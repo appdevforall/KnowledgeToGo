@@ -332,7 +332,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --timeout) TIMEOUT_SECS="${2:-180}"; shift 2 ;;
     --host) HOST="${2:-127.0.0.1}"; shift 2 ;;
-    --reset-iiab) RESET_IIAB=1; shift ;;
+    --reset-iiab|--shell) RESET_IIAB=1; shift ;;
     --remove-iiab|--remove-rootfs) set_mode "remove-iiab"; shift ;;
     --no-log) LOG_ENABLED=0; shift ;;
     --log-file) LOG_FILE="${2:-}"; shift 2 ;;
