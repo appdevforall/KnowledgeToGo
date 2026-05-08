@@ -1186,7 +1186,7 @@ public class DeployFragment extends Fragment {
                                     }
 
                                     // PIPELINE PHASE 3: Companion Data
-                                    if (chkCompanionData.isChecked() && (safeTier == InstallationPlanner.Tier.STANDARD || safeTier == InstallationPlanner.Tier.FULL)) {
+                                    if (chkCompanionData.isChecked()) {
 
                                         // A. Edit YAML safely via Regex BEFORE booting PRoot
                                         editLocalVarsForMaps(debianRootfs, safeTier);
