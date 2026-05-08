@@ -1485,7 +1485,7 @@ public class DeployFragment extends Fragment {
         getActivity().runOnUiThread(() -> btnFastInstall.setText("Configuring Maps..."));
 
         if (prootEngine == null) prootEngine = new PRootEngine();
-        String installCmd = "cd /opt/iiab/iiab && ./runrole maps";
+        String installCmd = "cd /opt/iiab/iiab && ./runrole --reinstall maps";
 
         prootEngine.executeInContainer(requireContext(), debianRootfs.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
             @Override public void onOutputLine(String line) {
