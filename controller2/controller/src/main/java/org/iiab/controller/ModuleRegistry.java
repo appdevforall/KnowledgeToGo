@@ -2,9 +2,11 @@
  * ============================================================================
  * Name        : ModuleRegistry.java
  * Author      : IIAB Project
- * Description : Centralized Master Roster for IIAB Modules
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : Centralized registry for IIAB modules and their configuration
  * ============================================================================
  */
+
 package org.iiab.controller;
 
 import java.util.Arrays;

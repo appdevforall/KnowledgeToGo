@@ -15,11 +15,12 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">AJUSTES</string>
 
-    <string name="tab_deploy">Instalación</string>
+    <string name="tab_deploy">Instalar</string>
     <string name="tab_status">Estado</string>
     <string name="tab_usage">Uso</string>
 
 
+    <string name="tab_share">Enviar</string>
     <string name="setup_title">Configuración Inicial</string>
     <string name="setup_welcome">Bienvenido al asistente de configuración de %1$s.\n\nPara funcionar correctamente, necesitamos los siguientes permisos:</string>
     <string name="setup_continue">Continuar</string>
@@ -33,6 +34,7 @@
     <string name="setup_display_over_other_apps">Mostrar sobre otras aplicaciones</string>
     <string name="setup_manage_termux_permissions">Administrar permisos de Termux</string>
 
+    <string name="setup_lang_desc">Por favor selecione su idioma</string>
     <string name="setup_termux_storage_btn">Archivos y medios (Almacenamiento)</string>
     <string name="termux_not_installed">Termux no está instalado.</string>
     <string name="termux_not_installed_error">Termux no está instalado o el dispositivo no es compatible.</string>
@@ -73,6 +75,7 @@
     <string name="dash_state_termux_only">Termux encontrado, vaya a la pestaña de Instalación para operarlo.</string>
     <string name="dash_termux_searching">Buscando instalación...</string>
 
+    <string name="dash_arch_proot">"PRoot: "</string>
     <string name="dash_installed_modules">Módulos disponibles</string>
     <string name="dash_books">Libros</string>
     <string name="dash_kiwix">Kiwix</string>
@@ -82,6 +85,7 @@
     <string name="dash_system">Sistema</string>
 
 
+    <string name="dash_code">Code</string>
     <string name="apps">Aplicaciones</string>
     <string name="browse_content">🚀 Explorar Contenido</string>
     <string name="launch_server">🚀 Iniciar Servidor</string>
@@ -228,6 +232,39 @@
     <string name="version_footer_format">IIAB-oA · 2026 · Controller %1$s</string>
     <string name="wi_fi_fdash">Wi-Fi: --</string>
     <string name="setup_termux_custom_permissions">Ajuste de permisos Termux</string>
+    <string name="setup_lang_title">Idioma de contenido</string>
+    <string name="dash_architectures_title">Arquitecturas</string>
+    <string name="dash_arch_termux">Aplicación:</string>
+    <string name="update_dialog_positive">Actualizar</string>
+    <string name="update_dialog_negative">Luego</string>
+    <string name="install_led_termux">Core</string>
+    <string name="install_header_fast">Instalación rápida</string>
+    <string name="install_btn_install">Instalar</string>
+    <string name="install_btn_reinstall">Reinstalar</string>
+    <string name="install_btn_delete">Eliminar</string>
+    <string name="install_btn_launch">Iniciar instalación</string>
+    <string name="install_adv_monitoring_title">Monitoreo avanzado</string>
+    <string name="install_btn_reset">Reseteo completo</string>
+    <string name="install_btn_backup">Respaldo</string>
+    <string name="install_dialog_reset_cancel">Cancelar</string>
+    <string name="install_btn_restore">Restaurar respaldo</string>
+    <string name="install_btn_force_stop">Forzar detención</string>
+    <string name="install_dialog_reset_title">Reseteo completo</string>
+    <string name="adb_notif_action_pin">Ingrese PIN</string>
+    <string name="sync_btn_cancel_transfer">Cancelar</string>
+    <string name="adb_enforcer_btn_setup">Configurar</string>
+    <string name="adb_enforcer_btn_ok">Aceptar</string>
+    <string name="install_tier_basic">Básico</string>
+    <string name="install_tier_standard">Estandard</string>
+    <string name="install_tier_full">Completo</string>
+    <string name="install_legend_iiab">IIAB</string>
+    <string name="install_legend_maps">IIAB Maps</string>
+    <string name="install_legend_kiwix">Wikipedia</string>
+    <string name="install_legend_free">Libre</string>
+    <string name="sync_success_title">Éxito</string>
+    <string name="sync_btn_start_transfer">Iniciar Transferencia</string>
+    <string name="download_started_toast">Descarga iniciada...</string>
+    <string name="ota_toast_checking">Revisar por actualizaciones...</string>
 
 
 </resources>

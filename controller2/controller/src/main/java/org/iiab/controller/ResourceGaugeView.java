@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ * Name        : ResourceGaugeView.java
+ * Author      : IIAB Project
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : Custom view for displaying animated resource gauges
+ * ============================================================================
+ */
 package org.iiab.controller;
 
 import android.animation.ValueAnimator;

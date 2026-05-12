@@ -1,3 +1,12 @@
+/*
+ * ============================================================================
+ * Name        : IIABAdbManager.java
+ * Author      : IIAB Project
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : Setup permission table helper and Locale configuration
+ * ============================================================================
+ */
+
 package org.iiab.controller;
 
 import android.content.Context;

@@ -15,9 +15,10 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">SETTINGS</string>
 
-    <string name="tab_deploy">Installation</string>
+    <string name="tab_deploy">Install</string>
     <string name="tab_status">Status</string>
     <string name="tab_usage">Usage</string>
+    <string name="tab_share">Share</string>
 
 
     <string name="setup_title">Initial Setup</string>
@@ -74,7 +75,7 @@
     <string name="dash_termux_searching">Searching for installation...</string>
     <string name="dash_architectures_title">Architectures</string>
     <string name="dash_arch_termux">"App: "</string>
-    <string name="dash_arch_proot">"Proot: "</string>
+    <string name="dash_arch_proot">"PRoot: "</string>
 
     <string name="dash_installed_modules">Available Modules</string>
     <string name="dash_books">Books</string>
@@ -290,7 +291,7 @@
     <string name="install_msg_offline_trusted">Server is offline. Module state is trusted and up to date.</string>
     <string name="install_msg_server_running_lock">Please turn off the server to manage modules.</string>
     <string name="install_btn_restore">Restore Backup</string>
-    <string name="install_btn_force_stop">Force Stop Termux</string>
+    <string name="install_btn_force_stop">Force Stop App</string>
     <string name="install_adv_select_backup">▶ Select backup...</string>
     <string name="install_adv_select_backup_open">▼ Select backup...</string>
     <string name="install_msg_fetching_backups">Fetching backups...</string>
@@ -340,4 +341,92 @@
 
     <string name="adb_snack_disabling_cp">Disabling Processes Restrictions...</string>
     <string name="adb_snack_setting_ppk">Setting PPK limit to 256...</string>
+
+    <string name="sync_mode_share">Share System</string>
+    <string name="sync_mode_receive">Receive System</string>
+
+    <string name="sync_share_desc">Share this IIAB installation (RootFS: Maps, Wikipedia and other content) with another device on the same Wi-Fi network or Hotspot.</string>
+    <string name="sync_share_status_off">Share daemon stopped</string>
+    <string name="sync_share_status_listening">Listening on port %1$d\nWaiting for connection...</string>
+    <string name="sync_btn_start_server">Start share service</string>
+    <string name="sync_btn_stop_server">Stop share service</string>
+
+    <string name="sync_receive_desc">Scan the host device\'s QR code to download an exact copy of its system. (Supports automatic resuming).</string>
+    <string name="sync_btn_scan_qr">Scan QR Code</string>
+
+    <string name="sync_transfer_filename">Synchronizing: %1$s...</string>
+    <string name="sync_transfer_speed_default">-- MB/s</string>
+    <string name="sync_transfer_eta_default">ETA: --:--</string>
+    <string name="sync_btn_cancel_transfer">Cancel</string>
+    <string name="sync_error_stop_server_first">Please STOP the IIAB Server first to prevent file corruption.</string>
+    <string name="sync_error_no_network">No active network found. Please enable Wi-Fi or Hotspot.</string>
+    <string name="sync_error_daemon_failed">Failed to start Share Daemon.</string>
+    <string name="sync_label_wifi">Wi-Fi</string>
+    <string name="sync_label_hotspot">Hotspot</string>
+    <string name="sync_share_status_active">Listening on %1$s (%2$s)\nPort: %3$d</string>
+    <string name="sync_placeholder_scanner">Scanner logic coming in next step!</string>
+
+    <string name="install_btn_export_backup">📤 Export Internal Backup to SD Card</string>
+    <string name="install_btn_import_backup">📥 Import Backup from SD Card</string>
+    <string name="install_msg_backup_in_progress_title">Backup in Progress</string>
+    <string name="install_msg_backup_in_progress_body">A 40GB+ backup process is already running in the background. Interrupting it now might corrupt the file.\n\nDo you want to force stop it?</string>
+    <string name="install_btn_force_stop_process">Force Stop</string>
+    <string name="install_btn_let_finish">Let it finish</string>
+    <string name="install_msg_backup_aborted">Backup aborted by user.</string>
+    <string name="install_msg_compressing">Compressing...\n(Do not close)</string>
+    <string name="install_msg_creating_backup">Creating native backup... (This takes a while)</string>
+    <string name="install_msg_backup_complete">Backup Complete: %1$s</string>
+    <string name="install_msg_backup_failed">Backup Failed with code: %1$d</string>
+    <string name="install_msg_backup_error">Backup Error: %1$s</string>
+
+    <string name="install_msg_export_please_select">Please select an internal backup from the menu above first.</string>
+    <string name="install_msg_exporting">Exporting %1$s...</string>
+    <string name="install_msg_export_success">Export completed successfully!</string>
+    <string name="install_msg_export_failed">Export failed: %1$s</string>
+
+    <string name="install_msg_importing">Importing backup... Please wait.</string>
+    <string name="install_msg_import_success">Backup Imported successfully!</string>
+    <string name="install_msg_import_failed">Import failed: %1$s</string>
+
+    <string name="adb_enforcer_title">System Optimization Required</string>
+    <string name="adb_enforcer_body">To ensure stable transfers of massive large files, Android\'s strict background process limits must be temporarily bypassed.\n\nPlease go to \'Advanced Monitoring\' in the Deploy tab, connect via ADB, and apply the \'Process Restriction\' recommended settings.</string>
+    <string name="adb_enforcer_btn_setup">Setup</string>
+    <string name="adb_enforcer_btn_ok">OK</string>
+
+    <string name="install_led_internet">Internet\nAccess</string>
+    <string name="install_warning_server_icon">⚠️</string>
+    <string name="install_btn_provision">Provision System</string>
+    <string name="install_btn_refresh">Refresh</string>
+    <string name="install_tier_basic">Basic</string>
+    <string name="install_tier_standard">Standard</string>
+    <string name="install_tier_full">Full</string>
+    <string name="install_chk_companion">Pull companion data for this edition</string>
+    <string name="install_legend_iiab">IIAB</string>
+    <string name="install_legend_maps">IIAB Maps</string>
+    <string name="install_legend_kiwix">Wikipedia</string>
+    <string name="install_legend_free">Free</string>
+
+    <string name="rsync_error_binary_missing">Native rsync binary not found!</string>
+    <string name="rsync_error_cancelled">Transfer cancelled by user.</string>
+    <string name="rsync_error_host_dropped">The host terminated the connection or the network dropped.</string>
+    <string name="rsync_error_exit_code">Rsync failed with exit code: %1$d</string>
+    <string name="rsync_error_fatal">Fatal Error: %1$s</string>
+    <string name="rsync_error_dry_run_cancelled">Calculation cancelled by user.</string>
+    <string name="rsync_error_dry_run_failed">Dry run failed. Exit code: %1$d</string>
+    <string name="rsync_error_dry_run_fatal">Fatal Error calculating size: %1$s</string>
+    <string name="rsync_success_complete">Transfer completed successfully!</string>
+
+    <string name="sync_msg_calculating">Analyzing system differences...\nThis may take a couple of minutes.</string>
+    <string name="sync_error_storage_title">Insufficient Storage</string>
+    <string name="sync_error_storage_msg">The update requires %.2f GB, but you only have %.2f GB available (considering a 5GB safety buffer).</string>
+    <string name="sync_title_update">Update System</string>
+    <string name="sync_title_install">Install System</string>
+    <string name="sync_msg_confirm_transfer">You are about to download %.2f GB.\nYou have enough storage space.\n\nDo you want to start the transfer now?</string>
+    <string name="sync_btn_start_transfer">Start Transfer</string>
+    <string name="sync_error_calc_title">Calculation Failed</string>
+    <string name="sync_error_calc_msg">Could not calculate system differences: %1$s</string>
+    <string name="sync_success_title">Success</string>
+    <string name="sync_error_title">Transfer Error</string>
+    <string name="sync_error_body">Rsync encountered a problem:\n\n%1$s</string>
+
 </resources>

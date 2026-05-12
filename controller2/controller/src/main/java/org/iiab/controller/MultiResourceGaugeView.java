@@ -1,3 +1,12 @@
+/*
+ * ============================================================================
+ * Name        : MultiResourceGaugeView.java
+ * Author      : IIAB Project
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : Custom view for displaying multiple animated resource gauges
+ * ============================================================================
+ */
+
 package org.iiab.controller;
 
 import android.animation.ValueAnimator;

@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Internet\nAccess"
+                    android:text="@string/install_led_internet"
                     android:textColor="@color/dash_text_inverted"
                     android:fontFamily="@font/orbitron"
                     android:textSize="9sp"
@@ -152,7 +152,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="⚠️"
+                android:text="@string/install_warning_server_icon"
                 android:textSize="16sp"
                 android:layout_marginEnd="8dp" />
 
@@ -305,7 +305,6 @@
             android:textSize="14sp"
             android:layout_marginBottom="24dp" />
 
-        <!-- Fast Installation Planner Panel -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -315,7 +314,6 @@
             android:padding="16dp"
             android:layout_marginBottom="16dp">
 
-            <!-- Top Section: Gauge and Buttons Split (50/50) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -323,7 +321,6 @@
                 android:baselineAligned="false"
                 android:weightSum="2">
 
-                <!-- Left Side: Reusing the exact same Gauge from Status -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -337,7 +334,6 @@
                         android:layout_height="130dp" />
                 </LinearLayout>
 
-                <!-- Right Side: Tier Selection -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -351,7 +347,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Basic"
+                        android:text="@string/install_tier_basic"
                         android:textColor="#FFFFFF"
                         android:background="@drawable/rounded_button"
                         android:backgroundTint="#333333"
@@ -362,7 +358,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Standard"
+                        android:text="@string/install_tier_standard"
                         android:textColor="#FFFFFF"
                         android:background="@drawable/rounded_button"
                         android:backgroundTint="#333333"
@@ -374,7 +370,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Full"
+                        android:text="@string/install_tier_full"
                         android:textColor="#FFFFFF"
                         android:background="@drawable/rounded_button"
                         android:backgroundTint="#333333"
@@ -383,7 +379,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Middle Section: Checkbox -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -401,7 +396,7 @@
                         android:id="@+id/chk_companion_data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pull companion data for this edition"
+                        android:text="@string/install_chk_companion"
                         android:textSize="12sp"
                         android:textColor="@color/dash_text_secondary"
                         android:buttonTint="#008000" />
@@ -422,7 +417,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Bottom Section: Custom 2x2 Legend Grid (Key: Value Aligned) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -432,7 +426,6 @@
                 android:backgroundTint="#1Affffff"
                 android:padding="12dp">
 
-                <!-- Row 1: IIAB & Maps -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -446,7 +439,7 @@
                         android:layout_weight="1"
                         android:paddingEnd="12dp">
                         <View android:id="@+id/dot_iiab" android:layout_width="10dp" android:layout_height="10dp" android:background="#00FFFF" android:layout_centerVertical="true"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="IIAB" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_iiab" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/install_legend_iiab" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_iiab" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
                         <TextView android:id="@+id/txt_legend_iiab" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0G" android:textSize="12sp" android:textColor="@color/dash_text_inverted" android:fontFamily="@font/orbitron" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
                     </RelativeLayout>
 
@@ -456,12 +449,11 @@
                         android:layout_weight="1"
                         android:paddingStart="12dp">
                         <View android:id="@+id/dot_maps" android:layout_width="10dp" android:layout_height="10dp" android:background="#FF9800" android:layout_centerVertical="true"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="IIAB Maps" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_maps" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/install_legend_maps" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_maps" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
                         <TextView android:id="@+id/txt_legend_maps" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0G" android:textSize="12sp" android:textColor="@color/dash_text_inverted" android:fontFamily="@font/orbitron" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
                     </RelativeLayout>
                 </LinearLayout>
 
-                <!-- Row 2: Kiwix & Free -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -476,7 +468,7 @@
                         android:layout_weight="1"
                         android:paddingEnd="12dp">
                         <View android:id="@+id/dot_kiwix" android:layout_width="10dp" android:layout_height="10dp" android:background="#008000" android:layout_centerVertical="true"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Wikipedia 'LANG'" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_kiwix" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/install_legend_kiwix" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_kiwix" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
                         <TextView android:id="@+id/txt_legend_kiwix" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0G" android:textSize="12sp" android:textColor="@color/dash_text_inverted" android:fontFamily="@font/orbitron" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
                     </RelativeLayout>
 
@@ -486,14 +478,13 @@
                         android:layout_weight="1"
                         android:paddingStart="12dp">
                         <View android:id="@+id/dot_free" android:layout_width="10dp" android:layout_height="10dp" android:background="#777777" android:layout_centerVertical="true"/>
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Free" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_free" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/install_legend_free" android:textSize="12sp" android:textColor="@color/dash_text_secondary" android:layout_toEndOf="@id/dot_free" android:layout_marginStart="6dp" android:layout_centerVertical="true"/>
                         <TextView android:id="@+id/txt_legend_free" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0.0G" android:textSize="12sp" android:textColor="@color/dash_text_inverted" android:fontFamily="@font/orbitron" android:layout_alignParentEnd="true" android:layout_centerVertical="true"/>
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Execution Action Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -505,7 +496,7 @@
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:text="Provision System"
+                android:text="@string/install_btn_provision"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
                 android:background="@drawable/rounded_button"
@@ -552,7 +543,7 @@
                 android:id="@+id/btn_refresh_modules"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Refresh"
+                android:text="@string/install_btn_refresh"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:padding="12dp"
@@ -671,7 +662,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:baselineAligned="false">
 
                 <Button
@@ -700,6 +691,17 @@
                     android:backgroundTint="#FFC107"
                     android:textAllCaps="false" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_export_backup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/install_btn_export_backup"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:background="?attr/selectableItemBackground" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -734,6 +736,17 @@
                     android:backgroundTint="#F44336"
                     android:textAllCaps="false" />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_import_backup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/install_btn_import_backup"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:background="?attr/selectableItemBackground" />
 
             <LinearLayout
                 android:layout_width="match_parent"

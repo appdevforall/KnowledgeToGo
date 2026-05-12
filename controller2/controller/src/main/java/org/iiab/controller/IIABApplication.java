@@ -1,3 +1,12 @@
+/*
+ * ============================================================================
+ * Name        : IIABApplication.java
+ * Author      : IIAB Project
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : Main Application class for IIAB
+ * ============================================================================
+ */
+
 package org.iiab.controller;
 
 import android.app.Application;

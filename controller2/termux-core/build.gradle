@@ -11,7 +11,8 @@ task patchTermuxSources(type: Copy) {
 
     // We filter line by line to redirect rogue R's to the main namespace
     filter { String line ->
-        line.replaceAll('import com.termux.view.R;', 'import com.termux.shared.R;')
+        line.replaceAll('com.termux.view.R', 'com.termux.shared.R')
+                .replaceAll('org.iiab.termuxcore.R', 'com.termux.shared.R')
     }
 }
 

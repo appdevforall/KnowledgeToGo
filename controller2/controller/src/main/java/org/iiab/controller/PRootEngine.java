@@ -1,9 +1,10 @@
 /*
- ============================================================================
- Name        : PRootEngine.java
- Author      : IIAB Project
- Description : Native Java wrapper for libproot.so container orchestration
- ============================================================================
+ * ============================================================================
+ * Name        : PRootEngine.java
+ * Author      : IIAB Project
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : PRoot container engine for executing Linux binaries
+ * ============================================================================
  */
 
 package org.iiab.controller;

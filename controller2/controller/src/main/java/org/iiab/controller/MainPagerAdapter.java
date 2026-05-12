@@ -29,6 +29,8 @@ public class MainPagerAdapter extends FragmentStateAdapter {
                 return new UsageFragment();
             case 2:
                 return new DeployFragment();
+            case 3:
+                return new SyncFragment();
             default:
                 return new DashboardFragment();
         }
@@ -36,6 +38,6 @@ public class MainPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

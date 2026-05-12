@@ -1,10 +1,10 @@
 /*
- ============================================================================
- Name        : ServiceReceiver.java
- Contributors: IIAB Project
- Copyright (c) 2026 IIAB Project
- Description : ServiceReceiver
- ============================================================================
+ * ============================================================================
+ * Name        : ServiceReceiver.java
+ * Author      : IIAB Project
+ * Copyright   : Copyright (c) 2026 IIAB Project
+ * Description : Broadcast receiver for system events
+ * ============================================================================
  */
 
 package org.iiab.controller;

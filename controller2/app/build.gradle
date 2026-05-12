@@ -9,8 +9,8 @@ android {
         applicationId "org.iiab.controller"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 40
-        versionName "v0.3.0beta"
+        versionCode 41
+        versionName "v0.3.1beta"
         setProperty("archivesBaseName", "$applicationId-$versionName")
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"

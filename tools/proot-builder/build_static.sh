@@ -12,6 +12,7 @@ REBUILD_PROOT=0
 REBUILD_ARIA2=0
 REBUILD_TAR=0
 REBUILD_GZIP=0
+REBUILD_RSYNC=0
 
 for arg in "$@"; do
     case $arg in
@@ -20,6 +21,7 @@ for arg in "$@"; do
             REBUILD_ARIA2=1
             REBUILD_TAR=1
             REBUILD_GZIP=1
+            REBUILD_RSYNC=1
             shift
             ;;
         --rebuild-proot)
@@ -38,9 +40,13 @@ for arg in "$@"; do
             REBUILD_GZIP=1
             shift
             ;;
+        --rebuild-rsync)
+            REBUILD_RSYNC=1
+            shift
+            ;;
         *)
             echo "Unknown argument: $arg"
-            echo "Usage: $0 [--rebuild-all | --rebuild-proot | --rebuild-aria2 | --rebuild-tar | --rebuild-gzip]"
+            echo "Usage: $0 [--rebuild-all | --rebuild-proot | --rebuild-aria2 | --rebuild-tar | --rebuild-gzip | --rebuild-all]"
             exit 1
             ;;
     esac
@@ -119,14 +125,14 @@ termux_step_pre_configure() {
 EOF
 
 # --- TAR PATCH ---
-# 1. Inject dependencies tricking the Python script with sed
+# Inject dependencies tricking the Python script with sed
 sed -i -E 's/libandroid-glob/libandroid-glob-static, libandroid-glob/g' packages/tar/build.sh
 sed -i -E 's/libiconv/libiconv-static, libiconv/g' packages/tar/build.sh
 
-# 2. Scorched Earth and Static Flags
+# Force static linking for for GNU Tar
 cat << 'EOF' >> packages/tar/build.sh
 termux_step_pre_configure() {
-    echo ">> Scorched Earth Tactic for GNU Tar..."
+    echo ">> Applying Static flags for GNU Tar..."
 
     # Destroy dynamic libs to force .a usage
     rm -f $TERMUX_PREFIX/lib/libandroid-glob.so*
@@ -148,10 +154,37 @@ cat << 'EOF' >> packages/gzip/build.sh
 termux_step_pre_configure() {
     echo ">> Applying Static flags for GNU Gzip..."
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
-    
+
     # Force Gnulib to compile its own qsort_r by denying the system's one
     export ac_cv_func_qsort_r=no
     export gl_cv_func_qsort_r=no
+}
+EOF
+
+# --- RSYNC PATCH ---
+cat << 'EOF' >> packages/rsync/build.sh
+termux_step_pre_configure() {
+    echo ">> Applying Static flags for Rsync..."
+    
+    # temporal: Escondemos los .so en lugar de borrarlos
+    mkdir -p $TERMUX_PREFIX/lib/hidden_so
+    mv $TERMUX_PREFIX/lib/libpopt.so* $TERMUX_PREFIX/lib/hidden_so/ 2>/dev/null || true
+    mv $TERMUX_PREFIX/lib/libiconv.so* $TERMUX_PREFIX/lib/hidden_so/ 2>/dev/null || true
+
+    LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
+    
+    # temporal: Desactivamos compresiones modernas
+    TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --disable-lz4 --disable-zstd --disable-xxhash --disable-openssl"
+
+    # temporal: Mentimos al compilador para evitar los errores de cabeceras de Android (Bionic libc)
+    export ac_cv_func_lchmod=no
+    export ac_cv_func_lutimes=no
+}
+
+termux_step_post_make() {
+    # temporal: Restauramos las librerías dinámicas a su lugar original
+    mv $TERMUX_PREFIX/lib/hidden_so/* $TERMUX_PREFIX/lib/ 2>/dev/null || true
+    rmdir $TERMUX_PREFIX/lib/hidden_so 2>/dev/null || true
 }
 EOF
 
@@ -260,6 +293,34 @@ for mapping in "${ARCHS[@]}"; do
         ar x "$DEB_DIR/gzip_"*"_$TERMUX_ARCH.deb" && tar xf data.tar.xz
         # Ensure we package it as .so so Android allows its execution
         cp data/data/com.termux/files/usr/bin/gzip "$OUT_DIR/libgzip.so"
+        cd "$TERMUX_REPO"
+    fi
+
+    # -------------------------------------------------------------------------
+    # 5. COMPILE RSYNC
+    # -------------------------------------------------------------------------
+    if [ -f "$OUT_DIR/librsync.so" ] && [ "$REBUILD_RSYNC" -eq 0 ]; then
+        echo ">> librsync.so already exists. Skipping. Use --rebuild-rsync to force."
+    else
+        echo ">> Healing sysroot and Building Rsync..."
+        FORCE_FLAG=$([ "$REBUILD_RSYNC" -eq 1 ] && echo "-f" || echo "")
+
+        # temporal: Forzamos la recompilación de las librerías que rompimos antes para sanar el entorno
+        ./scripts/run-docker.sh ./build-package.sh $FORCE_FLAG -a "$TERMUX_ARCH" libiconv libpopt
+
+        # Ahora sí, compilamos rsync
+        ./scripts/run-docker.sh ./build-package.sh $FORCE_FLAG -a "$TERMUX_ARCH" rsync
+
+        EXTRACT_DIR="$WORK_DIR/extract_${TERMUX_ARCH}_rsync"
+        mkdir -p "$EXTRACT_DIR" && cd "$EXTRACT_DIR"
+        DEB_DIR="$TERMUX_REPO/output"
+        if [ ! -d "$DEB_DIR" ]; then DEB_DIR="$TERMUX_REPO/debs"; fi
+
+        rm -rf data control
+        ar x "$DEB_DIR/rsync_"*"_$TERMUX_ARCH.deb" && tar xf data.tar.xz
+
+        # temporal: Copiamos el binario y lo renombramos a .so
+        cp data/data/com.termux/files/usr/bin/rsync "$OUT_DIR/librsync.so"
         cd "$TERMUX_REPO"
     fi
 

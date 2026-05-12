@@ -1,3 +1,13 @@
+/*
+ ============================================================================
+ Name        : Aria2Manager.java
+ Contributors: IIAB Project
+ Copyright (c) 2026 IIAB Project
+ Description : Java wrapper for the native libaria2c.so binary.
+ Handles native aria2c download tasks.
+ ============================================================================
+ */
+
 package org.iiab.controller;
 
 import android.content.Context;

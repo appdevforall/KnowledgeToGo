@@ -144,25 +144,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 addToLog(message);
                 if (usageFragment != null) usageFragment.updateLogSizeUI();
             } else if (WatchdogService.ACTION_STATE_STARTED.equals(action)) {
-                long elapsed = System.currentTimeMillis() - pulseStartTime;
-                long fullCycle = 1200;
-
-                // Find out how many milliseconds are left to finish the current wave
-                long remainder = elapsed % fullCycle;
-                long timeToNextCycleEnd = fullCycle - remainder;
-
-                // If the remaining time is too fast (< 1 second), add one more full cycle
-                // so the user actually has time to see the system notification drop down gracefully.
-                if (timeToNextCycleEnd < 1000) {
-                    timeToNextCycleEnd += fullCycle;
-                }
-
-                // Wait exactly until the wave hits 1.0f alpha, then lock it!
-                new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                    if (usageFragment != null) usageFragment.finalizeEntryPulse();
-                }, timeToNextCycleEnd);
+                // Keep the visual sync pulse alive if the UI reloads while protected
+                if (usageFragment != null) usageFragment.startFusionPulse();
             } else if (WatchdogService.ACTION_STATE_STOPPED.equals(action)) {
-                // Service is down! Give it a 1.5 second visual margin, then stop the exit pulse.
+                // Service is down! Give it a visual margin, then stop the exit pulse.
                 new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                     if (usageFragment != null) usageFragment.finalizeExitPulse();
                 }, 1500);
@@ -207,6 +192,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 2:
                     tab.setText(R.string.tab_deploy);
+                    break;
+                case 3:
+                    tab.setText(R.string.tab_share);
                     break;
             }
         }).attach();
@@ -395,6 +383,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 permissions.add(Manifest.permission.POST_NOTIFICATIONS);
             }
+        }
+
+        // ADDED CAMERA PERMISSION REQUEST
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permissions.add(Manifest.permission.CAMERA);
         }
 
         if (!permissions.isEmpty()) {
@@ -611,34 +604,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Delegated
     }
 
-    public void handleWatchdogClick() {
-        setWatchdogState(!prefs.getWatchdogEnable());
-    }
-
-    private void setWatchdogState(boolean enable) {
-        prefs.setWatchdogEnable(enable);
-        Intent intent = new Intent(this, WatchdogService.class);
-
-        if (enable) {
-            intent.setAction(WatchdogService.ACTION_START);
-            addToLog(getString(R.string.watchdog_started));
-            if (isServerAlive && usageFragment != null) usageFragment.startFusionPulse();
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(intent);
-            } else {
-                startService(intent);
-            }
-        } else {
-            addToLog(getString(R.string.watchdog_stopped));
-            if (usageFragment != null) usageFragment.startExitPulse();
-            stopService(intent);
-        }
-
-        updateUI();
-        updateUIColorsAndVisibility();
-    }
-
     public void handleControlClick() {
         if (!isServerAlive) {
             Snackbar.make(findViewById(android.R.id.content), R.string.qr_error_no_server, Snackbar.LENGTH_LONG).show();
@@ -761,7 +726,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
             // --- Watchdog injection / foreground service --- //
-            setWatchdogState(true);
+            prefs.setWatchdogEnable(true);
+            enableSystemProtection();
+            addToLog(getString(R.string.watchdog_started));
+            if (usageFragment != null) usageFragment.startFusionPulse();
 
             // Fallback for Oppo/Xiaomi: Notify user if server fails to start
             new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
@@ -774,7 +742,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             addToLog("Stopping IIAB environment gracefully...");
 
             PRootEngine stopEngine = new PRootEngine();
-            //
+
             stopEngine.executeInContainer(this, rootfsDir.getAbsolutePath(), "bash -lc '/usr/local/bin/pdsm stop'", new PRootEngine.OutputListener() {
                 @Override
                 public void onOutputLine(String line) {
@@ -801,7 +769,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         // 3. We turned off the Android Watchdog.
                         if (prefs.getWatchdogEnable()) {
-                            setWatchdogState(false);
+                            prefs.setWatchdogEnable(false);
+                            disableSystemProtection();
+                            addToLog(getString(R.string.watchdog_stopped));
+                            if (usageFragment != null) usageFragment.startExitPulse();
                         }
                     });
                 }
@@ -1453,5 +1424,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 v.vibrate(50);
             }
         }
+    }
+    // WATCHDOG PROTECTION UTILS
+    public void enableSystemProtection() {
+        Intent intent = new Intent(this, WatchdogService.class);
+        intent.setAction(WatchdogService.ACTION_START);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+    }
+
+    public void disableSystemProtection() {
+        Intent intent = new Intent(this, WatchdogService.class);
+        intent.setAction(WatchdogService.ACTION_STOP);
+        startService(intent);
     }
 }
