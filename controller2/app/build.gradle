@@ -9,7 +9,7 @@ android {
         applicationId "org.iiab.controller"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 4
+        versionCode 47
         versionName "v0.3.3beta"
         setProperty("archivesBaseName", "$applicationId-$versionName")
         ndk {
