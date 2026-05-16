@@ -908,7 +908,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void addToLog(String message) {
-        if (usageFragment != null) {
+        if (usageFragment != null && usageFragment.isAdded()) {
             usageFragment.addToLog(message);
         }
     }

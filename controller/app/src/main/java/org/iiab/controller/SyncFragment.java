@@ -3,7 +3,7 @@
  * Name        : SyncFragment.java
  * Author      : IIAB Project
  * Copyright   : Copyright (c) 2026 IIAB Project
- * Description : Java wrapper for the native librsync.so binary
+ * Description : Fragment to handle P2P/P2M syncing and App sharing
  * ============================================================================
  */
 
@@ -11,10 +11,9 @@ package org.iiab.controller;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.content.Intent;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +43,7 @@ import java.net.NetworkInterface;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
+import android.widget.RadioButton;
 
 public class SyncFragment extends Fragment {
 
@@ -54,24 +54,35 @@ public class SyncFragment extends Fragment {
     private ImageView imgQrCode;
     private TextView txtShareStatus;
     private Button btnStartServer;
+    private Button btnShareApp;
 
     // Receive UI
     private Button btnScanQr, btnCancelTransfer;
     private TextView txtTransferFilename, txtTransferSpeed, txtTransferEta;
     private ProgressBar progressBarTransfer;
 
+    // Managers
     private RsyncManager rsyncManager;
-    private boolean isDaemonRunning = false;
+    private ApkServer apkServer;
 
+    // States
+    private boolean isDaemonRunning = false;
+    private boolean isApkServerRunning = false;
     private String wifiIp = null;
     private String hotspotIp = null;
     private boolean showingWifi = true;
     private View qrCardContainer;
-    private ImageButton btnFlipQr;
     private int currentRsyncPort = 8730;
+    private static final int APK_PORT = 8080;
     private String tempUser = "iiab_peer";
     private String tempPass;
-    private boolean hostHasRootfs = true; // State tracker
+    private boolean hostHasRootfs = true;
+    private LinearLayout qrDisplaySection;
+    private RadioGroup rgNetworkSelector;
+    private RadioButton rbNetWifi, rbNetHotspot;
+    private LinearLayout cardShareSystem;
+    private LinearLayout cardShareApk;
+
 
     // Scanner Launcher
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
@@ -96,6 +107,33 @@ public class SyncFragment extends Fragment {
         imgQrCode = view.findViewById(R.id.img_qr_code);
         txtShareStatus = view.findViewById(R.id.txt_share_status);
         btnStartServer = view.findViewById(R.id.btn_start_server);
+        btnShareApp = view.findViewById(R.id.btn_share_app);
+
+        qrDisplaySection = view.findViewById(R.id.qr_display_section);
+        rgNetworkSelector = view.findViewById(R.id.rg_network_selector);
+        rbNetWifi = view.findViewById(R.id.rb_net_wifi);
+        rbNetHotspot = view.findViewById(R.id.rb_net_hotspot);
+        cardShareSystem = view.findViewById(R.id.card_share_system);
+        cardShareApk = view.findViewById(R.id.card_share_apk);
+
+        // Listener of the new network switch
+        rgNetworkSelector.setOnCheckedChangeListener((group, checkedId) -> {
+            // Crossfade animation for QR
+            imgQrCode.animate().alpha(0f).setDuration(150).withEndAction(() -> {
+                showingWifi = (checkedId == R.id.rb_net_wifi);
+
+                // We updated selector text colors
+                rbNetWifi.setTextColor(showingWifi ? getResources().getColor(R.color.dash_text_primary) : getResources().getColor(R.color.dash_text_secondary));
+                rbNetHotspot.setTextColor(!showingWifi ? getResources().getColor(R.color.dash_text_primary) : getResources().getColor(R.color.dash_text_secondary));
+
+                // We reload the QR according to the active server
+                if (isDaemonRunning) updateQrDisplayRsync();
+                if (isApkServerRunning) updateQrDisplayApk();
+
+                // We show the new QR smoothly
+                imgQrCode.animate().alpha(1f).setDuration(150).start();
+            }).start();
+        });
 
         btnScanQr = view.findViewById(R.id.btn_scan_qr);
         btnCancelTransfer = view.findViewById(R.id.btn_cancel_transfer);
@@ -105,7 +143,6 @@ public class SyncFragment extends Fragment {
         progressBarTransfer = view.findViewById(R.id.progress_bar_transfer);
 
         qrCardContainer = view.findViewById(R.id.qr_card_container);
-        btnFlipQr = view.findViewById(R.id.btn_flip_qr);
 
         setupToggleLogic();
         setupShareLogic();
@@ -127,24 +164,31 @@ public class SyncFragment extends Fragment {
     }
 
     private void setupShareLogic() {
-        btnFlipQr.setOnClickListener(v -> {
-            showingWifi = !showingWifi;
-            updateQrDisplay();
-        });
-
+        // --------------------------------------------------------------------
+        // RSYNC SERVER LOGIC (For Data Syncing)
+        // --------------------------------------------------------------------
         btnStartServer.setOnClickListener(v -> {
             MainActivity mainActivity = (MainActivity) getActivity();
             if (mainActivity == null) return;
 
-            // ENFORCE ADB OPTIMIZATION BEFORE SERVING
             if (!isSystemOptimizedForSync()) {
                 showOptimizationRequiredDialog();
                 return;
             }
 
+            if (isApkServerRunning) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle(getString(R.string.sync_dialog_server_running_title))
+                        .setMessage(getString(R.string.sync_error_stop_apk_first))
+                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return;
+            }
+
             if (mainActivity.isServerAlive) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Server is Running")
+                        .setTitle(getString(R.string.sync_dialog_server_running_title))
                         .setMessage(getString(R.string.sync_error_stop_server_first))
                         .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -159,15 +203,14 @@ public class SyncFragment extends Fragment {
                     return;
                 }
 
-                // WARNING 1: Check if rootfs actually exists on the server
                 File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
                 hostHasRootfs = rootfsDir.exists() && rootfsDir.isDirectory();
 
                 if (!hostHasRootfs) {
                     new AlertDialog.Builder(requireContext())
-                            .setTitle("Missing Environment")
-                            .setMessage("There doesn't seem to be an IIAB environment installed on this device. Do you want to start the share daemon anyway?")
-                            .setPositiveButton("Yes, continue", (dialog, which) -> startShareDaemon(rootfsDir))
+                            .setTitle(getString(R.string.sync_dialog_missing_env_title))
+                            .setMessage(getString(R.string.sync_dialog_missing_env_msg))
+                            .setPositiveButton(getString(R.string.sync_dialog_btn_continue), (dialog, which) -> startShareDaemon(rootfsDir))
                             .setNegativeButton(getString(R.string.cancel), null)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
@@ -175,14 +218,39 @@ public class SyncFragment extends Fragment {
                     startShareDaemon(rootfsDir);
                 }
             } else {
-                // PHASE 1 FIX: Guardrail for stopping the server
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Stop Share Daemon?")
-                        .setMessage("This will immediately disconnect any peers currently downloading the system. Are you sure you want to stop?")
+                        .setTitle(getString(R.string.sync_dialog_stop_title))
+                        .setMessage(getString(R.string.sync_dialog_stop_msg))
                         .setPositiveButton(getString(R.string.sync_btn_stop_server), (dialog, which) -> stopShareDaemon())
                         .setNegativeButton(getString(R.string.cancel), null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
+            }
+        });
+
+        // --------------------------------------------------------------------
+        // APK SERVER LOGIC (For App Sharing / Bootstrap)
+        // --------------------------------------------------------------------
+        btnShareApp.setOnClickListener(v -> {
+            if (isDaemonRunning) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle(getString(R.string.sync_dialog_server_running_title))
+                        .setMessage(getString(R.string.sync_error_stop_server_first))
+                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return;
+            }
+
+            if (!isApkServerRunning) {
+                fetchNetworkInterfaces();
+                if (wifiIp == null && hotspotIp == null) {
+                    Toast.makeText(getContext(), getString(R.string.sync_error_no_network), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                startApkServer();
+            } else {
+                stopApkServer();
             }
         });
     }
@@ -212,9 +280,10 @@ public class SyncFragment extends Fragment {
         } catch (Exception ignored) {}
     }
 
+    // --- RSYNC DAEMON METHODS ---
+
     private void startShareDaemon(File rootfsDir) {
         tempPass = SyncHandshakeHelper.generateSecurePassword();
-
         if (!rootfsDir.exists()) rootfsDir.mkdirs();
 
         boolean started = rsyncManager.startServer(requireContext(), currentRsyncPort, tempUser, tempPass, rootfsDir.getAbsolutePath());
@@ -222,34 +291,37 @@ public class SyncFragment extends Fragment {
         if (started) {
             isDaemonRunning = true;
             enableSystemProtection();
+
+            qrDisplaySection.setVisibility(View.VISIBLE);
             qrCardContainer.setVisibility(View.VISIBLE);
+            imgQrCode.setAlpha(1f);
+            cardShareSystem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#173317")));
 
+            rgNetworkSelector.setVisibility((wifiIp != null && hotspotIp != null) ? View.VISIBLE : View.GONE);
             showingWifi = (wifiIp != null);
-            btnFlipQr.setVisibility((wifiIp != null && hotspotIp != null) ? View.VISIBLE : View.GONE);
-
-            updateQrDisplay();
+            updateQrDisplayRsync();
 
             btnStartServer.setText(getString(R.string.sync_btn_stop_server));
             btnStartServer.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#F44336"))); // Red
+            btnShareApp.setVisibility(View.GONE);
         } else {
             Toast.makeText(getContext(), getString(R.string.sync_error_daemon_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void updateQrDisplay() {
+    private void updateQrDisplayRsync() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
-        String label = showingWifi ? getString(R.string.sync_label_wifi) : getString(R.string.sync_label_hotspot);
-
-        // Pass the hostHasRootfs flag to the QR payload
         String jsonPayload = SyncHandshakeHelper.createPayload(currentIp, currentRsyncPort, tempUser, tempPass, hostHasRootfs);
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(jsonPayload, 500);
 
-        if (qrBitmap != null) {
-            imgQrCode.setImageBitmap(qrBitmap);
-        }
+        if (qrBitmap != null) imgQrCode.setImageBitmap(qrBitmap);
 
-        txtShareStatus.setText(getString(R.string.sync_share_status_active, label, currentIp, currentRsyncPort));
-        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#4CAF50")); // Green
+        if (showingWifi) {
+            txtShareStatus.setText(getString(R.string.sync_share_status_wifi));
+        } else {
+            txtShareStatus.setText(getString(R.string.sync_share_status_hotspot));
+        }
+        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#AAAAAA"));
     }
 
     private void stopShareDaemon() {
@@ -257,18 +329,87 @@ public class SyncFragment extends Fragment {
         isDaemonRunning = false;
         disableSystemProtection();
 
-        qrCardContainer.setVisibility(View.GONE);
+        qrDisplaySection.setVisibility(View.GONE);
+        btnStartServer.setText(getString(R.string.sync_btn_start_server));
+        cardShareSystem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#222222")));
+
         btnStartServer.setText(getString(R.string.sync_btn_start_server));
         btnStartServer.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#008000"))); // Green
+        btnShareApp.setVisibility(View.VISIBLE);
         txtShareStatus.setText(getString(R.string.sync_share_status_off));
         txtShareStatus.setTextColor(android.graphics.Color.parseColor("#FF9800")); // Orange
     }
+
+    // --- APK SERVER METHODS ---
+
+    private void startApkServer() {
+        try {
+            String myApkPath = requireContext().getApplicationInfo().sourceDir;
+
+            apkServer = new ApkServer(APK_PORT, myApkPath);
+            apkServer.start();
+            isApkServerRunning = true;
+
+            qrDisplaySection.setVisibility(View.VISIBLE);
+            qrCardContainer.setVisibility(View.VISIBLE);
+            updateCardOrder(true);
+            imgQrCode.setAlpha(1f);
+            cardShareApk.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#17263A")));
+
+            rgNetworkSelector.setVisibility((wifiIp != null && hotspotIp != null) ? View.VISIBLE : View.GONE);
+            showingWifi = (wifiIp != null);
+            updateQrDisplayApk();
+
+            btnShareApp.setText(getString(R.string.sync_btn_stop_app));
+            btnShareApp.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#F44336"))); // Red
+            btnStartServer.setVisibility(View.GONE);
+
+        } catch (Exception e) {
+            Log.e("SyncFragment", "Error starting APK Server", e);
+            Toast.makeText(getContext(), "Failed to start App Server", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateQrDisplayApk() {
+        String currentIp = showingWifi ? wifiIp : hotspotIp;
+        String downloadUrl = "http://" + currentIp + ":" + APK_PORT + "/IIAB-Controller-Latest";
+        Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(downloadUrl, 500);
+
+        if (qrBitmap != null) imgQrCode.setImageBitmap(qrBitmap);
+
+        if (showingWifi) {
+            txtShareStatus.setText(getString(R.string.sync_app_status_wifi));
+        } else {
+            txtShareStatus.setText(getString(R.string.sync_app_status_hotspot));
+        }
+        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#AAAAAA"));
+    }
+
+    private void stopApkServer() {
+        if (apkServer != null) {
+            apkServer.stop();
+            apkServer = null;
+        }
+        isApkServerRunning = false;
+        updateCardOrder(false);
+
+        qrDisplaySection.setVisibility(View.GONE);
+        btnShareApp.setText(getString(R.string.sync_btn_share_app));
+        cardShareApk.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#222222")));
+
+        btnShareApp.setText(getString(R.string.sync_btn_share_app));
+        btnShareApp.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#0055A4"))); // Blue
+        btnStartServer.setVisibility(View.VISIBLE);
+        txtShareStatus.setText(getString(R.string.sync_share_status_off));
+        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#FF9800")); // Orange
+    }
+
+    // --- CLIENT (RECEIVER) METHODS ---
 
     private void setupReceiveLogic() {
         btnScanQr.setOnClickListener(v -> {
             MainActivity mainActivity = (MainActivity) getActivity();
 
-            // ENFORCE ADB OPTIMIZATION BEFORE SCANNING
             if (!isSystemOptimizedForSync()) {
                 showOptimizationRequiredDialog();
                 return;
@@ -276,7 +417,7 @@ public class SyncFragment extends Fragment {
 
             if (mainActivity != null && mainActivity.isServerAlive) {
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Server is Running")
+                        .setTitle(getString(R.string.sync_dialog_server_running_title))
                         .setMessage(getString(R.string.sync_error_stop_server_first))
                         .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -304,16 +445,15 @@ public class SyncFragment extends Fragment {
     private void handleScannedData(String scannedJson) {
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(scannedJson);
         if (creds == null) {
-            Toast.makeText(getContext(), "Invalid QR Code.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.sync_toast_invalid_qr), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // WARNING 2: Check if the host reported having a rootfs
         if (!creds.hasRootfs) {
             new AlertDialog.Builder(requireContext())
-                    .setTitle("Warning: Empty Host")
-                    .setMessage("The host device reports that it does not have a complete IIAB environment installed. Do you still want to attempt the transfer?")
-                    .setPositiveButton("Yes, try anyway", (dialog, which) -> checkNetworkAndStart(creds))
+                    .setTitle(getString(R.string.sync_dialog_empty_host_title))
+                    .setMessage(getString(R.string.sync_dialog_empty_host_msg))
+                    .setPositiveButton(getString(R.string.sync_dialog_btn_try_anyway), (dialog, which) -> checkNetworkAndStart(creds))
                     .setNegativeButton(getString(R.string.cancel), null)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
@@ -325,7 +465,7 @@ public class SyncFragment extends Fragment {
     private void checkNetworkAndStart(SyncHandshakeHelper.SyncCredentials creds) {
         btnScanQr.setVisibility(View.GONE);
         containerProgress.setVisibility(View.VISIBLE);
-        txtTransferFilename.setText("Connecting to Host...");
+        txtTransferFilename.setText(getString(R.string.sync_msg_connecting));
         progressBarTransfer.setIndeterminate(true);
 
         new Thread(() -> {
@@ -343,21 +483,16 @@ public class SyncFragment extends Fragment {
                     if (finalReachable) {
                         File destDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
 
-                        // --- PREVENT ERROR 23 DUE MISSING FOLDER ---
                         if (!destDir.exists()) {
                             destDir.mkdirs();
                         }
-                        // --------------------------------------------------
 
-                        // DRY-RUN PHASE
                         txtTransferFilename.setText(getString(R.string.sync_msg_calculating));
 
                         rsyncManager.calculateTransferPlan(requireContext(), creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new RsyncManager.DryRunListener() {
                             @Override
                             public void onCalculated(long bytesToTransfer) {
                                 double gigabytes = bytesToTransfer / (1024.0 * 1024.0 * 1024.0);
-
-                                // Storage validation
                                 File dataDir = android.os.Environment.getDataDirectory();
                                 double freeSpaceGb = dataDir.getFreeSpace() / (1024.0 * 1024.0 * 1024.0);
 
@@ -372,7 +507,6 @@ public class SyncFragment extends Fragment {
                                     return;
                                 }
 
-                                // Final Confirmation Dialog
                                 String title = (destDir.exists() && destDir.list() != null && destDir.list().length > 0) ? getString(R.string.sync_title_update) : getString(R.string.sync_title_install);
                                 String msg = getString(R.string.sync_msg_confirm_transfer, gigabytes);
 
@@ -403,8 +537,8 @@ public class SyncFragment extends Fragment {
                         });
                     } else {
                         new AlertDialog.Builder(requireContext())
-                                .setTitle("Connection Failed")
-                                .setMessage("Cannot reach Host at " + creds.ip + ".\nAre you sure you are connected to the same Wi-Fi network or Hotspot?")
+                                .setTitle(getString(R.string.sync_dialog_conn_failed_title))
+                                .setMessage(getString(R.string.sync_dialog_conn_failed_msg, creds.ip))
                                 .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
@@ -467,8 +601,23 @@ public class SyncFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (rsyncManager != null) {
-            rsyncManager.stop();
+        if (rsyncManager != null) rsyncManager.stop();
+        if (apkServer != null) apkServer.stop();
+    }
+
+    private void updateCardOrder(boolean isApkActive) {
+        // We remove both cards from the parent container
+        containerShare.removeView(cardShareSystem);
+        containerShare.removeView(cardShareApk);
+
+        if (isApkActive) {
+            // If APK is active, we paste the APK one first (it will be on top) and then the System one
+            containerShare.addView(cardShareApk);
+            containerShare.addView(cardShareSystem);
+        } else {
+            // By default (or if System is active), we paste System first and then APK
+            containerShare.addView(cardShareSystem);
+            containerShare.addView(cardShareApk);
         }
     }
 

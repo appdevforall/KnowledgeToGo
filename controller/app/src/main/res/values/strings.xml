@@ -429,4 +429,36 @@
     <string name="sync_error_title">Transfer Error</string>
     <string name="sync_error_body">Rsync encountered a problem:\n\n%1$s</string>
 
+    <string name="sync_btn_share_app">Share App (APK)</string>
+    <string name="sync_btn_stop_app">Stop App (APK) Server</string>
+    <string name="sync_app_server_active">App Server active: %1$s</string>
+    <string name="sync_qr_instruction_app">Scan this QR with any regular camera to download the IIAB on Android (IIAB-oA) App.</string>
+    <string name="sync_error_stop_apk_first">Please stop the APK server before starting the Rsync daemon.</string>
+
+    <string name="sync_dialog_server_running_title">Server is Running</string>
+    <string name="sync_dialog_missing_env_title">Missing Environment</string>
+    <string name="sync_dialog_missing_env_msg">There doesn\'t seem to be an IIAB environment installed on this device. Do you want to start the share daemon anyway?</string>
+    <string name="sync_dialog_btn_continue">Yes, continue</string>
+    <string name="sync_dialog_stop_title">Stop Share Daemon?</string>
+    <string name="sync_dialog_stop_msg">This will immediately disconnect any peers currently downloading the system. Are you sure you want to stop?</string>
+    <string name="sync_toast_invalid_qr">Invalid QR Code.</string>
+    <string name="sync_dialog_empty_host_title">Warning: Empty Host</string>
+    <string name="sync_dialog_empty_host_msg">The host device reports that it does not have a complete IIAB environment installed. Do you still want to attempt the transfer?</string>
+    <string name="sync_dialog_btn_try_anyway">Yes, try anyway</string>
+    <string name="sync_msg_connecting">Connecting to Host…</string>
+    <string name="sync_dialog_conn_failed_title">Connection Failed</string>
+    <string name="sync_dialog_conn_failed_msg">Cannot reach Host at %1$s.\nAre you sure you are connected to the same Wi-Fi network or Hotspot?</string>
+
+    <string name="sync_card_title_system">Share IIAB + Content</string>
+    <string name="sync_card_desc_system">When both devices have the IIAB-oA Controller app, you can share the IIAB platform and all its content (from a few hundreds of MB to several GB).</string>
+    <string name="sync_card_title_apk">Share IIAB-oA Controller app</string>
+    <string name="sync_card_desc_apk">In order to use IIAB on Android, the other device needs the app first. This feature allows you to share it locally. No Internet required!</string>
+    <string name="sync_card_title_receive">Receive IIAB + Content</string>
+    <string name="sync_card_desc_receive">Scan the QR code displayed on the Host device to start receiving the IIAB platform and selected content.</string>
+
+    <string name="sync_share_status_wifi">"1. Ensure the other device is on the same Wi-Fi.\n2. Scan this QR on the other device."</string>
+    <string name="sync_share_status_hotspot">1. Ask the other device to connect to your Hotspot.\n2. Scan this QR on the other device."</string>
+    <string name="sync_app_status_wifi">"1. Ensure the other device is on the same Wi-Fi.\n2. Scan this QR with any regular camera."</string>
+    <string name="sync_app_status_hotspot">"1. Ask the other device to connect to your Hotspot.\n2. Scan this QR with any regular camera."</string>
+
 </resources>

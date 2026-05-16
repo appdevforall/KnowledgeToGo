@@ -15,8 +15,8 @@ android {
         targetSdk 28
 
         // 2. Version Control (OTA)
-        versionCode 48
-        versionName "v0.3.4beta"
+        versionCode 49
+        versionName "v0.3.5beta"
         setProperty("archivesBaseName", "$applicationId-$versionName")
 
         // 3. Supported architectures (NDK) // do we need x86*?
@@ -94,6 +94,7 @@ dependencies {
     implementation 'com.github.MuntashirAkon:libadb-android:3.1.1'
     implementation 'org.conscrypt:conscrypt-android:2.5.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
 
     // Local Module: Our C++ engine (Termux)
     implementation project(':termux-core')
