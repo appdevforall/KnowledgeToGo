@@ -221,7 +221,7 @@ choose_local_vars_size() {
     printf "\n${BOLD}${BLU}==============================================${RST}\n" > /dev/tty
     printf "${BOLD}${YEL}  Choose your IIAB on Android base${RST}\n" > /dev/tty
     printf "${BOLD}${BLU}==============================================${RST}\n" > /dev/tty
-    printf "  ${GRN}1)${RST} Basic (Small)    - Core apps\n" > /dev/tty
+    printf "  ${GRN}1)${RST} Basic (Small)     - Core apps\n" > /dev/tty
     printf "  ${GRN}2)${RST} Standard (Medium) - Standard supported apps\n" > /dev/tty
     printf "  ${GRN}3)${RST} Full (Large)      - Every major recommended app\n\n" > /dev/tty
     printf "Select [1-3] (Default: 2): " > /dev/tty
