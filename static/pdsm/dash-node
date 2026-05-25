@@ -8,7 +8,13 @@ PDSM_COMMON="/usr/local/pdsm/lib/pdsm-common.sh"
 SERVICE_NAME="dash-node"
 
 APP_DIR="/library/dashboard"
-APP_CMD="npx ts-node server.ts"
+# Feature detection: we use npx by default, but if not we rely on
+# yarn as engine (currently @32 bits)
+if command -v npx >/dev/null 2>&1; then
+  APP_CMD="npx ts-node server.ts"
+else
+  APP_CMD="yarn run ts-node server.ts"
+fi
 LOGFILE="/var/log/dash-node.log"
 
 running() {
