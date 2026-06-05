@@ -336,23 +336,17 @@ install_iiaboa_dashboard() {
   local dash_dest="/library/dashboard"
 
   log "Setting up Node.js environment..."
-  if is_32bits; then
-    log "32-bit architecture detected. Avoiding NPM due to PRoot syscall bugs."
-    apt-get install -y nodejs node-gyp
 
-    log "Downloading and installing Yarn directly..."
-    mkdir -p /opt/yarn
-    curl -fsSL --compressed https://yarnpkg.com/latest.tar.gz | tar -xz -C /opt/yarn --strip-components=1
-    ln -sf /opt/yarn/bin/yarn /usr/local/bin/yarn
-    ln -sf /opt/yarn/bin/yarnpkg /usr/local/bin/yarnpkg
+  log "Avoiding NPM due to PRoot syscall bugs."
+  apt-get install -y nodejs node-gyp
 
-    log "Yarn version: $(yarn -v)"
-  else
-    log "64-bit architecture detected. Running IIAB nodejs role..."
-    sed -i '/^nodejs_install:/d' /etc/iiab/local_vars.yml
-    echo "nodejs_install: True" | tee -a /etc/iiab/local_vars.yml
-    (cd /opt/iiab/iiab && bash runrole nodejs)
-  fi
+  log "Downloading and installing Yarn directly..."
+  mkdir -p /opt/yarn
+  curl -fsSL --compressed https://yarnpkg.com/latest.tar.gz | tar -xz -C /opt/yarn --strip-components=1
+  ln -sf /opt/yarn/bin/yarn /usr/local/bin/yarn
+  ln -sf /opt/yarn/bin/yarnpkg /usr/local/bin/yarnpkg
+
+  log "Yarn version: $(yarn -v)"
 
   # Copy dashboard files
   mkdir -p "$dash_dest"
@@ -360,13 +354,8 @@ install_iiaboa_dashboard() {
 
   # Install node dependencies
   log "Installing Node dependencies for the dashboard..."
-  if is_32bits; then
-    log "Using Yarn for 32-bit installation..."
-    (cd "$dash_dest" && yarn install)
-  else
-    log "Using NPM for 64-bit installation..."
-    (cd "$dash_dest" && npm install)
-  fi
+  log "Using Yarn for installation..."
+  (cd "$dash_dest" && yarn install)
 
   # Books dashboard
   log "Pre-seeding Gutenberg Catalog Database..."
