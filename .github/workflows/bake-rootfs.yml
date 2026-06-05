@@ -1,0 +1,84 @@
+name: Bake IIAB RootFS Images
+
+on:
+  # 1. Manual trigger via GitHub UI
+  workflow_dispatch:
+    inputs:
+      tier_size:
+        description: 'IIAB Tier to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - '1'
+          - '2'
+          - '3'
+          - 'all'
+
+  # 2. Scheduled trigger (every Sunday at 04:00 AM UTC)
+  schedule:
+    - cron: '0 4 * * 0'
+
+  # 3. Release trigger, when a tagged release is pushed.
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  bake-rootfs:
+    name: Tier ${{ matrix.tier }} (${{ matrix.arch.android }})
+    runs-on: ubuntu-latest
+    
+    # Run if user chose 'all', specific tier, or if triggered by schedule/release
+    if: ${{ inputs.tier_size == 'all' || inputs.tier_size == matrix.tier || github.event_name != 'workflow_dispatch' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        tier: ['1', '2', '3']
+        arch:
+          - android: "arm64-v8a"
+            debian: "aarch64"
+            docker: "linux/arm64"
+          - android: "armeabi-v7a"
+            debian: "arm"
+            docker: "linux/arm/v7"
+
+    steps:
+      - name: Set up QEMU for ARM emulation
+        uses: docker/setup-qemu-action@v3
+
+      - name: Download Clean Debian Base
+        # Download the specific PRoot tarball for the target architecture
+        run: |
+          wget https://iiab.switnet.org/android/rootfs/proot-distro-v4.29.0/debian-trixie-${{ matrix.arch.debian }}-pd-v4.29.0.tar.xz
+          xz -d debian-trixie-${{ matrix.arch.debian }}-pd-v4.29.0.tar.xz
+          
+      - name: Create Docker Image from Base
+        # We explicitly tag our newly imported local image as 'trixie' to avoid 'latest' ambiguity
+        run: |
+          cat debian-trixie-${{ matrix.arch.debian }}-pd-v4.29.0.tar | docker import - debian-iiab-base:trixie
+
+      - name: Run IIAB Installer inside Emulator (Grab a coffee ☕)
+        # We run the container using our explicitly tagged 'trixie' local image
+        run: |
+          docker run --name iiab_baker \
+            --platform ${{ matrix.arch.docker }} \
+            -e AUTO_INSTALL_SIZE=${{ matrix.tier }} \
+            -e DEBIAN_FRONTEND=noninteractive \
+            debian-iiab-base:trixie \
+            /bin/bash -c "apt-get update && apt-get install -y curl ca-certificates && curl -fsSL https://raw.githubusercontent.com/appdevforall/iiab-android/main/iiab-android -o /usr/local/sbin/iiab-android && chmod +x /usr/local/sbin/iiab-android && /usr/local/sbin/iiab-android"
+
+      - name: Export and Compress Final RootFS
+        # Extract the modified filesystem back into a tarball
+        run: |
+          docker export iiab_baker > final_rootfs.tar
+          xz -T0 -9 final_rootfs.tar
+          mv final_rootfs.tar.xz latest_tier${{ matrix.tier }}_${{ matrix.arch.android }}.tar.xz
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Keep outputs separated by Tier and Architecture
+          name: baked-rootfs-tier${{ matrix.tier }}-${{ matrix.arch.android }}
+          path: latest_tier${{ matrix.tier }}_${{ matrix.arch.android }}.tar.xz
