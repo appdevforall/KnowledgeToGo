@@ -1,0 +1,60 @@
+name: Build static binaries (PRoot)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 0'
+
+jobs:
+  build-binaries:
+    name: Compile static termux packages
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout project code
+      uses: actions/checkout@v4
+
+    - name: Grant execute permission to builder script
+      run: chmod +x tools/proot-builder/build_static.sh
+
+    - name: Run Compilation (this will take awhile)
+
+      run: |
+        ./tools/proot-builder/build_static.sh --rebuild-all \
+          --build-dir ${{ github.workspace }}/termux-build \
+          --out-dir ${{ github.workspace }}/termux-artifacts
+
+    - name: Save artifacts to GitHub panel
+      uses: actions/upload-artifact@v4
+      with:
+        name: termux-ninja-binaries
+        path: ${{ github.workspace }}/termux-artifacts/
+
+    - name: Zip binaries for release distribution
+      run: |
+        cd ${{ github.workspace }}/termux-artifacts
+        zip -r ../termux-binaries-latest.zip .
+
+- name: Generate dynamic tag (date & time)
+      run: echo "TAG_NAME=binaries-$(date +'%Y-%m-%d_%H-%M')" >> $GITHUB_ENV
+
+    - name: Publish rolling release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ env.TAG_NAME }}
+        name: "Static binaries [${{ env.TAG_NAME }}]"
+        body: "Automated rolling build of static PRoot and utilities."
+        files: ${{ github.workspace }}/termux-binaries-latest.zip
+        prerelease: true
+
+    - name: Cleanup old nightly builds (Keep Last 3)
+      uses: dev-drprasad/delete-older-releases@v0.3.3
+      with:
+        keep_latest: 3
+        delete_tags: true
+        delete_tag_pattern: "^binaries-" 
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
