@@ -56,7 +56,7 @@ jobs:
       - name: Create Docker Image from Base
         if: github.event_name != 'workflow_dispatch' || inputs.tier_size == 'all' || inputs.tier_size == matrix.tier
         run: |
-          cat debian-trixie-${{ matrix.arch.debian }}-pd-v4.29.0.tar | docker import - debian-iiab-base:trixie
+          cat debian-trixie-${{ matrix.arch.debian }}-pd-v4.29.0.tar | docker import --platform ${{ matrix.arch.docker }} - debian-iiab-base:trixie
 
       - name: Run IIAB-oA Installer inside Emulator (Grab a coffee ☕)
         if: github.event_name != 'workflow_dispatch' || inputs.tier_size == 'all' || inputs.tier_size == matrix.tier
