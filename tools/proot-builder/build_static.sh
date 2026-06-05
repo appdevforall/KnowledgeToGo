@@ -93,7 +93,16 @@ echo 'TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-fallbacks=xterm-256color,xterm,l
 
 # --- PROOT PATCH ---
 sed -i 's/"libtalloc"/"libtalloc-static, libtalloc"/' packages/proot/build.sh
-sed -i '/termux_step_pre_configure()/a \tLDFLAGS+=" -static"\n\tLDFLAGS+=" -ffunction-sections -fdata-sections -Wl,--gc-sections"' packages/proot/build.sh
+cat << 'EOF' >> packages/proot/build.sh
+termux_step_pre_configure() {
+    echo ">> [IIAB] Scorched Earth for PRoot: Forcing static libtalloc..."
+    # We removed the dynamic library to force the linker to use libtalloc.a
+    rm -f $TERMUX_PREFIX/lib/libtalloc.so*
+
+    LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
+    CFLAGS+=" -static"
+}
+EOF
 
 # --- ARIA2 PATCH ---
 sed -i 's/TERMUX_PKG_DEPENDS="/TERMUX_PKG_DEPENDS="openssl-static, zlib-static, /' packages/aria2/build.sh
