@@ -20,8 +20,8 @@ android {
 
         // 3. Version Control (OTA)
         // NOTE: With splits enabled, this number will be multiplied by 10 (e.g. 50 -> 500, 501, 502)
-        versionCode 52
-        versionName "v0.3.6.2beta"
+        versionCode 53
+        versionName "v0.3.6.3beta"
         setProperty("archivesBaseName", "$applicationId-$versionName")
 
         // 4. Supported architectures (NDK) - Dropping x86/x86_64
