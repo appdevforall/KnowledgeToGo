@@ -6,6 +6,11 @@ on:
   #      - main
   workflow_dispatch:
 
+# --- PERMITS REQUIRED FOR WIF ---
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build-and-deploy:
     name: Build & Distribute
@@ -23,7 +28,7 @@ jobs:
           submodules: recursive
           fetch-depth: 0 # Required to read the commit history
 
-      # TODO: Add a step here to check if there are meaningful changes 
+      # TODO: Add a step here to check if there are meaningful changes
       # before proceeding with the build to save CI minutes (similar to CoGo's workflow).
       # - name: Check for meaningful changes
       #   id: check_changes
@@ -35,6 +40,7 @@ jobs:
       #     else
       #       echo "must_build=true" >> $GITHUB_OUTPUT
       #     fi
+
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -61,7 +67,7 @@ jobs:
         run: |
           echo "$ENCODED_STRING" | base64 -d > keystore.jks
 
-      # --- BUILD AND SIGNING ---
+      # --- VERSION AUDIT ---
 
       - name: Log Pinned Binary Version
         run: |
@@ -71,6 +77,7 @@ jobs:
           echo ""
           echo "=========================================="
 
+      # --- BUILD AND SIGNING ---
       # We use assembleRelease to match the production signature. 
       # This prevents testers from having to uninstall the app (and lose data) between updates.
       - name: Build and Sign APK
@@ -87,7 +94,7 @@ jobs:
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-          
+            
           # echo "gradle_time_end=$(date +%s)" >> $GITHUB_ENV
 
       - name: Find APK
@@ -113,7 +120,7 @@ jobs:
           #     | jq -r '.fields.summary // ""')
           #   [ -n "$JIRA_TITLE" ] && COMMIT_MSG="$JIRA_TITLE"
           # fi
-
+          
           # Create a temporary file with the release notes
           NOTES_FILE=$(mktemp)
           echo "Author: $COMMIT_AUTHOR" > "$NOTES_FILE"
@@ -123,18 +130,12 @@ jobs:
 
       # --- FIREBASE DEPLOYMENT ---
 
-      # TODO: Consider migrating to Workload Identity Federation (WIF)
-      # Uncomment the block below and remove the Service Account JSON step when ready.
-      # - name: Authenticate to Google Cloud via Workload Identity
-      #   uses: google-github-actions/auth@v2
-      #   with:
-      #     workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
-      #     service_account: ${{ secrets.IDENTITY_EMAIL }}
-
-      - name: Authenticate with Firebase
+      # Secure authentication using Workload Identity Federation (WIF)
+      - name: Authenticate to Google Cloud via Workload Identity
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.IDENTITY_EMAIL }}
 
       - name: Setup Firebase CLI
         run: npm install -g firebase-tools
