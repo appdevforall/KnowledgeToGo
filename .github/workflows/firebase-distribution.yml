@@ -1,9 +1,9 @@
 name: Deploy to Firebase App Distribution
 
 on:
-  #  push:
-  #    branches:
-  #      - main
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 # --- PERMITS REQUIRED FOR WIF ---
@@ -69,12 +69,16 @@ jobs:
 
       # --- VERSION AUDIT ---
 
+      - name: Get Git Short SHA
+        id: vars
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Log Pinned Binary Version
         run: |
           echo "=========================================="
           echo "Compiling with native binaries pinned to:"
           cat binary_version.txt
-          echo ""
+          echo "App Version Suffix: -${{ env.SHORT_SHA }}"
           echo "=========================================="
 
       # --- BUILD AND SIGNING ---
@@ -90,6 +94,7 @@ jobs:
           # echo "gradle_time_start=$(date +%s)" >> $GITHUB_ENV
           
           ./gradlew assembleRelease \
+            -PversionSuffix="-${{ env.SHORT_SHA }}" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
