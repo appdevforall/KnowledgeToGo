@@ -34,9 +34,9 @@ http://localhost:8085/maps
 ## Internet-in-a-Box on Android (IIAB-oA)
 
 ## 1. Introduction
-Internet-in-a-Box on Android (IIAB-oA) is a mobile application designed to provide a system of online educational services and content (based on Debian ARM) for areas without an internet connection.
+Internet-in-a-Box on Android (IIAB-oA) is a mobile application designed to provide a system of online educational services and content for areas without an internet connection.
 
-This development has evolved from its previous Termux-dependent versions; this new iteration is an all-in-one application (manager, installer, and viewer) that allows any Android device to become an offline content server, hosting vital tools such as Wikipedia (Kiwix), Kolibri, interactive maps, digital libraries, and code editors powered by IIAB.
+This development has evolved from its previous Termux-dependent versions; this new iteration is an all-in-one application (manager, installer, and viewer) that allows any Android device to become an offline content server (running on Debian ARM), hosting vital tools such as Wikipedia (Kiwix), Kolibri, interactive IIAB Maps, digital libraries, and even offline code editor (Code on the Go) powered by core IIAB.
 
 <p align="center">
   <img src="docs/images/iiab-oa-controller.png" alt="IIAB-oA Controller Logo" width="220">
@@ -52,7 +52,7 @@ The interface requires the activation of 4 special permissions:
 
 1. **Push Notifications:** Allows the application to send floating alerts about server status, errors, or completed synchronization processes.
 
-2. **Local Storage Access:** This is the most critical permission. It stores Wikipedia databases, Calibre books, and downloaded maps (which can exceed 50 GB in size). Without this permission, the quick installation will fail due to lack of space.
+2. **Local Storage Access:** This is the most critical permission. It stores Wikipedia zim files, Calibre books, and downloaded Maps (which can exceed 50 GB in size). Without this permission t will be possible to backup content out of the app itself to regular storage.
 
 3. **Display over other Apps:** Allows the IIAB-oA controller to keep floating windows or visual processes active while the user performs other tasks on the phone.
 
@@ -62,7 +62,7 @@ The interface requires the activation of 4 special permissions:
 
 * **"Manage all permissions" Button:** Opens the native Android settings for the device, allowing you to thoroughly review granted access or troubleshoot if a button gets stuck.
 
-* **Content Language:** A dropdown selector that allows you to choose the native language in which the server will be configured (the video shows how it automatically detects "Español (México)" after changing the phone's regional settings).
+* **Content Language:** A dropdown selector that allows you to choose the native language in which the server will be configured.
 
 <p align="center">
   <img src="docs/images/00-initial-setup-01.webp" alt="00-initial-setup-01" width="220">
@@ -118,6 +118,7 @@ The control center to download and manage the size and content of your offline s
 <p align="center">
   <img src="docs/images/03-install-fast-install-1.webp" alt="03-install-fast-install-1" width="220">
   <img src="docs/images/03-install-fast-install-2.webp" alt="03-install-fast-install-2" width="220">
+  <br><br>
   <img src="docs/images/03-install-modules.webp" alt="03-install-modules" width="220">
   <img src="docs/images/03-install-warning.webp" alt="03-install-warning" width="220">
 </p>
