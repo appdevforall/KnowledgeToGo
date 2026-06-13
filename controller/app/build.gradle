@@ -154,12 +154,13 @@ dependencies {
 }
 
 import groovy.json.JsonSlurper
+import java.security.MessageDigest
 
 // =========================================================
 // IIAB SUPPLY CHAIN HOOK (GITHUB RELEASES SYNC)
 // =========================================================
 task syncNativeArtifacts {
-    description = 'Downloads and extracts rolling native binaries from GitHub Releases'
+    description = 'Downloads, extracts, and cryptographically verifies rolling native binaries'
 
     // Repo name
     def repoName = "appdevforall/iiab-android"
@@ -170,6 +171,19 @@ task syncNativeArtifacts {
     def zipFile = file("${buildDir}/termux-binaries-latest.zip")
     def unzipDir = file("${buildDir}/temp_artifacts")
     def tagTrackerFile = file("src/main/assets/current_binaries_tag.txt")
+
+    // Helper to calculate SHA256
+    def calculateSha256 = { File file ->
+        def digest = MessageDigest.getInstance("SHA-256")
+        file.withInputStream { is ->
+            byte[] buffer = new byte[8192]
+            int read
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read)
+            }
+        }
+        return digest.digest().encodeHex().toString()
+    }
 
     doLast {
         println ">> [IIAB Hook] Querying GitHub API for latest rolling release..."
@@ -218,57 +232,87 @@ task syncNativeArtifacts {
                 if (!allBinariesExist) break // Exit outer loop
             }
 
-            if (currentTag == targetRelease.tag_name && allBinariesExist) {
+            // We also verify that the manifest exists in order to be able to audit.
+            def manifestFile = new File(assetsDir, "ninja_manifest.json")
+            def isCached = (currentTag == targetRelease.tag_name && allBinariesExist && manifestFile.exists())
+
+            if (isCached) {
                 println "   -> [CACHED] Artifacts are up to date (${currentTag}) and physically present. Skipping download."
-                return // Exits the task immediately, saving time!
             } else {
-                println "   -> Cache miss or missing physical files. Proceeding with download..."
+                println "   -> Cache miss, missing physical files, or missing manifest. Proceeding with download..."
+
+                // 4. Find the zip asset URL in the targeted release
+                def zipAsset = targetRelease.assets.find { it.name == 'termux-binaries-latest.zip' }
+                if (zipAsset == null) {
+                    throw new GradleException(">> [IIAB Hook] Zip asset not found in release ${targetRelease.tag_name}")
+                }
+
+                println "   -> Found matching binaries: ${targetRelease.tag_name}"
+                println "   -> Downloading ZIP (approx ~15MB)..."
+
+                // 5. Download the ZIP to the build/ directory
+                if (!zipFile.parentFile.exists()) zipFile.parentFile.mkdirs()
+                ant.get(src: zipAsset.browser_download_url, dest: zipFile, skipexisting: false)
+
+                // 6. Extract the ZIP to a temporary folder
+                println "   -> Extracting binaries..."
+                if (unzipDir.exists()) unzipDir.deleteDir() // Clean temp folder
+                copy {
+                    from zipTree(zipFile)
+                    into unzipDir
+                }
+
+                // 7. Route the files to their correct Android folders
+                copy {
+                    from "${unzipDir}/jniLibs"
+                    into jniLibsDir
+                }
+                copy {
+                    from unzipDir
+                    include "cacert.pem", "ninja_manifest.json"
+                    into assetsDir
+                }
+
+                // 8. Update our local tracker file with the new tag
+                tagTrackerFile.text = targetRelease.tag_name
             }
 
-            // 4. Find the zip asset URL in the targeted release
-            def zipAsset = targetRelease.assets.find { it.name == 'termux-binaries-latest.zip' }
-            if (zipAsset == null) {
-                throw new GradleException(">> [IIAB Hook] Zip asset not found in release ${targetRelease.tag_name}")
+            // --- 9. STRICT CRYPTOGRAPHIC AUDIT (SHA256) ---
+            if (manifestFile.exists()) {
+                println ">> [IIAB Hook] Performing strict SHA256 integrity audit..."
+                def manifest = slurper.parse(manifestFile)
+
+                // Iterate over each architecture in the JSON
+                manifest.binaries.each { archName, binariesMap ->
+                    binariesMap.each { binName, binMeta ->
+                        def physicalBinFile = new File(jniLibsDir, "${archName}/${binName}")
+
+                        if (!physicalBinFile.exists()) {
+                            throw new GradleException(">> [IIAB Hook] INTEGRITY FATAL: Expected binary missing! -> ${archName}/${binName}")
+                        }
+
+                        def expectedSha = binMeta.sha256
+                        def actualSha = calculateSha256(physicalBinFile)
+
+                        if (expectedSha != actualSha) {
+                            // IF THERE IS CORRUPTION, STOP THE COMPILATION IMMEDIATELY
+                            throw new GradleException(">> [IIAB Hook] INTEGRITY FATAL: CORRUPTED BINARY DETECTED!\nFile: ${archName}/${binName}\nExpected: ${expectedSha}\nActual:   ${actualSha}")
+                        }
+                    }
+                }
+                println "   -> [OK] All binaries passed cryptographic SHA256 audit."
+            } else {
+                throw new GradleException(">> [IIAB Hook] INTEGRITY FATAL: ninja_manifest.json is missing! Cannot verify binaries.")
             }
+            // ---------------------------------------------------
 
-            println "   -> Found matching binaries: ${targetRelease.tag_name}"
-            println "   -> Downloading ZIP (approx ~15MB)..."
-
-            // 5. Download the ZIP to the build/ directory
-            if (!zipFile.parentFile.exists()) zipFile.parentFile.mkdirs()
-            ant.get(src: zipAsset.browser_download_url, dest: zipFile, skipexisting: false)
-
-            // 6. Extract the ZIP to a temporary folder
-            println "   -> Extracting binaries..."
-            if (unzipDir.exists()) unzipDir.deleteDir() // Clean temp folder
-            copy {
-                from zipTree(zipFile)
-                into unzipDir
-            }
-
-            // 7. Route the files to their correct Android folders
-            // Move jniLibs/*.so to src/main/jniLibs
-            copy {
-                from "${unzipDir}/jniLibs"
-                into jniLibsDir
-            }
-            // Move the config/manifest files to src/main/assets
-            copy {
-                from unzipDir
-                include "cacert.pem", "ninja_manifest.json"
-                into assetsDir
-            }
-
-            // 8. Update our local tracker file with the new tag
-            tagTrackerFile.text = targetRelease.tag_name
-
-            println ">> [IIAB Hook] Successfully synced and extracted native artifacts!"
+            println ">> [IIAB Hook] Successfully synced and verified native artifacts!"
 
         } catch (Exception e) {
-            System.err.println ">> [IIAB Hook] ERROR: Failed to sync artifacts from GitHub"
+            System.err.println ">> [IIAB Hook] ERROR: Failed to sync or verify artifacts"
             System.err.println ">> [IIAB Hook] Details: ${e.message}"
-            // Throwing the exception ensures the build fails if critical binaries are missing
-            throw new GradleException("Artifact sync failed", e)
+            // Throwing the exception ensures the build fails if critical binaries can't be verified
+            throw new GradleException("Artifact sync/verification failed", e)
         }
     }
 }
