@@ -105,8 +105,12 @@ jobs:
       - name: Find APK
         id: find_apk
         run: |
-          # Locate the compiled APK (adjust the path if building a universal APK)
-          apk_path=$(find . -path "*/build/outputs/apk/release/*.apk" | head -n 1)
+          # Now we force it to specifically find the Universal APK
+          apk_path=$(find . -path "*/build/outputs/apk/release/*universal*.apk" | head -n 1)
+          if [ -z "$apk_path" ]; then
+            echo "Error: Universal APK not found."
+            exit 1
+          fi
           echo "APK_PATH=$apk_path" >> $GITHUB_OUTPUT
 
       # --- RELEASE NOTES ---
