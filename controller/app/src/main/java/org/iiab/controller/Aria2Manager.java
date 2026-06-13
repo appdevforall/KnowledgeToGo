@@ -4,7 +4,6 @@
  Contributors: IIAB Project
  Copyright (c) 2026 IIAB Project
  Description : Java wrapper for the native libaria2c.so binary.
- Handles native aria2c download tasks.
  ============================================================================
  */
 
@@ -17,6 +16,9 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,9 +31,7 @@ public class Aria2Manager {
 
     public interface DownloadListener {
         void onProgress(int percentage, String speed, String eta);
-
         void onComplete(String downloadPath);
-
         void onError(String error);
     }
 
@@ -55,30 +55,62 @@ public class Aria2Manager {
 
                 // Secure DHT file within our app (avoids the com.termux crash)
                 File dhtFile = new File(context.getFilesDir(), "dht.dat");
+                if (!dhtFile.exists()) {
+                    try { dhtFile.createNewFile(); } catch (Exception e) { Log.w(TAG, "Could not create dht.dat"); }
+                }
+
+                // --- Extract SSL Certificate from assets ---
+                File caCertFile = new File(context.getFilesDir(), "cacert.pem");
+                if (!caCertFile.exists()) {
+                    extractAsset(context, "cacert.pem", caCertFile);
+                }
 
                 Log.d(TAG, "Executing Native Aria2c...");
                 Log.d(TAG, "Target URL: " + url);
 
-                // 3. Build the command with the magic of Bash translated to Java
-                ProcessBuilder pb = new ProcessBuilder(
-                        aria2Bin.getAbsolutePath(),
-                        "--dir=" + downloadDir.getAbsolutePath(),
-                        "--continue=true",
-                        "--allow-overwrite=true",
-                        "--auto-file-renaming=false",
-                        "--max-connection-per-server=4",
-                        "--split=4",
-                        "--follow-metalink=mem",
-                        "--enable-dht=true",
-                        "--dht-file-path=" + dhtFile.getAbsolutePath(),
-                        "--bt-enable-lpd=true",
-                        "--seed-time=0",
-                        "--check-certificate=false",   // <--- Ignore missing SSL certificates in native Android
-                        "--console-log-level=warn",
-                        "--summary-interval=1",
-                        "--download-result=hide",
-                        url
-                );
+                // --- RUN NETWORK PROFILER (Time-boxed speed test) ---
+                // UI updates are now handled inside the profiler
+                boolean forceIpv4 = Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
+                // ----------------------------------------------------
+
+                // 3. Build the command dynamically
+                java.util.List<String> command = new java.util.ArrayList<>();
+                command.add(aria2Bin.getAbsolutePath());
+                command.add("--dir=" + downloadDir.getAbsolutePath());
+                command.add("--continue=true");
+                command.add("--allow-overwrite=true");
+                command.add("--auto-file-renaming=false");
+                command.add("--max-connection-per-server=4");
+                command.add("--split=4");
+                command.add("--follow-metalink=mem");
+                command.add("--enable-dht=true");
+                command.add("--dht-file-path=" + dhtFile.getAbsolutePath());
+                command.add("--bt-enable-lpd=true");
+                command.add("--seed-time=0");
+
+                // --- Apply SSL Certificate Validation ---
+                if (caCertFile.exists()) {
+                    Log.d(TAG, "SSL certificates found. Enforcing strict validation.");
+                    command.add("--check-certificate=true");
+                    command.add("--ca-certificate=" + caCertFile.getAbsolutePath());
+                } else {
+                    Log.w(TAG, "cacert.pem not found! Falling back to insecure connection.");
+                    command.add("--check-certificate=false");
+                }
+
+                command.add("--console-log-level=warn");
+                command.add("--summary-interval=1");
+                command.add("--download-result=hide");
+
+                // Apply network decision
+                if (forceIpv4) {
+                    Log.w(TAG, "Network profiler decided to FORCE IPv4.");
+                    command.add("--disable-ipv6=true");
+                }
+
+                command.add(url);
+
+                ProcessBuilder pb = new ProcessBuilder(command);
 
                 // Redirect errors to the same input stream
                 pb.redirectErrorStream(true);
@@ -98,7 +130,7 @@ public class Aria2Manager {
                         break;
                     }
 
-                    Log.d(TAG, "[Aria2] " + line); // Ver todo en el Logcat para debuggear
+                    Log.d(TAG, "[Aria2] " + line);
 
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
@@ -135,6 +167,22 @@ public class Aria2Manager {
         isCancelled = true;
         if (aria2Process != null) {
             aria2Process.destroy();
+        }
+    }
+
+    /**
+     * Helper method to copy files from the APK assets folder to internal storage.
+     */
+    private void extractAsset(Context context, String assetName, File destination) {
+        try (InputStream is = context.getAssets().open(assetName);
+             FileOutputStream fos = new FileOutputStream(destination)) {
+            byte[] buffer = new byte[8192];
+            int read;
+            while ((read = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, read);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to extract " + assetName + " from assets", e);
         }
     }
 }
