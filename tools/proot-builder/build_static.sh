@@ -119,9 +119,23 @@ echo 'TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --with-fallbacks=xterm-256color,xterm,l
 sed -i 's/"libtalloc"/"libtalloc-static, libtalloc"/' packages/proot/build.sh
 cat << 'EOF' >> packages/proot/build.sh
 termux_step_pre_configure() {
-    echo ">> [IIAB] Scorched Earth for PRoot: Forcing static libtalloc..."
-    # We removed the dynamic library to force the linker to use libtalloc.a
+    echo ">> [IIAB] Scorched Earth for PRoot: Forcing static libtalloc and stubbing liblog..."
+    # We removed the dynamic libraries to force the linker to use the .a archives
     rm -f $TERMUX_PREFIX/lib/libtalloc.so*
+    rm -f $TERMUX_PREFIX/lib/libandroid-shmem.so*
+
+    # Android NDK does not provide a static liblog.a.
+    # libandroid-shmem requires __android_log_print.
+    # We inject dummy stubs directly into PRoot's main C file to satisfy the static linker.
+    if ! grep -q "__android_log_print" $TERMUX_PKG_SRCDIR/src/cli/cli.c; then
+        cat << 'STUB' >> $TERMUX_PKG_SRCDIR/src/cli/cli.c
+
+/* IIAB DUMMY STUBS FOR STATIC LINKING */
+int __android_log_print(int prio, const char* tag, const char* fmt, ...) { return 0; }
+int __android_log_vprint(int prio, const char* tag, const char* fmt, void* ap) { return 0; }
+int __android_log_write(int prio, const char* tag, const char* text) { return 0; }
+STUB
+    fi
 
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     CFLAGS+=" -static"
@@ -291,6 +305,9 @@ for mapping in "${ARCHS[@]}"; do
     else
         echo ">> Building PRoot..."
         FORCE_FLAG=$([ "$REBUILD_PROOT" -eq 1 ] && echo "-f" || echo "")
+
+        # --- REBUILD MISSING LIBRARY BEFORE PROOT ---
+        ./scripts/run-docker.sh ./build-package.sh $FORCE_FLAG -a "$TERMUX_ARCH" libandroid-shmem
         ./scripts/run-docker.sh ./build-package.sh $FORCE_FLAG -a "$TERMUX_ARCH" proot
 
         EXTRACT_DIR="$BUILD_DIR/extract_${TERMUX_ARCH}_proot"
