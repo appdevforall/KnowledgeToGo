@@ -6,6 +6,8 @@ import com.termux.shared.termux.extrakeys.ExtraKeysConstants;
 import com.termux.shared.termux.extrakeys.ExtraKeysInfo;
 import com.termux.shared.termux.extrakeys.ExtraKeysView;
 
+import org.json.JSONException;
+
 /**
  * IIAB default extra-keys layout for the embedded Termux terminal.
  *
@@ -30,13 +32,22 @@ public final class IIABExtraKeys {
             "  ['TAB', 'CTRL', 'ALT', 'LEFT', 'DOWN', 'RIGHT', 'PGDN']\n" +
             "]";
 
+    /**
+     * Minimal one-row layout applied only if {@link #DEFAULT_LAYOUT} fails to load, so the
+     * user still gets usable keys instead of none (finding K4).
+     */
+    static final String FALLBACK_LAYOUT =
+            "[['ESC', 'TAB', 'CTRL', 'LEFT', 'DOWN', 'UP', 'RIGHT']]";
+
     private IIABExtraKeys() {
         // Utility class — no instances.
     }
 
     /**
      * Loads the IIAB default extra-keys layout into the given view via the public
-     * {@link ExtraKeysView#reload(ExtraKeysInfo, float)} API. No-op if the view is null.
+     * {@link ExtraKeysView#reload(ExtraKeysInfo, float)} API. If the default layout fails
+     * for any reason it falls back to {@link #FALLBACK_LAYOUT} so the terminal still shows
+     * usable keys. No-op if the view is null.
      *
      * @param extraKeysView the terminal's extra-keys view
      */
@@ -44,14 +55,39 @@ public final class IIABExtraKeys {
         if (extraKeysView == null) {
             return;
         }
-        try {
-            ExtraKeysInfo info = new ExtraKeysInfo(
-                    DEFAULT_LAYOUT,
-                    "default",
-                    new ExtraKeysConstants.ExtraKeyDisplayMap());
-            extraKeysView.reload(info, 0f);
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to load IIAB custom extra keys", e);
+        if (tryLoad(extraKeysView, DEFAULT_LAYOUT)) {
+            return;
         }
+        Log.w(TAG, "IIAB default extra-keys layout failed to load; applying minimal fallback");
+        if (tryLoad(extraKeysView, FALLBACK_LAYOUT)) {
+            return;
+        }
+        Log.e(TAG, "Both IIAB and fallback extra-keys layouts failed to load; no extra keys applied");
+    }
+
+    private static boolean tryLoad(ExtraKeysView extraKeysView, String layout) {
+        try {
+            extraKeysView.reload(buildInfo(layout), 0f);
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load extra-keys layout", e);
+            return false;
+        }
+    }
+
+    /**
+     * Builds an {@link ExtraKeysInfo} from a layout string using the same parameters as
+     * {@link #apply}. Package-private so unit tests can validate {@link #DEFAULT_LAYOUT}
+     * and {@link #FALLBACK_LAYOUT} without needing an Android view (finding K5).
+     *
+     * @param layout the extra-keys layout string
+     * @return the parsed {@link ExtraKeysInfo}
+     * @throws JSONException if the layout string is malformed
+     */
+    static ExtraKeysInfo buildInfo(String layout) throws JSONException {
+        return new ExtraKeysInfo(
+                layout,
+                "default",
+                new ExtraKeysConstants.ExtraKeyDisplayMap());
     }
 }
