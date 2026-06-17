@@ -1,3 +1,3 @@
 [submodule "controller/termux-core/termux-source"]
         path = controller/termux-core/termux-source
-	url = https://github.com/iiab/termux-app.git
+	url = https://github.com/appdevforall/termux-app.git
