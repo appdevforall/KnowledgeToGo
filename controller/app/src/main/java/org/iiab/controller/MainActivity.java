@@ -2033,7 +2033,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 findViewById(R.id.extra_keys_view);
 
                         if (extraKeysView != null) {
-                            extraKeysView.loadIIABDefaultKeys();
+                            IIABExtraKeys.apply(extraKeysView);
 
                             // Listen for normal keys (ESC, TAB, UP, etc)
                             extraKeysView.setExtraKeysViewClient(new com.termux.shared.termux.extrakeys.ExtraKeysView.IExtraKeysView() {
