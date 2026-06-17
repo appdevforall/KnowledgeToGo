@@ -5,6 +5,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import org.iiab.controller.rootfs.data.RootfsCatalog;
+import org.iiab.controller.rootfs.data.RootfsRemoteDataSource;
+import org.iiab.controller.rootfs.data.RootfsRepositoryImpl;
+import org.iiab.controller.rootfs.domain.GetRootfsSizeUseCase;
+import org.iiab.controller.rootfs.domain.Rootfs;
+import org.iiab.controller.rootfs.domain.RootfsRepository;
+import org.iiab.controller.rootfs.domain.RootfsTier;
+import org.iiab.controller.util.ByteFormatter;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -22,9 +31,9 @@ public class InstallationPlanner {
     private static final String KIWIX_URL = "https://download.kiwix.org/zim/wikipedia/";
     private static final String CACHE_FILE_NAME = "kiwix_catalog.json";
 
-    private static final double OS_BASIC_GB = 1.0;
-    private static final double OS_STANDARD_GB = 1.2;
-    private static final double OS_FULL_GB = 2.7;
+    // OS rootfs sizes are no longer hardcoded here. They are resolved live (with a
+    // hardcoded fallback) through the layered "rootfs" slice — see resolveOsSizeGb()
+    // and org.iiab.controller.rootfs.* . Fallback byte values live in RootfsCatalog.
 
     private static final double MAPS_BASIC_GB = 0.2;
     private static final double MAPS_STANDARD_GB = 11.0;
@@ -148,18 +157,11 @@ public class InstallationPlanner {
 
     public static void calculateProjectedSize(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, PlanResultListener listener) {
         new Thread(() -> {
-            double os = 0.0, maps = 0.0;
-            switch (tier) {
-                case BASIC:
-                    os = OS_BASIC_GB;
-                    break;
-                case STANDARD:
-                    os = OS_STANDARD_GB;
-                    break;
-                case FULL:
-                    os = OS_FULL_GB;
-                    break;
-            }
+            // Live OS size (with offline fallback), resolved through the layered slice.
+            // Safe to call synchronously here: calculateProjectedSize already runs
+            // on a background Thread.
+            double os = resolveOsSizeGb(tier);
+            double maps = 0.0;
 
             if (!pullCompanionData) {
                 StorageProjection res = new StorageProjection(os, 0, 0, "N/A", null);
@@ -247,5 +249,35 @@ public class InstallationPlanner {
                 }
             });
         }).start();
+    }
+
+    /**
+     * Resolves the OS rootfs size for a tier, in GiB, using the layered rootfs
+     * slice: live size from the Deploy server when reachable, hardcoded fallback
+     * otherwise. The ABI is detected from the device.
+     *
+     * <p>Performs a (cached) network call; must run off the main thread — it does,
+     * because every caller is inside {@link #calculateProjectedSize}'s worker thread.
+     */
+    private static double resolveOsSizeGb(Tier tier) {
+        RootfsCatalog catalog = new RootfsCatalog();
+        RootfsRepository repository =
+                new RootfsRepositoryImpl(new RootfsRemoteDataSource(), catalog);
+        GetRootfsSizeUseCase useCase = new GetRootfsSizeUseCase(repository);
+        Rootfs rootfs = useCase.execute(toDomainTier(tier), catalog.detectAbi());
+        return ByteFormatter.toGiB(rootfs.sizeBytes());
+    }
+
+    /** Maps the legacy {@link Tier} to the domain {@link RootfsTier}. */
+    private static RootfsTier toDomainTier(Tier tier) {
+        switch (tier) {
+            case STANDARD:
+                return RootfsTier.STANDARD;
+            case FULL:
+                return RootfsTier.FULL;
+            case BASIC:
+            default:
+                return RootfsTier.BASIC;
+        }
     }
 }

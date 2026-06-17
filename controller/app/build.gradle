@@ -144,6 +144,11 @@ dependencies {
     implementation 'androidx.biometric:biometric:1.1.0'
     implementation 'androidx.webkit:webkit:1.12.0'
 
+    // Presentation layer (Clean Architecture pilot): ViewModel + LiveData.
+    // Java artifacts — no Kotlin required.
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.8.7'
+
     // IIAB Tools
     implementation 'com.google.zxing:core:3.5.2'
     implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
