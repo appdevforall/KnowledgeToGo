@@ -40,7 +40,13 @@ _Last updated: 2026-06-17. Tracks remediation work against the findings below. I
 - **S3** (`IIABAdbManager` key spec): the ADB identity key was created with `ENCRYPT | DECRYPT` + non-randomized encryption padding on top of sign/verify. Verified no `Cipher` uses this alias, so the spec is now `SIGN | VERIFY` only (encryption paddings / `setRandomizedEncryptionRequired(false)` removed). Alias kept at `v3` (non-disruptive: hardens new key generation without forcing existing devices to re-pair ADB).
 - No new unit tests: both are framework-bound legacy line-fixes with no extractable pure logic; verified by inspection + compile + CI lint.
 
-**Phase 1 — Security hardening: IN PROGRESS.** Done so far: **S1** (PR #9), **M4**, **S3**. Remaining: **D2**, **D6**, **D12**, **S4**, **D11**.
+**D6 — Download integrity + TLS fail-closed (Phase 1 security): DONE** (PR `fix/phase1-security-d6-download-integrity`)
+- Closes **D6**: the rootfs (`latest_*.meta4` -> `.tar.gz`) is extracted and executed as root, but downloads had no integrity check and `Aria2Manager` silently fell back to `--check-certificate=false` when `cacert.pem` was missing.
+- **TLS fail-closed**: `cacert.pem` is now required (fail with a clear error if it cannot be provisioned) and `--check-certificate=true` is always passed — the insecure fallback is removed. Applies to all aria2 downloads (rootfs + ZIM).
+- **Integrity**: `--check-integrity=true` makes aria2 verify the SHA-256 checksums published in the `.meta4` (confirmed present: file-level + per-piece) during download; on mismatch aria2 exits non-zero, `onError` fires and the archive is never extracted. Uses the server's published hash + verified TLS, so no redundant on-device re-hash of the ~1.2 GB file.
+- Follow-up (separate items): ZIM content integrity (Kiwix publishes no embedded hash today; needs `.sha256` sidecars) and the cleartext OTA APK path in `MainActivity` (**F15**).
+
+**Phase 1 — Security hardening: IN PROGRESS.** Done so far: **S1** (PR #9), **M4**, **S3** (PR #10), **D6**. Remaining: **D2**, **D12**, **S4**, **D11**.
 
 ## 1. Executive summary
 

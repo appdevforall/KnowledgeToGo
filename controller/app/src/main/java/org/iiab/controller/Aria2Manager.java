@@ -64,6 +64,12 @@ public class Aria2Manager {
                 if (!caCertFile.exists()) {
                     extractAsset(context, "cacert.pem", caCertFile);
                 }
+                // D6: fail closed. The downloaded rootfs is extracted and executed as
+                // root, so we must never fall back to an unverified TLS connection
+                // where a MITM could swap it. If the CA bundle is unavailable, abort.
+                if (!caCertFile.exists()) {
+                    throw new Exception("Secure download aborted: CA certificate bundle (cacert.pem) is unavailable.");
+                }
 
                 Log.d(TAG, "Executing Native Aria2c...");
                 Log.d(TAG, "Target URL: " + url);
@@ -83,20 +89,20 @@ public class Aria2Manager {
                 command.add("--max-connection-per-server=4");
                 command.add("--split=4");
                 command.add("--follow-metalink=mem");
+                // D6: verify the SHA-256 checksums embedded in the .meta4 (Metalink)
+                // while downloading. On mismatch aria2 exits non-zero, so onError fires
+                // and the archive is never extracted/executed.
+                command.add("--check-integrity=true");
                 command.add("--enable-dht=true");
                 command.add("--dht-file-path=" + dhtFile.getAbsolutePath());
                 command.add("--bt-enable-lpd=true");
                 command.add("--seed-time=0");
 
-                // --- Apply SSL Certificate Validation ---
-                if (caCertFile.exists()) {
-                    Log.d(TAG, "SSL certificates found. Enforcing strict validation.");
-                    command.add("--check-certificate=true");
-                    command.add("--ca-certificate=" + caCertFile.getAbsolutePath());
-                } else {
-                    Log.w(TAG, "cacert.pem not found! Falling back to insecure connection.");
-                    command.add("--check-certificate=false");
-                }
+                // --- Apply SSL Certificate Validation (D6: always strict; cacert
+                // presence was already enforced above, so there is no insecure path) ---
+                Log.d(TAG, "Enforcing strict TLS certificate validation.");
+                command.add("--check-certificate=true");
+                command.add("--ca-certificate=" + caCertFile.getAbsolutePath());
 
                 command.add("--console-log-level=warn");
                 command.add("--summary-interval=1");
