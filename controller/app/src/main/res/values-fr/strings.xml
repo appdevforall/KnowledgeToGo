@@ -497,4 +497,8 @@
     <string name="sync_app_arch_label">Arch. de l\'App : %1$d-bit</string>
     <string name="sync_msg_arch_compatible">Matériel compatible. Démarrage de la connexion...</string>
 
+    <string name="install_btn_no_connection">Pas de connexion</string>
+    <string name="install_msg_no_connection">Pas de connexion Internet — connectez-vous pour télécharger.</string>
+    <string name="install_offline_estimated">Tailles estimées (hors ligne)</string>
+    <string name="rsync_error_invalid_credentials">Identifiants de synchronisation invalides ou non sécurisés. Veuillez scanner un QR code de synchronisation IIAB valide.</string>
 </resources>

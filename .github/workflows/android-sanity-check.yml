@@ -1,10 +1,19 @@
 name: Android Sanity Check (CI)
 
 on:
+  # One run per PR (pull_request) and one post-merge on the integration branches.
+  # Previously push:["**"] also ran on every feature-branch push, so an open PR
+  # got two redundant concurrent runs. Feature branches are covered by their PR.
   push:
-    branches: [ "**" ]
+    branches: [ "main", "development" ]
   pull_request:
     branches: [ "main", "development" ]
+
+# Supersede in-flight runs: when a newer commit lands on the same branch/PR, cancel
+# the older run so a fixup doesn't leave a zombie ~50-min lint job running.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check-syntax:
@@ -35,11 +44,10 @@ jobs:
     - name: Run Unit Tests
       run: ./gradlew testDebugUnitTest --stacktrace
 
-    # Lint runs for visibility only and never blocks the job (continue-on-error).
-    # Scoped to :app so the vendored termux-core/upstream lint backlog does not fail CI.
-    # Once the :app lint backlog is triaged, set abortOnError=true and drop continue-on-error.
-    - name: Run Android Lint (reporting, non-blocking)
-      continue-on-error: true
+    # Lint is a BLOCKING gate for :app. The existing backlog is grandfathered via the
+    # committed app/lint-baseline.xml; any NEW lint error fails CI. Scoped to :app so
+    # the vendored termux-core/upstream backlog does not block.
+    - name: Run Android Lint (:app, blocking)
       run: ./gradlew :app:lintDebug
 
     - name: Compile Test (Assemble Debug)
