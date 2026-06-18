@@ -184,6 +184,34 @@ live-size data behind the reference slice.
 
 ---
 
+## Theming (colors) — mandatory for all UI
+
+The app supports light and dark via `DayNight` (toggle in `MainActivity`), but most
+screens historically hardcoded dark-tuned hex, so the light theme is broken wherever
+that happens. We are migrating to one semantic colour-token system, screen by screen
+(refactor-by-feature).
+
+Rules for any new or migrated UI:
+
+1. **No hardcoded colours.** No `#RRGGBB` in layouts and no `Color.parseColor("#…")`
+   / `Color.WHITE` etc. in code. Reference a semantic token instead:
+   `@color/<token>` in XML, `ContextCompat.getColor(ctx, R.color.<token>)` in code.
+2. **Every token has a light value in `values/colors.xml` and a dark twin in
+   `values-night/colors.xml`.** If you add a token, add both.
+3. **Use the semantic families**: surfaces (`surface_background`, `surface_card`,
+   `surface_section`), text (`text_primary`, `text_secondary`, `text_disabled`,
+   `text_on_accent`), `accent`/`accent_muted`, status
+   (`status_success/warning/danger/info`), `divider_line`, and data-viz
+   (`chart_storage/ram/swap/os/maps/wiki/track`). Pick by role, not by look.
+4. **Legitimately fixed colours stay fixed:** a QR must be black/white to scan, so
+   `qr_foreground`/`qr_background` are mode-independent (no `-night` override).
+5. **Verify both modes** on a device before merge.
+
+Legacy tokens (`dash_*`, `white`, `black`, `section_*`, `btn_*`) are retired as screens
+migrate. Reference migration: the Dashboard (`fragment_dashboard` + `DashboardFragment`).
+
+---
+
 ## Tech-debt watch list (controller) — opportunistic targets
 
 Evident debt noticed while building the pilot. Chip away at these **only when

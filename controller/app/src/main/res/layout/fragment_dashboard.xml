@@ -117,14 +117,14 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/outline_android_wifi_3_bar_24"
-                        app:tint="#888888"
+                        app:tint="@color/text_secondary"
                         android:layout_centerVertical="true" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Wi-Fi"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:layout_toEndOf="@id/ic_wifi"
                         android:layout_marginStart="6dp"
@@ -154,14 +154,14 @@
                         android:layout_width="16dp"
                         android:layout_height="16dp"
                         android:src="@drawable/outline_connect_without_contact_24"
-                        app:tint="#888888"
+                        app:tint="@color/text_secondary"
                         android:layout_centerVertical="true" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hotspot"
-                        android:textColor="#888888"
+                        android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:layout_toEndOf="@id/ic_hotspot"
                         android:layout_marginStart="6dp"
@@ -193,13 +193,13 @@
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:src="@drawable/outline_clock_arrow_up_24"
-                    app:tint="#888888" />
+                    app:tint="@color/text_secondary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Uptime:"
-                    android:textColor="#888888"
+                    android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:layout_marginStart="6dp"
                     android:layout_marginEnd="8dp" />
@@ -339,7 +339,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/dash_offline"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#555555"
+                    android:backgroundTint="@color/surface_section"
                     android:textColor="@color/dash_text_primary"
                     android:fontFamily="@font/orbitron"
                     android:textSize="11sp"

@@ -283,8 +283,8 @@ public class DashboardFragment extends Fragment {
         int baseColorSwap = ContextCompat.getColor(requireContext(), R.color.dash_bar_swap);
         int baseColorStorage = ContextCompat.getColor(requireContext(), R.color.dash_bar_storage);
 
-        int warnColor = Color.parseColor("#FF9800"); // Orange
-        int dangerColor = Color.parseColor("#F44336"); // Red
+        int warnColor = ContextCompat.getColor(requireContext(), R.color.status_warning); // Orange
+        int dangerColor = ContextCompat.getColor(requireContext(), R.color.status_danger); // Red
 
         // RAM Gauge (Warning at 90%, Danger at 95%)
         int finalColorRam = memProgress >= 95 ? dangerColor : (memProgress >= 90 ? warnColor : baseColorRam);
@@ -344,9 +344,9 @@ public class DashboardFragment extends Fragment {
             if (batLevel <= 33) {
                 colorBattery = warnColor; // Orange (1-33%)
             } else if (batLevel <= 66) {
-                colorBattery = Color.parseColor("#4CAF50"); // Green (34-66%)
+                colorBattery = ContextCompat.getColor(requireContext(), R.color.status_success); // Green (34-66%)
             } else {
-                colorBattery = Color.parseColor("#2196F3"); // Blue (67-100%)
+                colorBattery = ContextCompat.getColor(requireContext(), R.color.status_info); // Blue (67-100%)
             }
 
             // Update the gauge with the newly assigned 4-parameter method

@@ -44,6 +44,41 @@
 
     <color name="footer_text_color">#5F6368</color>
 
+    <!-- ============================================================= -->
+    <!-- Semantic theming tokens (light). Each has a values-night twin. -->
+    <!-- Rule: reference these, never a hardcoded hex. See CLAUDE.md.   -->
+    <!-- ============================================================= -->
+    <!-- Surfaces -->
+    <color name="surface_background">#F4F5F7</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_section">#E8EAED</color>
+    <!-- Text -->
+    <color name="text_primary">#202124</color>
+    <color name="text_secondary">#5F6368</color>
+    <color name="text_disabled">#9AA0A6</color>
+    <color name="text_on_accent">#FFFFFF</color>
+    <!-- Brand / accent -->
+    <color name="accent">#2E7D32</color>
+    <color name="accent_muted">#A5D6A7</color>
+    <!-- Status -->
+    <color name="status_success">#2E7D32</color>
+    <color name="status_warning">#E65100</color>
+    <color name="status_danger">#C62828</color>
+    <color name="status_info">#1565C0</color>
+    <!-- Borders / dividers -->
+    <color name="divider_line">#E0E0E0</color>
+    <!-- Data-viz (categorical) -->
+    <color name="chart_storage">#00897B</color>
+    <color name="chart_ram">#FF8F00</color>
+    <color name="chart_swap">#5C6BC0</color>
+    <color name="chart_os">#00838F</color>
+    <color name="chart_maps">#EF6C00</color>
+    <color name="chart_wiki">#2E7D32</color>
+    <color name="chart_track">#C4C7CC</color>
+    <!-- Fixed (NOT theme-dependent: a QR must stay black/white to scan,
+         so these intentionally have no values-night override). -->
+    <color name="qr_foreground">#000000</color>
+    <color name="qr_background">#FFFFFF</color>
 </resources>
 
 

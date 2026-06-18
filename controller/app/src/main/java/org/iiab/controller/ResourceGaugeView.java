@@ -11,7 +11,6 @@ package org.iiab.controller;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -30,7 +29,7 @@ public class ResourceGaugeView extends View {
     private String centerText = "0%";
     private String bottomText = "-- / --";
 
-    private int currentColor = Color.parseColor("#4CAF50");
+    private int currentColor;
 
     public ResourceGaugeView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,10 +39,11 @@ public class ResourceGaugeView extends View {
     private void init(Context context) {
         setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         rectF = new RectF();
+        currentColor = androidx.core.content.ContextCompat.getColor(context, R.color.status_success);
 
         bgArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         bgArcPaint.setStyle(Paint.Style.STROKE);
-        bgArcPaint.setColor(Color.parseColor("#333333"));
+        bgArcPaint.setColor(androidx.core.content.ContextCompat.getColor(context, R.color.chart_track));
         bgArcPaint.setStrokeCap(Paint.Cap.ROUND);
         bgArcPaint.setPathEffect(null);
 
@@ -57,16 +57,16 @@ public class ResourceGaugeView extends View {
 
         percentPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         percentPaint.setTextAlign(Paint.Align.CENTER);
-        percentPaint.setColor(androidx.core.content.ContextCompat.getColor(context, R.color.dash_text_inverted));
+        percentPaint.setColor(androidx.core.content.ContextCompat.getColor(context, R.color.text_primary));
         percentPaint.setFakeBoldText(true);
 
         valuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         valuePaint.setTextAlign(Paint.Align.CENTER);
-        valuePaint.setColor(Color.parseColor("#AAAAAA"));
+        valuePaint.setColor(androidx.core.content.ContextCompat.getColor(context, R.color.text_secondary));
 
         titlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         titlePaint.setTextAlign(Paint.Align.CENTER);
-        titlePaint.setColor(Color.parseColor("#CCCCCC"));
+        titlePaint.setColor(androidx.core.content.ContextCompat.getColor(context, R.color.text_secondary));
         titlePaint.setFakeBoldText(true);
 
         // LOAD AND APPLY ORBITRON
