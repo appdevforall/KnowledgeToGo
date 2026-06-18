@@ -74,7 +74,7 @@
     <color name="chart_os">#00838F</color>
     <color name="chart_maps">#EF6C00</color>
     <color name="chart_wiki">#2E7D32</color>
-    <color name="chart_track">#E0E0E0</color>
+    <color name="chart_track">#C4C7CC</color>
     <!-- Fixed (NOT theme-dependent: a QR must stay black/white to scan,
          so these intentionally have no values-night override). -->
     <color name="qr_foreground">#000000</color>
