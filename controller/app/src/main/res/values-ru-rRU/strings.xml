@@ -496,4 +496,8 @@
     <string name="sync_app_arch_label">Архитектура App: %1$d-бит</string>
     <string name="sync_msg_arch_compatible">Оборудование совместимо. Запуск подключения...</string>
 
+    <string name="install_btn_no_connection">Нет соединения</string>
+    <string name="install_msg_no_connection">Нет подключения к интернету — подключитесь для загрузки.</string>
+    <string name="install_offline_estimated">Оценочные размеры (офлайн)</string>
+    <string name="rsync_error_invalid_credentials">Недействительные или небезопасные учётные данные синхронизации. Отсканируйте действительный QR-код синхронизации IIAB.</string>
 </resources>

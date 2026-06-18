@@ -497,4 +497,8 @@
     <string name="sync_app_arch_label">App Arch: %1$d-बिट</string>
     <string name="sync_msg_arch_compatible">हार्डवेयर संगत है। कनेक्शन शुरू हो रहा है...</string>
 
+    <string name="install_btn_no_connection">कोई कनेक्शन नहीं</string>
+    <string name="install_msg_no_connection">इंटरनेट कनेक्शन नहीं — डाउनलोड करने के लिए कनेक्ट करें।</string>
+    <string name="install_offline_estimated">अनुमानित आकार (ऑफ़लाइन)</string>
+    <string name="rsync_error_invalid_credentials">अमान्य या असुरक्षित सिंक क्रेडेंशियल। कृपया एक मान्य IIAB सिंक QR कोड स्कैन करें।</string>
 </resources>
