@@ -19,12 +19,14 @@ public class GetRootfsSizeUseCaseTest {
     private static final class FakeRepository implements RootfsRepository {
         private final long liveBytes;       // <= 0 means "unavailable"
         private final boolean liveFlag;
+        boolean fetchLiveCalled = false;
         FakeRepository(long liveBytes, boolean liveFlag) {
             this.liveBytes = liveBytes;
             this.liveFlag = liveFlag;
         }
         @Override
         public Rootfs fetchLive(RootfsTier tier, RootfsAbi abi) {
+            fetchLiveCalled = true;
             return new Rootfs(tier, abi, "url", liveBytes, liveFlag);
         }
         @Override
@@ -43,6 +45,16 @@ public class GetRootfsSizeUseCaseTest {
         Rootfs r = run(new FakeRepository(LIVE_OK, true));
         assertEquals(LIVE_OK, r.sizeBytes());
         assertTrue(r.isLive());
+    }
+
+    @Test
+    public void skipsLiveWhenOffline() {
+        FakeRepository repo = new FakeRepository(LIVE_OK, true); // live would be valid...
+        Rootfs r = new GetRootfsSizeUseCase(repo)
+                .execute(RootfsTier.STANDARD, RootfsAbi.ARM64_V8A, false); // ...but we're offline
+        assertEquals(FALLBACK, r.sizeBytes());
+        assertFalse(r.isLive());
+        assertFalse("live fetch must be skipped when offline", repo.fetchLiveCalled);
     }
 
     @Test

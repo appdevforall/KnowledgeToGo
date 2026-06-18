@@ -485,6 +485,17 @@
             </LinearLayout>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txt_offline_estimate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/install_offline_estimated"
+            android:textColor="@color/dash_text_secondary"
+            android:textSize="12sp"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

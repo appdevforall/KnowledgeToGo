@@ -29,9 +29,21 @@ public final class GetRootfsSizeUseCase {
      * Never returns {@code null}.
      */
     public Rootfs execute(RootfsTier tier, RootfsAbi abi) {
-        Rootfs live = repository.fetchLive(tier, abi);
-        if (live != null && live.isLive() && isPlausible(live.sizeBytes())) {
-            return live;
+        return execute(tier, abi, true);
+    }
+
+    /**
+     * Resolves the size for a tier+abi. When {@code attemptLive} is {@code false}
+     * (e.g. the device is known to be offline), the live lookup is skipped and the
+     * fallback is returned directly — avoiding a pointless network timeout.
+     * Never returns {@code null}.
+     */
+    public Rootfs execute(RootfsTier tier, RootfsAbi abi, boolean attemptLive) {
+        if (attemptLive) {
+            Rootfs live = repository.fetchLive(tier, abi);
+            if (live != null && live.isLive() && isPlausible(live.sizeBytes())) {
+                return live;
+            }
         }
         return repository.fallback(tier, abi);
     }

@@ -58,6 +58,50 @@ incrementally:
   a global freeze.
 - Before migrating old code, confirm it is in scope for the current task. No
   unsolicited mass refactors.
+- **Refactor-by-feature is the default:** every time we add or change a feature,
+  we land it in the layered structure *and* peel the legacy code it touches into
+  that structure in the same change. Feature work and refactoring advance together,
+  in step with the phases in `controller/docs/TECH_DEBT_PLAN.md` — never as a
+  separate "we'll clean it up later" task.
+
+---
+
+## Working in parallel (coordinating features on one repo)
+
+We often have more than one feature in flight at once on this single repo. To keep
+two layered migrations from colliding, follow these rules:
+
+- **One feature = one package = one branch/PR.** Each feature owns
+  `org.iiab.controller.<feature>/{domain,data,presentation}`. Code inside a feature
+  package is private to that feature, so two features in different packages almost
+  never produce merge conflicts. Keep new code there, not in shared classes.
+- **Know the conflict hotspots** — the files many features must touch: the legacy
+  god classes (`MainActivity`, `DeployFragment`), `InstallationPlanner`, anything
+  in `util/`, `build.gradle`, `AndroidManifest.xml`, and `res/values/strings.xml`.
+  Edits to these must be **additive and minimal**: add a new overload/method/string
+  rather than changing an existing signature; don't reformat or reorder surrounding
+  code; keep the diff as small as the change allows.
+- **One migrator per legacy class at a time.** Two branches must not both carve up
+  the same god class in parallel. If feature B needs a class that feature A is
+  actively migrating, B coordinates with A or waits — use the brief module freeze
+  from the strangler policy, and record who is migrating what in the Design map
+  below (it doubles as the coordination ledger).
+- **Shared contracts land first.** If two features need a common domain type or
+  port, define and merge that small interface on its own first, then both features
+  build against it. Don't duplicate it on two branches.
+- **Per-feature resource files** to avoid `strings.xml` collisions: a feature may
+  add its own `res/values/strings_<feature>.xml` (Android merges all `<resources>`
+  files) instead of everyone editing the one shared `strings.xml`. Append, never
+  reorder existing keys.
+- **Wire dependencies by hand, per feature.** Each feature has its own
+  `…ViewModelFactory` / small factory. There is no shared DI graph for everyone to
+  edit (introducing Hilt/Dagger is a separate ADR), so composition roots don't
+  become a contention point.
+- **Integrate often.** Keep branches short-lived; rebase on `main` frequently and
+  merge small. `main` moves under you — small, frequent integration keeps conflicts
+  tiny. Don't sit on a long-lived branch that touches a hotspot.
+- **No new shared mutable static state.** It couples features logically even when
+  the files don't conflict; prefer state encapsulated in a `ViewModel`.
 
 ---
 
@@ -77,10 +121,15 @@ First feature built across all three layers; use it as the copy-paste template.
   building + hardcoded fallback bytes + ABI detection), `RootfsRepositoryImpl`.
 - `presentation/` — `RootfsViewModel` + `RootfsUiState` + `RootfsViewModelFactory`.
 - `util/ByteFormatter` — shared, pure byte→human formatting.
-- **Legacy seam:** `InstallationPlanner.resolveOsSizeGb()` routes the OS size
-  through the use case (live-then-fallback) instead of the old hardcoded
-  `OS_*_GB` constants. Migrating `DeployFragment`'s projection UI to consume
-  `RootfsViewModel` directly is the next strangler step for this area.
+- **Presentation wired (DONE):** `DeployFragment`'s projection UI now consumes
+  `RootfsViewModel` directly — it observes the use-case result (live-then-fallback)
+  and feeds the resolved OS size into the projection. `InstallationPlanner`
+  exposes a `calculateProjectedSize(..., osSizeGb, ...)` overload for this UI path,
+  so OS-size resolution lives in the presentation layer rather than the planner.
+- **Legacy seam (retained):** `InstallationPlanner.resolveOsSizeGb()` still backs
+  the older `calculateProjectedSize(...)` overload used by the non-UI install flow
+  (which only needs the resolved companion-data filename). Removing it once the
+  install flow stops depending on it is a future strangler step.
 
 **Slice (DONE) — device architecture (`org.iiab.controller.deviceinfo`)**
 Carved out while fixing the dashboard "device architecture" field (it showed the
@@ -121,6 +170,8 @@ you are already in the file** (boy-scout), and record progress in the design map
   places. Route them through `util/ByteFormatter`.
 - **Thin tests:** only pure static logic is covered. Every migrated slice must
   add JVM unit tests for its domain/use-case layer (no emulator needed).
-- **Connectivity gating:** live network calls on the projection path can stall
-  up to the timeout when offline; prefer an explicit connectivity check before
-  the live attempt as this path is migrated.
+- **Connectivity gating (DONE for the rootfs path):** `DeployFragment` now keeps a
+  `hasInternet` flag (from `checkInternetAccess()`); when offline it skips the live
+  fetch (use-case `attemptLive=false`) to avoid the timeout stall, disables the
+  install button ("No connection"), and shows an "Estimated sizes (offline)"
+  caption. Apply the same pattern to other live-network paths as they migrate.

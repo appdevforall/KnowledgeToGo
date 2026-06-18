@@ -225,6 +225,9 @@
 
     <string name="install_btn_install">Install</string>
     <string name="install_btn_reinstall">Reinstall</string>
+    <string name="install_btn_no_connection">No connection</string>
+    <string name="install_msg_no_connection">No internet connection — connect to download.</string>
+    <string name="install_offline_estimated">Estimated sizes (offline)</string>
     <string name="install_msg_termux_missing">Please install the base Debian system first.</string>
     <string name="install_btn_delete">Delete</string>
     <string name="install_btn_launch">Launch installation</string>

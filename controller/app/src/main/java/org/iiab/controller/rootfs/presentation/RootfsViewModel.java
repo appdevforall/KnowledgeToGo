@@ -38,12 +38,21 @@ public class RootfsViewModel extends ViewModel {
         return state;
     }
 
-    /** Loads the size for a tier+abi; posts LOADING then SUCCESS/ERROR. */
+    /** Loads the size for a tier+abi (attempting the live fetch first). */
     public void load(RootfsTier tier, RootfsAbi abi) {
+        load(tier, abi, true);
+    }
+
+    /**
+     * Loads the size for a tier+abi; posts LOADING then SUCCESS/ERROR. When
+     * {@code attemptLive} is {@code false} (device offline) the live fetch is
+     * skipped and the hardcoded fallback is used directly.
+     */
+    public void load(RootfsTier tier, RootfsAbi abi, boolean attemptLive) {
         state.postValue(RootfsUiState.loading());
         executor.execute(() -> {
             try {
-                Rootfs rootfs = getRootfsSize.execute(tier, abi);
+                Rootfs rootfs = getRootfsSize.execute(tier, abi, attemptLive);
                 state.postValue(RootfsUiState.success(rootfs, ByteFormatter.toHuman(rootfs.sizeBytes())));
             } catch (Exception e) {
                 state.postValue(RootfsUiState.error(e.getMessage()));

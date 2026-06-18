@@ -155,12 +155,33 @@ public class InstallationPlanner {
         }).start();
     }
 
+    /**
+     * Projection-UI entry point. The OS rootfs size is resolved by the
+     * presentation layer (RootfsViewModel) and passed in here, so this path no
+     * longer touches the rootfs slice directly. Use this from screens that
+     * observe RootfsViewModel.
+     */
+    public static void calculateProjectedSize(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, double osSizeGb, PlanResultListener listener) {
+        new Thread(() -> computeProjection(context, tier, pullCompanionData, langCode, overrideVariant, osSizeGb, listener)).start();
+    }
+
+    /**
+     * Legacy entry point that resolves the OS size internally through the layered
+     * slice. Retained for non-UI callers (e.g. the install flow, which only needs
+     * the resolved companion-data filename). New UI code should use the overload
+     * that accepts a pre-resolved {@code osSizeGb} from RootfsViewModel.
+     */
     public static void calculateProjectedSize(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, PlanResultListener listener) {
-        new Thread(() -> {
-            // Live OS size (with offline fallback), resolved through the layered slice.
-            // Safe to call synchronously here: calculateProjectedSize already runs
-            // on a background Thread.
-            double os = resolveOsSizeGb(tier);
+        new Thread(() -> computeProjection(context, tier, pullCompanionData, langCode, overrideVariant, resolveOsSizeGb(tier), listener)).start();
+    }
+
+    /**
+     * Shared projection math (maps + Kiwix companion data) for a given OS size.
+     * Must run off the main thread — it performs a cached network read for the
+     * Kiwix catalog.
+     */
+    private static void computeProjection(Context context, Tier tier, boolean pullCompanionData, String langCode, String overrideVariant, double os, PlanResultListener listener) {
+        {
             double maps = 0.0;
 
             if (!pullCompanionData) {
@@ -248,7 +269,7 @@ public class InstallationPlanner {
                     listener.onError(error);
                 }
             });
-        }).start();
+        }
     }
 
     /**

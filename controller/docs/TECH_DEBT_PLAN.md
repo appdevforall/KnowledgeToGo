@@ -4,23 +4,21 @@
 
 ## Progress log
 
-_Last updated: 2026-06-16. Tracks remediation work against the findings below. IDs map to the register in this file (F/D/S/M) and to `FORK_DELTA_ANALYSIS.md` (K)._
+_Last updated: 2026-06-17. Tracks remediation work against the findings below. IDs map to the register in this file (F/D/S/M) and to `FORK_DELTA_ANALYSIS.md` (K)._
 
-**Phase 0 — Guardrails: DONE** (PR `chore/phase0-guardrails`)
+**Phase 0 — Guardrails: DONE** (PR `chore/phase0-guardrails`, merged as #4)
 - Extracted `SystemStatsUtil` and added the first JVM unit tests (`SystemStatsUtilTest`, `SyncHandshakeHelperTest`); added unit-test infra (`returnDefaultValues` + real `org.json`). Addresses **M10**.
 - CI gate: blocking `testDebugUnitTest`; `:app:lintDebug` runs non-blocking (scoped to `:app`). Addresses **M11**.
 - Added a root `.gitignore` and `FORK_DELTA_ANALYSIS.md`.
 - Remaining: flip lint `abortOnError=true` once the `:app` lint backlog is triaged; broaden tests to more pure functions (`LogManager.getFormattedSize`, `InstallationPlanner` sizing, the YAML parser).
 
-**K1 — Fork delta (Termux ExtraKeys): IN PROGRESS** (PR `feat/k1-extrakeys-in-app`; details in `FORK_DELTA_ANALYSIS.md`)
-- **K1**: `loadIIABDefaultKeys()` moved out of upstream `ExtraKeysView` into app `IIABExtraKeys` (public APIs only). DONE (app side).
+**K1 — Fork delta (Termux ExtraKeys): DONE** (PR `feat/k1-extrakeys-in-app`, merged as #5; details in `FORK_DELTA_ANALYSIS.md`)
+- **K1**: `loadIIABDefaultKeys()` moved out of upstream `ExtraKeysView` into app `IIABExtraKeys` (public APIs only). DONE.
 - **K3**: layout is now a single-source-of-truth constant. DONE.
 - **K4**: falls back to a minimal layout if the default fails to load. DONE.
 - **K5**: unit test validating the layout grid (`IIABExtraKeysTest`). DONE.
 - Remaining: point the submodule to `appdevforall/termux-app` at clean upstream and commit the pointer.
 
-<<<<<<< Updated upstream
-=======
 **Reference slice — Rootfs live sizes (Clean Architecture pilot): DONE** (PR #6, merged)
 - First feature built across all three layers (`org.iiab.controller.rootfs.{domain,data,presentation}` + `util/ByteFormatter`); serves as the copy-paste template for future slices. See root `CLAUDE.md` (design map) and `ROOTFS_SIZE_PILOT_ANALYSIS.md`.
 - Replaced the hardcoded `OS_*_GB` constants with live sizes from the Deploy server (`latest_*.meta4`), with per-ABI byte fallbacks for offline/error. Domain is pure JVM and unit-tested (`GetRootfsSizeUseCaseTest`, `ByteFormatterTest`).
@@ -32,7 +30,6 @@ _Last updated: 2026-06-16. Tracks remediation work against the findings below. I
 - Bug: the dashboard "device architecture" field reported the *app's* ABI (via `nativeLibraryDir`), so a 32-bit build on a 64-bit device wrongly showed 32-bit (we install the 32-bit app on 64-bit hardware to test the 32-bit path).
 - Fix: new layered slice — `domain` (`DeviceAbiProvider` port + `GetDeviceArchUseCase`, prefer-64-bit rule, pure JVM) and `data` (`BuildDeviceAbiProvider` reading device-level `Build.SUPPORTED_*_ABIS`). `DashboardFragment` now shows the real device arch; `getTermuxArch()` stays for app/content arch (modules, termux, debian). Unit test `GetDeviceArchUseCaseTest` covers the 32-bit-app-on-64-bit-device case.
 
->>>>>>> Stashed changes
 **Phases 1–4: NOT STARTED.** Next: Phase 1 security — **D2**, **D6**, **S1**, **S3**, **M4**, **D12**.
 
 ## 1. Executive summary

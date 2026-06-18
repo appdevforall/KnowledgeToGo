@@ -39,6 +39,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -47,6 +48,13 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.iiab.controller.rootfs.domain.RootfsAbi;
+import org.iiab.controller.rootfs.domain.RootfsTier;
+import org.iiab.controller.rootfs.presentation.RootfsUiState;
+import org.iiab.controller.rootfs.presentation.RootfsViewModel;
+import org.iiab.controller.rootfs.presentation.RootfsViewModelFactory;
+import org.iiab.controller.util.ByteFormatter;
 
 import org.json.JSONObject;
 
@@ -92,6 +100,7 @@ public class DeployFragment extends Fragment {
     // Planner UI
     private Button btnTierBasic, btnTierStandard, btnTierFull;
     private TextView txtLegendIiab, txtLegendMaps, txtLegendKiwix, txtLegendFree;
+    private TextView txtOfflineEstimate;
     private CheckBox chkCompanionData;
     private MultiResourceGaugeView storageGauge;
     private android.widget.ImageButton btnKiwixSettings;
@@ -112,6 +121,10 @@ public class DeployFragment extends Fragment {
     private String overrideKiwixLang = null;
     private String overrideKiwixVariant = null;
     private InstallationPlanner.Tier selectedTier = null;
+    // Presentation-layer source of the OS rootfs size (live, with offline fallback).
+    private RootfsViewModel rootfsViewModel;
+    // Last known connectivity, refreshed by checkInternetAccess() (every 3s via liveStatusRunnable).
+    private volatile boolean hasInternet = true;
 
     // Native Engine Variables
     private static Aria2Manager aria2Manager;
@@ -277,6 +290,7 @@ public class DeployFragment extends Fragment {
         txtLegendMaps = view.findViewById(R.id.txt_legend_maps);
         txtLegendKiwix = view.findViewById(R.id.txt_legend_kiwix);
         txtLegendFree = view.findViewById(R.id.txt_legend_free);
+        txtOfflineEstimate = view.findViewById(R.id.txt_offline_estimate);
 
         // SAF Binding
         btnImportBackup = view.findViewById(R.id.btn_import_backup);
@@ -631,7 +645,7 @@ public class DeployFragment extends Fragment {
 
         } else {
             // FREE MODE: All off and ready to operate
-            if (selectedTier == null || !isStorageSafe) btnFastInstall.setAlpha(0.4f);
+            if (!hasInternet || selectedTier == null || !isStorageSafe) btnFastInstall.setAlpha(0.4f);
             else btnFastInstall.setAlpha(1.0f);
 
             btnFastDelete.setAlpha(1.0f);
@@ -642,7 +656,13 @@ public class DeployFragment extends Fragment {
 
             btnFastInstall.setEnabled(true);
             btnFastInstall.setTextSize(14f);
-            btnFastInstall.setText(isProotInstalled ? R.string.install_btn_reinstall : R.string.install_btn_install);
+            if (!hasInternet) {
+                // Offline: downloading is impossible. Signal it on the button itself;
+                // the click listener shows a snackbar instead of starting a failing download.
+                btnFastInstall.setText(R.string.install_btn_no_connection);
+            } else {
+                btnFastInstall.setText(isProotInstalled ? R.string.install_btn_reinstall : R.string.install_btn_install);
+            }
 
             // Unlock checkboxes
             for (CheckBox cb : newInstallCheckboxes) {
@@ -660,6 +680,13 @@ public class DeployFragment extends Fragment {
     // =========================================================================================
 
     private void setupPlannerListeners() {
+        // Presentation layer: the projection UI consumes the OS rootfs size from
+        // RootfsViewModel (live, with offline fallback) instead of having
+        // InstallationPlanner resolve it. The observer completes each projection
+        // once the size is resolved.
+        rootfsViewModel = new ViewModelProvider(this, new RootfsViewModelFactory()).get(RootfsViewModel.class);
+        rootfsViewModel.state().observe(getViewLifecycleOwner(), this::onRootfsSizeResolved);
+
         btnTierBasic.setAlpha(0.5f);
         btnTierBasic.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#008000")));
         btnTierStandard.setAlpha(0.5f);
@@ -699,11 +726,41 @@ public class DeployFragment extends Fragment {
     }
 
     private void recalculateProjection() {
+        InstallationPlanner.Tier evalTier = (selectedTier != null) ? selectedTier : InstallationPlanner.Tier.BASIC;
+        // Ask the presentation layer for the OS rootfs size. onRootfsSizeResolved()
+        // (registered as an observer in setupPlannerListeners) reacts and finishes
+        // the projection with the resolved size.
+        if (rootfsViewModel != null) {
+            // When we already know we're offline, skip the live fetch (avoids the ~6s
+            // network timeout) and go straight to the hardcoded fallback size.
+            rootfsViewModel.load(toRootfsTier(evalTier), detectRootfsAbi(), hasInternet);
+        }
+    }
+
+    /**
+     * Completes the storage projection once {@link RootfsViewModel} resolves the OS
+     * size (live, or the offline fallback). The UI now consumes the size from the
+     * presentation layer instead of having {@link InstallationPlanner} resolve it.
+     */
+    private void onRootfsSizeResolved(RootfsUiState rootfsState) {
+        if (!isAdded() || rootfsState == null) return;
+        if (rootfsState.status == RootfsUiState.Status.LOADING) return;
+
+        final double osGiB = (rootfsState.rootfs != null)
+                ? ByteFormatter.toGiB(rootfsState.rootfs.sizeBytes())
+                : 0.0;
+
+        // Show the "estimated (offline)" caption whenever the size is a fallback
+        // (no live value), so the user knows the projection isn't server-confirmed.
+        if (txtOfflineEstimate != null) {
+            txtOfflineEstimate.setVisibility(rootfsState.live ? View.GONE : View.VISIBLE);
+        }
+
         android.content.SharedPreferences prefs = requireContext().getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
         String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", "en");
         InstallationPlanner.Tier evalTier = (selectedTier != null) ? selectedTier : InstallationPlanner.Tier.BASIC;
 
-        InstallationPlanner.calculateProjectedSize(requireContext(), evalTier, chkCompanionData.isChecked(), targetLang, overrideKiwixVariant, new InstallationPlanner.PlanResultListener() {
+        InstallationPlanner.calculateProjectedSize(requireContext(), evalTier, chkCompanionData.isChecked(), targetLang, overrideKiwixVariant, osGiB, new InstallationPlanner.PlanResultListener() {
             @Override
             public void onCalculated(InstallationPlanner.StorageProjection projection) {
                 if (!isAdded()) return;
@@ -932,6 +989,13 @@ public class DeployFragment extends Fragment {
             // 1. Main Lock: Server On
             if (mainAct.isServerAlive) {
                 Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
+            // 1b. No internet: a fresh install requires downloading the rootfs. Block it
+            // up front (but still allow cancelling an in-progress download below).
+            if (!hasInternet && !isDownloadingRootfs) {
+                Snackbar.make(v, R.string.install_msg_no_connection, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
@@ -2661,6 +2725,25 @@ public class DeployFragment extends Fragment {
         return "unknown";
     }
 
+    /** Maps the legacy planner tier to the domain {@link RootfsTier}. */
+    private RootfsTier toRootfsTier(InstallationPlanner.Tier tier) {
+        switch (tier) {
+            case STANDARD:
+                return RootfsTier.STANDARD;
+            case FULL:
+                return RootfsTier.FULL;
+            case BASIC:
+            default:
+                return RootfsTier.BASIC;
+        }
+    }
+
+    /** Detects the device ABI for rootfs selection, reusing {@link #getTermuxArch()}. */
+    private RootfsAbi detectRootfsAbi() {
+        String arch = getTermuxArch();
+        return (arch != null && arch.contains("64")) ? RootfsAbi.ARM64_V8A : RootfsAbi.ARMEABI_V7A;
+    }
+
     public void openTermuxAppInfo() {
         try {
             android.content.Intent intent = new android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -2686,6 +2769,7 @@ public class DeployFragment extends Fragment {
                 hasInternet = false;
             }
             final boolean isOnline = hasInternet;
+            DeployFragment.this.hasInternet = isOnline;
             if (isAdded() && getActivity() != null) {
                 getActivity().runOnUiThread(() -> {
                     if (ledInternet != null) {
