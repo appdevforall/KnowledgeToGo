@@ -26,6 +26,10 @@ _Last updated: 2026-06-17. Tracks remediation work against the findings below. I
 - **Offline UX (DONE):** addresses the "connectivity gating" watch item. `checkInternetAccess()` now stores a `hasInternet` flag; `updateDynamicButtons()` disables the install button (label "No connection") and the click listener shows a snackbar instead of starting a doomed download; an "Estimated sizes (offline)" caption shows whenever the size is a fallback (`RootfsUiState.live == false`); and offline we skip the live fetch (new `attemptLive` flag on the use case / ViewModel) to avoid the ~6 s timeout. The gauge itself was intentionally left untouched.
 - Remaining (optional): later remove the legacy `resolveOsSizeGb` path once the install flow no longer needs it.
 
+**Slice — Device architecture (`org.iiab.controller.deviceinfo`): DONE** (refactor-by-feature while fixing a dashboard bug)
+- Bug: the dashboard "device architecture" field reported the *app's* ABI (via `nativeLibraryDir`), so a 32-bit build on a 64-bit device wrongly showed 32-bit (we install the 32-bit app on 64-bit hardware to test the 32-bit path).
+- Fix: new layered slice — `domain` (`DeviceAbiProvider` port + `GetDeviceArchUseCase`, prefer-64-bit rule, pure JVM) and `data` (`BuildDeviceAbiProvider` reading device-level `Build.SUPPORTED_*_ABIS`). `DashboardFragment` now shows the real device arch; `getTermuxArch()` stays for app/content arch (modules, termux, debian). Unit test `GetDeviceArchUseCaseTest` covers the 32-bit-app-on-64-bit-device case.
+
 **Phases 1–4: NOT STARTED.** Next: Phase 1 security — **D2**, **D6**, **S1**, **S3**, **M4**, **D12**.
 
 ## 1. Executive summary

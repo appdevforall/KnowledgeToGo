@@ -131,6 +131,19 @@ First feature built across all three layers; use it as the copy-paste template.
   (which only needs the resolved companion-data filename). Removing it once the
   install flow stops depending on it is a future strangler step.
 
+**Slice (DONE) — device architecture (`org.iiab.controller.deviceinfo`)**
+Carved out while fixing the dashboard "device architecture" field (it showed the
+app's ABI, so a 32-bit app on a 64-bit phone reported 32-bit).
+
+- `domain/` — `DeviceAbiProvider` (port) + `GetDeviceArchUseCase` (rule:
+  prefer the device's primary 64-bit ABI, else 32-bit, else generic). Pure JVM,
+  unit-tested (`GetDeviceArchUseCaseTest`).
+- `data/` — `BuildDeviceAbiProvider` reads `Build.SUPPORTED_*_ABIS` (device-level,
+  not the app process), so it reports the real hardware arch.
+- **Legacy seam:** `DashboardFragment` resolves the device-panel arch through this
+  use case; `getTermuxArch()` (app/content ABI) is unchanged for modules, termux
+  and debian arch.
+
 **Legacy (NOT yet layered)** — most of `org.iiab.controller` is still flat:
 god classes `MainActivity` and `DeployFragment` (~2.7k LOC), shared mutable
 state on public/static fields, hand-rolled `HttpURLConnection` calls duplicated

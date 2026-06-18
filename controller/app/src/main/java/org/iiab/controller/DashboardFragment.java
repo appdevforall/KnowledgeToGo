@@ -27,6 +27,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import org.iiab.controller.deviceinfo.data.BuildDeviceAbiProvider;
+import org.iiab.controller.deviceinfo.domain.GetDeviceArchUseCase;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -220,9 +223,14 @@ public class DashboardFragment extends Fragment {
         int sdkVersion = android.os.Build.VERSION.SDK_INT;
         txtAndroidVersion.setText(getString(R.string.dash_android_version_value, "v" + androidRelease, String.valueOf(sdkVersion)));
 
-        // --- FETCH AND DISPLAY HOST ARCHITECTURE ---
+        // --- FETCH AND DISPLAY HOST (DEVICE) ARCHITECTURE ---
+        // This must be the REAL device arch, not the app's ABI: a 32-bit app can
+        // run on a 64-bit device (used for testing the 32-bit path), and the
+        // device panel must still report 64-bit. App/content arch keeps using
+        // getTermuxArch() elsewhere (modules, termux, debian).
         if (txtHostArch != null) {
-            txtHostArch.setText(getTermuxArch());
+            String deviceArch = new GetDeviceArchUseCase(new BuildDeviceAbiProvider()).execute();
+            txtHostArch.setText(deviceArch);
         }
 
         // --- CALCULATE SERVER UPTIME ---
