@@ -58,6 +58,7 @@ import org.iiab.controller.rootfs.presentation.RootfsUiState;
 import org.iiab.controller.rootfs.presentation.RootfsViewModel;
 import org.iiab.controller.rootfs.presentation.RootfsViewModelFactory;
 import org.iiab.controller.util.ByteFormatter;
+import org.iiab.controller.util.ProcessRunner;
 
 import org.json.JSONObject;
 
@@ -1086,8 +1087,12 @@ public class DeployFragment extends Fragment {
                                 File binDir = new File(requireContext().getFilesDir(), "usr/bin");
                                 if (binDir.exists()) {
                                     try {
-                                        Runtime.getRuntime().exec(new String[]{"chmod", "-R", "755", binDir.getAbsolutePath()}).waitFor();
-                                    } catch (Exception ignored) {
+                                        ProcessRunner.Result chmodResult = ProcessRunner.run(new String[]{"chmod", "-R", "755", binDir.getAbsolutePath()});
+                                        if (!chmodResult.isSuccess()) {
+                                            Log.w(TAG, "chmod on usr/bin failed (exit " + chmodResult.exitCode + "): " + chmodResult.output);
+                                        }
+                                    } catch (Exception e) {
+                                        Log.w(TAG, "chmod on usr/bin failed", e);
                                     }
                                 }
 
@@ -1137,8 +1142,12 @@ public class DeployFragment extends Fragment {
                             btnFastInstall.setEnabled(false);
                             new Thread(() -> {
                                 try {
-                                    Runtime.getRuntime().exec(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()}).waitFor();
-                                } catch (Exception ignored) {
+                                    ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
+                                    if (!wipeResult.isSuccess()) {
+                                        Log.w(TAG, "rm -rf rootfs (reinstall) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
+                                    }
+                                } catch (Exception e) {
+                                    Log.w(TAG, "rm -rf rootfs (reinstall) failed", e);
                                 }
                                 mainAct.runOnUiThread(executeDownload);
                             }).start();
@@ -1175,8 +1184,10 @@ public class DeployFragment extends Fragment {
                         new Thread(() -> {
                             enableSystemProtection();
                             try {
-                                Process p = Runtime.getRuntime().exec(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                                p.waitFor();
+                                ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
+                                if (!wipeResult.isSuccess()) {
+                                    Log.w(TAG, "rm -rf rootfs (delete) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
+                                }
                             } catch (Exception e) {
                                 mainAct.runOnUiThread(() -> Snackbar.make(getView(), getString(R.string.install_error_delete, e.getMessage()), Snackbar.LENGTH_LONG).show());
                             } finally {
@@ -1227,7 +1238,10 @@ public class DeployFragment extends Fragment {
                                 });
 
                                 // 1. WIPE
-                                Runtime.getRuntime().exec(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()}).waitFor();
+                                ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
+                                if (!wipeResult.isSuccess()) {
+                                    Log.w(TAG, "rm -rf rootfs (vanilla reset) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
+                                }
                                 debianRootfs.mkdirs();
 
                                 // 2. DOWNLOAD
@@ -1880,8 +1894,13 @@ public class DeployFragment extends Fragment {
                     String gzipBin = staticGzip.exists() ? staticGzip.getAbsolutePath() : "gzip";
 
                     String cmd = tarBin + " -cf - -C " + iiabRootDir.getAbsolutePath() + " installed-rootfs | " + gzipBin + " > " + backupFile.getAbsolutePath();
-                    Process p = Runtime.getRuntime().exec(new String[]{"/system/bin/sh", "-c", cmd});
-                    int exitCode = p.waitFor();
+                    // D12: ProcessRunner drains stderr so a large backup with tar warnings
+                    // cannot deadlock on a full pipe buffer.
+                    ProcessRunner.Result backupResult = ProcessRunner.run(new String[]{"/system/bin/sh", "-c", cmd});
+                    int exitCode = backupResult.exitCode;
+                    if (exitCode != 0) {
+                        Log.w(TAG, "Backup pipe failed (exit " + exitCode + "): " + backupResult.output);
+                    }
 
                     mainAct.runOnUiThread(() -> {
                         if (isBackupInProgress) {

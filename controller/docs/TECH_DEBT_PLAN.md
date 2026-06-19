@@ -52,7 +52,12 @@ _Last updated: 2026-06-17. Tracks remediation work against the findings below. I
 - New pure domain rule `org.iiab.controller.deploy.domain.ModuleName.isAllowed(name, known)`: the name must be a known catalog key (allowlist) AND match `[a-z0-9_-]` (no quotes/`;`/`&&`/`$()`). `ModuleRegistry.validYamlKeys()` is the single allowlist source. Unit-tested (`ModuleNameTest`).
 - The guard fails closed: an unrecognized/unsafe module is logged and skipped before the command is built; the command structure is unchanged for legitimate modules. Lower-risk on-device `sh -c` pipes (extract/backup, app-internal paths) are a documented follow-up.
 
-**Phase 1 — Security hardening: IN PROGRESS.** Done so far: **S1** (PR #9), **M4**, **S3** (PR #10), **D6** (PR #12), **D2**. Remaining: **D12**, **S4**, **D11**.
+**D12 — Undrained process pipes / swallowed exec errors (Phase 1 security): DONE** (PR `fix/phase1-security-d12-process-drain`)
+- Closes **D12**: several `Runtime.exec(...).waitFor()` calls in `DeployFragment` never read the child's output (deadlock risk once the ~64 KB pipe buffer fills — notably the backup `tar | gzip` pipe on a large rootfs) and some swallowed failures in empty `catch (Exception ignored) {}`.
+- New shared `util/ProcessRunner.run(cmd)`: `redirectErrorStream(true)` + full drain + returns `{exitCode, output}`, so a single read cannot deadlock and callers can log/handle failures.
+- Migrated the raw `exec().waitFor()` sites (backup, `chmod -R`, the three `rm -rf` wipes); empty catches now log. Left the extraction path (already drains stderr) and the `getprop` read (reads stdout) as-is. No new unit test (process glue, not pure logic — fragile to run a shell in unit tests on a Windows dev box); verified by inspection + CI compile.
+
+**Phase 1 — Security hardening: IN PROGRESS.** Done so far: **S1** (PR #9), **M4**, **S3** (PR #10), **D6** (PR #12), **D2** (PR #13), **D12**. Remaining: **D11**, **S4**, **F15**.
 ## 1. Executive summary
 
 The Controller is functional and shows real security intent (it SHA256-audits native binaries at build time, scrubs the keystore in CI, and scopes most broadcasts). But it carries debt on four fronts that scale badly toward the README's "millions of users" goal:
