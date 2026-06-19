@@ -4,7 +4,7 @@
     android:id="@+id/tutorial_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D9000000"
+    android:background="@color/overlay_scrim"
     android:elevation="10dp"
     android:alpha="0">
 
@@ -58,7 +58,7 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/btn_primary"
                 android:text="@string/tutorial_share_got_it"
-                android:textColor="#FFFFFF" />
+                android:textColor="@color/text_on_accent" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -67,7 +67,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:padding="12dp"
-        app:tint="#FFFFFF" />
+        app:tint="@color/text_on_accent" />
 
     <View
         android:id="@+id/pointer_needle"
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:text="@string/tutorial_share_light"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/text_on_accent"
                 android:textSize="14sp"
                 android:textStyle="bold" />
         </androidx.cardview.widget.CardView>

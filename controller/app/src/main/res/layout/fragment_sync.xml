@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="?android:attr/windowBackground">
+    android:background="@color/surface_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_height="48dp"
             android:orientation="horizontal"
             android:background="@drawable/rounded_button"
-            android:backgroundTint="#333333"
+            android:backgroundTint="@color/surface_section"
             android:layout_marginBottom="24dp">
 
             <RadioButton
@@ -70,7 +70,7 @@
                     android:layout_width="220dp"
                     android:layout_height="220dp"
                     android:layout_marginBottom="16dp"
-                    android:background="#FFFFFF"
+                    android:background="@color/qr_background"
                     android:padding="8dp">
 
                     <ImageView
@@ -86,7 +86,7 @@
                     android:layout_height="40dp"
                     android:orientation="horizontal"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#333333"
+                    android:backgroundTint="@color/surface_section"
                     android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -122,7 +122,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_share_status_init"
-                    android:textColor="#FF9800"
+                    android:textColor="@color/status_warning"
                     android:textSize="14sp"
                     android:textAlignment="center"
                     android:layout_marginBottom="16dp" />
@@ -133,12 +133,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="24dp"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#1A1A1A"
+                    android:backgroundTint="@color/surface_section"
                     android:paddingStart="16dp"
                     android:paddingTop="6dp"
                     android:paddingEnd="16dp"
                     android:paddingBottom="6dp"
-                    android:textColor="#4CAF50"
+                    android:textColor="@color/status_success"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:fontFamily="monospace"
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="#222222"
+                android:backgroundTint="@color/dash_module_bg"
                 android:padding="16dp"
                 android:layout_marginBottom="16dp">
 
@@ -160,7 +160,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_card_title_system"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
@@ -169,7 +169,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_card_desc_system"
-                    android:textColor="#AAAAAA"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     android:layout_marginBottom="16dp" />
 
@@ -180,9 +180,9 @@
                     android:text="@string/sync_btn_start_server"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#008000"
+                    android:backgroundTint="@color/status_success"
                     android:textAllCaps="false" />
             </LinearLayout>
 
@@ -192,7 +192,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="#222222"
+                android:backgroundTint="@color/dash_module_bg"
                 android:padding="16dp"
                 android:layout_marginBottom="16dp">
 
@@ -200,7 +200,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_card_title_apk"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
@@ -209,7 +209,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_card_desc_apk"
-                    android:textColor="#AAAAAA"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     android:layout_marginBottom="16dp" />
 
@@ -220,9 +220,9 @@
                     android:text="@string/sync_btn_share_app"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#0055A4"
+                    android:backgroundTint="@color/status_info"
                     android:textAllCaps="false" />
             </LinearLayout>
         </LinearLayout>
@@ -241,7 +241,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/rounded_button"
-                android:backgroundTint="#222222"
+                android:backgroundTint="@color/dash_module_bg"
                 android:padding="16dp"
                 android:layout_marginBottom="16dp">
 
@@ -249,7 +249,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_card_title_receive"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="8dp" />
@@ -258,7 +258,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sync_card_desc_receive"
-                    android:textColor="#AAAAAA"
+                    android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     android:layout_marginBottom="16dp" />
 
@@ -269,9 +269,9 @@
                     android:text="@string/sync_btn_scan_qr"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_on_accent"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#2196F3"
+                    android:backgroundTint="@color/status_info"
                     android:textAllCaps="false"
                     app:icon="@android:drawable/ic_menu_camera"
                     app:iconGravity="textStart" />
@@ -336,8 +336,8 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/sync_btn_cancel_transfer"
                     android:background="@drawable/rounded_button"
-                    android:backgroundTint="#F44336"
-                    android:textColor="#FFFFFF"
+                    android:backgroundTint="@color/status_danger"
+                    android:textColor="@color/text_on_accent"
                     android:textStyle="bold"
                     android:textAllCaps="false" />
             </LinearLayout>
@@ -351,12 +351,12 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/rounded_button"
-            android:backgroundTint="#1A1A1A"
+            android:backgroundTint="@color/surface_section"
             android:paddingStart="16dp"
             android:paddingTop="6dp"
             android:paddingEnd="16dp"
             android:paddingBottom="6dp"
-            android:textColor="#4CAF50"
+            android:textColor="@color/status_success"
             android:textSize="14sp"
             android:textStyle="bold"
             android:fontFamily="monospace"

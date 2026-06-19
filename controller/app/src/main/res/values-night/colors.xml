@@ -41,4 +41,17 @@
     <color name="chart_maps">#FF9800</color>
     <color name="chart_wiki">#66BB6A</color>
     <color name="chart_track">#333333</color>
+    <!-- Round 2 (Usage/Install/Share migration) — twins of values/colors.xml -->
+    <color name="surface_active_success">#173317</color>
+    <color name="surface_active_info">#17263A</color>
+    <color name="surface_active_danger">#5C1A1A</color>
+    <color name="surface_active_warning">#3A2A0E</color>
+    <color name="status_pending">#FFCA28</color>
+    <color name="accent_secondary">#B39DDB</color>
+    <color name="btn_neutral">#424242</color>
+    <color name="text_on_warning">#212121</color>
+    <color name="terminal_background">#0D0D0D</color>
+    <color name="terminal_text">#33FF33</color>
+    <color name="overlay_scrim">#CC000000</color>
+    <color name="toggle_selected">#3A3A3A</color>
 </resources>

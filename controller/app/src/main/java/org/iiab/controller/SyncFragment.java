@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 
 import android.widget.RadioButton;
+import androidx.core.content.ContextCompat;
 
 public class SyncFragment extends Fragment {
 
@@ -318,14 +319,14 @@ public class SyncFragment extends Fragment {
             qrDisplaySection.setVisibility(View.VISIBLE);
             qrCardContainer.setVisibility(View.VISIBLE);
             imgQrCode.setAlpha(1f);
-            cardShareSystem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#173317")));
+            cardShareSystem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface_active_success)));
 
             rgNetworkSelector.setVisibility((wifiIp != null && hotspotIp != null) ? View.VISIBLE : View.GONE);
             showingWifi = (wifiIp != null);
             updateQrDisplayRsync();
 
             btnStartServer.setText(getString(R.string.sync_btn_stop_server));
-            btnStartServer.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#F44336"))); // Red
+            btnStartServer.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_danger))); // Red
             btnShareApp.setVisibility(View.GONE);
         } else {
             Toast.makeText(getContext(), getString(R.string.sync_error_daemon_failed), Toast.LENGTH_SHORT).show();
@@ -341,7 +342,7 @@ public class SyncFragment extends Fragment {
 
         String baseText = showingWifi ? getString(R.string.sync_share_status_wifi) : getString(R.string.sync_share_status_hotspot);
         txtShareStatus.setText(baseText);
-        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#AAAAAA"));
+        txtShareStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
     }
 
     private void stopShareDaemon() {
@@ -352,13 +353,13 @@ public class SyncFragment extends Fragment {
 
         qrDisplaySection.setVisibility(View.GONE);
         btnStartServer.setText(getString(R.string.sync_btn_start_server));
-        cardShareSystem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#222222")));
+        cardShareSystem.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface_card)));
 
         btnStartServer.setText(getString(R.string.sync_btn_start_server));
-        btnStartServer.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#008000"))); // Green
+        btnStartServer.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_success))); // Green
         btnShareApp.setVisibility(View.VISIBLE);
         txtShareStatus.setText(getString(R.string.sync_share_status_off));
-        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#FF9800")); // Orange
+        txtShareStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning)); // Orange
     }
 
     // --- APK SERVER METHODS ---
@@ -375,14 +376,14 @@ public class SyncFragment extends Fragment {
             qrCardContainer.setVisibility(View.VISIBLE);
             updateCardOrder(true);
             imgQrCode.setAlpha(1f);
-            cardShareApk.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#17263A")));
+            cardShareApk.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface_active_info)));
 
             rgNetworkSelector.setVisibility((wifiIp != null && hotspotIp != null) ? View.VISIBLE : View.GONE);
             showingWifi = (wifiIp != null);
             updateQrDisplayApk();
 
             btnShareApp.setText(getString(R.string.sync_btn_stop_app));
-            btnShareApp.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#F44336"))); // Red
+            btnShareApp.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_danger))); // Red
             btnStartServer.setVisibility(View.GONE);
 
         } catch (Exception e) {
@@ -400,7 +401,7 @@ public class SyncFragment extends Fragment {
 
         String baseText = showingWifi ? getString(R.string.sync_app_status_wifi) : getString(R.string.sync_app_status_hotspot);
         txtShareStatus.setText(baseText);
-        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#AAAAAA"));
+        txtShareStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
     }
 
     private void stopApkServer() {
@@ -413,13 +414,13 @@ public class SyncFragment extends Fragment {
 
         qrDisplaySection.setVisibility(View.GONE);
         btnShareApp.setText(getString(R.string.sync_btn_share_app));
-        cardShareApk.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#222222")));
+        cardShareApk.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface_card)));
 
         btnShareApp.setText(getString(R.string.sync_btn_share_app));
-        btnShareApp.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#0055A4"))); // Blue
+        btnShareApp.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_info))); // Blue
         btnStartServer.setVisibility(View.VISIBLE);
         txtShareStatus.setText(getString(R.string.sync_share_status_off));
-        txtShareStatus.setTextColor(android.graphics.Color.parseColor("#FF9800")); // Orange
+        txtShareStatus.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning)); // Orange
     }
 
     // --- CLIENT (RECEIVER) METHODS ---
@@ -776,16 +777,16 @@ public class SyncFragment extends Fragment {
         }
 
         if (txtGuestArchLabel != null) {
-            txtGuestArchLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#00E676")));
-            txtGuestArchLabel.setTextColor(android.graphics.Color.BLACK);
+            txtGuestArchLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_success)));
+            txtGuestArchLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_on_warning));
         }
 
         Snackbar.make(requireView(), getString(R.string.sync_msg_arch_compatible), Snackbar.LENGTH_SHORT).show();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (txtGuestArchLabel != null) {
-                txtGuestArchLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#1A1A1A")));
-                txtGuestArchLabel.setTextColor(android.graphics.Color.parseColor("#4CAF50"));
+                txtGuestArchLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.surface_section)));
+                txtGuestArchLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_success));
             }
             onComplete.run();
         }, 1500);

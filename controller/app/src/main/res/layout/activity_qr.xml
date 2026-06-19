@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#DD000000"
+    android:background="@color/overlay_scrim"
     android:padding="24dp">
 
     <LinearLayout
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/rounded_button"
-            android:backgroundTint="#1A1A1A"
+            android:backgroundTint="@color/surface_card"
             android:elevation="8dp"
             android:padding="16dp">
 
@@ -35,7 +35,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/btn_flip_qr"
                     android:text="@string/qr_title_wifi"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:src="@android:drawable/ic_popup_sync"
                     android:contentDescription="@string/qr_flip_network"
-                    android:tint="#FFFFFF"
+                    android:tint="@color/text_primary"
                     android:scaleType="fitCenter"
                     android:padding="8dp"
                     android:visibility="gone" />
@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="http://---"
-                android:textColor="#AAAAAA"
+                android:textColor="@color/text_secondary"
                 android:textSize="16sp"
                 android:layout_marginBottom="16dp" />
 
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
-                android:background="#FFFFFF"
+                android:background="@color/qr_background"
                 android:padding="16dp" />
 
         </LinearLayout>
@@ -82,6 +82,6 @@
         android:layout_marginTop="24dp"
         android:text="@string/qr_btn_close"
         android:backgroundTint="@color/btn_danger"
-        android:textColor="#FFFFFF" />
+        android:textColor="@color/text_on_accent" />
 
 </LinearLayout>
