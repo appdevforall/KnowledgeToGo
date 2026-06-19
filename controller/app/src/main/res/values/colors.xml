@@ -80,12 +80,15 @@
     <color name="surface_active_success">#E6F4EA</color>
     <color name="surface_active_info">#E3F0FB</color>
     <color name="surface_active_danger">#FDECEA</color>
+    <color name="surface_active_warning">#FFF3E0</color>
     <color name="status_pending">#F9A825</color>
     <color name="accent_secondary">#6A3FB5</color>
     <color name="btn_neutral">#616161</color>
+    <color name="text_on_warning">#212121</color>
     <color name="terminal_background">#0D0D0D</color>
     <color name="terminal_text">#33FF33</color>
     <color name="overlay_scrim">#CC000000</color>
+    <color name="toggle_selected">#FFFFFF</color>
 
     <!-- Fixed (NOT theme-dependent: a QR must stay black/white to scan,
          so these intentionally have no values-night override). -->
