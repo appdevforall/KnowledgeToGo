@@ -174,6 +174,16 @@ round-trips through SharedPreferences.
   module and fails closed (logs + skips) before building the command. The command
   structure is unchanged for legitimate modules.
 
+**Slice (DONE) — archive extraction guard (`org.iiab.controller.deploy.domain`)**
+Phase-1 security slice closing tech-debt **D11** (tar path-traversal). An imported
+backup is untrusted; `TarExtractor` extracted without validating member names.
+
+- `domain/` — `ArchiveEntry.escapesRoot(name)` (pure JVM): rejects absolute paths
+  and `..` climbing above the destination root. Unit-tested (`ArchiveEntryTest`).
+- **Legacy seam:** `TarExtractor` pre-lists entries (`tar -t`) and fails closed
+  before extracting if any member escapes; the backup-creation `sh -c` pipe was
+  single-quoted. Applies to all extractions.
+
 **Legacy (NOT yet layered)** — most of `org.iiab.controller` is still flat:
 god classes `MainActivity` and `DeployFragment` (~2.7k LOC), shared mutable
 state on public/static fields, hand-rolled `HttpURLConnection` calls duplicated

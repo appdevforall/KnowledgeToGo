@@ -1893,7 +1893,10 @@ public class DeployFragment extends Fragment {
                     String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
                     String gzipBin = staticGzip.exists() ? staticGzip.getAbsolutePath() : "gzip";
 
-                    String cmd = tarBin + " -cf - -C " + iiabRootDir.getAbsolutePath() + " installed-rootfs | " + gzipBin + " > " + backupFile.getAbsolutePath();
+                    // D11: single-quote the interpolated paths so the backup pipe is robust
+                    // even if a path ever contains spaces/metacharacters (app-internal today).
+                    String cmd = "'" + tarBin + "' -cf - -C '" + iiabRootDir.getAbsolutePath()
+                            + "' installed-rootfs | '" + gzipBin + "' > '" + backupFile.getAbsolutePath() + "'";
                     // D12: ProcessRunner drains stderr so a large backup with tar warnings
                     // cannot deadlock on a full pipe buffer.
                     ProcessRunner.Result backupResult = ProcessRunner.run(new String[]{"/system/bin/sh", "-c", cmd});

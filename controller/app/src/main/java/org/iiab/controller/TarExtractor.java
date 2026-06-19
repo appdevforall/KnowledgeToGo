@@ -9,6 +9,8 @@
 
 package org.iiab.controller;
 
+import org.iiab.controller.deploy.domain.ArchiveEntry;
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -50,6 +52,16 @@ public class TarExtractor {
                 Log.d(TAG, "Using tar binary: " + tarBinary);
 
                 boolean isGzip = archivePath.toLowerCase().endsWith(".gz");
+
+                // D11: refuse path-traversal. List the archive members first and
+                // bail out (without extracting anything) if any member is absolute
+                // or climbs out of destDir via "..". An imported/restored backup is
+                // untrusted, so this runs for every extraction.
+                for (String entry : listEntries(tarBinary, archivePath, isGzip)) {
+                    if (ArchiveEntry.escapesRoot(entry)) {
+                        throw new Exception("Unsafe archive entry (path traversal): " + entry);
+                    }
+                }
 
                 // 2. BUILD THE COMMAND
                 List<String> command = new ArrayList<>();
@@ -123,6 +135,60 @@ public class TarExtractor {
                 new Handler(Looper.getMainLooper()).post(() -> listener.onError(e.getMessage()));
             }
         }).start();
+    }
+
+
+    /**
+     * D11: enumerate the archive's member names without extracting, so we can
+     * reject path-traversal before any file is written. Mirrors the extraction
+     * invocation (gzip is decompressed in Java and piped to {@code tar -t}).
+     */
+    private List<String> listEntries(String tarBinary, String archivePath, boolean isGzip) throws Exception {
+        List<String> names = new ArrayList<>();
+        List<String> listCmd = new ArrayList<>();
+        listCmd.add(tarBinary);
+        if (isGzip) {
+            listCmd.add("-t");
+            listCmd.add("-f");
+            listCmd.add("-");
+        } else {
+            listCmd.add("-tf");
+            listCmd.add(archivePath);
+        }
+
+        Process listProcess = new ProcessBuilder(listCmd).start();
+
+        Thread feeder = null;
+        if (isGzip) {
+            feeder = new Thread(() -> {
+                try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(archivePath));
+                     OutputStream os = listProcess.getOutputStream()) {
+                    byte[] buffer = new byte[8192];
+                    int read;
+                    while ((read = gis.read(buffer)) != -1) {
+                        os.write(buffer, 0, read);
+                    }
+                    os.flush();
+                } catch (Exception ignored) {
+                }
+            });
+            feeder.start();
+        }
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(listProcess.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                names.add(line);
+            }
+        }
+
+        int exitCode = listProcess.waitFor();
+        if (feeder != null) feeder.join();
+        if (exitCode != 0) {
+            // Could not verify the archive -> fail closed rather than extract blind.
+            throw new Exception("Could not read archive listing for verification (tar exit " + exitCode + ")");
+        }
+        return names;
     }
 
     public void stopExtraction() {
