@@ -6,8 +6,24 @@ on:
   # got two redundant concurrent runs. Feature branches are covered by their PR.
   push:
     branches: [ "main", "development" ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'controller/docs/**'
+      - 'tools/**'
+      - '.github/**'
+      - 'LICENSE'
+      - '.gitignore'
   pull_request:
     branches: [ "main", "development" ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'controller/docs/**'
+      - 'tools/**'
+      - '.github/**'
+      - 'LICENSE'
+      - '.gitignore'
 
 # Supersede in-flight runs: when a newer commit lands on the same branch/PR, cancel
 # the older run so a fixup doesn't leave a zombie ~50-min lint job running.
