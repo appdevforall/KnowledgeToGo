@@ -48,6 +48,18 @@ public class DnsValidatorTest {
         assertTrue(DnsValidator.validate(new DnsConfig("1.1.1.1", "")).valid);
     }
 
+    @Test public void rejectsLoopbackAndUnspecified() {
+        assertTrue(DnsValidator.isLoopbackOrUnspecified("127.0.0.1"));
+        assertTrue(DnsValidator.isLoopbackOrUnspecified("127.0.0.53"));
+        assertTrue(DnsValidator.isLoopbackOrUnspecified("0.0.0.0"));
+        assertTrue(DnsValidator.isLoopbackOrUnspecified("::1"));
+        assertTrue(DnsValidator.isLoopbackOrUnspecified("::"));
+        assertFalse(DnsValidator.isLoopbackOrUnspecified("1.1.1.1"));
+        assertFalse(DnsValidator.isLoopbackOrUnspecified("2001:4860:4860::8888"));
+        assertFalse(DnsValidator.validate(new DnsConfig("127.0.0.1", "")).valid);
+        assertFalse(DnsValidator.validate(new DnsConfig("8.8.8.8", "::1")).valid);
+    }
+
     @Test public void garbageRejected() {
         DnsValidator.Result r = DnsValidator.validate(new DnsConfig("aaa.bbb.ccc", "xxx.yyy.zzz"));
         assertFalse(r.valid);

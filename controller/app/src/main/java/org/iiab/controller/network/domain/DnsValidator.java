@@ -28,15 +28,40 @@ public final class DnsValidator {
         public static Result fail(String reason) { return new Result(false, reason); }
     }
 
-    /** Primary is required and must be a valid IP; secondary is optional but if set must be valid. */
+    /**
+     * Primary is required; secondary optional. Each must be a valid IP that is a USABLE
+     * DNS server: loopback (127.0.0.0/8, ::1) and unspecified (0.0.0.0, ::) are rejected,
+     * since a DNS server can't be the guest itself (and probing it would just fail).
+     */
     public static Result validate(DnsConfig config) {
         if (config == null) return Result.fail("null config");
         if (config.primary().isEmpty()) return Result.fail("primary DNS is required");
-        if (!isValidIp(config.primary())) return Result.fail("invalid primary DNS address");
-        if (config.hasSecondary() && !isValidIp(config.secondary())) {
-            return Result.fail("invalid secondary DNS address");
+        String p = checkServer(config.primary());
+        if (p != null) return Result.fail("primary DNS " + p);
+        if (config.hasSecondary()) {
+            String sec = checkServer(config.secondary());
+            if (sec != null) return Result.fail("secondary DNS " + sec);
         }
         return Result.ok();
+    }
+
+    /** @return null if {@code s} is a usable DNS server, otherwise a short reason. */
+    private static String checkServer(String s) {
+        if (!isValidIp(s)) return "is not a valid IP address";
+        if (isLoopbackOrUnspecified(s)) return "can't be a loopback or unspecified address";
+        return null;
+    }
+
+    /** A DNS server can't be loopback (the guest itself) or the unspecified address. */
+    public static boolean isLoopbackOrUnspecified(String s) {
+        if (s == null) return false;
+        String v = s.trim();
+        if (isValidIpv4(v)) {
+            return v.startsWith("127.") || v.equals("0.0.0.0");
+        }
+        String low = v.toLowerCase();
+        return low.equals("::1") || low.equals("0:0:0:0:0:0:0:1")
+            || low.equals("::") || low.equals("0:0:0:0:0:0:0:0");
     }
 
     /** A single address is valid if it parses as IPv4 OR IPv6. */
