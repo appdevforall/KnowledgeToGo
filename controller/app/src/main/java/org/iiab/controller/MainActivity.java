@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
+import org.iiab.controller.update.data.ApkVerifier;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -739,7 +740,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Register download listener
         IntentFilter filter = new IntentFilter(android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(downloadReceiver, filter, Context.RECEIVER_EXPORTED);
+            registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(downloadReceiver, filter);
         }
@@ -1296,7 +1297,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // 3. We delete previous failed downloads with THIS same name
         java.io.File oldApk = new java.io.File(
-                android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS),
+                getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS),
                 apkName
         );
         if (oldApk.exists()) {
@@ -1310,8 +1311,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         request.setMimeType("application/vnd.android.package-archive");
         request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
-        // 4. We tell DownloadManager to use the dynamic name
-        request.setDestinationInExternalPublicDir(android.os.Environment.DIRECTORY_DOWNLOADS, apkName);
+        // 4. F15: stage the APK in the app's PRIVATE external dir (not public
+        // Downloads) so another app cannot swap it before install.
+        request.setDestinationInExternalFilesDir(this, android.os.Environment.DIRECTORY_DOWNLOADS, apkName);
 
         android.app.DownloadManager manager = (android.app.DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         if (manager != null) {
@@ -1324,48 +1326,99 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             long id = intent.getLongExtra(android.app.DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (id == updateDownloadId) {
+            if (id != updateDownloadId) {
+                return;
+            }
+            // F15: only install if the download actually SUCCEEDED. DownloadManager
+            // reports completion even when the server returned an error/HTML page.
+            if (isDownloadSuccessful(id)) {
                 installApk();
+            } else {
+                Log.e(TAG, "OTA: download did not complete successfully; not installing.");
+                Toast.makeText(context, R.string.ota_error_download_failed, Toast.LENGTH_LONG).show();
             }
         }
     };
+
+    /** Did the DownloadManager job with this id finish with STATUS_SUCCESSFUL? */
+    private boolean isDownloadSuccessful(long id) {
+        android.app.DownloadManager manager =
+                (android.app.DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+        if (manager == null) {
+            return false;
+        }
+        try (android.database.Cursor c =
+                     manager.query(new android.app.DownloadManager.Query().setFilterById(id))) {
+            if (c != null && c.moveToFirst()) {
+                int idx = c.getColumnIndex(android.app.DownloadManager.COLUMN_STATUS);
+                return idx >= 0 && c.getInt(idx) == android.app.DownloadManager.STATUS_SUCCESSFUL;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "OTA: error querying download status", e);
+        }
+        return false;
+    }
 
     private void installApk() {
         String apkName = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
                 .getString("ota_apk_name", "iiab_update.apk");
 
         java.io.File apkFile = new java.io.File(
-                android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS),
+                getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS),
                 apkName
         );
 
-        if (apkFile.exists()) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            android.net.Uri apkUri = androidx.core.content.FileProvider.getUriForFile(
-                    this,
-                    getPackageName() + ".provider",
-                    apkFile
-            );
-
-            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            List<android.content.pm.ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            for (android.content.pm.ResolveInfo resolveInfo : resInfoList) {
-                String packageName = resolveInfo.activityInfo.packageName;
-                grantUriPermission(packageName, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            }
-
-            try {
-                startActivity(intent);
-            } catch (Exception e) {
-                Log.e(TAG, "OTA: Error launching installer", e);
-                Toast.makeText(this, R.string.ota_error_launching_installer, Toast.LENGTH_LONG).show();
-            }
-        } else {
+        if (!apkFile.exists()) {
             Log.e(TAG, "OTA: Downloaded APK file not found at " + apkFile.getAbsolutePath());
+            return;
+        }
+
+        // F15: verify the APK is signed by the SAME certificate as this app before
+        // installing. Rejects MITM/tampered APKs and non-APK downloads (e.g. an
+        // HTML/text error page saved with a .apk name).
+        if (!ApkVerifier.isSignedBySameCertAsApp(this, apkFile)) {
+            Log.e(TAG, "OTA: APK failed signature verification; deleting and aborting install.");
+            apkFile.delete();
+            Toast.makeText(this, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        // F15: on API 26+ the user must allow this app to install packages.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && !getPackageManager().canRequestPackageInstalls()) {
+            Toast.makeText(this, R.string.ota_msg_enable_unknown_sources, Toast.LENGTH_LONG).show();
+            try {
+                startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                        android.net.Uri.parse("package:" + getPackageName())));
+            } catch (Exception e) {
+                Log.e(TAG, "OTA: could not open unknown-sources settings", e);
+            }
+            return;
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        android.net.Uri apkUri = androidx.core.content.FileProvider.getUriForFile(
+                this,
+                getPackageName() + ".provider",
+                apkFile
+        );
+
+        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        List<android.content.pm.ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (android.content.pm.ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            grantUriPermission(packageName, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "OTA: Error launching installer", e);
+            Toast.makeText(this, R.string.ota_error_launching_installer, Toast.LENGTH_LONG).show();
         }
     }
 

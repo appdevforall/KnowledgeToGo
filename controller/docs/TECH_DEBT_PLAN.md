@@ -76,8 +76,15 @@ _Last updated: 2026-06-17. Tracks remediation work against the findings below. I
 - New pure domain rule `org.iiab.controller.adb.domain.AdbShellCommand.isSafe(command)` (rejects `; | & $ \` ( ) < > ' " \\`, CR/LF and control chars). Unit-tested (`AdbShellCommandTest`).
 - `executeCommand` now fails closed (logs + does not open the stream) on an unsafe command; the two legitimate `settings put` / `device_config put` calls are unaffected.
 
-**Phase 1 — Security hardening: IN PROGRESS.** Done so far: **S1** (PR #9), **M4** (PR #10), **D6** (PR #12), **D2** (PR #13), **D12** (PR #16), **D11** (PR #15). **S3 reverted** (see above), **S4**. Remaining: **F15**.
+**F15 — OTA self-updater security + correctness, PR A** (PR `feat/ota-updater-security-redesign`)
+- The OTA updater downloaded the new APK to **public Downloads** and installed it with **no integrity check**; `DownloadManager` reports "complete" even for an HTML/text error page, so a wrong/MITM'd response was installed as garbage (the "downloaded a text file" bug), and the completion receiver was registered **EXPORTED**.
+- PR A (security + functional correctness, layered `org.iiab.controller.update` slice):
+  - `domain/` — `UpdateCheck` (version rule) + `CertDigests.sameSigner` (pure, unit-tested).
+  - `data/ApkVerifier` — the downloaded APK must be signed by the **same certificate as the running app** (public certs via `PackageManager`, no secrets); rejects MITM/tampered APKs and non-APK downloads (kills the text-file bug).
+  - `MainActivity` seam: stage the APK in the app's **private** external dir (not public Downloads); only install when `DownloadManager` status is SUCCESSFUL; **verify signature before install**; handle the API 26+ "install unknown apps" permission; register the receiver **NOT_EXPORTED**.
+- Follow-ups: **PR B** (presentation: `UpdateViewModel` + in-app download-progress UX) and a separate `network-security-config` to scope cleartext to the local box hosts (**S18**; deferred to avoid risking box connectivity).
 
+**Phase 1 — Security hardening: IN PROGRESS.** Done so far: **S1** (PR #9), **M4** (PR #10), **D6** (PR #12), **D2** (PR #13), **D12** (PR #16), **D11** (PR #15), **S4** (PR #28). **S3 reverted** (see above). Remaining: **F15** (PR A in review).
 ## 1. Executive summary
 
 The Controller is functional and shows real security intent (it SHA256-audits native binaries at build time, scrubs the keystore in CI, and scopes most broadcasts). But it carries debt on four fronts that scale badly toward the README's "millions of users" goal:

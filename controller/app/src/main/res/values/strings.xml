@@ -515,4 +515,7 @@
     <string name="sync_msg_arch_compatible">Hardware compatible. Starting connection...</string>
 
     <string name="rsync_error_invalid_credentials">Invalid or unsafe sync credentials. Please scan a valid IIAB sync QR code.</string>
+    <string name="ota_error_verify_failed">The update could not be verified and was not installed. Please try again.</string>
+    <string name="ota_error_download_failed">The update download failed. Please try again.</string>
+    <string name="ota_msg_enable_unknown_sources">Allow installing updates from this app, then tap update again.</string>
 </resources>

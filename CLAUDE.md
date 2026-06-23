@@ -193,6 +193,18 @@ Phase-1 security slice closing tech-debt **S4** (arbitrary on-device shell via A
 - **Legacy seam:** `IIABAdbManager.executeCommand` validates and fails closed
   before opening the `shell:` stream.
 
+**Slice (IN PROGRESS) — OTA self-updater (`org.iiab.controller.update`)**
+Phase-1 security + functional redesign of the in-app updater (tech-debt **F15**).
+
+- `domain/` — `UpdateCheck` (is the server build newer?) + `CertDigests.sameSigner`
+  (pure signer-set comparison). Unit-tested.
+- `data/ApkVerifier` — the downloaded APK must be signed by the same certificate
+  as the running app (public certs only); rejects MITM/tampered or non-APK
+  downloads before install.
+- **Legacy seam:** `MainActivity` stages the APK privately, checks the download
+  status, verifies the signature, handles the install permission, and registers
+  the completion receiver NOT_EXPORTED. (PR A.) Presentation/progress UX = PR B.
+
 **Legacy (NOT yet layered)** — most of `org.iiab.controller` is still flat:
 god classes `MainActivity` and `DeployFragment` (~2.7k LOC), shared mutable
 state on public/static fields, hand-rolled `HttpURLConnection` calls duplicated

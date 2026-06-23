@@ -500,4 +500,7 @@
     <string name="sync_msg_arch_compatible">Hardware compatible. Iniciando conexión...</string>
 
     <string name="rsync_error_invalid_credentials">Credenciales de sincronización inválidas o no seguras. Escanea un código QR de sincronización IIAB válido.</string>
+    <string name="ota_error_verify_failed">No se pudo verificar la actualización y no se instaló. Inténtalo de nuevo.</string>
+    <string name="ota_error_download_failed">La descarga de la actualización falló. Inténtalo de nuevo.</string>
+    <string name="ota_msg_enable_unknown_sources">Permite instalar actualizaciones desde esta app y vuelve a tocar actualizar.</string>
 </resources>
