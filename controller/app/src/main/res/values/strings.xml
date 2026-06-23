@@ -528,4 +528,5 @@
     <string name="ota_progress_percent">%1$d%%</string>
     <string name="ota_btn_install">Install</string>
     <string name="ota_btn_cancel">Cancel</string>
+    <string name="restore_log_label">Extraction log</string>
 </resources>

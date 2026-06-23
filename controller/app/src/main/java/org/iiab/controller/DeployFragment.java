@@ -87,6 +87,9 @@ public class DeployFragment extends Fragment {
     private LinearLayout rolesContainer, discrepancyWarning;
     private Button btnLaunchInstall, btnFastInstall, btnFastDelete, btnAdvancedReset;
     private Button btnAdvancedBackup, btnAdvancedRestore, btnAdvancedForceStop;
+    private LinearLayout restoreLogPanel;
+    private TextView restoreLogText, restoreLogResult;
+    private android.widget.ScrollView restoreLogScroll;
 
     // Backup Menu UI
     private TextView txtSelectBackupTitle, txtBackupStatus;
@@ -284,6 +287,10 @@ public class DeployFragment extends Fragment {
         btnAdvancedBackup = view.findViewById(R.id.btn_advanced_backup);
         btnAdvancedRestore = view.findViewById(R.id.btn_advanced_restore);
         btnAdvancedForceStop = view.findViewById(R.id.btn_advanced_force_stop);
+        restoreLogPanel = view.findViewById(R.id.restore_log_panel);
+        restoreLogText = view.findViewById(R.id.restore_log_text);
+        restoreLogResult = view.findViewById(R.id.restore_log_result);
+        restoreLogScroll = view.findViewById(R.id.restore_log_scroll);
         txtSelectBackupTitle = view.findViewById(R.id.txt_select_backup_title);
         containerBackupList = view.findViewById(R.id.container_backup_list);
         txtBackupStatus = view.findViewById(R.id.txt_backup_status);
@@ -2134,6 +2141,11 @@ public class DeployFragment extends Fragment {
 
                 btnAdvancedRestore.setEnabled(false);
                 btnAdvancedRestore.setText(getString(R.string.install_status_restoring));
+                if (restoreLogPanel != null) {
+                    restoreLogPanel.setVisibility(View.VISIBLE);
+                    if (restoreLogText != null) restoreLogText.setText("");
+                    if (restoreLogResult != null) restoreLogResult.setText("");
+                }
                 File iiabRootDir = new File(requireContext().getFilesDir(), "rootfs");
                 TarExtractor tarExtractor = new TarExtractor();
 
@@ -2147,6 +2159,7 @@ public class DeployFragment extends Fragment {
                             btnAdvancedRestore.setEnabled(true);
                             btnAdvancedRestore.setText(getString(R.string.install_btn_restore));
                             Snackbar.make(getView(), R.string.install_success_restore, Snackbar.LENGTH_LONG).show();
+                            if (restoreLogResult != null) { restoreLogResult.setText("\u2713"); restoreLogResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_success)); }
                             updateDynamicButtons();
                         });
                     }
@@ -2159,8 +2172,18 @@ public class DeployFragment extends Fragment {
                             btnAdvancedRestore.setEnabled(true);
                             btnAdvancedRestore.setText(getString(R.string.install_btn_restore));
                             Snackbar.make(getView(), getString(R.string.install_msg_restore_failed) + " " + error, Snackbar.LENGTH_LONG).show();
+                            if (restoreLogResult != null) { restoreLogResult.setText("\u2717"); restoreLogResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning)); }
                             updateDynamicButtons();
                         });
+                    }
+
+                    @Override
+                    public void onProgress(String line) {
+                        if (restoreLogText == null) return;
+                        restoreLogText.append(line + "\n");
+                        if (restoreLogScroll != null) {
+                            restoreLogScroll.post(() -> restoreLogScroll.fullScroll(View.FOCUS_DOWN));
+                        }
                     }
                 });
             });

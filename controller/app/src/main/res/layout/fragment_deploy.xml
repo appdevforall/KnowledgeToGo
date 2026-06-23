@@ -737,6 +737,55 @@
                     android:textAllCaps="false" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/restore_log_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="12dp"
+                android:padding="8dp"
+                android:background="@drawable/rounded_button"
+                android:backgroundTint="@color/surface_section"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/restore_log_label"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/restore_log_result"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
+                </LinearLayout>
+
+                <ScrollView
+                    android:id="@+id/restore_log_scroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp">
+
+                    <TextView
+                        android:id="@+id/restore_log_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:textSize="11sp"
+                        android:textColor="?android:attr/textColorSecondary" />
+                </ScrollView>
+            </LinearLayout>
+
             <Button
                 android:id="@+id/btn_import_backup"
                 android:layout_width="match_parent"
