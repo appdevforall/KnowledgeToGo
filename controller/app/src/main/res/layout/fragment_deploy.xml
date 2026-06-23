@@ -502,7 +502,7 @@
             android:orientation="horizontal"
             android:layout_marginBottom="8dp">
 
-            <Button
+            <org.iiab.controller.ProgressButton
                 android:id="@+id/btn_fast_install"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
@@ -515,7 +515,7 @@
                 android:layout_marginEnd="8dp"
                 android:textAllCaps="false" />
 
-            <Button
+            <org.iiab.controller.ProgressButton
                 android:id="@+id/btn_fast_delete"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
@@ -676,7 +676,7 @@
                 android:layout_marginBottom="8dp"
                 android:baselineAligned="false">
 
-                <Button
+                <org.iiab.controller.ProgressButton
                     android:id="@+id/btn_advanced_backup"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
@@ -710,7 +710,7 @@
                 android:layout_marginBottom="8dp"
                 android:baselineAligned="false">
 
-                <Button
+                <org.iiab.controller.ProgressButton
                     android:id="@+id/btn_advanced_restore"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
