@@ -137,6 +137,9 @@ public class DeployFragment extends Fragment {
     private boolean isRestoring = false;
     private boolean isDeleting = false;
     private boolean isImporting = false;
+    private static final String[] IMPORT_SPINNER = {"\u28BF", "\u28FB", "\u28FD", "\u28FE", "\u28F7", "\u28EF", "\u28DF", "\u287F"};
+    private android.os.Handler importSpinnerHandler;
+    private int importSpinnerFrame = 0;
     private PRootEngine prootEngine;
 
     // Background Handlers
@@ -2164,6 +2167,29 @@ public class DeployFragment extends Fragment {
         }
     }
 
+    private void startImportSpinner() {
+        stopImportSpinner();
+        importSpinnerFrame = 0;
+        importSpinnerHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+        final Runnable r = new Runnable() {
+            @Override public void run() {
+                if (btnImportBackup != null) {
+                    String f = IMPORT_SPINNER[importSpinnerFrame++ % IMPORT_SPINNER.length];
+                    btnImportBackup.setText(f + "  " + getString(R.string.install_msg_importing));
+                }
+                if (importSpinnerHandler != null) importSpinnerHandler.postDelayed(this, 90);
+            }
+        };
+        importSpinnerHandler.post(r);
+    }
+
+    private void stopImportSpinner() {
+        if (importSpinnerHandler != null) {
+            importSpinnerHandler.removeCallbacksAndMessages(null);
+            importSpinnerHandler = null;
+        }
+    }
+
     /** Best-effort original filename from a SAF content:// URI (DISPLAY_NAME), or null. */
     private String queryDisplayName(Uri uri) {
         try (android.database.Cursor c = requireContext().getContentResolver()
@@ -2182,7 +2208,7 @@ public class DeployFragment extends Fragment {
         isImporting = true;
         updateDynamicButtons();
         btnImportBackup.setEnabled(false);
-        btnImportBackup.setText(getString(R.string.install_msg_importing));
+        startImportSpinner();
         Snackbar.make(getView(), getString(R.string.install_msg_importing), Snackbar.LENGTH_LONG).show();
 
         new Thread(() -> {
@@ -2215,6 +2241,7 @@ public class DeployFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         isImporting = false;
+                        stopImportSpinner();
                         btnImportBackup.setEnabled(true);
                         btnImportBackup.setText(getString(R.string.install_btn_import_backup));
                         selectedBackupFile = fileName;
@@ -2226,6 +2253,7 @@ public class DeployFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         isImporting = false;
+                        stopImportSpinner();
                         updateDynamicButtons();
                         btnImportBackup.setEnabled(true);
                         btnImportBackup.setText(getString(R.string.install_btn_import_backup));
