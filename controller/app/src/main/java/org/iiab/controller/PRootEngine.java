@@ -20,6 +20,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.iiab.controller.network.data.FileResolvConfWriter;
+import org.iiab.controller.network.data.PrefsDnsConfigRepository;
+import org.iiab.controller.network.domain.ApplyDnsUseCase;
+
 public class PRootEngine {
     private static final String TAG = "IIAB-PRootEngine";
     private Process currentProcess;
@@ -42,6 +46,19 @@ public class PRootEngine {
 
                 if (!prootBinary.exists()) {
                     throw new Exception("libproot.so not found in native library directory!");
+                }
+
+                // Single DNS injection point: every proot launch passes through here, so we write
+                // the effective DNS (user's custom config when enabled, else defaults) into the
+                // guest's resolv.conf BEFORE launching. Replaces the scattered writes that used to
+                // live in DeployFragment / MainActivity.
+                try {
+                    new ApplyDnsUseCase(
+                            new PrefsDnsConfigRepository(context),
+                            new FileResolvConfWriter()
+                    ).execute(new File(rootfsDir));
+                } catch (Exception dnsEx) {
+                    Log.w(TAG, "DNS apply skipped: " + dnsEx.getMessage());
                 }
 
                 // =========================================================
