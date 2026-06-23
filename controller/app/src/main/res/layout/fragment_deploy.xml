@@ -504,6 +504,7 @@
 
             <org.iiab.controller.ProgressButton
                 android:id="@+id/btn_fast_install"
+                app:progressButtonColor="@color/accent_secondary"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
@@ -517,6 +518,7 @@
 
             <org.iiab.controller.ProgressButton
                 android:id="@+id/btn_fast_delete"
+                app:progressButtonColor="@color/accent_secondary"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_weight="1"
@@ -678,6 +680,7 @@
 
                 <org.iiab.controller.ProgressButton
                     android:id="@+id/btn_advanced_backup"
+                    app:progressButtonColor="@color/accent_secondary"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
@@ -712,6 +715,7 @@
 
                 <org.iiab.controller.ProgressButton
                     android:id="@+id/btn_advanced_restore"
+                    app:progressButtonColor="@color/accent_secondary"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
                     android:layout_weight="1"
