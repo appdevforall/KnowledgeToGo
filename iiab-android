@@ -414,7 +414,9 @@ install_iiaboa_dashboard() {
 
   # Copy dashboard files
   mkdir -p "$dash_dest"
-  rsync -Aax "${dash_src}/" "$dash_dest/"
+  # Proot-safe copy: rsync's lchmod -> fchmodat2 (glibc>=2.39, kernel>=6.6) isn't
+  # translated by proot (rc=23 under proot on 6.6+ kernels); cp -a is reliable.
+  cp -a "${dash_src}/." "$dash_dest/"
 
   # Install node dependencies
   log "Installing Node dependencies for the dashboard..."
