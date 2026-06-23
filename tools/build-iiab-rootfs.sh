@@ -732,7 +732,62 @@ rm -f "$ROOTFS/etc/resolv.conf" 2>/dev/null || true            # ephemeral; the 
 rm -f "$ROOTFS/usr/local/sbin/hostnamectl" \
       "$ROOTFS/usr/local/sbin/ischroot" \
       "$ROOTFS/usr/local/sbin/reboot" 2>/dev/null || true
-( cd "$WORKDIR" && tar -czf "${OUTDIR}/${ARTIFACT}" installed-rootfs )   # top-level = installed-rootfs/iiab/ (extracts into rootfs/ as the app expects)
+# Embed the self-validation manifest (INTEGRITY only). Frozen spec + recipe:
+#   docs/ROOTFS_MANIFEST.md  (algo: iiab-tree-sha256-v1)
+# Two members inside the tree: identity (.iiab-rootfs.json, packed FIRST, hashed)
+# and integrity (.iiab-rootfs.integrity.json, packed LAST, excluded from its own
+# hash). Lets a manually-imported rootfs (no sidecar .meta4) detect corruption.
+TREEHASH_PY="$(dirname "$SELF")/iiab_tree_hash.py"
+[[ -f "$TREEHASH_PY" ]] || die "missing $(basename "$TREEHASH_PY") next to the build script (treehash recipe)."
+ID_MEMBER="installed-rootfs/iiab/.iiab-rootfs.json"
+INTEG_MEMBER="installed-rootfs/iiab/.iiab-rootfs.integrity.json"
+
+log "Embedding rootfs manifest (identity + integrity, iiab-tree-sha256-v1) ..."
+rm -f "$ROOTFS/.iiab-rootfs.json" "$ROOTFS/.iiab-rootfs.integrity.json" 2>/dev/null || true
+
+# (a) identity member -- packed first, IS hashed (single-line JSON, no trailing newline issues)
+cat > "$ROOTFS/.iiab-rootfs.json" <<JSON
+{"schema":1,"kind":"iiab-rootfs","arch":"${ARCH}","deb_arch":"${DEB_ARCH}","tier":"${TIER_NAME}","iiab_commit":"${IIAB_SHA}","built":"${STAMP}","base":"debian-trixie","proot_distro":"${PD_VERSION}","builder":"build-iiab-rootfs.sh"}
+JSON
+
+# (b) deterministic member list: identity FIRST, then everything else (LC_ALL=C
+#     sorted), both manifest members excluded here. --no-recursion + -T <list>
+#     makes the archive's member order EXACTLY this order, so what we hash in (c)
+#     equals what ends up in the artifact (and what the verifier later reads).
+MEMBER_LIST="$(mktemp)"
+( cd "$WORKDIR"
+  printf '%s\n' "$ID_MEMBER"
+  find installed-rootfs ! -path "$ID_MEMBER" ! -path "$INTEG_MEMBER" -print | LC_ALL=C sort
+) > "$MEMBER_LIST"
+
+# (c) compute the treehash over a STREAMED uncompressed tar of that list (no temp
+#     copy on disk; scales to multi-GB rootfs). Integrity member is absent here.
+TREEHASH="$( ( cd "$WORKDIR" && tar -c --no-recursion -T "$MEMBER_LIST" ) \
+             | python3 "$TREEHASH_PY" - "$INTEG_MEMBER" )" \
+  || { rm -f "$MEMBER_LIST"; die "treehash computation failed (unhashable member type? see docs/ROOTFS_MANIFEST.md)"; }
+[[ -n "$TREEHASH" ]] || { rm -f "$MEMBER_LIST"; die "empty treehash"; }
+
+# (d) integrity member -- packed last, NOT hashed
+cat > "$ROOTFS/.iiab-rootfs.integrity.json" <<JSON
+{"schema":1,"algo":"iiab-tree-sha256-v1","treehash":"${TREEHASH}"}
+JSON
+
+# (e) final artifact: same member order as (c), with the integrity member appended
+#     LAST. top-level = installed-rootfs/iiab/ (extracts into rootfs/ as the app expects)
+( cd "$WORKDIR" && tar -cz --no-recursion \
+    -T <(cat "$MEMBER_LIST"; printf '%s\n' "$INTEG_MEMBER") \
+    -f "${OUTDIR}/${ARTIFACT}" ) \
+  || { rm -f "$MEMBER_LIST"; die "packaging ${ARTIFACT} failed"; }
+rm -f "$MEMBER_LIST"
+
+# (f) build self-verify: re-read the finished artifact and confirm the embedded
+#     treehash matches. Never ship an artifact our own verifier would reject.
+log "Self-verifying embedded integrity (iiab-tree-sha256-v1) ..."
+_VERIFY="$(python3 "$TREEHASH_PY" "${OUTDIR}/${ARTIFACT}" "$INTEG_MEMBER")" \
+  || die "self-verify failed to re-read ${ARTIFACT}"
+[[ "$_VERIFY" == "$TREEHASH" ]] \
+  || die "integrity self-verify MISMATCH (built=${TREEHASH} read=${_VERIFY}); refusing to ship ${ARTIFACT}"
+log "Integrity self-verify OK: ${TREEHASH}"
 SIZE_BYTES="$(stat -c%s "${OUTDIR}/${ARTIFACT}")"
 SHA256="$(sha256sum "${OUTDIR}/${ARTIFACT}" | awk '{print $1}')"
 echo "$SHA256  $ARTIFACT" > "${OUTDIR}/${ARTIFACT}.sha256"
