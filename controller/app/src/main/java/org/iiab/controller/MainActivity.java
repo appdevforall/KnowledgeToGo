@@ -27,6 +27,10 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
 import org.iiab.controller.update.data.ApkVerifier;
+import org.iiab.controller.update.presentation.UpdateUiState;
+import org.iiab.controller.update.presentation.UpdateViewModel;
+import org.iiab.controller.update.presentation.UpdateViewModelFactory;
+import androidx.lifecycle.ViewModelProvider;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -65,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private android.widget.ImageView headerIcon;
 
     private long updateDownloadId = -1;
+    private androidx.appcompat.app.AlertDialog updateProgressDialog;
+    private UpdateViewModel updateViewModel;
     private long lastUpdateCheckTime = 0;
 
     // Tabs UI
@@ -1318,7 +1324,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         android.app.DownloadManager manager = (android.app.DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         if (manager != null) {
             updateDownloadId = manager.enqueue(request);
-            android.widget.Toast.makeText(this, R.string.download_started_toast, android.widget.Toast.LENGTH_SHORT).show();
+            // PR B: show the in-app modal progress dialog and start polling.
+            // The DownloadManager system notification is kept as well.
+            getUpdateViewModel().track(updateDownloadId);
+            showUpdateProgressDialog();
         }
     }
 
@@ -1332,8 +1341,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // F15: only install if the download actually SUCCEEDED. DownloadManager
             // reports completion even when the server returned an error/HTML page.
             if (isDownloadSuccessful(id)) {
-                installApk();
+                // PR B: verify signature, then move the dialog to READY (user taps Install).
+                java.io.File apk = verifyDownloadedApk();
+                if (apk != null) {
+                    getUpdateViewModel().onReady();
+                } else {
+                    getUpdateViewModel().onError(getString(R.string.ota_error_verify_failed));
+                    Toast.makeText(context, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
+                }
             } else {
+                getUpdateViewModel().onError(getString(R.string.ota_error_download_failed));
                 Log.e(TAG, "OTA: download did not complete successfully; not installing.");
                 Toast.makeText(context, R.string.ota_error_download_failed, Toast.LENGTH_LONG).show();
             }
@@ -1359,7 +1376,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return false;
     }
 
-    private void installApk() {
+    /** Verify the staged APK exists and is signed by this app's certificate. Returns the file, or null. */
+    private java.io.File verifyDownloadedApk() {
         String apkName = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
                 .getString("ota_apk_name", "iiab_update.apk");
 
@@ -1370,7 +1388,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (!apkFile.exists()) {
             Log.e(TAG, "OTA: Downloaded APK file not found at " + apkFile.getAbsolutePath());
-            return;
+            return null;
         }
 
         // F15: verify the APK is signed by the SAME certificate as this app before
@@ -1379,6 +1397,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!ApkVerifier.isSignedBySameCertAsApp(this, apkFile)) {
             Log.e(TAG, "OTA: APK failed signature verification; deleting and aborting install.");
             apkFile.delete();
+            return null;
+        }
+        return apkFile;
+    }
+
+    /** Launch the system installer for the (re-)verified APK. Invoked from the dialog's Install button. */
+    private void launchInstaller() {
+        java.io.File apkFile = verifyDownloadedApk();
+        if (apkFile == null) {
+            getUpdateViewModel().onError(getString(R.string.ota_error_verify_failed));
             Toast.makeText(this, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
             return;
         }
@@ -1395,6 +1423,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             return;
         }
+
+        getUpdateViewModel().onInstalling();
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         android.net.Uri apkUri = androidx.core.content.FileProvider.getUriForFile(
@@ -1419,6 +1449,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             Log.e(TAG, "OTA: Error launching installer", e);
             Toast.makeText(this, R.string.ota_error_launching_installer, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // ---- PR B: in-app OTA progress dialog ---------------------------------
+
+    private UpdateViewModel getUpdateViewModel() {
+        if (updateViewModel == null) {
+            updateViewModel = new ViewModelProvider(this, new UpdateViewModelFactory(this))
+                    .get(UpdateViewModel.class);
+            updateViewModel.state().observe(this, this::renderUpdateState);
+        }
+        return updateViewModel;
+    }
+
+    private void showUpdateProgressDialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_ota_progress, null);
+        androidx.appcompat.app.AlertDialog d = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle(R.string.ota_progress_title)
+                .setView(view)
+                .setCancelable(false)
+                .setPositiveButton(R.string.ota_btn_install, null)
+                .setNegativeButton(R.string.ota_btn_cancel, null)
+                .create();
+        d.setOnShowListener(dlg -> {
+            android.widget.Button install = d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+            android.widget.Button cancel = d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE);
+            if (install != null) install.setOnClickListener(v -> launchInstaller());
+            if (cancel != null) cancel.setOnClickListener(v -> {
+                UpdateUiState st = getUpdateViewModel().state().getValue();
+                boolean terminal = st != null && (st.status == UpdateUiState.Status.READY
+                        || st.status == UpdateUiState.Status.ERROR
+                        || st.status == UpdateUiState.Status.INSTALLING);
+                if (!terminal) {
+                    getUpdateViewModel().cancel();
+                }
+                d.dismiss();
+            });
+            renderUpdateState(getUpdateViewModel().state().getValue());
+        });
+        updateProgressDialog = d;
+        d.show();
+    }
+
+    private void renderUpdateState(UpdateUiState s) {
+        if (updateProgressDialog == null || s == null || !updateProgressDialog.isShowing()) {
+            return;
+        }
+        android.widget.ProgressBar bar = updateProgressDialog.findViewById(R.id.ota_progress);
+        TextView status = updateProgressDialog.findViewById(R.id.ota_status);
+        TextView percent = updateProgressDialog.findViewById(R.id.ota_percent);
+        android.widget.Button install = updateProgressDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
+        android.widget.Button cancel = updateProgressDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE);
+
+        boolean determinate = s.status == UpdateUiState.Status.DOWNLOADING && !s.indeterminate && s.percent >= 0;
+        if (bar != null) {
+            bar.setIndeterminate(!determinate);
+            if (determinate) bar.setProgress(s.percent);
+        }
+        if (percent != null) {
+            percent.setVisibility(determinate ? View.VISIBLE : View.GONE);
+            if (determinate) percent.setText(getString(R.string.ota_progress_percent, s.percent));
+        }
+
+        switch (s.status) {
+            case DOWNLOADING:
+                if (status != null) status.setText(R.string.ota_status_downloading);
+                if (install != null) install.setEnabled(false);
+                if (cancel != null) cancel.setEnabled(true);
+                break;
+            case VERIFYING:
+                if (status != null) status.setText(R.string.ota_status_verifying);
+                if (install != null) install.setEnabled(false);
+                if (cancel != null) cancel.setEnabled(true);
+                break;
+            case READY:
+                if (status != null) status.setText(R.string.ota_status_ready);
+                if (install != null) install.setEnabled(true);
+                if (cancel != null) cancel.setEnabled(true);
+                break;
+            case INSTALLING:
+                if (status != null) status.setText(R.string.ota_status_installing);
+                if (install != null) install.setEnabled(false);
+                if (cancel != null) cancel.setEnabled(false);
+                break;
+            case ERROR:
+                if (status != null) status.setText(s.message != null ? s.message : getString(R.string.ota_status_error));
+                if (install != null) install.setEnabled(false);
+                if (cancel != null) cancel.setEnabled(true);
+                break;
+            default:
+                break;
         }
     }
 

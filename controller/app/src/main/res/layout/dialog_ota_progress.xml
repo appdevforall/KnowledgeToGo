@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Modal progress dialog for the in-app OTA update (PR B).
+  ~ Author: AppDevForAll. Copyright (c) 2026 AppDevForAll.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/dash_bg_main"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/ota_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/ota_status_downloading"
+        android:textColor="@color/dash_text_primary"
+        android:textSize="15sp"
+        android:layout_marginBottom="12dp" />
+
+    <ProgressBar
+        android:id="@+id/ota_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:indeterminate="true"
+        android:progressTint="@color/accent_secondary"
+        android:indeterminateTint="@color/accent_secondary" />
+
+    <TextView
+        android:id="@+id/ota_percent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text=""
+        android:textColor="@color/dash_text_secondary"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp"
+        android:visibility="gone" />
+
+</LinearLayout>

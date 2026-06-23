@@ -518,4 +518,14 @@
     <string name="ota_error_verify_failed">The update could not be verified and was not installed. Please try again.</string>
     <string name="ota_error_download_failed">The update download failed. Please try again.</string>
     <string name="ota_msg_enable_unknown_sources">Allow installing updates from this app, then tap update again.</string>
+    <!-- OTA in-app progress dialog (PR B) -->
+    <string name="ota_progress_title">Updating</string>
+    <string name="ota_status_downloading">Downloading update…</string>
+    <string name="ota_status_verifying">Verifying signature…</string>
+    <string name="ota_status_ready">✓ Signature verified — ready to install</string>
+    <string name="ota_status_installing">Starting installer…</string>
+    <string name="ota_status_error">Update failed</string>
+    <string name="ota_progress_percent">%1$d%%</string>
+    <string name="ota_btn_install">Install</string>
+    <string name="ota_btn_cancel">Cancel</string>
 </resources>

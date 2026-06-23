@@ -503,4 +503,14 @@
     <string name="install_msg_no_connection">Sem conexão à internet — conecte-se para baixar.</string>
     <string name="install_offline_estimated">Tamanhos estimados (offline)</string>
     <string name="rsync_error_invalid_credentials">Credenciais de sincronização inválidas ou inseguras. Por favor, escaneie um QR code de sincronização IIAB válido.</string>
+    <!-- OTA in-app progress dialog (PR B) -->
+    <string name="ota_progress_title">Atualizando</string>
+    <string name="ota_status_downloading">Baixando atualização…</string>
+    <string name="ota_status_verifying">Verificando assinatura…</string>
+    <string name="ota_status_ready">✓ Assinatura verificada — pronto para instalar</string>
+    <string name="ota_status_installing">Iniciando o instalador…</string>
+    <string name="ota_status_error">Falha na atualização</string>
+    <string name="ota_progress_percent">%1$d%%</string>
+    <string name="ota_btn_install">Instalar</string>
+    <string name="ota_btn_cancel">Cancelar</string>
 </resources>

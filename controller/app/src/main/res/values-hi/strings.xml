@@ -501,4 +501,14 @@
     <string name="install_msg_no_connection">इंटरनेट कनेक्शन नहीं — डाउनलोड करने के लिए कनेक्ट करें।</string>
     <string name="install_offline_estimated">अनुमानित आकार (ऑफ़लाइन)</string>
     <string name="rsync_error_invalid_credentials">अमान्य या असुरक्षित सिंक क्रेडेंशियल। कृपया एक मान्य IIAB सिंक QR कोड स्कैन करें।</string>
+    <!-- OTA in-app progress dialog (PR B) -->
+    <string name="ota_progress_title">अपडेट हो रहा है</string>
+    <string name="ota_status_downloading">अपडेट डाउनलोड हो रहा है…</string>
+    <string name="ota_status_verifying">हस्ताक्षर सत्यापित हो रहा है…</string>
+    <string name="ota_status_ready">✓ हस्ताक्षर सत्यापित — इंस्टॉल के लिए तैयार</string>
+    <string name="ota_status_installing">इंस्टॉलर शुरू हो रहा है…</string>
+    <string name="ota_status_error">अपडेट विफल</string>
+    <string name="ota_progress_percent">%1$d%%</string>
+    <string name="ota_btn_install">इंस्टॉल करें</string>
+    <string name="ota_btn_cancel">रद्द करें</string>
 </resources>

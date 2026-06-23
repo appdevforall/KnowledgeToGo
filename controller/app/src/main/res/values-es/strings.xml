@@ -503,4 +503,14 @@
     <string name="ota_error_verify_failed">No se pudo verificar la actualización y no se instaló. Inténtalo de nuevo.</string>
     <string name="ota_error_download_failed">La descarga de la actualización falló. Inténtalo de nuevo.</string>
     <string name="ota_msg_enable_unknown_sources">Permite instalar actualizaciones desde esta app y vuelve a tocar actualizar.</string>
+    <!-- OTA in-app progress dialog (PR B) -->
+    <string name="ota_progress_title">Actualizando</string>
+    <string name="ota_status_downloading">Descargando actualización…</string>
+    <string name="ota_status_verifying">Verificando firma…</string>
+    <string name="ota_status_ready">✓ Firma verificada — lista para instalar</string>
+    <string name="ota_status_installing">Iniciando el instalador…</string>
+    <string name="ota_status_error">La actualización falló</string>
+    <string name="ota_progress_percent">%1$d%%</string>
+    <string name="ota_btn_install">Instalar</string>
+    <string name="ota_btn_cancel">Cancelar</string>
 </resources>

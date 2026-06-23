@@ -500,4 +500,14 @@
     <string name="install_msg_no_connection">Нет подключения к интернету — подключитесь для загрузки.</string>
     <string name="install_offline_estimated">Оценочные размеры (офлайн)</string>
     <string name="rsync_error_invalid_credentials">Недействительные или небезопасные учётные данные синхронизации. Отсканируйте действительный QR-код синхронизации IIAB.</string>
+    <!-- OTA in-app progress dialog (PR B) -->
+    <string name="ota_progress_title">Обновление</string>
+    <string name="ota_status_downloading">Загрузка обновления…</string>
+    <string name="ota_status_verifying">Проверка подписи…</string>
+    <string name="ota_status_ready">✓ Подпись проверена — готово к установке</string>
+    <string name="ota_status_installing">Запуск установщика…</string>
+    <string name="ota_status_error">Сбой обновления</string>
+    <string name="ota_progress_percent">%1$d%%</string>
+    <string name="ota_btn_install">Установить</string>
+    <string name="ota_btn_cancel">Отмена</string>
 </resources>
