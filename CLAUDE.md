@@ -1,4 +1,4 @@
-# CLAUDE.md — Project guardrails for iiab-android
+# CLAUDE.md — Project guardrails for KnowledgeToGo
 
 ## Language
 

@@ -1314,7 +1314,7 @@ public class DeployFragment extends Fragment {
                                                 String bootstrapCmd = "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && " +
                                                         "export DEBIAN_FRONTEND=noninteractive && " +
                                                         "apt-get update && apt-get install -y curl ca-certificates nano sudo && " +
-                                                        "curl -fsSL https://raw.githubusercontent.com/iiab/iiab-android/main/iiab-android -o /usr/local/sbin/iiab-android && " +
+                                                        "curl -fsSL https://raw.githubusercontent.com/appdevforall/KnowledgeToGo/main/iiab-android -o /usr/local/sbin/iiab-android && " +
                                                         "chmod +x /usr/local/sbin/iiab-android && " +
                                                         "apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache";
 

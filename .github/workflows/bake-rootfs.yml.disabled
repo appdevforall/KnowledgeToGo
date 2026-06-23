@@ -68,7 +68,7 @@ jobs:
             -e AUTO_INSTALL_SIZE=${{ matrix.tier }} \
             -e DEBIAN_FRONTEND=noninteractive \
             debian-iiab-base:trixie \
-            /bin/bash -c "mkdir -p /tmp && chmod 1777 /tmp && apt-get update && apt-get install -y curl ca-certificates && curl -fsSL https://raw.githubusercontent.com/appdevforall/iiab-android/main/iiab-android -o /usr/local/sbin/iiab-android && chmod +x /usr/local/sbin/iiab-android && /usr/local/sbin/iiab-android -f"
+            /bin/bash -c "mkdir -p /tmp && chmod 1777 /tmp && apt-get update && apt-get install -y curl ca-certificates && curl -fsSL https://raw.githubusercontent.com/appdevforall/KnowledgeToGo/main/iiab-android -o /usr/local/sbin/iiab-android && chmod +x /usr/local/sbin/iiab-android && /usr/local/sbin/iiab-android -f"
 
       - name: Export and Compress Final RootFS
         if: github.event_name != 'workflow_dispatch' || inputs.tier_size == 'all' || inputs.tier_size == matrix.tier

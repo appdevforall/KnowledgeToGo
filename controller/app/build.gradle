@@ -186,7 +186,7 @@ task syncNativeArtifacts {
     description = 'Downloads, extracts, and cryptographically verifies rolling native binaries'
 
     // Repo name
-    def repoName = "appdevforall/iiab-android"
+    def repoName = "appdevforall/KnowledgeToGo"
 
     // Work Directories
     def assetsDir = file("src/main/assets")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IIAB-oA Controller</string>
+    <string name="app_name">Knowledge To Go</string>
     <string name="cancel">Cancelar</string>
     <string name="copy_all">Copiar Todo</string>
     <string name="fix_action">CORREGIR</string>
@@ -185,7 +185,7 @@
     <string name="update_dialog_positive">Actualizar</string>
     <string name="update_dialog_negative">Más tarde</string>
 
-    <string name="download_title">Actualizando IIAB Controller</string>
+    <string name="download_title">Actualizando Knowledge To Go</string>
     <string name="download_description">Descargando nueva versión...</string>
     <string name="download_started_toast">Descarga iniciada...</string>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IIAB-oA Controller</string>
+    <string name="app_name">Knowledge To Go</string>
 
     <string name="cancel">Отмена</string>
     <string name="copy_all">Скопировать все</string>
@@ -189,7 +189,7 @@
     <string name="update_dialog_message">Хотите обновить приложение?\n\nЧто нового:\n%1$s</string>
     <string name="update_dialog_positive">Обновить</string>
     <string name="update_dialog_negative">Позже</string>
-    <string name="download_title">Обновление IIAB Controller</string>
+    <string name="download_title">Обновление Knowledge To Go</string>
     <string name="download_description">Загрузка новой версии...</string>
     <string name="download_started_toast">Загрузка начата...</string>
     <string name="ota_toast_checking">Поиск обновлений...</string>

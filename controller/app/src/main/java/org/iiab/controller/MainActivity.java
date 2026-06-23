@@ -1846,7 +1846,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 cliStr.append("      shift\n");
                 cliStr.append("      ;;\n");
                 cliStr.append("    -h|--help)\n");
-                cliStr.append("      echo 'IIAB Controller CLI'\n");
+                cliStr.append("      echo 'Knowledge To Go CLI'\n");
                 cliStr.append("      echo 'Usage: iiab [COMMAND] [OPTIONS]'\n");
                 cliStr.append("      echo 'Commands:'\n");
                 cliStr.append("      echo '  -l, --login        Enter the IIAB Debian Environment (Default)'\n");
@@ -1901,7 +1901,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && " +
                         "export DEBIAN_FRONTEND=noninteractive && " +
                         "apt-get update && apt-get install -y curl ca-certificates nano sudo && " +
-                        "curl -fsSL https://raw.githubusercontent.com/iiab/iiab-android/main/iiab-android -o /usr/local/sbin/iiab-android && " +
+                        "curl -fsSL https://raw.githubusercontent.com/appdevforall/KnowledgeToGo/main/iiab-android -o /usr/local/sbin/iiab-android && " +
                         "chmod +x /usr/local/sbin/iiab-android && " +
                         "apt-get clean && apt-get autoremove -y && " +
                         "rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache'\n\n");
@@ -1975,8 +1975,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // 5. Links and Resources
                 profile.append("echo \"Online resources:\"\n");
                 profile.append("echo -e \"\\033[1;33m*\\033[0m 🔗: \\033[1mhttps://internet-in-a-box.org\\033[0m\"\n");
-                profile.append("echo -e \"\\033[1;33m*\\033[0m 📖: \\033[1mhttps://github.com/iiab/iiab-android\\033[0m\"\n");
-                profile.append("echo -e \"\\033[1;33m*\\033[0m 🐛: \\033[1mhttps://github.com/iiab/iiab-android/issues\\033[0m\"\n");
+                profile.append("echo -e \"\\033[1;33m*\\033[0m 📖: \\033[1mhttps://github.com/appdevforall/KnowledgeToGo\\033[0m\"\n");
+                profile.append("echo -e \"\\033[1;33m*\\033[0m 🐛: \\033[1mhttps://github.com/appdevforall/KnowledgeToGo/issues\\033[0m\"\n");
                 profile.append("echo \"\"\n");
 
                 // 6. Custom Prompt (PS1)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">IIAB-oA Controller</string>
+    <string name="app_name">Knowledge To Go</string>
 
     <string name="cancel">रद्द करें</string>
     <string name="copy_all">सभी कॉपी करें</string>
@@ -189,7 +189,7 @@
     <string name="update_dialog_message">क्या आप एप्लिकेशन को अपडेट करना चाहते हैं?\n\nनया क्या है:\n%1$s</string>
     <string name="update_dialog_positive">अपडेट करें</string>
     <string name="update_dialog_negative">बाद में</string>
-    <string name="download_title">IIAB Controller अपडेट हो रहा है</string>
+    <string name="download_title">Knowledge To Go अपडेट हो रहा है</string>
     <string name="download_description">नया संस्करण डाउनलोड हो रहा है...</string>
     <string name="download_started_toast">डाउनलोड शुरू हुआ...</string>
 

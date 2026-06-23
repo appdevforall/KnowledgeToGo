@@ -14,7 +14,7 @@
 # actually under proot) using the SAME libproot.so and flags as PRootEngine.java.
 #
 # proot source: by default downloads the native-binaries release of
-# appdevforall/iiab-android (the very zip the APK uses via syncNativeArtifacts).
+# appdevforall/KnowledgeToGo (the very zip the APK uses via syncNativeArtifacts).
 #
 # Artifact identifier: the SHORT COMMIT of iiab/iiab that the installer actually
 # baked into this rootfs (read from the clone at /opt/iiab/iiab AFTER install =
@@ -114,7 +114,7 @@ MKMETALINK_VERSION="latest"        # module version to 'go install'; --mkmetalin
 GO_VERSION=""                      # "" = latest stable from go.dev; or pin e.g. go1.25.4; --go-version
 GO_MIN="1.25.1"                    # mkmetalink go.mod requires Go >= this
 KERNEL_STR="6.17.0-PRoot-IIAB"                       # same -k as PRootEngine.java
-REPO="appdevforall/iiab-android"
+REPO="appdevforall/KnowledgeToGo"
 INSTALLER_URL="https://raw.githubusercontent.com/${REPO}/main/iiab-android"
 # Release tag holding the native binaries (the same zip the APK uses). Empty =
 # auto: read controller/binary_version.txt from main.

@@ -29,7 +29,7 @@ fi
 #-----------------------------
 # Config
 #-----------------------------
-GIT_REPO_IIABOA="https://github.com/iiab/iiab-android"
+GIT_REPO_IIABOA="https://github.com/appdevforall/KnowledgeToGo"
 IIABOA_OPT_DIR="/opt/iiab-android"
 SITE_UPDATER="/opt/iiab-android/static/site/site-updater.sh"
 BASE_VARS_URL="https://raw.githubusercontent.com/iiab/iiab/refs/heads/master/vars/"
