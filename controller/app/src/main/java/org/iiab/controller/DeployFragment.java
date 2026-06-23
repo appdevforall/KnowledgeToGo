@@ -85,8 +85,13 @@ public class DeployFragment extends Fragment {
     private View ledInternet, ledDevMode, ledDcpr, ledPpk;
     private TextView txtDcpr, txtPpk, btnRefreshModules;
     private LinearLayout rolesContainer, discrepancyWarning;
-    private Button btnLaunchInstall, btnFastInstall, btnFastDelete, btnAdvancedReset;
-    private Button btnAdvancedBackup, btnAdvancedRestore, btnAdvancedForceStop;
+    private Button btnLaunchInstall, btnAdvancedReset;
+    private ProgressButton btnFastInstall, btnFastDelete;
+    private Button btnAdvancedForceStop;
+    private ProgressButton btnAdvancedBackup, btnAdvancedRestore;
+    private LinearLayout restoreLogPanel;
+    private TextView restoreLogText, restoreLogResult;
+    private androidx.core.widget.NestedScrollView restoreLogScroll;
 
     // Backup Menu UI
     private TextView txtSelectBackupTitle, txtBackupStatus;
@@ -137,6 +142,9 @@ public class DeployFragment extends Fragment {
     private boolean isRestoring = false;
     private boolean isDeleting = false;
     private boolean isImporting = false;
+    private static final String[] IMPORT_SPINNER = {"\u28BF", "\u28FB", "\u28FD", "\u28FE", "\u28F7", "\u28EF", "\u28DF", "\u287F"};
+    private android.os.Handler importSpinnerHandler;
+    private int importSpinnerFrame = 0;
     private PRootEngine prootEngine;
 
     // Background Handlers
@@ -281,6 +289,14 @@ public class DeployFragment extends Fragment {
         btnAdvancedBackup = view.findViewById(R.id.btn_advanced_backup);
         btnAdvancedRestore = view.findViewById(R.id.btn_advanced_restore);
         btnAdvancedForceStop = view.findViewById(R.id.btn_advanced_force_stop);
+        restoreLogPanel = view.findViewById(R.id.restore_log_panel);
+        restoreLogText = view.findViewById(R.id.restore_log_text);
+        restoreLogResult = view.findViewById(R.id.restore_log_result);
+        restoreLogScroll = view.findViewById(R.id.restore_log_scroll);
+        View restoreLogClose = view.findViewById(R.id.restore_log_close);
+        if (restoreLogClose != null) {
+            restoreLogClose.setOnClickListener(vv -> { if (restoreLogPanel != null) restoreLogPanel.setVisibility(View.GONE); });
+        }
         txtSelectBackupTitle = view.findViewById(R.id.txt_select_backup_title);
         containerBackupList = view.findViewById(R.id.container_backup_list);
         txtBackupStatus = view.findViewById(R.id.txt_backup_status);
@@ -1044,6 +1060,7 @@ public class DeployFragment extends Fragment {
                 mainAct.invalidateModuleStateTrust();
                 isDownloadingRootfs = true;
                 btnFastInstall.setAlpha(0.8f);
+                btnFastInstall.startProgress();
                 btnFastInstall.setTextSize(12f);
 
                 if (aria2Manager == null) aria2Manager = new Aria2Manager();
@@ -1183,6 +1200,7 @@ public class DeployFragment extends Fragment {
 
                         mainAct.invalidateModuleStateTrust();
                         btnFastDelete.setEnabled(false);
+                        btnFastDelete.startProgress();
                         Snackbar.make(getView(), R.string.install_status_deleting, Snackbar.LENGTH_SHORT).show();
                         new Thread(() -> {
                             enableSystemProtection();
@@ -1195,7 +1213,7 @@ public class DeployFragment extends Fragment {
                                 mainAct.runOnUiThread(() -> Snackbar.make(getView(), getString(R.string.install_error_delete, e.getMessage()), Snackbar.LENGTH_LONG).show());
                             } finally {
                                 isDeleting = false;
-                                mainAct.runOnUiThread(this::updateDynamicButtons);
+                                mainAct.runOnUiThread(() -> { btnFastDelete.stopProgress(); updateDynamicButtons(); });
                                 disableSystemProtection();
                             }
                         }).start();
@@ -1590,6 +1608,7 @@ public class DeployFragment extends Fragment {
         isDownloadingRootfs = false;
         if (isAdded() && getActivity() != null) {
             getActivity().runOnUiThread(() -> {
+                btnFastInstall.stopProgress();
                 btnFastInstall.setText(R.string.install_btn_reinstall);
                 btnFastInstall.setAlpha(1.0f);
                 updateDynamicButtons();
@@ -1605,6 +1624,7 @@ public class DeployFragment extends Fragment {
         isDownloadingRootfs = false;
         if (isAdded() && getActivity() != null) {
             getActivity().runOnUiThread(() -> {
+                btnFastInstall.stopProgress();
                 btnFastInstall.setText(R.string.install_btn_install);
                 btnFastInstall.setAlpha(1.0f);
                 updateDynamicButtons();
@@ -1838,7 +1858,7 @@ public class DeployFragment extends Fragment {
                         .setMessage(getString(R.string.install_msg_backup_in_progress_body))
                         .setPositiveButton(getString(R.string.install_btn_force_stop_process), (dialog, which) -> {
                             isBackupInProgress = false;
-                            btnAdvancedBackup.setText(getString(R.string.install_btn_backup));
+                            btnAdvancedBackup.setText(getString(R.string.install_btn_backup)); btnAdvancedBackup.stopProgress();
                             Snackbar.make(getView(), getString(R.string.install_msg_backup_aborted), Snackbar.LENGTH_SHORT).show();
                         })
                         .setNegativeButton(getString(R.string.install_btn_let_finish), null)
@@ -1849,6 +1869,7 @@ public class DeployFragment extends Fragment {
 
             isBackupInProgress = true;
             btnAdvancedBackup.setText(getString(R.string.install_msg_compressing));
+            btnAdvancedBackup.startProgress();
             Snackbar.make(v, getString(R.string.install_msg_creating_backup), Snackbar.LENGTH_LONG).show();
 
             new Thread(() -> {
@@ -1917,14 +1938,14 @@ public class DeployFragment extends Fragment {
                             prefs.edit().putInt("backup_daily_id", currentId - 1).apply();
                         }
                         isBackupInProgress = false;
-                        btnAdvancedBackup.setText(getString(R.string.install_btn_backup));
+                        btnAdvancedBackup.setText(getString(R.string.install_btn_backup)); btnAdvancedBackup.stopProgress();
                         updateDynamicButtons();
                         disableSystemProtection();
                     });
                 } catch (Exception e) {
                     mainAct.runOnUiThread(() -> {
                         isBackupInProgress = false;
-                        btnAdvancedBackup.setText(getString(R.string.install_btn_backup));
+                        btnAdvancedBackup.setText(getString(R.string.install_btn_backup)); btnAdvancedBackup.stopProgress();
                         Snackbar.make(getView(), getString(R.string.install_msg_backup_error, e.getMessage()), Snackbar.LENGTH_LONG).show();
                         updateDynamicButtons();
                         disableSystemProtection();
@@ -2131,6 +2152,12 @@ public class DeployFragment extends Fragment {
 
                 btnAdvancedRestore.setEnabled(false);
                 btnAdvancedRestore.setText(getString(R.string.install_status_restoring));
+                btnAdvancedRestore.startProgress();
+                if (restoreLogPanel != null) {
+                    restoreLogPanel.setVisibility(View.VISIBLE);
+                    if (restoreLogText != null) restoreLogText.setText("");
+                    if (restoreLogResult != null) restoreLogResult.setText("");
+                }
                 File iiabRootDir = new File(requireContext().getFilesDir(), "rootfs");
                 TarExtractor tarExtractor = new TarExtractor();
 
@@ -2144,6 +2171,8 @@ public class DeployFragment extends Fragment {
                             btnAdvancedRestore.setEnabled(true);
                             btnAdvancedRestore.setText(getString(R.string.install_btn_restore));
                             Snackbar.make(getView(), R.string.install_success_restore, Snackbar.LENGTH_LONG).show();
+                            if (restoreLogResult != null) { restoreLogResult.setText("\u2713"); restoreLogResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_success)); }
+                            btnAdvancedRestore.stopProgress();
                             updateDynamicButtons();
                         });
                     }
@@ -2156,19 +2185,67 @@ public class DeployFragment extends Fragment {
                             btnAdvancedRestore.setEnabled(true);
                             btnAdvancedRestore.setText(getString(R.string.install_btn_restore));
                             Snackbar.make(getView(), getString(R.string.install_msg_restore_failed) + " " + error, Snackbar.LENGTH_LONG).show();
+                            if (restoreLogResult != null) { restoreLogResult.setText("\u2717"); restoreLogResult.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning)); }
+                            btnAdvancedRestore.stopProgress();
                             updateDynamicButtons();
                         });
+                    }
+
+                    @Override
+                    public void onProgress(String line) {
+                        if (restoreLogText == null) return;
+                        restoreLogText.append(line + "\n");
+                        if (restoreLogScroll != null) {
+                            restoreLogScroll.post(() -> restoreLogScroll.fullScroll(View.FOCUS_DOWN));
+                        }
                     }
                 });
             });
         }
     }
 
+    private void startImportSpinner() {
+        stopImportSpinner();
+        importSpinnerFrame = 0;
+        importSpinnerHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+        final Runnable r = new Runnable() {
+            @Override public void run() {
+                if (btnImportBackup != null) {
+                    String f = IMPORT_SPINNER[importSpinnerFrame++ % IMPORT_SPINNER.length];
+                    btnImportBackup.setText(getString(R.string.install_msg_importing) + "  " + f);
+                }
+                if (importSpinnerHandler != null) importSpinnerHandler.postDelayed(this, 90);
+            }
+        };
+        importSpinnerHandler.post(r);
+    }
+
+    private void stopImportSpinner() {
+        if (importSpinnerHandler != null) {
+            importSpinnerHandler.removeCallbacksAndMessages(null);
+            importSpinnerHandler = null;
+        }
+    }
+
+    /** Best-effort original filename from a SAF content:// URI (DISPLAY_NAME), or null. */
+    private String queryDisplayName(Uri uri) {
+        try (android.database.Cursor c = requireContext().getContentResolver()
+                .query(uri, new String[]{android.provider.OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            if (c != null && c.moveToFirst()) {
+                int idx = c.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME);
+                if (idx >= 0) return c.getString(idx);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "queryDisplayName failed: " + e.getMessage());
+        }
+        return null;
+    }
+
     private void importBackupSafely(Uri sourceUri) {
         isImporting = true;
         updateDynamicButtons();
         btnImportBackup.setEnabled(false);
-        btnImportBackup.setText(getString(R.string.install_msg_importing));
+        startImportSpinner();
         Snackbar.make(getView(), getString(R.string.install_msg_importing), Snackbar.LENGTH_LONG).show();
 
         new Thread(() -> {
@@ -2177,7 +2254,14 @@ public class DeployFragment extends Fragment {
                 File backupsDir = new File(requireContext().getFilesDir(), "rootfs/backups");
                 if (!backupsDir.exists()) backupsDir.mkdirs();
 
-                String fileName = "imported_backup_" + System.currentTimeMillis() + ".tar.gz";
+                // Keep the imported file's EXACT name; disambiguate with -1/-2/... on collision.
+                String desiredName = queryDisplayName(sourceUri);
+                java.util.Set<String> existingNames = new java.util.HashSet<>();
+                File[] existingFiles = backupsDir.listFiles();
+                if (existingFiles != null) {
+                    for (File f : existingFiles) existingNames.add(f.getName());
+                }
+                String fileName = org.iiab.controller.backup.domain.BackupNameResolver.resolve(desiredName, existingNames);
                 File destFile = new File(backupsDir, fileName);
 
                 InputStream is = requireContext().getContentResolver().openInputStream(sourceUri);
@@ -2194,6 +2278,7 @@ public class DeployFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         isImporting = false;
+                        stopImportSpinner();
                         btnImportBackup.setEnabled(true);
                         btnImportBackup.setText(getString(R.string.install_btn_import_backup));
                         selectedBackupFile = fileName;
@@ -2205,6 +2290,7 @@ public class DeployFragment extends Fragment {
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
                         isImporting = false;
+                        stopImportSpinner();
                         updateDynamicButtons();
                         btnImportBackup.setEnabled(true);
                         btnImportBackup.setText(getString(R.string.install_btn_import_backup));

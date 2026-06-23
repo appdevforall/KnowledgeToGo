@@ -34,6 +34,9 @@ public class TarExtractor {
         void onComplete(String destDir);
 
         void onError(String error);
+
+        /** A streamed line of extraction output (verbose tar). Default no-op. */
+        default void onProgress(String line) { }
     }
 
     public void startExtraction(Context context, String archivePath, String destDir, ExtractionListener listener) {
@@ -66,7 +69,7 @@ public class TarExtractor {
                 // 2. BUILD THE COMMAND
                 List<String> command = new ArrayList<>();
                 command.add(tarBinary);
-                command.add("-xf");
+                command.add("-xvf");
 
                 if (isGzip) {
                     // Tell tar to read the uncompressed raw bytes from standard input (stdin)
@@ -84,11 +87,19 @@ public class TarExtractor {
                 tarProcess = pb.start();
 
                 // 3. READ TAR OUTPUT (Prevents buffer blocking and logs errors)
+                final Handler uiHandler = new Handler(Looper.getMainLooper());
                 new Thread(() -> {
+                    long[] lastEmit = {0L};
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(tarProcess.getInputStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             Log.d(TAG, "Tar Output: " + line);
+                            long now = System.currentTimeMillis();
+                            if (now - lastEmit[0] >= 50) {
+                                lastEmit[0] = now;
+                                final String l = line;
+                                uiHandler.post(() -> listener.onProgress(l));
+                            }
                         }
                     } catch (Exception ignored) {
                     }
