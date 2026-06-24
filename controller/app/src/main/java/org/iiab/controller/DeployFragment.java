@@ -1909,9 +1909,44 @@ public class DeployFragment extends Fragment {
                     String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
                     String gzipBin = staticGzip.exists() ? staticGzip.getAbsolutePath() : "gzip";
 
+                    // Stamp an identity manifest into the backup so a re-import is
+                    // recognized (kind/arch) AND explicitly declares it carries NO
+                    // integrity checksum (origin=device-backup) — we do NOT turn the
+                    // phone into a builder. It is staged in a temp tree and packed
+                    // FIRST (a second `-C`) so RootfsArchiveValidator reads it from
+                    // the first tar header without decompressing the whole archive.
+                    // See docs/ROOTFS_MANIFEST.md.
+                    String manifestArg = null;
+                    File mfStageRoot = new File(requireContext().getCacheDir(), "mfstage");
+                    try {
+                        if (mfStageRoot.exists()) {
+                            ProcessRunner.run(new String[]{"rm", "-rf", mfStageRoot.getAbsolutePath()});
+                        }
+                        File iiabStage = new File(mfStageRoot, "installed-rootfs/iiab");
+                        if (iiabStage.mkdirs()) {
+                            String appAbi = org.iiab.controller.deploy.data.RootfsManifest.appAbiId();
+                            String debArch = appAbi.contains("64") ? "arm64" : "armhf";
+                            String built = String.format(java.util.Locale.US, "%04d.%03d", year, dayOfYear);
+                            String identityJson = "{\"schema\":1,\"kind\":\"iiab-rootfs\",\"arch\":\""
+                                    + appAbi + "\",\"deb_arch\":\"" + debArch + "\",\"built\":\""
+                                    + built + "\",\"builder\":\"knowledgetogo-app\",\"origin\":\"device-backup\"}";
+                            java.io.FileOutputStream mfo =
+                                    new java.io.FileOutputStream(new File(iiabStage, ".iiab-rootfs.json"));
+                            mfo.write(identityJson.getBytes("UTF-8"));
+                            mfo.close();
+                            manifestArg = "-C '" + mfStageRoot.getAbsolutePath()
+                                    + "' 'installed-rootfs/iiab/.iiab-rootfs.json' ";
+                        }
+                    } catch (Exception mfe) {
+                        Log.w(TAG, "Could not stage identity manifest for backup: " + mfe.getMessage());
+                        manifestArg = null;
+                    }
+
                     // D11: single-quote the interpolated paths so the backup pipe is robust
                     // even if a path ever contains spaces/metacharacters (app-internal today).
-                    String cmd = "'" + tarBin + "' -cf - -C '" + iiabRootDir.getAbsolutePath()
+                    String cmd = "'" + tarBin + "' -cf - "
+                            + (manifestArg != null ? manifestArg : "")
+                            + "-C '" + iiabRootDir.getAbsolutePath()
                             + "' installed-rootfs | '" + gzipBin + "' > '" + backupFile.getAbsolutePath() + "'";
                     // D12: ProcessRunner drains stderr so a large backup with tar warnings
                     // cannot deadlock on a full pipe buffer.
@@ -2284,11 +2319,18 @@ public class DeployFragment extends Fragment {
                         vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK;
                 boolean okNoManifest =
                         vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK_NO_MANIFEST;
-                if (!okValidated && !okNoManifest) {
+                boolean okNoChecksum =
+                        vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK_NO_CHECKSUM;
+                if (!okValidated && !okNoManifest && !okNoChecksum) {
                     if (destFile.exists()) destFile.delete();
-                    final int errMsg = (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH)
-                            ? R.string.install_error_wrong_arch
-                            : R.string.install_error_not_rootfs;
+                    final int errMsg;
+                    if (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH) {
+                        errMsg = R.string.install_error_wrong_arch;
+                    } else if (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.CORRUPT) {
+                        errMsg = R.string.install_error_corrupt;
+                    } else {
+                        errMsg = R.string.install_error_not_rootfs;
+                    }
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
                             isImporting = false;
@@ -2305,6 +2347,11 @@ public class DeployFragment extends Fragment {
                 if (okNoManifest && getActivity() != null) {
                     getActivity().runOnUiThread(() ->
                             Snackbar.make(getView(), R.string.install_warn_manifest_missing, Snackbar.LENGTH_LONG).show());
+                }
+                // Transparency: an app-made (device) backup carries no integrity checksum.
+                if (okNoChecksum && getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Snackbar.make(getView(), R.string.install_warn_no_checksum, Snackbar.LENGTH_LONG).show());
                 }
 
                 if (getActivity() != null) {

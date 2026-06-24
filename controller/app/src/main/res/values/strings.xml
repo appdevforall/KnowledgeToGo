@@ -532,4 +532,6 @@
     <string name="install_error_not_rootfs">This file is not a valid IIAB rootfs backup, so it was not used.</string>
     <string name="install_error_wrong_arch">This backup is for a different CPU architecture (32-bit vs 64-bit) and cannot be used by this app.</string>
     <string name="install_warn_manifest_missing">Imported, but this backup has no IIAB manifest, so it could not be fully verified.</string>
+    <string name="install_error_corrupt">This backup failed its integrity check (it may be corrupted or altered), so it was not used.</string>
+    <string name="install_warn_no_checksum">Imported. This backup has no integrity checksum because it was created on a mobile device.</string>
 </resources>

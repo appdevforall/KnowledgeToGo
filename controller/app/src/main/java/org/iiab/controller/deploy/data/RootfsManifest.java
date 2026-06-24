@@ -41,15 +41,18 @@ public final class RootfsManifest {
         public final boolean present;
         public final String kind;
         public final String arch;
+        /** Producer hint; "device-backup" means an app-created backup with no checksum by design. */
+        public final String origin;
 
-        private Identity(boolean present, String kind, String arch) {
+        private Identity(boolean present, String kind, String arch, String origin) {
             this.present = present;
             this.kind = kind;
             this.arch = arch;
+            this.origin = origin;
         }
 
         static Identity absent() {
-            return new Identity(false, null, null);
+            return new Identity(false, null, null, null);
         }
     }
 
@@ -106,12 +109,13 @@ public final class RootfsManifest {
             JSONObject o = new JSONObject(jsonText);
             String kind = o.optString("kind", null);
             String arch = o.optString("arch", null);
-            return new Identity(true, kind, arch);
+            String origin = o.optString("origin", null);
+            return new Identity(true, kind, arch, origin);
         } catch (Exception e) {
             Log.w(TAG, "Identity manifest present but unparseable: " + e.getMessage());
             // Present-but-broken: treat as present with no usable fields so the
             // caller's kind check fails closed.
-            return new Identity(true, null, null);
+            return new Identity(true, null, null, null);
         }
     }
 
