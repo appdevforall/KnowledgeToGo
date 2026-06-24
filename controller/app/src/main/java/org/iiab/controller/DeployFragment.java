@@ -2334,6 +2334,7 @@ public class DeployFragment extends Fragment {
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
                             isImporting = false;
+                            stopImportSpinner(); // stop the braille spinner; rejection ends the import
                             updateDynamicButtons();
                             btnImportBackup.setEnabled(true);
                             btnImportBackup.setText(getString(R.string.install_btn_import_backup));
