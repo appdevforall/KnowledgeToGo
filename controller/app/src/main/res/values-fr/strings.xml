@@ -182,8 +182,8 @@
     <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">Enregistré</string>
     <string name="settings_saved">Paramètres enregistrés</string>
-    <string name="version_footer_fallback">IIAB-oA · 2026 · Controller v0.3.xbeta</string>
-    <string name="version_footer_format">IIAB-oA · 2026 · Controller %1$s</string>
+    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
 
     <string name="update_dialog_title">Nouvelle version disponible : %1$s</string>
     <string name="update_dialog_message">Voulez-vous mettre à jour l\'application ?\n\nNouveautés :\n%1$s</string>

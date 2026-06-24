@@ -191,8 +191,8 @@
     <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">Saved</string>
     <string name="settings_saved">Settings Saved</string>
-    <string name="version_footer_fallback">IIAB-oA · 2026 · Controller v0.1.xbeta</string>
-    <string name="version_footer_format">IIAB-oA · 2026 · Controller %1$s</string>
+    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
     <string name="setup_manage_all_permissions">Manage All Permissions</string>
 
     <string name="update_dialog_title">New version available: %1$s</string>
