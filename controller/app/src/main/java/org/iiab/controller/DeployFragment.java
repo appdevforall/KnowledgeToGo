@@ -2284,11 +2284,18 @@ public class DeployFragment extends Fragment {
                         vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK;
                 boolean okNoManifest =
                         vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK_NO_MANIFEST;
-                if (!okValidated && !okNoManifest) {
+                boolean okNoChecksum =
+                        vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK_NO_CHECKSUM;
+                if (!okValidated && !okNoManifest && !okNoChecksum) {
                     if (destFile.exists()) destFile.delete();
-                    final int errMsg = (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH)
-                            ? R.string.install_error_wrong_arch
-                            : R.string.install_error_not_rootfs;
+                    final int errMsg;
+                    if (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH) {
+                        errMsg = R.string.install_error_wrong_arch;
+                    } else if (vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.CORRUPT) {
+                        errMsg = R.string.install_error_corrupt;
+                    } else {
+                        errMsg = R.string.install_error_not_rootfs;
+                    }
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
                             isImporting = false;
@@ -2305,6 +2312,11 @@ public class DeployFragment extends Fragment {
                 if (okNoManifest && getActivity() != null) {
                     getActivity().runOnUiThread(() ->
                             Snackbar.make(getView(), R.string.install_warn_manifest_missing, Snackbar.LENGTH_LONG).show());
+                }
+                // Transparency: an app-made (device) backup carries no integrity checksum.
+                if (okNoChecksum && getActivity() != null) {
+                    getActivity().runOnUiThread(() ->
+                            Snackbar.make(getView(), R.string.install_warn_no_checksum, Snackbar.LENGTH_LONG).show());
                 }
 
                 if (getActivity() != null) {

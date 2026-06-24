@@ -47,7 +47,7 @@ public final class RootfsArchiveValidator {
 
     private static final String TAG = "IIAB-RootfsValidator";
 
-    public enum Result { OK, OK_NO_MANIFEST, NOT_A_ROOTFS, WRONG_ARCH, UNREADABLE }
+    public enum Result { OK, OK_NO_MANIFEST, OK_NO_CHECKSUM, NOT_A_ROOTFS, WRONG_ARCH, CORRUPT, UNREADABLE }
 
     private RootfsArchiveValidator() {
         // Static utility; not instantiable.
@@ -62,7 +62,7 @@ public final class RootfsArchiveValidator {
             if (entries.isEmpty()) {
                 return Result.UNREADABLE;
             }
-            return validateWithEntries(context, archivePath, isGzip, tarBinary, entries);
+            return validateWithEntries(context, archivePath, isGzip, tarBinary, entries, true);
         } catch (Exception e) {
             Log.e(TAG, "Validation error", e);
             return Result.UNREADABLE;
@@ -75,6 +75,19 @@ public final class RootfsArchiveValidator {
      */
     public static Result validateWithEntries(Context context, String archivePath,
                                              boolean isGzip, String tarBinary, List<String> entries) {
+        // Restore re-uses the listing for the D11 guard; integrity was already
+        // checked at import time, so don't pay a second full pass here.
+        return validateWithEntries(context, archivePath, isGzip, tarBinary, entries, false);
+    }
+
+    /**
+     * @param checkIntegrity when true (the import gate) and the rootfs is not an
+     *        app-made backup, recompute the embedded iiab-tree-sha256-v1 treehash
+     *        and fail closed ({@link Result#CORRUPT}) on a mismatch.
+     */
+    public static Result validateWithEntries(Context context, String archivePath,
+                                             boolean isGzip, String tarBinary,
+                                             List<String> entries, boolean checkIntegrity) {
         try {
             // Authoritative path: the build/app embeds an identity manifest
             // (installed-rootfs/iiab/.iiab-rootfs.json, packed first). See
@@ -88,7 +101,28 @@ public final class RootfsArchiveValidator {
                         && !id.arch.equals(RootfsManifest.appAbiId())) {
                     return Result.WRONG_ARCH;
                 }
-                return Result.OK; // manifest-validated; no need to probe ELF
+                // Identity is authoritative for kind+arch. Now decide integrity.
+                if ("device-backup".equals(id.origin)) {
+                    // App-made backup: no checksum by design (we don't turn the
+                    // phone into a builder). Cheap signal from the first header.
+                    return Result.OK_NO_CHECKSUM;
+                }
+                if (!checkIntegrity) {
+                    return Result.OK; // restore: already verified at import
+                }
+                RootfsIntegrity.Result ir = RootfsIntegrity.verify(archivePath);
+                switch (ir.status) {
+                    case MATCH:
+                    case ABSENT:           // builder rootfs without integrity yet (soft phase)
+                        return Result.OK;
+                    case DECLARED_NONE:
+                        return Result.OK_NO_CHECKSUM;
+                    case MISMATCH:
+                    case ERROR:
+                    default:
+                        Log.w(TAG, "Integrity check failed (" + ir.status + ") for " + archivePath);
+                        return Result.CORRUPT;
+                }
             }
 
             // Soft fallback (no manifest): legacy ELF/structure heuristic. We
