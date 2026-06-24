@@ -465,7 +465,19 @@ public final class BackupController {
                 btnAdvancedRestore.startProgress();
                 if (restoreLogPanel != null) {
                     restoreLogPanel.setVisibility(View.VISIBLE);
-                    if (restoreLogText != null) restoreLogText.setText("");
+                    if (restoreLogText != null) {
+                        // Transparency at restore (the meaningful moment): note when the
+                        // backup carries no integrity checksum / no manifest.
+                        org.iiab.controller.deploy.data.RootfsManifest.Identity rid =
+                                org.iiab.controller.deploy.data.RootfsManifest.read(backupFile.getAbsolutePath());
+                        if (!rid.present) {
+                            restoreLogText.setText(fragment.getString(R.string.install_warn_manifest_missing) + "\n\n");
+                        } else if ("device-backup".equals(rid.origin)) {
+                            restoreLogText.setText(fragment.getString(R.string.install_warn_no_checksum) + "\n\n");
+                        } else {
+                            restoreLogText.setText("");
+                        }
+                    }
                     if (restoreLogResult != null) restoreLogResult.setText("");
                 }
                 File iiabRootDir = new File(fragment.requireContext().getFilesDir(), "rootfs");
@@ -629,16 +641,6 @@ public final class BackupController {
                 }
                 // Soft phase: no identity manifest -> import is allowed, but warn the
                 // user (a future version will validate silently). See docs/ROOTFS_MANIFEST.md.
-                if (okNoManifest && fragment.getActivity() != null) {
-                    fragment.getActivity().runOnUiThread(() ->
-                            showImportSnackbar(fragment.getString(R.string.install_warn_manifest_missing)));
-                }
-                // Transparency: an app-made (device) backup carries no integrity checksum.
-                if (okNoChecksum && fragment.getActivity() != null) {
-                    fragment.getActivity().runOnUiThread(() ->
-                            showImportSnackbar(fragment.getString(R.string.install_warn_no_checksum)));
-                }
-
                 if (fragment.getActivity() != null) {
                     fragment.getActivity().runOnUiThread(() -> {
                         host.setImporting(false);
@@ -647,7 +649,12 @@ public final class BackupController {
                         btnImportBackup.setText(fragment.getString(R.string.install_btn_import_backup));
                         selectedBackupFile = fileName;
                         host.updateDynamicButtons();
-                        showImportSnackbar(fragment.getString(R.string.install_msg_import_success));
+                        // One snackbar only (Snackbar replaces, never queues): fold the
+                        // no-checksum / no-manifest transparency into the final message.
+                        showImportSnackbar(fragment.getString(
+                                okNoChecksum ? R.string.install_warn_no_checksum
+                                        : okNoManifest ? R.string.install_warn_manifest_missing
+                                        : R.string.install_msg_import_success));
                     });
                 }
             } catch (Exception e) {
