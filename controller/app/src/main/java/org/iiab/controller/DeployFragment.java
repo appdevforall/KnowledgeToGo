@@ -1909,9 +1909,44 @@ public class DeployFragment extends Fragment {
                     String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
                     String gzipBin = staticGzip.exists() ? staticGzip.getAbsolutePath() : "gzip";
 
+                    // Stamp an identity manifest into the backup so a re-import is
+                    // recognized (kind/arch) AND explicitly declares it carries NO
+                    // integrity checksum (origin=device-backup) — we do NOT turn the
+                    // phone into a builder. It is staged in a temp tree and packed
+                    // FIRST (a second `-C`) so RootfsArchiveValidator reads it from
+                    // the first tar header without decompressing the whole archive.
+                    // See docs/ROOTFS_MANIFEST.md.
+                    String manifestArg = null;
+                    File mfStageRoot = new File(requireContext().getCacheDir(), "mfstage");
+                    try {
+                        if (mfStageRoot.exists()) {
+                            ProcessRunner.run(new String[]{"rm", "-rf", mfStageRoot.getAbsolutePath()});
+                        }
+                        File iiabStage = new File(mfStageRoot, "installed-rootfs/iiab");
+                        if (iiabStage.mkdirs()) {
+                            String appAbi = org.iiab.controller.deploy.data.RootfsManifest.appAbiId();
+                            String debArch = appAbi.contains("64") ? "arm64" : "armhf";
+                            String built = String.format(java.util.Locale.US, "%04d.%03d", year, dayOfYear);
+                            String identityJson = "{\"schema\":1,\"kind\":\"iiab-rootfs\",\"arch\":\""
+                                    + appAbi + "\",\"deb_arch\":\"" + debArch + "\",\"built\":\""
+                                    + built + "\",\"builder\":\"knowledgetogo-app\",\"origin\":\"device-backup\"}";
+                            java.io.FileOutputStream mfo =
+                                    new java.io.FileOutputStream(new File(iiabStage, ".iiab-rootfs.json"));
+                            mfo.write(identityJson.getBytes("UTF-8"));
+                            mfo.close();
+                            manifestArg = "-C '" + mfStageRoot.getAbsolutePath()
+                                    + "' 'installed-rootfs/iiab/.iiab-rootfs.json' ";
+                        }
+                    } catch (Exception mfe) {
+                        Log.w(TAG, "Could not stage identity manifest for backup: " + mfe.getMessage());
+                        manifestArg = null;
+                    }
+
                     // D11: single-quote the interpolated paths so the backup pipe is robust
                     // even if a path ever contains spaces/metacharacters (app-internal today).
-                    String cmd = "'" + tarBin + "' -cf - -C '" + iiabRootDir.getAbsolutePath()
+                    String cmd = "'" + tarBin + "' -cf - "
+                            + (manifestArg != null ? manifestArg : "")
+                            + "-C '" + iiabRootDir.getAbsolutePath()
                             + "' installed-rootfs | '" + gzipBin + "' > '" + backupFile.getAbsolutePath() + "'";
                     // D12: ProcessRunner drains stderr so a large backup with tar warnings
                     // cannot deadlock on a full pipe buffer.
