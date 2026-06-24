@@ -6,7 +6,7 @@
 
     <!-- WebView (Web page content handles its own background,
     but you can force a dark theme in Java using WebSettings.setForceDark) -->
-    <WebView
+    <org.iiab.controller.portal.presentation.GestureWebView
         android:id="@+id/myWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -15,9 +15,7 @@ import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.webkit.ProxyConfig;
-import androidx.webkit.ProxyController;
-import androidx.webkit.WebViewFeature;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.concurrent.Executor;
 
@@ -29,10 +27,33 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
+import org.iiab.controller.portal.data.WebViewProxyConfigurator;
+import org.iiab.controller.portal.domain.NavigationPolicy;
+import org.iiab.controller.portal.presentation.GestureWebView;
+import org.iiab.controller.portal.presentation.PortalViewModel;
+
 public class PortalActivity extends AppCompatActivity {
     private static final String TAG = "IIAB-Portal";
-    private WebView webView;
-    private boolean isPageLoading = false;
+
+    /**
+     * Injected after each page load. (1) logs touch-point counts the web content
+     * receives (captured via onConsoleMessage -> logcat) so a lost multi-finger
+     * gesture can be diagnosed; (2) best-effort enables MapLibre two-finger pitch
+     * if a map instance is exposed on the page.
+     */
+    private static final String TOUCH_PROBE_JS =
+            "(function(){if(window.__iiabTouchProbe)return;window.__iiabTouchProbe=true;" +
+            "['touchstart','touchmove'].forEach(function(t){document.addEventListener(t,function(e){" +
+            "try{console.log('IIAB-TOUCH '+t+' touches='+(e.touches?e.touches.length:0));}catch(_){}}," +
+            "{passive:true,capture:true});});" +
+            "try{var m=window.map||window.__map||(window.maplibregl&&window.maplibregl.__map);" +
+            "if(m&&m.touchPitch&&m.touchPitch.enable){m.touchPitch.enable();" +
+            "if(m.touchZoomRotate&&m.touchZoomRotate.enable){m.touchZoomRotate.enable();}" +
+            "console.log('IIAB-TOUCH pitch-enabled');}else{console.log('IIAB-TOUCH no-map-instance');}}" +
+            "catch(err){console.log('IIAB-TOUCH pitch-error '+err);}})();";
+
+    private GestureWebView webView;
+    private PortalViewModel vm;
     private android.webkit.ValueCallback<android.net.Uri[]> filePathCallback;
     private final static int FILECHOOSER_RESULTCODE = 100;
 
@@ -41,8 +62,11 @@ public class PortalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portal);
 
+        vm = new ViewModelProvider(this).get(PortalViewModel.class);
+
         // 1. Basic WebView configuration
         webView = findViewById(R.id.myWebView);
+        webView.setGestureLogging(BuildConfig.DEBUG);
 
         LinearLayout bottomNav = findViewById(R.id.bottomNav);
         Button btnHandle = findViewById(R.id.btnHandle); // The new handle
@@ -55,39 +79,32 @@ public class PortalActivity extends AppCompatActivity {
         Button btnForward = findViewById(R.id.btnForward);
 
         // --- PREPARE HIDDEN BAR ---
-        // Wait for Android to draw the screen to determine bar height
-        // and hide it exactly below the bottom edge.
         bottomNav.post(() -> {
             bottomNav.setTranslationY(bottomNav.getHeight()); // Move outside the screen
-            bottomNav.setVisibility(View.VISIBLE); // Remove invisibility
+            bottomNav.setVisibility(View.VISIBLE);
         });
 
         // --- AUTO-HIDE TIMER ---
         Handler hideHandler = new Handler(Looper.getMainLooper());
 
-        // This is the hiding action packaged for later use
         Runnable hideRunnable = () -> {
             bottomNav.animate().translationY(bottomNav.getHeight()).setDuration(250);
             btnHandle.setVisibility(View.VISIBLE);
             btnHandle.animate().alpha(1f).setDuration(150);
         };
 
-        // --- Restart timer ---
         Runnable resetTimer = () -> {
             hideHandler.removeCallbacks(hideRunnable);
-            hideHandler.postDelayed(hideRunnable, 5000); // Restarts new 5 sec
+            hideHandler.postDelayed(hideRunnable, 5000);
         };
 
         // --- HANDLE LOGIC (Show Bar) ---
         btnHandle.setOnClickListener(v -> {
-            // 1. Animate entry
             btnHandle.animate().alpha(0f).setDuration(150).withEndAction(() -> btnHandle.setVisibility(View.GONE));
             bottomNav.animate().translationY(0).setDuration(250);
-
-            // 2. Starts countdown
             resetTimer.run();
         });
-        // Button actions
+
         btnBack.setOnClickListener(v -> {
             if (webView.canGoBack()) webView.goBack();
             resetTimer.run();
@@ -101,15 +118,8 @@ public class PortalActivity extends AppCompatActivity {
         Preferences prefs = new Preferences(this);
         boolean isVpnActive = prefs.getEnable();
 
-        String rawUrl = getIntent().getStringExtra("TARGET_URL");
-
-        // If for some strange reason the URL arrives empty, we use the security fallback
-        if (rawUrl == null || rawUrl.isEmpty()) {
-            rawUrl = "http://localhost:8085/home";
-        }
-
-        // We are giving the URL secure global reach for all lambdas from now on
-        final String finalTargetUrl = rawUrl;
+        // Resolve the target URL once (domain), surviving rotation via the ViewModel.
+        final String finalTargetUrl = vm.targetUrl(getIntent().getStringExtra("TARGET_URL"));
 
         btnHome.setOnClickListener(v -> {
             webView.loadUrl(finalTargetUrl);
@@ -118,63 +128,57 @@ public class PortalActivity extends AppCompatActivity {
 
         // Dual logic: Forced reload or Stop
         btnReload.setOnClickListener(v -> {
-            if (isPageLoading) {
+            if (vm.isLoading()) {
                 webView.stopLoading();
             } else {
-                // Disable cache temporarily
                 webView.getSettings().setCacheMode(android.webkit.WebSettings.LOAD_NO_CACHE);
-                // Force download from scratch
                 webView.clearCache(true);
                 webView.reload();
             }
             resetTimer.run();
         });
 
-        // --- NEW: DETECT LOADING TO CHANGE BUTTON TO 'X' ---
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, android.webkit.WebResourceRequest request) {
                 String url = request.getUrl().toString();
                 String host = request.getUrl().getHost();
 
-                // Internal server link (Box)
-                if (host != null && (host.equals("box") || host.equals("127.0.0.1") || host.equals("localhost"))) {
-                    return false; // Remains in our app and travels through the proxy
+                // Internal server link stays in the WebView (and travels through the proxy).
+                if (NavigationPolicy.isInternalHost(host)) {
+                    return false;
                 }
 
-                // External link (Real Internet)
+                // External link: hand to the system browser / appropriate app.
                 try {
-                    // Tell Android to find the correct app to open this (Chrome, YouTube, etc.)
-                    Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
-                    startActivity(intent);
+                    startActivity(new Intent(Intent.ACTION_VIEW, request.getUrl()));
                 } catch (Exception e) {
                     Log.e(TAG, "No app installed to open: " + url);
                 }
-
-                return true; // return true means: "WebView, I'll handle it, you ignore this click"
+                return true;
             }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                isPageLoading = true;
+                vm.setLoading(true);
                 btnReload.setText("✕"); // Change to Stop
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                isPageLoading = false;
+                vm.setLoading(false);
                 btnReload.setText("↻"); // Back to Reload
-
-                // Restore cache for normal browsing speed
                 view.getSettings().setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);
+
+                // Touch diagnostics + best-effort MapLibre pitch enablement.
+                view.evaluateJavascript(TOUCH_PROBE_JS, null);
             }
 
             @Override
             public void onReceivedError(WebView view, android.webkit.WebResourceRequest request, android.webkit.WebResourceError error) {
                 super.onReceivedError(view, request, error);
-
                 if (request.isForMainFrame()) {
                     String customErrorHtml = "<html><body style='background-color:#1A1A1A;color:#FFFFFF;text-align:center;padding-top:50px;font-family:sans-serif;'>"
                             + "<h2>⚠️ Connection Failed</h2>"
@@ -182,7 +186,7 @@ public class PortalActivity extends AppCompatActivity {
                             + "<p style='color:#888;font-size:12px;'>Error: " + error.getDescription() + "</p>"
                             + "</body></html>";
                     view.loadData(customErrorHtml, "text/html", "UTF-8");
-                    isPageLoading = false;
+                    vm.setLoading(false);
                     btnReload.setText("↻");
                 }
             }
@@ -190,12 +194,12 @@ public class PortalActivity extends AppCompatActivity {
 
         // --- MANUALLY CLOSE BAR LOGIC ---
         btnHideNav.setOnClickListener(v -> {
-            hideHandler.removeCallbacks(hideRunnable); // Cancel the timer so it doesn't conflict
-            hideRunnable.run(); // Execute hiding action immediately
+            hideHandler.removeCallbacks(hideRunnable);
+            hideRunnable.run();
         });
 
-        // <-- EXIT ACTION -->
         btnExit.setOnClickListener(v -> finish());
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
         webView.setWebChromeClient(new android.webkit.WebChromeClient() {
@@ -215,48 +219,43 @@ public class PortalActivity extends AppCompatActivity {
                 }
                 return true;
             }
+
+            @Override
+            public boolean onConsoleMessage(android.webkit.ConsoleMessage consoleMessage) {
+                // Surfaces in-page diagnostics (incl. IIAB-TOUCH probes) to logcat.
+                Log.d(TAG, "WebConsole: " + consoleMessage.message());
+                return true;
+            }
         });
 
         // Port and Mirror logic
         int tempPort = prefs.getSocksPort();
         if (tempPort <= 0) tempPort = 1080;
-
-        // We restored the secure variable for the port
         final int finalProxyPort = tempPort;
 
-        // 4. Proxy block (ONLY IF VPN IS ACTIVE)
+        // Proxy block (ONLY IF VPN IS ACTIVE)
         if (isVpnActive) {
-            if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
-                ProxyConfig proxyConfig = new ProxyConfig.Builder()
-                        .addProxyRule("socks5://127.0.0.1:" + finalProxyPort)
-                        .build();
-
+            if (WebViewProxyConfigurator.isSupported()) {
                 Executor executor = ContextCompat.getMainExecutor(this);
-
-                ProxyController.getInstance().setProxyOverride(proxyConfig, executor, () -> {
+                WebViewProxyConfigurator.applySocks(finalProxyPort, executor, () -> {
                     Log.d(TAG, "Proxy configured on port: " + finalProxyPort);
-                    // Load HTML only when proxy is ready
-                    webView.loadUrl(finalTargetUrl);
+                    webView.loadUrl(finalTargetUrl); // load only when proxy is ready
                 });
             } else {
-                // Fallback for older devices
                 Log.w(TAG, "Proxy Override not supported");
                 webView.loadUrl(finalTargetUrl);
             }
         } else {
-            // VPN is OFF. Do NOT use proxy. Just load localhost directly.
+            // VPN is OFF. Load localhost directly.
             webView.loadUrl(finalTargetUrl);
         }
     }
 
-    // Cleanup (Important to not leave the proxy active)
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
-            ProxyController.getInstance().clearProxyOverride(Runnable::run, () -> {
-                Log.d(TAG, "WebView proxy released");
-            });
+        if (WebViewProxyConfigurator.isSupported()) {
+            WebViewProxyConfigurator.clear(() -> Log.d(TAG, "WebView proxy released"));
         }
     }
 
@@ -275,7 +274,6 @@ public class PortalActivity extends AppCompatActivity {
             if (filePathCallback == null) return;
 
             android.net.Uri[] results = null;
-
             if (resultCode == RESULT_OK && data != null) {
                 String dataString = data.getDataString();
                 if (dataString != null) {
@@ -288,7 +286,6 @@ public class PortalActivity extends AppCompatActivity {
                     }
                 }
             }
-
             filePathCallback.onReceiveValue(results);
             filePathCallback = null;
         } else {
