@@ -2276,6 +2276,15 @@ public class DeployFragment extends Fragment {
         return null;
     }
 
+    /** Show a Snackbar whose visible time scales with the message length (reading time). */
+    private void showImportSnackbar(CharSequence text) {
+        View v = getView();
+        if (v != null) {
+            Snackbar.make(v, text,
+                    org.iiab.controller.util.SnackbarDuration.millisForText(text.toString())).show();
+        }
+    }
+
     private void importBackupSafely(Uri sourceUri) {
         isImporting = true;
         updateDynamicButtons();
@@ -2334,10 +2343,11 @@ public class DeployFragment extends Fragment {
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() -> {
                             isImporting = false;
+                            stopImportSpinner(); // stop the braille spinner; rejection ends the import
                             updateDynamicButtons();
                             btnImportBackup.setEnabled(true);
                             btnImportBackup.setText(getString(R.string.install_btn_import_backup));
-                            Snackbar.make(getView(), errMsg, Snackbar.LENGTH_LONG).show();
+                            showImportSnackbar(getString(errMsg));
                         });
                     }
                     return;
@@ -2346,12 +2356,12 @@ public class DeployFragment extends Fragment {
                 // user (a future version will validate silently). See docs/ROOTFS_MANIFEST.md.
                 if (okNoManifest && getActivity() != null) {
                     getActivity().runOnUiThread(() ->
-                            Snackbar.make(getView(), R.string.install_warn_manifest_missing, Snackbar.LENGTH_LONG).show());
+                            showImportSnackbar(getString(R.string.install_warn_manifest_missing)));
                 }
                 // Transparency: an app-made (device) backup carries no integrity checksum.
                 if (okNoChecksum && getActivity() != null) {
                     getActivity().runOnUiThread(() ->
-                            Snackbar.make(getView(), R.string.install_warn_no_checksum, Snackbar.LENGTH_LONG).show());
+                            showImportSnackbar(getString(R.string.install_warn_no_checksum)));
                 }
 
                 if (getActivity() != null) {
@@ -2362,7 +2372,7 @@ public class DeployFragment extends Fragment {
                         btnImportBackup.setText(getString(R.string.install_btn_import_backup));
                         selectedBackupFile = fileName;
                         updateDynamicButtons();
-                        Snackbar.make(getView(), getString(R.string.install_msg_import_success), Snackbar.LENGTH_LONG).show();
+                        showImportSnackbar(getString(R.string.install_msg_import_success));
                     });
                 }
             } catch (Exception e) {
@@ -2373,7 +2383,7 @@ public class DeployFragment extends Fragment {
                         updateDynamicButtons();
                         btnImportBackup.setEnabled(true);
                         btnImportBackup.setText(getString(R.string.install_btn_import_backup));
-                        Snackbar.make(getView(), getString(R.string.install_msg_import_failed, e.getMessage()), Snackbar.LENGTH_LONG).show();
+                        showImportSnackbar(getString(R.string.install_msg_import_failed, e.getMessage()));
                     });
                 }
             } finally {
