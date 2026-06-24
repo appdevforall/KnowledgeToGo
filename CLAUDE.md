@@ -103,6 +103,23 @@ two layered migrations from colliding, follow these rules:
 - **No new shared mutable static state.** It couples features logically even when
   the files don't conflict; prefer state encapsulated in a `ViewModel`.
 
+## Branch, commit & PR naming (Jira-linked)
+
+Every branch, commit, and PR in AppDevForAll development is tied to its Jira issue
+(`ADFA-XXXX`) so the work shows up automatically in that issue's **Development** panel.
+Put the key in all three:
+
+- **Branch:** `<type>/ADFA-XXXX-<short-kebab-description>` — `<type>` is the change kind
+  (`feat`, `fix`, `chore`, `docs`, `style`, `refactor`).
+  e.g. `chore/ADFA-4428-footer-powered-by-iiab`
+- **Commit:** start the subject with the key, then the conventional-commit form —
+  `ADFA-XXXX <type>(<scope>): <description>`.
+  e.g. `ADFA-4428 chore(branding): footer adds "powered by IIAB"`
+- **PR title:** same as the commit subject (`ADFA-XXXX <type>(<scope>): <description>`).
+
+The key in the branch/commit/PR is what links the work back to the issue — keep it exact
+(uppercase project key, hyphen, number). One issue can own several branches/PRs.
+
 ---
 
 ## Design map (keep this updated as we advance)
