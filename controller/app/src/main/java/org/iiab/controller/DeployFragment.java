@@ -75,7 +75,11 @@ import java.util.Iterator;
 import java.util.List;
 
 public class DeployFragment extends Fragment implements org.iiab.controller.backup.presentation.BackupHost,
-        org.iiab.controller.install.presentation.PlannerHost {
+        org.iiab.controller.install.presentation.PlannerHost,
+        org.iiab.controller.install.presentation.InstallHost {
+
+    private final org.iiab.controller.install.presentation.InstallController installController =
+            new org.iiab.controller.install.presentation.InstallController(this, this);
 
     private final org.iiab.controller.install.presentation.PlannerController plannerController =
             new org.iiab.controller.install.presentation.PlannerController(this, this);
@@ -364,11 +368,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         restoreQueueFromPrefs();
 
         if (isBatchInstalling) {
-            new Handler(Looper.getMainLooper()).postDelayed(this::processNextInQueue, 500);
+            new Handler(Looper.getMainLooper()).postDelayed(installController::processNextInQueue, 500);
         }
 
         if (lastKnownState.length() > 0) {
-            verifyInstallationState(lastKnownState);
+            installController.verifyInstallationState(lastKnownState);
         } else {
             loadLocalVarsFallback();
         }
@@ -533,7 +537,8 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         boolean isBusy = isSystemBusy();
 
         // 1. ALWAYS link the buttons so Listeners can intercept and drop the Snackbar
-        bindInstallButtonLogic(mainAct, debianRootfs, iiabRootDir);
+        installController.bind(mainAct, debianRootfs, iiabRootDir,
+                btnFastInstall, btnLaunchInstall, discrepancyWarning, rolesContainer, chkCompanionData);
         bindDeleteButtonLogic(mainAct, debianRootfs);
         backupController.bind(mainAct, backupsDir, iiabRootDir,
                 btnImportBackup, btnAdvancedBackup, btnAdvancedRestore,
@@ -615,181 +620,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // REGION 5: NATIVE PIPELINES
     // =========================================================================================
 
-    private void bindInstallButtonLogic(MainActivity mainAct, File debianRootfs, File iiabRootDir) {
-        btnFastInstall.setOnClickListener(v -> {
-            // 1. Main Lock: Server On
-            if (mainAct.isServerAlive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-
-            // 1b. No internet: a fresh install requires downloading the rootfs. Block it
-            // up front (but still allow cancelling an in-progress download below).
-            if (!hasInternet && !isDownloadingRootfs) {
-                Snackbar.make(v, R.string.install_msg_no_connection, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-
-            // 2. HIGH PRIORITY: If this button is working, we allow cancel
-            if (isDownloadingRootfs) {
-                new android.app.AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.install_btn_cancel_title))
-                        .setMessage(getString(R.string.install_btn_cancel_msg))
-                        .setPositiveButton(getString(R.string.install_btn_cancel_confirm), (dialog, which) -> {
-                            if (aria2Manager != null) aria2Manager.stopDownload();
-                            disableSystemProtection();
-                            isDownloadingRootfs = false;
-                            btnFastInstall.setText(R.string.install_btn_install);
-                            btnFastInstall.setAlpha(1.0f);
-                            Snackbar.make(getView(), R.string.install_msg_cancelled, Snackbar.LENGTH_SHORT).show();
-                            updateDynamicButtons();
-                        })
-                        .setNegativeButton(getString(R.string.cancel), null)
-                        .show();
-                return;
-            }
-
-            // 3. If it is not working, but the system is busy with something else: LOCK
-            if (isSystemBusy()) {
-                Snackbar.make(v, getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
-                return;
-            }
-
-            // 4. Normal installation startup validations
-            if (selectedTier == null) {
-                Snackbar.make(v, R.string.install_error_no_tier, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if (!isStorageSafe) {
-                Snackbar.make(v, R.string.install_error_no_storage, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-
-            // 5. Start the installation...
-            Runnable executeDownload = () -> {
-                enableSystemProtection();
-                mainAct.invalidateModuleStateTrust();
-                isDownloadingRootfs = true;
-                btnFastInstall.setAlpha(0.8f);
-                btnFastInstall.startProgress();
-                btnFastInstall.setTextSize(12f);
-
-                if (aria2Manager == null) aria2Manager = new Aria2Manager();
-
-                String arch = getTermuxArch();
-                String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "armeabi-v7a" : "arm64-v8a";
-                InstallationPlanner.Tier safeTier = (selectedTier != null) ? selectedTier : InstallationPlanner.Tier.BASIC;
-                String tierString = safeTier.name().toLowerCase(java.util.Locale.US);
-                String directUrl = "https://iiab.switnet.org/android/rootfs/latest_" + tierString + "_" + archSuffix + ".meta4";
-
-                aria2Manager.startDownload(requireContext(), directUrl, new Aria2Manager.DownloadListener() {
-                    @Override
-                    public void onProgress(int percentage, String speed, String eta) {
-                        if (isAdded() && getActivity() != null) {
-                            getActivity().runOnUiThread(() -> btnFastInstall.setText(getString(R.string.install_status_os_download, percentage, speed)));
-                        }
-                    }
-
-                    @Override
-                    public void onComplete(String downloadPath) {
-                        if (!isAdded() || getActivity() == null) return;
-                        mainAct.runOnUiThread(() -> btnFastInstall.setText(getString(R.string.install_status_extracting)));
-
-                        File downloadDir = new File(downloadPath);
-                        File[] archives = downloadDir.listFiles((dir, name) -> name.endsWith(".tar.xz") || name.endsWith(".tar.gz"));
-
-                        if (archives == null || archives.length == 0) {
-                            abortInstallation(getString(R.string.install_error_no_archive));
-                            return;
-                        }
-
-                        File downloadedArchive = archives[0];
-                        TarExtractor tarExtractor = new TarExtractor();
-
-                        tarExtractor.startExtraction(requireContext(), downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(), new TarExtractor.ExtractionListener() {
-                            @Override
-                            public void onComplete(String destDir) {
-                                downloadedArchive.delete();
-                                File prootTmp = new File(requireContext().getCacheDir(), "proot_tmp");
-                                if (!prootTmp.exists()) prootTmp.mkdirs();
-                                File binDir = new File(requireContext().getFilesDir(), "usr/bin");
-                                if (binDir.exists()) {
-                                    try {
-                                        ProcessRunner.Result chmodResult = ProcessRunner.run(new String[]{"chmod", "-R", "755", binDir.getAbsolutePath()});
-                                        if (!chmodResult.isSuccess()) {
-                                            Log.w(TAG, "chmod on usr/bin failed (exit " + chmodResult.exitCode + "): " + chmodResult.output);
-                                        }
-                                    } catch (Exception e) {
-                                        Log.w(TAG, "chmod on usr/bin failed", e);
-                                    }
-                                }
-
-                                // DNS is written at the single chokepoint (PRootEngine.executeInContainer),
-                                // so the companion-data proot steps below get a working resolv.conf for free.
-
-                                if (chkCompanionData.isChecked()) {
-                                    editLocalVarsForMaps(debianRootfs, safeTier);
-                                    android.content.SharedPreferences prefs = requireContext().getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-                                    String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", "en");
-
-                                    InstallationPlanner.calculateProjectedSize(requireContext(), safeTier, true, targetLang, overrideKiwixVariant, new InstallationPlanner.PlanResultListener() {
-                                        @Override
-                                        public void onCalculated(InstallationPlanner.StorageProjection projection) {
-                                            if (projection.resolvedFilename != null)
-                                                downloadAndIndexKiwix(projection.resolvedFilename, debianRootfs);
-                                            else runMapsAnsible(debianRootfs);
-                                        }
-
-                                        @Override
-                                        public void onError(String error) {
-                                            runMapsAnsible(debianRootfs);
-                                        }
-                                    });
-                                } else {
-                                    finishInstallationSuccess();
-                                }
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                abortInstallation(getString(R.string.install_error_extraction, error));
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        abortInstallation(getString(R.string.install_error_download, error));
-                    }
-                });
-            };
-
-            if (debianRootfs.exists() && debianRootfs.isDirectory()) {
-                new android.app.AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.install_btn_reinstall)
-                        .setMessage(R.string.install_dialog_wipe_msg)
-                        .setPositiveButton(R.string.install_btn_yes, (dialog, which) -> {
-                            btnFastInstall.setText(R.string.install_status_wiping_old);
-                            btnFastInstall.setEnabled(false);
-                            new Thread(() -> {
-                                try {
-                                    ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                                    if (!wipeResult.isSuccess()) {
-                                        Log.w(TAG, "rm -rf rootfs (reinstall) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
-                                    }
-                                } catch (Exception e) {
-                                    Log.w(TAG, "rm -rf rootfs (reinstall) failed", e);
-                                }
-                                mainAct.runOnUiThread(executeDownload);
-                            }).start();
-                        })
-                        .setNegativeButton(R.string.install_btn_no, null)
-                        .show();
-            } else {
-                executeDownload.run();
-            }
-        });
-    }
 
     private void bindDeleteButtonLogic(MainActivity mainAct, File debianRootfs) {
         btnFastDelete.setOnClickListener(v -> {
@@ -1019,423 +849,15 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         });
     }
 
-    private void processNextInQueue() {
-        if (installationQueue.isEmpty()) {
-            isBatchInstalling = false;
-            saveQueueToPrefs();
-            btnLaunchInstall.setEnabled(false);
-            btnLaunchInstall.setText(getString(R.string.install_btn_launch));
-            fetchLocalVarsFromPRoot();
-            if (getView() != null)
-                Snackbar.make(getView(), R.string.install_msg_finished, Snackbar.LENGTH_LONG).show();
-            return;
-        }
 
-        String nextModule = installationQueue.remove(0);
-        saveQueueToPrefs();
 
-        // D2: nextModule is interpolated into a command run as root inside the
-        // container (sed/echo/runrole). Only allow names from the known catalog
-        // with no shell metacharacters; fail closed and skip anything else.
-        if (!ModuleName.isAllowed(nextModule, ModuleRegistry.validYamlKeys())) {
-            Log.e(TAG, "Refusing to install unrecognized/unsafe module name: " + nextModule);
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).addToLog("[Security] Skipped invalid module: " + nextModule);
-            }
-            processNextInQueue();
-            return;
-        }
 
-        btnLaunchInstall.setEnabled(false);
-        btnLaunchInstall.setText(getString(R.string.install_status_installing_module, nextModule));
 
-        File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
-        if (prootEngine == null) prootEngine = new PRootEngine();
 
-        String installCmd = "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
-                "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
-                "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
-                "cd /opt/iiab/iiab && ./runrole " + nextModule;
 
-        prootEngine.executeInContainer(requireContext(), rootfsDir.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
-            @Override
-            public void onOutputLine(String line) {
-                if (getActivity() instanceof MainActivity)
-                    ((MainActivity) getActivity()).runOnUiThread(() -> ((MainActivity) getActivity()).addToLog("[Ansible] " + line));
-            }
 
-            @Override
-            public void onProcessExit(int exitCode) {
-                if (getActivity() != null) getActivity().runOnUiThread(() -> processNextInQueue());
-            }
 
-            @Override
-            public void onError(String error) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> {
-                        isBatchInstalling = false;
-                        updateDynamicButtons();
-                        if (getView() != null)
-                            Snackbar.make(getView(), getString(R.string.install_error_bootstrap, error), Snackbar.LENGTH_LONG).show();
-                    });
-                }
-            }
-        });
-    }
 
-    private void editLocalVarsForMaps(File debianRootfs, InstallationPlanner.Tier tier) {
-        File yamlFile = new File(debianRootfs, "etc/iiab/local_vars.yml");
-        if (!yamlFile.exists()) return;
-        try {
-            StringBuilder content = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new FileReader(yamlFile));
-            String line;
-            while ((line = reader.readLine()) != null) content.append(line).append("\n");
-            reader.close();
-
-            String text = content.toString();
-            // Always make sure the installation and module are active
-            text = text.replaceAll("(?m)^maps_install:\\s*.*", "maps_install: True");
-            text = text.replaceAll("(?m)^maps_enabled:\\s*.*", "maps_enabled: True");
-
-            if (tier == InstallationPlanner.Tier.BASIC) {
-                // BASIC TIER ~0.2GB
-                // Note: The current base image already has these default values.
-                // We leave them commented for the future in case the base image changes.
-                /*
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: nat-z8");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 7");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: none");
-                */
-            } else if (tier == InstallationPlanner.Tier.STANDARD) {
-                // STANDARD TIER ~11GB
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: osm-z11");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 7");
-            } else if (tier == InstallationPlanner.Tier.FULL) {
-                // FULL TIER ~16GB
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: osm-z11");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 8");
-            }
-
-            java.io.FileWriter writer = new java.io.FileWriter(yamlFile);
-            writer.write(text);
-            writer.close();
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void downloadAndIndexKiwix(String zimFilename, File debianRootfs) {
-        if (getActivity() == null) return;
-        getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_preparing_kiwix));
-
-        String zimUrl = "https://download.kiwix.org/zim/wikipedia/" + zimFilename;
-        File libraryDir = new File(debianRootfs, "library/zims/content");
-        if (!libraryDir.exists()) libraryDir.mkdirs();
-
-        if (aria2Manager == null) aria2Manager = new Aria2Manager();
-        aria2Manager.startDownload(requireContext(), zimUrl, new Aria2Manager.DownloadListener() {
-            @Override
-            public void onProgress(int percentage, String speed, String eta) {
-                if (isAdded() && getActivity() != null)
-                    getActivity().runOnUiThread(() -> btnFastInstall.setText(getString(R.string.install_status_zim_download, percentage, speed)));
-            }
-
-            @Override
-            public void onComplete(String downloadPath) {
-                if (getActivity() == null) return;
-                getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_indexing_zim));
-                File downloadedZim = new File(downloadPath, zimFilename);
-                if (downloadedZim.exists())
-                    downloadedZim.renameTo(new File(libraryDir, zimFilename));
-
-                if (prootEngine == null) prootEngine = new PRootEngine();
-                prootEngine.executeInContainer(requireContext(), debianRootfs.getAbsolutePath(), "iiab-make-kiwix-lib", new PRootEngine.OutputListener() {
-                    @Override
-                    public void onOutputLine(String line) {
-                        if (getActivity() instanceof MainActivity)
-                            ((MainActivity) getActivity()).runOnUiThread(() -> ((MainActivity) getActivity()).addToLog("[Kiwix] " + line));
-                    }
-
-                    @Override
-                    public void onProcessExit(int exitCode) {
-                        runMapsAnsible(debianRootfs);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        runMapsAnsible(debianRootfs);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String error) {
-                runMapsAnsible(debianRootfs);
-            }
-        });
-    }
-
-    private void runMapsAnsible(File debianRootfs) {
-        if (getActivity() == null) return;
-
-        InstallationPlanner.Tier safeTier = (selectedTier != null) ? selectedTier : InstallationPlanner.Tier.BASIC;
-
-        if (safeTier == InstallationPlanner.Tier.BASIC) {
-            // BYPASS PARA BASIC
-            getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_maps_provisioned));
-            new Handler(Looper.getMainLooper()).postDelayed(this::finishInstallationSuccess, 1500);
-            return;
-        }
-
-        getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_maps_configuring));
-
-        if (prootEngine == null) prootEngine = new PRootEngine();
-        String installCmd = "cd /opt/iiab/iiab && ./runrole --reinstall maps";
-
-        prootEngine.executeInContainer(requireContext(), debianRootfs.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
-            @Override
-            public void onOutputLine(String line) {
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).runOnUiThread(() -> ((MainActivity) getActivity()).addToLog("[Ansible] " + line));
-                }
-            }
-
-            @Override
-            public void onProcessExit(int exitCode) {
-                finishInstallationSuccess();
-            }
-
-            @Override
-            public void onError(String error) {
-                finishInstallationSuccess();
-            }
-        });
-    }
-
-    private void finishInstallationSuccess() {
-        disableSystemProtection();
-        isDownloadingRootfs = false;
-        if (isAdded() && getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                btnFastInstall.stopProgress();
-                btnFastInstall.setText(R.string.install_btn_reinstall);
-                btnFastInstall.setAlpha(1.0f);
-                updateDynamicButtons();
-                requestFreshLocalVarsSilently();
-                if (getView() != null)
-                    Snackbar.make(getView(), R.string.install_success_deployment, Snackbar.LENGTH_LONG).show();
-            });
-        }
-    }
-
-    private void abortInstallation(String message) {
-        disableSystemProtection();
-        isDownloadingRootfs = false;
-        if (isAdded() && getActivity() != null) {
-            getActivity().runOnUiThread(() -> {
-                btnFastInstall.stopProgress();
-                btnFastInstall.setText(R.string.install_btn_install);
-                btnFastInstall.setAlpha(1.0f);
-                updateDynamicButtons();
-                if (getView() != null)
-                    Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
-            });
-        }
-    }
-
-    private void fetchLocalVarsFromPRoot() {
-        File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
-        File localVarsFile = new File(rootfsDir, "etc/iiab/local_vars.yml");
-
-        if (!rootfsDir.exists() || !rootfsDir.isDirectory() || !localVarsFile.exists()) {
-            lastKnownState = new JSONObject();
-            verifyInstallationState(lastKnownState);
-            return;
-        }
-
-        new Thread(() -> {
-            try {
-                StringBuilder yamlOutput = new StringBuilder();
-                BufferedReader br = new BufferedReader(new FileReader(localVarsFile));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    yamlOutput.append(line).append("\n");
-                }
-                br.close();
-
-                JSONObject freshVars = parseYamlToJson(yamlOutput.toString());
-                lastKnownState = freshVars;
-
-                if (getActivity() instanceof MainActivity) {
-                    getActivity().getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE)
-                            .edit().putBoolean("is_module_state_trusted", true).apply();
-                }
-
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> verifyInstallationState(freshVars));
-                }
-            } catch (Exception e) {
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> verifyInstallationState(lastKnownState));
-                }
-            }
-        }).start();
-    }
-
-    private JSONObject parseYamlToJson(String yaml) {
-        // Delegates to the pure, unit-tested util (extracted from this god class).
-        // The naive split-on-':' behavior is unchanged; replacing it with a real
-        // YAML parser is still tracked as tech-debt D14.
-        return LocalVarsYamlParser.parseToJson(yaml);
-    }
-
-    private void verifyInstallationState(JSONObject jsonVars) {
-        new Thread(() -> {
-            if (!isAdded() || getActivity() == null || rolesContainer == null) return;
-
-            boolean isMainServerAlive = pingUrl("http://localhost:8085/home");
-            boolean discrepancyFound = false;
-
-            for (int r = 0; r < rolesContainer.getChildCount(); r++) {
-                LinearLayout row = (LinearLayout) rolesContainer.getChildAt(r);
-                for (int c = 0; c < row.getChildCount(); c++) {
-                    LinearLayout card = (LinearLayout) row.getChildAt(c);
-                    ModuleRegistry.IiabModule module = (ModuleRegistry.IiabModule) card.getTag();
-                    if (module == null) continue;
-
-                    android.widget.FrameLayout indicatorContainer = (android.widget.FrameLayout) card.getChildAt(0);
-                    View led = indicatorContainer.getChildAt(0);
-                    CheckBox checkBox = (CheckBox) indicatorContainer.getChildAt(1);
-
-                    boolean isInstallTrue = jsonVars.optBoolean(module.yamlBaseKey + "_install", false);
-                    boolean isEnabledTrue = jsonVars.optBoolean(module.yamlBaseKey + "_enabled", false);
-                    boolean yamlState = isInstallTrue || isEnabledTrue;
-                    boolean pingState = isMainServerAlive && pingUrl("http://localhost:8085/" + module.endpoint);
-
-                    MainActivity mainAct = (MainActivity) getActivity();
-                    boolean isRunning = mainAct != null && mainAct.isServerAlive;
-                    boolean isTrusted = mainAct != null && mainAct.isModuleStateTrusted();
-
-                    boolean isConfirmedInstalled;
-                    boolean isDiscrepancy;
-
-                    if (isRunning) {
-                        isConfirmedInstalled = yamlState && pingState;
-                        isDiscrepancy = yamlState != pingState;
-                    } else {
-                        isConfirmedInstalled = yamlState;
-                        isDiscrepancy = yamlState && !isTrusted;
-                    }
-
-                    final boolean finalConfirmed = isConfirmedInstalled;
-                    final boolean finalDiscrepancyFlag = isDiscrepancy;
-                    final boolean finalIsRunning = isRunning;
-
-                    getActivity().runOnUiThread(() -> {
-                        card.setOnClickListener(null);
-                        checkBox.setOnCheckedChangeListener(null);
-
-                        if (finalConfirmed && !finalDiscrepancyFlag) {
-                            checkBox.setVisibility(View.GONE);
-                            led.setVisibility(View.VISIBLE);
-                            led.setBackgroundTintList(null);
-
-                            if (finalIsRunning) {
-                                led.setBackgroundResource(R.drawable.led_on_green);
-                                card.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_confirmed, Snackbar.LENGTH_LONG).show());
-                            } else {
-                                led.setBackgroundResource(R.drawable.led_on_green);
-                                led.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.accent_secondary)));
-                                card.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_offline_trusted, Snackbar.LENGTH_LONG).show());
-                            }
-                        } else if (finalDiscrepancyFlag) {
-                            checkBox.setVisibility(View.GONE);
-                            led.setVisibility(View.VISIBLE);
-                            led.setBackgroundResource(R.drawable.led_off);
-                            led.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_pending)));
-                            card.setOnClickListener(v -> Snackbar.make(v, R.string.install_warning_discrepancy_msg, Snackbar.LENGTH_LONG).show());
-                        } else {
-                            led.setVisibility(View.GONE);
-                            checkBox.setVisibility(View.VISIBLE);
-                            checkBox.setChecked(false);
-
-                            if (finalIsRunning) {
-                                checkBox.setEnabled(false);
-                                card.setAlpha(0.6f);
-                                card.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show());
-                            } else {
-                                checkBox.setEnabled(true);
-                                card.setAlpha(1.0f);
-                                checkBox.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.text_primary)));
-                                card.setOnClickListener(v -> checkBox.toggle());
-                            }
-
-                            if (!newInstallCheckboxes.contains(checkBox))
-                                newInstallCheckboxes.add(checkBox);
-                            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> evaluateLaunchButton());
-                        }
-                    });
-
-                    if (finalDiscrepancyFlag) discrepancyFound = true;
-                }
-            }
-
-            final boolean finalDiscrepancy = discrepancyFound;
-            getActivity().runOnUiThread(() -> {
-                if (discrepancyWarning != null)
-                    discrepancyWarning.setVisibility(finalDiscrepancy ? View.VISIBLE : View.GONE);
-                evaluateLaunchButton();
-            });
-
-        }).start();
-    }
-
-    private void evaluateLaunchButton() {
-        if (isBatchInstalling) return;
-
-        boolean hasSelections = false;
-        installationQueue.clear();
-
-        for (CheckBox cb : newInstallCheckboxes) {
-            if (cb.isChecked()) {
-                hasSelections = true;
-                ViewGroup indicatorContainer = (ViewGroup) cb.getParent();
-                ViewGroup card = (ViewGroup) indicatorContainer.getParent();
-                ModuleRegistry.IiabModule module = (ModuleRegistry.IiabModule) card.getTag();
-
-                if (module != null) {
-                    installationQueue.add(module.yamlBaseKey);
-                }
-            }
-        }
-
-        btnLaunchInstall.setEnabled(hasSelections);
-        btnLaunchInstall.setAlpha(hasSelections ? 1.0f : 0.5f);
-        btnLaunchInstall.setText(getString(R.string.install_btn_launch));
-
-        if (hasSelections) {
-            btnLaunchInstall.setOnClickListener(v -> {
-                MainActivity mainAct = (MainActivity) getActivity();
-                if (mainAct != null && mainAct.isServerAlive) {
-                    Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-                if (isSystemBusy() && !isBatchInstalling) {
-                    Snackbar.make(v, getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                isBatchInstalling = true;
-                saveQueueToPrefs();
-                updateDynamicButtons();
-                processNextInQueue();
-            });
-        } else {
-            btnLaunchInstall.setOnClickListener(null);
-        }
-    }
 
     // =========================================================================================
     // REGION 6: BACKUP & RESTORE SAF
@@ -1870,12 +1292,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         }
     }
 
-    private void saveQueueToPrefs() {
-        if (getActivity() == null) return;
-        android.content.SharedPreferences prefs = getActivity().getSharedPreferences("iiab_queue_prefs", android.content.Context.MODE_PRIVATE);
-        String queueString = android.text.TextUtils.join(",", installationQueue);
-        prefs.edit().putString("pending_modules", queueString).putBoolean("is_batch_installing", isBatchInstalling).apply();
-    }
 
     private void restoreQueueFromPrefs() {
         if (getActivity() == null) return;
@@ -1889,7 +1305,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         }
     }
 
-    private boolean pingUrl(String urlStr) {
+    public boolean pingUrl(String urlStr) {
         try {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -1990,7 +1406,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 while ((line = br.readLine()) != null) text.append(line);
                 br.close();
                 lastKnownState = new JSONObject(text.toString());
-                verifyInstallationState(lastKnownState);
+                installController.verifyInstallationState(lastKnownState);
             } catch (Exception ignored) {
             }
         }
@@ -2024,11 +1440,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     }
 
     private void requestFreshLocalVars() {
-        fetchLocalVarsFromPRoot();
+        installController.fetchLocalVarsFromPRoot();
     }
 
-    private void requestFreshLocalVarsSilently() {
-        fetchLocalVarsFromPRoot();
+    public void requestFreshLocalVarsSilently() {
+        installController.fetchLocalVarsFromPRoot();
     }
 
     // --- BackupHost seam (backup/restore logic lives in BackupController) ---
@@ -2048,4 +1464,17 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     @Override public String getOverrideKiwixVariant() { return overrideKiwixVariant; }
     @Override public void setOverrideKiwixVariant(String variant) { this.overrideKiwixVariant = variant; }
     @Override public boolean hasInternet() { return this.hasInternet; }
+
+    // --- InstallHost seam (install pipeline lives in InstallController) ---
+    @Override public boolean isDownloadingRootfs() { return isDownloadingRootfs; }
+    @Override public void setDownloadingRootfs(boolean v) { isDownloadingRootfs = v; }
+    @Override public boolean isBatchInstalling() { return isBatchInstalling; }
+    @Override public void setBatchInstalling(boolean v) { isBatchInstalling = v; }
+    @Override public java.util.List<String> installationQueue() { return installationQueue; }
+    @Override public org.json.JSONObject getLastKnownState() { return lastKnownState; }
+    @Override public void setLastKnownState(org.json.JSONObject v) { lastKnownState = v; }
+    @Override public org.iiab.controller.Aria2Manager aria2Manager() { return aria2Manager; }
+    @Override public void setAria2Manager(org.iiab.controller.Aria2Manager v) { aria2Manager = v; }
+    @Override public org.iiab.controller.PRootEngine prootEngine() { return prootEngine; }
+    @Override public void setPRootEngine(org.iiab.controller.PRootEngine v) { prootEngine = v; }
 }
