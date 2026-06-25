@@ -196,10 +196,13 @@ public class PRootEngine {
                 pb.environment().put("USER", "root");
                 pb.environment().put("LOGNAME", "root");
 
-                currentProcess = pb.start();
+                // ADFA-4458: wait on THIS call's process, not the shared field, so a
+                // concurrent proot call can't make us return on the wrong process.
+                Process proc = pb.start();
+                currentProcess = proc;
 
                 // --- STREAM LIVE LOGS ---
-                BufferedReader reader = new BufferedReader(new InputStreamReader(currentProcess.getInputStream()));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
                 String line;
                 Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -209,7 +212,7 @@ public class PRootEngine {
                     mainHandler.post(() -> listener.onOutputLine(outLine));
                 }
 
-                int exitCode = currentProcess.waitFor();
+                int exitCode = proc.waitFor();
 
                 mainHandler.post(() -> listener.onProcessExit(exitCode));
 
@@ -319,13 +322,16 @@ public class PRootEngine {
                 pb.environment().put("USER", "root");
                 pb.environment().put("LOGNAME", "root");
 
-                currentProcess = pb.start();
+                // ADFA-4458: wait on THIS call's process, not the shared field, so a
+                // concurrent proot call can't make us return on the wrong process.
+                Process proc = pb.start();
+                currentProcess = proc;
 
                 // WE SAVE THE WRITING CHANNEL
-                processOutputStream = currentProcess.getOutputStream();
+                processOutputStream = proc.getOutputStream();
 
                 // WE READ IN BLOCKS (To avoid getting stuck waiting for a line break at the prompt)
-                java.io.InputStream is = currentProcess.getInputStream();
+                java.io.InputStream is = proc.getInputStream();
                 byte[] buffer = new byte[1024];
                 int read;
                 Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -335,7 +341,7 @@ public class PRootEngine {
                     mainHandler.post(() -> listener.onOutputLine(outputChunk));
                 }
 
-                int exitCode = currentProcess.waitFor();
+                int exitCode = proc.waitFor();
                 mainHandler.post(() -> listener.onProcessExit(exitCode));
 
             } catch (Exception e) {
