@@ -77,7 +77,11 @@ import java.util.List;
 public class DeployFragment extends Fragment implements org.iiab.controller.backup.presentation.BackupHost,
         org.iiab.controller.install.presentation.PlannerHost,
         org.iiab.controller.install.presentation.InstallHost,
-        org.iiab.controller.install.presentation.ResetDeleteHost {
+        org.iiab.controller.install.presentation.ResetDeleteHost,
+        org.iiab.controller.install.presentation.AdbShareHost {
+
+    private final org.iiab.controller.install.presentation.AdbShareController adbShareController =
+            new org.iiab.controller.install.presentation.AdbShareController(this, this);
 
     private final org.iiab.controller.install.presentation.ResetDeleteController resetDeleteController =
             new org.iiab.controller.install.presentation.ResetDeleteController(this, this);
@@ -160,106 +164,8 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     private Runnable liveStatusRunnable;
 
     // ADB Variables
-    private boolean isConnectedToAdb = false, isScanning = false, isAttemptingFastConnect = false;
-    private android.net.nsd.NsdManager nsdManager;
-    private String discoveredHostIp = "127.0.0.1";
-    private int discoveredConnectPort = -1, discoveredPairingPort = -1;
-    private android.net.nsd.NsdManager.DiscoveryListener connectDiscoveryListener, pairingDiscoveryListener;
-    private android.net.wifi.WifiManager.MulticastLock multicastLock;
 
-    private static final String CHANNEL_ID = "adb_pairing_channel";
-    private static final String SERVICE_TYPE_CONNECT = "_adb-tls-connect._tcp.";
-    private static final String SERVICE_TYPE_PAIRING = "_adb-tls-pairing._tcp.";
 
-    private final BroadcastReceiver adbUiUpdateReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            if ("org.iiab.controller.ADB_PAIRING_SUCCESSFUL".equals(action)) {
-                requireContext().getSharedPreferences("iiab_adb_prefs", Context.MODE_PRIVATE)
-                        .edit().putBoolean("pairing_just_succeeded", false).apply();
-
-                android.util.Log.i(TAG, "Broadcast received: Pairing successful! Re-scanning in 2.5s...");
-                if (isAdded()) {
-                    btnAdbAction.setText(getString(R.string.adb_status_securing));
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        startAdbPairingFlow();
-                    }, 2500);
-                }
-            } else if ("org.iiab.controller.ADB_PAIRING_FAILED".equals(action)) {
-                android.util.Log.w(TAG, "Broadcast received: Pairing failed.");
-                if (isAdded()) resetScanState();
-
-            } else if ("org.iiab.controller.ADB_PAIRING_SENT".equals(action)) {
-                btnAdbAction.setText(getString(R.string.adb_status_connected));
-                isConnectedToAdb = true;
-                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    if (isAdded()) updateUiState(true);
-                }, 500);
-
-            } else if ("org.iiab.controller.ADB_CPU_UPDATE".equals(action)) {
-                String cpuData = intent.getStringExtra("cpu_line");
-                if (isAdded() && isConnectedToAdb && cpuData != null) {
-                    float cpuVal = parseCpuUsage(cpuData);
-                    if (cpuVal >= 0f) {
-                        addCpuEntry(cpuVal);
-                    }
-                }
-            } else if ("org.iiab.controller.ADB_RESTRICTIONS_UPDATE".equals(action)) {
-                if (!isAdded()) return;
-
-                String cpValue = intent.getStringExtra("child_process_value");
-                String rawPpkValue = intent.getStringExtra("ppk_value");
-
-                requireContext().getSharedPreferences("iiab_adb_prefs", Context.MODE_PRIVATE)
-                        .edit()
-                        .putString("child_process_value", cpValue)
-                        .putString("ppk_value", rawPpkValue)
-                        .apply();
-
-                String ppkDisplay = ("null".equals(rawPpkValue) || "unknown".equals(rawPpkValue)) ? getString(R.string.adb_ppk_default) : rawPpkValue;
-
-                ledDcpr.setBackgroundTintList(null);
-                ledPpk.setBackgroundTintList(null);
-                ledPpk.setBackgroundResource(R.drawable.led_off);
-                ledDcpr.setBackgroundResource(R.drawable.led_off);
-
-                if (android.os.Build.VERSION.SDK_INT >= 34) {
-                    txtPpk.setText(android.text.Html.fromHtml(getString(R.string.adb_ppk_limit_not_required, ppkDisplay), android.text.Html.FROM_HTML_MODE_COMPACT));
-                    if ("256".equals(rawPpkValue) || "512".equals(rawPpkValue) || "1024".equals(rawPpkValue)) {
-                        ledPpk.setBackgroundResource(R.drawable.led_on_green);
-                    } else if ("error".equals(rawPpkValue) || rawPpkValue == null || rawPpkValue.isEmpty()) {
-                        ledPpk.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_pending)));
-                    } else {
-                        ledPpk.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_info)));
-                    }
-
-                    if ("0".equals(cpValue) || "false".equals(cpValue)) {
-                        ledDcpr.setBackgroundResource(R.drawable.led_on_green);
-                        txtDcpr.setText(android.text.Html.fromHtml(getString(R.string.adb_cp_disabled_ok), android.text.Html.FROM_HTML_MODE_COMPACT));
-                    } else if ("1".equals(cpValue) || "true".equals(cpValue) || "null".equals(cpValue) || cpValue == null) {
-                        ledDcpr.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_danger)));
-                        txtDcpr.setText(android.text.Html.fromHtml(getString(R.string.adb_cp_enabled_limiting), android.text.Html.FROM_HTML_MODE_COMPACT));
-                    } else {
-                        txtDcpr.setText(android.text.Html.fromHtml(getString(R.string.adb_cp_unknown), android.text.Html.FROM_HTML_MODE_COMPACT));
-                    }
-
-                } else if (android.os.Build.VERSION.SDK_INT >= 31) {
-                    txtDcpr.setText(android.text.Html.fromHtml(getString(R.string.adb_cp_not_required), android.text.Html.FROM_HTML_MODE_COMPACT));
-                    txtPpk.setText(android.text.Html.fromHtml(getString(R.string.adb_ppk_limit_active, ppkDisplay), android.text.Html.FROM_HTML_MODE_COMPACT));
-
-                    if ("256".equals(rawPpkValue) || "512".equals(rawPpkValue) || "1024".equals(rawPpkValue)) {
-                        ledPpk.setBackgroundResource(R.drawable.led_on_green);
-                    } else if ("error".equals(rawPpkValue) || rawPpkValue == null || rawPpkValue.isEmpty()) {
-                        ledPpk.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_danger)));
-                    } else {
-                        ledPpk.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_pending)));
-                    }
-                }
-            }
-        }
-    };
 
 
     // =========================================================================================
@@ -323,15 +229,13 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         // SAF Binding
         btnImportBackup = view.findViewById(R.id.btn_import_backup);
 
-        nsdManager = (android.net.nsd.NsdManager) requireContext().getSystemService(Context.NSD_SERVICE);
         sharedStateDir = new File(Environment.getExternalStorageDirectory(), ".iiab_state");
 
         // Initialization Logic
         backupController.registerLaunchers();
-        setupAdbNetworking();
+        adbShareController.onViewCreated(ledAdbStatus, ledDcpr, ledPpk, txtDcpr, txtPpk, txtAdbLedLabel, btnAdbAction);
         setupAdvancedMonitoringMenu(view);
         setupCpuChart();
-        setupAdbListeners();
         plannerController.bind(rolesContainer, storageGauge, btnTierBasic, btnTierStandard, btnTierFull,
                 txtLegendIiab, txtLegendMaps, txtLegendKiwix, txtLegendFree, txtOfflineEstimate,
                 btnKiwixSettings, chkCompanionData);
@@ -367,7 +271,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         super.onResume();
         if (discrepancyWarning != null) discrepancyWarning.setVisibility(View.GONE);
 
-        registerAdbReceiver();
+        adbShareController.onResume();
         checkAndHandleSyncFragmentFocus();
         restoreQueueFromPrefs();
 
@@ -388,10 +292,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     @Override
     public void onPause() {
         super.onPause();
-        try {
-            requireContext().unregisterReceiver(adbUiUpdateReceiver);
-        } catch (Exception ignored) {
-        }
+        adbShareController.onPause();
         liveStatusHandler.removeCallbacks(liveStatusRunnable);
     }
 
@@ -466,7 +367,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         if (adbPrefs.getBoolean("pairing_just_succeeded", false)) {
             adbPrefs.edit().putBoolean("pairing_just_succeeded", false).apply();
             btnAdbAction.setText("Securing connection...");
-            new Handler(Looper.getMainLooper()).postDelayed(() -> startAdbPairingFlow(true), 2500);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> adbShareController.startAdbPairingFlow(true), 2500);
         }
         if (adbPrefs.getBoolean("focus_adb", false)) {
             adbPrefs.edit().putBoolean("focus_adb", false).apply();
@@ -646,143 +547,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // REGION 7: ADB & SYSTEM RESTRICTIONS
     // =========================================================================================
 
-    private void setupAdbNetworking() {
-        android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wifi != null) {
-            multicastLock = wifi.createMulticastLock("iiab_adb_multicast_lock");
-            multicastLock.setReferenceCounted(true);
-        }
-    }
 
-    private void setupAdbListeners() {
-        LinearLayout containerDcpr = getView().findViewById(R.id.container_led_dcpr);
-        containerDcpr.setOnClickListener(v -> {
-            if (!isConnectedToAdb) {
-                Snackbar.make(v, R.string.adb_req_cp, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if (android.os.Build.VERSION.SDK_INT < 34) {
-                Snackbar.make(v, R.string.adb_not_req_cp, Snackbar.LENGTH_LONG).show();
-                return;
-            }
 
-            IIABAdbManager adbManager = IIABAdbManager.getInstance(requireContext());
-            adbManager.executeCommand("settings put global settings_enable_monitor_phantom_procs 0");
-            Snackbar.make(v, R.string.adb_snack_disabling_cp, Snackbar.LENGTH_SHORT).show();
-            new Handler(Looper.getMainLooper()).postDelayed(() -> adbManager.checkSystemRestrictions(requireContext()), 1000);
-        });
 
-        LinearLayout containerPpk = getView().findViewById(R.id.container_led_ppk);
-        containerPpk.setOnClickListener(v -> {
-            if (!isConnectedToAdb) {
-                Snackbar.make(v, R.string.adb_req_ppk, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if (android.os.Build.VERSION.SDK_INT < 31) {
-                Snackbar.make(v, R.string.adb_not_req_ppk, Snackbar.LENGTH_LONG).show();
-                return;
-            }
 
-            IIABAdbManager adbManager = IIABAdbManager.getInstance(requireContext());
-            adbManager.executeCommand("device_config put activity_manager max_phantom_processes 256");
-            Snackbar.make(v, R.string.adb_snack_setting_ppk, Snackbar.LENGTH_SHORT).show();
-            new Handler(Looper.getMainLooper()).postDelayed(() -> adbManager.checkSystemRestrictions(requireContext()), 1000);
-        });
 
-        btnAdbAction.setOnClickListener(v -> {
-            if (isConnectedToAdb) {
-                new Thread(() -> {
-                    try {
-                        IIABAdbManager.getInstance(requireContext()).disconnect();
-                    } catch (Exception ignored) {
-                    }
-                }).start();
-                isConnectedToAdb = false;
-                updateUiState(false);
-            } else if (!isScanning) {
-                startAdbPairingFlow();
-            }
-        });
-    }
-
-    private void registerAdbReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("org.iiab.controller.ADB_PAIRING_SUCCESSFUL");
-        filter.addAction("org.iiab.controller.ADB_PAIRING_FAILED");
-        filter.addAction("org.iiab.controller.ADB_PAIRING_SENT");
-        filter.addAction("org.iiab.controller.ADB_CPU_UPDATE");
-        filter.addAction("org.iiab.controller.ADB_RESTRICTIONS_UPDATE");
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            requireContext().registerReceiver(adbUiUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            requireContext().registerReceiver(adbUiUpdateReceiver, filter);
-        }
-    }
-
-    private void updateUiState(boolean isConnected) {
-        btnAdbAction.setEnabled(true);
-        if (isConnected) {
-            ledAdbStatus.setBackgroundResource(R.drawable.led_on_green);
-            txtAdbLedLabel.setText(getString(R.string.adb_status_connected));
-            txtAdbLedLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_success));
-            btnAdbAction.setText(getString(R.string.adb_btn_disconnect));
-            btnAdbAction.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_danger)));
-
-            txtDcpr.setText(android.text.Html.fromHtml(getString(R.string.adb_ui_checking_cp), android.text.Html.FROM_HTML_MODE_COMPACT));
-            txtPpk.setText(android.text.Html.fromHtml(getString(R.string.adb_ui_checking_ppk), android.text.Html.FROM_HTML_MODE_COMPACT));
-            ledDcpr.setBackgroundResource(R.drawable.led_off);
-            ledDcpr.setBackgroundTintList(null);
-            ledPpk.setBackgroundResource(R.drawable.led_off);
-            ledPpk.setBackgroundTintList(null);
-        } else {
-            ledAdbStatus.setBackgroundResource(R.drawable.led_off);
-            txtAdbLedLabel.setText(getString(R.string.adb_status_offline));
-            txtAdbLedLabel.setTextColor(ContextCompat.getColor(requireContext(), R.color.dash_text_secondary));
-            btnAdbAction.setText(getString(R.string.adb_btn_connect));
-            btnAdbAction.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.status_info)));
-
-            txtDcpr.setText(getString(R.string.adb_ui_unknown_cp));
-            txtPpk.setText(getString(R.string.adb_ui_unknown_ppk));
-            ledDcpr.setBackgroundResource(R.drawable.led_off);
-            ledDcpr.setBackgroundTintList(null);
-            ledPpk.setBackgroundResource(R.drawable.led_off);
-            ledPpk.setBackgroundTintList(null);
-        }
-    }
-
-    private void startAdbPairingFlow() {
-        startAdbPairingFlow(false);
-    }
-
-    private void startAdbPairingFlow(boolean isSilentScan) {
-        isScanning = true;
-        isAttemptingFastConnect = false;
-        btnAdbAction.setText(getString(R.string.adb_btn_scanning));
-        btnAdbAction.setEnabled(false);
-        discoveredConnectPort = -1;
-        discoveredPairingPort = -1;
-
-        if (multicastLock != null && !multicastLock.isHeld()) multicastLock.acquire();
-
-        connectDiscoveryListener = createDiscoveryListener(SERVICE_TYPE_CONNECT);
-        pairingDiscoveryListener = createDiscoveryListener(SERVICE_TYPE_PAIRING);
-
-        try {
-            nsdManager.discoverServices(SERVICE_TYPE_CONNECT, android.net.nsd.NsdManager.PROTOCOL_DNS_SD, connectDiscoveryListener);
-            nsdManager.discoverServices(SERVICE_TYPE_PAIRING, android.net.nsd.NsdManager.PROTOCOL_DNS_SD, pairingDiscoveryListener);
-        } catch (Exception e) {
-            resetScanState();
-            return;
-        }
-
-        if (!isSilentScan) {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                if (isScanning && !isConnectedToAdb) openDeveloperOptions();
-            }, 4000);
-        }
-
-        new Handler(Looper.getMainLooper()).postDelayed(this::checkIfScanTimedOut, 90000);
-    }
 
     private int getDynamicAdbPort(int fallbackPort) {
         try {
@@ -797,179 +566,13 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         return fallbackPort;
     }
 
-    private void attemptFastConnection(String hostIp, int port) {
-        if (isAttemptingFastConnect) return;
-        isAttemptingFastConnect = true;
 
-        Context appContext = requireContext().getApplicationContext();
-        new Thread(() -> {
-            boolean connected = false;
-            IIABAdbManager adbManager = IIABAdbManager.getInstance(appContext);
 
-            for (int i = 0; i < 6; i++) {
-                try {
-                    adbManager.connect(hostIp, port);
-                    connected = true;
-                    break;
-                } catch (Exception e) {
-                    try {
-                        adbManager.disconnect();
-                        Thread.sleep(600);
-                    } catch (Exception ignored) {
-                    }
-                }
-            }
 
-            if (connected) {
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    stopDiscovery();
-                    isConnectedToAdb = true;
-                    if (btnAdbAction != null)
-                        btnAdbAction.setText(getString(R.string.adb_status_connected));
-                    updateUiState(true);
-                });
-                adbManager.startCpuMonitor(appContext);
-                adbManager.checkSystemRestrictions(appContext);
-            } else {
-                isAttemptingFastConnect = false;
-            }
-        }).start();
-    }
 
-    private void openDeveloperOptions() {
-        try {
-            Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } catch (Exception e) {
-            Snackbar.make(getView(), R.string.adb_snack_dev_options, Snackbar.LENGTH_LONG).show();
-        }
-    }
 
-    private android.net.nsd.NsdManager.DiscoveryListener createDiscoveryListener(String serviceType) {
-        return new android.net.nsd.NsdManager.DiscoveryListener() {
-            @Override
-            public void onDiscoveryStarted(String regType) {
-            }
 
-            @Override
-            public void onServiceLost(android.net.nsd.NsdServiceInfo service) {
-            }
 
-            @Override
-            public void onDiscoveryStopped(String serviceType) {
-            }
-
-            @Override
-            public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-                nsdManager.stopServiceDiscovery(this);
-            }
-
-            @Override
-            public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-                nsdManager.stopServiceDiscovery(this);
-            }
-
-            @Override
-            public void onServiceFound(android.net.nsd.NsdServiceInfo service) {
-                if (service.getServiceType().contains("_adb-tls")) resolveService(service);
-            }
-        };
-    }
-
-    private void resolveService(android.net.nsd.NsdServiceInfo serviceInfo) {
-        nsdManager.resolveService(serviceInfo, new android.net.nsd.NsdManager.ResolveListener() {
-            @Override
-            public void onResolveFailed(android.net.nsd.NsdServiceInfo serviceInfo, int errorCode) {
-            }
-
-            @Override
-            public void onServiceResolved(android.net.nsd.NsdServiceInfo serviceInfo) {
-                int port = serviceInfo.getPort();
-                String type = serviceInfo.getServiceType();
-                String hostIp = serviceInfo.getHost().getHostAddress();
-                String myIp = getLocalWifiIp();
-
-                if (hostIp != null && !hostIp.equals(myIp) && !hostIp.equals("127.0.0.1")) return;
-
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    discoveredHostIp = hostIp;
-                    if (type.contains("connect")) {
-                        discoveredConnectPort = port;
-                        attemptFastConnection(hostIp, port);
-                    } else if (type.contains("pairing")) {
-                        discoveredPairingPort = port;
-                    }
-
-                    if (discoveredConnectPort != -1 && discoveredPairingPort != -1 && !isConnectedToAdb) {
-                        stopDiscovery();
-                        showPairingNotification(discoveredHostIp, discoveredConnectPort, discoveredPairingPort);
-                        resetScanState();
-                    }
-                });
-            }
-        });
-    }
-
-    private void showPairingNotification(String hostIp, int connectPort, int pairingPort) {
-        RemoteInput remoteInput = new RemoteInput.Builder(AdbPairingReceiver.KEY_PIN_REPLY).setLabel(getString(R.string.adb_notif_input_hint)).build();
-        Intent replyIntent = new Intent(requireContext(), AdbPairingReceiver.class);
-        replyIntent.putExtra("hostIp", hostIp);
-        replyIntent.putExtra("connectPort", connectPort);
-        replyIntent.putExtra("pairingPort", pairingPort);
-
-        int flags = PendingIntent.FLAG_UPDATE_CURRENT | (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0);
-        PendingIntent replyPendingIntent = PendingIntent.getBroadcast(requireContext(), 0, replyIntent, flags);
-        NotificationCompat.Action action = new NotificationCompat.Action.Builder(android.R.drawable.ic_menu_edit, getString(R.string.adb_notif_action_pin), replyPendingIntent).addRemoteInput(remoteInput).build();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "ADB Pairing", NotificationManager.IMPORTANCE_HIGH);
-            requireContext().getSystemService(NotificationManager.class).createNotificationChannel(channel);
-        }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(requireContext(), CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setContentTitle(getString(R.string.adb_notif_title))
-                .setContentText(getString(R.string.adb_notif_desc))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .addAction(action)
-                .setAutoCancel(true);
-
-        NotificationManager nm = (NotificationManager) requireContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null) nm.notify(AdbPairingReceiver.NOTIFICATION_ID, builder.build());
-    }
-
-    private void stopDiscovery() {
-        try {
-            if (connectDiscoveryListener != null) {
-                nsdManager.stopServiceDiscovery(connectDiscoveryListener);
-                connectDiscoveryListener = null;
-            }
-            if (pairingDiscoveryListener != null) {
-                nsdManager.stopServiceDiscovery(pairingDiscoveryListener);
-                pairingDiscoveryListener = null;
-            }
-        } catch (Exception ignored) {
-        } finally {
-            if (multicastLock != null && multicastLock.isHeld()) multicastLock.release();
-        }
-    }
-
-    private void checkIfScanTimedOut() {
-        if (isScanning && (discoveredConnectPort == -1 || discoveredPairingPort == -1)) {
-            Snackbar.make(getView(), R.string.adb_toast_scan_timeout, Snackbar.LENGTH_LONG).show();
-            stopDiscovery();
-            resetScanState();
-        }
-    }
-
-    private void resetScanState() {
-        isScanning = false;
-        if (!isConnectedToAdb) {
-            btnAdbAction.setEnabled(true);
-            btnAdbAction.setText(getString(R.string.adb_btn_connect));
-        }
-    }
 
     private void setupCpuChart() {
         cpuChart.getDescription().setEnabled(false);
@@ -994,7 +597,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         cpuChart.setData(new LineData());
     }
 
-    private void addCpuEntry(float cpuPercentage) {
+    public void addCpuEntry(float cpuPercentage) {
         if (cpuChart == null || cpuChart.getData() == null) return;
         LineData data = cpuChart.getData();
         ILineDataSet set = data.getDataSetByIndex(0);
@@ -1098,15 +701,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         }
     }
 
-    private String getLocalWifiIp() {
-        android.net.wifi.WifiManager wm = (android.net.wifi.WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wm != null) {
-            int ip = wm.getConnectionInfo().getIpAddress();
-            if (ip != 0)
-                return String.format(java.util.Locale.US, "%d.%d.%d.%d", (ip & 0xff), (ip >> 8 & 0xff), (ip >> 16 & 0xff), (ip >> 24 & 0xff));
-        }
-        return "127.0.0.1";
-    }
 
     public String getTermuxArch() {
         try {
@@ -1202,7 +796,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             ledDevMode.setBackgroundResource(isDevModeOn ? R.drawable.led_on_green : R.drawable.led_off);
     }
 
-    private float parseCpuUsage(String cpuLine) {
+    public float parseCpuUsage(String cpuLine) {
         try {
             java.util.regex.Pattern p = java.util.regex.Pattern.compile("(\\d+)%cpu.*?(\\d+)%idle");
             java.util.regex.Matcher m = p.matcher(cpuLine.toLowerCase());
