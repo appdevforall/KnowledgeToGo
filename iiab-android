@@ -29,8 +29,8 @@ fi
 #-----------------------------
 # Config
 #-----------------------------
-GIT_REPO_IIABOA="https://github.com/appdevforall/KnowledgeToGo"
-IIABOA_OPT_DIR="/opt/iiab-android"
+GIT_REPO_K2GO="https://github.com/appdevforall/KnowledgeToGo"
+K2GO_OPT_DIR="/opt/iiab-android"
 SITE_UPDATER="/opt/iiab-android/static/site/site-updater.sh"
 BASE_VARS_URL="https://raw.githubusercontent.com/iiab/iiab/refs/heads/master/vars/"
 LOCAL_VARS_DEST="/etc/iiab/local_vars.yml"
@@ -320,12 +320,12 @@ tty_yesno_default_n() {
 
 install_update_repo() {
 local current_pwd="$(pwd)"
-  if [ ! -d "$IIABOA_OPT_DIR" ]; then
+  if [ ! -d "$K2GO_OPT_DIR" ]; then
     cd /opt/
-    git clone "$GIT_REPO_IIABOA"
+    git clone "$GIT_REPO_K2GO" "$K2GO_OPT_DIR"
     cd $current_pwd
   else
-    cd "$IIABOA_OPT_DIR"
+    cd "$K2GO_OPT_DIR"
     git fetch origin main > /dev/null 2>&1 || true
     git reset --hard origin/main > /dev/null 2>&1 || true
     cd $current_pwd
@@ -396,7 +396,7 @@ install_demo_contents() {
 
 install_iiaboa_dashboard() {
   log "Installing IIAB-oA Dashboard..."
-  local dash_src="${IIABOA_OPT_DIR}/static/dashboard"
+  local dash_src="${K2GO_OPT_DIR}/static/dashboard"
   local dash_dest="/library/dashboard"
 
   log "Setting up Node.js environment..."
@@ -445,7 +445,7 @@ install_iiaboa_dashboard() {
 
   # Setup pdsm service
   log "Configuring dash-node PDSM service..."
-  cp "${IIABOA_OPT_DIR}/static/pdsm/dash-node" "/usr/local/pdsm/services-available/dash-node"
+  cp "${K2GO_OPT_DIR}/static/pdsm/dash-node" "/usr/local/pdsm/services-available/dash-node"
   chmod +x "/usr/local/pdsm/services-available/dash-node"
   /usr/local/bin/pdsm enable dash-node
   /usr/local/bin/pdsm restart dash-node
@@ -556,7 +556,7 @@ rm -f "$tmp_install"
 if [ "$ENABLE_INDEX_PAGE" -eq 1 ]; then
   if [ -f "$SITE_UPDATER" ]; then
     log "Running site-updater..."
-    cd "${IIABOA_OPT_DIR}/static/site"
+    cd "${K2GO_OPT_DIR}/static/site"
     bash site-updater.sh
   else
     warn "site-updater.sh not found at $SITE_UPDATER"
