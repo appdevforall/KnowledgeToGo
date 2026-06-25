@@ -315,6 +315,9 @@ public final class InstallController {
     // ADFA-4458: true while a module install is running; blocks re-entry of processNextInQueue
     // (e.g. onResume re-posting it) so a resume cannot finish the already-dequeued module.
     private boolean installInFlight = false;
+    // ADFA-4458: module keys the user selected; survives card re-render. verifyInstallationState
+    // runs on onResume and used to reset checks, so selection was lost when switching tabs.
+    private final java.util.Set<String> selectedModuleKeys = new java.util.HashSet<>();
 
     public void processNextInQueue() {
         if (installInFlight) return; // ADFA-4458: a module install is in flight; ignore re-entry
@@ -395,6 +398,7 @@ public final class InstallController {
                             fragment.getActivity().runOnUiThread(() -> processNextInQueue());
                     });
                 } else {
+                    selectedModuleKeys.remove(nextModule); // ADFA-4458: installed -> drop from selection
                     fragment.getActivity().runOnUiThread(() -> processNextInQueue());
                 }
             }
@@ -678,6 +682,7 @@ public final class InstallController {
                     final boolean finalConfirmed = isConfirmedInstalled;
                     final boolean finalDiscrepancyFlag = isDiscrepancy;
                     final boolean finalIsRunning = isRunning;
+                    final String moduleKey = module.yamlBaseKey;
 
                     fragment.getActivity().runOnUiThread(() -> {
                         card.setOnClickListener(null);
@@ -705,7 +710,7 @@ public final class InstallController {
                         } else {
                             led.setVisibility(View.GONE);
                             checkBox.setVisibility(View.VISIBLE);
-                            checkBox.setChecked(false);
+                            checkBox.setChecked(selectedModuleKeys.contains(moduleKey)); // ADFA-4458: restore selection
 
                             if (finalIsRunning) {
                                 checkBox.setEnabled(false);
@@ -720,7 +725,10 @@ public final class InstallController {
 
                             if (!host.moduleCheckboxes().contains(checkBox))
                                 host.moduleCheckboxes().add(checkBox);
-                            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> evaluateLaunchButton());
+                            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                                if (isChecked) selectedModuleKeys.add(moduleKey); else selectedModuleKeys.remove(moduleKey);
+                                evaluateLaunchButton();
+                            });
                         }
                     });
 
