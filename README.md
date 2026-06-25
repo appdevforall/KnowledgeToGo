@@ -7,7 +7,7 @@ As of April 2026, these IIAB Apps are supported:
 * **Calibre-Web** (eBooks & videos)
 * **Kiwix** (Wikipedias, etc)
 * **Kolibri** (lessons & quizzes)
-* **Maps** (satellite photos, terrain, buildings)
+* **IIAB Maps** (satellite photos, terrain, buildings)
 * **Matomo** (metrics)
 * **System Dashboard** (Android only) — web control panel written in TypeScript
 
@@ -190,7 +190,7 @@ An educational promoter travels to an isolated community. They meet a community 
 
     3. A minimalist slide-out Terminal will appear.
 
-        From here, you can access the Debian 13 operating system that powers our IIAB server, where you will have the ability to test and execute the core IIAB tools inside PRoot and install a large number of packages from Debian repositories itself.
+        From here, you can access the Debian 13 operating system that powers the embedded server, where you will have the ability to test and execute the core IIAB tools inside PRoot and install a large number of packages from Debian repositories itself.
 
     4. To hide it, you can simply press the back button or perform the back gesture several times, or unlock it at the top and slide the panel down.
 
