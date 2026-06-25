@@ -512,4 +512,20 @@
     <string name="ota_btn_install">इंस्टॉल करें</string>
     <string name="ota_btn_cancel">रद्द करें</string>
     <string name="restore_log_label">Extraction log</string>
+    <!-- ADFA-4453: backfill missing translations (DNS slice + install/OTA) -->
+    <string name="dns_accept">स्वीकार करें और सहेजें</string>
+    <string name="dns_primary">प्राथमिक DNS</string>
+    <string name="dns_secondary">द्वितीयक DNS</string>
+    <string name="dns_status_ok">DNS काम कर रहा है — सहेजा गया</string>
+    <string name="dns_status_testing">परीक्षण हो रहा है…</string>
+    <string name="network_advanced_label">उन्नत सेटिंग्स</string>
+    <string name="setup_dns">DNS सेट करें</string>
+    <string name="install_error_not_rootfs">यह फ़ाइल एक मान्य rootfs बैकअप नहीं है, इसलिए इसका उपयोग नहीं किया गया।</string>
+    <string name="install_error_wrong_arch">यह बैकअप एक भिन्न CPU आर्किटेक्चर (32-बिट बनाम 64-बिट) के लिए है और इस ऐप द्वारा उपयोग नहीं किया जा सकता।</string>
+    <string name="install_error_corrupt">यह बैकअप अपनी अखंडता जाँच में विफल रहा (यह दूषित या परिवर्तित हो सकता है), इसलिए इसका उपयोग नहीं किया गया।</string>
+    <string name="install_warn_manifest_missing">आयात किया गया, लेकिन इस बैकअप में कोई एम्बेडेड rootfs मेनिफ़ेस्ट नहीं है, इसलिए इसे पूरी तरह सत्यापित नहीं किया जा सका।</string>
+    <string name="install_warn_no_checksum">आयात किया गया। इस बैकअप में अखंडता चेकसम नहीं है क्योंकि इसे मोबाइल डिवाइस पर बनाया गया था।</string>
+    <string name="ota_error_verify_failed">अपडेट सत्यापित नहीं हो सका और इंस्टॉल नहीं हुआ। कृपया पुनः प्रयास करें।</string>
+    <string name="ota_error_download_failed">अपडेट डाउनलोड विफल रहा। कृपया पुनः प्रयास करें।</string>
+    <string name="ota_msg_enable_unknown_sources">इस ऐप से अपडेट इंस्टॉल करने की अनुमति दें, फिर पुनः अपडेट पर टैप करें।</string>
 </resources>

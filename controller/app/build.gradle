@@ -107,10 +107,10 @@ android {
         // but any NEW lint error fails it. Shrink the baseline as the backlog is fixed.
         abortOnError true
         baseline file("lint-baseline.xml")
-        // Missing translations in secondary locales (fr/hi/pt/ru) should not block
-        // the build — en/es are primary and translations land incrementally. Still
-        // reported as a warning so they stay visible.
-        warning 'MissingTranslation'
+        // Missing translations are a HARD ERROR (ADFA-4453): lint now runs in minutes
+        // (Fragment detectors re-enabled in ADFA-4443), so an incomplete locale must
+        // fail fast and be completed rather than silently drift.
+        error 'MissingTranslation'
 
         // androidx.fragment's UnsafeFragmentLifecycleObserverDetector (issue IDs
         // FragmentBackPressedCallback / FragmentLiveDataObserve / FragmentAddMenuProvider)

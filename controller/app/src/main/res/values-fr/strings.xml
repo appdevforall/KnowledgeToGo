@@ -512,4 +512,20 @@
     <string name="ota_btn_install">Installer</string>
     <string name="ota_btn_cancel">Annuler</string>
     <string name="restore_log_label">Journal d\'extraction</string>
+    <!-- ADFA-4453: backfill missing translations (DNS slice + install/OTA) -->
+    <string name="dns_accept">Accepter et enregistrer</string>
+    <string name="dns_primary">DNS principal</string>
+    <string name="dns_secondary">DNS secondaire</string>
+    <string name="dns_status_ok">Le DNS fonctionne — enregistré</string>
+    <string name="dns_status_testing">Test en cours…</string>
+    <string name="network_advanced_label">Paramètres avancés</string>
+    <string name="setup_dns">Configurer le DNS</string>
+    <string name="install_error_not_rootfs">Ce fichier n\'est pas une sauvegarde rootfs valide, il n\'a donc pas été utilisé.</string>
+    <string name="install_error_wrong_arch">Cette sauvegarde concerne une autre architecture de processeur (32 bits ou 64 bits) et ne peut pas être utilisée par cette application.</string>
+    <string name="install_error_corrupt">Cette sauvegarde a échoué au contrôle d\'intégrité (elle est peut-être corrompue ou altérée), elle n\'a donc pas été utilisée.</string>
+    <string name="install_warn_manifest_missing">Importée, mais cette sauvegarde ne contient pas de manifeste rootfs, elle n\'a donc pas pu être entièrement vérifiée.</string>
+    <string name="install_warn_no_checksum">Importée. Cette sauvegarde n\'a pas de somme de contrôle d\'intégrité car elle a été créée sur un appareil mobile.</string>
+    <string name="ota_error_verify_failed">La mise à jour n\'a pas pu être vérifiée et n\'a pas été installée. Veuillez réessayer.</string>
+    <string name="ota_error_download_failed">Le téléchargement de la mise à jour a échoué. Veuillez réessayer.</string>
+    <string name="ota_msg_enable_unknown_sources">Autorisez l\'installation des mises à jour depuis cette application, puis appuyez à nouveau sur Mettre à jour.</string>
 </resources>

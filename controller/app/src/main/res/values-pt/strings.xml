@@ -514,4 +514,20 @@
     <string name="ota_btn_install">Instalar</string>
     <string name="ota_btn_cancel">Cancelar</string>
     <string name="restore_log_label">Registro de extração</string>
+    <!-- ADFA-4453: backfill missing translations (DNS slice + install/OTA) -->
+    <string name="dns_accept">Aceitar e salvar</string>
+    <string name="dns_primary">DNS primário</string>
+    <string name="dns_secondary">DNS secundário</string>
+    <string name="dns_status_ok">O DNS funciona — salvo</string>
+    <string name="dns_status_testing">Testando…</string>
+    <string name="network_advanced_label">Configurações avançadas</string>
+    <string name="setup_dns">Configurar DNS</string>
+    <string name="install_error_not_rootfs">Este arquivo não é um backup de rootfs válido, por isso não foi usado.</string>
+    <string name="install_error_wrong_arch">Este backup é para outra arquitetura de CPU (32 bits vs 64 bits) e não pode ser usado por este app.</string>
+    <string name="install_error_corrupt">Este backup falhou na verificação de integridade (pode estar corrompido ou alterado), por isso não foi usado.</string>
+    <string name="install_warn_manifest_missing">Importado, mas este backup não tem manifesto rootfs incorporado, por isso não pôde ser totalmente verificado.</string>
+    <string name="install_warn_no_checksum">Importado. Este backup não tem checksum de integridade porque foi criado em um dispositivo móvel.</string>
+    <string name="ota_error_verify_failed">Não foi possível verificar a atualização e ela não foi instalada. Tente novamente.</string>
+    <string name="ota_error_download_failed">O download da atualização falhou. Tente novamente.</string>
+    <string name="ota_msg_enable_unknown_sources">Permita instalar atualizações deste app e toque em atualizar novamente.</string>
 </resources>
