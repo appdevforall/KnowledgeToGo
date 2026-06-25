@@ -112,14 +112,14 @@ android {
         // reported as a warning so they stay visible.
         warning 'MissingTranslation'
 
-        // Workaround: androidx.fragment's UnsafeFragmentLifecycleObserverDetector
-        // walks the call graph recursively per Fragment method; on our oversized
-        // Fragment/Activity methods (DeployFragment/MainActivity) this degrades to
-        // near-exponential cost and HANGS :app:lintDebug for hours (CI ~50 min -> 3 h).
-        // Disable its 3 issue IDs (the only ones that detector emits) so lint finishes
-        // in minutes; the other 450+ checks stay on. Re-enable after the god classes
-        // are split (see controller/docs/TECH_DEBT_PLAN.md).
-        disable 'FragmentBackPressedCallback', 'FragmentLiveDataObserve', 'FragmentAddMenuProvider'
+        // androidx.fragment's UnsafeFragmentLifecycleObserverDetector (issue IDs
+        // FragmentBackPressedCallback / FragmentLiveDataObserve / FragmentAddMenuProvider)
+        // was disabled in #36: its recursive call-graph walk hit near-exponential cost on
+        // the oversized DeployFragment and hung :app:lintDebug for hours. Re-enabled after
+        // the DeployFragment carves (ADFA-1028) -- the observe / back-pressed / menu-provider
+        // call sites no longer exist in any Fragment (they live in non-Fragment controllers
+        // and in MainActivity, both out of these detectors' scope), so the detector has
+        // nothing to walk. See controller/docs/TECH_DEBT_PLAN.md.
     }
 
     testOptions {
