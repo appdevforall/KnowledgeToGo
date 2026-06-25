@@ -1,14 +1,15 @@
-# :world_map: Internet-in-a-Box en Android
+# :world_map: Knowledge To Go
 
-**[Internet-in-a-Box (IIAB)](https://internet-in-a-box.org) en Android** permitirá que millones de personas en todo el mundo construyan sus propias bibliotecas familiares, ¡dentro de sus propios teléfonos!
+**Knowledge To Go (K2Go)**, con la tecnología de **[Internet-in-a-Box (IIAB)](https://internet-in-a-box.org)**, permitirá que millones de personas en todo el mundo construyan sus propias bibliotecas familiares, ¡dentro de sus propios teléfonos!
 
 A partir de Marzo de 2026, estas Apps de IIAB están soportadas:
 
 * **Calibre-Web** (eBooks & videos)
 * **Kiwix** (Wikipedias, etc)
 * **Kolibri** (lecciones y cuestionarios)
-* **Maps** (fotos satelitales, relieve, edificios)
+* **IIAB Maps** (fotos satelitales, relieve, edificios)
 * **Matomo** (métricas)
+* **System Dashboard** (solo Android) — panel de control web escrito en TypeScript
 
 El puerto predeterminado del servidor web es **8085**, por ejemplo:
 
@@ -16,16 +17,16 @@ El puerto predeterminado del servidor web es **8085**, por ejemplo:
 http://localhost:8085/maps
 ```
 
-## ¿Cuáles son los componentes actuales de "IIAB en Android"?
+## ¿Cuáles son los componentes actuales de Knowledge To Go?
 
-* **[termux-setup](https://github.com/iiab/iiab-android/tree/main/termux-setup) (iiab-termux)** — prepara un entorno tipo Debian en Android (se llama [PRoot](https://wiki.termux.com/wiki/PRoot))
+* **[termux-setup](https://github.com/appdevforall/KnowledgeToGo/tree/main/archive/termux-setup) (iiab-termux)** — prepara un entorno tipo Debian en Android (se llama [PRoot](https://wiki.termux.com/wiki/PRoot))
 * **Wrapper para instalar IIAB (iiab-android)** — configura [`local_vars_android.yml`](https://github.com/iiab/iiab/blob/master/vars/local_vars_android.yml) y luego lanza el instalador de IIAB
 * **Capa principal de portabilidad de IIAB** — modificaciones a través de IIAB y sus roles existentes, basado en el [PR #4122](https://github.com/iiab/iiab/pull/4122)
 * **proot-distro service manager (PDSM)** — como systemd, pero para `proot_services`
 
 ## Documentación relacionada
 
-* **Bootstrap de Android (en este repo):** [`termux-setup/README.md`](https://github.com/iiab/iiab-android/blob/main/termux-setup/README.md)
+* **Bootstrap de Android (en este repo):** [`termux-setup/README.md`](https://github.com/appdevforall/KnowledgeToGo/blob/main/archive/termux-setup/README.md)
 * **Rol proot_services (en el repo principal de IIAB):** [`roles/proot_services/README.md`](https://github.com/iiab/iiab/blob/master/roles/proot_services/README.md)
 
 ---
@@ -63,7 +64,7 @@ Antes de instalar, necesitas configurar tu dispositivo Android. Estos pasos inic
 
 ### Parte 2: Elige tu ruta de instalación
 
-Hay dos formas principales de instalar IIAB en Android. Si no estás seguro, recomendamos el método **Precompilado**.
+Hay dos formas principales de instalar Knowledge To Go. Si no estás seguro, recomendamos el método **Precompilado**.
 
 **Precompilado - Rápido y sencillo**  
 Esta es la ruta recomendada para la mayoría de los usuarios. En lugar de compilar el software en tu teléfono, descarga un sistema IIAB preconfigurado y listo para usar. Ahorra mucho tiempo, minimiza posibles errores y te pone en marcha rápidamente.
@@ -233,7 +234,7 @@ Antes de comenzar, obtén la IP de tu teléfono o tablet Android ejecutando `ifc
 
 ### SSH
 
-Para iniciar sesión en IIAB en Android desde tu computadora, sigue estas instrucciones en CLI (línea de comandos) con SSH:
+Para iniciar sesión en Knowledge To Go desde tu computadora, sigue estas instrucciones en CLI (línea de comandos) con SSH:
 
 1. En tu teléfono o tablet Android, llega al CLI de Termux. **Si antes ejecutaste `iiab-termux --login` para entrar al CLI de bajo nivel de IIAB Debian en PRoot Distro — DEBES regresar al CLI de alto nivel de Termux — por ejemplo ejecutando:**
 
@@ -281,13 +282,13 @@ Entonces estarás en una shell IIAB Debian con acceso a las herramientas del CLI
 
 ## ¿Qué pasa con los 32 bits?
 
-¡IIAB en Android funciona en dispositivos antiguos de 32 bits, y estamos progresando! [**Maps ahora es compatible**](https://github.com/iiab/iiab/pull/4302).
+¡Knowledge To Go funciona en dispositivos antiguos de 32 bits, y estamos progresando! [**Maps ahora es compatible**](https://github.com/iiab/iiab/pull/4302).
 
 Sin embargo, todavía hay limitaciones:
 
 * Kiwix: Actualmente no es compatible en 32 bits.
 
-Aunque nos encantaría cerrar [esta brecha](https://github.com/iiab/iiab-android/issues/35), portar Kiwix a esta arquitectura requiere importantes recursos de desarrollo. Como resultado, el desarrollo activo de esta función se encuentra actualmente en pausa. ¡Las contribuciones de la comunidad son bienvenidas si tienes la experiencia para ayudarnos a abordar esto!
+Aunque nos encantaría cerrar [esta brecha](https://github.com/appdevforall/KnowledgeToGo/issues/35), portar Kiwix a esta arquitectura requiere importantes recursos de desarrollo. Como resultado, el desarrollo activo de esta función se encuentra actualmente en pausa. ¡Las contribuciones de la comunidad son bienvenidas si tienes la experiencia para ayudarnos a abordar esto!
 
 Mientras tanto, puedes probar el estado actual de nuestro rootfs precompilado:
 
