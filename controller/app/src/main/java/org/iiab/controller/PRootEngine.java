@@ -111,6 +111,16 @@ public class PRootEngine {
                 args.add("-b");
                 args.add("/sys");
 
+                // ADFA-4435: Ansible strategy plugins use multiprocessing.Semaphore, which
+                // needs a writable POSIX shared-memory mount. Android's /dev has no shm and
+                // "-b /dev" shadows the guest's, so bind a writable host dir over /dev/shm
+                // (a later, more specific bind overrides "-b /dev"). Without it the install
+                // dies instantly: "Unable to use multiprocessing ... lack of access to /dev/shm".
+                File prootShmHost = new File(context.getFilesDir(), "proot_shm");
+                if (!prootShmHost.exists()) prootShmHost.mkdirs();
+                args.add("-b");
+                args.add(prootShmHost.getCanonicalPath() + ":/dev/shm");
+
                 File fakeProcDir = new File(canonicalRootfs, "proc");
                 File fUptime = new File(fakeProcDir, ".uptime");
                 File fVersion = new File(fakeProcDir, ".version");
@@ -260,6 +270,16 @@ public class PRootEngine {
                 args.add("/proc");
                 args.add("-b");
                 args.add("/sys");
+
+                // ADFA-4435: Ansible strategy plugins use multiprocessing.Semaphore, which
+                // needs a writable POSIX shared-memory mount. Android's /dev has no shm and
+                // "-b /dev" shadows the guest's, so bind a writable host dir over /dev/shm
+                // (a later, more specific bind overrides "-b /dev"). Without it the install
+                // dies instantly: "Unable to use multiprocessing ... lack of access to /dev/shm".
+                File prootShmHost = new File(context.getFilesDir(), "proot_shm");
+                if (!prootShmHost.exists()) prootShmHost.mkdirs();
+                args.add("-b");
+                args.add(prootShmHost.getCanonicalPath() + ":/dev/shm");
 
                 File sdcard = android.os.Environment.getExternalStorageDirectory();
                 args.add("-b");
