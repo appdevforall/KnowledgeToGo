@@ -32,6 +32,11 @@ import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import org.iiab.controller.network.presentation.DnsSettingsUiState;
+import org.iiab.controller.network.presentation.DnsSettingsViewModel;
+import org.iiab.controller.network.presentation.DnsSettingsViewModelFactory;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,7 +48,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
     private MainActivity mainActivity;
     // INTERFACE VARS
-    private EditText edittext_socks_addr, edittext_socks_udp_addr, edittext_socks_port, edittext_socks_user, edittext_socks_pass, edittext_dns_ipv4, edittext_dns_ipv6;
+    private EditText edittext_socks_addr, edittext_socks_udp_addr, edittext_socks_port, edittext_socks_user, edittext_socks_pass;
     private CheckBox checkbox_udp_in_tcp, checkbox_remote_dns, checkbox_global, checkbox_maintenance, checkbox_ipv4, checkbox_ipv6;
     private TextView textview_maintenance_warning, configLabel, advConfigLabel, logLabel, logWarning, logSizeText, connectionLog;
     private Button button_apps, button_save, button_control, button_browse_content, btnClearLog, btnCopyLog;
@@ -52,6 +57,17 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     private ProgressButton btnServerControl;
 
     private DashboardManager dashboardManager;
+
+    // Setup DNS (network slice, PR B)
+    private CheckBox setup_dns_check;
+    private LinearLayout dns_setup_fields;
+    private EditText dns_primary, dns_secondary;
+    private Button dns_accept;
+    private TextView dns_result;
+    private TextView dns_settings_label;
+    private LinearLayout dns_settings_section;
+    private DnsSettingsViewModel dnsViewModel;
+    private boolean suppressDnsToggle = false;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -78,8 +94,25 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         edittext_socks_port = view.findViewById(R.id.socks_port);
         edittext_socks_user = view.findViewById(R.id.socks_user);
         edittext_socks_pass = view.findViewById(R.id.socks_pass);
-        edittext_dns_ipv4 = view.findViewById(R.id.dns_ipv4);
-        edittext_dns_ipv6 = view.findViewById(R.id.dns_ipv6);
+        setup_dns_check = view.findViewById(R.id.setup_dns_check);
+        dns_setup_fields = view.findViewById(R.id.dns_setup_fields);
+        dns_primary = view.findViewById(R.id.dns_primary);
+        dns_secondary = view.findViewById(R.id.dns_secondary);
+        dns_accept = view.findViewById(R.id.dns_accept);
+        dns_result = view.findViewById(R.id.dns_result);
+        dns_settings_label = view.findViewById(R.id.dns_settings_label);
+        dns_settings_section = view.findViewById(R.id.dns_settings_section);
+        dns_settings_label.setText(String.format(getString(R.string.label_separator_up), getString(R.string.network_advanced_label)));
+        dns_settings_label.setOnClickListener(v -> toggleVisibility(dns_settings_section, dns_settings_label, getString(R.string.network_advanced_label)));
+        dnsViewModel = new ViewModelProvider(this, new DnsSettingsViewModelFactory(requireContext()))
+                .get(DnsSettingsViewModel.class);
+        dnsViewModel.state().observe(getViewLifecycleOwner(), this::renderDnsState);
+        setup_dns_check.setOnCheckedChangeListener((btn, checked) -> {
+            if (suppressDnsToggle) return;
+            dnsViewModel.onSetupToggled(checked);
+        });
+        dns_accept.setOnClickListener(v -> dnsViewModel.onAccept(
+                dns_primary.getText().toString(), dns_secondary.getText().toString()));
         checkbox_ipv4 = view.findViewById(R.id.ipv4);
         checkbox_ipv6 = view.findViewById(R.id.ipv6);
         checkbox_global = view.findViewById(R.id.global);
@@ -210,8 +243,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         edittext_socks_port.setText(String.valueOf(mainActivity.prefs.getSocksPort()));
         edittext_socks_user.setText(mainActivity.prefs.getSocksUsername());
         edittext_socks_pass.setText(mainActivity.prefs.getSocksPassword());
-        edittext_dns_ipv4.setText(mainActivity.prefs.getDnsIpv4());
-        edittext_dns_ipv6.setText(mainActivity.prefs.getDnsIpv6());
         checkbox_ipv4.setChecked(mainActivity.prefs.getIpv4());
         checkbox_ipv6.setChecked(mainActivity.prefs.getIpv6());
         checkbox_global.setChecked(mainActivity.prefs.getGlobal());
@@ -450,10 +481,42 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         mainActivity.prefs.setRemoteDns(true);
         mainActivity.prefs.setGlobal(true);
 
-        mainActivity.prefs.setDnsIpv4(edittext_dns_ipv4.getText().toString());
-        mainActivity.prefs.setDnsIpv6(edittext_dns_ipv6.getText().toString());
         mainActivity.prefs.setMaintenanceMode(checkbox_maintenance.isChecked());
     }
+
+    private void renderDnsState(DnsSettingsUiState st) {
+        if (setup_dns_check == null) return;
+        suppressDnsToggle = true;
+        setup_dns_check.setChecked(st.customEnabled);
+        suppressDnsToggle = false;
+        dns_setup_fields.setVisibility(st.customEnabled ? View.VISIBLE : View.GONE);
+        if (st.status == DnsSettingsUiState.Status.IDLE || st.status == DnsSettingsUiState.Status.UNREACHABLE) {
+            dns_primary.setText(st.primary);
+            dns_secondary.setText(st.secondary);
+        }
+        switch (st.status) {
+            case TESTING:
+                dns_result.setVisibility(View.VISIBLE);
+                dns_result.setText(getString(R.string.dns_status_testing));
+                dns_result.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary));
+                break;
+            case APPLIED:
+                dns_result.setVisibility(View.VISIBLE);
+                dns_result.setText(getString(R.string.dns_status_ok));
+                dns_result.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_success));
+                break;
+            case INVALID:
+            case UNREACHABLE:
+                dns_result.setVisibility(View.VISIBLE);
+                dns_result.setText(st.message != null ? st.message : "");
+                dns_result.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_warning));
+                break;
+            default:
+                dns_result.setVisibility(View.GONE);
+                break;
+        }
+    }
+
     public void highlightServerButton() {
         if (deckContainer == null || !isAdded()) return;
 

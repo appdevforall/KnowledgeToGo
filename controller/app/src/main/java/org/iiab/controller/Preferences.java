@@ -24,8 +24,6 @@ public class Preferences {
     public static final String SOCKS_PORT = "SocksPort";
     public static final String SOCKS_USER = "SocksUser";
     public static final String SOCKS_PASS = "SocksPass";
-    public static final String DNS_IPV4 = "DnsIpv4";
-    public static final String DNS_IPV6 = "DnsIpv6";
     public static final String IPV4 = "Ipv4";
     public static final String IPV6 = "Ipv6";
     public static final String GLOBAL = "Global";
@@ -89,26 +87,6 @@ public class Preferences {
     public void setSocksPassword(String pass) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(SOCKS_PASS, pass);
-        editor.commit();
-    }
-
-    public String getDnsIpv4() {
-        return prefs.getString(DNS_IPV4, "8.8.8.8");
-    }
-
-    public void setDnsIpv4(String addr) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(DNS_IPV4, addr);
-        editor.commit();
-    }
-
-    public String getDnsIpv6() {
-        return prefs.getString(DNS_IPV6, "2001:4860:4860::8888");
-    }
-
-    public void setDnsIpv6(String addr) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(DNS_IPV6, addr);
         editor.commit();
     }
 

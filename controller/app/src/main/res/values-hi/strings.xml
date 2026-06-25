@@ -107,8 +107,6 @@
     <string name="control_disable">Safe Pocket Web अक्षम करें</string>
     <string name="control_enable">Safe Pocket Web सक्षम करें</string>
 
-    <string name="dns_ipv4">DNS IPv4:</string>
-    <string name="dns_ipv6">DNS IPv6:</string>
     <string name="global">ग्लोबल</string>
     <string name="ipv4">IPv4</string>
     <string name="ipv6">IPv6</string>

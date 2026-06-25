@@ -109,8 +109,13 @@
     <string name="control_disable">Disable Safe Pocket Web</string>
     <string name="control_enable">Enable Safe Pocket Web</string>
 
-    <string name="dns_ipv4">DNS IPv4:</string>
-    <string name="dns_ipv6">DNS IPv6:</string>
+    <string name="setup_dns">Setup DNS</string>
+    <string name="network_advanced_label">Advanced settings</string>
+    <string name="dns_primary">Primary DNS</string>
+    <string name="dns_secondary">Secondary DNS</string>
+    <string name="dns_accept">Accept &amp; save</string>
+    <string name="dns_status_testing">Testing…</string>
+    <string name="dns_status_ok">DNS works — saved</string>
     <string name="global">Global</string>
     <string name="ipv4">IPv4</string>
     <string name="ipv6">IPv6</string>
