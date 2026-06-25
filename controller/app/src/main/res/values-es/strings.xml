@@ -518,4 +518,12 @@
     <string name="install_warn_manifest_missing">Importado, pero este backup no tiene manifiesto, así que no se pudo verificar del todo.</string>
     <string name="install_error_corrupt">Este backup falló la verificación de integridad (puede estar dañado o alterado), así que no se usó.</string>
     <string name="install_warn_no_checksum">Importado. Este backup no tiene checksum de integridad porque fue creado en un dispositivo móvil.</string>
+    <!-- ADFA-4453: backfill missing translations (DNS slice + install/OTA) -->
+    <string name="dns_accept">Aceptar y guardar</string>
+    <string name="dns_primary">DNS primario</string>
+    <string name="dns_secondary">DNS secundario</string>
+    <string name="dns_status_ok">DNS funciona — guardado</string>
+    <string name="dns_status_testing">Probando…</string>
+    <string name="network_advanced_label">Configuración avanzada</string>
+    <string name="setup_dns">Configurar DNS</string>
 </resources>

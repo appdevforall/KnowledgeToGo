@@ -510,4 +510,20 @@
     <string name="ota_btn_install">Установить</string>
     <string name="ota_btn_cancel">Отмена</string>
     <string name="restore_log_label">Extraction log</string>
+    <!-- ADFA-4453: backfill missing translations (DNS slice + install/OTA) -->
+    <string name="dns_accept">Принять и сохранить</string>
+    <string name="dns_primary">Основной DNS</string>
+    <string name="dns_secondary">Дополнительный DNS</string>
+    <string name="dns_status_ok">DNS работает — сохранено</string>
+    <string name="dns_status_testing">Проверка…</string>
+    <string name="network_advanced_label">Расширенные настройки</string>
+    <string name="setup_dns">Настроить DNS</string>
+    <string name="install_error_not_rootfs">Этот файл не является корректным бэкапом rootfs, поэтому не был использован.</string>
+    <string name="install_error_wrong_arch">Этот бэкап предназначен для другой архитектуры ЦП (32-бит и 64-бит) и не может быть использован этим приложением.</string>
+    <string name="install_error_corrupt">Этот бэкап не прошёл проверку целостности (возможно, повреждён или изменён), поэтому не был использован.</string>
+    <string name="install_warn_manifest_missing">Импортировано, но в этом бэкапе нет встроенного манифеста rootfs, поэтому его не удалось полностью проверить.</string>
+    <string name="install_warn_no_checksum">Импортировано. У этого бэкапа нет контрольной суммы целостности, так как он создан на мобильном устройстве.</string>
+    <string name="ota_error_verify_failed">Не удалось проверить обновление, оно не установлено. Попробуйте ещё раз.</string>
+    <string name="ota_error_download_failed">Не удалось загрузить обновление. Попробуйте ещё раз.</string>
+    <string name="ota_msg_enable_unknown_sources">Разрешите установку обновлений из этого приложения, затем снова нажмите «Обновить».</string>
 </resources>
