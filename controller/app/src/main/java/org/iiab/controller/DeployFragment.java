@@ -76,7 +76,11 @@ import java.util.List;
 
 public class DeployFragment extends Fragment implements org.iiab.controller.backup.presentation.BackupHost,
         org.iiab.controller.install.presentation.PlannerHost,
-        org.iiab.controller.install.presentation.InstallHost {
+        org.iiab.controller.install.presentation.InstallHost,
+        org.iiab.controller.install.presentation.ResetDeleteHost {
+
+    private final org.iiab.controller.install.presentation.ResetDeleteController resetDeleteController =
+            new org.iiab.controller.install.presentation.ResetDeleteController(this, this);
 
     private final org.iiab.controller.install.presentation.InstallController installController =
             new org.iiab.controller.install.presentation.InstallController(this, this);
@@ -539,12 +543,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         // 1. ALWAYS link the buttons so Listeners can intercept and drop the Snackbar
         installController.bind(mainAct, debianRootfs, iiabRootDir,
                 btnFastInstall, btnLaunchInstall, discrepancyWarning, rolesContainer, chkCompanionData);
-        bindDeleteButtonLogic(mainAct, debianRootfs);
+        resetDeleteController.bind(mainAct, debianRootfs, btnAdvancedReset, btnFastDelete);
         backupController.bind(mainAct, backupsDir, iiabRootDir,
                 btnImportBackup, btnAdvancedBackup, btnAdvancedRestore,
                 txtSelectBackupTitle, txtBackupStatus, containerBackupList,
                 restoreLogPanel, restoreLogText, restoreLogResult, restoreLogScroll);
-        bindResetButtonLogic(mainAct, debianRootfs);
 
         if (isServerRunning || isBusy) {
             // LOCK MODE: Server On or System Busy
@@ -621,233 +624,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // =========================================================================================
 
 
-    private void bindDeleteButtonLogic(MainActivity mainAct, File debianRootfs) {
-        btnFastDelete.setOnClickListener(v -> {
-            if (mainAct.isServerAlive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if (isSystemBusy()) {
-                Snackbar.make(v, getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
-                return;
-            }
 
-            new android.app.AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.install_dialog_delete_title)
-                    .setMessage(R.string.install_dialog_delete_msg)
-                    .setPositiveButton(R.string.install_btn_delete_confirm, (dialog, which) -> {
-                        isDeleting = true;
-                        mainAct.runOnUiThread(this::updateDynamicButtons);
-
-                        mainAct.invalidateModuleStateTrust();
-                        btnFastDelete.setEnabled(false);
-                        btnFastDelete.startProgress();
-                        Snackbar.make(getView(), R.string.install_status_deleting, Snackbar.LENGTH_SHORT).show();
-                        new Thread(() -> {
-                            enableSystemProtection();
-                            try {
-                                ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                                if (!wipeResult.isSuccess()) {
-                                    Log.w(TAG, "rm -rf rootfs (delete) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
-                                }
-                            } catch (Exception e) {
-                                mainAct.runOnUiThread(() -> Snackbar.make(getView(), getString(R.string.install_error_delete, e.getMessage()), Snackbar.LENGTH_LONG).show());
-                            } finally {
-                                isDeleting = false;
-                                mainAct.runOnUiThread(() -> { btnFastDelete.stopProgress(); updateDynamicButtons(); });
-                                disableSystemProtection();
-                            }
-                        }).start();
-                    })
-                    .setNegativeButton(R.string.cancel, null)
-                    .show();
-        });
-    }
-
-    private void bindResetButtonLogic(MainActivity mainAct, File debianRootfs) {
-        if (btnAdvancedReset == null) return;
-        btnAdvancedReset.setOnClickListener(v -> {
-
-            if (mainAct.isServerAlive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            if (isSystemBusy()) {
-                Snackbar.make(v, getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
-                return;
-            }
-            // NORMAL STATE: RESET START
-            new android.app.AlertDialog.Builder(requireContext())
-                    .setTitle(R.string.install_dialog_reset_title)
-                    .setMessage(R.string.install_dialog_reset_msg)
-                    .setPositiveButton(R.string.install_dialog_reset_confirm, (dialog, which) -> {
-                        // IMMEDIATE LOCK AGAINST DOUBLE PRESS
-                        if (isDownloadingRootfs) return;
-                        isDownloadingRootfs = true;
-
-                        mainAct.invalidateModuleStateTrust();
-                        final String originalText = getString(R.string.install_btn_reset);
-
-                        // We enable the button but change the text to serve as "Cancel"
-                        btnAdvancedReset.setEnabled(true);
-
-                        new Thread(() -> {
-                            enableSystemProtection();
-                            try {
-                                mainAct.runOnUiThread(() -> {
-                                    btnAdvancedReset.setText(getString(R.string.install_status_wiping_old));
-                                    Snackbar.make(getView(), R.string.install_status_starting_vanilla, Snackbar.LENGTH_SHORT).show();
-                                });
-
-                                // 1. WIPE
-                                ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                                if (!wipeResult.isSuccess()) {
-                                    Log.w(TAG, "rm -rf rootfs (vanilla reset) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
-                                }
-                                debianRootfs.mkdirs();
-
-                                // 2. DOWNLOAD
-                                mainAct.runOnUiThread(() -> btnAdvancedReset.setText(getString(R.string.install_status_downloading_debian)));
-                                if (aria2Manager == null) aria2Manager = new Aria2Manager();
-
-                                String arch = getTermuxArch();
-                                String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "arm" : "aarch64";
-                                String tarball = "debian-trixie-" + archSuffix + "-pd-v4.29.0.tar.xz";
-                                String url = "https://iiab.switnet.org/android/rootfs/proot-distro-v4.29.0/" + tarball;
-
-                                aria2Manager.startDownload(requireContext(), url, new Aria2Manager.DownloadListener() {
-                                    @Override
-                                    public void onProgress(int percentage, String speed, String eta) {
-                                        if (isAdded() && getActivity() != null) {
-                                            getActivity().runOnUiThread(() -> {
-                                                // We keep it visible that you can cancel
-                                                btnAdvancedReset.setText(getString(R.string.install_status_debian_download, percentage, speed) + " (Tap to Cancel)");
-                                            });
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onComplete(String downloadPath) {
-                                        new Thread(() -> {
-                                            try {
-                                                // 3. EXTRACT
-                                                isDownloadingRootfs = false;
-                                                mainAct.runOnUiThread(() -> {
-                                                    btnAdvancedReset.setText(getString(R.string.install_status_extracting_base));
-                                                    btnAdvancedReset.setEnabled(false); // <--- SAFE DOOR CLOSURE
-                                                });
-
-                                                File downloadedArchive = new File(downloadPath, tarball);
-                                                File staticTar = new File(requireContext().getApplicationInfo().nativeLibraryDir, "libtar.so");
-                                                File staticXz = new File(requireContext().getApplicationInfo().nativeLibraryDir, "libxz.so");
-                                                String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
-                                                String xzBin = staticXz.exists() ? staticXz.getAbsolutePath() : "xz";
-
-                                                // Pipe xz directly into tar to bypass Android's limited PATH
-                                                String extractCmd = xzBin + " -d -c " + downloadedArchive.getAbsolutePath() + " | " + tarBin + " --exclude='*/dev/*' --strip-components=1 -xf - -C " + debianRootfs.getAbsolutePath();
-
-                                                Process pExt = Runtime.getRuntime().exec(new String[]{"/system/bin/sh", "-c", extractCmd});
-                                                BufferedReader errReader = new BufferedReader(new java.io.InputStreamReader(pExt.getErrorStream()));
-                                                StringBuilder errMsg = new StringBuilder();
-                                                String errLine;
-                                                while ((errLine = errReader.readLine()) != null) {
-                                                    errMsg.append(errLine).append("\n");
-                                                    android.util.Log.e(TAG, "[TAR Extractor] " + errLine);
-                                                }
-
-                                                int exitCode = pExt.waitFor();
-                                                if (exitCode != 0) {
-                                                    throw new Exception("Extraction failed (Code " + exitCode + "):\n" + errMsg.toString());
-                                                }
-
-                                                downloadedArchive.delete();
-
-                                                // 4. BOOTSTRAP IIAB
-                                                mainAct.runOnUiThread(() -> btnAdvancedReset.setText(getString(R.string.install_status_bootstrapping)));
-
-                                                // DNS is written at the chokepoint (PRootEngine) before the
-                                                // bootstrap proot run below; no inline write needed here.
-
-                                                if (prootEngine == null)
-                                                    prootEngine = new PRootEngine();
-                                                String bootstrapCmd = "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && " +
-                                                        "export DEBIAN_FRONTEND=noninteractive && " +
-                                                        "apt-get update && apt-get install -y curl ca-certificates nano sudo && " +
-                                                        "curl -fsSL https://raw.githubusercontent.com/appdevforall/KnowledgeToGo/main/iiab-android -o /usr/local/sbin/iiab-android && " +
-                                                        "chmod +x /usr/local/sbin/iiab-android && " +
-                                                        "apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache";
-
-                                                prootEngine.executeInContainer(requireContext(), debianRootfs.getAbsolutePath(), "/bin/bash -c '" + bootstrapCmd + "'", new PRootEngine.OutputListener() {
-                                                    @Override
-                                                    public void onOutputLine(String line) {
-                                                        mainAct.runOnUiThread(() -> mainAct.addToLog("[Bootstrap] " + line));
-                                                    }
-
-                                                    @Override
-                                                    public void onProcessExit(int exitCode) {
-                                                        mainAct.runOnUiThread(() -> {
-                                                            disableSystemProtection();
-                                                            btnAdvancedReset.setText(originalText);
-                                                            btnAdvancedReset.setEnabled(true);
-                                                            updateDynamicButtons();
-                                                            Snackbar.make(getView(), R.string.install_success_vanilla, Snackbar.LENGTH_LONG).show();
-                                                        });
-                                                    }
-
-                                                    @Override
-                                                    public void onError(String error) {
-                                                        mainAct.runOnUiThread(() -> {
-                                                            disableSystemProtection();
-                                                            btnAdvancedReset.setText(originalText);
-                                                            btnAdvancedReset.setEnabled(true);
-                                                            updateDynamicButtons();
-                                                            Snackbar.make(getView(), getString(R.string.install_error_bootstrap, error), Snackbar.LENGTH_LONG).show();
-                                                        });
-                                                    }
-                                                });
-
-                                            } catch (Exception e) {
-                                                mainAct.runOnUiThread(() -> {
-                                                    isDownloadingRootfs = false;
-                                                    disableSystemProtection();
-                                                    btnAdvancedReset.setText(originalText);
-                                                    btnAdvancedReset.setEnabled(true);
-                                                    updateDynamicButtons();
-                                                    Snackbar.make(getView(), getString(R.string.install_error_extract_bootstrap, e.getMessage()), Snackbar.LENGTH_LONG).show();
-                                                });
-                                            }
-                                        }).start();
-                                    }
-
-                                    @Override
-                                    public void onError(String error) {
-                                        mainAct.runOnUiThread(() -> {
-                                            isDownloadingRootfs = false;
-                                            disableSystemProtection();
-                                            btnAdvancedReset.setText(originalText);
-                                            btnAdvancedReset.setEnabled(true);
-                                            updateDynamicButtons();
-                                            Snackbar.make(getView(), getString(R.string.install_error_download, error), Snackbar.LENGTH_LONG).show();
-                                        });
-                                    }
-                                });
-
-                            } catch (Exception e) {
-                                mainAct.runOnUiThread(() -> {
-                                    isDownloadingRootfs = false;
-                                    disableSystemProtection();
-                                    btnAdvancedReset.setText(originalText);
-                                    btnAdvancedReset.setEnabled(true);
-                                    updateDynamicButtons();
-                                    Snackbar.make(getView(), getString(R.string.install_error_reset, e.getMessage()), Snackbar.LENGTH_LONG).show();
-                                });
-                            }
-                        }).start();
-                    })
-                    .setNegativeButton(R.string.install_dialog_reset_cancel, null)
-                    .show();
-        });
-    }
 
 
 
@@ -1477,4 +1254,8 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     @Override public void setAria2Manager(org.iiab.controller.Aria2Manager v) { aria2Manager = v; }
     @Override public org.iiab.controller.PRootEngine prootEngine() { return prootEngine; }
     @Override public void setPRootEngine(org.iiab.controller.PRootEngine v) { prootEngine = v; }
+
+    // --- ResetDeleteHost seam ---
+    @Override public boolean isDeleting() { return isDeleting; }
+    @Override public void setDeleting(boolean v) { isDeleting = v; }
 }
