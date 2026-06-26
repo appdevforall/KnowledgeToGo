@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class RsyncManager {
 
     private static final String TAG = "IIAB-RsyncManager";
-    private Process rsyncProcess;
+    private volatile Process rsyncProcess;
     private boolean isCancelled = false;
 
     private static final String SYNC_MODULE_NAME = "iiab_sync";

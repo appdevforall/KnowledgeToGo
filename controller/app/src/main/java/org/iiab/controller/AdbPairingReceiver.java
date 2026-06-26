@@ -13,8 +13,7 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import org.iiab.controller.util.AppExecutors;
 
 public class AdbPairingReceiver extends BroadcastReceiver {
 
@@ -22,7 +21,6 @@ public class AdbPairingReceiver extends BroadcastReceiver {
     public static final int NOTIFICATION_ID = 9401;
     private static final String TAG = "AdbPairingNative";
 
-    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -60,7 +58,7 @@ public class AdbPairingReceiver extends BroadcastReceiver {
     }
 
     private void performNativePairing(Context context, String hostIp, int pairingPort, String pin) {
-        executor.execute(() -> {
+        AppExecutors.get().io().execute(() -> {
             try {
                 IIABAdbManager adbManager = IIABAdbManager.getInstance(context);
                 Log.d(TAG, "Attempting pairing on " + hostIp + ":" + pairingPort);
