@@ -44,7 +44,7 @@ jobs:
     steps:
       - name: Set up QEMU for ARM emulation
         if: github.event_name != 'workflow_dispatch' || inputs.tier_size == 'all' || inputs.tier_size == matrix.tier
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@v4
 
       - name: Download and prepare clean Debian base
         if: github.event_name != 'workflow_dispatch' || inputs.tier_size == 'all' || inputs.tier_size == matrix.tier
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload Artifact
         if: github.event_name != 'workflow_dispatch' || inputs.tier_size == 'all' || inputs.tier_size == matrix.tier
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: baked-rootfs-tier${{ matrix.tier }}-${{ matrix.arch.android }}
           path: latest_tier${{ matrix.tier }}_${{ matrix.arch.android }}.tar.xz

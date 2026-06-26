@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout project code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Grant execute permission to builder script
       run: chmod +x tools/proot-builder/build_static.sh
@@ -24,7 +24,7 @@ jobs:
           --out-dir ${{ github.workspace }}/termux-artifacts
 
     - name: Save artifacts to GitHub panel
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: termux-ninja-binaries
         path: ${{ github.workspace }}/termux-artifacts/
@@ -39,10 +39,10 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
     - name: Checkout project code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Download freshly built binaries
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: termux-ninja-binaries
         path: ${{ github.workspace }}/artifacts
@@ -54,7 +54,7 @@ jobs:
         chmod +x tools/proot-builder/smoke-native-binaries.sh
 
     - name: Register binfmt (QEMU) for foreign-arch binaries
-      uses: docker/setup-qemu-action@v3
+      uses: docker/setup-qemu-action@v4
 
     - name: Contract test — arm64-v8a (native)
       run: ./tools/proot-builder/smoke-native-binaries.sh --jnilibs "${{ github.workspace }}/artifacts" --arch arm64-v8a
@@ -70,7 +70,7 @@ jobs:
       contents: write
     steps:
     - name: Download built binaries
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v5
       with:
         name: termux-ninja-binaries
         path: ${{ github.workspace }}/termux-artifacts
@@ -84,7 +84,7 @@ jobs:
       run: echo "TAG_NAME=binaries-$(date +'%Y-%m-%d_%H-%M')" >> $GITHUB_ENV
 
     - name: Publish rolling release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         tag_name: ${{ env.TAG_NAME }}
         name: "Static binaries [${{ env.TAG_NAME }}]"
