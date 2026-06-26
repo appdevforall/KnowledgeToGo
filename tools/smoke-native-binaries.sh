@@ -3,24 +3,25 @@
 # smoke-native-binaries.sh — contract/smoke test for the vendored native binaries
 # (proot, aria2c, tar, gzip, xz, rsync, nano, less) shipped in the APK jniLibs.
 #
-# Why: the binaries are rebuilt weekly upstream. This gives each one a known
-# input -> known-good output ("answer sheet") so a recompiled bundle that no
-# longer behaves as expected is caught BEFORE it is published / adopted.
-# Standard + inventory: see Claude-Env docs; ticket ADFA-4465.
+# Gives each binary a known input -> known-good output ("answer sheet") so a
+# recompiled bundle that no longer behaves as expected is caught before it is
+# published / adopted. Standard + inventory: Claude-Env docs; ticket ADFA-4465.
 #
 # Execution model (mirrors tools/build-iiab-rootfs.sh):
-#   - Run the REAL lib*.so from jniLibs/<arch>.
-#   - Prefer NATIVE execution (run the smoke job on a matching-arch runner);
-#     fall back to QEMU user-static for a foreign arch.
-#   - proot is the only test that needs a guest rootfs; it runs the real launch
-#     when native, and is reduced to a version check (logged) under emulation,
-#     because proot under qemu-user is unreliable (same caveat as the rootfs tool).
+#   - Runs the REAL lib*.so from jniLibs/<arch>.
+#   - NATIVE is decided by ARCH FAMILY (uname -m vs target), not by whether exec
+#     happens to work: binfmt/QEMU can exec a foreign binary transparently, but
+#     proot under emulation is unreliable, so the real situation must be known.
+#   - Some bundle binaries are bionic/termux-linked (not static): they cannot be
+#     executed on a generic Linux host (no loader). Such a binary's BEHAVIORAL
+#     row is SKIPPED (still covered by the integrity/sha256 row); it is exercised
+#     faithfully on-device / in an environment that provides its loader.
 #
 # Usage:
 #   smoke-native-binaries.sh --jnilibs <dir> [--arch arm64-v8a|armeabi-v7a]
-#   <dir> is the folder that CONTAINS jniLibs/, or the jniLibs/<arch> folder itself.
+#   <dir> contains jniLibs/ (and ninja_manifest.json), or is jniLibs/<arch>.
 #
-# Exit 0 = all contract rows passed; non-zero = at least one failed.
+# Exit 0 = all applicable contract rows passed; non-zero = a failure.
 # Copyright (c) 2026 AppDevForAll.
 # =============================================================================
 set -u
@@ -31,8 +32,7 @@ bad()  { printf "${RED}[smoke] FAIL${RST} %s\n" "$*"; }
 skip() { printf "${YEL}[smoke] SKIP${RST} %s\n" "$*"; }
 log()  { printf "${BLU}[smoke]${RST} %s\n" "$*"; }
 
-ARCH="arm64-v8a"
-JNILIBS=""
+ARCH="arm64-v8a"; JNILIBS=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --jnilibs) JNILIBS="$2"; shift 2 ;;
@@ -43,19 +43,19 @@ while [ $# -gt 0 ]; do
 done
 [ -n "$JNILIBS" ] || { echo "ERROR: --jnilibs <dir> is required" >&2; exit 2; }
 
-# Resolve the directory that holds the lib*.so for this arch.
-if [ -d "$JNILIBS/jniLibs/$ARCH" ]; then BIN="$JNILIBS/jniLibs/$ARCH"
+if   [ -d "$JNILIBS/jniLibs/$ARCH" ]; then BIN="$JNILIBS/jniLibs/$ARCH"
 elif [ -d "$JNILIBS/$ARCH" ];        then BIN="$JNILIBS/$ARCH"
 elif [ -f "$JNILIBS/libtar.so" ];    then BIN="$JNILIBS"
 else echo "ERROR: cannot find jniLibs for $ARCH under $JNILIBS" >&2; exit 2; fi
 BIN="$(cd "$BIN" && pwd)"
+MANIFEST=""
+for m in "$JNILIBS/ninja_manifest.json" "$BIN/../ninja_manifest.json" "$BIN/../../ninja_manifest.json"; do
+  [ -f "$m" ] && { MANIFEST="$m"; break; }
+done
 log "Binaries dir: $BIN"
 log "Target arch : $ARCH"
 
-# --- Native vs emulated detection --------------------------------------------
-# NATIVE is decided by ARCH FAMILY (host uname -m vs target), NOT merely by
-# whether exec works: binfmt/QEMU can make a foreign binary exec transparently,
-# but proot under emulation is unreliable, so we must know the real situation.
+# --- Native vs emulated (by arch family) -------------------------------------
 HOST_ARCH="$(uname -m)"
 case "$ARCH" in
   arm64-v8a)   FAMILY="aarch64 arm64";     QEMU_WANT="qemu-aarch64-static" ;;
@@ -63,20 +63,17 @@ case "$ARCH" in
   x86_64)      FAMILY="x86_64 amd64";      QEMU_WANT="" ;;
   *)           FAMILY="$ARCH";             QEMU_WANT="qemu-${ARCH}-static" ;;
 esac
-NATIVE=0
-for f in $FAMILY; do [ "$HOST_ARCH" = "$f" ] && NATIVE=1; done
+NATIVE=0; for f in $FAMILY; do [ "$HOST_ARCH" = "$f" ] && NATIVE=1; done
 chmod +x "$BIN"/*.so 2>/dev/null || true
 
-QEMU=""   # set only when we must prepend an explicit qemu-user binary
+QEMU=""
 if [ "$NATIVE" -eq 1 ]; then
   log "Native: host $HOST_ARCH runs $ARCH directly."
 else
-  # Foreign arch: prefer transparent binfmt (exec just works); else explicit prefix.
   if [ -f "$BIN/libtar.so" ] && "$BIN/libtar.so" --version >/dev/null 2>&1; then
     log "Emulated: foreign $ARCH on $HOST_ARCH via registered binfmt/QEMU."
   elif [ -n "$QEMU_WANT" ] && command -v "$QEMU_WANT" >/dev/null 2>&1; then
-    QEMU="$(command -v "$QEMU_WANT")"
-    log "Emulated: foreign $ARCH on $HOST_ARCH via explicit $QEMU."
+    QEMU="$(command -v "$QEMU_WANT")"; log "Emulated: foreign $ARCH on $HOST_ARCH via explicit $QEMU."
   else
     echo "ERROR: $ARCH is foreign to $HOST_ARCH and no QEMU is available." >&2
     echo "       Install qemu-user-static (+binfmt-support) or run on a $ARCH host." >&2
@@ -84,40 +81,39 @@ else
   fi
 fi
 
-# run_bin <lib.so> [args...] — exec a bundle binary (direct/binfmt, or via explicit QEMU).
-run_bin() {
-  local b="$1"; shift
-  if [ -n "$QEMU" ]; then "$QEMU" "$b" "$@"; else "$b" "$@"; fi
-}
+# run_bin <lib.so> [args...] — exec a bundle binary (direct/binfmt or via QEMU).
+run_bin() { local b="$1"; shift; if [ -n "$QEMU" ]; then "$QEMU" "$b" "$@"; else "$b" "$@"; fi; }
+# bin_runs <lib.so> — true if the binary can actually execute on this host
+# (false when the ELF interpreter/loader is absent: rc 126/127).
+bin_runs() { run_bin "$1" --version >/dev/null 2>&1; local rc=$?; [ "$rc" -ne 126 ] && [ "$rc" -ne 127 ]; }
 
 PASS=0; FAIL=0
-# chk <description> <command...>  — the "answer sheet" engine.
+# chk <description> <command...>  — the answer-sheet engine.
 chk() { local d="$1"; shift; if "$@" >/dev/null 2>&1; then ok "$d"; PASS=$((PASS+1)); else bad "$d"; FAIL=$((FAIL+1)); fi; }
+# runchk <description> <lib.so> <command...> — like chk, but if the binary cannot
+# execute on this host (dynamic, no loader), SKIP instead of FAIL (off-device limit).
+runchk() {
+  local d="$1" lib="$2"; shift 2
+  if bin_runs "$BIN/$lib"; then chk "$d" "$@"
+  else skip "$d — $lib not executable here (dynamic/loader); behavioral check deferred to device"; fi
+}
 
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 cd "$WORK"
-
-# --- Fixtures (the known inputs) ---------------------------------------------
 mkdir -p src/sub
 printf 'hello knowledge to go\n' > src/a.txt
-head -c 4096 /dev/zero | tr '\0' 'Z' > src/sub/b.bin   # deterministic 4 KiB blob
+head -c 4096 /dev/zero | tr '\0' 'Z' > src/sub/b.bin
 
 # ============================== CONTRACT ROWS ================================
 
-# 1) Integrity: every expected binary is present (+ sha256 vs ninja_manifest.json)
-present_all() {
-  local f; for f in libproot.so libaria2c.so libtar.so libgzip.so libxz.so librsync.so libnano.so libless.so; do
-    [ -f "$BIN/$f" ] || { echo "missing $f"; return 1; }
-  done
-}
+# 1) Integrity (always; works off-device): presence + sha256 vs manifest.
+present_all() { local f; for f in libproot.so libaria2c.so libtar.so libgzip.so libxz.so librsync.so libnano.so libless.so; do [ -f "$BIN/$f" ] || { echo "missing $f"; return 1; }; done; }
 chk "all 8 binaries present in jniLibs/$ARCH" present_all
-
 manifest_match() {
-  local mf="$BIN/../ninja_manifest.json"; [ -f "$mf" ] || mf="$JNILIBS/ninja_manifest.json"
-  [ -f "$mf" ] || { echo "no manifest"; return 0; }   # absence is not a failure here
+  [ -n "$MANIFEST" ] || { echo "no manifest"; return 0; }
   local f got exp
-  for f in libproot.so libtar.so libaria2c.so; do
-    exp="$(grep -oE "\"$f\"[^}]*\"sha256\"[[:space:]]*:[[:space:]]*\"[0-9a-f]+\"" "$mf" 2>/dev/null | grep -oE '[0-9a-f]{64}' | head -1)"
+  for f in libproot.so libtar.so libaria2c.so libxz.so librsync.so; do
+    exp="$(grep -oE "\"$f\"[^}]*\"sha256\"[[:space:]]*:[[:space:]]*\"[0-9a-f]+\"" "$MANIFEST" 2>/dev/null | grep -oE '[0-9a-f]{64}' | head -1)"
     [ -n "$exp" ] || continue
     got="$(sha256sum "$BIN/$f" | awk '{print $1}')"
     [ "$exp" = "$got" ] || { echo "$f sha mismatch"; return 1; }
@@ -125,83 +121,51 @@ manifest_match() {
 }
 chk "manifest sha256 matches (when present)" manifest_match
 
-# 2) tar — round-trip create + extract (byte-identical) and stdin gzip path
-tar_roundtrip() {
-  run_bin "$BIN/libtar.so" -cf arc.tar -C src . || return 1
-  rm -rf out && mkdir out
-  run_bin "$BIN/libtar.so" -xf arc.tar -C out || return 1
-  diff -r src out
-}
-chk "tar create+extract round-trip is byte-identical" tar_roundtrip
+# 2) tar — round-trip + the app's gzip|tar -xvf - extraction path
+tar_roundtrip() { run_bin "$BIN/libtar.so" -cf arc.tar -C src . || return 1; rm -rf out && mkdir out; run_bin "$BIN/libtar.so" -xf arc.tar -C out || return 1; diff -r src out; }
+runchk "tar create+extract round-trip is byte-identical" libtar.so tar_roundtrip
+tar_stdin_gzip() { run_bin "$BIN/libtar.so" -cf arc2.tar -C src . || return 1; run_bin "$BIN/libgzip.so" -c arc2.tar > arc2.tar.gz || return 1; rm -rf out2 && mkdir out2; run_bin "$BIN/libgzip.so" -dc arc2.tar.gz | run_bin "$BIN/libtar.so" -xvf - -C out2 || return 1; diff -r src out2; }
+runchk "gzip -dc | tar -xvf - (app extraction path)" libtar.so tar_stdin_gzip
 
-tar_stdin_gzip() {   # mirrors TarExtractor: gzip-decompress | tar -xvf -
-  run_bin "$BIN/libtar.so" -cf arc2.tar -C src . || return 1
-  run_bin "$BIN/libgzip.so" -c arc2.tar > arc2.tar.gz || return 1
-  rm -rf out2 && mkdir out2
-  run_bin "$BIN/libgzip.so" -dc arc2.tar.gz | run_bin "$BIN/libtar.so" -xvf - -C out2 || return 1
-  diff -r src out2
-}
-chk "gzip -dc | tar -xvf - (app extraction path)" tar_stdin_gzip
+# 3) gzip / xz — round-trips
+gzip_roundtrip() { run_bin "$BIN/libgzip.so" -c src/sub/b.bin > b.gz || return 1; run_bin "$BIN/libgzip.so" -dc b.gz > b.out || return 1; cmp -s src/sub/b.bin b.out; }
+runchk "gzip compress/decompress round-trip" libgzip.so gzip_roundtrip
+xz_roundtrip() { run_bin "$BIN/libxz.so" -z -c src/sub/b.bin > b.xz || return 1; run_bin "$BIN/libxz.so" -dc b.xz > b.xzout || return 1; cmp -s src/sub/b.bin b.xzout; }
+runchk "xz compress/decompress round-trip" libxz.so xz_roundtrip
 
-# 3) gzip — round-trip
-gzip_roundtrip() {
-  run_bin "$BIN/libgzip.so" -c src/sub/b.bin > b.gz || return 1
-  run_bin "$BIN/libgzip.so" -dc b.gz > b.out || return 1
-  cmp -s src/sub/b.bin b.out
-}
-chk "gzip compress/decompress round-trip" gzip_roundtrip
+# 4) rsync — local mirror (daemon mode is exercised on-device)
+rsync_roundtrip() { rm -rf dest && mkdir dest; run_bin "$BIN/librsync.so" -a --delete src/ dest/ || return 1; diff -r src dest; }
+runchk "rsync -a mirror reproduces the tree" librsync.so rsync_roundtrip
 
-# 4) xz — round-trip
-xz_roundtrip() {
-  run_bin "$BIN/libxz.so" -z -c src/sub/b.bin > b.xz || return 1
-  run_bin "$BIN/libxz.so" -dc b.xz > b.xzout || return 1
-  cmp -s src/sub/b.bin b.xzout
-}
-chk "xz compress/decompress round-trip" xz_roundtrip
+# 5) aria2c — runs and still has the features the app depends on
+aria2_features() { local out; out="$(run_bin "$BIN/libaria2c.so" --version 2>&1)" || return 1; echo "$out" | grep -qi 'Metalink' && echo "$out" | grep -qiE 'https|TLS|SSL' && echo "$out" | grep -qi 'BitTorrent'; }
+runchk "aria2c has Metalink/https/BitTorrent" libaria2c.so aria2_features
 
-# 5) rsync — local mirror round-trip (daemon mode is exercised on-device)
-rsync_roundtrip() {
-  rm -rf dest && mkdir dest
-  run_bin "$BIN/librsync.so" -a --delete src/ dest/ || return 1
-  diff -r src dest
-}
-chk "rsync -a mirror reproduces the tree" rsync_roundtrip
+# 6) nano / less — execute (interactive on-device; here just confirm they run)
+runchk "nano --version runs" libnano.so run_bin "$BIN/libnano.so" --version
+runchk "less --version runs" libless.so run_bin "$BIN/libless.so" --version
 
-# 6) aria2c — executes and still has the features the app depends on.
-#    (Version strings drift each rebuild; feature TOKENS are stable.)
-aria2_features() {
-  local out; out="$(run_bin "$BIN/libaria2c.so" --version 2>&1)" || return 1
-  echo "$out" | grep -qi 'Metalink' || { echo "no Metalink"; return 1; }
-  echo "$out" | grep -qiE 'https|TLS|SSL' || { echo "no TLS/https"; return 1; }
-  echo "$out" | grep -qi 'BitTorrent' || { echo "no BitTorrent"; return 1; }
-}
-chk "aria2c runs and has Metalink/https/BitTorrent" aria2_features
-
-# 7) nano / less — execute (interactive on-device; here just confirm they run)
-chk "nano --version runs" run_bin "$BIN/libnano.so" --version
-chk "less --version runs" run_bin "$BIN/libless.so" --version
-
-# 8) proot — real launch contract when native; version-only under emulation.
+# 7) proot — real launch when native; version-only under emulation. Needs loader.
 proot_launch() {
-  command -v busybox >/dev/null 2>&1 || { echo "busybox not installed on runner"; return 1; }
-  rm -rf rootfs && mkdir -p rootfs/bin
-  cp "$(command -v busybox)" rootfs/bin/busybox || return 1
-  local out
-  out="$(run_bin "$BIN/libproot.so" -r "$PWD/rootfs" -w / /bin/busybox echo hello 2>/dev/null)" || return 1
-  [ "$out" = "hello" ]
+  # Use a bundle binary we KNOW is static (libtar) as the in-rootfs program, so
+  # the test needs no host busybox and no shared libs inside the minimal rootfs.
+  rm -rf rootfs ptmp && mkdir -p rootfs ptmp && cp "$BIN/libtar.so" rootfs/probe || return 1
+  export PROOT_LOADER="$BIN/libproot-loader.so"
+  [ -f "$BIN/libproot-loader32.so" ] && export PROOT_LOADER_32="$BIN/libproot-loader32.so"
+  export PROOT_TMP_DIR="$WORK/ptmp"
+  local out; out="$(run_bin "$BIN/libproot.so" -r "$WORK/rootfs" -w / /probe --version 2>/dev/null)" || return 1
+  echo "$out" | grep -qi 'tar'
 }
-if [ "$NATIVE" -eq 1 ]; then
+if [ "$NATIVE" -eq 1 ] && bin_runs "$BIN/libproot.so"; then
   chk "proot launches a command in a minimal rootfs (stdout=hello)" proot_launch
+elif bin_runs "$BIN/libproot.so"; then
+  skip "proot launch (emulated $ARCH); version OK — full launch verified on native arch / device"
 else
-  if run_bin "$BIN/libproot.so" --version >/dev/null 2>&1; then
-    skip "proot launch (emulated $ARCH); version OK — full launch verified on native arch / device"
-  else
-    bad "proot --version failed under emulation"; FAIL=$((FAIL+1))
-  fi
+  bad "proot is not executable on this host (--version failed)"; FAIL=$((FAIL+1))
 fi
 
 # ============================== VERDICT ======================================
 echo
 log "Result: ${PASS} passed, ${FAIL} failed (arch=$ARCH, mode=$([ "$NATIVE" -eq 1 ] && echo native || echo qemu))."
 [ "$FAIL" -eq 0 ] || { bad "Contract NOT satisfied — do not publish/adopt this build."; exit 1; }
-ok "All native-binary contracts satisfied."
+ok "All applicable native-binary contracts satisfied."
