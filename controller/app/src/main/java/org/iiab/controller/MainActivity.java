@@ -9,6 +9,8 @@
 
 package org.iiab.controller;
 
+import org.iiab.controller.util.AppExecutors;
+
 import android.Manifest;
 import android.os.Bundle;
 
@@ -659,7 +661,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             updateUIColorsAndVisibility(); // We forced an immediate visual update
         });
 
-        new Thread(() -> {
+        AppExecutors.get().io().execute(() -> {
             boolean boxAlive = false;
 
             // Attempt 1 (0 seconds)
@@ -706,7 +708,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             runOnUiThread(this::updateUIColorsAndVisibility);
-        }).start();
+        });
     }
 
     private void prepareVpn() {
@@ -1001,13 +1003,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
 
                         // 2. Zombie Cleanup (Replicating bash pkill script)
-                        new Thread(() -> {
+                        AppExecutors.get().io().execute(() -> {
                             try {
                                 // Force kill any orphaned PRoot children
                                 Runtime.getRuntime().exec(new String[]{"sh", "-c", "killall -9 proot 2>/dev/null"});
                             } catch (Exception ignored) {
                             }
-                        }).start();
+                        });
 
                         // 3. We turned off the Android Watchdog.
                         if (prefs.getWatchdogEnable()) {
@@ -1048,7 +1050,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkServerStatus() {
         if (isNegotiating) return;
 
-        new Thread(() -> {
+        AppExecutors.get().io().execute(() -> {
             boolean localAlive = pingUrl("http://localhost:8085/home", false);
             boolean vpnOn = prefs.getEnable();
             boolean boxAlive = false;
@@ -1079,7 +1081,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             runOnUiThread(this::updateUIColorsAndVisibility);
-        }).start();
+        });
     }
 
     public void updateUIColorsAndVisibility() {
@@ -1207,7 +1209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             runOnUiThread(() -> Toast.makeText(this, R.string.ota_toast_checking, Toast.LENGTH_SHORT).show());
         }
 
-        new Thread(() -> {
+        AppExecutors.get().io().execute(() -> {
             try {
                 // Check update JSON data
                 Log.d(TAG, "OTA: Connecting to https://iiab.switnet.org/android/apk/update.json");
@@ -1275,7 +1277,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.ota_toast_error_network, Toast.LENGTH_SHORT).show());
                 }
             }
-        }).start();
+        });
     }
 
     private void showUpdateDialog(String versionName, String changelog, String downloadUrl) {
