@@ -143,6 +143,10 @@ STUB
 EOF
 
 # --- ARIA2 PATCH ---
+# NOTE: aria2c is intentionally NOT made fully static. A static aria2c cannot
+# resolve DNS off Android (bionic's resolver needs netd; --async-dns is absent
+# since it is built --without-libcares), and it works dynamic on-device where
+# bionic is always present. Only xz gets -all-static (see its block). See README.
 sed -i 's/TERMUX_PKG_DEPENDS="/TERMUX_PKG_DEPENDS="openssl-static, zlib-static, /' packages/aria2/build.sh
 cat << 'EOF' >> packages/aria2/build.sh
 termux_step_pre_configure() {
@@ -234,6 +238,16 @@ termux_step_pre_configure() {
     echo ">> Applying Static flags for XZ Utils..."
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
     TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --enable-static --disable-shared --disable-year2038"
+}
+termux_step_make() {
+    # -all-static is a libtool-ONLY link flag; it must NOT be in configure-time
+    # LDFLAGS (configure's raw-clang test rejects it -> "cannot create
+    # executables"). Inject it at link time only (compile steps ignore LDFLAGS).
+    # xz links liblzma via libtool, which swallows a plain -static; -all-static
+    # forces a FULLY static executable. (aria2c is intentionally left dynamic:
+    # its bionic DNS resolver needs Android netd, so a static aria2c cannot
+    # resolve off-device; dynamic works on-device where bionic is always present.)
+    make -j"$(nproc)" LDFLAGS="$LDFLAGS -all-static"
 }
 termux_step_post_massage() {
     echo ">> Bypassing SOVERSION guard..."
