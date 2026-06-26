@@ -32,6 +32,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
+import org.iiab.controller.util.AppExecutors;
 import androidx.activity.result.ActivityResultLauncher;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -309,8 +311,18 @@ public class SyncFragment extends Fragment {
         tempPass = SyncHandshakeHelper.generateSecurePassword();
         if (!rootfsDir.exists()) rootfsDir.mkdirs();
 
-        boolean started = rsyncManager.startServer(requireContext(), currentRsyncPort, tempUser, tempPass, rootfsDir.getAbsolutePath());
+        // Start the rsync daemon off the main thread (file IO + ProcessBuilder.start
+        // would otherwise risk an ANR on the UI thread); apply the result on the UI.
+        final String shareDir = rootfsDir.getAbsolutePath();
+        AppExecutors.get().io().execute(() -> {
+            boolean started = rsyncManager.startServer(requireContext(), currentRsyncPort, tempUser, tempPass, shareDir);
+            if (!isAdded() || getActivity() == null) return;
+            requireActivity().runOnUiThread(() -> onShareDaemonResult(started));
+        });
+    }
 
+    private void onShareDaemonResult(boolean started) {
+        if (!isAdded()) return;
         if (started) {
             isDaemonRunning = true;
             enableSystemProtection();
