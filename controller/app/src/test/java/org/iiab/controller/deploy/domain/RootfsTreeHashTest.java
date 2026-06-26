@@ -4,7 +4,7 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : Byte-parity gate for RootfsTreeHash. GOLDEN is produced by the
- *               frozen reference tools/iiab_tree_hash.py over a fixed fixture of
+ *               frozen reference tools/rootfs-builder/iiab_tree_hash.py over a fixed fixture of
  *               logical members. Passing this test is what lets us BLOCK on a
  *               hash mismatch with confidence (the Java verifier agrees with the
  *               build side byte-for-byte).
@@ -28,7 +28,7 @@ import java.util.Random;
 
 public class RootfsTreeHashTest {
 
-    /** python3 tools/iiab_tree_hash.py fixture.tar <integrity-member>. */
+    /** python3 tools/rootfs-builder/iiab_tree_hash.py fixture.tar <integrity-member>. */
     private static final String GOLDEN =
             "e892069fb8eb7d5eb199780cbb86a25bfe6a77fec013445139d092cf139a58ec";
 

@@ -5,7 +5,7 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : Pure-JVM implementation of the "iiab-tree-sha256-v1" rootfs
  *               integrity digest. Byte-for-byte compatible with the frozen
- *               reference tools/iiab_tree_hash.py (spec: docs/ROOTFS_MANIFEST.md).
+ *               reference tools/rootfs-builder/iiab_tree_hash.py (spec: docs/ROOTFS_MANIFEST.md).
  *
  *               DOMAIN layer: no Android, no tar library. The data layer feeds it
  *               logical tar members (either as an Iterable<Member> for tests, or
