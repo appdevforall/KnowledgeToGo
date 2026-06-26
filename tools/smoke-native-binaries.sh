@@ -121,6 +121,33 @@ manifest_match() {
 }
 chk "manifest sha256 matches (when present)" manifest_match
 
+# 1b) Static-linkage contract: the required set MUST be statically linked (no
+# ELF interpreter, no dynamic NEEDED libs). Cross-arch (readelf reads the ELF;
+# no execution). aria2c is intentionally DYNAMIC (its bionic DNS needs Android
+# netd), so it is reported but NOT required static.
+REQUIRED_STATIC="libproot.so libtar.so libgzip.so libxz.so librsync.so libnano.so libless.so"
+is_static() {
+  local f="$1" interp needed
+  if command -v readelf >/dev/null 2>&1; then
+    interp="$(readelf -l "$f" 2>/dev/null | grep -i 'program interpreter')"
+    needed="$(readelf -d "$f" 2>/dev/null | grep -c 'NEEDED')"
+    [ -z "$interp" ] && [ "$needed" -eq 0 ]
+  else
+    file "$f" 2>/dev/null | grep -qi 'statically linked'
+  fi
+}
+static_contract() {
+  local f bad=""
+  for f in $REQUIRED_STATIC; do is_static "$BIN/$f" || bad="$bad $f"; done
+  [ -z "$bad" ] || { echo "dynamic (must be static):$bad"; return 1; }
+}
+if command -v readelf >/dev/null 2>&1 || command -v file >/dev/null 2>&1; then
+  chk "required binaries are statically linked" static_contract
+  is_static "$BIN/libaria2c.so" && log "note: libaria2c.so is STATIC here (allowed; intentional target is dynamic)"                                  || log "note: libaria2c.so is DYNAMIC (intentional; bionic DNS needs Android netd)"
+else
+  skip "static-linkage check (need readelf or file)"
+fi
+
 # 2) tar — round-trip + the app's gzip|tar -xvf - extraction path
 tar_roundtrip() { run_bin "$BIN/libtar.so" -cf arc.tar -C src . || return 1; rm -rf out && mkdir out; run_bin "$BIN/libtar.so" -xf arc.tar -C out || return 1; diff -r src out; }
 runchk "tar create+extract round-trip is byte-identical" libtar.so tar_roundtrip

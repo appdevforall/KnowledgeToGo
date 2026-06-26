@@ -50,7 +50,7 @@ jobs:
     - name: Tools for the proot launch + emulation fallback
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y busybox-static qemu-user-static binfmt-support
+        sudo apt-get install -y binutils qemu-user-static binfmt-support
         chmod +x tools/smoke-native-binaries.sh
 
     - name: Register binfmt (QEMU) for foreign-arch binaries
