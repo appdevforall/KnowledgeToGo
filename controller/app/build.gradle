@@ -20,10 +20,10 @@ android {
 
         // 3. Version Control (OTA)
         // NOTE: With splits enabled, this number will be multiplied by 10 (e.g. 50 -> 500, 501, 502)
-        versionCode 54
+        versionCode 55
         // Dynamic version suffix injected via CI/CD (e.g., "-a1b2c3d")
         def ciSuffix = project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ""
-        versionName "v0.3.7beta${ciSuffix}"
+        versionName "v0.4.0-beta${ciSuffix}"
 
         setProperty("archivesBaseName", "$applicationId-$versionName")
 
