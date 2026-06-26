@@ -12,7 +12,7 @@
  *               desugaring, and Apache Commons Compress reaches into
  *               java.nio.file on newer versions, so we hand-parse the tar the way
  *               RootfsManifest already does (ustar + GNU long name/link + pax
- *               path/linkpath). Byte-parity with tools/iiab_tree_hash.py is the
+ *               path/linkpath). Byte-parity with tools/rootfs-builder/iiab_tree_hash.py is the
  *               contract; see RootfsTreeHashTest + the data-layer fixture tests.
  * ============================================================================
  */

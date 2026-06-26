@@ -242,7 +242,7 @@ Enforces the ABI-separation policy + rootfs sanity at the two untrusted gates.
   (`docs/ROOTFS_MANIFEST.md`) when present (authoritative `kind`+`arch`); when
   absent, a non-blocking "manifest not found" alert + the ELF/structure fallback.
 - Pending: the integrity `iiab-tree-sha256-v1` check (`Result.CORRUPT`, mirrors
-  `tools/iiab_tree_hash.py`), the in-app backup-writer emitting both members, and
+  `tools/rootfs-builder/iiab_tree_hash.py`), the in-app backup-writer emitting both members, and
   the arbitrary-file attack-vector analysis.
 
 **Legacy (NOT yet layered)** — most of `org.iiab.controller` is still flat:

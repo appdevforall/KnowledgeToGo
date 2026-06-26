@@ -2,7 +2,7 @@
 
 Single source of truth for the two small members embedded in every IIAB-oA rootfs
 tarball. **Two producers, one schema:** the build pipeline
-(`tools/build-iiab-rootfs.sh`) and the in-app backup writer both emit these
+(`tools/rootfs-builder/build-iiab-rootfs.sh`) and the in-app backup writer both emit these
 members; the in-app validator reads them on **import/restore** (the untrusted
 gates). Both sides reference THIS file instead of re-describing the recipe, so
 they cannot drift.
@@ -153,7 +153,7 @@ whole-file buffering), so it scales to multi-GB / 80 GB rootfs images.
 - **Strict (later):** require the manifest, once both producers reliably emit it.
 
 ## Implementations
-- Build pipeline: `tools/build-iiab-rootfs.sh` (generation + build self-verify).
+- Build pipeline: `tools/rootfs-builder/build-iiab-rootfs.sh` (generation + build self-verify).
 - App: `RootfsArchiveValidator` (verifier, `Result.CORRUPT`) and the backup writer.
 
 Bump `schema` on any breaking change to the members; bump the `algo` string

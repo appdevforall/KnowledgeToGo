@@ -5,7 +5,7 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : End-to-end test of the dependency-free tar reader + integrity
  *               verifier against checked-in .tar.gz fixtures. The golden hashes
- *               were produced by the frozen reference tools/iiab_tree_hash.py.
+ *               were produced by the frozen reference tools/rootfs-builder/iiab_tree_hash.py.
  *               Fixtures cover pure ustar, GNU long-name ('L'), and pax ('x',
  *               incl. a non-ASCII name) — the formats Apache Commons Compress
  *               would have handled — proving our hand-rolled reader matches the
