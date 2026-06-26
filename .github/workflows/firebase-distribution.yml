@@ -147,7 +147,18 @@ jobs:
           service_account: ${{ secrets.IDENTITY_EMAIL }}
 
       - name: Setup Firebase CLI
-        run: npm install -g firebase-tools
+        # Use the STANDALONE binary, not `npm install -g`. A fresh npm install floats
+        # firebase-tools' transitive deps and (since ~2026-06-25) pulls a broken auth
+        # sub-dependency that can't consume Workload Identity Federation (external_account)
+        # credentials -> "Failed to authenticate". The standalone binary bundles its deps
+        # frozen at release time (pre-regression), so WIF auth works deterministically.
+        # 14.11.2 = the version proven on the self-hosted runner. Bump deliberately.
+        run: |
+          sudo curl -fsSL \
+            https://github.com/firebase/firebase-tools/releases/download/v14.11.2/firebase-tools-linux \
+            -o /usr/local/bin/firebase
+          sudo chmod +x /usr/local/bin/firebase
+          firebase --version
 
       # TODO: Run CI performance script before distributing
       # - name: Write CI Performance Data
