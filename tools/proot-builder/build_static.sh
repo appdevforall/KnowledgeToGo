@@ -200,6 +200,15 @@ termux_step_pre_configure() {
     CFLAGS+=" -Wno-error=implicit-function-declaration -Dlchmod=chmod"
     export gl_cv_func_lchown_works=yes
     TERMUX_PKG_EXTRA_CONFIGURE_ARGS+=" --disable-year2038"
+
+    # fix-linking-to-iconv.patch edits src/Makefile.am, so Makefile.in must be
+    # regenerated. Upstream's tar/build.sh does this in its own pre_configure; this
+    # override REPLACES that function (Bash: last definition wins), so redo it here
+    # as the LAST statement. Without it, make falls back to maintainer-mode
+    # 'automake-1.16', absent in the ubuntu:26.04 builder image (Automake 1.17).
+    # Safe for static binaries: -static flags above are applied later by
+    # ./configure; autoreconf only regenerates the build system.
+    autoreconf -fi
 }
 EOF
 
@@ -278,6 +287,11 @@ termux_step_pre_configure() {
     mv $TERMUX_PREFIX/lib/libtinfo*.so* $TERMUX_PREFIX/lib/hidden_so/ 2>/dev/null || true
 
     LDFLAGS+=" -static -ffunction-sections -fdata-sections -Wl,--gc-sections"
+
+    # Upstream less/build.sh regenerates the build system here; this override
+    # replaces that function, so redo it (last statement). Same automake-1.16 vs
+    # ubuntu:26.04 reasoning as tar. Does not affect static linking.
+    autoreconf -fi
 }
 termux_step_post_make() {
     mv $TERMUX_PREFIX/lib/hidden_so/* $TERMUX_PREFIX/lib/ 2>/dev/null || true
