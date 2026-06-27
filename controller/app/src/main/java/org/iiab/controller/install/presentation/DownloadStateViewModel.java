@@ -16,6 +16,7 @@
  */
 package org.iiab.controller.install.presentation;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import org.iiab.controller.Aria2Manager;
@@ -39,5 +40,10 @@ public class DownloadStateViewModel extends ViewModel {
 
     public void setDownloadingRootfs(boolean downloadingRootfs) {
         this.downloadingRootfs = downloadingRootfs;
+    }
+
+    /** Observable install-pipeline progress (app-scoped; survives recreation). */
+    public LiveData<InstallState> installState() {
+        return InstallProgressRepository.get().state();
     }
 }

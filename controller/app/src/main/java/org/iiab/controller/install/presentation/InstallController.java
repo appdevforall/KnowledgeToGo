@@ -159,13 +159,14 @@ public final class InstallController {
                 host.aria2Manager().startDownload(fragment.requireContext(), directUrl, new Aria2Manager.DownloadListener() {
                     @Override
                     public void onProgress(int percentage, String speed, String eta) {
-                        if (fragment.isAdded() && fragment.getActivity() != null) {
-                            fragment.getActivity().runOnUiThread(() -> btnFastInstall.setText(fragment.getString(R.string.install_status_os_download, percentage, speed)));
-                        }
+                        // Progress flows through the observable repository so the UI
+                        // re-binds after a recreation (ADFA-4474 PR1).
+                        InstallProgressRepository.get().postDownloading(percentage, speed);
                     }
 
                     @Override
                     public void onComplete(String downloadPath) {
+                        InstallProgressRepository.get().postPhase(InstallState.Phase.EXTRACTING);
                         if (!fragment.isAdded() || fragment.getActivity() == null) return;
                         mainAct.runOnUiThread(() -> btnFastInstall.setText(fragment.getString(R.string.install_status_extracting)));
 
@@ -441,6 +442,7 @@ public final class InstallController {
     }
 
     private void abortInstallation(String message) {
+        InstallProgressRepository.get().postIdle();
         host.disableSystemProtection();
         host.setDownloadingRootfs(false);
         if (fragment.isAdded() && fragment.getActivity() != null) {
@@ -456,6 +458,7 @@ public final class InstallController {
     }
 
     private void finishInstallationSuccess() {
+        InstallProgressRepository.get().postIdle();
         host.disableSystemProtection();
         host.setDownloadingRootfs(false);
         if (fragment.isAdded() && fragment.getActivity() != null) {

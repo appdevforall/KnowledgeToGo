@@ -186,6 +186,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
 
         downloadState = new ViewModelProvider(requireActivity())
                 .get(org.iiab.controller.install.presentation.DownloadStateViewModel.class);
+        downloadState.installState().observe(getViewLifecycleOwner(), this::renderInstallProgress);
 
         // UI Binding
         ledInternet = view.findViewById(R.id.led_install_internet);
@@ -299,6 +300,15 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         super.onPause();
         adbShareController.onPause();
         liveStatusHandler.removeCallbacks(liveStatusRunnable);
+    }
+
+    /** Renders the observable install progress (currently the download phase).
+     *  Re-binds automatically after recreation (ADFA-4474 PR1). */
+    private void renderInstallProgress(org.iiab.controller.install.presentation.InstallState s) {
+        if (s == null || btnFastInstall == null) return;
+        if (s.phase == org.iiab.controller.install.presentation.InstallState.Phase.DOWNLOADING) {
+            btnFastInstall.setText(getString(R.string.install_status_os_download, s.percent, s.speed));
+        }
     }
 
     @Override
