@@ -155,6 +155,18 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // ViewModel so it survives Fragment recreation (e.g. rotation during a download)
     // without static mutable state. (ADFA-4459, D9)
     private org.iiab.controller.install.presentation.DownloadStateViewModel downloadState;
+
+    // ADFA-4474 PR2: install progress is owned by InstallService and observed here.
+    private boolean installProgressShown = false;       // guards ProgressButton.startProgress()
+    private long lastInstallTerminalSeq = -1L;          // fires terminal snackbars exactly once
+    private final BroadcastReceiver installLogReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            String line = intent.getStringExtra(org.iiab.controller.install.presentation.InstallService.EXTRA_LINE);
+            if (line != null && getActivity() instanceof MainActivity) {
+                ((MainActivity) getActivity()).addToLog(line);
+            }
+        }
+    };
     // State Variables (New control variables)
     private boolean isRestoring = false;
     private boolean isDeleting = false;
@@ -293,6 +305,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
 
         updateDynamicButtons();
         liveStatusHandler.post(liveStatusRunnable);
+
+        // ADFA-4474 PR2: show InstallService provisioning output in the in-app log while visible.
+        androidx.core.content.ContextCompat.registerReceiver(requireContext(), installLogReceiver,
+                new IntentFilter(org.iiab.controller.install.presentation.InstallService.ACTION_INSTALL_LOG),
+                androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -300,25 +317,68 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         super.onPause();
         adbShareController.onPause();
         liveStatusHandler.removeCallbacks(liveStatusRunnable);
+        try { requireContext().unregisterReceiver(installLogReceiver); } catch (IllegalArgumentException ignored) { }
     }
 
-    /** Renders the observable install progress (currently the download phase).
-     *  Re-binds automatically after recreation (ADFA-4474 PR1). */
+    /** Renders the observable install progress published by InstallService.
+     *  Re-binds automatically after a recreation or backgrounding (ADFA-4474 PR2). */
     private void renderInstallProgress(org.iiab.controller.install.presentation.InstallState s) {
         if (s == null || btnFastInstall == null) return;
-        if (s.phase == org.iiab.controller.install.presentation.InstallState.Phase.DOWNLOADING) {
-            btnFastInstall.setText(getString(R.string.install_status_os_download, s.percent, s.speed));
+        org.iiab.controller.install.presentation.InstallState.Phase p = s.phase;
+
+        if (s.isRunning() && !installProgressShown) {
+            installProgressShown = true;
+            btnFastInstall.setAlpha(0.8f);
+            btnFastInstall.setTextSize(12f);
+            btnFastInstall.startProgress();
+        }
+
+        switch (p) {
+            case DOWNLOADING:
+                btnFastInstall.setText(getString(R.string.install_status_os_download, s.percent, s.speed));
+                break;
+            case EXTRACTING:
+            case PROVISIONING:
+                btnFastInstall.setText(s.message);
+                break;
+            case SUCCESS:
+                installProgressShown = false;
+                btnFastInstall.stopProgress();
+                btnFastInstall.setText(R.string.install_btn_reinstall);
+                btnFastInstall.setAlpha(1.0f);
+                updateDynamicButtons();
+                if (s.seq > lastInstallTerminalSeq) {
+                    lastInstallTerminalSeq = s.seq;
+                    requestFreshLocalVarsSilently();
+                    if (getView() != null)
+                        Snackbar.make(getView(), R.string.install_success_deployment, Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case FAILED:
+                installProgressShown = false;
+                btnFastInstall.stopProgress();
+                btnFastInstall.setText(R.string.install_btn_install);
+                btnFastInstall.setAlpha(1.0f);
+                updateDynamicButtons();
+                if (s.seq > lastInstallTerminalSeq) {
+                    lastInstallTerminalSeq = s.seq;
+                    if (getView() != null && !s.message.isEmpty())
+                        Snackbar.make(getView(), s.message, Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case IDLE:
+            default:
+                installProgressShown = false;
+                break;
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (getActivity() != null && getActivity().isChangingConfigurations()) return;
-        if (downloadState.getAria2Manager() != null && downloadState.isDownloadingRootfs()) {
-            downloadState.getAria2Manager().stopDownload();
-            downloadState.setDownloadingRootfs(false);
-        }
+        // ADFA-4474 PR2: the install now runs in InstallService and must survive
+        // leaving this screen (and configuration changes). Cancellation is explicit
+        // via the button / notification, so we no longer stop it here.
     }
 
 
@@ -470,11 +530,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             float lockAlpha = 0.5f;
 
             // We keep the opacity at 80% only for the button that is currently working
-            btnFastInstall.setAlpha((downloadState.isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
+            btnFastInstall.setAlpha((isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
             btnFastDelete.setAlpha(isDeleting ? 0.8f : lockAlpha);
             if (btnAdvancedBackup != null) btnAdvancedBackup.setAlpha(isBackupInProgress ? 0.8f : lockAlpha);
             if (btnAdvancedRestore != null) btnAdvancedRestore.setAlpha(isRestoring ? 0.8f : lockAlpha);
-            if (btnAdvancedReset != null) btnAdvancedReset.setAlpha((downloadState.isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
+            if (btnAdvancedReset != null) btnAdvancedReset.setAlpha((isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
             if (txtSelectBackupTitle != null) txtSelectBackupTitle.setAlpha(lockAlpha);
             if (btnImportBackup != null) btnImportBackup.setAlpha(isImporting ? 0.8f : lockAlpha);
 
@@ -645,11 +705,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // =========================================================================================
 
     public boolean isSystemBusy() {
-        return downloadState.isDownloadingRootfs() || isBatchInstalling || isBackupInProgress || isRestoring || isDeleting || isImporting;
+        return isDownloadingRootfs() || isBatchInstalling || isBackupInProgress || isRestoring || isDeleting || isImporting;
     }
 
     public String getSystemBusyMessage() {
-        if (downloadState.isDownloadingRootfs()) return getString(R.string.install_busy_provisioning);
+        if (isDownloadingRootfs()) return getString(R.string.install_busy_provisioning);
         if (isBatchInstalling) return getString(R.string.install_busy_modules);
         if (isBackupInProgress) return getString(R.string.install_busy_backup);
         if (isRestoring) return getString(R.string.install_busy_restore);
@@ -852,8 +912,10 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     @Override public boolean hasInternet() { return this.hasInternet; }
 
     // --- InstallHost seam (install pipeline lives in InstallController) ---
-    @Override public boolean isDownloadingRootfs() { return downloadState.isDownloadingRootfs(); }
-    @Override public void setDownloadingRootfs(boolean v) { downloadState.setDownloadingRootfs(v); }
+    // ADFA-4474 PR2: InstallProgressRepository is the single source of truth for
+    // "an install is in flight" (survives recreation; the InstallService is the writer).
+    @Override public boolean isDownloadingRootfs() { return org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning(); }
+    @Override public void setDownloadingRootfs(boolean v) { /* no-op: derived from the repository now */ }
     @Override public boolean isBatchInstalling() { return isBatchInstalling; }
     @Override public void setBatchInstalling(boolean v) { isBatchInstalling = v; }
     @Override public java.util.List<String> installationQueue() { return installationQueue; }

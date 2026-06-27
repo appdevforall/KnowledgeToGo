@@ -128,6 +128,10 @@
 
     <string name="watchdog_channel_desc">Garantit que les services restent actifs lorsque l\'écran est éteint.</string>
     <string name="watchdog_channel_name">Service K2Go Watchdog</string>
+    <string name="install_channel_name">Programme d\'installation K2Go</string>
+    <string name="install_channel_desc">Affiche la progression pendant l\'installation de Knowledge To Go.</string>
+    <string name="install_notif_title">Installation de Knowledge To Go</string>
+    <string name="install_notif_cancel">Annuler</string>
     <string name="watchdog_notif_title">K2Go Watchdog actif</string>
     <string name="watchdog_started">Watchdog démarré</string>
     <string name="watchdog_stopped">Watchdog arrêté</string>

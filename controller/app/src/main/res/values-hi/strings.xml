@@ -128,6 +128,10 @@
 
     <string name="watchdog_channel_desc">यह सुनिश्चित करता है कि स्क्रीन बंद होने पर सेवाएं सक्रिय रहें।</string>
     <string name="watchdog_channel_name">K2Go वॉचडॉग सेवा</string>
+    <string name="install_channel_name">K2Go इंस्टॉलर</string>
+    <string name="install_channel_desc">Knowledge To Go इंस्टॉल होने के दौरान प्रगति दिखाता है।</string>
+    <string name="install_notif_title">Knowledge To Go इंस्टॉल हो रहा है</string>
+    <string name="install_notif_cancel">रद्द करें</string>
     <string name="watchdog_notif_title">K2Go वॉचडॉग सक्रिय</string>
     <string name="watchdog_started">वॉचडॉग शुरू</string>
     <string name="watchdog_stopped">वॉचडॉग बंद</string>

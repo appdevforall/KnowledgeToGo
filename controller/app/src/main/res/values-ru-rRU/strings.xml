@@ -128,6 +128,10 @@
 
     <string name="watchdog_channel_desc">Гарантирует, что службы остаются активными при выключенном экране.</string>
     <string name="watchdog_channel_name">Служба K2Go Watchdog</string>
+    <string name="install_channel_name">Установщик K2Go</string>
+    <string name="install_channel_desc">Показывает ход установки Knowledge To Go.</string>
+    <string name="install_notif_title">Установка Knowledge To Go</string>
+    <string name="install_notif_cancel">Отмена</string>
     <string name="watchdog_notif_title">K2Go Watchdog активен</string>
     <string name="watchdog_started">Watchdog запущен</string>
     <string name="watchdog_stopped">Watchdog остановлен</string>

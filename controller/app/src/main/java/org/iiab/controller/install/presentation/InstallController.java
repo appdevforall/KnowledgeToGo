@@ -3,22 +3,23 @@
  * Name        : InstallController.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : Install pipeline carved out of DeployFragment (strangler-fig,
- *               ADFA-4434 PR 2): the install button, the module install queue
- *               and the per-role provisioning (download + Ansible runrole + maps
- *               + local-vars + install-state verification). It is one cohesive,
- *               cyclic call-graph, so it moves as a single controller. Shared
- *               state stays on the Fragment via InstallHost; managers (aria2,
- *               proot) are reached through the host. No behaviour change.
+ * Description : Install UI controller carved out of DeployFragment (strangler-fig,
+ *               ADFA-4434 PR 2). It owns the install button validations + dialogs,
+ *               the module install queue (per-role provisioning) and the
+ *               installation-state verification. The long-running rootfs install
+ *               pipeline (download + extract + companion data) was moved into the
+ *               lifecycle-independent foreground InstallService (ADFA-4474 PR2),
+ *               so this controller only STARTS it and the UI observes progress
+ *               through InstallProgressRepository. Shared state stays on the
+ *               Fragment via InstallHost.
  *               See controller/docs/TECH_DEBT_PLAN.md.
  * ============================================================================
  */
 package org.iiab.controller.install.presentation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,18 +32,14 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import org.iiab.controller.Aria2Manager;
-import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.MainActivity;
 import org.iiab.controller.ModuleRegistry;
 import org.iiab.controller.PRootEngine;
 import org.iiab.controller.ProgressButton;
 import org.iiab.controller.R;
-import org.iiab.controller.TarExtractor;
 import org.iiab.controller.deploy.domain.ModuleName;
 import org.iiab.controller.install.domain.AnsibleRunOutcome;
 import org.iiab.controller.util.LocalVarsYamlParser;
-import org.iiab.controller.util.ProcessRunner;
 
 import org.json.JSONObject;
 
@@ -98,25 +95,23 @@ public final class InstallController {
             }
 
             // 1b. No internet: a fresh install requires downloading the rootfs. Block it
-            // up front (but still allow cancelling an in-progress download below).
+            // up front (but still allow cancelling an in-progress install below).
             if (!host.hasInternet() && !host.isDownloadingRootfs()) {
                 Snackbar.make(v, R.string.install_msg_no_connection, Snackbar.LENGTH_LONG).show();
                 return;
             }
 
-            // 2. HIGH PRIORITY: If this button is working, we allow cancel
+            // 2. HIGH PRIORITY: if an install is in flight, this button cancels it.
+            // The InstallService handles the cancel and posts the terminal state; the
+            // observer in DeployFragment resets the button + shows the snackbar.
             if (host.isDownloadingRootfs()) {
                 new android.app.AlertDialog.Builder(fragment.requireContext())
                         .setTitle(fragment.getString(R.string.install_btn_cancel_title))
                         .setMessage(fragment.getString(R.string.install_btn_cancel_msg))
                         .setPositiveButton(fragment.getString(R.string.install_btn_cancel_confirm), (dialog, which) -> {
-                            if (host.aria2Manager() != null) host.aria2Manager().stopDownload();
-                            host.disableSystemProtection();
-                            host.setDownloadingRootfs(false);
-                            btnFastInstall.setText(R.string.install_btn_install);
-                            btnFastInstall.setAlpha(1.0f);
-                            Snackbar.make(fragment.getView(), R.string.install_msg_cancelled, Snackbar.LENGTH_SHORT).show();
-                            host.updateDynamicButtons();
+                            Intent cancel = new Intent(fragment.requireContext(), InstallService.class)
+                                    .setAction(InstallService.ACTION_CANCEL);
+                            fragment.requireContext().startService(cancel);
                         })
                         .setNegativeButton(fragment.getString(R.string.cancel), null)
                         .show();
@@ -139,131 +134,36 @@ public final class InstallController {
                 return;
             }
 
-            // 5. Start the installation...
-            Runnable executeDownload = () -> {
-                host.enableSystemProtection();
-                mainAct.invalidateModuleStateTrust();
-                host.setDownloadingRootfs(true);
-                btnFastInstall.setAlpha(0.8f);
-                btnFastInstall.startProgress();
-                btnFastInstall.setTextSize(12f);
-
-                if (host.aria2Manager() == null) host.setAria2Manager(new Aria2Manager());
-
-                String arch = host.getTermuxArch();
-                String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "armeabi-v7a" : "arm64-v8a";
-                InstallationPlanner.Tier safeTier = (host.getSelectedTier() != null) ? host.getSelectedTier() : InstallationPlanner.Tier.BASIC;
-                String tierString = safeTier.name().toLowerCase(java.util.Locale.US);
-                String directUrl = "https://iiab.switnet.org/android/rootfs/latest_" + tierString + "_" + archSuffix + ".meta4";
-
-                host.aria2Manager().startDownload(fragment.requireContext(), directUrl, new Aria2Manager.DownloadListener() {
-                    @Override
-                    public void onProgress(int percentage, String speed, String eta) {
-                        // Progress flows through the observable repository so the UI
-                        // re-binds after a recreation (ADFA-4474 PR1).
-                        InstallProgressRepository.get().postDownloading(percentage, speed);
-                    }
-
-                    @Override
-                    public void onComplete(String downloadPath) {
-                        InstallProgressRepository.get().postPhase(InstallState.Phase.EXTRACTING);
-                        if (!fragment.isAdded() || fragment.getActivity() == null) return;
-                        mainAct.runOnUiThread(() -> btnFastInstall.setText(fragment.getString(R.string.install_status_extracting)));
-
-                        File downloadDir = new File(downloadPath);
-                        File[] archives = downloadDir.listFiles((dir, name) -> name.endsWith(".tar.xz") || name.endsWith(".tar.gz"));
-
-                        if (archives == null || archives.length == 0) {
-                            abortInstallation(fragment.getString(R.string.install_error_no_archive));
-                            return;
-                        }
-
-                        File downloadedArchive = archives[0];
-                        TarExtractor tarExtractor = new TarExtractor();
-
-                        tarExtractor.startExtraction(fragment.requireContext(), downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(), new TarExtractor.ExtractionListener() {
-                            @Override
-                            public void onComplete(String destDir) {
-                                downloadedArchive.delete();
-                                File prootTmp = new File(fragment.requireContext().getCacheDir(), "proot_tmp");
-                                if (!prootTmp.exists()) prootTmp.mkdirs();
-                                File binDir = new File(fragment.requireContext().getFilesDir(), "usr/bin");
-                                if (binDir.exists()) {
-                                    try {
-                                        ProcessRunner.Result chmodResult = ProcessRunner.run(new String[]{"chmod", "-R", "755", binDir.getAbsolutePath()});
-                                        if (!chmodResult.isSuccess()) {
-                                            Log.w(TAG, "chmod on usr/bin failed (exit " + chmodResult.exitCode + "): " + chmodResult.output);
-                                        }
-                                    } catch (Exception e) {
-                                        Log.w(TAG, "chmod on usr/bin failed", e);
-                                    }
-                                }
-
-                                // DNS is written at the single chokepoint (PRootEngine.executeInContainer),
-                                // so the companion-data proot steps below get a working resolv.conf for free.
-
-                                if (chkCompanionData.isChecked()) {
-                                    editLocalVarsForMaps(debianRootfs, safeTier);
-                                    android.content.SharedPreferences prefs = fragment.requireContext().getSharedPreferences(fragment.getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-                                    String targetLang = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", "en");
-
-                                    InstallationPlanner.calculateProjectedSize(fragment.requireContext(), safeTier, true, targetLang, host.getOverrideKiwixVariant(), new InstallationPlanner.PlanResultListener() {
-                                        @Override
-                                        public void onCalculated(InstallationPlanner.StorageProjection projection) {
-                                            if (projection.resolvedFilename != null)
-                                                downloadAndIndexKiwix(projection.resolvedFilename, debianRootfs);
-                                            else runMapsAnsible(debianRootfs);
-                                        }
-
-                                        @Override
-                                        public void onError(String error) {
-                                            runMapsAnsible(debianRootfs);
-                                        }
-                                    });
-                                } else {
-                                    finishInstallationSuccess();
-                                }
-                            }
-
-                            @Override
-                            public void onError(String error) {
-                                abortInstallation(fragment.getString(R.string.install_error_extraction, error));
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        abortInstallation(fragment.getString(R.string.install_error_download, error));
-                    }
-                });
-            };
-
+            // 5. Start the installation in the foreground service (survives recreation).
             if (debianRootfs.exists() && debianRootfs.isDirectory()) {
                 new android.app.AlertDialog.Builder(fragment.requireContext())
                         .setTitle(R.string.install_btn_reinstall)
                         .setMessage(R.string.install_dialog_wipe_msg)
-                        .setPositiveButton(R.string.install_btn_yes, (dialog, which) -> {
-                            btnFastInstall.setText(R.string.install_status_wiping_old);
-                            btnFastInstall.setEnabled(false);
-                            new Thread(() -> {
-                                try {
-                                    ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                                    if (!wipeResult.isSuccess()) {
-                                        Log.w(TAG, "rm -rf rootfs (reinstall) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
-                                    }
-                                } catch (Exception e) {
-                                    Log.w(TAG, "rm -rf rootfs (reinstall) failed", e);
-                                }
-                                mainAct.runOnUiThread(executeDownload);
-                            }).start();
-                        })
+                        .setPositiveButton(R.string.install_btn_yes, (dialog, which) -> startInstallService(true))
                         .setNegativeButton(R.string.install_btn_no, null)
                         .show();
             } else {
-                executeDownload.run();
+                startInstallService(false);
             }
         });
+    }
+
+    /** Snapshots the current selections and hands the long-running install to the service. */
+    private void startInstallService(boolean reinstall) {
+        Context ctx = fragment.requireContext();
+        Intent i = new Intent(ctx, InstallService.class);
+        i.setAction(InstallService.ACTION_START);
+        i.putExtra(InstallService.EXTRA_TIER, host.getSelectedTier() != null ? host.getSelectedTier().name() : null);
+        i.putExtra(InstallService.EXTRA_COMPANION, chkCompanionData.isChecked());
+        i.putExtra(InstallService.EXTRA_ARCH, host.getTermuxArch());
+        i.putExtra(InstallService.EXTRA_KIWIX_LANG, host.getOverrideKiwixLang());
+        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, host.getOverrideKiwixVariant());
+        i.putExtra(InstallService.EXTRA_REINSTALL, reinstall);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            ctx.startForegroundService(i);
+        } else {
+            ctx.startService(i);
+        }
     }
 
     private void evaluateLaunchButton() {
@@ -439,170 +339,6 @@ public final class InstallController {
         android.content.SharedPreferences prefs = fragment.getActivity().getSharedPreferences("iiab_queue_prefs", android.content.Context.MODE_PRIVATE);
         String queueString = android.text.TextUtils.join(",", host.installationQueue());
         prefs.edit().putString("pending_modules", queueString).putBoolean("is_batch_installing", host.isBatchInstalling()).apply();
-    }
-
-    private void abortInstallation(String message) {
-        InstallProgressRepository.get().postIdle();
-        host.disableSystemProtection();
-        host.setDownloadingRootfs(false);
-        if (fragment.isAdded() && fragment.getActivity() != null) {
-            fragment.getActivity().runOnUiThread(() -> {
-                btnFastInstall.stopProgress();
-                btnFastInstall.setText(R.string.install_btn_install);
-                btnFastInstall.setAlpha(1.0f);
-                host.updateDynamicButtons();
-                if (fragment.getView() != null)
-                    Snackbar.make(fragment.getView(), message, Snackbar.LENGTH_LONG).show();
-            });
-        }
-    }
-
-    private void finishInstallationSuccess() {
-        InstallProgressRepository.get().postIdle();
-        host.disableSystemProtection();
-        host.setDownloadingRootfs(false);
-        if (fragment.isAdded() && fragment.getActivity() != null) {
-            fragment.getActivity().runOnUiThread(() -> {
-                btnFastInstall.stopProgress();
-                btnFastInstall.setText(R.string.install_btn_reinstall);
-                btnFastInstall.setAlpha(1.0f);
-                host.updateDynamicButtons();
-                host.requestFreshLocalVarsSilently();
-                if (fragment.getView() != null)
-                    Snackbar.make(fragment.getView(), R.string.install_success_deployment, Snackbar.LENGTH_LONG).show();
-            });
-        }
-    }
-
-    private void downloadAndIndexKiwix(String zimFilename, File debianRootfs) {
-        if (fragment.getActivity() == null) return;
-        fragment.getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_preparing_kiwix));
-
-        String zimUrl = "https://download.kiwix.org/zim/wikipedia/" + zimFilename;
-        File libraryDir = new File(debianRootfs, "library/zims/content");
-        if (!libraryDir.exists()) libraryDir.mkdirs();
-
-        if (host.aria2Manager() == null) host.setAria2Manager(new Aria2Manager());
-        host.aria2Manager().startDownload(fragment.requireContext(), zimUrl, new Aria2Manager.DownloadListener() {
-            @Override
-            public void onProgress(int percentage, String speed, String eta) {
-                if (fragment.isAdded() && fragment.getActivity() != null)
-                    fragment.getActivity().runOnUiThread(() -> btnFastInstall.setText(fragment.getString(R.string.install_status_zim_download, percentage, speed)));
-            }
-
-            @Override
-            public void onComplete(String downloadPath) {
-                if (fragment.getActivity() == null) return;
-                fragment.getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_indexing_zim));
-                File downloadedZim = new File(downloadPath, zimFilename);
-                if (downloadedZim.exists())
-                    downloadedZim.renameTo(new File(libraryDir, zimFilename));
-
-                if (host.prootEngine() == null) host.setPRootEngine(new PRootEngine());
-                host.prootEngine().executeInContainer(fragment.requireContext(), debianRootfs.getAbsolutePath(), "iiab-make-kiwix-lib", new PRootEngine.OutputListener() {
-                    @Override
-                    public void onOutputLine(String line) {
-                        if (fragment.getActivity() instanceof MainActivity)
-                            ((MainActivity) fragment.getActivity()).runOnUiThread(() -> ((MainActivity) fragment.getActivity()).addToLog("[Kiwix] " + line));
-                    }
-
-                    @Override
-                    public void onProcessExit(int exitCode) {
-                        runMapsAnsible(debianRootfs);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        runMapsAnsible(debianRootfs);
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String error) {
-                runMapsAnsible(debianRootfs);
-            }
-        });
-    }
-
-    private void runMapsAnsible(File debianRootfs) {
-        if (fragment.getActivity() == null) return;
-
-        InstallationPlanner.Tier safeTier = (host.getSelectedTier() != null) ? host.getSelectedTier() : InstallationPlanner.Tier.BASIC;
-
-        if (safeTier == InstallationPlanner.Tier.BASIC) {
-            // BYPASS PARA BASIC
-            fragment.getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_maps_provisioned));
-            new Handler(Looper.getMainLooper()).postDelayed(this::finishInstallationSuccess, 1500);
-            return;
-        }
-
-        fragment.getActivity().runOnUiThread(() -> btnFastInstall.setText(R.string.install_status_maps_configuring));
-
-        if (host.prootEngine() == null) host.setPRootEngine(new PRootEngine());
-        String installCmd = "cd /opt/iiab/iiab && ./runrole --reinstall maps";
-
-        host.prootEngine().executeInContainer(fragment.requireContext(), debianRootfs.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
-            @Override
-            public void onOutputLine(String line) {
-                if (fragment.getActivity() instanceof MainActivity) {
-                    ((MainActivity) fragment.getActivity()).runOnUiThread(() -> ((MainActivity) fragment.getActivity()).addToLog("[Ansible] " + line));
-                }
-            }
-
-            @Override
-            public void onProcessExit(int exitCode) {
-                finishInstallationSuccess();
-            }
-
-            @Override
-            public void onError(String error) {
-                finishInstallationSuccess();
-            }
-        });
-    }
-
-    private void editLocalVarsForMaps(File debianRootfs, InstallationPlanner.Tier tier) {
-        File yamlFile = new File(debianRootfs, "etc/iiab/local_vars.yml");
-        if (!yamlFile.exists()) return;
-        try {
-            StringBuilder content = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new FileReader(yamlFile));
-            String line;
-            while ((line = reader.readLine()) != null) content.append(line).append("\n");
-            reader.close();
-
-            String text = content.toString();
-            // Always make sure the installation and module are active
-            text = text.replaceAll("(?m)^maps_install:\\s*.*", "maps_install: True");
-            text = text.replaceAll("(?m)^maps_enabled:\\s*.*", "maps_enabled: True");
-
-            if (tier == InstallationPlanner.Tier.BASIC) {
-                // BASIC TIER ~0.2GB
-                // Note: The current base image already has these default values.
-                // We leave them commented for the future in case the base image changes.
-                /*
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: nat-z8");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 7");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: none");
-                */
-            } else if (tier == InstallationPlanner.Tier.STANDARD) {
-                // STANDARD TIER ~11GB
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: osm-z11");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 7");
-            } else if (tier == InstallationPlanner.Tier.FULL) {
-                // FULL TIER ~16GB
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: osm-z11");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 8");
-            }
-
-            java.io.FileWriter writer = new java.io.FileWriter(yamlFile);
-            writer.write(text);
-            writer.close();
-        } catch (Exception ignored) {
-        }
     }
 
     public void fetchLocalVarsFromPRoot() {
