@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Wraps the K2Go icon foreground (mipmap, safe-zone). Used by the adaptive
+     icon AND the app header logo (layout/main.xml). Preliminary icon. -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@mipmap/ic_launcher_foreground"
+    android:gravity="center" />
