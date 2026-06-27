@@ -188,7 +188,8 @@ public class RsyncManager {
                             String eta = matcher.group(3);
                             String finalFile = lastFile;
                             mainHandler.post(() -> listener.onProgress(percent, speed, eta, finalFile));
-                        } catch (Exception ignored) {
+                        } catch (Exception e) {
+                            Log.w(TAG, "Failed to parse rsync progress line", e);
                         }
                     }
                     // PHASE 1 FIX: Strict match for actual rsync errors, ignoring files named "error"
@@ -315,7 +316,8 @@ public class RsyncManager {
         if (rsyncProcess != null) {
             try {
                 rsyncProcess.destroy();
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                Log.w(TAG, "Error destroying rsync process on stop", e);
             }
         }
     }
