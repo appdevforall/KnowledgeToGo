@@ -22,6 +22,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import org.iiab.controller.download.domain.MetalinkSplit;
 
 public class Aria2Manager {
 
@@ -86,8 +89,13 @@ public class Aria2Manager {
                 command.add("--continue=true");
                 command.add("--allow-overwrite=true");
                 command.add("--auto-file-renaming=false");
-                command.add("--max-connection-per-server=4");
-                command.add("--split=4");
+                // ADFA-4473: per-server connections stay fixed (polite); --split
+                // scales with the number of HTTP mirrors in the metalink (clamp
+                // and counting live in MetalinkSplit; fallback to BASE_SPLIT if
+                // not a metalink / torrent / unreadable).
+                int split = resolveSplitFromMetalink(url);
+                command.add("--max-connection-per-server=" + MetalinkSplit.CONNECTIONS_PER_MIRROR);
+                command.add("--split=" + split);
                 command.add("--follow-metalink=mem");
                 // D6: verify the SHA-256 checksums embedded in the .meta4 (Metalink)
                 // while downloading. On mismatch aria2 exits non-zero, so onError fires
@@ -179,6 +187,39 @@ public class Aria2Manager {
     /**
      * Helper method to copy files from the APK assets folder to internal storage.
      */
+    /**
+     * ADFA-4473: fetch the .meta4/.metalink at {@code url} and resolve aria2c's
+     * {@code --split} from its http/https mirror count (see {@link MetalinkSplit}).
+     * This method owns only the network fetch; counting + clamp logic is pure and
+     * lives in the domain helper. Falls back to {@link MetalinkSplit#BASE_SPLIT}
+     * for non-metalink URLs, torrents, a non-200 response, or any parse error.
+     */
+    private int resolveSplitFromMetalink(String url) {
+        if (!MetalinkSplit.isMetalinkUrl(url)) {
+            return MetalinkSplit.BASE_SPLIT;
+        }
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.setRequestProperty("User-Agent", "K2Go");
+            if (conn.getResponseCode() != 200) {
+                return MetalinkSplit.BASE_SPLIT;
+            }
+            try (InputStream in = conn.getInputStream()) {
+                int split = MetalinkSplit.splitFromMetalink(in);
+                Log.d(TAG, "Metalink resolved --split=" + split);
+                return split;
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "resolveSplitFromMetalink fallback (" + e.getMessage() + ")");
+            return MetalinkSplit.BASE_SPLIT;
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+    }
+
     private void extractAsset(Context context, String assetName, File destination) {
         try (InputStream is = context.getAssets().open(assetName);
              FileOutputStream fos = new FileOutputStream(destination)) {
