@@ -9,7 +9,6 @@
 package org.iiab.controller;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,15 +22,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.Collections;
 import java.util.List;
 
 public class QrActivity extends AppCompatActivity {
@@ -145,50 +136,17 @@ public class QrActivity extends AppCompatActivity {
      * Strictly categorizes network interfaces to avoid Hotspot being labeled as Wi-Fi.
      */
     private void fetchNetworkInterfaces() {
-        try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface intf : interfaces) {
-                String name = intf.getName();
-                if (!intf.isUp()) continue;
-
-                // Strict categorizations
-                boolean isStrictWifi = name.equals("wlan0");
-                boolean isHotspot = name.startsWith("ap") || name.startsWith("swlan") || name.equals("wlan1") || name.equals("wlan2");
-
-                if (isStrictWifi || isHotspot) {
-                    List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                    for (InetAddress addr : addrs) {
-                        if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
-                            if (isStrictWifi) wifiIp = addr.getHostAddress();
-                            if (isHotspot) hotspotIp = addr.getHostAddress();
-                        }
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-        }
+        // EX3: single source of LAN IP discovery (shared with SyncFragment).
+        org.iiab.controller.sync.transport.NetworkInterfaces.LanIps ips = org.iiab.controller.sync.transport.NetworkInterfaces.discover();
+        wifiIp = ips.wifiIp;
+        hotspotIp = ips.hotspotIp;
     }
 
     /**
      * Generates a pure Black & White Bitmap using ZXing.
      */
     private Bitmap generateQrCode(String text) {
-        QRCodeWriter writer = new QRCodeWriter();
-        try {
-            // 800x800 guarantees high resolution on any screen
-            BitMatrix bitMatrix = writer.encode(text, BarcodeFormat.QR_CODE, 800, 800);
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
-                }
-            }
-            return bmp;
-        } catch (WriterException e) {
-            return null;
-        }
+        // 800x800 guarantees high resolution on any screen (EX3: shared encoder).
+        return org.iiab.controller.sync.transport.QrCodec.encode(text, 800);
     }
 }

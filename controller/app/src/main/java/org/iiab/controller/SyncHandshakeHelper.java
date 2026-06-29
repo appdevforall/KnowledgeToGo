@@ -9,7 +9,6 @@
 package org.iiab.controller;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -18,9 +17,6 @@ import org.iiab.controller.sync.domain.SyncCredentialValidator;
 
 import java.security.SecureRandom;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 
 public class SyncHandshakeHelper {
 
@@ -108,22 +104,7 @@ public class SyncHandshakeHelper {
     }
 
     public static Bitmap generateQrCode(String data, int size) {
-        try {
-            QRCodeWriter writer = new QRCodeWriter();
-            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, size, size);
-            int width = bitMatrix.getWidth();
-            int height = bitMatrix.getHeight();
-            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
-                }
-            }
-            return bmp;
-        } catch (Exception e) {
-            Log.e(TAG, "Error generating QR Code", e);
-            return null;
-        }
+        // EX3: shared QR encoder.
+        return org.iiab.controller.sync.transport.QrCodec.encode(data, size);
     }
 }

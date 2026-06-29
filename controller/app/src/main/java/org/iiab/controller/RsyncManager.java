@@ -19,6 +19,7 @@ import org.iiab.controller.sync.domain.RsyncOutcome;
 import org.iiab.controller.sync.domain.RsyncProgress;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.domain.SyncCredentialValidator;
+import org.iiab.controller.sync.transport.SecretStore;
 import org.iiab.controller.sync.transport.TransportEngine;
 
 import java.io.BufferedReader;
@@ -32,6 +33,7 @@ public class RsyncManager implements TransportEngine {
     private static final String TAG = "IIAB-RsyncManager";
     private volatile Process rsyncProcess;
     private boolean isCancelled = false;
+    private SecretStore secretStore;
 
     @Override
     public boolean startServer(Context context, ShareConfig config, String pass, String dirToShare) {
@@ -61,7 +63,6 @@ public class RsyncManager implements TransportEngine {
 
             File cacheDir = context.getCacheDir();
             File configFile = new File(cacheDir, "rsyncd.conf");
-            File secretsFile = new File(cacheDir, "rsyncd.secrets");
             File pidFile = new File(cacheDir, "rsyncd.pid");
             File lockFile = new File(cacheDir, "rsyncd.lock");
 
@@ -69,13 +70,8 @@ public class RsyncManager implements TransportEngine {
                 pidFile.delete();
             }
 
-            writeTextToFile(secretsFile, config.user + ":" + pass);
-
-            secretsFile.setExecutable(false, false);
-            secretsFile.setReadable(false, false);
-            secretsFile.setWritable(false, false);
-            secretsFile.setReadable(true, true);
-            secretsFile.setWritable(true, true);
+            secretStore = new SecretStore(cacheDir);
+            File secretsFile = secretStore.writeServerSecrets(config.user, pass);
 
             // PHASE 1 FIX: 'max connections = 3' protects the I/O bottleneck.
             // Config/argv assembly lives in the pure RsyncConfig domain (S14 step 1).
@@ -122,14 +118,8 @@ public class RsyncManager implements TransportEngine {
                     return;
                 }
 
-                File passFile = new File(context.getCacheDir(), "rsync_client.pass");
-                writeTextToFile(passFile, pass);
-
-                passFile.setExecutable(false, false);
-                passFile.setReadable(false, false);
-                passFile.setWritable(false, false);
-                passFile.setReadable(true, true);
-                passFile.setWritable(true, true);
+                secretStore = new SecretStore(context.getCacheDir());
+                File passFile = secretStore.writeClientPassword(pass);
 
                 String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
@@ -165,7 +155,7 @@ public class RsyncManager implements TransportEngine {
 
                 int exitCode = rsyncProcess.waitFor();
 
-                if (passFile.exists()) passFile.delete();
+                secretStore.deleteClientPassword();
 
                 if (isCancelled) {
                     mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_cancelled)));
@@ -211,13 +201,8 @@ public class RsyncManager implements TransportEngine {
                     return;
                 }
 
-                File passFile = new File(context.getCacheDir(), "rsync_client.pass");
-                writeTextToFile(passFile, pass);
-                passFile.setExecutable(false, false);
-                passFile.setReadable(false, false);
-                passFile.setWritable(false, false);
-                passFile.setReadable(true, true);
-                passFile.setWritable(true, true);
+                secretStore = new SecretStore(context.getCacheDir());
+                File passFile = secretStore.writeClientPassword(pass);
 
                 String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
@@ -240,7 +225,7 @@ public class RsyncManager implements TransportEngine {
                 }
 
                 int exitCode = rsyncProcess.waitFor();
-                if (passFile.exists()) passFile.delete();
+                secretStore.deleteClientPassword();
 
                 if (isCancelled) {
                     mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_dry_run_cancelled)));
@@ -261,6 +246,7 @@ public class RsyncManager implements TransportEngine {
     @Override
     public void stop() {
         isCancelled = true;
+        if (secretStore != null) secretStore.clear(); // S11: don't let secrets outlive the session
         if (rsyncProcess != null) {
             try {
                 rsyncProcess.destroy();

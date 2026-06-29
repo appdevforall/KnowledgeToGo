@@ -41,12 +41,8 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
 import java.io.File;
-import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
 import java.net.Socket;
-import java.util.Collections;
 import java.util.List;
 
 import android.widget.RadioButton;
@@ -280,29 +276,10 @@ public class SyncFragment extends Fragment {
     }
 
     private void fetchNetworkInterfaces() {
-        wifiIp = null;
-        hotspotIp = null;
-        try {
-            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
-            for (NetworkInterface intf : interfaces) {
-                String name = intf.getName();
-                if (!intf.isUp()) continue;
-
-                boolean isStrictWifi = name.equals("wlan0");
-                boolean isHotspot = name.startsWith("ap") || name.startsWith("swlan") || name.equals("wlan1") || name.equals("wlan2");
-
-                if (isStrictWifi || isHotspot) {
-                    List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
-                    for (InetAddress addr : addrs) {
-                        if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
-                            if (isStrictWifi) wifiIp = addr.getHostAddress();
-                            if (isHotspot) hotspotIp = addr.getHostAddress();
-                        }
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-        }
+        // EX3: single source of LAN IP discovery (shared with QrActivity).
+        org.iiab.controller.sync.transport.NetworkInterfaces.LanIps ips = org.iiab.controller.sync.transport.NetworkInterfaces.discover();
+        wifiIp = ips.wifiIp;
+        hotspotIp = ips.hotspotIp;
     }
 
     // --- RSYNC DAEMON METHODS ---
