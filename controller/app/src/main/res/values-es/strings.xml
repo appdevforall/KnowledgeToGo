@@ -531,4 +531,11 @@
     <string name="dns_status_testing">Probando…</string>
     <string name="network_advanced_label">Configuración avanzada</string>
     <string name="setup_dns">Configurar DNS</string>
+    <string name="settings_nav_setup">Configuración</string>
+    <string name="settings_nav_feedback">Comentarios</string>
+    <string name="settings_nav_about">Acerca de</string>
+    <string name="about_version">Versión %1$s</string>
+    <string name="settings_open_app_settings">Abrir ajustes del sistema</string>
+    <string name="settings_setup_desc">Gestiona los permisos y el idioma de la app.</string>
+    <string name="feedback_placeholder">Formulario de comentarios próximamente.</string>
 </resources>

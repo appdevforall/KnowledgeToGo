@@ -71,6 +71,7 @@
             tools:replace="screenOrientation" />
 
         <activity android:name=".SetupActivity" />
+        <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".QrActivity" />
 
         <receiver
