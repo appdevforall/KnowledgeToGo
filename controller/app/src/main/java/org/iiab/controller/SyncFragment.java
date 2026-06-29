@@ -73,7 +73,7 @@ public class SyncFragment extends Fragment {
     private TextView txtGuestArchLabel;
 
     // Managers
-    private RsyncManager rsyncManager;
+    private org.iiab.controller.sync.transport.TransportEngine transport;
     private ApkServer apkServer;
 
     // States
@@ -83,9 +83,8 @@ public class SyncFragment extends Fragment {
     private String hotspotIp = null;
     private boolean showingWifi = true;
     private View qrCardContainer;
-    private int currentRsyncPort = 8730;
-    private static final int APK_PORT = 8080;
-    private String tempUser = "iiab_peer";
+    // S14 step 2: transport config (port/user/module/apk-port) — kills S7 hardcodes.
+    private final org.iiab.controller.sync.domain.ShareConfig shareConfig = org.iiab.controller.sync.domain.ShareConfig.defaults();
     private String tempPass;
     private boolean hostHasRootfs = true;
     private LinearLayout qrDisplaySection;
@@ -112,7 +111,7 @@ public class SyncFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sync, container, false);
-        rsyncManager = new RsyncManager();
+        transport = new RsyncManager();
 
         rgSyncMode = view.findViewById(R.id.rg_sync_mode);
         containerShare = view.findViewById(R.id.container_share);
@@ -315,7 +314,7 @@ public class SyncFragment extends Fragment {
         // would otherwise risk an ANR on the UI thread); apply the result on the UI.
         final String shareDir = rootfsDir.getAbsolutePath();
         AppExecutors.get().io().execute(() -> {
-            boolean started = rsyncManager.startServer(requireContext(), currentRsyncPort, tempUser, tempPass, shareDir);
+            boolean started = transport.startServer(requireContext(), shareConfig, tempPass, shareDir);
             if (!isAdded() || getActivity() == null) return;
             requireActivity().runOnUiThread(() -> onShareDaemonResult(started));
         });
@@ -347,7 +346,7 @@ public class SyncFragment extends Fragment {
 
     private void updateQrDisplayRsync() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
-        String jsonPayload = SyncHandshakeHelper.createPayload(currentIp, currentRsyncPort, tempUser, tempPass, hostHasRootfs, getArchBits());
+        String jsonPayload = SyncHandshakeHelper.createPayload(currentIp, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, getArchBits());
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(jsonPayload, 500);
 
         if (qrBitmap != null) imgQrCode.setImageBitmap(qrBitmap);
@@ -358,7 +357,7 @@ public class SyncFragment extends Fragment {
     }
 
     private void stopShareDaemon() {
-        rsyncManager.stop();
+        transport.stop();
         isDaemonRunning = false;
         disableSystemProtection();
         updateArchLabelsVisibility();
@@ -380,7 +379,7 @@ public class SyncFragment extends Fragment {
         try {
             String myApkPath = requireContext().getApplicationInfo().sourceDir;
 
-            apkServer = new ApkServer(APK_PORT, myApkPath);
+            apkServer = new ApkServer(shareConfig.apkPort, myApkPath);
             apkServer.start();
             isApkServerRunning = true;
 
@@ -406,7 +405,7 @@ public class SyncFragment extends Fragment {
 
     private void updateQrDisplayApk() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
-        String downloadUrl = "http://" + currentIp + ":" + APK_PORT + "/IIAB-Controller-Latest";
+        String downloadUrl = "http://" + currentIp + ":" + shareConfig.apkPort + "/IIAB-Controller-Latest";
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(downloadUrl, 500);
 
         if (qrBitmap != null) imgQrCode.setImageBitmap(qrBitmap);
@@ -466,7 +465,7 @@ public class SyncFragment extends Fragment {
         });
 
         btnCancelTransfer.setOnClickListener(v -> {
-            rsyncManager.stop();
+            transport.stop();
             disableSystemProtection();
             containerProgress.setVisibility(View.GONE);
             btnScanQr.setVisibility(View.VISIBLE);
@@ -550,7 +549,7 @@ public class SyncFragment extends Fragment {
 
                         txtTransferFilename.setText(getString(R.string.sync_msg_calculating));
 
-                        rsyncManager.calculateTransferPlan(requireContext(), creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new RsyncManager.DryRunListener() {
+                        transport.calculateTransferPlan(requireContext(), shareConfig, creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new org.iiab.controller.sync.transport.TransportEngine.DryRunListener() {
                             @Override
                             public void onCalculated(long bytesToTransfer) {
                                 double gigabytes = bytesToTransfer / (1024.0 * 1024.0 * 1024.0);
@@ -619,7 +618,7 @@ public class SyncFragment extends Fragment {
 
         if (!destDir.exists()) destDir.mkdirs();
 
-        rsyncManager.startClient(requireContext(), creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new RsyncManager.SyncListener() {
+        transport.startClient(requireContext(), shareConfig, creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new org.iiab.controller.sync.transport.TransportEngine.SyncListener() {
             @Override
             public void onProgress(int percentage, String speed, String eta, String currentFile) {
                 progressBarTransfer.setProgress(percentage);
@@ -662,7 +661,7 @@ public class SyncFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (rsyncManager != null) rsyncManager.stop();
+        if (transport != null) transport.stop();
         if (apkServer != null) apkServer.stop();
     }
 

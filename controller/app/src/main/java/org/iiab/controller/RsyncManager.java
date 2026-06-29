@@ -17,7 +17,9 @@ import android.util.Log;
 import org.iiab.controller.sync.domain.RsyncConfig;
 import org.iiab.controller.sync.domain.RsyncOutcome;
 import org.iiab.controller.sync.domain.RsyncProgress;
+import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.domain.SyncCredentialValidator;
+import org.iiab.controller.sync.transport.TransportEngine;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,23 +27,14 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
-public class RsyncManager {
+public class RsyncManager implements TransportEngine {
 
     private static final String TAG = "IIAB-RsyncManager";
     private volatile Process rsyncProcess;
     private boolean isCancelled = false;
 
-    private static final String SYNC_MODULE_NAME = "iiab_sync";
-
-    public interface SyncListener {
-        void onProgress(int percentage, String speed, String eta, String currentFile);
-
-        void onComplete(String message);
-
-        void onError(String error);
-    }
-
-    public boolean startServer(Context context, int port, String user, String pass, String dirToShare) {
+    @Override
+    public boolean startServer(Context context, ShareConfig config, String pass, String dirToShare) {
         stop();
         isCancelled = false;
 
@@ -49,9 +42,9 @@ public class RsyncManager {
         // rsyncd.conf without validation. user/pass are app-generated and
         // dirToShare is app-controlled, but a stray CR/LF here would let new
         // config directives or module sections be injected.
-        if (!SyncCredentialValidator.isValidUsername(user)
+        if (!SyncCredentialValidator.isValidUsername(config.user)
                 || !SyncCredentialValidator.isValidPassword(pass)
-                || !SyncCredentialValidator.isValidPort(port)
+                || !SyncCredentialValidator.isValidPort(config.rsyncPort)
                 || !SyncCredentialValidator.isSafeConfigValue(dirToShare)) {
             Log.e(TAG, "Refusing to start rsync daemon: invalid credentials or share path");
             return false;
@@ -76,7 +69,7 @@ public class RsyncManager {
                 pidFile.delete();
             }
 
-            writeTextToFile(secretsFile, user + ":" + pass);
+            writeTextToFile(secretsFile, config.user + ":" + pass);
 
             secretsFile.setExecutable(false, false);
             secretsFile.setReadable(false, false);
@@ -87,8 +80,8 @@ public class RsyncManager {
             // PHASE 1 FIX: 'max connections = 3' protects the I/O bottleneck.
             // Config/argv assembly lives in the pure RsyncConfig domain (S14 step 1).
             String configContent = RsyncConfig.buildDaemonConf(
-                    pidFile.getAbsolutePath(), lockFile.getAbsolutePath(), port,
-                    SYNC_MODULE_NAME, dirToShare, user, secretsFile.getAbsolutePath());
+                    pidFile.getAbsolutePath(), lockFile.getAbsolutePath(), config.rsyncPort,
+                    config.moduleName, dirToShare, config.user, secretsFile.getAbsolutePath());
 
             writeTextToFile(configFile, configContent);
 
@@ -97,7 +90,7 @@ public class RsyncManager {
 
             pb.redirectErrorStream(true);
             rsyncProcess = pb.start();
-            Log.i(TAG, "Rsync Daemon started on port " + port);
+            Log.i(TAG, "Rsync Daemon started on port " + config.rsyncPort);
 
             return true;
 
@@ -107,7 +100,8 @@ public class RsyncManager {
         }
     }
 
-    public void startClient(Context context, String hostIp, int port, String user, String pass, String destinationDir, SyncListener listener) {
+    @Override
+    public void startClient(Context context, ShareConfig config, String hostIp, int port, String user, String pass, String destinationDir, TransportEngine.SyncListener listener) {
         stop();
         isCancelled = false;
         Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -137,7 +131,7 @@ public class RsyncManager {
                 passFile.setReadable(true, true);
                 passFile.setWritable(true, true);
 
-                String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, SYNC_MODULE_NAME);
+                String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
                 ProcessBuilder pb = new ProcessBuilder(RsyncConfig.clientArgs(
                         rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir));
@@ -196,13 +190,8 @@ public class RsyncManager {
         }).start();
     }
 
-    public interface DryRunListener {
-        void onCalculated(long bytesToTransfer);
-
-        void onError(String error);
-    }
-
-    public void calculateTransferPlan(Context context, String hostIp, int port, String user, String pass, String destinationDir, DryRunListener listener) {
+    @Override
+    public void calculateTransferPlan(Context context, ShareConfig config, String hostIp, int port, String user, String pass, String destinationDir, TransportEngine.DryRunListener listener) {
         stop();
         isCancelled = false;
         Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -230,7 +219,7 @@ public class RsyncManager {
                 passFile.setReadable(true, true);
                 passFile.setWritable(true, true);
 
-                String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, SYNC_MODULE_NAME);
+                String remoteUrl = RsyncConfig.buildRemoteUrl(user, hostIp, port, config.moduleName);
 
                 ProcessBuilder pb = new ProcessBuilder(RsyncConfig.dryRunArgs(
                         rsyncBin.getAbsolutePath(), passFile.getAbsolutePath(), remoteUrl, destinationDir));
@@ -269,6 +258,7 @@ public class RsyncManager {
         }).start();
     }
 
+    @Override
     public void stop() {
         isCancelled = true;
         if (rsyncProcess != null) {
