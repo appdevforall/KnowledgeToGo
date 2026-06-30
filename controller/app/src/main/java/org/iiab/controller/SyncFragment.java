@@ -1,8 +1,8 @@
 /*
  * ============================================================================
  * Name        : SyncFragment.java
- * Author      : IIAB Project
- * Copyright   : Copyright (c) 2026 IIAB Project
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : Fragment to handle P2P/P2M syncing and App sharing
  * ============================================================================
  */
@@ -435,7 +435,9 @@ public class SyncFragment extends Fragment {
                 return;
             }
 
-            if (mainActivity != null && mainActivity.isServerAlive) {
+            // EX6: the "safe to receive now?" rule lives in the pure TransferGuard domain.
+            boolean serverRunning = mainActivity != null && mainActivity.isServerAlive;
+            if (!org.iiab.controller.sync.domain.TransferGuard.canReceive(serverRunning).allowed) {
                 new AlertDialog.Builder(requireContext())
                         .setTitle(getString(R.string.sync_dialog_server_running_title))
                         .setMessage(getString(R.string.sync_error_stop_server_first))

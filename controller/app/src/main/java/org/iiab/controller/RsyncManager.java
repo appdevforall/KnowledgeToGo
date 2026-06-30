@@ -1,8 +1,8 @@
 /*
  * ============================================================================
  * Name        : RsyncManager.java
- * Author      : IIAB Project
- * Copyright   : Copyright (c) 2026 IIAB Project
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : Java wrapper for the native librsync.so binary
  * ============================================================================
  */

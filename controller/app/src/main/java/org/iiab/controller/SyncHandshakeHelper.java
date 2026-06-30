@@ -1,9 +1,10 @@
 /*
  * ============================================================================
  * Name        : SyncHandshakeHelper.java
- * Author      : IIAB Project
- * Copyright   : Copyright (c) 2026 IIAB Project
- * Description : Java wrapper for the native librsync.so binary
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : P2P sync handshake: the QR payload schema (create/parse),
+ * secure password generation, and QR encoding (delegated to QrCodec).
  * ============================================================================
  */
 package org.iiab.controller;

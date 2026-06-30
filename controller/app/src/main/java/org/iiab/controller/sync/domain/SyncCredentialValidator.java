@@ -1,8 +1,8 @@
 /*
  * ============================================================================
  * Name        : SyncCredentialValidator.java
- * Author      : IIAB Project
- * Copyright   : Copyright (c) 2026 IIAB Project
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : Domain rule: what counts as a *safe* peer-to-peer sync
  *               credential. Closes tech-debt item S1 (rsyncd.conf / rsync://
  *               URL injection from QR-scanned credentials).

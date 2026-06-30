@@ -1,8 +1,8 @@
 /*
  * ============================================================================
  * Name        : QrActivity.java
- * Author      : IIAB Project
- * Copyright   : Copyright (c) 2026 IIAB Project
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : QR share content helper
  * ============================================================================
  */
