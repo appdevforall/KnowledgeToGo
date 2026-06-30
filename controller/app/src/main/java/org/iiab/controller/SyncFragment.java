@@ -73,6 +73,7 @@ public class SyncFragment extends Fragment {
 
     // Arch Labels
     private TextView txtHostArchLabel;
+    private TextView txtShareIp; // ADFA-4496: show the advertised IP + interface under the QR
     private TextView txtGuestArchLabel;
 
     // Managers
@@ -164,6 +165,7 @@ public class SyncFragment extends Fragment {
         qrCardContainer = view.findViewById(R.id.qr_card_container);
 
         txtHostArchLabel = view.findViewById(R.id.txt_host_arch_label);
+        txtShareIp = view.findViewById(R.id.txt_share_ip);
         txtGuestArchLabel = view.findViewById(R.id.txt_guest_arch_label);
 
         // Static Arch Labels logic (Cleaned up with string resources)
@@ -338,8 +340,22 @@ public class SyncFragment extends Fragment {
         }
     }
 
+    /** ADFA-4496: show the IP (and which interface) the QR advertises, so a stale QR from a
+     *  previous network is obvious instead of looking like a transfer bug. */
+    private void updateShareIpLabel(String ip) {
+        if (txtShareIp == null) return;
+        if (ip == null) {
+            txtShareIp.setVisibility(View.GONE);
+            return;
+        }
+        String iface = getString(showingWifi ? R.string.wifi : R.string.hotspot);
+        txtShareIp.setText(iface + "   " + ip);
+        txtShareIp.setVisibility(View.VISIBLE);
+    }
+
     private void updateQrDisplayRsync() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
+        updateShareIpLabel(currentIp);
         String jsonPayload = SyncHandshakeHelper.createPayload(currentIp, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, getArchBits());
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(jsonPayload, 500);
 
@@ -399,6 +415,7 @@ public class SyncFragment extends Fragment {
 
     private void updateQrDisplayApk() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
+        updateShareIpLabel(currentIp);
         String downloadUrl = "http://" + currentIp + ":" + shareConfig.apkPort + "/IIAB-Controller-Latest";
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(downloadUrl, 500);
 

@@ -80,6 +80,25 @@
                         android:contentDescription="@string/qr_content_description" />
                 </FrameLayout>
 
+                <TextView
+                    android:id="@+id/txt_share_ip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/rounded_button"
+                    android:backgroundTint="@color/surface_section"
+                    android:paddingStart="16dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="6dp"
+                    android:textColor="@color/status_success"
+                    android:textSize="14sp"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.05"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:text="Wi-Fi   192.168.1.153" />
+
                 <RadioGroup
                     android:id="@+id/rg_network_selector"
                     android:layout_width="220dp"
