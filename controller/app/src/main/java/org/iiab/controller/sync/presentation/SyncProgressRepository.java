@@ -53,6 +53,12 @@ public final class SyncProgressRepository {
     public void postFailed(String message)  { post(SyncTransferState.failed(message)); }
     public void postIdle()                  { post(SyncTransferState.idle()); }
 
+    // Pre-transfer probing phases (ADFA-4492 step 4): published so the sondeo survives recreation.
+    public void postConnecting()                         { post(SyncTransferState.connecting()); }
+    public void postCalculating()                        { post(SyncTransferState.calculating()); }
+    public void postConfirm(String title, String msg)   { post(SyncTransferState.confirm(title, msg)); }
+    public void postAborted(String title, String msg)   { post(SyncTransferState.aborted(title, msg)); }
+
     private synchronized void post(SyncTransferState s) {
         state.postValue(s.withSeq(++seq));
     }
