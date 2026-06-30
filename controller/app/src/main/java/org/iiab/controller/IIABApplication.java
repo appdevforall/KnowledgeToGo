@@ -28,5 +28,11 @@ public class IIABApplication extends Application {
         } catch (Exception e) {
             Log.e("IIABApplication", "Error initializing Conscrypt", e);
         }
+
+        // Capture uncaught exceptions into a crash report, offered on next launch.
+        Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(
+                new org.iiab.controller.feedback.crash.K2GoUncaughtExceptionHandler(
+                        new org.iiab.controller.feedback.crash.data.CrashReportStore(this), previous));
     }
 }

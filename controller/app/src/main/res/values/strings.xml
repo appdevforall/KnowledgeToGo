@@ -560,4 +560,9 @@
     <string name="feedback_send">Send</string>
     <string name="feedback_empty_message">Please write your feedback first.</string>
     <string name="feedback_no_email_app">No email app found.</string>
+    <string name="crash_report_title">K2Go closed unexpectedly</string>
+    <string name="crash_report_subtitle">Send this report to help us fix it? You can review what\'s included below.</string>
+    <string name="crash_report_send">Send report</string>
+    <string name="crash_report_dismiss">Dismiss</string>
+    <string name="feedback_force_crash" translatable="false">Force test crash (debug)</string>
 </resources>

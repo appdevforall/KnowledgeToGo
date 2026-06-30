@@ -546,4 +546,8 @@
     <string name="feedback_send">Отправить</string>
     <string name="feedback_empty_message">Сначала напишите ваш отзыв.</string>
     <string name="feedback_no_email_app">Почтовое приложение не найдено.</string>
+    <string name="crash_report_title">K2Go неожиданно закрылся</string>
+    <string name="crash_report_subtitle">Отправить этот отчёт, чтобы помочь исправить? Ниже можно посмотреть, что включено.</string>
+    <string name="crash_report_send">Отправить отчёт</string>
+    <string name="crash_report_dismiss">Отклонить</string>
 </resources>

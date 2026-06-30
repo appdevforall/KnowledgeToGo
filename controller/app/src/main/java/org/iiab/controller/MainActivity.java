@@ -289,6 +289,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+        if (savedInstanceState == null
+                && new org.iiab.controller.feedback.crash.data.CrashReportStore(this).hasPending()) {
+            startActivity(new Intent(this, org.iiab.controller.feedback.crash.presentation.CrashReportActivity.class));
+        }
+
         prefs = new Preferences(this);
         setContentView(R.layout.main);
 

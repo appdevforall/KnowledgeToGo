@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.iiab.controller.BuildConfig;
 import org.iiab.controller.R;
 import org.iiab.controller.deviceinfo.data.BuildDeviceAbiProvider;
 import org.iiab.controller.deviceinfo.domain.GetDeviceArchUseCase;
@@ -48,6 +49,14 @@ public class FeedbackFragment extends Fragment {
         EditText message = v.findViewById(R.id.feedback_message);
         EditText email = v.findViewById(R.id.feedback_email);
         Button send = v.findViewById(R.id.feedback_send);
+
+        Button forceCrash = v.findViewById(R.id.feedback_force_crash);
+        if (BuildConfig.DEBUG) {
+            forceCrash.setVisibility(View.VISIBLE);
+            forceCrash.setOnClickListener(x -> {
+                throw new RuntimeException("K2Go test crash");
+            });
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_spinner_item, new String[]{

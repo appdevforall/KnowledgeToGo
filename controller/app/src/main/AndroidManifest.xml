@@ -71,6 +71,7 @@
             tools:replace="screenOrientation" />
 
         <activity android:name=".SetupActivity" />
+        <activity android:name=".feedback.crash.presentation.CrashReportActivity" />
         <activity android:name=".QrActivity" />
 
         <receiver

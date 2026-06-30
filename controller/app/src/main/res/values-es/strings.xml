@@ -546,4 +546,8 @@
     <string name="feedback_send">Enviar</string>
     <string name="feedback_empty_message">Escribe tu comentario primero.</string>
     <string name="feedback_no_email_app">No se encontró una app de correo.</string>
+    <string name="crash_report_title">K2Go se cerró inesperadamente</string>
+    <string name="crash_report_subtitle">¿Enviar este reporte para ayudarnos a corregirlo? Puedes revisar abajo qué se incluye.</string>
+    <string name="crash_report_send">Enviar reporte</string>
+    <string name="crash_report_dismiss">Descartar</string>
 </resources>
