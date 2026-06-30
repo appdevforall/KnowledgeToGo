@@ -33,6 +33,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import androidx.lifecycle.ViewModelProvider;
 import org.iiab.controller.util.AppExecutors;
 import androidx.activity.result.ActivityResultLauncher;
 
@@ -72,6 +73,8 @@ public class SyncFragment extends Fragment {
 
     // Managers
     private org.iiab.controller.sync.transport.TransportEngine transport;
+    private org.iiab.controller.sync.presentation.SyncStateViewModel syncVm; // 3b-2: survives recreation
+    private long lastTransferSeq = -1L; // 3b-2: fire terminal dialog once
     private ApkServer apkServer;
 
     // States
@@ -109,7 +112,8 @@ public class SyncFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_sync, container, false);
-        transport = new RsyncManager();
+        syncVm = new ViewModelProvider(requireActivity()).get(org.iiab.controller.sync.presentation.SyncStateViewModel.class);
+        transport = syncVm.getTransport();
 
         rgSyncMode = view.findViewById(R.id.rg_sync_mode);
         containerShare = view.findViewById(R.id.container_share);
@@ -170,6 +174,13 @@ public class SyncFragment extends Fragment {
         setupReceiveLogic();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // 3b-2: re-bind the rsync transfer progress after any recreation (theme toggle).
+        org.iiab.controller.sync.presentation.SyncProgressRepository.get().state().observe(getViewLifecycleOwner(), this::renderTransfer);
     }
 
     private void setupToggleLogic() {
@@ -446,6 +457,7 @@ public class SyncFragment extends Fragment {
         btnCancelTransfer.setOnClickListener(v -> {
             transport.stop();
             disableSystemProtection();
+            org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
             containerProgress.setVisibility(View.GONE);
             btnScanQr.setVisibility(View.VISIBLE);
         });
@@ -596,58 +608,102 @@ public class SyncFragment extends Fragment {
 
     private void startTransfer(SyncHandshakeHelper.SyncCredentials creds, File destDir) {
         enableSystemProtection();
-        txtTransferFilename.setText(getString(R.string.sync_transfer_filename, "RootFS"));
-        progressBarTransfer.setIndeterminate(false);
-        progressBarTransfer.setProgress(0);
-
         if (!destDir.exists()) destDir.mkdirs();
 
-        transport.startClient(requireContext(), shareConfig, creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new org.iiab.controller.sync.transport.TransportEngine.SyncListener() {
+        // 3b-2: progress flows through SyncProgressRepository so the UI re-binds after a
+        // recreation; the listener must NOT touch fragment views, and the transport uses
+        // the application context (it lives in the Activity-scoped ViewModel).
+        org.iiab.controller.sync.presentation.SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
+
+        transport.startClient(requireContext().getApplicationContext(), shareConfig, creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new org.iiab.controller.sync.transport.TransportEngine.SyncListener() {
             @Override
             public void onProgress(int percentage, String speed, String eta, String currentFile) {
-                if (!isAdded() || getContext() == null) return; // S8: detached -> no UI
-                progressBarTransfer.setProgress(percentage);
-                txtTransferSpeed.setText(speed);
-                txtTransferEta.setText("ETA: " + eta);
-
-                if (currentFile != null && !currentFile.isEmpty()) {
-                    String displayFile = currentFile.length() > 40 ? "..." + currentFile.substring(currentFile.length() - 40) : currentFile;
-                    txtTransferFilename.setText(getString(R.string.sync_transfer_filename, displayFile));
-                }
+                org.iiab.controller.sync.presentation.SyncProgressRepository.get().postTransferring(percentage, speed, eta, currentFile);
             }
 
             @Override
             public void onComplete(String message) {
-                if (!isAdded() || getContext() == null) return; // S8: detached -> no UI
-                disableSystemProtection();
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.sync_success_title))
-                        .setMessage(message)
-                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
-                        .show();
-                containerProgress.setVisibility(View.GONE);
-                btnScanQr.setVisibility(View.VISIBLE);
+                org.iiab.controller.sync.presentation.SyncProgressRepository.get().postSuccess(message);
             }
 
             @Override
             public void onError(String error) {
-                if (!isAdded() || getContext() == null) return; // S8: detached -> no UI
-                disableSystemProtection();
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.sync_error_title))
-                        .setMessage(getString(R.string.sync_error_body, error))
-                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                containerProgress.setVisibility(View.GONE);
-                btnScanQr.setVisibility(View.VISIBLE);
+                org.iiab.controller.sync.presentation.SyncProgressRepository.get().postFailed(error);
             }
         });
+    }
+
+    /** Renders the transfer state from SyncProgressRepository; re-binds after recreation (3b-2). */
+    private void renderTransfer(org.iiab.controller.sync.presentation.SyncTransferState st) {
+        if (st == null) return;
+        switch (st.phase) {
+            case TRANSFERRING:
+                ensureReceiveModeForTransfer();
+                progressBarTransfer.setIndeterminate(false);
+                progressBarTransfer.setProgress(st.percent);
+                txtTransferSpeed.setText(st.speed);
+                txtTransferEta.setText("ETA: " + st.eta);
+                if (!st.file.isEmpty()) {
+                    String displayFile = st.file.length() > 40 ? "..." + st.file.substring(st.file.length() - 40) : st.file;
+                    txtTransferFilename.setText(getString(R.string.sync_transfer_filename, displayFile));
+                }
+                break;
+            case SUCCESS:
+                if (st.seq > lastTransferSeq) {
+                    lastTransferSeq = st.seq;
+                    disableSystemProtection();
+                    if (getContext() != null)
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle(getString(R.string.sync_success_title))
+                                .setMessage(st.message)
+                                .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                                .show();
+                    org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
+                }
+                containerProgress.setVisibility(View.GONE);
+                btnScanQr.setVisibility(View.VISIBLE);
+                break;
+            case FAILED:
+                if (st.seq > lastTransferSeq) {
+                    lastTransferSeq = st.seq;
+                    disableSystemProtection();
+                    if (getContext() != null)
+                        new AlertDialog.Builder(requireContext())
+                                .setTitle(getString(R.string.sync_error_title))
+                                .setMessage(getString(R.string.sync_error_body, st.message))
+                                .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .show();
+                    org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
+                }
+                containerProgress.setVisibility(View.GONE);
+                btnScanQr.setVisibility(View.VISIBLE);
+                break;
+            case IDLE:
+            default:
+                break;
+        }
+    }
+
+    /** Forces the Share tab into receive mode so the transfer progress is visible after a
+     *  recreation (the mode toggle resets otherwise). 3b-2. */
+    private void ensureReceiveModeForTransfer() {
+        if (rgSyncMode.getCheckedRadioButtonId() != R.id.rb_mode_receive) {
+            rgSyncMode.check(R.id.rb_mode_receive);
+        }
+        containerProgress.setVisibility(View.VISIBLE);
+        btnScanQr.setVisibility(View.GONE);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // 3b-2: keep an in-flight transfer alive across a configuration change (theme toggle);
+        // the transport lives in the Activity-scoped ViewModel and the UI re-binds on recreate.
+        if (getActivity() != null && getActivity().isChangingConfigurations()
+                && org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()) {
+            return;
+        }
         if (transport != null) transport.stop();
         if (apkServer != null) apkServer.stop();
         disableSystemProtection(); // S8: ensure the watchdog stops if a transfer was cut short
