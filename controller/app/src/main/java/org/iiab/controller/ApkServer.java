@@ -3,7 +3,8 @@
  * Name        : ApkServer.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : Server to handle local APK distribution
+ * Description : Local APK distribution over HTTP (NanoHTTPD). D17: only answers
+ * GET requests for the single APK; other methods get 405.
  * ============================================================================
  */
 package org.iiab.controller;
@@ -25,6 +26,11 @@ public class ApkServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         try {
+            // D17: this server exposes exactly one file over the LAN; reject anything
+            // that is not a plain GET so it cannot be poked with other methods.
+            if (session.getMethod() != Method.GET) {
+                return newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, MIME_PLAINTEXT, "Method not allowed");
+            }
             File apkFile = new File(apkPath);
             if (!apkFile.exists()) {
                 return newFixedLengthResponse(Response.Status.NOT_FOUND, MIME_PLAINTEXT, "APK not found");

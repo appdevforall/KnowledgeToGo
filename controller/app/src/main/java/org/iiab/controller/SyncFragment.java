@@ -52,6 +52,12 @@ import androidx.core.content.ContextCompat;
 public class SyncFragment extends Fragment {
 
     private static final String TAG = "IIAB-SyncFragment";
+    // S16: name the ADB-optimization prefs/keys (shared with the ADB-share tab).
+    private static final String ADB_PREFS = "iiab_adb_prefs";
+    private static final String PREF_CHILD_PROCESS = "child_process_value";
+    private static final String PREF_PPK = "ppk_value";
+    private static final String PREF_FOCUS_ADB = "focus_adb";
+    private static final int MIN_PPK_LIMIT = 256; // min phantom-process limit that is "optimized"
 
     private RadioGroup rgSyncMode;
     private LinearLayout containerShare, containerReceive, containerProgress;
@@ -752,17 +758,17 @@ public class SyncFragment extends Fragment {
     private boolean isSystemOptimizedForSync() {
         if (android.os.Build.VERSION.SDK_INT < 31) return true;
 
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences("iiab_adb_prefs", Context.MODE_PRIVATE);
-        String cpValue = prefs.getString("child_process_value", null);
-        String ppkValue = prefs.getString("ppk_value", null);
+        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(ADB_PREFS, Context.MODE_PRIVATE);
+        String cpValue = prefs.getString(PREF_CHILD_PROCESS, null);
+        String ppkValue = prefs.getString(PREF_PPK, null);
 
         if (android.os.Build.VERSION.SDK_INT >= 34) {
             return "0".equals(cpValue) || "false".equals(cpValue);
         } else {
-            if ("256".equals(ppkValue) || "512".equals(ppkValue) || "1024".equals(ppkValue))
+            if ("256".equals(ppkValue) || "512".equals(ppkValue) || "1024".equals(ppkValue)) // fast-path known-good values
                 return true;
             try {
-                if (ppkValue != null && Integer.parseInt(ppkValue) >= 256) return true;
+                if (ppkValue != null && Integer.parseInt(ppkValue) >= MIN_PPK_LIMIT) return true;
             } catch (NumberFormatException e) {
                 Log.w(TAG, "Unparseable ppk_value: " + ppkValue, e);
             }
@@ -775,8 +781,8 @@ public class SyncFragment extends Fragment {
                 .setTitle(getString(R.string.adb_enforcer_title))
                 .setMessage(getString(R.string.adb_enforcer_body))
                 .setPositiveButton(getString(R.string.adb_enforcer_btn_setup), (dialog, which) -> {
-                    requireContext().getSharedPreferences("iiab_adb_prefs", Context.MODE_PRIVATE)
-                            .edit().putBoolean("focus_adb", true).apply();
+                    requireContext().getSharedPreferences(ADB_PREFS, Context.MODE_PRIVATE)
+                            .edit().putBoolean(PREF_FOCUS_ADB, true).apply();
 
                     MainActivity mainAct = (MainActivity) getActivity();
                     if (mainAct != null) {
