@@ -531,4 +531,11 @@
     <string name="ota_error_verify_failed">Не удалось проверить обновление, оно не установлено. Попробуйте ещё раз.</string>
     <string name="ota_error_download_failed">Не удалось загрузить обновление. Попробуйте ещё раз.</string>
     <string name="ota_msg_enable_unknown_sources">Разрешите установку обновлений из этого приложения, затем снова нажмите «Обновить».</string>
+    <string name="settings_nav_setup">Настройка</string>
+    <string name="settings_nav_feedback">Отзыв</string>
+    <string name="settings_nav_about">О программе</string>
+    <string name="about_version">Версия %1$s</string>
+    <string name="feedback_placeholder">Форма отзыва скоро появится.</string>
+    <string name="settings_title">Настройки</string>
+    <string name="action_done">Готово</string>
 </resources>

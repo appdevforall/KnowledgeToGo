@@ -532,4 +532,11 @@
     <string name="ota_error_verify_failed">La mise à jour n\'a pas pu être vérifiée et n\'a pas été installée. Veuillez réessayer.</string>
     <string name="ota_error_download_failed">Le téléchargement de la mise à jour a échoué. Veuillez réessayer.</string>
     <string name="ota_msg_enable_unknown_sources">Autorisez l\'installation des mises à jour depuis cette application, puis appuyez à nouveau sur Mettre à jour.</string>
+    <string name="settings_nav_setup">Configuration</string>
+    <string name="settings_nav_feedback">Commentaires</string>
+    <string name="settings_nav_about">À propos</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="feedback_placeholder">Formulaire de commentaires bientôt disponible.</string>
+    <string name="settings_title">Paramètres</string>
+    <string name="action_done">Terminé</string>
 </resources>

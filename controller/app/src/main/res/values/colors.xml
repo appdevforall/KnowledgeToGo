@@ -94,6 +94,11 @@
     <color name="qr_foreground">#000000</color>
     <color name="qr_background">#FFFFFF</color>
     <color name="splash_bg">#FF0C0D10</color>
+    <!-- Settings/chrome bar: dark chrome in both themes (mirrors the app header).
+         Fixed by design, like splash_bg/qr_* — no values-night twin. -->
+    <color name="chrome_surface">#1A1A1A</color>
+    <color name="chrome_on_surface">#FFFFFF</color>
+    <color name="chrome_ripple">#40FFFFFF</color>
 </resources>
 
 

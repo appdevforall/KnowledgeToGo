@@ -534,4 +534,11 @@
     <string name="ota_error_verify_failed">Não foi possível verificar a atualização e ela não foi instalada. Tente novamente.</string>
     <string name="ota_error_download_failed">O download da atualização falhou. Tente novamente.</string>
     <string name="ota_msg_enable_unknown_sources">Permita instalar atualizações deste app e toque em atualizar novamente.</string>
+    <string name="settings_nav_setup">Configuração</string>
+    <string name="settings_nav_feedback">Feedback</string>
+    <string name="settings_nav_about">Sobre</string>
+    <string name="about_version">Versão %1$s</string>
+    <string name="feedback_placeholder">Formulário de feedback em breve.</string>
+    <string name="settings_title">Configurações</string>
+    <string name="action_done">Concluído</string>
 </resources>
