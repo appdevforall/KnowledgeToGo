@@ -22,8 +22,19 @@ public final class RsyncOutcome {
         COMPLETE,
         /** socket/stream drop — the peer went away (10/12/20). */
         HOST_DROPPED,
+        /** process terminated by a signal — e.g. Android's phantom-process killer (SIGKILL). */
+        KILLED,
         /** any other non-zero exit. */
         ERROR
+    }
+
+    /**
+     * True when the exit code indicates the process was terminated by SIGKILL (137 = 128 + 9).
+     * On Android 12+ this is the signature of the phantom-process killer reaping a long-running
+     * native child (the rsync transfer/daemon). ADFA-4496.
+     */
+    public static boolean wasKilledBySignal(int exitCode) {
+        return exitCode == 137;
     }
 
     /** True for the exit codes treated as a successful transfer (0, 23, 24). */
@@ -35,6 +46,7 @@ public final class RsyncOutcome {
     public static Transfer classifyTransfer(int exitCode) {
         if (isSuccess(exitCode)) return Transfer.COMPLETE;
         if (exitCode == 10 || exitCode == 12 || exitCode == 20) return Transfer.HOST_DROPPED;
+        if (wasKilledBySignal(exitCode)) return Transfer.KILLED;
         return Transfer.ERROR;
     }
 }

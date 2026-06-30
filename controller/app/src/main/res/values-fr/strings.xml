@@ -551,4 +551,5 @@
     <string name="crash_report_subtitle">Envoyer ce rapport pour nous aider à corriger ? Vous pouvez vérifier ci-dessous ce qui est inclus.</string>
     <string name="crash_report_send">Envoyer le rapport</string>
     <string name="crash_report_dismiss">Ignorer</string>
+    <string name="rsync_error_process_killed">Android a arrêté le processus de transfert (limite de processus en arrière-plan). Pour l’éviter, activez « Désactiver les restrictions des processus enfants » dans les options pour développeurs, ou configurez ADB.</string>
 </resources>

@@ -550,4 +550,5 @@
     <string name="crash_report_subtitle">Отправить этот отчёт, чтобы помочь исправить? Ниже можно посмотреть, что включено.</string>
     <string name="crash_report_send">Отправить отчёт</string>
     <string name="crash_report_dismiss">Отклонить</string>
+    <string name="rsync_error_process_killed">Android остановил процесс передачи (ограничение фоновых процессов). Чтобы избежать этого, включите «Отключить ограничения дочерних процессов» в параметрах разработчика или настройте ADB.</string>
 </resources>

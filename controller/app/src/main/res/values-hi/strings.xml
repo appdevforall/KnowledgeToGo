@@ -551,4 +551,5 @@
     <string name="crash_report_subtitle">इसे ठीक करने में मदद के लिए यह रिपोर्ट भेजें? नीचे देखें कि क्या शामिल है।</string>
     <string name="crash_report_send">रिपोर्ट भेजें</string>
     <string name="crash_report_dismiss">खारिज करें</string>
+    <string name="rsync_error_process_killed">Android ने ट्रांसफ़र प्रोसेस रोक दी (बैकग्राउंड प्रोसेस सीमा)। इसे रोकने के लिए, डेवलपर विकल्प में “चाइल्ड प्रोसेस प्रतिबंध अक्षम करें” चालू करें, या ADB सेट करें।</string>
 </resources>

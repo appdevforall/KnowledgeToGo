@@ -35,4 +35,13 @@ public class RsyncOutcomeTest {
             assertEquals(RsyncOutcome.Transfer.ERROR, RsyncOutcome.classifyTransfer(c));
         }
     }
+
+    @Test
+    public void sigkillIsClassifiedAsKilled() {
+        assertTrue(RsyncOutcome.wasKilledBySignal(137));   // 128 + SIGKILL(9)
+        assertFalse(RsyncOutcome.wasKilledBySignal(143));  // SIGTERM is our own destroy()
+        assertFalse(RsyncOutcome.wasKilledBySignal(1));
+        assertFalse(RsyncOutcome.isSuccess(137));
+        assertEquals(RsyncOutcome.Transfer.KILLED, RsyncOutcome.classifyTransfer(137));
+    }
 }

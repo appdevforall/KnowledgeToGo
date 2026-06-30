@@ -550,4 +550,5 @@
     <string name="crash_report_subtitle">¿Enviar este reporte para ayudarnos a corregirlo? Puedes revisar abajo qué se incluye.</string>
     <string name="crash_report_send">Enviar reporte</string>
     <string name="crash_report_dismiss">Descartar</string>
+    <string name="rsync_error_process_killed">Android detuvo el proceso de transferencia (límite de procesos en segundo plano). Para evitarlo, activa «Desactivar restricciones de procesos secundarios» en Opciones de desarrollador, o configura ADB.</string>
 </resources>

@@ -167,6 +167,9 @@ public class RsyncManager implements TransportEngine {
                         case HOST_DROPPED: // socket/stream drop (10/12/20)
                             mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_host_dropped)));
                             break;
+                        case KILLED: // ADFA-4496: SIGKILL (137) -> phantom-process killer reaped the transfer
+                            mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_process_killed)));
+                            break;
                         default:
                             mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_exit_code, exitCode)));
                             break;
