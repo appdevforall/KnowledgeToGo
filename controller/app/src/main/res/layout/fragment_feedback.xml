@@ -1,10 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="@string/feedback_placeholder" android:textSize="16sp"/>
-</LinearLayout>
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feedback_type_label"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="16sp"
+            android:layout_marginBottom="6dp" />
+
+        <Spinner
+            android:id="@+id/feedback_category"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/feedback_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/feedback_message_hint"
+            android:inputType="textMultiLine|textCapSentences"
+            android:gravity="top|start"
+            android:minLines="4"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textColorHint="?android:attr/textColorSecondary"
+            android:layout_marginBottom="16dp"
+            android:importantForAutofill="no" />
+
+        <EditText
+            android:id="@+id/feedback_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/feedback_email_hint"
+            android:inputType="textEmailAddress"
+            android:autofillHints="emailAddress"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textColorHint="?android:attr/textColorSecondary"
+            android:layout_marginBottom="24dp" />
+
+        <Button
+            android:id="@+id/feedback_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="@string/feedback_send"
+            android:textAllCaps="false" />
+    </LinearLayout>
+</ScrollView>

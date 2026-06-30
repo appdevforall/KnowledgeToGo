@@ -549,7 +549,15 @@
     <string name="settings_nav_feedback">Feedback</string>
     <string name="settings_nav_about">About</string>
     <string name="about_version">Version %1$s</string>
-    <string name="feedback_placeholder">Feedback form coming soon.</string>
     <string name="settings_title">Settings</string>
     <string name="action_done">Done</string>
+    <string name="feedback_type_label">Type</string>
+    <string name="feedback_cat_bug">Bug</string>
+    <string name="feedback_cat_suggestion">Suggestion</string>
+    <string name="feedback_cat_content">Content request</string>
+    <string name="feedback_message_hint">Describe your feedback</string>
+    <string name="feedback_email_hint">Your email (optional)</string>
+    <string name="feedback_send">Send</string>
+    <string name="feedback_empty_message">Please write your feedback first.</string>
+    <string name="feedback_no_email_app">No email app found.</string>
 </resources>

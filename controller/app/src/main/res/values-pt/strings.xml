@@ -538,7 +538,15 @@
     <string name="settings_nav_feedback">Feedback</string>
     <string name="settings_nav_about">Sobre</string>
     <string name="about_version">Versão %1$s</string>
-    <string name="feedback_placeholder">Formulário de feedback em breve.</string>
     <string name="settings_title">Configurações</string>
     <string name="action_done">Concluído</string>
+    <string name="feedback_type_label">Tipo</string>
+    <string name="feedback_cat_bug">Problema</string>
+    <string name="feedback_cat_suggestion">Sugestão</string>
+    <string name="feedback_cat_content">Pedido de conteúdo</string>
+    <string name="feedback_message_hint">Descreva seu feedback</string>
+    <string name="feedback_email_hint">Seu e-mail (opcional)</string>
+    <string name="feedback_send">Enviar</string>
+    <string name="feedback_empty_message">Escreva seu feedback primeiro.</string>
+    <string name="feedback_no_email_app">Nenhum app de e-mail encontrado.</string>
 </resources>

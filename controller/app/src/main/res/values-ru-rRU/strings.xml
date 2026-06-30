@@ -535,7 +535,15 @@
     <string name="settings_nav_feedback">Отзыв</string>
     <string name="settings_nav_about">О программе</string>
     <string name="about_version">Версия %1$s</string>
-    <string name="feedback_placeholder">Форма отзыва скоро появится.</string>
     <string name="settings_title">Настройки</string>
     <string name="action_done">Готово</string>
+    <string name="feedback_type_label">Тип</string>
+    <string name="feedback_cat_bug">Ошибка</string>
+    <string name="feedback_cat_suggestion">Предложение</string>
+    <string name="feedback_cat_content">Запрос контента</string>
+    <string name="feedback_message_hint">Опишите ваш отзыв</string>
+    <string name="feedback_email_hint">Ваш e-mail (необязательно)</string>
+    <string name="feedback_send">Отправить</string>
+    <string name="feedback_empty_message">Сначала напишите ваш отзыв.</string>
+    <string name="feedback_no_email_app">Почтовое приложение не найдено.</string>
 </resources>

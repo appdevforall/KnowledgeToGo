@@ -536,7 +536,15 @@
     <string name="settings_nav_feedback">प्रतिक्रिया</string>
     <string name="settings_nav_about">परिचय</string>
     <string name="about_version">संस्करण %1$s</string>
-    <string name="feedback_placeholder">प्रतिक्रिया फ़ॉर्म जल्द आ रहा है।</string>
     <string name="settings_title">सेटिंग</string>
     <string name="action_done">हो गया</string>
+    <string name="feedback_type_label">प्रकार</string>
+    <string name="feedback_cat_bug">समस्या</string>
+    <string name="feedback_cat_suggestion">सुझाव</string>
+    <string name="feedback_cat_content">सामग्री अनुरोध</string>
+    <string name="feedback_message_hint">अपनी प्रतिक्रिया लिखें</string>
+    <string name="feedback_email_hint">आपका ईमेल (वैकल्पिक)</string>
+    <string name="feedback_send">भेजें</string>
+    <string name="feedback_empty_message">पहले अपनी प्रतिक्रिया लिखें।</string>
+    <string name="feedback_no_email_app">कोई ईमेल ऐप नहीं मिला।</string>
 </resources>

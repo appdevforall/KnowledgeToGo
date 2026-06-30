@@ -536,7 +536,15 @@
     <string name="settings_nav_feedback">Commentaires</string>
     <string name="settings_nav_about">À propos</string>
     <string name="about_version">Version %1$s</string>
-    <string name="feedback_placeholder">Formulaire de commentaires bientôt disponible.</string>
     <string name="settings_title">Paramètres</string>
     <string name="action_done">Terminé</string>
+    <string name="feedback_type_label">Type</string>
+    <string name="feedback_cat_bug">Anomalie</string>
+    <string name="feedback_cat_suggestion">Suggestion</string>
+    <string name="feedback_cat_content">Demande de contenu</string>
+    <string name="feedback_message_hint">Décrivez votre retour</string>
+    <string name="feedback_email_hint">Votre e-mail (facultatif)</string>
+    <string name="feedback_send">Envoyer</string>
+    <string name="feedback_empty_message">Veuillez d\'abord écrire votre retour.</string>
+    <string name="feedback_no_email_app">Aucune application e-mail trouvée.</string>
 </resources>
