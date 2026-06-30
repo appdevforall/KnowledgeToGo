@@ -537,4 +537,6 @@
     <string name="settings_nav_about">À propos</string>
     <string name="about_version">Version %1$s</string>
     <string name="feedback_placeholder">Formulaire de commentaires bientôt disponible.</string>
+    <string name="settings_title">Paramètres</string>
+    <string name="action_done">Terminé</string>
 </resources>

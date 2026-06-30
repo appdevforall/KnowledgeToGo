@@ -539,4 +539,6 @@
     <string name="settings_nav_about">Sobre</string>
     <string name="about_version">Versão %1$s</string>
     <string name="feedback_placeholder">Formulário de feedback em breve.</string>
+    <string name="settings_title">Configurações</string>
+    <string name="action_done">Concluído</string>
 </resources>

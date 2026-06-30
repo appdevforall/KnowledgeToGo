@@ -537,4 +537,6 @@
     <string name="settings_nav_about">परिचय</string>
     <string name="about_version">संस्करण %1$s</string>
     <string name="feedback_placeholder">प्रतिक्रिया फ़ॉर्म जल्द आ रहा है।</string>
+    <string name="settings_title">सेटिंग</string>
+    <string name="action_done">हो गया</string>
 </resources>

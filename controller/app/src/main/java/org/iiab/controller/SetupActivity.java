@@ -46,6 +46,8 @@ public class SetupActivity extends AppCompatActivity {
             rail.setVisibility(View.GONE);
         } else {
             rail.setVisibility(View.VISIBLE);
+            findViewById(R.id.settings_topbar).setVisibility(View.VISIBLE);
+            findViewById(R.id.btn_settings_done).setOnClickListener(v -> finish());
             findViewById(R.id.nav_setup).setOnClickListener(v -> show(SetupSectionFragment.newInstance(false)));
             findViewById(R.id.nav_feedback).setOnClickListener(v -> show(new FeedbackFragment()));
             findViewById(R.id.nav_about).setOnClickListener(v -> show(new AboutFragment()));
