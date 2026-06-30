@@ -549,7 +549,5 @@
     <string name="settings_nav_feedback">Feedback</string>
     <string name="settings_nav_about">About</string>
     <string name="about_version">Version %1$s</string>
-    <string name="settings_open_app_settings">Open system app settings</string>
-    <string name="settings_setup_desc">Manage permissions and language for the app.</string>
     <string name="feedback_placeholder">Feedback form coming soon.</string>
 </resources>

@@ -536,7 +536,5 @@
     <string name="settings_nav_feedback">प्रतिक्रिया</string>
     <string name="settings_nav_about">परिचय</string>
     <string name="about_version">संस्करण %1$s</string>
-    <string name="settings_open_app_settings">सिस्टम ऐप सेटिंग खोलें</string>
-    <string name="settings_setup_desc">ऐप की अनुमतियाँ और भाषा प्रबंधित करें।</string>
     <string name="feedback_placeholder">प्रतिक्रिया फ़ॉर्म जल्द आ रहा है।</string>
 </resources>

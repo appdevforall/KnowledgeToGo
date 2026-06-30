@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/windowBackground">
+
+    <Button
+        android:id="@+id/btn_setup_continue"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:text="@string/setup_continue"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/btn_explore_disabled"
+        android:textAllCaps="false"
+        android:enabled="false" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btn_setup_continue">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_title"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/setup_welcome_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:layout_marginBottom="24dp" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_perm_notifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_perm_notifications"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/PurpleSwitchTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_perm_storage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_perm_storage"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/PurpleSwitchTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_perm_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_perm_overlay"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="8dp"
+                android:theme="@style/PurpleSwitchTheme" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_perm_battery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_perm_battery"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:paddingVertical="12dp"
+                android:layout_marginBottom="24dp"
+                android:theme="@style/PurpleSwitchTheme" />
+
+            <Button
+                android:id="@+id/btn_manage_all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_manage_all_permissions"
+                android:textAllCaps="false"
+                android:gravity="start|center_vertical"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                android:paddingVertical="12dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp"
+                android:minHeight="0dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_marginBottom="24dp" />
+
+            <!-- NEW LANGUAGE SELECTOR BLOCK -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="24dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_lang_title"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Native Spinner -->
+                <Spinner
+                    android:id="@+id/spinner_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:paddingHorizontal="8dp"
+                    android:layout_marginBottom="12dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setup_lang_desc"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

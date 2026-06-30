@@ -549,7 +549,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Listeners
         themeToggle.setOnClickListener(v -> toggleTheme());
-        btnSettings.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, org.iiab.controller.settings.SettingsActivity.class)));
+        btnSettings.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SetupActivity.class)));
 
         // --- QR Share Button Logic ---
         btnShareQr.setOnClickListener(v -> {

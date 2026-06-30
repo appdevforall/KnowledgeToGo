@@ -535,7 +535,5 @@
     <string name="settings_nav_feedback">Отзыв</string>
     <string name="settings_nav_about">О программе</string>
     <string name="about_version">Версия %1$s</string>
-    <string name="settings_open_app_settings">Открыть системные настройки</string>
-    <string name="settings_setup_desc">Управление разрешениями и языком приложения.</string>
     <string name="feedback_placeholder">Форма отзыва скоро появится.</string>
 </resources>

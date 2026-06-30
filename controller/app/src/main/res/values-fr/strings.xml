@@ -536,7 +536,5 @@
     <string name="settings_nav_feedback">Commentaires</string>
     <string name="settings_nav_about">À propos</string>
     <string name="about_version">Version %1$s</string>
-    <string name="settings_open_app_settings">Ouvrir les réglages système</string>
-    <string name="settings_setup_desc">Gérez les autorisations et la langue de l\'application.</string>
     <string name="feedback_placeholder">Formulaire de commentaires bientôt disponible.</string>
 </resources>
