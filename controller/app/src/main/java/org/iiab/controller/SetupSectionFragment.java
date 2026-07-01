@@ -26,10 +26,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import org.iiab.controller.delivery.data.AnalyticsConsent;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,6 +52,8 @@ import java.util.Set;
 public class SetupSectionFragment extends Fragment {
 
     private static final String ARG_WIZARD = "wizard";
+    private static final String DELIVERY_PREFS = "iiab_delivery";
+    private static final String KEY_ENROLLMENT_SHOWN = "analytics_enrollment_shown";
 
     public static SetupSectionFragment newInstance(boolean wizard) {
         SetupSectionFragment f = new SetupSectionFragment();
@@ -136,11 +141,7 @@ public class SetupSectionFragment extends Fragment {
         if (wizard) {
             btnContinue.setOnClickListener(view -> {
                 persistSelectedLanguage();
-                SharedPreferences prefs = requireContext().getSharedPreferences(
-                        getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-                prefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
-                startActivity(new Intent(requireContext(), MainActivity.class));
-                requireActivity().finish();
+                maybeShowAnalyticsEnrollment();
             });
         } else {
             btnContinue.setVisibility(View.GONE);
@@ -176,6 +177,46 @@ public class SetupSectionFragment extends Fragment {
                 .putString("selected_lang_simple", loc.getLanguage() + "-" + loc.getCountry())
                 .putString("selected_lang_full", loc.getLanguage() + "_" + loc.getCountry() + ".UTF-8")
                 .apply();
+    }
+
+    /**
+     * One-time analytics enrollment during first-run setup. Shows a clear, no-dark-pattern
+     * choice to share strictly anonymous, operational usage stats; either choice records
+     * the consent and proceeds. Shown at most once (guarded by a flag).
+     */
+    private void maybeShowAnalyticsEnrollment() {
+        SharedPreferences delivery = requireContext().getSharedPreferences(
+                DELIVERY_PREFS, Context.MODE_PRIVATE);
+        if (delivery.getBoolean(KEY_ENROLLMENT_SHOWN, false)) {
+            completeSetup();
+            return;
+        }
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.analytics_enroll_title)
+                .setMessage(getString(R.string.analytics_enroll_body, getString(R.string.app_name)))
+                .setCancelable(false)
+                .setPositiveButton(R.string.analytics_enroll_accept, (d, w) -> {
+                    AnalyticsConsent.setEnabled(requireContext(), true);
+                    finishEnrollment(delivery);
+                })
+                .setNegativeButton(R.string.analytics_enroll_decline, (d, w) -> {
+                    AnalyticsConsent.setEnabled(requireContext(), false);
+                    finishEnrollment(delivery);
+                })
+                .show();
+    }
+
+    private void finishEnrollment(SharedPreferences delivery) {
+        delivery.edit().putBoolean(KEY_ENROLLMENT_SHOWN, true).apply();
+        completeSetup();
+    }
+
+    private void completeSetup() {
+        SharedPreferences prefs = requireContext().getSharedPreferences(
+                getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
+        prefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
+        startActivity(new Intent(requireContext(), MainActivity.class));
+        requireActivity().finish();
     }
 
     private void setupLanguageSpinner() {

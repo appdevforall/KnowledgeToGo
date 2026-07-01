@@ -551,4 +551,12 @@
     <string name="crash_report_send">Отправить отчёт</string>
     <string name="crash_report_dismiss">Отклонить</string>
     <string name="rsync_error_process_killed">Android остановил процесс передачи (ограничение фоновых процессов). Чтобы избежать этого, включите «Отключить ограничения дочерних процессов» в параметрах разработчика или настройте ADB.</string>
+
+    <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
+    <string name="analytics_enroll_title">Делиться анонимной статистикой использования?</string>
+    <string name="analytics_enroll_body">Помогите улучшить %1$s, делясь анонимной эксплуатационной статистикой использования — установки, загрузки, сбои, версия приложения и время использования. Никаких персональных данных, истории просмотров и ничего о людях, которые пользуются размещённым контентом. Вы можете изменить это в любое время в настройках.</string>
+    <string name="analytics_enroll_accept">Поделиться</string>
+    <string name="analytics_enroll_decline">Нет, спасибо</string>
+    <string name="settings_analytics_title">Делиться анонимной статистикой использования</string>
+    <string name="settings_analytics_desc">Только эксплуатационные данные (установки, сбои, время использования). Анонимно, без персональных данных. Меняйте в любое время.</string>
 </resources>

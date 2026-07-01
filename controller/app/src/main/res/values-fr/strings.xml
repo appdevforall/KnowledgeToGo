@@ -552,4 +552,12 @@
     <string name="crash_report_send">Envoyer le rapport</string>
     <string name="crash_report_dismiss">Ignorer</string>
     <string name="rsync_error_process_killed">Android a arrêté le processus de transfert (limite de processus en arrière-plan). Pour l’éviter, activez « Désactiver les restrictions des processus enfants » dans les options pour développeurs, ou configurez ADB.</string>
+
+    <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
+    <string name="analytics_enroll_title">Partager des statistiques d\'utilisation anonymes ?</string>
+    <string name="analytics_enroll_body">Aidez à améliorer %1$s en partageant des statistiques d\'utilisation anonymes et opérationnelles : installations, téléchargements, plantages, version de l\'application et temps d\'utilisation. Aucune donnée personnelle, aucun historique de navigation, et rien sur les personnes qui consultent le contenu diffusé. Vous pouvez modifier ce choix à tout moment dans les Paramètres.</string>
+    <string name="analytics_enroll_accept">Partager</string>
+    <string name="analytics_enroll_decline">Non merci</string>
+    <string name="settings_analytics_title">Partager des statistiques d\'utilisation anonymes</string>
+    <string name="settings_analytics_desc">Uniquement opérationnelles (installations, plantages, temps d\'utilisation). Anonymes, sans données personnelles. Modifiable à tout moment.</string>
 </resources>

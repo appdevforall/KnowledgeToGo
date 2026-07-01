@@ -552,4 +552,12 @@
     <string name="crash_report_send">रिपोर्ट भेजें</string>
     <string name="crash_report_dismiss">खारिज करें</string>
     <string name="rsync_error_process_killed">Android ने ट्रांसफ़र प्रोसेस रोक दी (बैकग्राउंड प्रोसेस सीमा)। इसे रोकने के लिए, डेवलपर विकल्प में “चाइल्ड प्रोसेस प्रतिबंध अक्षम करें” चालू करें, या ADB सेट करें।</string>
+
+    <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
+    <string name="analytics_enroll_title">गुमनाम उपयोग आँकड़े साझा करें?</string>
+    <string name="analytics_enroll_body">गुमनाम, परिचालन उपयोग आँकड़े साझा करके %1$s को बेहतर बनाने में मदद करें — जैसे इंस्टॉल, डाउनलोड, क्रैश, ऐप संस्करण और उपयोग का समय। कोई व्यक्तिगत डेटा नहीं, कोई ब्राउज़िंग इतिहास नहीं, और परोसी गई सामग्री का उपयोग करने वालों के बारे में कुछ नहीं। आप इसे सेटिंग में कभी भी बदल सकते हैं।</string>
+    <string name="analytics_enroll_accept">साझा करें</string>
+    <string name="analytics_enroll_decline">नहीं, धन्यवाद</string>
+    <string name="settings_analytics_title">गुमनाम उपयोग आँकड़े साझा करें</string>
+    <string name="settings_analytics_desc">केवल परिचालन (इंस्टॉल, क्रैश, उपयोग समय)। गुमनाम, कोई व्यक्तिगत डेटा नहीं। कभी भी बदलें।</string>
 </resources>
