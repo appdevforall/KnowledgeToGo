@@ -23,4 +23,9 @@ public enum FeedbackType {
     public String label() {
         return label;
     }
+
+    /** Lowercase wire token used in the JSON payload / Worker route (stable). */
+    public String wire() {
+        return name().toLowerCase(java.util.Locale.ROOT);
+    }
 }

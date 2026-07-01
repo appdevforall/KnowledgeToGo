@@ -19,18 +19,17 @@ import org.iiab.controller.BuildConfig;
 import org.iiab.controller.R;
 import org.iiab.controller.deviceinfo.data.BuildDeviceAbiProvider;
 import org.iiab.controller.deviceinfo.domain.GetDeviceArchUseCase;
-import org.iiab.controller.feedback.data.EmailFeedbackSender;
+import org.iiab.controller.feedback.data.FeedbackConfig;
+import org.iiab.controller.feedback.data.FeedbackTransport;
 import org.iiab.controller.feedback.data.FeedbackDiagnostics;
-import org.iiab.controller.feedback.domain.EmailContent;
 import org.iiab.controller.feedback.domain.FeedbackPayload;
-import org.iiab.controller.feedback.domain.FeedbackRenderer;
 import org.iiab.controller.feedback.domain.FeedbackType;
 
 /**
  * "Send feedback" form (operator v1): category + message + optional contact email.
- * Builds a {@link FeedbackPayload}, renders it with {@link FeedbackRenderer}, and sends
- * it via {@link EmailFeedbackSender} (mailto). The migration to the Cloudflare Worker
- * swaps only the sender; this form and the payload stay the same.
+ * Builds a {@link FeedbackPayload} and sends it via the {@link FeedbackTransport} chosen
+ * by {@link FeedbackConfig} (mailto by default; the Cloudflare Worker behind a flag).
+ * This form and the payload stay the same regardless of transport.
  */
 public class FeedbackFragment extends Fragment {
 
@@ -83,8 +82,8 @@ public class FeedbackFragment extends Fragment {
                     .abi(new GetDeviceArchUseCase(new BuildDeviceAbiProvider()).execute())
                     .binariesTag(FeedbackDiagnostics.binariesTag(requireContext()))
                     .build();
-            EmailContent content = new FeedbackRenderer().render(payload);
-            boolean ok = new EmailFeedbackSender().send(requireContext(), content);
+            FeedbackTransport transport = FeedbackConfig.create(requireContext());
+            boolean ok = transport.send(requireContext(), payload);
             if (!ok) {
                 Toast.makeText(requireContext(), R.string.feedback_no_email_app, Toast.LENGTH_LONG).show();
             }
