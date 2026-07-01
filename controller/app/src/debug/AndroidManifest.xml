@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  DEBUG-ONLY overlay: registers a receiver so the delivery backbone can be exercised
+  from adb (see DebugDeliveryReceiver). Merged into debug builds only; never in release.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <receiver
+            android:name="org.iiab.controller.delivery.debug.DebugDeliveryReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.iiab.controller.DEBUG_DELIVERY" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

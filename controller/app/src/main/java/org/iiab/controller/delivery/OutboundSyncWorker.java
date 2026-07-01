@@ -33,14 +33,16 @@ public final class OutboundSyncWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        if (!DeliveryConfig.isConfigured()) {
+        Context ctx = getApplicationContext();
+        if (!DeliveryConfig.isConfigured(ctx)) {
             return Result.success(); // no endpoint yet: keep items queued, don't spin
         }
-        OutboundQueue queue = new OutboundQueue(getApplicationContext());
+        OutboundQueue queue = new OutboundQueue(ctx);
         queue.dropOlderThan(MAX_AGE_MS);
         queue.trimToMax(MAX_ITEMS);
 
-        HttpOutboundSender sender = new HttpOutboundSender();
+        HttpOutboundSender sender =
+                new HttpOutboundSender(DeliveryConfig.getEndpoint(ctx), DeliveryConfig.getToken(ctx));
         while (true) {
             List<OutboundEnvelope> batch = queue.peekBatch(BATCH);
             if (batch.isEmpty()) {

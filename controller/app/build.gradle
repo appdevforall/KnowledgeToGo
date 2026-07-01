@@ -189,8 +189,15 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     // Real org.json so SyncHandshakeHelper JSON logic can run in JVM unit tests
     testImplementation 'org.json:json:20231013'
+    // MockWebServer: JVM-level proof of the delivery HTTP contract (ADFA-4504).
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test:core:1.5.0'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    // Drives the real OutboundSyncWorker on-device (ADFA-4504).
+    androidTestImplementation 'androidx.work:work-testing:2.9.1'
+    androidTestImplementation 'com.squareup.okhttp3:mockwebserver:4.12.0'
 }
 
 import groovy.json.JsonSlurper
