@@ -564,4 +564,9 @@
     <string name="phantom_warn_body">Sur Android 12+, le système peut arrêter le transfert en arrière-plan (limite de processus). Pour l’éviter, désactivez « restrictions des processus enfants », ou continuez quand même — les gros transferts peuvent être interrompus.</string>
     <string name="phantom_warn_open_dev">Ouvrir les options pour développeurs</string>
     <string name="phantom_warn_continue">Continuer quand même</string>
+
+    <!-- App UI language selector (ADFA-4304) -->
+    <string name="setup_app_lang_title">Langue de l\'application</string>
+    <string name="setup_app_lang_desc">Choisissez la langue des écrans de l\'application. \'Par défaut du système\' suit votre téléphone.</string>
+    <string name="setup_app_lang_system">Par défaut du système (suivre le téléphone)</string>
 </resources>

@@ -32,6 +32,9 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import org.iiab.controller.applang.data.AppLocaleController;
+import org.iiab.controller.applang.domain.AppLanguage;
+import org.iiab.controller.applang.domain.SupportedAppLanguages;
 import org.iiab.controller.delivery.data.AnalyticsConsent;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -69,6 +72,7 @@ public class SetupSectionFragment extends Fragment {
     private Button btnContinue;
     private Button btnManageAll;
     private Spinner spinnerLanguage;
+    private Spinner spinnerAppLanguage;
 
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private ActivityResultLauncher<Intent> storageLauncher;
@@ -129,12 +133,14 @@ public class SetupSectionFragment extends Fragment {
         btnContinue = v.findViewById(R.id.btn_setup_continue);
         btnManageAll = v.findViewById(R.id.btn_manage_all);
         spinnerLanguage = v.findViewById(R.id.spinner_language);
+        spinnerAppLanguage = v.findViewById(R.id.spinner_app_language);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             switchNotif.setVisibility(View.GONE);
         }
 
         setupListeners();
+        setupAppLanguageSpinner();
         setupLanguageSpinner();
         checkAllPermissions();
 
@@ -217,6 +223,38 @@ public class SetupSectionFragment extends Fragment {
         prefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
         startActivity(new Intent(requireContext(), MainActivity.class));
         requireActivity().finish();
+    }
+
+    /**
+     * App UI language selector (ADFA-4304): lets the operator show the app in any shipped
+     * language regardless of the phone's locale. "System default" clears the override.
+     * Thin — the actual locale switch lives in {@link AppLocaleController}.
+     */
+    private void setupAppLanguageSpinner() {
+        List<AppLanguage> languages =
+                SupportedAppLanguages.all(getString(R.string.setup_app_lang_system));
+        ArrayAdapter<AppLanguage> adapter = new ArrayAdapter<>(
+                requireContext(), android.R.layout.simple_spinner_item, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerAppLanguage.setAdapter(adapter);
+        spinnerAppLanguage.setSelection(
+                SupportedAppLanguages.indexOfTag(languages, AppLocaleController.currentTag()), false);
+
+        spinnerAppLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String tag = ((AppLanguage) parent.getItemAtPosition(position)).tag();
+                // No-op on the initial/programmatic selection; only apply a real change
+                // (applying recreates the activity in the chosen language).
+                if (!tag.equals(AppLocaleController.currentTag())) {
+                    AppLocaleController.apply(tag);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void setupLanguageSpinner() {

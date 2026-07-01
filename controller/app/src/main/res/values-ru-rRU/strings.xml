@@ -563,4 +563,9 @@
     <string name="phantom_warn_body">На Android 12+ система может остановить передачу в фоне (лимит процессов). Чтобы избежать этого, отключите «ограничения дочерних процессов» или продолжите всё равно — большие передачи могут прерваться.</string>
     <string name="phantom_warn_open_dev">Открыть параметры разработчика</string>
     <string name="phantom_warn_continue">Всё равно продолжить</string>
+
+    <!-- App UI language selector (ADFA-4304) -->
+    <string name="setup_app_lang_title">Язык приложения</string>
+    <string name="setup_app_lang_desc">Выберите язык экранов самого приложения. \'Системный по умолчанию\' следует настройкам телефона.</string>
+    <string name="setup_app_lang_system">Системный по умолчанию (как на телефоне)</string>
 </resources>

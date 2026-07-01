@@ -564,4 +564,9 @@
     <string name="phantom_warn_body">Android 12+ पर सिस्टम बैकग्राउंड में चल रहे ट्रांसफ़र को रोक सकता है (प्रोसेस सीमा)। इससे बचने के लिए, “चाइल्ड प्रोसेस प्रतिबंध” अक्षम करें, या फिर भी जारी रखें — बड़े ट्रांसफ़र बाधित हो सकते हैं।</string>
     <string name="phantom_warn_open_dev">डेवलपर विकल्प खोलें</string>
     <string name="phantom_warn_continue">फिर भी जारी रखें</string>
+
+    <!-- App UI language selector (ADFA-4304) -->
+    <string name="setup_app_lang_title">ऐप की भाषा</string>
+    <string name="setup_app_lang_desc">ऐप की अपनी स्क्रीन के लिए भाषा चुनें। \'सिस्टम डिफ़ॉल्ट\' आपके फ़ोन का अनुसरण करता है।</string>
+    <string name="setup_app_lang_system">सिस्टम डिफ़ॉल्ट (फ़ोन का अनुसरण करें)</string>
 </resources>

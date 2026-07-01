@@ -566,4 +566,9 @@
     <string name="phantom_warn_body">No Android 12+ o sistema pode encerrar a transferência em segundo plano (limite de processos). Para evitar, desative “restrições de processos filhos”, ou continue mesmo assim — transferências grandes podem ser interrompidas.</string>
     <string name="phantom_warn_open_dev">Abrir Opções do desenvolvedor</string>
     <string name="phantom_warn_continue">Continuar mesmo assim</string>
+
+    <!-- App UI language selector (ADFA-4304) -->
+    <string name="setup_app_lang_title">Idioma do app</string>
+    <string name="setup_app_lang_desc">Escolha o idioma das telas do app. \'Padrão do sistema\' segue o seu telefone.</string>
+    <string name="setup_app_lang_system">Padrão do sistema (seguir o telefone)</string>
 </resources>

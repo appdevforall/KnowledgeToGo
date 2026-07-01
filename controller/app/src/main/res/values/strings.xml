@@ -578,4 +578,9 @@
     <string name="phantom_warn_body">On Android 12+ the system can stop the transfer while it runs in the background (phantom-process limit). To prevent it, disable “child process restrictions”, or continue anyway — large transfers may be interrupted.</string>
     <string name="phantom_warn_open_dev">Open Developer options</string>
     <string name="phantom_warn_continue">Continue anyway</string>
+
+    <!-- App UI language selector (ADFA-4304) -->
+    <string name="setup_app_lang_title">App Language</string>
+    <string name="setup_app_lang_desc">Choose the language for the app's own screens. \'System default\' follows your phone.</string>
+    <string name="setup_app_lang_system">System default (follow phone)</string>
 </resources>
