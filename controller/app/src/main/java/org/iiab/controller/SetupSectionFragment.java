@@ -150,6 +150,7 @@ public class SetupSectionFragment extends Fragment {
         setupListeners();
         setupAppLanguageSpinner();
         setupLanguageSpinner();
+        setupLanguageSectionToggle(v);
         checkAllPermissions();
 
         if (wizard) {
@@ -238,6 +239,23 @@ public class SetupSectionFragment extends Fragment {
         prefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
         startActivity(new Intent(requireContext(), MainActivity.class));
         requireActivity().finish();
+    }
+
+    /**
+     * Collapsible "Language" section (ADFA-4304): collapsed by default so first-run setup
+     * stays short. Opening it reveals the App Language + Content Language selectors; the
+     * defaults already apply if the operator never opens it.
+     */
+    private void setupLanguageSectionToggle(View root) {
+        View header = root.findViewById(R.id.language_header);
+        View options = root.findViewById(R.id.language_options);
+        TextView chevron = root.findViewById(R.id.language_chevron);
+        chevron.setText("\u25B8"); // collapsed indicator
+        header.setOnClickListener(x -> {
+            boolean expand = options.getVisibility() != View.VISIBLE;
+            options.setVisibility(expand ? View.VISIBLE : View.GONE);
+            chevron.setText(expand ? "\u25BE" : "\u25B8");
+        });
     }
 
     /**

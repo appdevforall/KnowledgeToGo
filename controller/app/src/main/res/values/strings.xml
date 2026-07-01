@@ -583,4 +583,6 @@
     <string name="setup_app_lang_title">App Language</string>
     <string name="setup_app_lang_desc">Choose the language for the app\'s own screens. “System default” follows your phone.</string>
     <string name="setup_app_lang_system">System default (follow phone)</string>
+    <!-- Collapsible language section title (English-only, ADFA-4304) -->
+    <string name="setup_language_section" translatable="false">Language</string>
 </resources>
