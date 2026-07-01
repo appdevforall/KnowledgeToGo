@@ -166,11 +166,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.7'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.8.7'
     implementation 'androidx.work:work-runtime:2.9.1'
-    // WorkManager's Worker API exposes ListenableFuture only at runtime; full guava
-    // (via :termux-core) forces the empty listenablefuture stub, so the real class is
-    // absent from this module's compile classpath. Pin the real 1.0 artifact here so
-    // subclassing Worker compiles. See ADFA-4504.
-    implementation 'com.google.guava:listenablefuture:1.0'
+    // WorkManager's Worker API returns guava ListenableFuture. Full guava (pulled by
+    // :termux-core) forces the empty com.google.guava:listenablefuture stub to win
+    // version resolution, leaving no ListenableFuture.class on this module's compile
+    // classpath -> subclassing Worker fails to compile. Depend on full guava directly
+    // (same version as :termux-core, deduped at runtime) so the real class is present.
+    // See ADFA-4504.
+    implementation 'com.google.guava:guava:31.1-jre'
 
     // IIAB Tools
     implementation 'com.google.zxing:core:3.5.2'
