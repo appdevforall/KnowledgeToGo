@@ -17,4 +17,23 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginTop="16dp" android:text="@string/splash_powered_by"
         android:textSize="13sp"/>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp"
+        android:layout_marginTop="24dp" android:background="@color/chrome_ripple"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginTop="20dp">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/settings_analytics_title"
+            android:textSize="15sp" android:textStyle="bold"/>
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_analytics_consent"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/settings_analytics_desc"
+        android:textSize="13sp"/>
 </LinearLayout>

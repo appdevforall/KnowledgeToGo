@@ -9,11 +9,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import org.iiab.controller.R;
+import org.iiab.controller.delivery.data.AnalyticsConsent;
 
-/** About section: app name, version and the App Dev for All credit. */
+/** About section: app name, version, the App Dev for All credit, and the anonymous
+ * usage-statistics opt-in toggle (mirrors the first-run enrollment choice). */
 public class AboutFragment extends Fragment {
 
     @Nullable
@@ -28,6 +31,11 @@ public class AboutFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         TextView versionView = view.findViewById(R.id.about_version);
         versionView.setText(getString(R.string.about_version, appVersionName()));
+
+        SwitchCompat analytics = view.findViewById(R.id.switch_analytics_consent);
+        analytics.setChecked(AnalyticsConsent.isEnabled(requireContext()));
+        analytics.setOnCheckedChangeListener(
+                (btn, checked) -> AnalyticsConsent.setEnabled(requireContext(), checked));
     }
 
     private String appVersionName() {

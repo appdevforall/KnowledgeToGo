@@ -551,6 +551,14 @@
     <string name="crash_report_send">Enviar reporte</string>
     <string name="crash_report_dismiss">Descartar</string>
     <string name="rsync_error_process_killed">Android detuvo el proceso de transferencia (límite de procesos en segundo plano). Para evitarlo, activa «Desactivar restricciones de procesos secundarios» en Opciones de desarrollador, o configura ADB.</string>
+
+    <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
+    <string name="analytics_enroll_title">¿Compartir estadísticas de uso anónimas?</string>
+    <string name="analytics_enroll_body">Ayuda a mejorar %1$s compartiendo estadísticas de uso anónimas y operativas: instalaciones, descargas, fallos, versión de la app y tiempo de uso. Sin datos personales, sin historial de navegación y nada sobre las personas que usan el contenido servido. Puedes cambiarlo cuando quieras en Ajustes.</string>
+    <string name="analytics_enroll_accept">Compartir</string>
+    <string name="analytics_enroll_decline">No, gracias</string>
+    <string name="settings_analytics_title">Compartir estadísticas de uso anónimas</string>
+    <string name="settings_analytics_desc">Solo operativas (instalaciones, fallos, tiempo de uso). Anónimas, sin datos personales. Cámbialo cuando quieras.</string>
     <string name="phantom_warn_title">La transferencia podría interrumpirse</string>
     <string name="phantom_warn_body">En Android 12+ el sistema puede detener la transferencia mientras corre en segundo plano (límite de procesos). Para evitarlo, desactiva «restricciones de procesos secundarios», o continúa de todas formas — las transferencias grandes podrían interrumpirse.</string>
     <string name="phantom_warn_open_dev">Abrir Opciones de desarrollador</string>

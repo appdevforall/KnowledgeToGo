@@ -554,6 +554,14 @@
     <string name="crash_report_send">Enviar relatório</string>
     <string name="crash_report_dismiss">Dispensar</string>
     <string name="rsync_error_process_killed">O Android interrompeu o processo de transferência (limite de processos em segundo plano). Para evitar isso, ative “Desativar restrições de processos filhos” nas Opções do desenvolvedor, ou configure o ADB.</string>
+
+    <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
+    <string name="analytics_enroll_title">Compartilhar estatísticas de uso anônimas?</string>
+    <string name="analytics_enroll_body">Ajude a melhorar o %1$s compartilhando estatísticas de uso anônimas e operacionais: instalações, downloads, falhas, versão do app e tempo de uso. Sem dados pessoais, sem histórico de navegação e nada sobre as pessoas que usam o conteúdo disponibilizado. Você pode alterar isso quando quiser nas Configurações.</string>
+    <string name="analytics_enroll_accept">Compartilhar</string>
+    <string name="analytics_enroll_decline">Agora não</string>
+    <string name="settings_analytics_title">Compartilhar estatísticas de uso anônimas</string>
+    <string name="settings_analytics_desc">Apenas operacionais (instalações, falhas, tempo de uso). Anônimas, sem dados pessoais. Altere quando quiser.</string>
     <string name="phantom_warn_title">A transferência pode ser interrompida</string>
     <string name="phantom_warn_body">No Android 12+ o sistema pode encerrar a transferência em segundo plano (limite de processos). Para evitar, desative “restrições de processos filhos”, ou continue mesmo assim — transferências grandes podem ser interrompidas.</string>
     <string name="phantom_warn_open_dev">Abrir Opções do desenvolvedor</string>
