@@ -433,7 +433,7 @@
     <string name="sync_dialog_btn_try_anyway">हां, फिर भी प्रयास करें</string>
     <string name="sync_msg_connecting">होस्ट से कनेक्ट हो रहा है…</string>
     <string name="sync_dialog_conn_failed_title">कनेक्शन विफल</string>
-    <string name="sync_dialog_conn_failed_msg">होस्ट तक %1$s पर नहीं पहुंचा जा सका।\nक्या आप सुनिश्चित हैं कि आप उसी Wi-Fi नेटवर्क या हॉटस्पॉट से जुड़े हैं?</string>
+    <string name="sync_dialog_conn_failed_msg">होस्ट तक %1$s पर नहीं पहुंचा जा सका।\nक्या आप सुनिश्चित हैं कि आप उसी Wi-Fi नेटवर्क या हॉटस्पॉट से जुड़े हैं?\nकुछ Wi-Fi नेटवर्क डिवाइस-टू-डिवाइस कनेक्शन को ब्लॉक करते हैं; अगर बार-बार विफल हो, तो हॉटस्पॉट आज़माएं।</string>
 
     <string name="sync_card_title_system">सिस्टम + सामग्री साझा करें</string>
     <string name="sync_card_desc_system">जब दोनों डिवाइस में K2Go ऐप हो, तो आप सिस्टम और इसकी सभी सामग्री (कुछ सौ MB से लेकर कई GB तक) साझा कर सकते हैं।</string>
@@ -552,4 +552,8 @@
     <string name="crash_report_send">रिपोर्ट भेजें</string>
     <string name="crash_report_dismiss">खारिज करें</string>
     <string name="rsync_error_process_killed">Android ने ट्रांसफ़र प्रोसेस रोक दी (बैकग्राउंड प्रोसेस सीमा)। इसे रोकने के लिए, डेवलपर विकल्प में “चाइल्ड प्रोसेस प्रतिबंध अक्षम करें” चालू करें, या ADB सेट करें।</string>
+    <string name="phantom_warn_title">ट्रांसफ़र बाधित हो सकता है</string>
+    <string name="phantom_warn_body">Android 12+ पर सिस्टम बैकग्राउंड में चल रहे ट्रांसफ़र को रोक सकता है (प्रोसेस सीमा)। इससे बचने के लिए, “चाइल्ड प्रोसेस प्रतिबंध” अक्षम करें, या फिर भी जारी रखें — बड़े ट्रांसफ़र बाधित हो सकते हैं।</string>
+    <string name="phantom_warn_open_dev">डेवलपर विकल्प खोलें</string>
+    <string name="phantom_warn_continue">फिर भी जारी रखें</string>
 </resources>

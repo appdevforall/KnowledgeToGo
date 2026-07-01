@@ -456,7 +456,7 @@
     <string name="sync_dialog_btn_try_anyway">Yes, try anyway</string>
     <string name="sync_msg_connecting">Connecting to Host…</string>
     <string name="sync_dialog_conn_failed_title">Connection Failed</string>
-    <string name="sync_dialog_conn_failed_msg">Cannot reach Host at %1$s.\nAre you sure you are connected to the same Wi-Fi network or Hotspot?</string>
+    <string name="sync_dialog_conn_failed_msg">Cannot reach Host at %1$s.\nAre you sure you are connected to the same Wi-Fi network or Hotspot?\nSome Wi-Fi networks block device-to-device connections — if it keeps failing, try a hotspot.</string>
 
     <string name="sync_card_title_system">Send System + Content</string>
     <string name="sync_card_desc_system">When both devices have the K2Go app, you can share the system and all its content (from a few hundreds of MB to several GB).</string>
@@ -566,4 +566,8 @@
     <string name="crash_report_dismiss">Dismiss</string>
     <string name="feedback_force_crash" translatable="false">Force test crash (debug)</string>
     <string name="rsync_error_process_killed">Android stopped the transfer process (system background-process limit). To prevent this, enable “Disable child process restrictions” in Developer options, or set up the ADB optimization.</string>
+    <string name="phantom_warn_title">Transfer may be interrupted</string>
+    <string name="phantom_warn_body">On Android 12+ the system can stop the transfer while it runs in the background (phantom-process limit). To prevent it, disable “child process restrictions”, or continue anyway — large transfers may be interrupted.</string>
+    <string name="phantom_warn_open_dev">Open Developer options</string>
+    <string name="phantom_warn_continue">Continue anyway</string>
 </resources>

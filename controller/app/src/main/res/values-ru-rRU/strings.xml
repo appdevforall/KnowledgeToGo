@@ -432,7 +432,7 @@
     <string name="sync_dialog_btn_try_anyway">Да, попытаться в любом случае</string>
     <string name="sync_msg_connecting">Подключение к Хосту…</string>
     <string name="sync_dialog_conn_failed_title">Ошибка подключения</string>
-    <string name="sync_dialog_conn_failed_msg">Не удается связаться с Хостом по адресу %1$s.\nВы уверены, что подключены к одной и той же сети Wi-Fi или Точке доступа?</string>
+    <string name="sync_dialog_conn_failed_msg">Не удается связаться с Хостом по адресу %1$s.\nВы уверены, что подключены к одной и той же сети Wi-Fi или Точке доступа?\nНекоторые сети Wi-Fi блокируют соединение между устройствами; если ошибка повторяется, попробуйте точку доступа.</string>
 
     <string name="sync_card_title_system">Отправить систему + контент</string>
     <string name="sync_card_desc_system">Если на обоих устройствах установлено приложение K2Go, вы можете поделиться системой и всем её контентом (от сотен МБ до нескольких ГБ).</string>
@@ -551,4 +551,8 @@
     <string name="crash_report_send">Отправить отчёт</string>
     <string name="crash_report_dismiss">Отклонить</string>
     <string name="rsync_error_process_killed">Android остановил процесс передачи (ограничение фоновых процессов). Чтобы избежать этого, включите «Отключить ограничения дочерних процессов» в параметрах разработчика или настройте ADB.</string>
+    <string name="phantom_warn_title">Передача может прерваться</string>
+    <string name="phantom_warn_body">На Android 12+ система может остановить передачу в фоне (лимит процессов). Чтобы избежать этого, отключите «ограничения дочерних процессов» или продолжите всё равно — большие передачи могут прерваться.</string>
+    <string name="phantom_warn_open_dev">Открыть параметры разработчика</string>
+    <string name="phantom_warn_continue">Всё равно продолжить</string>
 </resources>
