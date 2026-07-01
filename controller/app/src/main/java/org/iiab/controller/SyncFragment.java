@@ -52,10 +52,7 @@ public class SyncFragment extends Fragment {
     private static final String TAG = "IIAB-SyncFragment";
     // S16: name the ADB-optimization prefs/keys (shared with the ADB-share tab).
     private static final String ADB_PREFS = "iiab_adb_prefs";
-    private static final String PREF_CHILD_PROCESS = "child_process_value";
-    private static final String PREF_PPK = "ppk_value";
     private static final String PREF_FOCUS_ADB = "focus_adb";
-    private static final int MIN_PPK_LIMIT = 256; // min phantom-process limit that is "optimized"
 
     private RadioGroup rgSyncMode;
     private LinearLayout containerShare, containerReceive, containerProgress;
@@ -207,64 +204,14 @@ public class SyncFragment extends Fragment {
         // RSYNC SERVER LOGIC (For Data Syncing)
         // --------------------------------------------------------------------
         btnStartServer.setOnClickListener(v -> {
-            MainActivity mainActivity = (MainActivity) getActivity();
-            if (mainActivity == null) return;
-
+            if (getActivity() == null) return;
+            // ADFA-4496: informed pre-flight. If the phantom-process monitor is active, warn (with the
+            // version-appropriate remedy) but let the user continue; #107 catches an actual kill.
             if (!isSystemOptimizedForSync()) {
-                showOptimizationRequiredDialog();
+                showPhantomWarningDialog(this::startShareFlow);
                 return;
             }
-
-            if (isApkServerRunning) {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.sync_dialog_server_running_title))
-                        .setMessage(getString(R.string.sync_error_stop_apk_first))
-                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                return;
-            }
-
-            if (mainActivity.isServerAlive) {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.sync_dialog_server_running_title))
-                        .setMessage(getString(R.string.sync_error_stop_server_first))
-                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                return;
-            }
-
-            if (!isDaemonRunning) {
-                fetchNetworkInterfaces();
-                if (wifiIp == null && hotspotIp == null) {
-                    Toast.makeText(getContext(), getString(R.string.sync_error_no_network), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
-                hostHasRootfs = rootfsDir.exists() && rootfsDir.isDirectory();
-
-                if (!hostHasRootfs) {
-                    new AlertDialog.Builder(requireContext())
-                            .setTitle(getString(R.string.sync_dialog_missing_env_title))
-                            .setMessage(getString(R.string.sync_dialog_missing_env_msg))
-                            .setPositiveButton(getString(R.string.sync_dialog_btn_continue), (dialog, which) -> startShareDaemon(rootfsDir))
-                            .setNegativeButton(getString(R.string.cancel), null)
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-                } else {
-                    startShareDaemon(rootfsDir);
-                }
-            } else {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.sync_dialog_stop_title))
-                        .setMessage(getString(R.string.sync_dialog_stop_msg))
-                        .setPositiveButton(getString(R.string.sync_btn_stop_server), (dialog, which) -> stopShareDaemon())
-                        .setNegativeButton(getString(R.string.cancel), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
+            startShareFlow();
         });
 
         // --------------------------------------------------------------------
@@ -449,32 +396,11 @@ public class SyncFragment extends Fragment {
 
     private void setupReceiveLogic() {
         btnScanQr.setOnClickListener(v -> {
-            MainActivity mainActivity = (MainActivity) getActivity();
-
             if (!isSystemOptimizedForSync()) {
-                showOptimizationRequiredDialog();
+                showPhantomWarningDialog(this::startReceiveFlow);
                 return;
             }
-
-            // EX6: the "safe to receive now?" rule lives in the pure TransferGuard domain.
-            boolean serverRunning = mainActivity != null && mainActivity.isServerAlive;
-            if (!org.iiab.controller.sync.domain.TransferGuard.canReceive(serverRunning).allowed) {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle(getString(R.string.sync_dialog_server_running_title))
-                        .setMessage(getString(R.string.sync_error_stop_server_first))
-                        .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-                return;
-            }
-
-            ScanOptions options = new ScanOptions();
-            options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
-            options.setPrompt(getString(R.string.sync_scanner_prompt));
-            options.setCameraId(0);
-            options.setBeepEnabled(false);
-            options.setBarcodeImageEnabled(false);
-            barcodeLauncher.launch(options);
+            startReceiveFlow();
         });
 
         btnCancelTransfer.setOnClickListener(v -> {
@@ -752,44 +678,122 @@ public class SyncFragment extends Fragment {
     }
 
     // SYSTEM RESTRICTION ENFORCER (PPK & CHILD PROCESSES)
+    /** ADFA-4496: "optimized" now means the phantom-process monitor is NOT active (live check). */
     private boolean isSystemOptimizedForSync() {
-        if (android.os.Build.VERSION.SDK_INT < 31) return true;
-
-        android.content.SharedPreferences prefs = requireContext().getSharedPreferences(ADB_PREFS, Context.MODE_PRIVATE);
-        String cpValue = prefs.getString(PREF_CHILD_PROCESS, null);
-        String ppkValue = prefs.getString(PREF_PPK, null);
-
-        if (android.os.Build.VERSION.SDK_INT >= 34) {
-            return "0".equals(cpValue) || "false".equals(cpValue);
-        } else {
-            if ("256".equals(ppkValue) || "512".equals(ppkValue) || "1024".equals(ppkValue)) // fast-path known-good values
-                return true;
-            try {
-                if (ppkValue != null && Integer.parseInt(ppkValue) >= MIN_PPK_LIMIT) return true;
-            } catch (NumberFormatException e) {
-                Log.w(TAG, "Unparseable ppk_value: " + ppkValue, e);
-            }
-            return false;
-        }
+        return !org.iiab.controller.sync.transport.PhantomProcessHelper.isMonitoringLikelyActive(getContext());
     }
 
-    private void showOptimizationRequiredDialog() {
-        new AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.adb_enforcer_title))
-                .setMessage(getString(R.string.adb_enforcer_body))
-                .setPositiveButton(getString(R.string.adb_enforcer_btn_setup), (dialog, which) -> {
-                    requireContext().getSharedPreferences(ADB_PREFS, Context.MODE_PRIVATE)
-                            .edit().putBoolean(PREF_FOCUS_ADB, true).apply();
+    /** ADFA-4496: informed pre-flight dialog — offers the version-appropriate remedy plus
+     *  "continue anyway" (the reactive safety net catches an actual kill). */
+    private void showPhantomWarningDialog(Runnable onContinue) {
+        if (getContext() == null) return;
+        AlertDialog.Builder b = new AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.phantom_warn_title))
+                .setMessage(getString(R.string.phantom_warn_body))
+                .setIcon(android.R.drawable.ic_dialog_alert);
+        if (android.os.Build.VERSION.SDK_INT >= 34) {
+            b.setPositiveButton(getString(R.string.phantom_warn_open_dev), (dialog, which) ->
+                    org.iiab.controller.sync.transport.PhantomProcessHelper.openDeveloperOptions(requireContext()));
+        } else {
+            b.setPositiveButton(getString(R.string.adb_enforcer_btn_setup), (dialog, which) -> {
+                requireContext().getSharedPreferences(ADB_PREFS, Context.MODE_PRIVATE)
+                        .edit().putBoolean(PREF_FOCUS_ADB, true).apply();
+                MainActivity mainAct = (MainActivity) getActivity();
+                if (mainAct != null) {
+                    androidx.viewpager2.widget.ViewPager2 pager = mainAct.findViewById(R.id.view_pager);
+                    if (pager != null) pager.setCurrentItem(2, true);
+                }
+            });
+        }
+        b.setNeutralButton(getString(R.string.phantom_warn_continue), (dialog, which) -> {
+            if (onContinue != null) onContinue.run();
+        });
+        b.setNegativeButton(getString(R.string.cancel), null);
+        b.show();
+    }
 
-                    MainActivity mainAct = (MainActivity) getActivity();
-                    if (mainAct != null) {
-                        androidx.viewpager2.widget.ViewPager2 pager = mainAct.findViewById(R.id.view_pager);
-                        if (pager != null) pager.setCurrentItem(2, true);
-                    }
-                })
-                .setNegativeButton(getString(R.string.adb_enforcer_btn_ok), null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+    /** Extracted from the Start-server click so the pre-flight can run it after "continue". */
+    private void startShareFlow() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null) return;
+
+        if (isApkServerRunning) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.sync_dialog_server_running_title))
+                    .setMessage(getString(R.string.sync_error_stop_apk_first))
+                    .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            return;
+        }
+
+        if (mainActivity.isServerAlive) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.sync_dialog_server_running_title))
+                    .setMessage(getString(R.string.sync_error_stop_server_first))
+                    .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            return;
+        }
+
+        if (!isDaemonRunning) {
+            fetchNetworkInterfaces();
+            if (wifiIp == null && hotspotIp == null) {
+                Toast.makeText(getContext(), getString(R.string.sync_error_no_network), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
+            hostHasRootfs = rootfsDir.exists() && rootfsDir.isDirectory();
+
+            if (!hostHasRootfs) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle(getString(R.string.sync_dialog_missing_env_title))
+                        .setMessage(getString(R.string.sync_dialog_missing_env_msg))
+                        .setPositiveButton(getString(R.string.sync_dialog_btn_continue), (dialog, which) -> startShareDaemon(rootfsDir))
+                        .setNegativeButton(getString(R.string.cancel), null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            } else {
+                startShareDaemon(rootfsDir);
+            }
+        } else {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.sync_dialog_stop_title))
+                    .setMessage(getString(R.string.sync_dialog_stop_msg))
+                    .setPositiveButton(getString(R.string.sync_btn_stop_server), (dialog, which) -> stopShareDaemon())
+                    .setNegativeButton(getString(R.string.cancel), null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+
+    }
+
+    /** Extracted from the Scan-QR click so the pre-flight can run it after "continue". */
+    private void startReceiveFlow() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        // EX6: the "safe to receive now?" rule lives in the pure TransferGuard domain.
+        boolean serverRunning = mainActivity != null && mainActivity.isServerAlive;
+        if (!org.iiab.controller.sync.domain.TransferGuard.canReceive(serverRunning).allowed) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.sync_dialog_server_running_title))
+                    .setMessage(getString(R.string.sync_error_stop_server_first))
+                    .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+            return;
+        }
+
+        ScanOptions options = new ScanOptions();
+        options.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        options.setPrompt(getString(R.string.sync_scanner_prompt));
+        options.setCameraId(0);
+        options.setBeepEnabled(false);
+        options.setBarcodeImageEnabled(false);
+        barcodeLauncher.launch(options);
+
     }
 
     private void showArchIncompatibilityDialog(String message) {

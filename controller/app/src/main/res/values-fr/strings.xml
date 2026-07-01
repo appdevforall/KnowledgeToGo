@@ -432,7 +432,7 @@
     <string name="sync_dialog_btn_try_anyway">Oui, essayer quand même</string>
     <string name="sync_msg_connecting">Connexion à l\'hôte…</string>
     <string name="sync_dialog_conn_failed_title">Connexion échouée</string>
-    <string name="sync_dialog_conn_failed_msg">Impossible d\'atteindre l\'hôte sur %1$s.\nÊtes-vous sûr d\'être connecté au même réseau Wi-Fi ou Point d\'accès ?</string>
+    <string name="sync_dialog_conn_failed_msg">Impossible d\'atteindre l\'hôte sur %1$s.\nÊtes-vous sûr d\'être connecté au même réseau Wi-Fi ou Point d\'accès ?\nCertains réseaux Wi-Fi bloquent les connexions entre appareils ; si l\'échec persiste, essayez un point d\'accès.</string>
 
     <string name="sync_card_title_system">Partager Système + Contenu</string>
     <string name="sync_card_desc_system">Lorsque les deux appareils disposent de l\'application K2Go, vous pouvez partager le système et tout son contenu (de quelques centaines de Mo à plusieurs Go).</string>
@@ -560,4 +560,8 @@
     <string name="analytics_enroll_decline">Non merci</string>
     <string name="settings_analytics_title">Partager des statistiques d\'utilisation anonymes</string>
     <string name="settings_analytics_desc">Uniquement opérationnelles (installations, plantages, temps d\'utilisation). Anonymes, sans données personnelles. Modifiable à tout moment.</string>
+    <string name="phantom_warn_title">Le transfert peut être interrompu</string>
+    <string name="phantom_warn_body">Sur Android 12+, le système peut arrêter le transfert en arrière-plan (limite de processus). Pour l’éviter, désactivez « restrictions des processus enfants », ou continuez quand même — les gros transferts peuvent être interrompus.</string>
+    <string name="phantom_warn_open_dev">Ouvrir les options pour développeurs</string>
+    <string name="phantom_warn_continue">Continuer quand même</string>
 </resources>
