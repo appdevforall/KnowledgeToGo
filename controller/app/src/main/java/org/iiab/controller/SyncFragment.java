@@ -480,6 +480,7 @@ public class SyncFragment extends Fragment {
         btnCancelTransfer.setOnClickListener(v -> {
             transport.stop();
             disableSystemProtection();
+            syncVm.releaseNetwork(); // ADFA-4496
             org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
             containerProgress.setVisibility(View.GONE);
             btnScanQr.setVisibility(View.VISIBLE);
@@ -632,6 +633,7 @@ public class SyncFragment extends Fragment {
                                 .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
+                    syncVm.releaseNetwork(); // ADFA-4496
                     org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
                 }
                 containerProgress.setVisibility(View.GONE);
@@ -658,6 +660,7 @@ public class SyncFragment extends Fragment {
                                 .setMessage(st.message)
                                 .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
                                 .show();
+                    syncVm.releaseNetwork(); // ADFA-4496
                     org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
                 }
                 containerProgress.setVisibility(View.GONE);
@@ -674,6 +677,7 @@ public class SyncFragment extends Fragment {
                                 .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .show();
+                    syncVm.releaseNetwork(); // ADFA-4496
                     org.iiab.controller.sync.presentation.SyncProgressRepository.get().postIdle();
                 }
                 containerProgress.setVisibility(View.GONE);
@@ -706,6 +710,7 @@ public class SyncFragment extends Fragment {
         }
         if (transport != null) transport.stop();
         if (apkServer != null) apkServer.stop();
+        syncVm.releaseNetwork(); // ADFA-4496: drop the network binding when the receive is torn down
         disableSystemProtection(); // S8: ensure the watchdog stops if a transfer was cut short
     }
 

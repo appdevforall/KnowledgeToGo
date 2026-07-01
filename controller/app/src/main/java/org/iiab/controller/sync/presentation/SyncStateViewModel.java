@@ -23,6 +23,7 @@ import org.iiab.controller.RsyncManager;
 import org.iiab.controller.SyncHandshakeHelper;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.transport.TransportEngine;
+import org.iiab.controller.sync.transport.WifiNetworkBinder;
 import org.iiab.controller.util.AppExecutors;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class SyncStateViewModel extends ViewModel {
     // credentials/destination are kept here so the re-bound fragment can start the transfer.
     private SyncHandshakeHelper.SyncCredentials pendingCreds;
     private File pendingDestDir;
+    private Context appContext; // application context, for releasing the network binding
 
     /** The single transport instance for this Activity; created lazily, reused across recreations. */
     public TransportEngine getTransport() {
@@ -60,8 +62,14 @@ public class SyncStateViewModel extends ViewModel {
     public void startProbe(Context appCtx, ShareConfig shareConfig, SyncHandshakeHelper.SyncCredentials creds) {
         this.pendingCreds = creds;
         this.pendingDestDir = null;
+        this.appContext = appCtx.getApplicationContext();
         final SyncProgressRepository repo = SyncProgressRepository.get();
         repo.postConnecting();
+
+        // ADFA-4496: pin this app's sockets (incl. the native rsync child) to the local network
+        // that reaches the host, so the probe/dry-run/transfer don't fail when the only network
+        // (Wi-Fi/hotspot) is flagged "no internet" and Android gives the app no default network.
+        WifiNetworkBinder.bindToHostNetwork(appCtx, creds.ip);
 
         AppExecutors.get().io().execute(() -> {
             boolean reachable = false;
@@ -114,15 +122,22 @@ public class SyncStateViewModel extends ViewModel {
         });
     }
 
+    /** Release the network binding put in place for a receive (ADFA-4496); safe to call repeatedly. */
+    public void releaseNetwork() {
+        if (appContext != null) WifiNetworkBinder.unbind(appContext);
+    }
+
     /** User declined the transfer (or cancelled mid-probe): stop any dry-run and reset. */
     public void cancelProbe() {
         if (transport != null) transport.stop();
+        releaseNetwork();
         SyncProgressRepository.get().postIdle();
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
+        releaseNetwork();
         if (transport != null) {
             transport.stop();
             transport = null;
