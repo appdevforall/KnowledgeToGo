@@ -434,7 +434,7 @@
     <string name="sync_dialog_btn_try_anyway">Sí, intentar de todos modos</string>
     <string name="sync_msg_connecting">Conectando al Anfitrión…</string>
     <string name="sync_dialog_conn_failed_title">Conexión Fallida</string>
-    <string name="sync_dialog_conn_failed_msg">No se puede alcanzar al Anfitrión en %1$s.\n¿Está seguro de que está conectado a la misma red Wi-Fi o Hotspot?</string>
+    <string name="sync_dialog_conn_failed_msg">No se puede alcanzar al Anfitrión en %1$s.\n¿Está seguro de que está conectado a la misma red Wi-Fi o Hotspot?\nAlgunas redes Wi-Fi bloquean la conexión entre dispositivos; si sigue fallando, prueba con un hotspot.</string>
 
     <string name="sync_card_title_system">Enviar Sistema + Contenido</string>
     <string name="sync_card_desc_system">Cuando ambos dispositivos tienen la app K2Go, puede compartir el sistema y todo su contenido (desde cientos de MB hasta varios GB).</string>

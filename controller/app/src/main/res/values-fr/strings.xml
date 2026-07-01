@@ -432,7 +432,7 @@
     <string name="sync_dialog_btn_try_anyway">Oui, essayer quand même</string>
     <string name="sync_msg_connecting">Connexion à l\'hôte…</string>
     <string name="sync_dialog_conn_failed_title">Connexion échouée</string>
-    <string name="sync_dialog_conn_failed_msg">Impossible d\'atteindre l\'hôte sur %1$s.\nÊtes-vous sûr d\'être connecté au même réseau Wi-Fi ou Point d\'accès ?</string>
+    <string name="sync_dialog_conn_failed_msg">Impossible d\'atteindre l\'hôte sur %1$s.\nÊtes-vous sûr d\'être connecté au même réseau Wi-Fi ou Point d\'accès ?\nCertains réseaux Wi-Fi bloquent les connexions entre appareils ; si l\'échec persiste, essayez un point d\'accès.</string>
 
     <string name="sync_card_title_system">Partager Système + Contenu</string>
     <string name="sync_card_desc_system">Lorsque les deux appareils disposent de l\'application K2Go, vous pouvez partager le système et tout son contenu (de quelques centaines de Mo à plusieurs Go).</string>
