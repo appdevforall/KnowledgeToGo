@@ -134,13 +134,40 @@
             return;
         }
 
+        const EXPECTED_LAYERS = ['terrain', 'vector', 'satellite'];
+
         mapsInMemory.forEach(map => {
+            const layers = Array.isArray(map.layers) ? map.layers : [];
+            const dates = (map.dates && typeof map.dates === 'object') ? map.dates : {};
+            const missing = EXPECTED_LAYERS.filter(l => !layers.includes(l));
+
+            const layerBadges = layers.length
+                ? layers.map(l => `<span class="badge bg-secondary me-1 mb-1">${l}</span>`).join('')
+                : '<span class="text-secondary small">no layers listed</span>';
+
+            const datesEntries = Object.keys(dates);
+            const datesLine = datesEntries.length
+                ? `<div class="small text-secondary mt-1">${datesEntries.map(l => `${l}: ${dates[l]}`).join(' · ')}</div>`
+                : '';
+
+            const incompleteWarn = (layers.length && missing.length)
+                ? `<div class="small text-warning mt-2">⚠️ Incomplete extract — missing: ${missing.join(', ')}</div>`
+                : '';
+
+            const renderLine = map.render_bbox
+                ? `<div class="map-coords text-break small text-secondary">render: [ ${map.render_bbox} ]</div>`
+                : '';
+
             const card = `
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card map-card p-3 h-100 shadow-sm d-flex flex-column justify-content-between">
                         <div>
                             <div class="fw-bold fs-5 mb-1">${map.name}</div>
                             <div class="map-coords text-break">[ ${map.bbox} ]</div>
+                            ${renderLine}
+                            <div class="mt-2">${layerBadges}</div>
+                            ${datesLine}
+                            ${incompleteWarn}
                         </div>
                         <div class="text-end mt-3">
                             <button id="btn-del-map-${map.name}" class="btn btn-sm btn-outline-danger" onclick="deleteRegionDirectly(event, '${map.name}')">🗑️ Delete</button>

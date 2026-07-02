@@ -1,0 +1,48 @@
+name: Dashboard Check (typecheck + tests)
+
+# The device dashboard (static/dashboard) is Node + TypeScript and boots via ts-node,
+# which type-checks on start — so a TS error can stop it booting. Nothing else in CI
+# covers it, so type-check + unit-test it on any PR that touches it. (ADFA-4511)
+
+on:
+  push:
+    branches: [ "main", "development" ]
+    paths:
+      - 'static/dashboard/**'
+  pull_request:
+    branches: [ "main", "development" ]
+    paths:
+      - 'static/dashboard/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./static/dashboard
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: static/dashboard/package-lock.json
+
+      # --ignore-scripts: skip the better-sqlite3 native build (not needed to type-check
+      # or run the maps unit tests); still installs all JS/TS deps + devDeps.
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Type-check (tsc --noEmit, strict)
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test

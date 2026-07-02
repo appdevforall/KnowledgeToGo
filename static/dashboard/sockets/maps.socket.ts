@@ -8,35 +8,85 @@ const SCRIPTS_DIR = '/opt/iiab/maps/tile-extract/';
 const EXTRACT_SCRIPT = path.join(SCRIPTS_DIR, 'tile-extract.py');
 const CATALOG_JSON = '/library/www/maps/extracts.json';
 
-// --- FUNCTION: Read existing regions from JSON ---
-function getMapsCatalog() {
+// ---------------------------------------------------------------------------
+// CONTRACT (source of truth: iiab/iiab roles/maps/templates/tile-extract.py.j2)
+//   sudo tile-extract.py extract <name> <box> [noninteractive]
+//   sudo tile-extract.py delete  <name>
+//   sudo tile-extract.py update-json
+//   name: [A-Za-z0-9_-], length 1..34 (uppercase and hyphen ARE valid)
+//   box : 4 comma floats min_lon,min_lat,max_lon,max_lat; min<max both axes; span<360
+// extracts.json: { regions: { <name>: { render_bounds:[..], ui_bounds:[..],
+//                 dates:{terrain,vector,satellite} } } }
+// Display uses ui_bounds (render_bounds can be -180..180 on antimeridian crossings).
+// ---------------------------------------------------------------------------
+
+interface CatalogRegion {
+    name: string;
+    bbox: string;
+    coords: number[];
+    render_bbox?: string;
+    render_coords?: number[];
+    layers: string[];
+    dates?: Record<string, string>;
+}
+
+function toBounds(candidate: unknown): number[] | null {
+    if (!Array.isArray(candidate) || candidate.length < 4) return null;
+    const nums = candidate.slice(0, 4).map((c: unknown) => Number(c));
+    if (nums.some((n: number) => !Number.isFinite(n))) return null;
+    return nums;
+}
+
+function displayBounds(regionData: any): number[] | null {
+    if (!regionData) return null;
+    return (
+        toBounds(regionData.ui_bounds) ??
+        toBounds(regionData.render_bounds) ??
+        toBounds(regionData.bbox) ??
+        toBounds(regionData)
+    );
+}
+
+function getMapsCatalog(): CatalogRegion[] {
     try {
         if (!fs.existsSync(CATALOG_JSON)) return [];
-        
+
         console.log('[Maps] Reading extracts.json catalog...');
         const fileContent = fs.readFileSync(CATALOG_JSON, 'utf8');
+        if (!fileContent.trim()) return [];
+
         const data = JSON.parse(fileContent);
-        
-        const regions = [];
-        if (data && data.regions) {
-            for (const name in data.regions) {
+
+        const regions: CatalogRegion[] = [];
+        if (data && data.regions && typeof data.regions === 'object') {
+            for (const name of Object.keys(data.regions)) {
                 const regionData = data.regions[name];
 
-                // Validation in case an old map does not have the new format
-                if (regionData && regionData.bbox && Array.isArray(regionData.bbox)) {
-                    const bbox = regionData.bbox.map((coord: number) => coord.toFixed(4));
-                    regions.push({
-                        name: name,
-                        bbox: bbox.join(', ')
-                    });
-                } else if (Array.isArray(regionData)) {
-                    // It maintains support for the old format through backward compatibility.
-                    const bbox = regionData.map((coord: number) => coord.toFixed(4));
-                    regions.push({
-                        name: name,
-                        bbox: bbox.join(', ')
-                    });
+                const ui = displayBounds(regionData);
+                if (!ui) {
+                    console.warn(`[Maps] Skipping region "${name}": no readable bounds.`);
+                    continue;
                 }
+
+                const render = toBounds(regionData?.render_bounds);
+                const dates =
+                    regionData && typeof regionData.dates === 'object' && regionData.dates
+                        ? (regionData.dates as Record<string, string>)
+                        : undefined;
+
+                const layers = dates ? Object.keys(dates) : [];
+                const fmt = (b: number[]) => b.map((c) => c.toFixed(4)).join(', ');
+                const renderDiffers = render && render.some((v, i) => v !== ui[i]);
+
+                regions.push({
+                    name,
+                    coords: ui,
+                    bbox: fmt(ui),
+                    render_coords: render ?? undefined,
+                    render_bbox: renderDiffers ? fmt(render as number[]) : undefined,
+                    layers,
+                    dates,
+                });
             }
         }
         return regions;
@@ -46,57 +96,110 @@ function getMapsCatalog() {
     }
 }
 
-// --- FUNCTION: The Security Regex Shield (Stricter) ---
-// The region name MUST be lowercase letters, numbers, or underscore ONLY.
-const regionNameRegex = /^[a-z0-9_]+$/;
+const regionNameRegex = /^[A-Za-z0-9_-]{1,34}$/;
 
-function validateSecureCommand(rawCommand: string): { type: string, region: string, bbox?: string, error?: string } {
-    const tokens = rawCommand.trim().split(/\s+/);
+type BoxResult = { ok: true; box: string } | { ok: false; error: string };
 
-    // 1. Must start with sudo and point to the correct script
+function parseBox(raw: string): BoxResult {
+    const cleaned = raw.replace(/\s+/g, '');
+    const parts = cleaned.split(',');
+    if (parts.length !== 4) {
+        return { ok: false, error: 'The Bounding Box must be exactly 4 comma-separated numbers: minLon,minLat,maxLon,maxLat' };
+    }
+    if (parts.some((p) => p === '')) {
+        return { ok: false, error: 'The Bounding Box has an empty coordinate (check for stray/duplicate commas).' };
+    }
+    const nums = parts.map(Number);
+    if (nums.some((n) => !Number.isFinite(n))) {
+        return { ok: false, error: 'The Bounding Box contains a non-numeric value.' };
+    }
+    const [minLon, minLat, maxLon, maxLat] = nums;
+    if (!(minLon < maxLon)) return { ok: false, error: 'Longitudes out of order: minLon must be < maxLon.' };
+    if (!(minLat < maxLat)) return { ok: false, error: 'Latitudes out of order: minLat must be < maxLat.' };
+    if (!(maxLon - minLon < 360)) return { ok: false, error: 'A region cannot wrap around the world (span must be < 360 degrees).' };
+    return { ok: true, box: cleaned };
+}
+
+type CommandType = 'extract' | 'delete' | 'update-json' | '';
+
+interface ValidatedCommand {
+    type: CommandType;
+    region: string;
+    bbox?: string;
+    noninteractive?: boolean;
+    error?: string;
+}
+
+function validateSecureCommand(rawCommand: string): ValidatedCommand {
+    const cleaned = (rawCommand || '').replace(/\s+/g, ' ').trim();
+    const tokens = cleaned.split(' ').filter(Boolean);
+
     if (tokens[0] !== 'sudo' || tokens[1] !== EXTRACT_SCRIPT) {
-        return { type: '', region: '', error: 'The command does not start with sudo /opt/iiab/maps/tile-extract/tile-extract.py' };
+        return { type: '', region: '', error: `The command must start with: sudo ${EXTRACT_SCRIPT}` };
     }
 
-    const action = tokens[2]; // 'extract' or 'delete'
+    const action = tokens[2];
+
+    if (action === 'update-json' && tokens.length === 3) {
+        return { type: 'update-json', region: '' };
+    }
+
     const regionName = tokens[3];
 
-    // 2. Validate the format of the region name
     if (!regionName || !regionNameRegex.test(regionName)) {
-        return { type: '', region: '', error: 'SECURITY ERROR: The region name MUST contain ONLY lowercase letters, numbers, and underscores (_).' };
+        return {
+            type: '',
+            region: '',
+            error: 'Invalid region name. Allowed: letters (A-Z, a-z), digits, hyphen (-) and underscore (_); length 1-34.',
+        };
     }
 
     if (action === 'delete' && tokens.length === 4) {
-        // Variant 1: DELETE (sudo tile-extract.py delete desert1)
         return { type: 'delete', region: regionName };
-    } 
-    
-    if (action === 'extract' && tokens.length === 5) {
-        // Variant 2: DOWNLOAD (sudo tile-extract.py extract desert1 bbox)
-        const bbox = tokens[4];
-        if (!/^[-0-9.,]+$/.test(bbox)) {
-            return { type: '', region: '', error: 'ERROR: The coordinates (Bounding Box) have an invalid format.' };
-        }
-        return { type: 'extract', region: regionName, bbox: bbox };
     }
 
-    // 3. Anything else is an error
-    return { type: '', region: '', error: 'Invalid command format. Only sudo [script] extract {region} {bbox} OR sudo [script] delete {region} are allowed.' };
+    if (action === 'extract' && tokens.length >= 5) {
+        let rest = tokens.slice(4);
+        let noninteractive = false;
+        if (rest[rest.length - 1] === 'noninteractive') {
+            noninteractive = true;
+            rest = rest.slice(0, -1);
+        }
+        const parsed = parseBox(rest.join(''));
+        if (parsed.ok) {
+            return { type: 'extract', region: regionName, bbox: parsed.box, noninteractive };
+        }
+        return { type: '', region: '', error: parsed.error };
+    }
+
+    return {
+        type: '',
+        region: '',
+        error:
+            'Invalid command format. Allowed:\n' +
+            `  sudo ${EXTRACT_SCRIPT} extract {region} {minLon,minLat,maxLon,maxLat} [noninteractive]\n` +
+            `  sudo ${EXTRACT_SCRIPT} delete {region}\n` +
+            `  sudo ${EXTRACT_SCRIPT} update-json`,
+    };
+}
+
+function buildArgs(v: ValidatedCommand): string[] {
+    if (v.type === 'update-json') return [EXTRACT_SCRIPT, 'update-json'];
+    if (v.type === 'delete') return [EXTRACT_SCRIPT, 'delete', v.region];
+    const args = [EXTRACT_SCRIPT, 'extract', v.region, v.bbox as string];
+    if (v.noninteractive) args.push('noninteractive');
+    return args;
 }
 
 export const handleMapsEvents = (socket: Socket) => {
     let scriptProcess: ChildProcess | null = null;
 
-    // A. Send catalog to the web
     socket.on('request_maps_catalog', () => {
-        // UX: Artificial 800ms delay to prevent visual flickering (glitches) on the frontend
         setTimeout(() => {
-            const catalog = getMapsCatalog();
-            socket.emit('maps_catalog_ready', catalog);
+            socket.emit('maps_catalog_ready', getMapsCatalog());
         }, 800);
     });
 
-    // B. Process raw order (copy-paste) with strict validation
     socket.on('start_command', (config: { rawCommand: string }) => {
         if (scriptProcess) {
             socket.emit('terminal_output', '\n[System] A process is already running.\n');
@@ -104,19 +207,16 @@ export const handleMapsEvents = (socket: Socket) => {
         }
 
         const validation = validateSecureCommand(config.rawCommand);
-
         if (validation.error) {
             socket.emit('terminal_output', `\n[System] SECURITY ERROR: ${validation.error}\n`);
             return;
         }
 
-        let args = [EXTRACT_SCRIPT, validation.type, validation.region];
-        if (validation.type === 'extract' && validation.bbox) args.push(validation.bbox);
-
-        socket.emit('terminal_output', `[System] Valid command. Starting action [${validation.type}] for region: ${validation.region}...\n`);
+        const args = buildArgs(validation);
+        const label = validation.type === 'update-json' ? 'update-json' : `${validation.type} ${validation.region}`;
+        socket.emit('terminal_output', `[System] Valid command. Starting action [${label}]...\n`);
 
         scriptProcess = spawn('sudo', args, { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
-
         socket.emit('process_status', { isRunning: true });
 
         scriptProcess.stdout?.on('data', (data) => socket.emit('terminal_output', data.toString()));
@@ -126,37 +226,32 @@ export const handleMapsEvents = (socket: Socket) => {
             scriptProcess = null;
             socket.emit('terminal_output', `\n[System] Process [${validation.type}] finished with code ${code}\n`);
             socket.emit('process_status', { isRunning: false });
-            // Reload catalog if successful
-            if (code === 0) {
-                const catalog = getMapsCatalog();
-                socket.emit('maps_catalog_ready', catalog);
-            }
+            if (code === 0) socket.emit('maps_catalog_ready', getMapsCatalog());
         });
     });
 
-    // C. Process direct card deletion (Intelligent UI)
     socket.on('delete_map_region', (regionName: string) => {
         if (scriptProcess) return;
 
-        // Double security check just in case
         if (!regionNameRegex.test(regionName)) {
             socket.emit('terminal_output', `\n[System] ERROR: Invalid region name for deletion: ${regionName}\n`);
             return;
         }
 
         socket.emit('terminal_output', `[System] Starting direct deletion for region: ${regionName}...\n`);
-        
-        scriptProcess = spawn('sudo', [EXTRACT_SCRIPT, 'delete', regionName], { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
+
+        scriptProcess = spawn('sudo', [EXTRACT_SCRIPT, 'delete', regionName], {
+            env: { ...process.env, PYTHONUNBUFFERED: '1' },
+        });
         socket.emit('process_status', { isRunning: true });
-        
+
         scriptProcess.stdout?.on('data', (data) => socket.emit('terminal_output', data.toString()));
+        scriptProcess.stderr?.on('data', (data) => socket.emit('terminal_output', data.toString()));
         scriptProcess.on('exit', (code) => {
             scriptProcess = null;
             if (code === 0) {
-                socket.emit('terminal_output', `\n[System] 🗑️ Region ${regionName} successfully deleted from JSON.\n`);
-                // Send updated catalog
-                const catalog = getMapsCatalog();
-                socket.emit('maps_catalog_ready', catalog);
+                socket.emit('terminal_output', `\n[System] Region ${regionName} successfully deleted.\n`);
+                socket.emit('maps_catalog_ready', getMapsCatalog());
             } else {
                 socket.emit('terminal_output', `\n[System] Error deleting region ${regionName}. Code ${code}\n`);
             }
@@ -166,7 +261,7 @@ export const handleMapsEvents = (socket: Socket) => {
 
     socket.on('send_input', (input: string) => {
         if (scriptProcess && scriptProcess.stdin) {
-            scriptProcess.stdin.write(`${input}\n`); 
+            scriptProcess.stdin.write(`${input}\n`);
         }
     });
 
@@ -174,3 +269,5 @@ export const handleMapsEvents = (socket: Socket) => {
         if (scriptProcess) scriptProcess.kill();
     });
 };
+
+export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs };
