@@ -67,6 +67,16 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
 }
 
+/* Non-Latin scripts (e.g. Devanagari/Hindi): letter-spacing detaches vowel signs and
+   uppercase is meaningless, so neutralize the Latin-oriented styling for those locales.
+   Requires <html lang> to reflect the active locale (set in dashboard.js). */
+:lang(hi) .nav-text,
+:lang(hi) .sidebar-title,
+:lang(hi) .btn {
+    text-transform: none;
+    letter-spacing: normal;
+}
+
 /* =========================================
    3. UI COMPONENTS & FORMS
    ========================================= */
