@@ -104,8 +104,8 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     private View ledInternet, ledDevMode, ledDcpr, ledPpk;
     private TextView txtDcpr, txtPpk, btnRefreshModules;
     private LinearLayout rolesContainer, discrepancyWarning;
-    private Button btnLaunchInstall, btnAdvancedReset;
-    private ProgressButton btnFastInstall, btnFastDelete;
+    private Button btnAdvancedReset;
+    private ProgressButton btnFastInstall, btnFastDelete, btnLaunchInstall;
     private Button btnAdvancedForceStop;
     private ProgressButton btnAdvancedBackup, btnAdvancedRestore;
     private LinearLayout restoreLogPanel;
@@ -438,9 +438,12 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             case RUNNING:
                 updateDynamicButtons();
                 if (btnLaunchInstall != null) {
-                    btnLaunchInstall.setEnabled(false);
                     if (s.currentModule != null)
                         btnLaunchInstall.setText(getString(R.string.install_status_installing_module, s.currentModule));
+                    // ADFA-4476: same indeterminate progress bar as the other action buttons.
+                    // startProgress() is idempotent (guards on isRunning) so re-observing after a
+                    // recreation does not restart it.
+                    btnLaunchInstall.startProgress();
                 }
                 break;
             case DONE:
@@ -461,6 +464,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                         }
                     }
                     if (btnLaunchInstall != null) {
+                        btnLaunchInstall.stopProgress(); // ADFA-4476: stop the progress bar
                         btnLaunchInstall.setEnabled(false);
                         btnLaunchInstall.setText(getString(R.string.install_btn_launch));
                     }

@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
@@ -52,7 +51,7 @@ public final class InstallController {
     private File debianRootfs;
     private File iiabRootDir;
     private ProgressButton btnFastInstall;
-    private Button btnLaunchInstall;
+    private ProgressButton btnLaunchInstall;
     private LinearLayout discrepancyWarning;
     private LinearLayout rolesContainer;
     private CheckBox chkCompanionData;
@@ -64,7 +63,7 @@ public final class InstallController {
 
     /** Wire the install/fast-install buttons. Call from onViewCreated. */
     public void bind(MainActivity mainAct, File debianRootfs, File iiabRootDir,
-                     ProgressButton btnFastInstall, Button btnLaunchInstall,
+                     ProgressButton btnFastInstall, ProgressButton btnLaunchInstall,
                      LinearLayout discrepancyWarning, LinearLayout rolesContainer,
                      CheckBox chkCompanionData) {
         this.mainAct = mainAct;
