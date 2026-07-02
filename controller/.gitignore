@@ -25,3 +25,6 @@ app/src/main/jniLibs/
 
 # Ignore the cache tracker for native binatires
 current_binaries_tag.txt
+
+# ADFA-4466: injected at CI from the GOOGLE_SERVICES_JSON secret; never commit a real one.
+app/google-services.json

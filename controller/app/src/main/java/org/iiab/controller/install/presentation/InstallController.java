@@ -156,6 +156,10 @@ public final class InstallController {
         } else {
             ctx.startService(i);
         }
+        // ADFA-4466 Phase 1: operational analytics (no-op unless the operator opted in).
+        org.iiab.controller.analytics.AnalyticsClient.with(ctx).logInstallStarted(
+                host.getSelectedTier() != null ? host.getSelectedTier().name() : null,
+                chkCompanionData.isChecked(), host.getTermuxArch());
     }
 
     private void evaluateLaunchButton() {

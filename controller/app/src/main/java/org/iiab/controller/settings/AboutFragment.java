@@ -35,7 +35,10 @@ public class AboutFragment extends Fragment {
         SwitchCompat analytics = view.findViewById(R.id.switch_analytics_consent);
         analytics.setChecked(AnalyticsConsent.isEnabled(requireContext()));
         analytics.setOnCheckedChangeListener(
-                (btn, checked) -> AnalyticsConsent.setEnabled(requireContext(), checked));
+                (btn, checked) -> {
+                    AnalyticsConsent.setEnabled(requireContext(), checked);
+                    org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
+                });
     }
 
     private String appVersionName() {

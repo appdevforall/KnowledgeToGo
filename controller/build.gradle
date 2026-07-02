@@ -29,6 +29,8 @@ buildscript {
 
 	dependencies {
 		classpath 'com.android.tools.build:gradle:8.4.1'
+		// ADFA-4466 Phase 1: Firebase (Google Services) Gradle plugin.
+		classpath 'com.google.gms:google-services:4.4.2'
 	}
 }
 

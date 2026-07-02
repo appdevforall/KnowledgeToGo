@@ -43,6 +43,7 @@ public class IIABApplication extends Application {
 
         // Operational usage analytics (no-op unless the operator opted in). Emits first_run
         // once, plus app_opened + session duration as the process moves fore/background.
+        AnalyticsClient.with(this).applyConsent();
         AnalyticsClient.with(this).logFirstRunIfNeeded();
         registerActivityLifecycleCallbacks(new ForegroundTracker());
     }
