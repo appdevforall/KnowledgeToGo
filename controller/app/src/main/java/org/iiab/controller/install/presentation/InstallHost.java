@@ -27,6 +27,8 @@ public interface InstallHost {
     // ADFA-4476 slice 1: module-grid selection lives in the Activity-scoped
     // ViewModel so it survives recreation; reached through this seam.
     java.util.Set<String> selectedModuleKeys();
+    // ADFA-4519: modules whose runrole is in flight right now (authoritative, survives recreation).
+    java.util.Set<String> installingModuleKeys();
     boolean isStorageSafe();
     boolean hasInternet();
     String getOverrideKiwixLang();
