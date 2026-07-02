@@ -898,6 +898,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
 
     // --- PlannerHost seam (planner logic lives in PlannerController) ---
     @Override public InstallationPlanner.Tier getSelectedTier() { return downloadState.getSelectedTier(); }
+    @Override public java.util.Set<String> selectedModuleKeys() { return downloadState.getSelectedModuleKeys(); }
     @Override public void setSelectedTier(InstallationPlanner.Tier tier) { downloadState.setSelectedTier(tier); }
     @Override public boolean isCompanionData() { return downloadState.isCompanionData(); }
     @Override public void setCompanionData(boolean v) { downloadState.setCompanionData(v); }

@@ -65,6 +65,14 @@ public class DownloadStateViewModel extends ViewModel {
     public String getOverrideKiwixVariant() { return overrideKiwixVariant; }
     public void setOverrideKiwixVariant(String variant) { this.overrideKiwixVariant = variant; }
 
+    // ADFA-4476 slice 1: module-grid checkbox selection, kept at Activity scope so
+    // the checked modules survive a recreation (theme toggle / rotation /
+    // background+return), the same seam as the tier/companion/kiwix selections.
+    // Previously an InstallController (Fragment-scoped) field, so it was lost on
+    // recreation while verifyInstallationState re-rendered the cards unchecked.
+    private final java.util.Set<String> selectedModuleKeys = new java.util.HashSet<>();
+    public java.util.Set<String> getSelectedModuleKeys() { return selectedModuleKeys; }
+
     /** Observable install-pipeline progress (app-scoped; survives recreation). */
     public LiveData<InstallState> installState() {
         return InstallProgressRepository.get().state();

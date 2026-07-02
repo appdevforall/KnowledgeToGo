@@ -24,6 +24,9 @@ public interface InstallHost {
     // selection / projection state (shared with the planner + dynamic buttons)
     org.iiab.controller.InstallationPlanner.Tier getSelectedTier();
     List<CheckBox> moduleCheckboxes();
+    // ADFA-4476 slice 1: module-grid selection lives in the Activity-scoped
+    // ViewModel so it survives recreation; reached through this seam.
+    java.util.Set<String> selectedModuleKeys();
     boolean isStorageSafe();
     boolean hasInternet();
     String getOverrideKiwixLang();
