@@ -60,11 +60,19 @@ const applyTranslations = () => {
         const key = el.getAttribute('data-i18n-title');
         if (window.i18n[key]) el.setAttribute('title', window.i18n[key]);
     });
+    // Accessible name for icon-only / non-text controls (e.g. the mobile nav pill).
+    document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+        const key = el.getAttribute('data-i18n-aria-label');
+        if (window.i18n[key]) el.setAttribute('aria-label', window.i18n[key]);
+    });
 };
 
 const loadLanguage = () => {
     const userLang = (navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase();
     const lang = SUPPORTED_LANGS.includes(userLang) ? userLang : 'en';
+    // Reflect the active locale on <html> so :lang() styling (e.g. non-Latin scripts) and
+    // assistive tech announce the right language.
+    document.documentElement.lang = lang;
     const script = document.createElement('script');
     script.src = `lang/${lang}.js`;
     // If the locale file fails to load, fall back to English so the UI is never blank.
@@ -106,6 +114,14 @@ document.addEventListener("DOMContentLoaded", () => {
     switchTab('home');
     discoverDashboardModules();
     floatingMenuManager.init();
+
+    // Keyboard activation for click-only controls exposed as role="button"
+    // (the sidebar nav items are <a> without href, so Enter/Space must trigger them).
+    document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+        const el = e.target.closest('[role="button"]');
+        if (el) { e.preventDefault(); el.click(); }
+    });
 });
 
 // ==========================================

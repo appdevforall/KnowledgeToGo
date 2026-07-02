@@ -569,4 +569,8 @@
     <string name="setup_app_lang_desc">Elige el idioma de las pantallas de la app. “Predeterminado del sistema” sigue tu teléfono.</string>
     <string name="setup_app_lang_system">Predeterminado del sistema (seguir el teléfono)</string>
     <string name="setup_language_section">Idioma</string>
+
+    <!-- Portal WebView APK download (ADFA-4512) -->
+    <string name="portal_download_started">Descargando %1$s…</string>
+    <string name="portal_download_failed">No se pudo iniciar la descarga.</string>
 </resources>
