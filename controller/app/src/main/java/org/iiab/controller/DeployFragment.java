@@ -581,12 +581,22 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             // LOCK MODE: Server On or System Busy
             float lockAlpha = 0.5f;
 
-            // We keep the opacity at 80% only for the button that is currently working
-            btnFastInstall.setAlpha((isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
+            // We keep the opacity at 80% only for the button that is currently working.
+            // Install and reset share isDownloadingRootfs() (ADFA-4476), so tell them
+            // apart by the running operation: otherwise a reset would leave the install
+            // button looking "active" instead of dimmed like the rest.
+            boolean rootfsOp = isDownloadingRootfs() && !isServerRunning;
+            org.iiab.controller.install.presentation.InstallState.Op runningOp =
+                    org.iiab.controller.install.presentation.InstallProgressRepository.get().currentOp();
+            boolean installWorking = rootfsOp
+                    && runningOp == org.iiab.controller.install.presentation.InstallState.Op.INSTALL;
+            boolean resetWorking = rootfsOp
+                    && runningOp == org.iiab.controller.install.presentation.InstallState.Op.RESET;
+            btnFastInstall.setAlpha(installWorking ? 0.8f : lockAlpha);
             btnFastDelete.setAlpha(isDeleting ? 0.8f : lockAlpha);
             if (btnAdvancedBackup != null) btnAdvancedBackup.setAlpha(isBackupInProgress ? 0.8f : lockAlpha);
             if (btnAdvancedRestore != null) btnAdvancedRestore.setAlpha(isRestoring ? 0.8f : lockAlpha);
-            if (btnAdvancedReset != null) btnAdvancedReset.setAlpha((isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
+            if (btnAdvancedReset != null) btnAdvancedReset.setAlpha(resetWorking ? 0.8f : lockAlpha);
             if (txtSelectBackupTitle != null) txtSelectBackupTitle.setAlpha(lockAlpha);
             if (btnImportBackup != null) btnImportBackup.setAlpha(isImporting ? 0.8f : lockAlpha);
 
