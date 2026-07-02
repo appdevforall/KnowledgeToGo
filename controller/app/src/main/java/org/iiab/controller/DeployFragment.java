@@ -156,6 +156,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // ADFA-4474 PR2: install progress is owned by InstallService and observed here.
     private boolean installProgressShown = false;       // guards ProgressButton.startProgress()
     private long lastInstallTerminalSeq = -1L;          // fires terminal snackbars exactly once
+    private long lastResetTerminalSeq = -1L;            // reset terminal snackbars, fired exactly once (ADFA-4476)
     private final BroadcastReceiver installLogReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             String line = intent.getStringExtra(org.iiab.controller.install.presentation.InstallService.EXTRA_LINE);
@@ -320,7 +321,13 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     /** Renders the observable install progress published by InstallService.
      *  Re-binds automatically after a recreation or backgrounding (ADFA-4474 PR2). */
     private void renderInstallProgress(org.iiab.controller.install.presentation.InstallState s) {
-        if (s == null || btnFastInstall == null) return;
+        if (s == null) return;
+        // Scratch reset shares the same repository/observer (ADFA-4476); render it apart.
+        if (s.op == org.iiab.controller.install.presentation.InstallState.Op.RESET) {
+            renderResetProgress(s);
+            return;
+        }
+        if (btnFastInstall == null) return;
         org.iiab.controller.install.presentation.InstallState.Phase p = s.phase;
 
         if (s.isRunning() && !installProgressShown) {
@@ -366,6 +373,54 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             case IDLE:
             default:
                 installProgressShown = false;
+                break;
+        }
+    }
+
+    /** Renders the scratch-reset progress (ADFA-4476), tagged Op.RESET on the shared
+     *  repository so it survives a recreation just like the install flow. */
+    private void renderResetProgress(org.iiab.controller.install.presentation.InstallState s) {
+        if (btnAdvancedReset == null) return;
+        switch (s.phase) {
+            case DOWNLOADING:
+                btnAdvancedReset.setEnabled(true);
+                if (s.percent <= 0) {
+                    btnAdvancedReset.setText(getString(R.string.install_status_downloading_debian));
+                } else {
+                    btnAdvancedReset.setText(getString(R.string.install_status_debian_download, s.percent, s.speed)
+                            + "\n(Tap to Cancel)");
+                }
+                break;
+            case EXTRACTING:
+            case PROVISIONING:
+                // Wiping / extracting / bootstrapping: message is supplied by the service.
+                btnAdvancedReset.setText(s.message);
+                btnAdvancedReset.setEnabled(false);
+                break;
+            case SUCCESS:
+                btnAdvancedReset.setText(R.string.install_btn_reset);
+                btnAdvancedReset.setEnabled(true);
+                updateDynamicButtons();
+                if (s.seq > lastResetTerminalSeq) {
+                    lastResetTerminalSeq = s.seq;
+                    if (getView() != null)
+                        Snackbar.make(getView(), R.string.install_success_vanilla, Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case FAILED:
+                btnAdvancedReset.setText(R.string.install_btn_reset);
+                btnAdvancedReset.setEnabled(true);
+                updateDynamicButtons();
+                if (s.seq > lastResetTerminalSeq) {
+                    lastResetTerminalSeq = s.seq;
+                    if (getView() != null && !s.message.isEmpty())
+                        Snackbar.make(getView(), s.message, Snackbar.LENGTH_LONG).show();
+                }
+                break;
+            case IDLE:
+            default:
+                btnAdvancedReset.setText(R.string.install_btn_reset);
+                btnAdvancedReset.setEnabled(true);
                 break;
         }
     }
@@ -526,12 +581,22 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             // LOCK MODE: Server On or System Busy
             float lockAlpha = 0.5f;
 
-            // We keep the opacity at 80% only for the button that is currently working
-            btnFastInstall.setAlpha((isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
+            // We keep the opacity at 80% only for the button that is currently working.
+            // Install and reset share isDownloadingRootfs() (ADFA-4476), so tell them
+            // apart by the running operation: otherwise a reset would leave the install
+            // button looking "active" instead of dimmed like the rest.
+            boolean rootfsOp = isDownloadingRootfs() && !isServerRunning;
+            org.iiab.controller.install.presentation.InstallState.Op runningOp =
+                    org.iiab.controller.install.presentation.InstallProgressRepository.get().currentOp();
+            boolean installWorking = rootfsOp
+                    && runningOp == org.iiab.controller.install.presentation.InstallState.Op.INSTALL;
+            boolean resetWorking = rootfsOp
+                    && runningOp == org.iiab.controller.install.presentation.InstallState.Op.RESET;
+            btnFastInstall.setAlpha(installWorking ? 0.8f : lockAlpha);
             btnFastDelete.setAlpha(isDeleting ? 0.8f : lockAlpha);
             if (btnAdvancedBackup != null) btnAdvancedBackup.setAlpha(isBackupInProgress ? 0.8f : lockAlpha);
             if (btnAdvancedRestore != null) btnAdvancedRestore.setAlpha(isRestoring ? 0.8f : lockAlpha);
-            if (btnAdvancedReset != null) btnAdvancedReset.setAlpha((isDownloadingRootfs() && !isServerRunning) ? 0.8f : lockAlpha);
+            if (btnAdvancedReset != null) btnAdvancedReset.setAlpha(resetWorking ? 0.8f : lockAlpha);
             if (txtSelectBackupTitle != null) txtSelectBackupTitle.setAlpha(lockAlpha);
             if (btnImportBackup != null) btnImportBackup.setAlpha(isImporting ? 0.8f : lockAlpha);
 

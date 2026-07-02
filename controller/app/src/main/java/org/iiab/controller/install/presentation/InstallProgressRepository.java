@@ -26,9 +26,22 @@ public final class InstallProgressRepository {
 
     private final MutableLiveData<InstallState> state = new MutableLiveData<>(InstallState.idle());
     private long seq = 0L;
+    // Which operation the upcoming posts belong to (ADFA-4476). Install and reset are
+    // mutually exclusive (both gated by isRunning()), so one field is enough: the
+    // service stamps it via beginInstall()/beginReset() before posting.
+    private volatile InstallState.Op currentOp = InstallState.Op.INSTALL;
 
     private InstallProgressRepository() {
     }
+
+    /** Marks the upcoming posts as belonging to the install pipeline. */
+    public void beginInstall() { currentOp = InstallState.Op.INSTALL; }
+
+    /** Marks the upcoming posts as belonging to the scratch-reset pipeline. */
+    public void beginReset() { currentOp = InstallState.Op.RESET; }
+
+    /** The operation the current state belongs to (INSTALL when idle). */
+    public InstallState.Op currentOp() { return current().op; }
 
     public LiveData<InstallState> state() {
         return state;
@@ -53,6 +66,6 @@ public final class InstallProgressRepository {
     public void postIdle()                                  { post(InstallState.idle()); }
 
     private synchronized void post(InstallState s) {
-        state.postValue(s.withSeq(++seq));
+        state.postValue(s.withOp(currentOp).withSeq(++seq));
     }
 }

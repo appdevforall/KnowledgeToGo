@@ -104,7 +104,8 @@ public final class InstallController {
             // 2. HIGH PRIORITY: if an install is in flight, this button cancels it.
             // The InstallService handles the cancel and posts the terminal state; the
             // observer in DeployFragment resets the button + shows the snackbar.
-            if (host.isDownloadingRootfs()) {
+            if (host.isDownloadingRootfs()
+                    && InstallProgressRepository.get().currentOp() == InstallState.Op.INSTALL) {
                 new android.app.AlertDialog.Builder(fragment.requireContext())
                         .setTitle(fragment.getString(R.string.install_btn_cancel_title))
                         .setMessage(fragment.getString(R.string.install_btn_cancel_msg))
