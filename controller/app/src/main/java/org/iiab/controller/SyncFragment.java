@@ -13,8 +13,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.content.Intent;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +35,6 @@ import androidx.lifecycle.ViewModelProvider;
 import org.iiab.controller.util.AppExecutors;
 import androidx.activity.result.ActivityResultLauncher;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 
@@ -47,12 +44,16 @@ import java.util.List;
 import android.widget.RadioButton;
 import androidx.core.content.ContextCompat;
 
-public class SyncFragment extends Fragment {
+public class SyncFragment extends Fragment implements org.iiab.controller.sync.presentation.ArchCheckHost {
 
     private static final String TAG = "IIAB-SyncFragment";
     // S16: name the ADB-optimization prefs/keys (shared with the ADB-share tab).
     private static final String ADB_PREFS = "iiab_adb_prefs";
     private static final String PREF_FOCUS_ADB = "focus_adb";
+
+    // ADFA-4506: arch labels + compatibility dialogs carved into a controller.
+    private final org.iiab.controller.sync.presentation.ArchCheckController archCheckController =
+            new org.iiab.controller.sync.presentation.ArchCheckController(this, this);
 
     private RadioGroup rgSyncMode;
     private LinearLayout containerShare, containerReceive, containerProgress;
@@ -68,10 +69,7 @@ public class SyncFragment extends Fragment {
     private TextView txtTransferFilename, txtTransferSpeed, txtTransferEta;
     private ProgressBar progressBarTransfer;
 
-    // Arch Labels
-    private TextView txtHostArchLabel;
     private TextView txtShareIp; // ADFA-4496: show the advertised IP + interface under the QR
-    private TextView txtGuestArchLabel;
 
     // Managers
     private org.iiab.controller.sync.transport.TransportEngine transport;
@@ -96,10 +94,6 @@ public class SyncFragment extends Fragment {
     private LinearLayout cardShareSystem;
     private LinearLayout cardShareApk;
 
-    private int getArchBits() {
-        String arch = getTermuxArch();
-        return (arch != null && arch.contains("64")) ? 64 : 32;
-    }
 
     // Scanner Launcher
     private final ActivityResultLauncher<ScanOptions> barcodeLauncher = registerForActivityResult(new ScanContract(), result -> {
@@ -161,17 +155,14 @@ public class SyncFragment extends Fragment {
         progressBarTransfer = view.findViewById(R.id.progress_bar_transfer);
         qrCardContainer = view.findViewById(R.id.qr_card_container);
 
-        txtHostArchLabel = view.findViewById(R.id.txt_host_arch_label);
+        TextView txtHostArchLabel = view.findViewById(R.id.txt_host_arch_label);
         txtShareIp = view.findViewById(R.id.txt_share_ip);
-        txtGuestArchLabel = view.findViewById(R.id.txt_guest_arch_label);
+        TextView txtGuestArchLabel = view.findViewById(R.id.txt_guest_arch_label);
 
-        // Static Arch Labels logic (Cleaned up with string resources)
-        String archLabelText = getString(R.string.sync_app_arch_label, getArchBits());
-
-        if (txtHostArchLabel != null) txtHostArchLabel.setText(archLabelText);
-        if (txtGuestArchLabel != null) txtGuestArchLabel.setText(archLabelText);
-
-        updateArchLabelsVisibility();
+        // ADFA-4506: arch labels + compatibility dialogs are owned by ArchCheckController.
+        archCheckController.bind(txtHostArchLabel, txtGuestArchLabel);
+        archCheckController.applyStaticLabels();
+        archCheckController.updateArchLabelsVisibility();
         setupToggleLogic();
         setupShareLogic();
         setupReceiveLogic();
@@ -195,7 +186,7 @@ public class SyncFragment extends Fragment {
                 containerShare.setVisibility(View.GONE);
                 containerReceive.setVisibility(View.VISIBLE);
             }
-            updateArchLabelsVisibility();
+            archCheckController.updateArchLabelsVisibility();
         });
     }
 
@@ -268,7 +259,7 @@ public class SyncFragment extends Fragment {
         if (started) {
             isDaemonRunning = true;
             enableSystemProtection();
-            updateArchLabelsVisibility();
+            archCheckController.updateArchLabelsVisibility();
 
             qrDisplaySection.setVisibility(View.VISIBLE);
             qrCardContainer.setVisibility(View.VISIBLE);
@@ -303,7 +294,7 @@ public class SyncFragment extends Fragment {
     private void updateQrDisplayRsync() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
         updateShareIpLabel(currentIp);
-        String jsonPayload = SyncHandshakeHelper.createPayload(currentIp, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, getArchBits());
+        String jsonPayload = SyncHandshakeHelper.createPayload(currentIp, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archCheckController.getArchBits());
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(jsonPayload, 500);
 
         if (qrBitmap != null) imgQrCode.setImageBitmap(qrBitmap);
@@ -317,7 +308,7 @@ public class SyncFragment extends Fragment {
         transport.stop();
         isDaemonRunning = false;
         disableSystemProtection();
-        updateArchLabelsVisibility();
+        archCheckController.updateArchLabelsVisibility();
 
         qrDisplaySection.setVisibility(View.GONE);
         btnStartServer.setText(getString(R.string.sync_btn_start_server));
@@ -422,11 +413,11 @@ public class SyncFragment extends Fragment {
 
         // --- ARCHITECTURE VALIDATION ---
         int hostBits = creds.archBits;
-        int guestBits = getArchBits();
+        int guestBits = archCheckController.getArchBits();
 
         if (hostBits != 0 && hostBits != guestBits) {
             if (hostBits == 64 && guestBits == 32) {
-                showArchIncompatibilityDialog(getString(R.string.sync_error_arch_hardware_32));
+                archCheckController.showArchIncompatibilityDialog(getString(R.string.sync_error_arch_hardware_32));
                 return;
             } else if (hostBits == 32 && guestBits == 64) {
                 boolean hardwareSupports32 = false;
@@ -438,16 +429,16 @@ public class SyncFragment extends Fragment {
                 }
 
                 if (hardwareSupports32) {
-                    showArchIncompatibilityDialog(getString(R.string.sync_error_arch_fixable));
+                    archCheckController.showArchIncompatibilityDialog(getString(R.string.sync_error_arch_fixable));
                 } else {
-                    showArchIncompatibilityDialog(getString(R.string.sync_error_arch_strict_64));
+                    archCheckController.showArchIncompatibilityDialog(getString(R.string.sync_error_arch_strict_64));
                 }
                 return;
             }
         }
 
         // --- EVERYTHING IS OK: PROCEED TO DOWNLOAD ---
-        showArchCompatibilitySuccess(() -> {
+        archCheckController.showArchCompatibilitySuccess(() -> {
             if (!creds.hasRootfs) {
                 new AlertDialog.Builder(requireContext())
                         .setTitle(getString(R.string.sync_dialog_empty_host_title))
@@ -796,95 +787,16 @@ public class SyncFragment extends Fragment {
 
     }
 
-    private void showArchIncompatibilityDialog(String message) {
-        android.os.Vibrator v = (android.os.Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
-        if (v != null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                v.vibrate(android.os.VibrationEffect.createOneShot(500, android.os.VibrationEffect.DEFAULT_AMPLITUDE));
-            } else {
-                v.vibrate(500);
-            }
-        }
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.sync_error_arch_title))
-                .setMessage(message)
-                .setPositiveButton(getString(R.string.adb_enforcer_btn_ok), null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+
+    // --- ArchCheckHost (ADFA-4506) -----------------------------------------
+    @Override
+    public boolean isServerRunning() {
+        return isDaemonRunning || isApkServerRunning;
     }
 
-    private String getTermuxArch() {
-        try {
-            android.content.pm.ApplicationInfo info = requireContext().getApplicationInfo();
-            String nativeLibDir = info.nativeLibraryDir;
-            if (nativeLibDir != null) {
-                if (nativeLibDir.endsWith("arm64") || nativeLibDir.contains("arm64-v8a"))
-                    return "arm64-v8a";
-                if (nativeLibDir.endsWith("arm") || nativeLibDir.contains("armeabi-v7a"))
-                    return "armeabi-v7a";
-                if (nativeLibDir.endsWith("x86_64") || nativeLibDir.contains("x86_64"))
-                    return "x86_64";
-                if (nativeLibDir.endsWith("x86") || nativeLibDir.contains("x86")) return "x86";
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "Failed to read native library dir for arch detection", e);
-        }
-        if (android.os.Build.SUPPORTED_ABIS.length > 0) return android.os.Build.SUPPORTED_ABIS[0];
-        return "unknown";
-    }
-
-    private void showArchCompatibilitySuccess(Runnable onComplete) {
-        // S8: this runs in the pre-transfer probing phase. A theme toggle / config
-        // change here detaches the fragment, so guard every context/view access and
-        // re-check inside the delayed runnable before touching the UI (was an
-        // IllegalStateException "not attached to a context" crash).
-        Context ctx = getContext();
-        if (!isAdded() || ctx == null || getView() == null) return;
-
-        android.os.Vibrator v = (android.os.Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
-        if (v != null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                long[] pattern = {0, 100, 100, 150};
-                v.vibrate(android.os.VibrationEffect.createWaveform(pattern, -1));
-            } else {
-                long[] pattern = {0, 100, 100, 150};
-                v.vibrate(pattern, -1);
-            }
-        }
-
-        if (txtGuestArchLabel != null) {
-            txtGuestArchLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(ctx, R.color.status_success)));
-            txtGuestArchLabel.setTextColor(ContextCompat.getColor(ctx, R.color.text_on_warning));
-        }
-
-        Snackbar.make(getView(), getString(R.string.sync_msg_arch_compatible), Snackbar.LENGTH_SHORT).show();
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Context laterCtx = getContext();
-            if (!isAdded() || laterCtx == null) return; // S8: fragment gone during the 1.5s delay
-            if (txtGuestArchLabel != null) {
-                txtGuestArchLabel.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(laterCtx, R.color.surface_section)));
-                txtGuestArchLabel.setTextColor(ContextCompat.getColor(laterCtx, R.color.status_success));
-            }
-            onComplete.run();
-        }, 1500);
-    }
-    private void updateArchLabelsVisibility() {
-        boolean isShareMode = (rgSyncMode.getCheckedRadioButtonId() == R.id.rb_mode_share);
-        boolean isServerRunning = isDaemonRunning || isApkServerRunning;
-
-        if (isShareMode) {
-            // In Send mode: if the server is running, the file is up. We hide the one below.
-            // If the server is NOT running, we show the one below.
-            if (txtGuestArchLabel != null) {
-                txtGuestArchLabel.setVisibility(isServerRunning ? View.GONE : View.VISIBLE);
-            }
-        } else {
-            // In Receive mode: We always show the one below.
-            if (txtGuestArchLabel != null) {
-                txtGuestArchLabel.setVisibility(View.VISIBLE);
-            }
-        }
+    @Override
+    public boolean isShareMode() {
+        return rgSyncMode.getCheckedRadioButtonId() == R.id.rb_mode_share;
     }
 }
