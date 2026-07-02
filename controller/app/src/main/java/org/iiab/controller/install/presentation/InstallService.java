@@ -51,6 +51,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 public final class InstallService extends Service {
@@ -74,6 +75,11 @@ public final class InstallService extends Service {
     public static final String EXTRA_KIWIX_VARIANT = "kiwixVariant"; // nullable override
     public static final String EXTRA_REINSTALL = "reinstall";    // boolean: wipe existing rootfs first
 
+    // Which pipeline to run (ADFA-4476). Absent/"install" -> normal install; "reset" -> scratch reset.
+    public static final String EXTRA_MODE = "mode";
+    public static final String MODE_INSTALL = "install";
+    public static final String MODE_RESET = "reset";
+
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
 
@@ -91,6 +97,7 @@ public final class InstallService extends Service {
     private String overrideKiwixLang;
     private String overrideKiwixVariant;
     private boolean reinstall;
+    private boolean resetMode;
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -126,6 +133,7 @@ public final class InstallService extends Service {
         overrideKiwixLang = intent.getStringExtra(EXTRA_KIWIX_LANG);
         overrideKiwixVariant = intent.getStringExtra(EXTRA_KIWIX_VARIANT);
         reinstall = intent.getBooleanExtra(EXTRA_REINSTALL, false);
+        resetMode = MODE_RESET.equals(intent.getStringExtra(EXTRA_MODE));
 
         iiabRootDir = new File(getFilesDir(), "rootfs");
         debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
@@ -134,12 +142,20 @@ public final class InstallService extends Service {
         acquireHardwareLocks();
         invalidateModuleStateTrust();
 
-        // Mark "running" immediately so the UI locks and the button shows progress
-        // even before aria2 reports the first tick.
-        InstallProgressRepository.get().postDownloading(0, "");
-
-        // Run the (blocking) wipe + download kickoff off the main thread.
-        new Thread(this::runPipeline, "install-service").start();
+        if (resetMode) {
+            // Scratch reset (ADFA-4476): wipe -> download Debian base -> extract -> bootstrap.
+            InstallProgressRepository.get().beginReset();
+            // Mark "running" immediately so the UI locks before the wipe starts.
+            InstallProgressRepository.get().postProvisioning(getString(R.string.install_status_wiping_old));
+            new Thread(this::runResetPipeline, "reset-service").start();
+        } else {
+            InstallProgressRepository.get().beginInstall();
+            // Mark "running" immediately so the UI locks and the button shows progress
+            // even before aria2 reports the first tick.
+            InstallProgressRepository.get().postDownloading(0, "");
+            // Run the (blocking) wipe + download kickoff off the main thread.
+            new Thread(this::runPipeline, "install-service").start();
+        }
         return START_NOT_STICKY;
     }
 
@@ -351,6 +367,118 @@ public final class InstallService extends Service {
             writer.write(text);
             writer.close();
         } catch (Exception ignored) {
+        }
+    }
+
+    // ------------------------------------------------------------ reset pipeline
+
+    /**
+     * Scratch reset (ADFA-4476): wipe the installed rootfs, download the Debian
+     * base tarball, extract it and bootstrap IIAB. Same steps as the former
+     * inline flow in ResetDeleteController, now owned by the service so it
+     * survives a configuration-change recreation. Progress is tagged RESET.
+     */
+    private void runResetPipeline() {
+        try {
+            // 1. WIPE
+            postProvisioning(getString(R.string.install_status_wiping_old));
+            try {
+                ProcessRunner.Result wipe = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
+                if (!wipe.isSuccess()) {
+                    Log.w(TAG, "rm -rf rootfs (reset) failed (exit " + wipe.exitCode + "): " + wipe.output);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "rm -rf rootfs (reset) failed", e);
+            }
+            debianRootfs.mkdirs();
+            if (cancelled) return;
+
+            // 2. DOWNLOAD
+            InstallProgressRepository.get().postDownloading(0, "");
+            updateNotification(getString(R.string.install_status_downloading_debian));
+
+            String archSuffix = (arch.contains("arm") && !arch.contains("64")) ? "arm" : "aarch64";
+            final String tarball = "debian-trixie-" + archSuffix + "-pd-v4.29.0.tar.xz";
+            String url = "https://iiab.switnet.org/android/rootfs/proot-distro-v4.29.0/" + tarball;
+
+            if (aria2Manager == null) aria2Manager = new Aria2Manager();
+            aria2Manager.startDownload(this, url, new Aria2Manager.DownloadListener() {
+                @Override
+                public void onProgress(int percentage, String speed, String eta) {
+                    if (cancelled) return;
+                    InstallProgressRepository.get().postDownloading(percentage, speed);
+                    updateNotification(getString(R.string.install_status_debian_download, percentage, speed));
+                }
+
+                @Override
+                public void onComplete(String downloadPath) {
+                    if (cancelled) return;
+                    resetExtractAndBootstrap(downloadPath, tarball);
+                }
+
+                @Override
+                public void onError(String error) {
+                    fail(getString(R.string.install_error_download, error));
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Reset pipeline crashed", e);
+            fail(getString(R.string.install_error_reset, String.valueOf(e.getMessage())));
+        }
+    }
+
+    /** Extract the downloaded Debian tarball (xz | tar) and bootstrap IIAB. */
+    private void resetExtractAndBootstrap(String downloadPath, String tarball) {
+        try {
+            // 3. EXTRACT
+            InstallProgressRepository.get().postExtracting(getString(R.string.install_status_extracting_base));
+            updateNotification(getString(R.string.install_status_extracting_base));
+
+            File downloadedArchive = new File(downloadPath, tarball);
+            File staticTar = new File(getApplicationInfo().nativeLibraryDir, "libtar.so");
+            File staticXz = new File(getApplicationInfo().nativeLibraryDir, "libxz.so");
+            String tarBin = staticTar.exists() ? staticTar.getAbsolutePath() : "tar";
+            String xzBin = staticXz.exists() ? staticXz.getAbsolutePath() : "xz";
+
+            // Pipe xz directly into tar to bypass Android's limited PATH.
+            String extractCmd = xzBin + " -d -c " + downloadedArchive.getAbsolutePath() + " | " + tarBin
+                    + " --exclude='*/dev/*' --strip-components=1 -xf - -C " + debianRootfs.getAbsolutePath();
+
+            Process pExt = Runtime.getRuntime().exec(new String[]{"/system/bin/sh", "-c", extractCmd});
+            BufferedReader errReader = new BufferedReader(new InputStreamReader(pExt.getErrorStream()));
+            StringBuilder errMsg = new StringBuilder();
+            String errLine;
+            while ((errLine = errReader.readLine()) != null) {
+                errMsg.append(errLine).append("\n");
+                Log.e(TAG, "[TAR Extractor] " + errLine);
+            }
+            int exitCode = pExt.waitFor();
+            if (exitCode != 0) {
+                throw new Exception("Extraction failed (Code " + exitCode + "):\n" + errMsg.toString());
+            }
+            downloadedArchive.delete();
+            if (cancelled) return;
+
+            // 4. BOOTSTRAP IIAB
+            postProvisioning(getString(R.string.install_status_bootstrapping));
+
+            // DNS is written at the chokepoint (PRootEngine) before the bootstrap run.
+            if (prootEngine == null) prootEngine = new PRootEngine();
+            String bootstrapCmd = "export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && "
+                    + "export DEBIAN_FRONTEND=noninteractive && "
+                    + "apt-get update && apt-get install -y curl ca-certificates nano sudo && "
+                    + "curl -fsSL https://raw.githubusercontent.com/appdevforall/KnowledgeToGo/main/iiab-android -o /usr/local/sbin/iiab-android && "
+                    + "chmod +x /usr/local/sbin/iiab-android && "
+                    + "apt-get clean && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache";
+
+            prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), "/bin/bash -c '" + bootstrapCmd + "'",
+                    new PRootEngine.OutputListener() {
+                        @Override public void onOutputLine(String line) { log("[Bootstrap] " + line); }
+                        @Override public void onProcessExit(int exitCode2) { finishSuccess(); }
+                        @Override public void onError(String error) { fail(getString(R.string.install_error_bootstrap, error)); }
+                    });
+        } catch (Exception e) {
+            fail(getString(R.string.install_error_extract_bootstrap, e.getMessage()));
         }
     }
 
