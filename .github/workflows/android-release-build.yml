@@ -35,12 +35,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      # ADFA-4466 Phase 1: the google-services plugin needs google-services.json at
-      # build time; inject it from the secret so the release build compiles.
+      # ADFA-4466 Phase 1: the google-services plugin needs google-services.json at build time.
+      # This is the DEDICATED K2Go Analytics Firebase project (separate from the App
+      # Distribution project, which uses GOOGLE_SERVICES_JSON). ADFA-4466.
       - name: Create google-services.json
         env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          GOOGLE_SERVICES_JSON_K2GO_ANALYTICS: ${{ secrets.GOOGLE_SERVICES_JSON_K2GO_ANALYTICS }}
+        run: echo "$GOOGLE_SERVICES_JSON_K2GO_ANALYTICS" > app/google-services.json
 
       - name: Decode Keystore
         env:
