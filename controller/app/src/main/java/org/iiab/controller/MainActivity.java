@@ -1161,6 +1161,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * ADFA-4519: show a Snackbar anchored to the Activity CoordinatorLayout, never to a
+     * fragment's NestedScrollView root. A ScrollView can host only one direct child, so a
+     * Snackbar shown against it during an Activity recreation (e.g. a theme toggle) crashes
+     * with "ScrollView can host only one direct child". The CoordinatorLayout is the intended
+     * Snackbar host and has no such constraint. No-ops if the Activity is going away.
+     */
+    public void showSnackbar(CharSequence text) {
+        if (isFinishing() || isDestroyed()) return;
+        View anchor = findViewById(R.id.main_coordinator);
+        if (anchor == null) anchor = findViewById(android.R.id.content);
+        if (anchor == null) return;
+        Snackbar.make(anchor, text, Snackbar.LENGTH_LONG).show();
+    }
+
     private void setVersionFooter() {
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);

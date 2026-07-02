@@ -228,14 +228,14 @@ public final class InstallController {
             btnLaunchInstall.setEnabled(false);
             btnLaunchInstall.setText(fragment.getString(R.string.install_btn_launch));
             fetchLocalVarsFromPRoot();
-            if (fragment.getView() != null) {
+            if (fragment.getActivity() instanceof MainActivity) {
+                MainActivity act = (MainActivity) fragment.getActivity();
                 if (failedModules.isEmpty()) {
-                    Snackbar.make(fragment.getView(), R.string.install_msg_finished, Snackbar.LENGTH_LONG).show();
+                    act.showSnackbar(fragment.getString(R.string.install_msg_finished)); // ADFA-4519
                 } else {
                     // ADFA-4435: do not report a clean finish when one or more modules failed.
-                    Snackbar.make(fragment.getView(),
-                            fragment.getString(R.string.install_msg_failed, android.text.TextUtils.join(", ", failedModules)),
-                            Snackbar.LENGTH_LONG).show();
+                    act.showSnackbar(fragment.getString(R.string.install_msg_failed,
+                            android.text.TextUtils.join(", ", failedModules))); // ADFA-4519
                 }
             }
             failedModules.clear();
@@ -311,8 +311,8 @@ public final class InstallController {
                     fragment.getActivity().runOnUiThread(() -> {
                         host.setBatchInstalling(false);
                         host.updateDynamicButtons();
-                        if (fragment.getView() != null)
-                            Snackbar.make(fragment.getView(), fragment.getString(R.string.install_error_bootstrap, error), Snackbar.LENGTH_LONG).show();
+                        if (fragment.getActivity() instanceof MainActivity) // ADFA-4519
+                            ((MainActivity) fragment.getActivity()).showSnackbar(fragment.getString(R.string.install_error_bootstrap, error));
                     });
                 }
             }

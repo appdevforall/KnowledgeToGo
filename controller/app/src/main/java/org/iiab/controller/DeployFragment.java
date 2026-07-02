@@ -347,8 +347,8 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 if (s.seq > lastInstallTerminalSeq) {
                     lastInstallTerminalSeq = s.seq;
                     requestFreshLocalVarsSilently();
-                    if (getView() != null)
-                        Snackbar.make(getView(), R.string.install_success_deployment, Snackbar.LENGTH_LONG).show();
+                    if (getActivity() instanceof MainActivity) // ADFA-4519
+                        ((MainActivity) getActivity()).showSnackbar(getString(R.string.install_success_deployment));
                 }
                 break;
             case FAILED:
@@ -359,8 +359,8 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 updateDynamicButtons();
                 if (s.seq > lastInstallTerminalSeq) {
                     lastInstallTerminalSeq = s.seq;
-                    if (getView() != null && !s.message.isEmpty())
-                        Snackbar.make(getView(), s.message, Snackbar.LENGTH_LONG).show();
+                    if (getActivity() instanceof MainActivity && !s.message.isEmpty()) // ADFA-4519
+                        ((MainActivity) getActivity()).showSnackbar(s.message);
                 }
                 break;
             case IDLE:
