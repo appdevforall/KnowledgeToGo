@@ -222,6 +222,13 @@ public final class InstallController {
 
     public void processNextInQueue() {
         if (installInFlight) return; // ADFA-4458: a module install is in flight; ignore re-entry
+        // ADFA-4519: a module install may already be in flight from BEFORE a recreation
+        // (theme toggle / rotation). installInFlight is Fragment-scoped and resets to false on
+        // recreation, so DeployFragment.onResume()'s "resume the queue" call would otherwise
+        // dequeue and launch a SECOND runrole concurrently with the first -- two ansible runs
+        // in one rootfs, which corrupts the install. installingModuleKeys lives in the
+        // Activity-scoped ViewModel and survives recreation, so it blocks the double-launch.
+        if (!host.installingModuleKeys().isEmpty()) return;
         if (host.installationQueue().isEmpty()) {
             host.setBatchInstalling(false);
             saveQueueToPrefs();
