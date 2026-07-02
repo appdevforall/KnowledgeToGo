@@ -3,32 +3,32 @@
     
     <ul class="nav flex-column gap-2 w-100 h-100">
         <li class="nav-item">
-            <a class="nav-link active nav-btn text-body" id="tab-home" onclick="switchTab('home')">
+            <a class="nav-link active nav-btn text-body" id="tab-home" role="button" tabindex="0" data-i18n-aria-label="nav_home" aria-label="Home" onclick="switchTab('home')">
                 <span class="nav-icon fs-4">🏠</span>
                 <span class="nav-text" data-i18n="nav_home">Home</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link nav-btn text-body" id="tab-kiwix" onclick="switchTab('kiwix')" style="display: none;">
+            <a class="nav-link nav-btn text-body" id="tab-kiwix" role="button" tabindex="0" data-i18n-aria-label="nav_kiwix" aria-label="Kiwix" onclick="switchTab('kiwix')" style="display: none;">
                 <span class="nav-icon fs-4">📚</span>
                 <span class="nav-text" data-i18n="nav_kiwix">Kiwix</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link nav-btn text-body" id="tab-maps" onclick="switchTab('maps')" style="display: none;">
+            <a class="nav-link nav-btn text-body" id="tab-maps" role="button" tabindex="0" data-i18n-aria-label="nav_maps" aria-label="Maps" onclick="switchTab('maps')" style="display: none;">
                 <span class="nav-icon fs-4">🗺️</span>
                 <span class="nav-text" data-i18n="nav_maps">Maps</span>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link nav-btn text-body" id="tab-books" onclick="switchTab('books')" style="display: none;">
+            <a class="nav-link nav-btn text-body" id="tab-books" role="button" tabindex="0" data-i18n-aria-label="nav_books" aria-label="Books" onclick="switchTab('books')" style="display: none;">
                 <span class="nav-icon fs-4">📖</span>
                 <span class="nav-text" data-i18n="nav_books">Books</span>
             </a>
         </li>
 
         <li class="nav-item mt-md-4">
-            <a class="nav-link nav-btn text-body" onclick="themeManager.cycleTheme()">
+            <a class="nav-link nav-btn text-body" role="button" tabindex="0" data-i18n-aria-label="nav_theme" aria-label="Theme" onclick="themeManager.cycleTheme()">
                 <span class="nav-icon fs-4" id="theme-toggle-icon">🌓</span>
                 <span class="nav-text" data-i18n="nav_theme">Theme</span>
             </a>
