@@ -622,8 +622,9 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <Button
+            <org.iiab.controller.ProgressButton
                 android:id="@+id/btn_launch_install"
+                app:progressButtonColor="@color/accent_secondary"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="@string/install_btn_launch"
