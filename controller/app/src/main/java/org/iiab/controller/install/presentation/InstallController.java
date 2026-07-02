@@ -20,7 +20,6 @@ package org.iiab.controller.install.presentation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,11 +33,8 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.iiab.controller.MainActivity;
 import org.iiab.controller.ModuleRegistry;
-import org.iiab.controller.PRootEngine;
 import org.iiab.controller.ProgressButton;
 import org.iiab.controller.R;
-import org.iiab.controller.deploy.domain.ModuleName;
-import org.iiab.controller.install.domain.AnsibleRunOutcome;
 import org.iiab.controller.util.LocalVarsYamlParser;
 
 import org.json.JSONObject;
@@ -46,12 +42,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class InstallController {
-
-    private static final String TAG = "IIAB-InstallController";
 
     private final Fragment fragment;
     private final InstallHost host;
@@ -202,154 +194,38 @@ public final class InstallController {
                     return;
                 }
 
-                host.setBatchInstalling(true);
-                saveQueueToPrefs();
-                host.updateDynamicButtons();
-                processNextInQueue();
+                startModuleQueue();
             });
         } else {
             btnLaunchInstall.setOnClickListener(null);
         }
     }
 
-    // ADFA-4435: modules whose runrole failed in the current batch (surfaced when the queue drains).
-    private final List<String> failedModules = new ArrayList<>();
-    // ADFA-4458: true while a module install is running; blocks re-entry of processNextInQueue
-    // (e.g. onResume re-posting it) so a resume cannot finish the already-dequeued module.
-    private boolean installInFlight = false;
-    // ADFA-4458 / ADFA-4476 slice 1: module keys the user selected. Moved to the
-    // Activity-scoped DownloadStateViewModel (via host.selectedModuleKeys()) so the
-    // selection now also survives a recreation, not just a card re-render.
-
-    public void processNextInQueue() {
-        if (installInFlight) return; // ADFA-4458: a module install is in flight; ignore re-entry
-        // ADFA-4519: a module install may already be in flight from BEFORE a recreation
-        // (theme toggle / rotation). installInFlight is Fragment-scoped and resets to false on
-        // recreation, so DeployFragment.onResume()'s "resume the queue" call would otherwise
-        // dequeue and launch a SECOND runrole concurrently with the first -- two ansible runs
-        // in one rootfs, which corrupts the install. installingModuleKeys lives in the
-        // Activity-scoped ViewModel and survives recreation, so it blocks the double-launch.
-        if (!host.installingModuleKeys().isEmpty()) return;
-        if (host.installationQueue().isEmpty()) {
-            host.setBatchInstalling(false);
-            saveQueueToPrefs();
-            btnLaunchInstall.setEnabled(false);
-            btnLaunchInstall.setText(fragment.getString(R.string.install_btn_launch));
-            fetchLocalVarsFromPRoot();
-            if (fragment.getActivity() instanceof MainActivity) {
-                MainActivity act = (MainActivity) fragment.getActivity();
-                if (failedModules.isEmpty()) {
-                    act.showSnackbar(fragment.getString(R.string.install_msg_finished)); // ADFA-4519
-                } else {
-                    // ADFA-4435: do not report a clean finish when one or more modules failed.
-                    act.showSnackbar(fragment.getString(R.string.install_msg_failed,
-                            android.text.TextUtils.join(", ", failedModules))); // ADFA-4519
-                }
-            }
-            failedModules.clear();
-            return;
-        }
-
-        String nextModule = host.installationQueue().remove(0);
-        saveQueueToPrefs();
-
-        // D2: nextModule is interpolated into a command run as root inside the
-        // container (sed/echo/runrole). Only allow names from the known catalog
-        // with no shell metacharacters; fail closed and skip anything else.
-        if (!ModuleName.isAllowed(nextModule, ModuleRegistry.validYamlKeys())) {
-            Log.e(TAG, "Refusing to install unrecognized/unsafe module name: " + nextModule);
-            if (fragment.getActivity() instanceof MainActivity) {
-                ((MainActivity) fragment.getActivity()).addToLog("[Security] Skipped invalid module: " + nextModule);
-            }
-            processNextInQueue();
-            return;
-        }
-
-        btnLaunchInstall.setEnabled(false);
-        btnLaunchInstall.setText(fragment.getString(R.string.install_status_installing_module, nextModule));
-        host.installingModuleKeys().add(nextModule); // ADFA-4519: authoritative "installing now"
-
-        File rootfsDir = new File(fragment.requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
-        if (host.prootEngine() == null) host.setPRootEngine(new PRootEngine());
-
-        String installCmd = "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
-                "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
-                "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
-                "cd /opt/iiab/iiab && ./runrole " + nextModule;
-
-        // ADFA-4435: Ansible can print its failure to stdout yet still exit 0 (e.g. the
-        // /dev/shm multiprocessing crash), so watch the output as well as the exit code.
-        // The verdict lives in a pure, unit-tested domain object.
-        final AnsibleRunOutcome outcome = new AnsibleRunOutcome();
-        installInFlight = true; // ADFA-4458: block re-entry while this install runs
-        host.prootEngine().executeInContainer(fragment.requireContext(), rootfsDir.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
-            @Override
-            public void onOutputLine(String line) {
-                outcome.observe(line);
-                if (fragment.getActivity() instanceof MainActivity)
-                    ((MainActivity) fragment.getActivity()).runOnUiThread(() -> ((MainActivity) fragment.getActivity()).addToLog("[Ansible] " + line));
-            }
-
-            @Override
-            public void onProcessExit(int exitCode) {
-                installInFlight = false; // ADFA-4458: this module's install finished
-                host.installingModuleKeys().remove(nextModule); // ADFA-4519: no longer in flight
-                if (fragment.getActivity() == null) return;
-                // ADFA-4435: was 'continue regardless of outcome'. A non-zero exit OR an Ansible
-                // error in the output means FAILED: roll back the speculative local_vars edit so
-                // the module is not left looking installed/enabled, then surface it.
-                final boolean failed = outcome.failed(exitCode);
-                if (failed) {
-                    failedModules.add(nextModule);
-                    if (fragment.getActivity() instanceof MainActivity)
-                        ((MainActivity) fragment.getActivity()).runOnUiThread(() -> ((MainActivity) fragment.getActivity())
-                                .addToLog("[Install] FAILED: " + nextModule + " (exit=" + exitCode + ")"));
-                    revertModuleInLocalVars(nextModule, rootfsDir, () -> {
-                        if (fragment.getActivity() != null)
-                            fragment.getActivity().runOnUiThread(() -> processNextInQueue());
-                    });
-                } else {
-                    host.selectedModuleKeys().remove(nextModule); // ADFA-4458: installed -> drop from selection
-                    fragment.getActivity().runOnUiThread(() -> processNextInQueue());
-                }
-            }
-
-            @Override
-            public void onError(String error) {
-                installInFlight = false; // ADFA-4458
-                host.installingModuleKeys().remove(nextModule); // ADFA-4519: no longer in flight
-                if (fragment.getActivity() != null) {
-                    fragment.getActivity().runOnUiThread(() -> {
-                        host.setBatchInstalling(false);
-                        host.updateDynamicButtons();
-                        if (fragment.getActivity() instanceof MainActivity) // ADFA-4519
-                            ((MainActivity) fragment.getActivity()).showSnackbar(fragment.getString(R.string.install_error_bootstrap, error));
-                    });
-                }
-            }
-        });
-    }
-
     /**
-     * ADFA-4435: Roll back the speculative local_vars edit made before runrole (the sed delete +
-     * echo _install/_enabled: True), so a failed install is not left looking installed/enabled.
-     * Always invokes {@code then} afterwards, whether or not the revert itself succeeds.
+     * ADFA-4476 slice 3: hand the selected module queue to the foreground InstallService,
+     * which owns the dequeue loop (sed/echo/runrole, AnsibleRunOutcome verdict, revert-on-fail)
+     * and publishes progress to ModuleQueueRepository. The service, not this Fragment-scoped
+     * controller, is the single owner, so a recreation mid-queue cannot launch a second
+     * concurrent runrole -- this supersedes the ADFA-4458/4519 re-entry guard and the
+     * onResume() re-fire. DeployFragment observes the repository for the grid + snackbars.
      */
-    private void revertModuleInLocalVars(String module, File rootfsDir, Runnable then) {
-        if (host.prootEngine() == null) host.setPRootEngine(new PRootEngine());
-        String revertCmd = "sed -i -E '/^[[:space:]]*" + module + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml";
-        host.prootEngine().executeInContainer(fragment.requireContext(), rootfsDir.getAbsolutePath(), revertCmd, new PRootEngine.OutputListener() {
-            @Override public void onOutputLine(String line) { }
-            @Override public void onProcessExit(int exitCode) { then.run(); }
-            @Override public void onError(String error) { then.run(); }
-        });
-    }
+    public void startModuleQueue() {
+        java.util.List<String> queue = host.installationQueue();
+        if (queue == null || queue.isEmpty()) return;
 
-    private void saveQueueToPrefs() {
-        if (fragment.getActivity() == null) return;
-        android.content.SharedPreferences prefs = fragment.getActivity().getSharedPreferences("iiab_queue_prefs", android.content.Context.MODE_PRIVATE);
-        String queueString = android.text.TextUtils.join(",", host.installationQueue());
-        prefs.edit().putString("pending_modules", queueString).putBoolean("is_batch_installing", host.isBatchInstalling()).apply();
+        Context ctx = fragment.requireContext();
+        Intent i = new Intent(ctx, InstallService.class);
+        i.setAction(InstallService.ACTION_START_MODULES);
+        i.putExtra(InstallService.EXTRA_MODULES, queue.toArray(new String[0]));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            ctx.startForegroundService(i);
+        } else {
+            ctx.startService(i);
+        }
+
+        host.updateDynamicButtons();
+        btnLaunchInstall.setEnabled(false);
+        btnLaunchInstall.setText(fragment.getString(R.string.install_btn_launch));
     }
 
     public void fetchLocalVarsFromPRoot() {
@@ -437,7 +313,7 @@ public final class InstallController {
                     // own authoritative state (survives recreation), so it wins over the yaml read
                     // -- otherwise a theme toggle mid-install re-reads local_vars.yml (where
                     // '<mod>_install: True' was written at runrole START) and falsely shows it done.
-                    final boolean finalIsInstalling = host.installingModuleKeys().contains(moduleKey);
+                    final boolean finalIsInstalling = ModuleQueueRepository.get().isInstalling(moduleKey);
 
                     fragment.getActivity().runOnUiThread(() -> {
                         card.setOnClickListener(null);

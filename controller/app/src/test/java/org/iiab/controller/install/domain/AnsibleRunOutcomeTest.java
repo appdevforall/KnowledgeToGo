@@ -18,6 +18,12 @@ public class AnsibleRunOutcomeTest {
         assertTrue(new AnsibleRunOutcome().failed(1));
     }
 
+    @Test public void phantomKill_exit137_isFailed() {
+        // Android 12+ phantom-process killer SIGKILLs container children -> exit 137.
+        // The service (ADFA-4476 slice 3) treats it as a per-module failure (revert + report).
+        assertTrue(new AnsibleRunOutcome().failed(137));
+    }
+
     @Test public void multiprocessingCrash_withExitZero_isFailed() {
         AnsibleRunOutcome o = new AnsibleRunOutcome();
         o.observe("ERROR! Unable to use multiprocessing, see stderr (lack of access to /dev/shm)");

@@ -42,10 +42,13 @@ import androidx.core.app.NotificationCompat;
 import org.iiab.controller.Aria2Manager;
 import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.MainActivity;
+import org.iiab.controller.ModuleRegistry;
 import org.iiab.controller.PRootEngine;
 import org.iiab.controller.R;
 import org.iiab.controller.TarExtractor;
 import org.iiab.controller.util.ProcessRunner;
+import org.iiab.controller.deploy.domain.ModuleName;
+import org.iiab.controller.install.domain.AnsibleRunOutcome;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,6 +65,8 @@ public final class InstallService extends Service {
 
     public static final String ACTION_START = "org.iiab.controller.INSTALL_START";
     public static final String ACTION_CANCEL = "org.iiab.controller.INSTALL_CANCEL";
+    // Per-module install queue (ADFA-4476 slice 3): distinct from the rootfs ACTION_START.
+    public static final String ACTION_START_MODULES = "org.iiab.controller.INSTALL_START_MODULES";
 
     // Broadcast of per-line provisioning output (best-effort in-app log).
     public static final String ACTION_INSTALL_LOG = "org.iiab.controller.INSTALL_LOG";
@@ -74,6 +79,7 @@ public final class InstallService extends Service {
     public static final String EXTRA_KIWIX_LANG = "kiwixLang";   // nullable override
     public static final String EXTRA_KIWIX_VARIANT = "kiwixVariant"; // nullable override
     public static final String EXTRA_REINSTALL = "reinstall";    // boolean: wipe existing rootfs first
+    public static final String EXTRA_MODULES = "modules";        // String[]: module yamlBaseKeys to install
 
     // Which pipeline to run (ADFA-4476). Absent/"install" -> normal install; "reset" -> scratch reset.
     public static final String EXTRA_MODE = "mode";
@@ -99,6 +105,11 @@ public final class InstallService extends Service {
     private boolean reinstall;
     private boolean resetMode;
 
+    // ADFA-4476 slice 3: per-module install queue state (module mode only).
+    private boolean moduleMode;
+    private java.util.Deque<String> moduleQueue;
+    private java.util.List<String> failedModules;
+
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
 
@@ -115,16 +126,41 @@ public final class InstallService extends Service {
             doCancel();
             return START_NOT_STICKY;
         }
-        if (!ACTION_START.equals(action)) {
+        boolean isModules = ACTION_START_MODULES.equals(action);
+        if (!ACTION_START.equals(action) && !isModules) {
             return START_NOT_STICKY;
         }
         if (started) {
-            // Ignore a duplicate start (e.g. a double tap); an install is already running.
+            // Ignore a duplicate start (e.g. a double tap); an operation is already running.
             return START_NOT_STICKY;
         }
         started = true;
+        moduleMode = isModules;
 
-        // Snapshot start parameters.
+        iiabRootDir = new File(getFilesDir(), "rootfs");
+        debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
+
+        if (isModules) {
+            // ADFA-4476 slice 3: the service owns the module install queue, so it survives a
+            // recreation (theme toggle / rotation) and can never launch two concurrent runroles.
+            String[] mods = intent.getStringArrayExtra(EXTRA_MODULES);
+            moduleQueue = new java.util.ArrayDeque<>();
+            if (mods != null) {
+                for (String m : mods) if (m != null && !m.isEmpty()) moduleQueue.add(m);
+            }
+            failedModules = new java.util.ArrayList<>();
+
+            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_modules)));
+            acquireHardwareLocks();
+            persistQueue();
+            // Mark "running" immediately (currentModule null until the first dequeue) so the UI
+            // locks and a resume cannot start a second loop.
+            ModuleQueueRepository.get().postRunning(null, moduleQueue.size());
+            new Thread(this::runModuleQueue, "module-queue-service").start();
+            return START_NOT_STICKY;
+        }
+
+        // Snapshot start parameters (rootfs install).
         String tierName = intent.getStringExtra(EXTRA_TIER);
         tier = parseTier(tierName);
         companionData = intent.getBooleanExtra(EXTRA_COMPANION, false);
@@ -134,9 +170,6 @@ public final class InstallService extends Service {
         overrideKiwixVariant = intent.getStringExtra(EXTRA_KIWIX_VARIANT);
         reinstall = intent.getBooleanExtra(EXTRA_REINSTALL, false);
         resetMode = MODE_RESET.equals(intent.getStringExtra(EXTRA_MODE));
-
-        iiabRootDir = new File(getFilesDir(), "rootfs");
-        debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
 
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_provisioning)));
         acquireHardwareLocks();
@@ -482,6 +515,119 @@ public final class InstallService extends Service {
         }
     }
 
+    // ------------------------------------------------------------ module queue
+
+    private void runModuleQueue() {
+        installNextModule();
+    }
+
+    /**
+     * Dequeue and install one module, then chain to the next from the proot callback.
+     * Owned by the service, so a Fragment recreation cannot start a second loop and there
+     * is never more than one runrole in flight (ADFA-4476 slice 3, superseding the
+     * ADFA-4458/4519 Fragment-scoped re-entry guard).
+     */
+    private void installNextModule() {
+        if (cancelled) return;
+        if (moduleQueue.isEmpty()) {
+            finishModuleQueue();
+            return;
+        }
+        final String nextModule = moduleQueue.poll();
+        persistQueue();
+
+        // D2: nextModule is interpolated into a command run as root inside the container
+        // (sed/echo/runrole). Only allow names from the known catalog with no shell
+        // metacharacters; fail closed and skip anything else.
+        if (!ModuleName.isAllowed(nextModule, ModuleRegistry.validYamlKeys())) {
+            Log.e(TAG, "Refusing to install unrecognized/unsafe module name: " + nextModule);
+            log("[Security] Skipped invalid module: " + nextModule);
+            installNextModule();
+            return;
+        }
+
+        ModuleQueueRepository.get().postRunning(nextModule, moduleQueue.size());
+        updateNotification(getString(R.string.install_status_installing_module, nextModule));
+
+        if (prootEngine == null) prootEngine = new PRootEngine();
+
+        // Speculative local_vars edit BEFORE runrole (same command as the former Fragment loop):
+        // reverted on failure so a failed module is not left looking installed/enabled.
+        String installCmd = "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
+                "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
+                "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
+                "cd /opt/iiab/iiab && ./runrole " + nextModule;
+
+        // ADFA-4435: Ansible can print its failure to stdout yet still exit 0, so the verdict
+        // considers the output as well as the exit code (pure, unit-tested domain object).
+        final AnsibleRunOutcome outcome = new AnsibleRunOutcome();
+        prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
+            @Override
+            public void onOutputLine(String line) {
+                outcome.observe(line);
+                log("[Ansible] " + line);
+            }
+
+            @Override
+            public void onProcessExit(int exitCode) {
+                if (cancelled) return;
+                // Phantom-process killer (Android 12+) can SIGKILL container children -> exit 137.
+                if (exitCode == 137) log("[Install] " + nextModule + " killed by the system (exit 137)");
+                if (outcome.failed(exitCode)) {
+                    failedModules.add(nextModule);
+                    log("[Install] FAILED: " + nextModule + " (exit=" + exitCode + ")");
+                    revertModuleInLocalVars(nextModule, InstallService.this::installNextModule);
+                } else {
+                    installNextModule();
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                if (cancelled) return;
+                // The container could not run at all: report this module and stop the batch
+                // (matches the former loop, which aborted on a proot error).
+                failedModules.add(nextModule);
+                log("[Install] ERROR: " + nextModule + " (" + error + ")");
+                moduleQueue.clear();
+                revertModuleInLocalVars(nextModule, InstallService.this::finishModuleQueue);
+            }
+        });
+    }
+
+    /**
+     * ADFA-4435: roll back the speculative local_vars edit made before runrole, so a failed
+     * install is not left looking installed/enabled. Always runs {@code then} afterwards.
+     */
+    private void revertModuleInLocalVars(String module, Runnable then) {
+        if (prootEngine == null) prootEngine = new PRootEngine();
+        String revertCmd = "sed -i -E '/^[[:space:]]*" + module + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml";
+        prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), revertCmd, new PRootEngine.OutputListener() {
+            @Override public void onOutputLine(String line) { }
+            @Override public void onProcessExit(int exitCode) { then.run(); }
+            @Override public void onError(String error) { then.run(); }
+        });
+    }
+
+    private void finishModuleQueue() {
+        if (finished) return;
+        finished = true;
+        persistClearQueue();
+        ModuleQueueRepository.get().postDone(new java.util.ArrayList<>(failedModules));
+        teardown();
+    }
+
+    private void persistQueue() {
+        getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE).edit()
+                .putString("pending_modules", android.text.TextUtils.join(",", new java.util.ArrayList<>(moduleQueue)))
+                .putBoolean("is_batch_installing", true).apply();
+    }
+
+    private void persistClearQueue() {
+        getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE).edit()
+                .putString("pending_modules", "").putBoolean("is_batch_installing", false).apply();
+    }
+
     // ---------------------------------------------------------------- terminal
 
     private void finishSuccess() {
@@ -506,7 +652,13 @@ public final class InstallService extends Service {
             if (aria2Manager != null) aria2Manager.stopDownload();
         } catch (Exception ignored) {
         }
-        InstallProgressRepository.get().postFailed(getString(R.string.install_msg_cancelled));
+        if (moduleMode) {
+            persistClearQueue();
+            ModuleQueueRepository.get().postDone(
+                    failedModules != null ? new java.util.ArrayList<>(failedModules) : new java.util.ArrayList<>());
+        } else {
+            InstallProgressRepository.get().postFailed(getString(R.string.install_msg_cancelled));
+        }
         teardown();
     }
 
@@ -521,7 +673,8 @@ public final class InstallService extends Service {
         // Safety net: if the process is torn down without a clean terminal, do not
         // leave the repository stuck in a running state.
         if (!finished) {
-            InstallProgressRepository.get().postIdle();
+            if (moduleMode) ModuleQueueRepository.get().postIdle();
+            else InstallProgressRepository.get().postIdle();
         }
         releaseHardwareLocks();
         super.onDestroy();

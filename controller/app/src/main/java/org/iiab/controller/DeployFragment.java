@@ -157,6 +157,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     private boolean installProgressShown = false;       // guards ProgressButton.startProgress()
     private long lastInstallTerminalSeq = -1L;          // fires terminal snackbars exactly once
     private long lastResetTerminalSeq = -1L;            // reset terminal snackbars, fired exactly once (ADFA-4476)
+    private long lastModuleQueueTerminalSeq = -1L;      // module-queue finish/fail snackbar, once (ADFA-4476 s3)
     private final BroadcastReceiver installLogReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
             String line = intent.getStringExtra(org.iiab.controller.install.presentation.InstallService.EXTRA_LINE);
@@ -197,6 +198,10 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         downloadState = new ViewModelProvider(requireActivity())
                 .get(org.iiab.controller.install.presentation.DownloadStateViewModel.class);
         downloadState.installState().observe(getViewLifecycleOwner(), this::renderInstallProgress);
+        // ADFA-4476 slice 3: the per-module queue is owned by InstallService; observe it so the
+        // launch button + grid re-bind after a recreation and the finish/fail snackbar fires once.
+        org.iiab.controller.install.presentation.ModuleQueueRepository.get().state()
+                .observe(getViewLifecycleOwner(), this::renderModuleQueue);
 
         // UI Binding
         ledInternet = view.findViewById(R.id.led_install_internet);
@@ -290,10 +295,9 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         adbShareController.onResume();
         checkAndHandleSyncFragmentFocus();
         restoreQueueFromPrefs();
-
-        if (isBatchInstalling) {
-            new Handler(Looper.getMainLooper()).postDelayed(installController::processNextInQueue, 500);
-        }
+        // ADFA-4476 slice 3: no longer re-fire the queue here. The foreground InstallService
+        // owns the module loop and keeps advancing across a recreation; we only observe it
+        // (see renderModuleQueue) and re-render the grid below.
 
         if (lastKnownState.length() > 0) {
             installController.verifyInstallationState(lastKnownState);
@@ -421,6 +425,52 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             default:
                 btnAdvancedReset.setText(R.string.install_btn_reset);
                 btnAdvancedReset.setEnabled(true);
+                break;
+        }
+    }
+
+    /** Renders the per-module install queue owned by InstallService (ADFA-4476 slice 3).
+     *  Re-binds after a recreation, so a theme toggle mid-queue keeps advancing and the
+     *  finish/fail snackbar fires exactly once. */
+    private void renderModuleQueue(org.iiab.controller.install.presentation.ModuleQueueState s) {
+        if (s == null) return;
+        switch (s.phase) {
+            case RUNNING:
+                updateDynamicButtons();
+                if (btnLaunchInstall != null) {
+                    btnLaunchInstall.setEnabled(false);
+                    if (s.currentModule != null)
+                        btnLaunchInstall.setText(getString(R.string.install_status_installing_module, s.currentModule));
+                }
+                break;
+            case DONE:
+                if (s.seq > lastModuleQueueTerminalSeq) {
+                    lastModuleQueueTerminalSeq = s.seq;
+                    // Installed modules drop out of the selection; failed ones stay checked so
+                    // the user can retry them. selectedModuleKeys survives recreation (slice 1).
+                    for (String key : new java.util.HashSet<>(selectedModuleKeys())) {
+                        if (!s.failedModules.contains(key)) selectedModuleKeys().remove(key);
+                    }
+                    if (getActivity() instanceof MainActivity) {
+                        MainActivity act = (MainActivity) getActivity();
+                        if (s.failedModules.isEmpty()) {
+                            act.showSnackbar(getString(R.string.install_msg_finished));
+                        } else {
+                            act.showSnackbar(getString(R.string.install_msg_failed,
+                                    android.text.TextUtils.join(", ", s.failedModules)));
+                        }
+                    }
+                    if (btnLaunchInstall != null) {
+                        btnLaunchInstall.setEnabled(false);
+                        btnLaunchInstall.setText(getString(R.string.install_btn_launch));
+                    }
+                    updateDynamicButtons();
+                    // Refresh the grid from the (now settled) local_vars.yml + ping.
+                    installController.fetchLocalVarsFromPRoot();
+                }
+                break;
+            case IDLE:
+            default:
                 break;
         }
     }
@@ -767,12 +817,12 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // =========================================================================================
 
     public boolean isSystemBusy() {
-        return isDownloadingRootfs() || isBatchInstalling || isBackupInProgress || isRestoring || isDeleting || isImporting;
+        return isDownloadingRootfs() || isBatchInstalling() || isBackupInProgress || isRestoring || isDeleting || isImporting;
     }
 
     public String getSystemBusyMessage() {
         if (isDownloadingRootfs()) return getString(R.string.install_busy_provisioning);
-        if (isBatchInstalling) return getString(R.string.install_busy_modules);
+        if (isBatchInstalling()) return getString(R.string.install_busy_modules);
         if (isBackupInProgress) return getString(R.string.install_busy_backup);
         if (isRestoring) return getString(R.string.install_busy_restore);
         if (isDeleting) return getString(R.string.install_busy_delete);
@@ -964,7 +1014,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // --- PlannerHost seam (planner logic lives in PlannerController) ---
     @Override public InstallationPlanner.Tier getSelectedTier() { return downloadState.getSelectedTier(); }
     @Override public java.util.Set<String> selectedModuleKeys() { return downloadState.getSelectedModuleKeys(); }
-    @Override public java.util.Set<String> installingModuleKeys() { return downloadState.getInstallingModuleKeys(); }
     @Override public void setSelectedTier(InstallationPlanner.Tier tier) { downloadState.setSelectedTier(tier); }
     @Override public boolean isCompanionData() { return downloadState.isCompanionData(); }
     @Override public void setCompanionData(boolean v) { downloadState.setCompanionData(v); }
@@ -982,8 +1031,10 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     // "an install is in flight" (survives recreation; the InstallService is the writer).
     @Override public boolean isDownloadingRootfs() { return org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning(); }
     @Override public void setDownloadingRootfs(boolean v) { /* no-op: derived from the repository now */ }
-    @Override public boolean isBatchInstalling() { return isBatchInstalling; }
-    @Override public void setBatchInstalling(boolean v) { isBatchInstalling = v; }
+    // ADFA-4476 slice 3: batch-installing is now derived from the service-owned repository
+    // (single source of truth), so it also covers a queue started before a recreation.
+    @Override public boolean isBatchInstalling() { return org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning(); }
+    @Override public void setBatchInstalling(boolean v) { /* no-op: derived from ModuleQueueRepository now */ }
     @Override public java.util.List<String> installationQueue() { return installationQueue; }
     @Override public org.json.JSONObject getLastKnownState() { return lastKnownState; }
     @Override public void setLastKnownState(org.json.JSONObject v) { lastKnownState = v; }
