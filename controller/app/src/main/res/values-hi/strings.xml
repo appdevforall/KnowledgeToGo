@@ -570,4 +570,8 @@
     <string name="setup_app_lang_desc">ऐप की अपनी स्क्रीन के लिए भाषा चुनें। “सिस्टम डिफ़ॉल्ट” आपके फ़ोन का अनुसरण करता है।</string>
     <string name="setup_app_lang_system">सिस्टम डिफ़ॉल्ट (फ़ोन का अनुसरण करें)</string>
     <string name="setup_language_section">भाषा</string>
+
+    <!-- Portal WebView APK download (ADFA-4512) -->
+    <string name="portal_download_started">%1$s डाउनलोड हो रहा है…</string>
+    <string name="portal_download_failed">डाउनलोड शुरू नहीं हो सका।</string>
 </resources>

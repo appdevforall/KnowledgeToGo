@@ -585,4 +585,8 @@
     <string name="setup_app_lang_system">System default (follow phone)</string>
     <!-- Collapsible language section title (ADFA-4304) -->
     <string name="setup_language_section">Language</string>
+
+    <!-- Portal WebView APK download (ADFA-4512) -->
+    <string name="portal_download_started">Downloading %1$s…</string>
+    <string name="portal_download_failed">Couldn\'t start the download.</string>
 </resources>
