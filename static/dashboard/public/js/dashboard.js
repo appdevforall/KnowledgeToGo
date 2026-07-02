@@ -35,20 +35,46 @@ const themeManager = {
 };
 
 // --- i18n System ---
+// Locales the dashboard ships (kept in parity with the Android app). 'en' is the
+// source of truth and the fallback for any missing locale/key.
+const SUPPORTED_LANGS = ['en', 'es', 'fr', 'hi', 'pt', 'ru'];
+
+// Translate a key, falling back to the given English text (or the key) when the active
+// locale is missing that key. Safe for dynamically-rendered strings (see maps/kiwix JS).
+window.t = (key, fallback) => (window.i18n && window.i18n[key]) || fallback || key;
+
 const applyTranslations = () => {
     if (!window.i18n) return;
+    // Text content (default): only overwrite when the key exists, so a missing key keeps
+    // the element's built-in English text.
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (window.i18n[key]) el.innerText = window.i18n[key];
     });
+    // Attribute variants: placeholder and title.
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (window.i18n[key]) el.setAttribute('placeholder', window.i18n[key]);
+    });
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (window.i18n[key]) el.setAttribute('title', window.i18n[key]);
+    });
 };
 
 const loadLanguage = () => {
-    const userLang = (navigator.language || navigator.userLanguage).substring(0, 2).toLowerCase();
-    const lang = ['es', 'en'].includes(userLang) ? userLang : 'en';
+    const userLang = (navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase();
+    const lang = SUPPORTED_LANGS.includes(userLang) ? userLang : 'en';
     const script = document.createElement('script');
     script.src = `lang/${lang}.js`;
+    // If the locale file fails to load, fall back to English so the UI is never blank.
     script.onload = applyTranslations;
+    script.onerror = () => {
+        const fallback = document.createElement('script');
+        fallback.src = 'lang/en.js';
+        fallback.onload = applyTranslations;
+        document.head.appendChild(fallback);
+    };
     document.head.appendChild(script);
 };
 
@@ -170,7 +196,7 @@ function renderLocalBooks(books) {
     container.innerHTML = '';
 
     if (books.length === 0) {
-        container.innerHTML = '<div class="col-12 text-center text-secondary py-5">No local books found. Check the Top 100 tab!</div>';
+        container.innerHTML = `<div class="col-12 text-center text-secondary py-5">${window.t('books_no_local','No local books found. Check the Top 100 tab!')}</div>`;
         return;
     }
 
@@ -184,9 +210,9 @@ function renderLocalBooks(books) {
                     <img src="${coverUrl}" onerror="this.src='https://via.placeholder.com/300x450?text=No+Cover'" class="card-img-top" style="height: 250px; object-fit: cover; border-radius: 8px 8px 0 0;">
                     <div class="card-body p-3 d-flex flex-column">
                         <h6 class="fw-bold mb-1 text-truncate" title="${book.title}">${book.title}</h6>
-                        <small class="text-secondary mb-2">${book.author || 'Unknown'} • ${book.year || 'N/A'}</small>
+                        <small class="text-secondary mb-2">${book.author || window.t('common_unknown','Unknown')} • ${book.year || window.t('common_na','N/A')}</small>
                         <div class="mt-auto d-flex gap-2">
-                            <a href="${readUrl}" target="_blank" class="btn btn-sm btn-success flex-grow-1 fw-bold">Read</a>
+                            <a href="${readUrl}" target="_blank" class="btn btn-sm btn-success flex-grow-1 fw-bold">${window.t('books_read','Read')}</a>
                             <button id="btn-del-${book.id}" class="btn btn-sm btn-outline-danger" onclick="deleteLocalBook(${book.id})">🗑️</button>
                         </div>
                     </div>
@@ -198,7 +224,7 @@ function renderLocalBooks(books) {
 }
 
 function deleteLocalBook(id) {
-    if (confirm("Are you sure you want to delete this book?")) {
+    if (confirm(window.t('books_delete_confirm','Are you sure you want to delete this book?'))) {
         console.log(`[Dashboard] 🗑️ Starting deletion of workbook ID: ${id}`);
 
         // We give visual feedback: We change the trash can for a spinner
@@ -228,7 +254,7 @@ function renderRemoteBooks(books) {
     container.innerHTML = '';
 
     if (books.length === 0) {
-        container.innerHTML = '<div class="list-group-item text-center text-secondary py-5 border-0">No books found in remote catalog.</div>';
+        container.innerHTML = `<div class="list-group-item text-center text-secondary py-5 border-0">${window.t('books_no_remote','No books found in remote catalog.')}</div>`;
         return;
     }
 
@@ -237,7 +263,7 @@ function renderRemoteBooks(books) {
         const isChecked = selectedRemoteBooks.includes(book.gutenberg_id) ? 'checked' : '';
         const isLocalDisabled = localMatch ? 'disabled' : '';
         const opacity = localMatch ? 'opacity-75' : '';
-        const badgeText = localMatch ? 'Local' : 'Info';
+        const badgeText = localMatch ? window.t('books_badge_local','Local') : window.t('books_badge_info','Info');
         const badgeClass = localMatch ? 'bg-success' : 'bg-primary';
         const localIdParam = localMatch ? localMatch.id : 'null';
 
@@ -278,10 +304,10 @@ function updateBookDownloadBtn() {
     const btn = document.getElementById('books-batch-download-btn');
     if (selectedRemoteBooks.length > 0) {
         btn.classList.remove('disabled');
-        btn.innerText = `DOWNLOAD (${selectedRemoteBooks.length})`;
+        btn.innerText = `${window.t('books_download_btn','DOWNLOAD')} (${selectedRemoteBooks.length})`;
     } else {
         btn.classList.add('disabled');
-        btn.innerText = 'DOWNLOAD';
+        btn.innerText = window.t('books_download_btn','DOWNLOAD');
     }
 }
 
@@ -304,7 +330,7 @@ function downloadSelectedBooks() {
 
     const btn = document.getElementById('books-batch-download-btn');
     btn.classList.add('disabled');
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>DOWNLOADING...';
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${window.t('books_downloading','DOWNLOADING...')}`;
 
     pendingCalibreAction = { type: 'download', payload: booksToDownload };
     socket.emit('download_books_batch', booksToDownload);
@@ -321,7 +347,7 @@ function downloadSelectedBooks() {
 // --- Security & Text Formatting ---
 function formatBookDescription(text) {
     if (!text || text === 'No description available for this book.') {
-        return 'No description available for this book.';
+        return window.t('books_no_description','No description available for this book.');
     }
 
     // Escape html to prevent XSS
@@ -366,7 +392,7 @@ function openBookModal(id, localBookId = null) {
 
     if (localBookId) {
         btn.className = "btn btn-success w-100 fw-bold text-uppercase";
-        btn.innerText = "📖 Read in Calibre-Web";
+        btn.innerText = window.t('books_read_calibre','📖 Read in Calibre-Web');
         btn.onclick = function() {
             window.open(`/books/read/${localBookId}/epub`, '_blank');
             const modalEl = document.getElementById('bookDetailsModal');
@@ -374,11 +400,11 @@ function openBookModal(id, localBookId = null) {
         };
     } else if (activeDownloads >= MAX_DOWNLOADS) {
         btn.className = "btn btn-secondary w-100 fw-bold disabled text-uppercase";
-        btn.innerText = "⏳ Queue Full (Wait for current downloads)";
+        btn.innerText = window.t('books_queue_full','⏳ Queue Full (Wait for current downloads)');
         btn.onclick = null;
     } else {
         btn.className = "btn btn-primary w-100 fw-bold text-uppercase";
-        btn.innerText = "📥 Download & Add to Calibre-Web";
+        btn.innerText = window.t('books_download_calibre','📥 Download & Add to Calibre-Web');
         btn.onclick = function() {
             startDownloadFromModal();
         };
@@ -410,7 +436,7 @@ function startDownloadFromModal() {
     const btn = document.getElementById('books-batch-download-btn');
     if (btn) {
         btn.classList.remove('disabled');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>DOWNLOADING...';
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${window.t('books_downloading','DOWNLOADING...')}`;
     }
 
     setTimeout(() => {
@@ -427,7 +453,7 @@ socket.on('book_status_update', (data) => {
     }
 
     if (data.status === 'error') {
-        alert(`❌ The book download or upload failed.\n\nServer Reason: ${data.message}\n\nMake sure you are not logged in multiple tabs at once.`);
+        alert(`${window.t('books_error_alert','❌ The book download or upload failed.')}\n\n${window.t('books_error_reason','Server Reason:')} ${data.message}\n\n${window.t('books_error_hint','Make sure you are not logged in multiple tabs at once.')}`);
     }
 });
 
@@ -448,7 +474,7 @@ socket.on('calibre_auth_required', () => {
     const batchBtn = document.getElementById('books-batch-download-btn');
     if (batchBtn && activeDownloads > 0) {
         batchBtn.classList.remove('disabled');
-        batchBtn.innerText = `DOWNLOAD (${selectedRemoteBooks.length || activeDownloads})`;
+        batchBtn.innerText = `${window.t('books_download_btn','DOWNLOAD')} (${selectedRemoteBooks.length || activeDownloads})`;
         // Reset the active downloads since the batch failed
         activeDownloads = 0;
     }
@@ -464,7 +490,7 @@ function submitCalibreLogin() {
     const pass = document.getElementById('calibre-pass-input').value.trim();
 
     if (!user || !pass) {
-        alert("Please enter both username and password.");
+        alert(window.t('calibre_enter_both','Please enter both username and password.'));
         return;
     }
 
@@ -493,7 +519,7 @@ socket.on('calibre_auth_updated', () => {
             const btn = document.getElementById('books-batch-download-btn');
             if (btn) {
                 btn.classList.add('disabled');
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>DOWNLOADING...';
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>${window.t('books_downloading','DOWNLOADING...')}`;
             }
             activeDownloads += pendingCalibreAction.payload.length;
             socket.emit('download_books_batch', pendingCalibreAction.payload);

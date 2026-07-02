@@ -1,25 +1,25 @@
 <div id="panel-books" class="app-panel pb-2 hidden-section">
 
     <div class="mb-4 pt-2">
-        <h4 class="fw-bold mb-1">📚 Books Downloader</h4>
-        <p class="text-secondary small mb-3">A curated catalog of over 1,000 books powered by Project Gutenberg</p>
+        <h4 class="fw-bold mb-1" data-i18n="books_title">📚 Books Downloader</h4>
+        <p class="text-secondary small mb-3" data-i18n="books_subtitle">A curated catalog of over 1,000 books powered by Project Gutenberg</p>
         <hr class="border-secondary opacity-25">
     </div>
 
     <div class="custom-search-container">
         <span class="search-icon">🔍</span>
-        <input type="text" class="form-control border-secondary" id="global-book-search" placeholder="Search local or remote catalog..." onkeyup="handleGlobalSearch(this.value)">
+        <input type="text" class="form-control border-secondary" id="global-book-search" placeholder="Search local or remote catalog..." data-i18n-placeholder="books_search_placeholder" onkeyup="handleGlobalSearch(this.value)">
     </div>
 
     <div class="books-tabs-grid" id="books-tab-nav">
-        <a class="nav-link tab-50 active" id="nav-local" onclick="switchBookTab('local')">📚 Local Books</a>
-        <a class="nav-link tab-50" id="nav-top" onclick="switchBookTab('top')">🏆 Top 100</a>
-        <a class="nav-link tab-100" id="nav-edu" onclick="switchBookTab('educational')">🎓 Educational & Children</a>
+        <a class="nav-link tab-50 active" id="nav-local" onclick="switchBookTab('local')" data-i18n="books_tab_local">📚 Local Books</a>
+        <a class="nav-link tab-50" id="nav-top" onclick="switchBookTab('top')" data-i18n="books_tab_top">🏆 Top 100</a>
+        <a class="nav-link tab-100" id="nav-edu" onclick="switchBookTab('educational')" data-i18n="books_tab_edu">🎓 Educational & Children</a>
     </div>
 
     <div id="books-action-bar" class="d-flex justify-content-between align-items-center mb-3 hidden-section">
         <div class="d-flex align-items-center"></div>
-        <button id="books-batch-download-btn" class="btn btn-success disabled" onclick="downloadSelectedBooks()">
+        <button id="books-batch-download-btn" class="btn btn-success disabled" onclick="downloadSelectedBooks()" data-i18n="books_download_btn">
             DOWNLOAD
         </button>
     </div>
@@ -32,16 +32,16 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-surface text-body border-warning">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title text-warning fw-bold">
+                <h5 class="modal-title text-warning fw-bold" data-i18n="limit_modal_title">
                     ⚠️ Suggested Download Limit
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" data-i18n="books_limit_modal_body">
                 Please complete the downloads in the queue first. Help use Project Gutenberg's bandwidth responsibly.
             </div>
             <div class="modal-footer border-top-0">
-                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">GOT IT</button>
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal" data-i18n="common_got_it_upper">GOT IT</button>
             </div>
         </div>
     </div>
@@ -55,15 +55,15 @@
             </div>
             <div class="modal-body text-center pt-0">
                 <img id="modal-cover-img" src="" class="img-fluid rounded mb-3 shadow" style="max-height: 300px; background: #333;" alt="Cover">
-                <h5 id="modal-title" class="fw-bold mb-1">Book Title</h5>
-                <p id="modal-author" class="text-secondary mb-1">Author Name</p>
-                <small id="modal-meta" class="text-muted d-block mb-3">Year: 1900</small>
+                <h5 id="modal-title" class="fw-bold mb-1" data-i18n="books_modal_title_ph">Book Title</h5>
+                <p id="modal-author" class="text-secondary mb-1" data-i18n="books_modal_author_ph">Author Name</p>
+                <small id="modal-meta" class="text-muted d-block mb-3" data-i18n="books_modal_meta_ph">Year: 1900</small>
 
-                <p id="modal-desc" class="text-start small mb-4 text-muted" style="max-height: 100px; overflow-y: auto;">
+                <p id="modal-desc" class="text-start small mb-4 text-muted" style="max-height: 100px; overflow-y: auto;" data-i18n="books_no_description">
                     No description available for this book.
                 </p>
 
-                <button id="modal-download-btn" class="btn btn-primary w-100 fw-bold text-uppercase" onclick="startDownloadFromModal()">
+                <button id="modal-download-btn" class="btn btn-primary w-100 fw-bold text-uppercase" onclick="startDownloadFromModal()" data-i18n="books_download_calibre">
                     📥 Download & Add to Calibre-Web
                 </button>
             </div>
@@ -74,21 +74,21 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content bg-surface text-body border-danger">
             <div class="modal-header border-bottom-0">
-                <h5 class="modal-title text-danger fw-bold">
+                <h5 class="modal-title text-danger fw-bold" data-i18n="calibre_error_title">
                     🔒 Calibre-Web Connection Error
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p class="text-secondary small mb-3">
+                <p class="text-secondary small mb-3" data-i18n="calibre_error_body">
                     The stored uploader credentials failed. Please enter the current Calibre-Web admin username and password to process changes.
                 </p>
                 <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Username</label>
+                    <label class="form-label text-muted small fw-bold" data-i18n="calibre_username">Username</label>
                     <input type="text" id="calibre-user-input" class="form-control" placeholder="admin">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">Password</label>
+                    <label class="form-label text-muted small fw-bold" data-i18n="calibre_password">Password</label>
                     <div class="input-group">
                         <input type="password" id="calibre-pass-input" class="form-control" placeholder="••••••••">
                         <button class="btn btn-outline-secondary border-start-0" type="button" id="toggle-pass-btn" onclick="togglePasswordVisibility()" style="border-color: var(--bs-border-color);">
@@ -98,8 +98,8 @@
                 </div>
             </div>
             <div class="modal-footer border-top-0">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger fw-bold" onclick="submitCalibreLogin()">Update & Retry</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" data-i18n="common_cancel">Cancel</button>
+                <button type="button" class="btn btn-danger fw-bold" onclick="submitCalibreLogin()" data-i18n="calibre_update_retry">Update & Retry</button>
             </div>
         </div>
     </div>

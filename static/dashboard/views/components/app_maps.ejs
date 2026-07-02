@@ -1,32 +1,32 @@
 <div id="panel-maps" class="app-panel hidden-section pb-5">
-    <h2 class="mb-4 fw-bold border-bottom border-secondary pb-3">Map Extraction Dashboard</h2>
+    <h2 class="mb-4 fw-bold border-bottom border-secondary pb-3" data-i18n="maps_title">Map Extraction Dashboard</h2>
     
     <div class="card mb-4 p-3 border-secondary shadow-sm">
-        <label for="raw-command" class="form-label text-warning fw-bold">Execute IIAB Maps shell command:</label>
+        <label for="raw-command" class="form-label text-warning fw-bold" data-i18n="maps_command_label">Execute IIAB Maps shell command:</label>
         <div class="row g-2 align-items-stretch">
             <div class="col-12 col-md-10">
-                <textarea id="raw-command" class="form-control shell-input border-0 h-100" rows="2" style="resize: none;" placeholder="e.g.: sudo /opt/iiab/maps/..."></textarea>
+                <textarea id="raw-command" class="form-control shell-input border-0 h-100" rows="2" style="resize: none;" placeholder="e.g.: sudo /opt/iiab/maps/..." data-i18n-placeholder="maps_command_placeholder"></textarea>
             </div>
             <div class="col-12 col-md-2">
-                <button id="btn-start" class="btn btn-primary w-100 h-100 fw-bold">Start</button>
+                <button id="btn-start" class="btn btn-primary w-100 h-100 fw-bold" data-i18n="maps_start">Start</button>
             </div>
         </div>
     </div>
 
     <div id="maps-terminal-container" class="position-relative mb-4">
-        <div id="terminal" style="background-color: #000; color: #0f0; height: 250px; overflow-y: auto; padding: 10px; font-family: monospace; border-radius: 5px; white-space: pre-wrap; margin-bottom: 15px;">Waiting for commands...</div>
+        <div id="terminal" style="background-color: #000; color: #0f0; height: 250px; overflow-y: auto; padding: 10px; font-family: monospace; border-radius: 5px; white-space: pre-wrap; margin-bottom: 15px;" data-i18n="common_waiting_commands">Waiting for commands...</div>
 
         <div class="collapse-btn-container d-flex justify-content-center">
-            <button id="btn-toggle-maps-terminal" class="btn btn-sm btn-dark border-secondary text-secondary" style="border-radius: 20px; padding: 2px 15px;">▲ Hide Terminal</button>
+            <button id="btn-toggle-maps-terminal" class="btn btn-sm btn-dark border-secondary text-secondary" style="border-radius: 20px; padding: 2px 15px;" data-i18n="common_hide_terminal">▲ Hide Terminal</button>
         </div>
     </div>
 
     <div id="controls-yn" class="card border-warning p-3 hidden-section shadow mb-4">
         <div class="d-flex justify-content-between align-items-center">
-            <span class="text-warning fw-bold">⚠️ The system requires your confirmation to continue:</span>
+            <span class="text-warning fw-bold" data-i18n="maps_confirm_prompt">⚠️ The system requires your confirmation to continue:</span>
             <div>
-                <button id="btn-yes" class="btn btn-success me-2 px-4">Yes</button>
-                <button id="btn-no" class="btn btn-danger px-4">No</button>
+                <button id="btn-yes" class="btn btn-success me-2 px-4" data-i18n="common_yes">Yes</button>
+                <button id="btn-no" class="btn btn-danger px-4" data-i18n="common_no">No</button>
             </div>
         </div>
     </div>
@@ -34,13 +34,13 @@
     <hr class="border-secondary mb-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="text-primary mb-0">🗺️ Existing Regions</h4>
-        <button id="btn-refresh-maps" class="btn btn-sm btn-outline-primary">Refresh List</button>
+        <h4 class="text-primary mb-0" data-i18n="maps_existing_regions">🗺️ Existing Regions</h4>
+        <button id="btn-refresh-maps" class="btn btn-sm btn-outline-primary" data-i18n="maps_refresh_list">Refresh List</button>
     </div>
     
     <div id="maps-status" class="alert alert-info d-flex align-items-center">
         <span class="spinner-border spinner-border-sm me-3" role="status" aria-hidden="true"></span>
-        <span>Loading server catalog...</span>
+        <span data-i18n="maps_loading_catalog">Loading server catalog...</span>
     </div>
 
     <div class="row g-3" id="maps-container">
@@ -60,10 +60,10 @@
     btnToggleMapsTerminal.addEventListener('click', (e) => {
         if(mapsTerminalVisible) {
             terminal.style.display = 'none';
-            e.target.textContent = '▼ Show Terminal';
+            e.target.textContent = window.t('common_show_terminal','▼ Show Terminal');
         } else {
             terminal.style.display = 'block';
-            e.target.textContent = '▲ Hide Terminal';
+            e.target.textContent = window.t('common_hide_terminal','▲ Hide Terminal');
         }
         mapsTerminalVisible = !mapsTerminalVisible;
     });
@@ -71,7 +71,7 @@
     // Extra function to force the display of errors or new processes
     function forceShowMapsTerminal() {
         terminal.style.display = 'block';
-        btnToggleMapsTerminal.textContent = '▲ Hide Terminal';
+        btnToggleMapsTerminal.textContent = window.t('common_hide_terminal','▲ Hide Terminal');
         mapsTerminalVisible = true;
     }
 
@@ -109,7 +109,7 @@
 
         // Lock the button and provide visual feedback
         btnRefreshMaps.disabled = true;
-        btnRefreshMaps.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>Refreshing...`;
+        btnRefreshMaps.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>${window.t('common_refreshing','Refreshing...')}`;
         socket.emit('request_maps_catalog');
     }
 
@@ -122,7 +122,7 @@
         mapsStatus.classList.add('hidden-section');
         mapsContainer.style.opacity = '1'; // Restore visibility
         btnRefreshMaps.disabled = false;
-        btnRefreshMaps.textContent = 'Refresh List';
+        btnRefreshMaps.textContent = window.t('maps_refresh_list','Refresh List');
         renderMapsGrid();
     });
 
@@ -130,7 +130,7 @@
     function renderMapsGrid() {
         mapsContainer.innerHTML = '';
         if (mapsInMemory.length === 0) {
-            mapsContainer.innerHTML = `<div class="col-12"><div class="alert text-secondary text-center border-secondary" style="border: 1px solid var(--border-color);">No map regions registered in extracts.json.</div></div>`;
+            mapsContainer.innerHTML = `<div class="col-12"><div class="alert text-secondary text-center border-secondary" style="border: 1px solid var(--border-color);">${window.t('maps_empty','No map regions registered in extracts.json.')}</div></div>`;
             return;
         }
 
@@ -143,7 +143,7 @@
 
             const layerBadges = layers.length
                 ? layers.map(l => `<span class="badge bg-secondary me-1 mb-1">${l}</span>`).join('')
-                : '<span class="text-secondary small">no layers listed</span>';
+                : `<span class="text-secondary small">${window.t('maps_no_layers','no layers listed')}</span>`;
 
             const datesEntries = Object.keys(dates);
             const datesLine = datesEntries.length
@@ -151,11 +151,11 @@
                 : '';
 
             const incompleteWarn = (layers.length && missing.length)
-                ? `<div class="small text-warning mt-2">⚠️ Incomplete extract — missing: ${missing.join(', ')}</div>`
+                ? `<div class="small text-warning mt-2">${window.t('maps_incomplete','⚠️ Incomplete extract — missing:')} ${missing.join(', ')}</div>`
                 : '';
 
             const renderLine = map.render_bbox
-                ? `<div class="map-coords text-break small text-secondary">render: [ ${map.render_bbox} ]</div>`
+                ? `<div class="map-coords text-break small text-secondary">${window.t('maps_render','render:')} [ ${map.render_bbox} ]</div>`
                 : '';
 
             const card = `
@@ -170,7 +170,7 @@
                             ${incompleteWarn}
                         </div>
                         <div class="text-end mt-3">
-                            <button id="btn-del-map-${map.name}" class="btn btn-sm btn-outline-danger" onclick="deleteRegionDirectly(event, '${map.name}')">🗑️ Delete</button>
+                            <button id="btn-del-map-${map.name}" class="btn btn-sm btn-outline-danger" onclick="deleteRegionDirectly(event, '${map.name}')">${window.t('common_delete_icon','🗑️ Delete')}</button>
                         </div>
                     </div>
                 </div>
@@ -182,9 +182,9 @@
     // C. Direct Deletion Logic
     function deleteRegionDirectly(event, regionName) {
         event.stopPropagation();
-        if(confirm(`⚠️ Do you want to delete the region "${regionName}" from the server?\n`)){
+        if(confirm(`${window.t('maps_delete_confirm','⚠️ Do you want to delete the region')} "${regionName}" ${window.t('maps_delete_confirm2','from the server?')}\n`)){
             const btnDel = document.getElementById(`btn-del-map-${regionName}`);
-            btnDel.textContent = "⏳ Deleting...";
+            btnDel.textContent = window.t('common_deleting','⏳ Deleting...');
             btnDel.disabled = true;
             btnDel.classList.replace('btn-outline-danger', 'btn-secondary');
             
@@ -199,10 +199,10 @@
         rawCommandInput.disabled = status.isRunning;
         
         if (status.isRunning) { 
-            btnStart.textContent = "Executing..."; 
+            btnStart.textContent = window.t('maps_executing','Executing...'); 
             btnStart.classList.replace('btn-primary', 'btn-secondary');
         } else { 
-            btnStart.textContent = "Start"; 
+            btnStart.textContent = window.t('maps_start','Start'); 
             btnStart.classList.replace('btn-secondary', 'btn-primary'); 
             controlsYN.classList.add('hidden-section');
         }
