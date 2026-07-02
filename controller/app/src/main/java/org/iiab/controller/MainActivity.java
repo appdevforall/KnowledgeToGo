@@ -1621,7 +1621,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 if (clipboard != null && clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
                     CharSequence text = clipboard.getPrimaryClip().getItemAt(0).getText();
-                    if (text != null && terminalSession != null) {
+                    // ADFA-4519: only write non-empty text. An empty clipboard item yields an
+                    // empty string, and TerminalSession.write("") reaches ByteQueue.write with
+                    // length 0, which throws IllegalArgumentException("length <= 0") and crashes.
+                    if (text != null && text.length() > 0 && terminalSession != null) {
                         terminalSession.write(text.toString());
                     }
                 }
