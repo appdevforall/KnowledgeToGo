@@ -73,6 +73,13 @@ public class DownloadStateViewModel extends ViewModel {
     private final java.util.Set<String> selectedModuleKeys = new java.util.HashSet<>();
     public java.util.Set<String> getSelectedModuleKeys() { return selectedModuleKeys; }
 
+    // ADFA-4519: modules the app is CURRENTLY installing (runrole in flight). The app is
+    // the engine, so this is the authoritative in-progress truth -- the grid renders from
+    // it and never reads the half-written local_vars.yml for these. Activity-scoped so it
+    // survives a recreation (theme toggle / rotation) mid-install.
+    private final java.util.Set<String> installingModuleKeys = new java.util.HashSet<>();
+    public java.util.Set<String> getInstallingModuleKeys() { return installingModuleKeys; }
+
     /** Observable install-pipeline progress (app-scoped; survives recreation). */
     public LiveData<InstallState> installState() {
         return InstallProgressRepository.get().state();

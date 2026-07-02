@@ -259,6 +259,7 @@ public final class InstallController {
 
         btnLaunchInstall.setEnabled(false);
         btnLaunchInstall.setText(fragment.getString(R.string.install_status_installing_module, nextModule));
+        host.installingModuleKeys().add(nextModule); // ADFA-4519: authoritative "installing now"
 
         File rootfsDir = new File(fragment.requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
         if (host.prootEngine() == null) host.setPRootEngine(new PRootEngine());
@@ -284,6 +285,7 @@ public final class InstallController {
             @Override
             public void onProcessExit(int exitCode) {
                 installInFlight = false; // ADFA-4458: this module's install finished
+                host.installingModuleKeys().remove(nextModule); // ADFA-4519: no longer in flight
                 if (fragment.getActivity() == null) return;
                 // ADFA-4435: was 'continue regardless of outcome'. A non-zero exit OR an Ansible
                 // error in the output means FAILED: roll back the speculative local_vars edit so
@@ -307,6 +309,7 @@ public final class InstallController {
             @Override
             public void onError(String error) {
                 installInFlight = false; // ADFA-4458
+                host.installingModuleKeys().remove(nextModule); // ADFA-4519: no longer in flight
                 if (fragment.getActivity() != null) {
                     fragment.getActivity().runOnUiThread(() -> {
                         host.setBatchInstalling(false);
@@ -422,12 +425,27 @@ public final class InstallController {
                     final boolean finalDiscrepancyFlag = isDiscrepancy;
                     final boolean finalIsRunning = isRunning;
                     final String moduleKey = module.yamlBaseKey;
+                    // ADFA-4519: the app itself is installing this module right now. This is our
+                    // own authoritative state (survives recreation), so it wins over the yaml read
+                    // -- otherwise a theme toggle mid-install re-reads local_vars.yml (where
+                    // '<mod>_install: True' was written at runrole START) and falsely shows it done.
+                    final boolean finalIsInstalling = host.installingModuleKeys().contains(moduleKey);
 
                     fragment.getActivity().runOnUiThread(() -> {
                         card.setOnClickListener(null);
                         checkBox.setOnCheckedChangeListener(null);
 
-                        if (finalConfirmed && !finalDiscrepancyFlag) {
+                        if (finalIsInstalling) {
+                            // In progress: keep it as a locked, checked selection -- never "installed".
+                            led.setVisibility(View.GONE);
+                            checkBox.setVisibility(View.VISIBLE);
+                            checkBox.setChecked(true);
+                            checkBox.setEnabled(false);
+                            card.setAlpha(0.6f);
+                            card.setOnClickListener(v -> Snackbar.make(v,
+                                    fragment.getString(R.string.install_status_installing_module, moduleKey),
+                                    Snackbar.LENGTH_LONG).show());
+                        } else if (finalConfirmed && !finalDiscrepancyFlag) {
                             checkBox.setVisibility(View.GONE);
                             led.setVisibility(View.VISIBLE);
                             led.setBackgroundTintList(null);
