@@ -32,6 +32,13 @@ import org.iiab.controller.portal.domain.NavigationPolicy;
 import org.iiab.controller.portal.presentation.GestureWebView;
 import org.iiab.controller.portal.presentation.PortalViewModel;
 
+import android.app.DownloadManager;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.webkit.URLUtil;
+import android.widget.Toast;
+
 public class PortalActivity extends AppCompatActivity {
     private static final String TAG = "IIAB-Portal";
 
@@ -228,6 +235,27 @@ public class PortalActivity extends AppCompatActivity {
             }
         });
 
+        // Downloads (ADFA-4512): a WebView never downloads on its own. Navigation routing
+        // above is unchanged (internal host stays in-view, external -> system browser);
+        // this listener ONLY fires for downloadable files. We handle APKs served by the
+        // local box (e.g. the "code" module) and hand them to the system DownloadManager;
+        // anything else is left alone.
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Uri uri = Uri.parse(url);
+            String host = uri.getHost();
+            String lastSeg = uri.getLastPathSegment();
+            boolean looksApk = "application/vnd.android.package-archive".equalsIgnoreCase(mimetype)
+                    || (lastSeg != null && lastSeg.toLowerCase().endsWith(".apk"))
+                    || (contentDisposition != null && contentDisposition.toLowerCase().contains(".apk"));
+
+            if (!looksApk || !NavigationPolicy.isInternalHost(host)) {
+                // Not an APK from the local server: leave existing behavior untouched.
+                Log.d(TAG, "Download ignored (not an internal-host APK): " + url);
+                return;
+            }
+            downloadServedApk(uri, contentDisposition, mimetype);
+        });
+
         // Port and Mirror logic
         int tempPort = prefs.getSocksPort();
         if (tempPort <= 0) tempPort = 1080;
@@ -248,6 +276,42 @@ public class PortalActivity extends AppCompatActivity {
         } else {
             // VPN is OFF. Load localhost directly.
             webView.loadUrl(finalTargetUrl);
+        }
+    }
+
+    /**
+     * Downloads an APK served by the local IIAB box via the system DownloadManager, keeping
+     * the server-provided filename (so both the current arm64-v8a build and a future
+     * armeabi-v7a one work without code changes). The completed notification opens the
+     * system package installer, which enforces the "install unknown apps" consent — we do
+     * not install silently. See ADFA-4512.
+     */
+    private void downloadServedApk(Uri uri, String contentDisposition, String mimetype) {
+        try {
+            String fileName = uri.getLastPathSegment();
+            if (fileName == null || !fileName.toLowerCase().endsWith(".apk")) {
+                fileName = URLUtil.guessFileName(uri.toString(), contentDisposition, mimetype);
+            }
+            if (fileName == null || !fileName.toLowerCase().endsWith(".apk")) {
+                fileName = "iiab-code.apk";
+            }
+
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+            request.setMimeType("application/vnd.android.package-archive");
+            request.setTitle(fileName);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            if (dm == null) {
+                Toast.makeText(this, R.string.portal_download_failed, Toast.LENGTH_LONG).show();
+                return;
+            }
+            dm.enqueue(request);
+            Toast.makeText(this, getString(R.string.portal_download_started, fileName), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "APK download failed to start: " + uri, e);
+            Toast.makeText(this, R.string.portal_download_failed, Toast.LENGTH_LONG).show();
         }
     }
 
