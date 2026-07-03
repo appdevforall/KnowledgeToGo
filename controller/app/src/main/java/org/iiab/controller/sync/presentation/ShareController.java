@@ -251,10 +251,33 @@ public final class ShareController {
     }
 
     // --- APK SERVER METHODS ---
-    /** Primary ABI the app runs under (e.g. arm64-v8a), used to stamp the shared APK name. */
-    private String currentArch() {
-        String[] abis = android.os.Build.SUPPORTED_ABIS;
-        return (abis != null && abis.length > 0) ? abis[0] : "unknown";
+    /**
+     * Arch label of the APK we are about to share, read from its own {@code lib/<abi>/}
+     * folders (the file that travels), not from the device. A universal build therefore
+     * gets "universal" even on a single-ABI phone. Falls back to the device primary ABI
+     * only if the APK can't be read. ADFA-4540.
+     */
+    private String apkArch(String apkPath) {
+        java.util.Set<String> abis = new java.util.LinkedHashSet<>();
+        try (java.util.zip.ZipFile zip = new java.util.zip.ZipFile(apkPath)) {
+            java.util.Enumeration<? extends java.util.zip.ZipEntry> entries = zip.entries();
+            while (entries.hasMoreElements()) {
+                String name = entries.nextElement().getName();
+                if (name.startsWith("lib/")) {
+                    int slash = name.indexOf('/', 4);
+                    if (slash > 4) {
+                        abis.add(name.substring(4, slash));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Could not read ABIs from APK; falling back to device ABI", e);
+            String[] dev = android.os.Build.SUPPORTED_ABIS;
+            if (dev != null && dev.length > 0) {
+                abis.add(dev[0]);
+            }
+        }
+        return ApkShareName.archLabel(abis);
     }
 
     private void startApkServer() {
@@ -263,7 +286,7 @@ public final class ShareController {
 
             // ADFA-4540: stamp the download name with brand+version+arch so the receiver
             // knows exactly which build they got (replaces the ambiguous "-Latest").
-            apkFileName = ApkShareName.fileName(org.iiab.controller.BuildConfig.VERSION_NAME, currentArch());
+            apkFileName = ApkShareName.fileName(org.iiab.controller.BuildConfig.VERSION_NAME, apkArch(myApkPath));
             apkServer = new ApkServer(shareConfig.apkPort, myApkPath, apkFileName);
             apkServer.start();
             isApkServerRunning = true;
