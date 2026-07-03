@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager2 viewPager;
     private TextView versionFooter;
     public boolean isServerAlive = false;
+    private long serverUpSinceMs = 0L; // ADFA-4466: for server_stopped uptime bucket
     public boolean isNegotiating = false;
     public DashboardFragment.SystemState currentSystemState = DashboardFragment.SystemState.NONE;
     public boolean isProxyDegraded = false;
@@ -141,6 +142,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .edit()
                 .putBoolean("is_module_state_trusted", false)
                 .apply();
+    }
+
+    /**
+     * ADFA-4466 Phase 1: single chokepoint for the server-alive polls so we can emit
+     * server_started / server_stopped exactly on the transition (consent-gated, no-op
+     * otherwise). server_stopped carries a coarse uptime bucket, never an exact duration.
+     */
+    private void updateServerAlive(boolean nowAlive) {
+        if (nowAlive && !isServerAlive) {
+            serverUpSinceMs = System.currentTimeMillis();
+            org.iiab.controller.analytics.AnalyticsClient.with(this).logServerStarted();
+        } else if (!nowAlive && isServerAlive) {
+            long uptime = serverUpSinceMs > 0L ? System.currentTimeMillis() - serverUpSinceMs : -1L;
+            serverUpSinceMs = 0L;
+            org.iiab.controller.analytics.AnalyticsClient.with(this).logServerStopped(uptime);
+        }
+        isServerAlive = nowAlive;
     }
 
     public boolean isModuleStateTrusted() {
@@ -695,7 +713,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // We evaluate the results
             isNegotiating = false;
-            isServerAlive = boxAlive || localAlive;
+            updateServerAlive(boxAlive || localAlive);
 
             // If VPN is ON but box/proxy is dead, the tunnel is degraded (Orange).
             if (prefs.getEnable()) {
@@ -1068,7 +1086,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 isProxyDegraded = false;
             }
 
-            isServerAlive = localAlive || boxAlive;
+            updateServerAlive(localAlive || boxAlive);
 
             // STATE MACHINE: Has the target state been reached?
             if (targetServerState != null && isServerAlive == targetServerState) {

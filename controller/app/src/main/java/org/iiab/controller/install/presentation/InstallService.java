@@ -211,6 +211,7 @@ public final class InstallService extends Service {
             startRootfsDownload();
         } catch (Exception e) {
             Log.e(TAG, "Install pipeline crashed", e);
+            org.iiab.controller.analytics.AnalyticsClient.with(this).logInstallFailed("download", "exception");
             fail(getString(R.string.install_error_download, String.valueOf(e.getMessage())));
         }
     }
@@ -237,6 +238,7 @@ public final class InstallService extends Service {
 
             @Override
             public void onError(String error) {
+                org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logInstallFailed("download", "network");
                 fail(getString(R.string.install_error_download, error));
             }
         });
@@ -249,6 +251,7 @@ public final class InstallService extends Service {
         File downloadDir = new File(downloadPath);
         File[] archives = downloadDir.listFiles((dir, name) -> name.endsWith(".tar.xz") || name.endsWith(".tar.gz"));
         if (archives == null || archives.length == 0) {
+            org.iiab.controller.analytics.AnalyticsClient.with(this).logInstallFailed("download", "no_archive");
             fail(getString(R.string.install_error_no_archive));
             return;
         }
@@ -285,6 +288,7 @@ public final class InstallService extends Service {
 
                     @Override
                     public void onError(String error) {
+                        org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logInstallFailed("extract", "extract_error");
                         fail(getString(R.string.install_error_extraction, error));
                     }
                 });
@@ -633,6 +637,11 @@ public final class InstallService extends Service {
     private void finishSuccess() {
         if (finished) return;
         finished = true;
+        if (!resetMode && !moduleMode) {
+            // ADFA-4466 Phase 1: operational analytics (no-op unless the operator opted in).
+            org.iiab.controller.analytics.AnalyticsClient.with(this)
+                    .logInstallCompleted(tier != null ? tier.name() : null, true);
+        }
         InstallProgressRepository.get().postSuccess();
         teardown();
     }
