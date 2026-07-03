@@ -62,6 +62,14 @@ jobs:
     - name: Grant Execute Permission to Gradlew
       run: chmod +x gradlew
 
+    # ADFA-4466 Phase 1: the google-services plugin needs google-services.json at build time.
+    # This is the DEDICATED K2Go Analytics Firebase project (separate from the App
+    # Distribution project, which uses GOOGLE_SERVICES_JSON). ADFA-4466.
+    - name: Create google-services.json
+      env:
+        GOOGLE_SERVICES_JSON_K2GO_ANALYTICS: ${{ secrets.GOOGLE_SERVICES_JSON_K2GO_ANALYTICS }}
+      run: echo "$GOOGLE_SERVICES_JSON_K2GO_ANALYTICS" > app/google-services.json
+
     # Phase 0 safety net: unit tests are a BLOCKING gate.
     - name: Run Unit Tests
       run: ./gradlew testDebugUnitTest --stacktrace

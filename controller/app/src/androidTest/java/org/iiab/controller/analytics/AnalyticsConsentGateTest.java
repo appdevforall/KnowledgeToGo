@@ -1,6 +1,7 @@
 package org.iiab.controller.analytics;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 
@@ -8,59 +9,63 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.iiab.controller.delivery.data.AnalyticsConsent;
-import org.iiab.controller.delivery.data.DeliveryConfig;
-import org.iiab.controller.delivery.data.OutboundQueue;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
-
 /**
- * On-device proof of the privacy gate: with consent OFF, AnalyticsClient enqueues nothing;
- * with consent ON, operational events are enqueued into the durable backbone queue.
- * Endpoint stays blank so nothing is actually sent during the test.
+ * On-device proof of the privacy gate for the Firebase sink (ADFA-4466 Phase 1).
+ *
+ * <p>Analytics now goes straight to the Firebase SDK (online-first), whose internal buffer
+ * is not introspectable on-device, so we assert what we can observe: the consent flag is
+ * OFF by default, and the whole gated emit path is exercised without throwing in both
+ * states. The privacy contract (no-op unless opted in) lives in {@code AnalyticsClient.gate()}
+ * plus {@code FirebaseAnalytics.setAnalyticsCollectionEnabled}.
  */
 @RunWith(AndroidJUnit4.class)
 public class AnalyticsConsentGateTest {
 
-    private Context ctx;
-    private OutboundQueue queue;
-
-    private void clearQueueFile() {
-        new File(ctx.getFilesDir(), "delivery_queue.jsonl").delete();
-    }
-
-    @Before
-    public void setUp() {
-        ctx = ApplicationProvider.getApplicationContext();
-        DeliveryConfig.setEndpoint(ctx, ""); // never send during the test
-        clearQueueFile();
-        queue = new OutboundQueue(ctx);
+    private Context ctx() {
+        return ApplicationProvider.getApplicationContext();
     }
 
     @After
     public void tearDown() {
-        AnalyticsConsent.setEnabled(ctx, false);
-        clearQueueFile();
+        AnalyticsConsent.setEnabled(ctx(), false);
     }
 
     @Test
-    public void nothingEnqueued_whenConsentOff() {
+    public void consentDefaultsOff() {
+        Context ctx = ctx();
         AnalyticsConsent.setEnabled(ctx, false);
-        AnalyticsClient client = AnalyticsClient.with(ctx);
-        client.logAppOpened();
-        client.logSession(1000L);
-        assertEquals(0, queue.count());
+        assertFalse(AnalyticsConsent.isEnabled(ctx));
     }
 
     @Test
-    public void eventsEnqueued_whenConsentOn() {
+    public void gatedPath_doesNotThrow_whenConsentOff() {
+        Context ctx = ctx();
+        AnalyticsConsent.setEnabled(ctx, false);
+        emitAll(AnalyticsClient.with(ctx));
+        assertFalse(AnalyticsConsent.isEnabled(ctx));
+    }
+
+    @Test
+    public void emitPath_doesNotThrow_whenConsentOn() {
+        Context ctx = ctx();
         AnalyticsConsent.setEnabled(ctx, true);
         AnalyticsClient client = AnalyticsClient.with(ctx);
+        client.applyConsent();
+        emitAll(client);
+        assertTrue(AnalyticsConsent.isEnabled(ctx));
+    }
+
+    private void emitAll(AnalyticsClient client) {
         client.logAppOpened();
         client.logSession(1000L);
-        assertEquals(2, queue.count());
+        client.logInstallStarted("BASIC", true, "arm64-v8a");
+        client.logInstallCompleted("BASIC", true);
+        client.logInstallFailed("download", "network");
+        client.logServerStarted();
+        client.logServerStopped(90_000L);
     }
 }

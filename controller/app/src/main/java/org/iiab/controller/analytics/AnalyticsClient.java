@@ -2,23 +2,31 @@ package org.iiab.controller.analytics;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.os.Bundle;
 
-import org.iiab.controller.analytics.domain.AnalyticsEvent;
-import org.iiab.controller.delivery.DeliveryManager;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
+import org.iiab.controller.analytics.domain.AnalyticsBuckets;
 import org.iiab.controller.delivery.data.AnalyticsConsent;
 import org.iiab.controller.delivery.data.InstallId;
 import org.iiab.controller.feedback.data.FeedbackDiagnostics;
 
 /**
- * Emits operational, anonymous usage events into the shared delivery backbone. Every
- * method is a no-op unless the operator has opted in ({@link AnalyticsConsent}) — so with
- * consent OFF nothing is built, collected, or enqueued. The backbone (WorkManager) flushes
- * to the Cloudflare Worker when connectivity returns; if no endpoint is configured yet the
- * events simply stay queued.
+ * Emits operational, anonymous usage events to Firebase Analytics (ADFA-4466 Phase 1).
  *
- * <p>Data set is strictly operational: an anonymous install id, app/device build info and
- * timing. No content, no per-user behaviour, no location, no PII.
+ * <p><b>Online-first:</b> events are handed straight to the Firebase SDK, which batches
+ * and delivers them itself (buffering while offline and flushing on reconnect). The
+ * shared store-and-forward backbone and the Cloudflare Worker are out of scope for now.
+ *
+ * <p><b>Consent-gated:</b> every method is a no-op unless the operator has opted in
+ * ({@link AnalyticsConsent}, default OFF). Collection is also toggled at the SDK level via
+ * {@link FirebaseAnalytics#setAnalyticsCollectionEnabled(boolean)} so nothing is gathered
+ * while consent is OFF. Advertising ID / SSAID collection is disabled in the manifest.
+ *
+ * <p><b>Data set is strictly operational:</b> an anonymous install id, build info and
+ * coarse timing/config. No content, no per-user behaviour, no location, no PII. Device
+ * model, OS version, app version and country are Firebase's own automatic dimensions, so
+ * this class does not send them as parameters.
  */
 public final class AnalyticsClient {
 
@@ -35,51 +43,128 @@ public final class AnalyticsClient {
         return new AnalyticsClient(ctx);
     }
 
-    /** Once per install (and only while opted in): app installed / first run. */
+    /**
+     * Keeps the SDK's collection flag in sync with the stored consent. Safe to call from
+     * anywhere (e.g. Application start, or right after the consent toggle changes).
+     */
+    public void applyConsent() {
+        FirebaseAnalytics.getInstance(app).setAnalyticsCollectionEnabled(AnalyticsConsent.isEnabled(app));
+    }
+
+    // -------------------------------------------------------------- app lifecycle
+
+    /** Once per install (and only while opted in). */
     public void logFirstRunIfNeeded() {
-        if (!AnalyticsConsent.isEnabled(app)) {
+        if (!gate()) {
             return;
         }
         SharedPreferences p = prefs();
         if (p.getBoolean(KEY_FIRST_RUN_LOGGED, false)) {
             return;
         }
-        enqueue(base("first_run"));
+        log("first_run", base());
         p.edit().putBoolean(KEY_FIRST_RUN_LOGGED, true).apply();
     }
 
     /** App brought to the foreground. */
     public void logAppOpened() {
-        if (!AnalyticsConsent.isEnabled(app)) {
+        if (!gate()) {
             return;
         }
-        enqueue(base("app_opened"));
+        log("app_opened", base());
     }
 
     /** App sent to the background: the session and its duration. */
     public void logSession(long durationMs) {
-        if (!AnalyticsConsent.isEnabled(app)) {
+        if (!gate()) {
             return;
         }
-        enqueue(base("session").with("session_ms", durationMs));
+        Bundle b = base();
+        b.putLong("session_ms", durationMs);
+        log("session", b);
     }
 
-    private AnalyticsEvent base(String name) {
-        String abi = Build.SUPPORTED_ABIS != null && Build.SUPPORTED_ABIS.length > 0
-                ? Build.SUPPORTED_ABIS[0] : "";
-        return AnalyticsEvent.named(name)
-                .with("install_id", InstallId.get(app))
-                .with("app_version", FeedbackDiagnostics.appVersionName(app))
-                .with("app_build", FeedbackDiagnostics.appVersionCode(app))
-                .with("android", Build.VERSION.RELEASE)
-                .with("device", Build.MANUFACTURER + " " + Build.MODEL)
-                .with("abi", abi)
-                .with("binaries_tag", FeedbackDiagnostics.binariesTag(app))
-                .with("ts", System.currentTimeMillis());
+    // ------------------------------------------------------- operational (Phase 1)
+
+    /** A rootfs install was launched. */
+    public void logInstallStarted(String tier, boolean companionData, String arch) {
+        if (!gate()) {
+            return;
+        }
+        Bundle b = base();
+        b.putString("tier", safe(tier));
+        b.putString("companion_data", String.valueOf(companionData));
+        b.putString("arch", safe(arch));
+        log("install_started", b);
     }
 
-    private void enqueue(AnalyticsEvent e) {
-        DeliveryManager.with(app).enqueueAnalytics(e.toJson());
+    /** A rootfs install finished (success flag). */
+    public void logInstallCompleted(String tier, boolean success) {
+        if (!gate()) {
+            return;
+        }
+        Bundle b = base();
+        b.putString("tier", safe(tier));
+        b.putString("success", String.valueOf(success));
+        log("install_completed", b);
+    }
+
+    /** A rootfs install failed at a given phase, with an enum reason code (never a message). */
+    public void logInstallFailed(String phase, String reasonCode) {
+        if (!gate()) {
+            return;
+        }
+        Bundle b = base();
+        b.putString("phase", safe(phase));
+        b.putString("reason_code", safe(reasonCode));
+        log("install_failed", b);
+    }
+
+    /** The box server came up. */
+    public void logServerStarted() {
+        if (!gate()) {
+            return;
+        }
+        log("server_started", base());
+    }
+
+    /** The box server went down, with a coarse uptime bucket (never the exact duration). */
+    public void logServerStopped(long uptimeMs) {
+        if (!gate()) {
+            return;
+        }
+        Bundle b = base();
+        b.putString("uptime_bucket", AnalyticsBuckets.uptimeBucket(uptimeMs));
+        log("server_stopped", b);
+    }
+
+    // ------------------------------------------------------------------- internals
+
+    /** True only when the operator opted in; also keeps the SDK flag in sync. */
+    private boolean gate() {
+        boolean consent = AnalyticsConsent.isEnabled(app);
+        FirebaseAnalytics.getInstance(app).setAnalyticsCollectionEnabled(consent);
+        return consent;
+    }
+
+    /**
+     * Common bundle: nothing device-identifying (Firebase auto-collects device/OS/version).
+     * install_id + binaries_tag are set as user properties so every event is attributable to
+     * an anonymous deployment without repeating them as params.
+     */
+    private Bundle base() {
+        FirebaseAnalytics fa = FirebaseAnalytics.getInstance(app);
+        fa.setUserProperty("install_id", InstallId.get(app));
+        fa.setUserProperty("binaries_tag", safe(FeedbackDiagnostics.binariesTag(app)));
+        return new Bundle();
+    }
+
+    private void log(String name, Bundle params) {
+        FirebaseAnalytics.getInstance(app).logEvent(name, params);
+    }
+
+    private static String safe(String v) {
+        return v != null ? v : "";
     }
 
     private SharedPreferences prefs() {

@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    // ADFA-4466 Phase 1: Firebase Analytics.
+    id 'com.google.gms.google-services'
 }
 
 // 1. AUTO-VERSIONING MAP (Must be defined outside the 'android' block)
@@ -181,6 +183,11 @@ dependencies {
     implementation 'org.conscrypt:conscrypt-android:2.5.3'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
+
+    // ADFA-4466 Phase 1: Firebase Analytics (online-first). BoM aligns versions;
+    // firebase-analytics (not -ktx) exposes the Java API used by AnalyticsClient.
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation 'com.google.firebase:firebase-analytics'
 
     // Local Module: Our C++ engine (Termux)
     implementation project(':termux-core')

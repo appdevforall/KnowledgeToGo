@@ -219,10 +219,12 @@ public class SetupSectionFragment extends Fragment {
                 .setCancelable(false)
                 .setPositiveButton(R.string.analytics_enroll_accept, (d, w) -> {
                     AnalyticsConsent.setEnabled(requireContext(), true);
+                    org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
                     finishEnrollment(delivery);
                 })
                 .setNegativeButton(R.string.analytics_enroll_decline, (d, w) -> {
                     AnalyticsConsent.setEnabled(requireContext(), false);
+                    org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
                     finishEnrollment(delivery);
                 })
                 .show();

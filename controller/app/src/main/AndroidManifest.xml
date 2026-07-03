@@ -98,5 +98,11 @@
                 android:value="true" />
         </service>
 
+        <!-- ADFA-4466 Phase 1: privacy hardening. Disable Advertising ID / SSAID
+             collection and ad personalization (K2Go may serve minors; operational
+             analytics only). -->
+        <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_ssaid_collection_enabled" android:value="false" />
+        <meta-data android:name="google_analytics_default_allow_ad_personalization_signals" android:value="false" />
     </application>
 </manifest>
