@@ -39,7 +39,7 @@ public class IIABApplication extends Application {
         Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(
                 new org.iiab.controller.feedback.crash.K2GoUncaughtExceptionHandler(
-                        new org.iiab.controller.feedback.crash.data.CrashReportStore(this), previous));
+                        this, new org.iiab.controller.feedback.crash.data.CrashReportStore(this), previous));
 
         // Operational usage analytics (no-op unless the operator opted in). Emits first_run
         // once, plus app_opened + session duration as the process moves fore/background.

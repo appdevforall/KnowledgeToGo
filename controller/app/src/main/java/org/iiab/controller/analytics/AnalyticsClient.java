@@ -138,6 +138,45 @@ public final class AnalyticsClient {
         log("server_stopped", b);
     }
 
+    // ------------------------------------------------------------- lifecycle (Phase 2)
+
+    /** The operator finished the first-run setup wizard. */
+    public void logOnboardingCompleted() {
+        if (!gate()) {
+            return;
+        }
+        log("onboarding_completed", base());
+    }
+
+    /** The operator sent operator feedback (no content, just that it happened). */
+    public void logFeedbackSent() {
+        if (!gate()) {
+            return;
+        }
+        log("feedback_sent", base());
+    }
+
+    /** An uncaught error occurred: a coarse type only (e.g. the exception class), never the message. */
+    public void logAppError(String type) {
+        if (!gate()) {
+            return;
+        }
+        Bundle b = base();
+        b.putString("type", safe(type));
+        log("app_error", b);
+    }
+
+    /** A module install finished (module = fixed-catalog key; deployment config, not user content). */
+    public void logModuleInstall(String module, boolean success) {
+        if (!gate()) {
+            return;
+        }
+        Bundle b = base();
+        b.putString("module", safe(module));
+        b.putString("result", success ? "success" : "failed");
+        log("module_install", b);
+    }
+
     // ------------------------------------------------------------------- internals
 
     /** True only when the operator opted in; also keeps the SDK flag in sync. */

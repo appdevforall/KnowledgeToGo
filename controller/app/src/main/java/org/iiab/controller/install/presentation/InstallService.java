@@ -580,8 +580,10 @@ public final class InstallService extends Service {
                 if (outcome.failed(exitCode)) {
                     failedModules.add(nextModule);
                     log("[Install] FAILED: " + nextModule + " (exit=" + exitCode + ")");
+                    org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, false);
                     revertModuleInLocalVars(nextModule, InstallService.this::installNextModule);
                 } else {
+                    org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, true);
                     installNextModule();
                 }
             }
@@ -593,6 +595,7 @@ public final class InstallService extends Service {
                 // (matches the former loop, which aborted on a proot error).
                 failedModules.add(nextModule);
                 log("[Install] ERROR: " + nextModule + " (" + error + ")");
+                org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, false);
                 moduleQueue.clear();
                 revertModuleInLocalVars(nextModule, InstallService.this::finishModuleQueue);
             }
