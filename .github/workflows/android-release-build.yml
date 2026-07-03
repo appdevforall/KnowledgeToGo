@@ -36,11 +36,11 @@ jobs:
         run: chmod +x gradlew
 
       # ADFA-4466: the google-services plugin needs google-services.json at build time;
-      # inject it from the GOOGLE_SERVICES_JSON secret so the build compiles.
+      # inject it from the dedicated K2Go analytics secret so the build compiles.
       - name: Create google-services.json
         env:
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+          GOOGLE_SERVICES_JSON_K2GO_ANALYTICS: ${{ secrets.GOOGLE_SERVICES_JSON_K2GO_ANALYTICS }}
+        run: echo "$GOOGLE_SERVICES_JSON_K2GO_ANALYTICS" > app/google-services.json
 
       - name: Decode Keystore
         env:
