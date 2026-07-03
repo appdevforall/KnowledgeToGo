@@ -17,6 +17,7 @@ import android.util.Log;
 import org.iiab.controller.sync.domain.RsyncConfig;
 import org.iiab.controller.sync.domain.RsyncOutcome;
 import org.iiab.controller.sync.domain.RsyncProgress;
+import org.iiab.controller.sync.domain.RsyncProcessMatcher;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.domain.SyncCredentialValidator;
 import org.iiab.controller.sync.transport.SecretStore;
@@ -24,6 +25,7 @@ import org.iiab.controller.sync.transport.TransportEngine;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -32,6 +34,7 @@ public class RsyncManager implements TransportEngine {
 
     private static final String TAG = "IIAB-RsyncManager";
     private volatile Process rsyncProcess;
+    private volatile String rsyncBinPath; // ADFA-4539: so stop() can find our per-connection children in /proc
     private volatile boolean isCancelled = false; // S10: read/written across threads
     private SecretStore secretStore;
 
@@ -55,6 +58,7 @@ public class RsyncManager implements TransportEngine {
         try {
             File nativeLibDir = new File(context.getApplicationInfo().nativeLibraryDir);
             File rsyncBin = new File(nativeLibDir, "librsync.so");
+            rsyncBinPath = rsyncBin.getAbsolutePath();
 
             if (!rsyncBin.exists()) {
                 Log.e(TAG, context.getString(R.string.rsync_error_binary_missing));
@@ -106,6 +110,7 @@ public class RsyncManager implements TransportEngine {
             try {
                 File nativeLibDir = new File(context.getApplicationInfo().nativeLibraryDir);
                 File rsyncBin = new File(nativeLibDir, "librsync.so");
+            rsyncBinPath = rsyncBin.getAbsolutePath();
 
                 if (!rsyncBin.exists()) {
                     throw new Exception(context.getString(R.string.rsync_error_binary_missing));
@@ -193,6 +198,7 @@ public class RsyncManager implements TransportEngine {
             try {
                 File nativeLibDir = new File(context.getApplicationInfo().nativeLibraryDir);
                 File rsyncBin = new File(nativeLibDir, "librsync.so");
+            rsyncBinPath = rsyncBin.getAbsolutePath();
 
                 if (!rsyncBin.exists())
                     throw new Exception(context.getString(R.string.rsync_error_binary_missing));
@@ -252,10 +258,73 @@ public class RsyncManager implements TransportEngine {
         if (secretStore != null) secretStore.clear(); // S11: don't let secrets outlive the session
         if (rsyncProcess != null) {
             try {
-                rsyncProcess.destroy();
+                rsyncProcess.destroy(); // SIGTERM the parent daemon so it stops accepting/forking
             } catch (Exception e) {
                 Log.w(TAG, "Error destroying rsync process on stop", e);
             }
+        }
+        // ADFA-4539: destroy() only signals the parent. The daemon forks a child per
+        // connection (--no-detach keeps the parent in foreground); that child keeps
+        // streaming the transfer and reparents to init when the parent dies. So sweep
+        // /proc and SIGKILL every rsync process that is ours (matched by our unique
+        // librsync.so path), which covers the connection children on both the share
+        // (daemon) and receive (client) sides.
+        killOurRsyncProcesses();
+    }
+
+    /**
+     * Kill every rsync process launched from our app-private librsync.so, found by
+     * scanning /proc. Same-UID kills only (SIGKILL via android.os.Process.killProcess),
+     * and never our own app process. Best-effort: unreadable/vanished entries are skipped.
+     */
+    private void killOurRsyncProcesses() {
+        String bin = rsyncBinPath;
+        if (bin == null || bin.isEmpty()) {
+            return;
+        }
+        File procDir = new File("/proc");
+        File[] pidDirs = procDir.listFiles();
+        if (pidDirs == null) {
+            return;
+        }
+        int myPid = android.os.Process.myPid();
+        for (File dir : pidDirs) {
+            String name = dir.getName();
+            int pid;
+            try {
+                pid = Integer.parseInt(name);
+            } catch (NumberFormatException notAPid) {
+                continue;
+            }
+            if (pid == myPid) {
+                continue; // never kill the app itself
+            }
+            String cmdline = readCmdline(new File(dir, "cmdline"));
+            if (RsyncProcessMatcher.isOurRsyncProcess(cmdline, bin)) {
+                try {
+                    android.os.Process.killProcess(pid); // SIGKILL; same UID as us
+                    Log.i(TAG, "ADFA-4539: killed lingering rsync pid " + pid);
+                } catch (Exception e) {
+                    Log.w(TAG, "Could not kill rsync pid " + pid, e);
+                }
+            }
+        }
+    }
+
+    /** Read /proc/<pid>/cmdline (NUL-separated argv) as a space-joined string, or null. */
+    private String readCmdline(File cmdlineFile) {
+        try (FileInputStream in = new FileInputStream(cmdlineFile)) {
+            byte[] buf = new byte[4096];
+            int total = 0, r;
+            while (total < buf.length && (r = in.read(buf, total, buf.length - total)) != -1) {
+                total += r;
+            }
+            if (total == 0) {
+                return null;
+            }
+            return new String(buf, 0, total).replace('\0', ' ').trim();
+        } catch (Exception e) {
+            return null; // not ours / vanished / no permission
         }
     }
 
