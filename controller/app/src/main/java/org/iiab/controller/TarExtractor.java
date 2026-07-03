@@ -57,6 +57,10 @@ public class TarExtractor {
                 if (!destination.exists()) {
                     destination.mkdirs();
                 }
+                // ADFA-4544: record free space + archive size for failure diagnostics.
+                final long freeBefore = freeBytes(destination);
+                Log.d(TAG, "Extract start: freeBytes=" + freeBefore
+                        + ", archiveCompressed=" + new File(archivePath).length() + ", dest=" + destDir);
                 // 1. DYNAMIC BINARY SELECTION
                 File staticTar = new File(context.getApplicationInfo().nativeLibraryDir, "libtar.so");
                 String tarBinary = staticTar.exists() ? staticTar.getAbsolutePath() : "/system/bin/tar";
@@ -111,13 +115,17 @@ public class TarExtractor {
                 tarProcess = pb.start();
 
                 // 3. READ TAR OUTPUT (Prevents buffer blocking and logs errors)
+                // ADFA-4544: retain the last output lines (stderr is merged) for diagnostics.
+                final java.util.concurrent.ConcurrentLinkedDeque<String> tarTail = new java.util.concurrent.ConcurrentLinkedDeque<>();
                 final Handler uiHandler = new Handler(Looper.getMainLooper());
-                new Thread(() -> {
+                Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(tarProcess.getInputStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
                             Log.d(TAG, "Tar Output: " + line);
+                            tarTail.addLast(line);
+                            while (tarTail.size() > 20) tarTail.pollFirst();
                             long now = System.currentTimeMillis();
                             if (now - lastEmit[0] >= 50) {
                                 lastEmit[0] = now;
@@ -127,40 +135,60 @@ public class TarExtractor {
                         }
                     } catch (Exception ignored) {
                     }
-                }).start();
+                });
+                readerThread.start();
 
                 // 4. THE JAVA DECOMPRESSION PIPE (If it's a .gz file)
+                boolean pipeBroke = false;
+                long totalWritten = 0;
                 if (isGzip) {
                     Log.d(TAG, "Starting Java GZIP Pipe stream to tar process...");
-                    // Try-with-resources automatically safely closes the streams when done
                     try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(archivePath));
                          OutputStream tarInput = tarProcess.getOutputStream()) {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
                         while ((bytesRead = gis.read(buffer)) != -1) {
-                            tarInput.write(buffer, 0, bytesRead);
+                            try {
+                                tarInput.write(buffer, 0, bytesRead);
+                                totalWritten += bytesRead;
+                            } catch (java.io.IOException pipe) {
+                                // ADFA-4544: tar (the pipe reader) closed its stdin early -> it
+                                // failed or was killed. Don't report a generic decompression error;
+                                // stop feeding and let waitFor() below surface tar's real exit code.
+                                pipeBroke = true;
+                                Log.e(TAG, "tar closed stdin early after " + totalWritten + " bytes", pipe);
+                                break;
+                            }
                         }
-                        tarInput.flush();
-                        Log.d(TAG, "Java GZIP Pipe finished pushing data.");
-                    } catch (Exception streamError) {
-                        Log.e(TAG, "Stream decompression error", streamError);
-                        throw new Exception("Decompression failed: " + streamError.getMessage());
+                        if (!pipeBroke) {
+                            tarInput.flush();
+                            Log.d(TAG, "Java GZIP Pipe finished pushing data.");
+                        }
                     }
+                    // A GZIPInputStream read error (corrupt archive) still propagates to the
+                    // outer catch as a genuine decompression failure.
                 }
 
-                // 5. WAIT FOR COMPLETION
-                // By this point, the OutputStream is closed. Tar knows EOF is reached and will exit.
+                // 5. WAIT FOR COMPLETION + DIAGNOSE
                 int exitCode = tarProcess.waitFor();
+                try { readerThread.join(1500); } catch (InterruptedException ignored) { }
                 isExtracting = false;
+                final long freeAfter = freeBytes(destination);
 
+                final boolean broke = pipeBroke;
+                final long wrote = totalWritten;
                 new Handler(Looper.getMainLooper()).post(() -> {
-                    if (exitCode == 0) {
+                    if (exitCode == 0 && !broke) {
                         Log.d(TAG, "Extraction successful.");
                         listener.onComplete(destDir);
                     } else {
-                        Log.e(TAG, "Extraction failed with code " + exitCode);
-                        listener.onError("Tar process exited with error code: " + exitCode);
+                        String diag = "tar exit=" + exitCode
+                                + (broke ? " (stdin pipe broke: tar died mid-stream; 137/killed => phantom-process or OOM)" : "")
+                                + ", wrote=" + wrote + "B, freeBefore=" + freeBefore + "B, freeAfter=" + freeAfter
+                                + "B, lastTarOutput=" + tarTail;
+                        Log.e(TAG, "Extraction failed: " + diag);
+                        listener.onError(diag);
                     }
                 });
 
@@ -224,6 +252,15 @@ public class TarExtractor {
             throw new Exception("Could not read archive listing for verification (tar exit " + exitCode + ")");
         }
         return names;
+    }
+
+    /** Available bytes on the destination's filesystem, or -1 if unavailable (ADFA-4544). */
+    private static long freeBytes(File dir) {
+        try {
+            return new android.os.StatFs(dir.getAbsolutePath()).getAvailableBytes();
+        } catch (Exception e) {
+            return -1L;
+        }
     }
 
     public void stopExtraction() {
