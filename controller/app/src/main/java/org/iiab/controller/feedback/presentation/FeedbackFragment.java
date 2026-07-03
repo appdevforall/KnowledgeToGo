@@ -84,7 +84,10 @@ public class FeedbackFragment extends Fragment {
                     .build();
             FeedbackTransport transport = FeedbackConfig.create(requireContext());
             boolean ok = transport.send(requireContext(), payload);
-            if (!ok) {
+            if (ok) {
+                // ADFA-4466 Phase 2: feedback-channel adoption (no content; no-op unless opted in).
+                org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).logFeedbackSent();
+            } else {
                 Toast.makeText(requireContext(), R.string.feedback_no_email_app, Toast.LENGTH_LONG).show();
             }
         });
