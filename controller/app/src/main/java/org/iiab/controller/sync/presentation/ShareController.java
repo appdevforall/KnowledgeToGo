@@ -34,6 +34,7 @@ import java.io.File;
 import org.iiab.controller.ApkServer;
 import org.iiab.controller.R;
 import org.iiab.controller.SyncHandshakeHelper;
+import org.iiab.controller.sync.domain.ApkShareName;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.transport.NetworkInterfaces;
 import org.iiab.controller.sync.transport.TransportEngine;
@@ -66,6 +67,7 @@ public final class ShareController {
 
     // Owned state.
     private ApkServer apkServer;
+    private String apkFileName; // K2Go-<version>-<arch>.apk, shared by the header and the QR URL (ADFA-4540)
     private boolean isDaemonRunning = false;
     private boolean isApkServerRunning = false;
     private String wifiIp = null;
@@ -249,11 +251,20 @@ public final class ShareController {
     }
 
     // --- APK SERVER METHODS ---
+    /** Primary ABI the app runs under (e.g. arm64-v8a), used to stamp the shared APK name. */
+    private String currentArch() {
+        String[] abis = android.os.Build.SUPPORTED_ABIS;
+        return (abis != null && abis.length > 0) ? abis[0] : "unknown";
+    }
+
     private void startApkServer() {
         try {
             String myApkPath = fragment.requireContext().getApplicationInfo().sourceDir;
 
-            apkServer = new ApkServer(shareConfig.apkPort, myApkPath);
+            // ADFA-4540: stamp the download name with brand+version+arch so the receiver
+            // knows exactly which build they got (replaces the ambiguous "-Latest").
+            apkFileName = ApkShareName.fileName(org.iiab.controller.BuildConfig.VERSION_NAME, currentArch());
+            apkServer = new ApkServer(shareConfig.apkPort, myApkPath, apkFileName);
             apkServer.start();
             isApkServerRunning = true;
 
@@ -280,7 +291,7 @@ public final class ShareController {
     private void updateQrDisplayApk() {
         String currentIp = showingWifi ? wifiIp : hotspotIp;
         updateShareIpLabel(currentIp);
-        String downloadUrl = "http://" + currentIp + ":" + shareConfig.apkPort + "/IIAB-Controller-Latest";
+        String downloadUrl = "http://" + currentIp + ":" + shareConfig.apkPort + "/" + apkFileName;
         Bitmap qrBitmap = SyncHandshakeHelper.generateQrCode(downloadUrl, 500);
 
         if (qrBitmap != null) imgQrCode.setImageBitmap(qrBitmap);
