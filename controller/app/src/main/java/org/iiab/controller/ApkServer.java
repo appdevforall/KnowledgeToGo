@@ -17,10 +17,12 @@ import fi.iki.elonen.NanoHTTPD;
 
 public class ApkServer extends NanoHTTPD {
     private final String apkPath;
+    private final String downloadFileName;
 
-    public ApkServer(int port, String apkPath) {
+    public ApkServer(int port, String apkPath, String downloadFileName) {
         super(port);
         this.apkPath = apkPath;
+        this.downloadFileName = downloadFileName;
     }
 
     @Override
@@ -41,8 +43,9 @@ public class ApkServer extends NanoHTTPD {
             // We use ChunkedResponse for large files (Avoid OutOfMemoryErrors)
             Response response = newChunkedResponse(Response.Status.OK, "application/vnd.android.package-archive", fis);
 
-            // We force the download name and indicate the size to the browser so that it shows the progress bar
-            response.addHeader("Content-Disposition", "attachment; filename=\"IIAB-Controller-Latest.apk\"");
+            // We force the download name and indicate the size to the browser so that it shows the progress bar.
+            // Name is stamped with brand+version+arch by the caller (ADFA-4540) so the receiver can tell which build this is.
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + downloadFileName + "\"");
             response.addHeader("Content-Length", String.valueOf(apkFile.length()));
 
             return response;
