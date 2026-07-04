@@ -8,12 +8,8 @@
     <color name="black">#000000</color>
     <color name="background_dark">#121212</color>
 
-    <color name="btn_vpn_on">#C62828</color>
-    <color name="btn_vpn_off">#2E7D32</color>
     <color name="btn_explore_ready">#F57C00</color>
     <color name="btn_explore_disabled">#B0B0B0</color>
-    <color name="btn_vpn_on_dim">#EF9A9A</color>
-    <color name="btn_vpn_off_dim">#A5D6A7</color>
 
     <color name="section_header_bg">#333333</color>
     <color name="section_body_bg_light">#F5F5F5</color>

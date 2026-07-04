@@ -96,7 +96,6 @@
     <string name="system_ready">System ready...\n</string>
 
     <string name="hotspot">Hotspot</string>
-    <string name="tunnel">Tunnel</string>
     <string name="wifi">Wi-Fi</string>
 
     <string name="qr_error_no_network">Enable Wi-Fi or Hotspot to share content over the network.</string>
@@ -106,8 +105,6 @@
     <string name="qr_title_wifi">Wi-Fi Network</string>
 
 
-    <string name="control_disable">Disable Safe Pocket Web</string>
-    <string name="control_enable">Enable Safe Pocket Web</string>
 
     <string name="setup_dns">Setup DNS</string>
     <string name="network_advanced_label">Advanced settings</string>
@@ -122,17 +119,9 @@
     <string name="maintenance_mode">Maintenance Mode</string>
     <string name="maintenance_warning_msg">Disable Safe Pocket Web in order to modify</string>
     <string name="remote_dns">Remote DNS</string>
-    <string name="socks_addr">Socks Address:</string>
-    <string name="socks_pass">Socks Password:</string>
-    <string name="socks_port">Socks Port:</string>
-    <string name="socks_udp_addr">Socks UDP Address:</string>
-    <string name="socks_user">Socks Username:</string>
     <string name="udp_in_tcp">UDP relay over TCP</string>
 
     <string name="user_initiated_conn">User initiated connection</string>
-    <string name="vpn_description">Enable friendly URLs. Lock out the threats.</string>
-    <string name="vpn_starting">VPN Starting...</string>
-    <string name="vpn_stopping">VPN Stopping...</string>
 
 
     <string name="watchdog_channel_desc">Ensures services remain active when screen is off.</string>
