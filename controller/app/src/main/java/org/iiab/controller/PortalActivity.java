@@ -14,10 +14,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.concurrent.Executor;
 
 import android.graphics.Bitmap;
 import android.view.View;
@@ -27,7 +25,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 
-import org.iiab.controller.portal.data.WebViewProxyConfigurator;
 import org.iiab.controller.portal.domain.NavigationPolicy;
 import org.iiab.controller.portal.presentation.GestureWebView;
 import org.iiab.controller.portal.presentation.PortalViewModel;
@@ -121,9 +118,6 @@ public class PortalActivity extends AppCompatActivity {
             if (webView.canGoForward()) webView.goForward();
             resetTimer.run();
         });
-
-        Preferences prefs = new Preferences(this);
-        boolean isVpnActive = prefs.getEnable();
 
         // Resolve the target URL once (domain), surviving rotation via the ViewModel.
         final String finalTargetUrl = vm.targetUrl(getIntent().getStringExtra("TARGET_URL"));
@@ -256,27 +250,8 @@ public class PortalActivity extends AppCompatActivity {
             downloadServedApk(uri, contentDisposition, mimetype);
         });
 
-        // Port and Mirror logic
-        int tempPort = prefs.getSocksPort();
-        if (tempPort <= 0) tempPort = 1080;
-        final int finalProxyPort = tempPort;
-
-        // Proxy block (ONLY IF VPN IS ACTIVE)
-        if (isVpnActive) {
-            if (WebViewProxyConfigurator.isSupported()) {
-                Executor executor = ContextCompat.getMainExecutor(this);
-                WebViewProxyConfigurator.applySocks(finalProxyPort, executor, () -> {
-                    Log.d(TAG, "Proxy configured on port: " + finalProxyPort);
-                    webView.loadUrl(finalTargetUrl); // load only when proxy is ready
-                });
-            } else {
-                Log.w(TAG, "Proxy Override not supported");
-                webView.loadUrl(finalTargetUrl);
-            }
-        } else {
-            // VPN is OFF. Load localhost directly.
-            webView.loadUrl(finalTargetUrl);
-        }
+        // Native architecture: content is served locally; load it directly.
+        webView.loadUrl(finalTargetUrl);
     }
 
     /**
@@ -312,14 +287,6 @@ public class PortalActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.e(TAG, "APK download failed to start: " + uri, e);
             Toast.makeText(this, R.string.portal_download_failed, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (WebViewProxyConfigurator.isSupported()) {
-            WebViewProxyConfigurator.clear(() -> Log.d(TAG, "WebView proxy released"));
         }
     }
 
