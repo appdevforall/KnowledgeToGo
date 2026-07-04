@@ -122,7 +122,6 @@
 
     <string name="user_initiated_conn">उपयोगकर्ता द्वारा आरंभ किया गया कनेक्शन</string>
     <string name="vpn_description">अनुकूल URL सक्षम करें। खतरों को ब्लॉक करें।</string>
-    <string name="vpn_permission_granted">VPN अनुमति दी गई। कनेक्ट हो रहा है...</string>
     <string name="vpn_starting">VPN शुरू हो रहा है...</string>
     <string name="vpn_stopping">VPN बंद हो रहा है...</string>
 

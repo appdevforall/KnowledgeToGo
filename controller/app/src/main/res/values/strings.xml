@@ -131,7 +131,6 @@
 
     <string name="user_initiated_conn">User initiated connection</string>
     <string name="vpn_description">Enable friendly URLs. Lock out the threats.</string>
-    <string name="vpn_permission_granted">VPN Permission Granted. Connecting...</string>
     <string name="vpn_starting">VPN Starting...</string>
     <string name="vpn_stopping">VPN Stopping...</string>
 

@@ -117,7 +117,6 @@
 
     <string name="user_initiated_conn">Conexión iniciada por el usuario</string>
     <string name="vpn_description">Habilite URLs amigables. Bloquee las amenazas.</string>
-    <string name="vpn_permission_granted">Permiso de VPN concedido. Conectando...</string>
     <string name="vpn_starting">Iniciando VPN...</string>
     <string name="vpn_stopping">Deteniendo VPN...</string>
 
