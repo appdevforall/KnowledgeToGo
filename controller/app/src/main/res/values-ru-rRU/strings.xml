@@ -122,7 +122,6 @@
 
     <string name="user_initiated_conn">Соединение инициировано пользователем</string>
     <string name="vpn_description">Включить безопасные URL. Блокировать угрозы.</string>
-    <string name="vpn_permission_granted">Разрешение VPN получено. Подключение...</string>
     <string name="vpn_starting">Запуск VPN...</string>
     <string name="vpn_stopping">Остановка VPN...</string>
 

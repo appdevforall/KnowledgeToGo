@@ -37,7 +37,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.net.VpnService;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
@@ -99,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String currentTargetUrl = null;
     private long pulseStartTime = 0;
 
-    private ActivityResultLauncher<Intent> vpnPermissionLauncher;
     private ActivityResultLauncher<String[]> requestPermissionsLauncher;
     private ActivityResultLauncher<Intent> batteryOptLauncher;
 
@@ -535,16 +533,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewPager.setCurrentItem(0, false);
 
         // 1. Initialize Result Launchers
-        vpnPermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && prefs.getEnable()) {
-                        connectVpn();
-                    }
-                    BatteryUtils.checkAndPromptOptimizations(MainActivity.this, batteryOptLauncher);
-                }
-        );
-
         batteryOptLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -745,10 +733,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void stopLogSizeUpdates() {
         sizeUpdateHandler.removeCallbacks(sizeUpdateRunnable);
-    }
-
-    private void connectVpn() {
-        addToLog(getString(R.string.vpn_permission_granted));
     }
 
     @Override
