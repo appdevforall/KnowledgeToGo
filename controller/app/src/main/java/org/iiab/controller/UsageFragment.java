@@ -48,10 +48,9 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
     private MainActivity mainActivity;
     // INTERFACE VARS
-    private EditText edittext_socks_addr, edittext_socks_udp_addr, edittext_socks_port, edittext_socks_user, edittext_socks_pass;
     private CheckBox checkbox_udp_in_tcp, checkbox_remote_dns, checkbox_global, checkbox_maintenance, checkbox_ipv4, checkbox_ipv6;
-    private TextView textview_maintenance_warning, configLabel, advConfigLabel, logLabel, logWarning, logSizeText, connectionLog;
-    private Button button_apps, button_save, button_control, button_browse_content, btnClearLog, btnCopyLog;
+    private TextView configLabel, advConfigLabel, logLabel, logWarning, logSizeText, connectionLog;
+    private Button button_apps, button_save, button_browse_content, btnClearLog, btnCopyLog;
     private LinearLayout logActions, configLayout, advancedConfig, deckContainer;
     private ProgressBar logProgress;
     private ProgressButton btnServerControl;
@@ -89,11 +88,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         // UI Bindings
-        edittext_socks_addr = view.findViewById(R.id.socks_addr);
-        edittext_socks_udp_addr = view.findViewById(R.id.socks_udp_addr);
-        edittext_socks_port = view.findViewById(R.id.socks_port);
-        edittext_socks_user = view.findViewById(R.id.socks_user);
-        edittext_socks_pass = view.findViewById(R.id.socks_pass);
         setup_dns_check = view.findViewById(R.id.setup_dns_check);
         dns_setup_fields = view.findViewById(R.id.dns_setup_fields);
         dns_primary = view.findViewById(R.id.dns_primary);
@@ -119,10 +113,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         checkbox_udp_in_tcp = view.findViewById(R.id.udp_in_tcp);
         checkbox_remote_dns = view.findViewById(R.id.remote_dns);
         checkbox_maintenance = view.findViewById(R.id.checkbox_maintenance);
-        textview_maintenance_warning = view.findViewById(R.id.maintenance_warning);
         button_apps = view.findViewById(R.id.apps);
         button_save = view.findViewById(R.id.save);
-        button_control = view.findViewById(R.id.control);
         button_browse_content = view.findViewById(R.id.btnBrowseContent);
 
         logActions = view.findViewById(R.id.log_actions);
@@ -141,12 +133,9 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         deckContainer = view.findViewById(R.id.deck_container);
         btnServerControl = view.findViewById(R.id.btn_server_control);
 
-        dashboardManager = new DashboardManager(requireActivity(), view, () -> {
-            mainActivity.handleControlClick();
-        });
+        dashboardManager = new DashboardManager(requireActivity(), view);
 
         // Listeners
-        button_control.setOnClickListener(v -> mainActivity.handleControlClick());
         button_browse_content.setOnClickListener(v -> mainActivity.handleBrowseContentClick(v));
         btnClearLog.setOnClickListener(this);
         btnCopyLog.setOnClickListener(this);
@@ -223,74 +212,23 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     public void updateUI() {
-        if (button_control == null) return;
+        if (checkbox_ipv4 == null) return;
 
-        boolean vpnActive = mainActivity.prefs.getEnable();
-
-        if (dashboardManager != null)
-            dashboardManager.setTunnelState(vpnActive, mainActivity.isProxyDegraded);
-
-        if (vpnActive) {
-            button_control.setText(R.string.control_disable);
-            button_control.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_vpn_on));
-        } else {
-            button_control.setText(R.string.control_enable);
-            button_control.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_vpn_off));
-        }
-
-        edittext_socks_addr.setText(mainActivity.prefs.getSocksAddress());
-        edittext_socks_udp_addr.setText(mainActivity.prefs.getSocksUdpAddress());
-        edittext_socks_port.setText(String.valueOf(mainActivity.prefs.getSocksPort()));
-        edittext_socks_user.setText(mainActivity.prefs.getSocksUsername());
-        edittext_socks_pass.setText(mainActivity.prefs.getSocksPassword());
         checkbox_ipv4.setChecked(mainActivity.prefs.getIpv4());
         checkbox_ipv6.setChecked(mainActivity.prefs.getIpv6());
         checkbox_global.setChecked(mainActivity.prefs.getGlobal());
         checkbox_udp_in_tcp.setChecked(mainActivity.prefs.getUdpInTcp());
         checkbox_remote_dns.setChecked(mainActivity.prefs.getRemoteDns());
         checkbox_maintenance.setChecked(mainActivity.prefs.getMaintenanceMode());
-        boolean editable = !vpnActive;
-        edittext_socks_addr.setEnabled(editable);
-        edittext_socks_port.setEnabled(editable);
-        button_save.setEnabled(editable);
-
-        checkbox_maintenance.setEnabled(editable);
-        if (textview_maintenance_warning != null) {
-            textview_maintenance_warning.setVisibility(vpnActive ? View.VISIBLE : View.GONE);
-        }
+        button_save.setEnabled(true);
+        checkbox_maintenance.setEnabled(true);
     }
 
     public void updateUIColorsAndVisibility() {
         if (!isAdded() || getContext() == null) {
             return;
         }
-        if (button_control == null) return;
-
-        boolean isVpnActive = mainActivity.prefs.getEnable();
-
-        if (dashboardManager != null) {
-            dashboardManager.setTunnelState(isVpnActive, mainActivity.isProxyDegraded);
-        }
-
-        // Main VPN Button
-        if (!mainActivity.isServerAlive) {
-            if (isVpnActive) {
-                button_control.setText(R.string.control_disable);
-                button_control.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_vpn_on_dim));
-            } else {
-                button_control.setText(R.string.control_enable);
-                button_control.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_vpn_off_dim));
-            }
-        } else {
-            button_control.setEnabled(true);
-            if (isVpnActive) {
-                button_control.setText(R.string.control_disable);
-                button_control.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_vpn_on));
-            } else {
-                button_control.setText(R.string.control_enable);
-                button_control.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_vpn_off));
-            }
-        }
+        if (button_browse_content == null) return;
 
         // Explore Button
         button_browse_content.setVisibility(View.VISIBLE);
@@ -470,11 +408,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     public void savePrefsFromUI() {
-        mainActivity.prefs.setSocksAddress("127.0.0.1");
-        mainActivity.prefs.setSocksPort(1080);
-        mainActivity.prefs.setSocksUdpAddress("");
-        mainActivity.prefs.setSocksUsername("");
-        mainActivity.prefs.setSocksPassword("");
         mainActivity.prefs.setIpv4(true);
         mainActivity.prefs.setIpv6(true);
         mainActivity.prefs.setUdpInTcp(false);

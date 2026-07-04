@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private long serverUpSinceMs = 0L; // ADFA-4466: for server_stopped uptime bucket
     public boolean isNegotiating = false;
     public DashboardFragment.SystemState currentSystemState = DashboardFragment.SystemState.NONE;
-    public boolean isProxyDegraded = false;
     public Boolean targetServerState = null;
     public String serverTransitionText = "";
     public UsageFragment usageFragment;
@@ -653,25 +652,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void runNegotiationSequence() {
-        isNegotiating = true;
-        runOnUiThread(() -> {
-            updateUIColorsAndVisibility(); // We forced an immediate visual update
-        });
-
-        AppExecutors.get().io().execute(() -> {
-            // Native architecture: content is served locally at localhost:8085.
-            boolean localAlive = pingUrl("http://localhost:8085/home");
-
-            isNegotiating = false;
-            updateServerAlive(localAlive);
-            isProxyDegraded = false;
-            currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
-
-            runOnUiThread(this::updateUIColorsAndVisibility);
-        });
-    }
-
     private void prepareVpn() {
         BatteryUtils.checkAndPromptOptimizations(MainActivity.this, batteryOptLauncher);
     }
@@ -760,7 +740,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else themeToggle.setImageResource(R.drawable.ic_theme_system);
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -798,29 +777,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         // Delegated
-    }
-
-    public void handleControlClick() {
-        if (!isServerAlive) {
-            Snackbar.make(findViewById(android.R.id.content), R.string.qr_error_no_server, Snackbar.LENGTH_LONG).show();
-            return;
-        }
-        if (prefs.getEnable()) {
-            BiometricHelper.prompt(this,
-                    getString(R.string.auth_required_title),
-                    getString(R.string.auth_required_subtitle),
-                    () -> {
-                        addToLog(getString(R.string.auth_success_disconnect));
-                        toggleService(true);
-                    });
-        } else {
-            if (BiometricHelper.isDeviceSecure(this)) {
-                addToLog(getString(R.string.user_initiated_conn));
-                toggleService(false);
-            } else {
-                BiometricHelper.showEnrollmentDialog(this);
-            }
-        }
     }
 
     public void handleBrowseContentClick(View v) {
@@ -986,18 +942,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void toggleService(boolean stop) {
-        prefs.setEnable(!stop);
-        savePrefs();
-        addToLog(getString(stop ? R.string.vpn_stopping : R.string.vpn_starting));
-
-        if (!stop) {
-            runNegotiationSequence();
-        } else {
-            updateUIColorsAndVisibility();
-        }
-    }
-
     public void updateUI() {
         if (usageFragment != null) {
             usageFragment.updateUI();
@@ -1009,7 +953,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AppExecutors.get().io().execute(() -> {
             boolean localAlive = pingUrl("http://localhost:8085/home");
-            isProxyDegraded = false;
 
             updateServerAlive(localAlive);
 
@@ -1976,7 +1919,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Include the system bins and our W^X fake prefix bins
                     "PATH=/sbin:/system/sbin:/system/bin:/system/xbin:" + workingDirectory.getAbsolutePath() + "/usr/bin"
             };
-
 
             // Launch the native Android shell!
             terminalSession = new com.termux.terminal.TerminalSession(
