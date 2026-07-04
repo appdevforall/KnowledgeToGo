@@ -59,8 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.Proxy;
-import java.net.InetSocketAddress;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "IIAB-MainActivity";
@@ -641,21 +639,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean pingUrl(String urlStr, boolean useProxy) {
+    private boolean pingUrl(String urlStr) {
         try {
             URL url = new URL(urlStr);
-            HttpURLConnection conn;
-
-            if (useProxy) {
-                // We routed the request directly to the app's SOCKS proxy
-                int socksPort = prefs.getSocksPort(); // generally 1080
-                Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress("127.0.0.1", socksPort));
-                conn = (HttpURLConnection) url.openConnection(proxy);
-            } else {
-                // Normal request (for localhost)
-                conn = (HttpURLConnection) url.openConnection();
-            }
-
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setUseCaches(false);
             conn.setConnectTimeout(1500);
             conn.setReadTimeout(1500);
@@ -673,50 +660,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         AppExecutors.get().io().execute(() -> {
-            boolean boxAlive = false;
+            // Native architecture: content is served locally at localhost:8085.
+            boolean localAlive = pingUrl("http://localhost:8085/home");
 
-            // Attempt 1 (0 seconds)
-            boxAlive = pingUrl("http://box/home", true);
-
-            // Attempt 2 (At 2 seconds)
-            if (!boxAlive) {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {
-                }
-                boxAlive = pingUrl("http://box/home", true);
-            }
-
-            // Attempt 3 (At 3 seconds)
-            if (!boxAlive) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignored) {
-                }
-                boxAlive = pingUrl("http://box/home", true);
-            }
-
-            // We validate if localhost serves as a fallback.
-            boolean localAlive = pingUrl("http://localhost:8085/home", false);
-
-            // We evaluate the results
             isNegotiating = false;
-            updateServerAlive(boxAlive || localAlive);
-
-            // If VPN is ON but box/proxy is dead, the tunnel is degraded (Orange).
-            if (prefs.getEnable()) {
-                isProxyDegraded = !boxAlive;
-            } else {
-                isProxyDegraded = false;
-            }
-
-            if (boxAlive) {
-                currentTargetUrl = "http://box/home";
-            } else if (localAlive) {
-                currentTargetUrl = "http://localhost:8085/home";
-            } else {
-                currentTargetUrl = null;
-            }
+            updateServerAlive(localAlive);
+            isProxyDegraded = false;
+            currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
 
             runOnUiThread(this::updateUIColorsAndVisibility);
         });
@@ -1058,19 +1008,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (isNegotiating) return;
 
         AppExecutors.get().io().execute(() -> {
-            boolean localAlive = pingUrl("http://localhost:8085/home", false);
-            boolean vpnOn = prefs.getEnable();
-            boolean boxAlive = false;
+            boolean localAlive = pingUrl("http://localhost:8085/home");
+            isProxyDegraded = false;
 
-            if (vpnOn) {
-                // The passive radar must also use the proxy to test the tunnel.
-                boxAlive = pingUrl("http://box/home", true);
-                isProxyDegraded = !boxAlive;
-            } else {
-                isProxyDegraded = false;
-            }
-
-            updateServerAlive(localAlive || boxAlive);
+            updateServerAlive(localAlive);
 
             // STATE MACHINE: Has the target state been reached?
             if (targetServerState != null && isServerAlive == targetServerState) {
@@ -1079,13 +1020,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (usageFragment != null) runOnUiThread(() -> usageFragment.stopBtnProgress());
             }
 
-            if (vpnOn && boxAlive) {
-                currentTargetUrl = "http://box/home";
-            } else if (localAlive) {
-                currentTargetUrl = "http://localhost:8085/home";
-            } else {
-                currentTargetUrl = null;
-            }
+            currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
 
             runOnUiThread(this::updateUIColorsAndVisibility);
         });
