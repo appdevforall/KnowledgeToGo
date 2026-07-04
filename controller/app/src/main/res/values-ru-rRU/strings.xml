@@ -95,7 +95,6 @@
     <string name="system_ready">Система готова...\n</string>
 
     <string name="hotspot">Точка доступа</string>
-    <string name="tunnel">Туннель</string>
     <string name="wifi">Wi-Fi</string>
 
     <string name="qr_error_no_network">Включите Wi-Fi или Точку доступа, чтобы поделиться контентом по сети.</string>
@@ -104,8 +103,6 @@
     <string name="qr_title_hotspot">Сеть Точки доступа</string>
     <string name="qr_title_wifi">Сеть Wi-Fi</string>
 
-    <string name="control_disable">Отключить Safe Pocket Web</string>
-    <string name="control_enable">Включить Safe Pocket Web</string>
 
     <string name="global">Глобально</string>
     <string name="ipv4">IPv4</string>
@@ -113,17 +110,9 @@
     <string name="maintenance_mode">Режим обслуживания</string>
     <string name="maintenance_warning_msg">Отключите Safe Pocket Web для изменения настроек.</string>
     <string name="remote_dns">Удаленный DNS</string>
-    <string name="socks_addr">Адрес Socks:</string>
-    <string name="socks_pass">Пароль Socks:</string>
-    <string name="socks_port">Порт Socks:</string>
-    <string name="socks_udp_addr">UDP адрес Socks:</string>
-    <string name="socks_user">Пользователь Socks:</string>
     <string name="udp_in_tcp">UDP-ретрансляция через TCP</string>
 
     <string name="user_initiated_conn">Соединение инициировано пользователем</string>
-    <string name="vpn_description">Включить безопасные URL. Блокировать угрозы.</string>
-    <string name="vpn_starting">Запуск VPN...</string>
-    <string name="vpn_stopping">Остановка VPN...</string>
 
     <string name="watchdog_channel_desc">Гарантирует, что службы остаются активными при выключенном экране.</string>
     <string name="watchdog_channel_name">Служба K2Go Watchdog</string>

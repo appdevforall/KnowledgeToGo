@@ -95,7 +95,6 @@
     <string name="system_ready">सिस्टम तैयार...\n</string>
 
     <string name="hotspot">हॉटस्पॉट</string>
-    <string name="tunnel">टनल</string>
     <string name="wifi">Wi-Fi</string>
 
     <string name="qr_error_no_network">नेटवर्क पर सामग्री साझा करने के लिए Wi-Fi या हॉटस्पॉट सक्षम करें।</string>
@@ -104,8 +103,6 @@
     <string name="qr_title_hotspot">हॉटस्पॉट नेटवर्क</string>
     <string name="qr_title_wifi">Wi-Fi नेटवर्क</string>
 
-    <string name="control_disable">Safe Pocket Web अक्षम करें</string>
-    <string name="control_enable">Safe Pocket Web सक्षम करें</string>
 
     <string name="global">ग्लोबल</string>
     <string name="ipv4">IPv4</string>
@@ -113,17 +110,9 @@
     <string name="maintenance_mode">रखरखाव मोड</string>
     <string name="maintenance_warning_msg">सेटिंग्स को संशोधित करने के लिए Safe Pocket Web अक्षम करें।</string>
     <string name="remote_dns">रिमोट DNS</string>
-    <string name="socks_addr">Socks पता:</string>
-    <string name="socks_pass">Socks पासवर्ड:</string>
-    <string name="socks_port">Socks पोर्ट:</string>
-    <string name="socks_udp_addr">Socks UDP पता:</string>
-    <string name="socks_user">Socks उपयोगकर्ता:</string>
     <string name="udp_in_tcp">TCP पर UDP रिले</string>
 
     <string name="user_initiated_conn">उपयोगकर्ता द्वारा आरंभ किया गया कनेक्शन</string>
-    <string name="vpn_description">अनुकूल URL सक्षम करें। खतरों को ब्लॉक करें।</string>
-    <string name="vpn_starting">VPN शुरू हो रहा है...</string>
-    <string name="vpn_stopping">VPN बंद हो रहा है...</string>
 
     <string name="watchdog_channel_desc">यह सुनिश्चित करता है कि स्क्रीन बंद होने पर सेवाएं सक्रिय रहें।</string>
     <string name="watchdog_channel_name">K2Go वॉचडॉग सेवा</string>

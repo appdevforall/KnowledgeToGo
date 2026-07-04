@@ -90,7 +90,6 @@
     <string name="system_ready">Sistema listo...\n</string>
 
     <string name="hotspot">Hotspot</string>
-    <string name="tunnel">Túnel</string>
     <string name="wifi">Wi-Fi</string>
 
     <string name="qr_error_no_network">Active Wi-Fi o Hotspot para compartir contenido a través de la red.</string>
@@ -99,8 +98,6 @@
     <string name="qr_title_hotspot">Red Hotspot</string>
     <string name="qr_title_wifi">Red Wi-Fi</string>
 
-    <string name="control_disable">Desactivar Safe Pocket Web</string>
-    <string name="control_enable">Activar Safe Pocket Web</string>
 
     <string name="global">Global</string>
     <string name="ipv4">IPv4</string>
@@ -108,17 +105,9 @@
     <string name="maintenance_mode">Modo Mantenimiento</string>
     <string name="maintenance_warning_msg">Desactive Safe Pocket Web para poder modificar configuraciones.</string>
     <string name="remote_dns">DNS Remoto</string>
-    <string name="socks_addr">Dirección Socks:</string>
-    <string name="socks_pass">Contraseña Socks:</string>
-    <string name="socks_port">Puerto Socks:</string>
-    <string name="socks_udp_addr">Dirección UDP Socks:</string>
-    <string name="socks_user">Usuario Socks:</string>
     <string name="udp_in_tcp">Relé UDP sobre TCP</string>
 
     <string name="user_initiated_conn">Conexión iniciada por el usuario</string>
-    <string name="vpn_description">Habilite URLs amigables. Bloquee las amenazas.</string>
-    <string name="vpn_starting">Iniciando VPN...</string>
-    <string name="vpn_stopping">Deteniendo VPN...</string>
 
     <string name="watchdog_channel_desc">Asegura que los servicios permanezcan activos cuando la pantalla está apagada.</string>
     <string name="watchdog_channel_name">Servicio K2Go Watchdog</string>

@@ -74,59 +74,7 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/dash_tunnel"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:background="?android:attr/selectableItemBackground"
-                android:padding="12dp"
-                android:visibility="gone">
-
-                <View
-                    android:id="@+id/led_tunnel"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/led_on_green" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tunnel"
-                    android:textColor="@color/dash_text_primary"
-                    android:textStyle="bold" />
-            </LinearLayout>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/control"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_marginHorizontal="12dp"
-            android:text="@string/control_enable"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_on_accent"
-            android:background="@drawable/rounded_button"
-            android:backgroundTint="@color/btn_vpn_off"
-            android:textAllCaps="false"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/control_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:text="@string/vpn_description"
-            android:textSize="13sp"
-            android:gravity="center"
-            android:textColor="?android:attr/textColorSecondary"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnBrowseContent"
@@ -217,39 +165,6 @@
                 android:textAllCaps="false" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/socks_addr"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="12sp"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/socks_addr"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textColor="?android:attr/textColorPrimary"
-                android:visibility="gone" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/socks_port"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="12sp"
-                android:visibility="gone" />
-
-            <EditText
-                android:id="@+id/socks_port"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="number"
-                android:textColor="?android:attr/textColorPrimary"
-                android:visibility="gone" />
-
-            <TextView
                 android:id="@+id/adv_config_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -267,49 +182,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/socks_udp_addr"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="11sp" />
-
-                <EditText
-                    android:id="@+id/socks_udp_addr"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/socks_user"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="11sp" />
-
-                <EditText
-                    android:id="@+id/socks_user"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="?android:attr/textColorPrimary" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/socks_pass"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="11sp" />
-
-                <EditText
-                    android:id="@+id/socks_pass"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:inputType="textPassword"
-                    android:textColor="?android:attr/textColorPrimary" />
 
                 <CheckBox
                     android:id="@+id/udp_in_tcp"

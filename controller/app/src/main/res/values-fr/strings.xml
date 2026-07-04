@@ -95,7 +95,6 @@
     <string name="system_ready">Système prêt...\n</string>
 
     <string name="hotspot">Point d\'accès</string>
-    <string name="tunnel">Tunnel</string>
     <string name="wifi">Wi-Fi</string>
 
     <string name="qr_error_no_network">Activez le Wi-Fi ou le Point d\'accès pour partager du contenu sur le réseau.</string>
@@ -104,8 +103,6 @@
     <string name="qr_title_hotspot">Réseau du Point d\'accès</string>
     <string name="qr_title_wifi">Réseau Wi-Fi</string>
 
-    <string name="control_disable">Désactiver Safe Pocket Web</string>
-    <string name="control_enable">Activer Safe Pocket Web</string>
 
     <string name="global">Global</string>
     <string name="ipv4">IPv4</string>
@@ -113,17 +110,9 @@
     <string name="maintenance_mode">Mode de maintenance</string>
     <string name="maintenance_warning_msg">Désactivez Safe Pocket Web pour pouvoir modifier les paramètres.</string>
     <string name="remote_dns">DNS distant</string>
-    <string name="socks_addr">Adresse Socks :</string>
-    <string name="socks_pass">Mot de passe Socks :</string>
-    <string name="socks_port">Port Socks :</string>
-    <string name="socks_udp_addr">Adresse UDP Socks :</string>
-    <string name="socks_user">Utilisateur Socks :</string>
     <string name="udp_in_tcp">Relais UDP sur TCP</string>
 
     <string name="user_initiated_conn">Connexion initiée par l\'utilisateur</string>
-    <string name="vpn_description">Activez des URL conviviales. Bloquez les menaces.</string>
-    <string name="vpn_starting">Démarrage du VPN...</string>
-    <string name="vpn_stopping">Arrêt du VPN...</string>
 
     <string name="watchdog_channel_desc">Garantit que les services restent actifs lorsque l\'écran est éteint.</string>
     <string name="watchdog_channel_name">Service K2Go Watchdog</string>
