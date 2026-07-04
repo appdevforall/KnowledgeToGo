@@ -23,12 +23,10 @@ public class ServiceReceiver extends BroadcastReceiver {
             return;
         }
         if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-            Preferences prefs = new Preferences(context);
-            if (prefs.getEnable()) {
-                // TODO(ADFA-3340): auto-start K2Go on boot. The previous
-                // VpnService/TProxyService implementation was removed (ADFA-4552,
-                // dead tunnel); the replacement start path will hook in here.
-            }
+            // TODO(ADFA-3340): auto-start K2Go on boot. The previous
+            // VpnService/TProxyService implementation was removed (ADFA-4552) and
+            // the "enable" pref was removed with the dead proxy (ADFA-4553); the
+            // replacement start path will hook in here.
         }
     }
 }

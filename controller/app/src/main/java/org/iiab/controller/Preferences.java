@@ -19,18 +19,12 @@ import android.content.SharedPreferences;
 
 public class Preferences {
     public static final String PREFS_NAME = "SocksPrefs";
-    public static final String SOCKS_ADDR = "SocksAddr";
-    public static final String SOCKS_UDP_ADDR = "SocksUdpAddr";
-    public static final String SOCKS_PORT = "SocksPort";
-    public static final String SOCKS_USER = "SocksUser";
-    public static final String SOCKS_PASS = "SocksPass";
     public static final String IPV4 = "Ipv4";
     public static final String IPV6 = "Ipv6";
     public static final String GLOBAL = "Global";
     public static final String UDP_IN_TCP = "UdpInTcp";
     public static final String REMOTE_DNS = "RemoteDNS";
     public static final String APPS = "Apps";
-    public static final String ENABLE = "Enable";
     public static final String WATCHDOG_ENABLE = "WatchdogEnable";
     public static final String MAINTENANCE_MODE = "MaintenanceMode";
 
@@ -38,56 +32,6 @@ public class Preferences {
 
     public Preferences(Context context) {
         prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_MULTI_PROCESS);
-    }
-
-    public String getSocksAddress() {
-        return prefs.getString(SOCKS_ADDR, "127.0.0.1");
-    }
-
-    public void setSocksAddress(String addr) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SOCKS_ADDR, addr);
-        editor.commit();
-    }
-
-    public String getSocksUdpAddress() {
-        return prefs.getString(SOCKS_UDP_ADDR, "");
-    }
-
-    public void setSocksUdpAddress(String addr) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SOCKS_UDP_ADDR, addr);
-        editor.commit();
-    }
-
-    public int getSocksPort() {
-        return prefs.getInt(SOCKS_PORT, 1080);
-    }
-
-    public void setSocksPort(int port) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt(SOCKS_PORT, port);
-        editor.commit();
-    }
-
-    public String getSocksUsername() {
-        return prefs.getString(SOCKS_USER, "");
-    }
-
-    public void setSocksUsername(String user) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SOCKS_USER, user);
-        editor.commit();
-    }
-
-    public String getSocksPassword() {
-        return prefs.getString(SOCKS_PASS, "");
-    }
-
-    public void setSocksPassword(String pass) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(SOCKS_PASS, pass);
-        editor.commit();
     }
 
     public String getMappedDns() {
@@ -151,16 +95,6 @@ public class Preferences {
     public void setApps(Set<String> apps) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putStringSet(APPS, apps);
-        editor.commit();
-    }
-
-    public boolean getEnable() {
-        return prefs.getBoolean(ENABLE, false);
-    }
-
-    public void setEnable(boolean enable) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(ENABLE, enable);
         editor.commit();
     }
 
