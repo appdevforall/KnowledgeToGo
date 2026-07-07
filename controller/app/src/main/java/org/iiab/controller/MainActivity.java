@@ -58,7 +58,7 @@ import java.util.Map;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements TerminalController.Host, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements TerminalController.Host, ServerController.Host, View.OnClickListener {
     private static final String TAG = "IIAB-MainActivity";
     public Preferences prefs;
     private ImageButton themeToggle;
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private TextView versionFooter;
-    private long serverUpSinceMs = 0L; // ADFA-4466: for server_stopped uptime bucket
     public boolean isNegotiating = false;
     public Boolean targetServerState = null;
     public String serverTransitionText = "";
@@ -81,14 +80,9 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         this.usageFragment = fragment;
     }
 
-    private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
-    private Runnable timeoutRunnable;
-    private boolean isWifiActive = false;
-    private boolean isHotspotActive = false;
 
     /** ADFA-4520: last observed native-hotspot state, for the LOHS AND-recommendation. */
-    public boolean isHotspotActive() { return isHotspotActive; }
-    private String currentTargetUrl = null;
+    public boolean isHotspotActive() { return serverController.isHotspotActive(); }
     private long pulseStartTime = 0;
 
     private ActivityResultLauncher<String[]> requestPermissionsLauncher;
@@ -98,11 +92,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     private final Handler sizeUpdateHandler = new Handler();
     private Runnable sizeUpdateRunnable;
 
-    // Variables for adaptive localhost server check
-    private final Handler serverCheckHandler = new Handler(android.os.Looper.getMainLooper());
-    private Runnable serverCheckRunnable;
-    private static final int CHECK_INTERVAL_MS = 3000;
-    public PRootEngine serverEngine;
+    public ServerController serverController;
 
     // Load native C++ engine
     static {
@@ -132,18 +122,6 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
      * server_started / server_stopped exactly on the transition (consent-gated, no-op
      * otherwise). server_stopped carries a coarse uptime bucket, never an exact duration.
      */
-    private void updateServerAlive(boolean nowAlive) {
-        boolean wasAlive = ServerStateRepository.get().current().alive;
-        if (nowAlive && !wasAlive) {
-            serverUpSinceMs = System.currentTimeMillis();
-            org.iiab.controller.analytics.AnalyticsClient.with(this).logServerStarted();
-        } else if (!nowAlive && wasAlive) {
-            long uptime = serverUpSinceMs > 0L ? System.currentTimeMillis() - serverUpSinceMs : -1L;
-            serverUpSinceMs = 0L;
-            org.iiab.controller.analytics.AnalyticsClient.with(this).logServerStopped(uptime);
-        }
-        // The repository is updated by the poll (checkServerStatus) right after this.
-    }
 
     public boolean isModuleStateTrusted() {
         return getSharedPreferences("iiab_queue_prefs", Context.MODE_PRIVATE)
@@ -192,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
                 case "org.iiab.ACTION_PREPARE_ROOTFS":
                     // The terminal requested a clean boot environment
                     File rootfsDir = new File(getFilesDir(), "rootfs/installed-rootfs/iiab");
-                    createFakeSysData(rootfsDir);
+                    serverController.createFakeSysData(rootfsDir);
                     break;
 //                case "org.iiab.ACTION_UNLOCK_SDCARD":
 //                    File prootTmp = new File(getFilesDir(), "proot_tmp");
@@ -422,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
                 Snackbars.make(findViewById(android.R.id.content), R.string.qr_error_no_server).show();
                 return;
             }
-            if (!isWifiActive && !isHotspotActive) {
+            if (!serverController.isWifiActive() && !serverController.isHotspotActive()) {
                 // Rule 2: At least one network must be active
                 Snackbars.make(findViewById(android.R.id.content), R.string.qr_error_no_network).show();
                 return;
@@ -447,15 +425,8 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
             }
         };
 
-        serverCheckRunnable = new Runnable() {
-            @Override
-            public void run() {
-                checkServerStatus();
-                updateConnectivityStatus(); // Check Wi-Fi & Hotspot states
-                serverCheckHandler.postDelayed(this, CHECK_INTERVAL_MS);
-            }
-        };
-        serverCheckHandler.post(serverCheckRunnable);
+        serverController = new ServerController(this, this);
+        serverController.start();
     }
 
     private void showBatterySnackbar() {
@@ -485,19 +456,6 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         }
     }
 
-    private boolean pingUrl(String urlStr) {
-        try {
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setUseCaches(false);
-            conn.setConnectTimeout(1500);
-            conn.setReadTimeout(1500);
-            conn.setRequestMethod("GET");
-            return (conn.getResponseCode() >= 200 && conn.getResponseCode() < 400);
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     private void prepareVpn() {
         BatteryUtils.checkAndPromptOptimizations(MainActivity.this, batteryOptLauncher);
@@ -519,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         updateController.unregisterDownloadReceiver();
 
         stopLogSizeUpdates();
-        serverCheckHandler.removeCallbacks(serverCheckRunnable);
+        serverController.onPause();
     }
 
     @Override
@@ -537,13 +495,10 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
                 showBatterySnackbar();
             }
         }
-        updateConnectivityStatus(); // Force instant UI refresh when returning to app
-
         if (usageFragment != null && usageFragment.isLogVisible()) {
             startLogSizeUpdates();
         }
-        serverCheckHandler.removeCallbacks(serverCheckRunnable);
-        serverCheckHandler.post(serverCheckRunnable);
+        serverController.onResume();
     }
 
     @Override
@@ -621,163 +576,15 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
             Snackbars.make(v, R.string.qr_error_no_server).show();
             return;
         }
-        if (currentTargetUrl != null) {
+        String targetUrl = serverController.getCurrentTargetUrl();
+        if (targetUrl != null) {
             Intent intent = new Intent(this, PortalActivity.class);
-            intent.putExtra("TARGET_URL", currentTargetUrl);
+            intent.putExtra("TARGET_URL", targetUrl);
             startActivity(intent);
         }
     }
 
-    private void createFakeSysData(File rootfsDir) {
-        try {
-            File procDir = new File(rootfsDir, "proc");
-            if (!procDir.exists()) procDir.mkdirs();
 
-            // Calculate REAL device boot time and uptime using Android's native clocks
-            long uptimeMillis = android.os.SystemClock.elapsedRealtime();
-            long bootTimeSeconds = (System.currentTimeMillis() - uptimeMillis) / 1000;
-            double uptimeSeconds = uptimeMillis / 1000.0;
-
-            // 1. Fake Uptime (Real Android uptime frozen at the moment of launch)
-            File uptimeFile = new File(procDir, ".uptime");
-            if (uptimeFile.exists()) uptimeFile.delete(); // Always refresh
-            java.io.FileOutputStream fosUp = new java.io.FileOutputStream(uptimeFile);
-            fosUp.write(String.format(java.util.Locale.US, "%.2f %.2f\n", uptimeSeconds, uptimeSeconds).getBytes());
-            fosUp.close();
-
-            // 2. Fake Version (Kernel Info)
-            File versionFile = new File(procDir, ".version");
-            if (!versionFile.exists()) {
-                java.io.FileOutputStream fosVer = new java.io.FileOutputStream(versionFile);
-                fosVer.write("Linux version 6.17.0-PRoot-IIAB (builder@iiab) (Android NDK) #1 SMP PREEMPT Thu Apr 30 20:00:00 UTC 2026\n".getBytes());
-                fosVer.close();
-            }
-
-            // 3. Fake Stat (Real btime injected dynamically)
-            File statFile = new File(procDir, ".stat");
-            if (statFile.exists()) statFile.delete(); // Always refresh
-            java.io.FileOutputStream fosStat = new java.io.FileOutputStream(statFile);
-            String statContent = "cpu  1000 0 1000 10000 0 0 0 0 0 0\n" +
-                    "btime " + bootTimeSeconds + "\n";
-            fosStat.write(statContent.getBytes());
-            fosStat.close();
-
-            // 4. Fake LoadAvg
-            File loadavgFile = new File(procDir, ".loadavg");
-            if (!loadavgFile.exists()) {
-                java.io.FileOutputStream fosLoad = new java.io.FileOutputStream(loadavgFile);
-                fosLoad.write("0.00 0.00 0.00 1/1 1\n".getBytes());
-                fosLoad.close();
-            }
-
-        } catch (Exception e) {
-            android.util.Log.e(TAG, "Failed to create dynamic fake sysdata", e);
-        }
-    }
-
-    public void handleServerLaunchClick(View v) {
-        // Set a hard timeout as a safety net
-        timeoutRunnable = () -> {
-            if (targetServerState != null) {
-                targetServerState = null; // Abort transition
-                if (usageFragment != null) runOnUiThread(() -> usageFragment.stopBtnProgress());
-                updateUIColorsAndVisibility();
-                addToLog(getString(R.string.server_timeout_warning));
-            }
-        };
-        timeoutHandler.postDelayed(timeoutRunnable, getResources().getInteger(R.integer.server_cool_off_duration_ms));
-
-        File rootfsDir = new File(getFilesDir(), "rootfs/installed-rootfs/iiab");
-
-        if (!ServerStateRepository.get().current().alive) {
-            addToLog(getString(R.string.log_server_booting_native));
-            // kernel & uptime
-            createFakeSysData(rootfsDir);
-
-            if (serverEngine != null) {
-                serverEngine.killProcess();
-            }
-            serverEngine = new PRootEngine();
-
-            // THE DOCKER TRICK: We start bash as login (-lc), start pdsm, and block the process with tail
-            // so that PROoot never closes until we kill it.
-            String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
-
-            serverEngine.executeInContainer(this, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
-                @Override
-                public void onOutputLine(String line) {
-                    runOnUiThread(() -> addToLog("[Server] " + line));
-                }
-
-                @Override
-                public void onProcessExit(int exitCode) {
-                    runOnUiThread(() -> addToLog(getString(R.string.log_server_engine_shutdown, exitCode)));
-                }
-
-                @Override
-                public void onError(String error) {
-                    runOnUiThread(() -> addToLog(getString(R.string.log_server_error, error)));
-                }
-            });
-            // --- Watchdog injection / foreground service --- //
-            prefs.setWatchdogEnable(true);
-            enableSystemProtection();
-            addToLog(getString(R.string.watchdog_started));
-            if (usageFragment != null) usageFragment.startFusionPulse();
-
-            // Fallback for Oppo/Xiaomi: Notify user if server fails to start
-            new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (targetServerState != null && !ServerStateRepository.get().current().alive) {
-                    Snackbars.make(v, R.string.termux_stuck_warning).show();
-                }
-            }, getResources().getInteger(R.integer.server_snackbar_delay_ms));
-
-        } else {
-            addToLog(getString(R.string.log_server_stopping_gracefully));
-
-            PRootEngine stopEngine = new PRootEngine();
-
-            stopEngine.executeInContainer(this, rootfsDir.getAbsolutePath(), "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'", new PRootEngine.OutputListener() {
-                @Override
-                public void onOutputLine(String line) {
-                    runOnUiThread(() -> addToLog("[PDSM Stop] " + line));
-                }
-
-                @Override
-                public void onProcessExit(int exitCode) {
-                    runOnUiThread(() -> {
-                        // 1. Kill the engine instance
-                        if (serverEngine != null) {
-                            serverEngine.killProcess();
-                            serverEngine = null;
-                        }
-
-                        // 2. Zombie Cleanup (Replicating bash pkill script)
-                        AppExecutors.get().io().execute(() -> {
-                            try {
-                                // Force kill any orphaned PRoot children
-                                Runtime.getRuntime().exec(new String[]{"sh", "-c", "killall -9 proot 2>/dev/null"});
-                            } catch (Exception ignored) {
-                            }
-                        });
-
-                        // 3. We turned off the Android Watchdog.
-                        if (prefs.getWatchdogEnable()) {
-                            prefs.setWatchdogEnable(false);
-                            disableSystemProtection();
-                            addToLog(getString(R.string.watchdog_stopped));
-                            if (usageFragment != null) usageFragment.startExitPulse();
-                        }
-                    });
-                }
-
-                @Override
-                public void onError(String error) {
-                    runOnUiThread(() -> addToLog(getString(R.string.log_server_stop_error, error)));
-                }
-            });
-        }
-    }
 
     public void updateUI() {
         if (usageFragment != null) {
@@ -785,31 +592,22 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         }
     }
 
-    private void checkServerStatus() {
-        if (isNegotiating) return;
 
-        AppExecutors.get().io().execute(() -> {
-            boolean localAlive = pingUrl("http://localhost:8085/home");
-
-            updateServerAlive(localAlive);
-
-            // ADFA-4578: evaluate + publish the SystemState at app level (every poll),
-            // so every tab reflects the server live instead of only after visiting the
-            final DashboardFragment.SystemState sysState = SystemStateEvaluator.evaluate(MainActivity.this, localAlive);
-            ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
-
-            // STATE MACHINE: Has the target state been reached?
-            if (targetServerState != null && ServerStateRepository.get().current().alive == targetServerState) {
-                targetServerState = null; // Transition complete!
-                timeoutHandler.removeCallbacks(timeoutRunnable); // Cancel safety net
-                if (usageFragment != null) runOnUiThread(() -> usageFragment.stopBtnProgress());
-            }
-
-            currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
-
-            runOnUiThread(this::updateUIColorsAndVisibility);
-        });
+    public void handleServerLaunchClick(View v) {
+        serverController.handleServerLaunchClick(v);
     }
+
+    // --- ServerController.Host ------------------------------------------------
+    @Override public void startFusionPulse() { if (usageFragment != null) usageFragment.startFusionPulse(); }
+    @Override public void startExitPulse() { if (usageFragment != null) usageFragment.startExitPulse(); }
+    @Override public void stopBtnProgress() { if (usageFragment != null) usageFragment.stopBtnProgress(); }
+    @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) {
+        if (usageFragment != null) usageFragment.updateConnectivityLeds(wifiOn, hotspotOn);
+    }
+    @Override public void refreshServerUi() { updateUIColorsAndVisibility(); }
+    @Override public Boolean getTargetServerState() { return targetServerState; }
+    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
+    @Override public boolean isNegotiating() { return isNegotiating; }
 
     public void updateUIColorsAndVisibility() {
         if (usageFragment != null) {
@@ -826,50 +624,6 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         android.util.Log.d(TAG, "Legacy Headless command ignored: " + actionFlag);
     }
 
-    private void updateConnectivityStatus() {
-        boolean isWifiOn = false;
-        boolean isHotspotOn = false;
-        WifiManager wifiManager = null; // Declare it outside so that it is accessible throughout the function
-
-        try {
-            wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            isWifiOn = wifiManager != null && wifiManager.isWifiEnabled();
-        } catch (SecurityException e) {
-            android.util.Log.w(TAG, "ACCESS_WIFI_STATE permission denied, ignoring Wi-Fi state");
-        }
-
-        try {
-            // 1. Try standard reflection (Works on older Androids)
-            if (wifiManager != null) {
-                java.lang.reflect.Method method = wifiManager.getClass().getDeclaredMethod("isWifiApEnabled");
-                method.setAccessible(true);
-                isHotspotOn = (Boolean) method.invoke(wifiManager);
-            }
-        } catch (Throwable e) {
-            // 2. Fallback for Android 10+: Check physical network interfaces
-            try {
-                java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
-                while (interfaces != null && interfaces.hasMoreElements()) {
-                    java.net.NetworkInterface iface = interfaces.nextElement();
-                    String name = iface.getName();
-                    if ((name.startsWith("ap") || name.startsWith("swlan")) && iface.isUp()) {
-                        isHotspotOn = true;
-                        break;
-                    }
-                }
-            } catch (Exception ex) {
-                // Silently ignore
-            }
-        }
-
-        // Store states for the QR button logic
-        this.isWifiActive = isWifiOn;
-        this.isHotspotActive = isHotspotOn;
-
-        if (usageFragment != null) {
-            runOnUiThread(() -> usageFragment.updateConnectivityLeds(this.isWifiActive, this.isHotspotActive));
-        }
-    }
 
     public void savePrefs() {
         if (usageFragment != null) {
