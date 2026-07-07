@@ -274,9 +274,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             new Thread(() -> {
                 boolean isAlive = pingUrl("http://localhost:8085/home");
                 checkInternetAccess();
-                if (getActivity() instanceof MainActivity) {
-                    ((MainActivity) getActivity()).isServerAlive = isAlive;
-                }
                 if (isAdded() && getActivity() != null) {
                     getActivity().runOnUiThread(this::updateDynamicButtons);
                 }
@@ -561,7 +558,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         MainActivity mainAct = (MainActivity) getActivity();
         if (mainAct == null || !isAdded()) return;
 
-        boolean isServerRunning = mainAct.isServerAlive;
+        boolean isServerRunning = ServerStateRepository.get().current().alive;
         final File iiabRootDir = new File(requireContext().getFilesDir(), "rootfs");
         final File debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
         final File backupsDir = new File(iiabRootDir, "backups");

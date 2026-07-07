@@ -119,7 +119,7 @@ public final class BackupController {
     private void bindBackupButtonLogic() {
         if (btnAdvancedBackup == null) return;
         btnAdvancedBackup.setOnClickListener(v -> {
-            if (mainAct.isServerAlive) {
+            if (org.iiab.controller.ServerStateRepository.get().current().alive) {
                 Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
                 return;
             }
@@ -426,7 +426,7 @@ public final class BackupController {
         MainActivity mainAct = (MainActivity) fragment.getActivity();
         if (mainAct == null || btnAdvancedRestore == null) return;
 
-        if (mainAct.isServerAlive) {
+        if (org.iiab.controller.ServerStateRepository.get().current().alive) {
             btnAdvancedRestore.setAlpha(0.5f);
             btnAdvancedRestore.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show());
             return;
@@ -438,7 +438,7 @@ public final class BackupController {
         } else {
             btnAdvancedRestore.setAlpha(1.0f);
             btnAdvancedRestore.setOnClickListener(v -> {
-                if (mainAct.isServerAlive) {
+                if (org.iiab.controller.ServerStateRepository.get().current().alive) {
                     Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
                     return;
                 }

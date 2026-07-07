@@ -104,7 +104,7 @@ public final class PlannerController {
 
         boolean isServerRunning = false;
         if (fragment.getActivity() instanceof MainActivity) {
-            isServerRunning = ((MainActivity) fragment.getActivity()).isServerAlive;
+            isServerRunning = org.iiab.controller.ServerStateRepository.get().current().alive;
         }
 
         String termuxArch = host.getTermuxArch();

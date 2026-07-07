@@ -13,7 +13,7 @@
 package org.iiab.controller.sync.presentation;
 
 public interface ReceiveHost {
-    /** True when the embedded IIAB server is running (MainActivity.isServerAlive). */
+    /** True when the embedded IIAB server is running (via the app-level ServerStateRepository). */
     boolean isServerAlive();
 
     /** ADFA-4496 pre-flight: true when the phantom-process monitor is NOT active. */

@@ -178,7 +178,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
         btnServerControl.setOnClickListener(v -> {
             // --- Intercept based on State Machine ---
-            DashboardFragment.SystemState state = mainActivity.currentSystemState;
+            DashboardFragment.SystemState state = ServerStateRepository.get().current().systemState;
             boolean isFullyInstalled = (state == DashboardFragment.SystemState.ONLINE || state == DashboardFragment.SystemState.OFFLINE);
 
             if (!isFullyInstalled) {
@@ -189,8 +189,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
             if (mainActivity.targetServerState != null) return;
 
-            mainActivity.serverTransitionText = !mainActivity.isServerAlive ? getString(R.string.server_booting) : getString(R.string.server_shutting_down);
-            mainActivity.targetServerState = !mainActivity.isServerAlive;
+            mainActivity.serverTransitionText = !ServerStateRepository.get().current().alive ? getString(R.string.server_booting) : getString(R.string.server_shutting_down);
+            mainActivity.targetServerState = !ServerStateRepository.get().current().alive;
 
             updateUIColorsAndVisibility();
             btnServerControl.startProgress();
@@ -239,7 +239,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
         // Explore Button
         button_browse_content.setVisibility(View.VISIBLE);
-        if (!mainActivity.isServerAlive) {
+        if (!ServerStateRepository.get().current().alive) {
             button_browse_content.setEnabled(true);
             button_browse_content.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_explore_disabled));
             button_browse_content.setAlpha(1.0f);
@@ -255,7 +255,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         }
 
         // Server Control Logic
-        DashboardFragment.SystemState state = mainActivity.currentSystemState;
+        DashboardFragment.SystemState state = ServerStateRepository.get().current().systemState;
         boolean isFullyInstalled = (state == DashboardFragment.SystemState.ONLINE || state == DashboardFragment.SystemState.OFFLINE);
 
         if (!isFullyInstalled) {
@@ -271,7 +271,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         } else {
             // SYSTEM READY: Normal behavior
             btnServerControl.setAlpha(1.0f);
-            if (mainActivity.isServerAlive) {
+            if (ServerStateRepository.get().current().alive) {
                 btnServerControl.setText(R.string.stop_server);
                 btnServerControl.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.btn_danger));
             } else {
