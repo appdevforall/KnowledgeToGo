@@ -564,7 +564,7 @@
     <string name="lohs_status_on">Actif : %1$s</string>
     <string name="lohs_status_failed">Impossible de démarrer (code %1$d). Vérifiez que le Wi-Fi et la localisation sont activés.</string>
     <string name="lohs_need_location">L\'autorisation et le service de localisation sont requis pour Hotspot LocalOnly.</string>
-    <string name="lohs_recommend">Aucune SIM détectée et le hotspot n\'a pas démarré. Essayez Hotspot LocalOnly (BETA) dans Advanced settings.</string>
+    <string name="lohs_recommend">Aucune SIM détectée et le hotspot n\'a pas démarré. Essayez Hotspot LocalOnly dans Paramètres avancés.</string>
     <string name="lohs_recommend_action">Voir</string>
     <string name="qr_title_join_wifi">Rejoindre ce Wi-Fi</string>
     <string name="qr_wifi_ssid">Réseau : %1$s</string>

@@ -78,6 +78,7 @@
     <color name="surface_active_warning">#FFF3E0</color>
     <color name="status_pending">#F9A825</color>
     <color name="accent_secondary">#6A3FB5</color>
+    <color name="lohs_qr_purple">#7B1FA2</color>
     <color name="btn_neutral">#616161</color>
     <color name="text_on_warning">#212121</color>
     <color name="terminal_background">#0D0D0D</color>

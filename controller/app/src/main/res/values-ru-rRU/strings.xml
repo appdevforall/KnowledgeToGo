@@ -563,7 +563,7 @@
     <string name="lohs_status_on">Активно: %1$s</string>
     <string name="lohs_status_failed">Не удалось запустить (код %1$d). Убедитесь, что Wi-Fi и геолокация включены.</string>
     <string name="lohs_need_location">Для Hotspot LocalOnly требуются разрешение и служба геолокации.</string>
-    <string name="lohs_recommend">SIM-карта не обнаружена, точка доступа не запустилась. Попробуйте Hotspot LocalOnly (BETA) в Advanced settings.</string>
+    <string name="lohs_recommend">SIM-карта не обнаружена, точка доступа не запустилась. Попробуйте Hotspot LocalOnly в Расширенные настройки.</string>
     <string name="lohs_recommend_action">Показать</string>
     <string name="qr_title_join_wifi">Подключиться к этой сети Wi-Fi</string>
     <string name="qr_wifi_ssid">Сеть: %1$s</string>

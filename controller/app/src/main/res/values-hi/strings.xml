@@ -564,7 +564,7 @@
     <string name="lohs_status_on">सक्रिय: %1$s</string>
     <string name="lohs_status_failed">शुरू नहीं हो सका (कोड %1$d)। सुनिश्चित करें कि Wi-Fi और स्थान चालू हैं।</string>
     <string name="lohs_need_location">Hotspot LocalOnly के लिए स्थान अनुमति और स्थान सेवा आवश्यक हैं।</string>
-    <string name="lohs_recommend">कोई SIM नहीं मिला और हॉटस्पॉट शुरू नहीं हुआ। Advanced settings में Hotspot LocalOnly (BETA) आज़माएँ।</string>
+    <string name="lohs_recommend">कोई SIM नहीं मिला और हॉटस्पॉट शुरू नहीं हुआ। उन्नत सेटिंग्स में Hotspot LocalOnly आज़माएँ।</string>
     <string name="lohs_recommend_action">देखें</string>
     <string name="qr_title_join_wifi">इस Wi-Fi से जुड़ें</string>
     <string name="qr_wifi_ssid">नेटवर्क: %1$s</string>
