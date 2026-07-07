@@ -7,7 +7,6 @@
     <string name="fix_action">ИСПРАВИТЬ</string>
     <string name="save">Сохранить</string>
 
-    <string name="advanced_settings_label">Настройки туннеля</string>
     <string name="connection_log_label">Журнал подключений</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
@@ -83,7 +82,6 @@
     <string name="dash_format_uptime_hours">%1$02d ч %2$02d м</string>
     <string name="dash_network_na">--</string>
 
-    <string name="apps">Приложения</string>
     <string name="browse_content">🚀 Исследовать контент</string>
     <string name="launch_server">🚀 Запустить сервер</string>
     <string name="stop_server">🛑 Остановить сервер</string>
@@ -104,13 +102,8 @@
     <string name="qr_title_wifi">Сеть Wi-Fi</string>
 
 
-    <string name="global">Глобально</string>
-    <string name="ipv4">IPv4</string>
-    <string name="ipv6">IPv6</string>
     <string name="maintenance_mode">Режим обслуживания</string>
     <string name="maintenance_warning_msg">Отключите Safe Pocket Web для изменения настроек.</string>
-    <string name="remote_dns">Удаленный DNS</string>
-    <string name="udp_in_tcp">UDP-ретрансляция через TCP</string>
 
     <string name="user_initiated_conn">Соединение инициировано пользователем</string>
 

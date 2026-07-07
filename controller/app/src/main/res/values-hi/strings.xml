@@ -7,7 +7,6 @@
     <string name="fix_action">ठीक करें</string>
     <string name="save">सहेजें</string>
 
-    <string name="advanced_settings_label">टनल सेटिंग्स</string>
     <string name="connection_log_label">कनेक्शन लॉग</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
@@ -83,7 +82,6 @@
     <string name="dash_format_uptime_hours">%1$02dh %2$02dm</string>
     <string name="dash_network_na">--</string>
 
-    <string name="apps">ऐप्स</string>
     <string name="browse_content">🚀 सामग्री एक्सप्लोर करें</string>
     <string name="launch_server">🚀 सर्वर प्रारंभ करें</string>
     <string name="stop_server">🛑 सर्वर बंद करें</string>
@@ -104,13 +102,8 @@
     <string name="qr_title_wifi">Wi-Fi नेटवर्क</string>
 
 
-    <string name="global">ग्लोबल</string>
-    <string name="ipv4">IPv4</string>
-    <string name="ipv6">IPv6</string>
     <string name="maintenance_mode">रखरखाव मोड</string>
     <string name="maintenance_warning_msg">सेटिंग्स को संशोधित करने के लिए Safe Pocket Web अक्षम करें।</string>
-    <string name="remote_dns">रिमोट DNS</string>
-    <string name="udp_in_tcp">TCP पर UDP रिले</string>
 
     <string name="user_initiated_conn">उपयोगकर्ता द्वारा आरंभ किया गया कनेक्शन</string>
 

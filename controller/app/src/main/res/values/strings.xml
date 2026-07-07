@@ -7,7 +7,6 @@
     <string name="fix_action">FIX</string>
     <string name="save">Save</string>
 
-    <string name="advanced_settings_label">Tunnel Settings</string>
     <string name="connection_log_label">Server Log</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
@@ -84,7 +83,6 @@
     <string name="dash_format_uptime_hours">%1$02dh %2$02dm</string>
     <string name="dash_network_na">--</string>
 
-    <string name="apps">Apps</string>
     <string name="browse_content">🚀 Explore Content</string>
     <string name="launch_server">🚀 Launch Server</string>
     <string name="stop_server">🛑 Stop Server</string>
@@ -113,13 +111,8 @@
     <string name="dns_accept">Accept &amp; save</string>
     <string name="dns_status_testing">Testing…</string>
     <string name="dns_status_ok">DNS works — saved</string>
-    <string name="global">Global</string>
-    <string name="ipv4">IPv4</string>
-    <string name="ipv6">IPv6</string>
     <string name="maintenance_mode">Maintenance Mode</string>
     <string name="maintenance_warning_msg">Disable Safe Pocket Web in order to modify</string>
-    <string name="remote_dns">Remote DNS</string>
-    <string name="udp_in_tcp">UDP relay over TCP</string>
 
     <string name="user_initiated_conn">User initiated connection</string>
 

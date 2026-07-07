@@ -7,7 +7,6 @@
     <string name="fix_action">CORRIGIR</string>
     <string name="save">Salvar</string>
 
-    <string name="advanced_settings_label">Configurações do Túnel</string>
     <string name="connection_log_label">Log de Conexão</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
@@ -83,7 +82,6 @@
     <string name="dash_format_uptime_hours">%1$02dh %2$02dm</string>
     <string name="dash_network_na">--</string>
 
-    <string name="apps">Aplicativos</string>
     <string name="browse_content">🚀 Explorar Conteúdo</string>
     <string name="launch_server">🚀 Iniciar Servidor</string>
     <string name="stop_server">🛑 Parar Servidor</string>
@@ -104,13 +102,8 @@
     <string name="qr_title_wifi">Rede Wi-Fi</string>
 
 
-    <string name="global">Global</string>
-    <string name="ipv4">IPv4</string>
-    <string name="ipv6">IPv6</string>
     <string name="maintenance_mode">Modo de Manutenção</string>
     <string name="maintenance_warning_msg">Desative o Safe Pocket Web para poder modificar as configurações.</string>
-    <string name="remote_dns">DNS Remoto</string>
-    <string name="udp_in_tcp">Relé UDP sobre TCP</string>
 
     <string name="user_initiated_conn">Conexão iniciada pelo usuário</string>
 

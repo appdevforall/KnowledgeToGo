@@ -7,7 +7,6 @@
     <string name="fix_action">CORRIGER</string>
     <string name="save">Enregistrer</string>
 
-    <string name="advanced_settings_label">Paramètres du tunnel</string>
     <string name="connection_log_label">Journal de connexion</string>
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
@@ -83,7 +82,6 @@
     <string name="dash_format_uptime_hours">%1$02dh %2$02dm</string>
     <string name="dash_network_na">--</string>
 
-    <string name="apps">Applications</string>
     <string name="browse_content">🚀 Explorer le contenu</string>
     <string name="launch_server">🚀 Lancer le serveur</string>
     <string name="stop_server">🛑 Arrêter le serveur</string>
@@ -104,13 +102,8 @@
     <string name="qr_title_wifi">Réseau Wi-Fi</string>
 
 
-    <string name="global">Global</string>
-    <string name="ipv4">IPv4</string>
-    <string name="ipv6">IPv6</string>
     <string name="maintenance_mode">Mode de maintenance</string>
     <string name="maintenance_warning_msg">Désactivez Safe Pocket Web pour pouvoir modifier les paramètres.</string>
-    <string name="remote_dns">DNS distant</string>
-    <string name="udp_in_tcp">Relais UDP sur TCP</string>
 
     <string name="user_initiated_conn">Connexion initiée par l\'utilisateur</string>
 
