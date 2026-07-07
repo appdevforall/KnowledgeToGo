@@ -556,15 +556,15 @@
     <string name="portal_download_started">Téléchargement de %1$s…</string>
     <string name="portal_download_failed">Impossible de démarrer le téléchargement.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LOHS (BETA)</string>
-    <string name="lohs_hint">Crée un réseau Wi-Fi local pour se connecter sans carte SIM. Les autres s\'y connectent pour accéder au contenu.</string>
-    <string name="lohs_toggle">Activer Hotspot LOHS</string>
+    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_hint">Crée un réseau Wi-Fi local pour se connecter sans carte SIM.</string>
+    <string name="lohs_toggle">Activer Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Afficher le QR Wi-Fi</string>
     <string name="lohs_status_starting">Démarrage du hotspot local...</string>
     <string name="lohs_status_on">Actif : %1$s</string>
     <string name="lohs_status_failed">Impossible de démarrer (code %1$d). Vérifiez que le Wi-Fi et la localisation sont activés.</string>
-    <string name="lohs_need_location">L\'autorisation et le service de localisation sont requis pour Hotspot LOHS.</string>
-    <string name="lohs_recommend">Aucune SIM détectée et le hotspot n\'a pas démarré. Essayez Hotspot LOHS (BETA) dans Advanced settings.</string>
+    <string name="lohs_need_location">L\'autorisation et le service de localisation sont requis pour Hotspot LocalOnly.</string>
+    <string name="lohs_recommend">Aucune SIM détectée et le hotspot n\'a pas démarré. Essayez Hotspot LocalOnly (BETA) dans Advanced settings.</string>
     <string name="lohs_recommend_action">Voir</string>
     <string name="qr_title_join_wifi">Rejoindre ce Wi-Fi</string>
     <string name="qr_wifi_ssid">Réseau : %1$s</string>

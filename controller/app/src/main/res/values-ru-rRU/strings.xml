@@ -555,15 +555,15 @@
     <string name="portal_download_started">Загрузка %1$s…</string>
     <string name="portal_download_failed">Не удалось начать загрузку.</string>
     <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
-    <string name="lohs_label">Hotspot LOHS (BETA)</string>
-    <string name="lohs_hint">Создаёт локальную сеть Wi-Fi для подключения без SIM-карты. Другие подключаются к ней для доступа к контенту.</string>
-    <string name="lohs_toggle">Включить Hotspot LOHS</string>
+    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_hint">Создаёт локальную сеть Wi-Fi для подключения без SIM-карты.</string>
+    <string name="lohs_toggle">Включить Hotspot LocalOnly</string>
     <string name="lohs_show_qr">Показать QR-код Wi-Fi</string>
     <string name="lohs_status_starting">Запуск локальной точки доступа...</string>
     <string name="lohs_status_on">Активно: %1$s</string>
     <string name="lohs_status_failed">Не удалось запустить (код %1$d). Убедитесь, что Wi-Fi и геолокация включены.</string>
-    <string name="lohs_need_location">Для Hotspot LOHS требуются разрешение и служба геолокации.</string>
-    <string name="lohs_recommend">SIM-карта не обнаружена, точка доступа не запустилась. Попробуйте Hotspot LOHS (BETA) в Advanced settings.</string>
+    <string name="lohs_need_location">Для Hotspot LocalOnly требуются разрешение и служба геолокации.</string>
+    <string name="lohs_recommend">SIM-карта не обнаружена, точка доступа не запустилась. Попробуйте Hotspot LocalOnly (BETA) в Advanced settings.</string>
     <string name="lohs_recommend_action">Показать</string>
     <string name="qr_title_join_wifi">Подключиться к этой сети Wi-Fi</string>
     <string name="qr_wifi_ssid">Сеть: %1$s</string>
