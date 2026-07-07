@@ -793,6 +793,12 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
             updateServerAlive(localAlive);
 
+            // ADFA-4578: evaluate + publish the SystemState at app level (every poll),
+            // so every tab reflects the server live instead of only after visiting the
+            // Dashboard. Mirror it onto currentSystemState for the current (field) readers.
+            final DashboardFragment.SystemState sysState = SystemStateEvaluator.evaluate(MainActivity.this, localAlive);
+            ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
+
             // STATE MACHINE: Has the target state been reached?
             if (targetServerState != null && isServerAlive == targetServerState) {
                 targetServerState = null; // Transition complete!
@@ -802,7 +808,10 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
             currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
 
-            runOnUiThread(this::updateUIColorsAndVisibility);
+            runOnUiThread(() -> {
+                currentSystemState = sysState;
+                updateUIColorsAndVisibility();
+            });
         });
     }
 
