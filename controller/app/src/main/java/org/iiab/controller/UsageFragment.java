@@ -9,7 +9,6 @@
 package org.iiab.controller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Color;
@@ -48,10 +47,9 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
     private MainActivity mainActivity;
     // INTERFACE VARS
-    private CheckBox checkbox_udp_in_tcp, checkbox_remote_dns, checkbox_global, checkbox_maintenance, checkbox_ipv4, checkbox_ipv6;
-    private TextView configLabel, advConfigLabel, logLabel, logWarning, logSizeText, connectionLog;
-    private Button button_apps, button_save, button_browse_content, btnClearLog, btnCopyLog;
-    private LinearLayout logActions, configLayout, advancedConfig, deckContainer;
+    private TextView logLabel, logWarning, logSizeText, connectionLog;
+    private Button button_browse_content, btnClearLog, btnCopyLog;
+    private LinearLayout logActions, deckContainer;
     private ProgressBar logProgress;
     private ProgressButton btnServerControl;
 
@@ -107,14 +105,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         });
         dns_accept.setOnClickListener(v -> dnsViewModel.onAccept(
                 dns_primary.getText().toString(), dns_secondary.getText().toString()));
-        checkbox_ipv4 = view.findViewById(R.id.ipv4);
-        checkbox_ipv6 = view.findViewById(R.id.ipv6);
-        checkbox_global = view.findViewById(R.id.global);
-        checkbox_udp_in_tcp = view.findViewById(R.id.udp_in_tcp);
-        checkbox_remote_dns = view.findViewById(R.id.remote_dns);
-        checkbox_maintenance = view.findViewById(R.id.checkbox_maintenance);
-        button_apps = view.findViewById(R.id.apps);
-        button_save = view.findViewById(R.id.save);
         button_browse_content = view.findViewById(R.id.btnBrowseContent);
 
         logActions = view.findViewById(R.id.log_actions);
@@ -124,10 +114,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         logProgress = view.findViewById(R.id.log_progress);
         logWarning = view.findViewById(R.id.log_warning_text);
         logSizeText = view.findViewById(R.id.log_size_text);
-        configLayout = view.findViewById(R.id.config_layout);
-        configLabel = view.findViewById(R.id.config_label);
-        advancedConfig = view.findViewById(R.id.advanced_config);
-        advConfigLabel = view.findViewById(R.id.adv_config_label);
         logLabel = view.findViewById(R.id.log_label);
 
         deckContainer = view.findViewById(R.id.deck_container);
@@ -139,15 +125,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         button_browse_content.setOnClickListener(v -> mainActivity.handleBrowseContentClick(v));
         btnClearLog.setOnClickListener(this);
         btnCopyLog.setOnClickListener(this);
-        configLabel.setOnClickListener(v -> handleConfigToggle());
-        advConfigLabel.setOnClickListener(v -> toggleVisibility(advancedConfig, advConfigLabel, getString(R.string.advanced_settings_label)));
         logLabel.setOnClickListener(v -> handleLogToggle());
-        checkbox_udp_in_tcp.setOnClickListener(this);
-        checkbox_remote_dns.setOnClickListener(this);
-        checkbox_global.setOnClickListener(this);
-        checkbox_maintenance.setOnClickListener(this);
-        button_apps.setOnClickListener(this);
-        button_save.setOnClickListener(this);
 
         btnServerControl.setOnClickListener(v -> {
             // --- Intercept based on State Machine ---
@@ -181,8 +159,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             return false;
         });
 
-        configLabel.setText(String.format(getString(R.string.label_separator_up), getString(R.string.advanced_settings_label)));
-        advConfigLabel.setText(String.format(getString(R.string.label_separator_up), getString(R.string.advanced_settings_label)));
         logLabel.setText(String.format(getString(R.string.label_separator_up), getString(R.string.connection_log_label)));
 
         updateUI();
@@ -190,16 +166,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v == checkbox_global || v == checkbox_remote_dns || v == checkbox_maintenance) {
-            mainActivity.savePrefs();
-            updateUI();
-        } else if (v == button_apps) {
-            startActivity(new Intent(requireContext(), AppListActivity.class));
-        } else if (v.getId() == R.id.save) {
-            mainActivity.savePrefs();
-            Toast.makeText(requireContext(), R.string.saved_toast, Toast.LENGTH_SHORT).show();
-            addToLog(getString(R.string.settings_saved));
-        } else if (v.getId() == R.id.btn_clear_log) {
+        if (v.getId() == R.id.btn_clear_log) {
             showResetLogConfirmation();
         } else if (v.getId() == R.id.btn_copy_log) {
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -212,16 +179,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     public void updateUI() {
-        if (checkbox_ipv4 == null) return;
-
-        checkbox_ipv4.setChecked(mainActivity.prefs.getIpv4());
-        checkbox_ipv6.setChecked(mainActivity.prefs.getIpv6());
-        checkbox_global.setChecked(mainActivity.prefs.getGlobal());
-        checkbox_udp_in_tcp.setChecked(mainActivity.prefs.getUdpInTcp());
-        checkbox_remote_dns.setChecked(mainActivity.prefs.getRemoteDns());
-        checkbox_maintenance.setChecked(mainActivity.prefs.getMaintenanceMode());
-        button_save.setEnabled(true);
-        checkbox_maintenance.setEnabled(true);
+        // Tunnel/VPN settings UI removed (ADFA-4553); no dynamic state to refresh here.
     }
 
     public void updateUIColorsAndVisibility() {
@@ -362,21 +320,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         if (logSizeText != null) logSizeText.setVisibility(connectionLog.getVisibility());
     }
 
-    private void handleConfigToggle() {
-        if (configLayout.getVisibility() == View.GONE) {
-            if (BiometricHelper.isDeviceSecure(requireContext())) {
-                BiometricHelper.prompt((androidx.appcompat.app.AppCompatActivity) requireActivity(),
-                        getString(R.string.auth_required_title),
-                        getString(R.string.auth_required_subtitle),
-                        () -> toggleVisibility(configLayout, configLabel, getString(R.string.advanced_settings_label)));
-            } else {
-                BiometricHelper.showEnrollmentDialog(requireContext());
-            }
-        } else {
-            toggleVisibility(configLayout, configLabel, getString(R.string.advanced_settings_label));
-        }
-    }
-
     private void toggleVisibility(View view, TextView label, String text) {
         boolean isGone = view.getVisibility() == View.GONE;
         view.setVisibility(isGone ? View.VISIBLE : View.GONE);
@@ -408,13 +351,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     public void savePrefsFromUI() {
-        mainActivity.prefs.setIpv4(true);
-        mainActivity.prefs.setIpv6(true);
-        mainActivity.prefs.setUdpInTcp(false);
-        mainActivity.prefs.setRemoteDns(true);
-        mainActivity.prefs.setGlobal(true);
-
-        mainActivity.prefs.setMaintenanceMode(checkbox_maintenance.isChecked());
+        // Tunnel/VPN prefs removed (ADFA-4553); nothing to persist from this screen.
     }
 
     private void renderDnsState(DnsSettingsUiState st) {
