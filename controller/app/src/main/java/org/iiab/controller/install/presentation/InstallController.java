@@ -80,7 +80,7 @@ public final class InstallController {
     private void bindInstallButtonLogic() {
         btnFastInstall.setOnClickListener(v -> {
             // 1. Main Lock: Server On
-            if (mainAct.isServerAlive) {
+            if (org.iiab.controller.ServerStateRepository.get().current().alive) {
                 Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
                 return;
             }
@@ -188,7 +188,7 @@ public final class InstallController {
         if (hasSelections) {
             btnLaunchInstall.setOnClickListener(v -> {
                 MainActivity mainAct = (MainActivity) fragment.getActivity();
-                if (mainAct != null && mainAct.isServerAlive) {
+                if (mainAct != null && org.iiab.controller.ServerStateRepository.get().current().alive) {
                     Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
                     return;
                 }
@@ -294,7 +294,7 @@ public final class InstallController {
                     boolean pingState = isMainServerAlive && host.pingUrl("http://localhost:8085/" + module.endpoint);
 
                     MainActivity mainAct = (MainActivity) fragment.getActivity();
-                    boolean isRunning = mainAct != null && mainAct.isServerAlive;
+                    boolean isRunning = mainAct != null && org.iiab.controller.ServerStateRepository.get().current().alive;
                     boolean isTrusted = mainAct != null && mainAct.isModuleStateTrusted();
 
                     boolean isConfirmedInstalled;

@@ -213,8 +213,7 @@ public class SyncFragment extends Fragment implements org.iiab.controller.sync.p
     // --- ShareHost (ADFA-4506) ---------------------------------------------
     @Override
     public boolean isServerAlive() {
-        MainActivity a = (MainActivity) getActivity();
-        return a != null && a.isServerAlive;
+        return ServerStateRepository.get().current().alive;
     }
 
     @Override

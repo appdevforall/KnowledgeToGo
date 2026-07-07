@@ -478,7 +478,6 @@ public class DashboardFragment extends Fragment {
         currentSystemState = evaluateSystemState(isMainServerAlive);
 
         if (getActivity() instanceof MainActivity) {
-            ((MainActivity) getActivity()).currentSystemState = currentSystemState;
             ((MainActivity) getActivity()).updateUIColorsAndVisibility();
         }
 

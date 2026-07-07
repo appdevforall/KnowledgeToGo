@@ -70,10 +70,8 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private TextView versionFooter;
-    public boolean isServerAlive = false;
     private long serverUpSinceMs = 0L; // ADFA-4466: for server_stopped uptime bucket
     public boolean isNegotiating = false;
-    public DashboardFragment.SystemState currentSystemState = DashboardFragment.SystemState.NONE;
     public Boolean targetServerState = null;
     public String serverTransitionText = "";
     public UsageFragment usageFragment;
@@ -134,15 +132,16 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
      * otherwise). server_stopped carries a coarse uptime bucket, never an exact duration.
      */
     private void updateServerAlive(boolean nowAlive) {
-        if (nowAlive && !isServerAlive) {
+        boolean wasAlive = ServerStateRepository.get().current().alive;
+        if (nowAlive && !wasAlive) {
             serverUpSinceMs = System.currentTimeMillis();
             org.iiab.controller.analytics.AnalyticsClient.with(this).logServerStarted();
-        } else if (!nowAlive && isServerAlive) {
+        } else if (!nowAlive && wasAlive) {
             long uptime = serverUpSinceMs > 0L ? System.currentTimeMillis() - serverUpSinceMs : -1L;
             serverUpSinceMs = 0L;
             org.iiab.controller.analytics.AnalyticsClient.with(this).logServerStopped(uptime);
         }
-        isServerAlive = nowAlive;
+        // The repository is updated by the poll (checkServerStatus) right after this.
     }
 
     public boolean isModuleStateTrusted() {
@@ -408,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
         // --- QR Share Button Logic ---
         btnShareQr.setOnClickListener(v -> {
-            if (!isServerAlive) {
+            if (!ServerStateRepository.get().current().alive) {
                 if (viewPager != null) {
                     viewPager.setCurrentItem(1, true);
                 }
@@ -617,7 +616,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     }
 
     public void handleBrowseContentClick(View v) {
-        if (!isServerAlive) {
+        if (!ServerStateRepository.get().current().alive) {
             Snackbar.make(v, R.string.qr_error_no_server, Snackbar.LENGTH_LONG).show();
             return;
         }
@@ -689,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
         File rootfsDir = new File(getFilesDir(), "rootfs/installed-rootfs/iiab");
 
-        if (!isServerAlive) {
+        if (!ServerStateRepository.get().current().alive) {
             addToLog(getString(R.string.log_server_booting_native));
             // kernel & uptime
             createFakeSysData(rootfsDir);
@@ -727,7 +726,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
             // Fallback for Oppo/Xiaomi: Notify user if server fails to start
             new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (targetServerState != null && !isServerAlive) {
+                if (targetServerState != null && !ServerStateRepository.get().current().alive) {
                     Snackbar.make(v, R.string.termux_stuck_warning, Snackbar.LENGTH_LONG).show();
                 }
             }, getResources().getInteger(R.integer.server_snackbar_delay_ms));
@@ -795,12 +794,11 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
             // ADFA-4578: evaluate + publish the SystemState at app level (every poll),
             // so every tab reflects the server live instead of only after visiting the
-            // Dashboard. Mirror it onto currentSystemState for the current (field) readers.
             final DashboardFragment.SystemState sysState = SystemStateEvaluator.evaluate(MainActivity.this, localAlive);
             ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
 
             // STATE MACHINE: Has the target state been reached?
-            if (targetServerState != null && isServerAlive == targetServerState) {
+            if (targetServerState != null && ServerStateRepository.get().current().alive == targetServerState) {
                 targetServerState = null; // Transition complete!
                 timeoutHandler.removeCallbacks(timeoutRunnable); // Cancel safety net
                 if (usageFragment != null) runOnUiThread(() -> usageFragment.stopBtnProgress());
@@ -808,10 +806,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
             currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
 
-            runOnUiThread(() -> {
-                currentSystemState = sysState;
-                updateUIColorsAndVisibility();
-            });
+            runOnUiThread(this::updateUIColorsAndVisibility);
         });
     }
 

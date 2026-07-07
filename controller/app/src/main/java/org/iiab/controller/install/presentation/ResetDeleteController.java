@@ -68,7 +68,7 @@ public final class ResetDeleteController {
                 return;
             }
 
-            if (mainAct.isServerAlive) {
+            if (org.iiab.controller.ServerStateRepository.get().current().alive) {
                 Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
                 return;
             }
@@ -101,7 +101,7 @@ public final class ResetDeleteController {
 
     private void bindDeleteButtonLogic() {
         btnFastDelete.setOnClickListener(v -> {
-            if (mainAct.isServerAlive) {
+            if (org.iiab.controller.ServerStateRepository.get().current().alive) {
                 Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
                 return;
             }
