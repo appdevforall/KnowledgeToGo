@@ -33,6 +33,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.MainActivity;
 import org.iiab.controller.ProgressButton;
@@ -120,11 +121,11 @@ public final class BackupController {
         if (btnAdvancedBackup == null) return;
         btnAdvancedBackup.setOnClickListener(v -> {
             if (org.iiab.controller.ServerStateRepository.get().current().alive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                 return;
             }
             if (host.isSystemBusy() && !host.isBackupInProgress()) {
-                Snackbar.make(v, host.getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, host.getSystemBusyMessage()).show();
                 return;
             }
             if (host.isBackupInProgress()) {
@@ -134,7 +135,7 @@ public final class BackupController {
                         .setPositiveButton(fragment.getString(R.string.install_btn_force_stop_process), (dialog, which) -> {
                             host.setBackupInProgress(false);
                             btnAdvancedBackup.setText(fragment.getString(R.string.install_btn_backup)); btnAdvancedBackup.stopProgress();
-                            Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_aborted), Snackbar.LENGTH_SHORT).show();
+                            Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_aborted)).show();
                         })
                         .setNegativeButton(fragment.getString(R.string.install_btn_let_finish), null)
                         .setIcon(android.R.drawable.ic_dialog_alert)
@@ -145,7 +146,7 @@ public final class BackupController {
             host.setBackupInProgress(true);
             btnAdvancedBackup.setText(fragment.getString(R.string.install_msg_compressing));
             btnAdvancedBackup.startProgress();
-            Snackbar.make(v, fragment.getString(R.string.install_msg_creating_backup), Snackbar.LENGTH_LONG).show();
+            Snackbars.make(v, fragment.getString(R.string.install_msg_creating_backup)).show();
 
             new Thread(() -> {
                 host.enableSystemProtection();
@@ -234,10 +235,10 @@ public final class BackupController {
                     mainAct.runOnUiThread(() -> {
                         if (host.isBackupInProgress()) {
                             if (exitCode == 0) {
-                                Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_complete, backupFile.getName()), Snackbar.LENGTH_LONG).show();
+                                Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_complete, backupFile.getName())).show();
                                 selectedBackupFile = backupFile.getName();
                             } else {
-                                Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_failed, exitCode), Snackbar.LENGTH_LONG).show();
+                                Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_failed, exitCode)).show();
                                 if (backupFile.exists()) backupFile.delete();
 
                                 // If it fails, we revert the ID so as not to waste numbers
@@ -256,7 +257,7 @@ public final class BackupController {
                     mainAct.runOnUiThread(() -> {
                         host.setBackupInProgress(false);
                         btnAdvancedBackup.setText(fragment.getString(R.string.install_btn_backup)); btnAdvancedBackup.stopProgress();
-                        Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_error, e.getMessage()), Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_error, e.getMessage())).show();
                         host.updateDynamicButtons();
                         host.disableSystemProtection();
                     });
@@ -399,7 +400,7 @@ public final class BackupController {
                                             if (filename.equals(selectedBackupFile)) selectedBackupFile = null;
                                             txtSelectBackupTitle.performClick();
                                             txtSelectBackupTitle.performClick();
-                                            Snackbar.make(fragment.getView(), R.string.install_msg_backup_deleted, Snackbar.LENGTH_SHORT).show();
+                                            Snackbars.make(fragment.getView(), R.string.install_msg_backup_deleted).show();
                                         }
                                     })
                                     .setNegativeButton(R.string.cancel, null)
@@ -428,35 +429,35 @@ public final class BackupController {
 
         if (org.iiab.controller.ServerStateRepository.get().current().alive) {
             btnAdvancedRestore.setAlpha(0.5f);
-            btnAdvancedRestore.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show());
+            btnAdvancedRestore.setOnClickListener(v -> Snackbars.make(v, R.string.install_msg_server_running_lock).show());
             return;
         }
 
         if (selectedBackupFile == null) {
             btnAdvancedRestore.setAlpha(0.5f);
-            btnAdvancedRestore.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_select_backup_first, Snackbar.LENGTH_LONG).show());
+            btnAdvancedRestore.setOnClickListener(v -> Snackbars.make(v, R.string.install_msg_select_backup_first).show());
         } else {
             btnAdvancedRestore.setAlpha(1.0f);
             btnAdvancedRestore.setOnClickListener(v -> {
                 if (org.iiab.controller.ServerStateRepository.get().current().alive) {
-                    Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                     return;
                 }
                 if (host.isSystemBusy()) {
-                    Snackbar.make(v, host.getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(v, host.getSystemBusyMessage()).show();
                     return;
                 }
 
                 host.setRestoring(true);
                 host.updateDynamicButtons();
-                Snackbar.make(v, fragment.getString(R.string.install_msg_restore_starting, selectedBackupFile), Snackbar.LENGTH_SHORT).show();
+                Snackbars.make(v, fragment.getString(R.string.install_msg_restore_starting, selectedBackupFile)).show();
                 mainAct.invalidateModuleStateTrust();
 
                 File backupFile = new File(new File(fragment.requireContext().getFilesDir(), "rootfs/backups"), selectedBackupFile);
                 if (!backupFile.exists()) {
                     host.setRestoring(false);
                     host.updateDynamicButtons();
-                    Snackbar.make(v, R.string.install_error_backup_missing, Snackbar.LENGTH_SHORT).show();
+                    Snackbars.make(v, R.string.install_error_backup_missing).show();
                     return;
                 }
 
@@ -492,7 +493,7 @@ public final class BackupController {
                             host.disableSystemProtection();
                             btnAdvancedRestore.setEnabled(true);
                             btnAdvancedRestore.setText(fragment.getString(R.string.install_btn_restore));
-                            Snackbar.make(fragment.getView(), R.string.install_success_restore, Snackbar.LENGTH_LONG).show();
+                            Snackbars.make(fragment.getView(), R.string.install_success_restore).show();
                             if (restoreLogResult != null) { restoreLogResult.setText("\u2713"); restoreLogResult.setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.status_success)); }
                             btnAdvancedRestore.stopProgress();
                             host.updateDynamicButtons();
@@ -506,7 +507,7 @@ public final class BackupController {
                             host.disableSystemProtection();
                             btnAdvancedRestore.setEnabled(true);
                             btnAdvancedRestore.setText(fragment.getString(R.string.install_btn_restore));
-                            Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_restore_failed) + " " + error, Snackbar.LENGTH_LONG).show();
+                            Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_restore_failed) + " " + error).show();
                             if (restoreLogResult != null) { restoreLogResult.setText("\u2717"); restoreLogResult.setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.status_warning)); }
                             btnAdvancedRestore.stopProgress();
                             host.updateDynamicButtons();
@@ -577,7 +578,7 @@ public final class BackupController {
         host.updateDynamicButtons();
         btnImportBackup.setEnabled(false);
         startImportSpinner();
-        Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_importing), Snackbar.LENGTH_LONG).show();
+        Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_importing)).show();
 
         new Thread(() -> {
             host.enableSystemProtection();
@@ -675,7 +676,7 @@ public final class BackupController {
     }
 
     private void exportBackupSafely(Uri destUri, String backupFileName) {
-        Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_exporting, backupFileName), Snackbar.LENGTH_LONG).show();
+        Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_exporting, backupFileName)).show();
 
         new Thread(() -> {
             host.enableSystemProtection();
@@ -694,13 +695,13 @@ public final class BackupController {
 
                 if (fragment.getActivity() != null) {
                     fragment.getActivity().runOnUiThread(() -> {
-                        Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_export_success), Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_export_success)).show();
                     });
                 }
             } catch (Exception e) {
                 if (fragment.getActivity() != null) {
                     fragment.getActivity().runOnUiThread(() -> {
-                        Snackbar.make(fragment.getView(), fragment.getString(R.string.install_msg_export_failed, e.getMessage()), Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_export_failed, e.getMessage())).show();
                     });
                 }
             } finally {

@@ -42,6 +42,7 @@ import android.net.wifi.WifiManager;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -418,12 +419,12 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
                 }
 
                 // Rule 1: Server must be running
-                Snackbar.make(findViewById(android.R.id.content), R.string.qr_error_no_server, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(findViewById(android.R.id.content), R.string.qr_error_no_server).show();
                 return;
             }
             if (!isWifiActive && !isHotspotActive) {
                 // Rule 2: At least one network must be active
-                Snackbar.make(findViewById(android.R.id.content), R.string.qr_error_no_network, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(findViewById(android.R.id.content), R.string.qr_error_no_network).show();
                 return;
             }
 
@@ -617,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
     public void handleBrowseContentClick(View v) {
         if (!ServerStateRepository.get().current().alive) {
-            Snackbar.make(v, R.string.qr_error_no_server, Snackbar.LENGTH_LONG).show();
+            Snackbars.make(v, R.string.qr_error_no_server).show();
             return;
         }
         if (currentTargetUrl != null) {
@@ -727,7 +728,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
             // Fallback for Oppo/Xiaomi: Notify user if server fails to start
             new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                 if (targetServerState != null && !ServerStateRepository.get().current().alive) {
-                    Snackbar.make(v, R.string.termux_stuck_warning, Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(v, R.string.termux_stuck_warning).show();
                 }
             }, getResources().getInteger(R.integer.server_snackbar_delay_ms));
 
@@ -894,7 +895,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         View anchor = findViewById(R.id.main_coordinator);
         if (anchor == null) anchor = findViewById(android.R.id.content);
         if (anchor == null) return;
-        Snackbar.make(anchor, text, Snackbar.LENGTH_LONG).show();
+        Snackbars.make(anchor, text).show();
     }
 
     private void setVersionFooter() {

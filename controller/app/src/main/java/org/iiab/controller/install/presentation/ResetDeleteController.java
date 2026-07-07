@@ -18,6 +18,7 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.MainActivity;
 import org.iiab.controller.ProgressButton;
@@ -69,12 +70,12 @@ public final class ResetDeleteController {
             }
 
             if (org.iiab.controller.ServerStateRepository.get().current().alive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                 return;
             }
             // isSystemBusy() covers an install (or any other long op) in flight.
             if (host.isSystemBusy()) {
-                Snackbar.make(v, host.getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, host.getSystemBusyMessage()).show();
                 return;
             }
             // NORMAL STATE: RESET START -> hand the pipeline to InstallService.
@@ -102,11 +103,11 @@ public final class ResetDeleteController {
     private void bindDeleteButtonLogic() {
         btnFastDelete.setOnClickListener(v -> {
             if (org.iiab.controller.ServerStateRepository.get().current().alive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                 return;
             }
             if (host.isSystemBusy()) {
-                Snackbar.make(v, host.getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, host.getSystemBusyMessage()).show();
                 return;
             }
 
@@ -120,7 +121,7 @@ public final class ResetDeleteController {
                         mainAct.invalidateModuleStateTrust();
                         btnFastDelete.setEnabled(false);
                         btnFastDelete.startProgress();
-                        Snackbar.make(fragment.getView(), R.string.install_status_deleting, Snackbar.LENGTH_SHORT).show();
+                        Snackbars.make(fragment.getView(), R.string.install_status_deleting).show();
                         new Thread(() -> {
                             host.enableSystemProtection();
                             try {
@@ -129,7 +130,7 @@ public final class ResetDeleteController {
                                     Log.w(TAG, "rm -rf rootfs (delete) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
                                 }
                             } catch (Exception e) {
-                                mainAct.runOnUiThread(() -> Snackbar.make(fragment.getView(), fragment.getString(R.string.install_error_delete, e.getMessage()), Snackbar.LENGTH_LONG).show());
+                                mainAct.runOnUiThread(() -> Snackbars.make(fragment.getView(), fragment.getString(R.string.install_error_delete, e.getMessage())).show());
                             } finally {
                                 host.setDeleting(false);
                                 mainAct.runOnUiThread(() -> { btnFastDelete.stopProgress(); host.updateDynamicButtons(); });
