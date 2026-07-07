@@ -571,4 +571,5 @@
     <string name="qr_wifi_password">Mot de passe : %1$s</string>
     <string name="settings_group_device">Appareil</string>
     <string name="settings_group_server">Serveur</string>
+    <string name="setup_dns_hint">DNS personnalisé pour le serveur de l\'appareil.</string>
 </resources>

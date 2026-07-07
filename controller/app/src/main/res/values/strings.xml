@@ -587,4 +587,5 @@
     <string name="settings_group_device">Device</string>
     <string name="settings_group_server">Server</string>
     <string name="beta_tag" translatable="false">BETA</string>
+    <string name="setup_dns_hint">Custom DNS for the on-device server.</string>
 </resources>

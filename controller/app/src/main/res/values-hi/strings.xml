@@ -571,4 +571,5 @@
     <string name="qr_wifi_password">पासवर्ड: %1$s</string>
     <string name="settings_group_device">डिवाइस</string>
     <string name="settings_group_server">सर्वर</string>
+    <string name="setup_dns_hint">डिवाइस के सर्वर के लिए कस्टम DNS।</string>
 </resources>

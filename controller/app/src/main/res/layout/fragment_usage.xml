@@ -283,6 +283,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/setup_dns" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/setup_dns_hint"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="11sp" />
+
             <LinearLayout
                 android:id="@+id/dns_setup_fields"
                 android:layout_width="match_parent"
