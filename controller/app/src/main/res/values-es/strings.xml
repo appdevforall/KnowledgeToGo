@@ -568,4 +568,6 @@
     <string name="qr_title_join_wifi">Únete a esta red Wi-Fi</string>
     <string name="qr_wifi_ssid">Red: %1$s</string>
     <string name="qr_wifi_password">Contraseña: %1$s</string>
+    <string name="settings_group_device">Dispositivo</string>
+    <string name="settings_group_server">Servidor</string>
 </resources>

@@ -584,4 +584,7 @@
     <string name="qr_title_join_wifi">Join this Wi-Fi</string>
     <string name="qr_wifi_ssid">Network: %1$s</string>
     <string name="qr_wifi_password">Password: %1$s</string>
+    <string name="settings_group_device">Device</string>
+    <string name="settings_group_server">Server</string>
+    <string name="beta_tag" translatable="false">BETA</string>
 </resources>

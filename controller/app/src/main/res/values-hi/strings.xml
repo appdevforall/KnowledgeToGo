@@ -569,4 +569,6 @@
     <string name="qr_title_join_wifi">इस Wi-Fi से जुड़ें</string>
     <string name="qr_wifi_ssid">नेटवर्क: %1$s</string>
     <string name="qr_wifi_password">पासवर्ड: %1$s</string>
+    <string name="settings_group_device">डिवाइस</string>
+    <string name="settings_group_server">सर्वर</string>
 </resources>

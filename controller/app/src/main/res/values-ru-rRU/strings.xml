@@ -568,4 +568,6 @@
     <string name="qr_title_join_wifi">Подключиться к этой сети Wi-Fi</string>
     <string name="qr_wifi_ssid">Сеть: %1$s</string>
     <string name="qr_wifi_password">Пароль: %1$s</string>
+    <string name="settings_group_device">Устройство</string>
+    <string name="settings_group_server">Сервер</string>
 </resources>

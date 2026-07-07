@@ -391,16 +391,24 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /** Brief alpha blink to draw the eye to a header (ADFA-4520 recommendation cue). */
+    /**
+     * ADFA-4520 recommendation cue. Mirrors DeployFragment#focusAdvancedMonitoring: blink the
+     * header text colour (danger <-> normal, 400ms x5, reverse), resetting to normal at the end.
+     */
     private void pulseView(View v) {
-        if (v == null) return;
-        v.animate().alpha(0.3f).setDuration(300).withEndAction(() ->
-                v.animate().alpha(1f).setDuration(300).withEndAction(() ->
-                        v.animate().alpha(0.3f).setDuration(300).withEndAction(() ->
-                                v.animate().alpha(1f).setDuration(300).start()
-                        ).start()
-                ).start()
-        ).start();
+        if (!(v instanceof TextView) || getContext() == null) return;
+        final TextView t = (TextView) v;
+        final int normal = t.getCurrentTextColor();
+        int danger = ContextCompat.getColor(requireContext(), R.color.status_danger);
+        android.animation.ObjectAnimator anim = android.animation.ObjectAnimator.ofObject(
+                t, "textColor", new android.animation.ArgbEvaluator(), normal, danger);
+        anim.setDuration(400);
+        anim.setRepeatCount(5);
+        anim.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+        anim.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(android.animation.Animator a) { t.setTextColor(normal); }
+        });
+        anim.start();
     }
 
     public void startFusionPulse() {

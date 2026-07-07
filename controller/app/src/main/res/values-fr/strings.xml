@@ -569,4 +569,6 @@
     <string name="qr_title_join_wifi">Rejoindre ce Wi-Fi</string>
     <string name="qr_wifi_ssid">Réseau : %1$s</string>
     <string name="qr_wifi_password">Mot de passe : %1$s</string>
+    <string name="settings_group_device">Appareil</string>
+    <string name="settings_group_server">Serveur</string>
 </resources>
