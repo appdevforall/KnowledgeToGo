@@ -17,6 +17,8 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.view.View;
 
+import org.iiab.controller.hotspot.LocalHotspotManager;
+
 public class DashboardManager {
 
     private final Activity activity;
@@ -40,6 +42,10 @@ public class DashboardManager {
         dashWifi.setOnClickListener(v -> activity.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)));
 
         dashHotspot.setOnClickListener(v -> {
+            // ADFA-4520: record that the operator tried the native hotspot, so the
+            // Usage tab can later recommend the LocalOnlyHotspot fallback ONLY when
+            // this AND "no SIM" AND "hotspot still not up" all hold.
+            LocalHotspotManager.get().markNativeHotspotAttempted();
             try {
                 Intent intent = new Intent(Intent.ACTION_MAIN);
                 intent.setClassName("com.android.settings", "com.android.settings.TetherSettings");
