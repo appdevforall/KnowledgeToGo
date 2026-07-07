@@ -116,6 +116,8 @@ The Controller is functional and shows real security intent (it SHA256-audits na
 
 **Recommendation:** do **not** open with a massive rewrite. Phase 0 installs guardrails (tests + CI gate on pure logic), Phase 1 closes the security holes, and only then do Phases 2–4 attack concurrency and architecture with the net already in place.
 
+**UI convention — Snackbar on-screen time (note, 2026-07-07):** snackbar duration is being standardized on `util.SnackbarDuration.millisForText(message)` (reading-time based, ~200 wpm, clamp 3–10 s) instead of a fixed `Snackbar.LENGTH_SHORT/LONG`, so long messages are not truncated; callers pass the resolved `String` (not the `resId`) so words can be counted. The sweep of existing call sites and the standing rule are tracked in **ADFA-4579**. A `Toast` equivalent should be considered the same way. (This note rides the docs-maintenance umbrella **ADFA-4452**.)
+
 ## 2. Scoring method
 
 Each item scores **Impact** (1–5, how much it slows the team), **Risk** (1–5, what happens if unfixed), and **Effort** (1–5, lower = easier). **Priority = (Impact + Risk) × (6 − Effort)** — higher is more urgent. IDs are prefixed by cluster: **F** = UI/lifecycle, **D** = deploy/install, **S** = sync/ADB, **M** = monitoring + build/infra.
