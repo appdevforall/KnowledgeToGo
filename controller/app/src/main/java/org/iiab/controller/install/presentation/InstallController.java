@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.MainActivity;
 import org.iiab.controller.ModuleRegistry;
@@ -81,14 +82,14 @@ public final class InstallController {
         btnFastInstall.setOnClickListener(v -> {
             // 1. Main Lock: Server On
             if (org.iiab.controller.ServerStateRepository.get().current().alive) {
-                Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                 return;
             }
 
             // 1b. No internet: a fresh install requires downloading the rootfs. Block it
             // up front (but still allow cancelling an in-progress install below).
             if (!host.hasInternet() && !host.isDownloadingRootfs()) {
-                Snackbar.make(v, R.string.install_msg_no_connection, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_msg_no_connection).show();
                 return;
             }
 
@@ -112,17 +113,17 @@ public final class InstallController {
 
             // 3. If it is not working, but the system is busy with something else: LOCK
             if (host.isSystemBusy()) {
-                Snackbar.make(v, host.getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, host.getSystemBusyMessage()).show();
                 return;
             }
 
             // 4. Normal installation startup validations
             if (host.getSelectedTier() == null) {
-                Snackbar.make(v, R.string.install_error_no_tier, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_error_no_tier).show();
                 return;
             }
             if (!host.isStorageSafe()) {
-                Snackbar.make(v, R.string.install_error_no_storage, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.install_error_no_storage).show();
                 return;
             }
 
@@ -189,11 +190,11 @@ public final class InstallController {
             btnLaunchInstall.setOnClickListener(v -> {
                 MainActivity mainAct = (MainActivity) fragment.getActivity();
                 if (mainAct != null && org.iiab.controller.ServerStateRepository.get().current().alive) {
-                    Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                     return;
                 }
                 if (host.isSystemBusy() && !host.isBatchInstalling()) {
-                    Snackbar.make(v, host.getSystemBusyMessage(), Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(v, host.getSystemBusyMessage()).show();
                     return;
                 }
 
@@ -329,9 +330,8 @@ public final class InstallController {
                             checkBox.setChecked(true);
                             checkBox.setEnabled(false);
                             card.setAlpha(0.6f);
-                            card.setOnClickListener(v -> Snackbar.make(v,
-                                    fragment.getString(R.string.install_status_installing_module, moduleKey),
-                                    Snackbar.LENGTH_LONG).show());
+                            card.setOnClickListener(v -> Snackbars.make(v,
+                                    fragment.getString(R.string.install_status_installing_module, moduleKey)).show());
                         } else if (finalConfirmed && !finalDiscrepancyFlag) {
                             checkBox.setVisibility(View.GONE);
                             led.setVisibility(View.VISIBLE);
@@ -339,18 +339,18 @@ public final class InstallController {
 
                             if (finalIsRunning) {
                                 led.setBackgroundResource(R.drawable.led_on_green);
-                                card.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_confirmed, Snackbar.LENGTH_LONG).show());
+                                card.setOnClickListener(v -> Snackbars.make(v, R.string.install_msg_confirmed).show());
                             } else {
                                 led.setBackgroundResource(R.drawable.led_on_green);
                                 led.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(fragment.requireContext(), R.color.accent_secondary)));
-                                card.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_offline_trusted, Snackbar.LENGTH_LONG).show());
+                                card.setOnClickListener(v -> Snackbars.make(v, R.string.install_msg_offline_trusted).show());
                             }
                         } else if (finalDiscrepancyFlag) {
                             checkBox.setVisibility(View.GONE);
                             led.setVisibility(View.VISIBLE);
                             led.setBackgroundResource(R.drawable.led_off);
                             led.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(fragment.requireContext(), R.color.status_pending)));
-                            card.setOnClickListener(v -> Snackbar.make(v, R.string.install_warning_discrepancy_msg, Snackbar.LENGTH_LONG).show());
+                            card.setOnClickListener(v -> Snackbars.make(v, R.string.install_warning_discrepancy_msg).show());
                         } else {
                             led.setVisibility(View.GONE);
                             checkBox.setVisibility(View.VISIBLE);
@@ -359,7 +359,7 @@ public final class InstallController {
                             if (finalIsRunning) {
                                 checkBox.setEnabled(false);
                                 card.setAlpha(0.6f);
-                                card.setOnClickListener(v -> Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show());
+                                card.setOnClickListener(v -> Snackbars.make(v, R.string.install_msg_server_running_lock).show());
                             } else {
                                 checkBox.setEnabled(true);
                                 card.setAlpha(1.0f);

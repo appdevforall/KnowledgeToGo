@@ -36,6 +36,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.AdbPairingReceiver;
 import org.iiab.controller.IIABAdbManager;
@@ -203,34 +204,34 @@ public final class AdbShareController {
         LinearLayout containerDcpr = fragment.getView().findViewById(R.id.container_led_dcpr);
         containerDcpr.setOnClickListener(v -> {
             if (!isConnectedToAdb) {
-                Snackbar.make(v, R.string.adb_req_cp, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.adb_req_cp).show();
                 return;
             }
             if (android.os.Build.VERSION.SDK_INT < 34) {
-                Snackbar.make(v, R.string.adb_not_req_cp, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.adb_not_req_cp).show();
                 return;
             }
 
             IIABAdbManager adbManager = IIABAdbManager.getInstance(fragment.requireContext());
             adbManager.executeCommand("settings put global settings_enable_monitor_phantom_procs 0");
-            Snackbar.make(v, R.string.adb_snack_disabling_cp, Snackbar.LENGTH_SHORT).show();
+            Snackbars.make(v, R.string.adb_snack_disabling_cp).show();
             new Handler(Looper.getMainLooper()).postDelayed(() -> adbManager.checkSystemRestrictions(fragment.requireContext()), 1000);
         });
 
         LinearLayout containerPpk = fragment.getView().findViewById(R.id.container_led_ppk);
         containerPpk.setOnClickListener(v -> {
             if (!isConnectedToAdb) {
-                Snackbar.make(v, R.string.adb_req_ppk, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.adb_req_ppk).show();
                 return;
             }
             if (android.os.Build.VERSION.SDK_INT < 31) {
-                Snackbar.make(v, R.string.adb_not_req_ppk, Snackbar.LENGTH_LONG).show();
+                Snackbars.make(v, R.string.adb_not_req_ppk).show();
                 return;
             }
 
             IIABAdbManager adbManager = IIABAdbManager.getInstance(fragment.requireContext());
             adbManager.executeCommand("device_config put activity_manager max_phantom_processes 256");
-            Snackbar.make(v, R.string.adb_snack_setting_ppk, Snackbar.LENGTH_SHORT).show();
+            Snackbars.make(v, R.string.adb_snack_setting_ppk).show();
             new Handler(Looper.getMainLooper()).postDelayed(() -> adbManager.checkSystemRestrictions(fragment.requireContext()), 1000);
         });
 
@@ -374,7 +375,7 @@ public final class AdbShareController {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             fragment.startActivity(intent);
         } catch (Exception e) {
-            Snackbar.make(fragment.getView(), R.string.adb_snack_dev_options, Snackbar.LENGTH_LONG).show();
+            Snackbars.make(fragment.getView(), R.string.adb_snack_dev_options).show();
         }
     }
 
@@ -489,7 +490,7 @@ public final class AdbShareController {
 
     private void checkIfScanTimedOut() {
         if (isScanning && (discoveredConnectPort == -1 || discoveredPairingPort == -1)) {
-            Snackbar.make(fragment.getView(), R.string.adb_toast_scan_timeout, Snackbar.LENGTH_LONG).show();
+            Snackbars.make(fragment.getView(), R.string.adb_toast_scan_timeout).show();
             stopDiscovery();
             resetScanState();
         }

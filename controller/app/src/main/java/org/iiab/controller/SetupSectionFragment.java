@@ -39,6 +39,7 @@ import org.iiab.controller.applang.domain.SupportedAppLanguages;
 import org.iiab.controller.delivery.data.AnalyticsConsent;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -428,7 +429,7 @@ public class SetupSectionFragment extends Fragment {
         ((SwitchCompat) switchView).setChecked(true);
         Animation shake = AnimationUtils.loadAnimation(requireContext(), R.anim.shake);
         switchView.startAnimation(shake);
-        Snackbar.make(requireView(), R.string.revoke_permission_warning, Snackbar.LENGTH_LONG)
+        Snackbars.make(requireView(), R.string.revoke_permission_warning)
                 .setAction(R.string.settings_label, v -> openAppSettings()).show();
     }
 

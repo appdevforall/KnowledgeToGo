@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.feedback.presentation.FeedbackFragment;
 import org.iiab.controller.settings.AboutFragment;
@@ -67,8 +68,8 @@ public class SetupActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (wizardMode) {
-            Snackbar.make(findViewById(android.R.id.content),
-                    getString(R.string.setup_back_blocked_msg), Snackbar.LENGTH_SHORT).show();
+            Snackbars.make(findViewById(android.R.id.content),
+                    getString(R.string.setup_back_blocked_msg)).show();
         } else {
             super.onBackPressed();
         }

@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.MainActivity;
@@ -438,7 +439,7 @@ public final class PlannerController {
             rgVariants.removeAllViews();
             spinnerLang.setAdapter(null);
             host.setOverrideKiwixVariant(null);
-            Snackbar.make(fragment.getView(), R.string.kiwix_cache_wiped, Snackbar.LENGTH_SHORT).show();
+            Snackbars.make(fragment.getView(), R.string.kiwix_cache_wiped).show();
         });
 
         InstallationPlanner.getOrFetchCatalog(fragment.requireContext(), new InstallationPlanner.CacheListener() {
@@ -509,7 +510,7 @@ public final class PlannerController {
                         recalculateProjection();
                         dialog.dismiss();
                     } else {
-                        Snackbar.make(fragment.getView(), R.string.kiwix_select_variant_error, Snackbar.LENGTH_SHORT).show();
+                        Snackbars.make(fragment.getView(), R.string.kiwix_select_variant_error).show();
                     }
                 });
             }
@@ -517,7 +518,7 @@ public final class PlannerController {
             @Override
             public void onError(String error) {
                 if (fragment.isAdded())
-                    Snackbar.make(fragment.getView(), fragment.getString(R.string.kiwix_catalog_error, error), Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(fragment.getView(), fragment.getString(R.string.kiwix_catalog_error, error)).show();
             }
         });
         dialog.show();

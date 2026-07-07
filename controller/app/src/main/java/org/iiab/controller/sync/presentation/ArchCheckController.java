@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.R;
 
@@ -125,7 +126,7 @@ public final class ArchCheckController {
             txtGuestArchLabel.setTextColor(ContextCompat.getColor(ctx, R.color.text_on_warning));
         }
 
-        Snackbar.make(fragment.getView(), fragment.getString(R.string.sync_msg_arch_compatible), Snackbar.LENGTH_SHORT).show();
+        Snackbars.make(fragment.getView(), fragment.getString(R.string.sync_msg_arch_compatible)).show();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Context laterCtx = fragment.getContext();

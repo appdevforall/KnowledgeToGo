@@ -50,6 +50,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import org.iiab.controller.util.LocalVarsYamlParser;
 import org.iiab.controller.rootfs.domain.RootfsAbi;
@@ -405,7 +406,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 if (s.seq > lastResetTerminalSeq) {
                     lastResetTerminalSeq = s.seq;
                     if (getView() != null)
-                        Snackbar.make(getView(), R.string.install_success_vanilla, Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(getView(), R.string.install_success_vanilla).show();
                 }
                 break;
             case FAILED:
@@ -415,7 +416,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 if (s.seq > lastResetTerminalSeq) {
                     lastResetTerminalSeq = s.seq;
                     if (getView() != null && !s.message.isEmpty())
-                        Snackbar.make(getView(), s.message, Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(getView(), s.message).show();
                 }
                 break;
             case IDLE:
@@ -588,9 +589,9 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 btnRefreshModules.setAlpha(0.6f);
                 btnRefreshModules.setOnClickListener(v -> {
                     if (!isProotInstalled)
-                        Snackbar.make(v, R.string.install_msg_termux_missing, Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(v, R.string.install_msg_termux_missing).show();
                     else if (isServerRunning)
-                        Snackbar.make(v, R.string.install_msg_server_running_lock, Snackbar.LENGTH_LONG).show();
+                        Snackbars.make(v, R.string.install_msg_server_running_lock).show();
                 });
             } else {
                 btnRefreshModules.setTextColor(ContextCompat.getColor(requireContext(), R.color.status_info));
@@ -658,7 +659,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 card.setAlpha(0.6f);
                 card.setOnClickListener(v -> {
                     String msg = isServerRunning ? getString(R.string.install_msg_server_running_lock) : getSystemBusyMessage();
-                    Snackbar.make(v, msg, Snackbar.LENGTH_LONG).show();
+                    Snackbars.make(v, msg).show();
                 });
             }
 

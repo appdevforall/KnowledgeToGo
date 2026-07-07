@@ -46,6 +46,7 @@ import org.iiab.controller.network.presentation.DnsSettingsViewModel;
 import org.iiab.controller.network.presentation.DnsSettingsViewModelFactory;
 
 import com.google.android.material.snackbar.Snackbar;
+import org.iiab.controller.util.Snackbars;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -376,7 +377,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             if (anchor == null) anchor = mainActivity.findViewById(android.R.id.content);
         }
         if (anchor != null) {
-            Snackbar.make(anchor, R.string.lohs_recommend, Snackbar.LENGTH_LONG)
+            Snackbars.make(anchor, R.string.lohs_recommend)
                     .setAction(R.string.lohs_recommend_action, v -> {
                         expandAdvancedSettings();
                         pulseView(dns_settings_label);
