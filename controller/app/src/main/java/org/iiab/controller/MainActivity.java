@@ -28,10 +28,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
-import org.iiab.controller.update.data.ApkVerifier;
-import org.iiab.controller.update.presentation.UpdateUiState;
-import org.iiab.controller.update.presentation.UpdateViewModel;
-import org.iiab.controller.update.presentation.UpdateViewModelFactory;
+import org.iiab.controller.update.presentation.UpdateController;
 import androidx.lifecycle.ViewModelProvider;
 import android.view.View;
 import android.widget.ImageButton;
@@ -67,10 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton btnSettings;
     private android.widget.ImageView headerIcon;
 
-    private long updateDownloadId = -1;
-    private androidx.appcompat.app.AlertDialog updateProgressDialog;
-    private UpdateViewModel updateViewModel;
-    private long lastUpdateCheckTime = 0;
+    private UpdateController updateController;
 
     // Tabs UI
     private TabLayout tabLayout;
@@ -349,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // --- START: EASTER EGG & OTA LOGIC ---
         versionFooter = findViewById(R.id.version_text);
         setVersionFooter();
+        updateController = new UpdateController(this);
 
         // Configure hidden bottom sheet
         View bottomSheet = findViewById(R.id.terminal_bottom_sheet);
@@ -502,13 +497,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         // --- THE UPDATER (OTA LOGIC) ---
                         // If released early and it was a quick tap (<500ms), trigger normal OTA update
                         if (System.currentTimeMillis() - touchStartTime < 500) {
-                            long currentTime = System.currentTimeMillis();
-                            if (currentTime - lastUpdateCheckTime < 10000) {
-                                Toast.makeText(MainActivity.this, R.string.ota_toast_cooldown, Toast.LENGTH_SHORT).show();
-                            } else {
-                                lastUpdateCheckTime = currentTime;
-                                checkForUpdates(true);
-                            }
+                            updateController.checkForUpdatesManual();
                         }
                         return true;
                 }
@@ -517,15 +506,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         // Check for version with 10s cooldown span
-        versionFooter.setOnClickListener(v -> {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastUpdateCheckTime < 10000) {
-                Toast.makeText(this, R.string.ota_toast_cooldown, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            lastUpdateCheckTime = currentTime;
-            checkForUpdates(true);
-        });
+        versionFooter.setOnClickListener(v -> updateController.checkForUpdatesManual());
 
         viewPager.setCurrentItem(0, false);
 
@@ -589,7 +570,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updateUI();
 
         addToLog(getString(R.string.app_started));
-        checkForUpdates(false);
+        updateController.checkForUpdates(false);
 
         sizeUpdateRunnable = new Runnable() {
             @Override
@@ -669,11 +650,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
 
-        try {
-            unregisterReceiver(downloadReceiver);
-        } catch (IllegalArgumentException e) {
-            // Ignore if it wasn't registered
-        }
+        updateController.unregisterDownloadReceiver();
 
         stopLogSizeUpdates();
         serverCheckHandler.removeCallbacks(serverCheckRunnable);
@@ -682,13 +659,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        // Register download listener
-        IntentFilter filter = new IntentFilter(android.app.DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(downloadReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(downloadReceiver, filter);
-        }
+        updateController.registerDownloadReceiver();
         //  Check permissions status
         updateHeaderIconsOpacity();
 
@@ -1101,347 +1072,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return Environment.isExternalStorageManager();
         } else {
             return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        }
-    }
-
-    private void checkForUpdates(boolean isManual) {
-        if (isManual) {
-            runOnUiThread(() -> Toast.makeText(this, R.string.ota_toast_checking, Toast.LENGTH_SHORT).show());
-        }
-
-        AppExecutors.get().io().execute(() -> {
-            try {
-                // Check update JSON data
-                Log.d(TAG, "OTA: Connecting to https://iiab.switnet.org/android/apk/update.json");
-                URL url = new URL("https://iiab.switnet.org/android/apk/update.json");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setConnectTimeout(5000);
-                conn.setRequestMethod("GET");
-
-                int responseCode = conn.getResponseCode();
-                Log.d(TAG, "OTA: HTTP response code: " + responseCode);
-
-                if (responseCode == 200) {
-                    BufferedReader reader = new BufferedReader(new java.io.InputStreamReader(conn.getInputStream()));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    reader.close();
-
-                    org.json.JSONObject json = new org.json.JSONObject(response.toString());
-
-                    // We read the versionCodeBase (Ex: 50)
-                    int serverVersionCodeBase = json.getInt("versionCodeBase");
-                    String serverVersionName = json.getString("versionName");
-                    String changelog = json.getString("changelog");
-
-                    // We get our local version and convert it to the base by dividing by 10
-                    int currentVersionCode = 0;
-                    try {
-                        currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-                    } catch (PackageManager.NameNotFoundException e) {
-                        Log.e(TAG, "OTA: Could not get local version code", e);
-                    }
-                    int localVersionCodeBase = currentVersionCode / 10;
-
-                    Log.d(TAG, "OTA: Server Base=" + serverVersionCodeBase + " | Local Base=" + localVersionCodeBase + " (Raw Local: " + currentVersionCode + ")");
-
-                    // We compare the base versions
-                    if (serverVersionCodeBase > localVersionCodeBase) {
-                        // DETECT ARCHITECTURE TO DOWNLOAD THE CORRECT APK
-                        String deviceArch = Build.SUPPORTED_ABIS.length > 0 ? Build.SUPPORTED_ABIS[0] : "unknown";
-                        String apkKey = "apk_universal"; // Fallback por defecto
-
-                        if (deviceArch.contains("arm64") || deviceArch.contains("aarch64")) {
-                            apkKey = "apk_arm64_v8a";
-                        } else if (deviceArch.contains("armeabi") || deviceArch.contains("armv7")) {
-                            apkKey = "apk_armeabi_v7a";
-                        }
-
-                        // If for some reason the JSON does not have that architecture, we use the universal
-                        String apkName = json.optString(apkKey, json.optString("apk_universal"));
-
-                        String downloadUrl = "https://iiab.switnet.org/android/apk/" + apkName;
-                        runOnUiThread(() -> showUpdateDialog(serverVersionName, changelog, downloadUrl));
-                    } else if (isManual) {
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.ota_toast_latest, Toast.LENGTH_LONG).show());
-                    }
-                } else if (isManual) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, getString(R.string.ota_toast_error_server, responseCode), Toast.LENGTH_SHORT).show());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "OTA: Critical error checking for updates", e);
-                if (isManual) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.ota_toast_error_network, Toast.LENGTH_SHORT).show());
-                }
-            }
-        });
-    }
-
-    private void showUpdateDialog(String versionName, String changelog, String downloadUrl) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle(getString(R.string.update_dialog_title, versionName))
-                .setMessage(getString(R.string.update_dialog_message, changelog))
-                .setPositiveButton(R.string.update_dialog_positive, (dialog, which) -> {
-                    startDownload(downloadUrl);
-                })
-                .setNegativeButton(R.string.update_dialog_negative, null)
-                .setCancelable(false)
-                .show();
-    }
-
-    private void startDownload(String downloadUrl) {
-        // 1. We extract the actual file name from the end of the URL
-        String apkName = android.net.Uri.parse(downloadUrl).getLastPathSegment();
-        if (apkName == null || !apkName.endsWith(".apk")) {
-            apkName = "iiab_update.apk"; // Fallback just in case
-        }
-
-        // 2. We save the name in memory so that it is not forgotten if the app closes
-        getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
-                .edit().putString("ota_apk_name", apkName).apply();
-
-        // 3. We delete previous failed downloads with THIS same name
-        java.io.File oldApk = new java.io.File(
-                getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS),
-                apkName
-        );
-        if (oldApk.exists()) {
-            oldApk.delete();
-        }
-
-        android.app.DownloadManager.Request request = new android.app.DownloadManager.Request(android.net.Uri.parse(downloadUrl));
-
-        request.setTitle(getString(R.string.download_title));
-        request.setDescription(getString(R.string.download_description));
-        request.setMimeType("application/vnd.android.package-archive");
-        request.setNotificationVisibility(android.app.DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-
-        // 4. F15: stage the APK in the app's PRIVATE external dir (not public
-        // Downloads) so another app cannot swap it before install.
-        request.setDestinationInExternalFilesDir(this, android.os.Environment.DIRECTORY_DOWNLOADS, apkName);
-
-        android.app.DownloadManager manager = (android.app.DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        if (manager != null) {
-            updateDownloadId = manager.enqueue(request);
-            // PR B: show the in-app modal progress dialog and start polling.
-            // The DownloadManager system notification is kept as well.
-            getUpdateViewModel().track(updateDownloadId);
-            showUpdateProgressDialog();
-        }
-    }
-
-    private final android.content.BroadcastReceiver downloadReceiver = new android.content.BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(android.app.DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (id != updateDownloadId) {
-                return;
-            }
-            // F15: only install if the download actually SUCCEEDED. DownloadManager
-            // reports completion even when the server returned an error/HTML page.
-            if (isDownloadSuccessful(id)) {
-                // PR B: verify signature, then move the dialog to READY (user taps Install).
-                java.io.File apk = verifyDownloadedApk();
-                if (apk != null) {
-                    getUpdateViewModel().onReady();
-                } else {
-                    getUpdateViewModel().onError(getString(R.string.ota_error_verify_failed));
-                    Toast.makeText(context, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
-                }
-            } else {
-                getUpdateViewModel().onError(getString(R.string.ota_error_download_failed));
-                Log.e(TAG, "OTA: download did not complete successfully; not installing.");
-                Toast.makeText(context, R.string.ota_error_download_failed, Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-
-    /** Did the DownloadManager job with this id finish with STATUS_SUCCESSFUL? */
-    private boolean isDownloadSuccessful(long id) {
-        android.app.DownloadManager manager =
-                (android.app.DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-        if (manager == null) {
-            return false;
-        }
-        try (android.database.Cursor c =
-                     manager.query(new android.app.DownloadManager.Query().setFilterById(id))) {
-            if (c != null && c.moveToFirst()) {
-                int idx = c.getColumnIndex(android.app.DownloadManager.COLUMN_STATUS);
-                return idx >= 0 && c.getInt(idx) == android.app.DownloadManager.STATUS_SUCCESSFUL;
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "OTA: error querying download status", e);
-        }
-        return false;
-    }
-
-    /** Verify the staged APK exists and is signed by this app's certificate. Returns the file, or null. */
-    private java.io.File verifyDownloadedApk() {
-        String apkName = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
-                .getString("ota_apk_name", "iiab_update.apk");
-
-        java.io.File apkFile = new java.io.File(
-                getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS),
-                apkName
-        );
-
-        if (!apkFile.exists()) {
-            Log.e(TAG, "OTA: Downloaded APK file not found at " + apkFile.getAbsolutePath());
-            return null;
-        }
-
-        // F15: verify the APK is signed by the SAME certificate as this app before
-        // installing. Rejects MITM/tampered APKs and non-APK downloads (e.g. an
-        // HTML/text error page saved with a .apk name).
-        if (!ApkVerifier.isSignedBySameCertAsApp(this, apkFile)) {
-            Log.e(TAG, "OTA: APK failed signature verification; deleting and aborting install.");
-            apkFile.delete();
-            return null;
-        }
-        return apkFile;
-    }
-
-    /** Launch the system installer for the (re-)verified APK. Invoked from the dialog's Install button. */
-    private void launchInstaller() {
-        java.io.File apkFile = verifyDownloadedApk();
-        if (apkFile == null) {
-            getUpdateViewModel().onError(getString(R.string.ota_error_verify_failed));
-            Toast.makeText(this, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        // F15: on API 26+ the user must allow this app to install packages.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && !getPackageManager().canRequestPackageInstalls()) {
-            Toast.makeText(this, R.string.ota_msg_enable_unknown_sources, Toast.LENGTH_LONG).show();
-            try {
-                startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
-                        android.net.Uri.parse("package:" + getPackageName())));
-            } catch (Exception e) {
-                Log.e(TAG, "OTA: could not open unknown-sources settings", e);
-            }
-            return;
-        }
-
-        getUpdateViewModel().onInstalling();
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        android.net.Uri apkUri = androidx.core.content.FileProvider.getUriForFile(
-                this,
-                getPackageName() + ".provider",
-                apkFile
-        );
-
-        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        List<android.content.pm.ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        for (android.content.pm.ResolveInfo resolveInfo : resInfoList) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            grantUriPermission(packageName, apkUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        }
-
-        try {
-            startActivity(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "OTA: Error launching installer", e);
-            Toast.makeText(this, R.string.ota_error_launching_installer, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    // ---- PR B: in-app OTA progress dialog ---------------------------------
-
-    private UpdateViewModel getUpdateViewModel() {
-        if (updateViewModel == null) {
-            updateViewModel = new ViewModelProvider(this, new UpdateViewModelFactory(this))
-                    .get(UpdateViewModel.class);
-            updateViewModel.state().observe(this, this::renderUpdateState);
-        }
-        return updateViewModel;
-    }
-
-    private void showUpdateProgressDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_ota_progress, null);
-        androidx.appcompat.app.AlertDialog d = new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle(R.string.ota_progress_title)
-                .setView(view)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ota_btn_install, null)
-                .setNegativeButton(R.string.ota_btn_cancel, null)
-                .create();
-        d.setOnShowListener(dlg -> {
-            android.widget.Button install = d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
-            android.widget.Button cancel = d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE);
-            if (install != null) install.setOnClickListener(v -> launchInstaller());
-            if (cancel != null) cancel.setOnClickListener(v -> {
-                UpdateUiState st = getUpdateViewModel().state().getValue();
-                boolean terminal = st != null && (st.status == UpdateUiState.Status.READY
-                        || st.status == UpdateUiState.Status.ERROR
-                        || st.status == UpdateUiState.Status.INSTALLING);
-                if (!terminal) {
-                    getUpdateViewModel().cancel();
-                }
-                d.dismiss();
-            });
-            renderUpdateState(getUpdateViewModel().state().getValue());
-        });
-        updateProgressDialog = d;
-        d.show();
-    }
-
-    private void renderUpdateState(UpdateUiState s) {
-        if (updateProgressDialog == null || s == null || !updateProgressDialog.isShowing()) {
-            return;
-        }
-        android.widget.ProgressBar bar = updateProgressDialog.findViewById(R.id.ota_progress);
-        TextView status = updateProgressDialog.findViewById(R.id.ota_status);
-        TextView percent = updateProgressDialog.findViewById(R.id.ota_percent);
-        android.widget.Button install = updateProgressDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE);
-        android.widget.Button cancel = updateProgressDialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE);
-
-        boolean determinate = s.status == UpdateUiState.Status.DOWNLOADING && !s.indeterminate && s.percent >= 0;
-        if (bar != null) {
-            bar.setIndeterminate(!determinate);
-            if (determinate) bar.setProgress(s.percent);
-        }
-        if (percent != null) {
-            percent.setVisibility(determinate ? View.VISIBLE : View.GONE);
-            if (determinate) percent.setText(getString(R.string.ota_progress_percent, s.percent));
-        }
-
-        switch (s.status) {
-            case DOWNLOADING:
-                if (status != null) status.setText(R.string.ota_status_downloading);
-                if (install != null) install.setEnabled(false);
-                if (cancel != null) cancel.setEnabled(true);
-                break;
-            case VERIFYING:
-                if (status != null) status.setText(R.string.ota_status_verifying);
-                if (install != null) install.setEnabled(false);
-                if (cancel != null) cancel.setEnabled(true);
-                break;
-            case READY:
-                if (status != null) status.setText(R.string.ota_status_ready);
-                if (install != null) install.setEnabled(true);
-                if (cancel != null) cancel.setEnabled(true);
-                break;
-            case INSTALLING:
-                if (status != null) status.setText(R.string.ota_status_installing);
-                if (install != null) install.setEnabled(false);
-                if (cancel != null) cancel.setEnabled(false);
-                break;
-            case ERROR:
-                if (status != null) status.setText(s.message != null ? s.message : getString(R.string.ota_status_error));
-                if (install != null) install.setEnabled(false);
-                if (cancel != null) cancel.setEnabled(true);
-                break;
-            default:
-                break;
         }
     }
 
