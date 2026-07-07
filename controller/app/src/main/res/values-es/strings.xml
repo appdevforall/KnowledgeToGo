@@ -554,4 +554,21 @@
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">Descargando %1$s…</string>
     <string name="portal_download_failed">No se pudo iniciar la descarga.</string>
+    <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
+    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_hint">Crea una red Wi-Fi local para conectarse sin SIM.</string>
+    <string name="lohs_toggle">Activar Hotspot LocalOnly</string>
+    <string name="lohs_show_qr">Mostrar QR de Wi-Fi</string>
+    <string name="lohs_status_starting">Iniciando el hotspot local...</string>
+    <string name="lohs_status_on">Activo: %1$s</string>
+    <string name="lohs_status_failed">No se pudo iniciar (código %1$d). Verifica que Wi-Fi y Ubicación estén activados.</string>
+    <string name="lohs_need_location">Se requieren el permiso de Ubicación y el servicio de Ubicación para Hotspot LocalOnly.</string>
+    <string name="lohs_recommend">No se detectó SIM y el hotspot no arrancó. Prueba Hotspot LocalOnly (BETA) en Advanced settings.</string>
+    <string name="lohs_recommend_action">Ver</string>
+    <string name="qr_title_join_wifi">Únete a esta red Wi-Fi</string>
+    <string name="qr_wifi_ssid">Red: %1$s</string>
+    <string name="qr_wifi_password">Contraseña: %1$s</string>
+    <string name="settings_group_device">Dispositivo</string>
+    <string name="settings_group_server">Servidor</string>
+    <string name="setup_dns_hint">DNS personalizado para el servidor.</string>
 </resources>

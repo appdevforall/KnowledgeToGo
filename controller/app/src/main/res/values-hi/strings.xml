@@ -555,4 +555,21 @@
     <!-- Portal WebView APK download (ADFA-4512) -->
     <string name="portal_download_started">%1$s डाउनलोड हो रहा है…</string>
     <string name="portal_download_failed">डाउनलोड शुरू नहीं हो सका।</string>
+    <!-- ADFA-4520: LocalOnlyHotspot (LOHS) fallback -->
+    <string name="lohs_label">Hotspot LocalOnly (BETA)</string>
+    <string name="lohs_hint">बिना SIM के जुड़ने के लिए एक स्थानीय Wi-Fi नेटवर्क बनाता है।</string>
+    <string name="lohs_toggle">Hotspot LocalOnly चालू करें</string>
+    <string name="lohs_show_qr">Wi-Fi QR दिखाएँ</string>
+    <string name="lohs_status_starting">स्थानीय हॉटस्पॉट शुरू हो रहा है...</string>
+    <string name="lohs_status_on">सक्रिय: %1$s</string>
+    <string name="lohs_status_failed">शुरू नहीं हो सका (कोड %1$d)। सुनिश्चित करें कि Wi-Fi और स्थान चालू हैं।</string>
+    <string name="lohs_need_location">Hotspot LocalOnly के लिए स्थान अनुमति और स्थान सेवा आवश्यक हैं।</string>
+    <string name="lohs_recommend">कोई SIM नहीं मिला और हॉटस्पॉट शुरू नहीं हुआ। Advanced settings में Hotspot LocalOnly (BETA) आज़माएँ।</string>
+    <string name="lohs_recommend_action">देखें</string>
+    <string name="qr_title_join_wifi">इस Wi-Fi से जुड़ें</string>
+    <string name="qr_wifi_ssid">नेटवर्क: %1$s</string>
+    <string name="qr_wifi_password">पासवर्ड: %1$s</string>
+    <string name="settings_group_device">डिवाइस</string>
+    <string name="settings_group_server">सर्वर</string>
+    <string name="setup_dns_hint">सर्वर के लिए कस्टम DNS।</string>
 </resources>

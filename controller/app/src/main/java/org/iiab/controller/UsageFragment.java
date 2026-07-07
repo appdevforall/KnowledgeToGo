@@ -32,6 +32,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import org.iiab.controller.hotspot.HotspotAvailability;
+import org.iiab.controller.hotspot.LocalHotspotManager;
 
 import org.iiab.controller.network.presentation.DnsSettingsUiState;
 import org.iiab.controller.network.presentation.DnsSettingsViewModel;
@@ -65,6 +73,23 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     private LinearLayout dns_settings_section;
     private DnsSettingsViewModel dnsViewModel;
     private boolean suppressDnsToggle = false;
+
+    // ADFA-4520: LocalOnlyHotspot (LOHS) fallback, lives inside the Advanced settings section.
+    private LinearLayout lohs_block;
+    private CheckBox lohs_toggle;
+    private TextView lohs_status, lohs_hint;
+    private Button lohs_show_qr;
+    private boolean suppressLohsToggle = false;
+    private String lohsSsid = null, lohsPass = null;
+    private final ActivityResultLauncher<String> lohsLocationPerm =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                if (granted) {
+                    startLohs();
+                } else {
+                    setLohsToggleChecked(false);
+                    if (getContext() != null) Toast.makeText(getContext(), R.string.lohs_need_location, Toast.LENGTH_LONG).show();
+                }
+            });
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -105,6 +130,30 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         });
         dns_accept.setOnClickListener(v -> dnsViewModel.onAccept(
                 dns_primary.getText().toString(), dns_secondary.getText().toString()));
+
+        // ADFA-4520: LocalOnlyHotspot section (inside Advanced settings), gated to API 26+.
+        lohs_block = view.findViewById(R.id.lohs_block);
+        lohs_toggle = view.findViewById(R.id.lohs_toggle);
+        lohs_status = view.findViewById(R.id.lohs_status);
+        lohs_hint = view.findViewById(R.id.lohs_hint);
+        lohs_show_qr = view.findViewById(R.id.lohs_show_qr);
+        if (!LocalHotspotManager.isSupported()) {
+            lohs_block.setVisibility(View.GONE);
+        } else {
+            lohs_toggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (suppressLohsToggle) return;
+                if (isChecked) requestLohsStart(); else LocalHotspotManager.get().stop();
+            });
+            lohs_show_qr.setOnClickListener(v -> {
+                if (lohsSsid != null) {
+                    Intent qr = new Intent(getContext(), QrActivity.class);
+                    qr.putExtra(QrActivity.EXTRA_WIFI_SSID, lohsSsid);
+                    qr.putExtra(QrActivity.EXTRA_WIFI_PASS, lohsPass);
+                    startActivity(qr);
+                }
+            });
+            LocalHotspotManager.get().state().observe(getViewLifecycleOwner(), this::renderLohs);
+        }
         button_browse_content = view.findViewById(R.id.btnBrowseContent);
 
         logActions = view.findViewById(R.id.log_actions);
@@ -239,6 +288,129 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     // =========================================================================
     // Empty methods kept to prevent crashes from MainActivity's legacy broadcast receivers
     // =========================================================================
+    // ADFA-4520 helpers -------------------------------------------------------
+
+    private void setLohsToggleChecked(boolean checked) {
+        suppressLohsToggle = true;
+        if (lohs_toggle != null) lohs_toggle.setChecked(checked);
+        suppressLohsToggle = false;
+    }
+
+    private void requestLohsStart() {
+        Context ctx = getContext();
+        if (ctx == null) return;
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            lohsLocationPerm.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            return;
+        }
+        startLohs();
+    }
+
+    private void startLohs() {
+        Context ctx = getContext();
+        if (ctx == null) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalHotspotManager.get().start(ctx.getApplicationContext());
+        }
+    }
+
+    private void renderLohs(LocalHotspotManager.State st) {
+        if (lohs_status == null || st == null) return;
+        switch (st.phase) {
+            case STARTING:
+                lohs_status.setVisibility(View.VISIBLE);
+                lohs_status.setText(R.string.lohs_status_starting);
+                lohs_show_qr.setVisibility(View.GONE);
+                break;
+            case ON:
+                lohsSsid = st.ssid;
+                lohsPass = st.passphrase;
+                setLohsToggleChecked(true);
+                lohs_status.setVisibility(View.VISIBLE);
+                lohs_status.setText(getString(R.string.lohs_status_on, st.ssid == null ? "" : st.ssid));
+                lohs_show_qr.setVisibility(View.VISIBLE);
+                break;
+            case FAILED:
+                setLohsToggleChecked(false);
+                lohs_status.setVisibility(View.VISIBLE);
+                lohs_status.setText(getString(R.string.lohs_status_failed, st.failureReason));
+                lohs_show_qr.setVisibility(View.GONE);
+                break;
+            case OFF:
+            default:
+                setLohsToggleChecked(false);
+                lohsSsid = null;
+                lohsPass = null;
+                lohs_status.setVisibility(View.GONE);
+                lohs_show_qr.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        maybeRecommendLohs();
+    }
+
+    /**
+     * ADFA-4520: recommend LOHS only when BOTH conditions hold (AND, not OR): the operator
+     * tried the native hotspot and it did not come up, AND there is no SIM in the device.
+     * Reveals + pulses the Advanced settings header (where LOHS lives) and shows a snackbar.
+     */
+    private void maybeRecommendLohs() {
+        Context ctx = getContext();
+        if (ctx == null || !LocalHotspotManager.isSupported()) return;
+        LocalHotspotManager mgr = LocalHotspotManager.get();
+        boolean triedNative = mgr.wasNativeHotspotAttempted();
+        boolean hotspotUp = mainActivity != null && mainActivity.isHotspotActive();
+        boolean simAbsent = HotspotAvailability.isSimAbsent(ctx);
+        if (!(triedNative && !hotspotUp && simAbsent)) return;
+        mgr.clearNativeHotspotAttempted();
+        expandAdvancedSettings();
+        pulseView(dns_settings_label);
+        View anchor = null;
+        if (mainActivity != null) {
+            anchor = mainActivity.findViewById(R.id.main_coordinator);
+            if (anchor == null) anchor = mainActivity.findViewById(android.R.id.content);
+        }
+        if (anchor != null) {
+            Snackbar.make(anchor, R.string.lohs_recommend, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.lohs_recommend_action, v -> {
+                        expandAdvancedSettings();
+                        pulseView(dns_settings_label);
+                    })
+                    .show();
+        }
+    }
+
+    private void expandAdvancedSettings() {
+        if (dns_settings_section != null && dns_settings_section.getVisibility() != View.VISIBLE) {
+            toggleVisibility(dns_settings_section, dns_settings_label, getString(R.string.network_advanced_label));
+        }
+    }
+
+    /**
+     * ADFA-4520 recommendation cue. Mirrors DeployFragment#focusAdvancedMonitoring: blink the
+     * header text colour (danger <-> normal, 400ms x5, reverse), resetting to normal at the end.
+     */
+    private void pulseView(View v) {
+        if (!(v instanceof TextView) || getContext() == null) return;
+        final TextView t = (TextView) v;
+        final int normal = t.getCurrentTextColor();
+        int danger = ContextCompat.getColor(requireContext(), R.color.status_danger);
+        android.animation.ObjectAnimator anim = android.animation.ObjectAnimator.ofObject(
+                t, "textColor", new android.animation.ArgbEvaluator(), normal, danger);
+        anim.setDuration(400);
+        anim.setRepeatCount(5);
+        anim.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+        anim.addListener(new android.animation.AnimatorListenerAdapter() {
+            @Override public void onAnimationEnd(android.animation.Animator a) { t.setTextColor(normal); }
+        });
+        anim.start();
+    }
+
     public void startFusionPulse() {
     }
 

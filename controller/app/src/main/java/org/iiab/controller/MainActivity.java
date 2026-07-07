@@ -86,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     private Runnable timeoutRunnable;
     private boolean isWifiActive = false;
     private boolean isHotspotActive = false;
+
+    /** ADFA-4520: last observed native-hotspot state, for the LOHS AND-recommendation. */
+    public boolean isHotspotActive() { return isHotspotActive; }
     private String currentTargetUrl = null;
     private long pulseStartTime = 0;
 
