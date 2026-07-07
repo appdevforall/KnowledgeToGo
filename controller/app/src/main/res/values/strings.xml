@@ -579,7 +579,7 @@
     <string name="lohs_status_on">Active: %1$s</string>
     <string name="lohs_status_failed">Could not start (code %1$d). Make sure Wi-Fi and Location are on.</string>
     <string name="lohs_need_location">Location permission and Location services are required for Hotspot LocalOnly.</string>
-    <string name="lohs_recommend">No SIM detected and the hotspot did not start. Try Hotspot LocalOnly (BETA) in Advanced settings.</string>
+    <string name="lohs_recommend">No SIM detected and the hotspot did not start. Try Hotspot LocalOnly in Advanced settings.</string>
     <string name="lohs_recommend_action">View</string>
     <string name="qr_title_join_wifi">Join this Wi-Fi</string>
     <string name="qr_wifi_ssid">Network: %1$s</string>
