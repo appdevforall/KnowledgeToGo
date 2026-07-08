@@ -147,3 +147,99 @@ msgctxt "feedback.force_crash.summary"
 msgid "Trigger a test <b>crash</b> — for diagnostics only."
 msgstr "Provoca un <b>fallo</b> de prueba — solo para diagnóstico."
 
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Continúa al siguiente paso de configuración."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Permite <b>notificaciones</b> para avisarte sobre el servidor y las transferencias."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Permite acceso al <b>almacenamiento</b> para leer y servir los archivos de tu biblioteca."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Permite que la app se <b>muestre sobre otras apps</b> (necesario para parte de la ayuda en pantalla)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Deja que la app <b>siga activa</b> en segundo plano para que el servidor no se detenga."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Abre la pantalla del sistema para gestionar <b>todos los permisos</b> a la vez."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Elige el <b>idioma</b> de la app y del contenido."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Idioma de la <b>interfaz</b> de la app."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Idioma preferido para el <b>contenido descargado</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Termina y cierra <b>ajustes</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Ir a los pasos de <b>configuración</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Ir a <b>comentarios</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Ir a la pantalla <b>Acerca de</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Muestra la barra de <b>navegación</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Oculta</b> la barra de navegación."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Ir <b>atrás</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Ir a la página de <b>inicio</b> de la biblioteca."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Recarga</b> la página."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Cierra</b> el navegador y vuelve a la app."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Ir <b>adelante</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Cambia el QR entre la <b>red Wi-Fi</b> y el <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Cierra</b> el código QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Descarta</b> este informe de fallo sin enviarlo."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Envía</b> el informe de fallo para ayudarnos a corregir el problema."
+

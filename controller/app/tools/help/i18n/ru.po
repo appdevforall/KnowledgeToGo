@@ -147,3 +147,99 @@ msgctxt "feedback.force_crash.summary"
 msgid "Trigger a test <b>crash</b> — for diagnostics only."
 msgstr "Вызвать тестовый <b>сбой</b> — только для диагностики."
 
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Перейдите к следующему шагу настройки."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Разрешите <b>уведомления</b>, чтобы получать оповещения о сервере и передачах."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Разрешите доступ к <b>хранилищу</b>, чтобы приложение читало и раздавало файлы вашей библиотеки."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Разрешите приложению <b>отображаться поверх других приложений</b> (нужно для части экранной справки)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Позвольте приложению <b>работать в фоне</b>, чтобы сервер не останавливался."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Откройте системный экран, чтобы управлять <b>всеми разрешениями</b> сразу."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Выберите <b>язык</b> приложения и контента."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Язык <b>интерфейса</b> приложения."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Предпочитаемый язык <b>загружаемого контента</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Завершите и закройте <b>настройки</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Перейти к шагам <b>настройки</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Перейти к <b>отзывам</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Перейти к экрану <b>О приложении</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Показать панель <b>навигации</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Скрыть</b> панель навигации."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>Назад</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "На <b>главную</b> страницу библиотеки."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Обновить</b> страницу."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Закрыть</b> браузер и вернуться в приложение."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>Вперёд</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Переключите QR между <b>сетью Wi-Fi</b> и <b>точкой доступа</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Закрыть</b> QR-код."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Отклонить</b> этот отчёт о сбое, не отправляя."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Отправить</b> отчёт о сбое, чтобы помочь нам исправить проблему."
+

@@ -147,3 +147,99 @@ msgctxt "feedback.force_crash.summary"
 msgid "Trigger a test <b>crash</b> — for diagnostics only."
 msgstr "एक परीक्षण <b>क्रैश</b> ट्रिगर करें — केवल डायग्नोस्टिक्स के लिए।"
 
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "अगले सेटअप चरण पर जारी रखें।"
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "सर्वर और ट्रांसफ़र के बारे में सूचित करने के लिए <b>नोटिफ़िकेशन</b> की अनुमति दें।"
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "आपकी लाइब्रेरी की फ़ाइलें पढ़ने और सर्व करने के लिए <b>स्टोरेज</b> की अनुमति दें।"
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "ऐप को <b>अन्य ऐप्स के ऊपर दिखने</b> की अनुमति दें (कुछ ऑन-स्क्रीन सहायता के लिए ज़रूरी)।"
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "सर्वर चालू रहे इसके लिए ऐप को <b>बैकग्राउंड में चलते रहने</b> दें।"
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "<b>सभी अनुमतियाँ</b> एक साथ प्रबंधित करने के लिए सिस्टम स्क्रीन खोलें।"
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "ऐप और सामग्री की <b>भाषा</b> चुनें।"
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "ऐप <b>इंटरफ़ेस</b> की भाषा।"
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "<b>डाउनलोड की गई सामग्री</b> के लिए पसंदीदा भाषा।"
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "समाप्त करें और <b>सेटिंग्स</b> बंद करें।"
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "<b>सेटअप</b> चरणों पर जाएँ।"
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "<b>फ़ीडबैक</b> पर जाएँ।"
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "<b>परिचय</b> स्क्रीन पर जाएँ।"
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "<b>नेविगेशन</b> बार दिखाएँ।"
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "नेविगेशन बार <b>छिपाएँ</b>।"
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>पीछे</b> जाएँ।"
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "लाइब्रेरी के <b>होम</b> पेज पर जाएँ।"
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "पेज <b>फिर से लोड करें</b>।"
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "ब्राउज़र <b>बंद करें</b> और ऐप पर लौटें।"
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>आगे</b> जाएँ।"
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "QR को <b>Wi-Fi नेटवर्क</b> और <b>हॉटस्पॉट</b> के बीच बदलें।"
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "QR कोड <b>बंद करें</b>।"
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "इस क्रैश रिपोर्ट को भेजे बिना <b>खारिज करें</b>।"
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "समस्या ठीक करने में मदद के लिए क्रैश रिपोर्ट <b>भेजें</b>।"
+

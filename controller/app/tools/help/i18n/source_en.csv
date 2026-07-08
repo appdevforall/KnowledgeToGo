@@ -35,3 +35,27 @@ about.analytics_consent,detail,"When on, the app shares anonymous usage data to 
 feedback.category,summary,Pick the <b>type</b> of feedback you're sending.
 feedback.send,summary,<b>Send</b> your feedback to the team.
 feedback.force_crash,summary,Trigger a test <b>crash</b> — for diagnostics only.
+setup_section.continue,summary,Continue to the next setup step.
+setup_section.perm_notifications,summary,Allow <b>notifications</b> so the app can alert you about the server and transfers.
+setup_section.perm_storage,summary,Allow <b>storage</b> access so the app can read and serve your library files.
+setup_section.perm_overlay,summary,Allow the app to <b>display over other apps</b> (needed for some on-screen help).
+setup_section.perm_battery,summary,Let the app <b>keep running</b> in the background so the server stays up.
+setup_section.manage_all,summary,Open the system screen to manage <b>all permissions</b> at once.
+setup_section.language_header,summary,Choose the app and content <b>language</b>.
+setup_section.app_language,summary,Language of the <b>app interface</b>.
+setup_section.content_language,summary,Preferred language for <b>downloaded content</b>.
+setup.done,summary,Finish and close <b>settings</b>.
+setup.nav_setup,summary,Go to the <b>setup</b> steps.
+setup.nav_feedback,summary,Go to <b>feedback</b>.
+setup.nav_about,summary,Go to the <b>About</b> screen.
+portal.handle,summary,Show the <b>navigation</b> bar.
+portal.hide_nav,summary,<b>Hide</b> the navigation bar.
+portal.back,summary,Go <b>back</b>.
+portal.home,summary,Go to the library <b>home</b> page.
+portal.reload,summary,<b>Reload</b> the page.
+portal.exit,summary,<b>Close</b> the browser and return to the app.
+portal.forward,summary,Go <b>forward</b>.
+qr.flip,summary,Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>.
+qr.close,summary,<b>Close</b> the QR code.
+crash.dismiss,summary,<b>Dismiss</b> this crash report without sending.
+crash.send,summary,<b>Send</b> the crash report to help us fix the problem.
