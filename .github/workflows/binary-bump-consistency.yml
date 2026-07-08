@@ -1,0 +1,33 @@
+name: Binary bump consistency
+
+# Guards the native-binaries pin: if the release tag changes, the integrity
+# manifest must change in the same PR (see controller/docs/UPDATING_NATIVE_BINARIES.md).
+# Complements PR #150, which bumped binary_version.txt without ninja_manifest.json.
+
+on:
+  pull_request:
+    branches: [ "main", "development" ]
+    paths:
+      - 'controller/binary_version.txt'
+      - 'controller/app/src/main/assets/ninja_manifest.json'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Ensure binary_version.txt and ninja_manifest.json move together
+        run: |
+          base="origin/${{ github.base_ref }}"
+          changed=$(git diff --name-only "$base"...HEAD)
+          ver='controller/binary_version.txt'
+          man='controller/app/src/main/assets/ninja_manifest.json'
+          echo "$changed" | grep -qx "$ver" && v=1 || v=0
+          echo "$changed" | grep -qx "$man" && m=1 || m=0
+          if [ "$v" != "$m" ]; then
+            echo "::error::binary_version.txt and ninja_manifest.json must change together (incomplete binary bump). See controller/docs/UPDATING_NATIVE_BINARIES.md"
+            exit 1
+          fi
+          echo "OK: version pin and integrity manifest are consistent."
