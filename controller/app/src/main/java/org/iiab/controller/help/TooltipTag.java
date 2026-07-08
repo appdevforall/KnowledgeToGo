@@ -104,6 +104,8 @@ public final class TooltipTag {
     public static final String USAGE_CLEAR_LOG = "usage.clear_log";
     public static final String USAGE_COPY_LOG = "usage.copy_log";
     public static final String USAGE_SERVER_CONTROL = "usage.server_control";
+    public static final String USAGE_LOHS_TOGGLE = "usage.lohs_toggle";
+    public static final String USAGE_LOHS_SHOW_QR = "usage.lohs_show_qr";
 
     // main
     public static final String MAIN_SHARE_QR = "main.share_qr";
