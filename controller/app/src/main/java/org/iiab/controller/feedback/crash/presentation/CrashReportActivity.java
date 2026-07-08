@@ -29,6 +29,7 @@ public class CrashReportActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crash_report);
+        org.iiab.controller.help.TooltipWiring.wireAll(getWindow().getDecorView());
 
         CrashReportStore store = new CrashReportStore(this);
         String trace = store.readPending();

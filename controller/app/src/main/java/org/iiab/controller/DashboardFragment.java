@@ -110,6 +110,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(view);
 
         // Bindings
         txtDeviceName = view.findViewById(R.id.dash_text_device_name);

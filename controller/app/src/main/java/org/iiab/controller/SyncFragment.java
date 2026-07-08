@@ -103,6 +103,7 @@ public class SyncFragment extends Fragment implements org.iiab.controller.sync.p
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(view);
         // 3b-2: re-bind the rsync transfer progress after any recreation (theme toggle).
         org.iiab.controller.sync.presentation.SyncProgressRepository.get().state().observe(getViewLifecycleOwner(), receiveController::renderTransfer);
     }

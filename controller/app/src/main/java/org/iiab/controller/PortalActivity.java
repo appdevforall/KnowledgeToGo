@@ -65,6 +65,7 @@ public class PortalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portal);
+        org.iiab.controller.help.TooltipWiring.wireAll(getWindow().getDecorView());
 
         vm = new ViewModelProvider(this).get(PortalViewModel.class);
 

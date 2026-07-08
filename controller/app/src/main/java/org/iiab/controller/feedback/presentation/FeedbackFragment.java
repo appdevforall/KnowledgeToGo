@@ -43,6 +43,7 @@ public class FeedbackFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(v);
 
         Spinner category = v.findViewById(R.id.feedback_category);
         EditText message = v.findViewById(R.id.feedback_message);

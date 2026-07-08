@@ -29,6 +29,7 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(view);
         TextView versionView = view.findViewById(R.id.about_version);
         versionView.setText(getString(R.string.about_version, appVersionName()));
 
