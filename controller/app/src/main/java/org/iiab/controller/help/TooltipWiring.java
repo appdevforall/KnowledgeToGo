@@ -71,6 +71,8 @@ public final class TooltipWiring {
         MAP.put(R.id.btn_import_backup, TooltipTag.DEPLOY_IMPORT_BACKUP);
         MAP.put(R.id.txt_select_backup_title, TooltipTag.DEPLOY_SELECT_BACKUP);
         MAP.put(R.id.restore_log_close, TooltipTag.DEPLOY_RESTORE_LOG_CLOSE);
+        MAP.put(R.id.led_install_internet, TooltipTag.DEPLOY_INTERNET);
+        MAP.put(R.id.led_install_dev_mode, TooltipTag.DEPLOY_DEV_MODE);
         // feedback
         MAP.put(R.id.feedback_category, TooltipTag.FEEDBACK_CATEGORY);
         MAP.put(R.id.feedback_send, TooltipTag.FEEDBACK_SEND);

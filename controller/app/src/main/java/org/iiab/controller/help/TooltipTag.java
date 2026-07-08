@@ -66,6 +66,8 @@ public final class TooltipTag {
     public static final String DEPLOY_IMPORT_BACKUP = "deploy.import_backup";
     public static final String DEPLOY_SELECT_BACKUP = "deploy.select_backup";
     public static final String DEPLOY_RESTORE_LOG_CLOSE = "deploy.restore_log_close";
+    public static final String DEPLOY_INTERNET = "deploy.internet";
+    public static final String DEPLOY_DEV_MODE = "deploy.dev_mode";
 
     // feedback
     public static final String FEEDBACK_CATEGORY = "feedback.category";
