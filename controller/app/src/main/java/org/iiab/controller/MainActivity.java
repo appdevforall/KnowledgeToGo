@@ -321,36 +321,61 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         terminalController = new TerminalController(this, this);
         terminalController.bind();
 
-        // 3-second Ninja trigger & OTA Updater
+        // ADFA-4595: version footer — three gestures:
+        //   single tap        -> check version / updates (OTA)
+        //   long-press        -> show the main.version help tooltip
+        //   double-tap + hold -> open the hidden full terminal (double-tap = key, hold = confirm)
         versionFooter.setOnTouchListener(new View.OnTouchListener() {
             private final Handler handler = new Handler(android.os.Looper.getMainLooper());
-            private final Runnable longPressRunnable = () -> terminalController.openFullTerminal();
-            private long touchStartTime;
+            private final int longPressMs = android.view.ViewConfiguration.getLongPressTimeout();
+            private final int doubleTapMs = android.view.ViewConfiguration.getDoubleTapTimeout();
+            private long downTime = 0L;
+            private long lastUpTime = 0L;
+            private boolean secondTap = false;
+            private boolean longFired = false;
+            private Runnable longPress;
+            private Runnable singleTap;
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
+                switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        touchStartTime = System.currentTimeMillis();
-                        handler.postDelayed(longPressRunnable, 3000);
+                        downTime = System.currentTimeMillis();
+                        secondTap = (downTime - lastUpTime) < doubleTapMs;
+                        longFired = false;
+                        if (singleTap != null) handler.removeCallbacks(singleTap);
+                        final boolean armedForTerminal = secondTap;
+                        longPress = () -> {
+                            longFired = true;
+                            if (armedForTerminal) {
+                                terminalController.openFullTerminal();
+                            } else {
+                                org.iiab.controller.help.TooltipManager.showTooltip(
+                                        MainActivity.this, versionFooter,
+                                        org.iiab.controller.help.TooltipCategory.K2GO,
+                                        org.iiab.controller.help.TooltipTag.MAIN_VERSION);
+                            }
+                        };
+                        handler.postDelayed(longPress, longPressMs);
                         return true;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        handler.removeCallbacks(longPressRunnable);
-
-                        // --- THE UPDATER (OTA LOGIC) ---
-                        // If released early and it was a quick tap (<500ms), trigger normal OTA update
-                        if (System.currentTimeMillis() - touchStartTime < 500) {
-                            updateController.checkForUpdatesManual();
+                        if (longPress != null) handler.removeCallbacks(longPress);
+                        long now = System.currentTimeMillis();
+                        boolean wasTap = !longFired && (now - downTime) < longPressMs;
+                        if (wasTap && !secondTap) {
+                            // Might be a single tap; confirm updates only if no second tap follows.
+                            lastUpTime = now;
+                            singleTap = () -> updateController.checkForUpdatesManual();
+                            handler.postDelayed(singleTap, doubleTapMs);
+                        } else {
+                            lastUpTime = wasTap ? now : 0L;
                         }
                         return true;
                 }
                 return false;
             }
         });
-
-        // Check for version with 10s cooldown span
-        versionFooter.setOnClickListener(v -> updateController.checkForUpdatesManual());
 
         viewPager.setCurrentItem(0, false);
 
