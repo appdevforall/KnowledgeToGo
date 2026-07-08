@@ -429,6 +429,13 @@ if (helpPython == null) {
         workingDir projectDir
         commandLine helpPython, "tools/help/build_help_db.py", "tools/help/i18n", helpDb.absolutePath
     }
+    tasks.register("smokeHelpTranslations", Exec) {
+        group = "help"
+        description = "Integrity smoke test for tooltip localizations (markup, encoding, round-trip)."
+        inputs.dir helpI18nDir
+        workingDir projectDir
+        commandLine helpPython, "tools/help/smoke_help.py", "tools/help/i18n", "--langs", helpRequiredLangs
+    }
     tasks.register("extractHelpPot", Exec) {
         group = "help"
         description = "Regenerate strings.pot from the English source (run on demand)."
