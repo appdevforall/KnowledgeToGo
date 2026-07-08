@@ -19,3 +19,19 @@ usage.dns_accept,summary,Apply the DNS settings you entered.
 usage.log,summary,Show the <b>connection log</b>.
 usage.clear_log,summary,<b>Clear</b> the connection log.
 usage.copy_log,summary,<b>Copy</b> the whole log to the clipboard.
+sync.mode_share,summary,Choose <b>Share</b> to send your library or apps to another device.
+sync.mode_receive,summary,Choose <b>Receive</b> to get content from another device.
+sync.net_wifi,summary,Transfer over <b>Wi-Fi</b>.
+sync.net_hotspot,summary,Transfer over the <b>hotspot</b>.
+sync.start_server,summary,<b>Start the server</b> so another device can pull your library.
+sync.share_app,summary,Share the <b>K2Go app</b> itself with a nearby device.
+sync.share_app,detail,Lets someone install K2Go from you without internet: they connect and download the app directly.
+sync.scan_qr,summary,<b>Scan a QR</b> to connect to the other device.
+sync.cancel_transfer,summary,<b>Cancel</b> the current transfer.
+dashboard.flip_gauges,summary,Flip to the next set of <b>gauges</b>.
+dashboard.modules_title,summary,Show or hide the list of <b>installed modules</b>.
+about.analytics_consent,summary,Turn anonymous <b>usage analytics</b> on or off.
+about.analytics_consent,detail,"When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+feedback.category,summary,Pick the <b>type</b> of feedback you're sending.
+feedback.send,summary,<b>Send</b> your feedback to the team.
+feedback.force_crash,summary,Trigger a test <b>crash</b> — for diagnostics only.

@@ -83,3 +83,67 @@ msgctxt "usage.copy_log.summary"
 msgid "<b>Copy</b> the whole log to the clipboard."
 msgstr "<b>Скопировать</b> весь журнал в буфер обмена."
 
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Выберите <b>Поделиться</b>, чтобы отправить библиотеку или приложения на другое устройство."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Выберите <b>Получить</b>, чтобы получить контент с другого устройства."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Передача по <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Передача через <b>точку доступа</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Запустите сервер</b>, чтобы другое устройство скачало вашу библиотеку."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Поделитесь самим <b>приложением K2Go</b> с устройством поблизости."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Позволяет установить K2Go от вас без интернета: устройство подключается и скачивает приложение напрямую."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Отсканируйте QR</b>, чтобы подключиться к другому устройству."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Отмените</b> текущую передачу."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Перейдите к следующему набору <b>датчиков</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b>."
+msgstr "Показать или скрыть список <b>установленных модулей</b>."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Включите или выключите анонимную <b>аналитику использования</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Когда включено, приложение отправляет анонимные данные об использовании, чтобы помочь его улучшить. Личный контент не собирается."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Выберите <b>тип</b> отправляемого отзыва."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Отправьте</b> ваш отзыв команде."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Вызвать тестовый <b>сбой</b> — только для диагностики."
+

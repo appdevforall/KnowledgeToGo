@@ -83,3 +83,67 @@ msgctxt "usage.copy_log.summary"
 msgid "<b>Copy</b> the whole log to the clipboard."
 msgstr "पूरा लॉग <b>क्लिपबोर्ड</b> पर कॉपी करें।"
 
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "अपनी लाइब्रेरी या ऐप्स दूसरे डिवाइस को भेजने के लिए <b>साझा करें</b> चुनें।"
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "दूसरे डिवाइस से सामग्री पाने के लिए <b>प्राप्त करें</b> चुनें।"
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "<b>Wi-Fi</b> से स्थानांतरित करें।"
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "<b>हॉटस्पॉट</b> से स्थानांतरित करें।"
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>सर्वर शुरू करें</b> ताकि दूसरा डिवाइस आपकी लाइब्रेरी ले सके।"
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "<b>K2Go ऐप</b> को पास के डिवाइस के साथ साझा करें।"
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "किसी को बिना इंटरनेट के आपसे K2Go इंस्टॉल करने देता है: वह जुड़ता है और ऐप सीधे डाउनलोड करता है।"
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "दूसरे डिवाइस से जुड़ने के लिए <b>QR स्कैन करें</b>।"
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "मौजूदा स्थानांतरण <b>रद्द करें</b>।"
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "<b>गेज</b> के अगले सेट पर जाएँ।"
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b>."
+msgstr "<b>इंस्टॉल किए गए मॉड्यूल</b> की सूची दिखाएँ या छिपाएँ।"
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "गुमनाम <b>उपयोग एनालिटिक्स</b> चालू या बंद करें।"
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "चालू होने पर, ऐप उसे बेहतर बनाने में मदद के लिए गुमनाम उपयोग डेटा साझा करता है। कोई व्यक्तिगत सामग्री एकत्र नहीं की जाती।"
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "आप जो फ़ीडबैक भेज रहे हैं उसका <b>प्रकार</b> चुनें।"
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "अपना फ़ीडबैक टीम को <b>भेजें</b>।"
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "एक परीक्षण <b>क्रैश</b> ट्रिगर करें — केवल डायग्नोस्टिक्स के लिए।"
+
