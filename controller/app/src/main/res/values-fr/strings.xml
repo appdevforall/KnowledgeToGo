@@ -569,4 +569,6 @@
     <string name="settings_group_device">Appareil</string>
     <string name="settings_group_server">Serveur</string>
     <string name="setup_dns_hint">DNS personnalisé pour le serveur.</string>
+    <string name="tooltip_see_more">Voir plus</string>
+    <string name="tooltip_help_unavailable">Le contenu d\'aide n\'est pas encore installé.</string>
 </resources>
