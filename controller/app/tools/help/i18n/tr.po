@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: tr\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Uygulamayı, izinleri ve dili yapılandırmak için <b>Ayarlar</b>'ı açın."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Ayarlar, uygulama genelindeki seçenekleri bir araya getirir: uygulamanın ihtiyaç duyduğu izinler, arayüz dili ve analiz onayı. Buradaki hiçbir şey sunucuyu başlatmaz veya durdurmaz."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Yakındaki bir cihazın katılıp kitaplığınızı açabilmesi için bir <b>QR kodu</b> gösterir."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR, Wi-Fi ağını (veya etkin noktayı) ve kitaplığınızın adresini içerir. Konuklar bağlanmak ve kendi cihazlarından göz atmak için tarar — yazmaya gerek yok."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "<b>Açık ve koyu</b> tema arasında geçiş yapın."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Yüklü uygulama <b>sürümü</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Geçerli durumun göstergesi ve <b>Wi-Fi</b> ayarına kısayol."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Wi-Fi arayüzünün açık olup olmadığını gösterir ve ona bir kısayoldur. Açıkken, aynı ağdaki diğer cihazlar kitaplığınızı telefonunuzun adresinden açabilir."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Geçerli durumun göstergesi ve <b>etkin noktaya</b> kısayol."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Telefonun etkin noktasının açık olup olmadığını gösterir ve ona bir kısayoldur. Açıkken, bağlı cihazlar katılıp kitaplığınızı açabilir."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "<b>Kitaplığınızı</b> yerleşik tarayıcıda açın."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "İçerik sunucusunu <b>başlatın veya durdurun</b>."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Bağlı diğer cihazlar kitaplığınıza yalnızca sunucu çalışırken erişebilir. İlk başlatma birkaç saniye sürebilir."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Gelişmiş</b> sunucu ayarları."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Sunucu için <b>özel DNS</b> ayarlarını etkinleştirin."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Yalnızca özel ağ kurulumlarında gereklidir; gerçekten ihtiyacınız olduğunu bilmiyorsanız kapalı bırakın."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Girdiğiniz DNS ayarlarını uygulayın."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "<b>Bağlantı günlüğünü</b> göster."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "Bağlantı günlüğünü <b>temizle</b>."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "Günlüğün tamamını panoya <b>kopyala</b>."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Kitaplığınızı veya uygulamalarınızı başka bir cihaza göndermek için <b>Paylaş</b>'ı seçin."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Başka bir cihazdan içerik almak için <b>Al</b>'ı seçin."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "<b>Wi-Fi</b> üzerinden aktar."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "<b>Etkin nokta</b> üzerinden aktar."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "Başka bir cihazın kitaplığınızı çekebilmesi için <b>sunucuyu başlatın</b>."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "<b>K2Go uygulamasının</b> kendisini yakındaki bir cihazla paylaşın."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Birinin internet olmadan K2Go'yu sizden yüklemesini sağlar: bağlanır ve uygulamayı doğrudan indirir."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "Diğer cihaza bağlanmak için bir <b>QR tarayın</b>."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "Geçerli aktarımı <b>iptal et</b>."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Bir sonraki <b>gösterge</b> grubuna geç."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "<b>Yüklü modüllerin</b> listesini (LED göstergeleri olarak gösterilir) göster veya gizle."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Anonim <b>kullanım analizini</b> açın veya kapatın."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Açıkken, uygulama iyileştirmeye yardımcı olmak için anonim kullanım verilerini paylaşır. Hiçbir kişisel içerik toplanmaz."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Gönderdiğiniz geri bildirimin <b>türünü</b> seçin."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "Geri bildiriminizi ekibe <b>gönderin</b>."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Bir test <b>çökmesi</b> tetikleyin — yalnızca tanılama içindir."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Bir sonraki kurulum adımına devam edin."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Uygulamanın sunucu ve aktarımlar hakkında sizi uyarabilmesi için <b>bildirimlere</b> izin verin."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Uygulamanın kitaplık dosyalarınızı okuyup sunabilmesi için <b>depolama</b> erişimine izin verin."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Uygulamanın <b>diğer uygulamaların üzerinde görünmesine</b> izin verin (bazı ekran yardımları için gerekli)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Sunucunun açık kalması için uygulamanın arka planda <b>çalışmaya devam etmesine</b> izin verin."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "<b>Tüm izinleri</b> tek seferde yönetmek için sistem ekranını açın."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Uygulama ve içerik <b>dilini</b> seçin."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "<b>Uygulama arayüzünün</b> dili."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "<b>İndirilen içerik</b> için tercih edilen dil."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Bitirin ve <b>ayarları</b> kapatın."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "<b>Kurulum</b> adımlarına git."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "<b>Geri bildirime</b> git."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "<b>Hakkında</b> ekranına git."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "<b>Gezinme</b> çubuğunu göster."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "Gezinme çubuğunu <b>gizle</b>."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>Geri</b> git."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Kitaplığın <b>ana</b> sayfasına git."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "Sayfayı <b>yeniden yükle</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "Tarayıcıyı <b>kapat</b> ve uygulamaya dön."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>İleri</b> git."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "QR'yi <b>Wi-Fi ağı</b> ile <b>etkin nokta</b> arasında değiştir."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "QR kodunu <b>kapat</b>."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "Bu çökme raporunu göndermeden <b>yoksay</b>."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "Sorunu düzeltmemize yardımcı olmak için çökme raporunu <b>gönder</b>."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "<b>Alt işlem kısıtlamasını</b> devre dışı bırakmak için durum ve denetim."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "<b>Phantom Process Killer</b>'ı (PPK) devre dışı bırakmak için durum ve denetim."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Kurulum için <b>gelişmiş izlemeyi</b> göster."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Gelişmiş izleme için <b>ADB</b> üzerinden bağlan."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "<b>Temel</b> sürümü yükle (en küçük uygulama kümesi)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "<b>Standart</b> sürümü yükle."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "<b>Tam</b> sürümü yükle (en büyük uygulama kümesi)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Modüllerle birlikte <b>tamamlayıcı içeriği</b> de yükle."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "<b>Kiwix</b> indirme ayarlarını (dil ve sürüm) aç."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "Seçili sürümü şimdi <b>hazırla</b>."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "Yüklü içeriği <b>sil</b>."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "<b>Modül yönetimini</b> göster veya gizle."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "Sistemde yüklü modüllerin listesini <b>yenile</b>."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "Seçili modüllerin kurulumunu <b>başlat</b>."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "<b>Bakım</b> araçlarını göster veya gizle."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "Yüklü içeriğinizi ve ayarlarınızı <b>yedekleyin</b>."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "Temel bir sistem kurulumuna <b>sıfırla</b> (hizmet yok)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "Bir yedekten <b>geri yükle</b>."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "Uygulamayı <b>zorla durdur</b>."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "Harici depolamadan bir yedeği <b>içe aktar</b>."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Hangi <b>yedeğin</b> kullanılacağını seçin."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "Geri yükleme günlüğünü <b>kapat</b>."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Açık ve koyu arasında elle geçiş yapın veya uygulamanın cihazınızın sistem temasını izlemesine izin verin."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "SIM olmadan bile çalışan bir <b>yalnızca yerel etkin nokta</b> açın."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Operatörün internet paylaşımı yolunu kullanmadan bir Wi-Fi etkin noktası oluşturur, böylece SIM veya mobil plan olmadan çalışır — normal etkin nokta engellendiğinde kullanışlıdır. Konum açık olmalıdır."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Yalnızca yerel etkin noktaya katılmak için bir <b>Wi-Fi QR</b> göster."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Yalnızca yerel etkin nokta, otomatik oluşturulan bir ad ve parola kullanır; QR'yi taramak bunları yazmadan katılmanızı sağlar."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Basit bir açma/kapama değildir — sunucunun alt işlemlerinin sonlandırılmaması için Android'in hayalet işlem sınırını (256'ya) yükseltir."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Telefonun <b>internet erişimi</b> göstergesi."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Gri = henüz kontrol edilmedi, kırmızı = internet yok, yeşil = çevrimiçi."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "<b>Geliştirici modunun</b> etkin olup olmadığının göstergesi."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Geliştirici seçenekleri; bir kurulumu paylaşma veya aktarma ve kablosuz hata ayıklama gibi gelişmiş özellikler için fiilen gereklidir."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "Harici depolamaya bir yedeği <b>dışa aktar</b>."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "Kaydedilmiş bir yedeği <b>sil</b>."
+

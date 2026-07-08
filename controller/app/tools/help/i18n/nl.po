@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: nl\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Open <b>Instellingen</b> om de app, machtigingen en taal te configureren."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Instellingen bundelt app-brede opties: de machtigingen die de app nodig heeft, de interfacetaal en de toestemming voor analyse. Niets hier start of stopt de server."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Toont een <b>QR-code</b> zodat een apparaat in de buurt kan verbinden en je bibliotheek kan openen."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "De QR bevat het wifi-netwerk (of de hotspot) plus het adres van je bibliotheek. Gasten scannen hem om te verbinden en te bladeren vanaf hun apparaat — zonder te typen."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Wissel tussen <b>licht en donker</b> thema."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "De geïnstalleerde app-<b>versie</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Indicator van de huidige status en een snelkoppeling naar de <b>wifi</b>-instelling."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Toont of de wifi-interface aan staat en is tevens een snelkoppeling ernaartoe. Als hij aan staat, kunnen andere apparaten op hetzelfde netwerk je bibliotheek openen op het adres van je telefoon."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Indicator van de huidige status en een snelkoppeling naar de <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Toont of de hotspot van de telefoon aan staat en is tevens een snelkoppeling ernaartoe. Als hij aan staat, kunnen verbonden apparaten deelnemen en je bibliotheek openen."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Open je <b>bibliotheek</b> in de ingebouwde browser."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "De contentserver <b>starten of stoppen</b>."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Andere verbonden apparaten kunnen je bibliotheek alleen bereiken terwijl de server draait. De eerste start kan enkele seconden duren."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Geavanceerde</b> serverinstellingen."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Schakel <b>aangepaste DNS</b>-instellingen voor de server in."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Alleen nodig bij bijzondere netwerkconfiguraties; laat het uit tenzij je het echt nodig hebt."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Pas de ingevoerde DNS-instellingen toe."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Toon het <b>verbindingslogboek</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "Het verbindingslogboek <b>wissen</b>."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "Het hele logboek naar het klembord <b>kopiëren</b>."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Kies <b>Delen</b> om je bibliotheek of apps naar een ander apparaat te sturen."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Kies <b>Ontvangen</b> om content van een ander apparaat te krijgen."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Overdracht via <b>wifi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Overdracht via de <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Start de server</b> zodat een ander apparaat je bibliotheek kan ophalen."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Deel de <b>K2Go-app</b> zelf met een apparaat in de buurt."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Laat iemand K2Go zonder internet bij jou installeren: men verbindt en downloadt de app rechtstreeks."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Scan een QR</b> om met het andere apparaat te verbinden."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "De huidige overdracht <b>annuleren</b>."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Blader naar de volgende reeks <b>meters</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Toon of verberg de lijst met <b>geïnstalleerde modules</b> (weergegeven als LED-indicatoren)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Zet anonieme <b>gebruiksanalyse</b> aan of uit."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Indien aan, deelt de app anonieme gebruiksgegevens om verbetering te helpen. Er wordt geen persoonlijke content verzameld."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Kies het <b>type</b> feedback dat je verstuurt."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Verstuur</b> je feedback naar het team."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Activeer een test-<b>crash</b> — alleen voor diagnostiek."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Ga verder naar de volgende installatiestap."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Sta <b>meldingen</b> toe zodat de app je kan waarschuwen over de server en overdrachten."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Sta <b>opslag</b>toegang toe zodat de app je bibliotheekbestanden kan lezen en aanbieden."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Sta de app toe zich <b>over andere apps</b> te tonen (nodig voor sommige schermhulp)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Laat de app op de achtergrond <b>blijven draaien</b> zodat de server actief blijft."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Open het systeemscherm om <b>alle machtigingen</b> in één keer te beheren."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Kies de <b>taal</b> voor app en content."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Taal van de <b>app-interface</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Voorkeurstaal voor <b>gedownloade content</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Voltooien en <b>instellingen</b> sluiten."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Ga naar de <b>installatie</b>stappen."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Ga naar <b>feedback</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Ga naar het scherm <b>Over</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Toon de <b>navigatiebalk</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "De navigatiebalk <b>verbergen</b>."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Ga <b>terug</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Ga naar de <b>startpagina</b> van de bibliotheek."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "De pagina <b>opnieuw laden</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "De browser <b>sluiten</b> en terugkeren naar de app."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Ga <b>vooruit</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Wissel de QR tussen het <b>wifi-netwerk</b> en de <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "De QR-code <b>sluiten</b>."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "Dit crashrapport <b>negeren</b> zonder te verzenden."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "Het crashrapport <b>verzenden</b> om ons te helpen het probleem op te lossen."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Status en bediening om de <b>beperking op kindprocessen</b> uit te schakelen."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Status en bediening om de <b>Phantom Process Killer</b> (PPK) uit te schakelen."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Toon <b>geavanceerde monitoring</b> voor de installatie."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Verbind via <b>ADB</b> voor geavanceerde monitoring."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Installeer de <b>Basis</b>-editie (kleinste set apps)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Installeer de <b>Standaard</b>-editie."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Installeer de <b>Volledige</b>-editie (grootste set apps)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Installeer ook <b>bijbehorende content</b> met de modules."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Open de download-instellingen van <b>Kiwix</b> (taal en variant)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "De geselecteerde editie nu <b>inrichten</b>."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "De geïnstalleerde content <b>verwijderen</b>."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Toon of verberg <b>modulebeheer</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "De lijst met op het systeem geïnstalleerde modules <b>vernieuwen</b>."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "De installatie van de geselecteerde modules <b>starten</b>."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Toon of verberg <b>onderhouds</b>gereedschap."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "Maak een <b>back-up</b> van je geïnstalleerde content en instellingen."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Terugzetten</b> naar een kale systeeminstallatie (zonder services)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Herstellen</b> vanaf een back-up."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "De app <b>geforceerd stoppen</b>."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "Een back-up <b>importeren</b> uit externe opslag."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Kies welke <b>back-up</b> je wilt gebruiken."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "Het herstellogboek <b>sluiten</b>."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Wissel handmatig tussen licht en donker, of laat de app het systeemthema van je apparaat volgen."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Schakel een <b>lokale hotspot</b> in die zelfs zonder simkaart werkt."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Maakt een wifi-hotspot zonder de tetheringroute van de provider, zodat hij werkt zonder simkaart of abonnement — handig als de normale hotspot geblokkeerd is. Locatie moet aan staan."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Toon een <b>wifi-QR</b> om deel te nemen aan de lokale hotspot."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "De lokale hotspot gebruikt een automatisch gegenereerde naam en wachtwoord; door de QR te scannen neem je deel zonder ze te typen."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Geen simpele aan/uit — het verhoogt de limiet voor fantoomprocessen van Android (naar 256) zodat de kindprocessen van de server niet worden beëindigd."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Indicator van de <b>internettoegang</b> van de telefoon."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Grijs = nog niet gecontroleerd, rood = geen internet, groen = online."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indicator of de <b>ontwikkelaarsmodus</b> is ingeschakeld."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Ontwikkelaarsopties zijn feitelijk vereist voor geavanceerde functies zoals het delen of overdragen van een installatie en draadloos debuggen."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "Een back-up <b>exporteren</b> naar externe opslag."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "Een opgeslagen back-up <b>verwijderen</b>."
+
