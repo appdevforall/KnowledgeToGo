@@ -16,7 +16,7 @@ msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
 msgstr "पास का डिवाइस जुड़कर आपकी लाइब्रेरी खोल सके, इसके लिए एक <b>QR कोड</b> दिखाएँ।"
 
 msgctxt "main.share_qr.detail"
-msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse — no typing required."
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
 msgstr "QR में Wi-Fi नेटवर्क (या हॉटस्पॉट) और आपकी लाइब्रेरी का पता होता है। मेहमान इसे स्कैन करके जुड़ते हैं और ब्राउज़ करते हैं — कुछ टाइप करने की ज़रूरत नहीं।"
 
 msgctxt "main.theme_toggle.summary"
