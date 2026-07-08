@@ -331,3 +331,7 @@ msgctxt "deploy.restore_log_close.summary"
 msgid "<b>Close</b> the restore log."
 msgstr "<b>Fechar</b> o registro de restauração."
 
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Alterne manualmente entre tema claro e escuro, ou deixe o app seguir o tema do sistema do seu dispositivo."
+

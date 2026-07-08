@@ -81,3 +81,4 @@ deploy.force_stop,summary,<b>Force-stop</b> the server.
 deploy.import_backup,summary,<b>Import</b> a backup file.
 deploy.select_backup,summary,Choose which <b>backup</b> to use.
 deploy.restore_log_close,summary,<b>Close</b> the restore log.
+main.theme_toggle,detail,"Switch manually between light and dark, or let the app follow your device's system theme."
