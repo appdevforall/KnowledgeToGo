@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: no\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Åpne <b>Innstillinger</b> for å konfigurere appen, tillatelsene og språket."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Innstillinger samler alternativer for hele appen: tillatelsene appen trenger, grensesnittspråket og samtykke til analyse. Ingenting her starter eller stopper serveren."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Viser en <b>QR-kode</b> slik at en enhet i nærheten kan koble til og åpne biblioteket ditt."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR-koden inneholder Wi-Fi-nettverket (eller sonen) pluss adressen til biblioteket ditt. Gjester skanner den for å koble til og bla fra egen enhet — uten å skrive."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Bytt mellom <b>lyst og mørkt</b> tema."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Den installerte app-<b>versjonen</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Indikator for gjeldende status og en snarvei til <b>Wi-Fi</b>-innstillingen."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Viser om Wi-Fi-grensesnittet er på og er også en snarvei til det. Når det er på, kan andre enheter på samme nettverk åpne biblioteket ditt på telefonens adresse."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Indikator for gjeldende status og en snarvei til <b>sonen</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Viser om telefonens sone er på og er også en snarvei til den. Når den er på, kan tilkoblede enheter koble seg til og åpne biblioteket ditt."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Åpne <b>biblioteket</b> ditt i den innebygde nettleseren."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Start eller stopp</b> innholdsserveren."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Andre tilkoblede enheter når biblioteket ditt bare mens serveren kjører. Første oppstart kan ta noen sekunder."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Avanserte</b> serverinnstillinger."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Aktiver <b>egendefinerte DNS</b>-innstillinger for serveren."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Trengs bare i spesielle nettverksoppsett; la den være av med mindre du vet at du trenger den."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Bruk DNS-innstillingene du oppga."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Vis <b>tilkoblingsloggen</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Tøm</b> tilkoblingsloggen."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Kopier</b> hele loggen til utklippstavlen."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Velg <b>Del</b> for å sende biblioteket eller appene dine til en annen enhet."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Velg <b>Motta</b> for å hente innhold fra en annen enhet."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Overføring over <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Overføring over <b>sonen</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Start serveren</b> slik at en annen enhet kan hente biblioteket ditt."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Del selve <b>K2Go-appen</b> med en enhet i nærheten."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Lar noen installere K2Go fra deg uten internett: de kobler til og laster ned appen direkte."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Skann en QR</b> for å koble til den andre enheten."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Avbryt</b> den gjeldende overføringen."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Bla til neste sett med <b>målere</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Vis eller skjul listen over <b>installerte moduler</b> (vist som LED-indikatorer)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Slå anonym <b>bruksanalyse</b> på eller av."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Når den er på, deler appen anonyme bruksdata for å bidra til å forbedre den. Ikke noe personlig innhold samles inn."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Velg <b>typen</b> tilbakemelding du sender."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Send</b> tilbakemeldingen din til teamet."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Utløs en test-<b>krasj</b> — bare for diagnostikk."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Fortsett til neste oppsettstrinn."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Tillat <b>varsler</b> slik at appen kan varsle deg om serveren og overføringer."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Tillat <b>lagrings</b>tilgang slik at appen kan lese og servere bibliotekfilene dine."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Tillat appen å <b>vises over andre apper</b> (trengs for noe hjelp på skjermen)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "La appen <b>fortsette å kjøre</b> i bakgrunnen slik at serveren holdes oppe."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Åpne systemskjermen for å håndtere <b>alle tillatelser</b> samtidig."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Velg <b>språk</b> for app og innhold."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Språk for <b>app-grensesnittet</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Foretrukket språk for <b>nedlastet innhold</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Fullfør og lukk <b>innstillingene</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Gå til <b>oppsett</b>strinnene."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Gå til <b>tilbakemelding</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Gå til <b>Om</b>-skjermen."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Vis <b>navigasjons</b>linjen."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Skjul</b> navigasjonslinjen."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Gå <b>tilbake</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Gå til bibliotekets <b>hjemmeside</b>."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Last inn</b> siden på nytt."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Lukk</b> nettleseren og gå tilbake til appen."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Gå <b>fremover</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Veksle QR mellom <b>Wi-Fi-nettverket</b> og <b>sonen</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Lukk</b> QR-koden."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Avvis</b> denne krasjrapporten uten å sende."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Send</b> krasjrapporten for å hjelpe oss å løse problemet."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Status og kontroll for å deaktivere <b>begrensningen på underprosesser</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Status og kontroll for å deaktivere <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Vis <b>avansert overvåking</b> for installasjonen."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Koble til over <b>ADB</b> for avansert overvåking."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Installer <b>Basis</b>-utgaven (minste sett med apper)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Installer <b>Standard</b>-utgaven."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Installer <b>Full</b>-utgaven (største sett med apper)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Installer også <b>følgeinnhold</b> med modulene."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Åpne nedlastingsinnstillinger for <b>Kiwix</b> (språk og variant)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Klargjør</b> den valgte utgaven nå."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Slett</b> det installerte innholdet."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Vis eller skjul <b>modulhåndtering</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Oppdater</b> listen over moduler installert på systemet."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Start</b> installasjonen av de valgte modulene."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Vis eller skjul <b>vedlikeholds</b>verktøy."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Sikkerhetskopier</b> det installerte innholdet og innstillingene."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Tilbakestill</b> til en enkel systeminstallasjon (uten tjenester)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Gjenopprett</b> fra en sikkerhetskopi."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Tvangsstopp</b> appen."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Importer</b> en sikkerhetskopi fra ekstern lagring."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Velg hvilken <b>sikkerhetskopi</b> du vil bruke."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Lukk</b> gjenopprettingsloggen."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Veksle manuelt mellom lyst og mørkt, eller la appen følge enhetens systemtema."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Slå på en <b>kun-lokal sone</b> som fungerer selv uten SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Oppretter en Wi-Fi-sone uten å bruke operatørens delingsvei, så den fungerer uten SIM eller mobilabonnement — nyttig når den vanlige sonen er blokkert. Posisjon må være på."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Vis en <b>Wi-Fi-QR</b> for å koble til den kun-lokale sonen."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Den kun-lokale sonen bruker et automatisk generert navn og passord; skanning av QR-en kobler til uten å skrive dem."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Ikke en enkel på/av — den hever Androids grense for fantomprosesser (til 256) slik at serverens underprosesser ikke drepes."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Indikator for telefonens <b>internettilgang</b>."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Grå = ikke sjekket ennå, rød = ingen internett, grønn = tilkoblet."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indikator for om <b>Utviklermodus</b> er aktivert."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Utvikleralternativer er i praksis nødvendige for avanserte funksjoner som deling eller overføring av en installasjon og trådløs feilsøking."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Eksporter</b> en sikkerhetskopi til ekstern lagring."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Slett</b> en lagret sikkerhetskopi."
+

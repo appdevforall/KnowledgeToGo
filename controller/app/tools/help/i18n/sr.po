@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: sr\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Отворите <b>Подешавања</b> да бисте конфигурисали апликацију, дозволе и језик."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Подешавања обједињују опције целе апликације: потребне дозволе, језик интерфејса и сагласност за аналитику. Ништа овде не покреће нити зауставља сервер."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Приказује <b>QR код</b> да би оближњи уређај могао да се придружи и отвори вашу библиотеку."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR садржи Wi-Fi мрежу (или хотспот) плус адресу ваше библиотеке. Гости га скенирају да би се повезали и прегледали са свог уређаја — без куцања."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Пребацивање између <b>светле и тамне</b> теме."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Инсталирана <b>верзија</b> апликације."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Показатељ тренутног стања и пречица до подешавања <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Показује да ли је Wi-Fi интерфејс укључен и уједно је пречица до њега. Када је укључен, други уређаји на истој мрежи могу да отворе вашу библиотеку на адреси вашег телефона."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Показатељ тренутног стања и пречица до <b>хотспота</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Показује да ли је хотспот телефона укључен и уједно је пречица до њега. Када је укључен, повезани уређаји могу да се придруже и отворе вашу библиотеку."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Отворите своју <b>библиотеку</b> у уграђеном прегледачу."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Покрените или зауставите</b> сервер садржаја."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Други повезани уређаји могу да приступе вашој библиотеци само док сервер ради. Прво покретање може да потраје неколико секунди."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Напредна</b> подешавања сервера."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Омогућите <b>прилагођена DNS</b> подешавања за сервер."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Потребно само у посебним мрежним конфигурацијама; оставите искључено осим ако вам заиста не треба."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Примените унета DNS подешавања."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Прикажи <b>дневник везе</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Обриши</b> дневник везе."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Копирај</b> цео дневник у оставу."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Изаберите <b>Дели</b> да бисте послали своју библиотеку или апликације на други уређај."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Изаберите <b>Прими</b> да бисте добили садржај са другог уређаја."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Пренос преко <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Пренос преко <b>хотспота</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Покрените сервер</b> да би други уређај могао да преузме вашу библиотеку."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Поделите саму <b>апликацију K2Go</b> са оближњим уређајем."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Омогућава некоме да инсталира K2Go од вас без интернета: повезује се и преузима апликацију директно."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Скенирајте QR</b> да бисте се повезали са другим уређајем."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Откажи</b> тренутни пренос."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Пређите на следећи скуп <b>мерача</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Прикажи или сакриј листу <b>инсталираних модула</b> (приказаних као LED показатељи)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Укључите или искључите анонимну <b>аналитику коришћења</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Када је укључено, апликација дели анонимне податке о коришћењу ради побољшања. Не прикупља се никакав лични садржај."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Изаберите <b>врсту</b> повратне информације коју шаљете."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Пошаљите</b> своју повратну информацију тиму."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Покрените тестни <b>пад</b> — само за дијагностику."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Наставите на следећи корак подешавања."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Дозволите <b>обавештења</b> да би апликација могла да вас упозори о серверу и преносима."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Дозволите приступ <b>складишту</b> да би апликација могла да чита и служи датотеке ваше библиотеке."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Дозволите апликацији да се <b>приказује преко других апликација</b> (потребно за неку помоћ на екрану)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Пустите апликацију да <b>настави да ради</b> у позадини да би сервер остао активан."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Отворите системски екран да бисте управљали <b>свим дозволама</b> одједном."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Изаберите <b>језик</b> апликације и садржаја."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Језик <b>интерфејса апликације</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Жељени језик за <b>преузети садржај</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Завршите и затворите <b>подешавања</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Идите на кораке <b>подешавања</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Идите на <b>повратне информације</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Идите на екран <b>О апликацији</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Прикажи траку за <b>навигацију</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Сакриј</b> траку за навигацију."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Иди <b>назад</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Иди на <b>почетну</b> страницу библиотеке."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Поново учитај</b> страницу."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Затвори</b> прегледач и врати се у апликацију."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Иди <b>напред</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Пребаци QR између <b>Wi-Fi мреже</b> и <b>хотспота</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Затвори</b> QR код."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Одбаци</b> овај извештај о паду без слања."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Пошаљи</b> извештај о паду да нам помогнеш да решимо проблем."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Стање и контрола за онемогућавање <b>ограничења подређених процеса</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Стање и контрола за онемогућавање <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Прикажи <b>напредно праћење</b> инсталације."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Повежи се преко <b>ADB</b> за напредно праћење."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Инсталирај издање <b>Основно</b> (најмањи скуп апликација)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Инсталирај издање <b>Стандардно</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Инсталирај издање <b>Пуно</b> (највећи скуп апликација)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Инсталирај и <b>пратећи садржај</b> заједно са модулима."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Отвори подешавања преузимања <b>Kiwix</b> (језик и варијанта)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Припреми</b> изабрано издање сада."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Обриши</b> инсталирани садржај."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Прикажи или сакриј <b>управљање модулима</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Освежи</b> листу модула инсталираних на систему."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Покрени</b> инсталацију изабраних модула."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Прикажи или сакриј алате за <b>одржавање</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Направи резервну копију</b> инсталираног садржаја и подешавања."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Ресетуј</b> на основну инсталацију система (без сервиса)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Врати</b> из резервне копије."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Присилно заустави</b> апликацију."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Увези</b> резервну копију са спољног складишта."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Изаберите коју <b>резервну копију</b> да користите."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Затвори</b> дневник враћања."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Пребацујте ручно између светле и тамне, или пустите да апликација прати системску тему уређаја."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Укључите <b>само локални хотспот</b> који ради чак и без SIM-а."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Прави Wi-Fi хотспот без коришћења оператерове путање дељења, па ради без SIM-а или мобилног плана — корисно када је уобичајени хотспот блокиран. Локација мора бити укључена."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Прикажи <b>Wi-Fi QR</b> за придруживање само локалном хотспоту."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Само локални хотспот користи аутоматски генерисано име и лозинку; скенирање QR-а придружује се без њиховог куцања."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Није једноставно укључи/искључи — подиже Android-ов лимит фантомских процеса (на 256) да подређени процеси сервера не би били прекинути."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Показатељ <b>приступа телефона интернету</b>."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Сиво = још није проверено, црвено = нема интернета, зелено = на мрежи."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Показатељ да ли је укључен <b>режим за програмере</b>."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Опције за програмере су практично неопходне за напредне функције као што су дељење или пренос инсталације и бежично отклањање грешака."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Извези</b> резервну копију на спољно складиште."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Обриши</b> сачувану резервну копију."
+

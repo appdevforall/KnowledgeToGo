@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: sk\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Otvorte <b>Nastavenia</b> na konfiguráciu aplikácie, povolení a jazyka."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Nastavenia zoskupujú možnosti celej aplikácie: potrebné povolenia, jazyk rozhrania a súhlas s analytikou. Nič tu nespúšťa ani nezastavuje server."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Zobrazí <b>QR kód</b>, aby sa blízke zariadenie mohlo pripojiť a otvoriť vašu knižnicu."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR kód obsahuje sieť Wi-Fi (alebo hotspot) a adresu vašej knižnice. Hostia ho naskenujú, aby sa pripojili a prezerali zo svojho zariadenia — bez písania."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Prepínanie medzi <b>svetlou a tmavou</b> témou."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Nainštalovaná <b>verzia</b> aplikácie."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Indikátor aktuálneho stavu a odkaz na nastavenie <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Ukazuje, či je rozhranie Wi-Fi zapnuté, a je zároveň odkazom naň. Keď je zapnuté, iné zariadenia v rovnakej sieti môžu otvoriť vašu knižnicu na adrese vášho telefónu."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Indikátor aktuálneho stavu a odkaz na <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Ukazuje, či je hotspot telefónu zapnutý, a je zároveň odkazom naň. Keď je zapnutý, pripojené zariadenia sa môžu pripojiť a otvoriť vašu knižnicu."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Otvorte svoju <b>knižnicu</b> v zabudovanom prehliadači."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Spustite alebo zastavte</b> server obsahu."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Iné pripojené zariadenia sa k vašej knižnici dostanú iba počas behu servera. Prvé spustenie môže trvať niekoľko sekúnd."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Rozšírené</b> nastavenia servera."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Povoľte pre server <b>vlastné nastavenia DNS</b>."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Potrebné len pri špeciálnych sieťových konfiguráciách; nechajte vypnuté, ak to naozaj nepotrebujete."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Použite zadané nastavenia DNS."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Zobraziť <b>protokol pripojenia</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Vymazať</b> protokol pripojenia."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Skopírovať</b> celý protokol do schránky."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Vyberte <b>Zdieľať</b> na odoslanie knižnice alebo aplikácií do iného zariadenia."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Vyberte <b>Prijať</b> na získanie obsahu z iného zariadenia."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Prenos cez <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Prenos cez <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Spustite server</b>, aby si iné zariadenie mohlo stiahnuť vašu knižnicu."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Zdieľajte samotnú <b>aplikáciu K2Go</b> s blízkym zariadením."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Umožní niekomu nainštalovať K2Go od vás bez internetu: pripojí sa a stiahne aplikáciu priamo."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Naskenujte QR</b> na pripojenie k druhému zariadeniu."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Zrušiť</b> aktuálny prenos."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Prepnúť na ďalšiu skupinu <b>ukazovateľov</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Zobraziť alebo skryť zoznam <b>nainštalovaných modulov</b> (zobrazených ako LED indikátory)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Zapnúť alebo vypnúť anonymnú <b>analytiku používania</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Keď je zapnutá, aplikácia zdieľa anonymné údaje o používaní na pomoc pri zlepšovaní. Nezhromažďuje sa žiadny osobný obsah."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Vyberte <b>typ</b> spätnej väzby, ktorú posielate."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Odoslať</b> spätnú väzbu tímu."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Vyvolať testovací <b>pád</b> — len na diagnostiku."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Pokračovať na ďalší krok nastavenia."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Povoľte <b>upozornenia</b>, aby vás aplikácia mohla informovať o serveri a prenosoch."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Povoľte prístup k <b>úložisku</b>, aby aplikácia mohla čítať a poskytovať súbory vašej knižnice."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Povoľte aplikácii <b>zobrazovať sa cez iné aplikácie</b> (potrebné pre niektorú pomoc na obrazovke)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Nechajte aplikáciu <b>bežať ďalej</b> na pozadí, aby server zostal aktívny."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Otvorte systémovú obrazovku na správu <b>všetkých povolení</b> naraz."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Vyberte <b>jazyk</b> aplikácie a obsahu."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Jazyk <b>rozhrania aplikácie</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Preferovaný jazyk <b>stiahnutého obsahu</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Dokončiť a zavrieť <b>nastavenia</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Prejsť na kroky <b>nastavenia</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Prejsť na <b>spätnú väzbu</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Prejsť na obrazovku <b>O aplikácii</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Zobraziť <b>navigačný</b> panel."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Skryť</b> navigačný panel."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Prejsť <b>späť</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Prejsť na <b>domovskú</b> stránku knižnice."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Znovu načítať</b> stránku."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Zavrieť</b> prehliadač a vrátiť sa do aplikácie."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Prejsť <b>vpred</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Prepnúť QR medzi <b>sieťou Wi-Fi</b> a <b>hotspotom</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Zavrieť</b> QR kód."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Zahodiť</b> toto hlásenie o páde bez odoslania."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Odoslať</b> hlásenie o páde, aby ste nám pomohli vyriešiť problém."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Stav a ovládanie na vypnutie <b>obmedzenia podriadených procesov</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Stav a ovládanie na vypnutie <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Zobraziť <b>rozšírené monitorovanie</b> inštalácie."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Pripojiť sa cez <b>ADB</b> na rozšírené monitorovanie."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Nainštalovať edíciu <b>Basic</b> (najmenšia sada aplikácií)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Nainštalovať edíciu <b>Standard</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Nainštalovať edíciu <b>Full</b> (najväčšia sada aplikácií)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Nainštalovať s modulmi aj <b>sprievodný obsah</b>."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Otvoriť nastavenia sťahovania <b>Kiwix</b> (jazyk a variant)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Pripraviť</b> vybranú edíciu teraz."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Odstrániť</b> nainštalovaný obsah."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Zobraziť alebo skryť <b>správu modulov</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Obnoviť</b> zoznam modulov nainštalovaných v systéme."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Spustiť</b> inštaláciu vybraných modulov."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Zobraziť alebo skryť nástroje <b>údržby</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Zálohovať</b> nainštalovaný obsah a nastavenia."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Obnoviť</b> na základnú inštaláciu systému (bez služieb)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Obnoviť</b> zo zálohy."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Vynútiť ukončenie</b> aplikácie."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Importovať</b> zálohu z externého úložiska."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Vyberte, ktorú <b>zálohu</b> použiť."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Zavrieť</b> protokol obnovenia."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Prepínajte ručne medzi svetlou a tmavou, alebo nechajte aplikáciu riadiť sa systémovou témou zariadenia."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Zapnite <b>len lokálny hotspot</b>, ktorý funguje aj bez SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Vytvorí Wi-Fi hotspot bez použitia zdieľania operátora, takže funguje bez SIM alebo paušálu — užitočné, keď je bežný hotspot blokovaný. Poloha musí byť zapnutá."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Zobraziť <b>Wi-Fi QR</b> na pripojenie k len lokálnemu hotspotu."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Len lokálny hotspot používa automaticky vygenerovaný názov a heslo; naskenovanie QR sa k nemu pripojí bez ich písania."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Nie je to jednoduché zapnutie/vypnutie — zvyšuje limit fantómových procesov Androidu (na 256), aby podriadené procesy servera neboli ukončené."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Indikátor <b>prístupu telefónu na internet</b>."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Sivá = zatiaľ neskontrolované, červená = bez internetu, zelená = online."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indikátor, či je zapnutý <b>režim vývojára</b>."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Možnosti pre vývojárov sú fakticky potrebné pre pokročilé funkcie ako zdieľanie alebo prenos inštalácie a bezdrôtové ladenie."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Exportovať</b> zálohu do externého úložiska."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Odstrániť</b> uloženú zálohu."
+

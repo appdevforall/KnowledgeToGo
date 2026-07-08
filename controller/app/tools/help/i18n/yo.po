@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: yo\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Ṣí <b>Ètò</b> láti ṣàtòpọ̀ ohun-èlò náà, àwọn ìyọ̀nda àti èdè."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Ètò kó àwọn àṣàyàn gbogbo ohun-èlò jọ: àwọn ìyọ̀nda tí ohun-èlò náà nílò, èdè wíwo, àti ìfọwọ́sí ìtúpalẹ̀. Kò sí ohunkóhun níbí tí ó ń bẹ̀rẹ̀ tàbí dúró sórvà."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Ń fi <b>kóòdù QR</b> hàn kí ẹ̀rọ tí ó wà nítòsí lè dara pọ̀ kí ó sì ṣí ilé-ìkàwé rẹ."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR náà ní nẹ́tíwọ́kì Wi-Fi (tàbí hotspot) pẹ̀lú àdírẹ́sì ilé-ìkàwé rẹ. Àwọn àlejò ń ṣàyẹ̀wò rẹ̀ láti sopọ̀ kí wọ́n sì ṣàwárí láti inú ẹ̀rọ wọn — láìsí títẹ̀."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Yí padà láàrín àkòrí <b>ìmọ́lẹ̀ àti òkùnkùn</b>."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "<b>Ẹ̀dà</b> ohun-èlò tí a fi sórí ẹ̀rọ."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Atọ́ka ipò lọ́wọ́lọ́wọ́ àti ọ̀nà kúkúrú sí ètò <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Ń fi hàn bóyá wíwo Wi-Fi ti ṣíṣẹ́ ó sì tún jẹ́ ọ̀nà kúkúrú sí i. Nígbà tí ó bá ṣíṣẹ́, àwọn ẹ̀rọ mìíràn lórí nẹ́tíwọ́kì kan náà lè ṣí ilé-ìkàwé rẹ ní àdírẹ́sì fóònù rẹ."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Atọ́ka ipò lọ́wọ́lọ́wọ́ àti ọ̀nà kúkúrú sí <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Ń fi hàn bóyá hotspot fóònù ti ṣíṣẹ́ ó sì tún jẹ́ ọ̀nà kúkúrú sí i. Nígbà tí ó bá ṣíṣẹ́, àwọn ẹ̀rọ tí a sopọ̀ lè dara pọ̀ kí wọ́n sì ṣí ilé-ìkàwé rẹ."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Ṣí <b>ilé-ìkàwé</b> rẹ nínú aṣàwákiri tí a kọ́ sínú."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Bẹ̀rẹ̀ tàbí dúró</b> sórvà àkóónú."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Àwọn ẹ̀rọ mìíràn tí a sopọ̀ lè dé ilé-ìkàwé rẹ nìkan nígbà tí sórvà bá ń ṣiṣẹ́. Ìbẹ̀rẹ̀ àkọ́kọ́ lè gba ìṣẹ́jú-àáyá díẹ̀."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "Ètò sórvà <b>onígbọ́ngbọ́n</b>."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Mú ètò <b>DNS àdáni</b> ṣiṣẹ́ fún sórvà náà."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "A nílò rẹ̀ nìkan nínú àwọn ìtòlẹ́sẹẹsẹ nẹ́tíwọ́kì àkànṣe; fi sílẹ̀ ní pípa àyàfi tí o bá mọ̀ pé o nílò rẹ̀."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Lo àwọn ètò DNS tí o tẹ̀ sínú."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Fi <b>àkọsílẹ̀ ìsopọ̀</b> hàn."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Nu</b> àkọsílẹ̀ ìsopọ̀ nù."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Ṣẹ̀dà</b> gbogbo àkọsílẹ̀ sí pátákó ìdìmú."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Yan <b>Pín</b> láti fi ilé-ìkàwé tàbí àwọn ohun-èlò rẹ ránṣẹ́ sí ẹ̀rọ mìíràn."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Yan <b>Gbà</b> láti gba àkóónú láti ẹ̀rọ mìíràn."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Ìgbé kalẹ̀ nípasẹ̀ <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Ìgbé kalẹ̀ nípasẹ̀ <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Bẹ̀rẹ̀ sórvà</b> kí ẹ̀rọ mìíràn lè fa ilé-ìkàwé rẹ."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Pín <b>ohun-èlò K2Go</b> fúnrararẹ̀ pẹ̀lú ẹ̀rọ tí ó wà nítòsí."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Ń jẹ́ kí ẹnìkan fi K2Go sórí ẹ̀rọ láti ọ̀dọ̀ rẹ láìsí íntánẹ́ẹ̀tì: wọ́n ń sopọ̀ kí wọ́n sì gbà ohun-èlò náà tààrà."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Ṣàyẹ̀wò QR</b> láti sopọ̀ mọ́ ẹ̀rọ mìíràn."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Fagilé</b> ìgbé kalẹ̀ lọ́wọ́lọ́wọ́."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Yí padà sí àkójọ <b>òṣùwọ̀n</b> tí ó tẹ̀lé."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Fi hàn tàbí bò àkójọ àwọn <b>module tí a fi sórí ẹ̀rọ</b> (tí a fi hàn gẹ́gẹ́ bí atọ́ka LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Tan tàbí pa <b>ìtúpalẹ̀ ìlò</b> àìlórúkọ."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Nígbà tí ó bá tán, ohun-èlò náà ń pín dátà ìlò àìlórúkọ láti ṣèrànwọ́ láti mú un dára sí i. Kò sí àkóónú àdáni tí a kójọ."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Yan <b>irú</b> èsì tí o ń fi ránṣẹ́."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Fi</b> èsì rẹ ránṣẹ́ sí ẹgbẹ́ náà."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Fa <b>ìwólulẹ̀</b> ìdánwò — fún àyẹ̀wò nìkan."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Tẹ̀síwájú sí ìgbésẹ̀ ìtòlẹ́sẹẹsẹ tí ó tẹ̀lé."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Yọ̀nda <b>àwọn ìfitónilétí</b> kí ohun-èlò náà lè kìlọ̀ fún ọ nípa sórvà àti àwọn ìgbé kalẹ̀."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Yọ̀nda ìwọlé sí <b>ibi ìpamọ́</b> kí ohun-èlò náà lè ka kí ó sì pèsè àwọn fáìlì ilé-ìkàwé rẹ."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Yọ̀nda fún ohun-èlò náà láti <b>fi hàn lórí àwọn ohun-èlò mìíràn</b> (a nílò rẹ̀ fún ìrànlọ́wọ́ ojú-ìlà kan.)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Jẹ́ kí ohun-èlò náà <b>máa ń ṣiṣẹ́ lọ</b> lẹ́yìn-ọ̀nà kí sórvà lè dúró."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Ṣí ojú-ìlà ètò láti ṣàkóso <b>gbogbo ìyọ̀nda</b> lẹ́ẹ̀kan."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Yan <b>èdè</b> ohun-èlò àti àkóónú."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Èdè <b>wíwo ohun-èlò</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Èdè tí a fẹ́ràn fún <b>àkóónú tí a gbà sílẹ̀</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Parí kí o sì ti <b>ètò</b> pa."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Lọ sí àwọn ìgbésẹ̀ <b>ìtòlẹ́sẹẹsẹ</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Lọ sí <b>èsì</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Lọ sí ojú-ìlà <b>Nípa</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Fi ọ̀pá <b>ìtọ́sọ́nà</b> hàn."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Bò</b> ọ̀pá ìtọ́sọ́nà."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Lọ <b>ẹ̀yìn</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Lọ sí ojú-ìwé <b>ilé</b> ti ilé-ìkàwé."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Tún ojú-ìwé náà kì</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Ti</b> aṣàwákiri pa kí o sì padà sí ohun-èlò náà."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Lọ <b>síwájú</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Yí QR padà láàrín <b>nẹ́tíwọ́kì Wi-Fi</b> àti <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Ti</b> kóòdù QR pa."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Kọ̀</b> ìròyìn ìwólulẹ̀ yìí sílẹ̀ láìsí fífiránṣẹ́."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Fi</b> ìròyìn ìwólulẹ̀ ránṣẹ́ láti ràn wá lọ́wọ́ láti tún ìṣòro náà ṣe."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Ipò àti ìdarí láti pa <b>ìhámọ́ ìlànà-ọmọ</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Ipò àti ìdarí láti pa <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Fi <b>ìbójútó onígbọ́ngbọ́n</b> hàn fún ìfisórí-ẹ̀rọ."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Sopọ̀ nípasẹ̀ <b>ADB</b> fún ìbójútó onígbọ́ngbọ́n."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Fi ẹ̀dà <b>Ìpìlẹ̀</b> sórí ẹ̀rọ (àkójọ ohun-èlò tí ó kéré jù)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Fi ẹ̀dà <b>Ìdiwọ̀n</b> sórí ẹ̀rọ."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Fi ẹ̀dà <b>Kíkún</b> sórí ẹ̀rọ (àkójọ ohun-èlò tí ó tóbi jù)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Fi <b>àkóónú alábàákẹ́gbẹ́</b> sórí ẹ̀rọ pẹ̀lú àwọn module."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Ṣí ètò ìgbàsílẹ̀ <b>Kiwix</b> (èdè àti onírúurú)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Pèsè</b> ẹ̀dà tí a yàn báyìí."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Pa</b> àkóónú tí a fi sórí ẹ̀rọ rẹ́."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Fi hàn tàbí bò <b>ìṣàkóso module</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Tuntun</b> àkójọ àwọn module tí a fi sórí ètò."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Ṣ̀ìfilọ́lẹ̀</b> ìfisórí-ẹ̀rọ àwọn module tí a yàn."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Fi hàn tàbí bò àwọn irinṣẹ́ <b>ìtọ́jú</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Ṣàfẹ́yàwọ́</b> àkóónú àti ètò rẹ tí a fi sórí ẹ̀rọ."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Tún ṣèto</b> sí ìfisórí-ẹ̀rọ ètò ìpìlẹ̀ (láìsí àwọn iṣẹ́)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Mú padà</b> láti inú àfẹ́yàwọ́."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Fi agbára dúró</b> ohun-èlò náà."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Mú</b> àfẹ́yàwọ́ wá láti ibi ìpamọ́ ìta."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Yan <b>àfẹ́yàwọ́</b> wo ni kí o lo."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Ti</b> àkọsílẹ̀ ìmúpadà pa."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Yí padà pẹ̀lú ọwọ́ láàrín ìmọ́lẹ̀ àti òkùnkùn, tàbí jẹ́ kí ohun-èlò náà tẹ̀lé àkòrí ètò ẹ̀rọ rẹ."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Tan <b>hotspot àdúgbò-nìkan</b> tí ó ń ṣiṣẹ́ àní láìsí SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Ń ṣẹ̀dá hotspot Wi-Fi láìsí lílo ọ̀nà ìpínkiri ti oníṣẹ́, nítorí náà ó ń ṣiṣẹ́ láìsí SIM tàbí ètò alágbèéká — ó wúlò nígbà tí a bá dí hotspot déédéé. Ipò gbọdọ̀ wà ní títan."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Fi <b>QR Wi-Fi</b> hàn láti dara pọ̀ mọ́ hotspot àdúgbò-nìkan."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Hotspot àdúgbò-nìkan ń lo orúkọ àti ọ̀rọ̀ ìkọ̀kọ̀ tí a ṣẹ̀dá fúnra rẹ̀; ṣíṣàyẹ̀wò QR ń dara pọ̀ láìsí títẹ̀ wọn."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Kìí ṣe títan/pípa rírọrùn — ó ń gbé òpin ìlànà-àwòṣe ti Android sókè (sí 256) kí àwọn ìlànà-ọmọ ti sórvà má bàa jẹ́ pípa."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Atọ́ka <b>ìwọlé íntánẹ́ẹ̀tì</b> ti fóònù."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Eérú = a kò ì tíì ṣàyẹ̀wò, pupa = kò sí íntánẹ́ẹ̀tì, àwọ̀ ewé = orí ayélujára."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Atọ́ka bóyá <b>Ipò Olùdàgbàsókè</b> ti ṣíṣẹ́."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Àwọn àṣàyàn olùdàgbàsókè jẹ́ pàtàkì ní ti gidi fún àwọn ẹ̀yà onígbọ́ngbọ́n bíi pípín tàbí gbígbé ìfisórí-ẹ̀rọ àti ìwádìí-àṣìṣe aláìlókùn."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Kó</b> àfẹ́yàwọ́ jáde sí ibi ìpamọ́ ìta."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Pa</b> àfẹ́yàwọ́ tí a fi pamọ́ rẹ́."
+

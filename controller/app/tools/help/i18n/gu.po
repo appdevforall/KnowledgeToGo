@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: gu\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "એપ, પરવાનગીઓ અને ભાષા ગોઠવવા માટે <b>સેટિંગ્સ</b> ખોલો."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "સેટિંગ્સ સમગ્ર એપના વિકલ્પોને એકસાથે લાવે છે: એપને જરૂરી પરવાનગીઓ, ઇન્ટરફેસ ભાષા અને વિશ્લેષણ સંમતિ. અહીં કંઈ સર્વર શરૂ કે બંધ કરતું નથી."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "એક <b>QR કોડ</b> બતાવે છે જેથી નજીકનું ઉપકરણ જોડાઈને તમારી લાઇબ્રેરી ખોલી શકે."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QRમાં Wi-Fi નેટવર્ક (અથવા હોટસ્પોટ) અને તમારી લાઇબ્રેરીનું સરનામું હોય છે. મહેમાનો તેને સ્કેન કરીને પોતાના ઉપકરણથી જોડાય છે અને બ્રાઉઝ કરે છે — કંઈ ટાઇપ કર્યા વગર."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "<b>આછી અને ઘેરી</b> થીમ વચ્ચે બદલો."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "ઇન્સ્ટોલ કરેલી એપ <b>આવૃત્તિ</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "વર્તમાન સ્થિતિનું સૂચક અને <b>Wi-Fi</b> સેટિંગ માટે શોર્ટકટ."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Wi-Fi ઇન્ટરફેસ ચાલુ છે કે નહીં તે બતાવે છે અને તેની શોર્ટકટ પણ છે. ચાલુ હોય ત્યારે, એ જ નેટવર્ક પરના અન્ય ઉપકરણો તમારા ફોનના સરનામે તમારી લાઇબ્રેરી ખોલી શકે છે."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "વર્તમાન સ્થિતિનું સૂચક અને <b>હોટસ્પોટ</b> માટે શોર્ટકટ."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "ફોનનું હોટસ્પોટ ચાલુ છે કે નહીં તે બતાવે છે અને તેની શોર્ટકટ પણ છે. ચાલુ હોય ત્યારે, જોડાયેલા ઉપકરણો જોડાઈને તમારી લાઇબ્રેરી ખોલી શકે છે."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "બિલ્ટ-ઇન બ્રાઉઝરમાં તમારી <b>લાઇબ્રેરી</b> ખોલો."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "સામગ્રી સર્વર <b>શરૂ કરો કે બંધ કરો</b>."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "અન્ય જોડાયેલા ઉપકરણો ફક્ત સર્વર ચાલુ હોય ત્યારે જ તમારી લાઇબ્રેરી સુધી પહોંચી શકે છે. પ્રથમ શરૂઆતમાં થોડી સેકંડ લાગી શકે છે."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>ઉન્નત</b> સર્વર સેટિંગ્સ."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "સર્વર માટે <b>કસ્ટમ DNS</b> સેટિંગ્સ સક્ષમ કરો."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "ફક્ત ખાસ નેટવર્ક ગોઠવણીમાં જ જરૂરી; ખરેખર જરૂર ન હોય ત્યાં સુધી બંધ રાખો."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "તમે દાખલ કરેલ DNS સેટિંગ્સ લાગુ કરો."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "<b>કનેક્શન લોગ</b> બતાવો."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "કનેક્શન લોગ <b>સાફ કરો</b>."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "આખો લોગ ક્લિપબોર્ડમાં <b>કૉપિ કરો</b>."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "તમારી લાઇબ્રેરી કે એપ્સ બીજા ઉપકરણ પર મોકલવા <b>શેર</b> પસંદ કરો."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "બીજા ઉપકરણથી સામગ્રી મેળવવા <b>પ્રાપ્ત કરો</b> પસંદ કરો."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "<b>Wi-Fi</b> દ્વારા ટ્રાન્સફર."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "<b>હોટસ્પોટ</b> દ્વારા ટ્રાન્સફર."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "બીજું ઉપકરણ તમારી લાઇબ્રેરી ખેંચી શકે તે માટે <b>સર્વર શરૂ કરો</b>."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "<b>K2Go એપ</b> પોતે નજીકના ઉપકરણ સાથે શેર કરો."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "કોઈને ઇન્ટરનેટ વગર તમારાથી K2Go ઇન્સ્ટોલ કરવા દે છે: તે જોડાય છે અને એપ સીધી ડાઉનલોડ કરે છે."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "બીજા ઉપકરણ સાથે જોડાવા <b>QR સ્કેન કરો</b>."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "વર્તમાન ટ્રાન્સફર <b>રદ કરો</b>."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "<b>ગેજ</b>ના આગલા સેટ પર જાઓ."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "<b>ઇન્સ્ટોલ કરેલા મોડ્યુલ</b>ની યાદી બતાવો કે છુપાવો (LED સૂચક તરીકે બતાવેલ)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "અનામી <b>ઉપયોગ વિશ્લેષણ</b> ચાલુ કે બંધ કરો."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "ચાલુ હોય ત્યારે, એપ સુધારવામાં મદદ કરવા અનામી ઉપયોગ ડેટા શેર કરે છે. કોઈ વ્યક્તિગત સામગ્રી એકત્રિત થતી નથી."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "તમે મોકલી રહેલા પ્રતિસાદનો <b>પ્રકાર</b> પસંદ કરો."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "તમારો પ્રતિસાદ ટીમને <b>મોકલો</b>."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "એક પરીક્ષણ <b>ક્રેશ</b> ટ્રિગર કરો — ફક્ત નિદાન માટે."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "આગલા સેટઅપ પગલા પર ચાલુ રાખો."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "<b>સૂચનાઓ</b>ને મંજૂરી આપો જેથી એપ સર્વર અને ટ્રાન્સફર વિશે તમને ચેતવી શકે."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "<b>સ્ટોરેજ</b> ઍક્સેસ મંજૂર કરો જેથી એપ તમારી લાઇબ્રેરી ફાઇલો વાંચી અને પીરસી શકે."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "એપને <b>અન્ય એપ્સ ઉપર દર્શાવવા</b>ની મંજૂરી આપો (કેટલીક ઓન-સ્ક્રીન મદદ માટે જરૂરી)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "સર્વર ચાલુ રહે તે માટે એપને પૃષ્ઠભૂમિમાં <b>ચાલતી રહેવા</b> દો."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "<b>બધી પરવાનગીઓ</b> એકસાથે સંચાલિત કરવા સિસ્ટમ સ્ક્રીન ખોલો."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "એપ અને સામગ્રીની <b>ભાષા</b> પસંદ કરો."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "<b>એપ ઇન્ટરફેસ</b>ની ભાષા."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "<b>ડાઉનલોડ કરેલી સામગ્રી</b> માટે પસંદગીની ભાષા."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "સમાપ્ત કરો અને <b>સેટિંગ્સ</b> બંધ કરો."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "<b>સેટઅપ</b> પગલાં પર જાઓ."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "<b>પ્રતિસાદ</b> પર જાઓ."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "<b>વિશે</b> સ્ક્રીન પર જાઓ."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "<b>નેવિગેશન</b> બાર બતાવો."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "નેવિગેશન બાર <b>છુપાવો</b>."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>પાછળ</b> જાઓ."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "લાઇબ્રેરીના <b>હોમ</b> પૃષ્ઠ પર જાઓ."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "પૃષ્ઠ <b>ફરી લોડ કરો</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "બ્રાઉઝર <b>બંધ કરો</b> અને એપ પર પાછા આવો."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>આગળ</b> જાઓ."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "QRને <b>Wi-Fi નેટવર્ક</b> અને <b>હોટસ્પોટ</b> વચ્ચે બદલો."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "QR કોડ <b>બંધ કરો</b>."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "આ ક્રેશ રિપોર્ટ મોકલ્યા વગર <b>કાઢી નાખો</b>."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "સમસ્યા ઠીક કરવામાં અમને મદદ કરવા ક્રેશ રિપોર્ટ <b>મોકલો</b>."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "<b>ચાઇલ્ડ-પ્રોસેસ પ્રતિબંધ</b> નિષ્ક્રિય કરવા માટે સ્થિતિ અને નિયંત્રણ."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "<b>Phantom Process Killer</b> (PPK) નિષ્ક્રિય કરવા માટે સ્થિતિ અને નિયંત્રણ."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "ઇન્સ્ટોલ માટે <b>ઉન્નત મોનિટરિંગ</b> બતાવો."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "ઉન્નત મોનિટરિંગ માટે <b>ADB</b> દ્વારા જોડાઓ."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "<b>બેઝિક</b> આવૃત્તિ ઇન્સ્ટોલ કરો (સૌથી નાનો એપ સેટ)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "<b>સ્ટાન્ડર્ડ</b> આવૃત્તિ ઇન્સ્ટોલ કરો."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "<b>પૂર્ણ</b> આવૃત્તિ ઇન્સ્ટોલ કરો (સૌથી મોટો એપ સેટ)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "મોડ્યુલ સાથે <b>સહાયક સામગ્રી</b> પણ ઇન્સ્ટોલ કરો."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "<b>Kiwix</b> ડાઉનલોડ સેટિંગ્સ ખોલો (ભાષા અને પ્રકાર)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "પસંદ કરેલી આવૃત્તિ હમણાં <b>પ્રોવિઝન</b> કરો."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "ઇન્સ્ટોલ કરેલી સામગ્રી <b>કાઢી નાખો</b>."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "<b>મોડ્યુલ સંચાલન</b> બતાવો કે છુપાવો."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "સિસ્ટમ પર ઇન્સ્ટોલ કરેલા મોડ્યુલની યાદી <b>તાજી કરો</b>."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "પસંદ કરેલા મોડ્યુલની ઇન્સ્ટોલેશન <b>શરૂ કરો</b>."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "<b>જાળવણી</b> સાધનો બતાવો કે છુપાવો."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "તમારી ઇન્સ્ટોલ કરેલી સામગ્રી અને સેટિંગ્સનું <b>બેકઅપ લો</b>."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "મૂળભૂત સિસ્ટમ ઇન્સ્ટોલ પર <b>રીસેટ કરો</b> (કોઈ સેવા વગર)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "બેકઅપમાંથી <b>પુનઃસ્થાપિત કરો</b>."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "એપ <b>બળપૂર્વક બંધ કરો</b>."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "બાહ્ય સ્ટોરેજમાંથી બેકઅપ <b>આયાત કરો</b>."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "કયું <b>બેકઅપ</b> વાપરવું તે પસંદ કરો."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "પુનઃસ્થાપન લોગ <b>બંધ કરો</b>."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "આછી અને ઘેરી વચ્ચે જાતે બદલો, અથવા એપને તમારા ઉપકરણની સિસ્ટમ થીમ અનુસરવા દો."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "એક <b>ફક્ત-સ્થાનિક હોટસ્પોટ</b> ચાલુ કરો જે SIM વગર પણ કામ કરે છે."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "ઓપરેટરના ટિથરિંગ માર્ગનો ઉપયોગ કર્યા વગર Wi-Fi હોટસ્પોટ બનાવે છે, તેથી SIM કે મોબાઇલ પ્લાન વગર કામ કરે છે — સામાન્ય હોટસ્પોટ બ્લોક હોય ત્યારે ઉપયોગી. સ્થાન ચાલુ હોવું જોઈએ."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "ફક્ત-સ્થાનિક હોટસ્પોટમાં જોડાવા <b>Wi-Fi QR</b> બતાવો."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "ફક્ત-સ્થાનિક હોટસ્પોટ આપમેળે બનેલ નામ અને પાસવર્ડ વાપરે છે; QR સ્કેન કરવાથી તે ટાઇપ કર્યા વગર જોડાય છે."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "સાદું ચાલુ/બંધ નથી — તે Androidની ફેન્ટમ-પ્રોસેસ મર્યાદા (256 સુધી) વધારે છે જેથી સર્વરની ચાઇલ્ડ પ્રોસેસ બંધ ન થાય."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "ફોનની <b>ઇન્ટરનેટ ઍક્સેસ</b>નું સૂચક."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "ભૂખરો = હજી ચકાસ્યું નથી, લાલ = ઇન્ટરનેટ નથી, લીલો = ઑનલાઇન."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "<b>ડેવલપર મોડ</b> સક્ષમ છે કે નહીં તેનું સૂચક."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "ઇન્સ્ટોલ શેર કે ટ્રાન્સફર અને વાયરલેસ ડિબગિંગ જેવી ઉન્નત સુવિધાઓ માટે ડેવલપર વિકલ્પો ખરેખર જરૂરી છે."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "બાહ્ય સ્ટોરેજમાં બેકઅપ <b>નિકાસ કરો</b>."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "સાચવેલ બેકઅપ <b>કાઢી નાખો</b>."
+

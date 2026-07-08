@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ko\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "<b>설정</b>을 열어 앱, 권한, 언어를 구성합니다."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "설정에는 앱 전반의 옵션이 모여 있습니다. 앱에 필요한 권한, 인터페이스 언어, 분석 동의 등입니다. 여기서는 서버를 시작하거나 중지하지 않습니다."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "근처 기기가 접속해 라이브러리를 열 수 있도록 <b>QR 코드</b>를 표시합니다."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR에는 Wi-Fi 네트워크(또는 핫스팟)와 라이브러리 주소가 담겨 있습니다. 손님은 스캔만 하면 자신의 기기에서 접속해 둘러볼 수 있으며 입력이 필요 없습니다."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "<b>밝은 테마와 어두운 테마</b>를 전환합니다."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "설치된 앱 <b>버전</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "현재 상태 표시 및 <b>Wi-Fi</b> 설정 바로가기."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Wi-Fi 인터페이스가 켜져 있는지 보여 주며 그곳으로 가는 바로가기이기도 합니다. 켜져 있으면 같은 네트워크의 다른 기기가 휴대폰 주소로 라이브러리를 열 수 있습니다."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "현재 상태 표시 및 <b>핫스팟</b> 바로가기."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "휴대폰 핫스팟이 켜져 있는지 보여 주며 그곳으로 가는 바로가기이기도 합니다. 켜져 있으면 연결된 기기가 접속해 라이브러리를 열 수 있습니다."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "내장 브라우저에서 <b>라이브러리</b>를 엽니다."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "콘텐츠 서버를 <b>시작하거나 중지</b>합니다."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "연결된 다른 기기는 서버가 실행 중일 때만 라이브러리에 접근할 수 있습니다. 첫 시작에는 몇 초가 걸릴 수 있습니다."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>고급</b> 서버 설정."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "서버에 <b>사용자 지정 DNS</b> 설정을 사용합니다."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "특수한 네트워크 구성에서만 필요합니다. 꼭 필요한 경우가 아니면 꺼 두세요."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "입력한 DNS 설정을 적용합니다."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "<b>연결 로그</b>를 표시합니다."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "연결 로그를 <b>지웁니다</b>."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "전체 로그를 클립보드에 <b>복사</b>합니다."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "라이브러리나 앱을 다른 기기로 보내려면 <b>공유</b>를 선택합니다."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "다른 기기에서 콘텐츠를 받으려면 <b>받기</b>를 선택합니다."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "<b>Wi-Fi</b>로 전송합니다."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "<b>핫스팟</b>으로 전송합니다."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "다른 기기가 라이브러리를 가져올 수 있도록 <b>서버를 시작</b>합니다."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "<b>K2Go 앱</b> 자체를 근처 기기와 공유합니다."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "인터넷 없이도 상대가 당신에게서 K2Go를 설치할 수 있습니다. 연결한 뒤 앱을 직접 다운로드합니다."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "다른 기기에 연결하려면 <b>QR을 스캔</b>합니다."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "현재 전송을 <b>취소</b>합니다."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "다음 <b>게이지</b> 묶음으로 넘깁니다."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "<b>설치된 모듈</b> 목록(LED 표시등으로 표시)을 표시하거나 숨깁니다."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "익명 <b>사용 분석</b>을 켜거나 끕니다."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "켜면 앱이 개선을 돕기 위해 익명 사용 데이터를 공유합니다. 개인 콘텐츠는 수집되지 않습니다."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "보낼 피드백의 <b>유형</b>을 선택합니다."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "피드백을 팀에 <b>보냅니다</b>."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "테스트용 <b>비정상 종료</b>를 발생시킵니다 — 진단 전용입니다."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "다음 설정 단계로 계속합니다."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "앱이 서버와 전송에 대해 알릴 수 있도록 <b>알림</b>을 허용합니다."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "앱이 라이브러리 파일을 읽고 제공할 수 있도록 <b>저장소</b> 접근을 허용합니다."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "앱이 <b>다른 앱 위에 표시</b>되도록 허용합니다(일부 화면 도움말에 필요)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "서버가 유지되도록 앱이 백그라운드에서 <b>계속 실행</b>되게 합니다."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "시스템 화면을 열어 <b>모든 권한</b>을 한 번에 관리합니다."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "앱과 콘텐츠의 <b>언어</b>를 선택합니다."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "<b>앱 인터페이스</b>의 언어."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "<b>다운로드한 콘텐츠</b>의 기본 언어."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "완료하고 <b>설정</b>을 닫습니다."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "<b>설정</b> 단계로 이동합니다."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "<b>피드백</b>으로 이동합니다."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "<b>정보</b> 화면으로 이동합니다."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "<b>탐색</b> 막대를 표시합니다."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "탐색 막대를 <b>숨깁니다</b>."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>뒤로</b> 이동합니다."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "라이브러리 <b>홈</b> 페이지로 이동합니다."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "페이지를 <b>새로 고칩니다</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "브라우저를 <b>닫고</b> 앱으로 돌아갑니다."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>앞으로</b> 이동합니다."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "QR을 <b>Wi-Fi 네트워크</b>와 <b>핫스팟</b> 사이에서 전환합니다."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "QR 코드를 <b>닫습니다</b>."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "이 비정상 종료 보고서를 보내지 않고 <b>무시</b>합니다."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "문제 해결에 도움이 되도록 비정상 종료 보고서를 <b>보냅니다</b>."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "<b>자식 프로세스 제한</b>을 비활성화하는 상태 및 제어."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "<b>Phantom Process Killer</b>(PPK)를 비활성화하는 상태 및 제어."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "설치의 <b>고급 모니터링</b>을 표시합니다."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "고급 모니터링을 위해 <b>ADB</b>로 연결합니다."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "<b>기본</b> 에디션을 설치합니다(가장 작은 앱 모음)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "<b>표준</b> 에디션을 설치합니다."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "<b>전체</b> 에디션을 설치합니다(가장 큰 앱 모음)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "모듈과 함께 <b>보조 콘텐츠</b>도 설치합니다."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "<b>Kiwix</b> 다운로드 설정(언어 및 버전)을 엽니다."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "선택한 에디션을 지금 <b>프로비저닝</b>합니다."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "설치된 콘텐츠를 <b>삭제</b>합니다."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "<b>모듈 관리</b>를 표시하거나 숨깁니다."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "시스템에 설치된 모듈 목록을 <b>새로 고칩니다</b>."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "선택한 모듈의 설치를 <b>시작</b>합니다."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "<b>유지 관리</b> 도구를 표시하거나 숨깁니다."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "설치된 콘텐츠와 설정을 <b>백업</b>합니다."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "기본적인 시스템 설치로 <b>초기화</b>합니다(서비스 없음)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "백업에서 <b>복원</b>합니다."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "앱을 <b>강제 종료</b>합니다."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "외부 저장소에서 백업을 <b>가져옵니다</b>."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "사용할 <b>백업</b>을 선택합니다."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "복원 로그를 <b>닫습니다</b>."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "밝음과 어두움을 수동으로 전환하거나 앱이 기기의 시스템 테마를 따르도록 합니다."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "SIM이 없어도 작동하는 <b>로컬 전용 핫스팟</b>을 켭니다."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "통신사 테더링 경로를 사용하지 않고 Wi-Fi 핫스팟을 만들기 때문에 SIM이나 요금제가 없어도 작동합니다 — 일반 핫스팟이 차단된 경우에 유용합니다. 위치가 켜져 있어야 합니다."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "로컬 전용 핫스팟에 접속할 <b>Wi-Fi QR</b>을 표시합니다."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "로컬 전용 핫스팟은 자동 생성된 이름과 비밀번호를 사용합니다. QR을 스캔하면 입력 없이 접속됩니다."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "단순한 켜기/끄기가 아닙니다 — 안드로이드의 팬텀 프로세스 한도(256개)를 올려 서버의 자식 프로세스가 종료되지 않도록 합니다."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "휴대폰의 <b>인터넷 접속</b> 표시."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "회색 = 아직 확인 안 됨, 빨강 = 인터넷 없음, 초록 = 온라인."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "<b>개발자 모드</b> 사용 여부 표시."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "설치 공유나 전송, 무선 디버깅 같은 고급 기능에는 개발자 옵션이 사실상 필요합니다."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "외부 저장소로 백업을 <b>내보냅니다</b>."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "저장된 백업을 <b>삭제</b>합니다."
+

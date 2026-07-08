@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: lt\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Atverkite <b>Nustatymus</b>, kad sukonfigūruotumėte programėlę, leidimus ir kalbą."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Nustatymai sugrupuoja visos programėlės parinktis: reikalingus leidimus, sąsajos kalbą ir sutikimą dėl analitikos. Niekas čia nepaleidžia ir nesustabdo serverio."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Rodo <b>QR kodą</b>, kad netoliese esantis įrenginys galėtų prisijungti ir atverti jūsų biblioteką."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR kode yra Wi-Fi tinklas (arba viešosios interneto prieigos taškas) ir jūsų bibliotekos adresas. Svečiai jį nuskaito, kad prisijungtų ir naršytų iš savo įrenginio — nieko nevedant."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Perjungti tarp <b>šviesios ir tamsios</b> temos."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Įdiegta programėlės <b>versija</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Dabartinės būsenos indikatorius ir nuoroda į <b>Wi-Fi</b> nustatymą."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Rodo, ar Wi-Fi sąsaja įjungta, ir taip pat yra nuoroda į ją. Kai įjungta, kiti to paties tinklo įrenginiai gali atverti jūsų biblioteką jūsų telefono adresu."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Dabartinės būsenos indikatorius ir nuoroda į <b>viešosios prieigos tašką</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Rodo, ar telefono viešosios prieigos taškas įjungtas, ir taip pat yra nuoroda į jį. Kai įjungtas, prijungti įrenginiai gali prisijungti ir atverti jūsų biblioteką."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Atverkite savo <b>biblioteką</b> integruotoje naršyklėje."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Paleisti arba sustabdyti</b> turinio serverį."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Kiti prijungti įrenginiai jūsų biblioteką gali pasiekti tik kol serveris veikia. Pirmas paleidimas gali užtrukti kelias sekundes."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Išplėstiniai</b> serverio nustatymai."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Įjunkite serveriui <b>tinkintus DNS</b> nustatymus."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Reikalinga tik specialiose tinklo konfigūracijose; palikite išjungtą, nebent tikrai reikia."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Pritaikykite įvestus DNS nustatymus."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Rodyti <b>ryšio žurnalą</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Išvalyti</b> ryšio žurnalą."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Kopijuoti</b> visą žurnalą į iškarpinę."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Pasirinkite <b>Bendrinti</b>, kad išsiųstumėte biblioteką ar programėles į kitą įrenginį."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Pasirinkite <b>Gauti</b>, kad gautumėte turinį iš kito įrenginio."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Perkėlimas per <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Perkėlimas per <b>viešosios prieigos tašką</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Paleiskite serverį</b>, kad kitas įrenginys galėtų atsisiųsti jūsų biblioteką."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Bendrinkite pačią <b>K2Go programėlę</b> su netoliese esančiu įrenginiu."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Leidžia kam nors įdiegti K2Go iš jūsų be interneto: prisijungia ir atsisiunčia programėlę tiesiogiai."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Nuskaitykite QR</b>, kad prisijungtumėte prie kito įrenginio."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Atšaukti</b> dabartinį perkėlimą."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Pereiti prie kito <b>matuoklių</b> rinkinio."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Rodyti arba slėpti <b>įdiegtų modulių</b> sąrašą (rodomą kaip LED indikatoriai)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Įjungti arba išjungti anoniminę <b>naudojimo analitiką</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Kai įjungta, programėlė bendrina anoniminius naudojimo duomenis, kad padėtų ją tobulinti. Joks asmeninis turinys nerenkamas."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Pasirinkite siunčiamo atsiliepimo <b>tipą</b>."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Išsiųskite</b> atsiliepimą komandai."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Sukelti bandomąjį <b>strigtį</b> — tik diagnostikai."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Tęsti į kitą sąrankos veiksmą."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Leiskite <b>pranešimus</b>, kad programėlė galėtų įspėti apie serverį ir perkėlimus."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Leiskite prieigą prie <b>saugyklos</b>, kad programėlė galėtų skaityti ir teikti jūsų bibliotekos failus."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Leiskite programėlei <b>rodytis virš kitų programėlių</b> (reikalinga kai kuriai pagalbai ekrane)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Leiskite programėlei <b>toliau veikti</b> fone, kad serveris liktų aktyvus."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Atverkite sistemos ekraną, kad valdytumėte <b>visus leidimus</b> iš karto."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Pasirinkite programėlės ir turinio <b>kalbą</b>."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "<b>Programėlės sąsajos</b> kalba."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Pageidaujama <b>atsisiųsto turinio</b> kalba."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Baigti ir uždaryti <b>nustatymus</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Eiti į <b>sąrankos</b> veiksmus."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Eiti į <b>atsiliepimus</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Eiti į ekraną <b>Apie</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Rodyti <b>naršymo</b> juostą."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Slėpti</b> naršymo juostą."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Eiti <b>atgal</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Eiti į bibliotekos <b>pradžios</b> puslapį."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Iš naujo įkelti</b> puslapį."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Uždaryti</b> naršyklę ir grįžti į programėlę."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Eiti <b>pirmyn</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Perjungti QR tarp <b>Wi-Fi tinklo</b> ir <b>viešosios prieigos taško</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Uždaryti</b> QR kodą."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Atmesti</b> šį strigties pranešimą jo nesiunčiant."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Siųsti</b> strigties pranešimą, kad padėtumėte išspręsti problemą."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Būsena ir valdiklis <b>antrinių procesų apribojimui</b> išjungti."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Būsena ir valdiklis <b>Phantom Process Killer</b> (PPK) išjungti."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Rodyti diegimo <b>išplėstinę stebėseną</b>."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Prisijungti per <b>ADB</b> išplėstinei stebėsenai."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Įdiegti <b>Bazinį</b> leidimą (mažiausias programų rinkinys)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Įdiegti <b>Standartinį</b> leidimą."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Įdiegti <b>Pilną</b> leidimą (didžiausias programų rinkinys)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Kartu su moduliais įdiegti ir <b>papildomą turinį</b>."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Atverti <b>Kiwix</b> atsisiuntimo nustatymus (kalba ir variantas)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Paruošti</b> pasirinktą leidimą dabar."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Ištrinti</b> įdiegtą turinį."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Rodyti arba slėpti <b>modulių valdymą</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Atnaujinti</b> sistemoje įdiegtų modulių sąrašą."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Paleisti</b> pasirinktų modulių diegimą."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Rodyti arba slėpti <b>priežiūros</b> įrankius."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Sukurti atsarginę kopiją</b> įdiegto turinio ir nustatymų."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Atkurti</b> į bazinį sistemos diegimą (be paslaugų)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Atkurti</b> iš atsarginės kopijos."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Priverstinai sustabdyti</b> programėlę."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Importuoti</b> atsarginę kopiją iš išorinės saugyklos."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Pasirinkite, kurią <b>atsarginę kopiją</b> naudoti."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Uždaryti</b> atkūrimo žurnalą."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Perjunkite rankiniu būdu tarp šviesios ir tamsios arba leiskite programėlei sekti įrenginio sistemos temą."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Įjunkite <b>tik vietinį prieigos tašką</b>, kuris veikia net be SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Sukuria Wi-Fi prieigos tašką nenaudojant operatoriaus dalijimosi kelio, todėl veikia be SIM ar mobiliojo plano — naudinga, kai įprastas prieigos taškas užblokuotas. Vietovė turi būti įjungta."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Rodyti <b>Wi-Fi QR</b>, kad prisijungtumėte prie tik vietinio prieigos taško."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Tik vietinis prieigos taškas naudoja automatiškai sugeneruotą pavadinimą ir slaptažodį; nuskaičius QR prisijungiama jų nevedant."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Tai nėra paprastas įjungimas/išjungimas — jis pakelia Android fantominių procesų ribą (iki 256), kad serverio antriniai procesai nebūtų nutraukti."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Telefono <b>interneto prieigos</b> indikatorius."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Pilka = dar nepatikrinta, raudona = nėra interneto, žalia = prisijungta."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indikatorius, ar įjungtas <b>Kūrėjo režimas</b>."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Kūrėjo parinktys iš esmės būtinos išplėstinėms funkcijoms, kaip diegimo bendrinimas ar perkėlimas ir belaidis derinimas."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Eksportuoti</b> atsarginę kopiją į išorinę saugyklą."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Ištrinti</b> išsaugotą atsarginę kopiją."
+

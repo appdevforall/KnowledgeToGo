@@ -20,6 +20,9 @@ Build pipeline (pure Python stdlib — no external packages; run by Gradle):
    `-PhelpAllowMissing=true` downgrades to a warning for local debugging (CI stays strict).
 3. `build_help_db.py` — compile `i18n/` → `../../src/main/assets/help.db`
    (one DB, `lang` column). Missing strings fall back to English.
+3.5. `smoke_help.py` — integrity smoke test (`<b>` markup balance vs. English, placeholders,
+   encoding, empty strings, untranslated heuristic + DB round-trip). Run: `./gradlew smokeHelpTranslations`.
+
 
 Required languages (build fails if incomplete): `en, es, fr, hi, pt, ru`.
 Adding languages toward ~50 is "correction, not construction": drop in a new
