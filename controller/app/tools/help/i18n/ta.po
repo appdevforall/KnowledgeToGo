@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ta\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "பயன்பாடு, அனுமதிகள் மற்றும் மொழியை உள்ளமைக்க <b>அமைப்புகள்</b> ஐத் திறக்கவும்."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "அமைப்புகள் பயன்பாடு முழுவதற்கான விருப்பங்களை ஒன்றுசேர்க்கிறது: பயன்பாட்டுக்குத் தேவையான அனுமதிகள், இடைமுக மொழி மற்றும் பகுப்பாய்வு ஒப்புதல். இங்கே எதுவும் சேவையகத்தைத் தொடங்கவோ நிறுத்தவோ செய்யாது."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "அருகிலுள்ள சாதனம் இணைந்து உங்கள் நூலகத்தைத் திறக்க ஒரு <b>QR குறியீட்டைக்</b> காட்டுகிறது."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR இல் Wi-Fi வலையமைப்பு (அல்லது ஹாட்ஸ்பாட்) மற்றும் உங்கள் நூலகத்தின் முகவரி உள்ளன. விருந்தினர்கள் தங்கள் சாதனத்திலிருந்து இணைந்து உலவ அதை ஸ்கேன் செய்கிறார்கள் — தட்டச்சு செய்யாமல்."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "<b>வெளிர் மற்றும் இருண்ட</b> தீம் இடையே மாற்றவும்."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "நிறுவப்பட்ட பயன்பாட்டு <b>பதிப்பு</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "தற்போதைய நிலையின் காட்டி மற்றும் <b>Wi-Fi</b> அமைப்பிற்கான குறுக்குவழி."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Wi-Fi இடைமுகம் இயக்கத்தில் உள்ளதா என்பதைக் காட்டுகிறது, மேலும் அதற்கான குறுக்குவழியும் ஆகும். இயக்கத்தில் இருக்கும்போது, அதே வலையமைப்பில் உள்ள பிற சாதனங்கள் உங்கள் தொலைபேசியின் முகவரியில் உங்கள் நூலகத்தைத் திறக்கலாம்."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "தற்போதைய நிலையின் காட்டி மற்றும் <b>ஹாட்ஸ்பாட்</b>டிற்கான குறுக்குவழி."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "தொலைபேசியின் ஹாட்ஸ்பாட் இயக்கத்தில் உள்ளதா என்பதைக் காட்டுகிறது, மேலும் அதற்கான குறுக்குவழியும் ஆகும். இயக்கத்தில் இருக்கும்போது, இணைந்த சாதனங்கள் சேர்ந்து உங்கள் நூலகத்தைத் திறக்கலாம்."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "உள்ளமைந்த உலாவியில் உங்கள் <b>நூலகத்தைத்</b> திறக்கவும்."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "உள்ளடக்க சேவையகத்தை <b>தொடங்கவும் அல்லது நிறுத்தவும்</b>."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "பிற இணைந்த சாதனங்கள் சேவையகம் இயங்கும்போது மட்டுமே உங்கள் நூலகத்தை அணுக முடியும். முதல் தொடக்கம் சில வினாடிகள் எடுக்கலாம்."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>மேம்பட்ட</b> சேவையக அமைப்புகள்."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "சேவையகத்திற்கு <b>தனிப்பயன் DNS</b> அமைப்புகளை இயக்கவும்."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "சிறப்பு வலையமைப்பு அமைவுகளில் மட்டுமே தேவை; உண்மையில் தேவை என்று தெரியாவிட்டால் அணைத்து வைக்கவும்."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "நீங்கள் உள்ளிட்ட DNS அமைப்புகளைப் பயன்படுத்தவும்."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "<b>இணைப்பு பதிவைக்</b> காட்டு."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "இணைப்பு பதிவை <b>அழி</b>."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "முழு பதிவையும் கிளிப்போர்டுக்கு <b>நகலெடு</b>."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "உங்கள் நூலகத்தையோ பயன்பாடுகளையோ மற்றொரு சாதனத்திற்கு அனுப்ப <b>பகிர்</b> ஐத் தேர்ந்தெடுக்கவும்."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "மற்றொரு சாதனத்திலிருந்து உள்ளடக்கம் பெற <b>பெறு</b> ஐத் தேர்ந்தெடுக்கவும்."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "<b>Wi-Fi</b> வழியாக பரிமாற்றம்."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "<b>ஹாட்ஸ்பாட்</b> வழியாக பரிமாற்றம்."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "மற்றொரு சாதனம் உங்கள் நூலகத்தை இழுக்க <b>சேவையகத்தைத் தொடங்கவும்</b>."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "<b>K2Go பயன்பாட்டையே</b> அருகிலுள்ள சாதனத்துடன் பகிரவும்."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "இணையம் இல்லாமல் யாராவது உங்களிடமிருந்து K2Go ஐ நிறுவ அனுமதிக்கிறது: அவர்கள் இணைந்து பயன்பாட்டை நேரடியாகப் பதிவிறக்குகிறார்கள்."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "மற்ற சாதனத்துடன் இணைய ஒரு <b>QR ஐ ஸ்கேன் செய்யவும்</b>."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "தற்போதைய பரிமாற்றத்தை <b>ரத்து செய்</b>."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "அடுத்த <b>அளவுமானி</b> தொகுப்பிற்கு மாறு."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "<b>நிறுவப்பட்ட தொகுதிகள்</b> பட்டியலைக் காட்டு அல்லது மறை (LED காட்டிகளாகக் காட்டப்படுகிறது)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "அநாமதேய <b>பயன்பாட்டு பகுப்பாய்வை</b> இயக்கு அல்லது அணை."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "இயக்கப்பட்டிருக்கும்போது, பயன்பாட்டை மேம்படுத்த உதவ அநாமதேய பயன்பாட்டுத் தரவைப் பகிர்கிறது. எந்தத் தனிப்பட்ட உள்ளடக்கமும் சேகரிக்கப்படுவதில்லை."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "நீங்கள் அனுப்பும் கருத்தின் <b>வகையைத்</b> தேர்ந்தெடுக்கவும்."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "உங்கள் கருத்தை குழுவிற்கு <b>அனுப்பு</b>."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "ஒரு சோதனை <b>செயலிழப்பைத்</b> தூண்டு — நோயறிதலுக்கு மட்டும்."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "அடுத்த அமைவு படிக்குத் தொடரவும்."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "சேவையகம் மற்றும் பரிமாற்றங்கள் குறித்து பயன்பாடு உங்களை எச்சரிக்க <b>அறிவிப்புகளை</b> அனுமதிக்கவும்."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "பயன்பாடு உங்கள் நூலக கோப்புகளைப் படித்து வழங்க <b>சேமிப்பக</b> அணுகலை அனுமதிக்கவும்."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "பயன்பாட்டை <b>பிற பயன்பாடுகளுக்கு மேல் காட்ட</b> அனுமதிக்கவும் (சில திரை உதவிக்குத் தேவை)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "சேவையகம் இயங்கிக் கொண்டிருக்க பயன்பாட்டைப் பின்னணியில் <b>தொடர்ந்து இயங்க</b> விடவும்."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "<b>அனைத்து அனுமதிகளையும்</b> ஒரே நேரத்தில் நிர்வகிக்க கணினித் திரையைத் திறக்கவும்."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "பயன்பாடு மற்றும் உள்ளடக்க <b>மொழியைத்</b> தேர்ந்தெடுக்கவும்."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "<b>பயன்பாட்டு இடைமுகத்தின்</b> மொழி."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "<b>பதிவிறக்கிய உள்ளடக்கத்திற்கு</b> விருப்பமான மொழி."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "முடித்து <b>அமைப்புகளை</b> மூடு."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "<b>அமைவு</b> படிகளுக்குச் செல்."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "<b>கருத்துக்குச்</b> செல்."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "<b>பற்றி</b> திரைக்குச் செல்."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "<b>வழிசெலுத்தல்</b> பட்டியைக் காட்டு."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "வழிசெலுத்தல் பட்டியை <b>மறை</b>."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>பின்</b> செல்."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "நூலகத்தின் <b>முகப்பு</b> பக்கத்திற்குச் செல்."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "பக்கத்தை <b>மீண்டும் ஏற்று</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "உலாவியை <b>மூடி</b> பயன்பாட்டிற்குத் திரும்பு."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>முன்</b> செல்."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "QR ஐ <b>Wi-Fi வலையமைப்பு</b> மற்றும் <b>ஹாட்ஸ்பாட்</b> இடையே மாற்று."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "QR குறியீட்டை <b>மூடு</b>."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "இந்த செயலிழப்பு அறிக்கையை அனுப்பாமல் <b>நிராகரி</b>."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "சிக்கலைச் சரிசெய்ய எங்களுக்கு உதவ செயலிழப்பு அறிக்கையை <b>அனுப்பு</b>."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "<b>சேய்-செயல்முறை கட்டுப்பாட்டை</b> முடக்குவதற்கான நிலை மற்றும் கட்டுப்பாடு."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "<b>Phantom Process Killer</b> (PPK) ஐ முடக்குவதற்கான நிலை மற்றும் கட்டுப்பாடு."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "நிறுவலுக்கான <b>மேம்பட்ட கண்காணிப்பைக்</b> காட்டு."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "மேம்பட்ட கண்காணிப்பிற்கு <b>ADB</b> வழியாக இணை."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "<b>அடிப்படை</b> பதிப்பை நிறுவு (மிகச் சிறிய பயன்பாட்டுத் தொகுப்பு)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "<b>நிலையான</b> பதிப்பை நிறுவு."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "<b>முழு</b> பதிப்பை நிறுவு (மிகப் பெரிய பயன்பாட்டுத் தொகுப்பு)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "தொகுதிகளுடன் <b>துணை உள்ளடக்கத்தையும்</b> நிறுவு."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "<b>Kiwix</b> பதிவிறக்க அமைப்புகளைத் திற (மொழி மற்றும் வகை)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "தேர்ந்தெடுத்த பதிப்பை இப்போதே <b>ஏற்பாடு செய்</b>."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "நிறுவப்பட்ட உள்ளடக்கத்தை <b>நீக்கு</b>."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "<b>தொகுதி மேலாண்மையைக்</b> காட்டு அல்லது மறை."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "கணினியில் நிறுவப்பட்ட தொகுதிகளின் பட்டியலை <b>புதுப்பி</b>."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "தேர்ந்தெடுத்த தொகுதிகளின் நிறுவலைத் <b>தொடங்கு</b>."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "<b>பராமரிப்பு</b> கருவிகளைக் காட்டு அல்லது மறை."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "நிறுவப்பட்ட உள்ளடக்கம் மற்றும் அமைப்புகளை <b>காப்புப்பிரதி எடு</b>."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "ஒரு எளிய கணினி நிறுவலுக்கு <b>மீட்டமை</b> (சேவைகள் இல்லை)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "ஒரு காப்புப்பிரதியிலிருந்து <b>மீட்டெடு</b>."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "பயன்பாட்டை <b>வலுக்கட்டாயமாக நிறுத்து</b>."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "வெளிப்புற சேமிப்பகத்திலிருந்து ஒரு காப்புப்பிரதியை <b>இறக்குமதி செய்</b>."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "எந்த <b>காப்புப்பிரதியைப்</b> பயன்படுத்துவது என்பதைத் தேர்ந்தெடுக்கவும்."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "மீட்டெடுப்பு பதிவை <b>மூடு</b>."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "வெளிர் மற்றும் இருண்ட இடையே கைமுறையாக மாறவும், அல்லது உங்கள் சாதனத்தின் கணினி தீமைப் பயன்பாடு பின்பற்ற விடவும்."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "SIM இல்லாமலும் வேலை செய்யும் ஒரு <b>உள்ளூர் மட்டும் ஹாட்ஸ்பாட்</b> ஐ இயக்கவும்."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "ஆபரேட்டரின் டெதரிங் பாதையைப் பயன்படுத்தாமல் Wi-Fi ஹாட்ஸ்பாட்டை உருவாக்குகிறது, எனவே SIM அல்லது மொபைல் திட்டம் இல்லாமல் வேலை செய்யும் — வழக்கமான ஹாட்ஸ்பாட் தடுக்கப்படும்போது பயனுள்ளது. இடம் இயக்கத்தில் இருக்க வேண்டும்."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "உள்ளூர் மட்டும் ஹாட்ஸ்பாட்டில் இணைய ஒரு <b>Wi-Fi QR</b> ஐக் காட்டு."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "உள்ளூர் மட்டும் ஹாட்ஸ்பாட் தானாக உருவாக்கப்பட்ட பெயர் மற்றும் கடவுச்சொல்லைப் பயன்படுத்துகிறது; QR ஐ ஸ்கேன் செய்தால் அவற்றைத் தட்டச்சு செய்யாமல் இணைகிறது."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "இது எளிய இயக்கு/அணை அல்ல — சேவையகத்தின் சேய்-செயல்முறைகள் நிறுத்தப்படாமல் இருக்க Android இன் ஃபாண்டம்-செயல்முறை வரம்பை (256 ஆக) உயர்த்துகிறது."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "தொலைபேசியின் <b>இணைய அணுகலின்</b> காட்டி."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "சாம்பல் = இன்னும் சரிபார்க்கப்படவில்லை, சிவப்பு = இணையம் இல்லை, பச்சை = ஆன்லைன்."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "<b>டெவலப்பர் பயன்முறை</b> இயக்கப்பட்டுள்ளதா என்பதன் காட்டி."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "நிறுவலைப் பகிர்தல் அல்லது பரிமாற்றம் மற்றும் வயர்லெஸ் பிழைத்திருத்தம் போன்ற மேம்பட்ட அம்சங்களுக்கு டெவலப்பர் விருப்பங்கள் நடைமுறையில் தேவை."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "வெளிப்புற சேமிப்பகத்திற்கு ஒரு காப்புப்பிரதியை <b>ஏற்றுமதி செய்</b>."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "சேமித்த ஒரு காப்புப்பிரதியை <b>நீக்கு</b>."
+
