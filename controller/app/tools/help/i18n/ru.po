@@ -1,0 +1,43 @@
+#
+msgid ""
+msgstr ""
+"Language: ru\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr ""
+"Откройте <b>Настройки</b>, чтобы настроить приложение, разрешения и язык."
+
+msgctxt "main.settings.detail"
+msgid ""
+"Settings groups app-wide options: the permissions the app needs, the "
+"interface language, and analytics consent. Nothing here starts or stops the "
+"server."
+msgstr ""
+"Настройки объединяют общие параметры приложения: необходимые разрешения, "
+"язык интерфейса и согласие на аналитику. Ничто здесь не запускает и не "
+"останавливает сервер."
+
+msgctxt "main.share_qr.summary"
+msgid ""
+"Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr ""
+"Покажите <b>QR-код</b>, чтобы устройство поблизости подключилось и открыло "
+"вашу библиотеку."
+
+msgctxt "main.share_qr.detail"
+msgid ""
+"The QR encodes the Wi-Fi network (or hotspot) plus the address of your "
+"library. Guests scan it to connect and browse — no typing required."
+msgstr ""
+"QR-код содержит сеть Wi-Fi (или точку доступа) и адрес вашей библиотеки. "
+"Гости сканируют его, чтобы подключиться и просматривать — без ручного ввода."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Переключение между <b>светлой и тёмной</b> темой."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Установленная <b>версия</b> приложения."

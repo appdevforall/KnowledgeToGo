@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -113,30 +114,12 @@ public final class TooltipManager {
             db = openDatabase(context);
             if (db == null) return null;
 
-            String summary = null;
-            String detail = null;
-            long tooltipId = -1;
-            try (Cursor c = db.rawQuery(
-                    "SELECT T.id, T.summary, T.detail FROM Tooltips T, TooltipCategories TC "
-                            + "WHERE T.categoryId = TC.id AND T.tag = ? COLLATE NOCASE "
-                            + "AND TC.category = ? COLLATE NOCASE",
-                    new String[]{tag, category})) {
-                if (!c.moveToFirst()) return null;
-                tooltipId = c.getLong(0);
-                summary = c.getString(1);
-                detail = c.getString(2);
+            String lang = Locale.getDefault().getLanguage();
+            TooltipItem item = queryTooltip(db, category, tag, lang);
+            if (item == null && !"en".equals(lang)) {
+                item = queryTooltip(db, category, tag, "en"); // fall back to the source language
             }
-
-            List<HelpLink> links = new ArrayList<>();
-            try (Cursor c = db.rawQuery(
-                    "SELECT description, uri FROM TooltipButtons WHERE tooltipId = ? "
-                            + "ORDER BY buttonNumberId",
-                    new String[]{String.valueOf(tooltipId)})) {
-                while (c.moveToNext()) {
-                    links.add(new HelpLink(c.getString(0), c.getString(1)));
-                }
-            }
-            return new TooltipItem(category, tag, summary, detail, links);
+            return item;
         } catch (Exception e) {
             Log.e(TAG, "getTooltip failed: " + e.getMessage());
             return null;
@@ -145,6 +128,31 @@ public final class TooltipManager {
                 try { db.close(); } catch (Exception ignored) {}
             }
         }
+    }
+
+    private static TooltipItem queryTooltip(SQLiteDatabase db, String category, String tag, String lang) {
+        String summary = null;
+        String detail = null;
+        long tooltipId = -1;
+        try (Cursor c = db.rawQuery(
+                "SELECT T.id, T.summary, T.detail FROM Tooltips T, TooltipCategories TC "
+                        + "WHERE T.categoryId = TC.id AND T.tag = ? COLLATE NOCASE "
+                        + "AND TC.category = ? COLLATE NOCASE AND T.lang = ?",
+                new String[]{tag, category, lang})) {
+            if (!c.moveToFirst()) return null;
+            tooltipId = c.getLong(0);
+            summary = c.getString(1);
+            detail = c.getString(2);
+        }
+        List<HelpLink> links = new ArrayList<>();
+        try (Cursor c = db.rawQuery(
+                "SELECT description, uri FROM TooltipButtons WHERE tooltipId = ? ORDER BY buttonNumberId",
+                new String[]{String.valueOf(tooltipId)})) {
+            while (c.moveToNext()) {
+                links.add(new HelpLink(c.getString(0), c.getString(1)));
+            }
+        }
+        return new TooltipItem(category, tag, summary, detail, links);
     }
 
     private static SQLiteDatabase openDatabase(Context context) {

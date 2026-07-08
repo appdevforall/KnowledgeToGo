@@ -1,0 +1,7 @@
+tag,field,text
+main.settings,summary,"Open <b>Settings</b> to configure the app, permissions and language."
+main.settings,detail,"Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+main.share_qr,summary,Show a <b>QR code</b> so a nearby device can join and open your library.
+main.share_qr,detail,The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse — no typing required.
+main.theme_toggle,summary,Switch between <b>light and dark</b> theme.
+main.version,summary,The installed app <b>version</b>.

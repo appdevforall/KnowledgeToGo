@@ -588,6 +588,6 @@
     <string name="settings_group_server">Server</string>
     <string name="beta_tag" translatable="false">BETA</string>
     <string name="setup_dns_hint">Custom DNS for the server.</string>
-    <string name="tooltip_see_more" tools:ignore="MissingTranslation">See more</string>
-    <string name="tooltip_help_unavailable" tools:ignore="MissingTranslation">Help content is not installed yet.</string>
+    <string name="tooltip_see_more">See more</string>
+    <string name="tooltip_help_unavailable">Help content is not installed yet.</string>
 </resources>

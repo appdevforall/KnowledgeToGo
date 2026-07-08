@@ -393,3 +393,47 @@ task syncNativeArtifacts {
 }
 
 preBuild.dependsOn syncNativeArtifacts
+
+// ---- ADFA-4593: tooltip three-tier help database ------------------------------
+// Source of truth is tools/help/i18n (.pot + <lang>.po compiled to assets/help.db).
+// Requires Python + polib for validation/compilation; if Python is absent the
+// committed help.db is used and checks are skipped (so local builds never break).
+def helpI18nDir = file("tools/help/i18n")
+def helpDb = file("src/main/assets/help.db")
+def helpRequiredLangs = "es,fr,hi,pt,ru"
+def helpPython = (System.getProperty("os.name").toLowerCase().contains("win")
+        ? ["py", "python", "python3"] : ["python3", "python"]).find { name ->
+    try { def p = "${name} --version".execute(); p.waitFor(); p.exitValue() == 0 }
+    catch (ignored) { false }
+}
+
+if (helpPython == null) {
+    logger.warn("ADFA-4593: Python not found; using committed help.db and skipping tooltip "
+            + "translation checks. Install Python + polib for full enforcement (required in CI).")
+} else {
+    tasks.register("validateHelpTranslations", Exec) {
+        group = "help"
+        description = "Fail the build if required tooltip translations are missing."
+        inputs.dir helpI18nDir
+        workingDir projectDir
+        def allowMissing = project.hasProperty("helpAllowMissing") ? project.property("helpAllowMissing") : "false"
+        commandLine helpPython, "tools/help/validate_help.py", "tools/help/i18n",
+                "--required", helpRequiredLangs, "--allow-missing", allowMissing
+    }
+    tasks.register("buildHelpDb", Exec) {
+        group = "help"
+        description = "Compile the tooltip help.db from .po sources."
+        inputs.dir helpI18nDir
+        outputs.file helpDb
+        dependsOn "validateHelpTranslations"
+        workingDir projectDir
+        commandLine helpPython, "tools/help/build_help_db.py", "tools/help/i18n", helpDb.absolutePath
+    }
+    tasks.register("extractHelpPot", Exec) {
+        group = "help"
+        description = "Regenerate strings.pot from the English source (run on demand)."
+        workingDir projectDir
+        commandLine helpPython, "tools/help/extract_help_pot.py", "tools/help/i18n"
+    }
+    tasks.matching { it.name == "preBuild" }.configureEach { dependsOn "buildHelpDb" }
+}

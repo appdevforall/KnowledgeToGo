@@ -1,0 +1,43 @@
+#
+msgid ""
+msgstr ""
+"Language: hi\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "ऐप, अनुमतियाँ और भाषा कॉन्फ़िगर करने के लिए <b>सेटिंग्स</b> खोलें।"
+
+msgctxt "main.settings.detail"
+msgid ""
+"Settings groups app-wide options: the permissions the app needs, the "
+"interface language, and analytics consent. Nothing here starts or stops the "
+"server."
+msgstr ""
+"सेटिंग्स ऐप के सामान्य विकल्पों को एक साथ रखती है: ज़रूरी अनुमतियाँ, "
+"इंटरफ़ेस की भाषा, और एनालिटिक्स सहमति। यहाँ कुछ भी सर्वर को चालू या बंद नहीं"
+" करता।"
+
+msgctxt "main.share_qr.summary"
+msgid ""
+"Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr ""
+"पास का डिवाइस जुड़कर आपकी लाइब्रेरी खोल सके, इसके लिए एक <b>QR कोड</b> "
+"दिखाएँ।"
+
+msgctxt "main.share_qr.detail"
+msgid ""
+"The QR encodes the Wi-Fi network (or hotspot) plus the address of your "
+"library. Guests scan it to connect and browse — no typing required."
+msgstr ""
+"QR में Wi-Fi नेटवर्क (या हॉटस्पॉट) और आपकी लाइब्रेरी का पता होता है। मेहमान "
+"इसे स्कैन करके जुड़ते हैं और ब्राउज़ करते हैं — कुछ टाइप करने की ज़रूरत "
+"नहीं।"
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "<b>लाइट और डार्क</b> थीम के बीच स्विच करें।"
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "इंस्टॉल किया गया ऐप <b>संस्करण</b>।"
