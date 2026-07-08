@@ -60,11 +60,16 @@ def parse_po(path):
     flush()
     return entries
 
-def write_po(path, entries, language=None, template=False):
+def write_po(path, entries, language=None, template=False, machine=False):
     """entries: list of (msgctxt, msgid, msgstr)."""
-    out = ['msgid ""', 'msgstr ""', '"Content-Type: text/plain; charset=UTF-8\\n"']
+    out = []
+    if machine:
+        out.append("# NOTE: Machine translation (AI) \u2014 pending human review; not final.")
+    out += ['msgid ""', 'msgstr ""', '"Content-Type: text/plain; charset=UTF-8\\n"']
     if language:
         out.append('"Language: %s\\n"' % language)
+    if machine:
+        out.append('"X-Translated-By: machine\\n"')
     out.append("")
     for ctx, msgid, msgstr in entries:
         out.append("msgctxt %s" % _quote(ctx))

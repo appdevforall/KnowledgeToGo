@@ -2,6 +2,94 @@ tag,field,text
 main.settings,summary,"Open <b>Settings</b> to configure the app, permissions and language."
 main.settings,detail,"Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
 main.share_qr,summary,Show a <b>QR code</b> so a nearby device can join and open your library.
-main.share_qr,detail,The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse — no typing required.
+main.share_qr,detail,The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required.
 main.theme_toggle,summary,Switch between <b>light and dark</b> theme.
 main.version,summary,The installed app <b>version</b>.
+usage.wifi,summary,Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface.
+usage.wifi,detail,"Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+usage.hotspot,summary,Indicator of the current status and a shortcut to the <b>hotspot</b>.
+usage.hotspot,detail,"Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+usage.browse_content,summary,Open your <b>library</b> in the built-in browser.
+usage.server_control,summary,<b>Start or stop</b> the content server.
+usage.server_control,detail,Other connected devices can only reach your library while the server is running. The first start can take a few seconds.
+usage.dns_settings,summary,<b>Advanced</b> server settings.
+usage.dns_check,summary,Enable <b>custom DNS</b> settings for the server.
+usage.dns_check,detail,Only needed in special network setups; leave it off unless you know you need it.
+usage.dns_accept,summary,Apply the DNS settings you entered.
+usage.log,summary,Show the <b>connection log</b>.
+usage.clear_log,summary,<b>Clear</b> the connection log.
+usage.copy_log,summary,<b>Copy</b> the whole log to the clipboard.
+sync.mode_share,summary,Choose <b>Share</b> to send your library or apps to another device.
+sync.mode_receive,summary,Choose <b>Receive</b> to get content from another device.
+sync.net_wifi,summary,Transfer over <b>Wi-Fi</b>.
+sync.net_hotspot,summary,Transfer over the <b>hotspot</b>.
+sync.start_server,summary,<b>Start the server</b> so another device can pull your library.
+sync.share_app,summary,Share the <b>K2Go app</b> itself with a nearby device.
+sync.share_app,detail,Lets someone install K2Go from you without internet: they connect and download the app directly.
+sync.scan_qr,summary,<b>Scan a QR</b> to connect to the other device.
+sync.cancel_transfer,summary,<b>Cancel</b> the current transfer.
+dashboard.flip_gauges,summary,Flip to the next set of <b>gauges</b>.
+dashboard.modules_title,summary,Show or hide the list of <b>installed modules</b> (shown as LED indicators).
+about.analytics_consent,summary,Turn anonymous <b>usage analytics</b> on or off.
+about.analytics_consent,detail,"When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+feedback.category,summary,Pick the <b>type</b> of feedback you're sending.
+feedback.send,summary,<b>Send</b> your feedback to the team.
+feedback.force_crash,summary,Trigger a test <b>crash</b> — for diagnostics only.
+setup_section.continue,summary,Continue to the next setup step.
+setup_section.perm_notifications,summary,Allow <b>notifications</b> so the app can alert you about the server and transfers.
+setup_section.perm_storage,summary,Allow <b>storage</b> access so the app can read and serve your library files.
+setup_section.perm_overlay,summary,Allow the app to <b>display over other apps</b> (needed for some on-screen help).
+setup_section.perm_battery,summary,Let the app <b>keep running</b> in the background so the server stays up.
+setup_section.manage_all,summary,Open the system screen to manage <b>all permissions</b> at once.
+setup_section.language_header,summary,Choose the app and content <b>language</b>.
+setup_section.app_language,summary,Language of the <b>app interface</b>.
+setup_section.content_language,summary,Preferred language for <b>downloaded content</b>.
+setup.done,summary,Finish and close <b>settings</b>.
+setup.nav_setup,summary,Go to the <b>setup</b> steps.
+setup.nav_feedback,summary,Go to <b>feedback</b>.
+setup.nav_about,summary,Go to the <b>About</b> screen.
+portal.handle,summary,Show the <b>navigation</b> bar.
+portal.hide_nav,summary,<b>Hide</b> the navigation bar.
+portal.back,summary,Go <b>back</b>.
+portal.home,summary,Go to the library <b>home</b> page.
+portal.reload,summary,<b>Reload</b> the page.
+portal.exit,summary,<b>Close</b> the browser and return to the app.
+portal.forward,summary,Go <b>forward</b>.
+qr.flip,summary,Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>.
+qr.close,summary,<b>Close</b> the QR code.
+crash.dismiss,summary,<b>Dismiss</b> this crash report without sending.
+crash.send,summary,<b>Send</b> the crash report to help us fix the problem.
+deploy.led_dcpr,summary,Status and control to disable the <b>child-process restriction</b>.
+deploy.led_ppk,summary,Status and control to disable the <b>Phantom Process Killer</b> (PPK).
+deploy.adv_monitoring,summary,Show <b>advanced monitoring</b> for the install.
+deploy.adb_action,summary,Connect over <b>ADB</b> for advanced monitoring.
+deploy.tier_basic,summary,Install the <b>Basic</b> edition (smallest set of apps).
+deploy.tier_standard,summary,Install the <b>Standard</b> edition.
+deploy.tier_full,summary,Install the <b>Full</b> edition (largest set of apps).
+deploy.companion_data,summary,Also install <b>companion content</b> with the modules.
+deploy.kiwix_settings,summary,Open <b>Kiwix</b> download settings (language and variant).
+deploy.fast_install,summary,<b>Provision</b> the selected edition now.
+deploy.fast_delete,summary,<b>Delete</b> the installed content.
+deploy.module_mgmt,summary,Show or hide <b>module management</b>.
+deploy.refresh_modules,summary,<b>Refresh</b> the list of modules installed on the system.
+deploy.launch_install,summary,<b>Launch</b> the installation of the selected modules.
+deploy.maintenance,summary,Show or hide <b>maintenance</b> tools.
+deploy.backup,summary,<b>Back up</b> your installed content and settings.
+deploy.reset,summary,<b>Reset</b> to a bare-bones system install (no services).
+deploy.restore,summary,<b>Restore</b> from a backup.
+deploy.force_stop,summary,<b>Force-stop</b> the app.
+deploy.import_backup,summary,<b>Import</b> a backup from external storage.
+deploy.select_backup,summary,Choose which <b>backup</b> to use.
+deploy.restore_log_close,summary,<b>Close</b> the restore log.
+main.theme_toggle,detail,"Switch manually between light and dark, or let the app follow your device's system theme."
+usage.lohs_toggle,summary,Turn on a <b>local-only hotspot</b> that works even with no SIM.
+usage.lohs_toggle,detail,"Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+usage.lohs_show_qr,summary,Show a <b>Wi-Fi QR</b> to join the local-only hotspot.
+usage.lohs_show_qr,detail,The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them.
+deploy.led_ppk,detail,Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed.
+deploy.internet,summary,Indicator of the phone's <b>internet access</b>.
+deploy.internet,detail,"Gray = not checked yet, red = no internet, green = online."
+deploy.dev_mode,summary,Indicator of whether <b>Developer mode</b> is enabled.
+deploy.dev_mode,detail,Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging.
+deploy.export_backup,summary,<b>Export</b> a backup to external storage.
+deploy.delete_backup,summary,<b>Delete</b> a saved backup.
