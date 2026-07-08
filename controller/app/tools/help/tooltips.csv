@@ -1,0 +1,9 @@
+category,tag,summary,detail
+k2go,main.settings,"Open <b>Settings</b> to configure the app, permissions and language.","Settings groups app-wide options: permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+k2go,main.share_qr,"Show a <b>QR code</b> so a nearby device can join and open your library.","The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse — no typing required."
+k2go,main.theme_toggle,"Switch between <b>light and dark</b> theme.",""
+k2go,main.version,"The installed app <b>version</b>.",""
+k2go,usage.wifi,"Share your library over the current <b>Wi-Fi</b> network.","When your phone is on Wi-Fi, other devices on the same network can reach your library at your phone's address."
+k2go,usage.hotspot,"Turn on a <b>hotspot</b> so nearby devices can connect with no external network.","The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet, which is ideal for offline sharing."
+k2go,usage.browse_content,"Open your <b>library</b> in the browser.",""
+k2go,usage.server_control,"<b>Start or stop</b> the content server.","The server must be running for other devices to reach your library. Starting it may take a few seconds the first time."
