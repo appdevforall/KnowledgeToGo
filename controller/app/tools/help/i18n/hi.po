@@ -27,3 +27,59 @@ msgctxt "main.version.summary"
 msgid "The installed app <b>version</b>."
 msgstr "इंस्टॉल किया गया ऐप <b>संस्करण</b>।"
 
+msgctxt "usage.wifi.summary"
+msgid "Share your library over the current <b>Wi-Fi</b> network."
+msgstr "अपनी लाइब्रेरी को मौजूदा <b>Wi-Fi</b> नेटवर्क पर साझा करें।"
+
+msgctxt "usage.wifi.detail"
+msgid "When your phone is connected to Wi-Fi, other devices on the same network can open your library at your phone's address."
+msgstr "जब आपका फ़ोन Wi-Fi पर होता है, तो उसी नेटवर्क के अन्य डिवाइस आपके फ़ोन के पते पर आपकी लाइब्रेरी खोल सकते हैं।"
+
+msgctxt "usage.hotspot.summary"
+msgid "Turn on a <b>hotspot</b> so nearby devices can connect with no external network."
+msgstr "पास के डिवाइस बिना किसी बाहरी नेटवर्क के जुड़ सकें, इसके लिए <b>हॉटस्पॉट</b> चालू करें।"
+
+msgctxt "usage.hotspot.detail"
+msgid "The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet — ideal for sharing offline."
+msgstr "हॉटस्पॉट आपके फ़ोन से एक लोकल Wi-Fi नेटवर्क बनाता है। यह बिना SIM या इंटरनेट के भी काम करता है — ऑफ़लाइन साझा करने के लिए आदर्श।"
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the browser."
+msgstr "अपनी <b>लाइब्रेरी</b> ब्राउज़र में खोलें।"
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "कंटेंट सर्वर <b>शुरू या बंद</b> करें।"
+
+msgctxt "usage.server_control.detail"
+msgid "Other devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "सर्वर चालू रहने पर ही अन्य डिवाइस आपकी लाइब्रेरी तक पहुँच सकते हैं। पहली बार शुरू होने में कुछ सेकंड लग सकते हैं।"
+
+msgctxt "usage.dns_settings.summary"
+msgid "Advanced <b>network</b> options."
+msgstr "<b>उन्नत</b> नेटवर्क विकल्प।"
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "सर्वर के लिए <b>कस्टम DNS</b> सेटिंग्स सक्षम करें।"
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "केवल विशेष नेटवर्क सेटअप में ज़रूरी; जब तक ज़रूरत न हो, इसे बंद रखें।"
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "आपके द्वारा दर्ज की गई DNS सेटिंग्स लागू करें।"
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "<b>कनेक्शन लॉग</b> दिखाएँ।"
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "कनेक्शन लॉग <b>साफ़ करें</b>।"
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "पूरा लॉग <b>क्लिपबोर्ड</b> पर कॉपी करें।"
+

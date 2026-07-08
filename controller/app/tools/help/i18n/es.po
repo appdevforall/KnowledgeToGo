@@ -27,3 +27,59 @@ msgctxt "main.version.summary"
 msgid "The installed app <b>version</b>."
 msgstr "La <b>versión</b> instalada de la app."
 
+msgctxt "usage.wifi.summary"
+msgid "Share your library over the current <b>Wi-Fi</b> network."
+msgstr "Comparte tu biblioteca por la red <b>Wi-Fi</b> actual."
+
+msgctxt "usage.wifi.detail"
+msgid "When your phone is connected to Wi-Fi, other devices on the same network can open your library at your phone's address."
+msgstr "Cuando tu teléfono está en Wi-Fi, otros dispositivos de la misma red pueden abrir tu biblioteca en la dirección de tu teléfono."
+
+msgctxt "usage.hotspot.summary"
+msgid "Turn on a <b>hotspot</b> so nearby devices can connect with no external network."
+msgstr "Enciende un <b>hotspot</b> para que dispositivos cercanos se conecten sin una red externa."
+
+msgctxt "usage.hotspot.detail"
+msgid "The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet — ideal for sharing offline."
+msgstr "El hotspot crea una red Wi-Fi local desde tu teléfono. Funciona incluso sin SIM ni internet: ideal para compartir sin conexión."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the browser."
+msgstr "Abre tu <b>biblioteca</b> en el navegador."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Inicia o detén</b> el servidor de contenido."
+
+msgctxt "usage.server_control.detail"
+msgid "Other devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Los demás dispositivos solo pueden acceder a tu biblioteca mientras el servidor está activo. El primer arranque puede tardar unos segundos."
+
+msgctxt "usage.dns_settings.summary"
+msgid "Advanced <b>network</b> options."
+msgstr "Opciones <b>avanzadas</b> de red."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Activa la configuración de <b>DNS personalizado</b> para el servidor."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Solo se necesita en configuraciones de red especiales; déjalo apagado salvo que sepas que lo necesitas."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Aplica la configuración de DNS que ingresaste."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Muestra el <b>registro de conexión</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Borra</b> el registro de conexión."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Copia</b> todo el registro al portapapeles."
+
