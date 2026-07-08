@@ -24,6 +24,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -270,7 +271,7 @@ public final class TooltipManager {
                 linksBox.setVisibility(View.GONE);
             }
 
-            popup.showAsDropDown(anchor);
+            showPopupSmart(popup, anchor);
         } catch (Exception e) {
             Log.e(TAG, "showPopup failed: " + e.getMessage());
         }
@@ -281,6 +282,26 @@ public final class TooltipManager {
             return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    // Show the popup below the anchor, or above it when the anchor sits low on
+    // screen (e.g. a bottom navigation/close button) so it isn't clipped off the
+    // bottom. Anchor-position based, so it works even while the WebView content
+    // is still laying out.
+    private static void showPopupSmart(PopupWindow popup, View anchor) {
+        try {
+            int screenH = anchor.getResources().getDisplayMetrics().heightPixels;
+            int[] loc = new int[2];
+            anchor.getLocationOnScreen(loc);
+            int anchorTop = loc[1];
+            if (anchorTop > screenH * 0.55f) {
+                popup.showAtLocation(anchor, Gravity.BOTTOM | Gravity.START, loc[0], screenH - anchorTop);
+            } else {
+                popup.showAsDropDown(anchor);
+            }
+        } catch (Exception e) {
+            try { popup.showAsDropDown(anchor); } catch (Exception ignored) {}
         }
     }
 

@@ -105,6 +105,8 @@ public final class TooltipWiring {
         MAP.put(R.id.btn_clear_log, TooltipTag.USAGE_CLEAR_LOG);
         MAP.put(R.id.btn_copy_log, TooltipTag.USAGE_COPY_LOG);
         MAP.put(R.id.btn_server_control, TooltipTag.USAGE_SERVER_CONTROL);
+        MAP.put(R.id.lohs_toggle, TooltipTag.USAGE_LOHS_TOGGLE);
+        MAP.put(R.id.lohs_show_qr, TooltipTag.USAGE_LOHS_SHOW_QR);
         // main
         MAP.put(R.id.btn_share_qr, TooltipTag.MAIN_SHARE_QR);
         MAP.put(R.id.btn_settings, TooltipTag.MAIN_SETTINGS);
