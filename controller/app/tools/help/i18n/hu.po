@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: hu\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Nyisd meg a <b>Beállításokat</b> az alkalmazás, az engedélyek és a nyelv beállításához."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "A Beállítások az egész alkalmazásra vonatkozó opciókat gyűjti össze: a szükséges engedélyeket, a felület nyelvét és az analitikai hozzájárulást. Itt semmi sem indítja el vagy állítja le a kiszolgálót."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "<b>QR-kódot</b> jelenít meg, hogy egy közeli eszköz csatlakozhasson és megnyithassa a könyvtáradat."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "A QR tartalmazza a Wi-Fi hálózatot (vagy a hotspotot) és a könyvtárad címét. A vendégek beolvassák, hogy csatlakozzanak és böngésszenek a saját eszközükről — gépelés nélkül."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Váltás <b>világos és sötét</b> téma között."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "A telepített alkalmazás <b>verziója</b>."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Az aktuális állapot jelzője és parancsikon a <b>Wi-Fi</b> beállításához."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Mutatja, hogy a Wi-Fi felület be van-e kapcsolva, és egyben parancsikon is hozzá. Amikor be van kapcsolva, az azonos hálózaton lévő más eszközök megnyithatják a könyvtáradat a telefonod címén."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Az aktuális állapot jelzője és parancsikon a <b>hotspothoz</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Mutatja, hogy a telefon hotspotja be van-e kapcsolva, és egyben parancsikon is hozzá. Amikor be van kapcsolva, a csatlakozott eszközök csatlakozhatnak és megnyithatják a könyvtáradat."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Nyisd meg a <b>könyvtáradat</b> a beépített böngészőben."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "A tartalomkiszolgáló <b>indítása vagy leállítása</b>."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "A többi csatlakozott eszköz csak akkor éri el a könyvtáradat, amíg a kiszolgáló fut. Az első indítás néhány másodpercig tarthat."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Speciális</b> kiszolgálóbeállítások."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Kapcsold be az <b>egyéni DNS</b>-beállításokat a kiszolgálóhoz."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Csak különleges hálózati beállításokban szükséges; hagyd kikapcsolva, hacsak nem tudod, hogy szükséged van rá."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Alkalmazd a megadott DNS-beállításokat."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "A <b>kapcsolati napló</b> megjelenítése."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "A kapcsolati napló <b>törlése</b>."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "A teljes napló <b>másolása</b> a vágólapra."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Válaszd a <b>Megosztás</b> lehetőséget a könyvtárad vagy alkalmazásaid másik eszközre küldéséhez."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Válaszd a <b>Fogadás</b> lehetőséget tartalom másik eszközről való beszerzéséhez."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Átvitel <b>Wi-Fin</b> keresztül."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Átvitel a <b>hotspoton</b> keresztül."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Indítsd el a kiszolgálót</b>, hogy egy másik eszköz letölthesse a könyvtáradat."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Oszd meg magát a <b>K2Go alkalmazást</b> egy közeli eszközzel."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Lehetővé teszi, hogy valaki internet nélkül telepítse tőled a K2Go-t: csatlakozik és közvetlenül letölti az alkalmazást."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Olvass be egy QR-t</b> a másik eszközhöz való csatlakozáshoz."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "A jelenlegi átvitel <b>megszakítása</b>."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Váltás a <b>mérők</b> következő csoportjára."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "A <b>telepített modulok</b> listájának megjelenítése vagy elrejtése (LED-jelzőkként megjelenítve)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "A névtelen <b>használati analitika</b> be- vagy kikapcsolása."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Bekapcsolva az alkalmazás névtelen használati adatokat oszt meg a fejlesztés segítésére. Semmilyen személyes tartalmat nem gyűjt."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Válaszd ki a küldött visszajelzés <b>típusát</b>."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Küldd el</b> a visszajelzésedet a csapatnak."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Teszt <b>összeomlás</b> kiváltása — csak diagnosztikához."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Folytatás a következő beállítási lépésre."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Engedélyezd az <b>értesítéseket</b>, hogy az alkalmazás értesíthessen a kiszolgálóról és az átvitelekről."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Engedélyezd a <b>tárhely</b> elérését, hogy az alkalmazás olvashassa és kiszolgálhassa a könyvtárad fájljait."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Engedélyezd az alkalmazásnak, hogy <b>más alkalmazások fölött jelenjen meg</b> (egyes képernyős súgókhoz szükséges)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Hagyd, hogy az alkalmazás a háttérben <b>tovább fusson</b>, hogy a kiszolgáló aktív maradjon."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Nyisd meg a rendszerképernyőt az <b>összes engedély</b> egyszerre történő kezeléséhez."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Válaszd ki az alkalmazás és a tartalom <b>nyelvét</b>."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Az <b>alkalmazás felületének</b> nyelve."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "A <b>letöltött tartalom</b> előnyben részesített nyelve."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Befejezés és a <b>beállítások</b> bezárása."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Ugrás a <b>beállítási</b> lépésekhez."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Ugrás a <b>visszajelzéshez</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Ugrás a <b>Névjegy</b> képernyőre."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "A <b>navigációs</b> sáv megjelenítése."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "A navigációs sáv <b>elrejtése</b>."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Ugrás <b>vissza</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Ugrás a könyvtár <b>kezdőlapjára</b>."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "Az oldal <b>újratöltése</b>."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "A böngésző <b>bezárása</b> és visszatérés az alkalmazáshoz."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Ugrás <b>előre</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "A QR váltása a <b>Wi-Fi hálózat</b> és a <b>hotspot</b> között."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "A QR-kód <b>bezárása</b>."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "Ennek az összeomlási jelentésnek az <b>elvetése</b> küldés nélkül."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "Az összeomlási jelentés <b>elküldése</b>, hogy segíts kijavítani a problémát."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Állapot és vezérlő a <b>gyermekfolyamat-korlátozás</b> letiltásához."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Állapot és vezérlő a <b>Phantom Process Killer</b> (PPK) letiltásához."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "A telepítés <b>speciális megfigyelésének</b> megjelenítése."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Csatlakozás <b>ADB</b>-n keresztül speciális megfigyeléshez."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Az <b>Alap</b> kiadás telepítése (a legkisebb alkalmazáskészlet)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "A <b>Standard</b> kiadás telepítése."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "A <b>Teljes</b> kiadás telepítése (a legnagyobb alkalmazáskészlet)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Telepítsd a <b>kísérőtartalmat</b> is a modulokkal együtt."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Nyisd meg a <b>Kiwix</b> letöltési beállításait (nyelv és változat)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "A kiválasztott kiadás <b>előkészítése</b> most."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "A telepített tartalom <b>törlése</b>."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "A <b>modulkezelés</b> megjelenítése vagy elrejtése."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "A rendszerre telepített modulok listájának <b>frissítése</b>."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "A kiválasztott modulok telepítésének <b>elindítása</b>."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "A <b>karbantartási</b> eszközök megjelenítése vagy elrejtése."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Készíts biztonsági mentést</b> a telepített tartalomról és beállításokról."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Visszaállítás</b> egy alap rendszertelepítésre (szolgáltatások nélkül)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Visszaállítás</b> biztonsági mentésből."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "Az alkalmazás <b>kényszerített leállítása</b>."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "Biztonsági mentés <b>importálása</b> külső tárhelyről."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Válaszd ki, melyik <b>biztonsági mentést</b> használd."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "A visszaállítási napló <b>bezárása</b>."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Válts kézzel világos és sötét között, vagy hagyd, hogy az alkalmazás az eszközöd rendszertémáját kövesse."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Kapcsolj be egy <b>csak helyi hotspotot</b>, amely SIM nélkül is működik."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Wi-Fi hotspotot hoz létre a szolgáltatói megosztási útvonal használata nélkül, így SIM vagy mobilcsomag nélkül is működik — hasznos, amikor a normál hotspot le van tiltva. A helymeghatározásnak bekapcsolva kell lennie."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Jeleníts meg egy <b>Wi-Fi QR-t</b> a csak helyi hotspothoz való csatlakozáshoz."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "A csak helyi hotspot automatikusan generált nevet és jelszót használ; a QR beolvasása csatlakoztat hozzá anélkül, hogy be kellene gépelni őket."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Nem egyszerű be/ki — megemeli az Android fantomfolyamat-korlátját (256-ra), hogy a kiszolgáló gyermekfolyamatai ne legyenek leállítva."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "A telefon <b>internet-hozzáférésének</b> jelzője."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Szürke = még nincs ellenőrizve, piros = nincs internet, zöld = online."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Jelzi, hogy a <b>Fejlesztői mód</b> engedélyezve van-e."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "A fejlesztői beállítások gyakorlatilag szükségesek a speciális funkciókhoz, mint egy telepítés megosztása vagy átvitele és a vezeték nélküli hibakeresés."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "Biztonsági mentés <b>exportálása</b> külső tárhelyre."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "Mentett biztonsági mentés <b>törlése</b>."
+

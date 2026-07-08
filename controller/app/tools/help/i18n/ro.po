@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ro\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Deschide <b>Setări</b> pentru a configura aplicația, permisiunile și limba."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Setările grupează opțiunile la nivelul întregii aplicații: permisiunile necesare, limba interfeței și consimțământul pentru analiză. Nimic de aici nu pornește sau oprește serverul."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Afișează un <b>cod QR</b> pentru ca un dispozitiv din apropiere să se poată conecta și deschide biblioteca ta."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "Codul QR conține rețeaua Wi-Fi (sau hotspotul) plus adresa bibliotecii tale. Invitații îl scanează pentru a se conecta și a naviga de pe dispozitivul lor — fără a tasta nimic."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Comută între tema <b>luminoasă și întunecată</b>."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "<b>Versiunea</b> instalată a aplicației."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Indicator al stării curente și scurtătură către setarea <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Arată dacă interfața Wi-Fi este pornită și este totodată o scurtătură către ea. Când este pornită, alte dispozitive din aceeași rețea pot deschide biblioteca ta la adresa telefonului tău."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Indicator al stării curente și scurtătură către <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Arată dacă hotspotul telefonului este pornit și este totodată o scurtătură către el. Când este pornit, dispozitivele conectate se pot alătura și deschide biblioteca ta."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Deschide <b>biblioteca</b> în browserul integrat."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Pornește sau oprește</b> serverul de conținut."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Alte dispozitive conectate pot ajunge la biblioteca ta doar cât timp serverul rulează. Prima pornire poate dura câteva secunde."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "Setări <b>avansate</b> ale serverului."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Activează setările <b>DNS personalizate</b> pentru server."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Necesare doar în configurații speciale de rețea; lasă-le dezactivate dacă nu ai nevoie cu adevărat."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Aplică setările DNS introduse."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Afișează <b>jurnalul de conexiune</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Golește</b> jurnalul de conexiune."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Copiază</b> tot jurnalul în clipboard."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Alege <b>Partajează</b> pentru a trimite biblioteca sau aplicațiile pe alt dispozitiv."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Alege <b>Primește</b> pentru a obține conținut de pe alt dispozitiv."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Transfer prin <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Transfer prin <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Pornește serverul</b> pentru ca alt dispozitiv să poată prelua biblioteca ta."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Partajează însăși <b>aplicația K2Go</b> cu un dispozitiv din apropiere."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Permite cuiva să instaleze K2Go de la tine fără internet: se conectează și descarcă aplicația direct."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Scanează un QR</b> pentru a te conecta la celălalt dispozitiv."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Anulează</b> transferul curent."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Treci la următorul set de <b>indicatoare</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Afișează sau ascunde lista <b>modulelor instalate</b> (afișate ca indicatoare LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Activează sau dezactivează <b>analiza de utilizare</b> anonimă."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Când este activată, aplicația partajează date de utilizare anonime pentru a ajuta la îmbunătățirea ei. Nu se colectează niciun conținut personal."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Alege <b>tipul</b> de feedback pe care îl trimiți."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Trimite</b> feedbackul tău echipei."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Declanșează o <b>blocare</b> de test — doar pentru diagnosticare."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Continuă la următorul pas de configurare."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Permite <b>notificările</b> ca aplicația să te poată anunța despre server și transferuri."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Permite accesul la <b>stocare</b> ca aplicația să poată citi și servi fișierele bibliotecii tale."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Permite aplicației să <b>se afișeze peste alte aplicații</b> (necesar pentru unele ajutoare pe ecran)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Lasă aplicația să <b>continue să ruleze</b> în fundal ca serverul să rămână activ."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Deschide ecranul de sistem pentru a gestiona <b>toate permisiunile</b> deodată."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Alege <b>limba</b> aplicației și a conținutului."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Limba <b>interfeței aplicației</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Limba preferată pentru <b>conținutul descărcat</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Termină și închide <b>setările</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Mergi la pașii de <b>configurare</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Mergi la <b>feedback</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Mergi la ecranul <b>Despre</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Afișează bara de <b>navigare</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Ascunde</b> bara de navigare."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Mergi <b>înapoi</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Mergi la pagina <b>principală</b> a bibliotecii."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Reîncarcă</b> pagina."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Închide</b> browserul și revino la aplicație."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Mergi <b>înainte</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Comută QR între <b>rețeaua Wi-Fi</b> și <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Închide</b> codul QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Respinge</b> acest raport de blocare fără a-l trimite."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Trimite</b> raportul de blocare pentru a ne ajuta să rezolvăm problema."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Stare și control pentru dezactivarea <b>restricției proceselor copil</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Stare și control pentru dezactivarea <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Afișează <b>monitorizarea avansată</b> pentru instalare."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Conectează-te prin <b>ADB</b> pentru monitorizare avansată."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Instalează ediția <b>De bază</b> (cel mai mic set de aplicații)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Instalează ediția <b>Standard</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Instalează ediția <b>Completă</b> (cel mai mare set de aplicații)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Instalează și <b>conținutul însoțitor</b> împreună cu modulele."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Deschide setările de descărcare <b>Kiwix</b> (limbă și variantă)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Pregătește</b> acum ediția selectată."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Șterge</b> conținutul instalat."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Afișează sau ascunde <b>gestionarea modulelor</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Reîmprospătează</b> lista modulelor instalate pe sistem."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Lansează</b> instalarea modulelor selectate."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Afișează sau ascunde instrumentele de <b>întreținere</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Creează o copie de rezervă</b> a conținutului instalat și a setărilor."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Resetează</b> la o instalare minimală a sistemului (fără servicii)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Restaurează</b> dintr-o copie de rezervă."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Oprește forțat</b> aplicația."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Importă</b> o copie de rezervă din stocarea externă."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Alege ce <b>copie de rezervă</b> să folosești."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Închide</b> jurnalul de restaurare."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Comută manual între luminos și întunecat, sau lasă aplicația să urmeze tema de sistem a dispozitivului."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Pornește un <b>hotspot doar local</b> care funcționează chiar și fără SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Creează un hotspot Wi-Fi fără a folosi calea de tethering a operatorului, deci funcționează fără SIM sau abonament mobil — util când hotspotul normal este blocat. Locația trebuie să fie pornită."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Afișează un <b>QR Wi-Fi</b> pentru a te alătura hotspotului doar local."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Hotspotul doar local folosește un nume și o parolă generate automat; scanarea QR îl alătură fără a le tasta."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Nu e o simplă pornire/oprire — ridică limita de procese fantomă a Android (la 256) pentru ca procesele copil ale serverului să nu fie oprite."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Indicator al <b>accesului la internet</b> al telefonului."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Gri = neverificat încă, roșu = fără internet, verde = online."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indicator dacă <b>modul Dezvoltator</b> este activat."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Opțiunile pentru dezvoltatori sunt practic necesare pentru funcții avansate precum partajarea sau transferul unei instalări și depanarea wireless."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Exportă</b> o copie de rezervă în stocarea externă."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Șterge</b> o copie de rezervă salvată."
+

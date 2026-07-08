@@ -13,7 +13,7 @@ import csv, os, sqlite3, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pohelper
 
-DEFAULT_LANGS = ["en", "es", "fr", "hi", "pt", "ru", "de", "ja", "ar", "it", "zh", "ko", "nl", "tr", "vi", "pl", "cs", "in", "fa", "uk"]
+DEFAULT_LANGS = ["en", "es", "fr", "hi", "pt", "ru", "de", "ja", "ar", "it", "zh", "ko", "nl", "tr", "vi", "pl", "cs", "in", "fa", "uk", "ro", "el", "hu"]
 
 def load_structure(d):
     s = {}

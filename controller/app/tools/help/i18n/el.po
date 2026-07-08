@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: el\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Ανοίξτε τις <b>Ρυθμίσεις</b> για να διαμορφώσετε την εφαρμογή, τα δικαιώματα και τη γλώσσα."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Οι ρυθμίσεις ομαδοποιούν τις επιλογές όλης της εφαρμογής: τα δικαιώματα που χρειάζεται, τη γλώσσα διεπαφής και τη συγκατάθεση για αναλυτικά. Τίποτα εδώ δεν ξεκινά ή σταματά τον διακομιστή."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Εμφανίζει έναν <b>κωδικό QR</b> ώστε μια κοντινή συσκευή να συνδεθεί και να ανοίξει τη βιβλιοθήκη σας."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "Ο κωδικός QR περιέχει το δίκτυο Wi-Fi (ή το hotspot) και τη διεύθυνση της βιβλιοθήκης σας. Οι επισκέπτες τον σαρώνουν για να συνδεθούν και να περιηγηθούν από τη συσκευή τους — χωρίς πληκτρολόγηση."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Εναλλαγή μεταξύ <b>φωτεινού και σκοτεινού</b> θέματος."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Η εγκατεστημένη <b>έκδοση</b> της εφαρμογής."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Ένδειξη της τρέχουσας κατάστασης και συντόμευση προς τη ρύθμιση <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Δείχνει αν η διεπαφή Wi-Fi είναι ενεργή και αποτελεί επίσης συντόμευση προς αυτήν. Όταν είναι ενεργή, άλλες συσκευές στο ίδιο δίκτυο μπορούν να ανοίξουν τη βιβλιοθήκη σας στη διεύθυνση του τηλεφώνου σας."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Ένδειξη της τρέχουσας κατάστασης και συντόμευση προς το <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Δείχνει αν το hotspot του τηλεφώνου είναι ενεργό και αποτελεί επίσης συντόμευση προς αυτό. Όταν είναι ενεργό, οι συνδεδεμένες συσκευές μπορούν να συνδεθούν και να ανοίξουν τη βιβλιοθήκη σας."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Ανοίξτε τη <b>βιβλιοθήκη</b> σας στο ενσωματωμένο πρόγραμμα περιήγησης."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Εκκίνηση ή διακοπή</b> του διακομιστή περιεχομένου."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Άλλες συνδεδεμένες συσκευές μπορούν να φτάσουν τη βιβλιοθήκη σας μόνο όσο ο διακομιστής εκτελείται. Η πρώτη εκκίνηση μπορεί να διαρκέσει λίγα δευτερόλεπτα."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Προηγμένες</b> ρυθμίσεις διακομιστή."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Ενεργοποιήστε <b>προσαρμοσμένες ρυθμίσεις DNS</b> για τον διακομιστή."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Χρειάζεται μόνο σε ειδικές διαμορφώσεις δικτύου· αφήστε το ανενεργό εκτός αν ξέρετε ότι το χρειάζεστε."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Εφαρμόστε τις ρυθμίσεις DNS που εισαγάγατε."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Εμφάνιση του <b>αρχείου καταγραφής σύνδεσης</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Εκκαθάριση</b> του αρχείου καταγραφής σύνδεσης."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Αντιγραφή</b> όλου του αρχείου καταγραφής στο πρόχειρο."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Επιλέξτε <b>Κοινή χρήση</b> για να στείλετε τη βιβλιοθήκη ή τις εφαρμογές σας σε άλλη συσκευή."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Επιλέξτε <b>Λήψη</b> για να λάβετε περιεχόμενο από άλλη συσκευή."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Μεταφορά μέσω <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Μεταφορά μέσω <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Ξεκινήστε τον διακομιστή</b> ώστε μια άλλη συσκευή να μπορεί να λάβει τη βιβλιοθήκη σας."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Μοιραστείτε την ίδια την <b>εφαρμογή K2Go</b> με μια κοντινή συσκευή."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Επιτρέπει σε κάποιον να εγκαταστήσει το K2Go από εσάς χωρίς διαδίκτυο: συνδέεται και κατεβάζει την εφαρμογή απευθείας."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Σαρώστε έναν κωδικό QR</b> για να συνδεθείτε με την άλλη συσκευή."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Ακύρωση</b> της τρέχουσας μεταφοράς."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Μετάβαση στο επόμενο σύνολο <b>μετρητών</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Εμφάνιση ή απόκρυψη της λίστας των <b>εγκατεστημένων μονάδων</b> (εμφανίζονται ως ενδείξεις LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Ενεργοποίηση ή απενεργοποίηση των ανώνυμων <b>αναλυτικών χρήσης</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Όταν είναι ενεργό, η εφαρμογή μοιράζεται ανώνυμα δεδομένα χρήσης για να βοηθήσει στη βελτίωσή της. Δεν συλλέγεται κανένα προσωπικό περιεχόμενο."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Επιλέξτε τον <b>τύπο</b> σχολίων που στέλνετε."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Στείλτε</b> τα σχόλιά σας στην ομάδα."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Ενεργοποιήστε μια δοκιμαστική <b>κατάρρευση</b> — μόνο για διαγνωστικά."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Συνεχίστε στο επόμενο βήμα ρύθμισης."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Επιτρέψτε τις <b>ειδοποιήσεις</b> ώστε η εφαρμογή να σας ειδοποιεί για τον διακομιστή και τις μεταφορές."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Επιτρέψτε την πρόσβαση στον <b>αποθηκευτικό χώρο</b> ώστε η εφαρμογή να διαβάζει και να προσφέρει τα αρχεία της βιβλιοθήκης σας."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Επιτρέψτε στην εφαρμογή να <b>εμφανίζεται πάνω από άλλες εφαρμογές</b> (χρειάζεται για κάποια βοήθεια στην οθόνη)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Αφήστε την εφαρμογή να <b>συνεχίσει να εκτελείται</b> στο παρασκήνιο ώστε ο διακομιστής να παραμένει ενεργός."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Ανοίξτε την οθόνη συστήματος για να διαχειριστείτε <b>όλα τα δικαιώματα</b> μαζί."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Επιλέξτε τη <b>γλώσσα</b> της εφαρμογής και του περιεχομένου."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Γλώσσα της <b>διεπαφής της εφαρμογής</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Προτιμώμενη γλώσσα για το <b>ληφθέν περιεχόμενο</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Ολοκλήρωση και κλείσιμο των <b>ρυθμίσεων</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Μετάβαση στα βήματα <b>ρύθμισης</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Μετάβαση στα <b>σχόλια</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Μετάβαση στην οθόνη <b>Σχετικά</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Εμφάνιση της γραμμής <b>πλοήγησης</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Απόκρυψη</b> της γραμμής πλοήγησης."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Μετάβαση <b>πίσω</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Μετάβαση στην <b>αρχική</b> σελίδα της βιβλιοθήκης."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Επαναφόρτωση</b> της σελίδας."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Κλείσιμο</b> του προγράμματος περιήγησης και επιστροφή στην εφαρμογή."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Μετάβαση <b>μπροστά</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Εναλλαγή του QR μεταξύ <b>δικτύου Wi-Fi</b> και <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Κλείσιμο</b> του κωδικού QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Απόρριψη</b> αυτής της αναφοράς κατάρρευσης χωρίς αποστολή."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Αποστολή</b> της αναφοράς κατάρρευσης για να μας βοηθήσετε να διορθώσουμε το πρόβλημα."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Κατάσταση και έλεγχος για απενεργοποίηση του <b>περιορισμού θυγατρικών διεργασιών</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Κατάσταση και έλεγχος για απενεργοποίηση του <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Εμφάνιση <b>προηγμένης παρακολούθησης</b> για την εγκατάσταση."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Σύνδεση μέσω <b>ADB</b> για προηγμένη παρακολούθηση."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Εγκατάσταση της έκδοσης <b>Βασική</b> (το μικρότερο σύνολο εφαρμογών)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Εγκατάσταση της έκδοσης <b>Τυπική</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Εγκατάσταση της έκδοσης <b>Πλήρης</b> (το μεγαλύτερο σύνολο εφαρμογών)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Εγκαταστήστε επίσης <b>συνοδευτικό περιεχόμενο</b> μαζί με τις μονάδες."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Ανοίξτε τις ρυθμίσεις λήψης <b>Kiwix</b> (γλώσσα και παραλλαγή)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Προετοιμάστε</b> τώρα την επιλεγμένη έκδοση."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Διαγράψτε</b> το εγκατεστημένο περιεχόμενο."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Εμφάνιση ή απόκρυψη της <b>διαχείρισης μονάδων</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Ανανέωση</b> της λίστας των μονάδων που είναι εγκατεστημένες στο σύστημα."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Έναρξη</b> της εγκατάστασης των επιλεγμένων μονάδων."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Εμφάνιση ή απόκρυψη των εργαλείων <b>συντήρησης</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Δημιουργήστε αντίγραφο ασφαλείας</b> του εγκατεστημένου περιεχομένου και των ρυθμίσεων."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Επαναφορά</b> σε μια βασική εγκατάσταση συστήματος (χωρίς υπηρεσίες)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Επαναφορά</b> από αντίγραφο ασφαλείας."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Εξαναγκασμένη διακοπή</b> της εφαρμογής."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Εισαγωγή</b> αντιγράφου ασφαλείας από εξωτερικό αποθηκευτικό χώρο."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Επιλέξτε ποιο <b>αντίγραφο ασφαλείας</b> θα χρησιμοποιήσετε."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Κλείσιμο</b> του αρχείου καταγραφής επαναφοράς."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Εναλλάξτε χειροκίνητα μεταξύ φωτεινού και σκοτεινού, ή αφήστε την εφαρμογή να ακολουθεί το θέμα συστήματος της συσκευής σας."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Ενεργοποιήστε ένα <b>τοπικό μόνο hotspot</b> που λειτουργεί ακόμη και χωρίς SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Δημιουργεί ένα hotspot Wi-Fi χωρίς τη διαδρομή tethering του παρόχου, οπότε λειτουργεί χωρίς SIM ή πρόγραμμα κινητής — χρήσιμο όταν το κανονικό hotspot είναι αποκλεισμένο. Η τοποθεσία πρέπει να είναι ενεργή."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Εμφανίστε ένα <b>QR Wi-Fi</b> για να συνδεθείτε στο τοπικό μόνο hotspot."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Το τοπικό μόνο hotspot χρησιμοποιεί αυτόματα παραγόμενο όνομα και κωδικό· η σάρωση του QR συνδέεται χωρίς να τα πληκτρολογήσετε."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Δεν είναι ένα απλό ενεργό/ανενεργό — αυξάνει το όριο διεργασιών-φαντασμάτων του Android (στις 256) ώστε οι θυγατρικές διεργασίες του διακομιστή να μην τερματίζονται."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Ένδειξη της <b>πρόσβασης του τηλεφώνου στο διαδίκτυο</b>."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Γκρι = δεν ελέγχθηκε ακόμη, κόκκινο = χωρίς διαδίκτυο, πράσινο = συνδεδεμένο."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Ένδειξη του αν η <b>λειτουργία προγραμματιστή</b> είναι ενεργοποιημένη."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Οι επιλογές προγραμματιστή είναι ουσιαστικά απαραίτητες για προηγμένες λειτουργίες όπως η κοινή χρήση ή η μεταφορά μιας εγκατάστασης και ο ασύρματος εντοπισμός σφαλμάτων."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Εξαγωγή</b> αντιγράφου ασφαλείας σε εξωτερικό αποθηκευτικό χώρο."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Διαγραφή</b> αποθηκευμένου αντιγράφου ασφαλείας."
+
