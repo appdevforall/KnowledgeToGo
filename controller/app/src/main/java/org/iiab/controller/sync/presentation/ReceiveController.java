@@ -243,7 +243,7 @@ public final class ReceiveController {
                 progressBarTransfer.setIndeterminate(false);
                 progressBarTransfer.setProgress(st.percent);
                 txtTransferSpeed.setText(st.speed);
-                txtTransferEta.setText("ETA: " + st.eta);
+                txtTransferEta.setText(fragment.getString(R.string.sync_transfer_eta, st.eta));
                 if (!st.file.isEmpty()) {
                     String displayFile = st.file.length() > 40 ? "..." + st.file.substring(st.file.length() - 40) : st.file;
                     txtTransferFilename.setText(fragment.getString(R.string.sync_transfer_filename, displayFile));

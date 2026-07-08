@@ -114,7 +114,7 @@
                 android:id="@+id/btn_server_control"
                 android:layout_width="match_parent"
                 android:layout_height="90dp"
-                android:text="Launch Server"
+                android:text="@string/launch_server"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_on_accent"

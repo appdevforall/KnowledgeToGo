@@ -546,7 +546,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         android.content.SharedPreferences adbPrefs = requireContext().getSharedPreferences("iiab_adb_prefs", Context.MODE_PRIVATE);
         if (adbPrefs.getBoolean("pairing_just_succeeded", false)) {
             adbPrefs.edit().putBoolean("pairing_just_succeeded", false).apply();
-            btnAdbAction.setText("Securing connection...");
+            btnAdbAction.setText(R.string.securing_connection);
             new Handler(Looper.getMainLooper()).postDelayed(() -> adbShareController.startAdbPairingFlow(true), 2500);
         }
         if (adbPrefs.getBoolean("focus_adb", false)) {

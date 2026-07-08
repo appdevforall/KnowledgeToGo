@@ -587,4 +587,17 @@
     <string name="setup_dns_hint">Custom DNS for the server.</string>
     <string name="tooltip_see_more">See more</string>
     <string name="tooltip_help_unavailable">Help content is not installed yet.</string>
+
+    <!-- ADFA-4537: externalized strings -->
+    <string name="adb_invalid_pin_length">Invalid PIN length. Must be 6 digits.</string>
+    <string name="securing_connection">Securing connection…</string>
+    <string name="storage_overload">OVERLOAD</string>
+    <string name="gauge_projected">Projected</string>
+    <string name="gauge_storage">Storage</string>
+    <string name="gauge_error">Error</string>
+    <string name="sync_transfer_eta">ETA: %1$s</string>
+    <string name="cd_share_via_qr">Share via QR</string>
+    <string name="cd_settings">Settings</string>
+    <string name="cd_toggle_theme">Toggle Theme</string>
+    <string name="uptime_label">Uptime:</string>
 </resources>

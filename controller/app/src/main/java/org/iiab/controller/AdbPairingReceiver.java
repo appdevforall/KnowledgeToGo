@@ -51,7 +51,7 @@ public class AdbPairingReceiver extends BroadcastReceiver {
                     performNativePairing(context.getApplicationContext(), hostIp, pairingPort, pin);
 
                 } else {
-                    Toast.makeText(context, "Invalid PIN length. Must be 6 digits.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getString(R.string.adb_invalid_pin_length), Toast.LENGTH_LONG).show();
                 }
             }
         }

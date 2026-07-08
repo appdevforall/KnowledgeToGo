@@ -570,4 +570,17 @@
     <string name="setup_dns_hint">Пользовательский DNS для сервера.</string>
     <string name="tooltip_see_more">Подробнее</string>
     <string name="tooltip_help_unavailable">Справочные материалы ещё не установлены.</string>
+
+    <!-- ADFA-4537: externalized strings -->
+    <string name="adb_invalid_pin_length">Неверная длина PIN-кода. Должно быть 6 цифр.</string>
+    <string name="securing_connection">Установка защищённого соединения…</string>
+    <string name="storage_overload">ПЕРЕГРУЗКА</string>
+    <string name="gauge_projected">Прогноз</string>
+    <string name="gauge_storage">Хранилище</string>
+    <string name="gauge_error">Ошибка</string>
+    <string name="sync_transfer_eta">ETA: %1$s</string>
+    <string name="cd_share_via_qr">Поделиться через QR</string>
+    <string name="cd_settings">Настройки</string>
+    <string name="cd_toggle_theme">Сменить тему</string>
+    <string name="uptime_label">Время работы:</string>
 </resources>
