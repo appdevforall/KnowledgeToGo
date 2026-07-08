@@ -243,3 +243,91 @@ msgctxt "crash.send.summary"
 msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr "<b>Enviar</b> o relatório de falha para nos ajudar a corrigir o problema."
 
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status of the install <b>child process</b>."
+msgstr "Estado do <b>processo filho</b> da instalação."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status of the <b>PPK</b> step in the install."
+msgstr "Estado da etapa <b>PPK</b> da instalação."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Mostrar o <b>monitoramento avançado</b> da instalação."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Conecte-se por <b>ADB</b> para monitoramento avançado."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgstr "Instale a edição <b>Basic</b> (o menor conjunto de conteúdo)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Instale a edição <b>Standard</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of content)."
+msgstr "Instale a edição <b>Full</b> (o maior conjunto de conteúdo)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion data</b> with the modules."
+msgstr "Instale também os <b>dados complementares</b> com os módulos."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Abra as configurações de download do <b>Kiwix</b> (idioma e variante)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Provisione</b> agora a edição selecionada."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Exclua</b> o conteúdo instalado."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Mostrar ou ocultar o <b>gerenciamento de módulos</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules."
+msgstr "<b>Atualize</b> a lista de módulos."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Inicie</b> a instalação dos módulos selecionados."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Mostrar ou ocultar as ferramentas de <b>manutenção</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "Faça um <b>backup</b> do seu conteúdo e configurações."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> the installation."
+msgstr "<b>Redefina</b> a instalação."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Restaure</b> a partir de um backup."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the server."
+msgstr "<b>Forçar a parada</b> do servidor."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup file."
+msgstr "<b>Importe</b> um arquivo de backup."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Escolha qual <b>backup</b> usar."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Fechar</b> o registro de restauração."
+

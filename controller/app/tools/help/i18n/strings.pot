@@ -242,3 +242,91 @@ msgctxt "crash.send.summary"
 msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr ""
 
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status of the install <b>child process</b>."
+msgstr ""
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status of the <b>PPK</b> step in the install."
+msgstr ""
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr ""
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr ""
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgstr ""
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr ""
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of content)."
+msgstr ""
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion data</b> with the modules."
+msgstr ""
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr ""
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr ""
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr ""
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr ""
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules."
+msgstr ""
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr ""
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr ""
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr ""
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> the installation."
+msgstr ""
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr ""
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the server."
+msgstr ""
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup file."
+msgstr ""
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr ""
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr ""
+

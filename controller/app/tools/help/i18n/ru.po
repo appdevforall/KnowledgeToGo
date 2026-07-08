@@ -243,3 +243,91 @@ msgctxt "crash.send.summary"
 msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr "<b>Отправить</b> отчёт о сбое, чтобы помочь нам исправить проблему."
 
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status of the install <b>child process</b>."
+msgstr "Состояние <b>дочернего процесса</b> установки."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status of the <b>PPK</b> step in the install."
+msgstr "Состояние шага <b>PPK</b> установки."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Показать <b>расширенный мониторинг</b> установки."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Подключитесь по <b>ADB</b> для расширенного мониторинга."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgstr "Установите издание <b>Basic</b> (наименьший набор контента)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Установите издание <b>Standard</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of content)."
+msgstr "Установите издание <b>Full</b> (наибольший набор контента)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion data</b> with the modules."
+msgstr "Также установить <b>сопутствующие данные</b> с модулями."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Открыть настройки загрузки <b>Kiwix</b> (язык и вариант)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Развернуть</b> выбранное издание сейчас."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Удалить</b> установленный контент."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Показать или скрыть <b>управление модулями</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules."
+msgstr "<b>Обновить</b> список модулей."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Запустить</b> установку выбранных модулей."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Показать или скрыть инструменты <b>обслуживания</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "Создайте <b>резервную копию</b> контента и настроек."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> the installation."
+msgstr "<b>Сбросить</b> установку."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Восстановить</b> из резервной копии."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the server."
+msgstr "<b>Принудительно остановить</b> сервер."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup file."
+msgstr "<b>Импортировать</b> файл резервной копии."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Выберите, какую <b>резервную копию</b> использовать."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Закрыть</b> журнал восстановления."
+

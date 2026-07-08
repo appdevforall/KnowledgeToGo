@@ -243,3 +243,91 @@ msgctxt "crash.send.summary"
 msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr "समस्या ठीक करने में मदद के लिए क्रैश रिपोर्ट <b>भेजें</b>।"
 
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status of the install <b>child process</b>."
+msgstr "इंस्टॉल के <b>चाइल्ड प्रोसेस</b> की स्थिति।"
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status of the <b>PPK</b> step in the install."
+msgstr "इंस्टॉल के <b>PPK</b> चरण की स्थिति।"
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "इंस्टॉल की <b>उन्नत निगरानी</b> दिखाएँ।"
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "उन्नत निगरानी के लिए <b>ADB</b> से कनेक्ट करें।"
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgstr "<b>Basic</b> संस्करण इंस्टॉल करें (सबसे छोटा सामग्री सेट)।"
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "<b>Standard</b> संस्करण इंस्टॉल करें।"
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of content)."
+msgstr "<b>Full</b> संस्करण इंस्टॉल करें (सबसे बड़ा सामग्री सेट)।"
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion data</b> with the modules."
+msgstr "मॉड्यूल के साथ <b>सहयोगी डेटा</b> भी इंस्टॉल करें।"
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "<b>Kiwix</b> डाउनलोड सेटिंग्स खोलें (भाषा और वेरिएंट)।"
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "चयनित संस्करण अभी <b>प्रोविज़न</b> करें।"
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "इंस्टॉल की गई सामग्री <b>हटाएँ</b>।"
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "<b>मॉड्यूल प्रबंधन</b> दिखाएँ या छिपाएँ।"
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules."
+msgstr "मॉड्यूल की सूची <b>रीफ़्रेश करें</b>।"
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "चयनित मॉड्यूल की स्थापना <b>शुरू करें</b>।"
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "<b>रखरखाव</b> उपकरण दिखाएँ या छिपाएँ।"
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "अपनी सामग्री और सेटिंग्स का <b>बैकअप</b> लें।"
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> the installation."
+msgstr "स्थापना <b>रीसेट करें</b>।"
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "बैकअप से <b>पुनर्स्थापित करें</b>।"
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the server."
+msgstr "सर्वर को <b>ज़बरदस्ती रोकें</b>।"
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup file."
+msgstr "बैकअप फ़ाइल <b>आयात करें</b>।"
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "उपयोग के लिए कौन-सा <b>बैकअप</b> चुनें।"
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "पुनर्स्थापना लॉग <b>बंद करें</b>।"
+

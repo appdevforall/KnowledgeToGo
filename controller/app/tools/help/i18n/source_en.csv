@@ -59,3 +59,25 @@ qr.flip,summary,Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspo
 qr.close,summary,<b>Close</b> the QR code.
 crash.dismiss,summary,<b>Dismiss</b> this crash report without sending.
 crash.send,summary,<b>Send</b> the crash report to help us fix the problem.
+deploy.led_dcpr,summary,Status of the install <b>child process</b>.
+deploy.led_ppk,summary,Status of the <b>PPK</b> step in the install.
+deploy.adv_monitoring,summary,Show <b>advanced monitoring</b> for the install.
+deploy.adb_action,summary,Connect over <b>ADB</b> for advanced monitoring.
+deploy.tier_basic,summary,Install the <b>Basic</b> edition (smallest set of content).
+deploy.tier_standard,summary,Install the <b>Standard</b> edition.
+deploy.tier_full,summary,Install the <b>Full</b> edition (largest set of content).
+deploy.companion_data,summary,Also install <b>companion data</b> with the modules.
+deploy.kiwix_settings,summary,Open <b>Kiwix</b> download settings (language and variant).
+deploy.fast_install,summary,<b>Provision</b> the selected edition now.
+deploy.fast_delete,summary,<b>Delete</b> the installed content.
+deploy.module_mgmt,summary,Show or hide <b>module management</b>.
+deploy.refresh_modules,summary,<b>Refresh</b> the list of modules.
+deploy.launch_install,summary,<b>Launch</b> the installation of the selected modules.
+deploy.maintenance,summary,Show or hide <b>maintenance</b> tools.
+deploy.backup,summary,<b>Back up</b> your installed content and settings.
+deploy.reset,summary,<b>Reset</b> the installation.
+deploy.restore,summary,<b>Restore</b> from a backup.
+deploy.force_stop,summary,<b>Force-stop</b> the server.
+deploy.import_backup,summary,<b>Import</b> a backup file.
+deploy.select_backup,summary,Choose which <b>backup</b> to use.
+deploy.restore_log_close,summary,<b>Close</b> the restore log.
