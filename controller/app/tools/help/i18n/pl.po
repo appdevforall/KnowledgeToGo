@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: pl\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Otwórz <b>Ustawienia</b>, aby skonfigurować aplikację, uprawnienia i język."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Ustawienia grupują opcje całej aplikacji: potrzebne uprawnienia, język interfejsu i zgodę na analitykę. Nic tutaj nie uruchamia ani nie zatrzymuje serwera."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Pokazuje <b>kod QR</b>, aby pobliskie urządzenie mogło dołączyć i otworzyć Twoją bibliotekę."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "Kod QR zawiera sieć Wi-Fi (lub hotspot) oraz adres Twojej biblioteki. Goście skanują go, aby połączyć się i przeglądać ze swojego urządzenia — bez pisania."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Przełącz między motywem <b>jasnym a ciemnym</b>."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Zainstalowana <b>wersja</b> aplikacji."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Wskaźnik bieżącego stanu i skrót do ustawień <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Pokazuje, czy interfejs Wi-Fi jest włączony, i jest zarazem skrótem do niego. Gdy jest włączony, inne urządzenia w tej samej sieci mogą otworzyć Twoją bibliotekę pod adresem Twojego telefonu."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Wskaźnik bieżącego stanu i skrót do <b>hotspotu</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Pokazuje, czy hotspot telefonu jest włączony, i jest zarazem skrótem do niego. Gdy jest włączony, podłączone urządzenia mogą dołączyć i otworzyć Twoją bibliotekę."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Otwórz swoją <b>bibliotekę</b> we wbudowanej przeglądarce."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Uruchom lub zatrzymaj</b> serwer treści."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Inne podłączone urządzenia mają dostęp do Twojej biblioteki tylko wtedy, gdy serwer działa. Pierwsze uruchomienie może potrwać kilka sekund."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Zaawansowane</b> ustawienia serwera."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Włącz <b>niestandardowe ustawienia DNS</b> dla serwera."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Potrzebne tylko w szczególnych konfiguracjach sieci; zostaw wyłączone, chyba że naprawdę tego potrzebujesz."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Zastosuj wprowadzone ustawienia DNS."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Pokaż <b>dziennik połączeń</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Wyczyść</b> dziennik połączeń."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Skopiuj</b> cały dziennik do schowka."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Wybierz <b>Udostępnij</b>, aby wysłać swoją bibliotekę lub aplikacje na inne urządzenie."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Wybierz <b>Odbierz</b>, aby pobrać treści z innego urządzenia."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Transfer przez <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Transfer przez <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Uruchom serwer</b>, aby inne urządzenie mogło pobrać Twoją bibliotekę."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Udostępnij samą <b>aplikację K2Go</b> pobliskiemu urządzeniu."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Pozwala komuś zainstalować K2Go od Ciebie bez internetu: łączy się i pobiera aplikację bezpośrednio."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Zeskanuj kod QR</b>, aby połączyć się z drugim urządzeniem."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Anuluj</b> bieżący transfer."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Przejdź do następnego zestawu <b>wskaźników</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Pokaż lub ukryj listę <b>zainstalowanych modułów</b> (pokazywanych jako wskaźniki LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Włącz lub wyłącz anonimową <b>analitykę użycia</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Po włączeniu aplikacja udostępnia anonimowe dane o użyciu, aby pomóc w ulepszaniu. Nie są zbierane żadne treści osobiste."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Wybierz <b>rodzaj</b> wysyłanej opinii."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Wyślij</b> swoją opinię do zespołu."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Wywołaj testową <b>awarię</b> — tylko do diagnostyki."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Przejdź do następnego kroku konfiguracji."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Zezwól na <b>powiadomienia</b>, aby aplikacja mogła informować Cię o serwerze i transferach."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Zezwól na dostęp do <b>pamięci</b>, aby aplikacja mogła odczytywać i udostępniać pliki Twojej biblioteki."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Zezwól aplikacji na <b>wyświetlanie nad innymi aplikacjami</b> (potrzebne do niektórych pomocy ekranowych)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Pozwól aplikacji <b>działać dalej</b> w tle, aby serwer pozostał aktywny."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Otwórz ekran systemowy, aby zarządzać <b>wszystkimi uprawnieniami</b> naraz."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Wybierz <b>język</b> aplikacji i treści."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Język <b>interfejsu aplikacji</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Preferowany język <b>pobranych treści</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Zakończ i zamknij <b>ustawienia</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Przejdź do kroków <b>konfiguracji</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Przejdź do <b>opinii</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Przejdź do ekranu <b>O aplikacji</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Pokaż pasek <b>nawigacji</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Ukryj</b> pasek nawigacji."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Przejdź <b>wstecz</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Przejdź do strony <b>głównej</b> biblioteki."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Odśwież</b> stronę."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Zamknij</b> przeglądarkę i wróć do aplikacji."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Przejdź <b>dalej</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Przełącz kod QR między <b>siecią Wi-Fi</b> a <b>hotspotem</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Zamknij</b> kod QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Odrzuć</b> ten raport o awarii bez wysyłania."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Wyślij</b> raport o awarii, aby pomóc nam rozwiązać problem."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Stan i sterowanie wyłączaniem <b>ograniczenia procesów potomnych</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Stan i sterowanie wyłączaniem <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Pokaż <b>zaawansowane monitorowanie</b> instalacji."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Połącz przez <b>ADB</b> w celu zaawansowanego monitorowania."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Zainstaluj edycję <b>Podstawową</b> (najmniejszy zestaw aplikacji)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Zainstaluj edycję <b>Standardową</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Zainstaluj edycję <b>Pełną</b> (największy zestaw aplikacji)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Zainstaluj także <b>treści towarzyszące</b> wraz z modułami."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Otwórz ustawienia pobierania <b>Kiwix</b> (język i wariant)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Zainicjuj</b> teraz wybraną edycję."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Usuń</b> zainstalowane treści."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Pokaż lub ukryj <b>zarządzanie modułami</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Odśwież</b> listę modułów zainstalowanych w systemie."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Uruchom</b> instalację wybranych modułów."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Pokaż lub ukryj narzędzia <b>konserwacji</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "Wykonaj <b>kopię zapasową</b> zainstalowanych treści i ustawień."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Zresetuj</b> do podstawowej instalacji systemu (bez usług)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Przywróć</b> z kopii zapasowej."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Wymuś zatrzymanie</b> aplikacji."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Zaimportuj</b> kopię zapasową z pamięci zewnętrznej."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Wybierz, której <b>kopii zapasowej</b> użyć."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Zamknij</b> dziennik przywracania."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Przełączaj ręcznie między jasnym a ciemnym lub pozwól aplikacji podążać za motywem systemowym urządzenia."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Włącz <b>hotspot tylko lokalny</b>, który działa nawet bez karty SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Tworzy hotspot Wi-Fi bez używania ścieżki tetheringu operatora, więc działa bez karty SIM lub planu komórkowego — przydatne, gdy zwykły hotspot jest zablokowany. Lokalizacja musi być włączona."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Pokaż <b>kod QR Wi-Fi</b>, aby dołączyć do hotspotu tylko lokalnego."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Hotspot tylko lokalny używa automatycznie wygenerowanej nazwy i hasła; zeskanowanie kodu QR łączy z nim bez ich wpisywania."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "To nie zwykłe włącz/wyłącz — podnosi limit procesów fantomowych Androida (do 256), aby procesy potomne serwera nie były zabijane."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Wskaźnik <b>dostępu telefonu do internetu</b>."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Szary = jeszcze nie sprawdzono, czerwony = brak internetu, zielony = online."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Wskaźnik, czy <b>tryb programisty</b> jest włączony."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Opcje programisty są praktycznie wymagane do zaawansowanych funkcji, takich jak udostępnianie lub przenoszenie instalacji oraz debugowanie bezprzewodowe."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Wyeksportuj</b> kopię zapasową do pamięci zewnętrznej."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Usuń</b> zapisaną kopię zapasową."
+

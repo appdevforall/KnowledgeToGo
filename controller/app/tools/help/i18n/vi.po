@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: vi\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Mở <b>Cài đặt</b> để cấu hình ứng dụng, quyền và ngôn ngữ."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Cài đặt tập hợp các tùy chọn toàn ứng dụng: các quyền ứng dụng cần, ngôn ngữ giao diện và sự đồng ý phân tích. Không có gì ở đây khởi động hay dừng máy chủ."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Hiển thị một <b>mã QR</b> để thiết bị ở gần có thể tham gia và mở thư viện của bạn."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "Mã QR chứa mạng Wi-Fi (hoặc điểm phát sóng) cùng địa chỉ thư viện của bạn. Khách quét mã để kết nối và duyệt từ thiết bị của họ — không cần gõ gì."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Chuyển giữa giao diện <b>sáng và tối</b>."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "<b>Phiên bản</b> ứng dụng đã cài."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Chỉ báo trạng thái hiện tại và lối tắt đến cài đặt <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Cho biết giao diện Wi-Fi có bật hay không và cũng là lối tắt đến đó. Khi bật, các thiết bị khác trong cùng mạng có thể mở thư viện của bạn tại địa chỉ điện thoại của bạn."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Chỉ báo trạng thái hiện tại và lối tắt đến <b>điểm phát sóng</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Cho biết điểm phát sóng của điện thoại có bật hay không và cũng là lối tắt đến đó. Khi bật, các thiết bị đã kết nối có thể tham gia và mở thư viện của bạn."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Mở <b>thư viện</b> của bạn trong trình duyệt tích hợp."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Khởi động hoặc dừng</b> máy chủ nội dung."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Các thiết bị đã kết nối khác chỉ có thể truy cập thư viện của bạn khi máy chủ đang chạy. Lần khởi động đầu tiên có thể mất vài giây."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "Cài đặt máy chủ <b>nâng cao</b>."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Bật cài đặt <b>DNS tùy chỉnh</b> cho máy chủ."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Chỉ cần trong các thiết lập mạng đặc biệt; hãy để tắt trừ khi bạn biết mình cần."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Áp dụng cài đặt DNS bạn đã nhập."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Hiển thị <b>nhật ký kết nối</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Xóa</b> nhật ký kết nối."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Sao chép</b> toàn bộ nhật ký vào bảng nhớ tạm."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Chọn <b>Chia sẻ</b> để gửi thư viện hoặc ứng dụng của bạn sang thiết bị khác."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Chọn <b>Nhận</b> để lấy nội dung từ thiết bị khác."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Truyền qua <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Truyền qua <b>điểm phát sóng</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Khởi động máy chủ</b> để thiết bị khác có thể tải thư viện của bạn."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Chia sẻ chính <b>ứng dụng K2Go</b> với thiết bị ở gần."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Cho phép ai đó cài K2Go từ bạn mà không cần internet: họ kết nối và tải ứng dụng trực tiếp."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Quét mã QR</b> để kết nối với thiết bị kia."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Hủy</b> quá trình truyền hiện tại."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Lật sang nhóm <b>đồng hồ đo</b> tiếp theo."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Hiện hoặc ẩn danh sách <b>mô-đun đã cài</b> (hiển thị dưới dạng đèn LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Bật hoặc tắt <b>phân tích sử dụng</b> ẩn danh."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Khi bật, ứng dụng chia sẻ dữ liệu sử dụng ẩn danh để giúp cải thiện. Không thu thập nội dung cá nhân nào."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Chọn <b>loại</b> phản hồi bạn gửi."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Gửi</b> phản hồi của bạn cho nhóm."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Kích hoạt một <b>sự cố</b> thử nghiệm — chỉ để chẩn đoán."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Tiếp tục sang bước thiết lập tiếp theo."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Cho phép <b>thông báo</b> để ứng dụng có thể báo cho bạn về máy chủ và các lần truyền."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Cho phép truy cập <b>bộ nhớ</b> để ứng dụng có thể đọc và phục vụ các tệp thư viện của bạn."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Cho phép ứng dụng <b>hiển thị trên các ứng dụng khác</b> (cần cho một số trợ giúp trên màn hình)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Để ứng dụng <b>tiếp tục chạy</b> ở nền để máy chủ luôn hoạt động."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Mở màn hình hệ thống để quản lý <b>tất cả quyền</b> cùng lúc."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Chọn <b>ngôn ngữ</b> cho ứng dụng và nội dung."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Ngôn ngữ của <b>giao diện ứng dụng</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Ngôn ngữ ưu tiên cho <b>nội dung đã tải</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Hoàn tất và đóng <b>cài đặt</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Đến các bước <b>thiết lập</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Đến <b>phản hồi</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Đến màn hình <b>Giới thiệu</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Hiển thị thanh <b>điều hướng</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Ẩn</b> thanh điều hướng."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Quay <b>lại</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Đến trang <b>chủ</b> của thư viện."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Tải lại</b> trang."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Đóng</b> trình duyệt và trở về ứng dụng."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Đi <b>tới</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Chuyển mã QR giữa <b>mạng Wi-Fi</b> và <b>điểm phát sóng</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Đóng</b> mã QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Bỏ qua</b> báo cáo sự cố này mà không gửi."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Gửi</b> báo cáo sự cố để giúp chúng tôi khắc phục vấn đề."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Trạng thái và điều khiển để tắt <b>giới hạn tiến trình con</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Trạng thái và điều khiển để tắt <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Hiển thị <b>giám sát nâng cao</b> cho quá trình cài đặt."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Kết nối qua <b>ADB</b> để giám sát nâng cao."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Cài đặt phiên bản <b>Cơ bản</b> (bộ ứng dụng nhỏ nhất)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Cài đặt phiên bản <b>Tiêu chuẩn</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Cài đặt phiên bản <b>Đầy đủ</b> (bộ ứng dụng lớn nhất)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Cài đặt thêm <b>nội dung đi kèm</b> cùng các mô-đun."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Mở cài đặt tải xuống <b>Kiwix</b> (ngôn ngữ và biến thể)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Cấp phát</b> phiên bản đã chọn ngay bây giờ."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Xóa</b> nội dung đã cài."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Hiện hoặc ẩn <b>quản lý mô-đun</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Làm mới</b> danh sách mô-đun đã cài trên hệ thống."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Bắt đầu</b> cài đặt các mô-đun đã chọn."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Hiện hoặc ẩn công cụ <b>bảo trì</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Sao lưu</b> nội dung đã cài và cài đặt của bạn."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Đặt lại</b> về bản cài hệ thống tối giản (không có dịch vụ)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Khôi phục</b> từ một bản sao lưu."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Buộc dừng</b> ứng dụng."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Nhập</b> một bản sao lưu từ bộ nhớ ngoài."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Chọn <b>bản sao lưu</b> nào để dùng."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Đóng</b> nhật ký khôi phục."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Chuyển thủ công giữa sáng và tối, hoặc để ứng dụng theo giao diện hệ thống của thiết bị."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Bật một <b>điểm phát sóng chỉ nội bộ</b> hoạt động cả khi không có SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Tạo điểm phát sóng Wi-Fi mà không dùng đường chia sẻ mạng của nhà mạng, nên hoạt động khi không có SIM hay gói cước — hữu ích khi điểm phát sóng thường bị chặn. Vị trí phải được bật."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Hiển thị <b>mã QR Wi-Fi</b> để tham gia điểm phát sóng chỉ nội bộ."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Điểm phát sóng chỉ nội bộ dùng tên và mật khẩu được tạo tự động; quét mã QR sẽ tham gia mà không cần gõ chúng."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Không phải bật/tắt đơn giản — nó nâng giới hạn tiến trình ảo của Android (lên 256) để các tiến trình con của máy chủ không bị kết thúc."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Chỉ báo <b>truy cập internet</b> của điện thoại."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Xám = chưa kiểm tra, đỏ = không có internet, xanh lá = trực tuyến."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Chỉ báo <b>chế độ Nhà phát triển</b> có được bật hay không."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Các tùy chọn nhà phát triển thực tế là bắt buộc cho các tính năng nâng cao như chia sẻ hoặc chuyển một bản cài và gỡ lỗi không dây."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Xuất</b> một bản sao lưu ra bộ nhớ ngoài."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Xóa</b> một bản sao lưu đã lưu."
+
