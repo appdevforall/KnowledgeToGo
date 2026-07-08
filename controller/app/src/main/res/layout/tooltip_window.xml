@@ -16,7 +16,7 @@
     android:padding="4dp">
 
     <!-- Compact popup sizes to content; the WebView content is width-capped via CSS.
-         WebViewLayout (which wants match_parent) doesn't apply to this small tooltip. -->
+         WebViewLayout (which wants match_parent) does not apply to this small tooltip. -->
     <WebView
         android:id="@+id/help_webview"
         android:layout_width="wrap_content"
@@ -30,4 +30,12 @@
         android:padding="12dp"
         android:textColor="#1E88E5"
         android:text="@string/tooltip_see_more"
-        a
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/help_links"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" />
+</LinearLayout>
