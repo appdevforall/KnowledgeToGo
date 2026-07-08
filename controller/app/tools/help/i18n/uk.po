@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: uk\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Відкрийте <b>Налаштування</b>, щоб налаштувати застосунок, дозволи та мову."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Налаштування об'єднують параметри всього застосунку: потрібні дозволи, мову інтерфейсу та згоду на аналітику. Ніщо тут не запускає й не зупиняє сервер."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Показує <b>QR-код</b>, щоб пристрій поблизу міг приєднатися та відкрити вашу бібліотеку."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR містить мережу Wi-Fi (або точку доступу) та адресу вашої бібліотеки. Гості сканують його, щоб під'єднатися й переглядати зі свого пристрою — без введення."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Перемикайтеся між <b>світлою та темною</b> темами."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "Встановлена <b>версія</b> застосунку."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Індикатор поточного стану та ярлик до налаштування <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Показує, чи ввімкнено інтерфейс Wi-Fi, і водночас є ярликом до нього. Коли ввімкнено, інші пристрої в тій самій мережі можуть відкрити вашу бібліотеку за адресою вашого телефона."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Індикатор поточного стану та ярлик до <b>точки доступу</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Показує, чи ввімкнено точку доступу телефона, і водночас є ярликом до неї. Коли ввімкнено, під'єднані пристрої можуть приєднатися й відкрити вашу бібліотеку."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Відкрийте свою <b>бібліотеку</b> у вбудованому браузері."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Запустіть або зупиніть</b> сервер вмісту."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Інші під'єднані пристрої мають доступ до вашої бібліотеки лише поки сервер працює. Перший запуск може тривати кілька секунд."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "<b>Розширені</b> налаштування сервера."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Увімкніть <b>власні налаштування DNS</b> для сервера."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Потрібно лише в особливих конфігураціях мережі; лишіть вимкненим, якщо не впевнені, що це потрібно."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Застосуйте введені налаштування DNS."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Показати <b>журнал з'єднань</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Очистити</b> журнал з'єднань."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Скопіювати</b> весь журнал до буфера обміну."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Виберіть <b>Поділитися</b>, щоб надіслати бібліотеку чи застосунки на інший пристрій."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Виберіть <b>Отримати</b>, щоб одержати вміст з іншого пристрою."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Передавання через <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Передавання через <b>точку доступу</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Запустіть сервер</b>, щоб інший пристрій міг завантажити вашу бібліотеку."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Поділіться самим <b>застосунком K2Go</b> з пристроєм поблизу."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Дозволяє комусь установити K2Go від вас без інтернету: він під'єднується й завантажує застосунок безпосередньо."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Скануйте QR</b>, щоб під'єднатися до іншого пристрою."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Скасувати</b> поточне передавання."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Перейти до наступного набору <b>індикаторів</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Показати або приховати список <b>установлених модулів</b> (показуються як LED-індикатори)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Увімкнути або вимкнути анонімну <b>аналітику використання</b>."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Коли ввімкнено, застосунок надсилає анонімні дані про використання, щоб допомогти його поліпшити. Жодного особистого вмісту не збирається."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Виберіть <b>тип</b> відгуку, який надсилаєте."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Надішліть</b> свій відгук команді."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Спричинити тестовий <b>збій</b> — лише для діагностики."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Перейти до наступного кроку налаштування."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Дозвольте <b>сповіщення</b>, щоб застосунок міг повідомляти вас про сервер і передавання."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Дозвольте доступ до <b>сховища</b>, щоб застосунок міг читати й надавати файли вашої бібліотеки."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Дозвольте застосунку <b>показуватися поверх інших застосунків</b> (потрібно для деякої екранної довідки)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Дозвольте застосунку <b>працювати далі</b> у фоні, щоб сервер лишався активним."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Відкрийте системний екран, щоб керувати <b>всіма дозволами</b> одразу."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Виберіть <b>мову</b> застосунку та вмісту."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Мова <b>інтерфейсу застосунку</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Бажана мова для <b>завантаженого вмісту</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Завершити й закрити <b>налаштування</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Перейти до кроків <b>налаштування</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Перейти до <b>відгуків</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Перейти до екрана <b>Про застосунок</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Показати панель <b>навігації</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Приховати</b> панель навігації."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Перейти <b>назад</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Перейти на <b>головну</b> сторінку бібліотеки."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Перезавантажити</b> сторінку."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Закрити</b> браузер і повернутися до застосунку."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Перейти <b>вперед</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Перемкнути QR між <b>мережею Wi-Fi</b> та <b>точкою доступу</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Закрити</b> QR-код."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Відхилити</b> цей звіт про збій без надсилання."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Надіслати</b> звіт про збій, щоб допомогти нам виправити проблему."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Стан і керування для вимкнення <b>обмеження дочірніх процесів</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Стан і керування для вимкнення <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Показати <b>розширений моніторинг</b> встановлення."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Під'єднатися через <b>ADB</b> для розширеного моніторингу."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Встановити видання <b>Базове</b> (найменший набір застосунків)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Встановити видання <b>Стандартне</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Встановити видання <b>Повне</b> (найбільший набір застосунків)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Також установити <b>супутній вміст</b> разом із модулями."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Відкрити налаштування завантаження <b>Kiwix</b> (мова та варіант)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Підготувати</b> вибране видання зараз."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Видалити</b> встановлений вміст."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Показати або приховати <b>керування модулями</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Оновити</b> список модулів, установлених у системі."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Запустити</b> встановлення вибраних модулів."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Показати або приховати інструменти <b>обслуговування</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Створити резервну копію</b> встановленого вмісту й налаштувань."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Скинути</b> до базового встановлення системи (без служб)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Відновити</b> з резервної копії."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Примусово зупинити</b> застосунок."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Імпортувати</b> резервну копію із зовнішнього сховища."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Виберіть, яку <b>резервну копію</b> використати."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Закрити</b> журнал відновлення."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Перемикайтеся вручну між світлою та темною, або дозвольте застосунку слідувати системній темі пристрою."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Увімкніть <b>лише локальну точку доступу</b>, яка працює навіть без SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Створює точку доступу Wi-Fi без використання оператора для роздачі, тож працює без SIM чи тарифу — корисно, коли звичайну точку доступу заблоковано. Місцезнаходження має бути ввімкнено."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Показати <b>QR Wi-Fi</b> для приєднання до лише локальної точки доступу."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Лише локальна точка доступу використовує автоматично згенеровані ім'я та пароль; сканування QR приєднує до неї без їх введення."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Це не просте увімкнення/вимкнення — воно підвищує ліміт фантомних процесів Android (до 256), щоб дочірні процеси сервера не завершувалися."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Індикатор <b>доступу телефона до інтернету</b>."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Сірий = ще не перевірено, червоний = немає інтернету, зелений = онлайн."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Індикатор того, чи ввімкнено <b>режим розробника</b>."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Параметри розробника фактично потрібні для розширених функцій, як-от надання чи перенесення встановлення та бездротове налагодження."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Експортувати</b> резервну копію до зовнішнього сховища."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Видалити</b> збережену резервну копію."
+

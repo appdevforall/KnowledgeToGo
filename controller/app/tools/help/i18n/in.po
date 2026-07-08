@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: in\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Buka <b>Setelan</b> untuk mengonfigurasi aplikasi, izin, dan bahasa."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Setelan mengelompokkan opsi seluruh aplikasi: izin yang dibutuhkan aplikasi, bahasa antarmuka, dan persetujuan analitik. Tidak ada di sini yang memulai atau menghentikan server."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Menampilkan <b>kode QR</b> agar perangkat terdekat dapat bergabung dan membuka perpustakaan Anda."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR memuat jaringan Wi-Fi (atau hotspot) plus alamat perpustakaan Anda. Tamu memindainya untuk terhubung dan menjelajah dari perangkat mereka — tanpa mengetik."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Beralih antara tema <b>terang dan gelap</b>."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "<b>Versi</b> aplikasi yang terpasang."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Indikator status saat ini dan pintasan ke setelan <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Menunjukkan apakah antarmuka Wi-Fi aktif dan juga merupakan pintasan ke sana. Saat aktif, perangkat lain di jaringan yang sama dapat membuka perpustakaan Anda di alamat ponsel Anda."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Indikator status saat ini dan pintasan ke <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Menunjukkan apakah hotspot ponsel aktif dan juga merupakan pintasan ke sana. Saat aktif, perangkat yang terhubung dapat bergabung dan membuka perpustakaan Anda."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Buka <b>perpustakaan</b> Anda di peramban bawaan."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Mulai atau hentikan</b> server konten."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Perangkat lain yang terhubung hanya dapat mengakses perpustakaan Anda selama server berjalan. Pengaktifan pertama bisa memakan beberapa detik."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "Setelan server <b>lanjutan</b>."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Aktifkan setelan <b>DNS khusus</b> untuk server."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Hanya diperlukan pada konfigurasi jaringan khusus; biarkan nonaktif kecuali Anda tahu memerlukannya."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Terapkan setelan DNS yang Anda masukkan."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Tampilkan <b>log koneksi</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Bersihkan</b> log koneksi."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Salin</b> seluruh log ke papan klip."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Pilih <b>Bagikan</b> untuk mengirim perpustakaan atau aplikasi Anda ke perangkat lain."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Pilih <b>Terima</b> untuk mendapatkan konten dari perangkat lain."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Transfer melalui <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Transfer melalui <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Mulai server</b> agar perangkat lain dapat menarik perpustakaan Anda."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Bagikan <b>aplikasi K2Go</b> itu sendiri ke perangkat terdekat."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Memungkinkan seseorang memasang K2Go dari Anda tanpa internet: mereka terhubung dan mengunduh aplikasi secara langsung."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Pindai QR</b> untuk terhubung ke perangkat lain."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Batalkan</b> transfer saat ini."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Beralih ke set <b>pengukur</b> berikutnya."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Tampilkan atau sembunyikan daftar <b>modul terpasang</b> (ditampilkan sebagai indikator LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Aktifkan atau nonaktifkan <b>analitik penggunaan</b> anonim."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Saat aktif, aplikasi membagikan data penggunaan anonim untuk membantu perbaikan. Tidak ada konten pribadi yang dikumpulkan."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Pilih <b>jenis</b> masukan yang Anda kirim."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Kirim</b> masukan Anda ke tim."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Picu <b>kerusakan</b> uji — hanya untuk diagnostik."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Lanjutkan ke langkah penyiapan berikutnya."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Izinkan <b>notifikasi</b> agar aplikasi dapat memberi tahu Anda tentang server dan transfer."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Izinkan akses <b>penyimpanan</b> agar aplikasi dapat membaca dan menyajikan berkas perpustakaan Anda."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Izinkan aplikasi <b>tampil di atas aplikasi lain</b> (diperlukan untuk sebagian bantuan di layar)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Biarkan aplikasi <b>tetap berjalan</b> di latar belakang agar server tetap aktif."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Buka layar sistem untuk mengelola <b>semua izin</b> sekaligus."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Pilih <b>bahasa</b> aplikasi dan konten."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Bahasa <b>antarmuka aplikasi</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Bahasa pilihan untuk <b>konten yang diunduh</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Selesai dan tutup <b>setelan</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Buka langkah <b>penyiapan</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Buka <b>masukan</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Buka layar <b>Tentang</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Tampilkan bilah <b>navigasi</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Sembunyikan</b> bilah navigasi."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>Kembali</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Buka halaman <b>beranda</b> perpustakaan."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Muat ulang</b> halaman."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Tutup</b> peramban dan kembali ke aplikasi."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>Maju</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Alihkan QR antara <b>jaringan Wi-Fi</b> dan <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Tutup</b> kode QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Abaikan</b> laporan kerusakan ini tanpa mengirim."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Kirim</b> laporan kerusakan untuk membantu kami memperbaiki masalah."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Status dan kontrol untuk menonaktifkan <b>pembatasan proses anak</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Status dan kontrol untuk menonaktifkan <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Tampilkan <b>pemantauan lanjutan</b> untuk pemasangan."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Sambungkan melalui <b>ADB</b> untuk pemantauan lanjutan."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Pasang edisi <b>Dasar</b> (kumpulan aplikasi terkecil)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Pasang edisi <b>Standar</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Pasang edisi <b>Penuh</b> (kumpulan aplikasi terbesar)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Pasang juga <b>konten pendamping</b> bersama modul."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Buka setelan unduhan <b>Kiwix</b> (bahasa dan varian)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Sediakan</b> edisi yang dipilih sekarang."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Hapus</b> konten yang terpasang."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Tampilkan atau sembunyikan <b>pengelolaan modul</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Segarkan</b> daftar modul yang terpasang di sistem."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Luncurkan</b> pemasangan modul yang dipilih."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Tampilkan atau sembunyikan alat <b>pemeliharaan</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Cadangkan</b> konten dan setelan yang terpasang."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Setel ulang</b> ke pemasangan sistem dasar (tanpa layanan)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Pulihkan</b> dari cadangan."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Paksa berhenti</b> aplikasi."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Impor</b> cadangan dari penyimpanan eksternal."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Pilih <b>cadangan</b> mana yang akan digunakan."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Tutup</b> log pemulihan."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Beralih secara manual antara terang dan gelap, atau biarkan aplikasi mengikuti tema sistem perangkat Anda."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Aktifkan <b>hotspot khusus lokal</b> yang bekerja bahkan tanpa SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Membuat hotspot Wi-Fi tanpa menggunakan jalur tethering operator, sehingga bekerja tanpa SIM atau paket seluler — berguna saat hotspot biasa diblokir. Lokasi harus aktif."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Tampilkan <b>QR Wi-Fi</b> untuk bergabung ke hotspot khusus lokal."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Hotspot khusus lokal menggunakan nama dan kata sandi yang dibuat otomatis; memindai QR akan bergabung tanpa mengetiknya."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Bukan sekadar aktif/nonaktif — ini menaikkan batas proses fantom Android (menjadi 256) agar proses anak server tidak dimatikan."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Indikator <b>akses internet</b> ponsel."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Abu-abu = belum diperiksa, merah = tidak ada internet, hijau = daring."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indikator apakah <b>mode Pengembang</b> aktif."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Opsi pengembang praktis diperlukan untuk fitur lanjutan seperti berbagi atau memindahkan pemasangan dan debugging nirkabel."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Ekspor</b> cadangan ke penyimpanan eksternal."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Hapus</b> cadangan yang tersimpan."
+
