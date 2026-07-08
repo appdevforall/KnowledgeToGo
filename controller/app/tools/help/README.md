@@ -14,7 +14,7 @@ Sources in `i18n/`:
 - `strings.pot` — template (regenerated from the English source).
 - `<lang>.po` — one per language (`es, fr, hi, pt, ru`, …). msgctxt = `<tag>.<field>`.
 
-Build pipeline (Python + `polib`; run by Gradle):
+Build pipeline (pure Python stdlib — no external packages; run by Gradle):
 1. `extract_help_pot.py` — regenerate `strings.pot` from English (on demand only).
 2. `validate_help.py` — fail if required languages are incomplete. Strict by default;
    `-PhelpAllowMissing=true` downgrades to a warning for local debugging (CI stays strict).
@@ -27,7 +27,7 @@ Adding languages toward ~50 is "correction, not construction": drop in a new
 
 Gradle wires `validateHelpTranslations` + `buildHelpDb` into `preBuild` **only if
 Python is on PATH**; otherwise the committed `help.db` is used and checks are skipped
-(local builds never break). CI must have Python + `polib` so enforcement is active.
+(local builds never break). CI only needs Python (3.x); no pip packages required.
 
 ## Schema (mirrors Code On the Go, plus `lang`)
 `TooltipCategories(category)` · `Tooltips(categoryId, tag, lang, summary, detail)` ·
@@ -45,4 +45,4 @@ conflicts with the dead-code cleanup. Remaining anchors: see the ADFA-4536 analy
 `See more` / help-unavailable are genuine Android UI strings and live in `res/values*/`
 (localized the normal way, TMS-ready) — separate from tooltip content.
 
-Prereq: `pip install polib`.
+Prereq: Python 3 on PATH (a tiny bundled `.po` parser, `pohelper.py`, avoids any pip dependency).

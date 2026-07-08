@@ -4,28 +4,25 @@
 # Author      : AppDevForAll
 # Copyright   : Copyright (c) 2026 AppDevForAll
 # Description : Fail the build if required tooltip translations are missing.
-#               Homologous to Android's MissingTranslation, but under our
-#               control: --allow-missing downgrades failure to a warning
-#               (for local debugging). CI/release must run strict (default).
+#               Homologous to Android's MissingTranslation, under our control:
+#               --allow-missing downgrades failure to a warning (local debug).
+#               Pure Python (no polib).
 # Usage       : python3 validate_help.py <i18n_dir> --required es,fr,hi,pt,ru [--allow-missing true]
-# Requires    : polib
 # ============================================================================
 import argparse, csv, os, sys
-try:
-    import polib
-except ImportError:
-    sys.exit("validate_help.py: polib is required (pip install polib)")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pohelper
 
 def expected_ctxs(d):
     exp = set()
     with open(os.path.join(d, "structure.csv"), newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
             tag = r["tag"]
-            exp.add(f"{tag}.summary")
+            exp.add("%s.summary" % tag)
             if r["detail"].strip().lower() == "yes":
-                exp.add(f"{tag}.detail")
-            for i, u in enumerate([x for x in (r["links"] or "").split(";") if x], start=1):
-                exp.add(f"{tag}.link{i}")
+                exp.add("%s.detail" % tag)
+            for i, _u in enumerate([x for x in (r["links"] or "").split(";") if x], start=1):
+                exp.add("%s.link%d" % (tag, i))
     return exp
 
 def main():
@@ -38,10 +35,10 @@ def main():
     exp = expected_ctxs(a.i18n_dir)
     problems = []
     for lang in [l for l in a.required.split(",") if l]:
-        path = os.path.join(a.i18n_dir, f"{lang}.po")
+        path = os.path.join(a.i18n_dir, "%s.po" % lang)
         if not os.path.exists(path):
             problems.append("%s: missing %s.po" % (lang, lang)); continue
-        have = {e.msgctxt for e in polib.pofile(path) if e.msgstr and "fuzzy" not in e.flags}
+        have = {e["msgctxt"] for e in pohelper.parse_po(path) if e.get("msgstr") and not e.get("fuzzy")}
         for ctx in sorted(exp - have):
             problems.append("%s: untranslated '%s'" % (lang, ctx))
     if problems:

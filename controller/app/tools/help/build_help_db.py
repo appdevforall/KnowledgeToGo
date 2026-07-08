@@ -3,18 +3,15 @@
 # Name        : build_help_db.py
 # Author      : AppDevForAll
 # Copyright   : Copyright (c) 2026 AppDevForAll
-# Description : Compile the read-only tooltip help database (help.db) for the
-#               K2Go three-tier help system from localized .po sources.
-#               English is the source (msgid); each <lang>.po supplies msgstr.
-#               Missing translations fall back to English. One DB, `lang` column.
-# Usage       : python3 build_help_db.py <i18n_dir> <out/help.db> [langs csv]
-# Requires    : polib  (pip install polib)
+# Description : Compile the read-only tooltip help database (help.db) from
+#               localized .po sources. English is the source (msgid); each
+#               <lang>.po supplies msgstr. Missing translations fall back to
+#               English. One DB, `lang` column. Pure Python (no polib).
+# Usage       : python3 build_help_db.py <i18n_dir> <out/help.db> [langs_csv]
 # ============================================================================
 import csv, os, sqlite3, sys
-try:
-    import polib
-except ImportError:
-    sys.exit("build_help_db.py: polib is required (pip install polib)")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pohelper
 
 DEFAULT_LANGS = ["en", "es", "fr", "hi", "pt", "ru"]
 
@@ -36,20 +33,20 @@ def load_source_en(d):
 def load_po(path):
     m = {}
     if os.path.exists(path):
-        for e in polib.pofile(path):
-            if e.msgstr and "fuzzy" not in e.flags:
-                m[e.msgctxt] = e.msgstr
+        for e in pohelper.parse_po(path):
+            if e.get("msgstr") and not e.get("fuzzy"):
+                m[e["msgctxt"]] = e["msgstr"]
     return m
 
 def build(i18n_dir, out, langs):
     struct = load_structure(i18n_dir)
     en = load_source_en(i18n_dir)
-    pos = {l: load_po(os.path.join(i18n_dir, f"{l}.po")) for l in langs if l != "en"}
+    pos = {l: load_po(os.path.join(i18n_dir, "%s.po" % l)) for l in langs if l != "en"}
 
     def text(lang, tag, field):
         if lang == "en":
             return en.get((tag, field), "")
-        return pos.get(lang, {}).get(f"{tag}.{field}") or en.get((tag, field), "")
+        return pos.get(lang, {}).get("%s.%s" % (tag, field)) or en.get((tag, field), "")
 
     if os.path.exists(out):
         os.remove(out)
@@ -82,7 +79,7 @@ def build(i18n_dir, out, langs):
             tid = cur.lastrowid
             for i, uri in enumerate(uris, start=1):
                 cur.execute("INSERT INTO TooltipButtons(tooltipId,buttonNumberId,description,uri) VALUES(?,?,?,?)",
-                            (tid, i, text(lang, tag, f"link{i}"), uri))
+                            (tid, i, text(lang, tag, "link%d" % i), uri))
     con.commit(); con.close()
     print("Wrote %s (%d tags x %d langs)" % (out, len(struct), len(langs)))
 
