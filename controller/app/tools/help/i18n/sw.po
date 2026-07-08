@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: sw\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "Fungua <b>Mipangilio</b> ili kusanidi programu, ruhusa na lugha."
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "Mipangilio hukusanya chaguo za programu nzima: ruhusa zinazohitajika, lugha ya kiolesura, na idhini ya uchanganuzi. Hakuna kitu hapa kinachoanzisha au kusimamisha seva."
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "Huonyesha <b>msimbo wa QR</b> ili kifaa cha karibu kiweze kujiunga na kufungua maktaba yako."
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QR ina mtandao wa Wi-Fi (au hotspot) pamoja na anwani ya maktaba yako. Wageni huitambaza ili kuunganisha na kuvinjari kutoka kifaa chao — bila kuandika."
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "Badilisha kati ya mandhari <b>angavu na giza</b>."
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "<b>Toleo</b> la programu lililosakinishwa."
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "Kiashiria cha hali ya sasa na njia ya mkato ya mpangilio wa <b>Wi-Fi</b>."
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Huonyesha kama kiolesura cha Wi-Fi kimewashwa na pia ni njia ya mkato kwake. Kikiwashwa, vifaa vingine kwenye mtandao huohuo vinaweza kufungua maktaba yako kwenye anwani ya simu yako."
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "Kiashiria cha hali ya sasa na njia ya mkato ya <b>hotspot</b>."
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "Huonyesha kama hotspot ya simu imewashwa na pia ni njia ya mkato kwake. Ikiwashwa, vifaa vilivyounganishwa vinaweza kujiunga na kufungua maktaba yako."
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "Fungua <b>maktaba</b> yako katika kivinjari kilichojengwa ndani."
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "<b>Anzisha au simamisha</b> seva ya maudhui."
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "Vifaa vingine vilivyounganishwa vinaweza kufikia maktaba yako tu wakati seva inaendeshwa. Uanzishaji wa kwanza unaweza kuchukua sekunde chache."
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "Mipangilio ya <b>kina</b> ya seva."
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "Washa mipangilio ya <b>DNS maalum</b> kwa seva."
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "Inahitajika tu katika usanidi maalum wa mtandao; iache imezimwa isipokuwa unajua unaihitaji."
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "Tumia mipangilio ya DNS uliyoingiza."
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "Onyesha <b>kumbukumbu ya muunganisho</b>."
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "<b>Futa</b> kumbukumbu ya muunganisho."
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "<b>Nakili</b> kumbukumbu yote kwenye ubao wa kunakili."
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "Chagua <b>Shiriki</b> ili kutuma maktaba au programu zako kwa kifaa kingine."
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "Chagua <b>Pokea</b> ili kupata maudhui kutoka kifaa kingine."
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "Uhamishaji kupitia <b>Wi-Fi</b>."
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "Uhamishaji kupitia <b>hotspot</b>."
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "<b>Anzisha seva</b> ili kifaa kingine kiweze kuvuta maktaba yako."
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "Shiriki <b>programu ya K2Go</b> yenyewe na kifaa cha karibu."
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "Humruhusu mtu kusakinisha K2Go kutoka kwako bila intaneti: anaunganisha na kupakua programu moja kwa moja."
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>Tambaza QR</b> ili kuunganisha na kifaa kingine."
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "<b>Ghairi</b> uhamishaji wa sasa."
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "Pindua hadi seti inayofuata ya <b>vipimo</b>."
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "Onyesha au ficha orodha ya <b>moduli zilizosakinishwa</b> (zinazoonyeshwa kama viashiria vya LED)."
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "Washa au zima <b>uchanganuzi wa matumizi</b> usiojulikana."
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "Ikiwashwa, programu hushiriki data ya matumizi isiyojulikana ili kusaidia kuiboresha. Hakuna maudhui binafsi yanayokusanywa."
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "Chagua <b>aina</b> ya maoni unayotuma."
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "<b>Tuma</b> maoni yako kwa timu."
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "Chochea <b>kuanguka</b> kwa majaribio — kwa uchunguzi tu."
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "Endelea hadi hatua inayofuata ya usanidi."
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "Ruhusu <b>arifa</b> ili programu iweze kukutahadharisha kuhusu seva na uhamishaji."
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "Ruhusu ufikiaji wa <b>hifadhi</b> ili programu iweze kusoma na kuhudumia faili za maktaba yako."
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "Ruhusu programu <b>kuonyeshwa juu ya programu nyingine</b> (inahitajika kwa baadhi ya usaidizi wa skrini)."
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "Acha programu <b>iendelee kufanya kazi</b> chinichini ili seva ibaki hai."
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "Fungua skrini ya mfumo ili kudhibiti <b>ruhusa zote</b> kwa pamoja."
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "Chagua <b>lugha</b> ya programu na maudhui."
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "Lugha ya <b>kiolesura cha programu</b>."
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "Lugha inayopendelewa kwa <b>maudhui yaliyopakuliwa</b>."
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "Maliza na funga <b>mipangilio</b>."
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "Nenda kwenye hatua za <b>usanidi</b>."
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "Nenda kwenye <b>maoni</b>."
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "Nenda kwenye skrini ya <b>Kuhusu</b>."
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "Onyesha upau wa <b>urambazaji</b>."
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "<b>Ficha</b> upau wa urambazaji."
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "Nenda <b>nyuma</b>."
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "Nenda kwenye ukurasa wa <b>nyumbani</b> wa maktaba."
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "<b>Pakia upya</b> ukurasa."
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "<b>Funga</b> kivinjari na urudi kwenye programu."
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "Nenda <b>mbele</b>."
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "Badilisha QR kati ya <b>mtandao wa Wi-Fi</b> na <b>hotspot</b>."
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "<b>Funga</b> msimbo wa QR."
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "<b>Puuza</b> ripoti hii ya kuanguka bila kutuma."
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "<b>Tuma</b> ripoti ya kuanguka ili kutusaidia kurekebisha tatizo."
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "Hali na kidhibiti cha kuzima <b>kizuizi cha michakato ya watoto</b>."
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "Hali na kidhibiti cha kuzima <b>Phantom Process Killer</b> (PPK)."
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "Onyesha <b>ufuatiliaji wa kina</b> wa usakinishaji."
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "Unganisha kupitia <b>ADB</b> kwa ufuatiliaji wa kina."
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "Sakinisha toleo la <b>Msingi</b> (seti ndogo zaidi ya programu)."
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "Sakinisha toleo la <b>Kawaida</b>."
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "Sakinisha toleo <b>Kamili</b> (seti kubwa zaidi ya programu)."
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "Sakinisha pia <b>maudhui yanayoandamana</b> pamoja na moduli."
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "Fungua mipangilio ya upakuaji ya <b>Kiwix</b> (lugha na aina)."
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "<b>Andaa</b> toleo lililochaguliwa sasa."
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "<b>Futa</b> maudhui yaliyosakinishwa."
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "Onyesha au ficha <b>usimamizi wa moduli</b>."
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "<b>Onyesha upya</b> orodha ya moduli zilizosakinishwa kwenye mfumo."
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "<b>Zindua</b> usakinishaji wa moduli zilizochaguliwa."
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "Onyesha au ficha zana za <b>matengenezo</b>."
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "<b>Hifadhi nakala</b> ya maudhui na mipangilio yako iliyosakinishwa."
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "<b>Weka upya</b> hadi usakinishaji wa mfumo wa msingi (bila huduma)."
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "<b>Rejesha</b> kutoka nakala rudufu."
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "<b>Simamisha kwa nguvu</b> programu."
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "<b>Leta</b> nakala rudufu kutoka hifadhi ya nje."
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "Chagua <b>nakala rudufu</b> ipi utumie."
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "<b>Funga</b> kumbukumbu ya urejeshaji."
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "Badilisha mwenyewe kati ya angavu na giza, au acha programu ifuate mandhari ya mfumo wa kifaa chako."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Washa <b>hotspot ya ndani pekee</b> inayofanya kazi hata bila SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Huunda hotspot ya Wi-Fi bila kutumia njia ya kushiriki mtandao ya mtoa huduma, hivyo hufanya kazi bila SIM au mpango wa simu — muhimu wakati hotspot ya kawaida imezuiwa. Mahali lazima pawe pamewashwa."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Onyesha <b>QR ya Wi-Fi</b> ili kujiunga na hotspot ya ndani pekee."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Hotspot ya ndani pekee hutumia jina na nenosiri yaliyotengenezwa kiotomatiki; kutambaza QR hujiunga bila kuyaandika."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Si kuwasha/kuzima rahisi — huongeza kikomo cha michakato ya kivuli cha Android (hadi 256) ili michakato ya watoto ya seva isiuawe."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Kiashiria cha <b>ufikiaji wa intaneti</b> wa simu."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Kijivu = bado haijaangaliwa, nyekundu = hakuna intaneti, kijani = mtandaoni."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Kiashiria cha kama <b>Hali ya Msanidi</b> imewashwa."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Chaguo za msanidi kihalisia zinahitajika kwa vipengele vya kina kama kushiriki au kuhamisha usakinishaji na utatuzi bila waya."
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Hamisha</b> nakala rudufu kwenda hifadhi ya nje."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Futa</b> nakala rudufu iliyohifadhiwa."
+
