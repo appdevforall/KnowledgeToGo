@@ -5,7 +5,6 @@
     <string name="cancel">रद्द करें</string>
     <string name="copy_all">सभी कॉपी करें</string>
     <string name="fix_action">ठीक करें</string>
-    <string name="save">सहेजें</string>
 
     <string name="connection_log_label">कनेक्शन लॉग</string>
     <string name="label_separator_down">▼ %s</string>
@@ -102,8 +101,6 @@
     <string name="qr_title_wifi">Wi-Fi नेटवर्क</string>
 
 
-    <string name="maintenance_mode">रखरखाव मोड</string>
-    <string name="maintenance_warning_msg">सेटिंग्स को संशोधित करने के लिए Safe Pocket Web अक्षम करें।</string>
 
     <string name="user_initiated_conn">उपयोगकर्ता द्वारा आरंभ किया गया कनेक्शन</string>
 

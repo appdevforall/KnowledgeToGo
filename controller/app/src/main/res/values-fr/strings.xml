@@ -5,7 +5,6 @@
     <string name="cancel">Annuler</string>
     <string name="copy_all">Tout copier</string>
     <string name="fix_action">CORRIGER</string>
-    <string name="save">Enregistrer</string>
 
     <string name="connection_log_label">Journal de connexion</string>
     <string name="label_separator_down">▼ %s</string>
@@ -102,8 +101,6 @@
     <string name="qr_title_wifi">Réseau Wi-Fi</string>
 
 
-    <string name="maintenance_mode">Mode de maintenance</string>
-    <string name="maintenance_warning_msg">Désactivez Safe Pocket Web pour pouvoir modifier les paramètres.</string>
 
     <string name="user_initiated_conn">Connexion initiée par l\'utilisateur</string>
 

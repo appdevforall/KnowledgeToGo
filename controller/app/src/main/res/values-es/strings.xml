@@ -4,7 +4,6 @@
     <string name="cancel">Cancelar</string>
     <string name="copy_all">Copiar Todo</string>
     <string name="fix_action">CORREGIR</string>
-    <string name="save">Guardar</string>
 
     <string name="connection_log_label">Log de Conexión</string>
     <string name="label_separator_down">▼ %s</string>
@@ -97,8 +96,6 @@
     <string name="qr_title_wifi">Red Wi-Fi</string>
 
 
-    <string name="maintenance_mode">Modo Mantenimiento</string>
-    <string name="maintenance_warning_msg">Desactive Safe Pocket Web para poder modificar configuraciones.</string>
 
     <string name="user_initiated_conn">Conexión iniciada por el usuario</string>
 
