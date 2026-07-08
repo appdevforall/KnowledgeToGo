@@ -373,6 +373,7 @@ public final class BackupController {
                         btnExport.setBackgroundColor(Color.TRANSPARENT);
                         btnExport.setColorFilter(ContextCompat.getColor(fragment.requireContext(), R.color.status_success));
                         btnExport.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
+                        org.iiab.controller.help.ViewTooltips.attachLongPress(btnExport, org.iiab.controller.help.TooltipCategory.K2GO, org.iiab.controller.help.TooltipTag.DEPLOY_EXPORT_BACKUP);
 
                         btnExport.setOnClickListener(btn -> {
                             selectedBackupFile = filename;
@@ -389,6 +390,7 @@ public final class BackupController {
                         btnDelete.setBackgroundColor(Color.TRANSPARENT);
                         btnDelete.setColorFilter(ContextCompat.getColor(fragment.requireContext(), R.color.status_danger));
                         btnDelete.setPadding(iconPadding, iconPadding, iconPadding, iconPadding);
+                        org.iiab.controller.help.ViewTooltips.attachLongPress(btnDelete, org.iiab.controller.help.TooltipCategory.K2GO, org.iiab.controller.help.TooltipTag.DEPLOY_DELETE_BACKUP);
 
                         btnDelete.setOnClickListener(btn -> {
                             new android.app.AlertDialog.Builder(fragment.requireContext())
