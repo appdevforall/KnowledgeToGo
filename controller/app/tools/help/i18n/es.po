@@ -28,12 +28,12 @@ msgid "The installed app <b>version</b>."
 msgstr "La <b>versión</b> instalada de la app."
 
 msgctxt "usage.wifi.summary"
-msgid "Share your library over the current <b>Wi-Fi</b> network."
-msgstr "Comparte tu biblioteca por la red <b>Wi-Fi</b> actual."
+msgid "Indicator of the current <b>Wi-Fi</b> interface status."
+msgstr "Indicador del estado actual de la interfaz <b>Wi-Fi</b>."
 
 msgctxt "usage.wifi.detail"
-msgid "When your phone is connected to Wi-Fi, other devices on the same network can open your library at your phone's address."
-msgstr "Cuando tu teléfono está en Wi-Fi, otros dispositivos de la misma red pueden abrir tu biblioteca en la dirección de tu teléfono."
+msgid "Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
+msgstr "Muestra si la interfaz Wi-Fi está activa. Cuando lo está, otros dispositivos de la misma red pueden abrir tu biblioteca en la dirección de tu teléfono."
 
 msgctxt "usage.hotspot.summary"
 msgid "Turn on a <b>hotspot</b> so nearby devices can connect with no external network."

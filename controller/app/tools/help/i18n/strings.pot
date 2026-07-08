@@ -27,11 +27,11 @@ msgid "The installed app <b>version</b>."
 msgstr ""
 
 msgctxt "usage.wifi.summary"
-msgid "Share your library over the current <b>Wi-Fi</b> network."
+msgid "Indicator of the current <b>Wi-Fi</b> interface status."
 msgstr ""
 
 msgctxt "usage.wifi.detail"
-msgid "When your phone is connected to Wi-Fi, other devices on the same network can open your library at your phone's address."
+msgid "Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
 msgstr ""
 
 msgctxt "usage.hotspot.summary"

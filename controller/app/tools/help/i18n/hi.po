@@ -28,11 +28,11 @@ msgid "The installed app <b>version</b>."
 msgstr "इंस्टॉल किया गया ऐप <b>संस्करण</b>।"
 
 msgctxt "usage.wifi.summary"
-msgid "Share your library over the current <b>Wi-Fi</b> network."
+msgid "Indicator of the current <b>Wi-Fi</b> interface status."
 msgstr "अपनी लाइब्रेरी को मौजूदा <b>Wi-Fi</b> नेटवर्क पर साझा करें।"
 
 msgctxt "usage.wifi.detail"
-msgid "When your phone is connected to Wi-Fi, other devices on the same network can open your library at your phone's address."
+msgid "Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
 msgstr "जब आपका फ़ोन Wi-Fi पर होता है, तो उसी नेटवर्क के अन्य डिवाइस आपके फ़ोन के पते पर आपकी लाइब्रेरी खोल सकते हैं।"
 
 msgctxt "usage.hotspot.summary"
