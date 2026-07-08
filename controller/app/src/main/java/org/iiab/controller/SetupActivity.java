@@ -37,6 +37,7 @@ public class SetupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
+        org.iiab.controller.help.TooltipWiring.wireAll(getWindow().getDecorView());
 
         SharedPreferences prefs = getSharedPreferences(
                 getString(R.string.pref_file_internal), Context.MODE_PRIVATE);

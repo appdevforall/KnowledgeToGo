@@ -10,9 +10,6 @@
 package org.iiab.controller;
 
 import org.iiab.controller.util.AppExecutors;
-import org.iiab.controller.help.TooltipCategory;
-import org.iiab.controller.help.TooltipTag;
-import org.iiab.controller.help.ViewTooltips;
 
 import android.Manifest;
 import android.os.Bundle;
@@ -384,10 +381,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         ImageButton btnShareQr = findViewById(R.id.btn_share_qr);
 
         // ADFA-4593: three-tier help — attach tier-1/2 tooltips (long-press) to native controls.
-        ViewTooltips.attachLongPress(themeToggle, TooltipCategory.K2GO, TooltipTag.MAIN_THEME_TOGGLE);
-        ViewTooltips.attachLongPress(btnSettings, TooltipCategory.K2GO, TooltipTag.MAIN_SETTINGS);
-        ViewTooltips.attachLongPress(btnShareQr, TooltipCategory.K2GO, TooltipTag.MAIN_SHARE_QR);
-        ViewTooltips.attachLongPress(versionFooter, TooltipCategory.K2GO, TooltipTag.MAIN_VERSION);
+        org.iiab.controller.help.TooltipWiring.wireAll(getWindow().getDecorView());
 
         // Listeners
         themeToggle.setOnClickListener(v -> toggleTheme());

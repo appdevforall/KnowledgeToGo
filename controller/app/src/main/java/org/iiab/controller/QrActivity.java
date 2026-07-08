@@ -46,7 +46,8 @@ public class QrActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_qr); // Rename your dialog_qr.xml to this
+        setContentView(R.layout.activity_qr);
+        org.iiab.controller.help.TooltipWiring.wireAll(getWindow().getDecorView()); // Rename your dialog_qr.xml to this
 
         titleText = findViewById(R.id.qr_network_title);
         ipText = findViewById(R.id.qr_ip_text);

@@ -110,6 +110,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(view);
 
         // UI Bindings
         setup_dns_check = view.findViewById(R.id.setup_dns_check);

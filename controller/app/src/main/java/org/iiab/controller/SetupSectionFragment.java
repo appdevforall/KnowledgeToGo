@@ -125,6 +125,7 @@ public class SetupSectionFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(v);
 
         TextView welcomeText = v.findViewById(R.id.setup_welcome_text);
         welcomeText.setText(getString(R.string.setup_welcome, getString(R.string.app_name)));

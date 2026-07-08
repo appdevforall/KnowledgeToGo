@@ -195,6 +195,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        org.iiab.controller.help.TooltipWiring.wireAll(view);
 
         downloadState = new ViewModelProvider(requireActivity())
                 .get(org.iiab.controller.install.presentation.DownloadStateViewModel.class);
