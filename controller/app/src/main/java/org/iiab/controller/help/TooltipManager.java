@@ -15,7 +15,7 @@ package org.iiab.controller.help;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -37,7 +37,6 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.pm.PackageInfoCompat;
 
 import org.iiab.controller.R;
 
@@ -64,6 +63,8 @@ public final class TooltipManager {
     private static final ExecutorService IO = Executors.newSingleThreadExecutor();
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
     private static PopupWindow activePopup;
+    private static final int DB_ASSET_VERSION = 2;
+    private static volatile boolean copiedThisProcess = false;
 
     private TooltipManager() {}
 
@@ -174,16 +175,18 @@ public final class TooltipManager {
     private static synchronized File ensureDatabase(Context context) {
         File out = new File(context.getFilesDir(), LOCAL_DB);
         try {
-            long appVersion = -1;
-            try {
-                PackageInfo pi = context.getPackageManager()
-                        .getPackageInfo(context.getPackageName(), 0);
-                appVersion = PackageInfoCompat.getLongVersionCode(pi);
-            } catch (Exception ignored) {}
+            if (copiedThisProcess && out.exists()) return out;
 
+            boolean debuggable = (context.getApplicationInfo().flags
+                    & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
             SharedPreferences sp = context.getSharedPreferences("help_db", Context.MODE_PRIVATE);
-            long copied = sp.getLong("version", -1);
-            if (out.exists() && copied == appVersion) return out;
+            int stored = sp.getInt("db_asset_version", -1);
+            // Debug builds always refresh (content changes without a version bump);
+            // release builds refresh only when the bundled DB version changes.
+            if (out.exists() && !debuggable && stored == DB_ASSET_VERSION) {
+                copiedThisProcess = true;
+                return out;
+            }
 
             try (InputStream in = context.getAssets().open(ASSET_DB);
                  OutputStream os = new FileOutputStream(out)) {
@@ -193,7 +196,8 @@ public final class TooltipManager {
                     os.write(buf, 0, n);
                 }
             }
-            sp.edit().putLong("version", appVersion).apply();
+            sp.edit().putInt("db_asset_version", DB_ASSET_VERSION).apply();
+            copiedThisProcess = true;
             return out;
         } catch (Exception e) {
             Log.e(TAG, "ensureDatabase failed: " + e.getMessage());
