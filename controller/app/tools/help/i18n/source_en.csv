@@ -5,14 +5,14 @@ main.share_qr,summary,Show a <b>QR code</b> so a nearby device can join and open
 main.share_qr,detail,The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required.
 main.theme_toggle,summary,Switch between <b>light and dark</b> theme.
 main.version,summary,The installed app <b>version</b>.
-usage.wifi,summary,Indicator of the current <b>Wi-Fi</b> interface status.
-usage.wifi,detail,"Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
-usage.hotspot,summary,Turn on a <b>hotspot</b> so nearby devices can connect with no external network.
-usage.hotspot,detail,The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet — ideal for sharing offline.
-usage.browse_content,summary,Open your <b>library</b> in the browser.
+usage.wifi,summary,Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface.
+usage.wifi,detail,"Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+usage.hotspot,summary,Indicator of the current status and a shortcut to the <b>hotspot</b>.
+usage.hotspot,detail,"Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+usage.browse_content,summary,Open your <b>library</b> in the built-in browser.
 usage.server_control,summary,<b>Start or stop</b> the content server.
-usage.server_control,detail,Other devices can only reach your library while the server is running. The first start can take a few seconds.
-usage.dns_settings,summary,Advanced <b>network</b> options.
+usage.server_control,detail,Other connected devices can only reach your library while the server is running. The first start can take a few seconds.
+usage.dns_settings,summary,<b>Advanced</b> server settings.
 usage.dns_check,summary,Enable <b>custom DNS</b> settings for the server.
 usage.dns_check,detail,Only needed in special network setups; leave it off unless you know you need it.
 usage.dns_accept,summary,Apply the DNS settings you entered.
@@ -29,7 +29,7 @@ sync.share_app,detail,Lets someone install K2Go from you without internet: they 
 sync.scan_qr,summary,<b>Scan a QR</b> to connect to the other device.
 sync.cancel_transfer,summary,<b>Cancel</b> the current transfer.
 dashboard.flip_gauges,summary,Flip to the next set of <b>gauges</b>.
-dashboard.modules_title,summary,Show or hide the list of <b>installed modules</b>.
+dashboard.modules_title,summary,Show or hide the list of <b>installed modules</b> (shown as LED indicators).
 about.analytics_consent,summary,Turn anonymous <b>usage analytics</b> on or off.
 about.analytics_consent,detail,"When on, the app shares anonymous usage data to help improve it. No personal content is collected."
 feedback.category,summary,Pick the <b>type</b> of feedback you're sending.
@@ -59,26 +59,35 @@ qr.flip,summary,Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspo
 qr.close,summary,<b>Close</b> the QR code.
 crash.dismiss,summary,<b>Dismiss</b> this crash report without sending.
 crash.send,summary,<b>Send</b> the crash report to help us fix the problem.
-deploy.led_dcpr,summary,Status of the install <b>child process</b>.
-deploy.led_ppk,summary,Status of the <b>PPK</b> step in the install.
+deploy.led_dcpr,summary,Status and control to disable the <b>child-process restriction</b>.
+deploy.led_ppk,summary,Status and control to disable the <b>Phantom Process Killer</b> (PPK).
 deploy.adv_monitoring,summary,Show <b>advanced monitoring</b> for the install.
 deploy.adb_action,summary,Connect over <b>ADB</b> for advanced monitoring.
-deploy.tier_basic,summary,Install the <b>Basic</b> edition (smallest set of content).
+deploy.tier_basic,summary,Install the <b>Basic</b> edition (smallest set of apps).
 deploy.tier_standard,summary,Install the <b>Standard</b> edition.
-deploy.tier_full,summary,Install the <b>Full</b> edition (largest set of content).
-deploy.companion_data,summary,Also install <b>companion data</b> with the modules.
+deploy.tier_full,summary,Install the <b>Full</b> edition (largest set of apps).
+deploy.companion_data,summary,Also install <b>companion content</b> with the modules.
 deploy.kiwix_settings,summary,Open <b>Kiwix</b> download settings (language and variant).
 deploy.fast_install,summary,<b>Provision</b> the selected edition now.
 deploy.fast_delete,summary,<b>Delete</b> the installed content.
 deploy.module_mgmt,summary,Show or hide <b>module management</b>.
-deploy.refresh_modules,summary,<b>Refresh</b> the list of modules.
+deploy.refresh_modules,summary,<b>Refresh</b> the list of modules installed on the system.
 deploy.launch_install,summary,<b>Launch</b> the installation of the selected modules.
 deploy.maintenance,summary,Show or hide <b>maintenance</b> tools.
 deploy.backup,summary,<b>Back up</b> your installed content and settings.
-deploy.reset,summary,<b>Reset</b> the installation.
+deploy.reset,summary,<b>Reset</b> to a bare-bones system install (no services).
 deploy.restore,summary,<b>Restore</b> from a backup.
-deploy.force_stop,summary,<b>Force-stop</b> the server.
-deploy.import_backup,summary,<b>Import</b> a backup file.
+deploy.force_stop,summary,<b>Force-stop</b> the app.
+deploy.import_backup,summary,<b>Import</b> a backup from external storage.
 deploy.select_backup,summary,Choose which <b>backup</b> to use.
 deploy.restore_log_close,summary,<b>Close</b> the restore log.
 main.theme_toggle,detail,"Switch manually between light and dark, or let the app follow your device's system theme."
+usage.lohs_toggle,summary,Turn on a <b>local-only hotspot</b> that works even with no SIM.
+usage.lohs_toggle,detail,"Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+usage.lohs_show_qr,summary,Show a <b>Wi-Fi QR</b> to join the local-only hotspot.
+usage.lohs_show_qr,detail,The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them.
+deploy.led_ppk,detail,Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed.
+deploy.internet,summary,Indicator of the phone's <b>internet access</b>.
+deploy.internet,detail,"Gray = not checked yet, red = no internet, green = online."
+deploy.dev_mode,summary,Indicator of whether <b>Developer mode</b> is enabled.
+deploy.dev_mode,detail,Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging.

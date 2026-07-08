@@ -28,23 +28,23 @@ msgid "The installed app <b>version</b>."
 msgstr "La <b>version</b> installée de l'application."
 
 msgctxt "usage.wifi.summary"
-msgid "Indicator of the current <b>Wi-Fi</b> interface status."
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
 msgstr "Partagez votre bibliothèque sur le réseau <b>Wi-Fi</b> actuel."
 
 msgctxt "usage.wifi.detail"
-msgid "Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
 msgstr "Quand votre téléphone est en Wi-Fi, les autres appareils du même réseau peuvent ouvrir votre bibliothèque à l'adresse de votre téléphone."
 
 msgctxt "usage.hotspot.summary"
-msgid "Turn on a <b>hotspot</b> so nearby devices can connect with no external network."
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
 msgstr "Activez un <b>point d'accès</b> pour que les appareils proches se connectent sans réseau externe."
 
 msgctxt "usage.hotspot.detail"
-msgid "The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet — ideal for sharing offline."
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
 msgstr "Le point d'accès crée un réseau Wi-Fi local depuis votre téléphone. Il fonctionne même sans SIM ni internet — idéal pour partager hors ligne."
 
 msgctxt "usage.browse_content.summary"
-msgid "Open your <b>library</b> in the browser."
+msgid "Open your <b>library</b> in the built-in browser."
 msgstr "Ouvrez votre <b>bibliothèque</b> dans le navigateur."
 
 msgctxt "usage.server_control.summary"
@@ -52,11 +52,11 @@ msgid "<b>Start or stop</b> the content server."
 msgstr "<b>Démarrez ou arrêtez</b> le serveur de contenu."
 
 msgctxt "usage.server_control.detail"
-msgid "Other devices can only reach your library while the server is running. The first start can take a few seconds."
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
 msgstr "Les autres appareils ne peuvent accéder à votre bibliothèque que lorsque le serveur est actif. Le premier démarrage peut prendre quelques secondes."
 
 msgctxt "usage.dns_settings.summary"
-msgid "Advanced <b>network</b> options."
+msgid "<b>Advanced</b> server settings."
 msgstr "Options <b>réseau</b> avancées."
 
 msgctxt "usage.dns_check.summary"
@@ -124,7 +124,7 @@ msgid "Flip to the next set of <b>gauges</b>."
 msgstr "Passez au groupe de <b>jauges</b> suivant."
 
 msgctxt "dashboard.modules_title.summary"
-msgid "Show or hide the list of <b>installed modules</b>."
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
 msgstr "Afficher ou masquer la liste des <b>modules installés</b>."
 
 msgctxt "about.analytics_consent.summary"
@@ -244,11 +244,11 @@ msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr "<b>Envoyer</b> le rapport de plantage pour nous aider à corriger le problème."
 
 msgctxt "deploy.led_dcpr.summary"
-msgid "Status of the install <b>child process</b>."
+msgid "Status and control to disable the <b>child-process restriction</b>."
 msgstr "État du <b>processus enfant</b> de l'installation."
 
 msgctxt "deploy.led_ppk.summary"
-msgid "Status of the <b>PPK</b> step in the install."
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
 msgstr "État de l'étape <b>PPK</b> de l'installation."
 
 msgctxt "deploy.adv_monitoring.summary"
@@ -260,7 +260,7 @@ msgid "Connect over <b>ADB</b> for advanced monitoring."
 msgstr "Connectez-vous en <b>ADB</b> pour le suivi avancé."
 
 msgctxt "deploy.tier_basic.summary"
-msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
 msgstr "Installez l'édition <b>Basic</b> (le plus petit ensemble de contenu)."
 
 msgctxt "deploy.tier_standard.summary"
@@ -268,11 +268,11 @@ msgid "Install the <b>Standard</b> edition."
 msgstr "Installez l'édition <b>Standard</b>."
 
 msgctxt "deploy.tier_full.summary"
-msgid "Install the <b>Full</b> edition (largest set of content)."
+msgid "Install the <b>Full</b> edition (largest set of apps)."
 msgstr "Installez l'édition <b>Full</b> (le plus grand ensemble de contenu)."
 
 msgctxt "deploy.companion_data.summary"
-msgid "Also install <b>companion data</b> with the modules."
+msgid "Also install <b>companion content</b> with the modules."
 msgstr "Installez aussi les <b>données complémentaires</b> avec les modules."
 
 msgctxt "deploy.kiwix_settings.summary"
@@ -292,7 +292,7 @@ msgid "Show or hide <b>module management</b>."
 msgstr "Afficher ou masquer la <b>gestion des modules</b>."
 
 msgctxt "deploy.refresh_modules.summary"
-msgid "<b>Refresh</b> the list of modules."
+msgid "<b>Refresh</b> the list of modules installed on the system."
 msgstr "<b>Actualisez</b> la liste des modules."
 
 msgctxt "deploy.launch_install.summary"
@@ -308,7 +308,7 @@ msgid "<b>Back up</b> your installed content and settings."
 msgstr "Faites une <b>sauvegarde</b> de votre contenu et de vos réglages."
 
 msgctxt "deploy.reset.summary"
-msgid "<b>Reset</b> the installation."
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
 msgstr "<b>Réinitialisez</b> l'installation."
 
 msgctxt "deploy.restore.summary"
@@ -316,11 +316,11 @@ msgid "<b>Restore</b> from a backup."
 msgstr "<b>Restaurez</b> depuis une sauvegarde."
 
 msgctxt "deploy.force_stop.summary"
-msgid "<b>Force-stop</b> the server."
+msgid "<b>Force-stop</b> the app."
 msgstr "<b>Forcez l'arrêt</b> du serveur."
 
 msgctxt "deploy.import_backup.summary"
-msgid "<b>Import</b> a backup file."
+msgid "<b>Import</b> a backup from external storage."
 msgstr "<b>Importez</b> un fichier de sauvegarde."
 
 msgctxt "deploy.select_backup.summary"
@@ -334,4 +334,40 @@ msgstr "<b>Fermer</b> le journal de restauration."
 msgctxt "main.theme_toggle.detail"
 msgid "Switch manually between light and dark, or let the app follow your device's system theme."
 msgstr "Basculez manuellement entre thème clair et sombre, ou laissez l'app suivre le thème système de votre appareil."
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "Activez un <b>point d'accès local</b> qui fonctionne même sans SIM."
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "Crée un point d'accès Wi-Fi sans passer par le partage de connexion de l'opérateur ; il fonctionne donc sans SIM ni forfait mobile — utile quand le point d'accès normal est bloqué. La localisation doit être activée."
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "Affichez un <b>QR Wi-Fi</b> pour rejoindre le point d'accès local."
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "Le point d'accès local utilise un nom et un mot de passe générés automatiquement ; scanner le QR permet de s'y connecter sans les saisir."
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "Ce n'est pas un simple oui/non : cela augmente la limite de processus phantom d'Android (à 256) pour que les processus enfants du serveur ne soient pas tués."
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "Indicateur de l'<b>accès à internet</b> du téléphone."
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "Gris = pas encore vérifié, rouge = pas d'internet, vert = connecté."
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "Indicateur indiquant si le <b>mode développeur</b> est activé."
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "Les options pour développeurs sont quasi indispensables pour des fonctions avancées comme partager ou transférer une installation et le débogage sans fil."
 

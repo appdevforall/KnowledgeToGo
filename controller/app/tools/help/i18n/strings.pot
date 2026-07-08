@@ -27,23 +27,23 @@ msgid "The installed app <b>version</b>."
 msgstr ""
 
 msgctxt "usage.wifi.summary"
-msgid "Indicator of the current <b>Wi-Fi</b> interface status."
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
 msgstr ""
 
 msgctxt "usage.wifi.detail"
-msgid "Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
 msgstr ""
 
 msgctxt "usage.hotspot.summary"
-msgid "Turn on a <b>hotspot</b> so nearby devices can connect with no external network."
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
 msgstr ""
 
 msgctxt "usage.hotspot.detail"
-msgid "The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet — ideal for sharing offline."
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
 msgstr ""
 
 msgctxt "usage.browse_content.summary"
-msgid "Open your <b>library</b> in the browser."
+msgid "Open your <b>library</b> in the built-in browser."
 msgstr ""
 
 msgctxt "usage.server_control.summary"
@@ -51,11 +51,11 @@ msgid "<b>Start or stop</b> the content server."
 msgstr ""
 
 msgctxt "usage.server_control.detail"
-msgid "Other devices can only reach your library while the server is running. The first start can take a few seconds."
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
 msgstr ""
 
 msgctxt "usage.dns_settings.summary"
-msgid "Advanced <b>network</b> options."
+msgid "<b>Advanced</b> server settings."
 msgstr ""
 
 msgctxt "usage.dns_check.summary"
@@ -123,7 +123,7 @@ msgid "Flip to the next set of <b>gauges</b>."
 msgstr ""
 
 msgctxt "dashboard.modules_title.summary"
-msgid "Show or hide the list of <b>installed modules</b>."
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
 msgstr ""
 
 msgctxt "about.analytics_consent.summary"
@@ -243,11 +243,11 @@ msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr ""
 
 msgctxt "deploy.led_dcpr.summary"
-msgid "Status of the install <b>child process</b>."
+msgid "Status and control to disable the <b>child-process restriction</b>."
 msgstr ""
 
 msgctxt "deploy.led_ppk.summary"
-msgid "Status of the <b>PPK</b> step in the install."
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
 msgstr ""
 
 msgctxt "deploy.adv_monitoring.summary"
@@ -259,7 +259,7 @@ msgid "Connect over <b>ADB</b> for advanced monitoring."
 msgstr ""
 
 msgctxt "deploy.tier_basic.summary"
-msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
 msgstr ""
 
 msgctxt "deploy.tier_standard.summary"
@@ -267,11 +267,11 @@ msgid "Install the <b>Standard</b> edition."
 msgstr ""
 
 msgctxt "deploy.tier_full.summary"
-msgid "Install the <b>Full</b> edition (largest set of content)."
+msgid "Install the <b>Full</b> edition (largest set of apps)."
 msgstr ""
 
 msgctxt "deploy.companion_data.summary"
-msgid "Also install <b>companion data</b> with the modules."
+msgid "Also install <b>companion content</b> with the modules."
 msgstr ""
 
 msgctxt "deploy.kiwix_settings.summary"
@@ -291,7 +291,7 @@ msgid "Show or hide <b>module management</b>."
 msgstr ""
 
 msgctxt "deploy.refresh_modules.summary"
-msgid "<b>Refresh</b> the list of modules."
+msgid "<b>Refresh</b> the list of modules installed on the system."
 msgstr ""
 
 msgctxt "deploy.launch_install.summary"
@@ -307,7 +307,7 @@ msgid "<b>Back up</b> your installed content and settings."
 msgstr ""
 
 msgctxt "deploy.reset.summary"
-msgid "<b>Reset</b> the installation."
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
 msgstr ""
 
 msgctxt "deploy.restore.summary"
@@ -315,11 +315,11 @@ msgid "<b>Restore</b> from a backup."
 msgstr ""
 
 msgctxt "deploy.force_stop.summary"
-msgid "<b>Force-stop</b> the server."
+msgid "<b>Force-stop</b> the app."
 msgstr ""
 
 msgctxt "deploy.import_backup.summary"
-msgid "<b>Import</b> a backup file."
+msgid "<b>Import</b> a backup from external storage."
 msgstr ""
 
 msgctxt "deploy.select_backup.summary"
@@ -332,5 +332,41 @@ msgstr ""
 
 msgctxt "main.theme_toggle.detail"
 msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr ""
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr ""
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr ""
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr ""
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr ""
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr ""
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr ""
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr ""
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr ""
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
 msgstr ""
 

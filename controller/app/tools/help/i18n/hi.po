@@ -28,23 +28,23 @@ msgid "The installed app <b>version</b>."
 msgstr "इंस्टॉल किया गया ऐप <b>संस्करण</b>।"
 
 msgctxt "usage.wifi.summary"
-msgid "Indicator of the current <b>Wi-Fi</b> interface status."
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
 msgstr "अपनी लाइब्रेरी को मौजूदा <b>Wi-Fi</b> नेटवर्क पर साझा करें।"
 
 msgctxt "usage.wifi.detail"
-msgid "Shows whether the Wi-Fi interface is up. When it is, other devices on the same network can open your library at your phone's address."
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
 msgstr "जब आपका फ़ोन Wi-Fi पर होता है, तो उसी नेटवर्क के अन्य डिवाइस आपके फ़ोन के पते पर आपकी लाइब्रेरी खोल सकते हैं।"
 
 msgctxt "usage.hotspot.summary"
-msgid "Turn on a <b>hotspot</b> so nearby devices can connect with no external network."
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
 msgstr "पास के डिवाइस बिना किसी बाहरी नेटवर्क के जुड़ सकें, इसके लिए <b>हॉटस्पॉट</b> चालू करें।"
 
 msgctxt "usage.hotspot.detail"
-msgid "The hotspot creates a local Wi-Fi network from your phone. It works even with no SIM or internet — ideal for sharing offline."
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
 msgstr "हॉटस्पॉट आपके फ़ोन से एक लोकल Wi-Fi नेटवर्क बनाता है। यह बिना SIM या इंटरनेट के भी काम करता है — ऑफ़लाइन साझा करने के लिए आदर्श।"
 
 msgctxt "usage.browse_content.summary"
-msgid "Open your <b>library</b> in the browser."
+msgid "Open your <b>library</b> in the built-in browser."
 msgstr "अपनी <b>लाइब्रेरी</b> ब्राउज़र में खोलें।"
 
 msgctxt "usage.server_control.summary"
@@ -52,11 +52,11 @@ msgid "<b>Start or stop</b> the content server."
 msgstr "कंटेंट सर्वर <b>शुरू या बंद</b> करें।"
 
 msgctxt "usage.server_control.detail"
-msgid "Other devices can only reach your library while the server is running. The first start can take a few seconds."
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
 msgstr "सर्वर चालू रहने पर ही अन्य डिवाइस आपकी लाइब्रेरी तक पहुँच सकते हैं। पहली बार शुरू होने में कुछ सेकंड लग सकते हैं।"
 
 msgctxt "usage.dns_settings.summary"
-msgid "Advanced <b>network</b> options."
+msgid "<b>Advanced</b> server settings."
 msgstr "<b>उन्नत</b> नेटवर्क विकल्प।"
 
 msgctxt "usage.dns_check.summary"
@@ -124,7 +124,7 @@ msgid "Flip to the next set of <b>gauges</b>."
 msgstr "<b>गेज</b> के अगले सेट पर जाएँ।"
 
 msgctxt "dashboard.modules_title.summary"
-msgid "Show or hide the list of <b>installed modules</b>."
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
 msgstr "<b>इंस्टॉल किए गए मॉड्यूल</b> की सूची दिखाएँ या छिपाएँ।"
 
 msgctxt "about.analytics_consent.summary"
@@ -244,11 +244,11 @@ msgid "<b>Send</b> the crash report to help us fix the problem."
 msgstr "समस्या ठीक करने में मदद के लिए क्रैश रिपोर्ट <b>भेजें</b>।"
 
 msgctxt "deploy.led_dcpr.summary"
-msgid "Status of the install <b>child process</b>."
+msgid "Status and control to disable the <b>child-process restriction</b>."
 msgstr "इंस्टॉल के <b>चाइल्ड प्रोसेस</b> की स्थिति।"
 
 msgctxt "deploy.led_ppk.summary"
-msgid "Status of the <b>PPK</b> step in the install."
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
 msgstr "इंस्टॉल के <b>PPK</b> चरण की स्थिति।"
 
 msgctxt "deploy.adv_monitoring.summary"
@@ -260,7 +260,7 @@ msgid "Connect over <b>ADB</b> for advanced monitoring."
 msgstr "उन्नत निगरानी के लिए <b>ADB</b> से कनेक्ट करें।"
 
 msgctxt "deploy.tier_basic.summary"
-msgid "Install the <b>Basic</b> edition (smallest set of content)."
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
 msgstr "<b>Basic</b> संस्करण इंस्टॉल करें (सबसे छोटा सामग्री सेट)।"
 
 msgctxt "deploy.tier_standard.summary"
@@ -268,11 +268,11 @@ msgid "Install the <b>Standard</b> edition."
 msgstr "<b>Standard</b> संस्करण इंस्टॉल करें।"
 
 msgctxt "deploy.tier_full.summary"
-msgid "Install the <b>Full</b> edition (largest set of content)."
+msgid "Install the <b>Full</b> edition (largest set of apps)."
 msgstr "<b>Full</b> संस्करण इंस्टॉल करें (सबसे बड़ा सामग्री सेट)।"
 
 msgctxt "deploy.companion_data.summary"
-msgid "Also install <b>companion data</b> with the modules."
+msgid "Also install <b>companion content</b> with the modules."
 msgstr "मॉड्यूल के साथ <b>सहयोगी डेटा</b> भी इंस्टॉल करें।"
 
 msgctxt "deploy.kiwix_settings.summary"
@@ -292,7 +292,7 @@ msgid "Show or hide <b>module management</b>."
 msgstr "<b>मॉड्यूल प्रबंधन</b> दिखाएँ या छिपाएँ।"
 
 msgctxt "deploy.refresh_modules.summary"
-msgid "<b>Refresh</b> the list of modules."
+msgid "<b>Refresh</b> the list of modules installed on the system."
 msgstr "मॉड्यूल की सूची <b>रीफ़्रेश करें</b>।"
 
 msgctxt "deploy.launch_install.summary"
@@ -308,7 +308,7 @@ msgid "<b>Back up</b> your installed content and settings."
 msgstr "अपनी सामग्री और सेटिंग्स का <b>बैकअप</b> लें।"
 
 msgctxt "deploy.reset.summary"
-msgid "<b>Reset</b> the installation."
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
 msgstr "स्थापना <b>रीसेट करें</b>।"
 
 msgctxt "deploy.restore.summary"
@@ -316,11 +316,11 @@ msgid "<b>Restore</b> from a backup."
 msgstr "बैकअप से <b>पुनर्स्थापित करें</b>।"
 
 msgctxt "deploy.force_stop.summary"
-msgid "<b>Force-stop</b> the server."
+msgid "<b>Force-stop</b> the app."
 msgstr "सर्वर को <b>ज़बरदस्ती रोकें</b>।"
 
 msgctxt "deploy.import_backup.summary"
-msgid "<b>Import</b> a backup file."
+msgid "<b>Import</b> a backup from external storage."
 msgstr "बैकअप फ़ाइल <b>आयात करें</b>।"
 
 msgctxt "deploy.select_backup.summary"
@@ -334,4 +334,40 @@ msgstr "पुनर्स्थापना लॉग <b>बंद करें
 msgctxt "main.theme_toggle.detail"
 msgid "Switch manually between light and dark, or let the app follow your device's system theme."
 msgstr "मैन्युअल रूप से लाइट और डार्क थीम के बीच बदलें, या ऐप को अपने डिवाइस की सिस्टम थीम का अनुसरण करने दें।"
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "एक <b>लोकल-ओनली हॉटस्पॉट</b> चालू करें जो बिना SIM के भी काम करता है।"
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "यह ऑपरेटर के टेदरिंग रास्ते के बिना Wi-Fi हॉटस्पॉट बनाता है, इसलिए बिना SIM या मोबाइल प्लान के काम करता है — जब सामान्य हॉटस्पॉट अवरुद्ध हो तब उपयोगी। लोकेशन चालू होनी चाहिए।"
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "लोकल हॉटस्पॉट से जुड़ने के लिए एक <b>Wi-Fi QR</b> दिखाएँ।"
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "लोकल हॉटस्पॉट स्वतः-जनरेट किया गया नाम और पासवर्ड उपयोग करता है; QR स्कैन करने से बिना टाइप किए जुड़ जाते हैं।"
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "यह साधारण चालू/बंद नहीं है: यह Android की phantom-process सीमा (256 तक) बढ़ाता है ताकि सर्वर के चाइल्ड प्रोसेस न मारे जाएँ।"
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "फ़ोन के <b>इंटरनेट एक्सेस</b> का संकेतक।"
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "स्लेटी = अभी जाँचा नहीं, लाल = इंटरनेट नहीं, हरा = ऑनलाइन।"
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "<b>डेवलपर मोड</b> सक्षम है या नहीं, इसका संकेतक।"
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "इंस्टॉल साझा/स्थानांतरित करने और वायरलेस डिबगिंग जैसी उन्नत सुविधाओं के लिए डेवलपर विकल्प लगभग अनिवार्य हैं।"
 
