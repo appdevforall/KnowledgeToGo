@@ -97,6 +97,13 @@ public final class TooltipManager {
                     public void run() {
                         if (item == null) {
                             Log.w(TAG, "No tooltip for category='" + category + "', tag='" + tag + "'");
+                            if (isDebuggable(context)) {
+                                // Debug-only: show a placeholder so the wiring is verifiable
+                                // even before content exists. Release builds stay silent.
+                                TooltipItem placeholder = new TooltipItem(category, tag,
+                                        "<i>(no help yet \u2014 " + tag + ")</i>", "", new ArrayList<HelpLink>());
+                                showPopup(context, anchor, 0, placeholder, linkHandler);
+                            }
                             return;
                         }
                         showPopup(context, anchor, 0, item, linkHandler);
@@ -266,6 +273,14 @@ public final class TooltipManager {
             popup.showAsDropDown(anchor);
         } catch (Exception e) {
             Log.e(TAG, "showPopup failed: " + e.getMessage());
+        }
+    }
+
+    private static boolean isDebuggable(Context context) {
+        try {
+            return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        } catch (Exception e) {
+            return false;
         }
     }
 
