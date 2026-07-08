@@ -371,3 +371,11 @@ msgctxt "deploy.dev_mode.detail"
 msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
 msgstr "Параметры разработчика практически необходимы для расширенных функций, таких как обмен или перенос установки и беспроводная отладка."
 
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "<b>Экспортируйте</b> резервную копию во внешнее хранилище."
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "<b>Удалите</b> сохранённую резервную копию."
+

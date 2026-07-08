@@ -91,3 +91,5 @@ deploy.internet,summary,Indicator of the phone's <b>internet access</b>.
 deploy.internet,detail,"Gray = not checked yet, red = no internet, green = online."
 deploy.dev_mode,summary,Indicator of whether <b>Developer mode</b> is enabled.
 deploy.dev_mode,detail,Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging.
+deploy.export_backup,summary,<b>Export</b> a backup to external storage.
+deploy.delete_backup,summary,<b>Delete</b> a saved backup.
