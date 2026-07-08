@@ -1,7 +1,9 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language: pt\n"
+"X-Translated-By: machine\n"
 
 msgctxt "main.settings.summary"
 msgid "Open <b>Settings</b> to configure the app, permissions and language."
@@ -17,7 +19,7 @@ msgstr "Mostre um <b>código QR</b> para que um dispositivo próximo entre e abr
 
 msgctxt "main.share_qr.detail"
 msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
-msgstr "O QR codifica a rede Wi-Fi (ou o hotspot) e o endereço da sua biblioteca. Os convidados escaneiam para conectar e navegar, sem digitar nada."
+msgstr "O QR codifica a rede Wi-Fi (ou o hotspot) e o endereço da sua biblioteca. Os convidados o escaneiam para conectar e navegar a partir do seu dispositivo — sem digitar nada."
 
 msgctxt "main.theme_toggle.summary"
 msgid "Switch between <b>light and dark</b> theme."
@@ -29,23 +31,23 @@ msgstr "A <b>versão</b> instalada do app."
 
 msgctxt "usage.wifi.summary"
 msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
-msgstr "Compartilhe sua biblioteca pela rede <b>Wi-Fi</b> atual."
+msgstr "Indicador do status atual e atalho para a interface <b>Wi-Fi</b>."
 
 msgctxt "usage.wifi.detail"
 msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
-msgstr "Quando seu telefone está no Wi-Fi, outros dispositivos na mesma rede podem abrir sua biblioteca no endereço do seu telefone."
+msgstr "Mostra se a interface Wi-Fi está ativa e também serve de atalho para ela. Quando está ativa, outros dispositivos na mesma rede podem abrir sua biblioteca no endereço do seu telefone."
 
 msgctxt "usage.hotspot.summary"
 msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
-msgstr "Ligue um <b>hotspot</b> para que dispositivos próximos se conectem sem uma rede externa."
+msgstr "Indicador do status atual e atalho para o <b>hotspot</b>."
 
 msgctxt "usage.hotspot.detail"
 msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
-msgstr "O hotspot cria uma rede Wi-Fi local a partir do seu telefone. Funciona até sem SIM ou internet — ideal para compartilhar offline."
+msgstr "Mostra se o hotspot do telefone está ligado e também serve de atalho para ele. Quando está ligado, os dispositivos conectados podem entrar e abrir sua biblioteca."
 
 msgctxt "usage.browse_content.summary"
 msgid "Open your <b>library</b> in the built-in browser."
-msgstr "Abra sua <b>biblioteca</b> no navegador."
+msgstr "Abra sua <b>biblioteca</b> no navegador integrado."
 
 msgctxt "usage.server_control.summary"
 msgid "<b>Start or stop</b> the content server."
@@ -53,11 +55,11 @@ msgstr "<b>Inicie ou pare</b> o servidor de conteúdo."
 
 msgctxt "usage.server_control.detail"
 msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
-msgstr "Os outros dispositivos só conseguem acessar sua biblioteca enquanto o servidor está ativo. A primeira inicialização pode levar alguns segundos."
+msgstr "Os outros dispositivos conectados só conseguem acessar sua biblioteca enquanto o servidor está ativo. A primeira inicialização pode levar alguns segundos."
 
 msgctxt "usage.dns_settings.summary"
 msgid "<b>Advanced</b> server settings."
-msgstr "Opções <b>avançadas</b> de rede."
+msgstr "Configurações <b>avançadas</b> do servidor."
 
 msgctxt "usage.dns_check.summary"
 msgid "Enable <b>custom DNS</b> settings for the server."
@@ -125,7 +127,7 @@ msgstr "Alterne para o próximo conjunto de <b>medidores</b>."
 
 msgctxt "dashboard.modules_title.summary"
 msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
-msgstr "Mostrar ou ocultar a lista de <b>módulos instalados</b>."
+msgstr "Mostrar ou ocultar a lista de <b>módulos instalados</b> (exibidos como indicadores LED)."
 
 msgctxt "about.analytics_consent.summary"
 msgid "Turn anonymous <b>usage analytics</b> on or off."
@@ -245,11 +247,11 @@ msgstr "<b>Enviar</b> o relatório de falha para nos ajudar a corrigir o problem
 
 msgctxt "deploy.led_dcpr.summary"
 msgid "Status and control to disable the <b>child-process restriction</b>."
-msgstr "Estado do <b>processo filho</b> da instalação."
+msgstr "Status e controle para desabilitar a <b>restrição de processos filhos</b>."
 
 msgctxt "deploy.led_ppk.summary"
 msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
-msgstr "Estado da etapa <b>PPK</b> da instalação."
+msgstr "Status e controle para desabilitar o <b>Phantom Process Killer</b> (PPK)."
 
 msgctxt "deploy.adv_monitoring.summary"
 msgid "Show <b>advanced monitoring</b> for the install."
@@ -261,7 +263,7 @@ msgstr "Conecte-se por <b>ADB</b> para monitoramento avançado."
 
 msgctxt "deploy.tier_basic.summary"
 msgid "Install the <b>Basic</b> edition (smallest set of apps)."
-msgstr "Instale a edição <b>Basic</b> (o menor conjunto de conteúdo)."
+msgstr "Instale a edição <b>Basic</b> (o menor conjunto de apps)."
 
 msgctxt "deploy.tier_standard.summary"
 msgid "Install the <b>Standard</b> edition."
@@ -269,11 +271,11 @@ msgstr "Instale a edição <b>Standard</b>."
 
 msgctxt "deploy.tier_full.summary"
 msgid "Install the <b>Full</b> edition (largest set of apps)."
-msgstr "Instale a edição <b>Full</b> (o maior conjunto de conteúdo)."
+msgstr "Instale a edição <b>Full</b> (o maior conjunto de apps)."
 
 msgctxt "deploy.companion_data.summary"
 msgid "Also install <b>companion content</b> with the modules."
-msgstr "Instale também os <b>dados complementares</b> com os módulos."
+msgstr "Instalar também o <b>conteúdo complementar</b> com os módulos."
 
 msgctxt "deploy.kiwix_settings.summary"
 msgid "Open <b>Kiwix</b> download settings (language and variant)."
@@ -293,7 +295,7 @@ msgstr "Mostrar ou ocultar o <b>gerenciamento de módulos</b>."
 
 msgctxt "deploy.refresh_modules.summary"
 msgid "<b>Refresh</b> the list of modules installed on the system."
-msgstr "<b>Atualize</b> a lista de módulos."
+msgstr "<b>Atualize</b> a lista de módulos instalados no sistema."
 
 msgctxt "deploy.launch_install.summary"
 msgid "<b>Launch</b> the installation of the selected modules."
@@ -309,7 +311,7 @@ msgstr "Faça um <b>backup</b> do seu conteúdo e configurações."
 
 msgctxt "deploy.reset.summary"
 msgid "<b>Reset</b> to a bare-bones system install (no services)."
-msgstr "<b>Redefina</b> a instalação."
+msgstr "<b>Redefina</b> para uma instalação de sistema básica (sem serviços)."
 
 msgctxt "deploy.restore.summary"
 msgid "<b>Restore</b> from a backup."
@@ -317,11 +319,11 @@ msgstr "<b>Restaure</b> a partir de um backup."
 
 msgctxt "deploy.force_stop.summary"
 msgid "<b>Force-stop</b> the app."
-msgstr "<b>Forçar a parada</b> do servidor."
+msgstr "<b>Forçar a parada</b> do app."
 
 msgctxt "deploy.import_backup.summary"
 msgid "<b>Import</b> a backup from external storage."
-msgstr "<b>Importe</b> um arquivo de backup."
+msgstr "<b>Importe</b> um backup do armazenamento externo."
 
 msgctxt "deploy.select_backup.summary"
 msgid "Choose which <b>backup</b> to use."
