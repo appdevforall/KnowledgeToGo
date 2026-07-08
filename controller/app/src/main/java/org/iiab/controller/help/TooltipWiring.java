@@ -113,7 +113,6 @@ public final class TooltipWiring {
         MAP.put(R.id.btn_share_qr, TooltipTag.MAIN_SHARE_QR);
         MAP.put(R.id.btn_settings, TooltipTag.MAIN_SETTINGS);
         MAP.put(R.id.theme_toggle, TooltipTag.MAIN_THEME_TOGGLE);
-        MAP.put(R.id.version_text, TooltipTag.MAIN_VERSION);
     }
 
     /** Attach tier-1/2 tooltips (long-press) to every mapped control found under {@code root}. */
