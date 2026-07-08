@@ -376,7 +376,7 @@ public final class PlannerController {
                         txtLegendFree.setText(String.format(java.util.Locale.US, "%.1fG", (freeSpaceGb - pTotal)));
                         txtLegendFree.setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.dash_text_inverted));
                     } else {
-                        txtLegendFree.setText("OVERLOAD");
+                        txtLegendFree.setText(R.string.storage_overload);
                         txtLegendFree.setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.status_danger));
                     }
                 }
@@ -410,7 +410,7 @@ public final class PlannerController {
                     }
 
                     int centerColor = (host.getSelectedTier() == null || host.isStorageSafe()) ? ContextCompat.getColor(fragment.requireContext(), R.color.dash_text_inverted) : ContextCompat.getColor(fragment.requireContext(), R.color.status_danger);
-                    storageGauge.updateData(segments, String.format(java.util.Locale.US, "%.1fG", pTotal), centerColor, "Projected", "Storage");
+                    storageGauge.updateData(segments, String.format(java.util.Locale.US, "%.1fG", pTotal), centerColor, fragment.getString(R.string.gauge_projected), fragment.getString(R.string.gauge_storage));
                 }
 
                 if (fragment.getActivity() != null)
@@ -419,7 +419,7 @@ public final class PlannerController {
 
             @Override
             public void onError(String error) {
-                if (fragment.isAdded() && txtLegendFree != null) txtLegendFree.setText("Error");
+                if (fragment.isAdded() && txtLegendFree != null) txtLegendFree.setText(R.string.gauge_error);
             }
         });
     }

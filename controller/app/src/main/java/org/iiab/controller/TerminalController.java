@@ -195,7 +195,7 @@ public class TerminalController {
                     new androidx.appcompat.app.AlertDialog.Builder(activity)
                             .setTitle(R.string.terminal_crash_title)
                             .setMessage(android.util.Log.getStackTraceString(t))
-                            .setPositiveButton("OK", null)
+                            .setPositiveButton(android.R.string.ok, null)
                             .show();
                 }
     }

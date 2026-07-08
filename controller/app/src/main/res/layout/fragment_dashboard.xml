@@ -124,7 +124,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Wi-Fi"
+                        android:text="@string/wifi"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:layout_toEndOf="@id/ic_wifi"
@@ -161,7 +161,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hotspot"
+                        android:text="@string/hotspot"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:layout_toEndOf="@id/ic_hotspot"
@@ -199,7 +199,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Uptime:"
+                    android:text="@string/uptime_label"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:layout_marginStart="6dp"

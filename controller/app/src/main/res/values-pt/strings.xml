@@ -573,4 +573,17 @@
     <string name="setup_dns_hint">DNS personalizado para o servidor.</string>
     <string name="tooltip_see_more">Ver mais</string>
     <string name="tooltip_help_unavailable">O conteúdo de ajuda ainda não está instalado.</string>
+
+    <!-- ADFA-4537: externalized strings -->
+    <string name="adb_invalid_pin_length">Comprimento de PIN inválido. Deve ter 6 dígitos.</string>
+    <string name="securing_connection">Protegendo a conexão…</string>
+    <string name="storage_overload">SOBRECARGA</string>
+    <string name="gauge_projected">Projetado</string>
+    <string name="gauge_storage">Armazenamento</string>
+    <string name="gauge_error">Erro</string>
+    <string name="sync_transfer_eta">ETA: %1$s</string>
+    <string name="cd_share_via_qr">Compartilhar via QR</string>
+    <string name="cd_settings">Configurações</string>
+    <string name="cd_toggle_theme">Alternar tema</string>
+    <string name="uptime_label">Tempo ativo:</string>
 </resources>

@@ -42,7 +42,7 @@
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_center_focus_strong"
-                android:contentDescription="Share via QR"
+                android:contentDescription="@string/cd_share_via_qr"
                 android:padding="12dp"
                 android:scaleType="fitCenter"
                 android:tint="#FFFFFF" />
@@ -57,7 +57,7 @@
                     android:layout_height="match_parent"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/ic_menu_preferences"
-                    android:contentDescription="Settings"
+                    android:contentDescription="@string/cd_settings"
                     android:padding="12dp"
                     android:scaleType="fitCenter"
                     android:tint="#FFFFFF" />
@@ -69,7 +69,7 @@
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_theme_system"
-                android:contentDescription="Toggle Theme"
+                android:contentDescription="@string/cd_toggle_theme"
                 android:padding="12dp"
                 android:scaleType="fitCenter"
                 android:tint="#FFFFFF" />

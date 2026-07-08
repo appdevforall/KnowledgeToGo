@@ -571,4 +571,17 @@
     <string name="setup_dns_hint">सर्वर के लिए कस्टम DNS।</string>
     <string name="tooltip_see_more">और देखें</string>
     <string name="tooltip_help_unavailable">सहायता सामग्री अभी इंस्टॉल नहीं है।</string>
+
+    <!-- ADFA-4537: externalized strings -->
+    <string name="adb_invalid_pin_length">अमान्य पिन लंबाई। 6 अंक होने चाहिए।</string>
+    <string name="securing_connection">कनेक्शन सुरक्षित किया जा रहा है…</string>
+    <string name="storage_overload">अधिभार</string>
+    <string name="gauge_projected">अनुमानित</string>
+    <string name="gauge_storage">संग्रहण</string>
+    <string name="gauge_error">त्रुटि</string>
+    <string name="sync_transfer_eta">ETA: %1$s</string>
+    <string name="cd_share_via_qr">QR से साझा करें</string>
+    <string name="cd_settings">सेटिंग्स</string>
+    <string name="cd_toggle_theme">थीम बदलें</string>
+    <string name="uptime_label">अपटाइम:</string>
 </resources>
