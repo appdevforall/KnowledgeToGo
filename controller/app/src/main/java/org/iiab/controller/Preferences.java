@@ -18,7 +18,6 @@ import android.content.SharedPreferences;
 public class Preferences {
     public static final String PREFS_NAME = "SocksPrefs";
     public static final String WATCHDOG_ENABLE = "WatchdogEnable";
-    public static final String MAINTENANCE_MODE = "MaintenanceMode";
 
     private SharedPreferences prefs;
 
@@ -33,16 +32,6 @@ public class Preferences {
     public void setWatchdogEnable(boolean enable) {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(WATCHDOG_ENABLE, enable);
-        editor.commit();
-    }
-
-    public boolean getMaintenanceMode() {
-        return prefs.getBoolean(MAINTENANCE_MODE, true);
-    }
-
-    public void setMaintenanceMode(boolean enable) {
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(MAINTENANCE_MODE, enable);
         editor.commit();
     }
 

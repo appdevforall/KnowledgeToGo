@@ -5,7 +5,6 @@
     <string name="cancel">Cancel</string>
     <string name="copy_all">Copy All</string>
     <string name="fix_action">FIX</string>
-    <string name="save">Save</string>
 
     <string name="connection_log_label">Server Log</string>
     <string name="label_separator_down">▼ %s</string>
@@ -111,8 +110,6 @@
     <string name="dns_accept">Accept &amp; save</string>
     <string name="dns_status_testing">Testing…</string>
     <string name="dns_status_ok">DNS works — saved</string>
-    <string name="maintenance_mode">Maintenance Mode</string>
-    <string name="maintenance_warning_msg">Disable Safe Pocket Web in order to modify</string>
 
     <string name="user_initiated_conn">User initiated connection</string>
 

@@ -5,7 +5,6 @@
     <string name="cancel">Отмена</string>
     <string name="copy_all">Скопировать все</string>
     <string name="fix_action">ИСПРАВИТЬ</string>
-    <string name="save">Сохранить</string>
 
     <string name="connection_log_label">Журнал подключений</string>
     <string name="label_separator_down">▼ %s</string>
@@ -102,8 +101,6 @@
     <string name="qr_title_wifi">Сеть Wi-Fi</string>
 
 
-    <string name="maintenance_mode">Режим обслуживания</string>
-    <string name="maintenance_warning_msg">Отключите Safe Pocket Web для изменения настроек.</string>
 
     <string name="user_initiated_conn">Соединение инициировано пользователем</string>
 
