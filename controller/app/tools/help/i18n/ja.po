@@ -1,0 +1,383 @@
+# NOTE: Machine translation (AI) — pending human review; not final.
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: ja\n"
+"X-Translated-By: machine\n"
+
+msgctxt "main.settings.summary"
+msgid "Open <b>Settings</b> to configure the app, permissions and language."
+msgstr "<b>設定</b>を開いて、アプリ・権限・言語を構成します。"
+
+msgctxt "main.settings.detail"
+msgid "Settings groups app-wide options: the permissions the app needs, the interface language, and analytics consent. Nothing here starts or stops the server."
+msgstr "設定にはアプリ全体のオプションがまとまっています。アプリに必要な権限、表示言語、分析への同意などです。ここではサーバーの起動や停止は行いません。"
+
+msgctxt "main.share_qr.summary"
+msgid "Show a <b>QR code</b> so a nearby device can join and open your library."
+msgstr "近くの端末が参加してライブラリを開けるように<b>QRコード</b>を表示します。"
+
+msgctxt "main.share_qr.detail"
+msgid "The QR encodes the Wi-Fi network (or hotspot) plus the address of your library. Guests scan it to connect and browse from their device — no typing required."
+msgstr "QRにはWi-Fiネットワーク（またはホットスポット）とライブラリのアドレスが含まれます。ゲストはスキャンするだけで接続し、自分の端末から閲覧できます。入力は不要です。"
+
+msgctxt "main.theme_toggle.summary"
+msgid "Switch between <b>light and dark</b> theme."
+msgstr "<b>ライトとダーク</b>のテーマを切り替えます。"
+
+msgctxt "main.version.summary"
+msgid "The installed app <b>version</b>."
+msgstr "インストール済みのアプリの<b>バージョン</b>。"
+
+msgctxt "usage.wifi.summary"
+msgid "Indicator of the current status and a shortcut to the <b>Wi-Fi</b> interface."
+msgstr "現在の状態の表示と、<b>Wi-Fi</b>設定へのショートカット。"
+
+msgctxt "usage.wifi.detail"
+msgid "Shows whether the Wi-Fi interface is up and is also a shortcut to it. When it is up, other devices on the same network can open your library at your phone's address."
+msgstr "Wi-Fiインターフェースが有効かどうかを示し、そこへのショートカットにもなります。有効なとき、同じネットワーク上の他の端末が、あなたの端末のアドレスでライブラリを開けます。"
+
+msgctxt "usage.hotspot.summary"
+msgid "Indicator of the current status and a shortcut to the <b>hotspot</b>."
+msgstr "現在の状態の表示と、<b>ホットスポット</b>へのショートカット。"
+
+msgctxt "usage.hotspot.detail"
+msgid "Shows whether the phone's hotspot is on and is also a shortcut to it. When it is on, connected devices can join it and open your library."
+msgstr "端末のホットスポットがオンかどうかを示し、そこへのショートカットにもなります。オンのとき、接続した端末が参加してライブラリを開けます。"
+
+msgctxt "usage.browse_content.summary"
+msgid "Open your <b>library</b> in the built-in browser."
+msgstr "内蔵ブラウザで<b>ライブラリ</b>を開きます。"
+
+msgctxt "usage.server_control.summary"
+msgid "<b>Start or stop</b> the content server."
+msgstr "コンテンツサーバーを<b>開始または停止</b>します。"
+
+msgctxt "usage.server_control.detail"
+msgid "Other connected devices can only reach your library while the server is running. The first start can take a few seconds."
+msgstr "接続中の他の端末は、サーバーが動作している間だけライブラリにアクセスできます。最初の起動には数秒かかることがあります。"
+
+msgctxt "usage.dns_settings.summary"
+msgid "<b>Advanced</b> server settings."
+msgstr "サーバーの<b>詳細</b>設定。"
+
+msgctxt "usage.dns_check.summary"
+msgid "Enable <b>custom DNS</b> settings for the server."
+msgstr "サーバーの<b>カスタムDNS</b>設定を有効にします。"
+
+msgctxt "usage.dns_check.detail"
+msgid "Only needed in special network setups; leave it off unless you know you need it."
+msgstr "特別なネットワーク構成でのみ必要です。必要だと分かっている場合を除き、オフのままにしてください。"
+
+msgctxt "usage.dns_accept.summary"
+msgid "Apply the DNS settings you entered."
+msgstr "入力したDNS設定を適用します。"
+
+msgctxt "usage.log.summary"
+msgid "Show the <b>connection log</b>."
+msgstr "<b>接続ログ</b>を表示します。"
+
+msgctxt "usage.clear_log.summary"
+msgid "<b>Clear</b> the connection log."
+msgstr "接続ログを<b>消去</b>します。"
+
+msgctxt "usage.copy_log.summary"
+msgid "<b>Copy</b> the whole log to the clipboard."
+msgstr "ログ全体をクリップボードに<b>コピー</b>します。"
+
+msgctxt "sync.mode_share.summary"
+msgid "Choose <b>Share</b> to send your library or apps to another device."
+msgstr "ライブラリやアプリを別の端末に送るには<b>共有</b>を選びます。"
+
+msgctxt "sync.mode_receive.summary"
+msgid "Choose <b>Receive</b> to get content from another device."
+msgstr "別の端末からコンテンツを受け取るには<b>受信</b>を選びます。"
+
+msgctxt "sync.net_wifi.summary"
+msgid "Transfer over <b>Wi-Fi</b>."
+msgstr "<b>Wi-Fi</b>で転送します。"
+
+msgctxt "sync.net_hotspot.summary"
+msgid "Transfer over the <b>hotspot</b>."
+msgstr "<b>ホットスポット</b>で転送します。"
+
+msgctxt "sync.start_server.summary"
+msgid "<b>Start the server</b> so another device can pull your library."
+msgstr "別の端末があなたのライブラリを取得できるように<b>サーバーを開始</b>します。"
+
+msgctxt "sync.share_app.summary"
+msgid "Share the <b>K2Go app</b> itself with a nearby device."
+msgstr "<b>K2Goアプリ</b>そのものを近くの端末と共有します。"
+
+msgctxt "sync.share_app.detail"
+msgid "Lets someone install K2Go from you without internet: they connect and download the app directly."
+msgstr "インターネットなしで相手があなたからK2Goをインストールできます。接続してアプリを直接ダウンロードします。"
+
+msgctxt "sync.scan_qr.summary"
+msgid "<b>Scan a QR</b> to connect to the other device."
+msgstr "<b>QRをスキャン</b>して相手の端末に接続します。"
+
+msgctxt "sync.cancel_transfer.summary"
+msgid "<b>Cancel</b> the current transfer."
+msgstr "現在の転送を<b>キャンセル</b>します。"
+
+msgctxt "dashboard.flip_gauges.summary"
+msgid "Flip to the next set of <b>gauges</b>."
+msgstr "次の<b>ゲージ</b>の組に切り替えます。"
+
+msgctxt "dashboard.modules_title.summary"
+msgid "Show or hide the list of <b>installed modules</b> (shown as LED indicators)."
+msgstr "<b>インストール済みモジュール</b>の一覧（LEDインジケーターとして表示）を表示または非表示にします。"
+
+msgctxt "about.analytics_consent.summary"
+msgid "Turn anonymous <b>usage analytics</b> on or off."
+msgstr "匿名の<b>使用状況分析</b>のオン・オフを切り替えます。"
+
+msgctxt "about.analytics_consent.detail"
+msgid "When on, the app shares anonymous usage data to help improve it. No personal content is collected."
+msgstr "オンのとき、アプリは改善のために匿名の使用状況データを共有します。個人的なコンテンツは収集されません。"
+
+msgctxt "feedback.category.summary"
+msgid "Pick the <b>type</b> of feedback you're sending."
+msgstr "送信するフィードバックの<b>種類</b>を選びます。"
+
+msgctxt "feedback.send.summary"
+msgid "<b>Send</b> your feedback to the team."
+msgstr "フィードバックをチームに<b>送信</b>します。"
+
+msgctxt "feedback.force_crash.summary"
+msgid "Trigger a test <b>crash</b> — for diagnostics only."
+msgstr "テスト用の<b>クラッシュ</b>を発生させます — 診断専用です。"
+
+msgctxt "setup_section.continue.summary"
+msgid "Continue to the next setup step."
+msgstr "次のセットアップ手順に進みます。"
+
+msgctxt "setup_section.perm_notifications.summary"
+msgid "Allow <b>notifications</b> so the app can alert you about the server and transfers."
+msgstr "サーバーや転送についてアプリが通知できるように<b>通知</b>を許可します。"
+
+msgctxt "setup_section.perm_storage.summary"
+msgid "Allow <b>storage</b> access so the app can read and serve your library files."
+msgstr "アプリがライブラリのファイルを読み取り提供できるように<b>ストレージ</b>へのアクセスを許可します。"
+
+msgctxt "setup_section.perm_overlay.summary"
+msgid "Allow the app to <b>display over other apps</b> (needed for some on-screen help)."
+msgstr "アプリが<b>他のアプリの上に表示</b>できるように許可します（一部の画面上ヘルプに必要）。"
+
+msgctxt "setup_section.perm_battery.summary"
+msgid "Let the app <b>keep running</b> in the background so the server stays up."
+msgstr "サーバーが動作し続けるように、アプリをバックグラウンドで<b>実行し続け</b>させます。"
+
+msgctxt "setup_section.manage_all.summary"
+msgid "Open the system screen to manage <b>all permissions</b> at once."
+msgstr "システム画面を開いて<b>すべての権限</b>を一度に管理します。"
+
+msgctxt "setup_section.language_header.summary"
+msgid "Choose the app and content <b>language</b>."
+msgstr "アプリとコンテンツの<b>言語</b>を選びます。"
+
+msgctxt "setup_section.app_language.summary"
+msgid "Language of the <b>app interface</b>."
+msgstr "<b>アプリ画面</b>の言語。"
+
+msgctxt "setup_section.content_language.summary"
+msgid "Preferred language for <b>downloaded content</b>."
+msgstr "<b>ダウンロードするコンテンツ</b>の優先言語。"
+
+msgctxt "setup.done.summary"
+msgid "Finish and close <b>settings</b>."
+msgstr "完了して<b>設定</b>を閉じます。"
+
+msgctxt "setup.nav_setup.summary"
+msgid "Go to the <b>setup</b> steps."
+msgstr "<b>セットアップ</b>の手順に移動します。"
+
+msgctxt "setup.nav_feedback.summary"
+msgid "Go to <b>feedback</b>."
+msgstr "<b>フィードバック</b>に移動します。"
+
+msgctxt "setup.nav_about.summary"
+msgid "Go to the <b>About</b> screen."
+msgstr "<b>情報</b>画面に移動します。"
+
+msgctxt "portal.handle.summary"
+msgid "Show the <b>navigation</b> bar."
+msgstr "<b>ナビゲーション</b>バーを表示します。"
+
+msgctxt "portal.hide_nav.summary"
+msgid "<b>Hide</b> the navigation bar."
+msgstr "ナビゲーションバーを<b>非表示</b>にします。"
+
+msgctxt "portal.back.summary"
+msgid "Go <b>back</b>."
+msgstr "<b>戻る</b>。"
+
+msgctxt "portal.home.summary"
+msgid "Go to the library <b>home</b> page."
+msgstr "ライブラリの<b>ホーム</b>ページに移動します。"
+
+msgctxt "portal.reload.summary"
+msgid "<b>Reload</b> the page."
+msgstr "ページを<b>再読み込み</b>します。"
+
+msgctxt "portal.exit.summary"
+msgid "<b>Close</b> the browser and return to the app."
+msgstr "ブラウザを<b>閉じて</b>アプリに戻ります。"
+
+msgctxt "portal.forward.summary"
+msgid "Go <b>forward</b>."
+msgstr "<b>進む</b>。"
+
+msgctxt "qr.flip.summary"
+msgid "Switch the QR between the <b>Wi-Fi network</b> and the <b>hotspot</b>."
+msgstr "QRを<b>Wi-Fiネットワーク</b>と<b>ホットスポット</b>で切り替えます。"
+
+msgctxt "qr.close.summary"
+msgid "<b>Close</b> the QR code."
+msgstr "QRコードを<b>閉じます</b>。"
+
+msgctxt "crash.dismiss.summary"
+msgid "<b>Dismiss</b> this crash report without sending."
+msgstr "このクラッシュレポートを送信せずに<b>破棄</b>します。"
+
+msgctxt "crash.send.summary"
+msgid "<b>Send</b> the crash report to help us fix the problem."
+msgstr "問題の修正に役立てるためクラッシュレポートを<b>送信</b>します。"
+
+msgctxt "deploy.led_dcpr.summary"
+msgid "Status and control to disable the <b>child-process restriction</b>."
+msgstr "<b>子プロセス制限</b>を無効にする状態表示と操作。"
+
+msgctxt "deploy.led_ppk.summary"
+msgid "Status and control to disable the <b>Phantom Process Killer</b> (PPK)."
+msgstr "<b>Phantom Process Killer</b>（PPK）を無効にする状態表示と操作。"
+
+msgctxt "deploy.adv_monitoring.summary"
+msgid "Show <b>advanced monitoring</b> for the install."
+msgstr "インストールの<b>詳細モニタリング</b>を表示します。"
+
+msgctxt "deploy.adb_action.summary"
+msgid "Connect over <b>ADB</b> for advanced monitoring."
+msgstr "詳細モニタリングのために<b>ADB</b>で接続します。"
+
+msgctxt "deploy.tier_basic.summary"
+msgid "Install the <b>Basic</b> edition (smallest set of apps)."
+msgstr "<b>ベーシック</b>版をインストールします（最小のアプリ構成）。"
+
+msgctxt "deploy.tier_standard.summary"
+msgid "Install the <b>Standard</b> edition."
+msgstr "<b>スタンダード</b>版をインストールします。"
+
+msgctxt "deploy.tier_full.summary"
+msgid "Install the <b>Full</b> edition (largest set of apps)."
+msgstr "<b>フル</b>版をインストールします（最大のアプリ構成）。"
+
+msgctxt "deploy.companion_data.summary"
+msgid "Also install <b>companion content</b> with the modules."
+msgstr "モジュールと一緒に<b>付随コンテンツ</b>もインストールします。"
+
+msgctxt "deploy.kiwix_settings.summary"
+msgid "Open <b>Kiwix</b> download settings (language and variant)."
+msgstr "<b>Kiwix</b>のダウンロード設定（言語と種類）を開きます。"
+
+msgctxt "deploy.fast_install.summary"
+msgid "<b>Provision</b> the selected edition now."
+msgstr "選択した版を今すぐ<b>プロビジョニング</b>します。"
+
+msgctxt "deploy.fast_delete.summary"
+msgid "<b>Delete</b> the installed content."
+msgstr "インストール済みのコンテンツを<b>削除</b>します。"
+
+msgctxt "deploy.module_mgmt.summary"
+msgid "Show or hide <b>module management</b>."
+msgstr "<b>モジュール管理</b>を表示または非表示にします。"
+
+msgctxt "deploy.refresh_modules.summary"
+msgid "<b>Refresh</b> the list of modules installed on the system."
+msgstr "システムにインストール済みのモジュール一覧を<b>更新</b>します。"
+
+msgctxt "deploy.launch_install.summary"
+msgid "<b>Launch</b> the installation of the selected modules."
+msgstr "選択したモジュールのインストールを<b>開始</b>します。"
+
+msgctxt "deploy.maintenance.summary"
+msgid "Show or hide <b>maintenance</b> tools."
+msgstr "<b>メンテナンス</b>ツールを表示または非表示にします。"
+
+msgctxt "deploy.backup.summary"
+msgid "<b>Back up</b> your installed content and settings."
+msgstr "インストール済みのコンテンツと設定を<b>バックアップ</b>します。"
+
+msgctxt "deploy.reset.summary"
+msgid "<b>Reset</b> to a bare-bones system install (no services)."
+msgstr "必要最小限のシステムインストールに<b>リセット</b>します（サービスなし）。"
+
+msgctxt "deploy.restore.summary"
+msgid "<b>Restore</b> from a backup."
+msgstr "バックアップから<b>復元</b>します。"
+
+msgctxt "deploy.force_stop.summary"
+msgid "<b>Force-stop</b> the app."
+msgstr "アプリを<b>強制停止</b>します。"
+
+msgctxt "deploy.import_backup.summary"
+msgid "<b>Import</b> a backup from external storage."
+msgstr "外部ストレージからバックアップを<b>インポート</b>します。"
+
+msgctxt "deploy.select_backup.summary"
+msgid "Choose which <b>backup</b> to use."
+msgstr "使用する<b>バックアップ</b>を選びます。"
+
+msgctxt "deploy.restore_log_close.summary"
+msgid "<b>Close</b> the restore log."
+msgstr "復元ログを<b>閉じます</b>。"
+
+msgctxt "main.theme_toggle.detail"
+msgid "Switch manually between light and dark, or let the app follow your device's system theme."
+msgstr "ライトとダークを手動で切り替えるか、アプリを端末のシステムテーマに従わせます。"
+
+msgctxt "usage.lohs_toggle.summary"
+msgid "Turn on a <b>local-only hotspot</b> that works even with no SIM."
+msgstr "SIMがなくても機能する<b>ローカル専用ホットスポット</b>をオンにします。"
+
+msgctxt "usage.lohs_toggle.detail"
+msgid "Creates a Wi-Fi hotspot without using the carrier tethering path, so it works with no SIM or mobile plan — useful when the normal hotspot is blocked. Location must be on."
+msgstr "通信事業者のテザリング経路を使わずにWi-Fiホットスポットを作成するため、SIMやモバイル契約がなくても機能します — 通常のホットスポットがブロックされているときに便利です。位置情報をオンにする必要があります。"
+
+msgctxt "usage.lohs_show_qr.summary"
+msgid "Show a <b>Wi-Fi QR</b> to join the local-only hotspot."
+msgstr "ローカル専用ホットスポットに参加するための<b>Wi-Fi QR</b>を表示します。"
+
+msgctxt "usage.lohs_show_qr.detail"
+msgid "The local-only hotspot uses an auto-generated name and password; scanning the QR joins it without typing them."
+msgstr "ローカル専用ホットスポットは自動生成された名前とパスワードを使用します。QRをスキャンすれば入力せずに参加できます。"
+
+msgctxt "deploy.led_ppk.detail"
+msgid "Not a simple on/off — it raises Android's phantom-process limit (to 256) so the server's child processes aren't killed."
+msgstr "単純なオン・オフではありません — Androidのファントムプロセス上限（256）を引き上げ、サーバーの子プロセスが終了されないようにします。"
+
+msgctxt "deploy.internet.summary"
+msgid "Indicator of the phone's <b>internet access</b>."
+msgstr "端末の<b>インターネット接続</b>の表示。"
+
+msgctxt "deploy.internet.detail"
+msgid "Gray = not checked yet, red = no internet, green = online."
+msgstr "グレー=未確認、赤=インターネットなし、緑=オンライン。"
+
+msgctxt "deploy.dev_mode.summary"
+msgid "Indicator of whether <b>Developer mode</b> is enabled."
+msgstr "<b>開発者モード</b>が有効かどうかの表示。"
+
+msgctxt "deploy.dev_mode.detail"
+msgid "Developer options are effectively required for advanced features like sharing or transferring an install and wireless debugging."
+msgstr "共有やインストールの転送、ワイヤレスデバッグなどの高度な機能には、開発者向けオプションが実質的に必要です。"
+
+msgctxt "deploy.export_backup.summary"
+msgid "<b>Export</b> a backup to external storage."
+msgstr "外部ストレージにバックアップを<b>エクスポート</b>します。"
+
+msgctxt "deploy.delete_backup.summary"
+msgid "<b>Delete</b> a saved backup."
+msgstr "保存済みのバックアップを<b>削除</b>します。"
+
