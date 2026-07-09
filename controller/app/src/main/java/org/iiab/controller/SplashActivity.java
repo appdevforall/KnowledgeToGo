@@ -28,8 +28,8 @@ import android.animation.ValueAnimator;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final long EXIT_AT_MS = 2000L;
-    private static final long EXIT_FADE_MS = 350L;
+    private static final long EXIT_AT_MS = 3100L;
+    private static final long EXIT_FADE_MS = 400L;
     private AuroraView aurora;
 
     @Override
@@ -59,10 +59,10 @@ public class SplashActivity extends AppCompatActivity {
         clip.setLevel(0);
         logo.setImageDrawable(clip);
         logo.setAlpha(0f);
-        logo.animate().alpha(1f).setStartDelay(180L).setDuration(420L).start();
+        logo.animate().alpha(1f).setStartDelay(220L).setDuration(520L).start();
         ValueAnimator wipe = ValueAnimator.ofInt(0, 10000);
-        wipe.setStartDelay(180L);
-        wipe.setDuration(850L);
+        wipe.setStartDelay(220L);
+        wipe.setDuration(980L);
         wipe.setInterpolator(new DecelerateInterpolator());
         wipe.addUpdateListener(a -> clip.setLevel((int) a.getAnimatedValue()));
         wipe.start();
@@ -71,11 +71,11 @@ public class SplashActivity extends AppCompatActivity {
         float dy = 16f * getResources().getDisplayMetrics().density;
         word.setAlpha(0f);
         word.setTranslationY(dy);
-        word.animate().alpha(1f).translationY(0f).setStartDelay(720L).setDuration(500L).start();
+        word.animate().alpha(1f).translationY(0f).setStartDelay(950L).setDuration(600L).start();
 
         // Credit fades in last.
         credit.setAlpha(0f);
-        credit.animate().alpha(1f).setStartDelay(1100L).setDuration(400L).start();
+        credit.animate().alpha(1f).setStartDelay(1450L).setDuration(480L).start();
 
         // Exit: fade the whole screen to the base color, then route to MainActivity.
         final View fade = findViewById(R.id.fade);
