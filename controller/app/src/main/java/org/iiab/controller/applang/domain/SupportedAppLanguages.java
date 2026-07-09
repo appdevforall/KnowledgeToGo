@@ -45,6 +45,7 @@ public final class SupportedAppLanguages {
         list.add(new AppLanguage("lt", "Lietuvių"));
         list.add(new AppLanguage("no", "Norsk"));
         list.add(new AppLanguage("hu", "Magyar"));
+        list.add(new AppLanguage("az", "Azərbaycan"));
         list.add(new AppLanguage("es", "Español"));
         list.add(new AppLanguage("fr", "Français"));
         list.add(new AppLanguage("hi", "हिन्दी"));
