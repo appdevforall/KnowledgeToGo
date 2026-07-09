@@ -21,7 +21,12 @@ public class SupportedAppLanguagesTest {
     @Test
     public void includesShippedLocales() {
         List<AppLanguage> list = SupportedAppLanguages.all("sys");
-        assertEquals(7, list.size());
+        // Keep in sync with the shipped values-* resource folders (ADFA-4537, Track A).
+        String[] shipped = {"en", "de", "es", "fr", "hi", "pt", "ru-RU"};
+        assertEquals(shipped.length + 1, list.size()); // +1 for system default at index 0
+        for (String tag : shipped) {
+            assertTrue("Missing shipped locale: " + tag, SupportedAppLanguages.indexOfTag(list, tag) > 0);
+        }
         assertEquals(1, SupportedAppLanguages.indexOfTag(list, "en"));
         assertEquals("Русский", list.get(SupportedAppLanguages.indexOfTag(list, "ru-RU")).toString());
     }
