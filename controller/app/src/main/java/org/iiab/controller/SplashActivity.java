@@ -10,21 +10,16 @@ package org.iiab.controller;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import android.animation.ValueAnimator;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -52,20 +47,11 @@ public class SplashActivity extends AppCompatActivity {
         word.setTextColor(textColor);
         credit.setTextColor(creditColor);
 
-        // Logo "draw-on": reveal bottom -> top via a ClipDrawable wipe, plus a short fade-in.
+        // Logo reveal: simple fade-in.
         ImageView logo = findViewById(R.id.logo);
-        Drawable art = ContextCompat.getDrawable(this, R.drawable.ic_launcher_foreground);
-        final ClipDrawable clip = new ClipDrawable(art, Gravity.BOTTOM, ClipDrawable.VERTICAL);
-        clip.setLevel(0);
-        logo.setImageDrawable(clip);
+        logo.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_launcher_foreground));
         logo.setAlpha(0f);
-        logo.animate().alpha(1f).setStartDelay(220L).setDuration(520L).start();
-        ValueAnimator wipe = ValueAnimator.ofInt(0, 10000);
-        wipe.setStartDelay(220L);
-        wipe.setDuration(980L);
-        wipe.setInterpolator(new DecelerateInterpolator());
-        wipe.addUpdateListener(a -> clip.setLevel((int) a.getAnimatedValue()));
-        wipe.start();
+        logo.animate().alpha(1f).setStartDelay(220L).setDuration(700L).start();
 
         // Wordmark rises + fades in after the logo.
         float dy = 16f * getResources().getDisplayMetrics().density;
