@@ -584,4 +584,5 @@
     <string name="cd_settings">Paramètres</string>
     <string name="cd_toggle_theme">Changer de thème</string>
     <string name="uptime_label">Temps de fonctionnement :</string>
+    <string name="server_busy_install_lock">Attendez la fin de l\'installation des modules avant de démarrer le serveur.</string>
 </resources>

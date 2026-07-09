@@ -514,4 +514,5 @@
     <string name="cd_settings">Mipangilio</string>
     <string name="cd_toggle_theme">Badilisha Mandhari</string>
     <string name="uptime_label">Muda wa kufanya kazi:</string>
+    <string name="server_busy_install_lock">Subiri usakinishaji wa moduli ukamilike kabla ya kuanzisha seva.</string>
 </resources>

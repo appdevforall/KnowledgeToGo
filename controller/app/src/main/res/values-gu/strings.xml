@@ -507,4 +507,5 @@
     <string name="cd_settings">સેટિંગ્સ</string>
     <string name="cd_toggle_theme">થીમ ટૉગલ કરો</string>
     <string name="uptime_label">અપટાઇમ:</string>
+    <string name="server_busy_install_lock">સર્વર શરૂ કરતાં પહેલાં મોડ્યુલ્સનું ઇન્સ્ટોલેશન પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
 </resources>

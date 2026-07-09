@@ -507,4 +507,5 @@
     <string name="cd_settings">Setări</string>
     <string name="cd_toggle_theme">Comută tema</string>
     <string name="uptime_label">Timp de funcționare:</string>
+    <string name="server_busy_install_lock">Așteptați finalizarea instalării modulelor înainte de a porni serverul.</string>
 </resources>
