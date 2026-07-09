@@ -27,6 +27,7 @@ public final class FeedbackPayload {
     private final String binariesTag;
     private final String screen;
     private final String stackTrace;
+    private final String screenshot;
 
     private FeedbackPayload(Builder b) {
         if (b.type == null) {
@@ -45,6 +46,7 @@ public final class FeedbackPayload {
         this.binariesTag = b.binariesTag;
         this.screen = b.screen;
         this.stackTrace = b.stackTrace;
+        this.screenshot = b.screenshot;
     }
 
     public FeedbackType type() { return type; }
@@ -73,6 +75,9 @@ public final class FeedbackPayload {
 
     public String stackTrace() { return stackTrace; }
 
+    /** Absolute path to an optional screenshot to attach (local file). */
+    public String screenshot() { return screenshot; }
+
     public static Builder builder(FeedbackType type) {
         return new Builder(type);
     }
@@ -92,6 +97,7 @@ public final class FeedbackPayload {
         private String binariesTag;
         private String screen;
         private String stackTrace;
+        private String screenshot;
 
         private Builder(FeedbackType type) {
             this.type = type;
@@ -120,6 +126,8 @@ public final class FeedbackPayload {
         public Builder screen(String v) { this.screen = v; return this; }
 
         public Builder stackTrace(String v) { this.stackTrace = v; return this; }
+
+        public Builder screenshot(String v) { this.screenshot = v; return this; }
 
         public FeedbackPayload build() {
             return new FeedbackPayload(this);

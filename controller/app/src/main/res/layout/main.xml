@@ -208,4 +208,13 @@
             android:visibility="visible" />
     </LinearLayout>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_feedback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/feedback_send"
+        android:src="@drawable/ic_feedback_24" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

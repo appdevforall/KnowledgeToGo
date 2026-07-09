@@ -302,6 +302,43 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
             }
         }).attach();
 
+        // ADFA-4538: draggable feedback FAB — present on all tabs (it lives in the activity,
+        // above the ViewPager, so it persists across tab switches). Tap -> capture screenshot
+        // -> open the feedback form tagged with the current tab.
+        com.google.android.material.floatingactionbutton.FloatingActionButton fabFeedback =
+                findViewById(R.id.fab_feedback);
+        org.iiab.controller.feedback.presentation.FeedbackFab.attach(fabFeedback, () -> {
+            int pos = viewPager.getCurrentItem();
+            String screen = pos == 0 ? "status" : pos == 1 ? "usage" : pos == 2 ? "deploy"
+                    : pos == 3 ? "share" : "main";
+            // Direct feedback report (no intermediate form): capture -> build a report with
+            // device/rootfs diagnostics + screenshot -> hand to the configured transport, which
+            // opens the mail chooser (where the user can add a note or cancel).
+            org.iiab.controller.feedback.data.FeedbackScreenshot.capture(MainActivity.this, path -> {
+                org.iiab.controller.feedback.domain.FeedbackPayload payload =
+                        org.iiab.controller.feedback.domain.FeedbackPayload
+                                .builder(org.iiab.controller.feedback.domain.FeedbackType.GENERAL)
+                                .appVersion(org.iiab.controller.feedback.data.FeedbackDiagnostics.appVersionName(MainActivity.this))
+                                .appBuild(org.iiab.controller.feedback.data.FeedbackDiagnostics.appVersionCode(MainActivity.this))
+                                .androidRelease(android.os.Build.VERSION.RELEASE)
+                                .device(android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL)
+                                .abi(new org.iiab.controller.deviceinfo.domain.GetDeviceArchUseCase(
+                                        new org.iiab.controller.deviceinfo.data.BuildDeviceAbiProvider()).execute())
+                                .binariesTag(org.iiab.controller.feedback.data.FeedbackDiagnostics.binariesTag(MainActivity.this))
+                                .screen("main." + screen)
+                                .screenshot(path)
+                                .build();
+                boolean ok = org.iiab.controller.feedback.data.FeedbackConfig.create(MainActivity.this)
+                        .send(MainActivity.this, payload);
+                if (ok) {
+                    org.iiab.controller.analytics.AnalyticsClient.with(MainActivity.this).logFeedbackSent();
+                } else {
+                    android.widget.Toast.makeText(MainActivity.this, R.string.feedback_no_email_app,
+                            android.widget.Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+
         // --- TUTORIAL TAB DETECTOR  ---
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

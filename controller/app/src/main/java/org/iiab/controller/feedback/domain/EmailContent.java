@@ -10,11 +10,17 @@ public final class EmailContent {
     private final String recipient;
     private final String subject;
     private final String body;
+    private final String attachmentPath;
 
     public EmailContent(String recipient, String subject, String body) {
+        this(recipient, subject, body, null);
+    }
+
+    public EmailContent(String recipient, String subject, String body, String attachmentPath) {
         this.recipient = recipient;
         this.subject = subject;
         this.body = body;
+        this.attachmentPath = attachmentPath;
     }
 
     public String recipient() { return recipient; }
@@ -22,4 +28,7 @@ public final class EmailContent {
     public String subject() { return subject; }
 
     public String body() { return body; }
+
+    /** Optional local file path to attach; null when there is no attachment. */
+    public String attachmentPath() { return attachmentPath; }
 }
