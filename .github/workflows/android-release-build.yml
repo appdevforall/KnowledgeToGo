@@ -65,6 +65,8 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # ADFA-4533: GlitchTip DSN for release builds
+          SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
         run: |
           ./gradlew assembleRelease \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \

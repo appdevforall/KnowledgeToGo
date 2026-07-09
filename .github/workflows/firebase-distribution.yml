@@ -89,6 +89,8 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          # ADFA-4533: GlitchTip DSN for release builds distributed to testers
+          SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
         run: |
           # TODO: Add gradle start/end timers here for the CI performance script
           # echo "gradle_time_start=$(date +%s)" >> $GITHUB_ENV

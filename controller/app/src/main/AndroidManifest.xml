@@ -36,6 +36,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.IIABController">
 
+        <!-- ADFA-4533: GlitchTip (Sentry) crash reporting. DSN injected per build type via the
+             ${sentryDsn} placeholder; auto-init disabled so init is consent-gated in code. -->
+        <meta-data android:name="io.sentry.dsn" android:value="${sentryDsn}" />
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
