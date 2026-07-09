@@ -243,6 +243,14 @@ public class ServerController {
     // --- server start / stop (the control button) -------------------------------
 
     public void handleServerLaunchClick(View v) {
+        // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
+        if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
+                || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+            host.setTargetServerState(null);
+            activity.runOnUiThread(host::stopBtnProgress);
+            host.refreshServerUi();
+            return;
+        }
         // Set a hard timeout as a safety net
         timeoutRunnable = () -> {
             if (host.getTargetServerState() != null) {

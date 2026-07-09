@@ -189,6 +189,14 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             }
             // --------------------------------------------------
 
+            // ADFA-4621: never toggle the server while a rootfs/module install is in flight —
+            // concurrent proot sessions over the same rootfs corrupt the install.
+            if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
+                    || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+                Snackbar.make(v, R.string.server_busy_install_lock, 6000).show();
+                return;
+            }
+
             if (mainActivity.targetServerState != null) return;
 
             mainActivity.serverTransitionText = !ServerStateRepository.get().current().alive ? getString(R.string.server_booting) : getString(R.string.server_shutting_down);
