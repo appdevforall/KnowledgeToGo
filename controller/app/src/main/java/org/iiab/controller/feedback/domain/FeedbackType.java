@@ -11,7 +11,8 @@ public enum FeedbackType {
     CRASH("Crash"),
     BUG("Bug"),
     SUGGESTION("Suggestion"),
-    CONTENT_REQUEST("Content request");
+    CONTENT_REQUEST("Content request"),
+    GENERAL("Feedback");
 
     private final String label;
 

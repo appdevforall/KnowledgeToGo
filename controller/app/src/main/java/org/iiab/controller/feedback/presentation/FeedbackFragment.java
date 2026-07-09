@@ -33,23 +33,6 @@ import org.iiab.controller.feedback.domain.FeedbackType;
  */
 public class FeedbackFragment extends Fragment {
 
-    private static final String ARG_SCREEN = "screen";
-    private static final String ARG_SHOT = "screenshot_path";
-
-    /** Opens the form pre-attaching an optional screenshot and tagging the origin screen. */
-    public static FeedbackFragment newInstance(String screenshotPath, String screen) {
-        FeedbackFragment f = new FeedbackFragment();
-        Bundle b = new Bundle();
-        if (screenshotPath != null) {
-            b.putString(ARG_SHOT, screenshotPath);
-        }
-        if (screen != null) {
-            b.putString(ARG_SCREEN, screen);
-        }
-        f.setArguments(b);
-        return f;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -61,10 +44,6 @@ public class FeedbackFragment extends Fragment {
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
         org.iiab.controller.help.TooltipWiring.wireAll(v);
-
-        Bundle args = getArguments();
-        final String screenArg = args != null ? args.getString(ARG_SCREEN) : null;
-        final String shotArg = args != null ? args.getString(ARG_SHOT) : null;
 
         Spinner category = v.findViewById(R.id.feedback_category);
         EditText message = v.findViewById(R.id.feedback_message);
@@ -103,8 +82,6 @@ public class FeedbackFragment extends Fragment {
                     .device(Build.MANUFACTURER + " " + Build.MODEL)
                     .abi(new GetDeviceArchUseCase(new BuildDeviceAbiProvider()).execute())
                     .binariesTag(FeedbackDiagnostics.binariesTag(requireContext()))
-                    .screen(screenArg)
-                    .screenshot(shotArg)
                     .build();
             FeedbackTransport transport = FeedbackConfig.create(requireContext());
             boolean ok = transport.send(requireContext(), payload);
