@@ -32,7 +32,7 @@ public class ModuleRegistry {
 
     // THE MASTER ROSTER: Centralized list for Dashboard, Deploy, and background checks.
     public static final List<IiabModule> MASTER_ROSTER = Arrays.asList(
-            new IiabModule("books", R.string.dash_books, false, "calibreweb"), // YAML uses calibreweb_install
+            new IiabModule("books", R.string.dash_books, false, "calibreweb"), // var base calibreweb_install; Ansible role dir is calibre-web (see RoleNames, ADFA-4629)
             new IiabModule("code", R.string.dash_code, false, "code"),         // YAML uses code_install
             new IiabModule("kiwix", R.string.dash_kiwix, true, "kiwix"),       // YAML uses kiwix_install. TRUE = Hidden on 32-bit!
             new IiabModule("kolibri", R.string.dash_kolibri, false, "kolibri"), // YAML uses kolibri_install

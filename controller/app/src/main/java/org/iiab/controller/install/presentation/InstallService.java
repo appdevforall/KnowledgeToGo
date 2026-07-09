@@ -557,10 +557,23 @@ public final class InstallService extends Service {
 
         // Speculative local_vars edit BEFORE runrole (same command as the former Fragment loop):
         // reverted on failure so a failed module is not left looking installed/enabled.
+        // ADFA-4629: the Ansible ROLE directory name can differ from the local_vars
+        // variable base -- upstream's runrole documents this (role 'calibre-web' uses var
+        // 'calibreweb'; also iiab-admin, osm-vector-maps). Keep writing <varBase>_install/
+        // enabled, but hand runrole the ROLE name. RoleNames is a hardcoded, unit-tested
+        // map, so the value is safe to interpolate; assert well-formed as a defensive D2 guard.
+        final String roleName = org.iiab.controller.deploy.domain.RoleNames.roleFor(nextModule);
+        if (!org.iiab.controller.deploy.domain.ModuleName.isWellFormed(roleName)) {
+            Log.e(TAG, "Refusing runrole with a malformed role name: " + roleName);
+            log("[Security] Skipped invalid role name: " + roleName);
+            installNextModule();
+            return;
+        }
+
         String installCmd = "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
-                "cd /opt/iiab/iiab && ./runrole " + nextModule;
+                "cd /opt/iiab/iiab && ./runrole " + roleName;
 
         // ADFA-4435: Ansible can print its failure to stdout yet still exit 0, so the verdict
         // considers the output as well as the exit code (pure, unit-tested domain object).
