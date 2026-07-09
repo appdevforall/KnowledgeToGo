@@ -135,9 +135,9 @@
     <string name="security_required_title">Sicurezza richiesta</string>
     <string name="battery_opt_denied">Perché l\'app funzioni al meglio, disattiva l\'ottimizzazione della batteria.</string>
     <string name="battery_opt_msg">Perché il Watchdog funzioni in modo affidabile, disattiva le ottimizzazioni della batteria per questa app.</string>
-    <string name="battery_opt_oppo_extra">\n\nOPPO/Realme rilevato: assicurati di abilitare anche \\'Consenti attività in background\\' nelle impostazioni di questa app.</string>
+    <string name="battery_opt_oppo_extra">\n\nOPPO/Realme rilevato: assicurati di abilitare anche \'Consenti attività in background\' nelle impostazioni di questa app.</string>
     <string name="battery_opt_title">Ottimizzazione della batteria</string>
-    <string name="battery_opt_xiaomi_extra">\n\nXiaomi rilevato: imposta il risparmio energetico su \\'Nessuna restrizione\\' nelle impostazioni.</string>
+    <string name="battery_opt_xiaomi_extra">\n\nXiaomi rilevato: imposta il risparmio energetico su \'Nessuna restrizione\' nelle impostazioni.</string>
     <string name="go_to_settings">Vai alle impostazioni</string>
     <string name="app_started">Applicazione avviata</string>
     <string name="pref_file_internal">IIAB_Internal</string>
@@ -211,7 +211,7 @@
     <string name="install_dialog_delete_backup_msg">Vuoi davvero eliminare definitivamente %1$s?\n\nQuesta azione non può essere annullata.</string>
     <string name="install_msg_backup_deleted">Backup eliminato correttamente.</string>
     <string name="adb_notif_title">Debug wireless K2Go</string>
-    <string name="adb_notif_desc">Porte ADB trovate! Tocca \\'Inserisci PIN\\' qui sotto.</string>
+    <string name="adb_notif_desc">Porte ADB trovate! Tocca \'Inserisci PIN\' qui sotto.</string>
     <string name="adb_notif_action_pin">Inserisci PIN</string>
     <string name="adb_notif_input_hint">Inserisci PIN a 6 cifre</string>
     <string name="adb_toast_scan_timeout">Scansione ADB scaduta. Riprova.</string>
@@ -312,7 +312,7 @@
     <string name="kiwix_select_variant_error">Seleziona una variante ZIM dall\'elenco</string>
     <string name="kiwix_catalog_error">Errore nel caricamento del catalogo: %1$s</string>
     <string name="adb_enforcer_title">Ottimizzazione del sistema richiesta</string>
-    <string name="adb_enforcer_body">Per garantire trasferimenti stabili di file di grandi dimensioni, i rigidi limiti dei processi in background di Android devono essere temporaneamente aggirati.\n\nVai su \\'Monitoraggio avanzato\\' nella scheda Deploy, connettiti via ADB e applica le impostazioni consigliate per la \\'Restrizione processi\\'.</string>
+    <string name="adb_enforcer_body">Per garantire trasferimenti stabili di file di grandi dimensioni, i rigidi limiti dei processi in background di Android devono essere temporaneamente aggirati.\n\nVai su \'Monitoraggio avanzato\' nella scheda Deploy, connettiti via ADB e applica le impostazioni consigliate per la \'Restrizione processi\'.</string>
     <string name="adb_enforcer_btn_setup">Configura</string>
     <string name="adb_enforcer_btn_ok">OK</string>
     <string name="install_led_internet">Accesso a\nInternet</string>
