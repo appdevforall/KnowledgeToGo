@@ -23,6 +23,7 @@ public final class SupportedAppLanguages {
         List<AppLanguage> list = new ArrayList<>();
         list.add(new AppLanguage("", systemDefaultLabel));
         list.add(new AppLanguage("en", "English"));
+        list.add(new AppLanguage("de", "Deutsch"));
         list.add(new AppLanguage("es", "Español"));
         list.add(new AppLanguage("fr", "Français"));
         list.add(new AppLanguage("hi", "हिन्दी"));
