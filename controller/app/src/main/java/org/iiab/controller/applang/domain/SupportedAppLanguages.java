@@ -1,61 +1,78 @@
 package org.iiab.controller.applang.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * The fixed set of UI languages the app can switch to: "system default" first (empty tag),
- * then every locale the app ships translations for, labelled with its endonym. Pure and
- * JVM-testable. Region-qualified tags (e.g. {@code ru-RU}) match the corresponding
- * {@code values-*} resource folders.
+ * then every locale the app ships translations for, ordered A–Z by the language's English
+ * name so the picker is one flat, searchable list (not grouped by script). Each entry is
+ * labelled {@code "<endonym> (<English name>)"} — e.g. {@code "Español (Spanish)"} — so a
+ * user can find their language under its Roman-alphabet name regardless of its own script.
+ * Pure and JVM-testable. Region-qualified tags (e.g. {@code ru-RU}) match the corresponding
+ * {@code values-*} resource folders. See ADFA-4537.
  */
 public final class SupportedAppLanguages {
+
+    /** {tag, endonym (native name), English name}. Order here is irrelevant — sorted below. */
+    private static final String[][] LANGUAGES = {
+        {"en", "English", "English"},
+        {"de", "Deutsch", "German"},
+        {"it", "Italiano", "Italian"},
+        {"ar", "العربية", "Arabic"},
+        {"ja", "日本語", "Japanese"},
+        {"zh-CN", "简体中文", "Chinese (Simplified)"},
+        {"ko", "한국어", "Korean"},
+        {"nl", "Nederlands", "Dutch"},
+        {"tr", "Türkçe", "Turkish"},
+        {"vi", "Tiếng Việt", "Vietnamese"},
+        {"pl", "Polski", "Polish"},
+        {"cs", "Čeština", "Czech"},
+        {"id", "Bahasa Indonesia", "Indonesian"},
+        {"fa", "فارسی", "Persian"},
+        {"uk", "Українська", "Ukrainian"},
+        {"ro", "Română", "Romanian"},
+        {"el", "Ελληνικά", "Greek"},
+        {"sk", "Slovenčina", "Slovak"},
+        {"bg", "Български", "Bulgarian"},
+        {"sr", "Српски", "Serbian"},
+        {"lt", "Lietuvių", "Lithuanian"},
+        {"no", "Norsk", "Norwegian"},
+        {"hu", "Magyar", "Hungarian"},
+        {"az", "Azərbaycan", "Azerbaijani"},
+        {"bn", "বাংলা", "Bengali"},
+        {"gu", "ગુજરાતી", "Gujarati"},
+        {"ta", "தமிழ்", "Tamil"},
+        {"sw", "Kiswahili", "Swahili"},
+        {"yo", "Yorùbá", "Yoruba"},
+        {"es", "Español", "Spanish"},
+        {"fr", "Français", "French"},
+        {"hi", "हिन्दी", "Hindi"},
+        {"pt", "Português", "Portuguese"},
+        {"ru-RU", "Русский", "Russian"},
+    };
 
     private SupportedAppLanguages() {
     }
 
     /**
      * @param systemDefaultLabel localized label for the "follow the phone" option
-     * @return an immutable, ordered list (system default at index 0)
+     * @return an immutable list: system default at index 0, then every language sorted
+     *         A–Z by its English name.
      */
     public static List<AppLanguage> all(String systemDefaultLabel) {
+        String[][] langs = LANGUAGES.clone();
+        Arrays.sort(langs, (a, b) -> a[2].compareToIgnoreCase(b[2]));
         List<AppLanguage> list = new ArrayList<>();
         list.add(new AppLanguage("", systemDefaultLabel));
-        list.add(new AppLanguage("en", "English"));
-        list.add(new AppLanguage("de", "Deutsch"));
-        list.add(new AppLanguage("it", "Italiano"));
-        list.add(new AppLanguage("ar", "العربية"));
-        list.add(new AppLanguage("ja", "日本語"));
-        list.add(new AppLanguage("zh-CN", "简体中文"));
-        list.add(new AppLanguage("ko", "한국어"));
-        list.add(new AppLanguage("nl", "Nederlands"));
-        list.add(new AppLanguage("tr", "Türkçe"));
-        list.add(new AppLanguage("vi", "Tiếng Việt"));
-        list.add(new AppLanguage("pl", "Polski"));
-        list.add(new AppLanguage("cs", "Čeština"));
-        list.add(new AppLanguage("id", "Bahasa Indonesia"));
-        list.add(new AppLanguage("fa", "فارسی"));
-        list.add(new AppLanguage("uk", "Українська"));
-        list.add(new AppLanguage("ro", "Română"));
-        list.add(new AppLanguage("el", "Ελληνικά"));
-        list.add(new AppLanguage("sk", "Slovenčina"));
-        list.add(new AppLanguage("bg", "Български"));
-        list.add(new AppLanguage("sr", "Српски"));
-        list.add(new AppLanguage("lt", "Lietuvių"));
-        list.add(new AppLanguage("no", "Norsk"));
-        list.add(new AppLanguage("hu", "Magyar"));
-        list.add(new AppLanguage("az", "Azərbaycan"));
-        list.add(new AppLanguage("bn", "বাংলা"));
-        list.add(new AppLanguage("gu", "ગુજરાતી"));
-        list.add(new AppLanguage("ta", "தமிழ்"));
-        list.add(new AppLanguage("sw", "Kiswahili"));
-        list.add(new AppLanguage("yo", "Yorùbá"));
-        list.add(new AppLanguage("es", "Español"));
-        list.add(new AppLanguage("fr", "Français"));
-        list.add(new AppLanguage("hi", "हिन्दी"));
-        list.add(new AppLanguage("pt", "Português"));
-        list.add(new AppLanguage("ru-RU", "Русский"));
+        for (String[] l : langs) {
+            String endonym = l[1];
+            String english = l[2];
+            String label = endonym.equals(english) ? endonym : endonym + " (" + english + ")";
+            list.add(new AppLanguage(l[0], label));
+        }
         return Collections.unmodifiableList(list);
     }
 

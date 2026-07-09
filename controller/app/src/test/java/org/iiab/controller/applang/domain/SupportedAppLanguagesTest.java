@@ -27,8 +27,22 @@ public class SupportedAppLanguagesTest {
         for (String tag : shipped) {
             assertTrue("Missing shipped locale: " + tag, SupportedAppLanguages.indexOfTag(list, tag) > 0);
         }
-        assertEquals(1, SupportedAppLanguages.indexOfTag(list, "en"));
-        assertEquals("Русский", list.get(SupportedAppLanguages.indexOfTag(list, "ru-RU")).toString());
+        // Label is "<endonym> (<English name>)"; English itself is just "English".
+        assertEquals("Русский (Russian)", list.get(SupportedAppLanguages.indexOfTag(list, "ru-RU")).toString());
+        assertEquals("Español (Spanish)", list.get(SupportedAppLanguages.indexOfTag(list, "es")).toString());
+        assertEquals("English", list.get(SupportedAppLanguages.indexOfTag(list, "en")).toString());
+    }
+
+    @Test
+    public void languagesSortedAlphabeticallyByEnglishNameAfterSystemDefault() {
+        List<AppLanguage> list = SupportedAppLanguages.all("sys");
+        // System default pinned at 0; then A–Z by English name: Arabic first, Yoruba last.
+        assertEquals("", list.get(0).tag());
+        assertEquals("ar", list.get(1).tag());
+        assertEquals("yo", list.get(list.size() - 1).tag());
+        // Spanish (S) sorts after German (G) — the whole point of the reorder.
+        assertTrue(SupportedAppLanguages.indexOfTag(list, "de")
+                < SupportedAppLanguages.indexOfTag(list, "es"));
     }
 
     @Test
