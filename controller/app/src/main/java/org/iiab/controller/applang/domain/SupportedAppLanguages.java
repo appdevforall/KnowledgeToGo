@@ -25,6 +25,7 @@ public final class SupportedAppLanguages {
         list.add(new AppLanguage("en", "English"));
         list.add(new AppLanguage("de", "Deutsch"));
         list.add(new AppLanguage("it", "Italiano"));
+        list.add(new AppLanguage("ar", "العربية"));
         list.add(new AppLanguage("es", "Español"));
         list.add(new AppLanguage("fr", "Français"));
         list.add(new AppLanguage("hi", "हिन्दी"));
