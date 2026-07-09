@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Authentifizierung erfolgreich. Verbindung wird getrennt…</string>
     <string name="security_required_msg">Du musst auf deinem Gerät eine PIN, ein Muster oder einen Fingerabdruck einrichten, bevor du die sichere Umgebung aktivierst.</string>
     <string name="security_required_title">Sicherheit erforderlich</string>
-    <string name="battery_opt_denied">Damit die App zu 100 % funktioniert, deaktiviere bitte die Akku-Optimierung.</string>
+    <string name="battery_opt_denied">Damit die App einwandfrei funktioniert, deaktiviere bitte die Akku-Optimierung.</string>
     <string name="battery_opt_msg">Damit der Watchdog zuverlässig funktioniert, deaktiviere bitte die Akku-Optimierungen für diese App.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme erkannt: Bitte aktiviere außerdem \'Hintergrundaktivität zulassen\' in den Einstellungen dieser App.</string>
     <string name="battery_opt_title">Akku-Optimierung</string>
