@@ -514,4 +514,5 @@
     <string name="cd_settings">Ρυθμίσεις</string>
     <string name="cd_toggle_theme">Εναλλαγή θέματος</string>
     <string name="uptime_label">Χρόνος λειτουργίας:</string>
+    <string name="server_busy_install_lock">Περιμένετε να ολοκληρωθεί η εγκατάσταση των μονάδων πριν εκκινήσετε τον διακομιστή.</string>
 </resources>

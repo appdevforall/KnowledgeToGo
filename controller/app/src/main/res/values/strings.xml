@@ -86,7 +86,7 @@
     <string name="launch_server">🚀 Launch Server</string>
     <string name="stop_server">🛑 Stop Server</string>
 
-    <string name="server_busy_install_lock" tools:ignore="MissingTranslation">Wait for the installation to finish before starting or stopping the server.</string>
+    <string name="server_busy_install_lock">Wait for the module(s) installation to finish before starting the server.</string>
     <string name="server_not_installed_warning">The server does not seem to be (fully) installed. Please check the Status or Installation tab for more info.</string>
     <string name="server_booting">Booting...</string>
     <string name="server_shutting_down">Shutting down...</string>

@@ -507,4 +507,5 @@
     <string name="cd_settings">সেটিংস</string>
     <string name="cd_toggle_theme">থিম টগল করুন</string>
     <string name="uptime_label">আপটাইম:</string>
+    <string name="server_busy_install_lock">সার্ভার চালু করার আগে মডিউল ইনস্টলেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
 </resources>

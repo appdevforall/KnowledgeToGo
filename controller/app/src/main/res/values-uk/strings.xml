@@ -507,4 +507,5 @@
     <string name="cd_settings">Налаштування</string>
     <string name="cd_toggle_theme">Перемкнути тему</string>
     <string name="uptime_label">Час роботи:</string>
+    <string name="server_busy_install_lock">Зачекайте завершення встановлення модулів, перш ніж запускати сервер.</string>
 </resources>

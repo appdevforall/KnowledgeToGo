@@ -507,4 +507,5 @@
     <string name="cd_settings">Innstillinger</string>
     <string name="cd_toggle_theme">Veksle tema</string>
     <string name="uptime_label">Oppetid:</string>
+    <string name="server_busy_install_lock">Vent til installasjonen av modulene er fullført før du starter serveren.</string>
 </resources>

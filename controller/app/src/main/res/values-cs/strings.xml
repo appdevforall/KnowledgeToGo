@@ -514,4 +514,5 @@
     <string name="cd_settings">Nastavení</string>
     <string name="cd_toggle_theme">Přepnout motiv</string>
     <string name="uptime_label">Doba běhu:</string>
+    <string name="server_busy_install_lock">Před spuštěním serveru počkejte na dokončení instalace modulů.</string>
 </resources>

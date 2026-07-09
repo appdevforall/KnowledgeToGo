@@ -514,4 +514,5 @@
     <string name="cd_settings">Tənzimləmələr</string>
     <string name="cd_toggle_theme">Temanı dəyiş</string>
     <string name="uptime_label">İşləmə müddəti:</string>
+    <string name="server_busy_install_lock">Serveri başlatmadan əvvəl modulların quraşdırılmasının bitməsini gözləyin.</string>
 </resources>
