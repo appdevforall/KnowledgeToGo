@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Ìfọwọ́sí Yọrí sí Rere. Ń já ìsopọ̀…</string>
     <string name="security_required_msg">O gbọ́dọ̀ ṣàgbékalẹ̀ PIN, Àpẹẹrẹ, tàbí Ìka-ọwọ́ lórí ẹ̀rọ rẹ kí o tó tan àyíká ààbò.</string>
     <string name="security_required_title">A Nílò Ààbò</string>
-    <string name="battery_opt_denied">Kí app lè ṣiṣẹ́ 100%, jọ̀wọ́ pa ìdinku lílo bátìrì.</string>
+    <string name="battery_opt_denied">Kí app lè ṣiṣẹ́ dáadáa, jọ̀wọ́ pa ìdinku lílo bátìrì.</string>
     <string name="battery_opt_msg">Kí Watchdog lè ṣiṣẹ́ láìséwu, jọ̀wọ́ pa àwọn ìdinku lílo bátìrì fún app yìí.</string>
     <string name="battery_opt_oppo_extra">\n\nA rí OPPO/Realme: Jọ̀wọ́ rí i dájú pé o tún tan \'Gba àṣírí iṣẹ́ ẹ̀yìn\' nínú àwọn ìṣàgbékalẹ̀ app yìí.</string>
     <string name="battery_opt_title">Ìdinku Lílo Bátìrì</string>

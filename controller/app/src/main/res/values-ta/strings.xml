@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">அங்கீகாரம் வெற்றி. துண்டிக்கிறது…</string>
     <string name="security_required_msg">பாதுகாப்பான சூழலை இயக்குவதற்கு முன் உங்கள் சாதனத்தில் PIN, வடிவம் அல்லது கைரேகையை அமைக்க வேண்டும்.</string>
     <string name="security_required_title">பாதுகாப்பு தேவை</string>
-    <string name="battery_opt_denied">பயன்பாடு 100% வேலை செய்ய, பேட்டரி மேம்படுத்தலை முடக்கவும்.</string>
+    <string name="battery_opt_denied">பயன்பாடு சரியாக வேலை செய்ய, பேட்டரி மேம்படுத்தலை முடக்கவும்.</string>
     <string name="battery_opt_msg">Watchdog நம்பகமாக வேலை செய்ய, இந்தப் பயன்பாட்டிற்கான பேட்டரி மேம்படுத்தல்களை முடக்கவும்.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme கண்டறியப்பட்டது: இந்தப் பயன்பாட்டின் அமைப்புகளில் \'பின்னணி செயல்பாட்டை அனுமதி\' யையும் இயக்குவதை உறுதிசெய்யவும்.</string>
     <string name="battery_opt_title">பேட்டரி மேம்படுத்தல்</string>

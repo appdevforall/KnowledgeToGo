@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Uwierzytelnienie powiodło się. Rozłączanie…</string>
     <string name="security_required_msg">Musisz ustawić PIN, wzór lub odcisk palca na urządzeniu przed włączeniem bezpiecznego środowiska.</string>
     <string name="security_required_title">Wymagane zabezpieczenie</string>
-    <string name="battery_opt_denied">Aby aplikacja działała w 100%, wyłącz optymalizację baterii.</string>
+    <string name="battery_opt_denied">Aby aplikacja działała prawidłowo, wyłącz optymalizację baterii.</string>
     <string name="battery_opt_msg">Aby Watchdog działał niezawodnie, wyłącz optymalizację baterii dla tej aplikacji.</string>
     <string name="battery_opt_oppo_extra">\n\nWykryto OPPO/Realme: Upewnij się, że w ustawieniach tej aplikacji włączysz również \'Zezwól na działanie w tle\'.</string>
     <string name="battery_opt_title">Optymalizacja baterii</string>

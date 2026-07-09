@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Автентифікація успішна. Відключення…</string>
     <string name="security_required_msg">Ви повинні налаштувати PIN, графічний ключ або відбиток пальця на пристрої, перш ніж вмикати захищене середовище.</string>
     <string name="security_required_title">Потрібна безпека</string>
-    <string name="battery_opt_denied">Щоб застосунок працював на 100%, вимкніть оптимізацію батареї.</string>
+    <string name="battery_opt_denied">Щоб застосунок працював належним чином, вимкніть оптимізацію батареї.</string>
     <string name="battery_opt_msg">Щоб Watchdog працював надійно, вимкніть оптимізацію батареї для цього застосунку.</string>
     <string name="battery_opt_oppo_extra">\n\nВиявлено OPPO/Realme: переконайтеся, що також увімкнули \'Дозволити фонову активність\' у налаштуваннях цього застосунку.</string>
     <string name="battery_opt_title">Оптимізація батареї</string>

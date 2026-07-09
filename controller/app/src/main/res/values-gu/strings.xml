@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">પ્રમાણીકરણ સફળ. ડિસ્કનેક્ટ થઈ રહ્યું છે…</string>
     <string name="security_required_msg">સુરક્ષિત વાતાવરણ ચાલુ કરતા પહેલાં તમારે તમારા ઉપકરણ પર PIN, પૅટર્ન અથવા ફિંગરપ્રિન્ટ સેટ કરવું આવશ્યક છે.</string>
     <string name="security_required_title">સુરક્ષા જરૂરી</string>
-    <string name="battery_opt_denied">ઍપ 100% કામ કરે તે માટે, કૃપા કરી બૅટરી ઑપ્ટિમાઇઝેશન બંધ કરો.</string>
+    <string name="battery_opt_denied">ઍપ યોગ્ય રીતે કામ કરે તે માટે, કૃપા કરી બૅટરી ઑપ્ટિમાઇઝેશન બંધ કરો.</string>
     <string name="battery_opt_msg">Watchdog વિશ્વસનીય રીતે કામ કરે તે માટે, કૃપા કરી આ ઍપ માટે બૅટરી ઑપ્ટિમાઇઝેશન બંધ કરો.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme શોધાયું: કૃપા કરી ખાતરી કરો કે તમે આ ઍપની સેટિંગ્સમાં \'બૅકગ્રાઉન્ડ પ્રવૃત્તિને મંજૂરી આપો\' પણ ચાલુ કરો.</string>
     <string name="battery_opt_title">બૅટરી ઑપ્ટિમાઇઝેશન</string>

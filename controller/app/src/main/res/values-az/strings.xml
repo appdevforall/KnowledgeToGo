@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Autentifikasiya uğurlu oldu. Bağlantı kəsilir…</string>
     <string name="security_required_msg">Təhlükəsiz mühiti aktivləşdirmədən əvvəl cihazınızda PIN, Naxış və ya Barmaq izi təyin etməlisiniz.</string>
     <string name="security_required_title">Təhlükəsizlik tələb olunur</string>
-    <string name="battery_opt_denied">Tətbiqin 100% işləməsi üçün, zəhmət olmasa batareya optimallaşdırmasını söndürün.</string>
+    <string name="battery_opt_denied">Tətbiqin düzgün işləməsi üçün, zəhmət olmasa batareya optimallaşdırmasını söndürün.</string>
     <string name="battery_opt_msg">Watchdog-un etibarlı işləməsi üçün, zəhmət olmasa bu tətbiq üçün batareya optimallaşdırmalarını söndürün.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme aşkarlandı: Zəhmət olmasa bu tətbiqin tənzimləmələrində \'Fon fəaliyyətinə icazə ver\' seçimini də aktivləşdirdiyinizdən əmin olun.</string>
     <string name="battery_opt_title">Batareya optimallaşdırması</string>

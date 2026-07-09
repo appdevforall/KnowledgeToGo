@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Удостоверяването е успешно. Прекъсване на връзката…</string>
     <string name="security_required_msg">Трябва да зададете PIN, шаблон или пръстов отпечатък на устройството си, преди да активирате защитената среда.</string>
     <string name="security_required_title">Изисква се защита</string>
-    <string name="battery_opt_denied">За да работи приложението на 100%, моля, изключете оптимизацията на батерията.</string>
+    <string name="battery_opt_denied">За да работи приложението правилно, моля, изключете оптимизацията на батерията.</string>
     <string name="battery_opt_msg">За да работи Watchdog надеждно, моля, изключете оптимизациите на батерията за това приложение.</string>
     <string name="battery_opt_oppo_extra">\n\nОткрит е OPPO/Realme: Моля, уверете се, че също активирате \'Разреши активност на заден план\' в настройките на това приложение.</string>
     <string name="battery_opt_title">Оптимизация на батерията</string>

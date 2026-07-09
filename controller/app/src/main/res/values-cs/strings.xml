@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Ověření úspěšné. Odpojování…</string>
     <string name="security_required_msg">Před zapnutím zabezpečeného prostředí musíte na svém zařízení nastavit PIN, gesto nebo otisk prstu.</string>
     <string name="security_required_title">Vyžadováno zabezpečení</string>
-    <string name="battery_opt_denied">Aby aplikace fungovala na 100 %, vypněte prosím optimalizaci baterie.</string>
+    <string name="battery_opt_denied">Aby aplikace fungovala správně, vypněte prosím optimalizaci baterie.</string>
     <string name="battery_opt_msg">Aby Watchdog fungoval spolehlivě, vypněte prosím optimalizace baterie pro tuto aplikaci.</string>
     <string name="battery_opt_oppo_extra">\n\nZjištěno OPPO/Realme: Ujistěte se prosím, že v nastavení této aplikace také povolíte \'Povolit aktivitu na pozadí\'.</string>
     <string name="battery_opt_title">Optimalizace baterie</string>

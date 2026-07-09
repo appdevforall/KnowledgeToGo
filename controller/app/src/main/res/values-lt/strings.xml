@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Autentifikacija pavyko. Atsijungiama…</string>
     <string name="security_required_msg">Prieš įjungdami saugią aplinką, savo įrenginyje turite nustatyti PIN, atrakinimo raštą arba pirštų atspaudą.</string>
     <string name="security_required_title">Reikalinga sauga</string>
-    <string name="battery_opt_denied">Kad programa veiktų 100 %, išjunkite baterijos optimizavimą.</string>
+    <string name="battery_opt_denied">Kad programa veiktų tinkamai, išjunkite baterijos optimizavimą.</string>
     <string name="battery_opt_msg">Kad Watchdog veiktų patikimai, išjunkite šios programos baterijos optimizavimą.</string>
     <string name="battery_opt_oppo_extra">\n\nAptiktas OPPO/Realme: taip pat įsitikinkite, kad šios programos nustatymuose įjungtas \'Leisti veiklą fone\'.</string>
     <string name="battery_opt_title">Baterijos optimizavimas</string>

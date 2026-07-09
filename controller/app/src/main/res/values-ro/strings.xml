@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Autentificare reușită. Se deconectează…</string>
     <string name="security_required_msg">Trebuie să configurezi un PIN, model sau amprentă pe dispozitiv înainte de a activa mediul securizat.</string>
     <string name="security_required_title">Securitate necesară</string>
-    <string name="battery_opt_denied">Pentru ca aplicația să funcționeze 100%, te rugăm să dezactivezi optimizarea bateriei.</string>
+    <string name="battery_opt_denied">Pentru ca aplicația să funcționeze corect, te rugăm să dezactivezi optimizarea bateriei.</string>
     <string name="battery_opt_msg">Pentru ca Watchdog să funcționeze fiabil, te rugăm să dezactivezi optimizările bateriei pentru această aplicație.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme detectat: Te rugăm să te asiguri că activezi și \'Permite activitatea în fundal\' în setările acestei aplicații.</string>
     <string name="battery_opt_title">Optimizarea bateriei</string>

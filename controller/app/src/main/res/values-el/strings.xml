@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Επιτυχής πιστοποίηση. Αποσύνδεση…</string>
     <string name="security_required_msg">Πρέπει να ορίσετε PIN, μοτίβο ή δακτυλικό αποτύπωμα στη συσκευή σας πριν ενεργοποιήσετε το ασφαλές περιβάλλον.</string>
     <string name="security_required_title">Απαιτείται ασφάλεια</string>
-    <string name="battery_opt_denied">Για να λειτουργεί η εφαρμογή 100%, απενεργοποιήστε τη βελτιστοποίηση μπαταρίας.</string>
+    <string name="battery_opt_denied">Για να λειτουργεί σωστά η εφαρμογή, απενεργοποιήστε τη βελτιστοποίηση μπαταρίας.</string>
     <string name="battery_opt_msg">Για να λειτουργεί αξιόπιστα το Watchdog, απενεργοποιήστε τις βελτιστοποιήσεις μπαταρίας για αυτήν την εφαρμογή.</string>
     <string name="battery_opt_oppo_extra">\n\nΕντοπίστηκε OPPO/Realme: Βεβαιωθείτε ότι έχετε επίσης ενεργοποιήσει την επιλογή \'Να επιτρέπεται η δραστηριότητα στο παρασκήνιο\' στις ρυθμίσεις αυτής της εφαρμογής.</string>
     <string name="battery_opt_title">Βελτιστοποίηση μπαταρίας</string>

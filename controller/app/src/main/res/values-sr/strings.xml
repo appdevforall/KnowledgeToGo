@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Аутентификација успешна. Прекидање везе…</string>
     <string name="security_required_msg">Морате подесити PIN, шаблон или отисак прста на уређају пре него што омогућите безбедно окружење.</string>
     <string name="security_required_title">Потребна безбедност</string>
-    <string name="battery_opt_denied">Да би апликација радила 100%, онемогућите оптимизацију батерије.</string>
+    <string name="battery_opt_denied">Да би апликација исправно радила, онемогућите оптимизацију батерије.</string>
     <string name="battery_opt_msg">Да би Watchdog радио поуздано, онемогућите оптимизацију батерије за ову апликацију.</string>
     <string name="battery_opt_oppo_extra">\n\nОткривен OPPO/Realme: Уверите се да сте такође омогућили \'Дозволи активност у позадини\' у подешавањима ове апликације.</string>
     <string name="battery_opt_title">Оптимизација батерије</string>

@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Autentisering vellykket. Kobler fra…</string>
     <string name="security_required_msg">Du må sette opp en PIN, mønster eller fingeravtrykk på enheten før du aktiverer det sikre miljøet.</string>
     <string name="security_required_title">Sikkerhet kreves</string>
-    <string name="battery_opt_denied">For at appen skal fungere 100 %, slå av batterioptimalisering.</string>
+    <string name="battery_opt_denied">For at appen skal fungere som den skal, slå av batterioptimalisering.</string>
     <string name="battery_opt_msg">For at Watchdog skal fungere pålitelig, slå av batterioptimaliseringer for denne appen.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme oppdaget: Sørg for at du også aktiverer \'Tillat bakgrunnsaktivitet\' i innstillingene for denne appen.</string>
     <string name="battery_opt_title">Batterioptimalisering</string>

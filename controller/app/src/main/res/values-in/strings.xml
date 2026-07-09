@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Autentikasi Berhasil. Memutus koneksi…</string>
     <string name="security_required_msg">Anda harus menyiapkan PIN, Pola, atau Sidik Jari pada perangkat sebelum mengaktifkan lingkungan aman.</string>
     <string name="security_required_title">Keamanan Diperlukan</string>
-    <string name="battery_opt_denied">Agar aplikasi berfungsi 100%, silakan nonaktifkan pengoptimalan baterai.</string>
+    <string name="battery_opt_denied">Agar aplikasi berfungsi dengan baik, silakan nonaktifkan pengoptimalan baterai.</string>
     <string name="battery_opt_msg">Agar Watchdog berfungsi dengan andal, silakan nonaktifkan pengoptimalan baterai untuk aplikasi ini.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme terdeteksi: Pastikan Anda juga mengaktifkan \'Izinkan aktivitas latar belakang\' di pengaturan aplikasi ini.</string>
     <string name="battery_opt_title">Pengoptimalan Baterai</string>

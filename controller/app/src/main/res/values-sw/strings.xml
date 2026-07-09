@@ -133,7 +133,7 @@
     <string name="auth_success_disconnect">Uthibitishaji Umefanikiwa. Inakata muunganisho…</string>
     <string name="security_required_msg">Lazima uweke PIN, Ruwaza, au Alama ya Kidole kwenye kifaa chako kabla ya kuwasha mazingira salama.</string>
     <string name="security_required_title">Usalama Unahitajika</string>
-    <string name="battery_opt_denied">Ili programu ifanye kazi 100%, tafadhali zima uboreshaji wa betri.</string>
+    <string name="battery_opt_denied">Ili programu ifanye kazi ipasavyo, tafadhali zima uboreshaji wa betri.</string>
     <string name="battery_opt_msg">Ili Watchdog ifanye kazi kwa uhakika, tafadhali zima uboreshaji wa betri kwa programu hii.</string>
     <string name="battery_opt_oppo_extra">\n\nOPPO/Realme imetambuliwa: Tafadhali hakikisha pia unawasha \'Ruhusu shughuli za nyuma\' katika mipangilio ya programu hii.</string>
     <string name="battery_opt_title">Uboreshaji wa Betri</string>
