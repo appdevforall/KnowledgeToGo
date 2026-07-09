@@ -33,6 +33,11 @@ public class SetupActivity extends AppCompatActivity {
 
     private boolean wizardMode;
 
+    // ADFA-4538: launch straight into the feedback form (from the MainActivity FAB).
+    public static final String EXTRA_OPEN_FEEDBACK = "open_feedback";
+    public static final String EXTRA_SCREENSHOT_PATH = "screenshot_path";
+    public static final String EXTRA_SCREEN = "screen";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,13 @@ public class SetupActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            show(SetupSectionFragment.newInstance(wizardMode));
+            if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_OPEN_FEEDBACK, false)) {
+                show(FeedbackFragment.newInstance(
+                        getIntent().getStringExtra(EXTRA_SCREENSHOT_PATH),
+                        getIntent().getStringExtra(EXTRA_SCREEN)));
+            } else {
+                show(SetupSectionFragment.newInstance(wizardMode));
+            }
         }
     }
 

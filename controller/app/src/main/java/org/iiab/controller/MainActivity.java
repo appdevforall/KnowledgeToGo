@@ -302,6 +302,26 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
             }
         }).attach();
 
+        // ADFA-4538: draggable feedback FAB — present on all tabs (it lives in the activity,
+        // above the ViewPager, so it persists across tab switches). Tap -> capture screenshot
+        // -> open the feedback form tagged with the current tab.
+        com.google.android.material.floatingactionbutton.FloatingActionButton fabFeedback =
+                findViewById(R.id.fab_feedback);
+        org.iiab.controller.feedback.presentation.FeedbackFab.attach(fabFeedback, () -> {
+            int pos = viewPager.getCurrentItem();
+            String screen = pos == 0 ? "status" : pos == 1 ? "usage" : pos == 2 ? "deploy"
+                    : pos == 3 ? "share" : "main";
+            org.iiab.controller.feedback.data.FeedbackScreenshot.capture(MainActivity.this, path -> {
+                android.content.Intent i = new android.content.Intent(MainActivity.this, SetupActivity.class);
+                i.putExtra(SetupActivity.EXTRA_OPEN_FEEDBACK, true);
+                i.putExtra(SetupActivity.EXTRA_SCREEN, "main." + screen);
+                if (path != null) {
+                    i.putExtra(SetupActivity.EXTRA_SCREENSHOT_PATH, path);
+                }
+                startActivity(i);
+            });
+        });
+
         // --- TUTORIAL TAB DETECTOR  ---
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

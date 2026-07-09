@@ -19,15 +19,29 @@ public final class EmailFeedbackSender {
 
     /** @return true if a mail app handled the intent; false if none is available. */
     public boolean send(Context ctx, EmailContent email) {
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email.recipient()});
-        intent.putExtra(Intent.EXTRA_SUBJECT, email.subject());
-        intent.putExtra(Intent.EXTRA_TEXT, email.body());
         try {
+            Intent intent;
+            if (email.attachmentPath() != null) {
+                // ADFA-4538: attach the screenshot via ACTION_SEND (mailto ignores attachments).
+                java.io.File file = new java.io.File(email.attachmentPath());
+                Uri uri = androidx.core.content.FileProvider.getUriForFile(
+                        ctx, ctx.getPackageName() + ".provider", file);
+                intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("message/rfc822");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("mailto:"));
+            }
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[]{email.recipient()});
+            intent.putExtra(Intent.EXTRA_SUBJECT, email.subject());
+            intent.putExtra(Intent.EXTRA_TEXT, email.body());
             ctx.startActivity(Intent.createChooser(intent, ctx.getString(R.string.feedback_send)));
             return true;
         } catch (ActivityNotFoundException e) {
+            return false;
+        } catch (Throwable t) {
             return false;
         }
     }

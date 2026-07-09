@@ -19,7 +19,7 @@ public final class FeedbackRenderer {
     private static final String DASH = " \u2014 ";
 
     public EmailContent render(FeedbackPayload p) {
-        return new EmailContent(RECIPIENT, subject(p), body(p));
+        return new EmailContent(RECIPIENT, subject(p), body(p), p.screenshot());
     }
 
     private String subject(FeedbackPayload p) {
