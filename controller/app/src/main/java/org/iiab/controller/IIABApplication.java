@@ -35,6 +35,20 @@ public class IIABApplication extends Application {
             Log.e("IIABApplication", "Error initializing Conscrypt", e);
         }
 
+        // ADFA-4533: crash reporting to GlitchTip (Sentry SDK), gated by its OWN opt-in
+        // (CrashReportConsent, default ON) -- independent of usage-analytics consent, since error
+        // reports are operational, not behavioural telemetry, and carry no PII
+        // (io.sentry.send-default-pii=false). No-op unless a DSN was built in (empty DSN -> SDK
+        // stays inert); manifest sets io.sentry.auto-init=false, so this is the only init path.
+        // Init here (before our handler) so K2GoUncaughtExceptionHandler wraps Sentry: save -> report.
+        try {
+            if (org.iiab.controller.delivery.data.CrashReportConsent.isEnabled(this)) {
+                io.sentry.android.core.SentryAndroid.init(this);
+            }
+        } catch (Throwable t) {
+            Log.e("IIABApplication", "Sentry init skipped", t);
+        }
+
         // Capture uncaught exceptions into a crash report, offered on next launch.
         Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(
