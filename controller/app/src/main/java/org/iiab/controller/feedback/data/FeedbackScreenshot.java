@@ -3,6 +3,8 @@ package org.iiab.controller.feedback.data;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.PixelCopy;
@@ -14,7 +16,11 @@ import java.io.FileOutputStream;
 /**
  * Captures the current window as a JPEG under {@code filesDir/feedback_screenshots}
  * (recycled from Code On the Go). Async: the result path is delivered on the main
- * thread; {@code null} means capture/save failed. ADFA-4538.
+ * thread; {@code null} means capture/save failed.
+ *
+ * <p>Uses {@link PixelCopy} on API 26+ (accurate, hardware-accelerated content); falls
+ * back to drawing the view hierarchy to a {@link Canvas} on API 24-25 (minSdk 24).
+ * ADFA-4538.
  */
 public final class FeedbackScreenshot {
 
@@ -27,23 +33,38 @@ public final class FeedbackScreenshot {
 
     public static void capture(Activity activity, Callback cb) {
         try {
-            View root = activity.getWindow().getDecorView();
+            View root = activity.getWindow().getDecorView().getRootView();
             int w = root.getWidth();
             int h = root.getHeight();
             if (w <= 0 || h <= 0) {
                 cb.onResult(null);
                 return;
             }
-            Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-            PixelCopy.request(activity.getWindow(), bmp, result -> {
-                if (result == PixelCopy.SUCCESS) {
-                    cb.onResult(save(activity, bmp));
-                } else {
-                    cb.onResult(null);
-                }
-            }, new Handler(Looper.getMainLooper()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+                PixelCopy.request(activity.getWindow(), bmp, result -> {
+                    if (result == PixelCopy.SUCCESS) {
+                        cb.onResult(save(activity, bmp));
+                    } else {
+                        cb.onResult(drawToBitmap(activity, root, w, h));
+                    }
+                }, new Handler(Looper.getMainLooper()));
+            } else {
+                cb.onResult(drawToBitmap(activity, root, w, h));
+            }
         } catch (Throwable t) {
             cb.onResult(null);
+        }
+    }
+
+    /** API 24-25 fallback: render the view hierarchy into a bitmap. */
+    private static String drawToBitmap(Context ctx, View root, int w, int h) {
+        try {
+            Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            root.draw(new Canvas(bmp));
+            return save(ctx, bmp);
+        } catch (Throwable t) {
+            return null;
         }
     }
 
