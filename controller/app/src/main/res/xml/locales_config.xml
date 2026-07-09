@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4537: the locales this app ships UI translations for. Referenced from
+     AndroidManifest (android:localeConfig) so Android 13+ (API 33) shows the app in
+     the system per-app language picker (Settings > Apps > <app> > Language). Keep in
+     sync with the values-* resource folders and SupportedAppLanguages. Tags are BCP-47;
+     zh-CN / ru-RU match values-zh-rCN / values-ru-rRU, "id" maps to the values-in folder. -->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="ar" />
+    <locale android:name="az" />
+    <locale android:name="bg" />
+    <locale android:name="bn" />
+    <locale android:name="cs" />
+    <locale android:name="de" />
+    <locale android:name="el" />
+    <locale android:name="es" />
+    <locale android:name="fa" />
+    <locale android:name="fr" />
+    <locale android:name="gu" />
+    <locale android:name="hi" />
+    <locale android:name="hu" />
+    <locale android:name="id" />
+    <locale android:name="it" />
+    <locale android:name="ja" />
+    <locale android:name="ko" />
+    <locale android:name="lt" />
+    <locale android:name="nl" />
+    <locale android:name="no" />
+    <locale android:name="pl" />
+    <locale android:name="pt" />
+    <locale android:name="ro" />
+    <locale android:name="ru-RU" />
+    <locale android:name="sk" />
+    <locale android:name="sr" />
+    <locale android:name="sw" />
+    <locale android:name="ta" />
+    <locale android:name="tr" />
+    <locale android:name="uk" />
+    <locale android:name="vi" />
+    <locale android:name="yo" />
+    <locale android:name="zh-CN" />
+</locale-config>

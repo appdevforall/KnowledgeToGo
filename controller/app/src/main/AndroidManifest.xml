@@ -27,6 +27,7 @@
 
     <application
         android:name=".IIABApplication"
+        android:localeConfig="@xml/locales_config"
         android:allowBackup="false"
         android:extractNativeLibs="true"
         android:usesCleartextTraffic="true"
