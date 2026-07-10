@@ -18,7 +18,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public class BatteryUtils {
 
@@ -38,11 +38,11 @@ public class BatteryUtils {
                         message += activity.getString(R.string.battery_opt_xiaomi_extra);
                     }
 
-                    new AlertDialog.Builder(activity)
+                    new BrandDialog(activity)
                             .setTitle(R.string.battery_opt_title)
                             .setMessage(message)
-                            .setPositiveButton(R.string.go_to_settings, (dialog, which) -> openBatterySettings(activity, manufacturer))
-                            .setNegativeButton(R.string.cancel, null)
+                            .setPositive(R.string.go_to_settings, () -> openBatterySettings(activity, manufacturer))
+                            .setNegative(R.string.cancel, null)
                             .show();
                 } else {
                     Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);

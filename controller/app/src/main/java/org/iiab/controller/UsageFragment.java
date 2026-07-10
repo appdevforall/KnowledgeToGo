@@ -24,7 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.core.content.ContextCompat;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -499,10 +499,10 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     private void showResetLogConfirmation() {
-        new AlertDialog.Builder(requireContext())
+        new BrandDialog(requireContext())
                 .setTitle(R.string.log_reset_confirm_title)
                 .setMessage(R.string.log_reset_confirm_msg)
-                .setPositiveButton(R.string.reset_log, (dialog, which) -> {
+                .setDestructive(R.string.reset_log, () -> {
                     LogManager.clearLogs(requireContext(), new LogManager.LogClearCallback() {
                         @Override
                         public void onSuccess() {
@@ -519,7 +519,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
                         }
                     });
                 })
-                .setNegativeButton(R.string.cancel, null).show();
+                .setNegative(R.string.cancel, null).show();
     }
 
     public void savePrefsFromUI() {

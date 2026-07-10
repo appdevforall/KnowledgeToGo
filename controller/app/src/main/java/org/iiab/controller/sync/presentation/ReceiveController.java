@@ -22,7 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.fragment.app.Fragment;
 
 import java.io.File;
@@ -122,12 +122,11 @@ public final class ReceiveController {
         // --- EVERYTHING IS OK: PROCEED TO DOWNLOAD ---
         host.showArchCompatibilitySuccess(() -> {
             if (!creds.hasRootfs) {
-                new AlertDialog.Builder(fragment.requireContext())
+                new BrandDialog(fragment.requireContext())
                         .setTitle(fragment.getString(R.string.sync_dialog_empty_host_title))
                         .setMessage(fragment.getString(R.string.sync_dialog_empty_host_msg))
-                        .setPositiveButton(fragment.getString(R.string.sync_dialog_btn_try_anyway), (dialog, which) -> startProbe(creds))
-                        .setNegativeButton(fragment.getString(R.string.cancel), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositive(fragment.getString(R.string.sync_dialog_btn_try_anyway), () -> startProbe(creds))
+                        .setNegative(fragment.getString(R.string.cancel), null)
                         .show();
             } else {
                 startProbe(creds);
@@ -198,11 +197,11 @@ public final class ReceiveController {
                 if (st.seq > lastTransferSeq) {
                     lastTransferSeq = st.seq;
                     if (fragment.getContext() != null) {
-                        new AlertDialog.Builder(fragment.requireContext())
+                        new BrandDialog(fragment.requireContext())
                                 .setTitle(st.title)
                                 .setMessage(st.message)
                                 .setCancelable(false)
-                                .setPositiveButton(fragment.getString(R.string.sync_btn_start_transfer), (dialog, which) -> {
+                                .setPositive(fragment.getString(R.string.sync_btn_start_transfer), () -> {
                                     SyncHandshakeHelper.SyncCredentials creds = syncVm.getPendingCreds();
                                     File destDir = syncVm.getPendingDestDir();
                                     if (creds != null && destDir != null) {
@@ -213,7 +212,7 @@ public final class ReceiveController {
                                         btnScanQr.setVisibility(View.VISIBLE);
                                     }
                                 })
-                                .setNegativeButton(fragment.getString(R.string.cancel), (dialog, which) -> {
+                                .setNegative(fragment.getString(R.string.cancel), () -> {
                                     syncVm.cancelProbe();
                                     containerProgress.setVisibility(View.GONE);
                                     btnScanQr.setVisibility(View.VISIBLE);
@@ -226,11 +225,10 @@ public final class ReceiveController {
                 if (st.seq > lastTransferSeq) {
                     lastTransferSeq = st.seq;
                     if (fragment.getContext() != null)
-                        new AlertDialog.Builder(fragment.requireContext())
+                        new BrandDialog(fragment.requireContext())
                                 .setTitle(st.title)
                                 .setMessage(st.message)
-                                .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositive(fragment.getString(R.string.adb_enforcer_btn_ok), null)
                                 .show();
                     syncVm.releaseNetwork(); // ADFA-4496
                     SyncProgressRepository.get().postIdle();
@@ -254,10 +252,10 @@ public final class ReceiveController {
                     lastTransferSeq = st.seq;
                     host.disableSystemProtection();
                     if (fragment.getContext() != null)
-                        new AlertDialog.Builder(fragment.requireContext())
+                        new BrandDialog(fragment.requireContext())
                                 .setTitle(fragment.getString(R.string.sync_success_title))
                                 .setMessage(st.message)
-                                .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
+                                .setPositive(fragment.getString(R.string.adb_enforcer_btn_ok), null)
                                 .show();
                     syncVm.releaseNetwork(); // ADFA-4496
                     SyncProgressRepository.get().postIdle();
@@ -270,11 +268,10 @@ public final class ReceiveController {
                     lastTransferSeq = st.seq;
                     host.disableSystemProtection();
                     if (fragment.getContext() != null)
-                        new AlertDialog.Builder(fragment.requireContext())
+                        new BrandDialog(fragment.requireContext())
                                 .setTitle(fragment.getString(R.string.sync_error_title))
                                 .setMessage(fragment.getString(R.string.sync_error_body, st.message))
-                                .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositive(fragment.getString(R.string.adb_enforcer_btn_ok), null)
                                 .show();
                     syncVm.releaseNetwork(); // ADFA-4496
                     SyncProgressRepository.get().postIdle();
@@ -301,11 +298,10 @@ public final class ReceiveController {
         // EX6: the "safe to receive now?" rule lives in the pure TransferGuard domain.
         boolean serverRunning = host.isServerAlive();
         if (!org.iiab.controller.sync.domain.TransferGuard.canReceive(serverRunning).allowed) {
-            new AlertDialog.Builder(fragment.requireContext())
+            new BrandDialog(fragment.requireContext())
                     .setTitle(fragment.getString(R.string.sync_dialog_server_running_title))
                     .setMessage(fragment.getString(R.string.sync_error_stop_server_first))
-                    .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositive(fragment.getString(R.string.adb_enforcer_btn_ok), null)
                     .show();
             return;
         }

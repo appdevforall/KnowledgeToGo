@@ -49,6 +49,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public final class PlannerController {
 
@@ -425,9 +426,8 @@ public final class PlannerController {
     }
 
     private void showKiwixSettingsDialog() {
-        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(fragment.requireContext()).create();
         View view = fragment.getLayoutInflater().inflate(R.layout.dialog_install_planner_settings, null);
-        dialog.setView(view);
+        BrandDialog.Handle dialog = new BrandDialog(fragment.requireContext()).setContentView(view).create();
 
         android.widget.Spinner spinnerLang = view.findViewById(R.id.spinner_kiwix_lang);
         Button btnWipe = view.findViewById(R.id.btn_wipe_cache);

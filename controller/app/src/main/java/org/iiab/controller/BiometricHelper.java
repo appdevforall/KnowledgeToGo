@@ -16,7 +16,7 @@ import android.os.Looper;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
@@ -44,14 +44,14 @@ public class BiometricHelper {
     }
 
     public static void showEnrollmentDialog(Context context) {
-        new AlertDialog.Builder(context)
+        new BrandDialog(context)
                 .setTitle(R.string.security_required_title)
                 .setMessage(R.string.security_required_msg)
-                .setPositiveButton(R.string.go_to_settings, (dialog, which) -> {
+                .setPositive(R.string.go_to_settings, () -> {
                     Intent intent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
                     context.startActivity(intent);
                 })
-                .setNegativeButton(R.string.cancel, null)
+                .setNegative(R.string.cancel, null)
                 .show();
     }
 

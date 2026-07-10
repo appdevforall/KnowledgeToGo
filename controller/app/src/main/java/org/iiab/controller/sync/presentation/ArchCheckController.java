@@ -20,7 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -74,11 +74,10 @@ public final class ArchCheckController {
             }
         }
 
-        new AlertDialog.Builder(fragment.requireContext())
+        new BrandDialog(fragment.requireContext())
                 .setTitle(fragment.getString(R.string.sync_error_arch_title))
                 .setMessage(message)
-                .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositive(fragment.getString(R.string.adb_enforcer_btn_ok), null)
                 .show();
     }
 

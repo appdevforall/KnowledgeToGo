@@ -56,6 +56,8 @@
     <!-- Brand / accent -->
     <color name="accent">#2E7D32</color>
     <color name="accent_muted">#A5D6A7</color>
+    <!-- Dialog accent (ADFA-4638): governs AlertDialog buttons; NOT the global accent. -->
+    <color name="dialog_accent">#2196F3</color>
     <!-- Status -->
     <color name="status_success">#2E7D32</color>
     <color name="status_warning">#E65100</color>

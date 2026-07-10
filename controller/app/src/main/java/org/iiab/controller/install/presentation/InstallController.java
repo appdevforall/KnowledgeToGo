@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public final class InstallController {
 
@@ -98,15 +99,15 @@ public final class InstallController {
             // observer in DeployFragment resets the button + shows the snackbar.
             if (host.isDownloadingRootfs()
                     && InstallProgressRepository.get().currentOp() == InstallState.Op.INSTALL) {
-                new android.app.AlertDialog.Builder(fragment.requireContext())
+                new BrandDialog(fragment.requireContext())
                         .setTitle(fragment.getString(R.string.install_btn_cancel_title))
                         .setMessage(fragment.getString(R.string.install_btn_cancel_msg))
-                        .setPositiveButton(fragment.getString(R.string.install_btn_cancel_confirm), (dialog, which) -> {
+                        .setDestructive(fragment.getString(R.string.install_btn_cancel_confirm), () -> {
                             Intent cancel = new Intent(fragment.requireContext(), InstallService.class)
                                     .setAction(InstallService.ACTION_CANCEL);
                             fragment.requireContext().startService(cancel);
                         })
-                        .setNegativeButton(fragment.getString(R.string.cancel), null)
+                        .setNegative(fragment.getString(R.string.cancel), null)
                         .show();
                 return;
             }
@@ -129,11 +130,11 @@ public final class InstallController {
 
             // 5. Start the installation in the foreground service (survives recreation).
             if (debianRootfs.exists() && debianRootfs.isDirectory()) {
-                new android.app.AlertDialog.Builder(fragment.requireContext())
+                new BrandDialog(fragment.requireContext())
                         .setTitle(R.string.install_btn_reinstall)
                         .setMessage(R.string.install_dialog_wipe_msg)
-                        .setPositiveButton(R.string.install_btn_yes, (dialog, which) -> startInstallService(true))
-                        .setNegativeButton(R.string.install_btn_no, null)
+                        .setDestructive(R.string.install_btn_yes, () -> startInstallService(true))
+                        .setNegative(R.string.install_btn_no, null)
                         .show();
             } else {
                 startInstallService(false);

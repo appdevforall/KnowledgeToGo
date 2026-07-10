@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public class DashboardFragment extends Fragment {
 
@@ -134,10 +135,10 @@ public class DashboardFragment extends Fragment {
             }
 
             // Force a blocking UI dialog to show the results
-            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            new BrandDialog(requireContext())
                     .setTitle(R.string.dash_diag_title)
                     .setMessage(message)
-                    .setPositiveButton(R.string.dash_diag_btn_ok, null)
+                    .setPositive(R.string.dash_diag_btn_ok, null)
                     .show();
         });
         // -------------------------

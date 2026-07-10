@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.fragment.app.Fragment;
 
 import androidx.lifecycle.ViewModelProvider;
@@ -176,15 +176,14 @@ public class SyncFragment extends Fragment implements org.iiab.controller.sync.p
     @Override
     public void showPhantomWarningDialog(Runnable onContinue) {
         if (getContext() == null) return;
-        AlertDialog.Builder b = new AlertDialog.Builder(requireContext())
+        BrandDialog b = new BrandDialog(requireContext())
                 .setTitle(getString(R.string.phantom_warn_title))
-                .setMessage(getString(R.string.phantom_warn_body))
-                .setIcon(android.R.drawable.ic_dialog_alert);
+                .setMessage(getString(R.string.phantom_warn_body));
         if (android.os.Build.VERSION.SDK_INT >= 34) {
-            b.setPositiveButton(getString(R.string.phantom_warn_open_dev), (dialog, which) ->
+            b.setPositive(getString(R.string.phantom_warn_open_dev), () ->
                     org.iiab.controller.sync.transport.PhantomProcessHelper.openDeveloperOptions(requireContext()));
         } else {
-            b.setPositiveButton(getString(R.string.adb_enforcer_btn_setup), (dialog, which) -> {
+            b.setPositive(getString(R.string.adb_enforcer_btn_setup), () -> {
                 requireContext().getSharedPreferences(ADB_PREFS, Context.MODE_PRIVATE)
                         .edit().putBoolean(PREF_FOCUS_ADB, true).apply();
                 MainActivity mainAct = (MainActivity) getActivity();
@@ -194,10 +193,10 @@ public class SyncFragment extends Fragment implements org.iiab.controller.sync.p
                 }
             });
         }
-        b.setNeutralButton(getString(R.string.phantom_warn_continue), (dialog, which) -> {
+        b.setNeutral(getString(R.string.phantom_warn_continue), () -> {
             if (onContinue != null) onContinue.run();
         });
-        b.setNegativeButton(getString(R.string.cancel), null);
+        b.setNegative(getString(R.string.cancel), null);
         b.show();
     }
 

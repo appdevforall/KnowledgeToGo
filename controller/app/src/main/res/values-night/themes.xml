@@ -5,6 +5,7 @@
         <item name="colorPrimary">#000000</item>
         <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.IIAB.Dialog</item>
 
         <item name="android:windowBackground">@color/background_dark</item>
         <item name="android:textColorPrimary">@color/white</item>

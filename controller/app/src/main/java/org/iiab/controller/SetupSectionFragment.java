@@ -26,7 +26,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -215,16 +215,16 @@ public class SetupSectionFragment extends Fragment {
             completeSetup();
             return;
         }
-        new AlertDialog.Builder(requireContext())
+        new BrandDialog(requireContext())
                 .setTitle(R.string.analytics_enroll_title)
                 .setMessage(getString(R.string.analytics_enroll_body, getString(R.string.app_name)))
                 .setCancelable(false)
-                .setPositiveButton(R.string.analytics_enroll_accept, (d, w) -> {
+                .setPositive(R.string.analytics_enroll_accept, () -> {
                     AnalyticsConsent.setEnabled(requireContext(), true);
                     org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
                     finishEnrollment(delivery);
                 })
-                .setNegativeButton(R.string.analytics_enroll_decline, (d, w) -> {
+                .setNegative(R.string.analytics_enroll_decline, () -> {
                     AnalyticsConsent.setEnabled(requireContext(), false);
                     org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).applyConsent();
                     finishEnrollment(delivery);

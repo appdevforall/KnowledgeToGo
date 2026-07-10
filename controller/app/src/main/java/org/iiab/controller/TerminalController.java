@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public class TerminalController {
 
@@ -209,10 +210,10 @@ public class TerminalController {
 
                 } catch (Throwable t) {
                     // CATCH ABSOLUTELY EVERYTHING (Even native JNI crashes)
-                    new androidx.appcompat.app.AlertDialog.Builder(activity)
+                    new BrandDialog(activity)
                             .setTitle(R.string.terminal_crash_title)
                             .setMessage(android.util.Log.getStackTraceString(t))
-                            .setPositiveButton(android.R.string.ok, null)
+                            .setPositive(android.R.string.ok, null)
                             .show();
                 }
     }
