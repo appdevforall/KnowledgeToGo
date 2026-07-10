@@ -219,7 +219,7 @@
     <string name="install_offline_estimated">Estimated sizes (offline)</string>
     <string name="install_msg_termux_missing">Please install the base Debian system first.</string>
     <string name="install_btn_delete">Delete</string>
-    <string name="install_btn_launch">Launch installation</string>
+    <string name="install_btn_launch">Install selected</string>
 
     <string name="install_adv_monitoring_title">Advanced monitoring</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
