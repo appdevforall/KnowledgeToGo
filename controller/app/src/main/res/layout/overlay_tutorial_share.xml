@@ -56,6 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/bg_dialog_button"
                 android:backgroundTint="@color/btn_primary"
                 android:text="@string/tutorial_share_got_it"
                 android:textColor="@color/text_on_accent" />
