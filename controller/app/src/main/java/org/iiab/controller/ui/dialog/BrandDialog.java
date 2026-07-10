@@ -110,6 +110,22 @@ public final class BrandDialog {
         return setPositive(context.getString(text), role, click);
     }
 
+    public BrandDialog setPositive(@NonNull CharSequence text, @Nullable OnClick click) {
+        return setPositive(text, Role.PRIMARY, click);
+    }
+
+    public BrandDialog setPositive(@StringRes int text, @Nullable OnClick click) {
+        return setPositive(context.getString(text), Role.PRIMARY, click);
+    }
+
+    public BrandDialog setDestructive(@NonNull CharSequence text, @Nullable OnClick click) {
+        return setPositive(text, Role.DESTRUCTIVE, click);
+    }
+
+    public BrandDialog setDestructive(@StringRes int text, @Nullable OnClick click) {
+        return setPositive(context.getString(text), Role.DESTRUCTIVE, click);
+    }
+
     public BrandDialog setNegative(@NonNull CharSequence text, @Nullable OnClick click) {
         this.negativeText = text;
         this.negativeClick = click;

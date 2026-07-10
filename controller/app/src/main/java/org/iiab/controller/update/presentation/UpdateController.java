@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProvider;
@@ -162,11 +163,11 @@ public class UpdateController {
     }
 
     private void showUpdateDialog(String versionName, String changelog, String downloadUrl) {
-        new AlertDialog.Builder(activity)
+        new BrandDialog(activity)
                 .setTitle(activity.getString(R.string.update_dialog_title, versionName))
                 .setMessage(activity.getString(R.string.update_dialog_message, changelog))
-                .setPositiveButton(R.string.update_dialog_positive, (dialog, which) -> startDownload(downloadUrl))
-                .setNegativeButton(R.string.update_dialog_negative, null)
+                .setPositive(R.string.update_dialog_positive, () -> startDownload(downloadUrl))
+                .setNegative(R.string.update_dialog_negative, null)
                 .setCancelable(false)
                 .show();
     }
