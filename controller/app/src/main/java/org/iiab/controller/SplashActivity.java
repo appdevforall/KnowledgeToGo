@@ -1,7 +1,7 @@
 /*
  * File        : SplashActivity.java
  * Description : Branded intro (introduction animation): an animated Aurora background
- *               (light/dark by system), the K2Go logo revealed with a bottom-up
+ *               (plain background, light/dark by system), the K2Go logo revealed with a
  *               "draw-on" wipe, the "Knowledge To Go" wordmark rising in, and an exit
  *               fade before routing to MainActivity. ADFA-4609.
  * Copyright   : Copyright (c) 2026 AppDevForAll
@@ -25,6 +25,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final long EXIT_AT_MS = 3100L;
     private static final long EXIT_FADE_MS = 400L;
+    // ADFA-4626: the Aurora (blue-green gradient) is retained but DISABLED by default so the
+    // splash uses a plain background. Flip this to true to bring the gradient back instantly.
+    private static final boolean AURORA_ENABLED = false;
     private AuroraView aurora;
 
     @Override
@@ -38,9 +41,16 @@ public class SplashActivity extends AppCompatActivity {
         int textColor = dark ? 0xFFFFFFFF : 0xFF0D0D0D;
         int creditColor = dark ? 0x99FFFFFF : 0x8A0E2A46;
 
+        // ADFA-4626: Aurora retained but off by default -> plain background following
+        // system light/dark. Flip AURORA_ENABLED to restore the gradient.
         aurora = findViewById(R.id.aurora);
-        aurora.setDark(dark);
-        aurora.start();
+        if (AURORA_ENABLED) {
+            aurora.setDark(dark);
+            aurora.start();
+        } else {
+            aurora.setVisibility(View.GONE);
+            findViewById(R.id.splash_root).setBackgroundColor(base);
+        }
 
         TextView word = findViewById(R.id.word);
         TextView credit = findViewById(R.id.credit);
