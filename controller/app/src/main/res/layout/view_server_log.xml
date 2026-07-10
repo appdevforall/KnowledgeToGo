@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/log_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="18dp"
         android:clipToPadding="false"
-        android:scrollbars="vertical"
-        app:fastScrollEnabled="true"
-        app:fastScrollHorizontalThumbDrawable="@drawable/fast_scroll_thumb"
-        app:fastScrollHorizontalTrackDrawable="@drawable/fast_scroll_track"
-        app:fastScrollVerticalThumbDrawable="@drawable/fast_scroll_thumb"
-        app:fastScrollVerticalTrackDrawable="@drawable/fast_scroll_track" />
+        android:overScrollMode="never" />
+
+    <!-- Custom, grabbable scrollbar (tap-to-jump + drag). 28dp touch area on the right. -->
+    <FrameLayout
+        android:id="@+id/log_scrollbar"
+        android:layout_width="28dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/log_scroll_thumb"
+            android:layout_width="6dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/scrollbar_thumb" />
+    </FrameLayout>
 
     <Button
         android:id="@+id/log_jump_latest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="16dp"
         android:minWidth="0dp"
         android:minHeight="0dp"
         android:paddingLeft="12dp"

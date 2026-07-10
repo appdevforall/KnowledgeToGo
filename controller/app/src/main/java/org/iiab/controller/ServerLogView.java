@@ -5,11 +5,15 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4640 — server-log console with terminal-style scrolling:
  *               sticky read position, follow/tail (less +F), a jump-to-newest
- *               affordance, a draggable fast-scroll thumb, and a bounded buffer.
+ *               affordance, a grabbable custom scrollbar (tap-to-jump + drag),
+ *               and a bounded buffer. Uses a custom scrollbar instead of the
+ *               AndroidX fast-scroller (which was not tap-jumpable, rendered a
+ *               second bar next to the native one, and was hard to grab).
  * ============================================================================
  */
 package org.iiab.controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -28,20 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A read-only log console backed by a {@link RecyclerView}.
- *
- * <p>Behaviors (ADFA-4640):
- * <ul>
- *   <li><b>Sticky read position:</b> new lines never move the viewport unless you are
- *       following the tail, so you can stop and read while the log keeps growing.</li>
- *   <li><b>Follow / tail (like {@code less +F}):</b> when the viewport is at the bottom the
- *       console auto-sticks to the newest line; scrolling up detaches, and the
- *       jump-to-newest button re-attaches.</li>
- *   <li><b>Draggable fast-scroll thumb</b> (configured in the XML) to move start&lt;-&gt;end.</li>
- *   <li><b>Bounded ring buffer</b> ({@link #MAX_LINES}) so long streams stay smooth.</li>
- * </ul>
- */
 public class ServerLogView extends FrameLayout {
 
     /** Keep at most this many lines in memory. */
@@ -51,17 +41,22 @@ public class ServerLogView extends FrameLayout {
     private LinearLayoutManager layoutManager;
     private LogAdapter adapter;
     private View jumpLatest;
+    private View scrollbar;
+    private View thumb;
     private boolean following = true;
 
     public ServerLogView(@NonNull Context context) { this(context, null); }
 
     public ServerLogView(@NonNull Context context, @Nullable AttributeSet attrs) { this(context, attrs, 0); }
 
+    @SuppressLint("ClickableViewAccessibility")
     public ServerLogView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater.from(context).inflate(R.layout.view_server_log, this, true);
         recycler = findViewById(R.id.log_recycler);
         jumpLatest = findViewById(R.id.log_jump_latest);
+        scrollbar = findViewById(R.id.log_scrollbar);
+        thumb = findViewById(R.id.log_scroll_thumb);
 
         layoutManager = new LinearLayoutManager(context);
         layoutManager.setStackFromEnd(true); // pin content to the bottom (newest) like a log
@@ -69,15 +64,15 @@ public class ServerLogView extends FrameLayout {
         adapter = new LogAdapter();
         recycler.setAdapter(adapter);
 
-        // Own the vertical drag while nested in the page ScrollView (incl. fast-scroll thumb).
+        // Own the vertical drag while nested in the page ScrollView.
         recycler.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
             @Override
             public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
                 int action = e.getActionMasked();
                 if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE) {
-                    rv.getParent().requestDisallowInterceptTouchEvent(true);
+                    disallowParentIntercept(true);
                 } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
-                    rv.getParent().requestDisallowInterceptTouchEvent(false);
+                    disallowParentIntercept(false);
                 }
                 return false;
             }
@@ -86,9 +81,38 @@ public class ServerLogView extends FrameLayout {
         recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView rv, int dx, int dy) {
+                // Only a user-driven scroll (drag/fling) changes follow state; programmatic
+                // scrolls (append tail, jump) are instant (IDLE) and must not detach.
+                if (rv.getScrollState() != RecyclerView.SCROLL_STATE_IDLE) {
+                    following = isAtBottom();
+                    jumpLatest.setVisibility(following ? GONE : VISIBLE);
+                }
+                updateThumb();
+            }
+        });
+
+        // Grabbable scrollbar: tap anywhere to jump there, drag to move across thousands of lines.
+        scrollbar.setOnTouchListener((v, e) -> {
+            int trackH = scrollbar.getHeight();
+            int count = adapter.getItemCount();
+            if (trackH <= 0 || count == 0) return false;
+            int action = e.getActionMasked();
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE) {
+                disallowParentIntercept(true);
+                float frac = clamp01(e.getY() / trackH);
+                int target = Math.round(frac * (count - 1));
+                layoutManager.scrollToPositionWithOffset(target, 0);
+                following = frac >= 0.995f;
+                jumpLatest.setVisibility(following ? GONE : VISIBLE);
+                recycler.post(this::updateThumb);
+                return true;
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                disallowParentIntercept(false);
                 following = isAtBottom();
                 jumpLatest.setVisibility(following ? GONE : VISIBLE);
+                return true;
             }
+            return false;
         });
 
         jumpLatest.setOnClickListener(v -> {
@@ -99,14 +123,52 @@ public class ServerLogView extends FrameLayout {
         jumpLatest.setVisibility(GONE);
     }
 
+    private void disallowParentIntercept(boolean disallow) {
+        ViewGroup p = (ViewGroup) getParent();
+        if (p != null) p.requestDisallowInterceptTouchEvent(disallow);
+    }
+
+    private static float clamp01(float v) {
+        return v < 0f ? 0f : (v > 1f ? 1f : v);
+    }
+
+    /** At the bottom when the list can no longer scroll further down. */
     private boolean isAtBottom() {
-        int last = layoutManager.findLastVisibleItemPosition();
-        return last == RecyclerView.NO_POSITION || last >= adapter.getItemCount() - 1;
+        return !recycler.canScrollVertically(1);
     }
 
     private void scrollToEnd() {
         int n = adapter.getItemCount();
-        if (n > 0) recycler.post(() -> recycler.scrollToPosition(n - 1));
+        if (n > 0) {
+            recycler.scrollToPosition(n - 1);
+            recycler.post(this::updateThumb);
+        }
+    }
+
+    /** Position/size the custom scrollbar thumb from the RecyclerView scroll metrics. */
+    private void updateThumb() {
+        int trackH = scrollbar.getHeight();
+        if (trackH <= 0) return;
+        int range = recycler.computeVerticalScrollRange();
+        int extent = recycler.computeVerticalScrollExtent();
+        int offset = recycler.computeVerticalScrollOffset();
+        if (adapter.getItemCount() == 0 || range <= extent) {
+            scrollbar.setVisibility(GONE);
+            return;
+        }
+        scrollbar.setVisibility(VISIBLE);
+        int minThumb = Math.round(40f * getResources().getDisplayMetrics().density);
+        int thumbH = (int) ((extent / (float) range) * trackH);
+        if (thumbH < minThumb) thumbH = minThumb;
+        if (thumbH > trackH) thumbH = trackH;
+        ViewGroup.LayoutParams lp = thumb.getLayoutParams();
+        if (lp.height != thumbH) {
+            lp.height = thumbH;
+            thumb.setLayoutParams(lp);
+        }
+        float denom = range - extent;
+        float frac = denom > 0 ? offset / denom : 0f;
+        thumb.setTranslationY(clamp01(frac) * (trackH - thumbH));
     }
 
     /** Append one line (no trailing newline). Auto-scrolls only while following the tail. */
@@ -117,16 +179,16 @@ public class ServerLogView extends FrameLayout {
             scrollToEnd();
         } else {
             jumpLatest.setVisibility(VISIBLE);
+            recycler.post(this::updateThumb);
         }
     }
 
-    /** Replace all content from a newline-delimited string (e.g. history load); sticks to the end. */
+    /** Replace all content from a newline-delimited string; sticks to the end. */
     public void setContent(String content) {
         List<String> lines = new ArrayList<>();
         if (content != null && !content.isEmpty()) {
             String[] parts = content.split("\n", -1);
             for (String p : parts) lines.add(p);
-            // drop the single empty token produced by a trailing '\n'
             if (!lines.isEmpty() && lines.get(lines.size() - 1).isEmpty()) {
                 lines.remove(lines.size() - 1);
             }
@@ -142,6 +204,7 @@ public class ServerLogView extends FrameLayout {
         adapter.setAll(new ArrayList<>());
         following = true;
         jumpLatest.setVisibility(GONE);
+        recycler.post(this::updateThumb);
     }
 
     /** All current lines joined with '\n' (for copy-to-clipboard). */
