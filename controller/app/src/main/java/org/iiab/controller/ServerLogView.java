@@ -63,10 +63,6 @@ public class ServerLogView extends FrameLayout {
         recycler.setLayoutManager(layoutManager);
         adapter = new LogAdapter();
         recycler.setAdapter(adapter);
-        // ADFA-4640: a streaming log should not animate inserts/moves — the default
-        // ItemAnimator produced a chaotic "sea of letters" reflow on jump-to-newest.
-        recycler.setItemAnimator(null);
-        recycler.setHasFixedSize(true); // the console is a fixed 250dp box
 
         // Own the vertical drag while nested in the page ScrollView.
         recycler.addOnItemTouchListener(new RecyclerView.SimpleOnItemTouchListener() {
