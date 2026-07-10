@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity {
 
         // Logo reveal: simple fade-in.
         ImageView logo = findViewById(R.id.logo);
-        logo.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_launcher_foreground));
+        logo.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.splash_logo));
         logo.setAlpha(0f);
         logo.animate().alpha(1f).setStartDelay(220L).setDuration(700L).start();
 
