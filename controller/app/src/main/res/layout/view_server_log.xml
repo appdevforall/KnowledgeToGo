@@ -10,10 +10,10 @@
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:fastScrollEnabled="true"
-        app:fastScrollHorizontalThumbDrawable="@drawable/scrollbar_thumb"
-        app:fastScrollHorizontalTrackDrawable="@drawable/scrollbar_track"
-        app:fastScrollVerticalThumbDrawable="@drawable/scrollbar_thumb"
-        app:fastScrollVerticalTrackDrawable="@drawable/scrollbar_track" />
+        app:fastScrollHorizontalThumbDrawable="@drawable/fast_scroll_thumb"
+        app:fastScrollHorizontalTrackDrawable="@drawable/fast_scroll_track"
+        app:fastScrollVerticalThumbDrawable="@drawable/fast_scroll_thumb"
+        app:fastScrollVerticalTrackDrawable="@drawable/fast_scroll_track" />
 
     <Button
         android:id="@+id/log_jump_latest"
