@@ -1,9 +1,7 @@
 /*
  * File        : SplashActivity.java
- * Description : Branded intro (introduction animation): an animated Aurora background
- *               (light/dark by system), the K2Go logo revealed with a bottom-up
- *               "draw-on" wipe, the "Knowledge To Go" wordmark rising in, and an exit
- *               fade before routing to MainActivity. ADFA-4609.
+ * Description : Branded intro: the K2Go logo and "Knowledge To Go" wordmark fading in on a
+ *               plain background (light/dark by system), then an exit fade to MainActivity.
  * Copyright   : Copyright (c) 2026 AppDevForAll
  */
 package org.iiab.controller;
@@ -25,7 +23,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final long EXIT_AT_MS = 3100L;
     private static final long EXIT_FADE_MS = 400L;
-    private AuroraView aurora;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +35,7 @@ public class SplashActivity extends AppCompatActivity {
         int textColor = dark ? 0xFFFFFFFF : 0xFF0D0D0D;
         int creditColor = dark ? 0x99FFFFFF : 0x8A0E2A46;
 
-        aurora = findViewById(R.id.aurora);
-        aurora.setDark(dark);
-        aurora.start();
+        findViewById(R.id.splash_root).setBackgroundColor(base);
 
         TextView word = findViewById(R.id.word);
         TextView credit = findViewById(R.id.credit);
@@ -77,7 +72,6 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (aurora != null) aurora.stop();
         super.onDestroy();
     }
 }
