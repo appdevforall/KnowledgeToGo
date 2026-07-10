@@ -697,9 +697,8 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     }
 
     public void addToLog(String message) {
-        if (usageFragment != null && usageFragment.isAdded()) {
-            usageFragment.addToLog(message);
-        }
+        // ADFA-4640: single source of truth; the Usage console observes LogRepository.
+        LogRepository.get().append(message);
     }
 
     /**

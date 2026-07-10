@@ -56,6 +56,11 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     // INTERFACE VARS
     private TextView logLabel, logWarning, logSizeText;
     private ServerLogView connectionLog;
+    // ADFA-4640: observe the app-scoped log so the console survives tab switches / hide-show.
+    private final LogRepository.Listener logListener = new LogRepository.Listener() {
+        @Override public void onAppend(String line) { if (connectionLog != null) connectionLog.append(line); }
+        @Override public void onCleared() { if (connectionLog != null) connectionLog.clear(); }
+    };
     private Button button_browse_content, btnClearLog, btnCopyLog;
     private LinearLayout logActions, deckContainer;
     private ProgressBar logProgress;
@@ -350,7 +355,18 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        // ADFA-4640: attach to the app-scoped log and render the current buffer.
+        LogRepository.get().addListener(logListener);
+        if (connectionLog != null) {
+            connectionLog.setContent(android.text.TextUtils.join("\n", LogRepository.get().snapshot()));
+        }
         maybeRecommendLohs();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LogRepository.get().removeListener(logListener);
     }
 
     /**
@@ -423,18 +439,9 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addToLog(String message) {
-        // 1. We add the security padlock to avoid crashes
-        if (!isAdded() || getActivity() == null) return;
-
-        // 2. We use getActivity() instead of requireActivity() for security
-        getActivity().runOnUiThread(() -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-            String currentTime = sdf.format(new Date());
-            String logEntry = "[" + currentTime + "] " + message;
-            if (connectionLog != null) {
-                connectionLog.append(logEntry);
-            }
-        });
+        // ADFA-4640: funnel into the app-scoped source of truth; the console (which
+        // observes LogRepository) renders it. Timestamping is centralized in the repo.
+        LogRepository.get().append(message);
     }
 
     public void updateLogSizeUI() {
@@ -461,12 +468,14 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         if (isOpening) {
             if (mainActivity.isReadingLogs) return;
             mainActivity.isReadingLogs = true;
+            if (connectionLog != null) {
+                connectionLog.setContent(android.text.TextUtils.join("\n", LogRepository.get().snapshot()));
+            }
             if (logProgress != null) logProgress.setVisibility(View.VISIBLE);
 
+            // ADFA-4640: read the blackbox only for the rapid-growth warning + size; do NOT
+            // setContent from it (that used to wipe the live install/Ansible log on reopen).
             LogManager.readLogsAsync(requireContext(), (logContent, isRapidGrowth) -> {
-                if (connectionLog != null) {
-                    connectionLog.setContent(logContent);
-                }
                 if (logProgress != null) logProgress.setVisibility(View.GONE);
                 if (logWarning != null)
                     logWarning.setVisibility(isRapidGrowth ? View.VISIBLE : View.GONE);
@@ -496,7 +505,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
                     LogManager.clearLogs(requireContext(), new LogManager.LogClearCallback() {
                         @Override
                         public void onSuccess() {
-                            connectionLog.clear();
+                            LogRepository.get().clear();
                             addToLog(getString(R.string.log_reset_user));
                             if (logWarning != null) logWarning.setVisibility(View.GONE);
                             updateLogSizeUI();

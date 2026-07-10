@@ -719,6 +719,9 @@ public final class InstallService extends Service {
 
     private void log(String line) {
         Log.i(TAG, line);
+        // ADFA-4640: capture into the app-scoped log (same process) so install/Ansible
+        // output is never lost regardless of which fragment/tab is on screen.
+        org.iiab.controller.LogRepository.get().append(line);
         Intent i = new Intent(ACTION_INSTALL_LOG);
         i.setPackage(getPackageName());
         i.putExtra(EXTRA_LINE, line);

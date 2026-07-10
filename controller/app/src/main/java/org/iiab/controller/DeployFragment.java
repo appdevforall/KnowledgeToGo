@@ -159,14 +159,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     private long lastInstallTerminalSeq = -1L;          // fires terminal snackbars exactly once
     private long lastResetTerminalSeq = -1L;            // reset terminal snackbars, fired exactly once (ADFA-4476)
     private long lastModuleQueueTerminalSeq = -1L;      // module-queue finish/fail snackbar, once (ADFA-4476 s3)
-    private final BroadcastReceiver installLogReceiver = new BroadcastReceiver() {
-        @Override public void onReceive(Context context, Intent intent) {
-            String line = intent.getStringExtra(org.iiab.controller.install.presentation.InstallService.EXTRA_LINE);
-            if (line != null && getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).addToLog(line);
-            }
-        }
-    };
     // State Variables (New control variables)
     private boolean isRestoring = false;
     private boolean isDeleting = false;
@@ -306,11 +298,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
 
         updateDynamicButtons();
         liveStatusHandler.post(liveStatusRunnable);
-
-        // ADFA-4474 PR2: show InstallService provisioning output in the in-app log while visible.
-        androidx.core.content.ContextCompat.registerReceiver(requireContext(), installLogReceiver,
-                new IntentFilter(org.iiab.controller.install.presentation.InstallService.ACTION_INSTALL_LOG),
-                androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -318,7 +305,6 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         super.onPause();
         adbShareController.onPause();
         liveStatusHandler.removeCallbacks(liveStatusRunnable);
-        try { requireContext().unregisterReceiver(installLogReceiver); } catch (IllegalArgumentException ignored) { }
     }
 
     /** Renders the observable install progress published by InstallService.
