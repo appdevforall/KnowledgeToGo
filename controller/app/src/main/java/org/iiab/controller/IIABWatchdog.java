@@ -44,7 +44,8 @@ public class IIABWatchdog {
 
     public static final String PREF_RAPID_GROWTH = "log_rapid_growth";
 
-    private static final boolean DEBUG_ENABLED = true;
+    // Debug logging is gated to debug builds only (ADFA-4452 / M19); was hardcoded true.
+    private static final boolean DEBUG_ENABLED = BuildConfig.DEBUG;
     private static final String BLACKBOX_FILE = "watchdog_heartbeat_log.txt";
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private static final int MAX_DAYS = 5;
