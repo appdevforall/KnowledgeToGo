@@ -37,7 +37,11 @@ const themeManager = {
 // --- i18n System ---
 // Locales the dashboard ships (kept in parity with the Android app). 'en' is the
 // source of truth and the fallback for any missing locale/key.
-const SUPPORTED_LANGS = ['en', 'es', 'fr', 'hi', 'pt', 'ru'];
+const SUPPORTED_LANGS = ['en', 'es', 'fr', 'hi', 'pt', 'ru', 'de', 'it', 'ar',
+    'ja', 'zh', 'ko', 'nl', 'tr', 'vi', 'pl', 'cs', 'id', 'fa', 'uk', 'ro', 'el',
+    'sk', 'bg', 'sr', 'lt', 'no', 'hu', 'az', 'bn', 'gu', 'ta', 'sw', 'yo'];
+// Scripts that read right-to-left; the document direction flips for these.
+const RTL_LANGS = ['ar', 'fa'];
 
 // Translate a key, falling back to the given English text (or the key) when the active
 // locale is missing that key. Safe for dynamically-rendered strings (see maps/kiwix JS).
@@ -71,8 +75,9 @@ const loadLanguage = () => {
     const userLang = (navigator.language || navigator.userLanguage || 'en').substring(0, 2).toLowerCase();
     const lang = SUPPORTED_LANGS.includes(userLang) ? userLang : 'en';
     // Reflect the active locale on <html> so :lang() styling (e.g. non-Latin scripts) and
-    // assistive tech announce the right language.
+    // assistive tech announce the right language, and flip direction for RTL scripts.
     document.documentElement.lang = lang;
+    document.documentElement.dir = RTL_LANGS.includes(lang) ? 'rtl' : 'ltr';
     const script = document.createElement('script');
     script.src = `lang/${lang}.js`;
     // If the locale file fails to load, fall back to English so the UI is never blank.
