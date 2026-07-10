@@ -152,6 +152,14 @@ public final class LogRepository {
         }
     }
 
+    /** Size in bytes of the persisted server log file (0 if none / not initialized). */
+    public long fileSizeBytes() {
+        Context ctx = appContext;
+        if (ctx == null) return 0L;
+        File f = new File(ctx.getFilesDir(), FILE_NAME);
+        return f.exists() ? f.length() : 0L;
+    }
+
     private void loadFromFile() {
         Context ctx = appContext;
         if (ctx == null) return;

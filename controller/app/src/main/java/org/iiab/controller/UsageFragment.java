@@ -449,7 +449,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         if (!isAdded() || getContext() == null || logSizeText == null) return;
 
         // 4. We use getContext() instead of requireContext()
-        String sizeStr = LogManager.getFormattedSize(getContext());
+        // ADFA-4640: report the console's own persistent log (server_log.txt), not the watchdog blackbox.
+        String sizeStr = LogManager.formatSize(getContext(), LogRepository.get().fileSizeBytes());
         logSizeText.setText(getString(R.string.log_size_format, sizeStr));
     }
 
