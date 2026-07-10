@@ -13,8 +13,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.view.MotionEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +54,13 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
     private MainActivity mainActivity;
     // INTERFACE VARS
-    private TextView logLabel, logWarning, logSizeText, connectionLog;
+    private TextView logLabel, logWarning, logSizeText;
+    private ServerLogView connectionLog;
+    // ADFA-4640: observe the app-scoped log so the console survives tab switches / hide-show.
+    private final LogRepository.Listener logListener = new LogRepository.Listener() {
+        @Override public void onAppend(String line) { if (connectionLog != null) connectionLog.append(line); }
+        @Override public void onCleared() { if (connectionLog != null) connectionLog.clear(); }
+    };
     private Button button_browse_content, btnClearLog, btnCopyLog;
     private LinearLayout logActions, deckContainer;
     private ProgressBar logProgress;
@@ -208,16 +212,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             mainActivity.handleServerLaunchClick(v);
         });
 
-        connectionLog.setMovementMethod(new ScrollingMovementMethod());
-        connectionLog.setTextIsSelectable(true);
-        connectionLog.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-            }
-            return false;
-        });
-
         logLabel.setText(String.format(getString(R.string.label_separator_up), getString(R.string.connection_log_label)));
 
         updateUI();
@@ -229,7 +223,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             showResetLogConfirmation();
         } else if (v.getId() == R.id.btn_copy_log) {
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("IIAB Log", connectionLog.getText().toString());
+            ClipData clip = ClipData.newPlainText("IIAB Log", connectionLog.getContent());
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(requireContext(), R.string.log_copied_toast, Toast.LENGTH_SHORT).show();
@@ -361,7 +355,18 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
+        // ADFA-4640: attach to the app-scoped log and render the current buffer.
+        LogRepository.get().addListener(logListener);
+        if (connectionLog != null) {
+            connectionLog.setContent(android.text.TextUtils.join("\n", LogRepository.get().snapshot()));
+        }
         maybeRecommendLohs();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LogRepository.get().removeListener(logListener);
     }
 
     /**
@@ -434,26 +439,9 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
     }
 
     public void addToLog(String message) {
-        // 1. We add the security padlock to avoid crashes
-        if (!isAdded() || getActivity() == null) return;
-
-        // 2. We use getActivity() instead of requireActivity() for security
-        getActivity().runOnUiThread(() -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-            String currentTime = sdf.format(new Date());
-            String logEntry = "[" + currentTime + "] " + message + "\n";
-            if (connectionLog != null) {
-                connectionLog.append(logEntry);
-                scrollToBottom();
-            }
-        });
-    }
-
-    private void scrollToBottom() {
-        if (connectionLog != null && connectionLog.getLayout() != null) {
-            int scroll = connectionLog.getLayout().getLineTop(connectionLog.getLineCount()) - connectionLog.getHeight();
-            if (scroll > 0) connectionLog.scrollTo(0, scroll);
-        }
+        // ADFA-4640: funnel into the app-scoped source of truth; the console (which
+        // observes LogRepository) renders it. Timestamping is centralized in the repo.
+        LogRepository.get().append(message);
     }
 
     public void updateLogSizeUI() {
@@ -461,7 +449,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         if (!isAdded() || getContext() == null || logSizeText == null) return;
 
         // 4. We use getContext() instead of requireContext()
-        String sizeStr = LogManager.getFormattedSize(getContext());
+        // ADFA-4640: report the console's own persistent log (server_log.txt), not the watchdog blackbox.
+        String sizeStr = LogManager.formatSize(getContext(), LogRepository.get().fileSizeBytes());
         logSizeText.setText(getString(R.string.log_size_format, sizeStr));
     }
 
@@ -480,13 +469,14 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         if (isOpening) {
             if (mainActivity.isReadingLogs) return;
             mainActivity.isReadingLogs = true;
+            if (connectionLog != null) {
+                connectionLog.setContent(android.text.TextUtils.join("\n", LogRepository.get().snapshot()));
+            }
             if (logProgress != null) logProgress.setVisibility(View.VISIBLE);
 
+            // ADFA-4640: read the blackbox only for the rapid-growth warning + size; do NOT
+            // setContent from it (that used to wipe the live install/Ansible log on reopen).
             LogManager.readLogsAsync(requireContext(), (logContent, isRapidGrowth) -> {
-                if (connectionLog != null) {
-                    connectionLog.setText(logContent);
-                    scrollToBottom();
-                }
                 if (logProgress != null) logProgress.setVisibility(View.GONE);
                 if (logWarning != null)
                     logWarning.setVisibility(isRapidGrowth ? View.VISIBLE : View.GONE);
@@ -516,7 +506,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
                     LogManager.clearLogs(requireContext(), new LogManager.LogClearCallback() {
                         @Override
                         public void onSuccess() {
-                            connectionLog.setText("");
+                            LogRepository.get().clear();
                             addToLog(getString(R.string.log_reset_user));
                             if (logWarning != null) logWarning.setVisibility(View.GONE);
                             updateLogSizeUI();

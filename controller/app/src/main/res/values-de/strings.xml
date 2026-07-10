@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">Design umschalten</string>
     <string name="uptime_label">Betriebszeit:</string>
     <string name="server_busy_install_lock">Warten Sie, bis die Installation der Module abgeschlossen ist, bevor Sie den Server starten.</string>
+    <string name="log_jump_latest">↓ Neueste</string>
 </resources>

@@ -77,6 +77,17 @@ public class LogManager {
         }
     }
 
+    // Format an arbitrary byte size using the same units/strings as the size readout.
+    public static String formatSize(Context context, long size) {
+        if (size < 1024) {
+            return context.getString(R.string.log_size_bytes, size);
+        } else if (size < 1024 * 1024) {
+            return String.format(Locale.getDefault(), context.getString(R.string.log_size_kb), size / 1024.0);
+        } else {
+            return String.format(Locale.getDefault(), context.getString(R.string.log_size_mb), size / (1024.0 * 1024.0));
+        }
+    }
+
     // Calculate the file size
     public static String getFormattedSize(Context context) {
         File logFile = new File(context.getFilesDir(), LOG_FILE_NAME);

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/log_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="18dp"
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
+
+    <!-- Custom, grabbable scrollbar (tap-to-jump + drag). 28dp touch area on the right. -->
+    <FrameLayout
+        android:id="@+id/log_scrollbar"
+        android:layout_width="28dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/log_scroll_thumb"
+            android:layout_width="6dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/scrollbar_thumb" />
+    </FrameLayout>
+
+    <Button
+        android:id="@+id/log_jump_latest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="16dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:text="@string/log_jump_latest"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/lohs_qr_purple"
+        android:textColor="@color/text_on_accent"
+        android:visibility="gone" />
+</merge>

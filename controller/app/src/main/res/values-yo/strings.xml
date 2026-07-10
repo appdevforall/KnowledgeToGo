@@ -515,4 +515,5 @@
     <string name="cd_toggle_theme">Yí Àwòṣe Padà</string>
     <string name="uptime_label">Àkókò Iṣẹ́:</string>
     <string name="server_busy_install_lock">Dúró kí fífi àwọn module sórí ẹ̀rọ parí kí o tó bẹ̀rẹ̀ sáfà náà.</string>
+    <string name="log_jump_latest">↓ Tuntun</string>
 </resources>

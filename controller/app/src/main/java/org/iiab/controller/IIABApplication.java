@@ -27,6 +27,8 @@ public class IIABApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        // ADFA-4640: wire up persistence for the server log (survives app restarts).
+        org.iiab.controller.LogRepository.get().init(this);
         // We inject Conscrypt as the app's primary security provider
         try {
             Security.insertProviderAt(Conscrypt.newProvider(), 1);

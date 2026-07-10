@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">テーマを切り替え</string>
     <string name="uptime_label">稼働時間:</string>
     <string name="server_busy_install_lock">サーバーを起動する前に、モジュールのインストールが完了するまでお待ちください。</string>
+    <string name="log_jump_latest">↓ 最新</string>
 </resources>

@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">Temayı değiştir</string>
     <string name="uptime_label">Çalışma süresi:</string>
     <string name="server_busy_install_lock">Sunucuyu başlatmadan önce modüllerin kurulumunun tamamlanmasını bekleyin.</string>
+    <string name="log_jump_latest">↓ En yeni</string>
 </resources>

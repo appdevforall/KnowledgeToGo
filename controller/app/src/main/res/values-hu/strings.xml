@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">Téma váltása</string>
     <string name="uptime_label">Üzemidő:</string>
     <string name="server_busy_install_lock">A szerver elindítása előtt várja meg, amíg a modulok telepítése befejeződik.</string>
+    <string name="log_jump_latest">↓ Legújabb</string>
 </resources>

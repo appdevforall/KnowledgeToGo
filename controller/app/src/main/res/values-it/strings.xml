@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">Cambia tema</string>
     <string name="uptime_label">Tempo di attività:</string>
     <string name="server_busy_install_lock">Attendi il completamento dell\'installazione dei moduli prima di avviare il server.</string>
+    <string name="log_jump_latest">↓ Recenti</string>
 </resources>

@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">Przełącz motyw</string>
     <string name="uptime_label">Czas działania:</string>
     <string name="server_busy_install_lock">Poczekaj na zakończenie instalacji modułów przed uruchomieniem serwera.</string>
+    <string name="log_jump_latest">↓ Najnowsze</string>
 </resources>
