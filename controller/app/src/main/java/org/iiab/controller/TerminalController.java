@@ -61,6 +61,23 @@ public class TerminalController {
         this.host = host;
     }
 
+    /**
+     * ADFA-4630: allow only IPv4/IPv6 literal characters so a DNS value is safe to echo
+     * into the generated CLI shell script. Returns "" for anything else (fail closed).
+     */
+    private static String dnsLiteralOrEmpty(String s) {
+        if (s == null) return "";
+        s = s.trim();
+        if (s.isEmpty() || s.length() > 45) return "";
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            boolean ok = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')
+                    || (c >= 'A' && c <= 'F') || c == '.' || c == ':';
+            if (!ok) return "";
+        }
+        return s;
+    }
+
     /** Wires the terminal views/adapters/listeners. Call once from onCreate. */
     public void bind() {
         // Configure hidden bottom sheet
@@ -395,6 +412,21 @@ public class TerminalController {
 
                 File iiabCliScript = new File(hostBinDir, "iiab");
                 StringBuilder cliStr = new StringBuilder();
+
+                // ADFA-4630: resolve the app's effective DNS (user's custom config when enabled,
+                // else defaults) so the login path can provision /etc/resolv.conf. Entering the
+                // terminal is not a "boot", so nothing else seeds resolv.conf -> without this the
+                // manual terminal has no DNS/internet until a service start happens to write it.
+                org.iiab.controller.network.domain.DnsConfig termDns;
+                try {
+                    termDns = new org.iiab.controller.network.data.PrefsDnsConfigRepository(activity).loadEffective();
+                } catch (Exception dnsEx) {
+                    termDns = org.iiab.controller.network.domain.DnsConfig.defaults();
+                }
+                if (termDns == null || termDns.isEmpty()) termDns = org.iiab.controller.network.domain.DnsConfig.defaults();
+                String termDnsPrimary = dnsLiteralOrEmpty(termDns.primary());
+                String termDnsSecondary = dnsLiteralOrEmpty(termDns.secondary());
+                if (termDnsPrimary.isEmpty()) termDnsPrimary = "1.1.1.1";
                 cliStr.append("#!/system/bin/sh\n\n");
 
                 // Global script variables
@@ -473,6 +505,13 @@ public class TerminalController {
                 cliStr.append("    PROOT_CMD=\"$PROOT_CMD -w /root /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm-256color /bin/bash -l -i\"\n");
 
                 // Execute!
+                // ADFA-4630: seed the guest resolv.conf from the app's effective DNS before entering,
+                // so the terminal has working DNS without needing to start any service.
+                cliStr.append("    rm -f \"$ROOTFS_DIR/etc/resolv.conf\" 2>/dev/null || true\n");
+                cliStr.append("    echo 'nameserver ").append(termDnsPrimary).append("' > \"$ROOTFS_DIR/etc/resolv.conf\"\n");
+                if (!termDnsSecondary.isEmpty()) {
+                    cliStr.append("    echo 'nameserver ").append(termDnsSecondary).append("' >> \"$ROOTFS_DIR/etc/resolv.conf\"\n");
+                }
                 cliStr.append("    echo -e '\\033[32mEntering Jail...\\033[0m'\n");
                 cliStr.append("    eval \"$PROOT_CMD\"\n");
                 cliStr.append("}\n\n");
@@ -550,8 +589,10 @@ public class TerminalController {
                 cliStr.append("    tar --exclude='*/dev/*' --strip-components=1 -xJf \"$DL_DIR/$TARBALL\" -C \"$ROOTFS_DIR\" || true\n\n");
                 cliStr.append("    echo -e '\\033[36m[4/4] Bootstrapping environment via PRoot...\\033[0m'\n");
                 cliStr.append("    rm -f \"$ROOTFS_DIR/etc/resolv.conf\" 2>/dev/null || true\n");
-                cliStr.append("    echo 'nameserver 1.1.1.1' > \"$ROOTFS_DIR/etc/resolv.conf\"\n");
-                cliStr.append("    echo 'nameserver 8.8.8.8' >> \"$ROOTFS_DIR/etc/resolv.conf\"\n");
+                cliStr.append("    echo 'nameserver ").append(termDnsPrimary).append("' > \"$ROOTFS_DIR/etc/resolv.conf\"\n");
+                if (!termDnsSecondary.isEmpty()) {
+                    cliStr.append("    echo 'nameserver ").append(termDnsSecondary).append("' >> \"$ROOTFS_DIR/etc/resolv.conf\"\n");
+                }
                 cliStr.append("    echo '127.0.0.1 localhost' > \"$ROOTFS_DIR/etc/hosts\"\n");
                 cliStr.append("    ").append(libproot.getAbsolutePath()).append(" --sysvipc -0 --link2symlink -k 6.1.0 -r \"$ROOTFS_DIR\" \\\n");
                 cliStr.append("      -b /dev -b /proc -b /sys -b /storage/emulated/0:/sdcard \\\n");
