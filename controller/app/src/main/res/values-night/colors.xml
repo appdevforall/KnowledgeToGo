@@ -29,6 +29,7 @@
     <color name="text_on_accent">#FFFFFF</color>
     <color name="accent">#4CAF50</color>
     <color name="accent_muted">#2E5A30</color>
+    <color name="dialog_accent">#2196F3</color>
     <color name="status_success">#66BB6A</color>
     <color name="status_warning">#FFB300</color>
     <color name="status_danger">#EF5350</color>

@@ -5,12 +5,20 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="alertDialogTheme">@style/ThemeOverlay.IIAB.Dialog</item>
 
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColorPrimary">@color/black</item>
 
         <item name="sectionBackground">@color/section_body_bg_light</item>
         <item name="sectionHeaderBackground">@color/section_header_bg</item>
+    </style>
+
+    <!-- Branded dialog theme (ADFA-4638): unifies AlertDialog button color to the
+         brand blue. Overrides colorAccent ONLY inside dialogs; global colorAccent
+         (green) is untouched. Surface follows the day/night base theme. -->
+    <style name="ThemeOverlay.IIAB.Dialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/dialog_accent</item>
     </style>
 
     <style name="PurpleSwitchTheme" parent="">
