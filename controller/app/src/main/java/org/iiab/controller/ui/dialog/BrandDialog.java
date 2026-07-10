@@ -51,6 +51,7 @@ public final class BrandDialog {
         public Button getPositiveButton() { return positive; }
         public Button getNegativeButton() { return negative; }
         public void dismiss() { dialog.dismiss(); }
+        public void show() { dialog.show(); }
 
         public void setContent(@NonNull View view) {
             content.removeAllViews();
@@ -159,7 +160,7 @@ public final class BrandDialog {
         return this;
     }
 
-    public Handle show() {
+    public Handle create() {
         View root = LayoutInflater.from(context).inflate(R.layout.dialog_brand, null, false);
         TextView titleView = root.findViewById(R.id.brand_dialog_title);
         TextView messageView = root.findViewById(R.id.brand_dialog_message);
@@ -227,7 +228,12 @@ public final class BrandDialog {
             });
         }
 
-        dialog.show();
         return new Handle(dialog, positive, negative, contentHost);
+    }
+
+    public Handle show() {
+        Handle h = create();
+        h.show();
+        return h;
     }
 }

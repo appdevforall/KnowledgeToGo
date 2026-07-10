@@ -46,6 +46,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public final class BackupController {
 
@@ -129,16 +130,15 @@ public final class BackupController {
                 return;
             }
             if (host.isBackupInProgress()) {
-                new android.app.AlertDialog.Builder(fragment.requireContext())
+                new BrandDialog(fragment.requireContext())
                         .setTitle(fragment.getString(R.string.install_msg_backup_in_progress_title))
                         .setMessage(fragment.getString(R.string.install_msg_backup_in_progress_body))
-                        .setPositiveButton(fragment.getString(R.string.install_btn_force_stop_process), (dialog, which) -> {
+                        .setDestructive(fragment.getString(R.string.install_btn_force_stop_process), () -> {
                             host.setBackupInProgress(false);
                             btnAdvancedBackup.setText(fragment.getString(R.string.install_btn_backup)); btnAdvancedBackup.stopProgress();
                             Snackbars.make(fragment.getView(), fragment.getString(R.string.install_msg_backup_aborted)).show();
                         })
-                        .setNegativeButton(fragment.getString(R.string.install_btn_let_finish), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegative(fragment.getString(R.string.install_btn_let_finish), null)
                         .show();
                 return;
             }
@@ -393,10 +393,10 @@ public final class BackupController {
                         org.iiab.controller.help.ViewTooltips.attachLongPress(btnDelete, org.iiab.controller.help.TooltipCategory.K2GO, org.iiab.controller.help.TooltipTag.DEPLOY_DELETE_BACKUP);
 
                         btnDelete.setOnClickListener(btn -> {
-                            new android.app.AlertDialog.Builder(fragment.requireContext())
+                            new BrandDialog(fragment.requireContext())
                                     .setTitle(R.string.install_dialog_delete_backup_title)
                                     .setMessage(fragment.getString(R.string.install_dialog_delete_backup_msg, filename))
-                                    .setPositiveButton(R.string.install_btn_delete_confirm, (dialog, which) -> {
+                                    .setDestructive(R.string.install_btn_delete_confirm, () -> {
                                         File toDelete = new File(backupsDir, filename);
                                         if (toDelete.delete()) {
                                             if (filename.equals(selectedBackupFile)) selectedBackupFile = null;
@@ -405,7 +405,7 @@ public final class BackupController {
                                             Snackbars.make(fragment.getView(), R.string.install_msg_backup_deleted).show();
                                         }
                                     })
-                                    .setNegativeButton(R.string.cancel, null)
+                                    .setNegative(R.string.cancel, null)
                                     .show();
                         });
 

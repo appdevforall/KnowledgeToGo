@@ -26,6 +26,7 @@ import org.iiab.controller.R;
 import org.iiab.controller.util.ProcessRunner;
 
 import java.io.File;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 public final class ResetDeleteController {
 
@@ -79,10 +80,10 @@ public final class ResetDeleteController {
                 return;
             }
             // NORMAL STATE: RESET START -> hand the pipeline to InstallService.
-            new android.app.AlertDialog.Builder(fragment.requireContext())
+            new BrandDialog(fragment.requireContext())
                     .setTitle(R.string.install_dialog_reset_title)
                     .setMessage(R.string.install_dialog_reset_msg)
-                    .setPositiveButton(R.string.install_dialog_reset_confirm, (dialog, which) -> {
+                    .setDestructive(R.string.install_dialog_reset_confirm, () -> {
                         mainAct.invalidateModuleStateTrust();
                         android.content.Context ctx = fragment.requireContext();
                         android.content.Intent i = new android.content.Intent(ctx, InstallService.class);
@@ -95,7 +96,7 @@ public final class ResetDeleteController {
                             ctx.startService(i);
                         }
                     })
-                    .setNegativeButton(R.string.install_dialog_reset_cancel, null)
+                    .setNegative(R.string.install_dialog_reset_cancel, null)
                     .show();
         });
     }
@@ -111,10 +112,10 @@ public final class ResetDeleteController {
                 return;
             }
 
-            new android.app.AlertDialog.Builder(fragment.requireContext())
+            new BrandDialog(fragment.requireContext())
                     .setTitle(R.string.install_dialog_delete_title)
                     .setMessage(R.string.install_dialog_delete_msg)
-                    .setPositiveButton(R.string.install_btn_delete_confirm, (dialog, which) -> {
+                    .setDestructive(R.string.install_btn_delete_confirm, () -> {
                         host.setDeleting(true);
                         mainAct.runOnUiThread(host::updateDynamicButtons);
 
@@ -138,7 +139,7 @@ public final class ResetDeleteController {
                             }
                         }).start();
                     })
-                    .setNegativeButton(R.string.cancel, null)
+                    .setNegative(R.string.cancel, null)
                     .show();
         });
     }
