@@ -37,7 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
+import org.iiab.controller.ui.dialog.BrandDialog;
 
 import org.iiab.controller.R;
 
@@ -331,11 +331,10 @@ public final class TooltipManager {
                                     + "</body></html>", "text/html", "utf-8");
                 }
             });
-            new AlertDialog.Builder(context)
+            new BrandDialog(context)
                     .setTitle(label)
-                    .setView(web)
-                    .setPositiveButton(android.R.string.ok, null)
-                    .create()
+                    .setContentView(web)
+                    .setPositive(android.R.string.ok, null)
                     .show();
             web.loadUrl(url);
         } catch (Exception e) {

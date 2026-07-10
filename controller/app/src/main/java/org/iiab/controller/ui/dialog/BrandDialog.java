@@ -37,16 +37,19 @@ public final class BrandDialog {
     public static final class Handle {
         private final AlertDialog dialog;
         private final Button positive;
+        private final Button negative;
         private final FrameLayout content;
 
-        Handle(AlertDialog dialog, Button positive, FrameLayout content) {
+        Handle(AlertDialog dialog, Button positive, Button negative, FrameLayout content) {
             this.dialog = dialog;
             this.positive = positive;
+            this.negative = negative;
             this.content = content;
         }
 
         public AlertDialog getDialog() { return dialog; }
         public Button getPositiveButton() { return positive; }
+        public Button getNegativeButton() { return negative; }
         public void dismiss() { dialog.dismiss(); }
 
         public void setContent(@NonNull View view) {
@@ -225,6 +228,6 @@ public final class BrandDialog {
         }
 
         dialog.show();
-        return new Handle(dialog, positive, contentHost);
+        return new Handle(dialog, positive, negative, contentHost);
     }
 }

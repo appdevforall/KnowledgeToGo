@@ -28,7 +28,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import org.iiab.controller.ui.dialog.BrandDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -55,7 +54,7 @@ public class UpdateController {
     private final AppCompatActivity activity;
 
     private long updateDownloadId = -1;
-    private AlertDialog updateProgressDialog;
+    private BrandDialog.Handle updateProgressDialog;
     private UpdateViewModel updateViewModel;
     private long lastUpdateCheckTime = 0;
 
@@ -329,42 +328,35 @@ public class UpdateController {
 
     private void showUpdateProgressDialog() {
         View view = activity.getLayoutInflater().inflate(R.layout.dialog_ota_progress, null);
-        AlertDialog d = new AlertDialog.Builder(activity)
+        BrandDialog.Handle d = new BrandDialog(activity)
                 .setTitle(R.string.ota_progress_title)
-                .setView(view)
+                .setContentView(view)
                 .setCancelable(false)
-                .setPositiveButton(R.string.ota_btn_install, null)
-                .setNegativeButton(R.string.ota_btn_cancel, null)
-                .create();
-        d.setOnShowListener(dlg -> {
-            Button install = d.getButton(AlertDialog.BUTTON_POSITIVE);
-            Button cancel = d.getButton(AlertDialog.BUTTON_NEGATIVE);
-            if (install != null) install.setOnClickListener(v -> launchInstaller());
-            if (cancel != null) cancel.setOnClickListener(v -> {
-                UpdateUiState st = getUpdateViewModel().state().getValue();
-                boolean terminal = st != null && (st.status == UpdateUiState.Status.READY
-                        || st.status == UpdateUiState.Status.ERROR
-                        || st.status == UpdateUiState.Status.INSTALLING);
-                if (!terminal) {
-                    getUpdateViewModel().cancel();
-                }
-                d.dismiss();
-            });
-            renderUpdateState(getUpdateViewModel().state().getValue());
-        });
+                .setDismissOnPositive(false)
+                .setPositive(R.string.ota_btn_install, () -> launchInstaller())
+                .setNegative(R.string.ota_btn_cancel, () -> {
+                    UpdateUiState st = getUpdateViewModel().state().getValue();
+                    boolean terminal = st != null && (st.status == UpdateUiState.Status.READY
+                            || st.status == UpdateUiState.Status.ERROR
+                            || st.status == UpdateUiState.Status.INSTALLING);
+                    if (!terminal) {
+                        getUpdateViewModel().cancel();
+                    }
+                })
+                .show();
         updateProgressDialog = d;
-        d.show();
+        renderUpdateState(getUpdateViewModel().state().getValue());
     }
 
     private void renderUpdateState(UpdateUiState s) {
-        if (updateProgressDialog == null || s == null || !updateProgressDialog.isShowing()) {
+        if (updateProgressDialog == null || s == null || !updateProgressDialog.getDialog().isShowing()) {
             return;
         }
-        ProgressBar bar = updateProgressDialog.findViewById(R.id.ota_progress);
-        TextView status = updateProgressDialog.findViewById(R.id.ota_status);
-        TextView percent = updateProgressDialog.findViewById(R.id.ota_percent);
-        Button install = updateProgressDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        Button cancel = updateProgressDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+        ProgressBar bar = updateProgressDialog.getDialog().findViewById(R.id.ota_progress);
+        TextView status = updateProgressDialog.getDialog().findViewById(R.id.ota_status);
+        TextView percent = updateProgressDialog.getDialog().findViewById(R.id.ota_percent);
+        Button install = updateProgressDialog.getPositiveButton();
+        Button cancel = updateProgressDialog.getNegativeButton();
 
         boolean determinate = s.status == UpdateUiState.Status.DOWNLOADING && !s.indeterminate && s.percent >= 0;
         if (bar != null) {
