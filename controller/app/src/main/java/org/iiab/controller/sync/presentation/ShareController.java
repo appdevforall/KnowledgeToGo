@@ -25,7 +25,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -38,6 +37,7 @@ import org.iiab.controller.sync.domain.ApkShareName;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.transport.NetworkInterfaces;
 import org.iiab.controller.sync.transport.TransportEngine;
+import org.iiab.controller.ui.dialog.BrandDialog;
 import org.iiab.controller.util.AppExecutors;
 
 public final class ShareController {
@@ -125,11 +125,10 @@ public final class ShareController {
         // APK SERVER LOGIC (app sharing / bootstrap).
         btnShareApp.setOnClickListener(v -> {
             if (isDaemonRunning) {
-                new AlertDialog.Builder(fragment.requireContext())
-                        .setTitle(fragment.getString(R.string.sync_dialog_server_running_title))
-                        .setMessage(fragment.getString(R.string.sync_error_stop_server_first))
-                        .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                new BrandDialog(fragment.requireContext())
+                        .setTitle(R.string.sync_dialog_server_running_title)
+                        .setMessage(R.string.sync_error_stop_server_first)
+                        .setPositive(R.string.adb_enforcer_btn_ok, BrandDialog.Role.PRIMARY, null)
                         .show();
                 return;
             }
@@ -362,21 +361,19 @@ public final class ShareController {
         if (fragment.getActivity() == null) return;
 
         if (isApkServerRunning) {
-            new AlertDialog.Builder(fragment.requireContext())
-                    .setTitle(fragment.getString(R.string.sync_dialog_server_running_title))
-                    .setMessage(fragment.getString(R.string.sync_error_stop_apk_first))
-                    .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+            new BrandDialog(fragment.requireContext())
+                    .setTitle(R.string.sync_dialog_server_running_title)
+                    .setMessage(R.string.sync_error_stop_apk_first)
+                    .setPositive(R.string.adb_enforcer_btn_ok, BrandDialog.Role.PRIMARY, null)
                     .show();
             return;
         }
 
         if (host.isServerAlive()) {
-            new AlertDialog.Builder(fragment.requireContext())
-                    .setTitle(fragment.getString(R.string.sync_dialog_server_running_title))
-                    .setMessage(fragment.getString(R.string.sync_error_stop_server_first))
-                    .setPositiveButton(fragment.getString(R.string.adb_enforcer_btn_ok), null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+            new BrandDialog(fragment.requireContext())
+                    .setTitle(R.string.sync_dialog_server_running_title)
+                    .setMessage(R.string.sync_error_stop_server_first)
+                    .setPositive(R.string.adb_enforcer_btn_ok, BrandDialog.Role.PRIMARY, null)
                     .show();
             return;
         }
@@ -392,23 +389,21 @@ public final class ShareController {
             hostHasRootfs = rootfsDir.exists() && rootfsDir.isDirectory();
 
             if (!hostHasRootfs) {
-                new AlertDialog.Builder(fragment.requireContext())
-                        .setTitle(fragment.getString(R.string.sync_dialog_missing_env_title))
-                        .setMessage(fragment.getString(R.string.sync_dialog_missing_env_msg))
-                        .setPositiveButton(fragment.getString(R.string.sync_dialog_btn_continue), (dialog, which) -> startShareDaemon(rootfsDir))
-                        .setNegativeButton(fragment.getString(R.string.cancel), null)
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                new BrandDialog(fragment.requireContext())
+                        .setTitle(R.string.sync_dialog_missing_env_title)
+                        .setMessage(R.string.sync_dialog_missing_env_msg)
+                        .setPositive(R.string.sync_dialog_btn_continue, BrandDialog.Role.PRIMARY, () -> startShareDaemon(rootfsDir))
+                        .setNegative(R.string.cancel, null)
                         .show();
             } else {
                 startShareDaemon(rootfsDir);
             }
         } else {
-            new AlertDialog.Builder(fragment.requireContext())
-                    .setTitle(fragment.getString(R.string.sync_dialog_stop_title))
-                    .setMessage(fragment.getString(R.string.sync_dialog_stop_msg))
-                    .setPositiveButton(fragment.getString(R.string.sync_btn_stop_server), (dialog, which) -> stopShareDaemon())
-                    .setNegativeButton(fragment.getString(R.string.cancel), null)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+            new BrandDialog(fragment.requireContext())
+                    .setTitle(R.string.sync_dialog_stop_title)
+                    .setMessage(R.string.sync_dialog_stop_msg)
+                    .setPositive(R.string.sync_btn_stop_server, BrandDialog.Role.DESTRUCTIVE, () -> stopShareDaemon())
+                    .setNegative(R.string.cancel, null)
                     .show();
         }
     }
