@@ -20,7 +20,7 @@ body {
 .top-header {
     position: absolute;
     top: 0; left: 0; width: 100%;
-    display: flex; align-items: center;
+    display: flex; align-items: center; justify-content: center;
     padding: 16px 20px;
     box-sizing: border-box;
     background-color: transparent;
@@ -33,13 +33,22 @@ body {
 }
 
 .header-title {
-    flex-grow: 1;
     text-align: center;
+    margin: 0;
+}
+
+.product-name {
     margin: 0;
     font-size: 26px;
     font-weight: 900;
     color: #2C3E50;
-    padding-right: 48px;
+}
+
+.product-subtitle {
+    margin: 4px 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #5A6B7B;
 }
 
 /* =========================================
@@ -78,7 +87,7 @@ body {
 .btn-dashboard { background-color: #1e1e1e; border: 1px solid #5dbca5; color: #5dbca5; margin-top: 20px; }
 
 .btn span { margin-right: 12px; font-size: 20px; }
-.btn .app-logo { width: 32px; height: 32px; margin-right: 12px; }
+.btn .app-logo { width: 32px; height: 32px; object-fit: contain; margin-right: 12px; }
 
 /* Inactive status for buttons (grey) */
 .btn.disabled {
