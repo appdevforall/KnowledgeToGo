@@ -515,4 +515,5 @@
     <string name="cd_toggle_theme">Prepnúť tému</string>
     <string name="uptime_label">Čas prevádzky:</string>
     <string name="server_busy_install_lock">Pred spustením servera počkajte na dokončenie inštalácie modulov.</string>
+    <string name="log_jump_latest">↓ Najnovšie</string>
 </resources>

@@ -515,4 +515,5 @@
     <string name="cd_toggle_theme">Perjungti temą</string>
     <string name="uptime_label">Veikimo laikas:</string>
     <string name="server_busy_install_lock">Prieš paleisdami serverį palaukite, kol bus baigtas modulių diegimas.</string>
+    <string name="log_jump_latest">↓ Naujausi</string>
 </resources>

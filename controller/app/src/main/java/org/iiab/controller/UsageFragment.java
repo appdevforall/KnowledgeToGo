@@ -13,8 +13,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
-import android.view.MotionEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +54,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
     private MainActivity mainActivity;
     // INTERFACE VARS
-    private TextView logLabel, logWarning, logSizeText, connectionLog;
+    private TextView logLabel, logWarning, logSizeText;
+    private ServerLogView connectionLog;
     private Button button_browse_content, btnClearLog, btnCopyLog;
     private LinearLayout logActions, deckContainer;
     private ProgressBar logProgress;
@@ -208,16 +207,6 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             mainActivity.handleServerLaunchClick(v);
         });
 
-        connectionLog.setMovementMethod(new ScrollingMovementMethod());
-        connectionLog.setTextIsSelectable(true);
-        connectionLog.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-            }
-            return false;
-        });
-
         logLabel.setText(String.format(getString(R.string.label_separator_up), getString(R.string.connection_log_label)));
 
         updateUI();
@@ -229,7 +218,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
             showResetLogConfirmation();
         } else if (v.getId() == R.id.btn_copy_log) {
             ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText("IIAB Log", connectionLog.getText().toString());
+            ClipData clip = ClipData.newPlainText("IIAB Log", connectionLog.getContent());
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(requireContext(), R.string.log_copied_toast, Toast.LENGTH_SHORT).show();
@@ -441,19 +430,11 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         getActivity().runOnUiThread(() -> {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
             String currentTime = sdf.format(new Date());
-            String logEntry = "[" + currentTime + "] " + message + "\n";
+            String logEntry = "[" + currentTime + "] " + message;
             if (connectionLog != null) {
                 connectionLog.append(logEntry);
-                scrollToBottom();
             }
         });
-    }
-
-    private void scrollToBottom() {
-        if (connectionLog != null && connectionLog.getLayout() != null) {
-            int scroll = connectionLog.getLayout().getLineTop(connectionLog.getLineCount()) - connectionLog.getHeight();
-            if (scroll > 0) connectionLog.scrollTo(0, scroll);
-        }
     }
 
     public void updateLogSizeUI() {
@@ -484,8 +465,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
             LogManager.readLogsAsync(requireContext(), (logContent, isRapidGrowth) -> {
                 if (connectionLog != null) {
-                    connectionLog.setText(logContent);
-                    scrollToBottom();
+                    connectionLog.setContent(logContent);
                 }
                 if (logProgress != null) logProgress.setVisibility(View.GONE);
                 if (logWarning != null)
@@ -516,7 +496,7 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
                     LogManager.clearLogs(requireContext(), new LogManager.LogClearCallback() {
                         @Override
                         public void onSuccess() {
-                            connectionLog.setText("");
+                            connectionLog.clear();
                             addToLog(getString(R.string.log_reset_user));
                             if (logWarning != null) logWarning.setVisibility(View.GONE);
                             updateLogSizeUI();

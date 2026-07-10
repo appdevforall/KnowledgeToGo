@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/log_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/scrollbar_thumb"
+        app:fastScrollHorizontalTrackDrawable="@drawable/scrollbar_track"
+        app:fastScrollVerticalThumbDrawable="@drawable/scrollbar_thumb"
+        app:fastScrollVerticalTrackDrawable="@drawable/scrollbar_track" />
+
+    <Button
+        android:id="@+id/log_jump_latest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:text="@string/log_jump_latest"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/lohs_qr_purple"
+        android:textColor="@color/text_on_accent"
+        android:visibility="gone" />
+</merge>

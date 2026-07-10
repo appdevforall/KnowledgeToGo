@@ -508,4 +508,5 @@
     <string name="cd_toggle_theme">Chuyển đổi giao diện</string>
     <string name="uptime_label">Thời gian hoạt động:</string>
     <string name="server_busy_install_lock">Hãy đợi quá trình cài đặt các mô-đun hoàn tất trước khi khởi động máy chủ.</string>
+    <string name="log_jump_latest">↓ Mới nhất</string>
 </resources>

@@ -515,4 +515,5 @@
     <string name="cd_toggle_theme">Badilisha Mandhari</string>
     <string name="uptime_label">Muda wa kufanya kazi:</string>
     <string name="server_busy_install_lock">Subiri usakinishaji wa moduli ukamilike kabla ya kuanzisha seva.</string>
+    <string name="log_jump_latest">↓ Mpya</string>
 </resources>
