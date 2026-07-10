@@ -5,7 +5,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const LANG_DIR = path.join(__dirname, '..', 'public', 'lang');
-const LOCALES = ['es', 'fr', 'hi', 'pt', 'ru'];
+const LOCALES = ['es', 'fr', 'hi', 'pt', 'ru', 'de', 'it', 'ar', 'ja', 'zh', 'ko',
+    'nl', 'tr', 'vi', 'pl', 'cs', 'id', 'fa', 'uk', 'ro', 'el', 'sk', 'bg', 'sr',
+    'lt', 'no', 'hu', 'az', 'bn', 'gu', 'ta', 'sw', 'yo'];
 
 // Evaluate a lang/<code>.js file in a sandbox that only provides a `window`
 // object, then return the resulting i18n key set. Each file assigns
