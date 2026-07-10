@@ -1,0 +1,11 @@
+// Machine-translated (tr) — pending human review. See ADFA-4537.
+window.i18n = {
+    "title": "İçerik Seç",
+    "books": "Kitaplar",
+    "code": "Code on the Go",
+    "kiwix": "Kiwix",
+    "kolibri": "Kolibri",
+    "maps": "Haritalar",
+    "matomo": "Matomo",
+    "backend_error": "Arka uç sunucusu yanıt vermiyor. Lütfen başlatıldığından emin olun. Termux uygulamasına gidin ve şunu çalıştırın"
+};

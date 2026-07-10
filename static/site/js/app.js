@@ -16,12 +16,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 
+    // Locales the content page ships (kept in parity with the Android app).
+    // 'en' is the source of truth and the fallback for any missing locale.
+    const supportedLangs = ['en', 'es', 'fr', 'hi', 'ru', 'de', 'it', 'ar', 'ja', 'zh',
+        'ko', 'nl', 'tr', 'vi', 'pl', 'cs', 'id', 'fa', 'uk', 'ro', 'el', 'sk', 'bg',
+        'sr', 'lt', 'no', 'hu', 'az', 'bn', 'gu', 'ta', 'sw', 'yo'];
+    const RTL_LANGS = ['ar', 'fa'];
+
     // Function to load the language file dynamically
     const loadScript = (lang) => {
         const script = document.createElement('script');
         // Fallback to 'en' if the user's language file doesn't exist
-        const supportedLangs = ['es', 'en'];
         const finalLang = supportedLangs.includes(lang) ? lang : 'en';
+
+        // Reflect the active locale on <html> so :lang() styling and assistive tech
+        // announce the right language, and flip direction for RTL scripts.
+        document.documentElement.lang = finalLang;
+        document.documentElement.dir = RTL_LANGS.includes(finalLang) ? 'rtl' : 'ltr';
 
         script.src = `lang/${finalLang}.js`;
         script.onload = applyTranslations;
