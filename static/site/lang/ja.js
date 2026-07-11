@@ -1,6 +1,7 @@
 // Machine-translated (ja) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "コンテンツを選択",
+    "powered_by": "Internet-in-a-Box を利用",
     "books": "本",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

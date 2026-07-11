@@ -1,6 +1,7 @@
 // Machine-translated (bg) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Изберете съдържание",
+    "powered_by": "задвижвано от Internet-in-a-Box",
     "books": "Книги",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

@@ -1,6 +1,7 @@
 // Machine-translated (hi) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "सामग्री चुनें",
+    "powered_by": "Internet-in-a-Box द्वारा संचालित",
     "books": "किताबें",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

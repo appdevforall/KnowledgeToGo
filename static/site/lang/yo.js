@@ -1,6 +1,7 @@
 // Machine-translated (yo) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Yan Àkóónú",
+    "powered_by": "ó ń ṣiṣẹ́ pẹ̀lú Internet-in-a-Box",
     "books": "Àwọn ìwé",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

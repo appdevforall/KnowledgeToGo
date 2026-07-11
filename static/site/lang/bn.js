@@ -1,6 +1,7 @@
 // Machine-translated (bn) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "কন্টেন্ট নির্বাচন করুন",
+    "powered_by": "Internet-in-a-Box দ্বারা চালিত",
     "books": "বই",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

@@ -1,6 +1,7 @@
 // Machine-translated (vi) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Chọn nội dung",
+    "powered_by": "được cung cấp bởi Internet-in-a-Box",
     "books": "Sách",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

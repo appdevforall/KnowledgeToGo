@@ -1,6 +1,7 @@
 // Machine-translated (hu) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Válasszon tartalmat",
+    "powered_by": "az Internet-in-a-Box hajtja",
     "books": "Könyvek",
     "code": "Code on the Go",
     "kiwix": "Kiwix",
