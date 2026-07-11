@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">推定サイズ（オフライン）</string>
     <string name="install_msg_termux_missing">先にベースの Debian システムをインストールしてください。</string>
     <string name="install_btn_delete">削除</string>
-    <string name="install_btn_launch">インストールを開始</string>
+    <string name="install_btn_launch">選択項目をインストール</string>
     <string name="install_adv_monitoring_title">詳細モニタリング</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">インストールを手動で確認してください。表示内容と検出内容に不一致があるようです。</string>

@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">예상 크기(오프라인)</string>
     <string name="install_msg_termux_missing">먼저 기본 Debian 시스템을 설치하세요.</string>
     <string name="install_btn_delete">삭제</string>
-    <string name="install_btn_launch">설치 시작</string>
+    <string name="install_btn_launch">선택 항목 설치</string>
     <string name="install_adv_monitoring_title">고급 모니터링</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">설치를 수동으로 확인하세요. 명시된 내용과 감지된 내용 사이에 불일치가 있는 것 같습니다.</string>

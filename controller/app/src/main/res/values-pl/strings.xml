@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Szacowane rozmiary (offline)</string>
     <string name="install_msg_termux_missing">Najpierw zainstaluj bazowy system Debian.</string>
     <string name="install_btn_delete">Usuń</string>
-    <string name="install_btn_launch">Rozpocznij instalację</string>
+    <string name="install_btn_launch">Zainstaluj wybrane</string>
     <string name="install_adv_monitoring_title">Zaawansowane monitorowanie</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Sprawdź instalację ręcznie, wygląda na to, że istnieje rozbieżność między tym, co jest podane, a tym, co wykryto.</string>

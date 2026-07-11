@@ -198,7 +198,7 @@
     <string name="install_btn_install">Instalar</string>
     <string name="install_btn_reinstall">Reinstalar</string>
     <string name="install_btn_delete">Excluir</string>
-    <string name="install_btn_launch">Iniciar instalação</string>
+    <string name="install_btn_launch">Instalar seleção</string>
     <string name="install_btn_provision">Provisionar Sistema</string>
     <string name="install_btn_refresh">Atualizar</string>
     <string name="install_btn_reset">Redefinição completa</string>

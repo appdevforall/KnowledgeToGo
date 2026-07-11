@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Təxmini ölçülər (oflayn)</string>
     <string name="install_msg_termux_missing">Zəhmət olmasa əvvəlcə baza Debian sistemini quraşdırın.</string>
     <string name="install_btn_delete">Sil</string>
-    <string name="install_btn_launch">Quraşdırmanı başlat</string>
+    <string name="install_btn_launch">Seçilmişi quraşdır</string>
     <string name="install_adv_monitoring_title">Qabaqcıl monitorinq</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Zəhmət olmasa quraşdırmanı əl ilə yoxlayın, göstərilən və aşkarlanan arasında uyğunsuzluq var kimi görünür.</string>

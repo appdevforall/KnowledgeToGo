@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">الأحجام المقدَّرة (غير متصل)</string>
     <string name="install_msg_termux_missing">يرجى تثبيت نظام Debian الأساسي أولًا.</string>
     <string name="install_btn_delete">حذف</string>
-    <string name="install_btn_launch">بدء التثبيت</string>
+    <string name="install_btn_launch">تثبيت المحدد</string>
     <string name="install_adv_monitoring_title">المراقبة المتقدمة</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">يرجى التحقق من التثبيت يدويًا، يبدو أن هناك تباينًا بين ما هو مُعلَن وما تم اكتشافه.</string>

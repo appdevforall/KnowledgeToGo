@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Àwọn ìwọ̀n àfojúsùn (láìsí ayélujára)</string>
     <string name="install_msg_termux_missing">Jọ̀wọ́ fi ìpìlẹ̀ ètò Debian sórí ẹ̀rọ ní àkọ́kọ́.</string>
     <string name="install_btn_delete">Pa á rẹ́</string>
-    <string name="install_btn_launch">Bẹ̀rẹ̀ ìfisórí ẹ̀rọ</string>
+    <string name="install_btn_launch">Fi àṣàyàn sórí ẹ̀rọ</string>
     <string name="install_adv_monitoring_title">Àbójútó tí ó jinlẹ̀</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Jọ̀wọ́ ṣàyẹ̀wò ìfisórí ẹ̀rọ pẹ̀lú ọwọ́, ó dàbí pé ìyàtọ̀ wà láàrin ohun tí a sọ àti ohun tí a rí.</string>

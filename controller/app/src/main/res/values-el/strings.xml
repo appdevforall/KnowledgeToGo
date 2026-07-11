@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Εκτιμώμενα μεγέθη (εκτός σύνδεσης)</string>
     <string name="install_msg_termux_missing">Εγκαταστήστε πρώτα το βασικό σύστημα Debian.</string>
     <string name="install_btn_delete">Διαγραφή</string>
-    <string name="install_btn_launch">Έναρξη εγκατάστασης</string>
+    <string name="install_btn_launch">Εγκατάσταση επιλεγμένων</string>
     <string name="install_adv_monitoring_title">Παρακολούθηση για προχωρημένους</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Ελέγξτε την εγκατάσταση χειροκίνητα· φαίνεται ότι υπάρχει διαφορά μεταξύ αυτού που δηλώνεται και αυτού που εντοπίστηκε.</string>

@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">மதிப்பிடப்பட்ட அளவுகள் (ஆஃப்லைன்)</string>
     <string name="install_msg_termux_missing">முதலில் அடிப்படை Debian அமைப்பை நிறுவவும்.</string>
     <string name="install_btn_delete">நீக்கு</string>
-    <string name="install_btn_launch">நிறுவலைத் தொடங்கு</string>
+    <string name="install_btn_launch">தேர்ந்தெடுத்ததை நிறுவு</string>
     <string name="install_adv_monitoring_title">மேம்பட்ட கண்காணிப்பு</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">நிறுவலை கைமுறையாகச் சரிபார்க்கவும், கூறப்பட்டதற்கும் கண்டறியப்பட்டதற்கும் இடையே ஒரு முரண்பாடு இருப்பது போல் தெரிகிறது.</string>

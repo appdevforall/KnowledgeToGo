@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">预估大小（离线）</string>
     <string name="install_msg_termux_missing">请先安装基础 Debian 系统。</string>
     <string name="install_btn_delete">删除</string>
-    <string name="install_btn_launch">开始安装</string>
+    <string name="install_btn_launch">安装所选</string>
     <string name="install_adv_monitoring_title">高级监控</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">请手动检查安装，声明的内容与检测到的内容之间似乎存在差异。</string>

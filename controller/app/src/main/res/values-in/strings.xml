@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Perkiraan ukuran (luring)</string>
     <string name="install_msg_termux_missing">Silakan pasang sistem Debian dasar terlebih dahulu.</string>
     <string name="install_btn_delete">Hapus</string>
-    <string name="install_btn_launch">Mulai pemasangan</string>
+    <string name="install_btn_launch">Pasang yang dipilih</string>
     <string name="install_adv_monitoring_title">Pemantauan lanjutan</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Silakan periksa pemasangan secara manual, tampaknya ada ketidaksesuaian antara yang dinyatakan dan yang terdeteksi.</string>

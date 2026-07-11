@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Odhadované velikosti (offline)</string>
     <string name="install_msg_termux_missing">Nejprve prosím nainstalujte základní systém Debian.</string>
     <string name="install_btn_delete">Odstranit</string>
-    <string name="install_btn_launch">Spustit instalaci</string>
+    <string name="install_btn_launch">Nainstalovat vybrané</string>
     <string name="install_adv_monitoring_title">Pokročilé monitorování</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Zkontrolujte prosím instalaci ručně, zdá se, že je nesoulad mezi tím, co je uvedeno a co bylo zjištěno.</string>
