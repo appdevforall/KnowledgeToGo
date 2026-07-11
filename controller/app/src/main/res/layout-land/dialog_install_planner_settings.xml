@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -14,7 +15,7 @@
         android:layout_height="32dp"
         android:layout_gravity="end"
         android:src="@drawable/ic_close_24"
-        android:tint="@color/dash_text_secondary"
+        app:tint="@color/dash_text_secondary"
         android:contentDescription="@string/kiwix_dialog_close"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
@@ -60,7 +61,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:src="@drawable/outline_cloud_off_24"
-            android:tint="@color/status_danger"
+            app:tint="@color/status_danger"
             android:contentDescription="@string/kiwix_dialog_offline" />
 
         <TextView
