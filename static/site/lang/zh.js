@@ -1,6 +1,7 @@
 // Machine-translated (zh) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "选择内容",
+    "powered_by": "由 Internet-in-a-Box 提供支持",
     "books": "图书",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

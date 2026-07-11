@@ -1,6 +1,7 @@
 // Machine-translated (id) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Pilih Konten",
+    "powered_by": "didukung oleh Internet-in-a-Box",
     "books": "Buku",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

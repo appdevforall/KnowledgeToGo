@@ -1,6 +1,7 @@
 // Machine-translated (sr) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Изаберите садржај",
+    "powered_by": "покреће Internet-in-a-Box",
     "books": "Књиге",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

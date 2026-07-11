@@ -1,6 +1,7 @@
 // Machine-translated (fa) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "محتوا را انتخاب کنید",
+    "powered_by": "قدرت‌گرفته از Internet-in-a-Box",
     "books": "کتاب‌ها",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

@@ -1,6 +1,7 @@
 // Machine-translated (az) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Məzmun seçin",
+    "powered_by": "Internet-in-a-Box tərəfindən dəstəklənir",
     "books": "Kitablar",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

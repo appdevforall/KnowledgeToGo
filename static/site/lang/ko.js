@@ -1,6 +1,7 @@
 // Machine-translated (ko) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "콘텐츠 선택",
+    "powered_by": "Internet-in-a-Box 제공",
     "books": "도서",
     "code": "Code on the Go",
     "kiwix": "Kiwix",

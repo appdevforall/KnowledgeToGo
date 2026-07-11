@@ -1,5 +1,6 @@
 window.i18n = {
     "title": "Choose Content",
+    "powered_by": "powered by Internet-in-a-Box",
     "books": "Books",
     "code": "Code on the Go",
     "kiwix": "Kiwix",
