@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "Saxlanmış ehtiyat nüsxəni <b>sil</b>."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "<b>Basic</b> versiyası əsas komponentləri quraşdırır:<ul><li><b>Kiwix</b> — oflayn Wikipedia və digər kitabxanalar</li><li><b>IIAB Maps</b> — Internet-in-a-Box-dan seçilmiş oflayn xəritələr</li><li><b>System Dashboard</b> — məzmunu və statusu idarə et</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "<b>Standard</b> versiyası Basic dəstinə <b>Kolibri</b> əlavə edir:<ul><li><b>Kiwix</b> — oflayn Wikipedia və digər kitabxanalar</li><li><b>IIAB Maps</b> — Internet-in-a-Box-dan seçilmiş oflayn xəritələr</li><li><b>System Dashboard</b> — məzmunu və statusu idarə et</li><li><b>Kolibri</b> — strukturlaşdırılmış kurslar və dərslər</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "<b>Full</b> versiyası gündəlik istifadə üçün ən güclü tətbiqlərimizi quraşdırır:<ul><li><b>Kiwix</b> — oflayn Wikipedia və digər kitabxanalar</li><li><b>Kolibri</b> — strukturlaşdırılmış kurslar və dərslər</li><li><b>IIAB Maps</b> — Internet-in-a-Box-dan seçilmiş oflayn xəritələr</li><li><b>System Dashboard</b> — məzmunu və statusu idarə et</li><li><b>Calibre-Web</b> — elektron kitab kitabxanası</li><li><b>Code on the Go</b> — tətbiqlər yaratmaq üçün tam, oflayn-öncəlikli IDE</li></ul>"

@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">ડેવલપર\nમોડ</string>
     <string name="install_led_child_process">પ્રક્રિયાઓ\nપ્રતિબંધ</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">ઝડપી ઇન્સ્ટૉલેશન</string>
+    <string name="install_header_fast">સરળ ઇન્સ્ટોલેશન</string>
     <string name="install_desc_fast">મુખ્ય ઍપ્સ માટે વૈકલ્પિક ડેટા સાથે, પૂર્વ-નિર્મિત IIAB સિસ્ટમ પ્રદાન કરે છે.</string>
     <string name="install_header_roles">મૉડ્યુલ મેનેજમેન્ટ</string>
     <string name="install_header_maintenance">જાળવણી &#38; પુનઃપ્રાપ્તિ</string>

@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">ডেভেলপার\nমোড</string>
     <string name="install_led_child_process">প্রসেস \nসীমাবদ্ধতা</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">দ্রুত ইনস্টলেশন</string>
+    <string name="install_header_fast">সহজ ইনস্টলেশন</string>
     <string name="install_desc_fast">প্রধান অ্যাপের জন্য ঐচ্ছিক ডেটাসহ একটি পূর্বনির্মিত IIAB সিস্টেম প্রস্তুত করে।</string>
     <string name="install_header_roles">মডিউল ব্যবস্থাপনা</string>
     <string name="install_header_maintenance">রক্ষণাবেক্ষণ &#38; পুনরুদ্ধার</string>

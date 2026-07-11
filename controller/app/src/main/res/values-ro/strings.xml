@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Mod\ndezvoltator</string>
     <string name="install_led_child_process">Restricție\nprocese</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Instalare rapidă</string>
+    <string name="install_header_fast">Instalare Ușoară</string>
     <string name="install_desc_fast">Furnizează un sistem IIAB predefinit, cu date opționale pentru aplicațiile principale.</string>
     <string name="install_header_roles">Gestionare module</string>
     <string name="install_header_maintenance">Întreținere &#38; recuperare</string>

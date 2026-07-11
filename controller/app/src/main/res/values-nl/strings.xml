@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Ontwikkelaars-\nmodus</string>
     <string name="install_led_child_process">Proces-\nbeperking</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">Snelle installatie</string>
+    <string name="install_header_fast">Eenvoudige installatie</string>
     <string name="install_desc_fast">Levert een vooraf gebouwd IIAB-systeem, met optionele data voor de belangrijkste apps.</string>
     <string name="install_header_roles">Modulebeheer</string>
     <string name="install_header_maintenance">Onderhoud en herstel</string>

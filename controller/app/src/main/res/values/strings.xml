@@ -203,7 +203,7 @@
     <string name="install_led_child_process">Processes \nRestriction</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
 
-    <string name="install_header_fast">Fast Installation</string>
+    <string name="install_header_fast">Easy Installation</string>
     <string name="install_desc_fast">Provisions a prebuilt IIAB system, with optional data for main apps.</string>
 
     <string name="install_header_roles">Module management</string>

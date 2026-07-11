@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>Pa</b> àfẹ́yàwọ́ tí a fi pamọ́ rẹ́."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "Ẹ̀dà <b>Basic</b> ń fi àwọn ohun pàtàkì sórí ẹ̀rọ:<ul><li><b>Kiwix</b> — Wikipedia àìlórí-àyélujára àti àwọn ibi ìkówèésí mìíràn</li><li><b>IIAB Maps</b> — àwọn àwòrán ilẹ̀ àìlórí-àyélujára tí a yàn láti Internet-in-a-Box</li><li><b>System Dashboard</b> — ṣàkóso àkóónú àti ipò</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "Ẹ̀dà <b>Standard</b> ń fi <b>Kolibri</b> kún ìtò Basic:<ul><li><b>Kiwix</b> — Wikipedia àìlórí-àyélujára àti àwọn ibi ìkówèésí mìíràn</li><li><b>IIAB Maps</b> — àwọn àwòrán ilẹ̀ àìlórí-àyélujára tí a yàn láti Internet-in-a-Box</li><li><b>System Dashboard</b> — ṣàkóso àkóónú àti ipò</li><li><b>Kolibri</b> — àwọn ẹ̀kọ́ àti ìdánilẹ́kọ̀ọ́ tí a ṣètò</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "Ẹ̀dà <b>Full</b> ń fi àwọn ohun èlò tó lágbára jùlọ sórí ẹ̀rọ fún ìlò ojoojúmọ́:<ul><li><b>Kiwix</b> — Wikipedia àìlórí-àyélujára àti àwọn ibi ìkówèésí mìíràn</li><li><b>Kolibri</b> — àwọn ẹ̀kọ́ àti ìdánilẹ́kọ̀ọ́ tí a ṣètò</li><li><b>IIAB Maps</b> — àwọn àwòrán ilẹ̀ àìlórí-àyélujára tí a yàn láti Internet-in-a-Box</li><li><b>System Dashboard</b> — ṣàkóso àkóónú àti ipò</li><li><b>Calibre-Web</b> — ibi ìkówèésí ìwé alátagbà</li><li><b>Code on the Go</b> — IDE kíkún tí ó ń fún àìlórí-àyélujára ní ààyò fún kíkọ́ àwọn ohun èlò</li></ul>"

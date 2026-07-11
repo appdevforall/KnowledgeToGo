@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Fejlesztői\nmód</string>
     <string name="install_led_child_process">Folyamat-\nkorlátozás</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">Gyors telepítés</string>
+    <string name="install_header_fast">Egyszerű telepítés</string>
     <string name="install_desc_fast">Előre elkészített IIAB rendszert biztosít, opcionális adatokkal a fő alkalmazásokhoz.</string>
     <string name="install_header_roles">Modulkezelés</string>
     <string name="install_header_maintenance">Karbantartás &#38; helyreállítás</string>

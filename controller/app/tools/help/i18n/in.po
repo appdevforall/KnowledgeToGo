@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>Hapus</b> cadangan yang tersimpan."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "Edisi <b>Basic</b> menginstal komponen penting:<ul><li><b>Kiwix</b> — Wikipedia offline dan pustaka lainnya</li><li><b>IIAB Maps</b> — peta offline pilihan dari Internet-in-a-Box</li><li><b>System Dashboard</b> — kelola konten dan status</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "Edisi <b>Standard</b> menambahkan <b>Kolibri</b> ke set Basic:<ul><li><b>Kiwix</b> — Wikipedia offline dan pustaka lainnya</li><li><b>IIAB Maps</b> — peta offline pilihan dari Internet-in-a-Box</li><li><b>System Dashboard</b> — kelola konten dan status</li><li><b>Kolibri</b> — kursus dan pelajaran terstruktur</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "Edisi <b>Full</b> menginstal aplikasi kami yang paling andal untuk penggunaan sehari-hari:<ul><li><b>Kiwix</b> — Wikipedia offline dan pustaka lainnya</li><li><b>Kolibri</b> — kursus dan pelajaran terstruktur</li><li><b>IIAB Maps</b> — peta offline pilihan dari Internet-in-a-Box</li><li><b>System Dashboard</b> — kelola konten dan status</li><li><b>Calibre-Web</b> — pustaka e-book</li><li><b>Code on the Go</b> — IDE offline-first lengkap untuk membangun aplikasi</li></ul>"

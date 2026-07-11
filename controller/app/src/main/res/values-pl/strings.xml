@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Tryb\ndeweloperski</string>
     <string name="install_led_child_process">Ograniczenie \nprocesów</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Szybka instalacja</string>
+    <string name="install_header_fast">Łatwa instalacja</string>
     <string name="install_desc_fast">Udostępnia gotowy system IIAB, z opcjonalnymi danymi dla głównych aplikacji.</string>
     <string name="install_header_roles">Zarządzanie modułami</string>
     <string name="install_header_maintenance">Konserwacja &#38; odzyskiwanie</string>

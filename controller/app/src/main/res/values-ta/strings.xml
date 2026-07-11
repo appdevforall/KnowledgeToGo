@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">டெவலப்பர்\nபயன்முறை</string>
     <string name="install_led_child_process">செயல்முறைகள்\nகட்டுப்பாடு</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">விரைவு நிறுவல்</string>
+    <string name="install_header_fast">எளிதான நிறுவல்</string>
     <string name="install_desc_fast">முன்பே கட்டமைக்கப்பட்ட IIAB அமைப்பை வழங்குகிறது, முக்கிய பயன்பாடுகளுக்கான விருப்பத் தரவுடன்.</string>
     <string name="install_header_roles">தொகுதி மேலாண்மை</string>
     <string name="install_header_maintenance">பராமரிப்பு &#38; மீட்பு</string>

@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "Eine gespeicherte Sicherung <b>löschen</b>."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "Die <b>Basic</b>-Edition installiert das Wesentliche:<ul><li><b>Kiwix</b> — Offline-Wikipedia und weitere Bibliotheken</li><li><b>IIAB Maps</b> — kuratierte Offline-Karten von Internet-in-a-Box</li><li><b>System Dashboard</b> — Inhalte und Status verwalten</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "Die <b>Standard</b>-Edition fügt dem Basic-Paket <b>Kolibri</b> hinzu:<ul><li><b>Kiwix</b> — Offline-Wikipedia und weitere Bibliotheken</li><li><b>IIAB Maps</b> — kuratierte Offline-Karten von Internet-in-a-Box</li><li><b>System Dashboard</b> — Inhalte und Status verwalten</li><li><b>Kolibri</b> — strukturierte Kurse und Lektionen</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "Die <b>Full</b>-Edition installiert unsere leistungsstärksten Anwendungen für den täglichen Gebrauch:<ul><li><b>Kiwix</b> — Offline-Wikipedia und weitere Bibliotheken</li><li><b>Kolibri</b> — strukturierte Kurse und Lektionen</li><li><b>IIAB Maps</b> — kuratierte Offline-Karten von Internet-in-a-Box</li><li><b>System Dashboard</b> — Inhalte und Status verwalten</li><li><b>Calibre-Web</b> — E-Book-Bibliothek</li><li><b>Code on the Go</b> — eine vollständige Offline-First-IDE zum Erstellen von Anwendungen</li></ul>"

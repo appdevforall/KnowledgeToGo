@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Kūrėjo\nrežimas</string>
     <string name="install_led_child_process">Procesų\napribojimas</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Greitas diegimas</string>
+    <string name="install_header_fast">Paprastas diegimas</string>
     <string name="install_desc_fast">Parūpina iš anksto paruoštą IIAB sistemą su pasirenkamais pagrindinių programų duomenimis.</string>
     <string name="install_header_roles">Modulių valdymas</string>
     <string name="install_header_maintenance">Priežiūra &#38; atkūrimas</string>

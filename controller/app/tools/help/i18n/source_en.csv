@@ -64,8 +64,11 @@ deploy.led_ppk,summary,Status and control to disable the <b>Phantom Process Kill
 deploy.adv_monitoring,summary,Show <b>advanced monitoring</b> for the install.
 deploy.adb_action,summary,Connect over <b>ADB</b> for advanced monitoring.
 deploy.tier_basic,summary,Install the <b>Basic</b> edition (smallest set of apps).
+deploy.tier_basic,detail,"The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
 deploy.tier_standard,summary,Install the <b>Standard</b> edition.
+deploy.tier_standard,detail,"The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
 deploy.tier_full,summary,Install the <b>Full</b> edition (largest set of apps).
+deploy.tier_full,detail,"The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
 deploy.companion_data,summary,Also install <b>companion content</b> with the modules.
 deploy.kiwix_settings,summary,Open <b>Kiwix</b> download settings (language and variant).
 deploy.fast_install,summary,<b>Provision</b> the selected edition now.

@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Режим за\nразработчици</string>
     <string name="install_led_child_process">Ограничение на\nпроцесите</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Бърза инсталация</string>
+    <string name="install_header_fast">Лесно инсталиране</string>
     <string name="install_desc_fast">Осигурява предварително изградена система IIAB, с опционални данни за основните приложения.</string>
     <string name="install_header_roles">Управление на модули</string>
     <string name="install_header_maintenance">Поддръжка &#38; възстановяване</string>

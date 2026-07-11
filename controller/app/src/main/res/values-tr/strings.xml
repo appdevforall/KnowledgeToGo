@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Geliştirici\nModu</string>
     <string name="install_led_child_process">İşlem\nKısıtlaması</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">Hızlı kurulum</string>
+    <string name="install_header_fast">Kolay Kurulum</string>
     <string name="install_desc_fast">Önceden oluşturulmuş bir IIAB sistemi sağlar; ana uygulamalar için isteğe bağlı veriler içerir.</string>
     <string name="install_header_roles">Modül yönetimi</string>
     <string name="install_header_maintenance">Bakım ve kurtarma</string>

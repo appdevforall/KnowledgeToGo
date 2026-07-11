@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">حالت\nتوسعه‌دهنده</string>
     <string name="install_led_child_process">محدودیت\nفرآیندها</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">نصب سریع</string>
+    <string name="install_header_fast">نصب آسان</string>
     <string name="install_desc_fast">یک سیستم IIAB از پیش‌ساخته را فراهم می‌کند، با داده اختیاری برای برنامه‌های اصلی.</string>
     <string name="install_header_roles">مدیریت ماژول</string>
     <string name="install_header_maintenance">نگهداری &#38; بازیابی</string>

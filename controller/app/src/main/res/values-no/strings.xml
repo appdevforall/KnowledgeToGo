@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Utvikler-\nmodus</string>
     <string name="install_led_child_process">Prosess-\nbegrensning</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Rask installasjon</string>
+    <string name="install_header_fast">Enkel installasjon</string>
     <string name="install_desc_fast">Klargjør et ferdigbygd IIAB-system, med valgfrie data for hovedapper.</string>
     <string name="install_header_roles">Modulhåndtering</string>
     <string name="install_header_maintenance">Vedlikehold &#38; gjenoppretting</string>

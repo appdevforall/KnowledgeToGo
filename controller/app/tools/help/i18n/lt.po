@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>Ištrinti</b> išsaugotą atsarginę kopiją."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "<b>Basic</b> leidimas įdiegia svarbiausius dalykus:<ul><li><b>Kiwix</b> — neprisijungus veikianti Wikipedia ir kitos bibliotekos</li><li><b>IIAB Maps</b> — parinkti neprisijungus veikiantys žemėlapiai iš Internet-in-a-Box</li><li><b>System Dashboard</b> — valdykite turinį ir būseną</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "<b>Standard</b> leidimas prideda <b>Kolibri</b> prie Basic rinkinio:<ul><li><b>Kiwix</b> — neprisijungus veikianti Wikipedia ir kitos bibliotekos</li><li><b>IIAB Maps</b> — parinkti neprisijungus veikiantys žemėlapiai iš Internet-in-a-Box</li><li><b>System Dashboard</b> — valdykite turinį ir būseną</li><li><b>Kolibri</b> — struktūruoti kursai ir pamokos</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "<b>Full</b> leidimas įdiegia galingiausias mūsų programas kasdieniam naudojimui:<ul><li><b>Kiwix</b> — neprisijungus veikianti Wikipedia ir kitos bibliotekos</li><li><b>Kolibri</b> — struktūruoti kursai ir pamokos</li><li><b>IIAB Maps</b> — parinkti neprisijungus veikiantys žemėlapiai iš Internet-in-a-Box</li><li><b>System Dashboard</b> — valdykite turinį ir būseną</li><li><b>Calibre-Web</b> — elektroninių knygų biblioteka</li><li><b>Code on the Go</b> — visavertė neprisijungus veikianti IDE programoms kurti</li></ul>"

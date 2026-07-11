@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>Supprimez</b> une sauvegarde enregistrée."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "L'édition <b>Basic</b> installe l'essentiel :<ul><li><b>Kiwix</b> — Wikipédia hors ligne et autres bibliothèques</li><li><b>IIAB Maps</b> — cartes hors ligne sélectionnées d'Internet-in-a-Box</li><li><b>System Dashboard</b> — gérer le contenu et l'état</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "L'édition <b>Standard</b> ajoute <b>Kolibri</b> à l'ensemble Basic :<ul><li><b>Kiwix</b> — Wikipédia hors ligne et autres bibliothèques</li><li><b>IIAB Maps</b> — cartes hors ligne sélectionnées d'Internet-in-a-Box</li><li><b>System Dashboard</b> — gérer le contenu et l'état</li><li><b>Kolibri</b> — cours et leçons structurés</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "L'édition <b>Full</b> installe nos applications les plus puissantes pour un usage quotidien :<ul><li><b>Kiwix</b> — Wikipédia hors ligne et autres bibliothèques</li><li><b>Kolibri</b> — cours et leçons structurés</li><li><b>IIAB Maps</b> — cartes hors ligne sélectionnées d'Internet-in-a-Box</li><li><b>System Dashboard</b> — gérer le contenu et l'état</li><li><b>Calibre-Web</b> — bibliothèque de livres électroniques</li><li><b>Code on the Go</b> — un IDE complet privilégiant le hors ligne pour créer des applications</li></ul>"

@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Mode\nPengembang</string>
     <string name="install_led_child_process">Pembatasan \nProses</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Pemasangan Cepat</string>
+    <string name="install_header_fast">Instalasi Mudah</string>
     <string name="install_desc_fast">Menyediakan sistem IIAB pra-bangun, dengan data opsional untuk aplikasi utama.</string>
     <string name="install_header_roles">Manajemen modul</string>
     <string name="install_header_maintenance">Pemeliharaan &#38; Pemulihan</string>

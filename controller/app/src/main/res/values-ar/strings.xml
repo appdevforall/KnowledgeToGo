@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">وضع\nالمطوّر</string>
     <string name="install_led_child_process">تقييد\nالعمليات</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">تثبيت سريع</string>
+    <string name="install_header_fast">تثبيت سهل</string>
     <string name="install_desc_fast">يوفّر نظام IIAB مبنيًا مسبقًا، مع بيانات اختيارية للتطبيقات الرئيسية.</string>
     <string name="install_header_roles">إدارة الوحدات</string>
     <string name="install_header_maintenance">الصيانة والاستعادة</string>

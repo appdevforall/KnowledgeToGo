@@ -185,7 +185,7 @@
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
     <string name="install_led_internet">इंटरनेट\nएक्सेस</string>
 
-    <string name="install_header_fast">त्वरित इंस्टालेशन</string>
+    <string name="install_header_fast">आसान इंस्टॉलेशन</string>
     <string name="install_desc_fast">मुख्य ऐप्स के लिए वैकल्पिक डेटा के साथ, पहले से संकलित IIAB सिस्टम प्रदान करता है।</string>
     <string name="install_header_roles">मॉड्यूल प्रबंधन</string>
     <string name="install_header_maintenance">रखरखाव और पुनर्प्राप्ति</string>

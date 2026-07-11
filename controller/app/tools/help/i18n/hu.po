@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "Mentett biztonsági mentés <b>törlése</b>."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "A <b>Basic</b> kiadás telepíti a legfontosabb elemeket:<ul><li><b>Kiwix</b> — offline Wikipedia és más könyvtárak</li><li><b>IIAB Maps</b> — válogatott offline térképek az Internet-in-a-Box-ból</li><li><b>System Dashboard</b> — tartalom és állapot kezelése</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "A <b>Standard</b> kiadás hozzáadja a <b>Kolibri</b>-t a Basic csomaghoz:<ul><li><b>Kiwix</b> — offline Wikipedia és más könyvtárak</li><li><b>IIAB Maps</b> — válogatott offline térképek az Internet-in-a-Box-ból</li><li><b>System Dashboard</b> — tartalom és állapot kezelése</li><li><b>Kolibri</b> — strukturált tanfolyamok és leckék</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "A <b>Full</b> kiadás telepíti legerősebb alkalmazásainkat a mindennapi használatra:<ul><li><b>Kiwix</b> — offline Wikipedia és más könyvtárak</li><li><b>Kolibri</b> — strukturált tanfolyamok és leckék</li><li><b>IIAB Maps</b> — válogatott offline térképek az Internet-in-a-Box-ból</li><li><b>System Dashboard</b> — tartalom és állapot kezelése</li><li><b>Calibre-Web</b> — e-könyvtár</li><li><b>Code on the Go</b> — teljes értékű, offline-first IDE alkalmazások fejlesztéséhez</li></ul>"
