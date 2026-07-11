@@ -509,4 +509,8 @@
     <string name="uptime_label">અપટાઇમ:</string>
     <string name="server_busy_install_lock">સર્વર શરૂ કરતાં પહેલાં મોડ્યુલ્સનું ઇન્સ્ટોલેશન પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
     <string name="log_jump_latest">↓ નવીનતમ</string>
+    <string name="kiwix_dialog_loading">ઇન્ટરનેટ પરથી કૅટલોગ લોડ થઈ રહ્યું છે…</string>
+    <string name="kiwix_dialog_offline">ઇન્ટરનેટ કનેક્શન નથી. Kiwix કૅટલોગ લોડ કરવા માટે કનેક્ટ કરો.</string>
+    <string name="kiwix_dialog_retry">ફરી પ્રયાસ કરો</string>
+    <string name="kiwix_dialog_close">બંધ કરો</string>
 </resources>

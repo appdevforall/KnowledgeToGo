@@ -478,6 +478,10 @@
     <string name="kiwix_dialog_wipe_cache">Wipe Cache</string>
     <string name="kiwix_dialog_wipe_zim_cache">Wipe ZIM Cache</string>
     <string name="kiwix_dialog_select">Select</string>
+    <string name="kiwix_dialog_loading">Loading catalog from the Internet…</string>
+    <string name="kiwix_dialog_offline">No Internet connection. Connect to load the Kiwix catalog.</string>
+    <string name="kiwix_dialog_retry">Retry</string>
+    <string name="kiwix_dialog_close">Close</string>
 
     <string name="qr_btn_close">Close</string>
     <string name="qr_content_description">QR Code</string>

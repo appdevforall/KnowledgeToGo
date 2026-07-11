@@ -516,4 +516,8 @@
     <string name="uptime_label">Doba běhu:</string>
     <string name="server_busy_install_lock">Před spuštěním serveru počkejte na dokončení instalace modulů.</string>
     <string name="log_jump_latest">↓ Nejnovější</string>
+    <string name="kiwix_dialog_loading">Načítání katalogu z internetu…</string>
+    <string name="kiwix_dialog_offline">Bez připojení k internetu. Připojte se pro načtení katalogu Kiwix.</string>
+    <string name="kiwix_dialog_retry">Zkusit znovu</string>
+    <string name="kiwix_dialog_close">Zavřít</string>
 </resources>

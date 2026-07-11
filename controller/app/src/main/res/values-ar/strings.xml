@@ -509,4 +509,8 @@
     <string name="uptime_label">مدة التشغيل:</string>
     <string name="server_busy_install_lock">انتظر حتى انتهاء تثبيت الوحدات قبل تشغيل الخادم.</string>
     <string name="log_jump_latest">↓ الأحدث</string>
+    <string name="kiwix_dialog_loading">جارٍ تحميل الفهرس من الإنترنت…</string>
+    <string name="kiwix_dialog_offline">لا يوجد اتصال بالإنترنت. اتصل لتحميل فهرس Kiwix.</string>
+    <string name="kiwix_dialog_retry">إعادة المحاولة</string>
+    <string name="kiwix_dialog_close">إغلاق</string>
 </resources>

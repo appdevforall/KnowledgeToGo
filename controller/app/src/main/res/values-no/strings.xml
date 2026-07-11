@@ -509,4 +509,8 @@
     <string name="uptime_label">Oppetid:</string>
     <string name="server_busy_install_lock">Vent til installasjonen av modulene er fullført før du starter serveren.</string>
     <string name="log_jump_latest">↓ Nyeste</string>
+    <string name="kiwix_dialog_loading">Laster inn katalog fra Internett…</string>
+    <string name="kiwix_dialog_offline">Ingen Internett-tilkobling. Koble til for å laste inn Kiwix-katalogen.</string>
+    <string name="kiwix_dialog_retry">Prøv igjen</string>
+    <string name="kiwix_dialog_close">Lukk</string>
 </resources>

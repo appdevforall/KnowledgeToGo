@@ -516,4 +516,8 @@
     <string name="uptime_label">Време на работа:</string>
     <string name="server_busy_install_lock">Изчакайте инсталирането на модулите да завърши, преди да стартирате сървъра.</string>
     <string name="log_jump_latest">↓ Най-нови</string>
+    <string name="kiwix_dialog_loading">Зареждане на каталога от интернет…</string>
+    <string name="kiwix_dialog_offline">Няма връзка с интернет. Свържете се, за да заредите каталога на Kiwix.</string>
+    <string name="kiwix_dialog_retry">Опитай отново</string>
+    <string name="kiwix_dialog_close">Затвори</string>
 </resources>

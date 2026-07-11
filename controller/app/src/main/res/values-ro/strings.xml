@@ -509,4 +509,8 @@
     <string name="uptime_label">Timp de funcționare:</string>
     <string name="server_busy_install_lock">Așteptați finalizarea instalării modulelor înainte de a porni serverul.</string>
     <string name="log_jump_latest">↓ Recente</string>
+    <string name="kiwix_dialog_loading">Se încarcă catalogul de pe internet…</string>
+    <string name="kiwix_dialog_offline">Nicio conexiune la internet. Conectează-te pentru a încărca catalogul Kiwix.</string>
+    <string name="kiwix_dialog_retry">Reîncearcă</string>
+    <string name="kiwix_dialog_close">Închide</string>
 </resources>

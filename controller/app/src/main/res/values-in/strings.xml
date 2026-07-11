@@ -516,4 +516,8 @@
     <string name="uptime_label">Waktu aktif:</string>
     <string name="server_busy_install_lock">Tunggu hingga instalasi modul selesai sebelum menjalankan server.</string>
     <string name="log_jump_latest">↓ Terbaru</string>
+    <string name="kiwix_dialog_loading">Memuat katalog dari Internet…</string>
+    <string name="kiwix_dialog_offline">Tidak ada koneksi Internet. Hubungkan untuk memuat katalog Kiwix.</string>
+    <string name="kiwix_dialog_retry">Coba lagi</string>
+    <string name="kiwix_dialog_close">Tutup</string>
 </resources>

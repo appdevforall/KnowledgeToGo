@@ -429,98 +429,133 @@ public final class PlannerController {
         View view = fragment.getLayoutInflater().inflate(R.layout.dialog_install_planner_settings, null);
         BrandDialog.Handle dialog = new BrandDialog(fragment.requireContext()).setContentView(view).create();
 
-        android.widget.Spinner spinnerLang = view.findViewById(R.id.spinner_kiwix_lang);
-        Button btnWipe = view.findViewById(R.id.btn_wipe_cache);
-        Button btnSelect = view.findViewById(R.id.btn_select_variant);
-        android.widget.RadioGroup rgVariants = view.findViewById(R.id.rg_kiwix_variants);
+        final android.widget.Spinner spinnerLang = view.findViewById(R.id.spinner_kiwix_lang);
+        final Button btnWipe = view.findViewById(R.id.btn_wipe_cache);
+        final Button btnSelect = view.findViewById(R.id.btn_select_variant);
+        final android.widget.RadioGroup rgVariants = view.findViewById(R.id.rg_kiwix_variants);
+        final View content = view.findViewById(R.id.planner_content);
+        final View loading = view.findViewById(R.id.planner_loading);
+        final View offline = view.findViewById(R.id.planner_offline);
+        final View btnClose = view.findViewById(R.id.btn_planner_close);
+        final Button btnRetry = view.findViewById(R.id.btn_planner_retry);
 
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        // Load (or reload) the Kiwix catalog from the Internet, swapping the dialog
+        // between loading / offline / ready. Open, Retry and Wipe Cache all reuse this
+        // one path so the dialog is never left empty or stranded (ADFA-4658).
+        final Runnable[] loadRef = new Runnable[1];
+        loadRef[0] = () -> {
+            loading.setVisibility(View.VISIBLE);
+            content.setVisibility(View.GONE);
+            offline.setVisibility(View.GONE);
+            btnSelect.setEnabled(false);
+
+            InstallationPlanner.getOrFetchCatalog(fragment.requireContext(), new InstallationPlanner.CacheListener() {
+                @Override
+                public void onReady(JSONObject catalog) {
+                    if (!fragment.isAdded()) return;
+                    loading.setVisibility(View.GONE);
+                    offline.setVisibility(View.GONE);
+                    content.setVisibility(View.VISIBLE);
+                    btnSelect.setEnabled(true);
+
+                    List<String> langKeys = new ArrayList<>();
+                    java.util.Iterator<String> keys = catalog.keys();
+                    while (keys.hasNext()) langKeys.add(keys.next());
+                    java.util.Collections.sort(langKeys);
+
+                    List<String> displayNames = new ArrayList<>();
+                    int selectedIndex = 0;
+                    android.content.SharedPreferences prefs = fragment.requireContext().getSharedPreferences(fragment.getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
+                    String currentTarget = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", "en");
+
+                    for (int i = 0; i < langKeys.size(); i++) {
+                        String code = langKeys.get(i);
+                        java.util.Locale loc = new java.util.Locale(code);
+                        String name = loc.getDisplayLanguage(loc);
+                        displayNames.add(name.substring(0, 1).toUpperCase() + name.substring(1) + " / " + loc.getDisplayLanguage(java.util.Locale.US));
+                        if (code.equals(currentTarget)) selectedIndex = i;
+                    }
+
+                    android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(fragment.requireContext(), android.R.layout.simple_spinner_dropdown_item, displayNames);
+                    spinnerLang.setAdapter(adapter);
+                    spinnerLang.setSelection(selectedIndex);
+
+                    spinnerLang.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(android.widget.AdapterView<?> parent, View v, int position, long id) {
+                            String selectedCode = langKeys.get(position);
+                            rgVariants.removeAllViews();
+
+                            JSONObject variants = catalog.optJSONObject(selectedCode);
+                            if (variants != null) {
+                                java.util.Iterator<String> vKeys = variants.keys();
+                                while (vKeys.hasNext()) {
+                                    String vk = vKeys.next();
+                                    JSONObject vData = variants.optJSONObject(vk);
+                                    double size = (vData != null) ? vData.optDouble("size", 0.0) : 0.0;
+
+                                    android.widget.RadioButton rb = new android.widget.RadioButton(fragment.requireContext());
+                                    rb.setId(View.generateViewId());
+                                    rb.setText(String.format(java.util.Locale.US, "%-22s %5.1f GB", vk, size));
+                                    rb.setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.dash_text_primary));
+                                    rb.setTypeface(Typeface.MONOSPACE);
+                                    rb.setTag(vk);
+                                    rgVariants.addView(rb);
+
+                                    if (vk.equals(host.getOverrideKiwixVariant())) rb.setChecked(true);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(android.widget.AdapterView<?> parent) {
+                        }
+                    });
+
+                    btnSelect.setOnClickListener(v -> {
+                        int checkedId = rgVariants.getCheckedRadioButtonId();
+                        android.widget.RadioButton rb = (checkedId != -1) ? rgVariants.findViewById(checkedId) : null;
+                        int pos = spinnerLang.getSelectedItemPosition();
+                        if (rb != null && pos >= 0 && pos < langKeys.size()) {
+                            host.setOverrideKiwixVariant((String) rb.getTag());
+                            host.setOverrideKiwixLang(langKeys.get(pos));
+                            recalculateProjection();
+                            dialog.dismiss();
+                        } else {
+                            Snackbars.make(fragment.getView(), R.string.kiwix_select_variant_error).show();
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(String error) {
+                    if (!fragment.isAdded()) return;
+                    loading.setVisibility(View.GONE);
+                    content.setVisibility(View.GONE);
+                    offline.setVisibility(View.VISIBLE);
+                    btnSelect.setEnabled(false);
+                }
+            });
+        };
+
+        // Wipe Cache: clear the stale selection (clearCheck BEFORE removeAllViews, or
+        // the RadioGroup keeps its checked id and Select crashes on a null RadioButton,
+        // ADFA-4658), then reload the catalog. It does NOT close the dialog.
         btnWipe.setOnClickListener(v -> {
             InstallationPlanner.wipeCache(fragment.requireContext());
+            rgVariants.clearCheck();
             rgVariants.removeAllViews();
             spinnerLang.setAdapter(null);
             host.setOverrideKiwixVariant(null);
             Snackbars.make(fragment.getView(), R.string.kiwix_cache_wiped).show();
+            loadRef[0].run();
         });
 
-        InstallationPlanner.getOrFetchCatalog(fragment.requireContext(), new InstallationPlanner.CacheListener() {
-            @Override
-            public void onReady(JSONObject catalog) {
-                if (!fragment.isAdded()) return;
+        if (btnRetry != null) btnRetry.setOnClickListener(v -> loadRef[0].run());
 
-                List<String> langKeys = new ArrayList<>();
-                java.util.Iterator<String> keys = catalog.keys();
-                while (keys.hasNext()) langKeys.add(keys.next());
-                java.util.Collections.sort(langKeys);
-
-                List<String> displayNames = new ArrayList<>();
-                int selectedIndex = 0;
-                android.content.SharedPreferences prefs = fragment.requireContext().getSharedPreferences(fragment.getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-                String currentTarget = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", "en");
-
-                for (int i = 0; i < langKeys.size(); i++) {
-                    String code = langKeys.get(i);
-                    java.util.Locale loc = new java.util.Locale(code);
-                    String name = loc.getDisplayLanguage(loc);
-                    displayNames.add(name.substring(0, 1).toUpperCase() + name.substring(1) + " / " + loc.getDisplayLanguage(java.util.Locale.US));
-                    if (code.equals(currentTarget)) selectedIndex = i;
-                }
-
-                android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(fragment.requireContext(), android.R.layout.simple_spinner_dropdown_item, displayNames);
-                spinnerLang.setAdapter(adapter);
-                spinnerLang.setSelection(selectedIndex);
-
-                spinnerLang.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(android.widget.AdapterView<?> parent, View v, int position, long id) {
-                        String selectedCode = langKeys.get(position);
-                        rgVariants.removeAllViews();
-
-                        JSONObject variants = catalog.optJSONObject(selectedCode);
-                        if (variants != null) {
-                            java.util.Iterator<String> vKeys = variants.keys();
-                            while (vKeys.hasNext()) {
-                                String vk = vKeys.next();
-                                JSONObject vData = variants.optJSONObject(vk);
-                                double size = (vData != null) ? vData.optDouble("size", 0.0) : 0.0;
-
-                                android.widget.RadioButton rb = new android.widget.RadioButton(fragment.requireContext());
-                                rb.setId(View.generateViewId());
-                                rb.setText(String.format(java.util.Locale.US, "%-22s %5.1f GB", vk, size));
-                                rb.setTextColor(ContextCompat.getColor(fragment.requireContext(), R.color.dash_text_primary));
-                                rb.setTypeface(Typeface.MONOSPACE);
-                                rb.setTag(vk);
-                                rgVariants.addView(rb);
-
-                                if (vk.equals(host.getOverrideKiwixVariant())) rb.setChecked(true);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                    }
-                });
-
-                btnSelect.setOnClickListener(v -> {
-                    int checkedId = rgVariants.getCheckedRadioButtonId();
-                    if (checkedId != -1) {
-                        android.widget.RadioButton rb = rgVariants.findViewById(checkedId);
-                        host.setOverrideKiwixVariant((String) rb.getTag());
-                        host.setOverrideKiwixLang(langKeys.get(spinnerLang.getSelectedItemPosition()));
-                        recalculateProjection();
-                        dialog.dismiss();
-                    } else {
-                        Snackbars.make(fragment.getView(), R.string.kiwix_select_variant_error).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onError(String error) {
-                if (fragment.isAdded())
-                    Snackbars.make(fragment.getView(), fragment.getString(R.string.kiwix_catalog_error, error)).show();
-            }
-        });
+        loadRef[0].run();
         dialog.show();
     }
 

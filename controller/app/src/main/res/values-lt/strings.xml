@@ -516,4 +516,8 @@
     <string name="uptime_label">Veikimo laikas:</string>
     <string name="server_busy_install_lock">Prieš paleisdami serverį palaukite, kol bus baigtas modulių diegimas.</string>
     <string name="log_jump_latest">↓ Naujausi</string>
+    <string name="kiwix_dialog_loading">Įkeliamas katalogas iš interneto…</string>
+    <string name="kiwix_dialog_offline">Nėra interneto ryšio. Prisijunkite, kad įkeltumėte Kiwix katalogą.</string>
+    <string name="kiwix_dialog_retry">Bandyti dar kartą</string>
+    <string name="kiwix_dialog_close">Uždaryti</string>
 </resources>

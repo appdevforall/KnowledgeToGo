@@ -516,4 +516,8 @@
     <string name="uptime_label">இயங்கும் நேரம்:</string>
     <string name="server_busy_install_lock">சேவையகத்தைத் தொடங்குவதற்கு முன் தொகுதிகளின் நிறுவல் முடியும் வரை காத்திருக்கவும்.</string>
     <string name="log_jump_latest">↓ புதியவை</string>
+    <string name="kiwix_dialog_loading">இணையத்திலிருந்து பட்டியல் ஏற்றப்படுகிறது…</string>
+    <string name="kiwix_dialog_offline">இணைய இணைப்பு இல்லை. Kiwix பட்டியலை ஏற்ற இணையுங்கள்.</string>
+    <string name="kiwix_dialog_retry">மீண்டும் முயற்சி</string>
+    <string name="kiwix_dialog_close">மூடு</string>
 </resources>
