@@ -436,10 +436,17 @@ public final class PlannerController {
 
         btnWipe.setOnClickListener(v -> {
             InstallationPlanner.wipeCache(fragment.requireContext());
+            // clearCheck() BEFORE removeAllViews(): RadioGroup keeps its checked id
+            // after removeAllViews(), so a later Select would find a null RadioButton
+            // and crash on getTag() (ADFA-4658).
+            rgVariants.clearCheck();
             rgVariants.removeAllViews();
             spinnerLang.setAdapter(null);
             host.setOverrideKiwixVariant(null);
             Snackbars.make(fragment.getView(), R.string.kiwix_cache_wiped).show();
+            // The catalog was just wiped, so there is nothing left to pick here;
+            // close the dialog instead of leaving an empty box with no way out.
+            dialog.dismiss();
         });
 
         InstallationPlanner.getOrFetchCatalog(fragment.requireContext(), new InstallationPlanner.CacheListener() {
@@ -503,10 +510,11 @@ public final class PlannerController {
 
                 btnSelect.setOnClickListener(v -> {
                     int checkedId = rgVariants.getCheckedRadioButtonId();
-                    if (checkedId != -1) {
-                        android.widget.RadioButton rb = rgVariants.findViewById(checkedId);
+                    android.widget.RadioButton rb = (checkedId != -1) ? rgVariants.findViewById(checkedId) : null;
+                    int pos = spinnerLang.getSelectedItemPosition();
+                    if (rb != null && pos >= 0 && pos < langKeys.size()) {
                         host.setOverrideKiwixVariant((String) rb.getTag());
-                        host.setOverrideKiwixLang(langKeys.get(spinnerLang.getSelectedItemPosition()));
+                        host.setOverrideKiwixLang(langKeys.get(pos));
                         recalculateProjection();
                         dialog.dismiss();
                     } else {
