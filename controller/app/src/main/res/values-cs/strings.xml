@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Režim\nvývojáře</string>
     <string name="install_led_child_process">Omezení\nprocesů</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">Rychlá instalace</string>
+    <string name="install_header_fast">Snadná instalace</string>
     <string name="install_desc_fast">Poskytuje předpřipravený systém IIAB s volitelnými daty pro hlavní aplikace.</string>
     <string name="install_header_roles">Správa modulů</string>
     <string name="install_header_maintenance">Údržba &#38; obnova</string>

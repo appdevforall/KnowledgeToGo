@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">开发者\n模式</string>
     <string name="install_led_child_process">进程\n限制</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">快速安装</string>
+    <string name="install_header_fast">轻松安装</string>
     <string name="install_desc_fast">提供预构建的 IIAB 系统，主要应用可选择附带数据。</string>
     <string name="install_header_roles">模块管理</string>
     <string name="install_header_maintenance">维护与恢复</string>

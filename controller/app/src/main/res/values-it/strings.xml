@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Modalità\nsviluppatore</string>
     <string name="install_led_child_process">Restrizione\nprocessi</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">Installazione rapida</string>
+    <string name="install_header_fast">Installazione facile</string>
     <string name="install_desc_fast">Fornisce un sistema IIAB predefinito, con dati opzionali per le app principali.</string>
     <string name="install_header_roles">Gestione dei moduli</string>
     <string name="install_header_maintenance">Manutenzione e ripristino</string>

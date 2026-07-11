@@ -181,7 +181,7 @@
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
     <string name="install_led_internet">Acceso a\nInternet</string>
 
-    <string name="install_header_fast">Instalación rápida</string>
+    <string name="install_header_fast">Instalación fácil</string>
     <string name="install_desc_fast">Provisiona un sistema IIAB precompilado, con datos opcionales para las aplicaciones principales.</string>
 
     <string name="install_header_roles">Gestión de módulos</string>

@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "સાચવેલ બેકઅપ <b>કાઢી નાખો</b>."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "<b>Basic</b> આવૃત્તિ આવશ્યક વસ્તુઓ ઇન્સ્ટોલ કરે છે:<ul><li><b>Kiwix</b> — ઑફલાઇન Wikipedia અને અન્ય લાઇબ્રેરીઓ</li><li><b>IIAB Maps</b> — Internet-in-a-Box માંથી ક્યુરેટ કરેલા ઑફલાઇન નકશા</li><li><b>System Dashboard</b> — સામગ્રી અને સ્થિતિ સંચાલિત કરો</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "<b>Standard</b> આવૃત્તિ Basic સેટમાં <b>Kolibri</b> ઉમેરે છે:<ul><li><b>Kiwix</b> — ઑફલાઇન Wikipedia અને અન્ય લાઇબ્રેરીઓ</li><li><b>IIAB Maps</b> — Internet-in-a-Box માંથી ક્યુરેટ કરેલા ઑફલાઇન નકશા</li><li><b>System Dashboard</b> — સામગ્રી અને સ્થિતિ સંચાલિત કરો</li><li><b>Kolibri</b> — સંરચિત અભ્યાસક્રમો અને પાઠ</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "<b>Full</b> આવૃત્તિ રોજિંદા ઉપયોગ માટે અમારી સૌથી શક્તિશાળી એપ્લિકેશનો ઇન્સ્ટોલ કરે છે:<ul><li><b>Kiwix</b> — ઑફલાઇન Wikipedia અને અન્ય લાઇબ્રેરીઓ</li><li><b>Kolibri</b> — સંરચિત અભ્યાસક્રમો અને પાઠ</li><li><b>IIAB Maps</b> — Internet-in-a-Box માંથી ક્યુરેટ કરેલા ઑફલાઇન નકશા</li><li><b>System Dashboard</b> — સામગ્રી અને સ્થિતિ સંચાલિત કરો</li><li><b>Calibre-Web</b> — ઈ-બુક્સ લાઇબ્રેરી</li><li><b>Code on the Go</b> — એપ્લિકેશનો બનાવવા માટે એક સંપૂર્ણ ઑફલાઇન-ફર્સ્ટ IDE</li></ul>"

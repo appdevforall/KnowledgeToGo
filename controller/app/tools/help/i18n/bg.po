@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>Изтриване</b> на запазен архив."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "Изданието <b>Basic</b> инсталира най-необходимото:<ul><li><b>Kiwix</b> — офлайн Wikipedia и други библиотеки</li><li><b>IIAB Maps</b> — подбрани офлайн карти от Internet-in-a-Box</li><li><b>System Dashboard</b> — управление на съдържание и състояние</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "Изданието <b>Standard</b> добавя <b>Kolibri</b> към набора Basic:<ul><li><b>Kiwix</b> — офлайн Wikipedia и други библиотеки</li><li><b>IIAB Maps</b> — подбрани офлайн карти от Internet-in-a-Box</li><li><b>System Dashboard</b> — управление на съдържание и състояние</li><li><b>Kolibri</b> — структурирани курсове и уроци</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "Изданието <b>Full</b> инсталира нашите най-мощни приложения за ежедневна употреба:<ul><li><b>Kiwix</b> — офлайн Wikipedia и други библиотеки</li><li><b>Kolibri</b> — структурирани курсове и уроци</li><li><b>IIAB Maps</b> — подбрани офлайн карти от Internet-in-a-Box</li><li><b>System Dashboard</b> — управление на съдържание и състояние</li><li><b>Calibre-Web</b> — библиотека с електронни книги</li><li><b>Code on the Go</b> — пълноценна офлайн-ориентирана IDE за създаване на приложения</li></ul>"

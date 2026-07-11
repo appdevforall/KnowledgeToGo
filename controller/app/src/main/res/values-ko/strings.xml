@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">개발자\n모드</string>
     <string name="install_led_child_process">프로세스\n제한</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">빠른 설치</string>
+    <string name="install_header_fast">간편 설치</string>
     <string name="install_desc_fast">미리 빌드된 IIAB 시스템을 제공하며, 주요 앱용 데이터는 선택 사항입니다.</string>
     <string name="install_header_roles">모듈 관리</string>
     <string name="install_header_maintenance">유지 관리 및 복구</string>

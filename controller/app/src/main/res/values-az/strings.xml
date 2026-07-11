@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Tərtibatçı\nRejimi</string>
     <string name="install_led_child_process">Proseslər \nMəhdudiyyəti</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Sürətli quraşdırma</string>
+    <string name="install_header_fast">Asan Quraşdırma</string>
     <string name="install_desc_fast">Əsas tətbiqlər üçün isteğe bağlı məlumatla əvvəlcədən qurulmuş IIAB sistemini təmin edir.</string>
     <string name="install_header_roles">Modul idarəetməsi</string>
     <string name="install_header_maintenance">Texniki xidmət &#38; Bərpa</string>

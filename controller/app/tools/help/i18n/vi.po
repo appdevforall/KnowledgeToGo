@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>Xóa</b> một bản sao lưu đã lưu."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "Phiên bản <b>Basic</b> cài đặt các thành phần thiết yếu:<ul><li><b>Kiwix</b> — Wikipedia ngoại tuyến và các thư viện khác</li><li><b>IIAB Maps</b> — bản đồ ngoại tuyến được tuyển chọn từ Internet-in-a-Box</li><li><b>System Dashboard</b> — quản lý nội dung và trạng thái</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "Phiên bản <b>Standard</b> bổ sung <b>Kolibri</b> vào bộ Basic:<ul><li><b>Kiwix</b> — Wikipedia ngoại tuyến và các thư viện khác</li><li><b>IIAB Maps</b> — bản đồ ngoại tuyến được tuyển chọn từ Internet-in-a-Box</li><li><b>System Dashboard</b> — quản lý nội dung và trạng thái</li><li><b>Kolibri</b> — các khóa học và bài học có cấu trúc</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "Phiên bản <b>Full</b> cài đặt các ứng dụng mạnh mẽ nhất của chúng tôi cho việc sử dụng hàng ngày:<ul><li><b>Kiwix</b> — Wikipedia ngoại tuyến và các thư viện khác</li><li><b>Kolibri</b> — các khóa học và bài học có cấu trúc</li><li><b>IIAB Maps</b> — bản đồ ngoại tuyến được tuyển chọn từ Internet-in-a-Box</li><li><b>System Dashboard</b> — quản lý nội dung và trạng thái</li><li><b>Calibre-Web</b> — thư viện sách điện tử</li><li><b>Code on the Go</b> — một IDE ưu tiên ngoại tuyến đầy đủ để xây dựng ứng dụng</li></ul>"

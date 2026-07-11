@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Hali ya\nMsanidi</string>
     <string name="install_led_child_process">Kizuizi cha\nMichakato</string>
     <string name="install_led_ppk">Phantom \nProcess Killer</string>
-    <string name="install_header_fast">Usakinishaji wa Haraka</string>
+    <string name="install_header_fast">Usakinishaji Rahisi</string>
     <string name="install_desc_fast">Hutoa mfumo wa IIAB uliojengwa awali, ukiwa na data ya hiari kwa programu kuu.</string>
     <string name="install_header_roles">Usimamizi wa moduli</string>
     <string name="install_header_maintenance">Matengenezo &#38; Uokoaji</string>

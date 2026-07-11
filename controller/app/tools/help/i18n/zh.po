@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "<b>删除</b>已保存的备份。"
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "<b>Basic</b> 版本安装基本功能：<ul><li><b>Kiwix</b> — 离线 Wikipedia 及其他资料库</li><li><b>IIAB Maps</b> — 来自 Internet-in-a-Box 的精选离线地图</li><li><b>System Dashboard</b> — 管理内容和状态</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "<b>Standard</b> 版本在 Basic 套件的基础上添加 <b>Kolibri</b>：<ul><li><b>Kiwix</b> — 离线 Wikipedia 及其他资料库</li><li><b>IIAB Maps</b> — 来自 Internet-in-a-Box 的精选离线地图</li><li><b>System Dashboard</b> — 管理内容和状态</li><li><b>Kolibri</b> — 结构化的课程和课时</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "<b>Full</b> 版本安装我们最强大的日常应用：<ul><li><b>Kiwix</b> — 离线 Wikipedia 及其他资料库</li><li><b>Kolibri</b> — 结构化的课程和课时</li><li><b>IIAB Maps</b> — 来自 Internet-in-a-Box 的精选离线地图</li><li><b>System Dashboard</b> — 管理内容和状态</li><li><b>Calibre-Web</b> — 电子书库</li><li><b>Code on the Go</b> — 用于构建应用程序的完整离线优先 IDE</li></ul>"

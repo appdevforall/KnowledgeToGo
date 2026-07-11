@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Λειτουργία\nπρογραμματιστή</string>
     <string name="install_led_child_process">Περιορισμός \nδιεργασιών</string>
     <string name="install_led_ppk">Process \nPhantom Killer</string>
-    <string name="install_header_fast">Γρήγορη εγκατάσταση</string>
+    <string name="install_header_fast">Εύκολη Εγκατάσταση</string>
     <string name="install_desc_fast">Παρέχει ένα προκατασκευασμένο σύστημα IIAB, με προαιρετικά δεδομένα για τις κύριες εφαρμογές.</string>
     <string name="install_header_roles">Διαχείριση module</string>
     <string name="install_header_maintenance">Συντήρηση &#38; ανάκτηση</string>

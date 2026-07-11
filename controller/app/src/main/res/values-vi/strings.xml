@@ -163,7 +163,7 @@
     <string name="install_led_dev_options">Chế độ\nnhà phát triển</string>
     <string name="install_led_child_process">Hạn chế\ntiến trình</string>
     <string name="install_led_ppk">Phantom\nProcess Killer</string>
-    <string name="install_header_fast">Cài đặt nhanh</string>
+    <string name="install_header_fast">Cài đặt dễ dàng</string>
     <string name="install_desc_fast">Cung cấp hệ thống IIAB dựng sẵn, với dữ liệu tùy chọn cho các ứng dụng chính.</string>
     <string name="install_header_roles">Quản lý mô-đun</string>
     <string name="install_header_maintenance">Bảo trì và phục hồi</string>

@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "சேமித்த ஒரு காப்புப்பிரதியை <b>நீக்கு</b>."
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "<b>Basic</b> பதிப்பு அத்தியாவசியமானவற்றை நிறுவுகிறது:<ul><li><b>Kiwix</b> — ஆஃப்லைன் Wikipedia மற்றும் பிற நூலகங்கள்</li><li><b>IIAB Maps</b> — Internet-in-a-Box இலிருந்து தேர்ந்தெடுக்கப்பட்ட ஆஃப்லைன் வரைபடங்கள்</li><li><b>System Dashboard</b> — உள்ளடக்கம் மற்றும் நிலையை நிர்வகிக்கவும்</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "<b>Standard</b> பதிப்பு Basic தொகுப்பில் <b>Kolibri</b> ஐ சேர்க்கிறது:<ul><li><b>Kiwix</b> — ஆஃப்லைன் Wikipedia மற்றும் பிற நூலகங்கள்</li><li><b>IIAB Maps</b> — Internet-in-a-Box இலிருந்து தேர்ந்தெடுக்கப்பட்ட ஆஃப்லைன் வரைபடங்கள்</li><li><b>System Dashboard</b> — உள்ளடக்கம் மற்றும் நிலையை நிர்வகிக்கவும்</li><li><b>Kolibri</b> — கட்டமைக்கப்பட்ட பாடநெறிகள் மற்றும் பாடங்கள்</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "<b>Full</b> பதிப்பு அன்றாடப் பயன்பாட்டிற்கான எங்கள் மிகவும் சக்திவாய்ந்த பயன்பாடுகளை நிறுவுகிறது:<ul><li><b>Kiwix</b> — ஆஃப்லைன் Wikipedia மற்றும் பிற நூலகங்கள்</li><li><b>Kolibri</b> — கட்டமைக்கப்பட்ட பாடநெறிகள் மற்றும் பாடங்கள்</li><li><b>IIAB Maps</b> — Internet-in-a-Box இலிருந்து தேர்ந்தெடுக்கப்பட்ட ஆஃப்லைன் வரைபடங்கள்</li><li><b>System Dashboard</b> — உள்ளடக்கம் மற்றும் நிலையை நிர்வகிக்கவும்</li><li><b>Calibre-Web</b> — மின்-புத்தகங்கள் நூலகம்</li><li><b>Code on the Go</b> — பயன்பாடுகளை உருவாக்குவதற்கான முழுமையான ஆஃப்லைன்-ஃபர்ஸ்ட் IDE</li></ul>"

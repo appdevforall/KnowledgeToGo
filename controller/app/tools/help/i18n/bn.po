@@ -381,3 +381,15 @@ msgctxt "deploy.delete_backup.summary"
 msgid "<b>Delete</b> a saved backup."
 msgstr "একটি সংরক্ষিত ব্যাকআপ <b>মুছুন</b>।"
 
+
+msgctxt "deploy.tier_basic.detail"
+msgid "The <b>Basic</b> edition installs the essentials:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li></ul>"
+msgstr "<b>Basic</b> সংস্করণ প্রয়োজনীয় জিনিসগুলি ইনস্টল করে:<ul><li><b>Kiwix</b> — অফলাইন Wikipedia এবং অন্যান্য লাইব্রেরি</li><li><b>IIAB Maps</b> — Internet-in-a-Box থেকে নির্বাচিত অফলাইন মানচিত্র</li><li><b>System Dashboard</b> — সামগ্রী এবং অবস্থা পরিচালনা করুন</li></ul>"
+
+msgctxt "deploy.tier_standard.detail"
+msgid "The <b>Standard</b> edition adds <b>Kolibri</b> to the Basic set:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Kolibri</b> — structured courses and lessons</li></ul>"
+msgstr "<b>Standard</b> সংস্করণ Basic সেটে <b>Kolibri</b> যোগ করে:<ul><li><b>Kiwix</b> — অফলাইন Wikipedia এবং অন্যান্য লাইব্রেরি</li><li><b>IIAB Maps</b> — Internet-in-a-Box থেকে নির্বাচিত অফলাইন মানচিত্র</li><li><b>System Dashboard</b> — সামগ্রী এবং অবস্থা পরিচালনা করুন</li><li><b>Kolibri</b> — কাঠামোবদ্ধ কোর্স এবং পাঠ</li></ul>"
+
+msgctxt "deploy.tier_full.detail"
+msgid "The <b>Full</b> edition installs our most powerful applications for everyday use:<ul><li><b>Kiwix</b> — offline Wikipedia and other libraries</li><li><b>Kolibri</b> — structured courses and lessons</li><li><b>IIAB Maps</b> — curated offline maps from Internet-in-a-Box</li><li><b>System Dashboard</b> — manage content and status</li><li><b>Calibre-Web</b> — e-books library</li><li><b>Code on the Go</b> — a full offline-first IDE for building applications</li></ul>"
+msgstr "<b>Full</b> সংস্করণ দৈনন্দিন ব্যবহারের জন্য আমাদের সবচেয়ে শক্তিশালী অ্যাপ্লিকেশনগুলি ইনস্টল করে:<ul><li><b>Kiwix</b> — অফলাইন Wikipedia এবং অন্যান্য লাইব্রেরি</li><li><b>Kolibri</b> — কাঠামোবদ্ধ কোর্স এবং পাঠ</li><li><b>IIAB Maps</b> — Internet-in-a-Box থেকে নির্বাচিত অফলাইন মানচিত্র</li><li><b>System Dashboard</b> — সামগ্রী এবং অবস্থা পরিচালনা করুন</li><li><b>Calibre-Web</b> — ই-বুক লাইব্রেরি</li><li><b>Code on the Go</b> — অ্যাপ্লিকেশন তৈরির জন্য একটি সম্পূর্ণ অফলাইন-ফার্স্ট IDE</li></ul>"
