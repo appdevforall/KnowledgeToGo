@@ -332,6 +332,30 @@ local current_pwd="$(pwd)"
   fi
 }
 
+# Pre-seed /opt/iiab/iiab and apply AppDevForAll's in-flight upstream patches
+# BEFORE the generic installer runs Ansible. Safe because the upstream installer
+# (/usr/sbin/iiab from iiab-factory) clones iiab only if it is absent and never
+# pulls/resets an existing checkout, so our patched tree survives into the run
+# (e.g. the kolibri role reads its .patch during it). The applier is idempotent
+# and exits non-zero on context drift, so a bad carry fails the build loudly
+# instead of baking a half-patched tree. See tools/upstream-patches/README.md.
+apply_upstream_patches() {
+  local applier="${K2GO_OPT_DIR}/tools/upstream-patches/apply-upstream-patches.sh"
+  if [ ! -f "$applier" ]; then
+    log "No upstream-patches applier found; skipping."
+    return 0
+  fi
+  command -v git   > /dev/null 2>&1 || apt-get -y install git
+  command -v patch > /dev/null 2>&1 || apt-get -y install patch
+  mkdir -p /opt/iiab
+  if [ ! -d /opt/iiab/iiab ]; then
+    log "Pre-seeding /opt/iiab/iiab so upstream patches apply before Ansible..."
+    git clone https://github.com/iiab/iiab /opt/iiab/iiab || die "could not clone iiab/iiab to pre-seed upstream patches"
+  fi
+  log "Applying in-flight upstream patches to /opt/iiab/iiab..."
+  bash "$applier" --root /opt/iiab/iiab || die "upstream patch apply failed (see log above)"
+}
+
 #-----------------------------
 # Demo Contents Installer
 #-----------------------------
@@ -532,6 +556,11 @@ disable_role_32bits kiwix "$LOCAL_VARS_DEST"
 # Make the generic IIAB installer proot-safe before running it
 #-----------------------------
 ensure_proot_safe_env
+
+#-----------------------------
+# Apply our in-flight upstream patches to /opt/iiab/iiab before Ansible runs
+#-----------------------------
+apply_upstream_patches
 
 #-----------------------------
 # Fetch install.txt with fallback and run it
