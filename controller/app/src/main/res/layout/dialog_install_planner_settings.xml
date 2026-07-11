@@ -6,51 +6,138 @@
     android:background="@color/dash_bg_main"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/kiwix_dialog_lang_label"
-        android:textColor="@color/dash_text_secondary"
-        android:textSize="12sp"
-        android:layout_marginBottom="4dp"/>
+    <!-- Header: explicit close (X) so there is always a way out (ADFA-4658) -->
+    <ImageView
+        android:id="@+id/btn_planner_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_close_24"
+        android:tint="@color/dash_text_secondary"
+        android:contentDescription="@string/kiwix_dialog_close"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="4dp" />
 
-    <Spinner
-        android:id="@+id/spinner_kiwix_lang"
+    <!-- Loading state: the catalog is fetched from the Internet -->
+    <LinearLayout
+        android:id="@+id/planner_loading"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="@color/dash_module_bg"
-        android:popupBackground="@color/dash_bg_card"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="240dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/kiwix_dialog_variants_label"
-        android:textColor="@color/dash_text_primary"
-        android:textStyle="bold"
-        android:textSize="12sp"
-        android:layout_marginBottom="8dp"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="@drawable/rounded_button"
-        android:backgroundTint="@color/dash_module_bg"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp">
-
-        <RadioGroup
-            android:id="@+id/rg_kiwix_variants"
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+            android:indeterminate="true"
+            android:indeterminateTint="@color/dash_text_primary" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/kiwix_dialog_loading"
+            android:textColor="@color/dash_text_primary"
+            android:textSize="13sp"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <!-- Offline state: fetch failed / no connection -->
+    <LinearLayout
+        android:id="@+id/planner_offline"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="12dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/outline_cloud_off_24"
+            android:tint="@color/status_danger"
+            android:contentDescription="@string/kiwix_dialog_offline" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/kiwix_dialog_offline"
+            android:textColor="@color/status_danger"
+            android:textSize="13sp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/btn_planner_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/kiwix_dialog_retry"
+            android:textColor="@color/text_on_accent"
+            android:textAllCaps="false"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/status_info" />
+    </LinearLayout>
+
+    <!-- Ready state: language + variants -->
+    <LinearLayout
+        android:id="@+id/planner_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kiwix_dialog_lang_label"
+            android:textColor="@color/dash_text_secondary"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"/>
+
+        <Spinner
+            android:id="@+id/spinner_kiwix_lang"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/dash_module_bg"
+            android:popupBackground="@color/dash_bg_card"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kiwix_dialog_variants_label"
+            android:textColor="@color/dash_text_primary"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:background="@drawable/rounded_button"
+            android:backgroundTint="@color/dash_module_bg"
+            android:padding="8dp">
+
+            <RadioGroup
+                android:id="@+id/rg_kiwix_variants"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- Actions -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="16dp"
         android:weightSum="2">
 
         <Button

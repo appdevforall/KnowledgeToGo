@@ -516,4 +516,8 @@
     <string name="uptime_label">Muda wa kufanya kazi:</string>
     <string name="server_busy_install_lock">Subiri usakinishaji wa moduli ukamilike kabla ya kuanzisha seva.</string>
     <string name="log_jump_latest">↓ Mpya</string>
+    <string name="kiwix_dialog_loading">Inapakia katalogi kutoka kwenye Intaneti…</string>
+    <string name="kiwix_dialog_offline">Hakuna muunganisho wa Intaneti. Unganisha ili kupakia katalogi ya Kiwix.</string>
+    <string name="kiwix_dialog_retry">Jaribu tena</string>
+    <string name="kiwix_dialog_close">Funga</string>
 </resources>

@@ -509,4 +509,8 @@
     <string name="uptime_label">Üzemidő:</string>
     <string name="server_busy_install_lock">A szerver elindítása előtt várja meg, amíg a modulok telepítése befejeződik.</string>
     <string name="log_jump_latest">↓ Legújabb</string>
+    <string name="kiwix_dialog_loading">Katalógus betöltése az internetről…</string>
+    <string name="kiwix_dialog_offline">Nincs internetkapcsolat. Csatlakozzon a Kiwix-katalógus betöltéséhez.</string>
+    <string name="kiwix_dialog_retry">Újra</string>
+    <string name="kiwix_dialog_close">Bezárás</string>
 </resources>

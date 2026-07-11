@@ -586,4 +586,8 @@
     <string name="uptime_label">Temps de fonctionnement :</string>
     <string name="server_busy_install_lock">Attendez la fin de l\'installation des modules avant de démarrer le serveur.</string>
     <string name="log_jump_latest">↓ Récents</string>
+    <string name="kiwix_dialog_loading">Chargement du catalogue depuis Internet…</string>
+    <string name="kiwix_dialog_offline">Aucune connexion Internet. Connectez-vous pour charger le catalogue Kiwix.</string>
+    <string name="kiwix_dialog_retry">Réessayer</string>
+    <string name="kiwix_dialog_close">Fermer</string>
 </resources>

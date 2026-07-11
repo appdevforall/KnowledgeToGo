@@ -516,4 +516,8 @@
     <string name="uptime_label">Čas prevádzky:</string>
     <string name="server_busy_install_lock">Pred spustením servera počkajte na dokončenie inštalácie modulov.</string>
     <string name="log_jump_latest">↓ Najnovšie</string>
+    <string name="kiwix_dialog_loading">Načítava sa katalóg z internetu…</string>
+    <string name="kiwix_dialog_offline">Žiadne internetové pripojenie. Pripojte sa na načítanie katalógu Kiwix.</string>
+    <string name="kiwix_dialog_retry">Skúsiť znova</string>
+    <string name="kiwix_dialog_close">Zavrieť</string>
 </resources>

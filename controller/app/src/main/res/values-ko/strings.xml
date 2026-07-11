@@ -509,4 +509,8 @@
     <string name="uptime_label">가동 시간:</string>
     <string name="server_busy_install_lock">서버를 시작하기 전에 모듈 설치가 완료될 때까지 기다리세요.</string>
     <string name="log_jump_latest">↓ 최신</string>
+    <string name="kiwix_dialog_loading">인터넷에서 카탈로그를 불러오는 중…</string>
+    <string name="kiwix_dialog_offline">인터넷 연결이 없습니다. 연결하여 Kiwix 카탈로그를 불러오세요.</string>
+    <string name="kiwix_dialog_retry">다시 시도</string>
+    <string name="kiwix_dialog_close">닫기</string>
 </resources>

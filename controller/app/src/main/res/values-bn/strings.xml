@@ -509,4 +509,8 @@
     <string name="uptime_label">আপটাইম:</string>
     <string name="server_busy_install_lock">সার্ভার চালু করার আগে মডিউল ইনস্টলেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
     <string name="log_jump_latest">↓ সর্বশেষ</string>
+    <string name="kiwix_dialog_loading">ইন্টারনেট থেকে ক্যাটালগ লোড হচ্ছে…</string>
+    <string name="kiwix_dialog_offline">ইন্টারনেট সংযোগ নেই। Kiwix ক্যাটালগ লোড করতে সংযোগ করুন।</string>
+    <string name="kiwix_dialog_retry">আবার চেষ্টা করুন</string>
+    <string name="kiwix_dialog_close">বন্ধ করুন</string>
 </resources>

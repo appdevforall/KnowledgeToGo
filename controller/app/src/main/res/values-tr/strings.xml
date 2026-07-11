@@ -509,4 +509,8 @@
     <string name="uptime_label">Çalışma süresi:</string>
     <string name="server_busy_install_lock">Sunucuyu başlatmadan önce modüllerin kurulumunun tamamlanmasını bekleyin.</string>
     <string name="log_jump_latest">↓ En yeni</string>
+    <string name="kiwix_dialog_loading">Katalog internetten yükleniyor…</string>
+    <string name="kiwix_dialog_offline">İnternet bağlantısı yok. Kiwix kataloğunu yüklemek için bağlanın.</string>
+    <string name="kiwix_dialog_retry">Yeniden dene</string>
+    <string name="kiwix_dialog_close">Kapat</string>
 </resources>
