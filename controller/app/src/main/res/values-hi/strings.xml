@@ -196,7 +196,7 @@
     <string name="install_btn_install">इंस्टॉल</string>
     <string name="install_btn_reinstall">पुनर्स्थापित करें</string>
     <string name="install_btn_delete">हटाएं</string>
-    <string name="install_btn_launch">इंस्टालेशन प्रारंभ करें</string>
+    <string name="install_btn_launch">चयनित इंस्टॉल करें</string>
     <string name="install_btn_provision">सिस्टम प्रोविजन करें</string>
     <string name="install_btn_refresh">रिफ्रेश</string>
     <string name="install_btn_reset">पूर्ण रीसेट (Scratch Reset)</string>

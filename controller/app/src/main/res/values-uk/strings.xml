@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Орієнтовні розміри (офлайн)</string>
     <string name="install_msg_termux_missing">Спочатку встановіть базову систему Debian.</string>
     <string name="install_btn_delete">Видалити</string>
-    <string name="install_btn_launch">Почати встановлення</string>
+    <string name="install_btn_launch">Встановити вибране</string>
     <string name="install_adv_monitoring_title">Розширений моніторинг</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Перевірте встановлення вручну, здається, є розбіжність між заявленим і виявленим.</string>

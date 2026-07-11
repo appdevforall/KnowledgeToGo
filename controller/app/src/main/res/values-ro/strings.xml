@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Dimensiuni estimate (offline)</string>
     <string name="install_msg_termux_missing">Te rugăm să instalezi mai întâi sistemul de bază Debian.</string>
     <string name="install_btn_delete">Șterge</string>
-    <string name="install_btn_launch">Pornește instalarea</string>
+    <string name="install_btn_launch">Instalează selecția</string>
     <string name="install_adv_monitoring_title">Monitorizare avansată</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Te rugăm să verifici instalarea manual, se pare că există o discrepanță între ceea ce este declarat și ceea ce este detectat.</string>

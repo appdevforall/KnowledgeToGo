@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">અંદાજિત કદ (ઑફલાઇન)</string>
     <string name="install_msg_termux_missing">કૃપા કરી પહેલાં આધાર Debian સિસ્ટમ ઇન્સ્ટૉલ કરો.</string>
     <string name="install_btn_delete">કાઢી નાખો</string>
-    <string name="install_btn_launch">ઇન્સ્ટૉલેશન શરૂ કરો</string>
+    <string name="install_btn_launch">પસંદ કરેલ ઇન્સ્ટૉલ કરો</string>
     <string name="install_adv_monitoring_title">અદ્યતન નિરીક્ષણ</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">કૃપા કરી ઇન્સ્ટૉલેશન જાતે તપાસો, જે જણાવ્યું છે અને જે શોધાયું છે તેની વચ્ચે વિસંગતતા હોય તેવું લાગે છે.</string>

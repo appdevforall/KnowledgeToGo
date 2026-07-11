@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Geschatte groottes (offline)</string>
     <string name="install_msg_termux_missing">Installeer eerst het Debian-basissysteem.</string>
     <string name="install_btn_delete">Verwijderen</string>
-    <string name="install_btn_launch">Installatie starten</string>
+    <string name="install_btn_launch">Selectie installeren</string>
     <string name="install_adv_monitoring_title">Geavanceerde monitoring</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Controleer de installatie handmatig; er lijkt een discrepantie te zijn tussen wat is aangegeven en wat is gedetecteerd.</string>

@@ -195,7 +195,7 @@
     <string name="install_btn_install">Установить</string>
     <string name="install_btn_reinstall">Переустановить</string>
     <string name="install_btn_delete">Удалить</string>
-    <string name="install_btn_launch">Запустить установку</string>
+    <string name="install_btn_launch">Установить выбранное</string>
     <string name="install_btn_provision">Развернуть систему</string>
     <string name="install_btn_refresh">Обновить</string>
     <string name="install_btn_reset">Полный сброс</string>

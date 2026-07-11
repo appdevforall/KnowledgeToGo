@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Процењене величине (ван мреже)</string>
     <string name="install_msg_termux_missing">Прво инсталирајте основни Debian систем.</string>
     <string name="install_btn_delete">Обриши</string>
-    <string name="install_btn_launch">Покрени инсталацију</string>
+    <string name="install_btn_launch">Инсталирај изабрано</string>
     <string name="install_adv_monitoring_title">Напредни надзор</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Проверите инсталацију ручно, изгледа да постоји неслагање између наведеног и откривеног.</string>

@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Ukubwa uliokadiriwa (nje ya mtandao)</string>
     <string name="install_msg_termux_missing">Tafadhali sakinisha mfumo wa msingi wa Debian kwanza.</string>
     <string name="install_btn_delete">Futa</string>
-    <string name="install_btn_launch">Zindua usakinishaji</string>
+    <string name="install_btn_launch">Sakinisha zilizochaguliwa</string>
     <string name="install_adv_monitoring_title">Ufuatiliaji wa kina</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Tafadhali angalia usakinishaji kwa mikono, inaonekana kuna tofauti kati ya kilichotajwa na kilichotambuliwa.</string>

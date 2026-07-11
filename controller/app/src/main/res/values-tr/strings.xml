@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Tahmini boyutlar (çevrimdışı)</string>
     <string name="install_msg_termux_missing">Lütfen önce temel Debian sistemini kurun.</string>
     <string name="install_btn_delete">Sil</string>
-    <string name="install_btn_launch">Kurulumu başlat</string>
+    <string name="install_btn_launch">Seçileni kur</string>
     <string name="install_adv_monitoring_title">Gelişmiş izleme</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Lütfen kurulumu manuel olarak kontrol edin; belirtilen ile algılanan arasında bir tutarsızlık var gibi görünüyor.</string>

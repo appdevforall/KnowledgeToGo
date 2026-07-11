@@ -176,7 +176,7 @@
     <string name="install_offline_estimated">Numatomi dydžiai (neprisijungus)</string>
     <string name="install_msg_termux_missing">Pirmiausia įdiekite bazinę Debian sistemą.</string>
     <string name="install_btn_delete">Ištrinti</string>
-    <string name="install_btn_launch">Paleisti diegimą</string>
+    <string name="install_btn_launch">Įdiegti pasirinktus</string>
     <string name="install_adv_monitoring_title">Išplėstinė stebėsena</string>
     <string name="install_warning_discrepancy_icon">⚠️</string>
     <string name="install_warning_discrepancy_msg">Patikrinkite diegimą rankiniu būdu, atrodo, kad yra neatitikimas tarp nurodyto ir aptikto.</string>
