@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">Нема интернет везе. Повежите се да бисте учитали Kiwix каталог.</string>
     <string name="kiwix_dialog_retry">Покушај поново</string>
     <string name="kiwix_dialog_close">Затвори</string>
+    <string name="install_error_verify">Преузете системске датотеке нису прошле проверу интегритета (непотпуне или оштећене). Покушајте поново да инсталирате.</string>
 </resources>

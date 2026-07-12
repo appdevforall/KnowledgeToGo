@@ -335,6 +335,7 @@
     <string name="install_error_no_archive">Error: Downloaded archive not found.</string>
     <string name="install_error_extraction">Extraction Failed: %1$s</string>
     <string name="install_error_download">Download Failed: %1$s</string>
+    <string name="install_error_verify">The downloaded system files failed the integrity check (incomplete or corrupted). Please try installing again.</string>
     <string name="install_dialog_wipe_msg">This will wipe the current Debian system and download a fresh copy. Continue?</string>
     <string name="install_btn_yes">Yes</string>
     <string name="install_btn_no">No</string>

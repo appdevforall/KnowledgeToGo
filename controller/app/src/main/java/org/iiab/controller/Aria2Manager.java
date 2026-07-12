@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.iiab.controller.download.domain.MetalinkSplit;
+import org.iiab.controller.download.domain.MetalinkFile;
+import org.iiab.controller.download.domain.DownloadVerifier;
 
 public class Aria2Manager {
 
@@ -36,6 +38,8 @@ public class Aria2Manager {
         void onProgress(int percentage, String speed, String eta);
         void onComplete(String downloadPath);
         void onError(String error);
+        /** ADFA-4676: post-download integrity gate failed (size/SHA-256 mismatch). */
+        default void onIntegrityFailure(String reason) { onError(reason); }
     }
 
     public void startDownload(Context context, String url, DownloadListener listener) {
@@ -164,11 +168,36 @@ public class Aria2Manager {
                     return;
                 }
 
-                if (exitCode == 0) {
-                    mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
-                } else {
+                if (exitCode != 0) {
                     mainHandler.post(() -> listener.onError("Aria2c native process failed with code " + exitCode));
+                    return;
                 }
+                // ADFA-4676: never trust the exit code alone. For a Metalink download,
+                // verify the artifact against the .meta4 <size> + file-level SHA-256
+                // before reporting success, so an incomplete/corrupt/stale file cannot
+                // reach extraction.
+                MetalinkFile mf = MetalinkSplit.isMetalinkUrl(url) ? fetchMetalink(url) : null;
+                if (mf != null && mf.canVerify()) {
+                    File artifact = new File(downloadDir, mf.fileName());
+                    DownloadVerifier.Result vr = DownloadVerifier.verify(artifact, mf.sizeBytes(), mf.sha256());
+                    if (vr != DownloadVerifier.Result.OK) {
+                        Log.e(TAG, "Integrity check failed (" + vr + ") for " + mf.fileName()
+                                + " expectedSize=" + mf.sizeBytes()
+                                + " actualSize=" + (artifact.exists() ? artifact.length() : -1));
+                        // Drop the bad artifact + aria2 control file so a later run starts clean.
+                        artifact.delete();
+                        new File(downloadDir, mf.fileName() + ".aria2").delete();
+                        final String reason = vr.name();
+                        mainHandler.post(() -> listener.onIntegrityFailure(reason));
+                        return;
+                    }
+                    // Verified: remove any stale sibling tarball so nothing else can be picked.
+                    File[] stale = downloadDir.listFiles((d, n) ->
+                            (n.endsWith(".tar.gz") || n.endsWith(".tar.xz")) && !n.equals(mf.fileName()));
+                    if (stale != null) { for (File f : stale) f.delete(); }
+                    Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
+                }
+                mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
 
             } catch (Exception e) {
                 Log.e(TAG, "Native Execution Error", e);
@@ -194,6 +223,28 @@ public class Aria2Manager {
      * lives in the domain helper. Falls back to {@link MetalinkSplit#BASE_SPLIT}
      * for non-metalink URLs, torrents, a non-200 response, or any parse error.
      */
+    /** ADFA-4676: fetch + parse the .meta4 into a verifiable MetalinkFile, or null on any error. */
+    private MetalinkFile fetchMetalink(String url) {
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.setRequestProperty("User-Agent", "K2Go");
+            if (conn.getResponseCode() != 200) {
+                return null;
+            }
+            try (InputStream in = conn.getInputStream()) {
+                return MetalinkFile.parse(in);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "fetchMetalink fallback (" + e.getMessage() + ")");
+            return null;
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+    }
+
     private int resolveSplitFromMetalink(String url) {
         if (!MetalinkSplit.isMetalinkUrl(url)) {
             return MetalinkSplit.BASE_SPLIT;

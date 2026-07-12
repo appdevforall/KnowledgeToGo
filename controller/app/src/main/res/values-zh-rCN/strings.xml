@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">无网络连接。请连接后加载 Kiwix 目录。</string>
     <string name="kiwix_dialog_retry">重试</string>
     <string name="kiwix_dialog_close">关闭</string>
+    <string name="install_error_verify">下载的系统文件未通过完整性校验（不完整或已损坏）。请重新尝试安装。</string>
 </resources>

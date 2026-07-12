@@ -241,6 +241,16 @@ public final class InstallService extends Service {
                 org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logInstallFailed("download", "network");
                 fail(getString(R.string.install_error_download, error));
             }
+
+            @Override
+            public void onIntegrityFailure(String reason) {
+                // ADFA-4676: the download completed but failed the app-side integrity
+                // gate (size/SHA-256). Surface it as a verification failure, not a
+                // generic network error.
+                Log.e(TAG, "Rootfs download failed integrity verification: " + reason);
+                org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logInstallFailed("download", "verify");
+                fail(getString(R.string.install_error_verify));
+            }
         });
     }
 

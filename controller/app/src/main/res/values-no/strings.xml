@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">Ingen Internett-tilkobling. Koble til for å laste inn Kiwix-katalogen.</string>
     <string name="kiwix_dialog_retry">Prøv igjen</string>
     <string name="kiwix_dialog_close">Lukk</string>
+    <string name="install_error_verify">De nedlastede systemfilene besto ikke integritetskontrollen (ufullstendige eller skadede). Prøv å installere på nytt.</string>
 </resources>

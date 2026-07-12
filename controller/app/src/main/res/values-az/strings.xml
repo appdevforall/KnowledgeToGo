@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">İnternet bağlantısı yoxdur. Kiwix kataloqunu yükləmək üçün qoşulun.</string>
     <string name="kiwix_dialog_retry">Yenidən cəhd et</string>
     <string name="kiwix_dialog_close">Bağla</string>
+    <string name="install_error_verify">Yüklənmiş sistem faylları bütövlük yoxlamasından keçmədi (natamam və ya zədələnmiş). Zəhmət olmasa quraşdırmanı yenidən sınayın.</string>
 </resources>

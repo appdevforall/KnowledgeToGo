@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">Nincs internetkapcsolat. Csatlakozzon a Kiwix-katalógus betöltéséhez.</string>
     <string name="kiwix_dialog_retry">Újra</string>
     <string name="kiwix_dialog_close">Bezárás</string>
+    <string name="install_error_verify">A letöltött rendszerfájlok nem mentek át az integritásellenőrzésen (hiányosak vagy sérültek). Kérjük, próbálja meg újra a telepítést.</string>
 </resources>

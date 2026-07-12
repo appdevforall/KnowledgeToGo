@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">Няма връзка с интернет. Свържете се, за да заредите каталога на Kiwix.</string>
     <string name="kiwix_dialog_retry">Опитай отново</string>
     <string name="kiwix_dialog_close">Затвори</string>
+    <string name="install_error_verify">Изтеглените системни файлове не преминаха проверката за цялост (непълни или повредени). Опитайте да инсталирате отново.</string>
 </resources>

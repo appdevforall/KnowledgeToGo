@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">Brak połączenia z internetem. Połącz się, aby wczytać katalog Kiwix.</string>
     <string name="kiwix_dialog_retry">Ponów</string>
     <string name="kiwix_dialog_close">Zamknij</string>
+    <string name="install_error_verify">Pobrane pliki systemowe nie przeszły weryfikacji integralności (niekompletne lub uszkodzone). Spróbuj zainstalować ponownie.</string>
 </resources>
