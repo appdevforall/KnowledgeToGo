@@ -120,13 +120,20 @@ public class TarExtractor {
                 final Handler uiHandler = new Handler(Looper.getMainLooper());
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
+                    long[] lastLog = {0L};
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(tarProcess.getInputStream()))) {
                         String line;
                         while ((line = reader.readLine()) != null) {
-                            Log.d(TAG, "Tar Output: " + line);
+                            // Always keep the tail (tar's stderr is merged here) so the failure
+                            // diagnostic has the real cause; throttle the per-file logcat line so
+                            // it does not flood logcat and get dropped "over proc quota" (ADFA-4544).
                             tarTail.addLast(line);
                             while (tarTail.size() > 20) tarTail.pollFirst();
                             long now = System.currentTimeMillis();
+                            if (now - lastLog[0] >= 250) {
+                                lastLog[0] = now;
+                                Log.d(TAG, "Tar Output: " + line);
+                            }
                             if (now - lastEmit[0] >= 50) {
                                 lastEmit[0] = now;
                                 final String l = line;
@@ -143,8 +150,11 @@ public class TarExtractor {
                 long totalWritten = 0;
                 if (isGzip) {
                     Log.d(TAG, "Starting Java GZIP Pipe stream to tar process...");
-                    try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(archivePath));
-                         OutputStream tarInput = tarProcess.getOutputStream()) {
+                    // tarInput is closed defensively in the finally below (NOT via
+                    // try-with-resources): once tar dies its stdin flush/close re-throws EPIPE,
+                    // which would escape to the outer catch and hide tar's real cause (ADFA-4544).
+                    OutputStream tarInput = tarProcess.getOutputStream();
+                    try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(archivePath))) {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
@@ -162,9 +172,19 @@ public class TarExtractor {
                             }
                         }
                         if (!pipeBroke) {
-                            tarInput.flush();
+                            try {
+                                tarInput.flush();
+                            } catch (java.io.IOException pipe) {
+                                pipeBroke = true;
+                                Log.e(TAG, "tar closed stdin early on flush after " + totalWritten + " bytes", pipe);
+                            }
                             Log.d(TAG, "Java GZIP Pipe finished pushing data.");
                         }
+                    } finally {
+                        // ADFA-4544: swallow the EPIPE that flush/close throws once tar is gone,
+                        // so we still reach waitFor() + the rich diagnostic below instead of a bare
+                        // "Fatal Extraction Error: EPIPE" from the outer catch.
+                        try { tarInput.close(); } catch (java.io.IOException ignored) { }
                     }
                     // A GZIPInputStream read error (corrupt archive) still propagates to the
                     // outer catch as a genuine decompression failure.
