@@ -40,6 +40,8 @@ public class Aria2Manager {
         void onError(String error);
         /** ADFA-4676: post-download integrity gate failed (size/SHA-256 mismatch). */
         default void onIntegrityFailure(String reason) { onError(reason); }
+        /** ADFA-4676: the user stopped the download; a clean stop, not a failure. */
+        default void onCancelled() { }
     }
 
     public void startDownload(Context context, String url, DownloadListener listener) {
@@ -94,28 +96,34 @@ public class Aria2Manager {
                 boolean resumeOrRepair = false;
                 if (mf != null && mf.canVerify()) {
                     File existing = new File(downloadDir, mf.fileName());
+                    File control = new File(downloadDir, mf.fileName() + ".aria2");
                     if (existing.isFile()) {
                         long len = existing.length();
-                        if (len == mf.sizeBytes()
+                        if (control.isFile()) {
+                            // Interrupted download: aria2 keeps its .aria2 control file and
+                            // pre-allocates the full size, so length alone cannot tell
+                            // "complete" from "in progress". Resume via --continue /
+                            // --check-integrity; do not waste a full-file hash here.
+                            resumeOrRepair = true;
+                            Log.d(TAG, "Interrupted download present (" + len + "/" + mf.sizeBytes()
+                                    + " bytes); resuming via --check-integrity.");
+                        } else if (len == mf.sizeBytes()
                                 && DownloadVerifier.verify(existing, mf.sizeBytes(), mf.sha256()) == DownloadVerifier.Result.OK) {
-                            // Already the full, verified artifact -> skip download entirely.
+                            // Fully downloaded and verified (no control file) -> skip download.
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
                             mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
                             return;
-                        }
-                        if (len > mf.sizeBytes()) {
+                        } else if (len > mf.sizeBytes()) {
                             // Larger than the declared size: no piece map can match it. Discard.
                             Log.w(TAG, "Discarding oversized on-disk artifact (len=" + len
                                     + " > expected=" + mf.sizeBytes() + ").");
                             existing.delete();
-                            new File(downloadDir, mf.fileName() + ".aria2").delete();
                         } else {
-                            // Partial, or complete-but-corrupt: keep it and let aria2's
-                            // --check-integrity repair only the damaged/missing pieces.
+                            // Complete-but-corrupt with no control file: let --check-integrity
+                            // repair only the damaged pieces instead of re-downloading all.
                             resumeOrRepair = true;
-                            Log.d(TAG, "Existing artifact present (" + len + "/" + mf.sizeBytes()
-                                    + " bytes); will resume/piece-repair via --check-integrity.");
+                            Log.d(TAG, "Unverified artifact with no control file; will piece-repair via --check-integrity.");
                         }
                     }
                 }
@@ -207,7 +215,8 @@ public class Aria2Manager {
                 Log.d(TAG, "Native Aria2c exited with code: " + exitCode);
 
                 if (isCancelled) {
-                    mainHandler.post(() -> listener.onError("Download cancelled."));
+                    Log.d(TAG, "Download cancelled by user.");
+                    mainHandler.post(listener::onCancelled);
                     return;
                 }
 
@@ -238,6 +247,13 @@ public class Aria2Manager {
                 mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
 
             } catch (Exception e) {
+                if (isCancelled) {
+                    // The stream was closed by our own stopDownload(); a user stop is a
+                    // clean cancellation, not a fatal error.
+                    Log.d(TAG, "Download cancelled by user.");
+                    mainHandler.post(listener::onCancelled);
+                    return;
+                }
                 Log.e(TAG, "Native Execution Error", e);
                 mainHandler.post(() -> listener.onError("Fatal Error: " + e.getMessage()));
             }
