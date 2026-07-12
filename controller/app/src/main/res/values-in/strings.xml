@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">Tidak ada koneksi Internet. Hubungkan untuk memuat katalog Kiwix.</string>
     <string name="kiwix_dialog_retry">Coba lagi</string>
     <string name="kiwix_dialog_close">Tutup</string>
+    <string name="install_error_verify">Berkas sistem yang diunduh gagal pemeriksaan integritas (tidak lengkap atau rusak). Silakan coba pasang lagi.</string>
 </resources>

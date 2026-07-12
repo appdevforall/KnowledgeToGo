@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">لا يوجد اتصال بالإنترنت. اتصل لتحميل فهرس Kiwix.</string>
     <string name="kiwix_dialog_retry">إعادة المحاولة</string>
     <string name="kiwix_dialog_close">إغلاق</string>
+    <string name="install_error_verify">فشلت ملفات النظام التي تم تنزيلها في فحص السلامة (غير مكتملة أو تالفة). يرجى محاولة التثبيت مرة أخرى.</string>
 </resources>

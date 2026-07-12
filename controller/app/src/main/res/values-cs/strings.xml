@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">Bez připojení k internetu. Připojte se pro načtení katalogu Kiwix.</string>
     <string name="kiwix_dialog_retry">Zkusit znovu</string>
     <string name="kiwix_dialog_close">Zavřít</string>
+    <string name="install_error_verify">Stažené systémové soubory neprošly kontrolou integrity (neúplné nebo poškozené). Zkuste instalaci znovu.</string>
 </resources>

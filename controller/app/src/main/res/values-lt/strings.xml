@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">Nėra interneto ryšio. Prisijunkite, kad įkeltumėte Kiwix katalogą.</string>
     <string name="kiwix_dialog_retry">Bandyti dar kartą</string>
     <string name="kiwix_dialog_close">Uždaryti</string>
+    <string name="install_error_verify">Atsisiųsti sistemos failai neišlaikė vientisumo patikros (neišsamūs arba sugadinti). Bandykite įdiegti dar kartą.</string>
 </resources>

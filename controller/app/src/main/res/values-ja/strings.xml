@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">インターネット接続がありません。接続してKiwixカタログを読み込んでください。</string>
     <string name="kiwix_dialog_retry">再試行</string>
     <string name="kiwix_dialog_close">閉じる</string>
+    <string name="install_error_verify">ダウンロードしたシステムファイルの整合性チェックに失敗しました（不完全または破損）。もう一度インストールをお試しください。</string>
 </resources>

@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">인터넷 연결이 없습니다. 연결하여 Kiwix 카탈로그를 불러오세요.</string>
     <string name="kiwix_dialog_retry">다시 시도</string>
     <string name="kiwix_dialog_close">닫기</string>
+    <string name="install_error_verify">다운로드한 시스템 파일이 무결성 검사를 통과하지 못했습니다(불완전하거나 손상됨). 설치를 다시 시도해 주세요.</string>
 </resources>

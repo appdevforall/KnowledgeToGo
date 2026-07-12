@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">இணைய இணைப்பு இல்லை. Kiwix பட்டியலை ஏற்ற இணையுங்கள்.</string>
     <string name="kiwix_dialog_retry">மீண்டும் முயற்சி</string>
     <string name="kiwix_dialog_close">மூடு</string>
+    <string name="install_error_verify">பதிவிறக்கிய கணினி கோப்புகள் ஒருமைப்பாட்டுச் சரிபார்ப்பில் தோல்வியடைந்தன (முழுமையற்றவை அல்லது சிதைந்தவை). மீண்டும் நிறுவ முயற்சிக்கவும்.</string>
 </resources>

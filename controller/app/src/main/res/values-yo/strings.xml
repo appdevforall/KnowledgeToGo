@@ -520,4 +520,5 @@
     <string name="kiwix_dialog_offline">Kò sí ìsopọ̀ Íńtánẹ́ẹ̀tì. Sopọ̀ láti gbé àkójọ Kiwix jáde.</string>
     <string name="kiwix_dialog_retry">Gbìyànjú lẹ́ẹ̀kansí</string>
     <string name="kiwix_dialog_close">Tì</string>
+    <string name="install_error_verify">Àwọn fáìlì ẹ̀rọ tí a gbà sílẹ̀ kùnà àyẹ̀wò ìdúróṣinṣin (àìpé tàbí bàjẹ́). Jọ̀wọ́ gbìyànjú láti fi sórí ẹrọ lẹ́ẹ̀kansi.</string>
 </resources>

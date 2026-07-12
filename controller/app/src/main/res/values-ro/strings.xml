@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">Nicio conexiune la internet. Conectează-te pentru a încărca catalogul Kiwix.</string>
     <string name="kiwix_dialog_retry">Reîncearcă</string>
     <string name="kiwix_dialog_close">Închide</string>
+    <string name="install_error_verify">Fișierele de sistem descărcate nu au trecut verificarea integrității (incomplete sau corupte). Încercați din nou instalarea.</string>
 </resources>

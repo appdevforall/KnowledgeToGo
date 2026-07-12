@@ -513,4 +513,5 @@
     <string name="kiwix_dialog_offline">اتصال اینترنتی وجود ندارد. برای بارگیری فهرست Kiwix متصل شوید.</string>
     <string name="kiwix_dialog_retry">تلاش مجدد</string>
     <string name="kiwix_dialog_close">بستن</string>
+    <string name="install_error_verify">فایل‌های سیستمی دانلودشده در بررسی یکپارچگی ناموفق بودند (ناقص یا خراب). لطفاً نصب را دوباره امتحان کنید.</string>
 </resources>
