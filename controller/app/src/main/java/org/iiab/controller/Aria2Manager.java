@@ -81,6 +81,38 @@ public class Aria2Manager {
                 Log.d(TAG, "Executing Native Aria2c...");
                 Log.d(TAG, "Target URL: " + url);
 
+                // ADFA-4676: fetch the .meta4 once — it drives the integrity gate, the
+                // --split mirror count, and reconciling whatever is already on disk so that
+                // stopping and restarting a download is safe (no wasted re-download, and the
+                // network profiler never trips over a leftover completed file).
+                MetalinkFile mf = MetalinkSplit.isMetalinkUrl(url) ? fetchMetalink(url) : null;
+                if (mf != null && mf.canVerify()) {
+                    File existing = new File(downloadDir, mf.fileName());
+                    File control = new File(downloadDir, mf.fileName() + ".aria2");
+                    if (existing.isFile()) {
+                        long len = existing.length();
+                        if (len == mf.sizeBytes()
+                                && DownloadVerifier.verify(existing, mf.sizeBytes(), mf.sha256()) == DownloadVerifier.Result.OK) {
+                            // Already fully downloaded and verified (e.g. the user stopped
+                            // after completion): skip the profiler and re-download entirely.
+                            pruneStaleSiblings(downloadDir, mf.fileName());
+                            Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
+                            mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
+                            return;
+                        }
+                        if (len >= mf.sizeBytes() || !control.exists()) {
+                            // Complete-but-corrupt, oversized, or a partial with no aria2
+                            // control file (cannot resume; would trip aria2 errorCode=13).
+                            // Discard so the run below starts clean.
+                            Log.w(TAG, "Discarding unusable on-disk artifact (len=" + len
+                                    + ", expected=" + mf.sizeBytes() + ", control=" + control.exists() + ").");
+                            existing.delete();
+                            control.delete();
+                        }
+                        // else: a partial WITH a control file -> left in place for aria2 --continue.
+                    }
+                }
+
                 // --- RUN NETWORK PROFILER (Time-boxed speed test) ---
                 // UI updates are now handled inside the profiler
                 boolean forceIpv4 = Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
@@ -97,7 +129,8 @@ public class Aria2Manager {
                 // scales with the number of HTTP mirrors in the metalink (clamp
                 // and counting live in MetalinkSplit; fallback to BASE_SPLIT if
                 // not a metalink / torrent / unreadable).
-                int split = resolveSplitFromMetalink(url);
+                int split = (mf != null) ? MetalinkSplit.splitForMirrorCount(mf.mirrors().size())
+                                         : MetalinkSplit.BASE_SPLIT;
                 command.add("--max-connection-per-server=" + MetalinkSplit.CONNECTIONS_PER_MIRROR);
                 command.add("--split=" + split);
                 command.add("--follow-metalink=mem");
@@ -176,7 +209,6 @@ public class Aria2Manager {
                 // verify the artifact against the .meta4 <size> + file-level SHA-256
                 // before reporting success, so an incomplete/corrupt/stale file cannot
                 // reach extraction.
-                MetalinkFile mf = MetalinkSplit.isMetalinkUrl(url) ? fetchMetalink(url) : null;
                 if (mf != null && mf.canVerify()) {
                     File artifact = new File(downloadDir, mf.fileName());
                     DownloadVerifier.Result vr = DownloadVerifier.verify(artifact, mf.sizeBytes(), mf.sha256());
@@ -184,17 +216,13 @@ public class Aria2Manager {
                         Log.e(TAG, "Integrity check failed (" + vr + ") for " + mf.fileName()
                                 + " expectedSize=" + mf.sizeBytes()
                                 + " actualSize=" + (artifact.exists() ? artifact.length() : -1));
-                        // Drop the bad artifact + aria2 control file so a later run starts clean.
                         artifact.delete();
                         new File(downloadDir, mf.fileName() + ".aria2").delete();
                         final String reason = vr.name();
                         mainHandler.post(() -> listener.onIntegrityFailure(reason));
                         return;
                     }
-                    // Verified: remove any stale sibling tarball so nothing else can be picked.
-                    File[] stale = downloadDir.listFiles((d, n) ->
-                            (n.endsWith(".tar.gz") || n.endsWith(".tar.xz")) && !n.equals(mf.fileName()));
-                    if (stale != null) { for (File f : stale) f.delete(); }
+                    pruneStaleSiblings(downloadDir, mf.fileName());
                     Log.d(TAG, "Integrity verified: " + mf.fileName() + " (" + mf.sizeBytes() + " bytes, sha-256 OK)");
                 }
                 mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
@@ -215,13 +243,6 @@ public class Aria2Manager {
 
     /**
      * Helper method to copy files from the APK assets folder to internal storage.
-     */
-    /**
-     * ADFA-4473: fetch the .meta4/.metalink at {@code url} and resolve aria2c's
-     * {@code --split} from its http/https mirror count (see {@link MetalinkSplit}).
-     * This method owns only the network fetch; counting + clamp logic is pure and
-     * lives in the domain helper. Falls back to {@link MetalinkSplit#BASE_SPLIT}
-     * for non-metalink URLs, torrents, a non-200 response, or any parse error.
      */
     /** ADFA-4676: fetch + parse the .meta4 into a verifiable MetalinkFile, or null on any error. */
     private MetalinkFile fetchMetalink(String url) {
@@ -245,30 +266,11 @@ public class Aria2Manager {
         }
     }
 
-    private int resolveSplitFromMetalink(String url) {
-        if (!MetalinkSplit.isMetalinkUrl(url)) {
-            return MetalinkSplit.BASE_SPLIT;
-        }
-        HttpURLConnection conn = null;
-        try {
-            conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
-            conn.setRequestProperty("User-Agent", "K2Go");
-            if (conn.getResponseCode() != 200) {
-                return MetalinkSplit.BASE_SPLIT;
-            }
-            try (InputStream in = conn.getInputStream()) {
-                int split = MetalinkSplit.splitFromMetalink(in);
-                Log.d(TAG, "Metalink resolved --split=" + split);
-                return split;
-            }
-        } catch (Exception e) {
-            Log.w(TAG, "resolveSplitFromMetalink fallback (" + e.getMessage() + ")");
-            return MetalinkSplit.BASE_SPLIT;
-        } finally {
-            if (conn != null) conn.disconnect();
-        }
+    /** ADFA-4676: remove any other rootfs tarball so only the verified artifact remains. */
+    private static void pruneStaleSiblings(File downloadDir, String keepName) {
+        File[] stale = downloadDir.listFiles((d, n) ->
+                (n.endsWith(".tar.gz") || n.endsWith(".tar.xz")) && !n.equals(keepName));
+        if (stale != null) { for (File f : stale) f.delete(); }
     }
 
     private void extractAsset(Context context, String assetName, File destination) {
