@@ -86,36 +86,46 @@ public class Aria2Manager {
                 // stopping and restarting a download is safe (no wasted re-download, and the
                 // network profiler never trips over a leftover completed file).
                 MetalinkFile mf = MetalinkSplit.isMetalinkUrl(url) ? fetchMetalink(url) : null;
+                // resumeOrRepair: an existing (partial or complete-but-corrupt) file is on
+                // disk. Keep it and let the main aria2 run below salvage it via
+                // --check-integrity against the .meta4 piece hashes (re-downloading only the
+                // damaged/missing 1 MiB pieces). Skip the profiler in that case: it lacks
+                // --allow-overwrite/--check-integrity and would trip aria2 errorCode=13.
+                boolean resumeOrRepair = false;
                 if (mf != null && mf.canVerify()) {
                     File existing = new File(downloadDir, mf.fileName());
-                    File control = new File(downloadDir, mf.fileName() + ".aria2");
                     if (existing.isFile()) {
                         long len = existing.length();
                         if (len == mf.sizeBytes()
                                 && DownloadVerifier.verify(existing, mf.sizeBytes(), mf.sha256()) == DownloadVerifier.Result.OK) {
-                            // Already fully downloaded and verified (e.g. the user stopped
-                            // after completion): skip the profiler and re-download entirely.
+                            // Already the full, verified artifact -> skip download entirely.
                             pruneStaleSiblings(downloadDir, mf.fileName());
                             Log.d(TAG, "Reusing already-verified artifact: " + mf.fileName() + " (skipping download)");
                             mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
                             return;
                         }
-                        if (len >= mf.sizeBytes() || !control.exists()) {
-                            // Complete-but-corrupt, oversized, or a partial with no aria2
-                            // control file (cannot resume; would trip aria2 errorCode=13).
-                            // Discard so the run below starts clean.
-                            Log.w(TAG, "Discarding unusable on-disk artifact (len=" + len
-                                    + ", expected=" + mf.sizeBytes() + ", control=" + control.exists() + ").");
+                        if (len > mf.sizeBytes()) {
+                            // Larger than the declared size: no piece map can match it. Discard.
+                            Log.w(TAG, "Discarding oversized on-disk artifact (len=" + len
+                                    + " > expected=" + mf.sizeBytes() + ").");
                             existing.delete();
-                            control.delete();
+                            new File(downloadDir, mf.fileName() + ".aria2").delete();
+                        } else {
+                            // Partial, or complete-but-corrupt: keep it and let aria2's
+                            // --check-integrity repair only the damaged/missing pieces.
+                            resumeOrRepair = true;
+                            Log.d(TAG, "Existing artifact present (" + len + "/" + mf.sizeBytes()
+                                    + " bytes); will resume/piece-repair via --check-integrity.");
                         }
-                        // else: a partial WITH a control file -> left in place for aria2 --continue.
                     }
                 }
 
                 // --- RUN NETWORK PROFILER (Time-boxed speed test) ---
                 // UI updates are now handled inside the profiler
-                boolean forceIpv4 = Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
+                // Skip speed profiling when resuming/repairing an existing file: the
+                // profiler cannot write over a file that has no control file.
+                boolean forceIpv4 = resumeOrRepair ? false
+                        : Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
                 // ----------------------------------------------------
 
                 // 3. Build the command dynamically
