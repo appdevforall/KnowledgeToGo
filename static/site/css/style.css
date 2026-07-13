@@ -86,6 +86,7 @@ body {
 .btn-maps    { background-color: #0F8213; color: #FFFFFF; }
 .btn-matomo  { background-color: #1976D2; color: #FFFFFF; }
 .btn-dashboard { background-color: #1e1e1e; border: 1px solid #5dbca5; color: #5dbca5; margin-top: 20px; }
+.btn-k2go-docs { background-color: #2196F3; color: #FFFFFF; }
 
 .btn span { margin-right: 12px; font-size: 20px; }
 .btn .app-logo { width: 32px; height: 32px; object-fit: contain; margin-right: 12px; }
