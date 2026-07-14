@@ -108,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         return true;
     }
 
+    /** Notification-tap flag: open the full terminal directly (ADFA-4696). */
+    public static final String EXTRA_OPEN_TERMINAL = "org.iiab.controller.OPEN_TERMINAL";
+
     private TerminalController terminalController;
 
     public void invalidateModuleStateTrust() {
@@ -357,6 +360,7 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
 
         terminalController = new TerminalController(this, this);
         terminalController.bind();
+        maybeOpenTerminalFromIntent(getIntent());
 
         // ADFA-4595: version footer — three gestures:
         //   single tap        -> check version / updates (OTA)
@@ -570,6 +574,17 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        maybeOpenTerminalFromIntent(intent);
+    }
+
+    /** Open the full terminal when launched from its keep-alive notification (ADFA-4696). */
+    private void maybeOpenTerminalFromIntent(Intent intent) {
+        if (intent == null || terminalController == null) return;
+        if (!intent.getBooleanExtra(EXTRA_OPEN_TERMINAL, false)) return;
+        intent.removeExtra(EXTRA_OPEN_TERMINAL); // consume so it fires once
+        View root = findViewById(android.R.id.content);
+        if (root != null) root.post(() -> terminalController.openFullTerminal());
+        else terminalController.openFullTerminal();
     }
 
     private void toggleTheme() {
