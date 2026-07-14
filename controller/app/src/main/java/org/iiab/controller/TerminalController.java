@@ -267,6 +267,7 @@ public class TerminalController {
                         } else {
                             // No sessions left! Close the terminal panel entirely.
                             terminalSession = null;
+                            TerminalSessionService.stop(activity);
                             View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
                             if (bottomSheet != null) {
                                 com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
@@ -748,6 +749,8 @@ public class TerminalController {
             terminalView.setTextSize((int) currentTerminalFontSize);
             // Add to our multi-session list
             terminalSessionsList.add(terminalSession);
+            // ADFA-4696 (phase 2): keep the process alive while a session runs.
+            TerminalSessionService.start(activity);
             if (sessionsAdapter != null) {
                 activity.runOnUiThread(() -> sessionsAdapter.notifyDataSetChanged());
             }
@@ -794,6 +797,7 @@ public class TerminalController {
                                 if (terminalView != null) terminalView.attachSession(terminalSession);
                             } else {
                                 terminalSession = null;
+                                TerminalSessionService.stop(activity);
                                 View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
                                 if (bottomSheet != null) {
                                     com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =

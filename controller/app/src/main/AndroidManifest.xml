@@ -97,6 +97,11 @@
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
+        <service
+            android:name=".TerminalSessionService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <!-- Lets AppCompat store + reapply the per-app UI language (ADFA-4304). -->
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
