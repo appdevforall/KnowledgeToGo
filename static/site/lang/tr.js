@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Haritalar",
+    "maps": "IIAB Haritalar",
     "matomo": "Matomo",
     "backend_error": "Arka uç sunucusu yanıt vermiyor. Lütfen başlatıldığından emin olun. Termux uygulamasına gidin ve şunu çalıştırın"
 };

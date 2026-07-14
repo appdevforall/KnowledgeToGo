@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "نقشه‌ها",
+    "maps": "IIAB نقشه‌ها",
     "matomo": "Matomo",
     "backend_error": "سرور بک‌اند پاسخ نمی‌دهد. لطفاً مطمئن شوید که راه‌اندازی شده است. برنامه Termux را باز کنید و اجرا کنید"
 };

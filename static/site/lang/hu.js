@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Térképek",
+    "maps": "IIAB Térképek",
     "matomo": "Matomo",
     "backend_error": "A backend szerver nem válaszol. Ellenőrizze, hogy elindult-e. Nyissa meg a Termux alkalmazást és futtassa"
 };

@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Ramani",
+    "maps": "IIAB Ramani",
     "matomo": "Matomo",
     "backend_error": "Seva ya nyuma haijibu. Tafadhali hakikisha imeanzishwa. Fungua programu ya Termux na uendeshe"
 };

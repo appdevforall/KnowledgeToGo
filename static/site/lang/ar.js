@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "الخرائط",
+    "maps": "IIAB الخرائط",
     "matomo": "Matomo",
     "backend_error": "خادم الواجهة الخلفية لا يستجيب. يرجى التأكد من أنه قيد التشغيل. افتح تطبيق Termux ونفّذ"
 };
