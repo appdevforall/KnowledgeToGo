@@ -377,7 +377,11 @@
     <string name="sync_app_status_wifi">"1. Zabezpečte, aby bolo druhé zariadenie na rovnakej Wi-Fi.\n2. Naskenujte tento QR ľubovoľnou bežnou kamerou."</string>
     <string name="sync_app_status_hotspot">"1. Požiadajte druhé zariadenie, aby sa pripojilo k vášmu Hotspotu.\n2. Naskenujte tento QR ľubovoľnou bežnou kamerou."</string>
     <string name="terminal_locked">Terminál uzamknutý (rolovanie zapnuté)</string>
-    <string name="terminal_unlocked">Terminál odomknutý (potiahnutím nadol zatvoríte)</string>
+    <string name="terminal_unlocked">Terminál odomknutý (potiahnutím nadol skryjete)</string>
+    <string name="terminal_channel_name">K2Go Terminal</string>
+    <string name="terminal_channel_desc">Udržiava terminálové relácie spustené na pozadí.</string>
+    <string name="terminal_notif_title">Terminál K2Go je aktívny</string>
+    <string name="terminal_notif_text">Na pozadí beží terminálová relácia.</string>
     <string name="terminal_crash_title">Zlyhanie spustenia terminálu</string>
     <string name="terminal_copied_toast">Text skopírovaný</string>
     <string name="sessions_title">RELÁCIE</string>

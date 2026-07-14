@@ -57,9 +57,77 @@ public class TerminalController {
     private List<com.termux.terminal.TerminalSession> terminalSessionsList = new ArrayList<>();
     private android.widget.ArrayAdapter<com.termux.terminal.TerminalSession> sessionsAdapter;
 
+    // ADFA-4696 (phase 2): sessions are owned by an app-scoped store, not the Activity.
+    private final TerminalSessionStore store = TerminalSessionStore.get();
+    private final TerminalSessionStore.Ui uiDelegate = new TerminalSessionStore.Ui() {
+        @Override
+        public void onInvalidate() {
+            activity.runOnUiThread(() -> { if (terminalView != null) terminalView.invalidate(); });
+        }
+
+        @Override
+        public void onSessionsChanged() {
+            activity.runOnUiThread(() -> { if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged(); });
+        }
+
+        @Override
+        public void onCurrentSessionEnded(com.termux.terminal.TerminalSession newCurrent) {
+            activity.runOnUiThread(() -> {
+                terminalSession = newCurrent;
+                if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
+                if (newCurrent != null) {
+                    if (terminalView != null) terminalView.attachSession(newCurrent);
+                } else {
+                    // No sessions left: the store already stopped the keep-alive service
+                    // (headless-safe); just hide the panel.
+                    View sheet = activity.findViewById(R.id.terminal_bottom_sheet);
+                    if (sheet != null) {
+                        com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
+                                com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet);
+                        behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void copyToClipboard(String text) {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("terminal", text);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+                activity.runOnUiThread(() -> Toast.makeText(activity, R.string.terminal_copied_toast, Toast.LENGTH_SHORT).show());
+            }
+        }
+
+        @Override
+        public void pasteInto(com.termux.terminal.TerminalSession target) {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            // ADFA-4519: only write non-empty text; TerminalSession.write("") throws.
+            if (target != null && clipboard != null && clipboard.hasPrimaryClip()
+                    && clipboard.getPrimaryClip().getItemCount() > 0) {
+                CharSequence text = clipboard.getPrimaryClip().getItemAt(0).getText();
+                if (text != null && text.length() > 0) {
+                    target.write(text.toString());
+                }
+            }
+        }
+    };
+
     public TerminalController(AppCompatActivity activity, Host host) {
         this.activity = activity;
         this.host = host;
+    }
+
+    /** Set the visible session and mirror it into the app-scoped store. */
+    private void setCurrentSession(com.termux.terminal.TerminalSession session) {
+        terminalSession = session;
+        store.setCurrent(session);
+    }
+
+    /** Release the UI delegate (call from Activity.onDestroy). Sessions keep running. */
+    public void detach() {
+        store.detachUi(uiDelegate);
     }
 
     /**
@@ -86,6 +154,21 @@ public class TerminalController {
         terminalView = activity.findViewById(R.id.terminal_view);
         bottomSheetBehavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+
+        // ADFA-4696 (phase 2): bind to the app-scoped session store so sessions
+        // survive this Activity. Point the drawer list + current session at it,
+        // register the UI delegate, and reattach any surviving session.
+        terminalSessionsList = store.sessions();
+        terminalSession = store.current();
+        store.attachUi(uiDelegate);
+        store.init(activity);
+        if (terminalSession != null && terminalView != null) {
+            // Reattach a surviving session to the freshly recreated view. It needs the
+            // full view-scoped wiring (renderer + TerminalViewClient + extra keys), not
+            // just attachSession, or updateSize NPEs on a null renderer/client (ADFA-4696).
+            terminalView.setTextSize((int) currentTerminalFontSize);
+            wireTerminalView();
+        }
 
         // MULTI-SESSION DRAWER SETUP
         // =========================================================
@@ -114,7 +197,7 @@ public class TerminalController {
 
             // Switch session when clicked
             drawerList.setOnItemClickListener((parent, view, position, id) -> {
-                terminalSession = terminalSessionsList.get(position);
+                setCurrentSession(terminalSessionsList.get(position));
                 if (terminalView != null) {
                     terminalView.attachSession(terminalSession);
 
@@ -194,11 +277,11 @@ public class TerminalController {
                     // Keep the current session if it is still running; otherwise fall
                     // back to any surviving session before deciding to spawn a new one.
                     if (terminalSession != null && !terminalSession.isRunning()) {
-                        terminalSession = null;
+                        setCurrentSession(null);
                     }
                     if (terminalSession == null && terminalSessionsList != null
                             && !terminalSessionsList.isEmpty()) {
-                        terminalSession = terminalSessionsList.get(terminalSessionsList.size() - 1);
+                        setCurrentSession(terminalSessionsList.get(terminalSessionsList.size() - 1));
                     }
 
                     if (terminalSession == null) {
@@ -237,128 +320,267 @@ public class TerminalController {
                 }
     }
 
-    public void addNewSession() {
-        com.termux.terminal.TerminalSessionClient client = new com.termux.terminal.TerminalSessionClient() {
-            @Override
-            public void onTextChanged(com.termux.terminal.TerminalSession session) {
-                activity.runOnUiThread(() -> terminalView.invalidate());
-            }
+    /**
+     * View-scoped wiring reused by addNewSession and by bind()'s reattach of a
+     * surviving session (ADFA-4696): installs the TerminalViewClient + extra keys
+     * and attaches the current session. The renderer (setTextSize) must already be
+     * set, or updateSize NPEs.
+     */
+    private void wireTerminalView() {
+            // --- VIEW CLIENT (Touches, Zoom & Keyboard) ---
+            terminalView.setTerminalViewClient(new com.termux.view.TerminalViewClient() {
+                @Override
+                public float onScale(float scale) {
+                    currentTerminalFontSize *= scale;
 
-            @Override
-            public void onTitleChanged(com.termux.terminal.TerminalSession session) {
-            }
+                    if (currentTerminalFontSize < 10f) currentTerminalFontSize = 10f;
+                    if (currentTerminalFontSize > 80f) currentTerminalFontSize = 80f;
 
-            // --- THE CLEAN SHUTDOWN (When Bash dies and tells us) ---
-            @Override
-            public void onSessionFinished(com.termux.terminal.TerminalSession session) {
-                activity.runOnUiThread(() -> {
-                    // 1. Remove the dead session from our list and update the UI Drawer
-                    if (terminalSessionsList != null) {
-                        terminalSessionsList.remove(session);
-                        if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
-                    }
+                    terminalView.setTextSize((int) currentTerminalFontSize);
+                    return 1.0f;
+                }
 
-                    // 2. Are we looking at the session that just died?
-                    if (terminalSession == session) {
-                        if (terminalSessionsList != null && !terminalSessionsList.isEmpty()) {
-                            // Fallback: Jump to the last available active session
-                            terminalSession = terminalSessionsList.get(terminalSessionsList.size() - 1);
-                            if (terminalView != null) terminalView.attachSession(terminalSession);
-                        } else {
-                            // No sessions left! Close the terminal panel entirely.
-                            terminalSession = null;
-                            TerminalSessionService.stop(activity);
-                            View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
-                            if (bottomSheet != null) {
-                                com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
-                                        com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
-                                behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+                // --- THE ESCAPE TAP (Crucial for Debugging Limbo Sessions) ---
+                @Override
+                public void onSingleTapUp(android.view.MotionEvent e) {
+                    // If the terminal process is dead (e.g., has crashed or shown "[Process completed]"),
+                    // a single tap on the black screen hides the panel and nullifies the session.
+                    // If the CURRENT terminal process is dead, switch to a surviving live
+                    // session; only hide the panel when nothing is left alive (ADFA-4696).
+                    if (terminalSession != null && !terminalSession.isRunning()) {
+                        activity.runOnUiThread(() -> {
+                            // Current session has exited. Drop it, then prefer a
+                            // surviving live session (ADFA-4696) instead of
+                            // terminating every session.
+                            if (terminalSessionsList != null) {
+                                terminalSessionsList.remove(terminalSession);
                             }
+                            com.termux.terminal.TerminalSession live = null;
+                            if (terminalSessionsList != null) {
+                                for (int i = terminalSessionsList.size() - 1; i >= 0; i--) {
+                                    if (terminalSessionsList.get(i).isRunning()) {
+                                        live = terminalSessionsList.get(i);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (live != null) {
+                                setCurrentSession(live);
+                                if (terminalView != null) terminalView.attachSession(terminalSession);
+                            } else {
+                                setCurrentSession(null);
+                                View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
+                                if (bottomSheet != null) {
+                                    com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
+                                            com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
+                                    behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+                                }
+                            }
+                            if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
+                        });
+                        return; // Event consumed.
+                    }
+
+                    // --- NORMAL BEHAVIOR FOR ALIVE SESSIONS (Focus and Keyboard) ---
+                    terminalView.setFocusable(true);
+                    terminalView.setFocusableInTouchMode(true);
+                    terminalView.requestFocus();
+
+                    terminalView.post(() -> {
+                        android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (imm != null) imm.showSoftInput(terminalView, 0);
+                    });
+                }
+
+                @Override
+                public boolean onLongPress(android.view.MotionEvent e) {
+                    return false;
+                }
+
+                @Override
+                public boolean shouldBackButtonBeMappedToEscape() {
+                    return false;
+                }
+
+                @Override
+                public boolean shouldEnforceCharBasedInput() {
+                    return false;
+                }
+
+                @Override
+                public boolean shouldUseCtrlSpaceWorkaround() {
+                    return false;
+                }
+
+                @Override
+                public boolean isTerminalViewSelected() {
+                    return true;
+                }
+
+                @Override
+                public void copyModeChanged(boolean copyMode) {
+                }
+
+                // --- THE ESCAPE HATCH: Listen for hardware ENTER key on dead sessions ---
+                @Override
+                public boolean onKeyDown(int keyCode, android.view.KeyEvent e, com.termux.terminal.TerminalSession session) {
+                    // Return false to let the terminal emulator handle keys internally.
+                    // This allows onSessionFinished to trigger if keys are processed.
+                    return false;
+                }
+
+                @Override
+                public boolean onKeyUp(int keyCode, android.view.KeyEvent e) {
+                    return false;
+                }
+
+                @Override
+                public boolean readControlKey() {
+                    com.termux.shared.termux.extrakeys.ExtraKeysView extraKeysView = activity.findViewById(R.id.extra_keys_view);
+                    if (extraKeysView != null) {
+                        // Polling the CTRL state natively from the view!
+                        Boolean state = extraKeysView.readSpecialButton(com.termux.shared.termux.extrakeys.SpecialButton.CTRL, true);
+                        return state != null && state;
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean readAltKey() {
+                    com.termux.shared.termux.extrakeys.ExtraKeysView extraKeysView = activity.findViewById(R.id.extra_keys_view);
+                    if (extraKeysView != null) {
+                        // Polling the ALT state natively from the view!
+                        Boolean state = extraKeysView.readSpecialButton(com.termux.shared.termux.extrakeys.SpecialButton.ALT, true);
+                        return state != null && state;
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean readShiftKey() {
+                    return false;
+                }
+
+                @Override
+                public boolean readFnKey() {
+                    return false;
+                }
+
+                @Override
+                public boolean onCodePoint(int codePoint, boolean ctrlDown, com.termux.terminal.TerminalSession session) {
+                    return false;
+                }
+
+                @Override
+                public void onEmulatorSet() {
+                }
+
+                @Override
+                public void logError(String tag, String message) {
+                }
+
+                @Override
+                public void logWarn(String tag, String message) {
+                }
+
+                @Override
+                public void logInfo(String tag, String message) {
+                }
+
+                @Override
+                public void logDebug(String tag, String message) {
+                }
+
+                @Override
+                public void logVerbose(String tag, String message) {
+                }
+
+                @Override
+                public void logStackTraceWithMessage(String tag, String message, Exception e) {
+                }
+
+                @Override
+                public void logStackTrace(String tag, Exception e) {
+                }
+            });
+            // We wait for the view to be drawn before attaching the session to ensure the terminal is ready.
+            terminalView.post(() -> {
+                if (terminalSession != null) {
+                    terminalView.attachSession(terminalSession);
+
+                    // =========================================================
+                    // IIAB NATIVE KEYBOARD INTEGRATION
+                    // =========================================================
+                    try {
+                        com.termux.shared.termux.extrakeys.ExtraKeysView extraKeysView =
+                                activity.findViewById(R.id.extra_keys_view);
+
+                        if (extraKeysView != null) {
+                            IIABExtraKeys.apply(extraKeysView);
+
+                            // Listen for normal keys (ESC, TAB, UP, etc)
+                            extraKeysView.setExtraKeysViewClient(new com.termux.shared.termux.extrakeys.ExtraKeysView.IExtraKeysView() {
+                                @Override
+                                public void onExtraKeyButtonClick(View view, com.termux.shared.termux.extrakeys.ExtraKeyButton buttonInfo, com.google.android.material.button.MaterialButton button) {
+                                    if (terminalSession != null) {
+                                        String key = buttonInfo.getKey();
+                                        switch (key) {
+                                            case "ESC":
+                                                terminalSession.write("\033");
+                                                break;
+                                            case "TAB":
+                                                terminalSession.write("\t");
+                                                break;
+                                            case "UP":
+                                                terminalSession.write("\033[A");
+                                                break;
+                                            case "DOWN":
+                                                terminalSession.write("\033[B");
+                                                break;
+                                            case "RIGHT":
+                                                terminalSession.write("\033[C");
+                                                break;
+                                            case "LEFT":
+                                                terminalSession.write("\033[D");
+                                                break;
+                                            // --- NEW ORIGINAL TERMUX KEYS ---
+                                            case "HOME":
+                                                terminalSession.write("\033[1~");
+                                                break;
+                                            case "END":
+                                                terminalSession.write("\033[4~");
+                                                break;
+                                            case "PGUP":
+                                                terminalSession.write("\033[5~");
+                                                break;
+                                            case "PGDN":
+                                                terminalSession.write("\033[6~");
+                                                break;
+                                            default:
+                                                terminalSession.write(key);
+                                                break;
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public boolean performExtraKeyButtonHapticFeedback(View view, com.termux.shared.termux.extrakeys.ExtraKeyButton buttonInfo, com.google.android.material.button.MaterialButton button) {
+                                    return false; // Let Termux handle the vibration natively
+                                }
+                            });
                         }
-                    }
-                });
-            }
-
-            @Override
-            public void onCopyTextToClipboard(com.termux.terminal.TerminalSession session, String text) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("terminal", text);
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                    activity.runOnUiThread(() -> Toast.makeText(activity, R.string.terminal_copied_toast, Toast.LENGTH_SHORT).show());
-                }
-            }
-
-            @Override
-            public void onPasteTextFromClipboard(com.termux.terminal.TerminalSession session) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                if (clipboard != null && clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
-                    CharSequence text = clipboard.getPrimaryClip().getItemAt(0).getText();
-                    // ADFA-4519: only write non-empty text. An empty clipboard item yields an
-                    // empty string, and TerminalSession.write("") reaches ByteQueue.write with
-                    // length 0, which throws IllegalArgumentException("length <= 0") and crashes.
-                    if (text != null && text.length() > 0 && terminalSession != null) {
-                        terminalSession.write(text.toString());
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to initialize Native ExtraKeys", e);
                     }
                 }
-            }
+            });
+    }
 
-            @Override
-            public void onBell(com.termux.terminal.TerminalSession session) {
-            }
-
-            @Override
-            public void onColorsChanged(com.termux.terminal.TerminalSession session) {
-            }
-
-            @Override
-            public void onTerminalCursorStateChange(boolean state) {
-            }
-
-            @Override
-            public Integer getTerminalCursorStyle() {
-                return 0;
-            }
-
-            @Override
-            public void setTerminalShellPid(com.termux.terminal.TerminalSession session, int pid) {
-            }
-
-            @Override
-            public void logError(String tag, String message) {
-                Log.e(tag, message);
-            }
-
-            @Override
-            public void logWarn(String tag, String message) {
-                Log.w(tag, message);
-            }
-
-            @Override
-            public void logInfo(String tag, String message) {
-                Log.i(tag, message);
-            }
-
-            @Override
-            public void logDebug(String tag, String message) {
-                Log.d(tag, message);
-            }
-
-            @Override
-            public void logVerbose(String tag, String message) {
-                Log.v(tag, message);
-            }
-
-            @Override
-            public void logStackTraceWithMessage(String tag, String message, Exception e) {
-                Log.e(tag, message, e);
-            }
-
-            @Override
-            public void logStackTrace(String tag, Exception e) {
-                Log.e(tag, "Stack trace", e);
-            }
-        };
+    public void addNewSession() {
+        // ADFA-4696 (phase 2): the shared app-scoped store IS the session client,
+        // so sessions are serviced independently of any Activity; UI-facing
+        // callbacks route back through the Ui delegate registered in bind().
+        com.termux.terminal.TerminalSessionClient client = store;
 
         try {
             // --- DUAL SYSTEM ARCHITECTURE: THE HOST SHELL ---
@@ -749,260 +971,14 @@ public class TerminalController {
             terminalView.setTextSize((int) currentTerminalFontSize);
             // Add to our multi-session list
             terminalSessionsList.add(terminalSession);
+            store.setCurrent(terminalSession);
             // ADFA-4696 (phase 2): keep the process alive while a session runs.
             TerminalSessionService.start(activity);
             if (sessionsAdapter != null) {
                 activity.runOnUiThread(() -> sessionsAdapter.notifyDataSetChanged());
             }
 
-            // --- VIEW CLIENT (Touches, Zoom & Keyboard) ---
-            terminalView.setTerminalViewClient(new com.termux.view.TerminalViewClient() {
-                @Override
-                public float onScale(float scale) {
-                    currentTerminalFontSize *= scale;
-
-                    if (currentTerminalFontSize < 10f) currentTerminalFontSize = 10f;
-                    if (currentTerminalFontSize > 80f) currentTerminalFontSize = 80f;
-
-                    terminalView.setTextSize((int) currentTerminalFontSize);
-                    return 1.0f;
-                }
-
-                // --- THE ESCAPE TAP (Crucial for Debugging Limbo Sessions) ---
-                @Override
-                public void onSingleTapUp(android.view.MotionEvent e) {
-                    // If the terminal process is dead (e.g., has crashed or shown "[Process completed]"),
-                    // a single tap on the black screen hides the panel and nullifies the session.
-                    // If the CURRENT terminal process is dead, switch to a surviving live
-                    // session; only hide the panel when nothing is left alive (ADFA-4696).
-                    if (terminalSession != null && !terminalSession.isRunning()) {
-                        activity.runOnUiThread(() -> {
-                            // Current session has exited. Drop it, then prefer a
-                            // surviving live session (ADFA-4696) instead of
-                            // terminating every session.
-                            if (terminalSessionsList != null) {
-                                terminalSessionsList.remove(terminalSession);
-                            }
-                            com.termux.terminal.TerminalSession live = null;
-                            if (terminalSessionsList != null) {
-                                for (int i = terminalSessionsList.size() - 1; i >= 0; i--) {
-                                    if (terminalSessionsList.get(i).isRunning()) {
-                                        live = terminalSessionsList.get(i);
-                                        break;
-                                    }
-                                }
-                            }
-                            if (live != null) {
-                                terminalSession = live;
-                                if (terminalView != null) terminalView.attachSession(terminalSession);
-                            } else {
-                                terminalSession = null;
-                                TerminalSessionService.stop(activity);
-                                View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
-                                if (bottomSheet != null) {
-                                    com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
-                                            com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
-                                    behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
-                                }
-                            }
-                            if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
-                        });
-                        return; // Event consumed.
-                    }
-
-                    // --- NORMAL BEHAVIOR FOR ALIVE SESSIONS (Focus and Keyboard) ---
-                    terminalView.setFocusable(true);
-                    terminalView.setFocusableInTouchMode(true);
-                    terminalView.requestFocus();
-
-                    terminalView.post(() -> {
-                        android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        if (imm != null) imm.showSoftInput(terminalView, 0);
-                    });
-                }
-
-                @Override
-                public boolean onLongPress(android.view.MotionEvent e) {
-                    return false;
-                }
-
-                @Override
-                public boolean shouldBackButtonBeMappedToEscape() {
-                    return false;
-                }
-
-                @Override
-                public boolean shouldEnforceCharBasedInput() {
-                    return false;
-                }
-
-                @Override
-                public boolean shouldUseCtrlSpaceWorkaround() {
-                    return false;
-                }
-
-                @Override
-                public boolean isTerminalViewSelected() {
-                    return true;
-                }
-
-                @Override
-                public void copyModeChanged(boolean copyMode) {
-                }
-
-                // --- THE ESCAPE HATCH: Listen for hardware ENTER key on dead sessions ---
-                @Override
-                public boolean onKeyDown(int keyCode, android.view.KeyEvent e, com.termux.terminal.TerminalSession session) {
-                    // Return false to let the terminal emulator handle keys internally.
-                    // This allows onSessionFinished to trigger if keys are processed.
-                    return false;
-                }
-
-                @Override
-                public boolean onKeyUp(int keyCode, android.view.KeyEvent e) {
-                    return false;
-                }
-
-                @Override
-                public boolean readControlKey() {
-                    com.termux.shared.termux.extrakeys.ExtraKeysView extraKeysView = activity.findViewById(R.id.extra_keys_view);
-                    if (extraKeysView != null) {
-                        // Polling the CTRL state natively from the view!
-                        Boolean state = extraKeysView.readSpecialButton(com.termux.shared.termux.extrakeys.SpecialButton.CTRL, true);
-                        return state != null && state;
-                    }
-                    return false;
-                }
-
-                @Override
-                public boolean readAltKey() {
-                    com.termux.shared.termux.extrakeys.ExtraKeysView extraKeysView = activity.findViewById(R.id.extra_keys_view);
-                    if (extraKeysView != null) {
-                        // Polling the ALT state natively from the view!
-                        Boolean state = extraKeysView.readSpecialButton(com.termux.shared.termux.extrakeys.SpecialButton.ALT, true);
-                        return state != null && state;
-                    }
-                    return false;
-                }
-
-                @Override
-                public boolean readShiftKey() {
-                    return false;
-                }
-
-                @Override
-                public boolean readFnKey() {
-                    return false;
-                }
-
-                @Override
-                public boolean onCodePoint(int codePoint, boolean ctrlDown, com.termux.terminal.TerminalSession session) {
-                    return false;
-                }
-
-                @Override
-                public void onEmulatorSet() {
-                }
-
-                @Override
-                public void logError(String tag, String message) {
-                }
-
-                @Override
-                public void logWarn(String tag, String message) {
-                }
-
-                @Override
-                public void logInfo(String tag, String message) {
-                }
-
-                @Override
-                public void logDebug(String tag, String message) {
-                }
-
-                @Override
-                public void logVerbose(String tag, String message) {
-                }
-
-                @Override
-                public void logStackTraceWithMessage(String tag, String message, Exception e) {
-                }
-
-                @Override
-                public void logStackTrace(String tag, Exception e) {
-                }
-            });
-            // We wait for the view to be drawn before attaching the session to ensure the terminal is ready.
-            terminalView.post(() -> {
-                if (terminalSession != null) {
-                    terminalView.attachSession(terminalSession);
-
-                    // =========================================================
-                    // IIAB NATIVE KEYBOARD INTEGRATION
-                    // =========================================================
-                    try {
-                        com.termux.shared.termux.extrakeys.ExtraKeysView extraKeysView =
-                                activity.findViewById(R.id.extra_keys_view);
-
-                        if (extraKeysView != null) {
-                            IIABExtraKeys.apply(extraKeysView);
-
-                            // Listen for normal keys (ESC, TAB, UP, etc)
-                            extraKeysView.setExtraKeysViewClient(new com.termux.shared.termux.extrakeys.ExtraKeysView.IExtraKeysView() {
-                                @Override
-                                public void onExtraKeyButtonClick(View view, com.termux.shared.termux.extrakeys.ExtraKeyButton buttonInfo, com.google.android.material.button.MaterialButton button) {
-                                    if (terminalSession != null) {
-                                        String key = buttonInfo.getKey();
-                                        switch (key) {
-                                            case "ESC":
-                                                terminalSession.write("\033");
-                                                break;
-                                            case "TAB":
-                                                terminalSession.write("\t");
-                                                break;
-                                            case "UP":
-                                                terminalSession.write("\033[A");
-                                                break;
-                                            case "DOWN":
-                                                terminalSession.write("\033[B");
-                                                break;
-                                            case "RIGHT":
-                                                terminalSession.write("\033[C");
-                                                break;
-                                            case "LEFT":
-                                                terminalSession.write("\033[D");
-                                                break;
-                                            // --- NEW ORIGINAL TERMUX KEYS ---
-                                            case "HOME":
-                                                terminalSession.write("\033[1~");
-                                                break;
-                                            case "END":
-                                                terminalSession.write("\033[4~");
-                                                break;
-                                            case "PGUP":
-                                                terminalSession.write("\033[5~");
-                                                break;
-                                            case "PGDN":
-                                                terminalSession.write("\033[6~");
-                                                break;
-                                            default:
-                                                terminalSession.write(key);
-                                                break;
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public boolean performExtraKeyButtonHapticFeedback(View view, com.termux.shared.termux.extrakeys.ExtraKeyButton buttonInfo, com.google.android.material.button.MaterialButton button) {
-                                    return false; // Let Termux handle the vibration natively
-                                }
-                            });
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to initialize Native ExtraKeys", e);
-                    }
-                }
-            });
+            wireTerminalView();
 
         } catch (Exception e) {
             Log.e(TAG, "Failed to start Terminal Session", e);

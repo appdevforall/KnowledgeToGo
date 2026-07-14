@@ -82,9 +82,9 @@ public class TerminalSessionService extends Service {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID, "K2Go Terminal",
+                    CHANNEL_ID, getString(R.string.terminal_channel_name),
                     NotificationManager.IMPORTANCE_LOW); // LOW: no sound/vibration
-            channel.setDescription("Keeps terminal sessions running in the background.");
+            channel.setDescription(getString(R.string.terminal_channel_desc));
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
@@ -93,13 +93,17 @@ public class TerminalSessionService extends Service {
     }
 
     private Notification buildNotification() {
-        Intent open = new Intent(this, MainActivity.class);
+        // Tapping the notification opens the terminal directly, bypassing the hidden
+        // version-footer gesture (ADFA-4696). SINGLE_TOP reuses the running Activity.
+        Intent open = new Intent(this, MainActivity.class)
+                .putExtra(MainActivity.EXTRA_OPEN_TERMINAL, true)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pending = PendingIntent.getActivity(
-                this, 0, open, PendingIntent.FLAG_IMMUTABLE);
+                this, 0, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("K2Go terminal active")
-                .setContentText("A terminal session is running in the background.")
+                .setContentTitle(getString(R.string.terminal_notif_title))
+                .setContentText(getString(R.string.terminal_notif_text))
                 .setSmallIcon(android.R.drawable.ic_menu_view)
                 .setContentIntent(pending)
                 .setPriority(NotificationCompat.PRIORITY_LOW)

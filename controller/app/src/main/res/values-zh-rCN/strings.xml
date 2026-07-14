@@ -377,7 +377,11 @@
     <string name="sync_app_status_wifi">1. 确保另一台设备在同一 Wi-Fi 上。\n2. 用任意普通相机扫描此二维码。</string>
     <string name="sync_app_status_hotspot">1. 请另一台设备连接到你的热点。\n2. 用任意普通相机扫描此二维码。</string>
     <string name="terminal_locked">终端已锁定（滚动已启用）</string>
-    <string name="terminal_unlocked">终端已解锁（向下滑动关闭）</string>
+    <string name="terminal_unlocked">终端已解锁（向下滑动隐藏）</string>
+    <string name="terminal_channel_name">K2Go 终端</string>
+    <string name="terminal_channel_desc">在后台保持终端会话运行。</string>
+    <string name="terminal_notif_title">K2Go 终端已激活</string>
+    <string name="terminal_notif_text">一个终端会话正在后台运行。</string>
     <string name="terminal_crash_title">终端启动崩溃</string>
     <string name="terminal_copied_toast">已复制文本</string>
     <string name="sessions_title">会话</string>

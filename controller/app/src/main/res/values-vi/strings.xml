@@ -377,7 +377,11 @@
     <string name="sync_app_status_wifi">1. Đảm bảo thiết bị kia ở cùng Wi-Fi.\n2. Quét mã QR này bằng máy ảnh thường bất kỳ.</string>
     <string name="sync_app_status_hotspot">1. Yêu cầu thiết bị kia kết nối với điểm phát sóng của bạn.\n2. Quét mã QR này bằng máy ảnh thường bất kỳ.</string>
     <string name="terminal_locked">Terminal đã khóa (đã bật cuộn)</string>
-    <string name="terminal_unlocked">Terminal đã mở khóa (vuốt xuống để đóng)</string>
+    <string name="terminal_unlocked">Terminal đã mở khóa (vuốt xuống để ẩn)</string>
+    <string name="terminal_channel_name">K2Go Terminal</string>
+    <string name="terminal_channel_desc">Giữ cho các phiên terminal chạy ở chế độ nền.</string>
+    <string name="terminal_notif_title">Terminal K2Go đang hoạt động</string>
+    <string name="terminal_notif_text">Một phiên terminal đang chạy ở chế độ nền.</string>
     <string name="terminal_crash_title">Sự cố khởi động Terminal</string>
     <string name="terminal_copied_toast">Đã sao chép văn bản</string>
     <string name="sessions_title">PHIÊN</string>
