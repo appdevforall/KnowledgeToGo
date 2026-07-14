@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">1. Assicurati che l\'altro dispositivo sia sullo stesso Wi-Fi.\n2. Scansiona questo QR con una normale fotocamera.</string>
     <string name="sync_app_status_hotspot">1. Chiedi all\'altro dispositivo di connettersi al tuo hotspot.\n2. Scansiona questo QR con una normale fotocamera.</string>
     <string name="terminal_locked">Terminale bloccato (scorrimento attivo)</string>
-    <string name="terminal_unlocked">Terminale sbloccato (scorri verso il basso per chiudere)</string>
+    <string name="terminal_unlocked">Terminale sbloccato (scorri verso il basso per nascondere)</string>
     <string name="terminal_crash_title">Crash all\'avvio del terminale</string>
     <string name="terminal_copied_toast">Testo copiato</string>
     <string name="sessions_title">SESSIONI</string>

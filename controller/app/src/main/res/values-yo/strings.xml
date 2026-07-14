@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Rí i dájú pé ẹ̀rọ mìíràn wà lórí Wi-Fi kan náà.\n2. Ṣàyẹ̀wò QR yìí pẹ̀lú kámẹ́rà lásán èyíkéyìí."</string>
     <string name="sync_app_status_hotspot">"1. Béèrè lọ́wọ́ ẹ̀rọ mìíràn láti sopọ̀ mọ́ Hotspot rẹ.\n2. Ṣàyẹ̀wò QR yìí pẹ̀lú kámẹ́rà lásán èyíkéyìí."</string>
     <string name="terminal_locked">A ti tì Terminal (a ti tan yíyí)</string>
-    <string name="terminal_unlocked">A ti ṣí Terminal (fà sísàlẹ̀ láti pa á)</string>
+    <string name="terminal_unlocked">A ti ṣí Terminal (fà sísàlẹ̀ láti fi pamọ́)</string>
     <string name="terminal_crash_title">Ìbàjẹ́ Ìbẹ̀rẹ̀ Terminal</string>
     <string name="terminal_copied_toast">A ti ṣ\'àdàkọ ọ̀rọ̀</string>
     <string name="sessions_title">ÀWỌN ÌPÀDÉ</string>

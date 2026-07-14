@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">1. تأكد من أن الجهاز الآخر على نفس شبكة الواي فاي.\n2. امسح رمز QR هذا بأي كاميرا عادية.</string>
     <string name="sync_app_status_hotspot">1. اطلب من الجهاز الآخر الاتصال بنقطة اتصالك.\n2. امسح رمز QR هذا بأي كاميرا عادية.</string>
     <string name="terminal_locked">الطرفية مقفلة (التمرير مفعَّل)</string>
-    <string name="terminal_unlocked">الطرفية مفتوحة (اسحب لأسفل للإغلاق)</string>
+    <string name="terminal_unlocked">الطرفية مفتوحة (اسحب لأسفل للإخفاء)</string>
     <string name="terminal_crash_title">تعطّل بدء الطرفية</string>
     <string name="terminal_copied_toast">تم نسخ النص</string>
     <string name="sessions_title">الجلسات</string>

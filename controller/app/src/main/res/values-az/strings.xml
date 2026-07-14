@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Digər cihazın eyni Wi-Fi-da olduğundan əmin olun.\n2. Bu QR-ı hər hansı adi kamera ilə skan edin."</string>
     <string name="sync_app_status_hotspot">"1. Digər cihazdan Hotspot-unuza qoşulmasını istəyin.\n2. Bu QR-ı hər hansı adi kamera ilə skan edin."</string>
     <string name="terminal_locked">Terminal kilidləndi (sürüşdürmə aktivdir)</string>
-    <string name="terminal_unlocked">Terminal kiliddən çıxarıldı (bağlamaq üçün aşağı sürüşdürün)</string>
+    <string name="terminal_unlocked">Terminal kiliddən çıxarıldı (gizlətmək üçün aşağı sürüşdürün)</string>
     <string name="terminal_crash_title">Terminal başlatma çökməsi</string>
     <string name="terminal_copied_toast">Mətn kopyalandı</string>
     <string name="sessions_title">SESSİYALAR</string>

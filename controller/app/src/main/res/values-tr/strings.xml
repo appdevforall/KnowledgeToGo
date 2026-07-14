@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">1. Diğer cihazın aynı Wi-Fi\'de olduğundan emin olun.\n2. Bu QR\'yi herhangi bir normal kamerayla tarayın.</string>
     <string name="sync_app_status_hotspot">1. Diğer cihazdan etkin noktanıza bağlanmasını isteyin.\n2. Bu QR\'yi herhangi bir normal kamerayla tarayın.</string>
     <string name="terminal_locked">Terminal kilitli (kaydırma etkin)</string>
-    <string name="terminal_unlocked">Terminal kilidi açık (kapatmak için aşağı kaydırın)</string>
+    <string name="terminal_unlocked">Terminal kilidi açık (gizlemek için aşağı kaydırın)</string>
     <string name="terminal_crash_title">Terminal başlatma çökmesi</string>
     <string name="terminal_copied_toast">Metin kopyalandı</string>
     <string name="sessions_title">OTURUMLAR</string>

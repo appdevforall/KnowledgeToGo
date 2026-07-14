@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Ujistěte se, že druhé zařízení je na stejné Wi-Fi.\n2. Naskenujte tento QR jakýmkoli běžným fotoaparátem."</string>
     <string name="sync_app_status_hotspot">"1. Požádejte druhé zařízení, aby se připojilo k vašemu Hotspotu.\n2. Naskenujte tento QR jakýmkoli běžným fotoaparátem."</string>
     <string name="terminal_locked">Terminál uzamčen (rolování povoleno)</string>
-    <string name="terminal_unlocked">Terminál odemčen (přejeďte dolů pro zavření)</string>
+    <string name="terminal_unlocked">Terminál odemčen (přejeďte dolů pro skrytí)</string>
     <string name="terminal_crash_title">Selhání spuštění terminálu</string>
     <string name="terminal_copied_toast">Text zkopírován</string>
     <string name="sessions_title">RELACE</string>

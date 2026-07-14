@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. ખાતરી કરો કે બીજું ઉપકરણ એ જ Wi-Fi પર છે.\n2. કોઈપણ સામાન્ય કૅમેરાથી આ QR સ્કૅન કરો."</string>
     <string name="sync_app_status_hotspot">"1. બીજા ઉપકરણને તમારા Hotspot સાથે કનેક્ટ કરવા કહો.\n2. કોઈપણ સામાન્ય કૅમેરાથી આ QR સ્કૅન કરો."</string>
     <string name="terminal_locked">Terminal લૉક થયું (સ્ક્રોલ સક્ષમ)</string>
-    <string name="terminal_unlocked">Terminal અનલૉક થયું (બંધ કરવા નીચે સ્વાઇપ કરો)</string>
+    <string name="terminal_unlocked">Terminal અનલૉક થયું (છુપાવવા નીચે સ્વાઇપ કરો)</string>
     <string name="terminal_crash_title">Terminal સ્પૉન ક્રૅશ</string>
     <string name="terminal_copied_toast">ટેક્સ્ટ કૉપિ કર્યું</string>
     <string name="sessions_title">સત્રો</string>

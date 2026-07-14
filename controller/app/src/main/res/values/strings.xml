@@ -451,7 +451,7 @@
     <string name="sync_app_status_hotspot">"1. Ask the other device to connect to your Hotspot.\n2. Scan this QR with any regular camera."</string>
 
     <string name="terminal_locked">Terminal locked (Scroll enabled)</string>
-    <string name="terminal_unlocked">Terminal unlocked (Swipe down to close)</string>
+    <string name="terminal_unlocked">Terminal unlocked (Swipe down to hide)</string>
     <string name="terminal_crash_title">Terminal Spawn Crash</string>
     <string name="terminal_copied_toast">Copied text</string>
     <string name="sessions_title">SESSIONS</string>

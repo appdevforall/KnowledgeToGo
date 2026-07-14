@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Уверете се, че другото устройство е на същия Wi-Fi.\n2. Сканирайте този QR с всяка обикновена камера."</string>
     <string name="sync_app_status_hotspot">"1. Помолете другото устройство да се свърже с вашия Hotspot.\n2. Сканирайте този QR с всяка обикновена камера."</string>
     <string name="terminal_locked">Терминалът е заключен (превъртането е активирано)</string>
-    <string name="terminal_unlocked">Терминалът е отключен (плъзнете надолу, за да затворите)</string>
+    <string name="terminal_unlocked">Терминалът е отключен (плъзнете надолу, за да скриете)</string>
     <string name="terminal_crash_title">Срив при стартиране на терминала</string>
     <string name="terminal_copied_toast">Текстът е копиран</string>
     <string name="sessions_title">СЕСИИ</string>

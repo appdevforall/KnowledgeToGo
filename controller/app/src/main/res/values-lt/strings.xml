@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Įsitikinkite, kad kitas įrenginys yra tame pačiame Wi-Fi.\n2. Nuskaitykite šį QR bet kuria įprasta kamera."</string>
     <string name="sync_app_status_hotspot">"1. Paprašykite kito įrenginio prisijungti prie jūsų Hotspot.\n2. Nuskaitykite šį QR bet kuria įprasta kamera."</string>
     <string name="terminal_locked">Terminalas užrakintas (slinkimas įjungtas)</string>
-    <string name="terminal_unlocked">Terminalas atrakintas (braukite žemyn, kad uždarytumėte)</string>
+    <string name="terminal_unlocked">Terminalas atrakintas (braukite žemyn, kad paslėptumėte)</string>
     <string name="terminal_crash_title">Terminalo paleidimo gedimas</string>
     <string name="terminal_copied_toast">Tekstas nukopijuotas</string>
     <string name="sessions_title">SESIJOS</string>

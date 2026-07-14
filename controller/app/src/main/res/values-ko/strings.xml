@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">1. 상대 기기가 같은 Wi-Fi에 있는지 확인하세요.\n2. 일반 카메라로 이 QR을 스캔하세요.</string>
     <string name="sync_app_status_hotspot">1. 상대 기기에 당신의 핫스팟에 연결하도록 요청하세요.\n2. 일반 카메라로 이 QR을 스캔하세요.</string>
     <string name="terminal_locked">터미널 잠김(스크롤 활성화)</string>
-    <string name="terminal_unlocked">터미널 잠금 해제됨(아래로 밀어 닫기)</string>
+    <string name="terminal_unlocked">터미널 잠금 해제됨(아래로 밀어 숨기기)</string>
     <string name="terminal_crash_title">터미널 시작 충돌</string>
     <string name="terminal_copied_toast">텍스트를 복사했습니다</string>
     <string name="sessions_title">세션</string>

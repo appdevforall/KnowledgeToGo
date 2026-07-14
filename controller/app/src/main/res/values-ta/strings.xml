@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. மற்ற சாதனம் ஒரே Wi-Fi இல் இருப்பதை உறுதிசெய்யவும்.\n2. இந்த QR ஐ எந்த சாதாரண கேமராவாலும் ஸ்கேன் செய்யவும்."</string>
     <string name="sync_app_status_hotspot">"1. மற்ற சாதனத்தை உங்கள் Hotspot உடன் இணைக்கச் சொல்லுங்கள்.\n2. இந்த QR ஐ எந்த சாதாரண கேமராவாலும் ஸ்கேன் செய்யவும்."</string>
     <string name="terminal_locked">Terminal பூட்டப்பட்டது (ஸ்க்ரோல் இயக்கப்பட்டது)</string>
-    <string name="terminal_unlocked">Terminal திறக்கப்பட்டது (மூட கீழே ஸ்வைப் செய்யவும்)</string>
+    <string name="terminal_unlocked">Terminal திறக்கப்பட்டது (மறைக்க கீழே ஸ்வைப் செய்யவும்)</string>
     <string name="terminal_crash_title">Terminal தொடக்க செயலிழப்பு</string>
     <string name="terminal_copied_toast">உரை நகலெடுக்கப்பட்டது</string>
     <string name="sessions_title">அமர்வுகள்</string>

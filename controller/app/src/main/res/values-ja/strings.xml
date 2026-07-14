@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">1. 相手のデバイスが同じ Wi-Fi にあることを確認してください。\n2. 通常のカメラでこの QR をスキャンしてください。</string>
     <string name="sync_app_status_hotspot">1. 相手のデバイスにあなたのホットスポットへの接続を依頼してください。\n2. 通常のカメラでこの QR をスキャンしてください。</string>
     <string name="terminal_locked">ターミナルをロックしました（スクロール有効）</string>
-    <string name="terminal_unlocked">ターミナルのロックを解除しました（下にスワイプで閉じる）</string>
+    <string name="terminal_unlocked">ターミナルのロックを解除しました（下にスワイプで非表示）</string>
     <string name="terminal_crash_title">ターミナル起動クラッシュ</string>
     <string name="terminal_copied_toast">テキストをコピーしました</string>
     <string name="sessions_title">セッション</string>

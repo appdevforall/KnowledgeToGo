@@ -428,7 +428,7 @@
     <string name="sync_app_status_hotspot">"1. Peça ao outro dispositivo para se conectar ao seu Hotspot.\n2. Escaneie este QR com qualquer câmera normal."</string>
 
     <string name="terminal_locked">Terminal bloqueado (Rolagem ativada)</string>
-    <string name="terminal_unlocked">Terminal desbloqueado (Deslize para baixo para fechar)</string>
+    <string name="terminal_unlocked">Terminal desbloqueado (Deslize para baixo para ocultar)</string>
     <string name="terminal_crash_title">Falha ao iniciar o Terminal</string>
     <string name="terminal_copied_toast">Texto copiado</string>
     <string name="sessions_title">SESSÕES</string>

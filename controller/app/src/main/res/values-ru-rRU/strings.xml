@@ -425,7 +425,7 @@
     <string name="sync_app_status_hotspot">"1. Попросите другое устройство подключиться к вашей Точке доступа.\n2. Отсканируйте этот QR с помощью любой камеры."</string>
 
     <string name="terminal_locked">Терминал заблокирован (включена прокрутка)</string>
-    <string name="terminal_unlocked">Терминал разблокирован (проведите вниз, чтобы закрыть)</string>
+    <string name="terminal_unlocked">Терминал разблокирован (проведите вниз, чтобы скрыть)</string>
     <string name="terminal_crash_title">Ошибка запуска терминала</string>
     <string name="terminal_copied_toast">Текст скопирован</string>
     <string name="sessions_title">СЕАНСЫ</string>

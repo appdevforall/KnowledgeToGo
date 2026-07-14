@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Уверите се да је други уређај на истом Wi-Fi.\n2. Скенирајте овај QR било којом обичном камером."</string>
     <string name="sync_app_status_hotspot">"1. Замолите други уређај да се повеже на ваш Hotspot.\n2. Скенирајте овај QR било којом обичном камером."</string>
     <string name="terminal_locked">Терминал закључан (скроловање омогућено)</string>
-    <string name="terminal_unlocked">Терминал откључан (превуците надоле за затварање)</string>
+    <string name="terminal_unlocked">Терминал откључан (превуците надоле за сакривање)</string>
     <string name="terminal_crash_title">Пад при покретању терминала</string>
     <string name="terminal_copied_toast">Текст копиран</string>
     <string name="sessions_title">СЕСИЈЕ</string>

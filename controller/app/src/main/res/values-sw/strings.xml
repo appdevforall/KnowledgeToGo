@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Hakikisha kifaa kingine kiko kwenye Wi-Fi ile ile.\n2. Changanua QR hii kwa kamera ya kawaida yoyote."</string>
     <string name="sync_app_status_hotspot">"1. Omba kifaa kingine kiunganishe na Hotspot yako.\n2. Changanua QR hii kwa kamera ya kawaida yoyote."</string>
     <string name="terminal_locked">Terminal imefungwa (Kusogeza kumewashwa)</string>
-    <string name="terminal_unlocked">Terminal imefunguliwa (Telezesha chini ili kufunga)</string>
+    <string name="terminal_unlocked">Terminal imefunguliwa (Telezesha chini ili kuficha)</string>
     <string name="terminal_crash_title">Ajali ya Kuzalisha Terminal</string>
     <string name="terminal_copied_toast">Maandishi yamenakiliwa</string>
     <string name="sessions_title">VIPINDI</string>

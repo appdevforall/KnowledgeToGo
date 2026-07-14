@@ -377,7 +377,7 @@
     <string name="sync_app_status_wifi">"1. Győződjön meg róla, hogy a másik eszköz ugyanazon a Wi-Fi-n van.\n2. Olvassa be ezt a QR-kódot bármilyen normál kamerával."</string>
     <string name="sync_app_status_hotspot">"1. Kérje meg a másik eszközt, hogy csatlakozzon a Hotspotjához.\n2. Olvassa be ezt a QR-kódot bármilyen normál kamerával."</string>
     <string name="terminal_locked">Terminál zárolva (görgetés engedélyezve)</string>
-    <string name="terminal_unlocked">Terminál feloldva (húzza lefelé a bezáráshoz)</string>
+    <string name="terminal_unlocked">Terminál feloldva (húzza lefelé az elrejtéshez)</string>
     <string name="terminal_crash_title">Terminál indítási hiba</string>
     <string name="terminal_copied_toast">Szöveg másolva</string>
     <string name="sessions_title">MUNKAMENETEK</string>
