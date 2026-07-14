@@ -594,6 +594,18 @@ else
   log "Skipping index site installation (ENABLE_INDEX_PAGE=0)."
 fi
 
+#-----------------------------
+# K2Go docs (tier-3) static module — infrastructure only.
+# Install the nginx conf + create the served dir. Documentation content is
+# dropped into /library/www/html/k2go-docs later (cp); an empty dir returns 404
+# so the portal index hides the module until real content exists.
+#-----------------------------
+log "Installing K2Go docs (tier-3) static module scaffold..."
+cp "${K2GO_OPT_DIR}/static/k2go-docs/k2go-docs-nginx.conf" "/etc/nginx/conf.d/k2go-docs-nginx.conf"
+mkdir -p /library/www/html/k2go-docs
+/usr/local/bin/pdsm restart nginx
+ok "K2Go docs module scaffold installed (hidden until docs are added)."
+
 # Install demo content
 if [ "$ENABLE_DEMO_CONTENTS" -eq 1 ]; then
   install_demo_contents
