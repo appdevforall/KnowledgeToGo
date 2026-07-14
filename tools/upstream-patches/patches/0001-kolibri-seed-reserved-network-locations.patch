@@ -1,0 +1,37 @@
+Upstream-PR:     https://github.com/iiab/iiab/pull/4444
+Upstream-Status: approved (pending release in the pinned iiab commit)
+Applies-to:      roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
+Summary:         Kolibri: seed Studio/KDP "reserved" NetworkLocations at pdsm start (ZeroConf registration does not run under proot)
+
+Mirrors upstream iiab/iiab#4444. Replaces the earlier #4442 "trust system CA"
+carry, which did not actually fix Kolibri online import under Android/proot.
+Real cause: Kolibri's "reserved" NetworkLocations (Studio/KDP) are created by a
+ZeroConf registration event that never fires under proot (netlink blocked), so
+they are seeded directly on service start. Applies with -p1 over /opt/iiab/iiab;
+the applier fails loudly if the pinned commit's file drifts. Remove once #4444
+ships in the pinned iiab commit.
+
+diff --git a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
+--- a/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
++++ b/roles/proot_services/files/pdsm/usr_local_pdsm/services-available/kolibri
+@@ -26,6 +26,20 @@
+   # Ensure nginx is up as a requirement
+   require_service "nginx"
+ 
++  # Seed Studio & KDP "reserved" NetworkLocations if absent.
++  # Normally created via the ZeroConf registration event, which does not
++  # run under proot (netlink is blocked). Seed directly.
++  reserved_count=$(sqlite3 "${KOLIBRI_HOME%/}/networklocation.sqlite3" \
++    "SELECT COUNT(*) FROM discovery_networklocation WHERE location_type='reserved';" \
++    2>/dev/null || echo 0)
++  if [ "${reserved_count:-0}" -eq 0 ]; then
++    echo "[pdsm:$SERVICE_NAME] seeding reserved network locations (Studio/KDP)"
++    "$KOLIBRI_BIN" manage shell -c \
++      "from kolibri.core.discovery.tasks import _refresh_reserved_locations; _refresh_reserved_locations()" \
++      >/dev/null 2>&1 || \
++      echo "[pdsm:$SERVICE_NAME] WARNING: reserved-location seeding failed (continuing)" >&2
++  fi
++
+   "$KOLIBRI_BIN" start
+ 
+   # Small wait loop so 'start' only returns when it's actually alive
