@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Χάρτες",
+    "maps": "IIAB Χάρτες",
     "matomo": "Matomo",
     "backend_error": "Ο διακομιστής backend δεν αποκρίνεται. Βεβαιωθείτε ότι έχει ξεκινήσει. Ανοίξτε την εφαρμογή Termux και εκτελέστε"
 };

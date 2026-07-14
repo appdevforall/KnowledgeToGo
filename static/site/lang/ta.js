@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "வரைபடங்கள்",
+    "maps": "IIAB வரைபடங்கள்",
     "matomo": "Matomo",
     "backend_error": "பின்புற சேவையகம் பதிலளிக்கவில்லை. அது தொடங்கப்பட்டுள்ளதா என உறுதிசெய்யவும். Termux பயன்பாட்டைத் திறந்து இயக்கவும்"
 };

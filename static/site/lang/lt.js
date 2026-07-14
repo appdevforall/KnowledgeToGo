@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Žemėlapiai",
+    "maps": "IIAB Žemėlapiai",
     "matomo": "Matomo",
     "backend_error": "Vidinis serveris neatsako. Įsitikinkite, kad jis paleistas. Atidarykite Termux programėlę ir paleiskite"
 };

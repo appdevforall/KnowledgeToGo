@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "মানচিত্র",
+    "maps": "IIAB মানচিত্র",
     "matomo": "Matomo",
     "backend_error": "ব্যাকএন্ড সার্ভার সাড়া দিচ্ছে না। এটি চালু আছে কিনা নিশ্চিত করুন। Termux অ্যাপ খুলুন এবং চালান"
 };

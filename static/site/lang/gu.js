@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "નકશા",
+    "maps": "IIAB નકશા",
     "matomo": "Matomo",
     "backend_error": "બેકએન્ડ સર્વર પ્રતિસાદ આપતું નથી. કૃપા કરીને ખાતરી કરો કે તે શરૂ થયું છે. Termux એપ્લિકેશન ખોલો અને ચલાવો"
 };

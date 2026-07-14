@@ -5,7 +5,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Maps",
+    "maps": "IIAB Maps",
     "matomo": "Matomo",
     "k2go_docs": "K2Go docs",
     "backend_error": "The backend server is not responding. Please verify it's started. Please go to the Termux App and run"

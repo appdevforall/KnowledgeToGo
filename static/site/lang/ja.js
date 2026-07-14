@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "地図",
+    "maps": "IIAB 地図",
     "matomo": "Matomo",
     "backend_error": "バックエンドサーバーが応答していません。起動しているか確認してください。Termux アプリを開いて次を実行してください"
 };

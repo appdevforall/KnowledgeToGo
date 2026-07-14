@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Bản đồ",
+    "maps": "IIAB Bản đồ",
     "matomo": "Matomo",
     "backend_error": "Máy chủ backend không phản hồi. Vui lòng xác minh rằng nó đã khởi động. Vui lòng mở ứng dụng Termux và chạy"
 };

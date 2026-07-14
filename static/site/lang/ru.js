@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Карты",
+    "maps": "IIAB Карты",
     "matomo": "Matomo",
     "backend_error": "Сервер бэкенда не отвечает. Убедитесь, что он запущен. Откройте приложение Termux и выполните"
 };

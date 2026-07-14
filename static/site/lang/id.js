@@ -6,7 +6,7 @@ window.i18n = {
     "code": "Code on the Go",
     "kiwix": "Kiwix",
     "kolibri": "Kolibri",
-    "maps": "Peta",
+    "maps": "IIAB Peta",
     "matomo": "Matomo",
     "backend_error": "Server backend tidak merespons. Harap pastikan sudah dijalankan. Buka aplikasi Termux dan jalankan"
 };
