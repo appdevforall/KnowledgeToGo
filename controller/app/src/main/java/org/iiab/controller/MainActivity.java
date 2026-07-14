@@ -632,6 +632,14 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     }
 
     @Override
+    protected void onDestroy() {
+        // ADFA-4696 (phase 2): release the terminal UI delegate so the session
+        // store never holds this destroyed Activity. Running sessions are kept.
+        if (terminalController != null) terminalController.detach();
+        super.onDestroy();
+    }
+
+    @Override
     public void onClick(View view) {
         // Delegated
     }

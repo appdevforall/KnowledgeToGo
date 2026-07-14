@@ -57,9 +57,77 @@ public class TerminalController {
     private List<com.termux.terminal.TerminalSession> terminalSessionsList = new ArrayList<>();
     private android.widget.ArrayAdapter<com.termux.terminal.TerminalSession> sessionsAdapter;
 
+    // ADFA-4696 (phase 2): sessions are owned by an app-scoped store, not the Activity.
+    private final TerminalSessionStore store = TerminalSessionStore.get();
+    private final TerminalSessionStore.Ui uiDelegate = new TerminalSessionStore.Ui() {
+        @Override
+        public void onInvalidate() {
+            activity.runOnUiThread(() -> { if (terminalView != null) terminalView.invalidate(); });
+        }
+
+        @Override
+        public void onSessionsChanged() {
+            activity.runOnUiThread(() -> { if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged(); });
+        }
+
+        @Override
+        public void onCurrentSessionEnded(com.termux.terminal.TerminalSession newCurrent) {
+            activity.runOnUiThread(() -> {
+                terminalSession = newCurrent;
+                if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
+                if (newCurrent != null) {
+                    if (terminalView != null) terminalView.attachSession(newCurrent);
+                } else {
+                    // No sessions left: the store already stopped the keep-alive service
+                    // (headless-safe); just hide the panel.
+                    View sheet = activity.findViewById(R.id.terminal_bottom_sheet);
+                    if (sheet != null) {
+                        com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
+                                com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet);
+                        behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void copyToClipboard(String text) {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("terminal", text);
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+                activity.runOnUiThread(() -> Toast.makeText(activity, R.string.terminal_copied_toast, Toast.LENGTH_SHORT).show());
+            }
+        }
+
+        @Override
+        public void pasteInto(com.termux.terminal.TerminalSession target) {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            // ADFA-4519: only write non-empty text; TerminalSession.write("") throws.
+            if (target != null && clipboard != null && clipboard.hasPrimaryClip()
+                    && clipboard.getPrimaryClip().getItemCount() > 0) {
+                CharSequence text = clipboard.getPrimaryClip().getItemAt(0).getText();
+                if (text != null && text.length() > 0) {
+                    target.write(text.toString());
+                }
+            }
+        }
+    };
+
     public TerminalController(AppCompatActivity activity, Host host) {
         this.activity = activity;
         this.host = host;
+    }
+
+    /** Set the visible session and mirror it into the app-scoped store. */
+    private void setCurrentSession(com.termux.terminal.TerminalSession session) {
+        terminalSession = session;
+        store.setCurrent(session);
+    }
+
+    /** Release the UI delegate (call from Activity.onDestroy). Sessions keep running. */
+    public void detach() {
+        store.detachUi(uiDelegate);
     }
 
     /**
@@ -86,6 +154,17 @@ public class TerminalController {
         terminalView = activity.findViewById(R.id.terminal_view);
         bottomSheetBehavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+
+        // ADFA-4696 (phase 2): bind to the app-scoped session store so sessions
+        // survive this Activity. Point the drawer list + current session at it,
+        // register the UI delegate, and reattach any surviving session.
+        terminalSessionsList = store.sessions();
+        terminalSession = store.current();
+        store.attachUi(uiDelegate);
+        store.init(activity);
+        if (terminalSession != null && terminalView != null) {
+            terminalView.post(() -> terminalView.attachSession(terminalSession));
+        }
 
         // MULTI-SESSION DRAWER SETUP
         // =========================================================
@@ -114,7 +193,7 @@ public class TerminalController {
 
             // Switch session when clicked
             drawerList.setOnItemClickListener((parent, view, position, id) -> {
-                terminalSession = terminalSessionsList.get(position);
+                setCurrentSession(terminalSessionsList.get(position));
                 if (terminalView != null) {
                     terminalView.attachSession(terminalSession);
 
@@ -194,11 +273,11 @@ public class TerminalController {
                     // Keep the current session if it is still running; otherwise fall
                     // back to any surviving session before deciding to spawn a new one.
                     if (terminalSession != null && !terminalSession.isRunning()) {
-                        terminalSession = null;
+                        setCurrentSession(null);
                     }
                     if (terminalSession == null && terminalSessionsList != null
                             && !terminalSessionsList.isEmpty()) {
-                        terminalSession = terminalSessionsList.get(terminalSessionsList.size() - 1);
+                        setCurrentSession(terminalSessionsList.get(terminalSessionsList.size() - 1));
                     }
 
                     if (terminalSession == null) {
@@ -238,127 +317,10 @@ public class TerminalController {
     }
 
     public void addNewSession() {
-        com.termux.terminal.TerminalSessionClient client = new com.termux.terminal.TerminalSessionClient() {
-            @Override
-            public void onTextChanged(com.termux.terminal.TerminalSession session) {
-                activity.runOnUiThread(() -> terminalView.invalidate());
-            }
-
-            @Override
-            public void onTitleChanged(com.termux.terminal.TerminalSession session) {
-            }
-
-            // --- THE CLEAN SHUTDOWN (When Bash dies and tells us) ---
-            @Override
-            public void onSessionFinished(com.termux.terminal.TerminalSession session) {
-                activity.runOnUiThread(() -> {
-                    // 1. Remove the dead session from our list and update the UI Drawer
-                    if (terminalSessionsList != null) {
-                        terminalSessionsList.remove(session);
-                        if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
-                    }
-
-                    // 2. Are we looking at the session that just died?
-                    if (terminalSession == session) {
-                        if (terminalSessionsList != null && !terminalSessionsList.isEmpty()) {
-                            // Fallback: Jump to the last available active session
-                            terminalSession = terminalSessionsList.get(terminalSessionsList.size() - 1);
-                            if (terminalView != null) terminalView.attachSession(terminalSession);
-                        } else {
-                            // No sessions left! Close the terminal panel entirely.
-                            terminalSession = null;
-                            TerminalSessionService.stop(activity);
-                            View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
-                            if (bottomSheet != null) {
-                                com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
-                                        com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
-                                behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
-                            }
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onCopyTextToClipboard(com.termux.terminal.TerminalSession session, String text) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                android.content.ClipData clip = android.content.ClipData.newPlainText("terminal", text);
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                    activity.runOnUiThread(() -> Toast.makeText(activity, R.string.terminal_copied_toast, Toast.LENGTH_SHORT).show());
-                }
-            }
-
-            @Override
-            public void onPasteTextFromClipboard(com.termux.terminal.TerminalSession session) {
-                android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                if (clipboard != null && clipboard.hasPrimaryClip() && clipboard.getPrimaryClip().getItemCount() > 0) {
-                    CharSequence text = clipboard.getPrimaryClip().getItemAt(0).getText();
-                    // ADFA-4519: only write non-empty text. An empty clipboard item yields an
-                    // empty string, and TerminalSession.write("") reaches ByteQueue.write with
-                    // length 0, which throws IllegalArgumentException("length <= 0") and crashes.
-                    if (text != null && text.length() > 0 && terminalSession != null) {
-                        terminalSession.write(text.toString());
-                    }
-                }
-            }
-
-            @Override
-            public void onBell(com.termux.terminal.TerminalSession session) {
-            }
-
-            @Override
-            public void onColorsChanged(com.termux.terminal.TerminalSession session) {
-            }
-
-            @Override
-            public void onTerminalCursorStateChange(boolean state) {
-            }
-
-            @Override
-            public Integer getTerminalCursorStyle() {
-                return 0;
-            }
-
-            @Override
-            public void setTerminalShellPid(com.termux.terminal.TerminalSession session, int pid) {
-            }
-
-            @Override
-            public void logError(String tag, String message) {
-                Log.e(tag, message);
-            }
-
-            @Override
-            public void logWarn(String tag, String message) {
-                Log.w(tag, message);
-            }
-
-            @Override
-            public void logInfo(String tag, String message) {
-                Log.i(tag, message);
-            }
-
-            @Override
-            public void logDebug(String tag, String message) {
-                Log.d(tag, message);
-            }
-
-            @Override
-            public void logVerbose(String tag, String message) {
-                Log.v(tag, message);
-            }
-
-            @Override
-            public void logStackTraceWithMessage(String tag, String message, Exception e) {
-                Log.e(tag, message, e);
-            }
-
-            @Override
-            public void logStackTrace(String tag, Exception e) {
-                Log.e(tag, "Stack trace", e);
-            }
-        };
+        // ADFA-4696 (phase 2): the shared app-scoped store IS the session client,
+        // so sessions are serviced independently of any Activity; UI-facing
+        // callbacks route back through the Ui delegate registered in bind().
+        com.termux.terminal.TerminalSessionClient client = store;
 
         try {
             // --- DUAL SYSTEM ARCHITECTURE: THE HOST SHELL ---
@@ -749,6 +711,7 @@ public class TerminalController {
             terminalView.setTextSize((int) currentTerminalFontSize);
             // Add to our multi-session list
             terminalSessionsList.add(terminalSession);
+            store.setCurrent(terminalSession);
             // ADFA-4696 (phase 2): keep the process alive while a session runs.
             TerminalSessionService.start(activity);
             if (sessionsAdapter != null) {
@@ -793,11 +756,10 @@ public class TerminalController {
                                 }
                             }
                             if (live != null) {
-                                terminalSession = live;
+                                setCurrentSession(live);
                                 if (terminalView != null) terminalView.attachSession(terminalSession);
                             } else {
-                                terminalSession = null;
-                                TerminalSessionService.stop(activity);
+                                setCurrentSession(null);
                                 View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
                                 if (bottomSheet != null) {
                                     com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
