@@ -163,7 +163,14 @@ public class TerminalController {
         store.attachUi(uiDelegate);
         store.init(activity);
         if (terminalSession != null && terminalView != null) {
-            terminalView.post(() -> terminalView.attachSession(terminalSession));
+            // Initialise the renderer before attaching (as addNewSession does):
+            // attachSession -> updateSize reads TerminalRenderer, which is created
+            // by setTextSize. Skipping this NPEs when reattaching a surviving session
+            // to a freshly recreated view (ADFA-4696).
+            terminalView.setTextSize((int) currentTerminalFontSize);
+            terminalView.post(() -> {
+                if (terminalSession != null) terminalView.attachSession(terminalSession);
+            });
         }
 
         // MULTI-SESSION DRAWER SETUP
