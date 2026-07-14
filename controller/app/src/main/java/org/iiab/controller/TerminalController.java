@@ -178,17 +178,36 @@ public class TerminalController {
                     // 3 seconds reached! Expand terminal.
                     host.vibrateDevice();
 
-                    // --- TERMINAL RESET NUKE ---
+                    // --- NON-DESTRUCTIVE OPEN (ADFA-4696) ---
+                    // Reattach to the existing live session instead of destroying it,
+                    // so hiding and reopening the terminal keeps the running shell.
+                    // Prune only sessions that have already exited.
                     if (terminalSessionsList != null) {
-                        for (com.termux.terminal.TerminalSession s : terminalSessionsList) {
-                            s.finishIfRunning();
+                        for (int i = terminalSessionsList.size() - 1; i >= 0; i--) {
+                            if (!terminalSessionsList.get(i).isRunning()) {
+                                terminalSessionsList.remove(i);
+                            }
                         }
-                        terminalSessionsList.clear();
+                        if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
                     }
-                    terminalSession = null;
 
-                    // Spawn the first session
-                    addNewSession();
+                    // Keep the current session if it is still running; otherwise fall
+                    // back to any surviving session before deciding to spawn a new one.
+                    if (terminalSession != null && !terminalSession.isRunning()) {
+                        terminalSession = null;
+                    }
+                    if (terminalSession == null && terminalSessionsList != null
+                            && !terminalSessionsList.isEmpty()) {
+                        terminalSession = terminalSessionsList.get(terminalSessionsList.size() - 1);
+                    }
+
+                    if (terminalSession == null) {
+                        // No live session: spawn one (addNewSession attaches it to the view).
+                        addNewSession();
+                    } else {
+                        // Reattach the surviving session to the view.
+                        terminalView.attachSession(terminalSession);
+                    }
 
                     // 1. Force the view to be VISIBLE before expanding
                     View targetSheet = activity.findViewById(R.id.terminal_bottom_sheet);
@@ -751,24 +770,37 @@ public class TerminalController {
                 public void onSingleTapUp(android.view.MotionEvent e) {
                     // If the terminal process is dead (e.g., has crashed or shown "[Process completed]"),
                     // a single tap on the black screen hides the panel and nullifies the session.
-                    // If the CURRENT terminal process is dead, close the panel and kill ALL sessions.
+                    // If the CURRENT terminal process is dead, switch to a surviving live
+                    // session; only hide the panel when nothing is left alive (ADFA-4696).
                     if (terminalSession != null && !terminalSession.isRunning()) {
                         activity.runOnUiThread(() -> {
-                            View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
-                            if (bottomSheet != null) {
-                                com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
-                                        com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
-                                behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
-                            }
-
-                            // The Guillotine: Kill all active sessions securely
+                            // Current session has exited. Drop it, then prefer a
+                            // surviving live session (ADFA-4696) instead of
+                            // terminating every session.
                             if (terminalSessionsList != null) {
-                                for (com.termux.terminal.TerminalSession s : terminalSessionsList) {
-                                    s.finishIfRunning();
-                                }
-                                terminalSessionsList.clear();
+                                terminalSessionsList.remove(terminalSession);
                             }
-                            terminalSession = null;
+                            com.termux.terminal.TerminalSession live = null;
+                            if (terminalSessionsList != null) {
+                                for (int i = terminalSessionsList.size() - 1; i >= 0; i--) {
+                                    if (terminalSessionsList.get(i).isRunning()) {
+                                        live = terminalSessionsList.get(i);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (live != null) {
+                                terminalSession = live;
+                                if (terminalView != null) terminalView.attachSession(terminalSession);
+                            } else {
+                                terminalSession = null;
+                                View bottomSheet = activity.findViewById(R.id.terminal_bottom_sheet);
+                                if (bottomSheet != null) {
+                                    com.google.android.material.bottomsheet.BottomSheetBehavior<?> behavior =
+                                            com.google.android.material.bottomsheet.BottomSheetBehavior.from(bottomSheet);
+                                    behavior.setState(com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN);
+                                }
+                            }
                             if (sessionsAdapter != null) sessionsAdapter.notifyDataSetChanged();
                         });
                         return; // Event consumed.
