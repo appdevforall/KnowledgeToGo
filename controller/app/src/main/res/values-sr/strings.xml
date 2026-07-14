@@ -378,6 +378,10 @@
     <string name="sync_app_status_hotspot">"1. Замолите други уређај да се повеже на ваш Hotspot.\n2. Скенирајте овај QR било којом обичном камером."</string>
     <string name="terminal_locked">Терминал закључан (скроловање омогућено)</string>
     <string name="terminal_unlocked">Терминал откључан (превуците надоле за сакривање)</string>
+    <string name="terminal_channel_name">K2Go Terminal</string>
+    <string name="terminal_channel_desc">Одржава терминалске сесије активним у позадини.</string>
+    <string name="terminal_notif_title">K2Go терминал је активан</string>
+    <string name="terminal_notif_text">Терминалска сесија је покренута у позадини.</string>
     <string name="terminal_crash_title">Пад при покретању терминала</string>
     <string name="terminal_copied_toast">Текст копиран</string>
     <string name="sessions_title">СЕСИЈЕ</string>

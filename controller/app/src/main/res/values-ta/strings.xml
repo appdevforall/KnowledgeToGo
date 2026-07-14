@@ -378,6 +378,10 @@
     <string name="sync_app_status_hotspot">"1. மற்ற சாதனத்தை உங்கள் Hotspot உடன் இணைக்கச் சொல்லுங்கள்.\n2. இந்த QR ஐ எந்த சாதாரண கேமராவாலும் ஸ்கேன் செய்யவும்."</string>
     <string name="terminal_locked">Terminal பூட்டப்பட்டது (ஸ்க்ரோல் இயக்கப்பட்டது)</string>
     <string name="terminal_unlocked">Terminal திறக்கப்பட்டது (மறைக்க கீழே ஸ்வைப் செய்யவும்)</string>
+    <string name="terminal_channel_name">K2Go Terminal</string>
+    <string name="terminal_channel_desc">டெர்மினல் அமர்வுகளை பின்னணியில் இயங்க வைக்கிறது.</string>
+    <string name="terminal_notif_title">K2Go டெர்மினல் செயலில் உள்ளது</string>
+    <string name="terminal_notif_text">ஒரு டெர்மினல் அமர்வு பின்னணியில் இயங்குகிறது.</string>
     <string name="terminal_crash_title">Terminal தொடக்க செயலிழப்பு</string>
     <string name="terminal_copied_toast">உரை நகலெடுக்கப்பட்டது</string>
     <string name="sessions_title">அமர்வுகள்</string>

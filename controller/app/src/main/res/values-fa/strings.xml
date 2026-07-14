@@ -378,6 +378,10 @@
     <string name="sync_app_status_hotspot">"۱. از دستگاه دیگر بخواهید به Hotspot شما متصل شود.\n۲. این QR را با هر دوربین معمولی اسکن کنید."</string>
     <string name="terminal_locked">Terminal قفل شد (پیمایش فعال است)</string>
     <string name="terminal_unlocked">Terminal باز شد (برای پنهان کردن به پایین بکشید)</string>
+    <string name="terminal_channel_name">K2Go Terminal</string>
+    <string name="terminal_channel_desc">جلسات ترمینال را در پس‌زمینه فعال نگه می‌دارد.</string>
+    <string name="terminal_notif_title">ترمینال K2Go فعال است</string>
+    <string name="terminal_notif_text">یک جلسه ترمینال در پس‌زمینه در حال اجراست.</string>
     <string name="terminal_crash_title">خرابی راه‌اندازی Terminal</string>
     <string name="terminal_copied_toast">متن کپی شد</string>
     <string name="sessions_title">جلسه‌ها</string>
