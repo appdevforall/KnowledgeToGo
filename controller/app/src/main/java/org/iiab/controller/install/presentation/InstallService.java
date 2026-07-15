@@ -488,8 +488,11 @@ public final class InstallService extends Service {
             String xzBin = staticXz.exists() ? staticXz.getAbsolutePath() : "xz";
 
             // Pipe xz directly into tar to bypass Android's limited PATH.
-            String extractCmd = xzBin + " -d -c " + downloadedArchive.getAbsolutePath() + " | " + tarBin
-                    + " --exclude='*/dev/*' --strip-components=1 -xf - -C " + debianRootfs.getAbsolutePath();
+            // D2 follow-up (ADFA-4718): single-quote the interpolated binary/paths so the pipe
+            // is robust even if a path ever contained spaces/metacharacters (app-internal today),
+            // matching the backup pipe (D11). The literal --exclude keeps its own quoting.
+            String extractCmd = "'" + xzBin + "' -d -c '" + downloadedArchive.getAbsolutePath() + "' | '" + tarBin
+                    + "' --exclude='*/dev/*' --strip-components=1 -xf - -C '" + debianRootfs.getAbsolutePath() + "'";
 
             Process pExt = Runtime.getRuntime().exec(new String[]{"/system/bin/sh", "-c", extractCmd});
             BufferedReader errReader = new BufferedReader(new InputStreamReader(pExt.getErrorStream()));
