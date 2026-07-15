@@ -12,6 +12,8 @@
  */
 package org.iiab.controller.dashboard.presentation;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -28,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class DashboardStatusViewModel extends ViewModel {
 
-    private static final String BASE_URL = "http://localhost:8085/";
+    private static final String BASE_URL = BoxEndpoints.BASE + "/";
     private static final String HOME_URL = BASE_URL + "home";
     private static final long PERIOD_SECONDS = 5;
 

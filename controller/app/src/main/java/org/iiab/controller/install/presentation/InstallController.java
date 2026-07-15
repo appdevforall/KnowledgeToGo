@@ -17,6 +17,8 @@
  */
 package org.iiab.controller.install.presentation;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -276,7 +278,7 @@ public final class InstallController {
         new Thread(() -> {
             if (!fragment.isAdded() || fragment.getActivity() == null || rolesContainer == null) return;
 
-            boolean isMainServerAlive = host.pingUrl("http://localhost:8085/home");
+            boolean isMainServerAlive = host.pingUrl(BoxEndpoints.BASE + "/home");
             boolean discrepancyFound = false;
 
             for (int r = 0; r < rolesContainer.getChildCount(); r++) {
@@ -293,7 +295,7 @@ public final class InstallController {
                     boolean isInstallTrue = jsonVars.optBoolean(module.yamlBaseKey + "_install", false);
                     boolean isEnabledTrue = jsonVars.optBoolean(module.yamlBaseKey + "_enabled", false);
                     boolean yamlState = isInstallTrue || isEnabledTrue;
-                    boolean pingState = isMainServerAlive && host.pingUrl("http://localhost:8085/" + module.endpoint);
+                    boolean pingState = isMainServerAlive && host.pingUrl(BoxEndpoints.BASE + "/" + module.endpoint);
 
                     MainActivity mainAct = (MainActivity) fragment.getActivity();
                     boolean isRunning = mainAct != null && org.iiab.controller.ServerStateRepository.get().current().alive;

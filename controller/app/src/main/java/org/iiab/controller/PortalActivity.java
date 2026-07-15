@@ -8,6 +8,8 @@
  */
 package org.iiab.controller;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebView;
@@ -262,7 +264,7 @@ public class PortalActivity extends AppCompatActivity {
                 PdfViewerBuild build =
                         PdfViewerRouter.pick(WebViewVersion.chromeMajor(userAgent), pdfViewerBuilds);
                 if (build != null) {
-                    String viewerUrl = PdfViewerUrl.forPdf("http://localhost:8085" + build.getViewerPath(), url);
+                    String viewerUrl = PdfViewerUrl.forPdf(BoxEndpoints.BASE + build.getViewerPath(), url);
                     if (viewerUrl != null) {
                         Log.d(TAG, "PDF routed to pdf.js build '" + build.getId() + "': " + url);
                         webView.loadUrl(viewerUrl);

@@ -8,6 +8,8 @@
  */
 package org.iiab.controller.portal.data;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 import android.util.Log;
 
 import org.iiab.controller.portal.domain.PdfViewerBuild;
@@ -32,7 +34,7 @@ import java.util.List;
 public final class PdfViewerCatalog {
 
     private static final String TAG = "PdfViewerCatalog";
-    private static final String MANIFEST_URL = "http://localhost:8085/pdfjs/manifest.json";
+    private static final String MANIFEST_URL = BoxEndpoints.BASE + "/pdfjs/manifest.json";
     private static final int TIMEOUT_MS = 4000;
 
     private PdfViewerCatalog() {}
