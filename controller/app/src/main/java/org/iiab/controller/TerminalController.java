@@ -959,9 +959,13 @@ public class TerminalController {
                 mkshrc.append("[ -f /system/etc/mkshrc ] && . /system/etc/mkshrc\n");
                 // 2. Crush the system prompt with our custom one
                 mkshrc.append("export PS1=\"~$ \"\n");
-                // ADFA-4709: persistent command history. mksh writes HISTFILE
-                // incrementally, so history survives the session being SIGKILLed.
-                mkshrc.append("export HISTFILE=\"$HOME/.mksh_history\"\n");
+                // ADFA-4709: deeper in-session command history (Up-arrow recall).
+                // NOTE: Android's system shell is mksh (MirBSD ksh), a size-reduced AOSP
+                // build whose persistent HISTFILE machinery is disabled: it neither writes
+                // nor reloads history to/from disk, so host history is in-session only.
+                // Debian (bash) has full cross-session history. Giving the host shell
+                // persistent history would require replacing /system/bin/sh with a fuller
+                // shell (e.g. a bundled bash / busybox ash) — see ADFA-4709.
                 mkshrc.append("export HISTSIZE=5000\n");
                 fosMkshrc.write(mkshrc.toString().getBytes());
                 fosMkshrc.close();
