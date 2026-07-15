@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADFA-4714 (tech-debt S18): scope cleartext HTTP.
+  The app reaches the on-device box only over http on loopback:
+    - localhost:8085  (portal / dashboard / pdf.js / k2go-docs)
+    - 127.0.0.1:8114  (tier-3 help tooltips)
+  Permit cleartext there; deny it everywhere else. HTTPS is always allowed (e.g. the OTA
+  update at iiab.switnet.org). Native aria2 downloads run in a separate process and are not
+  governed by this config. QR-encoded LAN URLs shown to other devices are strings, not
+  requests from this app.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>
