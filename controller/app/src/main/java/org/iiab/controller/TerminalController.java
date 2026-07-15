@@ -745,7 +745,7 @@ public class TerminalController {
                 cliStr.append("        PROOT_CMD=\"$PROOT_CMD -b \\\"$BACKUPS_DIR:/backups\\\"\"\n");
                 cliStr.append("    fi\n");
 
-                cliStr.append("    PROOT_CMD=\"$PROOT_CMD -w /root /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm-256color /bin/bash -l -i\"\n");
+                cliStr.append("    PROOT_CMD=\"$PROOT_CMD -w /root /usr/bin/env HOME=/root PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm-256color HISTFILE=/root/.bash_history HISTSIZE=5000 HISTFILESIZE=20000 HISTCONTROL=ignoreboth PROMPT_COMMAND='history -a' /bin/bash -l -i\"\n");
 
                 // Execute!
                 // ADFA-4630: seed the guest resolv.conf from the app's effective DNS before entering,
