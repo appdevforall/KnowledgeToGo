@@ -594,4 +594,5 @@
     <string name="kiwix_dialog_retry">Повторить</string>
     <string name="kiwix_dialog_close">Закрыть</string>
     <string name="install_error_verify">Загруженные системные файлы не прошли проверку целостности (неполные или повреждённые). Повторите установку.</string>
+    <string name="install_btn_select_content">Выбрать контент</string>
 </resources>

@@ -525,4 +525,5 @@
     <string name="kiwix_dialog_retry">Yenidən cəhd et</string>
     <string name="kiwix_dialog_close">Bağla</string>
     <string name="install_error_verify">Yüklənmiş sistem faylları bütövlük yoxlamasından keçmədi (natamam və ya zədələnmiş). Zəhmət olmasa quraşdırmanı yenidən sınayın.</string>
+    <string name="install_btn_select_content">Məzmun seçin</string>
 </resources>

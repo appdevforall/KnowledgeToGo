@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">Повторити</string>
     <string name="kiwix_dialog_close">Закрити</string>
     <string name="install_error_verify">Завантажені системні файли не пройшли перевірку цілісності (неповні або пошкоджені). Повторіть встановлення.</string>
+    <string name="install_btn_select_content">Вибрати вміст</string>
 </resources>

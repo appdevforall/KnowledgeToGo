@@ -525,4 +525,5 @@
     <string name="kiwix_dialog_retry">Επανάληψη</string>
     <string name="kiwix_dialog_close">Κλείσιμο</string>
     <string name="install_error_verify">Τα ληφθέντα αρχεία συστήματος απέτυχαν στον έλεγχο ακεραιότητας (ελλιπή ή κατεστραμμένα). Δοκιμάστε ξανά την εγκατάσταση.</string>
+    <string name="install_btn_select_content">Επιλογή περιεχομένου</string>
 </resources>

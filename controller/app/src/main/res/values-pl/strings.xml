@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">Ponów</string>
     <string name="kiwix_dialog_close">Zamknij</string>
     <string name="install_error_verify">Pobrane pliki systemowe nie przeszły weryfikacji integralności (niekompletne lub uszkodzone). Spróbuj zainstalować ponownie.</string>
+    <string name="install_btn_select_content">Wybierz treść</string>
 </resources>

@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">Yeniden dene</string>
     <string name="kiwix_dialog_close">Kapat</string>
     <string name="install_error_verify">İndirilen sistem dosyaları bütünlük denetimini geçemedi (eksik veya bozuk). Lütfen kurulumu yeniden deneyin.</string>
+    <string name="install_btn_select_content">İçerik seç</string>
 </resources>
