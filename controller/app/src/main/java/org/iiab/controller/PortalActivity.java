@@ -246,9 +246,9 @@ public class PortalActivity extends AppCompatActivity {
 
         // Downloads (ADFA-4512): a WebView never downloads on its own. Navigation routing
         // above is unchanged (internal host stays in-view, external -> system browser);
-        // this listener ONLY fires for downloadable files. We handle APKs served by the
-        // local box (e.g. the "code" module) and hand them to the system DownloadManager;
-        // anything else is left alone.
+        // this listener ONLY fires for downloadable files. Files served by the local box are
+        // handed to the system DownloadManager (APKs via the installer flow, anything else as
+        // a plain download, ADFA-4710); downloads from an external host are left untouched.
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Uri uri = Uri.parse(url);
             String host = uri.getHost();
@@ -273,16 +273,22 @@ public class PortalActivity extends AppCompatActivity {
                 downloadServedFile(uri, contentDisposition, mimetype);
                 return;
             }
+            // Only files served by the local box are downloaded here; external downloads are
+            // left untouched (external navigation already opens in the system browser).
+            if (!NavigationPolicy.isInternalHost(host)) {
+                Log.d(TAG, "Download ignored (external host): " + url);
+                return;
+            }
             boolean looksApk = "application/vnd.android.package-archive".equalsIgnoreCase(mimetype)
                     || (lastSeg != null && lastSeg.toLowerCase().endsWith(".apk"))
                     || (contentDisposition != null && contentDisposition.toLowerCase().contains(".apk"));
-
-            if (!looksApk || !NavigationPolicy.isInternalHost(host)) {
-                // Not an APK from the local server: leave existing behavior untouched.
-                Log.d(TAG, "Download ignored (not an internal-host APK): " + url);
-                return;
+            if (looksApk) {
+                // APK: keep the installer flow (system "install unknown apps" consent).
+                downloadServedApk(uri, contentDisposition, mimetype);
+            } else {
+                // Any other box file (archives, docs, ...): plain system download.
+                downloadServedFile(uri, contentDisposition, mimetype);
             }
-            downloadServedApk(uri, contentDisposition, mimetype);
         });
 
         // Native architecture: content is served locally; load it directly.
