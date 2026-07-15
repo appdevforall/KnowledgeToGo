@@ -606,6 +606,24 @@ mkdir -p /library/www/html/k2go-docs
 /usr/local/bin/pdsm restart nginx
 ok "K2Go docs module scaffold installed (hidden until docs are added)."
 
+#-----------------------------
+# pdf.js viewer (ADFA-4708) — static module.
+# Serve Mozilla pdf.js so the portal WebView can render PDFs inline/offline. The prebuilt
+# dist is produced by static/pdfjs/fetch-pdfjs.sh (run at build time); here we install the
+# nginx conf and deploy the dist to the web root. Unlike k2go-docs this is always present.
+#-----------------------------
+log "Installing pdf.js viewer static module..."
+cp "${K2GO_OPT_DIR}/static/pdfjs/pdfjs-nginx.conf" "/etc/nginx/conf.d/pdfjs-nginx.conf"
+mkdir -p /library/www/html/pdfjs
+if [ -d "${K2GO_OPT_DIR}/static/pdfjs/dist/web" ]; then
+  cp -a "${K2GO_OPT_DIR}/static/pdfjs/dist/." /library/www/html/pdfjs/
+  ok "pdf.js dist deployed."
+else
+  warn "pdf.js dist not found (run static/pdfjs/fetch-pdfjs.sh at build time); viewer will 404 until deployed."
+fi
+/usr/local/bin/pdsm restart nginx
+ok "pdf.js viewer module installed."
+
 # Install demo content
 if [ "$ENABLE_DEMO_CONTENTS" -eq 1 ]; then
   install_demo_contents
