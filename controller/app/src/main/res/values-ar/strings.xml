@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">مراقبة K2Go نشطة</string>
     <string name="watchdog_started">بدأت المراقبة</string>
     <string name="watchdog_stopped">توقفت المراقبة</string>
-    <string name="critical_os_blocked">حرج: حجب نظام التشغيل تحفيز Termux (SecurityException).</string>
     <string name="maintenance_write_failed">فشلت كتابة الصيانة</string>
-    <string name="permission_denied_log">تم رفض الإذن: تأكد من أن الـ manifest يحتوي على RUN_COMMAND وأن التطبيق غير مقيَّد.</string>
-    <string name="ping_fail">PING 8085: فشل (%s)</string>
-    <string name="ping_ok">PING 8085: نجح</string>
-    <string name="pulse_error_log">خطأ Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: تحفيز Termux…</string>
     <string name="session_started">بدأت جلسة HEARTBEAT</string>
     <string name="session_stopped">توقفت جلسة HEARTBEAT</string>
     <string name="termux_stuck_warning">لا يفتح Termux؟ فعّل المراقب الرئيسي لإجباره على أخذ التركيز.</string>
-    <string name="unexpected_error_termux">خطأ غير متوقع أثناء إرسال الأمر إلى Termux</string>
     <string name="end_of_history">--- نهاية السجل ---</string>
     <string name="error_reading_history">خطأ في قراءة السجل: %s</string>
     <string name="failed_write_blackbox">فشلت الكتابة إلى BlackBox</string>

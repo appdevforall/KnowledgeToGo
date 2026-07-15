@@ -126,17 +126,10 @@
     <string name="watchdog_started">Watchdog Started</string>
     <string name="watchdog_stopped">Watchdog Stopped</string>
 
-    <string name="critical_os_blocked">CRITICAL: OS blocked Termux stimulus (SecurityException).</string>
     <string name="maintenance_write_failed">Maintenance write failed</string>
-    <string name="permission_denied_log">Permission Denied: Ensure manifest has RUN_COMMAND and app is not restricted.</string>
-    <string name="ping_fail">PING 8085: FAIL (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse Error: %s</string>
-    <string name="pulse_stimulating">Pulse: Stimulating Termux...</string>
     <string name="session_started">HEARTBEAT SESSION STARTED</string>
     <string name="session_stopped">HEARTBEAT SESSION STOPPED</string>
     <string name="termux_stuck_warning">Termux not opening? Enable Master Watchdog to force it to gain focus.</string>
-    <string name="unexpected_error_termux">Unexpected error sending intent to Termux</string>
 
 
     <string name="end_of_history">--- End of History ---</string>

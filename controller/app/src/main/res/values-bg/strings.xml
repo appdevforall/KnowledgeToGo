@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog на K2Go е активен</string>
     <string name="watchdog_started">Watchdog е стартиран</string>
     <string name="watchdog_stopped">Watchdog е спрян</string>
-    <string name="critical_os_blocked">КРИТИЧНО: ОС блокира стимула на Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Записът за поддръжка е неуспешен</string>
-    <string name="permission_denied_log">Отказан достъп: Уверете се, че манифестът има RUN_COMMAND и приложението не е ограничено.</string>
-    <string name="ping_fail">PING 8085: НЕУСПЕХ (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Грешка на Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Стимулиране на Termux…</string>
     <string name="session_started">СЕСИЯТА HEARTBEAT Е ЗАПОЧНАТА</string>
     <string name="session_stopped">СЕСИЯТА HEARTBEAT Е СПРЯНА</string>
     <string name="termux_stuck_warning">Termux не се отваря? Активирайте Master Watchdog, за да го принудите да получи фокус.</string>
-    <string name="unexpected_error_termux">Неочаквана грешка при изпращане на intent към Termux</string>
     <string name="end_of_history">--- Край на историята ---</string>
     <string name="error_reading_history">Грешка при четене на историята: %s</string>
     <string name="failed_write_blackbox">Записът в BlackBox е неуспешен</string>

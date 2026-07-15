@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go 看门狗已启用</string>
     <string name="watchdog_started">看门狗已启动</string>
     <string name="watchdog_stopped">看门狗已停止</string>
-    <string name="critical_os_blocked">严重：操作系统阻止了 Termux 唤醒（SecurityException）。</string>
     <string name="maintenance_write_failed">维护写入失败</string>
-    <string name="permission_denied_log">权限被拒绝：请确保清单包含 RUN_COMMAND 且应用未受限制。</string>
-    <string name="ping_fail">PING 8085: 失败 (%s)</string>
-    <string name="ping_ok">PING 8085: 成功</string>
-    <string name="pulse_error_log">Pulse 错误: %s</string>
-    <string name="pulse_stimulating">Pulse: 正在唤醒 Termux…</string>
     <string name="session_started">HEARTBEAT 会话已开始</string>
     <string name="session_stopped">HEARTBEAT 会话已停止</string>
     <string name="termux_stuck_warning">Termux 打不开？启用主看门狗以强制其获取焦点。</string>
-    <string name="unexpected_error_termux">向 Termux 发送 intent 时发生意外错误</string>
     <string name="end_of_history">--- 历史记录结束 ---</string>
     <string name="error_reading_history">读取历史记录出错: %s</string>
     <string name="failed_write_blackbox">写入 BlackBox 失败</string>

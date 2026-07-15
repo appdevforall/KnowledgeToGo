@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go 워치독 활성</string>
     <string name="watchdog_started">워치독 시작됨</string>
     <string name="watchdog_stopped">워치독 중지됨</string>
-    <string name="critical_os_blocked">심각: OS가 Termux 자극을 차단했습니다(SecurityException).</string>
     <string name="maintenance_write_failed">유지 관리 쓰기 실패</string>
-    <string name="permission_denied_log">권한 거부됨: manifest에 RUN_COMMAND가 있고 앱이 제한되지 않았는지 확인하세요.</string>
-    <string name="ping_fail">PING 8085: 실패 (%s)</string>
-    <string name="ping_ok">PING 8085: 성공</string>
-    <string name="pulse_error_log">Pulse 오류: %s</string>
-    <string name="pulse_stimulating">Pulse: Termux 자극 중…</string>
     <string name="session_started">HEARTBEAT 세션 시작됨</string>
     <string name="session_stopped">HEARTBEAT 세션 중지됨</string>
     <string name="termux_stuck_warning">Termux가 열리지 않나요? 마스터 워치독을 활성화하여 강제로 포커스를 잡게 하세요.</string>
-    <string name="unexpected_error_termux">Termux에 인텐트를 보내는 중 예기치 않은 오류가 발생했습니다</string>
     <string name="end_of_history">--- 기록 끝 ---</string>
     <string name="error_reading_history">기록 읽기 오류: %s</string>
     <string name="failed_write_blackbox">BlackBox에 쓰기 실패</string>

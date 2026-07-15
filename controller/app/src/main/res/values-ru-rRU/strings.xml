@@ -114,17 +114,10 @@
     <string name="watchdog_started">Watchdog запущен</string>
     <string name="watchdog_stopped">Watchdog остановлен</string>
 
-    <string name="critical_os_blocked">КРИТИЧЕСКАЯ ОШИБКА: ОС заблокировала стимуляцию виртуальной среды (SecurityException).</string>
     <string name="maintenance_write_failed">Ошибка записи при обслуживании</string>
-    <string name="permission_denied_log">Доступ запрещен: убедитесь, что в манифесте есть RUN_COMMAND и приложение не ограничено.</string>
-    <string name="ping_fail">PING 8085: ОШИБКА (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Ошибка пульса: %s</string>
-    <string name="pulse_stimulating">Пульс: Стимуляция системы...</string>
     <string name="session_started">СЕАНС СЕРДЦЕБИЕНИЯ ЗАПУЩЕН</string>
     <string name="session_stopped">СЕАНС СЕРДЦЕБИЕНИЯ ОСТАНОВЛЕН</string>
     <string name="termux_stuck_warning">Окружение не запускается? Включите Мастер Watchdog, чтобы принудительно вывести его на передний план.</string>
-    <string name="unexpected_error_termux">Непредвиденная ошибка при отправке intent в виртуальную среду.</string>
 
     <string name="end_of_history">--- Конец истории ---</string>
     <string name="error_reading_history">Ошибка чтения истории: %s</string>

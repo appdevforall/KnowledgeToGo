@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go Watchdog aktivdir</string>
     <string name="watchdog_started">Watchdog başladıldı</string>
     <string name="watchdog_stopped">Watchdog dayandırıldı</string>
-    <string name="critical_os_blocked">KRİTİK: OS Termux stimulunu blokladı (SecurityException).</string>
     <string name="maintenance_write_failed">Texniki xidmət yazısı uğursuz oldu</string>
-    <string name="permission_denied_log">İcazə rədd edildi: Manifestdə RUN_COMMAND olduğundan və tətbiqin məhdudlaşdırılmadığından əmin olun.</string>
-    <string name="ping_fail">PING 8085: UĞURSUZ (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse xətası: %s</string>
-    <string name="pulse_stimulating">Pulse: Termux stimullaşdırılır…</string>
     <string name="session_started">HEARTBEAT SESSİYASI BAŞLADI</string>
     <string name="session_stopped">HEARTBEAT SESSİYASI DAYANDI</string>
     <string name="termux_stuck_warning">Termux açılmır? Onu fokusa gətirməyə məcbur etmək üçün Master Watchdog-u aktivləşdirin.</string>
-    <string name="unexpected_error_termux">Termux-a intent göndərilərkən gözlənilməz xəta</string>
     <string name="end_of_history">--- Tarixçənin sonu ---</string>
     <string name="error_reading_history">Tarixçə oxunarkən xəta: %s</string>
     <string name="failed_write_blackbox">BlackBox-a yazmaq uğursuz oldu</string>

@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog K2Go Aktif</string>
     <string name="watchdog_started">Watchdog Dimulai</string>
     <string name="watchdog_stopped">Watchdog Dihentikan</string>
-    <string name="critical_os_blocked">KRITIS: OS memblokir stimulus Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Penulisan pemeliharaan gagal</string>
-    <string name="permission_denied_log">Izin Ditolak: Pastikan manifest memiliki RUN_COMMAND dan aplikasi tidak dibatasi.</string>
-    <string name="ping_fail">PING 8085: GAGAL (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Kesalahan Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Menstimulasi Termux…</string>
     <string name="session_started">SESI HEARTBEAT DIMULAI</string>
     <string name="session_stopped">SESI HEARTBEAT DIHENTIKAN</string>
     <string name="termux_stuck_warning">Termux tidak terbuka? Aktifkan Master Watchdog untuk memaksanya mendapatkan fokus.</string>
-    <string name="unexpected_error_termux">Kesalahan tak terduga saat mengirim intent ke Termux</string>
     <string name="end_of_history">--- Akhir Riwayat ---</string>
     <string name="error_reading_history">Kesalahan membaca riwayat: %s</string>
     <string name="failed_write_blackbox">Gagal menulis ke BlackBox</string>
