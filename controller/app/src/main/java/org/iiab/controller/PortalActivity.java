@@ -28,6 +28,13 @@ import android.os.Looper;
 import org.iiab.controller.portal.domain.NavigationPolicy;
 import org.iiab.controller.portal.domain.PdfPolicy;
 import org.iiab.controller.portal.domain.PdfViewerUrl;
+import org.iiab.controller.portal.domain.PdfViewerBuild;
+import org.iiab.controller.portal.domain.PdfViewerRouter;
+import org.iiab.controller.portal.domain.WebViewVersion;
+import org.iiab.controller.portal.data.PdfViewerCatalog;
+import org.iiab.controller.util.AppExecutors;
+import java.util.Collections;
+import java.util.List;
 import org.iiab.controller.portal.presentation.GestureWebView;
 import org.iiab.controller.portal.presentation.PortalViewModel;
 
@@ -59,6 +66,9 @@ public class PortalActivity extends AppCompatActivity {
             "catch(err){console.log('IIAB-TOUCH pitch-error '+err);}})();";
 
     private GestureWebView webView;
+    // pdf.js builds advertised by /pdfjs/manifest.json (loaded off the main thread).
+    // Empty until loaded / when the box serves none -> PDFs fall back to download.
+    private volatile List<PdfViewerBuild> pdfViewerBuilds = Collections.emptyList();
     private PortalViewModel vm;
     private android.webkit.ValueCallback<android.net.Uri[]> filePathCallback;
     private final static int FILECHOOSER_RESULTCODE = 100;
@@ -73,6 +83,8 @@ public class PortalActivity extends AppCompatActivity {
 
         // 1. Basic WebView configuration
         webView = findViewById(R.id.myWebView);
+        // Learn which pdf.js builds the box serves so we can route PDFs per WebView version.
+        AppExecutors.get().io().execute(() -> pdfViewerBuilds = PdfViewerCatalog.fetch());
         webView.setGestureLogging(BuildConfig.DEBUG);
 
         LinearLayout bottomNav = findViewById(R.id.bottomNav);
@@ -243,15 +255,23 @@ public class PortalActivity extends AppCompatActivity {
             String lastSeg = uri.getLastPathSegment();
 
             // PDFs served by the local box (ADFA-4708): the Android WebView has no built-in
-            // PDF viewer, so instead of downloading, route them to the locally-served pdf.js
-            // reader (same origin, works offline). Anything else falls through to the APK path.
+            // PDF viewer. Pick the pdf.js build this device's WebView can run (from the served
+            // manifest) and open it in-view; if none qualifies (very old WebView or no build
+            // served) fall back to downloading the PDF. Non-PDFs fall through to the APK path.
             if (NavigationPolicy.isInternalHost(host) && PdfPolicy.isPdf(url, mimetype, contentDisposition)) {
-                String viewerUrl = PdfViewerUrl.forPdf(url);
-                if (viewerUrl != null) {
-                    Log.d(TAG, "PDF routed to local pdf.js viewer: " + url);
-                    webView.loadUrl(viewerUrl);
-                    return;
+                PdfViewerBuild build =
+                        PdfViewerRouter.pick(WebViewVersion.chromeMajor(userAgent), pdfViewerBuilds);
+                if (build != null) {
+                    String viewerUrl = PdfViewerUrl.forPdf("http://localhost:8085" + build.getViewerPath(), url);
+                    if (viewerUrl != null) {
+                        Log.d(TAG, "PDF routed to pdf.js build '" + build.getId() + "': " + url);
+                        webView.loadUrl(viewerUrl);
+                        return;
+                    }
                 }
+                Log.d(TAG, "No compatible pdf.js build for this WebView; downloading PDF: " + url);
+                downloadServedFile(uri, contentDisposition, mimetype);
+                return;
             }
             boolean looksApk = "application/vnd.android.package-archive".equalsIgnoreCase(mimetype)
                     || (lastSeg != null && lastSeg.toLowerCase().endsWith(".apk"))
@@ -267,6 +287,35 @@ public class PortalActivity extends AppCompatActivity {
 
         // Native architecture: content is served locally; load it directly.
         webView.loadUrl(finalTargetUrl);
+    }
+
+    /**
+     * Fallback for a PDF we cannot show in-view (no pdf.js build fits this WebView, or none is
+     * served): hand the file to the system DownloadManager with the server-provided name, so
+     * the user still gets it. Generic file download will be unified under ADFA-4710.
+     */
+    private void downloadServedFile(Uri uri, String contentDisposition, String mimetype) {
+        try {
+            String fileName = URLUtil.guessFileName(uri.toString(), contentDisposition, mimetype);
+            DownloadManager.Request request = new DownloadManager.Request(uri);
+            if (mimetype != null && !mimetype.isEmpty()) {
+                request.setMimeType(mimetype);
+            }
+            request.setTitle(fileName);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+            if (dm == null) {
+                Toast.makeText(this, R.string.portal_download_failed, Toast.LENGTH_LONG).show();
+                return;
+            }
+            dm.enqueue(request);
+            Toast.makeText(this, getString(R.string.portal_download_started, fileName), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "File download failed to start: " + uri, e);
+            Toast.makeText(this, R.string.portal_download_failed, Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
