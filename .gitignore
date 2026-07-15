@@ -7,3 +7,6 @@
 # OS
 .DS_Store
 Thumbs.db
+
+# pdf.js prebuilt dist (fetched at build time, not vendored) — ADFA-4708
+static/pdfjs/dist/
