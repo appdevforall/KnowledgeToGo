@@ -525,4 +525,5 @@
     <string name="kiwix_dialog_retry">Опитай отново</string>
     <string name="kiwix_dialog_close">Затвори</string>
     <string name="install_error_verify">Изтеглените системни файлове не преминаха проверката за цялост (непълни или повредени). Опитайте да инсталирате отново.</string>
+    <string name="install_btn_select_content">Избор на съдържание</string>
 </resources>

@@ -597,4 +597,5 @@
     <string name="kiwix_dialog_retry">Tentar novamente</string>
     <string name="kiwix_dialog_close">Fechar</string>
     <string name="install_error_verify">Os arquivos de sistema baixados falharam na verificação de integridade (incompletos ou corrompidos). Tente instalar novamente.</string>
+    <string name="install_btn_select_content">Selecionar conteúdo</string>
 </resources>

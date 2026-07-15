@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">Thử lại</string>
     <string name="kiwix_dialog_close">Đóng</string>
     <string name="install_error_verify">Các tệp hệ thống đã tải xuống không vượt qua kiểm tra tính toàn vẹn (không đầy đủ hoặc bị hỏng). Vui lòng thử cài đặt lại.</string>
+    <string name="install_btn_select_content">Chọn nội dung</string>
 </resources>

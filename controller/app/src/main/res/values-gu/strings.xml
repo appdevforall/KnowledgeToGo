@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">ફરી પ્રયાસ કરો</string>
     <string name="kiwix_dialog_close">બંધ કરો</string>
     <string name="install_error_verify">ડાઉનલોડ કરેલી સિસ્ટમ ફાઇલો અખંડિતતા ચકાસણીમાં નિષ્ફળ ગઈ (અધૂરી અથવા દૂષિત). કૃપા કરીને ફરીથી ઇન્સ્ટોલ કરવાનો પ્રયાસ કરો.</string>
+    <string name="install_btn_select_content">સામગ્રી પસંદ કરો</string>
 </resources>

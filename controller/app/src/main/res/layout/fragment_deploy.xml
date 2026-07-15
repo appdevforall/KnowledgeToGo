@@ -387,7 +387,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginTop="8dp"
-                android:weightSum="4">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -407,15 +407,26 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:gravity="center">
-                    <ImageButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_kiwix_settings"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/outline_dashboard_2_gear_24"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        app:tint="@color/text_secondary" />
+                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="0dp"
+                        android:minHeight="0dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="@string/install_btn_select_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/text_secondary"
+                        app:icon="@drawable/ic_select_content_24"
+                        app:iconSize="18dp"
+                        app:iconPadding="4dp"
+                        app:iconTint="@color/text_secondary" />
                 </LinearLayout>
             </LinearLayout>
 

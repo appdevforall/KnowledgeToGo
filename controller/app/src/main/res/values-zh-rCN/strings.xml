@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">重试</string>
     <string name="kiwix_dialog_close">关闭</string>
     <string name="install_error_verify">下载的系统文件未通过完整性校验（不完整或已损坏）。请重新尝试安装。</string>
+    <string name="install_btn_select_content">选择内容</string>
 </resources>

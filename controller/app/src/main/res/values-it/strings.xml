@@ -518,4 +518,5 @@
     <string name="kiwix_dialog_retry">Riprova</string>
     <string name="kiwix_dialog_close">Chiudi</string>
     <string name="install_error_verify">I file di sistema scaricati non hanno superato il controllo di integrità (incompleti o corrotti). Riprova l\'installazione.</string>
+    <string name="install_btn_select_content">Seleziona contenuti</string>
 </resources>

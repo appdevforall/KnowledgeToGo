@@ -525,4 +525,5 @@
     <string name="kiwix_dialog_retry">Jaribu tena</string>
     <string name="kiwix_dialog_close">Funga</string>
     <string name="install_error_verify">Faili za mfumo zilizopakuliwa hazikupita ukaguzi wa uadilifu (hazijakamilika au zimeharibika). Tafadhali jaribu kusakinisha tena.</string>
+    <string name="install_btn_select_content">Chagua maudhui</string>
 </resources>

@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
+import com.google.android.material.button.MaterialButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -67,7 +67,7 @@ public final class PlannerController {
     private TextView txtLegendKiwix;
     private TextView txtLegendFree;
     private TextView txtOfflineEstimate;
-    private ImageButton btnKiwixSettings;
+    private MaterialButton btnKiwixSettings;
     private CheckBox chkCompanionData;
 
     // Owned by the planner (nothing else uses it).
@@ -83,7 +83,7 @@ public final class PlannerController {
                      Button btnTierBasic, Button btnTierStandard, Button btnTierFull,
                      TextView txtLegendIiab, TextView txtLegendMaps, TextView txtLegendKiwix,
                      TextView txtLegendFree, TextView txtOfflineEstimate,
-                     ImageButton btnKiwixSettings, CheckBox chkCompanionData) {
+                     MaterialButton btnKiwixSettings, CheckBox chkCompanionData) {
         this.rolesContainer = rolesContainer;
         this.storageGauge = storageGauge;
         this.btnTierBasic = btnTierBasic;
@@ -241,12 +241,11 @@ public final class PlannerController {
         // ADFA-4474 PR3: restore the companion-data choice (set BEFORE attaching the
         // listener so it does not trigger a redundant recalculation).
         chkCompanionData.setChecked(host.isCompanionData());
-        btnKiwixSettings.setColorFilter(ContextCompat.getColor(fragment.requireContext(),
-                host.isCompanionData() ? R.color.colorAccent : R.color.dash_text_secondary));
+        applyKiwixTint(host.isCompanionData() ? R.color.colorAccent : R.color.dash_text_secondary);
 
         chkCompanionData.setOnCheckedChangeListener((buttonView, isChecked) -> {
             host.setCompanionData(isChecked);
-            btnKiwixSettings.setColorFilter(ContextCompat.getColor(fragment.requireContext(), isChecked ? R.color.colorAccent : R.color.dash_text_secondary));
+            applyKiwixTint(isChecked ? R.color.colorAccent : R.color.dash_text_secondary);
             recalculateProjection();
         });
 
@@ -260,6 +259,13 @@ public final class PlannerController {
     }
 
     /** Re-applies the selected-tier button highlight after a recreation (ADFA-4474 PR3). */
+    /** ADFA-4712: tint the labelled "Select content" control (icon + text) by state. */
+    private void applyKiwixTint(int colorRes) {
+        int c = ContextCompat.getColor(fragment.requireContext(), colorRes);
+        btnKiwixSettings.setIconTint(ColorStateList.valueOf(c));
+        btnKiwixSettings.setTextColor(c);
+    }
+
     private void restoreTierHighlight() {
         InstallationPlanner.Tier sel = host.getSelectedTier();
         if (sel == null) return;
