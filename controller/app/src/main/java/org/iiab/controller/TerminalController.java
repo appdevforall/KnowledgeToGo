@@ -755,6 +755,21 @@ public class TerminalController {
                 if (!termDnsSecondary.isEmpty()) {
                     cliStr.append("    echo 'nameserver ").append(termDnsSecondary).append("' >> \"$ROOTFS_DIR/etc/resolv.conf\"\n");
                 }
+                // ADFA-4709: seed persistent, crash-safe shell history for the Debian shell.
+                // A login bash sources /etc/profile.d/*.sh; appending each command to HISTFILE
+                // immediately means history survives the session being SIGKILLed.
+                cliStr.append("    mkdir -p \"$ROOTFS_DIR/etc/profile.d\" 2>/dev/null\n");
+                cliStr.append("    cat > \"$ROOTFS_DIR/etc/profile.d/00-k2go-history.sh\" <<'K2GOHIST'\n");
+                cliStr.append("# K2Go: persistent, crash-safe shell history (ADFA-4709)\n");
+                cliStr.append("export HISTSIZE=5000\n");
+                cliStr.append("export HISTFILESIZE=20000\n");
+                cliStr.append("export HISTCONTROL=ignoreboth\n");
+                cliStr.append("shopt -s histappend 2>/dev/null\n");
+                cliStr.append("case \"$PROMPT_COMMAND\" in\n");
+                cliStr.append("  *\"history -a\"*) ;;\n");
+                cliStr.append("  *) PROMPT_COMMAND=\"history -a${PROMPT_COMMAND:+; $PROMPT_COMMAND}\" ;;\n");
+                cliStr.append("esac\n");
+                cliStr.append("K2GOHIST\n");
                 cliStr.append("    echo -e '\\033[32mEntering Jail...\\033[0m'\n");
                 cliStr.append("    eval \"$PROOT_CMD\"\n");
                 cliStr.append("}\n\n");
@@ -944,6 +959,10 @@ public class TerminalController {
                 mkshrc.append("[ -f /system/etc/mkshrc ] && . /system/etc/mkshrc\n");
                 // 2. Crush the system prompt with our custom one
                 mkshrc.append("export PS1=\"~$ \"\n");
+                // ADFA-4709: persistent command history. mksh writes HISTFILE
+                // incrementally, so history survives the session being SIGKILLed.
+                mkshrc.append("export HISTFILE=\"$HOME/.mksh_history\"\n");
+                mkshrc.append("export HISTSIZE=5000\n");
                 fosMkshrc.write(mkshrc.toString().getBytes());
                 fosMkshrc.close();
             } catch (Exception e) {
