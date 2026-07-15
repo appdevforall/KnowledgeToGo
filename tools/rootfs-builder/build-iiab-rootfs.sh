@@ -139,6 +139,7 @@ ALL_ARCH=0                # 1 = build BOTH arches (arm64-v8a + armeabi-v7a) in a
 ALL_TIER=0                # 1 = build ALL tiers (basic + standard + full) in a loop
 SCRATCH_BUILD=0           # 1 = wipe ALL prior state (OUTDIR + WORKDIR) before building
 CONFIRM_SCRATCH=0         # 1 = skip the scratch confirmation prompt (--confirm-scratch-yes)
+BASE_LOCAL_OVERRIDE=""    # ADFA-4698: use this local Debian base .tar.xz instead of the switnet pd-vX download (per-arch; pair with a single --arch, not --all-arch)
 
 # ----------------------------- Args -------------------------------------------
 ORIG_ARGS=("$@")          # preserved verbatim for the --all-* self-dispatch loop
@@ -164,6 +165,7 @@ while [[ $# -gt 0 ]]; do
     --scratch-build)       SCRATCH_BUILD=1; shift ;;
     --confirm-scratch-yes) CONFIRM_SCRATCH=1; shift ;;
     --keep)         KEEP_ROOTFS=1; shift ;;
+    --base-local)   BASE_LOCAL_OVERRIDE="$2"; shift 2 ;;
     --accept-force-emulate-qemu) ACCEPT_EMULATE=1; shift ;;
     -h|--help)
       grep -E '^#( |$)' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
@@ -228,8 +230,12 @@ if [[ "$ALL_ARCH" -eq 1 || "$ALL_TIER" -eq 1 ]]; then
     esac
   done
   MULTI_RC=0
+  MULTI_TOTAL=$(( ${#build_archs[@]} * ${#build_tiers[@]} ))
+  MULTI_N=0
   for _arch in "${build_archs[@]}"; do
     for _tier in "${build_tiers[@]}"; do
+      MULTI_N=$((MULTI_N + 1))
+      log "$(printf 'Rootfs global status [%02d/%02d]' "$MULTI_N" "$MULTI_TOTAL")  ==> tier=${_tier}  arch=${_arch}"
       log "==================== BUILD  tier=${_tier}  arch=${_arch} ===================="
       if bash "$SELF" "${PASS[@]}" --arch "$_arch" --tier "$_tier"; then
         ok "build OK: ${_tier}/${_arch}"
@@ -549,11 +555,18 @@ AVAIL_GB="$(df -BG --output=avail "$(dirname "$WORKDIR")" 2>/dev/null | tail -1 
 [[ "${AVAIL_GB:-0}" -ge 8 ]] || warn "Low free space (~${AVAIL_GB}G). full needs ~8-10G."
 
 # ----------------------------- 1) Debian base ---------------------------------
-log "[1/5] Downloading Debian base (${BASE_TARBALL})..."
-BASE_LOCAL="${WORKDIR}/${BASE_TARBALL}"
-if [[ ! -f "$BASE_LOCAL" ]]; then
-  curl -fL --retry 5 --retry-connrefused -o "$BASE_LOCAL" "$BASE_URL" \
-    || die "Could not download the base: $BASE_URL"
+if [[ -n "$BASE_LOCAL_OVERRIDE" ]]; then
+  # ADFA-4698: use a locally-built Debian base (make-debian-base.sh) instead of switnet.
+  [[ -f "$BASE_LOCAL_OVERRIDE" ]] || die "--base-local not found: $BASE_LOCAL_OVERRIDE"
+  BASE_LOCAL="$BASE_LOCAL_OVERRIDE"
+  log "[1/5] Using local Debian base: ${BASE_LOCAL} (skipping switnet download)"
+else
+  log "[1/5] Downloading Debian base (${BASE_TARBALL})..."
+  BASE_LOCAL="${WORKDIR}/${BASE_TARBALL}"
+  if [[ ! -f "$BASE_LOCAL" ]]; then
+    curl -fL --retry 5 --retry-connrefused -o "$BASE_LOCAL" "$BASE_URL" \
+      || die "Could not download the base: $BASE_URL"
+  fi
 fi
 
 log "Extracting base into ${ROOTFS} (archive top-level = installed-rootfs/iiab/) ..."
