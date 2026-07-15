@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go ウォッチドッグ稼働中</string>
     <string name="watchdog_started">ウォッチドッグを開始しました</string>
     <string name="watchdog_stopped">ウォッチドッグを停止しました</string>
-    <string name="critical_os_blocked">重大：OS が Termux の起動要求をブロックしました（SecurityException）。</string>
     <string name="maintenance_write_failed">メンテナンスの書き込みに失敗しました</string>
-    <string name="permission_denied_log">権限が拒否されました：manifest に RUN_COMMAND があり、アプリが制限されていないことを確認してください。</string>
-    <string name="ping_fail">PING 8085: 失敗 (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse エラー: %s</string>
-    <string name="pulse_stimulating">Pulse: Termux を起動中…</string>
     <string name="session_started">ハートビートセッション開始</string>
     <string name="session_stopped">ハートビートセッション停止</string>
     <string name="termux_stuck_warning">Termux が開かない？ マスターウォッチドッグを有効にして強制的にフォーカスを取得させてください。</string>
-    <string name="unexpected_error_termux">Termux へのインテント送信中に予期しないエラーが発生しました</string>
     <string name="end_of_history">--- 履歴の終わり ---</string>
     <string name="error_reading_history">履歴の読み取りエラー: %s</string>
     <string name="failed_write_blackbox">BlackBox への書き込みに失敗しました</string>

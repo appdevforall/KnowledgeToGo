@@ -114,17 +114,10 @@
     <string name="watchdog_started">Watchdog démarré</string>
     <string name="watchdog_stopped">Watchdog arrêté</string>
 
-    <string name="critical_os_blocked">CRITIQUE : Le système a bloqué la stimulation de l\'environnement virtuel (SecurityException).</string>
     <string name="maintenance_write_failed">Échec de l\'écriture de maintenance</string>
-    <string name="permission_denied_log">Autorisation refusée : Assurez-vous que le manifeste contient RUN_COMMAND et que l\'application n\'est pas restreinte.</string>
-    <string name="ping_fail">PING 8085 : ÉCHEC (%s)</string>
-    <string name="ping_ok">PING 8085 : OK</string>
-    <string name="pulse_error_log">Erreur de Pulse : %s</string>
-    <string name="pulse_stimulating">Pulse : Stimulation du système...</string>
     <string name="session_started">SESSION DE BATTEMENT DÉMARRÉE</string>
     <string name="session_stopped">SESSION DE BATTEMENT ARRÊTÉE</string>
     <string name="termux_stuck_warning">L\'environnement ne démarre pas ? Activez le Watchdog maître pour forcer le focus.</string>
-    <string name="unexpected_error_termux">Erreur inattendue lors de l\'envoi de l\'intention à l\'environnement virtuel.</string>
 
     <string name="end_of_history">--- Fin de l\'historique ---</string>
     <string name="error_reading_history">Erreur lors de la lecture de l\'historique : %s</string>

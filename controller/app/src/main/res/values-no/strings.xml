@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go Watchdog aktiv</string>
     <string name="watchdog_started">Watchdog startet</string>
     <string name="watchdog_stopped">Watchdog stoppet</string>
-    <string name="critical_os_blocked">KRITISK: OS blokkerte Termux-stimulus (SecurityException).</string>
     <string name="maintenance_write_failed">Vedlikeholdsskriving mislyktes</string>
-    <string name="permission_denied_log">Tillatelse avslått: Sørg for at manifestet har RUN_COMMAND og at appen ikke er begrenset.</string>
-    <string name="ping_fail">PING 8085: MISLYKTES (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse-feil: %s</string>
-    <string name="pulse_stimulating">Pulse: Stimulerer Termux…</string>
     <string name="session_started">HEARTBEAT-ØKT STARTET</string>
     <string name="session_stopped">HEARTBEAT-ØKT STOPPET</string>
     <string name="termux_stuck_warning">Åpner ikke Termux? Slå på Master Watchdog for å tvinge det til å få fokus.</string>
-    <string name="unexpected_error_termux">Uventet feil ved sending av intent til Termux</string>
     <string name="end_of_history">--- Slutt på historikk ---</string>
     <string name="error_reading_history">Feil ved lesing av historikk: %s</string>
     <string name="failed_write_blackbox">Kunne ikke skrive til BlackBox</string>

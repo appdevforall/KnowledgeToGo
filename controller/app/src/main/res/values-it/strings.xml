@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog K2Go attivo</string>
     <string name="watchdog_started">Watchdog avviato</string>
     <string name="watchdog_stopped">Watchdog fermato</string>
-    <string name="critical_os_blocked">CRITICO: il SO ha bloccato lo stimolo di Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Scrittura di manutenzione non riuscita</string>
-    <string name="permission_denied_log">Autorizzazione negata: assicurati che il manifest abbia RUN_COMMAND e che l\'app non sia limitata.</string>
-    <string name="ping_fail">PING 8085: NON RIUSCITO (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Errore Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: stimolazione di Termux…</string>
     <string name="session_started">SESSIONE HEARTBEAT AVVIATA</string>
     <string name="session_stopped">SESSIONE HEARTBEAT FERMATA</string>
     <string name="termux_stuck_warning">Termux non si apre? Attiva il Master Watchdog per forzarne il focus.</string>
-    <string name="unexpected_error_termux">Errore imprevisto nell\'invio dell\'intent a Termux</string>
     <string name="end_of_history">--- Fine della cronologia ---</string>
     <string name="error_reading_history">Errore nella lettura della cronologia: %s</string>
     <string name="failed_write_blackbox">Scrittura su BlackBox non riuscita</string>

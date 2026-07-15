@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go Watchdog செயலில் உள்ளது</string>
     <string name="watchdog_started">Watchdog தொடங்கியது</string>
     <string name="watchdog_stopped">Watchdog நிறுத்தப்பட்டது</string>
-    <string name="critical_os_blocked">தீவிரம்: OS Termux தூண்டுதலைத் தடுத்தது (SecurityException).</string>
     <string name="maintenance_write_failed">பராமரிப்பு எழுதுதல் தோல்வியடைந்தது</string>
-    <string name="permission_denied_log">அனுமதி மறுக்கப்பட்டது: manifest இல் RUN_COMMAND உள்ளதா என்றும் பயன்பாடு கட்டுப்படுத்தப்படவில்லை என்றும் உறுதிசெய்யவும்.</string>
-    <string name="ping_fail">PING 8085: தோல்வி (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse பிழை: %s</string>
-    <string name="pulse_stimulating">Pulse: Termux ஐ தூண்டுகிறது…</string>
     <string name="session_started">HEARTBEAT அமர்வு தொடங்கியது</string>
     <string name="session_stopped">HEARTBEAT அமர்வு நிறுத்தப்பட்டது</string>
     <string name="termux_stuck_warning">Termux திறக்கவில்லையா? அது கவனத்தைப் பெற கட்டாயப்படுத்த Master Watchdog ஐ இயக்கவும்.</string>
-    <string name="unexpected_error_termux">Termux க்கு intent அனுப்பும்போது எதிர்பாராத பிழை</string>
     <string name="end_of_history">--- வரலாற்றின் முடிவு ---</string>
     <string name="error_reading_history">வரலாற்றைப் படிப்பதில் பிழை: %s</string>
     <string name="failed_write_blackbox">BlackBox க்கு எழுதுவதில் தோல்வி</string>

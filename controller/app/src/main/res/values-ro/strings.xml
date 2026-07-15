@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog K2Go activ</string>
     <string name="watchdog_started">Watchdog pornit</string>
     <string name="watchdog_stopped">Watchdog oprit</string>
-    <string name="critical_os_blocked">CRITIC: Sistemul de operare a blocat stimularea Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Scrierea de întreținere a eșuat</string>
-    <string name="permission_denied_log">Permisiune refuzată: Asigură-te că manifestul are RUN_COMMAND și că aplicația nu este restricționată.</string>
-    <string name="ping_fail">PING 8085: EȘEC (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Eroare Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Se stimulează Termux…</string>
     <string name="session_started">SESIUNE HEARTBEAT PORNITĂ</string>
     <string name="session_stopped">SESIUNE HEARTBEAT OPRITĂ</string>
     <string name="termux_stuck_warning">Termux nu se deschide? Activează Master Watchdog pentru a-l forța să obțină focalizarea.</string>
-    <string name="unexpected_error_termux">Eroare neașteptată la trimiterea intent-ului către Termux</string>
     <string name="end_of_history">--- Sfârșitul istoricului ---</string>
     <string name="error_reading_history">Eroare la citirea istoricului: %s</string>
     <string name="failed_write_blackbox">Scrierea în BlackBox a eșuat</string>

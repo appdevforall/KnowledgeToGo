@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog K2Go đang hoạt động</string>
     <string name="watchdog_started">Đã khởi động Watchdog</string>
     <string name="watchdog_stopped">Đã dừng Watchdog</string>
-    <string name="critical_os_blocked">NGHIÊM TRỌNG: Hệ điều hành đã chặn kích hoạt Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Ghi bảo trì thất bại</string>
-    <string name="permission_denied_log">Bị từ chối quyền: Đảm bảo manifest có RUN_COMMAND và ứng dụng không bị hạn chế.</string>
-    <string name="ping_fail">PING 8085: THẤT BẠI (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Lỗi Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Đang kích hoạt Termux…</string>
     <string name="session_started">PHIÊN HEARTBEAT ĐÃ BẮT ĐẦU</string>
     <string name="session_stopped">PHIÊN HEARTBEAT ĐÃ DỪNG</string>
     <string name="termux_stuck_warning">Termux không mở? Bật Master Watchdog để buộc nó lấy tiêu điểm.</string>
-    <string name="unexpected_error_termux">Lỗi không mong muốn khi gửi intent đến Termux</string>
     <string name="end_of_history">--- Kết thúc lịch sử ---</string>
     <string name="error_reading_history">Lỗi khi đọc lịch sử: %s</string>
     <string name="failed_write_blackbox">Ghi vào BlackBox thất bại</string>

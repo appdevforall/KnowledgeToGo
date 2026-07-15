@@ -114,17 +114,10 @@
     <string name="watchdog_started">वॉचडॉग शुरू</string>
     <string name="watchdog_stopped">वॉचडॉग बंद</string>
 
-    <string name="critical_os_blocked">क्रिटिकल: OS ने वर्चुअल वातावरण उत्तेजना को ब्लॉक कर दिया (SecurityException)।</string>
     <string name="maintenance_write_failed">रखरखाव लेखन विफल</string>
-    <string name="permission_denied_log">अनुमति अस्वीकार: सुनिश्चित करें कि मैनिफ़ेस्ट में RUN_COMMAND है और ऐप प्रतिबंधित नहीं है।</string>
-    <string name="ping_fail">PING 8085: विफल (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">पल्स त्रुटि: %s</string>
-    <string name="pulse_stimulating">पल्स: सिस्टम को उत्तेजित करना...</string>
     <string name="session_started">हार्टबीट सत्र शुरू हुआ</string>
     <string name="session_stopped">हार्टबीट सत्र बंद हुआ</string>
     <string name="termux_stuck_warning">क्या वातावरण शुरू नहीं हो रहा है? फोकस बाध्य करने के लिए मास्टर वॉचडॉग सक्षम करें।</string>
-    <string name="unexpected_error_termux">वर्चुअल वातावरण में इंटेंट भेजने में अनपेक्षित त्रुटि।</string>
 
     <string name="end_of_history">--- इतिहास का अंत ---</string>
     <string name="error_reading_history">इतिहास पढ़ने में त्रुटि: %s</string>

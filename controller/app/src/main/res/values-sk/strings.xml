@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog K2Go je aktívny</string>
     <string name="watchdog_started">Watchdog spustený</string>
     <string name="watchdog_stopped">Watchdog zastavený</string>
-    <string name="critical_os_blocked">KRITICKÉ: OS zablokoval podnet pre Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Zápis údržby zlyhal</string>
-    <string name="permission_denied_log">Prístup zamietnutý: Zabezpečte, aby manifest obsahoval RUN_COMMAND a aplikácia nebola obmedzená.</string>
-    <string name="ping_fail">PING 8085: ZLYHANIE (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Chyba Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Stimuluje sa Termux…</string>
     <string name="session_started">RELÁCIA HEARTBEAT SPUSTENÁ</string>
     <string name="session_stopped">RELÁCIA HEARTBEAT ZASTAVENÁ</string>
     <string name="termux_stuck_warning">Termux sa neotvára? Zapnite Master Watchdog, aby ho prinútil získať zameranie.</string>
-    <string name="unexpected_error_termux">Neočakávaná chyba pri odosielaní intentu do Termux</string>
     <string name="end_of_history">--- Koniec histórie ---</string>
     <string name="error_reading_history">Chyba pri čítaní histórie: %s</string>
     <string name="failed_write_blackbox">Zápis do BlackBox zlyhal</string>

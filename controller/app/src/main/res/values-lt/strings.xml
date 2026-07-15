@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go Watchdog aktyvus</string>
     <string name="watchdog_started">Watchdog paleistas</string>
     <string name="watchdog_stopped">Watchdog sustabdytas</string>
-    <string name="critical_os_blocked">KRITINĖ: OS užblokavo Termux stimulą (SecurityException).</string>
     <string name="maintenance_write_failed">Techninės priežiūros įrašymas nepavyko</string>
-    <string name="permission_denied_log">Leidimas atmestas: įsitikinkite, kad manifeste yra RUN_COMMAND ir programa nėra apribota.</string>
-    <string name="ping_fail">PING 8085: NEPAVYKO (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse klaida: %s</string>
-    <string name="pulse_stimulating">Pulse: stimuliuojamas Termux…</string>
     <string name="session_started">HEARTBEAT SESIJA PRADĖTA</string>
     <string name="session_stopped">HEARTBEAT SESIJA SUSTABDYTA</string>
     <string name="termux_stuck_warning">Termux neatsidaro? Įjunkite Master Watchdog, kad priverstumėte jį gauti fokusą.</string>
-    <string name="unexpected_error_termux">Netikėta klaida siunčiant intent į Termux</string>
     <string name="end_of_history">--- Istorijos pabaiga ---</string>
     <string name="error_reading_history">Klaida skaitant istoriją: %s</string>
     <string name="failed_write_blackbox">Nepavyko įrašyti į BlackBox</string>

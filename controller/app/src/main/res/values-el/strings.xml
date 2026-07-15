@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Το Watchdog K2Go είναι ενεργό</string>
     <string name="watchdog_started">Το Watchdog ξεκίνησε</string>
     <string name="watchdog_stopped">Το Watchdog σταμάτησε</string>
-    <string name="critical_os_blocked">ΚΡΙΣΙΜΟ: Το OS απέκλεισε το ερέθισμα του Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Η εγγραφή συντήρησης απέτυχε</string>
-    <string name="permission_denied_log">Άρνηση άδειας: Βεβαιωθείτε ότι το manifest έχει RUN_COMMAND και ότι η εφαρμογή δεν είναι περιορισμένη.</string>
-    <string name="ping_fail">PING 8085: ΑΠΟΤΥΧΙΑ (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Σφάλμα Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Διέγερση του Termux…</string>
     <string name="session_started">Η ΣΥΝΕΔΡΙΑ HEARTBEAT ΞΕΚΙΝΗΣΕ</string>
     <string name="session_stopped">Η ΣΥΝΕΔΡΙΑ HEARTBEAT ΣΤΑΜΑΤΗΣΕ</string>
     <string name="termux_stuck_warning">Δεν ανοίγει το Termux; Ενεργοποιήστε το Master Watchdog για να το αναγκάσετε να αποκτήσει εστίαση.</string>
-    <string name="unexpected_error_termux">Απροσδόκητο σφάλμα κατά την αποστολή intent στο Termux</string>
     <string name="end_of_history">--- Τέλος ιστορικού ---</string>
     <string name="error_reading_history">Σφάλμα ανάγνωσης ιστορικού: %s</string>
     <string name="failed_write_blackbox">Η εγγραφή στο BlackBox απέτυχε</string>

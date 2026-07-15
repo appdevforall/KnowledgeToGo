@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">K2Go Watchdog সক্রিয়</string>
     <string name="watchdog_started">Watchdog চালু হয়েছে</string>
     <string name="watchdog_stopped">Watchdog বন্ধ হয়েছে</string>
-    <string name="critical_os_blocked">সংকটজনক: OS Termux উদ্দীপনা ব্লক করেছে (SecurityException)।</string>
     <string name="maintenance_write_failed">রক্ষণাবেক্ষণ লেখা ব্যর্থ হয়েছে</string>
-    <string name="permission_denied_log">অনুমতি প্রত্যাখ্যাত: নিশ্চিত করুন manifest-এ RUN_COMMAND আছে এবং অ্যাপটি সীমাবদ্ধ নয়।</string>
-    <string name="ping_fail">PING 8085: ব্যর্থ (%s)</string>
-    <string name="ping_ok">PING 8085: OK</string>
-    <string name="pulse_error_log">Pulse ত্রুটি: %s</string>
-    <string name="pulse_stimulating">Pulse: Termux উদ্দীপিত হচ্ছে…</string>
     <string name="session_started">HEARTBEAT সেশন শুরু হয়েছে</string>
     <string name="session_stopped">HEARTBEAT সেশন বন্ধ হয়েছে</string>
     <string name="termux_stuck_warning">Termux খুলছে না? এটিকে ফোকাস পেতে বাধ্য করতে Master Watchdog চালু করুন।</string>
-    <string name="unexpected_error_termux">Termux-এ intent পাঠানোর সময় অপ্রত্যাশিত ত্রুটি</string>
     <string name="end_of_history">--- ইতিহাসের শেষ ---</string>
     <string name="error_reading_history">ইতিহাস পড়তে ত্রুটি: %s</string>
     <string name="failed_write_blackbox">BlackBox-এ লেখা ব্যর্থ হয়েছে</string>

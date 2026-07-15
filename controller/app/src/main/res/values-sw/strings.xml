@@ -100,17 +100,10 @@
     <string name="watchdog_notif_title">Watchdog ya K2Go Inafanya Kazi</string>
     <string name="watchdog_started">Watchdog Imeanzishwa</string>
     <string name="watchdog_stopped">Watchdog Imesimamishwa</string>
-    <string name="critical_os_blocked">MUHIMU: OS imezuia kichocheo cha Termux (SecurityException).</string>
     <string name="maintenance_write_failed">Uandishi wa matengenezo umeshindwa</string>
-    <string name="permission_denied_log">Ruhusa Imekataliwa: Hakikisha manifest ina RUN_COMMAND na programu haijazuiwa.</string>
-    <string name="ping_fail">PING 8085: IMESHINDWA (%s)</string>
-    <string name="ping_ok">PING 8085: SAWA</string>
-    <string name="pulse_error_log">Hitilafu ya Pulse: %s</string>
-    <string name="pulse_stimulating">Pulse: Inachochea Termux…</string>
     <string name="session_started">KIPINDI CHA HEARTBEAT KIMEANZA</string>
     <string name="session_stopped">KIPINDI CHA HEARTBEAT KIMESIMAMA</string>
     <string name="termux_stuck_warning">Termux haifunguki? Washa Master Watchdog ili kuilazimisha kupata umakini.</string>
-    <string name="unexpected_error_termux">Hitilafu isiyotarajiwa wakati wa kutuma intent kwa Termux</string>
     <string name="end_of_history">--- Mwisho wa Historia ---</string>
     <string name="error_reading_history">Hitilafu wakati wa kusoma historia: %s</string>
     <string name="failed_write_blackbox">Kuandika kwenye BlackBox kumeshindwa</string>
