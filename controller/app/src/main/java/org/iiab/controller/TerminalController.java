@@ -965,7 +965,8 @@ public class TerminalController {
                     workingDirectory.getAbsolutePath(),
                     new String[]{"-l"}, // Login shell flag
                     env,
-                    5000, // <--- Careful to increase, all lines (per session) are stored in RAM
+                    10000, // scrollback lines/session, in RAM. Rows allocate on demand,
+                           // so empty sessions cost ~KB; worst case ~3 MB when fully filled.
                     client
             );
             terminalView.setTextSize((int) currentTerminalFontSize);
