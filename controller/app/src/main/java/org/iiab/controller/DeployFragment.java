@@ -8,6 +8,8 @@
  */
 package org.iiab.controller;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 import org.iiab.controller.deploy.domain.ModuleName;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -268,7 +270,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         // Handlers
         liveStatusRunnable = () -> {
             new Thread(() -> {
-                boolean isAlive = pingUrl("http://localhost:8085/home");
+                boolean isAlive = pingUrl(BoxEndpoints.BASE + "/home");
                 checkInternetAccess();
                 if (isAdded() && getActivity() != null) {
                     getActivity().runOnUiThread(this::updateDynamicButtons);

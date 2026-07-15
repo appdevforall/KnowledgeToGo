@@ -8,6 +8,8 @@
  */
 package org.iiab.controller.help.domain;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 /**
  * Builds tier-3 documentation URLs. Tooltip IDs are the source of truth for article
  * paths: {@code /k2go-docs/<tooltipId>} on the local server. Change the route here only.
@@ -15,7 +17,7 @@ package org.iiab.controller.help.domain;
 public final class Tier3DocsUrl {
 
     /** Base URL of the tier-3 docs module (served by nginx on :8085). */
-    public static final String BASE = "http://localhost:8085/k2go-docs/";
+    public static final String BASE = BoxEndpoints.BASE + "/k2go-docs/";
 
     private Tier3DocsUrl() {}
 

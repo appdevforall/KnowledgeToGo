@@ -16,6 +16,8 @@
  */
 package org.iiab.controller;
 
+import org.iiab.controller.config.BoxEndpoints;
+
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
@@ -133,7 +135,7 @@ public class ServerController {
         if (host.isNegotiating()) return;
 
         AppExecutors.get().io().execute(() -> {
-            boolean localAlive = pingUrl("http://localhost:8085/home");
+            boolean localAlive = pingUrl(BoxEndpoints.BASE + "/home");
 
             updateServerAlive(localAlive);
 
@@ -150,7 +152,7 @@ public class ServerController {
                 activity.runOnUiThread(host::stopBtnProgress);
             }
 
-            currentTargetUrl = localAlive ? "http://localhost:8085/home" : null;
+            currentTargetUrl = localAlive ? BoxEndpoints.BASE + "/home" : null;
 
             activity.runOnUiThread(host::refreshServerUi);
         });
