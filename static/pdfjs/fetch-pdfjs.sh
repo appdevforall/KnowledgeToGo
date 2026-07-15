@@ -5,7 +5,13 @@
 # /library/www/html/pdfjs (see the iiab-android setup script).
 set -euo pipefail
 
-# Pin -> CONFIRM this is the version we want before release.
+# Pinned pdf.js version. pdf.js ships a stable dist ~monthly and uses semver, so a MAJOR
+# bump can break the viewer API. Keep this pinned and bump it DELIBERATELY — primarily when
+# a pdf.js security advisory lands (it has had RCE CVEs), not on every release. Also confirm
+# the pin runs on the oldest Android System WebView we target (app minSdk = 24 / Android 7;
+# recent pdf.js majors need a modern Chromium WebView). Use the newest STABLE that is still
+# compatible — never a nightly/beta.
+# TODO(Luis): confirm the version to ship (marker below is a placeholder, not verified).
 PDFJS_VERSION="${PDFJS_VERSION:-4.10.38}"
 # Optional integrity check: set PDFJS_SHA256 to the expected zip checksum to enforce it.
 PDFJS_SHA256="${PDFJS_SHA256:-}"
