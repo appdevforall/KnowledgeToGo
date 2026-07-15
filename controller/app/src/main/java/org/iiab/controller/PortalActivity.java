@@ -26,6 +26,8 @@ import android.os.Handler;
 import android.os.Looper;
 
 import org.iiab.controller.portal.domain.NavigationPolicy;
+import org.iiab.controller.portal.domain.PdfPolicy;
+import org.iiab.controller.portal.domain.PdfViewerUrl;
 import org.iiab.controller.portal.presentation.GestureWebView;
 import org.iiab.controller.portal.presentation.PortalViewModel;
 
@@ -239,6 +241,18 @@ public class PortalActivity extends AppCompatActivity {
             Uri uri = Uri.parse(url);
             String host = uri.getHost();
             String lastSeg = uri.getLastPathSegment();
+
+            // PDFs served by the local box (ADFA-4708): the Android WebView has no built-in
+            // PDF viewer, so instead of downloading, route them to the locally-served pdf.js
+            // reader (same origin, works offline). Anything else falls through to the APK path.
+            if (NavigationPolicy.isInternalHost(host) && PdfPolicy.isPdf(url, mimetype, contentDisposition)) {
+                String viewerUrl = PdfViewerUrl.forPdf(url);
+                if (viewerUrl != null) {
+                    Log.d(TAG, "PDF routed to local pdf.js viewer: " + url);
+                    webView.loadUrl(viewerUrl);
+                    return;
+                }
+            }
             boolean looksApk = "application/vnd.android.package-archive".equalsIgnoreCase(mimetype)
                     || (lastSeg != null && lastSeg.toLowerCase().endsWith(".apk"))
                     || (contentDisposition != null && contentDisposition.toLowerCase().contains(".apk"));
