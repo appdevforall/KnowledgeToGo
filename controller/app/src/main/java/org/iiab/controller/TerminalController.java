@@ -745,7 +745,7 @@ public class TerminalController {
                 cliStr.append("        PROOT_CMD=\"$PROOT_CMD -b \\\"$BACKUPS_DIR:/backups\\\"\"\n");
                 cliStr.append("    fi\n");
 
-                cliStr.append("    PROOT_CMD=\"$PROOT_CMD -w /root /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm-256color /bin/bash -l -i\"\n");
+                cliStr.append("    PROOT_CMD=\"$PROOT_CMD -w /root /usr/bin/env HOME=/root PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin TERM=xterm-256color HISTFILE=/root/.bash_history HISTSIZE=5000 HISTFILESIZE=20000 HISTCONTROL=ignoreboth PROMPT_COMMAND='history -a' /bin/bash -l -i\"\n");
 
                 // Execute!
                 // ADFA-4630: seed the guest resolv.conf from the app's effective DNS before entering,
@@ -755,6 +755,21 @@ public class TerminalController {
                 if (!termDnsSecondary.isEmpty()) {
                     cliStr.append("    echo 'nameserver ").append(termDnsSecondary).append("' >> \"$ROOTFS_DIR/etc/resolv.conf\"\n");
                 }
+                // ADFA-4709: seed persistent, crash-safe shell history for the Debian shell.
+                // A login bash sources /etc/profile.d/*.sh; appending each command to HISTFILE
+                // immediately means history survives the session being SIGKILLed.
+                cliStr.append("    mkdir -p \"$ROOTFS_DIR/etc/profile.d\" 2>/dev/null\n");
+                cliStr.append("    cat > \"$ROOTFS_DIR/etc/profile.d/00-k2go-history.sh\" <<'K2GOHIST'\n");
+                cliStr.append("# K2Go: persistent, crash-safe shell history (ADFA-4709)\n");
+                cliStr.append("export HISTSIZE=5000\n");
+                cliStr.append("export HISTFILESIZE=20000\n");
+                cliStr.append("export HISTCONTROL=ignoreboth\n");
+                cliStr.append("shopt -s histappend 2>/dev/null\n");
+                cliStr.append("case \"$PROMPT_COMMAND\" in\n");
+                cliStr.append("  *\"history -a\"*) ;;\n");
+                cliStr.append("  *) PROMPT_COMMAND=\"history -a${PROMPT_COMMAND:+; $PROMPT_COMMAND}\" ;;\n");
+                cliStr.append("esac\n");
+                cliStr.append("K2GOHIST\n");
                 cliStr.append("    echo -e '\\033[32mEntering Jail...\\033[0m'\n");
                 cliStr.append("    eval \"$PROOT_CMD\"\n");
                 cliStr.append("}\n\n");
@@ -944,6 +959,14 @@ public class TerminalController {
                 mkshrc.append("[ -f /system/etc/mkshrc ] && . /system/etc/mkshrc\n");
                 // 2. Crush the system prompt with our custom one
                 mkshrc.append("export PS1=\"~$ \"\n");
+                // ADFA-4709: deeper in-session command history (Up-arrow recall).
+                // NOTE: Android's system shell is mksh (MirBSD ksh), a size-reduced AOSP
+                // build whose persistent HISTFILE machinery is disabled: it neither writes
+                // nor reloads history to/from disk, so host history is in-session only.
+                // Debian (bash) has full cross-session history. Giving the host shell
+                // persistent history would require replacing /system/bin/sh with a fuller
+                // shell (e.g. a bundled bash / busybox ash) — see ADFA-4709.
+                mkshrc.append("export HISTSIZE=5000\n");
                 fosMkshrc.write(mkshrc.toString().getBytes());
                 fosMkshrc.close();
             } catch (Exception e) {
