@@ -131,7 +131,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
     private TextView txtOfflineEstimate;
     private CheckBox chkCompanionData;
     private MultiResourceGaugeView storageGauge;
-    private com.google.android.material.button.MaterialButton btnKiwixSettings;
+    private android.widget.Button btnKiwixSettings;
 
     // SAF & Backup Controls
     private Button btnImportBackup;
@@ -261,7 +261,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
         btnLaunchInstall.setEnabled(false);
         btnLaunchInstall.setAlpha(0.5f);
         int kiwixTint = ContextCompat.getColor(requireContext(), R.color.text_secondary);
-        btnKiwixSettings.setIconTint(android.content.res.ColorStateList.valueOf(kiwixTint));
+        btnKiwixSettings.setCompoundDrawableTintList(android.content.res.ColorStateList.valueOf(kiwixTint));
         btnKiwixSettings.setTextColor(kiwixTint);
         btnFastInstall.setAlpha(0.4f);
 

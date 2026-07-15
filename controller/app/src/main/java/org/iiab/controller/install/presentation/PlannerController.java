@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import com.google.android.material.button.MaterialButton;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -67,7 +67,7 @@ public final class PlannerController {
     private TextView txtLegendKiwix;
     private TextView txtLegendFree;
     private TextView txtOfflineEstimate;
-    private MaterialButton btnKiwixSettings;
+    private Button btnKiwixSettings;
     private CheckBox chkCompanionData;
 
     // Owned by the planner (nothing else uses it).
@@ -83,7 +83,7 @@ public final class PlannerController {
                      Button btnTierBasic, Button btnTierStandard, Button btnTierFull,
                      TextView txtLegendIiab, TextView txtLegendMaps, TextView txtLegendKiwix,
                      TextView txtLegendFree, TextView txtOfflineEstimate,
-                     MaterialButton btnKiwixSettings, CheckBox chkCompanionData) {
+                     Button btnKiwixSettings, CheckBox chkCompanionData) {
         this.rolesContainer = rolesContainer;
         this.storageGauge = storageGauge;
         this.btnTierBasic = btnTierBasic;
@@ -262,7 +262,7 @@ public final class PlannerController {
     /** ADFA-4712: tint the labelled "Select content" control (icon + text) by state. */
     private void applyKiwixTint(int colorRes) {
         int c = ContextCompat.getColor(fragment.requireContext(), colorRes);
-        btnKiwixSettings.setIconTint(ColorStateList.valueOf(c));
+        btnKiwixSettings.setCompoundDrawableTintList(ColorStateList.valueOf(c));
         btnKiwixSettings.setTextColor(c);
     }
 

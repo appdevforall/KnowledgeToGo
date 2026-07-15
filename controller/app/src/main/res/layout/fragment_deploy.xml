@@ -409,24 +409,22 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:gravity="center">
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/btn_kiwix_settings"
-                        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                        style="?android:attr/borderlessButtonStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:minWidth="0dp"
                         android:minHeight="0dp"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:text="@string/install_btn_select_content"
                         android:textSize="12sp"
+                        android:textAllCaps="false"
                         android:textColor="@color/text_secondary"
-                        app:icon="@drawable/ic_select_content_24"
-                        app:iconSize="18dp"
-                        app:iconPadding="4dp"
-                        app:iconTint="@color/text_secondary" />
+                        android:drawableStart="@drawable/ic_select_content_24"
+                        android:drawablePadding="6dp"
+                        android:drawableTint="@color/text_secondary" />
                 </LinearLayout>
             </LinearLayout>
 
