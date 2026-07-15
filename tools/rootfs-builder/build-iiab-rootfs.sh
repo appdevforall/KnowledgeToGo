@@ -230,8 +230,12 @@ if [[ "$ALL_ARCH" -eq 1 || "$ALL_TIER" -eq 1 ]]; then
     esac
   done
   MULTI_RC=0
+  MULTI_TOTAL=$(( ${#build_archs[@]} * ${#build_tiers[@]} ))
+  MULTI_N=0
   for _arch in "${build_archs[@]}"; do
     for _tier in "${build_tiers[@]}"; do
+      MULTI_N=$((MULTI_N + 1))
+      log "$(printf 'Rootfs global status [%02d/%02d]' "$MULTI_N" "$MULTI_TOTAL")  ==> tier=${_tier}  arch=${_arch}"
       log "==================== BUILD  tier=${_tier}  arch=${_arch} ===================="
       if bash "$SELF" "${PASS[@]}" --arch "$_arch" --tier "$_tier"; then
         ok "build OK: ${_tier}/${_arch}"
