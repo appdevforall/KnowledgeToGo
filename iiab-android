@@ -621,15 +621,18 @@ mkdir -p /library/www/html/pdfjs
 # curl/unzip in the build environment. pdf.js release cadence ~monthly (semver; majors
 # can break) -> the version is PINNED in fetch-pdfjs.sh; bump it deliberately, mainly on
 # a pdf.js security advisory, not on every release.
-if [ ! -d "${K2GO_OPT_DIR}/static/pdfjs/dist/web" ]; then
-  log "Fetching pinned pdf.js dist (build-time)..."
+if [ ! -f "${K2GO_OPT_DIR}/static/pdfjs/dist/manifest.json" ]; then
+  log "Fetching pinned pdf.js builds (build-time)..."
   if ! bash "${K2GO_OPT_DIR}/static/pdfjs/fetch-pdfjs.sh"; then
     warn "pdf.js fetch failed; viewer will 404 until the dist is provided."
   fi
 fi
-if [ -d "${K2GO_OPT_DIR}/static/pdfjs/dist/web" ]; then
+# Clean teardown before redeploy: wipe the served dir so a removed build leaves no stale
+# files (removing a build is just dropping it from VERSIONS in fetch-pdfjs.sh).
+rm -rf /library/www/html/pdfjs/*
+if [ -f "${K2GO_OPT_DIR}/static/pdfjs/dist/manifest.json" ]; then
   cp -a "${K2GO_OPT_DIR}/static/pdfjs/dist/." /library/www/html/pdfjs/
-  ok "pdf.js dist deployed."
+  ok "pdf.js builds deployed: $(sed -n 's/.*\"id\":\"\([^\"]*\)\".*/\1/p' /library/www/html/pdfjs/manifest.json | tr '\n' ' ')"
 else
   warn "pdf.js dist not found; viewer will 404 until deployed."
 fi

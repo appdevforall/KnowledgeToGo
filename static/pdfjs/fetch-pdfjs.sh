@@ -1,37 +1,66 @@
 #!/usr/bin/env bash
-# Fetch a pinned Mozilla pdf.js prebuilt distribution into ./dist for deployment.
-# pdf.js is pure JS (Apache-2.0) -> no 32/64-bit concern; the same dist serves every ABI.
-# Run at rootfs-build time on a networked host; the extracted dist is then deployed to
-# /library/www/html/pdfjs (see the iiab-android setup script).
+# Fetch pinned Mozilla pdf.js prebuilt distributions into ./dist and emit a manifest the
+# app reads to pick a viewer per device. pdf.js is pure JS (Apache-2.0) -> ABI-agnostic
+# (one set of files serves ARM 32 and 64). Run at rootfs-build time on a networked host.
+#
+# WHY TWO VERSIONS: the Android System WebView is whatever the device has (we never touch
+# the ROM). A modern WebView runs the latest pdf.js; a frozen/old one does not. So we ship
+# a newer build AND an older build, and the app routes by the device's WebView major:
+#   - v6  -> needs Chromium/WebView >= 118  (latest; receives upstream security fixes)
+#   - v4  -> needs Chromium/WebView >= 88   (best-effort for old/frozen devices; TENTATIVE)
+# The app is data-driven off manifest.json, so REMOVING a build is just deleting its row
+# from VERSIONS below: it won't be fetched, won't be in the manifest, and the app ignores
+# it — no dead code, no stale files (the installer wipes the web dir before redeploying).
+#
+# To drop v4 later (e.g. policy: maintained software only): delete its VERSIONS line. Done.
 set -euo pipefail
 
-# Pinned pdf.js version. pdf.js ships a stable dist ~monthly and uses semver, so a MAJOR
-# bump can break the viewer API. Keep this pinned and bump it DELIBERATELY — primarily when
-# a pdf.js security advisory lands (it has had RCE CVEs), not on every release. Also confirm
-# the pin runs on the oldest Android System WebView we target (app minSdk = 24 / Android 7;
-# recent pdf.js majors need a modern Chromium WebView). Use the newest STABLE that is still
-# compatible — never a nightly/beta.
-# TODO(Luis): confirm the version to ship (marker below is a placeholder, not verified).
-PDFJS_VERSION="${PDFJS_VERSION:-4.10.38}"
-# Optional integrity check: set PDFJS_SHA256 to the expected zip checksum to enforce it.
-PDFJS_SHA256="${PDFJS_SHA256:-}"
+# id : version : minWebViewMajor : [flags]
+#  - id           = served subdir and manifest id (/pdfjs/<id>/web/viewer.html)
+#  - version      = pinned pdf.js release (CONFIRM before shipping)
+#  - minWebViewMajor = minimum Chromium/WebView major that build supports
+#  - flags        = optional, comma-separated (e.g. "tentative")
+VERSIONS=(
+  "6:6.1.200:118:"
+  "4:4.10.38:88:tentative"
+)
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DIST_DIR="${HERE}/dist"
-ZIP_URL="https://github.com/mozilla/pdf.js/releases/download/v${PDFJS_VERSION}/pdfjs-${PDFJS_VERSION}-dist.zip"
-TMP_ZIP="$(mktemp -t pdfjs-XXXXXX.zip)"
-trap 'rm -f "$TMP_ZIP"' EXIT
-
-echo "Fetching pdf.js v${PDFJS_VERSION} ..."
-curl -fSL "$ZIP_URL" -o "$TMP_ZIP"
-
-if [ -n "$PDFJS_SHA256" ]; then
-  echo "${PDFJS_SHA256}  ${TMP_ZIP}" | sha256sum -c -
-fi
-
 rm -rf "$DIST_DIR"
 mkdir -p "$DIST_DIR"
-unzip -q "$TMP_ZIP" -d "$DIST_DIR"
-# Sanity: the viewer the app points to must exist.
-test -f "${DIST_DIR}/web/viewer.html" || { echo "ERROR: web/viewer.html missing from dist"; exit 1; }
-echo "pdf.js dist ready at ${DIST_DIR} (web/viewer.html present)."
+
+manifest_rows=()
+for row in "${VERSIONS[@]}"; do
+  IFS=':' read -r id version minmajor flags <<< "$row"
+  zip_url="https://github.com/mozilla/pdf.js/releases/download/v${version}/pdfjs-${version}-dist.zip"
+  tmp_zip="$(mktemp -t "pdfjs-${id}-XXXXXX.zip")"
+  echo "Fetching pdf.js v${version} (build '${id}', min WebView ${minmajor}) ..."
+  curl -fSL "$zip_url" -o "$tmp_zip"
+  mkdir -p "${DIST_DIR}/${id}"
+  unzip -q "$tmp_zip" -d "${DIST_DIR}/${id}"
+  rm -f "$tmp_zip"
+  test -f "${DIST_DIR}/${id}/web/viewer.html" \
+    || { echo "ERROR: web/viewer.html missing for build '${id}'"; exit 1; }
+  tentative="false"; [ "${flags:-}" = "tentative" ] && tentative="true"
+  manifest_rows+=("    {\"id\":\"${id}\",\"viewerPath\":\"/pdfjs/${id}/web/viewer.html\",\"minWebViewMajor\":${minmajor},\"version\":\"${version}\",\"tentative\":${tentative}}")
+done
+
+# Emit manifest.json from exactly what was fetched.
+{
+  echo '{'
+  echo '  "schema": "pdfjs-viewers-v1",'
+  echo '  "builds": ['
+  n=${#manifest_rows[@]}
+  for i in "${!manifest_rows[@]}"; do
+    sep=","; [ "$i" -eq "$((n-1))" ] && sep=""
+    echo "${manifest_rows[$i]}${sep}"
+  done
+  echo '  ]'
+  echo '}'
+} > "${DIST_DIR}/manifest.json"
+
+echo "pdf.js dist ready:"
+ls -1 "$DIST_DIR"
+echo "--- manifest.json ---"
+cat "${DIST_DIR}/manifest.json"
