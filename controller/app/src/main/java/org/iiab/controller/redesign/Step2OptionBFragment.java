@@ -175,6 +175,6 @@ public class Step2OptionBFragment extends Fragment {
         lp.weight = w; v.setLayoutParams(lp);
     }
     private void tintBg(View v, int colorRes) {
-        v.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), colorRes)));
+        v.setBackgroundColor(ContextCompat.getColor(requireContext(), colorRes));
     }
 }
