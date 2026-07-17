@@ -99,9 +99,13 @@ public class Step1SystemFragment extends Fragment {
         // System size (no content) resolves without a network read.
         InstallationPlanner.calculateProjectedSize(requireContext(), tier, false,
                 ContentLanguage.systemDefault(), null,
-                projection -> {
-                    if (!isAdded()) return;
-                    applyBar(projection.osSize);
+                new InstallationPlanner.PlanResultListener() {
+                    @Override
+                    public void onCalculated(InstallationPlanner.StorageProjection projection) {
+                        if (isAdded()) applyBar(projection.osSize);
+                    }
+                    @Override
+                    public void onError(String error) { /* keep the last bar on error */ }
                 });
     }
 
