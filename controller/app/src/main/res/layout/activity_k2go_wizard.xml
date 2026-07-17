@@ -84,6 +84,8 @@
                 android:text="@string/k2go_internet_download_sub" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             <TextView android:id="@+id/setup_copy" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:layout_marginTop="14dp"
                 android:gravity="center" android:text="@string/k2go_copy_from_phone" android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+            <TextView android:id="@+id/wiz_skip_for_now" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_skip_for_now" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
         </LinearLayout>
 
         <!-- Push the primary CTA to the bottom (fixed position across steps, per the wizard diagram). -->

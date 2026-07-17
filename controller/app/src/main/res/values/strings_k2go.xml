@@ -77,4 +77,5 @@
     <string name="k2go_courses_hint" translatable="false">Kiwix presets exist; Kolibri can\'t be preset yet — set up on the device after install.</string>
     <string name="k2go_added_after" translatable="false">added after install</string>
     <string name="k2go_step2a_hint" translatable="false">Tap a source to Add or Skip it. Skip all = just the system.</string>
+    <string name="k2go_skip_for_now" translatable="false">Skip for now ›</string>
 </resources>

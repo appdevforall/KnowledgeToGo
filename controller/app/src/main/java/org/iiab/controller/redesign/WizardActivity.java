@@ -74,6 +74,11 @@ public class WizardActivity extends AppCompatActivity {
             startActivity(new Intent(this, LibraryActivity.class));
             finish();
         });
+        findViewById(R.id.wiz_skip_for_now).setOnClickListener(v -> {
+            markComplete();
+            startActivity(new Intent(this, LibraryActivity.class));
+            finish();
+        });
 
         primary.setOnClickListener(v -> onPrimary());
         back.setOnClickListener(v -> goBack());

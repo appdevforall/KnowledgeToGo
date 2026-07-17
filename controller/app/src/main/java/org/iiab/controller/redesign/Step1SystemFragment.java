@@ -79,6 +79,12 @@ public class Step1SystemFragment extends Fragment {
         });
 
         root.findViewById(R.id.k2go_step1_back).setOnClickListener(v -> requireActivity().finish());
+        root.findViewById(R.id.k2go_step1_skip_now).setOnClickListener(v -> {
+            requireContext().getSharedPreferences(getString(R.string.pref_file_internal), android.content.Context.MODE_PRIVATE)
+                    .edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
+            startActivity(new android.content.Intent(requireContext(), LibraryActivity.class));
+            requireActivity().finish();
+        });
         select(selected);
         return root;
     }
