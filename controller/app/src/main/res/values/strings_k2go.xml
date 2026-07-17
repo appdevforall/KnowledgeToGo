@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="k2go_tab_library" translatable="false">Library</string>
+    <string name="k2go_tab_connect" translatable="false">Connect</string>
+    <string name="k2go_tab_clone" translatable="false">Clone</string>
+    <string name="k2go_tab_settings" translatable="false">Settings</string>
+</resources>

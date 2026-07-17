@@ -64,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
         fade.setAlpha(0f);
         new Handler(Looper.getMainLooper()).postDelayed(() ->
                 fade.animate().alpha(1f).setDuration(EXIT_FADE_MS).withEndAction(() -> {
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                    startActivity(new Intent(SplashActivity.this, org.iiab.controller.redesign.LibraryActivity.class));
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();
                 }).start(), EXIT_AT_MS);

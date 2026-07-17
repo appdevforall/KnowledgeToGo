@@ -80,6 +80,13 @@
             tools:replace="screenOrientation" />
 
         <activity android:name=".SetupActivity" />
+
+        <!-- ADFA-4725: new content-first UI shell (scoped Material 3 theme). -->
+        <activity
+            android:name=".redesign.LibraryActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:theme="@style/Theme.K2Go" />
         <activity android:name=".feedback.crash.presentation.CrashReportActivity" />
         <activity android:name=".QrActivity" />
 

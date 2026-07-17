@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_library"  android:icon="@drawable/ic_nav_library"  android:title="@string/k2go_tab_library" />
+    <item android:id="@+id/nav_connect"  android:icon="@drawable/ic_nav_connect"  android:title="@string/k2go_tab_connect" />
+    <item android:id="@+id/nav_clone"    android:icon="@drawable/ic_nav_clone"    android:title="@string/k2go_tab_clone" />
+    <item android:id="@+id/nav_settings" android:icon="@drawable/ic_nav_settings" android:title="@string/k2go_tab_settings" />
+</menu>
