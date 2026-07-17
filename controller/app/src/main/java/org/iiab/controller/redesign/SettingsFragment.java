@@ -118,7 +118,7 @@ public class SettingsFragment extends Fragment {
 
     private String versionName() {
         try {
-            return "v" + requireContext().getPackageManager()
+            return requireContext().getPackageManager()
                     .getPackageInfo(requireContext().getPackageName(), 0).versionName;
         } catch (Exception e) {
             return "";

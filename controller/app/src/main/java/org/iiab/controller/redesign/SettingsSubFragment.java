@@ -113,7 +113,7 @@ public class SettingsSubFragment extends Fragment {
 
     private String versionName(Context ctx) {
         try {
-            return "v" + ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionName;
+            return ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionName;
         } catch (Exception e) {
             return "";
         }
