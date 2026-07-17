@@ -1,6 +1,5 @@
 package org.iiab.controller.redesign;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +18,17 @@ import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.R;
 import org.iiab.controller.applang.data.ContentLanguage;
 
-/** Step 1 of "Set up your library": choose the system edition (apps) with a live storage bar. */
+/** Step 1 of "Set up your library": choose the system edition (apps) with a live storage bar.
+ *  Edition sizes are resolved from the rootfs .meta4 (live when online); when offline they show
+ *  the last-known value from RootfsCatalog — never hardcoded in the UI. */
 public class Step1SystemFragment extends Fragment {
 
     private static final class Edition {
-        final InstallationPlanner.Tier tier; final String name; final double sizeGb;
-        final String desc; final boolean recommended; ImageView radio;
-        Edition(InstallationPlanner.Tier t, String n, double s, String d, boolean r) {
-            tier = t; name = n; sizeGb = s; desc = d; recommended = r;
+        final InstallationPlanner.Tier tier; final String name;
+        final String desc; final boolean recommended;
+        ImageView radio; TextView sizeView;
+        Edition(InstallationPlanner.Tier t, String n, String d, boolean r) {
+            tier = t; name = n; desc = d; recommended = r;
         }
     }
 
@@ -50,11 +52,11 @@ public class Step1SystemFragment extends Fragment {
         tint(barFree, R.color.k2go_hairline);
 
         editions.clear();
-        editions.add(new Edition(InstallationPlanner.Tier.BASIC, "Basic", 1.2,
+        editions.add(new Edition(InstallationPlanner.Tier.BASIC, "Basic",
                 "Wikipedia reader app + Books app", false));
-        editions.add(new Edition(InstallationPlanner.Tier.STANDARD, "Standard", 1.4,
+        editions.add(new Edition(InstallationPlanner.Tier.STANDARD, "Standard",
                 "Basic plus Courses app", true));
-        editions.add(new Edition(InstallationPlanner.Tier.FULL, "Full", 2.7,
+        editions.add(new Edition(InstallationPlanner.Tier.FULL, "Full",
                 "Standard plus Maps app (all apps)", false));
 
         LinearLayout host = root.findViewById(R.id.k2go_editions);
@@ -62,13 +64,14 @@ public class Step1SystemFragment extends Fragment {
             View row = inflater.inflate(R.layout.view_k2go_edition, host, false);
             ((TextView) row.findViewById(R.id.k2go_edition_name)).setText(e.name);
             ((TextView) row.findViewById(R.id.k2go_edition_desc)).setText(e.desc);
-            ((TextView) row.findViewById(R.id.k2go_edition_size))
-                    .setText(String.format(Locale.US, "~ %.1f GB", e.sizeGb));
+            e.sizeView = row.findViewById(R.id.k2go_edition_size);
+            e.sizeView.setText(sizeText(InstallationPlanner.fallbackOsSizeGb(e.tier))); // instant last-known
             row.findViewById(R.id.k2go_edition_reco)
                     .setVisibility(e.recommended ? View.VISIBLE : View.GONE);
             e.radio = row.findViewById(R.id.k2go_edition_radio);
             row.setOnClickListener(v -> select(e.tier));
             host.addView(row);
+            resolveEditionSize(e); // refine to the live .meta4 size when online
         }
 
         root.findViewById(R.id.k2go_step1_next).setOnClickListener(v -> {
@@ -89,6 +92,20 @@ public class Step1SystemFragment extends Fragment {
         return root;
     }
 
+    private static String sizeText(double gb) { return String.format(Locale.US, "~ %.1f GB", gb); }
+
+    private void resolveEditionSize(Edition e) {
+        InstallationPlanner.calculateProjectedSize(requireContext(), e.tier, false,
+                ContentLanguage.systemDefault(), null,
+                new InstallationPlanner.PlanResultListener() {
+                    @Override
+                    public void onCalculated(InstallationPlanner.StorageProjection p) {
+                        if (isAdded() && e.sizeView != null) e.sizeView.setText(sizeText(p.osSize));
+                    }
+                    @Override public void onError(String error) { /* keep last-known */ }
+                });
+    }
+
     private void select(InstallationPlanner.Tier tier) {
         selected = tier;
         if (getActivity() instanceof SetupLibraryActivity) {
@@ -103,7 +120,6 @@ public class Step1SystemFragment extends Fragment {
     }
 
     private void recomputeBar(InstallationPlanner.Tier tier) {
-        // System size (no content) resolves without a network read.
         InstallationPlanner.calculateProjectedSize(requireContext(), tier, false,
                 ContentLanguage.systemDefault(), null,
                 new InstallationPlanner.PlanResultListener() {

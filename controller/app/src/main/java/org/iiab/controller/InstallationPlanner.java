@@ -342,6 +342,12 @@ public class InstallationPlanner {
      * <p>Performs a (cached) network call; must run off the main thread — it does,
      * because every caller is inside {@link #calculateProjectedSize}'s worker thread.
      */
+    /** No-network last-known OS size (RootfsCatalog fallback) — instant, for placeholders. */
+    public static double fallbackOsSizeGb(Tier tier) {
+        RootfsCatalog catalog = new RootfsCatalog();
+        return ByteFormatter.toGiB(catalog.fallbackBytes(toDomainTier(tier), catalog.detectAbi()));
+    }
+
     private static double resolveOsSizeGb(Tier tier) {
         RootfsCatalog catalog = new RootfsCatalog();
         RootfsRepository repository =
