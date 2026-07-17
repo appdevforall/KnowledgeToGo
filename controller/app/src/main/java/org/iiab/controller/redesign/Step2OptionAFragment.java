@@ -49,6 +49,13 @@ public class Step2OptionAFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
         View v = inflater.inflate(R.layout.fragment_k2go_setup_step2a, c, false);
         lang = ContentLanguage.systemDefault();
+        if (getActivity() instanceof SetupLibraryActivity) {
+            everything = ((SetupLibraryActivity) getActivity()).isEverything();
+            pictures = ((SetupLibraryActivity) getActivity()).isPictures();
+        }
+        AbFlip.attach(v.findViewById(R.id.k2go_step2_title), () -> {
+            if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).flipAbTest();
+        });
         bar = v.findViewById(R.id.k2go_bar);
         barUsed = v.findViewById(R.id.k2go_bar_used);
         barSystem = v.findViewById(R.id.k2go_bar_system);
@@ -102,6 +109,10 @@ public class Step2OptionAFragment extends Fragment {
     private static String gb(double s) { return s >= 0 ? String.format(Locale.US, "%.1fG", s) : "—"; }
 
     private void refresh() {
+        if (getActivity() instanceof SetupLibraryActivity) {
+            ((SetupLibraryActivity) getActivity()).setEverything(everything);
+            ((SetupLibraryActivity) getActivity()).setPictures(pictures);
+        }
         // toggle labels with live sizes
         label(covPopular, "Popular", sizeOf(popularBase() + "_" + (pictures ? "maxi" : "nopic")), !everything);
         label(covEverything, "Everything", sizeOf("all_" + (pictures ? "maxi" : "nopic")), everything);
