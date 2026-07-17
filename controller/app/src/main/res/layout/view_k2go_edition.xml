@@ -36,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:textColor="@color/k2go_ink" />
+            <TextView android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="6dp" android:gravity="center" android:text="i" android:textSize="10sp" android:textStyle="bold" android:textColor="@color/k2go_ink" android:background="@drawable/k2go_info_circle" />
 
             <TextView
                 android:id="@+id/k2go_edition_reco"

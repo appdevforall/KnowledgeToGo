@@ -30,7 +30,7 @@ public class Step2OptionBFragment extends Fragment {
 
     private static final String[] NAMES = {"Wikipedia", "Books", "Maps", "Courses", "Review"};
     private static final String[] INFO = {
-            "", "Books — included with your edition.", "Maps — included with your edition.",
+            "", "Books — coming soon (no content manager yet · 0 GB).", "Maps — included with your edition.",
             "Courses — set up on the device after install.", "Review your library, then download."};
 
     private int step = 0;

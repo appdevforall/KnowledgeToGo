@@ -30,7 +30,7 @@ import org.json.JSONObject;
  */
 public class Step2OptionAFragment extends Fragment {
 
-    private static final double BOOKS_GB = 0.8, MAPS_GB = 0.2, WIKI_FALLBACK = 4.6;
+    private static final double BOOKS_GB = 0.0, MAPS_GB = 0.2, WIKI_FALLBACK = 4.6;
 
     private boolean everything = false, pictures = true;
     private boolean wikiInc = true, booksInc = true;
@@ -165,7 +165,7 @@ public class Step2OptionAFragment extends Fragment {
         label(detPic, "With pictures", sizeOf(coverageBase() + "_maxi"), pictures, true);
         label(detTxt, "Text only", sizeOf(coverageBase() + "_nopic"), !pictures, true);
         wikiSize.setText(wikiInc ? gb(wikiSizeGb()) : getString(R.string.k2go_skipped));
-        booksSize.setText(booksInc ? "0.8 GB" : getString(R.string.k2go_skipped));
+        booksSize.setText("0 GB");
 
         double picks = (wikiInc ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0) + (mapsInc ? MAPS_GB : 0);
         applyBar(osGb, picks);
