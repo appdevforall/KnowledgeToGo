@@ -64,4 +64,5 @@
     <string name="k2go_internet_download_sub" translatable="false">system + content · 3 GB+</string>
     <string name="k2go_receive" translatable="false">Receive</string>
     <string name="k2go_welcome_sub" translatable="false">A library in your pocket</string>
+    <string name="k2go_back_link" translatable="false">‹ Back</string>
 </resources>

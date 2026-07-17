@@ -31,7 +31,7 @@ public class WizardActivity extends AppCompatActivity {
     private String langTag = ""; // "" = system
 
     private TextView title, subtitle, primary;
-    private View welcome, language, perms, setup;
+    private View welcome, language, perms, setup, back;
     private TextView notifStatus, storageStatus, batteryStatus;
 
     private final ActivityResultLauncher<Intent> permResult =
@@ -48,6 +48,7 @@ public class WizardActivity extends AppCompatActivity {
         language = findViewById(R.id.wiz_language);
         perms = findViewById(R.id.wiz_perms);
         setup = findViewById(R.id.wiz_setup);
+        back = findViewById(R.id.wiz_back);
         notifStatus = findViewById(R.id.perm_notif_status);
         storageStatus = findViewById(R.id.perm_storage_status);
         batteryStatus = findViewById(R.id.perm_battery_status);
@@ -75,6 +76,7 @@ public class WizardActivity extends AppCompatActivity {
         });
 
         primary.setOnClickListener(v -> onPrimary());
+        back.setOnClickListener(v -> goBack());
         render();
     }
 
@@ -97,6 +99,16 @@ public class WizardActivity extends AppCompatActivity {
         render();
     }
 
+    private void goBack() {
+        if (step > 0) { step--; render(); }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (step > 0) { step--; render(); }
+        else super.onBackPressed();
+    }
+
     private void render() {
         welcome.setVisibility(step == 0 ? View.VISIBLE : View.GONE);
         language.setVisibility(step == 1 ? View.VISIBLE : View.GONE);
@@ -104,6 +116,7 @@ public class WizardActivity extends AppCompatActivity {
         setup.setVisibility(step == 3 ? View.VISIBLE : View.GONE);
         title.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
         subtitle.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
+        back.setVisibility(step >= 1 ? View.VISIBLE : View.GONE);
 
         switch (step) {
             case 0:

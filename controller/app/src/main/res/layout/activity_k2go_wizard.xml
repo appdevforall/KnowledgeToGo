@@ -93,5 +93,9 @@
         <TextView android:id="@+id/wiz_primary" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="28dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_get_started"
             android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+        <TextView android:id="@+id/wiz_back" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_back_link"
+            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal"
+            android:clickable="true" android:focusable="true" android:visibility="gone" />
     </LinearLayout>
 </ScrollView>
