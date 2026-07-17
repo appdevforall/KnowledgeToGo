@@ -7,14 +7,14 @@
         android:orientation="vertical" android:padding="16dp">
 
         <TextView android:id="@+id/k2go_step2_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Set up your library"
+            android:text="@string/k2go_setup_library_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" android:text="System ✓  ·  Content"
+            android:layout_marginTop="4dp" android:text="@string/k2go_step2a_breadcrumb"
             android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:text="Storage"
+            android:layout_marginTop="16dp" android:text="@string/k2go_storage"
             android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
         <LinearLayout android:id="@+id/k2go_bar" android:layout_width="match_parent"
             android:layout_height="18dp" android:layout_marginTop="6dp" android:orientation="horizontal">
@@ -33,13 +33,13 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="horizontal" android:gravity="center_vertical">
                 <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="Wikipedia (via Kiwix)" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
+                    android:text="@string/k2go_wikipedia_kiwix" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
                 <TextView android:id="@+id/k2go_wiki_size" android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" />
             </LinearLayout>
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                android:text="Coverage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+                android:text="@string/k2go_coverage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
                 <TextView android:id="@+id/k2go_cov_popular" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
@@ -48,7 +48,7 @@
             </LinearLayout>
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                android:text="Detail" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+                android:text="@string/k2go_detail" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
                 <TextView android:id="@+id/k2go_det_pictures" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
                     android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
@@ -58,12 +58,12 @@
         </LinearLayout>
 
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
-            android:text="Books and Maps are included with your edition; Courses is set up after install."
+            android:text="@string/k2go_step2a_note"
             android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
 
         <TextView android:id="@+id/k2go_download" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="18dp" android:padding="16dp" android:gravity="center"
-            android:text="Download library" android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:text="@string/k2go_download_library" android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg"
             android:clickable="true" android:focusable="true" />
     </LinearLayout>

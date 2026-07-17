@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set up your library"
+            android:text="@string/k2go_setup_library_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink" />
 
@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="1  System   →   2  Content"
+            android:text="@string/k2go_step1_breadcrumb"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="@color/k2go_teal" />
 
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Storage"
+            android:text="@string/k2go_storage"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:text="CHOOSE AN EDITION"
+            android:text="@string/k2go_choose_edition"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_teal" />
 
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:text="These are apps — the programs that open content. You'll choose the content itself in Step 2."
+            android:text="@string/k2go_step1_note"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
@@ -82,7 +82,7 @@
             android:layout_marginTop="18dp"
             android:padding="16dp"
             android:gravity="center"
-            android:text="Next: choose content"
+            android:text="@string/k2go_next_choose_content"
             android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textColor="@color/k2go_on_teal"
             android:background="@drawable/k2go_primary_bg"

@@ -1,7 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go redesign UI strings (ADFA-4725). translatable=false for now; a dedicated
+     l10n pass will translate these across the 33 locales. -->
 <resources>
     <string name="k2go_tab_library" translatable="false">Library</string>
     <string name="k2go_tab_connect" translatable="false">Connect</string>
     <string name="k2go_tab_clone" translatable="false">Clone</string>
     <string name="k2go_tab_settings" translatable="false">Settings</string>
+    <string name="k2go_get_more" translatable="false">+  Get more</string>
+    <string name="k2go_step1_breadcrumb" translatable="false">1  System   →   2  Content</string>
+    <string name="k2go_perm_allow" translatable="false">Allow</string>
+    <string name="k2go_clone_app_programs" translatable="false">App &amp; programs</string>
+    <string name="k2go_connect_available" translatable="false">Available while the app is open.</string>
+    <string name="k2go_back" translatable="false">Back</string>
+    <string name="k2go_step2a_note" translatable="false">Books and Maps are included with your edition; Courses is set up after install.</string>
+    <string name="k2go_choose_edition" translatable="false">CHOOSE AN EDITION</string>
+    <string name="k2go_clone_content" translatable="false">Content — books, Wikipedia, maps</string>
+    <string name="k2go_copy_from_phone" translatable="false">Copy from a phone</string>
+    <string name="k2go_clone_subtitle" translatable="false">Copy the K2Go app and its library onto another phone</string>
+    <string name="k2go_coverage" translatable="false">Coverage</string>
+    <string name="k2go_detail" translatable="false">Detail</string>
+    <string name="k2go_download_library" translatable="false">Download library</string>
+    <string name="k2go_lang_english" translatable="false">English</string>
+    <string name="k2go_lang_spanish" translatable="false">Español</string>
+    <string name="k2go_cov_everything" translatable="false">Everything</string>
+    <string name="k2go_get_started" translatable="false">Get started</string>
+    <string name="k2go_hotspot" translatable="false">Hotspot</string>
+    <string name="k2go_internet_download" translatable="false">Internet download</string>
+    <string name="k2go_just_scan" translatable="false">Just scan — no need to type!</string>
+    <string name="k2go_perm_keep_running" translatable="false">Keep running</string>
+    <string name="k2go_brand" translatable="false">Knowledge To Go</string>
+    <string name="k2go_connect_subtitle" translatable="false">Let a nearby device browse your library.</string>
+    <string name="k2go_perm_nearby_note" translatable="false">Nearby devices is asked later, only when sharing.</string>
+    <string name="k2go_next" translatable="false">Next</string>
+    <string name="k2go_next_choose_content" translatable="false">Next: choose content</string>
+    <string name="k2go_clone_next_note" translatable="false">Next: join the same network, then start.</string>
+    <string name="k2go_perm_notifications" translatable="false">Notifications</string>
+    <string name="k2go_cov_popular" translatable="false">Popular</string>
+    <string name="k2go_recommended" translatable="false">Recommended</string>
+    <string name="k2go_scan_didnt_work" translatable="false">Scan didn\'t work? Use this:</string>
+    <string name="k2go_scan_join_hotspot" translatable="false">Scan to join my hotspot</string>
+    <string name="k2go_send_nearby" translatable="false">Send to a nearby phone</string>
+    <string name="k2go_send" translatable="false">Send</string>
+    <string name="k2go_setup_library_title" translatable="false">Set up your library</string>
+    <string name="k2go_starting_library" translatable="false">Starting your library…</string>
+    <string name="k2go_perm_storage" translatable="false">Storage access</string>
+    <string name="k2go_storage" translatable="false">Storage</string>
+    <string name="k2go_lang_system_default" translatable="false">System default</string>
+    <string name="k2go_step2b_breadcrumb" translatable="false">System ✓  ·  Content — step 2 of 2</string>
+    <string name="k2go_step2a_breadcrumb" translatable="false">System ✓  ·  Content</string>
+    <string name="k2go_det_text" translatable="false">Text only</string>
+    <string name="k2go_clone_headsup" translatable="false">The K2Go library on the other phone (if any) is replaced with this one.</string>
+    <string name="k2go_step1_note" translatable="false">These are apps — the programs that open content. You\'ll choose the content itself in Step 2.</string>
+    <string name="k2go_connect_shownext" translatable="false">They\'re connected — show next ›</string>
+    <string name="k2go_clone_total" translatable="false">Total copy</string>
+    <string name="k2go_clone_receive_hdr" translatable="false">WHAT THEY\'LL RECEIVE</string>
+    <string name="k2go_wifi" translatable="false">Wi-Fi</string>
+    <string name="k2go_wikipedia_kiwix" translatable="false">Wikipedia (via Kiwix)</string>
+    <string name="k2go_det_pictures" translatable="false">With pictures</string>
+    <string name="k2go_perm_notifications_sub" translatable="false">download progress</string>
+    <string name="k2go_projected_use" translatable="false">projected use</string>
+    <string name="k2go_perm_keep_running_sub" translatable="false">skip battery limits</string>
+    <string name="k2go_perm_storage_sub" translatable="false">store &amp; serve content</string>
+    <string name="k2go_internet_download_sub" translatable="false">system + content · 3 GB+</string>
+    <string name="k2go_receive" translatable="false">Receive</string>
 </resources>

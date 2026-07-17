@@ -46,7 +46,7 @@
                 android:paddingEnd="8dp"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
-                android:text="Recommended"
+                android:text="@string/k2go_recommended"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/k2go_on_teal"
                 android:background="@drawable/k2go_chip_bg"
