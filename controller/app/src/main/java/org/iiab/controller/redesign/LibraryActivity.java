@@ -154,8 +154,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         } else {
             f = PlaceholderFragment.newInstance(title);
         }
+        // Switching tabs clears any Settings sub-screen on the back stack.
+        getSupportFragmentManager().popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_nav_host, f)
+                .commit();
+    }
+
+    /** Push a Settings sub-screen (Language/About/Advanced/Feedback) keeping the bottom nav. */
+    public void openSettingsSub(androidx.fragment.app.Fragment f) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_nav_host, f)
+                .addToBackStack("settings_sub")
                 .commit();
     }
 
