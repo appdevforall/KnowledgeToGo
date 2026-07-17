@@ -64,10 +64,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
 
         bootGate = findViewById(R.id.k2go_boot_gate);
-        bootGate.setAnimation(R.raw.library_animation);
-        bootGate.setMinAndMaxFrame("A_ENTRY_LOOP");
-        bootGate.setRepeatCount(LottieDrawable.INFINITE);
-        bootGate.playAnimation();
+        if (!reduceMotion()) {
+            bootGate.setAnimation(R.raw.library_animation);
+            bootGate.setMinAndMaxFrame("A_ENTRY_LOOP");
+            bootGate.setRepeatCount(LottieDrawable.INFINITE);
+            bootGate.playAnimation();
+        }
 
         serverController = new ServerController(this, this);
         serverController.start();
@@ -103,6 +105,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             return;
         }
         gateDismissed = true;
+        if (reduceMotion()) { bootGate.setVisibility(View.GONE); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("B_OPEN_FLIP");
@@ -157,11 +160,20 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (serverController != null) serverController.onPause();
     }
 
+    private boolean reduceMotion() {
+        try {
+            return android.provider.Settings.Global.getFloat(getContentResolver(),
+                    android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
     public void turnOffK2Go() {
         if (closing) return;
         closing = true;
-        if (bootGate != null) {
+        if (bootGate != null && !reduceMotion()) {
             bootGate.setVisibility(View.VISIBLE);
             bootGate.removeAllAnimatorListeners();
             bootGate.setRepeatCount(LottieDrawable.INFINITE);
@@ -180,6 +192,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (closedDone) return;
         closedDone = true;
         if (bootGate == null) { finishAndRemoveTask(); return; }
+        if (reduceMotion()) { finishAndRemoveTask(); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("D_CLOSED_FLIP");

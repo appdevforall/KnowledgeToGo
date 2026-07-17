@@ -34,11 +34,11 @@ import org.iiab.controller.util.AppExecutors;
 public class LibraryHomeFragment extends Fragment {
 
     private static final long POLL_MS = 3000L;
-    private static final int GRAY = 0, AMBER = 1, GREEN = 2;
+    private static final int GRAY = 0, AMBER = 1, GREEN = 2, RED = 3;
 
     private static final class Card {
         final String endpoint; final String title; final boolean requires64; final int iconRes;
-        View dot; TextView status; int state = GRAY;
+        View dot; TextView status; int state = GRAY; int amberStreak = 0;
         Card(String e, String t, boolean r, int i) { endpoint = e; title = t; requires64 = r; iconRes = i; }
     }
 
@@ -110,7 +110,13 @@ public class LibraryHomeFragment extends Fragment {
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
             startActivity(i);
         } else {
-            Toast.makeText(requireContext(), "Still starting — one moment", Toast.LENGTH_SHORT).show();
+            c.amberStreak = 0;
+            applyState(c, AMBER);
+            AppExecutors.get().io().execute(() -> {
+                final int st = probe(c.endpoint);
+                main.post(() -> { if (isAdded()) applyState(c, (st == GREEN || st == GRAY) ? st : AMBER); });
+            });
+            Toast.makeText(requireContext(), "Retrying…", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -130,7 +136,11 @@ public class LibraryHomeFragment extends Fragment {
             if (!alive) { applyState(c, GRAY); continue; }
             AppExecutors.get().io().execute(() -> {
                 final int st = probe(c.endpoint);
-                main.post(() -> { if (isAdded()) applyState(c, st); });
+                main.post(() -> {
+                    if (!isAdded()) return;
+                    if (st == GREEN || st == GRAY) { c.amberStreak = 0; applyState(c, st); }
+                    else { c.amberStreak++; applyState(c, c.amberStreak >= 4 ? RED : AMBER); }
+                });
             });
         }
     }
@@ -143,6 +153,7 @@ public class LibraryHomeFragment extends Fragment {
         switch (st) {
             case GREEN: dotColor = R.color.k2go_leaf; textColor = R.color.k2go_leaf; label = "Ready"; break;
             case AMBER: dotColor = R.color.k2go_amber; textColor = R.color.k2go_amber_text; label = "Connecting"; break;
+            case RED:   dotColor = R.color.k2go_clay; textColor = R.color.k2go_clay; label = "Unavailable · tap to retry"; break;
             default:    dotColor = R.color.k2go_muted; textColor = R.color.k2go_muted; label = "Not installed"; break;
         }
         tint(c.dot, dotColor);
