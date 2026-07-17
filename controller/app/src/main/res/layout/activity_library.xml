@@ -1,25 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/k2go_paper">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/k2go_nav_host"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/k2go_bottom_nav"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/k2go_nav_host"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/k2go_bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/k2go_paper"
+            app:elevation="0dp"
+            app:labelVisibilityMode="labeled"
+            app:itemIconTint="@color/k2go_nav_item"
+            app:itemTextColor="@color/k2go_nav_item"
+            app:menu="@menu/bottom_nav_k2go" />
+    </LinearLayout>
+
+    <!-- Boot gate: covers the ~5-6s server boot; entry loop then OPEN flip. -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/k2go_boot_gate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/k2go_paper"
-        app:elevation="0dp"
-        app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/k2go_nav_item"
-        app:itemTextColor="@color/k2go_nav_item"
-        app:menu="@menu/bottom_nav_k2go" />
-</LinearLayout>
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerCrop" />
+</FrameLayout>

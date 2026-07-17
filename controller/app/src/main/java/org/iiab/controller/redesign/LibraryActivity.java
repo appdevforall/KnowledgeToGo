@@ -1,17 +1,40 @@
 package org.iiab.controller.redesign;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.iiab.controller.R;
+import org.iiab.controller.ServerController;
+import org.iiab.controller.ServerStateRepository;
+import org.iiab.controller.WatchdogService;
 
 /**
- * New content-first UI shell (ADFA-4725): bottom nav Library / Connect / Clone / Settings.
- * Phase 1 = shell only. Server wiring, content cards, wizard and Step-2 land in later phases.
+ * New content-first UI shell (ADFA-4725). Owns the server lifecycle for the new UI:
+ * starts the status poll, auto-starts the stack if it is down, and shows a boot gate
+ * (Lottie) that flips to OPEN once the server is reachable.
+ * Phase 2 = runtime gate. Content cards, wizard and Step-2 land in later phases.
  */
-public class LibraryActivity extends AppCompatActivity {
+public class LibraryActivity extends AppCompatActivity implements ServerController.Host {
+
+    private static final String TAG = "K2Go-Library";
+    private static final long AUTOSTART_DELAY_MS = 3500L;
+    private static final long GATE_SAFETY_MS = 25000L;
+
+    private ServerController serverController;
+    private boolean isNegotiating = false;
+    private Boolean targetServerState = null;
+
+    private LottieAnimationView bootGate;
+    private boolean gateDismissed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +46,59 @@ public class LibraryActivity extends AppCompatActivity {
             showTab(item.getItemId());
             return true;
         });
-
         if (savedInstanceState == null) {
             nav.setSelectedItemId(R.id.nav_library);
         }
+
+        bootGate = findViewById(R.id.k2go_boot_gate);
+        bootGate.setAnimation(R.raw.library_animation);
+        bootGate.setMinAndMaxFrame("A_ENTRY_LOOP");
+        bootGate.setRepeatCount(LottieDrawable.INFINITE);
+        bootGate.playAnimation();
+
+        serverController = new ServerController(this, this);
+        serverController.start();
+
+        ServerStateRepository.get().state().observe(this, s -> {
+            if (s != null && s.alive) {
+                onServerReady();
+            }
+        });
+
+        Handler main = new Handler(Looper.getMainLooper());
+        // If the stack isn't up after one poll cycle, start it.
+        main.postDelayed(() -> {
+            if (!isFinishing()
+                    && !ServerStateRepository.get().current().alive
+                    && targetServerState == null) {
+                serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+            }
+        }, AUTOSTART_DELAY_MS);
+        // Safety: never trap the user behind the gate.
+        main.postDelayed(() -> {
+            if (!gateDismissed) {
+                onServerReady();
+            }
+        }, GATE_SAFETY_MS);
+    }
+
+    private void onServerReady() {
+        if (gateDismissed || bootGate == null) {
+            return;
+        }
+        gateDismissed = true;
+        bootGate.removeAllAnimatorListeners();
+        bootGate.setRepeatCount(0);
+        bootGate.setMinAndMaxFrame("B_OPEN_FLIP");
+        bootGate.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (bootGate != null) {
+                    bootGate.setVisibility(View.GONE);
+                }
+            }
+        });
+        bootGate.playAnimation();
     }
 
     private void showTab(int itemId) {
@@ -40,9 +112,49 @@ public class LibraryActivity extends AppCompatActivity {
         } else {
             title = "Library";
         }
-        Fragment f = PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_nav_host, f)
+                .replace(R.id.k2go_nav_host, PlaceholderFragment.newInstance(title))
                 .commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (serverController != null) serverController.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (serverController != null) serverController.onPause();
+    }
+
+    // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
+    @Override public void addToLog(String message) { Log.d(TAG, message); }
+    @Override public void startFusionPulse() { }
+    @Override public void startExitPulse() { }
+    @Override public void stopBtnProgress() { }
+    @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
+    @Override public void refreshServerUi() { }
+    @Override public Boolean getTargetServerState() { return targetServerState; }
+    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
+    @Override public boolean isNegotiating() { return isNegotiating; }
+
+    @Override
+    public void enableSystemProtection() {
+        Intent i = new Intent(this, WatchdogService.class);
+        i.setAction(WatchdogService.ACTION_START);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(i);
+        } else {
+            startService(i);
+        }
+    }
+
+    @Override
+    public void disableSystemProtection() {
+        Intent i = new Intent(this, WatchdogService.class);
+        i.setAction(WatchdogService.ACTION_STOP);
+        startService(i);
     }
 }
