@@ -47,7 +47,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         SharedPreferences prefs0 = getSharedPreferences(
                 getString(R.string.pref_file_internal), MODE_PRIVATE);
         if (!prefs0.getBoolean(getString(R.string.pref_key_setup_complete), false)) {
-            startActivity(new Intent(this, org.iiab.controller.SetupActivity.class));
+            startActivity(new Intent(this, WizardActivity.class));
             finish();
             return;
         }

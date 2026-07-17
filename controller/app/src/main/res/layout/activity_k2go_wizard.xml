@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/k2go_paper" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="24dp">
+
+        <TextView android:id="@+id/wiz_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
+        <TextView android:id="@+id/wiz_subtitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="6dp" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_muted" />
+
+        <!-- WELCOME -->
+        <LinearLayout android:id="@+id/wiz_welcome" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="24dp" android:gravity="center">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📚" android:textSize="72sp" />
+        </LinearLayout>
+
+        <!-- LANGUAGE -->
+        <LinearLayout android:id="@+id/wiz_language" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="20dp" android:visibility="gone">
+            <LinearLayout android:id="@+id/lang_system" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <ImageView android:id="@+id/lang_system_radio" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_radio_on" android:contentDescription="@null" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="System default" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/lang_en" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <ImageView android:id="@+id/lang_en_radio" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_radio_off" android:contentDescription="@null" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="English" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/lang_es" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <ImageView android:id="@+id/lang_es_radio" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_radio_off" android:contentDescription="@null" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="Español" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- PERMISSIONS -->
+        <LinearLayout android:id="@+id/wiz_perms" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="20dp" android:visibility="gone">
+            <LinearLayout android:id="@+id/perm_notif" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Notifications" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="download progress" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                </LinearLayout>
+                <TextView android:id="@+id/perm_notif_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allow" android:textColor="@color/k2go_teal" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/perm_storage" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Storage access" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="store &amp; serve content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                </LinearLayout>
+                <TextView android:id="@+id/perm_storage_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allow" android:textColor="@color/k2go_teal" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/perm_battery" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Keep running" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="skip battery limits" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                </LinearLayout>
+                <TextView android:id="@+id/perm_battery_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Allow" android:textColor="@color/k2go_teal" />
+            </LinearLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
+                android:text="Nearby devices is asked later, only when sharing." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+        </LinearLayout>
+
+        <!-- SET UP LIBRARY -->
+        <LinearLayout android:id="@+id/wiz_setup" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="20dp" android:visibility="gone">
+            <TextView android:id="@+id/setup_download" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp"
+                android:gravity="center" android:text="Internet download" android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="4dp"
+                android:text="system + content · 3 GB+" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            <TextView android:id="@+id/setup_copy" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp" android:layout_marginTop="14dp"
+                android:gravity="center" android:text="Copy from a phone" android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+        </LinearLayout>
+
+        <TextView android:id="@+id/wiz_primary" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="28dp" android:padding="16dp" android:gravity="center" android:text="Get started"
+            android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+    </LinearLayout>
+</ScrollView>
