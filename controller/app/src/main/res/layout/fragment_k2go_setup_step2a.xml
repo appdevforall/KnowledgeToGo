@@ -98,7 +98,6 @@
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
             android:text="@string/k2go_step2a_hint" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
 
-        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:minHeight="12dp" />
         <TextView android:id="@+id/k2go_download" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="12dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_download_library"
             android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
