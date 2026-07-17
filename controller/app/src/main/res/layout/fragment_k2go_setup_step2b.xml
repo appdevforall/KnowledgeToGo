@@ -21,17 +21,8 @@
         <TextView android:id="@+id/k2go_step_caption" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_marginTop="8dp" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
 
-        <TextView android:id="@+id/k2go_gauge_total" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="14dp" android:gravity="center" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center"
-            android:text="@string/k2go_projected_use" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-        <LinearLayout android:id="@+id/k2go_bar" android:layout_width="match_parent" android:layout_height="18dp"
-            android:layout_marginTop="8dp" android:orientation="horizontal">
-            <View android:id="@+id/k2go_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" />
-            <View android:id="@+id/k2go_bar_system" android:layout_width="0dp" android:layout_height="match_parent" />
-            <View android:id="@+id/k2go_bar_picks"  android:layout_width="0dp" android:layout_height="match_parent" />
-            <View android:id="@+id/k2go_bar_free"   android:layout_width="0dp" android:layout_height="match_parent" />
-        </LinearLayout>
+        <org.iiab.controller.MultiResourceGaugeView android:id="@+id/k2go_gauge"
+            android:layout_width="match_parent" android:layout_height="210dp" android:layout_marginTop="10dp" />
         <TextView android:id="@+id/k2go_legend" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_marginTop="6dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
 
