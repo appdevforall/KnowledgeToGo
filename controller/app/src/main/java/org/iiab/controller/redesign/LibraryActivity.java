@@ -131,6 +131,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         androidx.fragment.app.Fragment f;
         if (itemId == R.id.nav_library) {
             f = new LibraryHomeFragment();
+        } else if (itemId == R.id.nav_connect) {
+            f = new ConnectFragment();
+        } else if (itemId == R.id.nav_clone) {
+            f = new CloneFragment();
         } else if (itemId == R.id.nav_settings) {
             f = new SettingsFragment();
         } else {
