@@ -112,8 +112,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         } else {
             title = "Library";
         }
+        androidx.fragment.app.Fragment f = (itemId == R.id.nav_library)
+                ? new LibraryHomeFragment()
+                : PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_nav_host, PlaceholderFragment.newInstance(title))
+                .replace(R.id.k2go_nav_host, f)
                 .commit();
     }
 
