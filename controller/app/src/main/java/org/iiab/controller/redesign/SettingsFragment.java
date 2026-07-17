@@ -1,6 +1,12 @@
 package org.iiab.controller.redesign;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +17,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import org.iiab.controller.R;
 
-/** Settings tab (ADFA-4725): Basics (About live) + Advanced (visual) + Turn off K2Go. */
+/** Settings tab (ADFA-4725): Basics (Language/Theme/About wired; rest marked as preview) +
+ *  Advanced (preview) + Turn off K2Go. Preview rows are visibly non-functional so nothing
+ *  looks like a working button that does nothing. */
 public class SettingsFragment extends Fragment {
 
     private LinearLayout list;
@@ -26,26 +35,78 @@ public class SettingsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_settings, c, false);
         list = root.findViewById(R.id.k2go_settings_list);
 
-        View.OnClickListener soon = v ->
-                Toast.makeText(requireContext(), "Coming soon", Toast.LENGTH_SHORT).show();
-
         header("BASICS");
-        row("Language", "", soon);
-        row("Permissions", "", soon);
-        row("Theme", "Light / Follow system / Dark", soon);
-        row("Share usage statistics", "On", soon);
-        row("About", versionName(), soon);
-        row("Send feedback", "", soon);
+        row("Language", "", v -> openLanguageSettings());
+        preview("Permissions", "");
+        row("Theme", themeLabel(), v -> chooseTheme());
+        preview("Share usage statistics", "On");
+        row("About", versionName(), v -> showAbout());
+        preview("Send feedback", "");
 
         header("ADVANCED · for power users");
-        row("System & modules", "", soon);
-        row("Backups & recovery", "", soon);
-        row("Developer tools (ADB)", "", soon);
-        row("Network & DNS", "", soon);
-        row("Terminal (Debian)", "", soon);
+        preview("System & modules", "");
+        preview("Backups & recovery", "");
+        preview("Developer tools (ADB)", "");
+        preview("Network & DNS", "");
+        preview("Terminal (Debian)", "");
 
         turnOffRow();
         return root;
+    }
+
+    // ---- wired actions ----
+
+    private void openLanguageSettings() {
+        try {
+            if (Build.VERSION.SDK_INT >= 33) {
+                startActivity(new Intent(Settings.ACTION_APP_LOCALE_SETTINGS,
+                        Uri.parse("package:" + requireContext().getPackageName())));
+                return;
+            }
+        } catch (Exception ignore) { /* fall through */ }
+        try {
+            startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:" + requireContext().getPackageName())));
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "Language settings unavailable on this device", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void chooseTheme() {
+        final String[] labels = {"Light", "Follow system", "Dark"};
+        final int[] modes = {
+                AppCompatDelegate.MODE_NIGHT_NO,
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
+                AppCompatDelegate.MODE_NIGHT_YES};
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Theme")
+                .setItems(labels, (d, w) -> {
+                    prefs().edit().putInt("k2go_theme", modes[w]).apply();
+                    AppCompatDelegate.setDefaultNightMode(modes[w]);
+                })
+                .show();
+    }
+
+    private String themeLabel() {
+        switch (prefs().getInt("k2go_theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)) {
+            case AppCompatDelegate.MODE_NIGHT_NO: return "Light";
+            case AppCompatDelegate.MODE_NIGHT_YES: return "Dark";
+            default: return "Follow system";
+        }
+    }
+
+    private void showAbout() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("About")
+                .setMessage("Knowledge To Go (K2Go)\nVersion " + versionName()
+                        + "\n" + requireContext().getPackageName())
+                .setPositiveButton("OK", null)
+                .show();
+    }
+
+    private SharedPreferences prefs() {
+        return requireContext().getSharedPreferences(
+                getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
     }
 
     private String versionName() {
@@ -56,6 +117,8 @@ public class SettingsFragment extends Fragment {
             return "";
         }
     }
+
+    // ---- rows ----
 
     private void header(String text) {
         TextView t = new TextView(requireContext());
@@ -70,13 +133,26 @@ public class SettingsFragment extends Fragment {
     }
 
     private void row(String title, String value, View.OnClickListener onClick) {
+        buildRow(title, value, onClick, false);
+    }
+
+    /** A visibly non-functional row: dimmed, tagged "Soon", not clickable. */
+    private void preview(String title, String value) {
+        buildRow(title, (value == null || value.isEmpty()) ? "Soon" : value + " · Soon", null, true);
+    }
+
+    private void buildRow(String title, String value, View.OnClickListener onClick, boolean isPreview) {
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setBackgroundResource(R.drawable.k2go_card_bg);
         row.setPadding(dp(14), dp(14), dp(14), dp(14));
-        row.setClickable(true);
-        row.setOnClickListener(onClick);
+        if (isPreview) {
+            row.setAlpha(0.5f);
+        } else {
+            row.setClickable(true);
+            row.setOnClickListener(onClick);
+        }
 
         TextView t = new TextView(requireContext());
         t.setText(title);

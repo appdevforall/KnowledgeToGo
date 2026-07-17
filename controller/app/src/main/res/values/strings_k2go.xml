@@ -97,4 +97,5 @@
     <string name="k2go_wiki_det_maxi" translatable="false">With pictures</string>
     <string name="k2go_wiki_det_nopic" translatable="false">Text only</string>
     <string name="k2go_wiki_det_mini" translatable="false">Summaries</string>
+    <string name="k2go_preview_banner" translatable="false">Preview — not functional yet</string>
 </resources>
