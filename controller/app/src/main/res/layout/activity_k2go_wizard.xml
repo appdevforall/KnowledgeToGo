@@ -79,6 +79,10 @@
                 android:gravity="center" android:text="@string/k2go_copy_from_phone" android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
         </LinearLayout>
 
+        <!-- Push the primary CTA to the bottom (fixed position across steps, per the wizard diagram). -->
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+            android:minHeight="24dp" />
+
         <TextView android:id="@+id/wiz_primary" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="28dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_get_started"
             android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
