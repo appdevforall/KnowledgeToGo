@@ -71,7 +71,7 @@ public class LibraryHomeFragment extends Fragment {
         buildCards(inflater, root.findViewById(R.id.k2go_cards));
 
         root.findViewById(R.id.k2go_get_more).setOnClickListener(v ->
-                Toast.makeText(requireContext(), "Get more — coming soon", Toast.LENGTH_SHORT).show());
+                startActivity(new android.content.Intent(requireContext(), SetupLibraryActivity.class)));
         return root;
     }
 

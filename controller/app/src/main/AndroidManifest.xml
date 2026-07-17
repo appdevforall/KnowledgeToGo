@@ -87,6 +87,12 @@
             android:exported="false"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:theme="@style/Theme.K2Go" />
+
+        <activity
+            android:name=".redesign.SetupLibraryActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:theme="@style/Theme.K2Go" />
         <activity android:name=".feedback.crash.presentation.CrashReportActivity" />
         <activity android:name=".QrActivity" />
 
