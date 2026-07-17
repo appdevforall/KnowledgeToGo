@@ -73,11 +73,16 @@ public class Step2OptionAFragment extends Fragment {
         download.setOnClickListener(x -> startDownload());
 
         // Real Kiwix catalog for this language (cached; network only if stale).
-        InstallationPlanner.getOrFetchCatalog(requireContext(), catalog -> {
-            if (!isAdded()) return;
-            langData = catalog.optJSONObject(lang);
-            if (langData == null) langData = catalog.optJSONObject("en");
-            refresh();
+        InstallationPlanner.getOrFetchCatalog(requireContext(), new InstallationPlanner.CacheListener() {
+            @Override
+            public void onReady(JSONObject catalog) {
+                if (!isAdded()) return;
+                langData = catalog.optJSONObject(lang);
+                if (langData == null) langData = catalog.optJSONObject("en");
+                refresh();
+            }
+            @Override
+            public void onError(String error) { /* keep "—"; Download still resolves the variant */ }
         });
         refresh();
         return v;
