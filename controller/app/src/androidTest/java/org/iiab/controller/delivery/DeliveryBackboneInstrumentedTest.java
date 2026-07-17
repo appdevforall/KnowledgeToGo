@@ -15,6 +15,7 @@ import org.iiab.controller.delivery.data.OutboundQueue;
 import org.iiab.controller.delivery.domain.OutboundEnvelope;
 import org.iiab.controller.delivery.domain.OutboundType;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,9 @@ import okhttp3.mockwebserver.RecordedRequest;
  *  - a 5xx makes the Worker retry and RETAIN the items (nothing is lost).
  *
  * Run on a connected device/emulator: ./gradlew connectedDebugAndroidTest
- * (or right-click -> Run in Android Studio).
+ *
+ * ADFA-4746: if MockWebServer cannot start on the device/OS, the tests are skipped
+ * (Assume) instead of failing, so the connected suite stays green + readable.
  */
 @RunWith(AndroidJUnit4.class)
 public class DeliveryBackboneInstrumentedTest {
@@ -51,8 +54,12 @@ public class DeliveryBackboneInstrumentedTest {
     public void setUp() throws Exception {
         ctx = ApplicationProvider.getApplicationContext();
         clearQueueFile();
-        server = new MockWebServer();
-        server.start();
+        try {
+            server = new MockWebServer();
+            server.start();
+        } catch (Throwable t) {
+            Assume.assumeNoException("MockWebServer unavailable on this device/OS", t);
+        }
         DeliveryConfig.setEndpoint(ctx, server.url("/ingest").toString());
         DeliveryConfig.setToken(ctx, "device-token");
         queue = new OutboundQueue(ctx);
@@ -60,10 +67,12 @@ public class DeliveryBackboneInstrumentedTest {
 
     @After
     public void tearDown() throws Exception {
-        server.shutdown();
-        DeliveryConfig.setEndpoint(ctx, "");
-        DeliveryConfig.setToken(ctx, "");
-        clearQueueFile();
+        if (server != null) server.shutdown();
+        if (ctx != null) {
+            DeliveryConfig.setEndpoint(ctx, "");
+            DeliveryConfig.setToken(ctx, "");
+            clearQueueFile();
+        }
     }
 
     private void enqueue(int n) {
