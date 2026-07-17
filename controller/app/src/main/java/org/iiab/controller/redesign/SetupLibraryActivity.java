@@ -15,9 +15,13 @@ import org.iiab.controller.R;
 public class SetupLibraryActivity extends AppCompatActivity {
 
     private InstallationPlanner.Tier selectedTier = InstallationPlanner.Tier.STANDARD;
-    private boolean contentEverything = false; // false = Popular
-    private boolean contentPictures = true;    // true = With pictures
+    private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
+    private boolean contentPictures = true;    // legacy
     private boolean optionB = false;           // A is the default
+    // Shared Wikipedia selection so picks survive the A/B flip.
+    private final java.util.LinkedHashSet<String> wikiVariants = new java.util.LinkedHashSet<>();
+    private boolean wikiIncluded = true;
+    private String wikiView = "list"; // "list" | "grouped"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,12 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void setEverything(boolean b) { contentEverything = b; }
     public boolean isPictures() { return contentPictures; }
     public void setPictures(boolean b) { contentPictures = b; }
+
+    public java.util.LinkedHashSet<String> getWikiVariants() { return wikiVariants; }
+    public boolean isWikiIncluded() { return wikiIncluded; }
+    public void setWikiIncluded(boolean b) { wikiIncluded = b; }
+    public String getWikiView() { return wikiView; }
+    public void setWikiView(String v) { wikiView = v; }
 
     private Fragment step2Fragment() {
         return optionB ? new Step2OptionBFragment() : new Step2OptionAFragment();

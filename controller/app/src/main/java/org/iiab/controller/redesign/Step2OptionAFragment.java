@@ -1,7 +1,6 @@
 package org.iiab.controller.redesign;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import java.util.Locale;
+import java.util.Set;
 import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.R;
 import org.iiab.controller.SystemStateEvaluator;
@@ -23,28 +23,30 @@ import org.iiab.controller.install.presentation.InstallService;
 import org.json.JSONObject;
 
 /**
- * Step 2 Content — Option A (Expandable + Bar). Collapsible sources: Wikipedia (real Kiwix
- * variant, skippable), Books (Coming soon, cosmetic skip), Maps (fixed 0.2 GB), Courses
- * (disabled). Bar + total reflect the picks; Download drives InstallService (companion +
- * Wikipedia variant). Skip everything -> just the system.
+ * Step 2 Content — Option A (Expandable + Bar). Wikipedia is one collapsible module among Books
+ * (Coming soon), Maps (fixed 0.2 GB) and Courses (disabled). Its versions are chosen with the
+ * shared {@link WikiVersionPicker} (List/Grouped, multi-select, min one). Bar + total reflect the
+ * picks; Download drives InstallService. v1 installs the primary of the selection.
  */
 public class Step2OptionAFragment extends Fragment {
 
-    private static final double BOOKS_GB = 0.0, MAPS_GB = 0.2, WIKI_FALLBACK = 4.6;
+    private static final double BOOKS_GB = 0.0, MAPS_GB = 0.2;
 
-    private boolean everything = false, pictures = true;
     private boolean wikiInc = true, booksInc = true;
     private final boolean mapsInc = true; // Maps content is fixed for now
     private String lang;
     private JSONObject langData;
     private double osGb = 1.4;
 
+    private Set<String> sel;
+    private WikiVersionPicker picker;
+
     private CheckBox wikiCheck, booksCheck, mapsCheck;
     private View wikiBody, booksBody, mapsBody;
     private TextView wikiChevron, booksChevron, mapsChevron, wikiSkip, booksSkip;
     private View wikiCard, booksCard;
-    private TextView wikiSize, booksSize, legend, download;
-    private TextView covPop, covEvery, detPic, detTxt;
+    private TextView wikiSize, booksSize, legend, download, wikiHint;
+    private ViewGroup versions;
     private LinearLayout bar;
     private View bU, bS, bP, bF;
 
@@ -52,26 +54,20 @@ public class Step2OptionAFragment extends Fragment {
         return (getActivity() instanceof SetupLibraryActivity) ? (SetupLibraryActivity) getActivity() : null;
     }
     private InstallationPlanner.Tier tier() { return act() != null ? act().getSelectedTier() : InstallationPlanner.Tier.STANDARD; }
-    private String popularBase() { return (langData != null && langData.has("top1m_maxi")) ? "top1m" : "top"; }
-    private String coverageBase() { return everything ? "all" : popularBase(); }
-    private String variantKey() { return coverageBase() + "_" + (pictures ? "maxi" : "nopic"); }
-    private double sizeOf(String variant) {
-        if (langData == null) return -1;
-        JSONObject o = langData.optJSONObject(variant);
-        return o == null ? -1 : o.optDouble("size", -1);
-    }
+
     private double wikiSizeGb() {
-        double s = sizeOf(variantKey());
-        return s >= 0 ? s : WIKI_FALLBACK;
+        String p = WikiVariants.primary(sel);
+        double s = (p == null) ? -1 : WikiVariants.sizeGb(langData, p);
+        return s >= 0 ? s : 0;
     }
-    private static String gb(double s) { return s >= 0 ? String.format(Locale.US, "%.1fG", s) : "—"; }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
         View v = inflater.inflate(R.layout.fragment_k2go_setup_step2a, c, false);
         lang = ContentLanguage.systemDefault();
-        if (act() != null) { everything = act().isEverything(); pictures = act().isPictures(); }
+        sel = (act() != null) ? act().getWikiVariants() : new java.util.LinkedHashSet<>();
+        if (act() != null) wikiInc = act().isWikiIncluded();
 
         bar = v.findViewById(R.id.k2go_bar);
         bU = v.findViewById(R.id.k2go_bar_used); bS = v.findViewById(R.id.k2go_bar_system);
@@ -84,9 +80,12 @@ public class Step2OptionAFragment extends Fragment {
         wikiSkip = v.findViewById(R.id.k2go_wiki_skip); booksSkip = v.findViewById(R.id.k2go_books_skip);
         wikiCard = v.findViewById(R.id.k2go_wiki_card); booksCard = v.findViewById(R.id.k2go_books_card);
         wikiSize = v.findViewById(R.id.k2go_wiki_size); booksSize = v.findViewById(R.id.k2go_books_size);
-        covPop = v.findViewById(R.id.k2go_cov_popular); covEvery = v.findViewById(R.id.k2go_cov_everything);
-        detPic = v.findViewById(R.id.k2go_det_pictures); detTxt = v.findViewById(R.id.k2go_det_text);
+        versions = v.findViewById(R.id.k2go_wiki_versions);
+        wikiHint = v.findViewById(R.id.k2go_wiki_hint);
         colorSeg(bU, R.color.k2go_muted); colorSeg(bS, R.color.k2go_teal); colorSeg(bP, R.color.k2go_leaf); colorSeg(bF, R.color.k2go_hairline);
+
+        picker = new WikiVersionPicker(requireContext(), versions, sel,
+                act() != null ? act().getWikiView() : "list", this::refresh);
 
         AbFlip.attach(v.findViewById(R.id.k2go_step2_title), () -> { if (act() != null) act().flipAbTest(); });
 
@@ -100,17 +99,11 @@ public class Step2OptionAFragment extends Fragment {
         booksSkip.setOnClickListener(x -> setBooks(!booksInc));
         mapsCheck.setOnClickListener(x -> mapsCheck.setChecked(true)); // fixed
 
-        covPop.setOnClickListener(x -> { everything = false; persist(); refresh(); });
-        covEvery.setOnClickListener(x -> { if (covEvery.isEnabled()) { everything = true; persist(); refresh(); } });
-        detPic.setOnClickListener(x -> { pictures = true; persist(); refresh(); });
-        detTxt.setOnClickListener(x -> { pictures = false; persist(); refresh(); });
-
         download.setOnClickListener(x -> startDownload());
         v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> {
             if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
         });
 
-        // system size (no network) and Kiwix catalog (cached) both drive the numbers.
         InstallationPlanner.calculateProjectedSize(requireContext(), tier(), false, lang, null,
                 new InstallationPlanner.PlanResultListener() {
                     @Override public void onCalculated(InstallationPlanner.StorageProjection p) { if (isAdded()) { osGb = p.osSize; refresh(); } }
@@ -121,16 +114,17 @@ public class Step2OptionAFragment extends Fragment {
                 if (!isAdded()) return;
                 langData = catalog.optJSONObject(lang);
                 if (langData == null) langData = catalog.optJSONObject("en");
+                picker.setLangData(langData);
+                if (wikiInc) picker.selectDefaultIfEmpty();
+                picker.render();
                 refresh();
             }
             @Override public void onError(String e) { }
         });
 
-        refresh();
+        setWiki(wikiInc);
         return v;
     }
-
-    private void persist() { if (act() != null) { act().setEverything(everything); act().setPictures(pictures); } }
 
     private void toggle(View body, TextView chevron) {
         boolean show = body.getVisibility() != View.VISIBLE;
@@ -143,7 +137,9 @@ public class Step2OptionAFragment extends Fragment {
         wikiCheck.setChecked(inc);
         wikiCard.setAlpha(inc ? 1f : 0.55f);
         wikiSkip.setText(inc ? R.string.k2go_skip : R.string.k2go_add);
-        if (!inc) { wikiBody.setVisibility(View.GONE); wikiChevron.setText("▸"); }
+        if (inc) { wikiBody.setVisibility(View.VISIBLE); wikiChevron.setText("▾"); }
+        else { wikiBody.setVisibility(View.GONE); wikiChevron.setText("▸"); }
+        if (act() != null) act().setWikiIncluded(inc);
         refresh();
     }
     private void setBooks(boolean inc) {
@@ -155,29 +151,21 @@ public class Step2OptionAFragment extends Fragment {
         refresh();
     }
 
+    private boolean wikiInvalid() { return wikiInc && sel.isEmpty(); }
+
     private void refresh() {
-        double free = StorageInfo.freeGb();
-        // Wikipedia variant labels + "Everything won't fit" guard
-        boolean everyFits = sizeOf("all_" + (pictures ? "maxi" : "nopic")) < 0
-                || sizeOf("all_" + (pictures ? "maxi" : "nopic")) <= (free - osGb);
-        label(covPop, "Popular", sizeOf(popularBase() + "_" + (pictures ? "maxi" : "nopic")), !everything, true);
-        label(covEvery, "Everything", sizeOf("all_" + (pictures ? "maxi" : "nopic")), everything, everyFits);
-        label(detPic, "With pictures", sizeOf(coverageBase() + "_maxi"), pictures, true);
-        label(detTxt, "Text only", sizeOf(coverageBase() + "_nopic"), !pictures, true);
-        wikiSize.setText(wikiInc ? gb(wikiSizeGb()) : getString(R.string.k2go_skipped));
+        if (act() != null) { act().setWikiView(picker.getMode()); act().setWikiIncluded(wikiInc); }
+        wikiHint.setVisibility(wikiInvalid() ? View.VISIBLE : View.GONE);
+        wikiSize.setText(!wikiInc ? getString(R.string.k2go_skipped)
+                : sel.isEmpty() ? "—" : WikiVariants.gb(wikiSizeGb()));
         booksSize.setText("0 GB");
 
-        double picks = (wikiInc ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0) + (mapsInc ? MAPS_GB : 0);
+        double picks = (wikiInc && !sel.isEmpty() ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0) + (mapsInc ? MAPS_GB : 0);
         applyBar(osGb, picks);
         download.setText(String.format(Locale.US, "Download library · %.1f GB", osGb + picks));
-    }
-
-    private void label(TextView t, String name, double size, boolean on, boolean enabled) {
-        t.setText(name + "  " + gb(size));
-        t.setEnabled(enabled);
-        t.setAlpha(enabled ? 1f : 0.4f);
-        t.setBackgroundResource(on && enabled ? R.drawable.k2go_primary_bg : R.drawable.k2go_card_bg);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on && enabled ? R.color.k2go_on_teal : R.color.k2go_ink));
+        boolean ok = !wikiInvalid();
+        download.setEnabled(ok);
+        download.setAlpha(ok ? 1f : 0.5f);
     }
 
     private void applyBar(double systemGb, double picksGb) {
@@ -191,14 +179,16 @@ public class Step2OptionAFragment extends Fragment {
     }
 
     private void startDownload() {
-        boolean companion = wikiInc || booksInc || mapsInc;
+        if (wikiInvalid()) { Toast.makeText(requireContext(), R.string.k2go_wiki_pick_one, Toast.LENGTH_SHORT).show(); return; }
+        String variant = wikiInc ? WikiVariants.primary(sel) : null;
+        boolean companion = variant != null || booksInc || mapsInc;
         Intent i = new Intent(requireContext(), InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, tier().name());
         i.putExtra(InstallService.EXTRA_COMPANION, companion);
         i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(requireContext()));
         i.putExtra(InstallService.EXTRA_KIWIX_LANG, lang);
-        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, wikiInc ? variantKey() : null);
+        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, variant);
         i.putExtra(InstallService.EXTRA_REINSTALL, false);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) requireContext().startForegroundService(i);
         else requireContext().startService(i);

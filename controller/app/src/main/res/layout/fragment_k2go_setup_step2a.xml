@@ -34,22 +34,9 @@
                 <TextView android:id="@+id/k2go_wiki_chevron" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="▸" android:textColor="@color/k2go_teal" />
             </LinearLayout>
             <LinearLayout android:id="@+id/k2go_wiki_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_coverage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-                    <TextView android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="6dp" android:gravity="center" android:text="i" android:textSize="10sp" android:textStyle="bold" android:textColor="@color/k2go_ink" android:background="@drawable/k2go_info_circle" />
-                </LinearLayout>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                    <TextView android:id="@+id/k2go_cov_popular" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-                    <TextView android:id="@+id/k2go_cov_everything" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-                </LinearLayout>
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:orientation="horizontal" android:gravity="center_vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_detail" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-                    <TextView android:layout_width="16dp" android:layout_height="16dp" android:layout_marginStart="6dp" android:gravity="center" android:text="i" android:textSize="10sp" android:textStyle="bold" android:textColor="@color/k2go_ink" android:background="@drawable/k2go_info_circle" />
-                </LinearLayout>
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                    <TextView android:id="@+id/k2go_det_pictures" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-                    <TextView android:id="@+id/k2go_det_text" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-                </LinearLayout>
+                <LinearLayout android:id="@+id/k2go_wiki_versions" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+                <TextView android:id="@+id/k2go_wiki_hint" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:visibility="gone"
+                    android:text="@string/k2go_wiki_pick_one" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_clay" />
             </LinearLayout>
         </LinearLayout>
 

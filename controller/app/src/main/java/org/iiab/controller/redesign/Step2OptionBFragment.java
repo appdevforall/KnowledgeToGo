@@ -15,16 +15,19 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.MultiResourceGaugeView;
 import org.iiab.controller.R;
 import org.iiab.controller.SystemStateEvaluator;
 import org.iiab.controller.applang.data.ContentLanguage;
 import org.iiab.controller.install.presentation.InstallService;
+import org.json.JSONObject;
 
 /**
- * Step 2 Content — Option B (5-step map + arc Gauge). One source per step, projected-use gauge,
- * per-step "Skip". Wikipedia is includable (checkbox / Skip); Maps is fixed; Books/Courses WIP.
+ * Step 2 Content — Option B (5-step map + arc Gauge). Wikipedia has a full screen of its own
+ * (step 1 of 5) hosting the shared {@link WikiVersionPicker} (List/Grouped, multi-select, min
+ * one). Maps is fixed; Books/Courses WIP. v1 installs the primary of the selection.
  */
 public class Step2OptionBFragment extends Fragment {
 
@@ -35,28 +38,32 @@ public class Step2OptionBFragment extends Fragment {
 
     private int step = 0;
     private String lang;
-    private boolean everything = false, pictures = true, wikiIncluded = true;
+    private JSONObject langData;
+    private boolean wikiIncluded = true;
     private double lastTotal = 0, pOs = 1.4, pMaps = 0.2, pKiwix = 4.6;
 
+    private Set<String> sel;
+    private WikiVersionPicker picker;
+
     private final TextView[] dots = new TextView[5];
-    private TextView caption, legend, btnBack, btnNext, btnSkip, info;
+    private TextView caption, legend, btnBack, btnNext, btnSkip, info, wikiHint;
     private CheckBox wikiCheck;
     private MultiResourceGaugeView gauge;
-    private TextView covPop, covEvery, detPic, detTxt;
     private View wikiBlock;
+    private ViewGroup versions;
 
     private SetupLibraryActivity act() {
         return (getActivity() instanceof SetupLibraryActivity) ? (SetupLibraryActivity) getActivity() : null;
     }
     private InstallationPlanner.Tier tier() { return act() != null ? act().getSelectedTier() : InstallationPlanner.Tier.STANDARD; }
-    private String variantKey() { return (everything ? "all" : "top1m") + "_" + (pictures ? "maxi" : "nopic"); }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
         View v = inflater.inflate(R.layout.fragment_k2go_setup_step2b, c, false);
         lang = ContentLanguage.systemDefault();
-        if (act() != null) { everything = act().isEverything(); pictures = act().isPictures(); }
+        sel = (act() != null) ? act().getWikiVariants() : new java.util.LinkedHashSet<>();
+        if (act() != null) wikiIncluded = act().isWikiIncluded();
 
         int[] ids = {R.id.k2go_sd0, R.id.k2go_sd1, R.id.k2go_sd2, R.id.k2go_sd3, R.id.k2go_sd4};
         for (int i = 0; i < 5; i++) dots[i] = v.findViewById(ids[i]);
@@ -69,27 +76,58 @@ public class Step2OptionBFragment extends Fragment {
         btnSkip = v.findViewById(R.id.k2go_btn_skip);
         wikiCheck = v.findViewById(R.id.k2go_wiki_check);
         wikiBlock = v.findViewById(R.id.k2go_wiki_block);
-        covPop = v.findViewById(R.id.k2go_cov_popular);
-        covEvery = v.findViewById(R.id.k2go_cov_everything);
-        detPic = v.findViewById(R.id.k2go_det_pictures);
-        detTxt = v.findViewById(R.id.k2go_det_text);
+        versions = v.findViewById(R.id.k2go_wiki_versions);
+        wikiHint = v.findViewById(R.id.k2go_wiki_hint);
+
+        picker = new WikiVersionPicker(requireContext(), versions, sel,
+                act() != null ? act().getWikiView() : "list", () -> { updateHint(); refreshProjection(); });
 
         wikiCheck.setChecked(wikiIncluded);
-        wikiCheck.setOnClickListener(x -> { wikiIncluded = wikiCheck.isChecked(); refreshProjection(); });
-        covPop.setOnClickListener(x -> { everything = false; persist(); refreshProjection(); });
-        covEvery.setOnClickListener(x -> { everything = true; persist(); refreshProjection(); });
-        detPic.setOnClickListener(x -> { pictures = true; persist(); refreshProjection(); });
-        detTxt.setOnClickListener(x -> { pictures = false; persist(); refreshProjection(); });
+        wikiCheck.setOnClickListener(x -> {
+            wikiIncluded = wikiCheck.isChecked();
+            persist();
+            versions.setVisibility(wikiIncluded ? View.VISIBLE : View.GONE);
+            updateHint();
+            refreshProjection();
+        });
         btnBack.setOnClickListener(x -> {
             if (step > 0) { step--; render(); }
             else if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
         });
         btnSkip.setOnClickListener(x -> {
-            if (step == 0) { wikiIncluded = false; wikiCheck.setChecked(false); refreshProjection(); }
+            if (step == 0) {
+                wikiIncluded = false;
+                wikiCheck.setChecked(false);
+                versions.setVisibility(View.GONE);
+                persist();
+                updateHint();
+                refreshProjection();
+            }
             if (step < 4) { step++; render(); }
         });
-        btnNext.setOnClickListener(x -> { if (step < 4) { step++; render(); } else startDownload(); });
+        btnNext.setOnClickListener(x -> {
+            if (step == 0 && wikiIncluded && sel.isEmpty()) {
+                updateHint();
+                Toast.makeText(requireContext(), R.string.k2go_wiki_pick_one, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (step < 4) { step++; render(); } else startDownload();
+        });
         AbFlip.attach(v.findViewById(R.id.k2go_step2_title), () -> { if (act() != null) act().flipAbTest(); });
+
+        InstallationPlanner.getOrFetchCatalog(requireContext(), new InstallationPlanner.CacheListener() {
+            @Override public void onReady(JSONObject catalog) {
+                if (!isAdded()) return;
+                langData = catalog.optJSONObject(lang);
+                if (langData == null) langData = catalog.optJSONObject("en");
+                picker.setLangData(langData);
+                if (wikiIncluded) picker.selectDefaultIfEmpty();
+                picker.render();
+                updateHint();
+                refreshProjection();
+            }
+            @Override public void onError(String e) { }
+        });
 
         render();
         refreshProjection();
@@ -97,8 +135,7 @@ public class Step2OptionBFragment extends Fragment {
     }
 
     private void persist() {
-        if (act() != null) { act().setEverything(everything); act().setPictures(pictures); }
-        toggleLabels();
+        if (act() != null) { act().setWikiIncluded(wikiIncluded); act().setWikiView(picker.getMode()); }
     }
 
     private void render() {
@@ -109,37 +146,32 @@ public class Step2OptionBFragment extends Fragment {
         }
         caption.setText(NAMES[step]);
         wikiBlock.setVisibility(step == 0 ? View.VISIBLE : View.GONE);
+        versions.setVisibility(step == 0 && wikiIncluded ? View.VISIBLE : View.GONE);
         info.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
         info.setText(INFO[step]);
         btnBack.setVisibility(step == 0 ? View.INVISIBLE : View.VISIBLE);
         btnSkip.setVisibility(step < 4 ? View.VISIBLE : View.GONE);
-        toggleLabels();
+        updateHint();
         updateNextLabel();
     }
 
-    private void toggleLabels() {
-        hi(covPop, !everything); hi(covEvery, everything);
-        hi(detPic, pictures); hi(detTxt, !pictures);
-    }
-    private void hi(TextView t, boolean on) {
-        t.setBackgroundResource(on ? R.drawable.k2go_primary_bg : R.drawable.k2go_card_bg);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
+    private void updateHint() {
+        wikiHint.setVisibility(step == 0 && wikiIncluded && sel.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
     private void updateNextLabel() {
-        btnNext.setText(step == 4
-                ? String.format(Locale.US, "Download library · %.1f GB", lastTotal)
-                : "Next");
+        btnNext.setText(step == 4 ? String.format(Locale.US, "Download library · %.1f GB", lastTotal) : "Next");
     }
 
     private void refreshProjection() {
-        InstallationPlanner.calculateProjectedSize(requireContext(), tier(), true, lang, variantKey(),
+        String variant = wikiIncluded ? WikiVariants.primary(sel) : null;
+        InstallationPlanner.calculateProjectedSize(requireContext(), tier(), true, lang, variant,
                 new InstallationPlanner.PlanResultListener() {
                     @Override
                     public void onCalculated(InstallationPlanner.StorageProjection p) {
                         if (!isAdded()) return;
                         pOs = p.osSize; pMaps = p.mapsSize; pKiwix = p.kiwixSize;
-                        double picks = (wikiIncluded ? pKiwix : 0) + pMaps;
+                        double picks = ((wikiIncluded && variant != null) ? pKiwix : 0) + pMaps;
                         lastTotal = pOs + picks;
                         updateGauge(pOs, picks);
                         updateNextLabel();
@@ -166,13 +198,14 @@ public class Step2OptionBFragment extends Fragment {
     }
 
     private void startDownload() {
+        String variant = wikiIncluded ? WikiVariants.primary(sel) : null;
         Intent i = new Intent(requireContext(), InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, tier().name());
         i.putExtra(InstallService.EXTRA_COMPANION, true);
         i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(requireContext()));
         i.putExtra(InstallService.EXTRA_KIWIX_LANG, lang);
-        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, wikiIncluded ? variantKey() : null);
+        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, variant);
         i.putExtra(InstallService.EXTRA_REINSTALL, false);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) requireContext().startForegroundService(i);
         else requireContext().startService(i);

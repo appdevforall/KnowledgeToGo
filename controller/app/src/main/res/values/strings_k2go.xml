@@ -78,4 +78,23 @@
     <string name="k2go_added_after" translatable="false">added after install</string>
     <string name="k2go_step2a_hint" translatable="false">Tap a source to Add or Skip it. Skip all = just the system.</string>
     <string name="k2go_skip_for_now" translatable="false">Skip for now ›</string>
+
+    <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
+    <string name="k2go_wiki_view_list" translatable="false">List</string>
+    <string name="k2go_wiki_view_grouped" translatable="false">Grouped</string>
+    <string name="k2go_wiki_col_version" translatable="false">Version</string>
+    <string name="k2go_wiki_col_size" translatable="false">Size</string>
+    <string name="k2go_wiki_choose" translatable="false">Choose versions</string>
+    <string name="k2go_wiki_skip_all" translatable="false">Skip Wikipedia</string>
+    <string name="k2go_wiki_pick_one" translatable="false">Pick at least one version to continue.</string>
+    <string name="k2go_wiki_none" translatable="false">No versions available for this language.</string>
+    <string name="k2go_wiki_cov_all" translatable="false">Everything</string>
+    <string name="k2go_wiki_cov_all_desc" translatable="false">Every article</string>
+    <string name="k2go_wiki_cov_top1m" translatable="false">Top 1M</string>
+    <string name="k2go_wiki_cov_top1m_desc" translatable="false">~1M most-read articles</string>
+    <string name="k2go_wiki_cov_top" translatable="false">Popular</string>
+    <string name="k2go_wiki_cov_top_desc" translatable="false">Most consulted articles</string>
+    <string name="k2go_wiki_det_maxi" translatable="false">With pictures</string>
+    <string name="k2go_wiki_det_nopic" translatable="false">Text only</string>
+    <string name="k2go_wiki_det_mini" translatable="false">Summaries</string>
 </resources>
