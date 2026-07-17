@@ -15,6 +15,12 @@
             android:orientation="vertical" android:layout_marginTop="24dp" android:gravity="center">
             <ImageView android:layout_width="150dp" android:layout_height="150dp"
                 android:src="@drawable/splash_logo" android:contentDescription="@null" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="20dp" android:gravity="center" android:text="@string/k2go_brand"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" android:gravity="center" android:text="@string/k2go_welcome_sub"
+                android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_muted" />
         </LinearLayout>
 
         <!-- LANGUAGE -->

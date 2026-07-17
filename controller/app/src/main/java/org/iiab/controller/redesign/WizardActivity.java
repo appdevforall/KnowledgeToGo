@@ -102,11 +102,11 @@ public class WizardActivity extends AppCompatActivity {
         language.setVisibility(step == 1 ? View.VISIBLE : View.GONE);
         perms.setVisibility(step == 2 ? View.VISIBLE : View.GONE);
         setup.setVisibility(step == 3 ? View.VISIBLE : View.GONE);
+        title.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
+        subtitle.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
 
         switch (step) {
             case 0:
-                title.setText("Knowledge To Go");
-                subtitle.setText("A library in your pocket");
                 primary.setVisibility(View.VISIBLE);
                 primary.setText("Get started");
                 enable(primary, true);
