@@ -28,6 +28,7 @@
 
         <LinearLayout android:id="@+id/k2go_wiki_block" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="16dp" android:padding="14dp" android:background="@drawable/k2go_card_bg">
+            <CheckBox android:id="@+id/k2go_wiki_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" android:text="Include Wikipedia" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" android:layout_marginBottom="8dp" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_coverage"
                 android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
@@ -52,8 +53,10 @@
         <TextView android:id="@+id/k2go_btn_next" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="12dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_next"
             android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg" android:clickable="true" android:focusable="true" />
-        <TextView android:id="@+id/k2go_btn_back" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_back_link"
-            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp" android:gravity="center_vertical">
+            <TextView android:id="@+id/k2go_btn_back" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="@string/k2go_back_link" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
+            <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" />
+            <TextView android:id="@+id/k2go_btn_skip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="@string/k2go_skip" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

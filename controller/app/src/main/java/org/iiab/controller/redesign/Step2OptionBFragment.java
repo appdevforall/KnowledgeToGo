@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -22,9 +23,8 @@ import org.iiab.controller.applang.data.ContentLanguage;
 import org.iiab.controller.install.presentation.InstallService;
 
 /**
- * Step 2 Content — Option B (5-step map + arc Gauge). Guided: one source per step, a
- * projected-use gauge (reuses the old UI's MultiResourceGaugeView), Wikipedia coverage/detail
- * on step 1, Download on Review. Same install payload as Option A; picks shared via the Activity.
+ * Step 2 Content — Option B (5-step map + arc Gauge). One source per step, projected-use gauge,
+ * per-step "Skip". Wikipedia is includable (checkbox / Skip); Maps is fixed; Books/Courses WIP.
  */
 public class Step2OptionBFragment extends Fragment {
 
@@ -35,11 +35,12 @@ public class Step2OptionBFragment extends Fragment {
 
     private int step = 0;
     private String lang;
-    private boolean everything = false, pictures = true;
-    private double lastTotal = 0;
+    private boolean everything = false, pictures = true, wikiIncluded = true;
+    private double lastTotal = 0, pOs = 1.4, pMaps = 0.2, pKiwix = 4.6;
 
     private final TextView[] dots = new TextView[5];
-    private TextView caption, legend, btnBack, btnNext, info;
+    private TextView caption, legend, btnBack, btnNext, btnSkip, info;
+    private CheckBox wikiCheck;
     private MultiResourceGaugeView gauge;
     private TextView covPop, covEvery, detPic, detTxt;
     private View wikiBlock;
@@ -65,12 +66,16 @@ public class Step2OptionBFragment extends Fragment {
         info = v.findViewById(R.id.k2go_info_text);
         btnBack = v.findViewById(R.id.k2go_btn_back);
         btnNext = v.findViewById(R.id.k2go_btn_next);
+        btnSkip = v.findViewById(R.id.k2go_btn_skip);
+        wikiCheck = v.findViewById(R.id.k2go_wiki_check);
         wikiBlock = v.findViewById(R.id.k2go_wiki_block);
         covPop = v.findViewById(R.id.k2go_cov_popular);
         covEvery = v.findViewById(R.id.k2go_cov_everything);
         detPic = v.findViewById(R.id.k2go_det_pictures);
         detTxt = v.findViewById(R.id.k2go_det_text);
 
+        wikiCheck.setChecked(wikiIncluded);
+        wikiCheck.setOnClickListener(x -> { wikiIncluded = wikiCheck.isChecked(); refreshProjection(); });
         covPop.setOnClickListener(x -> { everything = false; persist(); refreshProjection(); });
         covEvery.setOnClickListener(x -> { everything = true; persist(); refreshProjection(); });
         detPic.setOnClickListener(x -> { pictures = true; persist(); refreshProjection(); });
@@ -78,6 +83,10 @@ public class Step2OptionBFragment extends Fragment {
         btnBack.setOnClickListener(x -> {
             if (step > 0) { step--; render(); }
             else if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
+        });
+        btnSkip.setOnClickListener(x -> {
+            if (step == 0) { wikiIncluded = false; wikiCheck.setChecked(false); refreshProjection(); }
+            if (step < 4) { step++; render(); }
         });
         btnNext.setOnClickListener(x -> { if (step < 4) { step++; render(); } else startDownload(); });
         AbFlip.attach(v.findViewById(R.id.k2go_step2_title), () -> { if (act() != null) act().flipAbTest(); });
@@ -103,6 +112,7 @@ public class Step2OptionBFragment extends Fragment {
         info.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
         info.setText(INFO[step]);
         btnBack.setVisibility(step == 0 ? View.INVISIBLE : View.VISIBLE);
+        btnSkip.setVisibility(step < 4 ? View.VISIBLE : View.GONE);
         toggleLabels();
         updateNextLabel();
     }
@@ -128,8 +138,10 @@ public class Step2OptionBFragment extends Fragment {
                     @Override
                     public void onCalculated(InstallationPlanner.StorageProjection p) {
                         if (!isAdded()) return;
-                        lastTotal = p.totalSize;
-                        updateGauge(p.osSize, p.mapsSize + p.kiwixSize);
+                        pOs = p.osSize; pMaps = p.mapsSize; pKiwix = p.kiwixSize;
+                        double picks = (wikiIncluded ? pKiwix : 0) + pMaps;
+                        lastTotal = pOs + picks;
+                        updateGauge(pOs, picks);
                         updateNextLabel();
                     }
                     @Override public void onError(String e) { }
@@ -160,7 +172,7 @@ public class Step2OptionBFragment extends Fragment {
         i.putExtra(InstallService.EXTRA_COMPANION, true);
         i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(requireContext()));
         i.putExtra(InstallService.EXTRA_KIWIX_LANG, lang);
-        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, variantKey());
+        i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, wikiIncluded ? variantKey() : null);
         i.putExtra(InstallService.EXTRA_REINSTALL, false);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) requireContext().startForegroundService(i);
         else requireContext().startService(i);
