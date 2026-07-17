@@ -30,8 +30,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** Called by Step 1 "Next". Step 2 (A/B) lands in the next increment. */
     public void goToStep2() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host,
-                        PlaceholderFragment.newInstance("Step 2 · Content — coming next"))
+                .replace(R.id.k2go_setup_host, new Step2OptionAFragment())
                 .addToBackStack("step2")
                 .commit();
     }
