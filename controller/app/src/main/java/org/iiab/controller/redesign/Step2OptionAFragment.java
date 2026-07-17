@@ -78,6 +78,9 @@ public class Step2OptionAFragment extends Fragment {
         detPictures.setOnClickListener(x -> { pictures = true; refresh(); });
         detText.setOnClickListener(x -> { pictures = false; refresh(); });
         download.setOnClickListener(x -> startDownload());
+        v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> {
+            if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
+        });
 
         // Real Kiwix catalog for this language (cached; network only if stale).
         InstallationPlanner.getOrFetchCatalog(requireContext(), new InstallationPlanner.CacheListener() {

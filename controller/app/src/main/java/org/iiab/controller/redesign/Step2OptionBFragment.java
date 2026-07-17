@@ -84,7 +84,10 @@ public class Step2OptionBFragment extends Fragment {
         covEvery.setOnClickListener(x -> { everything = true; persist(); refreshProjection(); });
         detPic.setOnClickListener(x -> { pictures = true; persist(); refreshProjection(); });
         detTxt.setOnClickListener(x -> { pictures = false; persist(); refreshProjection(); });
-        btnBack.setOnClickListener(x -> { if (step > 0) { step--; render(); } });
+        btnBack.setOnClickListener(x -> {
+            if (step > 0) { step--; render(); }
+            else if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
+        });
         btnNext.setOnClickListener(x -> { if (step < 4) { step++; render(); } else startDownload(); });
         AbFlip.attach(caption != null ? v.findViewById(R.id.k2go_step2_title) : v, () -> { if (act() != null) act().flipAbTest(); });
 

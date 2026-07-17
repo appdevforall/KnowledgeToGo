@@ -61,10 +61,15 @@
             android:text="@string/k2go_step2a_note"
             android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
 
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:minHeight="12dp" />
         <TextView android:id="@+id/k2go_download" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="18dp" android:padding="16dp" android:gravity="center"
             android:text="@string/k2go_download_library" android:textAppearance="?attr/textAppearanceTitleLarge"
             android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg"
+            android:clickable="true" android:focusable="true" />
+        <TextView android:id="@+id/k2go_step2a_back" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_back_link"
+            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal"
             android:clickable="true" android:focusable="true" />
     </LinearLayout>
 </ScrollView>
