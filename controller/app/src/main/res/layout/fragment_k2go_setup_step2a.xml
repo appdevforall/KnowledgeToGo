@@ -2,22 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/k2go_paper" android:fillViewport="true">
-
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="16dp">
 
         <TextView android:id="@+id/k2go_step2_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="@string/k2go_setup_library_title"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" android:text="@string/k2go_step2a_breadcrumb"
-            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" />
+            android:text="@string/k2go_setup_library_title" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"
+            android:text="@string/k2go_step2a_breadcrumb" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" />
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:text="@string/k2go_storage"
-            android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-        <LinearLayout android:id="@+id/k2go_bar" android:layout_width="match_parent"
-            android:layout_height="18dp" android:layout_marginTop="6dp" android:orientation="horizontal">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:text="@string/k2go_storage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+        <LinearLayout android:id="@+id/k2go_bar" android:layout_width="match_parent" android:layout_height="18dp" android:layout_marginTop="6dp" android:orientation="horizontal">
             <View android:id="@+id/k2go_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" />
             <View android:id="@+id/k2go_bar_system" android:layout_width="0dp" android:layout_height="match_parent" />
             <View android:id="@+id/k2go_bar_picks"  android:layout_width="0dp" android:layout_height="match_parent" />
@@ -26,50 +21,77 @@
         <TextView android:id="@+id/k2go_legend" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:layout_marginTop="6dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
 
-        <!-- Wikipedia (expanded) -->
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginTop="18dp" android:padding="14dp"
-            android:background="@drawable/k2go_card_bg">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:gravity="center_vertical">
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="@string/k2go_wikipedia_kiwix" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
-                <TextView android:id="@+id/k2go_wiki_size" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" />
+        <!-- Wikipedia -->
+        <LinearLayout android:id="@+id/k2go_wiki_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+            android:layout_marginTop="16dp" android:padding="14dp" android:background="@drawable/k2go_card_bg">
+            <LinearLayout android:id="@+id/k2go_wiki_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:clickable="true" android:focusable="true">
+                <CheckBox android:id="@+id/k2go_wiki_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/k2go_src_wikipedia" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                <TextView android:id="@+id/k2go_wiki_size" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="10dp" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                <TextView android:id="@+id/k2go_wiki_skip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="8dp" android:text="@string/k2go_skip" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                <TextView android:id="@+id/k2go_wiki_chevron" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="▸" android:textColor="@color/k2go_teal" />
             </LinearLayout>
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                android:text="@string/k2go_coverage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                <TextView android:id="@+id/k2go_cov_popular" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-                <TextView android:id="@+id/k2go_cov_everything" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-            </LinearLayout>
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                android:text="@string/k2go_detail" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                <TextView android:id="@+id/k2go_det_pictures" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
-                <TextView android:id="@+id/k2go_det_text" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
+            <LinearLayout android:id="@+id/k2go_wiki_body" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_coverage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
+                    <TextView android:id="@+id/k2go_cov_popular" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
+                    <TextView android:id="@+id/k2go_cov_everything" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
+                </LinearLayout>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="@string/k2go_detail" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
+                    <TextView android:id="@+id/k2go_det_pictures" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:layout_marginEnd="6dp" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
+                    <TextView android:id="@+id/k2go_det_text" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="10dp" android:gravity="center" android:clickable="true" android:focusable="true" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Books -->
+        <LinearLayout android:id="@+id/k2go_books_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+            android:layout_marginTop="12dp" android:padding="14dp" android:background="@drawable/k2go_card_bg">
+            <LinearLayout android:id="@+id/k2go_books_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:clickable="true" android:focusable="true">
+                <CheckBox android:id="@+id/k2go_books_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/k2go_src_books" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                <TextView android:id="@+id/k2go_books_size" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="10dp" android:text="0.8 GB" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                <TextView android:id="@+id/k2go_books_skip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="8dp" android:text="@string/k2go_skip" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                <TextView android:id="@+id/k2go_books_chevron" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="▸" android:textColor="@color/k2go_teal" />
+            </LinearLayout>
+            <TextView android:id="@+id/k2go_books_body" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:visibility="gone"
+                android:text="@string/k2go_books_body" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
+        <!-- Maps -->
+        <LinearLayout android:id="@+id/k2go_maps_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+            android:layout_marginTop="12dp" android:padding="14dp" android:background="@drawable/k2go_card_bg">
+            <LinearLayout android:id="@+id/k2go_maps_header" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:clickable="true" android:focusable="true">
+                <CheckBox android:id="@+id/k2go_maps_check" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true" />
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/k2go_src_maps" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                <TextView android:id="@+id/k2go_maps_size" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="10dp" android:text="0.2 GB" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyLarge" />
+                <TextView android:id="@+id/k2go_maps_chevron" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="▸" android:textColor="@color/k2go_teal" />
+            </LinearLayout>
+            <TextView android:id="@+id/k2go_maps_body" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:visibility="gone"
+                android:text="@string/k2go_maps_body" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
+        <!-- Courses (disabled) -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+            android:layout_marginTop="12dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:alpha="0.55">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+                <CheckBox android:layout_width="wrap_content" android:layout_height="wrap_content" android:enabled="false" />
+                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="@string/k2go_src_courses" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_added_after" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            </LinearLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="@string/k2go_courses_hint" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp"
-            android:text="@string/k2go_step2a_note"
-            android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+            android:text="@string/k2go_step2a_hint" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
 
         <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:minHeight="12dp" />
         <TextView android:id="@+id/k2go_download" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="18dp" android:padding="16dp" android:gravity="center"
-            android:text="@string/k2go_download_library" android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg"
-            android:clickable="true" android:focusable="true" />
+            android:layout_marginTop="12dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_download_library"
+            android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg" android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
         <TextView android:id="@+id/k2go_step2a_back" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="10dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_back_link"
-            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal"
-            android:clickable="true" android:focusable="true" />
+            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
     </LinearLayout>
 </ScrollView>

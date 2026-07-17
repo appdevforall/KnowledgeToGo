@@ -65,4 +65,16 @@
     <string name="k2go_receive" translatable="false">Receive</string>
     <string name="k2go_welcome_sub" translatable="false">A library in your pocket</string>
     <string name="k2go_back_link" translatable="false">‹ Back</string>
+    <string name="k2go_src_wikipedia" translatable="false">Wikipedia</string>
+    <string name="k2go_src_books" translatable="false">Books</string>
+    <string name="k2go_src_maps" translatable="false">Maps</string>
+    <string name="k2go_src_courses" translatable="false">Courses</string>
+    <string name="k2go_skip" translatable="false">Skip</string>
+    <string name="k2go_add" translatable="false">Add</string>
+    <string name="k2go_skipped" translatable="false">skipped</string>
+    <string name="k2go_books_body" translatable="false">Coming soon — no content to choose yet.</string>
+    <string name="k2go_maps_body" translatable="false">Offline world base map. Included with the map (fixed for now).</string>
+    <string name="k2go_courses_hint" translatable="false">Kiwix presets exist; Kolibri can\'t be preset yet — set up on the device after install.</string>
+    <string name="k2go_added_after" translatable="false">added after install</string>
+    <string name="k2go_step2a_hint" translatable="false">Tap a source to Add or Skip it. Skip all = just the system.</string>
 </resources>
