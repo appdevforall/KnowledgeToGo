@@ -81,7 +81,15 @@ public class Step1SystemFragment extends Fragment {
             }
         });
 
-        root.findViewById(R.id.k2go_step1_back).setOnClickListener(v -> requireActivity().finish());
+        root.findViewById(R.id.k2go_step1_back).setOnClickListener(v -> {
+            // Setup was already marked complete when the wizard launched this; route to the
+            // library (reusing it if it is under us) instead of a bare finish() that would
+            // drop the user to the Android home screen.
+            android.content.Intent i = new android.content.Intent(requireContext(), LibraryActivity.class);
+            i.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(i);
+            requireActivity().finish();
+        });
         root.findViewById(R.id.k2go_step1_skip_now).setOnClickListener(v -> {
             requireContext().getSharedPreferences(getString(R.string.pref_file_internal), android.content.Context.MODE_PRIVATE)
                     .edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
