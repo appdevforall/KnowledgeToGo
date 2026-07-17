@@ -1,29 +1,30 @@
 package org.iiab.controller.redesign;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import org.iiab.controller.InstallationPlanner;
+import org.iiab.controller.MultiResourceGaugeView;
 import org.iiab.controller.R;
 import org.iiab.controller.SystemStateEvaluator;
 import org.iiab.controller.applang.data.ContentLanguage;
 import org.iiab.controller.install.presentation.InstallService;
 
 /**
- * Step 2 Content — Option B (5-step map + Gauge). Guided: one source per step, a projected-use
- * gauge (real total from InstallationPlanner), Wikipedia coverage/detail on step 1, Download on
- * Review. Same install payload as Option A; picks are shared via SetupLibraryActivity.
+ * Step 2 Content — Option B (5-step map + arc Gauge). Guided: one source per step, a
+ * projected-use gauge (reuses the old UI's MultiResourceGaugeView), Wikipedia coverage/detail
+ * on step 1, Download on Review. Same install payload as Option A; picks shared via the Activity.
  */
 public class Step2OptionBFragment extends Fragment {
 
@@ -38,11 +39,10 @@ public class Step2OptionBFragment extends Fragment {
     private double lastTotal = 0;
 
     private final TextView[] dots = new TextView[5];
-    private TextView caption, gaugeTotal, legend, btnBack, btnNext, info;
+    private TextView caption, legend, btnBack, btnNext, info;
+    private MultiResourceGaugeView gauge;
     private TextView covPop, covEvery, detPic, detTxt;
     private View wikiBlock;
-    private LinearLayout bar;
-    private View bU, bS, bP, bF;
 
     private SetupLibraryActivity act() {
         return (getActivity() instanceof SetupLibraryActivity) ? (SetupLibraryActivity) getActivity() : null;
@@ -60,25 +60,16 @@ public class Step2OptionBFragment extends Fragment {
         int[] ids = {R.id.k2go_sd0, R.id.k2go_sd1, R.id.k2go_sd2, R.id.k2go_sd3, R.id.k2go_sd4};
         for (int i = 0; i < 5; i++) dots[i] = v.findViewById(ids[i]);
         caption = v.findViewById(R.id.k2go_step_caption);
-        gaugeTotal = v.findViewById(R.id.k2go_gauge_total);
+        gauge = v.findViewById(R.id.k2go_gauge);
         legend = v.findViewById(R.id.k2go_legend);
         info = v.findViewById(R.id.k2go_info_text);
         btnBack = v.findViewById(R.id.k2go_btn_back);
         btnNext = v.findViewById(R.id.k2go_btn_next);
         wikiBlock = v.findViewById(R.id.k2go_wiki_block);
-        bar = v.findViewById(R.id.k2go_bar);
-        bU = v.findViewById(R.id.k2go_bar_used);
-        bS = v.findViewById(R.id.k2go_bar_system);
-        bP = v.findViewById(R.id.k2go_bar_picks);
-        bF = v.findViewById(R.id.k2go_bar_free);
         covPop = v.findViewById(R.id.k2go_cov_popular);
         covEvery = v.findViewById(R.id.k2go_cov_everything);
         detPic = v.findViewById(R.id.k2go_det_pictures);
         detTxt = v.findViewById(R.id.k2go_det_text);
-        tintBg(bU, R.color.k2go_muted);
-        tintBg(bS, R.color.k2go_teal);
-        tintBg(bP, R.color.k2go_leaf);
-        tintBg(bF, R.color.k2go_hairline);
 
         covPop.setOnClickListener(x -> { everything = false; persist(); refreshProjection(); });
         covEvery.setOnClickListener(x -> { everything = true; persist(); refreshProjection(); });
@@ -89,7 +80,7 @@ public class Step2OptionBFragment extends Fragment {
             else if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
         });
         btnNext.setOnClickListener(x -> { if (step < 4) { step++; render(); } else startDownload(); });
-        AbFlip.attach(caption != null ? v.findViewById(R.id.k2go_step2_title) : v, () -> { if (act() != null) act().flipAbTest(); });
+        AbFlip.attach(v.findViewById(R.id.k2go_step2_title), () -> { if (act() != null) act().flipAbTest(); });
 
         render();
         refreshProjection();
@@ -138,21 +129,26 @@ public class Step2OptionBFragment extends Fragment {
                     public void onCalculated(InstallationPlanner.StorageProjection p) {
                         if (!isAdded()) return;
                         lastTotal = p.totalSize;
-                        gaugeTotal.setText(String.format(Locale.US, "%.1f GB", p.totalSize));
-                        applyBar(p.osSize, p.mapsSize + p.kiwixSize);
+                        updateGauge(p.osSize, p.mapsSize + p.kiwixSize);
                         updateNextLabel();
                     }
                     @Override public void onError(String e) { }
                 });
     }
 
-    private void applyBar(double systemGb, double picksGb) {
+    private void updateGauge(double systemGb, double picksGb) {
         double total = StorageInfo.totalGb();
         double used = StorageInfo.usedGb();
-        double freeAfter = Math.max(0, StorageInfo.freeGb() - systemGb - picksGb);
-        if (total <= 0) total = used + systemGb + picksGb + freeAfter + 0.01;
-        bar.setWeightSum((float) total);
-        setW(bU, (float) used); setW(bS, (float) systemGb); setW(bP, (float) picksGb); setW(bF, (float) freeAfter);
+        if (total <= 0) total = used + systemGb + picksGb + 0.01;
+        double freeAfter = Math.max(0, total - used - systemGb - picksGb);
+        List<MultiResourceGaugeView.Segment> segs = new ArrayList<>();
+        segs.add(new MultiResourceGaugeView.Segment((float) (used / total * 100f), ContextCompat.getColor(requireContext(), R.color.k2go_muted)));
+        segs.add(new MultiResourceGaugeView.Segment((float) (systemGb / total * 100f), ContextCompat.getColor(requireContext(), R.color.k2go_teal)));
+        segs.add(new MultiResourceGaugeView.Segment((float) (picksGb / total * 100f), ContextCompat.getColor(requireContext(), R.color.k2go_leaf)));
+        if (gauge != null) {
+            gauge.updateData(segs, String.format(Locale.US, "%.1fG", used + systemGb + picksGb),
+                    ContextCompat.getColor(requireContext(), R.color.k2go_ink), "projected use", "");
+        }
         legend.setText(String.format(Locale.US, "Used %.1f · System %.1f · Picks %.1f · Free %.1f",
                 used, systemGb, picksGb, freeAfter));
     }
@@ -171,13 +167,5 @@ public class Step2OptionBFragment extends Fragment {
         Toast.makeText(requireContext(), "Downloading your library…", Toast.LENGTH_LONG).show();
         startActivity(new Intent(requireContext(), LibraryActivity.class));
         requireActivity().finish();
-    }
-
-    private void setW(View v, float w) {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
-        lp.weight = w; v.setLayoutParams(lp);
-    }
-    private void tintBg(View v, int colorRes) {
-        v.setBackgroundColor(ContextCompat.getColor(requireContext(), colorRes));
     }
 }
