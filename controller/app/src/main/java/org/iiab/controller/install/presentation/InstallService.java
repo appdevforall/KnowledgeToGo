@@ -307,7 +307,7 @@ public final class InstallService extends Service {
     private void startCompanionData() {
         editLocalVarsForMaps(debianRootfs, tier);
         SharedPreferences prefs = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", "en");
+        String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", org.iiab.controller.applang.data.ContentLanguage.systemDefault());
 
         InstallationPlanner.calculateProjectedSize(this, tier, true, targetLang, overrideKiwixVariant,
                 new InstallationPlanner.PlanResultListener() {

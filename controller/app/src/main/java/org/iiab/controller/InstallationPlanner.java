@@ -223,10 +223,10 @@ public class InstallationPlanner {
                 @Override
                 public void onReady(JSONObject catalog) {
                     double kiwixSize = 0.0;
-                    String resolvedLang = langCode;
+                    String resolvedLang = org.iiab.controller.applang.data.ContentLanguage.normalize(langCode);
                     String resolvedFile = null;
 
-                    JSONObject langData = catalog.optJSONObject(langCode);
+                    JSONObject langData = catalog.optJSONObject(resolvedLang);
 
                     if (langData == null) {
                         langData = catalog.optJSONObject("en");

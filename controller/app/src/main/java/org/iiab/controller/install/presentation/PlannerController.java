@@ -309,7 +309,7 @@ public final class PlannerController {
         }
 
         android.content.SharedPreferences prefs = fragment.requireContext().getSharedPreferences(fragment.getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        String targetLang = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", "en");
+        String targetLang = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", org.iiab.controller.applang.data.ContentLanguage.systemDefault());
         InstallationPlanner.Tier evalTier = (host.getSelectedTier() != null) ? host.getSelectedTier() : InstallationPlanner.Tier.BASIC;
 
         InstallationPlanner.calculateProjectedSize(fragment.requireContext(), evalTier, chkCompanionData.isChecked(), targetLang, host.getOverrideKiwixVariant(), osGiB, new InstallationPlanner.PlanResultListener() {
@@ -474,7 +474,7 @@ public final class PlannerController {
                     List<String> displayNames = new ArrayList<>();
                     int selectedIndex = 0;
                     android.content.SharedPreferences prefs = fragment.requireContext().getSharedPreferences(fragment.getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-                    String currentTarget = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", "en");
+                    String currentTarget = (host.getOverrideKiwixLang() != null) ? host.getOverrideKiwixLang() : prefs.getString("selected_lang_minimal", org.iiab.controller.applang.data.ContentLanguage.systemDefault());
 
                     for (int i = 0; i < langKeys.size(); i++) {
                         String code = langKeys.get(i);
