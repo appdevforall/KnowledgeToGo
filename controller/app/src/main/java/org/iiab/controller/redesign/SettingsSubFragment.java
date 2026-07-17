@@ -103,6 +103,7 @@ public class SettingsSubFragment extends Fragment {
     private void openTerminal(Context ctx) {
         Intent i = new Intent(ctx, org.iiab.controller.MainActivity.class);
         i.putExtra(org.iiab.controller.MainActivity.EXTRA_OPEN_TERMINAL, true);
+        i.putExtra(org.iiab.controller.MainActivity.EXTRA_TERMINAL_ONLY, true);
         ctx.startActivity(i);
     }
 

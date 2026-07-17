@@ -111,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     /** Notification-tap flag: open the full terminal directly (ADFA-4696). */
     public static final String EXTRA_OPEN_TERMINAL = "org.iiab.controller.OPEN_TERMINAL";
 
+    /** Launched only to show the terminal (from the new UI): finish on close instead of
+     *  revealing the old dashboard. */
+    public static final String EXTRA_TERMINAL_ONLY = "org.iiab.controller.TERMINAL_ONLY";
+    private boolean terminalOnlyMode = false;
+
     private TerminalController terminalController;
 
     public void invalidateModuleStateTrust() {
@@ -581,10 +586,35 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     private void maybeOpenTerminalFromIntent(Intent intent) {
         if (intent == null || terminalController == null) return;
         if (!intent.getBooleanExtra(EXTRA_OPEN_TERMINAL, false)) return;
+        terminalOnlyMode = intent.getBooleanExtra(EXTRA_TERMINAL_ONLY, false);
         intent.removeExtra(EXTRA_OPEN_TERMINAL); // consume so it fires once
+        intent.removeExtra(EXTRA_TERMINAL_ONLY);
         View root = findViewById(android.R.id.content);
-        if (root != null) root.post(() -> terminalController.openFullTerminal());
-        else terminalController.openFullTerminal();
+        Runnable open = () -> {
+            terminalController.openFullTerminal();
+            if (terminalOnlyMode) attachTerminalOnlyFinish();
+        };
+        if (root != null) root.post(open);
+        else open.run();
+    }
+
+    /** In terminal-only mode, hiding the terminal sheet returns to the caller (the new UI)
+     *  rather than exposing the old dashboard behind it. */
+    private void attachTerminalOnlyFinish() {
+        View sheet = findViewById(R.id.terminal_bottom_sheet);
+        if (sheet == null) return;
+        com.google.android.material.bottomsheet.BottomSheetBehavior<View> b =
+                com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet);
+        b.addBottomSheetCallback(new com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@androidx.annotation.NonNull View bottomSheet, int newState) {
+                if (newState == com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN) {
+                    finish();
+                }
+            }
+            @Override
+            public void onSlide(@androidx.annotation.NonNull View bottomSheet, float slideOffset) { }
+        });
     }
 
     private void toggleTheme() {
