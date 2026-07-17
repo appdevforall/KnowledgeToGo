@@ -3,6 +3,7 @@ package org.iiab.controller.redesign;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,6 +40,16 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Not set up yet? Run the first-run wizard, then it routes back here.
+        SharedPreferences prefs0 = getSharedPreferences(
+                getString(R.string.pref_file_internal), MODE_PRIVATE);
+        if (!prefs0.getBoolean(getString(R.string.pref_key_setup_complete), false)) {
+            startActivity(new Intent(this, org.iiab.controller.SetupActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_library);
 
         BottomNavigationView nav = findViewById(R.id.k2go_bottom_nav);
