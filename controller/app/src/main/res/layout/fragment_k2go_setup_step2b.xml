@@ -58,13 +58,12 @@
         <TextView android:id="@+id/k2go_info_text" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:layout_marginTop="16dp" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_muted" android:visibility="gone" />
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="18dp">
-            <TextView android:id="@+id/k2go_btn_back" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_back"
-                android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_teal" android:background="@drawable/k2go_getmore_bg" android:clickable="true" android:focusable="true" />
-            <TextView android:id="@+id/k2go_btn_next" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                android:padding="16dp" android:gravity="center" android:text="@string/k2go_next"
-                android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg" android:clickable="true" android:focusable="true" />
-        </LinearLayout>
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:minHeight="12dp" />
+        <TextView android:id="@+id/k2go_btn_next" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_next"
+            android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_on_teal" android:background="@drawable/k2go_primary_bg" android:clickable="true" android:focusable="true" />
+        <TextView android:id="@+id/k2go_btn_back" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_back_link"
+            android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
     </LinearLayout>
 </ScrollView>
