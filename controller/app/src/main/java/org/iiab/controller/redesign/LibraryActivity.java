@@ -64,6 +64,17 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
 
         bootGate = findViewById(R.id.k2go_boot_gate);
+        // The Lottie has a text layer (OPEN/CLOSED sign) referencing "Atkinson Hyperlegible".
+        // Without this delegate Lottie looks for assets/fonts/Atkinson Hyperlegible.ttf and
+        // crashes (Font asset not found). Feed it the app's Atkinson font resource instead.
+        bootGate.setFontAssetDelegate(new com.airbnb.lottie.FontAssetDelegate() {
+            @Override
+            public android.graphics.Typeface fetchFont(String fontFamily) {
+                android.graphics.Typeface tf = androidx.core.content.res.ResourcesCompat.getFont(
+                        LibraryActivity.this, R.font.atkinson_hyperlegible);
+                return tf != null ? tf : android.graphics.Typeface.DEFAULT;
+            }
+        });
         if (!reduceMotion()) {
             bootGate.setAnimation(R.raw.library_animation);
             bootGate.setMinAndMaxFrame("A_ENTRY_LOOP");
