@@ -36,6 +36,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private LottieAnimationView bootGate;
     private boolean gateDismissed = false;
+    private boolean closing = false;
+    private boolean closedDone = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         serverController.start();
 
         ServerStateRepository.get().state().observe(this, s -> {
-            if (s != null && s.alive) {
+            if (s == null) return;
+            if (closing) {
+                if (!s.alive) onClosedReady();
+            } else if (s.alive) {
                 onServerReady();
             }
         });
@@ -123,9 +128,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         } else {
             title = "Library";
         }
-        androidx.fragment.app.Fragment f = (itemId == R.id.nav_library)
-                ? new LibraryHomeFragment()
-                : PlaceholderFragment.newInstance(title);
+        androidx.fragment.app.Fragment f;
+        if (itemId == R.id.nav_library) {
+            f = new LibraryHomeFragment();
+        } else if (itemId == R.id.nav_settings) {
+            f = new SettingsFragment();
+        } else {
+            f = PlaceholderFragment.newInstance(title);
+        }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_nav_host, f)
                 .commit();
@@ -141,6 +151,39 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onPause() {
         super.onPause();
         if (serverController != null) serverController.onPause();
+    }
+
+    /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
+    public void turnOffK2Go() {
+        if (closing) return;
+        closing = true;
+        if (bootGate != null) {
+            bootGate.setVisibility(View.VISIBLE);
+            bootGate.removeAllAnimatorListeners();
+            bootGate.setRepeatCount(LottieDrawable.INFINITE);
+            bootGate.setMinAndMaxFrame("C_EXIT_LOOP");
+            bootGate.playAnimation();
+        }
+        if (ServerStateRepository.get().current().alive && targetServerState == null) {
+            serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+        } else if (!ServerStateRepository.get().current().alive) {
+            onClosedReady();
+        }
+        new Handler(Looper.getMainLooper()).postDelayed(this::onClosedReady, 15000L);
+    }
+
+    private void onClosedReady() {
+        if (closedDone) return;
+        closedDone = true;
+        if (bootGate == null) { finishAndRemoveTask(); return; }
+        bootGate.removeAllAnimatorListeners();
+        bootGate.setRepeatCount(0);
+        bootGate.setMinAndMaxFrame("D_CLOSED_FLIP");
+        bootGate.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) { finishAndRemoveTask(); }
+        });
+        bootGate.playAnimation();
     }
 
     // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
