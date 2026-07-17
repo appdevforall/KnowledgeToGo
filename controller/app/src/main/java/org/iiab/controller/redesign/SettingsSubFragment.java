@@ -99,6 +99,13 @@ public class SettingsSubFragment extends Fragment {
         } catch (Exception ignore) { /* no-op */ }
     }
 
+    /** The full Debian terminal lives in MainActivity; EXTRA_OPEN_TERMINAL opens it directly. */
+    private void openTerminal(Context ctx) {
+        Intent i = new Intent(ctx, org.iiab.controller.MainActivity.class);
+        i.putExtra(org.iiab.controller.MainActivity.EXTRA_OPEN_TERMINAL, true);
+        ctx.startActivity(i);
+    }
+
     // ---- Advanced (power-user features — preview for now) ----
     private void buildAdvanced(Context ctx, LinearLayout list) {
         SettingsUi.caption(ctx, list, "For power users.");
@@ -108,7 +115,7 @@ public class SettingsSubFragment extends Fragment {
         SettingsUi.sectionHeader(ctx, list, "DEVELOPER");
         SettingsUi.preview(ctx, list, "ADB", null);
         SettingsUi.preview(ctx, list, "Network & DNS", null);
-        SettingsUi.preview(ctx, list, "Terminal (Debian)", null);
+        SettingsUi.row(ctx, list, "Terminal (Debian)", null, null, v -> openTerminal(ctx));
     }
 
     private String versionName(Context ctx) {
