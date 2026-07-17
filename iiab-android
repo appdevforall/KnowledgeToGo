@@ -552,6 +552,13 @@ install_update_repo
 # kiwix
 disable_role_32bits kiwix "$LOCAL_VARS_DEST"
 
+# Code on the Go ships in EVERY tier: force the role on BEFORE the main IIAB install
+# so Ansible provisions it regardless of the chosen tier template (dashboard sets the
+# same kind of flags, but post-install because it is hand-installed; code is a real role).
+sed -i -E '/^[[:space:]]*code_(install|enabled)[[:space:]]*:/d' "$LOCAL_VARS_DEST"
+echo "code_install: True"  >> "$LOCAL_VARS_DEST"
+echo "code_enabled: True"  >> "$LOCAL_VARS_DEST"
+
 #-----------------------------
 # Make the generic IIAB installer proot-safe before running it
 #-----------------------------
