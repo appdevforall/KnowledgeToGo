@@ -135,8 +135,9 @@ public class Step2OptionAFragment extends Fragment {
         wikiCheck.setChecked(inc);
         wikiCard.setAlpha(inc ? 1f : 0.55f);
         wikiSkip.setText(inc ? R.string.k2go_skip : R.string.k2go_add);
-        if (inc) { wikiBody.setVisibility(View.VISIBLE); wikiChevron.setText("▾"); }
-        else { wikiBody.setVisibility(View.GONE); wikiChevron.setText("▸"); }
+        // Inclusion no longer forces the card open — Wikipedia starts collapsed like the
+        // other sources so the "tap to expand" pattern is visible. Skipping still collapses.
+        if (!inc) { wikiBody.setVisibility(View.GONE); wikiChevron.setText("▸"); }
         if (act() != null) act().setWikiIncluded(inc);
         refresh();
     }
