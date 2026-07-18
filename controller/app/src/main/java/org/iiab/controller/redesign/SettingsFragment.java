@@ -92,7 +92,7 @@ public class SettingsFragment extends Fragment {
         off.setPadding(SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16));
         off.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
         off.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_clay));
-        off.setBackgroundResource(R.drawable.k2go_getmore_bg);
+        off.setBackgroundResource(R.drawable.k2go_turnoff_bg);
         off.setClickable(true);
         off.setOnClickListener(v -> confirmTurnOff());
         footer.addView(off, new LinearLayout.LayoutParams(-1, -2));
