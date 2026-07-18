@@ -29,6 +29,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private static final String TAG = "K2Go-Library";
     private static final long AUTOSTART_DELAY_MS = 3500L;
     private static final long GATE_SAFETY_MS = 25000L;
+    /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
+    private static final long NO_SYSTEM_GATE_MS = 900L;
 
     private ServerController serverController;
     private boolean isNegotiating = false;
@@ -82,6 +84,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             bootGate.playAnimation();
         }
 
+        // If the user skipped install there is no rootfs/server to wait for; the gate would
+        // otherwise burn the full safety timeout. Detect it and dismiss quickly.
+        final boolean systemInstalled = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this);
+
         serverController = new ServerController(this, this);
         serverController.start();
 
@@ -96,19 +102,21 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
         Handler main = new Handler(Looper.getMainLooper());
         // If the stack isn't up after one poll cycle, start it.
-        main.postDelayed(() -> {
-            if (!isFinishing()
-                    && !ServerStateRepository.get().current().alive
-                    && targetServerState == null) {
-                serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-            }
-        }, AUTOSTART_DELAY_MS);
+        if (systemInstalled) {
+            main.postDelayed(() -> {
+                if (!isFinishing()
+                        && !ServerStateRepository.get().current().alive
+                        && targetServerState == null) {
+                    serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+                }
+            }, AUTOSTART_DELAY_MS);
+        }
         // Safety: never trap the user behind the gate.
         main.postDelayed(() -> {
             if (!gateDismissed) {
                 onServerReady();
             }
-        }, GATE_SAFETY_MS);
+        }, systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
     }
 
     private void onServerReady() {
