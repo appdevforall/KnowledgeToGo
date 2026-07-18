@@ -186,7 +186,7 @@ public class Step2OptionAFragment extends Fragment {
 
     private void startDownload() {
         if (wikiInvalid()) { Toast.makeText(requireContext(), R.string.k2go_wiki_pick_one, Toast.LENGTH_SHORT).show(); return; }
-        String variant = wikiInc ? WikiVariants.primary(sel) : null;
+        String variant = (wikiInc && WikiVariants.primary(sel) != null) ? WikiVariants.primary(sel) : "";
         boolean companion = variant != null || booksInc || mapsInc;
         Intent i = new Intent(requireContext(), InstallService.class);
         i.setAction(InstallService.ACTION_START);

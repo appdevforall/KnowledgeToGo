@@ -46,7 +46,7 @@
     <string name="k2go_perm_storage" translatable="false">Storage access</string>
     <string name="k2go_storage" translatable="false">Storage</string>
     <string name="k2go_lang_system_default" translatable="false">System default</string>
-    <string name="k2go_step2b_breadcrumb" translatable="false">System ✓  ·  Content — step 2 of 2</string>
+    <string name="k2go_step2b_breadcrumb" translatable="false">1 ✓ System → 2 Content</string>
     <string name="k2go_step2a_breadcrumb" translatable="false">1 ✓ System → 2 Content</string>
     <string name="k2go_det_text" translatable="false">Text only</string>
     <string name="k2go_clone_headsup" translatable="false">The K2Go library on the other phone (if any) is replaced with this one.</string>

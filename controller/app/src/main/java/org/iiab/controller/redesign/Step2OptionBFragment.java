@@ -167,7 +167,7 @@ public class Step2OptionBFragment extends Fragment {
     }
 
     private void refreshProjection() {
-        String variant = wikiIncluded ? WikiVariants.primary(sel) : null;
+        String variant = (wikiIncluded && WikiVariants.primary(sel) != null) ? WikiVariants.primary(sel) : "";
         InstallationPlanner.calculateProjectedSize(requireContext(), tier(), true, lang, variant,
                 new InstallationPlanner.PlanResultListener() {
                     @Override
@@ -201,7 +201,7 @@ public class Step2OptionBFragment extends Fragment {
     }
 
     private void startDownload() {
-        String variant = wikiIncluded ? WikiVariants.primary(sel) : null;
+        String variant = (wikiIncluded && WikiVariants.primary(sel) != null) ? WikiVariants.primary(sel) : "";
         Intent i = new Intent(requireContext(), InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, tier().name());

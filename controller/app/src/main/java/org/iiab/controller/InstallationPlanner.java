@@ -289,7 +289,10 @@ public class InstallationPlanner {
                     }
 
                     if (langData != null) {
-                        if (overrideVariant != null) {
+                        if (overrideVariant != null && overrideVariant.isEmpty()) {
+                            // Explicit "no Wikipedia" (skip): leave kiwixSize 0 / resolvedFile
+                            // null. Skipping must mean ZERO — never a tier-coupled auto-pick.
+                        } else if (overrideVariant != null) {
                             // Explicit pick from the UI. Honor it exactly, or degrade WITHIN
                             // the same coverage family (e.g. top1m_maxi -> top_maxi), NEVER
                             // escalating — a "Popular" pick must not silently become the full
