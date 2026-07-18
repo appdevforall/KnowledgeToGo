@@ -212,7 +212,6 @@ public class Step2OptionBFragment extends Fragment {
         i.putExtra(InstallService.EXTRA_REINSTALL, false);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) requireContext().startForegroundService(i);
         else requireContext().startService(i);
-        Toast.makeText(requireContext(), "Downloading your library…", Toast.LENGTH_LONG).show();
         startActivity(new Intent(requireContext(), LibraryActivity.class)
                 .putExtra(LibraryActivity.EXTRA_INSTALLING, true));
         requireActivity().finish();
