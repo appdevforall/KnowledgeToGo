@@ -17,6 +17,8 @@ import org.iiab.controller.R;
 import org.iiab.controller.ServerController;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.WatchdogService;
+import org.iiab.controller.install.presentation.InstallProgressRepository;
+import org.iiab.controller.install.presentation.InstallState;
 
 /**
  * New content-first UI shell (ADFA-4725). Owns the server lifecycle for the new UI:
@@ -31,12 +33,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private static final long GATE_SAFETY_MS = 25000L;
     /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
     private static final long NO_SYSTEM_GATE_MS = 900L;
+    /** Set by the Setup "Download" so the gate waits for the install to finish, not a timeout. */
+    public static final String EXTRA_INSTALLING = "installing";
+    private boolean installing = false;
 
     private ServerController serverController;
     private boolean isNegotiating = false;
     private Boolean targetServerState = null;
 
     private LottieAnimationView bootGate;
+    private View installProgress;
+    private android.widget.TextView installStatus, installDetail;
+    private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
     private boolean closedDone = false;
@@ -66,6 +74,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
 
         bootGate = findViewById(R.id.k2go_boot_gate);
+        installProgress = findViewById(R.id.k2go_install_progress);
+        installStatus = findViewById(R.id.k2go_install_status);
+        installBar = findViewById(R.id.k2go_install_bar);
+        installDetail = findViewById(R.id.k2go_install_detail);
+        installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false);
         // The Lottie has a text layer (OPEN/CLOSED sign) referencing "Atkinson Hyperlegible".
         // Without this delegate Lottie looks for assets/fonts/Atkinson Hyperlegible.ttf and
         // crashes (Font asset not found). Feed it the app's Atkinson font resource instead.
@@ -100,23 +113,56 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             }
         });
 
+        // Keep the gate up while an install runs, showing real progress, and dismiss only
+        // when it actually finishes (or fails) — a 2-3 GB download won't beat a timeout.
+        InstallProgressRepository.get().state().observe(this, st -> {
+            if (st == null || gateDismissed) return;
+            if (st.isRunning()) { installing = true; showInstallProgress(st); }
+            else if (st.isTerminal()) { hideInstallProgress(); onServerReady(); }
+        });
+
         Handler main = new Handler(Looper.getMainLooper());
-        // If the stack isn't up after one poll cycle, start it.
-        if (systemInstalled) {
-            main.postDelayed(() -> {
-                if (!isFinishing()
-                        && !ServerStateRepository.get().current().alive
-                        && targetServerState == null) {
-                    serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-                }
-            }, AUTOSTART_DELAY_MS);
-        }
-        // Safety: never trap the user behind the gate.
-        main.postDelayed(() -> {
-            if (!gateDismissed) {
-                onServerReady();
+        if (installing) {
+            // A download is in progress: keep the gate and show live progress; dismissal
+            // comes from the install reaching SUCCESS/FAILED, not a timeout.
+            showInstallProgress(InstallProgressRepository.get().current());
+        } else {
+            // If the stack isn't up after one poll cycle, start it.
+            if (systemInstalled) {
+                main.postDelayed(() -> {
+                    if (!isFinishing()
+                            && !ServerStateRepository.get().current().alive
+                            && targetServerState == null) {
+                        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+                    }
+                }, AUTOSTART_DELAY_MS);
             }
-        }, systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
+            // Safety: never trap the user behind the gate.
+            main.postDelayed(() -> {
+                if (!gateDismissed) {
+                    onServerReady();
+                }
+            }, systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
+        }
+    }
+
+    private void showInstallProgress(InstallState st) {
+        if (installProgress == null || st == null || !st.isRunning()) return;
+        installProgress.setVisibility(View.VISIBLE);
+        if (st.phase == InstallState.Phase.DOWNLOADING) {
+            installStatus.setText("Downloading your library…");
+            installBar.setIndeterminate(false);
+            installBar.setProgress(st.percent);
+            installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
+        } else {
+            installStatus.setText(st.message.isEmpty() ? "Setting up your library…" : st.message);
+            installBar.setIndeterminate(true);
+            installDetail.setText("");
+        }
+    }
+
+    private void hideInstallProgress() {
+        if (installProgress != null) installProgress.setVisibility(View.GONE);
     }
 
     private void onServerReady() {
@@ -124,6 +170,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             return;
         }
         gateDismissed = true;
+        hideInstallProgress();
         if (reduceMotion()) { bootGate.setVisibility(View.GONE); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
