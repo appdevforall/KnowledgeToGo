@@ -80,8 +80,13 @@ final class SettingsUi {
         row.addView(t);
         SwitchCompat sw = new SwitchCompat(c);
         sw.setChecked(checked);
+        // The default switch enforces a 48dp touch-target min-height that inflates the row.
+        // Drop it and cap the switch so the toggle row matches the value rows.
+        sw.setMinimumHeight(0);
+        sw.setPadding(0, 0, 0, 0);
         sw.setOnCheckedChangeListener((b, isChk) -> cb.changed(isChk));
-        row.addView(sw);
+        row.addView(sw, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, dp(c, 28)));
     }
 
     static void infoRow(Context c, LinearLayout list, String titleText, String value) {
