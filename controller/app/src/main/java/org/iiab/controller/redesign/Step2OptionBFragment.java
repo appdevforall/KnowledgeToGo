@@ -91,8 +91,11 @@ public class Step2OptionBFragment extends Fragment {
             refreshProjection();
         });
         btnBack.setOnClickListener(x -> {
-            if (step > 0) { step--; render(); }
-            else if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
+            if (step > 0) { step--; render(); return; }
+            if (getActivity() == null) return;
+            androidx.fragment.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            if (fm.getBackStackEntryCount() > 0) fm.popBackStack();
+            else getActivity().finish();
         });
         btnSkip.setOnClickListener(x -> {
             if (step == 0) {

@@ -194,8 +194,25 @@ public final class InstallService extends Service {
 
     // ---------------------------------------------------------------- pipeline
 
+    /** Record the tier being installed so a later content-only "Get more" can size correctly. */
+    private void persistInstalledTier() {
+        try {
+            getSharedPreferences(getString(R.string.pref_file_internal), android.content.Context.MODE_PRIVATE)
+                    .edit().putString("installed_tier", tier.name()).apply();
+        } catch (Exception ignore) { /* best-effort */ }
+    }
+
     private void runPipeline() {
         try {
+            // Non-destructive guard (ADFA-4725): an already-installed system is NEVER
+            // re-extracted unless an explicit reinstall was requested. "Get more" then only
+            // runs the additive companion-data steps (Kiwix zims + Maps) inside the existing
+            // rootfs, so the OS blocks and any customized content are left untouched.
+            if (!reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
+                if (companionData) startCompanionData();
+                else finishSuccess();
+                return;
+            }
             if (reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
                 postProvisioning(getString(R.string.install_status_wiping_old));
                 try {
@@ -208,6 +225,7 @@ public final class InstallService extends Service {
                 }
             }
             if (cancelled) return;
+            persistInstalledTier();
             startRootfsDownload();
         } catch (Exception e) {
             Log.e(TAG, "Install pipeline crashed", e);

@@ -100,9 +100,7 @@ public class Step2OptionAFragment extends Fragment {
         mapsCheck.setOnClickListener(x -> mapsCheck.setChecked(true)); // fixed
 
         download.setOnClickListener(x -> startDownload());
-        v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> {
-            if (getActivity() != null) getActivity().getSupportFragmentManager().popBackStack();
-        });
+        v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> backOrExit());
 
         InstallationPlanner.calculateProjectedSize(requireContext(), tier(), false, lang, null,
                 new InstallationPlanner.PlanResultListener() {
@@ -176,6 +174,14 @@ public class Step2OptionAFragment extends Fragment {
         bar.setWeightSum((float) total);
         setW(bU, (float) used); setW(bS, (float) systemGb); setW(bP, (float) picksGb); setW(bF, (float) freeAfter);
         legend.setText(String.format(Locale.US, "Used %.1f · System %.1f · Your picks %.1f · Free %.1f", used, systemGb, picksGb, freeAfter));
+    }
+
+    /** Back to Step 1 when it is on the stack; otherwise (content-only entry) return to the library. */
+    private void backOrExit() {
+        if (getActivity() == null) return;
+        androidx.fragment.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) fm.popBackStack();
+        else getActivity().finish();
     }
 
     private void startDownload() {

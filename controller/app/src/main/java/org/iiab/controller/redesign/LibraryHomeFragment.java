@@ -70,8 +70,15 @@ public class LibraryHomeFragment extends Fragment {
 
         buildCards(inflater, root.findViewById(R.id.k2go_cards));
 
-        root.findViewById(R.id.k2go_get_more).setOnClickListener(v ->
-                startActivity(new android.content.Intent(requireContext(), SetupLibraryActivity.class)));
+        root.findViewById(R.id.k2go_get_more).setOnClickListener(v -> {
+            // If a system is already installed, skip the destructive system step and go
+            // straight to content (Step 2). Otherwise run the full setup from Step 1.
+            android.content.Intent i = new android.content.Intent(requireContext(), SetupLibraryActivity.class);
+            if (org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
+                i.putExtra(SetupLibraryActivity.EXTRA_CONTENT_ONLY, true);
+            }
+            startActivity(i);
+        });
         return root;
     }
 

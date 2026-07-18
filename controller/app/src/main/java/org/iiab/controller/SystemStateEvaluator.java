@@ -26,6 +26,14 @@ public final class SystemStateEvaluator {
     private static volatile String cachedDebianArch;
     private static volatile boolean archCalculated;
 
+    /** True when a system (rootfs) is actually installed on disk — the reliable signal for
+     *  whether "Get more" should skip the destructive system step and go straight to content. */
+    public static boolean isSystemInstalled(Context ctx) {
+        File rootfsDir = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        return new File(rootfsDir, "bin/bash").exists()
+                || new File(rootfsDir, "usr/local/pdsm/flag_install_ready").exists();
+    }
+
     /** Server responding → ONLINE; else derive from the rootfs on disk. */
     public static DashboardFragment.SystemState evaluate(Context ctx, boolean serverAlive) {
         File rootfsDir = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab");

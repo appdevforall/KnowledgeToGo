@@ -15,6 +15,10 @@ import org.iiab.controller.R;
 public class SetupLibraryActivity extends AppCompatActivity {
 
     private InstallationPlanner.Tier selectedTier = InstallationPlanner.Tier.STANDARD;
+
+    /** Launch extra: skip Step 1 (system) and open Step 2 (content) directly, for when a
+     *  system is already installed so adding content never overwrites it. */
+    public static final String EXTRA_CONTENT_ONLY = "contentOnly";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     private boolean optionB = false;           // A is the default
@@ -28,8 +32,16 @@ public class SetupLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
         if (savedInstanceState == null) {
+            boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
+            androidx.fragment.app.Fragment first;
+            if (contentOnly) {
+                selectedTier = readInstalledTier();   // size content against the installed tier
+                first = step2Fragment();
+            } else {
+                first = new Step1SystemFragment();
+            }
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.k2go_setup_host, new Step1SystemFragment())
+                    .replace(R.id.k2go_setup_host, first)
                     .commit();
         }
     }
@@ -47,6 +59,16 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void setWikiIncluded(boolean b) { wikiIncluded = b; }
     public String getWikiView() { return wikiView; }
     public void setWikiView(String v) { wikiView = v; }
+
+    private InstallationPlanner.Tier readInstalledTier() {
+        String t = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
+                .getString("installed_tier", InstallationPlanner.Tier.STANDARD.name());
+        try {
+            return InstallationPlanner.Tier.valueOf(t);
+        } catch (Exception e) {
+            return InstallationPlanner.Tier.STANDARD;
+        }
+    }
 
     private Fragment step2Fragment() {
         return optionB ? new Step2OptionBFragment() : new Step2OptionAFragment();
