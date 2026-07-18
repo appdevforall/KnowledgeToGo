@@ -243,7 +243,7 @@ public class SetupSectionFragment extends Fragment {
         SharedPreferences prefs = requireContext().getSharedPreferences(
                 getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
         prefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
-        startActivity(new Intent(requireContext(), MainActivity.class));
+        startActivity(new Intent(requireContext(), org.iiab.controller.redesign.LibraryActivity.class));
         requireActivity().finish();
     }
 

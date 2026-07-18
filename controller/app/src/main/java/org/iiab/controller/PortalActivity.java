@@ -99,11 +99,14 @@ public class PortalActivity extends AppCompatActivity {
         Button btnExit = findViewById(R.id.btnExit);
         Button btnForward = findViewById(R.id.btnForward);
 
-        // --- PREPARE HIDDEN BAR ---
+        // --- PERSISTENT BAR ---
+        // Keep the nav bar (with Exit) visible so a non-technical user always has an
+        // obvious way out. The handle is only used after a manual hide (btnHideNav).
         bottomNav.post(() -> {
-            bottomNav.setTranslationY(bottomNav.getHeight()); // Move outside the screen
+            bottomNav.setTranslationY(0);
             bottomNav.setVisibility(View.VISIBLE);
         });
+        btnHandle.setVisibility(View.GONE);
 
         // --- AUTO-HIDE TIMER ---
         Handler hideHandler = new Handler(Looper.getMainLooper());
@@ -114,10 +117,8 @@ public class PortalActivity extends AppCompatActivity {
             btnHandle.animate().alpha(1f).setDuration(150);
         };
 
-        Runnable resetTimer = () -> {
-            hideHandler.removeCallbacks(hideRunnable);
-            hideHandler.postDelayed(hideRunnable, 5000);
-        };
+        // Persistent bar: never auto-hide. Cancel any pending hide; only btnHideNav hides.
+        Runnable resetTimer = () -> hideHandler.removeCallbacks(hideRunnable);
 
         // --- HANDLE LOGIC (Show Bar) ---
         btnHandle.setOnClickListener(v -> {

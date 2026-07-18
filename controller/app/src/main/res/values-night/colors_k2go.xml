@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="k2go_ink">#FBF8F3</color>
+    <color name="k2go_paper">#0F1A19</color>
+    <color name="k2go_surface">#17302E</color>
+    <color name="k2go_teal">#4FB3BA</color>
+    <color name="k2go_leaf">#2E9E5B</color>
+    <color name="k2go_amber">#F2A23C</color>
+    <color name="k2go_amber_text">#F2A23C</color>
+    <color name="k2go_clay">#C4462F</color>
+    <color name="k2go_muted">#9BA6A3</color>
+    <color name="k2go_hairline">#2A3D3B</color>
+    <color name="k2go_on_teal">#0F1A19</color>
+</resources>

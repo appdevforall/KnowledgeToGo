@@ -83,6 +83,7 @@ public final class InstallService extends Service {
 
     // Which pipeline to run (ADFA-4476). Absent/"install" -> normal install; "reset" -> scratch reset.
     public static final String EXTRA_MODE = "mode";
+    public static final String EXTRA_SKIP_MAPS = "skipMaps"; // content flow: maps ship in the base image
     public static final String MODE_INSTALL = "install";
     public static final String MODE_RESET = "reset";
 
@@ -103,6 +104,7 @@ public final class InstallService extends Service {
     private String overrideKiwixLang;
     private String overrideKiwixVariant;
     private boolean reinstall;
+    private boolean skipMaps;
     private boolean resetMode;
 
     // ADFA-4476 slice 3: per-module install queue state (module mode only).
@@ -169,6 +171,7 @@ public final class InstallService extends Service {
         overrideKiwixLang = intent.getStringExtra(EXTRA_KIWIX_LANG);
         overrideKiwixVariant = intent.getStringExtra(EXTRA_KIWIX_VARIANT);
         reinstall = intent.getBooleanExtra(EXTRA_REINSTALL, false);
+        skipMaps = intent.getBooleanExtra(EXTRA_SKIP_MAPS, false);
         resetMode = MODE_RESET.equals(intent.getStringExtra(EXTRA_MODE));
 
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_provisioning)));
@@ -194,8 +197,25 @@ public final class InstallService extends Service {
 
     // ---------------------------------------------------------------- pipeline
 
+    /** Record the tier being installed so a later content-only "Get more" can size correctly. */
+    private void persistInstalledTier() {
+        try {
+            getSharedPreferences(getString(R.string.pref_file_internal), android.content.Context.MODE_PRIVATE)
+                    .edit().putString("installed_tier", tier.name()).apply();
+        } catch (Exception ignore) { /* best-effort */ }
+    }
+
     private void runPipeline() {
         try {
+            // Non-destructive guard (ADFA-4725): an already-installed system is NEVER
+            // re-extracted unless an explicit reinstall was requested. "Get more" then only
+            // runs the additive companion-data steps (Kiwix zims + Maps) inside the existing
+            // rootfs, so the OS blocks and any customized content are left untouched.
+            if (!reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
+                if (companionData) startCompanionData();
+                else finishSuccess();
+                return;
+            }
             if (reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
                 postProvisioning(getString(R.string.install_status_wiping_old));
                 try {
@@ -208,6 +228,7 @@ public final class InstallService extends Service {
                 }
             }
             if (cancelled) return;
+            persistInstalledTier();
             startRootfsDownload();
         } catch (Exception e) {
             Log.e(TAG, "Install pipeline crashed", e);
@@ -307,7 +328,7 @@ public final class InstallService extends Service {
     private void startCompanionData() {
         editLocalVarsForMaps(debianRootfs, tier);
         SharedPreferences prefs = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", "en");
+        String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", org.iiab.controller.applang.data.ContentLanguage.systemDefault());
 
         InstallationPlanner.calculateProjectedSize(this, tier, true, targetLang, overrideKiwixVariant,
                 new InstallationPlanner.PlanResultListener() {
@@ -368,8 +389,9 @@ public final class InstallService extends Service {
     private void runMapsAnsible() {
         if (cancelled) return;
 
-        if (tier == InstallationPlanner.Tier.BASIC) {
-            // BASIC bypass: maps already provisioned in the base image.
+        if (skipMaps || tier == InstallationPlanner.Tier.BASIC) {
+            // Maps ship in the software block (base image) and BASIC already has them; the
+            // content flow disables the maps reinstall. Skip straight to success.
             postProvisioning(getString(R.string.install_status_maps_provisioned));
             new Handler(Looper.getMainLooper()).postDelayed(this::finishSuccess, 1500);
             return;

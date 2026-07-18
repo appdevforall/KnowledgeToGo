@@ -19,6 +19,7 @@ public class AdbPairingReceiver extends BroadcastReceiver {
 
     public static final String KEY_PIN_REPLY = "key_pin_reply";
     public static final int NOTIFICATION_ID = 9401;
+    public static final int RETURN_NOTIFICATION_ID = 9402;
     private static final String TAG = "AdbPairingNative";
 
 
@@ -73,10 +74,25 @@ public class AdbPairingReceiver extends BroadcastReceiver {
                             .putBoolean("pairing_just_succeeded", true)
                             .apply();
 
-                    // CRITICAL: Bring our app back to the screen automatically!
-                    Intent bringToFront = new Intent(context, MainActivity.class);
-                    bringToFront.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    context.startActivity(bringToFront);
+                    // ADFA-4725 (overlay decision, Option B): no SAW / no background
+                    // startActivity. Post an OS-sanctioned "tap to return" notification that
+                    // opens the new UI (LibraryActivity). Reliable on restrictive phones.
+                    Intent open = new Intent(context, org.iiab.controller.redesign.LibraryActivity.class);
+                    open.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    int piFlags = android.app.PendingIntent.FLAG_UPDATE_CURRENT
+                            | (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M
+                               ? android.app.PendingIntent.FLAG_IMMUTABLE : 0);
+                    android.app.PendingIntent pi = android.app.PendingIntent.getActivity(context, 0, open, piFlags);
+                    NotificationManager nmReturn = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (nmReturn != null) {
+                        NotificationCompat.Builder rb = new NotificationCompat.Builder(context, "adb_pairing_channel")
+                                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                                .setContentTitle("Paired")
+                                .setContentText("Tap to return to K2Go")
+                                .setAutoCancel(true)
+                                .setContentIntent(pi);
+                        nmReturn.notify(RETURN_NOTIFICATION_ID, rb.build());
+                    }
 
                 } else {
                     Log.e(TAG, "Native pairing failed.");

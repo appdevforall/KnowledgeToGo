@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Scoped Material 3 theme for the redesigned UI (ADFA-4725). Applied per-Activity; global app theme untouched. -->
+<resources>
+    <style name="Theme.K2Go" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/k2go_teal</item>
+        <item name="colorOnPrimary">@color/k2go_on_teal</item>
+        <item name="colorPrimaryContainer">@color/k2go_surface</item>
+        <item name="colorOnPrimaryContainer">@color/k2go_ink</item>
+        <item name="android:colorBackground">@color/k2go_paper</item>
+        <item name="colorSurface">@color/k2go_paper</item>
+        <item name="colorSurfaceContainer">@color/k2go_surface</item>
+        <item name="colorOnBackground">@color/k2go_ink</item>
+        <item name="colorOnSurface">@color/k2go_ink</item>
+        <item name="colorOnSurfaceVariant">@color/k2go_muted</item>
+        <item name="colorOutlineVariant">@color/k2go_hairline</item>
+        <item name="colorError">@color/k2go_clay</item>
+        <item name="colorOnError">@color/k2go_on_teal</item>
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.K2Go.Display</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.K2Go.Title</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.K2Go.Body</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.K2Go.Label</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.K2Go.Caption</item>
+    </style>
+
+    <style name="TextAppearance.K2Go.Display" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextAppearance.K2Go.Title" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="TextAppearance.K2Go.Body" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="TextAppearance.K2Go.Label" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="TextAppearance.K2Go.Caption" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/atkinson_hyperlegible</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+</resources>

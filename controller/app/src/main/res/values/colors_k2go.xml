@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go redesign tokens (ADFA-4725). Status colors mean status only; teal = brand. -->
+<resources>
+    <color name="k2go_ink">#14211F</color>
+    <color name="k2go_paper">#FBF8F3</color>
+    <color name="k2go_surface">#EFEBE2</color>
+    <color name="k2go_teal">#0E5C63</color>
+    <color name="k2go_leaf">#2E9E5B</color>
+    <color name="k2go_amber">#F2A23C</color>
+    <color name="k2go_amber_text">#B0740F</color>
+    <color name="k2go_clay">#C4462F</color>
+    <color name="k2go_muted">#5C6360</color>
+    <color name="k2go_hairline">#D9D4C8</color>
+    <color name="k2go_on_teal">#FBF8F3</color>
+</resources>

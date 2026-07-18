@@ -80,6 +80,54 @@ public class InstallationPlanner {
         if (cacheFile.exists()) cacheFile.delete();
     }
 
+    /** Canonical Wikipedia variants, ordered coverage-desc then detail-desc. */
+    public static final String[] CANONICAL_VARIANTS = {
+            "all_maxi", "all_nopic", "all_mini",
+            "top1m_maxi", "top1m_nopic", "top1m_mini",
+            "top_maxi", "top_nopic", "top_mini"
+    };
+
+    /** Variants actually present for a language, in canonical order (for the UI to render). */
+    public static java.util.List<String> availableVariants(JSONObject langData) {
+        java.util.List<String> out = new java.util.ArrayList<>();
+        if (langData == null) return out;
+        for (String key : CANONICAL_VARIANTS) if (langData.has(key)) out.add(key);
+        return out;
+    }
+
+    private static String coverageOf(String variant) {
+        if (variant.startsWith("all_")) return "all";
+        if (variant.startsWith("top1m_")) return "top1m";
+        return "top";
+    }
+    private static String detailOf(String variant) {
+        if (variant.endsWith("_maxi")) return "maxi";
+        if (variant.endsWith("_mini")) return "mini";
+        return "nopic";
+    }
+
+    /**
+     * Resolve an explicit variant against what the language actually offers, degrading only
+     * DOWNWARD within the coverage family (top1m -> top) and across detail, never escalating.
+     * Returns a present key or null.
+     */
+    private static String resolveInFamily(JSONObject langData, String requested) {
+        if (langData == null) return null;
+        if (langData.has(requested)) return requested;
+        String cov = coverageOf(requested);
+        String det = detailOf(requested);
+        String[] covLadder = cov.equals("all") ? new String[]{"all"}
+                : cov.equals("top1m") ? new String[]{"top1m", "top"}
+                : new String[]{"top"};
+        String[] detLadder = det.equals("maxi") ? new String[]{"maxi", "nopic", "mini"}
+                : det.equals("nopic") ? new String[]{"nopic", "mini", "maxi"}
+                : new String[]{"mini", "nopic", "maxi"};
+        for (String cc : covLadder)
+            for (String dd : detLadder)
+                if (langData.has(cc + "_" + dd)) return cc + "_" + dd;
+        return null;
+    }
+
     public static void getOrFetchCatalog(Context context, CacheListener listener) {
         new Thread(() -> {
             File cacheFile = new File(context.getCacheDir(), CACHE_FILE_NAME);
@@ -134,12 +182,19 @@ public class InstallationPlanner {
 
                         if (!database.has(lang)) database.put(lang, new JSONObject());
 
-                        // NEW: Store size AND exact filename
-                        JSONObject variantData = new JSONObject();
-                        variantData.put("size", sizeGb);
-                        variantData.put("file", "wikipedia_" + lang + "_" + variant + "_" + date + ".zim");
-
-                        database.getJSONObject(lang).put(variant, variantData);
+                        // Store size, exact filename AND date. The listing can hold more than
+                        // one date for the same variant; keep ONLY the newest by declared
+                        // intent ("YYYY-MM" compares lexicographically = chronologically),
+                        // not by whichever row happens to come last in the HTML.
+                        JSONObject langObj = database.getJSONObject(lang);
+                        JSONObject existing = langObj.optJSONObject(variant);
+                        if (existing == null || date.compareTo(existing.optString("date", "")) > 0) {
+                            JSONObject variantData = new JSONObject();
+                            variantData.put("size", sizeGb);
+                            variantData.put("date", date);
+                            variantData.put("file", "wikipedia_" + lang + "_" + variant + "_" + date + ".zim");
+                            langObj.put(variant, variantData);
+                        }
                     }
                 }
 
@@ -223,10 +278,10 @@ public class InstallationPlanner {
                 @Override
                 public void onReady(JSONObject catalog) {
                     double kiwixSize = 0.0;
-                    String resolvedLang = langCode;
+                    String resolvedLang = org.iiab.controller.applang.data.ContentLanguage.normalize(langCode);
                     String resolvedFile = null;
 
-                    JSONObject langData = catalog.optJSONObject(langCode);
+                    JSONObject langData = catalog.optJSONObject(resolvedLang);
 
                     if (langData == null) {
                         langData = catalog.optJSONObject("en");
@@ -234,19 +289,29 @@ public class InstallationPlanner {
                     }
 
                     if (langData != null) {
-                        if (overrideVariant != null && langData.has(overrideVariant)) {
-                            JSONObject vData = langData.optJSONObject(overrideVariant);
-                            // VDATA NULL PROTECTION
-                            if (vData != null) {
-                                kiwixSize = vData.optDouble("size", 0.0);
-                                resolvedFile = vData.optString("file", null);
+                        if (overrideVariant != null && overrideVariant.isEmpty()) {
+                            // Explicit "no Wikipedia" (skip): leave kiwixSize 0 / resolvedFile
+                            // null. Skipping must mean ZERO — never a tier-coupled auto-pick.
+                        } else if (overrideVariant != null) {
+                            // Explicit pick from the UI. Honor it exactly, or degrade WITHIN
+                            // the same coverage family (e.g. top1m_maxi -> top_maxi), NEVER
+                            // escalating — a "Popular" pick must not silently become the full
+                            // "Everything" ZIM. If nothing in-family exists, install no
+                            // Wikipedia rather than substituting a different corpus.
+                            String resolved = resolveInFamily(langData, overrideVariant);
+                            if (resolved != null) {
+                                JSONObject vData = langData.optJSONObject(resolved);
+                                if (vData != null) {
+                                    kiwixSize = vData.optDouble("size", 0.0);
+                                    resolvedFile = vData.optString("file", null);
+                                }
                             }
                         } else {
+                            // Legacy callers with no explicit pick: priority auto-select.
                             String[] priorities = {"all_maxi", "top1m_maxi", "all_nopic", "top1m_nopic", "top_maxi", "all_mini", "top_nopic"};
                             for (String p : priorities) {
                                 if (langData.has(p)) {
                                     JSONObject vData = langData.optJSONObject(p);
-                                    // VDATA NULL PROTECTION
                                     if (vData != null) {
                                         double size = vData.optDouble("size", 0.0);
                                         if (size <= finalLimit) {
@@ -280,6 +345,12 @@ public class InstallationPlanner {
      * <p>Performs a (cached) network call; must run off the main thread — it does,
      * because every caller is inside {@link #calculateProjectedSize}'s worker thread.
      */
+    /** No-network last-known OS size (RootfsCatalog fallback) — instant, for placeholders. */
+    public static double fallbackOsSizeGb(Tier tier) {
+        RootfsCatalog catalog = new RootfsCatalog();
+        return ByteFormatter.toGiB(catalog.fallbackBytes(toDomainTier(tier), catalog.detectAbi()));
+    }
+
     private static double resolveOsSizeGb(Context context, Tier tier) {
         RootfsCatalog catalog = new RootfsCatalog(context);
         RootfsRepository repository =

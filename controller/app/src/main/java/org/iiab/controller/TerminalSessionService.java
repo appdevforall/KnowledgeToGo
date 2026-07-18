@@ -97,6 +97,7 @@ public class TerminalSessionService extends Service {
         // version-footer gesture (ADFA-4696). SINGLE_TOP reuses the running Activity.
         Intent open = new Intent(this, MainActivity.class)
                 .putExtra(MainActivity.EXTRA_OPEN_TERMINAL, true)
+                .putExtra(MainActivity.EXTRA_TERMINAL_ONLY, true)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pending = PendingIntent.getActivity(
                 this, 0, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

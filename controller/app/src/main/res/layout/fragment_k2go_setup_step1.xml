@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/k2go_paper"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/k2go_setup_library_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/k2go_step1_breadcrumb"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/k2go_teal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/k2go_storage"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <LinearLayout
+            android:id="@+id/k2go_storage_bar"
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+            <View android:id="@+id/k2go_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" />
+            <View android:id="@+id/k2go_bar_system" android:layout_width="0dp" android:layout_height="match_parent" />
+            <View android:id="@+id/k2go_bar_free"   android:layout_width="0dp" android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/k2go_storage_legend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/k2go_choose_edition"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_teal" />
+
+        <LinearLayout
+            android:id="@+id/k2go_editions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/k2go_step1_note"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:minHeight="16dp" />
+
+        <TextView
+            android:id="@+id/k2go_step1_next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:padding="16dp"
+            android:gravity="center"
+            android:text="@string/k2go_next_choose_content"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="@color/k2go_on_teal"
+            android:background="@drawable/k2go_primary_bg"
+            android:clickable="true"
+            android:focusable="true" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp" android:gravity="center_vertical">
+            <TextView android:id="@+id/k2go_step1_back" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="@string/k2go_back_link" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
+            <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" />
+            <TextView android:id="@+id/k2go_step1_skip_now" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="@string/k2go_skip_for_now" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" android:clickable="true" android:focusable="true" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

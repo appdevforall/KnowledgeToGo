@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/k2go_paper">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/k2go_nav_host"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/k2go_bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/k2go_paper"
+            app:elevation="0dp"
+            app:labelVisibilityMode="labeled"
+            app:itemIconTint="@color/k2go_nav_item"
+            app:itemTextColor="@color/k2go_nav_item"
+            app:menu="@menu/bottom_nav_k2go" />
+    </LinearLayout>
+
+    <!-- Boot gate: covers the ~5-6s server boot; entry loop then OPEN flip. -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/k2go_boot_gate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/k2go_paper"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="centerCrop" />
+
+    <!-- Install progress over the boot gate: stays until the install actually finishes. -->
+    <LinearLayout
+        android:id="@+id/k2go_install_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:paddingLeft="28dp"
+        android:paddingRight="28dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="56dp"
+        android:elevation="13dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/k2go_install_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/k2go_ink" />
+
+        <ProgressBar
+            android:id="@+id/k2go_install_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:max="100"
+            android:progressTint="@color/k2go_teal"
+            android:progressBackgroundTint="@color/k2go_hairline" />
+
+        <TextView
+            android:id="@+id/k2go_install_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+    </LinearLayout>
+</FrameLayout>

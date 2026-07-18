@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/k2go_paper">
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:id="@+id/k2go_settings_list" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" />
+    </ScrollView>
+
+    <LinearLayout android:id="@+id/k2go_settings_footer" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="vertical"
+        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="8dp" android:paddingBottom="12dp"
+        android:background="@color/k2go_paper" />
+</LinearLayout>
