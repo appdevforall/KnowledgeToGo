@@ -83,6 +83,7 @@ public final class InstallService extends Service {
 
     // Which pipeline to run (ADFA-4476). Absent/"install" -> normal install; "reset" -> scratch reset.
     public static final String EXTRA_MODE = "mode";
+    public static final String EXTRA_SKIP_MAPS = "skipMaps"; // content flow: maps ship in the base image
     public static final String MODE_INSTALL = "install";
     public static final String MODE_RESET = "reset";
 
@@ -103,6 +104,7 @@ public final class InstallService extends Service {
     private String overrideKiwixLang;
     private String overrideKiwixVariant;
     private boolean reinstall;
+    private boolean skipMaps;
     private boolean resetMode;
 
     // ADFA-4476 slice 3: per-module install queue state (module mode only).
@@ -169,6 +171,7 @@ public final class InstallService extends Service {
         overrideKiwixLang = intent.getStringExtra(EXTRA_KIWIX_LANG);
         overrideKiwixVariant = intent.getStringExtra(EXTRA_KIWIX_VARIANT);
         reinstall = intent.getBooleanExtra(EXTRA_REINSTALL, false);
+        skipMaps = intent.getBooleanExtra(EXTRA_SKIP_MAPS, false);
         resetMode = MODE_RESET.equals(intent.getStringExtra(EXTRA_MODE));
 
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_provisioning)));
@@ -386,8 +389,9 @@ public final class InstallService extends Service {
     private void runMapsAnsible() {
         if (cancelled) return;
 
-        if (tier == InstallationPlanner.Tier.BASIC) {
-            // BASIC bypass: maps already provisioned in the base image.
+        if (skipMaps || tier == InstallationPlanner.Tier.BASIC) {
+            // Maps ship in the software block (base image) and BASIC already has them; the
+            // content flow disables the maps reinstall. Skip straight to success.
             postProvisioning(getString(R.string.install_status_maps_provisioned));
             new Handler(Looper.getMainLooper()).postDelayed(this::finishSuccess, 1500);
             return;

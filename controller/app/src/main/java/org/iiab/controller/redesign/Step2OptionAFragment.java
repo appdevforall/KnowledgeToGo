@@ -97,7 +97,9 @@ public class Step2OptionAFragment extends Fragment {
         wikiSkip.setOnClickListener(x -> setWiki(!wikiInc));
         booksCheck.setOnClickListener(x -> setBooks(booksCheck.isChecked()));
         booksSkip.setOnClickListener(x -> setBooks(!booksInc));
-        mapsCheck.setOnClickListener(x -> mapsCheck.setChecked(true)); // fixed
+        // Maps ships in the software block — shown for reference, not installed here.
+        mapsCheck.setChecked(true); mapsCheck.setEnabled(false);
+        ((TextView) v.findViewById(R.id.k2go_maps_size)).setText("Included");
 
         download.setOnClickListener(x -> startDownload());
         v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> backOrExit());
@@ -159,7 +161,7 @@ public class Step2OptionAFragment extends Fragment {
                 : sel.isEmpty() ? "—" : WikiVariants.gb(wikiSizeGb()));
         booksSize.setText("0 GB");
 
-        double picks = (wikiInc && !sel.isEmpty() ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0) + (mapsInc ? MAPS_GB : 0);
+        double picks = (wikiInc && !sel.isEmpty() ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0); // Maps ships with the system
         applyBar(osGb, picks);
         download.setText(String.format(Locale.US, "Download library · %.1f GB", osGb + picks));
         boolean ok = !wikiInvalid();
@@ -188,7 +190,7 @@ public class Step2OptionAFragment extends Fragment {
     private void startDownload() {
         if (wikiInvalid()) { Toast.makeText(requireContext(), R.string.k2go_wiki_pick_one, Toast.LENGTH_SHORT).show(); return; }
         String variant = (wikiInc && WikiVariants.primary(sel) != null) ? WikiVariants.primary(sel) : "";
-        boolean companion = variant != null || booksInc || mapsInc;
+        boolean companion = variant != null || booksInc;
         Intent i = new Intent(requireContext(), InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, tier().name());
@@ -197,6 +199,7 @@ public class Step2OptionAFragment extends Fragment {
         i.putExtra(InstallService.EXTRA_KIWIX_LANG, lang);
         i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, variant);
         i.putExtra(InstallService.EXTRA_REINSTALL, false);
+        i.putExtra(InstallService.EXTRA_SKIP_MAPS, true);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) requireContext().startForegroundService(i);
         else requireContext().startService(i);
         startActivity(new Intent(requireContext(), LibraryActivity.class)

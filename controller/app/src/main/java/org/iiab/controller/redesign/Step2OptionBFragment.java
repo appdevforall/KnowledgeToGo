@@ -174,7 +174,7 @@ public class Step2OptionBFragment extends Fragment {
                     public void onCalculated(InstallationPlanner.StorageProjection p) {
                         if (!isAdded()) return;
                         pOs = p.osSize; pMaps = p.mapsSize; pKiwix = p.kiwixSize;
-                        double picks = ((wikiIncluded && variant != null) ? pKiwix : 0) + pMaps;
+                        double picks = ((wikiIncluded && variant != null) ? pKiwix : 0); // Maps ships with the system
                         lastTotal = pOs + picks;
                         updateGauge(pOs, picks);
                         updateNextLabel();
@@ -210,6 +210,7 @@ public class Step2OptionBFragment extends Fragment {
         i.putExtra(InstallService.EXTRA_KIWIX_LANG, lang);
         i.putExtra(InstallService.EXTRA_KIWIX_VARIANT, variant);
         i.putExtra(InstallService.EXTRA_REINSTALL, false);
+        i.putExtra(InstallService.EXTRA_SKIP_MAPS, true);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) requireContext().startForegroundService(i);
         else requireContext().startService(i);
         startActivity(new Intent(requireContext(), LibraryActivity.class)
