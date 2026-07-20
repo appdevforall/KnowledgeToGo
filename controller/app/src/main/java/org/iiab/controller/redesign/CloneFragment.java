@@ -1,7 +1,10 @@
 package org.iiab.controller.redesign;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -15,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -61,6 +65,10 @@ public class CloneFragment extends Fragment {
     private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, stop, footer, receiveNote;
     private LinearLayout netRow, steps, fallback, fallbackValues;
     private ImageView qr;
+    private TextView showcode, codetext, copyBtn, shareBtn;
+    private LinearLayout codeblock;
+    private String currentPayload = "";
+    private boolean codeExpanded = false;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
@@ -89,6 +97,11 @@ public class CloneFragment extends Fragment {
         stop = v.findViewById(R.id.k2go_clone_stop);
         footer = v.findViewById(R.id.k2go_clone_footer);
         receiveNote = v.findViewById(R.id.k2go_clone_receive_note);
+        showcode = v.findViewById(R.id.k2go_clone_showcode);
+        codeblock = v.findViewById(R.id.k2go_clone_codeblock);
+        codetext = v.findViewById(R.id.k2go_clone_codetext);
+        copyBtn = v.findViewById(R.id.k2go_clone_copy);
+        shareBtn = v.findViewById(R.id.k2go_clone_share);
 
         SyncStateViewModel syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
         transport = syncVm.getTransport();
@@ -102,6 +115,20 @@ public class CloneFragment extends Fragment {
             if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.START : Stage.JOIN; render(); }
         });
         stop.setOnClickListener(x -> confirmStop());
+        showcode.setOnClickListener(x -> {
+            codeExpanded = !codeExpanded;
+            codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
+            showcode.setText(codeExpanded ? "Show code as text  ▴" : "Show code as text  ▾");
+        });
+        copyBtn.setOnClickListener(x -> {
+            ClipboardManager cm = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("K2Go transfer code", currentPayload));
+            Toast.makeText(requireContext(), "Code copied", Toast.LENGTH_SHORT).show();
+        });
+        shareBtn.setOnClickListener(x -> {
+            Intent i = new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, currentPayload);
+            startActivity(Intent.createChooser(i, "Send transfer code"));
+        });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
 
@@ -157,6 +184,7 @@ public class CloneFragment extends Fragment {
 
     private void render() {
         if (!isAdded() || caption == null) return;
+        if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
         paintTab(tabSend, side == Side.SEND);
         paintTab(tabReceive, side == Side.RECEIVE);
 
@@ -212,11 +240,12 @@ public class CloneFragment extends Fragment {
             advance.setText("‹ Back to step 1");
             styleAdvance(false);
             if (!daemonStarted) { qr.setImageBitmap(null); caption.setText("Preparing transfer…"); subCaption.setText(""); setFallback(null); return; }
-            qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(
-                    SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits()), 500));
+            String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits());
+            qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
             caption.setText("Scan code 2 to start the transfer");
             subCaption.setText("The copy begins when they scan this one.");
             setFallback(null);
+            showCodeAsText(payload);
             stop.setVisibility(View.VISIBLE);
             footer.setText("Starts by itself. Stays on until you Stop.");
         }
@@ -229,11 +258,12 @@ public class CloneFragment extends Fragment {
         buildSteps(false);
         advance.setVisibility(View.GONE);
         if (!daemonStarted) { qr.setImageBitmap(null); caption.setText("Preparing transfer…"); subCaption.setText(""); setFallback(null); return; }
-        qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(
-                SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits()), 500));
+        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits());
+        qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
         caption.setText("Scan to start the transfer");
         subCaption.setText("You're on the same Wi-Fi — one code.");
         setFallback(null);
+        showCodeAsText(payload);
         stop.setVisibility(View.VISIBLE);
         footer.setText("Starts by itself. Stays on until you Stop.");
     }
@@ -259,6 +289,13 @@ public class CloneFragment extends Fragment {
         advance.setVisibility(View.GONE);
         stop.setVisibility(View.GONE);
         footer.setText("");
+    }
+
+    private void showCodeAsText(String payload) {
+        currentPayload = payload;
+        codetext.setText(payload);
+        showcode.setVisibility(View.VISIBLE);
+        codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
     }
 
     private void setQr(String data) {
