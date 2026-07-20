@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -378,6 +379,7 @@ public class CloneFragment extends Fragment {
     /** Observes the shared transfer repository; fires terminal dialogs once per seq. */
     private void onTransferState(SyncTransferState st) {
         if (!isAdded() || st == null) return;
+        Log.i("IIAB-Clone", "recv state=" + st.phase + " title=" + st.title + " msg=" + st.message);
         if (st.seq > lastSeq) {
             if (st.phase == SyncTransferState.Phase.CONFIRM) { lastSeq = st.seq; showReceiveConfirm(st); }
             else if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
@@ -475,6 +477,7 @@ public class CloneFragment extends Fragment {
         } else {
             SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(contents);
             if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
+            Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
             syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
         }
     }
