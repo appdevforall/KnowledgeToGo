@@ -115,7 +115,6 @@ public class CloneFragment extends Fragment {
         advance.setOnClickListener(x -> {
             if (mode == Mode.HOTSPOT) {
                 stage = (stage == Stage.JOIN) ? Stage.START : Stage.JOIN;
-                if (stage == Stage.START) userStopped = false;   // entering step 2 auto-starts the service
                 render();
             }
         });
@@ -148,7 +147,6 @@ public class CloneFragment extends Fragment {
     private void setMode(Mode m) {
         mode = m;
         stage = (m == Mode.HOTSPOT) ? Stage.JOIN : Stage.START;
-        userStopped = false;
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
