@@ -178,6 +178,7 @@ public class ConnectFragment extends Fragment {
         caption.setText("Scan to open the library");
         subCaption.setText("You're on the same Wi-Fi — one code.");
         setFallback(new String[]{browseUrl(ip)});
+        finish.setVisibility(View.VISIBLE);   // same forward exit back to the library
     }
 
     /** Clear the QR + fallback and show a status message (starting / failed / unsupported). */
