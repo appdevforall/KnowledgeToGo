@@ -15,8 +15,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -32,7 +34,9 @@ import org.iiab.controller.R;
 import org.iiab.controller.SyncHandshakeHelper;
 import org.iiab.controller.hotspot.LocalHotspotManager;
 import org.iiab.controller.sync.domain.ShareConfig;
+import org.iiab.controller.sync.presentation.SyncProgressRepository;
 import org.iiab.controller.sync.presentation.SyncStateViewModel;
+import org.iiab.controller.sync.presentation.SyncTransferState;
 import org.iiab.controller.sync.transport.NetworkInterfaces;
 import org.iiab.controller.sync.transport.QrCodec;
 import org.iiab.controller.sync.transport.TransportEngine;
@@ -63,7 +67,15 @@ public class CloneFragment extends Fragment {
 
     private ActivityResultLauncher<String> locationPerm;
 
-    private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, stop, footer, receiveNote;
+    private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, stop, footer;
+    // Receive side
+    private SyncStateViewModel syncVm;
+    private LinearLayout receiveBox, progressBox;
+    private EditText paste;
+    private TextView receiveWarn, receiveStart, pStatus, pFile, pStats, cancel;
+    private ProgressBar pbar;
+    private long lastSeq = -1L;
+    private AlertDialog confirmDialog;
     private LinearLayout netRow, steps, fallback, fallbackValues;
     private ImageView qr;
     private TextView showcode, codetext, copyBtn, shareBtn;
@@ -97,14 +109,23 @@ public class CloneFragment extends Fragment {
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
         footer = v.findViewById(R.id.k2go_clone_footer);
-        receiveNote = v.findViewById(R.id.k2go_clone_receive_note);
+        receiveBox = v.findViewById(R.id.k2go_clone_receive_box);
+        paste = v.findViewById(R.id.k2go_clone_paste);
+        receiveWarn = v.findViewById(R.id.k2go_clone_receive_warn);
+        receiveStart = v.findViewById(R.id.k2go_clone_receive_start);
+        progressBox = v.findViewById(R.id.k2go_clone_progress);
+        pStatus = v.findViewById(R.id.k2go_clone_pstatus);
+        pbar = v.findViewById(R.id.k2go_clone_pbar);
+        pFile = v.findViewById(R.id.k2go_clone_pfile);
+        pStats = v.findViewById(R.id.k2go_clone_pstats);
+        cancel = v.findViewById(R.id.k2go_clone_cancel);
         showcode = v.findViewById(R.id.k2go_clone_showcode);
         codeblock = v.findViewById(R.id.k2go_clone_codeblock);
         codetext = v.findViewById(R.id.k2go_clone_codetext);
         copyBtn = v.findViewById(R.id.k2go_clone_copy);
         shareBtn = v.findViewById(R.id.k2go_clone_share);
 
-        SyncStateViewModel syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
+        syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
         transport = syncVm.getTransport();
         shareConfig = ShareConfig.defaults();
 
@@ -133,7 +154,13 @@ public class CloneFragment extends Fragment {
             startActivity(Intent.createChooser(i, "Send transfer code"));
         });
 
+        receiveStart.setOnClickListener(x -> onReceiveStart());
+        cancel.setOnClickListener(x -> onReceiveCancel());
+
         hs.state().observe(getViewLifecycleOwner(), st -> render());
+        SyncTransferState cur = SyncProgressRepository.get().current();
+        lastSeq = (cur != null) ? cur.seq : -1L;   // only fire dialogs on NEW transitions
+        SyncProgressRepository.get().state().observe(getViewLifecycleOwner(), this::onTransferState);
 
         setSide(Side.SEND);
         return v;
@@ -201,10 +228,11 @@ public class CloneFragment extends Fragment {
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
-            receiveNote.setVisibility(View.VISIBLE);
+            receiveBox.setVisibility(View.VISIBLE);
+            renderReceive();
             return;
         }
-        receiveNote.setVisibility(View.GONE);
+        receiveBox.setVisibility(View.GONE);
         netRow.setVisibility(View.VISIBLE);
         qr.setVisibility(View.VISIBLE);
         caption.setVisibility(View.VISIBLE);
@@ -297,6 +325,108 @@ public class CloneFragment extends Fragment {
         stop.setBackgroundResource(R.drawable.k2go_primary_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
         stop.setOnClickListener(x -> { userStopped = false; render(); });
+    }
+
+    // ------------------------------------------------------------------ Receive
+
+    private void onReceiveStart() {
+        String json = paste.getText().toString().trim();
+        if (json.isEmpty()) { Toast.makeText(requireContext(), "Paste the transfer code first", Toast.LENGTH_SHORT).show(); return; }
+        SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
+        if (creds == null) { Toast.makeText(requireContext(), "That code isn't valid", Toast.LENGTH_LONG).show(); return; }
+        syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+    }
+
+    private void onReceiveCancel() {
+        SyncTransferState st = SyncProgressRepository.get().current();
+        if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
+            transport.stop();
+            syncVm.releaseNetwork();
+            SyncProgressRepository.get().postIdle();
+        } else {
+            syncVm.cancelProbe();
+        }
+        renderReceive();
+    }
+
+    /** Observes the shared transfer repository; fires terminal dialogs once per seq. */
+    private void onTransferState(SyncTransferState st) {
+        if (!isAdded() || st == null) return;
+        if (st.seq > lastSeq) {
+            if (st.phase == SyncTransferState.Phase.CONFIRM) { lastSeq = st.seq; showReceiveConfirm(st); }
+            else if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
+            else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
+        }
+        if (side == Side.RECEIVE) renderReceive();
+    }
+
+    private void renderReceive() {
+        SyncTransferState st = SyncProgressRepository.get().current();
+        SyncTransferState.Phase ph = (st == null) ? SyncTransferState.Phase.IDLE : st.phase;
+        boolean busy = (st != null && st.isActive());
+        paste.setVisibility(busy ? View.GONE : View.VISIBLE);
+        receiveWarn.setVisibility(busy ? View.GONE : View.VISIBLE);
+        receiveStart.setVisibility(busy ? View.GONE : View.VISIBLE);
+        progressBox.setVisibility(busy ? View.VISIBLE : View.GONE);
+        if (!busy) return;
+        if (ph == SyncTransferState.Phase.CONFIRM) { showReceiveConfirm(st); return; }
+        if (ph == SyncTransferState.Phase.TRANSFERRING) {
+            pbar.setIndeterminate(false);
+            pbar.setProgress(st.percent);
+            pStatus.setText("Copying the library\u2026");
+            pFile.setText(st.file);
+            pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
+        } else {
+            pbar.setIndeterminate(true);
+            pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? "Calculating what to copy\u2026" : "Connecting\u2026");
+            pFile.setText("");
+            pStats.setText("");
+        }
+    }
+
+    private void showReceiveConfirm(SyncTransferState st) {
+        if (confirmDialog != null && confirmDialog.isShowing()) return;
+        String title = (st.title != null && !st.title.isEmpty()) ? st.title : "Copy the library?";
+        String msg = (st.message != null) ? st.message : "";
+        if (!msg.isEmpty()) msg += "\n\n";
+        msg += "This replaces the library on this phone with the sender's copy.";
+        confirmDialog = new AlertDialog.Builder(requireContext())
+                .setTitle(title)
+                .setMessage(msg)
+                .setNegativeButton("Cancel", (d, w) -> { syncVm.cancelProbe(); renderReceive(); })
+                .setPositiveButton("Copy", (d, w) -> startReceiveTransfer())
+                .setCancelable(false)
+                .show();
+    }
+
+    private void startReceiveTransfer() {
+        final Context app = requireContext().getApplicationContext();
+        SyncHandshakeHelper.SyncCredentials creds = syncVm.getPendingCreds();
+        File dest = syncVm.getPendingDestDir();
+        if (creds == null || dest == null) {
+            Toast.makeText(requireContext(), "Transfer details expired \u2014 paste the code again", Toast.LENGTH_LONG).show();
+            syncVm.releaseNetwork();
+            SyncProgressRepository.get().postIdle();
+            renderReceive();
+            return;
+        }
+        SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
+        transport.startClient(app, shareConfig, creds.ip, creds.port, creds.user, creds.pass, dest.getAbsolutePath(),
+                new TransportEngine.SyncListener() {
+                    @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
+                    @Override public void onComplete(String message) { SyncProgressRepository.get().postSuccess(message); }
+                    @Override public void onError(String error) { SyncProgressRepository.get().postFailed(error); }
+                });
+    }
+
+    private void showReceiveTerminal(boolean ok, String message) {
+        syncVm.releaseNetwork();
+        new AlertDialog.Builder(requireContext())
+                .setTitle(ok ? "Copy complete" : "Copy stopped")
+                .setMessage(message != null ? message : "")
+                .setPositiveButton("OK", (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setCancelable(false)
+                .show();
     }
 
     private void confirmStop() {
