@@ -4,9 +4,6 @@
     android:background="@color/k2go_paper" android:fillViewport="true">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="16dp">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="10dp" android:layout_marginBottom="8dp"
-            android:gravity="center" android:text="@string/k2go_preview_banner" android:background="@drawable/k2go_card_bg"
-            android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="@string/k2go_tab_connect" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
@@ -15,41 +12,41 @@
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg" android:padding="4dp">
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_hotspot" android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal" />
-            <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_wifi" android:textColor="@color/k2go_muted" />
+            <TextView android:id="@+id/k2go_conn_hotspot" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_hotspot" android:clickable="true" android:focusable="true" />
+            <TextView android:id="@+id/k2go_conn_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_wifi" android:clickable="true" android:focusable="true" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="14dp" android:gravity="center_vertical">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="1  Join"
-                android:background="@drawable/k2go_card_bg" android:textColor="@color/k2go_ink" android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="   →   " android:textColor="@color/k2go_muted" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="8dp" android:text="2  Open"
-                android:background="@drawable/k2go_card_bg" android:textColor="@color/k2go_muted" />
-        </LinearLayout>
+        <LinearLayout android:id="@+id/k2go_conn_steps" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:gravity="center_vertical" />
 
-        <LinearLayout android:layout_width="220dp" android:layout_height="220dp" android:layout_gravity="center_horizontal"
-            android:layout_marginTop="18dp" android:gravity="center" android:background="@drawable/k2go_card_bg">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="▦"
-                android:textSize="96sp" android:textColor="@color/k2go_ink" />
-        </LinearLayout>
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="12dp"
-            android:text="@string/k2go_scan_join_hotspot" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="4dp"
-            android:text="@string/k2go_just_scan" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
+        <ImageView android:id="@+id/k2go_conn_qr" android:layout_width="220dp" android:layout_height="220dp"
+            android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
+            android:background="@drawable/k2go_card_bg" android:contentDescription="@string/k2go_tab_connect" />
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+        <TextView android:id="@+id/k2go_conn_caption" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
+        <TextView android:id="@+id/k2go_conn_subcaption" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
+
+        <LinearLayout android:id="@+id/k2go_conn_fallback" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
             android:layout_marginTop="14dp" android:padding="14dp" android:background="@drawable/k2go_card_bg">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_scan_didnt_work" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Wi-Fi: K2Go-A7F3" android:textColor="@color/k2go_ink" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Password: a7f3k9m2" android:textColor="@color/k2go_ink" />
+            <TextView android:id="@+id/k2go_conn_fallback_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/k2go_scan_didnt_work" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            <LinearLayout android:id="@+id/k2go_conn_fallback_values" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="6dp" />
         </LinearLayout>
 
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:padding="16dp"
-            android:gravity="center" android:text="@string/k2go_connect_shownext" android:background="@drawable/k2go_primary_bg"
-            android:textColor="@color/k2go_on_teal" android:textAppearance="?attr/textAppearanceTitleLarge" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:layout_marginTop="10dp"
-            android:text="@string/k2go_connect_available" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+        <TextView android:id="@+id/k2go_conn_finish" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Done"
+            android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
+            android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
+        <TextView android:id="@+id/k2go_conn_advance" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:clickable="true" android:focusable="true" android:visibility="gone" />
+        <TextView android:id="@+id/k2go_conn_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:layout_marginTop="10dp" android:text="@string/k2go_connect_available"
+            android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
     </LinearLayout>
 </ScrollView>
