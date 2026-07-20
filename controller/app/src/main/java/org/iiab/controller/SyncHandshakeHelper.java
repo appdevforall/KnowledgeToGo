@@ -30,6 +30,8 @@ public class SyncHandshakeHelper {
         public String pass;
         public boolean hasRootfs;
         public int archBits;
+        public long sysBytes;      // ADFA-4780: approx system size (0 = unknown)
+        public long contentBytes;  // ADFA-4780: approx content size (0 = unknown)
 
         public SyncCredentials(String ip, int port, String user, String pass, boolean hasRootfs, int archBits) {
             this.ip = ip;
@@ -52,6 +54,12 @@ public class SyncHandshakeHelper {
     }
 
     public static String createPayload(String ip, int port, String user, String pass, boolean hasRootfs, int archBits) {
+        return createPayload(ip, port, user, pass, hasRootfs, archBits, 0L, 0L);
+    }
+
+    /** ADFA-4780: adds the approximate system/content byte split (omitted when 0). */
+    public static String createPayload(String ip, int port, String user, String pass, boolean hasRootfs, int archBits,
+                                       long sysBytes, long contentBytes) {
         try {
             JSONObject json = new JSONObject();
             json.put("ip", ip);
@@ -61,6 +69,8 @@ public class SyncHandshakeHelper {
             json.put("has_rootfs", hasRootfs);
             json.put("a", archBits);
             json.put("app", "iiab_sync");
+            if (sysBytes > 0) json.put("sys_bytes", sysBytes);
+            if (contentBytes > 0) json.put("content_bytes", contentBytes);
             return json.toString();
         } catch (Exception e) {
             Log.e(TAG, "Error creating JSON payload", e);
@@ -90,7 +100,7 @@ public class SyncHandshakeHelper {
                 return null;
             }
 
-            return new SyncCredentials(
+            SyncCredentials creds = new SyncCredentials(
                     ip,
                     port,
                     user,
@@ -98,6 +108,9 @@ public class SyncHandshakeHelper {
                     json.optBoolean("has_rootfs", true), // Default to true if missing for legacy compatibility
                     json.optInt("a", 0)
             );
+            creds.sysBytes = json.optLong("sys_bytes", 0L);          // ADFA-4780 (optional)
+            creds.contentBytes = json.optLong("content_bytes", 0L);
+            return creds;
         } catch (Exception e) {
             Log.e(TAG, "Error parsing scanned QR code", e);
             return null;

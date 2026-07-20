@@ -66,6 +66,7 @@ public class CloneFragment extends Fragment {
     private ShareConfig shareConfig;
     private String tempPass;
     private boolean daemonStarted = false, daemonStarting = false, hostHasRootfs = false;
+    private LibrarySize.Split librarySplit;  // ADFA-4780: approx system/content sizes (computed on share)
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
 
     private ActivityResultLauncher<String> locationPerm;
@@ -227,11 +228,13 @@ public class CloneFragment extends Fragment {
         final String shareDir = rootfsDir.getAbsolutePath();
         final Context app = requireContext().getApplicationContext();
         final androidx.fragment.app.FragmentActivity act = requireActivity();  // capture before the thread
+        final File iiabRoot = rootfsDir;  // effectively final for the worker
         new Thread(() -> {
             final boolean ok = transport.startServer(app, shareConfig, tempPass, shareDir);
+            final LibrarySize.Split split = LibrarySize.compute(iiabRoot);  // ADFA-4780: approx sizes for the QR + overview
             act.runOnUiThread(() -> {
                 if (!isAdded()) return;
-                daemonStarting = false; daemonStarted = ok; render();
+                daemonStarting = false; daemonStarted = ok; librarySplit = split; render();
             });
         }, "clone-share-daemon").start();
     }
@@ -329,14 +332,21 @@ public class CloneFragment extends Fragment {
             showStartButton();
             return;
         }
-        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits());
+        long sysB = (librarySplit != null) ? librarySplit.systemBytes : 0L;
+        long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
+        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
         caption.setText(twoCode ? "Ready! Scan code 2 to start the transfer" : "Ready! Scan to start the transfer");
         subCaption.setText("The copy begins when they scan this one.");
         setFallback(null);
         showCodeAsText(payload);
         showStopButton();
-        footer.setText("Stays on until you Stop.");
+        if (librarySplit != null) {
+            footer.setText("System " + LibrarySize.human(sysB) + "  ·  Content " + LibrarySize.human(contentB)
+                    + "  ·  Total " + LibrarySize.human(librarySplit.totalBytes()) + "\nStays on until you Stop.");
+        } else {
+            footer.setText("Stays on until you Stop.");
+        }
     }
 
     private void showStopButton() {
