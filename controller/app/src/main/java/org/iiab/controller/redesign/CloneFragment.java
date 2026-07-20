@@ -515,8 +515,12 @@ public class CloneFragment extends Fragment {
     }
 
     private void showReceiveTerminal(boolean ok, String message) {
-        syncVm.releaseNetwork();
-        wifiJoiner.release();
+        // Only tear down the joined Wi-Fi on success. On failure keep it so the user can retry
+        // "Scan to start" without re-joining — releasing it here left retries with no route (ENETUNREACH).
+        if (ok) {
+            syncVm.releaseNetwork();
+            wifiJoiner.release();
+        }
         new AlertDialog.Builder(requireContext())
                 .setTitle(ok ? "Copy complete" : "Copy stopped")
                 .setMessage(message != null ? message : "")

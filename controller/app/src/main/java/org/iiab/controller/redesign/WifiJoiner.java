@@ -21,10 +21,13 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
 public final class WifiJoiner {
+
+    private static final String TAG = "IIAB-WifiJoiner";
 
     public interface Callback {
         void onJoined();
@@ -71,6 +74,7 @@ public final class WifiJoiner {
                 if (done[0]) return;
                 done[0] = true;
                 cm.bindProcessToNetwork(network);
+                Log.i(TAG, "Joined \"" + ssid + "\" and bound process to " + network);
                 ui.onJoined();
             }
             @Override public void onUnavailable() {
