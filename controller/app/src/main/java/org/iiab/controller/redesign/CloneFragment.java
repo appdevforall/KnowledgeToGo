@@ -81,8 +81,7 @@ public class CloneFragment extends Fragment {
     private AlertDialog confirmDialog;
     private enum RStage { JOIN, START }
     private RStage rStage = RStage.JOIN;
-    private boolean joining = false, pasteExpanded = false;
-    private final WifiJoiner wifiJoiner = new WifiJoiner();
+    private boolean pasteExpanded = false;
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
     private LinearLayout rcvSteps, rcvIntro, rcvNotice, pasteBlock;
     private TextView rcvCaption, rcvScan, rcvSub, rcvSkip, rcvSkipHint, rcvCamNote, rcvShowPaste;
@@ -177,8 +176,10 @@ public class CloneFragment extends Fragment {
 
         receiveStart.setOnClickListener(x -> onReceiveStart());
         cancel.setOnClickListener(x -> onReceiveCancel());
-        rcvScan.setOnClickListener(x -> launchScanner(rStage == RStage.JOIN
-                ? "Scan the other phone's Wi-Fi code" : "Scan the other phone's transfer code"));
+        rcvScan.setOnClickListener(x -> {
+            if (rStage == RStage.JOIN) openWifiSettings();
+            else launchScanner("Scan the other phone's transfer code");
+        });
         rcvSkip.setOnClickListener(x -> { rStage = RStage.START; render(); });
         rcvShowPaste.setOnClickListener(x -> { pasteExpanded = !pasteExpanded; renderReceive(); });
 
@@ -194,7 +195,7 @@ public class CloneFragment extends Fragment {
     private void setSide(Side sd) {
         side = sd;
         if (sd == Side.SEND) { setMode(Mode.HOTSPOT); return; }
-        rStage = RStage.JOIN; joining = false; pasteExpanded = false;
+        rStage = RStage.JOIN; pasteExpanded = false;
         render();
     }
 
@@ -417,16 +418,16 @@ public class CloneFragment extends Fragment {
         boolean atJoin = (rStage == RStage.JOIN);
         rcvSteps.setVisibility(View.VISIBLE);
         rcvCaption.setVisibility(View.VISIBLE);
-        if (joining) rcvCaption.setText("Approve the connection when Android asks\u2026");
-        else rcvCaption.setText(atJoin ? "Point your camera at the other phone's Wi-Fi code."
+        rcvCaption.setText(atJoin ? "Connect to the other phone's Wi-Fi (or its hotspot) in your phone's settings."
                 : "Now scan the other phone's transfer code.");
         rcvIntro.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvScan.setText(atJoin ? "Scan to join" : "Scan to start");
-        rcvScan.setEnabled(!joining);
+        rcvScan.setText(atJoin ? "Open Wi-Fi settings" : "Scan to start");
         rcvScan.setVisibility(View.VISIBLE);
         rcvSub.setText(atJoin ? "Step 1 of 2" : "Step 2 of 2");
         rcvSub.setVisibility(View.VISIBLE);
+        rcvSkip.setText("Already connected? Continue \u203a");
+        rcvSkipHint.setText("K2Go can't join that network for you \u2014 connect in Settings, then Continue.");
         rcvSkip.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvCamNote.setVisibility(atJoin ? View.GONE : View.VISIBLE);
@@ -456,29 +457,21 @@ public class CloneFragment extends Fragment {
     private void onScan(String contents) {
         if (!isAdded()) return;
         if (contents == null) { Toast.makeText(requireContext(), "Scan cancelled", Toast.LENGTH_SHORT).show(); return; }
-        if (rStage == RStage.JOIN) {
-            String[] w = WifiJoiner.parseWifiQr(contents);
-            if (w == null) { Toast.makeText(requireContext(), "That isn't a Wi-Fi join code. Scan code 1 from the other phone, or Skip.", Toast.LENGTH_LONG).show(); return; }
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) { Toast.makeText(requireContext(), "This Android can't join from the app. Connect in Wi-Fi settings, then Skip.", Toast.LENGTH_LONG).show(); return; }
-            joining = true;
-            renderReceive();
-            final androidx.fragment.app.FragmentActivity act = requireActivity();
-            final String ssid = w[0];
-            wifiJoiner.join(requireContext(), w[0], w[1], new WifiJoiner.Callback() {
-                @Override public void onJoined() {
-                    act.runOnUiThread(() -> { if (!isAdded()) return; joining = false; rStage = RStage.START;
-                        Toast.makeText(act, "Connected to " + ssid, Toast.LENGTH_SHORT).show(); render(); });
-                }
-                @Override public void onFailed(String reason) {
-                    act.runOnUiThread(() -> { if (!isAdded()) return; joining = false;
-                        Toast.makeText(act, reason, Toast.LENGTH_LONG).show(); render(); });
-                }
-            });
-        } else {
-            SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(contents);
-            if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
-            Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
-            syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+        SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(contents);
+        if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
+        Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
+        syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+    }
+
+    private void openWifiSettings() {
+        try {
+            startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+        } catch (Exception e) {
+            try {
+                startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            } catch (Exception e2) {
+                Toast.makeText(requireContext(), "Open Settings \u203a Wi-Fi to join the other phone.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -518,12 +511,7 @@ public class CloneFragment extends Fragment {
     }
 
     private void showReceiveTerminal(boolean ok, String message) {
-        // Only tear down the joined Wi-Fi on success. On failure keep it so the user can retry
-        // "Scan to start" without re-joining — releasing it here left retries with no route (ENETUNREACH).
-        if (ok) {
-            syncVm.releaseNetwork();
-            wifiJoiner.release();
-        }
+        syncVm.releaseNetwork();
         new AlertDialog.Builder(requireContext())
                 .setTitle(ok ? "Copy complete" : "Copy stopped")
                 .setMessage(message != null ? message : "")
@@ -535,7 +523,7 @@ public class CloneFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (!SyncProgressRepository.get().isActive()) wifiJoiner.release();
+        if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
     }
 
     private void confirmStop() {
