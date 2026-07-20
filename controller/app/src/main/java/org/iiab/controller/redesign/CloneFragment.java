@@ -142,7 +142,7 @@ public class CloneFragment extends Fragment {
         showcode.setOnClickListener(x -> {
             codeExpanded = !codeExpanded;
             codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
-            showcode.setText(codeExpanded ? "Show code as text  ▴" : "Show code as text  ▾");
+            showcode.setText(codeExpanded ? "Hide code  ▴" : "Scan didn't work? Show code as text  ▾");
         });
         copyBtn.setOnClickListener(x -> {
             ClipboardManager cm = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
