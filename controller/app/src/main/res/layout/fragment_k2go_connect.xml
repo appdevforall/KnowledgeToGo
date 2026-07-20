@@ -38,8 +38,12 @@
                 android:orientation="vertical" android:layout_marginTop="6dp" />
         </LinearLayout>
 
+        <TextView android:id="@+id/k2go_conn_finish" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Done"
+            android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
+            android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
         <TextView android:id="@+id/k2go_conn_advance" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
             android:clickable="true" android:focusable="true" android:visibility="gone" />
         <TextView android:id="@+id/k2go_conn_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center" android:layout_marginTop="10dp" android:text="@string/k2go_connect_available"

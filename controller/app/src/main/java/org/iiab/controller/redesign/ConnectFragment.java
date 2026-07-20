@@ -37,11 +37,12 @@ public class ConnectFragment extends Fragment {
 
     private Mode mode = Mode.HOTSPOT;
     private Stage stage = Stage.JOIN;
+    private boolean openDone = false;
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
 
-    private TextView tabHotspot, tabWifi, caption, subCaption, advance;
+    private TextView tabHotspot, tabWifi, caption, subCaption, advance, finish;
     private LinearLayout steps, fallback, fallbackValues;
     private ImageView qr;
 
@@ -69,11 +70,24 @@ public class ConnectFragment extends Fragment {
         fallback = v.findViewById(R.id.k2go_conn_fallback);
         fallbackValues = v.findViewById(R.id.k2go_conn_fallback_values);
         advance = v.findViewById(R.id.k2go_conn_advance);
+        finish = v.findViewById(R.id.k2go_conn_finish);
 
         tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
-            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; render(); }
+            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; openDone = false; render(); }
+        });
+        finish.setOnClickListener(x -> {
+            openDone = true;      // tick step 2, briefly show it complete, then go Home
+            finish.setEnabled(false);
+            render();
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                if (!isAdded()) return;
+                View nav = requireActivity().findViewById(R.id.k2go_bottom_nav);
+                if (nav instanceof com.google.android.material.bottomnavigation.BottomNavigationView) {
+                    ((com.google.android.material.bottomnavigation.BottomNavigationView) nav).setSelectedItemId(R.id.nav_library);
+                }
+            }, 1500);
         });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
@@ -85,6 +99,7 @@ public class ConnectFragment extends Fragment {
     private void setMode(Mode m) {
         mode = m;
         stage = (m == Mode.HOTSPOT) ? Stage.JOIN : Stage.OPEN;
+        openDone = false;
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
@@ -105,6 +120,7 @@ public class ConnectFragment extends Fragment {
         if (!isAdded() || caption == null) return;
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
+        if (finish != null) finish.setVisibility(View.GONE);
         if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
     }
 
@@ -145,6 +161,8 @@ public class ConnectFragment extends Fragment {
             setFallback(new String[]{browseUrl(ip)});
             advance.setText("‹ Back to step 1");
             styleAdvance(false);
+            finish.setVisibility(openDone ? View.GONE : View.VISIBLE);
+            advance.setVisibility(openDone ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -197,7 +215,7 @@ public class ConnectFragment extends Fragment {
         boolean atOpen = (stage == Stage.OPEN);
         steps.addView(badge("1", "Join", !atOpen, atOpen));   // active when on Join; done (check) when on Open
         steps.addView(arrow());
-        steps.addView(badge("2", "Open", atOpen, false));
+        steps.addView(badge("2", "Open", atOpen && !openDone, openDone));
     }
 
     private View badge(String num, String label, boolean active, boolean done) {
