@@ -209,6 +209,7 @@ public class CloneFragment extends Fragment {
         qr.setVisibility(View.VISIBLE);
         caption.setVisibility(View.VISIBLE);
         subCaption.setVisibility(View.VISIBLE);
+        footer.setVisibility(View.VISIBLE);   // RECEIVE hid it; restore for SEND
         stop.setVisibility(View.GONE);
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
@@ -279,7 +280,7 @@ public class CloneFragment extends Fragment {
         setFallback(null);
         showCodeAsText(payload);
         showStopButton();
-        footer.setText("Starts by itself. Stays on until you Stop.");
+        footer.setText("Stays on until you Stop.");
     }
 
     private void showStopButton() {
