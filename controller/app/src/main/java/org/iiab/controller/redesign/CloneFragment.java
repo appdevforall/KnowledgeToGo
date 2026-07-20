@@ -59,6 +59,7 @@ public class CloneFragment extends Fragment {
     private ShareConfig shareConfig;
     private String tempPass;
     private boolean daemonStarted = false, daemonStarting = false, hostHasRootfs = false;
+    private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
 
     private ActivityResultLauncher<String> locationPerm;
 
@@ -112,9 +113,12 @@ public class CloneFragment extends Fragment {
         tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
-            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.START : Stage.JOIN; render(); }
+            if (mode == Mode.HOTSPOT) {
+                stage = (stage == Stage.JOIN) ? Stage.START : Stage.JOIN;
+                if (stage == Stage.START) userStopped = false;   // entering step 2 auto-starts the service
+                render();
+            }
         });
-        stop.setOnClickListener(x -> confirmStop());
         showcode.setOnClickListener(x -> {
             codeExpanded = !codeExpanded;
             codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
@@ -144,6 +148,7 @@ public class CloneFragment extends Fragment {
     private void setMode(Mode m) {
         mode = m;
         stage = (m == Mode.HOTSPOT) ? Stage.JOIN : Stage.START;
+        userStopped = false;
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
@@ -160,7 +165,7 @@ public class CloneFragment extends Fragment {
 
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */
     private void ensureDaemon(String ip) {
-        if (daemonStarted || daemonStarting || ip == null) return;
+        if (daemonStarted || daemonStarting || userStopped || ip == null) return;
         daemonStarting = true;
         tempPass = SyncHandshakeHelper.generateSecurePassword();
         File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
@@ -224,7 +229,6 @@ public class CloneFragment extends Fragment {
         String pass = (st.passphrase != null) ? st.passphrase : "";
         String ip = NetworkInterfaces.discover().hotspotIp;
         if (ip == null) ip = "192.168.49.1";
-        ensureDaemon(ip);
 
         buildSteps(true);
         advance.setVisibility(View.VISIBLE);
@@ -239,33 +243,61 @@ public class CloneFragment extends Fragment {
         } else {
             advance.setText("‹ Back to step 1");
             styleAdvance(false);
-            if (!daemonStarted) { qr.setImageBitmap(null); caption.setText("Preparing transfer…"); subCaption.setText(""); setFallback(null); return; }
-            String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits());
-            qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
-            caption.setText("Scan code 2 to start the transfer");
-            subCaption.setText("The copy begins when they scan this one.");
-            setFallback(null);
-            showCodeAsText(payload);
-            stop.setVisibility(View.VISIBLE);
-            footer.setText("Starts by itself. Stays on until you Stop.");
+            ensureDaemon(ip);
+            renderStartState(ip, true);
         }
     }
 
     private void renderWifi() {
         String ip = NetworkInterfaces.discover().wifiIp;
         if (ip == null) { buildSteps(false); advance.setVisibility(View.GONE); simpleState("Not on a Wi-Fi network", "Join a Wi-Fi, or use Hotspot."); return; }
-        ensureDaemon(ip);
         buildSteps(false);
         advance.setVisibility(View.GONE);
-        if (!daemonStarted) { qr.setImageBitmap(null); caption.setText("Preparing transfer…"); subCaption.setText(""); setFallback(null); return; }
+        ensureDaemon(ip);
+        renderStartState(ip, false);
+    }
+
+    /** Step-2 state: starting -> stopped (Start sharing) -> running (QR + Stop sharing). */
+    private void renderStartState(String ip, boolean twoCode) {
+        if (daemonStarting) {
+            qr.setImageBitmap(null);
+            caption.setText("Starting the service…");
+            subCaption.setText("");
+            setFallback(null); footer.setText(""); stop.setVisibility(View.GONE);
+            return;
+        }
+        if (!daemonStarted) {   // stopped by the user (or failed to start)
+            qr.setImageBitmap(null);
+            caption.setText("Sharing stopped");
+            subCaption.setText("Start the service to share this phone's library.");
+            setFallback(null); footer.setText("");
+            showStartButton();
+            return;
+        }
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits());
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
-        caption.setText("Scan to start the transfer");
-        subCaption.setText("You're on the same Wi-Fi — one code.");
+        caption.setText(twoCode ? "Ready! Scan code 2 to start the transfer" : "Ready! Scan to start the transfer");
+        subCaption.setText("The copy begins when they scan this one.");
         setFallback(null);
         showCodeAsText(payload);
-        stop.setVisibility(View.VISIBLE);
+        showStopButton();
         footer.setText("Starts by itself. Stays on until you Stop.");
+    }
+
+    private void showStopButton() {
+        stop.setVisibility(View.VISIBLE);
+        stop.setText("Stop sharing");
+        stop.setBackgroundResource(R.drawable.k2go_turnoff_bg);
+        stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
+        stop.setOnClickListener(x -> confirmStop());
+    }
+
+    private void showStartButton() {
+        stop.setVisibility(View.VISIBLE);
+        stop.setText("Start sharing");
+        stop.setBackgroundResource(R.drawable.k2go_primary_bg);
+        stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
+        stop.setOnClickListener(x -> { userStopped = false; render(); });
     }
 
     private void confirmStop() {
@@ -276,6 +308,7 @@ public class CloneFragment extends Fragment {
                 .setPositiveButton("Stop", (d, w) -> {
                     if (transport != null) transport.stop();
                     daemonStarted = false;
+                    userStopped = true;   // do not auto-restart on the next render
                     render();
                 })
                 .show();
@@ -324,7 +357,7 @@ public class CloneFragment extends Fragment {
         boolean atStart = (stage == Stage.START);
         steps.addView(badge("1", "Join", !atStart, atStart));
         steps.addView(arrow());
-        steps.addView(badge("2", "Start", atStart, false));
+        steps.addView(badge("2", "Start", atStart && !daemonStarted, atStart && daemonStarted));
     }
 
     private View badge(String num, String label, boolean active, boolean done) {
