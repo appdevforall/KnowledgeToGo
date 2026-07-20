@@ -422,7 +422,7 @@ public class CloneFragment extends Fragment {
                 : "Now scan the other phone's transfer code.");
         rcvIntro.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvScan.setText(atJoin ? "Open Wi-Fi settings" : "Scan to start");
+        rcvScan.setText(atJoin ? "Scan via Wi-Fi settings" : "Scan to start");
         rcvScan.setVisibility(View.VISIBLE);
         rcvSub.setText(atJoin ? "Step 1 of 2" : "Step 2 of 2");
         rcvSub.setVisibility(View.VISIBLE);
