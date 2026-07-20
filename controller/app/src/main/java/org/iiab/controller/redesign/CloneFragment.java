@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import com.journeyapps.barcodescanner.ScanContract;
+import com.journeyapps.barcodescanner.ScanOptions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -72,10 +75,16 @@ public class CloneFragment extends Fragment {
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
     private EditText paste;
-    private TextView receiveWarn, receiveStart, pStatus, pFile, pStats, cancel;
+    private TextView receiveStart, pStatus, pFile, pStats, cancel;
     private ProgressBar pbar;
     private long lastSeq = -1L;
     private AlertDialog confirmDialog;
+    private enum RStage { JOIN, START }
+    private RStage rStage = RStage.JOIN;
+    private boolean pasteExpanded = false;
+    private ActivityResultLauncher<ScanOptions> barcodeLauncher;
+    private LinearLayout rcvSteps, rcvIntro, rcvNotice, pasteBlock;
+    private TextView rcvCaption, rcvScan, rcvSub, rcvSkip, rcvSkipHint, rcvCamNote, rcvShowPaste;
     private LinearLayout netRow, steps, fallback, fallbackValues;
     private ImageView qr;
     private TextView showcode, codetext, copyBtn, shareBtn;
@@ -89,6 +98,7 @@ public class CloneFragment extends Fragment {
         locationPerm = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 granted -> { if (granted) hs.start(requireContext().getApplicationContext()); render(); });
+        barcodeLauncher = registerForActivityResult(new ScanContract(), r -> onScan(r.getContents()));
     }
 
     @Nullable
@@ -111,8 +121,18 @@ public class CloneFragment extends Fragment {
         footer = v.findViewById(R.id.k2go_clone_footer);
         receiveBox = v.findViewById(R.id.k2go_clone_receive_box);
         paste = v.findViewById(R.id.k2go_clone_paste);
-        receiveWarn = v.findViewById(R.id.k2go_clone_receive_warn);
         receiveStart = v.findViewById(R.id.k2go_clone_receive_start);
+        rcvSteps = v.findViewById(R.id.k2go_rcv_steps);
+        rcvCaption = v.findViewById(R.id.k2go_rcv_caption);
+        rcvIntro = v.findViewById(R.id.k2go_rcv_intro);
+        rcvNotice = v.findViewById(R.id.k2go_rcv_notice);
+        rcvScan = v.findViewById(R.id.k2go_rcv_scan);
+        rcvSub = v.findViewById(R.id.k2go_rcv_sub);
+        rcvSkip = v.findViewById(R.id.k2go_rcv_skip);
+        rcvSkipHint = v.findViewById(R.id.k2go_rcv_skiphint);
+        rcvCamNote = v.findViewById(R.id.k2go_rcv_camnote);
+        rcvShowPaste = v.findViewById(R.id.k2go_rcv_showpaste);
+        pasteBlock = v.findViewById(R.id.k2go_rcv_pasteblock);
         progressBox = v.findViewById(R.id.k2go_clone_progress);
         pStatus = v.findViewById(R.id.k2go_clone_pstatus);
         pbar = v.findViewById(R.id.k2go_clone_pbar);
@@ -156,6 +176,12 @@ public class CloneFragment extends Fragment {
 
         receiveStart.setOnClickListener(x -> onReceiveStart());
         cancel.setOnClickListener(x -> onReceiveCancel());
+        rcvScan.setOnClickListener(x -> {
+            if (rStage == RStage.JOIN) openWifiSettings();
+            else launchScanner("Scan the other phone's transfer code");
+        });
+        rcvSkip.setOnClickListener(x -> { rStage = RStage.START; render(); });
+        rcvShowPaste.setOnClickListener(x -> { pasteExpanded = !pasteExpanded; renderReceive(); });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
         SyncTransferState cur = SyncProgressRepository.get().current();
@@ -168,7 +194,9 @@ public class CloneFragment extends Fragment {
 
     private void setSide(Side sd) {
         side = sd;
-        if (sd == Side.SEND) setMode(Mode.HOTSPOT); else render();
+        if (sd == Side.SEND) { setMode(Mode.HOTSPOT); return; }
+        rStage = RStage.JOIN; pasteExpanded = false;
+        render();
     }
 
     private void setMode(Mode m) {
@@ -352,6 +380,7 @@ public class CloneFragment extends Fragment {
     /** Observes the shared transfer repository; fires terminal dialogs once per seq. */
     private void onTransferState(SyncTransferState st) {
         if (!isAdded() || st == null) return;
+        Log.i("IIAB-Clone", "recv state=" + st.phase + " title=" + st.title + " msg=" + st.message);
         if (st.seq > lastSeq) {
             if (st.phase == SyncTransferState.Phase.CONFIRM) { lastSeq = st.seq; showReceiveConfirm(st); }
             else if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
@@ -362,25 +391,87 @@ public class CloneFragment extends Fragment {
 
     private void renderReceive() {
         SyncTransferState st = SyncProgressRepository.get().current();
-        SyncTransferState.Phase ph = (st == null) ? SyncTransferState.Phase.IDLE : st.phase;
         boolean busy = (st != null && st.isActive());
-        paste.setVisibility(busy ? View.GONE : View.VISIBLE);
-        receiveWarn.setVisibility(busy ? View.GONE : View.VISIBLE);
-        receiveStart.setVisibility(busy ? View.GONE : View.VISIBLE);
         progressBox.setVisibility(busy ? View.VISIBLE : View.GONE);
-        if (!busy) return;
-        if (ph == SyncTransferState.Phase.CONFIRM) { showReceiveConfirm(st); return; }
-        if (ph == SyncTransferState.Phase.TRANSFERRING) {
-            pbar.setIndeterminate(false);
-            pbar.setProgress(st.percent);
-            pStatus.setText("Copying the library\u2026");
-            pFile.setText(st.file);
-            pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
-        } else {
-            pbar.setIndeterminate(true);
-            pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? "Calculating what to copy\u2026" : "Connecting\u2026");
-            pFile.setText("");
-            pStats.setText("");
+        if (busy) {
+            rcvSteps.setVisibility(View.GONE); rcvCaption.setVisibility(View.GONE);
+            rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
+            rcvScan.setVisibility(View.GONE); rcvSub.setVisibility(View.GONE);
+            rcvSkip.setVisibility(View.GONE); rcvSkipHint.setVisibility(View.GONE);
+            rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
+            SyncTransferState.Phase ph = st.phase;
+            if (ph == SyncTransferState.Phase.CONFIRM) { showReceiveConfirm(st); return; }
+            if (ph == SyncTransferState.Phase.TRANSFERRING) {
+                pbar.setIndeterminate(false);
+                pbar.setProgress(st.percent);
+                pStatus.setText("Copying the library\u2026");
+                pFile.setText(st.file);
+                pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
+            } else {
+                pbar.setIndeterminate(true);
+                pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? "Calculating what to copy\u2026" : "Connecting\u2026");
+                pFile.setText(""); pStats.setText("");
+            }
+            return;
+        }
+        buildReceiveSteps();
+        boolean atJoin = (rStage == RStage.JOIN);
+        rcvSteps.setVisibility(View.VISIBLE);
+        rcvCaption.setVisibility(View.VISIBLE);
+        rcvCaption.setText(atJoin ? "Connect to the other phone's Wi-Fi (or its hotspot) in your phone's settings."
+                : "Now scan the other phone's transfer code.");
+        rcvIntro.setVisibility(atJoin ? View.VISIBLE : View.GONE);
+        rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
+        rcvScan.setText(atJoin ? "Scan via Wi-Fi settings" : "Scan to start");
+        rcvScan.setVisibility(View.VISIBLE);
+        rcvSub.setText(atJoin ? "Step 1 of 2" : "Step 2 of 2");
+        rcvSub.setVisibility(View.VISIBLE);
+        rcvSkip.setText("Already connected? Continue \u203a");
+        rcvSkipHint.setText("K2Go can't join that network for you \u2014 connect in Settings, then Continue.");
+        rcvSkip.setVisibility(atJoin ? View.VISIBLE : View.GONE);
+        rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
+        rcvCamNote.setVisibility(atJoin ? View.GONE : View.VISIBLE);
+        rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
+        rcvShowPaste.setText(pasteExpanded ? "Input QR code as text  \u25B4" : "Input QR code as text  \u25BE");
+        pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
+    }
+
+    private void buildReceiveSteps() {
+        rcvSteps.removeAllViews();
+        boolean atStart = (rStage == RStage.START);
+        rcvSteps.addView(badge("1", "Join", !atStart, atStart));
+        rcvSteps.addView(arrow());
+        rcvSteps.addView(badge("2", "Start", atStart, false));
+    }
+
+    private void launchScanner(String prompt) {
+        ScanOptions o = new ScanOptions();
+        o.setDesiredBarcodeFormats(ScanOptions.QR_CODE);
+        o.setPrompt(prompt);
+        o.setBeepEnabled(false);
+        o.setBarcodeImageEnabled(false);
+        o.setOrientationLocked(false);
+        barcodeLauncher.launch(o);
+    }
+
+    private void onScan(String contents) {
+        if (!isAdded()) return;
+        if (contents == null) { Toast.makeText(requireContext(), "Scan cancelled", Toast.LENGTH_SHORT).show(); return; }
+        SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(contents);
+        if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
+        Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
+        syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+    }
+
+    private void openWifiSettings() {
+        try {
+            startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIFI_SETTINGS));
+        } catch (Exception e) {
+            try {
+                startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            } catch (Exception e2) {
+                Toast.makeText(requireContext(), "Open Settings \u203a Wi-Fi to join the other phone.", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -427,6 +518,12 @@ public class CloneFragment extends Fragment {
                 .setPositiveButton("OK", (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
                 .setCancelable(false)
                 .show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
     }
 
     private void confirmStop() {
