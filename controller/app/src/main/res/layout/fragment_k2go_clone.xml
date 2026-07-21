@@ -196,6 +196,47 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- ADFA-4784: "these phones aren't compatible" hard-block state (no arch jargon; raw
+                 architecture only behind Technical details). Shown instead of the scan area. -->
+            <LinearLayout android:id="@+id/k2go_rcv_incompat" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="12dp" android:visibility="gone">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:padding="14dp" android:background="@drawable/k2go_warn_bg">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="12dp"
+                        android:text="!" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="These phones aren't compatible" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="for copying between them." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
+                            android:text="This phone and the other one are built differently, so the library can't run if copied." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
+                            android:text="What to do" android:textStyle="bold" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
+                            android:text="Get a K2Go version made for this phone — ask your promoter, or download the right one." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                        <TextView android:id="@+id/k2go_rcv_incompat_why" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp" android:text="Why aren't they compatible?  ▾" android:textStyle="bold" android:textColor="#8A5A00"
+                            android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
+                        <TextView android:id="@+id/k2go_rcv_incompat_whytext" android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp" android:visibility="gone"
+                            android:text="K2Go's library includes programs built to match a phone's hardware. When two phones are built differently, the programs from one can't run on the other, so copying the library wouldn't work."
+                            android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView android:id="@+id/k2go_rcv_incompat_tech" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="Technical details  ▾"
+                    android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" android:clickable="true" android:focusable="true" />
+                <TextView android:id="@+id/k2go_rcv_incompat_techtext" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:padding="12dp" android:background="@drawable/k2go_card_bg" android:fontFamily="monospace" android:visibility="gone"
+                    android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+
+                <TextView android:id="@+id/k2go_rcv_incompat_back" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="‹ Scan a different code"
+                    android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
+            </LinearLayout>
+
             <LinearLayout android:id="@+id/k2go_clone_progress" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="8dp" android:padding="14dp"
                 android:background="@drawable/k2go_card_bg" android:visibility="gone">

@@ -91,6 +91,12 @@ public class CloneFragment extends Fragment {
     private ActivityResultLauncher<ScanOptions> barcodeLauncher;
     private LinearLayout rcvSteps, rcvIntro, rcvNotice, pasteBlock;
     private TextView rcvCaption, rcvScan, rcvSub, rcvSkip, rcvSkipHint, rcvCamNote, rcvShowPaste;
+    // ADFA-4784: incompatibility hard-block state (receiver). >=0 means "showing not-compatible"
+    // for a scanned/pasted code advertising that host architecture.
+    private LinearLayout rcvIncompat;
+    private TextView incompatWhy, incompatWhyText, incompatTech, incompatTechText, incompatBack;
+    private int incompatHostBits = -1;
+    private boolean incompatWhyOpen = false, incompatTechOpen = false;
     private LinearLayout netRow, steps, fallback, fallbackValues;
     private ImageView qr;
     private TextView showcode, codetext, copyBtn, shareBtn;
@@ -143,6 +149,15 @@ public class CloneFragment extends Fragment {
         rcvCamNote = v.findViewById(R.id.k2go_rcv_camnote);
         rcvShowPaste = v.findViewById(R.id.k2go_rcv_showpaste);
         pasteBlock = v.findViewById(R.id.k2go_rcv_pasteblock);
+        rcvIncompat = v.findViewById(R.id.k2go_rcv_incompat);
+        incompatWhy = v.findViewById(R.id.k2go_rcv_incompat_why);
+        incompatWhyText = v.findViewById(R.id.k2go_rcv_incompat_whytext);
+        incompatTech = v.findViewById(R.id.k2go_rcv_incompat_tech);
+        incompatTechText = v.findViewById(R.id.k2go_rcv_incompat_techtext);
+        incompatBack = v.findViewById(R.id.k2go_rcv_incompat_back);
+        incompatWhy.setOnClickListener(x -> { incompatWhyOpen = !incompatWhyOpen; renderReceive(); });
+        incompatTech.setOnClickListener(x -> { incompatTechOpen = !incompatTechOpen; renderReceive(); });
+        incompatBack.setOnClickListener(x -> { incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false; renderReceive(); });
         progressBox = v.findViewById(R.id.k2go_clone_progress);
         pStatus = v.findViewById(R.id.k2go_clone_pstatus);
         pbar = v.findViewById(R.id.k2go_clone_pbar);
@@ -211,6 +226,7 @@ public class CloneFragment extends Fragment {
         side = sd;
         if (sd == Side.SEND) { setMode(Mode.HOTSPOT); return; }
         rStage = RStage.JOIN; pasteExpanded = false;
+        incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false;   // ADFA-4784: fresh on entry
         render();
     }
 
@@ -253,7 +269,20 @@ public class CloneFragment extends Fragment {
         }, "clone-share-daemon").start();
     }
 
-    private static int archBits() {
+    /**
+     * This app's ACTUAL installed ABI width, read from nativeLibraryDir — not the device's 64-bit
+     * capability. A 32-bit install on a 64-bit phone must report 32, because the rootfs/library arch
+     * follows the app's install ABI, not the hardware. Mirrors ArchCheckController.getArchBits().
+     * (ADFA-4784: the earlier Build.SUPPORTED_64_BIT_ABIS check wrongly passed 32-on-64 as compatible.)
+     */
+    private int archBits() {
+        try {
+            String dir = requireContext().getApplicationInfo().nativeLibraryDir;
+            if (dir != null) {
+                if (dir.contains("arm64") || dir.contains("x86_64") || dir.endsWith("64")) return 64;
+                if (dir.contains("arm") || dir.contains("x86")) return 32;
+            }
+        } catch (Exception ignored) { }
         return (Build.SUPPORTED_64_BIT_ABIS != null && Build.SUPPORTED_64_BIT_ABIS.length > 0) ? 64 : 32;
     }
 
@@ -424,7 +453,26 @@ public class CloneFragment extends Fragment {
         if (json.isEmpty()) { Toast.makeText(requireContext(), "Paste the transfer code first", Toast.LENGTH_SHORT).show(); return; }
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
         if (creds == null) { Toast.makeText(requireContext(), "That code isn't valid", Toast.LENGTH_LONG).show(); return; }
+        if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
         syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+    }
+
+    // ADFA-4784: hard guardrail — a library built for a different CPU can't run here. The sender's
+    // arch travels in the QR (creds.archBits); unknown (0) or equal is fine, anything else is blocked.
+    private boolean archCompatible(int hostBits) {
+        return hostBits == 0 || hostBits == archBits();
+    }
+
+    private void showIncompat(int hostBits) {
+        incompatHostBits = hostBits;
+        incompatWhyOpen = false; incompatTechOpen = false;
+        renderReceive();
+    }
+
+    private static String bitsLabel(int bits) {
+        if (bits == 64) return "64-bit (arm64-v8a)";
+        if (bits == 32) return "32-bit (armeabi-v7a)";
+        return "unknown";
     }
 
     private void onReceiveCancel() {
@@ -456,6 +504,7 @@ public class CloneFragment extends Fragment {
         boolean busy = (st != null && st.isActive());
         progressBox.setVisibility(busy ? View.VISIBLE : View.GONE);
         confirmPanel.setVisibility(View.GONE);
+        rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
         if (busy) {
             rcvSteps.setVisibility(View.GONE); rcvCaption.setVisibility(View.GONE);
             rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
@@ -484,6 +533,20 @@ public class CloneFragment extends Fragment {
                 pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? "Calculating what to copy\u2026" : "Connecting\u2026");
                 pFile.setText(""); pStats.setText("");
             }
+            return;
+        }
+        if (incompatHostBits >= 0) {   // ADFA-4784: not-compatible hard block, replaces the scan area
+            rcvSteps.setVisibility(View.GONE); rcvCaption.setVisibility(View.GONE);
+            rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
+            rcvScan.setVisibility(View.GONE); rcvSub.setVisibility(View.GONE);
+            rcvSkip.setVisibility(View.GONE); rcvSkipHint.setVisibility(View.GONE);
+            rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
+            rcvIncompat.setVisibility(View.VISIBLE);
+            incompatWhyText.setVisibility(incompatWhyOpen ? View.VISIBLE : View.GONE);
+            incompatWhy.setText(incompatWhyOpen ? "Why aren't they compatible?  ▴" : "Why aren't they compatible?  ▾");
+            incompatTechText.setVisibility(incompatTechOpen ? View.VISIBLE : View.GONE);
+            incompatTech.setText(incompatTechOpen ? "Technical details  ▴" : "Technical details  ▾");
+            incompatTechText.setText("This phone: " + bitsLabel(archBits()) + "\nOther phone: " + bitsLabel(incompatHostBits));
             return;
         }
         buildReceiveSteps();
@@ -532,6 +595,7 @@ public class CloneFragment extends Fragment {
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(contents);
         if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
         Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
+        if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
         syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
     }
 
