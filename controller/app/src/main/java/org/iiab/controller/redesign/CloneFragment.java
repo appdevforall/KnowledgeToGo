@@ -93,7 +93,7 @@ public class CloneFragment extends Fragment {
     private LinearLayout forkBox, tabsRow;
     private TextView cloneHdr, subtitleView, backHeader;
     private boolean getAppSkipped = false, getAppDone = false;   // ADFA-4785: step-2 (Get app) disposition
-    private TextView stepTitle, skipApp;
+    private TextView stepTitle, skipApp, shareWifi;
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -253,6 +253,8 @@ public class CloneFragment extends Fragment {
         stepTitle = v.findViewById(R.id.k2go_clone_steptitle);
         skipApp = v.findViewById(R.id.k2go_clone_skipapp);
         skipApp.setOnClickListener(x -> { getAppSkipped = true; stage = Stage.START; render(); });
+        shareWifi = v.findViewById(R.id.k2go_clone_sharewifi);
+        shareWifi.setOnClickListener(x -> openWifiSettings());
         v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
         v.findViewById(R.id.k2go_clone_fork_receive).setOnClickListener(x -> enterSide(Side.RECEIVE));
         backHeader.setOnClickListener(x -> goToFork());
@@ -370,7 +372,7 @@ public class CloneFragment extends Fragment {
     private void render() {
         if (!isAdded() || caption == null) return;
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
-        if (stepTitle != null) { stepTitle.setVisibility(View.GONE); skipApp.setVisibility(View.GONE); }
+        if (stepTitle != null) { stepTitle.setVisibility(View.GONE); skipApp.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
         paintTab(tabSend, side == Side.SEND);
         paintTab(tabReceive, side == Side.RECEIVE);
 
@@ -496,13 +498,9 @@ public class CloneFragment extends Fragment {
             setFallback(null);
             footer.setText("");
             advance.setVisibility(View.VISIBLE);
+            shareWifi.setVisibility(View.VISIBLE);
             advance.setText("Next: get the app");
             styleAdvance(true);
-            stop.setVisibility(View.VISIBLE);
-            stop.setText("Share Wi-Fi via Android settings");
-            stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
-            stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-            stop.setOnClickListener(x -> openWifiSettings());
             skipApp.setVisibility(View.VISIBLE);
             skipApp.setText("Skip — they already have K2Go  ›");
         } else {
