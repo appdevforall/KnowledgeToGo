@@ -210,8 +210,8 @@ public class CloneFragment extends Fragment {
 
         tabSend.setOnClickListener(x -> setSide(Side.SEND));
         tabReceive.setOnClickListener(x -> setSide(Side.RECEIVE));
-        tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
-        tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
+        tabHotspot.setOnClickListener(x -> requestMode(Mode.HOTSPOT));
+        tabWifi.setOnClickListener(x -> requestMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
             if (stage == Stage.JOIN) { sendApp = true; render(); }        // step 1 -> step 2 (Get app)
             else { stage = Stage.JOIN; getAppDone = false; render(); }     // step 3 -> back to step 1
@@ -272,6 +272,20 @@ public class CloneFragment extends Fragment {
         rStage = RStage.JOIN; pasteExpanded = false;
         incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false;   // ADFA-4784: fresh on entry
         render();
+    }
+
+    // ADFA-4785: switching the network at step 3 (Copy) drops the active connection and cuts any
+    // copy in progress. Warn first; elsewhere (or when the mode is unchanged) switch directly.
+    private void requestMode(Mode target) {
+        boolean sharing = (side == Side.SEND && !sendApp && stage == Stage.START && daemonStarted);
+        if (target == mode || !sharing) { setMode(target); return; }
+        String label = (target == Mode.HOTSPOT) ? "Hotspot" : "Wi-Fi";
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Switch to " + label + "?")
+                .setMessage("This stops any copy in progress. The other phone can start again by rescanning the new code.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Switch", (d, w) -> setMode(target))
+                .show();
     }
 
     private void setMode(Mode m) {
@@ -887,7 +901,7 @@ public class CloneFragment extends Fragment {
     private void confirmStop() {
         new AlertDialog.Builder(requireContext())
                 .setTitle("Stop sharing?")
-                .setMessage("This stops the copy. The other device can start again by re-scanning.")
+                .setMessage("This stops any copy in progress. The other device can start again by rescanning.")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Stop", (d, w) -> {
                     if (transport != null) transport.stop();
