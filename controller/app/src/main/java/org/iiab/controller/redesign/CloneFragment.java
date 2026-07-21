@@ -88,6 +88,10 @@ public class CloneFragment extends Fragment {
     private ActivityResultLauncher<String> locationPerm;
 
     private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, stop, footer;
+    // ADFA-4785: intent fork (Send / Receive) replaces the persistent top toggle.
+    private boolean atFork = true;
+    private LinearLayout forkBox, tabsRow;
+    private TextView cloneHdr, subtitleView, backHeader;
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -241,9 +245,21 @@ public class CloneFragment extends Fragment {
         lastSeq = (cur != null) ? cur.seq : -1L;   // only fire dialogs on NEW transitions
         SyncProgressRepository.get().state().observe(getViewLifecycleOwner(), this::onTransferState);
 
-        setSide(Side.SEND);
+        cloneHdr = v.findViewById(R.id.k2go_clone_hdr);
+        subtitleView = v.findViewById(R.id.k2go_clone_subtitle);
+        backHeader = v.findViewById(R.id.k2go_clone_back);
+        forkBox = v.findViewById(R.id.k2go_clone_fork);
+        tabsRow = v.findViewById(R.id.k2go_clone_tabs);
+        v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
+        v.findViewById(R.id.k2go_clone_fork_receive).setOnClickListener(x -> enterSide(Side.RECEIVE));
+        backHeader.setOnClickListener(x -> goToFork());
+        render();
         return v;
     }
+
+    private void enterSide(Side sd) { atFork = false; setSide(sd); }
+
+    private void goToFork() { atFork = true; render(); }
 
     private void setSide(Side sd) {
         side = sd;
@@ -354,6 +370,34 @@ public class CloneFragment extends Fragment {
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
         paintTab(tabSend, side == Side.SEND);
         paintTab(tabReceive, side == Side.RECEIVE);
+
+        if (atFork) {
+            cloneHdr.setVisibility(View.VISIBLE);
+            subtitleView.setVisibility(View.VISIBLE);
+            forkBox.setVisibility(View.VISIBLE);
+            tabsRow.setVisibility(View.GONE);
+            backHeader.setVisibility(View.GONE);
+            netRow.setVisibility(View.GONE);
+            steps.setVisibility(View.GONE);
+            qr.setVisibility(View.GONE);
+            caption.setVisibility(View.GONE);
+            subCaption.setVisibility(View.GONE);
+            fallback.setVisibility(View.GONE);
+            advance.setVisibility(View.GONE);
+            stop.setVisibility(View.GONE);
+            footer.setVisibility(View.GONE);
+            shareCard.setVisibility(View.GONE);
+            sendAppEntry.setVisibility(View.GONE);
+            sendAppView.setVisibility(View.GONE);
+            receiveBox.setVisibility(View.GONE);
+            return;
+        }
+        forkBox.setVisibility(View.GONE);
+        tabsRow.setVisibility(View.GONE);
+        cloneHdr.setVisibility(View.GONE);
+        subtitleView.setVisibility(View.GONE);
+        backHeader.setVisibility(View.VISIBLE);
+        backHeader.setText(side == Side.RECEIVE ? "‹ Receive" : "‹ Send");
 
         if (side == Side.RECEIVE) {
             netRow.setVisibility(View.GONE);

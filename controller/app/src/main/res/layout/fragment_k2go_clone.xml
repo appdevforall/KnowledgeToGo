@@ -5,12 +5,37 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="16dp">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        <TextView android:id="@+id/k2go_clone_hdr" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="@string/k2go_tab_clone" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
         <TextView android:id="@+id/k2go_clone_subtitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"
             android:text="@string/k2go_clone_subtitle" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_muted" />
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+        <!-- ADFA-4785: intent fork replaces the persistent Send/Receive toggle. -->
+        <TextView android:id="@+id/k2go_clone_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" android:padding="4dp" android:text="&#8249; Back" android:textColor="@color/k2go_teal"
+            android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
+
+        <LinearLayout android:id="@+id/k2go_clone_fork" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="16dp" android:visibility="gone">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="What do you want to do?" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+            <LinearLayout android:id="@+id/k2go_clone_fork_send" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="10dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Send to another phone  &#8250;" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
+                    android:text="Show codes; the other phone scans them." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            </LinearLayout>
+            <LinearLayout android:id="@+id/k2go_clone_fork_receive" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="12dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Receive from another phone  &#8250;" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
+                    android:text="Scan their codes to get a copy here." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/k2go_clone_tabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
             android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg" android:padding="4dp">
             <TextView android:id="@+id/k2go_clone_send" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
                 android:gravity="center" android:text="@string/k2go_send" android:clickable="true" android:focusable="true" />
