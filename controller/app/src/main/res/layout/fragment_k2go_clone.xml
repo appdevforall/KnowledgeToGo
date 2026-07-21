@@ -66,6 +66,9 @@
         <LinearLayout android:id="@+id/k2go_clone_steps" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:orientation="horizontal" android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:gravity="center_vertical" />
 
+        <TextView android:id="@+id/k2go_clone_steptitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" android:visibility="gone" />
+
         <ImageView android:id="@+id/k2go_clone_qr" android:layout_width="220dp" android:layout_height="220dp"
             android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
             android:background="@drawable/k2go_card_bg" android:contentDescription="@string/k2go_tab_clone" />
@@ -144,6 +147,10 @@
 
         <TextView android:id="@+id/k2go_clone_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center" android:layout_marginTop="10dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+
+        <TextView android:id="@+id/k2go_clone_skipapp" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:layout_marginTop="10dp" android:padding="6dp" android:textColor="@color/k2go_teal"
+            android:textAppearance="?attr/textAppearanceBodySmall" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
         <!-- ADFA-4785: "Send the app" sub-screen — serve the APK by QR (+ Android share fallback). -->
         <LinearLayout android:id="@+id/k2go_sendapp_view" android:layout_width="match_parent" android:layout_height="wrap_content"

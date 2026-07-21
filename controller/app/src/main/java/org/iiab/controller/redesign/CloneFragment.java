@@ -93,6 +93,7 @@ public class CloneFragment extends Fragment {
     private LinearLayout forkBox, tabsRow;
     private TextView cloneHdr, subtitleView, backHeader;
     private boolean getAppSkipped = false, getAppDone = false;   // ADFA-4785: step-2 (Get app) disposition
+    private TextView stepTitle, skipApp;
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -213,8 +214,8 @@ public class CloneFragment extends Fragment {
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
             if (mode != Mode.HOTSPOT) return;
-            if (stage == Stage.JOIN) { getAppSkipped = true; stage = Stage.START; render(); }   // skip Get app -> Copy
-            else { stage = Stage.JOIN; getAppSkipped = false; getAppDone = false; render(); }    // back to Connect
+            if (stage == Stage.JOIN) { sendApp = true; render(); }        // step 1 -> step 2 (Get app)
+            else { stage = Stage.JOIN; getAppDone = false; render(); }     // step 3 -> back to step 1
         });
         showcode.setOnClickListener(x -> {
             codeExpanded = !codeExpanded;
@@ -250,6 +251,9 @@ public class CloneFragment extends Fragment {
         backHeader = v.findViewById(R.id.k2go_clone_back);
         forkBox = v.findViewById(R.id.k2go_clone_fork);
         tabsRow = v.findViewById(R.id.k2go_clone_tabs);
+        stepTitle = v.findViewById(R.id.k2go_clone_steptitle);
+        skipApp = v.findViewById(R.id.k2go_clone_skipapp);
+        skipApp.setOnClickListener(x -> { getAppSkipped = true; stage = Stage.START; render(); });
         v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
         v.findViewById(R.id.k2go_clone_fork_receive).setOnClickListener(x -> enterSide(Side.RECEIVE));
         backHeader.setOnClickListener(x -> goToFork());
@@ -368,6 +372,7 @@ public class CloneFragment extends Fragment {
     private void render() {
         if (!isAdded() || caption == null) return;
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
+        if (stepTitle != null) { stepTitle.setVisibility(View.GONE); skipApp.setVisibility(View.GONE); }
         paintTab(tabSend, side == Side.SEND);
         paintTab(tabReceive, side == Side.RECEIVE);
 
@@ -459,13 +464,17 @@ public class CloneFragment extends Fragment {
         advance.setVisibility(View.VISIBLE);
         if (stage == Stage.JOIN) {
             setQr("WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;");
-            caption.setText("Scan code 1 to join");
-            subCaption.setText(R.string.k2go_just_scan);
+            stepTitle.setVisibility(View.VISIBLE);
+            stepTitle.setText("Step 1 · Connect the other phone");
+            caption.setText("Point its camera here to join this phone.");
+            subCaption.setText("");
             setFallback(new String[]{"Wi-Fi: " + ssid, "Password: " + pass});
-            advance.setText("They already have K2Go  ›");   // ADFA-4785: skip Get app -> Copy
-            styleAdvance(false);
+            advance.setText("Next: get the app");
+            styleAdvance(true);
             footer.setText("");
-            sendAppEntry.setVisibility(View.VISIBLE);   // "Send the app first" -> step 2 (Get app)
+            sendAppEntry.setVisibility(View.GONE);
+            skipApp.setVisibility(View.VISIBLE);
+            skipApp.setText("Skip — they already have K2Go  ›");
         } else {
             advance.setText("‹ Back to step 1");
             styleAdvance(false);
@@ -485,6 +494,8 @@ public class CloneFragment extends Fragment {
 
     /** Step-2 state: starting -> stopped (Start sharing) -> running (QR + Stop sharing). */
     private void renderStartState(String ip, boolean twoCode) {
+        stepTitle.setVisibility(View.VISIBLE);
+        stepTitle.setText("Step 3 · Copy the library");
         if (!daemonStarted && !daemonStarting && !shareAnyway && !rootfsPresent()) {   // ADFA-4786
             qr.setImageBitmap(null);
             caption.setText("Nothing to share yet");
