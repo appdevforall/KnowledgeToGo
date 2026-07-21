@@ -78,7 +78,8 @@ public class CloneFragment extends Fragment {
     private TextView receiveStart, pStatus, pFile, pStats, cancel;
     private ProgressBar pbar;
     private long lastSeq = -1L;
-    private AlertDialog confirmDialog;
+    private LinearLayout confirmPanel;
+    private TextView confirmTitle, confirmMsg;
     private enum RStage { JOIN, START }
     private RStage rStage = RStage.JOIN;
     private boolean pasteExpanded = false;
@@ -139,6 +140,11 @@ public class CloneFragment extends Fragment {
         pFile = v.findViewById(R.id.k2go_clone_pfile);
         pStats = v.findViewById(R.id.k2go_clone_pstats);
         cancel = v.findViewById(R.id.k2go_clone_cancel);
+        confirmPanel = v.findViewById(R.id.k2go_rcv_confirm);
+        confirmTitle = v.findViewById(R.id.k2go_rcv_confirm_title);
+        confirmMsg = v.findViewById(R.id.k2go_rcv_confirm_msg);
+        v.findViewById(R.id.k2go_rcv_confirm_go).setOnClickListener(x -> startReceiveTransfer());
+        v.findViewById(R.id.k2go_rcv_confirm_cancel).setOnClickListener(x -> { syncVm.cancelProbe(); renderReceive(); });
         showcode = v.findViewById(R.id.k2go_clone_showcode);
         codeblock = v.findViewById(R.id.k2go_clone_codeblock);
         codetext = v.findViewById(R.id.k2go_clone_codetext);
@@ -382,8 +388,7 @@ public class CloneFragment extends Fragment {
         if (!isAdded() || st == null) return;
         Log.i("IIAB-Clone", "recv state=" + st.phase + " title=" + st.title + " msg=" + st.message);
         if (st.seq > lastSeq) {
-            if (st.phase == SyncTransferState.Phase.CONFIRM) { lastSeq = st.seq; showReceiveConfirm(st); }
-            else if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
+            if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
             else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
         }
         if (side == Side.RECEIVE) renderReceive();
@@ -393,6 +398,7 @@ public class CloneFragment extends Fragment {
         SyncTransferState st = SyncProgressRepository.get().current();
         boolean busy = (st != null && st.isActive());
         progressBox.setVisibility(busy ? View.VISIBLE : View.GONE);
+        confirmPanel.setVisibility(View.GONE);
         if (busy) {
             rcvSteps.setVisibility(View.GONE); rcvCaption.setVisibility(View.GONE);
             rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
@@ -400,7 +406,16 @@ public class CloneFragment extends Fragment {
             rcvSkip.setVisibility(View.GONE); rcvSkipHint.setVisibility(View.GONE);
             rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
             SyncTransferState.Phase ph = st.phase;
-            if (ph == SyncTransferState.Phase.CONFIRM) { showReceiveConfirm(st); return; }
+            if (ph == SyncTransferState.Phase.CONFIRM) {
+                progressBox.setVisibility(View.GONE);
+                confirmTitle.setText((st.title != null && !st.title.isEmpty()) ? st.title : "Copy the library?");
+                String m = (st.message != null) ? st.message : "";
+                if (!m.isEmpty()) m += "\n\n";
+                m += "This replaces the library on this phone with the sender's copy.";
+                confirmMsg.setText(m);
+                confirmPanel.setVisibility(View.VISIBLE);
+                return;
+            }
             if (ph == SyncTransferState.Phase.TRANSFERRING) {
                 pbar.setIndeterminate(false);
                 pbar.setProgress(st.percent);
@@ -473,21 +488,6 @@ public class CloneFragment extends Fragment {
                 Toast.makeText(requireContext(), "Open Settings \u203a Wi-Fi to join the other phone.", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private void showReceiveConfirm(SyncTransferState st) {
-        if (confirmDialog != null && confirmDialog.isShowing()) return;
-        String title = (st.title != null && !st.title.isEmpty()) ? st.title : "Copy the library?";
-        String msg = (st.message != null) ? st.message : "";
-        if (!msg.isEmpty()) msg += "\n\n";
-        msg += "This replaces the library on this phone with the sender's copy.";
-        confirmDialog = new AlertDialog.Builder(requireContext())
-                .setTitle(title)
-                .setMessage(msg)
-                .setNegativeButton("Cancel", (d, w) -> { syncVm.cancelProbe(); renderReceive(); })
-                .setPositiveButton("Copy", (d, w) -> startReceiveTransfer())
-                .setCancelable(false)
-                .show();
     }
 
     private void startReceiveTransfer() {
