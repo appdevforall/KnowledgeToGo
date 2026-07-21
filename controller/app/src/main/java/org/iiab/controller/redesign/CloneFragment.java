@@ -269,7 +269,20 @@ public class CloneFragment extends Fragment {
         }, "clone-share-daemon").start();
     }
 
-    private static int archBits() {
+    /**
+     * This app's ACTUAL installed ABI width, read from nativeLibraryDir — not the device's 64-bit
+     * capability. A 32-bit install on a 64-bit phone must report 32, because the rootfs/library arch
+     * follows the app's install ABI, not the hardware. Mirrors ArchCheckController.getArchBits().
+     * (ADFA-4784: the earlier Build.SUPPORTED_64_BIT_ABIS check wrongly passed 32-on-64 as compatible.)
+     */
+    private int archBits() {
+        try {
+            String dir = requireContext().getApplicationInfo().nativeLibraryDir;
+            if (dir != null) {
+                if (dir.contains("arm64") || dir.contains("x86_64") || dir.endsWith("64")) return 64;
+                if (dir.contains("arm") || dir.contains("x86")) return 32;
+            }
+        } catch (Exception ignored) { }
         return (Build.SUPPORTED_64_BIT_ABIS != null && Build.SUPPORTED_64_BIT_ABIS.length > 0) ? 64 : 32;
     }
 
