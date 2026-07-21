@@ -66,6 +66,9 @@ public class CloneFragment extends Fragment {
     private ShareConfig shareConfig;
     private String tempPass;
     private boolean daemonStarted = false, daemonStarting = false, hostHasRootfs = false;
+    private LibrarySize.Split librarySplit;  // ADFA-4780: approx system/content sizes (computed on share)
+    private LinearLayout shareCard;
+    private TextView sizeSys, sizeContent, sizeTotal;
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
 
     private ActivityResultLauncher<String> locationPerm;
@@ -119,6 +122,10 @@ public class CloneFragment extends Fragment {
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
         footer = v.findViewById(R.id.k2go_clone_footer);
+        shareCard = v.findViewById(R.id.k2go_clone_sharecard);
+        sizeSys = v.findViewById(R.id.k2go_clone_size_sys);
+        sizeContent = v.findViewById(R.id.k2go_clone_size_content);
+        sizeTotal = v.findViewById(R.id.k2go_clone_size_total);
         receiveBox = v.findViewById(R.id.k2go_clone_receive_box);
         paste = v.findViewById(R.id.k2go_clone_paste);
         receiveStart = v.findViewById(R.id.k2go_clone_receive_start);
@@ -227,11 +234,13 @@ public class CloneFragment extends Fragment {
         final String shareDir = rootfsDir.getAbsolutePath();
         final Context app = requireContext().getApplicationContext();
         final androidx.fragment.app.FragmentActivity act = requireActivity();  // capture before the thread
+        final File iiabRoot = rootfsDir;  // effectively final for the worker
         new Thread(() -> {
             final boolean ok = transport.startServer(app, shareConfig, tempPass, shareDir);
+            final LibrarySize.Split split = LibrarySize.compute(iiabRoot);  // ADFA-4780: approx sizes for the QR + overview
             act.runOnUiThread(() -> {
                 if (!isAdded()) return;
-                daemonStarting = false; daemonStarted = ok; render();
+                daemonStarting = false; daemonStarted = ok; librarySplit = split; render();
             });
         }, "clone-share-daemon").start();
     }
@@ -256,6 +265,7 @@ public class CloneFragment extends Fragment {
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
+            shareCard.setVisibility(View.GONE);
             receiveBox.setVisibility(View.VISIBLE);
             renderReceive();
             return;
@@ -267,6 +277,7 @@ public class CloneFragment extends Fragment {
         subCaption.setVisibility(View.VISIBLE);
         footer.setVisibility(View.VISIBLE);   // RECEIVE hid it; restore for SEND
         stop.setVisibility(View.GONE);
+        shareCard.setVisibility(View.GONE);
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
 
@@ -318,24 +329,34 @@ public class CloneFragment extends Fragment {
             qr.setImageBitmap(null);
             caption.setText("Starting the service…");
             subCaption.setText("");
-            setFallback(null); footer.setText(""); stop.setVisibility(View.GONE);
+            setFallback(null); footer.setText(""); stop.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
             qr.setImageBitmap(null);
             caption.setText("Sharing stopped");
             subCaption.setText("Start the service to share this phone's library.");
-            setFallback(null); footer.setText("");
+            setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
             showStartButton();
             return;
         }
-        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits());
+        long sysB = (librarySplit != null) ? librarySplit.systemBytes : 0L;
+        long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
+        String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
         caption.setText(twoCode ? "Ready! Scan code 2 to start the transfer" : "Ready! Scan to start the transfer");
         subCaption.setText("The copy begins when they scan this one.");
         setFallback(null);
         showCodeAsText(payload);
         showStopButton();
+        if (librarySplit != null) {
+            sizeSys.setText(LibrarySize.human(sysB));
+            sizeContent.setText(LibrarySize.human(contentB));
+            sizeTotal.setText(LibrarySize.human(librarySplit.totalBytes()));
+            shareCard.setVisibility(View.VISIBLE);
+        } else {
+            shareCard.setVisibility(View.GONE);
+        }
         footer.setText("Stays on until you Stop.");
     }
 
