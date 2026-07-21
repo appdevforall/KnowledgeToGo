@@ -213,7 +213,6 @@ public class CloneFragment extends Fragment {
         tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
-            if (mode != Mode.HOTSPOT) return;
             if (stage == Stage.JOIN) { sendApp = true; render(); }        // step 1 -> step 2 (Get app)
             else { stage = Stage.JOIN; getAppDone = false; render(); }     // step 3 -> back to step 1
         });
@@ -275,7 +274,7 @@ public class CloneFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
-        stage = (m == Mode.HOTSPOT) ? Stage.JOIN : Stage.START;
+        stage = Stage.JOIN;   // ADFA-4785: both modes start at step 1 (Join), not straight to Copy
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
@@ -467,7 +466,7 @@ public class CloneFragment extends Fragment {
         if (stage == Stage.JOIN) {
             setQr("WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;");
             stepTitle.setVisibility(View.VISIBLE);
-            stepTitle.setText("Step 1 · Connect the other phone");
+            stepTitle.setText("Step 1 · Join the other phone");
             caption.setText("Point its camera here to join this phone.");
             subCaption.setText("");
             setFallback(new String[]{"Wi-Fi: " + ssid, "Password: " + pass});
@@ -489,9 +488,26 @@ public class CloneFragment extends Fragment {
         String ip = NetworkInterfaces.discover().wifiIp;
         if (ip == null) { buildSteps(false); advance.setVisibility(View.GONE); simpleState("Not on a Wi-Fi network", "Join a Wi-Fi, or use Hotspot."); return; }
         buildSteps(false);
-        advance.setVisibility(View.GONE);
-        ensureDaemon(ip);
-        renderStartState(ip, false);
+        if (stage == Stage.JOIN) {
+            qr.setVisibility(View.GONE);
+            stepTitle.setVisibility(View.VISIBLE);
+            stepTitle.setText("Step 1 · Join the other phone");
+            caption.setText("Get the other phone onto this Wi-Fi.");
+            subCaption.setText("Share this Wi-Fi from Settings, or have them join it, then continue.");
+            setFallback(null);
+            footer.setText("");
+            advance.setVisibility(View.VISIBLE);
+            advance.setText("Next: get the app");
+            styleAdvance(true);
+            skipApp.setVisibility(View.VISIBLE);
+            skipApp.setText("Skip — they already have K2Go  ›");
+        } else {
+            advance.setVisibility(View.VISIBLE);
+            advance.setText("‹ Back to step 1");
+            styleAdvance(false);
+            ensureDaemon(ip);
+            renderStartState(ip, false);
+        }
     }
 
     /** Step-2 state: starting -> stopped (Start sharing) -> running (QR + Stop sharing). */
@@ -916,8 +932,8 @@ public class CloneFragment extends Fragment {
     private void buildSteps(boolean twoSteps) {   // ADFA-4785: 3-step spine (Connect / Get app / Copy)
         steps.removeAllViews();
         steps.setVisibility(View.VISIBLE);
-        int active = sendApp ? 2 : (mode == Mode.HOTSPOT && stage == Stage.JOIN ? 1 : 3);
-        steps.addView(badge("1", "Connect", active == 1, active > 1));
+        int active = sendApp ? 2 : (stage == Stage.JOIN ? 1 : 3);
+        steps.addView(badge("1", "Join", active == 1, active > 1));
         steps.addView(arrow());
         steps.addView(badge("2", "Get app", active == 2, getAppDone));
         steps.addView(arrow());
