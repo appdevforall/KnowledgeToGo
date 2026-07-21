@@ -95,8 +95,8 @@ public class CloneFragment extends Fragment {
     private TextView receiveStart, pStatus, pFile, pStats, cancel;
     private ProgressBar pbar;
     private long lastSeq = -1L;
-    private LinearLayout confirmPanel;
-    private TextView confirmTitle, confirmMsg;
+    private LinearLayout confirmPanel, confirmSizes, confirmReplace, confirmFresh;
+    private TextView confirmSys, confirmContent, confirmTotal;
     private enum RStage { JOIN, START }
     private RStage rStage = RStage.JOIN;
     private boolean pasteExpanded = false;
@@ -177,8 +177,12 @@ public class CloneFragment extends Fragment {
         pStats = v.findViewById(R.id.k2go_clone_pstats);
         cancel = v.findViewById(R.id.k2go_clone_cancel);
         confirmPanel = v.findViewById(R.id.k2go_rcv_confirm);
-        confirmTitle = v.findViewById(R.id.k2go_rcv_confirm_title);
-        confirmMsg = v.findViewById(R.id.k2go_rcv_confirm_msg);
+        confirmSizes = v.findViewById(R.id.k2go_rcv_confirm_sizes);
+        confirmSys = v.findViewById(R.id.k2go_rcv_confirm_sys);
+        confirmContent = v.findViewById(R.id.k2go_rcv_confirm_content);
+        confirmTotal = v.findViewById(R.id.k2go_rcv_confirm_total);
+        confirmReplace = v.findViewById(R.id.k2go_rcv_confirm_replace);
+        confirmFresh = v.findViewById(R.id.k2go_rcv_confirm_fresh);
         v.findViewById(R.id.k2go_rcv_confirm_go).setOnClickListener(x -> startReceiveTransfer());
         v.findViewById(R.id.k2go_rcv_confirm_cancel).setOnClickListener(x -> { syncVm.cancelProbe(); renderReceive(); });
         showcode = v.findViewById(R.id.k2go_clone_showcode);
@@ -637,11 +641,25 @@ public class CloneFragment extends Fragment {
             SyncTransferState.Phase ph = st.phase;
             if (ph == SyncTransferState.Phase.CONFIRM) {
                 progressBox.setVisibility(View.GONE);
-                confirmTitle.setText((st.title != null && !st.title.isEmpty()) ? st.title : "Copy the library?");
-                String m = (st.message != null) ? st.message : "";
-                if (!m.isEmpty()) m += "\n\n";
-                m += "This replaces the library on this phone with the sender's copy.";
-                confirmMsg.setText(m);
+                // ADFA-4790: confirm as a System/Content/Total table (sizes travel in the QR) per the
+                // design mockup; the replace notice is static in the layout. If the sender didn't send
+                // sizes (older build), hide the table and just show the notice.
+                SyncHandshakeHelper.SyncCredentials pc = syncVm.getPendingCreds();
+                long sysB = (pc != null) ? pc.sysBytes : 0L;
+                long contentB = (pc != null) ? pc.contentBytes : 0L;
+                if (sysB > 0 || contentB > 0) {
+                    confirmSys.setText(LibrarySize.human(sysB));
+                    confirmContent.setText(LibrarySize.human(contentB));
+                    confirmTotal.setText(LibrarySize.human(sysB + contentB));
+                    confirmSizes.setVisibility(View.VISIBLE);
+                } else {
+                    confirmSizes.setVisibility(View.GONE);
+                }
+                // ADFA-4790: on an empty phone there's nothing to replace — show the benign notice
+                // instead of the "replaces your library / no undo" warning.
+                boolean fresh = !rootfsPresent();
+                confirmFresh.setVisibility(fresh ? View.VISIBLE : View.GONE);
+                confirmReplace.setVisibility(fresh ? View.GONE : View.VISIBLE);
                 confirmPanel.setVisibility(View.VISIBLE);
                 return;
             }

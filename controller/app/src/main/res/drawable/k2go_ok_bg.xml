@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4790: benign "first copy, nothing to replace" notice. Fixed colors in both themes
+     (like k2go_notice_bg / k2go_warn_bg); body text uses k2go_notice_ink so it reads on the fill. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#2E7D32" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+    <item android:left="5dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#E4F0E3" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+</layer-list>

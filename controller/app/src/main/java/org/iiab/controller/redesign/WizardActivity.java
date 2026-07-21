@@ -71,7 +71,9 @@ public class WizardActivity extends AppCompatActivity {
         });
         findViewById(R.id.setup_copy).setOnClickListener(v -> {
             markComplete();
-            startActivity(new Intent(this, LibraryActivity.class));
+            // ADFA-4777: "Copy from a phone" lands directly on the (now functional) Clone tab.
+            startActivity(new Intent(this, LibraryActivity.class)
+                    .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone));
             finish();
         });
         findViewById(R.id.wiz_skip_for_now).setOnClickListener(v -> {
