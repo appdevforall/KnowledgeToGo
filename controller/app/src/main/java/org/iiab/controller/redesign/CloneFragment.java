@@ -499,6 +499,11 @@ public class CloneFragment extends Fragment {
             advance.setVisibility(View.VISIBLE);
             advance.setText("Next: get the app");
             styleAdvance(true);
+            stop.setVisibility(View.VISIBLE);
+            stop.setText("Share Wi-Fi via Android settings");
+            stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
+            stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+            stop.setOnClickListener(x -> openWifiSettings());
             skipApp.setVisibility(View.VISIBLE);
             skipApp.setText("Skip — they already have K2Go  ›");
         } else {
