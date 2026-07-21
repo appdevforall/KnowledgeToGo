@@ -92,6 +92,7 @@ public class CloneFragment extends Fragment {
     private boolean atFork = true;
     private LinearLayout forkBox, tabsRow;
     private TextView cloneHdr, subtitleView, backHeader;
+    private boolean getAppSkipped = false, getAppDone = false;   // ADFA-4785: step-2 (Get app) disposition
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -199,7 +200,7 @@ public class CloneFragment extends Fragment {
         sendAppQr = v.findViewById(R.id.k2go_sendapp_qr);
         sendAppEntry.setOnClickListener(x -> { sendApp = true; render(); });
         v.findViewById(R.id.k2go_sendapp_back).setOnClickListener(x -> exitSendApp());
-        v.findViewById(R.id.k2go_sendapp_next).setOnClickListener(x -> exitSendApp());
+        v.findViewById(R.id.k2go_sendapp_next).setOnClickListener(x -> getAppDoneNext());
         v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
 
         syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
@@ -211,10 +212,9 @@ public class CloneFragment extends Fragment {
         tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
-            if (mode == Mode.HOTSPOT) {
-                stage = (stage == Stage.JOIN) ? Stage.START : Stage.JOIN;
-                render();
-            }
+            if (mode != Mode.HOTSPOT) return;
+            if (stage == Stage.JOIN) { getAppSkipped = true; stage = Stage.START; render(); }   // skip Get app -> Copy
+            else { stage = Stage.JOIN; getAppSkipped = false; getAppDone = false; render(); }    // back to Connect
         });
         showcode.setOnClickListener(x -> {
             codeExpanded = !codeExpanded;
@@ -257,7 +257,7 @@ public class CloneFragment extends Fragment {
         return v;
     }
 
-    private void enterSide(Side sd) { atFork = false; setSide(sd); }
+    private void enterSide(Side sd) { atFork = false; getAppSkipped = false; getAppDone = false; sendApp = false; setSide(sd); }
 
     private void goToFork() { atFork = true; render(); }
 
@@ -462,10 +462,10 @@ public class CloneFragment extends Fragment {
             caption.setText("Scan code 1 to join");
             subCaption.setText(R.string.k2go_just_scan);
             setFallback(new String[]{"Wi-Fi: " + ssid, "Password: " + pass});
-            advance.setText("Show code 2 ›");
-            styleAdvance(true);
+            advance.setText("They already have K2Go  ›");   // ADFA-4785: skip Get app -> Copy
+            styleAdvance(false);
             footer.setText("");
-            sendAppEntry.setVisibility(View.VISIBLE);   // ADFA-4785: bootstrap entry on the first Send screen
+            sendAppEntry.setVisibility(View.VISIBLE);   // "Send the app first" -> step 2 (Get app)
         } else {
             advance.setText("‹ Back to step 1");
             styleAdvance(false);
@@ -562,6 +562,14 @@ public class CloneFragment extends Fragment {
             try { apkServer.stop(); } catch (Exception ignored) { }
             apkServer = null;
         }
+    }
+
+    private void getAppDoneNext() {   // ADFA-4785: step 2 (Get app) done -> step 3 (Copy)
+        getAppDone = true;
+        stage = Stage.START;
+        stopApkServer();
+        sendApp = false;
+        render();
     }
 
     private void exitSendApp() {
@@ -892,14 +900,15 @@ public class CloneFragment extends Fragment {
     }
 
     // ---- step badges (same style as Connect): number kept, corner check when done ----
-    private void buildSteps(boolean twoSteps) {
+    private void buildSteps(boolean twoSteps) {   // ADFA-4785: 3-step spine (Connect / Get app / Copy)
         steps.removeAllViews();
-        if (!twoSteps) { steps.setVisibility(View.GONE); return; }
         steps.setVisibility(View.VISIBLE);
-        boolean atStart = (stage == Stage.START);
-        steps.addView(badge("1", "Join", !atStart, atStart));
+        int active = sendApp ? 2 : (mode == Mode.HOTSPOT && stage == Stage.JOIN ? 1 : 3);
+        steps.addView(badge("1", "Connect", active == 1, active > 1));
         steps.addView(arrow());
-        steps.addView(badge("2", "Start", atStart && !daemonStarted, atStart && daemonStarted));
+        steps.addView(badge("2", "Get app", active == 2, getAppDone));
+        steps.addView(arrow());
+        steps.addView(badge("3", "Copy", active == 3, false));
     }
 
     private View badge(String num, String label, boolean active, boolean done) {
