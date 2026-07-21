@@ -9,6 +9,7 @@
     <color name="k2go_amber">#F2A23C</color>
     <color name="k2go_amber_text">#B0740F</color>
     <color name="k2go_clay">#C4462F</color>
+    <color name="k2go_notice_ink">#3A2320</color>  <!-- fixed dark; notice bg is always light pink -->
     <color name="k2go_muted">#5C6360</color>
     <color name="k2go_hairline">#D9D4C8</color>
     <color name="k2go_on_teal">#FBF8F3</color>
