@@ -84,7 +84,7 @@ public class CloneFragment extends Fragment {
     private TextView receiveStart, pStatus, pFile, pStats, cancel;
     private ProgressBar pbar;
     private long lastSeq = -1L;
-    private LinearLayout confirmPanel, confirmSizes;
+    private LinearLayout confirmPanel, confirmSizes, confirmReplace, confirmFresh;
     private TextView confirmSys, confirmContent, confirmTotal;
     private enum RStage { JOIN, START }
     private RStage rStage = RStage.JOIN;
@@ -170,6 +170,8 @@ public class CloneFragment extends Fragment {
         confirmSys = v.findViewById(R.id.k2go_rcv_confirm_sys);
         confirmContent = v.findViewById(R.id.k2go_rcv_confirm_content);
         confirmTotal = v.findViewById(R.id.k2go_rcv_confirm_total);
+        confirmReplace = v.findViewById(R.id.k2go_rcv_confirm_replace);
+        confirmFresh = v.findViewById(R.id.k2go_rcv_confirm_fresh);
         v.findViewById(R.id.k2go_rcv_confirm_go).setOnClickListener(x -> startReceiveTransfer());
         v.findViewById(R.id.k2go_rcv_confirm_cancel).setOnClickListener(x -> { syncVm.cancelProbe(); renderReceive(); });
         showcode = v.findViewById(R.id.k2go_clone_showcode);
@@ -567,6 +569,11 @@ public class CloneFragment extends Fragment {
                 } else {
                     confirmSizes.setVisibility(View.GONE);
                 }
+                // ADFA-4790: on an empty phone there's nothing to replace — show the benign notice
+                // instead of the "replaces your library / no undo" warning.
+                boolean fresh = !rootfsPresent();
+                confirmFresh.setVisibility(fresh ? View.VISIBLE : View.GONE);
+                confirmReplace.setVisibility(fresh ? View.GONE : View.VISIBLE);
                 confirmPanel.setVisibility(View.VISIBLE);
                 return;
             }
