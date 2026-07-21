@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">高级</string>
     <string name="k2go_settings_turn_off">关闭 K2Go</string>
     <string name="k2go_settings_running_note">K2Go 会在后台持续运行，直到你将其关闭。</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">第 1 步 · 连接另一部手机</string>
+    <string name="k2go_clone_step2_title">第 2 步 · 获取应用</string>
+    <string name="k2go_clone_step3_title">第 3 步 · 复制图书馆</string>
+    <string name="k2go_clone_back_step1">‹ 返回第 1 步</string>
+    <string name="k2go_clone_next_get_app">下一步：获取应用</string>
+    <string name="k2go_clone_skip_have_app">跳过 — 他们已经有 K2Go  ›</string>
+    <string name="k2go_clone_already_connected">已连接？继续 ›</string>
+    <string name="k2go_clone_join_wifi_note">让另一部手机连上这个 Wi-Fi。</string>
+    <string name="k2go_clone_cant_join_note">K2Go 无法替你加入该网络 — 请在设置中连接，然后继续。</string>
+    <string name="k2go_clone_point_camera_join">将它的摄像头对准这里以连接这部手机。</string>
+    <string name="k2go_clone_share_wifi_note">从设置分享此 Wi-Fi，或让他们加入，然后继续。</string>
+    <string name="k2go_clone_share_wifi_settings">通过 Android 设置分享 Wi-Fi</string>
+    <string name="k2go_clone_share_anyway">仍然分享</string>
+    <string name="k2go_clone_start_sharing">开始分享</string>
+    <string name="k2go_clone_stop_sharing">停止分享</string>
+    <string name="k2go_clone_start_service_note">启动服务以分享这部手机的图书馆。</string>
+    <string name="k2go_clone_starting_service">正在启动服务…</string>
+    <string name="k2go_clone_sharing_now">正在分享</string>
+    <string name="k2go_clone_sharing_stopped">已停止分享</string>
+    <string name="k2go_clone_stays_on">在你点击停止之前保持开启。</string>
+    <string name="k2go_clone_nothing_title">暂时没有可分享的内容</string>
+    <string name="k2go_clone_no_library_note">这部手机未安装 K2Go 图书馆。请先安装内容，或仍然分享。</string>
+    <string name="k2go_clone_copy_begins_note">当他们扫描这个时开始复制。</string>
+    <string name="k2go_clone_copying">正在复制图书馆…</string>
+    <string name="k2go_clone_connecting">正在连接…</string>
+    <string name="k2go_clone_use_this_code">使用此代码</string>
 </resources>

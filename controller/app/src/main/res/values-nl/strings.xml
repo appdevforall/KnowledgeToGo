@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Geavanceerd</string>
     <string name="k2go_settings_turn_off">K2Go uitschakelen</string>
     <string name="k2go_settings_running_note">K2Go blijft op de achtergrond draaien totdat je het uitschakelt.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Stap 1 · Verbind de andere telefoon</string>
+    <string name="k2go_clone_step2_title">Stap 2 · Haal de app op</string>
+    <string name="k2go_clone_step3_title">Stap 3 · Kopieer de bibliotheek</string>
+    <string name="k2go_clone_back_step1">‹ Terug naar stap 1</string>
+    <string name="k2go_clone_next_get_app">Volgende: haal de app op</string>
+    <string name="k2go_clone_skip_have_app">Overslaan — ze hebben K2Go al  ›</string>
+    <string name="k2go_clone_already_connected">Al verbonden? Doorgaan ›</string>
+    <string name="k2go_clone_join_wifi_note">Zet de andere telefoon op deze Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kan dat netwerk niet voor je verbinden — verbind in Instellingen en ga dan door.</string>
+    <string name="k2go_clone_point_camera_join">Richt zijn camera hierheen om deze telefoon te verbinden.</string>
+    <string name="k2go_clone_share_wifi_note">Deel deze Wi-Fi via Instellingen, of laat ze verbinden, en ga dan door.</string>
+    <string name="k2go_clone_share_wifi_settings">Wi-Fi delen via Android-instellingen</string>
+    <string name="k2go_clone_share_anyway">Toch delen</string>
+    <string name="k2go_clone_start_sharing">Delen starten</string>
+    <string name="k2go_clone_stop_sharing">Delen stoppen</string>
+    <string name="k2go_clone_start_service_note">Start de service om de bibliotheek van deze telefoon te delen.</string>
+    <string name="k2go_clone_starting_service">Service wordt gestart…</string>
+    <string name="k2go_clone_sharing_now">NU AAN HET DELEN</string>
+    <string name="k2go_clone_sharing_stopped">Delen gestopt</string>
+    <string name="k2go_clone_stays_on">Blijft aan totdat je op Stoppen tikt.</string>
+    <string name="k2go_clone_nothing_title">Nog niets te delen</string>
+    <string name="k2go_clone_no_library_note">Op deze telefoon is geen K2Go-bibliotheek geïnstalleerd. Installeer eerst inhoud, of deel toch.</string>
+    <string name="k2go_clone_copy_begins_note">Het kopiëren begint wanneer ze deze scannen.</string>
+    <string name="k2go_clone_copying">Bibliotheek kopiëren…</string>
+    <string name="k2go_clone_connecting">Verbinden…</string>
+    <string name="k2go_clone_use_this_code">Deze code gebruiken</string>
 </resources>

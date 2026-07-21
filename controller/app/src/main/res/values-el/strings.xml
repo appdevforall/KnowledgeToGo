@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Για προχωρημένους</string>
     <string name="k2go_settings_turn_off">Απενεργοποίηση K2Go</string>
     <string name="k2go_settings_running_note">Το K2Go συνεχίζει να εκτελείται στο παρασκήνιο μέχρι να το απενεργοποιήσετε.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Βήμα 1 · Συνδέστε το άλλο τηλέφωνο</string>
+    <string name="k2go_clone_step2_title">Βήμα 2 · Αποκτήστε την εφαρμογή</string>
+    <string name="k2go_clone_step3_title">Βήμα 3 · Αντιγράψτε τη βιβλιοθήκη</string>
+    <string name="k2go_clone_back_step1">‹ Πίσω στο βήμα 1</string>
+    <string name="k2go_clone_next_get_app">Επόμενο: αποκτήστε την εφαρμογή</string>
+    <string name="k2go_clone_skip_have_app">Παράλειψη — έχουν ήδη το K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Ήδη συνδεδεμένοι; Συνέχεια ›</string>
+    <string name="k2go_clone_join_wifi_note">Βάλτε το άλλο τηλέφωνο σε αυτό το Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">Το K2Go δεν μπορεί να συνδεθεί σε αυτό το δίκτυο για εσάς — συνδεθείτε στις Ρυθμίσεις και μετά Συνέχεια.</string>
+    <string name="k2go_clone_point_camera_join">Στρέψτε την κάμερά του εδώ για να συνδεθεί σε αυτό το τηλέφωνο.</string>
+    <string name="k2go_clone_share_wifi_note">Μοιραστείτε αυτό το Wi-Fi από τις Ρυθμίσεις, ή ζητήστε τους να συνδεθούν, και μετά συνεχίστε.</string>
+    <string name="k2go_clone_share_wifi_settings">Κοινή χρήση Wi-Fi μέσω ρυθμίσεων Android</string>
+    <string name="k2go_clone_share_anyway">Κοινή χρήση ούτως ή άλλως</string>
+    <string name="k2go_clone_start_sharing">Έναρξη κοινής χρήσης</string>
+    <string name="k2go_clone_stop_sharing">Διακοπή κοινής χρήσης</string>
+    <string name="k2go_clone_start_service_note">Ξεκινήστε την υπηρεσία για να μοιραστείτε τη βιβλιοθήκη αυτού του τηλεφώνου.</string>
+    <string name="k2go_clone_starting_service">Εκκίνηση υπηρεσίας…</string>
+    <string name="k2go_clone_sharing_now">ΚΟΙΝΗ ΧΡΗΣΗ ΤΩΡΑ</string>
+    <string name="k2go_clone_sharing_stopped">Η κοινή χρήση διακόπηκε</string>
+    <string name="k2go_clone_stays_on">Παραμένει ενεργό μέχρι να πατήσετε Διακοπή.</string>
+    <string name="k2go_clone_nothing_title">Τίποτα για κοινή χρήση ακόμη</string>
+    <string name="k2go_clone_no_library_note">Αυτό το τηλέφωνο δεν έχει εγκατεστημένη τη βιβλιοθήκη K2Go. Εγκαταστήστε πρώτα περιεχόμενο ή μοιραστείτε ούτως ή άλλως.</string>
+    <string name="k2go_clone_copy_begins_note">Η αντιγραφή ξεκινά όταν σαρώσουν αυτό.</string>
+    <string name="k2go_clone_copying">Αντιγραφή βιβλιοθήκης…</string>
+    <string name="k2go_clone_connecting">Σύνδεση…</string>
+    <string name="k2go_clone_use_this_code">Χρήση αυτού του κωδικού</string>
 </resources>

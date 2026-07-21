@@ -626,4 +626,31 @@
     <string name="k2go_settings_advanced">Дополнительно</string>
     <string name="k2go_settings_turn_off">Выключить K2Go</string>
     <string name="k2go_settings_running_note">K2Go продолжает работать в фоне, пока вы его не выключите.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Шаг 1 · Подключите другой телефон</string>
+    <string name="k2go_clone_step2_title">Шаг 2 · Получите приложение</string>
+    <string name="k2go_clone_step3_title">Шаг 3 · Скопируйте библиотеку</string>
+    <string name="k2go_clone_back_step1">‹ Назад к шагу 1</string>
+    <string name="k2go_clone_next_get_app">Далее: получите приложение</string>
+    <string name="k2go_clone_skip_have_app">Пропустить — у них уже есть K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Уже подключены? Продолжить ›</string>
+    <string name="k2go_clone_join_wifi_note">Подключите другой телефон к этой Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go не может подключиться к этой сети за вас — подключитесь в Настройках, затем Продолжить.</string>
+    <string name="k2go_clone_point_camera_join">Наведите его камеру сюда, чтобы подключиться к этому телефону.</string>
+    <string name="k2go_clone_share_wifi_note">Поделитесь этой Wi-Fi из Настроек или попросите их подключиться, затем продолжите.</string>
+    <string name="k2go_clone_share_wifi_settings">Поделиться Wi-Fi через настройки Android</string>
+    <string name="k2go_clone_share_anyway">Всё равно поделиться</string>
+    <string name="k2go_clone_start_sharing">Начать раздачу</string>
+    <string name="k2go_clone_stop_sharing">Остановить раздачу</string>
+    <string name="k2go_clone_start_service_note">Запустите службу, чтобы поделиться библиотекой этого телефона.</string>
+    <string name="k2go_clone_starting_service">Запуск службы…</string>
+    <string name="k2go_clone_sharing_now">СЕЙЧАС РАЗДАЁТСЯ</string>
+    <string name="k2go_clone_sharing_stopped">Раздача остановлена</string>
+    <string name="k2go_clone_stays_on">Остаётся включённым, пока вы не нажмёте «Стоп».</string>
+    <string name="k2go_clone_nothing_title">Пока нечего раздавать</string>
+    <string name="k2go_clone_no_library_note">На этом телефоне не установлена библиотека K2Go. Сначала установите контент или всё равно поделитесь.</string>
+    <string name="k2go_clone_copy_begins_note">Копирование начнётся, когда они отсканируют этот.</string>
+    <string name="k2go_clone_copying">Копирование библиотеки…</string>
+    <string name="k2go_clone_connecting">Подключение…</string>
+    <string name="k2go_clone_use_this_code">Использовать этот код</string>
 </resources>

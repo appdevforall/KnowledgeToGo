@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Gelişmiş</string>
     <string name="k2go_settings_turn_off">K2Go\'yu kapat</string>
     <string name="k2go_settings_running_note">K2Go, siz kapatana kadar arka planda çalışmaya devam eder.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Adım 1 · Diğer telefonu bağla</string>
+    <string name="k2go_clone_step2_title">Adım 2 · Uygulamayı al</string>
+    <string name="k2go_clone_step3_title">Adım 3 · Kitaplığı kopyala</string>
+    <string name="k2go_clone_back_step1">‹ Adım 1\'e dön</string>
+    <string name="k2go_clone_next_get_app">Sonraki: uygulamayı al</string>
+    <string name="k2go_clone_skip_have_app">Atla — zaten K2Go var  ›</string>
+    <string name="k2go_clone_already_connected">Zaten bağlı mı? Devam ›</string>
+    <string name="k2go_clone_join_wifi_note">Diğer telefonu bu Wi-Fi\'ye bağla.</string>
+    <string name="k2go_clone_cant_join_note">K2Go bu ağa sizin için bağlanamaz — Ayarlar\'dan bağlanın, sonra Devam.</string>
+    <string name="k2go_clone_point_camera_join">Bu telefona bağlanmak için kamerasını buraya doğrult.</string>
+    <string name="k2go_clone_share_wifi_note">Bu Wi-Fi\'yi Ayarlar\'dan paylaşın veya bağlanmalarını isteyin, sonra devam edin.</string>
+    <string name="k2go_clone_share_wifi_settings">Wi-Fi\'yi Android ayarlarından paylaş</string>
+    <string name="k2go_clone_share_anyway">Yine de paylaş</string>
+    <string name="k2go_clone_start_sharing">Paylaşımı başlat</string>
+    <string name="k2go_clone_stop_sharing">Paylaşımı durdur</string>
+    <string name="k2go_clone_start_service_note">Bu telefonun kitaplığını paylaşmak için hizmeti başlatın.</string>
+    <string name="k2go_clone_starting_service">Hizmet başlatılıyor…</string>
+    <string name="k2go_clone_sharing_now">ŞİMDİ PAYLAŞILIYOR</string>
+    <string name="k2go_clone_sharing_stopped">Paylaşım durduruldu</string>
+    <string name="k2go_clone_stays_on">Durdur\'a basana kadar açık kalır.</string>
+    <string name="k2go_clone_nothing_title">Henüz paylaşılacak bir şey yok</string>
+    <string name="k2go_clone_no_library_note">Bu telefonda K2Go kitaplığı yüklü değil. Önce içerik yükleyin veya yine de paylaşın.</string>
+    <string name="k2go_clone_copy_begins_note">Kopyalama, bunu taradıklarında başlar.</string>
+    <string name="k2go_clone_copying">Kitaplık kopyalanıyor…</string>
+    <string name="k2go_clone_connecting">Bağlanıyor…</string>
+    <string name="k2go_clone_use_this_code">Bu kodu kullan</string>
 </resources>

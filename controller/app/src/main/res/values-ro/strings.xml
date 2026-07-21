@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Avansat</string>
     <string name="k2go_settings_turn_off">Dezactivează K2Go</string>
     <string name="k2go_settings_running_note">K2Go rulează în fundal până când îl dezactivezi.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Pasul 1 · Conectează celălalt telefon</string>
+    <string name="k2go_clone_step2_title">Pasul 2 · Obține aplicația</string>
+    <string name="k2go_clone_step3_title">Pasul 3 · Copiază biblioteca</string>
+    <string name="k2go_clone_back_step1">‹ Înapoi la pasul 1</string>
+    <string name="k2go_clone_next_get_app">Următorul: obține aplicația</string>
+    <string name="k2go_clone_skip_have_app">Omite — au deja K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Deja conectate? Continuă ›</string>
+    <string name="k2go_clone_join_wifi_note">Conectează celălalt telefon la acest Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go nu se poate conecta la acea rețea în locul tău — conectează-te în Setări, apoi Continuă.</string>
+    <string name="k2go_clone_point_camera_join">Îndreaptă camera lui aici pentru a se conecta la acest telefon.</string>
+    <string name="k2go_clone_share_wifi_note">Partajează acest Wi-Fi din Setări, sau roagă-i să se conecteze, apoi continuă.</string>
+    <string name="k2go_clone_share_wifi_settings">Partajează Wi-Fi prin setările Android</string>
+    <string name="k2go_clone_share_anyway">Partajează oricum</string>
+    <string name="k2go_clone_start_sharing">Începe partajarea</string>
+    <string name="k2go_clone_stop_sharing">Oprește partajarea</string>
+    <string name="k2go_clone_start_service_note">Pornește serviciul pentru a partaja biblioteca acestui telefon.</string>
+    <string name="k2go_clone_starting_service">Se pornește serviciul…</string>
+    <string name="k2go_clone_sharing_now">SE PARTAJEAZĂ ACUM</string>
+    <string name="k2go_clone_sharing_stopped">Partajare oprită</string>
+    <string name="k2go_clone_stays_on">Rămâne pornit până apeși Oprește.</string>
+    <string name="k2go_clone_nothing_title">Nimic de partajat încă</string>
+    <string name="k2go_clone_no_library_note">Acest telefon nu are biblioteca K2Go instalată. Instalează mai întâi conținut, sau partajează oricum.</string>
+    <string name="k2go_clone_copy_begins_note">Copierea începe când scanează acesta.</string>
+    <string name="k2go_clone_copying">Se copiază biblioteca…</string>
+    <string name="k2go_clone_connecting">Se conectează…</string>
+    <string name="k2go_clone_use_this_code">Folosește acest cod</string>
 </resources>

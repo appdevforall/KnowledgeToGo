@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Qabaqcıl</string>
     <string name="k2go_settings_turn_off">K2Go-nu söndür</string>
     <string name="k2go_settings_running_note">K2Go siz söndürənə qədər arxa planda işləməyə davam edir.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. review — machine, verify. -->
+    <string name="k2go_clone_step1_title">Addım 1 · Digər telefonu qoşun</string>
+    <string name="k2go_clone_step2_title">Addım 2 · Tətbiqi əldə edin</string>
+    <string name="k2go_clone_step3_title">Addım 3 · Kitabxananı kopyalayın</string>
+    <string name="k2go_clone_back_step1">‹ Addım 1-ə qayıt</string>
+    <string name="k2go_clone_next_get_app">Növbəti: tətbiqi əldə edin</string>
+    <string name="k2go_clone_skip_have_app">Ötür — onlarda artıq K2Go var  ›</string>
+    <string name="k2go_clone_already_connected">Artıq qoşulub? Davam et ›</string>
+    <string name="k2go_clone_join_wifi_note">Digər telefonu bu Wi-Fi-yə qoşun.</string>
+    <string name="k2go_clone_cant_join_note">K2Go sizin əvəzinizə o şəbəkəyə qoşula bilməz — Ayarlarda qoşulun, sonra Davam edin.</string>
+    <string name="k2go_clone_point_camera_join">Bu telefona qoşulmaq üçün onun kamerasını buraya tutun.</string>
+    <string name="k2go_clone_share_wifi_note">Bu Wi-Fi-ni Ayarlardan paylaşın və ya onlardan qoşulmalarını xahiş edin, sonra davam edin.</string>
+    <string name="k2go_clone_share_wifi_settings">Wi-Fi-ni Android ayarları vasitəsilə paylaş</string>
+    <string name="k2go_clone_share_anyway">Yenə də paylaş</string>
+    <string name="k2go_clone_start_sharing">Paylaşmağa başla</string>
+    <string name="k2go_clone_stop_sharing">Paylaşmağı dayandır</string>
+    <string name="k2go_clone_start_service_note">Bu telefonun kitabxanasını paylaşmaq üçün xidməti başladın.</string>
+    <string name="k2go_clone_starting_service">Xidmət başladılır…</string>
+    <string name="k2go_clone_sharing_now">İNDİ PAYLAŞILIR</string>
+    <string name="k2go_clone_sharing_stopped">Paylaşma dayandırıldı</string>
+    <string name="k2go_clone_stays_on">Dayandır düyməsini basana qədər açıq qalır.</string>
+    <string name="k2go_clone_nothing_title">Hələ paylaşmağa bir şey yoxdur</string>
+    <string name="k2go_clone_no_library_note">Bu telefonda K2Go kitabxanası quraşdırılmayıb. Əvvəlcə məzmun quraşdırın və ya yenə də paylaşın.</string>
+    <string name="k2go_clone_copy_begins_note">Onlar bunu skan edəndə kopyalama başlayır.</string>
+    <string name="k2go_clone_copying">Kitabxana kopyalanır…</string>
+    <string name="k2go_clone_connecting">Qoşulur…</string>
+    <string name="k2go_clone_use_this_code">Bu kodu istifadə et</string>
 </resources>

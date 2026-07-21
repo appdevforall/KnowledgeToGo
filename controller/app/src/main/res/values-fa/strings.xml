@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">پیشرفته</string>
     <string name="k2go_settings_turn_off">خاموش کردن K2Go</string>
     <string name="k2go_settings_running_note">K2Go تا زمانی که آن را خاموش نکنید در پس‌زمینه اجرا می‌شود.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">مرحله ۱ · تلفن دیگر را وصل کنید</string>
+    <string name="k2go_clone_step2_title">مرحله ۲ · برنامه را دریافت کنید</string>
+    <string name="k2go_clone_step3_title">مرحله ۳ · کتابخانه را کپی کنید</string>
+    <string name="k2go_clone_back_step1">‹ بازگشت به مرحله ۱</string>
+    <string name="k2go_clone_next_get_app">بعدی: برنامه را دریافت کنید</string>
+    <string name="k2go_clone_skip_have_app">رد کردن — آن‌ها از قبل K2Go دارند  ›</string>
+    <string name="k2go_clone_already_connected">قبلاً متصل شده؟ ادامه ›</string>
+    <string name="k2go_clone_join_wifi_note">تلفن دیگر را به این Wi-Fi وصل کنید.</string>
+    <string name="k2go_clone_cant_join_note">K2Go نمی‌تواند به‌جای شما به آن شبکه بپیوندد — در تنظیمات متصل شوید، سپس ادامه دهید.</string>
+    <string name="k2go_clone_point_camera_join">دوربینش را اینجا بگیرید تا به این تلفن بپیوندد.</string>
+    <string name="k2go_clone_share_wifi_note">این Wi-Fi را از تنظیمات به اشتراک بگذارید، یا از آن‌ها بخواهید بپیوندند، سپس ادامه دهید.</string>
+    <string name="k2go_clone_share_wifi_settings">اشتراک‌گذاری Wi-Fi از طریق تنظیمات Android</string>
+    <string name="k2go_clone_share_anyway">به‌هرحال به اشتراک بگذار</string>
+    <string name="k2go_clone_start_sharing">شروع اشتراک‌گذاری</string>
+    <string name="k2go_clone_stop_sharing">توقف اشتراک‌گذاری</string>
+    <string name="k2go_clone_start_service_note">سرویس را برای اشتراک‌گذاری کتابخانه این تلفن اجرا کنید.</string>
+    <string name="k2go_clone_starting_service">در حال اجرای سرویس…</string>
+    <string name="k2go_clone_sharing_now">اکنون در حال اشتراک‌گذاری</string>
+    <string name="k2go_clone_sharing_stopped">اشتراک‌گذاری متوقف شد</string>
+    <string name="k2go_clone_stays_on">تا زمانی که توقف را بزنید روشن می‌ماند.</string>
+    <string name="k2go_clone_nothing_title">هنوز چیزی برای اشتراک‌گذاری نیست</string>
+    <string name="k2go_clone_no_library_note">روی این تلفن کتابخانه K2Go نصب نیست. ابتدا محتوا نصب کنید، یا به‌هرحال به اشتراک بگذارید.</string>
+    <string name="k2go_clone_copy_begins_note">کپی وقتی شروع می‌شود که این را اسکن کنند.</string>
+    <string name="k2go_clone_copying">در حال کپی کتابخانه…</string>
+    <string name="k2go_clone_connecting">در حال اتصال…</string>
+    <string name="k2go_clone_use_this_code">استفاده از این کد</string>
 </resources>

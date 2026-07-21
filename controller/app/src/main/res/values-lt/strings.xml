@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Išplėstiniai</string>
     <string name="k2go_settings_turn_off">Išjungti K2Go</string>
     <string name="k2go_settings_running_note">K2Go veikia fone, kol jo neišjungsite.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">1 veiksmas · Prijunkite kitą telefoną</string>
+    <string name="k2go_clone_step2_title">2 veiksmas · Gaukite programą</string>
+    <string name="k2go_clone_step3_title">3 veiksmas · Kopijuokite biblioteką</string>
+    <string name="k2go_clone_back_step1">‹ Atgal į 1 veiksmą</string>
+    <string name="k2go_clone_next_get_app">Toliau: gaukite programą</string>
+    <string name="k2go_clone_skip_have_app">Praleisti — jie jau turi K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Jau prisijungta? Tęsti ›</string>
+    <string name="k2go_clone_join_wifi_note">Prijunkite kitą telefoną prie šio Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go negali už jus prisijungti prie to tinklo — prisijunkite Nustatymuose, tada Tęsti.</string>
+    <string name="k2go_clone_point_camera_join">Nukreipkite jo kamerą čia, kad prisijungtų prie šio telefono.</string>
+    <string name="k2go_clone_share_wifi_note">Bendrinkite šį Wi-Fi iš Nustatymų arba paprašykite jų prisijungti, tada tęskite.</string>
+    <string name="k2go_clone_share_wifi_settings">Bendrinti Wi-Fi per Android nustatymus</string>
+    <string name="k2go_clone_share_anyway">Vis tiek bendrinti</string>
+    <string name="k2go_clone_start_sharing">Pradėti bendrinimą</string>
+    <string name="k2go_clone_stop_sharing">Sustabdyti bendrinimą</string>
+    <string name="k2go_clone_start_service_note">Paleiskite paslaugą, kad bendrintumėte šio telefono biblioteką.</string>
+    <string name="k2go_clone_starting_service">Paleidžiama paslauga…</string>
+    <string name="k2go_clone_sharing_now">DABAR BENDRINAMA</string>
+    <string name="k2go_clone_sharing_stopped">Bendrinimas sustabdytas</string>
+    <string name="k2go_clone_stays_on">Lieka įjungta, kol nepaspausite Sustabdyti.</string>
+    <string name="k2go_clone_nothing_title">Kol kas nėra ką bendrinti</string>
+    <string name="k2go_clone_no_library_note">Šiame telefone K2Go biblioteka neįdiegta. Pirma įdiekite turinį arba vis tiek bendrinkite.</string>
+    <string name="k2go_clone_copy_begins_note">Kopijavimas prasideda, kai jie nuskaito šį.</string>
+    <string name="k2go_clone_copying">Kopijuojama biblioteka…</string>
+    <string name="k2go_clone_connecting">Jungiamasi…</string>
+    <string name="k2go_clone_use_this_code">Naudoti šį kodą</string>
 </resources>

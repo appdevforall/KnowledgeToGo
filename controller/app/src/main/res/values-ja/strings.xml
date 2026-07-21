@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">詳細設定</string>
     <string name="k2go_settings_turn_off">K2Go をオフにする</string>
     <string name="k2go_settings_running_note">K2Go はオフにするまでバックグラウンドで実行され続けます。</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">ステップ 1 · もう一方の端末をつなぐ</string>
+    <string name="k2go_clone_step2_title">ステップ 2 · アプリを入手</string>
+    <string name="k2go_clone_step3_title">ステップ 3 · ライブラリをコピー</string>
+    <string name="k2go_clone_back_step1">‹ ステップ 1 に戻る</string>
+    <string name="k2go_clone_next_get_app">次: アプリを入手</string>
+    <string name="k2go_clone_skip_have_app">スキップ — 既に K2Go を持っている  ›</string>
+    <string name="k2go_clone_already_connected">すでに接続済み？ 続行 ›</string>
+    <string name="k2go_clone_join_wifi_note">もう一方の端末をこの Wi-Fi につなぎます。</string>
+    <string name="k2go_clone_cant_join_note">K2Go が代わりにそのネットワークに接続することはできません — 設定で接続してから続行してください。</string>
+    <string name="k2go_clone_point_camera_join">この端末につなぐには、そのカメラをここに向けます。</string>
+    <string name="k2go_clone_share_wifi_note">この Wi-Fi を設定から共有するか、相手に接続してもらってから続行します。</string>
+    <string name="k2go_clone_share_wifi_settings">Android の設定から Wi-Fi を共有</string>
+    <string name="k2go_clone_share_anyway">それでも共有</string>
+    <string name="k2go_clone_start_sharing">共有を開始</string>
+    <string name="k2go_clone_stop_sharing">共有を停止</string>
+    <string name="k2go_clone_start_service_note">この端末のライブラリを共有するにはサービスを開始します。</string>
+    <string name="k2go_clone_starting_service">サービスを開始中…</string>
+    <string name="k2go_clone_sharing_now">共有中</string>
+    <string name="k2go_clone_sharing_stopped">共有を停止しました</string>
+    <string name="k2go_clone_stays_on">停止するまでオンのままです。</string>
+    <string name="k2go_clone_nothing_title">まだ共有するものがありません</string>
+    <string name="k2go_clone_no_library_note">この端末には K2Go ライブラリがインストールされていません。先にコンテンツをインストールするか、それでも共有してください。</string>
+    <string name="k2go_clone_copy_begins_note">相手がこれをスキャンするとコピーが始まります。</string>
+    <string name="k2go_clone_copying">ライブラリをコピー中…</string>
+    <string name="k2go_clone_connecting">接続中…</string>
+    <string name="k2go_clone_use_this_code">このコードを使う</string>
 </resources>

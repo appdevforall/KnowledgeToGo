@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">متقدم</string>
     <string name="k2go_settings_turn_off">إيقاف K2Go</string>
     <string name="k2go_settings_running_note">يستمر K2Go في العمل في الخلفية حتى توقفه.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">الخطوة 1 · وصّل الهاتف الآخر</string>
+    <string name="k2go_clone_step2_title">الخطوة 2 · احصل على التطبيق</string>
+    <string name="k2go_clone_step3_title">الخطوة 3 · انسخ المكتبة</string>
+    <string name="k2go_clone_back_step1">‹ العودة إلى الخطوة 1</string>
+    <string name="k2go_clone_next_get_app">التالي: احصل على التطبيق</string>
+    <string name="k2go_clone_skip_have_app">تخطي — لديهم K2Go بالفعل  ›</string>
+    <string name="k2go_clone_already_connected">متصلان بالفعل؟ متابعة ›</string>
+    <string name="k2go_clone_join_wifi_note">صِل الهاتف الآخر بشبكة Wi-Fi هذه.</string>
+    <string name="k2go_clone_cant_join_note">لا يستطيع K2Go الانضمام إلى تلك الشبكة نيابةً عنك — اتصل من الإعدادات ثم تابع.</string>
+    <string name="k2go_clone_point_camera_join">وجّه كاميرته هنا للانضمام إلى هذا الهاتف.</string>
+    <string name="k2go_clone_share_wifi_note">شارك شبكة Wi-Fi هذه من الإعدادات، أو اطلب منهم الانضمام، ثم تابع.</string>
+    <string name="k2go_clone_share_wifi_settings">مشاركة Wi-Fi عبر إعدادات Android</string>
+    <string name="k2go_clone_share_anyway">المشاركة على أي حال</string>
+    <string name="k2go_clone_start_sharing">بدء المشاركة</string>
+    <string name="k2go_clone_stop_sharing">إيقاف المشاركة</string>
+    <string name="k2go_clone_start_service_note">ابدأ الخدمة لمشاركة مكتبة هذا الهاتف.</string>
+    <string name="k2go_clone_starting_service">جارٍ بدء الخدمة…</string>
+    <string name="k2go_clone_sharing_now">تتم المشاركة الآن</string>
+    <string name="k2go_clone_sharing_stopped">تم إيقاف المشاركة</string>
+    <string name="k2go_clone_stays_on">يظل قيد التشغيل حتى تضغط إيقاف.</string>
+    <string name="k2go_clone_nothing_title">لا شيء للمشاركة بعد</string>
+    <string name="k2go_clone_no_library_note">لا توجد مكتبة K2Go مثبّتة على هذا الهاتف. ثبّت المحتوى أولاً، أو شارك على أي حال.</string>
+    <string name="k2go_clone_copy_begins_note">يبدأ النسخ عندما يمسحون هذا ضوئيًا.</string>
+    <string name="k2go_clone_copying">جارٍ نسخ المكتبة…</string>
+    <string name="k2go_clone_connecting">جارٍ الاتصال…</string>
+    <string name="k2go_clone_use_this_code">استخدم هذا الرمز</string>
 </resources>

@@ -627,4 +627,31 @@
     <string name="k2go_settings_advanced">Avancé</string>
     <string name="k2go_settings_turn_off">Désactiver K2Go</string>
     <string name="k2go_settings_running_note">K2Go continue de fonctionner en arrière-plan jusqu\'à ce que vous le désactiviez.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Étape 1 · Reliez l\'autre téléphone</string>
+    <string name="k2go_clone_step2_title">Étape 2 · Obtenez l\'app</string>
+    <string name="k2go_clone_step3_title">Étape 3 · Copiez la bibliothèque</string>
+    <string name="k2go_clone_back_step1">‹ Retour à l\'étape 1</string>
+    <string name="k2go_clone_next_get_app">Suivant : obtenez l\'app</string>
+    <string name="k2go_clone_skip_have_app">Ignorer — ils ont déjà K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Déjà connectés ? Continuer ›</string>
+    <string name="k2go_clone_join_wifi_note">Mettez l\'autre téléphone sur ce Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go ne peut pas rejoindre ce réseau pour vous — connectez-vous dans les Paramètres, puis Continuer.</string>
+    <string name="k2go_clone_point_camera_join">Pointez sa caméra ici pour rejoindre ce téléphone.</string>
+    <string name="k2go_clone_share_wifi_note">Partagez ce Wi-Fi depuis les Paramètres, ou demandez-leur de le rejoindre, puis continuez.</string>
+    <string name="k2go_clone_share_wifi_settings">Partager le Wi-Fi via les paramètres Android</string>
+    <string name="k2go_clone_share_anyway">Partager quand même</string>
+    <string name="k2go_clone_start_sharing">Commencer le partage</string>
+    <string name="k2go_clone_stop_sharing">Arrêter le partage</string>
+    <string name="k2go_clone_start_service_note">Démarrez le service pour partager la bibliothèque de ce téléphone.</string>
+    <string name="k2go_clone_starting_service">Démarrage du service…</string>
+    <string name="k2go_clone_sharing_now">PARTAGE EN COURS</string>
+    <string name="k2go_clone_sharing_stopped">Partage arrêté</string>
+    <string name="k2go_clone_stays_on">Reste actif jusqu\'à ce que vous appuyiez sur Arrêter.</string>
+    <string name="k2go_clone_nothing_title">Rien à partager pour l\'instant</string>
+    <string name="k2go_clone_no_library_note">Ce téléphone n\'a pas la bibliothèque K2Go installée. Installez du contenu d\'abord, ou partagez quand même.</string>
+    <string name="k2go_clone_copy_begins_note">La copie démarre lorsqu\'ils scannent celui-ci.</string>
+    <string name="k2go_clone_copying">Copie de la bibliothèque…</string>
+    <string name="k2go_clone_connecting">Connexion…</string>
+    <string name="k2go_clone_use_this_code">Utiliser ce code</string>
 </resources>

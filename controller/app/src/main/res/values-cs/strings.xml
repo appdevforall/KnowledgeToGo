@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Pokročilé</string>
     <string name="k2go_settings_turn_off">Vypnout K2Go</string>
     <string name="k2go_settings_running_note">K2Go běží na pozadí, dokud jej nevypnete.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Krok 1 · Připojte druhý telefon</string>
+    <string name="k2go_clone_step2_title">Krok 2 · Získejte aplikaci</string>
+    <string name="k2go_clone_step3_title">Krok 3 · Zkopírujte knihovnu</string>
+    <string name="k2go_clone_back_step1">‹ Zpět na krok 1</string>
+    <string name="k2go_clone_next_get_app">Další: získejte aplikaci</string>
+    <string name="k2go_clone_skip_have_app">Přeskočit — už mají K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Již připojeno? Pokračovat ›</string>
+    <string name="k2go_clone_join_wifi_note">Připojte druhý telefon k této Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go se za vás k té síti nepřipojí — připojte se v Nastavení a pak pokračujte.</string>
+    <string name="k2go_clone_point_camera_join">Namiřte jeho fotoaparát sem pro připojení k tomuto telefonu.</string>
+    <string name="k2go_clone_share_wifi_note">Sdílejte tuto Wi-Fi z Nastavení, nebo je nechte připojit, a pak pokračujte.</string>
+    <string name="k2go_clone_share_wifi_settings">Sdílet Wi-Fi přes nastavení Androidu</string>
+    <string name="k2go_clone_share_anyway">Přesto sdílet</string>
+    <string name="k2go_clone_start_sharing">Spustit sdílení</string>
+    <string name="k2go_clone_stop_sharing">Zastavit sdílení</string>
+    <string name="k2go_clone_start_service_note">Spusťte službu pro sdílení knihovny tohoto telefonu.</string>
+    <string name="k2go_clone_starting_service">Spouštění služby…</string>
+    <string name="k2go_clone_sharing_now">SDÍLÍ SE</string>
+    <string name="k2go_clone_sharing_stopped">Sdílení zastaveno</string>
+    <string name="k2go_clone_stays_on">Zůstane zapnuté, dokud nestisknete Zastavit.</string>
+    <string name="k2go_clone_nothing_title">Zatím není co sdílet</string>
+    <string name="k2go_clone_no_library_note">V tomto telefonu není nainstalována knihovna K2Go. Nejprve nainstalujte obsah, nebo přesto sdílejte.</string>
+    <string name="k2go_clone_copy_begins_note">Kopírování začne, když naskenují tento.</string>
+    <string name="k2go_clone_copying">Kopírování knihovny…</string>
+    <string name="k2go_clone_connecting">Připojování…</string>
+    <string name="k2go_clone_use_this_code">Použít tento kód</string>
 </resources>

@@ -626,4 +626,31 @@
     <string name="k2go_settings_advanced">Avanzado</string>
     <string name="k2go_settings_turn_off">Apagar K2Go</string>
     <string name="k2go_settings_running_note">K2Go sigue ejecutándose en segundo plano hasta que lo apagues.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Paso 1 · Une el otro teléfono</string>
+    <string name="k2go_clone_step2_title">Paso 2 · Consigue la app</string>
+    <string name="k2go_clone_step3_title">Paso 3 · Copia la biblioteca</string>
+    <string name="k2go_clone_back_step1">‹ Volver al paso 1</string>
+    <string name="k2go_clone_next_get_app">Siguiente: consigue la app</string>
+    <string name="k2go_clone_skip_have_app">Omitir — ya tienen K2Go  ›</string>
+    <string name="k2go_clone_already_connected">¿Ya conectados? Continuar ›</string>
+    <string name="k2go_clone_join_wifi_note">Pon el otro teléfono en esta Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go no puede unirse a esa red por ti — conéctate en Ajustes y luego Continuar.</string>
+    <string name="k2go_clone_point_camera_join">Apunta su cámara aquí para unirse a este teléfono.</string>
+    <string name="k2go_clone_share_wifi_note">Comparte esta Wi-Fi desde Ajustes, o pídeles que se unan, y luego continúa.</string>
+    <string name="k2go_clone_share_wifi_settings">Compartir Wi-Fi desde ajustes de Android</string>
+    <string name="k2go_clone_share_anyway">Compartir de todos modos</string>
+    <string name="k2go_clone_start_sharing">Empezar a compartir</string>
+    <string name="k2go_clone_stop_sharing">Dejar de compartir</string>
+    <string name="k2go_clone_start_service_note">Inicia el servicio para compartir la biblioteca de este teléfono.</string>
+    <string name="k2go_clone_starting_service">Iniciando el servicio…</string>
+    <string name="k2go_clone_sharing_now">COMPARTIENDO AHORA</string>
+    <string name="k2go_clone_sharing_stopped">Se dejó de compartir</string>
+    <string name="k2go_clone_stays_on">Permanece activo hasta que pulses Detener.</string>
+    <string name="k2go_clone_nothing_title">Nada que compartir aún</string>
+    <string name="k2go_clone_no_library_note">Este teléfono no tiene la biblioteca de K2Go instalada. Instala contenido primero, o comparte de todos modos.</string>
+    <string name="k2go_clone_copy_begins_note">La copia comienza cuando escanean este.</string>
+    <string name="k2go_clone_copying">Copiando la biblioteca…</string>
+    <string name="k2go_clone_connecting">Conectando…</string>
+    <string name="k2go_clone_use_this_code">Usar este código</string>
 </resources>

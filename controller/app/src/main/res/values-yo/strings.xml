@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Ìlọsíwájú</string>
     <string name="k2go_settings_turn_off">Pa K2Go</string>
     <string name="k2go_settings_running_note">K2Go máa ń bá iṣẹ́ lọ ní ẹ̀yìn títí tí ìwọ yóò fi pa á.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. review — machine, verify. -->
+    <string name="k2go_clone_step1_title">Ìgbésẹ̀ 1 · So fóònù kejì pọ̀</string>
+    <string name="k2go_clone_step2_title">Ìgbésẹ̀ 2 · Gba app náà</string>
+    <string name="k2go_clone_step3_title">Ìgbésẹ̀ 3 · Ẹ̀dà ilé-ìkàwé</string>
+    <string name="k2go_clone_back_step1">‹ Padà sí ìgbésẹ̀ 1</string>
+    <string name="k2go_clone_next_get_app">Tókàn: gba app náà</string>
+    <string name="k2go_clone_skip_have_app">Fò ó — wọ́n ti ní K2Go tẹ́lẹ̀  ›</string>
+    <string name="k2go_clone_already_connected">Ti sopọ̀ tẹ́lẹ̀? Tẹ̀síwájú ›</string>
+    <string name="k2go_clone_join_wifi_note">Mú fóònù kejì wá sórí Wi-Fi yìí.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kò lè dara pọ̀ mọ́ nẹ́tíwọ́kì yẹn fún ọ — sopọ̀ nínú Ètò, lẹ́yìn náà Tẹ̀síwájú.</string>
+    <string name="k2go_clone_point_camera_join">Tọ́ka kámẹ́rà rẹ̀ síhìn-ín láti dara pọ̀ mọ́ fóònù yìí.</string>
+    <string name="k2go_clone_share_wifi_note">Pín Wi-Fi yìí láti inú Ètò, tàbí béèrè kí wọ́n dara pọ̀, lẹ́yìn náà tẹ̀síwájú.</string>
+    <string name="k2go_clone_share_wifi_settings">Pín Wi-Fi nípasẹ̀ ètò Android</string>
+    <string name="k2go_clone_share_anyway">Pín bákan náà</string>
+    <string name="k2go_clone_start_sharing">Bẹ̀rẹ̀ pínpín</string>
+    <string name="k2go_clone_stop_sharing">Dá pínpín dúró</string>
+    <string name="k2go_clone_start_service_note">Bẹ̀rẹ̀ iṣẹ́ náà láti pín ilé-ìkàwé fóònù yìí.</string>
+    <string name="k2go_clone_starting_service">Ń bẹ̀rẹ̀ iṣẹ́ náà…</string>
+    <string name="k2go_clone_sharing_now">Ń PÍN NÍSINSÌNYÍ</string>
+    <string name="k2go_clone_sharing_stopped">Pínpín ti dáwọ́ dúró</string>
+    <string name="k2go_clone_stays_on">Yóò wà títí tí ìwọ yóò fi tẹ Dúró.</string>
+    <string name="k2go_clone_nothing_title">Kò sí ohun kankan láti pín síbẹ̀</string>
+    <string name="k2go_clone_no_library_note">Fóònù yìí kò ní ilé-ìkàwé K2Go tí a fi sórí rẹ̀. Fi àkóónú sórí rẹ̀ lákọ̀ọ́kọ́, tàbí pín bákan náà.</string>
+    <string name="k2go_clone_copy_begins_note">Ẹ̀dà máa ń bẹ̀rẹ̀ nígbà tí wọ́n bá ṣàwárí èyí.</string>
+    <string name="k2go_clone_copying">Ń da ilé-ìkàwé…</string>
+    <string name="k2go_clone_connecting">Ń sopọ̀…</string>
+    <string name="k2go_clone_use_this_code">Lo kóòdù yìí</string>
 </resources>

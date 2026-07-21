@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">উন্নত</string>
     <string name="k2go_settings_turn_off">K2Go বন্ধ করুন</string>
     <string name="k2go_settings_running_note">আপনি বন্ধ না করা পর্যন্ত K2Go ব্যাকগ্রাউন্ডে চলতে থাকে।</string>
+    <!-- ADFA-4795: Clone send-spine l10n. review — machine, verify. -->
+    <string name="k2go_clone_step1_title">ধাপ ১ · অন্য ফোনটি সংযুক্ত করুন</string>
+    <string name="k2go_clone_step2_title">ধাপ ২ · অ্যাপটি নিন</string>
+    <string name="k2go_clone_step3_title">ধাপ ৩ · লাইব্রেরি কপি করুন</string>
+    <string name="k2go_clone_back_step1">‹ ধাপ ১-এ ফিরুন</string>
+    <string name="k2go_clone_next_get_app">পরবর্তী: অ্যাপটি নিন</string>
+    <string name="k2go_clone_skip_have_app">এড়িয়ে যান — তাদের কাছে ইতিমধ্যে K2Go আছে  ›</string>
+    <string name="k2go_clone_already_connected">ইতিমধ্যে সংযুক্ত? চালিয়ে যান ›</string>
+    <string name="k2go_clone_join_wifi_note">অন্য ফোনটিকে এই Wi-Fi-তে আনুন।</string>
+    <string name="k2go_clone_cant_join_note">K2Go আপনার হয়ে সেই নেটওয়ার্কে যুক্ত হতে পারে না — সেটিংসে সংযুক্ত হন, তারপর চালিয়ে যান।</string>
+    <string name="k2go_clone_point_camera_join">এই ফোনে যুক্ত হতে এর ক্যামেরা এখানে তাক করুন।</string>
+    <string name="k2go_clone_share_wifi_note">এই Wi-Fi সেটিংস থেকে শেয়ার করুন, বা তাদের যুক্ত হতে বলুন, তারপর চালিয়ে যান।</string>
+    <string name="k2go_clone_share_wifi_settings">Android সেটিংসের মাধ্যমে Wi-Fi শেয়ার করুন</string>
+    <string name="k2go_clone_share_anyway">তবুও শেয়ার করুন</string>
+    <string name="k2go_clone_start_sharing">শেয়ার করা শুরু করুন</string>
+    <string name="k2go_clone_stop_sharing">শেয়ার করা বন্ধ করুন</string>
+    <string name="k2go_clone_start_service_note">এই ফোনের লাইব্রেরি শেয়ার করতে পরিষেবাটি শুরু করুন।</string>
+    <string name="k2go_clone_starting_service">পরিষেবা শুরু হচ্ছে…</string>
+    <string name="k2go_clone_sharing_now">এখন শেয়ার হচ্ছে</string>
+    <string name="k2go_clone_sharing_stopped">শেয়ার করা বন্ধ হয়েছে</string>
+    <string name="k2go_clone_stays_on">আপনি বন্ধ না করা পর্যন্ত চালু থাকে।</string>
+    <string name="k2go_clone_nothing_title">এখনও শেয়ার করার কিছু নেই</string>
+    <string name="k2go_clone_no_library_note">এই ফোনে K2Go লাইব্রেরি ইনস্টল করা নেই। প্রথমে কন্টেন্ট ইনস্টল করুন, বা তবুও শেয়ার করুন।</string>
+    <string name="k2go_clone_copy_begins_note">তারা এটি স্ক্যান করলে কপি শুরু হয়।</string>
+    <string name="k2go_clone_copying">লাইব্রেরি কপি হচ্ছে…</string>
+    <string name="k2go_clone_connecting">সংযোগ করা হচ্ছে…</string>
+    <string name="k2go_clone_use_this_code">এই কোডটি ব্যবহার করুন</string>
 </resources>

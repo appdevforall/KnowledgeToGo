@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Avansert</string>
     <string name="k2go_settings_turn_off">Slå av K2Go</string>
     <string name="k2go_settings_running_note">K2Go fortsetter å kjøre i bakgrunnen til du slår det av.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Trinn 1 · Koble til den andre telefonen</string>
+    <string name="k2go_clone_step2_title">Trinn 2 · Hent appen</string>
+    <string name="k2go_clone_step3_title">Trinn 3 · Kopier biblioteket</string>
+    <string name="k2go_clone_back_step1">‹ Tilbake til trinn 1</string>
+    <string name="k2go_clone_next_get_app">Neste: hent appen</string>
+    <string name="k2go_clone_skip_have_app">Hopp over — de har K2Go allerede  ›</string>
+    <string name="k2go_clone_already_connected">Allerede tilkoblet? Fortsett ›</string>
+    <string name="k2go_clone_join_wifi_note">Få den andre telefonen på dette Wi-Fi-et.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kan ikke koble til det nettverket for deg — koble til i Innstillinger, og fortsett.</string>
+    <string name="k2go_clone_point_camera_join">Rett kameraet hit for å koble til denne telefonen.</string>
+    <string name="k2go_clone_share_wifi_note">Del dette Wi-Fi-et fra Innstillinger, eller la dem koble til, og fortsett.</string>
+    <string name="k2go_clone_share_wifi_settings">Del Wi-Fi via Android-innstillinger</string>
+    <string name="k2go_clone_share_anyway">Del likevel</string>
+    <string name="k2go_clone_start_sharing">Start deling</string>
+    <string name="k2go_clone_stop_sharing">Stopp deling</string>
+    <string name="k2go_clone_start_service_note">Start tjenesten for å dele biblioteket på denne telefonen.</string>
+    <string name="k2go_clone_starting_service">Starter tjenesten…</string>
+    <string name="k2go_clone_sharing_now">DELER NÅ</string>
+    <string name="k2go_clone_sharing_stopped">Deling stoppet</string>
+    <string name="k2go_clone_stays_on">Er på til du trykker Stopp.</string>
+    <string name="k2go_clone_nothing_title">Ingenting å dele ennå</string>
+    <string name="k2go_clone_no_library_note">Denne telefonen har ikke K2Go-biblioteket installert. Installer innhold først, eller del likevel.</string>
+    <string name="k2go_clone_copy_begins_note">Kopieringen starter når de skanner denne.</string>
+    <string name="k2go_clone_copying">Kopierer biblioteket…</string>
+    <string name="k2go_clone_connecting">Kobler til…</string>
+    <string name="k2go_clone_use_this_code">Bruk denne koden</string>
 </resources>

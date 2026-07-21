@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Nâng cao</string>
     <string name="k2go_settings_turn_off">Tắt K2Go</string>
     <string name="k2go_settings_running_note">K2Go tiếp tục chạy nền cho đến khi bạn tắt nó.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Bước 1 · Kết nối điện thoại kia</string>
+    <string name="k2go_clone_step2_title">Bước 2 · Lấy ứng dụng</string>
+    <string name="k2go_clone_step3_title">Bước 3 · Sao chép thư viện</string>
+    <string name="k2go_clone_back_step1">‹ Quay lại bước 1</string>
+    <string name="k2go_clone_next_get_app">Tiếp theo: lấy ứng dụng</string>
+    <string name="k2go_clone_skip_have_app">Bỏ qua — họ đã có K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Đã kết nối? Tiếp tục ›</string>
+    <string name="k2go_clone_join_wifi_note">Đưa điện thoại kia vào Wi-Fi này.</string>
+    <string name="k2go_clone_cant_join_note">K2Go không thể thay bạn tham gia mạng đó — hãy kết nối trong Cài đặt, rồi Tiếp tục.</string>
+    <string name="k2go_clone_point_camera_join">Hướng camera của nó vào đây để kết nối với điện thoại này.</string>
+    <string name="k2go_clone_share_wifi_note">Chia sẻ Wi-Fi này từ Cài đặt, hoặc nhờ họ tham gia, rồi tiếp tục.</string>
+    <string name="k2go_clone_share_wifi_settings">Chia sẻ Wi-Fi qua cài đặt Android</string>
+    <string name="k2go_clone_share_anyway">Vẫn chia sẻ</string>
+    <string name="k2go_clone_start_sharing">Bắt đầu chia sẻ</string>
+    <string name="k2go_clone_stop_sharing">Dừng chia sẻ</string>
+    <string name="k2go_clone_start_service_note">Khởi động dịch vụ để chia sẻ thư viện của điện thoại này.</string>
+    <string name="k2go_clone_starting_service">Đang khởi động dịch vụ…</string>
+    <string name="k2go_clone_sharing_now">ĐANG CHIA SẺ</string>
+    <string name="k2go_clone_sharing_stopped">Đã dừng chia sẻ</string>
+    <string name="k2go_clone_stays_on">Vẫn bật cho đến khi bạn nhấn Dừng.</string>
+    <string name="k2go_clone_nothing_title">Chưa có gì để chia sẻ</string>
+    <string name="k2go_clone_no_library_note">Điện thoại này chưa cài thư viện K2Go. Hãy cài nội dung trước, hoặc vẫn chia sẻ.</string>
+    <string name="k2go_clone_copy_begins_note">Việc sao chép bắt đầu khi họ quét mã này.</string>
+    <string name="k2go_clone_copying">Đang sao chép thư viện…</string>
+    <string name="k2go_clone_connecting">Đang kết nối…</string>
+    <string name="k2go_clone_use_this_code">Dùng mã này</string>
 </resources>

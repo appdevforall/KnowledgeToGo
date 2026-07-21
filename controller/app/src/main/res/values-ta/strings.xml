@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">மேம்பட்டது</string>
     <string name="k2go_settings_turn_off">K2Go ஐ அணைக்கவும்</string>
     <string name="k2go_settings_running_note">நீங்கள் அணைக்கும் வரை K2Go பின்னணியில் இயங்கிக்கொண்டே இருக்கும்.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. review — machine, verify. -->
+    <string name="k2go_clone_step1_title">படி 1 · மற்ற தொலைபேசியை இணைக்கவும்</string>
+    <string name="k2go_clone_step2_title">படி 2 · ஆப்பைப் பெறவும்</string>
+    <string name="k2go_clone_step3_title">படி 3 · நூலகத்தை நகலெடுக்கவும்</string>
+    <string name="k2go_clone_back_step1">‹ படி 1 க்குத் திரும்பு</string>
+    <string name="k2go_clone_next_get_app">அடுத்து: ஆப்பைப் பெறவும்</string>
+    <string name="k2go_clone_skip_have_app">தவிர் — அவர்களிடம் ஏற்கனவே K2Go உள்ளது  ›</string>
+    <string name="k2go_clone_already_connected">ஏற்கனவே இணைக்கப்பட்டதா? தொடரவும் ›</string>
+    <string name="k2go_clone_join_wifi_note">மற்ற தொலைபேசியை இந்த Wi-Fi இல் இணைக்கவும்.</string>
+    <string name="k2go_clone_cant_join_note">K2Go உங்களுக்காக அந்த நெட்வொர்க்கில் இணைய முடியாது — அமைப்புகளில் இணைத்து, பிறகு தொடரவும்.</string>
+    <string name="k2go_clone_point_camera_join">இந்த தொலைபேசியுடன் இணைய அதன் கேமராவை இங்கே காட்டவும்.</string>
+    <string name="k2go_clone_share_wifi_note">இந்த Wi-Fi ஐ அமைப்புகளில் இருந்து பகிரவும், அல்லது அவர்களை இணையச் சொல்லவும், பிறகு தொடரவும்.</string>
+    <string name="k2go_clone_share_wifi_settings">Android அமைப்புகள் வழியாக Wi-Fi பகிரவும்</string>
+    <string name="k2go_clone_share_anyway">எப்படியும் பகிரவும்</string>
+    <string name="k2go_clone_start_sharing">பகிர்வதைத் தொடங்கவும்</string>
+    <string name="k2go_clone_stop_sharing">பகிர்வதை நிறுத்தவும்</string>
+    <string name="k2go_clone_start_service_note">இந்த தொலைபேசியின் நூலகத்தைப் பகிர சேவையைத் தொடங்கவும்.</string>
+    <string name="k2go_clone_starting_service">சேவை தொடங்குகிறது…</string>
+    <string name="k2go_clone_sharing_now">இப்போது பகிரப்படுகிறது</string>
+    <string name="k2go_clone_sharing_stopped">பகிர்வு நிறுத்தப்பட்டது</string>
+    <string name="k2go_clone_stays_on">நிறுத்து அழுத்தும் வரை இயங்கும்.</string>
+    <string name="k2go_clone_nothing_title">இன்னும் பகிர எதுவும் இல்லை</string>
+    <string name="k2go_clone_no_library_note">இந்த தொலைபேசியில் K2Go நூலகம் நிறுவப்படவில்லை. முதலில் உள்ளடக்கத்தை நிறுவவும், அல்லது எப்படியும் பகிரவும்.</string>
+    <string name="k2go_clone_copy_begins_note">அவர்கள் இதை ஸ்கேன் செய்யும்போது நகல் தொடங்கும்.</string>
+    <string name="k2go_clone_copying">நூலகம் நகலெடுக்கப்படுகிறது…</string>
+    <string name="k2go_clone_connecting">இணைக்கிறது…</string>
+    <string name="k2go_clone_use_this_code">இந்தக் குறியீட்டைப் பயன்படுத்தவும்</string>
 </resources>

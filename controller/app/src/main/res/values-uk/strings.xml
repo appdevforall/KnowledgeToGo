@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Додатково</string>
     <string name="k2go_settings_turn_off">Вимкнути K2Go</string>
     <string name="k2go_settings_running_note">K2Go працює у фоні, доки ви його не вимкнете.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Крок 1 · Підключіть інший телефон</string>
+    <string name="k2go_clone_step2_title">Крок 2 · Отримайте застосунок</string>
+    <string name="k2go_clone_step3_title">Крок 3 · Скопіюйте бібліотеку</string>
+    <string name="k2go_clone_back_step1">‹ Назад до кроку 1</string>
+    <string name="k2go_clone_next_get_app">Далі: отримайте застосунок</string>
+    <string name="k2go_clone_skip_have_app">Пропустити — у них вже є K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Вже підключено? Продовжити ›</string>
+    <string name="k2go_clone_join_wifi_note">Підключіть інший телефон до цієї Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go не може підключитися до цієї мережі за вас — підключіться в Налаштуваннях, потім Продовжити.</string>
+    <string name="k2go_clone_point_camera_join">Наведіть його камеру сюди, щоб підключитися до цього телефону.</string>
+    <string name="k2go_clone_share_wifi_note">Поділіться цією Wi-Fi з Налаштувань або попросіть їх підключитися, потім продовжте.</string>
+    <string name="k2go_clone_share_wifi_settings">Поділитися Wi-Fi через налаштування Android</string>
+    <string name="k2go_clone_share_anyway">Усе одно поділитися</string>
+    <string name="k2go_clone_start_sharing">Почати роздачу</string>
+    <string name="k2go_clone_stop_sharing">Зупинити роздачу</string>
+    <string name="k2go_clone_start_service_note">Запустіть службу, щоб поділитися бібліотекою цього телефону.</string>
+    <string name="k2go_clone_starting_service">Запуск служби…</string>
+    <string name="k2go_clone_sharing_now">ЗАРАЗ РОЗДАЄТЬСЯ</string>
+    <string name="k2go_clone_sharing_stopped">Роздачу зупинено</string>
+    <string name="k2go_clone_stays_on">Залишається увімкненим, доки ви не натиснете «Стоп».</string>
+    <string name="k2go_clone_nothing_title">Поки нема чим ділитися</string>
+    <string name="k2go_clone_no_library_note">На цьому телефоні не встановлено бібліотеку K2Go. Спочатку встановіть вміст або все одно поділіться.</string>
+    <string name="k2go_clone_copy_begins_note">Копіювання почнеться, коли вони відсканують цей.</string>
+    <string name="k2go_clone_copying">Копіювання бібліотеки…</string>
+    <string name="k2go_clone_connecting">Підключення…</string>
+    <string name="k2go_clone_use_this_code">Використати цей код</string>
 </resources>

@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Kina</string>
     <string name="k2go_settings_turn_off">Zima K2Go</string>
     <string name="k2go_settings_running_note">K2Go inaendelea kufanya kazi chinichini hadi utakapoizima.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. review — machine, verify. -->
+    <string name="k2go_clone_step1_title">Hatua 1 · Unganisha simu nyingine</string>
+    <string name="k2go_clone_step2_title">Hatua 2 · Pata programu</string>
+    <string name="k2go_clone_step3_title">Hatua 3 · Nakili maktaba</string>
+    <string name="k2go_clone_back_step1">‹ Rudi hatua 1</string>
+    <string name="k2go_clone_next_get_app">Ifuatayo: pata programu</string>
+    <string name="k2go_clone_skip_have_app">Ruka — tayari wana K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Tayari zimeunganishwa? Endelea ›</string>
+    <string name="k2go_clone_join_wifi_note">Unganisha simu nyingine kwenye Wi-Fi hii.</string>
+    <string name="k2go_clone_cant_join_note">K2Go haiwezi kujiunga na mtandao huo kwa niaba yako — unganisha katika Mipangilio, kisha Endelea.</string>
+    <string name="k2go_clone_point_camera_join">Elekeza kamera yake hapa ili kuunganisha kwenye simu hii.</string>
+    <string name="k2go_clone_share_wifi_note">Shiriki Wi-Fi hii kutoka Mipangilio, au waombe wajiunge, kisha endelea.</string>
+    <string name="k2go_clone_share_wifi_settings">Shiriki Wi-Fi kupitia mipangilio ya Android</string>
+    <string name="k2go_clone_share_anyway">Shiriki hata hivyo</string>
+    <string name="k2go_clone_start_sharing">Anza kushiriki</string>
+    <string name="k2go_clone_stop_sharing">Simamisha kushiriki</string>
+    <string name="k2go_clone_start_service_note">Anzisha huduma ili kushiriki maktaba ya simu hii.</string>
+    <string name="k2go_clone_starting_service">Inaanzisha huduma…</string>
+    <string name="k2go_clone_sharing_now">INASHIRIKI SASA</string>
+    <string name="k2go_clone_sharing_stopped">Kushiriki kumesimamishwa</string>
+    <string name="k2go_clone_stays_on">Inabaki imewashwa hadi ubonyeze Simamisha.</string>
+    <string name="k2go_clone_nothing_title">Bado hakuna cha kushiriki</string>
+    <string name="k2go_clone_no_library_note">Simu hii haina maktaba ya K2Go iliyosakinishwa. Sakinisha maudhui kwanza, au shiriki hata hivyo.</string>
+    <string name="k2go_clone_copy_begins_note">Kunakili huanza wanapoichanganua hii.</string>
+    <string name="k2go_clone_copying">Inanakili maktaba…</string>
+    <string name="k2go_clone_connecting">Inaunganisha…</string>
+    <string name="k2go_clone_use_this_code">Tumia msimbo huu</string>
 </resources>

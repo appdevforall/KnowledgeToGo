@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Erweitert</string>
     <string name="k2go_settings_turn_off">K2Go ausschalten</string>
     <string name="k2go_settings_running_note">K2Go läuft im Hintergrund weiter, bis du es ausschaltest.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Schritt 1 · Das andere Telefon verbinden</string>
+    <string name="k2go_clone_step2_title">Schritt 2 · App holen</string>
+    <string name="k2go_clone_step3_title">Schritt 3 · Bibliothek kopieren</string>
+    <string name="k2go_clone_back_step1">‹ Zurück zu Schritt 1</string>
+    <string name="k2go_clone_next_get_app">Weiter: App holen</string>
+    <string name="k2go_clone_skip_have_app">Überspringen — sie haben K2Go bereits  ›</string>
+    <string name="k2go_clone_already_connected">Bereits verbunden? Fortfahren ›</string>
+    <string name="k2go_clone_join_wifi_note">Verbinde das andere Telefon mit diesem Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kann diesem Netzwerk nicht für dich beitreten — verbinde dich in den Einstellungen, dann Fortfahren.</string>
+    <string name="k2go_clone_point_camera_join">Richte seine Kamera hierher, um diesem Telefon beizutreten.</string>
+    <string name="k2go_clone_share_wifi_note">Teile dieses Wi-Fi über die Einstellungen, oder lass sie beitreten, dann fortfahren.</string>
+    <string name="k2go_clone_share_wifi_settings">Wi-Fi über Android-Einstellungen teilen</string>
+    <string name="k2go_clone_share_anyway">Trotzdem teilen</string>
+    <string name="k2go_clone_start_sharing">Teilen starten</string>
+    <string name="k2go_clone_stop_sharing">Teilen beenden</string>
+    <string name="k2go_clone_start_service_note">Starte den Dienst, um die Bibliothek dieses Telefons zu teilen.</string>
+    <string name="k2go_clone_starting_service">Dienst wird gestartet…</string>
+    <string name="k2go_clone_sharing_now">TEILT JETZT</string>
+    <string name="k2go_clone_sharing_stopped">Teilen beendet</string>
+    <string name="k2go_clone_stays_on">Bleibt an, bis du auf Stopp tippst.</string>
+    <string name="k2go_clone_nothing_title">Noch nichts zu teilen</string>
+    <string name="k2go_clone_no_library_note">Auf diesem Telefon ist keine K2Go-Bibliothek installiert. Installiere zuerst Inhalte, oder teile trotzdem.</string>
+    <string name="k2go_clone_copy_begins_note">Das Kopieren beginnt, wenn sie dieses scannen.</string>
+    <string name="k2go_clone_copying">Bibliothek wird kopiert…</string>
+    <string name="k2go_clone_connecting">Verbindung…</string>
+    <string name="k2go_clone_use_this_code">Diesen Code verwenden</string>
 </resources>

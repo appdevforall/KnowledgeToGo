@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Napredno</string>
     <string name="k2go_settings_turn_off">Isključi K2Go</string>
     <string name="k2go_settings_running_note">K2Go nastavlja da radi u pozadini dok ga ne isključite.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. review — machine, verify. -->
+    <string name="k2go_clone_step1_title">Korak 1 · Povežite drugi telefon</string>
+    <string name="k2go_clone_step2_title">Korak 2 · Nabavite aplikaciju</string>
+    <string name="k2go_clone_step3_title">Korak 3 · Kopirajte biblioteku</string>
+    <string name="k2go_clone_back_step1">‹ Nazad na korak 1</string>
+    <string name="k2go_clone_next_get_app">Dalje: nabavite aplikaciju</string>
+    <string name="k2go_clone_skip_have_app">Preskoči — već imaju K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Već povezani? Nastavi ›</string>
+    <string name="k2go_clone_join_wifi_note">Povežite drugi telefon na ovaj Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note">K2Go ne može da se poveže na tu mrežu umesto vas — povežite se u Podešavanjima, pa Nastavi.</string>
+    <string name="k2go_clone_point_camera_join">Usmerite njegovu kameru ovde da se poveže sa ovim telefonom.</string>
+    <string name="k2go_clone_share_wifi_note">Podelite ovaj Wi-Fi iz Podešavanja, ili neka se povežu, pa nastavite.</string>
+    <string name="k2go_clone_share_wifi_settings">Deli Wi-Fi preko Android podešavanja</string>
+    <string name="k2go_clone_share_anyway">Ipak podeli</string>
+    <string name="k2go_clone_start_sharing">Započni deljenje</string>
+    <string name="k2go_clone_stop_sharing">Zaustavi deljenje</string>
+    <string name="k2go_clone_start_service_note">Pokrenite uslugu da podelite biblioteku ovog telefona.</string>
+    <string name="k2go_clone_starting_service">Pokretanje usluge…</string>
+    <string name="k2go_clone_sharing_now">SADA SE DELI</string>
+    <string name="k2go_clone_sharing_stopped">Deljenje zaustavljeno</string>
+    <string name="k2go_clone_stays_on">Ostaje uključeno dok ne pritisnete Zaustavi.</string>
+    <string name="k2go_clone_nothing_title">Još nema šta da se deli</string>
+    <string name="k2go_clone_no_library_note">Na ovom telefonu nije instalirana K2Go biblioteka. Prvo instalirajte sadržaj ili ipak podelite.</string>
+    <string name="k2go_clone_copy_begins_note">Kopiranje počinje kada skeniraju ovaj.</string>
+    <string name="k2go_clone_copying">Kopiranje biblioteke…</string>
+    <string name="k2go_clone_connecting">Povezivanje…</string>
+    <string name="k2go_clone_use_this_code">Koristi ovaj kod</string>
 </resources>

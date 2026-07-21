@@ -550,4 +550,31 @@
     <string name="k2go_settings_advanced">Speciális</string>
     <string name="k2go_settings_turn_off">K2Go kikapcsolása</string>
     <string name="k2go_settings_running_note">A K2Go a háttérben fut, amíg ki nem kapcsolod.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">1. lépés · Csatlakoztasd a másik telefont</string>
+    <string name="k2go_clone_step2_title">2. lépés · Szerezd meg az appot</string>
+    <string name="k2go_clone_step3_title">3. lépés · Másold a könyvtárat</string>
+    <string name="k2go_clone_back_step1">‹ Vissza az 1. lépéshez</string>
+    <string name="k2go_clone_next_get_app">Következő: szerezd meg az appot</string>
+    <string name="k2go_clone_skip_have_app">Kihagyás — már van K2Go-juk  ›</string>
+    <string name="k2go_clone_already_connected">Már csatlakozva? Folytatás ›</string>
+    <string name="k2go_clone_join_wifi_note">Csatlakoztasd a másik telefont ehhez a Wi-Fi-hez.</string>
+    <string name="k2go_clone_cant_join_note">A K2Go nem tud helyetted csatlakozni ahhoz a hálózathoz — csatlakozz a Beállításokban, majd Folytatás.</string>
+    <string name="k2go_clone_point_camera_join">Irányítsd ide a kameráját, hogy csatlakozzon ehhez a telefonhoz.</string>
+    <string name="k2go_clone_share_wifi_note">Oszd meg ezt a Wi-Fi-t a Beállításokból, vagy kérd meg őket, hogy csatlakozzanak, majd folytasd.</string>
+    <string name="k2go_clone_share_wifi_settings">Wi-Fi megosztása az Android beállításokon keresztül</string>
+    <string name="k2go_clone_share_anyway">Megosztás mindenképp</string>
+    <string name="k2go_clone_start_sharing">Megosztás indítása</string>
+    <string name="k2go_clone_stop_sharing">Megosztás leállítása</string>
+    <string name="k2go_clone_start_service_note">Indítsd el a szolgáltatást a telefon könyvtárának megosztásához.</string>
+    <string name="k2go_clone_starting_service">Szolgáltatás indítása…</string>
+    <string name="k2go_clone_sharing_now">MOST MEGOSZTVA</string>
+    <string name="k2go_clone_sharing_stopped">Megosztás leállítva</string>
+    <string name="k2go_clone_stays_on">Bekapcsolva marad, amíg meg nem nyomod a Leállítást.</string>
+    <string name="k2go_clone_nothing_title">Még nincs mit megosztani</string>
+    <string name="k2go_clone_no_library_note">Ezen a telefonon nincs telepítve a K2Go könyvtár. Előbb telepíts tartalmat, vagy oszd meg mindenképp.</string>
+    <string name="k2go_clone_copy_begins_note">A másolás akkor kezdődik, amikor beolvassák ezt.</string>
+    <string name="k2go_clone_copying">Könyvtár másolása…</string>
+    <string name="k2go_clone_connecting">Csatlakozás…</string>
+    <string name="k2go_clone_use_this_code">Ezt a kódot használom</string>
 </resources>

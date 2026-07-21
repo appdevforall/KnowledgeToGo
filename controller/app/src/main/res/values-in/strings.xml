@@ -557,4 +557,31 @@
     <string name="k2go_settings_advanced">Lanjutan</string>
     <string name="k2go_settings_turn_off">Matikan K2Go</string>
     <string name="k2go_settings_running_note">K2Go tetap berjalan di latar belakang sampai Anda mematikannya.</string>
+    <!-- ADFA-4795: Clone send-spine l10n. machine translation. -->
+    <string name="k2go_clone_step1_title">Langkah 1 · Hubungkan ponsel satunya</string>
+    <string name="k2go_clone_step2_title">Langkah 2 · Dapatkan aplikasi</string>
+    <string name="k2go_clone_step3_title">Langkah 3 · Salin perpustakaan</string>
+    <string name="k2go_clone_back_step1">‹ Kembali ke langkah 1</string>
+    <string name="k2go_clone_next_get_app">Berikutnya: dapatkan aplikasi</string>
+    <string name="k2go_clone_skip_have_app">Lewati — mereka sudah punya K2Go  ›</string>
+    <string name="k2go_clone_already_connected">Sudah terhubung? Lanjutkan ›</string>
+    <string name="k2go_clone_join_wifi_note">Hubungkan ponsel satunya ke Wi-Fi ini.</string>
+    <string name="k2go_clone_cant_join_note">K2Go tidak bisa bergabung ke jaringan itu untuk Anda — hubungkan di Pengaturan, lalu Lanjutkan.</string>
+    <string name="k2go_clone_point_camera_join">Arahkan kameranya ke sini untuk bergabung dengan ponsel ini.</string>
+    <string name="k2go_clone_share_wifi_note">Bagikan Wi-Fi ini dari Pengaturan, atau minta mereka bergabung, lalu lanjutkan.</string>
+    <string name="k2go_clone_share_wifi_settings">Bagikan Wi-Fi lewat pengaturan Android</string>
+    <string name="k2go_clone_share_anyway">Tetap bagikan</string>
+    <string name="k2go_clone_start_sharing">Mulai berbagi</string>
+    <string name="k2go_clone_stop_sharing">Hentikan berbagi</string>
+    <string name="k2go_clone_start_service_note">Mulai layanan untuk membagikan perpustakaan ponsel ini.</string>
+    <string name="k2go_clone_starting_service">Memulai layanan…</string>
+    <string name="k2go_clone_sharing_now">SEDANG BERBAGI</string>
+    <string name="k2go_clone_sharing_stopped">Berbagi dihentikan</string>
+    <string name="k2go_clone_stays_on">Tetap aktif sampai Anda menekan Hentikan.</string>
+    <string name="k2go_clone_nothing_title">Belum ada yang bisa dibagikan</string>
+    <string name="k2go_clone_no_library_note">Ponsel ini belum memiliki perpustakaan K2Go. Instal konten dulu, atau tetap bagikan.</string>
+    <string name="k2go_clone_copy_begins_note">Penyalinan dimulai saat mereka memindai yang ini.</string>
+    <string name="k2go_clone_copying">Menyalin perpustakaan…</string>
+    <string name="k2go_clone_connecting">Menghubungkan…</string>
+    <string name="k2go_clone_use_this_code">Gunakan kode ini</string>
 </resources>
