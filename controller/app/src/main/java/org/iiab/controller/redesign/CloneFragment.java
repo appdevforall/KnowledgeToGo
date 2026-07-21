@@ -72,6 +72,7 @@ public class CloneFragment extends Fragment {
     private TextView sizeSys, sizeContent, sizeTotal;
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
     private boolean protectionOn = false; // ADFA-4782: foreground WatchdogService currently held
+    private boolean shareAnyway = false;  // ADFA-4786: user chose to share even with no library installed
 
     private ActivityResultLauncher<String> locationPerm;
 
@@ -250,10 +251,12 @@ public class CloneFragment extends Fragment {
     /** Start the rsync share daemon once we have a LAN IP (off the main thread). */
     private void ensureDaemon(String ip) {
         if (daemonStarted || daemonStarting || userStopped || ip == null) return;
+        File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
+        boolean hasLib = rootfsPresent();
+        if (!hasLib && !shareAnyway) return;   // ADFA-4786: don't silently share an empty library; renderStartState shows the notice
         daemonStarting = true;
         tempPass = SyncHandshakeHelper.generateSecurePassword();
-        File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
-        hostHasRootfs = rootfsDir.exists() && rootfsDir.isDirectory();
+        hostHasRootfs = hasLib;
         if (!rootfsDir.exists()) rootfsDir.mkdirs();
         final String shareDir = rootfsDir.getAbsolutePath();
         final Context app = requireContext().getApplicationContext();
@@ -267,6 +270,13 @@ public class CloneFragment extends Fragment {
                 daemonStarting = false; daemonStarted = ok; librarySplit = split; render();
             });
         }, "clone-share-daemon").start();
+    }
+
+    /** ADFA-4786: true only when a real library is installed (dir exists and is non-empty). */
+    private boolean rootfsPresent() {
+        File d = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
+        String[] kids = d.isDirectory() ? d.list() : null;
+        return kids != null && kids.length > 0;
     }
 
     /**
@@ -395,6 +405,18 @@ public class CloneFragment extends Fragment {
 
     /** Step-2 state: starting -> stopped (Start sharing) -> running (QR + Stop sharing). */
     private void renderStartState(String ip, boolean twoCode) {
+        if (!daemonStarted && !daemonStarting && !shareAnyway && !rootfsPresent()) {   // ADFA-4786
+            qr.setImageBitmap(null);
+            caption.setText("Nothing to share yet");
+            subCaption.setText("This phone has no K2Go library installed. Install content first, or share anyway.");
+            setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
+            stop.setVisibility(View.VISIBLE);
+            stop.setText("Share anyway");
+            stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
+            stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+            stop.setOnClickListener(x -> { shareAnyway = true; render(); });
+            return;
+        }
         if (daemonStarting) {
             qr.setImageBitmap(null);
             caption.setText("Starting the service…");
@@ -454,7 +476,7 @@ public class CloneFragment extends Fragment {
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
         if (creds == null) { Toast.makeText(requireContext(), "That code isn't valid", Toast.LENGTH_LONG).show(); return; }
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
-        syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+        probeOrWarnEmpty(creds);   // ADFA-4786
     }
 
     // ADFA-4784: hard guardrail — a library built for a different CPU can't run here. The sender's
@@ -473,6 +495,21 @@ public class CloneFragment extends Fragment {
         if (bits == 64) return "64-bit (arm64-v8a)";
         if (bits == 32) return "32-bit (armeabi-v7a)";
         return "unknown";
+    }
+
+    // ADFA-4786: the sender advertises whether it has a library (creds.hasRootfs). If not, there's
+    // nothing to copy — warn before probing rather than pulling an empty library.
+    private void probeOrWarnEmpty(SyncHandshakeHelper.SyncCredentials creds) {
+        if (!creds.hasRootfs) {
+            new AlertDialog.Builder(requireContext())
+                    .setTitle("The other phone has no library")
+                    .setMessage("There's nothing to copy from it yet. Continue anyway?")
+                    .setNegativeButton("Cancel", null)
+                    .setPositiveButton("Try anyway", (d, w) -> syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds))
+                    .show();
+            return;
+        }
+        syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
     }
 
     private void onReceiveCancel() {
@@ -596,7 +633,7 @@ public class CloneFragment extends Fragment {
         if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
         Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
-        syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds);
+        probeOrWarnEmpty(creds);   // ADFA-4786
     }
 
     private void openWifiSettings() {
