@@ -78,6 +78,11 @@
     <string name="k2go_added_after" translatable="false">added after install</string>
     <string name="k2go_step2a_hint" translatable="false">Tap a source to Add or Skip it. Skip all = just the system.</string>
     <string name="k2go_skip_for_now" translatable="false">Skip for now ›</string>
+    <string name="k2go_wiz_choose_language" translatable="false">Choose language</string>
+    <string name="k2go_wiz_language_sub" translatable="false">Sets app + content language.</string>
+    <string name="k2go_wiz_permissions_title" translatable="false">Allow a few things</string>
+    <string name="k2go_continue" translatable="false">Continue</string>
+    <string name="k2go_wiz_setup_sub" translatable="false">How do you want it?</string>
 
     <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
     <string name="k2go_wiki_view_list" translatable="false">List</string>
