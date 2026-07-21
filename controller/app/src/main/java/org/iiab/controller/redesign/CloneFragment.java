@@ -445,9 +445,9 @@ public class CloneFragment extends Fragment {
         rcvSkipHint.setText("K2Go can't join that network for you \u2014 connect in Settings, then Continue.");
         rcvSkip.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
-        rcvCamNote.setVisibility(atJoin ? View.GONE : View.VISIBLE);
+        rcvCamNote.setVisibility(View.GONE);
         rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvShowPaste.setText(pasteExpanded ? "Input QR code as text  \u25B4" : "Input QR code as text  \u25BE");
+        rcvShowPaste.setText(pasteExpanded ? "Scan didn't work? Enter code as text  \u25B4" : "Scan didn't work? Enter code as text  \u25BE");
         pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
     }
 
