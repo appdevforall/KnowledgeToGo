@@ -445,7 +445,7 @@ public class CloneFragment extends Fragment {
             fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE); sendAppEntry.setVisibility(View.GONE);
             steps.setVisibility(View.VISIBLE); buildSteps(true);
-            stepTitle.setVisibility(View.VISIBLE); stepTitle.setText("Step 2 · Get the app");
+            stepTitle.setVisibility(View.VISIBLE); stepTitle.setText(getString(R.string.k2go_clone_step2_title));
             sendAppView.setVisibility(View.VISIBLE);
             renderSendApp();
             return;
@@ -483,18 +483,18 @@ public class CloneFragment extends Fragment {
         if (stage == Stage.JOIN) {
             setQr("WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;");
             stepTitle.setVisibility(View.VISIBLE);
-            stepTitle.setText("Step 1 · Join the other phone");
-            caption.setText("Point its camera here to join this phone.");
+            stepTitle.setText(getString(R.string.k2go_clone_step1_title));
+            caption.setText(getString(R.string.k2go_clone_point_camera_join));
             subCaption.setText("");
             setFallback(new String[]{"Wi-Fi: " + ssid, "Password: " + pass});
-            advance.setText("Next: get the app");
+            advance.setText(getString(R.string.k2go_clone_next_get_app));
             styleAdvance(true);
             footer.setText("");
             sendAppEntry.setVisibility(View.GONE);
             skipApp.setVisibility(View.VISIBLE);
-            skipApp.setText("Skip — they already have K2Go  ›");
+            skipApp.setText(getString(R.string.k2go_clone_skip_have_app));
         } else {
-            advance.setText("‹ Back to step 1");
+            advance.setText(getString(R.string.k2go_clone_back_step1));
             styleAdvance(false);
             ensureDaemon(ip);
             renderStartState(ip, true);
@@ -508,20 +508,20 @@ public class CloneFragment extends Fragment {
         if (stage == Stage.JOIN) {
             qr.setVisibility(View.GONE);
             stepTitle.setVisibility(View.VISIBLE);
-            stepTitle.setText("Step 1 · Join the other phone");
-            caption.setText("Get the other phone onto this Wi-Fi.");
-            subCaption.setText("Share this Wi-Fi from Settings, or have them join it, then continue.");
+            stepTitle.setText(getString(R.string.k2go_clone_step1_title));
+            caption.setText(getString(R.string.k2go_clone_join_wifi_note));
+            subCaption.setText(getString(R.string.k2go_clone_share_wifi_note));
             setFallback(null);
             footer.setText("");
             advance.setVisibility(View.VISIBLE);
             shareWifi.setVisibility(View.VISIBLE);
-            advance.setText("Next: get the app");
+            advance.setText(getString(R.string.k2go_clone_next_get_app));
             styleAdvance(true);
             skipApp.setVisibility(View.VISIBLE);
-            skipApp.setText("Skip — they already have K2Go  ›");
+            skipApp.setText(getString(R.string.k2go_clone_skip_have_app));
         } else {
             advance.setVisibility(View.VISIBLE);
-            advance.setText("‹ Back to step 1");
+            advance.setText(getString(R.string.k2go_clone_back_step1));
             styleAdvance(false);
             ensureDaemon(ip);
             renderStartState(ip, false);
@@ -531,14 +531,14 @@ public class CloneFragment extends Fragment {
     /** Step-2 state: starting -> stopped (Start sharing) -> running (QR + Stop sharing). */
     private void renderStartState(String ip, boolean twoCode) {
         stepTitle.setVisibility(View.VISIBLE);
-        stepTitle.setText("Step 3 · Copy the library");
+        stepTitle.setText(getString(R.string.k2go_clone_step3_title));
         if (!daemonStarted && !daemonStarting && !shareAnyway && !rootfsPresent()) {   // ADFA-4786
             qr.setImageBitmap(null);
-            caption.setText("Nothing to share yet");
-            subCaption.setText("This phone has no K2Go library installed. Install content first, or share anyway.");
+            caption.setText(getString(R.string.k2go_clone_nothing_title));
+            subCaption.setText(getString(R.string.k2go_clone_no_library_note));
             setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
             stop.setVisibility(View.VISIBLE);
-            stop.setText("Share anyway");
+            stop.setText(getString(R.string.k2go_clone_share_anyway));
             stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
             stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
             stop.setOnClickListener(x -> { shareAnyway = true; render(); });
@@ -546,15 +546,15 @@ public class CloneFragment extends Fragment {
         }
         if (daemonStarting) {
             qr.setImageBitmap(null);
-            caption.setText("Starting the service…");
+            caption.setText(getString(R.string.k2go_clone_starting_service));
             subCaption.setText("");
             setFallback(null); footer.setText(""); stop.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
             qr.setImageBitmap(null);
-            caption.setText("Sharing stopped");
-            subCaption.setText("Start the service to share this phone's library.");
+            caption.setText(getString(R.string.k2go_clone_sharing_stopped));
+            subCaption.setText(getString(R.string.k2go_clone_start_service_note));
             setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
             showStartButton();
             return;
@@ -564,7 +564,7 @@ public class CloneFragment extends Fragment {
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
         caption.setText(twoCode ? "Ready! Scan code 2 to start the transfer" : "Ready! Scan to start the transfer");
-        subCaption.setText("The copy begins when they scan this one.");
+        subCaption.setText(getString(R.string.k2go_clone_copy_begins_note));
         setFallback(null);
         showCodeAsText(payload);
         showStopButton();
@@ -576,7 +576,7 @@ public class CloneFragment extends Fragment {
         } else {
             shareCard.setVisibility(View.GONE);
         }
-        footer.setText("Stays on until you Stop.");
+        footer.setText(getString(R.string.k2go_clone_stays_on));
     }
 
     // ------------------------------------------------------------ "Send the app" (ADFA-4785)
@@ -644,7 +644,7 @@ public class CloneFragment extends Fragment {
 
     private void showStopButton() {
         stop.setVisibility(View.VISIBLE);
-        stop.setText("Stop sharing");
+        stop.setText(getString(R.string.k2go_clone_stop_sharing));
         stop.setBackgroundResource(R.drawable.k2go_turnoff_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
         stop.setOnClickListener(x -> confirmStop());
@@ -652,7 +652,7 @@ public class CloneFragment extends Fragment {
 
     private void showStartButton() {
         stop.setVisibility(View.VISIBLE);
-        stop.setText("Start sharing");
+        stop.setText(getString(R.string.k2go_clone_start_sharing));
         stop.setBackgroundResource(R.drawable.k2go_primary_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
         stop.setOnClickListener(x -> { userStopped = false; render(); });
@@ -766,7 +766,7 @@ public class CloneFragment extends Fragment {
             if (ph == SyncTransferState.Phase.TRANSFERRING) {
                 pbar.setIndeterminate(false);
                 pbar.setProgress(st.percent);
-                pStatus.setText("Copying the library\u2026");
+                pStatus.setText(getString(R.string.k2go_clone_copying));
                 pFile.setText(st.file);
                 pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
             } else {
@@ -802,8 +802,8 @@ public class CloneFragment extends Fragment {
         rcvScan.setVisibility(View.VISIBLE);
         rcvSub.setText(atJoin ? "Step 1 of 2" : "Step 2 of 2");
         rcvSub.setVisibility(View.VISIBLE);
-        rcvSkip.setText("Already connected? Continue \u203a");
-        rcvSkipHint.setText("K2Go can't join that network for you \u2014 connect in Settings, then Continue.");
+        rcvSkip.setText(getString(R.string.k2go_clone_already_connected));
+        rcvSkipHint.setText(getString(R.string.k2go_clone_cant_join_note));
         rcvSkip.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvCamNote.setVisibility(View.GONE);

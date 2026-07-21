@@ -156,10 +156,10 @@ public class ConnectFragment extends Fragment {
             String ip = NetworkInterfaces.discover().hotspotIp;
             if (ip == null) ip = "192.168.49.1";
             setQr(browseUrl(ip));
-            caption.setText("Scan to open the library");
-            subCaption.setText("Read-only access to your content.");
+            caption.setText(getString(R.string.k2go_connect_scan_open));
+            subCaption.setText(getString(R.string.k2go_connect_readonly));
             setFallback(new String[]{browseUrl(ip)});
-            advance.setText("‹ Back to step 1");
+            advance.setText(getString(R.string.k2go_clone_back_step1));
             styleAdvance(false);
             finish.setVisibility(openDone ? View.GONE : View.VISIBLE);
             advance.setVisibility(openDone ? View.GONE : View.VISIBLE);
@@ -175,8 +175,8 @@ public class ConnectFragment extends Fragment {
             return;
         }
         setQr(browseUrl(ip));
-        caption.setText("Scan to open the library");
-        subCaption.setText("You're on the same Wi-Fi — one code.");
+        caption.setText(getString(R.string.k2go_connect_scan_open));
+        subCaption.setText(getString(R.string.k2go_connect_same_wifi));
         setFallback(new String[]{browseUrl(ip)});
         finish.setVisibility(View.VISIBLE);   // same forward exit back to the library
     }

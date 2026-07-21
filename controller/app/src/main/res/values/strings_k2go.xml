@@ -88,6 +88,32 @@
     <string name="k2go_settings_advanced">Advanced</string>
     <string name="k2go_settings_turn_off">Turn off K2Go</string>
     <string name="k2go_settings_running_note">K2Go keeps running in the background until you turn it off.</string>
+    <!-- ADFA-4795: Clone/Connect extracted literals (EN); translated in follow-up commits. -->
+    <string name="k2go_clone_already_connected" translatable="false">Already connected? Continue ›</string>
+    <string name="k2go_clone_copying" translatable="false">Copying the library…</string>
+    <string name="k2go_clone_join_wifi_note" translatable="false">Get the other phone onto this Wi-Fi.</string>
+    <string name="k2go_clone_cant_join_note" translatable="false">K2Go can\'t join that network for you — connect in Settings, then Continue.</string>
+    <string name="k2go_clone_next_get_app" translatable="false">Next: get the app</string>
+    <string name="k2go_clone_nothing_title" translatable="false">Nothing to share yet</string>
+    <string name="k2go_clone_point_camera_join" translatable="false">Point its camera here to join this phone.</string>
+    <string name="k2go_clone_share_anyway" translatable="false">Share anyway</string>
+    <string name="k2go_clone_share_wifi_note" translatable="false">Share this Wi-Fi from Settings, or have them join it, then continue.</string>
+    <string name="k2go_clone_sharing_stopped" translatable="false">Sharing stopped</string>
+    <string name="k2go_clone_skip_have_app" translatable="false">Skip — they already have K2Go  ›</string>
+    <string name="k2go_clone_start_sharing" translatable="false">Start sharing</string>
+    <string name="k2go_clone_start_service_note" translatable="false">Start the service to share this phone\'s library.</string>
+    <string name="k2go_clone_starting_service" translatable="false">Starting the service…</string>
+    <string name="k2go_clone_stays_on" translatable="false">Stays on until you Stop.</string>
+    <string name="k2go_clone_step1_title" translatable="false">Step 1 · Join the other phone</string>
+    <string name="k2go_clone_step2_title" translatable="false">Step 2 · Get the app</string>
+    <string name="k2go_clone_step3_title" translatable="false">Step 3 · Copy the library</string>
+    <string name="k2go_clone_stop_sharing" translatable="false">Stop sharing</string>
+    <string name="k2go_clone_copy_begins_note" translatable="false">The copy begins when they scan this one.</string>
+    <string name="k2go_clone_no_library_note" translatable="false">This phone has no K2Go library installed. Install content first, or share anyway.</string>
+    <string name="k2go_clone_back_step1" translatable="false">‹ Back to step 1</string>
+    <string name="k2go_connect_readonly" translatable="false">Read-only access to your content.</string>
+    <string name="k2go_connect_scan_open" translatable="false">Scan to open the library</string>
+    <string name="k2go_connect_same_wifi" translatable="false">You\'re on the same Wi-Fi — one code.</string>
 
     <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
     <string name="k2go_wiki_view_list" translatable="false">List</string>
