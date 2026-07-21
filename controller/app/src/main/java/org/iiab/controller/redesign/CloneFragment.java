@@ -67,6 +67,8 @@ public class CloneFragment extends Fragment {
     private String tempPass;
     private boolean daemonStarted = false, daemonStarting = false, hostHasRootfs = false;
     private LibrarySize.Split librarySplit;  // ADFA-4780: approx system/content sizes (computed on share)
+    private LinearLayout shareCard;
+    private TextView sizeSys, sizeContent, sizeTotal;
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
 
     private ActivityResultLauncher<String> locationPerm;
@@ -120,6 +122,10 @@ public class CloneFragment extends Fragment {
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
         footer = v.findViewById(R.id.k2go_clone_footer);
+        shareCard = v.findViewById(R.id.k2go_clone_sharecard);
+        sizeSys = v.findViewById(R.id.k2go_clone_size_sys);
+        sizeContent = v.findViewById(R.id.k2go_clone_size_content);
+        sizeTotal = v.findViewById(R.id.k2go_clone_size_total);
         receiveBox = v.findViewById(R.id.k2go_clone_receive_box);
         paste = v.findViewById(R.id.k2go_clone_paste);
         receiveStart = v.findViewById(R.id.k2go_clone_receive_start);
@@ -259,6 +265,7 @@ public class CloneFragment extends Fragment {
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
+            shareCard.setVisibility(View.GONE);
             receiveBox.setVisibility(View.VISIBLE);
             renderReceive();
             return;
@@ -270,6 +277,7 @@ public class CloneFragment extends Fragment {
         subCaption.setVisibility(View.VISIBLE);
         footer.setVisibility(View.VISIBLE);   // RECEIVE hid it; restore for SEND
         stop.setVisibility(View.GONE);
+        shareCard.setVisibility(View.GONE);
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
 
@@ -321,14 +329,14 @@ public class CloneFragment extends Fragment {
             qr.setImageBitmap(null);
             caption.setText("Starting the service…");
             subCaption.setText("");
-            setFallback(null); footer.setText(""); stop.setVisibility(View.GONE);
+            setFallback(null); footer.setText(""); stop.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
             qr.setImageBitmap(null);
             caption.setText("Sharing stopped");
             subCaption.setText("Start the service to share this phone's library.");
-            setFallback(null); footer.setText("");
+            setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
             showStartButton();
             return;
         }
@@ -342,11 +350,14 @@ public class CloneFragment extends Fragment {
         showCodeAsText(payload);
         showStopButton();
         if (librarySplit != null) {
-            footer.setText("System " + LibrarySize.human(sysB) + "  ·  Content " + LibrarySize.human(contentB)
-                    + "  ·  Total " + LibrarySize.human(librarySplit.totalBytes()) + "\nStays on until you Stop.");
+            sizeSys.setText(LibrarySize.human(sysB));
+            sizeContent.setText(LibrarySize.human(contentB));
+            sizeTotal.setText(LibrarySize.human(librarySplit.totalBytes()));
+            shareCard.setVisibility(View.VISIBLE);
         } else {
-            footer.setText("Stays on until you Stop.");
+            shareCard.setVisibility(View.GONE);
         }
+        footer.setText("Stays on until you Stop.");
     }
 
     private void showStopButton() {
