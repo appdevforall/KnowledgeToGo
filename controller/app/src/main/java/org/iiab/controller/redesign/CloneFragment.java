@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,12 +31,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import java.io.File;
+import org.iiab.controller.ApkServer;
+import org.iiab.controller.BuildConfig;
 import org.iiab.controller.R;
 import org.iiab.controller.SyncHandshakeHelper;
 import org.iiab.controller.WatchdogService;
+import org.iiab.controller.sync.domain.ApkShareName;
 import org.iiab.controller.hotspot.LocalHotspotManager;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.presentation.SyncProgressRepository;
@@ -72,6 +77,12 @@ public class CloneFragment extends Fragment {
     private TextView sizeSys, sizeContent, sizeTotal;
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
     private boolean protectionOn = false; // ADFA-4782: foreground WatchdogService currently held
+    // ADFA-4785: "Send the app" sub-screen (bootstrap a phone with no K2Go) — serves the APK over HTTP.
+    private boolean sendApp = false;
+    private ApkServer apkServer;
+    private String apkFileName;
+    private LinearLayout sendAppEntry, sendAppView;
+    private ImageView sendAppQr;
 
     private ActivityResultLauncher<String> locationPerm;
 
@@ -174,6 +185,13 @@ public class CloneFragment extends Fragment {
         codetext = v.findViewById(R.id.k2go_clone_codetext);
         copyBtn = v.findViewById(R.id.k2go_clone_copy);
         shareBtn = v.findViewById(R.id.k2go_clone_share);
+        sendAppEntry = v.findViewById(R.id.k2go_sendapp_entry);
+        sendAppView = v.findViewById(R.id.k2go_sendapp_view);
+        sendAppQr = v.findViewById(R.id.k2go_sendapp_qr);
+        sendAppEntry.setOnClickListener(x -> { sendApp = true; render(); });
+        v.findViewById(R.id.k2go_sendapp_back).setOnClickListener(x -> exitSendApp());
+        v.findViewById(R.id.k2go_sendapp_next).setOnClickListener(x -> exitSendApp());
+        v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
 
         syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
         transport = syncVm.getTransport();
@@ -334,12 +352,25 @@ public class CloneFragment extends Fragment {
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
+            sendAppEntry.setVisibility(View.GONE);
+            sendAppView.setVisibility(View.GONE);
             receiveBox.setVisibility(View.VISIBLE);
             renderReceive();
             syncProtection();
             return;
         }
         receiveBox.setVisibility(View.GONE);
+        if (sendApp) {   // ADFA-4785: "Send the app" sub-screen replaces the normal Send flow
+            netRow.setVisibility(View.GONE); steps.setVisibility(View.GONE); qr.setVisibility(View.GONE);
+            caption.setVisibility(View.GONE); subCaption.setVisibility(View.GONE); footer.setVisibility(View.GONE);
+            fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
+            shareCard.setVisibility(View.GONE); sendAppEntry.setVisibility(View.GONE);
+            sendAppView.setVisibility(View.VISIBLE);
+            renderSendApp();
+            return;
+        }
+        sendAppView.setVisibility(View.GONE);
+        sendAppEntry.setVisibility(View.GONE);   // renderHotspot's JOIN stage re-shows it
         netRow.setVisibility(View.VISIBLE);
         qr.setVisibility(View.VISIBLE);
         caption.setVisibility(View.VISIBLE);
@@ -376,6 +407,7 @@ public class CloneFragment extends Fragment {
             advance.setText("Show code 2 ›");
             styleAdvance(true);
             footer.setText("");
+            sendAppEntry.setVisibility(View.VISIBLE);   // ADFA-4785: bootstrap entry on the first Send screen
         } else {
             advance.setText("‹ Back to step 1");
             styleAdvance(false);
@@ -428,6 +460,60 @@ public class CloneFragment extends Fragment {
             shareCard.setVisibility(View.GONE);
         }
         footer.setText("Stays on until you Stop.");
+    }
+
+    // ------------------------------------------------------------ "Send the app" (ADFA-4785)
+
+    private void renderSendApp() {
+        startApkServer();
+        NetworkInterfaces.LanIps net = NetworkInterfaces.discover();
+        String ip = (net.hotspotIp != null) ? net.hotspotIp : net.wifiIp;
+        if (ip == null || apkServer == null) { sendAppQr.setImageBitmap(null); return; }
+        String url = "http://" + ip + ":" + shareConfig.apkPort + "/" + apkFileName;
+        sendAppQr.setImageBitmap(SyncHandshakeHelper.generateQrCode(url, 500));
+    }
+
+    private void startApkServer() {
+        if (apkServer != null) return;
+        try {
+            String apkPath = requireContext().getApplicationInfo().sourceDir;
+            String arch = (archBits() == 64) ? "arm64-v8a" : "armeabi-v7a";
+            apkFileName = ApkShareName.fileName(BuildConfig.VERSION_NAME, arch);
+            apkServer = new ApkServer(shareConfig.apkPort, apkPath, apkFileName);
+            apkServer.start();
+        } catch (Exception e) {
+            Log.e("IIAB-Clone", "APK server failed to start", e);
+            Toast.makeText(requireContext(), "Couldn't start the app share", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void stopApkServer() {
+        if (apkServer != null) {
+            try { apkServer.stop(); } catch (Exception ignored) { }
+            apkServer = null;
+        }
+    }
+
+    private void exitSendApp() {
+        stopApkServer();
+        sendApp = false;
+        render();
+    }
+
+    /** Fallback for a phone that can't scan: hand the installed APK to the Android share sheet. */
+    private void shareApkViaSheet() {
+        try {
+            File apk = new File(requireContext().getApplicationInfo().sourceDir);
+            Uri uri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", apk);
+            Intent i = new Intent(Intent.ACTION_SEND)
+                    .setType("application/vnd.android.package-archive")
+                    .putExtra(Intent.EXTRA_STREAM, uri)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(i, "Share K2Go app"));
+        } catch (Exception e) {
+            Log.e("IIAB-Clone", "APK share sheet failed", e);
+            Toast.makeText(requireContext(), "Couldn't open the share sheet", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showStopButton() {
@@ -654,6 +740,7 @@ public class CloneFragment extends Fragment {
         // keeps the (app-scoped) WatchdogService alive so leaving the tab doesn't cut the transfer.
         if (!SyncProgressRepository.get().isActive() && !daemonStarted) stopProtection();
         if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
+        stopApkServer();   // ADFA-4785
     }
 
     private void confirmStop() {
