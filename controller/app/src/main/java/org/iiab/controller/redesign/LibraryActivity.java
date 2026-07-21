@@ -35,6 +35,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private static final long NO_SYSTEM_GATE_MS = 900L;
     /** Set by the Setup "Download" so the gate waits for the install to finish, not a timeout. */
     public static final String EXTRA_INSTALLING = "installing";
+    /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
+    public static final String EXTRA_TAB = "tab";
     private boolean installing = false;
 
     private ServerController serverController;
@@ -70,7 +72,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             return true;
         });
         if (savedInstanceState == null) {
-            nav.setSelectedItemId(R.id.nav_library);
+            nav.setSelectedItemId(getIntent().getIntExtra(EXTRA_TAB, R.id.nav_library));   // ADFA-4777
         }
 
         bootGate = findViewById(R.id.k2go_boot_gate);
