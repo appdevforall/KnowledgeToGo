@@ -8,6 +8,22 @@ plugins {
 // Assigns a unique ID to each architecture so Version Codes do not collide.
 ext.abiCodes = ['armeabi-v7a': 1, 'arm64-v8a': 2]
 
+// ADFA-4787: make every build traceable to its commit. Reads the short git SHA (plus a "-dirty"
+// marker for an unclean working tree) so LOCAL Android Studio builds are stamped too — CI still
+// overrides this via -PversionSuffix. Degrades to "" if git isn't available (e.g. source tarball),
+// so the build never fails.
+def gitShortSha = {
+    try {
+        def sha = "git rev-parse --short HEAD".execute(null, rootProject.projectDir).text.trim()
+        if (sha.isEmpty()) return ""
+        def status = "git status --porcelain".execute(null, rootProject.projectDir).text.trim()
+        return status.isEmpty() ? sha : sha + "-dirty"
+    } catch (ignored) {
+        return ""
+    }
+}
+ext.gitSha = gitShortSha()
+
 android {
     // 2. Identity
     namespace 'org.iiab.controller'
@@ -23,9 +39,12 @@ android {
         // 3. Version Control (OTA)
         // NOTE: With splits enabled, this number will be multiplied by 10 (e.g. 50 -> 500, 501, 502)
         versionCode 58
-        // Dynamic version suffix injected via CI/CD (e.g., "-a1b2c3d")
-        def ciSuffix = project.hasProperty('versionSuffix') ? project.property('versionSuffix') : ""
+        // Dynamic version suffix: CI passes -PversionSuffix explicitly; local builds fall back to
+        // the git short SHA (ADFA-4787) so any installed APK is traceable to its commit.
+        def ciSuffix = project.hasProperty('versionSuffix') ? project.property('versionSuffix')
+                : (project.ext.gitSha ? "-${project.ext.gitSha}" : "")
         versionName "v0.5.1-beta${ciSuffix}"
+        buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
 
         setProperty("archivesBaseName", "$applicationId-$versionName")
 
