@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Zavrieť</string>
     <string name="install_error_verify">Stiahnuté systémové súbory neprešli kontrolou integrity (neúplné alebo poškodené). Skúste inštaláciu znova.</string>
     <string name="install_btn_select_content">Vybrať obsah</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Knižnica</string>
+    <string name="k2go_tab_connect">Pripojiť</string>
+    <string name="k2go_tab_clone">Klonovať</string>
+    <string name="k2go_tab_settings">Nastavenia</string>
+    <string name="k2go_next">Ďalej</string>
+    <string name="k2go_back">Späť</string>
+    <string name="k2go_back_link">‹ Späť</string>
+    <string name="k2go_skip">Preskočiť</string>
+    <string name="k2go_add">Pridať</string>
+    <string name="k2go_get_started">Začať</string>
+    <string name="k2go_continue">Pokračovať</string>
+    <string name="k2go_welcome_sub">Knižnica vo vašom vrecku</string>
+    <string name="k2go_lang_system_default">Predvolené systémom</string>
+    <string name="k2go_wiz_choose_language">Vybrať jazyk</string>
+    <string name="k2go_wiz_language_sub">Nastaví jazyk aplikácie a obsahu.</string>
+    <string name="k2go_wiz_permissions_title">Povoliť niekoľko vecí</string>
+    <string name="k2go_perm_notifications">Upozornenia</string>
+    <string name="k2go_perm_notifications_sub">priebeh sťahovania</string>
+    <string name="k2go_perm_storage">Prístup k úložisku</string>
+    <string name="k2go_perm_storage_sub">ukladať a poskytovať obsah</string>
+    <string name="k2go_perm_keep_running">Ponechať spustené</string>
+    <string name="k2go_perm_keep_running_sub">ignorovať obmedzenia batérie</string>
+    <string name="k2go_perm_allow">Povoliť</string>
+    <string name="k2go_perm_nearby_note">Zariadenia v okolí sa vyžiadajú neskôr, len pri zdieľaní.</string>
+    <string name="k2go_setup_library_title">Nastavte si knižnicu</string>
+    <string name="k2go_wiz_setup_sub">Ako ju chcete?</string>
+    <string name="k2go_internet_download">Stiahnutie z internetu</string>
+    <string name="k2go_internet_download_sub">systém + obsah · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Kopírovať z telefónu</string>
+    <string name="k2go_skip_for_now">Zatiaľ preskočiť ›</string>
+    <string name="k2go_download_library">Stiahnuť knižnicu</string>
 </resources>

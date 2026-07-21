@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Funga</string>
     <string name="install_error_verify">Faili za mfumo zilizopakuliwa hazikupita ukaguzi wa uadilifu (hazijakamilika au zimeharibika). Tafadhali jaribu kusakinisha tena.</string>
     <string name="install_btn_select_content">Chagua maudhui</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). review — machine, verify. -->
+    <string name="k2go_tab_library">Maktaba</string>
+    <string name="k2go_tab_connect">Unganisha</string>
+    <string name="k2go_tab_clone">Nakili</string>
+    <string name="k2go_tab_settings">Mipangilio</string>
+    <string name="k2go_next">Endelea</string>
+    <string name="k2go_back">Nyuma</string>
+    <string name="k2go_back_link">‹ Nyuma</string>
+    <string name="k2go_skip">Ruka</string>
+    <string name="k2go_add">Ongeza</string>
+    <string name="k2go_get_started">Anza</string>
+    <string name="k2go_continue">Endelea</string>
+    <string name="k2go_welcome_sub">Maktaba mfukoni mwako</string>
+    <string name="k2go_lang_system_default">Chaguomsingi la mfumo</string>
+    <string name="k2go_wiz_choose_language">Chagua lugha</string>
+    <string name="k2go_wiz_language_sub">Huweka lugha ya programu na maudhui.</string>
+    <string name="k2go_wiz_permissions_title">Ruhusu mambo machache</string>
+    <string name="k2go_perm_notifications">Arifa</string>
+    <string name="k2go_perm_notifications_sub">maendeleo ya upakuaji</string>
+    <string name="k2go_perm_storage">Ufikiaji wa hifadhi</string>
+    <string name="k2go_perm_storage_sub">hifadhi na tumikia maudhui</string>
+    <string name="k2go_perm_keep_running">Endelea kufanya kazi</string>
+    <string name="k2go_perm_keep_running_sub">puuza vikomo vya betri</string>
+    <string name="k2go_perm_allow">Ruhusu</string>
+    <string name="k2go_perm_nearby_note">Vifaa vilivyo karibu vitaulizwa baadaye, tu wakati wa kushiriki.</string>
+    <string name="k2go_setup_library_title">Sanidi maktaba yako</string>
+    <string name="k2go_wiz_setup_sub">Unaitakaje?</string>
+    <string name="k2go_internet_download">Upakuaji wa intaneti</string>
+    <string name="k2go_internet_download_sub">mfumo + maudhui · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Nakili kutoka kwa simu</string>
+    <string name="k2go_skip_for_now">Ruka kwa sasa ›</string>
+    <string name="k2go_download_library">Pakua maktaba</string>
 </resources>

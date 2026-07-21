@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Închide</string>
     <string name="install_error_verify">Fișierele de sistem descărcate nu au trecut verificarea integrității (incomplete sau corupte). Încercați din nou instalarea.</string>
     <string name="install_btn_select_content">Selectează conținut</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Bibliotecă</string>
+    <string name="k2go_tab_connect">Conectare</string>
+    <string name="k2go_tab_clone">Clonare</string>
+    <string name="k2go_tab_settings">Setări</string>
+    <string name="k2go_next">Înainte</string>
+    <string name="k2go_back">Înapoi</string>
+    <string name="k2go_back_link">‹ Înapoi</string>
+    <string name="k2go_skip">Omite</string>
+    <string name="k2go_add">Adaugă</string>
+    <string name="k2go_get_started">Începe</string>
+    <string name="k2go_continue">Continuă</string>
+    <string name="k2go_welcome_sub">O bibliotecă în buzunarul tău</string>
+    <string name="k2go_lang_system_default">Implicit de sistem</string>
+    <string name="k2go_wiz_choose_language">Alege limba</string>
+    <string name="k2go_wiz_language_sub">Setează limba aplicației și a conținutului.</string>
+    <string name="k2go_wiz_permissions_title">Permite câteva lucruri</string>
+    <string name="k2go_perm_notifications">Notificări</string>
+    <string name="k2go_perm_notifications_sub">progresul descărcării</string>
+    <string name="k2go_perm_storage">Acces la stocare</string>
+    <string name="k2go_perm_storage_sub">stochează și oferă conținut</string>
+    <string name="k2go_perm_keep_running">Menține activ</string>
+    <string name="k2go_perm_keep_running_sub">ignoră limitele bateriei</string>
+    <string name="k2go_perm_allow">Permite</string>
+    <string name="k2go_perm_nearby_note">Dispozitivele din apropiere sunt solicitate mai târziu, doar la partajare.</string>
+    <string name="k2go_setup_library_title">Configurează-ți biblioteca</string>
+    <string name="k2go_wiz_setup_sub">Cum o vrei?</string>
+    <string name="k2go_internet_download">Descărcare de pe internet</string>
+    <string name="k2go_internet_download_sub">sistem + conținut · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Copiază de pe un telefon</string>
+    <string name="k2go_skip_for_now">Omite deocamdată ›</string>
+    <string name="k2go_download_library">Descarcă biblioteca</string>
 </resources>

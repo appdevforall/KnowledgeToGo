@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Κλείσιμο</string>
     <string name="install_error_verify">Τα ληφθέντα αρχεία συστήματος απέτυχαν στον έλεγχο ακεραιότητας (ελλιπή ή κατεστραμμένα). Δοκιμάστε ξανά την εγκατάσταση.</string>
     <string name="install_btn_select_content">Επιλογή περιεχομένου</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Βιβλιοθήκη</string>
+    <string name="k2go_tab_connect">Σύνδεση</string>
+    <string name="k2go_tab_clone">Κλωνοποίηση</string>
+    <string name="k2go_tab_settings">Ρυθμίσεις</string>
+    <string name="k2go_next">Επόμενο</string>
+    <string name="k2go_back">Πίσω</string>
+    <string name="k2go_back_link">‹ Πίσω</string>
+    <string name="k2go_skip">Παράλειψη</string>
+    <string name="k2go_add">Προσθήκη</string>
+    <string name="k2go_get_started">Ξεκινήστε</string>
+    <string name="k2go_continue">Συνέχεια</string>
+    <string name="k2go_welcome_sub">Μια βιβλιοθήκη στην τσέπη σας</string>
+    <string name="k2go_lang_system_default">Προεπιλογή συστήματος</string>
+    <string name="k2go_wiz_choose_language">Επιλογή γλώσσας</string>
+    <string name="k2go_wiz_language_sub">Ορίζει τη γλώσσα εφαρμογής και περιεχομένου.</string>
+    <string name="k2go_wiz_permissions_title">Επιτρέψτε μερικά πράγματα</string>
+    <string name="k2go_perm_notifications">Ειδοποιήσεις</string>
+    <string name="k2go_perm_notifications_sub">πρόοδος λήψης</string>
+    <string name="k2go_perm_storage">Πρόσβαση στον αποθηκευτικό χώρο</string>
+    <string name="k2go_perm_storage_sub">αποθήκευση και διάθεση περιεχομένου</string>
+    <string name="k2go_perm_keep_running">Διατήρηση σε λειτουργία</string>
+    <string name="k2go_perm_keep_running_sub">παράβλεψη ορίων μπαταρίας</string>
+    <string name="k2go_perm_allow">Επιτρέπω</string>
+    <string name="k2go_perm_nearby_note">Οι κοντινές συσκευές ζητούνται αργότερα, μόνο κατά την κοινή χρήση.</string>
+    <string name="k2go_setup_library_title">Ρυθμίστε τη βιβλιοθήκη σας</string>
+    <string name="k2go_wiz_setup_sub">Πώς τη θέλετε;</string>
+    <string name="k2go_internet_download">Λήψη από το διαδίκτυο</string>
+    <string name="k2go_internet_download_sub">σύστημα + περιεχόμενο · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Αντιγραφή από τηλέφωνο</string>
+    <string name="k2go_skip_for_now">Παράλειψη προς το παρόν ›</string>
+    <string name="k2go_download_library">Λήψη βιβλιοθήκης</string>
 </resources>

@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Zamknij</string>
     <string name="install_error_verify">Pobrane pliki systemowe nie przeszły weryfikacji integralności (niekompletne lub uszkodzone). Spróbuj zainstalować ponownie.</string>
     <string name="install_btn_select_content">Wybierz treść</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Biblioteka</string>
+    <string name="k2go_tab_connect">Połącz</string>
+    <string name="k2go_tab_clone">Klonuj</string>
+    <string name="k2go_tab_settings">Ustawienia</string>
+    <string name="k2go_next">Dalej</string>
+    <string name="k2go_back">Wstecz</string>
+    <string name="k2go_back_link">‹ Wstecz</string>
+    <string name="k2go_skip">Pomiń</string>
+    <string name="k2go_add">Dodaj</string>
+    <string name="k2go_get_started">Rozpocznij</string>
+    <string name="k2go_continue">Kontynuuj</string>
+    <string name="k2go_welcome_sub">Biblioteka w twojej kieszeni</string>
+    <string name="k2go_lang_system_default">Domyślne systemu</string>
+    <string name="k2go_wiz_choose_language">Wybierz język</string>
+    <string name="k2go_wiz_language_sub">Ustawia język aplikacji i treści.</string>
+    <string name="k2go_wiz_permissions_title">Zezwól na kilka rzeczy</string>
+    <string name="k2go_perm_notifications">Powiadomienia</string>
+    <string name="k2go_perm_notifications_sub">postęp pobierania</string>
+    <string name="k2go_perm_storage">Dostęp do pamięci</string>
+    <string name="k2go_perm_storage_sub">przechowuj i udostępniaj treści</string>
+    <string name="k2go_perm_keep_running">Nie zatrzymuj</string>
+    <string name="k2go_perm_keep_running_sub">ignoruj limity baterii</string>
+    <string name="k2go_perm_allow">Zezwól</string>
+    <string name="k2go_perm_nearby_note">Urządzenia w pobliżu zostaną poproszone później, tylko przy udostępnianiu.</string>
+    <string name="k2go_setup_library_title">Skonfiguruj swoją bibliotekę</string>
+    <string name="k2go_wiz_setup_sub">Jak ją chcesz?</string>
+    <string name="k2go_internet_download">Pobieranie z internetu</string>
+    <string name="k2go_internet_download_sub">system + treść · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Kopiuj z telefonu</string>
+    <string name="k2go_skip_for_now">Pomiń na razie ›</string>
+    <string name="k2go_download_library">Pobierz bibliotekę</string>
 </resources>

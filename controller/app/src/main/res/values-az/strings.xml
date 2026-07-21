@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Bağla</string>
     <string name="install_error_verify">Yüklənmiş sistem faylları bütövlük yoxlamasından keçmədi (natamam və ya zədələnmiş). Zəhmət olmasa quraşdırmanı yenidən sınayın.</string>
     <string name="install_btn_select_content">Məzmun seçin</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). review — machine, verify. -->
+    <string name="k2go_tab_library">Kitabxana</string>
+    <string name="k2go_tab_connect">Qoşul</string>
+    <string name="k2go_tab_clone">Klonla</string>
+    <string name="k2go_tab_settings">Ayarlar</string>
+    <string name="k2go_next">İrəli</string>
+    <string name="k2go_back">Geri</string>
+    <string name="k2go_back_link">‹ Geri</string>
+    <string name="k2go_skip">Ötür</string>
+    <string name="k2go_add">Əlavə et</string>
+    <string name="k2go_get_started">Başla</string>
+    <string name="k2go_continue">Davam et</string>
+    <string name="k2go_welcome_sub">Cibinizdə bir kitabxana</string>
+    <string name="k2go_lang_system_default">Sistem defoltu</string>
+    <string name="k2go_wiz_choose_language">Dil seçin</string>
+    <string name="k2go_wiz_language_sub">Tətbiq və məzmun dilini təyin edir.</string>
+    <string name="k2go_wiz_permissions_title">Bir neçə şeyə icazə verin</string>
+    <string name="k2go_perm_notifications">Bildirişlər</string>
+    <string name="k2go_perm_notifications_sub">endirmə gedişatı</string>
+    <string name="k2go_perm_storage">Yaddaşa giriş</string>
+    <string name="k2go_perm_storage_sub">məzmunu saxla və təqdim et</string>
+    <string name="k2go_perm_keep_running">İşləməyə davam et</string>
+    <string name="k2go_perm_keep_running_sub">batareya limitlərini nəzərə alma</string>
+    <string name="k2go_perm_allow">İcazə ver</string>
+    <string name="k2go_perm_nearby_note">Yaxınlıqdakı cihazlar sonra, yalnız paylaşarkən soruşulur.</string>
+    <string name="k2go_setup_library_title">Kitabxananızı qurun</string>
+    <string name="k2go_wiz_setup_sub">Necə istəyirsiniz?</string>
+    <string name="k2go_internet_download">İnternetdən endir</string>
+    <string name="k2go_internet_download_sub">sistem + məzmun · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Telefondan kopyala</string>
+    <string name="k2go_skip_for_now">Hələlik ötür ›</string>
+    <string name="k2go_download_library">Kitabxananı endir</string>
 </resources>

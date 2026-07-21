@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">বন্ধ করুন</string>
     <string name="install_error_verify">ডাউনলোড করা সিস্টেম ফাইলগুলি অখণ্ডতা যাচাইয়ে ব্যর্থ হয়েছে (অসম্পূর্ণ বা ক্ষতিগ্রস্ত)। অনুগ্রহ করে আবার ইনস্টল করার চেষ্টা করুন।</string>
     <string name="install_btn_select_content">কন্টেন্ট নির্বাচন</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). review — machine, verify. -->
+    <string name="k2go_tab_library">লাইব্রেরি</string>
+    <string name="k2go_tab_connect">সংযোগ</string>
+    <string name="k2go_tab_clone">ক্লোন</string>
+    <string name="k2go_tab_settings">সেটিংস</string>
+    <string name="k2go_next">পরবর্তী</string>
+    <string name="k2go_back">পিছনে</string>
+    <string name="k2go_back_link">‹ পিছনে</string>
+    <string name="k2go_skip">এড়িয়ে যান</string>
+    <string name="k2go_add">যোগ করুন</string>
+    <string name="k2go_get_started">শুরু করুন</string>
+    <string name="k2go_continue">চালিয়ে যান</string>
+    <string name="k2go_welcome_sub">আপনার পকেটে একটি লাইব্রেরি</string>
+    <string name="k2go_lang_system_default">সিস্টেম ডিফল্ট</string>
+    <string name="k2go_wiz_choose_language">ভাষা নির্বাচন করুন</string>
+    <string name="k2go_wiz_language_sub">অ্যাপ ও সামগ্রীর ভাষা নির্ধারণ করে।</string>
+    <string name="k2go_wiz_permissions_title">কয়েকটি বিষয় অনুমতি দিন</string>
+    <string name="k2go_perm_notifications">বিজ্ঞপ্তি</string>
+    <string name="k2go_perm_notifications_sub">ডাউনলোড অগ্রগতি</string>
+    <string name="k2go_perm_storage">স্টোরেজ অ্যাক্সেস</string>
+    <string name="k2go_perm_storage_sub">সামগ্রী সংরক্ষণ ও পরিবেশন করুন</string>
+    <string name="k2go_perm_keep_running">চালু রাখুন</string>
+    <string name="k2go_perm_keep_running_sub">ব্যাটারির সীমা উপেক্ষা করুন</string>
+    <string name="k2go_perm_allow">অনুমতি দিন</string>
+    <string name="k2go_perm_nearby_note">কাছাকাছি ডিভাইস পরে, শুধু শেয়ার করার সময় জিজ্ঞাসা করা হয়।</string>
+    <string name="k2go_setup_library_title">আপনার লাইব্রেরি সেট আপ করুন</string>
+    <string name="k2go_wiz_setup_sub">আপনি কীভাবে চান?</string>
+    <string name="k2go_internet_download">ইন্টারনেট ডাউনলোড</string>
+    <string name="k2go_internet_download_sub">সিস্টেম + সামগ্রী · 3 GB+</string>
+    <string name="k2go_copy_from_phone">একটি ফোন থেকে কপি করুন</string>
+    <string name="k2go_skip_for_now">আপাতত এড়িয়ে যান ›</string>
+    <string name="k2go_download_library">লাইব্রেরি ডাউনলোড করুন</string>
 </resources>

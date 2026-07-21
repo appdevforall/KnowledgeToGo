@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Lukk</string>
     <string name="install_error_verify">De nedlastede systemfilene besto ikke integritetskontrollen (ufullstendige eller skadede). Prøv å installere på nytt.</string>
     <string name="install_btn_select_content">Velg innhold</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Bibliotek</string>
+    <string name="k2go_tab_connect">Koble til</string>
+    <string name="k2go_tab_clone">Klon</string>
+    <string name="k2go_tab_settings">Innstillinger</string>
+    <string name="k2go_next">Neste</string>
+    <string name="k2go_back">Tilbake</string>
+    <string name="k2go_back_link">‹ Tilbake</string>
+    <string name="k2go_skip">Hopp over</string>
+    <string name="k2go_add">Legg til</string>
+    <string name="k2go_get_started">Kom i gang</string>
+    <string name="k2go_continue">Fortsett</string>
+    <string name="k2go_welcome_sub">Et bibliotek i lomma</string>
+    <string name="k2go_lang_system_default">Systemstandard</string>
+    <string name="k2go_wiz_choose_language">Velg språk</string>
+    <string name="k2go_wiz_language_sub">Angir språk for app og innhold.</string>
+    <string name="k2go_wiz_permissions_title">Tillat noen ting</string>
+    <string name="k2go_perm_notifications">Varsler</string>
+    <string name="k2go_perm_notifications_sub">nedlastingsfremdrift</string>
+    <string name="k2go_perm_storage">Lagringstilgang</string>
+    <string name="k2go_perm_storage_sub">lagre og dele innhold</string>
+    <string name="k2go_perm_keep_running">Hold i gang</string>
+    <string name="k2go_perm_keep_running_sub">ignorer batterigrenser</string>
+    <string name="k2go_perm_allow">Tillat</string>
+    <string name="k2go_perm_nearby_note">Enheter i nærheten spørres senere, bare ved deling.</string>
+    <string name="k2go_setup_library_title">Sett opp biblioteket ditt</string>
+    <string name="k2go_wiz_setup_sub">Hvordan vil du ha det?</string>
+    <string name="k2go_internet_download">Nedlasting via internett</string>
+    <string name="k2go_internet_download_sub">system + innhold · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Kopier fra en telefon</string>
+    <string name="k2go_skip_for_now">Hopp over for nå ›</string>
+    <string name="k2go_download_library">Last ned bibliotek</string>
 </resources>

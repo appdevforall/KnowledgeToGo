@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Uždaryti</string>
     <string name="install_error_verify">Atsisiųsti sistemos failai neišlaikė vientisumo patikros (neišsamūs arba sugadinti). Bandykite įdiegti dar kartą.</string>
     <string name="install_btn_select_content">Pasirinkti turinį</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Biblioteka</string>
+    <string name="k2go_tab_connect">Prisijungti</string>
+    <string name="k2go_tab_clone">Klonuoti</string>
+    <string name="k2go_tab_settings">Nustatymai</string>
+    <string name="k2go_next">Toliau</string>
+    <string name="k2go_back">Atgal</string>
+    <string name="k2go_back_link">‹ Atgal</string>
+    <string name="k2go_skip">Praleisti</string>
+    <string name="k2go_add">Pridėti</string>
+    <string name="k2go_get_started">Pradėti</string>
+    <string name="k2go_continue">Tęsti</string>
+    <string name="k2go_welcome_sub">Biblioteka jūsų kišenėje</string>
+    <string name="k2go_lang_system_default">Sistemos numatytasis</string>
+    <string name="k2go_wiz_choose_language">Pasirinkti kalbą</string>
+    <string name="k2go_wiz_language_sub">Nustato programos ir turinio kalbą.</string>
+    <string name="k2go_wiz_permissions_title">Leisti kelis dalykus</string>
+    <string name="k2go_perm_notifications">Pranešimai</string>
+    <string name="k2go_perm_notifications_sub">atsisiuntimo eiga</string>
+    <string name="k2go_perm_storage">Saugyklos prieiga</string>
+    <string name="k2go_perm_storage_sub">saugoti ir teikti turinį</string>
+    <string name="k2go_perm_keep_running">Palikti veikiantį</string>
+    <string name="k2go_perm_keep_running_sub">nepaisyti baterijos apribojimų</string>
+    <string name="k2go_perm_allow">Leisti</string>
+    <string name="k2go_perm_nearby_note">Netoliese esančių įrenginių prašoma vėliau, tik dalijantis.</string>
+    <string name="k2go_setup_library_title">Nustatykite savo biblioteką</string>
+    <string name="k2go_wiz_setup_sub">Kaip norite?</string>
+    <string name="k2go_internet_download">Atsisiuntimas iš interneto</string>
+    <string name="k2go_internet_download_sub">sistema + turinys · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Kopijuoti iš telefono</string>
+    <string name="k2go_skip_for_now">Kol kas praleisti ›</string>
+    <string name="k2go_download_library">Atsisiųsti biblioteką</string>
 </resources>

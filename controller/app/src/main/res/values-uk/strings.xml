@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Закрити</string>
     <string name="install_error_verify">Завантажені системні файли не пройшли перевірку цілісності (неповні або пошкоджені). Повторіть встановлення.</string>
     <string name="install_btn_select_content">Вибрати вміст</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Бібліотека</string>
+    <string name="k2go_tab_connect">Підключити</string>
+    <string name="k2go_tab_clone">Клонувати</string>
+    <string name="k2go_tab_settings">Налаштування</string>
+    <string name="k2go_next">Далі</string>
+    <string name="k2go_back">Назад</string>
+    <string name="k2go_back_link">‹ Назад</string>
+    <string name="k2go_skip">Пропустити</string>
+    <string name="k2go_add">Додати</string>
+    <string name="k2go_get_started">Почати</string>
+    <string name="k2go_continue">Продовжити</string>
+    <string name="k2go_welcome_sub">Бібліотека у вашій кишені</string>
+    <string name="k2go_lang_system_default">Системні за замовчуванням</string>
+    <string name="k2go_wiz_choose_language">Вибрати мову</string>
+    <string name="k2go_wiz_language_sub">Задає мову застосунку та вмісту.</string>
+    <string name="k2go_wiz_permissions_title">Дозволити кілька речей</string>
+    <string name="k2go_perm_notifications">Сповіщення</string>
+    <string name="k2go_perm_notifications_sub">хід завантаження</string>
+    <string name="k2go_perm_storage">Доступ до сховища</string>
+    <string name="k2go_perm_storage_sub">зберігати та роздавати вміст</string>
+    <string name="k2go_perm_keep_running">Не зупиняти</string>
+    <string name="k2go_perm_keep_running_sub">ігнорувати обмеження батареї</string>
+    <string name="k2go_perm_allow">Дозволити</string>
+    <string name="k2go_perm_nearby_note">Пристрої поблизу запитуються пізніше, лише під час надсилання.</string>
+    <string name="k2go_setup_library_title">Налаштуйте свою бібліотеку</string>
+    <string name="k2go_wiz_setup_sub">Як ви хочете?</string>
+    <string name="k2go_internet_download">Завантаження з інтернету</string>
+    <string name="k2go_internet_download_sub">система + вміст · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Копіювати з телефону</string>
+    <string name="k2go_skip_for_now">Поки пропустити ›</string>
+    <string name="k2go_download_library">Завантажити бібліотеку</string>
 </resources>

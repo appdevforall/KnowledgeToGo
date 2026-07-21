@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">닫기</string>
     <string name="install_error_verify">다운로드한 시스템 파일이 무결성 검사를 통과하지 못했습니다(불완전하거나 손상됨). 설치를 다시 시도해 주세요.</string>
     <string name="install_btn_select_content">콘텐츠 선택</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">라이브러리</string>
+    <string name="k2go_tab_connect">연결</string>
+    <string name="k2go_tab_clone">복제</string>
+    <string name="k2go_tab_settings">설정</string>
+    <string name="k2go_next">다음</string>
+    <string name="k2go_back">뒤로</string>
+    <string name="k2go_back_link">‹ 뒤로</string>
+    <string name="k2go_skip">건너뛰기</string>
+    <string name="k2go_add">추가</string>
+    <string name="k2go_get_started">시작하기</string>
+    <string name="k2go_continue">계속</string>
+    <string name="k2go_welcome_sub">주머니 속 도서관</string>
+    <string name="k2go_lang_system_default">시스템 기본값</string>
+    <string name="k2go_wiz_choose_language">언어 선택</string>
+    <string name="k2go_wiz_language_sub">앱과 콘텐츠 언어를 설정합니다.</string>
+    <string name="k2go_wiz_permissions_title">몇 가지 권한 허용</string>
+    <string name="k2go_perm_notifications">알림</string>
+    <string name="k2go_perm_notifications_sub">다운로드 진행률</string>
+    <string name="k2go_perm_storage">저장소 액세스</string>
+    <string name="k2go_perm_storage_sub">콘텐츠 저장 및 제공</string>
+    <string name="k2go_perm_keep_running">계속 실행</string>
+    <string name="k2go_perm_keep_running_sub">배터리 제한 무시</string>
+    <string name="k2go_perm_allow">허용</string>
+    <string name="k2go_perm_nearby_note">근처 기기는 나중에 공유할 때만 요청됩니다.</string>
+    <string name="k2go_setup_library_title">라이브러리 설정</string>
+    <string name="k2go_wiz_setup_sub">어떻게 하시겠어요?</string>
+    <string name="k2go_internet_download">인터넷 다운로드</string>
+    <string name="k2go_internet_download_sub">시스템 + 콘텐츠 · 3 GB+</string>
+    <string name="k2go_copy_from_phone">휴대폰에서 복사</string>
+    <string name="k2go_skip_for_now">지금은 건너뛰기 ›</string>
+    <string name="k2go_download_library">라이브러리 다운로드</string>
 </resources>

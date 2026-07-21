@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">மூடு</string>
     <string name="install_error_verify">பதிவிறக்கிய கணினி கோப்புகள் ஒருமைப்பாட்டுச் சரிபார்ப்பில் தோல்வியடைந்தன (முழுமையற்றவை அல்லது சிதைந்தவை). மீண்டும் நிறுவ முயற்சிக்கவும்.</string>
     <string name="install_btn_select_content">உள்ளடக்கத்தைத் தேர்ந்தெடுக்கவும்</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). review — machine, verify. -->
+    <string name="k2go_tab_library">நூலகம்</string>
+    <string name="k2go_tab_connect">இணை</string>
+    <string name="k2go_tab_clone">நகலெடு</string>
+    <string name="k2go_tab_settings">அமைப்புகள்</string>
+    <string name="k2go_next">அடுத்து</string>
+    <string name="k2go_back">பின்</string>
+    <string name="k2go_back_link">‹ பின்</string>
+    <string name="k2go_skip">தவிர்</string>
+    <string name="k2go_add">சேர்</string>
+    <string name="k2go_get_started">தொடங்கு</string>
+    <string name="k2go_continue">தொடர்</string>
+    <string name="k2go_welcome_sub">உங்கள் பாக்கெட்டில் ஒரு நூலகம்</string>
+    <string name="k2go_lang_system_default">கணினி இயல்புநிலை</string>
+    <string name="k2go_wiz_choose_language">மொழியைத் தேர்வுசெய்</string>
+    <string name="k2go_wiz_language_sub">ஆப் மற்றும் உள்ளடக்கத்தின் மொழியை அமைக்கிறது.</string>
+    <string name="k2go_wiz_permissions_title">சில விஷயங்களை அனுமதிக்கவும்</string>
+    <string name="k2go_perm_notifications">அறிவிப்புகள்</string>
+    <string name="k2go_perm_notifications_sub">பதிவிறக்க முன்னேற்றம்</string>
+    <string name="k2go_perm_storage">சேமிப்பக அணுகல்</string>
+    <string name="k2go_perm_storage_sub">உள்ளடக்கத்தைச் சேமித்து வழங்கவும்</string>
+    <string name="k2go_perm_keep_running">இயங்க வைத்திரு</string>
+    <string name="k2go_perm_keep_running_sub">பேட்டரி வரம்புகளைப் புறக்கணி</string>
+    <string name="k2go_perm_allow">அனுமதி</string>
+    <string name="k2go_perm_nearby_note">அருகிலுள்ள சாதனங்கள் பின்னர், பகிரும்போது மட்டுமே கேட்கப்படும்.</string>
+    <string name="k2go_setup_library_title">உங்கள் நூலகத்தை அமைக்கவும்</string>
+    <string name="k2go_wiz_setup_sub">அதை எப்படி விரும்புகிறீர்கள்?</string>
+    <string name="k2go_internet_download">இணைய பதிவிறக்கம்</string>
+    <string name="k2go_internet_download_sub">கணினி + உள்ளடக்கம் · 3 GB+</string>
+    <string name="k2go_copy_from_phone">தொலைபேசியிலிருந்து நகலெடு</string>
+    <string name="k2go_skip_for_now">இப்போதைக்கு தவிர் ›</string>
+    <string name="k2go_download_library">நூலகத்தைப் பதிவிறக்கு</string>
 </resources>

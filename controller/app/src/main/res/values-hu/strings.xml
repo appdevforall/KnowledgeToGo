@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Bezárás</string>
     <string name="install_error_verify">A letöltött rendszerfájlok nem mentek át az integritásellenőrzésen (hiányosak vagy sérültek). Kérjük, próbálja meg újra a telepítést.</string>
     <string name="install_btn_select_content">Tartalom kiválasztása</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Könyvtár</string>
+    <string name="k2go_tab_connect">Csatlakozás</string>
+    <string name="k2go_tab_clone">Klónozás</string>
+    <string name="k2go_tab_settings">Beállítások</string>
+    <string name="k2go_next">Tovább</string>
+    <string name="k2go_back">Vissza</string>
+    <string name="k2go_back_link">‹ Vissza</string>
+    <string name="k2go_skip">Kihagyás</string>
+    <string name="k2go_add">Hozzáadás</string>
+    <string name="k2go_get_started">Kezdés</string>
+    <string name="k2go_continue">Folytatás</string>
+    <string name="k2go_welcome_sub">Egy könyvtár a zsebedben</string>
+    <string name="k2go_lang_system_default">Rendszer alapértelmezett</string>
+    <string name="k2go_wiz_choose_language">Nyelv választása</string>
+    <string name="k2go_wiz_language_sub">Beállítja az alkalmazás és a tartalom nyelvét.</string>
+    <string name="k2go_wiz_permissions_title">Engedélyezz néhány dolgot</string>
+    <string name="k2go_perm_notifications">Értesítések</string>
+    <string name="k2go_perm_notifications_sub">letöltés folyamata</string>
+    <string name="k2go_perm_storage">Tárhozzáférés</string>
+    <string name="k2go_perm_storage_sub">tartalom tárolása és kiszolgálása</string>
+    <string name="k2go_perm_keep_running">Maradjon futva</string>
+    <string name="k2go_perm_keep_running_sub">akkumulátorkorlátok mellőzése</string>
+    <string name="k2go_perm_allow">Engedélyezés</string>
+    <string name="k2go_perm_nearby_note">A közeli eszközöket később kéri, csak megosztáskor.</string>
+    <string name="k2go_setup_library_title">Állítsd be a könyvtáradat</string>
+    <string name="k2go_wiz_setup_sub">Hogyan szeretnéd?</string>
+    <string name="k2go_internet_download">Letöltés internetről</string>
+    <string name="k2go_internet_download_sub">rendszer + tartalom · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Másolás egy telefonról</string>
+    <string name="k2go_skip_for_now">Kihagyás egyelőre ›</string>
+    <string name="k2go_download_library">Könyvtár letöltése</string>
 </resources>

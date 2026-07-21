@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Затвори</string>
     <string name="install_error_verify">Преузете системске датотеке нису прошле проверу интегритета (непотпуне или оштећене). Покушајте поново да инсталирате.</string>
     <string name="install_btn_select_content">Изабери садржај</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). review — machine, verify. -->
+    <string name="k2go_tab_library">Biblioteka</string>
+    <string name="k2go_tab_connect">Poveži</string>
+    <string name="k2go_tab_clone">Kloniraj</string>
+    <string name="k2go_tab_settings">Podešavanja</string>
+    <string name="k2go_next">Dalje</string>
+    <string name="k2go_back">Nazad</string>
+    <string name="k2go_back_link">‹ Nazad</string>
+    <string name="k2go_skip">Preskoči</string>
+    <string name="k2go_add">Dodaj</string>
+    <string name="k2go_get_started">Započni</string>
+    <string name="k2go_continue">Nastavi</string>
+    <string name="k2go_welcome_sub">Biblioteka u vašem džepu</string>
+    <string name="k2go_lang_system_default">Podrazumevano sistemsko</string>
+    <string name="k2go_wiz_choose_language">Izaberi jezik</string>
+    <string name="k2go_wiz_language_sub">Postavlja jezik aplikacije i sadržaja.</string>
+    <string name="k2go_wiz_permissions_title">Dozvoli nekoliko stvari</string>
+    <string name="k2go_perm_notifications">Obaveštenja</string>
+    <string name="k2go_perm_notifications_sub">napredak preuzimanja</string>
+    <string name="k2go_perm_storage">Pristup skladištu</string>
+    <string name="k2go_perm_storage_sub">čuvaj i deli sadržaj</string>
+    <string name="k2go_perm_keep_running">Nastavi rad</string>
+    <string name="k2go_perm_keep_running_sub">ignoriši ograničenja baterije</string>
+    <string name="k2go_perm_allow">Dozvoli</string>
+    <string name="k2go_perm_nearby_note">Uređaji u blizini se traže kasnije, samo pri deljenju.</string>
+    <string name="k2go_setup_library_title">Podesite svoju biblioteku</string>
+    <string name="k2go_wiz_setup_sub">Kako je želite?</string>
+    <string name="k2go_internet_download">Preuzimanje sa interneta</string>
+    <string name="k2go_internet_download_sub">sistem + sadržaj · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Kopiraj sa telefona</string>
+    <string name="k2go_skip_for_now">Preskoči za sada ›</string>
+    <string name="k2go_download_library">Preuzmi biblioteku</string>
 </resources>

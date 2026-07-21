@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Tì</string>
     <string name="install_error_verify">Àwọn fáìlì ẹ̀rọ tí a gbà sílẹ̀ kùnà àyẹ̀wò ìdúróṣinṣin (àìpé tàbí bàjẹ́). Jọ̀wọ́ gbìyànjú láti fi sórí ẹrọ lẹ́ẹ̀kansi.</string>
     <string name="install_btn_select_content">Yan àkóónú</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). review — machine, verify. -->
+    <string name="k2go_tab_library">Ilé-ìkàwé</string>
+    <string name="k2go_tab_connect">Sopọ̀</string>
+    <string name="k2go_tab_clone">Ẹ̀dà</string>
+    <string name="k2go_tab_settings">Ètò</string>
+    <string name="k2go_next">Tẹ̀síwájú</string>
+    <string name="k2go_back">Padà</string>
+    <string name="k2go_back_link">‹ Padà</string>
+    <string name="k2go_skip">Fò ó</string>
+    <string name="k2go_add">Fikun</string>
+    <string name="k2go_get_started">Bẹ̀rẹ̀</string>
+    <string name="k2go_continue">Tẹ̀síwájú</string>
+    <string name="k2go_welcome_sub">Ilé-ìkàwé nínú àpò rẹ</string>
+    <string name="k2go_lang_system_default">Àìyípadà ẹ̀rọ</string>
+    <string name="k2go_wiz_choose_language">Yan èdè</string>
+    <string name="k2go_wiz_language_sub">Ó ṣètò èdè app àti àkóónú.</string>
+    <string name="k2go_wiz_permissions_title">Fàyè gba nǹkan díẹ̀</string>
+    <string name="k2go_perm_notifications">Ìfitónilétí</string>
+    <string name="k2go_perm_notifications_sub">ìtẹ̀síwájú ìgbàsílẹ̀</string>
+    <string name="k2go_perm_storage">Wíwọlé ìtọ́jú</string>
+    <string name="k2go_perm_storage_sub">tọ́jú kí o sì pèsè àkóónú</string>
+    <string name="k2go_perm_keep_running">Jẹ́ kí ó máa ṣiṣẹ́</string>
+    <string name="k2go_perm_keep_running_sub">fojú fo ààlà bátìrì</string>
+    <string name="k2go_perm_allow">Fàyè gba</string>
+    <string name="k2go_perm_nearby_note">A óò béèrè àwọn ẹ̀rọ tó wà nítòsí nígbà tó bá yá, nìkan nígbà pípín.</string>
+    <string name="k2go_setup_library_title">Ṣètò ilé-ìkàwé rẹ</string>
+    <string name="k2go_wiz_setup_sub">Báwo ni o ṣe fẹ́ ẹ?</string>
+    <string name="k2go_internet_download">Ìgbàsílẹ̀ Íńtánẹ́ẹ̀tì</string>
+    <string name="k2go_internet_download_sub">ìtòlẹ́sẹẹsẹ + àkóónú · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Ẹ̀dà láti fóònù</string>
+    <string name="k2go_skip_for_now">Fò ó fún ìsinsìnyí ›</string>
+    <string name="k2go_download_library">Gba ilé-ìkàwé sílẹ̀</string>
 </resources>

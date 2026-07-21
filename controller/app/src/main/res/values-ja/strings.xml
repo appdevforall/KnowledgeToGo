@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">閉じる</string>
     <string name="install_error_verify">ダウンロードしたシステムファイルの整合性チェックに失敗しました（不完全または破損）。もう一度インストールをお試しください。</string>
     <string name="install_btn_select_content">コンテンツを選択</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">ライブラリ</string>
+    <string name="k2go_tab_connect">接続</string>
+    <string name="k2go_tab_clone">複製</string>
+    <string name="k2go_tab_settings">設定</string>
+    <string name="k2go_next">次へ</string>
+    <string name="k2go_back">戻る</string>
+    <string name="k2go_back_link">‹ 戻る</string>
+    <string name="k2go_skip">スキップ</string>
+    <string name="k2go_add">追加</string>
+    <string name="k2go_get_started">開始</string>
+    <string name="k2go_continue">続行</string>
+    <string name="k2go_welcome_sub">ポケットの中の図書館</string>
+    <string name="k2go_lang_system_default">システムの既定</string>
+    <string name="k2go_wiz_choose_language">言語を選択</string>
+    <string name="k2go_wiz_language_sub">アプリとコンテンツの言語を設定します。</string>
+    <string name="k2go_wiz_permissions_title">いくつかの許可を与える</string>
+    <string name="k2go_perm_notifications">通知</string>
+    <string name="k2go_perm_notifications_sub">ダウンロードの進捗</string>
+    <string name="k2go_perm_storage">ストレージへのアクセス</string>
+    <string name="k2go_perm_storage_sub">コンテンツの保存と配信</string>
+    <string name="k2go_perm_keep_running">実行を継続</string>
+    <string name="k2go_perm_keep_running_sub">バッテリー制限を無視</string>
+    <string name="k2go_perm_allow">許可</string>
+    <string name="k2go_perm_nearby_note">近くのデバイスは後で、共有時にのみ求められます。</string>
+    <string name="k2go_setup_library_title">ライブラリを設定</string>
+    <string name="k2go_wiz_setup_sub">どのようにしますか？</string>
+    <string name="k2go_internet_download">インターネットからダウンロード</string>
+    <string name="k2go_internet_download_sub">システム + コンテンツ · 3 GB+</string>
+    <string name="k2go_copy_from_phone">スマホからコピー</string>
+    <string name="k2go_skip_for_now">今はスキップ ›</string>
+    <string name="k2go_download_library">ライブラリをダウンロード</string>
 </resources>

@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Затвори</string>
     <string name="install_error_verify">Изтеглените системни файлове не преминаха проверката за цялост (непълни или повредени). Опитайте да инсталирате отново.</string>
     <string name="install_btn_select_content">Избор на съдържание</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Библиотека</string>
+    <string name="k2go_tab_connect">Свързване</string>
+    <string name="k2go_tab_clone">Клониране</string>
+    <string name="k2go_tab_settings">Настройки</string>
+    <string name="k2go_next">Напред</string>
+    <string name="k2go_back">Назад</string>
+    <string name="k2go_back_link">‹ Назад</string>
+    <string name="k2go_skip">Пропусни</string>
+    <string name="k2go_add">Добави</string>
+    <string name="k2go_get_started">Първи стъпки</string>
+    <string name="k2go_continue">Продължи</string>
+    <string name="k2go_welcome_sub">Библиотека в джоба ви</string>
+    <string name="k2go_lang_system_default">Системна по подразбиране</string>
+    <string name="k2go_wiz_choose_language">Избор на език</string>
+    <string name="k2go_wiz_language_sub">Задава езика на приложението и съдържанието.</string>
+    <string name="k2go_wiz_permissions_title">Разрешете няколко неща</string>
+    <string name="k2go_perm_notifications">Известия</string>
+    <string name="k2go_perm_notifications_sub">напредък на изтеглянето</string>
+    <string name="k2go_perm_storage">Достъп до хранилището</string>
+    <string name="k2go_perm_storage_sub">съхранявай и споделяй съдържание</string>
+    <string name="k2go_perm_keep_running">Продължи работа</string>
+    <string name="k2go_perm_keep_running_sub">игнорирай ограниченията на батерията</string>
+    <string name="k2go_perm_allow">Разреши</string>
+    <string name="k2go_perm_nearby_note">Устройствата наблизо се искат по-късно, само при споделяне.</string>
+    <string name="k2go_setup_library_title">Настройте библиотеката си</string>
+    <string name="k2go_wiz_setup_sub">Как я искате?</string>
+    <string name="k2go_internet_download">Изтегляне от интернет</string>
+    <string name="k2go_internet_download_sub">система + съдържание · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Копиране от телефон</string>
+    <string name="k2go_skip_for_now">Пропусни засега ›</string>
+    <string name="k2go_download_library">Изтегляне на библиотека</string>
 </resources>

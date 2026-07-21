@@ -591,4 +591,36 @@
     <string name="kiwix_dialog_close">Fechar</string>
     <string name="install_error_verify">Os arquivos de sistema baixados falharam na verificação de integridade (incompletos ou corrompidos). Tente instalar novamente.</string>
     <string name="install_btn_select_content">Selecionar conteúdo</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Biblioteca</string>
+    <string name="k2go_tab_connect">Conectar</string>
+    <string name="k2go_tab_clone">Clonar</string>
+    <string name="k2go_tab_settings">Configurações</string>
+    <string name="k2go_next">Avançar</string>
+    <string name="k2go_back">Voltar</string>
+    <string name="k2go_back_link">‹ Voltar</string>
+    <string name="k2go_skip">Ignorar</string>
+    <string name="k2go_add">Adicionar</string>
+    <string name="k2go_get_started">Começar</string>
+    <string name="k2go_continue">Continuar</string>
+    <string name="k2go_welcome_sub">Uma biblioteca no seu bolso</string>
+    <string name="k2go_lang_system_default">Padrão do sistema</string>
+    <string name="k2go_wiz_choose_language">Escolher idioma</string>
+    <string name="k2go_wiz_language_sub">Define o idioma do app e do conteúdo.</string>
+    <string name="k2go_wiz_permissions_title">Conceda algumas permissões</string>
+    <string name="k2go_perm_notifications">Notificações</string>
+    <string name="k2go_perm_notifications_sub">progresso do download</string>
+    <string name="k2go_perm_storage">Acesso ao armazenamento</string>
+    <string name="k2go_perm_storage_sub">armazenar e servir conteúdo</string>
+    <string name="k2go_perm_keep_running">Manter em execução</string>
+    <string name="k2go_perm_keep_running_sub">sem limites de bateria</string>
+    <string name="k2go_perm_allow">Permitir</string>
+    <string name="k2go_perm_nearby_note">Dispositivos próximos são solicitados depois, apenas ao compartilhar.</string>
+    <string name="k2go_setup_library_title">Configure sua biblioteca</string>
+    <string name="k2go_wiz_setup_sub">Como você quer?</string>
+    <string name="k2go_internet_download">Download pela internet</string>
+    <string name="k2go_internet_download_sub">sistema + conteúdo · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Copiar de um telefone</string>
+    <string name="k2go_skip_for_now">Ignorar por enquanto ›</string>
+    <string name="k2go_download_library">Baixar biblioteca</string>
 </resources>

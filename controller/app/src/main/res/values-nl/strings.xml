@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Sluiten</string>
     <string name="install_error_verify">De gedownloade systeembestanden zijn niet door de integriteitscontrole gekomen (onvolledig of beschadigd). Probeer de installatie opnieuw.</string>
     <string name="install_btn_select_content">Inhoud selecteren</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Bibliotheek</string>
+    <string name="k2go_tab_connect">Verbinden</string>
+    <string name="k2go_tab_clone">Klonen</string>
+    <string name="k2go_tab_settings">Instellingen</string>
+    <string name="k2go_next">Volgende</string>
+    <string name="k2go_back">Terug</string>
+    <string name="k2go_back_link">‹ Terug</string>
+    <string name="k2go_skip">Overslaan</string>
+    <string name="k2go_add">Toevoegen</string>
+    <string name="k2go_get_started">Aan de slag</string>
+    <string name="k2go_continue">Doorgaan</string>
+    <string name="k2go_welcome_sub">Een bibliotheek in je zak</string>
+    <string name="k2go_lang_system_default">Systeemstandaard</string>
+    <string name="k2go_wiz_choose_language">Taal kiezen</string>
+    <string name="k2go_wiz_language_sub">Stelt de taal van app en inhoud in.</string>
+    <string name="k2go_wiz_permissions_title">Enkele dingen toestaan</string>
+    <string name="k2go_perm_notifications">Meldingen</string>
+    <string name="k2go_perm_notifications_sub">downloadvoortgang</string>
+    <string name="k2go_perm_storage">Opslagtoegang</string>
+    <string name="k2go_perm_storage_sub">inhoud opslaan en aanbieden</string>
+    <string name="k2go_perm_keep_running">Actief houden</string>
+    <string name="k2go_perm_keep_running_sub">batterijlimieten negeren</string>
+    <string name="k2go_perm_allow">Toestaan</string>
+    <string name="k2go_perm_nearby_note">Apparaten in de buurt worden later gevraagd, alleen bij het delen.</string>
+    <string name="k2go_setup_library_title">Stel je bibliotheek in</string>
+    <string name="k2go_wiz_setup_sub">Hoe wil je het?</string>
+    <string name="k2go_internet_download">Downloaden via internet</string>
+    <string name="k2go_internet_download_sub">systeem + inhoud · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Kopiëren vanaf een telefoon</string>
+    <string name="k2go_skip_for_now">Voorlopig overslaan ›</string>
+    <string name="k2go_download_library">Bibliotheek downloaden</string>
 </resources>

@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Kapat</string>
     <string name="install_error_verify">İndirilen sistem dosyaları bütünlük denetimini geçemedi (eksik veya bozuk). Lütfen kurulumu yeniden deneyin.</string>
     <string name="install_btn_select_content">İçerik seç</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Kitaplık</string>
+    <string name="k2go_tab_connect">Bağlan</string>
+    <string name="k2go_tab_clone">Klonla</string>
+    <string name="k2go_tab_settings">Ayarlar</string>
+    <string name="k2go_next">İleri</string>
+    <string name="k2go_back">Geri</string>
+    <string name="k2go_back_link">‹ Geri</string>
+    <string name="k2go_skip">Atla</string>
+    <string name="k2go_add">Ekle</string>
+    <string name="k2go_get_started">Başla</string>
+    <string name="k2go_continue">Devam</string>
+    <string name="k2go_welcome_sub">Cebinizde bir kitaplık</string>
+    <string name="k2go_lang_system_default">Sistem varsayılanı</string>
+    <string name="k2go_wiz_choose_language">Dil seç</string>
+    <string name="k2go_wiz_language_sub">Uygulama ve içerik dilini ayarlar.</string>
+    <string name="k2go_wiz_permissions_title">Birkaç şeye izin verin</string>
+    <string name="k2go_perm_notifications">Bildirimler</string>
+    <string name="k2go_perm_notifications_sub">indirme ilerlemesi</string>
+    <string name="k2go_perm_storage">Depolama erişimi</string>
+    <string name="k2go_perm_storage_sub">içeriği depola ve sun</string>
+    <string name="k2go_perm_keep_running">Çalışır durumda tut</string>
+    <string name="k2go_perm_keep_running_sub">pil sınırlarını yoksay</string>
+    <string name="k2go_perm_allow">İzin ver</string>
+    <string name="k2go_perm_nearby_note">Yakındaki cihazlar daha sonra, yalnızca paylaşırken istenir.</string>
+    <string name="k2go_setup_library_title">Kitaplığınızı kurun</string>
+    <string name="k2go_wiz_setup_sub">Nasıl istersiniz?</string>
+    <string name="k2go_internet_download">İnternetten indir</string>
+    <string name="k2go_internet_download_sub">sistem + içerik · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Bir telefondan kopyala</string>
+    <string name="k2go_skip_for_now">Şimdilik atla ›</string>
+    <string name="k2go_download_library">Kitaplığı indir</string>
 </resources>

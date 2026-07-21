@@ -519,4 +519,36 @@
     <string name="kiwix_dialog_close">Tutup</string>
     <string name="install_error_verify">Berkas sistem yang diunduh gagal pemeriksaan integritas (tidak lengkap atau rusak). Silakan coba pasang lagi.</string>
     <string name="install_btn_select_content">Pilih konten</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Perpustakaan</string>
+    <string name="k2go_tab_connect">Hubungkan</string>
+    <string name="k2go_tab_clone">Klon</string>
+    <string name="k2go_tab_settings">Pengaturan</string>
+    <string name="k2go_next">Berikutnya</string>
+    <string name="k2go_back">Kembali</string>
+    <string name="k2go_back_link">‹ Kembali</string>
+    <string name="k2go_skip">Lewati</string>
+    <string name="k2go_add">Tambah</string>
+    <string name="k2go_get_started">Mulai</string>
+    <string name="k2go_continue">Lanjutkan</string>
+    <string name="k2go_welcome_sub">Perpustakaan di saku Anda</string>
+    <string name="k2go_lang_system_default">Default sistem</string>
+    <string name="k2go_wiz_choose_language">Pilih bahasa</string>
+    <string name="k2go_wiz_language_sub">Menetapkan bahasa aplikasi dan konten.</string>
+    <string name="k2go_wiz_permissions_title">Izinkan beberapa hal</string>
+    <string name="k2go_perm_notifications">Notifikasi</string>
+    <string name="k2go_perm_notifications_sub">kemajuan unduhan</string>
+    <string name="k2go_perm_storage">Akses penyimpanan</string>
+    <string name="k2go_perm_storage_sub">simpan dan sajikan konten</string>
+    <string name="k2go_perm_keep_running">Tetap berjalan</string>
+    <string name="k2go_perm_keep_running_sub">abaikan batas baterai</string>
+    <string name="k2go_perm_allow">Izinkan</string>
+    <string name="k2go_perm_nearby_note">Perangkat di dekat diminta nanti, hanya saat berbagi.</string>
+    <string name="k2go_setup_library_title">Siapkan perpustakaan Anda</string>
+    <string name="k2go_wiz_setup_sub">Bagaimana Anda menginginkannya?</string>
+    <string name="k2go_internet_download">Unduhan internet</string>
+    <string name="k2go_internet_download_sub">sistem + konten · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Salin dari ponsel</string>
+    <string name="k2go_skip_for_now">Lewati untuk sekarang ›</string>
+    <string name="k2go_download_library">Unduh perpustakaan</string>
 </resources>

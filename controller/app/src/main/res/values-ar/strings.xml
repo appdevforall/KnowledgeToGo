@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">إغلاق</string>
     <string name="install_error_verify">فشلت ملفات النظام التي تم تنزيلها في فحص السلامة (غير مكتملة أو تالفة). يرجى محاولة التثبيت مرة أخرى.</string>
     <string name="install_btn_select_content">اختيار المحتوى</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">المكتبة</string>
+    <string name="k2go_tab_connect">اتصال</string>
+    <string name="k2go_tab_clone">استنساخ</string>
+    <string name="k2go_tab_settings">الإعدادات</string>
+    <string name="k2go_next">التالي</string>
+    <string name="k2go_back">رجوع</string>
+    <string name="k2go_back_link">‹ رجوع</string>
+    <string name="k2go_skip">تخطي</string>
+    <string name="k2go_add">إضافة</string>
+    <string name="k2go_get_started">ابدأ</string>
+    <string name="k2go_continue">متابعة</string>
+    <string name="k2go_welcome_sub">مكتبة في جيبك</string>
+    <string name="k2go_lang_system_default">افتراضي النظام</string>
+    <string name="k2go_wiz_choose_language">اختيار اللغة</string>
+    <string name="k2go_wiz_language_sub">يحدد لغة التطبيق والمحتوى.</string>
+    <string name="k2go_wiz_permissions_title">اسمح ببعض الأشياء</string>
+    <string name="k2go_perm_notifications">الإشعارات</string>
+    <string name="k2go_perm_notifications_sub">تقدّم التنزيل</string>
+    <string name="k2go_perm_storage">الوصول إلى التخزين</string>
+    <string name="k2go_perm_storage_sub">تخزين المحتوى وتقديمه</string>
+    <string name="k2go_perm_keep_running">إبقاؤه قيد التشغيل</string>
+    <string name="k2go_perm_keep_running_sub">تجاهل حدود البطارية</string>
+    <string name="k2go_perm_allow">السماح</string>
+    <string name="k2go_perm_nearby_note">يُطلب الوصول إلى الأجهزة القريبة لاحقًا، فقط عند المشاركة.</string>
+    <string name="k2go_setup_library_title">إعداد مكتبتك</string>
+    <string name="k2go_wiz_setup_sub">كيف تريدها؟</string>
+    <string name="k2go_internet_download">التنزيل عبر الإنترنت</string>
+    <string name="k2go_internet_download_sub">النظام + المحتوى · 3 GB+</string>
+    <string name="k2go_copy_from_phone">النسخ من هاتف</string>
+    <string name="k2go_skip_for_now">التخطي الآن ›</string>
+    <string name="k2go_download_library">تنزيل المكتبة</string>
 </resources>

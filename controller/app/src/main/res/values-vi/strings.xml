@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">Đóng</string>
     <string name="install_error_verify">Các tệp hệ thống đã tải xuống không vượt qua kiểm tra tính toàn vẹn (không đầy đủ hoặc bị hỏng). Vui lòng thử cài đặt lại.</string>
     <string name="install_btn_select_content">Chọn nội dung</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">Thư viện</string>
+    <string name="k2go_tab_connect">Kết nối</string>
+    <string name="k2go_tab_clone">Nhân bản</string>
+    <string name="k2go_tab_settings">Cài đặt</string>
+    <string name="k2go_next">Tiếp theo</string>
+    <string name="k2go_back">Quay lại</string>
+    <string name="k2go_back_link">‹ Quay lại</string>
+    <string name="k2go_skip">Bỏ qua</string>
+    <string name="k2go_add">Thêm</string>
+    <string name="k2go_get_started">Bắt đầu</string>
+    <string name="k2go_continue">Tiếp tục</string>
+    <string name="k2go_welcome_sub">Một thư viện trong túi bạn</string>
+    <string name="k2go_lang_system_default">Mặc định hệ thống</string>
+    <string name="k2go_wiz_choose_language">Chọn ngôn ngữ</string>
+    <string name="k2go_wiz_language_sub">Đặt ngôn ngữ của ứng dụng và nội dung.</string>
+    <string name="k2go_wiz_permissions_title">Cho phép một vài thứ</string>
+    <string name="k2go_perm_notifications">Thông báo</string>
+    <string name="k2go_perm_notifications_sub">tiến trình tải xuống</string>
+    <string name="k2go_perm_storage">Quyền truy cập bộ nhớ</string>
+    <string name="k2go_perm_storage_sub">lưu trữ và cung cấp nội dung</string>
+    <string name="k2go_perm_keep_running">Tiếp tục chạy</string>
+    <string name="k2go_perm_keep_running_sub">bỏ qua giới hạn pin</string>
+    <string name="k2go_perm_allow">Cho phép</string>
+    <string name="k2go_perm_nearby_note">Thiết bị ở gần được hỏi sau, chỉ khi chia sẻ.</string>
+    <string name="k2go_setup_library_title">Thiết lập thư viện của bạn</string>
+    <string name="k2go_wiz_setup_sub">Bạn muốn thế nào?</string>
+    <string name="k2go_internet_download">Tải xuống từ internet</string>
+    <string name="k2go_internet_download_sub">hệ thống + nội dung · 3 GB+</string>
+    <string name="k2go_copy_from_phone">Sao chép từ điện thoại</string>
+    <string name="k2go_skip_for_now">Bỏ qua lúc này ›</string>
+    <string name="k2go_download_library">Tải thư viện</string>
 </resources>

@@ -512,4 +512,36 @@
     <string name="kiwix_dialog_close">بستن</string>
     <string name="install_error_verify">فایل‌های سیستمی دانلودشده در بررسی یکپارچگی ناموفق بودند (ناقص یا خراب). لطفاً نصب را دوباره امتحان کنید.</string>
     <string name="install_btn_select_content">انتخاب محتوا</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Wizard + nav). machine translation. -->
+    <string name="k2go_tab_library">کتابخانه</string>
+    <string name="k2go_tab_connect">اتصال</string>
+    <string name="k2go_tab_clone">شبیه‌سازی</string>
+    <string name="k2go_tab_settings">تنظیمات</string>
+    <string name="k2go_next">بعدی</string>
+    <string name="k2go_back">بازگشت</string>
+    <string name="k2go_back_link">‹ بازگشت</string>
+    <string name="k2go_skip">رد کردن</string>
+    <string name="k2go_add">افزودن</string>
+    <string name="k2go_get_started">شروع</string>
+    <string name="k2go_continue">ادامه</string>
+    <string name="k2go_welcome_sub">کتابخانه‌ای در جیب شما</string>
+    <string name="k2go_lang_system_default">پیش‌فرض سیستم</string>
+    <string name="k2go_wiz_choose_language">انتخاب زبان</string>
+    <string name="k2go_wiz_language_sub">زبان برنامه و محتوا را تعیین می‌کند.</string>
+    <string name="k2go_wiz_permissions_title">چند مورد را مجاز کنید</string>
+    <string name="k2go_perm_notifications">اعلان‌ها</string>
+    <string name="k2go_perm_notifications_sub">پیشرفت دانلود</string>
+    <string name="k2go_perm_storage">دسترسی به حافظه</string>
+    <string name="k2go_perm_storage_sub">ذخیره و ارائه محتوا</string>
+    <string name="k2go_perm_keep_running">در حال اجرا نگه‌دار</string>
+    <string name="k2go_perm_keep_running_sub">نادیده گرفتن محدودیت‌های باتری</string>
+    <string name="k2go_perm_allow">اجازه</string>
+    <string name="k2go_perm_nearby_note">دستگاه‌های نزدیک بعداً و فقط هنگام اشتراک‌گذاری خواسته می‌شوند.</string>
+    <string name="k2go_setup_library_title">کتابخانه خود را تنظیم کنید</string>
+    <string name="k2go_wiz_setup_sub">چگونه می‌خواهید؟</string>
+    <string name="k2go_internet_download">دانلود از اینترنت</string>
+    <string name="k2go_internet_download_sub">سیستم + محتوا · 3 GB+</string>
+    <string name="k2go_copy_from_phone">کپی از یک تلفن</string>
+    <string name="k2go_skip_for_now">فعلاً رد کن ›</string>
+    <string name="k2go_download_library">دانلود کتابخانه</string>
 </resources>
