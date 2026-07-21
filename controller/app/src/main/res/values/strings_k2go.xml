@@ -54,6 +54,8 @@
     <string name="k2go_connect_shownext" translatable="false">They\'re connected — show next ›</string>
     <string name="k2go_clone_total" translatable="false">Total copy</string>
     <string name="k2go_clone_receive_hdr" translatable="false">WHAT THEY\'LL RECEIVE</string>
+    <string name="k2go_clone_confirm_split" translatable="false">System %1$s · Content %2$s</string>
+    <string name="k2go_clone_confirm_replace" translatable="false">This replaces the library on this phone with the sender\'s copy. No undo.</string>
     <string name="k2go_wifi" translatable="false">Wi-Fi</string>
     <string name="k2go_wikipedia_kiwix" translatable="false">Wikipedia (via Kiwix)</string>
     <string name="k2go_det_pictures" translatable="false">With pictures</string>

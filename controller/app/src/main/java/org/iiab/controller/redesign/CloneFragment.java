@@ -551,11 +551,22 @@ public class CloneFragment extends Fragment {
             SyncTransferState.Phase ph = st.phase;
             if (ph == SyncTransferState.Phase.CONFIRM) {
                 progressBox.setVisibility(View.GONE);
-                confirmTitle.setText((st.title != null && !st.title.isEmpty()) ? st.title : "Copy the library?");
-                String m = (st.message != null) ? st.message : "";
-                if (!m.isEmpty()) m += "\n\n";
-                m += "This replaces the library on this phone with the sender's copy.";
-                confirmMsg.setText(m);
+                // ADFA-4790: keep the backend's localized title + message, then append a localized
+                // System/Content split (sizes travel in the QR) and a localized replace warning — all
+                // via string resources, so the confirm follows the device language (no hardcoded English).
+                confirmTitle.setText((st.title != null && !st.title.isEmpty())
+                        ? st.title : getString(R.string.sync_title_install));
+                StringBuilder m = new StringBuilder();
+                if (st.message != null && !st.message.isEmpty()) m.append(st.message);
+                SyncHandshakeHelper.SyncCredentials pc = syncVm.getPendingCreds();
+                if (pc != null && (pc.sysBytes > 0 || pc.contentBytes > 0)) {
+                    if (m.length() > 0) m.append('\n');
+                    m.append(getString(R.string.k2go_clone_confirm_split,
+                            LibrarySize.human(pc.sysBytes), LibrarySize.human(pc.contentBytes)));
+                }
+                if (m.length() > 0) m.append("\n\n");
+                m.append(getString(R.string.k2go_clone_confirm_replace));
+                confirmMsg.setText(m.toString());
                 confirmPanel.setVisibility(View.VISIBLE);
                 return;
             }

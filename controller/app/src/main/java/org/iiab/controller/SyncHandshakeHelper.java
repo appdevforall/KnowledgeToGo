@@ -69,8 +69,8 @@ public class SyncHandshakeHelper {
             json.put("has_rootfs", hasRootfs);
             json.put("a", archBits);
             json.put("app", "iiab_sync");
-            if (sysBytes > 0) json.put("sys_bytes", sysBytes);
-            if (contentBytes > 0) json.put("content_bytes", contentBytes);
+            if (sysBytes > 0) json.put("sb", sysBytes);        // ADFA-4790: compact keys keep the QR light
+            if (contentBytes > 0) json.put("cb", contentBytes);
             return json.toString();
         } catch (Exception e) {
             Log.e(TAG, "Error creating JSON payload", e);
@@ -108,8 +108,8 @@ public class SyncHandshakeHelper {
                     json.optBoolean("has_rootfs", true), // Default to true if missing for legacy compatibility
                     json.optInt("a", 0)
             );
-            creds.sysBytes = json.optLong("sys_bytes", 0L);          // ADFA-4780 (optional)
-            creds.contentBytes = json.optLong("content_bytes", 0L);
+            creds.sysBytes = json.optLong("sb", 0L);                 // ADFA-4790: compact payload keys
+            creds.contentBytes = json.optLong("cb", 0L);
             return creds;
         } catch (Exception e) {
             Log.e(TAG, "Error parsing scanned QR code", e);
