@@ -423,8 +423,10 @@ public class CloneFragment extends Fragment {
             return;
         }
         receiveBox.setVisibility(View.GONE);
-        if (sendApp) {   // ADFA-4785: step 2 (Get app) — spine + step title, then the sub-view
-            netRow.setVisibility(View.GONE); qr.setVisibility(View.GONE);
+        if (sendApp) {   // ADFA-4785: step 2 (Get app) — spine + step title + network selector, then the sub-view
+            netRow.setVisibility(View.VISIBLE); qr.setVisibility(View.GONE);
+            paintTab(tabHotspot, mode == Mode.HOTSPOT);
+            paintTab(tabWifi, mode == Mode.WIFI);
             caption.setVisibility(View.GONE); subCaption.setVisibility(View.GONE); footer.setVisibility(View.GONE);
             fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE); sendAppEntry.setVisibility(View.GONE);
@@ -566,9 +568,10 @@ public class CloneFragment extends Fragment {
     // ------------------------------------------------------------ "Send the app" (ADFA-4785)
 
     private void renderSendApp() {
+        if (mode == Mode.HOTSPOT) ensureHotspot();
         startApkServer();
         NetworkInterfaces.LanIps net = NetworkInterfaces.discover();
-        String ip = (net.hotspotIp != null) ? net.hotspotIp : net.wifiIp;
+        String ip = (mode == Mode.HOTSPOT) ? net.hotspotIp : net.wifiIp;
         if (ip == null || apkServer == null) { sendAppQr.setImageBitmap(null); return; }
         String url = "http://" + ip + ":" + shareConfig.apkPort + "/" + apkFileName;
         sendAppQr.setImageBitmap(SyncHandshakeHelper.generateQrCode(url, 500));
