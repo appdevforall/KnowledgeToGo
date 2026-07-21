@@ -84,8 +84,8 @@ public class CloneFragment extends Fragment {
     private TextView receiveStart, pStatus, pFile, pStats, cancel;
     private ProgressBar pbar;
     private long lastSeq = -1L;
-    private LinearLayout confirmPanel;
-    private TextView confirmTitle, confirmMsg;
+    private LinearLayout confirmPanel, confirmSizes;
+    private TextView confirmSys, confirmContent, confirmTotal;
     private enum RStage { JOIN, START }
     private RStage rStage = RStage.JOIN;
     private boolean pasteExpanded = false;
@@ -166,8 +166,10 @@ public class CloneFragment extends Fragment {
         pStats = v.findViewById(R.id.k2go_clone_pstats);
         cancel = v.findViewById(R.id.k2go_clone_cancel);
         confirmPanel = v.findViewById(R.id.k2go_rcv_confirm);
-        confirmTitle = v.findViewById(R.id.k2go_rcv_confirm_title);
-        confirmMsg = v.findViewById(R.id.k2go_rcv_confirm_msg);
+        confirmSizes = v.findViewById(R.id.k2go_rcv_confirm_sizes);
+        confirmSys = v.findViewById(R.id.k2go_rcv_confirm_sys);
+        confirmContent = v.findViewById(R.id.k2go_rcv_confirm_content);
+        confirmTotal = v.findViewById(R.id.k2go_rcv_confirm_total);
         v.findViewById(R.id.k2go_rcv_confirm_go).setOnClickListener(x -> startReceiveTransfer());
         v.findViewById(R.id.k2go_rcv_confirm_cancel).setOnClickListener(x -> { syncVm.cancelProbe(); renderReceive(); });
         showcode = v.findViewById(R.id.k2go_clone_showcode);
@@ -551,22 +553,20 @@ public class CloneFragment extends Fragment {
             SyncTransferState.Phase ph = st.phase;
             if (ph == SyncTransferState.Phase.CONFIRM) {
                 progressBox.setVisibility(View.GONE);
-                // ADFA-4790: keep the backend's localized title + message, then append a localized
-                // System/Content split (sizes travel in the QR) and a localized replace warning — all
-                // via string resources, so the confirm follows the device language (no hardcoded English).
-                confirmTitle.setText((st.title != null && !st.title.isEmpty())
-                        ? st.title : getString(R.string.sync_title_install));
-                StringBuilder m = new StringBuilder();
-                if (st.message != null && !st.message.isEmpty()) m.append(st.message);
+                // ADFA-4790: confirm as a System/Content/Total table (sizes travel in the QR) per the
+                // design mockup; the replace notice is static in the layout. If the sender didn't send
+                // sizes (older build), hide the table and just show the notice.
                 SyncHandshakeHelper.SyncCredentials pc = syncVm.getPendingCreds();
-                if (pc != null && (pc.sysBytes > 0 || pc.contentBytes > 0)) {
-                    if (m.length() > 0) m.append('\n');
-                    m.append(getString(R.string.k2go_clone_confirm_split,
-                            LibrarySize.human(pc.sysBytes), LibrarySize.human(pc.contentBytes)));
+                long sysB = (pc != null) ? pc.sysBytes : 0L;
+                long contentB = (pc != null) ? pc.contentBytes : 0L;
+                if (sysB > 0 || contentB > 0) {
+                    confirmSys.setText(LibrarySize.human(sysB));
+                    confirmContent.setText(LibrarySize.human(contentB));
+                    confirmTotal.setText(LibrarySize.human(sysB + contentB));
+                    confirmSizes.setVisibility(View.VISIBLE);
+                } else {
+                    confirmSizes.setVisibility(View.GONE);
                 }
-                if (m.length() > 0) m.append("\n\n");
-                m.append(getString(R.string.k2go_clone_confirm_replace));
-                confirmMsg.setText(m.toString());
                 confirmPanel.setVisibility(View.VISIBLE);
                 return;
             }

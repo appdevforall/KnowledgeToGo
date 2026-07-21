@@ -181,19 +181,55 @@
                     android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
             </LinearLayout>
 
-                        <LinearLayout android:id="@+id/k2go_rcv_confirm" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:layout_marginTop="12dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
-                <TextView android:id="@+id/k2go_rcv_confirm_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textColor="@color/k2go_ink" android:textStyle="bold" android:textAppearance="?attr/textAppearanceTitleMedium" />
-                <TextView android:id="@+id/k2go_rcv_confirm_msg" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-                    android:layout_marginTop="14dp" android:gravity="end">
-                    <TextView android:id="@+id/k2go_rcv_confirm_cancel" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:padding="10dp" android:text="Cancel" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" />
-                    <TextView android:id="@+id/k2go_rcv_confirm_go" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp" android:padding="10dp" android:text="Continue" android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" />
+            <!-- ADFA-4790: confirm as a System/Content/Total table + replace notice, per the design mockup. -->
+            <LinearLayout android:id="@+id/k2go_rcv_confirm" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="12dp" android:visibility="gone">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="You'll receive a full copy" android:textColor="@color/k2go_ink" android:textStyle="bold" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                <LinearLayout android:id="@+id/k2go_rcv_confirm_sizes" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:layout_marginTop="12dp" android:padding="16dp" android:background="@drawable/k2go_card_bg">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="FROM THE OTHER PHONE" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                            android:text="System" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        <TextView android:id="@+id/k2go_rcv_confirm_sys" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                            android:text="Content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        <TextView android:id="@+id/k2go_rcv_confirm_content" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp"
+                        android:background="@color/k2go_muted" android:alpha="0.25" />
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                        <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                            android:text="Total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        <TextView android:id="@+id/k2go_rcv_confirm_total" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    </LinearLayout>
                 </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginTop="14dp" android:padding="14dp" android:background="@drawable/k2go_notice_bg">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="12dp"
+                        android:text="!" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="This replaces your K2Go library" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
+                            android:text="Your current library (system + content) is replaced with theirs. No undo." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    </LinearLayout>
+                </LinearLayout>
+                <TextView android:id="@+id/k2go_rcv_confirm_go" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Continue — start copying"
+                    android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
+                    android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+                <TextView android:id="@+id/k2go_rcv_confirm_cancel" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="Cancel"
+                    android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_muted"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" />
             </LinearLayout>
 
             <!-- ADFA-4784: "these phones aren't compatible" hard-block state (no arch jargon; raw
