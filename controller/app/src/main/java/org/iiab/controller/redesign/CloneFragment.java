@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.io.File;
 import org.iiab.controller.R;
 import org.iiab.controller.SyncHandshakeHelper;
+import org.iiab.controller.WatchdogService;
 import org.iiab.controller.hotspot.LocalHotspotManager;
 import org.iiab.controller.sync.domain.ShareConfig;
 import org.iiab.controller.sync.presentation.SyncProgressRepository;
@@ -70,6 +71,7 @@ public class CloneFragment extends Fragment {
     private LinearLayout shareCard;
     private TextView sizeSys, sizeContent, sizeTotal;
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
+    private boolean protectionOn = false; // ADFA-4782: foreground WatchdogService currently held
 
     private ActivityResultLauncher<String> locationPerm;
 
@@ -255,6 +257,37 @@ public class CloneFragment extends Fragment {
         return (Build.SUPPORTED_64_BIT_ABIS != null && Build.SUPPORTED_64_BIT_ABIS.length > 0) ? 64 : 32;
     }
 
+    // ------------------------------------------------------------ Background protection (ADFA-4782)
+    // A Clone transfer runs a long native rsync (Send serves a daemon; Receive pulls). If the app is
+    // backgrounded or the screen locks, Android can freeze the app and its native children and the
+    // phantom-process killer can SIGKILL rsync (exit 137). The foreground WatchdogService holds CPU +
+    // Wi-Fi locks with a notification to keep it alive. Protection tracks the actual transfer state:
+    // on while the Send daemon is up OR a Receive pull is active, off otherwise.
+    private void syncProtection() {
+        boolean active = daemonStarted || SyncProgressRepository.get().isActive();
+        if (active) startProtection(); else stopProtection();
+    }
+
+    private void startProtection() {
+        if (protectionOn) return;
+        Context ctx = getContext();
+        if (ctx == null) return;
+        Intent i = new Intent(ctx, WatchdogService.class).setAction(WatchdogService.ACTION_START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ctx.startForegroundService(i);
+        else ctx.startService(i);
+        protectionOn = true;
+        Log.i("IIAB-Clone", "watchdog protection ON");
+    }
+
+    private void stopProtection() {
+        if (!protectionOn) return;
+        protectionOn = false;
+        Context ctx = getContext();
+        if (ctx == null) return;   // detached; the service is app-scoped and stops on its own teardown path
+        ctx.startService(new Intent(ctx, WatchdogService.class).setAction(WatchdogService.ACTION_STOP));
+        Log.i("IIAB-Clone", "watchdog protection OFF");
+    }
+
     private void render() {
         if (!isAdded() || caption == null) return;
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
@@ -274,6 +307,7 @@ public class CloneFragment extends Fragment {
             shareCard.setVisibility(View.GONE);
             receiveBox.setVisibility(View.VISIBLE);
             renderReceive();
+            syncProtection();
             return;
         }
         receiveBox.setVisibility(View.GONE);
@@ -288,6 +322,7 @@ public class CloneFragment extends Fragment {
         paintTab(tabWifi, mode == Mode.WIFI);
 
         if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
+        syncProtection();
     }
 
     private void renderHotspot() {
@@ -413,6 +448,7 @@ public class CloneFragment extends Fragment {
             else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
         }
         if (side == Side.RECEIVE) renderReceive();
+        syncProtection();   // ADFA-4782: match protection to the live pull state on every transition
     }
 
     private void renderReceive() {
@@ -533,9 +569,15 @@ public class CloneFragment extends Fragment {
 
     private void showReceiveTerminal(boolean ok, String message) {
         syncVm.releaseNetwork();
+        String body = (message != null) ? message : "";
+        // ADFA-4782: if rsync was SIGKILLed (exit 137, phantom-process killer), guide the user.
+        if (!ok && body.contains("137")) {
+            body += "\n\nThe copy was stopped by the system. Keep this screen on and the app in the "
+                  + "foreground during a transfer, then scan again to resume.";
+        }
         new AlertDialog.Builder(requireContext())
                 .setTitle(ok ? "Copy complete" : "Copy stopped")
-                .setMessage(message != null ? message : "")
+                .setMessage(body)
                 .setPositiveButton("OK", (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
                 .setCancelable(false)
                 .show();
@@ -544,6 +586,9 @@ public class CloneFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // ADFA-4782: release protection only when nothing is running; an active share daemon or pull
+        // keeps the (app-scoped) WatchdogService alive so leaving the tab doesn't cut the transfer.
+        if (!SyncProgressRepository.get().isActive() && !daemonStarted) stopProtection();
         if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
     }
 
