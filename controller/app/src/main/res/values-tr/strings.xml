@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">Bir telefondan kopyala</string>
     <string name="k2go_skip_for_now">Şimdilik atla ›</string>
     <string name="k2go_download_library">Kitaplığı indir</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Dil</string>
+    <string name="k2go_settings_about">Hakkında</string>
+    <string name="k2go_settings_advanced">Gelişmiş</string>
+    <string name="k2go_settings_turn_off">K2Go\'yu kapat</string>
+    <string name="k2go_settings_running_note">K2Go, siz kapatana kadar arka planda çalışmaya devam eder.</string>
 </resources>

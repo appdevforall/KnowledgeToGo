@@ -79,7 +79,7 @@ public class SettingsFragment extends Fragment {
 
     private void buildFooter(Context ctx, LinearLayout footer) {
         TextView note = new TextView(ctx);
-        note.setText("K2Go keeps running in the background until you turn it off.");
+        note.setText(getString(R.string.k2go_settings_running_note));
         note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         note.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
         LinearLayout.LayoutParams np = new LinearLayout.LayoutParams(-1, -2);
@@ -87,7 +87,7 @@ public class SettingsFragment extends Fragment {
         footer.addView(note, np);
 
         TextView off = new TextView(ctx);
-        off.setText("Turn off K2Go");
+        off.setText(getString(R.string.k2go_settings_turn_off));
         off.setGravity(Gravity.CENTER);
         off.setPadding(SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16));
         off.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);

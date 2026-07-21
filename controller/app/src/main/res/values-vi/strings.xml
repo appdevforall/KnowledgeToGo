@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">Sao chép từ điện thoại</string>
     <string name="k2go_skip_for_now">Bỏ qua lúc này ›</string>
     <string name="k2go_download_library">Tải thư viện</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Ngôn ngữ</string>
+    <string name="k2go_settings_about">Giới thiệu</string>
+    <string name="k2go_settings_advanced">Nâng cao</string>
+    <string name="k2go_settings_turn_off">Tắt K2Go</string>
+    <string name="k2go_settings_running_note">K2Go tiếp tục chạy nền cho đến khi bạn tắt nó.</string>
 </resources>

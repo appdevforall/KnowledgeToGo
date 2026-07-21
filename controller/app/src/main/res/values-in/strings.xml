@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Salin dari ponsel</string>
     <string name="k2go_skip_for_now">Lewati untuk sekarang ›</string>
     <string name="k2go_download_library">Unduh perpustakaan</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Bahasa</string>
+    <string name="k2go_settings_about">Tentang</string>
+    <string name="k2go_settings_advanced">Lanjutan</string>
+    <string name="k2go_settings_turn_off">Matikan K2Go</string>
+    <string name="k2go_settings_running_note">K2Go tetap berjalan di latar belakang sampai Anda mematikannya.</string>
 </resources>

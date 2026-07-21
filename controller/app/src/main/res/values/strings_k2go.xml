@@ -83,6 +83,11 @@
     <string name="k2go_wiz_permissions_title">Allow a few things</string>
     <string name="k2go_continue">Continue</string>
     <string name="k2go_wiz_setup_sub">How do you want it?</string>
+    <string name="k2go_settings_language">Language</string>
+    <string name="k2go_settings_about">About</string>
+    <string name="k2go_settings_advanced">Advanced</string>
+    <string name="k2go_settings_turn_off">Turn off K2Go</string>
+    <string name="k2go_settings_running_note">K2Go keeps running in the background until you turn it off.</string>
 
     <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
     <string name="k2go_wiki_view_list" translatable="false">List</string>

@@ -620,4 +620,10 @@
     <string name="k2go_copy_from_phone">Копировать с телефона</string>
     <string name="k2go_skip_for_now">Пока пропустить ›</string>
     <string name="k2go_download_library">Скачать библиотеку</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Язык</string>
+    <string name="k2go_settings_about">О приложении</string>
+    <string name="k2go_settings_advanced">Дополнительно</string>
+    <string name="k2go_settings_turn_off">Выключить K2Go</string>
+    <string name="k2go_settings_running_note">K2Go продолжает работать в фоне, пока вы его не выключите.</string>
 </resources>

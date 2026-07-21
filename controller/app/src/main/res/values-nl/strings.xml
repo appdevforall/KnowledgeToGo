@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">Kopiëren vanaf een telefoon</string>
     <string name="k2go_skip_for_now">Voorlopig overslaan ›</string>
     <string name="k2go_download_library">Bibliotheek downloaden</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Taal</string>
+    <string name="k2go_settings_about">Over</string>
+    <string name="k2go_settings_advanced">Geavanceerd</string>
+    <string name="k2go_settings_turn_off">K2Go uitschakelen</string>
+    <string name="k2go_settings_running_note">K2Go blijft op de achtergrond draaien totdat je het uitschakelt.</string>
 </resources>

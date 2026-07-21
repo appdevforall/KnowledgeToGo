@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">একটি ফোন থেকে কপি করুন</string>
     <string name="k2go_skip_for_now">আপাতত এড়িয়ে যান ›</string>
     <string name="k2go_download_library">লাইব্রেরি ডাউনলোড করুন</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). review — machine, verify. -->
+    <string name="k2go_settings_language">ভাষা</string>
+    <string name="k2go_settings_about">সম্পর্কে</string>
+    <string name="k2go_settings_advanced">উন্নত</string>
+    <string name="k2go_settings_turn_off">K2Go বন্ধ করুন</string>
+    <string name="k2go_settings_running_note">আপনি বন্ধ না করা পর্যন্ত K2Go ব্যাকগ্রাউন্ডে চলতে থাকে।</string>
 </resources>

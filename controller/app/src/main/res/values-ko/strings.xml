@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">휴대폰에서 복사</string>
     <string name="k2go_skip_for_now">지금은 건너뛰기 ›</string>
     <string name="k2go_download_library">라이브러리 다운로드</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">언어</string>
+    <string name="k2go_settings_about">정보</string>
+    <string name="k2go_settings_advanced">고급</string>
+    <string name="k2go_settings_turn_off">K2Go 끄기</string>
+    <string name="k2go_settings_running_note">K2Go는 끌 때까지 백그라운드에서 계속 실행됩니다.</string>
 </resources>

@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">Másolás egy telefonról</string>
     <string name="k2go_skip_for_now">Kihagyás egyelőre ›</string>
     <string name="k2go_download_library">Könyvtár letöltése</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Nyelv</string>
+    <string name="k2go_settings_about">Névjegy</string>
+    <string name="k2go_settings_advanced">Speciális</string>
+    <string name="k2go_settings_turn_off">K2Go kikapcsolása</string>
+    <string name="k2go_settings_running_note">A K2Go a háttérben fut, amíg ki nem kapcsolod.</string>
 </resources>

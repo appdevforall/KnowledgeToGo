@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Αντιγραφή από τηλέφωνο</string>
     <string name="k2go_skip_for_now">Παράλειψη προς το παρόν ›</string>
     <string name="k2go_download_library">Λήψη βιβλιοθήκης</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Γλώσσα</string>
+    <string name="k2go_settings_about">Σχετικά</string>
+    <string name="k2go_settings_advanced">Για προχωρημένους</string>
+    <string name="k2go_settings_turn_off">Απενεργοποίηση K2Go</string>
+    <string name="k2go_settings_running_note">Το K2Go συνεχίζει να εκτελείται στο παρασκήνιο μέχρι να το απενεργοποιήσετε.</string>
 </resources>

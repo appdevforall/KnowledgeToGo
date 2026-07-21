@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Nakili kutoka kwa simu</string>
     <string name="k2go_skip_for_now">Ruka kwa sasa ›</string>
     <string name="k2go_download_library">Pakua maktaba</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). review — machine, verify. -->
+    <string name="k2go_settings_language">Lugha</string>
+    <string name="k2go_settings_about">Kuhusu</string>
+    <string name="k2go_settings_advanced">Kina</string>
+    <string name="k2go_settings_turn_off">Zima K2Go</string>
+    <string name="k2go_settings_running_note">K2Go inaendelea kufanya kazi chinichini hadi utakapoizima.</string>
 </resources>

@@ -48,10 +48,10 @@ public class SettingsSubFragment extends Fragment {
 
         String screen = getArguments() != null ? getArguments().getString(ARG, "") : "";
         switch (screen) {
-            case "language": title.setText("Language"); buildLanguage(ctx, list); break;
-            case "about":    title.setText("About");    buildAbout(ctx, list);    break;
-            case "advanced": title.setText("Advanced"); buildAdvanced(ctx, list); break;
-            default:         title.setText("Settings");
+            case "language": title.setText(getString(R.string.k2go_settings_language)); buildLanguage(ctx, list); break;
+            case "about":    title.setText(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
+            case "advanced": title.setText(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
+            default:         title.setText(getString(R.string.k2go_tab_settings));
         }
         return root;
     }

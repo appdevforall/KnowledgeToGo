@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Telefondan kopyala</string>
     <string name="k2go_skip_for_now">Hələlik ötür ›</string>
     <string name="k2go_download_library">Kitabxananı endir</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). review — machine, verify. -->
+    <string name="k2go_settings_language">Dil</string>
+    <string name="k2go_settings_about">Haqqında</string>
+    <string name="k2go_settings_advanced">Qabaqcıl</string>
+    <string name="k2go_settings_turn_off">K2Go-nu söndür</string>
+    <string name="k2go_settings_running_note">K2Go siz söndürənə qədər arxa planda işləməyə davam edir.</string>
 </resources>

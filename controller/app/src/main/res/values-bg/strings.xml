@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Копиране от телефон</string>
     <string name="k2go_skip_for_now">Пропусни засега ›</string>
     <string name="k2go_download_library">Изтегляне на библиотека</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Език</string>
+    <string name="k2go_settings_about">Относно</string>
+    <string name="k2go_settings_advanced">Разширени</string>
+    <string name="k2go_settings_turn_off">Изключване на K2Go</string>
+    <string name="k2go_settings_running_note">K2Go продължава да работи във фонов режим, докато не го изключите.</string>
 </resources>

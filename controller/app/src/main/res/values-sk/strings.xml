@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Kopírovať z telefónu</string>
     <string name="k2go_skip_for_now">Zatiaľ preskočiť ›</string>
     <string name="k2go_download_library">Stiahnuť knižnicu</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Jazyk</string>
+    <string name="k2go_settings_about">O aplikácii</string>
+    <string name="k2go_settings_advanced">Pokročilé</string>
+    <string name="k2go_settings_turn_off">Vypnúť K2Go</string>
+    <string name="k2go_settings_running_note">K2Go beží na pozadí, kým ho nevypnete.</string>
 </resources>

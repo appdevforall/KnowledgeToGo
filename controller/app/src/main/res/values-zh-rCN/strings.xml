@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">从手机复制</string>
     <string name="k2go_skip_for_now">暂时跳过 ›</string>
     <string name="k2go_download_library">下载图书馆</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">语言</string>
+    <string name="k2go_settings_about">关于</string>
+    <string name="k2go_settings_advanced">高级</string>
+    <string name="k2go_settings_turn_off">关闭 K2Go</string>
+    <string name="k2go_settings_running_note">K2Go 会在后台持续运行，直到你将其关闭。</string>
 </resources>

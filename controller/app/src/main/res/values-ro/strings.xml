@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">Copiază de pe un telefon</string>
     <string name="k2go_skip_for_now">Omite deocamdată ›</string>
     <string name="k2go_download_library">Descarcă biblioteca</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Limbă</string>
+    <string name="k2go_settings_about">Despre</string>
+    <string name="k2go_settings_advanced">Avansat</string>
+    <string name="k2go_settings_turn_off">Dezactivează K2Go</string>
+    <string name="k2go_settings_running_note">K2Go rulează în fundal până când îl dezactivezi.</string>
 </resources>

@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Kopijuoti iš telefono</string>
     <string name="k2go_skip_for_now">Kol kas praleisti ›</string>
     <string name="k2go_download_library">Atsisiųsti biblioteką</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">Kalba</string>
+    <string name="k2go_settings_about">Apie</string>
+    <string name="k2go_settings_advanced">Išplėstiniai</string>
+    <string name="k2go_settings_turn_off">Išjungti K2Go</string>
+    <string name="k2go_settings_running_note">K2Go veikia fone, kol jo neišjungsite.</string>
 </resources>

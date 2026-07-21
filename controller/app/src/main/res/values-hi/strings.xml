@@ -621,4 +621,10 @@
     <string name="k2go_copy_from_phone">फ़ोन से कॉपी करें</string>
     <string name="k2go_skip_for_now">अभी के लिए छोड़ें ›</string>
     <string name="k2go_download_library">लाइब्रेरी डाउनलोड करें</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). machine translation. -->
+    <string name="k2go_settings_language">भाषा</string>
+    <string name="k2go_settings_about">परिचय</string>
+    <string name="k2go_settings_advanced">उन्नत</string>
+    <string name="k2go_settings_turn_off">K2Go बंद करें</string>
+    <string name="k2go_settings_running_note">K2Go तब तक बैकग्राउंड में चलता रहता है जब तक आप इसे बंद नहीं करते।</string>
 </resources>

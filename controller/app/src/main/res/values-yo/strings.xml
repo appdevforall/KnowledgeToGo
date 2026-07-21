@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">Ẹ̀dà láti fóònù</string>
     <string name="k2go_skip_for_now">Fò ó fún ìsinsìnyí ›</string>
     <string name="k2go_download_library">Gba ilé-ìkàwé sílẹ̀</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). review — machine, verify. -->
+    <string name="k2go_settings_language">Èdè</string>
+    <string name="k2go_settings_about">Nípa</string>
+    <string name="k2go_settings_advanced">Ìlọsíwájú</string>
+    <string name="k2go_settings_turn_off">Pa K2Go</string>
+    <string name="k2go_settings_running_note">K2Go máa ń bá iṣẹ́ lọ ní ẹ̀yìn títí tí ìwọ yóò fi pa á.</string>
 </resources>

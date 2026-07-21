@@ -551,4 +551,10 @@
     <string name="k2go_copy_from_phone">தொலைபேசியிலிருந்து நகலெடு</string>
     <string name="k2go_skip_for_now">இப்போதைக்கு தவிர் ›</string>
     <string name="k2go_download_library">நூலகத்தைப் பதிவிறக்கு</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). review — machine, verify. -->
+    <string name="k2go_settings_language">மொழி</string>
+    <string name="k2go_settings_about">பற்றி</string>
+    <string name="k2go_settings_advanced">மேம்பட்டது</string>
+    <string name="k2go_settings_turn_off">K2Go ஐ அணைக்கவும்</string>
+    <string name="k2go_settings_running_note">நீங்கள் அணைக்கும் வரை K2Go பின்னணியில் இயங்கிக்கொண்டே இருக்கும்.</string>
 </resources>

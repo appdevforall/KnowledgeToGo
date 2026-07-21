@@ -544,4 +544,10 @@
     <string name="k2go_copy_from_phone">Kopiraj sa telefona</string>
     <string name="k2go_skip_for_now">Preskoči za sada ›</string>
     <string name="k2go_download_library">Preuzmi biblioteku</string>
+    <!-- ADFA-4795: K2Go redesign l10n (Settings). review — machine, verify. -->
+    <string name="k2go_settings_language">Jezik</string>
+    <string name="k2go_settings_about">O aplikaciji</string>
+    <string name="k2go_settings_advanced">Napredno</string>
+    <string name="k2go_settings_turn_off">Isključi K2Go</string>
+    <string name="k2go_settings_running_note">K2Go nastavlja da radi u pozadini dok ga ne isključite.</string>
 </resources>
