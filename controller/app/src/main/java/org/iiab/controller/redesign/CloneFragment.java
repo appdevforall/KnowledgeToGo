@@ -423,11 +423,13 @@ public class CloneFragment extends Fragment {
             return;
         }
         receiveBox.setVisibility(View.GONE);
-        if (sendApp) {   // ADFA-4785: "Send the app" sub-screen replaces the normal Send flow
-            netRow.setVisibility(View.GONE); steps.setVisibility(View.GONE); qr.setVisibility(View.GONE);
+        if (sendApp) {   // ADFA-4785: step 2 (Get app) — spine + step title, then the sub-view
+            netRow.setVisibility(View.GONE); qr.setVisibility(View.GONE);
             caption.setVisibility(View.GONE); subCaption.setVisibility(View.GONE); footer.setVisibility(View.GONE);
             fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE); sendAppEntry.setVisibility(View.GONE);
+            steps.setVisibility(View.VISIBLE); buildSteps(true);
+            stepTitle.setVisibility(View.VISIBLE); stepTitle.setText("Step 2 · Get the app");
             sendAppView.setVisibility(View.VISIBLE);
             renderSendApp();
             return;

@@ -156,11 +156,7 @@
         <LinearLayout android:id="@+id/k2go_sendapp_view" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
             <TextView android:id="@+id/k2go_sendapp_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:padding="6dp" android:text="‹ Send" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp"
-                android:text="Send the app" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceHeadlineSmall" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="For a phone that doesn't have K2Go yet." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                android:padding="6dp" android:text="‹ Back" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
 
             <ImageView android:id="@+id/k2go_sendapp_qr" android:layout_width="220dp" android:layout_height="220dp"
                 android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
@@ -192,7 +188,7 @@
                 android:gravity="center" android:layout_marginTop="8dp" android:text="Once it's installed there, come back and copy your library."
                 android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             <TextView android:id="@+id/k2go_sendapp_next" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Next: copy the library"
+                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Installed? Copy the library"
                 android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
                 android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
         </LinearLayout>
