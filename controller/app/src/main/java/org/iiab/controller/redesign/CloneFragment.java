@@ -266,7 +266,7 @@ public class CloneFragment extends Fragment {
 
     private void setSide(Side sd) {
         side = sd;
-        if (sd == Side.SEND) { setMode(Mode.HOTSPOT); return; }
+        if (sd == Side.SEND) { stage = Stage.JOIN; setMode(Mode.HOTSPOT); return; }   // ADFA-4785: enter Send at step 1
         rStage = RStage.JOIN; pasteExpanded = false;
         incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false;   // ADFA-4784: fresh on entry
         render();
@@ -274,9 +274,8 @@ public class CloneFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
-        stage = Stage.JOIN;   // ADFA-4785: both modes start at step 1 (Join), not straight to Copy
         if (m == Mode.HOTSPOT) ensureHotspot();
-        render();
+        render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
     }
 
     private void ensureHotspot() {
