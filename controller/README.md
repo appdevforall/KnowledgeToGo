@@ -41,6 +41,6 @@ K2Go is built on top of the **[Termux](https://github.com/termux/termux-app)** p
 
 Our deepest thanks to the **Termux team and contributors** for their foundational work, without which K2Go would not be possible.
 
-## Disclaimer
+## Disclaimer!
 
 **This software is under active development and is provided "as is", without warranty of any kind.** It is intended for research, testing, and educational development. Because it interacts heavily with Android's background services and networking stack, it may behave differently across various device manufacturers (OEMs). It is not yet guaranteed for stable, unattended production deployment. Use at your own risk.
