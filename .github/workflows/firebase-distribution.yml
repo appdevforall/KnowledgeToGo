@@ -203,10 +203,10 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           NOTES_FILE: ${{ steps.prepare_notes.outputs.NOTES_FILE }}
         run: |
-          # Single Firebase App Distribution group in use: "dev" (main and all branches).
+          # Single Firebase App Distribution group for everything (main and all branches).
           firebase appdistribution:distribute "$APK_PATH" \
             --app "$FIREBASE_APP_ID" \
-            --groups "dev" \
+            --groups "testers" \
             --release-notes-file "$NOTES_FILE"
 
       # --- SECURITY CLEANUP ---
