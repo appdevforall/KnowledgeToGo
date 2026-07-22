@@ -9,14 +9,14 @@
     <string name="k2go_get_more" translatable="false">+  Get more</string>
     <string name="k2go_step1_breadcrumb" translatable="false">1  System   →   2  Content</string>
     <string name="k2go_perm_allow">Allow</string>
-    <string name="k2go_clone_app_programs" translatable="false">App &amp; programs</string>
-    <string name="k2go_connect_available" translatable="false">Available while the app is open.</string>
+    <string name="k2go_clone_app_programs">App &amp; programs</string>
+    <string name="k2go_connect_available">Available while the app is open.</string>
     <string name="k2go_back">Back</string>
     <string name="k2go_step2a_note" translatable="false">Books and Maps are included with your edition; Courses is set up after install.</string>
     <string name="k2go_choose_edition" translatable="false">CHOOSE AN EDITION</string>
-    <string name="k2go_clone_content" translatable="false">Content — books, Wikipedia, maps</string>
+    <string name="k2go_clone_content">Content — books, Wikipedia, maps</string>
     <string name="k2go_copy_from_phone">Copy from a phone</string>
-    <string name="k2go_clone_subtitle" translatable="false">Copy the K2Go app and its library onto another phone</string>
+    <string name="k2go_clone_subtitle">Copy the K2Go app and its library onto another phone</string>
     <string name="k2go_coverage" translatable="false">Coverage</string>
     <string name="k2go_detail" translatable="false">Detail</string>
     <string name="k2go_download_library">Download library</string>
@@ -24,23 +24,23 @@
     <string name="k2go_lang_spanish" translatable="false">Español</string>
     <string name="k2go_cov_everything" translatable="false">Everything</string>
     <string name="k2go_get_started">Get started</string>
-    <string name="k2go_hotspot" translatable="false">Hotspot</string>
+    <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Internet download</string>
-    <string name="k2go_just_scan" translatable="false">Just scan — no need to type!</string>
+    <string name="k2go_just_scan">Just scan — no need to type!</string>
     <string name="k2go_perm_keep_running">Keep running</string>
     <string name="k2go_brand" translatable="false">Knowledge To Go</string>
-    <string name="k2go_connect_subtitle" translatable="false">Let a nearby device browse your library.</string>
+    <string name="k2go_connect_subtitle">Let a nearby device browse your library.</string>
     <string name="k2go_perm_nearby_note">Nearby devices is asked later, only when sharing.</string>
     <string name="k2go_next">Next</string>
     <string name="k2go_next_choose_content" translatable="false">Next: choose content</string>
-    <string name="k2go_clone_next_note" translatable="false">Next: join the same network, then start.</string>
+    <string name="k2go_clone_next_note">Next: join the same network, then start.</string>
     <string name="k2go_perm_notifications">Notifications</string>
     <string name="k2go_cov_popular" translatable="false">Popular</string>
     <string name="k2go_recommended" translatable="false">Recommended</string>
-    <string name="k2go_scan_didnt_work" translatable="false">Scan didn\'t work? Use this:</string>
-    <string name="k2go_scan_join_hotspot" translatable="false">Scan to join my hotspot</string>
-    <string name="k2go_send_nearby" translatable="false">Send to a nearby phone</string>
-    <string name="k2go_send" translatable="false">Send</string>
+    <string name="k2go_scan_didnt_work">Scan didn\'t work? Use this:</string>
+    <string name="k2go_scan_join_hotspot">Scan to join my hotspot</string>
+    <string name="k2go_send_nearby">Send to a nearby phone</string>
+    <string name="k2go_send">Send</string>
     <string name="k2go_setup_library_title">Set up your library</string>
     <string name="k2go_starting_library" translatable="false">Starting your library…</string>
     <string name="k2go_perm_storage">Storage access</string>
@@ -49,12 +49,12 @@
     <string name="k2go_step2b_breadcrumb" translatable="false">1 ✓ System → 2 Content</string>
     <string name="k2go_step2a_breadcrumb" translatable="false">1 ✓ System → 2 Content</string>
     <string name="k2go_det_text" translatable="false">Text only</string>
-    <string name="k2go_clone_headsup" translatable="false">The K2Go library on the other phone (if any) is replaced with this one.</string>
+    <string name="k2go_clone_headsup">The K2Go library on the other phone (if any) is replaced with this one.</string>
     <string name="k2go_step1_note" translatable="false">These are apps — the programs that open content. You\'ll choose the content itself in Step 2.</string>
-    <string name="k2go_connect_shownext" translatable="false">They\'re connected — show next ›</string>
-    <string name="k2go_clone_total" translatable="false">Total copy</string>
-    <string name="k2go_clone_receive_hdr" translatable="false">WHAT THEY\'LL RECEIVE</string>
-    <string name="k2go_wifi" translatable="false">Wi-Fi</string>
+    <string name="k2go_connect_shownext">They\'re connected — show next ›</string>
+    <string name="k2go_clone_total">Total copy</string>
+    <string name="k2go_clone_receive_hdr">WHAT THEY\'LL RECEIVE</string>
+    <string name="k2go_wifi">Wi-Fi</string>
     <string name="k2go_wikipedia_kiwix" translatable="false">Wikipedia (via Kiwix)</string>
     <string name="k2go_det_pictures" translatable="false">With pictures</string>
     <string name="k2go_perm_notifications_sub">download progress</string>
@@ -62,7 +62,7 @@
     <string name="k2go_perm_keep_running_sub">skip battery limits</string>
     <string name="k2go_perm_storage_sub">store &amp; serve content</string>
     <string name="k2go_internet_download_sub">system + content · 3 GB+</string>
-    <string name="k2go_receive" translatable="false">Receive</string>
+    <string name="k2go_receive">Receive</string>
     <string name="k2go_welcome_sub">A library in your pocket</string>
     <string name="k2go_back_link">‹ Back</string>
     <string name="k2go_src_wikipedia" translatable="false">Wikipedia</string>
@@ -94,7 +94,7 @@
     <string name="k2go_clone_already_wifi_skip">Already on the same Wi-Fi?  Skip ›</string>
     <string name="k2go_clone_camera_note">Camera not working? Connect to the other phone\'s Wi-Fi in Settings, then Skip.</string>
     <string name="k2go_clone_camera_q">Camera not working?</string>
-    <string name="k2go_clone_cant_scan" translatable="false">Can\'t scan? Share the app another way  ›</string>
+    <string name="k2go_clone_cant_scan">Can\'t scan? Share the app another way  ›</string>
     <string name="k2go_cancel">Cancel</string>
     <string name="k2go_clone_connecting">Connecting…</string>
     <string name="k2go_lbl_content">Content</string>
@@ -102,13 +102,13 @@
     <string name="k2go_clone_everything_note">Everything it has — its apps and their content.</string>
     <string name="k2go_clone_exact_size">Exact size is shown once you connect.</string>
     <string name="k2go_clone_from_other_hdr">FROM THE OTHER PHONE</string>
-    <string name="k2go_clone_get_version_note" translatable="false">Get a K2Go version made for this phone — ask your promoter, or download the right one.</string>
+    <string name="k2go_clone_get_version_note">Get a K2Go version made for this phone — ask your promoter, or download the right one.</string>
     <string name="k2go_clone_installed_copy">Installed? Copy the library</string>
-    <string name="k2go_clone_incompat_why_long" translatable="false">K2Go\'s library includes programs built to match a phone\'s hardware. When two phones are built differently, the programs from one can\'t run on the other, so copying the library wouldn\'t work.</string>
+    <string name="k2go_clone_incompat_why_long">K2Go\'s library includes programs built to match a phone\'s hardware. When two phones are built differently, the programs from one can\'t run on the other, so copying the library wouldn\'t work.</string>
     <string name="k2go_clone_nothing_to_replace">Nothing to replace</string>
-    <string name="k2go_clone_once_installed" translatable="false">Once it\'s installed there, come back and copy your library.</string>
-    <string name="k2go_clone_one_android_step" translatable="false">One Android step</string>
-    <string name="k2go_clone_other_no_app" translatable="false">Other phone doesn\'t have K2Go yet?</string>
+    <string name="k2go_clone_once_installed">Once it\'s installed there, come back and copy your library.</string>
+    <string name="k2go_clone_one_android_step">One Android step</string>
+    <string name="k2go_clone_other_no_app">Other phone doesn\'t have K2Go yet?</string>
     <string name="k2go_clone_receive_from">Receive from another phone  ›</string>
     <string name="k2go_clone_sharing_now">SHARING NOW</string>
     <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter code as text  ▾</string>
@@ -116,20 +116,20 @@
     <string name="k2go_clone_scan_their_codes">Scan their codes to get a copy here.</string>
     <string name="k2go_clone_scan_get_app">Scan to get the app</string>
     <string name="k2go_clone_scan_to_join">Scan to join</string>
-    <string name="k2go_clone_send_app_first" translatable="false">Send the app first  ›</string>
+    <string name="k2go_clone_send_app_first">Send the app first  ›</string>
     <string name="k2go_clone_send_to">Send to another phone  ›</string>
     <string name="k2go_clone_sending_whole">Sending your whole library</string>
     <string name="k2go_clone_share_wifi_settings">Share Wi-Fi via Android settings</string>
-    <string name="k2go_clone_share_action" translatable="false">Share ›</string>
+    <string name="k2go_clone_share_action">Share ›</string>
     <string name="k2go_clone_show_codes">Show codes; the other phone scans them.</string>
     <string name="k2go_clone_sizes_estimates">Sizes are estimates.</string>
     <string name="k2go_lbl_system">System</string>
-    <string name="k2go_clone_technical_details" translatable="false">Technical details  ▾</string>
-    <string name="k2go_clone_app_separate_step" translatable="false">The app goes by a separate quick step, then copy the library.</string>
-    <string name="k2go_clone_other_downloads" translatable="false">The other phone downloads K2Go from this code.</string>
-    <string name="k2go_clone_allow_install_note" translatable="false">The other phone taps "allow install from this source" — a one-time step.</string>
-    <string name="k2go_clone_incompat_title" translatable="false">These phones aren\'t compatible</string>
-    <string name="k2go_clone_incompat_body" translatable="false">This phone and the other one are built differently, so the library can\'t run if copied.</string>
+    <string name="k2go_clone_technical_details">Technical details  ▾</string>
+    <string name="k2go_clone_app_separate_step">The app goes by a separate quick step, then copy the library.</string>
+    <string name="k2go_clone_other_downloads">The other phone downloads K2Go from this code.</string>
+    <string name="k2go_clone_allow_install_note">The other phone taps "allow install from this source" — a one-time step.</string>
+    <string name="k2go_clone_incompat_title">These phones aren\'t compatible</string>
+    <string name="k2go_clone_incompat_body">This phone and the other one are built differently, so the library can\'t run if copied.</string>
     <string name="k2go_clone_no_library_fresh">This phone has no library yet — you\'ll simply receive the sender\'s copy.</string>
     <string name="k2go_clone_replaces_title">This replaces your K2Go library</string>
     <string name="k2go_lbl_total">Total</string>
@@ -137,11 +137,11 @@
     <string name="k2go_clone_receive_you_hdr">WHAT YOU\'LL RECEIVE</string>
     <string name="k2go_clone_fork_question">What do you want to do?</string>
     <string name="k2go_clone_what_to_do">What to do</string>
-    <string name="k2go_clone_why_incompat" translatable="false">Why aren\'t they compatible?  ▾</string>
+    <string name="k2go_clone_why_incompat">Why aren\'t they compatible?  ▾</string>
     <string name="k2go_clone_youll_receive">You\'ll receive a full copy</string>
     <string name="k2go_clone_replace_theirs">Your current library (system + content) is replaced with theirs. No undo.</string>
     <string name="k2go_clone_replace_other">Your library (system + content) is replaced with the other phone\'s. No undo.</string>
-    <string name="k2go_clone_for_copying" translatable="false">for copying between them.</string>
+    <string name="k2go_clone_for_copying">for copying between them.</string>
     <string name="k2go_clone_scan_different">‹ Scan a different code</string>
     <string name="k2go_clone_copy_btn">⧉  Copy</string>
     <string name="k2go_clone_already_connected">Already connected? Continue ›</string>
@@ -166,9 +166,9 @@
     <string name="k2go_clone_copy_begins_note">The copy begins when they scan this one.</string>
     <string name="k2go_clone_no_library_note">This phone has no K2Go library installed. Install content first, or share anyway.</string>
     <string name="k2go_clone_back_step1">‹ Back to step 1</string>
-    <string name="k2go_connect_readonly" translatable="false">Read-only access to your content.</string>
-    <string name="k2go_connect_scan_open" translatable="false">Scan to open the library</string>
-    <string name="k2go_connect_same_wifi" translatable="false">You\'re on the same Wi-Fi — one code.</string>
+    <string name="k2go_connect_readonly">Read-only access to your content.</string>
+    <string name="k2go_connect_scan_open">Scan to open the library</string>
+    <string name="k2go_connect_same_wifi">You\'re on the same Wi-Fi — one code.</string>
 
     <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
     <string name="k2go_wiki_view_list" translatable="false">List</string>
