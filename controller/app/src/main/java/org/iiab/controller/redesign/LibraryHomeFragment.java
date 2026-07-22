@@ -254,3 +254,5 @@ public class LibraryHomeFragment extends Fragment {
         }
     }
 }
+
+// CI test (ADFA-4812): a push to a non-main branch is built and distributed to Firebase — validates ADFA-4810. Throwaway; do not merge.
