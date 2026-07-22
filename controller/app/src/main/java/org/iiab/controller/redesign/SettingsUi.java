@@ -70,7 +70,7 @@ final class SettingsUi {
         col.addView(title(c, title));
         if (subtitle != null && !subtitle.isEmpty()) col.addView(sub(c, subtitle));
         row.addView(col);
-        row.addView(sub(c, "Soon"));
+        row.addView(sub(c, c.getString(R.string.k2go_soon)));
     }
 
     static void toggle(Context c, LinearLayout list, String titleText, boolean checked, OnToggle cb) {

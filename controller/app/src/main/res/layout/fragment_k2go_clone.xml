@@ -264,7 +264,7 @@
                 <EditText android:id="@+id/k2go_clone_paste" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:padding="14dp" android:background="@drawable/k2go_card_bg" android:fontFamily="monospace"
                     android:gravity="top|start" android:minLines="3" android:maxLines="6" android:inputType="textMultiLine"
-                    android:hint="Paste transfer code" android:textColor="@color/k2go_ink" android:textColorHint="@color/k2go_muted"
+                    android:hint="@string/k2go_clone_paste_hint" android:textColor="@color/k2go_ink" android:textColorHint="@color/k2go_muted"
                     android:textAppearance="?attr/textAppearanceBodySmall" android:importantForAutofill="no" />
                 <TextView android:id="@+id/k2go_clone_receive_start" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="10dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_use_this_code"

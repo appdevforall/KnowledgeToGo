@@ -416,7 +416,7 @@ public class CloneFragment extends Fragment {
         cloneHdr.setVisibility(View.GONE);
         subtitleView.setVisibility(View.GONE);
         backHeader.setVisibility(View.VISIBLE);
-        backHeader.setText(side == Side.RECEIVE ? "‹ Receive" : "‹ Send");
+        backHeader.setText(getString(side == Side.RECEIVE ? R.string.k2go_clone_back_receive : R.string.k2go_clone_back_send));
 
         if (side == Side.RECEIVE) {
             netRow.setVisibility(View.GONE);
@@ -563,7 +563,7 @@ public class CloneFragment extends Fragment {
         long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
-        caption.setText(twoCode ? "Ready! Scan code 2 to start the transfer" : "Ready! Scan to start the transfer");
+        caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
         subCaption.setText(getString(R.string.k2go_clone_copy_begins_note));
         setFallback(null);
         showCodeAsText(payload);
@@ -800,7 +800,7 @@ public class CloneFragment extends Fragment {
         rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
         rcvScan.setText(atJoin ? getString(R.string.k2go_clone_rcv_scan_wifi) : getString(R.string.k2go_clone_rcv_scan_start));
         rcvScan.setVisibility(View.VISIBLE);
-        rcvSub.setText(atJoin ? "Step 1 of 2" : "Step 2 of 2");
+        rcvSub.setText(getString(atJoin ? R.string.k2go_clone_step_1of2 : R.string.k2go_clone_step_2of2));
         rcvSub.setVisibility(View.VISIBLE);
         rcvSkip.setText(getString(R.string.k2go_clone_already_connected));
         rcvSkipHint.setText(getString(R.string.k2go_clone_cant_join_note));
