@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Önizleme — henüz çalışmıyor</string>
     <string name="k2go_lang_english">İngilizce</string>
     <string name="k2go_lang_spanish">İspanyolca</string>
-    <string name="k2go_brand">Yanınızda Bilgi</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Tema</string>
     <string name="k2go_settings_help">Yardım</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Desteklenmiyor</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Kitap okuyun</string>
-    <string name="k2go_card_code">Hareket halinde kod yazın</string>
     <string name="k2go_card_wikipedia">Wikipedia\'yı keşfedin</string>
     <string name="k2go_card_courses">Kurslara katılın</string>
     <string name="k2go_card_maps">Haritalarda gezinin</string>

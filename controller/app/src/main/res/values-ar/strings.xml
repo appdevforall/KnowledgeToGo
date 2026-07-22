@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">معاينة — لا تعمل بعد</string>
     <string name="k2go_lang_english">الإنجليزية</string>
     <string name="k2go_lang_spanish">الإسبانية</string>
-    <string name="k2go_brand">المعرفة أينما ذهبت</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">السمة</string>
     <string name="k2go_settings_help">المساعدة</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">غير مدعوم</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">اقرأ كتابًا</string>
-    <string name="k2go_card_code">برمج أثناء التنقل</string>
     <string name="k2go_card_wikipedia">استكشف Wikipedia</string>
     <string name="k2go_card_courses">خذ دورات</string>
     <string name="k2go_card_maps">تصفح الخرائط</string>

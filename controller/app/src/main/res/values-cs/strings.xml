@@ -708,7 +708,6 @@
     <string name="k2go_preview_banner">Náhled — zatím nefunkční</string>
     <string name="k2go_lang_english">Angličtina</string>
     <string name="k2go_lang_spanish">Španělština</string>
-    <string name="k2go_brand">Znalosti s sebou</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Motiv</string>
     <string name="k2go_settings_help">Nápověda</string>
@@ -761,7 +760,6 @@
     <string name="k2go_not_supported">Nepodporováno</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Přečíst knihu</string>
-    <string name="k2go_card_code">Programujte na cestách</string>
     <string name="k2go_card_wikipedia">Prozkoumat Wikipedii</string>
     <string name="k2go_card_courses">Absolvovat kurzy</string>
     <string name="k2go_card_maps">Procházet mapy</string>

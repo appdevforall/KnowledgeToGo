@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Pregled — još ne funkcioniše</string>
     <string name="k2go_lang_english">Engleski</string>
     <string name="k2go_lang_spanish">Španski</string>
-    <string name="k2go_brand">Znanje sa sobom</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
     <string name="k2go_settings_theme">Tema</string>
     <string name="k2go_settings_help">Pomoć</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Nije podržano</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). review — machine, verify. -->
     <string name="k2go_card_books">Pročitaj knjigu</string>
-    <string name="k2go_card_code">Kodiraj u pokretu</string>
     <string name="k2go_card_wikipedia">Istražite Wikipedia</string>
     <string name="k2go_card_courses">Pohađajte kurseve</string>
     <string name="k2go_card_maps">Navigirajte mape</string>

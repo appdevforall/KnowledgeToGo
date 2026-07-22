@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Forhåndsvisning — ikke funksjonell ennå</string>
     <string name="k2go_lang_english">Engelsk</string>
     <string name="k2go_lang_spanish">Spansk</string>
-    <string name="k2go_brand">Kunnskap å ta med</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Tema</string>
     <string name="k2go_settings_help">Hjelp</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Støttes ikke</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Les en bok</string>
-    <string name="k2go_card_code">Kod på farten</string>
     <string name="k2go_card_wikipedia">Utforsk Wikipedia</string>
     <string name="k2go_card_courses">Ta kurs</string>
     <string name="k2go_card_maps">Naviger i kart</string>

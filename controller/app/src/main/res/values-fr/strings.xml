@@ -778,7 +778,6 @@
     <string name="k2go_preview_banner">Aperçu — pas encore fonctionnel</string>
     <string name="k2go_lang_english">Anglais</string>
     <string name="k2go_lang_spanish">Espagnol</string>
-    <string name="k2go_brand">Le savoir à emporter</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Thème</string>
     <string name="k2go_settings_help">Aide</string>
@@ -831,7 +830,6 @@
     <string name="k2go_not_supported">Non pris en charge</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Lire un livre</string>
-    <string name="k2go_card_code">Coder en déplacement</string>
     <string name="k2go_card_wikipedia">Explorer Wikipedia</string>
     <string name="k2go_card_courses">Suivre des cours</string>
     <string name="k2go_card_maps">Parcourir des cartes</string>

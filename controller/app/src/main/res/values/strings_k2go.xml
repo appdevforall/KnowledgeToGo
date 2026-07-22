@@ -28,7 +28,7 @@
     <string name="k2go_internet_download">Internet download</string>
     <string name="k2go_just_scan">Just scan — no need to type!</string>
     <string name="k2go_perm_keep_running">Keep running</string>
-    <string name="k2go_brand">Knowledge To Go</string>
+    <string name="k2go_brand" translatable="false">Knowledge To Go</string>
     <string name="k2go_connect_subtitle">Let a nearby device browse your library.</string>
     <string name="k2go_perm_nearby_note">Nearby devices is asked later, only when sharing.</string>
     <string name="k2go_next">Next</string>
@@ -241,7 +241,7 @@
     <string name="k2go_preview_banner">Preview — not functional yet</string>
     <!-- ADFA-4795: redesign dynamic text (cards, editions, connect states, badges, toggles, formats) sweep 3 -->
     <string name="k2go_card_books">Read a book</string>
-    <string name="k2go_card_code">Code on the Go</string>
+    <string name="k2go_card_code" translatable="false">Code on the Go</string>
     <string name="k2go_card_wikipedia">Explore Wikipedia</string>
     <string name="k2go_card_courses">Take courses</string>
     <string name="k2go_card_maps">Navigate maps</string>

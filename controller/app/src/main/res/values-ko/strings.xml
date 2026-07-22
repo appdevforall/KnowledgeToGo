@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">미리보기 — 아직 작동하지 않음</string>
     <string name="k2go_lang_english">영어</string>
     <string name="k2go_lang_spanish">스페인어</string>
-    <string name="k2go_brand">가지고 다니는 지식</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">테마</string>
     <string name="k2go_settings_help">도움말</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">지원되지 않음</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">책 읽기</string>
-    <string name="k2go_card_code">이동 중 코딩</string>
     <string name="k2go_card_wikipedia">Wikipedia 탐색</string>
     <string name="k2go_card_courses">강좌 수강</string>
     <string name="k2go_card_maps">지도 탐색</string>
