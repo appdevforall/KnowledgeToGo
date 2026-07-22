@@ -5,27 +5,49 @@
     android:layout_height="match_parent"
     android:background="@color/k2go_paper">
 
+    <!-- ADFA-4799: rail (leading) + content. The rail is shown and the bottom bar hidden in
+         medium/expanded (>= 600dp wide); the reverse in compact. Toggled at runtime by width in
+         LibraryActivity, so rotation never recreates the activity (the boot gate is preserved). -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/k2go_nav_host"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/k2go_bottom_nav"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.google.android.material.navigationrail.NavigationRailView
+            android:id="@+id/k2go_nav_rail"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/k2go_paper"
+            android:visibility="gone"
             app:elevation="0dp"
             app:labelVisibilityMode="labeled"
             app:itemIconTint="@color/k2go_nav_item"
             app:itemTextColor="@color/k2go_nav_item"
             app:menu="@menu/bottom_nav_k2go" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/k2go_nav_host"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/k2go_bottom_nav"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/k2go_paper"
+                app:elevation="0dp"
+                app:labelVisibilityMode="labeled"
+                app:itemIconTint="@color/k2go_nav_item"
+                app:itemTextColor="@color/k2go_nav_item"
+                app:menu="@menu/bottom_nav_k2go" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Boot gate: covers the ~5-6s server boot; entry loop then OPEN flip. -->

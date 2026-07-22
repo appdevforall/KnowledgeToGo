@@ -4,15 +4,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import org.iiab.controller.R;
 import org.iiab.controller.ServerController;
 import org.iiab.controller.ServerStateRepository;
@@ -38,6 +40,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
     public static final String EXTRA_TAB = "tab";
     private boolean installing = false;
+
+    /** ADFA-4799: bottom bar (compact) and rail (medium/expanded) share the NavigationBarView
+     *  API and the same menu; we just toggle which one is visible by window width. */
+    private static final int MEDIUM_MIN_DP = 600;
+    private static final String STATE_TAB = "k2go_tab";
+    private NavigationBarView bottomNav, railNav;
+    private int currentTab = R.id.nav_library;
+    private boolean navSyncing = false;
 
     private ServerController serverController;
     private boolean isNegotiating = false;
@@ -66,14 +76,25 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
         setContentView(R.layout.activity_library);
 
-        BottomNavigationView nav = findViewById(R.id.k2go_bottom_nav);
-        nav.setOnItemSelectedListener(item -> {
-            showTab(item.getItemId());
+        bottomNav = findViewById(R.id.k2go_bottom_nav);
+        railNav = findViewById(R.id.k2go_nav_rail);
+        NavigationBarView.OnItemSelectedListener navListener = item -> {
+            if (!navSyncing) {
+                currentTab = item.getItemId();
+                showTab(currentTab);
+                syncSelection(currentTab);
+            }
             return true;
-        });
-        if (savedInstanceState == null) {
-            nav.setSelectedItemId(getIntent().getIntExtra(EXTRA_TAB, R.id.nav_library));   // ADFA-4777
-        }
+        };
+        bottomNav.setOnItemSelectedListener(navListener);
+        railNav.setOnItemSelectedListener(navListener);
+        applyNavForWidth();
+
+        currentTab = (savedInstanceState != null)
+                ? savedInstanceState.getInt(STATE_TAB, R.id.nav_library)
+                : getIntent().getIntExtra(EXTRA_TAB, R.id.nav_library);   // ADFA-4777
+        showTab(currentTab);
+        syncSelection(currentTab);
 
         bootGate = findViewById(R.id.k2go_boot_gate);
         installProgress = findViewById(R.id.k2go_install_progress);
@@ -218,6 +239,35 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_nav_host, f)
                 .commit();
+    }
+
+    /** Show the rail in medium/expanded (>= 600dp wide), the bottom bar in compact. */
+    private void applyNavForWidth() {
+        boolean wide = getResources().getConfiguration().screenWidthDp >= MEDIUM_MIN_DP;
+        if (railNav != null) railNav.setVisibility(wide ? View.VISIBLE : View.GONE);
+        if (bottomNav != null) bottomNav.setVisibility(wide ? View.GONE : View.VISIBLE);
+    }
+
+    /** Keep both nav widgets on the same selected tab without re-triggering the listener. */
+    private void syncSelection(int id) {
+        navSyncing = true;
+        if (bottomNav != null && bottomNav.getSelectedItemId() != id) bottomNav.setSelectedItemId(id);
+        if (railNav != null && railNav.getSelectedItemId() != id) railNav.setSelectedItemId(id);
+        navSyncing = false;
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // configChanges keeps the activity alive (no boot-gate replay); just re-pick the nav.
+        applyNavForWidth();
+        syncSelection(currentTab);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putInt(STATE_TAB, currentTab);
     }
 
     /** Push a Settings sub-screen (Language/About/Advanced/Feedback) keeping the bottom nav. */

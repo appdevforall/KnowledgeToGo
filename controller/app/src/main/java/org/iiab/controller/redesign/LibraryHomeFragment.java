@@ -2,9 +2,11 @@ package org.iiab.controller.redesign;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +48,11 @@ public class LibraryHomeFragment extends Fragment {
     private final Handler main = new Handler(Looper.getMainLooper());
     private TextView homeStatus;
     private View homeStatusDot;
+    private LinearLayout cardsHost;
+    private View getMoreFooter;
+
+    /** Material 3 breakpoint: >= 600dp wide → medium/expanded (3 columns + nav rail). */
+    private static final int MEDIUM_MIN_DP = 600;
 
     private final Runnable poll = new Runnable() {
         @Override public void run() {
@@ -68,47 +75,102 @@ public class LibraryHomeFragment extends Fragment {
         cards.add(new Card("kolibri", getString(R.string.k2go_card_courses),      false, R.drawable.ic_card_courses));
         cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));
 
-        buildCards(inflater, root.findViewById(R.id.k2go_cards));
-
-        root.findViewById(R.id.k2go_get_more).setOnClickListener(v -> {
-            // If a system is already installed, skip the destructive system step and go
-            // straight to content (Step 2). Otherwise run the full setup from Step 1.
-            android.content.Intent i = new android.content.Intent(requireContext(), SetupLibraryActivity.class);
-            if (org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
-                i.putExtra(SetupLibraryActivity.EXTRA_CONTENT_ONLY, true);
-            }
-            startActivity(i);
-        });
+        cardsHost = root.findViewById(R.id.k2go_cards);
+        getMoreFooter = root.findViewById(R.id.k2go_get_more_footer);
+        root.findViewById(R.id.k2go_get_more).setOnClickListener(v -> openGetMore());
+        relayout();
         return root;
     }
 
-    private void buildCards(LayoutInflater inflater, LinearLayout host) {
-        LinearLayout row = null;
-        for (int i = 0; i < cards.size(); i++) {
-            if (i % 2 == 0) {
-                row = new LinearLayout(requireContext());
-                row.setOrientation(LinearLayout.HORIZONTAL);
-                host.addView(row, new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            }
-            final Card c = cards.get(i);
-            View card = inflater.inflate(R.layout.view_k2go_card, row, false);
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        relayout();
+    }
+
+    /**
+     * ADFA-4799: lay out by window width (not orientation). Compact (&lt; 600dp) = 2 columns +
+     * pinned "Get more" footer; medium/expanded (&gt;= 600dp) = 3 columns with "Get more" as the
+     * last grid cell. The card is fixed-height with an autosizing 2-line title, so the grid stays
+     * balanced under any translation.
+     */
+    private void relayout() {
+        if (cardsHost == null || !isAdded()) return;
+        int columns = getResources().getConfiguration().screenWidthDp >= MEDIUM_MIN_DP ? 3 : 2;
+        boolean getMoreInGrid = columns >= 3;
+        if (getMoreFooter != null) getMoreFooter.setVisibility(getMoreInGrid ? View.GONE : View.VISIBLE);
+        buildCards(getLayoutInflater(), cardsHost, columns, getMoreInGrid);
+        refreshStatuses();
+    }
+
+    private void buildCards(LayoutInflater inflater, LinearLayout host, int columns, boolean getMoreInGrid) {
+        host.removeAllViews();
+        final int cardH = getResources().getDimensionPixelSize(R.dimen.k2go_card_height);
+
+        List<View> cells = new ArrayList<>();
+        for (final Card c : cards) {
+            View card = inflater.inflate(R.layout.view_k2go_card, host, false);
             ((ImageView) card.findViewById(R.id.k2go_card_icon)).setImageResource(c.iconRes);
             ((TextView) card.findViewById(R.id.k2go_card_title)).setText(c.title);
             c.dot = card.findViewById(R.id.k2go_card_dot);
             c.status = card.findViewById(R.id.k2go_card_status);
             card.setOnClickListener(v -> onCardClick(c));
-            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) card.getLayoutParams();
-            lp.width = 0; lp.weight = 1f;
-            row.addView(card, lp);
-            applyState(c, GRAY);
+            applyState(c, c.state);   // keep the live status across a relayout
+            cells.add(card);
         }
-        if (cards.size() % 2 == 1 && row != null) {
-            View spacer = new View(requireContext());
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, 1);
-            lp.weight = 1f;
-            row.addView(spacer, lp);
+        if (getMoreInGrid) cells.add(makeGetMoreCell(cardH));
+
+        int i = 0, n = cells.size();
+        while (i < n) {
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            host.addView(row, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            int inRow = Math.min(columns, n - i);
+            for (int k = 0; k < inRow; k++) {
+                View cell = cells.get(i++);
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) cell.getLayoutParams();
+                if (lp == null) lp = new LinearLayout.LayoutParams(0, cardH);
+                lp.width = 0;
+                lp.weight = (inRow == 1) ? columns : 1f;   // a lone last card spans the full row
+                cell.setLayoutParams(lp);
+                row.addView(cell);
+            }
+            if (inRow > 1 && inRow < columns) {   // pad a partial row so cards keep their column width
+                View spacer = new View(requireContext());
+                LinearLayout.LayoutParams sp = new LinearLayout.LayoutParams(0, 1);
+                sp.weight = columns - inRow;
+                row.addView(spacer, sp);
+            }
         }
+    }
+
+    /** Card-shaped "Get more" cell used as the last grid cell in medium/expanded. */
+    private View makeGetMoreCell(int cardH) {
+        TextView t = new TextView(requireContext());
+        t.setText(getString(R.string.k2go_get_more));
+        t.setGravity(Gravity.CENTER);
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
+        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        t.setBackgroundResource(R.drawable.k2go_getmore_bg);
+        t.setClickable(true);
+        t.setFocusable(true);
+        t.setOnClickListener(v -> openGetMore());
+        int m = Math.round(getResources().getDisplayMetrics().density * 8);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, cardH);
+        lp.setMargins(m, m, m, m);
+        t.setLayoutParams(lp);
+        return t;
+    }
+
+    private void openGetMore() {
+        // If a system is already installed, skip the destructive system step and go straight
+        // to content (Step 2). Otherwise run the full setup from Step 1.
+        Intent i = new Intent(requireContext(), SetupLibraryActivity.class);
+        if (org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
+            i.putExtra(SetupLibraryActivity.EXTRA_CONTENT_ONLY, true);
+        }
+        startActivity(i);
     }
 
     private void onCardClick(Card c) {

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4799: i18n-robust card. Fixed height (2-line worst case), title max 2 lines +
+     autosize, status 1 line, icon fixed — so translated labels never skew the grid. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/k2go_card_height"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     android:layout_margin="8dp"
     android:padding="16dp"
-    android:minHeight="150dp"
     android:background="@drawable/k2go_card_bg"
     android:clickable="true"
     android:focusable="true">
@@ -16,18 +17,23 @@
         android:id="@+id/k2go_card_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginTop="10dp"
         app:tint="@color/k2go_teal"
         android:contentDescription="@null" />
 
     <TextView
         android:id="@+id/k2go_card_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="12dp"
         android:gravity="center"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textAppearance="?attr/textAppearanceTitleLarge"
-        android:textColor="@color/k2go_ink" />
+        android:textColor="@color/k2go_ink"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeMaxTextSize="18sp"
+        app:autoSizeStepGranularity="1sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -47,6 +53,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
     </LinearLayout>
