@@ -7,6 +7,7 @@
         <item name="colorPrimaryContainer">@color/k2go_surface</item>
         <item name="colorOnPrimaryContainer">@color/k2go_ink</item>
         <item name="android:colorBackground">@color/k2go_paper</item>
+        <item name="android:windowBackground">@color/k2go_paper</item>
         <item name="colorSurface">@color/k2go_paper</item>
         <item name="colorSurfaceContainer">@color/k2go_surface</item>
         <item name="colorOnBackground">@color/k2go_ink</item>

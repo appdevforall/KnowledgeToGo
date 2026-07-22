@@ -53,6 +53,10 @@ public class WizardActivity extends AppCompatActivity {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_k2go_wizard);
+        // ADFA-4797: survive the locale-change recreate — keep the step and re-read the
+        // applied language, so we don't flash back to the welcome step.
+        langTag = AppLocaleController.currentTag();
+        if (b != null) step = b.getInt("step", 0);
         title = findViewById(R.id.wiz_title);
         subtitle = findViewById(R.id.wiz_subtitle);
         primary = findViewById(R.id.wiz_primary);
@@ -100,6 +104,20 @@ public class WizardActivity extends AppCompatActivity {
         primary.setOnClickListener(v -> onPrimary());
         back.setOnClickListener(v -> goBack());
         render();
+
+        // ADFA-4797: on a recreate (e.g. right after a language change) fade the screen in
+        // instead of a hard flash; first launch (b == null) stays instant.
+        if (b != null) {
+            View content = findViewById(android.R.id.content);
+            content.setAlpha(0f);
+            content.animate().alpha(1f).setDuration(220).start();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putInt("step", step);
     }
 
     private void updateLangBox() {
@@ -121,8 +139,8 @@ public class WizardActivity extends AppCompatActivity {
         if (step == 0) {
             step = 1;
         } else if (step == 1) {
+            step = 2;               // set before apply so it survives the recreate
             applyLanguage();
-            step = 2;
         } else if (step == 2) {
             if (allPermsGranted()) step = 3;
         }
