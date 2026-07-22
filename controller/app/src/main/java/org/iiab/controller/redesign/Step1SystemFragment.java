@@ -52,12 +52,12 @@ public class Step1SystemFragment extends Fragment {
         tint(barFree, R.color.k2go_hairline);
 
         editions.clear();
-        editions.add(new Edition(InstallationPlanner.Tier.BASIC, "Basic",
-                "Wikipedia reader app + Books app", false));
-        editions.add(new Edition(InstallationPlanner.Tier.STANDARD, "Standard",
-                "Basic plus Courses app", true));
-        editions.add(new Edition(InstallationPlanner.Tier.FULL, "Full",
-                "Standard plus Maps app (all apps)", false));
+        editions.add(new Edition(InstallationPlanner.Tier.BASIC, getString(R.string.k2go_edition_basic),
+                getString(R.string.k2go_edition_basic_desc), false));
+        editions.add(new Edition(InstallationPlanner.Tier.STANDARD, getString(R.string.k2go_edition_standard),
+                getString(R.string.k2go_edition_standard_desc), true));
+        editions.add(new Edition(InstallationPlanner.Tier.FULL, getString(R.string.k2go_edition_full),
+                getString(R.string.k2go_edition_full_desc), false));
 
         LinearLayout host = root.findViewById(R.id.k2go_editions);
         for (Edition e : editions) {
@@ -149,7 +149,7 @@ public class Step1SystemFragment extends Fragment {
         setWeight(barUsed, (float) used);
         setWeight(barSystem, (float) systemGb);
         setWeight(barFree, (float) freeAfter);
-        legend.setText(String.format(Locale.US, "Used %.1f  ·  System %.1f  ·  Free %.1f",
+        legend.setText(getString(R.string.k2go_legend_sys_free,
                 used, systemGb, freeAfter));
     }
 

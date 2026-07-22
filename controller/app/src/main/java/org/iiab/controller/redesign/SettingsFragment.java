@@ -31,12 +31,12 @@ public class SettingsFragment extends Fragment {
         LinearLayout list = root.findViewById(R.id.k2go_settings_list);
         LinearLayout footer = root.findViewById(R.id.k2go_settings_footer);
 
-        SettingsUi.row(ctx, list, "Language", null, null, v -> openSub("language"));
-        SettingsUi.row(ctx, list, "Theme", null, themeLabel(), v -> chooseTheme());
-        SettingsUi.preview(ctx, list, "Help", null);
-        SettingsUi.row(ctx, list, "Send feedback", null, null, v -> openFeedback());
-        SettingsUi.row(ctx, list, "About", null, versionName(), v -> openSub("about"));
-        SettingsUi.row(ctx, list, "Advanced", "System, backups, developer tools", null, v -> openSub("advanced"));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_language), null, null, v -> openSub("language"));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_theme), null, themeLabel(), v -> chooseTheme());
+        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_help), null);
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_send_feedback), null, null, v -> openFeedback());
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_about), null, versionName(), v -> openSub("about"));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_advanced), getString(R.string.k2go_settings_advanced_sub), null, v -> openSub("advanced"));
 
         buildFooter(ctx, footer);
         return root;
@@ -55,13 +55,13 @@ public class SettingsFragment extends Fragment {
     }
 
     private void chooseTheme() {
-        final String[] labels = {"Light", "Follow system", "Dark"};
+        final String[] labels = {getString(R.string.k2go_theme_light), getString(R.string.k2go_theme_system), getString(R.string.k2go_theme_dark)};
         final int[] modes = {
                 AppCompatDelegate.MODE_NIGHT_NO,
                 AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
                 AppCompatDelegate.MODE_NIGHT_YES};
         new AlertDialog.Builder(requireContext())
-                .setTitle("Theme")
+                .setTitle(getString(R.string.k2go_settings_theme))
                 .setItems(labels, (d, w) -> {
                     prefs().edit().putInt("k2go_theme", modes[w]).apply();
                     AppCompatDelegate.setDefaultNightMode(modes[w]);
@@ -71,15 +71,15 @@ public class SettingsFragment extends Fragment {
 
     private String themeLabel() {
         switch (prefs().getInt("k2go_theme", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)) {
-            case AppCompatDelegate.MODE_NIGHT_NO: return "Light";
-            case AppCompatDelegate.MODE_NIGHT_YES: return "Dark";
-            default: return "Follow system";
+            case AppCompatDelegate.MODE_NIGHT_NO: return getString(R.string.k2go_theme_light);
+            case AppCompatDelegate.MODE_NIGHT_YES: return getString(R.string.k2go_theme_dark);
+            default: return getString(R.string.k2go_theme_system);
         }
     }
 
     private void buildFooter(Context ctx, LinearLayout footer) {
         TextView note = new TextView(ctx);
-        note.setText("K2Go keeps running in the background until you turn it off.");
+        note.setText(getString(R.string.k2go_settings_running_note));
         note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         note.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
         LinearLayout.LayoutParams np = new LinearLayout.LayoutParams(-1, -2);
@@ -87,7 +87,7 @@ public class SettingsFragment extends Fragment {
         footer.addView(note, np);
 
         TextView off = new TextView(ctx);
-        off.setText("Turn off K2Go");
+        off.setText(getString(R.string.k2go_settings_turn_off));
         off.setGravity(Gravity.CENTER);
         off.setPadding(SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16), SettingsUi.dp(ctx, 16));
         off.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleLarge);
@@ -100,10 +100,10 @@ public class SettingsFragment extends Fragment {
 
     private void confirmTurnOff() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Turn off K2Go?")
-                .setMessage("This stops the library and closes the app. (Home or back only minimize it — it keeps running in the background.)")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Turn off", (d, w) -> {
+                .setTitle(getString(R.string.k2go_settings_turnoff_title))
+                .setMessage(getString(R.string.k2go_settings_turnoff_msg))
+                .setNegativeButton(getString(R.string.k2go_cancel), null)
+                .setPositiveButton(getString(R.string.k2go_settings_turnoff_confirm), (d, w) -> {
                     if (getActivity() instanceof LibraryActivity) {
                         ((LibraryActivity) getActivity()).turnOffK2Go();
                     }

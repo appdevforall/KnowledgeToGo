@@ -12,26 +12,26 @@
 
         <!-- ADFA-4785: intent fork replaces the persistent Send/Receive toggle. -->
         <TextView android:id="@+id/k2go_clone_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_marginTop="4dp" android:padding="4dp" android:text="&#8249; Back" android:textColor="@color/k2go_teal"
+            android:layout_marginTop="4dp" android:padding="4dp" android:text="@string/k2go_back_link" android:textColor="@color/k2go_teal"
             android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
         <LinearLayout android:id="@+id/k2go_clone_fork" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="16dp" android:visibility="gone">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="What do you want to do?" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                android:text="@string/k2go_clone_fork_question" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
             <LinearLayout android:id="@+id/k2go_clone_fork_send" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="10dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Send to another phone  &#8250;" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:text="@string/k2go_clone_send_to" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                    android:text="Show codes; the other phone scans them." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    android:text="@string/k2go_clone_show_codes" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
             <LinearLayout android:id="@+id/k2go_clone_fork_receive" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="12dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Receive from another phone  &#8250;" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:text="@string/k2go_clone_receive_from" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                    android:text="Scan their codes to get a copy here." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    android:text="@string/k2go_clone_scan_their_codes" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
         </LinearLayout>
 
@@ -56,11 +56,11 @@
             android:orientation="vertical" android:layout_marginTop="14dp" android:padding="14dp"
             android:background="@drawable/k2go_getmore_bg" android:clickable="true" android:focusable="true" android:visibility="gone">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Other phone doesn't have K2Go yet?" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                android:text="@string/k2go_clone_other_no_app" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                android:text="Send the app first  ›" android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:text="@string/k2go_clone_send_app_first" android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                android:text="The app goes by a separate quick step, then copy the library." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                android:text="@string/k2go_clone_app_separate_step" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
         </LinearLayout>
 
         <LinearLayout android:id="@+id/k2go_clone_steps" android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -81,20 +81,20 @@
         <LinearLayout android:id="@+id/k2go_clone_sharecard" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="14dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="SHARING NOW" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
+                android:text="@string/k2go_clone_sharing_now" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp"
-                android:text="Sending your whole library" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                android:text="@string/k2go_clone_sending_whole" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                android:text="All applications and their content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                android:text="@string/k2go_clone_all_apps" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp">
                 <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="System" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    android:text="@string/k2go_lbl_system" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
                 <TextView android:id="@+id/k2go_clone_size_sys" android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
             </LinearLayout>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
                 <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="Content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    android:text="@string/k2go_lbl_content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
                 <TextView android:id="@+id/k2go_clone_size_content" android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
             </LinearLayout>
@@ -102,12 +102,12 @@
                 android:background="@color/k2go_muted" android:alpha="0.25" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
                 <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="Total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:text="@string/k2go_lbl_total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
                 <TextView android:id="@+id/k2go_clone_size_total" android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
             </LinearLayout>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp"
-                android:text="Sizes are estimates." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                android:text="@string/k2go_clone_sizes_estimates" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
         </LinearLayout>
 
         <LinearLayout android:id="@+id/k2go_clone_fallback" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
@@ -119,7 +119,7 @@
         </LinearLayout>
 
         <TextView android:id="@+id/k2go_clone_showcode" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="Scan didn\'t work? Show code as text  ▾"
+            android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_show_text"
             android:textColor="@color/k2go_teal"
             android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
@@ -130,14 +130,14 @@
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
                 android:layout_marginTop="8dp" android:gravity="end">
                 <TextView android:id="@+id/k2go_clone_copy" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:padding="8dp" android:text="⧉  Copy" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                    android:padding="8dp" android:text="@string/k2go_clone_copy_btn" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
                 <TextView android:id="@+id/k2go_clone_share" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp" android:padding="8dp" android:text="Share ›" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                    android:layout_marginStart="12dp" android:padding="8dp" android:text="@string/k2go_clone_share_action" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
             </LinearLayout>
         </LinearLayout>
 
         <TextView android:id="@+id/k2go_clone_sharewifi" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:padding="14dp" android:gravity="center" android:text="Share Wi-Fi via Android settings"
+            android:layout_marginTop="16dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_clone_share_wifi_settings"
             android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal"
             android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
@@ -150,7 +150,7 @@
             android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
         <TextView android:id="@+id/k2go_clone_stop" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:text="Stop sharing"
+            android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_stop_sharing"
             android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
             android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
@@ -162,16 +162,16 @@
         <LinearLayout android:id="@+id/k2go_sendapp_view" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
             <TextView android:id="@+id/k2go_sendapp_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:padding="6dp" android:text="‹ Back" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                android:padding="6dp" android:text="@string/k2go_back_link" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
 
             <ImageView android:id="@+id/k2go_sendapp_qr" android:layout_width="220dp" android:layout_height="220dp"
                 android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
                 android:background="@drawable/k2go_card_bg" android:contentDescription="Send the app" />
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="12dp" android:text="Scan to get the app"
+                android:gravity="center" android:layout_marginTop="12dp" android:text="@string/k2go_clone_scan_get_app"
                 android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="2dp" android:text="The other phone downloads K2Go from this code."
+                android:gravity="center" android:layout_marginTop="2dp" android:text="@string/k2go_clone_other_downloads"
                 android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -180,21 +180,21 @@
                     android:text="!" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleLarge" />
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="One Android step" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        android:text="@string/k2go_clone_one_android_step" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceBodyMedium" />
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                        android:text="The other phone taps &quot;allow install from this source&quot; — a one-time step."
+                        android:text="@string/k2go_clone_allow_install_note"
                         android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView android:id="@+id/k2go_sendapp_share" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="Can't scan? Share the app another way  ›"
+                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_cant_scan"
                 android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="8dp" android:text="Once it's installed there, come back and copy your library."
+                android:gravity="center" android:layout_marginTop="8dp" android:text="@string/k2go_clone_once_installed"
                 android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             <TextView android:id="@+id/k2go_sendapp_next" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Installed? Copy the library"
+                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_installed_copy"
                 android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
                 android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
         </LinearLayout>
@@ -211,13 +211,13 @@
             <LinearLayout android:id="@+id/k2go_rcv_intro" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="12dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="WHAT YOU'LL RECEIVE" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
+                    android:text="@string/k2go_clone_receive_you_hdr" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp"
-                    android:text="A full copy of the other phone's library." android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    android:text="@string/k2go_clone_full_copy_note" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"
-                    android:text="Everything it has — its apps and their content." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    android:text="@string/k2go_clone_everything_note" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Exact size is shown once you connect." android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                    android:text="@string/k2go_clone_exact_size" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
 
             <LinearLayout android:id="@+id/k2go_rcv_notice" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -226,14 +226,14 @@
                     android:text="!" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleLarge" />
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="This replaces your K2Go library" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        android:text="@string/k2go_clone_replaces_title" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleMedium" />
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                        android:text="Your library (system + content) is replaced with the other phone's. No undo." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                        android:text="@string/k2go_clone_replace_other" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView android:id="@+id/k2go_rcv_scan" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Scan to join"
+                android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_scan_to_join"
                 android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
                 android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
 
@@ -241,21 +241,21 @@
                 android:gravity="center" android:layout_marginTop="8dp" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
 
             <TextView android:id="@+id/k2go_rcv_skip" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="Already on the same Wi-Fi?  Skip ›"
+                android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_clone_already_wifi_skip"
                 android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal"
                 android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
             <TextView android:id="@+id/k2go_rcv_skiphint" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="8dp"
-                android:text="Camera not working? Connect to the other phone's Wi-Fi in Settings, then Skip."
+                android:text="@string/k2go_clone_camera_note"
                 android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" android:visibility="gone" />
 
             <TextView android:id="@+id/k2go_rcv_camnote" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="10dp" android:text="Camera not working?"
+                android:gravity="center" android:layout_marginTop="10dp" android:text="@string/k2go_clone_camera_q"
                 android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" android:visibility="gone" />
 
             <TextView android:id="@+id/k2go_rcv_showpaste" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="Scan didn\'t work? Enter code as text  ▾"
+                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_enter_text"
                 android:textColor="@color/k2go_teal"
                 android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
@@ -264,10 +264,10 @@
                 <EditText android:id="@+id/k2go_clone_paste" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:padding="14dp" android:background="@drawable/k2go_card_bg" android:fontFamily="monospace"
                     android:gravity="top|start" android:minLines="3" android:maxLines="6" android:inputType="textMultiLine"
-                    android:hint="Paste transfer code" android:textColor="@color/k2go_ink" android:textColorHint="@color/k2go_muted"
+                    android:hint="@string/k2go_clone_paste_hint" android:textColor="@color/k2go_ink" android:textColorHint="@color/k2go_muted"
                     android:textAppearance="?attr/textAppearanceBodySmall" android:importantForAutofill="no" />
                 <TextView android:id="@+id/k2go_clone_receive_start" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" android:padding="16dp" android:gravity="center" android:text="Use this code"
+                    android:layout_marginTop="10dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_use_this_code"
                     android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
                     android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
             </LinearLayout>
@@ -276,20 +276,20 @@
             <LinearLayout android:id="@+id/k2go_rcv_confirm" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="12dp" android:visibility="gone">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="You'll receive a full copy" android:textColor="@color/k2go_ink" android:textStyle="bold" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                    android:text="@string/k2go_clone_youll_receive" android:textColor="@color/k2go_ink" android:textStyle="bold" android:textAppearance="?attr/textAppearanceTitleLarge" />
                 <LinearLayout android:id="@+id/k2go_rcv_confirm_sizes" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="vertical" android:layout_marginTop="12dp" android:padding="16dp" android:background="@drawable/k2go_card_bg">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="FROM THE OTHER PHONE" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
+                        android:text="@string/k2go_clone_from_other_hdr" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="10dp">
                         <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                            android:text="System" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                            android:text="@string/k2go_lbl_system" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView android:id="@+id/k2go_rcv_confirm_sys" android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
                     </LinearLayout>
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
                         <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                            android:text="Content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                            android:text="@string/k2go_lbl_content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView android:id="@+id/k2go_rcv_confirm_content" android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
                     </LinearLayout>
@@ -297,7 +297,7 @@
                         android:background="@color/k2go_muted" android:alpha="0.25" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
                         <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                            android:text="Total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                            android:text="@string/k2go_lbl_total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
                         <TextView android:id="@+id/k2go_rcv_confirm_total" android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
                     </LinearLayout>
@@ -308,9 +308,9 @@
                         android:text="!" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleLarge" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="This replaces your K2Go library" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                            android:text="@string/k2go_clone_replaces_title" android:textStyle="bold" android:textColor="@color/k2go_clay" android:textAppearance="?attr/textAppearanceTitleMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                            android:text="Your current library (system + content) is replaced with theirs. No undo." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_replace_theirs" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout android:id="@+id/k2go_rcv_confirm_fresh" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -319,17 +319,17 @@
                         android:text="✓" android:textStyle="bold" android:textColor="#1E6B2E" android:textAppearance="?attr/textAppearanceTitleLarge" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Nothing to replace" android:textStyle="bold" android:textColor="#1E6B2E" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                            android:text="@string/k2go_clone_nothing_to_replace" android:textStyle="bold" android:textColor="#1E6B2E" android:textAppearance="?attr/textAppearanceTitleMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                            android:text="This phone has no library yet — you'll simply receive the sender's copy." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_no_library_fresh" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
                 </LinearLayout>
                 <TextView android:id="@+id/k2go_rcv_confirm_go" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="Continue — start copying"
+                    android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_continue_copying"
                     android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
                     android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
                 <TextView android:id="@+id/k2go_rcv_confirm_cancel" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="Cancel"
+                    android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_cancel"
                     android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_muted"
                     android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" />
             </LinearLayout>
@@ -344,34 +344,34 @@
                         android:text="!" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleLarge" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="These phones aren't compatible" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                            android:text="@string/k2go_clone_incompat_title" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleMedium" />
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="for copying between them." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                            android:text="@string/k2go_clone_for_copying" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
-                            android:text="This phone and the other one are built differently, so the library can't run if copied." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_incompat_body" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                            android:text="What to do" android:textStyle="bold" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                            android:text="@string/k2go_clone_what_to_do" android:textStyle="bold" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                            android:text="Get a K2Go version made for this phone — ask your promoter, or download the right one." android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_get_version_note" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                         <TextView android:id="@+id/k2go_rcv_incompat_why" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp" android:text="Why aren't they compatible?  ▾" android:textStyle="bold" android:textColor="#8A5A00"
+                            android:layout_marginTop="10dp" android:text="@string/k2go_clone_why_incompat" android:textStyle="bold" android:textColor="#8A5A00"
                             android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
                         <TextView android:id="@+id/k2go_rcv_incompat_whytext" android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:layout_marginTop="4dp" android:visibility="gone"
-                            android:text="K2Go's library includes programs built to match a phone's hardware. When two phones are built differently, the programs from one can't run on the other, so copying the library wouldn't work."
+                            android:text="@string/k2go_clone_incompat_why_long"
                             android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <TextView android:id="@+id/k2go_rcv_incompat_tech" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="Technical details  ▾"
+                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_technical_details"
                     android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" android:clickable="true" android:focusable="true" />
                 <TextView android:id="@+id/k2go_rcv_incompat_techtext" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:padding="12dp" android:background="@drawable/k2go_card_bg" android:fontFamily="monospace" android:visibility="gone"
                     android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
 
                 <TextView android:id="@+id/k2go_rcv_incompat_back" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="‹ Scan a different code"
+                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_different"
                     android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
             </LinearLayout>
 
@@ -379,7 +379,7 @@
                 android:orientation="vertical" android:layout_marginTop="8dp" android:padding="14dp"
                 android:background="@drawable/k2go_card_bg" android:visibility="gone">
                 <TextView android:id="@+id/k2go_clone_pstatus" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Connecting…" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
+                    android:text="@string/k2go_clone_connecting" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
                 <ProgressBar android:id="@+id/k2go_clone_pbar" style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:max="100" />
                 <TextView android:id="@+id/k2go_clone_pfile" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -388,7 +388,7 @@
                 <TextView android:id="@+id/k2go_clone_pstats" android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="2dp" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodySmall" />
                 <TextView android:id="@+id/k2go_clone_cancel" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:padding="14dp" android:gravity="center" android:text="Cancel"
+                    android:layout_marginTop="12dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_cancel"
                     android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
                     android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
             </LinearLayout>

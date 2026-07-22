@@ -128,27 +128,27 @@ public class WizardActivity extends AppCompatActivity {
         switch (step) {
             case 0:
                 primary.setVisibility(View.VISIBLE);
-                primary.setText("Get started");
+                primary.setText(getString(R.string.k2go_get_started));
                 enable(primary, true);
                 break;
             case 1:
-                title.setText("Choose language");
-                subtitle.setText("Sets app + content language.");
+                title.setText(getString(R.string.k2go_wiz_choose_language));
+                subtitle.setText(getString(R.string.k2go_wiz_language_sub));
                 primary.setVisibility(View.VISIBLE);
-                primary.setText("Next");
+                primary.setText(getString(R.string.k2go_next));
                 enable(primary, true);
                 break;
             case 2:
-                title.setText("Allow a few things");
+                title.setText(getString(R.string.k2go_wiz_permissions_title));
                 subtitle.setText("");
                 refreshPermStatuses();
                 primary.setVisibility(View.VISIBLE);
-                primary.setText("Continue");
+                primary.setText(getString(R.string.k2go_continue));
                 enable(primary, allPermsGranted());
                 break;
             default:
-                title.setText("Set up your library");
-                subtitle.setText("How do you want it?");
+                title.setText(getString(R.string.k2go_setup_library_title));
+                subtitle.setText(getString(R.string.k2go_wiz_setup_sub));
                 primary.setVisibility(View.GONE);
                 break;
         }
@@ -173,7 +173,7 @@ public class WizardActivity extends AppCompatActivity {
         setStatus(batteryStatus, hasBattery());
     }
     private void setStatus(TextView t, boolean granted) {
-        t.setText(granted ? "Granted" : "Allow");
+        t.setText(getString(granted ? R.string.k2go_perm_granted : R.string.k2go_perm_allow));
         t.setTextColor(ContextCompat.getColor(this, granted ? R.color.k2go_leaf : R.color.k2go_teal));
     }
     private boolean allPermsGranted() {

@@ -99,7 +99,7 @@ public class Step2OptionAFragment extends Fragment {
         booksSkip.setOnClickListener(x -> setBooks(!booksInc));
         // Maps ships in the software block — shown for reference, not installed here.
         mapsCheck.setChecked(true); mapsCheck.setEnabled(false);
-        ((TextView) v.findViewById(R.id.k2go_maps_size)).setText("Included");
+        ((TextView) v.findViewById(R.id.k2go_maps_size)).setText(getString(R.string.k2go_step2_included));
 
         download.setOnClickListener(x -> startDownload());
         v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> backOrExit());
@@ -163,7 +163,7 @@ public class Step2OptionAFragment extends Fragment {
 
         double picks = (wikiInc && !sel.isEmpty() ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0); // Maps ships with the system
         applyBar(osGb, picks);
-        download.setText(String.format(Locale.US, "Download library · %.1f GB", osGb + picks));
+        download.setText(getString(R.string.k2go_step2_download_fmt, osGb + picks));
         boolean ok = !wikiInvalid();
         download.setEnabled(ok);
         download.setAlpha(ok ? 1f : 0.5f);
@@ -176,7 +176,7 @@ public class Step2OptionAFragment extends Fragment {
         if (total <= 0) total = used + systemGb + picksGb + freeAfter + 0.01;
         bar.setWeightSum((float) total);
         setW(bU, (float) used); setW(bS, (float) systemGb); setW(bP, (float) picksGb); setW(bF, (float) freeAfter);
-        legend.setText(String.format(Locale.US, "Used %.1f · System %.1f · Your picks %.1f · Free %.1f", used, systemGb, picksGb, freeAfter));
+        legend.setText(getString(R.string.k2go_legend_your_picks, used, systemGb, picksGb, freeAfter));
     }
 
     /** Back to Step 1 when it is on the stack; otherwise (content-only entry) return to the library. */

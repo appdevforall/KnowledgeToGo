@@ -48,17 +48,17 @@ public class SettingsSubFragment extends Fragment {
 
         String screen = getArguments() != null ? getArguments().getString(ARG, "") : "";
         switch (screen) {
-            case "language": title.setText("Language"); buildLanguage(ctx, list); break;
-            case "about":    title.setText("About");    buildAbout(ctx, list);    break;
-            case "advanced": title.setText("Advanced"); buildAdvanced(ctx, list); break;
-            default:         title.setText("Settings");
+            case "language": title.setText(getString(R.string.k2go_settings_language)); buildLanguage(ctx, list); break;
+            case "about":    title.setText(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
+            case "advanced": title.setText(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
+            default:         title.setText(getString(R.string.k2go_tab_settings));
         }
         return root;
     }
 
     // ---- Language: one choice sets BOTH the app UI locale and the content language ----
     private void buildLanguage(Context ctx, LinearLayout list) {
-        SettingsUi.caption(ctx, list, "Sets the app language and the default content language.");
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_settings_lang_caption));
         List<AppLanguage> langs = SupportedAppLanguages.all(getString(R.string.setup_app_lang_system));
         String current = AppLocaleController.currentTag();
         for (AppLanguage lang : langs) {
@@ -82,14 +82,14 @@ public class SettingsSubFragment extends Fragment {
 
     // ---- About ----
     private void buildAbout(Context ctx, LinearLayout list) {
-        SettingsUi.infoRow(ctx, list, "App version", versionName(ctx));
-        SettingsUi.row(ctx, list, "Permissions", null, null, v -> openAppSettings(ctx));
-        SettingsUi.toggle(ctx, list, "Share usage statistics", AnalyticsConsent.isEnabled(ctx), checked -> {
+        SettingsUi.infoRow(ctx, list, getString(R.string.k2go_settings_app_version), versionName(ctx));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
+        SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_usage_stats), AnalyticsConsent.isEnabled(ctx), checked -> {
             AnalyticsConsent.setEnabled(ctx, checked);
             org.iiab.controller.analytics.AnalyticsClient.with(ctx).applyConsent();
         });
-        SettingsUi.preview(ctx, list, "Open-source licenses", null);
-        SettingsUi.preview(ctx, list, "Privacy", null);
+        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_licenses), null);
+        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_privacy), null);
     }
 
     private void openAppSettings(Context ctx) {
@@ -109,13 +109,13 @@ public class SettingsSubFragment extends Fragment {
 
     // ---- Advanced (power-user features — preview for now) ----
     private void buildAdvanced(Context ctx, LinearLayout list) {
-        SettingsUi.caption(ctx, list, "For power users.");
-        SettingsUi.sectionHeader(ctx, list, "SYSTEM");
-        SettingsUi.preview(ctx, list, "Module management", "Tier, add modules, hide");
-        SettingsUi.preview(ctx, list, "Backups & recovery", null);
-        SettingsUi.sectionHeader(ctx, list, "DEVELOPER");
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_settings_power_users));
+        SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_system));
+        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_module_mgmt), getString(R.string.k2go_settings_module_mgmt_sub));
+        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_backups), null);
+        SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_developer));
         SettingsUi.preview(ctx, list, "ADB", null);
-        SettingsUi.preview(ctx, list, "Network & DNS", null);
+        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_network_dns), null);
         SettingsUi.row(ctx, list, "Terminal (Debian)", null, null, v -> openTerminal(ctx));
     }
 
