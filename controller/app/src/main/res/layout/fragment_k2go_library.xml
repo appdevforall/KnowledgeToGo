@@ -56,8 +56,11 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Pinned footer: Get more stays visible while the cards scroll (like Turn off in Settings). -->
+    <!-- Pinned footer: Get more stays visible while the cards scroll (like Turn off in Settings).
+         ADFA-4799: shown in compact; in medium/expanded "Get more" becomes the last grid cell
+         and this footer is hidden. -->
     <LinearLayout
+        android:id="@+id/k2go_get_more_footer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

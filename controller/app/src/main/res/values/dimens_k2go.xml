@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go redesign dimensions. -->
+<resources>
+    <!-- ADFA-4799: fixed Library card height sized to the 2-line worst case, so a longer
+         translated title never grows one card and unbalances its row. Shared by the card
+         layout and the programmatic "Get more" grid cell. -->
+    <dimen name="k2go_card_height">176dp</dimen>
+</resources>
