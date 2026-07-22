@@ -194,7 +194,7 @@ public class Step2OptionBFragment extends Fragment {
             gauge.updateData(segs, String.format(Locale.US, "%.1fG", used + systemGb + picksGb),
                     ContextCompat.getColor(requireContext(), R.color.k2go_ink), "projected use", "");
         }
-        legend.setText(String.format(Locale.US, "Used %.1f · System %.1f · Picks %.1f · Free %.1f",
+        legend.setText(getString(R.string.k2go_legend_picks,
                 used, systemGb, picksGb, freeAfter));
     }
 

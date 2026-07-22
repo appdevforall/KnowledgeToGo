@@ -176,7 +176,7 @@ public class Step2OptionAFragment extends Fragment {
         if (total <= 0) total = used + systemGb + picksGb + freeAfter + 0.01;
         bar.setWeightSum((float) total);
         setW(bU, (float) used); setW(bS, (float) systemGb); setW(bP, (float) picksGb); setW(bF, (float) freeAfter);
-        legend.setText(String.format(Locale.US, "Used %.1f · System %.1f · Your picks %.1f · Free %.1f", used, systemGb, picksGb, freeAfter));
+        legend.setText(getString(R.string.k2go_legend_your_picks, used, systemGb, picksGb, freeAfter));
     }
 
     /** Back to Step 1 when it is on the stack; otherwise (content-only entry) return to the library. */

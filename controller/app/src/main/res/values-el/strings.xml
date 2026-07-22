@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">Έναρξη</string>
     <string name="k2go_badge_getapp">Λήψη εφαρμογής</string>
     <string name="k2go_badge_copy">Αντιγραφή</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Σε χρήση %1$.1f  ·  Σύστημα %2$.1f  ·  Ελεύθερο %3$.1f</string>
+    <string name="k2go_legend_your_picks">Σε χρήση %1$.1f · Σύστημα %2$.1f · Οι επιλογές σας %3$.1f · Ελεύθερο %4$.1f</string>
+    <string name="k2go_legend_picks">Σε χρήση %1$.1f · Σύστημα %2$.1f · Επιλογές %3$.1f · Ελεύθερο %4$.1f</string>
 </resources>

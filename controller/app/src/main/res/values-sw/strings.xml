@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">Anza</string>
     <string name="k2go_badge_getapp">Pata programu</string>
     <string name="k2go_badge_copy">Nakili</string>
+    <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
+    <string name="k2go_legend_sys_free">Imetumika %1$.1f  ·  Mfumo %2$.1f  ·  Bila kutumika %3$.1f</string>
+    <string name="k2go_legend_your_picks">Imetumika %1$.1f · Mfumo %2$.1f · Chaguo lako %3$.1f · Bila kutumika %4$.1f</string>
+    <string name="k2go_legend_picks">Imetumika %1$.1f · Mfumo %2$.1f · Chaguo %3$.1f · Bila kutumika %4$.1f</string>
 </resources>

@@ -149,7 +149,7 @@ public class Step1SystemFragment extends Fragment {
         setWeight(barUsed, (float) used);
         setWeight(barSystem, (float) systemGb);
         setWeight(barFree, (float) freeAfter);
-        legend.setText(String.format(Locale.US, "Used %.1f  ·  System %.1f  ·  Free %.1f",
+        legend.setText(getString(R.string.k2go_legend_sys_free,
                 used, systemGb, freeAfter));
     }
 

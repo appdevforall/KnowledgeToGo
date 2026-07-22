@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">Spustit</string>
     <string name="k2go_badge_getapp">Získat aplikaci</string>
     <string name="k2go_badge_copy">Kopírovat</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Použito %1$.1f  ·  Systém %2$.1f  ·  Volné %3$.1f</string>
+    <string name="k2go_legend_your_picks">Použito %1$.1f · Systém %2$.1f · Váš výběr %3$.1f · Volné %4$.1f</string>
+    <string name="k2go_legend_picks">Použito %1$.1f · Systém %2$.1f · Výběr %3$.1f · Volné %4$.1f</string>
 </resources>

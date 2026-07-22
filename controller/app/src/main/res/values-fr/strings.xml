@@ -878,4 +878,8 @@
     <string name="k2go_badge_start">Démarrer</string>
     <string name="k2go_badge_getapp">Obtenir l\'appli</string>
     <string name="k2go_badge_copy">Copier</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Utilisé %1$.1f  ·  Système %2$.1f  ·  Libre %3$.1f</string>
+    <string name="k2go_legend_your_picks">Utilisé %1$.1f · Système %2$.1f · Vos choix %3$.1f · Libre %4$.1f</string>
+    <string name="k2go_legend_picks">Utilisé %1$.1f · Système %2$.1f · Choix %3$.1f · Libre %4$.1f</string>
 </resources>

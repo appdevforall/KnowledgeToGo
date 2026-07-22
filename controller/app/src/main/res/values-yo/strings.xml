@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">Bẹrẹ</string>
     <string name="k2go_badge_getapp">Gba ohun elo</string>
     <string name="k2go_badge_copy">Daakọ</string>
+    <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
+    <string name="k2go_legend_sys_free">Lílo %1$.1f  ·  Ẹ̀rọ %2$.1f  ·  Òfo %3$.1f</string>
+    <string name="k2go_legend_your_picks">Lílo %1$.1f · Ẹ̀rọ %2$.1f · Àṣàyàn rẹ %3$.1f · Òfo %4$.1f</string>
+    <string name="k2go_legend_picks">Lílo %1$.1f · Ẹ̀rọ %2$.1f · Àṣàyàn %3$.1f · Òfo %4$.1f</string>
 </resources>

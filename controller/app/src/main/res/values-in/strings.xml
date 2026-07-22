@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">Mulai</string>
     <string name="k2go_badge_getapp">Dapatkan aplikasi</string>
     <string name="k2go_badge_copy">Salin</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Terpakai %1$.1f  ·  Sistem %2$.1f  ·  Kosong %3$.1f</string>
+    <string name="k2go_legend_your_picks">Terpakai %1$.1f · Sistem %2$.1f · Pilihan Anda %3$.1f · Kosong %4$.1f</string>
+    <string name="k2go_legend_picks">Terpakai %1$.1f · Sistem %2$.1f · Pilihan %3$.1f · Kosong %4$.1f</string>
 </resources>

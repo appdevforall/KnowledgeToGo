@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">Start</string>
     <string name="k2go_badge_getapp">Hent app</string>
     <string name="k2go_badge_copy">Kopier</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Brukt %1$.1f  ·  System %2$.1f  ·  Ledig %3$.1f</string>
+    <string name="k2go_legend_your_picks">Brukt %1$.1f · System %2$.1f · Dine valg %3$.1f · Ledig %4$.1f</string>
+    <string name="k2go_legend_picks">Brukt %1$.1f · System %2$.1f · Valg %3$.1f · Ledig %4$.1f</string>
 </resources>

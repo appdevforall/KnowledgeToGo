@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">Pradėti</string>
     <string name="k2go_badge_getapp">Gauti programą</string>
     <string name="k2go_badge_copy">Kopijuoti</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Naudojama %1$.1f  ·  Sistema %2$.1f  ·  Laisva %3$.1f</string>
+    <string name="k2go_legend_your_picks">Naudojama %1$.1f · Sistema %2$.1f · Jūsų pasirinkimai %3$.1f · Laisva %4$.1f</string>
+    <string name="k2go_legend_picks">Naudojama %1$.1f · Sistema %2$.1f · Pasirinkimai %3$.1f · Laisva %4$.1f</string>
 </resources>

@@ -877,4 +877,8 @@
     <string name="k2go_badge_start">Начать</string>
     <string name="k2go_badge_getapp">Получить приложение</string>
     <string name="k2go_badge_copy">Копировать</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Занято %1$.1f  ·  Система %2$.1f  ·  Свободно %3$.1f</string>
+    <string name="k2go_legend_your_picks">Занято %1$.1f · Система %2$.1f · Ваш выбор %3$.1f · Свободно %4$.1f</string>
+    <string name="k2go_legend_picks">Занято %1$.1f · Система %2$.1f · Выбор %3$.1f · Свободно %4$.1f</string>
 </resources>

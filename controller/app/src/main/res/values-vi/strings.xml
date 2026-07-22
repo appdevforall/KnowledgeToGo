@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">Bắt đầu</string>
     <string name="k2go_badge_getapp">Tải ứng dụng</string>
     <string name="k2go_badge_copy">Sao chép</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Đã dùng %1$.1f  ·  Hệ thống %2$.1f  ·  Trống %3$.1f</string>
+    <string name="k2go_legend_your_picks">Đã dùng %1$.1f · Hệ thống %2$.1f · Lựa chọn của bạn %3$.1f · Trống %4$.1f</string>
+    <string name="k2go_legend_picks">Đã dùng %1$.1f · Hệ thống %2$.1f · Lựa chọn %3$.1f · Trống %4$.1f</string>
 </resources>

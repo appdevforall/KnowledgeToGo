@@ -288,4 +288,8 @@
     <string name="k2go_badge_start">Start</string>
     <string name="k2go_badge_getapp">Get app</string>
     <string name="k2go_badge_copy">Copy</string>
+    <!-- ADFA-4795: storage bar legend (positional format) sweep 4 -->
+    <string name="k2go_legend_sys_free">Used %1$.1f  ·  System %2$.1f  ·  Free %3$.1f</string>
+    <string name="k2go_legend_your_picks">Used %1$.1f · System %2$.1f · Your picks %3$.1f · Free %4$.1f</string>
+    <string name="k2go_legend_picks">Used %1$.1f · System %2$.1f · Picks %3$.1f · Free %4$.1f</string>
 </resources>

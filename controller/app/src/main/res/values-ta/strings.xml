@@ -808,4 +808,8 @@
     <string name="k2go_badge_start">தொடங்கு</string>
     <string name="k2go_badge_getapp">பயன்பாட்டைப் பெறவும்</string>
     <string name="k2go_badge_copy">நகலெடு</string>
+    <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
+    <string name="k2go_legend_sys_free">பயன்படுத்தியது %1$.1f  ·  கணினி %2$.1f  ·  காலி %3$.1f</string>
+    <string name="k2go_legend_your_picks">பயன்படுத்தியது %1$.1f · கணினி %2$.1f · உங்கள் தேர்வுகள் %3$.1f · காலி %4$.1f</string>
+    <string name="k2go_legend_picks">பயன்படுத்தியது %1$.1f · கணினி %2$.1f · தேர்வுகள் %3$.1f · காலி %4$.1f</string>
 </resources>

@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">શરૂ કરો</string>
     <string name="k2go_badge_getapp">ઍપ મેળવો</string>
     <string name="k2go_badge_copy">કૉપિ કરો</string>
+    <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
+    <string name="k2go_legend_sys_free">વપરાયેલ %1$.1f  ·  સિસ્ટમ %2$.1f  ·  ખાલી %3$.1f</string>
+    <string name="k2go_legend_your_picks">વપરાયેલ %1$.1f · સિસ્ટમ %2$.1f · તમારી પસંદગી %3$.1f · ખાલી %4$.1f</string>
+    <string name="k2go_legend_picks">વપરાયેલ %1$.1f · સિસ્ટમ %2$.1f · પસંદગી %3$.1f · ખાલી %4$.1f</string>
 </resources>

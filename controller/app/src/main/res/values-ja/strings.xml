@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">開始</string>
     <string name="k2go_badge_getapp">アプリを取得</string>
     <string name="k2go_badge_copy">コピー</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">使用中 %1$.1f  ·  システム %2$.1f  ·  空き %3$.1f</string>
+    <string name="k2go_legend_your_picks">使用中 %1$.1f · システム %2$.1f · あなたの選択 %3$.1f · 空き %4$.1f</string>
+    <string name="k2go_legend_picks">使用中 %1$.1f · システム %2$.1f · 選択 %3$.1f · 空き %4$.1f</string>
 </resources>

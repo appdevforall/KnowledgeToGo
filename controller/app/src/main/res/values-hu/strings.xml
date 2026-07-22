@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">Indítás</string>
     <string name="k2go_badge_getapp">Alkalmazás letöltése</string>
     <string name="k2go_badge_copy">Másolás</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Használt %1$.1f  ·  Rendszer %2$.1f  ·  Szabad %3$.1f</string>
+    <string name="k2go_legend_your_picks">Használt %1$.1f · Rendszer %2$.1f · A választásod %3$.1f · Szabad %4$.1f</string>
+    <string name="k2go_legend_picks">Használt %1$.1f · Rendszer %2$.1f · Választás %3$.1f · Szabad %4$.1f</string>
 </resources>

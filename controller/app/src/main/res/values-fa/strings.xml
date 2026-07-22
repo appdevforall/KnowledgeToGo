@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">شروع</string>
     <string name="k2go_badge_getapp">دریافت برنامه</string>
     <string name="k2go_badge_copy">کپی</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">استفاده‌شده %1$.1f  ·  سیستم %2$.1f  ·  آزاد %3$.1f</string>
+    <string name="k2go_legend_your_picks">استفاده‌شده %1$.1f · سیستم %2$.1f · انتخاب‌های شما %3$.1f · آزاد %4$.1f</string>
+    <string name="k2go_legend_picks">استفاده‌شده %1$.1f · سیستم %2$.1f · انتخاب‌ها %3$.1f · آزاد %4$.1f</string>
 </resources>

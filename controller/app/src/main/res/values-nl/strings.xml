@@ -801,4 +801,8 @@
     <string name="k2go_badge_start">Starten</string>
     <string name="k2go_badge_getapp">App downloaden</string>
     <string name="k2go_badge_copy">Kopiëren</string>
+    <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
+    <string name="k2go_legend_sys_free">Gebruikt %1$.1f  ·  Systeem %2$.1f  ·  Vrij %3$.1f</string>
+    <string name="k2go_legend_your_picks">Gebruikt %1$.1f · Systeem %2$.1f · Jouw keuzes %3$.1f · Vrij %4$.1f</string>
+    <string name="k2go_legend_picks">Gebruikt %1$.1f · Systeem %2$.1f · Keuzes %3$.1f · Vrij %4$.1f</string>
 </resources>
