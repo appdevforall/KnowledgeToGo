@@ -21,6 +21,7 @@
             android:visibility="gone"
             app:elevation="0dp"
             app:labelVisibilityMode="labeled"
+            app:menuGravity="center"
             app:itemIconTint="@color/k2go_nav_item"
             app:itemTextColor="@color/k2go_nav_item"
             app:menu="@menu/bottom_nav_k2go" />
