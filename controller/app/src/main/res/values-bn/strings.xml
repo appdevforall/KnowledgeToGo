@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">ব্যাকআপ &amp; পুনরুদ্ধার</string>
     <string name="k2go_settings_sec_developer">ডেভেলপার</string>
     <string name="k2go_settings_network_dns">নেটওয়ার্ক &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. review — machine, verify. -->
+    <string name="k2go_clone_switch_title">%1$s-এ পরিবর্তন করবেন?</string>
+    <string name="k2go_clone_switch_msg">এটি চলমান যেকোনো কপি বন্ধ করে দেয়। অন্য ফোনটি নতুন কোড আবার স্ক্যান করে আবার শুরু করতে পারে।</string>
+    <string name="k2go_clone_switch_confirm">পরিবর্তন করুন</string>
+    <string name="k2go_clone_nolib_title">অন্য ফোনে কোনো লাইব্রেরি নেই</string>
+    <string name="k2go_clone_nolib_msg">এটি থেকে কপি করার মতো এখনও কিছু নেই। তবুও চালিয়ে যাবেন?</string>
+    <string name="k2go_clone_try_anyway">তবুও চেষ্টা করুন</string>
+    <string name="k2go_clone_copy_complete">কপি সম্পূর্ণ হয়েছে</string>
+    <string name="k2go_clone_copy_stopped">কপি বন্ধ করা হয়েছে</string>
+    <string name="k2go_clone_stopshare_title">শেয়ার করা বন্ধ করবেন?</string>
+    <string name="k2go_clone_stopshare_msg">এটি চলমান যেকোনো কপি বন্ধ করে দেয়। অন্য ডিভাইসটি আবার স্ক্যান করে আবার শুরু করতে পারে।</string>
+    <string name="k2go_clone_stop_confirm">বন্ধ করুন</string>
+    <string name="k2go_clone_tech_arch">এই ফোন: %1$s\nঅন্য ফোন: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">কোড কপি করা হয়েছে</string>
+    <string name="k2go_clone_toast_app_share_fail">অ্যাপ শেয়ার শুরু করা যায়নি</string>
+    <string name="k2go_clone_toast_share_sheet_fail">শেয়ার শিট খোলা যায়নি</string>
+    <string name="k2go_clone_toast_paste_first">প্রথমে ট্রান্সফার কোড পেস্ট করুন</string>
+    <string name="k2go_clone_toast_code_invalid">সেই কোডটি বৈধ নয়</string>
+    <string name="k2go_clone_toast_scan_cancelled">স্ক্যান বাতিল করা হয়েছে</string>
+    <string name="k2go_clone_toast_scan_invalid">সেটি একটি বৈধ ট্রান্সফার কোড নয়।</string>
+    <string name="k2go_clone_toast_open_wifi">অন্য ফোনে যোগ দিতে সেটিংস › Wi-Fi খুলুন।</string>
+    <string name="k2go_clone_toast_expired">ট্রান্সফারের বিবরণের মেয়াদ শেষ হয়ে গেছে — কোডটি আবার পেস্ট করুন</string>
+    <string name="k2go_step2_included">অন্তর্ভুক্ত</string>
+    <string name="k2go_downloading_library">আপনার লাইব্রেরি ডাউনলোড হচ্ছে…</string>
+    <string name="k2go_retrying">আবার চেষ্টা করা হচ্ছে…</string>
+    <string name="k2go_not_supported">সমর্থিত নয়</string>
 </resources>

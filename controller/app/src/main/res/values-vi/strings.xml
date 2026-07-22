@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Sao lưu &amp; khôi phục</string>
     <string name="k2go_settings_sec_developer">NHÀ PHÁT TRIỂN</string>
     <string name="k2go_settings_network_dns">Mạng &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Chuyển sang %1$s?</string>
+    <string name="k2go_clone_switch_msg">Thao tác này sẽ dừng mọi bản sao đang diễn ra. Điện thoại kia có thể bắt đầu lại bằng cách quét lại mã mới.</string>
+    <string name="k2go_clone_switch_confirm">Chuyển</string>
+    <string name="k2go_clone_nolib_title">Điện thoại kia không có thư viện</string>
+    <string name="k2go_clone_nolib_msg">Chưa có gì để sao chép từ đó. Vẫn tiếp tục?</string>
+    <string name="k2go_clone_try_anyway">Vẫn thử</string>
+    <string name="k2go_clone_copy_complete">Đã sao chép xong</string>
+    <string name="k2go_clone_copy_stopped">Đã dừng sao chép</string>
+    <string name="k2go_clone_stopshare_title">Dừng chia sẻ?</string>
+    <string name="k2go_clone_stopshare_msg">Thao tác này sẽ dừng mọi bản sao đang diễn ra. Thiết bị kia có thể bắt đầu lại bằng cách quét lại.</string>
+    <string name="k2go_clone_stop_confirm">Dừng</string>
+    <string name="k2go_clone_tech_arch">Điện thoại này: %1$s\nĐiện thoại kia: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Đã sao chép mã</string>
+    <string name="k2go_clone_toast_app_share_fail">Không thể bắt đầu chia sẻ ứng dụng</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Không thể mở trang chia sẻ</string>
+    <string name="k2go_clone_toast_paste_first">Hãy dán mã chuyển trước</string>
+    <string name="k2go_clone_toast_code_invalid">Mã đó không hợp lệ</string>
+    <string name="k2go_clone_toast_scan_cancelled">Đã hủy quét</string>
+    <string name="k2go_clone_toast_scan_invalid">Đó không phải là mã chuyển hợp lệ.</string>
+    <string name="k2go_clone_toast_open_wifi">Mở Cài đặt › Wi-Fi để kết nối với điện thoại kia.</string>
+    <string name="k2go_clone_toast_expired">Chi tiết chuyển đã hết hạn — hãy dán lại mã</string>
+    <string name="k2go_step2_included">Đã bao gồm</string>
+    <string name="k2go_downloading_library">Đang tải xuống thư viện của bạn…</string>
+    <string name="k2go_retrying">Đang thử lại…</string>
+    <string name="k2go_not_supported">Không được hỗ trợ</string>
 </resources>

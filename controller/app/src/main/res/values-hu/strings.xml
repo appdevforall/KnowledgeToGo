@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Biztonsági mentés &amp; helyreállítás</string>
     <string name="k2go_settings_sec_developer">FEJLESZTŐ</string>
     <string name="k2go_settings_network_dns">Hálózat &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Váltás erre: %1$s?</string>
+    <string name="k2go_clone_switch_msg">Ez leállítja a folyamatban lévő másolást. A másik telefon az új kód újbóli beolvasásával kezdheti újra.</string>
+    <string name="k2go_clone_switch_confirm">Váltás</string>
+    <string name="k2go_clone_nolib_title">A másik telefonon nincs könyvtár</string>
+    <string name="k2go_clone_nolib_msg">Még nincs miből másolni. Mindenképp folytatja?</string>
+    <string name="k2go_clone_try_anyway">Megpróbálom mégis</string>
+    <string name="k2go_clone_copy_complete">Másolás kész</string>
+    <string name="k2go_clone_copy_stopped">Másolás leállítva</string>
+    <string name="k2go_clone_stopshare_title">Leállítja a megosztást?</string>
+    <string name="k2go_clone_stopshare_msg">Ez leállítja a folyamatban lévő másolást. A másik eszköz újbóli beolvasással kezdheti újra.</string>
+    <string name="k2go_clone_stop_confirm">Leállítás</string>
+    <string name="k2go_clone_tech_arch">Ez a telefon: %1$s\nMásik telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kód másolva</string>
+    <string name="k2go_clone_toast_app_share_fail">Nem sikerült elindítani az alkalmazásmegosztást</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Nem sikerült megnyitni a megosztási lapot</string>
+    <string name="k2go_clone_toast_paste_first">Először illessze be az átviteli kódot</string>
+    <string name="k2go_clone_toast_code_invalid">Ez a kód érvénytelen</string>
+    <string name="k2go_clone_toast_scan_cancelled">Beolvasás megszakítva</string>
+    <string name="k2go_clone_toast_scan_invalid">Ez nem érvényes átviteli kód.</string>
+    <string name="k2go_clone_toast_open_wifi">Nyissa meg a Beállítások › Wi-Fi menüt a másik telefonhoz való csatlakozáshoz.</string>
+    <string name="k2go_clone_toast_expired">Az átvitel adatai lejártak — illessze be újra a kódot</string>
+    <string name="k2go_step2_included">Belefoglalva</string>
+    <string name="k2go_downloading_library">A könyvtár letöltése folyamatban…</string>
+    <string name="k2go_retrying">Újrapróbálkozás…</string>
+    <string name="k2go_not_supported">Nem támogatott</string>
 </resources>

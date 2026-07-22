@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Back-ups &amp; herstel</string>
     <string name="k2go_settings_sec_developer">ONTWIKKELAAR</string>
     <string name="k2go_settings_network_dns">Netwerk &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Overschakelen naar %1$s?</string>
+    <string name="k2go_clone_switch_msg">Hiermee wordt elke lopende kopie gestopt. De andere telefoon kan opnieuw beginnen door de nieuwe code opnieuw te scannen.</string>
+    <string name="k2go_clone_switch_confirm">Overschakelen</string>
+    <string name="k2go_clone_nolib_title">De andere telefoon heeft geen bibliotheek</string>
+    <string name="k2go_clone_nolib_msg">Er is nog niets om ervan te kopiëren. Toch doorgaan?</string>
+    <string name="k2go_clone_try_anyway">Toch proberen</string>
+    <string name="k2go_clone_copy_complete">Kopiëren voltooid</string>
+    <string name="k2go_clone_copy_stopped">Kopiëren gestopt</string>
+    <string name="k2go_clone_stopshare_title">Delen stoppen?</string>
+    <string name="k2go_clone_stopshare_msg">Hiermee wordt elke lopende kopie gestopt. Het andere apparaat kan opnieuw beginnen door opnieuw te scannen.</string>
+    <string name="k2go_clone_stop_confirm">Stoppen</string>
+    <string name="k2go_clone_tech_arch">Deze telefoon: %1$s\nAndere telefoon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Code gekopieerd</string>
+    <string name="k2go_clone_toast_app_share_fail">Kan het delen van de app niet starten</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Kan het deelvenster niet openen</string>
+    <string name="k2go_clone_toast_paste_first">Plak eerst de overdrachtscode</string>
+    <string name="k2go_clone_toast_code_invalid">Die code is niet geldig</string>
+    <string name="k2go_clone_toast_scan_cancelled">Scannen geannuleerd</string>
+    <string name="k2go_clone_toast_scan_invalid">Dat is geen geldige overdrachtscode.</string>
+    <string name="k2go_clone_toast_open_wifi">Open Instellingen › Wi-Fi om verbinding te maken met de andere telefoon.</string>
+    <string name="k2go_clone_toast_expired">De overdrachtsgegevens zijn verlopen — plak de code opnieuw</string>
+    <string name="k2go_step2_included">Inbegrepen</string>
+    <string name="k2go_downloading_library">Je bibliotheek wordt gedownload…</string>
+    <string name="k2go_retrying">Opnieuw proberen…</string>
+    <string name="k2go_not_supported">Niet ondersteund</string>
 </resources>

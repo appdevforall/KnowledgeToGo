@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Резервні копії &amp; відновлення</string>
     <string name="k2go_settings_sec_developer">РОЗРОБНИК</string>
     <string name="k2go_settings_network_dns">Мережа &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Перейти на %1$s?</string>
+    <string name="k2go_clone_switch_msg">Це зупинить будь-яке поточне копіювання. Інший телефон може почати знову, повторно відсканувавши новий код.</string>
+    <string name="k2go_clone_switch_confirm">Перейти</string>
+    <string name="k2go_clone_nolib_title">На іншому телефоні немає бібліотеки</string>
+    <string name="k2go_clone_nolib_msg">З нього поки що нема чого копіювати. Продовжити попри це?</string>
+    <string name="k2go_clone_try_anyway">Усе одно спробувати</string>
+    <string name="k2go_clone_copy_complete">Копіювання завершено</string>
+    <string name="k2go_clone_copy_stopped">Копіювання зупинено</string>
+    <string name="k2go_clone_stopshare_title">Припинити надсилання?</string>
+    <string name="k2go_clone_stopshare_msg">Це зупинить будь-яке поточне копіювання. Інший пристрій може почати знову, повторно відсканувавши.</string>
+    <string name="k2go_clone_stop_confirm">Зупинити</string>
+    <string name="k2go_clone_tech_arch">Цей телефон: %1$s\nІнший телефон: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Код скопійовано</string>
+    <string name="k2go_clone_toast_app_share_fail">Не вдалося запустити надсилання додатка</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Не вдалося відкрити панель надсилання</string>
+    <string name="k2go_clone_toast_paste_first">Спочатку вставте код передавання</string>
+    <string name="k2go_clone_toast_code_invalid">Цей код недійсний</string>
+    <string name="k2go_clone_toast_scan_cancelled">Сканування скасовано</string>
+    <string name="k2go_clone_toast_scan_invalid">Це недійсний код передавання.</string>
+    <string name="k2go_clone_toast_open_wifi">Відкрийте Налаштування › Wi-Fi, щоб приєднатися до іншого телефона.</string>
+    <string name="k2go_clone_toast_expired">Термін дії даних передавання минув — вставте код ще раз</string>
+    <string name="k2go_step2_included">Включено</string>
+    <string name="k2go_downloading_library">Завантаження вашої бібліотеки…</string>
+    <string name="k2go_retrying">Повторна спроба…</string>
+    <string name="k2go_not_supported">Не підтримується</string>
 </resources>

@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Backups &amp; Wiederherstellung</string>
     <string name="k2go_settings_sec_developer">ENTWICKLER</string>
     <string name="k2go_settings_network_dns">Netzwerk &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Zu %1$s wechseln?</string>
+    <string name="k2go_clone_switch_msg">Dies stoppt jede laufende Kopie. Das andere Telefon kann erneut beginnen, indem es den neuen Code noch einmal scannt.</string>
+    <string name="k2go_clone_switch_confirm">Wechseln</string>
+    <string name="k2go_clone_nolib_title">Das andere Telefon hat keine Bibliothek</string>
+    <string name="k2go_clone_nolib_msg">Es gibt noch nichts, was davon kopiert werden könnte. Trotzdem fortfahren?</string>
+    <string name="k2go_clone_try_anyway">Trotzdem versuchen</string>
+    <string name="k2go_clone_copy_complete">Kopie abgeschlossen</string>
+    <string name="k2go_clone_copy_stopped">Kopie gestoppt</string>
+    <string name="k2go_clone_stopshare_title">Freigabe beenden?</string>
+    <string name="k2go_clone_stopshare_msg">Dies stoppt jede laufende Kopie. Das andere Gerät kann durch erneutes Scannen wieder beginnen.</string>
+    <string name="k2go_clone_stop_confirm">Stoppen</string>
+    <string name="k2go_clone_tech_arch">Dieses Telefon: %1$s\nAnderes Telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Code kopiert</string>
+    <string name="k2go_clone_toast_app_share_fail">Die App-Freigabe konnte nicht gestartet werden</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Das Freigabefenster konnte nicht geöffnet werden</string>
+    <string name="k2go_clone_toast_paste_first">Fügen Sie zuerst den Übertragungscode ein</string>
+    <string name="k2go_clone_toast_code_invalid">Dieser Code ist ungültig</string>
+    <string name="k2go_clone_toast_scan_cancelled">Scan abgebrochen</string>
+    <string name="k2go_clone_toast_scan_invalid">Das ist kein gültiger Übertragungscode.</string>
+    <string name="k2go_clone_toast_open_wifi">Öffnen Sie Einstellungen › Wi-Fi, um sich mit dem anderen Telefon zu verbinden.</string>
+    <string name="k2go_clone_toast_expired">Die Übertragungsdetails sind abgelaufen — fügen Sie den Code erneut ein</string>
+    <string name="k2go_step2_included">Enthalten</string>
+    <string name="k2go_downloading_library">Ihre Bibliothek wird heruntergeladen…</string>
+    <string name="k2go_retrying">Wird erneut versucht…</string>
+    <string name="k2go_not_supported">Nicht unterstützt</string>
 </resources>

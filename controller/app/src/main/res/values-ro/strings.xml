@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Copii de rezervă &amp; recuperare</string>
     <string name="k2go_settings_sec_developer">DEZVOLTATOR</string>
     <string name="k2go_settings_network_dns">Rețea &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Comutați la %1$s?</string>
+    <string name="k2go_clone_switch_msg">Aceasta oprește orice copiere în curs. Celălalt telefon poate începe din nou scanând din nou noul cod.</string>
+    <string name="k2go_clone_switch_confirm">Comută</string>
+    <string name="k2go_clone_nolib_title">Celălalt telefon nu are bibliotecă</string>
+    <string name="k2go_clone_nolib_msg">Încă nu există nimic de copiat de pe el. Continuați oricum?</string>
+    <string name="k2go_clone_try_anyway">Încearcă oricum</string>
+    <string name="k2go_clone_copy_complete">Copiere finalizată</string>
+    <string name="k2go_clone_copy_stopped">Copiere oprită</string>
+    <string name="k2go_clone_stopshare_title">Opriți partajarea?</string>
+    <string name="k2go_clone_stopshare_msg">Aceasta oprește orice copiere în curs. Celălalt dispozitiv poate începe din nou prin rescanare.</string>
+    <string name="k2go_clone_stop_confirm">Oprește</string>
+    <string name="k2go_clone_tech_arch">Acest telefon: %1$s\nCelălalt telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Cod copiat</string>
+    <string name="k2go_clone_toast_app_share_fail">Partajarea aplicației nu a putut fi pornită</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Panoul de partajare nu a putut fi deschis</string>
+    <string name="k2go_clone_toast_paste_first">Mai întâi lipiți codul de transfer</string>
+    <string name="k2go_clone_toast_code_invalid">Acel cod nu este valid</string>
+    <string name="k2go_clone_toast_scan_cancelled">Scanare anulată</string>
+    <string name="k2go_clone_toast_scan_invalid">Acela nu este un cod de transfer valid.</string>
+    <string name="k2go_clone_toast_open_wifi">Deschideți Setări › Wi-Fi pentru a vă conecta la celălalt telefon.</string>
+    <string name="k2go_clone_toast_expired">Detaliile transferului au expirat — lipiți codul din nou</string>
+    <string name="k2go_step2_included">Inclus</string>
+    <string name="k2go_downloading_library">Se descarcă biblioteca dvs.…</string>
+    <string name="k2go_retrying">Se reîncearcă…</string>
+    <string name="k2go_not_supported">Neacceptat</string>
 </resources>

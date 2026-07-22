@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">备份 &amp; 恢复</string>
     <string name="k2go_settings_sec_developer">开发者</string>
     <string name="k2go_settings_network_dns">网络 &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">切换到 %1$s？</string>
+    <string name="k2go_clone_switch_msg">这会停止所有正在进行的复制。另一部手机可以通过重新扫描新代码再次开始。</string>
+    <string name="k2go_clone_switch_confirm">切换</string>
+    <string name="k2go_clone_nolib_title">另一部手机没有库</string>
+    <string name="k2go_clone_nolib_msg">目前还没有可从中复制的内容。仍要继续吗？</string>
+    <string name="k2go_clone_try_anyway">仍要尝试</string>
+    <string name="k2go_clone_copy_complete">复制完成</string>
+    <string name="k2go_clone_copy_stopped">复制已停止</string>
+    <string name="k2go_clone_stopshare_title">停止共享？</string>
+    <string name="k2go_clone_stopshare_msg">这会停止所有正在进行的复制。另一台设备可以通过重新扫描再次开始。</string>
+    <string name="k2go_clone_stop_confirm">停止</string>
+    <string name="k2go_clone_tech_arch">这部手机：%1$s\n另一部手机：%2$s</string>
+    <string name="k2go_clone_toast_code_copied">代码已复制</string>
+    <string name="k2go_clone_toast_app_share_fail">无法开始应用共享</string>
+    <string name="k2go_clone_toast_share_sheet_fail">无法打开共享面板</string>
+    <string name="k2go_clone_toast_paste_first">请先粘贴传输代码</string>
+    <string name="k2go_clone_toast_code_invalid">该代码无效</string>
+    <string name="k2go_clone_toast_scan_cancelled">扫描已取消</string>
+    <string name="k2go_clone_toast_scan_invalid">这不是有效的传输代码。</string>
+    <string name="k2go_clone_toast_open_wifi">打开设置 › Wi-Fi 以连接到另一部手机。</string>
+    <string name="k2go_clone_toast_expired">传输详情已过期 — 请重新粘贴代码</string>
+    <string name="k2go_step2_included">已包含</string>
+    <string name="k2go_downloading_library">正在下载您的库…</string>
+    <string name="k2go_retrying">正在重试…</string>
+    <string name="k2go_not_supported">不支持</string>
 </resources>

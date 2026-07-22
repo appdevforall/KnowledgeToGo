@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">காப்புப்பிரதி &amp; மீட்பு</string>
     <string name="k2go_settings_sec_developer">டெவலப்பர்</string>
     <string name="k2go_settings_network_dns">நெட்வொர்க் &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. review — machine, verify. -->
+    <string name="k2go_clone_switch_title">%1$s க்கு மாற்றவா?</string>
+    <string name="k2go_clone_switch_msg">இது நடப்பில் உள்ள நகலெடுப்பை நிறுத்தும். புதிய குறியீட்டை மீண்டும் ஸ்கேன் செய்வதன் மூலம் மற்ற தொலைபேசி மீண்டும் தொடங்கலாம்.</string>
+    <string name="k2go_clone_switch_confirm">மாற்று</string>
+    <string name="k2go_clone_nolib_title">மற்ற தொலைபேசியில் நூலகம் இல்லை</string>
+    <string name="k2go_clone_nolib_msg">அதிலிருந்து நகலெடுக்க இன்னும் எதுவும் இல்லை. எப்படியும் தொடரவா?</string>
+    <string name="k2go_clone_try_anyway">எப்படியும் முயற்சிக்கவும்</string>
+    <string name="k2go_clone_copy_complete">நகலெடுத்தல் முடிந்தது</string>
+    <string name="k2go_clone_copy_stopped">நகலெடுத்தல் நிறுத்தப்பட்டது</string>
+    <string name="k2go_clone_stopshare_title">பகிர்வதை நிறுத்தவா?</string>
+    <string name="k2go_clone_stopshare_msg">இது நடப்பில் உள்ள நகலெடுப்பை நிறுத்தும். மீண்டும் ஸ்கேன் செய்வதன் மூலம் மற்ற சாதனம் மீண்டும் தொடங்கலாம்.</string>
+    <string name="k2go_clone_stop_confirm">நிறுத்து</string>
+    <string name="k2go_clone_tech_arch">இந்த தொலைபேசி: %1$s\nமற்ற தொலைபேசி: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">குறியீடு நகலெடுக்கப்பட்டது</string>
+    <string name="k2go_clone_toast_app_share_fail">பயன்பாட்டு பகிர்வைத் தொடங்க முடியவில்லை</string>
+    <string name="k2go_clone_toast_share_sheet_fail">பகிர்வு தாளைத் திறக்க முடியவில்லை</string>
+    <string name="k2go_clone_toast_paste_first">முதலில் பரிமாற்றக் குறியீட்டை ஒட்டவும்</string>
+    <string name="k2go_clone_toast_code_invalid">அந்தக் குறியீடு செல்லுபடியாகாது</string>
+    <string name="k2go_clone_toast_scan_cancelled">ஸ்கேன் ரத்து செய்யப்பட்டது</string>
+    <string name="k2go_clone_toast_scan_invalid">அது செல்லுபடியாகும் பரிமாற்றக் குறியீடு அல்ல.</string>
+    <string name="k2go_clone_toast_open_wifi">மற்ற தொலைபேசியில் இணைய அமைப்புகள் › Wi-Fi ஐத் திறக்கவும்.</string>
+    <string name="k2go_clone_toast_expired">பரிமாற்ற விவரங்கள் காலாவதியாகிவிட்டன — குறியீட்டை மீண்டும் ஒட்டவும்</string>
+    <string name="k2go_step2_included">சேர்க்கப்பட்டது</string>
+    <string name="k2go_downloading_library">உங்கள் நூலகம் பதிவிறக்கப்படுகிறது…</string>
+    <string name="k2go_retrying">மீண்டும் முயற்சிக்கிறது…</string>
+    <string name="k2go_not_supported">ஆதரிக்கப்படவில்லை</string>
 </resources>

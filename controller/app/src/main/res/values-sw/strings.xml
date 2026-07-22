@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Nakala rudufu &amp; urejeshaji</string>
     <string name="k2go_settings_sec_developer">MSANIDI</string>
     <string name="k2go_settings_network_dns">Mtandao &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. review — machine, verify. -->
+    <string name="k2go_clone_switch_title">Ubadili hadi %1$s?</string>
+    <string name="k2go_clone_switch_msg">Hii inasimamisha unakili wowote unaoendelea. Simu nyingine inaweza kuanza tena kwa kuchanganua tena msimbo mpya.</string>
+    <string name="k2go_clone_switch_confirm">Badili</string>
+    <string name="k2go_clone_nolib_title">Simu nyingine haina maktaba</string>
+    <string name="k2go_clone_nolib_msg">Bado hakuna cha kunakili kutoka kwayo. Uendelee hata hivyo?</string>
+    <string name="k2go_clone_try_anyway">Jaribu hata hivyo</string>
+    <string name="k2go_clone_copy_complete">Kunakili kumekamilika</string>
+    <string name="k2go_clone_copy_stopped">Kunakili kumesimamishwa</string>
+    <string name="k2go_clone_stopshare_title">Usimamishe kushiriki?</string>
+    <string name="k2go_clone_stopshare_msg">Hii inasimamisha unakili wowote unaoendelea. Kifaa kingine kinaweza kuanza tena kwa kuchanganua tena.</string>
+    <string name="k2go_clone_stop_confirm">Simamisha</string>
+    <string name="k2go_clone_tech_arch">Simu hii: %1$s\nSimu nyingine: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Msimbo umenakiliwa</string>
+    <string name="k2go_clone_toast_app_share_fail">Haikuweza kuanzisha ushiriki wa programu</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Haikuweza kufungua karatasi ya kushiriki</string>
+    <string name="k2go_clone_toast_paste_first">Bandika msimbo wa uhamishaji kwanza</string>
+    <string name="k2go_clone_toast_code_invalid">Msimbo huo si sahihi</string>
+    <string name="k2go_clone_toast_scan_cancelled">Uchanganuzi umeghairiwa</string>
+    <string name="k2go_clone_toast_scan_invalid">Huo si msimbo sahihi wa uhamishaji.</string>
+    <string name="k2go_clone_toast_open_wifi">Fungua Mipangilio › Wi-Fi ili kuunganisha na simu nyingine.</string>
+    <string name="k2go_clone_toast_expired">Maelezo ya uhamishaji yamekwisha muda — bandika msimbo tena</string>
+    <string name="k2go_step2_included">Imejumuishwa</string>
+    <string name="k2go_downloading_library">Inapakua maktaba yako…</string>
+    <string name="k2go_retrying">Inajaribu tena…</string>
+    <string name="k2go_not_supported">Haitumiki</string>
 </resources>

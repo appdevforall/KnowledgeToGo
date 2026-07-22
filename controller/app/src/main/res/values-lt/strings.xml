@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Atsarginės kopijos &amp; atkūrimas</string>
     <string name="k2go_settings_sec_developer">KŪRĖJAS</string>
     <string name="k2go_settings_network_dns">Tinklas &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Perjungti į %1$s?</string>
+    <string name="k2go_clone_switch_msg">Tai sustabdys visą vykstantį kopijavimą. Kitas telefonas gali pradėti iš naujo nuskaitęs naują kodą.</string>
+    <string name="k2go_clone_switch_confirm">Perjungti</string>
+    <string name="k2go_clone_nolib_title">Kitas telefonas neturi bibliotekos</string>
+    <string name="k2go_clone_nolib_msg">Kol kas nėra ką iš jo kopijuoti. Vis tiek tęsti?</string>
+    <string name="k2go_clone_try_anyway">Vis tiek bandyti</string>
+    <string name="k2go_clone_copy_complete">Kopijavimas baigtas</string>
+    <string name="k2go_clone_copy_stopped">Kopijavimas sustabdytas</string>
+    <string name="k2go_clone_stopshare_title">Nustoti bendrinti?</string>
+    <string name="k2go_clone_stopshare_msg">Tai sustabdys visą vykstantį kopijavimą. Kitas įrenginys gali pradėti iš naujo dar kartą nuskaitęs.</string>
+    <string name="k2go_clone_stop_confirm">Sustabdyti</string>
+    <string name="k2go_clone_tech_arch">Šis telefonas: %1$s\nKitas telefonas: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kodas nukopijuotas</string>
+    <string name="k2go_clone_toast_app_share_fail">Nepavyko pradėti programos bendrinimo</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Nepavyko atidaryti bendrinimo lapo</string>
+    <string name="k2go_clone_toast_paste_first">Pirmiausia įklijuokite perdavimo kodą</string>
+    <string name="k2go_clone_toast_code_invalid">Šis kodas netinkamas</string>
+    <string name="k2go_clone_toast_scan_cancelled">Nuskaitymas atšauktas</string>
+    <string name="k2go_clone_toast_scan_invalid">Tai netinkamas perdavimo kodas.</string>
+    <string name="k2go_clone_toast_open_wifi">Norėdami prisijungti prie kito telefono, atidarykite Nustatymai › Wi-Fi.</string>
+    <string name="k2go_clone_toast_expired">Perdavimo informacija nebegalioja — įklijuokite kodą dar kartą</string>
+    <string name="k2go_step2_included">Įtraukta</string>
+    <string name="k2go_downloading_library">Atsisiunčiama jūsų biblioteka…</string>
+    <string name="k2go_retrying">Bandoma iš naujo…</string>
+    <string name="k2go_not_supported">Nepalaikoma</string>
 </resources>

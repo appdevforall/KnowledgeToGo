@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Backup &amp; ripristino</string>
     <string name="k2go_settings_sec_developer">SVILUPPATORE</string>
     <string name="k2go_settings_network_dns">Rete &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Passare a %1$s?</string>
+    <string name="k2go_clone_switch_msg">Questo interrompe qualsiasi copia in corso. L\'altro telefono può ricominciare eseguendo di nuovo la scansione del nuovo codice.</string>
+    <string name="k2go_clone_switch_confirm">Cambia</string>
+    <string name="k2go_clone_nolib_title">L\'altro telefono non ha una libreria</string>
+    <string name="k2go_clone_nolib_msg">Non c\'è ancora nulla da copiare da esso. Continuare comunque?</string>
+    <string name="k2go_clone_try_anyway">Prova comunque</string>
+    <string name="k2go_clone_copy_complete">Copia completata</string>
+    <string name="k2go_clone_copy_stopped">Copia interrotta</string>
+    <string name="k2go_clone_stopshare_title">Interrompere la condivisione?</string>
+    <string name="k2go_clone_stopshare_msg">Questo interrompe qualsiasi copia in corso. L\'altro dispositivo può ricominciare eseguendo di nuovo la scansione.</string>
+    <string name="k2go_clone_stop_confirm">Interrompi</string>
+    <string name="k2go_clone_tech_arch">Questo telefono: %1$s\nAltro telefono: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Codice copiato</string>
+    <string name="k2go_clone_toast_app_share_fail">Impossibile avviare la condivisione dell\'app</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Impossibile aprire il pannello di condivisione</string>
+    <string name="k2go_clone_toast_paste_first">Incolla prima il codice di trasferimento</string>
+    <string name="k2go_clone_toast_code_invalid">Questo codice non è valido</string>
+    <string name="k2go_clone_toast_scan_cancelled">Scansione annullata</string>
+    <string name="k2go_clone_toast_scan_invalid">Questo non è un codice di trasferimento valido.</string>
+    <string name="k2go_clone_toast_open_wifi">Apri Impostazioni › Wi-Fi per unirti all\'altro telefono.</string>
+    <string name="k2go_clone_toast_expired">I dettagli del trasferimento sono scaduti — incolla di nuovo il codice</string>
+    <string name="k2go_step2_included">Incluso</string>
+    <string name="k2go_downloading_library">Download della tua libreria in corso…</string>
+    <string name="k2go_retrying">Nuovo tentativo…</string>
+    <string name="k2go_not_supported">Non supportato</string>
 </resources>

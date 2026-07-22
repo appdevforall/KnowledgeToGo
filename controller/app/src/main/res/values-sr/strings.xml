@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Rezervne kopije &amp; oporavak</string>
     <string name="k2go_settings_sec_developer">PROGRAMER</string>
     <string name="k2go_settings_network_dns">Mreža &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. review — machine, verify. -->
+    <string name="k2go_clone_switch_title">Prebaciti na %1$s?</string>
+    <string name="k2go_clone_switch_msg">Ovo zaustavlja svako kopiranje u toku. Drugi telefon može ponovo da počne skeniranjem novog koda.</string>
+    <string name="k2go_clone_switch_confirm">Prebaci</string>
+    <string name="k2go_clone_nolib_title">Drugi telefon nema biblioteku</string>
+    <string name="k2go_clone_nolib_msg">Sa njega još nema šta da se kopira. Ipak nastaviti?</string>
+    <string name="k2go_clone_try_anyway">Ipak pokušaj</string>
+    <string name="k2go_clone_copy_complete">Kopiranje je završeno</string>
+    <string name="k2go_clone_copy_stopped">Kopiranje je zaustavljeno</string>
+    <string name="k2go_clone_stopshare_title">Zaustaviti deljenje?</string>
+    <string name="k2go_clone_stopshare_msg">Ovo zaustavlja svako kopiranje u toku. Drugi uređaj može ponovo da počne skeniranjem.</string>
+    <string name="k2go_clone_stop_confirm">Zaustavi</string>
+    <string name="k2go_clone_tech_arch">Ovaj telefon: %1$s\nDrugi telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kod je kopiran</string>
+    <string name="k2go_clone_toast_app_share_fail">Deljenje aplikacije nije moglo da se pokrene</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Tabla za deljenje nije mogla da se otvori</string>
+    <string name="k2go_clone_toast_paste_first">Prvo nalepite kod za prenos</string>
+    <string name="k2go_clone_toast_code_invalid">Taj kod nije važeći</string>
+    <string name="k2go_clone_toast_scan_cancelled">Skeniranje je otkazano</string>
+    <string name="k2go_clone_toast_scan_invalid">To nije važeći kod za prenos.</string>
+    <string name="k2go_clone_toast_open_wifi">Otvorite Podešavanja › Wi-Fi da biste se povezali sa drugim telefonom.</string>
+    <string name="k2go_clone_toast_expired">Detalji prenosa su istekli — ponovo nalepite kod</string>
+    <string name="k2go_step2_included">Uključeno</string>
+    <string name="k2go_downloading_library">Preuzimanje vaše biblioteke…</string>
+    <string name="k2go_retrying">Ponovni pokušaj…</string>
+    <string name="k2go_not_supported">Nije podržano</string>
 </resources>

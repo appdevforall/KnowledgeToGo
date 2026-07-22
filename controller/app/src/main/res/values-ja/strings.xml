@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">バックアップ &amp; 復元</string>
     <string name="k2go_settings_sec_developer">開発者</string>
     <string name="k2go_settings_network_dns">ネットワーク &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">%1$s に切り替えますか？</string>
+    <string name="k2go_clone_switch_msg">進行中のコピーはすべて停止します。相手の端末は新しいコードを再スキャンすればもう一度開始できます。</string>
+    <string name="k2go_clone_switch_confirm">切り替える</string>
+    <string name="k2go_clone_nolib_title">相手の端末にライブラリがありません</string>
+    <string name="k2go_clone_nolib_msg">まだコピーできるものがありません。このまま続行しますか？</string>
+    <string name="k2go_clone_try_anyway">それでも試す</string>
+    <string name="k2go_clone_copy_complete">コピーが完了しました</string>
+    <string name="k2go_clone_copy_stopped">コピーを停止しました</string>
+    <string name="k2go_clone_stopshare_title">共有を停止しますか？</string>
+    <string name="k2go_clone_stopshare_msg">進行中のコピーはすべて停止します。相手の端末は再スキャンすればもう一度開始できます。</string>
+    <string name="k2go_clone_stop_confirm">停止</string>
+    <string name="k2go_clone_tech_arch">この端末: %1$s\n相手の端末: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">コードをコピーしました</string>
+    <string name="k2go_clone_toast_app_share_fail">アプリの共有を開始できませんでした</string>
+    <string name="k2go_clone_toast_share_sheet_fail">共有シートを開けませんでした</string>
+    <string name="k2go_clone_toast_paste_first">先に転送コードを貼り付けてください</string>
+    <string name="k2go_clone_toast_code_invalid">そのコードは無効です</string>
+    <string name="k2go_clone_toast_scan_cancelled">スキャンをキャンセルしました</string>
+    <string name="k2go_clone_toast_scan_invalid">これは有効な転送コードではありません。</string>
+    <string name="k2go_clone_toast_open_wifi">相手の端末に接続するには、設定 › Wi-Fi を開いてください。</string>
+    <string name="k2go_clone_toast_expired">転送情報の有効期限が切れました — コードをもう一度貼り付けてください</string>
+    <string name="k2go_step2_included">含まれています</string>
+    <string name="k2go_downloading_library">ライブラリをダウンロードしています…</string>
+    <string name="k2go_retrying">再試行しています…</string>
+    <string name="k2go_not_supported">サポートされていません</string>
 </resources>

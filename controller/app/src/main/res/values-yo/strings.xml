@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Àwọn àdàkọ &amp; ìmúpadà</string>
     <string name="k2go_settings_sec_developer">OLÙDÀGBÀSÓKÈ</string>
     <string name="k2go_settings_network_dns">Nẹ́tíwọ́kì &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. review — machine, verify. -->
+    <string name="k2go_clone_switch_title">Yipada sí %1$s?</string>
+    <string name="k2go_clone_switch_msg">Èyí máa dá ìṣàdàkọ yòówù tí ń lọ lọ́wọ́ dúró. Fóònù kejì lè bẹ̀rẹ̀ lẹ́ẹ̀kansi nípa síṣàyẹ̀wò kóòdù tuntun náà lẹ́ẹ̀kansi.</string>
+    <string name="k2go_clone_switch_confirm">Yipada</string>
+    <string name="k2go_clone_nolib_title">Fóònù kejì kò ní ilé-ìkàwé</string>
+    <string name="k2go_clone_nolib_msg">Kò sí ohunkóhun láti ṣàdàkọ láti ọ̀dọ̀ rẹ̀ síbẹ̀. Ṣé kí a tẹ̀síwájú lọ́nàkọnà?</string>
+    <string name="k2go_clone_try_anyway">Gbìyànjú lọ́nàkọnà</string>
+    <string name="k2go_clone_copy_complete">Ìṣàdàkọ ti parí</string>
+    <string name="k2go_clone_copy_stopped">Ìṣàdàkọ ti dúró</string>
+    <string name="k2go_clone_stopshare_title">Ṣé kí a dá pípín dúró?</string>
+    <string name="k2go_clone_stopshare_msg">Èyí máa dá ìṣàdàkọ yòówù tí ń lọ lọ́wọ́ dúró. Ẹ̀rọ kejì lè bẹ̀rẹ̀ lẹ́ẹ̀kansi nípa síṣàyẹ̀wò lẹ́ẹ̀kansi.</string>
+    <string name="k2go_clone_stop_confirm">Dúró</string>
+    <string name="k2go_clone_tech_arch">Fóònù yìí: %1$s\nFóònù kejì: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">A ti ṣàdàkọ kóòdù</string>
+    <string name="k2go_clone_toast_app_share_fail">Kò lè bẹ̀rẹ̀ pípín áàpù náà</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Kò lè ṣí ìwé pípín náà</string>
+    <string name="k2go_clone_toast_paste_first">Kọ́kọ́ lẹ kóòdù ìṣíkiri náà mọ́</string>
+    <string name="k2go_clone_toast_code_invalid">Kóòdù yẹn kò wúlò</string>
+    <string name="k2go_clone_toast_scan_cancelled">A ti fagilé ìṣàyẹ̀wò</string>
+    <string name="k2go_clone_toast_scan_invalid">Ìyẹn kìí ṣe kóòdù ìṣíkiri tí ó wúlò.</string>
+    <string name="k2go_clone_toast_open_wifi">Ṣí Ètò › Wi-Fi láti darapọ̀ mọ́ fóònù kejì.</string>
+    <string name="k2go_clone_toast_expired">Àwọn àlàyé ìṣíkiri ti pẹ́ jù — lẹ kóòdù náà mọ́ lẹ́ẹ̀kansi</string>
+    <string name="k2go_step2_included">Wọ́n fi kún un</string>
+    <string name="k2go_downloading_library">Ń gba ilé-ìkàwé rẹ wọlé…</string>
+    <string name="k2go_retrying">Ń gbìyànjú lẹ́ẹ̀kansi…</string>
+    <string name="k2go_not_supported">Kò ní àtìlẹ́yìn</string>
 </resources>

@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Zálohy &amp; obnovenie</string>
     <string name="k2go_settings_sec_developer">VÝVOJÁR</string>
     <string name="k2go_settings_network_dns">Sieť &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Prepnúť na %1$s?</string>
+    <string name="k2go_clone_switch_msg">Tým sa zastaví akékoľvek prebiehajúce kopírovanie. Druhý telefón môže začať znova opätovným naskenovaním nového kódu.</string>
+    <string name="k2go_clone_switch_confirm">Prepnúť</string>
+    <string name="k2go_clone_nolib_title">Druhý telefón nemá žiadnu knižnicu</string>
+    <string name="k2go_clone_nolib_msg">Zatiaľ z neho nie je čo kopírovať. Napriek tomu pokračovať?</string>
+    <string name="k2go_clone_try_anyway">Napriek tomu skúsiť</string>
+    <string name="k2go_clone_copy_complete">Kopírovanie dokončené</string>
+    <string name="k2go_clone_copy_stopped">Kopírovanie zastavené</string>
+    <string name="k2go_clone_stopshare_title">Zastaviť zdieľanie?</string>
+    <string name="k2go_clone_stopshare_msg">Tým sa zastaví akékoľvek prebiehajúce kopírovanie. Druhé zariadenie môže začať znova opätovným naskenovaním.</string>
+    <string name="k2go_clone_stop_confirm">Zastaviť</string>
+    <string name="k2go_clone_tech_arch">Tento telefón: %1$s\nDruhý telefón: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kód skopírovaný</string>
+    <string name="k2go_clone_toast_app_share_fail">Nepodarilo sa spustiť zdieľanie aplikácie</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Nepodarilo sa otvoriť panel zdieľania</string>
+    <string name="k2go_clone_toast_paste_first">Najprv vložte prenosový kód</string>
+    <string name="k2go_clone_toast_code_invalid">Tento kód nie je platný</string>
+    <string name="k2go_clone_toast_scan_cancelled">Skenovanie zrušené</string>
+    <string name="k2go_clone_toast_scan_invalid">Toto nie je platný prenosový kód.</string>
+    <string name="k2go_clone_toast_open_wifi">Otvorte Nastavenia › Wi-Fi a pripojte sa k druhému telefónu.</string>
+    <string name="k2go_clone_toast_expired">Platnosť údajov o prenose vypršala — vložte kód znova</string>
+    <string name="k2go_step2_included">Zahrnuté</string>
+    <string name="k2go_downloading_library">Sťahovanie vašej knižnice…</string>
+    <string name="k2go_retrying">Opakovanie…</string>
+    <string name="k2go_not_supported">Nepodporované</string>
 </resources>

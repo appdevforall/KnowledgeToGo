@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">બેકઅપ &amp; પુનઃપ્રાપ્તિ</string>
     <string name="k2go_settings_sec_developer">ડેવલપર</string>
     <string name="k2go_settings_network_dns">નેટવર્ક &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. review — machine, verify. -->
+    <string name="k2go_clone_switch_title">%1$s પર સ્વિચ કરીએ?</string>
+    <string name="k2go_clone_switch_msg">આ પ્રગતિમાં રહેલી કોઈપણ કૉપી બંધ કરે છે. બીજો ફોન નવો કોડ ફરીથી સ્કૅન કરીને ફરી શરૂ કરી શકે છે.</string>
+    <string name="k2go_clone_switch_confirm">સ્વિચ કરો</string>
+    <string name="k2go_clone_nolib_title">બીજા ફોનમાં કોઈ લાઇબ્રેરી નથી</string>
+    <string name="k2go_clone_nolib_msg">તેમાંથી કૉપી કરવા માટે હજી કંઈ નથી. તેમ છતાં ચાલુ રાખીએ?</string>
+    <string name="k2go_clone_try_anyway">તેમ છતાં પ્રયાસ કરો</string>
+    <string name="k2go_clone_copy_complete">કૉપી પૂર્ણ થઈ</string>
+    <string name="k2go_clone_copy_stopped">કૉપી બંધ કરી</string>
+    <string name="k2go_clone_stopshare_title">શેર કરવાનું બંધ કરીએ?</string>
+    <string name="k2go_clone_stopshare_msg">આ પ્રગતિમાં રહેલી કોઈપણ કૉપી બંધ કરે છે. બીજું ઉપકરણ ફરીથી સ્કૅન કરીને ફરી શરૂ કરી શકે છે.</string>
+    <string name="k2go_clone_stop_confirm">બંધ કરો</string>
+    <string name="k2go_clone_tech_arch">આ ફોન: %1$s\nબીજો ફોન: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">કોડ કૉપી થયો</string>
+    <string name="k2go_clone_toast_app_share_fail">ઍપ શેર શરૂ કરી શકાયું નહીં</string>
+    <string name="k2go_clone_toast_share_sheet_fail">શેર શીટ ખોલી શકાઈ નહીં</string>
+    <string name="k2go_clone_toast_paste_first">પહેલા ટ્રાન્સફર કોડ પેસ્ટ કરો</string>
+    <string name="k2go_clone_toast_code_invalid">તે કોડ માન્ય નથી</string>
+    <string name="k2go_clone_toast_scan_cancelled">સ્કૅન રદ કર્યું</string>
+    <string name="k2go_clone_toast_scan_invalid">તે માન્ય ટ્રાન્સફર કોડ નથી.</string>
+    <string name="k2go_clone_toast_open_wifi">બીજા ફોન સાથે જોડાવા માટે સેટિંગ્સ › Wi-Fi ખોલો.</string>
+    <string name="k2go_clone_toast_expired">ટ્રાન્સફર વિગતોની સમયમર્યાદા સમાપ્ત થઈ — કોડ ફરીથી પેસ્ટ કરો</string>
+    <string name="k2go_step2_included">શામેલ</string>
+    <string name="k2go_downloading_library">તમારી લાઇબ્રેરી ડાઉનલોડ થઈ રહી છે…</string>
+    <string name="k2go_retrying">ફરી પ્રયાસ થઈ રહ્યો છે…</string>
+    <string name="k2go_not_supported">સમર્થિત નથી</string>
 </resources>

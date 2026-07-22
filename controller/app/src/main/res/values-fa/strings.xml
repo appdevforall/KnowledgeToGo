@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">پشتیبان‌گیری‌ها &amp; بازیابی</string>
     <string name="k2go_settings_sec_developer">توسعه‌دهنده</string>
     <string name="k2go_settings_network_dns">شبکه &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">تغییر به %1$s؟</string>
+    <string name="k2go_clone_switch_msg">این کار هر کپی در حال انجام را متوقف می‌کند. تلفن دیگر می‌تواند با اسکن دوباره کد جدید، دوباره شروع کند.</string>
+    <string name="k2go_clone_switch_confirm">تغییر</string>
+    <string name="k2go_clone_nolib_title">تلفن دیگر کتابخانه‌ای ندارد</string>
+    <string name="k2go_clone_nolib_msg">هنوز چیزی برای کپی کردن از آن وجود ندارد. به‌هرحال ادامه می‌دهید؟</string>
+    <string name="k2go_clone_try_anyway">به‌هرحال امتحان کن</string>
+    <string name="k2go_clone_copy_complete">کپی کامل شد</string>
+    <string name="k2go_clone_copy_stopped">کپی متوقف شد</string>
+    <string name="k2go_clone_stopshare_title">اشتراک‌گذاری متوقف شود؟</string>
+    <string name="k2go_clone_stopshare_msg">این کار هر کپی در حال انجام را متوقف می‌کند. دستگاه دیگر می‌تواند با اسکن دوباره، دوباره شروع کند.</string>
+    <string name="k2go_clone_stop_confirm">توقف</string>
+    <string name="k2go_clone_tech_arch">این تلفن: %1$s\nتلفن دیگر: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">کد کپی شد</string>
+    <string name="k2go_clone_toast_app_share_fail">اشتراک‌گذاری برنامه شروع نشد</string>
+    <string name="k2go_clone_toast_share_sheet_fail">برگه اشتراک‌گذاری باز نشد</string>
+    <string name="k2go_clone_toast_paste_first">ابتدا کد انتقال را بچسبانید</string>
+    <string name="k2go_clone_toast_code_invalid">آن کد معتبر نیست</string>
+    <string name="k2go_clone_toast_scan_cancelled">اسکن لغو شد</string>
+    <string name="k2go_clone_toast_scan_invalid">آن یک کد انتقال معتبر نیست.</string>
+    <string name="k2go_clone_toast_open_wifi">برای پیوستن به تلفن دیگر، تنظیمات › Wi-Fi را باز کنید.</string>
+    <string name="k2go_clone_toast_expired">جزئیات انتقال منقضی شد — کد را دوباره بچسبانید</string>
+    <string name="k2go_step2_included">شامل</string>
+    <string name="k2go_downloading_library">در حال دانلود کتابخانه شما…</string>
+    <string name="k2go_retrying">در حال تلاش دوباره…</string>
+    <string name="k2go_not_supported">پشتیبانی نمی‌شود</string>
 </resources>

@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">النسخ الاحتياطية &amp; الاستعادة</string>
     <string name="k2go_settings_sec_developer">المطوّر</string>
     <string name="k2go_settings_network_dns">الشبكة &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">التبديل إلى %1$s؟</string>
+    <string name="k2go_clone_switch_msg">يؤدي هذا إلى إيقاف أي نسخ قيد التقدم. يمكن للهاتف الآخر البدء من جديد بإعادة مسح الرمز الجديد.</string>
+    <string name="k2go_clone_switch_confirm">تبديل</string>
+    <string name="k2go_clone_nolib_title">الهاتف الآخر لا يحتوي على مكتبة</string>
+    <string name="k2go_clone_nolib_msg">لا يوجد شيء لنسخه منه بعد. المتابعة على أي حال؟</string>
+    <string name="k2go_clone_try_anyway">المحاولة على أي حال</string>
+    <string name="k2go_clone_copy_complete">اكتمل النسخ</string>
+    <string name="k2go_clone_copy_stopped">تم إيقاف النسخ</string>
+    <string name="k2go_clone_stopshare_title">إيقاف المشاركة؟</string>
+    <string name="k2go_clone_stopshare_msg">يؤدي هذا إلى إيقاف أي نسخ قيد التقدم. يمكن للجهاز الآخر البدء من جديد بإعادة المسح.</string>
+    <string name="k2go_clone_stop_confirm">إيقاف</string>
+    <string name="k2go_clone_tech_arch">هذا الهاتف: %1$s\nالهاتف الآخر: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">تم نسخ الرمز</string>
+    <string name="k2go_clone_toast_app_share_fail">تعذّر بدء مشاركة التطبيق</string>
+    <string name="k2go_clone_toast_share_sheet_fail">تعذّر فتح ورقة المشاركة</string>
+    <string name="k2go_clone_toast_paste_first">الصق رمز النقل أولاً</string>
+    <string name="k2go_clone_toast_code_invalid">هذا الرمز غير صالح</string>
+    <string name="k2go_clone_toast_scan_cancelled">تم إلغاء المسح</string>
+    <string name="k2go_clone_toast_scan_invalid">هذا ليس رمز نقل صالحًا.</string>
+    <string name="k2go_clone_toast_open_wifi">افتح الإعدادات › Wi-Fi للانضمام إلى الهاتف الآخر.</string>
+    <string name="k2go_clone_toast_expired">انتهت صلاحية تفاصيل النقل — الصق الرمز مرة أخرى</string>
+    <string name="k2go_step2_included">مُضمَّن</string>
+    <string name="k2go_downloading_library">جارٍ تنزيل مكتبتك…</string>
+    <string name="k2go_retrying">جارٍ إعادة المحاولة…</string>
+    <string name="k2go_not_supported">غير مدعوم</string>
 </resources>

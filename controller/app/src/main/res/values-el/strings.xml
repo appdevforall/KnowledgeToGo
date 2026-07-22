@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Αντίγραφα ασφαλείας &amp; ανάκτηση</string>
     <string name="k2go_settings_sec_developer">ΠΡΟΓΡΑΜΜΑΤΙΣΤΗΣ</string>
     <string name="k2go_settings_network_dns">Δίκτυο &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Εναλλαγή σε %1$s;</string>
+    <string name="k2go_clone_switch_msg">Αυτό διακόπτει κάθε αντιγραφή σε εξέλιξη. Το άλλο τηλέφωνο μπορεί να ξεκινήσει ξανά σαρώνοντας εκ νέου τον νέο κώδικα.</string>
+    <string name="k2go_clone_switch_confirm">Εναλλαγή</string>
+    <string name="k2go_clone_nolib_title">Το άλλο τηλέφωνο δεν έχει βιβλιοθήκη</string>
+    <string name="k2go_clone_nolib_msg">Δεν υπάρχει ακόμη τίποτα για αντιγραφή από αυτό. Συνέχεια ούτως ή άλλως;</string>
+    <string name="k2go_clone_try_anyway">Δοκιμή ούτως ή άλλως</string>
+    <string name="k2go_clone_copy_complete">Η αντιγραφή ολοκληρώθηκε</string>
+    <string name="k2go_clone_copy_stopped">Η αντιγραφή διακόπηκε</string>
+    <string name="k2go_clone_stopshare_title">Διακοπή κοινής χρήσης;</string>
+    <string name="k2go_clone_stopshare_msg">Αυτό διακόπτει κάθε αντιγραφή σε εξέλιξη. Η άλλη συσκευή μπορεί να ξεκινήσει ξανά με νέα σάρωση.</string>
+    <string name="k2go_clone_stop_confirm">Διακοπή</string>
+    <string name="k2go_clone_tech_arch">Αυτό το τηλέφωνο: %1$s\nΆλλο τηλέφωνο: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Ο κώδικας αντιγράφηκε</string>
+    <string name="k2go_clone_toast_app_share_fail">Δεν ήταν δυνατή η έναρξη της κοινής χρήσης εφαρμογής</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Δεν ήταν δυνατό το άνοιγμα του φύλλου κοινής χρήσης</string>
+    <string name="k2go_clone_toast_paste_first">Επικολλήστε πρώτα τον κωδικό μεταφοράς</string>
+    <string name="k2go_clone_toast_code_invalid">Αυτός ο κωδικός δεν είναι έγκυρος</string>
+    <string name="k2go_clone_toast_scan_cancelled">Η σάρωση ακυρώθηκε</string>
+    <string name="k2go_clone_toast_scan_invalid">Αυτός δεν είναι έγκυρος κωδικός μεταφοράς.</string>
+    <string name="k2go_clone_toast_open_wifi">Ανοίξτε τις Ρυθμίσεις › Wi-Fi για να συνδεθείτε με το άλλο τηλέφωνο.</string>
+    <string name="k2go_clone_toast_expired">Οι λεπτομέρειες μεταφοράς έληξαν — επικολλήστε ξανά τον κωδικό</string>
+    <string name="k2go_step2_included">Περιλαμβάνεται</string>
+    <string name="k2go_downloading_library">Λήψη της βιβλιοθήκης σας…</string>
+    <string name="k2go_retrying">Επανάληψη…</string>
+    <string name="k2go_not_supported">Δεν υποστηρίζεται</string>
 </resources>

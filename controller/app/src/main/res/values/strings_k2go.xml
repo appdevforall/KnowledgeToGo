@@ -113,31 +113,31 @@
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <!-- ADFA-4795: redesign dialogs, toasts, Step2/Library setText (sweep 2) -->
-    <string name="k2go_clone_switch_title" translatable="false">Switch to %1$s?</string>
-    <string name="k2go_clone_switch_msg" translatable="false">This stops any copy in progress. The other phone can start again by rescanning the new code.</string>
-    <string name="k2go_clone_switch_confirm" translatable="false">Switch</string>
-    <string name="k2go_clone_nolib_title" translatable="false">The other phone has no library</string>
-    <string name="k2go_clone_nolib_msg" translatable="false">There\'s nothing to copy from it yet. Continue anyway?</string>
-    <string name="k2go_clone_try_anyway" translatable="false">Try anyway</string>
-    <string name="k2go_clone_copy_complete" translatable="false">Copy complete</string>
-    <string name="k2go_clone_copy_stopped" translatable="false">Copy stopped</string>
-    <string name="k2go_clone_stopshare_title" translatable="false">Stop sharing?</string>
-    <string name="k2go_clone_stopshare_msg" translatable="false">This stops any copy in progress. The other device can start again by rescanning.</string>
-    <string name="k2go_clone_stop_confirm" translatable="false">Stop</string>
-    <string name="k2go_clone_tech_arch" translatable="false">This phone: %1$s\nOther phone: %2$s</string>
-    <string name="k2go_clone_toast_code_copied" translatable="false">Code copied</string>
-    <string name="k2go_clone_toast_app_share_fail" translatable="false">Couldn\'t start the app share</string>
-    <string name="k2go_clone_toast_share_sheet_fail" translatable="false">Couldn\'t open the share sheet</string>
-    <string name="k2go_clone_toast_paste_first" translatable="false">Paste the transfer code first</string>
-    <string name="k2go_clone_toast_code_invalid" translatable="false">That code isn\'t valid</string>
-    <string name="k2go_clone_toast_scan_cancelled" translatable="false">Scan cancelled</string>
-    <string name="k2go_clone_toast_scan_invalid" translatable="false">That isn\'t a valid transfer code.</string>
-    <string name="k2go_clone_toast_open_wifi" translatable="false">Open Settings › Wi-Fi to join the other phone.</string>
-    <string name="k2go_clone_toast_expired" translatable="false">Transfer details expired — paste the code again</string>
-    <string name="k2go_step2_included" translatable="false">Included</string>
-    <string name="k2go_downloading_library" translatable="false">Downloading your library…</string>
-    <string name="k2go_retrying" translatable="false">Retrying…</string>
-    <string name="k2go_not_supported" translatable="false">Not supported</string>
+    <string name="k2go_clone_switch_title">Switch to %1$s?</string>
+    <string name="k2go_clone_switch_msg">This stops any copy in progress. The other phone can start again by rescanning the new code.</string>
+    <string name="k2go_clone_switch_confirm">Switch</string>
+    <string name="k2go_clone_nolib_title">The other phone has no library</string>
+    <string name="k2go_clone_nolib_msg">There\'s nothing to copy from it yet. Continue anyway?</string>
+    <string name="k2go_clone_try_anyway">Try anyway</string>
+    <string name="k2go_clone_copy_complete">Copy complete</string>
+    <string name="k2go_clone_copy_stopped">Copy stopped</string>
+    <string name="k2go_clone_stopshare_title">Stop sharing?</string>
+    <string name="k2go_clone_stopshare_msg">This stops any copy in progress. The other device can start again by rescanning.</string>
+    <string name="k2go_clone_stop_confirm">Stop</string>
+    <string name="k2go_clone_tech_arch">This phone: %1$s\nOther phone: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Code copied</string>
+    <string name="k2go_clone_toast_app_share_fail">Couldn\'t start the app share</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Couldn\'t open the share sheet</string>
+    <string name="k2go_clone_toast_paste_first">Paste the transfer code first</string>
+    <string name="k2go_clone_toast_code_invalid">That code isn\'t valid</string>
+    <string name="k2go_clone_toast_scan_cancelled">Scan cancelled</string>
+    <string name="k2go_clone_toast_scan_invalid">That isn\'t a valid transfer code.</string>
+    <string name="k2go_clone_toast_open_wifi">Open Settings › Wi-Fi to join the other phone.</string>
+    <string name="k2go_clone_toast_expired">Transfer details expired — paste the code again</string>
+    <string name="k2go_step2_included">Included</string>
+    <string name="k2go_downloading_library">Downloading your library…</string>
+    <string name="k2go_retrying">Retrying…</string>
+    <string name="k2go_not_supported">Not supported</string>
     <!-- ADFA-4795: Clone/Connect extracted literals (EN); translated in follow-up commits. -->
     <string name="k2go_clone_full_copy_note">A full copy of the other phone\'s library.</string>
     <string name="k2go_clone_all_apps">All applications and their content</string>

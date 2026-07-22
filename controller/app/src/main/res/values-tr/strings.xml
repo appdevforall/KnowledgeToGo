@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Yedeklemeler &amp; kurtarma</string>
     <string name="k2go_settings_sec_developer">GELİŞTİRİCİ</string>
     <string name="k2go_settings_network_dns">Ağ &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">%1$s öğesine geçilsin mi?</string>
+    <string name="k2go_clone_switch_msg">Bu, devam eden tüm kopyalamaları durdurur. Diğer telefon, yeni kodu yeniden tarayarak yeniden başlayabilir.</string>
+    <string name="k2go_clone_switch_confirm">Geç</string>
+    <string name="k2go_clone_nolib_title">Diğer telefonda kitaplık yok</string>
+    <string name="k2go_clone_nolib_msg">Ondan kopyalanacak henüz bir şey yok. Yine de devam edilsin mi?</string>
+    <string name="k2go_clone_try_anyway">Yine de dene</string>
+    <string name="k2go_clone_copy_complete">Kopyalama tamamlandı</string>
+    <string name="k2go_clone_copy_stopped">Kopyalama durduruldu</string>
+    <string name="k2go_clone_stopshare_title">Paylaşım durdurulsun mu?</string>
+    <string name="k2go_clone_stopshare_msg">Bu, devam eden tüm kopyalamaları durdurur. Diğer cihaz yeniden tarayarak yeniden başlayabilir.</string>
+    <string name="k2go_clone_stop_confirm">Durdur</string>
+    <string name="k2go_clone_tech_arch">Bu telefon: %1$s\nDiğer telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kod kopyalandı</string>
+    <string name="k2go_clone_toast_app_share_fail">Uygulama paylaşımı başlatılamadı</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Paylaşım sayfası açılamadı</string>
+    <string name="k2go_clone_toast_paste_first">Önce aktarım kodunu yapıştırın</string>
+    <string name="k2go_clone_toast_code_invalid">Bu kod geçerli değil</string>
+    <string name="k2go_clone_toast_scan_cancelled">Tarama iptal edildi</string>
+    <string name="k2go_clone_toast_scan_invalid">Bu, geçerli bir aktarım kodu değil.</string>
+    <string name="k2go_clone_toast_open_wifi">Diğer telefona bağlanmak için Ayarlar › Wi-Fi bölümünü açın.</string>
+    <string name="k2go_clone_toast_expired">Aktarım ayrıntılarının süresi doldu — kodu tekrar yapıştırın</string>
+    <string name="k2go_step2_included">Dahil</string>
+    <string name="k2go_downloading_library">Kitaplığınız indiriliyor…</string>
+    <string name="k2go_retrying">Yeniden deneniyor…</string>
+    <string name="k2go_not_supported">Desteklenmiyor</string>
 </resources>

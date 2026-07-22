@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Kopie zapasowe &amp; odzyskiwanie</string>
     <string name="k2go_settings_sec_developer">PROGRAMISTA</string>
     <string name="k2go_settings_network_dns">Sieć &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Przełączyć na %1$s?</string>
+    <string name="k2go_clone_switch_msg">Spowoduje to zatrzymanie każdego trwającego kopiowania. Drugi telefon może zacząć od nowa, ponownie skanując nowy kod.</string>
+    <string name="k2go_clone_switch_confirm">Przełącz</string>
+    <string name="k2go_clone_nolib_title">Drugi telefon nie ma biblioteki</string>
+    <string name="k2go_clone_nolib_msg">Nie ma jeszcze z niego nic do skopiowania. Kontynuować mimo to?</string>
+    <string name="k2go_clone_try_anyway">Spróbuj mimo to</string>
+    <string name="k2go_clone_copy_complete">Kopiowanie zakończone</string>
+    <string name="k2go_clone_copy_stopped">Kopiowanie zatrzymane</string>
+    <string name="k2go_clone_stopshare_title">Zatrzymać udostępnianie?</string>
+    <string name="k2go_clone_stopshare_msg">Spowoduje to zatrzymanie każdego trwającego kopiowania. Drugie urządzenie może zacząć od nowa, ponownie skanując.</string>
+    <string name="k2go_clone_stop_confirm">Zatrzymaj</string>
+    <string name="k2go_clone_tech_arch">Ten telefon: %1$s\nDrugi telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kod skopiowany</string>
+    <string name="k2go_clone_toast_app_share_fail">Nie można uruchomić udostępniania aplikacji</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Nie można otworzyć panelu udostępniania</string>
+    <string name="k2go_clone_toast_paste_first">Najpierw wklej kod transferu</string>
+    <string name="k2go_clone_toast_code_invalid">Ten kod jest nieprawidłowy</string>
+    <string name="k2go_clone_toast_scan_cancelled">Skanowanie anulowane</string>
+    <string name="k2go_clone_toast_scan_invalid">To nie jest prawidłowy kod transferu.</string>
+    <string name="k2go_clone_toast_open_wifi">Otwórz Ustawienia › Wi-Fi, aby połączyć się z drugim telefonem.</string>
+    <string name="k2go_clone_toast_expired">Szczegóły transferu wygasły — wklej kod ponownie</string>
+    <string name="k2go_step2_included">Uwzględniono</string>
+    <string name="k2go_downloading_library">Pobieranie Twojej biblioteki…</string>
+    <string name="k2go_retrying">Ponawianie próby…</string>
+    <string name="k2go_not_supported">Nieobsługiwane</string>
 </resources>

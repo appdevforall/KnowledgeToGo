@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">Sikkerhetskopier &amp; gjenoppretting</string>
     <string name="k2go_settings_sec_developer">UTVIKLER</string>
     <string name="k2go_settings_network_dns">Nettverk &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Bytte til %1$s?</string>
+    <string name="k2go_clone_switch_msg">Dette stopper enhver kopiering som pågår. Den andre telefonen kan starte på nytt ved å skanne den nye koden igjen.</string>
+    <string name="k2go_clone_switch_confirm">Bytt</string>
+    <string name="k2go_clone_nolib_title">Den andre telefonen har ikke noe bibliotek</string>
+    <string name="k2go_clone_nolib_msg">Det er ennå ingenting å kopiere fra den. Vil du fortsette likevel?</string>
+    <string name="k2go_clone_try_anyway">Prøv likevel</string>
+    <string name="k2go_clone_copy_complete">Kopiering fullført</string>
+    <string name="k2go_clone_copy_stopped">Kopiering stoppet</string>
+    <string name="k2go_clone_stopshare_title">Stoppe deling?</string>
+    <string name="k2go_clone_stopshare_msg">Dette stopper enhver kopiering som pågår. Den andre enheten kan starte på nytt ved å skanne igjen.</string>
+    <string name="k2go_clone_stop_confirm">Stopp</string>
+    <string name="k2go_clone_tech_arch">Denne telefonen: %1$s\nAnnen telefon: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kode kopiert</string>
+    <string name="k2go_clone_toast_app_share_fail">Kunne ikke starte appdelingen</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Kunne ikke åpne delingsvinduet</string>
+    <string name="k2go_clone_toast_paste_first">Lim inn overføringskoden først</string>
+    <string name="k2go_clone_toast_code_invalid">Den koden er ikke gyldig</string>
+    <string name="k2go_clone_toast_scan_cancelled">Skanning avbrutt</string>
+    <string name="k2go_clone_toast_scan_invalid">Det er ikke en gyldig overføringskode.</string>
+    <string name="k2go_clone_toast_open_wifi">Åpne Innstillinger › Wi-Fi for å koble til den andre telefonen.</string>
+    <string name="k2go_clone_toast_expired">Overføringsdetaljene er utløpt — lim inn koden på nytt</string>
+    <string name="k2go_step2_included">Inkludert</string>
+    <string name="k2go_downloading_library">Laster ned biblioteket ditt…</string>
+    <string name="k2go_retrying">Prøver igjen…</string>
+    <string name="k2go_not_supported">Støttes ikke</string>
 </resources>

@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Cadangan &amp; pemulihan</string>
     <string name="k2go_settings_sec_developer">PENGEMBANG</string>
     <string name="k2go_settings_network_dns">Jaringan &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Beralih ke %1$s?</string>
+    <string name="k2go_clone_switch_msg">Ini menghentikan penyalinan yang sedang berlangsung. Ponsel satunya dapat memulai lagi dengan memindai ulang kode baru.</string>
+    <string name="k2go_clone_switch_confirm">Beralih</string>
+    <string name="k2go_clone_nolib_title">Ponsel satunya tidak memiliki pustaka</string>
+    <string name="k2go_clone_nolib_msg">Belum ada yang bisa disalin darinya. Tetap lanjutkan?</string>
+    <string name="k2go_clone_try_anyway">Tetap coba</string>
+    <string name="k2go_clone_copy_complete">Penyalinan selesai</string>
+    <string name="k2go_clone_copy_stopped">Penyalinan dihentikan</string>
+    <string name="k2go_clone_stopshare_title">Berhenti berbagi?</string>
+    <string name="k2go_clone_stopshare_msg">Ini menghentikan penyalinan yang sedang berlangsung. Perangkat satunya dapat memulai lagi dengan memindai ulang.</string>
+    <string name="k2go_clone_stop_confirm">Berhenti</string>
+    <string name="k2go_clone_tech_arch">Ponsel ini: %1$s\nPonsel satunya: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Kode disalin</string>
+    <string name="k2go_clone_toast_app_share_fail">Tidak dapat memulai berbagi aplikasi</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Tidak dapat membuka lembar berbagi</string>
+    <string name="k2go_clone_toast_paste_first">Tempel kode transfer terlebih dahulu</string>
+    <string name="k2go_clone_toast_code_invalid">Kode itu tidak valid</string>
+    <string name="k2go_clone_toast_scan_cancelled">Pemindaian dibatalkan</string>
+    <string name="k2go_clone_toast_scan_invalid">Itu bukan kode transfer yang valid.</string>
+    <string name="k2go_clone_toast_open_wifi">Buka Setelan › Wi-Fi untuk bergabung dengan ponsel satunya.</string>
+    <string name="k2go_clone_toast_expired">Detail transfer kedaluwarsa — tempel kode lagi</string>
+    <string name="k2go_step2_included">Termasuk</string>
+    <string name="k2go_downloading_library">Mengunduh pustaka Anda…</string>
+    <string name="k2go_retrying">Mencoba lagi…</string>
+    <string name="k2go_not_supported">Tidak didukung</string>
 </resources>

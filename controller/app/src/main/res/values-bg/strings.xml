@@ -733,4 +733,30 @@
     <string name="k2go_settings_backups">Резервни копия &amp; възстановяване</string>
     <string name="k2go_settings_sec_developer">РАЗРАБОТЧИК</string>
     <string name="k2go_settings_network_dns">Мрежа &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">Превключване към %1$s?</string>
+    <string name="k2go_clone_switch_msg">Това спира всяко текущо копиране. Другият телефон може да започне отново, като сканира повторно новия код.</string>
+    <string name="k2go_clone_switch_confirm">Превключване</string>
+    <string name="k2go_clone_nolib_title">Другият телефон няма библиотека</string>
+    <string name="k2go_clone_nolib_msg">Още няма какво да се копира от него. Да продължи ли въпреки това?</string>
+    <string name="k2go_clone_try_anyway">Опитай въпреки това</string>
+    <string name="k2go_clone_copy_complete">Копирането е завършено</string>
+    <string name="k2go_clone_copy_stopped">Копирането е спряно</string>
+    <string name="k2go_clone_stopshare_title">Спиране на споделянето?</string>
+    <string name="k2go_clone_stopshare_msg">Това спира всяко текущо копиране. Другото устройство може да започне отново чрез повторно сканиране.</string>
+    <string name="k2go_clone_stop_confirm">Спри</string>
+    <string name="k2go_clone_tech_arch">Този телефон: %1$s\nДругият телефон: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">Кодът е копиран</string>
+    <string name="k2go_clone_toast_app_share_fail">Споделянето на приложението не можа да започне</string>
+    <string name="k2go_clone_toast_share_sheet_fail">Панелът за споделяне не можа да се отвори</string>
+    <string name="k2go_clone_toast_paste_first">Първо поставете кода за прехвърляне</string>
+    <string name="k2go_clone_toast_code_invalid">Този код не е валиден</string>
+    <string name="k2go_clone_toast_scan_cancelled">Сканирането е отменено</string>
+    <string name="k2go_clone_toast_scan_invalid">Това не е валиден код за прехвърляне.</string>
+    <string name="k2go_clone_toast_open_wifi">Отворете Настройки › Wi-Fi, за да се свържете с другия телефон.</string>
+    <string name="k2go_clone_toast_expired">Данните за прехвърлянето изтекоха — поставете кода отново</string>
+    <string name="k2go_step2_included">Включено</string>
+    <string name="k2go_downloading_library">Изтегляне на вашата библиотека…</string>
+    <string name="k2go_retrying">Нов опит…</string>
+    <string name="k2go_not_supported">Не се поддържа</string>
 </resources>

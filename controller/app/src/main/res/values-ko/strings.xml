@@ -726,4 +726,30 @@
     <string name="k2go_settings_backups">백업 &amp; 복구</string>
     <string name="k2go_settings_sec_developer">개발자</string>
     <string name="k2go_settings_network_dns">네트워크 &amp; DNS</string>
+    <!-- ADFA-4795: redesign dialogs/toasts/misc l10n. machine translation. -->
+    <string name="k2go_clone_switch_title">%1$s(으)로 전환하시겠어요?</string>
+    <string name="k2go_clone_switch_msg">진행 중인 복사가 모두 중지됩니다. 상대방 휴대전화는 새 코드를 다시 스캔하여 다시 시작할 수 있습니다.</string>
+    <string name="k2go_clone_switch_confirm">전환</string>
+    <string name="k2go_clone_nolib_title">상대방 휴대전화에 라이브러리가 없습니다</string>
+    <string name="k2go_clone_nolib_msg">아직 복사할 항목이 없습니다. 그래도 계속하시겠어요?</string>
+    <string name="k2go_clone_try_anyway">그래도 시도</string>
+    <string name="k2go_clone_copy_complete">복사 완료</string>
+    <string name="k2go_clone_copy_stopped">복사 중지됨</string>
+    <string name="k2go_clone_stopshare_title">공유를 중지하시겠어요?</string>
+    <string name="k2go_clone_stopshare_msg">진행 중인 복사가 모두 중지됩니다. 상대방 기기는 다시 스캔하여 다시 시작할 수 있습니다.</string>
+    <string name="k2go_clone_stop_confirm">중지</string>
+    <string name="k2go_clone_tech_arch">이 휴대전화: %1$s\n상대방 휴대전화: %2$s</string>
+    <string name="k2go_clone_toast_code_copied">코드 복사됨</string>
+    <string name="k2go_clone_toast_app_share_fail">앱 공유를 시작할 수 없습니다</string>
+    <string name="k2go_clone_toast_share_sheet_fail">공유 시트를 열 수 없습니다</string>
+    <string name="k2go_clone_toast_paste_first">전송 코드를 먼저 붙여넣으세요</string>
+    <string name="k2go_clone_toast_code_invalid">해당 코드는 유효하지 않습니다</string>
+    <string name="k2go_clone_toast_scan_cancelled">스캔 취소됨</string>
+    <string name="k2go_clone_toast_scan_invalid">유효한 전송 코드가 아닙니다.</string>
+    <string name="k2go_clone_toast_open_wifi">상대방 휴대전화에 연결하려면 설정 › Wi-Fi를 여세요.</string>
+    <string name="k2go_clone_toast_expired">전송 정보가 만료되었습니다 — 코드를 다시 붙여넣으세요</string>
+    <string name="k2go_step2_included">포함됨</string>
+    <string name="k2go_downloading_library">라이브러리를 다운로드하는 중…</string>
+    <string name="k2go_retrying">다시 시도하는 중…</string>
+    <string name="k2go_not_supported">지원되지 않음</string>
 </resources>
