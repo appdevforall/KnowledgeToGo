@@ -691,6 +691,9 @@ public final class InstallService extends Service {
     private void finishSuccess() {
         if (finished) return;
         finished = true;
+        // ADFA-4811: clear the install guard BEFORE publishing SUCCESS, so the UI observer can
+        // start the server for this session (handleServerLaunchClick refuses while the guard is set).
+        org.iiab.controller.InstallGuard.end(this);
         if (!resetMode && !moduleMode) {
             // ADFA-4466 Phase 1: operational analytics (no-op unless the operator opted in).
             org.iiab.controller.analytics.AnalyticsClient.with(this)

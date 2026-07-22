@@ -144,8 +144,27 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // when it actually finishes (or fails) — a 2-3 GB download won't beat a timeout.
         InstallProgressRepository.get().state().observe(this, st -> {
             if (st == null || gateDismissed) return;
-            if (st.isRunning()) { installing = true; showInstallProgress(st); }
-            else if (st.isTerminal()) { hideInstallProgress(); onServerReady(); }
+            if (st.isRunning()) {
+                installing = true;
+                showInstallProgress(st);
+            } else if (st.isTerminal()) {
+                hideInstallProgress();
+                installing = false; // install finished; let the server-alive observer lift the gate
+                if (st.phase == InstallState.Phase.SUCCESS) {
+                    // ADFA-4811: start the server in this same session so the library is usable on
+                    // the FIRST run (no relaunch). The install just cleared the guard, so this is
+                    // allowed. The gate stays until the server responds (alive observer), with a
+                    // safety timeout so the user is never trapped if it doesn't come up.
+                    if (!ServerStateRepository.get().current().alive && targetServerState == null) {
+                        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+                    }
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        if (!gateDismissed) onServerReady();
+                    }, GATE_SAFETY_MS);
+                } else {
+                    onServerReady(); // FAILED: lift the gate; land on the library (offline)
+                }
+            }
         });
 
         Handler main = new Handler(Looper.getMainLooper());
