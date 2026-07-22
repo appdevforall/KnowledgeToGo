@@ -24,24 +24,23 @@
                 android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_muted" />
         </LinearLayout>
 
-        <!-- LANGUAGE -->
+        <!-- LANGUAGE (ADFA-4797: single selector that opens the full picker) -->
         <LinearLayout android:id="@+id/wiz_language" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="20dp" android:visibility="gone">
-            <LinearLayout android:id="@+id/lang_system" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
-                <ImageView android:id="@+id/lang_system_radio" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_radio_on" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/k2go_lang_system_default" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="@string/k2go_lang_label" android:textColor="@color/k2go_muted"
+                android:textAppearance="?attr/textAppearanceLabelLarge" android:letterSpacing="0.08" />
+            <LinearLayout android:id="@+id/lang_box" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                android:gravity="center_vertical" android:padding="16dp" android:layout_marginTop="8dp"
+                android:background="@drawable/k2go_lang_box_bg" android:clickable="true" android:focusable="true">
+                <TextView android:id="@+id/lang_box_label" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                    android:text="@string/k2go_lang_follow_system" android:textColor="@color/k2go_ink"
+                    android:textAppearance="?attr/textAppearanceTitleMedium" android:textStyle="bold" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="▾" android:textColor="@color/k2go_teal" android:textSize="18sp" />
             </LinearLayout>
-            <LinearLayout android:id="@+id/lang_en" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
-                <ImageView android:id="@+id/lang_en_radio" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_radio_off" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/k2go_lang_english" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
-            </LinearLayout>
-            <LinearLayout android:id="@+id/lang_es" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-                android:gravity="center_vertical" android:padding="14dp" android:layout_marginTop="8dp" android:background="@drawable/k2go_card_bg" android:clickable="true" android:focusable="true">
-                <ImageView android:id="@+id/lang_es_radio" android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_radio_off" android:contentDescription="@null" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:text="@string/k2go_lang_spanish" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyLarge" />
-            </LinearLayout>
+            <TextView android:id="@+id/lang_helper" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyLarge" />
         </LinearLayout>
 
         <!-- PERMISSIONS -->

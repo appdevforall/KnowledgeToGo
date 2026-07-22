@@ -76,6 +76,22 @@ public final class SupportedAppLanguages {
         return Collections.unmodifiableList(list);
     }
 
+    /**
+     * Picker variant (ADFA-4797): the "follow system" entry first, then every language
+     * shown in its own endonym, sorted A–Z by endonym. Each entry carries the English
+     * name as {@code searchName} so a search box can match either endonym or English.
+     */
+    public static List<AppLanguage> forPicker(String systemDefaultLabel) {
+        String[][] langs = LANGUAGES.clone();
+        Arrays.sort(langs, (a, b) -> a[1].compareToIgnoreCase(b[1]));
+        List<AppLanguage> list = new ArrayList<>();
+        list.add(new AppLanguage("", systemDefaultLabel));
+        for (String[] l : langs) {
+            list.add(new AppLanguage(l[0], l[1], l[2]));
+        }
+        return Collections.unmodifiableList(list);
+    }
+
     /** Index of the entry matching {@code tag}, or 0 (system default) if none matches. */
     public static int indexOfTag(List<AppLanguage> list, String tag) {
         String t = tag == null ? "" : tag;
