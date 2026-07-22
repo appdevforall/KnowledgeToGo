@@ -88,6 +88,30 @@
     <string name="k2go_settings_advanced">Advanced</string>
     <string name="k2go_settings_turn_off">Turn off K2Go</string>
     <string name="k2go_settings_running_note">K2Go keeps running in the background until you turn it off.</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen (method-arg literals) -->
+    <string name="k2go_settings_theme" translatable="false">Theme</string>
+    <string name="k2go_settings_help" translatable="false">Help</string>
+    <string name="k2go_settings_send_feedback" translatable="false">Send feedback</string>
+    <string name="k2go_settings_advanced_sub" translatable="false">System, backups, developer tools</string>
+    <string name="k2go_theme_light" translatable="false">Light</string>
+    <string name="k2go_theme_system" translatable="false">Follow system</string>
+    <string name="k2go_theme_dark" translatable="false">Dark</string>
+    <string name="k2go_settings_turnoff_title" translatable="false">Turn off K2Go?</string>
+    <string name="k2go_settings_turnoff_msg" translatable="false">This stops the library and closes the app. (Home or back only minimize it — it keeps running in the background.)</string>
+    <string name="k2go_settings_turnoff_confirm" translatable="false">Turn off</string>
+    <string name="k2go_settings_lang_caption" translatable="false">Sets the app language and the default content language.</string>
+    <string name="k2go_settings_app_version" translatable="false">App version</string>
+    <string name="k2go_settings_permissions" translatable="false">Permissions</string>
+    <string name="k2go_settings_usage_stats" translatable="false">Share usage statistics</string>
+    <string name="k2go_settings_licenses" translatable="false">Open-source licenses</string>
+    <string name="k2go_settings_privacy" translatable="false">Privacy</string>
+    <string name="k2go_settings_power_users" translatable="false">For power users.</string>
+    <string name="k2go_settings_sec_system" translatable="false">SYSTEM</string>
+    <string name="k2go_settings_module_mgmt" translatable="false">Module management</string>
+    <string name="k2go_settings_module_mgmt_sub" translatable="false">Tier, add modules, hide</string>
+    <string name="k2go_settings_backups" translatable="false">Backups &amp; recovery</string>
+    <string name="k2go_settings_sec_developer" translatable="false">DEVELOPER</string>
+    <string name="k2go_settings_network_dns" translatable="false">Network &amp; DNS</string>
     <!-- ADFA-4795: Clone/Connect extracted literals (EN); translated in follow-up commits. -->
     <string name="k2go_clone_full_copy_note">A full copy of the other phone\'s library.</string>
     <string name="k2go_clone_all_apps">All applications and their content</string>
