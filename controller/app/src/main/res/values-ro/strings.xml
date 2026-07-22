@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Engleză</string>
     <string name="k2go_lang_spanish">Spaniolă</string>
     <string name="k2go_brand">Cunoștințe la purtător</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Temă</string>
+    <string name="k2go_settings_help">Ajutor</string>
+    <string name="k2go_settings_send_feedback">Trimite feedback</string>
+    <string name="k2go_settings_advanced_sub">Sistem, copii de rezervă, instrumente pentru dezvoltatori</string>
+    <string name="k2go_theme_light">Luminoasă</string>
+    <string name="k2go_theme_system">Urmează sistemul</string>
+    <string name="k2go_theme_dark">Întunecată</string>
+    <string name="k2go_settings_turnoff_title">Dezactivați K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Aceasta oprește biblioteca și închide aplicația. (Butoanele Acasă sau Înapoi doar o minimizează — continuă să ruleze în fundal.)</string>
+    <string name="k2go_settings_turnoff_confirm">Dezactivează</string>
+    <string name="k2go_settings_lang_caption">Setează limba aplicației și limba implicită a conținutului.</string>
+    <string name="k2go_settings_app_version">Versiunea aplicației</string>
+    <string name="k2go_settings_permissions">Permisiuni</string>
+    <string name="k2go_settings_usage_stats">Partajează statisticile de utilizare</string>
+    <string name="k2go_settings_licenses">Licențe open-source</string>
+    <string name="k2go_settings_privacy">Confidențialitate</string>
+    <string name="k2go_settings_power_users">Pentru utilizatori avansați.</string>
+    <string name="k2go_settings_sec_system">SISTEM</string>
+    <string name="k2go_settings_module_mgmt">Gestionarea modulelor</string>
+    <string name="k2go_settings_module_mgmt_sub">Nivel, adăugare module, ascundere</string>
+    <string name="k2go_settings_backups">Copii de rezervă &amp; recuperare</string>
+    <string name="k2go_settings_sec_developer">DEZVOLTATOR</string>
+    <string name="k2go_settings_network_dns">Rețea &amp; DNS</string>
 </resources>

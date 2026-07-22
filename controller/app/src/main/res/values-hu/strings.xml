@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Angol</string>
     <string name="k2go_lang_spanish">Spanyol</string>
     <string name="k2go_brand">Tudás útközben</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Téma</string>
+    <string name="k2go_settings_help">Súgó</string>
+    <string name="k2go_settings_send_feedback">Visszajelzés küldése</string>
+    <string name="k2go_settings_advanced_sub">Rendszer, biztonsági mentések, fejlesztői eszközök</string>
+    <string name="k2go_theme_light">Világos</string>
+    <string name="k2go_theme_system">Rendszer követése</string>
+    <string name="k2go_theme_dark">Sötét</string>
+    <string name="k2go_settings_turnoff_title">Kikapcsolja a K2Go-t?</string>
+    <string name="k2go_settings_turnoff_msg">Ez leállítja a könyvtárat és bezárja az alkalmazást. (A Kezdőképernyő vagy a Vissza gomb csak kicsinyíti — a háttérben tovább fut.)</string>
+    <string name="k2go_settings_turnoff_confirm">Kikapcsolás</string>
+    <string name="k2go_settings_lang_caption">Beállítja az alkalmazás nyelvét és az alapértelmezett tartalomnyelvet.</string>
+    <string name="k2go_settings_app_version">Alkalmazás verziója</string>
+    <string name="k2go_settings_permissions">Engedélyek</string>
+    <string name="k2go_settings_usage_stats">Használati statisztikák megosztása</string>
+    <string name="k2go_settings_licenses">Nyílt forráskódú licencek</string>
+    <string name="k2go_settings_privacy">Adatvédelem</string>
+    <string name="k2go_settings_power_users">Haladó felhasználóknak.</string>
+    <string name="k2go_settings_sec_system">RENDSZER</string>
+    <string name="k2go_settings_module_mgmt">Modulkezelés</string>
+    <string name="k2go_settings_module_mgmt_sub">Szint, modulok hozzáadása, elrejtés</string>
+    <string name="k2go_settings_backups">Biztonsági mentés &amp; helyreállítás</string>
+    <string name="k2go_settings_sec_developer">FEJLESZTŐ</string>
+    <string name="k2go_settings_network_dns">Hálózat &amp; DNS</string>
 </resources>

@@ -781,4 +781,28 @@
     <string name="k2go_lang_english">Inglês</string>
     <string name="k2go_lang_spanish">Espanhol</string>
     <string name="k2go_brand">Conhecimento para levar</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Ajuda</string>
+    <string name="k2go_settings_send_feedback">Enviar feedback</string>
+    <string name="k2go_settings_advanced_sub">Sistema, backups, ferramentas de desenvolvedor</string>
+    <string name="k2go_theme_light">Claro</string>
+    <string name="k2go_theme_system">Seguir o sistema</string>
+    <string name="k2go_theme_dark">Escuro</string>
+    <string name="k2go_settings_turnoff_title">Desligar o K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Isto para a biblioteca e fecha o app. (Início ou voltar apenas o minimizam — ele continua em execução em segundo plano.)</string>
+    <string name="k2go_settings_turnoff_confirm">Desligar</string>
+    <string name="k2go_settings_lang_caption">Define o idioma do app e o idioma padrão do conteúdo.</string>
+    <string name="k2go_settings_app_version">Versão do app</string>
+    <string name="k2go_settings_permissions">Permissões</string>
+    <string name="k2go_settings_usage_stats">Compartilhar estatísticas de uso</string>
+    <string name="k2go_settings_licenses">Licenças de código aberto</string>
+    <string name="k2go_settings_privacy">Privacidade</string>
+    <string name="k2go_settings_power_users">Para usuários avançados.</string>
+    <string name="k2go_settings_sec_system">SISTEMA</string>
+    <string name="k2go_settings_module_mgmt">Gerenciamento de módulos</string>
+    <string name="k2go_settings_module_mgmt_sub">Nível, adicionar módulos, ocultar</string>
+    <string name="k2go_settings_backups">Backups &amp; recuperação</string>
+    <string name="k2go_settings_sec_developer">DESENVOLVEDOR</string>
+    <string name="k2go_settings_network_dns">Rede &amp; DNS</string>
 </resources>

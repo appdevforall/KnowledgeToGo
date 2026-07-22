@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Английски</string>
     <string name="k2go_lang_spanish">Испански</string>
     <string name="k2go_brand">Знание за из път</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Тема</string>
+    <string name="k2go_settings_help">Помощ</string>
+    <string name="k2go_settings_send_feedback">Изпращане на обратна връзка</string>
+    <string name="k2go_settings_advanced_sub">Система, резервни копия, инструменти за разработчици</string>
+    <string name="k2go_theme_light">Светла</string>
+    <string name="k2go_theme_system">Следвай системата</string>
+    <string name="k2go_theme_dark">Тъмна</string>
+    <string name="k2go_settings_turnoff_title">Изключване на K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Това спира библиотеката и затваря приложението. (Начало или Назад само го минимизират — то продължава да работи във фонов режим.)</string>
+    <string name="k2go_settings_turnoff_confirm">Изключване</string>
+    <string name="k2go_settings_lang_caption">Задава езика на приложението и езика на съдържанието по подразбиране.</string>
+    <string name="k2go_settings_app_version">Версия на приложението</string>
+    <string name="k2go_settings_permissions">Разрешения</string>
+    <string name="k2go_settings_usage_stats">Споделяне на статистика за използването</string>
+    <string name="k2go_settings_licenses">Лицензи с отворен код</string>
+    <string name="k2go_settings_privacy">Поверителност</string>
+    <string name="k2go_settings_power_users">За напреднали потребители.</string>
+    <string name="k2go_settings_sec_system">СИСТЕМА</string>
+    <string name="k2go_settings_module_mgmt">Управление на модулите</string>
+    <string name="k2go_settings_module_mgmt_sub">Ниво, добавяне на модули, скриване</string>
+    <string name="k2go_settings_backups">Резервни копия &amp; възстановяване</string>
+    <string name="k2go_settings_sec_developer">РАЗРАБОТЧИК</string>
+    <string name="k2go_settings_network_dns">Мрежа &amp; DNS</string>
 </resources>

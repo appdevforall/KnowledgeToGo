@@ -778,4 +778,28 @@
     <string name="k2go_lang_english">Inglés</string>
     <string name="k2go_lang_spanish">Español</string>
     <string name="k2go_brand">Conocimiento para llevar</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Ayuda</string>
+    <string name="k2go_settings_send_feedback">Enviar comentarios</string>
+    <string name="k2go_settings_advanced_sub">Sistema, copias de seguridad, herramientas para desarrolladores</string>
+    <string name="k2go_theme_light">Claro</string>
+    <string name="k2go_theme_system">Seguir el sistema</string>
+    <string name="k2go_theme_dark">Oscuro</string>
+    <string name="k2go_settings_turnoff_title">¿Apagar K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Esto detiene la biblioteca y cierra la app. (Inicio o atrás solo la minimizan — sigue ejecutándose en segundo plano.)</string>
+    <string name="k2go_settings_turnoff_confirm">Apagar</string>
+    <string name="k2go_settings_lang_caption">Establece el idioma de la app y el idioma predeterminado del contenido.</string>
+    <string name="k2go_settings_app_version">Versión de la app</string>
+    <string name="k2go_settings_permissions">Permisos</string>
+    <string name="k2go_settings_usage_stats">Compartir estadísticas de uso</string>
+    <string name="k2go_settings_licenses">Licencias de código abierto</string>
+    <string name="k2go_settings_privacy">Privacidad</string>
+    <string name="k2go_settings_power_users">Para usuarios avanzados.</string>
+    <string name="k2go_settings_sec_system">SISTEMA</string>
+    <string name="k2go_settings_module_mgmt">Gestión de módulos</string>
+    <string name="k2go_settings_module_mgmt_sub">Nivel, agregar módulos, ocultar</string>
+    <string name="k2go_settings_backups">Copias de seguridad &amp; recuperación</string>
+    <string name="k2go_settings_sec_developer">DESARROLLADOR</string>
+    <string name="k2go_settings_network_dns">Red &amp; DNS</string>
 </resources>

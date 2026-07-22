@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">અંગ્રેજી</string>
     <string name="k2go_lang_spanish">સ્પેનિશ</string>
     <string name="k2go_brand">સાથે લઈ જવાનું જ્ઞાન</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
+    <string name="k2go_settings_theme">થીમ</string>
+    <string name="k2go_settings_help">મદદ</string>
+    <string name="k2go_settings_send_feedback">પ્રતિસાદ મોકલો</string>
+    <string name="k2go_settings_advanced_sub">સિસ્ટમ, બેકઅપ, ડેવલપર ટૂલ્સ</string>
+    <string name="k2go_theme_light">લાઇટ</string>
+    <string name="k2go_theme_system">સિસ્ટમને અનુસરો</string>
+    <string name="k2go_theme_dark">ડાર્ક</string>
+    <string name="k2go_settings_turnoff_title">K2Go બંધ કરવું છે?</string>
+    <string name="k2go_settings_turnoff_msg">આ લાઇબ્રેરીને રોકે છે અને ઍપ બંધ કરે છે. (હોમ કે બૅક ફક્ત તેને નાનું કરે છે — તે બૅકગ્રાઉન્ડમાં ચાલતું રહે છે.)</string>
+    <string name="k2go_settings_turnoff_confirm">બંધ કરો</string>
+    <string name="k2go_settings_lang_caption">ઍપની ભાષા અને ડિફૉલ્ટ સામગ્રી ભાષા સેટ કરે છે.</string>
+    <string name="k2go_settings_app_version">ઍપ સંસ્કરણ</string>
+    <string name="k2go_settings_permissions">પરવાનગીઓ</string>
+    <string name="k2go_settings_usage_stats">વપરાશ આંકડા શેર કરો</string>
+    <string name="k2go_settings_licenses">ઓપન-સોર્સ લાઇસન્સ</string>
+    <string name="k2go_settings_privacy">ગોપનીયતા</string>
+    <string name="k2go_settings_power_users">પાવર વપરાશકર્તાઓ માટે.</string>
+    <string name="k2go_settings_sec_system">સિસ્ટમ</string>
+    <string name="k2go_settings_module_mgmt">મોડ્યુલ સંચાલન</string>
+    <string name="k2go_settings_module_mgmt_sub">ટિયર, મોડ્યુલ ઉમેરો, છુપાવો</string>
+    <string name="k2go_settings_backups">બેકઅપ &amp; પુનઃપ્રાપ્તિ</string>
+    <string name="k2go_settings_sec_developer">ડેવલપર</string>
+    <string name="k2go_settings_network_dns">નેટવર્ક &amp; DNS</string>
 </resources>

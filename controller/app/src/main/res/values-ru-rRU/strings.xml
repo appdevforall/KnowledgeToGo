@@ -778,4 +778,28 @@
     <string name="k2go_lang_english">Английский</string>
     <string name="k2go_lang_spanish">Испанский</string>
     <string name="k2go_brand">Знания с собой</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Тема</string>
+    <string name="k2go_settings_help">Справка</string>
+    <string name="k2go_settings_send_feedback">Отправить отзыв</string>
+    <string name="k2go_settings_advanced_sub">Система, резервные копии, инструменты разработчика</string>
+    <string name="k2go_theme_light">Светлая</string>
+    <string name="k2go_theme_system">Как в системе</string>
+    <string name="k2go_theme_dark">Тёмная</string>
+    <string name="k2go_settings_turnoff_title">Выключить K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Это остановит библиотеку и закроет приложение. (Домой или Назад только сворачивают его — оно продолжает работать в фоновом режиме.)</string>
+    <string name="k2go_settings_turnoff_confirm">Выключить</string>
+    <string name="k2go_settings_lang_caption">Задаёт язык приложения и язык контента по умолчанию.</string>
+    <string name="k2go_settings_app_version">Версия приложения</string>
+    <string name="k2go_settings_permissions">Разрешения</string>
+    <string name="k2go_settings_usage_stats">Делиться статистикой использования</string>
+    <string name="k2go_settings_licenses">Лицензии open source</string>
+    <string name="k2go_settings_privacy">Конфиденциальность</string>
+    <string name="k2go_settings_power_users">Для опытных пользователей.</string>
+    <string name="k2go_settings_sec_system">СИСТЕМА</string>
+    <string name="k2go_settings_module_mgmt">Управление модулями</string>
+    <string name="k2go_settings_module_mgmt_sub">Уровень, добавить модули, скрыть</string>
+    <string name="k2go_settings_backups">Резервные копии &amp; восстановление</string>
+    <string name="k2go_settings_sec_developer">РАЗРАБОТЧИК</string>
+    <string name="k2go_settings_network_dns">Сеть &amp; DNS</string>
 </resources>

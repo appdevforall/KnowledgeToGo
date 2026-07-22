@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">英语</string>
     <string name="k2go_lang_spanish">西班牙语</string>
     <string name="k2go_brand">随身携带的知识</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">主题</string>
+    <string name="k2go_settings_help">帮助</string>
+    <string name="k2go_settings_send_feedback">发送反馈</string>
+    <string name="k2go_settings_advanced_sub">系统、备份、开发者工具</string>
+    <string name="k2go_theme_light">浅色</string>
+    <string name="k2go_theme_system">跟随系统</string>
+    <string name="k2go_theme_dark">深色</string>
+    <string name="k2go_settings_turnoff_title">关闭 K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">这将停止库并关闭应用. (主页键或返回键仅将其最小化 — 它会继续在后台运行.)</string>
+    <string name="k2go_settings_turnoff_confirm">关闭</string>
+    <string name="k2go_settings_lang_caption">设置应用语言和默认内容语言.</string>
+    <string name="k2go_settings_app_version">应用版本</string>
+    <string name="k2go_settings_permissions">权限</string>
+    <string name="k2go_settings_usage_stats">分享使用统计信息</string>
+    <string name="k2go_settings_licenses">开源许可证</string>
+    <string name="k2go_settings_privacy">隐私</string>
+    <string name="k2go_settings_power_users">适用于高级用户.</string>
+    <string name="k2go_settings_sec_system">系统</string>
+    <string name="k2go_settings_module_mgmt">模块管理</string>
+    <string name="k2go_settings_module_mgmt_sub">层级、添加模块、隐藏</string>
+    <string name="k2go_settings_backups">备份 &amp; 恢复</string>
+    <string name="k2go_settings_sec_developer">开发者</string>
+    <string name="k2go_settings_network_dns">网络 &amp; DNS</string>
 </resources>

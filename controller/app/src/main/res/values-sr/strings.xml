@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Engleski</string>
     <string name="k2go_lang_spanish">Španski</string>
     <string name="k2go_brand">Znanje sa sobom</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Pomoć</string>
+    <string name="k2go_settings_send_feedback">Pošalji povratne informacije</string>
+    <string name="k2go_settings_advanced_sub">Sistem, rezervne kopije, alati za programere</string>
+    <string name="k2go_theme_light">Svetla</string>
+    <string name="k2go_theme_system">Prati sistem</string>
+    <string name="k2go_theme_dark">Tamna</string>
+    <string name="k2go_settings_turnoff_title">Isključiti K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Ovo zaustavlja biblioteku i zatvara aplikaciju. (Dugmad Početna ili Nazad je samo minimiziraju — nastavlja da radi u pozadini.)</string>
+    <string name="k2go_settings_turnoff_confirm">Isključi</string>
+    <string name="k2go_settings_lang_caption">Postavlja jezik aplikacije i podrazumevani jezik sadržaja.</string>
+    <string name="k2go_settings_app_version">Verzija aplikacije</string>
+    <string name="k2go_settings_permissions">Dozvole</string>
+    <string name="k2go_settings_usage_stats">Deljenje statistike korišćenja</string>
+    <string name="k2go_settings_licenses">Licence otvorenog koda</string>
+    <string name="k2go_settings_privacy">Privatnost</string>
+    <string name="k2go_settings_power_users">Za napredne korisnike.</string>
+    <string name="k2go_settings_sec_system">SISTEM</string>
+    <string name="k2go_settings_module_mgmt">Upravljanje modulima</string>
+    <string name="k2go_settings_module_mgmt_sub">Nivo, dodavanje modula, skrivanje</string>
+    <string name="k2go_settings_backups">Rezervne kopije &amp; oporavak</string>
+    <string name="k2go_settings_sec_developer">PROGRAMER</string>
+    <string name="k2go_settings_network_dns">Mreža &amp; DNS</string>
 </resources>

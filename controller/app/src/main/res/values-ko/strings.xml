@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">영어</string>
     <string name="k2go_lang_spanish">스페인어</string>
     <string name="k2go_brand">가지고 다니는 지식</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">테마</string>
+    <string name="k2go_settings_help">도움말</string>
+    <string name="k2go_settings_send_feedback">의견 보내기</string>
+    <string name="k2go_settings_advanced_sub">시스템, 백업, 개발자 도구</string>
+    <string name="k2go_theme_light">밝게</string>
+    <string name="k2go_theme_system">시스템 설정 따르기</string>
+    <string name="k2go_theme_dark">어둡게</string>
+    <string name="k2go_settings_turnoff_title">K2Go를 끄시겠습니까?</string>
+    <string name="k2go_settings_turnoff_msg">라이브러리를 중지하고 앱을 닫습니다. (홈 또는 뒤로 가기는 최소화만 합니다 — 백그라운드에서 계속 실행됩니다.)</string>
+    <string name="k2go_settings_turnoff_confirm">끄기</string>
+    <string name="k2go_settings_lang_caption">앱 언어와 기본 콘텐츠 언어를 설정합니다.</string>
+    <string name="k2go_settings_app_version">앱 버전</string>
+    <string name="k2go_settings_permissions">권한</string>
+    <string name="k2go_settings_usage_stats">사용 통계 공유</string>
+    <string name="k2go_settings_licenses">오픈 소스 라이선스</string>
+    <string name="k2go_settings_privacy">개인정보 보호</string>
+    <string name="k2go_settings_power_users">고급 사용자용.</string>
+    <string name="k2go_settings_sec_system">시스템</string>
+    <string name="k2go_settings_module_mgmt">모듈 관리</string>
+    <string name="k2go_settings_module_mgmt_sub">등급, 모듈 추가, 숨기기</string>
+    <string name="k2go_settings_backups">백업 &amp; 복구</string>
+    <string name="k2go_settings_sec_developer">개발자</string>
+    <string name="k2go_settings_network_dns">네트워크 &amp; DNS</string>
 </resources>

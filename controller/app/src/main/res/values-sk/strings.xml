@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Angličtina</string>
     <string name="k2go_lang_spanish">Španielčina</string>
     <string name="k2go_brand">Vedomosti so sebou</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Motív</string>
+    <string name="k2go_settings_help">Pomocník</string>
+    <string name="k2go_settings_send_feedback">Odoslať spätnú väzbu</string>
+    <string name="k2go_settings_advanced_sub">Systém, zálohy, nástroje pre vývojárov</string>
+    <string name="k2go_theme_light">Svetlý</string>
+    <string name="k2go_theme_system">Podľa systému</string>
+    <string name="k2go_theme_dark">Tmavý</string>
+    <string name="k2go_settings_turnoff_title">Vypnúť K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Týmto sa zastaví knižnica a aplikácia sa zatvorí. (Domov alebo späť ju len minimalizujú — na pozadí beží ďalej.)</string>
+    <string name="k2go_settings_turnoff_confirm">Vypnúť</string>
+    <string name="k2go_settings_lang_caption">Nastaví jazyk aplikácie a predvolený jazyk obsahu.</string>
+    <string name="k2go_settings_app_version">Verzia aplikácie</string>
+    <string name="k2go_settings_permissions">Povolenia</string>
+    <string name="k2go_settings_usage_stats">Zdieľať štatistiky používania</string>
+    <string name="k2go_settings_licenses">Licencie open source</string>
+    <string name="k2go_settings_privacy">Súkromie</string>
+    <string name="k2go_settings_power_users">Pre pokročilých používateľov.</string>
+    <string name="k2go_settings_sec_system">SYSTÉM</string>
+    <string name="k2go_settings_module_mgmt">Správa modulov</string>
+    <string name="k2go_settings_module_mgmt_sub">Úroveň, pridať moduly, skryť</string>
+    <string name="k2go_settings_backups">Zálohy &amp; obnovenie</string>
+    <string name="k2go_settings_sec_developer">VÝVOJÁR</string>
+    <string name="k2go_settings_network_dns">Sieť &amp; DNS</string>
 </resources>

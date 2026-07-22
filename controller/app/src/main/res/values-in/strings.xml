@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Bahasa Inggris</string>
     <string name="k2go_lang_spanish">Bahasa Spanyol</string>
     <string name="k2go_brand">Pengetahuan yang Bisa Dibawa</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Bantuan</string>
+    <string name="k2go_settings_send_feedback">Kirim masukan</string>
+    <string name="k2go_settings_advanced_sub">Sistem, cadangan, alat pengembang</string>
+    <string name="k2go_theme_light">Terang</string>
+    <string name="k2go_theme_system">Ikuti sistem</string>
+    <string name="k2go_theme_dark">Gelap</string>
+    <string name="k2go_settings_turnoff_title">Matikan K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Ini menghentikan pustaka dan menutup aplikasi. (Beranda atau kembali hanya meminimalkannya — aplikasi tetap berjalan di latar belakang.)</string>
+    <string name="k2go_settings_turnoff_confirm">Matikan</string>
+    <string name="k2go_settings_lang_caption">Menetapkan bahasa aplikasi dan bahasa konten default.</string>
+    <string name="k2go_settings_app_version">Versi aplikasi</string>
+    <string name="k2go_settings_permissions">Izin</string>
+    <string name="k2go_settings_usage_stats">Bagikan statistik penggunaan</string>
+    <string name="k2go_settings_licenses">Lisensi sumber terbuka</string>
+    <string name="k2go_settings_privacy">Privasi</string>
+    <string name="k2go_settings_power_users">Untuk pengguna mahir.</string>
+    <string name="k2go_settings_sec_system">SISTEM</string>
+    <string name="k2go_settings_module_mgmt">Manajemen modul</string>
+    <string name="k2go_settings_module_mgmt_sub">Tingkat, tambah modul, sembunyikan</string>
+    <string name="k2go_settings_backups">Cadangan &amp; pemulihan</string>
+    <string name="k2go_settings_sec_developer">PENGEMBANG</string>
+    <string name="k2go_settings_network_dns">Jaringan &amp; DNS</string>
 </resources>

@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Anglų</string>
     <string name="k2go_lang_spanish">Ispanų</string>
     <string name="k2go_brand">Žinios su savimi</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Pagalba</string>
+    <string name="k2go_settings_send_feedback">Siųsti atsiliepimą</string>
+    <string name="k2go_settings_advanced_sub">Sistema, atsarginės kopijos, kūrėjo įrankiai</string>
+    <string name="k2go_theme_light">Šviesi</string>
+    <string name="k2go_theme_system">Pagal sistemą</string>
+    <string name="k2go_theme_dark">Tamsi</string>
+    <string name="k2go_settings_turnoff_title">Išjungti K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Tai sustabdo biblioteką ir uždaro programą. (Pradžios arba atgal mygtukas tik sumažina ją — ji toliau veikia fone.)</string>
+    <string name="k2go_settings_turnoff_confirm">Išjungti</string>
+    <string name="k2go_settings_lang_caption">Nustato programos kalbą ir numatytąją turinio kalbą.</string>
+    <string name="k2go_settings_app_version">Programos versija</string>
+    <string name="k2go_settings_permissions">Leidimai</string>
+    <string name="k2go_settings_usage_stats">Bendrinti naudojimo statistiką</string>
+    <string name="k2go_settings_licenses">Atvirojo kodo licencijos</string>
+    <string name="k2go_settings_privacy">Privatumas</string>
+    <string name="k2go_settings_power_users">Pažengusiems naudotojams.</string>
+    <string name="k2go_settings_sec_system">SISTEMA</string>
+    <string name="k2go_settings_module_mgmt">Modulių valdymas</string>
+    <string name="k2go_settings_module_mgmt_sub">Pakopa, pridėti modulius, slėpti</string>
+    <string name="k2go_settings_backups">Atsarginės kopijos &amp; atkūrimas</string>
+    <string name="k2go_settings_sec_developer">KŪRĖJAS</string>
+    <string name="k2go_settings_network_dns">Tinklas &amp; DNS</string>
 </resources>

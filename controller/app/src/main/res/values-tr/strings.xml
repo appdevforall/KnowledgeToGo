@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">İngilizce</string>
     <string name="k2go_lang_spanish">İspanyolca</string>
     <string name="k2go_brand">Yanınızda Bilgi</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Yardım</string>
+    <string name="k2go_settings_send_feedback">Geri bildirim gönder</string>
+    <string name="k2go_settings_advanced_sub">Sistem, yedeklemeler, geliştirici araçları</string>
+    <string name="k2go_theme_light">Açık</string>
+    <string name="k2go_theme_system">Sistemi izle</string>
+    <string name="k2go_theme_dark">Koyu</string>
+    <string name="k2go_settings_turnoff_title">K2Go kapatılsın mı?</string>
+    <string name="k2go_settings_turnoff_msg">Bu, kitaplığı durdurur ve uygulamayı kapatır. (Ana ekran veya geri yalnızca simge durumuna küçültür — arka planda çalışmaya devam eder.)</string>
+    <string name="k2go_settings_turnoff_confirm">Kapat</string>
+    <string name="k2go_settings_lang_caption">Uygulama dilini ve varsayılan içerik dilini ayarlar.</string>
+    <string name="k2go_settings_app_version">Uygulama sürümü</string>
+    <string name="k2go_settings_permissions">İzinler</string>
+    <string name="k2go_settings_usage_stats">Kullanım istatistiklerini paylaş</string>
+    <string name="k2go_settings_licenses">Açık kaynak lisansları</string>
+    <string name="k2go_settings_privacy">Gizlilik</string>
+    <string name="k2go_settings_power_users">Uzman kullanıcılar için.</string>
+    <string name="k2go_settings_sec_system">SİSTEM</string>
+    <string name="k2go_settings_module_mgmt">Modül yönetimi</string>
+    <string name="k2go_settings_module_mgmt_sub">Katman, modül ekle, gizle</string>
+    <string name="k2go_settings_backups">Yedeklemeler &amp; kurtarma</string>
+    <string name="k2go_settings_sec_developer">GELİŞTİRİCİ</string>
+    <string name="k2go_settings_network_dns">Ağ &amp; DNS</string>
 </resources>

@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Engels</string>
     <string name="k2go_lang_spanish">Spaans</string>
     <string name="k2go_brand">Kennis voor onderweg</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Thema</string>
+    <string name="k2go_settings_help">Help</string>
+    <string name="k2go_settings_send_feedback">Feedback sturen</string>
+    <string name="k2go_settings_advanced_sub">Systeem, back-ups, ontwikkelaarstools</string>
+    <string name="k2go_theme_light">Licht</string>
+    <string name="k2go_theme_system">Systeem volgen</string>
+    <string name="k2go_theme_dark">Donker</string>
+    <string name="k2go_settings_turnoff_title">K2Go uitschakelen?</string>
+    <string name="k2go_settings_turnoff_msg">Hiermee wordt de bibliotheek gestopt en de app gesloten. (Home of terug minimaliseren de app alleen — hij blijft op de achtergrond draaien.)</string>
+    <string name="k2go_settings_turnoff_confirm">Uitschakelen</string>
+    <string name="k2go_settings_lang_caption">Stelt de app-taal en de standaardtaal voor content in.</string>
+    <string name="k2go_settings_app_version">App-versie</string>
+    <string name="k2go_settings_permissions">Machtigingen</string>
+    <string name="k2go_settings_usage_stats">Gebruiksstatistieken delen</string>
+    <string name="k2go_settings_licenses">Open-source licenties</string>
+    <string name="k2go_settings_privacy">Privacy</string>
+    <string name="k2go_settings_power_users">Voor gevorderde gebruikers.</string>
+    <string name="k2go_settings_sec_system">SYSTEEM</string>
+    <string name="k2go_settings_module_mgmt">Modulebeheer</string>
+    <string name="k2go_settings_module_mgmt_sub">Niveau, modules toevoegen, verbergen</string>
+    <string name="k2go_settings_backups">Back-ups &amp; herstel</string>
+    <string name="k2go_settings_sec_developer">ONTWIKKELAAR</string>
+    <string name="k2go_settings_network_dns">Netwerk &amp; DNS</string>
 </resources>

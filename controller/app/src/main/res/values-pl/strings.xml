@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Angielski</string>
     <string name="k2go_lang_spanish">Hiszpański</string>
     <string name="k2go_brand">Wiedza na wynos</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Motyw</string>
+    <string name="k2go_settings_help">Pomoc</string>
+    <string name="k2go_settings_send_feedback">Wyślij opinię</string>
+    <string name="k2go_settings_advanced_sub">System, kopie zapasowe, narzędzia programisty</string>
+    <string name="k2go_theme_light">Jasny</string>
+    <string name="k2go_theme_system">Zgodnie z systemem</string>
+    <string name="k2go_theme_dark">Ciemny</string>
+    <string name="k2go_settings_turnoff_title">Wyłączyć K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Spowoduje to zatrzymanie biblioteki i zamknięcie aplikacji. (Ekran główny lub wstecz tylko ją minimalizują — działa nadal w tle.)</string>
+    <string name="k2go_settings_turnoff_confirm">Wyłącz</string>
+    <string name="k2go_settings_lang_caption">Ustawia język aplikacji i domyślny język treści.</string>
+    <string name="k2go_settings_app_version">Wersja aplikacji</string>
+    <string name="k2go_settings_permissions">Uprawnienia</string>
+    <string name="k2go_settings_usage_stats">Udostępnij statystyki użytkowania</string>
+    <string name="k2go_settings_licenses">Licencje open source</string>
+    <string name="k2go_settings_privacy">Prywatność</string>
+    <string name="k2go_settings_power_users">Dla zaawansowanych użytkowników.</string>
+    <string name="k2go_settings_sec_system">SYSTEM</string>
+    <string name="k2go_settings_module_mgmt">Zarządzanie modułami</string>
+    <string name="k2go_settings_module_mgmt_sub">Poziom, dodaj moduły, ukryj</string>
+    <string name="k2go_settings_backups">Kopie zapasowe &amp; odzyskiwanie</string>
+    <string name="k2go_settings_sec_developer">PROGRAMISTA</string>
+    <string name="k2go_settings_network_dns">Sieć &amp; DNS</string>
 </resources>

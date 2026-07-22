@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">İngiliscə</string>
     <string name="k2go_lang_spanish">İspanca</string>
     <string name="k2go_brand">Özünüzlə Bilik</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Kömək</string>
+    <string name="k2go_settings_send_feedback">Rəy göndər</string>
+    <string name="k2go_settings_advanced_sub">Sistem, ehtiyat nüsxələr, tərtibatçı alətləri</string>
+    <string name="k2go_theme_light">İşıqlı</string>
+    <string name="k2go_theme_system">Sistemə uyğun</string>
+    <string name="k2go_theme_dark">Qaranlıq</string>
+    <string name="k2go_settings_turnoff_title">K2Go söndürülsün?</string>
+    <string name="k2go_settings_turnoff_msg">Bu, kitabxananı dayandırır və tətbiqi bağlayır. (Əsas səhifə və ya geri düyməsi onu yalnız kiçildir — o, arxa planda işləməyə davam edir.)</string>
+    <string name="k2go_settings_turnoff_confirm">Söndür</string>
+    <string name="k2go_settings_lang_caption">Tətbiq dilini və defolt məzmun dilini təyin edir.</string>
+    <string name="k2go_settings_app_version">Tətbiq versiyası</string>
+    <string name="k2go_settings_permissions">İcazələr</string>
+    <string name="k2go_settings_usage_stats">İstifadə statistikasını paylaş</string>
+    <string name="k2go_settings_licenses">Açıq mənbəli lisenziyalar</string>
+    <string name="k2go_settings_privacy">Məxfilik</string>
+    <string name="k2go_settings_power_users">Təcrübəli istifadəçilər üçün.</string>
+    <string name="k2go_settings_sec_system">SİSTEM</string>
+    <string name="k2go_settings_module_mgmt">Modul idarəetməsi</string>
+    <string name="k2go_settings_module_mgmt_sub">Səviyyə, modul əlavə et, gizlət</string>
+    <string name="k2go_settings_backups">Ehtiyat nüsxə &amp; bərpa</string>
+    <string name="k2go_settings_sec_developer">TƏRTİBATÇI</string>
+    <string name="k2go_settings_network_dns">Şəbəkə &amp; DNS</string>
 </resources>

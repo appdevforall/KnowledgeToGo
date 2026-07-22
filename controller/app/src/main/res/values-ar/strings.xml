@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">الإنجليزية</string>
     <string name="k2go_lang_spanish">الإسبانية</string>
     <string name="k2go_brand">المعرفة أينما ذهبت</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">السمة</string>
+    <string name="k2go_settings_help">المساعدة</string>
+    <string name="k2go_settings_send_feedback">إرسال ملاحظات</string>
+    <string name="k2go_settings_advanced_sub">النظام، النسخ الاحتياطية، أدوات المطوّر</string>
+    <string name="k2go_theme_light">فاتح</string>
+    <string name="k2go_theme_system">اتباع النظام</string>
+    <string name="k2go_theme_dark">داكن</string>
+    <string name="k2go_settings_turnoff_title">إيقاف K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">يؤدي هذا إلى إيقاف المكتبة وإغلاق التطبيق. (زرّا الشاشة الرئيسية أو الرجوع يصغّرانه فقط — يستمر في العمل في الخلفية.)</string>
+    <string name="k2go_settings_turnoff_confirm">إيقاف</string>
+    <string name="k2go_settings_lang_caption">يضبط لغة التطبيق ولغة المحتوى الافتراضية.</string>
+    <string name="k2go_settings_app_version">إصدار التطبيق</string>
+    <string name="k2go_settings_permissions">الأذونات</string>
+    <string name="k2go_settings_usage_stats">مشاركة إحصائيات الاستخدام</string>
+    <string name="k2go_settings_licenses">تراخيص المصدر المفتوح</string>
+    <string name="k2go_settings_privacy">الخصوصية</string>
+    <string name="k2go_settings_power_users">للمستخدمين المتقدّمين.</string>
+    <string name="k2go_settings_sec_system">النظام</string>
+    <string name="k2go_settings_module_mgmt">إدارة الوحدات</string>
+    <string name="k2go_settings_module_mgmt_sub">المستوى، إضافة الوحدات، الإخفاء</string>
+    <string name="k2go_settings_backups">النسخ الاحتياطية &amp; الاستعادة</string>
+    <string name="k2go_settings_sec_developer">المطوّر</string>
+    <string name="k2go_settings_network_dns">الشبكة &amp; DNS</string>
 </resources>

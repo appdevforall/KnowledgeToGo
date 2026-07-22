@@ -779,4 +779,28 @@
     <string name="k2go_lang_english">Anglais</string>
     <string name="k2go_lang_spanish">Espagnol</string>
     <string name="k2go_brand">Le savoir à emporter</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Thème</string>
+    <string name="k2go_settings_help">Aide</string>
+    <string name="k2go_settings_send_feedback">Envoyer un commentaire</string>
+    <string name="k2go_settings_advanced_sub">Système, sauvegardes, outils pour développeurs</string>
+    <string name="k2go_theme_light">Clair</string>
+    <string name="k2go_theme_system">Suivre le système</string>
+    <string name="k2go_theme_dark">Sombre</string>
+    <string name="k2go_settings_turnoff_title">Désactiver K2Go ?</string>
+    <string name="k2go_settings_turnoff_msg">Cela arrête la bibliothèque et ferme l\'application. (Accueil ou retour ne font que la réduire — elle continue de fonctionner en arrière-plan.)</string>
+    <string name="k2go_settings_turnoff_confirm">Désactiver</string>
+    <string name="k2go_settings_lang_caption">Définit la langue de l\'application et la langue par défaut du contenu.</string>
+    <string name="k2go_settings_app_version">Version de l\'application</string>
+    <string name="k2go_settings_permissions">Autorisations</string>
+    <string name="k2go_settings_usage_stats">Partager les statistiques d\'utilisation</string>
+    <string name="k2go_settings_licenses">Licences open source</string>
+    <string name="k2go_settings_privacy">Confidentialité</string>
+    <string name="k2go_settings_power_users">Pour les utilisateurs avancés.</string>
+    <string name="k2go_settings_sec_system">SYSTÈME</string>
+    <string name="k2go_settings_module_mgmt">Gestion des modules</string>
+    <string name="k2go_settings_module_mgmt_sub">Niveau, ajouter des modules, masquer</string>
+    <string name="k2go_settings_backups">Sauvegardes &amp; récupération</string>
+    <string name="k2go_settings_sec_developer">DÉVELOPPEUR</string>
+    <string name="k2go_settings_network_dns">Réseau &amp; DNS</string>
 </resources>

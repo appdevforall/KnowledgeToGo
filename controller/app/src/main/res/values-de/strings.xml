@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Englisch</string>
     <string name="k2go_lang_spanish">Spanisch</string>
     <string name="k2go_brand">Wissen für unterwegs</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Design</string>
+    <string name="k2go_settings_help">Hilfe</string>
+    <string name="k2go_settings_send_feedback">Feedback senden</string>
+    <string name="k2go_settings_advanced_sub">System, Backups, Entwicklertools</string>
+    <string name="k2go_theme_light">Hell</string>
+    <string name="k2go_theme_system">Systemeinstellung folgen</string>
+    <string name="k2go_theme_dark">Dunkel</string>
+    <string name="k2go_settings_turnoff_title">K2Go ausschalten?</string>
+    <string name="k2go_settings_turnoff_msg">Dadurch wird die Bibliothek gestoppt und die App geschlossen. (Startbildschirm oder Zurück minimieren sie nur — sie läuft im Hintergrund weiter.)</string>
+    <string name="k2go_settings_turnoff_confirm">Ausschalten</string>
+    <string name="k2go_settings_lang_caption">Legt die App-Sprache und die Standardsprache für Inhalte fest.</string>
+    <string name="k2go_settings_app_version">App-Version</string>
+    <string name="k2go_settings_permissions">Berechtigungen</string>
+    <string name="k2go_settings_usage_stats">Nutzungsstatistiken teilen</string>
+    <string name="k2go_settings_licenses">Open-Source-Lizenzen</string>
+    <string name="k2go_settings_privacy">Datenschutz</string>
+    <string name="k2go_settings_power_users">Für erfahrene Nutzer.</string>
+    <string name="k2go_settings_sec_system">SYSTEM</string>
+    <string name="k2go_settings_module_mgmt">Modulverwaltung</string>
+    <string name="k2go_settings_module_mgmt_sub">Stufe, Module hinzufügen, ausblenden</string>
+    <string name="k2go_settings_backups">Backups &amp; Wiederherstellung</string>
+    <string name="k2go_settings_sec_developer">ENTWICKLER</string>
+    <string name="k2go_settings_network_dns">Netzwerk &amp; DNS</string>
 </resources>

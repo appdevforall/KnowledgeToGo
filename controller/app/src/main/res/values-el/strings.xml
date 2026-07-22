@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Αγγλικά</string>
     <string name="k2go_lang_spanish">Ισπανικά</string>
     <string name="k2go_brand">Γνώση μαζί σας</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Θέμα</string>
+    <string name="k2go_settings_help">Βοήθεια</string>
+    <string name="k2go_settings_send_feedback">Αποστολή σχολίων</string>
+    <string name="k2go_settings_advanced_sub">Σύστημα, αντίγραφα ασφαλείας, εργαλεία προγραμματιστή</string>
+    <string name="k2go_theme_light">Φωτεινό</string>
+    <string name="k2go_theme_system">Ακολούθηση συστήματος</string>
+    <string name="k2go_theme_dark">Σκοτεινό</string>
+    <string name="k2go_settings_turnoff_title">Απενεργοποίηση του K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Αυτό σταματά τη βιβλιοθήκη και κλείνει την εφαρμογή. (Η Αρχική ή η Πίσω απλώς την ελαχιστοποιούν — συνεχίζει να εκτελείται στο παρασκήνιο.)</string>
+    <string name="k2go_settings_turnoff_confirm">Απενεργοποίηση</string>
+    <string name="k2go_settings_lang_caption">Ορίζει τη γλώσσα της εφαρμογής και την προεπιλεγμένη γλώσσα περιεχομένου.</string>
+    <string name="k2go_settings_app_version">Έκδοση εφαρμογής</string>
+    <string name="k2go_settings_permissions">Άδειες πρόσβασης</string>
+    <string name="k2go_settings_usage_stats">Κοινοποίηση στατιστικών χρήσης</string>
+    <string name="k2go_settings_licenses">Άδειες ανοιχτού κώδικα</string>
+    <string name="k2go_settings_privacy">Απόρρητο</string>
+    <string name="k2go_settings_power_users">Για προχωρημένους χρήστες.</string>
+    <string name="k2go_settings_sec_system">ΣΥΣΤΗΜΑ</string>
+    <string name="k2go_settings_module_mgmt">Διαχείριση λειτουργικών μονάδων</string>
+    <string name="k2go_settings_module_mgmt_sub">Επίπεδο, προσθήκη λειτουργικών μονάδων, απόκρυψη</string>
+    <string name="k2go_settings_backups">Αντίγραφα ασφαλείας &amp; ανάκτηση</string>
+    <string name="k2go_settings_sec_developer">ΠΡΟΓΡΑΜΜΑΤΙΣΤΗΣ</string>
+    <string name="k2go_settings_network_dns">Δίκτυο &amp; DNS</string>
 </resources>

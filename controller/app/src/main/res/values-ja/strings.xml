@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">英語</string>
     <string name="k2go_lang_spanish">スペイン語</string>
     <string name="k2go_brand">持ち歩ける知識</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">テーマ</string>
+    <string name="k2go_settings_help">ヘルプ</string>
+    <string name="k2go_settings_send_feedback">フィードバックを送信</string>
+    <string name="k2go_settings_advanced_sub">システム、バックアップ、開発者ツール</string>
+    <string name="k2go_theme_light">ライト</string>
+    <string name="k2go_theme_system">システムに従う</string>
+    <string name="k2go_theme_dark">ダーク</string>
+    <string name="k2go_settings_turnoff_title">K2Goをオフにしますか?</string>
+    <string name="k2go_settings_turnoff_msg">ライブラリを停止してアプリを閉じます. (ホームや戻るでは最小化されるだけです — バックグラウンドで実行され続けます.)</string>
+    <string name="k2go_settings_turnoff_confirm">オフにする</string>
+    <string name="k2go_settings_lang_caption">アプリの言語とデフォルトのコンテンツ言語を設定します.</string>
+    <string name="k2go_settings_app_version">アプリのバージョン</string>
+    <string name="k2go_settings_permissions">権限</string>
+    <string name="k2go_settings_usage_stats">使用統計を共有</string>
+    <string name="k2go_settings_licenses">オープンソースライセンス</string>
+    <string name="k2go_settings_privacy">プライバシー</string>
+    <string name="k2go_settings_power_users">パワーユーザー向け.</string>
+    <string name="k2go_settings_sec_system">システム</string>
+    <string name="k2go_settings_module_mgmt">モジュール管理</string>
+    <string name="k2go_settings_module_mgmt_sub">ティア、モジュールの追加、非表示</string>
+    <string name="k2go_settings_backups">バックアップ &amp; 復元</string>
+    <string name="k2go_settings_sec_developer">開発者</string>
+    <string name="k2go_settings_network_dns">ネットワーク &amp; DNS</string>
 </resources>

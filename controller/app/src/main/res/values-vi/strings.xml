@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Tiếng Anh</string>
     <string name="k2go_lang_spanish">Tiếng Tây Ban Nha</string>
     <string name="k2go_brand">Tri thức mang theo</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Giao diện</string>
+    <string name="k2go_settings_help">Trợ giúp</string>
+    <string name="k2go_settings_send_feedback">Gửi phản hồi</string>
+    <string name="k2go_settings_advanced_sub">Hệ thống, sao lưu, công cụ nhà phát triển</string>
+    <string name="k2go_theme_light">Sáng</string>
+    <string name="k2go_theme_system">Theo hệ thống</string>
+    <string name="k2go_theme_dark">Tối</string>
+    <string name="k2go_settings_turnoff_title">Tắt K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Thao tác này dừng thư viện và đóng ứng dụng. (Nút Home hoặc Quay lại chỉ thu nhỏ ứng dụng — nó vẫn chạy ở chế độ nền.)</string>
+    <string name="k2go_settings_turnoff_confirm">Tắt</string>
+    <string name="k2go_settings_lang_caption">Đặt ngôn ngữ ứng dụng và ngôn ngữ nội dung mặc định.</string>
+    <string name="k2go_settings_app_version">Phiên bản ứng dụng</string>
+    <string name="k2go_settings_permissions">Quyền</string>
+    <string name="k2go_settings_usage_stats">Chia sẻ thống kê sử dụng</string>
+    <string name="k2go_settings_licenses">Giấy phép nguồn mở</string>
+    <string name="k2go_settings_privacy">Quyền riêng tư</string>
+    <string name="k2go_settings_power_users">Dành cho người dùng chuyên sâu.</string>
+    <string name="k2go_settings_sec_system">HỆ THỐNG</string>
+    <string name="k2go_settings_module_mgmt">Quản lý mô-đun</string>
+    <string name="k2go_settings_module_mgmt_sub">Bậc, thêm mô-đun, ẩn</string>
+    <string name="k2go_settings_backups">Sao lưu &amp; khôi phục</string>
+    <string name="k2go_settings_sec_developer">NHÀ PHÁT TRIỂN</string>
+    <string name="k2go_settings_network_dns">Mạng &amp; DNS</string>
 </resources>

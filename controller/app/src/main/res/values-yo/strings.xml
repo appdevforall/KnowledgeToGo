@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Èdè Gẹ̀ẹ́sì</string>
     <string name="k2go_lang_spanish">Èdè Sípáníìṣì</string>
     <string name="k2go_brand">Ìmọ̀ Láti Gbé Lọ</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
+    <string name="k2go_settings_theme">Àkòrí</string>
+    <string name="k2go_settings_help">Ìrànlọ́wọ́</string>
+    <string name="k2go_settings_send_feedback">Fi èsì ránṣẹ́</string>
+    <string name="k2go_settings_advanced_sub">Ẹ̀rọ, àwọn àdàkọ, àwọn irinṣẹ́ olùdàgbàsókè</string>
+    <string name="k2go_theme_light">Ìmọ́lẹ̀</string>
+    <string name="k2go_theme_system">Tẹ̀lé ẹ̀rọ</string>
+    <string name="k2go_theme_dark">Òkùnkùn</string>
+    <string name="k2go_settings_turnoff_title">Pa K2Go bí?</string>
+    <string name="k2go_settings_turnoff_msg">Èyí ń dá ibi ìkówèésí dúró ó sì ń pa áàpù náà. (Ilé tàbí ẹ̀yìn ń dín in kù nìkan — ó ń bá iṣẹ́ lọ ní ẹ̀yìn.)</string>
+    <string name="k2go_settings_turnoff_confirm">Pa á</string>
+    <string name="k2go_settings_lang_caption">Ń ṣètò èdè áàpù àti èdè àkóónú ìpìlẹ̀.</string>
+    <string name="k2go_settings_app_version">Ẹ̀yà áàpù</string>
+    <string name="k2go_settings_permissions">Àwọn ìyọ̀ǹda</string>
+    <string name="k2go_settings_usage_stats">Pín àwọn ìṣirò ìlò</string>
+    <string name="k2go_settings_licenses">Àwọn ìwé àṣẹ orísun-ṣíṣí</string>
+    <string name="k2go_settings_privacy">Àṣírí</string>
+    <string name="k2go_settings_power_users">Fún àwọn olùmúlò gíga.</string>
+    <string name="k2go_settings_sec_system">Ẹ̀RỌ</string>
+    <string name="k2go_settings_module_mgmt">Ìṣàkóso módùlù</string>
+    <string name="k2go_settings_module_mgmt_sub">Ipele, fi módùlù kún, fi pamọ́</string>
+    <string name="k2go_settings_backups">Àwọn àdàkọ &amp; ìmúpadà</string>
+    <string name="k2go_settings_sec_developer">OLÙDÀGBÀSÓKÈ</string>
+    <string name="k2go_settings_network_dns">Nẹ́tíwọ́kì &amp; DNS</string>
 </resources>

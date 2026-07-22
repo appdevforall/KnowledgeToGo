@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">Kiingereza</string>
     <string name="k2go_lang_spanish">Kihispania</string>
     <string name="k2go_brand">Maarifa ya Kubeba</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
+    <string name="k2go_settings_theme">Mandhari</string>
+    <string name="k2go_settings_help">Usaidizi</string>
+    <string name="k2go_settings_send_feedback">Tuma maoni</string>
+    <string name="k2go_settings_advanced_sub">Mfumo, nakala rudufu, zana za wasanidi</string>
+    <string name="k2go_theme_light">Nyangavu</string>
+    <string name="k2go_theme_system">Fuata mfumo</string>
+    <string name="k2go_theme_dark">Giza</string>
+    <string name="k2go_settings_turnoff_title">Uzime K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Hii inasimamisha maktaba na kufunga programu. (Mwanzo au nyuma hupunguza tu — inaendelea kufanya kazi chinichini.)</string>
+    <string name="k2go_settings_turnoff_confirm">Zima</string>
+    <string name="k2go_settings_lang_caption">Huweka lugha ya programu na lugha chaguo-msingi ya maudhui.</string>
+    <string name="k2go_settings_app_version">Toleo la programu</string>
+    <string name="k2go_settings_permissions">Ruhusa</string>
+    <string name="k2go_settings_usage_stats">Shiriki takwimu za matumizi</string>
+    <string name="k2go_settings_licenses">Leseni za chanzo huria</string>
+    <string name="k2go_settings_privacy">Faragha</string>
+    <string name="k2go_settings_power_users">Kwa watumiaji wa kina.</string>
+    <string name="k2go_settings_sec_system">MFUMO</string>
+    <string name="k2go_settings_module_mgmt">Usimamizi wa moduli</string>
+    <string name="k2go_settings_module_mgmt_sub">Kiwango, ongeza moduli, ficha</string>
+    <string name="k2go_settings_backups">Nakala rudufu &amp; urejeshaji</string>
+    <string name="k2go_settings_sec_developer">MSANIDI</string>
+    <string name="k2go_settings_network_dns">Mtandao &amp; DNS</string>
 </resources>

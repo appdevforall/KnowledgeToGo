@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">انگلیسی</string>
     <string name="k2go_lang_spanish">اسپانیایی</string>
     <string name="k2go_brand">دانش همراه شما</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">پوسته</string>
+    <string name="k2go_settings_help">راهنما</string>
+    <string name="k2go_settings_send_feedback">ارسال بازخورد</string>
+    <string name="k2go_settings_advanced_sub">سیستم، پشتیبان‌گیری‌ها، ابزارهای توسعه‌دهنده</string>
+    <string name="k2go_theme_light">روشن</string>
+    <string name="k2go_theme_system">پیروی از سیستم</string>
+    <string name="k2go_theme_dark">تیره</string>
+    <string name="k2go_settings_turnoff_title">خاموش کردن K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">این کار کتابخانه را متوقف و برنامه را می‌بندد. (دکمه‌های خانه یا بازگشت فقط آن را کوچک می‌کنند — در پس‌زمینه به کار خود ادامه می‌دهد.)</string>
+    <string name="k2go_settings_turnoff_confirm">خاموش کردن</string>
+    <string name="k2go_settings_lang_caption">زبان برنامه و زبان پیش‌فرض محتوا را تنظیم می‌کند.</string>
+    <string name="k2go_settings_app_version">نسخهٔ برنامه</string>
+    <string name="k2go_settings_permissions">مجوزها</string>
+    <string name="k2go_settings_usage_stats">اشتراک‌گذاری آمار استفاده</string>
+    <string name="k2go_settings_licenses">مجوزهای متن‌باز</string>
+    <string name="k2go_settings_privacy">حریم خصوصی</string>
+    <string name="k2go_settings_power_users">برای کاربران حرفه‌ای.</string>
+    <string name="k2go_settings_sec_system">سیستم</string>
+    <string name="k2go_settings_module_mgmt">مدیریت ماژول‌ها</string>
+    <string name="k2go_settings_module_mgmt_sub">سطح، افزودن ماژول، پنهان‌سازی</string>
+    <string name="k2go_settings_backups">پشتیبان‌گیری‌ها &amp; بازیابی</string>
+    <string name="k2go_settings_sec_developer">توسعه‌دهنده</string>
+    <string name="k2go_settings_network_dns">شبکه &amp; DNS</string>
 </resources>

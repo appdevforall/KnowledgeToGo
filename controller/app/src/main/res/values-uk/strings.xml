@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Англійська</string>
     <string name="k2go_lang_spanish">Іспанська</string>
     <string name="k2go_brand">Знання із собою</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Тема</string>
+    <string name="k2go_settings_help">Довідка</string>
+    <string name="k2go_settings_send_feedback">Надіслати відгук</string>
+    <string name="k2go_settings_advanced_sub">Система, резервні копії, інструменти розробника</string>
+    <string name="k2go_theme_light">Світла</string>
+    <string name="k2go_theme_system">За системою</string>
+    <string name="k2go_theme_dark">Темна</string>
+    <string name="k2go_settings_turnoff_title">Вимкнути K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Це зупиняє бібліотеку та закриває застосунок. (Кнопки «Додому» чи «Назад» лише згортають його — він продовжує працювати у фоновому режимі.)</string>
+    <string name="k2go_settings_turnoff_confirm">Вимкнути</string>
+    <string name="k2go_settings_lang_caption">Установлює мову застосунку та мову вмісту за замовчуванням.</string>
+    <string name="k2go_settings_app_version">Версія застосунку</string>
+    <string name="k2go_settings_permissions">Дозволи</string>
+    <string name="k2go_settings_usage_stats">Ділитися статистикою використання</string>
+    <string name="k2go_settings_licenses">Ліцензії з відкритим кодом</string>
+    <string name="k2go_settings_privacy">Конфіденційність</string>
+    <string name="k2go_settings_power_users">Для досвідчених користувачів.</string>
+    <string name="k2go_settings_sec_system">СИСТЕМА</string>
+    <string name="k2go_settings_module_mgmt">Керування модулями</string>
+    <string name="k2go_settings_module_mgmt_sub">Рівень, додавання модулів, приховування</string>
+    <string name="k2go_settings_backups">Резервні копії &amp; відновлення</string>
+    <string name="k2go_settings_sec_developer">РОЗРОБНИК</string>
+    <string name="k2go_settings_network_dns">Мережа &amp; DNS</string>
 </resources>

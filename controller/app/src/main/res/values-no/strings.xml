@@ -702,4 +702,28 @@
     <string name="k2go_lang_english">Engelsk</string>
     <string name="k2go_lang_spanish">Spansk</string>
     <string name="k2go_brand">Kunnskap å ta med</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
+    <string name="k2go_settings_theme">Tema</string>
+    <string name="k2go_settings_help">Hjelp</string>
+    <string name="k2go_settings_send_feedback">Send tilbakemelding</string>
+    <string name="k2go_settings_advanced_sub">System, sikkerhetskopier, utviklerverktøy</string>
+    <string name="k2go_theme_light">Lys</string>
+    <string name="k2go_theme_system">Følg systemet</string>
+    <string name="k2go_theme_dark">Mørk</string>
+    <string name="k2go_settings_turnoff_title">Slå av K2Go?</string>
+    <string name="k2go_settings_turnoff_msg">Dette stopper biblioteket og lukker appen. (Hjem eller tilbake minimerer den bare — den fortsetter å kjøre i bakgrunnen.)</string>
+    <string name="k2go_settings_turnoff_confirm">Slå av</string>
+    <string name="k2go_settings_lang_caption">Angir appspråket og standardspråket for innhold.</string>
+    <string name="k2go_settings_app_version">Appversjon</string>
+    <string name="k2go_settings_permissions">Tillatelser</string>
+    <string name="k2go_settings_usage_stats">Del bruksstatistikk</string>
+    <string name="k2go_settings_licenses">Åpen kildekode-lisenser</string>
+    <string name="k2go_settings_privacy">Personvern</string>
+    <string name="k2go_settings_power_users">For avanserte brukere.</string>
+    <string name="k2go_settings_sec_system">SYSTEM</string>
+    <string name="k2go_settings_module_mgmt">Moduladministrasjon</string>
+    <string name="k2go_settings_module_mgmt_sub">Nivå, legg til moduler, skjul</string>
+    <string name="k2go_settings_backups">Sikkerhetskopier &amp; gjenoppretting</string>
+    <string name="k2go_settings_sec_developer">UTVIKLER</string>
+    <string name="k2go_settings_network_dns">Nettverk &amp; DNS</string>
 </resources>

@@ -709,4 +709,28 @@
     <string name="k2go_lang_english">ஆங்கிலம்</string>
     <string name="k2go_lang_spanish">ஸ்பானிஷ்</string>
     <string name="k2go_brand">எடுத்துச் செல்லும் அறிவு</string>
+    <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
+    <string name="k2go_settings_theme">கருப்பொருள்</string>
+    <string name="k2go_settings_help">உதவி</string>
+    <string name="k2go_settings_send_feedback">கருத்தை அனுப்பு</string>
+    <string name="k2go_settings_advanced_sub">கணினி, காப்புப்பிரதிகள், டெவலப்பர் கருவிகள்</string>
+    <string name="k2go_theme_light">வெளிர்</string>
+    <string name="k2go_theme_system">கணினியைப் பின்பற்று</string>
+    <string name="k2go_theme_dark">இருள்</string>
+    <string name="k2go_settings_turnoff_title">K2Go ஐ முடக்கவா?</string>
+    <string name="k2go_settings_turnoff_msg">இது நூலகத்தை நிறுத்தி, பயன்பாட்டை மூடுகிறது. (முகப்பு அல்லது பின்செல் அதைச் சிறிதாக்கும் மட்டுமே — அது பின்னணியில் இயங்கிக்கொண்டே இருக்கும்.)</string>
+    <string name="k2go_settings_turnoff_confirm">முடக்கு</string>
+    <string name="k2go_settings_lang_caption">பயன்பாட்டு மொழியையும் இயல்புநிலை உள்ளடக்க மொழியையும் அமைக்கிறது.</string>
+    <string name="k2go_settings_app_version">பயன்பாட்டு பதிப்பு</string>
+    <string name="k2go_settings_permissions">அனுமதிகள்</string>
+    <string name="k2go_settings_usage_stats">பயன்பாட்டு புள்ளிவிவரங்களைப் பகிர்</string>
+    <string name="k2go_settings_licenses">திறந்த மூல உரிமங்கள்</string>
+    <string name="k2go_settings_privacy">தனியுரிமை</string>
+    <string name="k2go_settings_power_users">வல்லுநர் பயனர்களுக்கு.</string>
+    <string name="k2go_settings_sec_system">கணினி</string>
+    <string name="k2go_settings_module_mgmt">தொகுதி மேலாண்மை</string>
+    <string name="k2go_settings_module_mgmt_sub">அடுக்கு, தொகுதிகளைச் சேர், மறை</string>
+    <string name="k2go_settings_backups">காப்புப்பிரதி &amp; மீட்பு</string>
+    <string name="k2go_settings_sec_developer">டெவலப்பர்</string>
+    <string name="k2go_settings_network_dns">நெட்வொர்க் &amp; DNS</string>
 </resources>
