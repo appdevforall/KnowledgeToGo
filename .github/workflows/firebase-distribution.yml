@@ -176,16 +176,6 @@ jobs:
           echo "Message: $COMMIT_MSG" >> "$NOTES_FILE"
           echo "NOTES_FILE=$NOTES_FILE" >> "$GITHUB_OUTPUT"
 
-      - name: Select Firebase group
-        id: group
-        run: |
-          # main -> the general testers group; every other branch -> the dev group.
-          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-            echo "GROUP=testers" >> "$GITHUB_OUTPUT"
-          else
-            echo "GROUP=dev" >> "$GITHUB_OUTPUT"
-          fi
-
       # --- FIREBASE DEPLOYMENT ---
 
       - name: Authenticate to Google Cloud via Workload Identity
@@ -212,11 +202,11 @@ jobs:
           APK_PATH: ${{ steps.find_apk.outputs.APK_PATH }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           NOTES_FILE: ${{ steps.prepare_notes.outputs.NOTES_FILE }}
-          GROUP: ${{ steps.group.outputs.GROUP }}
         run: |
+          # Single Firebase App Distribution group in use: "dev" (main and all branches).
           firebase appdistribution:distribute "$APK_PATH" \
             --app "$FIREBASE_APP_ID" \
-            --groups "$GROUP" \
+            --groups "dev" \
             --release-notes-file "$NOTES_FILE"
 
       # --- SECURITY CLEANUP ---
