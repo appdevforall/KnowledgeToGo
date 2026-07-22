@@ -823,4 +823,8 @@
     <string name="k2go_clone_paste_hint">Поставяне на код за прехвърляне</string>
     <string name="k2go_soon">Скоро</string>
     <string name="feedback_force_crash">Принудително тестово сривване (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64-битов (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-битов (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">неизвестно</string>
 </resources>

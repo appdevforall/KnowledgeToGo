@@ -823,4 +823,8 @@
     <string name="k2go_clone_paste_hint">பரிமாற்றக் குறியீட்டை ஒட்டவும்</string>
     <string name="k2go_soon">விரைவில்</string>
     <string name="feedback_force_crash">சோதனை செயலிழப்பைக் கட்டாயப்படுத்து (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
+    <string name="k2go_arch_64">64-பிட் (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-பிட் (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">தெரியாதது</string>
 </resources>

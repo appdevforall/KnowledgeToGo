@@ -816,4 +816,8 @@
     <string name="k2go_clone_paste_hint">স্থানান্তর কোড পেস্ট করুন</string>
     <string name="k2go_soon">শীঘ্রই</string>
     <string name="feedback_force_crash">পরীক্ষামূলক ক্র্যাশ বাধ্য করুন (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
+    <string name="k2go_arch_64">64-বিট (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-বিট (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">অজানা</string>
 </resources>

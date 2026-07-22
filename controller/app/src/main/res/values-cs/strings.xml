@@ -823,4 +823,8 @@
     <string name="k2go_clone_paste_hint">Vložit kód přenosu</string>
     <string name="k2go_soon">Brzy</string>
     <string name="feedback_force_crash">Vynutit testovací pád (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64bitový (arm64-v8a)</string>
+    <string name="k2go_arch_32">32bitový (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">neznámé</string>
 </resources>

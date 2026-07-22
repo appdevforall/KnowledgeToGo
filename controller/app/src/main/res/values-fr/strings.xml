@@ -893,4 +893,8 @@
     <string name="k2go_clone_paste_hint">Coller le code de transfert</string>
     <string name="k2go_soon">Bientôt</string>
     <string name="feedback_force_crash">Forcer un plantage de test (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64 bits (arm64-v8a)</string>
+    <string name="k2go_arch_32">32 bits (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">inconnu</string>
 </resources>

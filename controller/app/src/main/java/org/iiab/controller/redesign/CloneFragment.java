@@ -681,10 +681,10 @@ public class CloneFragment extends Fragment {
         renderReceive();
     }
 
-    private static String bitsLabel(int bits) {
-        if (bits == 64) return "64-bit (arm64-v8a)";
-        if (bits == 32) return "32-bit (armeabi-v7a)";
-        return "unknown";
+    private String bitsLabel(int bits) {
+        if (bits == 64) return getString(R.string.k2go_arch_64);
+        if (bits == 32) return getString(R.string.k2go_arch_32);
+        return getString(R.string.k2go_arch_unknown);
     }
 
     // ADFA-4786: the sender advertises whether it has a library (creds.hasRootfs). If not, there's

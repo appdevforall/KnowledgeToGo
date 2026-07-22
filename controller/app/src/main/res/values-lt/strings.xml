@@ -823,4 +823,8 @@
     <string name="k2go_clone_paste_hint">Įklijuoti perkėlimo kodą</string>
     <string name="k2go_soon">Netrukus</string>
     <string name="feedback_force_crash">Priverstinis bandomasis gedimas (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64 bitų (arm64-v8a)</string>
+    <string name="k2go_arch_32">32 bitų (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">nežinoma</string>
 </resources>

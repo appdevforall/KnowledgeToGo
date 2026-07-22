@@ -816,4 +816,8 @@
     <string name="k2go_clone_paste_hint">Übertragungscode einfügen</string>
     <string name="k2go_soon">Bald</string>
     <string name="feedback_force_crash">Testabsturz erzwingen (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64-Bit (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-Bit (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">unbekannt</string>
 </resources>

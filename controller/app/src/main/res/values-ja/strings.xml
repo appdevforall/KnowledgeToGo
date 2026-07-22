@@ -816,4 +816,8 @@
     <string name="k2go_clone_paste_hint">転送コードを貼り付け</string>
     <string name="k2go_soon">近日公開</string>
     <string name="feedback_force_crash">テストクラッシュを強制 (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64ビット (arm64-v8a)</string>
+    <string name="k2go_arch_32">32ビット (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">不明</string>
 </resources>

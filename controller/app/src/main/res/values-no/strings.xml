@@ -816,4 +816,8 @@
     <string name="k2go_clone_paste_hint">Lim inn overføringskode</string>
     <string name="k2go_soon">Snart</string>
     <string name="feedback_force_crash">Tving frem testkrasj (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64-bit (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-bit (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">ukjent</string>
 </resources>

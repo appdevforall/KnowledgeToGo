@@ -816,4 +816,8 @@
     <string name="k2go_clone_paste_hint">Aktarım kodunu yapıştır</string>
     <string name="k2go_soon">Yakında</string>
     <string name="feedback_force_crash">Test çökmesini zorla (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64 bit (arm64-v8a)</string>
+    <string name="k2go_arch_32">32 bit (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">bilinmiyor</string>
 </resources>

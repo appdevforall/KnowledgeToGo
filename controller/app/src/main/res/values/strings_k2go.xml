@@ -302,4 +302,8 @@
     <string name="k2go_clone_step_2of2">Step 2 of 2</string>
     <string name="k2go_clone_paste_hint">Paste transfer code</string>
     <string name="k2go_soon">Soon</string>
+    <!-- ADFA-4795: arch technical labels (behind Technical details); ABI ids kept verbatim -->
+    <string name="k2go_arch_64">64-bit (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-bit (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">unknown</string>
 </resources>

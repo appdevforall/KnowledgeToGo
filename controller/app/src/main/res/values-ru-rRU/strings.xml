@@ -892,4 +892,8 @@
     <string name="k2go_clone_paste_hint">Вставить код передачи</string>
     <string name="k2go_soon">Скоро</string>
     <string name="feedback_force_crash">Принудительный тестовый сбой (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64-битный (arm64-v8a)</string>
+    <string name="k2go_arch_32">32-битный (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">неизвестно</string>
 </resources>

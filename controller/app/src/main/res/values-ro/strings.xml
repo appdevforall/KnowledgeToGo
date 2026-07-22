@@ -816,4 +816,8 @@
     <string name="k2go_clone_paste_hint">Lipește codul de transfer</string>
     <string name="k2go_soon">În curând</string>
     <string name="feedback_force_crash">Forțează blocarea de test (debug)</string>
+    <!-- ADFA-4795: arch technical labels l10n. machine translation. -->
+    <string name="k2go_arch_64">64 de biți (arm64-v8a)</string>
+    <string name="k2go_arch_32">32 de biți (armeabi-v7a)</string>
+    <string name="k2go_arch_unknown">necunoscut</string>
 </resources>
