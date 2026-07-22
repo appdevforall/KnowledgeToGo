@@ -17,6 +17,11 @@ import java.util.Locale;
  * consumer — new content sources can add their own {@code forX()} without touching callers.
  * Pure and JVM-testable (except {@link #forKiwix}/{@link #forHelp} on an empty tag, which
  * derive from the system locale via {@link ContentLanguage}).
+ *
+ * <p>The whole mechanism (how UI / content / help agree on a language, and how to add a new
+ * language, translation, consumer or app) is documented in
+ * {@code controller/docs/LANGUAGE_ARCHITECTURE.md}. The one rule: never resolve a language
+ * code ad hoc — route it through here.
  */
 public final class LanguageResolver {
 
