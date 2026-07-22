@@ -1,9 +1,16 @@
 name: Deploy to Firebase App Distribution
 
+# ADFA-4810: build & distribute on a push to ANY branch (not just main), so anyone gets a
+# Firebase build of their work without waiting for a merge. Tags (v*) are handled by
+# android-release-build.yml (production signing -> GitHub Release + R2) and are excluded here.
+# One signing key for everything on Firebase: the production keystore (same signature as the
+# main tester build), so testers never have to uninstall between builds.
 on:
   push:
     branches:
-      - main
+      - '**'
+    tags-ignore:
+      - 'v*'
   workflow_dispatch:
 
 # --- PERMITS REQUIRED FOR WIF ---
@@ -11,11 +18,64 @@ permissions:
   contents: read
   id-token: write
 
+# One in-flight build per branch; a newer push cancels the previous run (saves CI, avoids stacking).
+concurrency:
+  group: firebase-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  gate:
+    name: Decide whether to build
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.decide.outputs.build }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # need history to diff against main
+
+      - name: Decide
+        id: decide
+        run: |
+          set -euo pipefail
+          # Manual runs are always intentional.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual dispatch -> build."; echo "build=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Branch: $BRANCH"
+
+          # main always builds (it distributes to the testers group).
+          if [ "$BRANCH" = "main" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+
+          # Skip branches with no real changes vs main (avoids building refs identical to main).
+          git fetch -q origin main
+          DIFF=$(git diff --name-only origin/main...HEAD | wc -l | tr -d ' ')
+          echo "Files changed vs main: $DIFF"
+          if [ "$DIFF" = "0" ]; then
+            echo "::notice::No changes vs main; skipping build for $BRANCH."
+            echo "build=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+
+          # Require a Jira ticket in the branch name (ADFA-####) or the community/ prefix.
+          # Skip (with a warning) rather than fail, to avoid red X noise on ad-hoc branches.
+          if echo "$BRANCH" | grep -qiE 'adfa-[0-9]+' || echo "$BRANCH" | grep -q '^community/'; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::Branch '$BRANCH' has no Jira ticket (ADFA-####) and is not a community/ branch; skipping the Firebase build. Rename the branch or run the workflow manually to build it."
+            echo "build=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build-and-deploy:
     name: Build & Distribute
+    needs: gate
+    if: needs.gate.outputs.build == 'true'
     runs-on: ubuntu-latest
-    
+
     # The Android code is located in the ./controller directory
     defaults:
       run:
@@ -27,20 +87,6 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0 # Required to read the commit history
-
-      # TODO: Add a step here to check if there are meaningful changes
-      # before proceeding with the build to save CI minutes (similar to CoGo's workflow).
-      # - name: Check for meaningful changes
-      #   id: check_changes
-      #   run: |
-      #     DIFF_COUNT=$(git diff --name-only origin/main..HEAD | wc -l | tr -d ' ' || echo "0")
-      #     if [[ "$DIFF_COUNT" -eq 0 ]]; then
-      #       echo "::notice::Skipping build for branch identical to main"
-      #       echo "must_build=false" >> $GITHUB_OUTPUT
-      #     else
-      #       echo "must_build=true" >> $GITHUB_OUTPUT
-      #     fi
-
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -69,21 +115,28 @@ jobs:
 
       # --- VERSION AUDIT ---
 
-      - name: Get Git Short SHA
+      - name: Compute version suffix (branch + short SHA)
         id: vars
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          SAFE_BRANCH=$(echo "$BRANCH" | tr '/ ' '--' | tr -cd 'A-Za-z0-9._-')
+          echo "SHORT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
+          echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
+          echo "VERSION_SUFFIX=-${SAFE_BRANCH}-${SHORT_SHA}" >> "$GITHUB_ENV"
 
       - name: Log Pinned Binary Version
         run: |
           echo "=========================================="
           echo "Compiling with native binaries pinned to:"
           cat binary_version.txt
-          echo "App Version Suffix: -${{ env.SHORT_SHA }}"
+          echo "App Version Suffix: ${{ env.VERSION_SUFFIX }}"
           echo "=========================================="
 
       # --- BUILD AND SIGNING ---
-      # We use assembleRelease to match the production signature. 
-      # This prevents testers from having to uninstall the app (and lose data) between updates.
+      # assembleRelease + the production keystore for EVERY Firebase build (branches + main), so a
+      # single signature is used and testers never uninstall between builds. Tags are the only
+      # artifacts published to GitHub/R2 (separate workflow); this workflow never runs on tags.
       - name: Build and Sign APK
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -92,28 +145,23 @@ jobs:
           # ADFA-4533: GlitchTip DSN for release builds distributed to testers
           SENTRY_DSN_RELEASE: ${{ secrets.SENTRY_DSN_RELEASE }}
         run: |
-          # TODO: Add gradle start/end timers here for the CI performance script
-          # echo "gradle_time_start=$(date +%s)" >> $GITHUB_ENV
-          
           ./gradlew assembleRelease \
-            -PversionSuffix="-${{ env.SHORT_SHA }}" \
+            -PversionSuffix="${{ env.VERSION_SUFFIX }}" \
             -Pandroid.injected.signing.store.file=$(pwd)/keystore.jks \
             -Pandroid.injected.signing.store.password=$KEYSTORE_PASSWORD \
             -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$KEY_PASSWORD
-            
-          # echo "gradle_time_end=$(date +%s)" >> $GITHUB_ENV
 
       - name: Find APK
         id: find_apk
         run: |
-          # Now we force it to specifically find the Universal APK
+          # Distribute the Universal APK so both 32-bit and 64-bit testers can install it.
           apk_path=$(find . -path "*/build/outputs/apk/release/*universal*.apk" | head -n 1)
           if [ -z "$apk_path" ]; then
             echo "Error: Universal APK not found."
             exit 1
           fi
-          echo "APK_PATH=$apk_path" >> $GITHUB_OUTPUT
+          echo "APK_PATH=$apk_path" >> "$GITHUB_OUTPUT"
 
       # --- RELEASE NOTES ---
 
@@ -122,26 +170,24 @@ jobs:
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
           COMMIT_AUTHOR=$(git log -1 --pretty=%an)
-          
-          # TODO: Integrate Jira API here to extract the ticket ID and fetch the title
-          # JIRA_TICKET=$(echo "$COMMIT_MSG" | grep -o 'ADFA-[0-9]\+' | head -1)
-          # if [ -n "$JIRA_TICKET" ] && [ -n "${{ secrets.JIRA_API_TOKEN }}" ]; then
-          #   JIRA_TITLE=$(curl -s -u "${{ secrets.JIRA_EMAIL }}:${{ secrets.JIRA_API_TOKEN }}" \
-          #     "https://appdevforall.atlassian.net/rest/api/3/issue/${JIRA_TICKET}?fields=summary" \
-          #     | jq -r '.fields.summary // ""')
-          #   [ -n "$JIRA_TITLE" ] && COMMIT_MSG="$JIRA_TITLE"
-          # fi
-          
-          # Create a temporary file with the release notes
           NOTES_FILE=$(mktemp)
-          echo "Author: $COMMIT_AUTHOR" > "$NOTES_FILE"
+          echo "Branch: ${{ env.SAFE_BRANCH }} (${{ env.SHORT_SHA }})" > "$NOTES_FILE"
+          echo "Author: $COMMIT_AUTHOR" >> "$NOTES_FILE"
           echo "Message: $COMMIT_MSG" >> "$NOTES_FILE"
-          
-          echo "NOTES_FILE=$NOTES_FILE" >> $GITHUB_OUTPUT
+          echo "NOTES_FILE=$NOTES_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Select Firebase group
+        id: group
+        run: |
+          # main -> the general testers group; every other branch -> the dev group.
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "GROUP=testers" >> "$GITHUB_OUTPUT"
+          else
+            echo "GROUP=dev" >> "$GITHUB_OUTPUT"
+          fi
 
       # --- FIREBASE DEPLOYMENT ---
 
-      # Secure authentication using Workload Identity Federation (WIF)
       - name: Authenticate to Google Cloud via Workload Identity
         uses: google-github-actions/auth@v3
         with:
@@ -154,7 +200,6 @@ jobs:
         # sub-dependency that can't consume Workload Identity Federation (external_account)
         # credentials -> "Failed to authenticate". The standalone binary bundles its deps
         # frozen at release time (pre-regression), so WIF auth works deterministically.
-        # 14.11.2 = the version proven on the self-hosted runner. Bump deliberately.
         run: |
           sudo curl -fsSL \
             https://github.com/firebase/firebase-tools/releases/download/v14.11.2/firebase-tools-linux \
@@ -162,31 +207,17 @@ jobs:
           sudo chmod +x /usr/local/bin/firebase
           firebase --version
 
-      # TODO: Run CI performance script before distributing
-      # - name: Write CI Performance Data
-      #   run: |
-      #     apk_size_bytes=$(stat -c '%s' ${{ steps.find_apk.outputs.APK_PATH }})
-      #     uv run scripts/insert-ci-perf-data.py $(basename ${{ steps.find_apk.outputs.APK_PATH }}) ${{ env.gradle_time_start }} ${{ env.gradle_time_end }} $apk_size_bytes
-
       - name: Upload to Firebase App Distribution
         env:
           APK_PATH: ${{ steps.find_apk.outputs.APK_PATH }}
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           NOTES_FILE: ${{ steps.prepare_notes.outputs.NOTES_FILE }}
+          GROUP: ${{ steps.group.outputs.GROUP }}
         run: |
           firebase appdistribution:distribute "$APK_PATH" \
             --app "$FIREBASE_APP_ID" \
-            --groups "testers" \
+            --groups "$GROUP" \
             --release-notes-file "$NOTES_FILE"
-
-      # TODO: Add a step here to send a rich Slack notification
-      # - name: Send Slack Notification
-      #   env:
-      #     SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #   run: |
-      #     curl -X POST -H "Content-type: application/json" \
-      #     --data '{"text":"🚀 New build deployed to Firebase! Author: ${{ steps.prepare_notes.outputs.COMMIT_AUTHOR }}"}' \
-      #     "$SLACK_WEBHOOK"
 
       # --- SECURITY CLEANUP ---
 
