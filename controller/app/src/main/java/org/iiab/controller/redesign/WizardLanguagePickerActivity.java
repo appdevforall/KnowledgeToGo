@@ -20,14 +20,23 @@ import org.iiab.controller.applang.domain.AppLanguage;
 import org.iiab.controller.applang.domain.SupportedAppLanguages;
 
 /**
- * ADFA-4797: "Choose language" sub-screen for the setup wizard. A search box over a
- * single-choice list of every supported UI language (endonyms), "follow system" pinned
- * on top. Returns the chosen BCP-47 tag ("" = follow system) via {@link #EXTRA_TAG}.
+ * ADFA-4797: searchable "Choose language" sub-screen. A search box over a single-choice
+ * list of every supported language (endonyms), with a neutral option pinned on top.
+ * Returns the chosen BCP-47 tag ("" = the pinned neutral option) via {@link #EXTRA_TAG}.
  * No hardcoded language list — driven by {@link SupportedAppLanguages}.
+ *
+ * <p>Reusable across callers (ADFA-4798): pass {@link #EXTRA_TITLE} for the header and
+ * {@link #EXTRA_PINNED} for the index-0 label (e.g. "Follow system language" for the app
+ * language, "Same as app language" for the content language). Both default to the wizard's
+ * values, so the original wizard call keeps working unchanged.
  */
 public class WizardLanguagePickerActivity extends AppCompatActivity {
 
     public static final String EXTRA_TAG = "lang_tag";
+    /** Optional header title; defaults to {@code k2go_lang_choose_title}. */
+    public static final String EXTRA_TITLE = "lang_title";
+    /** Optional label for the pinned index-0 option; defaults to {@code k2go_lang_follow_system}. */
+    public static final String EXTRA_PINNED = "lang_pinned";
 
     private String current = "";
     private List<AppLanguage> all;
@@ -40,8 +49,15 @@ public class WizardLanguagePickerActivity extends AppCompatActivity {
 
         current = getIntent().getStringExtra(EXTRA_TAG);
         if (current == null) current = "";
-        all = SupportedAppLanguages.forPicker(getString(R.string.k2go_lang_follow_system));
+        String pinned = getIntent().getStringExtra(EXTRA_PINNED);
+        if (pinned == null) pinned = getString(R.string.k2go_lang_follow_system);
+        all = SupportedAppLanguages.forPicker(pinned);
         listView = findViewById(R.id.lang_list);
+
+        String title = getIntent().getStringExtra(EXTRA_TITLE);
+        if (title != null && !title.isEmpty()) {
+            ((TextView) findViewById(R.id.lang_picker_title)).setText(title);
+        }
 
         findViewById(R.id.lang_picker_back).setOnClickListener(v -> finish());
         ((EditText) findViewById(R.id.lang_search)).addTextChangedListener(new TextWatcher() {

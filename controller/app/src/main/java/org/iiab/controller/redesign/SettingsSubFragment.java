@@ -1,7 +1,9 @@
 package org.iiab.controller.redesign;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -10,13 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import java.util.List;
 import org.iiab.controller.R;
 import org.iiab.controller.applang.data.AppLocaleController;
-import org.iiab.controller.applang.data.ContentLanguage;
+import org.iiab.controller.applang.data.LanguageResolver;
 import org.iiab.controller.applang.domain.AppLanguage;
 import org.iiab.controller.applang.domain.SupportedAppLanguages;
 import org.iiab.controller.delivery.data.AnalyticsConsent;
@@ -27,6 +30,28 @@ import org.iiab.controller.delivery.data.AnalyticsConsent;
 public class SettingsSubFragment extends Fragment {
 
     private static final String ARG = "screen";
+    private static final String PREF_CONTENT_TAG = "content_lang_tag";
+
+    private TextView contentValue;
+    private String contentTag = "";   // "" = same as app language
+
+    private final ActivityResultLauncher<Intent> appPicker =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
+                if (r.getResultCode() == Activity.RESULT_OK && r.getData() != null) {
+                    String tag = r.getData().getStringExtra(WizardLanguagePickerActivity.EXTRA_TAG);
+                    applyAppLanguage(requireContext(), tag == null ? "" : tag);
+                }
+            });
+
+    private final ActivityResultLauncher<Intent> contentPicker =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
+                if (r.getResultCode() == Activity.RESULT_OK && r.getData() != null) {
+                    String tag = r.getData().getStringExtra(WizardLanguagePickerActivity.EXTRA_TAG);
+                    contentTag = tag == null ? "" : tag;
+                    persistContent(requireContext());
+                    if (contentValue != null) contentValue.setText(contentLabel());
+                }
+            });
 
     static SettingsSubFragment newInstance(String screen) {
         SettingsSubFragment f = new SettingsSubFragment();
@@ -56,28 +81,88 @@ public class SettingsSubFragment extends Fragment {
         return root;
     }
 
-    // ---- Language: one choice sets BOTH the app UI locale and the content language ----
+    // ---- Language: two independent selectors (ADFA-4798). App language drives the UI locale;
+    //      content language is the default for downloaded content. Both open the same searchable
+    //      picker. Content "" means "same as app language" and tracks the app tag. ----
     private void buildLanguage(Context ctx, LinearLayout list) {
-        SettingsUi.caption(ctx, list, getString(R.string.k2go_settings_lang_caption));
-        List<AppLanguage> langs = SupportedAppLanguages.all(getString(R.string.setup_app_lang_system));
-        String current = AppLocaleController.currentTag();
-        for (AppLanguage lang : langs) {
-            boolean isCurrent = lang.tag().equals(current);
-            SettingsUi.row(ctx, list, lang.toString(), null, isCurrent ? "✓" : null,
-                    v -> applyLanguage(ctx, lang.tag()));
-        }
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_lang_settings_sub));
+        String appTag = AppLocaleController.currentTag();
+        contentTag = readContentTag(ctx);
+
+        SettingsUi.selector(ctx, list,
+                getString(R.string.k2go_lang_app_label),
+                appLabel(appTag),
+                getString(R.string.k2go_lang_app_helper),
+                v -> appPicker.launch(pickerIntent(ctx,
+                        getString(R.string.k2go_lang_choose_title),
+                        getString(R.string.k2go_lang_follow_system),
+                        AppLocaleController.currentTag())));
+
+        contentValue = SettingsUi.selector(ctx, list,
+                getString(R.string.k2go_lang_content_label),
+                contentLabel(),
+                getString(R.string.k2go_lang_content_helper),
+                v -> contentPicker.launch(pickerIntent(ctx,
+                        getString(R.string.k2go_lang_choose_content_title),
+                        getString(R.string.k2go_lang_same_as_app),
+                        contentTag)));
+
+        SettingsUi.note(ctx, list, getString(R.string.k2go_lang_content_note));
     }
 
-    private void applyLanguage(Context ctx, String tag) {
-        // Content language = the base subtag (ru-RU -> ru), normalized to the Kiwix form;
-        // empty tag (follow system) -> derive from the system locale.
-        String content = (tag == null || tag.isEmpty())
-                ? ContentLanguage.systemDefault()
-                : ContentLanguage.normalize(tag.split("-")[0]);
-        ctx.getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
-                .edit().putString("selected_lang_minimal", content).apply();
-        // Applying the UI locale recreates the activities (AppCompat persists the choice).
+    private Intent pickerIntent(Context ctx, String title, String pinned, String current) {
+        return new Intent(ctx, WizardLanguagePickerActivity.class)
+                .putExtra(WizardLanguagePickerActivity.EXTRA_TITLE, title)
+                .putExtra(WizardLanguagePickerActivity.EXTRA_PINNED, pinned)
+                .putExtra(WizardLanguagePickerActivity.EXTRA_TAG, current);
+    }
+
+    /** App language: applying the UI locale recreates the activities (AppCompat persists it).
+     *  Recompute the content code first so a "same as app" content choice tracks the new app. */
+    private void applyAppLanguage(Context ctx, String tag) {
+        prefs(ctx).edit()
+                .putString("selected_lang_minimal", LanguageResolver.contentCode(tag, contentTag))
+                .apply();
         AppLocaleController.apply(tag);
+    }
+
+    /** Content language: independent of the UI locale, no recreate. Persists the choice and the
+     *  resolved content code the installer consumes. */
+    private void persistContent(Context ctx) {
+        String appTag = AppLocaleController.currentTag();
+        prefs(ctx).edit()
+                .putString(PREF_CONTENT_TAG, contentTag)
+                .putString("selected_lang_minimal", LanguageResolver.contentCode(appTag, contentTag))
+                .apply();
+    }
+
+    private String readContentTag(Context ctx) {
+        String t = prefs(ctx).getString(PREF_CONTENT_TAG, "");
+        return t == null ? "" : t;
+    }
+
+    private SharedPreferences prefs(Context ctx) {
+        return ctx.getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
+    }
+
+    /** Endonym shown in the app box; "" -> the "follow system" label. */
+    private String appLabel(String tag) {
+        if (tag == null || tag.isEmpty()) return getString(R.string.k2go_lang_follow_system);
+        return endonymOf(tag);
+    }
+
+    /** Endonym shown in the content box; "" -> the "same as app" label. */
+    private String contentLabel() {
+        if (contentTag == null || contentTag.isEmpty()) return getString(R.string.k2go_lang_same_as_app);
+        return endonymOf(contentTag);
+    }
+
+    /** A tag's endonym from the canonical list, or the tag itself if not found. */
+    private String endonymOf(String tag) {
+        for (AppLanguage l : SupportedAppLanguages.forPicker("")) {
+            if (l.tag().equals(tag)) return l.toString();
+        }
+        return tag;
     }
 
     // ---- About ----

@@ -1,6 +1,7 @@
 package org.iiab.controller.redesign;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -59,6 +60,70 @@ final class SettingsUi {
             row.addView(chev);
         }
         return row;
+    }
+
+    /**
+     * A labelled language "box" (ADFA-4798): a section label, a bordered value row with a
+     * ▾ affordance, and an optional helper line below. Returns the value {@link TextView} so
+     * the caller can update it in place after a pick (no full rebuild needed).
+     */
+    static TextView selector(Context c, LinearLayout list, String label, String value,
+                             String helper, View.OnClickListener onClick) {
+        TextView lbl = new TextView(c);
+        lbl.setText(label);
+        lbl.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        lbl.setTextColor(ContextCompat.getColor(c, R.color.k2go_teal));
+        lbl.setLetterSpacing(0.08f);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(-1, -2);
+        llp.topMargin = dp(c, 18);
+        list.addView(lbl, llp);
+
+        LinearLayout box = new LinearLayout(c);
+        box.setOrientation(LinearLayout.HORIZONTAL);
+        box.setGravity(Gravity.CENTER_VERTICAL);
+        box.setBackgroundResource(R.drawable.k2go_lang_box_bg);
+        box.setPadding(dp(c, 16), dp(c, 16), dp(c, 16), dp(c, 16));
+        if (onClick != null) { box.setClickable(true); box.setFocusable(true); box.setOnClickListener(onClick); }
+        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(-1, -2);
+        blp.topMargin = dp(c, 8);
+        list.addView(box, blp);
+
+        TextView val = new TextView(c);
+        val.setText(value);
+        val.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        val.setTextColor(ContextCompat.getColor(c, R.color.k2go_ink));
+        val.setTypeface(val.getTypeface(), Typeface.BOLD);
+        box.addView(val, new LinearLayout.LayoutParams(0, -2, 1f));
+
+        TextView chev = new TextView(c);
+        chev.setText("▾");
+        chev.setTextColor(ContextCompat.getColor(c, R.color.k2go_teal));
+        chev.setTextSize(18);
+        box.addView(chev);
+
+        if (helper != null && !helper.isEmpty()) {
+            TextView h = new TextView(c);
+            h.setText(helper);
+            h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            h.setTextColor(ContextCompat.getColor(c, R.color.k2go_muted));
+            LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(-1, -2);
+            hlp.topMargin = dp(c, 8);
+            list.addView(h, hlp);
+        }
+        return val;
+    }
+
+    /** A soft note / callout box (ADFA-4798). */
+    static void note(Context c, LinearLayout list, String text) {
+        TextView t = new TextView(c);
+        t.setText(text);
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        t.setTextColor(ContextCompat.getColor(c, R.color.k2go_muted));
+        t.setBackgroundResource(R.drawable.k2go_card_bg);
+        t.setPadding(dp(c, 16), dp(c, 16), dp(c, 16), dp(c, 16));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
+        lp.topMargin = dp(c, 20);
+        list.addView(t, lp);
     }
 
     static void preview(Context c, LinearLayout list, String title, String subtitle) {

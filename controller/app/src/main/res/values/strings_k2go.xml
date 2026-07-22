@@ -316,4 +316,13 @@
     <string name="k2go_lang_all" translatable="false">ALL LANGUAGES</string>
     <string name="k2go_lang_helper_system" translatable="false">Your phone is set to %1$s — we\'ll follow it.\nTap above to choose a specific language instead.</string>
     <string name="k2go_lang_helper_specific" translatable="false">App and content will be in %1$s.</string>
+    <!-- ADFA-4798: Settings app/content language split. translatable=false for now; localized in the l10n sweep. -->
+    <string name="k2go_lang_settings_sub" translatable="false">Set the app and content languages separately.</string>
+    <string name="k2go_lang_app_label" translatable="false">APP LANGUAGE</string>
+    <string name="k2go_lang_content_label" translatable="false">CONTENT LANGUAGE</string>
+    <string name="k2go_lang_app_helper" translatable="false">Menus, buttons, and messages.</string>
+    <string name="k2go_lang_content_helper" translatable="false">The default language when you add content (Wikipedia, books, maps).</string>
+    <string name="k2go_lang_content_note" translatable="false">You can still pick a different language for each content item when you add it.</string>
+    <string name="k2go_lang_same_as_app" translatable="false">Same as app language</string>
+    <string name="k2go_lang_choose_content_title" translatable="false">Choose content language</string>
 </resources>
