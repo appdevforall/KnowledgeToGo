@@ -882,4 +882,5 @@
     <string name="k2go_legend_sys_free">इस्तेमाल %1$.1f  ·  सिस्टम %2$.1f  ·  खाली %3$.1f</string>
     <string name="k2go_legend_your_picks">इस्तेमाल %1$.1f · सिस्टम %2$.1f · आपके चयन %3$.1f · खाली %4$.1f</string>
     <string name="k2go_legend_picks">इस्तेमाल %1$.1f · सिस्टम %2$.1f · चयन %3$.1f · खाली %4$.1f</string>
+    <string name="k2go_perm_granted">दी गई</string> <!-- machine translation -->
 </resources>

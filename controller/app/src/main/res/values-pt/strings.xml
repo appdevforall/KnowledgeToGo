@@ -884,4 +884,5 @@
     <string name="k2go_legend_sys_free">Usado %1$.1f  ·  Sistema %2$.1f  ·  Livre %3$.1f</string>
     <string name="k2go_legend_your_picks">Usado %1$.1f · Sistema %2$.1f · Suas escolhas %3$.1f · Livre %4$.1f</string>
     <string name="k2go_legend_picks">Usado %1$.1f · Sistema %2$.1f · Escolhas %3$.1f · Livre %4$.1f</string>
+    <string name="k2go_perm_granted">Concedido</string> <!-- machine translation -->
 </resources>

@@ -805,4 +805,5 @@
     <string name="k2go_legend_sys_free">已用 %1$.1f  ·  系统 %2$.1f  ·  可用 %3$.1f</string>
     <string name="k2go_legend_your_picks">已用 %1$.1f · 系统 %2$.1f · 你的选择 %3$.1f · 可用 %4$.1f</string>
     <string name="k2go_legend_picks">已用 %1$.1f · 系统 %2$.1f · 已选 %3$.1f · 可用 %4$.1f</string>
+    <string name="k2go_perm_granted">已授予</string> <!-- machine translation -->
 </resources>

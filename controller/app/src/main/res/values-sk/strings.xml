@@ -812,4 +812,5 @@
     <string name="k2go_legend_sys_free">Použité %1$.1f  ·  Systém %2$.1f  ·  Voľné %3$.1f</string>
     <string name="k2go_legend_your_picks">Použité %1$.1f · Systém %2$.1f · Váš výber %3$.1f · Voľné %4$.1f</string>
     <string name="k2go_legend_picks">Použité %1$.1f · Systém %2$.1f · Výber %3$.1f · Voľné %4$.1f</string>
+    <string name="k2go_perm_granted">Udelené</string> <!-- machine translation -->
 </resources>

@@ -812,4 +812,5 @@
     <string name="k2go_legend_sys_free">Terpakai %1$.1f  ·  Sistem %2$.1f  ·  Kosong %3$.1f</string>
     <string name="k2go_legend_your_picks">Terpakai %1$.1f · Sistem %2$.1f · Pilihan Anda %3$.1f · Kosong %4$.1f</string>
     <string name="k2go_legend_picks">Terpakai %1$.1f · Sistem %2$.1f · Pilihan %3$.1f · Kosong %4$.1f</string>
+    <string name="k2go_perm_granted">Diberikan</string> <!-- machine translation -->
 </resources>

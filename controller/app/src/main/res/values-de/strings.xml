@@ -805,4 +805,5 @@
     <string name="k2go_legend_sys_free">Belegt %1$.1f  ·  System %2$.1f  ·  Frei %3$.1f</string>
     <string name="k2go_legend_your_picks">Belegt %1$.1f · System %2$.1f · Deine Auswahl %3$.1f · Frei %4$.1f</string>
     <string name="k2go_legend_picks">Belegt %1$.1f · System %2$.1f · Auswahl %3$.1f · Frei %4$.1f</string>
+    <string name="k2go_perm_granted">Erteilt</string> <!-- machine translation -->
 </resources>

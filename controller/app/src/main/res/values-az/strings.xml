@@ -812,4 +812,5 @@
     <string name="k2go_legend_sys_free">İstifadə %1$.1f  ·  Sistem %2$.1f  ·  Boş %3$.1f</string>
     <string name="k2go_legend_your_picks">İstifadə %1$.1f · Sistem %2$.1f · Sizin seçimləriniz %3$.1f · Boş %4$.1f</string>
     <string name="k2go_legend_picks">İstifadə %1$.1f · Sistem %2$.1f · Seçimlər %3$.1f · Boş %4$.1f</string>
+    <string name="k2go_perm_granted">Verildi</string> <!-- review — machine, verify -->
 </resources>

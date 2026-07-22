@@ -812,4 +812,5 @@
     <string name="k2go_legend_sys_free">Imetumika %1$.1f  ·  Mfumo %2$.1f  ·  Bila kutumika %3$.1f</string>
     <string name="k2go_legend_your_picks">Imetumika %1$.1f · Mfumo %2$.1f · Chaguo lako %3$.1f · Bila kutumika %4$.1f</string>
     <string name="k2go_legend_picks">Imetumika %1$.1f · Mfumo %2$.1f · Chaguo %3$.1f · Bila kutumika %4$.1f</string>
+    <string name="k2go_perm_granted">Imetolewa</string> <!-- review — machine, verify -->
 </resources>

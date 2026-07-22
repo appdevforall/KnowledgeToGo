@@ -292,4 +292,5 @@
     <string name="k2go_legend_sys_free">Used %1$.1f  ·  System %2$.1f  ·  Free %3$.1f</string>
     <string name="k2go_legend_your_picks">Used %1$.1f · System %2$.1f · Your picks %3$.1f · Free %4$.1f</string>
     <string name="k2go_legend_picks">Used %1$.1f · System %2$.1f · Picks %3$.1f · Free %4$.1f</string>
+    <string name="k2go_perm_granted">Granted</string>
 </resources>

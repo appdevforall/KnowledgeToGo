@@ -173,7 +173,7 @@ public class WizardActivity extends AppCompatActivity {
         setStatus(batteryStatus, hasBattery());
     }
     private void setStatus(TextView t, boolean granted) {
-        t.setText(granted ? "Granted" : "Allow");
+        t.setText(getString(granted ? R.string.k2go_perm_granted : R.string.k2go_perm_allow));
         t.setTextColor(ContextCompat.getColor(this, granted ? R.color.k2go_leaf : R.color.k2go_teal));
     }
     private boolean allPermsGranted() {

@@ -881,4 +881,5 @@
     <string name="k2go_legend_sys_free">Занято %1$.1f  ·  Система %2$.1f  ·  Свободно %3$.1f</string>
     <string name="k2go_legend_your_picks">Занято %1$.1f · Система %2$.1f · Ваш выбор %3$.1f · Свободно %4$.1f</string>
     <string name="k2go_legend_picks">Занято %1$.1f · Система %2$.1f · Выбор %3$.1f · Свободно %4$.1f</string>
+    <string name="k2go_perm_granted">Предоставлено</string> <!-- machine translation -->
 </resources>

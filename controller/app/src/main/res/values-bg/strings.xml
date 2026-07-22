@@ -812,4 +812,5 @@
     <string name="k2go_legend_sys_free">Използвано %1$.1f  ·  Система %2$.1f  ·  Свободно %3$.1f</string>
     <string name="k2go_legend_your_picks">Използвано %1$.1f · Система %2$.1f · Вашият избор %3$.1f · Свободно %4$.1f</string>
     <string name="k2go_legend_picks">Използвано %1$.1f · Система %2$.1f · Избор %3$.1f · Свободно %4$.1f</string>
+    <string name="k2go_perm_granted">Предоставено</string> <!-- machine translation -->
 </resources>

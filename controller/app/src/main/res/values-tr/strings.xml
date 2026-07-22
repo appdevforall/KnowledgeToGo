@@ -805,4 +805,5 @@
     <string name="k2go_legend_sys_free">Kullanılan %1$.1f  ·  Sistem %2$.1f  ·  Boş %3$.1f</string>
     <string name="k2go_legend_your_picks">Kullanılan %1$.1f · Sistem %2$.1f · Seçimleriniz %3$.1f · Boş %4$.1f</string>
     <string name="k2go_legend_picks">Kullanılan %1$.1f · Sistem %2$.1f · Seçimler %3$.1f · Boş %4$.1f</string>
+    <string name="k2go_perm_granted">Verildi</string> <!-- machine translation -->
 </resources>

@@ -812,4 +812,5 @@
     <string name="k2go_legend_sys_free">Naudojama %1$.1f  ·  Sistema %2$.1f  ·  Laisva %3$.1f</string>
     <string name="k2go_legend_your_picks">Naudojama %1$.1f · Sistema %2$.1f · Jūsų pasirinkimai %3$.1f · Laisva %4$.1f</string>
     <string name="k2go_legend_picks">Naudojama %1$.1f · Sistema %2$.1f · Pasirinkimai %3$.1f · Laisva %4$.1f</string>
+    <string name="k2go_perm_granted">Suteikta</string> <!-- machine translation -->
 </resources>
