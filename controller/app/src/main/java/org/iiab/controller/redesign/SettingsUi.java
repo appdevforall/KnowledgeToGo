@@ -6,8 +6,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import org.iiab.controller.R;
 
 /** Programmatic row builders shared by the Settings top level and its sub-screens. */
@@ -143,15 +143,16 @@ final class SettingsUi {
         TextView t = title(c, titleText);
         t.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
         row.addView(t);
-        SwitchCompat sw = new SwitchCompat(c);
+        // ADFA-4802: Material 3 switch. The old SwitchCompat rendered its ON track as
+        // colorControlActivated at ~30% alpha, so on the K2Go surfaces the track vanished and
+        // only the teal thumb showed (both light and dark). MaterialSwitch fills the ON track
+        // (primary) with an onPrimary thumb, so the on/off state is clearly visible in both themes.
+        MaterialSwitch sw = new MaterialSwitch(c);
         sw.setChecked(checked);
-        // The default switch enforces a 48dp touch-target min-height that inflates the row.
-        // Drop it and cap the switch so the toggle row matches the value rows.
         sw.setMinimumHeight(0);
-        sw.setPadding(0, 0, 0, 0);
         sw.setOnCheckedChangeListener((b, isChk) -> cb.changed(isChk));
         row.addView(sw, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, dp(c, 28)));
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     }
 
     static void infoRow(Context c, LinearLayout list, String titleText, String value) {
