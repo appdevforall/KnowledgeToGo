@@ -900,4 +900,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">OUVERT</string>
     <string name="k2go_sign_closed">FERMÉ</string>
+    <string name="k2go_lang_label">LANGUE</string>
+    <string name="k2go_lang_follow_system">Suivre la langue du système</string>
+    <string name="k2go_lang_choose_title">Choisir la langue</string>
+    <string name="k2go_lang_search_hint">Rechercher des langues</string>
+    <string name="k2go_lang_all">TOUTES LES LANGUES</string>
+    <string name="k2go_lang_helper_system">Votre téléphone est réglé sur %1$s — nous allons le suivre.\nAppuyez ci-dessus pour choisir une langue spécifique.</string>
+    <string name="k2go_lang_helper_specific">L\'application et le contenu seront en %1$s.</string>
+    <string name="k2go_lang_settings_sub">Définissez séparément les langues de l\'application et du contenu.</string>
+    <string name="k2go_lang_app_label">LANGUE DE L\'APPLICATION</string>
+    <string name="k2go_lang_content_label">LANGUE DU CONTENU</string>
+    <string name="k2go_lang_app_helper">Menus, boutons et messages.</string>
+    <string name="k2go_lang_content_helper">La langue par défaut lorsque vous ajoutez du contenu (Wikipedia, livres, cartes).</string>
+    <string name="k2go_lang_content_note">Vous pouvez toujours choisir une langue différente pour chaque élément de contenu lorsque vous l\'ajoutez.</string>
+    <string name="k2go_lang_same_as_app">Comme la langue de l\'application</string>
+    <string name="k2go_lang_choose_content_title">Choisir la langue du contenu</string>
 </resources>

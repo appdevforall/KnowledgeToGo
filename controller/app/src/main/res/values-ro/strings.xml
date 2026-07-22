@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">DESCHIS</string>
     <string name="k2go_sign_closed">ÎNCHIS</string>
+    <string name="k2go_lang_label">LIMBĂ</string>
+    <string name="k2go_lang_follow_system">Urmează limba sistemului</string>
+    <string name="k2go_lang_choose_title">Alege limba</string>
+    <string name="k2go_lang_search_hint">Caută limbi</string>
+    <string name="k2go_lang_all">TOATE LIMBILE</string>
+    <string name="k2go_lang_helper_system">Telefonul tău este setat pe %1$s — o vom folosi.\nApasă mai sus pentru a alege o anumită limbă.</string>
+    <string name="k2go_lang_helper_specific">Aplicația și conținutul vor fi în %1$s.</string>
+    <string name="k2go_lang_settings_sub">Setează separat limbile aplicației și ale conținutului.</string>
+    <string name="k2go_lang_app_label">LIMBA APLICAȚIEI</string>
+    <string name="k2go_lang_content_label">LIMBA CONȚINUTULUI</string>
+    <string name="k2go_lang_app_helper">Meniuri, butoane și mesaje.</string>
+    <string name="k2go_lang_content_helper">Limba implicită când adaugi conținut (Wikipedia, cărți, hărți).</string>
+    <string name="k2go_lang_content_note">Poți alege o altă limbă pentru fiecare element de conținut când îl adaugi.</string>
+    <string name="k2go_lang_same_as_app">La fel ca limba aplicației</string>
+    <string name="k2go_lang_choose_content_title">Alege limba conținutului</string>
 </resources>

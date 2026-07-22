@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">NYITVA</string>
     <string name="k2go_sign_closed">ZÁRVA</string>
+    <string name="k2go_lang_label">NYELV</string>
+    <string name="k2go_lang_follow_system">Rendszernyelv követése</string>
+    <string name="k2go_lang_choose_title">Nyelv kiválasztása</string>
+    <string name="k2go_lang_search_hint">Nyelvek keresése</string>
+    <string name="k2go_lang_all">ÖSSZES NYELV</string>
+    <string name="k2go_lang_helper_system">A telefonod nyelve: %1$s — ezt követjük.\nKoppints fentre, ha inkább egy adott nyelvet választanál.</string>
+    <string name="k2go_lang_helper_specific">Az alkalmazás és a tartalom nyelve: %1$s.</string>
+    <string name="k2go_lang_settings_sub">Állítsd be külön az alkalmazás és a tartalom nyelvét.</string>
+    <string name="k2go_lang_app_label">ALKALMAZÁS NYELVE</string>
+    <string name="k2go_lang_content_label">TARTALOM NYELVE</string>
+    <string name="k2go_lang_app_helper">Menük, gombok és üzenetek.</string>
+    <string name="k2go_lang_content_helper">Az alapértelmezett nyelv tartalom hozzáadásakor (Wikipedia, könyvek, térképek).</string>
+    <string name="k2go_lang_content_note">Hozzáadáskor minden tartalmi elemhez külön nyelvet is választhatsz.</string>
+    <string name="k2go_lang_same_as_app">Megegyezik az alkalmazás nyelvével</string>
+    <string name="k2go_lang_choose_content_title">Tartalom nyelvének kiválasztása</string>
 </resources>

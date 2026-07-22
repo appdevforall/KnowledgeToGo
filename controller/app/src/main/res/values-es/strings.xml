@@ -899,4 +899,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">ABIERTO</string>
     <string name="k2go_sign_closed">CERRADO</string>
+    <string name="k2go_lang_label">IDIOMA</string>
+    <string name="k2go_lang_follow_system">Seguir el idioma del sistema</string>
+    <string name="k2go_lang_choose_title">Elegir idioma</string>
+    <string name="k2go_lang_search_hint">Buscar idiomas</string>
+    <string name="k2go_lang_all">TODOS LOS IDIOMAS</string>
+    <string name="k2go_lang_helper_system">Tu teléfono está configurado en %1$s: lo seguiremos.\nToca arriba para elegir un idioma específico.</string>
+    <string name="k2go_lang_helper_specific">La aplicación y el contenido estarán en %1$s.</string>
+    <string name="k2go_lang_settings_sub">Configura por separado los idiomas de la aplicación y del contenido.</string>
+    <string name="k2go_lang_app_label">IDIOMA DE LA APLICACIÓN</string>
+    <string name="k2go_lang_content_label">IDIOMA DEL CONTENIDO</string>
+    <string name="k2go_lang_app_helper">Menús, botones y mensajes.</string>
+    <string name="k2go_lang_content_helper">El idioma predeterminado cuando añades contenido (Wikipedia, libros, mapas).</string>
+    <string name="k2go_lang_content_note">Aún puedes elegir un idioma diferente para cada elemento de contenido al añadirlo.</string>
+    <string name="k2go_lang_same_as_app">Igual que el idioma de la aplicación</string>
+    <string name="k2go_lang_choose_content_title">Elegir idioma del contenido</string>
 </resources>

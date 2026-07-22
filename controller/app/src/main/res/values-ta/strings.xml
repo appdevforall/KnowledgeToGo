@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">திறந்தது</string>
     <string name="k2go_sign_closed">மூடியது</string>
+    <string name="k2go_lang_label">மொழி</string>
+    <string name="k2go_lang_follow_system">கணினி மொழியைப் பின்பற்று</string>
+    <string name="k2go_lang_choose_title">மொழியைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_lang_search_hint">மொழிகளைத் தேடு</string>
+    <string name="k2go_lang_all">அனைத்து மொழிகளும்</string>
+    <string name="k2go_lang_helper_system">உங்கள் ஃபோன் %1$s இல் அமைக்கப்பட்டுள்ளது — அதைப் பின்பற்றுவோம்.\nகுறிப்பிட்ட மொழியைத் தேர்ந்தெடுக்க மேலே தட்டவும்.</string>
+    <string name="k2go_lang_helper_specific">ஆப்ஸும் உள்ளடக்கமும் %1$s இல் இருக்கும்.</string>
+    <string name="k2go_lang_settings_sub">ஆப்ஸ் மற்றும் உள்ளடக்க மொழிகளைத் தனித்தனியாக அமைக்கவும்.</string>
+    <string name="k2go_lang_app_label">ஆப்ஸ் மொழி</string>
+    <string name="k2go_lang_content_label">உள்ளடக்க மொழி</string>
+    <string name="k2go_lang_app_helper">மெனுக்கள், பட்டன்கள் மற்றும் செய்திகள்.</string>
+    <string name="k2go_lang_content_helper">நீங்கள் உள்ளடக்கம் சேர்க்கும்போது இயல்பு மொழி (Wikipedia, புத்தகங்கள், வரைபடங்கள்).</string>
+    <string name="k2go_lang_content_note">ஒவ்வொரு உள்ளடக்க உருப்படியையும் சேர்க்கும்போது வேறு மொழியைத் தேர்ந்தெடுக்கலாம்.</string>
+    <string name="k2go_lang_same_as_app">ஆப்ஸ் மொழியைப் போலவே</string>
+    <string name="k2go_lang_choose_content_title">உள்ளடக்க மொழியைத் தேர்ந்தெடுக்கவும்</string>
 </resources>

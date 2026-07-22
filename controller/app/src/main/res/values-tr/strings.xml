@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">AÇIK</string>
     <string name="k2go_sign_closed">KAPALI</string>
+    <string name="k2go_lang_label">DİL</string>
+    <string name="k2go_lang_follow_system">Sistem dilini kullan</string>
+    <string name="k2go_lang_choose_title">Dil seçin</string>
+    <string name="k2go_lang_search_hint">Dilleri ara</string>
+    <string name="k2go_lang_all">TÜM DİLLER</string>
+    <string name="k2go_lang_helper_system">Telefonunuz %1$s olarak ayarlı — onu kullanacağız.\nBelirli bir dil seçmek için yukarıya dokunun.</string>
+    <string name="k2go_lang_helper_specific">Uygulama ve içerik %1$s dilinde olacak.</string>
+    <string name="k2go_lang_settings_sub">Uygulama ve içerik dillerini ayrı ayrı ayarlayın.</string>
+    <string name="k2go_lang_app_label">UYGULAMA DİLİ</string>
+    <string name="k2go_lang_content_label">İÇERİK DİLİ</string>
+    <string name="k2go_lang_app_helper">Menüler, düğmeler ve mesajlar.</string>
+    <string name="k2go_lang_content_helper">İçerik eklerken varsayılan dil (Wikipedia, kitaplar, haritalar).</string>
+    <string name="k2go_lang_content_note">Eklerken her içerik öğesi için yine de farklı bir dil seçebilirsiniz.</string>
+    <string name="k2go_lang_same_as_app">Uygulama diliyle aynı</string>
+    <string name="k2go_lang_choose_content_title">İçerik dilini seçin</string>
 </resources>

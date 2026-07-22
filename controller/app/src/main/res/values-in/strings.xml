@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">BUKA</string>
     <string name="k2go_sign_closed">TUTUP</string>
+    <string name="k2go_lang_label">BAHASA</string>
+    <string name="k2go_lang_follow_system">Ikuti bahasa sistem</string>
+    <string name="k2go_lang_choose_title">Pilih bahasa</string>
+    <string name="k2go_lang_search_hint">Cari bahasa</string>
+    <string name="k2go_lang_all">SEMUA BAHASA</string>
+    <string name="k2go_lang_helper_system">Ponsel Anda disetel ke %1$s — kami akan mengikutinya.\nKetuk di atas untuk memilih bahasa tertentu.</string>
+    <string name="k2go_lang_helper_specific">Aplikasi dan konten akan menggunakan %1$s.</string>
+    <string name="k2go_lang_settings_sub">Atur bahasa aplikasi dan konten secara terpisah.</string>
+    <string name="k2go_lang_app_label">BAHASA APLIKASI</string>
+    <string name="k2go_lang_content_label">BAHASA KONTEN</string>
+    <string name="k2go_lang_app_helper">Menu, tombol, dan pesan.</string>
+    <string name="k2go_lang_content_helper">Bahasa default saat Anda menambahkan konten (Wikipedia, buku, peta).</string>
+    <string name="k2go_lang_content_note">Anda masih dapat memilih bahasa berbeda untuk setiap item konten saat menambahkannya.</string>
+    <string name="k2go_lang_same_as_app">Sama dengan bahasa aplikasi</string>
+    <string name="k2go_lang_choose_content_title">Pilih bahasa konten</string>
 </resources>

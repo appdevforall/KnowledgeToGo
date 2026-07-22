@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">ΑΝΟΙΧΤΑ</string>
     <string name="k2go_sign_closed">ΚΛΕΙΣΤΑ</string>
+    <string name="k2go_lang_label">ΓΛΩΣΣΑ</string>
+    <string name="k2go_lang_follow_system">Χρήση γλώσσας συστήματος</string>
+    <string name="k2go_lang_choose_title">Επιλογή γλώσσας</string>
+    <string name="k2go_lang_search_hint">Αναζήτηση γλωσσών</string>
+    <string name="k2go_lang_all">ΟΛΕΣ ΟΙ ΓΛΩΣΣΕΣ</string>
+    <string name="k2go_lang_helper_system">Το τηλέφωνό σας είναι ρυθμισμένο στα %1$s — θα την ακολουθήσουμε.\nΠατήστε παραπάνω για να επιλέξετε μια συγκεκριμένη γλώσσα.</string>
+    <string name="k2go_lang_helper_specific">Η εφαρμογή και το περιεχόμενο θα είναι στα %1$s.</string>
+    <string name="k2go_lang_settings_sub">Ορίστε ξεχωριστά τη γλώσσα της εφαρμογής και του περιεχομένου.</string>
+    <string name="k2go_lang_app_label">ΓΛΩΣΣΑ ΕΦΑΡΜΟΓΗΣ</string>
+    <string name="k2go_lang_content_label">ΓΛΩΣΣΑ ΠΕΡΙΕΧΟΜΕΝΟΥ</string>
+    <string name="k2go_lang_app_helper">Μενού, κουμπιά και μηνύματα.</string>
+    <string name="k2go_lang_content_helper">Η προεπιλεγμένη γλώσσα όταν προσθέτετε περιεχόμενο (Wikipedia, βιβλία, χάρτες).</string>
+    <string name="k2go_lang_content_note">Μπορείτε ακόμη να επιλέξετε διαφορετική γλώσσα για κάθε στοιχείο περιεχομένου όταν το προσθέτετε.</string>
+    <string name="k2go_lang_same_as_app">Ίδια με τη γλώσσα εφαρμογής</string>
+    <string name="k2go_lang_choose_content_title">Επιλογή γλώσσας περιεχομένου</string>
 </resources>

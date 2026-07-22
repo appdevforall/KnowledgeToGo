@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">ખુલ્લું</string>
     <string name="k2go_sign_closed">બંધ</string>
+    <string name="k2go_lang_label">ભાષા</string>
+    <string name="k2go_lang_follow_system">સિસ્ટમની ભાષા અનુસરો</string>
+    <string name="k2go_lang_choose_title">ભાષા પસંદ કરો</string>
+    <string name="k2go_lang_search_hint">ભાષાઓ શોધો</string>
+    <string name="k2go_lang_all">બધી ભાષાઓ</string>
+    <string name="k2go_lang_helper_system">તમારો ફોન %1$s પર સેટ છે — અમે તેને અનુસરીશું.\nતેના બદલે કોઈ ચોક્કસ ભાષા પસંદ કરવા ઉપર ટૅપ કરો.</string>
+    <string name="k2go_lang_helper_specific">ઍપ અને સામગ્રી %1$s માં હશે.</string>
+    <string name="k2go_lang_settings_sub">ઍપ અને સામગ્રીની ભાષા અલગ-અલગ સેટ કરો.</string>
+    <string name="k2go_lang_app_label">ઍપની ભાષા</string>
+    <string name="k2go_lang_content_label">સામગ્રીની ભાષા</string>
+    <string name="k2go_lang_app_helper">મેનૂ, બટન અને સંદેશા.</string>
+    <string name="k2go_lang_content_helper">તમે સામગ્રી ઉમેરો ત્યારે ડિફૉલ્ટ ભાષા (Wikipedia, પુસ્તકો, નકશા).</string>
+    <string name="k2go_lang_content_note">તમે દરેક સામગ્રી આઇટમ ઉમેરો ત્યારે તેના માટે અલગ ભાષા પસંદ કરી શકો છો.</string>
+    <string name="k2go_lang_same_as_app">ઍપની ભાષા જેવી જ</string>
+    <string name="k2go_lang_choose_content_title">સામગ્રીની ભાષા પસંદ કરો</string>
 </resources>

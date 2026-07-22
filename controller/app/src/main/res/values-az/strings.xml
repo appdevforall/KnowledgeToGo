@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">AÇIQ</string>
     <string name="k2go_sign_closed">BAĞLI</string>
+    <string name="k2go_lang_label">DİL</string>
+    <string name="k2go_lang_follow_system">Sistem dilini izlə</string>
+    <string name="k2go_lang_choose_title">Dil seçin</string>
+    <string name="k2go_lang_search_hint">Dilləri axtar</string>
+    <string name="k2go_lang_all">BÜTÜN DİLLƏR</string>
+    <string name="k2go_lang_helper_system">Telefonunuz %1$s dilinə təyin edilib — biz ona uyğunlaşacağıq.\nKonkret bir dil seçmək üçün yuxarıya toxunun.</string>
+    <string name="k2go_lang_helper_specific">Tətbiq və məzmun %1$s dilində olacaq.</string>
+    <string name="k2go_lang_settings_sub">Tətbiq və məzmun dillərini ayrıca təyin edin.</string>
+    <string name="k2go_lang_app_label">TƏTBİQ DİLİ</string>
+    <string name="k2go_lang_content_label">MƏZMUN DİLİ</string>
+    <string name="k2go_lang_app_helper">Menyular, düymələr və mesajlar.</string>
+    <string name="k2go_lang_content_helper">Məzmun əlavə etdiyiniz zaman standart dil (Wikipedia, kitablar, xəritələr).</string>
+    <string name="k2go_lang_content_note">Hər məzmun elementini əlavə edərkən onun üçün fərqli dil seçə bilərsiniz.</string>
+    <string name="k2go_lang_same_as_app">Tətbiq dili ilə eyni</string>
+    <string name="k2go_lang_choose_content_title">Məzmun dilini seçin</string>
 </resources>

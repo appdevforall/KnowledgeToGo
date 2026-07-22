@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">OTVORENÉ</string>
     <string name="k2go_sign_closed">ZATVORENÉ</string>
+    <string name="k2go_lang_label">JAZYK</string>
+    <string name="k2go_lang_follow_system">Použiť jazyk systému</string>
+    <string name="k2go_lang_choose_title">Vyberte jazyk</string>
+    <string name="k2go_lang_search_hint">Hľadať jazyky</string>
+    <string name="k2go_lang_all">VŠETKY JAZYKY</string>
+    <string name="k2go_lang_helper_system">Telefón je nastavený na %1$s — použijeme ho.\nKlepnutím vyššie vyberte konkrétny jazyk.</string>
+    <string name="k2go_lang_helper_specific">Aplikácia a obsah budú v jazyku %1$s.</string>
+    <string name="k2go_lang_settings_sub">Nastavte jazyk aplikácie a obsahu samostatne.</string>
+    <string name="k2go_lang_app_label">JAZYK APLIKÁCIE</string>
+    <string name="k2go_lang_content_label">JAZYK OBSAHU</string>
+    <string name="k2go_lang_app_helper">Ponuky, tlačidlá a správy.</string>
+    <string name="k2go_lang_content_helper">Predvolený jazyk pri pridávaní obsahu (Wikipedia, knihy, mapy).</string>
+    <string name="k2go_lang_content_note">Pri pridávaní každej položky obsahu môžete stále vybrať iný jazyk.</string>
+    <string name="k2go_lang_same_as_app">Rovnaký ako jazyk aplikácie</string>
+    <string name="k2go_lang_choose_content_title">Vyberte jazyk obsahu</string>
 </resources>

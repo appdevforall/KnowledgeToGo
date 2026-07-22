@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">OTVORENO</string>
     <string name="k2go_sign_closed">ZATVORENO</string>
+    <string name="k2go_lang_label">ЈЕЗИК</string>
+    <string name="k2go_lang_follow_system">Прати језик система</string>
+    <string name="k2go_lang_choose_title">Изаберите језик</string>
+    <string name="k2go_lang_search_hint">Претражи језике</string>
+    <string name="k2go_lang_all">СВИ ЈЕЗИЦИ</string>
+    <string name="k2go_lang_helper_system">Телефон је подешен на %1$s — пратићемо га.\nДодирните горе да изаберете одређени језик.</string>
+    <string name="k2go_lang_helper_specific">Апликација и садржај биће на језику %1$s.</string>
+    <string name="k2go_lang_settings_sub">Подесите језике апликације и садржаја одвојено.</string>
+    <string name="k2go_lang_app_label">ЈЕЗИК АПЛИКАЦИЈЕ</string>
+    <string name="k2go_lang_content_label">ЈЕЗИК САДРЖАЈА</string>
+    <string name="k2go_lang_app_helper">Менији, дугмад и поруке.</string>
+    <string name="k2go_lang_content_helper">Подразумевани језик када додајете садржај (Wikipedia, књиге, мапе).</string>
+    <string name="k2go_lang_content_note">И даље можете изабрати другачији језик за сваку ставку садржаја када је додајете.</string>
+    <string name="k2go_lang_same_as_app">Исто као језик апликације</string>
+    <string name="k2go_lang_choose_content_title">Изаберите језик садржаја</string>
 </resources>

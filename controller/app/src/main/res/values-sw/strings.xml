@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">WAZI</string>
     <string name="k2go_sign_closed">IMEFUNGWA</string>
+    <string name="k2go_lang_label">LUGHA</string>
+    <string name="k2go_lang_follow_system">Fuata lugha ya mfumo</string>
+    <string name="k2go_lang_choose_title">Chagua lugha</string>
+    <string name="k2go_lang_search_hint">Tafuta lugha</string>
+    <string name="k2go_lang_all">LUGHA ZOTE</string>
+    <string name="k2go_lang_helper_system">Simu yako imewekwa kwa %1$s — tutaifuata.\nGusa hapo juu ili kuchagua lugha mahususi badala yake.</string>
+    <string name="k2go_lang_helper_specific">Programu na maudhui yatakuwa katika %1$s.</string>
+    <string name="k2go_lang_settings_sub">Weka lugha za programu na maudhui kando.</string>
+    <string name="k2go_lang_app_label">LUGHA YA PROGRAMU</string>
+    <string name="k2go_lang_content_label">LUGHA YA MAUDHUI</string>
+    <string name="k2go_lang_app_helper">Menyu, vitufe na ujumbe.</string>
+    <string name="k2go_lang_content_helper">Lugha chaguomsingi unapoongeza maudhui (Wikipedia, vitabu, ramani).</string>
+    <string name="k2go_lang_content_note">Bado unaweza kuchagua lugha tofauti kwa kila kipengele cha maudhui unapokiongeza.</string>
+    <string name="k2go_lang_same_as_app">Sawa na lugha ya programu</string>
+    <string name="k2go_lang_choose_content_title">Chagua lugha ya maudhui</string>
 </resources>

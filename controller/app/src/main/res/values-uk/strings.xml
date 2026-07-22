@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">ВІДЧИНЕНО</string>
     <string name="k2go_sign_closed">ЗАЧИНЕНО</string>
+    <string name="k2go_lang_label">МОВА</string>
+    <string name="k2go_lang_follow_system">Використовувати мову системи</string>
+    <string name="k2go_lang_choose_title">Виберіть мову</string>
+    <string name="k2go_lang_search_hint">Пошук мов</string>
+    <string name="k2go_lang_all">УСІ МОВИ</string>
+    <string name="k2go_lang_helper_system">На телефоні вибрано %1$s — використаємо її.\nТоркніться вище, щоб вибрати певну мову.</string>
+    <string name="k2go_lang_helper_specific">Застосунок і вміст будуть мовою %1$s.</string>
+    <string name="k2go_lang_settings_sub">Налаштуйте мови застосунку та вмісту окремо.</string>
+    <string name="k2go_lang_app_label">МОВА ЗАСТОСУНКУ</string>
+    <string name="k2go_lang_content_label">МОВА ВМІСТУ</string>
+    <string name="k2go_lang_app_helper">Меню, кнопки та повідомлення.</string>
+    <string name="k2go_lang_content_helper">Мова за замовчуванням під час додавання вмісту (Wikipedia, книги, карти).</string>
+    <string name="k2go_lang_content_note">Ви все одно можете вибрати іншу мову для кожного елемента вмісту під час додавання.</string>
+    <string name="k2go_lang_same_as_app">Така сама, як мова застосунку</string>
+    <string name="k2go_lang_choose_content_title">Виберіть мову вмісту</string>
 </resources>

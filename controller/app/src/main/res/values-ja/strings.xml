@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">開館中</string>
     <string name="k2go_sign_closed">閉館中</string>
+    <string name="k2go_lang_label">言語</string>
+    <string name="k2go_lang_follow_system">システムの言語に従う</string>
+    <string name="k2go_lang_choose_title">言語を選択</string>
+    <string name="k2go_lang_search_hint">言語を検索</string>
+    <string name="k2go_lang_all">すべての言語</string>
+    <string name="k2go_lang_helper_system">お使いのスマートフォンは %1$s に設定されています。これに従います。\n特定の言語を選ぶには上をタップしてください。</string>
+    <string name="k2go_lang_helper_specific">アプリとコンテンツは %1$s で表示されます。</string>
+    <string name="k2go_lang_settings_sub">アプリとコンテンツの言語を個別に設定します。</string>
+    <string name="k2go_lang_app_label">アプリの言語</string>
+    <string name="k2go_lang_content_label">コンテンツの言語</string>
+    <string name="k2go_lang_app_helper">メニュー、ボタン、メッセージ。</string>
+    <string name="k2go_lang_content_helper">コンテンツを追加するときの既定の言語（Wikipedia、書籍、地図）。</string>
+    <string name="k2go_lang_content_note">コンテンツを追加する際に、項目ごとに別の言語を選ぶこともできます。</string>
+    <string name="k2go_lang_same_as_app">アプリの言語と同じ</string>
+    <string name="k2go_lang_choose_content_title">コンテンツの言語を選択</string>
 </resources>
