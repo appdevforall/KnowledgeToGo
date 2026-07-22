@@ -15,11 +15,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import org.iiab.controller.R;
 import org.iiab.controller.applang.data.AppLocaleController;
 import org.iiab.controller.applang.data.ContentLanguage;
 import org.iiab.controller.applang.domain.AppLanguage;
 import org.iiab.controller.applang.domain.SupportedAppLanguages;
+import org.iiab.controller.delivery.data.AnalyticsConsent;
 import java.util.Locale;
 
 /**
@@ -138,13 +140,36 @@ public class WizardActivity extends AppCompatActivity {
     private void onPrimary() {
         if (step == 0) {
             step = 1;
+            render();
         } else if (step == 1) {
             step = 2;               // set before apply so it survives the recreate
             applyLanguage();
+            render();
         } else if (step == 2) {
-            if (allPermsGranted()) step = 3;
+            // ADFA-4802: after permissions, ask once for anonymous usage-stats consent
+            // (mirrors the legacy flow), then advance to "Set up your library".
+            if (allPermsGranted()) maybeAskAnalytics(() -> { step = 3; render(); });
         }
-        render();
+    }
+
+    /** One-time usage-stats consent prompt; runs {@code onDone} after the choice (or immediately
+     *  if already asked here or in the legacy flow). Reuses the analytics_enroll_* strings. */
+    private void maybeAskAnalytics(Runnable onDone) {
+        if (AnalyticsConsent.wasAsked(this)) { onDone.run(); return; }
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.analytics_enroll_title)
+                .setMessage(getString(R.string.analytics_enroll_body, getString(R.string.app_name)))
+                .setCancelable(false)
+                .setPositiveButton(R.string.analytics_enroll_accept, (d, w) -> setAnalytics(true, onDone))
+                .setNegativeButton(R.string.analytics_enroll_decline, (d, w) -> setAnalytics(false, onDone))
+                .show();
+    }
+
+    private void setAnalytics(boolean on, Runnable onDone) {
+        AnalyticsConsent.setEnabled(this, on);
+        AnalyticsConsent.markAsked(this);
+        org.iiab.controller.analytics.AnalyticsClient.with(this).applyConsent();
+        onDone.run();
     }
 
     private void goBack() {
