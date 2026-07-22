@@ -163,7 +163,7 @@ public class Step2OptionAFragment extends Fragment {
 
         double picks = (wikiInc && !sel.isEmpty() ? wikiSizeGb() : 0) + (booksInc ? BOOKS_GB : 0); // Maps ships with the system
         applyBar(osGb, picks);
-        download.setText(String.format(Locale.US, "Download library · %.1f GB", osGb + picks));
+        download.setText(getString(R.string.k2go_step2_download_fmt, osGb + picks));
         boolean ok = !wikiInvalid();
         download.setEnabled(ok);
         download.setAlpha(ok ? 1f : 0.5f);

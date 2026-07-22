@@ -239,4 +239,53 @@
     <string name="k2go_wiki_det_nopic">Text only</string>
     <string name="k2go_wiki_det_mini">Summaries</string>
     <string name="k2go_preview_banner">Preview — not functional yet</string>
+    <!-- ADFA-4795: redesign dynamic text (cards, editions, connect states, badges, toggles, formats) sweep 3 -->
+    <string name="k2go_card_books" translatable="false">Read a book</string>
+    <string name="k2go_card_code" translatable="false">Code on the Go</string>
+    <string name="k2go_card_wikipedia" translatable="false">Explore Wikipedia</string>
+    <string name="k2go_card_courses" translatable="false">Take courses</string>
+    <string name="k2go_card_maps" translatable="false">Navigate maps</string>
+    <string name="k2go_home_ready" translatable="false">Ready to explore</string>
+    <string name="k2go_card_ready" translatable="false">Ready</string>
+    <string name="k2go_card_connecting" translatable="false">Connecting</string>
+    <string name="k2go_card_unavailable" translatable="false">Unavailable · tap to retry</string>
+    <string name="k2go_card_not_installed" translatable="false">Not installed</string>
+    <string name="k2go_edition_basic" translatable="false">Basic</string>
+    <string name="k2go_edition_standard" translatable="false">Standard</string>
+    <string name="k2go_edition_full" translatable="false">Full</string>
+    <string name="k2go_edition_basic_desc" translatable="false">Wikipedia reader app + Books app</string>
+    <string name="k2go_edition_standard_desc" translatable="false">Basic plus Courses app</string>
+    <string name="k2go_edition_full_desc" translatable="false">Standard plus Maps app (all apps)</string>
+    <string name="k2go_connect_hotspot_unsupported" translatable="false">Hotspot needs Android 8 or newer</string>
+    <string name="k2go_connect_try_wifi" translatable="false">Try the Wi-Fi option instead.</string>
+    <string name="k2go_connect_starting_hotspot" translatable="false">Starting hotspot…</string>
+    <string name="k2go_connect_hotspot_failed" translatable="false">Couldn\'t start the hotspot</string>
+    <string name="k2go_connect_enable_location" translatable="false">Enable Location, then tap Hotspot again.</string>
+    <string name="k2go_connect_no_wifi" translatable="false">Not on a Wi-Fi network</string>
+    <string name="k2go_connect_join_wifi" translatable="false">Join a Wi-Fi, or use Hotspot.</string>
+    <string name="k2go_fallback_wifi" translatable="false">Wi-Fi: %1$s</string>
+    <string name="k2go_fallback_pass" translatable="false">Password: %1$s</string>
+    <string name="k2go_step2_download_fmt" translatable="false">Download library · %.1f GB</string>
+    <string name="k2go_step2_review" translatable="false">Review</string>
+    <string name="k2go_step2b_info_books" translatable="false">Books — coming soon (no content manager yet · 0 GB).</string>
+    <string name="k2go_step2b_info_maps" translatable="false">Maps — included with your edition.</string>
+    <string name="k2go_step2b_info_courses" translatable="false">Courses — set up on the device after install.</string>
+    <string name="k2go_step2b_info_review" translatable="false">Review your library, then download.</string>
+    <string name="k2go_setting_up_library" translatable="false">Setting up your library…</string>
+    <string name="k2go_clone_hide_code" translatable="false">Hide code  ▴</string>
+    <string name="k2go_clone_chooser_send_code" translatable="false">Send transfer code</string>
+    <string name="k2go_clone_scan_prompt_receive" translatable="false">Scan the other phone\'s transfer code</string>
+    <string name="k2go_clone_chooser_share_app" translatable="false">Share K2Go app</string>
+    <string name="k2go_clone_calculating" translatable="false">Calculating what to copy…</string>
+    <string name="k2go_clone_why_incompat_open" translatable="false">Why aren\'t they compatible?  ▴</string>
+    <string name="k2go_clone_technical_details_open" translatable="false">Technical details  ▴</string>
+    <string name="k2go_clone_rcv_join_caption" translatable="false">Connect to the other phone\'s Wi-Fi (or its hotspot) in your phone\'s settings.</string>
+    <string name="k2go_clone_rcv_scan_caption" translatable="false">Now scan the other phone\'s transfer code.</string>
+    <string name="k2go_clone_rcv_scan_wifi" translatable="false">Scan via Wi-Fi settings</string>
+    <string name="k2go_clone_rcv_scan_start" translatable="false">Scan to start</string>
+    <string name="k2go_clone_enter_text_open" translatable="false">Scan didn\'t work? Enter code as text  ▴</string>
+    <string name="k2go_badge_join" translatable="false">Join</string>
+    <string name="k2go_badge_start" translatable="false">Start</string>
+    <string name="k2go_badge_getapp" translatable="false">Get app</string>
+    <string name="k2go_badge_copy" translatable="false">Copy</string>
 </resources>

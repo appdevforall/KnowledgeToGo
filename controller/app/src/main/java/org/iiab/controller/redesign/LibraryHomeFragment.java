@@ -62,11 +62,11 @@ public class LibraryHomeFragment extends Fragment {
         homeStatusDot = root.findViewById(R.id.k2go_home_status_dot);
 
         cards.clear();
-        cards.add(new Card("books",   "Read a book",       false, R.drawable.ic_card_book));
-        cards.add(new Card("code",    "Code on the Go",    false, R.drawable.ic_card_code));
-        cards.add(new Card("kiwix",   "Explore Wikipedia", true,  R.drawable.ic_card_wikipedia));
-        cards.add(new Card("kolibri", "Take courses",      false, R.drawable.ic_card_courses));
-        cards.add(new Card("maps",    "Navigate maps",     false, R.drawable.ic_card_maps));
+        cards.add(new Card("books",   getString(R.string.k2go_card_books),       false, R.drawable.ic_card_book));
+        cards.add(new Card("code",    getString(R.string.k2go_card_code),    false, R.drawable.ic_card_code));
+        cards.add(new Card("kiwix",   getString(R.string.k2go_card_wikipedia), true,  R.drawable.ic_card_wikipedia));
+        cards.add(new Card("kolibri", getString(R.string.k2go_card_courses),      false, R.drawable.ic_card_courses));
+        cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));
 
         buildCards(inflater, root.findViewById(R.id.k2go_cards));
 
@@ -132,7 +132,7 @@ public class LibraryHomeFragment extends Fragment {
 
     private void refreshStatuses() {
         boolean alive = ServerStateRepository.get().current().alive;
-        if (homeStatus != null) homeStatus.setText(alive ? "Ready to explore" : "Starting your library…");
+        if (homeStatus != null) homeStatus.setText(alive ? getString(R.string.k2go_home_ready) : getString(R.string.k2go_starting_library));
         if (homeStatusDot != null) tint(homeStatusDot, alive ? R.color.k2go_leaf : R.color.k2go_amber);
         for (final Card c : cards) {
             if (c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0) {
@@ -158,10 +158,10 @@ public class LibraryHomeFragment extends Fragment {
         int dotColor, textColor;
         String label;
         switch (st) {
-            case GREEN: dotColor = R.color.k2go_leaf; textColor = R.color.k2go_leaf; label = "Ready"; break;
-            case AMBER: dotColor = R.color.k2go_amber; textColor = R.color.k2go_amber_text; label = "Connecting"; break;
-            case RED:   dotColor = R.color.k2go_clay; textColor = R.color.k2go_clay; label = "Unavailable · tap to retry"; break;
-            default:    dotColor = R.color.k2go_muted; textColor = R.color.k2go_muted; label = "Not installed"; break;
+            case GREEN: dotColor = R.color.k2go_leaf; textColor = R.color.k2go_leaf; label = getString(R.string.k2go_card_ready); break;
+            case AMBER: dotColor = R.color.k2go_amber; textColor = R.color.k2go_amber_text; label = getString(R.string.k2go_card_connecting); break;
+            case RED:   dotColor = R.color.k2go_clay; textColor = R.color.k2go_clay; label = getString(R.string.k2go_card_unavailable); break;
+            default:    dotColor = R.color.k2go_muted; textColor = R.color.k2go_muted; label = getString(R.string.k2go_card_not_installed); break;
         }
         tint(c.dot, dotColor);
         c.status.setText(label);

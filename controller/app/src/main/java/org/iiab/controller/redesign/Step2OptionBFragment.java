@@ -31,10 +31,8 @@ import org.json.JSONObject;
  */
 public class Step2OptionBFragment extends Fragment {
 
-    private static final String[] NAMES = {"Wikipedia", "Books", "Maps", "Courses", "Review"};
-    private static final String[] INFO = {
-            "", "Books — coming soon (no content manager yet · 0 GB).", "Maps — included with your edition.",
-            "Courses — set up on the device after install.", "Review your library, then download."};
+    private static final int[] NAMES = {R.string.k2go_src_wikipedia, R.string.k2go_src_books, R.string.k2go_src_maps, R.string.k2go_src_courses, R.string.k2go_step2_review};
+    private static final int[] INFO = {0, R.string.k2go_step2b_info_books, R.string.k2go_step2b_info_maps, R.string.k2go_step2b_info_courses, R.string.k2go_step2b_info_review};
 
     private int step = 0;
     private String lang;
@@ -147,11 +145,11 @@ public class Step2OptionBFragment extends Fragment {
             dots[i].setBackgroundResource(on ? R.drawable.k2go_primary_bg : R.drawable.k2go_card_bg);
             dots[i].setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_muted));
         }
-        caption.setText(NAMES[step]);
+        caption.setText(getString(NAMES[step]));
         wikiBlock.setVisibility(step == 0 ? View.VISIBLE : View.GONE);
         versions.setVisibility(step == 0 && wikiIncluded ? View.VISIBLE : View.GONE);
         info.setVisibility(step == 0 ? View.GONE : View.VISIBLE);
-        info.setText(INFO[step]);
+        info.setText(INFO[step] == 0 ? "" : getString(INFO[step]));
         btnBack.setVisibility(step == 0 ? View.INVISIBLE : View.VISIBLE);
         btnSkip.setVisibility(step < 4 ? View.VISIBLE : View.GONE);
         updateHint();
@@ -163,7 +161,7 @@ public class Step2OptionBFragment extends Fragment {
     }
 
     private void updateNextLabel() {
-        btnNext.setText(step == 4 ? String.format(Locale.US, "Download library · %.1f GB", lastTotal) : "Next");
+        btnNext.setText(step == 4 ? getString(R.string.k2go_step2_download_fmt, lastTotal) : getString(R.string.k2go_next));
     }
 
     private void refreshProjection() {

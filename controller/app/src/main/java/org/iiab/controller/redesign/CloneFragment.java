@@ -219,7 +219,7 @@ public class CloneFragment extends Fragment {
         showcode.setOnClickListener(x -> {
             codeExpanded = !codeExpanded;
             codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
-            showcode.setText(codeExpanded ? "Hide code  ▴" : "Scan didn't work? Show code as text  ▾");
+            showcode.setText(codeExpanded ? getString(R.string.k2go_clone_hide_code) : getString(R.string.k2go_clone_scan_show_text));
         });
         copyBtn.setOnClickListener(x -> {
             ClipboardManager cm = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -228,14 +228,14 @@ public class CloneFragment extends Fragment {
         });
         shareBtn.setOnClickListener(x -> {
             Intent i = new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, currentPayload);
-            startActivity(Intent.createChooser(i, "Send transfer code"));
+            startActivity(Intent.createChooser(i, getString(R.string.k2go_clone_chooser_send_code)));
         });
 
         receiveStart.setOnClickListener(x -> onReceiveStart());
         cancel.setOnClickListener(x -> onReceiveCancel());
         rcvScan.setOnClickListener(x -> {
             if (rStage == RStage.JOIN) openWifiSettings();
-            else launchScanner("Scan the other phone's transfer code");
+            else launchScanner(getString(R.string.k2go_clone_scan_prompt_receive));
         });
         rcvSkip.setOnClickListener(x -> { rStage = RStage.START; render(); });
         rcvShowPaste.setOnClickListener(x -> { pasteExpanded = !pasteExpanded; renderReceive(); });
@@ -469,9 +469,9 @@ public class CloneFragment extends Fragment {
     private void renderHotspot() {
         LocalHotspotManager.State st = hs.state().getValue();
         LocalHotspotManager.Phase phase = (st != null) ? st.phase : LocalHotspotManager.Phase.OFF;
-        if (!LocalHotspotManager.isSupported()) { simpleState("Hotspot needs Android 8 or newer", "Try the Wi-Fi option instead."); return; }
-        if (phase == LocalHotspotManager.Phase.OFF || phase == LocalHotspotManager.Phase.STARTING) { simpleState("Starting hotspot…", ""); return; }
-        if (phase == LocalHotspotManager.Phase.FAILED) { simpleState("Couldn't start the hotspot", "Enable Location, then tap Hotspot again."); return; }
+        if (!LocalHotspotManager.isSupported()) { simpleState(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi)); return; }
+        if (phase == LocalHotspotManager.Phase.OFF || phase == LocalHotspotManager.Phase.STARTING) { simpleState(getString(R.string.k2go_connect_starting_hotspot), ""); return; }
+        if (phase == LocalHotspotManager.Phase.FAILED) { simpleState(getString(R.string.k2go_connect_hotspot_failed), getString(R.string.k2go_connect_enable_location)); return; }
 
         String ssid = (st.ssid != null) ? st.ssid : "";
         String pass = (st.passphrase != null) ? st.passphrase : "";
@@ -486,7 +486,7 @@ public class CloneFragment extends Fragment {
             stepTitle.setText(getString(R.string.k2go_clone_step1_title));
             caption.setText(getString(R.string.k2go_clone_point_camera_join));
             subCaption.setText("");
-            setFallback(new String[]{"Wi-Fi: " + ssid, "Password: " + pass});
+            setFallback(new String[]{getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
             advance.setText(getString(R.string.k2go_clone_next_get_app));
             styleAdvance(true);
             footer.setText("");
@@ -503,7 +503,7 @@ public class CloneFragment extends Fragment {
 
     private void renderWifi() {
         String ip = NetworkInterfaces.discover().wifiIp;
-        if (ip == null) { buildSteps(false); advance.setVisibility(View.GONE); simpleState("Not on a Wi-Fi network", "Join a Wi-Fi, or use Hotspot."); return; }
+        if (ip == null) { buildSteps(false); advance.setVisibility(View.GONE); simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi)); return; }
         buildSteps(false);
         if (stage == Stage.JOIN) {
             qr.setVisibility(View.GONE);
@@ -635,7 +635,7 @@ public class CloneFragment extends Fragment {
                     .setType("application/vnd.android.package-archive")
                     .putExtra(Intent.EXTRA_STREAM, uri)
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            startActivity(Intent.createChooser(i, "Share K2Go app"));
+            startActivity(Intent.createChooser(i, getString(R.string.k2go_clone_chooser_share_app)));
         } catch (Exception e) {
             Log.e("IIAB-Clone", "APK share sheet failed", e);
             Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_share_sheet_fail), Toast.LENGTH_SHORT).show();
@@ -771,7 +771,7 @@ public class CloneFragment extends Fragment {
                 pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
             } else {
                 pbar.setIndeterminate(true);
-                pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? "Calculating what to copy\u2026" : "Connecting\u2026");
+                pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? getString(R.string.k2go_clone_calculating) : getString(R.string.k2go_clone_connecting));
                 pFile.setText(""); pStats.setText("");
             }
             return;
@@ -784,9 +784,9 @@ public class CloneFragment extends Fragment {
             rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
             rcvIncompat.setVisibility(View.VISIBLE);
             incompatWhyText.setVisibility(incompatWhyOpen ? View.VISIBLE : View.GONE);
-            incompatWhy.setText(incompatWhyOpen ? "Why aren't they compatible?  ▴" : "Why aren't they compatible?  ▾");
+            incompatWhy.setText(incompatWhyOpen ? getString(R.string.k2go_clone_why_incompat_open) : getString(R.string.k2go_clone_why_incompat));
             incompatTechText.setVisibility(incompatTechOpen ? View.VISIBLE : View.GONE);
-            incompatTech.setText(incompatTechOpen ? "Technical details  ▴" : "Technical details  ▾");
+            incompatTech.setText(incompatTechOpen ? getString(R.string.k2go_clone_technical_details_open) : getString(R.string.k2go_clone_technical_details));
             incompatTechText.setText(getString(R.string.k2go_clone_tech_arch, bitsLabel(archBits()), bitsLabel(incompatHostBits)));
             return;
         }
@@ -794,11 +794,11 @@ public class CloneFragment extends Fragment {
         boolean atJoin = (rStage == RStage.JOIN);
         rcvSteps.setVisibility(View.VISIBLE);
         rcvCaption.setVisibility(View.VISIBLE);
-        rcvCaption.setText(atJoin ? "Connect to the other phone's Wi-Fi (or its hotspot) in your phone's settings."
-                : "Now scan the other phone's transfer code.");
+        rcvCaption.setText(atJoin ? getString(R.string.k2go_clone_rcv_join_caption)
+                : getString(R.string.k2go_clone_rcv_scan_caption));
         rcvIntro.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvNotice.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvScan.setText(atJoin ? "Scan via Wi-Fi settings" : "Scan to start");
+        rcvScan.setText(atJoin ? getString(R.string.k2go_clone_rcv_scan_wifi) : getString(R.string.k2go_clone_rcv_scan_start));
         rcvScan.setVisibility(View.VISIBLE);
         rcvSub.setText(atJoin ? "Step 1 of 2" : "Step 2 of 2");
         rcvSub.setVisibility(View.VISIBLE);
@@ -808,16 +808,16 @@ public class CloneFragment extends Fragment {
         rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvCamNote.setVisibility(View.GONE);
         rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvShowPaste.setText(pasteExpanded ? "Scan didn't work? Enter code as text  \u25B4" : "Scan didn't work? Enter code as text  \u25BE");
+        rcvShowPaste.setText(pasteExpanded ? getString(R.string.k2go_clone_enter_text_open) : getString(R.string.k2go_clone_scan_enter_text));
         pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
     }
 
     private void buildReceiveSteps() {
         rcvSteps.removeAllViews();
         boolean atStart = (rStage == RStage.START);
-        rcvSteps.addView(badge("1", "Join", !atStart, atStart));
+        rcvSteps.addView(badge("1", getString(R.string.k2go_badge_join), !atStart, atStart));
         rcvSteps.addView(arrow());
-        rcvSteps.addView(badge("2", "Start", atStart, false));
+        rcvSteps.addView(badge("2", getString(R.string.k2go_badge_start), atStart, false));
     }
 
     private void launchScanner(String prompt) {
@@ -952,11 +952,11 @@ public class CloneFragment extends Fragment {
         steps.removeAllViews();
         steps.setVisibility(View.VISIBLE);
         int active = sendApp ? 2 : (stage == Stage.JOIN ? 1 : 3);
-        steps.addView(badge("1", "Join", active == 1, active > 1));
+        steps.addView(badge("1", getString(R.string.k2go_badge_join), active == 1, active > 1));
         steps.addView(arrow());
-        steps.addView(badge("2", "Get app", active == 2, getAppDone));
+        steps.addView(badge("2", getString(R.string.k2go_badge_getapp), active == 2, getAppDone));
         steps.addView(arrow());
-        steps.addView(badge("3", "Copy", active == 3, false));
+        steps.addView(badge("3", getString(R.string.k2go_badge_copy), active == 3, false));
     }
 
     private View badge(String num, String label, boolean active, boolean done) {

@@ -129,15 +129,15 @@ public class ConnectFragment extends Fragment {
         LocalHotspotManager.Phase phase = (st != null) ? st.phase : LocalHotspotManager.Phase.OFF;
 
         if (!LocalHotspotManager.isSupported()) {
-            simpleState("Hotspot needs Android 8 or newer", "Try the Wi-Fi option instead.");
+            simpleState(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi));
             return;
         }
         if (phase == LocalHotspotManager.Phase.OFF || phase == LocalHotspotManager.Phase.STARTING) {
-            simpleState("Starting hotspot…", "");
+            simpleState(getString(R.string.k2go_connect_starting_hotspot), "");
             return;
         }
         if (phase == LocalHotspotManager.Phase.FAILED) {
-            simpleState("Couldn't start the hotspot", "Enable Location, then tap Hotspot again.");
+            simpleState(getString(R.string.k2go_connect_hotspot_failed), getString(R.string.k2go_connect_enable_location));
             return;
         }
 
@@ -149,7 +149,7 @@ public class ConnectFragment extends Fragment {
             setQr("WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;");
             caption.setText(R.string.k2go_scan_join_hotspot);
             subCaption.setText(R.string.k2go_just_scan);
-            setFallback(new String[]{"Wi-Fi: " + ssid, "Password: " + pass});
+            setFallback(new String[]{getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
             advance.setText(R.string.k2go_connect_shownext);
             styleAdvance(true);
         } else {
@@ -171,7 +171,7 @@ public class ConnectFragment extends Fragment {
         advance.setVisibility(View.GONE);
         String ip = NetworkInterfaces.discover().wifiIp;
         if (ip == null) {
-            simpleState("Not on a Wi-Fi network", "Join a Wi-Fi, or use Hotspot.");
+            simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi));
             return;
         }
         setQr(browseUrl(ip));

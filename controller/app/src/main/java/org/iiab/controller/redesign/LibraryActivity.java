@@ -157,7 +157,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             installBar.setProgress(st.percent);
             installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
         } else {
-            installStatus.setText(st.message.isEmpty() ? "Setting up your library…" : st.message);
+            installStatus.setText(st.message.isEmpty() ? getString(R.string.k2go_setting_up_library) : st.message);
             installBar.setIndeterminate(true);
             installDetail.setText("");
         }
