@@ -308,4 +308,12 @@
     <string name="k2go_arch_unknown">unknown</string>
     <string name="k2go_sign_open">OPEN</string>
     <string name="k2go_sign_closed">CLOSED</string>
+    <!-- ADFA-4797: wizard language picker. translatable=false for now; localized in a follow-up. -->
+    <string name="k2go_lang_label" translatable="false">LANGUAGE</string>
+    <string name="k2go_lang_follow_system" translatable="false">Follow system language</string>
+    <string name="k2go_lang_choose_title" translatable="false">Choose language</string>
+    <string name="k2go_lang_search_hint" translatable="false">Search languages</string>
+    <string name="k2go_lang_all" translatable="false">ALL LANGUAGES</string>
+    <string name="k2go_lang_helper_system" translatable="false">Your phone is set to %1$s — we\'ll follow it.\nTap above to choose a specific language instead.</string>
+    <string name="k2go_lang_helper_specific" translatable="false">App and content will be in %1$s.</string>
 </resources>

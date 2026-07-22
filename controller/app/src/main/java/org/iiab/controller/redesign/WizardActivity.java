@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -19,6 +18,9 @@ import androidx.core.content.ContextCompat;
 import org.iiab.controller.R;
 import org.iiab.controller.applang.data.AppLocaleController;
 import org.iiab.controller.applang.data.ContentLanguage;
+import org.iiab.controller.applang.domain.AppLanguage;
+import org.iiab.controller.applang.domain.SupportedAppLanguages;
+import java.util.Locale;
 
 /**
  * New first-run onboarding (ADFA-4725): Welcome -> Language -> Permissions -> Set up your library.
@@ -33,14 +35,28 @@ public class WizardActivity extends AppCompatActivity {
     private TextView title, subtitle, primary;
     private View welcome, language, perms, setup, back;
     private TextView notifStatus, storageStatus, batteryStatus;
+    private TextView langBoxLabel, langHelper;
 
     private final ActivityResultLauncher<Intent> permResult =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> render());
+
+    private final ActivityResultLauncher<Intent> langPicker =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
+                if (r.getResultCode() == RESULT_OK && r.getData() != null) {
+                    langTag = r.getData().getStringExtra(WizardLanguagePickerActivity.EXTRA_TAG);
+                    if (langTag == null) langTag = "";
+                    updateLangBox();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_k2go_wizard);
+        // ADFA-4797: survive the locale-change recreate — keep the step and re-read the
+        // applied language, so we don't flash back to the welcome step.
+        langTag = AppLocaleController.currentTag();
+        if (b != null) step = b.getInt("step", 0);
         title = findViewById(R.id.wiz_title);
         subtitle = findViewById(R.id.wiz_subtitle);
         primary = findViewById(R.id.wiz_primary);
@@ -53,10 +69,13 @@ public class WizardActivity extends AppCompatActivity {
         storageStatus = findViewById(R.id.perm_storage_status);
         batteryStatus = findViewById(R.id.perm_battery_status);
 
-        // language selection
-        findViewById(R.id.lang_system).setOnClickListener(v -> pickLang(""));
-        findViewById(R.id.lang_en).setOnClickListener(v -> pickLang("en"));
-        findViewById(R.id.lang_es).setOnClickListener(v -> pickLang("es"));
+        // language selection (ADFA-4797): tap the box -> full "Choose language" picker
+        langBoxLabel = findViewById(R.id.lang_box_label);
+        langHelper = findViewById(R.id.lang_helper);
+        findViewById(R.id.lang_box).setOnClickListener(v -> langPicker.launch(
+                new Intent(this, WizardLanguagePickerActivity.class)
+                        .putExtra(WizardLanguagePickerActivity.EXTRA_TAG, langTag)));
+        updateLangBox();
 
         // permission requests
         findViewById(R.id.perm_notif).setOnClickListener(v -> requestNotif());
@@ -85,21 +104,43 @@ public class WizardActivity extends AppCompatActivity {
         primary.setOnClickListener(v -> onPrimary());
         back.setOnClickListener(v -> goBack());
         render();
+
+        // ADFA-4797: on a recreate (e.g. right after a language change) fade the screen in
+        // instead of a hard flash; first launch (b == null) stays instant.
+        if (b != null) {
+            View content = findViewById(android.R.id.content);
+            content.setAlpha(0f);
+            content.animate().alpha(1f).setDuration(220).start();
+        }
     }
 
-    private void pickLang(String tag) {
-        langTag = tag;
-        ((ImageView) findViewById(R.id.lang_system_radio)).setImageResource(tag.isEmpty() ? R.drawable.ic_radio_on : R.drawable.ic_radio_off);
-        ((ImageView) findViewById(R.id.lang_en_radio)).setImageResource("en".equals(tag) ? R.drawable.ic_radio_on : R.drawable.ic_radio_off);
-        ((ImageView) findViewById(R.id.lang_es_radio)).setImageResource("es".equals(tag) ? R.drawable.ic_radio_on : R.drawable.ic_radio_off);
+    @Override
+    protected void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putInt("step", step);
+    }
+
+    private void updateLangBox() {
+        String label = getString(R.string.k2go_lang_follow_system);
+        for (AppLanguage l : SupportedAppLanguages.forPicker(label)) {
+            if (l.tag().equals(langTag)) { label = l.toString(); break; }
+        }
+        langBoxLabel.setText(label);
+        if (langTag.isEmpty()) {
+            String sys = Locale.getDefault().getDisplayLanguage(Locale.getDefault());
+            if (!sys.isEmpty()) sys = sys.substring(0, 1).toUpperCase(Locale.getDefault()) + sys.substring(1);
+            langHelper.setText(getString(R.string.k2go_lang_helper_system, sys));
+        } else {
+            langHelper.setText(getString(R.string.k2go_lang_helper_specific, label));
+        }
     }
 
     private void onPrimary() {
         if (step == 0) {
             step = 1;
         } else if (step == 1) {
+            step = 2;               // set before apply so it survives the recreate
             applyLanguage();
-            step = 2;
         } else if (step == 2) {
             if (allPermsGranted()) step = 3;
         }
@@ -161,9 +202,14 @@ public class WizardActivity extends AppCompatActivity {
 
     // --- language ---
     private void applyLanguage() {
-        AppLocaleController.apply(langTag);
-        String content = langTag.isEmpty() ? ContentLanguage.systemDefault() : langTag;
+        // Content language = base subtag normalized to the Kiwix form (ru-RU -> ru); empty
+        // tag (follow system) derives from the system locale. Mirrors SettingsSubFragment.
+        String content = langTag.isEmpty()
+                ? ContentLanguage.systemDefault()
+                : ContentLanguage.normalize(langTag.split("-")[0]);
         prefs().edit().putString("selected_lang_minimal", content).apply();
+        // Applying the UI locale recreates the activities (AppCompat persists the choice).
+        AppLocaleController.apply(langTag);
     }
 
     // --- permissions ---
