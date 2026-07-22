@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">খোলা</string>
     <string name="k2go_sign_closed">বন্ধ</string>
+    <string name="k2go_lang_label">ভাষা</string>
+    <string name="k2go_lang_follow_system">সিস্টেমের ভাষা অনুসরণ করুন</string>
+    <string name="k2go_lang_choose_title">ভাষা বেছে নিন</string>
+    <string name="k2go_lang_search_hint">ভাষা খুঁজুন</string>
+    <string name="k2go_lang_all">সব ভাষা</string>
+    <string name="k2go_lang_helper_system">আপনার ফোন %1$s-এ সেট করা আছে — আমরা সেটিই অনুসরণ করব।\nনির্দিষ্ট একটি ভাষা বেছে নিতে উপরে ট্যাপ করুন।</string>
+    <string name="k2go_lang_helper_specific">অ্যাপ ও কনটেন্ট %1$s ভাষায় থাকবে।</string>
+    <string name="k2go_lang_settings_sub">অ্যাপ ও কনটেন্টের ভাষা আলাদাভাবে সেট করুন।</string>
+    <string name="k2go_lang_app_label">অ্যাপের ভাষা</string>
+    <string name="k2go_lang_content_label">কনটেন্টের ভাষা</string>
+    <string name="k2go_lang_app_helper">মেনু, বোতাম ও বার্তা।</string>
+    <string name="k2go_lang_content_helper">আপনি কনটেন্ট যোগ করার সময় ডিফল্ট ভাষা (Wikipedia, বই, মানচিত্র)।</string>
+    <string name="k2go_lang_content_note">প্রতিটি কনটেন্ট আইটেম যোগ করার সময় আপনি এখনও এর জন্য আলাদা ভাষা বেছে নিতে পারেন।</string>
+    <string name="k2go_lang_same_as_app">অ্যাপের ভাষার মতোই</string>
+    <string name="k2go_lang_choose_content_title">কনটেন্টের ভাষা বেছে নিন</string>
 </resources>

@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">مفتوح</string>
     <string name="k2go_sign_closed">مغلق</string>
+    <string name="k2go_lang_label">اللغة</string>
+    <string name="k2go_lang_follow_system">اتّباع لغة النظام</string>
+    <string name="k2go_lang_choose_title">اختيار اللغة</string>
+    <string name="k2go_lang_search_hint">البحث في اللغات</string>
+    <string name="k2go_lang_all">جميع اللغات</string>
+    <string name="k2go_lang_helper_system">هاتفك مضبوط على %1$s — سنتّبعه.\nاضغط بالأعلى لاختيار لغة محددة بدلاً من ذلك.</string>
+    <string name="k2go_lang_helper_specific">سيكون التطبيق والمحتوى باللغة %1$s.</string>
+    <string name="k2go_lang_settings_sub">اضبط لغة التطبيق ولغة المحتوى بشكل منفصل.</string>
+    <string name="k2go_lang_app_label">لغة التطبيق</string>
+    <string name="k2go_lang_content_label">لغة المحتوى</string>
+    <string name="k2go_lang_app_helper">القوائم والأزرار والرسائل.</string>
+    <string name="k2go_lang_content_helper">اللغة الافتراضية عند إضافة محتوى (Wikipedia، كتب، خرائط).</string>
+    <string name="k2go_lang_content_note">لا يزال بإمكانك اختيار لغة مختلفة لكل عنصر محتوى عند إضافته.</string>
+    <string name="k2go_lang_same_as_app">مثل لغة التطبيق</string>
+    <string name="k2go_lang_choose_content_title">اختيار لغة المحتوى</string>
 </resources>

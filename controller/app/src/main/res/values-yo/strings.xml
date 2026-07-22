@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
     <string name="k2go_sign_open">ṢÍLẸ̀</string>
     <string name="k2go_sign_closed">TÍ</string>
+    <string name="k2go_lang_label">ÈDÈ</string>
+    <string name="k2go_lang_follow_system">Tẹ̀lé èdè ẹ̀rọ</string>
+    <string name="k2go_lang_choose_title">Yan èdè</string>
+    <string name="k2go_lang_search_hint">Wá àwọn èdè</string>
+    <string name="k2go_lang_all">GBOGBO ÈDÈ</string>
+    <string name="k2go_lang_helper_system">Fóònù rẹ ti wà ní %1$s — a óò tẹ̀lé e.\nTẹ òkè láti yan èdè kan pàtó dípò.</string>
+    <string name="k2go_lang_helper_specific">Áàpù àti àkóónú yóò wà ní %1$s.</string>
+    <string name="k2go_lang_settings_sub">Ṣètò àwọn èdè áàpù àti àkóónú lọ́tọ̀ọ̀tọ̀.</string>
+    <string name="k2go_lang_app_label">ÈDÈ ÁÀPÙ</string>
+    <string name="k2go_lang_content_label">ÈDÈ ÀKÓÓNÚ</string>
+    <string name="k2go_lang_app_helper">Àwọn àkọ́jọ, bọ́tìnnì, àti ìránṣẹ́.</string>
+    <string name="k2go_lang_content_helper">Èdè àkọ́kọ́ nígbà tí o bá fi àkóónú kún (Wikipedia, ìwé, àwòrán ilẹ̀).</string>
+    <string name="k2go_lang_content_note">O ṣì lè yan èdè tí ó yàtọ̀ fún ohun àkóónú kọ̀ọ̀kan nígbà tí o bá fi kún un.</string>
+    <string name="k2go_lang_same_as_app">Bákan náà bí èdè áàpù</string>
+    <string name="k2go_lang_choose_content_title">Yan èdè àkóónú</string>
 </resources>

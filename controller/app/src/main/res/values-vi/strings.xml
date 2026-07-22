@@ -823,4 +823,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">MỞ CỬA</string>
     <string name="k2go_sign_closed">ĐÓNG CỬA</string>
+    <string name="k2go_lang_label">NGÔN NGỮ</string>
+    <string name="k2go_lang_follow_system">Theo ngôn ngữ hệ thống</string>
+    <string name="k2go_lang_choose_title">Chọn ngôn ngữ</string>
+    <string name="k2go_lang_search_hint">Tìm ngôn ngữ</string>
+    <string name="k2go_lang_all">TẤT CẢ NGÔN NGỮ</string>
+    <string name="k2go_lang_helper_system">Điện thoại của bạn được đặt thành %1$s — chúng tôi sẽ theo cài đặt đó.\nNhấn vào phía trên để chọn một ngôn ngữ cụ thể.</string>
+    <string name="k2go_lang_helper_specific">Ứng dụng và nội dung sẽ hiển thị bằng %1$s.</string>
+    <string name="k2go_lang_settings_sub">Đặt riêng ngôn ngữ ứng dụng và nội dung.</string>
+    <string name="k2go_lang_app_label">NGÔN NGỮ ỨNG DỤNG</string>
+    <string name="k2go_lang_content_label">NGÔN NGỮ NỘI DUNG</string>
+    <string name="k2go_lang_app_helper">Menu, nút và thông báo.</string>
+    <string name="k2go_lang_content_helper">Ngôn ngữ mặc định khi bạn thêm nội dung (Wikipedia, sách, bản đồ).</string>
+    <string name="k2go_lang_content_note">Bạn vẫn có thể chọn một ngôn ngữ khác cho từng mục nội dung khi thêm.</string>
+    <string name="k2go_lang_same_as_app">Giống ngôn ngữ ứng dụng</string>
+    <string name="k2go_lang_choose_content_title">Chọn ngôn ngữ nội dung</string>
 </resources>

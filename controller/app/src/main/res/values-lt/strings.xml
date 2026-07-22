@@ -830,4 +830,19 @@
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
     <string name="k2go_sign_open">ATIDARYTA</string>
     <string name="k2go_sign_closed">UŽDARYTA</string>
+    <string name="k2go_lang_label">KALBA</string>
+    <string name="k2go_lang_follow_system">Naudoti sistemos kalbą</string>
+    <string name="k2go_lang_choose_title">Pasirinkite kalbą</string>
+    <string name="k2go_lang_search_hint">Ieškoti kalbų</string>
+    <string name="k2go_lang_all">VISOS KALBOS</string>
+    <string name="k2go_lang_helper_system">Jūsų telefone nustatyta %1$s — jos ir laikysimės.\nBakstelėkite viršuje, kad pasirinktumėte konkrečią kalbą.</string>
+    <string name="k2go_lang_helper_specific">Programa ir turinys bus %1$s kalba.</string>
+    <string name="k2go_lang_settings_sub">Nustatykite programos ir turinio kalbas atskirai.</string>
+    <string name="k2go_lang_app_label">PROGRAMOS KALBA</string>
+    <string name="k2go_lang_content_label">TURINIO KALBA</string>
+    <string name="k2go_lang_app_helper">Meniu, mygtukai ir pranešimai.</string>
+    <string name="k2go_lang_content_helper">Numatytoji kalba pridedant turinį (Wikipedia, knygos, žemėlapiai).</string>
+    <string name="k2go_lang_content_note">Pridėdami kiekvieną turinio elementą galite pasirinkti jam kitą kalbą.</string>
+    <string name="k2go_lang_same_as_app">Tokia pati kaip programos kalba</string>
+    <string name="k2go_lang_choose_content_title">Pasirinkite turinio kalbą</string>
 </resources>
