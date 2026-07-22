@@ -827,4 +827,7 @@
     <string name="k2go_arch_64">biti 64 (arm64-v8a)</string>
     <string name="k2go_arch_32">biti 32 (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">haijulikani</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="k2go_sign_open">WAZI</string>
+    <string name="k2go_sign_closed">IMEFUNGWA</string>
 </resources>

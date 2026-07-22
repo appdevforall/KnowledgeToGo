@@ -820,4 +820,7 @@
     <string name="k2go_arch_64">64-bit (arm64-v8a)</string>
     <string name="k2go_arch_32">32-bit (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">không rõ</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
+    <string name="k2go_sign_open">MỞ CỬA</string>
+    <string name="k2go_sign_closed">ĐÓNG CỬA</string>
 </resources>

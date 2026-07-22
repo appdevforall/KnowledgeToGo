@@ -81,17 +81,19 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
         installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false);
-        // The Lottie has a text layer (OPEN/CLOSED sign) referencing "Atkinson Hyperlegible".
-        // Without this delegate Lottie looks for assets/fonts/Atkinson Hyperlegible.ttf and
-        // crashes (Font asset not found). Feed it the app's Atkinson font resource instead.
+        // The Lottie has a text layer (OPEN/CLOSED sign). Use the system typeface (Noto-based,
+        // global script fallback) so localized words render in any language; a TextDelegate maps
+        // the OPEN/CLOSED source text to the localized @string values.
         bootGate.setFontAssetDelegate(new com.airbnb.lottie.FontAssetDelegate() {
             @Override
             public android.graphics.Typeface fetchFont(String fontFamily) {
-                android.graphics.Typeface tf = androidx.core.content.res.ResourcesCompat.getFont(
-                        LibraryActivity.this, R.font.atkinson_hyperlegible);
-                return tf != null ? tf : android.graphics.Typeface.DEFAULT;
+                return android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD);
             }
         });
+        com.airbnb.lottie.TextDelegate signText = new com.airbnb.lottie.TextDelegate(bootGate);
+        signText.setText("OPEN", getString(R.string.k2go_sign_open));
+        signText.setText("CLOSED", getString(R.string.k2go_sign_closed));
+        bootGate.setTextDelegate(signText);
         if (!reduceMotion()) {
             bootGate.setAnimation(R.raw.library_animation);
             bootGate.setMinAndMaxFrame("A_ENTRY_LOOP");

@@ -827,4 +827,7 @@
     <string name="k2go_arch_64">64-bit (arm64-v8a)</string>
     <string name="k2go_arch_32">32-bit (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">naməlum</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="k2go_sign_open">AÇIQ</string>
+    <string name="k2go_sign_closed">BAĞLI</string>
 </resources>

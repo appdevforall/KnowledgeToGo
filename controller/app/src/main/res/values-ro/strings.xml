@@ -820,4 +820,7 @@
     <string name="k2go_arch_64">64 de biți (arm64-v8a)</string>
     <string name="k2go_arch_32">32 de biți (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">necunoscut</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
+    <string name="k2go_sign_open">DESCHIS</string>
+    <string name="k2go_sign_closed">ÎNCHIS</string>
 </resources>

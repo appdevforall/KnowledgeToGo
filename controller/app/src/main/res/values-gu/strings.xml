@@ -820,4 +820,7 @@
     <string name="k2go_arch_64">64-બિટ (arm64-v8a)</string>
     <string name="k2go_arch_32">32-બિટ (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">અજ્ઞાત</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="k2go_sign_open">ખુલ્લું</string>
+    <string name="k2go_sign_closed">બંધ</string>
 </resources>

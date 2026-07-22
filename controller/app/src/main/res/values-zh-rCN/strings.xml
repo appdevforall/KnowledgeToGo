@@ -820,4 +820,7 @@
     <string name="k2go_arch_64">64 位 (arm64-v8a)</string>
     <string name="k2go_arch_32">32 位 (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">未知</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="k2go_sign_open">开馆</string>
+    <string name="k2go_sign_closed">闭馆</string>
 </resources>

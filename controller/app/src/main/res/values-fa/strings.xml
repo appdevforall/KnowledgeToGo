@@ -820,4 +820,7 @@
     <string name="k2go_arch_64">64 بیتی (arm64-v8a)</string>
     <string name="k2go_arch_32">32 بیتی (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">نامشخص</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
+    <string name="k2go_sign_open">باز</string>
+    <string name="k2go_sign_closed">بسته</string>
 </resources>

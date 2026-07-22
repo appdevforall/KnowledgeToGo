@@ -897,4 +897,7 @@
     <string name="k2go_arch_64">64-बिट (arm64-v8a)</string>
     <string name="k2go_arch_32">32-बिट (armeabi-v7a)</string>
     <string name="k2go_arch_unknown">अज्ञात</string>
+    <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. machine translation. -->
+    <string name="k2go_sign_open">खुला</string>
+    <string name="k2go_sign_closed">बंद</string>
 </resources>
