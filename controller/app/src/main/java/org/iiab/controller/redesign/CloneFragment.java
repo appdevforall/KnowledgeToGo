@@ -224,7 +224,7 @@ public class CloneFragment extends Fragment {
         copyBtn.setOnClickListener(x -> {
             ClipboardManager cm = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("K2Go transfer code", currentPayload));
-            Toast.makeText(requireContext(), "Code copied", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_code_copied), Toast.LENGTH_SHORT).show();
         });
         shareBtn.setOnClickListener(x -> {
             Intent i = new Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, currentPayload);
@@ -281,10 +281,10 @@ public class CloneFragment extends Fragment {
         if (target == mode || !sharing) { setMode(target); return; }
         String label = (target == Mode.HOTSPOT) ? "Hotspot" : "Wi-Fi";
         new AlertDialog.Builder(requireContext())
-                .setTitle("Switch to " + label + "?")
-                .setMessage("This stops any copy in progress. The other phone can start again by rescanning the new code.")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Switch", (d, w) -> setMode(target))
+                .setTitle(getString(R.string.k2go_clone_switch_title, label))
+                .setMessage(getString(R.string.k2go_clone_switch_msg))
+                .setNegativeButton(getString(R.string.k2go_cancel), null)
+                .setPositiveButton(getString(R.string.k2go_clone_switch_confirm), (d, w) -> setMode(target))
                 .show();
     }
 
@@ -601,7 +601,7 @@ public class CloneFragment extends Fragment {
             apkServer.start();
         } catch (Exception e) {
             Log.e("IIAB-Clone", "APK server failed to start", e);
-            Toast.makeText(requireContext(), "Couldn't start the app share", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_app_share_fail), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -638,7 +638,7 @@ public class CloneFragment extends Fragment {
             startActivity(Intent.createChooser(i, "Share K2Go app"));
         } catch (Exception e) {
             Log.e("IIAB-Clone", "APK share sheet failed", e);
-            Toast.makeText(requireContext(), "Couldn't open the share sheet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_share_sheet_fail), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -662,9 +662,9 @@ public class CloneFragment extends Fragment {
 
     private void onReceiveStart() {
         String json = paste.getText().toString().trim();
-        if (json.isEmpty()) { Toast.makeText(requireContext(), "Paste the transfer code first", Toast.LENGTH_SHORT).show(); return; }
+        if (json.isEmpty()) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_paste_first), Toast.LENGTH_SHORT).show(); return; }
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(json);
-        if (creds == null) { Toast.makeText(requireContext(), "That code isn't valid", Toast.LENGTH_LONG).show(); return; }
+        if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_code_invalid), Toast.LENGTH_LONG).show(); return; }
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
         probeOrWarnEmpty(creds);   // ADFA-4786
     }
@@ -692,10 +692,10 @@ public class CloneFragment extends Fragment {
     private void probeOrWarnEmpty(SyncHandshakeHelper.SyncCredentials creds) {
         if (!creds.hasRootfs) {
             new AlertDialog.Builder(requireContext())
-                    .setTitle("The other phone has no library")
-                    .setMessage("There's nothing to copy from it yet. Continue anyway?")
-                    .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Try anyway", (d, w) -> syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds))
+                    .setTitle(getString(R.string.k2go_clone_nolib_title))
+                    .setMessage(getString(R.string.k2go_clone_nolib_msg))
+                    .setNegativeButton(getString(R.string.k2go_cancel), null)
+                    .setPositiveButton(getString(R.string.k2go_clone_try_anyway), (d, w) -> syncVm.startProbe(requireContext().getApplicationContext(), shareConfig, creds))
                     .show();
             return;
         }
@@ -787,7 +787,7 @@ public class CloneFragment extends Fragment {
             incompatWhy.setText(incompatWhyOpen ? "Why aren't they compatible?  ▴" : "Why aren't they compatible?  ▾");
             incompatTechText.setVisibility(incompatTechOpen ? View.VISIBLE : View.GONE);
             incompatTech.setText(incompatTechOpen ? "Technical details  ▴" : "Technical details  ▾");
-            incompatTechText.setText("This phone: " + bitsLabel(archBits()) + "\nOther phone: " + bitsLabel(incompatHostBits));
+            incompatTechText.setText(getString(R.string.k2go_clone_tech_arch, bitsLabel(archBits()), bitsLabel(incompatHostBits)));
             return;
         }
         buildReceiveSteps();
@@ -832,9 +832,9 @@ public class CloneFragment extends Fragment {
 
     private void onScan(String contents) {
         if (!isAdded()) return;
-        if (contents == null) { Toast.makeText(requireContext(), "Scan cancelled", Toast.LENGTH_SHORT).show(); return; }
+        if (contents == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_scan_cancelled), Toast.LENGTH_SHORT).show(); return; }
         SyncHandshakeHelper.SyncCredentials creds = SyncHandshakeHelper.parsePayload(contents);
-        if (creds == null) { Toast.makeText(requireContext(), "That isn't a valid transfer code.", Toast.LENGTH_LONG).show(); return; }
+        if (creds == null) { Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_scan_invalid), Toast.LENGTH_LONG).show(); return; }
         Log.i("IIAB-Clone", "scanned payload host=" + creds.ip + ":" + creds.port + " user=" + creds.user + " rootfs=" + creds.hasRootfs + " arch=" + creds.archBits);
         if (!archCompatible(creds.archBits)) { showIncompat(creds.archBits); return; }   // ADFA-4784
         probeOrWarnEmpty(creds);   // ADFA-4786
@@ -847,7 +847,7 @@ public class CloneFragment extends Fragment {
             try {
                 startActivity(new android.content.Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
             } catch (Exception e2) {
-                Toast.makeText(requireContext(), "Open Settings \u203a Wi-Fi to join the other phone.", Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_open_wifi), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -857,7 +857,7 @@ public class CloneFragment extends Fragment {
         SyncHandshakeHelper.SyncCredentials creds = syncVm.getPendingCreds();
         File dest = syncVm.getPendingDestDir();
         if (creds == null || dest == null) {
-            Toast.makeText(requireContext(), "Transfer details expired \u2014 paste the code again", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), getString(R.string.k2go_clone_toast_expired), Toast.LENGTH_LONG).show();
             syncVm.releaseNetwork();
             SyncProgressRepository.get().postIdle();
             renderReceive();
@@ -881,9 +881,9 @@ public class CloneFragment extends Fragment {
                   + "foreground during a transfer, then scan again to resume.";
         }
         new AlertDialog.Builder(requireContext())
-                .setTitle(ok ? "Copy complete" : "Copy stopped")
+                .setTitle(getString(ok ? R.string.k2go_clone_copy_complete : R.string.k2go_clone_copy_stopped))
                 .setMessage(body)
-                .setPositiveButton("OK", (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setPositiveButton(getString(android.R.string.ok), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
                 .setCancelable(false)
                 .show();
     }
@@ -900,10 +900,10 @@ public class CloneFragment extends Fragment {
 
     private void confirmStop() {
         new AlertDialog.Builder(requireContext())
-                .setTitle("Stop sharing?")
-                .setMessage("This stops any copy in progress. The other device can start again by rescanning.")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Stop", (d, w) -> {
+                .setTitle(getString(R.string.k2go_clone_stopshare_title))
+                .setMessage(getString(R.string.k2go_clone_stopshare_msg))
+                .setNegativeButton(getString(R.string.k2go_cancel), null)
+                .setPositiveButton(getString(R.string.k2go_clone_stop_confirm), (d, w) -> {
                     if (transport != null) transport.stop();
                     daemonStarted = false;
                     userStopped = true;   // do not auto-restart on the next render

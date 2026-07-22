@@ -152,7 +152,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (installProgress == null || st == null || !st.isRunning()) return;
         installProgress.setVisibility(View.VISIBLE);
         if (st.phase == InstallState.Phase.DOWNLOADING) {
-            installStatus.setText("Downloading your library…");
+            installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
             installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));

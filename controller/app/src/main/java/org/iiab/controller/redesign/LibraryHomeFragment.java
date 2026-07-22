@@ -123,7 +123,7 @@ public class LibraryHomeFragment extends Fragment {
                 final int st = probe(c.endpoint);
                 main.post(() -> { if (isAdded()) applyState(c, (st == GREEN || st == GRAY) ? st : AMBER); });
             });
-            Toast.makeText(requireContext(), "Retrying…", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), getString(R.string.k2go_retrying), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -137,7 +137,7 @@ public class LibraryHomeFragment extends Fragment {
         for (final Card c : cards) {
             if (c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0) {
                 applyState(c, GRAY);
-                if (c.status != null) c.status.setText("Not supported");
+                if (c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
                 continue;
             }
             if (!alive) { applyState(c, GRAY); continue; }

@@ -99,7 +99,7 @@ public class Step2OptionAFragment extends Fragment {
         booksSkip.setOnClickListener(x -> setBooks(!booksInc));
         // Maps ships in the software block — shown for reference, not installed here.
         mapsCheck.setChecked(true); mapsCheck.setEnabled(false);
-        ((TextView) v.findViewById(R.id.k2go_maps_size)).setText("Included");
+        ((TextView) v.findViewById(R.id.k2go_maps_size)).setText(getString(R.string.k2go_step2_included));
 
         download.setOnClickListener(x -> startDownload());
         v.findViewById(R.id.k2go_step2a_back).setOnClickListener(x -> backOrExit());
