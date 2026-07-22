@@ -115,15 +115,24 @@ jobs:
 
       # --- VERSION AUDIT ---
 
-      - name: Compute version suffix (branch + short SHA)
-        id: vars
+      - name: Compute version suffix (ticket + short SHA)
         run: |
           SHORT_SHA=$(git rev-parse --short HEAD)
           BRANCH="${GITHUB_REF#refs/heads/}"
-          SAFE_BRANCH=$(echo "$BRANCH" | tr '/ ' '--' | tr -cd 'A-Za-z0-9._-')
+          # Keep the version name short and identifiable: the Jira ticket if the branch has one,
+          # else "main", else a trimmed branch slug. The short SHA always pins the exact commit,
+          # so the branch prefix (feat/fix/...) and the descriptive tail are dropped.
+          TICKET=$(echo "$BRANCH" | grep -oiE 'adfa-[0-9]+' | head -1 | tr '[:lower:]' '[:upper:]')
+          if [ -n "$TICKET" ]; then
+            LABEL="$TICKET"
+          elif [ "$BRANCH" = "main" ]; then
+            LABEL="main"
+          else
+            LABEL=$(echo "$BRANCH" | tr '/ ' '--' | tr -cd 'A-Za-z0-9._-' | cut -c1-16)
+          fi
           echo "SHORT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
-          echo "SAFE_BRANCH=$SAFE_BRANCH" >> "$GITHUB_ENV"
-          echo "VERSION_SUFFIX=-${SAFE_BRANCH}-${SHORT_SHA}" >> "$GITHUB_ENV"
+          echo "BRANCH_FULL=$BRANCH" >> "$GITHUB_ENV"
+          echo "VERSION_SUFFIX=-${LABEL}-${SHORT_SHA}" >> "$GITHUB_ENV"
 
       - name: Log Pinned Binary Version
         run: |
@@ -171,7 +180,7 @@ jobs:
           COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
           COMMIT_AUTHOR=$(git log -1 --pretty=%an)
           NOTES_FILE=$(mktemp)
-          echo "Branch: ${{ env.SAFE_BRANCH }} (${{ env.SHORT_SHA }})" > "$NOTES_FILE"
+          echo "Branch: ${{ env.BRANCH_FULL }} (${{ env.SHORT_SHA }})" > "$NOTES_FILE"
           echo "Author: $COMMIT_AUTHOR" >> "$NOTES_FILE"
           echo "Message: $COMMIT_MSG" >> "$NOTES_FILE"
           echo "NOTES_FILE=$NOTES_FILE" >> "$GITHUB_OUTPUT"
