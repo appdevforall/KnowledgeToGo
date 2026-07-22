@@ -883,4 +883,14 @@
     <string name="k2go_legend_your_picks">Utilisé %1$.1f · Système %2$.1f · Vos choix %3$.1f · Libre %4$.1f</string>
     <string name="k2go_legend_picks">Utilisé %1$.1f · Système %2$.1f · Choix %3$.1f · Libre %4$.1f</string>
     <string name="k2go_perm_granted">Accordé</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Envoyer</string>
+    <string name="k2go_clone_back_receive">‹ Recevoir</string>
+    <string name="k2go_clone_ready_scan">Prêt ! Scannez pour démarrer le transfert</string>
+    <string name="k2go_clone_ready_scan2">Prêt ! Scannez le code 2 pour démarrer le transfert</string>
+    <string name="k2go_clone_step_1of2">Étape 1 sur 2</string>
+    <string name="k2go_clone_step_2of2">Étape 2 sur 2</string>
+    <string name="k2go_clone_paste_hint">Coller le code de transfert</string>
+    <string name="k2go_soon">Bientôt</string>
+    <string name="feedback_force_crash">Forcer un plantage de test (debug)</string>
 </resources>

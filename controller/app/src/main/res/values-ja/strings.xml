@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">使用中 %1$.1f · システム %2$.1f · あなたの選択 %3$.1f · 空き %4$.1f</string>
     <string name="k2go_legend_picks">使用中 %1$.1f · システム %2$.1f · 選択 %3$.1f · 空き %4$.1f</string>
     <string name="k2go_perm_granted">許可済み</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ 送信</string>
+    <string name="k2go_clone_back_receive">‹ 受信</string>
+    <string name="k2go_clone_ready_scan">準備完了！スキャンして転送を開始</string>
+    <string name="k2go_clone_ready_scan2">準備完了！コード2をスキャンして転送を開始</string>
+    <string name="k2go_clone_step_1of2">ステップ 1 / 2</string>
+    <string name="k2go_clone_step_2of2">ステップ 2 / 2</string>
+    <string name="k2go_clone_paste_hint">転送コードを貼り付け</string>
+    <string name="k2go_soon">近日公開</string>
+    <string name="feedback_force_crash">テストクラッシュを強制 (debug)</string>
 </resources>

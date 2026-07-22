@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Imetumika %1$.1f · Mfumo %2$.1f · Chaguo lako %3$.1f · Bila kutumika %4$.1f</string>
     <string name="k2go_legend_picks">Imetumika %1$.1f · Mfumo %2$.1f · Chaguo %3$.1f · Bila kutumika %4$.1f</string>
     <string name="k2go_perm_granted">Imetolewa</string> <!-- review — machine, verify -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->
+    <string name="k2go_clone_back_send">‹ Tuma</string>
+    <string name="k2go_clone_back_receive">‹ Pokea</string>
+    <string name="k2go_clone_ready_scan">Tayari! Changanua ili kuanza uhamishaji</string>
+    <string name="k2go_clone_ready_scan2">Tayari! Changanua msimbo 2 ili kuanza uhamishaji</string>
+    <string name="k2go_clone_step_1of2">Hatua ya 1 kati ya 2</string>
+    <string name="k2go_clone_step_2of2">Hatua ya 2 kati ya 2</string>
+    <string name="k2go_clone_paste_hint">Bandika msimbo wa uhamishaji</string>
+    <string name="k2go_soon">Hivi karibuni</string>
+    <string name="feedback_force_crash">Lazimisha ajali ya jaribio (debug)</string>
 </resources>

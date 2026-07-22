@@ -545,7 +545,7 @@
     <string name="crash_report_subtitle">Send this report to help us fix it? You can review what\'s included below.</string>
     <string name="crash_report_send">Send report</string>
     <string name="crash_report_dismiss">Dismiss</string>
-    <string name="feedback_force_crash" translatable="false">Force test crash (debug)</string>
+    <string name="feedback_force_crash">Force test crash (debug)</string>
     <string name="rsync_error_process_killed">Android stopped the transfer process (system background-process limit). To prevent this, enable “Disable child process restrictions” in Developer options, or set up the ADB optimization.</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->

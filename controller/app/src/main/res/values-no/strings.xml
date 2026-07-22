@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">Brukt %1$.1f · System %2$.1f · Dine valg %3$.1f · Ledig %4$.1f</string>
     <string name="k2go_legend_picks">Brukt %1$.1f · System %2$.1f · Valg %3$.1f · Ledig %4$.1f</string>
     <string name="k2go_perm_granted">Innvilget</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Send</string>
+    <string name="k2go_clone_back_receive">‹ Motta</string>
+    <string name="k2go_clone_ready_scan">Klar! Skann for å starte overføringen</string>
+    <string name="k2go_clone_ready_scan2">Klar! Skann kode 2 for å starte overføringen</string>
+    <string name="k2go_clone_step_1of2">Trinn 1 av 2</string>
+    <string name="k2go_clone_step_2of2">Trinn 2 av 2</string>
+    <string name="k2go_clone_paste_hint">Lim inn overføringskode</string>
+    <string name="k2go_soon">Snart</string>
+    <string name="feedback_force_crash">Tving frem testkrasj (debug)</string>
 </resources>

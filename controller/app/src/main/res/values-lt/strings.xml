@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Naudojama %1$.1f · Sistema %2$.1f · Jūsų pasirinkimai %3$.1f · Laisva %4$.1f</string>
     <string name="k2go_legend_picks">Naudojama %1$.1f · Sistema %2$.1f · Pasirinkimai %3$.1f · Laisva %4$.1f</string>
     <string name="k2go_perm_granted">Suteikta</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Siųsti</string>
+    <string name="k2go_clone_back_receive">‹ Gauti</string>
+    <string name="k2go_clone_ready_scan">Paruošta! Nuskaitykite, kad pradėtumėte perkėlimą</string>
+    <string name="k2go_clone_ready_scan2">Paruošta! Nuskaitykite 2 kodą, kad pradėtumėte perkėlimą</string>
+    <string name="k2go_clone_step_1of2">1 iš 2 žingsnis</string>
+    <string name="k2go_clone_step_2of2">2 iš 2 žingsnis</string>
+    <string name="k2go_clone_paste_hint">Įklijuoti perkėlimo kodą</string>
+    <string name="k2go_soon">Netrukus</string>
+    <string name="feedback_force_crash">Priverstinis bandomasis gedimas (debug)</string>
 </resources>

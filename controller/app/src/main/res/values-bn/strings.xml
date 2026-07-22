@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">ব্যবহৃত %1$.1f · সিস্টেম %2$.1f · আপনার পছন্দ %3$.1f · ফাঁকা %4$.1f</string>
     <string name="k2go_legend_picks">ব্যবহৃত %1$.1f · সিস্টেম %2$.1f · পছন্দ %3$.1f · ফাঁকা %4$.1f</string>
     <string name="k2go_perm_granted">মঞ্জুর</string> <!-- review — machine, verify -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->
+    <string name="k2go_clone_back_send">‹ পাঠান</string>
+    <string name="k2go_clone_back_receive">‹ গ্রহণ করুন</string>
+    <string name="k2go_clone_ready_scan">প্রস্তুত! স্থানান্তর শুরু করতে স্ক্যান করুন</string>
+    <string name="k2go_clone_ready_scan2">প্রস্তুত! স্থানান্তর শুরু করতে কোড 2 স্ক্যান করুন</string>
+    <string name="k2go_clone_step_1of2">ধাপ 1 / 2</string>
+    <string name="k2go_clone_step_2of2">ধাপ 2 / 2</string>
+    <string name="k2go_clone_paste_hint">স্থানান্তর কোড পেস্ট করুন</string>
+    <string name="k2go_soon">শীঘ্রই</string>
+    <string name="feedback_force_crash">পরীক্ষামূলক ক্র্যাশ বাধ্য করুন (debug)</string>
 </resources>

@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Použito %1$.1f · Systém %2$.1f · Váš výběr %3$.1f · Volné %4$.1f</string>
     <string name="k2go_legend_picks">Použito %1$.1f · Systém %2$.1f · Výběr %3$.1f · Volné %4$.1f</string>
     <string name="k2go_perm_granted">Uděleno</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Odeslat</string>
+    <string name="k2go_clone_back_receive">‹ Přijmout</string>
+    <string name="k2go_clone_ready_scan">Připraveno! Naskenujte pro zahájení přenosu</string>
+    <string name="k2go_clone_ready_scan2">Připraveno! Naskenujte kód 2 pro zahájení přenosu</string>
+    <string name="k2go_clone_step_1of2">Krok 1 z 2</string>
+    <string name="k2go_clone_step_2of2">Krok 2 z 2</string>
+    <string name="k2go_clone_paste_hint">Vložit kód přenosu</string>
+    <string name="k2go_soon">Brzy</string>
+    <string name="feedback_force_crash">Vynutit testovací pád (debug)</string>
 </resources>

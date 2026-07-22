@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">استفاده‌شده %1$.1f · سیستم %2$.1f · انتخاب‌های شما %3$.1f · آزاد %4$.1f</string>
     <string name="k2go_legend_picks">استفاده‌شده %1$.1f · سیستم %2$.1f · انتخاب‌ها %3$.1f · آزاد %4$.1f</string>
     <string name="k2go_perm_granted">اعطا شد</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ ارسال</string>
+    <string name="k2go_clone_back_receive">‹ دریافت</string>
+    <string name="k2go_clone_ready_scan">آماده! برای شروع انتقال اسکن کنید</string>
+    <string name="k2go_clone_ready_scan2">آماده! برای شروع انتقال کد 2 را اسکن کنید</string>
+    <string name="k2go_clone_step_1of2">مرحله 1 از 2</string>
+    <string name="k2go_clone_step_2of2">مرحله 2 از 2</string>
+    <string name="k2go_clone_paste_hint">چسباندن کد انتقال</string>
+    <string name="k2go_soon">به‌زودی</string>
+    <string name="feedback_force_crash">اجبار به خرابی آزمایشی (debug)</string>
 </resources>

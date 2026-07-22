@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Използвано %1$.1f · Система %2$.1f · Вашият избор %3$.1f · Свободно %4$.1f</string>
     <string name="k2go_legend_picks">Използвано %1$.1f · Система %2$.1f · Избор %3$.1f · Свободно %4$.1f</string>
     <string name="k2go_perm_granted">Предоставено</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Изпрати</string>
+    <string name="k2go_clone_back_receive">‹ Получи</string>
+    <string name="k2go_clone_ready_scan">Готово! Сканирайте, за да започнете прехвърлянето</string>
+    <string name="k2go_clone_ready_scan2">Готово! Сканирайте код 2, за да започнете прехвърлянето</string>
+    <string name="k2go_clone_step_1of2">Стъпка 1 от 2</string>
+    <string name="k2go_clone_step_2of2">Стъпка 2 от 2</string>
+    <string name="k2go_clone_paste_hint">Поставяне на код за прехвърляне</string>
+    <string name="k2go_soon">Скоро</string>
+    <string name="feedback_force_crash">Принудително тестово сривване (debug)</string>
 </resources>

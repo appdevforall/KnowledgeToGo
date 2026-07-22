@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Lílo %1$.1f · Ẹ̀rọ %2$.1f · Àṣàyàn rẹ %3$.1f · Òfo %4$.1f</string>
     <string name="k2go_legend_picks">Lílo %1$.1f · Ẹ̀rọ %2$.1f · Àṣàyàn %3$.1f · Òfo %4$.1f</string>
     <string name="k2go_perm_granted">Ti fọwọ́sí</string> <!-- review — machine, verify -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->
+    <string name="k2go_clone_back_send">‹ Fi ranṣẹ́</string>
+    <string name="k2go_clone_back_receive">‹ Gbà</string>
+    <string name="k2go_clone_ready_scan">Ó ti ṣetán! Ṣayẹ̀wò láti bẹ̀rẹ̀ ìkó-jáde</string>
+    <string name="k2go_clone_ready_scan2">Ó ti ṣetán! Ṣayẹ̀wò kóòdù 2 láti bẹ̀rẹ̀ ìkó-jáde</string>
+    <string name="k2go_clone_step_1of2">Ìgbésẹ̀ 1 nínú 2</string>
+    <string name="k2go_clone_step_2of2">Ìgbésẹ̀ 2 nínú 2</string>
+    <string name="k2go_clone_paste_hint">Lẹ̀ kóòdù ìkó-jáde</string>
+    <string name="k2go_soon">Láìpẹ́</string>
+    <string name="feedback_force_crash">Fipá mú ìjàǹbá àdánwò (debug)</string>
 </resources>

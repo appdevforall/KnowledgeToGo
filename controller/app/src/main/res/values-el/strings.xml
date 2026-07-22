@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Σε χρήση %1$.1f · Σύστημα %2$.1f · Οι επιλογές σας %3$.1f · Ελεύθερο %4$.1f</string>
     <string name="k2go_legend_picks">Σε χρήση %1$.1f · Σύστημα %2$.1f · Επιλογές %3$.1f · Ελεύθερο %4$.1f</string>
     <string name="k2go_perm_granted">Παραχωρήθηκε</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Αποστολή</string>
+    <string name="k2go_clone_back_receive">‹ Λήψη</string>
+    <string name="k2go_clone_ready_scan">Έτοιμο! Σαρώστε για να ξεκινήσει η μεταφορά</string>
+    <string name="k2go_clone_ready_scan2">Έτοιμο! Σαρώστε τον κωδικό 2 για να ξεκινήσει η μεταφορά</string>
+    <string name="k2go_clone_step_1of2">Βήμα 1 από 2</string>
+    <string name="k2go_clone_step_2of2">Βήμα 2 από 2</string>
+    <string name="k2go_clone_paste_hint">Επικόλληση κωδικού μεταφοράς</string>
+    <string name="k2go_soon">Σύντομα</string>
+    <string name="feedback_force_crash">Εξαναγκασμός δοκιμαστικής κατάρρευσης (debug)</string>
 </resources>

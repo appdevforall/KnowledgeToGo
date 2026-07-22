@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">İstifadə %1$.1f · Sistem %2$.1f · Sizin seçimləriniz %3$.1f · Boş %4$.1f</string>
     <string name="k2go_legend_picks">İstifadə %1$.1f · Sistem %2$.1f · Seçimlər %3$.1f · Boş %4$.1f</string>
     <string name="k2go_perm_granted">Verildi</string> <!-- review — machine, verify -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->
+    <string name="k2go_clone_back_send">‹ Göndər</string>
+    <string name="k2go_clone_back_receive">‹ Qəbul et</string>
+    <string name="k2go_clone_ready_scan">Hazırdır! Köçürməyə başlamaq üçün skan edin</string>
+    <string name="k2go_clone_ready_scan2">Hazırdır! Köçürməyə başlamaq üçün 2 kodunu skan edin</string>
+    <string name="k2go_clone_step_1of2">Addım 1 / 2</string>
+    <string name="k2go_clone_step_2of2">Addım 2 / 2</string>
+    <string name="k2go_clone_paste_hint">Köçürmə kodunu yapışdır</string>
+    <string name="k2go_soon">Tezliklə</string>
+    <string name="feedback_force_crash">Sınaq çökməsini məcbur et (debug)</string>
 </resources>

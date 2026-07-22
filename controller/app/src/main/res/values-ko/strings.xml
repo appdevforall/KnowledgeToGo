@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">사용 %1$.1f · 시스템 %2$.1f · 내 선택 %3$.1f · 여유 %4$.1f</string>
     <string name="k2go_legend_picks">사용 %1$.1f · 시스템 %2$.1f · 선택 %3$.1f · 여유 %4$.1f</string>
     <string name="k2go_perm_granted">허용됨</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ 보내기</string>
+    <string name="k2go_clone_back_receive">‹ 받기</string>
+    <string name="k2go_clone_ready_scan">준비 완료! 스캔하여 전송 시작</string>
+    <string name="k2go_clone_ready_scan2">준비 완료! 코드 2를 스캔하여 전송 시작</string>
+    <string name="k2go_clone_step_1of2">2단계 중 1단계</string>
+    <string name="k2go_clone_step_2of2">2단계 중 2단계</string>
+    <string name="k2go_clone_paste_hint">전송 코드 붙여넣기</string>
+    <string name="k2go_soon">곧 제공</string>
+    <string name="feedback_force_crash">테스트 충돌 강제 실행 (debug)</string>
 </resources>

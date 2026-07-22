@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">பயன்படுத்தியது %1$.1f · கணினி %2$.1f · உங்கள் தேர்வுகள் %3$.1f · காலி %4$.1f</string>
     <string name="k2go_legend_picks">பயன்படுத்தியது %1$.1f · கணினி %2$.1f · தேர்வுகள் %3$.1f · காலி %4$.1f</string>
     <string name="k2go_perm_granted">வழங்கப்பட்டது</string> <!-- review — machine, verify -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->
+    <string name="k2go_clone_back_send">‹ அனுப்பு</string>
+    <string name="k2go_clone_back_receive">‹ பெறு</string>
+    <string name="k2go_clone_ready_scan">தயார்! பரிமாற்றத்தைத் தொடங்க ஸ்கேன் செய்யவும்</string>
+    <string name="k2go_clone_ready_scan2">தயார்! பரிமாற்றத்தைத் தொடங்க குறியீடு 2ஐ ஸ்கேன் செய்யவும்</string>
+    <string name="k2go_clone_step_1of2">படி 1 / 2</string>
+    <string name="k2go_clone_step_2of2">படி 2 / 2</string>
+    <string name="k2go_clone_paste_hint">பரிமாற்றக் குறியீட்டை ஒட்டவும்</string>
+    <string name="k2go_soon">விரைவில்</string>
+    <string name="feedback_force_crash">சோதனை செயலிழப்பைக் கட்டாயப்படுத்து (debug)</string>
 </resources>

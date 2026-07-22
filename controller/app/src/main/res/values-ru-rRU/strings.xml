@@ -882,4 +882,14 @@
     <string name="k2go_legend_your_picks">Занято %1$.1f · Система %2$.1f · Ваш выбор %3$.1f · Свободно %4$.1f</string>
     <string name="k2go_legend_picks">Занято %1$.1f · Система %2$.1f · Выбор %3$.1f · Свободно %4$.1f</string>
     <string name="k2go_perm_granted">Предоставлено</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Отправить</string>
+    <string name="k2go_clone_back_receive">‹ Получить</string>
+    <string name="k2go_clone_ready_scan">Готово! Отсканируйте, чтобы начать передачу</string>
+    <string name="k2go_clone_ready_scan2">Готово! Отсканируйте код 2, чтобы начать передачу</string>
+    <string name="k2go_clone_step_1of2">Шаг 1 из 2</string>
+    <string name="k2go_clone_step_2of2">Шаг 2 из 2</string>
+    <string name="k2go_clone_paste_hint">Вставить код передачи</string>
+    <string name="k2go_soon">Скоро</string>
+    <string name="feedback_force_crash">Принудительный тестовый сбой (debug)</string>
 </resources>

@@ -883,4 +883,14 @@
     <string name="k2go_legend_your_picks">इस्तेमाल %1$.1f · सिस्टम %2$.1f · आपके चयन %3$.1f · खाली %4$.1f</string>
     <string name="k2go_legend_picks">इस्तेमाल %1$.1f · सिस्टम %2$.1f · चयन %3$.1f · खाली %4$.1f</string>
     <string name="k2go_perm_granted">दी गई</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ भेजें</string>
+    <string name="k2go_clone_back_receive">‹ प्राप्त करें</string>
+    <string name="k2go_clone_ready_scan">तैयार! स्थानांतरण शुरू करने के लिए स्कैन करें</string>
+    <string name="k2go_clone_ready_scan2">तैयार! स्थानांतरण शुरू करने के लिए कोड 2 स्कैन करें</string>
+    <string name="k2go_clone_step_1of2">चरण 1 / 2</string>
+    <string name="k2go_clone_step_2of2">चरण 2 / 2</string>
+    <string name="k2go_clone_paste_hint">स्थानांतरण कोड पेस्ट करें</string>
+    <string name="k2go_soon">जल्द ही</string>
+    <string name="feedback_force_crash">परीक्षण क्रैश बाध्य करें (debug)</string>
 </resources>

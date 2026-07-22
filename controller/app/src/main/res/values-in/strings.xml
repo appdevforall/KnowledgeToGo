@@ -813,4 +813,14 @@
     <string name="k2go_legend_your_picks">Terpakai %1$.1f · Sistem %2$.1f · Pilihan Anda %3$.1f · Kosong %4$.1f</string>
     <string name="k2go_legend_picks">Terpakai %1$.1f · Sistem %2$.1f · Pilihan %3$.1f · Kosong %4$.1f</string>
     <string name="k2go_perm_granted">Diberikan</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Kirim</string>
+    <string name="k2go_clone_back_receive">‹ Terima</string>
+    <string name="k2go_clone_ready_scan">Siap! Pindai untuk memulai transfer</string>
+    <string name="k2go_clone_ready_scan2">Siap! Pindai kode 2 untuk memulai transfer</string>
+    <string name="k2go_clone_step_1of2">Langkah 1 dari 2</string>
+    <string name="k2go_clone_step_2of2">Langkah 2 dari 2</string>
+    <string name="k2go_clone_paste_hint">Tempel kode transfer</string>
+    <string name="k2go_soon">Segera</string>
+    <string name="feedback_force_crash">Paksa crash uji (debug)</string>
 </resources>

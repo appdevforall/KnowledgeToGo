@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">Зайнято %1$.1f · Система %2$.1f · Ваш вибір %3$.1f · Вільно %4$.1f</string>
     <string name="k2go_legend_picks">Зайнято %1$.1f · Система %2$.1f · Вибір %3$.1f · Вільно %4$.1f</string>
     <string name="k2go_perm_granted">Надано</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Надіслати</string>
+    <string name="k2go_clone_back_receive">‹ Отримати</string>
+    <string name="k2go_clone_ready_scan">Готово! Скануйте, щоб почати передавання</string>
+    <string name="k2go_clone_ready_scan2">Готово! Скануйте код 2, щоб почати передавання</string>
+    <string name="k2go_clone_step_1of2">Крок 1 з 2</string>
+    <string name="k2go_clone_step_2of2">Крок 2 з 2</string>
+    <string name="k2go_clone_paste_hint">Вставити код передавання</string>
+    <string name="k2go_soon">Незабаром</string>
+    <string name="feedback_force_crash">Примусовий тестовий збій (debug)</string>
 </resources>

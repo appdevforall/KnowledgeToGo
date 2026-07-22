@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">Utilizat %1$.1f · Sistem %2$.1f · Selecția ta %3$.1f · Liber %4$.1f</string>
     <string name="k2go_legend_picks">Utilizat %1$.1f · Sistem %2$.1f · Selecție %3$.1f · Liber %4$.1f</string>
     <string name="k2go_perm_granted">Acordat</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Trimite</string>
+    <string name="k2go_clone_back_receive">‹ Primește</string>
+    <string name="k2go_clone_ready_scan">Gata! Scanează pentru a începe transferul</string>
+    <string name="k2go_clone_ready_scan2">Gata! Scanează codul 2 pentru a începe transferul</string>
+    <string name="k2go_clone_step_1of2">Pasul 1 din 2</string>
+    <string name="k2go_clone_step_2of2">Pasul 2 din 2</string>
+    <string name="k2go_clone_paste_hint">Lipește codul de transfer</string>
+    <string name="k2go_soon">În curând</string>
+    <string name="feedback_force_crash">Forțează blocarea de test (debug)</string>
 </resources>

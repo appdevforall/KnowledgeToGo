@@ -294,12 +294,12 @@
     <string name="k2go_legend_picks">Used %1$.1f · System %2$.1f · Picks %3$.1f · Free %4$.1f</string>
     <string name="k2go_perm_granted">Granted</string>
     <!-- ADFA-4795: clone back-header, ready/step states, paste hint, Soon badge (sweep 5) -->
-    <string name="k2go_clone_back_send" translatable="false">‹ Send</string>
-    <string name="k2go_clone_back_receive" translatable="false">‹ Receive</string>
-    <string name="k2go_clone_ready_scan" translatable="false">Ready! Scan to start the transfer</string>
-    <string name="k2go_clone_ready_scan2" translatable="false">Ready! Scan code 2 to start the transfer</string>
-    <string name="k2go_clone_step_1of2" translatable="false">Step 1 of 2</string>
-    <string name="k2go_clone_step_2of2" translatable="false">Step 2 of 2</string>
-    <string name="k2go_clone_paste_hint" translatable="false">Paste transfer code</string>
-    <string name="k2go_soon" translatable="false">Soon</string>
+    <string name="k2go_clone_back_send">‹ Send</string>
+    <string name="k2go_clone_back_receive">‹ Receive</string>
+    <string name="k2go_clone_ready_scan">Ready! Scan to start the transfer</string>
+    <string name="k2go_clone_ready_scan2">Ready! Scan code 2 to start the transfer</string>
+    <string name="k2go_clone_step_1of2">Step 1 of 2</string>
+    <string name="k2go_clone_step_2of2">Step 2 of 2</string>
+    <string name="k2go_clone_paste_hint">Paste transfer code</string>
+    <string name="k2go_soon">Soon</string>
 </resources>

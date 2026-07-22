@@ -806,4 +806,14 @@
     <string name="k2go_legend_your_picks">Đã dùng %1$.1f · Hệ thống %2$.1f · Lựa chọn của bạn %3$.1f · Trống %4$.1f</string>
     <string name="k2go_legend_picks">Đã dùng %1$.1f · Hệ thống %2$.1f · Lựa chọn %3$.1f · Trống %4$.1f</string>
     <string name="k2go_perm_granted">Đã cấp</string> <!-- machine translation -->
+    <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
+    <string name="k2go_clone_back_send">‹ Gửi</string>
+    <string name="k2go_clone_back_receive">‹ Nhận</string>
+    <string name="k2go_clone_ready_scan">Sẵn sàng! Quét để bắt đầu chuyển</string>
+    <string name="k2go_clone_ready_scan2">Sẵn sàng! Quét mã 2 để bắt đầu chuyển</string>
+    <string name="k2go_clone_step_1of2">Bước 1 / 2</string>
+    <string name="k2go_clone_step_2of2">Bước 2 / 2</string>
+    <string name="k2go_clone_paste_hint">Dán mã chuyển</string>
+    <string name="k2go_soon">Sắp có</string>
+    <string name="feedback_force_crash">Buộc sự cố thử nghiệm (debug)</string>
 </resources>
