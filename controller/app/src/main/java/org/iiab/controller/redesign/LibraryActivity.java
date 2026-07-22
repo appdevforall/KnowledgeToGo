@@ -133,7 +133,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             if (s == null) return;
             if (closing) {
                 if (!s.alive) onClosedReady();
-            } else if (s.alive) {
+            } else if (s.alive && !installing) {
+                // ADFA-4811: don't lift the boot gate on a server the installer transiently brings
+                // up mid-install; the gate is dismissed when the install reaches a terminal state.
                 onServerReady();
             }
         });

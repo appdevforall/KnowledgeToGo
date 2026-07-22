@@ -247,7 +247,8 @@ public class ServerController {
     public void handleServerLaunchClick(View v) {
         // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
-                || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+                || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                || InstallGuard.inProgress(activity)) {   // ADFA-4811: durable guard survives a mid-install kill
             host.setTargetServerState(null);
             activity.runOnUiThread(host::stopBtnProgress);
             host.refreshServerUi();
@@ -326,6 +327,11 @@ public class ServerController {
                         }
 
                         AppExecutors.get().io().execute(() -> {
+                            // ADFA-4811: never global-kill proot while an install is running — it
+                            // would kill the in-flight installer's proot over the shared rootfs.
+                            if (InstallGuard.inProgress(activity)) {
+                                return;
+                            }
                             try {
                                 Runtime.getRuntime().exec(new String[]{"sh", "-c", "killall -9 proot 2>/dev/null"});
                             } catch (Exception ignored) {

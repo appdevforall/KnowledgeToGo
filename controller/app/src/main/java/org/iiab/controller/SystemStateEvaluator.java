@@ -29,6 +29,11 @@ public final class SystemStateEvaluator {
     /** True when a system (rootfs) is actually installed on disk — the reliable signal for
      *  whether "Get more" should skip the destructive system step and go straight to content. */
     public static boolean isSystemInstalled(Context ctx) {
+        // ADFA-4811: a running (or interrupted) install is not "installed" — the rootfs is
+        // half-baked, so callers must not treat it as ready or auto-start the server over it.
+        if (InstallGuard.inProgress(ctx)) {
+            return false;
+        }
         File rootfsDir = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab");
         return new File(rootfsDir, "bin/bash").exists()
                 || new File(rootfsDir, "usr/local/pdsm/flag_install_ready").exists();

@@ -138,6 +138,9 @@ public final class InstallService extends Service {
         }
         started = true;
         moduleMode = isModules;
+        // ADFA-4811: durable marker so the app stands back (no auto-start, keep the boot gate,
+        // isSystemInstalled=false, no global proot kill) until this install reaches a clean terminal.
+        org.iiab.controller.InstallGuard.begin(this);
 
         iiabRootDir = new File(getFilesDir(), "rootfs");
         debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
@@ -723,6 +726,9 @@ public final class InstallService extends Service {
     }
 
     private void teardown() {
+        // ADFA-4811: clear the durable install marker on a clean terminal (success/fail/cancel).
+        // A process killed mid-install skips this, intentionally leaving the marker set.
+        org.iiab.controller.InstallGuard.end(this);
         releaseHardwareLocks();
         stopForeground(true);
         stopSelf();
