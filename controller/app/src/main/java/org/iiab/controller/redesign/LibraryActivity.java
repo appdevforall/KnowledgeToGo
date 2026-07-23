@@ -463,11 +463,17 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
         ellipsisRunnable = new Runnable() {
             int i = 0;
+            // Fixed 3-slot suffix: dots padded with spaces so the total width never changes. The
+            // suffix is rendered monospaced (space == dot advance) so the centered message stays put.
+            final String[] frames = {".  ", ".. ", "..."};
             @Override public void run() {
                 if (installStatus != null) {
-                    StringBuilder dots = new StringBuilder();
-                    for (int k = 0; k <= i % 3; k++) dots.append('.');
-                    installStatus.setText(bootBaseText + dots);
+                    String suffix = frames[i % frames.length];
+                    android.text.SpannableString sp = new android.text.SpannableString(bootBaseText + suffix);
+                    sp.setSpan(new android.text.style.TypefaceSpan("monospace"),
+                            bootBaseText.length(), bootBaseText.length() + suffix.length(),
+                            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    installStatus.setText(sp);
                 }
                 i++;
                 ellipsisHandler.postDelayed(this, 450L);
