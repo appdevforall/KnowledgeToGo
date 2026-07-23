@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">И даље можете изабрати другачији језик за сваку ставку садржаја када је додајете.</string>
     <string name="k2go_lang_same_as_app">Исто као језик апликације</string>
     <string name="k2go_lang_choose_content_title">Изаберите језик садржаја</string>
+    <string name="k2go_hide">Sakrij</string>
 </resources>

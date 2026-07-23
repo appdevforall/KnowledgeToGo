@@ -42,7 +42,7 @@ public class ConnectFragment extends Fragment {
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
 
-    private TextView tabHotspot, tabWifi, caption, subCaption, advance, finish, fallbackTitle;
+    private TextView tabHotspot, tabWifi, caption, subCaption, advance, finish, fallbackToggle;
     private LinearLayout steps, fallback, fallbackValues;
     private ImageView qr;
     // ADFA-4815: the scan fallback (Wi-Fi/pass or URL) is hidden until tapped, so it only
@@ -71,10 +71,8 @@ public class ConnectFragment extends Fragment {
         caption = v.findViewById(R.id.k2go_conn_caption);
         subCaption = v.findViewById(R.id.k2go_conn_subcaption);
         fallback = v.findViewById(R.id.k2go_conn_fallback);
-        fallbackTitle = v.findViewById(R.id.k2go_conn_fallback_title);
+        fallbackToggle = v.findViewById(R.id.k2go_conn_fallback_toggle);
         fallbackValues = v.findViewById(R.id.k2go_conn_fallback_values);
-        int fp = Math.round(6 * getResources().getDisplayMetrics().density);
-        fallbackTitle.setPadding(0, fp, 0, fp);
         advance = v.findViewById(R.id.k2go_conn_advance);
         finish = v.findViewById(R.id.k2go_conn_finish);
 
@@ -204,27 +202,31 @@ public class ConnectFragment extends Fragment {
 
     private void setFallback(String[] values) {
         fallbackValues.removeAllViews();
-        if (values == null || values.length == 0) { fallback.setVisibility(View.GONE); return; }
-        fallback.setVisibility(View.VISIBLE);
+        if (values == null || values.length == 0) {
+            fallback.setVisibility(View.GONE);
+            fallbackToggle.setVisibility(View.GONE);
+            return;
+        }
         for (String val : values) {
             TextView t = new TextView(requireContext());
             t.setText(val);
+            t.setGravity(Gravity.CENTER);
             t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
             t.setTextIsSelectable(true);
             fallbackValues.addView(t);
         }
-        // ADFA-4815: reveal-on-tap. Collapsed by default so a working scan stays clutter-free;
-        // tapping the title shows the Wi-Fi/pass (or URL) and flips the label to "hide".
+        // ADFA-4815: reveal-on-tap. The toggle sits under "just scan…"; the quote block with the
+        // values stays hidden until tapped, so a working scan stays clutter-free.
+        fallbackToggle.setVisibility(View.VISIBLE);
         applyFallbackOpen();
-        fallbackTitle.setOnClickListener(x -> { fallbackOpen = !fallbackOpen; applyFallbackOpen(); });
+        fallbackToggle.setOnClickListener(x -> { fallbackOpen = !fallbackOpen; applyFallbackOpen(); });
     }
 
     private void applyFallbackOpen() {
-        fallbackValues.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
-        fallbackTitle.setText(fallbackOpen
-                ? getString(R.string.k2go_clone_hide_code)
+        fallback.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
+        fallbackToggle.setText(fallbackOpen
+                ? getString(R.string.k2go_hide) + "  ▴"
                 : getString(R.string.k2go_scan_didnt_work) + "  ▾");
-        fallbackTitle.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
     }
 
     // ---- step badges: numbered circle that KEEPS its number and gains a corner check when done ----

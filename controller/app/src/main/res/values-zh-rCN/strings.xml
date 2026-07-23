@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">添加每个内容项时，您仍可为其选择不同的语言。</string>
     <string name="k2go_lang_same_as_app">与应用语言相同</string>
     <string name="k2go_lang_choose_content_title">选择内容语言</string>
+    <string name="k2go_hide">隐藏</string>
 </resources>

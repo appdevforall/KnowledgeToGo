@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Μπορείτε ακόμη να επιλέξετε διαφορετική γλώσσα για κάθε στοιχείο περιεχομένου όταν το προσθέτετε.</string>
     <string name="k2go_lang_same_as_app">Ίδια με τη γλώσσα εφαρμογής</string>
     <string name="k2go_lang_choose_content_title">Επιλογή γλώσσας περιεχομένου</string>
+    <string name="k2go_hide">Απόκρυψη</string>
 </resources>

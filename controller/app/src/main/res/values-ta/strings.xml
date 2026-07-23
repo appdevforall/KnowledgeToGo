@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">ஒவ்வொரு உள்ளடக்க உருப்படியையும் சேர்க்கும்போது வேறு மொழியைத் தேர்ந்தெடுக்கலாம்.</string>
     <string name="k2go_lang_same_as_app">ஆப்ஸ் மொழியைப் போலவே</string>
     <string name="k2go_lang_choose_content_title">உள்ளடக்க மொழியைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_hide">மறை</string>
 </resources>

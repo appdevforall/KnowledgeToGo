@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">コンテンツを追加する際に、項目ごとに別の言語を選ぶこともできます。</string>
     <string name="k2go_lang_same_as_app">アプリの言語と同じ</string>
     <string name="k2go_lang_choose_content_title">コンテンツの言語を選択</string>
+    <string name="k2go_hide">非表示</string>
 </resources>

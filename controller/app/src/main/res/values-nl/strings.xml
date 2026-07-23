@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Je kunt bij het toevoegen nog steeds een andere taal kiezen voor elk contentitem.</string>
     <string name="k2go_lang_same_as_app">Gelijk aan app-taal</string>
     <string name="k2go_lang_choose_content_title">Contenttaal kiezen</string>
+    <string name="k2go_hide">Verbergen</string>
 </resources>

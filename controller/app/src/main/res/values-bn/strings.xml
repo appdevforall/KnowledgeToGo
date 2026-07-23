@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">প্রতিটি কনটেন্ট আইটেম যোগ করার সময় আপনি এখনও এর জন্য আলাদা ভাষা বেছে নিতে পারেন।</string>
     <string name="k2go_lang_same_as_app">অ্যাপের ভাষার মতোই</string>
     <string name="k2go_lang_choose_content_title">কনটেন্টের ভাষা বেছে নিন</string>
+    <string name="k2go_hide">লুকান</string>
 </resources>

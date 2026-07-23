@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">لا يزال بإمكانك اختيار لغة مختلفة لكل عنصر محتوى عند إضافته.</string>
     <string name="k2go_lang_same_as_app">مثل لغة التطبيق</string>
     <string name="k2go_lang_choose_content_title">اختيار لغة المحتوى</string>
+    <string name="k2go_hide">إخفاء</string>
 </resources>

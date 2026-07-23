@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Все още можете да изберете различен език за всеки елемент от съдържанието, когато го добавяте.</string>
     <string name="k2go_lang_same_as_app">Като езика на приложението</string>
     <string name="k2go_lang_choose_content_title">Изберете език на съдържанието</string>
+    <string name="k2go_hide">Скриване</string>
 </resources>

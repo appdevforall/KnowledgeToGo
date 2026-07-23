@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Du kannst beim Hinzufügen für jeden Inhalt weiterhin eine andere Sprache wählen.</string>
     <string name="k2go_lang_same_as_app">Wie App-Sprache</string>
     <string name="k2go_lang_choose_content_title">Inhaltssprache wählen</string>
+    <string name="k2go_hide">Ausblenden</string>
 </resources>

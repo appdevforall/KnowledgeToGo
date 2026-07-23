@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Poți alege o altă limbă pentru fiecare element de conținut când îl adaugi.</string>
     <string name="k2go_lang_same_as_app">La fel ca limba aplicației</string>
     <string name="k2go_lang_choose_content_title">Alege limba conținutului</string>
+    <string name="k2go_hide">Ascunde</string>
 </resources>

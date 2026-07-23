@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">هنگام افزودن هر مورد محتوا همچنان می‌توانید زبان متفاوتی برای آن انتخاب کنید.</string>
     <string name="k2go_lang_same_as_app">مانند زبان برنامه</string>
     <string name="k2go_lang_choose_content_title">انتخاب زبان محتوا</string>
+    <string name="k2go_hide">پنهان کردن</string>
 </resources>

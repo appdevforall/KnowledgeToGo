@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Puoi comunque scegliere una lingua diversa per ogni contenuto quando lo aggiungi.</string>
     <string name="k2go_lang_same_as_app">Come la lingua dell\'app</string>
     <string name="k2go_lang_choose_content_title">Scegli la lingua dei contenuti</string>
+    <string name="k2go_hide">Nascondi</string>
 </resources>

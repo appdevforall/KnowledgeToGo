@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Anda masih dapat memilih bahasa berbeda untuk setiap item konten saat menambahkannya.</string>
     <string name="k2go_lang_same_as_app">Sama dengan bahasa aplikasi</string>
     <string name="k2go_lang_choose_content_title">Pilih bahasa konten</string>
+    <string name="k2go_hide">Sembunyikan</string>
 </resources>

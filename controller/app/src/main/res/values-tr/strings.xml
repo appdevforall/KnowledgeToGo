@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Eklerken her içerik öğesi için yine de farklı bir dil seçebilirsiniz.</string>
     <string name="k2go_lang_same_as_app">Uygulama diliyle aynı</string>
     <string name="k2go_lang_choose_content_title">İçerik dilini seçin</string>
+    <string name="k2go_hide">Gizle</string>
 </resources>

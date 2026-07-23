@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Pridėdami kiekvieną turinio elementą galite pasirinkti jam kitą kalbą.</string>
     <string name="k2go_lang_same_as_app">Tokia pati kaip programos kalba</string>
     <string name="k2go_lang_choose_content_title">Pasirinkite turinio kalbą</string>
+    <string name="k2go_hide">Slėpti</string>
 </resources>

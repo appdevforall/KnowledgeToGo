@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Bạn vẫn có thể chọn một ngôn ngữ khác cho từng mục nội dung khi thêm.</string>
     <string name="k2go_lang_same_as_app">Giống ngôn ngữ ứng dụng</string>
     <string name="k2go_lang_choose_content_title">Chọn ngôn ngữ nội dung</string>
+    <string name="k2go_hide">Ẩn</string>
 </resources>

@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">U každé položky obsahu můžete při jejím přidání stále zvolit jiný jazyk.</string>
     <string name="k2go_lang_same_as_app">Stejný jako jazyk aplikace</string>
     <string name="k2go_lang_choose_content_title">Zvolte jazyk obsahu</string>
+    <string name="k2go_hide">Skrýt</string>
 </resources>

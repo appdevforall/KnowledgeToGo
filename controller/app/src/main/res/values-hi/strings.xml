@@ -913,4 +913,5 @@
     <string name="k2go_lang_content_note">प्रत्येक सामग्री आइटम जोड़ते समय आप उसके लिए अलग भाषा भी चुन सकते हैं।</string>
     <string name="k2go_lang_same_as_app">ऐप भाषा के समान</string>
     <string name="k2go_lang_choose_content_title">सामग्री भाषा चुनें</string>
+    <string name="k2go_hide">छिपाएँ</string>
 </resources>

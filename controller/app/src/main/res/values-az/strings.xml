@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Hər məzmun elementini əlavə edərkən onun üçün fərqli dil seçə bilərsiniz.</string>
     <string name="k2go_lang_same_as_app">Tətbiq dili ilə eyni</string>
     <string name="k2go_lang_choose_content_title">Məzmun dilini seçin</string>
+    <string name="k2go_hide">Gizlət</string>
 </resources>

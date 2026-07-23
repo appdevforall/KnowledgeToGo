@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Du kan fortsatt velge et annet språk for hvert innholdselement når du legger det til.</string>
     <string name="k2go_lang_same_as_app">Samme som appspråket</string>
     <string name="k2go_lang_choose_content_title">Velg innholdsspråk</string>
+    <string name="k2go_hide">Skjul</string>
 </resources>
