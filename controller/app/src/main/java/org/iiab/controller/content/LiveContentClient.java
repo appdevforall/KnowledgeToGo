@@ -95,11 +95,15 @@ public final class LiveContentClient {
             if (line.contains("Indexing complete")) { done(); return; }
 
             if (!indexing) {
+                // A single event can carry many buffered aria2 lines at once, so take the LAST
+                // "(NN%)...DL:<rate>" in the blob — that's the most recent progress, not a stale one.
                 Matcher m = DL.matcher(line);
-                if (m.find()) {
-                    try { listener.onProgress(Integer.parseInt(m.group(1)), m.group(2)); }
+                int lastPct = -1; String lastSpeed = null;
+                while (m.find()) {
+                    try { lastPct = Integer.parseInt(m.group(1)); lastSpeed = m.group(2); }
                     catch (NumberFormatException ignore) { /* partial line */ }
                 }
+                if (lastPct >= 0) listener.onProgress(lastPct, lastSpeed);
             }
         });
 

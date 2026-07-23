@@ -413,7 +413,10 @@ public final class InstallService extends Service {
         liveContentClient.addZim(zimFilename, new org.iiab.controller.content.LiveContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
                 if (cancelled) return;
-                String text = getString(R.string.install_status_zim_download, percent, speed);
+                // ADFA-4830: install_status_zim_download no longer bakes the unit — the rate carries
+                // its own localized "/s". The live channel gives a raw rate, so append it here.
+                String rate = speed + getString(R.string.k2go_rate_per_second);
+                String text = getString(R.string.install_status_zim_download, percent, rate);
                 postProvisioning(text);
                 updateNotification(text);
             }

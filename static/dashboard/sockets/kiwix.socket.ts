@@ -152,7 +152,10 @@ export const handleKiwixEvents = (socket: Socket) => {
         socket.emit('kiwix_terminal_output', `\n[System] Starting download...\n`);
         socket.emit('kiwix_process_status', { isRunning: true });
 
-        const args = ['-d', ZIMS_DIR, '-c', '-Z', '-x', '4', '-s', '4', '-j', '5', '--async-dns=false', ...urls];
+        // ADFA-4832: --summary-interval=1 makes aria2 print the progress line every second even when
+        // piped (default is 60s), so the app (and web UI) get real-time progress instead of one
+        // stale blob per minute.
+        const args = ['-d', ZIMS_DIR, '-c', '-Z', '-x', '4', '-s', '4', '-j', '5', '--summary-interval=1', '--async-dns=false', ...urls];
         downloadProcess = spawn('/usr/bin/aria2c', args);
 
         downloadProcess.stdout?.on('data', (data) => socket.emit('kiwix_terminal_output', data.toString()));
