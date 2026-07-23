@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Maarufu</string>
     <string name="k2go_recommended">Inayopendekezwa</string>
     <string name="k2go_starting_library">Inaanzisha maktaba yako…</string>
+    <string name="k2go_home_failed">Imeshindwa kuanza — gusa ili ujaribu tena</string>
     <string name="k2go_storage">Hifadhi</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Mfumo → 2 Maudhui</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Mfumo → 2 Maudhui</string>

@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Popularne</string>
     <string name="k2go_recommended">Zalecane</string>
     <string name="k2go_starting_library">Uruchamianie biblioteki…</string>
+    <string name="k2go_home_failed">Nie udało się uruchomić — dotknij, aby ponowić</string>
     <string name="k2go_storage">Pamięć</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ System → 2 Treść</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ System → 2 Treść</string>

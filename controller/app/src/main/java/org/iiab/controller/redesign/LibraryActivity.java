@@ -320,6 +320,30 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
     }
 
+    /** ADFA-4837: true while a server start is actually in progress (header shows "Starting…"). */
+    public boolean isServerStarting() {
+        return Boolean.TRUE.equals(targetServerState);
+    }
+
+    /** ADFA-4837: can we safely (re)start the server from the Library home? Only when it's installed,
+     *  really idle, and nothing else is in flight — so a retry can never stack over a stop/install. */
+    public boolean canStartServer() {
+        return !closing
+                && targetServerState == null
+                && !ServerStateRepository.get().current().alive
+                && (serverController == null || !serverController.isStopping())
+                && !InstallProgressRepository.get().isRunning()
+                && !org.iiab.controller.InstallGuard.inProgress(this)
+                && org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this);
+    }
+
+    /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
+    public void startServer() {
+        if (!canStartServer()) return;
+        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header
+        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+    }
+
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
     public void turnOffK2Go() {
         if (closing) return;

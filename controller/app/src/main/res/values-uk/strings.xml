@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Популярне</string>
     <string name="k2go_recommended">Рекомендовано</string>
     <string name="k2go_starting_library">Запуск вашої бібліотеки…</string>
+    <string name="k2go_home_failed">Не вдалося запустити — торкніться, щоб повторити</string>
     <string name="k2go_storage">Сховище</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Система → 2 Вміст</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Система → 2 Вміст</string>

@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Popularno</string>
     <string name="k2go_recommended">Preporučeno</string>
     <string name="k2go_starting_library">Pokretanje vaše biblioteke…</string>
+    <string name="k2go_home_failed">Покретање није успело — додирните за поновни покушај</string>
     <string name="k2go_storage">Skladište</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistem → 2 Sadržaj</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistem → 2 Sadržaj</string>

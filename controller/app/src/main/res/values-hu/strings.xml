@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Népszerű</string>
     <string name="k2go_recommended">Ajánlott</string>
     <string name="k2go_starting_library">Könyvtár indítása…</string>
+    <string name="k2go_home_failed">Nem sikerült elindítani — koppintson az újrapróbához</string>
     <string name="k2go_storage">Tárhely</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Rendszer → 2 Tartalom</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Rendszer → 2 Tartalom</string>

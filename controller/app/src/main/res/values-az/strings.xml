@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Populyar</string>
     <string name="k2go_recommended">Tövsiyə olunan</string>
     <string name="k2go_starting_library">Kitabxananız başladılır…</string>
+    <string name="k2go_home_failed">Başlamadı — yenidən cəhd üçün toxunun</string>
     <string name="k2go_storage">Yaddaş</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistem → 2 Məzmun</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistem → 2 Məzmun</string>

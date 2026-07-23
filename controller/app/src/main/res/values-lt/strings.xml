@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Populiaru</string>
     <string name="k2go_recommended">Rekomenduojama</string>
     <string name="k2go_starting_library">Pradedama kurti biblioteką…</string>
+    <string name="k2go_home_failed">Nepavyko paleisti — palieskite, kad pakartotumėte</string>
     <string name="k2go_storage">Saugykla</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistema → 2 Turinys</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistema → 2 Turinys</string>

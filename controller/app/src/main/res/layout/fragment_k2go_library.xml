@@ -25,6 +25,7 @@
                 android:textColor="@color/k2go_ink" />
 
             <LinearLayout
+                android:id="@+id/k2go_home_status_row"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

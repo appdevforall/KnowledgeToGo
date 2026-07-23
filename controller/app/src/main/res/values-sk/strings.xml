@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Populárne</string>
     <string name="k2go_recommended">Odporúčané</string>
     <string name="k2go_starting_library">Spúšťanie vašej knižnice…</string>
+    <string name="k2go_home_failed">Nepodarilo sa spustiť — ťuknite na zopakovanie</string>
     <string name="k2go_storage">Úložisko</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Systém → 2 Obsah</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Systém → 2 Obsah</string>

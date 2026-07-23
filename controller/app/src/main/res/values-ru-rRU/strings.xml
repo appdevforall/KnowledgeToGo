@@ -739,6 +739,7 @@
     <string name="k2go_cov_popular">Популярное</string>
     <string name="k2go_recommended">Рекомендуемое</string>
     <string name="k2go_starting_library">Запуск вашей библиотеки…</string>
+    <string name="k2go_home_failed">Не удалось запустить — нажмите, чтобы повторить</string>
     <string name="k2go_storage">Хранилище</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Система → 2 Контент</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Система → 2 Контент</string>

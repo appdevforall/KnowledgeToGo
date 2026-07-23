@@ -252,6 +252,9 @@ public class ServerController {
 
     // --- server start / stop (the control button) -------------------------------
 
+    /** ADFA-4837: true while a graceful stop is in flight; a start must not stack over it. */
+    public boolean isStopping() { return stopping; }
+
     public void handleServerLaunchClick(View v) {
         // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
@@ -276,6 +279,14 @@ public class ServerController {
         File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
 
         if (!ServerStateRepository.get().current().alive) {
+            // ADFA-4837: a graceful stop can already have flipped the server to !alive while its
+            // proot is still tearing down. Never start on top of that — it would stack a second
+            // proot over the same rootfs (the collision class we keep fighting).
+            if (stopping) {
+                host.setTargetServerState(null);
+                activity.runOnUiThread(host::stopBtnProgress);
+                return;
+            }
             host.addToLog(activity.getString(R.string.log_server_booting_native));
             createFakeSysData(rootfsDir);
 

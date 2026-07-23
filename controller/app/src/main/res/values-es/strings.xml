@@ -739,6 +739,7 @@
     <string name="k2go_cov_popular">Popular</string>
     <string name="k2go_recommended">Recomendado</string>
     <string name="k2go_starting_library">Iniciando tu biblioteca…</string>
+    <string name="k2go_home_failed">No se pudo iniciar — toca para reintentar</string>
     <string name="k2go_storage">Almacenamiento</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistema → 2 Contenido</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistema → 2 Contenido</string>

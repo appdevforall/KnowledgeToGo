@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Populair</string>
     <string name="k2go_recommended">Aanbevolen</string>
     <string name="k2go_starting_library">Je bibliotheek wordt gestart…</string>
+    <string name="k2go_home_failed">Starten mislukt — tik om opnieuw te proberen</string>
     <string name="k2go_storage">Opslag</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Systeem → 2 Inhoud</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Systeem → 2 Inhoud</string>
