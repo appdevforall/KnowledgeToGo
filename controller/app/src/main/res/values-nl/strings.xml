@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Voorbeeld — nog niet functioneel</string>
     <string name="k2go_lang_english">Engels</string>
     <string name="k2go_lang_spanish">Spaans</string>
-    <string name="k2go_brand">Kennis voor onderweg</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Thema</string>
     <string name="k2go_settings_help">Help</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Niet ondersteund</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Een boek lezen</string>
-    <string name="k2go_card_code">Coderen onderweg</string>
     <string name="k2go_card_wikipedia">Wikipedia verkennen</string>
     <string name="k2go_card_courses">Cursussen volgen</string>
     <string name="k2go_card_maps">Kaarten verkennen</string>

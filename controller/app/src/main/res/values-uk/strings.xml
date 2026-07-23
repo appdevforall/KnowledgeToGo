@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Попередній перегляд — поки не працює</string>
     <string name="k2go_lang_english">Англійська</string>
     <string name="k2go_lang_spanish">Іспанська</string>
-    <string name="k2go_brand">Знання із собою</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Тема</string>
     <string name="k2go_settings_help">Довідка</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Не підтримується</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Читати книгу</string>
-    <string name="k2go_card_code">Програмуй у дорозі</string>
     <string name="k2go_card_wikipedia">Досліджуйте Wikipedia</string>
     <string name="k2go_card_courses">Проходьте курси</string>
     <string name="k2go_card_maps">Орієнтуйтеся на картах</string>

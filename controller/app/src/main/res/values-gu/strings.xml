@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">પૂર્વાવલોકન — હજી કાર્યરત નથી</string>
     <string name="k2go_lang_english">અંગ્રેજી</string>
     <string name="k2go_lang_spanish">સ્પેનિશ</string>
-    <string name="k2go_brand">સાથે લઈ જવાનું જ્ઞાન</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
     <string name="k2go_settings_theme">થીમ</string>
     <string name="k2go_settings_help">મદદ</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">સમર્થિત નથી</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). review — machine, verify. -->
     <string name="k2go_card_books">પુસ્તક વાંચો</string>
-    <string name="k2go_card_code">ચાલતાં-ફરતાં કોડ લખો</string>
     <string name="k2go_card_wikipedia">Wikipedia એક્સપ્લોર કરો</string>
     <string name="k2go_card_courses">અભ્યાસક્રમો કરો</string>
     <string name="k2go_card_maps">નકશા નેવિગેટ કરો</string>

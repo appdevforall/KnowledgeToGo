@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">预览 — 尚不可用</string>
     <string name="k2go_lang_english">英语</string>
     <string name="k2go_lang_spanish">西班牙语</string>
-    <string name="k2go_brand">随身携带的知识</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">主题</string>
     <string name="k2go_settings_help">帮助</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">不支持</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">阅读书籍</string>
-    <string name="k2go_card_code">随时随地编程</string>
     <string name="k2go_card_wikipedia">探索Wikipedia</string>
     <string name="k2go_card_courses">学习课程</string>
     <string name="k2go_card_maps">浏览地图</string>

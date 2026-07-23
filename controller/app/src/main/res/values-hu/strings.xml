@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Előnézet — még nem működik</string>
     <string name="k2go_lang_english">Angol</string>
     <string name="k2go_lang_spanish">Spanyol</string>
-    <string name="k2go_brand">Tudás útközben</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Téma</string>
     <string name="k2go_settings_help">Súgó</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Nem támogatott</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Könyv olvasása</string>
-    <string name="k2go_card_code">Kódolás útközben</string>
     <string name="k2go_card_wikipedia">Wikipedia felfedezése</string>
     <string name="k2go_card_courses">Tanfolyamok elvégzése</string>
     <string name="k2go_card_maps">Térképek böngészése</string>

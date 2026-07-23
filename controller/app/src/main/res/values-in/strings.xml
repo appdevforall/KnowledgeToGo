@@ -708,7 +708,6 @@
     <string name="k2go_preview_banner">Pratinjau — belum berfungsi</string>
     <string name="k2go_lang_english">Bahasa Inggris</string>
     <string name="k2go_lang_spanish">Bahasa Spanyol</string>
-    <string name="k2go_brand">Pengetahuan yang Bisa Dibawa</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Tema</string>
     <string name="k2go_settings_help">Bantuan</string>
@@ -761,7 +760,6 @@
     <string name="k2go_not_supported">Tidak didukung</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Baca buku</string>
-    <string name="k2go_card_code">Coding saat bepergian</string>
     <string name="k2go_card_wikipedia">Jelajahi Wikipedia</string>
     <string name="k2go_card_courses">Ikuti kursus</string>
     <string name="k2go_card_maps">Navigasi peta</string>

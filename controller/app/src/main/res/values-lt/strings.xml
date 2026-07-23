@@ -708,7 +708,6 @@
     <string name="k2go_preview_banner">Peržiūra — dar neveikia</string>
     <string name="k2go_lang_english">Anglų</string>
     <string name="k2go_lang_spanish">Ispanų</string>
-    <string name="k2go_brand">Žinios su savimi</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Tema</string>
     <string name="k2go_settings_help">Pagalba</string>
@@ -761,7 +760,6 @@
     <string name="k2go_not_supported">Nepalaikoma</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Skaityti knygą</string>
-    <string name="k2go_card_code">Programuokite kelyje</string>
     <string name="k2go_card_wikipedia">Naršykite Wikipedia</string>
     <string name="k2go_card_courses">Lankykite kursus</string>
     <string name="k2go_card_maps">Naršykite žemėlapius</string>

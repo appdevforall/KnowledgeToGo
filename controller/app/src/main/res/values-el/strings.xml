@@ -708,7 +708,6 @@
     <string name="k2go_preview_banner">Προεπισκόπηση — δεν λειτουργεί ακόμη</string>
     <string name="k2go_lang_english">Αγγλικά</string>
     <string name="k2go_lang_spanish">Ισπανικά</string>
-    <string name="k2go_brand">Γνώση μαζί σας</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Θέμα</string>
     <string name="k2go_settings_help">Βοήθεια</string>
@@ -761,7 +760,6 @@
     <string name="k2go_not_supported">Δεν υποστηρίζεται</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Διαβάστε ένα βιβλίο</string>
-    <string name="k2go_card_code">Προγραμματίστε εν κινήσει</string>
     <string name="k2go_card_wikipedia">Εξερευνήστε τη Wikipedia</string>
     <string name="k2go_card_courses">Παρακολουθήστε μαθήματα</string>
     <string name="k2go_card_maps">Πλοηγηθείτε σε χάρτες</string>

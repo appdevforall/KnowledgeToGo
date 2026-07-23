@@ -701,7 +701,6 @@
     <string name="k2go_preview_banner">Previzualizare — încă nefuncțional</string>
     <string name="k2go_lang_english">Engleză</string>
     <string name="k2go_lang_spanish">Spaniolă</string>
-    <string name="k2go_brand">Cunoștințe la purtător</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. machine translation. -->
     <string name="k2go_settings_theme">Temă</string>
     <string name="k2go_settings_help">Ajutor</string>
@@ -754,7 +753,6 @@
     <string name="k2go_not_supported">Neacceptat</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). machine translation. -->
     <string name="k2go_card_books">Citește o carte</string>
-    <string name="k2go_card_code">Programează din mers</string>
     <string name="k2go_card_wikipedia">Explorează Wikipedia</string>
     <string name="k2go_card_courses">Urmează cursuri</string>
     <string name="k2go_card_maps">Navighează pe hărți</string>

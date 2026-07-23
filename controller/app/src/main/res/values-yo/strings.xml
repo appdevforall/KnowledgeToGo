@@ -708,7 +708,6 @@
     <string name="k2go_preview_banner">Àkọ́wò — kò tíì ṣiṣẹ́</string>
     <string name="k2go_lang_english">Èdè Gẹ̀ẹ́sì</string>
     <string name="k2go_lang_spanish">Èdè Sípáníìṣì</string>
-    <string name="k2go_brand">Ìmọ̀ Láti Gbé Lọ</string>
     <!-- ADFA-4795: Settings menu + Advanced sub-screen l10n. review — machine, verify. -->
     <string name="k2go_settings_theme">Àkòrí</string>
     <string name="k2go_settings_help">Ìrànlọ́wọ́</string>
@@ -761,7 +760,6 @@
     <string name="k2go_not_supported">Kò ní àtìlẹ́yìn</string>
     <!-- ADFA-4795: redesign dynamic text l10n (sweep 3). review — machine, verify. -->
     <string name="k2go_card_books">Ka iwe kan</string>
-    <string name="k2go_card_code">Ṣe koodu lọna</string>
     <string name="k2go_card_wikipedia">Ṣawari Wikipedia</string>
     <string name="k2go_card_courses">Gba awọn ẹkọ</string>
     <string name="k2go_card_maps">Lilọ kiri awọn maapu</string>
