@@ -3,6 +3,10 @@
 <resources>
     <color name="k2go_ink">#14211F</color>
     <color name="k2go_paper">#FBF8F3</color>
+    <!-- ADFA-4814: boot-gate letterbox behind the intro/outro Lottie. Must match the animation's
+         own BG layer (#FBF8F3) and stay the same in light + dark, so the margin reads as continuous
+         (no override in values-night). -->
+    <color name="k2go_boot_bg">#FBF8F3</color>
     <color name="k2go_surface">#EFEBE2</color>
     <color name="k2go_teal">#0E5C63</color>
     <color name="k2go_leaf">#2E9E5B</color>

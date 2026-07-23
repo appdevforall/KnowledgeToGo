@@ -52,14 +52,19 @@
     </LinearLayout>
 
     <!-- Boot gate: covers the ~5-6s server boot; entry loop then OPEN flip. -->
+    <!-- ADFA-4814: fitCenter + horizontal padding so the intro/outro isn't jammed into the
+         corners. Background matches the animation's own BG (#FBF8F3 in both themes) so the
+         margin reads as continuous. -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/k2go_boot_gate"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/k2go_paper"
+        android:background="@color/k2go_boot_bg"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:clickable="true"
         android:focusable="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="fitCenter" />
 
     <!-- Install progress over the boot gate: stays until the install actually finishes. -->
     <LinearLayout
