@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">扫描以获取应用</string>
     <string name="k2go_clone_scan_to_join">扫描以连接</string>
     <string name="k2go_clone_scan_different">‹ 扫描其他代码</string>
-    <string name="k2go_clone_scan_enter_text">扫描不成功？以文本形式输入代码  ▾</string>
-    <string name="k2go_clone_scan_show_text">扫描不成功？以文本形式显示代码  ▾</string>
+    <string name="k2go_clone_scan_enter_text">扫描不成功？以文本形式输入代码  ▸</string>
+    <string name="k2go_clone_scan_show_text">扫描不成功？以文本形式显示代码  ▸</string>
     <string name="k2go_clone_show_codes">显示代码；另一部手机扫描它们。</string>
     <string name="k2go_clone_copy_btn">⧉  复制</string>
     <string name="k2go_cancel">取消</string>
@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">添加每个内容项时，您仍可为其选择不同的语言。</string>
     <string name="k2go_lang_same_as_app">与应用语言相同</string>
     <string name="k2go_lang_choose_content_title">选择内容语言</string>
+    <string name="k2go_hide">隐藏</string>
 </resources>

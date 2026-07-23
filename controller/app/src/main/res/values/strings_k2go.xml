@@ -161,8 +161,8 @@
     <string name="k2go_clone_other_no_app">Other phone doesn\'t have K2Go yet?</string>
     <string name="k2go_clone_receive_from">Receive from another phone  ›</string>
     <string name="k2go_clone_sharing_now">SHARING NOW</string>
-    <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter code as text  ▾</string>
-    <string name="k2go_clone_scan_show_text">Scan didn\'t work? Show code as text  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter code as text  ▸</string>
+    <string name="k2go_clone_scan_show_text">Scan didn\'t work? Show code as text  ▸</string>
     <string name="k2go_clone_scan_their_codes">Scan their codes to get a copy here.</string>
     <string name="k2go_clone_scan_get_app">Scan to get the app</string>
     <string name="k2go_clone_scan_to_join">Scan to join</string>
@@ -325,4 +325,5 @@
     <string name="k2go_lang_content_note">You can still pick a different language for each content item when you add it.</string>
     <string name="k2go_lang_same_as_app">Same as app language</string>
     <string name="k2go_lang_choose_content_title">Choose content language</string>
+    <string name="k2go_hide">Hide</string>
 </resources>

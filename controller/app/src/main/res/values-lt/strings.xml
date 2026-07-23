@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Nuskaitykite, kad gautumėte programą</string>
     <string name="k2go_clone_scan_to_join">Nuskaitykite, kad prisijungtumėte</string>
     <string name="k2go_clone_scan_different">‹ Nuskaityti kitą kodą</string>
-    <string name="k2go_clone_scan_enter_text">Nuskaityti nepavyko? Įveskite kodą kaip tekstą  ▾</string>
-    <string name="k2go_clone_scan_show_text">Nuskaityti nepavyko? Rodyti kodą kaip tekstą  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Nuskaityti nepavyko? Įveskite kodą kaip tekstą  ▸</string>
+    <string name="k2go_clone_scan_show_text">Nuskaityti nepavyko? Rodyti kodą kaip tekstą  ▸</string>
     <string name="k2go_clone_show_codes">Parodykite kodus; kitas telefonas juos nuskaito.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopijuoti</string>
     <string name="k2go_cancel">Atšaukti</string>
@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Pridėdami kiekvieną turinio elementą galite pasirinkti jam kitą kalbą.</string>
     <string name="k2go_lang_same_as_app">Tokia pati kaip programos kalba</string>
     <string name="k2go_lang_choose_content_title">Pasirinkite turinio kalbą</string>
+    <string name="k2go_hide">Slėpti</string>
 </resources>

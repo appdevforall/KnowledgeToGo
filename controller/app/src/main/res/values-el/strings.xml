@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Σάρωση για λήψη της εφαρμογής</string>
     <string name="k2go_clone_scan_to_join">Σάρωση για σύνδεση</string>
     <string name="k2go_clone_scan_different">‹ Σάρωση άλλου κωδικού</string>
-    <string name="k2go_clone_scan_enter_text">Η σάρωση δεν λειτούργησε; Εισαγάγετε τον κωδικό ως κείμενο  ▾</string>
-    <string name="k2go_clone_scan_show_text">Η σάρωση δεν λειτούργησε; Εμφάνιση κωδικού ως κείμενο  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Η σάρωση δεν λειτούργησε; Εισαγάγετε τον κωδικό ως κείμενο  ▸</string>
+    <string name="k2go_clone_scan_show_text">Η σάρωση δεν λειτούργησε; Εμφάνιση κωδικού ως κείμενο  ▸</string>
     <string name="k2go_clone_show_codes">Εμφανίστε τους κωδικούς· το άλλο τηλέφωνο τους σαρώνει.</string>
     <string name="k2go_clone_copy_btn">⧉  Αντιγραφή</string>
     <string name="k2go_cancel">Άκυρο</string>
@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Μπορείτε ακόμη να επιλέξετε διαφορετική γλώσσα για κάθε στοιχείο περιεχομένου όταν το προσθέτετε.</string>
     <string name="k2go_lang_same_as_app">Ίδια με τη γλώσσα εφαρμογής</string>
     <string name="k2go_lang_choose_content_title">Επιλογή γλώσσας περιεχομένου</string>
+    <string name="k2go_hide">Απόκρυψη</string>
 </resources>

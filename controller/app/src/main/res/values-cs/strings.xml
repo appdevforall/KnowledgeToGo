@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Naskenujte pro získání aplikace</string>
     <string name="k2go_clone_scan_to_join">Naskenujte pro připojení</string>
     <string name="k2go_clone_scan_different">‹ Naskenovat jiný kód</string>
-    <string name="k2go_clone_scan_enter_text">Skenování nefungovalo? Zadejte kód jako text  ▾</string>
-    <string name="k2go_clone_scan_show_text">Skenování nefungovalo? Zobrazte kód jako text  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Skenování nefungovalo? Zadejte kód jako text  ▸</string>
+    <string name="k2go_clone_scan_show_text">Skenování nefungovalo? Zobrazte kód jako text  ▸</string>
     <string name="k2go_clone_show_codes">Zobrazte kódy; druhý telefon je naskenuje.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopírovat</string>
     <string name="k2go_cancel">Zrušit</string>
@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">U každé položky obsahu můžete při jejím přidání stále zvolit jiný jazyk.</string>
     <string name="k2go_lang_same_as_app">Stejný jako jazyk aplikace</string>
     <string name="k2go_lang_choose_content_title">Zvolte jazyk obsahu</string>
+    <string name="k2go_hide">Skrýt</string>
 </resources>

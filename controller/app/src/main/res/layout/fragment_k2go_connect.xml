@@ -30,12 +30,17 @@
         <TextView android:id="@+id/k2go_conn_subcaption" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
 
+        <!-- ADFA-4815: fallback reveal. The toggle sits right under "just scan…", same centered
+             small-text format; the quote block with the actual values shows only when tapped. -->
+        <TextView android:id="@+id/k2go_conn_fallback_toggle" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:layout_marginTop="6dp" android:padding="6dp"
+            android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal"
+            android:clickable="true" android:focusable="true" android:visibility="gone" />
+
         <LinearLayout android:id="@+id/k2go_conn_fallback" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
-            android:layout_marginTop="14dp" android:padding="14dp" android:background="@drawable/k2go_card_bg">
-            <TextView android:id="@+id/k2go_conn_fallback_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/k2go_scan_didnt_work" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            android:layout_marginTop="8dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
             <LinearLayout android:id="@+id/k2go_conn_fallback_values" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:layout_marginTop="6dp" />
+                android:orientation="vertical" />
         </LinearLayout>
 
         <TextView android:id="@+id/k2go_conn_finish" android:layout_width="match_parent" android:layout_height="wrap_content"

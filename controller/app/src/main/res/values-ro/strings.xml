@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Scanează pentru a obține aplicația</string>
     <string name="k2go_clone_scan_to_join">Scanează pentru conectare</string>
     <string name="k2go_clone_scan_different">‹ Scanează alt cod</string>
-    <string name="k2go_clone_scan_enter_text">Scanarea nu a funcționat? Introdu codul ca text  ▾</string>
-    <string name="k2go_clone_scan_show_text">Scanarea nu a funcționat? Afișează codul ca text  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Scanarea nu a funcționat? Introdu codul ca text  ▸</string>
+    <string name="k2go_clone_scan_show_text">Scanarea nu a funcționat? Afișează codul ca text  ▸</string>
     <string name="k2go_clone_show_codes">Afișează codurile; celălalt telefon le scanează.</string>
     <string name="k2go_clone_copy_btn">⧉  Copiază</string>
     <string name="k2go_cancel">Anulează</string>
@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Poți alege o altă limbă pentru fiecare element de conținut când îl adaugi.</string>
     <string name="k2go_lang_same_as_app">La fel ca limba aplicației</string>
     <string name="k2go_lang_choose_content_title">Alege limba conținutului</string>
+    <string name="k2go_hide">Ascunde</string>
 </resources>

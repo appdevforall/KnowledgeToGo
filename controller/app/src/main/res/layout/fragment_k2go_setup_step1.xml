@@ -18,13 +18,12 @@
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/k2go_step_spine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/k2go_step1_breadcrumb"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/k2go_teal" />
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" />
 
         <TextView
             android:layout_width="wrap_content"

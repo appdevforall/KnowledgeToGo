@@ -42,9 +42,12 @@ public class ConnectFragment extends Fragment {
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
 
-    private TextView tabHotspot, tabWifi, caption, subCaption, advance, finish;
+    private TextView tabHotspot, tabWifi, caption, subCaption, advance, finish, fallbackToggle;
     private LinearLayout steps, fallback, fallbackValues;
     private ImageView qr;
+    // ADFA-4815: the scan fallback (Wi-Fi/pass or URL) is hidden until tapped, so it only
+    // shows up when the scan actually failed — same reveal as the Clone step-3 "show code as text".
+    private boolean fallbackOpen = false;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
@@ -68,6 +71,7 @@ public class ConnectFragment extends Fragment {
         caption = v.findViewById(R.id.k2go_conn_caption);
         subCaption = v.findViewById(R.id.k2go_conn_subcaption);
         fallback = v.findViewById(R.id.k2go_conn_fallback);
+        fallbackToggle = v.findViewById(R.id.k2go_conn_fallback_toggle);
         fallbackValues = v.findViewById(R.id.k2go_conn_fallback_values);
         advance = v.findViewById(R.id.k2go_conn_advance);
         finish = v.findViewById(R.id.k2go_conn_finish);
@@ -75,7 +79,7 @@ public class ConnectFragment extends Fragment {
         tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
-            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; openDone = false; render(); }
+            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; openDone = false; fallbackOpen = false; render(); }
         });
         finish.setOnClickListener(x -> {
             openDone = true;      // tick step 2, briefly show it complete, then go Home
@@ -100,6 +104,7 @@ public class ConnectFragment extends Fragment {
         mode = m;
         stage = (m == Mode.HOTSPOT) ? Stage.JOIN : Stage.OPEN;
         openDone = false;
+        fallbackOpen = false;   // ADFA-4815: each mode/stage starts with the fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
@@ -197,15 +202,31 @@ public class ConnectFragment extends Fragment {
 
     private void setFallback(String[] values) {
         fallbackValues.removeAllViews();
-        if (values == null || values.length == 0) { fallback.setVisibility(View.GONE); return; }
-        fallback.setVisibility(View.VISIBLE);
+        if (values == null || values.length == 0) {
+            fallback.setVisibility(View.GONE);
+            fallbackToggle.setVisibility(View.GONE);
+            return;
+        }
         for (String val : values) {
             TextView t = new TextView(requireContext());
             t.setText(val);
+            t.setGravity(Gravity.CENTER);
             t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
             t.setTextIsSelectable(true);
             fallbackValues.addView(t);
         }
+        // ADFA-4815: reveal-on-tap. The toggle sits under "just scan…"; the quote block with the
+        // values stays hidden until tapped, so a working scan stays clutter-free.
+        fallbackToggle.setVisibility(View.VISIBLE);
+        applyFallbackOpen();
+        fallbackToggle.setOnClickListener(x -> { fallbackOpen = !fallbackOpen; applyFallbackOpen(); });
+    }
+
+    private void applyFallbackOpen() {
+        fallback.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
+        fallbackToggle.setText(fallbackOpen
+                ? getString(R.string.k2go_hide) + "  ▴"
+                : getString(R.string.k2go_scan_didnt_work) + "  ▸");
     }
 
     // ---- step badges: numbered circle that KEEPS its number and gains a corner check when done ----

@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Skenirajte da dobijete aplikaciju</string>
     <string name="k2go_clone_scan_to_join">Skenirajte za povezivanje</string>
     <string name="k2go_clone_scan_different">‹ Skeniraj drugi kod</string>
-    <string name="k2go_clone_scan_enter_text">Skeniranje nije uspelo? Unesite kod kao tekst  ▾</string>
-    <string name="k2go_clone_scan_show_text">Skeniranje nije uspelo? Prikažite kod kao tekst  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Skeniranje nije uspelo? Unesite kod kao tekst  ▸</string>
+    <string name="k2go_clone_scan_show_text">Skeniranje nije uspelo? Prikažite kod kao tekst  ▸</string>
     <string name="k2go_clone_show_codes">Prikažite kodove; drugi telefon ih skenira.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopiraj</string>
     <string name="k2go_cancel">Otkaži</string>
@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">И даље можете изабрати другачији језик за сваку ставку садржаја када је додајете.</string>
     <string name="k2go_lang_same_as_app">Исто као језик апликације</string>
     <string name="k2go_lang_choose_content_title">Изаберите језик садржаја</string>
+    <string name="k2go_hide">Sakrij</string>
 </resources>

@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">ஆப்பைப் பெற ஸ்கேன் செய்யவும்</string>
     <string name="k2go_clone_scan_to_join">இணைய ஸ்கேன் செய்யவும்</string>
     <string name="k2go_clone_scan_different">‹ வேறு குறியீட்டை ஸ்கேன் செய்</string>
-    <string name="k2go_clone_scan_enter_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாக உள்ளிடவும்  ▾</string>
-    <string name="k2go_clone_scan_show_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாகக் காட்டவும்  ▾</string>
+    <string name="k2go_clone_scan_enter_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாக உள்ளிடவும்  ▸</string>
+    <string name="k2go_clone_scan_show_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாகக் காட்டவும்  ▸</string>
     <string name="k2go_clone_show_codes">குறியீடுகளைக் காட்டவும்; மற்ற தொலைபேசி அவற்றை ஸ்கேன் செய்யும்.</string>
     <string name="k2go_clone_copy_btn">⧉  நகலெடு</string>
     <string name="k2go_cancel">ரத்துசெய்</string>
@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">ஒவ்வொரு உள்ளடக்க உருப்படியையும் சேர்க்கும்போது வேறு மொழியைத் தேர்ந்தெடுக்கலாம்.</string>
     <string name="k2go_lang_same_as_app">ஆப்ஸ் மொழியைப் போலவே</string>
     <string name="k2go_lang_choose_content_title">உள்ளடக்க மொழியைத் தேர்ந்தெடுக்கவும்</string>
+    <string name="k2go_hide">மறை</string>
 </resources>

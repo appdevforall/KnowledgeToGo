@@ -66,6 +66,7 @@ public class CloneFragment extends Fragment {
     private Mode mode = Mode.HOTSPOT;
     private Stage stage = Stage.JOIN;
     private boolean startedStep = false;
+    private boolean fallbackOpen = false;   // ADFA-4815: step-1 scan fallback hidden until tapped
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private TransportEngine transport;
@@ -93,7 +94,7 @@ public class CloneFragment extends Fragment {
     private LinearLayout forkBox, tabsRow;
     private TextView cloneHdr, subtitleView, backHeader;
     private boolean getAppSkipped = false, getAppDone = false;   // ADFA-4785: step-2 (Get app) disposition
-    private TextView stepTitle, skipApp, shareWifi;
+    private TextView stepTitle, skipApp, shareWifi, fallbackToggle;
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -145,6 +146,7 @@ public class CloneFragment extends Fragment {
         caption = v.findViewById(R.id.k2go_clone_caption);
         subCaption = v.findViewById(R.id.k2go_clone_subcaption);
         fallback = v.findViewById(R.id.k2go_clone_fallback);
+        fallbackToggle = v.findViewById(R.id.k2go_clone_fallback_toggle);
         fallbackValues = v.findViewById(R.id.k2go_clone_fallback_values);
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
@@ -213,6 +215,7 @@ public class CloneFragment extends Fragment {
         tabHotspot.setOnClickListener(x -> requestMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> requestMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
+            fallbackOpen = false;   // ADFA-4815: collapse the step-1 fallback when changing step
             if (stage == Stage.JOIN) { sendApp = true; render(); }        // step 1 -> step 2 (Get app)
             else { stage = Stage.JOIN; getAppDone = false; render(); }     // step 3 -> back to step 1
         });
@@ -290,6 +293,7 @@ public class CloneFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
+        fallbackOpen = false;   // ADFA-4815: each mode starts with the step-1 fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
     }
@@ -402,6 +406,7 @@ public class CloneFragment extends Fragment {
             caption.setVisibility(View.GONE);
             subCaption.setVisibility(View.GONE);
             fallback.setVisibility(View.GONE);
+            fallbackToggle.setVisibility(View.GONE);
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
@@ -425,6 +430,7 @@ public class CloneFragment extends Fragment {
             caption.setVisibility(View.GONE);
             subCaption.setVisibility(View.GONE);
             fallback.setVisibility(View.GONE);
+            fallbackToggle.setVisibility(View.GONE);
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
@@ -442,7 +448,7 @@ public class CloneFragment extends Fragment {
             paintTab(tabHotspot, mode == Mode.HOTSPOT);
             paintTab(tabWifi, mode == Mode.WIFI);
             caption.setVisibility(View.GONE); subCaption.setVisibility(View.GONE); footer.setVisibility(View.GONE);
-            fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
+            fallbackToggle.setVisibility(View.GONE); fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE); sendAppEntry.setVisibility(View.GONE);
             steps.setVisibility(View.VISIBLE); buildSteps(true);
             stepTitle.setVisibility(View.VISIBLE); stepTitle.setText(getString(R.string.k2go_clone_step2_title));
@@ -936,15 +942,31 @@ public class CloneFragment extends Fragment {
 
     private void setFallback(String[] values) {
         fallbackValues.removeAllViews();
-        if (values == null || values.length == 0) { fallback.setVisibility(View.GONE); return; }
-        fallback.setVisibility(View.VISIBLE);
+        if (values == null || values.length == 0) {
+            fallback.setVisibility(View.GONE);
+            fallbackToggle.setVisibility(View.GONE);
+            return;
+        }
         for (String val : values) {
             TextView t = new TextView(requireContext());
             t.setText(val);
+            t.setGravity(Gravity.CENTER);
             t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
             t.setTextIsSelectable(true);
             fallbackValues.addView(t);
         }
+        // ADFA-4815: reveal-on-tap, same as Connect. The toggle sits under the subcaption; the
+        // Wi-Fi + password quote shows only when tapped, so a working scan stays clutter-free.
+        fallbackToggle.setVisibility(View.VISIBLE);
+        applyFallbackOpen();
+        fallbackToggle.setOnClickListener(x -> { fallbackOpen = !fallbackOpen; applyFallbackOpen(); });
+    }
+
+    private void applyFallbackOpen() {
+        fallback.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
+        fallbackToggle.setText(fallbackOpen
+                ? getString(R.string.k2go_hide) + "  ▴"
+                : getString(R.string.k2go_scan_didnt_work) + "  ▸");
     }
 
     // ---- step badges (same style as Connect): number kept, corner check when done ----

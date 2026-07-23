@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">برای دریافت برنامه اسکن کنید</string>
     <string name="k2go_clone_scan_to_join">برای پیوستن اسکن کنید</string>
     <string name="k2go_clone_scan_different">‹ اسکن کد دیگر</string>
-    <string name="k2go_clone_scan_enter_text">اسکن کار نکرد؟ کد را به‌صورت متن وارد کنید  ▾</string>
-    <string name="k2go_clone_scan_show_text">اسکن کار نکرد؟ کد را به‌صورت متن نمایش دهید  ▾</string>
+    <string name="k2go_clone_scan_enter_text">اسکن کار نکرد؟ کد را به‌صورت متن وارد کنید  ▸</string>
+    <string name="k2go_clone_scan_show_text">اسکن کار نکرد؟ کد را به‌صورت متن نمایش دهید  ▸</string>
     <string name="k2go_clone_show_codes">کدها را نشان دهید؛ تلفن دیگر آن‌ها را اسکن می‌کند.</string>
     <string name="k2go_clone_copy_btn">⧉  کپی</string>
     <string name="k2go_cancel">لغو</string>
@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">هنگام افزودن هر مورد محتوا همچنان می‌توانید زبان متفاوتی برای آن انتخاب کنید.</string>
     <string name="k2go_lang_same_as_app">مانند زبان برنامه</string>
     <string name="k2go_lang_choose_content_title">انتخاب زبان محتوا</string>
+    <string name="k2go_hide">پنهان کردن</string>
 </resources>

@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Scannen, um die App zu erhalten</string>
     <string name="k2go_clone_scan_to_join">Scannen zum Beitreten</string>
     <string name="k2go_clone_scan_different">‹ Anderen Code scannen</string>
-    <string name="k2go_clone_scan_enter_text">Scan hat nicht geklappt? Code als Text eingeben  ▾</string>
-    <string name="k2go_clone_scan_show_text">Scan hat nicht geklappt? Code als Text anzeigen  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Scan hat nicht geklappt? Code als Text eingeben  ▸</string>
+    <string name="k2go_clone_scan_show_text">Scan hat nicht geklappt? Code als Text anzeigen  ▸</string>
     <string name="k2go_clone_show_codes">Zeige die Codes; das andere Telefon scannt sie.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopieren</string>
     <string name="k2go_cancel">Abbrechen</string>
@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Du kannst beim Hinzufügen für jeden Inhalt weiterhin eine andere Sprache wählen.</string>
     <string name="k2go_lang_same_as_app">Wie App-Sprache</string>
     <string name="k2go_lang_choose_content_title">Inhaltssprache wählen</string>
+    <string name="k2go_hide">Ausblenden</string>
 </resources>

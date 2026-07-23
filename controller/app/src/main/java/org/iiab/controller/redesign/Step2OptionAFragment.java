@@ -65,6 +65,10 @@ public class Step2OptionAFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
         View v = inflater.inflate(R.layout.fragment_k2go_setup_step2a, c, false);
+        // ADFA-4815: numbered step spine — step 1 done (check), step 2 active.
+        StepSpine.render(v.findViewById(R.id.k2go_step_spine),
+                new StepSpine.Step("1", getString(R.string.k2go_lbl_system), false, true),
+                new StepSpine.Step("2", getString(R.string.k2go_lbl_content), true, false));
         lang = ContentLanguage.systemDefault();
         sel = (act() != null) ? act().getWikiVariants() : new java.util.LinkedHashSet<>();
         if (act() != null) wikiInc = act().isWikiIncluded();

@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Tətbiqi almaq üçün skan edin</string>
     <string name="k2go_clone_scan_to_join">Qoşulmaq üçün skan edin</string>
     <string name="k2go_clone_scan_different">‹ Başqa kodu skan et</string>
-    <string name="k2go_clone_scan_enter_text">Skan alınmadı? Kodu mətn kimi daxil edin  ▾</string>
-    <string name="k2go_clone_scan_show_text">Skan alınmadı? Kodu mətn kimi göstərin  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Skan alınmadı? Kodu mətn kimi daxil edin  ▸</string>
+    <string name="k2go_clone_scan_show_text">Skan alınmadı? Kodu mətn kimi göstərin  ▸</string>
     <string name="k2go_clone_show_codes">Kodları göstərin; digər telefon onları skan edir.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopyala</string>
     <string name="k2go_cancel">Ləğv et</string>
@@ -843,4 +843,5 @@
     <string name="k2go_lang_content_note">Hər məzmun elementini əlavə edərkən onun üçün fərqli dil seçə bilərsiniz.</string>
     <string name="k2go_lang_same_as_app">Tətbiq dili ilə eyni</string>
     <string name="k2go_lang_choose_content_title">Məzmun dilini seçin</string>
+    <string name="k2go_hide">Gizlət</string>
 </resources>

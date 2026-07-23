@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Uygulamayı almak için tara</string>
     <string name="k2go_clone_scan_to_join">Bağlanmak için tara</string>
     <string name="k2go_clone_scan_different">‹ Başka bir kod tara</string>
-    <string name="k2go_clone_scan_enter_text">Tarama işe yaramadı mı? Kodu metin olarak girin  ▾</string>
-    <string name="k2go_clone_scan_show_text">Tarama işe yaramadı mı? Kodu metin olarak göster  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Tarama işe yaramadı mı? Kodu metin olarak girin  ▸</string>
+    <string name="k2go_clone_scan_show_text">Tarama işe yaramadı mı? Kodu metin olarak göster  ▸</string>
     <string name="k2go_clone_show_codes">Kodları gösterin; diğer telefon onları tarar.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopyala</string>
     <string name="k2go_cancel">İptal</string>
@@ -836,4 +836,5 @@
     <string name="k2go_lang_content_note">Eklerken her içerik öğesi için yine de farklı bir dil seçebilirsiniz.</string>
     <string name="k2go_lang_same_as_app">Uygulama diliyle aynı</string>
     <string name="k2go_lang_choose_content_title">İçerik dilini seçin</string>
+    <string name="k2go_hide">Gizle</string>
 </resources>
