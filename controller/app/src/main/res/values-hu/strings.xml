@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">Megegyezik az alkalmazás nyelvével</string>
     <string name="k2go_lang_choose_content_title">Tartalom nyelvének kiválasztása</string>
     <string name="k2go_hide">Elrejtés</string>
+    <string name="k2go_home_no_library">Még nincs könyvtár — nyisd meg a Továbbiak menüt a telepítéshez és tartalom hozzáadásához</string>
+    <string name="k2go_home_ready_empty">A könyvtár kész — nyisd meg a Továbbiak menüt tartalom hozzáadásához</string>
 </resources>

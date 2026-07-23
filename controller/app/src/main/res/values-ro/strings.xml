@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">La fel ca limba aplicației</string>
     <string name="k2go_lang_choose_content_title">Alege limba conținutului</string>
     <string name="k2go_hide">Ascunde</string>
+    <string name="k2go_home_no_library">Încă nu există bibliotecă — deschide Obține mai multe pentru a instala și adăuga conținut</string>
+    <string name="k2go_home_ready_empty">Biblioteca este gata — deschide Obține mai multe pentru a adăuga conținut</string>
 </resources>

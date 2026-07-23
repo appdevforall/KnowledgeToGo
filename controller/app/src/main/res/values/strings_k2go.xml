@@ -326,4 +326,6 @@
     <string name="k2go_lang_same_as_app">Same as app language</string>
     <string name="k2go_lang_choose_content_title">Choose content language</string>
     <string name="k2go_hide">Hide</string>
+    <string name="k2go_home_no_library">No library yet — open Get more to install and add content</string>
+    <string name="k2go_home_ready_empty">Library ready — open Get more to add content</string>
 </resources>

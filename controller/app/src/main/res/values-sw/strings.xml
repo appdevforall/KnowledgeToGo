@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Sawa na lugha ya programu</string>
     <string name="k2go_lang_choose_content_title">Chagua lugha ya maudhui</string>
     <string name="k2go_hide">Ficha</string>
+    <string name="k2go_home_no_library">Bado hakuna maktaba — fungua Pata zaidi ili kusakinisha na kuongeza maudhui</string>
+    <string name="k2go_home_ready_empty">Maktaba iko tayari — fungua Pata zaidi ili kuongeza maudhui</string>
 </resources>

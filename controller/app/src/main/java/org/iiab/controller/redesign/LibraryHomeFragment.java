@@ -37,6 +37,8 @@ public class LibraryHomeFragment extends Fragment {
 
     private static final long POLL_MS = 3000L;
     private static final int GRAY = 0, AMBER = 1, GREEN = 2, RED = 3;
+    // ADFA-4828: header (aggregate) states — distinct from the per-card states above.
+    private static final int H_NO_LIBRARY = 0, H_STARTING = 1, H_READY = 2, H_READY_EMPTY = 3;
 
     private static final class Card {
         final String endpoint; final String title; final boolean requires64; final int iconRes;
@@ -192,26 +194,82 @@ public class LibraryHomeFragment extends Fragment {
     @Override public void onResume() { super.onResume(); main.post(poll); }
     @Override public void onPause() { super.onPause(); main.removeCallbacks(poll); }
 
+    private boolean unsupported(Card c) {
+        return c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0;
+    }
+
     private void refreshStatuses() {
+        boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
-        if (homeStatus != null) homeStatus.setText(alive ? getString(R.string.k2go_home_ready) : getString(R.string.k2go_starting_library));
-        if (homeStatusDot != null) tint(homeStatusDot, alive ? R.color.k2go_leaf : R.color.k2go_amber);
+
+        // ADFA-4828: nothing installed (or an install is running — the boot gate normally covers
+        // that). The home isn't starting anything, so don't imply it: the cards read "Not installed"
+        // and the header points to Get more (set in updateHeaderFromCards).
+        if (!installed) {
+            for (final Card c : cards) {
+                applyState(c, GRAY);
+                if (unsupported(c) && c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
+            }
+            updateHeaderFromCards();
+            return;
+        }
+
         for (final Card c : cards) {
-            if (c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0) {
+            if (unsupported(c)) {
                 applyState(c, GRAY);
                 if (c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
                 continue;
             }
-            if (!alive) { applyState(c, GRAY); continue; }
+            // ADFA-4828: system is installed. Before the first probe resolves (or while the server
+            // is still coming up) show "Connecting", never "Not installed" — the latter only appears
+            // once a probe actually reports the content is absent (404 -> GRAY).
+            if (!alive) { applyState(c, AMBER); continue; }
             AppExecutors.get().io().execute(() -> {
                 final int st = probe(c.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
                     if (st == GREEN || st == GRAY) { c.amberStreak = 0; applyState(c, st); }
                     else { c.amberStreak++; applyState(c, c.amberStreak >= 4 ? RED : AMBER); }
+                    updateHeaderFromCards();
                 });
             });
         }
+        updateHeaderFromCards();
+    }
+
+    /**
+     * ADFA-4828: the header reflects the real aggregate, so it never contradicts the cards —
+     * "no library" when nothing is installed, "starting" until the installed cards actually answer,
+     * "ready" only when something is up, "ready but empty" when the server is up with no content.
+     */
+    private void updateHeaderFromCards() {
+        if (homeStatus == null || !isAdded()) return;
+        boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        boolean alive = ServerStateRepository.get().current().alive;
+        if (!installed) { setHeader(H_NO_LIBRARY); return; }
+        if (!alive)     { setHeader(H_STARTING);  return; }
+        boolean anyChecking = false, anyReady = false;
+        for (Card c : cards) {
+            if (unsupported(c) || c.state == GRAY) continue;   // GRAY = content absent → doesn't gate
+            if (c.state == AMBER) anyChecking = true;
+            else if (c.state == GREEN) anyReady = true;
+        }
+        if (anyChecking) setHeader(H_STARTING);
+        else if (anyReady) setHeader(H_READY);
+        else setHeader(H_READY_EMPTY);   // server up, nothing installed to explore
+    }
+
+    private void setHeader(int h) {
+        if (homeStatus == null) return;
+        String text; int dotColor;
+        switch (h) {
+            case H_NO_LIBRARY:  text = getString(R.string.k2go_home_no_library);  dotColor = R.color.k2go_muted; break;
+            case H_READY:       text = getString(R.string.k2go_home_ready);       dotColor = R.color.k2go_leaf;  break;
+            case H_READY_EMPTY: text = getString(R.string.k2go_home_ready_empty); dotColor = R.color.k2go_leaf;  break;
+            default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
+        }
+        homeStatus.setText(text);
+        if (homeStatusDot != null) tint(homeStatusDot, dotColor);
     }
 
     private void applyState(Card c, int st) {

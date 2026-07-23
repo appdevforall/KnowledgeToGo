@@ -914,4 +914,6 @@
     <string name="k2go_lang_same_as_app">ऐप भाषा के समान</string>
     <string name="k2go_lang_choose_content_title">सामग्री भाषा चुनें</string>
     <string name="k2go_hide">छिपाएँ</string>
+    <string name="k2go_home_no_library">अभी कोई लाइब्रेरी नहीं — इंस्टॉल करने और सामग्री जोड़ने के लिए Get more खोलें</string>
+    <string name="k2go_home_ready_empty">लाइब्रेरी तैयार है — सामग्री जोड़ने के लिए Get more खोलें</string>
 </resources>

@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Stejný jako jazyk aplikace</string>
     <string name="k2go_lang_choose_content_title">Zvolte jazyk obsahu</string>
     <string name="k2go_hide">Skrýt</string>
+    <string name="k2go_home_no_library">Zatím žádná knihovna — otevřete Získat více a nainstalujte a přidejte obsah</string>
+    <string name="k2go_home_ready_empty">Knihovna je připravena — otevřete Získat více a přidejte obsah</string>
 </resources>

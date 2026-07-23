@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">与应用语言相同</string>
     <string name="k2go_lang_choose_content_title">选择内容语言</string>
     <string name="k2go_hide">隐藏</string>
+    <string name="k2go_home_no_library">还没有资料库 — 打开“获取更多”以安装并添加内容</string>
+    <string name="k2go_home_ready_empty">资料库已就绪 — 打开“获取更多”以添加内容</string>
 </resources>

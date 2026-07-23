@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">Giống ngôn ngữ ứng dụng</string>
     <string name="k2go_lang_choose_content_title">Chọn ngôn ngữ nội dung</string>
     <string name="k2go_hide">Ẩn</string>
+    <string name="k2go_home_no_library">Chưa có thư viện — mở Tải thêm để cài đặt và thêm nội dung</string>
+    <string name="k2go_home_ready_empty">Thư viện đã sẵn sàng — mở Tải thêm để thêm nội dung</string>
 </resources>

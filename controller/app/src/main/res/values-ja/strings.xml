@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">アプリの言語と同じ</string>
     <string name="k2go_lang_choose_content_title">コンテンツの言語を選択</string>
     <string name="k2go_hide">非表示</string>
+    <string name="k2go_home_no_library">ライブラリはまだありません — 「さらに取得」を開いてインストールし、コンテンツを追加してください</string>
+    <string name="k2go_home_ready_empty">ライブラリの準備ができました — 「さらに取得」を開いてコンテンツを追加してください</string>
 </resources>

@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Tokia pati kaip programos kalba</string>
     <string name="k2go_lang_choose_content_title">Pasirinkite turinio kalbą</string>
     <string name="k2go_hide">Slėpti</string>
+    <string name="k2go_home_no_library">Bibliotekos dar nėra — atverkite „Gauti daugiau“, kad įdiegtumėte ir pridėtumėte turinio</string>
+    <string name="k2go_home_ready_empty">Biblioteka paruošta — atverkite „Gauti daugiau“, kad pridėtumėte turinio</string>
 </resources>

@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Bákan náà bí èdè áàpù</string>
     <string name="k2go_lang_choose_content_title">Yan èdè àkóónú</string>
     <string name="k2go_hide">Fi pamọ́</string>
+    <string name="k2go_home_no_library">Kò sí ibi ìkówèésí síbẹ̀ — ṣí Gba díẹ̀ sí i láti fi sórí ẹrọ, kí o sì fi àkóónú kún un</string>
+    <string name="k2go_home_ready_empty">Ibi ìkówèésí ti ṣetán — ṣí Gba díẹ̀ sí i láti fi àkóónú kún un</string>
 </resources>

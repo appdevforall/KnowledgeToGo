@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">ஆப்ஸ் மொழியைப் போலவே</string>
     <string name="k2go_lang_choose_content_title">உள்ளடக்க மொழியைத் தேர்ந்தெடுக்கவும்</string>
     <string name="k2go_hide">மறை</string>
+    <string name="k2go_home_no_library">இன்னும் நூலகம் இல்லை — நிறுவவும் உள்ளடக்கம் சேர்க்கவும் Get more திறக்கவும்</string>
+    <string name="k2go_home_ready_empty">நூலகம் தயார் — உள்ளடக்கம் சேர்க்க Get more திறக்கவும்</string>
 </resources>
