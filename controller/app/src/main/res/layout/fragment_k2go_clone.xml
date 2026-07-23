@@ -87,6 +87,13 @@
         <TextView android:id="@+id/k2go_clone_subcaption" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:gravity="center" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
 
+        <!-- ADFA-4815: step-1 scan fallback reveal (same as Connect): plain centered toggle under
+             the subcaption; the quote block with Wi-Fi + password shows only when tapped. -->
+        <TextView android:id="@+id/k2go_clone_fallback_toggle" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="center" android:layout_marginTop="6dp" android:padding="6dp"
+            android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal"
+            android:clickable="true" android:focusable="true" android:visibility="gone" />
+
         <LinearLayout android:id="@+id/k2go_clone_sharecard" android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:layout_marginTop="14dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -120,11 +127,9 @@
         </LinearLayout>
 
         <LinearLayout android:id="@+id/k2go_clone_fallback" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
-            android:layout_marginTop="14dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/k2go_scan_didnt_work" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            android:layout_marginTop="8dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
             <LinearLayout android:id="@+id/k2go_clone_fallback_values" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:layout_marginTop="6dp" />
+                android:orientation="vertical" />
         </LinearLayout>
 
         <TextView android:id="@+id/k2go_clone_showcode" android:layout_width="match_parent" android:layout_height="wrap_content"
