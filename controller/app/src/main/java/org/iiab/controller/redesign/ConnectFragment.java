@@ -226,7 +226,7 @@ public class ConnectFragment extends Fragment {
         fallback.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
         fallbackToggle.setText(fallbackOpen
                 ? getString(R.string.k2go_hide) + "  ▴"
-                : getString(R.string.k2go_scan_didnt_work) + "  ▾");
+                : getString(R.string.k2go_scan_didnt_work) + "  ▸");
     }
 
     // ---- step badges: numbered circle that KEEPS its number and gains a corner check when done ----

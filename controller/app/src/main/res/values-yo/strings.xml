@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Ṣàwárí láti gba app náà</string>
     <string name="k2go_clone_scan_to_join">Ṣàwárí láti dara pọ̀</string>
     <string name="k2go_clone_scan_different">‹ Ṣàwárí kóòdù mìíràn</string>
-    <string name="k2go_clone_scan_enter_text">Ṣíṣàwárí kò ṣiṣẹ́? Tẹ kóòdù sí gẹ́gẹ́ bí ọ̀rọ̀  ▾</string>
-    <string name="k2go_clone_scan_show_text">Ṣíṣàwárí kò ṣiṣẹ́? Fi kóòdù hàn gẹ́gẹ́ bí ọ̀rọ̀  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Ṣíṣàwárí kò ṣiṣẹ́? Tẹ kóòdù sí gẹ́gẹ́ bí ọ̀rọ̀  ▸</string>
+    <string name="k2go_clone_scan_show_text">Ṣíṣàwárí kò ṣiṣẹ́? Fi kóòdù hàn gẹ́gẹ́ bí ọ̀rọ̀  ▸</string>
     <string name="k2go_clone_show_codes">Fi àwọn kóòdù hàn; fóònù kejì ń ṣàwárí wọn.</string>
     <string name="k2go_clone_copy_btn">⧉  Ẹ̀dà</string>
     <string name="k2go_cancel">Fagilé</string>

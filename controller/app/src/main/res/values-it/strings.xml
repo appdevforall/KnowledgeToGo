@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Scansiona per ottenere l\'app</string>
     <string name="k2go_clone_scan_to_join">Scansiona per unirti</string>
     <string name="k2go_clone_scan_different">‹ Scansiona un altro codice</string>
-    <string name="k2go_clone_scan_enter_text">La scansione non ha funzionato? Inserisci il codice come testo  ▾</string>
-    <string name="k2go_clone_scan_show_text">La scansione non ha funzionato? Mostra il codice come testo  ▾</string>
+    <string name="k2go_clone_scan_enter_text">La scansione non ha funzionato? Inserisci il codice come testo  ▸</string>
+    <string name="k2go_clone_scan_show_text">La scansione non ha funzionato? Mostra il codice come testo  ▸</string>
     <string name="k2go_clone_show_codes">Mostra i codici; l\'altro telefono li scansiona.</string>
     <string name="k2go_clone_copy_btn">⧉  Copia</string>
     <string name="k2go_cancel">Annulla</string>

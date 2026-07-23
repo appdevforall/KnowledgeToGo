@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">アプリを入手するにはスキャン</string>
     <string name="k2go_clone_scan_to_join">参加するにはスキャン</string>
     <string name="k2go_clone_scan_different">‹ 別のコードをスキャン</string>
-    <string name="k2go_clone_scan_enter_text">スキャンできない？ コードをテキストで入力  ▾</string>
-    <string name="k2go_clone_scan_show_text">スキャンできない？ コードをテキストで表示  ▾</string>
+    <string name="k2go_clone_scan_enter_text">スキャンできない？ コードをテキストで入力  ▸</string>
+    <string name="k2go_clone_scan_show_text">スキャンできない？ コードをテキストで表示  ▸</string>
     <string name="k2go_clone_show_codes">コードを表示し、相手がそれをスキャンします。</string>
     <string name="k2go_clone_copy_btn">⧉  コピー</string>
     <string name="k2go_cancel">キャンセル</string>

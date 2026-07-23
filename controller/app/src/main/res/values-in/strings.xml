@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Pindai untuk mendapatkan aplikasi</string>
     <string name="k2go_clone_scan_to_join">Pindai untuk bergabung</string>
     <string name="k2go_clone_scan_different">‹ Pindai kode lain</string>
-    <string name="k2go_clone_scan_enter_text">Pemindaian gagal? Masukkan kode sebagai teks  ▾</string>
-    <string name="k2go_clone_scan_show_text">Pemindaian gagal? Tampilkan kode sebagai teks  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Pemindaian gagal? Masukkan kode sebagai teks  ▸</string>
+    <string name="k2go_clone_scan_show_text">Pemindaian gagal? Tampilkan kode sebagai teks  ▸</string>
     <string name="k2go_clone_show_codes">Tampilkan kode; ponsel lain memindainya.</string>
     <string name="k2go_clone_copy_btn">⧉  Salin</string>
     <string name="k2go_cancel">Batal</string>

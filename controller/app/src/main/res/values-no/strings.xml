@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Skann for å hente appen</string>
     <string name="k2go_clone_scan_to_join">Skann for å koble til</string>
     <string name="k2go_clone_scan_different">‹ Skann en annen kode</string>
-    <string name="k2go_clone_scan_enter_text">Skanning fungerte ikke? Skriv inn koden som tekst  ▾</string>
-    <string name="k2go_clone_scan_show_text">Skanning fungerte ikke? Vis koden som tekst  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Skanning fungerte ikke? Skriv inn koden som tekst  ▸</string>
+    <string name="k2go_clone_scan_show_text">Skanning fungerte ikke? Vis koden som tekst  ▸</string>
     <string name="k2go_clone_show_codes">Vis kodene; den andre telefonen skanner dem.</string>
     <string name="k2go_clone_copy_btn">⧉  Kopier</string>
     <string name="k2go_cancel">Avbryt</string>

@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Quét để lấy ứng dụng</string>
     <string name="k2go_clone_scan_to_join">Quét để kết nối</string>
     <string name="k2go_clone_scan_different">‹ Quét mã khác</string>
-    <string name="k2go_clone_scan_enter_text">Quét không được? Nhập mã dưới dạng văn bản  ▾</string>
-    <string name="k2go_clone_scan_show_text">Quét không được? Hiển thị mã dưới dạng văn bản  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Quét không được? Nhập mã dưới dạng văn bản  ▸</string>
+    <string name="k2go_clone_scan_show_text">Quét không được? Hiển thị mã dưới dạng văn bản  ▸</string>
     <string name="k2go_clone_show_codes">Hiển thị mã; điện thoại kia quét chúng.</string>
     <string name="k2go_clone_copy_btn">⧉  Sao chép</string>
     <string name="k2go_cancel">Hủy</string>

@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">Olvasd be az app megszerzéséhez</string>
     <string name="k2go_clone_scan_to_join">Olvasd be a csatlakozáshoz</string>
     <string name="k2go_clone_scan_different">‹ Másik kód beolvasása</string>
-    <string name="k2go_clone_scan_enter_text">Nem sikerült a beolvasás? Add meg a kódot szövegként  ▾</string>
-    <string name="k2go_clone_scan_show_text">Nem sikerült a beolvasás? Mutasd a kódot szövegként  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Nem sikerült a beolvasás? Add meg a kódot szövegként  ▸</string>
+    <string name="k2go_clone_scan_show_text">Nem sikerült a beolvasás? Mutasd a kódot szövegként  ▸</string>
     <string name="k2go_clone_show_codes">Mutasd a kódokat; a másik telefon beolvassa őket.</string>
     <string name="k2go_clone_copy_btn">⧉  Másolás</string>
     <string name="k2go_cancel">Mégse</string>

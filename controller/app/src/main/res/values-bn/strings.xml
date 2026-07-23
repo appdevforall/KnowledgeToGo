@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">অ্যাপ পেতে স্ক্যান করুন</string>
     <string name="k2go_clone_scan_to_join">যুক্ত হতে স্ক্যান করুন</string>
     <string name="k2go_clone_scan_different">‹ অন্য কোড স্ক্যান করুন</string>
-    <string name="k2go_clone_scan_enter_text">স্ক্যান কাজ করেনি? কোডটি টেক্সট হিসেবে লিখুন  ▾</string>
-    <string name="k2go_clone_scan_show_text">স্ক্যান কাজ করেনি? কোডটি টেক্সট হিসেবে দেখান  ▾</string>
+    <string name="k2go_clone_scan_enter_text">স্ক্যান কাজ করেনি? কোডটি টেক্সট হিসেবে লিখুন  ▸</string>
+    <string name="k2go_clone_scan_show_text">স্ক্যান কাজ করেনি? কোডটি টেক্সট হিসেবে দেখান  ▸</string>
     <string name="k2go_clone_show_codes">কোড দেখান; অন্য ফোন সেগুলো স্ক্যান করে।</string>
     <string name="k2go_clone_copy_btn">⧉  কপি</string>
     <string name="k2go_cancel">বাতিল</string>

@@ -681,8 +681,8 @@
     <string name="k2go_clone_scan_get_app">Сканируйте, чтобы получить приложение</string>
     <string name="k2go_clone_scan_to_join">Сканируйте для подключения</string>
     <string name="k2go_clone_scan_different">‹ Сканировать другой код</string>
-    <string name="k2go_clone_scan_enter_text">Сканирование не сработало? Введите код как текст  ▾</string>
-    <string name="k2go_clone_scan_show_text">Сканирование не сработало? Показать код как текст  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Сканирование не сработало? Введите код как текст  ▸</string>
+    <string name="k2go_clone_scan_show_text">Сканирование не сработало? Показать код как текст  ▸</string>
     <string name="k2go_clone_show_codes">Покажите коды; другой телефон их отсканирует.</string>
     <string name="k2go_clone_copy_btn">⧉  Копировать</string>
     <string name="k2go_cancel">Отмена</string>

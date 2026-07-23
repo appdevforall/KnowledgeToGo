@@ -605,8 +605,8 @@
     <string name="k2go_clone_scan_get_app">امسح ضوئيًا للحصول على التطبيق</string>
     <string name="k2go_clone_scan_to_join">امسح ضوئيًا للانضمام</string>
     <string name="k2go_clone_scan_different">‹ مسح رمز آخر</string>
-    <string name="k2go_clone_scan_enter_text">لم ينجح المسح؟ أدخل الرمز كنص  ▾</string>
-    <string name="k2go_clone_scan_show_text">لم ينجح المسح؟ اعرض الرمز كنص  ▾</string>
+    <string name="k2go_clone_scan_enter_text">لم ينجح المسح؟ أدخل الرمز كنص  ▸</string>
+    <string name="k2go_clone_scan_show_text">لم ينجح المسح؟ اعرض الرمز كنص  ▸</string>
     <string name="k2go_clone_show_codes">اعرض الرموز؛ الهاتف الآخر يمسحها ضوئيًا.</string>
     <string name="k2go_clone_copy_btn">⧉  نسخ</string>
     <string name="k2go_cancel">إلغاء</string>

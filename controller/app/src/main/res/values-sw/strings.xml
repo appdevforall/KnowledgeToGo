@@ -612,8 +612,8 @@
     <string name="k2go_clone_scan_get_app">Changanua ili kupata programu</string>
     <string name="k2go_clone_scan_to_join">Changanua ili kuunganisha</string>
     <string name="k2go_clone_scan_different">‹ Changanua msimbo mwingine</string>
-    <string name="k2go_clone_scan_enter_text">Uchanganuzi haukufanya kazi? Ingiza msimbo kama maandishi  ▾</string>
-    <string name="k2go_clone_scan_show_text">Uchanganuzi haukufanya kazi? Onyesha msimbo kama maandishi  ▾</string>
+    <string name="k2go_clone_scan_enter_text">Uchanganuzi haukufanya kazi? Ingiza msimbo kama maandishi  ▸</string>
+    <string name="k2go_clone_scan_show_text">Uchanganuzi haukufanya kazi? Onyesha msimbo kama maandishi  ▸</string>
     <string name="k2go_clone_show_codes">Onyesha misimbo; simu nyingine inaichanganua.</string>
     <string name="k2go_clone_copy_btn">⧉  Nakili</string>
     <string name="k2go_cancel">Ghairi</string>
