@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">热门</string>
     <string name="k2go_recommended">推荐</string>
     <string name="k2go_starting_library">正在启动您的图书馆…</string>
+    <string name="k2go_home_failed">无法启动 — 点按重试</string>
     <string name="k2go_storage">存储</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ 系统 → 2 内容</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ 系统 → 2 内容</string>

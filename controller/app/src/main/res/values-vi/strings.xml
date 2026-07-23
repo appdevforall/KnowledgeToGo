@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Phổ biến</string>
     <string name="k2go_recommended">Được đề xuất</string>
     <string name="k2go_starting_library">Đang khởi tạo thư viện của bạn…</string>
+    <string name="k2go_home_failed">Không khởi động được — chạm để thử lại</string>
     <string name="k2go_storage">Bộ nhớ</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Hệ thống → 2 Nội dung</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Hệ thống → 2 Nội dung</string>

@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">લોકપ્રિય</string>
     <string name="k2go_recommended">ભલામણ કરેલ</string>
     <string name="k2go_starting_library">તમારી લાઇબ્રેરી શરૂ થઈ રહી છે…</string>
+    <string name="k2go_home_failed">શરૂ કરી શકાયું નથી — ફરી પ્રયાસ કરવા ટૅપ કરો</string>
     <string name="k2go_storage">સ્ટોરેજ</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ સિસ્ટમ → 2 સામગ્રી</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ સિસ્ટમ → 2 સામગ્રી</string>

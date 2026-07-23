@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">人気</string>
     <string name="k2go_recommended">おすすめ</string>
     <string name="k2go_starting_library">ライブラリを準備しています…</string>
+    <string name="k2go_home_failed">起動できませんでした — タップで再試行</string>
     <string name="k2go_storage">ストレージ</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ システム → 2 コンテンツ</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ システム → 2 コンテンツ</string>

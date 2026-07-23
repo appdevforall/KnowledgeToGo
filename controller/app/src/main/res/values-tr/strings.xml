@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Popüler</string>
     <string name="k2go_recommended">Önerilen</string>
     <string name="k2go_starting_library">Kitaplığınız başlatılıyor…</string>
+    <string name="k2go_home_failed">Başlatılamadı — yeniden denemek için dokunun</string>
     <string name="k2go_storage">Depolama</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistem → 2 İçerik</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistem → 2 İçerik</string>

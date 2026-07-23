@@ -38,18 +38,27 @@ public class LibraryHomeFragment extends Fragment {
     private static final long POLL_MS = 3000L;
     private static final int GRAY = 0, AMBER = 1, GREEN = 2, RED = 3;
     // ADFA-4828: header (aggregate) states — distinct from the per-card states above.
-    private static final int H_NO_LIBRARY = 0, H_STARTING = 1, H_READY = 2, H_READY_EMPTY = 3;
+    // ADFA-4837: H_FAILED = installed but the server isn't running and isn't starting.
+    private static final int H_NO_LIBRARY = 0, H_STARTING = 1, H_READY = 2, H_READY_EMPTY = 3, H_FAILED = 4;
+    // ADFA-4837: how long a card stays amber (patient) once the box is up before it's called stuck.
+    private static final long CARD_RED_GRACE_MS = 60000L;
 
     private static final class Card {
         final String endpoint; final String title; final boolean requires64; final int iconRes;
-        View dot; TextView status; int state = GRAY; int amberStreak = 0;
+        View dot; TextView status; int state = GRAY;
         Card(String e, String t, boolean r, int i) { endpoint = e; title = t; requires64 = r; iconRes = i; }
     }
+
+    // ADFA-4837: monotonic mark of when the server first became alive; the card red-grace is measured
+    // from here so services (kolibri/kiwix) get their full warm-up before anything turns red.
+    private long serverAliveSinceMs = 0L;
+    private int headerState = H_STARTING;
 
     private final List<Card> cards = new ArrayList<>();
     private final Handler main = new Handler(Looper.getMainLooper());
     private TextView homeStatus;
     private View homeStatusDot;
+    private View homeStatusRow;
     private LinearLayout cardsHost;
     private View getMoreFooter;
 
@@ -69,6 +78,21 @@ public class LibraryHomeFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_library, container, false);
         homeStatus = root.findViewById(R.id.k2go_home_status);
         homeStatusDot = root.findViewById(R.id.k2go_home_status_dot);
+        homeStatusRow = root.findViewById(R.id.k2go_home_status_row);
+        // ADFA-4837: when the header reports the server couldn't start, tapping it retries — but only
+        // when it's genuinely safe (LibraryActivity.canStartServer guards against stacking a 2nd proot).
+        if (homeStatusRow != null) {
+            homeStatusRow.setOnClickListener(v -> {
+                if (headerState != H_FAILED) return;
+                if (getActivity() instanceof LibraryActivity) {
+                    LibraryActivity act = (LibraryActivity) getActivity();
+                    if (act.canStartServer()) {
+                        act.startServer();
+                        setHeader(H_STARTING);   // optimistic; the poll corrects it if the start fails
+                    }
+                }
+            });
+        }
 
         cards.clear();
         cards.add(new Card("books",   getString(R.string.k2go_card_books),       false, R.drawable.ic_card_book));
@@ -181,7 +205,6 @@ public class LibraryHomeFragment extends Fragment {
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
             startActivity(i);
         } else {
-            c.amberStreak = 0;
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
                 final int st = probe(c.endpoint);
@@ -201,6 +224,10 @@ public class LibraryHomeFragment extends Fragment {
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
+
+        // ADFA-4837: track when the server first came up; the card red-grace is measured from here.
+        if (alive) { if (serverAliveSinceMs == 0L) serverAliveSinceMs = android.os.SystemClock.elapsedRealtime(); }
+        else serverAliveSinceMs = 0L;
 
         // ADFA-4828: nothing installed (or an install is running — the boot gate normally covers
         // that). The home isn't starting anything, so don't imply it: the cards read "Not installed"
@@ -228,8 +255,15 @@ public class LibraryHomeFragment extends Fragment {
                 final int st = probe(c.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
-                    if (st == GREEN || st == GRAY) { c.amberStreak = 0; applyState(c, st); }
-                    else { c.amberStreak++; applyState(c, c.amberStreak >= 4 ? RED : AMBER); }
+                    if (st == GREEN || st == GRAY) {
+                        applyState(c, st);
+                    } else {
+                        // ADFA-4837: stay amber (patient) while the box is warming up; only fall to red
+                        // once the server has been alive past the grace and this service still won't answer.
+                        long aliveMs = serverAliveSinceMs > 0L
+                                ? android.os.SystemClock.elapsedRealtime() - serverAliveSinceMs : 0L;
+                        applyState(c, aliveMs >= CARD_RED_GRACE_MS ? RED : AMBER);
+                    }
                     updateHeaderFromCards();
                 });
             });
@@ -247,7 +281,14 @@ public class LibraryHomeFragment extends Fragment {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
         if (!installed) { setHeader(H_NO_LIBRARY); return; }
-        if (!alive)     { setHeader(H_STARTING);  return; }
+        if (!alive) {
+            // ADFA-4837: "Starting…" only while a start is really in progress; otherwise the server
+            // isn't coming up on its own → "Couldn't start — tap to retry".
+            boolean starting = (getActivity() instanceof LibraryActivity)
+                    && ((LibraryActivity) getActivity()).isServerStarting();
+            setHeader(starting ? H_STARTING : H_FAILED);
+            return;
+        }
         boolean anyChecking = false, anyReady = false;
         for (Card c : cards) {
             if (unsupported(c) || c.state == GRAY) continue;   // GRAY = content absent → doesn't gate
@@ -261,15 +302,19 @@ public class LibraryHomeFragment extends Fragment {
 
     private void setHeader(int h) {
         if (homeStatus == null) return;
+        headerState = h;
         String text; int dotColor;
         switch (h) {
             case H_NO_LIBRARY:  text = getString(R.string.k2go_home_no_library);  dotColor = R.color.k2go_muted; break;
             case H_READY:       text = getString(R.string.k2go_home_ready);       dotColor = R.color.k2go_leaf;  break;
             case H_READY_EMPTY: text = getString(R.string.k2go_home_ready_empty); dotColor = R.color.k2go_leaf;  break;
+            case H_FAILED:      text = getString(R.string.k2go_home_failed);      dotColor = R.color.k2go_clay;  break;
             default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
         }
         homeStatus.setText(text);
         if (homeStatusDot != null) tint(homeStatusDot, dotColor);
+        // ADFA-4837: only the failed state is tappable (retry); keep others inert.
+        if (homeStatusRow != null) homeStatusRow.setClickable(h == H_FAILED);
     }
 
     private void applyState(Card c, int st) {

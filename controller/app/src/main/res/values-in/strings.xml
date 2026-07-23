@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Populer</string>
     <string name="k2go_recommended">Direkomendasikan</string>
     <string name="k2go_starting_library">Memulai pustaka Anda…</string>
+    <string name="k2go_home_failed">Gagal memulai — ketuk untuk coba lagi</string>
     <string name="k2go_storage">Penyimpanan</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistem → 2 Konten</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistem → 2 Konten</string>

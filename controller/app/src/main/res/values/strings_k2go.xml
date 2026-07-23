@@ -43,6 +43,7 @@
     <string name="k2go_send">Send</string>
     <string name="k2go_setup_library_title">Set up your library</string>
     <string name="k2go_starting_library">Starting your library…</string>
+    <string name="k2go_home_failed">Couldn\'t start — tap to retry</string>
     <string name="k2go_perm_storage">Storage access</string>
     <string name="k2go_storage">Storage</string>
     <string name="k2go_lang_system_default">System default</string>

@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Populare</string>
     <string name="k2go_recommended">Recomandate</string>
     <string name="k2go_starting_library">Se pornește biblioteca ta…</string>
+    <string name="k2go_home_failed">Pornire eșuată — atinge pentru a reîncerca</string>
     <string name="k2go_storage">Stocare</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Sistem → 2 Conținut</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Sistem → 2 Conținut</string>

@@ -740,6 +740,7 @@
     <string name="k2go_cov_popular">लोकप्रिय</string>
     <string name="k2go_recommended">अनुशंसित</string>
     <string name="k2go_starting_library">आपकी लाइब्रेरी शुरू हो रही है…</string>
+    <string name="k2go_home_failed">शुरू नहीं हो सका — पुनः प्रयास के लिए टैप करें</string>
     <string name="k2go_storage">स्टोरेज</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ सिस्टम → 2 सामग्री</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ सिस्टम → 2 सामग्री</string>

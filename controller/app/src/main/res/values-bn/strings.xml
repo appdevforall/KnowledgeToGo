@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">জনপ্রিয়</string>
     <string name="k2go_recommended">প্রস্তাবিত</string>
     <string name="k2go_starting_library">আপনার লাইব্রেরি শুরু হচ্ছে…</string>
+    <string name="k2go_home_failed">শুরু করা যায়নি — পুনরায় চেষ্টা করতে ট্যাপ করুন</string>
     <string name="k2go_storage">স্টোরেজ</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ সিস্টেম → 2 কনটেন্ট</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ সিস্টেম → 2 কনটেন্ট</string>

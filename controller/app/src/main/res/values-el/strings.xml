@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Δημοφιλή</string>
     <string name="k2go_recommended">Προτεινόμενα</string>
     <string name="k2go_starting_library">Εκκίνηση της βιβλιοθήκης σας…</string>
+    <string name="k2go_home_failed">Αποτυχία εκκίνησης — πατήστε για επανάληψη</string>
     <string name="k2go_storage">Αποθηκευτικός χώρος</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Σύστημα → 2 Περιεχόμενο</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Σύστημα → 2 Περιεχόμενο</string>

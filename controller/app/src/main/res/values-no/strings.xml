@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">Populært</string>
     <string name="k2go_recommended">Anbefalt</string>
     <string name="k2go_starting_library">Starter biblioteket ditt…</string>
+    <string name="k2go_home_failed">Kunne ikke starte — trykk for å prøve igjen</string>
     <string name="k2go_storage">Lagring</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ System → 2 Innhold</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ System → 2 Innhold</string>

@@ -663,6 +663,7 @@
     <string name="k2go_cov_popular">شائع</string>
     <string name="k2go_recommended">موصى به</string>
     <string name="k2go_starting_library">جارٍ بدء مكتبتك…</string>
+    <string name="k2go_home_failed">تعذّر البدء — انقر لإعادة المحاولة</string>
     <string name="k2go_storage">التخزين</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ النظام → 2 المحتوى</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ النظام → 2 المحتوى</string>

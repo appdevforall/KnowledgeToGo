@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">Популярни</string>
     <string name="k2go_recommended">Препоръчани</string>
     <string name="k2go_starting_library">Стартиране на вашата библиотека…</string>
+    <string name="k2go_home_failed">Неуспешно стартиране — докоснете за нов опит</string>
     <string name="k2go_storage">Хранилище</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ Система → 2 Съдържание</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ Система → 2 Съдържание</string>

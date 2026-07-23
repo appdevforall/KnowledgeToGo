@@ -61,6 +61,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closing = false;
     private boolean closedDone = false;
 
+    // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
+    private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
+    private Runnable ellipsisRunnable;
+    private String bootBaseText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,7 +199,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private void showInstallProgress(InstallState st) {
         if (installProgress == null || st == null || !st.isRunning()) return;
+        stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
+        if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
@@ -208,6 +215,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     }
 
     private void hideInstallProgress() {
+        stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
     }
 
@@ -320,6 +328,30 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
     }
 
+    /** ADFA-4837: true while a server start is actually in progress (header shows "Starting…"). */
+    public boolean isServerStarting() {
+        return Boolean.TRUE.equals(targetServerState);
+    }
+
+    /** ADFA-4837: can we safely (re)start the server from the Library home? Only when it's installed,
+     *  really idle, and nothing else is in flight — so a retry can never stack over a stop/install. */
+    public boolean canStartServer() {
+        return !closing
+                && targetServerState == null
+                && !ServerStateRepository.get().current().alive
+                && (serverController == null || !serverController.isStopping())
+                && !InstallProgressRepository.get().isRunning()
+                && !org.iiab.controller.InstallGuard.inProgress(this)
+                && org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this);
+    }
+
+    /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
+    public void startServer() {
+        if (!canStartServer()) return;
+        targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header
+        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+    }
+
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
     public void turnOffK2Go() {
         if (closing) return;
@@ -327,6 +359,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // ADFA-4834: minimal shutdown feedback — a status line + the service currently stopping,
         // shown over the exit animation and kept until the environment is really stopped, so we
         // never bounce back to the Library mid-shutdown. Works with or without the Lottie.
+        stopBootEllipsis();   // ADFA-4837: leaving boot; the shutdown line owns the status now
         if (installProgress != null) {
             installProgress.setVisibility(View.VISIBLE);
             if (installStatus != null) installStatus.setText(getString(R.string.server_shutting_down));
@@ -399,6 +432,59 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     // the primary close trigger; the /home-poll observer and the 120s timeout are only fallbacks.
     @Override public void onShutdownComplete() {
         if (closing) onClosedReady();
+    }
+
+    // ADFA-4837: a start began — show an animated "Starting your library…" immediately so the ~15s
+    // before the first pdsm line isn't a blank, frozen-looking screen.
+    @Override public void onStartupBegan() {
+        if (closing || installing || gateDismissed || installProgress == null) return;
+        installProgress.setVisibility(View.VISIBLE);
+        if (installBar != null) installBar.setVisibility(View.GONE);
+        if (installDetail != null) installDetail.setText("");
+        startBootEllipsis();
+    }
+
+    // ADFA-4837: boot progress — show which service is starting under the boot animation, mirroring
+    // the shutdown line, so start/close feel symmetric. Only during the initial boot gate (not during
+    // an install, which owns the same overlay, and not while closing).
+    @Override public void onStartupProgress(String service) {
+        if (closing || installing || gateDismissed || installProgress == null) return;
+        installProgress.setVisibility(View.VISIBLE);
+        if (installBar != null) installBar.setVisibility(View.GONE);
+        startBootEllipsis();   // keep the status line animating; the service shows below
+        if (installDetail != null) installDetail.setText(service);
+    }
+
+    /** ADFA-4837: cycle "Starting your library" + . / .. / … on the boot status line. */
+    private void startBootEllipsis() {
+        if (ellipsisRunnable != null) return;   // already animating
+        if (bootBaseText == null) {
+            bootBaseText = getString(R.string.k2go_starting_library).replaceAll("[\\s.…]+$", "");
+        }
+        ellipsisRunnable = new Runnable() {
+            int i = 0;
+            // Fixed 3-slot suffix: dots padded with spaces so the total width never changes. The
+            // suffix is rendered monospaced (space == dot advance) so the centered message stays put.
+            final String[] frames = {".  ", ".. ", "..."};
+            @Override public void run() {
+                if (installStatus != null) {
+                    String suffix = frames[i % frames.length];
+                    android.text.SpannableString sp = new android.text.SpannableString(bootBaseText + suffix);
+                    sp.setSpan(new android.text.style.TypefaceSpan("monospace"),
+                            bootBaseText.length(), bootBaseText.length() + suffix.length(),
+                            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    installStatus.setText(sp);
+                }
+                i++;
+                ellipsisHandler.postDelayed(this, 450L);
+            }
+        };
+        ellipsisHandler.post(ellipsisRunnable);
+    }
+
+    private void stopBootEllipsis() {
+        if (ellipsisRunnable != null) ellipsisHandler.removeCallbacks(ellipsisRunnable);
+        ellipsisRunnable = null;
     }
 
     @Override

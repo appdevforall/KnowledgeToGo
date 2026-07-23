@@ -54,6 +54,13 @@ public class ServerController {
         /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
          *  This is the real "everything is down" signal the close should hang off of. */
         default void onShutdownComplete() {}
+        /** ADFA-4837: a start has begun. Fires immediately (before any pdsm output) so the boot
+         *  screen can show an animated "starting" message during the long silent warm-up, instead of
+         *  a blank line until the first pdsm service reports ~15s later. */
+        default void onStartupBegan() {}
+        /** ADFA-4837: the pdsm service currently starting, for a boot progress line (symmetric to
+         *  onShutdownProgress). Heavy services (kolibri/kiwix) warm up lazily after this. */
+        default void onStartupProgress(String service) {}
     }
 
     private final AppCompatActivity activity;
@@ -252,6 +259,9 @@ public class ServerController {
 
     // --- server start / stop (the control button) -------------------------------
 
+    /** ADFA-4837: true while a graceful stop is in flight; a start must not stack over it. */
+    public boolean isStopping() { return stopping; }
+
     public void handleServerLaunchClick(View v) {
         // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
@@ -276,7 +286,16 @@ public class ServerController {
         File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
 
         if (!ServerStateRepository.get().current().alive) {
+            // ADFA-4837: a graceful stop can already have flipped the server to !alive while its
+            // proot is still tearing down. Never start on top of that — it would stack a second
+            // proot over the same rootfs (the collision class we keep fighting).
+            if (stopping) {
+                host.setTargetServerState(null);
+                activity.runOnUiThread(host::stopBtnProgress);
+                return;
+            }
             host.addToLog(activity.getString(R.string.log_server_booting_native));
+            activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
             createFakeSysData(rootfsDir);
 
             if (serverEngine != null) {
@@ -290,6 +309,12 @@ public class ServerController {
                 @Override
                 public void onOutputLine(String line) {
                     activity.runOnUiThread(() -> host.addToLog("[Server] " + line));
+                    // ADFA-4837: surface which service is starting to the boot screen (symmetric to stop).
+                    java.util.regex.Matcher m = PDSM_SVC.matcher(line);
+                    if (m.find()) {
+                        final String svc = m.group(1);
+                        activity.runOnUiThread(() -> host.onStartupProgress(svc));
+                    }
                 }
 
                 @Override

@@ -670,6 +670,7 @@
     <string name="k2go_cov_popular">பிரபலமானவை</string>
     <string name="k2go_recommended">பரிந்துரைக்கப்பட்டவை</string>
     <string name="k2go_starting_library">உங்கள் நூலகத்தைத் தொடங்குகிறது…</string>
+    <string name="k2go_home_failed">தொடங்க முடியவில்லை — மீண்டும் முயல தட்டவும்</string>
     <string name="k2go_storage">சேமிப்பகம்</string>
     <string name="k2go_step2b_breadcrumb">1 ✓ கணினி → 2 உள்ளடக்கம்</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ கணினி → 2 உள்ளடக்கம்</string>
