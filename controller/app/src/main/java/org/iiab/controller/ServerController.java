@@ -54,6 +54,9 @@ public class ServerController {
         /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
          *  This is the real "everything is down" signal the close should hang off of. */
         default void onShutdownComplete() {}
+        /** ADFA-4837: the pdsm service currently starting, for a boot progress line (symmetric to
+         *  onShutdownProgress). Heavy services (kolibri/kiwix) warm up lazily after this. */
+        default void onStartupProgress(String service) {}
     }
 
     private final AppCompatActivity activity;
@@ -301,6 +304,12 @@ public class ServerController {
                 @Override
                 public void onOutputLine(String line) {
                     activity.runOnUiThread(() -> host.addToLog("[Server] " + line));
+                    // ADFA-4837: surface which service is starting to the boot screen (symmetric to stop).
+                    java.util.regex.Matcher m = PDSM_SVC.matcher(line);
+                    if (m.find()) {
+                        final String svc = m.group(1);
+                        activity.runOnUiThread(() -> host.onStartupProgress(svc));
+                    }
                 }
 
                 @Override

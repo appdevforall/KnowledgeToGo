@@ -195,6 +195,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private void showInstallProgress(InstallState st) {
         if (installProgress == null || st == null || !st.isRunning()) return;
         installProgress.setVisibility(View.VISIBLE);
+        if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
@@ -423,6 +424,17 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     // the primary close trigger; the /home-poll observer and the 120s timeout are only fallbacks.
     @Override public void onShutdownComplete() {
         if (closing) onClosedReady();
+    }
+
+    // ADFA-4837: boot progress — show which service is starting under the boot animation, mirroring
+    // the shutdown line, so start/close feel symmetric. Only during the initial boot gate (not during
+    // an install, which owns the same overlay, and not while closing).
+    @Override public void onStartupProgress(String service) {
+        if (closing || installing || gateDismissed || installProgress == null) return;
+        installProgress.setVisibility(View.VISIBLE);
+        if (installStatus != null) installStatus.setText(getString(R.string.k2go_starting_library));
+        if (installBar != null) installBar.setVisibility(View.GONE);
+        if (installDetail != null) installDetail.setText(service);
     }
 
     @Override
