@@ -136,7 +136,15 @@ public class Aria2Manager {
                         : Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
                 // ----------------------------------------------------
 
-                // 3. Build the command dynamically
+                // 3. Build the command dynamically.
+                // ADFA-4832 — SYNC WITH THE DASHBOARD. This flag set is the reference for the
+                // in-server aria2 (static/dashboard/sockets/kiwix.socket.ts), which runs the live
+                // "Get more" downloads. Keep both aligned so behaviour matches; if you change flags
+                // here, mirror them there (and note any intentional divergence). Known divergences:
+                // the server uses Debian's system CA (no bundled cacert), the container resolver
+                // (--async-dns=false) instead of ApplyDnsUseCase + the IPv4 profiler, and has no
+                // DHT/BitTorrent yet; only this app path pre-reconciles/resumes via MetalinkSplit +
+                // DownloadVerifier before invoking aria2.
                 java.util.List<String> command = new java.util.ArrayList<>();
                 command.add(aria2Bin.getAbsolutePath());
                 command.add("--dir=" + downloadDir.getAbsolutePath());
