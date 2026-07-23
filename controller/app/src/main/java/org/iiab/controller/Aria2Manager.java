@@ -204,7 +204,10 @@ public class Aria2Manager {
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
                         int percent = Integer.parseInt(matcher.group(1));
-                        String speed = matcher.group(2);
+                        // ADFA-4815: aria2's DL field is a transfer rate (e.g. "4.5MiB"), so label it
+                        // per second. Only the real rate gets "/s" — the profiler's status strings
+                        // ("Test IPv4", "✓ IPv6") come through a different path and stay as-is.
+                        String speed = matcher.group(2) + "/s";
                         String eta = matcher.group(3);
 
                         mainHandler.post(() -> listener.onProgress(percent, speed, eta));
