@@ -152,7 +152,38 @@ export const handleKiwixEvents = (socket: Socket) => {
         socket.emit('kiwix_terminal_output', `\n[System] Starting download...\n`);
         socket.emit('kiwix_process_status', { isRunning: true });
 
-        const args = ['-d', ZIMS_DIR, '-c', '-Z', '-x', '4', '-s', '4', '-j', '5', '--async-dns=false', ...urls];
+        // ADFA-4832 — SYNC WITH THE APP. These aria2 flags mirror the app-side downloader
+        // (controller/app/.../Aria2Manager.java), which is the better-tested reference, so an
+        // in-server "Get more" behaves like an app-side download. Keep the two lists aligned; if
+        // you change one, change the other and document any new divergence.
+        //   Aligned: --continue, --allow-overwrite, --auto-file-renaming=false,
+        //     --max-connection-per-server=4 (MetalinkSplit.CONNECTIONS_PER_MIRROR),
+        //     --split=16 (MetalinkSplit.MAX_SPLIT; kiwix metalinks are multi-mirror),
+        //     --follow-metalink=mem, --check-integrity=true (verify the .meta4 SHA-256s),
+        //     --console-log-level=warn, --summary-interval=1 (real-time progress when piped),
+        //     --download-result=hide.
+        //   Intentional divergences (different environment): TLS uses Debian's system CA here vs a
+        //     bundled cacert in the app; DNS is the container resolver (--async-dns=false) vs the
+        //     app's ApplyDnsUseCase + IPv4 profiler; no DHT/BitTorrent yet (app enables it — future
+        //     alignment, needs a writable dht path); the app also pre-reconciles/resumes via
+        //     MetalinkSplit + DownloadVerifier before invoking aria2.
+        const args = [
+            '-d', ZIMS_DIR,
+            '--continue=true',
+            '--allow-overwrite=true',
+            '--auto-file-renaming=false',
+            '--max-connection-per-server=4',
+            '--split=16',
+            '--follow-metalink=mem',
+            '--check-integrity=true',
+            '--console-log-level=warn',
+            '--summary-interval=1',
+            '--download-result=hide',
+            '--async-dns=false',
+            '-Z',            // sequential when several ZIMs are queued (the dashboard can batch)
+            '-j', '5',
+            ...urls,
+        ];
         downloadProcess = spawn('/usr/bin/aria2c', args);
 
         downloadProcess.stdout?.on('data', (data) => socket.emit('kiwix_terminal_output', data.toString()));
