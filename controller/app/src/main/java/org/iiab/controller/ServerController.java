@@ -51,6 +51,9 @@ public class ServerController {
         void disableSystemProtection();
         /** ADFA-4834: the pdsm service currently stopping, for the shutdown screen. */
         default void onShutdownProgress(String service) {}
+        /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
+         *  This is the real "everything is down" signal the close should hang off of. */
+        default void onShutdownComplete() {}
     }
 
     private final AppCompatActivity activity;
@@ -358,6 +361,12 @@ public class ServerController {
                             host.addToLog(activity.getString(R.string.watchdog_stopped));
                             host.startExitPulse();
                         }
+
+                        // ADFA-4834: the graceful stop has exited and proot is being killed — this is
+                        // the real "everything is down" moment. Tell the host so a pending "Turn off"
+                        // can finish closing (and terminate the process) instead of hanging on the
+                        // /home poll heuristic.
+                        host.onShutdownComplete();
                     });
                 }
 

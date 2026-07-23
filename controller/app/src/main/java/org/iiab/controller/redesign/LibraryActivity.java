@@ -354,16 +354,28 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private void onClosedReady() {
         if (closedDone) return;
         closedDone = true;
-        if (bootGate == null) { finishAndRemoveTask(); return; }
-        if (reduceMotion()) { finishAndRemoveTask(); return; }
+        if (bootGate == null) { finishAndExit(); return; }
+        if (reduceMotion()) { finishAndExit(); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("D_CLOSED_FLIP");
         bootGate.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) { finishAndRemoveTask(); }
+            public void onAnimationEnd(Animator animation) { finishAndExit(); }
         });
         bootGate.playAnimation();
+    }
+
+    /**
+     * ADFA-4834: "Turn off" means off. finishAndRemoveTask() alone only drops the UI/task — the
+     * process (and its worker threads) lingers idle, so the app looks "still on" and re-shows a
+     * stale, server-down Library on return. Remove the task, then terminate the process. The
+     * watchdog (START_STICKY) is already stopped by the teardown, so nothing revives us.
+     */
+    private void finishAndExit() {
+        finishAndRemoveTask();
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> android.os.Process.killProcess(android.os.Process.myPid()), 200L);
     }
 
     // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
@@ -381,6 +393,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     @Override public void onShutdownProgress(String service) {
         if (!closing || installDetail == null) return;
         installDetail.setText(service);
+    }
+
+    // ADFA-4834: teardown really finished (pdsm stop exited, proot killed, watchdog off). This is
+    // the primary close trigger; the /home-poll observer and the 120s timeout are only fallbacks.
+    @Override public void onShutdownComplete() {
+        if (closing) onClosedReady();
     }
 
     @Override
