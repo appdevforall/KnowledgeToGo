@@ -42,6 +42,10 @@ public class Step1SystemFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_setup_step1, container, false);
+        // ADFA-4815: numbered step spine (same style as Clone/Connect) — step 1 active.
+        StepSpine.render(root.findViewById(R.id.k2go_step_spine),
+                new StepSpine.Step("1", getString(R.string.k2go_lbl_system), true, false),
+                new StepSpine.Step("2", getString(R.string.k2go_lbl_content), false, false));
         bar = root.findViewById(R.id.k2go_storage_bar);
         barUsed = root.findViewById(R.id.k2go_bar_used);
         barSystem = root.findViewById(R.id.k2go_bar_system);

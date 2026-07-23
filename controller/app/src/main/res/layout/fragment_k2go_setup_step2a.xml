@@ -7,8 +7,8 @@
 
         <TextView android:id="@+id/k2go_step2_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="@string/k2go_setup_library_title" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp"
-            android:text="@string/k2go_step2a_breadcrumb" android:textAppearance="?attr/textAppearanceBodyLarge" android:textColor="@color/k2go_teal" />
+        <LinearLayout android:id="@+id/k2go_step_spine" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" android:orientation="horizontal" />
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp"
             android:text="@string/k2go_storage" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
