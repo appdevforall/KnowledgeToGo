@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/k2go_ink" />
+            android:textColor="@color/k2go_boot_ink" />
 
         <ProgressBar
             android:id="@+id/k2go_install_bar"
@@ -105,6 +105,6 @@
             android:layout_marginTop="6dp"
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted" />
+            android:textColor="@color/k2go_boot_muted" />
     </LinearLayout>
 </FrameLayout>

@@ -7,6 +7,11 @@
          own BG layer (#FBF8F3) and stay the same in light + dark, so the margin reads as continuous
          (no override in values-night). -->
     <color name="k2go_boot_bg">#FBF8F3</color>
+    <!-- ADFA-4814: the boot screen is always a light surface (k2go_boot_bg), so the install-progress
+         text drawn over it must stay dark in both themes — k2go_ink/k2go_muted flip to light in dark
+         mode, which turned the status line invisible on the light gate. Fixed values, no night override. -->
+    <color name="k2go_boot_ink">#14211F</color>
+    <color name="k2go_boot_muted">#5C6360</color>
     <color name="k2go_surface">#EFEBE2</color>
     <color name="k2go_teal">#0E5C63</color>
     <color name="k2go_leaf">#2E9E5B</color>
