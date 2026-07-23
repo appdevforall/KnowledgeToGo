@@ -324,6 +324,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     public void turnOffK2Go() {
         if (closing) return;
         closing = true;
+        // ADFA-4834: minimal shutdown feedback — a status line + the service currently stopping,
+        // shown over the exit animation and kept until the environment is really stopped, so we
+        // never bounce back to the Library mid-shutdown. Works with or without the Lottie.
+        if (installProgress != null) {
+            installProgress.setVisibility(View.VISIBLE);
+            if (installStatus != null) installStatus.setText(getString(R.string.server_shutting_down));
+            if (installDetail != null) installDetail.setText("");
+            if (installBar != null) installBar.setVisibility(View.GONE);
+        }
         if (bootGate != null && !reduceMotion()) {
             bootGate.setVisibility(View.VISIBLE);
             bootGate.removeAllAnimatorListeners();
@@ -336,22 +345,37 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         } else if (!ServerStateRepository.get().current().alive) {
             onClosedReady();
         }
-        new Handler(Looper.getMainLooper()).postDelayed(this::onClosedReady, 15000L);
+        // The real close is driven by the server-alive observer (closing && !alive -> onClosedReady).
+        // A graceful stop can take ~40s (kolibri), so keep only a long last-resort safety; the old 15s
+        // fired mid-stop and dumped the user back on the Library.
+        new Handler(Looper.getMainLooper()).postDelayed(this::onClosedReady, 120000L);
     }
 
     private void onClosedReady() {
         if (closedDone) return;
         closedDone = true;
-        if (bootGate == null) { finishAndRemoveTask(); return; }
-        if (reduceMotion()) { finishAndRemoveTask(); return; }
+        if (bootGate == null) { finishAndExit(); return; }
+        if (reduceMotion()) { finishAndExit(); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);
         bootGate.setMinAndMaxFrame("D_CLOSED_FLIP");
         bootGate.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(Animator animation) { finishAndRemoveTask(); }
+            public void onAnimationEnd(Animator animation) { finishAndExit(); }
         });
         bootGate.playAnimation();
+    }
+
+    /**
+     * ADFA-4834: "Turn off" means off. finishAndRemoveTask() alone only drops the UI/task — the
+     * process (and its worker threads) lingers idle, so the app looks "still on" and re-shows a
+     * stale, server-down Library on return. Remove the task, then terminate the process. The
+     * watchdog (START_STICKY) is already stopped by the teardown, so nothing revives us.
+     */
+    private void finishAndExit() {
+        finishAndRemoveTask();
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> android.os.Process.killProcess(android.os.Process.myPid()), 200L);
     }
 
     // --- ServerController.Host (shell: pulses / LEDs are no-ops for now) --------
@@ -364,6 +388,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     @Override public Boolean getTargetServerState() { return targetServerState; }
     @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
     @Override public boolean isNegotiating() { return isNegotiating; }
+
+    // ADFA-4834: minimal shutdown feedback — show the service currently stopping while closing.
+    @Override public void onShutdownProgress(String service) {
+        if (!closing || installDetail == null) return;
+        installDetail.setText(service);
+    }
+
+    // ADFA-4834: teardown really finished (pdsm stop exited, proot killed, watchdog off). This is
+    // the primary close trigger; the /home-poll observer and the 120s timeout are only fallbacks.
+    @Override public void onShutdownComplete() {
+        if (closing) onClosedReady();
+    }
 
     @Override
     public void enableSystemProtection() {

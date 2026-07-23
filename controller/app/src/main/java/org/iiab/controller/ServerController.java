@@ -49,6 +49,11 @@ public class ServerController {
         boolean isNegotiating();
         void enableSystemProtection();
         void disableSystemProtection();
+        /** ADFA-4834: the pdsm service currently stopping, for the shutdown screen. */
+        default void onShutdownProgress(String service) {}
+        /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
+         *  This is the real "everything is down" signal the close should hang off of. */
+        default void onShutdownComplete() {}
     }
 
     private final AppCompatActivity activity;
@@ -60,6 +65,9 @@ public class ServerController {
     private boolean isWifiActive = false;
     private boolean isHotspotActive = false;
     private String currentTargetUrl = null;
+    // ADFA-4834: hard guard so a repeat "Turn off" tap never spawns a second concurrent pdsm stop.
+    private volatile boolean stopping = false;
+    private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
     private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
     private Runnable timeoutRunnable;
@@ -308,6 +316,8 @@ public class ServerController {
             }, activity.getResources().getInteger(R.integer.server_snackbar_delay_ms));
 
         } else {
+            if (stopping) return;   // ADFA-4834: a stop is already in flight; ignore repeat taps
+            stopping = true;
             host.addToLog(activity.getString(R.string.log_server_stopping_gracefully));
 
             PRootEngine stopEngine = new PRootEngine();
@@ -316,11 +326,18 @@ public class ServerController {
                 @Override
                 public void onOutputLine(String line) {
                     activity.runOnUiThread(() -> host.addToLog("[PDSM Stop] " + line));
+                    // ADFA-4834: surface which service is stopping to the shutdown screen.
+                    java.util.regex.Matcher m = PDSM_SVC.matcher(line);
+                    if (m.find()) {
+                        final String svc = m.group(1);
+                        activity.runOnUiThread(() -> host.onShutdownProgress(svc));
+                    }
                 }
 
                 @Override
                 public void onProcessExit(int exitCode) {
                     activity.runOnUiThread(() -> {
+                        stopping = false;   // ADFA-4834: stop finished; allow a future stop
                         if (serverEngine != null) {
                             serverEngine.killProcess();
                             serverEngine = null;
@@ -344,11 +361,18 @@ public class ServerController {
                             host.addToLog(activity.getString(R.string.watchdog_stopped));
                             host.startExitPulse();
                         }
+
+                        // ADFA-4834: the graceful stop has exited and proot is being killed — this is
+                        // the real "everything is down" moment. Tell the host so a pending "Turn off"
+                        // can finish closing (and terminate the process) instead of hanging on the
+                        // /home poll heuristic.
+                        host.onShutdownComplete();
                     });
                 }
 
                 @Override
                 public void onError(String error) {
+                    stopping = false;   // ADFA-4834: allow a retry if the stop failed to launch
                     activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_stop_error, error)));
                 }
             });
