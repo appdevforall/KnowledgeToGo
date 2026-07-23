@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Ίδια με τη γλώσσα εφαρμογής</string>
     <string name="k2go_lang_choose_content_title">Επιλογή γλώσσας περιεχομένου</string>
     <string name="k2go_hide">Απόκρυψη</string>
+    <string name="k2go_home_no_library">Δεν υπάρχει ακόμη βιβλιοθήκη — ανοίξτε το «Λήψη περισσότερων» για εγκατάσταση και προσθήκη περιεχομένου</string>
+    <string name="k2go_home_ready_empty">Η βιβλιοθήκη είναι έτοιμη — ανοίξτε το «Λήψη περισσότερων» για προσθήκη περιεχομένου</string>
 </resources>

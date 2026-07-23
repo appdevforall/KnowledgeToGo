@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">مانند زبان برنامه</string>
     <string name="k2go_lang_choose_content_title">انتخاب زبان محتوا</string>
     <string name="k2go_hide">پنهان کردن</string>
+    <string name="k2go_home_no_library">هنوز کتابخانه‌ای نیست — برای نصب و افزودن محتوا «دریافت بیشتر» را باز کنید</string>
+    <string name="k2go_home_ready_empty">کتابخانه آماده است — برای افزودن محتوا «دریافت بیشتر» را باز کنید</string>
 </resources>

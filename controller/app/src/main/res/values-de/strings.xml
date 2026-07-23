@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">Wie App-Sprache</string>
     <string name="k2go_lang_choose_content_title">Inhaltssprache wählen</string>
     <string name="k2go_hide">Ausblenden</string>
+    <string name="k2go_home_no_library">Noch keine Bibliothek — öffne „Mehr laden“, um zu installieren und Inhalte hinzuzufügen</string>
+    <string name="k2go_home_ready_empty">Bibliothek bereit — öffne „Mehr laden“, um Inhalte hinzuzufügen</string>
 </resources>

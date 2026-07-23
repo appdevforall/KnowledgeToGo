@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Sama dengan bahasa aplikasi</string>
     <string name="k2go_lang_choose_content_title">Pilih bahasa konten</string>
     <string name="k2go_hide">Sembunyikan</string>
+    <string name="k2go_home_no_library">Belum ada pustaka — buka Dapatkan lainnya untuk memasang dan menambah konten</string>
+    <string name="k2go_home_ready_empty">Pustaka siap — buka Dapatkan lainnya untuk menambah konten</string>
 </resources>

@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">ઍપની ભાષા જેવી જ</string>
     <string name="k2go_lang_choose_content_title">સામગ્રીની ભાષા પસંદ કરો</string>
     <string name="k2go_hide">છુપાવો</string>
+    <string name="k2go_home_no_library">હજી કોઈ લાઇબ્રેરી નથી — ઇન્સ્ટોલ કરવા અને સામગ્રી ઉમેરવા Get more ખોલો</string>
+    <string name="k2go_home_ready_empty">લાઇબ્રેરી તૈયાર છે — સામગ્રી ઉમેરવા Get more ખોલો</string>
 </resources>

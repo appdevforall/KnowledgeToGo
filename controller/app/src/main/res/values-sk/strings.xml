@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Rovnaký ako jazyk aplikácie</string>
     <string name="k2go_lang_choose_content_title">Vyberte jazyk obsahu</string>
     <string name="k2go_hide">Skryť</string>
+    <string name="k2go_home_no_library">Zatiaľ žiadna knižnica — otvorte Získať viac a nainštalujte a pridajte obsah</string>
+    <string name="k2go_home_ready_empty">Knižnica je pripravená — otvorte Získať viac a pridajte obsah</string>
 </resources>

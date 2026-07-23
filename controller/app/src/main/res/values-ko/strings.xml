@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">앱 언어와 동일</string>
     <string name="k2go_lang_choose_content_title">콘텐츠 언어 선택</string>
     <string name="k2go_hide">숨기기</string>
+    <string name="k2go_home_no_library">아직 라이브러리가 없습니다 — 설치하고 콘텐츠를 추가하려면 더 받기를 여세요</string>
+    <string name="k2go_home_ready_empty">라이브러리가 준비되었습니다 — 콘텐츠를 추가하려면 더 받기를 여세요</string>
 </resources>

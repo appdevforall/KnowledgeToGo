@@ -913,4 +913,6 @@
     <string name="k2go_lang_same_as_app">Igual que el idioma de la aplicación</string>
     <string name="k2go_lang_choose_content_title">Elegir idioma del contenido</string>
     <string name="k2go_hide">Ocultar</string>
+    <string name="k2go_home_no_library">Aún no hay biblioteca — abre Obtener más para instalar y añadir contenido</string>
+    <string name="k2go_home_ready_empty">Biblioteca lista — abre Obtener más para añadir contenido</string>
 </resources>

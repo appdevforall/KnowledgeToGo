@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">مثل لغة التطبيق</string>
     <string name="k2go_lang_choose_content_title">اختيار لغة المحتوى</string>
     <string name="k2go_hide">إخفاء</string>
+    <string name="k2go_home_no_library">لا توجد مكتبة بعد — افتح "الحصول على المزيد" للتثبيت وإضافة محتوى</string>
+    <string name="k2go_home_ready_empty">المكتبة جاهزة — افتح "الحصول على المزيد" لإضافة محتوى</string>
 </resources>

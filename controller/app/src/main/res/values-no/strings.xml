@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">Samme som appspråket</string>
     <string name="k2go_lang_choose_content_title">Velg innholdsspråk</string>
     <string name="k2go_hide">Skjul</string>
+    <string name="k2go_home_no_library">Ingen bibliotek ennå — åpne Hent mer for å installere og legge til innhold</string>
+    <string name="k2go_home_ready_empty">Biblioteket er klart — åpne Hent mer for å legge til innhold</string>
 </resources>

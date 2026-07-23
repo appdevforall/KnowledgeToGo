@@ -913,4 +913,6 @@
     <string name="k2go_lang_same_as_app">Как язык приложения</string>
     <string name="k2go_lang_choose_content_title">Выбор языка контента</string>
     <string name="k2go_hide">Скрыть</string>
+    <string name="k2go_home_no_library">Библиотеки пока нет — откройте «Получить ещё», чтобы установить и добавить контент</string>
+    <string name="k2go_home_ready_empty">Библиотека готова — откройте «Получить ещё», чтобы добавить контент</string>
 </resources>

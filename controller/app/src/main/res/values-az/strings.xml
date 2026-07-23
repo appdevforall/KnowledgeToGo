@@ -844,4 +844,6 @@
     <string name="k2go_lang_same_as_app">Tətbiq dili ilə eyni</string>
     <string name="k2go_lang_choose_content_title">Məzmun dilini seçin</string>
     <string name="k2go_hide">Gizlət</string>
+    <string name="k2go_home_no_library">Hələ kitabxana yoxdur — quraşdırmaq və məzmun əlavə etmək üçün Daha çox əldə et bölməsini açın</string>
+    <string name="k2go_home_ready_empty">Kitabxana hazırdır — məzmun əlavə etmək üçün Daha çox əldə et bölməsini açın</string>
 </resources>

@@ -837,4 +837,6 @@
     <string name="k2go_lang_same_as_app">Gelijk aan app-taal</string>
     <string name="k2go_lang_choose_content_title">Contenttaal kiezen</string>
     <string name="k2go_hide">Verbergen</string>
+    <string name="k2go_home_no_library">Nog geen bibliotheek — open Meer ophalen om te installeren en inhoud toe te voegen</string>
+    <string name="k2go_home_ready_empty">Bibliotheek klaar — open Meer ophalen om inhoud toe te voegen</string>
 </resources>
