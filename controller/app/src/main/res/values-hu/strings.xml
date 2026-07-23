@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Az exportálás sikertelen: %1$s</string>
     <string name="install_error_no_tier">Hé! Válasszon egy kiadást a telepítéshez (Basic, Standard vagy Full).</string>
     <string name="install_error_no_storage">Nincs elég tárhely! Szabadítson fel helyet, vagy válasszon kisebb kiadást. (5GB biztonsági tartalék szükséges)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Rendszer kicsomagolása…\n(Ez eltart egy ideig)</string>
     <string name="install_error_no_archive">Hiba: A letöltött archívum nem található.</string>
     <string name="install_error_extraction">A kicsomagolás sikertelen: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">A törlés sikertelen: %1$s</string>
     <string name="install_status_installing_module">%1$s telepítése…</string>
     <string name="install_status_preparing_kiwix">Kiwix előkészítése…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM indexelése…</string>
     <string name="install_status_maps_provisioned">Az IIAB Maps már be van állítva…</string>
     <string name="install_status_maps_configuring">IIAB Maps konfigurálása…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Régi rendszer törlése…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian visszaállítás indítása…</string>
     <string name="install_status_downloading_debian">Debian letöltése…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Alap kicsomagolása…</string>
     <string name="install_status_bootstrapping">Debian bootstrapelése…</string>
     <string name="install_success_vanilla">A Vanilla alaprendszer sikeresen bootstrapelve!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">Elrejtés</string>
     <string name="k2go_home_no_library">Még nincs könyvtár — nyisd meg a Továbbiak menüt a telepítéshez és tartalom hozzáadásához</string>
     <string name="k2go_home_ready_empty">A könyvtár kész — nyisd meg a Továbbiak menüt tartalom hozzáadásához</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

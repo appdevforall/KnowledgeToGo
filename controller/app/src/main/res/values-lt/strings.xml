@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Eksportuoti nepavyko: %1$s</string>
     <string name="install_error_no_tier">Ei! Pasirinkite diegtiną leidimą (Basic, Standard arba Full).</string>
     <string name="install_error_no_storage">Nepakanka saugyklos! Atlaisvinkite vietos arba pasirinkite mažesnį leidimą. (Reikia 5 GB saugos rezervo)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Išpakuojama sistema…\n(Tai užtrunka)</string>
     <string name="install_error_no_archive">Klaida: atsisiųstas archyvas nerastas.</string>
     <string name="install_error_extraction">Išpakavimas nepavyko: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Trynimas nepavyko: %1$s</string>
     <string name="install_status_installing_module">Diegiama %1$s…</string>
     <string name="install_status_preparing_kiwix">Ruošiamas Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Indeksuojamas ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps jau paruošta…</string>
     <string name="install_status_maps_configuring">Konfigūruojama IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Trinama sena sistema…</string>
     <string name="install_status_starting_vanilla">Pradedamas Vanilla Debian atkūrimas…</string>
     <string name="install_status_downloading_debian">Atsisiunčiama Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Išpakuojama bazė…</string>
     <string name="install_status_bootstrapping">Įkraunama Debian…</string>
     <string name="install_success_vanilla">Vanilla bazinė sistema sėkmingai įkrauta!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Slėpti</string>
     <string name="k2go_home_no_library">Bibliotekos dar nėra — atverkite „Gauti daugiau“, kad įdiegtumėte ir pridėtumėte turinio</string>
     <string name="k2go_home_ready_empty">Biblioteka paruošta — atverkite „Gauti daugiau“, kad pridėtumėte turinio</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

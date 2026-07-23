@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">İxrac uğursuz oldu: %1$s</string>
     <string name="install_error_no_tier">Hey! Quraşdırmaq üçün bir nəşr seçin (Basic, Standard və ya Full).</string>
     <string name="install_error_no_storage">Kifayət qədər yaddaş yoxdur! Zəhmət olmasa yer boşaldın və ya daha kiçik nəşr seçin. (5GB təhlükəsizlik buferi tələb olunur)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Sistem çıxarılır…\n(Bu bir qədər çəkir)</string>
     <string name="install_error_no_archive">Xəta: Endirilən arxiv tapılmadı.</string>
     <string name="install_error_extraction">Çıxarma uğursuz oldu: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Silmə uğursuz oldu: %1$s</string>
     <string name="install_status_installing_module">%1$s quraşdırılır…</string>
     <string name="install_status_preparing_kiwix">Kiwix hazırlanır…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM indekslənir…</string>
     <string name="install_status_maps_provisioned">IIAB Maps artıq təmin edilib…</string>
     <string name="install_status_maps_configuring">IIAB Maps konfiqurasiya edilir…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Köhnə sistem silinir…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian sıfırlaması başladılır…</string>
     <string name="install_status_downloading_debian">Debian endirilir…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Baza çıxarılır…</string>
     <string name="install_status_bootstrapping">Debian bootstrap edilir…</string>
     <string name="install_success_vanilla">Vanilla Baza Sistemi uğurla bootstrap edildi!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Gizlət</string>
     <string name="k2go_home_no_library">Hələ kitabxana yoxdur — quraşdırmaq və məzmun əlavə etmək üçün Daha çox əldə et bölməsini açın</string>
     <string name="k2go_home_ready_empty">Kitabxana hazırdır — məzmun əlavə etmək üçün Daha çox əldə et bölməsini açın</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Kíkójáde kùnà: %1$s</string>
     <string name="install_error_no_tier">Hẹ́! Yan ẹ̀yà kan láti fi sórí ẹ̀rọ (Basic, Standard, tàbí Full).</string>
     <string name="install_error_no_storage">Ibi ìpamọ́ kò tó! Jọ̀wọ́ dá àyè sílẹ̀ tàbí yan ẹ̀yà kékeré. (A nílò ààbò ìṣọ̀wọ́ 5GB)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Ń yọ Ètò jáde…\n(Èyí gba àkókò díẹ̀)</string>
     <string name="install_error_no_archive">Àṣìṣe: A kò rí àkójọpọ̀ tí a gbà sílẹ̀.</string>
     <string name="install_error_extraction">Yíyọjáde Kùnà: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Pípa Kùnà: %1$s</string>
     <string name="install_status_installing_module">Ń fi %1$s sórí ẹ̀rọ…</string>
     <string name="install_status_preparing_kiwix">Ń múra Kiwix sílẹ̀…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Ń ṣàtọ́ka ZIM…</string>
     <string name="install_status_maps_provisioned">A ti pèsè IIAB Maps tẹ́lẹ̀…</string>
     <string name="install_status_maps_configuring">Ń ṣàgbékalẹ̀ IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Ń pa ètò àtijọ́ rẹ́…</string>
     <string name="install_status_starting_vanilla">Ń bẹ̀rẹ̀ Ìtúnbẹ̀rẹ̀ Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Ń gba Debian sílẹ̀…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Ń yọ Ìpìlẹ̀ jáde…</string>
     <string name="install_status_bootstrapping">Ń ṣe bootstrap Debian…</string>
     <string name="install_success_vanilla">A ti ṣe bootstrap ìpìlẹ̀ ètò Vanilla ní àṣeyọrí!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Fi pamọ́</string>
     <string name="k2go_home_no_library">Kò sí ibi ìkówèésí síbẹ̀ — ṣí Gba díẹ̀ sí i láti fi sórí ẹrọ, kí o sì fi àkóónú kún un</string>
     <string name="k2go_home_ready_empty">Ibi ìkówèésí ti ṣetán — ṣí Gba díẹ̀ sí i láti fi àkóónú kún un</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

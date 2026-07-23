@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">내보내기 실패: %1$s</string>
     <string name="install_error_no_tier">안녕하세요! 설치할 에디션을 선택하세요(Basic, Standard 또는 Full).</string>
     <string name="install_error_no_storage">저장 공간이 부족합니다! 공간을 확보하거나 더 작은 에디션을 선택하세요. (5GB 안전 여유 필요)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">시스템 압축 해제 중…\n(시간이 걸립니다)</string>
     <string name="install_error_no_archive">오류: 다운로드한 아카이브를 찾을 수 없습니다.</string>
     <string name="install_error_extraction">압축 해제 실패: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">삭제 실패: %1$s</string>
     <string name="install_status_installing_module">%1$s 설치 중…</string>
     <string name="install_status_preparing_kiwix">Kiwix 준비 중…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM 색인 중…</string>
     <string name="install_status_maps_provisioned">IIAB Maps가 이미 준비되었습니다…</string>
     <string name="install_status_maps_configuring">IIAB Maps 구성 중…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">이전 시스템을 지우는 중…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian 초기화 시작 중…</string>
     <string name="install_status_downloading_debian">Debian 다운로드 중…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">기본 시스템 압축 해제 중…</string>
     <string name="install_status_bootstrapping">Debian 부트스트랩 중…</string>
     <string name="install_success_vanilla">Vanilla 기본 시스템 부트스트랩 성공!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">숨기기</string>
     <string name="k2go_home_no_library">아직 라이브러리가 없습니다 — 설치하고 콘텐츠를 추가하려면 더 받기를 여세요</string>
     <string name="k2go_home_ready_empty">라이브러리가 준비되었습니다 — 콘텐츠를 추가하려면 더 받기를 여세요</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

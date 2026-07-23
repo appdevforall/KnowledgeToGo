@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">এক্সপোর্ট ব্যর্থ হয়েছে: %1$s</string>
     <string name="install_error_no_tier">শুনুন! ইনস্টল করার জন্য একটি সংস্করণ নির্বাচন করুন (Basic, Standard, বা Full)।</string>
     <string name="install_error_no_storage">পর্যাপ্ত স্টোরেজ নেই! অনুগ্রহ করে জায়গা খালি করুন বা একটি ছোট সংস্করণ বেছে নিন। (5GB নিরাপত্তা বাফার প্রয়োজন)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">সিস্টেম এক্সট্র্যাক্ট করা হচ্ছে…\n(এতে কিছুটা সময় লাগে)</string>
     <string name="install_error_no_archive">ত্রুটি: ডাউনলোড করা আর্কাইভ পাওয়া যায়নি।</string>
     <string name="install_error_extraction">এক্সট্র্যাকশন ব্যর্থ হয়েছে: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">মুছে ফেলা ব্যর্থ হয়েছে: %1$s</string>
     <string name="install_status_installing_module">%1$s ইনস্টল করা হচ্ছে…</string>
     <string name="install_status_preparing_kiwix">Kiwix প্রস্তুত করা হচ্ছে…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM ইনডেক্স করা হচ্ছে…</string>
     <string name="install_status_maps_provisioned">IIAB Maps ইতিমধ্যে প্রস্তুত করা হয়েছে…</string>
     <string name="install_status_maps_configuring">IIAB Maps কনফিগার করা হচ্ছে…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">পুরনো সিস্টেম মুছে ফেলা হচ্ছে…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian রিসেট শুরু হচ্ছে…</string>
     <string name="install_status_downloading_debian">Debian ডাউনলোড করা হচ্ছে…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">ভিত্তি এক্সট্র্যাক্ট করা হচ্ছে…</string>
     <string name="install_status_bootstrapping">Debian বুটস্ট্র্যাপ করা হচ্ছে…</string>
     <string name="install_success_vanilla">Vanilla ভিত্তি সিস্টেম সফলভাবে বুটস্ট্র্যাপ করা হয়েছে!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">লুকান</string>
     <string name="k2go_home_no_library">এখনও কোনো লাইব্রেরি নেই — ইনস্টল ও কনটেন্ট যোগ করতে Get more খুলুন</string>
     <string name="k2go_home_ready_empty">লাইব্রেরি প্রস্তুত — কনটেন্ট যোগ করতে Get more খুলুন</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

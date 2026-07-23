@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Xuất thất bại: %1$s</string>
     <string name="install_error_no_tier">Này! Chọn một phiên bản để cài (Basic, Standard hoặc Full).</string>
     <string name="install_error_no_storage">Không đủ bộ nhớ! Vui lòng giải phóng dung lượng hoặc chọn phiên bản nhỏ hơn. (Cần 5GB dự phòng an toàn)</string>
-    <string name="install_status_os_download">HĐH: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">HĐH: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Đang giải nén hệ thống…\n(Việc này mất một lúc)</string>
     <string name="install_error_no_archive">Lỗi: Không tìm thấy kho lưu trữ đã tải.</string>
     <string name="install_error_extraction">Giải nén thất bại: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Xóa thất bại: %1$s</string>
     <string name="install_status_installing_module">Đang cài %1$s…</string>
     <string name="install_status_preparing_kiwix">Đang chuẩn bị Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Đang lập chỉ mục ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps đã được chuẩn bị…</string>
     <string name="install_status_maps_configuring">Đang cấu hình IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Đang xóa hệ thống cũ…</string>
     <string name="install_status_starting_vanilla">Đang bắt đầu đặt lại Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Đang tải Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Đang giải nén phần cơ sở…</string>
     <string name="install_status_bootstrapping">Đang bootstrap Debian…</string>
     <string name="install_success_vanilla">Đã bootstrap thành công hệ thống cơ sở Vanilla!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">Ẩn</string>
     <string name="k2go_home_no_library">Chưa có thư viện — mở Tải thêm để cài đặt và thêm nội dung</string>
     <string name="k2go_home_ready_empty">Thư viện đã sẵn sàng — mở Tải thêm để thêm nội dung</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

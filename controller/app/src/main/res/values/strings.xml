@@ -323,7 +323,7 @@
 
     <string name="install_error_no_tier">Hey! Select an edition to install (Basic, Standard, or Full).</string>
     <string name="install_error_no_storage">Not enough storage! Please free up space or choose a smaller edition. (5GB safety buffer required)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Extracting System...\n(This takes a while)</string>
     <string name="install_error_no_archive">Error: Downloaded archive not found.</string>
     <string name="install_error_extraction">Extraction Failed: %1$s</string>
@@ -341,7 +341,7 @@
 
     <string name="install_status_installing_module">Installing %1$s...</string>
     <string name="install_status_preparing_kiwix">Preparing Kiwix...</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Indexing ZIM...</string>
     <string name="install_status_maps_provisioned">IIAB Maps already provisioned...</string>
     <string name="install_status_maps_configuring">Configuring IIAB Maps...</string>
@@ -350,7 +350,7 @@
     <string name="install_status_wiping_old">Wiping old system...</string>
     <string name="install_status_starting_vanilla">Starting Vanilla Debian Reset...</string>
     <string name="install_status_downloading_debian">Downloading Debian...</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Extracting Base...</string>
     <string name="install_status_bootstrapping">Bootstrapping Debian...</string>
     <string name="install_success_vanilla">Vanilla Base System successfully bootstrapped!</string>

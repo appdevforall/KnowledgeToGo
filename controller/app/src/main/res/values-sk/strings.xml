@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Export zlyhal: %1$s</string>
     <string name="install_error_no_tier">Hej! Vyberte edíciu na inštaláciu (Basic, Standard alebo Full).</string>
     <string name="install_error_no_storage">Nedostatok úložiska! Uvoľnite prosím miesto alebo zvoľte menšiu edíciu. (Vyžaduje sa bezpečnostná rezerva 5GB)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Extrahuje sa systém…\n(Toto chvíľu trvá)</string>
     <string name="install_error_no_archive">Chyba: Stiahnutý archív sa nenašiel.</string>
     <string name="install_error_extraction">Extrakcia zlyhala: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Odstránenie zlyhalo: %1$s</string>
     <string name="install_status_installing_module">Inštaluje sa %1$s…</string>
     <string name="install_status_preparing_kiwix">Pripravuje sa Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Indexuje sa ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps už boli pripravené…</string>
     <string name="install_status_maps_configuring">Konfigurujú sa IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Vymazáva sa starý systém…</string>
     <string name="install_status_starting_vanilla">Začína sa obnovenie Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Sťahuje sa Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Extrahuje sa základ…</string>
     <string name="install_status_bootstrapping">Bootstrapuje sa Debian…</string>
     <string name="install_success_vanilla">Vanilla základný systém úspešne bootstrapovaný!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Skryť</string>
     <string name="k2go_home_no_library">Zatiaľ žiadna knižnica — otvorte Získať viac a nainštalujte a pridajte obsah</string>
     <string name="k2go_home_ready_empty">Knižnica je pripravená — otvorte Získať viac a pridajte obsah</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

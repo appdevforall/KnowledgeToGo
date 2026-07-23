@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Eksport mislyktes: %1$s</string>
     <string name="install_error_no_tier">Hei! Velg en utgave å installere (Basic, Standard eller Full).</string>
     <string name="install_error_no_storage">Ikke nok lagringsplass! Frigjør plass eller velg en mindre utgave. (5 GB sikkerhetsbuffer kreves)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Pakker ut systemet…\n(Dette tar en stund)</string>
     <string name="install_error_no_archive">Feil: Nedlastet arkiv ikke funnet.</string>
     <string name="install_error_extraction">Utpakking mislyktes: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Sletting mislyktes: %1$s</string>
     <string name="install_status_installing_module">Installerer %1$s…</string>
     <string name="install_status_preparing_kiwix">Forbereder Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Indekserer ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps er allerede klargjort…</string>
     <string name="install_status_maps_configuring">Konfigurerer IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Sletter gammelt system…</string>
     <string name="install_status_starting_vanilla">Starter Vanilla Debian-nullstilling…</string>
     <string name="install_status_downloading_debian">Laster ned Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Pakker ut basen…</string>
     <string name="install_status_bootstrapping">Bootstrapper Debian…</string>
     <string name="install_success_vanilla">Vanilla-grunnsystemet ble bootstrappet!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">Skjul</string>
     <string name="k2go_home_no_library">Ingen bibliotek ennå — åpne Hent mer for å installere og legge til innhold</string>
     <string name="k2go_home_ready_empty">Biblioteket er klart — åpne Hent mer for å legge til innhold</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

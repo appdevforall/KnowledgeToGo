@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Uhamishaji umeshindwa: %1$s</string>
     <string name="install_error_no_tier">Habari! Chagua toleo la kusakinisha (Basic, Standard, au Full).</string>
     <string name="install_error_no_storage">Hifadhi haitoshi! Tafadhali fungua nafasi au chagua toleo dogo zaidi. (Nafasi ya usalama ya 5GB inahitajika)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Inatoa Mfumo…\n(Hii inachukua muda)</string>
     <string name="install_error_no_archive">Hitilafu: Kumbukumbu iliyopakuliwa haijapatikana.</string>
     <string name="install_error_extraction">Utoaji Umeshindwa: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Ufutaji Umeshindwa: %1$s</string>
     <string name="install_status_installing_module">Inasakinisha %1$s…</string>
     <string name="install_status_preparing_kiwix">Inaandaa Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Inaorodhesha ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps tayari imeandaliwa…</string>
     <string name="install_status_maps_configuring">Inasanidi IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Inafuta mfumo wa zamani…</string>
     <string name="install_status_starting_vanilla">Inaanza Uwekaji Upya wa Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Inapakua Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Inatoa Msingi…</string>
     <string name="install_status_bootstrapping">Inaanzisha Debian…</string>
     <string name="install_success_vanilla">Mfumo wa Msingi wa Vanilla umeanzishwa kwa mafanikio!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Ficha</string>
     <string name="k2go_home_no_library">Bado hakuna maktaba — fungua Pata zaidi ili kusakinisha na kuongeza maudhui</string>
     <string name="k2go_home_ready_empty">Maktaba iko tayari — fungua Pata zaidi ili kuongeza maudhui</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

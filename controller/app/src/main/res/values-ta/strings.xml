@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">ஏற்றுமதி தோல்வியடைந்தது: %1$s</string>
     <string name="install_error_no_tier">ஹேய்! நிறுவ ஒரு பதிப்பைத் தேர்ந்தெடுக்கவும் (Basic, Standard அல்லது Full).</string>
     <string name="install_error_no_storage">போதிய சேமிப்பகம் இல்லை! இடத்தை விடுவிக்கவும் அல்லது சிறிய பதிப்பைத் தேர்ந்தெடுக்கவும். (5GB பாதுகாப்பு இடையகம் தேவை)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">அமைப்பைப் பிரித்தெடுக்கிறது…\n(இது சிறிது நேரம் ஆகும்)</string>
     <string name="install_error_no_archive">பிழை: பதிவிறக்கப்பட்ட காப்பகம் கிடைக்கவில்லை.</string>
     <string name="install_error_extraction">பிரித்தெடுத்தல் தோல்வியடைந்தது: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">நீக்குதல் தோல்வியடைந்தது: %1$s</string>
     <string name="install_status_installing_module">%1$s ஐ நிறுவுகிறது…</string>
     <string name="install_status_preparing_kiwix">Kiwix ஐ தயார்படுத்துகிறது…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM ஐ அட்டவணைப்படுத்துகிறது…</string>
     <string name="install_status_maps_provisioned">IIAB Maps ஏற்கனவே வழங்கப்பட்டுள்ளது…</string>
     <string name="install_status_maps_configuring">IIAB Maps ஐ கட்டமைக்கிறது…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">பழைய அமைப்பை அழிக்கிறது…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian மீட்டமைப்பைத் தொடங்குகிறது…</string>
     <string name="install_status_downloading_debian">Debian ஐப் பதிவிறக்குகிறது…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">அடிப்படையைப் பிரித்தெடுக்கிறது…</string>
     <string name="install_status_bootstrapping">Debian ஐ bootstrap செய்கிறது…</string>
     <string name="install_success_vanilla">Vanilla அடிப்படை அமைப்பு வெற்றிகரமாக bootstrap செய்யப்பட்டது!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">மறை</string>
     <string name="k2go_home_no_library">இன்னும் நூலகம் இல்லை — நிறுவவும் உள்ளடக்கம் சேர்க்கவும் Get more திறக்கவும்</string>
     <string name="k2go_home_ready_empty">நூலகம் தயார் — உள்ளடக்கம் சேர்க்க Get more திறக்கவும்</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

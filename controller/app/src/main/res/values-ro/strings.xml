@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Exportul a eșuat: %1$s</string>
     <string name="install_error_no_tier">Hei! Selectează o ediție de instalat (Basic, Standard sau Full).</string>
     <string name="install_error_no_storage">Spațiu de stocare insuficient! Te rugăm să eliberezi spațiu sau să alegi o ediție mai mică. (Este necesar un tampon de siguranță de 5GB)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Se extrage sistemul…\n(Aceasta durează un timp)</string>
     <string name="install_error_no_archive">Eroare: Arhiva descărcată nu a fost găsită.</string>
     <string name="install_error_extraction">Extragerea a eșuat: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Ștergerea a eșuat: %1$s</string>
     <string name="install_status_installing_module">Se instalează %1$s…</string>
     <string name="install_status_preparing_kiwix">Se pregătește Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Se indexează ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps deja furnizat…</string>
     <string name="install_status_maps_configuring">Se configurează IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Se șterge sistemul vechi…</string>
     <string name="install_status_starting_vanilla">Se începe resetarea Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Se descarcă Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Se extrage baza…</string>
     <string name="install_status_bootstrapping">Se face bootstrap la Debian…</string>
     <string name="install_success_vanilla">Sistemul de bază Vanilla a fost inițializat cu succes!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">Ascunde</string>
     <string name="k2go_home_no_library">Încă nu există bibliotecă — deschide Obține mai multe pentru a instala și adăuga conținut</string>
     <string name="k2go_home_ready_empty">Biblioteca este gata — deschide Obține mai multe pentru a adăuga conținut</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>
