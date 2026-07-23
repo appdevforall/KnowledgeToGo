@@ -54,6 +54,10 @@ public class ServerController {
         /** ADFA-4834: the graceful teardown finished (pdsm stop exited, proot killed, watchdog off).
          *  This is the real "everything is down" signal the close should hang off of. */
         default void onShutdownComplete() {}
+        /** ADFA-4837: a start has begun. Fires immediately (before any pdsm output) so the boot
+         *  screen can show an animated "starting" message during the long silent warm-up, instead of
+         *  a blank line until the first pdsm service reports ~15s later. */
+        default void onStartupBegan() {}
         /** ADFA-4837: the pdsm service currently starting, for a boot progress line (symmetric to
          *  onShutdownProgress). Heavy services (kolibri/kiwix) warm up lazily after this. */
         default void onStartupProgress(String service) {}
@@ -291,6 +295,7 @@ public class ServerController {
                 return;
             }
             host.addToLog(activity.getString(R.string.log_server_booting_native));
+            activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
             createFakeSysData(rootfsDir);
 
             if (serverEngine != null) {

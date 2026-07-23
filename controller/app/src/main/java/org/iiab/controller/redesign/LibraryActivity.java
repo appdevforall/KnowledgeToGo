@@ -61,6 +61,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closing = false;
     private boolean closedDone = false;
 
+    // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
+    private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
+    private Runnable ellipsisRunnable;
+    private String bootBaseText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,6 +199,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private void showInstallProgress(InstallState st) {
         if (installProgress == null || st == null || !st.isRunning()) return;
+        stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
         if (st.phase == InstallState.Phase.DOWNLOADING) {
@@ -209,6 +215,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     }
 
     private void hideInstallProgress() {
+        stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
     }
 
@@ -352,6 +359,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // ADFA-4834: minimal shutdown feedback — a status line + the service currently stopping,
         // shown over the exit animation and kept until the environment is really stopped, so we
         // never bounce back to the Library mid-shutdown. Works with or without the Lottie.
+        stopBootEllipsis();   // ADFA-4837: leaving boot; the shutdown line owns the status now
         if (installProgress != null) {
             installProgress.setVisibility(View.VISIBLE);
             if (installStatus != null) installStatus.setText(getString(R.string.server_shutting_down));
@@ -426,15 +434,51 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (closing) onClosedReady();
     }
 
+    // ADFA-4837: a start began — show an animated "Starting your library…" immediately so the ~15s
+    // before the first pdsm line isn't a blank, frozen-looking screen.
+    @Override public void onStartupBegan() {
+        if (closing || installing || gateDismissed || installProgress == null) return;
+        installProgress.setVisibility(View.VISIBLE);
+        if (installBar != null) installBar.setVisibility(View.GONE);
+        if (installDetail != null) installDetail.setText("");
+        startBootEllipsis();
+    }
+
     // ADFA-4837: boot progress — show which service is starting under the boot animation, mirroring
     // the shutdown line, so start/close feel symmetric. Only during the initial boot gate (not during
     // an install, which owns the same overlay, and not while closing).
     @Override public void onStartupProgress(String service) {
         if (closing || installing || gateDismissed || installProgress == null) return;
         installProgress.setVisibility(View.VISIBLE);
-        if (installStatus != null) installStatus.setText(getString(R.string.k2go_starting_library));
         if (installBar != null) installBar.setVisibility(View.GONE);
+        startBootEllipsis();   // keep the status line animating; the service shows below
         if (installDetail != null) installDetail.setText(service);
+    }
+
+    /** ADFA-4837: cycle "Starting your library" + . / .. / … on the boot status line. */
+    private void startBootEllipsis() {
+        if (ellipsisRunnable != null) return;   // already animating
+        if (bootBaseText == null) {
+            bootBaseText = getString(R.string.k2go_starting_library).replaceAll("[\\s.…]+$", "");
+        }
+        ellipsisRunnable = new Runnable() {
+            int i = 0;
+            @Override public void run() {
+                if (installStatus != null) {
+                    StringBuilder dots = new StringBuilder();
+                    for (int k = 0; k <= i % 3; k++) dots.append('.');
+                    installStatus.setText(bootBaseText + dots);
+                }
+                i++;
+                ellipsisHandler.postDelayed(this, 450L);
+            }
+        };
+        ellipsisHandler.post(ellipsisRunnable);
+    }
+
+    private void stopBootEllipsis() {
+        if (ellipsisRunnable != null) ellipsisHandler.removeCallbacks(ellipsisRunnable);
+        ellipsisRunnable = null;
     }
 
     @Override
