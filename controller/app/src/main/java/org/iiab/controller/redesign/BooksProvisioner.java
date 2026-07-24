@@ -15,6 +15,7 @@
 package org.iiab.controller.redesign;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +26,8 @@ import java.util.List;
 public final class BooksProvisioner {
     private BooksProvisioner() {}
 
+    private static final String TAG = "K2Go-Provision";
+
     /** True when there is a banked Books order waiting to be provisioned. */
     public static boolean hasPending(Context ctx) {
         return BooksWishlist.size(ctx) > 0;
@@ -33,8 +36,12 @@ public final class BooksProvisioner {
     /** Hand the wishlist to BooksDownloadService (requires the server to be up) and clear it.
      *  No-op if empty or a session is already running. */
     public static void drain(Context ctx) {
-        if (BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) return;
+        if (BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
+            Log.d(TAG, "books drain skipped: a session is already active");
+            return;
+        }
         JSONArray order = BooksWishlist.all(ctx);
+        Log.i(TAG, "books drain: " + order.length() + " in wishlist");
         List<String> ids = new ArrayList<>(), titles = new ArrayList<>(), urls = new ArrayList<>();
         for (int i = 0; i < order.length(); i++) {
             JSONObject o = order.optJSONObject(i);
@@ -46,6 +53,7 @@ public final class BooksProvisioner {
             urls.add(o.optString("url", ""));
         }
         if (ids.isEmpty()) { BooksWishlist.clear(ctx); return; }
+        Log.i(TAG, "books drain: handing " + ids.size() + " to BooksDownloadService");
         BooksDownloadService.start(ctx.getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
         BooksWishlist.clear(ctx);   // handed off; the service owns retry from here

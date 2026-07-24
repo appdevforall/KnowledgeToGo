@@ -15,6 +15,7 @@
 package org.iiab.controller.redesign;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +25,8 @@ import java.util.List;
 
 public final class ZimProvisioner {
     private ZimProvisioner() {}
+
+    private static final String TAG = "K2Go-Provision";
 
     /** True when there is a banked ZIM order waiting to be provisioned. */
     public static boolean hasPending(Context ctx) {
@@ -36,9 +39,10 @@ public final class ZimProvisioner {
         if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()) return;
         if (ZimWishlist.size(ctx) == 0) return;
         final Context app = ctx.getApplicationContext();
+        Log.i(TAG, "zim drain: " + ZimWishlist.size(app) + " in wishlist; loading catalog");
         KiwixCatalog.getOrFetch(app, new KiwixCatalog.Listener() {
             @Override public void onReady(JSONObject catalog) { resolveAndStart(app, catalog); }
-            @Override public void onError(String message) { /* leave the wishlist for a later retry */ }
+            @Override public void onError(String message) { Log.w(TAG, "zim drain: catalog load failed: " + message); }
         });
     }
 
@@ -58,9 +62,10 @@ public final class ZimProvisioner {
             labels.add(label(p[0], v.optString("creator"), v.optString("flavour")));
             bytes.add(v.optLong("size", o.optLong("bytes", 0)));
         }
-        if (files.isEmpty()) { ZimWishlist.clear(app); return; }
+        if (files.isEmpty()) { Log.w(TAG, "zim drain: nothing resolved from wishlist"); ZimWishlist.clear(app); return; }
         long[] b = new long[bytes.size()];
         for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
+        Log.i(TAG, "zim drain: handing " + files.size() + " to ZimDownloadService");
         ZimDownloadService.start(app, files.toArray(new String[0]), labels.toArray(new String[0]), b);
         ZimWishlist.clear(app);   // handed off; the service owns retry from here
     }

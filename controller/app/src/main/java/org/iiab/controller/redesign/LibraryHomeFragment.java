@@ -244,7 +244,8 @@ public class LibraryHomeFragment extends Fragment {
         // ADFA-4853: system is installed and the server is up — drain any wizard content orders
         // (Books, ZIM) into the live download engines (one-shot; each wishlist is cleared once
         // handed off, and each service downloads one item at a time with per-item retry).
-        if (alive) {
+        if (alive && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext()))) {
+            android.util.Log.i("K2Go-Provision", "home: server alive with pending wishlist -> draining");
             if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
             if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
         }
