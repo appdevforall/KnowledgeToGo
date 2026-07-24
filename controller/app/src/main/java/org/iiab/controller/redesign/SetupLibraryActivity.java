@@ -102,14 +102,19 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4848: Choose -> Confirm. Stub (placeholder) until slice 3 builds Confirm + Preparing. */
-    public void openMapsConfirm(long totalMb) {
-        String t = totalMb >= 1024
-                ? String.format(java.util.Locale.US, "Confirm · %.1f GB", totalMb / 1024.0)
-                : "Confirm · " + totalMb + " MB";
+    /** ADFA-4848: Choose -> Confirm (breakdown + total + time warning). */
+    public void openMapsConfirm(String[] names, String[] opts, long[] mb) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(t))
+                .replace(R.id.k2go_setup_host, MapsConfirmFragment.newInstance(names, opts, mb))
                 .addToBackStack("maps_confirm")
+                .commit();
+    }
+
+    /** ADFA-4848: Confirm -> Preparing (boot animation + phase checklist; mock until the backend). */
+    public void openMapsPreparing() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new MapsPreparingFragment())
+                .addToBackStack("maps_preparing")
                 .commit();
     }
 

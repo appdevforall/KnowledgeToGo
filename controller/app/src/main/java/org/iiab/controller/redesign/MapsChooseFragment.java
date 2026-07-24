@@ -65,6 +65,7 @@ public class MapsChooseFragment extends Fragment {
     };
 
     private final long[] selectedMb = new long[GROUPS.length];
+    private final int[] selectedIdx = new int[GROUPS.length];
     private final LinearLayout[][] pillViews = new LinearLayout[GROUPS.length][];
     private final TextView[] groupSizeViews = new TextView[GROUPS.length];
     private long freeMb = 0;
@@ -100,7 +101,15 @@ public class MapsChooseFragment extends Fragment {
             long total = total();
             if (freeMb > 0 && total > freeMb) return; // guarded (button already disabled)
             if (getActivity() instanceof SetupLibraryActivity) {
-                ((SetupLibraryActivity) getActivity()).openMapsConfirm(total);
+                String[] names = new String[GROUPS.length];
+                String[] opts = new String[GROUPS.length];
+                long[] mb = new long[GROUPS.length];
+                for (int gi = 0; gi < GROUPS.length; gi++) {
+                    names[gi] = getString(GROUPS[gi].label);
+                    opts[gi] = getString(GROUPS[gi].opts[selectedIdx[gi]].label);
+                    mb[gi] = selectedMb[gi];
+                }
+                ((SetupLibraryActivity) getActivity()).openMapsConfirm(names, opts, mb);
             }
         });
 
@@ -112,6 +121,7 @@ public class MapsChooseFragment extends Fragment {
         for (int gi = 0; gi < GROUPS.length; gi++) {
             final Grp g = GROUPS[gi];
             selectedMb[gi] = g.opts[g.def].mb;
+            selectedIdx[gi] = g.def;
 
             // Header row: icon · name (bold) · hint (muted) · [spacer] · current size (teal, right).
             LinearLayout header = new LinearLayout(requireContext());
@@ -194,6 +204,7 @@ public class MapsChooseFragment extends Fragment {
 
     private void selectOpt(int gi, int oi) {
         selectedMb[gi] = GROUPS[gi].opts[oi].mb;
+        selectedIdx[gi] = oi;
         applyGroupSelection(gi, oi);
         refresh();
     }

@@ -374,4 +374,25 @@
     <string name="k2go_maps_fits" translatable="false">Fits: %1$s of %2$s free</string>
     <string name="k2go_maps_nospace" translatable="false">Not enough space \u2014 needs %1$s, %2$s free</string>
     <string name="k2go_maps_download" translatable="false">Download \u00b7 %1$s</string>
+
+    <!-- ADFA-4848 (slice 3): Maps Confirm + Preparing (WIP; translatable=false). -->
+    <string name="k2go_maps_confirm_title" translatable="false">Ready to build your maps?</string>
+    <string name="k2go_maps_confirm_sub" translatable="false">Here is what will be added.</string>
+    <string name="k2go_maps_total" translatable="false">Total</string>
+    <string name="k2go_maps_takes_time_title" translatable="false">This takes time</string>
+    <string name="k2go_maps_takes_time_body" translatable="false">A large download and build \u2014 minutes to a few hours. It keeps working in the background and resumes if interrupted.</string>
+    <string name="k2go_maps_use_wifi" translatable="false">Use Wi-Fi</string>
+    <string name="k2go_maps_keep_charged" translatable="false">Keep charged</string>
+    <string name="k2go_maps_start_building" translatable="false">Start building \u00b7 %1$s</string>
+    <string name="k2go_maps_keep_using" translatable="false">You can keep using the app meanwhile.</string>
+    <string name="k2go_maps_preparing_title" translatable="false">Preparing your maps\u2026</string>
+    <string name="k2go_maps_preparing_sub" translatable="false">This can take a while. You can leave it running.</string>
+    <string name="k2go_maps_leave_title" translatable="false">Leave it running</string>
+    <string name="k2go_maps_leave_body" translatable="false">It continues in the background. We\u2019ll notify you when your maps are ready.</string>
+    <string name="k2go_maps_run_bg" translatable="false">Run in background</string>
+    <string name="k2go_maps_phase_prepared" translatable="false">Prepared the list</string>
+    <string name="k2go_maps_phase_downloading" translatable="false">Downloading map data</string>
+    <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
+    <string name="k2go_maps_phase_finishing" translatable="false">Finishing up</string>
+    <string name="k2go_maps_phase_ready" translatable="false">Ready</string>
 </resources>
