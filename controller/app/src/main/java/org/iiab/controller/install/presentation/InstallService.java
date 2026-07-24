@@ -92,7 +92,7 @@ public final class InstallService extends Service {
 
     private Aria2Manager aria2Manager;
     private PRootEngine prootEngine;
-    private org.iiab.controller.content.LiveContentClient liveContentClient;   // ADFA-4832
+    private org.iiab.controller.content.RestContentClient restContentClient;   // ADFA-4840 (was socket.io, ADFA-4832)
 
     private volatile boolean cancelled = false;
     private volatile boolean finished = false;
@@ -401,16 +401,17 @@ public final class InstallService extends Service {
     }
 
     /**
-     * ADFA-4832: add a ZIM on the LIVE system through the in-server dashboard channel (socket.io),
-     * so the running server does the download + index in-process (no second proot). This service is
-     * foreground, so it owns the connection for the whole job even across UI/config changes.
+     * ADFA-4840: add a ZIM on the LIVE system through the in-server durable REST job engine, so the
+     * running server does the download + index in-process (no second proot). Short POST + ~1s polls
+     * instead of a long-lived socket; the job is durable server-side, so it survives UI/config churn
+     * and even a dashboard restart. This service is foreground, so polling continues in the background.
      * On success we finish here rather than running the maps proot — maps on a live system needs the
-     * same channel migration (follow-up), and spawning that proot would re-introduce the collision.
+     * same migration (follow-up), and spawning that proot would re-introduce the collision.
      */
     private void addZimViaLiveChannel(String zimFilename) {
         postProvisioning(getString(R.string.install_status_preparing_kiwix));
-        liveContentClient = new org.iiab.controller.content.LiveContentClient();
-        liveContentClient.addZim(zimFilename, new org.iiab.controller.content.LiveContentClient.Listener() {
+        restContentClient = new org.iiab.controller.content.RestContentClient();
+        restContentClient.addZim(zimFilename, new org.iiab.controller.content.RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
                 if (cancelled) return;
                 // ADFA-4830: install_status_zim_download no longer bakes the unit — the rate carries
@@ -765,7 +766,7 @@ public final class InstallService extends Service {
         finished = true;
         try {
             if (aria2Manager != null) aria2Manager.stopDownload();
-            if (liveContentClient != null) liveContentClient.cancel();   // ADFA-4832
+            if (restContentClient != null) restContentClient.cancel();   // ADFA-4840
         } catch (Exception ignored) {
         }
         if (moduleMode) {
