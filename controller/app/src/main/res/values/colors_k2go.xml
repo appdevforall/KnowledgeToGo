@@ -22,4 +22,18 @@
     <color name="k2go_muted">#5C6360</color>
     <color name="k2go_hairline">#D9D4C8</color>
     <color name="k2go_on_teal">#FBF8F3</color>
+
+    <!-- ADFA-4850: book-cover placeholder palette + selection/library bands. These are drawn with
+         white text on top, so they must stay dark enough for that contrast in BOTH themes — hence
+         fixed values with NO values-night override (same reasoning as k2go_boot_* above). Using
+         semantic tokens like k2go_ink here made covers flip to near-white in dark mode and hid the
+         label. -->
+    <color name="k2go_cover_1">#0E5C63</color>  <!-- teal -->
+    <color name="k2go_cover_2">#3A5A8C</color>  <!-- indigo -->
+    <color name="k2go_cover_3">#6E3B7A</color>  <!-- plum -->
+    <color name="k2go_cover_4">#B5432E</color>  <!-- clay -->
+    <color name="k2go_cover_5">#2E7D4F</color>  <!-- forest -->
+    <color name="k2go_cover_6">#4A5568</color>  <!-- slate -->
+    <color name="k2go_band_library">#2E9E5B</color> <!-- green band: already in your books -->
+    <color name="k2go_band_selected">#4A504E</color> <!-- gray band: selected to add -->
 </resources>

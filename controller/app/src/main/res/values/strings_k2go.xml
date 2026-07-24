@@ -457,6 +457,9 @@
     <string name="k2go_books_search_hint" translatable="false">Search books</string>
     <string name="k2go_books_chip_popular" translatable="false">Popular</string>
     <string name="k2go_books_chip_edu" translatable="false">Educational</string>
+    <string name="k2go_books_chip_local" translatable="false">My books</string>
+    <string name="k2go_books_local_none" translatable="false">No books in your library yet.</string>
+    <string name="k2go_books_local_hint" translatable="false">Tap a book to open it in the library.</string>
     <string name="k2go_books_loading" translatable="false">Loading…</string>
     <string name="k2go_books_unavailable" translatable="false">Couldn\'t reach the content service.</string>
     <string name="k2go_books_none" translatable="false">No books found.</string>

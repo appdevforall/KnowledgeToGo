@@ -5,14 +5,21 @@
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4850. Get More Books. Browse/search the offline Gutenberg catalog
  *               (/api/books/search), a 2-column cover grid with multi-select; category chips
- *               (Popular / Educational). Books already in the Calibre-Web library are marked and
- *               not selectable. "Add to library" hands the selection to BooksDownloadService
- *               (one at a time, retry, background). Never "Read" here — reading is the home
- *               "Read a Book" card. Covers are colored placeholders (title/author) for now.
+ *               (Popular / Educational / My books). "Add to library" hands the selection to
+ *               BooksDownloadService (one at a time, retry, background). The "My books" chip lists
+ *               the local Calibre-Web library (/api/books/library); tapping a local book opens its
+ *               Calibre-Web page (all details + Read / Download) — reading itself lives there and on
+ *               the home "Read a Book" card, never here.
+ *
+ *               State is shown with a band UNDER the title (not a whole-card tint, which was hard to
+ *               read): a green "In your books" band for library titles, a gray "Selected" band for
+ *               picks. Covers use a fixed palette (k2go_cover_*) with white text so contrast holds in
+ *               both light and dark themes — semantic tokens flipped to near-white in dark mode.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -29,7 +36,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import org.iiab.controller.PortalActivity;
 import org.iiab.controller.R;
+import org.iiab.controller.config.BoxEndpoints;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -46,13 +55,18 @@ public class BooksLandingFragment extends Fragment {
     private TextView status, downloadsLink;
     private Button addBtn;
 
-    private String filter = "";      // "" = Popular, "educational"
+    private String filter = "";      // "" = Popular, "educational", "local" = My books
     private String query = "";
     private final List<JSONObject> books = new ArrayList<>();
     private final LinkedHashMap<String, JSONObject> selected = new LinkedHashMap<>();
     private final Set<String> libraryTitles = new HashSet<>();
 
-    private final int[] palette = {R.color.k2go_teal, R.color.k2go_clay, R.color.k2go_leaf, R.color.k2go_amber, R.color.k2go_ink};
+    // Fixed cover palette: dark enough for white text, identical in light + dark themes.
+    private final int[] palette = {
+            R.color.k2go_cover_1, R.color.k2go_cover_2, R.color.k2go_cover_3,
+            R.color.k2go_cover_4, R.color.k2go_cover_5, R.color.k2go_cover_6};
+
+    private boolean isLocal() { return "local".equals(filter); }
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -75,6 +89,7 @@ public class BooksLandingFragment extends Fragment {
         search.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) {
+                if (isLocal()) return;           // search applies to the catalog, not the local list
                 query = s.toString().trim(); loadBooks();
             }
             @Override public void afterTextChanged(android.text.Editable s) {}
@@ -93,15 +108,29 @@ public class BooksLandingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadLibrary();          // a book may have finished adding; refresh badges
+        if (isLocal()) loadBooks();
         refreshFooter();
     }
 
     private void buildChips() {
         chips.removeAllViews();
-        chips.addView(chip(getString(R.string.k2go_books_chip_popular), filter.isEmpty(), () -> { filter = ""; query = ""; loadBooks(); }));
-        View gap = new View(requireContext());
-        chips.addView(gap, new LinearLayout.LayoutParams(px(8), 1));
-        chips.addView(chip(getString(R.string.k2go_books_chip_edu), "educational".equals(filter), () -> { filter = "educational"; query = ""; loadBooks(); }));
+        chips.addView(chip(getString(R.string.k2go_books_chip_popular), filter.isEmpty(), () -> { filter = ""; query = ""; onFilterChanged(); }));
+        chips.addView(gap());
+        chips.addView(chip(getString(R.string.k2go_books_chip_edu), "educational".equals(filter), () -> { filter = "educational"; query = ""; onFilterChanged(); }));
+        chips.addView(gap());
+        chips.addView(chip(getString(R.string.k2go_books_chip_local), isLocal(), () -> { filter = "local"; query = ""; onFilterChanged(); }));
+    }
+
+    private View gap() {
+        View g = new View(requireContext());
+        g.setLayoutParams(new LinearLayout.LayoutParams(px(8), 1));
+        return g;
+    }
+
+    private void onFilterChanged() {
+        buildChips();       // repaint active state
+        loadBooks();
+        refreshFooter();
     }
 
     private TextView chip(String text, boolean on, Runnable onClick) {
@@ -125,7 +154,7 @@ public class BooksLandingFragment extends Fragment {
                     JSONObject b = rows.optJSONObject(i);
                     if (b != null) libraryTitles.add(b.optString("title", "").toLowerCase(Locale.ROOT).trim());
                 }
-                render();
+                if (!isLocal()) render();
             }
             @Override public void onErr(String m) { /* keep whatever we had */ }
         });
@@ -135,7 +164,7 @@ public class BooksLandingFragment extends Fragment {
         status.setVisibility(View.VISIBLE);
         status.setText(getString(R.string.k2go_books_loading));
         grid.removeAllViews();
-        BooksClient.search(query, filter, 40, new BooksClient.ArrayCb() {
+        BooksClient.ArrayCb cb = new BooksClient.ArrayCb() {
             @Override public void onOk(JSONArray rows) {
                 if (!isAdded()) return;
                 books.clear();
@@ -147,7 +176,9 @@ public class BooksLandingFragment extends Fragment {
                 status.setVisibility(View.VISIBLE);
                 status.setText(getString(R.string.k2go_books_unavailable));
             }
-        });
+        };
+        if (isLocal()) BooksClient.library(cb);
+        else BooksClient.search(query, filter, 40, cb);
     }
 
     private boolean inLibrary(JSONObject b) {
@@ -156,8 +187,9 @@ public class BooksLandingFragment extends Fragment {
 
     private void render() {
         grid.removeAllViews();
-        status.setVisibility(books.isEmpty() ? View.VISIBLE : View.GONE);
-        if (books.isEmpty()) status.setText(getString(R.string.k2go_books_none));
+        boolean empty = books.isEmpty();
+        status.setVisibility(empty ? View.VISIBLE : View.GONE);
+        if (empty) status.setText(getString(isLocal() ? R.string.k2go_books_local_none : R.string.k2go_books_none));
 
         for (int i = 0; i < books.size(); i += 2) {
             LinearLayout row = new LinearLayout(requireContext());
@@ -177,11 +209,12 @@ public class BooksLandingFragment extends Fragment {
     }
 
     private View cell(JSONObject b) {
+        boolean local = isLocal();
         String title = b.optString("title", "");
         String author = b.optString("author", "");
         String gid = b.optString("gutenberg_id", "");
-        boolean lib = inLibrary(b);
-        boolean sel = selected.containsKey(gid);
+        boolean lib = !local && inLibrary(b);
+        boolean sel = !local && selected.containsKey(gid);
 
         LinearLayout box = new LinearLayout(requireContext());
         box.setOrientation(LinearLayout.VERTICAL);
@@ -190,16 +223,16 @@ public class BooksLandingFragment extends Fragment {
         boxLp.setMargins(px(6), px(6), px(6), px(6));
         box.setLayoutParams(boxLp);
 
-        // Colored cover with the title on it (placeholder; real covers load later from cover_url).
+        // Colored cover (placeholder; real covers load later from cover_url).
         LinearLayout cover = new LinearLayout(requireContext());
         cover.setOrientation(LinearLayout.VERTICAL);
         cover.setGravity(Gravity.CENTER);
-        cover.setPadding(px(10), px(12), px(10), px(12));
+        cover.setPadding(px(12), px(14), px(12), px(14));
         int color = ContextCompat.getColor(requireContext(), palette[Math.abs(title.hashCode()) % palette.length]);
         GradientDrawable bg = new GradientDrawable();
         bg.setColor(color);
         bg.setCornerRadius(px(10));
-        if (sel) { bg.setStroke(px(3), ContextCompat.getColor(requireContext(), R.color.k2go_teal)); }
+        if (sel) bg.setStroke(px(3), ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         cover.setBackground(bg);
         cover.setMinimumHeight(px(150));
 
@@ -207,40 +240,71 @@ public class BooksLandingFragment extends Fragment {
         tt.setText(title);
         tt.setMaxLines(4);
         tt.setGravity(Gravity.CENTER);
-        tt.setTextColor(0xFFFFFFFF);
         tt.setTypeface(tt.getTypeface(), Typeface.BOLD);
         tt.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleSmall);
         tt.setTextColor(0xFFFFFFFF);
         cover.addView(tt);
 
-        TextView badge = new TextView(requireContext());
-        badge.setGravity(Gravity.CENTER);
-        badge.setTextColor(0xCCFFFFFF);
-        badge.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        badge.setTextColor(0xCCFFFFFF);
-        badge.setText(lib ? getString(R.string.k2go_books_in_library)
-                : sel ? getString(R.string.k2go_books_selected) : author);
-        LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        blp.topMargin = px(8);
-        cover.addView(badge, blp);
+        // State band UNDER the title (green = in your books, gray = selected); else the author.
+        if (lib) {
+            cover.addView(band(R.color.k2go_band_library, getString(R.string.k2go_books_in_library)));
+        } else if (sel) {
+            cover.addView(band(R.color.k2go_band_selected, getString(R.string.k2go_books_selected)));
+        } else {
+            TextView sub = new TextView(requireContext());
+            sub.setGravity(Gravity.CENTER);
+            sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            sub.setTextColor(0xCCFFFFFF);
+            sub.setText(author);
+            LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            slp.topMargin = px(8);
+            cover.addView(sub, slp);
+        }
 
         box.addView(cover);
 
-        if (!lib) {
+        if (local) {
+            final int id = b.optInt("id", -1);
+            box.setOnClickListener(v -> openLocalBook(id));
+        } else if (!lib) {
             box.setOnClickListener(v -> {
                 if (selected.containsKey(gid)) selected.remove(gid); else selected.put(gid, b);
                 render();
             });
         }
-        box.setAlpha(lib ? 0.7f : 1f);
         return box;
     }
 
+    /** A pill band under the title. A faint white stroke keeps it legible on any cover color. */
+    private TextView band(int colorRes, String text) {
+        TextView t = new TextView(requireContext());
+        t.setText(text);
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(px(12), px(4), px(12), px(4));
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        t.setTextColor(0xFFFFFFFF);
+        GradientDrawable d = new GradientDrawable();
+        d.setColor(ContextCompat.getColor(requireContext(), colorRes));
+        d.setCornerRadius(px(8));
+        d.setStroke(px(1), 0x4DFFFFFF);
+        t.setBackground(d);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = px(8);
+        t.setLayoutParams(lp);
+        return t;
+    }
+
     private void refreshFooter() {
-        int n = selected.size();
-        addBtn.setEnabled(n > 0);
-        addBtn.setText(n > 0 ? getString(R.string.k2go_books_add_fmt, n) : getString(R.string.k2go_books_add_none));
+        if (isLocal()) {
+            addBtn.setVisibility(View.GONE);
+        } else {
+            addBtn.setVisibility(View.VISIBLE);
+            int n = selected.size();
+            addBtn.setEnabled(n > 0);
+            addBtn.setText(n > 0 ? getString(R.string.k2go_books_add_fmt, n) : getString(R.string.k2go_books_add_none));
+        }
         boolean active = BooksDownloadService.hasSession();
         downloadsLink.setVisibility(active ? View.VISIBLE : View.GONE);
         if (active) downloadsLink.setText(getString(R.string.k2go_books_view_downloads));
@@ -262,5 +326,13 @@ public class BooksLandingFragment extends Fragment {
 
     private void openDownloads() {
         if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).openBooksDownloads();
+    }
+
+    /** Open a local book's Calibre-Web page (details + Read / Download) in the in-app portal. */
+    private void openLocalBook(int id) {
+        if (id < 0) return;
+        Intent i = new Intent(requireContext(), PortalActivity.class);
+        i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/books/book/" + id);
+        startActivity(i);
     }
 }
