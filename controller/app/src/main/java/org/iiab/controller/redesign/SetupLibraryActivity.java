@@ -67,7 +67,15 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void setWikiView(String v) { wikiView = v; }
 
     public String getZimLang() {
-        if (zimLang == null) zimLang = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
+        if (zimLang == null) {
+            // Default to the wizard's content language (same pref the install path uses), falling
+            // back to the system language. "Manually selected" = it differs from the phone system.
+            String sys = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
+            String stored = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
+                    .getString("selected_lang_minimal", sys);
+            zimLang = org.iiab.controller.applang.data.ContentLanguage.normalize(stored);
+            zimLangManual = !zimLang.equals(sys);
+        }
         return zimLang;
     }
     /** True when the content language was picked manually (differs from the system default). */
