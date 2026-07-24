@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4848: Get More hub card (icon + title + one-line description). Fixed height so the
+     2-column grid stays balanced; title/desc autosize a step before truncating. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/k2go_card_height"
+    android:orientation="vertical"
+    android:gravity="top|start"
+    android:layout_margin="8dp"
+    android:padding="16dp"
+    android:background="@drawable/k2go_card_bg"
+    android:clickable="true"
+    android:focusable="true">
+
+    <ImageView
+        android:id="@+id/k2go_gm_card_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:tint="@color/k2go_teal"
+        android:contentDescription="@null" />
+
+    <TextView
+        android:id="@+id/k2go_gm_card_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:minLines="2"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:textColor="@color/k2go_ink"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="13sp"
+        app:autoSizeMaxTextSize="17sp"
+        app:autoSizeStepGranularity="1sp" />
+
+    <TextView
+        android:id="@+id/k2go_gm_card_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="@color/k2go_muted" />
+</LinearLayout>

@@ -36,7 +36,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
             androidx.fragment.app.Fragment first;
             if (contentOnly) {
                 selectedTier = readInstalledTier();   // size content against the installed tier
-                first = step2Fragment();
+                first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
             } else {
                 first = new Step1SystemFragment();
             }
@@ -79,6 +79,16 @@ public class SetupLibraryActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, step2Fragment())
                 .addToBackStack("step2")
+                .commit();
+    }
+
+    /** ADFA-4848: open a content type's screen from the Get More hub. Maps gets its own flow in a
+     *  later slice; the rest are navigable placeholders for now so the hub is reviewable. */
+    public void openContentType(String key, String title) {
+        androidx.fragment.app.Fragment f = PlaceholderFragment.newInstance(title);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, f)
+                .addToBackStack("getmore_" + key)
                 .commit();
     }
 
