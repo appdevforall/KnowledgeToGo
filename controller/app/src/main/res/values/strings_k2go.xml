@@ -336,11 +336,15 @@
     <string name="k2go_gm_hub_sub" translatable="false">Add content to your library. All offline.</string>
     <string name="k2go_gm_hub_prompt" translatable="false">What would you like to add?</string>
     <string name="k2go_gm_wikipedia_title" translatable="false">Wikipedia &amp; ZIM content</string>
-    <string name="k2go_gm_wikipedia_desc" translatable="false">Articles, video, media \u00b7 many collections</string>
+    <string name="k2go_gm_wikipedia_desc" translatable="false">Articles, video, media</string>
     <string name="k2go_gm_books_title" translatable="false">Books</string>
-    <string name="k2go_gm_books_desc" translatable="false">Gutenberg &amp; more \u00b7 thousands, tiny</string>
+    <string name="k2go_gm_books_desc" translatable="false">Gutenberg &amp; more</string>
     <string name="k2go_gm_maps_title" translatable="false">Maps</string>
-    <string name="k2go_gm_maps_desc" translatable="false">Vector, satellite, 3D \u00b7 choose quality</string>
+    <string name="k2go_gm_maps_desc" translatable="false">Vector, satellite, 3D</string>
     <string name="k2go_gm_courses_title" translatable="false">Courses</string>
-    <string name="k2go_gm_courses_desc" translatable="false">Kolibri lessons \u00b7 in-app soon</string>
+    <string name="k2go_gm_courses_desc" translatable="false">Kolibri lessons</string>
+    <string name="k2go_gm_wikipedia_note" translatable="false">Many collections</string>
+    <string name="k2go_gm_books_note" translatable="false">Thousands, tiny</string>
+    <string name="k2go_gm_maps_note" translatable="false">Choose quality</string>
+    <string name="k2go_gm_courses_note" translatable="false">In-app: TBD</string>
 </resources>

@@ -29,17 +29,18 @@ import org.iiab.controller.R;
 
 public class GetMoreHubFragment extends Fragment {
 
-    /** One content type on the hub. {@code key} is what SetupLibraryActivity routes on. */
+    /** One content type on the hub. {@code key} is what SetupLibraryActivity routes on;
+     *  {@code note} is the second (bold) line, {@code amber} tints it (e.g. "In-app: TBD"). */
     private static final class Item {
-        final String key; final int icon; final int title; final int desc;
-        Item(String k, int i, int t, int d) { key = k; icon = i; title = t; desc = d; }
+        final String key; final int icon; final int title; final int desc; final int note; final boolean amber;
+        Item(String k, int i, int t, int d, int n, boolean a) { key = k; icon = i; title = t; desc = d; note = n; amber = a; }
     }
 
     private static final Item[] ITEMS = {
-            new Item("wikipedia", R.drawable.ic_card_wikipedia, R.string.k2go_gm_wikipedia_title, R.string.k2go_gm_wikipedia_desc),
-            new Item("books",     R.drawable.ic_card_book,      R.string.k2go_gm_books_title,     R.string.k2go_gm_books_desc),
-            new Item("maps",      R.drawable.ic_card_maps,      R.string.k2go_gm_maps_title,      R.string.k2go_gm_maps_desc),
-            new Item("courses",   R.drawable.ic_card_courses,   R.string.k2go_gm_courses_title,   R.string.k2go_gm_courses_desc),
+            new Item("wikipedia", R.drawable.ic_card_wikipedia, R.string.k2go_gm_wikipedia_title, R.string.k2go_gm_wikipedia_desc, R.string.k2go_gm_wikipedia_note, false),
+            new Item("books",     R.drawable.ic_card_book,      R.string.k2go_gm_books_title,     R.string.k2go_gm_books_desc,     R.string.k2go_gm_books_note,     false),
+            new Item("maps",      R.drawable.ic_card_maps,      R.string.k2go_gm_maps_title,      R.string.k2go_gm_maps_desc,      R.string.k2go_gm_maps_note,      false),
+            new Item("courses",   R.drawable.ic_card_courses,   R.string.k2go_gm_courses_title,   R.string.k2go_gm_courses_desc,   R.string.k2go_gm_courses_note,   true),
     };
 
     @Nullable
@@ -53,7 +54,7 @@ public class GetMoreHubFragment extends Fragment {
 
     private void buildCards(LayoutInflater inflater, LinearLayout host) {
         host.removeAllViews();
-        final int cardH = getResources().getDimensionPixelSize(R.dimen.k2go_card_height);
+        final int cardH = getResources().getDimensionPixelSize(R.dimen.k2go_gm_card_height);
         for (int i = 0; i < ITEMS.length; i += 2) {
             LinearLayout row = new LinearLayout(requireContext());
             row.setOrientation(LinearLayout.HORIZONTAL);
@@ -65,6 +66,10 @@ public class GetMoreHubFragment extends Fragment {
                 ((ImageView) card.findViewById(R.id.k2go_gm_card_icon)).setImageResource(it.icon);
                 ((TextView) card.findViewById(R.id.k2go_gm_card_title)).setText(it.title);
                 ((TextView) card.findViewById(R.id.k2go_gm_card_desc)).setText(it.desc);
+                TextView note = card.findViewById(R.id.k2go_gm_card_note);
+                note.setText(it.note);
+                note.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
+                        it.amber ? R.color.k2go_amber_text : R.color.k2go_muted));
                 card.setOnClickListener(v -> {
                     if (getActivity() instanceof SetupLibraryActivity) {
                         ((SetupLibraryActivity) getActivity()).openContentType(it.key, getString(it.title));

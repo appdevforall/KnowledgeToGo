@@ -5,4 +5,5 @@
          translated title never grows one card and unbalances its row. Shared by the card
          layout and the programmatic "Get more" grid cell. -->
     <dimen name="k2go_card_height">176dp</dimen>
+    <dimen name="k2go_gm_card_height">200dp</dimen>
 </resources>
