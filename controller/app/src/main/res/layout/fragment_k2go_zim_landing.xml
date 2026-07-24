@@ -148,13 +148,13 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Fixed bottom bar: appears only when the cart has a selection. -->
+    <!-- Fixed bottom bar: always shown; the Review button is disabled at 0 MB until something
+         is selected, so its place in the layout is predictable. -->
     <LinearLayout
         android:id="@+id/k2go_zim_bottombar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"

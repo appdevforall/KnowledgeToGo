@@ -158,13 +158,10 @@ public class ZimLandingFragment extends Fragment {
         int pct = totalMb > 0 ? (int) Math.min(100, Math.round((used + sel) * 100.0 / totalMb)) : 0;
         storageBar.setProgress(pct);
         storageLabel.setText(getString(R.string.k2go_zim_storage_fmt, gb(used), gb(sel), gb(freeMb)));
-        if (bottomBar != null) {
-            if (sel > 0) {
-                bottomBar.setVisibility(View.VISIBLE);
-                review.setText(getString(R.string.k2go_zim_review_fmt, gb(sel)));
-            } else {
-                bottomBar.setVisibility(View.GONE);
-            }
+        if (review != null) {
+            // Always present; disabled at 0 MB until something is selected.
+            review.setEnabled(sel > 0);
+            review.setText(getString(R.string.k2go_zim_review_fmt, gb(sel)));
         }
     }
 
