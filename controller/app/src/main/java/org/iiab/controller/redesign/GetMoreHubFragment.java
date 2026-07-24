@@ -75,7 +75,12 @@ public class GetMoreHubFragment extends Fragment {
                         ((SetupLibraryActivity) getActivity()).openContentType(it.key, getString(it.title));
                     }
                 });
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, cardH);
+                // Reuse the inflated params so the card's layout_margin (separation) is kept —
+                // replacing them with fresh params would drop the margin and glue the cards together.
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) card.getLayoutParams();
+                if (lp == null) lp = new LinearLayout.LayoutParams(0, cardH);
+                lp.width = 0;
+                lp.height = cardH;
                 lp.weight = 1f;
                 row.addView(card, lp);
             }
