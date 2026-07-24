@@ -395,4 +395,17 @@
     <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
     <string name="k2go_maps_phase_finishing" translatable="false">Finishing up</string>
     <string name="k2go_maps_phase_ready" translatable="false">Ready</string>
+
+    <!-- ADFA-4849: Wikipedia & ZIM content (WIP; translate in a later l10n pass) -->
+    <string name="k2go_zim_title" translatable="false">Wikipedia &amp; ZIM content</string>
+    <string name="k2go_zim_lang_fmt" translatable="false">Language: %1$s</string>
+    <string name="k2go_zim_lang_sub" translatable="false">From system · filters the catalog</string>
+    <string name="k2go_zim_change" translatable="false">Change</string>
+    <string name="k2go_zim_storage" translatable="false">STORAGE</string>
+    <string name="k2go_zim_storage_fmt" translatable="false">Used %1$s · Your selection %2$s · Free %3$s</string>
+    <string name="k2go_zim_search_hint" translatable="false">Search titles…</string>
+    <string name="k2go_zim_browse" translatable="false">Browse categories</string>
+    <string name="k2go_zim_loading" translatable="false">Loading catalog…</string>
+    <string name="k2go_zim_unavailable" translatable="false">Couldn’t reach the content mirror. Check your connection and try again.</string>
+    <string name="k2go_zim_cat_unavailable" translatable="false">Not available</string>
 </resources>

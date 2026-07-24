@@ -27,6 +27,11 @@ public class SetupLibraryActivity extends AppCompatActivity {
     private boolean wikiIncluded = true;
     private String wikiView = "list"; // "list" | "grouped"
 
+    // ADFA-4849: Wikipedia & ZIM content — selected content language + cross-category selection
+    // cart ("project|lang|flavour" -> size bytes) that accumulates across category screens.
+    private String zimLang = null;
+    private final java.util.LinkedHashMap<String, Long> zimCart = new java.util.LinkedHashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,13 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public String getWikiView() { return wikiView; }
     public void setWikiView(String v) { wikiView = v; }
 
+    public String getZimLang() {
+        if (zimLang == null) zimLang = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
+        return zimLang;
+    }
+    public void setZimLang(String l) { zimLang = l; }
+    public java.util.LinkedHashMap<String, Long> getZimCart() { return zimCart; }
+
     private InstallationPlanner.Tier readInstalledTier() {
         String t = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
                 .getString("installed_tier", InstallationPlanner.Tier.STANDARD.name());
@@ -85,12 +97,24 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
      *  the rest are navigable placeholders for now so the hub is reviewable. */
     public void openContentType(String key, String title) {
-        androidx.fragment.app.Fragment f = "maps".equals(key)
-                ? new MapsLandingFragment()
-                : PlaceholderFragment.newInstance(title);
+        androidx.fragment.app.Fragment f;
+        if ("maps".equals(key)) f = new MapsLandingFragment();
+        else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
+        else f = PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, f)
                 .addToBackStack("getmore_" + key)
+                .commit();
+    }
+
+    /** ADFA-4849: ZIM landing -> a category's detail (variants). Temporary placeholder until the
+     *  category-detail screen lands in the next slice. */
+    public void openZimCategory(String project) {
+        KiwixCategories.Category c = KiwixCategories.byKey(project);
+        String title = c != null ? c.title : project;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(title))
+                .addToBackStack("zim_cat_" + project)
                 .commit();
     }
 
