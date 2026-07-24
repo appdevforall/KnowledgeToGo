@@ -24,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -155,16 +154,12 @@ public class MapsChooseFragment extends Fragment {
             header.addView(size);
             groupSizeViews[gi] = size;
 
-            // Pills row (horizontally scrollable): each pill = label + its own size.
-            HorizontalScrollView hsv = new HorizontalScrollView(requireContext());
-            hsv.setHorizontalScrollBarEnabled(false);
-            LinearLayout row = new LinearLayout(requireContext());
-            row.setOrientation(LinearLayout.HORIZONTAL);
-            hsv.addView(row);
+            // Pills: wrap to the next line when they don't fit (small screens) instead of clipping.
+            FlowLayout flow = new FlowLayout(requireContext(), px(8), px(8));
             LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             rlp.topMargin = px(8);
-            host.addView(hsv, rlp);
+            host.addView(flow, rlp);
 
             pillViews[gi] = new LinearLayout[g.opts.length];
             for (int oi = 0; oi < g.opts.length; oi++) {
@@ -190,11 +185,7 @@ public class MapsChooseFragment extends Fragment {
 
                 pill.setOnClickListener(v -> selectOpt(gg, oo));
                 pill.setMinimumWidth(px(64));
-                LinearLayout.LayoutParams plp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                plp.rightMargin = px(8);
-                pill.setLayoutParams(plp);
-                row.addView(pill);
+                flow.addView(pill);
                 pillViews[gi][oi] = pill;
             }
             applyGroupSelection(gi, g.def);
