@@ -1,11 +1,15 @@
 package org.iiab.controller.redesign;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.R;
+import org.iiab.controller.SystemStateEvaluator;
+import org.iiab.controller.install.presentation.InstallService;
 
 /**
  * "Set up your library" host (ADFA-4725): Step 1 System -> Step 2 Content (A/B). Holds the
@@ -160,6 +164,24 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void backToGetMoreHubZim() {
         getSupportFragmentManager().popBackStack("getmore_wikipedia",
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked
+     *  as wishlists and drains itself once the server is up (BooksProvisioner/ZimProvisioner). So
+     *  the install is companion=false (OS/tier only; maps ships in the image), replacing the old
+     *  Step 2 "Download library" trigger. */
+    public void startWizardInstall() {
+        Intent i = new Intent(this, InstallService.class);
+        i.setAction(InstallService.ACTION_START);
+        i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());
+        i.putExtra(InstallService.EXTRA_COMPANION, false);
+        i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(this));
+        i.putExtra(InstallService.EXTRA_REINSTALL, false);
+        i.putExtra(InstallService.EXTRA_SKIP_MAPS, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
+        startActivity(new Intent(this, LibraryActivity.class).putExtra(LibraryActivity.EXTRA_INSTALLING, true));
+        finish();
     }
 
     /** ADFA-4853: the wizard content step — the Get More hub in pre-install mode (tier-gated). */

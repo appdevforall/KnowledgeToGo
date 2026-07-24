@@ -97,7 +97,7 @@ public class GetMoreHubFragment extends Fragment {
             View cont = root.findViewById(R.id.k2go_gm_continue);
             cont.setVisibility(View.VISIBLE);
             cont.setOnClickListener(v -> {
-                if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).goToStep2();
+                if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).startWizardInstall();
             });
             root.findViewById(R.id.k2go_gm_wizard_header).setVisibility(View.VISIBLE);
             StepSpine.render(root.findViewById(R.id.k2go_gm_spine),
