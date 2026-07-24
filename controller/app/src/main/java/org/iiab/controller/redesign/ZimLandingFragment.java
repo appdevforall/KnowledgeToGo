@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -179,6 +180,34 @@ public class ZimLandingFragment extends Fragment {
         else status.setText("");
     }
 
+    /** Material icon per category (first pass; the team can refine the set later). */
+    private int iconFor(String key) {
+        switch (key) {
+            case "wikipedia": case "vikidia":
+                return R.drawable.ic_card_wikipedia;
+            case "wikibooks": case "libretexts": case "gutenberg": case "wikisource":
+                return R.drawable.ic_card_book;
+            case "devdocs": case "freecodecamp":
+                return R.drawable.ic_card_code;
+            case "mooc": case "wikiversity":
+                return R.drawable.ic_card_courses;
+            case "maps":
+                return R.drawable.ic_card_maps;
+            case "ted": case "videos":
+                return R.drawable.ic_cat_video;
+            case "stack_exchange":
+                return R.drawable.ic_cat_qa;
+            case "phet":
+                return R.drawable.ic_cat_science;
+            case "wiktionary":
+                return R.drawable.ic_cat_translate;
+            case "ifixit":
+                return R.drawable.ic_cat_build;
+            default: // other, zimit, psiram, wikinews, wikiquote, wikivoyage
+                return R.drawable.ic_cat_article;
+        }
+    }
+
     private boolean matches(KiwixCategories.Category c, String q) {
         if (q.isEmpty()) return true;
         return c.title.toLowerCase(Locale.ROOT).contains(q)
@@ -217,6 +246,13 @@ public class ZimLandingFragment extends Fragment {
         row.setBackgroundResource(R.drawable.k2go_card_bg);
         row.setPadding(px(14), px(12), px(14), px(12));
         row.setAlpha(enabled ? 1f : 0.5f);
+
+        ImageView icon = new ImageView(requireContext());
+        icon.setImageResource(iconFor(c.key));
+        icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(px(26), px(26));
+        ilp.rightMargin = px(12);
+        row.addView(icon, ilp);
 
         LinearLayout text = new LinearLayout(requireContext());
         text.setOrientation(LinearLayout.VERTICAL);
