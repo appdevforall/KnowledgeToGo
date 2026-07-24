@@ -81,7 +81,7 @@ public class Step1SystemFragment extends Fragment {
         root.findViewById(R.id.k2go_step1_next).setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
                 ((SetupLibraryActivity) getActivity()).setSelectedTier(selected);
-                ((SetupLibraryActivity) getActivity()).goToStep2();
+                ((SetupLibraryActivity) getActivity()).goToWizardContent();
             }
         });
 

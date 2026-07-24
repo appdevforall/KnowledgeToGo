@@ -157,6 +157,24 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
+    /** ADFA-4853: the wizard content step — the Get More hub in pre-install mode (tier-gated). */
+    public void goToWizardContent() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, GetMoreHubFragment.newInstance(true))
+                .addToBackStack("wizard_content")
+                .commit();
+    }
+
+    /** ADFA-4853: route a wizard (pre-install) content card. Books uses the offline catalog +
+     *  wishlist; Wikipedia/Maps are placeholders until their wizard sources land. */
+    public void openWizardContent(String key, String title) {
+        if ("books".equals(key)) { openBooksWizard(); return; }
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(title))
+                .addToBackStack("wizard_" + key)
+                .commit();
+    }
+
     /** ADFA-4853: open Books in wizard mode (pre-install, offline catalog -> wishlist). */
     public void openBooksWizard() {
         getSupportFragmentManager().beginTransaction()

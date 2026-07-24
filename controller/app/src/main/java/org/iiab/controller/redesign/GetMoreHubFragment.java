@@ -26,6 +26,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.R;
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.util.AppExecutors;
@@ -70,6 +72,17 @@ public class GetMoreHubFragment extends Fragment {
     private int probesPending = 0;
     private LayoutInflater inflater;
     private LinearLayout host;
+    private boolean wizard;
+
+    /** Wizard (pre-install) mode: availability comes from the chosen tier's plan, not a live probe,
+     *  and cards open the offline/wishlist screens instead of the live ones. */
+    public static GetMoreHubFragment newInstance(boolean wizard) {
+        GetMoreHubFragment f = new GetMoreHubFragment();
+        Bundle b = new Bundle();
+        b.putBoolean("wizard", wizard);
+        f.setArguments(b);
+        return f;
+    }
 
     @Nullable
     @Override
@@ -77,9 +90,23 @@ public class GetMoreHubFragment extends Fragment {
         this.inflater = inflater;
         View root = inflater.inflate(R.layout.fragment_k2go_getmore_hub, container, false);
         host = root.findViewById(R.id.k2go_gm_cards);
-        probeAll();
-        buildCards();   // shows the "checking…" state until probes resolve
+        wizard = getArguments() != null && getArguments().getBoolean("wizard", false);
+        if (wizard) computeWizardAvailability();   // synchronous, tier-based (no server yet)
+        else probeAll();
+        buildCards();   // live mode shows "checking…" until probes resolve
         return root;
+    }
+
+    /** Pre-install: a card is offered based on the chosen tier, not a live probe. Books ships only
+     *  in Full (Calibre-Web); Wikipedia and Maps ship in every tier; Courses (Kolibri) is TBD. */
+    private void computeWizardAvailability() {
+        available.clear();
+        available.add("wikipedia");
+        available.add("maps");
+        boolean full = (getActivity() instanceof SetupLibraryActivity)
+                && ((SetupLibraryActivity) getActivity()).getSelectedTier() == InstallationPlanner.Tier.FULL;
+        if (full) available.add("books");
+        // courses: hidden until determined
     }
 
     /** Probe every card's endpoint; reveal the ones that answer (module installed). */
@@ -138,9 +165,10 @@ public class GetMoreHubFragment extends Fragment {
                 note.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
                         it.amber ? R.color.k2go_amber_text : R.color.k2go_muted));
                 card.setOnClickListener(v -> {
-                    if (getActivity() instanceof SetupLibraryActivity) {
-                        ((SetupLibraryActivity) getActivity()).openContentType(it.key, getString(it.title));
-                    }
+                    if (!(getActivity() instanceof SetupLibraryActivity)) return;
+                    SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
+                    if (wizard) a.openWizardContent(it.key, getString(it.title));
+                    else a.openContentType(it.key, getString(it.title));
                 });
                 // Reuse the inflated params so the card's layout_margin (separation) is kept —
                 // replacing them with fresh params would drop the margin and glue the cards together.
@@ -156,6 +184,24 @@ public class GetMoreHubFragment extends Fragment {
                 row.addView(pad, new LinearLayout.LayoutParams(0, cardH, 1f));
             }
         }
+
+        if (wizard) addContinue();   // pre-install: proceed to the system install step
+    }
+
+    /** Wizard-only "Continue" that proceeds to the install step (the queue drains the wishlists). */
+    private void addContinue() {
+        Button cont = new Button(requireContext());
+        cont.setText(R.string.k2go_wizard_continue);
+        cont.setAllCaps(false);
+        cont.setTextColor(0xFFFFFFFF);
+        cont.setBackgroundColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dp(52));
+        lp.topMargin = dp(20);
+        cont.setOnClickListener(v -> {
+            if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).goToStep2();
+        });
+        host.addView(cont, lp);
     }
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }
