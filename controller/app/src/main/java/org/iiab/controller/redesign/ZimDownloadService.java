@@ -153,6 +153,7 @@ public final class ZimDownloadService extends Service {
         sIndex = i; sPercent = 0; sStatus[i] = ACTIVE;
         publish();
         updateNotification(sLabels[i]);
+        android.util.Log.i("K2Go-Provision", "zim job start [" + i + "] file='" + sFiles[i] + "'");
         client = new RestContentClient();
         client.addZim(sFiles[i], new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
@@ -162,8 +163,8 @@ public final class ZimDownloadService extends Service {
             }
             @Override public void onIndexing() { sStatus[i] = INDEXING; publish(); }
             @Override public void onLog(String line) { /* logcat only */ }
-            @Override public void onDone() { sStatus[i] = DONE; publish(); processNext(); }
-            @Override public void onError(String message) { sStatus[i] = FAILED; publish(); processNext(); }
+            @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
+            @Override public void onError(String message) { android.util.Log.w("K2Go-Provision", "zim job FAILED [" + i + "] file='" + sFiles[i] + "': " + message); sStatus[i] = FAILED; publish(); processNext(); }
         });
     }
 
