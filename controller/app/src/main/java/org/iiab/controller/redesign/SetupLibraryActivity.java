@@ -110,12 +110,20 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4848: Confirm -> Preparing (boot animation + phase checklist; mock until the backend). */
+    /** ADFA-4848: Confirm -> Preparing (contained placeholder animation + process status; mock
+     *  until the backend). */
     public void openMapsPreparing() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new MapsPreparingFragment())
                 .addToBackStack("maps_preparing")
                 .commit();
+    }
+
+    /** ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
+     *  stack and return to the Get More hub; the build keeps running. */
+    public void backToGetMoreHub() {
+        getSupportFragmentManager().popBackStack("getmore_maps",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     /** Hidden A/B-test switch: flip the Step-2 layout in place; picks carry over. */

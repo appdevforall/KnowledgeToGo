@@ -54,9 +54,6 @@ public class MapsConfirmFragment extends Fragment {
         back.setText("‹ " + getString(R.string.k2go_maps_scr_title));
         back.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
-        ((TextView) root.findViewById(R.id.k2go_confirm_tips)).setText(
-                getString(R.string.k2go_maps_use_wifi) + "     " + getString(R.string.k2go_maps_keep_charged));
-
         Bundle a = getArguments();
         String[] names = a != null ? a.getStringArray(ARG_NAMES) : new String[0];
         String[] opts = a != null ? a.getStringArray(ARG_OPTS) : new String[0];

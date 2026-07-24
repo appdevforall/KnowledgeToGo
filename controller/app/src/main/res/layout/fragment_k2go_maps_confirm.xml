@@ -75,13 +75,33 @@
                 android:textColor="@color/k2go_amber_text" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/k2go_confirm_tips"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/ic_wifi"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:text="@string/k2go_maps_use_wifi"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:drawableStart="@drawable/ic_battery"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:text="@string/k2go_maps_keep_charged"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/k2go_start_btn"
