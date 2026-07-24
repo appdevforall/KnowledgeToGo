@@ -445,4 +445,6 @@
     <string name="k2go_zim_notif_cancel" translatable="false">Cancel</string>
     <string name="k2go_zim_all_ready" translatable="false">All content ready</string>
     <string name="k2go_zim_item_failed_suffix" translatable="false">  · Failed</string>
+    <string name="k2go_zim_finish" translatable="false">Finish</string>
+    <string name="k2go_zim_retry" translatable="false">Retry</string>
 </resources>

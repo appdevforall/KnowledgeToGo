@@ -117,11 +117,22 @@
                 android:textColor="@color/k2go_teal" />
         </LinearLayout>
 
+        <!-- Enabled once the whole list is terminal (done/failed); clears the session + cart. -->
+        <Button
+            android:id="@+id/k2go_zprep_finish"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/k2go_zim_finish"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/k2go_teal" />
+
         <Button
             android:id="@+id/k2go_zprep_run_bg"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="10dp"
             android:text="@string/k2go_zim_run_bg"
             android:textColor="@color/k2go_teal"
             android:textAllCaps="false"

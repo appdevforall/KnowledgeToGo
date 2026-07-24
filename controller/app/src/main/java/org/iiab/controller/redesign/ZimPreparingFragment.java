@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -44,6 +45,7 @@ public class ZimPreparingFragment extends Fragment {
     private TextView label, pct, detail;
     private ProgressBar bar;
     private LinearLayout listv;
+    private Button finishBtn, runBgBtn;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -64,9 +66,18 @@ public class ZimPreparingFragment extends Fragment {
         bar = root.findViewById(R.id.k2go_zprep_bar);
         listv = root.findViewById(R.id.k2go_zprep_list);
 
-        root.findViewById(R.id.k2go_zprep_run_bg).setOnClickListener(v -> {
+        runBgBtn = root.findViewById(R.id.k2go_zprep_run_bg);
+        runBgBtn.setOnClickListener(v -> {
             ZimDownloadService.setListener(null);           // stop observing; server keeps going
             if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).backToGetMoreHubZim();
+        });
+        finishBtn = root.findViewById(R.id.k2go_zprep_finish);
+        finishBtn.setOnClickListener(v -> {
+            ZimDownloadService.finishSession();             // clear the session; free it for a new list
+            if (getActivity() instanceof SetupLibraryActivity) {
+                ((SetupLibraryActivity) getActivity()).getZimCart().clear();
+                ((SetupLibraryActivity) getActivity()).backToGetMoreHubZim();
+            }
         });
 
         // Start (or re-attach to) the download session, then observe its state.
@@ -156,6 +167,10 @@ public class ZimPreparingFragment extends Fragment {
                 gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), doneCount, n));
 
         drawChecklist(labels, status);
+
+        boolean complete = ZimDownloadService.isComplete();
+        finishBtn.setEnabled(complete);
+        runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
     }
 
     private void drawChecklist(String[] labels, int[] status) {
@@ -194,7 +209,24 @@ public class ZimPreparingFragment extends Fragment {
             t.setText(failed ? labels[i] + getString(R.string.k2go_zim_item_failed_suffix) : labels[i]);
             int tc = failed ? R.color.k2go_amber_text : (done || active ? R.color.k2go_ink : R.color.k2go_muted);
             t.setTextColor(ContextCompat.getColor(requireContext(), tc));
-            r.addView(t);
+            r.addView(t, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            if (failed) {
+                final int idx = i;
+                TextView retry = new TextView(requireContext());
+                retry.setText(R.string.k2go_zim_retry);
+                retry.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+                retry.setTypeface(retry.getTypeface(), android.graphics.Typeface.BOLD);
+                retry.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+                retry.setPadding(px(12), px(6), px(12), px(6));
+                retry.setBackgroundResource(R.drawable.k2go_getmore_bg);
+                retry.setClickable(true);
+                retry.setOnClickListener(v -> ZimDownloadService.retry(requireContext().getApplicationContext(), idx));
+                LinearLayout.LayoutParams retryLp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                retryLp.leftMargin = px(8);
+                r.addView(retry, retryLp);
+            }
 
             listv.addView(r);
         }
