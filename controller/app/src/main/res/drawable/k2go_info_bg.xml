@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4849: filled green notice (e.g. "Fits: X of Y free"). Left accent + pale green body,
-     mirroring k2go_warn_bg. A FILLED banner (not an outline) so it never reads as a button. -->
+<!-- ADFA-4849: filled teal notice (e.g. "Leave it running"). Left accent + pale teal body,
+     mirroring k2go_warn_bg. A FILLED info card (not an outline) so it never reads as a button. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#2E9E5B" />
+            <solid android:color="#0E5C63" />
             <corners android:radius="16dp" />
         </shape>
     </item>
     <item android:left="5dp">
         <shape android:shape="rectangle">
-            <solid android:color="#DCF0E3" />
+            <solid android:color="#DCE9EA" />
             <corners android:radius="16dp" />
         </shape>
     </item>

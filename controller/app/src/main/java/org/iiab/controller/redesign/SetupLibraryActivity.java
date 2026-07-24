@@ -27,6 +27,12 @@ public class SetupLibraryActivity extends AppCompatActivity {
     private boolean wikiIncluded = true;
     private String wikiView = "list"; // "list" | "grouped"
 
+    // ADFA-4849: Wikipedia & ZIM content — selected content language + cross-category selection
+    // cart ("project|lang|flavour" -> size bytes) that accumulates across category screens.
+    private String zimLang = null;
+    private boolean zimLangManual = false; // false = following the wizard/system default
+    private final java.util.LinkedHashMap<String, Long> zimCart = new java.util.LinkedHashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +66,31 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public String getWikiView() { return wikiView; }
     public void setWikiView(String v) { wikiView = v; }
 
+    public String getZimLang() {
+        if (zimLang == null) {
+            // Default to the wizard's content language (same pref the install path uses), falling
+            // back to the system language. "Manually selected" = it differs from the phone system.
+            String sys = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
+            String stored = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
+                    .getString("selected_lang_minimal", sys);
+            zimLang = org.iiab.controller.applang.data.ContentLanguage.normalize(stored);
+            zimLangManual = !zimLang.equals(sys);
+        }
+        return zimLang;
+    }
+    /** True when the content language was picked manually (differs from the system default). */
+    public boolean isZimLangManual() { getZimLang(); return zimLangManual; }
+    public void setZimLang(String l) {
+        zimLang = l;
+        zimLangManual = !l.equals(org.iiab.controller.applang.data.ContentLanguage.systemDefault());
+    }
+    /** Re-align the content language to the system/wizard default. */
+    public void followSystemLang() {
+        zimLang = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
+        zimLangManual = false;
+    }
+    public java.util.LinkedHashMap<String, Long> getZimCart() { return zimCart; }
+
     private InstallationPlanner.Tier readInstalledTier() {
         String t = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
                 .getString("installed_tier", InstallationPlanner.Tier.STANDARD.name());
@@ -85,13 +116,44 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
      *  the rest are navigable placeholders for now so the hub is reviewable. */
     public void openContentType(String key, String title) {
-        androidx.fragment.app.Fragment f = "maps".equals(key)
-                ? new MapsLandingFragment()
-                : PlaceholderFragment.newInstance(title);
+        androidx.fragment.app.Fragment f;
+        if ("maps".equals(key)) f = new MapsLandingFragment();
+        else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
+        else f = PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, f)
                 .addToBackStack("getmore_" + key)
                 .commit();
+    }
+
+    /** ADFA-4849: ZIM landing -> a category's detail (variants/titles, multi-select). */
+    public void openZimCategory(String project) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, ZimCategoryFragment.newInstance(project))
+                .addToBackStack("zim_cat_" + project)
+                .commit();
+    }
+
+    /** ADFA-4849: ZIM landing "Review" -> Confirm (cross-category breakdown of the cart). */
+    public void openZimConfirm() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ZimConfirmFragment())
+                .addToBackStack("zim_confirm")
+                .commit();
+    }
+
+    /** ADFA-4849: Confirm -> Preparing (contained animation + real progress; mock until backend). */
+    public void openZimPreparing() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ZimPreparingFragment())
+                .addToBackStack("zim_preparing")
+                .commit();
+    }
+
+    /** ADFA-4849: "Run in background" from ZIM Preparing -> back to the Get More hub. */
+    public void backToGetMoreHubZim() {
+        getSupportFragmentManager().popBackStack("getmore_wikipedia",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     /** ADFA-4848: Maps landing -> "Choose layers & quality" (Option B). */

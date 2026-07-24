@@ -395,4 +395,56 @@
     <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
     <string name="k2go_maps_phase_finishing" translatable="false">Finishing up</string>
     <string name="k2go_maps_phase_ready" translatable="false">Ready</string>
+
+    <!-- ADFA-4849: Wikipedia & ZIM content (WIP; translate in a later l10n pass) -->
+    <string name="k2go_zim_title" translatable="false">Wikipedia &amp; ZIM content</string>
+    <string name="k2go_zim_lang_fmt" translatable="false">Language: %1$s</string>
+    <string name="k2go_zim_lang_sub" translatable="false">From system · filters the catalog</string>
+    <string name="k2go_zim_lang_sub_manual" translatable="false">Manually selected · filters the catalog</string>
+    <string name="k2go_zim_change" translatable="false">Change</string>
+    <string name="k2go_zim_storage" translatable="false">STORAGE</string>
+    <string name="k2go_zim_storage_fmt" translatable="false">Used %1$s · Your selection %2$s · Free %3$s</string>
+    <string name="k2go_zim_search_hint" translatable="false">Search titles…</string>
+    <string name="k2go_zim_browse" translatable="false">Browse categories</string>
+    <string name="k2go_zim_loading" translatable="false">Loading catalog…</string>
+    <string name="k2go_zim_unavailable" translatable="false">Couldn’t reach the content mirror. Check your connection and try again.</string>
+    <string name="k2go_zim_cat_unavailable" translatable="false">Not available</string>
+    <string name="k2go_zim_see_all_fmt" translatable="false">See all %1$d categories · %2$d items</string>
+    <string name="k2go_zim_no_match" translatable="false">No categories match your search.</string>
+    <string name="k2go_zc_sub_fmt" translatable="false">%1$s · %2$d items</string>
+    <string name="k2go_zc_sort_size" translatable="false">By size</string>
+    <string name="k2go_zc_sort_name" translatable="false">A–Z</string>
+    <string name="k2go_zc_search_hint" translatable="false">Search in %1$s</string>
+    <string name="k2go_zc_add_fmt" translatable="false">Add to selection · %1$s</string>
+    <string name="k2go_zc_nospace" translatable="false">Not enough space — needs %1$s, %2$s free</string>
+    <string name="k2go_zc_lang_fmt" translatable="false">%1$s · %2$d</string>
+    <string name="k2go_zc_sort_name_desc" translatable="false">Z–A</string>
+    <string name="k2go_zc_sort_group" translatable="false">Grouped</string>
+    <string name="k2go_zc_group_topics" translatable="false">Topics</string>
+    <string name="k2go_zim_lang_mul" translatable="false">Multiple languages</string>
+    <string name="k2go_zc_none" translatable="false">No items in this language. Try another — e.g. Multiple languages.</string>
+    <string name="k2go_zim_review_fmt" translatable="false">Review selection · %1$s</string>
+    <string name="k2go_zim_confirm_title" translatable="false">Ready to download?</string>
+    <string name="k2go_zim_confirm_sub" translatable="false">Your selection across categories.</string>
+    <string name="k2go_zim_total" translatable="false">Total</string>
+    <string name="k2go_zim_items_fmt" translatable="false">%1$d items</string>
+    <string name="k2go_zim_fits_fmt" translatable="false">Fits: %1$s of %2$s free</string>
+    <string name="k2go_zim_nofit_fmt" translatable="false">Doesn’t fit: needs %1$s, %2$s free</string>
+    <string name="k2go_zim_takes_title" translatable="false">This takes time</string>
+    <string name="k2go_zim_takes_body" translatable="false">ZIM files are large — this can run for hours on a slow link. It keeps going in the background and resumes if interrupted.</string>
+    <string name="k2go_zim_start_fmt" translatable="false">Start download · %1$s</string>
+    <string name="k2go_zim_preparing_title" translatable="false">Preparing content…</string>
+    <string name="k2go_zim_preparing_sub" translatable="false">Large downloads. You can leave it running.</string>
+    <string name="k2go_zim_downloading_fmt" translatable="false">Downloading %1$s</string>
+    <string name="k2go_zim_prep_detail_fmt" translatable="false">%1$s of %2$s%3$s · %4$d of %5$d items · resumes if it drops</string>
+    <string name="k2go_zim_leave_title" translatable="false">Leave it running</string>
+    <string name="k2go_zim_leave_body" translatable="false">We’ll notify you when your content is ready.</string>
+    <string name="k2go_zim_run_bg" translatable="false">Run in background</string>
+    <string name="k2go_zim_dl_channel_name" translatable="false">Content downloads</string>
+    <string name="k2go_zim_dl_notif_title" translatable="false">Downloading content</string>
+    <string name="k2go_zim_notif_cancel" translatable="false">Cancel</string>
+    <string name="k2go_zim_all_ready" translatable="false">All content ready</string>
+    <string name="k2go_zim_item_failed_suffix" translatable="false">  · Failed</string>
+    <string name="k2go_zim_finish" translatable="false">Finish</string>
+    <string name="k2go_zim_retry" translatable="false">Retry</string>
 </resources>
