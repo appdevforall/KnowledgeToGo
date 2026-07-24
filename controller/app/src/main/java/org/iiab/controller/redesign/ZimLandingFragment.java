@@ -46,7 +46,7 @@ public class ZimLandingFragment extends Fragment {
     private JSONObject catalog;
     private long freeMb = 0, totalMb = 0;
     private LinearLayout cats;
-    private TextView status, langLabel, storageLabel;
+    private TextView status, langLabel, langSub, storageLabel;
     private ProgressBar storageBar;
     private Button review;
     private String query = "";
@@ -73,6 +73,7 @@ public class ZimLandingFragment extends Fragment {
         cats = root.findViewById(R.id.k2go_zim_cats);
         status = root.findViewById(R.id.k2go_zim_status);
         langLabel = root.findViewById(R.id.k2go_zim_lang);
+        langSub = root.findViewById(R.id.k2go_zim_lang_sub);
         storageLabel = root.findViewById(R.id.k2go_zim_storage_label);
         storageBar = root.findViewById(R.id.k2go_zim_storage_bar);
         review = root.findViewById(R.id.k2go_zim_review);
@@ -127,6 +128,9 @@ public class ZimLandingFragment extends Fragment {
 
     private void updateLangLabel() {
         langLabel.setText(getString(R.string.k2go_zim_lang_fmt, langDisplay(lang())));
+        boolean manual = (getActivity() instanceof SetupLibraryActivity)
+                && ((SetupLibraryActivity) getActivity()).isZimLangManual();
+        langSub.setText(manual ? R.string.k2go_zim_lang_sub_manual : R.string.k2go_zim_lang_sub);
     }
 
     private String langDisplay(String code) {
@@ -313,6 +317,12 @@ public class ZimLandingFragment extends Fragment {
                 new ArrayList<>(set), this::langDisplay, lang(), code -> {
                     if (getActivity() instanceof SetupLibraryActivity) {
                         ((SetupLibraryActivity) getActivity()).setZimLang(code);
+                    }
+                    updateLangLabel();
+                    buildRows();
+                }, getString(R.string.k2go_lang_follow_system), () -> {
+                    if (getActivity() instanceof SetupLibraryActivity) {
+                        ((SetupLibraryActivity) getActivity()).followSystemLang();
                     }
                     updateLangLabel();
                     buildRows();

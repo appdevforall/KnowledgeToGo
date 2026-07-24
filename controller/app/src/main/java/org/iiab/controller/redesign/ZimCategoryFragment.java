@@ -72,7 +72,7 @@ public class ZimCategoryFragment extends Fragment {
     private long freeMb = 0, totalMb = 0;
 
     private LinearLayout list;
-    private TextView freeLabel, sortSize, sortName, sortGroup, langChip, langCurrent;
+    private TextView freeLabel, sortSize, sortName, sortGroup, langChip, langCurrent, langSub;
     private ProgressBar bar;
     private Button add;
 
@@ -103,6 +103,7 @@ public class ZimCategoryFragment extends Fragment {
         sortGroup = root.findViewById(R.id.k2go_zc_sort_group);
         langChip = root.findViewById(R.id.k2go_zc_lang);   // informative label only (not a button)
         langCurrent = root.findViewById(R.id.k2go_zc_lang_current);
+        langSub = root.findViewById(R.id.k2go_zc_lang_sub);
         root.findViewById(R.id.k2go_zc_change).setOnClickListener(v -> pickLanguage());
 
         android.widget.EditText search = root.findViewById(R.id.k2go_zc_search);
@@ -182,6 +183,9 @@ public class ZimCategoryFragment extends Fragment {
     private void render() {
         langChip.setText(getString(R.string.k2go_zc_lang_fmt, langDisplay(lang), entries.size()));
         langCurrent.setText(getString(R.string.k2go_zim_lang_fmt, langDisplay(lang)));
+        boolean manual = (getActivity() instanceof SetupLibraryActivity)
+                && ((SetupLibraryActivity) getActivity()).isZimLangManual();
+        langSub.setText(manual ? R.string.k2go_zim_lang_sub_manual : R.string.k2go_zim_lang_sub);
         sortSize.setText(getString(R.string.k2go_zc_sort_size) + (sizeDir < 0 ? " ▼" : " ▲"));
         sortName.setText((nameDir > 0 ? getString(R.string.k2go_zc_sort_name) : getString(R.string.k2go_zc_sort_name_desc))
                 + (nameDir > 0 ? " ▼" : " ▲"));
@@ -366,6 +370,12 @@ public class ZimCategoryFragment extends Fragment {
                     lang = code;
                     if (getActivity() instanceof SetupLibraryActivity)
                         ((SetupLibraryActivity) getActivity()).setZimLang(lang);
+                    rebuild();
+                }, getString(R.string.k2go_lang_follow_system), () -> {
+                    if (getActivity() instanceof SetupLibraryActivity)
+                        ((SetupLibraryActivity) getActivity()).followSystemLang();
+                    lang = (getActivity() instanceof SetupLibraryActivity)
+                            ? ((SetupLibraryActivity) getActivity()).getZimLang() : lang;
                     rebuild();
                 });
     }

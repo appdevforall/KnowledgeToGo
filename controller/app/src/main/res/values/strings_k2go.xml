@@ -400,6 +400,7 @@
     <string name="k2go_zim_title" translatable="false">Wikipedia &amp; ZIM content</string>
     <string name="k2go_zim_lang_fmt" translatable="false">Language: %1$s</string>
     <string name="k2go_zim_lang_sub" translatable="false">From system · filters the catalog</string>
+    <string name="k2go_zim_lang_sub_manual" translatable="false">Manually selected · filters the catalog</string>
     <string name="k2go_zim_change" translatable="false">Change</string>
     <string name="k2go_zim_storage" translatable="false">STORAGE</string>
     <string name="k2go_zim_storage_fmt" translatable="false">Used %1$s · Your selection %2$s · Free %3$s</string>

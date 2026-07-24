@@ -79,6 +79,7 @@
                     android:textColor="@color/k2go_ink" />
 
                 <TextView
+                    android:id="@+id/k2go_zc_lang_sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/k2go_zim_lang_sub"

@@ -30,6 +30,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
     // ADFA-4849: Wikipedia & ZIM content — selected content language + cross-category selection
     // cart ("project|lang|flavour" -> size bytes) that accumulates across category screens.
     private String zimLang = null;
+    private boolean zimLangManual = false; // false = following the wizard/system default
     private final java.util.LinkedHashMap<String, Long> zimCart = new java.util.LinkedHashMap<>();
 
     @Override
@@ -69,7 +70,17 @@ public class SetupLibraryActivity extends AppCompatActivity {
         if (zimLang == null) zimLang = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
         return zimLang;
     }
-    public void setZimLang(String l) { zimLang = l; }
+    /** True when the content language was picked manually (differs from the system default). */
+    public boolean isZimLangManual() { getZimLang(); return zimLangManual; }
+    public void setZimLang(String l) {
+        zimLang = l;
+        zimLangManual = !l.equals(org.iiab.controller.applang.data.ContentLanguage.systemDefault());
+    }
+    /** Re-align the content language to the system/wizard default. */
+    public void followSystemLang() {
+        zimLang = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
+        zimLangManual = false;
+    }
     public java.util.LinkedHashMap<String, Long> getZimCart() { return zimCart; }
 
     private InstallationPlanner.Tier readInstalledTier() {

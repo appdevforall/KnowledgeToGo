@@ -38,6 +38,12 @@ public final class ZimLanguageDialog {
 
     public static void show(Context ctx, String title, List<String> codes, Display disp,
                             String current, OnPick onPick) {
+        show(ctx, title, codes, disp, current, onPick, null, null);
+    }
+
+    /** With an optional pinned row on top (e.g. "Follow system language"). */
+    public static void show(Context ctx, String title, List<String> codes, Display disp,
+                            String current, OnPick onPick, String pinnedLabel, Runnable onPinned) {
         final List<String> sorted = new ArrayList<>(codes);
         Collections.sort(sorted, (a, b) -> disp.name(a).compareToIgnoreCase(disp.name(b)));
 
@@ -72,6 +78,9 @@ public final class ZimLanguageDialog {
         render[0] = () -> {
             String term = search.getText().toString().trim().toLowerCase(Locale.ROOT);
             listv.removeAllViews();
+            if (onPinned != null) {
+                listv.addView(row(ctx, pinnedLabel, false, () -> { onPinned.run(); dialog.dismiss(); }));
+            }
             for (String code : sorted) {
                 String label = disp.name(code) + "  (" + code + ")";
                 if (!term.isEmpty() && !label.toLowerCase(Locale.ROOT).contains(term)) continue;
