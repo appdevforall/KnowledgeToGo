@@ -241,10 +241,12 @@ public class LibraryHomeFragment extends Fragment {
             return;
         }
 
-        // ADFA-4853: system is installed and the server is up — drain any wizard Books order into
-        // the live download engine (one-shot; the wishlist is cleared once handed off).
-        if (alive && BooksProvisioner.hasPending(requireContext())) {
-            BooksProvisioner.drain(requireContext());
+        // ADFA-4853: system is installed and the server is up — drain any wizard content orders
+        // (Books, ZIM) into the live download engines (one-shot; each wishlist is cleared once
+        // handed off, and each service downloads one item at a time with per-item retry).
+        if (alive) {
+            if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
+            if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
         }
 
         for (final Card c : cards) {
