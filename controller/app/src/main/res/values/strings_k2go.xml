@@ -447,4 +447,28 @@
     <string name="k2go_zim_item_failed_suffix" translatable="false">  · Failed</string>
     <string name="k2go_zim_finish" translatable="false">Finish</string>
     <string name="k2go_zim_retry" translatable="false">Retry</string>
+
+    <!-- ADFA-4850: Get More Books / Project Gutenberg -->
+    <string name="k2go_books_title" translatable="false">Books</string>
+    <string name="k2go_books_search_hint" translatable="false">Search books</string>
+    <string name="k2go_books_chip_popular" translatable="false">Popular</string>
+    <string name="k2go_books_chip_edu" translatable="false">Educational</string>
+    <string name="k2go_books_loading" translatable="false">Loading…</string>
+    <string name="k2go_books_unavailable" translatable="false">Couldn\'t reach the content service.</string>
+    <string name="k2go_books_none" translatable="false">No books found.</string>
+    <string name="k2go_books_in_library" translatable="false">In your books</string>
+    <string name="k2go_books_selected" translatable="false">Selected</string>
+    <string name="k2go_books_add_fmt" translatable="false">Add %1$d to library</string>
+    <string name="k2go_books_add_none" translatable="false">Select books to add</string>
+    <string name="k2go_books_view_downloads" translatable="false">View downloads</string>
+    <string name="k2go_books_dl_title" translatable="false">Downloads</string>
+    <string name="k2go_books_dl_sub" translatable="false">Added one at a time — kind to Project Gutenberg.</string>
+    <string name="k2go_books_dl_detail_fmt" translatable="false">%1$d of %2$d books</string>
+    <string name="k2go_books_state_queued" translatable="false">Queued</string>
+    <string name="k2go_books_state_downloading" translatable="false">Downloading…</string>
+    <string name="k2go_books_state_adding" translatable="false">Adding to your library…</string>
+    <string name="k2go_books_state_done" translatable="false">In your books</string>
+    <string name="k2go_books_state_failed" translatable="false">Couldn\'t add — tap Retry</string>
+    <string name="k2go_books_dl_channel_name" translatable="false">Book downloads</string>
+    <string name="k2go_books_dl_notif_title" translatable="false">Adding books to your library</string>
 </resources>

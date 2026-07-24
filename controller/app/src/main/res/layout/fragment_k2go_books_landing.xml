@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4850: Get More Books. Fixed header (search + category chips); scrolling cover grid;
+     fixed bottom "Add to library" bar. Grid + chips built programmatically. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/k2go_books_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_teal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/k2go_books_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <EditText
+            android:id="@+id/k2go_books_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:padding="12dp"
+            android:background="@drawable/k2go_card_bg"
+            android:hint="@string/k2go_books_search_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_ink"
+            android:textColorHint="@color/k2go_muted" />
+
+        <LinearLayout
+            android:id="@+id/k2go_books_chips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/k2go_books_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/k2go_books_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="@color/k2go_muted"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/k2go_books_downloads_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_teal"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/k2go_books_add"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/k2go_teal"
+            android:enabled="false" />
+    </LinearLayout>
+</LinearLayout>

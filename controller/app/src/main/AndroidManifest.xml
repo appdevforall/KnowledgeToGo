@@ -127,6 +127,11 @@
             android:foregroundServiceType="specialUse" />
 
         <service
+            android:name=".redesign.BooksDownloadService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
+        <service
             android:name=".TerminalSessionService"
             android:exported="false"
             android:foregroundServiceType="specialUse" />

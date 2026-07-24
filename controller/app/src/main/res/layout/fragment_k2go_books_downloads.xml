@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4850: Books download manager (one at a time). Contained spinner + per-book checklist
+     (done / downloading / adding / failed+retry) + Finish / Run in background. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/k2go_books_dl_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <TextView
+            android:id="@+id/k2go_bdl_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_muted" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:background="@drawable/k2go_info_bg">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/k2go_books_dl_sub"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_teal" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/k2go_bdl_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp" />
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
+
+        <Button
+            android:id="@+id/k2go_bdl_finish"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/k2go_zim_finish"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/k2go_teal" />
+
+        <Button
+            android:id="@+id/k2go_bdl_run_bg"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/k2go_zim_run_bg"
+            android:textColor="@color/k2go_teal"
+            android:textAllCaps="false"
+            android:background="@drawable/k2go_getmore_bg" />
+    </LinearLayout>
+</LinearLayout>
