@@ -107,13 +107,10 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4849: ZIM landing -> a category's detail (variants). Temporary placeholder until the
-     *  category-detail screen lands in the next slice. */
+    /** ADFA-4849: ZIM landing -> a category's detail (variants/titles, multi-select). */
     public void openZimCategory(String project) {
-        KiwixCategories.Category c = KiwixCategories.byKey(project);
-        String title = c != null ? c.title : project;
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(title))
+                .replace(R.id.k2go_setup_host, ZimCategoryFragment.newInstance(project))
                 .addToBackStack("zim_cat_" + project)
                 .commit();
     }

@@ -410,4 +410,10 @@
     <string name="k2go_zim_cat_unavailable" translatable="false">Not available</string>
     <string name="k2go_zim_see_all_fmt" translatable="false">See all %1$d categories · %2$d items</string>
     <string name="k2go_zim_no_match" translatable="false">No categories match your search.</string>
+    <string name="k2go_zc_sub_fmt" translatable="false">%1$s · %2$d items</string>
+    <string name="k2go_zc_sort_size" translatable="false">By size</string>
+    <string name="k2go_zc_sort_name" translatable="false">A–Z</string>
+    <string name="k2go_zc_search_hint" translatable="false">Search in %1$s</string>
+    <string name="k2go_zc_add_fmt" translatable="false">Add to selection · %1$s</string>
+    <string name="k2go_zc_nospace" translatable="false">Not enough space — needs %1$s, %2$s free</string>
 </resources>
