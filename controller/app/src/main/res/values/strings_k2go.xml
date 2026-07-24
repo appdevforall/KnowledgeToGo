@@ -408,4 +408,6 @@
     <string name="k2go_zim_loading" translatable="false">Loading catalog…</string>
     <string name="k2go_zim_unavailable" translatable="false">Couldn’t reach the content mirror. Check your connection and try again.</string>
     <string name="k2go_zim_cat_unavailable" translatable="false">Not available</string>
+    <string name="k2go_zim_see_all_fmt" translatable="false">See all %1$d categories · %2$d items</string>
+    <string name="k2go_zim_no_match" translatable="false">No categories match your search.</string>
 </resources>

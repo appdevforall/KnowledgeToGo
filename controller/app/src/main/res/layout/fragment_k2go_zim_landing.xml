@@ -100,16 +100,21 @@
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
-        <!-- Search (visual placeholder this slice; title-search wires later) -->
-        <TextView
+        <!-- Category search: filters the browse list by name (so a low-count category is findable). -->
+        <EditText
             android:id="@+id/k2go_zim_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:padding="12dp"
             android:background="@drawable/k2go_card_bg"
+            android:hint="@string/k2go_zim_search_hint"
+            android:inputType="text"
+            android:imeOptions="actionSearch"
+            android:maxLines="1"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_muted" />
+            android:textColor="@color/k2go_ink"
+            android:textColorHint="@color/k2go_muted" />
 
         <TextView
             android:layout_width="match_parent"

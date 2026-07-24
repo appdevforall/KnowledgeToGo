@@ -40,11 +40,15 @@ import java.util.Set;
 
 public class ZimLandingFragment extends Fragment {
 
+    private static final int COLLAPSED = 15;
+
     private JSONObject catalog;
     private long freeMb = 0, totalMb = 0;
     private LinearLayout cats;
     private TextView status, langLabel, storageLabel;
     private ProgressBar storageBar;
+    private String query = "";
+    private boolean expanded = false;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -70,7 +74,15 @@ public class ZimLandingFragment extends Fragment {
         storageLabel = root.findViewById(R.id.k2go_zim_storage_label);
         storageBar = root.findViewById(R.id.k2go_zim_storage_bar);
 
-        ((TextView) root.findViewById(R.id.k2go_zim_search)).setText(R.string.k2go_zim_search_hint);
+        android.widget.EditText search = root.findViewById(R.id.k2go_zim_search);
+        search.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {
+                query = s.toString().trim().toLowerCase(Locale.ROOT);
+                if (catalog != null) buildRows();
+            }
+            @Override public void afterTextChanged(android.text.Editable s) {}
+        });
         root.findViewById(R.id.k2go_zim_change).setOnClickListener(v -> pickLanguage());
 
         try {
@@ -149,10 +161,47 @@ public class ZimLandingFragment extends Fragment {
         Collections.sort(ordered, (a, b) ->
                 Integer.compare(KiwixCatalog.totalFiles(catalog, b.key), KiwixCatalog.totalFiles(catalog, a.key)));
 
-        for (KiwixCategories.Category c : ordered) {
-            int total = KiwixCatalog.totalFiles(catalog, c.key);
-            cats.addView(categoryRow(c, total, KiwixCatalog.count(catalog, c.key, lang)));
+        List<KiwixCategories.Category> shown = new ArrayList<>();
+        for (KiwixCategories.Category c : ordered) if (matches(c, query)) shown.add(c);
+
+        // Collapse to the first 15 only when not searching; searching shows every match so a
+        // low-count category (e.g. TED) is always findable even though it sorts far down.
+        boolean limiting = query.isEmpty() && !expanded && shown.size() > COLLAPSED;
+        int limit = limiting ? COLLAPSED : shown.size();
+
+        for (int i = 0; i < limit; i++) {
+            KiwixCategories.Category c = shown.get(i);
+            cats.addView(categoryRow(c, KiwixCatalog.totalFiles(catalog, c.key),
+                    KiwixCatalog.count(catalog, c.key, lang)));
         }
+        if (limiting) cats.addView(seeAllRow(ordered.size(), totalItems(ordered)));
+        if (shown.isEmpty()) status.setText(getString(R.string.k2go_zim_no_match));
+        else status.setText("");
+    }
+
+    private boolean matches(KiwixCategories.Category c, String q) {
+        if (q.isEmpty()) return true;
+        return c.title.toLowerCase(Locale.ROOT).contains(q)
+                || c.subtitle.toLowerCase(Locale.ROOT).contains(q)
+                || c.key.toLowerCase(Locale.ROOT).contains(q);
+    }
+
+    private int totalItems(List<KiwixCategories.Category> all) {
+        int n = 0;
+        for (KiwixCategories.Category c : all) n += KiwixCatalog.totalFiles(catalog, c.key);
+        return n;
+    }
+
+    private View seeAllRow(int catCount, int itemCount) {
+        TextView t = new TextView(requireContext());
+        t.setText(getString(R.string.k2go_zim_see_all_fmt, catCount, itemCount));
+        t.setGravity(Gravity.CENTER);
+        t.setPadding(px(12), px(12), px(12), px(12));
+        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        t.setTypeface(t.getTypeface(), android.graphics.Typeface.BOLD);
+        t.setClickable(true);
+        t.setOnClickListener(v -> { expanded = true; buildRows(); });
+        return t;
     }
 
     private View categoryRow(KiwixCategories.Category c, int total, int inLang) {
