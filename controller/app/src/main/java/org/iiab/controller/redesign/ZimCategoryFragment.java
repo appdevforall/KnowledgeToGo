@@ -180,9 +180,10 @@ public class ZimCategoryFragment extends Fragment {
     }
 
     private void render() {
-        langChip.setText(getString(R.string.k2go_zc_lang_fmt, langDisplay(lang), entries.size()));
+        langChip.setText(getString(R.string.k2go_zc_lang_fmt, langDisplay(lang), entries.size()) + "  ▾");
         sortSize.setText(getString(R.string.k2go_zc_sort_size) + (sizeDir < 0 ? " ▼" : " ▲"));
-        sortName.setText(nameDir > 0 ? getString(R.string.k2go_zc_sort_name) : getString(R.string.k2go_zc_sort_name_desc));
+        sortName.setText((nameDir > 0 ? getString(R.string.k2go_zc_sort_name) : getString(R.string.k2go_zc_sort_name_desc))
+                + (nameDir > 0 ? " ▼" : " ▲"));
         chip(sortSize, "size".equals(view));
         chip(sortName, "name".equals(view));
         chip(sortGroup, "group".equals(view));
