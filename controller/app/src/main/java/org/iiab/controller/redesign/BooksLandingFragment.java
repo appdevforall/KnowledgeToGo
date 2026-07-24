@@ -243,6 +243,7 @@ public class BooksLandingFragment extends Fragment {
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             for (int k = i; k < i + 2 && k < books.size(); k++) {
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+                lp.setMargins(px(5), px(5), px(5), px(5));   // slight gutter so cards don't touch
                 row.addView(cell(books.get(k), palette[cidx[k]]), lp);
             }
             if (i + 1 >= books.size()) { // pad a lone last cell so it stays half-width
@@ -285,8 +286,7 @@ public class BooksLandingFragment extends Fragment {
         box.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams boxLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        boxLp.setMargins(px(8), px(8), px(8), px(8));
-        box.setLayoutParams(boxLp);
+        box.setLayoutParams(boxLp);   // the inter-card gutter is set on the row's LayoutParams (render)
 
         // Colored cover (placeholder; real covers load later from cover_url).
         LinearLayout cover = new LinearLayout(requireContext());
