@@ -148,6 +148,7 @@ public class MapsChooseFragment extends Fragment {
 
             ImageView icon = new ImageView(requireContext());
             icon.setImageResource(g.icon);
+            icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
             LinearLayout.LayoutParams iclp = new LinearLayout.LayoutParams(px(20), px(20));
             iclp.rightMargin = px(8);
             header.addView(icon, iclp);
