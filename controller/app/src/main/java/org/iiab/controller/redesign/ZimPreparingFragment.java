@@ -155,11 +155,11 @@ public class ZimPreparingFragment extends Fragment {
             }
         }
         int overall = totalBytes > 0 ? (int) Math.min(100, doneBytes * 100 / totalBytes)
-                : (ZimDownloadService.isAllDone() ? 100 : 0);
+                : (ZimDownloadService.isComplete() ? 100 : 0);
         bar.setProgress(overall);
         pct.setText(overall + "%");
 
-        boolean allDone = ZimDownloadService.isAllDone();
+        boolean allDone = ZimDownloadService.isComplete();
         label.setText(allDone
                 ? getString(R.string.k2go_zim_all_ready)
                 : getString(R.string.k2go_zim_downloading_fmt, idx < n ? labels[idx] : ""));
