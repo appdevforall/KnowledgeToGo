@@ -221,6 +221,29 @@ public class LibraryHomeFragment extends Fragment {
         return c.requires64 && android.os.Build.SUPPORTED_64_BIT_ABIS.length == 0;
     }
 
+    // ADFA-4853: guards a single in-flight readiness probe before the post-install drain.
+    private volatile boolean provisionProbing = false;
+
+    /** The dashboard REST engine (dash-node) is ready when an /api call returns non-5xx — unlike
+     *  /home (nginx), which is up before its upstream is. Used to gate the post-install drain. */
+    private static boolean apiReady() {
+        java.net.HttpURLConnection c = null;
+        try {
+            java.net.URL u = new java.net.URL(BoxEndpoints.BASE + "/api/books/library");
+            c = (java.net.HttpURLConnection) u.openConnection();
+            c.setUseCaches(false);
+            c.setConnectTimeout(2500);
+            c.setReadTimeout(2500);
+            c.setRequestMethod("GET");
+            int code = c.getResponseCode();
+            return code >= 200 && code < 500;   // 502/503 => dash-node not up yet
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (c != null) c.disconnect();
+        }
+    }
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
@@ -244,10 +267,24 @@ public class LibraryHomeFragment extends Fragment {
         // ADFA-4853: system is installed and the server is up — drain any wizard content orders
         // (Books, ZIM) into the live download engines (one-shot; each wishlist is cleared once
         // handed off, and each service downloads one item at a time with per-item retry).
-        if (alive && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext()))) {
-            android.util.Log.i("K2Go-Provision", "home: server alive with pending wishlist -> draining");
-            if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
-            if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
+        // ADFA-4853: /home answering means nginx is up, but the dashboard REST engine (dash-node
+        // on :4000) may still be warming up — POSTing then returns 502 Bad Gateway and the jobs
+        // fail with no content installed. So gate the drain on the REST API actually answering;
+        // the wishlist is untouched until then, and this poll (~3s) retries until it's ready.
+        if (alive && !provisionProbing
+                && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext()))) {
+            provisionProbing = true;
+            AppExecutors.get().io().execute(() -> {
+                final boolean ready = apiReady();
+                main.post(() -> {
+                    provisionProbing = false;
+                    if (!isAdded()) return;
+                    if (!ready) { android.util.Log.d("K2Go-Provision", "REST API not ready yet (nginx 502); will retry"); return; }
+                    android.util.Log.i("K2Go-Provision", "REST API ready -> draining wishlists");
+                    if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
+                    if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
+                });
+            });
         }
 
         for (final Card c : cards) {
