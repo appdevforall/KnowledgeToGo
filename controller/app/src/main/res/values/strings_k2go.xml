@@ -330,4 +330,69 @@
     <string name="k2go_home_no_library">No library yet — open Get more to install and add content</string>
     <string name="k2go_home_ready_empty">Library ready — open Get more to add content</string>
     <string name="k2go_rate_per_second">/s</string>
+
+    <!-- ADFA-4848: Get More content hub (WIP; translatable=false until the l10n pass). -->
+    <string name="k2go_gm_hub_title" translatable="false">Get more</string>
+    <string name="k2go_gm_hub_sub" translatable="false">Add content to your library. All offline.</string>
+    <string name="k2go_gm_hub_prompt" translatable="false">What would you like to add?</string>
+    <string name="k2go_gm_wikipedia_title" translatable="false">Wikipedia &amp; ZIM content</string>
+    <string name="k2go_gm_wikipedia_desc" translatable="false">Articles, video, media</string>
+    <string name="k2go_gm_books_title" translatable="false">Books</string>
+    <string name="k2go_gm_books_desc" translatable="false">Gutenberg &amp; more</string>
+    <string name="k2go_gm_maps_title" translatable="false">Maps</string>
+    <string name="k2go_gm_maps_desc" translatable="false">Vector, satellite, 3D</string>
+    <string name="k2go_gm_courses_title" translatable="false">Courses</string>
+    <string name="k2go_gm_courses_desc" translatable="false">Kolibri lessons</string>
+    <string name="k2go_gm_wikipedia_note" translatable="false">Many collections</string>
+    <string name="k2go_gm_books_note" translatable="false">Thousands, tiny</string>
+    <string name="k2go_gm_maps_note" translatable="false">Choose quality</string>
+    <string name="k2go_gm_courses_note" translatable="false">In-app: TBD</string>
+
+    <!-- ADFA-4848: Maps Get More flow (WIP; translatable=false until the l10n pass). -->
+    <string name="k2go_maps_scr_title" translatable="false">Maps</string>
+    <string name="k2go_maps_landing_sub" translatable="false">Set up your offline maps.</string>
+    <string name="k2go_maps_install_title" translatable="false">Install or update maps</string>
+    <string name="k2go_maps_install_desc" translatable="false">Base map, satellite, 3D terrain, search \u2014 pick quality &amp; size, then build.</string>
+    <string name="k2go_maps_choose_cta" translatable="false">Choose layers &amp; quality \u203a</string>
+    <string name="k2go_maps_choose_title" translatable="false">Choose layers &amp; quality</string>
+    <string name="k2go_maps_choose_sub" translatable="false">More detail means a bigger download.</string>
+    <string name="k2go_maps_grp_base" translatable="false">Base map</string>
+    <string name="k2go_maps_grp_base_hint" translatable="false">streets &amp; places</string>
+    <string name="k2go_maps_grp_sat" translatable="false">Satellite</string>
+    <string name="k2go_maps_grp_sat_hint" translatable="false">aerial photos</string>
+    <string name="k2go_maps_grp_terrain" translatable="false">3D terrain</string>
+    <string name="k2go_maps_grp_terrain_hint" translatable="false">elevation</string>
+    <string name="k2go_maps_grp_search" translatable="false">Search</string>
+    <string name="k2go_maps_grp_search_hint" translatable="false">find places</string>
+    <string name="k2go_maps_lvl_off" translatable="false">Off</string>
+    <string name="k2go_maps_lvl_low" translatable="false">Low</string>
+    <string name="k2go_maps_lvl_standard" translatable="false">Standard</string>
+    <string name="k2go_maps_lvl_high" translatable="false">High</string>
+    <string name="k2go_maps_lvl_max" translatable="false">Max</string>
+    <string name="k2go_maps_lvl_cities" translatable="false">Cities</string>
+    <string name="k2go_maps_free" translatable="false">Free space %1$s</string>
+    <string name="k2go_maps_fits" translatable="false">Fits: %1$s of %2$s free</string>
+    <string name="k2go_maps_nospace" translatable="false">Not enough space \u2014 needs %1$s, %2$s free</string>
+    <string name="k2go_maps_download" translatable="false">Download \u00b7 %1$s</string>
+
+    <!-- ADFA-4848 (slice 3): Maps Confirm + Preparing (WIP; translatable=false). -->
+    <string name="k2go_maps_confirm_title" translatable="false">Ready to build your maps?</string>
+    <string name="k2go_maps_confirm_sub" translatable="false">Here is what will be added.</string>
+    <string name="k2go_maps_total" translatable="false">Total</string>
+    <string name="k2go_maps_takes_time_title" translatable="false">This takes time</string>
+    <string name="k2go_maps_takes_time_body" translatable="false">A large download and build \u2014 minutes to a few hours. It keeps working in the background and resumes if interrupted.</string>
+    <string name="k2go_maps_use_wifi" translatable="false">Use Wi-Fi</string>
+    <string name="k2go_maps_keep_charged" translatable="false">Keep charged</string>
+    <string name="k2go_maps_start_building" translatable="false">Start building \u00b7 %1$s</string>
+    <string name="k2go_maps_keep_using" translatable="false">You can keep using the app meanwhile.</string>
+    <string name="k2go_maps_preparing_title" translatable="false">Preparing your maps\u2026</string>
+    <string name="k2go_maps_preparing_sub" translatable="false">This can take a while. You can leave it running.</string>
+    <string name="k2go_maps_leave_title" translatable="false">Leave it running</string>
+    <string name="k2go_maps_leave_body" translatable="false">It continues in the background. We\u2019ll notify you when your maps are ready.</string>
+    <string name="k2go_maps_run_bg" translatable="false">Run in background</string>
+    <string name="k2go_maps_phase_prepared" translatable="false">Prepared the list</string>
+    <string name="k2go_maps_phase_downloading" translatable="false">Downloading map data</string>
+    <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
+    <string name="k2go_maps_phase_finishing" translatable="false">Finishing up</string>
+    <string name="k2go_maps_phase_ready" translatable="false">Ready</string>
 </resources>

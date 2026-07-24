@@ -36,7 +36,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
             androidx.fragment.app.Fragment first;
             if (contentOnly) {
                 selectedTier = readInstalledTier();   // size content against the installed tier
-                first = step2Fragment();
+                first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
             } else {
                 first = new Step1SystemFragment();
             }
@@ -80,6 +80,50 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .replace(R.id.k2go_setup_host, step2Fragment())
                 .addToBackStack("step2")
                 .commit();
+    }
+
+    /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
+     *  the rest are navigable placeholders for now so the hub is reviewable. */
+    public void openContentType(String key, String title) {
+        androidx.fragment.app.Fragment f = "maps".equals(key)
+                ? new MapsLandingFragment()
+                : PlaceholderFragment.newInstance(title);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, f)
+                .addToBackStack("getmore_" + key)
+                .commit();
+    }
+
+    /** ADFA-4848: Maps landing -> "Choose layers & quality" (Option B). */
+    public void openMapsChoose() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new MapsChooseFragment())
+                .addToBackStack("maps_choose")
+                .commit();
+    }
+
+    /** ADFA-4848: Choose -> Confirm (breakdown + total + time warning). */
+    public void openMapsConfirm(String[] names, String[] opts, long[] mb) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, MapsConfirmFragment.newInstance(names, opts, mb))
+                .addToBackStack("maps_confirm")
+                .commit();
+    }
+
+    /** ADFA-4848: Confirm -> Preparing (contained placeholder animation + process status; mock
+     *  until the backend). */
+    public void openMapsPreparing() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new MapsPreparingFragment())
+                .addToBackStack("maps_preparing")
+                .commit();
+    }
+
+    /** ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
+     *  stack and return to the Get More hub; the build keeps running. */
+    public void backToGetMoreHub() {
+        getSupportFragmentManager().popBackStack("getmore_maps",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     /** Hidden A/B-test switch: flip the Step-2 layout in place; picks carry over. */
