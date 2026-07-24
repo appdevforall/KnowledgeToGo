@@ -442,10 +442,12 @@ install_iiaboa_dashboard() {
   # translated by proot (rc=23 under proot on 6.6+ kernels); cp -a is reliable.
   cp -a "${dash_src}/." "$dash_dest/"
 
-  # Install node dependencies
+  # Install node dependencies and compile TS->JS (ADFA-4839: dash-node runs dist/server.js).
   log "Installing Node dependencies for the dashboard..."
   log "Using Yarn for installation..."
   (cd "$dash_dest" && yarn install)
+  log "Building the dashboard (TypeScript -> dist/)..."
+  (cd "$dash_dest" && yarn build)
 
   # Books dashboard
   log "Pre-seeding Gutenberg Catalog Database..."

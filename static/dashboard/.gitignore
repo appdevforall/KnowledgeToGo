@@ -1,14 +1,14 @@
-# Dependencias
+# Dependencies
 node_modules/
 
-# Archivos de entorno y logs
+# Environment files and logs
 .env
 npm-debug.log*
 
-# Archivos compilados (si en el futuro decides compilar el TS)
+# Compiled output (ADFA-4839: the dashboard now compiles TS -> dist/)
 dist/
 build/
 
-# Archivos del sistema operativo (Mac/Linux)
+# OS files (Mac/Linux)
 .DS_Store
 Thumbs.db
