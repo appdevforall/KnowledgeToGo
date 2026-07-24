@@ -212,13 +212,6 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
 
-    // ADFA-4832: socket.io client to drive the in-server dashboard channel (live content
-    // add/index over localhost) without spawning a second proot. org.json is provided by
-    // the Android platform, so exclude the bundled copy to avoid a duplicate-class clash.
-    implementation('io.socket:socket.io-client:2.1.0') {
-        exclude group: 'org.json', module: 'json'
-    }
-
     // ADFA-4466 Phase 1: Firebase Analytics (online-first). BoM aligns versions;
     // firebase-analytics (not -ktx) exposes the Java API used by AnalyticsClient.
     implementation platform('com.google.firebase:firebase-bom:33.7.0')
