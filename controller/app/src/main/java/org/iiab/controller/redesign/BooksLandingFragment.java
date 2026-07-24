@@ -52,11 +52,13 @@ import java.util.Set;
 public class BooksLandingFragment extends Fragment {
 
     private LinearLayout grid, chips;
-    private TextView status, downloadsLink;
+    private TextView status, downloadsLink, langPill;
     private Button addBtn;
 
     private String filter = "";      // "" = Popular, "educational", "local" = My books
     private String query = "";
+    private String lang = "";        // "" = all languages, else an ISO code from the catalog
+    private final List<String> langCodes = new ArrayList<>();   // languages present in the catalog
     private final List<JSONObject> books = new ArrayList<>();
     private final LinkedHashMap<String, JSONObject> selected = new LinkedHashMap<>();
     private final Set<String> libraryTitles = new HashSet<>();
@@ -84,6 +86,9 @@ public class BooksLandingFragment extends Fragment {
         status = root.findViewById(R.id.k2go_books_status);
         addBtn = root.findViewById(R.id.k2go_books_add);
         downloadsLink = root.findViewById(R.id.k2go_books_downloads_link);
+        langPill = root.findViewById(R.id.k2go_books_lang);
+        langPill.setOnClickListener(v -> openLanguagePicker());
+        updateLangPill();
 
         android.widget.EditText search = root.findViewById(R.id.k2go_books_search);
         search.addTextChangedListener(new android.text.TextWatcher() {
@@ -99,6 +104,7 @@ public class BooksLandingFragment extends Fragment {
         addBtn.setOnClickListener(v -> startDownloads());
         downloadsLink.setOnClickListener(v -> openDownloads());
 
+        loadLanguages();
         loadLibrary();
         loadBooks();
         return root;
@@ -129,8 +135,46 @@ public class BooksLandingFragment extends Fragment {
 
     private void onFilterChanged() {
         buildChips();       // repaint active state
+        updateLangPill();   // hidden for the local library (not catalog-language filtered)
         loadBooks();
         refreshFooter();
+    }
+
+    private void loadLanguages() {
+        BooksClient.languages(new BooksClient.ArrayCb() {
+            @Override public void onOk(JSONArray rows) {
+                if (!isAdded()) return;
+                langCodes.clear();
+                for (int i = 0; i < rows.length(); i++) {
+                    JSONObject r = rows.optJSONObject(i);
+                    String code = r != null ? r.optString("code", "").trim() : "";
+                    if (!code.isEmpty()) langCodes.add(code);
+                }
+            }
+            @Override public void onErr(String m) { /* leave the picker empty; "All" still works */ }
+        });
+    }
+
+    private String langName(String code) {
+        if (code == null || code.isEmpty()) return code;
+        String n = new Locale(code).getDisplayLanguage();
+        return (n == null || n.isEmpty() || n.equalsIgnoreCase(code)) ? code : n;
+    }
+
+    private void updateLangPill() {
+        if (langPill == null) return;
+        langPill.setVisibility(isLocal() ? View.GONE : View.VISIBLE);
+        langPill.setText(lang.isEmpty()
+                ? getString(R.string.k2go_books_lang_all)
+                : getString(R.string.k2go_books_lang_fmt, langName(lang)));
+    }
+
+    private void openLanguagePicker() {
+        ZimLanguageDialog.show(requireContext(), getString(R.string.k2go_books_lang_title),
+                langCodes, this::langName, lang,
+                code -> { lang = code; updateLangPill(); loadBooks(); },
+                getString(R.string.k2go_books_lang_all),
+                () -> { lang = ""; updateLangPill(); loadBooks(); });
     }
 
     private TextView chip(String text, boolean on, Runnable onClick) {
@@ -178,7 +222,7 @@ public class BooksLandingFragment extends Fragment {
             }
         };
         if (isLocal()) BooksClient.library(cb);
-        else BooksClient.search(query, filter, 40, cb);
+        else BooksClient.search(query, filter, lang, 40, cb);
     }
 
     private boolean inLibrary(JSONObject b) {

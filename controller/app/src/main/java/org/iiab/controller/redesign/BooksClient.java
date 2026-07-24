@@ -37,14 +37,28 @@ public final class BooksClient {
     public interface ArrayCb { void onOk(JSONArray rows); void onErr(String message); }
     public interface OkCb { void onOk(); void onErr(String message); }
 
-    /** Search the offline Gutenberg catalog. filter: ""|"educational"; q empty => top-by-downloads. */
-    public static void search(String q, String filter, int limit, ArrayCb cb) {
+    /** Search the offline Gutenberg catalog. filter: ""|"educational"; lang: ""=all or an ISO code;
+     *  q empty => top-by-downloads. */
+    public static void search(String q, String filter, String lang, int limit, ArrayCb cb) {
         AppExecutors.get().io().execute(() -> {
             try {
                 String url = BASE + "/search?limit=" + limit
                         + "&filter=" + enc(filter == null ? "" : filter)
+                        + "&lang=" + enc(lang == null ? "" : lang)
                         + "&q=" + enc(q == null ? "" : q);
                 JSONArray a = new JSONArray(httpGet(url));
+                MAIN.post(() -> cb.onOk(a));
+            } catch (Exception e) {
+                MAIN.post(() -> cb.onErr("couldn't reach the content service"));
+            }
+        });
+    }
+
+    /** The distinct languages available in the catalog (rows: {code, count}), most-stocked first. */
+    public static void languages(ArrayCb cb) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                JSONArray a = new JSONArray(httpGet(BASE + "/languages"));
                 MAIN.post(() -> cb.onOk(a));
             } catch (Exception e) {
                 MAIN.post(() -> cb.onErr("couldn't reach the content service"));

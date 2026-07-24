@@ -46,6 +46,19 @@
             android:textColor="@color/k2go_ink"
             android:textColorHint="@color/k2go_muted" />
 
+        <TextView
+            android:id="@+id/k2go_books_lang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/k2go_pill_bg"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_ink" />
+
         <LinearLayout
             android:id="@+id/k2go_books_chips"
             android:layout_width="wrap_content"

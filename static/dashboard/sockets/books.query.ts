@@ -35,28 +35,49 @@ function coverUrl(id: number | string): string {
     return `https://www.gutenberg.org/cache/epub/${id}/pg${id}.cover.medium.jpg`;
 }
 
-/** FTS/browse the offline catalog. query MATCH (prefix) | 'educational' | top-by-downloads. */
-export function searchCatalog(q: string, filter: string, limit: number): CatalogBook[] {
+/** FTS/browse the offline catalog. query MATCH (prefix) | 'educational' | top-by-downloads.
+ *  An optional ISO language code (e.g. "en") narrows every branch to that language. */
+export function searchCatalog(q: string, filter: string, lang: string, limit: number): CatalogBook[] {
     if (!fs.existsSync(CATALOG_DB_PATH)) throw new Error('catalog database not found (sync first)');
     const lim = Math.max(1, Math.min(200, Number.isFinite(limit) ? limit : 40));
     const cols = 'gutenberg_id, title, author, language, download_url, description';
+    const useLang = typeof lang === 'string' && lang.trim().length > 0;
+    const langArg: any[] = useLang ? [lang.trim()] : [];
     const db = new Database(CATALOG_DB_PATH, { readonly: true });
     try {
         let rows: any[];
         if (q && q.trim().length > 0) {
+            const langClause = useLang ? ' AND language = ?' : '';
             rows = db.prepare(
-                `SELECT ${cols} FROM catalog WHERE catalog MATCH ? ORDER BY rank LIMIT ?`
-            ).all(q.trim() + '*', lim);
+                `SELECT ${cols} FROM catalog WHERE catalog MATCH ?${langClause} ORDER BY rank LIMIT ?`
+            ).all(q.trim() + '*', ...langArg, lim);
         } else if (filter === 'educational') {
+            const langClause = useLang ? ' AND language = ?' : '';
             rows = db.prepare(
-                `SELECT ${cols} FROM catalog WHERE bookshelves LIKE '%Children%' OR bookshelves LIKE '%Education%' ORDER BY downloads DESC LIMIT ?`
-            ).all(lim);
+                `SELECT ${cols} FROM catalog WHERE (bookshelves LIKE '%Children%' OR bookshelves LIKE '%Education%')${langClause} ORDER BY downloads DESC LIMIT ?`
+            ).all(...langArg, lim);
         } else {
+            const whereLang = useLang ? ' WHERE language = ?' : '';
             rows = db.prepare(
-                `SELECT ${cols} FROM catalog ORDER BY downloads DESC LIMIT ?`
-            ).all(lim);
+                `SELECT ${cols} FROM catalog${whereLang} ORDER BY downloads DESC LIMIT ?`
+            ).all(...langArg, lim);
         }
         return rows.map((r) => ({ ...r, cover_url: coverUrl(r.gutenberg_id) })) as CatalogBook[];
+    } finally {
+        db.close();
+    }
+}
+
+/** The distinct languages present in the catalog, most-stocked first — so the picker only ever
+ *  offers languages that actually have books (Gutenberg is mostly English). */
+export function listLanguages(): any[] {
+    if (!fs.existsSync(CATALOG_DB_PATH)) throw new Error('catalog database not found (sync first)');
+    const db = new Database(CATALOG_DB_PATH, { readonly: true });
+    try {
+        return db.prepare(
+            `SELECT language AS code, COUNT(*) AS count FROM catalog
+             WHERE language IS NOT NULL AND language != '' GROUP BY language ORDER BY count DESC`
+        ).all();
     } finally {
         db.close();
     }

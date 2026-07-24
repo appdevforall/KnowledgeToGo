@@ -6,7 +6,7 @@
 // none of these calls hold state — a client can drop and re-attach by polling the id.
 import express, { Router, Request, Response } from 'express';
 import { jobs, Job, JobType } from './sockets/jobs';
-import { searchCatalog, listLibrary, removeBook } from './sockets/books.query';
+import { searchCatalog, listLibrary, removeBook, listLanguages } from './sockets/books.query';
 
 const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books'];
 function isType(t: string): t is JobType {
@@ -41,10 +41,20 @@ apiRouter.get('/books/search', (req: Request, res: Response): void => {
     try {
         const q = String(req.query.q ?? '');
         const filter = String(req.query.filter ?? '');
+        const lang = String(req.query.lang ?? '');
         const limit = parseInt(String(req.query.limit ?? '40'), 10);
-        res.json(searchCatalog(q, filter, limit));
+        res.json(searchCatalog(q, filter, lang, limit));
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'search failed' });
+    }
+});
+
+// The distinct languages present in the catalog (for the language picker).
+apiRouter.get('/books/languages', (_req: Request, res: Response): void => {
+    try {
+        res.json(listLanguages());
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'languages read failed' });
     }
 });
 
