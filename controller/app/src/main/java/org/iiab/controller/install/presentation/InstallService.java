@@ -92,6 +92,7 @@ public final class InstallService extends Service {
 
     private Aria2Manager aria2Manager;
     private PRootEngine prootEngine;
+    private org.iiab.controller.content.LiveContentClient liveContentClient;   // ADFA-4832
 
     private volatile boolean cancelled = false;
     private volatile boolean finished = false;
@@ -350,6 +351,16 @@ public final class InstallService extends Service {
     }
 
     private void downloadAndIndexKiwix(String zimFilename) {
+        // ADFA-4832: on an already-running system, adding a ZIM via a second proot
+        // (iiab-make-kiwix-lib) collides with the live server and breaks Kiwix. Route the add
+        // through the in-server dashboard channel — the running server downloads + indexes
+        // in-process, no new proot. The app-side proot path below stays for the fresh-install
+        // case (server down), which safely owns the rootfs exclusively.
+        if (org.iiab.controller.ServerStateRepository.get().current().alive) {
+            addZimViaLiveChannel(zimFilename);
+            return;
+        }
+
         postProvisioning(getString(R.string.install_status_preparing_kiwix));
 
         String zimUrl = "https://download.kiwix.org/zim/wikipedia/" + zimFilename;
@@ -385,6 +396,41 @@ public final class InstallService extends Service {
             @Override
             public void onError(String error) {
                 runMapsAnsible();
+            }
+        });
+    }
+
+    /**
+     * ADFA-4832: add a ZIM on the LIVE system through the in-server dashboard channel (socket.io),
+     * so the running server does the download + index in-process (no second proot). This service is
+     * foreground, so it owns the connection for the whole job even across UI/config changes.
+     * On success we finish here rather than running the maps proot — maps on a live system needs the
+     * same channel migration (follow-up), and spawning that proot would re-introduce the collision.
+     */
+    private void addZimViaLiveChannel(String zimFilename) {
+        postProvisioning(getString(R.string.install_status_preparing_kiwix));
+        liveContentClient = new org.iiab.controller.content.LiveContentClient();
+        liveContentClient.addZim(zimFilename, new org.iiab.controller.content.LiveContentClient.Listener() {
+            @Override public void onProgress(int percent, String speed) {
+                if (cancelled) return;
+                String text = getString(R.string.install_status_zim_download, percent, speed);
+                postProvisioning(text);
+                updateNotification(text);
+            }
+            @Override public void onIndexing() {
+                if (cancelled) return;
+                postProvisioning(getString(R.string.install_status_indexing_zim));
+            }
+            @Override public void onLog(String line) { log("[Kiwix-live] " + line); }
+            @Override public void onDone() {
+                if (cancelled) return;
+                finishSuccess();
+            }
+            @Override public void onError(String message) {
+                if (cancelled) return;
+                log("[Kiwix-live] add failed: " + message);
+                // Safe degrade: never spawn a colliding proot on the live system — surface the failure.
+                fail(getString(R.string.install_error_download, message));
             }
         });
     }
@@ -716,6 +762,7 @@ public final class InstallService extends Service {
         finished = true;
         try {
             if (aria2Manager != null) aria2Manager.stopDownload();
+            if (liveContentClient != null) liveContentClient.cancel();   // ADFA-4832
         } catch (Exception ignored) {
         }
         if (moduleMode) {
