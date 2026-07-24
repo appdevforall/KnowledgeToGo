@@ -1,6 +1,6 @@
 # ADR — Content management on the live system (app ↔ in-server channel)
 
-Status: Accepted. Phase 1 (socket.io bridge) in progress; Phase 2 (REST + durable jobs) planned. Ticket: ADFA-4832.
+Status: Accepted. Phase 1 (socket.io bridge) shipped (ADFA-4832). Phase 2 (REST + durable jobs, full scope) accepted and in progress — see "Phase 2 (accepted) — design of record" below. Tickets: ADFA-4832 (epic thread), plus the Phase 2 tickets listed in that section.
 
 ## Context
 
@@ -28,6 +28,34 @@ Status: Accepted. Phase 1 (socket.io bridge) in progress; Phase 2 (REST + durabl
 - The app-side IPv4/IPv6 network profiler is not used for the ZIM download (the server's `aria2c` is a plain spawn). Acceptable now; port in Phase 2 if needed.
 - Maps/books on a live system still need the same migration (follow-up). Phase 1 skips the maps proot on the live path to avoid re-introducing a collision.
 - If the app process is fully killed, the job dies (server kills on disconnect). Phase 2 durable jobs remove this.
+
+## Phase 2 (accepted) — design of record
+
+Scope decision: **full Phase 2 in one rootfs rebuild** — kiwix + maps + books on the REST engine, IPv4/aria2 parity, and the dashboard packaging (build + supervision). Iteration decision: a **dev "push static/" path** copies the updated dashboard into the installed rootfs on-device and restarts `dash-node`, so we don't pay the ~2h rebuild per test; the full rebuild happens once at the end.
+
+### Server (in-server dashboard)
+
+1. **Job manager, module-scoped (not per-socket).** The download+index job is owned by the dashboard process, not by any connection. A client `disconnect` no longer kills anything (Phase 1 killed on disconnect). This is the core durability change.
+2. **Durable journal via `better-sqlite3`** (already a dependency). Table `jobs(id, type, target, phase, percent, speed, error, created, updated)`. On dashboard boot, reconcile: incomplete download jobs resume (aria2 `--continue` already resumes partials), indexing re-runs if it hadn't finished.
+3. **Progress parsed server-side into structured fields.** aria2/index stdout is parsed on the server into `{phase: downloading|indexing|done|error, percent, speedBytesPerSec, error}` and stored on the job. Clients read structured JSON — no more client-side terminal-scraping.
+4. **REST contract (localhost:8085 → :4000), short calls:**
+   - `POST /api/{kiwix|maps|books}/download {ids:[...]}` → `{jobId}`
+   - `GET  /api/{...}/jobs/:id` → the structured job row
+   - `POST /api/{...}/jobs/:id/cancel`
+   - `GET  /api/{...}/catalog`, `DELETE /api/{...}/item/:id`
+   The socket.io handlers stay only as a thin compat shell (or are removed) — the job manager is the single source of truth.
+5. **aria2 IPv4 profiler parity.** Port the app's IPv4-preference behavior to the server aria2 spawn (closes a divergence noted below).
+6. **Packaging.** Compile TS→JS (drop `ts-node` dev mode), run under `pdsm` supervision with a health check; `dash-node` restarts cleanly on failure. This — not a separate cmdsrv — is the answer to "Node is fragile".
+
+### Android
+
+7. **REST content client replaces the socket.io `LiveContentClient`.** Short localhost calls: `POST` to start, **poll `GET` every ~1s** for structured progress, `POST cancel`. Owned by the foreground `InstallService`. There is no long-lived connection to lose; the job survives UI/config churn and even a dashboard/socket restart (durable job + `--continue`). Wire into `InstallService.downloadAndIndexKiwix` and the maps/books paths.
+
+### Tickets
+
+- Dashboard: durable REST job engine + endpoints + sqlite + aria2 IPv4 parity (kiwix/maps/books).
+- Dashboard packaging: TS→JS build + pdsm supervision/health + dev push-static path.
+- Android: REST content client (foreground poll) replacing socket.io Phase 1.
 
 ## References
 
