@@ -154,15 +154,17 @@ public final class BooksDownloadService extends Service {
     }
 
     private void startJob(int i) {
+        android.util.Log.i("K2Go-Provision", "books job start [" + i + "] id=" + sIds[i] + " title='" + sTitles[i] + "' url=" + sUrls[i]);
         try {
             JSONObject item = new JSONObject().put("id", sIds[i]).put("title", sTitles[i]).put("url", sUrls[i]);
             JSONObject body = new JSONObject().put("items", new JSONArray().put(item));
             JSONObject resp = httpJson("POST", BASE + "/download", body);
             String id = resp.optString("id", "");
-            if (id.isEmpty()) { fail(i); return; }
+            if (id.isEmpty()) { android.util.Log.w("K2Go-Provision", "books job [" + i + "] no job id in response: " + resp); fail(i); return; }
             currentJobId = id;
             main.postDelayed(() -> poll(i), POLL_MS);
         } catch (Exception e) {
+            android.util.Log.w("K2Go-Provision", "books job [" + i + "] POST failed: " + e.getMessage());
             fail(i);
         }
     }
@@ -175,9 +177,11 @@ public final class BooksDownloadService extends Service {
                 String phase = j.optString("phase", "");
                 switch (phase) {
                     case "done":
+                        android.util.Log.i("K2Go-Provision", "books job done [" + i + "]");
                         sStatus[i] = DONE; publish(); main.post(BooksDownloadService.this::processNext); return;
                     case "error":
                     case "canceled":
+                        android.util.Log.w("K2Go-Provision", "books job [" + i + "] phase=" + phase + " err=" + j.optString("error"));
                         fail(i); return;
                     case "processing":
                         if (sStatus[i] != ADDING) { sStatus[i] = ADDING; publish(); }
