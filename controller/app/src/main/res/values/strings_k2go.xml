@@ -357,13 +357,13 @@
     <string name="k2go_maps_choose_title" translatable="false">Choose layers &amp; quality</string>
     <string name="k2go_maps_choose_sub" translatable="false">More detail means a bigger download.</string>
     <string name="k2go_maps_grp_base" translatable="false">Base map</string>
-    <string name="k2go_maps_grp_base_hint" translatable="false">coverage &amp; roads</string>
+    <string name="k2go_maps_grp_base_hint" translatable="false">streets &amp; places</string>
     <string name="k2go_maps_grp_sat" translatable="false">Satellite</string>
     <string name="k2go_maps_grp_sat_hint" translatable="false">aerial photos</string>
     <string name="k2go_maps_grp_terrain" translatable="false">3D terrain</string>
     <string name="k2go_maps_grp_terrain_hint" translatable="false">elevation</string>
     <string name="k2go_maps_grp_search" translatable="false">Search</string>
-    <string name="k2go_maps_grp_search_hint" translatable="false">find places \u00b7 low-power</string>
+    <string name="k2go_maps_grp_search_hint" translatable="false">find places</string>
     <string name="k2go_maps_lvl_off" translatable="false">Off</string>
     <string name="k2go_maps_lvl_low" translatable="false">Low</string>
     <string name="k2go_maps_lvl_standard" translatable="false">Standard</string>

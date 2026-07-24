@@ -6,20 +6,26 @@
  * Description : ADFA-4848 (slice 2). Maps "Choose layers & quality" (Option B). Segmented
  *               groups constrained to the Android support matrix (roles/maps/defaults +
  *               local_vars_android_*): base map, satellite, 3D terrain, low-power search.
- *               Live total + free-space guard drive the CTA. Sizes are PLACEHOLDERS until
- *               the refreshMapsSizes build task lands maps_sizes.csv. Download hands off to
- *               Confirm (next slice). No language picker, no search box (Maps has neither).
+ *               Each group shows an icon, a bold name + muted hint, and the CURRENT
+ *               selection's size on the right; each pill shows its own size — all live.
+ *               A free-space guard (StatFs) disables the CTA when it won't fit. Sizes are
+ *               PLACEHOLDERS until the refreshMapsSizes build task lands maps_sizes.csv.
+ *               No language picker, no search box (Maps has neither). Download hands off to
+ *               Confirm (next slice).
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.StatFs;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,30 +43,31 @@ public class MapsChooseFragment extends Fragment {
 
     private static final class Opt { final int label; final long mb; Opt(int l, long m) { label = l; mb = m; } }
     private static final class Grp {
-        final int label; final int hint; final Opt[] opts; final int def;
-        Grp(int l, int h, Opt[] o, int d) { label = l; hint = h; opts = o; def = d; }
+        final int icon; final int label; final int hint; final Opt[] opts; final int def;
+        Grp(int ic, int l, int h, Opt[] o, int d) { icon = ic; label = l; hint = h; opts = o; def = d; }
     }
 
     // Options mirror the interactive prototype (human labels -> real zoom levels wire in with the
     // backend). Sizes are placeholders pending maps_sizes.csv.
     private final Grp[] GROUPS = {
-            new Grp(R.string.k2go_maps_grp_base, R.string.k2go_maps_grp_base_hint, new Opt[]{
+            new Grp(R.drawable.ic_maps_base, R.string.k2go_maps_grp_base, R.string.k2go_maps_grp_base_hint, new Opt[]{
                     new Opt(R.string.k2go_maps_lvl_low, 120), new Opt(R.string.k2go_maps_lvl_standard, 2500),
                     new Opt(R.string.k2go_maps_lvl_high, 14000) }, 1),
-            new Grp(R.string.k2go_maps_grp_sat, R.string.k2go_maps_grp_sat_hint, new Opt[]{
+            new Grp(R.drawable.ic_maps_satellite, R.string.k2go_maps_grp_sat, R.string.k2go_maps_grp_sat_hint, new Opt[]{
                     new Opt(R.string.k2go_maps_lvl_off, 0), new Opt(R.string.k2go_maps_lvl_low, 600),
                     new Opt(R.string.k2go_maps_lvl_standard, 2400), new Opt(R.string.k2go_maps_lvl_high, 9000),
                     new Opt(R.string.k2go_maps_lvl_max, 40000) }, 0),
-            new Grp(R.string.k2go_maps_grp_terrain, R.string.k2go_maps_grp_terrain_hint, new Opt[]{
+            new Grp(R.drawable.ic_maps_terrain, R.string.k2go_maps_grp_terrain, R.string.k2go_maps_grp_terrain_hint, new Opt[]{
                     new Opt(R.string.k2go_maps_lvl_off, 0), new Opt(R.string.k2go_maps_lvl_low, 500),
                     new Opt(R.string.k2go_maps_lvl_standard, 1200), new Opt(R.string.k2go_maps_lvl_high, 3000),
                     new Opt(R.string.k2go_maps_lvl_max, 7000) }, 0),
-            new Grp(R.string.k2go_maps_grp_search, R.string.k2go_maps_grp_search_hint, new Opt[]{
+            new Grp(R.drawable.ic_maps_search, R.string.k2go_maps_grp_search, R.string.k2go_maps_grp_search_hint, new Opt[]{
                     new Opt(R.string.k2go_maps_lvl_off, 0), new Opt(R.string.k2go_maps_lvl_cities, 35) }, 1),
     };
 
     private final long[] selectedMb = new long[GROUPS.length];
-    private final TextView[][] pillViews = new TextView[GROUPS.length][];
+    private final LinearLayout[][] pillViews = new LinearLayout[GROUPS.length][];
+    private final TextView[] groupSizeViews = new TextView[GROUPS.length];
     private long freeMb = 0;
     private ProgressBar freeBar;
     private TextView freeLabel, fit;
@@ -74,7 +81,7 @@ public class MapsChooseFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_maps_choose, container, false);
 
         TextView back = root.findViewById(R.id.k2go_choose_back);
-        back.setText("‹ " + getString(R.string.k2go_maps_scr_title));
+        back.setText("‹ " + getString(R.string.k2go_gm_hub_title));
         back.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
         freeBar = root.findViewById(R.id.k2go_free_bar);
@@ -107,36 +114,86 @@ public class MapsChooseFragment extends Fragment {
             final Grp g = GROUPS[gi];
             selectedMb[gi] = g.opts[g.def].mb;
 
-            TextView label = new TextView(requireContext());
-            label.setText(getString(g.label) + "  " + getString(g.hint));
-            label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-            label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleSmall);
-            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+            // Header row: icon · name (bold) · hint (muted) · [spacer] · current size (teal, right).
+            LinearLayout header = new LinearLayout(requireContext());
+            header.setOrientation(LinearLayout.HORIZONTAL);
+            header.setGravity(Gravity.CENTER_VERTICAL);
+            LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            llp.topMargin = px(16);
-            host.addView(label, llp);
+            hlp.topMargin = px(18);
+            host.addView(header, hlp);
 
+            ImageView icon = new ImageView(requireContext());
+            icon.setImageResource(g.icon);
+            LinearLayout.LayoutParams iclp = new LinearLayout.LayoutParams(px(20), px(20));
+            iclp.rightMargin = px(8);
+            header.addView(icon, iclp);
+
+            TextView name = new TextView(requireContext());
+            name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleSmall);
+            name.setText(getString(g.label));
+            name.setTypeface(name.getTypeface(), Typeface.BOLD);
+            name.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+            header.addView(name);
+
+            TextView hint = new TextView(requireContext());
+            hint.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            hint.setText(getString(g.hint));
+            hint.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            LinearLayout.LayoutParams hnlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            hnlp.leftMargin = px(6);
+            header.addView(hint, hnlp);
+
+            View spacer = new View(requireContext());
+            header.addView(spacer, new LinearLayout.LayoutParams(0, 1, 1f));
+
+            TextView size = new TextView(requireContext());
+            size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            size.setTypeface(size.getTypeface(), Typeface.BOLD);
+            size.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+            header.addView(size);
+            groupSizeViews[gi] = size;
+
+            // Pills row (horizontally scrollable): each pill = label + its own size.
             HorizontalScrollView hsv = new HorizontalScrollView(requireContext());
             hsv.setHorizontalScrollBarEnabled(false);
             LinearLayout row = new LinearLayout(requireContext());
             row.setOrientation(LinearLayout.HORIZONTAL);
             hsv.addView(row);
-            LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            hlp.topMargin = px(8);
-            host.addView(hsv, hlp);
+            rlp.topMargin = px(8);
+            host.addView(hsv, rlp);
 
-            pillViews[gi] = new TextView[g.opts.length];
+            pillViews[gi] = new LinearLayout[g.opts.length];
             for (int oi = 0; oi < g.opts.length; oi++) {
                 final int gg = gi, oo = oi;
-                TextView pill = new TextView(requireContext());
-                pill.setText(getString(g.opts[oi].label));
+                LinearLayout pill = new LinearLayout(requireContext());
+                pill.setOrientation(LinearLayout.VERTICAL);
+                pill.setGravity(Gravity.CENTER);
                 pill.setPadding(px(14), px(8), px(14), px(8));
+                pill.setClickable(true);
+                pill.setFocusable(true);
+
+                TextView plabel = new TextView(requireContext());
+                plabel.setText(getString(g.opts[oi].label));
+                plabel.setGravity(Gravity.CENTER);
+                plabel.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+                pill.addView(plabel);
+
+                TextView psize = new TextView(requireContext());
+                psize.setText(g.opts[oi].mb > 0 ? fmt(g.opts[oi].mb) : "—");
+                psize.setGravity(Gravity.CENTER);
+                psize.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+                pill.addView(psize);
+
+                pill.setOnClickListener(v -> selectOpt(gg, oo));
+                pill.setMinimumWidth(px(64));
                 LinearLayout.LayoutParams plp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 plp.rightMargin = px(8);
                 pill.setLayoutParams(plp);
-                pill.setOnClickListener(v -> selectOpt(gg, oo));
                 row.addView(pill);
                 pillViews[gi][oi] = pill;
             }
@@ -152,12 +209,15 @@ public class MapsChooseFragment extends Fragment {
 
     private void applyGroupSelection(int gi, int selOi) {
         for (int oi = 0; oi < pillViews[gi].length; oi++) {
-            TextView p = pillViews[gi][oi];
+            LinearLayout pill = pillViews[gi][oi];
             boolean sel = oi == selOi;
-            p.setBackgroundResource(sel ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-            p.setTextColor(ContextCompat.getColor(requireContext(),
-                    sel ? android.R.color.white : R.color.k2go_ink));
+            pill.setBackgroundResource(sel ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
+            int labelColor = sel ? android.R.color.white : R.color.k2go_ink;
+            int sizeColor = sel ? android.R.color.white : R.color.k2go_muted;
+            ((TextView) pill.getChildAt(0)).setTextColor(ContextCompat.getColor(requireContext(), labelColor));
+            ((TextView) pill.getChildAt(1)).setTextColor(ContextCompat.getColor(requireContext(), sizeColor));
         }
+        groupSizeViews[gi].setText(selectedMb[gi] > 0 ? fmt(selectedMb[gi]) : "—");
     }
 
     private long total() {

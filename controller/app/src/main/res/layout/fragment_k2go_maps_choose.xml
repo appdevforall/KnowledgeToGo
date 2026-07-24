@@ -27,16 +27,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@string/k2go_maps_choose_title"
+            android:text="@string/k2go_maps_scr_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
+            android:text="@string/k2go_maps_choose_title"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:text="@string/k2go_maps_choose_sub"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
         <LinearLayout
