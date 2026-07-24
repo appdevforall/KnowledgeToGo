@@ -119,6 +119,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
         androidx.fragment.app.Fragment f;
         if ("maps".equals(key)) f = new MapsLandingFragment();
         else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
+        else if ("books".equals(key)) f = new BooksLandingFragment();     // ADFA-4850: Books / Gutenberg
         else f = PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, f)
@@ -154,6 +155,14 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void backToGetMoreHubZim() {
         getSupportFragmentManager().popBackStack("getmore_wikipedia",
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
+    public void openBooksDownloads() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new BooksDownloadsFragment())
+                .addToBackStack("books_downloads")
+                .commit();
     }
 
     /** ADFA-4848: Maps landing -> "Choose layers & quality" (Option B). */
