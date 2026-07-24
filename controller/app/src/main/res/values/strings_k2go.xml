@@ -448,6 +448,10 @@
     <string name="k2go_zim_finish" translatable="false">Finish</string>
     <string name="k2go_zim_retry" translatable="false">Retry</string>
 
+    <!-- ADFA-4850: Get More hub — module-gated cards -->
+    <string name="k2go_gm_checking" translatable="false">Checking installed modules…</string>
+    <string name="k2go_gm_none" translatable="false">No content modules are installed yet.</string>
+
     <!-- ADFA-4850: Get More Books / Project Gutenberg -->
     <string name="k2go_books_title" translatable="false">Books</string>
     <string name="k2go_books_search_hint" translatable="false">Search books</string>
