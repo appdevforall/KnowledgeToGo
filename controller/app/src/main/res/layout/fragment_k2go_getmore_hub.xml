@@ -23,6 +23,50 @@
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink" />
 
+        <!-- ADFA-4853: wizard-only header — step spine + storage projection, mirroring Step 2. -->
+        <LinearLayout
+            android:id="@+id/k2go_gm_wizard_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/k2go_gm_spine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/k2go_storage"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+
+            <LinearLayout
+                android:id="@+id/k2go_gm_bar"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+                <View android:id="@+id/k2go_gm_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_muted" />
+                <View android:id="@+id/k2go_gm_bar_system" android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_teal" />
+                <View android:id="@+id/k2go_gm_bar_picks"  android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_leaf" />
+                <View android:id="@+id/k2go_gm_bar_free"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_hairline" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/k2go_gm_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

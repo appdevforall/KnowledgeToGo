@@ -99,6 +99,11 @@ public class GetMoreHubFragment extends Fragment {
             cont.setOnClickListener(v -> {
                 if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).goToStep2();
             });
+            root.findViewById(R.id.k2go_gm_wizard_header).setVisibility(View.VISIBLE);
+            StepSpine.render(root.findViewById(R.id.k2go_gm_spine),
+                    new StepSpine.Step("1", getString(R.string.k2go_lbl_system), false, true),
+                    new StepSpine.Step("2", getString(R.string.k2go_lbl_content), true, false));
+            refreshStorage(root);
             computeWizardAvailability();   // synchronous, tier-based (no server yet)
         } else {
             probeAll();
@@ -117,6 +122,51 @@ public class GetMoreHubFragment extends Fragment {
                 && ((SetupLibraryActivity) getActivity()).getSelectedTier() == InstallationPlanner.Tier.FULL;
         if (full) available.add("books");
         // courses: hidden until determined
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (wizard && getView() != null) refreshStorage(getView());   // picks may have changed
+    }
+
+    /** Wizard-only storage projection: System (tier OS) + Your picks (wishlists) vs device free. */
+    private void refreshStorage(View root) {
+        if (root == null || !isAdded()) return;
+        InstallationPlanner.Tier tier = (getActivity() instanceof SetupLibraryActivity)
+                ? ((SetupLibraryActivity) getActivity()).getSelectedTier() : InstallationPlanner.Tier.STANDARD;
+        double systemGb = InstallationPlanner.fallbackOsSizeGb(tier);
+        double picksGb = picksGb();
+        double total = StorageInfo.totalGb();
+        double used = StorageInfo.usedGb();
+        double freeAfter = Math.max(0, StorageInfo.freeGb() - systemGb - picksGb);
+        if (total <= 0) total = used + systemGb + picksGb + freeAfter + 0.01;
+        LinearLayout bar = root.findViewById(R.id.k2go_gm_bar);
+        bar.setWeightSum((float) total);
+        setW(root.findViewById(R.id.k2go_gm_bar_used), (float) used);
+        setW(root.findViewById(R.id.k2go_gm_bar_system), (float) systemGb);
+        setW(root.findViewById(R.id.k2go_gm_bar_picks), (float) picksGb);
+        setW(root.findViewById(R.id.k2go_gm_bar_free), (float) freeAfter);
+        ((TextView) root.findViewById(R.id.k2go_gm_legend)).setText(
+                getString(R.string.k2go_legend_your_picks, used, systemGb, picksGb, freeAfter));
+    }
+
+    /** GB the wizard picks will add: ZIM by real catalog bytes; books are tiny EPUBs (~few MB). */
+    private double picksGb() {
+        double gb = 0;
+        org.json.JSONArray z = ZimWishlist.all(requireContext());
+        for (int i = 0; i < z.length(); i++) {
+            org.json.JSONObject o = z.optJSONObject(i);
+            if (o != null) gb += o.optLong("bytes", 0) / (1024.0 * 1024.0 * 1024.0);
+        }
+        gb += BooksWishlist.size(requireContext()) * 0.003;
+        return gb;
+    }
+
+    private void setW(View v, float w) {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
+        lp.weight = w;
+        v.setLayoutParams(lp);
     }
 
     /** Probe every card's endpoint; reveal the ones that answer (module installed). */
