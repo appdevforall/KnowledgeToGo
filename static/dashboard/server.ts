@@ -10,6 +10,12 @@ import { handleKiwixEvents } from './sockets/kiwix.socket';
 import { handleHomeEvents } from './sockets/home.socket';
 import { handleBooksEvents } from './sockets/books.socket';
 
+// ADFA-4838: durable REST job engine. Importing the runner modules registers them with
+// the shared JobManager; the router exposes them over /api.
+import { jobs } from './sockets/jobs';
+import './sockets/kiwix.exec';
+import { apiRouter } from './routes';
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -28,9 +34,13 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ADFA-4838: JSON body parsing + the REST content API.
+app.use(express.json());
+app.use('/api', apiRouter);
+
 // Main route
 app.get('/', (req, res) => {
-    res.render('index'); 
+    res.render('index');
 });
 
 // Main Socket Connection Handler
@@ -53,6 +63,8 @@ server.listen(PORT, () => {
     console.log(`===========================================`);
     console.log(`K2Go Dashboard active on port ${PORT}`);
     console.log(`===========================================`);
+    // ADFA-4838: resume any content jobs that were mid-flight before a restart.
+    try { jobs.reconcileOnBoot(); } catch (e) { console.error('[jobs] reconcile failed', e); }
 });
 
 // ==========================================
