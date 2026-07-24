@@ -98,7 +98,7 @@
             android:layout_marginTop="16dp"
             android:orientation="vertical"
             android:padding="14dp"
-            android:background="@drawable/k2go_getmore_bg">
+            android:background="@drawable/k2go_info_bg">
 
             <TextView
                 android:layout_width="match_parent"

@@ -85,6 +85,9 @@ public class ZimConfirmFragment extends Fragment {
                 ? getString(R.string.k2go_zim_fits_fmt, gb(totalMb), gb(freeMb))
                 : getString(R.string.k2go_zim_nofit_fmt, gb(totalMb), gb(freeMb)));
         fitsView.setTextColor(ContextCompat.getColor(requireContext(), fits ? R.color.k2go_leaf : R.color.k2go_amber_text));
+        // Filled banner (never an outline/button); a round check for the "fits" case.
+        fitsView.setBackgroundResource(fits ? R.drawable.k2go_ok_bg : R.drawable.k2go_warn_bg);
+        fitsView.setCompoundDrawablesRelativeWithIntrinsicBounds(fits ? R.drawable.ic_check_circle : 0, 0, 0, 0);
 
         Button start = root.findViewById(R.id.k2go_zconf_start);
         start.setText(getString(R.string.k2go_zim_start_fmt, gb(totalMb)));

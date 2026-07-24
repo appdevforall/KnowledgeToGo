@@ -56,7 +56,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:padding="12dp"
-            android:background="@drawable/k2go_getmore_bg"
+            android:gravity="center_vertical"
+            android:drawablePadding="8dp"
+            android:drawableTint="@color/k2go_leaf"
+            android:background="@drawable/k2go_ok_bg"
             android:textAppearance="?attr/textAppearanceBodyMedium" />
 
         <LinearLayout

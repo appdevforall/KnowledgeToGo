@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -120,7 +121,8 @@ public class ZimPreparingFragment extends Fragment {
     private void drawChecklist(int active) {
         listv.removeAllViews();
         for (int i = 0; i < catTitles.size(); i++) {
-            int dotColor = i < active ? R.color.k2go_leaf : (i == active ? R.color.k2go_teal : R.color.k2go_hairline);
+            boolean done = i < active;
+            boolean current = i == active;
             int textColor = i <= active ? R.color.k2go_ink : R.color.k2go_muted;
 
             LinearLayout r = new LinearLayout(requireContext());
@@ -128,12 +130,24 @@ public class ZimPreparingFragment extends Fragment {
             r.setGravity(Gravity.CENTER_VERTICAL);
             r.setPadding(0, px(6), 0, px(6));
 
-            View dot = new View(requireContext());
-            dot.setBackgroundResource(R.drawable.k2go_dot);
-            dot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), dotColor)));
-            LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(px(10), px(10));
-            dlp.rightMargin = px(10);
-            r.addView(dot, dlp);
+            if (done) {
+                // Completed item: the round check, like the "fits" banner.
+                ImageView chk = new ImageView(requireContext());
+                chk.setImageResource(R.drawable.ic_check_circle);
+                chk.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
+                LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(px(16), px(16));
+                clp.rightMargin = px(8);
+                r.addView(chk, clp);
+            } else {
+                View dot = new View(requireContext());
+                dot.setBackgroundResource(R.drawable.k2go_dot);
+                dot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(),
+                        current ? R.color.k2go_teal : R.color.k2go_hairline)));
+                LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(px(10), px(10));
+                dlp.leftMargin = px(3);
+                dlp.rightMargin = px(11);
+                r.addView(dot, dlp);
+            }
 
             TextView t = new TextView(requireContext());
             t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
