@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -292,25 +291,17 @@ public class ZimLandingFragment extends Fragment {
 
     private void pickLanguage() {
         if (catalog == null) return;
-        // Union of languages the Wikipedia project offers (the broadest), sorted by display name.
-        Set<String> set = KiwixCatalog.languages(catalog, "wikipedia");
-        if (set.isEmpty()) set = KiwixCatalog.languages(catalog, "other");
-        final List<String> codes = new ArrayList<>(set);
-        Collections.sort(codes, (a, b) -> langDisplay(a).compareToIgnoreCase(langDisplay(b)));
-        if (codes.isEmpty()) return;
-
-        final String[] names = new String[codes.size()];
-        for (int i = 0; i < codes.size(); i++) names[i] = langDisplay(codes.get(i)) + "  (" + codes.get(i) + ")";
-
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.k2go_zim_change)
-                .setItems(names, (d, which) -> {
+        // Union of languages across all categories, in a searchable picker (hundreds of codes).
+        Set<String> set = new java.util.LinkedHashSet<>();
+        for (KiwixCategories.Category c : KiwixCategories.ALL) set.addAll(KiwixCatalog.languages(catalog, c.key));
+        if (set.isEmpty()) return;
+        ZimLanguageDialog.show(requireContext(), getString(R.string.k2go_zim_change),
+                new ArrayList<>(set), this::langDisplay, lang(), code -> {
                     if (getActivity() instanceof SetupLibraryActivity) {
-                        ((SetupLibraryActivity) getActivity()).setZimLang(codes.get(which));
+                        ((SetupLibraryActivity) getActivity()).setZimLang(code);
                     }
                     updateLangLabel();
                     buildRows();
-                })
-                .show();
+                });
     }
 }

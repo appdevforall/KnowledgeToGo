@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -360,20 +359,15 @@ public class ZimCategoryFragment extends Fragment {
 
     private void pickLanguage() {
         if (catalog == null) return;
-        final List<String> codes = new ArrayList<>(KiwixCatalog.languages(catalog, project));
-        Collections.sort(codes, (a, b) -> langDisplay(a).compareToIgnoreCase(langDisplay(b)));
+        List<String> codes = new ArrayList<>(KiwixCatalog.languages(catalog, project));
         if (codes.isEmpty()) return;
-        final String[] names = new String[codes.size()];
-        for (int i = 0; i < codes.size(); i++) names[i] = langDisplay(codes.get(i)) + "  (" + codes.get(i) + ")";
-        new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.k2go_zim_change)
-                .setItems(names, (d, which) -> {
-                    lang = codes.get(which);
+        ZimLanguageDialog.show(requireContext(), getString(R.string.k2go_zim_change),
+                codes, this::langDisplay, lang, code -> {
+                    lang = code;
                     if (getActivity() instanceof SetupLibraryActivity)
                         ((SetupLibraryActivity) getActivity()).setZimLang(lang);
                     rebuild();
-                })
-                .show();
+                });
     }
 
     private String gb(long mb) {
