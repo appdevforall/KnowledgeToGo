@@ -30,8 +30,14 @@ MIRROR  = "https://mirrors.dotsrc.org/kiwix/zim"
 UA = "Mozilla/5.0 (K2Go Downloader)"
 
 # Flavour/quality keywords that are NOT languages (some collide with obscure ISO-639-3 codes).
-BLACKLIST = {"all","nopic","maxi","mini","novid","nodet","full","simple"}
+BLACKLIST = {"all","nopic","maxi","mini","novid","nodet","full"}
 LEGACY = {"iw":"he","in":"id","ji":"yi"}
+
+# Wiki-family projects use STRICT naming: <project>_<wikicode>_<flavour>_<date>. Their language
+# is always the token right after the project, and it can be a Wikimedia code that is NOT ISO
+# (nah, roa, eml, roa-tara, be-tarask, ...). For these we trust position 1 instead of ISO.
+WIKI_FAMILY = {"wikipedia","wiktionary","wikibooks","wikiquote","wikisource",
+               "wikiversity","wikivoyage","wikinews","vikidia"}
 
 try:
     import pycountry
@@ -71,13 +77,14 @@ def code_of(tok):
     if is1(tok) or is3(tok): return norm(tok)
     return None
 
-def parse_name(fn):
+def parse_name(fn, category=""):
     """filename (no path) -> (creator, lang, flavour, date) ; lang '' if none.
 
-    kiwix names are usually creator_LANG_flavour_date (lang right after the creator), but some
-    are creator_title_..._LANG (lang trails). So: take position 1 if it's a code; otherwise scan
-    from the END for a trailing code. Avoids picking title words that happen to be ISO codes
-    (e.g. French 'de' in the middle of a title)."""
+    Wiki-family projects: the token after the project is the language (a Wikimedia code, maybe
+    non-ISO) — trust position 1. Everyone else: names are usually creator_LANG_flavour_date, but
+    some are creator_title_..._LANG, so take position 1 if it's an ISO code, otherwise scan from
+    the END for a trailing code (avoids title words that happen to be ISO codes, e.g. French
+    'de')."""
     stem = fn[:-4] if fn.lower().endswith(".zim") else fn
     toks = stem.split("_")
     date = ""
@@ -86,13 +93,19 @@ def parse_name(fn):
     creator = toks[0] if toks else stem
     mids = toks[1:]
     lang, idx = "", -1
-    if mids:
-        c0 = code_of(mids[0])
-        if c0: lang, idx = c0, 0
-    if not lang:
-        for i in range(len(mids) - 1, -1, -1):
-            c = code_of(mids[i])
-            if c: lang, idx = c, i; break
+
+    if category in WIKI_FAMILY and mids and norm(mids[0]) not in BLACKLIST \
+            and not re.fullmatch(r"\d{4}-\d{2}", mids[0]):
+        lang, idx = norm(mids[0]), 0                 # trust the strict wiki grammar
+    else:
+        if mids:
+            c0 = code_of(mids[0])
+            if c0: lang, idx = c0, 0
+        if not lang:
+            for i in range(len(mids) - 1, -1, -1):
+                c = code_of(mids[i])
+                if c: lang, idx = c, i; break
+
     flav = [m for j, m in enumerate(mids) if j != idx] if idx >= 0 else mids
     flavour = "_".join(flav) if flav else "all"
     return creator, lang, flavour, date
@@ -105,7 +118,7 @@ def parse_listing(html, category, out):
         fn = m.group(1).split("/")[-1]
         date = f"{m.group(2)}-{m.group(3)}"
         bytes_ = int(round(float(m.group(4)) * SIZE[(m.group(5) or "").upper()]))
-        creator, lang, flavour, d2 = parse_name(fn)
+        creator, lang, flavour, d2 = parse_name(fn, category)
         if d2: date = d2
         out.append([category, creator, lang, flavour, bytes_, date, fn])
 

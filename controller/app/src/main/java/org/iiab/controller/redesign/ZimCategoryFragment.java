@@ -224,7 +224,7 @@ public class ZimCategoryFragment extends Fragment {
         for (Entry e : topics) if (passes(e)) t.add(e);
         if (!t.isEmpty()) {
             Collections.sort(t, (a, b) -> Long.compare(b.bytes, a.bytes));
-            addHeader(getString(R.string.k2go_zc_group_other), null);
+            addHeader(getString(R.string.k2go_zc_group_topics), null);
             for (Entry e : t) list.addView(row(e, label(e.creator, e.flavour), px(12)));
         }
     }

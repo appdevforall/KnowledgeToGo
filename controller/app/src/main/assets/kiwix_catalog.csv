@@ -1852,18 +1852,6 @@ wikibooks,wikibooks,zh,all_maxi,157286400,2026-07,wikibooks_zh_all_maxi_2026-07.
 wikibooks,wikibooks,zh,all_nopic,98566144,2026-07,wikibooks_zh_all_nopic_2026-07.zim
 wikipedia,speedtest,en,blob,50331648,2024-05,speedtest_en_blob_2024-05.zim
 wikipedia,speedtest,en,blob-mini,2097152,2024-05,speedtest_en_blob-mini_2024-05.zim
-wikipedia,wikipedia,,eml_all_maxi,175112192,2026-07,wikipedia_eml_all_maxi_2026-07.zim
-wikipedia,wikipedia,,eml_all_nopic,29360128,2026-07,wikipedia_eml_all_nopic_2026-07.zim
-wikipedia,wikipedia,,map-bms_all_maxi,32505856,2026-07,wikipedia_map-bms_all_maxi_2026-07.zim
-wikipedia,wikipedia,,map-bms_all_nopic,11534336,2026-07,wikipedia_map-bms_all_nopic_2026-07.zim
-wikipedia,wikipedia,,nah_all_maxi,19922944,2026-04,wikipedia_nah_all_maxi_2026-04.zim
-wikipedia,wikipedia,,nah_all_maxi_2026-07a,18874368,2026-07,wikipedia_nah_all_maxi_2026-07a.zim
-wikipedia,wikipedia,,nah_all_nopic,4718592,2026-04,wikipedia_nah_all_nopic_2026-04.zim
-wikipedia,wikipedia,,nah_all_nopic_2026-07a,4718592,2026-07,wikipedia_nah_all_nopic_2026-07a.zim
-wikipedia,wikipedia,,roa-tara_all_maxi,152043520,2026-07,wikipedia_roa-tara_all_maxi_2026-07.zim
-wikipedia,wikipedia,,roa-tara_all_nopic,16777216,2026-07,wikipedia_roa-tara_all_nopic_2026-07.zim
-wikipedia,wikipedia,,roa_all_maxi,149946368,2026-04,wikipedia_roa_all_maxi_2026-04.zim
-wikipedia,wikipedia,,roa_all_nopic,15728640,2026-04,wikipedia_roa_all_nopic_2026-04.zim
 wikipedia,wikipedia,ab,all_maxi,36700160,2026-04,wikipedia_ab_all_maxi_2026-04.zim
 wikipedia,wikipedia,ab,all_nopic,10485760,2026-04,wikipedia_ab_all_nopic_2026-04.zim
 wikipedia,wikipedia,ace,all_maxi,44040192,2026-07,wikipedia_ace_all_maxi_2026-07.zim
@@ -2121,6 +2109,8 @@ wikipedia,wikipedia,el,all_nopic,1825361101,2026-06,wikipedia_el_all_nopic_2026-
 wikipedia,wikipedia,el,top_maxi,1932735283,2026-07,wikipedia_el_top_maxi_2026-07.zim
 wikipedia,wikipedia,el,top_mini,118489088,2026-07,wikipedia_el_top_mini_2026-07.zim
 wikipedia,wikipedia,el,top_nopic,573571072,2026-07,wikipedia_el_top_nopic_2026-07.zim
+wikipedia,wikipedia,eml,all_maxi,175112192,2026-07,wikipedia_eml_all_maxi_2026-07.zim
+wikipedia,wikipedia,eml,all_nopic,29360128,2026-07,wikipedia_eml_all_nopic_2026-07.zim
 wikipedia,wikipedia,en,100,332398592,2026-07,wikipedia_en_100_2026-07.zim
 wikipedia,wikipedia,en,100_maxi,52428800,2026-07,wikipedia_en_100_maxi_2026-07.zim
 wikipedia,wikipedia,en,100_mini,4613734,2026-07,wikipedia_en_100_mini_2026-07.zim
@@ -2585,6 +2575,8 @@ wikipedia,wikipedia,mad,all_maxi,67108864,2026-07,wikipedia_mad_all_maxi_2026-07
 wikipedia,wikipedia,mad,all_nopic,23068672,2026-07,wikipedia_mad_all_nopic_2026-07.zim
 wikipedia,wikipedia,mai,all_maxi,167772160,2026-07,wikipedia_mai_all_maxi_2026-07.zim
 wikipedia,wikipedia,mai,all_nopic,50331648,2026-07,wikipedia_mai_all_nopic_2026-07.zim
+wikipedia,wikipedia,map-bms,all_maxi,32505856,2026-07,wikipedia_map-bms_all_maxi_2026-07.zim
+wikipedia,wikipedia,map-bms,all_nopic,11534336,2026-07,wikipedia_map-bms_all_nopic_2026-07.zim
 wikipedia,wikipedia,mdf,all_maxi,541065216,2026-06,wikipedia_mdf_all_maxi_2026-06.zim
 wikipedia,wikipedia,mdf,all_nopic,29360128,2026-06,wikipedia_mdf_all_nopic_2026-06.zim
 wikipedia,wikipedia,mg,all_maxi,850395136,2026-07,wikipedia_mg_all_maxi_2026-07.zim
@@ -2637,6 +2629,10 @@ wikipedia,wikipedia,myv,all_maxi,132120576,2026-01,wikipedia_myv_all_maxi_2026-0
 wikipedia,wikipedia,myv,all_nopic,27262976,2026-01,wikipedia_myv_all_nopic_2026-01.zim
 wikipedia,wikipedia,mzn,all_maxi,1073741824,2026-07,wikipedia_mzn_all_maxi_2026-07.zim
 wikipedia,wikipedia,mzn,all_nopic,196083712,2026-07,wikipedia_mzn_all_nopic_2026-07.zim
+wikipedia,wikipedia,nah,all_maxi,19922944,2026-04,wikipedia_nah_all_maxi_2026-04.zim
+wikipedia,wikipedia,nah,all_maxi_2026-07a,18874368,2026-07,wikipedia_nah_all_maxi_2026-07a.zim
+wikipedia,wikipedia,nah,all_nopic,4718592,2026-04,wikipedia_nah_all_nopic_2026-04.zim
+wikipedia,wikipedia,nah,all_nopic_2026-07a,4718592,2026-07,wikipedia_nah_all_nopic_2026-07a.zim
 wikipedia,wikipedia,nan,all_maxi,2362232013,2026-07,wikipedia_nan_all_maxi_2026-07.zim
 wikipedia,wikipedia,nan,all_mini,411041792,2026-07,wikipedia_nan_all_mini_2026-07.zim
 wikipedia,wikipedia,nan,all_nopic,498073600,2026-07,wikipedia_nan_all_nopic_2026-07.zim
@@ -2779,6 +2775,10 @@ wikipedia,wikipedia,ro,all_nopic,2899102925,2026-05,wikipedia_ro_all_nopic_2026-
 wikipedia,wikipedia,ro,top_maxi,2684354560,2026-07,wikipedia_ro_top_maxi_2026-07.zim
 wikipedia,wikipedia,ro,top_mini,115343360,2026-07,wikipedia_ro_top_mini_2026-07.zim
 wikipedia,wikipedia,ro,top_nopic,540016640,2026-07,wikipedia_ro_top_nopic_2026-07.zim
+wikipedia,wikipedia,roa,all_maxi,149946368,2026-04,wikipedia_roa_all_maxi_2026-04.zim
+wikipedia,wikipedia,roa,all_nopic,15728640,2026-04,wikipedia_roa_all_nopic_2026-04.zim
+wikipedia,wikipedia,roa-tara,all_maxi,152043520,2026-07,wikipedia_roa-tara_all_maxi_2026-07.zim
+wikipedia,wikipedia,roa-tara,all_nopic,16777216,2026-07,wikipedia_roa-tara_all_nopic_2026-07.zim
 wikipedia,wikipedia,ru,all_maxi,40802189312,2026-02,wikipedia_ru_all_maxi_2026-02.zim
 wikipedia,wikipedia,ru,all_mini,5153960755,2026-04,wikipedia_ru_all_mini_2026-04.zim
 wikipedia,wikipedia,ru,all_nopic,15032385536,2026-01,wikipedia_ru_all_nopic_2026-01.zim
@@ -3438,7 +3438,6 @@ wikivoyage,wikivoyage,vi,all_maxi,32505856,2026-06,wikivoyage_vi_all_maxi_2026-0
 wikivoyage,wikivoyage,vi,all_nopic,7549747,2026-06,wikivoyage_vi_all_nopic_2026-06.zim
 wikivoyage,wikivoyage,zh,all_maxi,119537664,2026-06,wikivoyage_zh_all_maxi_2026-06.zim
 wikivoyage,wikivoyage,zh,all_nopic,39845888,2026-06,wikivoyage_zh_all_nopic_2026-06.zim
-wiktionary,wiktionary,,nah_all_nopic,4089446,2026-04,wiktionary_nah_all_nopic_2026-04.zim
 wiktionary,wiktionary,af,all_nopic,26214400,2026-07,wiktionary_af_all_nopic_2026-07.zim
 wiktionary,wiktionary,am,all_nopic,1572864,2026-07,wiktionary_am_all_nopic_2026-07.zim
 wiktionary,wiktionary,an,all_nopic,2097152,2026-07,wiktionary_an_all_nopic_2026-07.zim
@@ -3527,6 +3526,7 @@ wiktionary,wiktionary,ms,all_nopic,37748736,2026-07,wiktionary_ms_all_nopic_2026
 wiktionary,wiktionary,mt,all_nopic,1677722,2026-07,wiktionary_mt_all_nopic_2026-07.zim
 wiktionary,wiktionary,my,all_nopic,62914560,2026-07,wiktionary_my_all_nopic_2026-07.zim
 wiktionary,wiktionary,na,all_nopic,477184,2026-05,wiktionary_na_all_nopic_2026-05.zim
+wiktionary,wiktionary,nah,all_nopic,4089446,2026-04,wiktionary_nah_all_nopic_2026-04.zim
 wiktionary,wiktionary,nan,all_nopic,12582912,2026-07,wiktionary_nan_all_nopic_2026-07.zim
 wiktionary,wiktionary,nb,all_nopic,71303168,2026-07,wiktionary_nb_all_nopic_2026-07.zim
 wiktionary,wiktionary,nds,all_nopic,16777216,2026-07,wiktionary_nds_all_nopic_2026-07.zim

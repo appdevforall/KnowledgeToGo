@@ -419,5 +419,5 @@
     <string name="k2go_zc_lang_fmt" translatable="false">%1$s · %2$d</string>
     <string name="k2go_zc_sort_name_desc" translatable="false">Z–A</string>
     <string name="k2go_zc_sort_group" translatable="false">Grouped</string>
-    <string name="k2go_zc_group_other" translatable="false">Other</string>
+    <string name="k2go_zc_group_topics" translatable="false">Topics</string>
 </resources>
