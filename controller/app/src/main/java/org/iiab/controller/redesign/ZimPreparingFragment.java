@@ -163,8 +163,11 @@ public class ZimPreparingFragment extends Fragment {
         label.setText(allDone
                 ? getString(R.string.k2go_zim_all_ready)
                 : getString(R.string.k2go_zim_downloading_fmt, idx < n ? labels[idx] : ""));
+        long sp = ZimDownloadService.speed();
+        String speedPart = (!allDone && sp > 0)
+                ? " · " + humanRate(sp) + getString(R.string.k2go_rate_per_second) : "";
         detail.setText(getString(R.string.k2go_zim_prep_detail_fmt,
-                gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), doneCount, n));
+                gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), speedPart, doneCount, n));
 
         drawChecklist(labels, status);
 
@@ -235,6 +238,17 @@ public class ZimPreparingFragment extends Fragment {
     private String gb(long mb) {
         if (mb >= 1024) return String.format(Locale.US, "%.1f GB", mb / 1024.0);
         return mb + " MB";
+    }
+
+    /** bytes/sec -> a short rate token ("3.4 MB"); the caller appends the localized "/s". */
+    private String humanRate(long bps) {
+        if (bps <= 0) return "0 B";
+        String[] u = {"B", "KB", "MB", "GB"};
+        double v = bps;
+        int i = 0;
+        while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+        return i == 0 ? String.format(Locale.US, "%.0f %s", v, u[i])
+                : String.format(Locale.US, "%.1f %s", v, u[i]);
     }
 
     @Override
