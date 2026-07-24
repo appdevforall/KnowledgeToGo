@@ -31,10 +31,12 @@ app.use(helmet({
     contentSecurityPolicy: false
 }));
 
-// EJS views and static files configuration
+// EJS views and static files configuration.
+// ADFA-4839: resolve against the working dir (the dash-node service does `cd /library/dashboard`),
+// not __dirname — once compiled, __dirname is .../dist, but views/ and public/ live at the root.
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(process.cwd(), 'views'));
+app.use(express.static(path.join(process.cwd(), 'public')));
 
 // ADFA-4838: JSON body parsing + the REST content API.
 app.use(express.json());
@@ -61,7 +63,10 @@ io.on('connection', (socket: Socket) => {
 });
 
 const PORT = 4000;
-server.listen(PORT, () => {
+// ADFA-4839: bind to loopback only. nginx (localhost) proxies /dashboard, /api and
+// /socket.io to us; there is no reason to expose :4000 on the device's network
+// interfaces (Node's default host would). This closes the network-reachable :4000.
+server.listen(PORT, '127.0.0.1', () => {
     console.log(`===========================================`);
     console.log(`K2Go Dashboard active on port ${PORT}`);
     console.log(`===========================================`);
