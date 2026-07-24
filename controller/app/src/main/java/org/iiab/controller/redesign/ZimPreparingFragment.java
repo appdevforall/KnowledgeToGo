@@ -3,19 +3,19 @@
  * Name        : ZimPreparingFragment.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4849. ZIM Preparing (screen 4). A contained placeholder spinner (independent
- *               of the boot/close Lottie) + a REAL progress bar with percent + "X of N items" +
- *               a per-category checklist. ZIM downloads have true byte progress, so a real bar is
- *               honest here (unlike Maps tile-building). Progress is MOCK until the download
- *               backend is wired. "Run in background" returns to the Get More hub.
+ * Description : ADFA-4849. ZIM Preparing (screen 4). Drives the real download of the selection
+ *               cart through ZimDownloadService (foreground; sequential per ZIM via the REST job
+ *               engine, continuing past failures). Shows a contained placeholder spinner + a REAL
+ *               progress bar (weighted by bytes) + "X of N items" + a per-item checklist (round
+ *               check when done, teal dot while active/indexing, amber when failed). The service
+ *               is the source of truth, so this screen re-attaches to an in-flight session and
+ *               "Run in background" leaves it running.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,15 +37,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.iiab.controller.R;
+import org.json.JSONObject;
 
 public class ZimPreparingFragment extends Fragment {
 
-    private final List<String> catTitles = new ArrayList<>();
-    private long totalMb = 0;
-
-    private final Handler main = new Handler(Looper.getMainLooper());
-    private Runnable tick;
-    private int prog = 0;
     private TextView label, pct, detail;
     private ProgressBar bar;
     private LinearLayout listv;
@@ -63,20 +58,6 @@ public class ZimPreparingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_zim_preparing, container, false);
 
-        LinkedHashMap<String, Long> byCat = new LinkedHashMap<>();
-        for (Map.Entry<String, Long> e : cart().entrySet()) {
-            String project = e.getKey().split("\\|", 2)[0];
-            Long agg = byCat.get(project);
-            byCat.put(project, (agg == null ? 0 : agg) + e.getValue());
-        }
-        long totalBytes = 0;
-        for (Map.Entry<String, Long> e : byCat.entrySet()) {
-            KiwixCategories.Category c = KiwixCategories.byKey(e.getKey());
-            catTitles.add(c != null ? c.title : e.getKey());
-            totalBytes += e.getValue();
-        }
-        totalMb = totalBytes / (1024L * 1024L);
-
         label = root.findViewById(R.id.k2go_zprep_label);
         pct = root.findViewById(R.id.k2go_zprep_pct);
         detail = root.findViewById(R.id.k2go_zprep_detail);
@@ -84,46 +65,106 @@ public class ZimPreparingFragment extends Fragment {
         listv = root.findViewById(R.id.k2go_zprep_list);
 
         root.findViewById(R.id.k2go_zprep_run_bg).setOnClickListener(v -> {
+            ZimDownloadService.setListener(null);           // stop observing; server keeps going
             if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).backToGetMoreHubZim();
         });
 
-        startMock();
+        // Start (or re-attach to) the download session, then observe its state.
+        KiwixCatalog.getOrFetch(requireContext(), new KiwixCatalog.Listener() {
+            @Override public void onReady(JSONObject catalog) {
+                if (!isAdded()) return;
+                if (!ZimDownloadService.isRunning()) startSession(catalog);
+                ZimDownloadService.setListener(ZimPreparingFragment.this::render);
+                render();
+            }
+            @Override public void onError(String m) {
+                if (!isAdded()) return;
+                ZimDownloadService.setListener(ZimPreparingFragment.this::render);
+                render();
+            }
+        });
         return root;
     }
 
-    private int activeIndex() {
-        if (catTitles.isEmpty()) return 0;
-        if (prog >= 100) return catTitles.size();
-        return Math.min(catTitles.size() - 1, prog * catTitles.size() / 100);
+    /** Resolve the cart to (filename, label, bytes) triples and start the foreground service. */
+    private void startSession(JSONObject catalog) {
+        List<String> files = new ArrayList<>();
+        List<String> labels = new ArrayList<>();
+        List<Long> bytes = new ArrayList<>();
+        for (Map.Entry<String, Long> e : cart().entrySet()) {
+            String[] p = e.getKey().split("\\|", 3);   // project | lang | entryKey
+            if (p.length < 3) continue;
+            JSONObject ld = KiwixCatalog.langData(catalog, p[0], p[1]);
+            JSONObject v = ld != null ? ld.optJSONObject(p[2]) : null;
+            if (v == null) continue;
+            files.add(v.optString("file"));
+            labels.add(itemLabel(p[0], v.optString("creator"), v.optString("flavour")));
+            bytes.add(v.optLong("size", e.getValue()));
+        }
+        if (files.isEmpty()) return;
+        long[] b = new long[bytes.size()];
+        for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
+        ZimDownloadService.start(requireContext().getApplicationContext(),
+                files.toArray(new String[0]), labels.toArray(new String[0]), b);
     }
 
-    private void startMock() {
-        prog = 0;
-        tick = new Runnable() {
-            @Override public void run() {
-                prog = Math.min(100, prog + 3);
-                int active = activeIndex();
-                pct.setText(prog + "%");
-                bar.setProgress(prog);
-                String cur = active < catTitles.size() ? catTitles.get(active)
-                        : (catTitles.isEmpty() ? "" : catTitles.get(catTitles.size() - 1));
-                label.setText(getString(R.string.k2go_zim_downloading_fmt, cur));
-                long doneMb = totalMb * prog / 100;
-                int idx = Math.min(catTitles.size(), active + 1);
-                detail.setText(getString(R.string.k2go_zim_prep_detail_fmt, gb(doneMb), gb(totalMb), idx, catTitles.size()));
-                drawChecklist(active);
-                if (prog < 100) main.postDelayed(this, 400);
+    private String itemLabel(String project, String creator, String flavour) {
+        KiwixCategories.Category c = KiwixCategories.byKey(project);
+        String cat = c != null ? c.title : project;
+        if (creator == null) creator = "";
+        if (flavour == null || flavour.isEmpty()) flavour = "all";
+        boolean creatorIsProject = creator.equalsIgnoreCase(project)
+                || creator.toLowerCase(Locale.ROOT).startsWith(project.toLowerCase(Locale.ROOT));
+        String tail = "all".equals(flavour) ? creator : (creatorIsProject
+                ? flavour.replace('_', ' ').replace('-', ' ')
+                : creator + " · " + flavour.replace('_', ' ').replace('-', ' '));
+        if ("all".equals(flavour) && creatorIsProject) tail = "All";
+        return cat + " · " + tail;
+    }
+
+    private void render() {
+        if (!isAdded()) return;
+        String[] labels = ZimDownloadService.labels();
+        long[] bytes = ZimDownloadService.bytes();
+        int[] status = ZimDownloadService.status();
+        int idx = ZimDownloadService.index();
+        int p = ZimDownloadService.percent();
+        int n = labels.length;
+        if (n == 0) return;
+
+        long totalBytes = 0, doneBytes = 0;
+        int doneCount = 0;
+        for (int i = 0; i < n; i++) {
+            totalBytes += bytes[i];
+            if (status[i] == ZimDownloadService.DONE || status[i] == ZimDownloadService.FAILED) {
+                doneBytes += bytes[i];
+                doneCount++;
+            } else if (i == idx && (status[i] == ZimDownloadService.ACTIVE || status[i] == ZimDownloadService.INDEXING)) {
+                doneBytes += bytes[i] * p / 100;
             }
-        };
-        main.post(tick);
+        }
+        int overall = totalBytes > 0 ? (int) Math.min(100, doneBytes * 100 / totalBytes)
+                : (ZimDownloadService.isAllDone() ? 100 : 0);
+        bar.setProgress(overall);
+        pct.setText(overall + "%");
+
+        boolean allDone = ZimDownloadService.isAllDone();
+        label.setText(allDone
+                ? getString(R.string.k2go_zim_all_ready)
+                : getString(R.string.k2go_zim_downloading_fmt, idx < n ? labels[idx] : ""));
+        detail.setText(getString(R.string.k2go_zim_prep_detail_fmt,
+                gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), doneCount, n));
+
+        drawChecklist(labels, status);
     }
 
-    private void drawChecklist(int active) {
+    private void drawChecklist(String[] labels, int[] status) {
         listv.removeAllViews();
-        for (int i = 0; i < catTitles.size(); i++) {
-            boolean done = i < active;
-            boolean current = i == active;
-            int textColor = i <= active ? R.color.k2go_ink : R.color.k2go_muted;
+        for (int i = 0; i < labels.length; i++) {
+            int st = status[i];
+            boolean done = st == ZimDownloadService.DONE;
+            boolean failed = st == ZimDownloadService.FAILED;
+            boolean active = st == ZimDownloadService.ACTIVE || st == ZimDownloadService.INDEXING;
 
             LinearLayout r = new LinearLayout(requireContext());
             r.setOrientation(LinearLayout.HORIZONTAL);
@@ -131,7 +172,6 @@ public class ZimPreparingFragment extends Fragment {
             r.setPadding(0, px(6), 0, px(6));
 
             if (done) {
-                // Completed item: the round check, like the "fits" banner.
                 ImageView chk = new ImageView(requireContext());
                 chk.setImageResource(R.drawable.ic_check_circle);
                 chk.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
@@ -141,8 +181,8 @@ public class ZimPreparingFragment extends Fragment {
             } else {
                 View dot = new View(requireContext());
                 dot.setBackgroundResource(R.drawable.k2go_dot);
-                dot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(),
-                        current ? R.color.k2go_teal : R.color.k2go_hairline)));
+                int c = failed ? R.color.k2go_amber : (active ? R.color.k2go_teal : R.color.k2go_hairline);
+                dot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), c)));
                 LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(px(10), px(10));
                 dlp.leftMargin = px(3);
                 dlp.rightMargin = px(11);
@@ -151,8 +191,9 @@ public class ZimPreparingFragment extends Fragment {
 
             TextView t = new TextView(requireContext());
             t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-            t.setText(catTitles.get(i));
-            t.setTextColor(ContextCompat.getColor(requireContext(), textColor));
+            t.setText(failed ? labels[i] + getString(R.string.k2go_zim_item_failed_suffix) : labels[i]);
+            int tc = failed ? R.color.k2go_amber_text : (done || active ? R.color.k2go_ink : R.color.k2go_muted);
+            t.setTextColor(ContextCompat.getColor(requireContext(), tc));
             r.addView(t);
 
             listv.addView(r);
@@ -166,7 +207,7 @@ public class ZimPreparingFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        if (tick != null) main.removeCallbacks(tick);
+        ZimDownloadService.setListener(null);
         super.onDestroyView();
     }
 }

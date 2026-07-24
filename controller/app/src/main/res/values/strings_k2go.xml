@@ -440,4 +440,9 @@
     <string name="k2go_zim_leave_title" translatable="false">Leave it running</string>
     <string name="k2go_zim_leave_body" translatable="false">We’ll notify you when your content is ready.</string>
     <string name="k2go_zim_run_bg" translatable="false">Run in background</string>
+    <string name="k2go_zim_dl_channel_name" translatable="false">Content downloads</string>
+    <string name="k2go_zim_dl_notif_title" translatable="false">Downloading content</string>
+    <string name="k2go_zim_notif_cancel" translatable="false">Cancel</string>
+    <string name="k2go_zim_all_ready" translatable="false">All content ready</string>
+    <string name="k2go_zim_item_failed_suffix" translatable="false">  · Failed</string>
 </resources>
