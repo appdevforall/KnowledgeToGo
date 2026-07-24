@@ -125,6 +125,7 @@ public class ZimLandingFragment extends Fragment {
     }
 
     private String langDisplay(String code) {
+        if (KiwixCatalog.MUL.equals(code)) return getString(R.string.k2go_zim_lang_mul);
         try {
             Locale l = new Locale(code);
             String n = l.getDisplayName(l);

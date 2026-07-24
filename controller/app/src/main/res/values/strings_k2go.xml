@@ -420,4 +420,6 @@
     <string name="k2go_zc_sort_name_desc" translatable="false">Z–A</string>
     <string name="k2go_zc_sort_group" translatable="false">Grouped</string>
     <string name="k2go_zc_group_topics" translatable="false">Topics</string>
+    <string name="k2go_zim_lang_mul" translatable="false">Multiple languages</string>
+    <string name="k2go_zc_none" translatable="false">No items in this language. Try another — e.g. Multiple languages.</string>
 </resources>

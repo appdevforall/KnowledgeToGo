@@ -113,25 +113,10 @@ public final class KiwixCatalog {
         return p == null ? null : p.optJSONObject(lang);
     }
 
-    /** Entries for a language MERGED with the language-agnostic "mul" bucket (for a category screen). */
-    public static JSONObject langDataMerged(JSONObject catalog, String project, String lang) {
-        JSONObject out = new JSONObject();
-        merge(out, langData(catalog, project, lang));
-        if (!MUL.equals(lang)) merge(out, langData(catalog, project, MUL));
-        return out;
-    }
-
-    private static void merge(JSONObject into, JSONObject src) {
-        if (src == null) return;
-        for (Iterator<String> it = src.keys(); it.hasNext(); ) {
-            String k = it.next();
-            try { into.put(k, src.get(k)); } catch (Exception ignore) {}
-        }
-    }
-
-    /** Files available for a project in a language (incl. the "mul" bucket). 0 => disabled in UI. */
+    /** Files available for a project in a language (strict; "mul" is its own language). 0 => disabled. */
     public static int count(JSONObject catalog, String project, String lang) {
-        return langDataMerged(catalog, project, lang).length();
+        JSONObject ld = langData(catalog, project, lang);
+        return ld == null ? 0 : ld.length();
     }
 
     /** Total files across all languages for a project (the big "2,465"-style number). */
@@ -147,16 +132,13 @@ public final class KiwixCatalog {
         return n;
     }
 
-    /** Languages a project offers (excludes the "mul" bucket for the picker). */
+    /** Languages a project offers, including the "mul" (multilingual) bucket as its own entry. */
     public static Set<String> languages(JSONObject catalog, String project) {
         Set<String> out = new LinkedHashSet<>();
         if (catalog == null) return out;
         JSONObject p = catalog.optJSONObject(project);
         if (p == null) return out;
-        for (Iterator<String> it = p.keys(); it.hasNext(); ) {
-            String l = it.next();
-            if (!MUL.equals(l)) out.add(l);
-        }
+        for (Iterator<String> it = p.keys(); it.hasNext(); ) out.add(it.next());
         return out;
     }
 

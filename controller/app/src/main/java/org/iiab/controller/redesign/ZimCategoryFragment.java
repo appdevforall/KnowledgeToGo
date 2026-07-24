@@ -136,16 +136,18 @@ public class ZimCategoryFragment extends Fragment {
     /** (Re)build the entry list for the current project + language, then render. */
     private void rebuild() {
         entries.clear();
-        JSONObject data = KiwixCatalog.langDataMerged(catalog, project, lang);
+        JSONObject data = KiwixCatalog.langData(catalog, project, lang);  // strict: this language only
         LinkedHashMap<String, Long> cart = cart();
         String prefix = project + "|" + lang + "|";
-        for (Iterator<String> it = data.keys(); it.hasNext(); ) {
-            String k = it.next();
-            JSONObject v = data.optJSONObject(k);
-            if (v == null) continue;
-            Entry e = new Entry(k, v.optString("creator"), v.optString("flavour"), v.optLong("size", 0));
-            e.checked = cart.containsKey(prefix + k);
-            entries.add(e);
+        if (data != null) {
+            for (Iterator<String> it = data.keys(); it.hasNext(); ) {
+                String k = it.next();
+                JSONObject v = data.optJSONObject(k);
+                if (v == null) continue;
+                Entry e = new Entry(k, v.optString("creator"), v.optString("flavour"), v.optLong("size", 0));
+                e.checked = cart.containsKey(prefix + k);
+                entries.add(e);
+            }
         }
         render();
     }
@@ -157,6 +159,7 @@ public class ZimCategoryFragment extends Fragment {
     }
 
     private String langDisplay(String code) {
+        if (KiwixCatalog.MUL.equals(code)) return getString(R.string.k2go_zim_lang_mul);
         try {
             Locale l = new Locale(code);
             String n = l.getDisplayName(l);
@@ -187,6 +190,14 @@ public class ZimCategoryFragment extends Fragment {
         list.removeAllViews();
         if ("group".equals(view) && isWiki()) renderGrouped();
         else renderList();
+        if (list.getChildCount() == 0) {
+            TextView none = new TextView(requireContext());
+            none.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            none.setText(getString(R.string.k2go_zc_none));
+            none.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            none.setPadding(0, px(16), 0, px(16));
+            list.addView(none);
+        }
         updateTotals();
     }
 
