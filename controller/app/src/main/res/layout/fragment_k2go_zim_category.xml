@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4849: ZIM category detail (screen 2). Variant/title rows built programmatically into
-     k2go_zc_list; in-category search + sort; per-item free-space guard; Add-to-selection. -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- ADFA-4849: ZIM category detail (screen 2). Fixed header + fixed bottom bar; only the list
+     scrolls. Rows are built programmatically into k2go_zc_list. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
+    <!-- Fixed header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +14,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingTop="20dp"
-        android:paddingBottom="24dp">
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/k2go_zc_back"
@@ -23,21 +24,35 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_teal" />
 
-        <TextView
-            android:id="@+id/k2go_zc_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:textColor="@color/k2go_ink" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/k2go_zc_sub"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_muted" />
+            <TextView
+                android:id="@+id/k2go_zc_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:textColor="@color/k2go_ink" />
+
+            <!-- Language + count label (tap to change language). -->
+            <TextView
+                android:id="@+id/k2go_zc_lang"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:background="@drawable/k2go_pill_bg"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_teal" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/k2go_zc_search"
@@ -59,42 +74,63 @@
             android:layout_marginTop="12dp"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/k2go_zc_sort_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/k2go_zc_sort_size"
+            <TextView android:id="@+id/k2go_zc_sort_size"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:paddingLeft="12dp" android:paddingRight="12dp" android:paddingTop="8dp" android:paddingBottom="8dp"
                 android:textAppearance="?attr/textAppearanceBodySmall" />
 
-            <TextView
-                android:id="@+id/k2go_zc_sort_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextView android:id="@+id/k2go_zc_sort_name"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:paddingLeft="14dp"
-                android:paddingRight="14dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/k2go_zc_sort_name"
+                android:paddingLeft="12dp" android:paddingRight="12dp" android:paddingTop="8dp" android:paddingBottom="8dp"
+                android:textAppearance="?attr/textAppearanceBodySmall" />
+
+            <TextView android:id="@+id/k2go_zc_sort_group"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingLeft="12dp" android:paddingRight="12dp" android:paddingTop="8dp" android:paddingBottom="8dp"
+                android:text="@string/k2go_zc_sort_group"
                 android:textAppearance="?attr/textAppearanceBodySmall" />
         </LinearLayout>
+    </LinearLayout>
+
+    <!-- Scrolling list (the only scrollable region) -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:id="@+id/k2go_zc_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="8dp" />
+    </ScrollView>
+
+    <!-- Fixed bottom bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
         <TextView
             android:id="@+id/k2go_zc_free"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
@@ -112,9 +148,9 @@
             android:id="@+id/k2go_zc_add"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:textColor="@android:color/white"
             android:textAllCaps="false"
             android:backgroundTint="@color/k2go_teal" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
