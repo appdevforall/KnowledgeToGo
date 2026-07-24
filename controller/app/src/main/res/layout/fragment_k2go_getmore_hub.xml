@@ -16,6 +16,7 @@
         android:paddingBottom="24dp">
 
         <TextView
+            android:id="@+id/k2go_gm_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/k2go_gm_hub_title"
@@ -44,5 +45,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="vertical" />
+
+        <!-- ADFA-4853: wizard-only; proceeds to the install step. Styled like other primary
+             buttons so it reads as part of the flow. -->
+        <Button
+            android:id="@+id/k2go_gm_continue"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/k2go_wizard_continue"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/k2go_teal"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

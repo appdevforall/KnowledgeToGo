@@ -26,7 +26,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -91,8 +90,19 @@ public class GetMoreHubFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_getmore_hub, container, false);
         host = root.findViewById(R.id.k2go_gm_cards);
         wizard = getArguments() != null && getArguments().getBoolean("wizard", false);
-        if (wizard) computeWizardAvailability();   // synchronous, tier-based (no server yet)
-        else probeAll();
+        if (wizard) {
+            // Same hub, worn as the wizard's content step: retitle it and offer Continue.
+            TextView title = root.findViewById(R.id.k2go_gm_title);
+            if (title != null) title.setText(R.string.k2go_setup_library_title);
+            View cont = root.findViewById(R.id.k2go_gm_continue);
+            cont.setVisibility(View.VISIBLE);
+            cont.setOnClickListener(v -> {
+                if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).goToStep2();
+            });
+            computeWizardAvailability();   // synchronous, tier-based (no server yet)
+        } else {
+            probeAll();
+        }
         buildCards();   // live mode shows "checking…" until probes resolve
         return root;
     }
@@ -185,23 +195,6 @@ public class GetMoreHubFragment extends Fragment {
             }
         }
 
-        if (wizard) addContinue();   // pre-install: proceed to the system install step
-    }
-
-    /** Wizard-only "Continue" that proceeds to the install step (the queue drains the wishlists). */
-    private void addContinue() {
-        Button cont = new Button(requireContext());
-        cont.setText(R.string.k2go_wizard_continue);
-        cont.setAllCaps(false);
-        cont.setTextColor(0xFFFFFFFF);
-        cont.setBackgroundColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dp(52));
-        lp.topMargin = dp(20);
-        cont.setOnClickListener(v -> {
-            if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).goToStep2();
-        });
-        host.addView(cont, lp);
     }
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }
