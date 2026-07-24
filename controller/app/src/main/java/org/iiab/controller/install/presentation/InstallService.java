@@ -610,7 +610,28 @@ public final class InstallService extends Service {
     // ------------------------------------------------------------ module queue
 
     private void runModuleQueue() {
-        installNextModule();
+        // ADFA-4842: a runrole modifies system packages/config, so it must own the rootfs
+        // exclusively. Unlike content (which the running server handles in-process), we cannot
+        // avoid the runrole's own proot — so instead stop the server's SERVICES first (pdsm stop)
+        // so a runrole never runs alongside a live server writing the same DBs/config (the
+        // data-corruption risk). The app restarts the server after the queue (LibraryActivity's
+        // module-queue observer). Stopping is idempotent (no-op if the server is already down).
+        if (cancelled) return;
+        updateNotification(getString(R.string.server_shutting_down));
+        log("[Modules] Stopping server services before runroles (exclusive rootfs)...");
+        if (prootEngine == null) prootEngine = new PRootEngine();
+        prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(),
+                "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'",
+                new PRootEngine.OutputListener() {
+                    @Override public void onOutputLine(String line) { log("[Modules] pdsm stop: " + line); }
+                    @Override public void onProcessExit(int exitCode) { installNextModule(); }
+                    @Override public void onError(String error) {
+                        // Proceed anyway: if the stop couldn't launch, the runroles still need to run;
+                        // surface it in the log rather than hanging the queue.
+                        log("[Modules] pdsm stop error (continuing): " + error);
+                        installNextModule();
+                    }
+                });
     }
 
     /**
