@@ -18,6 +18,7 @@ package org.iiab.controller.redesign;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import org.iiab.controller.util.AppExecutors;
 import org.json.JSONArray;
@@ -37,6 +38,7 @@ import java.util.zip.GZIPInputStream;
 public final class BooksCatalogAsset {
     private BooksCatalogAsset() {}
 
+    private static final String TAG = "K2Go-BooksAsset";
     private static final String ASSET = "books_catalog.jsonl.gz";
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
@@ -64,6 +66,7 @@ public final class BooksCatalogAsset {
                 }
                 MAIN.post(() -> cb.onOk(out));
             } catch (Exception e) {
+                Log.w(TAG, "offline catalog read failed for asset '" + ASSET + "'", e);
                 MAIN.post(() -> cb.onErr("couldn't read the offline catalog"));
             }
         });
@@ -89,6 +92,7 @@ public final class BooksCatalogAsset {
                 }
                 MAIN.post(() -> cb.onOk(out));
             } catch (Exception e) {
+                Log.w(TAG, "offline catalog read failed for asset '" + ASSET + "'", e);
                 MAIN.post(() -> cb.onErr("couldn't read the offline catalog"));
             }
         });
@@ -115,6 +119,7 @@ public final class BooksCatalogAsset {
                 list.add(row);
             }
         }
+        Log.i(TAG, "loaded " + list.size() + " books from asset '" + ASSET + "'");
         CACHE = list;
         return CACHE;
     }

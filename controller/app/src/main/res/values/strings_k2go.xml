@@ -467,6 +467,7 @@
     <string name="k2go_books_local_hint" translatable="false">Tap a book to open it in the library.</string>
     <string name="k2go_books_loading" translatable="false">Loading…</string>
     <string name="k2go_books_unavailable" translatable="false">Couldn\'t reach the content service.</string>
+    <string name="k2go_books_offline_error" translatable="false">Couldn\'t read the offline catalog.</string>
     <string name="k2go_books_none" translatable="false">No books found.</string>
     <string name="k2go_books_in_library" translatable="false">In your books</string>
     <string name="k2go_books_selected" translatable="false">Selected</string>

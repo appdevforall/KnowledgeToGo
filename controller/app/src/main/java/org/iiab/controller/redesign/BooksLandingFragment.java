@@ -224,6 +224,7 @@ public class BooksLandingFragment extends Fragment {
     }
 
     private void loadBooks() {
+        android.util.Log.d("K2Go-Books", "loadBooks wizard=" + wizard + " filter=" + filter + " lang=" + lang + " q=" + query);
         status.setVisibility(View.VISIBLE);
         status.setText(getString(R.string.k2go_books_loading));
         grid.removeAllViews();
@@ -237,7 +238,7 @@ public class BooksLandingFragment extends Fragment {
             @Override public void onErr(String m) {
                 if (!isAdded()) return;
                 status.setVisibility(View.VISIBLE);
-                status.setText(getString(R.string.k2go_books_unavailable));
+                status.setText(getString(wizard ? R.string.k2go_books_offline_error : R.string.k2go_books_unavailable));
             }
         };
         if (wizard) BooksCatalogAsset.search(requireContext(), query, lang, 40, cb);
