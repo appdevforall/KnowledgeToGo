@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Помилка експорту: %1$s</string>
     <string name="install_error_no_tier">Гей! Виберіть видання для встановлення (Basic, Standard або Full).</string>
     <string name="install_error_no_storage">Недостатньо сховища! Звільніть місце або виберіть менше видання. (Потрібен резерв безпеки 5GB)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Розпакування системи…\n(Це триває деякий час)</string>
     <string name="install_error_no_archive">Помилка: завантажений архів не знайдено.</string>
     <string name="install_error_extraction">Помилка розпакування: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Помилка видалення: %1$s</string>
     <string name="install_status_installing_module">Встановлення %1$s…</string>
     <string name="install_status_preparing_kiwix">Підготовка Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Індексація ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps вже підготовлено…</string>
     <string name="install_status_maps_configuring">Налаштування IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Стирання старої системи…</string>
     <string name="install_status_starting_vanilla">Початок скидання Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Завантаження Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Розпакування бази…</string>
     <string name="install_status_bootstrapping">Ініціалізація Debian…</string>
     <string name="install_success_vanilla">Базову систему Vanilla успішно ініціалізовано!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">Сховати</string>
     <string name="k2go_home_no_library">Бібліотеки ще немає — відкрийте «Отримати більше», щоб встановити й додати вміст</string>
     <string name="k2go_home_ready_empty">Бібліотека готова — відкрийте «Отримати більше», щоб додати вміст</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

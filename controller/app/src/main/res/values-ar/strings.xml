@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">فشل التصدير: %1$s</string>
     <string name="install_error_no_tier">مرحبًا! اختر إصدارًا للتثبيت (Basic أو Standard أو Full).</string>
     <string name="install_error_no_storage">لا يوجد تخزين كافٍ! يرجى تحرير مساحة أو اختيار إصدار أصغر. (مطلوب هامش أمان 5 غيغابايت)</string>
-    <string name="install_status_os_download">نظام التشغيل: %1$d%% | %2$s/ث</string>
+    <string name="install_status_os_download">نظام التشغيل: %1$d%% | %2$s</string>
     <string name="install_status_extracting">جارٍ استخراج النظام…\n(يستغرق هذا بعض الوقت)</string>
     <string name="install_error_no_archive">خطأ: لم يتم العثور على الأرشيف المُنزَّل.</string>
     <string name="install_error_extraction">فشل الاستخراج: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">فشل الحذف: %1$s</string>
     <string name="install_status_installing_module">جارٍ تثبيت %1$s…</string>
     <string name="install_status_preparing_kiwix">جارٍ تحضير Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/ث</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">جارٍ فهرسة ZIM…</string>
     <string name="install_status_maps_provisioned">تم بالفعل توفير IIAB Maps…</string>
     <string name="install_status_maps_configuring">جارٍ تكوين IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">جارٍ محو النظام القديم…</string>
     <string name="install_status_starting_vanilla">جارٍ بدء إعادة تعيين Vanilla Debian…</string>
     <string name="install_status_downloading_debian">جارٍ تنزيل Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/ث</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">جارٍ استخراج الأساس…</string>
     <string name="install_status_bootstrapping">جارٍ تمهيد Debian…</string>
     <string name="install_success_vanilla">تم تمهيد نظام Vanilla الأساسي بنجاح!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">إخفاء</string>
     <string name="k2go_home_no_library">لا توجد مكتبة بعد — افتح "الحصول على المزيد" للتثبيت وإضافة محتوى</string>
     <string name="k2go_home_ready_empty">المكتبة جاهزة — افتح "الحصول على المزيد" لإضافة محتوى</string>
+    <string name="k2go_rate_per_second">/ث</string>
 </resources>

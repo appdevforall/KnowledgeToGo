@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Export selhal: %1$s</string>
     <string name="install_error_no_tier">Hej! Vyberte edici k instalaci (Basic, Standard nebo Full).</string>
     <string name="install_error_no_storage">Nedostatek úložiště! Uvolněte prosím místo nebo zvolte menší edici. (Vyžadována 5GB bezpečnostní rezerva)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Rozbalování systému…\n(Chvíli to trvá)</string>
     <string name="install_error_no_archive">Chyba: Stažený archiv nebyl nalezen.</string>
     <string name="install_error_extraction">Rozbalování selhalo: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Odstranění selhalo: %1$s</string>
     <string name="install_status_installing_module">Instalace %1$s…</string>
     <string name="install_status_preparing_kiwix">Příprava Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Indexování ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps již připraveny…</string>
     <string name="install_status_maps_configuring">Konfigurace IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Mazání starého systému…</string>
     <string name="install_status_starting_vanilla">Zahajování obnovení Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Stahování Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Rozbalování základu…</string>
     <string name="install_status_bootstrapping">Bootstrapping Debian…</string>
     <string name="install_success_vanilla">Základní systém Vanilla úspěšně nastartován!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Skrýt</string>
     <string name="k2go_home_no_library">Zatím žádná knihovna — otevřete Získat více a nainstalujte a přidejte obsah</string>
     <string name="k2go_home_ready_empty">Knihovna je připravena — otevřete Získat více a přidejte obsah</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

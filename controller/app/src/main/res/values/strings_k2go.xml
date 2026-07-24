@@ -328,4 +328,5 @@
     <string name="k2go_hide">Hide</string>
     <string name="k2go_home_no_library">No library yet — open Get more to install and add content</string>
     <string name="k2go_home_ready_empty">Library ready — open Get more to add content</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

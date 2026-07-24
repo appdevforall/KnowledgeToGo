@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">エクスポートに失敗しました: %1$s</string>
     <string name="install_error_no_tier">インストールするエディションを選択してください（Basic、Standard、Full）。</string>
     <string name="install_error_no_storage">ストレージが足りません！ 空き容量を確保するか、より小さいエディションを選択してください。（5 GB の安全マージンが必要）</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">システムを展開中…\n(しばらくかかります)</string>
     <string name="install_error_no_archive">エラー: ダウンロードしたアーカイブが見つかりません。</string>
     <string name="install_error_extraction">展開に失敗しました: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">削除に失敗しました: %1$s</string>
     <string name="install_status_installing_module">%1$s をインストール中…</string>
     <string name="install_status_preparing_kiwix">Kiwix を準備中…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM をインデックス中…</string>
     <string name="install_status_maps_provisioned">IIAB Maps はすでに準備済みです…</string>
     <string name="install_status_maps_configuring">IIAB Maps を構成中…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">古いシステムを消去中…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian リセットを開始中…</string>
     <string name="install_status_downloading_debian">Debian をダウンロード中…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">ベースを展開中…</string>
     <string name="install_status_bootstrapping">Debian をブートストラップ中…</string>
     <string name="install_success_vanilla">Vanilla ベースシステムのブートストラップに成功しました！</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">非表示</string>
     <string name="k2go_home_no_library">ライブラリはまだありません — 「さらに取得」を開いてインストールし、コンテンツを追加してください</string>
     <string name="k2go_home_ready_empty">ライブラリの準備ができました — 「さらに取得」を開いてコンテンツを追加してください</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

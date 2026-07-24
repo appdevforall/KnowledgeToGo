@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">导出失败: %1$s</string>
     <string name="install_error_no_tier">嘿！请选择要安装的版本（Basic、Standard 或 Full）。</string>
     <string name="install_error_no_storage">存储空间不足！请释放空间或选择更小的版本。（需要 5GB 安全缓冲）</string>
-    <string name="install_status_os_download">操作系统: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">操作系统: %1$d%% | %2$s</string>
     <string name="install_status_extracting">正在解压系统…\n(这需要一段时间)</string>
     <string name="install_error_no_archive">错误: 未找到下载的归档文件。</string>
     <string name="install_error_extraction">解压失败: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">删除失败: %1$s</string>
     <string name="install_status_installing_module">正在安装 %1$s…</string>
     <string name="install_status_preparing_kiwix">正在准备 Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">正在索引 ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps 已预置…</string>
     <string name="install_status_maps_configuring">正在配置 IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">正在清除旧系统…</string>
     <string name="install_status_starting_vanilla">正在开始 Vanilla Debian 重置…</string>
     <string name="install_status_downloading_debian">正在下载 Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">正在解压基础系统…</string>
     <string name="install_status_bootstrapping">正在引导 Debian…</string>
     <string name="install_success_vanilla">Vanilla 基础系统引导成功！</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">隐藏</string>
     <string name="k2go_home_no_library">还没有资料库 — 打开“获取更多”以安装并添加内容</string>
     <string name="k2go_home_ready_empty">资料库已就绪 — 打开“获取更多”以添加内容</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

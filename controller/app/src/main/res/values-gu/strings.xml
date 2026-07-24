@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">નિકાસ નિષ્ફળ: %1$s</string>
     <string name="install_error_no_tier">અરે! ઇન્સ્ટૉલ કરવા માટે એક આવૃત્તિ પસંદ કરો (Basic, Standard, અથવા Full).</string>
     <string name="install_error_no_storage">પૂરતું સ્ટોરેજ નથી! કૃપા કરી જગ્યા ખાલી કરો અથવા નાની આવૃત્તિ પસંદ કરો. (5GB સલામતી બફર જરૂરી)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">સિસ્ટમ કાઢી રહ્યું છે…\n(આમાં થોડો સમય લાગે છે)</string>
     <string name="install_error_no_archive">ભૂલ: ડાઉનલોડ કરેલ આર્કાઇવ મળ્યું નથી.</string>
     <string name="install_error_extraction">કાઢવામાં નિષ્ફળ: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">કાઢી નાખવામાં નિષ્ફળ: %1$s</string>
     <string name="install_status_installing_module">%1$s ઇન્સ્ટૉલ થઈ રહ્યું છે…</string>
     <string name="install_status_preparing_kiwix">Kiwix તૈયાર થઈ રહ્યું છે…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM અનુક્રમિત થઈ રહ્યું છે…</string>
     <string name="install_status_maps_provisioned">IIAB Maps પહેલેથી જ પ્રદાન કરેલ છે…</string>
     <string name="install_status_maps_configuring">IIAB Maps ગોઠવી રહ્યું છે…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">જૂની સિસ્ટમ ભૂંસી રહ્યું છે…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian રીસેટ શરૂ થઈ રહ્યું છે…</string>
     <string name="install_status_downloading_debian">Debian ડાઉનલોડ થઈ રહ્યું છે…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">આધાર કાઢી રહ્યું છે…</string>
     <string name="install_status_bootstrapping">Debian bootstrap થઈ રહ્યું છે…</string>
     <string name="install_success_vanilla">Vanilla આધાર સિસ્ટમ સફળતાપૂર્વક bootstrap થઈ!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">છુપાવો</string>
     <string name="k2go_home_no_library">હજી કોઈ લાઇબ્રેરી નથી — ઇન્સ્ટોલ કરવા અને સામગ્રી ઉમેરવા Get more ખોલો</string>
     <string name="k2go_home_ready_empty">લાઇબ્રેરી તૈયાર છે — સામગ્રી ઉમેરવા Get more ખોલો</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

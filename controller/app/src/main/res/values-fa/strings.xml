@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">صدور ناموفق بود: %1$s</string>
     <string name="install_error_no_tier">هی! یک نسخه برای نصب انتخاب کنید (Basic، Standard یا Full).</string>
     <string name="install_error_no_storage">حافظه کافی نیست! لطفاً فضا آزاد کنید یا نسخه کوچک‌تری انتخاب کنید. (۵ گیگابایت حافظه ایمنی لازم است)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">در حال استخراج سیستم…\n(این کار مدتی طول می‌کشد)</string>
     <string name="install_error_no_archive">خطا: بایگانی دانلودشده یافت نشد.</string>
     <string name="install_error_extraction">استخراج ناموفق بود: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">حذف ناموفق بود: %1$s</string>
     <string name="install_status_installing_module">در حال نصب %1$s…</string>
     <string name="install_status_preparing_kiwix">در حال آماده‌سازی Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">در حال فهرست‌بندی ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps از قبل فراهم شده…</string>
     <string name="install_status_maps_configuring">در حال پیکربندی IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">در حال پاک کردن سیستم قدیمی…</string>
     <string name="install_status_starting_vanilla">در حال شروع بازنشانی Vanilla Debian…</string>
     <string name="install_status_downloading_debian">در حال دانلود Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">در حال استخراج پایه…</string>
     <string name="install_status_bootstrapping">در حال بوت‌استرپ Debian…</string>
     <string name="install_success_vanilla">سیستم پایه Vanilla با موفقیت بوت‌استرپ شد!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">پنهان کردن</string>
     <string name="k2go_home_no_library">هنوز کتابخانه‌ای نیست — برای نصب و افزودن محتوا «دریافت بیشتر» را باز کنید</string>
     <string name="k2go_home_ready_empty">کتابخانه آماده است — برای افزودن محتوا «دریافت بیشتر» را باز کنید</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

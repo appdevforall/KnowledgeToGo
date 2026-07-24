@@ -204,10 +204,11 @@ public class Aria2Manager {
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
                         int percent = Integer.parseInt(matcher.group(1));
-                        // ADFA-4815: aria2's DL field is a transfer rate (e.g. "4.5MiB"), so label it
-                        // per second. Only the real rate gets "/s" — the profiler's status strings
-                        // ("Test IPv4", "✓ IPv6") come through a different path and stay as-is.
-                        String speed = matcher.group(2) + "/s";
+                        // ADFA-4830: aria2's DL field is a transfer rate, so append the localized
+                        // per-second unit here — the only place that knows the value is a rate. The
+                        // profiler's status ("Test IPv4", "✓ IPv6") comes through a different path and
+                        // stays unit-free, and the display strings no longer bake the unit.
+                        String speed = matcher.group(2) + context.getString(R.string.k2go_rate_per_second);
                         String eta = matcher.group(3);
 
                         mainHandler.post(() -> listener.onProgress(percent, speed, eta));

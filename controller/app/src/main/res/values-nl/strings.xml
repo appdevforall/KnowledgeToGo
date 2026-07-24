@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Export mislukt: %1$s</string>
     <string name="install_error_no_tier">Hé! Selecteer een editie om te installeren (Basic, Standard of Full).</string>
     <string name="install_error_no_storage">Onvoldoende opslag! Maak ruimte vrij of kies een kleinere editie. (5 GB veiligheidsmarge vereist)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Systeem uitpakken…\n(Dit duurt even)</string>
     <string name="install_error_no_archive">Fout: gedownload archief niet gevonden.</string>
     <string name="install_error_extraction">Uitpakken mislukt: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Verwijderen mislukt: %1$s</string>
     <string name="install_status_installing_module">%1$s installeren…</string>
     <string name="install_status_preparing_kiwix">Kiwix voorbereiden…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM indexeren…</string>
     <string name="install_status_maps_provisioned">IIAB Maps al ingericht…</string>
     <string name="install_status_maps_configuring">IIAB Maps configureren…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Oud systeem wissen…</string>
     <string name="install_status_starting_vanilla">Vanilla Debian-reset starten…</string>
     <string name="install_status_downloading_debian">Debian downloaden…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Basis uitpakken…</string>
     <string name="install_status_bootstrapping">Debian bootstrappen…</string>
     <string name="install_success_vanilla">Vanilla-basissysteem succesvol gebootstrapt!</string>
@@ -839,4 +839,5 @@
     <string name="k2go_hide">Verbergen</string>
     <string name="k2go_home_no_library">Nog geen bibliotheek — open Meer ophalen om te installeren en inhoud toe te voegen</string>
     <string name="k2go_home_ready_empty">Bibliotheek klaar — open Meer ophalen om inhoud toe te voegen</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

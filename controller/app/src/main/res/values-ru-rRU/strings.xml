@@ -243,7 +243,7 @@
 
     <string name="install_error_no_tier">Эй! Выберите версию для установки (Базовая, Стандартная или Полная).</string>
     <string name="install_error_no_storage">Недостаточно места! Пожалуйста, освободите место или выберите меньшую версию. (Требуется резерв 5 ГБ)</string>
-    <string name="install_status_os_download">ОС: %1$d%% | %2$s/с</string>
+    <string name="install_status_os_download">ОС: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Извлечение системы...\n(Это займет некоторое время)</string>
     <string name="install_error_no_archive">Ошибка: Загруженный архив не найден.</string>
     <string name="install_error_extraction">Ошибка извлечения: %1$s</string>
@@ -260,7 +260,7 @@
 
     <string name="install_status_installing_module">Установка %1$s...</string>
     <string name="install_status_preparing_kiwix">Подготовка Kiwix...</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/с</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Индексация ZIM...</string>
     <string name="install_status_maps_provisioned">Карты IIAB уже предоставлены...</string>
     <string name="install_status_maps_configuring">Настройка карт IIAB...</string>
@@ -269,7 +269,7 @@
     <string name="install_status_wiping_old">Удаление старой системы...</string>
     <string name="install_status_starting_vanilla">Начало сброса на Vanilla Debian...</string>
     <string name="install_status_downloading_debian">Загрузка Debian...</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/с</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Извлечение базы...</string>
     <string name="install_status_bootstrapping">Инициализация Debian...</string>
     <string name="install_success_vanilla">Базовая система Vanilla успешно инициализирована!</string>
@@ -915,4 +915,5 @@
     <string name="k2go_hide">Скрыть</string>
     <string name="k2go_home_no_library">Библиотеки пока нет — откройте «Получить ещё», чтобы установить и добавить контент</string>
     <string name="k2go_home_ready_empty">Библиотека готова — откройте «Получить ещё», чтобы добавить контент</string>
+    <string name="k2go_rate_per_second">/с</string>
 </resources>

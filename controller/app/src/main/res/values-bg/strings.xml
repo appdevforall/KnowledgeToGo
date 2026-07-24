@@ -265,7 +265,7 @@
     <string name="install_msg_export_failed">Експортирането е неуспешно: %1$s</string>
     <string name="install_error_no_tier">Хей! Изберете издание за инсталиране (Basic, Standard или Full).</string>
     <string name="install_error_no_storage">Няма достатъчно хранилище! Моля, освободете място или изберете по-малко издание. (Изисква се 5GB буфер за безопасност)</string>
-    <string name="install_status_os_download">ОС: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">ОС: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Извличане на системата…\n(Това отнема известно време)</string>
     <string name="install_error_no_archive">Грешка: Изтегленият архив не е намерен.</string>
     <string name="install_error_extraction">Извличането е неуспешно: %1$s</string>
@@ -280,7 +280,7 @@
     <string name="install_error_delete">Изтриването е неуспешно: %1$s</string>
     <string name="install_status_installing_module">Инсталиране на %1$s…</string>
     <string name="install_status_preparing_kiwix">Подготовка на Kiwix…</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">Индексиране на ZIM…</string>
     <string name="install_status_maps_provisioned">IIAB Maps вече е осигурен…</string>
     <string name="install_status_maps_configuring">Конфигуриране на IIAB Maps…</string>
@@ -288,7 +288,7 @@
     <string name="install_status_wiping_old">Изтриване на старата система…</string>
     <string name="install_status_starting_vanilla">Започва нулиране на Vanilla Debian…</string>
     <string name="install_status_downloading_debian">Изтегляне на Debian…</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">Извличане на базата…</string>
     <string name="install_status_bootstrapping">Bootstrap на Debian…</string>
     <string name="install_success_vanilla">Базовата система Vanilla е успешно инициализирана!</string>
@@ -846,4 +846,5 @@
     <string name="k2go_hide">Скриване</string>
     <string name="k2go_home_no_library">Още няма библиотека — отворете „Вземи още“, за да инсталирате и добавите съдържание</string>
     <string name="k2go_home_ready_empty">Библиотеката е готова — отворете „Вземи още“, за да добавите съдържание</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>

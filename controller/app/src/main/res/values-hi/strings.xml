@@ -244,7 +244,7 @@
 
     <string name="install_error_no_tier">अरे! इंस्टॉल करने के लिए एक संस्करण चुनें (बेसिक, स्टैंडर्ड या पूर्ण)।</string>
     <string name="install_error_no_storage">पर्याप्त स्टोरेज नहीं है! कृपया स्थान खाली करें या एक छोटा संस्करण चुनें। (5GB का सुरक्षा बफर आवश्यक है)</string>
-    <string name="install_status_os_download">OS: %1$d%% | %2$s/s</string>
+    <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">सिस्टम निकाला जा रहा है...\n(इसमें कुछ समय लगेगा)</string>
     <string name="install_error_no_archive">त्रुटि: डाउनलोड किया गया संग्रह (Archive) नहीं मिला।</string>
     <string name="install_error_extraction">निष्कर्षण विफल: %1$s</string>
@@ -261,7 +261,7 @@
 
     <string name="install_status_installing_module">%1$s इंस्टॉल हो रहा है...</string>
     <string name="install_status_preparing_kiwix">Kiwix तैयार किया जा रहा है...</string>
-    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s/s</string>
+    <string name="install_status_zim_download">ZIM: %1$d%% | %2$s</string>
     <string name="install_status_indexing_zim">ZIM इंडेक्स किया जा रहा है...</string>
     <string name="install_status_maps_provisioned">IIAB मानचित्र पहले से ही तैयार हैं...</string>
     <string name="install_status_maps_configuring">IIAB मानचित्र कॉन्फ़िगर किए जा रहे हैं...</string>
@@ -270,7 +270,7 @@
     <string name="install_status_wiping_old">पुराना सिस्टम मिटाया जा रहा है...</string>
     <string name="install_status_starting_vanilla">Vanilla Debian रीसेट शुरू किया जा रहा है...</string>
     <string name="install_status_downloading_debian">Debian डाउनलोड हो रहा है...</string>
-    <string name="install_status_debian_download">Debian: %1$d%% | %2$s/s</string>
+    <string name="install_status_debian_download">Debian: %1$d%% | %2$s</string>
     <string name="install_status_extracting_base">बेस निकाला जा रहा है...</string>
     <string name="install_status_bootstrapping">Debian बूटस्ट्रैप किया जा रहा है...</string>
     <string name="install_success_vanilla">Vanilla बेस सिस्टम सफलतापूर्वक बूटस्ट्रैप किया गया!</string>
@@ -916,4 +916,5 @@
     <string name="k2go_hide">छिपाएँ</string>
     <string name="k2go_home_no_library">अभी कोई लाइब्रेरी नहीं — इंस्टॉल करने और सामग्री जोड़ने के लिए Get more खोलें</string>
     <string name="k2go_home_ready_empty">लाइब्रेरी तैयार है — सामग्री जोड़ने के लिए Get more खोलें</string>
+    <string name="k2go_rate_per_second">/s</string>
 </resources>
