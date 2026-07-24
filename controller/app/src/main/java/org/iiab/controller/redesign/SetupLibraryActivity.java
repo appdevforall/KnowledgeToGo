@@ -33,6 +33,10 @@ public class SetupLibraryActivity extends AppCompatActivity {
     private boolean zimLangManual = false; // false = following the wizard/system default
     private final java.util.LinkedHashMap<String, Long> zimCart = new java.util.LinkedHashMap<>();
 
+    // ADFA-4853: true while the ZIM flow runs inside the wizard (pre-install). The terminal step
+    // then persists the cart to ZimWishlist instead of starting a live download.
+    private boolean zimWizard = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +120,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
      *  the rest are navigable placeholders for now so the hub is reviewable. */
     public void openContentType(String key, String title) {
+        zimWizard = false;   // live (post-install) path; the ZIM terminal downloads, not wishlists
         androidx.fragment.app.Fragment f;
         if ("maps".equals(key)) f = new MapsLandingFragment();
         else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
@@ -169,10 +174,34 @@ public class SetupLibraryActivity extends AppCompatActivity {
      *  wishlist; Wikipedia/Maps are placeholders until their wizard sources land. */
     public void openWizardContent(String key, String title) {
         if ("books".equals(key)) { openBooksWizard(); return; }
+        if ("wikipedia".equals(key)) { openZimWizard(); return; }
+        // Maps is identical pre/post-install (it stops everything and runs the proot), so it reuses
+        // the existing Maps flow rather than a wizard-specific mode.
+        if ("maps".equals(key)) { openContentType(key, title); return; }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(title))
                 .addToBackStack("wizard_" + key)
                 .commit();
+    }
+
+    /** ADFA-4853: ZIM in wizard mode — same offline browse (kiwix_catalog.csv), but the terminal
+     *  step persists the cart to ZimWishlist instead of downloading live. */
+    public void openZimWizard() {
+        zimWizard = true;
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ZimLandingFragment())
+                .addToBackStack("wizard_wikipedia")
+                .commit();
+    }
+
+    public boolean isZimWizard() { return zimWizard; }
+
+    /** ADFA-4853: ZIM Confirm terminal in wizard mode — bank the selection and return to the hub. */
+    public void zimWizardConfirm() {
+        ZimWishlist.add(this, zimCart);
+        zimCart.clear();
+        getSupportFragmentManager().popBackStack("wizard_wikipedia",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     /** ADFA-4853: open Books in wizard mode (pre-install, offline catalog -> wishlist). */

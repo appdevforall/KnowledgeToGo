@@ -451,6 +451,7 @@
     <!-- ADFA-4850: Get More hub — module-gated cards -->
     <string name="k2go_gm_checking" translatable="false">Checking installed modules…</string>
     <string name="k2go_wizard_continue" translatable="false">Continue</string>
+    <string name="k2go_zim_add_setup_fmt" translatable="false">Add to your setup (%1$s)</string>
     <string name="k2go_gm_none" translatable="false">No content modules are installed yet.</string>
 
     <!-- ADFA-4850: Get More Books / Project Gutenberg -->
