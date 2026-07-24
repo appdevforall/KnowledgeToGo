@@ -18,6 +18,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -47,6 +48,7 @@ public class ZimLandingFragment extends Fragment {
     private LinearLayout cats;
     private TextView status, langLabel, storageLabel;
     private ProgressBar storageBar;
+    private Button review;
     private String query = "";
     private boolean expanded = false;
 
@@ -73,6 +75,10 @@ public class ZimLandingFragment extends Fragment {
         langLabel = root.findViewById(R.id.k2go_zim_lang);
         storageLabel = root.findViewById(R.id.k2go_zim_storage_label);
         storageBar = root.findViewById(R.id.k2go_zim_storage_bar);
+        review = root.findViewById(R.id.k2go_zim_review);
+        review.setOnClickListener(v -> {
+            if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).openZimConfirm();
+        });
 
         android.widget.EditText search = root.findViewById(R.id.k2go_zim_search);
         search.addTextChangedListener(new android.text.TextWatcher() {
@@ -146,6 +152,14 @@ public class ZimLandingFragment extends Fragment {
         int pct = totalMb > 0 ? (int) Math.min(100, Math.round((used + sel) * 100.0 / totalMb)) : 0;
         storageBar.setProgress(pct);
         storageLabel.setText(getString(R.string.k2go_zim_storage_fmt, gb(used), gb(sel), gb(freeMb)));
+        if (review != null) {
+            if (sel > 0) {
+                review.setVisibility(View.VISIBLE);
+                review.setText(getString(R.string.k2go_zim_review_fmt, gb(sel)));
+            } else {
+                review.setVisibility(View.GONE);
+            }
+        }
     }
 
     private String gb(long mb) {

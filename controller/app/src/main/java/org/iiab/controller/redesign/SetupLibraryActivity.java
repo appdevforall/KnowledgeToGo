@@ -115,6 +115,28 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /** ADFA-4849: ZIM landing "Review" -> Confirm (cross-category breakdown of the cart). */
+    public void openZimConfirm() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ZimConfirmFragment())
+                .addToBackStack("zim_confirm")
+                .commit();
+    }
+
+    /** ADFA-4849: Confirm -> Preparing (contained animation + real progress; mock until backend). */
+    public void openZimPreparing() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new ZimPreparingFragment())
+                .addToBackStack("zim_preparing")
+                .commit();
+    }
+
+    /** ADFA-4849: "Run in background" from ZIM Preparing -> back to the Get More hub. */
+    public void backToGetMoreHubZim() {
+        getSupportFragmentManager().popBackStack("getmore_wikipedia",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
     /** ADFA-4848: Maps landing -> "Choose layers & quality" (Option B). */
     public void openMapsChoose() {
         getSupportFragmentManager().beginTransaction()
