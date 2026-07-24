@@ -60,6 +60,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean gateDismissed = false;
     private boolean closing = false;
     private boolean closedDone = false;
+    private boolean moduleBusy = false;   // ADFA-4842: a module (runrole) queue is running
 
     // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
     private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
@@ -172,6 +173,21 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             }
         });
 
+        // ADFA-4842: while a module (runrole) queue runs, the server is stopped and the rootfs is
+        // being modified — block the WHOLE library UI (every tab + nav) behind the full-screen boot
+        // gate, show which module is installing, and bring the server back when the queue finishes.
+        org.iiab.controller.install.presentation.ModuleQueueRepository.get().state().observe(this, ms -> {
+            if (ms == null) return;
+            if (ms.isRunning()) {
+                if (!moduleBusy) { moduleBusy = true; showModuleBusy(); }
+                if (installDetail != null) installDetail.setText(ms.currentModule == null ? "" : ms.currentModule);
+            } else if (moduleBusy) {
+                moduleBusy = false;
+                hideModuleBusy();
+                if (canStartServer()) startServer();   // the server was stopped for the runroles
+            }
+        });
+
         Handler main = new Handler(Looper.getMainLooper());
         if (installing) {
             // A download is in progress: keep the gate and show live progress; dismissal
@@ -217,6 +233,37 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private void hideInstallProgress() {
         stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
+    }
+
+    // ADFA-4842: full-screen "system updating" block while a module (runrole) queue runs. The boot
+    // gate is match_parent + clickable and drawn over the nav content, so it blocks EVERY tab
+    // (Library, Connect, Clone, Settings) and the nav bar — not just the Library cards.
+    private void showModuleBusy() {
+        if (closing) return;
+        stopBootEllipsis();
+        if (installProgress != null) {
+            installProgress.setVisibility(View.VISIBLE);
+            if (installStatus != null) installStatus.setText(getString(R.string.install_busy_modules));
+            if (installBar != null) { installBar.setVisibility(View.VISIBLE); installBar.setIndeterminate(true); }
+        }
+        if (bootGate != null) {
+            bootGate.setVisibility(View.VISIBLE);
+            if (!reduceMotion()) {
+                bootGate.removeAllAnimatorListeners();
+                bootGate.setRepeatCount(LottieDrawable.INFINITE);
+                bootGate.setMinAndMaxFrame("A_ENTRY_LOOP");
+                bootGate.playAnimation();
+            }
+        }
+    }
+
+    private void hideModuleBusy() {
+        hideInstallProgress();
+        if (bootGate != null) {
+            bootGate.removeAllAnimatorListeners();
+            bootGate.cancelAnimation();
+            bootGate.setVisibility(View.GONE);
+        }
     }
 
     private void onServerReady() {
