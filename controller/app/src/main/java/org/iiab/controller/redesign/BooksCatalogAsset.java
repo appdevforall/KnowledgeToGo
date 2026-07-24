@@ -4,7 +4,9 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4853. OFFLINE Books catalog, read from the bundled asset
- *               assets/books_catalog.jsonl.gz (generated from the dashboard catalog.db by
+ *               assets/books_catalog.jsonl (plain JSONL — a ".gz" double-extension asset got
+ *               EOL-normalized and dropped from the APK; single-extension plain text is safe),
+ *               (generated from the dashboard catalog.db by
  *               tools/gen-books-catalog-asset.py). This is the wizard/pre-install data source:
  *               the user can search + pick books before the system (and Calibre-Web) exist. It
  *               emits the SAME row shape as the live REST search (gutenberg_id, title, author,
@@ -33,13 +35,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
 
 public final class BooksCatalogAsset {
     private BooksCatalogAsset() {}
 
     private static final String TAG = "K2Go-BooksAsset";
-    private static final String ASSET = "books_catalog.jsonl.gz";
+    private static final String ASSET = "books_catalog.jsonl";
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
     // Parsed once, kept in memory (already popularity-ordered by the generator).
@@ -102,8 +103,7 @@ public final class BooksCatalogAsset {
         if (CACHE != null) return CACHE;
         List<JSONObject> list = new ArrayList<>();
         try (InputStream raw = app.getAssets().open(ASSET);
-             GZIPInputStream gz = new GZIPInputStream(raw);
-             BufferedReader r = new BufferedReader(new InputStreamReader(gz, StandardCharsets.UTF_8))) {
+             BufferedReader r = new BufferedReader(new InputStreamReader(raw, StandardCharsets.UTF_8))) {
             String line;
             while ((line = r.readLine()) != null) {
                 line = line.trim();

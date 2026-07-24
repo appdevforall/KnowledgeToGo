@@ -6,28 +6,29 @@
 # Generate the app's OFFLINE Books catalog asset from the dashboard catalog.db,
 # so the wizard can search/select books before the system (and Calibre-Web) exist.
 #
-# Reads the dashboard catalog (SQLite FTS 'catalog' table) and writes a gzipped
-# JSON Lines file — one compact record per line:
+# Reads the dashboard catalog (SQLite FTS 'catalog' table) and writes a plain
+# (uncompressed) JSON Lines file — one compact record per line:
 #     {"id": <gutenberg_id>, "title": "...", "author": "...", "lang": "en", "url": "..."}
 # JSONL (not CSV) so commas/quotes/accents in titles/authors never corrupt a row.
-# The whole catalog is tiny (~170 KB gzipped), so this stays a bundled APK asset.
+# Kept UNCOMPRESSED with a single extension (.jsonl), like assets/kiwix_catalog.csv:
+# a ".jsonl.gz" double-extension binary got EOL-normalized by .gitattributes and was
+# not packaged into the APK (FileNotFoundException at runtime). Plain text avoids that.
 #
 # Usage:
-#   gen-books-catalog-asset.py [CATALOG_DB] [OUT_JSONL_GZ]
+#   gen-books-catalog-asset.py [CATALOG_DB] [OUT_JSONL]
 # Defaults:
-#   CATALOG_DB   = /library/dashboard/books/catalog.db   (on the installed system)
-#   OUT_JSONL_GZ = <repo>/controller/app/src/main/assets/books_catalog.jsonl.gz
+#   CATALOG_DB = /library/dashboard/books/catalog.db   (on the installed system)
+#   OUT_JSONL  = <repo>/controller/app/src/main/assets/books_catalog.jsonl
 # ============================================================================
 import sqlite3
 import json
-import gzip
 import sys
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = sys.argv[1] if len(sys.argv) > 1 else "/library/dashboard/books/catalog.db"
 OUT = sys.argv[2] if len(sys.argv) > 2 else os.path.join(
-    HERE, "..", "controller", "app", "src", "main", "assets", "books_catalog.jsonl.gz")
+    HERE, "..", "controller", "app", "src", "main", "assets", "books_catalog.jsonl")
 
 if not os.path.exists(SRC):
     sys.exit(f"catalog not found: {SRC} (run on a system that has the dashboard catalog, "
@@ -45,7 +46,7 @@ finally:
 
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 n = 0
-with gzip.open(OUT, "wt", encoding="utf-8") as f:
+with open(OUT, "w", encoding="utf-8") as f:
     for gid, title, author, lang, url in rows:
         if gid is None or not url:
             continue
