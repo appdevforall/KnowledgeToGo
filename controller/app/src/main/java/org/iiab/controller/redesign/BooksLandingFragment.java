@@ -63,6 +63,20 @@ public class BooksLandingFragment extends Fragment {
     private final LinkedHashMap<String, JSONObject> selected = new LinkedHashMap<>();
     private final Set<String> libraryTitles = new HashSet<>();
 
+    // Wizard mode (ADFA-4853): pre-install. Source is the OFFLINE catalog asset, there is no live
+    // server, and "Add" writes to the persisted wishlist (drained after install) instead of the
+    // live download service. "In your books" here means "already in your setup order".
+    private boolean wizard = false;
+
+    /** Open the Books screen in wizard (pre-install, offline) mode. */
+    public static BooksLandingFragment newInstance(boolean wizard) {
+        BooksLandingFragment f = new BooksLandingFragment();
+        Bundle b = new Bundle();
+        b.putBoolean("wizard", wizard);
+        f.setArguments(b);
+        return f;
+    }
+
     // Fixed cover palette: dark enough for white text, identical in light + dark themes.
     private final int[] palette = {
             R.color.k2go_cover_1, R.color.k2go_cover_2, R.color.k2go_cover_3,
@@ -76,6 +90,7 @@ public class BooksLandingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_books_landing, container, false);
+        wizard = getArguments() != null && getArguments().getBoolean("wizard", false);
 
         TextView back = root.findViewById(R.id.k2go_books_back);
         back.setText("‹ " + getString(R.string.k2go_gm_hub_title));
@@ -121,6 +136,7 @@ public class BooksLandingFragment extends Fragment {
     private void buildChips() {
         chips.removeAllViews();
         chips.addView(chip(getString(R.string.k2go_books_chip_popular), filter.isEmpty(), () -> { filter = ""; query = ""; onFilterChanged(); }));
+        if (wizard) return;   // offline asset has no bookshelves (Educational) and no live library (My books)
         chips.addView(gap());
         chips.addView(chip(getString(R.string.k2go_books_chip_edu), "educational".equals(filter), () -> { filter = "educational"; query = ""; onFilterChanged(); }));
         chips.addView(gap());
@@ -141,7 +157,7 @@ public class BooksLandingFragment extends Fragment {
     }
 
     private void loadLanguages() {
-        BooksClient.languages(new BooksClient.ArrayCb() {
+        BooksClient.ArrayCb cb = new BooksClient.ArrayCb() {
             @Override public void onOk(JSONArray rows) {
                 if (!isAdded()) return;
                 langCodes.clear();
@@ -152,7 +168,9 @@ public class BooksLandingFragment extends Fragment {
                 }
             }
             @Override public void onErr(String m) { /* leave the picker empty; "All" still works */ }
-        });
+        };
+        if (wizard) BooksCatalogAsset.languages(requireContext(), cb);
+        else BooksClient.languages(cb);
     }
 
     private String langName(String code) {
@@ -190,6 +208,7 @@ public class BooksLandingFragment extends Fragment {
     }
 
     private void loadLibrary() {
+        if (wizard) { render(); return; }   // "in your setup" comes from the wishlist; no live library
         BooksClient.library(new BooksClient.ArrayCb() {
             @Override public void onOk(JSONArray rows) {
                 if (!isAdded()) return;
@@ -221,11 +240,13 @@ public class BooksLandingFragment extends Fragment {
                 status.setText(getString(R.string.k2go_books_unavailable));
             }
         };
-        if (isLocal()) BooksClient.library(cb);
+        if (wizard) BooksCatalogAsset.search(requireContext(), query, lang, 40, cb);
+        else if (isLocal()) BooksClient.library(cb);
         else BooksClient.search(query, filter, lang, 40, cb);
     }
 
     private boolean inLibrary(JSONObject b) {
+        if (wizard) return BooksWishlist.contains(requireContext(), b.optString("gutenberg_id", ""));
         return libraryTitles.contains(b.optString("title", "").toLowerCase(Locale.ROOT).trim());
     }
 
@@ -312,7 +333,8 @@ public class BooksLandingFragment extends Fragment {
 
         // State band UNDER the title (green = in your books, gray = selected); else the author.
         if (lib) {
-            cover.addView(band(R.color.k2go_band_library, getString(R.string.k2go_books_in_library)));
+            cover.addView(band(R.color.k2go_band_library,
+                    getString(wizard ? R.string.k2go_books_added : R.string.k2go_books_in_library)));
         } else if (sel) {
             cover.addView(band(R.color.k2go_band_selected, getString(R.string.k2go_books_selected)));
         } else {
@@ -368,8 +390,10 @@ public class BooksLandingFragment extends Fragment {
             addBtn.setVisibility(View.VISIBLE);
             int n = selected.size();
             addBtn.setEnabled(n > 0);
-            addBtn.setText(n > 0 ? getString(R.string.k2go_books_add_fmt, n) : getString(R.string.k2go_books_add_none));
+            int fmt = wizard ? R.string.k2go_books_add_setup_fmt : R.string.k2go_books_add_fmt;
+            addBtn.setText(n > 0 ? getString(fmt, n) : getString(R.string.k2go_books_add_none));
         }
+        if (wizard) { downloadsLink.setVisibility(View.GONE); return; }   // no live downloads pre-install
         boolean active = BooksDownloadService.hasSession();
         downloadsLink.setVisibility(active ? View.VISIBLE : View.GONE);
         if (active) downloadsLink.setText(getString(R.string.k2go_books_view_downloads));
@@ -377,6 +401,15 @@ public class BooksLandingFragment extends Fragment {
 
     private void startDownloads() {
         if (selected.isEmpty()) return;
+        if (wizard) {   // pre-install: record the picks into the wishlist; provisioned after install
+            for (JSONObject b : selected.values()) {
+                BooksWishlist.add(requireContext(), b.optString("gutenberg_id", ""),
+                        b.optString("title", ""), b.optString("download_url", ""));
+            }
+            selected.clear();
+            render();   // picked books now show the "Added" band
+            return;
+        }
         List<String> ids = new ArrayList<>(), titles = new ArrayList<>(), urls = new ArrayList<>();
         for (JSONObject b : selected.values()) {
             ids.add(b.optString("gutenberg_id", ""));

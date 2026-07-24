@@ -469,6 +469,8 @@
     <string name="k2go_books_in_library" translatable="false">In your books</string>
     <string name="k2go_books_selected" translatable="false">Selected</string>
     <string name="k2go_books_add_fmt" translatable="false">Add %1$d to library</string>
+    <string name="k2go_books_add_setup_fmt" translatable="false">Add %1$d to your setup</string>
+    <string name="k2go_books_added" translatable="false">Added</string>
     <string name="k2go_books_add_none" translatable="false">Select books to add</string>
     <string name="k2go_books_view_downloads" translatable="false">View downloads</string>
     <string name="k2go_books_dl_title" translatable="false">Downloads</string>

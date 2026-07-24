@@ -157,6 +157,14 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
+    /** ADFA-4853: open Books in wizard mode (pre-install, offline catalog -> wishlist). */
+    public void openBooksWizard() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, BooksLandingFragment.newInstance(true))
+                .addToBackStack("wizard_books")
+                .commit();
+    }
+
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
     public void openBooksDownloads() {
         getSupportFragmentManager().beginTransaction()
