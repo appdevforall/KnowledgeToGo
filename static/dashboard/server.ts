@@ -14,6 +14,8 @@ import { handleBooksEvents } from './sockets/books.socket';
 // the shared JobManager; the router exposes them over /api.
 import { jobs } from './sockets/jobs';
 import './sockets/kiwix.exec';
+import './sockets/maps.exec';
+import './sockets/books.exec';
 import { apiRouter } from './routes';
 
 const app = express();

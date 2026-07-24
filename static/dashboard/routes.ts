@@ -35,10 +35,13 @@ export const apiRouter: Router = express.Router();
 apiRouter.post('/:type/download', (req: Request, res: Response): void => {
     const type = String(req.params.type);
     if (!isType(type)) { res.status(404).json({ error: 'unknown type' }); return; }
-    const body = req.body as { ids?: unknown };
-    const ids = Array.isArray(body?.ids) ? body.ids.map((x) => String(x)) : [];
-    if (ids.length === 0) { res.status(400).json({ error: 'ids required' }); return; }
-    res.status(202).json(toApi(jobs.create(type, ids)));
+    // kiwix sends { ids: ["file.zim"] }; maps/books send { items: [ {...} ] }.
+    const body = req.body as { ids?: unknown; items?: unknown };
+    const items: unknown[] = Array.isArray(body?.items)
+        ? body.items
+        : Array.isArray(body?.ids) ? body.ids : [];
+    if (items.length === 0) { res.status(400).json({ error: 'items (or ids) required' }); return; }
+    res.status(202).json(toApi(jobs.create(type, items)));
 });
 
 // Poll one job's structured status.

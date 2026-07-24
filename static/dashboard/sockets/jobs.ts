@@ -42,6 +42,9 @@ export interface JobUpdate {
 /** Passed to a runner: report progress, check cancellation, spawn tracked children. */
 export interface RunnerContext {
     readonly job: Job;
+    /** Raw request items (strings for kiwix; objects for maps/books). */
+    readonly items: unknown[];
+    /** Convenience view: just the string items (kiwix ZIM filenames). */
     readonly ids: string[];
     update(patch: JobUpdate): void;
     isCanceled(): boolean;
@@ -88,12 +91,13 @@ class JobManager {
         this.runners.set(type, runner);
     }
 
-    /** Create + start a job. Returns the persisted row immediately (phase 'queued'). */
-    create(type: JobType, ids: string[]): Job {
+    /** Create + start a job. Returns the persisted row immediately (phase 'queued').
+     *  `items` are strings for kiwix (ZIM filenames) or objects for maps/books. */
+    create(type: JobType, items: unknown[]): Job {
         const now = Date.now();
         const id = `${type}-${now}-${Math.random().toString(36).slice(2, 8)}`;
         const job: Job = {
-            id, type, target: JSON.stringify(ids), phase: 'queued',
+            id, type, target: JSON.stringify(items), phase: 'queued',
             percent: -1, speed: 0, detail: null, error: null, created: now, updated: now,
         };
         this.db.prepare(
@@ -159,11 +163,12 @@ class JobManager {
         const rt = { canceled: false, procs: new Set<ChildProcess>() };
         this.runtime.set(job.id, rt);
 
-        let ids: string[] = [];
-        try { ids = JSON.parse(job.target) as string[]; } catch { ids = []; }
+        let items: unknown[] = [];
+        try { const parsed = JSON.parse(job.target); items = Array.isArray(parsed) ? parsed : []; } catch { items = []; }
+        const ids = items.filter((x): x is string => typeof x === 'string');
 
         const ctx: RunnerContext = {
-            job, ids,
+            job, items, ids,
             update: (p) => this.patch(job.id, p),
             isCanceled: () => rt.canceled,
             throwIfCanceled: () => { if (rt.canceled) throw new CanceledError(); },
