@@ -625,3 +625,28 @@ task refreshMapsSizes {
 }
 
 preBuild.dependsOn refreshMapsSizes
+
+// ---- Kiwix ZIM catalog refresh (release-only) ---------------------------------
+// Regenerates src/main/assets/kiwix_catalog.csv from the Kiwix directory listings via
+// tools/build_kiwix_catalog.py. Unlike the size tasks above it does NOT run on every build
+// (the listings are large and the servers throttle bots) — it runs automatically only when
+// assembling a RELEASE, and can be invoked manually any time: ./gradlew refreshKiwixCatalog.
+// Never fails the build: if python3 is missing or the fetch is blocked, the committed CSV
+// (last known) is kept.
+task refreshKiwixCatalog {
+    group = 'build setup'
+    description = 'Regenerate assets/kiwix_catalog.csv from the Kiwix listings (release / manual)'
+    doLast {
+        try {
+            def proc = ['python3', 'tools/build_kiwix_catalog.py'].execute(null, projectDir)
+            proc.consumeProcessOutput(System.out, System.err)
+            proc.waitFor()
+            if (proc.exitValue() != 0) logger.warn(">> [kiwix catalog] generator exit ${proc.exitValue()}; kept existing CSV.")
+        } catch (Exception e) {
+            logger.warn(">> [kiwix catalog] skipped (${e.message}); kept existing CSV.")
+        }
+    }
+}
+tasks.matching { it.name == 'assembleRelease' || it.name == 'bundleRelease' }.configureEach {
+    dependsOn refreshKiwixCatalog
+}
