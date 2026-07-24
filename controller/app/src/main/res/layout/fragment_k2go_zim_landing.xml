@@ -1,153 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4849: Wikipedia & ZIM content — catalog landing. Language + storage + search +
-     browse-by-category list (rows built programmatically into k2go_zim_cats from KiwixCatalog). -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- ADFA-4849: Wikipedia & ZIM content — catalog landing. Content scrolls; the 'Review
+     selection' button is pinned to the bottom so it's always reachable. 'See all N categories'
+     sits at the end of the scrolling list. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/k2go_zim_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_teal" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/k2go_zim_title"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:textColor="@color/k2go_ink" />
+
+            <!-- Language row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp"
+                android:background="@drawable/k2go_getmore_bg">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/k2go_zim_lang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textColor="@color/k2go_ink" />
+
+                    <TextView
+                        android:id="@+id/k2go_zim_lang_sub"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/k2go_zim_lang_sub"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_muted" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/k2go_zim_change"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/k2go_zim_change"
+                    android:textAllCaps="false" />
+            </LinearLayout>
+
+            <!-- Storage -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/k2go_zim_storage"
+                android:textAppearance="?attr/textAppearanceLabelSmall"
+                android:textColor="@color/k2go_muted" />
+
+            <ProgressBar
+                android:id="@+id/k2go_zim_storage_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:max="100"
+                android:progressTint="@color/k2go_teal"
+                android:progressBackgroundTint="@color/k2go_hairline" />
+
+            <TextView
+                android:id="@+id/k2go_zim_storage_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+
+            <EditText
+                android:id="@+id/k2go_zim_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:padding="12dp"
+                android:background="@drawable/k2go_card_bg"
+                android:hint="@string/k2go_zim_search_hint"
+                android:inputType="text"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_ink"
+                android:textColorHint="@color/k2go_muted" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/k2go_zim_browse"
+                android:textStyle="bold"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="@color/k2go_ink" />
+
+            <TextView
+                android:id="@+id/k2go_zim_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_muted" />
+
+            <LinearLayout
+                android:id="@+id/k2go_zim_cats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Fixed bottom bar: appears only when the cart has a selection. -->
     <LinearLayout
+        android:id="@+id/k2go_zim_bottombar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="24dp">
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/k2go_zim_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_teal" />
-
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/k2go_zim_title"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:textColor="@color/k2go_ink" />
+            android:layout_height="1dp"
+            android:background="@color/k2go_hairline" />
 
-        <!-- Language row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:background="@drawable/k2go_getmore_bg">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/k2go_zim_lang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textAppearance="?attr/textAppearanceTitleSmall"
-                    android:textColor="@color/k2go_ink" />
-
-                <TextView
-                    android:id="@+id/k2go_zim_lang_sub"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/k2go_zim_lang_sub"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textColor="@color/k2go_muted" />
-            </LinearLayout>
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp">
 
             <Button
-                android:id="@+id/k2go_zim_change"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/k2go_zim_change"
-                android:textAllCaps="false" />
+                android:id="@+id/k2go_zim_review"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:textColor="@android:color/white"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/k2go_teal" />
         </LinearLayout>
-
-        <!-- Storage -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/k2go_zim_storage"
-            android:textAppearance="?attr/textAppearanceLabelSmall"
-            android:textColor="@color/k2go_muted" />
-
-        <ProgressBar
-            android:id="@+id/k2go_zim_storage_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:max="100"
-            android:progressTint="@color/k2go_teal"
-            android:progressBackgroundTint="@color/k2go_hairline" />
-
-        <TextView
-            android:id="@+id/k2go_zim_storage_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted" />
-
-        <!-- Category search: filters the browse list by name (so a low-count category is findable). -->
-        <EditText
-            android:id="@+id/k2go_zim_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:padding="12dp"
-            android:background="@drawable/k2go_card_bg"
-            android:hint="@string/k2go_zim_search_hint"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
-            android:maxLines="1"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_ink"
-            android:textColorHint="@color/k2go_muted" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/k2go_zim_browse"
-            android:textStyle="bold"
-            android:textAppearance="?attr/textAppearanceTitleSmall"
-            android:textColor="@color/k2go_ink" />
-
-        <TextView
-            android:id="@+id/k2go_zim_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_muted" />
-
-        <LinearLayout
-            android:id="@+id/k2go_zim_cats"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical" />
-
-        <Button
-            android:id="@+id/k2go_zim_review"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="16dp"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/k2go_teal"
-            android:visibility="gone" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
