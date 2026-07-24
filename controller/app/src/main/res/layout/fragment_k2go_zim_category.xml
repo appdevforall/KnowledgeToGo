@@ -39,7 +39,7 @@
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/k2go_ink" />
 
-            <!-- Language + count label (tap to change language). -->
+            <!-- Informative label only (language · count). NOT a button. -->
             <TextView
                 android:id="@+id/k2go_zc_lang"
                 android:layout_width="wrap_content"
@@ -52,6 +52,47 @@
                 android:background="@drawable/k2go_pill_bg"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/k2go_teal" />
+        </LinearLayout>
+
+        <!-- Language selector (same control as the catalog landing). -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:background="@drawable/k2go_getmore_bg">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/k2go_zc_lang_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="@color/k2go_ink" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/k2go_zim_lang_sub"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/k2go_zc_change"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/k2go_zim_change"
+                android:textAllCaps="false" />
         </LinearLayout>
 
         <EditText

@@ -73,7 +73,7 @@ public class ZimCategoryFragment extends Fragment {
     private long freeMb = 0, totalMb = 0;
 
     private LinearLayout list;
-    private TextView freeLabel, sortSize, sortName, sortGroup, langChip;
+    private TextView freeLabel, sortSize, sortName, sortGroup, langChip, langCurrent;
     private ProgressBar bar;
     private Button add;
 
@@ -102,8 +102,9 @@ public class ZimCategoryFragment extends Fragment {
         sortSize = root.findViewById(R.id.k2go_zc_sort_size);
         sortName = root.findViewById(R.id.k2go_zc_sort_name);
         sortGroup = root.findViewById(R.id.k2go_zc_sort_group);
-        langChip = root.findViewById(R.id.k2go_zc_lang);
-        langChip.setOnClickListener(v -> pickLanguage());
+        langChip = root.findViewById(R.id.k2go_zc_lang);   // informative label only (not a button)
+        langCurrent = root.findViewById(R.id.k2go_zc_lang_current);
+        root.findViewById(R.id.k2go_zc_change).setOnClickListener(v -> pickLanguage());
 
         android.widget.EditText search = root.findViewById(R.id.k2go_zc_search);
         search.setHint(getString(R.string.k2go_zc_search_hint, cat != null ? cat.title : project));
@@ -180,7 +181,8 @@ public class ZimCategoryFragment extends Fragment {
     }
 
     private void render() {
-        langChip.setText(getString(R.string.k2go_zc_lang_fmt, langDisplay(lang), entries.size()) + "  ▾");
+        langChip.setText(getString(R.string.k2go_zc_lang_fmt, langDisplay(lang), entries.size()));
+        langCurrent.setText(getString(R.string.k2go_zim_lang_fmt, langDisplay(lang)));
         sortSize.setText(getString(R.string.k2go_zc_sort_size) + (sizeDir < 0 ? " ▼" : " ▲"));
         sortName.setText((nameDir > 0 ? getString(R.string.k2go_zc_sort_name) : getString(R.string.k2go_zc_sort_name_desc))
                 + (nameDir > 0 ? " ▼" : " ▲"));

@@ -158,10 +158,13 @@ public class ZimLandingFragment extends Fragment {
         cats.removeAllViews();
         String lang = lang();
 
+        // Counts + ordering reflect the SELECTED language (not the all-languages total), so the
+        // language selector is meaningful: e.g. Wikipedia in Spanish shows its ~dozens, not 2,465.
+        final String L = lang;
         List<KiwixCategories.Category> ordered = new ArrayList<>();
         Collections.addAll(ordered, KiwixCategories.ALL);
         Collections.sort(ordered, (a, b) ->
-                Integer.compare(KiwixCatalog.totalFiles(catalog, b.key), KiwixCatalog.totalFiles(catalog, a.key)));
+                Integer.compare(KiwixCatalog.count(catalog, b.key, L), KiwixCatalog.count(catalog, a.key, L)));
 
         List<KiwixCategories.Category> shown = new ArrayList<>();
         for (KiwixCategories.Category c : ordered) if (matches(c, query)) shown.add(c);
@@ -173,10 +176,9 @@ public class ZimLandingFragment extends Fragment {
 
         for (int i = 0; i < limit; i++) {
             KiwixCategories.Category c = shown.get(i);
-            cats.addView(categoryRow(c, KiwixCatalog.totalFiles(catalog, c.key),
-                    KiwixCatalog.count(catalog, c.key, lang)));
+            cats.addView(categoryRow(c, KiwixCatalog.count(catalog, c.key, L)));
         }
-        if (limiting) cats.addView(seeAllRow(ordered.size(), totalItems(ordered)));
+        if (limiting) cats.addView(seeAllRow(ordered.size(), totalItems(ordered, L)));
         if (shown.isEmpty()) status.setText(getString(R.string.k2go_zim_no_match));
         else status.setText("");
     }
@@ -216,9 +218,9 @@ public class ZimLandingFragment extends Fragment {
                 || c.key.toLowerCase(Locale.ROOT).contains(q);
     }
 
-    private int totalItems(List<KiwixCategories.Category> all) {
+    private int totalItems(List<KiwixCategories.Category> all, String lang) {
         int n = 0;
-        for (KiwixCategories.Category c : all) n += KiwixCatalog.totalFiles(catalog, c.key);
+        for (KiwixCategories.Category c : all) n += KiwixCatalog.count(catalog, c.key, lang);
         return n;
     }
 
@@ -234,8 +236,8 @@ public class ZimLandingFragment extends Fragment {
         return t;
     }
 
-    private View categoryRow(KiwixCategories.Category c, int total, int inLang) {
-        boolean enabled = total > 0;
+    private View categoryRow(KiwixCategories.Category c, int n) {
+        boolean enabled = n > 0;
 
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -264,7 +266,7 @@ public class ZimLandingFragment extends Fragment {
         TextView right = new TextView(requireContext());
         right.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
         right.setTextColor(ContextCompat.getColor(requireContext(), enabled ? R.color.k2go_ink : R.color.k2go_muted));
-        right.setText(enabled ? (total + "   ›") : getString(R.string.k2go_zim_cat_unavailable));
+        right.setText(enabled ? (n + "   ›") : getString(R.string.k2go_zim_cat_unavailable));
         row.addView(right);
 
         if (enabled) {
