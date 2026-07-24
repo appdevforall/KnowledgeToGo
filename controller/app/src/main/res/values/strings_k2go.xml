@@ -347,4 +347,31 @@
     <string name="k2go_gm_books_note" translatable="false">Thousands, tiny</string>
     <string name="k2go_gm_maps_note" translatable="false">Choose quality</string>
     <string name="k2go_gm_courses_note" translatable="false">In-app: TBD</string>
+
+    <!-- ADFA-4848: Maps Get More flow (WIP; translatable=false until the l10n pass). -->
+    <string name="k2go_maps_scr_title" translatable="false">Maps</string>
+    <string name="k2go_maps_landing_sub" translatable="false">Set up your offline maps.</string>
+    <string name="k2go_maps_install_title" translatable="false">Install or update maps</string>
+    <string name="k2go_maps_install_desc" translatable="false">Base map, satellite, 3D terrain, search \u2014 pick quality &amp; size, then build.</string>
+    <string name="k2go_maps_choose_cta" translatable="false">Choose layers &amp; quality \u203a</string>
+    <string name="k2go_maps_choose_title" translatable="false">Choose layers &amp; quality</string>
+    <string name="k2go_maps_choose_sub" translatable="false">More detail means a bigger download.</string>
+    <string name="k2go_maps_grp_base" translatable="false">Base map</string>
+    <string name="k2go_maps_grp_base_hint" translatable="false">coverage &amp; roads</string>
+    <string name="k2go_maps_grp_sat" translatable="false">Satellite</string>
+    <string name="k2go_maps_grp_sat_hint" translatable="false">aerial photos</string>
+    <string name="k2go_maps_grp_terrain" translatable="false">3D terrain</string>
+    <string name="k2go_maps_grp_terrain_hint" translatable="false">elevation</string>
+    <string name="k2go_maps_grp_search" translatable="false">Search</string>
+    <string name="k2go_maps_grp_search_hint" translatable="false">find places \u00b7 low-power</string>
+    <string name="k2go_maps_lvl_off" translatable="false">Off</string>
+    <string name="k2go_maps_lvl_low" translatable="false">Low</string>
+    <string name="k2go_maps_lvl_standard" translatable="false">Standard</string>
+    <string name="k2go_maps_lvl_high" translatable="false">High</string>
+    <string name="k2go_maps_lvl_max" translatable="false">Max</string>
+    <string name="k2go_maps_lvl_cities" translatable="false">Cities</string>
+    <string name="k2go_maps_free" translatable="false">Free space %1$s</string>
+    <string name="k2go_maps_fits" translatable="false">Fits: %1$s of %2$s free</string>
+    <string name="k2go_maps_nospace" translatable="false">Not enough space \u2014 needs %1$s, %2$s free</string>
+    <string name="k2go_maps_download" translatable="false">Download \u00b7 %1$s</string>
 </resources>

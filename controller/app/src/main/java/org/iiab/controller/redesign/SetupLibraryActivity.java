@@ -82,13 +82,34 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4848: open a content type's screen from the Get More hub. Maps gets its own flow in a
-     *  later slice; the rest are navigable placeholders for now so the hub is reviewable. */
+    /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
+     *  the rest are navigable placeholders for now so the hub is reviewable. */
     public void openContentType(String key, String title) {
-        androidx.fragment.app.Fragment f = PlaceholderFragment.newInstance(title);
+        androidx.fragment.app.Fragment f = "maps".equals(key)
+                ? new MapsLandingFragment()
+                : PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, f)
                 .addToBackStack("getmore_" + key)
+                .commit();
+    }
+
+    /** ADFA-4848: Maps landing -> "Choose layers & quality" (Option B). */
+    public void openMapsChoose() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new MapsChooseFragment())
+                .addToBackStack("maps_choose")
+                .commit();
+    }
+
+    /** ADFA-4848: Choose -> Confirm. Stub (placeholder) until slice 3 builds Confirm + Preparing. */
+    public void openMapsConfirm(long totalMb) {
+        String t = totalMb >= 1024
+                ? String.format(java.util.Locale.US, "Confirm · %.1f GB", totalMb / 1024.0)
+                : "Confirm · " + totalMb + " MB";
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(t))
+                .addToBackStack("maps_confirm")
                 .commit();
     }
 
