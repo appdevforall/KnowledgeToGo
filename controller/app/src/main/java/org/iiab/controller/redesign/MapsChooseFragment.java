@@ -40,28 +40,30 @@ import java.util.Locale;
 
 public class MapsChooseFragment extends Fragment {
 
-    private static final class Opt { final int label; final long mb; Opt(int l, long m) { label = l; mb = m; } }
+    private static final class Opt { final int label; final String level; long mb;
+        Opt(int l, String lv, long m) { label = l; level = lv; mb = m; } }
     private static final class Grp {
-        final int icon; final int label; final int hint; final Opt[] opts; final int def;
-        Grp(int ic, int l, int h, Opt[] o, int d) { icon = ic; label = l; hint = h; opts = o; def = d; }
+        final int icon; final int label; final int hint; final String key; final Opt[] opts; final int def;
+        Grp(int ic, int l, int h, String k, Opt[] o, int d) { icon = ic; label = l; hint = h; key = k; opts = o; def = d; }
     }
 
-    // Options mirror the interactive prototype (human labels -> real zoom levels wire in with the
-    // backend). Sizes are placeholders pending maps_sizes.csv.
+    // Layers/levels are constrained to the Android maps support matrix; the `level` keys map to the
+    // mirror files (roles/maps/defaults). The mb values are last-known fallbacks (whole-world sizes);
+    // resolveSizes() overwrites them with the packaged maps_sizes.csv at runtime.
     private final Grp[] GROUPS = {
-            new Grp(R.drawable.ic_maps_base, R.string.k2go_maps_grp_base, R.string.k2go_maps_grp_base_hint, new Opt[]{
-                    new Opt(R.string.k2go_maps_lvl_low, 120), new Opt(R.string.k2go_maps_lvl_standard, 2500),
-                    new Opt(R.string.k2go_maps_lvl_high, 14000) }, 1),
-            new Grp(R.drawable.ic_maps_satellite, R.string.k2go_maps_grp_sat, R.string.k2go_maps_grp_sat_hint, new Opt[]{
-                    new Opt(R.string.k2go_maps_lvl_off, 0), new Opt(R.string.k2go_maps_lvl_low, 600),
-                    new Opt(R.string.k2go_maps_lvl_standard, 2400), new Opt(R.string.k2go_maps_lvl_high, 9000),
-                    new Opt(R.string.k2go_maps_lvl_max, 40000) }, 0),
-            new Grp(R.drawable.ic_maps_terrain, R.string.k2go_maps_grp_terrain, R.string.k2go_maps_grp_terrain_hint, new Opt[]{
-                    new Opt(R.string.k2go_maps_lvl_off, 0), new Opt(R.string.k2go_maps_lvl_low, 500),
-                    new Opt(R.string.k2go_maps_lvl_standard, 1200), new Opt(R.string.k2go_maps_lvl_high, 3000),
-                    new Opt(R.string.k2go_maps_lvl_max, 7000) }, 0),
-            new Grp(R.drawable.ic_maps_search, R.string.k2go_maps_grp_search, R.string.k2go_maps_grp_search_hint, new Opt[]{
-                    new Opt(R.string.k2go_maps_lvl_off, 0), new Opt(R.string.k2go_maps_lvl_cities, 35) }, 1),
+            new Grp(R.drawable.ic_maps_base, R.string.k2go_maps_grp_base, R.string.k2go_maps_grp_base_hint, "base", new Opt[]{
+                    new Opt(R.string.k2go_maps_lvl_low, "nat-z8", 85), new Opt(R.string.k2go_maps_lvl_standard, "osm-z11", 8602),
+                    new Opt(R.string.k2go_maps_lvl_high, "osm-z14", 83354) }, 1),
+            new Grp(R.drawable.ic_maps_satellite, R.string.k2go_maps_grp_sat, R.string.k2go_maps_grp_sat_hint, "satellite", new Opt[]{
+                    new Opt(R.string.k2go_maps_lvl_off, null, 0), new Opt(R.string.k2go_maps_lvl_low, "7", 85),
+                    new Opt(R.string.k2go_maps_lvl_standard, "9", 1229), new Opt(R.string.k2go_maps_lvl_high, "11", 21299),
+                    new Opt(R.string.k2go_maps_lvl_max, "13", 276890) }, 0),
+            new Grp(R.drawable.ic_maps_terrain, R.string.k2go_maps_grp_terrain, R.string.k2go_maps_grp_terrain_hint, "terrain", new Opt[]{
+                    new Opt(R.string.k2go_maps_lvl_off, null, 0), new Opt(R.string.k2go_maps_lvl_low, "7", 933),
+                    new Opt(R.string.k2go_maps_lvl_standard, "8", 6144), new Opt(R.string.k2go_maps_lvl_high, "9", 27341),
+                    new Opt(R.string.k2go_maps_lvl_max, "10", 101274) }, 0),
+            new Grp(R.drawable.ic_maps_search, R.string.k2go_maps_grp_search, R.string.k2go_maps_grp_search_hint, "search", new Opt[]{
+                    new Opt(R.string.k2go_maps_lvl_off, null, 0), new Opt(R.string.k2go_maps_lvl_cities, "pop-1k-cities", 15) }, 1),
     };
 
     private final long[] selectedMb = new long[GROUPS.length];
@@ -74,6 +76,17 @@ public class MapsChooseFragment extends Fragment {
     private Button download;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
+
+    /** Overwrite each option's size with the packaged last-known value (maps_sizes.csv);
+     *  the built-in mb stays as the fallback when a row is missing. */
+    private void resolveSizes() {
+        MapsCatalog cat = new MapsCatalog(requireContext());
+        for (Grp g : GROUPS) {
+            for (Opt o : g.opts) {
+                o.mb = cat.sizeMb(g.key, o.level, o.mb);
+            }
+        }
+    }
 
     @Nullable
     @Override
@@ -95,6 +108,7 @@ public class MapsChooseFragment extends Fragment {
             freeMb = 0;
         }
 
+        resolveSizes();
         buildGroups(root.findViewById(R.id.k2go_maps_groups));
 
         download.setOnClickListener(v -> {
