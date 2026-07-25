@@ -3,13 +3,14 @@
  * Name        : SetupProgressActivity.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4853. "Finishing setup" — the visible post-install provisioning screen. Shows
- *               one section per content stream actually being provisioned, in a fixed order
- *               (Wikipedia/ZIM, then Books; Maps later), each with a per-item checklist driven by
- *               the live download services (ZimDownloadService / BooksDownloadService). A section
- *               only appears if its service has a session, so the user sees exactly what they picked
- *               being added. Finish clears the sessions; Run in background leaves them going (each
- *               service also shows its own notification).
+ * Description : ADFA-4853. "Finishing setup" — the post-install provisioning screen. An INDEX with
+ *               one summary row per content stream being provisioned (Wikipedia/ZIM, Books; Maps
+ *               later), in a fixed order; each row shows a rolled-up state and a chevron. Tapping a
+ *               row opens that stream's REAL detail card (ZimPreparingFragment / BooksDownloadsFragment
+ *               in "from index" mode) hosted right here, so the user sees the actual live progress —
+ *               not a re-drawn copy. In a detail, the primary action is Back (to the index); Finish
+ *               (secondary, with confirmation) leaves the whole setup. The index-level Finish is the
+ *               single exit; while running the user can leave via Run in background.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -20,11 +21,14 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -32,22 +36,29 @@ import org.iiab.controller.R;
 
 public class SetupProgressActivity extends AppCompatActivity {
 
+    private ScrollView indexScroll;
     private LinearLayout sections;
     private Button finishBtn, runBgBtn;
+    private View detailRoot;
+    private int fragHostId;
+    private boolean showingDetail = false;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
     @Override
     protected void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
+        fragHostId = View.generateViewId();
 
-        ScrollView sv = new ScrollView(this);
+        FrameLayout rootFrame = new FrameLayout(this);
+        rootFrame.setBackgroundColor(ContextCompat.getColor(this, R.color.k2go_paper));
+
+        // ---- INDEX ----
+        indexScroll = new ScrollView(this);
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(px(20), px(24), px(20), px(24));
-        root.setBackgroundColor(ContextCompat.getColor(this, R.color.k2go_paper));
-        sv.addView(root);
-        setContentView(sv);
+        indexScroll.addView(root);
 
         TextView title = new TextView(this);
         title.setText(R.string.k2go_setup_progress_title);
@@ -71,74 +82,97 @@ public class SetupProgressActivity extends AppCompatActivity {
         secLp.topMargin = px(16);
         root.addView(sections, secLp);
 
-        finishBtn = new Button(this);
-        finishBtn.setText(R.string.k2go_zim_finish);
-        finishBtn.setAllCaps(false);
-        finishBtn.setTextColor(0xFFFFFFFF);
-        finishBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.k2go_teal)));
+        finishBtn = primaryButton(getString(R.string.k2go_zim_finish));
+        finishBtn.setOnClickListener(v -> confirmFinish());
         LinearLayout.LayoutParams fLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, px(52));
         fLp.topMargin = px(20);
-        finishBtn.setLayoutParams(fLp);
-        finishBtn.setOnClickListener(v -> {
-            ZimDownloadService.finishSession();
-            BooksDownloadService.finishSession();
-            finish();
-        });
-        root.addView(finishBtn);
+        root.addView(finishBtn, fLp);
 
-        runBgBtn = new Button(this);
-        runBgBtn.setText(R.string.k2go_zim_run_bg);
-        runBgBtn.setAllCaps(false);
-        runBgBtn.setTextColor(ContextCompat.getColor(this, R.color.k2go_teal));
-        runBgBtn.setBackgroundResource(R.drawable.k2go_getmore_bg);
+        runBgBtn = secondaryButton(getString(R.string.k2go_zim_run_bg));
+        runBgBtn.setOnClickListener(v -> finish());   // leave the services running
         LinearLayout.LayoutParams rLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, px(52));
         rLp.topMargin = px(10);
-        runBgBtn.setLayoutParams(rLp);
-        runBgBtn.setOnClickListener(v -> finish());   // leave the services running
-        root.addView(runBgBtn);
+        root.addView(runBgBtn, rLp);
+
+        // ---- DETAIL (hosts the real per-module card) ----
+        LinearLayout detail = new LinearLayout(this);
+        detail.setOrientation(LinearLayout.VERTICAL);
+        detail.setVisibility(View.GONE);
+
+        FrameLayout fragHost = new FrameLayout(this);
+        fragHost.setId(fragHostId);
+        detail.addView(fragHost, new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f));
+
+        LinearLayout bar = new LinearLayout(this);
+        bar.setOrientation(LinearLayout.VERTICAL);
+        bar.setPadding(px(20), px(10), px(20), px(16));
+        Button back = primaryButton(getString(R.string.k2go_setup_back));
+        back.setOnClickListener(v -> backToIndex());
+        bar.addView(back, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, px(52)));
+        Button term = secondaryButton(getString(R.string.k2go_zim_finish));
+        LinearLayout.LayoutParams termLp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, px(52));
+        termLp.topMargin = px(10);
+        term.setOnClickListener(v -> confirmFinish());
+        bar.addView(term, termLp);
+        detail.addView(bar);
+
+        detailRoot = detail;
+
+        rootFrame.addView(indexScroll, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        rootFrame.addView(detailRoot, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        setContentView(rootFrame);
+    }
+
+    private Button primaryButton(String text) {
+        Button b = new Button(this);
+        b.setText(text);
+        b.setAllCaps(false);
+        b.setTextColor(0xFFFFFFFF);
+        b.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.k2go_teal)));
+        return b;
+    }
+
+    private Button secondaryButton(String text) {
+        Button b = new Button(this);
+        b.setText(text);
+        b.setAllCaps(false);
+        b.setTextColor(ContextCompat.getColor(this, R.color.k2go_teal));
+        b.setBackgroundResource(R.drawable.k2go_getmore_bg);
+        return b;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ZimDownloadService.setListener(this::render);
-        BooksDownloadService.setListener(this::render);
-        render();
+        if (!showingDetail) {
+            ZimDownloadService.setListener(this::render);
+            BooksDownloadService.setListener(this::render);
+            render();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        ZimDownloadService.setListener(null);
-        BooksDownloadService.setListener(null);
-    }
-
-    private String detailStream = null;   // null = index; "zim" / "books" = a stream's detail
-
-    private void render() {
-        if (sections == null) return;
-        sections.removeAllViews();
-        if (detailStream == null) buildIndex();
-        else buildDetail(detailStream);
-        boolean complete = allComplete();
-        finishBtn.setEnabled(complete);
-        runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+        if (!showingDetail) {
+            ZimDownloadService.setListener(null);
+            BooksDownloadService.setListener(null);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        if (detailStream != null) { detailStream = null; render(); }
+        if (showingDetail) backToIndex();
         else super.onBackPressed();
     }
 
-    private boolean allComplete() {
-        boolean zimActive = ZimDownloadService.hasSession() && !ZimDownloadService.isComplete();
-        boolean booksActive = BooksDownloadService.hasSession() && !BooksDownloadService.isComplete();
-        return !zimActive && !booksActive;
-    }
-
-    // ---- Index: one light summary row per active stream; tapping opens its detail ----
-    private void buildIndex() {
+    // ---- Index ----
+    private void render() {
+        if (sections == null || showingDetail) return;
+        sections.removeAllViews();
         if (ZimDownloadService.hasSession()) {
             sections.addView(indexRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
                     ZimDownloadService.status(), ZimDownloadService.DONE, ZimDownloadService.FAILED,
@@ -149,6 +183,15 @@ public class SetupProgressActivity extends AppCompatActivity {
                     BooksDownloadService.status(), BooksDownloadService.DONE, BooksDownloadService.FAILED,
                     BooksDownloadService.isComplete()));
         }
+        boolean complete = allComplete();
+        finishBtn.setEnabled(complete);
+        runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+    }
+
+    private boolean allComplete() {
+        boolean zimActive = ZimDownloadService.hasSession() && !ZimDownloadService.isComplete();
+        boolean booksActive = BooksDownloadService.hasSession() && !BooksDownloadService.isComplete();
+        return !zimActive && !booksActive;
     }
 
     private View indexRow(String heading, String key, int[] status, int doneVal, int failedVal, boolean complete) {
@@ -184,49 +227,47 @@ public class SetupProgressActivity extends AppCompatActivity {
         col.addView(sub);
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        TextView chev = new TextView(this);
-        chev.setText("›");
-        chev.setTextColor(ContextCompat.getColor(this, R.color.k2go_muted));
-        chev.setTextSize(22);
-        row.addView(chev);
+        ImageView chev = new ImageView(this);
+        chev.setImageResource(R.drawable.ic_chevron_right);
+        chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
+        row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
-        row.setOnClickListener(v -> { detailStream = key; render(); });
+        row.setOnClickListener(v -> openDetail(key));
         return row;
     }
 
-    // ---- Detail: the tapped stream's checklist, drawn by the shared ProvisioningChecklist ----
-    private void buildDetail(String key) {
-        final boolean isZim = "zim".equals(key);
-        String[] raw = isZim ? ZimDownloadService.labels() : BooksDownloadService.titles();
-        final String[] labels = raw != null ? raw : new String[0];
-        int[] status = isZim ? ZimDownloadService.status() : BooksDownloadService.status();
-        int doneVal = isZim ? ZimDownloadService.DONE : BooksDownloadService.DONE;
-        int failedVal = isZim ? ZimDownloadService.FAILED : BooksDownloadService.FAILED;
+    // ---- Detail: host the real per-module card ----
+    private void openDetail(String key) {
+        showingDetail = true;
+        androidx.fragment.app.Fragment f = "zim".equals(key)
+                ? ZimPreparingFragment.newInstance(true) : BooksDownloadsFragment.newInstance(true);
+        getSupportFragmentManager().beginTransaction().replace(fragHostId, f).commit();
+        indexScroll.setVisibility(View.GONE);
+        detailRoot.setVisibility(View.VISIBLE);
+    }
 
-        TextView back = new TextView(this);
-        back.setText("‹ " + getString(R.string.k2go_setup_progress_title));
-        back.setTextColor(ContextCompat.getColor(this, R.color.k2go_teal));
-        back.setPadding(0, px(4), 0, px(10));
-        back.setOnClickListener(v -> { detailStream = null; render(); });
-        sections.addView(back);
+    private void backToIndex() {
+        showingDetail = false;
+        androidx.fragment.app.Fragment cur = getSupportFragmentManager().findFragmentById(fragHostId);
+        if (cur != null) getSupportFragmentManager().beginTransaction().remove(cur).commit();
+        detailRoot.setVisibility(View.GONE);
+        indexScroll.setVisibility(View.VISIBLE);
+        // The detail card took over the service listener; reclaim it for the index.
+        ZimDownloadService.setListener(this::render);
+        BooksDownloadService.setListener(this::render);
+        render();
+    }
 
-        TextView h = new TextView(this);
-        h.setText(getString(isZim ? R.string.k2go_gm_wikipedia_title : R.string.k2go_gm_books_title));
-        h.setTypeface(h.getTypeface(), Typeface.BOLD);
-        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
-        h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-        sections.addView(h);
-
-        LinearLayout list = new LinearLayout(this);
-        list.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        llp.topMargin = px(6);
-        sections.addView(list, llp);
-
-        ProvisioningChecklist.render(this, list, labels.length, status, doneVal, failedVal,
-                i -> labels[i],
-                i -> { if (isZim) ZimDownloadService.retry(getApplicationContext(), i);
-                       else BooksDownloadService.retry(getApplicationContext(), i); });
+    private void confirmFinish() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.k2go_setup_finish_q)
+                .setMessage(R.string.k2go_setup_finish_msg)
+                .setPositiveButton(R.string.k2go_zim_finish, (d, w) -> {
+                    ZimDownloadService.finishSession();
+                    BooksDownloadService.finishSession();
+                    finish();
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 }

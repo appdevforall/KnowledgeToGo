@@ -456,6 +456,9 @@
     <string name="k2go_setup_state_done" translatable="false">Done</string>
     <string name="k2go_setup_state_failed_fmt" translatable="false">%1$d failed</string>
     <string name="k2go_setup_state_progress_fmt" translatable="false">%1$d of %2$d</string>
+    <string name="k2go_setup_back" translatable="false">Back</string>
+    <string name="k2go_setup_finish_q" translatable="false">Finish setup?</string>
+    <string name="k2go_setup_finish_msg" translatable="false">Anything still downloading keeps going in the background; items with errors won\'t be retried.</string>
     <string name="k2go_zim_add_setup_fmt" translatable="false">Add to your setup (%1$s)</string>
     <string name="k2go_gm_none" translatable="false">No content modules are installed yet.</string>
 

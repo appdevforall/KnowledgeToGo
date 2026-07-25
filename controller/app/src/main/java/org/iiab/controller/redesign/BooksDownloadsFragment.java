@@ -39,6 +39,16 @@ public class BooksDownloadsFragment extends Fragment {
     private TextView detail;
     private LinearLayout listv;
     private Button finishBtn, runBgBtn;
+    private boolean fromIndex;   // hosted by the Finishing-setup index: hide own buttons, only observe
+
+    /** Open as a detail card inside the Finishing-setup index (host owns Back/Finish; observe only). */
+    public static BooksDownloadsFragment newInstance(boolean fromIndex) {
+        BooksDownloadsFragment f = new BooksDownloadsFragment();
+        Bundle b = new Bundle();
+        b.putBoolean("fromIndex", fromIndex);
+        f.setArguments(b);
+        return f;
+    }
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -46,6 +56,7 @@ public class BooksDownloadsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_books_downloads, container, false);
+        fromIndex = getArguments() != null && getArguments().getBoolean("fromIndex", false);
 
         detail = root.findViewById(R.id.k2go_bdl_detail);
         listv = root.findViewById(R.id.k2go_bdl_list);
@@ -60,6 +71,11 @@ public class BooksDownloadsFragment extends Fragment {
             BooksDownloadService.finishSession();      // clear the session; free it for a new list
             requireActivity().getSupportFragmentManager().popBackStack();
         });
+
+        if (fromIndex) {   // the index host provides Back/Finish; this card only observes
+            finishBtn.setVisibility(View.GONE);
+            runBgBtn.setVisibility(View.GONE);
+        }
 
         BooksDownloadService.setListener(this::render);
         render();
@@ -79,9 +95,11 @@ public class BooksDownloadsFragment extends Fragment {
 
         drawChecklist(titles, status);
 
-        boolean complete = BooksDownloadService.isComplete();
-        finishBtn.setEnabled(complete);
-        runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+        if (!fromIndex) {
+            boolean complete = BooksDownloadService.isComplete();
+            finishBtn.setEnabled(complete);
+            runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void drawChecklist(String[] titles, int[] status) {

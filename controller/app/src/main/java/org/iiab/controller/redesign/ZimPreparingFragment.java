@@ -46,6 +46,16 @@ public class ZimPreparingFragment extends Fragment {
     private ProgressBar bar;
     private LinearLayout listv;
     private Button finishBtn, runBgBtn;
+    private boolean fromIndex;   // hosted by the Finishing-setup index: hide own buttons, only observe
+
+    /** Open as a detail card inside the Finishing-setup index (host owns Back/Finish; observe only). */
+    public static ZimPreparingFragment newInstance(boolean fromIndex) {
+        ZimPreparingFragment f = new ZimPreparingFragment();
+        Bundle b = new Bundle();
+        b.putBoolean("fromIndex", fromIndex);
+        f.setArguments(b);
+        return f;
+    }
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -59,6 +69,7 @@ public class ZimPreparingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_zim_preparing, container, false);
+        fromIndex = getArguments() != null && getArguments().getBoolean("fromIndex", false);
 
         label = root.findViewById(R.id.k2go_zprep_label);
         pct = root.findViewById(R.id.k2go_zprep_pct);
@@ -80,11 +91,16 @@ public class ZimPreparingFragment extends Fragment {
             }
         });
 
+        if (fromIndex) {   // the index host provides Back/Finish; this card only observes
+            finishBtn.setVisibility(View.GONE);
+            runBgBtn.setVisibility(View.GONE);
+        }
+
         // Start (or re-attach to) the download session, then observe its state.
         KiwixCatalog.getOrFetch(requireContext(), new KiwixCatalog.Listener() {
             @Override public void onReady(JSONObject catalog) {
                 if (!isAdded()) return;
-                if (!ZimDownloadService.isRunning()) startSession(catalog);
+                if (!fromIndex && !ZimDownloadService.isRunning()) startSession(catalog);
                 ZimDownloadService.setListener(ZimPreparingFragment.this::render);
                 render();
             }
@@ -171,9 +187,11 @@ public class ZimPreparingFragment extends Fragment {
 
         drawChecklist(labels, status);
 
-        boolean complete = ZimDownloadService.isComplete();
-        finishBtn.setEnabled(complete);
-        runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+        if (!fromIndex) {
+            boolean complete = ZimDownloadService.isComplete();
+            finishBtn.setEnabled(complete);
+            runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void drawChecklist(String[] labels, int[] status) {
