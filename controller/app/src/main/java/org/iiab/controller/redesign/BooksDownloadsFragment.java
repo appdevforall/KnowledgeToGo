@@ -85,75 +85,13 @@ public class BooksDownloadsFragment extends Fragment {
     }
 
     private void drawChecklist(String[] titles, int[] status) {
-        listv.removeAllViews();
-        for (int i = 0; i < titles.length; i++) {
-            int st = status[i];
-            boolean done = st == BooksDownloadService.DONE;
-            boolean failed = st == BooksDownloadService.FAILED;
-            boolean active = st == BooksDownloadService.ACTIVE || st == BooksDownloadService.ADDING;
-
-            LinearLayout r = new LinearLayout(requireContext());
-            r.setOrientation(LinearLayout.HORIZONTAL);
-            r.setGravity(Gravity.CENTER_VERTICAL);
-            r.setPadding(0, px(6), 0, px(6));
-
-            if (done) {
-                ImageView chk = new ImageView(requireContext());
-                chk.setImageResource(R.drawable.ic_check_circle);
-                chk.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
-                LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(px(16), px(16));
-                clp.rightMargin = px(8);
-                r.addView(chk, clp);
-            } else {
-                View dot = new View(requireContext());
-                dot.setBackgroundResource(R.drawable.k2go_dot);
-                int c = failed ? R.color.k2go_amber : (active ? R.color.k2go_teal : R.color.k2go_hairline);
-                dot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), c)));
-                LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(px(10), px(10));
-                dlp.leftMargin = px(3);
-                dlp.rightMargin = px(11);
-                r.addView(dot, dlp);
-            }
-
-            LinearLayout col = new LinearLayout(requireContext());
-            col.setOrientation(LinearLayout.VERTICAL);
-
-            TextView t = new TextView(requireContext());
-            t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-            t.setText(titles[i]);
-            t.setMaxLines(2);
-            int tc = failed ? R.color.k2go_amber_text : (done || active ? R.color.k2go_ink : R.color.k2go_muted);
-            t.setTextColor(ContextCompat.getColor(requireContext(), tc));
-            col.addView(t);
-
-            TextView state = new TextView(requireContext());
-            state.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-            state.setText(stateLabel(st));
-            state.setTextColor(ContextCompat.getColor(requireContext(),
-                    failed ? R.color.k2go_amber_text : R.color.k2go_muted));
-            col.addView(state);
-
-            r.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-
-            if (failed) {
-                final int idx = i;
-                TextView retry = new TextView(requireContext());
-                retry.setText(R.string.k2go_zim_retry);
-                retry.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-                retry.setTypeface(retry.getTypeface(), Typeface.BOLD);
-                retry.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-                retry.setPadding(px(12), px(6), px(12), px(6));
-                retry.setBackgroundResource(R.drawable.k2go_getmore_bg);
-                retry.setClickable(true);
-                retry.setOnClickListener(v -> BooksDownloadService.retry(requireContext().getApplicationContext(), idx));
-                LinearLayout.LayoutParams retryLp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                retryLp.leftMargin = px(8);
-                r.addView(retry, retryLp);
-            }
-
-            listv.addView(r);
-        }
+        ProvisioningChecklist.render(requireContext(), listv, titles.length, status,
+                BooksDownloadService.DONE, BooksDownloadService.FAILED,
+                new ProvisioningChecklist.RowText() {
+                    @Override public String main(int i) { return titles[i]; }
+                    @Override public String sub(int i) { return stateLabel(status[i]); }
+                },
+                i -> BooksDownloadService.retry(requireContext().getApplicationContext(), i));
     }
 
     private String stateLabel(int st) {
