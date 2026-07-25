@@ -25,7 +25,6 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public static final String EXTRA_CONTENT_ONLY = "contentOnly";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
-    private boolean optionB = false;           // A is the default
     // Shared Wikipedia selection so picks survive the A/B flip.
     private final java.util.LinkedHashSet<String> wikiVariants = new java.util.LinkedHashSet<>();
     private boolean wikiIncluded = true;
@@ -109,17 +108,6 @@ public class SetupLibraryActivity extends AppCompatActivity {
         }
     }
 
-    private Fragment step2Fragment() {
-        return optionB ? new Step2OptionBFragment() : new Step2OptionAFragment();
-    }
-
-    /** Called by Step 1 "Next". */
-    public void goToStep2() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, step2Fragment())
-                .addToBackStack("step2")
-                .commit();
-    }
 
     /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
      *  the rest are navigable placeholders for now so the hub is reviewable. */
@@ -274,12 +262,4 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    /** Hidden A/B-test switch: flip the Step-2 layout in place; picks carry over. */
-    public void flipAbTest() {
-        optionB = !optionB;
-        Log.d("K2Go-ABtest", "Set-up-content layout -> " + (optionB ? "B (5-step + gauge)" : "A (expandable + bar)"));
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, step2Fragment())
-                .commit();
-    }
 }
