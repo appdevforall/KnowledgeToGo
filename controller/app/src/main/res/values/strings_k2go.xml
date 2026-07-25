@@ -453,6 +453,9 @@
     <string name="k2go_wizard_continue" translatable="false">Continue</string>
     <string name="k2go_setup_progress_title" translatable="false">Finishing setup</string>
     <string name="k2go_setup_progress_sub" translatable="false">Adding your content. You can keep using the app.</string>
+    <string name="k2go_setup_state_done" translatable="false">Done</string>
+    <string name="k2go_setup_state_failed_fmt" translatable="false">%1$d failed</string>
+    <string name="k2go_setup_state_progress_fmt" translatable="false">%1$d of %2$d</string>
     <string name="k2go_zim_add_setup_fmt" translatable="false">Add to your setup (%1$s)</string>
     <string name="k2go_gm_none" translatable="false">No content modules are installed yet.</string>
 

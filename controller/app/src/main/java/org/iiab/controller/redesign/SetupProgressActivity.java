@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -114,25 +113,22 @@ public class SetupProgressActivity extends AppCompatActivity {
         BooksDownloadService.setListener(null);
     }
 
+    private String detailStream = null;   // null = index; "zim" / "books" = a stream's detail
+
     private void render() {
         if (sections == null) return;
         sections.removeAllViews();
-
-        // Fixed order: Wikipedia/ZIM first, then Books (Maps will slot in here later).
-        if (ZimDownloadService.hasSession()) {
-            sections.addView(section(getString(R.string.k2go_gm_wikipedia_title),
-                    ZimDownloadService.labels(), ZimDownloadService.status(),
-                    ZimDownloadService.DONE, ZimDownloadService.FAILED, true));
-        }
-        if (BooksDownloadService.hasSession()) {
-            sections.addView(section(getString(R.string.k2go_gm_books_title),
-                    BooksDownloadService.titles(), BooksDownloadService.status(),
-                    BooksDownloadService.DONE, BooksDownloadService.FAILED, false));
-        }
-
+        if (detailStream == null) buildIndex();
+        else buildDetail(detailStream);
         boolean complete = allComplete();
         finishBtn.setEnabled(complete);
         runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (detailStream != null) { detailStream = null; render(); }
+        else super.onBackPressed();
     }
 
     private boolean allComplete() {
@@ -141,83 +137,96 @@ public class SetupProgressActivity extends AppCompatActivity {
         return !zimActive && !booksActive;
     }
 
-    /** One content stream's card: header + a per-item checklist. {@code isZim} routes Retry. */
-    private View section(String heading, String[] labels, int[] status, int doneVal, int failedVal, boolean isZim) {
-        LinearLayout card = new LinearLayout(this);
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setBackgroundResource(R.drawable.k2go_card_bg);
-        card.setPadding(px(16), px(14), px(16), px(14));
-        LinearLayout.LayoutParams cardLp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        cardLp.bottomMargin = px(12);
-        card.setLayoutParams(cardLp);
+    // ---- Index: one light summary row per active stream; tapping opens its detail ----
+    private void buildIndex() {
+        if (ZimDownloadService.hasSession()) {
+            sections.addView(indexRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
+                    ZimDownloadService.status(), ZimDownloadService.DONE, ZimDownloadService.FAILED,
+                    ZimDownloadService.isComplete()));
+        }
+        if (BooksDownloadService.hasSession()) {
+            sections.addView(indexRow(getString(R.string.k2go_gm_books_title), "books",
+                    BooksDownloadService.status(), BooksDownloadService.DONE, BooksDownloadService.FAILED,
+                    BooksDownloadService.isComplete()));
+        }
+    }
 
+    private View indexRow(String heading, String key, int[] status, int doneVal, int failedVal, boolean complete) {
+        int n = status != null ? status.length : 0, done = 0, failed = 0;
+        if (status != null) for (int st : status) { if (st == doneVal) done++; else if (st == failedVal) failed++; }
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
         TextView h = new TextView(this);
         h.setText(heading);
         h.setTypeface(h.getTypeface(), Typeface.BOLD);
         h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
         h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-        card.addView(h);
+        col.addView(h);
+        TextView sub = new TextView(this);
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        String state;
+        if (!complete) state = getString(R.string.k2go_setup_state_progress_fmt, done, n);
+        else if (failed > 0) state = getString(R.string.k2go_setup_state_failed_fmt, failed);
+        else state = getString(R.string.k2go_setup_state_done);
+        sub.setText(state);
+        sub.setTextColor(ContextCompat.getColor(this, failed > 0 ? R.color.k2go_amber_text : R.color.k2go_muted));
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        if (labels == null) labels = new String[0];
-        for (int i = 0; i < labels.length; i++) {
-            int st = status != null && i < status.length ? status[i] : 0;
-            boolean done = st == doneVal;
-            boolean failed = st == failedVal;
-            boolean active = !done && !failed && st != 0;   // 0 == PENDING in both services
+        TextView chev = new TextView(this);
+        chev.setText("›");
+        chev.setTextColor(ContextCompat.getColor(this, R.color.k2go_muted));
+        chev.setTextSize(22);
+        row.addView(chev);
 
-            LinearLayout r = new LinearLayout(this);
-            r.setOrientation(LinearLayout.HORIZONTAL);
-            r.setGravity(Gravity.CENTER_VERTICAL);
-            r.setPadding(0, px(6), 0, px(6));
+        row.setOnClickListener(v -> { detailStream = key; render(); });
+        return row;
+    }
 
-            if (done) {
-                ImageView chk = new ImageView(this);
-                chk.setImageResource(R.drawable.ic_check_circle);
-                chk.setColorFilter(ContextCompat.getColor(this, R.color.k2go_leaf));
-                LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(px(16), px(16));
-                clp.rightMargin = px(8);
-                r.addView(chk, clp);
-            } else {
-                View dot = new View(this);
-                dot.setBackgroundResource(R.drawable.k2go_dot);
-                int c = failed ? R.color.k2go_amber : (active ? R.color.k2go_teal : R.color.k2go_hairline);
-                dot.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, c)));
-                LinearLayout.LayoutParams dlp = new LinearLayout.LayoutParams(px(10), px(10));
-                dlp.leftMargin = px(3);
-                dlp.rightMargin = px(11);
-                r.addView(dot, dlp);
-            }
+    // ---- Detail: the tapped stream's checklist, drawn by the shared ProvisioningChecklist ----
+    private void buildDetail(String key) {
+        final boolean isZim = "zim".equals(key);
+        String[] raw = isZim ? ZimDownloadService.labels() : BooksDownloadService.titles();
+        final String[] labels = raw != null ? raw : new String[0];
+        int[] status = isZim ? ZimDownloadService.status() : BooksDownloadService.status();
+        int doneVal = isZim ? ZimDownloadService.DONE : BooksDownloadService.DONE;
+        int failedVal = isZim ? ZimDownloadService.FAILED : BooksDownloadService.FAILED;
 
-            TextView t = new TextView(this);
-            t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-            t.setText(labels[i]);
-            t.setMaxLines(2);
-            int tc = failed ? R.color.k2go_amber_text : (done || active ? R.color.k2go_ink : R.color.k2go_muted);
-            t.setTextColor(ContextCompat.getColor(this, tc));
-            r.addView(t, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        TextView back = new TextView(this);
+        back.setText("‹ " + getString(R.string.k2go_setup_progress_title));
+        back.setTextColor(ContextCompat.getColor(this, R.color.k2go_teal));
+        back.setPadding(0, px(4), 0, px(10));
+        back.setOnClickListener(v -> { detailStream = null; render(); });
+        sections.addView(back);
 
-            if (failed) {
-                final int idx = i;
-                TextView retry = new TextView(this);
-                retry.setText(R.string.k2go_zim_retry);
-                retry.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-                retry.setTypeface(retry.getTypeface(), Typeface.BOLD);
-                retry.setTextColor(ContextCompat.getColor(this, R.color.k2go_teal));
-                retry.setPadding(px(12), px(6), px(12), px(6));
-                retry.setBackgroundResource(R.drawable.k2go_getmore_bg);
-                retry.setOnClickListener(v -> {
-                    if (isZim) ZimDownloadService.retry(getApplicationContext(), idx);
-                    else BooksDownloadService.retry(getApplicationContext(), idx);
-                });
-                LinearLayout.LayoutParams rl = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                rl.leftMargin = px(8);
-                r.addView(retry, rl);
-            }
+        TextView h = new TextView(this);
+        h.setText(getString(isZim ? R.string.k2go_gm_wikipedia_title : R.string.k2go_gm_books_title));
+        h.setTypeface(h.getTypeface(), Typeface.BOLD);
+        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
+        h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        sections.addView(h);
 
-            card.addView(r);
-        }
-        return card;
+        LinearLayout list = new LinearLayout(this);
+        list.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        llp.topMargin = px(6);
+        sections.addView(list, llp);
+
+        ProvisioningChecklist.render(this, list, labels.length, status, doneVal, failedVal,
+                i -> labels[i],
+                i -> { if (isZim) ZimDownloadService.retry(getApplicationContext(), i);
+                       else BooksDownloadService.retry(getApplicationContext(), i); });
     }
 }
