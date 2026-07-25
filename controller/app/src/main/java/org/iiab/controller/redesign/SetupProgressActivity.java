@@ -186,7 +186,7 @@ public class SetupProgressActivity extends AppCompatActivity {
 
         // Status dot + line.
         tint(dot, servicesReady ? R.color.k2go_leaf : R.color.k2go_amber);
-        statusText.setText(servicesReady ? R.string.k2go_setup_progress_sub : R.string.k2go_setup_starting);
+        statusText.setText(servicesReady ? R.string.k2go_setup_adding : R.string.k2go_setup_starting);
 
         // Bottom controls.
         boolean success = allComplete && failedTotal == 0;
