@@ -163,6 +163,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     if (!ServerStateRepository.get().current().alive && targetServerState == null) {
                         serverController.handleServerLaunchClick(findViewById(android.R.id.content));
                     }
+                    // ADFA-4853: if the wizard banked content, go straight to Finishing setup
+                    // (over the library) — no brief stop on the home. That screen shows
+                    // "Starting services…" and drains the wishlists when the engine is up.
+                    if (BooksWishlist.size(this) > 0 || ZimWishlist.size(this) > 0) {
+                        startActivity(new android.content.Intent(this, SetupProgressActivity.class));
+                    }
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {
                         if (!gateDismissed) onServerReady();
                     }, GATE_SAFETY_MS);

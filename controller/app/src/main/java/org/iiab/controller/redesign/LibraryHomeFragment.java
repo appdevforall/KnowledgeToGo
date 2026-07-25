@@ -280,11 +280,12 @@ public class LibraryHomeFragment extends Fragment {
                     provisionProbing = false;
                     if (!isAdded()) return;
                     if (!ready) { android.util.Log.d("K2Go-Provision", "REST API not ready yet (nginx 502); will retry"); return; }
-                    android.util.Log.i("K2Go-Provision", "REST API ready -> draining wishlists");
+                    // Fallback engine: if the visible Finishing-setup screen isn't up (e.g. the
+                    // user backgrounded it), keep provisioning going from here. The install path
+                    // opens the screen directly; this just makes sure the drain still happens.
+                    android.util.Log.i("K2Go-Provision", "REST API ready -> draining wishlists (home fallback)");
                     if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
                     if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
-                    // Show the visible "Finishing setup" screen (per-stream progress cards).
-                    startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class));
                 });
             });
         }
