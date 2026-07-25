@@ -100,9 +100,13 @@ public final class BooksDownloadService extends Service {
         sIndex = 0; sRunning = false;
     }
 
+    private static final int MAX_ATTEMPTS = 3;      // total tries per book before marking it failed
+    private static final long RETRY_DELAY_MS = 4000L;
+
     private final Handler main = new Handler(Looper.getMainLooper());
     private volatile String currentJobId;
     private volatile boolean canceled = false;
+    private int attempts = 0;                        // attempts for the item currently in flight
 
     @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
     @Nullable @Override public IBinder onBind(Intent intent) { return null; }
@@ -148,9 +152,23 @@ public final class BooksDownloadService extends Service {
         int i = firstPending();
         if (i < 0) { sessionComplete(); return; }
         sIndex = i; sStatus[i] = ACTIVE;
+        attempts = 0;
         publish();
         updateNotification(sTitles[i]);
         AppExecutors.get().io().execute(() -> startJob(i));
+    }
+
+    /** Transient failure (nginx 502 while the engine warms up, a flaky Gutenberg fetch, etc.):
+     *  retry the same book a couple times before giving up, so the wizard doesn't stall on a blip. */
+    private void retryOrFail(int i) {
+        attempts++;
+        if (attempts < MAX_ATTEMPTS) {
+            android.util.Log.w("K2Go-Provision", "books job [" + i + "] transient failure, retry " + attempts + "/" + (MAX_ATTEMPTS - 1));
+            main.postDelayed(() -> AppExecutors.get().io().execute(() -> startJob(i)), RETRY_DELAY_MS);
+        } else {
+            android.util.Log.w("K2Go-Provision", "books job [" + i + "] failed after " + attempts + " attempts");
+            fail(i);
+        }
     }
 
     private void startJob(int i) {
@@ -160,12 +178,12 @@ public final class BooksDownloadService extends Service {
             JSONObject body = new JSONObject().put("items", new JSONArray().put(item));
             JSONObject resp = httpJson("POST", BASE + "/download", body);
             String id = resp.optString("id", "");
-            if (id.isEmpty()) { android.util.Log.w("K2Go-Provision", "books job [" + i + "] no job id in response: " + resp); fail(i); return; }
+            if (id.isEmpty()) { android.util.Log.w("K2Go-Provision", "books job [" + i + "] no job id in response: " + resp); retryOrFail(i); return; }
             currentJobId = id;
             main.postDelayed(() -> poll(i), POLL_MS);
         } catch (Exception e) {
             android.util.Log.w("K2Go-Provision", "books job [" + i + "] POST failed: " + e.getMessage());
-            fail(i);
+            retryOrFail(i);
         }
     }
 
@@ -182,7 +200,7 @@ public final class BooksDownloadService extends Service {
                     case "error":
                     case "canceled":
                         android.util.Log.w("K2Go-Provision", "books job [" + i + "] phase=" + phase + " err=" + j.optString("error"));
-                        fail(i); return;
+                        retryOrFail(i); return;
                     case "processing":
                         if (sStatus[i] != ADDING) { sStatus[i] = ADDING; publish(); }
                         break;
