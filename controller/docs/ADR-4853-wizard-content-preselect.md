@@ -48,7 +48,13 @@ Separate **selection** from **execution** with a persisted order ("leave a food 
 - Offline Books catalog source + persisted order in the app.
 - Wizard Books step reusing the Books UI, tier-gated.
 - Post-install drain via `BooksDownloadService`.
+- "Finishing setup" index → real per-module detail cards; auto-retry (max 3) on transient failures.
 - Out of scope: real covers, wizard-time catalog fetch, ZIM/maps pre-selection.
+
+## Follow-ups (separate tickets, hang under ADFA-1028)
+
+- **Background jobs monitor screen.** There is no monitoring of background provisioning jobs today. We need a dedicated screen that (a) lives-monitors in-progress background work and (b) keeps a history/log of items that failed. The "Finishing setup" screen's Finish button will carry a note ("you can review failed tasks in the background jobs monitor") pointing here, so a failure is never a dead end. Only content on the LIVE route (ZIM, Books) belongs here.
+- **Maps is NOT backgroundable — and the Maps card needs clear guidance.** Maps changes (other than FQR) STOP the server, so a Maps (re)install must run to completion in the foreground for however long it takes; it is not on the live/background route and must never be shown as a background job. When the Maps card is built, it must explain: the system already ships a minimal-but-functional maps; rebuilding it is usually unnecessary; FQR is often the better option; a higher-quality reinstall is an advanced decision. Maps stays out of the live provisioning index until/unless it gets a real live path.
 
 ## References
 
