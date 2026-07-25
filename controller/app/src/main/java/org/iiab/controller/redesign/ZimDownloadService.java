@@ -98,8 +98,12 @@ public final class ZimDownloadService extends Service {
         sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false;
     }
 
+    private static final int MAX_ATTEMPTS = 3;      // total tries per ZIM before marking it failed
+    private static final long RETRY_DELAY_MS = 4000L;
+
     private final Handler main = new Handler(Looper.getMainLooper());
     private RestContentClient client;
+    private int attempts = 0;                        // attempts for the ZIM currently in flight
 
     @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
     @Nullable @Override public IBinder onBind(Intent intent) { return null; }
@@ -151,8 +155,14 @@ public final class ZimDownloadService extends Service {
         int i = firstPending();
         if (i < 0) { sessionComplete(); return; }
         sIndex = i; sPercent = 0; sStatus[i] = ACTIVE;
+        attempts = 0;
         publish();
         updateNotification(sLabels[i]);
+        startItem(i);
+    }
+
+    private void startItem(final int i) {
+        android.util.Log.i("K2Go-Provision", "zim job start [" + i + "] file='" + sFiles[i] + "'");
         client = new RestContentClient();
         client.addZim(sFiles[i], new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
@@ -162,9 +172,25 @@ public final class ZimDownloadService extends Service {
             }
             @Override public void onIndexing() { sStatus[i] = INDEXING; publish(); }
             @Override public void onLog(String line) { /* logcat only */ }
-            @Override public void onDone() { sStatus[i] = DONE; publish(); processNext(); }
-            @Override public void onError(String message) { sStatus[i] = FAILED; publish(); processNext(); }
+            @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
+            @Override public void onError(String message) {
+                android.util.Log.w("K2Go-Provision", "zim job [" + i + "] error: " + message);
+                retryOrFail(i);
+            }
         });
+    }
+
+    /** Transient failure (server warming up, a flaky mirror): retry the same ZIM a couple times
+     *  before giving up, so a blip doesn't leave content missing. */
+    private void retryOrFail(int i) {
+        attempts++;
+        if (attempts < MAX_ATTEMPTS) {
+            android.util.Log.w("K2Go-Provision", "zim job [" + i + "] transient failure, retry " + attempts + "/" + (MAX_ATTEMPTS - 1));
+            main.postDelayed(() -> startItem(i), RETRY_DELAY_MS);
+        } else {
+            android.util.Log.w("K2Go-Provision", "zim job [" + i + "] failed after " + attempts + " attempts");
+            sStatus[i] = FAILED; publish(); processNext();
+        }
     }
 
     private void sessionComplete() {

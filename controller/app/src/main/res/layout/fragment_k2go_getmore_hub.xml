@@ -16,11 +16,56 @@
         android:paddingBottom="24dp">
 
         <TextView
+            android:id="@+id/k2go_gm_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/k2go_gm_hub_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink" />
+
+        <!-- ADFA-4853: wizard-only header — step spine + storage projection, mirroring Step 2. -->
+        <LinearLayout
+            android:id="@+id/k2go_gm_wizard_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/k2go_gm_spine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/k2go_storage"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+
+            <LinearLayout
+                android:id="@+id/k2go_gm_bar"
+                android:layout_width="match_parent"
+                android:layout_height="18dp"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+                <View android:id="@+id/k2go_gm_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_muted" />
+                <View android:id="@+id/k2go_gm_bar_system" android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_teal" />
+                <View android:id="@+id/k2go_gm_bar_picks"  android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_leaf" />
+                <View android:id="@+id/k2go_gm_bar_free"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_hairline" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/k2go_gm_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -44,5 +89,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="vertical" />
+
+        <!-- ADFA-4853: wizard-only; proceeds to the install step. Styled like other primary
+             buttons so it reads as part of the flow. -->
+        <Button
+            android:id="@+id/k2go_gm_continue"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/k2go_wizard_continue"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/k2go_teal"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

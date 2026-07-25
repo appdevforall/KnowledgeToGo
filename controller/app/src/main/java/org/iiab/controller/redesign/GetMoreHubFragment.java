@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.R;
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.util.AppExecutors;
@@ -70,6 +71,17 @@ public class GetMoreHubFragment extends Fragment {
     private int probesPending = 0;
     private LayoutInflater inflater;
     private LinearLayout host;
+    private boolean wizard;
+
+    /** Wizard (pre-install) mode: availability comes from the chosen tier's plan, not a live probe,
+     *  and cards open the offline/wishlist screens instead of the live ones. */
+    public static GetMoreHubFragment newInstance(boolean wizard) {
+        GetMoreHubFragment f = new GetMoreHubFragment();
+        Bundle b = new Bundle();
+        b.putBoolean("wizard", wizard);
+        f.setArguments(b);
+        return f;
+    }
 
     @Nullable
     @Override
@@ -77,9 +89,84 @@ public class GetMoreHubFragment extends Fragment {
         this.inflater = inflater;
         View root = inflater.inflate(R.layout.fragment_k2go_getmore_hub, container, false);
         host = root.findViewById(R.id.k2go_gm_cards);
-        probeAll();
-        buildCards();   // shows the "checking…" state until probes resolve
+        wizard = getArguments() != null && getArguments().getBoolean("wizard", false);
+        if (wizard) {
+            // Same hub, worn as the wizard's content step: retitle it and offer Continue.
+            TextView title = root.findViewById(R.id.k2go_gm_title);
+            if (title != null) title.setText(R.string.k2go_setup_library_title);
+            View cont = root.findViewById(R.id.k2go_gm_continue);
+            cont.setVisibility(View.VISIBLE);
+            cont.setOnClickListener(v -> {
+                if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).startWizardInstall();
+            });
+            root.findViewById(R.id.k2go_gm_wizard_header).setVisibility(View.VISIBLE);
+            StepSpine.render(root.findViewById(R.id.k2go_gm_spine),
+                    new StepSpine.Step("1", getString(R.string.k2go_lbl_system), false, true),
+                    new StepSpine.Step("2", getString(R.string.k2go_lbl_content), true, false));
+            refreshStorage(root);
+            computeWizardAvailability();   // synchronous, tier-based (no server yet)
+        } else {
+            probeAll();
+        }
+        buildCards();   // live mode shows "checking…" until probes resolve
         return root;
+    }
+
+    /** Pre-install: a card is offered based on the chosen tier, not a live probe. Books ships only
+     *  in Full (Calibre-Web); Wikipedia and Maps ship in every tier; Courses (Kolibri) is TBD. */
+    private void computeWizardAvailability() {
+        available.clear();
+        available.add("wikipedia");
+        available.add("maps");
+        boolean full = (getActivity() instanceof SetupLibraryActivity)
+                && ((SetupLibraryActivity) getActivity()).getSelectedTier() == InstallationPlanner.Tier.FULL;
+        if (full) available.add("books");
+        // courses: hidden until determined
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (wizard && getView() != null) refreshStorage(getView());   // picks may have changed
+    }
+
+    /** Wizard-only storage projection: System (tier OS) + Your picks (wishlists) vs device free. */
+    private void refreshStorage(View root) {
+        if (root == null || !isAdded()) return;
+        InstallationPlanner.Tier tier = (getActivity() instanceof SetupLibraryActivity)
+                ? ((SetupLibraryActivity) getActivity()).getSelectedTier() : InstallationPlanner.Tier.STANDARD;
+        double systemGb = InstallationPlanner.fallbackOsSizeGb(tier);
+        double picksGb = picksGb();
+        double total = StorageInfo.totalGb();
+        double used = StorageInfo.usedGb();
+        double freeAfter = Math.max(0, StorageInfo.freeGb() - systemGb - picksGb);
+        if (total <= 0) total = used + systemGb + picksGb + freeAfter + 0.01;
+        LinearLayout bar = root.findViewById(R.id.k2go_gm_bar);
+        bar.setWeightSum((float) total);
+        setW(root.findViewById(R.id.k2go_gm_bar_used), (float) used);
+        setW(root.findViewById(R.id.k2go_gm_bar_system), (float) systemGb);
+        setW(root.findViewById(R.id.k2go_gm_bar_picks), (float) picksGb);
+        setW(root.findViewById(R.id.k2go_gm_bar_free), (float) freeAfter);
+        ((TextView) root.findViewById(R.id.k2go_gm_legend)).setText(
+                getString(R.string.k2go_legend_your_picks, used, systemGb, picksGb, freeAfter));
+    }
+
+    /** GB the wizard picks will add: ZIM by real catalog bytes; books are tiny EPUBs (~few MB). */
+    private double picksGb() {
+        double gb = 0;
+        org.json.JSONArray z = ZimWishlist.all(requireContext());
+        for (int i = 0; i < z.length(); i++) {
+            org.json.JSONObject o = z.optJSONObject(i);
+            if (o != null) gb += o.optLong("bytes", 0) / (1024.0 * 1024.0 * 1024.0);
+        }
+        gb += BooksWishlist.size(requireContext()) * 0.003;
+        return gb;
+    }
+
+    private void setW(View v, float w) {
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
+        lp.weight = w;
+        v.setLayoutParams(lp);
     }
 
     /** Probe every card's endpoint; reveal the ones that answer (module installed). */
@@ -138,9 +225,10 @@ public class GetMoreHubFragment extends Fragment {
                 note.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
                         it.amber ? R.color.k2go_amber_text : R.color.k2go_muted));
                 card.setOnClickListener(v -> {
-                    if (getActivity() instanceof SetupLibraryActivity) {
-                        ((SetupLibraryActivity) getActivity()).openContentType(it.key, getString(it.title));
-                    }
+                    if (!(getActivity() instanceof SetupLibraryActivity)) return;
+                    SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
+                    if (wizard) a.openWizardContent(it.key, getString(it.title));
+                    else a.openContentType(it.key, getString(it.title));
                 });
                 // Reuse the inflated params so the card's layout_margin (separation) is kept —
                 // replacing them with fresh params would drop the margin and glue the cards together.
@@ -156,6 +244,7 @@ public class GetMoreHubFragment extends Fragment {
                 row.addView(pad, new LinearLayout.LayoutParams(0, cardH, 1f));
             }
         }
+
     }
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }

@@ -131,6 +131,11 @@
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
+        <activity
+            android:name=".redesign.SetupProgressActivity"
+            android:exported="false"
+            android:theme="@style/Theme.K2Go" />
+
         <service
             android:name=".TerminalSessionService"
             android:exported="false"

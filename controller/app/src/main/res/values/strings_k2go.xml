@@ -450,6 +450,22 @@
 
     <!-- ADFA-4850: Get More hub — module-gated cards -->
     <string name="k2go_gm_checking" translatable="false">Checking installed modules…</string>
+    <string name="k2go_wizard_continue" translatable="false">Continue</string>
+    <string name="k2go_setup_progress_title" translatable="false">Finishing setup</string>
+    <string name="k2go_setup_context" translatable="false">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
+    <string name="k2go_setup_starting" translatable="false">Starting services</string>
+    <string name="k2go_setup_adding" translatable="false">Adding your content</string>
+    <string name="k2go_setup_redirect" translatable="false">Installation complete — sending you to your library…</string>
+    <string name="k2go_setup_cancel" translatable="false">Cancel</string>
+    <string name="k2go_setup_finish_note" translatable="false">You can review failed tasks later in the background jobs monitor.</string>
+    <string name="k2go_setup_state_done" translatable="false">Done</string>
+    <string name="k2go_setup_state_queued" translatable="false">Queued</string>
+    <string name="k2go_setup_state_failed_fmt" translatable="false">%1$d failed</string>
+    <string name="k2go_setup_state_progress_fmt" translatable="false">%1$d of %2$d</string>
+    <string name="k2go_setup_back" translatable="false">Back</string>
+    <string name="k2go_setup_finish_q" translatable="false">Finish setup?</string>
+    <string name="k2go_setup_finish_msg" translatable="false">Anything still downloading keeps going in the background; items with errors won\'t be retried.</string>
+    <string name="k2go_zim_add_setup_fmt" translatable="false">Add to your setup (%1$s)</string>
     <string name="k2go_gm_none" translatable="false">No content modules are installed yet.</string>
 
     <!-- ADFA-4850: Get More Books / Project Gutenberg -->
@@ -465,10 +481,13 @@
     <string name="k2go_books_local_hint" translatable="false">Tap a book to open it in the library.</string>
     <string name="k2go_books_loading" translatable="false">Loading…</string>
     <string name="k2go_books_unavailable" translatable="false">Couldn\'t reach the content service.</string>
+    <string name="k2go_books_offline_error" translatable="false">Couldn\'t read the offline catalog.</string>
     <string name="k2go_books_none" translatable="false">No books found.</string>
     <string name="k2go_books_in_library" translatable="false">In your books</string>
     <string name="k2go_books_selected" translatable="false">Selected</string>
     <string name="k2go_books_add_fmt" translatable="false">Add %1$d to library</string>
+    <string name="k2go_books_add_setup_fmt" translatable="false">Add %1$d to your setup</string>
+    <string name="k2go_books_added" translatable="false">Added</string>
     <string name="k2go_books_add_none" translatable="false">Select books to add</string>
     <string name="k2go_books_view_downloads" translatable="false">View downloads</string>
     <string name="k2go_books_dl_title" translatable="false">Downloads</string>
