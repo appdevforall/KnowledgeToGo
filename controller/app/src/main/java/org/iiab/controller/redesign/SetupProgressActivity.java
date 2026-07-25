@@ -330,8 +330,12 @@ public class SetupProgressActivity extends AppCompatActivity {
 
     private void backToIndex() {
         showingDetail = false;
+        // commitNow (synchronous) so the fragment's onDestroyView — which nulls the service
+        // listener — runs BEFORE we reclaim it. With async commit() the teardown fired later and
+        // clobbered the index's listener, so a job finishing while back on the index never updated
+        // the UI (spinner stuck) until the card was reopened.
         androidx.fragment.app.Fragment cur = getSupportFragmentManager().findFragmentById(R.id.k2go_sp_fraghost);
-        if (cur != null) getSupportFragmentManager().beginTransaction().remove(cur).commit();
+        if (cur != null) getSupportFragmentManager().beginTransaction().remove(cur).commitNow();
         detailRoot.setVisibility(View.GONE);
         indexScroll.setVisibility(View.VISIBLE);
         ZimDownloadService.setListener(this::render);
