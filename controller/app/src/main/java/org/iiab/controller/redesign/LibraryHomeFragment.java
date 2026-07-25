@@ -283,6 +283,8 @@ public class LibraryHomeFragment extends Fragment {
                     android.util.Log.i("K2Go-Provision", "REST API ready -> draining wishlists");
                     if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
                     if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
+                    // Show the visible "Finishing setup" screen (per-stream progress cards).
+                    startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class));
                 });
             });
         }
