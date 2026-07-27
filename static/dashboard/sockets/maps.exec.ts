@@ -25,17 +25,27 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.update({ phase: 'processing', percent: -1, detail: name });
     const args = [EXTRACT_SCRIPT, 'extract', name, parsed.box, 'noninteractive'];
 
+    // ADFA-4879: tile-extract.py runs three sequential pmtiles extracts (vector, satellite,
+    // terrain). Each prints an in-layer bar ("fetching chunks NN%") and ends with one
+    // "Extract transferred ... archive size of ..." line. We derive an OVERALL percent from the
+    // completed-layer count refined by the current layer's %, so the bar climbs smoothly 0..100
+    // instead of resetting three times. If the in-layer % doesn't survive the non-TTY pipe, the
+    // layer-count alone still advances it (0 -> 33 -> 66), and the runner sets 100 on success.
+    const TOTAL_LAYERS = 3;
+    let layersDone = 0;
+    let lastPct = 0;
+
     await new Promise<void>((resolve, reject) => {
         const p = ctx.spawn('sudo', args, { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
         const onData = (buf: Buffer) => {
             const text = buf.toString();
             ctx.log(text.trim());
-            // tile-extract prints progress lines; surface a % if present, else stay indeterminate.
-            const re = /(\d+)\s*%/g;
-            let m: RegExpExecArray | null;
-            let last = -1;
-            while ((m = re.exec(text)) !== null) last = parseInt(m[1], 10);
-            if (last >= 0) ctx.update({ phase: 'processing', percent: last });
+            const pm = [...text.matchAll(/fetching chunks\s+(\d+)\s*%/g)];
+            if (pm.length) lastPct = parseInt(pm[pm.length - 1][1], 10);
+            const completed = (text.match(/Extract transferred/g) || []).length;
+            if (completed) { layersDone = Math.min(TOTAL_LAYERS, layersDone + completed); lastPct = 0; }
+            const overall = Math.min(99, Math.round((layersDone * 100 + lastPct) / TOTAL_LAYERS));
+            ctx.update({ phase: 'processing', percent: overall, detail: name });
         };
         p.stdout?.on('data', onData);
         p.stderr?.on('data', onData);
