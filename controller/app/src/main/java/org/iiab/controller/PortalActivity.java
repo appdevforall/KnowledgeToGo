@@ -68,6 +68,7 @@ public class PortalActivity extends AppCompatActivity {
             "catch(err){console.log('IIAB-TOUCH pitch-error '+err);}})();";
 
     private GestureWebView webView;
+    private org.iiab.controller.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
     // pdf.js builds advertised by /pdfjs/manifest.json (loaded off the main thread).
     // Empty until loaded / when the box serves none -> PDFs fall back to download.
     private volatile List<PdfViewerBuild> pdfViewerBuilds = Collections.emptyList();
@@ -193,6 +194,9 @@ public class PortalActivity extends AppCompatActivity {
 
                 // Touch diagnostics + best-effort MapLibre pitch enablement.
                 view.evaluateJavascript(TOUCH_PROBE_JS, null);
+
+                // ADFA-4879: arm/disarm in-app FQR maps depending on whether this is /maps/.
+                if (fqr != null) fqr.onPageFinished(url);
             }
 
             @Override
@@ -294,6 +298,11 @@ public class PortalActivity extends AppCompatActivity {
             }
         });
 
+        // ADFA-4879: FQR maps live inside this shared WebView but activate only on the box's
+        // /maps/ page (gated in FqrController#onPageFinished). Attach the bridge before loadUrl.
+        fqr = new org.iiab.controller.redesign.FqrController(this, webView);
+        fqr.attach();
+
         // Native architecture: content is served locally; load it directly.
         webView.loadUrl(finalTargetUrl);
     }
@@ -370,6 +379,14 @@ public class PortalActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        // ADFA-4879: stop FQR polling + drop its overlay/dialog so we don't leak the activity.
+        // The durable server job (if any) keeps running and shows up on the next /maps/ reload.
+        if (fqr != null) fqr.detach();
+        super.onDestroy();
     }
 
     @Override
