@@ -63,11 +63,16 @@ export class CanceledError extends Error {
 
 const DB_PATH = process.env.K2GO_JOBS_DB || '/library/dashboard/jobs.db';
 const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
+// ADFA-4879: a small in-memory rolling log tail per job, so a client can show a live log over REST
+// (GET /:type/jobs/:id/log?since=N). Bounded so it can't grow without limit; cleared on restart.
+const MAX_LOG_LINES = 500;
+const MAX_LOG_JOBS = 50;
 
 class JobManager {
     private db: Database.Database;
     private runners = new Map<JobType, Runner>();
     private runtime = new Map<string, { canceled: boolean; procs: Set<ChildProcess> }>();
+    private logs = new Map<string, { lines: string[]; dropped: number }>();
 
     constructor() {
         try { fs.mkdirSync(path.dirname(DB_PATH), { recursive: true }); } catch { /* best effort */ }
@@ -116,6 +121,43 @@ class JobManager {
         return (type
             ? this.db.prepare(`SELECT * FROM jobs WHERE type = ? ORDER BY created DESC`).all(type)
             : this.db.prepare(`SELECT * FROM jobs ORDER BY created DESC`).all()) as Job[];
+    }
+
+    /** Append a runner log line (also mirrored to the server console). Bounded + rolling. */
+    private appendLog(id: string, line: string): void {
+        if (!line) return;
+        let buf = this.logs.get(id);
+        if (!buf) {
+            if (this.logs.size >= MAX_LOG_JOBS) {
+                const oldest = this.logs.keys().next().value;   // Map keeps insertion order
+                if (oldest !== undefined) this.logs.delete(oldest);
+            }
+            buf = { lines: [], dropped: 0 };
+            this.logs.set(id, buf);
+        }
+        for (const l of line.split('\n')) { if (l.length) buf.lines.push(l); }
+        if (buf.lines.length > MAX_LOG_LINES) {
+            const excess = buf.lines.length - MAX_LOG_LINES;
+            buf.lines.splice(0, excess);
+            buf.dropped += excess;
+        }
+        console.log(`[job ${id}] ${line}`);
+    }
+
+    /** Read the log tail from an absolute line cursor (`since`), for incremental polling.
+     *  Returns the lines held from max(since, dropped) up to `next` (feed `next` back as `since`). */
+    getLog(id: string, since: number): { from: number; next: number; lines: string[]; truncated: boolean } {
+        const buf = this.logs.get(id);
+        if (!buf) return { from: 0, next: 0, lines: [], truncated: false };
+        const total = buf.dropped + buf.lines.length;
+        const s = Number.isFinite(since) && since > 0 ? Math.floor(since) : 0;
+        const startAbs = Math.max(s, buf.dropped);   // can't serve lines we've already dropped
+        return {
+            from: startAbs,
+            next: total,
+            lines: buf.lines.slice(startAbs - buf.dropped),
+            truncated: s < buf.dropped,
+        };
     }
 
     /** Cancel a running job (kills its children) and marks it 'canceled'. */
@@ -178,7 +220,7 @@ class JobManager {
                 child.on('exit', () => rt.procs.delete(child));
                 return child;
             },
-            log: (line) => console.log(`[job ${job.id}] ${line}`),
+            log: (line) => this.appendLog(job.id, line),
         };
 
         Promise.resolve()
