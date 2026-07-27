@@ -56,6 +56,9 @@ public final class BooksProvisioner {
         Log.i(TAG, "books drain: handing " + ids.size() + " to BooksDownloadService");
         BooksDownloadService.start(ctx.getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
+        // TODO(ADFA-4874): clearing here means that if the process dies mid-download both the
+        // wishlist and the service's in-memory state are lost (orphaned partial). The durable
+        // background-jobs monitor should own this hand-off so it survives process death.
         BooksWishlist.clear(ctx);   // handed off; the service owns retry from here
     }
 }

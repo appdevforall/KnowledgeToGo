@@ -51,6 +51,11 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 selectedTier = readInstalledTier();   // size content against the installed tier
                 first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
             } else {
+                // ADFA-4874: a fresh wizard run — drop any wishlist left by an aborted first-run so
+                // we never drain stale pre-install picks after a later install. Safe here: the user
+                // has not chosen anything yet in this run.
+                BooksWishlist.clear(this);
+                ZimWishlist.clear(this);
                 first = new Step1SystemFragment();
             }
             getSupportFragmentManager().beginTransaction()

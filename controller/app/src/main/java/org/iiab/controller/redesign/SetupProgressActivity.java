@@ -33,16 +33,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.R;
-import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.util.AppExecutors;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class SetupProgressActivity extends AppCompatActivity {
 
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
+    // ADFA-4874: after this many failed readiness polls (~30s at 2s each) the status line switches
+    // to a soft "taking longer than expected" message, so a stuck engine doesn't look frozen.
+    private static final int SLOW_AFTER_POLLS = 15;
 
     private View dot;
     private TextView statusText, redirect, cancel, finishNote;
@@ -57,6 +56,7 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean redirectScheduled = false;
     private boolean showingDetail = false;
     private boolean probing = false;
+    private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -121,7 +121,7 @@ public class SetupProgressActivity extends AppCompatActivity {
             if (probing || servicesReady) return;
             probing = true;
             AppExecutors.get().io().execute(() -> {
-                final boolean ready = apiReady();
+                final boolean ready = RestReadiness.apiReady();
                 main.post(() -> {
                     probing = false;
                     if (isFinishing()) return;
@@ -134,6 +134,7 @@ public class SetupProgressActivity extends AppCompatActivity {
                         }
                         render();
                     } else {
+                        readyPolls++;   // ADFA-4874: feeds the slow-start message in render()
                         render();
                         main.postDelayed(readyPoll, READY_POLL_MS);
                     }
@@ -141,24 +142,6 @@ public class SetupProgressActivity extends AppCompatActivity {
             });
         }
     };
-
-    private static boolean apiReady() {
-        HttpURLConnection c = null;
-        try {
-            URL u = new URL(BoxEndpoints.BASE + "/api/books/library");
-            c = (HttpURLConnection) u.openConnection();
-            c.setUseCaches(false);
-            c.setConnectTimeout(2500);
-            c.setReadTimeout(2500);
-            c.setRequestMethod("GET");
-            int code = c.getResponseCode();
-            return code >= 200 && code < 500;   // 502/503 => engine not up yet
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (c != null) c.disconnect();
-        }
-    }
 
     // ---- render ----
     private void render() {
@@ -184,9 +167,12 @@ public class SetupProgressActivity extends AppCompatActivity {
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
                 + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED);
 
-        // Status dot + line.
+        // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
+        // message instead of "Starting services" so it doesn't look frozen (ADFA-4874).
         tint(dot, servicesReady ? R.color.k2go_leaf : R.color.k2go_amber);
-        statusText.setText(servicesReady ? R.string.k2go_setup_adding : R.string.k2go_setup_starting);
+        int statusRes = servicesReady ? R.string.k2go_setup_adding
+                : (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
+        statusText.setText(statusRes);
 
         // Bottom controls.
         boolean success = allComplete && failedTotal == 0;

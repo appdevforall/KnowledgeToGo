@@ -67,6 +67,9 @@ public final class ZimProvisioner {
         for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
         Log.i(TAG, "zim drain: handing " + files.size() + " to ZimDownloadService");
         ZimDownloadService.start(app, files.toArray(new String[0]), labels.toArray(new String[0]), b);
+        // TODO(ADFA-4874): clearing here means that if the process dies mid-download both the
+        // wishlist and the service's in-memory state are lost (orphaned partial). The durable
+        // background-jobs monitor should own this hand-off so it survives process death.
         ZimWishlist.clear(app);   // handed off; the service owns retry from here
     }
 
