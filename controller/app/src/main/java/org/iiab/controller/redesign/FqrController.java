@@ -542,19 +542,26 @@ public final class FqrController {
             "var EX=/tile-extract\\.py\\s+extract\\s+([a-z0-9_]{1,34})\\s+(-?[\\d.]+,-?[\\d.]+,-?[\\d.]+,-?[\\d.]+)/;" +
             "var DE=/tile-extract\\.py\\s+delete\\s+([a-z0-9_]{1,34})/;" +
             "function hidePop(pre){var p=pre.closest?pre.closest('.maplibregl-popup'):null;if(p){p.style.display='none';}}" +
-            "function handle(pre){try{var t=(pre.textContent||'');" +
-            "var m=t.match(EX);if(m){hidePop(pre);if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(m[1],m[2]);}return true;}" +
-            "var d=t.match(DE);if(d){hidePop(pre);if(window.K2GoFQR&&K2GoFQR.onDeleteRequested){K2GoFQR.onDeleteRequested(d[1]);}return true;}" +
-            "}catch(e){}return false;}" +
-            "var ex=sr.querySelector('.maplibregl-popup pre');if(ex)handle(ex);" +
+            // Extract: the command <pre> is rebuilt on EVERY keystroke, so firing from the observer
+            // captured after the first letter. Fire only when the user presses Next (name is final);
+            // read the <pre> then — it's already updated live with the full name.
+            "function fireExtract(){try{var pre=sr.querySelector('.maplibregl-popup pre');if(!pre)return;" +
+            "var m=(pre.textContent||'').match(EX);if(!m)return;hidePop(pre);" +
+            "if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(m[1],m[2]);}}catch(e){}}" +
+            // Delete: the delete popup shows a complete command (no typing) -> observe + fire.
+            "function handleDelete(pre){try{var d=(pre.textContent||'').match(DE);if(!d)return false;hidePop(pre);" +
+            "if(window.K2GoFQR&&K2GoFQR.onDeleteRequested){K2GoFQR.onDeleteRequested(d[1]);}return true;}catch(e){return false;}}" +
+            "var ex=sr.querySelector('.maplibregl-popup pre');if(ex)handleDelete(ex);" +
             "var mo=new MutationObserver(function(ms){ms.forEach(function(mu){var a=mu.addedNodes||[];for(var i=0;i<a.length;i++){var n=a[i];if(!n||n.nodeType!==1)continue;" +
             "var pre=(n.matches&&n.matches('pre'))?n:(n.querySelector?n.querySelector('.maplibregl-popup pre, pre'):null);" +
-            "if(pre)handle(pre);}});});" +
+            "if(pre)handleDelete(pre);}});});" +
             "mo.observe(sr,{childList:true,subtree:true});" +
-            // Opening the trash tool opens our searchable list too (so the user needn't hunt a tiny box).
+            // Delegated clicks: the trash tool opens our list; "Next" finalizes the extract name.
             "sr.addEventListener('click',function(ev){try{var path=ev.composedPath?ev.composedPath():[];" +
-            "for(var i=0;i<path.length;i++){var el=path[i];if(el&&el.title==='Choose region to delete'){" +
-            "if(window.K2GoFQR&&K2GoFQR.onDeleteToolOpened){K2GoFQR.onDeleteToolOpened();}break;}}}catch(e){}},true);" +
+            "for(var i=0;i<path.length;i++){var el=path[i];if(!el)continue;" +
+            "if(el.title==='Choose region to delete'){if(window.K2GoFQR&&K2GoFQR.onDeleteToolOpened){K2GoFQR.onDeleteToolOpened();}break;}" +
+            "if(el.tagName==='BUTTON'&&(el.textContent||'').trim()==='Next'){setTimeout(fireExtract,0);break;}" +
+            "}}catch(e){}},true);" +
             // Native calls this to fly the map behind the list sheet to a picked region.
             "window.__k2goFlyTo=function(a,b,c,d){try{var mm=document.querySelector('maps-black').map;" +
             "mm.fitBounds([[a,b],[c,d]],{padding:60,duration:600});}catch(e){}};" +
