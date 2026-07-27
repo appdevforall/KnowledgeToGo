@@ -126,6 +126,42 @@ public final class MapsRegionClient {
         }
     }
 
+    /** The downloaded regions catalog, read from the box's public /maps/extracts.json. */
+    public interface RegionsListener {
+        void onRegions(JSONObject regions);   // { "<name>": { ui_bounds:[...], ... }, ... }
+        void onError(String message);
+    }
+
+    public void listRegions(@NonNull RegionsListener l) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                JSONObject j = httpJson("GET", BoxEndpoints.BASE + "/maps/extracts.json", null);
+                JSONObject regions = j.optJSONObject("regions");
+                final JSONObject out = regions != null ? regions : new JSONObject();
+                main.post(() -> l.onRegions(out));
+            } catch (Exception e) {
+                main.post(() -> l.onError("couldn't read the downloaded regions"));
+            }
+        });
+    }
+
+    /** Delete a downloaded region (tile-extract.py delete + update-json, server-side). */
+    public interface DeleteListener {
+        void onOk();
+        void onError(String message);
+    }
+
+    public void deleteRegion(@NonNull String name, @NonNull DeleteListener l) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                httpJson("POST", BASE + "/delete", new JSONObject().put("name", name));
+                main.post(l::onOk);
+            } catch (Exception e) {
+                main.post(() -> l.onError("delete failed"));
+            }
+        });
+    }
+
     /** Stop polling locally and release the listener WITHOUT canceling the server job. Used when the
      *  UI goes away but the durable download should keep running on the box. */
     public void stopPolling() {

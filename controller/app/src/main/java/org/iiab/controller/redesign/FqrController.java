@@ -28,16 +28,24 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class FqrController {
@@ -52,6 +60,17 @@ public final class FqrController {
     private ProgressBar overlayBar;
     private TextView overlayPct, overlayTitle;
     private boolean overlayMinimized = false;
+
+    // Delete: unified list bottom-sheet (~55%) fed by the manual trash tool.
+    private View deleteSheet;
+    private EditText searchField;
+    private LinearLayout listContainer;
+    private final List<Region> regions = new ArrayList<>();
+    private String highlight;   // region to float to the top / tint (the one just clicked on the map)
+    private static final class Region {
+        final String name; final double[] b;   // b = ui_bounds [minLon,minLat,maxLon,maxLat] or null
+        Region(String n, double[] bb) { name = n; b = bb; }
+    }
 
     // UI validation mirrors what the map's own name field enforces (lower case, digits, _).
     private static final Pattern NAME_RE = Pattern.compile("^[a-z0-9_]{1,34}$");
@@ -74,6 +93,7 @@ public final class FqrController {
         active = false;
         client.stopPolling();
         hideOverlay();
+        hideDeleteSheet();
         dismissDialog();
     }
 
@@ -99,6 +119,22 @@ public final class FqrController {
         if (!active) return;   // never act off the maps page
         activity.runOnUiThread(() -> handleExtract(name == null ? "" : name.trim(),
                 box == null ? "" : box.replaceAll("\\s+", "")));
+    }
+
+    /** The map's trash tool was activated → open the (searchable) region list so the user doesn't
+     *  have to hunt a tiny rectangle on the map. */
+    @JavascriptInterface
+    public void onDeleteToolOpened() {
+        if (!active) return;
+        activity.runOnUiThread(() -> openDeleteList(null));
+    }
+
+    /** The user clicked a region with the trash tool → open the list with that region on top. */
+    @JavascriptInterface
+    public void onDeleteRequested(String name) {
+        if (!active) return;
+        final String n = name == null ? "" : name.trim();
+        activity.runOnUiThread(() -> openDeleteList(n));
     }
 
     private void handleExtract(String name, String box) {
@@ -301,6 +337,172 @@ public final class FqrController {
         overlayMinimized = false;
     }
 
+    // ---- Delete: unified list bottom-sheet + manual capture ----------------------------------
+    private void openDeleteList(String hl) {
+        if (hl != null && !hl.isEmpty()) this.highlight = hl;   // keep last highlight otherwise
+        if (deleteSheet == null) buildDeleteSheet();
+        refreshRegions();
+    }
+
+    private void buildDeleteSheet() {
+        LinearLayout sheet = new LinearLayout(activity);
+        sheet.setOrientation(LinearLayout.VERTICAL);
+        sheet.setBackgroundColor(0xFF0F1512);
+        sheet.setElevation(dp(12));
+        sheet.setPadding(dp(16), dp(14), dp(16), dp(12));
+
+        LinearLayout header = new LinearLayout(activity);
+        header.setOrientation(LinearLayout.HORIZONTAL);
+        header.setGravity(Gravity.CENTER_VERTICAL);
+        TextView title = new TextView(activity);
+        title.setText("Downloaded regions");
+        title.setTextColor(Color.WHITE);
+        title.setTypeface(title.getTypeface(), Typeface.BOLD);
+        title.setTextSize(16);
+        header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        TextView close = new TextView(activity);
+        close.setText("✕");
+        close.setTextColor(0xFF8FA39B);
+        close.setTextSize(18);
+        close.setPadding(dp(12), 0, dp(4), 0);
+        close.setOnClickListener(v -> hideDeleteSheet());
+        header.addView(close);
+        sheet.addView(header);
+
+        searchField = new EditText(activity);
+        searchField.setHint("Search by name");
+        searchField.setSingleLine(true);
+        searchField.setTextColor(Color.WHITE);
+        searchField.setHintTextColor(0xFF6E7F78);
+        LinearLayout.LayoutParams sflp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        sflp.topMargin = dp(8);
+        sheet.addView(searchField, sflp);
+        searchField.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) { renderRows(s.toString()); }
+            @Override public void afterTextChanged(android.text.Editable e) { }
+        });
+
+        ScrollView sv = new ScrollView(activity);
+        listContainer = new LinearLayout(activity);
+        listContainer.setOrientation(LinearLayout.VERTICAL);
+        sv.addView(listContainer);
+        LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
+        svlp.topMargin = dp(8);
+        sheet.addView(sv, svlp);
+
+        // ~55% of the screen so the map stays visible + pannable above the sheet.
+        int h = Math.round(activity.getResources().getDisplayMetrics().heightPixels * 0.55f);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, h);
+        params.gravity = Gravity.BOTTOM;
+        deleteSheet = sheet;
+        activity.addContentView(deleteSheet, params);
+    }
+
+    private void refreshRegions() {
+        client.listRegions(new MapsRegionClient.RegionsListener() {
+            @Override public void onRegions(JSONObject regs) {
+                regions.clear();
+                for (Iterator<String> it = regs.keys(); it.hasNext(); ) {
+                    String k = it.next();
+                    regions.add(new Region(k, boundsOf(regs.optJSONObject(k))));
+                }
+                renderRows(searchField != null ? searchField.getText().toString() : "");
+            }
+            @Override public void onError(String m) { toast(m); }
+        });
+    }
+
+    private static double[] boundsOf(JSONObject o) {
+        if (o == null) return null;
+        JSONArray a = o.optJSONArray("ui_bounds");
+        if (a == null) a = o.optJSONArray("render_bounds");
+        if (a == null || a.length() < 4) return null;
+        return new double[]{ a.optDouble(0), a.optDouble(1), a.optDouble(2), a.optDouble(3) };
+    }
+
+    private void renderRows(String filter) {
+        if (listContainer == null) return;
+        listContainer.removeAllViews();
+        final String f = filter == null ? "" : filter.trim().toLowerCase(Locale.US);
+        List<Region> sorted = new ArrayList<>(regions);
+        Collections.sort(sorted, (x, y) -> {
+            boolean hx = x.name.equals(highlight), hy = y.name.equals(highlight);
+            if (hx != hy) return hx ? -1 : 1;   // the just-selected region floats to the top
+            return x.name.compareTo(y.name);
+        });
+        int shown = 0;
+        for (Region r : sorted) {
+            if (!f.isEmpty() && !r.name.toLowerCase(Locale.US).contains(f)) continue;
+            listContainer.addView(regionRow(r));
+            shown++;
+        }
+        if (shown == 0) {
+            TextView t = new TextView(activity);
+            t.setText(regions.isEmpty() ? "No downloaded regions yet." : "No matches.");
+            t.setTextColor(0xFF8FA39B);
+            t.setPadding(0, dp(14), 0, 0);
+            listContainer.addView(t);
+        }
+    }
+
+    private View regionRow(Region r) {
+        LinearLayout row = new LinearLayout(activity);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPadding(dp(10), dp(12), dp(10), dp(12));
+        if (r.name.equals(highlight)) row.setBackgroundColor(0x334CAF7D);
+        TextView name = new TextView(activity);
+        name.setText(r.name);
+        name.setTextColor(Color.WHITE);
+        name.setTextSize(14);
+        row.addView(name, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        row.setOnClickListener(v -> flyTo(r));   // tapping a row flies the map behind to that region
+        TextView x = new TextView(activity);
+        x.setText("✕");
+        x.setTextColor(0xFFE05353);
+        x.setTextSize(16);
+        x.setPadding(dp(16), dp(2), dp(6), dp(2));
+        x.setOnClickListener(v -> confirmDelete(r.name));
+        row.addView(x);
+        return row;
+    }
+
+    private void flyTo(Region r) {
+        if (r.b == null) return;
+        webView.evaluateJavascript(String.format(Locale.US,
+                "window.__k2goFlyTo&&window.__k2goFlyTo(%s,%s,%s,%s);", r.b[0], r.b[1], r.b[2], r.b[3]), null);
+    }
+
+    private void confirmDelete(String name) {
+        new AlertDialog.Builder(activity)
+                .setTitle("Delete “" + name + "”?")
+                .setMessage("This full-quality region will be removed from this device.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Delete", (d, w) -> client.deleteRegion(name, new MapsRegionClient.DeleteListener() {
+                    @Override public void onOk() {
+                        toast("Deleted “" + name + "”");
+                        highlight = null;
+                        webView.reload();     // map redraws without the region
+                        refreshRegions();     // and the list drops it
+                    }
+                    @Override public void onError(String m) {
+                        new AlertDialog.Builder(activity).setTitle("Delete failed").setMessage(m)
+                                .setPositiveButton("OK", null).show();
+                    }
+                }))
+                .show();
+    }
+
+    private void hideDeleteSheet() {
+        if (deleteSheet == null) return;
+        ViewGroup parent = (ViewGroup) deleteSheet.getParent();
+        if (parent != null) parent.removeView(deleteSheet);
+        deleteSheet = null; searchField = null; listContainer = null; highlight = null;
+    }
+
     // ---- helpers -----------------------------------------------------------------------------
     private LinearLayout card(int pad) {
         LinearLayout l = new LinearLayout(activity);
@@ -335,15 +537,25 @@ public final class FqrController {
             "if(window.__k2goFqr)return;window.__k2goFqr=true;" +
             "var host=document.querySelector('maps-black');if(!host||!host.shadowRoot){console.log('K2Go-FQR no shadow');return;}" +
             "var sr=host.shadowRoot;" +
-            "var RE=/tile-extract\\.py\\s+extract\\s+([a-z0-9_]{1,34})\\s+(-?[\\d.]+,-?[\\d.]+,-?[\\d.]+,-?[\\d.]+)/;" +
-            "function handle(pre){try{var t=(pre.textContent||'');var m=t.match(RE);if(!m)return false;" +
-            "var pop=pre.closest?pre.closest('.maplibregl-popup'):null;if(pop){pop.style.display='none';}" +
-            "if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(m[1],m[2]);}return true;}catch(e){return false;}}" +
+            "var EX=/tile-extract\\.py\\s+extract\\s+([a-z0-9_]{1,34})\\s+(-?[\\d.]+,-?[\\d.]+,-?[\\d.]+,-?[\\d.]+)/;" +
+            "var DE=/tile-extract\\.py\\s+delete\\s+([a-z0-9_]{1,34})/;" +
+            "function hidePop(pre){var p=pre.closest?pre.closest('.maplibregl-popup'):null;if(p){p.style.display='none';}}" +
+            "function handle(pre){try{var t=(pre.textContent||'');" +
+            "var m=t.match(EX);if(m){hidePop(pre);if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(m[1],m[2]);}return true;}" +
+            "var d=t.match(DE);if(d){hidePop(pre);if(window.K2GoFQR&&K2GoFQR.onDeleteRequested){K2GoFQR.onDeleteRequested(d[1]);}return true;}" +
+            "}catch(e){}return false;}" +
             "var ex=sr.querySelector('.maplibregl-popup pre');if(ex)handle(ex);" +
             "var mo=new MutationObserver(function(ms){ms.forEach(function(mu){var a=mu.addedNodes||[];for(var i=0;i<a.length;i++){var n=a[i];if(!n||n.nodeType!==1)continue;" +
             "var pre=(n.matches&&n.matches('pre'))?n:(n.querySelector?n.querySelector('.maplibregl-popup pre, pre'):null);" +
             "if(pre)handle(pre);}});});" +
             "mo.observe(sr,{childList:true,subtree:true});" +
+            // Opening the trash tool opens our searchable list too (so the user needn't hunt a tiny box).
+            "sr.addEventListener('click',function(ev){try{var path=ev.composedPath?ev.composedPath():[];" +
+            "for(var i=0;i<path.length;i++){var el=path[i];if(el&&el.title==='Choose region to delete'){" +
+            "if(window.K2GoFQR&&K2GoFQR.onDeleteToolOpened){K2GoFQR.onDeleteToolOpened();}break;}}}catch(e){}},true);" +
+            // Native calls this to fly the map behind the list sheet to a picked region.
+            "window.__k2goFlyTo=function(a,b,c,d){try{var mm=document.querySelector('maps-black').map;" +
+            "mm.fitBounds([[a,b],[c,d]],{padding:60,duration:600});}catch(e){}};" +
             "console.log('K2Go-FQR bridge armed');" +
             "}catch(e){try{console.log('K2Go-FQR fatal '+e);}catch(_){}}})();";
 }
