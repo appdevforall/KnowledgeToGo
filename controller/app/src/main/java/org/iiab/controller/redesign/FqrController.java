@@ -126,7 +126,9 @@ public final class FqrController {
     @JavascriptInterface
     public void onDeleteToolOpened() {
         if (!active) return;
-        activity.runOnUiThread(() -> openDeleteList(null));
+        // Fires on every trash-tool click (activate AND deactivate). Only open on the first one;
+        // if the list is already up, ignore so toggling the tool off doesn't reopen/refresh it.
+        activity.runOnUiThread(() -> { if (deleteSheet == null) openDeleteList(null); });
     }
 
     /** The user clicked a region with the trash tool → open the list with that region on top. */
