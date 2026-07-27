@@ -3,7 +3,7 @@
 // Maps runner for the durable job engine: extract a tile region via tile-extract.py.
 // Ported from the Phase 1 maps.socket handler; reuses its box validation. A job item
 // is { name, box, noninteractive? }; deletion stays a separate op (not a long job).
-import { jobs, RunnerContext, CanceledError } from './jobs';
+import { jobs, RunnerContext, CanceledError, JobUpdate } from './jobs';
 import { parseBox } from './maps.socket';
 import path from 'path';
 
@@ -32,6 +32,7 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // instead of resetting three times. If the in-layer % doesn't survive the non-TTY pipe, the
     // layer-count alone still advances it (0 -> 33 -> 66), and the runner sets 100 on success.
     const TOTAL_LAYERS = 3;
+    const RATE: Record<string, number> = { B: 1, kB: 1e3, MB: 1e6, GB: 1e9 };   // pmtiles unit -> bytes
     let layersDone = 0;
     let lastPct = 0;
 
@@ -45,7 +46,12 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             const completed = (text.match(/Extract transferred/g) || []).length;
             if (completed) { layersDone = Math.min(TOTAL_LAYERS, layersDone + completed); lastPct = 0; }
             const overall = Math.min(99, Math.round((layersDone * 100 + lastPct) / TOTAL_LAYERS));
-            ctx.update({ phase: 'processing', percent: overall, detail: name });
+            const patch: JobUpdate = { phase: 'processing', percent: overall, detail: name };
+            // pmtiles prints a live transfer rate ("2.4 MB/s"); surface the latest as job.speed
+            // (bytes/sec) so the app can show it. Omitted when absent, so it isn't reset to 0.
+            const sm = [...text.matchAll(/([\d.]+)\s*(B|kB|MB|GB)\/s/g)];
+            if (sm.length) { const last = sm[sm.length - 1]; patch.speed = Math.round(parseFloat(last[1]) * (RATE[last[2]] ?? 1)); }
+            ctx.update(patch);
         };
         p.stdout?.on('data', onData);
         p.stderr?.on('data', onData);
