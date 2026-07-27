@@ -120,6 +120,27 @@ function parseBox(raw: string): BoxResult {
     return { ok: true, box: cleaned };
 }
 
+// ADFA-4879: parse tile-extract.py's interactive size prompt into bytes, for the in-app consent
+// step. The script prints (see approve_download_size in tile-extract.py):
+//   "New region will be 8.54 MB downloaded, 8.34 MB on disk. This will
+//    leave about 73.58 GB free space on this partition. Continue?"
+// Pure + unit-tested so the /api/maps/estimate route stays thin. Returns null until it appears.
+const EST_UNITS: Record<string, number> = { kB: 1e3, MB: 1e6, GB: 1e9, TB: 1e12 };
+
+export interface MapsEstimate { transfer: number; archive: number; free: number; free_after: number; }
+
+function parseEstimate(text: string): MapsEstimate | null {
+    const m = text.match(
+        /New region will be ([\d.]+)\s*(kB|MB|GB|TB) downloaded, ([\d.]+)\s*(kB|MB|GB|TB) on disk\.\s*This will\s+leave about ([\d.]+)\s*(kB|MB|GB|TB) free/,
+    );
+    if (!m) return null;
+    const b = (n: string, u: string) => Math.round(parseFloat(n) * (EST_UNITS[u] ?? 1));
+    const transfer = b(m[1], m[2]);
+    const archive = b(m[3], m[4]);
+    const freeAfter = b(m[5], m[6]);
+    return { transfer, archive, free: freeAfter + archive, free_after: freeAfter };
+}
+
 type CommandType = 'extract' | 'delete' | 'update-json' | '';
 
 interface ValidatedCommand {
@@ -270,4 +291,4 @@ export const handleMapsEvents = (socket: Socket) => {
     });
 };
 
-export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs };
+export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate };

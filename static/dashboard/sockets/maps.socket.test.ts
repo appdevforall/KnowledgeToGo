@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateSecureCommand, parseBox, buildArgs, displayBounds } from './maps.socket';
+import { validateSecureCommand, parseBox, buildArgs, displayBounds, parseEstimate } from './maps.socket';
 
 const SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const sudo = (rest: string) => `sudo ${SCRIPT} ${rest}`;
@@ -29,6 +29,24 @@ test('parseBox rejects bad count, empty coord, non-numeric, order, span', () => 
     assert.equal(parseBox('1,x,3,4').ok, false);
     assert.equal(parseBox('5,2,3,4').ok, false);      // minLon > maxLon
     assert.equal(parseBox('-200,0,200,10').ok, false); // span >= 360
+});
+
+test('parseEstimate reads the interactive size prompt into bytes (ADFA-4879)', () => {
+    // Real output captured from tile-extract.py's approve_download_size().
+    const prompt = 'Determining download size...\n' +
+        'New region will be 8.54 MB downloaded, 8.34 MB on disk. This will\n' +
+        'leave about 73.58 GB free space on this partition. Continue? y/n ';
+    const e = parseEstimate(prompt);
+    assert.ok(e);
+    assert.equal(e!.transfer, 8_540_000);
+    assert.equal(e!.archive, 8_340_000);
+    assert.equal(e!.free_after, 73_580_000_000);
+    assert.equal(e!.free, 73_580_000_000 + 8_340_000);
+});
+
+test('parseEstimate returns null before the size line appears', () => {
+    assert.equal(parseEstimate('Determining download size...'), null);
+    assert.equal(parseEstimate(''), null);
 });
 
 test('validateSecureCommand: extract with uppercase/hyphen name + spaces', () => {
