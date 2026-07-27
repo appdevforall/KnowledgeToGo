@@ -126,6 +126,14 @@ public final class MapsRegionClient {
         }
     }
 
+    /** Stop polling locally and release the listener WITHOUT canceling the server job. Used when the
+     *  UI goes away but the durable download should keep running on the box. */
+    public void stopPolling() {
+        finished = true;
+        teardown();
+        dl = null;
+    }
+
     /** Best-effort cancel of the in-flight download. */
     public void cancel() {
         final String id = jobId;

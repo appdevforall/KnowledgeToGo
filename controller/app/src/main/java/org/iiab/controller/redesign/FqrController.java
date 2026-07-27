@@ -46,7 +46,7 @@ public final class FqrController {
     private final WebView webView;
     private final MapsRegionClient client = new MapsRegionClient();
 
-    private boolean active = false;   // true only while the /maps/ page is loaded
+    private volatile boolean active = false;   // written on UI thread, read on the WebView binder thread
     private AlertDialog dialog;       // "calculating" / consent (one at a time)
     private View overlay;             // floating progress card (null when hidden)
     private ProgressBar overlayBar;
@@ -66,6 +66,15 @@ public final class FqrController {
     /** Attach the JS bridge. Call once, BEFORE the first loadUrl. */
     public void attach() {
         webView.addJavascriptInterface(this, "K2GoFQR");
+    }
+
+    /** Host activity is going away: stop polling and drop UI, but let the durable server job keep
+     *  running (no cancel). Call from PortalActivity#onDestroy. */
+    public void detach() {
+        active = false;
+        client.stopPolling();
+        hideOverlay();
+        dismissDialog();
     }
 
     /** Arm (or disarm) on each page load, based on whether this is the /maps/ page. */

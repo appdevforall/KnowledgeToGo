@@ -382,6 +382,14 @@ public class PortalActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        // ADFA-4879: stop FQR polling + drop its overlay/dialog so we don't leak the activity.
+        // The durable server job (if any) keeps running and shows up on the next /maps/ reload.
+        if (fqr != null) fqr.detach();
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILECHOOSER_RESULTCODE) {
             if (filePathCallback == null) return;
