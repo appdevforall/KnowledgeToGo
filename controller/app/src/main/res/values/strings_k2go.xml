@@ -455,6 +455,7 @@
     <string name="k2go_setup_context" translatable="false">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
     <string name="k2go_setup_starting" translatable="false">Starting services</string>
     <string name="k2go_setup_adding" translatable="false">Adding your content</string>
+    <string name="k2go_setup_slow" translatable="false">Starting services — this is taking longer than usual</string>
     <string name="k2go_setup_redirect" translatable="false">Installation complete — sending you to your library…</string>
     <string name="k2go_setup_cancel" translatable="false">Cancel</string>
     <string name="k2go_setup_finish_note" translatable="false">You can review failed tasks later in the background jobs monitor.</string>

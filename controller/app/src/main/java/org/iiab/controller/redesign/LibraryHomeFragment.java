@@ -224,25 +224,8 @@ public class LibraryHomeFragment extends Fragment {
     // ADFA-4853: guards a single in-flight readiness probe before the post-install drain.
     private volatile boolean provisionProbing = false;
 
-    /** The dashboard REST engine (dash-node) is ready when an /api call returns non-5xx — unlike
-     *  /home (nginx), which is up before its upstream is. Used to gate the post-install drain. */
-    private static boolean apiReady() {
-        java.net.HttpURLConnection c = null;
-        try {
-            java.net.URL u = new java.net.URL(BoxEndpoints.BASE + "/api/books/library");
-            c = (java.net.HttpURLConnection) u.openConnection();
-            c.setUseCaches(false);
-            c.setConnectTimeout(2500);
-            c.setReadTimeout(2500);
-            c.setRequestMethod("GET");
-            int code = c.getResponseCode();
-            return code >= 200 && code < 500;   // 502/503 => dash-node not up yet
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (c != null) c.disconnect();
-        }
-    }
+    // ADFA-4874: the REST readiness probe now lives in RestReadiness (shared with
+    // SetupProgressActivity) so there is a single definition of the drain gate.
 
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
@@ -275,7 +258,7 @@ public class LibraryHomeFragment extends Fragment {
                 && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext()))) {
             provisionProbing = true;
             AppExecutors.get().io().execute(() -> {
-                final boolean ready = apiReady();
+                final boolean ready = RestReadiness.apiReady();
                 main.post(() -> {
                     provisionProbing = false;
                     if (!isAdded()) return;
