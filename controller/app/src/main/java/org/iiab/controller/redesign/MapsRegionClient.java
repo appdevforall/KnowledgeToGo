@@ -44,7 +44,7 @@ public final class MapsRegionClient {
 
     /** Region download progress (single durable job). */
     public interface DownloadListener {
-        void onProgress(int percent);   // percent may be -1 (indeterminate)
+        void onProgress(int percent, long speedBytesPerSec);   // percent may be -1; speed 0 if unknown
         void onDone();
         void onError(String message);
     }
@@ -116,7 +116,8 @@ public final class MapsRegionClient {
                     return;
                 default: {   // queued / downloading / processing: report progress if known
                     final int p = percent;
-                    deliver(() -> dl.onProgress(p));
+                    final long sp = j.optLong("speed", 0L);
+                    deliver(() -> dl.onProgress(p, sp));
                 }
             }
             main.postDelayed(pollTask, POLL_MS);

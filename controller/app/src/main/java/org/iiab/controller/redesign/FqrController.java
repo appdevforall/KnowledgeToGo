@@ -58,7 +58,7 @@ public final class FqrController {
     private AlertDialog dialog;       // "calculating" / consent (one at a time)
     private View overlay;             // floating progress card (null when hidden)
     private ProgressBar overlayBar;
-    private TextView overlayPct, overlayTitle;
+    private TextView overlayPct, overlayTitle, overlayMin;
     private boolean overlayMinimized = false;
 
     // Delete: unified list bottom-sheet (~55%) fed by the manual trash tool.
@@ -235,9 +235,9 @@ public final class FqrController {
         if (box == null) return;
         showOverlay(name);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
-            @Override public void onProgress(int percent) { updateOverlay(percent); }
+            @Override public void onProgress(int percent, long speed) { updateOverlay(percent, speed); }
             @Override public void onDone() {
-                updateOverlay(100);
+                updateOverlay(100, 0);
                 overlayTitle.setText("Region added");
                 webView.postDelayed(() -> { hideOverlay(); webView.reload(); }, 1200);
             }
@@ -266,13 +266,13 @@ public final class FqrController {
         overlayTitle.setTextColor(Color.WHITE);
         overlayTitle.setTypeface(overlayTitle.getTypeface(), Typeface.BOLD);
         top.addView(overlayTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        TextView min = new TextView(activity);
-        min.setText("–");   // minimize
-        min.setTextColor(0xFF8FA39B);
-        min.setTextSize(20);
-        min.setPadding(dp(12), 0, dp(8), 0);
-        min.setOnClickListener(v -> toggleMinimize());
-        top.addView(min);
+        overlayMin = new TextView(activity);
+        overlayMin.setText("Hide");   // minimize to a compact card; tap again to Show
+        overlayMin.setTextColor(0xFF8FA39B);
+        overlayMin.setTextSize(13);
+        overlayMin.setPadding(dp(12), 0, dp(4), 0);
+        overlayMin.setOnClickListener(v -> toggleMinimize());
+        top.addView(overlayMin);
         cardV.addView(top);
 
         overlayBar = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
@@ -317,25 +317,36 @@ public final class FqrController {
         for (int i = 1; i < cardV.getChildCount(); i++) {
             cardV.getChildAt(i).setVisibility(overlayMinimized ? View.GONE : View.VISIBLE);
         }
+        if (overlayMin != null) overlayMin.setText(overlayMinimized ? "Show" : "Hide");
     }
 
-    private void updateOverlay(int percent) {
+    private void updateOverlay(int percent, long speed) {
         if (overlayBar == null || overlayPct == null) return;
+        final String rate = speed > 0 ? "  ·  " + humanRate(speed) : "";
         if (percent < 0) {
             overlayBar.setIndeterminate(true);
-            overlayPct.setText("Working…");
+            overlayPct.setText("Working…" + rate);
         } else {
             overlayBar.setIndeterminate(false);
             overlayBar.setProgress(percent);
-            overlayPct.setText(percent + "%");
+            overlayPct.setText(percent + "%" + rate);
         }
+    }
+
+    /** bytes/sec -> "2.4 MB/s". Empty for non-positive (speed not reported yet). */
+    private static String humanRate(long bps) {
+        if (bps <= 0) return "";
+        final String[] u = {"B", "KB", "MB", "GB"};
+        double v = bps; int i = 0;
+        while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+        return (i == 0 ? String.format(Locale.US, "%.0f", v) : String.format(Locale.US, "%.1f", v)) + " " + u[i] + "/s";
     }
 
     private void hideOverlay() {
         if (overlay == null) return;
         ViewGroup parent = (ViewGroup) overlay.getParent();
         if (parent != null) parent.removeView(overlay);
-        overlay = null; overlayBar = null; overlayPct = null; overlayTitle = null;
+        overlay = null; overlayBar = null; overlayPct = null; overlayTitle = null; overlayMin = null;
         overlayMinimized = false;
     }
 
