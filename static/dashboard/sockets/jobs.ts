@@ -11,6 +11,7 @@ import Database from 'better-sqlite3';
 import { spawn, ChildProcess, SpawnOptions } from 'child_process';
 import fs from 'fs';
 import path from 'path';
+import { RollingLog, LogSlice } from './rolling-log';
 
 export type JobType = 'kiwix' | 'maps' | 'books';
 export type JobPhase =
@@ -68,6 +69,8 @@ class JobManager {
     private db: Database.Database;
     private runners = new Map<JobType, Runner>();
     private runtime = new Map<string, { canceled: boolean; procs: Set<ChildProcess> }>();
+    // ADFA-4879: bounded rolling log tail per job for the live-log REST endpoint.
+    private readonly logTail = new RollingLog();
 
     constructor() {
         try { fs.mkdirSync(path.dirname(DB_PATH), { recursive: true }); } catch { /* best effort */ }
@@ -116,6 +119,11 @@ class JobManager {
         return (type
             ? this.db.prepare(`SELECT * FROM jobs WHERE type = ? ORDER BY created DESC`).all(type)
             : this.db.prepare(`SELECT * FROM jobs ORDER BY created DESC`).all()) as Job[];
+    }
+
+    /** Read the log tail from an absolute line cursor (`since`), for incremental polling. */
+    getLog(id: string, since: number): LogSlice {
+        return this.logTail.getSince(id, since);
     }
 
     /** Cancel a running job (kills its children) and marks it 'canceled'. */
@@ -178,7 +186,7 @@ class JobManager {
                 child.on('exit', () => rt.procs.delete(child));
                 return child;
             },
-            log: (line) => console.log(`[job ${job.id}] ${line}`),
+            log: (line) => { this.logTail.append(job.id, line); console.log(`[job ${job.id}] ${line}`); },
         };
 
         Promise.resolve()

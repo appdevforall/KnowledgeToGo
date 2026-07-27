@@ -173,6 +173,15 @@ apiRouter.get('/:type/jobs/:id', (req: Request, res: Response): void => {
     res.json(toApi(job));
 });
 
+// Live log tail for a job (ADFA-4879). Opt-in: a client polls ?since=<cursor> and appends the
+// returned lines, feeding `next` back as the next `since`. Enables a simple live log over REST.
+apiRouter.get('/:type/jobs/:id/log', (req: Request, res: Response): void => {
+    const job = jobs.get(String(req.params.id));
+    if (!job || job.type !== String(req.params.type)) { res.status(404).json({ error: 'not found' }); return; }
+    const since = parseInt(String(req.query.since ?? '0'), 10);
+    res.json(jobs.getLog(job.id, Number.isFinite(since) ? since : 0));
+});
+
 // List a type's jobs (most recent first).
 apiRouter.get('/:type/jobs', (req: Request, res: Response): void => {
     const type = String(req.params.type);
