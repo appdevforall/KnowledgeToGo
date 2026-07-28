@@ -77,6 +77,14 @@ public class MapsChooseFragment extends Fragment {
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
+    // ADFA-4900: persist the user's per-layer choices so leaving and returning to the selector shows
+    // what they picked, not the system defaults. Kept SEPARATE from MapsWishlist (which is the
+    // "banked for install" order written only at Confirm) so editing pills never triggers an install.
+    private static final String SEL_PREFS = "k2go_maps_selector";
+    private android.content.SharedPreferences selPrefs() {
+        return requireContext().getApplicationContext().getSharedPreferences(SEL_PREFS, android.content.Context.MODE_PRIVATE);
+    }
+
     /** Overwrite each option's size with the packaged last-known value (maps_sizes.csv);
      *  the built-in mb stays as the fallback when a row is missing. */
     private void resolveSizes() {
@@ -138,8 +146,11 @@ public class MapsChooseFragment extends Fragment {
     private void buildGroups(LinearLayout host) {
         for (int gi = 0; gi < GROUPS.length; gi++) {
             final Grp g = GROUPS[gi];
-            selectedMb[gi] = g.opts[g.def].mb;
-            selectedIdx[gi] = g.def;
+            // Restore the saved choice for this group; fall back to the default the first time.
+            int savedIdx = selPrefs().getInt("sel_" + g.key, g.def);
+            if (savedIdx < 0 || savedIdx >= g.opts.length) savedIdx = g.def;
+            selectedIdx[gi] = savedIdx;
+            selectedMb[gi] = g.opts[savedIdx].mb;
 
             // Header row: icon · name (bold) · hint (muted) · [spacer] · current size (teal, right).
             LinearLayout header = new LinearLayout(requireContext());
@@ -217,13 +228,14 @@ public class MapsChooseFragment extends Fragment {
                 flow.addView(pill);
                 pillViews[gi][oi] = pill;
             }
-            applyGroupSelection(gi, g.def);
+            applyGroupSelection(gi, selectedIdx[gi]);
         }
     }
 
     private void selectOpt(int gi, int oi) {
         selectedMb[gi] = GROUPS[gi].opts[oi].mb;
         selectedIdx[gi] = oi;
+        selPrefs().edit().putInt("sel_" + GROUPS[gi].key, oi).apply();   // persist on each change
         applyGroupSelection(gi, oi);
         refresh();
     }
