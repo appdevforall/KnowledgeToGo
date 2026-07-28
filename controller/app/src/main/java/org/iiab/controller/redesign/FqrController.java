@@ -21,7 +21,6 @@ package org.iiab.controller.redesign;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,14 +80,20 @@ public final class FqrController {
     private static final Pattern BOX_RE =
             Pattern.compile("^-?\\d+(?:\\.\\d+)?,-?\\d+(?:\\.\\d+)?,-?\\d+(?:\\.\\d+)?,-?\\d+(?:\\.\\d+)?$");
 
+    static boolean validName(String name) { return name != null && NAME_RE.matcher(name).matches(); }
+    static boolean validBox(String box) { return box != null && BOX_RE.matcher(box).matches(); }
+
     public FqrController(Activity activity, WebView webView) {
         this.activity = activity;
         this.webView = webView;
     }
 
-    /** Attach the JS bridge. Call once, BEFORE the first loadUrl. */
-    public void attach() {
-        webView.addJavascriptInterface(this, "K2GoFQR");
+    /** Add the JS bridge only for the /maps/ page and remove it elsewhere, to keep the interface off
+     *  non-maps pages (defense in depth; the bridge methods also guard on {@code active}). Call before
+     *  each load (initial + navigations) — addJavascriptInterface takes effect on the next load. */
+    public void prepareForUrl(String url) {
+        if (isMapsPage(url)) webView.addJavascriptInterface(this, "K2GoFQR");
+        else webView.removeJavascriptInterface("K2GoFQR");
     }
 
     /** Host activity is going away: stop polling and drop UI, but let the durable server job keep
@@ -108,14 +113,16 @@ public final class FqrController {
         if (active) { deleteToolOn = false; webView.evaluateJavascript(BRIDGE_JS, null); }
     }
 
+    /** True when the URL's path is the box's maps page. Pure string parsing (no android.net.Uri) so
+     *  it is unit-testable and dependency-free. */
     static boolean isMapsPage(String url) {
         if (url == null) return false;
-        try {
-            String path = Uri.parse(url).getPath();
-            return path != null && (path.equals("/maps/") || path.equals("/maps"));
-        } catch (Exception e) {
-            return false;
-        }
+        String u = url;
+        int hash = u.indexOf('#'); if (hash >= 0) u = u.substring(0, hash);
+        int q = u.indexOf('?'); if (q >= 0) u = u.substring(0, q);
+        int scheme = u.indexOf("://");
+        if (scheme >= 0) { int slash = u.indexOf('/', scheme + 3); u = slash >= 0 ? u.substring(slash) : "/"; }
+        return u.equals("/maps/") || u.equals("/maps");
     }
 
     // ---- JS bridge (called from the injected observer, off the UI thread) --------------------
@@ -150,7 +157,7 @@ public final class FqrController {
     }
 
     private void handleExtract(String name, String box) {
-        if (!NAME_RE.matcher(name).matches() || !BOX_RE.matcher(box).matches()) {
+        if (!validName(name) || !validBox(box)) {
             toast("That region name or area looks invalid.");
             return;
         }
@@ -250,7 +257,7 @@ public final class FqrController {
             @Override public void onProgress(int percent, long speed) { updateOverlay(percent, speed); }
             @Override public void onDone() {
                 updateOverlay(100, 0);
-                overlayTitle.setText("Region added");
+                if (overlayTitle != null) overlayTitle.setText("Region added");   // may be gone if hidden
                 webView.postDelayed(() -> { hideOverlay(); webView.reload(); }, 1200);
             }
             @Override public void onError(String message) {
@@ -441,7 +448,7 @@ public final class FqrController {
         });
     }
 
-    private static double[] boundsOf(JSONObject o) {
+    static double[] boundsOf(JSONObject o) {
         if (o == null) return null;
         JSONArray a = o.optJSONArray("ui_bounds");
         if (a == null) a = o.optJSONArray("render_bounds");
@@ -555,10 +562,10 @@ public final class FqrController {
         return String.format(Locale.US, "%.2f GB", mb / 1000.0);
     }
 
-    // Injected once per maps page load. Idempotent (guards window.__k2goFqr). Pierces the
-    // <maps-black> shadow root, watches for the extract popup's <pre>, parses name+box, hides the
-    // raw command, and calls the native bridge. Delete (delete <name>) is intentionally ignored
-    // here — that flow lands in a later PR.
+    // Injected once per maps page load (idempotent). Pierces the <maps-black> shadow root and bridges
+    // to native: EXTRACT fires when the user presses Next (the command <pre> is rebuilt on every
+    // keystroke, so we can't fire from the observer); DELETE is caught by a MutationObserver that runs
+    // ONLY while the trash tool is on; the trash tool also opens our list; __k2goFlyTo flies the map.
     private static final String BRIDGE_JS =
             "(function(){try{" +
             "if(window.__k2goFqr)return;window.__k2goFqr=true;" +
@@ -576,15 +583,16 @@ public final class FqrController {
             // Delete: the delete popup shows a complete command (no typing) -> observe + fire.
             "function handleDelete(pre){try{var d=(pre.textContent||'').match(DE);if(!d)return false;hidePop(pre);" +
             "if(window.K2GoFQR&&K2GoFQR.onDeleteRequested){K2GoFQR.onDeleteRequested(d[1]);}return true;}catch(e){return false;}}" +
-            "var ex=sr.querySelector('.maplibregl-popup pre');if(ex)handleDelete(ex);" +
             "var mo=new MutationObserver(function(ms){ms.forEach(function(mu){var a=mu.addedNodes||[];for(var i=0;i<a.length;i++){var n=a[i];if(!n||n.nodeType!==1)continue;" +
             "var pre=(n.matches&&n.matches('pre'))?n:(n.querySelector?n.querySelector('.maplibregl-popup pre, pre'):null);" +
             "if(pre)handleDelete(pre);}});});" +
-            "mo.observe(sr,{childList:true,subtree:true});" +
+            // Connect the observer only while the trash tool is on -> no churn during normal map use.
+            "var observing=false,deleteMode=false;" +
+            "function setObserve(on){try{if(on&&!observing){mo.observe(sr,{childList:true,subtree:true});observing=true;}else if(!on&&observing){mo.disconnect();observing=false;}}catch(e){}}" +
             // Delegated clicks: the trash tool opens our list; "Next" finalizes the extract name.
             "sr.addEventListener('click',function(ev){try{var path=ev.composedPath?ev.composedPath():[];" +
             "for(var i=0;i<path.length;i++){var el=path[i];if(!el)continue;" +
-            "if(el.title==='Choose region to delete'){if(window.K2GoFQR&&K2GoFQR.onDeleteToolOpened){K2GoFQR.onDeleteToolOpened();}break;}" +
+            "if(el.title==='Choose region to delete'){deleteMode=!deleteMode;setObserve(deleteMode);if(window.K2GoFQR&&K2GoFQR.onDeleteToolOpened){K2GoFQR.onDeleteToolOpened();}break;}" +
             "if(el.tagName==='BUTTON'&&(el.textContent||'').trim()==='Next'){setTimeout(fireExtract,0);break;}" +
             "}}catch(e){}},true);" +
             // Native calls this to fly the map behind the list sheet to a picked region.
