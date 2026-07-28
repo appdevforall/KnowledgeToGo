@@ -19,13 +19,13 @@
     <ImageButton
         android:id="@+id/btnHandle"
         android:layout_width="56dp"
-        android:layout_height="24dp"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_nav_handle"
         android:contentDescription="@string/k2go_nav_show_bar"
         android:elevation="8dp"
-        android:padding="0dp"
+        android:paddingTop="20dp"
         android:scaleType="center"
         android:tint="?attr/colorOnSurfaceVariant"
         app:srcCompat="@drawable/ic_nav_grabber" />
