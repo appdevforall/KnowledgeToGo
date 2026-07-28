@@ -68,6 +68,9 @@ public final class FqrController {
     private final List<Region> regions = new ArrayList<>();
     private String highlight;   // region to float to the top / tint (the one just clicked on the map)
     private boolean deleteToolOn = false;   // mirrors the map's trash tool on/off so a 2nd press closes
+    // The delete list is a bottom sheet covering this fraction of the screen; fly-to reserves the
+    // same fraction as bottom padding so a picked region centers in the VISIBLE map above the sheet.
+    private static final float DELETE_SHEET_FRACTION = 0.40f;
     private static final class Region {
         final String name; final double[] b;   // b = ui_bounds [minLon,minLat,maxLon,maxLat] or null
         Region(String n, double[] bb) { name = n; b = bb; }
@@ -417,7 +420,7 @@ public final class FqrController {
         sheet.addView(sv, svlp);
 
         // ~55% of the screen so the map stays visible + pannable above the sheet.
-        int h = Math.round(activity.getResources().getDisplayMetrics().heightPixels * 0.55f);
+        int h = Math.round(activity.getResources().getDisplayMetrics().heightPixels * DELETE_SHEET_FRACTION);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, h);
         params.gravity = Gravity.BOTTOM;
         deleteSheet = sheet;
@@ -496,7 +499,8 @@ public final class FqrController {
     private void flyTo(Region r) {
         if (r.b == null) return;
         webView.evaluateJavascript(String.format(Locale.US,
-                "window.__k2goFlyTo&&window.__k2goFlyTo(%s,%s,%s,%s);", r.b[0], r.b[1], r.b[2], r.b[3]), null);
+                "window.__k2goFlyTo&&window.__k2goFlyTo(%s,%s,%s,%s,%s);",
+                r.b[0], r.b[1], r.b[2], r.b[3], DELETE_SHEET_FRACTION), null);
     }
 
     private void confirmDelete(String name) {
@@ -584,8 +588,10 @@ public final class FqrController {
             "if(el.tagName==='BUTTON'&&(el.textContent||'').trim()==='Next'){setTimeout(fireExtract,0);break;}" +
             "}}catch(e){}},true);" +
             // Native calls this to fly the map behind the list sheet to a picked region.
-            "window.__k2goFlyTo=function(a,b,c,d){try{var mm=document.querySelector('maps-black').map;" +
-            "mm.fitBounds([[a,b],[c,d]],{padding:60,duration:600});}catch(e){}};" +
+            "window.__k2goFlyTo=function(a,b,c,d,frac){try{var mm=document.querySelector('maps-black').map;" +
+            "var el=mm.getContainer?mm.getContainer():null;var H=el?el.clientHeight:0;" +
+            "var pb=Math.round(H*(frac||0))+40;" +   // reserve the sheet's area at the bottom
+            "mm.fitBounds([[a,b],[c,d]],{padding:{top:40,left:40,right:40,bottom:pb},duration:600});}catch(e){}};" +
             "console.log('K2Go-FQR bridge armed');" +
             "}catch(e){try{console.log('K2Go-FQR fatal '+e);}catch(_){}}})();";
 }
