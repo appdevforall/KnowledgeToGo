@@ -71,6 +71,8 @@ public class PortalActivity extends AppCompatActivity {
     private org.iiab.controller.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
     private static final long AUTO_HIDE_MS = 4000L;   // ADFA-4887: nav-bar auto-hide after inactivity
     private boolean fullscreenOn = false;             // ADFA-4887: Home button toggles fullscreen
+    private Handler hideHandler;                      // ADFA-4887: nav-bar auto-hide (cleared in onDestroy)
+    private Runnable hideRunnable;
     // pdf.js builds advertised by /pdfjs/manifest.json (loaded off the main thread).
     // Empty until loaded / when the box serves none -> PDFs fall back to download.
     private volatile List<PdfViewerBuild> pdfViewerBuilds = Collections.emptyList();
@@ -111,9 +113,9 @@ public class PortalActivity extends AppCompatActivity {
         });
         btnHandle.setVisibility(View.GONE);
 
-        Handler hideHandler = new Handler(Looper.getMainLooper());
+        hideHandler = new Handler(Looper.getMainLooper());
 
-        Runnable hideRunnable = () -> {
+        hideRunnable = () -> {
             bottomNav.animate().translationY(bottomNav.getHeight()).setDuration(250);
             btnHandle.setVisibility(View.VISIBLE);
             btnHandle.animate().alpha(1f).setDuration(150);
@@ -408,6 +410,7 @@ public class PortalActivity extends AppCompatActivity {
         // ADFA-4879: stop FQR polling + drop its overlay/dialog so we don't leak the activity.
         // The durable server job (if any) keeps running and shows up on the next /maps/ reload.
         if (fqr != null) fqr.detach();
+        if (hideHandler != null && hideRunnable != null) hideHandler.removeCallbacks(hideRunnable);   // ADFA-4887
         super.onDestroy();
     }
 
