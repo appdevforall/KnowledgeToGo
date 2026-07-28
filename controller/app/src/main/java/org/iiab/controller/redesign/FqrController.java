@@ -115,8 +115,10 @@ public final class FqrController {
         this.cSurfaceHighest  = attr(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF223029);
         this.cOnSurface       = attr(com.google.android.material.R.attr.colorOnSurface, Color.WHITE);
         this.cOnSurfaceVariant= attr(com.google.android.material.R.attr.colorOnSurfaceVariant, 0xFF8FA39B);
-        this.cPrimary         = attr(com.google.android.material.R.attr.colorPrimary, 0xFF4CAF7D);
-        this.cError           = attr(com.google.android.material.R.attr.colorError, 0xFFE05353);
+        // colorPrimary/colorError are declared by appcompat (not the Material R.attr), unlike the
+        // Material3-specific surface roles above; read them from the appcompat namespace.
+        this.cPrimary         = attr(androidx.appcompat.R.attr.colorPrimary, 0xFF4CAF7D);
+        this.cError           = attr(androidx.appcompat.R.attr.colorError, 0xFFE05353);
     }
 
     private int attr(int attrId, int fallback) {
