@@ -529,4 +529,18 @@
     <string name="k2go_fqr_delete" translatable="false">Delete</string>
     <string name="k2go_fqr_deleted" translatable="false">Deleted “%1$s”</string>
     <string name="k2go_fqr_delete_failed" translatable="false">Delete failed</string>
+
+    <!-- ADFA-4886: WebView nav bar (icon-only buttons) contentDescription + error page.
+         translatable=false until the l10n pass, matching the rest of this file. -->
+    <string name="k2go_nav_back" translatable="false">Back</string>
+    <string name="k2go_nav_forward" translatable="false">Forward</string>
+    <string name="k2go_nav_fullscreen" translatable="false">Fullscreen</string>
+    <string name="k2go_nav_reload" translatable="false">Reload</string>
+    <string name="k2go_nav_stop" translatable="false">Stop loading</string>
+    <string name="k2go_nav_exit" translatable="false">Exit</string>
+    <string name="k2go_nav_show_bar" translatable="false">Show navigation bar</string>
+    <string name="k2go_nav_hide_bar" translatable="false">Hide navigation bar</string>
+    <string name="k2go_portal_error_title" translatable="false">Connection Failed</string>
+    <string name="k2go_portal_error_body" translatable="false">Unable to reach the secure environment.</string>
+    <string name="k2go_portal_error_detail" translatable="false">Error: %1$s</string>
 </resources>

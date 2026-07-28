@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:background="?attr/colorSurface">
 
     <!-- WebView (Web page content handles its own background,
     but you can force a dark theme in Java using WebSettings.setForceDark) -->
@@ -11,39 +12,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <Button
+    <!-- ADFA-4886: nav chrome uses Material 3 vector icons + theme attributes (system day/night)
+         instead of emoji/glyph text buttons. Icon-only buttons carry a contentDescription. -->
+    <ImageButton
         android:id="@+id/btnHandle"
         android:layout_width="60dp"
         android:layout_height="32dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:alpha="0.8"
-        android:background="?android:attr/colorButtonNormal"
-        android:padding="0dp"
-        android:stateListAnimator="@null"
-        android:text="⌃"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="18sp" />
+        android:background="?attr/colorSurfaceContainerHighest"
+        android:contentDescription="@string/k2go_nav_show_bar"
+        android:padding="4dp"
+        android:scaleType="fitCenter"
+        android:tint="?attr/colorOnSurfaceVariant"
+        app:srcCompat="@drawable/ic_expand_less" />
 
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?android:attr/colorBackgroundFloating"
+        android:background="?attr/colorSurfaceContainer"
         android:orientation="vertical"
         android:visibility="invisible"
         android:elevation="8dp">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnHideNav"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:background="?android:attr/selectableItemBackground"
-            android:text="⌄"
-            android:textSize="20sp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:stateListAnimator="@null" />
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/k2go_nav_hide_bar"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:tint="?attr/colorOnSurfaceVariant"
+            app:srcCompat="@drawable/ic_expand_more" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,57 +55,66 @@
             android:orientation="horizontal"
             android:paddingBottom="8dp">
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnBack"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="◀"
-                android:textSize="20sp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/k2go_nav_back"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:tint="?attr/colorOnSurface"
+                app:srcCompat="@drawable/ic_arrow_left" />
 
-            <!-- ADFA-4887: repurposed as a Fullscreen toggle (no in-WebView home page anymore).
-                 Material 3 icon + contentDescription land in ADFA-4886. -->
-            <Button
+            <!-- ADFA-4887: repurposed as a Fullscreen toggle (no in-WebView home page anymore). -->
+            <ImageButton
                 android:id="@+id/btnHome"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="⛶"
-                android:textSize="20sp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/k2go_nav_fullscreen"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:tint="?attr/colorOnSurface"
+                app:srcCompat="@drawable/ic_fullscreen" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnReload"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="↻"
-                android:textSize="20sp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/k2go_nav_reload"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:tint="?attr/colorOnSurface"
+                app:srcCompat="@drawable/ic_refresh" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnExit"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="✖"
-                android:textSize="20sp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textColor="#D32F2F" /> <!-- Red is universal alert color -->
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/k2go_nav_exit"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:tint="@color/k2go_nav_exit"
+                app:srcCompat="@drawable/ic_close_24" /> <!-- Red is the universal alert color -->
 
-            <Button
+            <ImageButton
                 android:id="@+id/btnForward"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="▶"
-                android:textSize="20sp"
-                style="?android:attr/buttonBarButtonStyle"
-                android:textColor="?android:attr/textColorPrimary" />
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/k2go_nav_forward"
+                android:padding="12dp"
+                android:scaleType="fitCenter"
+                android:tint="?attr/colorOnSurface"
+                app:srcCompat="@drawable/ic_arrow_right" />
         </LinearLayout>
 
     </LinearLayout>

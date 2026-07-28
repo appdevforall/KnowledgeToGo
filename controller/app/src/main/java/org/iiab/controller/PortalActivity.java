@@ -21,7 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.graphics.Bitmap;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.content.Intent;
 import android.os.Handler;
@@ -95,14 +95,14 @@ public class PortalActivity extends AppCompatActivity {
         webView.setGestureLogging(BuildConfig.DEBUG);
 
         LinearLayout bottomNav = findViewById(R.id.bottomNav);
-        Button btnHandle = findViewById(R.id.btnHandle); // The new handle
-        Button btnHideNav = findViewById(R.id.btnHideNav); // Button to close
+        ImageButton btnHandle = findViewById(R.id.btnHandle); // The new handle
+        ImageButton btnHideNav = findViewById(R.id.btnHideNav); // Button to close
 
-        Button btnBack = findViewById(R.id.btnBack);
-        Button btnHome = findViewById(R.id.btnHome);
-        Button btnReload = findViewById(R.id.btnReload);
-        Button btnExit = findViewById(R.id.btnExit);
-        Button btnForward = findViewById(R.id.btnForward);
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        ImageButton btnHome = findViewById(R.id.btnHome);
+        ImageButton btnReload = findViewById(R.id.btnReload);
+        ImageButton btnExit = findViewById(R.id.btnExit);
+        ImageButton btnForward = findViewById(R.id.btnForward);
 
         // --- NAV BAR (auto-hide after inactivity) ---
         // Visible on entry; hides after AUTO_HIDE_MS with no interaction, measured from the LAST
@@ -206,14 +206,16 @@ public class PortalActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 vm.setLoading(true);
-                btnReload.setText("✕"); // Change to Stop
+                btnReload.setImageResource(R.drawable.ic_stop); // Change to Stop
+                btnReload.setContentDescription(getString(R.string.k2go_nav_stop));
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 vm.setLoading(false);
-                btnReload.setText("↻"); // Back to Reload
+                btnReload.setImageResource(R.drawable.ic_refresh); // Back to Reload
+                btnReload.setContentDescription(getString(R.string.k2go_nav_reload));
                 view.getSettings().setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);
 
                 // Touch diagnostics + best-effort MapLibre pitch enablement.
@@ -228,13 +230,15 @@ public class PortalActivity extends AppCompatActivity {
                 super.onReceivedError(view, request, error);
                 if (request.isForMainFrame()) {
                     String customErrorHtml = "<html><body style='background-color:#1A1A1A;color:#FFFFFF;text-align:center;padding-top:50px;font-family:sans-serif;'>"
-                            + "<h2>⚠️ Connection Failed</h2>"
-                            + "<p>Unable to reach the secure environment.</p>"
-                            + "<p style='color:#888;font-size:12px;'>Error: " + error.getDescription() + "</p>"
+                            + "<h2>⚠️ " + getString(R.string.k2go_portal_error_title) + "</h2>"
+                            + "<p>" + getString(R.string.k2go_portal_error_body) + "</p>"
+                            + "<p style='color:#888;font-size:12px;'>"
+                            + getString(R.string.k2go_portal_error_detail, error.getDescription()) + "</p>"
                             + "</body></html>";
                     view.loadData(customErrorHtml, "text/html", "UTF-8");
                     vm.setLoading(false);
-                    btnReload.setText("↻");
+                    btnReload.setImageResource(R.drawable.ic_refresh);
+                    btnReload.setContentDescription(getString(R.string.k2go_nav_reload));
                 }
             }
         });

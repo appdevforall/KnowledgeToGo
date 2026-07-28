@@ -71,7 +71,7 @@
             android:exported="false"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.K2Go"/> <!-- ADFA-4886: Material 3 DayNight + app typography for the WebView chrome -->
 
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"

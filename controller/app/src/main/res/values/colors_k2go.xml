@@ -36,4 +36,8 @@
     <color name="k2go_cover_6">#4A5568</color>  <!-- slate -->
     <color name="k2go_band_library">#2E9E5B</color> <!-- green band: already in your books -->
     <color name="k2go_band_selected">#4A504E</color> <!-- gray band: selected to add -->
+
+    <!-- ADFA-4886: WebView nav "Exit" tint. Red is the universal alert/exit color; kept fixed in
+         both light and dark (no values-night override) so the exit affordance always reads the same. -->
+    <color name="k2go_nav_exit">#D32F2F</color>
 </resources>
