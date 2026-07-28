@@ -1,106 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ADFA-4848: Get More hub — the content catalog entry. Header + a 2-column grid of
-     content-type cards, filled programmatically by GetMoreHubFragment. -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+     content-type cards, filled programmatically by GetMoreHubFragment.
+     ADFA-4910: the wizard "Continue" button is pinned to the bottom (outside the ScrollView), like
+     the other wizard steps, so it never scrolls away with the cards. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/k2go_gm_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/k2go_gm_hub_title"
-            android:textAppearance="?attr/textAppearanceHeadlineMedium"
-            android:textColor="@color/k2go_ink" />
-
-        <!-- ADFA-4853: wizard-only header — step spine + storage projection, mirroring Step 2. -->
         <LinearLayout
-            android:id="@+id/k2go_gm_wizard_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:id="@+id/k2go_gm_spine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal" />
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="24dp"
+            android:paddingBottom="16dp">
 
             <TextView
+                android:id="@+id/k2go_gm_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/k2go_storage"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/k2go_muted" />
+                android:text="@string/k2go_gm_hub_title"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:textColor="@color/k2go_ink" />
 
+            <!-- ADFA-4853: wizard-only header — step spine + storage projection, mirroring Step 2. -->
             <LinearLayout
-                android:id="@+id/k2go_gm_bar"
+                android:id="@+id/k2go_gm_wizard_header"
                 android:layout_width="match_parent"
-                android:layout_height="18dp"
-                android:layout_marginTop="6dp"
-                android:orientation="horizontal">
-                <View android:id="@+id/k2go_gm_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_muted" />
-                <View android:id="@+id/k2go_gm_bar_system" android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_teal" />
-                <View android:id="@+id/k2go_gm_bar_picks"  android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_leaf" />
-                <View android:id="@+id/k2go_gm_bar_free"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_hairline" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/k2go_gm_spine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/k2go_storage"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+
+                <LinearLayout
+                    android:id="@+id/k2go_gm_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+                    <View android:id="@+id/k2go_gm_bar_used"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_muted" />
+                    <View android:id="@+id/k2go_gm_bar_system" android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_teal" />
+                    <View android:id="@+id/k2go_gm_bar_picks"  android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_leaf" />
+                    <View android:id="@+id/k2go_gm_bar_free"   android:layout_width="0dp" android:layout_height="match_parent" android:background="@color/k2go_hairline" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/k2go_gm_legend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
             </LinearLayout>
 
             <TextView
-                android:id="@+id/k2go_gm_legend"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:layout_marginTop="4dp"
+                android:text="@string/k2go_gm_hub_sub"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
                 android:textColor="@color/k2go_muted" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/k2go_gm_hub_prompt"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/k2go_ink" />
+
+            <LinearLayout
+                android:id="@+id/k2go_gm_cards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
         </LinearLayout>
+    </ScrollView>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/k2go_gm_hub_sub"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/k2go_muted" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="@string/k2go_gm_hub_prompt"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
-            android:textColor="@color/k2go_ink" />
-
-        <LinearLayout
-            android:id="@+id/k2go_gm_cards"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical" />
-
-        <!-- ADFA-4853: wizard-only; proceeds to the install step. Styled like other primary
-             buttons so it reads as part of the flow. -->
-        <Button
-            android:id="@+id/k2go_gm_continue"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/k2go_wizard_continue"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/k2go_teal"
-            android:visibility="gone" />
-    </LinearLayout>
-</ScrollView>
+    <!-- ADFA-4853/4910: wizard-only; pinned to the bottom so it stays visible over the scroll. -->
+    <Button
+        android:id="@+id/k2go_gm_continue"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/k2go_wizard_continue"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/k2go_teal"
+        android:visibility="gone" />
+</LinearLayout>
