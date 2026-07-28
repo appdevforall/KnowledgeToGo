@@ -116,7 +116,7 @@ public class BooksLandingFragment extends Fragment {
         });
 
         buildChips();
-        addBtn.setOnClickListener(v -> startDownloads());
+        addBtn.setOnClickListener(v -> reviewSelection());
         downloadsLink.setOnClickListener(v -> openDownloads());
 
         loadLanguages();
@@ -391,8 +391,8 @@ public class BooksLandingFragment extends Fragment {
             addBtn.setVisibility(View.VISIBLE);
             int n = selected.size();
             addBtn.setEnabled(n > 0);
-            int fmt = wizard ? R.string.k2go_books_add_setup_fmt : R.string.k2go_books_add_fmt;
-            addBtn.setText(n > 0 ? getString(fmt, n) : getString(R.string.k2go_books_add_none));
+            // ADFA-4910: the landing now leads to a Confirm/review step, not a direct add.
+            addBtn.setText(n > 0 ? getString(R.string.k2go_books_review_fmt, n) : getString(R.string.k2go_books_add_none));
         }
         if (wizard) { downloadsLink.setVisibility(View.GONE); return; }   // no live downloads pre-install
         boolean active = BooksDownloadService.hasSession();
@@ -400,27 +400,20 @@ public class BooksLandingFragment extends Fragment {
         if (active) downloadsLink.setText(getString(R.string.k2go_books_view_downloads));
     }
 
-    private void startDownloads() {
+    /** ADFA-4910: hand the current selection to the activity cart and open the Confirm/review
+     *  screen. Confirm is the single place that banks (wizard) or downloads (live), so both flows
+     *  share one review step. The picks stay in {@code selected} so returning here keeps the state. */
+    private void reviewSelection() {
         if (selected.isEmpty()) return;
-        if (wizard) {   // pre-install: record the picks into the wishlist; provisioned after install
-            for (JSONObject b : selected.values()) {
-                BooksWishlist.add(requireContext(), b.optString("gutenberg_id", ""),
-                        b.optString("title", ""), b.optString("download_url", ""));
-            }
-            selected.clear();
-            render();   // picked books now show the "Added" band
-            return;
-        }
-        List<String> ids = new ArrayList<>(), titles = new ArrayList<>(), urls = new ArrayList<>();
+        if (!(getActivity() instanceof SetupLibraryActivity)) return;
+        LinkedHashMap<String, String[]> cart = new LinkedHashMap<>();
         for (JSONObject b : selected.values()) {
-            ids.add(b.optString("gutenberg_id", ""));
-            titles.add(b.optString("title", ""));
-            urls.add(b.optString("download_url", ""));
+            cart.put(b.optString("gutenberg_id", ""), new String[]{
+                    b.optString("title", ""), b.optString("author", ""), b.optString("download_url", "")});
         }
-        BooksDownloadService.start(requireContext().getApplicationContext(),
-                ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
-        selected.clear();
-        openDownloads();
+        SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
+        a.setBooksCart(cart);
+        a.openBooksConfirm();
     }
 
     private void openDownloads() {
