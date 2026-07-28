@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4886: collapsed-bar handle. The visible tab (the bar's own colorSurfaceContainer surface
+     with rounded top corners) is drawn only in the bottom strip via a top inset, so the button can
+     be a full 48dp-tall touch target (a11y minimum) while still looking like a slim peeking tab. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="20dp">
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/colorSurfaceContainer" />
+            <corners
+                android:topLeftRadius="14dp"
+                android:topRightRadius="14dp"
+                android:bottomLeftRadius="0dp"
+                android:bottomRightRadius="0dp" />
+        </shape>
+    </item>
+</layer-list>
