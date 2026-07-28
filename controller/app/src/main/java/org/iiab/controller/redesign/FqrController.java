@@ -133,17 +133,16 @@ public final class FqrController {
                 box == null ? "" : box.replaceAll("\\s+", "")));
     }
 
-    /** The map's trash tool was activated → open the (searchable) region list so the user doesn't
-     *  have to hunt a tiny rectangle on the map. */
+    /** The map's trash tool was toggled; {@code on} is its REAL state (read from the map cursor, not a
+     *  parallel flip that could desync/invert). Open the list when it turns on, close it when off. A
+     *  second press dismisses the list (feels native); closing via the sheet's X doesn't change the
+     *  tool, so the next deactivate correctly leaves it closed. */
     @JavascriptInterface
-    public void onDeleteToolOpened() {
+    public void onDeleteToolState(boolean on) {
         if (!active) return;
-        // The map's trash tool toggles on every click, so mirror it: open on activate, close on
-        // deactivate — a second press dismisses the list (feels native). Closing via the sheet's own
-        // X does NOT flip this flag, so the following deactivate press correctly leaves it closed.
         activity.runOnUiThread(() -> {
-            deleteToolOn = !deleteToolOn;
-            if (deleteToolOn) openDeleteList(null);
+            deleteToolOn = on;
+            if (on) openDeleteList(null);
             else hideDeleteSheet();
         });
     }
@@ -587,12 +586,14 @@ public final class FqrController {
             "var pre=(n.matches&&n.matches('pre'))?n:(n.querySelector?n.querySelector('.maplibregl-popup pre, pre'):null);" +
             "if(pre)handleDelete(pre);}});});" +
             // Connect the observer only while the trash tool is on -> no churn during normal map use.
-            "var observing=false,deleteMode=false;" +
+            "var observing=false;" +
             "function setObserve(on){try{if(on&&!observing){mo.observe(sr,{childList:true,subtree:true});observing=true;}else if(!on&&observing){mo.disconnect();observing=false;}}catch(e){}}" +
             // Delegated clicks: the trash tool opens our list; "Next" finalizes the extract name.
             "sr.addEventListener('click',function(ev){try{var path=ev.composedPath?ev.composedPath():[];" +
             "for(var i=0;i<path.length;i++){var el=path[i];if(!el)continue;" +
-            "if(el.title==='Choose region to delete'){deleteMode=!deleteMode;setObserve(deleteMode);if(window.K2GoFQR&&K2GoFQR.onDeleteToolOpened){K2GoFQR.onDeleteToolOpened();}break;}" +
+            // Read the tool's REAL state from the map cursor (crosshair = active) after the click,
+            // so open/close mirrors the tool exactly (no flip-based desync/inversion).
+            "if(el.title==='Choose region to delete'){setTimeout(function(){try{var on=host.map.getCanvas().style.cursor==='crosshair';setObserve(on);if(window.K2GoFQR&&K2GoFQR.onDeleteToolState){K2GoFQR.onDeleteToolState(on);}}catch(e){}},0);break;}" +
             "if(el.tagName==='BUTTON'&&(el.textContent||'').trim()==='Next'){setTimeout(fireExtract,0);break;}" +
             "}}catch(e){}},true);" +
             // Native calls this to fly the map behind the list sheet to a picked region.
