@@ -255,7 +255,8 @@ public class LibraryHomeFragment extends Fragment {
         // fail with no content installed. So gate the drain on the REST API actually answering;
         // the wishlist is untouched until then, and this poll (~3s) retries until it's ready.
         if (alive && !provisionProbing
-                && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext()))) {
+                && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext())
+                    || MapsProvisioner.hasPending(requireContext()))) {   // ADFA-4900
             provisionProbing = true;
             AppExecutors.get().io().execute(() -> {
                 final boolean ready = RestReadiness.apiReady();
@@ -269,6 +270,7 @@ public class LibraryHomeFragment extends Fragment {
                     android.util.Log.i("K2Go-Provision", "REST API ready -> draining wishlists (home fallback)");
                     if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
                     if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
+                    if (MapsProvisioner.hasPending(requireContext())) MapsProvisioner.drain(requireContext()); // ADFA-4900
                 });
             });
         }

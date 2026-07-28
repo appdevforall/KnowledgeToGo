@@ -130,6 +130,7 @@ public class SetupProgressActivity extends AppCompatActivity {
                         if (!drained) {
                             if (BooksProvisioner.hasPending(SetupProgressActivity.this)) BooksProvisioner.drain(SetupProgressActivity.this);
                             if (ZimProvisioner.hasPending(SetupProgressActivity.this)) ZimProvisioner.drain(SetupProgressActivity.this);
+                            if (MapsProvisioner.hasPending(SetupProgressActivity.this)) MapsProvisioner.drain(SetupProgressActivity.this); // ADFA-4900
                             drained = true;
                         }
                         render();

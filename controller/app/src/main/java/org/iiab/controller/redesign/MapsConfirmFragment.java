@@ -75,11 +75,17 @@ public class MapsConfirmFragment extends Fragment {
 
         final String[] levels = a != null ? a.getStringArray(ARG_LEVELS) : null;
 
+        // ADFA-4900: in the wizard (pre-install) Maps banks the selection; post-install it installs.
+        final boolean wizard = getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isMapsWizard();
+
         Button start = root.findViewById(R.id.k2go_start_btn);
-        start.setText(getString(R.string.k2go_maps_start_building, fmt(total)));
+        start.setText(getString(wizard ? R.string.k2go_maps_add_setup_fmt : R.string.k2go_maps_start_building, fmt(total)));
         start.setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
-                ((SetupLibraryActivity) getActivity()).openMapsPreparing(levels);
+                SetupLibraryActivity act = (SetupLibraryActivity) getActivity();
+                if (act.isMapsWizard()) act.mapsWizardConfirm(levels);
+                else act.openMapsPreparing(levels);
             }
         });
 

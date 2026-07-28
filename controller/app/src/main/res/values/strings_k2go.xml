@@ -384,6 +384,7 @@
     <string name="k2go_maps_use_wifi" translatable="false">Use Wi-Fi</string>
     <string name="k2go_maps_keep_charged" translatable="false">Keep charged</string>
     <string name="k2go_maps_start_building" translatable="false">Start building \u00b7 %1$s</string>
+    <string name="k2go_maps_add_setup_fmt" translatable="false">Add to your setup \u00b7 %1$s</string>
     <string name="k2go_maps_keep_using" translatable="false">You can keep using the app meanwhile.</string>
     <string name="k2go_maps_preparing_title" translatable="false">Preparing your maps\u2026</string>
     <string name="k2go_maps_preparing_sub" translatable="false">This can take a while. You can leave it running.</string>
