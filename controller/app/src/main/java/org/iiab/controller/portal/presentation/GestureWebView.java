@@ -44,7 +44,12 @@ public class GestureWebView extends WebView {
     public boolean onTouchEvent(MotionEvent event) {
         final int pointers = event.getPointerCount();
 
-        if (onUserInteraction != null) onUserInteraction.run();
+        // Reset the host's UI timers on touch start/end only (not every MOVE) so a pan/tilt doesn't
+        // re-post the auto-hide dozens of times a second; ACTION_UP effectively marks the last touch.
+        final int action = event.getActionMasked();
+        if (onUserInteraction != null && (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP)) {
+            onUserInteraction.run();
+        }
 
         // Two or more fingers: keep the gesture for the web content (the map),
         // so an ancestor (pager/scroll) can't hijack a tilt/rotate/pinch.
