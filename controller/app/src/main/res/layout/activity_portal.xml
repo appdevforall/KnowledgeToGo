@@ -61,12 +61,14 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:textColor="?android:attr/textColorPrimary" />
 
+            <!-- ADFA-4887: repurposed as a Fullscreen toggle (no in-WebView home page anymore).
+                 Material 3 icon + contentDescription land in ADFA-4886. -->
             <Button
                 android:id="@+id/btnHome"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="🏠"
+                android:text="⛶"
                 android:textSize="20sp"
                 style="?android:attr/buttonBarButtonStyle"
                 android:textColor="?android:attr/textColorPrimary" />

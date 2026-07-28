@@ -69,6 +69,8 @@ public class PortalActivity extends AppCompatActivity {
 
     private GestureWebView webView;
     private org.iiab.controller.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
+    private static final long AUTO_HIDE_MS = 4000L;   // ADFA-4887: nav-bar auto-hide after inactivity
+    private boolean fullscreenOn = false;             // ADFA-4887: Home button toggles fullscreen
     // pdf.js builds advertised by /pdfjs/manifest.json (loaded off the main thread).
     // Empty until loaded / when the box serves none -> PDFs fall back to download.
     private volatile List<PdfViewerBuild> pdfViewerBuilds = Collections.emptyList();
@@ -100,16 +102,15 @@ public class PortalActivity extends AppCompatActivity {
         Button btnExit = findViewById(R.id.btnExit);
         Button btnForward = findViewById(R.id.btnForward);
 
-        // --- PERSISTENT BAR ---
-        // Keep the nav bar (with Exit) visible so a non-technical user always has an
-        // obvious way out. The handle is only used after a manual hide (btnHideNav).
+        // --- NAV BAR (auto-hide after inactivity) ---
+        // Visible on entry; hides after AUTO_HIDE_MS with no interaction, measured from the LAST
+        // touch. The handle (⌃) brings it back; btnHideNav hides it manually.
         bottomNav.post(() -> {
             bottomNav.setTranslationY(0);
             bottomNav.setVisibility(View.VISIBLE);
         });
         btnHandle.setVisibility(View.GONE);
 
-        // --- AUTO-HIDE TIMER ---
         Handler hideHandler = new Handler(Looper.getMainLooper());
 
         Runnable hideRunnable = () -> {
@@ -118,8 +119,13 @@ public class PortalActivity extends AppCompatActivity {
             btnHandle.animate().alpha(1f).setDuration(150);
         };
 
-        // Persistent bar: never auto-hide. Cancel any pending hide; only btnHideNav hides.
-        Runnable resetTimer = () -> hideHandler.removeCallbacks(hideRunnable);
+        // Reschedule the hide on every interaction -> auto-hide from the LAST touch, not the first.
+        Runnable resetTimer = () -> {
+            hideHandler.removeCallbacks(hideRunnable);
+            hideHandler.postDelayed(hideRunnable, AUTO_HIDE_MS);
+        };
+        webView.setOnUserInteraction(resetTimer);   // content touches count as interaction too
+        resetTimer.run();                            // start the initial countdown
 
         // --- HANDLE LOGIC (Show Bar) ---
         btnHandle.setOnClickListener(v -> {
@@ -141,8 +147,23 @@ public class PortalActivity extends AppCompatActivity {
         // Resolve the target URL once (domain), surviving rotation via the ViewModel.
         final String finalTargetUrl = vm.targetUrl(getIntent().getStringExtra("TARGET_URL"));
 
+        // ADFA-4887: there is no in-WebView home page anymore, so Home is a Fullscreen toggle.
+        // Enters full immersive (system bars hidden) and hides our bar too — but the bar stays
+        // recoverable via the handle. Press again to exit.
         btnHome.setOnClickListener(v -> {
-            webView.loadUrl(finalTargetUrl);
+            fullscreenOn = !fullscreenOn;
+            androidx.core.view.WindowInsetsControllerCompat wic =
+                    androidx.core.view.WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+            if (fullscreenOn) {
+                wic.setSystemBarsBehavior(
+                        androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+                wic.hide(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                hideRunnable.run();   // hide our bar too (still recoverable via the handle)
+            } else {
+                wic.show(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+                btnHandle.animate().alpha(0f).setDuration(150).withEndAction(() -> btnHandle.setVisibility(View.GONE));
+                bottomNav.animate().translationY(0).setDuration(250);
+            }
             resetTimer.run();
         });
 
