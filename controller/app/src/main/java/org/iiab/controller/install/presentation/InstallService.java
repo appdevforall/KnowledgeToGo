@@ -776,7 +776,10 @@ public final class InstallService extends Service {
                 " && echo 'maps_search_nominatim_db: basic' >> " + lv +
                 " && echo 'maps_ne6_zoom: full' >> " + lv +
                 " && echo 'maps_preset_full_quality_regions: []' >> " + lv +
-                " && cd /opt/iiab/iiab && ./runrole maps";
+                // --reinstall: maps ships in the base image (maps_installed: True in iiab_state.yml),
+                // so a plain runrole SKIPS install.yml and never re-fetches tiles for the new
+                // selection. --reinstall forces install.yml to re-provision the chosen layers.
+                " && cd /opt/iiab/iiab && ./runrole --reinstall maps";
     }
 
     private void finishModuleQueue() {
