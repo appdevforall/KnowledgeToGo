@@ -14,19 +14,21 @@
 
     <!-- ADFA-4886: nav chrome uses Material 3 vector icons + theme attributes (system day/night)
          instead of emoji/glyph text buttons. Icon-only buttons carry a contentDescription. -->
+    <!-- Collapsed-bar handle: a Material 3 tab of the bar's own surface with a drag grabber,
+         so it reads as the nav bar peeking from the bottom edge rather than a separate button. -->
     <ImageButton
         android:id="@+id/btnHandle"
-        android:layout_width="60dp"
-        android:layout_height="32dp"
+        android:layout_width="56dp"
+        android:layout_height="24dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:alpha="0.8"
-        android:background="?attr/colorSurfaceContainerHighest"
+        android:background="@drawable/bg_nav_handle"
         android:contentDescription="@string/k2go_nav_show_bar"
-        android:padding="4dp"
-        android:scaleType="fitCenter"
+        android:elevation="8dp"
+        android:padding="0dp"
+        android:scaleType="center"
         android:tint="?attr/colorOnSurfaceVariant"
-        app:srcCompat="@drawable/ic_expand_less" />
+        app:srcCompat="@drawable/ic_nav_grabber" />
 
     <LinearLayout
         android:id="@+id/bottomNav"

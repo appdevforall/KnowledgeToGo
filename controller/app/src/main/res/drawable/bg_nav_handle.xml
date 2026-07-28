@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4886: the collapsed-bar handle reads as the nav bar's own surface peeking from the
+     bottom edge — same colorSurfaceContainer as the bar, rounded top corners only. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="?attr/colorSurfaceContainer" />
+    <corners
+        android:topLeftRadius="14dp"
+        android:topRightRadius="14dp"
+        android:bottomLeftRadius="0dp"
+        android:bottomRightRadius="0dp" />
+</shape>
