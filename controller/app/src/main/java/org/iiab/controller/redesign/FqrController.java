@@ -226,14 +226,16 @@ public final class FqrController {
         // Kick off the actual download only after consent; the box already re-validates.
         // (startDownload is invoked from the positive button above.)
         pendingBox = box;
+        pendingArchive = archive;
     }
 
-    private String pendingBox;   // box paired with the name at consent time
+    private String pendingBox;      // box paired with the name at consent time
+    private long pendingArchive;    // on-disk size (bytes) to show in the overlay header
 
     private void startDownload(String name) {
         final String box = pendingBox;
         if (box == null) return;
-        showOverlay(name);
+        showOverlay(name, pendingArchive);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
             @Override public void onProgress(int percent, long speed) { updateOverlay(percent, speed); }
             @Override public void onDone() {
@@ -253,7 +255,7 @@ public final class FqrController {
     }
 
     // ---- Floating progress overlay -----------------------------------------------------------
-    private void showOverlay(String name) {
+    private void showOverlay(String name, long sizeBytes) {
         hideOverlay();
         LinearLayout cardV = card(dp(16));
         cardV.setOrientation(LinearLayout.VERTICAL);
@@ -262,7 +264,8 @@ public final class FqrController {
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
         overlayTitle = new TextView(activity);
-        overlayTitle.setText(String.format(Locale.US, "Downloading “%s”", name));
+        final String size = sizeBytes > 0 ? "  ·  " + human(sizeBytes) : "";   // "Downloading “x” · 2.1 GB"
+        overlayTitle.setText(String.format(Locale.US, "Downloading “%s”%s", name, size));
         overlayTitle.setTextColor(Color.WHITE);
         overlayTitle.setTypeface(overlayTitle.getTypeface(), Typeface.BOLD);
         top.addView(overlayTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
@@ -313,10 +316,10 @@ public final class FqrController {
         if (overlay == null) return;
         overlayMinimized = !overlayMinimized;
         LinearLayout cardV = (LinearLayout) overlay;
-        // Keep the title row (index 0) always; hide bar (1) and controls row (2) when minimized.
-        for (int i = 1; i < cardV.getChildCount(); i++) {
-            cardV.getChildAt(i).setVisibility(overlayMinimized ? View.GONE : View.VISIBLE);
-        }
+        // Minimized = keep the title + the slim advancing bar; hide only the percent/cancel row,
+        // so progress stays visible even when collapsed (the point of minimizing is minimal chrome).
+        View controls = cardV.getChildAt(cardV.getChildCount() - 1);
+        controls.setVisibility(overlayMinimized ? View.GONE : View.VISIBLE);
         if (overlayMin != null) overlayMin.setText(overlayMinimized ? "Show" : "Hide");
     }
 
