@@ -44,7 +44,7 @@ public final class MapsRegionClient {
 
     /** Region download progress (single durable job). */
     public interface DownloadListener {
-        void onProgress(int percent);   // percent may be -1 (indeterminate)
+        void onProgress(int percent, long speedBytesPerSec);   // percent may be -1; speed 0 if unknown
         void onDone();
         void onError(String message);
     }
@@ -116,7 +116,8 @@ public final class MapsRegionClient {
                     return;
                 default: {   // queued / downloading / processing: report progress if known
                     final int p = percent;
-                    deliver(() -> dl.onProgress(p));
+                    final long sp = j.optLong("speed", 0L);
+                    deliver(() -> dl.onProgress(p, sp));
                 }
             }
             main.postDelayed(pollTask, POLL_MS);
@@ -124,6 +125,42 @@ public final class MapsRegionClient {
             if (++pollErrors > MAX_POLL_ERRORS) { fail("lost contact with the maps service"); return; }
             main.postDelayed(pollTask, POLL_MS);
         }
+    }
+
+    /** The downloaded regions catalog, read from the box's public /maps/extracts.json. */
+    public interface RegionsListener {
+        void onRegions(JSONObject regions);   // { "<name>": { ui_bounds:[...], ... }, ... }
+        void onError(String message);
+    }
+
+    public void listRegions(@NonNull RegionsListener l) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                JSONObject j = httpJson("GET", BoxEndpoints.BASE + "/maps/extracts.json", null);
+                JSONObject regions = j.optJSONObject("regions");
+                final JSONObject out = regions != null ? regions : new JSONObject();
+                main.post(() -> l.onRegions(out));
+            } catch (Exception e) {
+                main.post(() -> l.onError("couldn't read the downloaded regions"));
+            }
+        });
+    }
+
+    /** Delete a downloaded region (tile-extract.py delete + update-json, server-side). */
+    public interface DeleteListener {
+        void onOk();
+        void onError(String message);
+    }
+
+    public void deleteRegion(@NonNull String name, @NonNull DeleteListener l) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                httpJson("POST", BASE + "/delete", new JSONObject().put("name", name));
+                main.post(l::onOk);
+            } catch (Exception e) {
+                main.post(() -> l.onError("delete failed"));
+            }
+        });
     }
 
     /** Stop polling locally and release the listener WITHOUT canceling the server job. Used when the

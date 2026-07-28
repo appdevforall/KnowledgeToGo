@@ -166,6 +166,7 @@ public class PortalActivity extends AppCompatActivity {
 
                 // Internal server link stays in the WebView (and travels through the proxy).
                 if (NavigationPolicy.isInternalHost(host)) {
+                    if (fqr != null) fqr.prepareForUrl(url);   // ADFA-4879: add the FQR bridge only on /maps/
                     return false;
                 }
 
@@ -301,7 +302,7 @@ public class PortalActivity extends AppCompatActivity {
         // ADFA-4879: FQR maps live inside this shared WebView but activate only on the box's
         // /maps/ page (gated in FqrController#onPageFinished). Attach the bridge before loadUrl.
         fqr = new org.iiab.controller.redesign.FqrController(this, webView);
-        fqr.attach();
+        fqr.prepareForUrl(finalTargetUrl);
 
         // Native architecture: content is served locally; load it directly.
         webView.loadUrl(finalTargetUrl);
