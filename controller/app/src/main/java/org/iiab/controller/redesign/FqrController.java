@@ -67,6 +67,7 @@ public final class FqrController {
     private LinearLayout listContainer;
     private final List<Region> regions = new ArrayList<>();
     private String highlight;   // region to float to the top / tint (the one just clicked on the map)
+    private boolean deleteToolOn = false;   // mirrors the map's trash tool on/off so a 2nd press closes
     private static final class Region {
         final String name; final double[] b;   // b = ui_bounds [minLon,minLat,maxLon,maxLat] or null
         Region(String n, double[] bb) { name = n; b = bb; }
@@ -91,6 +92,7 @@ public final class FqrController {
      *  running (no cancel). Call from PortalActivity#onDestroy. */
     public void detach() {
         active = false;
+        deleteToolOn = false;
         client.stopPolling();
         hideOverlay();
         hideDeleteSheet();
@@ -100,7 +102,7 @@ public final class FqrController {
     /** Arm (or disarm) on each page load, based on whether this is the /maps/ page. */
     public void onPageFinished(String url) {
         active = isMapsPage(url);
-        if (active) webView.evaluateJavascript(BRIDGE_JS, null);
+        if (active) { deleteToolOn = false; webView.evaluateJavascript(BRIDGE_JS, null); }
     }
 
     static boolean isMapsPage(String url) {
@@ -126,9 +128,14 @@ public final class FqrController {
     @JavascriptInterface
     public void onDeleteToolOpened() {
         if (!active) return;
-        // Fires on every trash-tool click (activate AND deactivate). Only open on the first one;
-        // if the list is already up, ignore so toggling the tool off doesn't reopen/refresh it.
-        activity.runOnUiThread(() -> { if (deleteSheet == null) openDeleteList(null); });
+        // The map's trash tool toggles on every click, so mirror it: open on activate, close on
+        // deactivate — a second press dismisses the list (feels native). Closing via the sheet's own
+        // X does NOT flip this flag, so the following deactivate press correctly leaves it closed.
+        activity.runOnUiThread(() -> {
+            deleteToolOn = !deleteToolOn;
+            if (deleteToolOn) openDeleteList(null);
+            else hideDeleteSheet();
+        });
     }
 
     /** The user clicked a region with the trash tool → open the list with that region on top. */
