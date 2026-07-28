@@ -493,6 +493,13 @@
     <string name="k2go_books_added" translatable="false">Added</string>
     <string name="k2go_books_add_none" translatable="false">Select books to add</string>
     <string name="k2go_books_view_downloads" translatable="false">View downloads</string>
+    <!-- ADFA-4910: Books Confirm (review step between landing and download/bank). -->
+    <string name="k2go_books_review_fmt" translatable="false">Review selection (%1$d)</string>
+    <string name="k2go_books_back_title" translatable="false">Books</string>
+    <string name="k2go_books_confirm_title" translatable="false">Ready to add these books?</string>
+    <string name="k2go_books_confirm_sub" translatable="false">Your selection.</string>
+    <string name="k2go_books_confirm_note_title" translatable="false">One at a time</string>
+    <string name="k2go_books_total_fmt" translatable="false">%1$d books</string>
     <string name="k2go_books_dl_title" translatable="false">Downloads</string>
     <string name="k2go_books_dl_sub" translatable="false">Added one at a time — kind to Project Gutenberg.</string>
     <string name="k2go_books_dl_detail_fmt" translatable="false">%1$d of %2$d books</string>
