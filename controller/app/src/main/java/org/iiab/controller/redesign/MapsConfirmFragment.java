@@ -31,14 +31,15 @@ import java.util.Locale;
 
 public class MapsConfirmFragment extends Fragment {
 
-    private static final String ARG_NAMES = "names", ARG_OPTS = "opts", ARG_MB = "mb";
+    private static final String ARG_NAMES = "names", ARG_OPTS = "opts", ARG_MB = "mb", ARG_LEVELS = "levels";
 
-    public static MapsConfirmFragment newInstance(String[] names, String[] opts, long[] mb) {
+    public static MapsConfirmFragment newInstance(String[] names, String[] opts, long[] mb, String[] levels) {
         MapsConfirmFragment f = new MapsConfirmFragment();
         Bundle b = new Bundle();
         b.putStringArray(ARG_NAMES, names);
         b.putStringArray(ARG_OPTS, opts);
         b.putLongArray(ARG_MB, mb);
+        b.putStringArray(ARG_LEVELS, levels);   // ADFA-4900: per-layer machine keys (null = off)
         f.setArguments(b);
         return f;
     }
@@ -72,11 +73,13 @@ public class MapsConfirmFragment extends Fragment {
         }
         box.addView(row(getString(R.string.k2go_maps_total), "", fmt(total), true));
 
+        final String[] levels = a != null ? a.getStringArray(ARG_LEVELS) : null;
+
         Button start = root.findViewById(R.id.k2go_start_btn);
         start.setText(getString(R.string.k2go_maps_start_building, fmt(total)));
         start.setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
-                ((SetupLibraryActivity) getActivity()).openMapsPreparing();
+                ((SetupLibraryActivity) getActivity()).openMapsPreparing(levels);
             }
         });
 

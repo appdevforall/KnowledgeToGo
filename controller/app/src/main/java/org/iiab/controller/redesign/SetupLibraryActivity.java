@@ -243,21 +243,42 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4848: Choose -> Confirm (breakdown + total + time warning). */
-    public void openMapsConfirm(String[] names, String[] opts, long[] mb) {
+    /** ADFA-4848: Choose -> Confirm (breakdown + total + time warning). ADFA-4900: also carries the
+     *  per-layer level keys (aligned to the Choose groups; null = off) so Preparing can install. */
+    public void openMapsConfirm(String[] names, String[] opts, long[] mb, String[] levels) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, MapsConfirmFragment.newInstance(names, opts, mb))
+                .replace(R.id.k2go_setup_host, MapsConfirmFragment.newInstance(names, opts, mb, levels))
                 .addToBackStack("maps_confirm")
                 .commit();
     }
 
-    /** ADFA-4848: Confirm -> Preparing (contained placeholder animation + process status; mock
-     *  until the backend). */
-    public void openMapsPreparing() {
+    /** ADFA-4848: Confirm -> Preparing. ADFA-4900: Preparing drives the real install (runrole maps
+     *  via the module-queue engine) using the per-layer selection and shows real progress. */
+    public void openMapsPreparing(String[] levels) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, new MapsPreparingFragment())
+                .replace(R.id.k2go_setup_host, MapsPreparingFragment.newInstance(levels))
                 .addToBackStack("maps_preparing")
                 .commit();
+    }
+
+    /** ADFA-4900: start the maps install through the module-queue engine (a queue of {"maps"} plus
+     *  the per-layer selection). InstallService writes the full maps_* local_vars and runs runrole
+     *  with the shared success/failure verdict, revert-on-fail and observable progress. {@code levels}
+     *  is aligned to the Choose groups [base, satellite, terrain, search]; null = off. */
+    public void startMapsInstall(String[] levels) {
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        boolean search = levels != null && levels.length > 3 && levels[3] != null;
+        Intent i = new Intent(this, InstallService.class);
+        i.setAction(InstallService.ACTION_START_MODULES);
+        i.putExtra(InstallService.EXTRA_MODULES, new String[]{"maps"});
+        i.putExtra(InstallService.EXTRA_MAPS_VECTOR, base);
+        i.putExtra(InstallService.EXTRA_MAPS_SAT, sat);
+        i.putExtra(InstallService.EXTRA_MAPS_TERRAIN, ter);
+        i.putExtra(InstallService.EXTRA_MAPS_SEARCH, search);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
     }
 
     /** ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back

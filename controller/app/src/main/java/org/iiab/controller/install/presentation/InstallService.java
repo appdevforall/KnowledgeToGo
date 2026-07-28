@@ -87,6 +87,15 @@ public final class InstallService extends Service {
     public static final String MODE_INSTALL = "install";
     public static final String MODE_RESET = "reset";
 
+    // ADFA-4900: per-layer maps config carried with a module queue of {"maps"}. When present, the
+    // "maps" module writes the full maps_* var set to local_vars (from the wizard selection) before
+    // runrole, instead of the generic <key>_install/_enabled echo. Values are validated against a
+    // fixed allowlist before interpolation (D2).
+    public static final String EXTRA_MAPS_VECTOR = "mapsVector";   // nat-z8 | osm-z11 | osm-z14
+    public static final String EXTRA_MAPS_SAT = "mapsSat";         // 7|9|11|13 | none
+    public static final String EXTRA_MAPS_TERRAIN = "mapsTerrain"; // 7|8|9|10 | none
+    public static final String EXTRA_MAPS_SEARCH = "mapsSearch";   // boolean: static pop-1k-cities on/off
+
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
 
@@ -112,6 +121,17 @@ public final class InstallService extends Service {
     private boolean moduleMode;
     private java.util.Deque<String> moduleQueue;
     private java.util.List<String> failedModules;
+
+    // ADFA-4900: wizard maps per-layer config (only set when the queue is {"maps"} from the wizard).
+    private boolean hasMapsConfig;
+    private String mapsVector, mapsSat, mapsTerrain;
+    private boolean mapsSearchOn;
+    private static final java.util.Set<String> MAPS_VECTOR_OK =
+            new java.util.HashSet<>(java.util.Arrays.asList("nat-z8", "osm-z11", "osm-z14"));
+    private static final java.util.Set<String> MAPS_SAT_OK =
+            new java.util.HashSet<>(java.util.Arrays.asList("none", "7", "9", "11", "13"));
+    private static final java.util.Set<String> MAPS_TERRAIN_OK =
+            new java.util.HashSet<>(java.util.Arrays.asList("none", "7", "8", "9", "10"));
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -155,6 +175,13 @@ public final class InstallService extends Service {
                 for (String m : mods) if (m != null && !m.isEmpty()) moduleQueue.add(m);
             }
             failedModules = new java.util.ArrayList<>();
+
+            // ADFA-4900: pick up the wizard maps per-layer selection, if any.
+            mapsVector = intent.getStringExtra(EXTRA_MAPS_VECTOR);
+            mapsSat = intent.getStringExtra(EXTRA_MAPS_SAT);
+            mapsTerrain = intent.getStringExtra(EXTRA_MAPS_TERRAIN);
+            mapsSearchOn = intent.getBooleanExtra(EXTRA_MAPS_SEARCH, false);
+            hasMapsConfig = mapsVector != null && moduleQueue.contains("maps");
 
             startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_modules)));
             acquireHardwareLocks();
@@ -658,7 +685,11 @@ public final class InstallService extends Service {
             return;
         }
 
-        String installCmd = "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
+        // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
+        // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
+        final String installCmd = ("maps".equals(nextModule) && hasMapsConfig)
+                ? mapsInstallCmd()
+                : "sed -i -E '/^[[:space:]]*" + nextModule + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_install: True' >> /etc/iiab/local_vars.yml && " +
                 "echo '" + nextModule + "_enabled: True' >> /etc/iiab/local_vars.yml && " +
                 "cd /opt/iiab/iiab && ./runrole " + roleName;
@@ -715,6 +746,37 @@ public final class InstallService extends Service {
             @Override public void onProcessExit(int exitCode) { then.run(); }
             @Override public void onError(String error) { then.run(); }
         });
+    }
+
+    /**
+     * ADFA-4900: build the maps runrole command from the wizard's per-layer selection. Translates
+     * the selection into the maps role's local_vars (roles/maps/tasks/install_frontend.yml):
+     * satellite/terrain "none" turns the layer off; search maps to maps_search_engine +
+     * maps_search_static_db. Every var the role's iiab.ini step references is written so the play
+     * never hits an undefined var. Values are validated against a fixed allowlist (D2); anything
+     * unexpected falls back to a safe default. Uses sed-delete + echo (append-if-missing).
+     */
+    private String mapsInstallCmd() {
+        final String lv = "/etc/iiab/local_vars.yml";
+        String vq = MAPS_VECTOR_OK.contains(mapsVector) ? mapsVector : "osm-z11";
+        String sat = MAPS_SAT_OK.contains(mapsSat) ? mapsSat : "none";
+        String ter = MAPS_TERRAIN_OK.contains(mapsTerrain) ? mapsTerrain : "none";
+        String engine = mapsSearchOn ? "static" : "";
+        return "sed -i -E '/^[[:space:]]*maps_(install|enabled|region_downloader|vector_quality|" +
+                "satellite_zoom|terrain_zoom|search_engine|search_static_db|search_nominatim_db|" +
+                "ne6_zoom|preset_full_quality_regions)[[:space:]]*:/d' " + lv +
+                " && echo 'maps_install: True' >> " + lv +
+                " && echo 'maps_enabled: True' >> " + lv +
+                " && echo 'maps_region_downloader: True' >> " + lv +
+                " && echo 'maps_vector_quality: " + vq + "' >> " + lv +
+                " && echo 'maps_satellite_zoom: " + sat + "' >> " + lv +
+                " && echo 'maps_terrain_zoom: " + ter + "' >> " + lv +
+                " && echo 'maps_search_engine: \"" + engine + "\"' >> " + lv +
+                " && echo 'maps_search_static_db: pop-1k-cities' >> " + lv +
+                " && echo 'maps_search_nominatim_db: basic' >> " + lv +
+                " && echo 'maps_ne6_zoom: full' >> " + lv +
+                " && echo 'maps_preset_full_quality_regions: []' >> " + lv +
+                " && cd /opt/iiab/iiab && ./runrole maps";
     }
 
     private void finishModuleQueue() {

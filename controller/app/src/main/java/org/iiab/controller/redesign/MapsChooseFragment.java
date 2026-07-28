@@ -118,12 +118,16 @@ public class MapsChooseFragment extends Fragment {
                 String[] names = new String[GROUPS.length];
                 String[] opts = new String[GROUPS.length];
                 long[] mb = new long[GROUPS.length];
+                // ADFA-4900: carry the machine level keys (null = "off") so the install can write
+                // local_vars — aligned to GROUPS order [base, satellite, terrain, search].
+                String[] levels = new String[GROUPS.length];
                 for (int gi = 0; gi < GROUPS.length; gi++) {
                     names[gi] = getString(GROUPS[gi].label);
                     opts[gi] = getString(GROUPS[gi].opts[selectedIdx[gi]].label);
                     mb[gi] = selectedMb[gi];
+                    levels[gi] = GROUPS[gi].opts[selectedIdx[gi]].level;
                 }
-                ((SetupLibraryActivity) getActivity()).openMapsConfirm(names, opts, mb);
+                ((SetupLibraryActivity) getActivity()).openMapsConfirm(names, opts, mb, levels);
             }
         });
 

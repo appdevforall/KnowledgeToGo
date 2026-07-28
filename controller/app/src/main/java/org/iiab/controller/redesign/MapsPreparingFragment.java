@@ -3,19 +3,17 @@
  * Name        : MapsPreparingFragment.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4848 (slice 3). Maps Preparing. A CONTAINED placeholder spinner
- *               (independent of the boot/close Lottie) plus a single status line that
- *               mirrors what the background process is doing, like the boot screen shows the
- *               current service. No invented progress bar. The status text is MOCK for now
- *               (cycles the phases); the REST/Ansible backend feeds the real output later.
- *               "Run in background" leaves it running and returns to the Get More hub.
+ * Description : ADFA-4848 (slice 3) / ADFA-4900. Maps Preparing. A contained placeholder
+ *               spinner plus a single status line. ADFA-4900: this now drives the REAL install
+ *               — on first entry it starts the maps runrole through the module-queue engine
+ *               (InstallService) with the per-layer selection, and the status line follows the
+ *               real queue state (ModuleQueueRepository), no longer a mock. "Run in background"
+ *               leaves it running and returns to the Get More hub.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,21 +24,21 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.iiab.controller.R;
+import org.iiab.controller.install.presentation.ModuleQueueRepository;
+import org.iiab.controller.install.presentation.ModuleQueueState;
 
 public class MapsPreparingFragment extends Fragment {
 
-    // Mock phase feed until the backend streams real process text.
-    private final int[] PHASES = {
-            R.string.k2go_maps_phase_prepared,
-            R.string.k2go_maps_phase_downloading,
-            R.string.k2go_maps_phase_building,
-            R.string.k2go_maps_phase_finishing,
-            R.string.k2go_maps_phase_ready,
-    };
+    private static final String ARG_LEVELS = "levels";
 
-    private final Handler main = new Handler(Looper.getMainLooper());
-    private Runnable tick;
-    private int step = 0;
+    public static MapsPreparingFragment newInstance(String[] levels) {
+        MapsPreparingFragment f = new MapsPreparingFragment();
+        Bundle b = new Bundle();
+        b.putStringArray(ARG_LEVELS, levels);
+        f.setArguments(b);
+        return f;
+    }
+
     private TextView status;
 
     @Nullable
@@ -49,37 +47,37 @@ public class MapsPreparingFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_k2go_maps_preparing, container, false);
 
         status = root.findViewById(R.id.k2go_prep_status);
+        status.setText(getString(R.string.k2go_maps_phase_prepared));
 
         // Run in background -> back to the Get More hub (drops the whole Maps flow off the
-        // back stack), the build keeps going.
+        // back stack), the build keeps going in the foreground service.
         root.findViewById(R.id.k2go_prep_run_bg).setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
                 ((SetupLibraryActivity) getActivity()).backToGetMoreHub();
             }
         });
 
-        startMock();
-        return root;
-    }
+        // Start the real install only on first entry (not on a config-change recreation, and not
+        // if a maps job is already running/done from this session).
+        String[] levels = getArguments() != null ? getArguments().getStringArray(ARG_LEVELS) : null;
+        if (s == null
+                && getActivity() instanceof SetupLibraryActivity
+                && !ModuleQueueRepository.get().isRunning()) {
+            ((SetupLibraryActivity) getActivity()).startMapsInstall(levels);
+        }
 
-    private void startMock() {
-        step = 0;
-        tick = new Runnable() {
-            @Override
-            public void run() {
-                status.setText(getString(PHASES[step]));
-                if (step < PHASES.length - 1) {
-                    step++;
-                    main.postDelayed(this, 1500);
-                }
+        // Follow the real queue state instead of a mock phase cycle.
+        ModuleQueueRepository.get().state().observe(getViewLifecycleOwner(), st -> {
+            if (st == null) return;
+            if (st.phase == ModuleQueueState.Phase.RUNNING) {
+                status.setText(getString(R.string.k2go_maps_phase_building));
+            } else if (st.phase == ModuleQueueState.Phase.DONE) {
+                status.setText(st.failedModules.isEmpty()
+                        ? getString(R.string.k2go_maps_phase_ready)
+                        : getString(R.string.k2go_maps_phase_failed));
             }
-        };
-        main.post(tick);
-    }
+        });
 
-    @Override
-    public void onDestroyView() {
-        if (tick != null) main.removeCallbacks(tick);
-        super.onDestroyView();
+        return root;
     }
 }
