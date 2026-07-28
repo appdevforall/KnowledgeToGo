@@ -14,29 +14,46 @@
  *                 3) run the durable REST download (MapsRegionClient) with a floating progress
  *                    overlay that can be minimized; on success we reload so the region draws.
  *               No sudo/shell on the device — the box's localhost REST does the work.
+ *
+ *               ADFA-4884: the overlays/dialogs (consent sheet, "calculating" dialog, floating
+ *               progress overlay, delete list) are themed with Material 3 + system day/night by
+ *               building them through a ContextThemeWrapper(Theme.K2Go) — a Material3.DayNight theme
+ *               carrying the app palette — without touching PortalActivity's global theme. Colors come
+ *               from theme attributes (colorSurface/onSurface/primary/error/…) so they follow light/dark;
+ *               dialogs use MaterialAlertDialogBuilder, buttons MaterialButton, and the progress bars
+ *               the Material progress indicators. All user-facing text lives in string resources.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.graphics.ColorUtils;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
+
+import org.iiab.controller.R;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -53,11 +70,17 @@ public final class FqrController {
     private final WebView webView;
     private final MapsRegionClient client = new MapsRegionClient();
 
+    // Material 3 + day/night for our own overlays/dialogs, without changing PortalActivity's global
+    // theme: build every view/dialog through this wrapper so ?attr colors + the app font resolve.
+    private final Context themed;
+    private final int cSurface, cSurfaceContainer, cSurfaceHighest, cOnSurface, cOnSurfaceVariant, cPrimary, cError;
+
     private volatile boolean active = false;   // written on UI thread, read on the WebView binder thread
     private AlertDialog dialog;       // "calculating" / consent (one at a time)
     private View overlay;             // floating progress card (null when hidden)
-    private ProgressBar overlayBar;
-    private TextView overlayPct, overlayTitle, overlayMin;
+    private LinearProgressIndicator overlayBar;
+    private TextView overlayPct, overlayTitle;
+    private TextView overlayMin;
     private boolean overlayMinimized = false;
 
     // Delete: unified list bottom-sheet (~55%) fed by the manual trash tool.
@@ -86,6 +109,18 @@ public final class FqrController {
     public FqrController(Activity activity, WebView webView) {
         this.activity = activity;
         this.webView = webView;
+        this.themed = new ContextThemeWrapper(activity, R.style.Theme_K2Go);
+        this.cSurface         = attr(com.google.android.material.R.attr.colorSurface, 0xFF16201B);
+        this.cSurfaceContainer= attr(com.google.android.material.R.attr.colorSurfaceContainerHigh, 0xFF16201B);
+        this.cSurfaceHighest  = attr(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF223029);
+        this.cOnSurface       = attr(com.google.android.material.R.attr.colorOnSurface, Color.WHITE);
+        this.cOnSurfaceVariant= attr(com.google.android.material.R.attr.colorOnSurfaceVariant, 0xFF8FA39B);
+        this.cPrimary         = attr(com.google.android.material.R.attr.colorPrimary, 0xFF4CAF7D);
+        this.cError           = attr(com.google.android.material.R.attr.colorError, 0xFFE05353);
+    }
+
+    private int attr(int attrId, int fallback) {
+        return MaterialColors.getColor(themed, attrId, fallback);
     }
 
     /** Add the JS bridge only for the /maps/ page and remove it elsewhere, to keep the interface off
@@ -157,7 +192,7 @@ public final class FqrController {
 
     private void handleExtract(String name, String box) {
         if (!validName(name) || !validBox(box)) {
-            toast("That region name or area looks invalid.");
+            toast(str(R.string.k2go_fqr_invalid));
             return;
         }
         // "Calculating size…" while the server runs its dry-run.
@@ -169,10 +204,10 @@ public final class FqrController {
             }
             @Override public void onError(String message) {
                 dismissDialog();
-                new AlertDialog.Builder(activity)
-                        .setTitle("Can't download this region")
+                new MaterialAlertDialogBuilder(themed)
+                        .setTitle(R.string.k2go_fqr_estimate_error_title)
                         .setMessage(message)
-                        .setPositiveButton("OK", null)
+                        .setPositiveButton(android.R.string.ok, null)
                         .show();
             }
         });
@@ -181,61 +216,67 @@ public final class FqrController {
     // ---- Consent -----------------------------------------------------------------------------
     private void showCalculating() {
         dismissDialog();
-        LinearLayout box = card(dp(20));
-        ProgressBar spin = new ProgressBar(activity);
-        box.addView(spin, new LinearLayout.LayoutParams(dp(28), dp(28)));
-        TextView t = new TextView(activity);
-        t.setText("Calculating download size…");
+        LinearLayout row = dialogContent(dp(20));
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        CircularProgressIndicator spin = new CircularProgressIndicator(themed);
+        spin.setIndeterminate(true);
+        spin.setIndicatorSize(dp(28));
+        row.addView(spin, new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView t = new TextView(themed);
+        t.setText(R.string.k2go_fqr_calculating);
         t.setPadding(dp(14), 0, 0, 0);
-        t.setTextColor(Color.WHITE);
-        box.setOrientation(LinearLayout.HORIZONTAL);
-        box.setGravity(Gravity.CENTER_VERTICAL);
-        box.addView(t);
-        dialog = new AlertDialog.Builder(activity).setView(box).setCancelable(true).show();
+        t.setTextColor(cOnSurface);
+        row.addView(t);
+        dialog = new MaterialAlertDialogBuilder(themed).setView(row).setCancelable(true).show();
     }
 
     private void showConsent(String name, String box, long transfer, long archive, long free, long freeAfter) {
-        LinearLayout root = card(dp(20));
+        LinearLayout body = dialogContent(dp(4));
 
-        TextView title = new TextView(activity);
-        title.setText("Download this region?");
-        title.setTextColor(Color.WHITE);
-        title.setTextSize(18);
-        title.setTypeface(title.getTypeface(), Typeface.BOLD);
-        root.addView(title);
-
-        TextView sub = new TextView(activity);
-        sub.setText(String.format(Locale.US, "“%s” — %s to download, %s on disk.",
-                name, human(transfer), human(archive)));
-        sub.setTextColor(0xFFB9C4BF);
-        sub.setPadding(0, dp(6), 0, dp(14));
-        root.addView(sub);
+        TextView sub = new TextView(themed);
+        sub.setText(str(R.string.k2go_fqr_consent_sub, name, human(transfer), human(archive)));
+        sub.setTextColor(cOnSurface);
+        sub.setPadding(0, 0, 0, dp(14));
+        body.addView(sub);
 
         // Free-space bar: how much of the current free space this region takes.
-        LinearLayout bar = new LinearLayout(activity);
+        LinearLayout bar = new LinearLayout(themed);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         long denom = Math.max(free, archive + freeAfter);
         if (denom <= 0) denom = 1;
-        View used = new View(activity);
-        used.setBackgroundColor(0xFF4CAF7D);   // this region (leaf)
-        View freeSeg = new View(activity);
-        freeSeg.setBackgroundColor(0xFF223029); // free after
+        View used = new View(themed);
+        used.setBackgroundColor(cPrimary);        // this region (leaf)
+        View freeSeg = new View(themed);
+        freeSeg.setBackgroundColor(cSurfaceHighest); // free after
         int h = dp(12);
         bar.addView(used, new LinearLayout.LayoutParams(0, h, Math.max(1f, archive)));
         bar.addView(freeSeg, new LinearLayout.LayoutParams(0, h, Math.max(1f, Math.max(0, denom - archive))));
-        root.addView(bar);
+        body.addView(bar);
 
-        TextView legend = new TextView(activity);
-        legend.setText(String.format(Locale.US, "This region: %s  ·  Free after: %s", human(archive), human(freeAfter)));
-        legend.setTextColor(0xFF8FA39B);
+        TextView legend = new TextView(themed);
+        legend.setText(str(R.string.k2go_fqr_consent_legend, human(archive), human(Math.max(0, freeAfter))));
+        legend.setTextColor(cOnSurfaceVariant);
         legend.setTextSize(11);
         legend.setPadding(0, dp(8), 0, 0);
-        root.addView(legend);
+        body.addView(legend);
 
-        dialog = new AlertDialog.Builder(activity)
-                .setView(root)
-                .setNegativeButton("Not now", (d, w) -> d.dismiss())
-                .setPositiveButton("Download", (d, w) -> startDownload(name))
+        // ADFA-4884: warn when the region wouldn't fit (negative free-after = disk almost full).
+        if (freeAfter < 0) {
+            TextView warn = new TextView(themed);
+            warn.setText(str(R.string.k2go_fqr_consent_wont_fit, human(-freeAfter)));
+            warn.setTextColor(cError);
+            warn.setTextSize(12);
+            warn.setPadding(0, dp(10), 0, 0);
+            body.addView(warn);
+        }
+
+        dialog = new MaterialAlertDialogBuilder(themed)
+                .setTitle(R.string.k2go_fqr_consent_title)
+                .setView(body)
+                .setNegativeButton(R.string.k2go_fqr_not_now, (d, w) -> d.dismiss())
+                .setPositiveButton(R.string.k2go_fqr_download, (d, w) -> startDownload(name))
                 .setCancelable(true)
                 .show();
 
@@ -256,15 +297,15 @@ public final class FqrController {
             @Override public void onProgress(int percent, long speed) { updateOverlay(percent, speed); }
             @Override public void onDone() {
                 updateOverlay(100, 0);
-                if (overlayTitle != null) overlayTitle.setText("Region added");   // may be gone if hidden
+                if (overlayTitle != null) overlayTitle.setText(R.string.k2go_fqr_region_added); // may be gone if hidden
                 webView.postDelayed(() -> { hideOverlay(); webView.reload(); }, 1200);
             }
             @Override public void onError(String message) {
                 hideOverlay();
                 if (!"canceled".equals(message)) {
-                    new AlertDialog.Builder(activity)
-                            .setTitle("Download failed").setMessage(message)
-                            .setPositiveButton("OK", null).show();
+                    new MaterialAlertDialogBuilder(themed)
+                            .setTitle(R.string.k2go_fqr_download_failed).setMessage(message)
+                            .setPositiveButton(android.R.string.ok, null).show();
                 }
             }
         });
@@ -273,48 +314,49 @@ public final class FqrController {
     // ---- Floating progress overlay -----------------------------------------------------------
     private void showOverlay(String name, long sizeBytes) {
         hideOverlay();
-        LinearLayout cardV = card(dp(16));
+        LinearLayout cardV = surfaceCard(dp(16), 16f);
         cardV.setOrientation(LinearLayout.VERTICAL);
 
-        LinearLayout top = new LinearLayout(activity);
+        LinearLayout top = new LinearLayout(themed);
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
-        overlayTitle = new TextView(activity);
-        final String size = sizeBytes > 0 ? "  ·  " + human(sizeBytes) : "";   // "Downloading “x” · 2.1 GB"
-        overlayTitle.setText(String.format(Locale.US, "Downloading “%s”%s", name, size));
-        overlayTitle.setTextColor(Color.WHITE);
+        overlayTitle = new TextView(themed);
+        final String title = str(R.string.k2go_fqr_downloading, name)
+                + (sizeBytes > 0 ? "  ·  " + human(sizeBytes) : "");   // "Downloading “x” · 2.1 GB"
+        overlayTitle.setText(title);
+        overlayTitle.setTextColor(cOnSurface);
         overlayTitle.setTypeface(overlayTitle.getTypeface(), Typeface.BOLD);
         top.addView(overlayTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        overlayMin = new TextView(activity);
-        overlayMin.setText("Hide");   // minimize to a compact card; tap again to Show
-        overlayMin.setTextColor(0xFF8FA39B);
+        overlayMin = new TextView(themed);
+        overlayMin.setText(R.string.k2go_hide);   // minimize to a compact card; tap again to Show
+        overlayMin.setTextColor(cPrimary);
         overlayMin.setTextSize(13);
         overlayMin.setPadding(dp(12), 0, dp(4), 0);
         overlayMin.setOnClickListener(v -> toggleMinimize());
         top.addView(overlayMin);
         cardV.addView(top);
 
-        overlayBar = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
-        overlayBar.setMax(100);
+        overlayBar = new LinearProgressIndicator(themed);
         overlayBar.setIndeterminate(true);
+        overlayBar.setTrackCornerRadius(dp(2));
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        blp.topMargin = dp(10);
+        blp.topMargin = dp(12);
         cardV.addView(overlayBar, blp);
 
-        LinearLayout row = new LinearLayout(activity);
+        LinearLayout row = new LinearLayout(themed);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         rlp.topMargin = dp(8);
-        overlayPct = new TextView(activity);
-        overlayPct.setText("Starting…");
-        overlayPct.setTextColor(0xFF8FA39B);
+        overlayPct = new TextView(themed);
+        overlayPct.setText(R.string.k2go_fqr_starting);
+        overlayPct.setTextColor(cOnSurfaceVariant);
         row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        Button cancel = new Button(activity);
-        cancel.setText("Cancel");
-        cancel.setAllCaps(false);
+        MaterialButton cancel = new MaterialButton(themed, null,
+                com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        cancel.setText(R.string.k2go_cancel);
         cancel.setOnClickListener(v -> { client.cancel(); hideOverlay(); });
         row.addView(cancel);
         cardV.addView(row, rlp);
@@ -336,20 +378,30 @@ public final class FqrController {
         // so progress stays visible even when collapsed (the point of minimizing is minimal chrome).
         View controls = cardV.getChildAt(cardV.getChildCount() - 1);
         controls.setVisibility(overlayMinimized ? View.GONE : View.VISIBLE);
-        if (overlayMin != null) overlayMin.setText(overlayMinimized ? "Show" : "Hide");
+        if (overlayMin != null) overlayMin.setText(overlayMinimized ? R.string.k2go_fqr_show : R.string.k2go_hide);
     }
 
     private void updateOverlay(int percent, long speed) {
         if (overlayBar == null || overlayPct == null) return;
         final String rate = speed > 0 ? "  ·  " + humanRate(speed) : "";
         if (percent < 0) {
-            overlayBar.setIndeterminate(true);
-            overlayPct.setText("Working…" + rate);
+            if (!overlayBar.isIndeterminate()) setBarMode(true);
+            overlayPct.setText(str(R.string.k2go_fqr_working) + rate);
         } else {
-            overlayBar.setIndeterminate(false);
-            overlayBar.setProgress(percent);
-            overlayPct.setText(percent + "%" + rate);
+            if (overlayBar.isIndeterminate()) setBarMode(false);
+            overlayBar.setProgressCompat(percent, true);
+            overlayPct.setText(str(R.string.k2go_fqr_percent, percent) + rate);
         }
+    }
+
+    /** Switch the Material progress indicator between indeterminate/determinate. The indicator forbids
+     *  the switch while visible, so toggle visibility around it. */
+    private void setBarMode(boolean indeterminate) {
+        if (overlayBar == null) return;
+        int vis = overlayBar.getVisibility();
+        overlayBar.setVisibility(View.GONE);
+        overlayBar.setIndeterminate(indeterminate);
+        overlayBar.setVisibility(vis == View.GONE ? View.VISIBLE : vis);
     }
 
     /** bytes/sec -> "2.4 MB/s". Empty for non-positive (speed not reported yet). */
@@ -377,35 +429,35 @@ public final class FqrController {
     }
 
     private void buildDeleteSheet() {
-        LinearLayout sheet = new LinearLayout(activity);
+        LinearLayout sheet = new LinearLayout(themed);
         sheet.setOrientation(LinearLayout.VERTICAL);
-        sheet.setBackgroundColor(0xFF0F1512);
+        sheet.setBackground(rounded(cSurface, 16f, true));   // rounded top corners, flat bottom
         sheet.setElevation(dp(12));
         sheet.setPadding(dp(16), dp(14), dp(16), dp(12));
 
-        LinearLayout header = new LinearLayout(activity);
+        LinearLayout header = new LinearLayout(themed);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
-        TextView title = new TextView(activity);
-        title.setText("Downloaded regions");
-        title.setTextColor(Color.WHITE);
+        TextView title = new TextView(themed);
+        title.setText(R.string.k2go_fqr_delete_list_title);
+        title.setTextColor(cOnSurface);
         title.setTypeface(title.getTypeface(), Typeface.BOLD);
         title.setTextSize(16);
         header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        TextView close = new TextView(activity);
+        TextView close = new TextView(themed);
         close.setText("✕");
-        close.setTextColor(0xFF8FA39B);
+        close.setTextColor(cOnSurfaceVariant);
         close.setTextSize(18);
         close.setPadding(dp(12), 0, dp(4), 0);
         close.setOnClickListener(v -> hideDeleteSheet());
         header.addView(close);
         sheet.addView(header);
 
-        searchField = new EditText(activity);
-        searchField.setHint("Search by name");
+        searchField = new EditText(themed);
+        searchField.setHint(R.string.k2go_fqr_search_hint);
         searchField.setSingleLine(true);
-        searchField.setTextColor(Color.WHITE);
-        searchField.setHintTextColor(0xFF6E7F78);
+        searchField.setTextColor(cOnSurface);
+        searchField.setHintTextColor(cOnSurfaceVariant);
         LinearLayout.LayoutParams sflp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         sflp.topMargin = dp(8);
@@ -416,8 +468,8 @@ public final class FqrController {
             @Override public void afterTextChanged(android.text.Editable e) { }
         });
 
-        ScrollView sv = new ScrollView(activity);
-        listContainer = new LinearLayout(activity);
+        ScrollView sv = new ScrollView(themed);
+        listContainer = new LinearLayout(themed);
         listContainer.setOrientation(LinearLayout.VERTICAL);
         sv.addView(listContainer);
         LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(
@@ -472,29 +524,29 @@ public final class FqrController {
             shown++;
         }
         if (shown == 0) {
-            TextView t = new TextView(activity);
-            t.setText(regions.isEmpty() ? "No downloaded regions yet." : "No matches.");
-            t.setTextColor(0xFF8FA39B);
+            TextView t = new TextView(themed);
+            t.setText(regions.isEmpty() ? R.string.k2go_fqr_empty : R.string.k2go_fqr_no_matches);
+            t.setTextColor(cOnSurfaceVariant);
             t.setPadding(0, dp(14), 0, 0);
             listContainer.addView(t);
         }
     }
 
     private View regionRow(Region r) {
-        LinearLayout row = new LinearLayout(activity);
+        LinearLayout row = new LinearLayout(themed);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setPadding(dp(10), dp(12), dp(10), dp(12));
-        if (r.name.equals(highlight)) row.setBackgroundColor(0x334CAF7D);
-        TextView name = new TextView(activity);
+        if (r.name.equals(highlight)) row.setBackgroundColor(ColorUtils.setAlphaComponent(cPrimary, 0x33));
+        TextView name = new TextView(themed);
         name.setText(r.name);
-        name.setTextColor(Color.WHITE);
+        name.setTextColor(cOnSurface);
         name.setTextSize(14);
         row.addView(name, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         row.setOnClickListener(v -> flyTo(r));   // tapping a row flies the map behind to that region
-        TextView x = new TextView(activity);
+        TextView x = new TextView(themed);
         x.setText("✕");
-        x.setTextColor(0xFFE05353);
+        x.setTextColor(cError);
         x.setTextSize(16);
         x.setPadding(dp(16), dp(2), dp(6), dp(2));
         x.setOnClickListener(v -> confirmDelete(r.name));
@@ -510,20 +562,20 @@ public final class FqrController {
     }
 
     private void confirmDelete(String name) {
-        new AlertDialog.Builder(activity)
-                .setTitle("Delete “" + name + "”?")
-                .setMessage("This full-quality region will be removed from this device.")
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Delete", (d, w) -> client.deleteRegion(name, new MapsRegionClient.DeleteListener() {
+        new MaterialAlertDialogBuilder(themed)
+                .setTitle(str(R.string.k2go_fqr_delete_confirm_title, name))
+                .setMessage(R.string.k2go_fqr_delete_confirm_msg)
+                .setNegativeButton(R.string.k2go_cancel, null)
+                .setPositiveButton(R.string.k2go_fqr_delete, (d, w) -> client.deleteRegion(name, new MapsRegionClient.DeleteListener() {
                     @Override public void onOk() {
-                        toast("Deleted “" + name + "”");
+                        toast(str(R.string.k2go_fqr_deleted, name));
                         highlight = null;
                         webView.reload();     // map redraws without the region
                         refreshRegions();     // and the list drops it
                     }
                     @Override public void onError(String m) {
-                        new AlertDialog.Builder(activity).setTitle("Delete failed").setMessage(m)
-                                .setPositiveButton("OK", null).show();
+                        new MaterialAlertDialogBuilder(themed).setTitle(R.string.k2go_fqr_delete_failed).setMessage(m)
+                                .setPositiveButton(android.R.string.ok, null).show();
                     }
                 }))
                 .show();
@@ -537,13 +589,32 @@ public final class FqrController {
     }
 
     // ---- helpers -----------------------------------------------------------------------------
-    private LinearLayout card(int pad) {
-        LinearLayout l = new LinearLayout(activity);
+    /** Padded, transparent container for MaterialAlertDialog setView (the dialog paints the surface). */
+    private LinearLayout dialogContent(int pad) {
+        LinearLayout l = new LinearLayout(themed);
         l.setOrientation(LinearLayout.VERTICAL);
         l.setPadding(pad, pad, pad, pad);
-        l.setBackgroundColor(0xFF16201B);
+        return l;
+    }
+
+    /** Opaque, rounded Material surface for the floating overlay / bottom sheet (added via
+     *  addContentView, so it carries its own surface). */
+    private LinearLayout surfaceCard(int pad, float radius) {
+        LinearLayout l = new LinearLayout(themed);
+        l.setOrientation(LinearLayout.VERTICAL);
+        l.setPadding(pad, pad, pad, pad);
+        l.setBackground(rounded(cSurfaceContainer, radius, false));
         l.setElevation(dp(8));
         return l;
+    }
+
+    private GradientDrawable rounded(int color, float radiusDp, boolean topOnly) {
+        GradientDrawable g = new GradientDrawable();
+        g.setColor(color);
+        float r = dp(radiusDp);
+        if (topOnly) g.setCornerRadii(new float[]{ r, r, r, r, 0, 0, 0, 0 });
+        else g.setCornerRadius(r);
+        return g;
     }
 
     private void dismissDialog() {
@@ -551,6 +622,10 @@ public final class FqrController {
     }
 
     private void toast(String m) { Toast.makeText(activity, m, Toast.LENGTH_SHORT).show(); }
+
+    private String str(int resId, Object... args) {
+        return args.length == 0 ? activity.getString(resId) : activity.getString(resId, args);
+    }
 
     private int dp(float v) { return Math.round(v * activity.getResources().getDisplayMetrics().density); }
 

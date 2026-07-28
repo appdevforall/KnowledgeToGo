@@ -501,4 +501,32 @@
     <string name="k2go_books_state_failed" translatable="false">Couldn\'t add — tap Retry</string>
     <string name="k2go_books_dl_channel_name" translatable="false">Book downloads</string>
     <string name="k2go_books_dl_notif_title" translatable="false">Adding books to your library</string>
+
+    <!-- ADFA-4884: in-app FQR maps overlays/dialogs (extracted from FqrController for i18n;
+         translatable=false until the l10n pass, matching the rest of this file). -->
+    <string name="k2go_fqr_invalid" translatable="false">That region name or area looks invalid.</string>
+    <string name="k2go_fqr_calculating" translatable="false">Calculating download size…</string>
+    <string name="k2go_fqr_estimate_error_title" translatable="false">Can\'t download this region</string>
+    <string name="k2go_fqr_consent_title" translatable="false">Download this region?</string>
+    <string name="k2go_fqr_consent_sub" translatable="false">“%1$s” — %2$s to download, %3$s on disk.</string>
+    <string name="k2go_fqr_consent_legend" translatable="false">This region: %1$s  ·  Free after: %2$s</string>
+    <string name="k2go_fqr_consent_wont_fit" translatable="false">This region may not fit — only %1$s would be free afterward.</string>
+    <string name="k2go_fqr_download" translatable="false">Download</string>
+    <string name="k2go_fqr_not_now" translatable="false">Not now</string>
+    <string name="k2go_fqr_downloading" translatable="false">Downloading “%1$s”</string>
+    <string name="k2go_fqr_show" translatable="false">Show</string>
+    <string name="k2go_fqr_starting" translatable="false">Starting…</string>
+    <string name="k2go_fqr_working" translatable="false">Working…</string>
+    <string name="k2go_fqr_percent" translatable="false">%1$d%%</string>
+    <string name="k2go_fqr_region_added" translatable="false">Region added</string>
+    <string name="k2go_fqr_download_failed" translatable="false">Download failed</string>
+    <string name="k2go_fqr_delete_list_title" translatable="false">Downloaded regions</string>
+    <string name="k2go_fqr_search_hint" translatable="false">Search by name</string>
+    <string name="k2go_fqr_empty" translatable="false">No downloaded regions yet.</string>
+    <string name="k2go_fqr_no_matches" translatable="false">No matches.</string>
+    <string name="k2go_fqr_delete_confirm_title" translatable="false">Delete “%1$s”?</string>
+    <string name="k2go_fqr_delete_confirm_msg" translatable="false">This full-quality region will be removed from this device.</string>
+    <string name="k2go_fqr_delete" translatable="false">Delete</string>
+    <string name="k2go_fqr_deleted" translatable="false">Deleted “%1$s”</string>
+    <string name="k2go_fqr_delete_failed" translatable="false">Delete failed</string>
 </resources>
