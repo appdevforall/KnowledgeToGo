@@ -33,6 +33,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.R;
+import org.iiab.controller.install.presentation.ModuleQueueRepository;
+import org.iiab.controller.install.presentation.ModuleQueueState;
 import org.iiab.controller.util.AppExecutors;
 
 public class SetupProgressActivity extends AppCompatActivity {
@@ -56,6 +58,7 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean redirectScheduled = false;
     private boolean showingDetail = false;
     private boolean probing = false;
+    private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
@@ -115,34 +118,65 @@ public class SetupProgressActivity extends AppCompatActivity {
         else super.onBackPressed();
     }
 
-    // ---- readiness gate: wait for the REST engine, then drain the wishlists ----
+    // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
+    // Once the REST engine is up, run the install tasks as an ORDERED, serialized pipeline:
+    // maps (proot / runrole) exclusively first, then ZIM, then Books, auto-continuing between
+    // stages HERE (never dropping to Home/Library mid-sequence). Keep polling until every stage
+    // has been started and finished; render() then auto-advances (or shows Finish on failure).
     private final Runnable readyPoll = new Runnable() {
         @Override public void run() {
-            if (probing || servicesReady) return;
+            if (probing) return;
             probing = true;
             AppExecutors.get().io().execute(() -> {
                 final boolean ready = RestReadiness.apiReady();
                 main.post(() -> {
                     probing = false;
                     if (isFinishing()) return;
-                    if (ready) {
-                        servicesReady = true;
-                        if (!drained) {
-                            if (BooksProvisioner.hasPending(SetupProgressActivity.this)) BooksProvisioner.drain(SetupProgressActivity.this);
-                            if (ZimProvisioner.hasPending(SetupProgressActivity.this)) ZimProvisioner.drain(SetupProgressActivity.this);
-                            if (MapsProvisioner.hasPending(SetupProgressActivity.this)) MapsProvisioner.drain(SetupProgressActivity.this); // ADFA-4900
-                            drained = true;
-                        }
-                        render();
-                    } else {
+                    if (!ready) {
                         readyPolls++;   // ADFA-4874: feeds the slow-start message in render()
                         render();
                         main.postDelayed(readyPoll, READY_POLL_MS);
+                        return;
                     }
+                    servicesReady = true;
+                    boolean moreWork = orchestrateStep();
+                    render();
+                    if (moreWork) main.postDelayed(readyPoll, READY_POLL_MS);
                 });
             });
         }
     };
+
+    /**
+     * ADFA-4900: one step of the serialized install pipeline. Starts the next stage only when the
+     * previous one has finished; proot (maps) runs exclusively before any REST download, so Ansible's
+     * background forks never overlap a live REST job. Returns true while work remains (keep polling),
+     * false once every stage has been started and is complete.
+     */
+    private boolean orchestrateStep() {
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        boolean queueRunning = ModuleQueueRepository.get().isRunning();
+
+        // Stage 1 — maps (proot), exclusive of all REST work.
+        if (MapsProvisioner.hasPending(this)) {
+            if (!queueRunning) { MapsProvisioner.drain(this); mapsLaunched = true; }
+            return true;
+        }
+        if (queueRunning) return true;                                      // maps runrole in flight
+        if (mapsLaunched && mq.phase != ModuleQueueState.Phase.DONE) return true;   // launched; await DONE (race guard)
+
+        // Stage 2 — ZIM (REST), only after maps is done.
+        if (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete()) return true;
+        if (ZimProvisioner.hasPending(this)) { ZimProvisioner.drain(this); return true; }
+
+        // Stage 3 — Books (REST), only after ZIM is done.
+        if (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete()) return true;
+        if (BooksProvisioner.hasPending(this)) { BooksProvisioner.drain(this); return true; }
+
+        // Every stage has been started and is complete.
+        drained = true;
+        return false;
+    }
 
     // ---- render ----
     private void render() {
@@ -165,8 +199,12 @@ public class SetupProgressActivity extends AppCompatActivity {
         boolean allComplete = drained
                 && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
                 && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete());
+        // ADFA-4900: a failed maps runrole must count as a failure too (Finish, not a false success).
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        boolean mapsFailed = mq.phase == ModuleQueueState.Phase.DONE && mq.failedModules.contains("maps");
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
-                + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED);
+                + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
+                + (mapsFailed ? 1 : 0);
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
         // message instead of "Starting services" so it doesn't look frozen (ADFA-4874).
