@@ -126,12 +126,6 @@ public final class InstallService extends Service {
     private boolean hasMapsConfig;
     private String mapsVector, mapsSat, mapsTerrain;
     private boolean mapsSearchOn;
-    private static final java.util.Set<String> MAPS_VECTOR_OK =
-            new java.util.HashSet<>(java.util.Arrays.asList("nat-z8", "osm-z11", "osm-z14"));
-    private static final java.util.Set<String> MAPS_SAT_OK =
-            new java.util.HashSet<>(java.util.Arrays.asList("none", "7", "9", "11", "13"));
-    private static final java.util.Set<String> MAPS_TERRAIN_OK =
-            new java.util.HashSet<>(java.util.Arrays.asList("none", "7", "8", "9", "10"));
 
     private File iiabRootDir;     // filesDir/rootfs
     private File debianRootfs;    // filesDir/rootfs/installed-rootfs/iiab
@@ -756,30 +750,10 @@ public final class InstallService extends Service {
      * never hits an undefined var. Values are validated against a fixed allowlist (D2); anything
      * unexpected falls back to a safe default. Uses sed-delete + echo (append-if-missing).
      */
+    // ADFA-4900: the maps runrole command is a pure, unit-tested builder (MapsRunroleCommand).
     private String mapsInstallCmd() {
-        final String lv = "/etc/iiab/local_vars.yml";
-        String vq = MAPS_VECTOR_OK.contains(mapsVector) ? mapsVector : "osm-z11";
-        String sat = MAPS_SAT_OK.contains(mapsSat) ? mapsSat : "none";
-        String ter = MAPS_TERRAIN_OK.contains(mapsTerrain) ? mapsTerrain : "none";
-        String engine = mapsSearchOn ? "static" : "";
-        return "sed -i -E '/^[[:space:]]*maps_(install|enabled|region_downloader|vector_quality|" +
-                "satellite_zoom|terrain_zoom|search_engine|search_static_db|search_nominatim_db|" +
-                "ne6_zoom|preset_full_quality_regions)[[:space:]]*:/d' " + lv +
-                " && echo 'maps_install: True' >> " + lv +
-                " && echo 'maps_enabled: True' >> " + lv +
-                " && echo 'maps_region_downloader: True' >> " + lv +
-                " && echo 'maps_vector_quality: " + vq + "' >> " + lv +
-                " && echo 'maps_satellite_zoom: " + sat + "' >> " + lv +
-                " && echo 'maps_terrain_zoom: " + ter + "' >> " + lv +
-                " && echo 'maps_search_engine: \"" + engine + "\"' >> " + lv +
-                " && echo 'maps_search_static_db: pop-1k-cities' >> " + lv +
-                " && echo 'maps_search_nominatim_db: basic' >> " + lv +
-                " && echo 'maps_ne6_zoom: full' >> " + lv +
-                " && echo 'maps_preset_full_quality_regions: []' >> " + lv +
-                // --reinstall: maps ships in the base image (maps_installed: True in iiab_state.yml),
-                // so a plain runrole SKIPS install.yml and never re-fetches tiles for the new
-                // selection. --reinstall forces install.yml to re-provision the chosen layers.
-                " && cd /opt/iiab/iiab && ./runrole --reinstall maps";
+        return org.iiab.controller.install.domain.MapsRunroleCommand.build(
+                mapsVector, mapsSat, mapsTerrain, mapsSearchOn);
     }
 
     private void finishModuleQueue() {

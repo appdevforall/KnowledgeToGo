@@ -20,6 +20,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,9 @@ public class SetupProgressActivity extends AppCompatActivity {
 
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
+    // ADFA-4900: if the maps module queue never reports RUNNING/DONE this long after hand-off, treat
+    // it as a start failure so the pipeline can't hang forever waiting on a stage that never began.
+    private static final long MAPS_START_TIMEOUT_MS = 30000L;
     // ADFA-4874: after this many failed readiness polls (~30s at 2s each) the status line switches
     // to a soft "taking longer than expected" message, so a stuck engine doesn't look frozen.
     private static final int SLOW_AFTER_POLLS = 15;
@@ -59,6 +63,8 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean showingDetail = false;
     private boolean probing = false;
     private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
+    private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
+    private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
@@ -126,6 +132,15 @@ public class SetupProgressActivity extends AppCompatActivity {
     private final Runnable readyPoll = new Runnable() {
         @Override public void run() {
             if (probing) return;
+            if (isFinishing()) return;
+            // Once the engine is confirmed up, advance the pipeline on the main thread without
+            // re-checking apiReady() over HTTP every tick (the build can run for hours). ADFA-4900/#6.
+            if (servicesReady) {
+                boolean moreWork = orchestrateStep();
+                render();
+                if (moreWork) main.postDelayed(readyPoll, READY_POLL_MS);
+                return;
+            }
             probing = true;
             AppExecutors.get().io().execute(() -> {
                 final boolean ready = RestReadiness.apiReady();
@@ -157,21 +172,27 @@ public class SetupProgressActivity extends AppCompatActivity {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean queueRunning = ModuleQueueRepository.get().isRunning();
 
-        // Stage 1 — maps (proot), exclusive of all REST work.
+        // Stage 1 — maps (proot), exclusive of all REST work (proot tasks run serially via the queue).
         if (MapsProvisioner.hasPending(this)) {
-            if (!queueRunning) { MapsProvisioner.drain(this); mapsLaunched = true; }
+            if (!queueRunning) { MapsProvisioner.drain(this); mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime(); }
             return true;
         }
         if (queueRunning) return true;                                      // maps runrole in flight
-        if (mapsLaunched && mq.phase != ModuleQueueState.Phase.DONE) return true;   // launched; await DONE (race guard)
+        if (mapsLaunched && !mapsStartFailed && mq.phase != ModuleQueueState.Phase.DONE) {
+            // Launched but the queue hasn't reported RUNNING/DONE yet. Wait, but fail closed if it
+            // never starts (ADFA-4900/#1) so the pipeline can't hang on a stage that never began.
+            if (SystemClock.elapsedRealtime() - mapsLaunchedAt > MAPS_START_TIMEOUT_MS) mapsStartFailed = true;
+            else return true;
+        }
 
-        // Stage 2 — ZIM (REST), only after maps is done.
-        if (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete()) return true;
-        if (ZimProvisioner.hasPending(this)) { ZimProvisioner.drain(this); return true; }
-
-        // Stage 3 — Books (REST), only after ZIM is done.
-        if (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete()) return true;
-        if (BooksProvisioner.hasPending(this)) { BooksProvisioner.drain(this); return true; }
+        // Stage 2 — REST: ZIM and Books run CONCURRENTLY (both are REST calls and don't conflict);
+        // only proot (maps) needs exclusivity. Keep polling until both are complete.
+        if (ZimProvisioner.hasPending(this)) ZimProvisioner.drain(this);
+        if (BooksProvisioner.hasPending(this)) BooksProvisioner.drain(this);
+        boolean restBusy = (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete())
+                || (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete())
+                || ZimProvisioner.hasPending(this) || BooksProvisioner.hasPending(this);
+        if (restBusy) return true;
 
         // Every stage has been started and is complete.
         drained = true;
@@ -204,7 +225,8 @@ public class SetupProgressActivity extends AppCompatActivity {
                 && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete());
         // ADFA-4900: a failed maps runrole must count as a failure too (Finish, not a false success).
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean mapsFailed = mq.phase == ModuleQueueState.Phase.DONE && mq.failedModules.contains("maps");
+        boolean mapsFailed = mapsStartFailed
+                || (mq.phase == ModuleQueueState.Phase.DONE && mq.failedModules.contains("maps"));
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
                 + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
                 + (mapsFailed ? 1 : 0);
@@ -307,10 +329,10 @@ public class SetupProgressActivity extends AppCompatActivity {
      *  screen yet (the richer downloads card is ADFA-4901), so the row is not tappable. */
     private View mapsRow() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean running = ModuleQueueRepository.get().isRunning()
-                || (mapsLaunched && mq.phase != ModuleQueueState.Phase.DONE);
-        boolean done = mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE;
-        boolean failed = done && mq.failedModules.contains("maps");
+        boolean done = mapsStartFailed || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
+        boolean running = !done && (ModuleQueueRepository.get().isRunning()
+                || (mapsLaunched && mq.phase != ModuleQueueState.Phase.DONE));
+        boolean failed = mapsStartFailed || (done && mq.failedModules.contains("maps"));
         boolean started = running || done;
 
         LinearLayout row = new LinearLayout(this);

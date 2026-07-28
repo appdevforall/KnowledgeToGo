@@ -40,6 +40,7 @@ public class MapsPreparingFragment extends Fragment {
     }
 
     private TextView status;
+    private boolean launched = false;   // ADFA-4900: guard against re-launching maps on view recreation
 
     @Nullable
     @Override
@@ -60,10 +61,12 @@ public class MapsPreparingFragment extends Fragment {
         // Start the real install only on first entry (not on a config-change recreation, and not
         // if a maps job is already running/done from this session).
         String[] levels = getArguments() != null ? getArguments().getStringArray(ARG_LEVELS) : null;
-        if (s == null
+        if (s == null && !launched
                 && getActivity() instanceof SetupLibraryActivity
-                && !ModuleQueueRepository.get().isRunning()) {
+                && !ModuleQueueRepository.get().isRunning()
+                && ModuleQueueRepository.get().current().phase != ModuleQueueState.Phase.DONE) {
             ((SetupLibraryActivity) getActivity()).startMapsInstall(levels);
+            launched = true;
         }
 
         // Follow the real queue state instead of a mock phase cycle.
