@@ -28,6 +28,7 @@ public class GestureWebView extends WebView {
     public static final String TAG = "IIAB-GestureWV";
 
     private boolean gestureLogging = false;
+    private Runnable onUserInteraction;   // ADFA-4887: notified on each touch (nav-bar auto-hide)
 
     public GestureWebView(Context context) { super(context); }
     public GestureWebView(Context context, AttributeSet attrs) { super(context, attrs); }
@@ -36,9 +37,19 @@ public class GestureWebView extends WebView {
     /** Enable verbose touch logging (debug builds only). */
     public void setGestureLogging(boolean enabled) { this.gestureLogging = enabled; }
 
+    /** Called on every touch so the host can reset UI timers (e.g. nav-bar auto-hide from last touch). */
+    public void setOnUserInteraction(Runnable r) { this.onUserInteraction = r; }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         final int pointers = event.getPointerCount();
+
+        // Reset the host's UI timers on touch start/end only (not every MOVE) so a pan/tilt doesn't
+        // re-post the auto-hide dozens of times a second; ACTION_UP effectively marks the last touch.
+        final int action = event.getActionMasked();
+        if (onUserInteraction != null && (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP)) {
+            onUserInteraction.run();
+        }
 
         // Two or more fingers: keep the gesture for the web content (the map),
         // so an ancestor (pager/scroll) can't hijack a tilt/rotate/pinch.
