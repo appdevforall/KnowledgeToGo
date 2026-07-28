@@ -182,10 +182,13 @@ public class SetupProgressActivity extends AppCompatActivity {
     private void render() {
         if (sections == null || showingDetail) return;
 
+        boolean mapsShown = MapsProvisioner.hasPending(this) || mapsLaunched;   // ADFA-4900
         boolean zimShown = ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0;
         boolean booksShown = BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0;
 
         sections.removeAllViews();
+        // ADFA-4900: maps (proot) runs first in the pipeline, so its row leads the list.
+        if (mapsShown) sections.addView(mapsRow());
         if (zimShown) sections.addView(streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
                 ZimDownloadService.hasSession(), ZimDownloadService.status(),
                 ZimDownloadService.DONE, ZimDownloadService.FAILED,
@@ -296,6 +299,56 @@ public class SetupProgressActivity extends AppCompatActivity {
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
         if (sess) row.setOnClickListener(v -> openDetail(key));   // detail only once there's a live session
+        return row;
+    }
+
+    /** ADFA-4900: summary row for the maps (proot) stage, driven by the module-queue state:
+     *  queued -> spinner (runrole in flight) -> check (done) / amber alert (failed). No detail
+     *  screen yet (the richer downloads card is ADFA-4901), so the row is not tappable. */
+    private View mapsRow() {
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        boolean running = ModuleQueueRepository.get().isRunning()
+                || (mapsLaunched && mq.phase != ModuleQueueState.Phase.DONE);
+        boolean done = mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE;
+        boolean failed = done && mq.failedModules.contains("maps");
+        boolean started = running || done;
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout slot = new LinearLayout(this);
+        slot.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams slotLp = new LinearLayout.LayoutParams(px(24), px(24));
+        slotLp.rightMargin = px(10);
+        slot.addView(indicator(started, done, failed ? 1 : 0));
+        row.addView(slot, slotLp);
+
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextView h = new TextView(this);
+        h.setText(getString(R.string.k2go_gm_maps_title));
+        h.setTypeface(h.getTypeface(), android.graphics.Typeface.BOLD);
+        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
+        h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        col.addView(h);
+        TextView sub = new TextView(this);
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        String state;
+        if (!started) state = getString(R.string.k2go_setup_state_queued);
+        else if (failed) state = getString(R.string.k2go_maps_phase_failed);
+        else if (done) state = getString(R.string.k2go_setup_state_done);
+        else state = getString(R.string.k2go_maps_phase_building);
+        sub.setText(state);
+        sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
         return row;
     }
 
