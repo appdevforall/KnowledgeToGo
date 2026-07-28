@@ -36,6 +36,14 @@ public final class BooksProvisioner {
     /** Hand the wishlist to BooksDownloadService (requires the server to be up) and clear it.
      *  No-op if empty or a session is already running. */
     public static void drain(Context ctx) {
+        // ADFA-4900: proot (runrole) and REST downloads must not run at the same time — Ansible forks
+        // background processes and concurrent REST work is a recipe for corruption. Defer REST while a
+        // module-queue (proot) job is pending or running; a later drain pass picks it up once idle.
+        if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                || MapsProvisioner.hasPending(ctx)) {
+            Log.d(TAG, "books drain deferred: proot (runrole) work is pending/running");
+            return;
+        }
         if (BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
             Log.d(TAG, "books drain skipped: a session is already active");
             return;

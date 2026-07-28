@@ -36,6 +36,14 @@ public final class ZimProvisioner {
     /** Resolve the wishlist against the offline catalog and hand it to ZimDownloadService.
      *  No-op if empty or a session is already running. Requires the server to be up. */
     public static void drain(Context ctx) {
+        // ADFA-4900: proot (runrole) and REST downloads must not run concurrently (Ansible forks
+        // background processes; concurrent REST work risks corruption). Defer ZIM while a module-queue
+        // (proot) job is pending or running; a later drain pass runs it once proot is idle.
+        if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                || MapsProvisioner.hasPending(ctx)) {
+            Log.d(TAG, "zim drain deferred: proot (runrole) work is pending/running");
+            return;
+        }
         if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()) return;
         if (ZimWishlist.size(ctx) == 0) return;
         final Context app = ctx.getApplicationContext();

@@ -40,6 +40,10 @@ public class SetupLibraryActivity extends AppCompatActivity {
     // then persists the cart to ZimWishlist instead of starting a live download.
     private boolean zimWizard = false;
 
+    // ADFA-4900: true while the Maps flow runs inside the wizard (pre-install). The Confirm step then
+    // banks the per-layer selection to MapsWishlist instead of starting a live runrole.
+    private boolean mapsWizard = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +122,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
      *  the rest are navigable placeholders for now so the hub is reviewable. */
     public void openContentType(String key, String title) {
         zimWizard = false;   // live (post-install) path; the ZIM terminal downloads, not wishlists
+        mapsWizard = false;  // ADFA-4900: live (post-install) path; Maps installs, not wishlists
         androidx.fragment.app.Fragment f;
         if ("maps".equals(key)) f = new MapsLandingFragment();
         else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
@@ -190,9 +195,9 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void openWizardContent(String key, String title) {
         if ("books".equals(key)) { openBooksWizard(); return; }
         if ("wikipedia".equals(key)) { openZimWizard(); return; }
-        // Maps is identical pre/post-install (it stops everything and runs the proot), so it reuses
-        // the existing Maps flow rather than a wizard-specific mode.
-        if ("maps".equals(key)) { openContentType(key, title); return; }
+        // ADFA-4900: in the wizard there is no rootfs yet, so Maps cannot run runrole. It banks the
+        // per-layer selection (MapsWishlist) like Books/ZIM and MapsProvisioner applies it post-install.
+        if ("maps".equals(key)) { openContentType(key, title); mapsWizard = true; return; }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(title))
                 .addToBackStack("wizard_" + key)
@@ -243,21 +248,57 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4848: Choose -> Confirm (breakdown + total + time warning). */
-    public void openMapsConfirm(String[] names, String[] opts, long[] mb) {
+    /** ADFA-4848: Choose -> Confirm (breakdown + total + time warning). ADFA-4900: also carries the
+     *  per-layer level keys (aligned to the Choose groups; null = off) so Preparing can install. */
+    public void openMapsConfirm(String[] names, String[] opts, long[] mb, String[] levels) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, MapsConfirmFragment.newInstance(names, opts, mb))
+                .replace(R.id.k2go_setup_host, MapsConfirmFragment.newInstance(names, opts, mb, levels))
                 .addToBackStack("maps_confirm")
                 .commit();
     }
 
-    /** ADFA-4848: Confirm -> Preparing (contained placeholder animation + process status; mock
-     *  until the backend). */
-    public void openMapsPreparing() {
+    /** ADFA-4848: Confirm -> Preparing. ADFA-4900: Preparing drives the real install (runrole maps
+     *  via the module-queue engine) using the per-layer selection and shows real progress. */
+    public void openMapsPreparing(String[] levels) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, new MapsPreparingFragment())
+                .replace(R.id.k2go_setup_host, MapsPreparingFragment.newInstance(levels))
                 .addToBackStack("maps_preparing")
                 .commit();
+    }
+
+    /** ADFA-4900: true while Maps runs inside the wizard (pre-install) — Confirm banks the selection. */
+    public boolean isMapsWizard() { return mapsWizard; }
+
+    /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
+     *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */
+    public void mapsWizardConfirm(String[] levels) {
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        boolean search = levels != null && levels.length > 3 && levels[3] != null;
+        MapsWishlist.save(this, base, sat, ter, search);
+        getSupportFragmentManager().popBackStack("getmore_maps",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    /** ADFA-4900: start the maps install through the module-queue engine (a queue of {"maps"} plus
+     *  the per-layer selection). InstallService writes the full maps_* local_vars and runs runrole
+     *  with the shared success/failure verdict, revert-on-fail and observable progress. {@code levels}
+     *  is aligned to the Choose groups [base, satellite, terrain, search]; null = off. */
+    public void startMapsInstall(String[] levels) {
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        boolean search = levels != null && levels.length > 3 && levels[3] != null;
+        Intent i = new Intent(this, InstallService.class);
+        i.setAction(InstallService.ACTION_START_MODULES);
+        i.putExtra(InstallService.EXTRA_MODULES, new String[]{"maps"});
+        i.putExtra(InstallService.EXTRA_MAPS_VECTOR, base);
+        i.putExtra(InstallService.EXTRA_MAPS_SAT, sat);
+        i.putExtra(InstallService.EXTRA_MAPS_TERRAIN, ter);
+        i.putExtra(InstallService.EXTRA_MAPS_SEARCH, search);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
     }
 
     /** ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
