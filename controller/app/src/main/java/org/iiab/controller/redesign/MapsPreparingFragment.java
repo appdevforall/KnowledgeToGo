@@ -81,18 +81,11 @@ public class MapsPreparingFragment extends Fragment {
         status = root.findViewById(R.id.k2go_prep_status);
         status.setText(getString(R.string.k2go_maps_phase_prepared));
 
-        View runBg = root.findViewById(R.id.k2go_prep_run_bg);
-        if (fromIndex) {
-            runBg.setVisibility(View.GONE);   // the index host provides Back/Finish; this card only observes
-        } else {
-            // Run in background -> back to the Get More hub (drops the whole Maps flow off the
-            // back stack), the build keeps going in the foreground service.
-            runBg.setOnClickListener(v -> {
-                if (getActivity() instanceof SetupLibraryActivity) {
-                    ((SetupLibraryActivity) getActivity()).backToGetMoreHub();
-                }
-            });
-        }
+        // ADFA-4910: intentionally NO "Run in background" button. A maps (module) install runs on
+        // the live system through proot, so it cannot be sent to the background — leaving this
+        // screen (or tapping other cards) could error or corrupt the system. The flow stays gated
+        // here until it finishes; Back is provided by the wizard host. (Content downloads that CAN
+        // background — ZIM/Books — keep their own button.)
 
         // Start the real install only on first entry (not on a config-change recreation, not when
         // hosted as the Finishing-setup detail, and not if a maps job is already running/done).

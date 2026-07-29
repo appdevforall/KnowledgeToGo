@@ -192,14 +192,5 @@
                 android:textIsSelectable="true" />
         </ScrollView>
 
-        <Button
-            android:id="@+id/k2go_prep_run_bg"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="14dp"
-            android:text="@string/k2go_maps_run_bg"
-            android:textColor="@color/k2go_teal"
-            android:textAllCaps="false"
-            android:background="@drawable/k2go_getmore_bg" />
     </LinearLayout>
 </ScrollView>
