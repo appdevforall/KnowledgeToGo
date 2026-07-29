@@ -301,7 +301,7 @@ public final class InstallService extends Service {
     }
 
     private void onRootfsDownloaded(String downloadPath) {
-        InstallProgressRepository.get().postExtracting(0, 0L, 0L, "");   // ADFA-4915: UI label is fixed; % arrives via TarExtractor
+        InstallProgressRepository.get().postExtracting(-1, "");   // ADFA-4915: -1 = indeterminate "reading/listing" until the first member is extracted
         updateNotification(getString(R.string.install_status_extracting));
 
         File downloadDir = new File(downloadPath);
@@ -317,7 +317,7 @@ public final class InstallService extends Service {
                 new TarExtractor.ExtractionListener() {
                     @Override
                     public void onProgress(int percent, long done, long total, String line) {
-                        InstallProgressRepository.get().postExtracting(percent, done, total, line);
+                        InstallProgressRepository.get().postExtracting(percent, line);
                     }
 
                     @Override

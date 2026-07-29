@@ -148,7 +148,7 @@ public class TarExtractor {
                                 lastLog[0] = now;
                                 Log.d(TAG, "Tar Output: " + line);
                             }
-                            doneMembers[0]++;   // ADFA-4915: ~one verbose line per extracted member
+                            doneMembers[0]++;   // ADFA-4915: ~one verbose line per member (stray stderr lines just push toward the 99% clamp)
                             if (now - lastEmit[0] >= 50) {
                                 lastEmit[0] = now;
                                 final String l = line;
@@ -164,8 +164,6 @@ public class TarExtractor {
                     }
                 });
                 readerThread.start();
-                // ADFA-4915: publish the denominator up front so the UI can show "0 / N".
-                uiHandler.post(() -> listener.onProgress(0, 0L, totalMembers, ""));
 
                 // 4. THE JAVA DECOMPRESSION PIPE (If it's a .gz file)
                 boolean pipeBroke = false;

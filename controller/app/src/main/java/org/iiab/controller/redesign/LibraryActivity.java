@@ -106,6 +106,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
+        // ADFA-4915: extract detail is one middle-ellipsized line so long file names never overlap.
+        installDetail.setMaxLines(1);
+        installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
         installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false);
         // The Lottie has a text layer (OPEN/CLOSED sign). Use the system typeface (Noto-based,
         // global script fallback) so localized words render in any language; a TextDelegate maps
@@ -214,24 +217,23 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             installBar.setProgress(st.percent);
             installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
         } else if (st.phase == InstallState.Phase.EXTRACTING) {
-            // ADFA-4915: determinate extract — real % plus just the current file's basename.
-            // No internal path prefix and no N/M counter (UX review): the internal
-            // installed-rootfs/iiab/... path added nothing and wrapped to 3-4 lines, overlapping
-            // the animation on short screens. Skip directory entries (line ends with '/'), keep
-            // it to one middle-ellipsized line so long names never overlap.
-            installStatus.setText(getString(R.string.install_status_extracting).split("\\n")[0].trim());
-            installBar.setIndeterminate(false);
-            installBar.setProgress(st.percent);
-            String det = st.percent + "%";
-            String line = st.message;
-            if (!line.isEmpty() && !line.endsWith("/")) {
-                int slash = line.lastIndexOf('/');
-                String name = slash >= 0 ? line.substring(slash + 1) : line;
-                if (!name.isEmpty()) det += "  ·  " + name;
+            if (st.percent < 0) {
+                // ADFA-4915: "reading/listing" sub-phase. listEntries() scans the whole archive
+                // (~1 min; longer on low-end devices), so show an animated "reading …" + an
+                // indeterminate bar instead of a frozen 0%.
+                startReadingEllipsis(getString(R.string.k2go_reading));
+                installBar.setIndeterminate(true);
+                installDetail.setText("");
+            } else {
+                // ADFA-4915: determinate extract — real % plus just the current file's basename
+                // (no internal path, no counter): one ellipsized line that never overlaps.
+                installStatus.setText(org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
+                        getString(R.string.install_status_extracting)));
+                installBar.setIndeterminate(false);
+                installBar.setProgress(st.percent);
+                String name = org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message);
+                installDetail.setText(name.isEmpty() ? (st.percent + "%") : (st.percent + "%  ·  " + name));
             }
-            installDetail.setMaxLines(1);
-            installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
-            installDetail.setText(det);
         } else {
             installStatus.setText(st.message.isEmpty() ? getString(R.string.k2go_setting_up_library) : st.message);
             installBar.setIndeterminate(true);
@@ -510,6 +512,29 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private void stopBootEllipsis() {
         if (ellipsisRunnable != null) ellipsisHandler.removeCallbacks(ellipsisRunnable);
         ellipsisRunnable = null;
+    }
+
+    /** ADFA-4915: animate "reading" + . / .. / … while the archive is being listed. Reuses the
+     *  ellipsis handler (boot and reading never run at once) without touching {@code bootBaseText}. */
+    private void startReadingEllipsis(final String base) {
+        stopBootEllipsis();
+        ellipsisRunnable = new Runnable() {
+            int i = 0;
+            final String[] frames = {"   ", ".  ", ".. ", "..."};   // 0..3 dots, fixed 3-slot width (monospace)
+            @Override public void run() {
+                if (installStatus != null) {
+                    String suffix = frames[i % frames.length];
+                    android.text.SpannableString sp = new android.text.SpannableString(base + " " + suffix);
+                    sp.setSpan(new android.text.style.TypefaceSpan("monospace"),
+                            base.length() + 1, base.length() + 1 + suffix.length(),
+                            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    installStatus.setText(sp);
+                }
+                i++;
+                ellipsisHandler.postDelayed(this, 450L);
+            }
+        };
+        ellipsisHandler.post(ellipsisRunnable);
     }
 
     @Override
