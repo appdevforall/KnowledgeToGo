@@ -74,7 +74,7 @@
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="650" />
+                        android:layout_weight="680" />
 
                     <ImageView
                         android:layout_width="0dp"
@@ -87,7 +87,7 @@
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="55" />
+                        android:layout_weight="25" />
                 </LinearLayout>
 
                 <Space
