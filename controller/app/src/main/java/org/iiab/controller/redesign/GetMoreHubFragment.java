@@ -170,9 +170,11 @@ public class GetMoreHubFragment extends Fragment {
      *  KB < 1 MB, MB < 1 GB, else GB. Input is in GB. */
     private String human(double gb) {
         double mb = gb * 1024.0;
-        if (mb >= 1024) return String.format(java.util.Locale.US, "%.1f GB", mb / 1024.0);
-        if (mb >= 1) return String.format(java.util.Locale.US, "%.0f MB", mb);
-        return String.format(java.util.Locale.US, "%.0f KB", Math.max(0, mb * 1024.0));
+        double kb = mb * 1024.0;
+        // Pick the unit from the value that would round up, so a boundary never shows "1024 MB".
+        if (mb >= 1023.5) return String.format(java.util.Locale.US, "%.1f GB", mb / 1024.0);
+        if (kb >= 1023.5) return String.format(java.util.Locale.US, "%.0f MB", mb);
+        return String.format(java.util.Locale.US, "%.0f KB", Math.max(0, kb));
     }
 
     private void setW(View v, float w) {
