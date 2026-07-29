@@ -467,6 +467,10 @@
     <string name="k2go_install_busy" translatable="false">An install is already running — please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
     <string name="k2go_setup_leave_hint" translatable="false">Still setting up on the system. You can leave the app — it keeps going and will be ready when you come back.</string>
+    <!-- ADFA-4919 (2c-ii): shown when a proot install was killed and the system can't start. -->
+    <string name="k2go_damaged_title" translatable="false">Installation interrupted</string>
+    <string name="k2go_damaged_body" translatable="false">The setup was stopped before it finished, and the system can\u2019t start. To fix it, reinstall the app and run setup again.</string>
+    <string name="k2go_damaged_close" translatable="false">Close</string>
     <string name="k2go_setup_starting" translatable="false">Starting services</string>
     <string name="k2go_setup_adding" translatable="false">Adding your content</string>
     <string name="k2go_setup_slow" translatable="false">Starting services — this is taking longer than usual</string>

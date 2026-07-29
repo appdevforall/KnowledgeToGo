@@ -60,6 +60,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean gateDismissed = false;
     private boolean closing = false;
     private boolean closedDone = false;
+    private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
 
     // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
     private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
@@ -135,6 +136,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // otherwise burn the full safety timeout. Detect it and dismiss quickly.
         final boolean systemInstalled = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this);
 
+        // ADFA-4919 (2c-ii): marker set + no live installer (both install repos IDLE) means a proot
+        // install was killed. Enter recovery instead of quietly lifting the gate to an empty library.
+        recovering = !installing
+                && org.iiab.controller.InstallGuard.inProgress(this)
+                && !InstallProgressRepository.get().current().isRunning()
+                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning();
+
         serverController = new ServerController(this, this);
         serverController.start();
 
@@ -145,6 +153,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             } else if (s.alive && !installing) {
                 // ADFA-4811: don't lift the boot gate on a server the installer transiently brings
                 // up mid-install; the gate is dismissed when the install reaches a terminal state.
+                // ADFA-4919 (2c-ii): if we were in recovery and the server came up, the system boots
+                // after all — the marker was stale; clear it and proceed.
+                if (recovering) { recovering = false; org.iiab.controller.InstallGuard.end(this); }
                 onServerReady();
             }
         });
@@ -155,6 +166,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             if (st == null || gateDismissed) return;
             if (st.isRunning()) {
                 installing = true;
+                recovering = false;   // ADFA-4919: a real install is live — not a killed one
                 showInstallProgress(st);
             } else if (st.isTerminal()) {
                 hideInstallProgress();
@@ -189,6 +201,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // A download is in progress: keep the gate and show live progress; dismissal
             // comes from the install reaching SUCCESS/FAILED, not a timeout.
             showInstallProgress(InstallProgressRepository.get().current());
+        } else if (recovering) {
+            // ADFA-4919 (2c-ii): keep the gate up while we check a possibly-damaged install. Try to
+            // bring the server up (a healthy base just needs starting); after GATE_SAFETY_MS the
+            // verdict runs. If the server comes up first, the observer above clears the marker.
+            serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+            main.postDelayed(this::evaluateRecovery, GATE_SAFETY_MS);
         } else {
             // If the stack isn't up after one poll cycle, start it.
             if (systemInstalled) {
@@ -358,6 +376,38 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onPause() {
         super.onPause();
         if (serverController != null) serverController.onPause();
+    }
+
+    /** ADFA-4919 (2c-ii): after the recovery timeout, decide whether a killed proot install left the
+     *  system usable (stale marker -> proceed) or damaged (-> tell the user to reinstall). */
+    private void evaluateRecovery() {
+        if (isFinishing() || gateDismissed || !recovering) return;   // observer/terminal may have cleared it
+        recovering = false;
+        boolean marker = org.iiab.controller.InstallGuard.inProgress(this);
+        boolean reachable = ServerStateRepository.get().current().alive;
+        boolean baseOk = new java.io.File(
+                new java.io.File(getFilesDir(), "rootfs/installed-rootfs/iiab"),
+                "usr/local/pdsm/flag_install_ready").exists();
+        org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict v =
+                org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(marker, baseOk, reachable);
+        if (v == org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL) {
+            showDamagedDialog();
+        } else {
+            if (marker) org.iiab.controller.InstallGuard.end(this);   // stale marker — system is usable
+            onServerReady();
+        }
+    }
+
+    /** ADFA-4919 (2c-ii): a proot install was killed and the system can't start. There is no in-app
+     *  wipe/repair yet, so the honest remedy is to reinstall the app. Blocking, non-cancelable. */
+    private void showDamagedDialog() {
+        if (isFinishing()) return;
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setTitle(R.string.k2go_damaged_title)
+                .setMessage(R.string.k2go_damaged_body)
+                .setPositiveButton(R.string.k2go_damaged_close, (d, w) -> finishAffinity())
+                .show();
     }
 
     private boolean reduceMotion() {
