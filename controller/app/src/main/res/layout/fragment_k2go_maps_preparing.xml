@@ -90,34 +90,37 @@
         </LinearLayout>
 
         <!-- ADFA-4901: collapsible live log fed by LogRepository (the reusable terminal for all
-             proot module installs). Hidden by default; the status line above shows the latest line. -->
+             proot module installs). Hidden by default; the status line above shows the latest line.
+             ADFA-4910: rendered as a tappable text + chevron (NOT a second outlined button next to
+             "Run in background"), matching the clone/connect hint style. Tapping reveals the
+             terminal; toggleLog() swaps the label and rotates the chevron. -->
         <LinearLayout
             android:id="@+id/k2go_prep_log_toggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp"
-            android:background="@drawable/k2go_getmore_bg"
+            android:gravity="center"
+            android:padding="10dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true">
 
             <TextView
                 android:id="@+id/k2go_prep_log_label"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/k2go_maps_log_show"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="@color/k2go_ink" />
+                android:textColor="@color/k2go_teal" />
 
             <ImageView
                 android:id="@+id/k2go_prep_log_chevron"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="4dp"
                 android:src="@drawable/ic_chevron_right"
-                app:tint="@color/k2go_muted"
+                app:tint="@color/k2go_teal"
                 android:importantForAccessibility="no" />
         </LinearLayout>
 
