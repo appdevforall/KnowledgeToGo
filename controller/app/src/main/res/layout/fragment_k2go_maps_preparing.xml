@@ -56,6 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="@string/k2go_maps_phase_prepared"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="@color/k2go_ink" />
@@ -126,7 +128,7 @@
             android:layout_marginTop="8dp"
             android:padding="10dp"
             android:visibility="gone"
-            android:background="#FF0F1512">
+            android:background="@color/k2go_terminal_bg">
 
             <TextView
                 android:id="@+id/k2go_prep_log_text"
@@ -134,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="monospace"
                 android:textSize="11sp"
-                android:textColor="#FF9FE1CB"
+                android:textColor="@color/k2go_terminal_text"
                 android:textIsSelectable="true" />
         </ScrollView>
 
