@@ -3,6 +3,7 @@
      boot/close Lottie) + a REAL progress bar/percent + "X of N items" + per-category checklist.
      Mock progress until the download backend is wired. -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -31,18 +32,69 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_muted" />
 
+        <!-- ADFA-4910: real "working" Lottie (cloud -> streaming dots -> logo) in place of the
+             placeholder spinner. The animation ships WITHOUT the logo (see SPEC); the K2Go
+             launcher foreground is composited on top, over the built-in green glow, positioned by
+             a weighted scaffold so it tracks the art at any width. adjustViewBounds locks the
+             600:368 ratio; Lottie falls back to a static first frame when system animations are off. -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
 
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/k2go_zprep_anim"
-                style="?android:attr/progressBarStyleLarge"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:layout_gravity="center"
-                android:indeterminateTint="@color/k2go_teal" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                app:lottie_rawRes="@raw/k2go_working_loop"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true" />
+
+            <!-- Logo overlay (fills the art rect). The weights are the knobs: vertical
+                 top/logo/bottom and horizontal left/logo/right center the logo at ~0.80W / 0.54H,
+                 sized to sit over the green glow. -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="300" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="480"
+                    android:orientation="horizontal">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="650" />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="295"
+                        android:src="@drawable/ic_launcher_foreground"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@null" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="55" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="220" />
+            </LinearLayout>
         </FrameLayout>
 
         <LinearLayout
