@@ -36,7 +36,6 @@ import androidx.fragment.app.Fragment;
 
 import org.iiab.controller.R;
 
-import java.util.Locale;
 
 public class MapsChooseFragment extends Fragment {
 
@@ -279,8 +278,7 @@ public class MapsChooseFragment extends Fragment {
         download.setText(getString(R.string.k2go_maps_download, fmt(t)));
     }
 
-    private String fmt(long mb) {
-        if (mb >= 1024) return String.format(Locale.US, "%.1f GB", mb / 1024.0);
-        return mb + " MB";
+    private String fmt(long mb) {   // ADFA-4910: one standard size formatter for the whole UI
+        return org.iiab.controller.util.ByteFormatter.humanMb(mb);
     }
 }

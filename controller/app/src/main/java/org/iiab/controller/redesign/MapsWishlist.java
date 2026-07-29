@@ -25,14 +25,17 @@ public final class MapsWishlist {
     }
 
     /** Bank the wizard selection. Layer keys use the maps role's values; satellite/terrain "none"
-     *  = off, and {@code search} = the static pop-1k-cities engine on/off. */
-    public static void save(Context ctx, String base, String sat, String terrain, boolean search) {
+     *  = off, and {@code search} = the static pop-1k-cities engine on/off. {@code mb} is the total
+     *  download size of the selection (from the maps catalog), used by the Get More storage
+     *  projection so "Your picks" reflects the real maps size. */
+    public static void save(Context ctx, String base, String sat, String terrain, boolean search, long mb) {
         prefs(ctx).edit()
                 .putBoolean("has", true)
                 .putString("base", base == null ? "osm-z11" : base)
                 .putString("sat", sat == null ? "none" : sat)
                 .putString("terrain", terrain == null ? "none" : terrain)
                 .putBoolean("search", search)
+                .putLong("mb", Math.max(0, mb))
                 .apply();
     }
 
@@ -41,6 +44,8 @@ public final class MapsWishlist {
     public static String sat(Context ctx) { return prefs(ctx).getString("sat", "none"); }
     public static String terrain(Context ctx) { return prefs(ctx).getString("terrain", "none"); }
     public static boolean search(Context ctx) { return prefs(ctx).getBoolean("search", false); }
+    /** Total download size (MB) of the banked selection; 0 if unknown. */
+    public static long mb(Context ctx) { return prefs(ctx).getLong("mb", 0); }
 
     public static void clear(Context ctx) { prefs(ctx).edit().clear().apply(); }
 }

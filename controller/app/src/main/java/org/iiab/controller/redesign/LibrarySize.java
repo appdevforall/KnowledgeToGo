@@ -20,7 +20,6 @@ import android.system.OsConstants;
 import android.system.StructStat;
 
 import java.io.File;
-import java.util.Locale;
 
 public final class LibrarySize {
 
@@ -62,11 +61,9 @@ public final class LibrarySize {
         return 0L;
     }
 
-    /** Compact size label: "1.7 GB" for >= 1 GB, else "820 MB". */
+    /** Compact size label: "1.7 GB" for >= 1 GB, "820 MB", or "512 KB". ADFA-4910: one standard
+     *  formatter shared with the rest of the UI. */
     public static String human(long bytes) {
-        double gb = bytes / (1024.0 * 1024.0 * 1024.0);
-        if (gb >= 1.0) return String.format(Locale.US, "%.1f GB", gb);
-        double mb = bytes / (1024.0 * 1024.0);
-        return String.format(Locale.US, "%.0f MB", mb);
+        return org.iiab.controller.util.ByteFormatter.humanGb(bytes / (1024.0 * 1024.0 * 1024.0));
     }
 }

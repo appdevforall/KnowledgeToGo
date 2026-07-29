@@ -801,8 +801,8 @@
     <string name="k2go_badge_getapp">Pobierz aplikację</string>
     <string name="k2go_badge_copy">Kopiuj</string>
     <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
-    <string name="k2go_legend_sys_free">Użyte %1$.1f  ·  System %2$.1f  ·  Wolne %3$.1f</string>
-    <string name="k2go_legend_your_picks">Użyte %1$.1f · System %2$.1f · Twój wybór %3$.1f · Wolne %4$.1f</string>
+    <string name="k2go_legend_sys_free">Użyte %1$s  ·  System %2$s  ·  Wolne %3$s</string>
+    <string name="k2go_legend_your_picks">Użyte %1$s · System %2$s · Twój wybór %3$s · Wolne %4$s</string>
     <string name="k2go_legend_picks">Użyte %1$.1f · System %2$.1f · Wybór %3$.1f · Wolne %4$.1f</string>
     <string name="k2go_perm_granted">Przyznano</string> <!-- machine translation -->
     <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->
