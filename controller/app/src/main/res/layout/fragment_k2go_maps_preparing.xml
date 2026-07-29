@@ -99,16 +99,21 @@
         </FrameLayout>
 
         <!-- The process's own text, not an invented percentage. -->
+        <!-- ADFA-4910: fixed 2-line height (minLines=maxLines=2) so the note below never jumps
+             as this line flips between 1 and 2 lines. Slightly smaller text (BodyMedium) too.
+             Aimed at proot/Ansible installs: their logs are verbose and flip length very fast,
+             which made the "Leave it running" card twitch — a static block + smaller line calm it. -->
         <TextView
             android:id="@+id/k2go_prep_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
+            android:minLines="2"
             android:maxLines="2"
             android:ellipsize="end"
             android:text="@string/k2go_maps_phase_prepared"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_ink" />
 
         <!-- ADFA-4900: informational note (not a button). Uses the wizard info-card background
