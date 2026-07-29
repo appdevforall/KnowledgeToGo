@@ -36,6 +36,7 @@ import androidx.core.content.ContextCompat;
 import org.iiab.controller.R;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.install.presentation.ModuleQueueState;
+import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
 
 public class SetupProgressActivity extends AppCompatActivity {
@@ -61,6 +62,7 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean redirectCancelled = false;
     private boolean redirectScheduled = false;
     private boolean showingDetail = false;
+    private boolean leaveWarned = false;   // ADFA-4919 (2c): captured the first exit-Back once
     private boolean probing = false;
     private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
     private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
@@ -126,8 +128,25 @@ public class SetupProgressActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (showingDetail) backToIndex();
-        else super.onBackPressed();
+        if (showingDetail) { backToIndex(); return; }
+        // ADFA-4919 (2c): a proot install runs on the live system and must not be abandoned mid-run.
+        // No up-front confirm (that would spoil the friendly flow). Instead, capture the FIRST Back
+        // that would exit the app to reassure the user (snackbar) that leaving the app is fine — the
+        // install keeps going and will be there when they return. A second Back then exits normally.
+        if (prootActive() && !leaveWarned) {
+            leaveWarned = true;
+            Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    /** ADFA-4919: a proot module is queued/running (the gate/lock is active). */
+    private boolean prootActive() {
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        boolean mapsShown = MapsProvisioner.hasPending(this) || mapsLaunched;
+        boolean mapsTerminal = mapsStartFailed || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
+        return mapsShown && !mapsTerminal;
     }
 
     // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
@@ -236,7 +255,7 @@ public class SetupProgressActivity extends AppCompatActivity {
         boolean mapsTerminal = mapsStartFailed
                 || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
         // ADFA-4919: a proot module is queued/running (the gate is active).
-        boolean prootActive = mapsShown && !mapsTerminal;
+        boolean prootActive = prootActive();
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
         boolean allComplete;
         if (noRest && mapsShown) {
