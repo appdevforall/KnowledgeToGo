@@ -801,8 +801,8 @@
     <string name="k2go_badge_getapp">앱 받기</string>
     <string name="k2go_badge_copy">복사</string>
     <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
-    <string name="k2go_legend_sys_free">사용 %1$.1f  ·  시스템 %2$.1f  ·  여유 %3$.1f</string>
-    <string name="k2go_legend_your_picks">사용 %1$.1f · 시스템 %2$.1f · 내 선택 %3$.1f · 여유 %4$.1f</string>
+    <string name="k2go_legend_sys_free">사용 %1$s  ·  시스템 %2$s  ·  여유 %3$s</string>
+    <string name="k2go_legend_your_picks">사용 %1$s · 시스템 %2$s · 내 선택 %3$s · 여유 %4$s</string>
     <string name="k2go_legend_picks">사용 %1$.1f · 시스템 %2$.1f · 선택 %3$.1f · 여유 %4$.1f</string>
     <string name="k2go_perm_granted">허용됨</string> <!-- machine translation -->
     <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->

@@ -801,8 +801,8 @@
     <string name="k2go_badge_getapp">অ্যাপ পান</string>
     <string name="k2go_badge_copy">কপি করুন</string>
     <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
-    <string name="k2go_legend_sys_free">ব্যবহৃত %1$.1f  ·  সিস্টেম %2$.1f  ·  ফাঁকা %3$.1f</string>
-    <string name="k2go_legend_your_picks">ব্যবহৃত %1$.1f · সিস্টেম %2$.1f · আপনার পছন্দ %3$.1f · ফাঁকা %4$.1f</string>
+    <string name="k2go_legend_sys_free">ব্যবহৃত %1$s  ·  সিস্টেম %2$s  ·  ফাঁকা %3$s</string>
+    <string name="k2go_legend_your_picks">ব্যবহৃত %1$s · সিস্টেম %2$s · আপনার পছন্দ %3$s · ফাঁকা %4$s</string>
     <string name="k2go_legend_picks">ব্যবহৃত %1$.1f · সিস্টেম %2$.1f · পছন্দ %3$.1f · ফাঁকা %4$.1f</string>
     <string name="k2go_perm_granted">মঞ্জুর</string> <!-- review — machine, verify -->
     <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->

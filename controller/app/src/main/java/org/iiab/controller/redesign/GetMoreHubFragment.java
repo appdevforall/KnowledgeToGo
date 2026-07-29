@@ -148,10 +148,15 @@ public class GetMoreHubFragment extends Fragment {
         setW(root.findViewById(R.id.k2go_gm_bar_picks), (float) picksGb);
         setW(root.findViewById(R.id.k2go_gm_bar_free), (float) freeAfter);
         ((TextView) root.findViewById(R.id.k2go_gm_legend)).setText(
-                getString(R.string.k2go_legend_your_picks, used, systemGb, picksGb, freeAfter));
+                getString(R.string.k2go_legend_your_picks,
+                        org.iiab.controller.util.ByteFormatter.humanGb(used),
+                        org.iiab.controller.util.ByteFormatter.humanGb(systemGb),
+                        org.iiab.controller.util.ByteFormatter.humanGb(picksGb),
+                        org.iiab.controller.util.ByteFormatter.humanGb(freeAfter)));
     }
 
-    /** GB the wizard picks will add: ZIM by real catalog bytes; books are tiny EPUBs (~few MB). */
+    /** GB the wizard picks will add: ZIM by real catalog bytes; maps by the banked catalog size;
+     *  books are tiny EPUBs (~few MB, estimated since the catalog has no per-book size). */
     private double picksGb() {
         double gb = 0;
         org.json.JSONArray z = ZimWishlist.all(requireContext());
@@ -159,6 +164,7 @@ public class GetMoreHubFragment extends Fragment {
             org.json.JSONObject o = z.optJSONObject(i);
             if (o != null) gb += o.optLong("bytes", 0) / (1024.0 * 1024.0 * 1024.0);
         }
+        gb += MapsWishlist.mb(requireContext()) / 1024.0;     // ADFA-4910: count the banked maps size
         gb += BooksWishlist.size(requireContext()) * 0.003;
         return gb;
     }

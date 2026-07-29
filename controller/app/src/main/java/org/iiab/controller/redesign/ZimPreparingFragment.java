@@ -202,9 +202,8 @@ public class ZimPreparingFragment extends Fragment {
                 i -> ZimDownloadService.retry(requireContext().getApplicationContext(), i));
     }
 
-    private String gb(long mb) {
-        if (mb >= 1024) return String.format(Locale.US, "%.1f GB", mb / 1024.0);
-        return mb + " MB";
+    private String gb(long mb) {   // ADFA-4910: one standard size formatter for the whole UI
+        return org.iiab.controller.util.ByteFormatter.humanMb(mb);
     }
 
     /** bytes/sec -> a short rate token ("3.4 MB"); the caller appends the localized "/s". */

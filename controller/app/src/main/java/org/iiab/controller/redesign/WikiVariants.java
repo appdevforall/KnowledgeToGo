@@ -1,7 +1,6 @@
 package org.iiab.controller.redesign;
 
 import android.content.Context;
-import java.util.Locale;
 import java.util.Set;
 import org.iiab.controller.InstallationPlanner;
 import org.iiab.controller.R;
@@ -65,7 +64,6 @@ public final class WikiVariants {
 
     public static String gb(double s) {
         if (s < 0) return "—";
-        if (s >= 1) return String.format(Locale.US, "%.1f GB", s);
-        return Math.round(s * 1000) + " MB";
+        return org.iiab.controller.util.ByteFormatter.humanGb(s);   // ADFA-4910: one standard formatter
     }
 }

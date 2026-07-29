@@ -154,7 +154,9 @@ public class Step1SystemFragment extends Fragment {
         setWeight(barSystem, (float) systemGb);
         setWeight(barFree, (float) freeAfter);
         legend.setText(getString(R.string.k2go_legend_sys_free,
-                used, systemGb, freeAfter));
+                org.iiab.controller.util.ByteFormatter.humanGb(used),
+                org.iiab.controller.util.ByteFormatter.humanGb(systemGb),
+                org.iiab.controller.util.ByteFormatter.humanGb(freeAfter)));
     }
 
     private void setWeight(View v, float w) {

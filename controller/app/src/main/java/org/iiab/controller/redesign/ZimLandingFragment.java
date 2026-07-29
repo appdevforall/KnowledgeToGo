@@ -165,9 +165,8 @@ public class ZimLandingFragment extends Fragment {
         }
     }
 
-    private String gb(long mb) {
-        if (mb >= 1024) return String.format(Locale.US, "%.1f GB", mb / 1024.0);
-        return mb + " MB";
+    private String gb(long mb) {   // ADFA-4910: one standard size formatter for the whole UI
+        return org.iiab.controller.util.ByteFormatter.humanMb(mb);
     }
 
     private void buildRows() {

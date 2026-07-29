@@ -38,4 +38,24 @@ public final class ByteFormatter {
         }
         return bytes + " B";
     }
+
+    // ADFA-4910: single standard for the size labels the redesign UI shows. Same binary math as
+    // toHuman, but decimal-style labels (GB/MB/KB) to match the wizard/Get More UI, and adaptive
+    // units so a small value never renders as "0.0 GB". The unit is chosen from the value that
+    // would round up, so a boundary never shows "1024 MB".
+
+    /** UI size label from a fractional number of GB. */
+    public static String humanGb(double gb) {
+        double mb = gb * 1024.0;
+        double kb = mb * 1024.0;
+        if (mb >= 1023.5) return String.format(Locale.US, "%.1f GB", mb / 1024.0);
+        if (kb >= 1023.5) return String.format(Locale.US, "%.0f MB", mb);
+        if (kb < 0.5) return "0 MB";   // nothing selected reads as "0 MB", not "0 KB"
+        return String.format(Locale.US, "%.0f KB", kb);
+    }
+
+    /** UI size label from a whole number of MB. */
+    public static String humanMb(long mb) {
+        return humanGb(mb / 1024.0);
+    }
 }
