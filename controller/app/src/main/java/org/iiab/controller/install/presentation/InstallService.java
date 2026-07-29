@@ -940,7 +940,14 @@ public final class InstallService extends Service {
 
     private void updateNotification(String text) {
         if (finished) return;
-        NotificationManager manager = getSystemService(NotificationManager.class);
-        if (manager != null) manager.notify(NOTIFICATION_ID, buildNotification(text));
+        // ADFA-4919: update via startForeground (like a fresh foreground post), NOT
+        // NotificationManager.notify(). notify() re-posts the notification as a regular one and drops
+        // the foreground-service protection (FLAG_NO_CLEAR), which let the user SWIPE the install
+        // notification away mid-proot-install. Re-asserting startForeground keeps it the FGS
+        // notification -> ongoing / non-dismissible, matching the terminal's protected notification.
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (finished) return;
+            startForeground(NOTIFICATION_ID, buildNotification(text));
+        });
     }
 }
