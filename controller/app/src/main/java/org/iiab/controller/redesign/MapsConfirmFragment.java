@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import org.iiab.controller.R;
+import org.iiab.controller.util.Snackbars;
 
 
 public class MapsConfirmFragment extends Fragment {
@@ -84,8 +85,18 @@ public class MapsConfirmFragment extends Fragment {
         start.setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
                 SetupLibraryActivity act = (SetupLibraryActivity) getActivity();
-                if (act.isMapsWizard()) act.mapsWizardConfirm(levels, totalMb);
-                else act.openMapsPreparing(levels);
+                if (act.isMapsWizard()) {
+                    act.mapsWizardConfirm(levels, totalMb);
+                } else if (InstallJobs.isBusy()) {
+                    // ADFA-4919: proot (Maps) acts on the live system, so it must not overlap a
+                    // running proot runrole or a REST download. Refuse and tell the user to wait.
+                    Snackbars.make(v, R.string.k2go_install_busy).show();
+                } else {
+                    // ADFA-4919: route Get More Maps through the install index (gated), same as the
+                    // wizard — banks to MapsWishlist and opens SetupProgressActivity. Replaces the old
+                    // standalone openMapsPreparing() so there is a single, gated way to install maps.
+                    act.openMapsIndex(levels, totalMb);
+                }
             }
         });
 

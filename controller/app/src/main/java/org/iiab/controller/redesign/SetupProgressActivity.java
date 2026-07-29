@@ -447,6 +447,13 @@ public class SetupProgressActivity extends AppCompatActivity {
     private void goHome(boolean clearSessions) {
         cancelRedirect();
         if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
+        // ADFA-4919: the natural end of installing content is the Library — go there directly and
+        // clear the install screens above it. Both the wizard and Get More launch from LibraryActivity,
+        // so CLEAR_TOP lands on the existing Library (dropping Get More + this index). Previously this
+        // was a bare finish(), which in the Get More flow fell back to Get More instead of the Library.
+        // Only success/Finish reach here; "Run in background" (REST) still just finish()es in place.
+        startActivity(new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP));
         finish();
     }
 

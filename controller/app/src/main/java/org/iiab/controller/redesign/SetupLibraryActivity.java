@@ -323,8 +323,26 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /** ADFA-4848: Confirm -> Preparing. ADFA-4900: Preparing drives the real install (runrole maps
-     *  via the module-queue engine) using the per-layer selection and shows real progress. */
+    /** ADFA-4919: Get More Maps installs through the SAME install index as the wizard. Banks the
+     *  per-layer selection to MapsWishlist and opens SetupProgressActivity, which drains it via
+     *  MapsProvisioner and applies the proot gate (no background) + stage-based completion.
+     *  WHY: one gated way to install a proot module, instead of the old standalone screen that
+     *  bypassed the index. The server is up during Get More, so the index's readiness latches and
+     *  the drain proceeds. This is the entry ADFA-4842 (module management) should generalize. */
+    public void openMapsIndex(String[] levels, long totalMb) {
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        boolean search = levels != null && levels.length > 3 && levels[3] != null;
+        MapsWishlist.save(this, base, sat, ter, search, totalMb);
+        startActivity(new Intent(this, SetupProgressActivity.class));
+    }
+
+    /** @deprecated ADFA-4919: the STANDALONE Get More Maps route (shows MapsPreparingFragment with
+     *  its own "Run in background", no index, no gate). Superseded by openMapsIndex(). Left UNUSED
+     *  on purpose (not deleted): ADFA-4842 (reactivate proot modules via module management) may want
+     *  to generalize a "install these proot modules now" path from here — 4842 decides whether to
+     *  reuse/generalize or delete. Deleting now could remove something module management wants. */
     public void openMapsPreparing(String[] levels) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, MapsPreparingFragment.newInstance(levels))
@@ -347,7 +365,11 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    /** ADFA-4900: start the maps install through the module-queue engine (a queue of {"maps"} plus
+    /** @deprecated ADFA-4919: part of the standalone Get More route (called only by the standalone
+     *  MapsPreparingFragment path, now unreachable). The install index reaches the same engine via
+     *  MapsProvisioner.drain(). Kept UNUSED pending ADFA-4842 (see openMapsPreparing). WHY-kept: it
+     *  is the thinnest "start these proot modules now" call, a candidate for 4842 to generalize.
+     *  ADFA-4900: start the maps install through the module-queue engine (a queue of {"maps"} plus
      *  the per-layer selection). InstallService writes the full maps_* local_vars and runs runrole
      *  with the shared success/failure verdict, revert-on-fail and observable progress. {@code levels}
      *  is aligned to the Choose groups [base, satellite, terrain, search]; null = off. */
@@ -367,7 +389,10 @@ public class SetupLibraryActivity extends AppCompatActivity {
         else startService(i);
     }
 
-    /** ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
+    /** @deprecated ADFA-4919: only used by the standalone Get More "Run in background" button, which
+     *  the index gate removes for proot. Unreachable once Get More routes through openMapsIndex().
+     *  Kept UNUSED pending ADFA-4842 (see openMapsPreparing). (ZIM uses backToGetMoreHubZim, separate.)
+     *  ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
      *  stack and return to the Get More hub; the build keeps running. */
     public void backToGetMoreHub() {
         getSupportFragmentManager().popBackStack("getmore_maps",

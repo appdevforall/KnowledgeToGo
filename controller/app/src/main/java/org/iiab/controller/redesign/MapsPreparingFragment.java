@@ -81,6 +81,10 @@ public class MapsPreparingFragment extends Fragment {
         status = root.findViewById(R.id.k2go_prep_status);
         status.setText(getString(R.string.k2go_maps_phase_prepared));
 
+        // ADFA-4919: the fromIndex=false branch below is the DEPRECATED standalone Get More route
+        // (its own "Run in background", no index, no gate). Get More now routes through the install
+        // index (SetupLibraryActivity.openMapsIndex), so this branch is unreachable in that flow.
+        // Kept UNUSED pending ADFA-4842 (module management) — see SetupLibraryActivity.openMapsPreparing.
         View runBg = root.findViewById(R.id.k2go_prep_run_bg);
         if (fromIndex) {
             runBg.setVisibility(View.GONE);   // the index host provides Back/Finish; this card only observes

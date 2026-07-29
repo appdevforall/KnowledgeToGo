@@ -463,6 +463,8 @@
     <string name="k2go_setup_context" translatable="false">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
     <!-- ADFA-4919: proot (Maps) runs on the live system and cannot background; keep the user here. -->
     <string name="k2go_setup_context_proot" translatable="false">It will redirect you automatically when finished. Keep the app on this screen while it installs — this part can’t run in the background.</string>
+    <!-- ADFA-4919: shown when the user tries to start a proot module while another install job is running. -->
+    <string name="k2go_install_busy" translatable="false">An install is already running — please wait for it to finish.</string>
     <string name="k2go_setup_starting" translatable="false">Starting services</string>
     <string name="k2go_setup_adding" translatable="false">Adding your content</string>
     <string name="k2go_setup_slow" translatable="false">Starting services — this is taking longer than usual</string>
