@@ -55,7 +55,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private LottieAnimationView bootGate;
     private View installProgress;
-    private android.widget.TextView installStatus, installDetail;
+    private android.widget.TextView installStatus, installDetail, installPercent;
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
@@ -106,6 +106,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
+        installPercent = findViewById(R.id.k2go_install_percent);
         // ADFA-4915: extract detail is one middle-ellipsized line so long file names never overlap.
         installDetail.setMaxLines(1);
         installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
@@ -208,16 +209,22 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
     }
 
+    /** ADFA-4910: locale-aware "NN%" (explicit Locale so digits localize and lint is happy). */
+    private static String pct(int p) {
+        return String.format(java.util.Locale.getDefault(), "%d%%", p);
+    }
+
     private void showInstallProgress(InstallState st) {
         if (installProgress == null || st == null || !st.isRunning()) return;
         stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
+        if (installPercent != null) installPercent.setVisibility(View.GONE); // ADFA-4910: only the determinate extract shows it
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
-            installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
+            installDetail.setText(pct(st.percent) + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
         } else if (st.phase == InstallState.Phase.EXTRACTING) {
             // Keep the "Extracting System…" legend on the status line for both sub-phases.
             installStatus.setText(org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
@@ -233,8 +240,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 // (no internal path, no counter): one ellipsized line that never overlaps.
                 installBar.setIndeterminate(false);
                 installBar.setProgress(st.percent);
-                String name = org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message);
-                installDetail.setText(name.isEmpty() ? (st.percent + "%") : (st.percent + "%  ·  " + name));
+                // ADFA-4910: the % lives on its own fixed line (always the same spot); the file
+                // name gets the line below, so it can grow/shrink without moving the number.
+                if (installPercent != null) {
+                    installPercent.setVisibility(View.VISIBLE);
+                    installPercent.setText(pct(st.percent));
+                }
+                installDetail.setText(org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message));
             }
         } else {
             installStatus.setText(st.message.isEmpty() ? getString(R.string.k2go_setting_up_library) : st.message);
