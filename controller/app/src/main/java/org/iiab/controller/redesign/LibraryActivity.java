@@ -143,6 +143,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 && !InstallProgressRepository.get().current().isRunning()
                 && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning();
 
+        // ADFA-4919 (2c): a proot module install is live (its queue is RUNNING = the service is up).
+        // Reopening the app (fresh LibraryActivity, e.g. from the notification) must land on the
+        // progress index, not the empty home — open it over the gate; the index drives completion.
+        if (!installing && !recovering
+                && org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+            startActivity(new android.content.Intent(this, SetupProgressActivity.class));
+        }
+
         serverController = new ServerController(this, this);
         serverController.start();
 

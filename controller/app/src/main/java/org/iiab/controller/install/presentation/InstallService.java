@@ -41,7 +41,6 @@ import androidx.core.app.NotificationCompat;
 
 import org.iiab.controller.Aria2Manager;
 import org.iiab.controller.InstallationPlanner;
-import org.iiab.controller.MainActivity;
 import org.iiab.controller.ModuleRegistry;
 import org.iiab.controller.PRootEngine;
 import org.iiab.controller.R;
@@ -917,7 +916,10 @@ public final class InstallService extends Service {
     }
 
     private Notification buildNotification(String text) {
-        Intent open = new Intent(this, MainActivity.class);
+        // ADFA-4919: return to the modern progress surface — LibraryActivity shows rootfs progress
+        // (boot gate) and routes to the proot install index when a module is running — unlike legacy
+        // MainActivity, which shows neither. Reusable for any proot module install (delivery, etc.).
+        Intent open = new Intent(this, org.iiab.controller.redesign.LibraryActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
 
         Intent cancel = new Intent(this, InstallService.class).setAction(ACTION_CANCEL);
