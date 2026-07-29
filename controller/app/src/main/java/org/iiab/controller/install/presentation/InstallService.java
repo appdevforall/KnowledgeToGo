@@ -41,7 +41,6 @@ import androidx.core.app.NotificationCompat;
 
 import org.iiab.controller.Aria2Manager;
 import org.iiab.controller.InstallationPlanner;
-import org.iiab.controller.MainActivity;
 import org.iiab.controller.ModuleRegistry;
 import org.iiab.controller.PRootEngine;
 import org.iiab.controller.R;
@@ -917,7 +916,10 @@ public final class InstallService extends Service {
     }
 
     private Notification buildNotification(String text) {
-        Intent open = new Intent(this, MainActivity.class);
+        // ADFA-4919: return to the modern progress surface — LibraryActivity shows rootfs progress
+        // (boot gate) and routes to the proot install index when a module is running — unlike legacy
+        // MainActivity, which shows neither. Reusable for any proot module install (delivery, etc.).
+        Intent open = new Intent(this, org.iiab.controller.redesign.LibraryActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
 
         Intent cancel = new Intent(this, InstallService.class).setAction(ACTION_CANCEL);
@@ -938,7 +940,14 @@ public final class InstallService extends Service {
 
     private void updateNotification(String text) {
         if (finished) return;
-        NotificationManager manager = getSystemService(NotificationManager.class);
-        if (manager != null) manager.notify(NOTIFICATION_ID, buildNotification(text));
+        // ADFA-4919: update via startForeground (like a fresh foreground post), NOT
+        // NotificationManager.notify(). notify() re-posts the notification as a regular one and drops
+        // the foreground-service protection (FLAG_NO_CLEAR), which let the user SWIPE the install
+        // notification away mid-proot-install. Re-asserting startForeground keeps it the FGS
+        // notification -> ongoing / non-dismissible, matching the terminal's protected notification.
+        new Handler(Looper.getMainLooper()).post(() -> {
+            if (finished) return;
+            startForeground(NOTIFICATION_ID, buildNotification(text));
+        });
     }
 }

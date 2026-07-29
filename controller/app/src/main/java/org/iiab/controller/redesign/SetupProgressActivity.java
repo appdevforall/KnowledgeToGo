@@ -67,6 +67,7 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
     private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
     private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
+    private boolean mapsSeen = false;        // ADFA-4919: latched once the proot (maps) stage is seen
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
@@ -129,13 +130,18 @@ public class SetupProgressActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (showingDetail) { backToIndex(); return; }
-        // ADFA-4919 (2c): a proot install runs on the live system and must not be abandoned mid-run.
-        // No up-front confirm (that would spoil the friendly flow). Instead, capture the FIRST Back
-        // that would exit the app to reassure the user (snackbar) that leaving the app is fine — the
-        // install keeps going and will be there when they return. A second Back then exits normally.
-        if (prootActive() && !leaveWarned) {
-            leaveWarned = true;
-            Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
+        // ADFA-4919 (2c): the index is the LAST barrier for a proot install (runs on the live system,
+        // can't be abandoned mid-run). No up-front confirm (that would spoil the friendly flow). The
+        // FIRST Back reassures via a snackbar; every Back after that sends the whole app to the
+        // background (home) -- we never walk back through the selection/hub steps into a half-built
+        // flow. The install keeps running; reopening the app resumes here.
+        if (prootActive()) {
+            if (!leaveWarned) {
+                leaveWarned = true;
+                Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
+            } else {
+                moveTaskToBack(true);
+            }
             return;
         }
         super.onBackPressed();
@@ -144,9 +150,22 @@ public class SetupProgressActivity extends AppCompatActivity {
     /** ADFA-4919: a proot module is queued/running (the gate/lock is active). */
     private boolean prootActive() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean mapsShown = MapsProvisioner.hasPending(this) || mapsLaunched;
-        boolean mapsTerminal = mapsStartFailed || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
-        return mapsShown && !mapsTerminal;
+        boolean mapsTerminal = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
+        return mapsInSession() && !mapsTerminal;
+    }
+
+    /** ADFA-4919: is the proot (maps) stage part of THIS install session? Latched from the DURABLE
+     *  module queue (app-scoped) + wishlist, so a fresh index instance — e.g. reopened from the
+     *  notification while the queue is still running — still shows the stage, hides "Run in
+     *  background", and reaches completion, even though it never called drain() itself. (The queue
+     *  runs proot modules one at a time; today that is only maps.) */
+    private boolean mapsInSession() {
+        if (mapsLaunched || mapsStartFailed
+                || MapsProvisioner.hasPending(this)
+                || ModuleQueueRepository.get().isRunning()) {
+            mapsSeen = true;
+        }
+        return mapsSeen;
     }
 
     // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
@@ -228,7 +247,7 @@ public class SetupProgressActivity extends AppCompatActivity {
     private void render() {
         if (sections == null || showingDetail) return;
 
-        boolean mapsShown = MapsProvisioner.hasPending(this) || mapsLaunched;   // ADFA-4900
+        boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean zimShown = ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0;
         boolean booksShown = BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0;
 
@@ -253,7 +272,7 @@ public class SetupProgressActivity extends AppCompatActivity {
         boolean noRest = !ZimDownloadService.hasSession() && !BooksDownloadService.hasSession()
                 && ZimWishlist.size(this) == 0 && BooksWishlist.size(this) == 0;
         boolean mapsTerminal = mapsStartFailed
-                || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
+                || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = prootActive();
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
@@ -370,9 +389,9 @@ public class SetupProgressActivity extends AppCompatActivity {
      *  the stage has started; opens the maps Preparing card as its detail (ADFA-4901). */
     private View mapsRow() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-        boolean done = mapsStartFailed || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
+        boolean done = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
         boolean running = !done && (ModuleQueueRepository.get().isRunning()
-                || (mapsLaunched && mq.phase != ModuleQueueState.Phase.DONE));
+                || (mapsInSession() && mq.phase != ModuleQueueState.Phase.DONE));
         boolean failed = mapsStartFailed || (done && mq.failedModules.contains("maps"));
         boolean started = running || done;
 
