@@ -213,6 +213,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
             installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
+        } else if (st.phase == InstallState.Phase.EXTRACTING) {
+            // ADFA-4915: determinate extract — real % (members / total), "N / M" counter, live file line.
+            installStatus.setText(getString(R.string.install_status_extracting).split("\\n")[0].trim());
+            installBar.setIndeterminate(false);
+            installBar.setProgress(st.percent);
+            StringBuilder det = new StringBuilder().append(st.percent).append('%');
+            if (st.total > 0) det.append("  ·  ").append(st.done).append(" / ").append(st.total);
+            if (!st.message.isEmpty()) det.append("  ·  ").append(st.message);
+            installDetail.setText(det.toString());
         } else {
             installStatus.setText(st.message.isEmpty() ? getString(R.string.k2go_setting_up_library) : st.message);
             installBar.setIndeterminate(true);

@@ -335,6 +335,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 btnFastInstall.setText(getString(R.string.install_status_os_download, s.percent, s.speed));
                 break;
             case EXTRACTING:
+                // ADFA-4915: surface real extract % on the legacy button (ProgressButton is
+                // indeterminate, so % rides the text). Reuses the existing string (no new string).
+                btnFastInstall.setText(getString(R.string.install_status_extracting).split("\\n")[0].trim()
+                        + "  " + s.percent + "%");
+                break;
             case PROVISIONING:
                 btnFastInstall.setText(s.message);
                 break;

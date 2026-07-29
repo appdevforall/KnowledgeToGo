@@ -10,6 +10,7 @@
 package org.iiab.controller;
 
 import org.iiab.controller.deploy.domain.ArchiveEntry;
+import org.iiab.controller.deploy.domain.ExtractProgress;
 
 import android.content.Context;
 import android.os.Handler;
@@ -37,6 +38,14 @@ public class TarExtractor {
 
         /** A streamed line of extraction output (verbose tar). Default no-op. */
         default void onProgress(String line) { }
+
+        /**
+         * ADFA-4915: determinate extraction progress. {@code percent} is clamped to
+         * [0,99] while extracting and set to 100 exactly once on completion; {@code done}
+         * / {@code total} are archive-member counts; {@code line} is the current verbose
+         * tar line (may be empty). Default no-op.
+         */
+        default void onProgress(int percent, long done, long total, String line) { }
     }
 
     public void startExtraction(Context context, String archivePath, String destDir, ExtractionListener listener) {
@@ -78,6 +87,11 @@ public class TarExtractor {
                         throw new Exception("Unsafe archive entry (path traversal): " + entry);
                     }
                 }
+
+                // ADFA-4915: entries.size() is the extraction denominator (members), already
+                // computed above for the traversal/ABI checks — no extra tar pass.
+                final long totalMembers = entries.size();
+                final long[] doneMembers = {0L};
 
                 // For untrusted imports/restores: it must be a valid rootfs of THIS
                 // app's architecture (ABI policy: 32<->32, 64<->64). Reuses the
@@ -134,16 +148,24 @@ public class TarExtractor {
                                 lastLog[0] = now;
                                 Log.d(TAG, "Tar Output: " + line);
                             }
+                            doneMembers[0]++;   // ADFA-4915: ~one verbose line per extracted member
                             if (now - lastEmit[0] >= 50) {
                                 lastEmit[0] = now;
                                 final String l = line;
-                                uiHandler.post(() -> listener.onProgress(l));
+                                final long d = doneMembers[0];
+                                final int pct = ExtractProgress.percent(d, totalMembers);
+                                uiHandler.post(() -> {
+                                    listener.onProgress(l);
+                                    listener.onProgress(pct, d, totalMembers, l);
+                                });
                             }
                         }
                     } catch (Exception ignored) {
                     }
                 });
                 readerThread.start();
+                // ADFA-4915: publish the denominator up front so the UI can show "0 / N".
+                uiHandler.post(() -> listener.onProgress(0, 0L, totalMembers, ""));
 
                 // 4. THE JAVA DECOMPRESSION PIPE (If it's a .gz file)
                 boolean pipeBroke = false;
@@ -201,6 +223,7 @@ public class TarExtractor {
                 new Handler(Looper.getMainLooper()).post(() -> {
                     if (exitCode == 0 && !broke) {
                         Log.d(TAG, "Extraction successful.");
+                        listener.onProgress(100, totalMembers, totalMembers, "");   // ADFA-4915: 100% only on completion
                         listener.onComplete(destDir);
                     } else {
                         String diag = "tar exit=" + exitCode

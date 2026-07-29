@@ -60,6 +60,7 @@ public final class InstallProgressRepository {
     // All posts are thread-safe (callable from the aria2 / proot worker threads).
     public void postDownloading(int percent, String speed) { post(InstallState.downloading(percent, speed)); }
     public void postExtracting(String message)             { post(InstallState.extracting(message)); }
+    public void postExtracting(int percent, long done, long total, String message) { post(InstallState.extracting(percent, done, total, message)); }
     public void postProvisioning(String message)           { post(InstallState.provisioning(message)); }
     public void postSuccess()                               { post(InstallState.success()); }
     public void postFailed(String message)                  { post(InstallState.failed(message)); }
