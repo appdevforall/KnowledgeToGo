@@ -391,19 +391,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (serverController != null) serverController.onPause();
     }
 
-    /** ADFA-4919 (2c-ii): heuristic — does the install log tail contain a clean Ansible recap
-     *  ("unreachable=0" + "failed=0")? OBSERVATION ONLY (logged as K2Go-Recover), NOT used in the
-     *  verdict: IIAB emits several intermediate PLAY RECAPs, so this can be true even for an
-     *  interrupted run. Kept to gather data toward a reliable end-of-install marker later. */
-    private boolean logShowsCleanFinish() {
-        java.util.List<String> tail = org.iiab.controller.LogRepository.get().snapshot();
-        for (int i = tail.size() - 1, floor = Math.max(0, tail.size() - 400); i >= floor; i--) {
-            String l = tail.get(i);
-            if (l != null && l.contains("failed=0") && l.contains("unreachable=0")) return true;
-        }
-        return false;
-    }
-
     /** ADFA-4919 (2c-ii): after the recovery timeout, decide whether a killed proot install left the
      *  system usable (stale marker -> proceed) or damaged (-> tell the user to reinstall). */
     private void evaluateRecovery() {
@@ -411,11 +398,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         recovering = false;
         boolean marker = org.iiab.controller.InstallGuard.inProgress(this);
         boolean reachable = ServerStateRepository.get().current().alive;
-        boolean logCleanFinish = logShowsCleanFinish();
         org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict v =
                 org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(marker, reachable);
-        android.util.Log.i("K2Go-Recover", "verdict=" + v + " marker=" + marker
-                + " reachable=" + reachable + " logCleanFinish=" + logCleanFinish);
+        android.util.Log.i("K2Go-Recover", "verdict=" + v + " marker=" + marker + " reachable=" + reachable);
         if (v == org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL) {
             showDamagedDialog();
         } else {
