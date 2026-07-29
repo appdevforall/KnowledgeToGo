@@ -22,9 +22,11 @@ public final class InstallState {
 
     public final Phase phase;
     public final Op op;
-    public final int percent;     // 0..100, meaningful for DOWNLOADING
+    // 0..100 for DOWNLOADING and for EXTRACTING while extracting; -1 means
+    // indeterminate (the EXTRACTING "reading/listing" sub-phase, ADFA-4915).
+    public final int percent;
     public final String speed;    // e.g. "12.3MiB", may be empty
-    public final String message;  // resolved status text / error to render
+    public final String message;  // resolved status text / current file line / error
     public final long seq;        // assigned by the repository; identifies terminal events
 
     private InstallState(Phase phase, Op op, int percent, String speed, String message, long seq) {
@@ -64,6 +66,15 @@ public final class InstallState {
 
     public static InstallState extracting(String message) {
         return new InstallState(Phase.EXTRACTING, Op.INSTALL, 0, "", message, 0L);
+    }
+
+    /**
+     * ADFA-4915: determinate extract progress. {@code percent} is pre-clamped by
+     * ExtractProgress (0..99, then 100 on completion) or -1 for the indeterminate
+     * "reading/listing" sub-phase; {@code message} is the current file line (may be empty).
+     */
+    public static InstallState extracting(int percent, String message) {
+        return new InstallState(Phase.EXTRACTING, Op.INSTALL, percent, "", message, 0L);
     }
 
     public static InstallState provisioning(String message) {

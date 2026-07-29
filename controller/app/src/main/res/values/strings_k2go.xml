@@ -273,6 +273,8 @@
     <string name="k2go_step2b_info_courses">Courses — set up on the device after install.</string>
     <string name="k2go_step2b_info_review">Review your library, then download.</string>
     <string name="k2go_setting_up_library">Setting up your library…</string>
+    <!-- ADFA-4915: minimalist indicator during the archive "reading/listing" sub-phase. Technical term, not localized for now. -->
+    <string name="k2go_reading" translatable="false">reading</string>
     <string name="k2go_clone_hide_code">Hide code  ▴</string>
     <string name="k2go_clone_chooser_send_code">Send transfer code</string>
     <string name="k2go_clone_scan_prompt_receive">Scan the other phone\'s transfer code</string>

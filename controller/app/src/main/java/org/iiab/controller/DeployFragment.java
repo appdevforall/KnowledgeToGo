@@ -334,7 +334,15 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             case DOWNLOADING:
                 btnFastInstall.setText(getString(R.string.install_status_os_download, s.percent, s.speed));
                 break;
-            case EXTRACTING:
+            case EXTRACTING: {
+                // ADFA-4915: legacy button shows the extract % (or "…" during the reading sub-phase).
+                String lbl = org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
+                        getString(R.string.install_status_extracting));
+                btnFastInstall.setText(s.percent < 0
+                        ? (getString(R.string.k2go_reading) + "  …")
+                        : (lbl + "  " + s.percent + "%"));
+                break;
+            }
             case PROVISIONING:
                 btnFastInstall.setText(s.message);
                 break;
