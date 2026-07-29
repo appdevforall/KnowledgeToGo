@@ -219,18 +219,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             installBar.setProgress(st.percent);
             installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
         } else if (st.phase == InstallState.Phase.EXTRACTING) {
+            // Keep the "Extracting System…" legend on the status line for both sub-phases.
+            installStatus.setText(org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
+                    getString(R.string.install_status_extracting)));
             if (st.percent < 0) {
                 // ADFA-4915: "reading/listing" sub-phase. listEntries() scans the whole archive
-                // (~1 min; longer on low-end devices), so show an animated "reading …" + an
-                // indeterminate bar instead of a frozen 0%.
-                startReadingEllipsis(getString(R.string.k2go_reading));
+                // (~1 min; longer on low-end devices). Indeterminate bar + an animated "reading …"
+                // on the DETAIL line (where the % goes), not on the status legend.
                 installBar.setIndeterminate(true);
-                installDetail.setText("");
+                startReadingEllipsis(getString(R.string.k2go_reading));
             } else {
                 // ADFA-4915: determinate extract — real % plus just the current file's basename
                 // (no internal path, no counter): one ellipsized line that never overlaps.
-                installStatus.setText(org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
-                        getString(R.string.install_status_extracting)));
                 installBar.setIndeterminate(false);
                 installBar.setProgress(st.percent);
                 String name = org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message);
@@ -516,21 +516,22 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         ellipsisRunnable = null;
     }
 
-    /** ADFA-4915: animate "reading" + . / .. / … while the archive is being listed. Reuses the
-     *  ellipsis handler (boot and reading never run at once) without touching {@code bootBaseText}. */
+    /** ADFA-4915: animate "reading" + . / .. / … on the DETAIL line while the archive is being
+     *  listed. Reuses the ellipsis handler (boot and reading never run at once) without touching
+     *  {@code bootBaseText}. */
     private void startReadingEllipsis(final String base) {
         stopBootEllipsis();
         ellipsisRunnable = new Runnable() {
             int i = 0;
             final String[] frames = {"   ", ".  ", ".. ", "..."};   // 0..3 dots, fixed 3-slot width (monospace)
             @Override public void run() {
-                if (installStatus != null) {
+                if (installDetail != null) {
                     String suffix = frames[i % frames.length];
                     android.text.SpannableString sp = new android.text.SpannableString(base + " " + suffix);
                     sp.setSpan(new android.text.style.TypefaceSpan("monospace"),
                             base.length() + 1, base.length() + 1 + suffix.length(),
                             android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    installStatus.setText(sp);
+                    installDetail.setText(sp);
                 }
                 i++;
                 ellipsisHandler.postDelayed(this, 450L);
