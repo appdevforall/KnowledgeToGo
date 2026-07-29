@@ -44,6 +44,14 @@ public class SetupLibraryActivity extends AppCompatActivity {
     // banks the per-layer selection to MapsWishlist instead of starting a live runrole.
     private boolean mapsWizard = false;
 
+    // ADFA-4910: true while the Books flow runs inside the wizard (pre-install). The Confirm step then
+    // banks the picks to BooksWishlist instead of starting a live download.
+    private boolean booksWizard = false;
+
+    // ADFA-4910: the Books selection handed from the landing to the Confirm screen:
+    // gutenberg_id -> {title, author, download_url}.
+    private final java.util.LinkedHashMap<String, String[]> booksCart = new java.util.LinkedHashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +131,7 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public void openContentType(String key, String title) {
         zimWizard = false;   // live (post-install) path; the ZIM terminal downloads, not wishlists
         mapsWizard = false;  // ADFA-4900: live (post-install) path; Maps installs, not wishlists
+        booksWizard = false; // ADFA-4910: live (post-install) path; Books download, not wishlists
         androidx.fragment.app.Fragment f;
         if ("maps".equals(key)) f = new MapsLandingFragment();
         else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
@@ -226,10 +235,67 @@ public class SetupLibraryActivity extends AppCompatActivity {
 
     /** ADFA-4853: open Books in wizard mode (pre-install, offline catalog -> wishlist). */
     public void openBooksWizard() {
+        booksWizard = true;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, BooksLandingFragment.newInstance(true))
                 .addToBackStack("wizard_books")
                 .commit();
+    }
+
+    public boolean isBooksWizard() { return booksWizard; }
+
+    /** ADFA-4910: the Books selection cart (gutenberg_id -> {title, author, download_url}), set by
+     *  the landing when the user taps "Review" and read by BooksConfirmFragment. */
+    public java.util.LinkedHashMap<String, String[]> getBooksCart() { return booksCart; }
+    public void setBooksCart(java.util.LinkedHashMap<String, String[]> picks) {
+        booksCart.clear();
+        if (picks != null) booksCart.putAll(picks);
+    }
+
+    /** ADFA-4910: Books landing "Review" -> Confirm (list + total + honest note). */
+    public void openBooksConfirm() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new BooksConfirmFragment())
+                .addToBackStack("books_confirm")
+                .commit();
+    }
+
+    /** ADFA-4910: Books Confirm terminal in wizard mode — bank the picks and return to the hub. */
+    public void booksWizardConfirm() {
+        for (java.util.Map.Entry<String, String[]> e : booksCart.entrySet()) {
+            String[] v = e.getValue();
+            String title = v != null && v.length > 0 ? v[0] : "";
+            String url = v != null && v.length > 2 ? v[2] : "";
+            BooksWishlist.add(this, e.getKey(), title, url);
+        }
+        booksCart.clear();
+        getSupportFragmentManager().popBackStack("wizard_books",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    /** ADFA-4910: Books Confirm terminal in live mode — hand the picks to the download service and
+     *  open the downloads screen (per-book checklist + retry). */
+    public void startBooksDownload() {
+        java.util.List<String> ids = new java.util.ArrayList<>(), titles = new java.util.ArrayList<>(),
+                urls = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<String, String[]> e : booksCart.entrySet()) {
+            String[] v = e.getValue();
+            ids.add(e.getKey());
+            titles.add(v != null && v.length > 0 ? v[0] : "");
+            urls.add(v != null && v.length > 2 ? v[2] : "");
+        }
+        int count = ids.size();
+        booksCart.clear();
+        BooksDownloadService.start(getApplicationContext(),
+                ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
+        // ADFA-4910: mirror the wizard's confirm — hand the picks to the background service and
+        // return to the Get More home (drop landing + confirm off the stack), instead of stranding
+        // the user on the downloads screen. The download keeps running; the landing's "View
+        // downloads" link (and the notification) let them check progress later.
+        getSupportFragmentManager().popBackStack("getmore_books",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        android.widget.Toast.makeText(this,
+                getString(R.string.k2go_books_dl_started_fmt, count), android.widget.Toast.LENGTH_SHORT).show();
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
