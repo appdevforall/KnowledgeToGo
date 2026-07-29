@@ -94,6 +94,11 @@ public class SetupProgressActivity extends AppCompatActivity {
         Button detailRunBg = findViewById(R.id.k2go_sp_detail_finish);
         detailRunBg.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
         detailRunBg.setOnClickListener(v -> finish());
+
+        // ADFA-4919: observe the maps (proot) queue so its RUNNING -> DONE transition always
+        // re-renders the index. The REST streams have service listeners; the proot stage had none,
+        // so a proot-only install could finish without the index ever updating to Finish/redirect.
+        ModuleQueueRepository.get().state().observe(this, st -> render());
     }
 
     @Override
@@ -219,12 +224,25 @@ public class SetupProgressActivity extends AppCompatActivity {
                 BooksDownloadService.DONE, BooksDownloadService.FAILED,
                 BooksDownloadService.hasSession() && BooksDownloadService.isComplete(), BooksWishlist.size(this)));
 
-        // Overall state.
-        boolean allComplete = drained
-                && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
-                && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete());
-        // ADFA-4900: a failed maps runrole must count as a failure too (Finish, not a false success).
+        // Overall state. Completion is stage-based.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
+        // ADFA-4919: a proot-only set (no REST content at all) must finish WITHOUT waiting on any
+        // REST drain -- its completion is simply the maps (proot) stage going terminal. Otherwise the
+        // index never reaches success/failure and can't show redirect/Cancel/Finish. The REST/mixed
+        // path keeps its existing drain-based signal untouched.
+        boolean noRest = !ZimDownloadService.hasSession() && !BooksDownloadService.hasSession()
+                && ZimWishlist.size(this) == 0 && BooksWishlist.size(this) == 0;
+        boolean mapsTerminal = mapsStartFailed
+                || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
+        boolean allComplete;
+        if (noRest && mapsShown) {
+            allComplete = mapsTerminal && !ModuleQueueRepository.get().isRunning();
+        } else {
+            allComplete = drained
+                    && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
+                    && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete());
+        }
+        // ADFA-4900: a failed maps runrole must count as a failure too (Finish, not a false success).
         boolean mapsFailed = mapsStartFailed
                 || (mq.phase == ModuleQueueState.Phase.DONE && mq.failedModules.contains("maps"));
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
