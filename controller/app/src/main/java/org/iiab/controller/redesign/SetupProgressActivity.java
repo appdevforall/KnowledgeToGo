@@ -324,9 +324,9 @@ public class SetupProgressActivity extends AppCompatActivity {
         return row;
     }
 
-    /** ADFA-4900: summary row for the maps (proot) stage, driven by the module-queue state:
-     *  queued -> spinner (runrole in flight) -> check (done) / amber alert (failed). No detail
-     *  screen yet (the richer downloads card is ADFA-4901), so the row is not tappable. */
+    /** ADFA-4900/4901: summary row for the maps (proot) stage, driven by the module-queue state:
+     *  queued -> spinner (runrole in flight) -> check (done) / amber alert (failed). Tappable once
+     *  the stage has started; opens the maps Preparing card as its detail (ADFA-4901). */
     private View mapsRow() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean done = mapsStartFailed || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
@@ -371,6 +371,16 @@ public class SetupProgressActivity extends AppCompatActivity {
         sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        // ADFA-4901: like the ZIM/Books rows, maps opens its own progress detail once the stage has
+        // started (running or done). Maps is a single proot runrole, so the detail is the queue-driven
+        // Preparing card (spinner + phase), not a per-item checklist.
+        ImageView chev = new ImageView(this);
+        chev.setImageResource(R.drawable.ic_chevron_right);
+        chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
+        chev.setVisibility(started ? View.VISIBLE : View.INVISIBLE);
+        row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
+        if (started) row.setOnClickListener(v -> openDetail("maps"));
         return row;
     }
 
@@ -421,8 +431,10 @@ public class SetupProgressActivity extends AppCompatActivity {
     // ---- detail: host the real per-module card ----
     private void openDetail(String key) {
         showingDetail = true;
-        androidx.fragment.app.Fragment f = "zim".equals(key)
-                ? ZimPreparingFragment.newInstance(true) : BooksDownloadsFragment.newInstance(true);
+        androidx.fragment.app.Fragment f;
+        if ("zim".equals(key)) f = ZimPreparingFragment.newInstance(true);
+        else if ("maps".equals(key)) f = MapsPreparingFragment.newInstance(true);   // ADFA-4901: observe-only
+        else f = BooksDownloadsFragment.newInstance(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commit();
         indexScroll.setVisibility(View.GONE);
         detailRoot.setVisibility(View.VISIBLE);

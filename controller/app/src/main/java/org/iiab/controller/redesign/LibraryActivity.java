@@ -166,7 +166,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     // ADFA-4853: if the wizard banked content, go straight to Finishing setup
                     // (over the library) — no brief stop on the home. That screen shows
                     // "Starting services…" and drains the wishlists when the engine is up.
-                    if (BooksWishlist.size(this) > 0 || ZimWishlist.size(this) > 0) {
+                    // ADFA-4901: include MapsWishlist — a maps-only wizard run must still open
+                    // Finishing setup so MapsProvisioner can drain it (otherwise maps never installs).
+                    if (BooksWishlist.size(this) > 0 || ZimWishlist.size(this) > 0 || MapsWishlist.has(this)) {
                         startActivity(new android.content.Intent(this, SetupProgressActivity.class));
                     }
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {

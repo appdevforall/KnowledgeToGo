@@ -391,6 +391,9 @@
     <string name="k2go_maps_leave_title" translatable="false">Leave it running</string>
     <string name="k2go_maps_leave_body" translatable="false">It continues in the background. We\u2019ll notify you when your maps are ready.</string>
     <string name="k2go_maps_run_bg" translatable="false">Run in background</string>
+    <!-- ADFA-4901: collapsible install log (reusable across proot modules). -->
+    <string name="k2go_maps_log_show" translatable="false">Show details</string>
+    <string name="k2go_maps_log_hide" translatable="false">Hide details</string>
     <string name="k2go_maps_phase_prepared" translatable="false">Prepared the list</string>
     <string name="k2go_maps_phase_downloading" translatable="false">Downloading map data</string>
     <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
