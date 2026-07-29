@@ -214,14 +214,24 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             installBar.setProgress(st.percent);
             installDetail.setText(st.percent + "%" + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
         } else if (st.phase == InstallState.Phase.EXTRACTING) {
-            // ADFA-4915: determinate extract — real % (members / total), "N / M" counter, live file line.
+            // ADFA-4915: determinate extract — real % plus just the current file's basename.
+            // No internal path prefix and no N/M counter (UX review): the internal
+            // installed-rootfs/iiab/... path added nothing and wrapped to 3-4 lines, overlapping
+            // the animation on short screens. Skip directory entries (line ends with '/'), keep
+            // it to one middle-ellipsized line so long names never overlap.
             installStatus.setText(getString(R.string.install_status_extracting).split("\\n")[0].trim());
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
-            StringBuilder det = new StringBuilder().append(st.percent).append('%');
-            if (st.total > 0) det.append("  ·  ").append(st.done).append(" / ").append(st.total);
-            if (!st.message.isEmpty()) det.append("  ·  ").append(st.message);
-            installDetail.setText(det.toString());
+            String det = st.percent + "%";
+            String line = st.message;
+            if (!line.isEmpty() && !line.endsWith("/")) {
+                int slash = line.lastIndexOf('/');
+                String name = slash >= 0 ? line.substring(slash + 1) : line;
+                if (!name.isEmpty()) det += "  ·  " + name;
+            }
+            installDetail.setMaxLines(1);
+            installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
+            installDetail.setText(det);
         } else {
             installStatus.setText(st.message.isEmpty() ? getString(R.string.k2go_setting_up_library) : st.message);
             installBar.setIndeterminate(true);
