@@ -502,6 +502,7 @@
     <string name="k2go_books_total_fmt" translatable="false">%1$d books</string>
     <string name="k2go_books_dl_title" translatable="false">Downloads</string>
     <string name="k2go_books_dl_sub" translatable="false">Added one at a time — kind to Project Gutenberg.</string>
+    <string name="k2go_books_dl_started_fmt" translatable="false">Downloading %1$d books in the background…</string>
     <string name="k2go_books_dl_detail_fmt" translatable="false">%1$d of %2$d books</string>
     <string name="k2go_books_state_queued" translatable="false">Queued</string>
     <string name="k2go_books_state_downloading" translatable="false">Downloading…</string>
