@@ -324,9 +324,9 @@ public class SetupProgressActivity extends AppCompatActivity {
         return row;
     }
 
-    /** ADFA-4900: summary row for the maps (proot) stage, driven by the module-queue state:
-     *  queued -> spinner (runrole in flight) -> check (done) / amber alert (failed). No detail
-     *  screen yet (the richer downloads card is ADFA-4901), so the row is not tappable. */
+    /** ADFA-4900/4901: summary row for the maps (proot) stage, driven by the module-queue state:
+     *  queued -> spinner (runrole in flight) -> check (done) / amber alert (failed). Tappable once
+     *  the stage has started; opens the maps Preparing card as its detail (ADFA-4901). */
     private View mapsRow() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean done = mapsStartFailed || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
