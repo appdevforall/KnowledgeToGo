@@ -129,13 +129,18 @@ public class SetupProgressActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (showingDetail) { backToIndex(); return; }
-        // ADFA-4919 (2c): a proot install runs on the live system and must not be abandoned mid-run.
-        // No up-front confirm (that would spoil the friendly flow). Instead, capture the FIRST Back
-        // that would exit the app to reassure the user (snackbar) that leaving the app is fine — the
-        // install keeps going and will be there when they return. A second Back then exits normally.
-        if (prootActive() && !leaveWarned) {
-            leaveWarned = true;
-            Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
+        // ADFA-4919 (2c): the index is the LAST barrier for a proot install (runs on the live system,
+        // can't be abandoned mid-run). No up-front confirm (that would spoil the friendly flow). The
+        // FIRST Back reassures via a snackbar; every Back after that sends the whole app to the
+        // background (home) -- we never walk back through the selection/hub steps into a half-built
+        // flow. The install keeps running; reopening the app resumes here.
+        if (prootActive()) {
+            if (!leaveWarned) {
+                leaveWarned = true;
+                Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
+            } else {
+                moveTaskToBack(true);
+            }
             return;
         }
         super.onBackPressed();
