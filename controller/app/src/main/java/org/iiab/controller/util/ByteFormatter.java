@@ -50,7 +50,8 @@ public final class ByteFormatter {
         double kb = mb * 1024.0;
         if (mb >= 1023.5) return String.format(Locale.US, "%.1f GB", mb / 1024.0);
         if (kb >= 1023.5) return String.format(Locale.US, "%.0f MB", mb);
-        return String.format(Locale.US, "%.0f KB", Math.max(0, kb));
+        if (kb < 0.5) return "0 MB";   // nothing selected reads as "0 MB", not "0 KB"
+        return String.format(Locale.US, "%.0f KB", kb);
     }
 
     /** UI size label from a whole number of MB. */

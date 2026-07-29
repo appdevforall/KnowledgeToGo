@@ -169,7 +169,6 @@ public class GetMoreHubFragment extends Fragment {
         return gb;
     }
 
-
     private void setW(View v, float w) {
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
         lp.weight = w;
