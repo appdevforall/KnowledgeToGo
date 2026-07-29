@@ -237,7 +237,7 @@ public class SetupProgressActivity extends AppCompatActivity {
                 || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = mapsShown && !mapsTerminal;
-        contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
+        if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
         boolean allComplete;
         if (noRest && mapsShown) {
             allComplete = mapsTerminal && !ModuleQueueRepository.get().isRunning();
