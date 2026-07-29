@@ -389,9 +389,10 @@
     <string name="k2go_maps_add_setup_fmt" translatable="false">Add to your setup \u00b7 %1$s</string>
     <string name="k2go_maps_keep_using" translatable="false">You can keep using the app meanwhile.</string>
     <string name="k2go_maps_preparing_title" translatable="false">Preparing your maps\u2026</string>
-    <string name="k2go_maps_preparing_sub" translatable="false">This can take a while. You can leave it running.</string>
-    <string name="k2go_maps_leave_title" translatable="false">Leave it running</string>
-    <string name="k2go_maps_leave_body" translatable="false">It continues in the background. We\u2019ll notify you when your maps are ready.</string>
+    <string name="k2go_maps_preparing_sub" translatable="false">This can take a while \u2014 please keep this screen open.</string>
+    <!-- ADFA-4919: honest wording — proot installs run on the live system and cannot background. Kept generic for any proot module. -->
+    <string name="k2go_maps_leave_title" translatable="false">Keep this screen open</string>
+    <string name="k2go_maps_leave_body" translatable="false">This installs directly on the system, so it can\u2019t run in the background. Please keep this screen open until it finishes.</string>
     <string name="k2go_maps_run_bg" translatable="false">Run in background</string>
     <!-- ADFA-4901: collapsible install log (reusable across proot modules). -->
     <string name="k2go_maps_log_show" translatable="false">Show details</string>
@@ -460,6 +461,8 @@
     <string name="k2go_wizard_continue" translatable="false">Continue</string>
     <string name="k2go_setup_progress_title" translatable="false">Finishing setup</string>
     <string name="k2go_setup_context" translatable="false">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
+    <!-- ADFA-4919: proot (Maps) runs on the live system and cannot background; keep the user here. -->
+    <string name="k2go_setup_context_proot" translatable="false">It will redirect you automatically when finished. Keep the app on this screen while it installs — this part can’t run in the background.</string>
     <string name="k2go_setup_starting" translatable="false">Starting services</string>
     <string name="k2go_setup_adding" translatable="false">Adding your content</string>
     <string name="k2go_setup_slow" translatable="false">Starting services — this is taking longer than usual</string>

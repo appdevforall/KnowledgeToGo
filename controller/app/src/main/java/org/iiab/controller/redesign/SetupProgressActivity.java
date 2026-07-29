@@ -50,9 +50,9 @@ public class SetupProgressActivity extends AppCompatActivity {
     private static final int SLOW_AFTER_POLLS = 15;
 
     private View dot;
-    private TextView statusText, redirect, cancel, finishNote;
+    private TextView statusText, redirect, cancel, finishNote, contextText;
     private LinearLayout sections;
-    private Button finishBtn, runBgBtn;
+    private Button finishBtn, runBgBtn, detailRunBgBtn;
     private View detailRoot, indexScroll;
 
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -81,6 +81,7 @@ public class SetupProgressActivity extends AppCompatActivity {
         cancel = findViewById(R.id.k2go_sp_cancel);
         finishBtn = findViewById(R.id.k2go_sp_finish);
         finishNote = findViewById(R.id.k2go_sp_finish_note);
+        contextText = findViewById(R.id.k2go_sp_context);
         runBgBtn = findViewById(R.id.k2go_sp_runbg);
         indexScroll = findViewById(R.id.k2go_sp_index);
         detailRoot = findViewById(R.id.k2go_sp_detail);
@@ -91,9 +92,9 @@ public class SetupProgressActivity extends AppCompatActivity {
 
         Button back = findViewById(R.id.k2go_sp_back);
         back.setOnClickListener(v -> backToIndex());
-        Button detailRunBg = findViewById(R.id.k2go_sp_detail_finish);
-        detailRunBg.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
-        detailRunBg.setOnClickListener(v -> finish());
+        detailRunBgBtn = findViewById(R.id.k2go_sp_detail_finish);
+        detailRunBgBtn.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
+        detailRunBgBtn.setOnClickListener(v -> finish());
 
         // ADFA-4919: observe the maps (proot) queue so its RUNNING -> DONE transition always
         // re-renders the index. The REST streams have service listeners; the proot stage had none,
@@ -234,6 +235,9 @@ public class SetupProgressActivity extends AppCompatActivity {
                 && ZimWishlist.size(this) == 0 && BooksWishlist.size(this) == 0;
         boolean mapsTerminal = mapsStartFailed
                 || (mapsLaunched && mq.phase == ModuleQueueState.Phase.DONE);
+        // ADFA-4919: a proot module is queued/running (the gate is active).
+        boolean prootActive = mapsShown && !mapsTerminal;
+        if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
         boolean allComplete;
         if (noRest && mapsShown) {
             allComplete = mapsTerminal && !ModuleQueueRepository.get().isRunning();
@@ -273,7 +277,7 @@ public class SetupProgressActivity extends AppCompatActivity {
             show(redirect, false); show(cancel, false);
         } else {   // starting or running
             cancelRedirect();
-            show(runBgBtn, true);
+            show(runBgBtn, !prootActive);   // ADFA-4919: no "Run in background" while a proot module runs — the index is the gate
             show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
         }
     }
@@ -453,6 +457,8 @@ public class SetupProgressActivity extends AppCompatActivity {
         if ("zim".equals(key)) f = ZimPreparingFragment.newInstance(true);
         else if ("maps".equals(key)) f = MapsPreparingFragment.newInstance(true);   // ADFA-4901: observe-only
         else f = BooksDownloadsFragment.newInstance(true);
+        // ADFA-4919: the proot (maps) detail cannot background either — only Back (to the index).
+        if (detailRunBgBtn != null) detailRunBgBtn.setVisibility("maps".equals(key) ? View.GONE : View.VISIBLE);
         getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commit();
         indexScroll.setVisibility(View.GONE);
         detailRoot.setVisibility(View.VISIBLE);
