@@ -802,7 +802,7 @@
     <string name="k2go_badge_copy">કૉપિ કરો</string>
     <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
     <string name="k2go_legend_sys_free">વપરાયેલ %1$.1f  ·  સિસ્ટમ %2$.1f  ·  ખાલી %3$.1f</string>
-    <string name="k2go_legend_your_picks">વપરાયેલ %1$.1f · સિસ્ટમ %2$.1f · તમારી પસંદગી %3$.1f · ખાલી %4$.1f</string>
+    <string name="k2go_legend_your_picks">વપરાયેલ %1$s · સિસ્ટમ %2$s · તમારી પસંદગી %3$s · ખાલી %4$s</string>
     <string name="k2go_legend_picks">વપરાયેલ %1$.1f · સિસ્ટમ %2$.1f · પસંદગી %3$.1f · ખાલી %4$.1f</string>
     <string name="k2go_perm_granted">અપાયું</string> <!-- review — machine, verify -->
     <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. review — machine, verify. -->

@@ -809,7 +809,7 @@
     <string name="k2go_badge_copy">Kopírovat</string>
     <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
     <string name="k2go_legend_sys_free">Použito %1$.1f  ·  Systém %2$.1f  ·  Volné %3$.1f</string>
-    <string name="k2go_legend_your_picks">Použito %1$.1f · Systém %2$.1f · Váš výběr %3$.1f · Volné %4$.1f</string>
+    <string name="k2go_legend_your_picks">Použito %1$s · Systém %2$s · Váš výběr %3$s · Volné %4$s</string>
     <string name="k2go_legend_picks">Použito %1$.1f · Systém %2$.1f · Výběr %3$.1f · Volné %4$.1f</string>
     <string name="k2go_perm_granted">Uděleno</string> <!-- machine translation -->
     <!-- ADFA-4795: clone header/ready/step/hint, Soon, force-crash l10n. machine translation. -->

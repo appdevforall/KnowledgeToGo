@@ -337,12 +337,12 @@ public class SetupLibraryActivity extends AppCompatActivity {
 
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */
-    public void mapsWizardConfirm(String[] levels) {
+    public void mapsWizardConfirm(String[] levels, long totalMb) {
         String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
         String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
         String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
         boolean search = levels != null && levels.length > 3 && levels[3] != null;
-        MapsWishlist.save(this, base, sat, ter, search);
+        MapsWishlist.save(this, base, sat, ter, search, totalMb);
         getSupportFragmentManager().popBackStack("getmore_maps",
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }

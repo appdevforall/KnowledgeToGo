@@ -73,6 +73,7 @@ public class MapsConfirmFragment extends Fragment {
         }
         box.addView(row(getString(R.string.k2go_maps_total), "", fmt(total), true));
 
+        final long totalMb = total;   // ADFA-4910: banked so Get More "Your picks" counts maps
         final String[] levels = a != null ? a.getStringArray(ARG_LEVELS) : null;
 
         // ADFA-4900: in the wizard (pre-install) Maps banks the selection; post-install it installs.
@@ -84,7 +85,7 @@ public class MapsConfirmFragment extends Fragment {
         start.setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
                 SetupLibraryActivity act = (SetupLibraryActivity) getActivity();
-                if (act.isMapsWizard()) act.mapsWizardConfirm(levels);
+                if (act.isMapsWizard()) act.mapsWizardConfirm(levels, totalMb);
                 else act.openMapsPreparing(levels);
             }
         });
