@@ -801,7 +801,7 @@
     <string name="k2go_badge_getapp">Obține aplicația</string>
     <string name="k2go_badge_copy">Copiază</string>
     <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
-    <string name="k2go_legend_sys_free">Utilizat %1$.1f  ·  Sistem %2$.1f  ·  Liber %3$.1f</string>
+    <string name="k2go_legend_sys_free">Utilizat %1$s  ·  Sistem %2$s  ·  Liber %3$s</string>
     <string name="k2go_legend_your_picks">Utilizat %1$s · Sistem %2$s · Selecția ta %3$s · Liber %4$s</string>
     <string name="k2go_legend_picks">Utilizat %1$.1f · Sistem %2$.1f · Selecție %3$.1f · Liber %4$.1f</string>
     <string name="k2go_perm_granted">Acordat</string> <!-- machine translation -->

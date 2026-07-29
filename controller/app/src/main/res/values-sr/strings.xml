@@ -801,7 +801,7 @@
     <string name="k2go_badge_getapp">Preuzmi aplikaciju</string>
     <string name="k2go_badge_copy">Kopiraj</string>
     <!-- ADFA-4795: storage bar legend l10n. review — machine, verify. -->
-    <string name="k2go_legend_sys_free">Iskorišćeno %1$.1f  ·  Sistem %2$.1f  ·  Slobodno %3$.1f</string>
+    <string name="k2go_legend_sys_free">Iskorišćeno %1$s  ·  Sistem %2$s  ·  Slobodno %3$s</string>
     <string name="k2go_legend_your_picks">Iskorišćeno %1$s · Sistem %2$s · Vaš izbor %3$s · Slobodno %4$s</string>
     <string name="k2go_legend_picks">Iskorišćeno %1$.1f · Sistem %2$.1f · Izbor %3$.1f · Slobodno %4$.1f</string>
     <string name="k2go_perm_granted">Odobreno</string> <!-- review — machine, verify -->

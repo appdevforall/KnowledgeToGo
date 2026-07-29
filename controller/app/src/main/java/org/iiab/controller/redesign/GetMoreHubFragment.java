@@ -149,7 +149,10 @@ public class GetMoreHubFragment extends Fragment {
         setW(root.findViewById(R.id.k2go_gm_bar_free), (float) freeAfter);
         ((TextView) root.findViewById(R.id.k2go_gm_legend)).setText(
                 getString(R.string.k2go_legend_your_picks,
-                        human(used), human(systemGb), human(picksGb), human(freeAfter)));
+                        org.iiab.controller.util.ByteFormatter.humanGb(used),
+                        org.iiab.controller.util.ByteFormatter.humanGb(systemGb),
+                        org.iiab.controller.util.ByteFormatter.humanGb(picksGb),
+                        org.iiab.controller.util.ByteFormatter.humanGb(freeAfter)));
     }
 
     /** GB the wizard picks will add: ZIM by real catalog bytes; maps by the banked catalog size;
@@ -166,16 +169,6 @@ public class GetMoreHubFragment extends Fragment {
         return gb;
     }
 
-    /** ADFA-4910: adaptive size unit so small picks aren't rounded to "0.0 GB". Steps up at ~1024:
-     *  KB < 1 MB, MB < 1 GB, else GB. Input is in GB. */
-    private String human(double gb) {
-        double mb = gb * 1024.0;
-        double kb = mb * 1024.0;
-        // Pick the unit from the value that would round up, so a boundary never shows "1024 MB".
-        if (mb >= 1023.5) return String.format(java.util.Locale.US, "%.1f GB", mb / 1024.0);
-        if (kb >= 1023.5) return String.format(java.util.Locale.US, "%.0f MB", mb);
-        return String.format(java.util.Locale.US, "%.0f KB", Math.max(0, kb));
-    }
 
     private void setW(View v, float w) {
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();

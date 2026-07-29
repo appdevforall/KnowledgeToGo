@@ -878,7 +878,7 @@
     <string name="k2go_badge_getapp">ऐप प्राप्त करें</string>
     <string name="k2go_badge_copy">कॉपी करें</string>
     <!-- ADFA-4795: storage bar legend l10n. machine translation. -->
-    <string name="k2go_legend_sys_free">इस्तेमाल %1$.1f  ·  सिस्टम %2$.1f  ·  खाली %3$.1f</string>
+    <string name="k2go_legend_sys_free">इस्तेमाल %1$s  ·  सिस्टम %2$s  ·  खाली %3$s</string>
     <string name="k2go_legend_your_picks">इस्तेमाल %1$s · सिस्टम %2$s · आपके चयन %3$s · खाली %4$s</string>
     <string name="k2go_legend_picks">इस्तेमाल %1$.1f · सिस्टम %2$.1f · चयन %3$.1f · खाली %4$.1f</string>
     <string name="k2go_perm_granted">दी गई</string> <!-- machine translation -->
