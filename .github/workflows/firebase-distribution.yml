@@ -148,6 +148,10 @@ jobs:
       # artifacts published to GitHub/R2 (separate workflow); this workflow never runs on tags.
       - name: Build and Sign APK
         env:
+          # :app:syncNativeArtifacts queries the GitHub API for the pinned binaries
+          # release; unauthenticated it gets HTTP 403 (shared-runner rate limit), so
+          # provide the auto token for the M15 authenticated-retry fallback (build.gradle).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
