@@ -598,27 +598,19 @@ public class SetupProgressActivity extends AppCompatActivity {
     }
     private void goHome(boolean clearSessions) {
         cancelRedirect();
-        // ADFA-4842: a non-maps proot MODULE batch (kolibri/calibreweb/…) stops services during its
-        // runroles, so the system is down when we leave. Land on a FRESH LibraryActivity (recreate, not
-        // reuse) so its normal cold-boot path runs — boot gate + guarded autostart + wait for the server
-        // — instead of dropping onto a dead home. Maps and REST-only sessions keep the server up, so they
-        // reuse the existing Library (no recreate, no boot-gate flash). Evaluated before the clear below
-        // so moduleInSession() can still see the batch.
-        boolean moduleBatch = moduleInSession();
         if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
         ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
 
         // ADFA-4919: the natural end of installing content is the Library — go there directly and
         // clear the install screens above it. Both the wizard and Get More launch from LibraryActivity,
-        // so CLEAR_TOP lands on the existing Library (dropping Get More + this index). Previously this
-        // was a bare finish(), which in the Get More flow fell back to Get More instead of the Library.
-        // Only success/Finish reach here; "Run in background" (REST) still just finish()es in place.
-        android.content.Intent home = new android.content.Intent(this, LibraryActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        // A module batch recreates Library (CLEAR_TOP alone, standard launchMode → fresh onCreate =
-        // cold-boot). Maps/REST reuse the live instance (add SINGLE_TOP → onNewIntent, no recreate).
-        if (!moduleBatch) home.addFlags(android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(home);
+        // so CLEAR_TOP + SINGLE_TOP lands on the existing Library (dropping Get More + this index).
+        // Previously this was a bare finish(), which in the Get More flow fell back to Get More instead
+        // of the Library. Only success/Finish reach here; "Run in background" (REST) still finish()es in
+        // place. ADFA-4842: for a module batch, the server was stopped for the runroles — LibraryActivity's
+        // module-queue observer blocks the UI during the run and restarts the server on DONE, so we just
+        // return to the live Library here (no cold-boot recreate).
+        startActivity(new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP));
         finish();
     }
 

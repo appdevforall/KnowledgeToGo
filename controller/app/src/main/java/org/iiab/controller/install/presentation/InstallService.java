@@ -635,7 +635,26 @@ public final class InstallService extends Service {
     // ------------------------------------------------------------ module queue
 
     private void runModuleQueue() {
-        installNextModule();
+        // ADFA-4842: a runrole modifies system packages/config, so it must own the rootfs
+        // exclusively. Unlike content (which the running server adds in-process), we cannot avoid the
+        // runrole's own proot — so stop the server's SERVICES first (pdsm stop) so a runrole never runs
+        // alongside a live server writing the same DBs/config (the data-corruption risk). The app
+        // restarts the server after the queue finishes (LibraryActivity's module-queue observer).
+        // Stopping is idempotent (no-op if already down); proceed even if the stop couldn't launch.
+        if (cancelled) return;
+        updateNotification(getString(R.string.server_shutting_down));
+        log("[Modules] Stopping server services before runroles (exclusive rootfs)...");
+        if (prootEngine == null) prootEngine = new PRootEngine();
+        prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(),
+                "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'",
+                new PRootEngine.OutputListener() {
+                    @Override public void onOutputLine(String line) { log("[Modules] pdsm stop: " + line); }
+                    @Override public void onProcessExit(int exitCode) { installNextModule(); }
+                    @Override public void onError(String error) {
+                        log("[Modules] pdsm stop error (continuing): " + error);
+                        installNextModule();
+                    }
+                });
     }
 
     /**
@@ -764,6 +783,10 @@ public final class InstallService extends Service {
         if (finished) return;
         finished = true;
         persistClearQueue();
+        // ADFA-4842: clear the durable install guard BEFORE publishing DONE so the LibraryActivity
+        // observer that restarts the server (canStartServer() requires !InstallGuard.inProgress) is not
+        // raced by teardown()'s later clear. teardown() clears it again (idempotent).
+        org.iiab.controller.InstallGuard.end(this);
         ModuleQueueRepository.get().postDone(new java.util.ArrayList<>(failedModules));
         teardown();
     }
