@@ -53,7 +53,7 @@ public final class RestContentClient {
         void onError(String message);                // failure (terminal)
     }
 
-    private static final String BASE = BoxEndpoints.BASE + "/api/kiwix";
+    private static final String BASE = BoxEndpoints.API + "/kiwix";
     private static final long POLL_MS = 1000L;
     private static final int MAX_POLL_ERRORS = 10;   // tolerate ~10s of transient network blips
 

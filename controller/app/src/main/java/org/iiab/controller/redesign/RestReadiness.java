@@ -25,7 +25,7 @@ public final class RestReadiness {
     public static boolean apiReady() {
         HttpURLConnection c = null;
         try {
-            URL u = new URL(BoxEndpoints.BASE + "/api/books/library");
+            URL u = new URL(BoxEndpoints.API + "/books/library");
             c = (HttpURLConnection) u.openConnection();
             c.setUseCaches(false);
             c.setConnectTimeout(2500);
