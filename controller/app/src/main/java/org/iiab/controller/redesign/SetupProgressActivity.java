@@ -145,6 +145,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         super.onPause();
         main.removeCallbacks(readyPoll);
         main.removeCallbacks(serverUpPoll);   // ADFA-4842
+        stopStatusEllipsis();                 // ADFA-4842
         cancelRedirect();
         if (serverController != null) serverController.onPause();   // ADFA-4842: stop the status poll (not the server)
         if (!showingDetail) {
@@ -369,17 +370,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 + prootFailed;
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
-        // message instead of "Starting services" so it doesn't look frozen (ADFA-4874).
-        tint(dot, servicesReady ? R.color.k2go_leaf : R.color.k2go_amber);
-        int statusRes = servicesReady ? R.string.k2go_setup_adding
-                : (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
-        // ADFA-4842: while restarting the server after a module batch, show "starting services" (amber)
-        // instead of "adding", so the wait reads honestly as the system coming back up.
-        if (moduleRestartKicked && !moduleServerUp) {
-            tint(dot, R.color.k2go_amber);
-            statusRes = R.string.k2go_setup_starting;
-        }
-        statusText.setText(statusRes);
+        // message instead of "Starting services" so it doesn't look frozen (ADFA-4874). ADFA-4842: while
+        // restarting the server after a module batch, show "starting services" (amber) too.
+        boolean amberWaiting = !servicesReady || (moduleRestartKicked && !moduleServerUp);
+        tint(dot, amberWaiting ? R.color.k2go_amber : R.color.k2go_leaf);
+        int statusRes;
+        if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;
+        else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
+        else statusRes = R.string.k2go_setup_adding;
+        // ADFA-4842: animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
+        if (amberWaiting) startStatusEllipsis(getString(statusRes));
+        else { stopStatusEllipsis(); statusText.setText(statusRes); }
 
         // Bottom controls.
         boolean success = allComplete && failedTotal == 0;
@@ -638,6 +639,30 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     /** ADFA-4842: after a module batch (the server was pdsm-stopped for the runroles), start the server
      *  once and poll the REST core until it answers. render() gates completion/redirect on
      *  moduleServerUp, so we only leave for the Library once the system is actually live. */
+    // ADFA-4842: animated ellipsis on the amber "starting/waiting" status line (dots appear & disappear).
+    private Runnable statusEllipsis;
+    private String ellipsisBase;
+    private int ellipsisFrame = 0;
+    private void startStatusEllipsis(String fullText) {
+        String base = fullText.replaceAll("[.…]+$", "");   // strip trailing dots/ellipsis
+        if (statusEllipsis != null && base.equals(ellipsisBase)) return;   // already animating this text
+        stopStatusEllipsis();
+        ellipsisBase = base;
+        ellipsisFrame = 0;
+        statusEllipsis = new Runnable() {
+            private final String[] frames = {"", ".", "..", "..."};
+            @Override public void run() {
+                if (statusText != null) statusText.setText(ellipsisBase + frames[ellipsisFrame % frames.length]);
+                ellipsisFrame++;
+                main.postDelayed(this, 450L);
+            }
+        };
+        main.post(statusEllipsis);
+    }
+    private void stopStatusEllipsis() {
+        if (statusEllipsis != null) { main.removeCallbacks(statusEllipsis); statusEllipsis = null; ellipsisBase = null; }
+    }
+
     private void ensureServerUpForModules() {
         if (moduleServerUp || moduleRestartKicked) return;
         moduleRestartKicked = true;
@@ -677,7 +702,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // module batch already restarted the server and waited for it here (ensureServerUpForModules), so
         // the reused Library is live on arrival — no cold-boot recreate needed.
         startActivity(new android.content.Intent(this, LibraryActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));   // ADFA-4842: land on Home, not the launching tab (Settings)
         finish();
     }
 

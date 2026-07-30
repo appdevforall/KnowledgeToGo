@@ -383,6 +383,19 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        // ADFA-4842: an install finished and CLEAR_TOP'd back here (reused instance). Honor EXTRA_TAB so
+        // we land on the Library (Home) tab, not whatever tab was showing when the user left — e.g. they
+        // opened Module management from Settings, so without this they'd land back on Settings.
+        if (intent != null) {
+            int tab = intent.getIntExtra(EXTRA_TAB, -1);
+            if (tab != -1) { currentTab = tab; showTab(tab); syncSelection(tab); }
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();
