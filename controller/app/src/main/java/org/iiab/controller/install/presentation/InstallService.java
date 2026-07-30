@@ -635,13 +635,17 @@ public final class InstallService extends Service {
     // ------------------------------------------------------------ module queue
 
     private void runModuleQueue() {
-        // ADFA-4842: a runrole modifies system packages/config, so it must own the rootfs
-        // exclusively. Unlike content (which the running server adds in-process), we cannot avoid the
-        // runrole's own proot — so stop the server's SERVICES first (pdsm stop) so a runrole never runs
-        // alongside a live server writing the same DBs/config (the data-corruption risk). The app
-        // restarts the server after the queue finishes (LibraryActivity's module-queue observer).
-        // Stopping is idempotent (no-op if already down); proceed even if the stop couldn't launch.
+        // ADFA-4842: a real module runrole (kolibri/calibreweb/…) modifies system packages/config and
+        // restarts services, so it must own the rootfs exclusively — stop the server's SERVICES first
+        // (pdsm stop) so it never runs alongside a live server writing the same DBs/config (the
+        // data-corruption risk). The install index restarts the server after the queue and only then
+        // redirects to a live Library. Maps is the exception: it coexists with a live server (adds
+        // tiles, doesn't touch the REST core), so a maps-only batch skips the stop entirely — no
+        // needless server bounce for the wizard/Get-More maps flow.
         if (cancelled) return;
+        boolean anyRealModule = false;
+        for (String m : moduleQueue) if (!"maps".equals(m)) { anyRealModule = true; break; }
+        if (!anyRealModule) { installNextModule(); return; }
         updateNotification(getString(R.string.server_shutting_down));
         log("[Modules] Stopping server services before runroles (exclusive rootfs)...");
         if (prootEngine == null) prootEngine = new PRootEngine();

@@ -39,7 +39,7 @@ import org.iiab.controller.install.presentation.ModuleQueueState;
 import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
 
-public class SetupProgressActivity extends AppCompatActivity {
+public class SetupProgressActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
 
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
@@ -74,6 +74,14 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean moduleStartFailed = false;
     private boolean moduleSeen = false;      // latched once a non-maps proot batch is seen
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
+    // ADFA-4842: a real module batch stops the server (pdsm stop) for its runroles. When the queue is
+    // DONE, the index restarts the server and WAITS here — showing "Starting services…" — until the REST
+    // core answers, then completes/redirects to an already-live Library. Owns a ServerController (Host)
+    // just to issue that start; the server proot is process-scoped so it survives into LibraryActivity.
+    private org.iiab.controller.ServerController serverController;
+    private Boolean targetServerState = null;         // ServerController.Host state
+    private boolean moduleRestartKicked = false;      // handleServerLaunchClick issued once
+    private boolean moduleServerUp = false;           // REST core answered after the restart
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -104,6 +112,12 @@ public class SetupProgressActivity extends AppCompatActivity {
         detailRunBgBtn.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
         detailRunBgBtn.setOnClickListener(v -> finish());
 
+        // ADFA-4842: own a ServerController so the index can restart the server after a module batch
+        // (it was pdsm-stopped for the runroles) and keep ServerStateRepository fresh so the start
+        // toggle can't misfire. The server proot is process-scoped, so it survives into LibraryActivity.
+        serverController = new org.iiab.controller.ServerController(this, this);
+        serverController.start();
+
         // ADFA-4919: observe the maps (proot) queue so its RUNNING -> DONE transition always
         // re-renders the index. The REST streams have service listeners; the proot stage had none,
         // so a proot-only install could finish without the index ever updating to Finish/redirect.
@@ -113,6 +127,7 @@ public class SetupProgressActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (serverController != null) serverController.onResume();   // ADFA-4842: keep ServerState fresh
         if (!showingDetail) {
             ZimDownloadService.setListener(this::render);
             BooksDownloadService.setListener(this::render);
@@ -125,7 +140,9 @@ public class SetupProgressActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         main.removeCallbacks(readyPoll);
+        main.removeCallbacks(serverUpPoll);   // ADFA-4842
         cancelRedirect();
+        if (serverController != null) serverController.onPause();   // ADFA-4842: stop the status poll (not the server)
         if (!showingDetail) {
             ZimDownloadService.setListener(null);
             BooksDownloadService.setListener(null);
@@ -320,7 +337,16 @@ public class SetupProgressActivity extends AppCompatActivity {
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
         boolean allComplete;
         if (noRest && prootShown) {
-            allComplete = prootTerminal && !ModuleQueueRepository.get().isRunning();
+            boolean queueDone = prootTerminal && !ModuleQueueRepository.get().isRunning();
+            if (queueDone && moduleShown) {
+                // ADFA-4842: a module batch stopped the server for its runroles. Don't declare success
+                // (or start the redirect countdown) until we've restarted it and the REST core answers,
+                // so the user lands on a LIVE Library — not a dead home that wakes up seconds later.
+                ensureServerUpForModules();
+                allComplete = moduleServerUp;
+            } else {
+                allComplete = queueDone;   // maps-only: server stayed up, nothing to wait for
+            }
         } else {
             allComplete = drained
                     && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
@@ -340,6 +366,12 @@ public class SetupProgressActivity extends AppCompatActivity {
         tint(dot, servicesReady ? R.color.k2go_leaf : R.color.k2go_amber);
         int statusRes = servicesReady ? R.string.k2go_setup_adding
                 : (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
+        // ADFA-4842: while restarting the server after a module batch, show "starting services" (amber)
+        // instead of "adding", so the wait reads honestly as the system coming back up.
+        if (moduleRestartKicked && !moduleServerUp) {
+            tint(dot, R.color.k2go_amber);
+            statusRes = R.string.k2go_setup_starting;
+        }
         statusText.setText(statusRes);
 
         // Bottom controls.
@@ -596,27 +628,46 @@ public class SetupProgressActivity extends AppCompatActivity {
         main.removeCallbacks(goHomeRunnable);
         redirectScheduled = false;
     }
+    /** ADFA-4842: after a module batch (the server was pdsm-stopped for the runroles), start the server
+     *  once and poll the REST core until it answers. render() gates completion/redirect on
+     *  moduleServerUp, so we only leave for the Library once the system is actually live. */
+    private void ensureServerUpForModules() {
+        if (moduleServerUp || moduleRestartKicked) return;
+        moduleRestartKicked = true;
+        // finishModuleQueue cleared InstallGuard before DONE and the queue is no longer running, so the
+        // start is allowed; the index's own server poll keeps ServerStateRepository fresh so this starts
+        // (never toggles off). The server proot is process-scoped and survives into LibraryActivity.
+        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+        main.postDelayed(serverUpPoll, READY_POLL_MS);
+    }
+
+    private final Runnable serverUpPoll = new Runnable() {
+        @Override public void run() {
+            if (isFinishing() || moduleServerUp) return;
+            AppExecutors.get().io().execute(() -> {
+                final boolean up = RestReadiness.apiReady();
+                main.post(() -> {
+                    if (isFinishing() || moduleServerUp) return;
+                    if (up) { moduleServerUp = true; render(); }   // render() now completes → redirect
+                    else main.postDelayed(serverUpPoll, READY_POLL_MS);
+                });
+            });
+        }
+    };
+
     private void goHome(boolean clearSessions) {
         cancelRedirect();
-        // ADFA-4842: a proot MODULE batch ran 'pdsm stop' before its runroles, so the server is
-        // deterministically DOWN now. Land on a FRESH LibraryActivity (recreate: CLEAR_TOP WITHOUT
-        // SINGLE_TOP, standard launchMode → fresh onCreate) so its normal cold-boot runs — boot gate +
-        // guarded autostart (reliable now, since the server really is down) + wait for the server, then
-        // reveal the live home. Maps and REST-only sessions keep the server up, so they reuse the live
-        // Library (add SINGLE_TOP, no recreate, no boot-gate flash). Evaluated before the clear below so
-        // moduleInSession() can still see the batch.
-        boolean moduleBatch = moduleInSession();
         if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
         ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
 
         // ADFA-4919: the natural end of installing is the Library — go there directly and clear the
         // install screens above it. Both the wizard and Get More launch from LibraryActivity, so
-        // CLEAR_TOP lands on it (dropping Get More + this index). Only success/Finish reach here; "Run in
-        // background" (REST) still finish()es in place.
-        android.content.Intent home = new android.content.Intent(this, LibraryActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (!moduleBatch) home.addFlags(android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(home);
+        // CLEAR_TOP + SINGLE_TOP lands on the existing Library (dropping Get More + this index). Only
+        // success/Finish reach here; "Run in background" (REST) still finish()es in place. ADFA-4842: a
+        // module batch already restarted the server and waited for it here (ensureServerUpForModules), so
+        // the reused Library is live on arrival — no cold-boot recreate needed.
+        startActivity(new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP));
         finish();
     }
 
@@ -649,5 +700,30 @@ public class SetupProgressActivity extends AppCompatActivity {
         ZimDownloadService.setListener(this::render);
         BooksDownloadService.setListener(this::render);
         render();
+    }
+
+    // ---- ServerController.Host (ADFA-4842): minimal — the index only needs to START the server after
+    // a module batch. UI-affordance callbacks are no-ops here (the index has its own status line). ----
+    @Override public void addToLog(String message) { android.util.Log.d("K2Go-SetupProgress", message); }
+    @Override public void startFusionPulse() { }
+    @Override public void startExitPulse() { }
+    @Override public void stopBtnProgress() { }
+    @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
+    @Override public void refreshServerUi() { }
+    @Override public Boolean getTargetServerState() { return targetServerState; }
+    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
+    @Override public boolean isNegotiating() { return false; }
+
+    @Override public void enableSystemProtection() {
+        android.content.Intent i = new android.content.Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
+    }
+
+    @Override public void disableSystemProtection() {
+        android.content.Intent i = new android.content.Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
+        startService(i);
     }
 }
