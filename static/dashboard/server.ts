@@ -1,17 +1,9 @@
 import express from 'express';
 import http from 'http';
-import { Server, Socket } from 'socket.io';
-import path from 'path';
 import helmet from 'helmet';
 
-// Import our modules (event controllers)
-import { handleMapsEvents } from './sockets/maps.socket';
-import { handleKiwixEvents } from './sockets/kiwix.socket';
-import { handleHomeEvents } from './sockets/home.socket';
-import { handleBooksEvents } from './sockets/books.socket';
-
 // ADFA-4838: durable REST job engine. Importing the runner modules registers them with
-// the shared JobManager; the router exposes them over /api.
+// the shared JobManager; the router (routes.ts) exposes them over the REST API.
 import { jobs } from './sockets/jobs';
 import './sockets/kiwix.exec';
 import './sockets/maps.exec';
@@ -20,55 +12,25 @@ import { apiRouter } from './routes';
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
 
-// 🛡️ SECURITY SHIELD (HELMET)
-// ==========================================
+// Security headers. No TLS on the box; nginx fronts us on loopback.
 app.use(helmet({
-    // No https, no SSL, no HSTS.
     hsts: false,
-    // Check websockets works without restrictions
-    contentSecurityPolicy: false
+    contentSecurityPolicy: false,
 }));
 
-// EJS views and static files configuration.
-// ADFA-4839: resolve against the working dir (the dash-node service does `cd /library/dashboard`),
-// not __dirname — once compiled, __dirname is .../dist, but views/ and public/ live at the root.
-app.set('view engine', 'ejs');
-app.set('views', path.join(process.cwd(), 'views'));
-app.use(express.static(path.join(process.cwd(), 'public')));
-
-// ADFA-4838: JSON body parsing + the REST content API.
+// ADFA-4933: this process is now a headless REST core. The legacy web dashboard UI
+// (EJS views + socket.io) was retired — the app talks to us over REST only. Internally
+// the router stays mounted at /api; nginx exposes it on the box under /k2go-api.
 app.use(express.json());
 app.use('/api', apiRouter);
 
-// Main route
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-// Main Socket Connection Handler
-io.on('connection', (socket: Socket) => {
-    console.log(`A client has connected (ID: ${socket.id}).`);
-    
-    // Connect the wires to the modules
-    handleMapsEvents(socket);
-    handleKiwixEvents(socket);
-    handleHomeEvents(socket);
-    handleBooksEvents(socket);
-    
-    socket.on('disconnect', () => {
-        console.log(`Client disconnected (ID: ${socket.id}).`);
-    });
-});
-
 const PORT = 4000;
-// ADFA-4839: bind to loopback only. nginx (localhost) proxies /dashboard, /api and
-// /socket.io to us; there is no reason to expose :4000 on the device's network
-// interfaces (Node's default host would). This closes the network-reachable :4000.
+// ADFA-4839/4933: bind to loopback only. nginx (localhost) proxies /k2go-api to us;
+// there is no reason to expose :4000 on the device's network interfaces.
 server.listen(PORT, '127.0.0.1', () => {
     console.log(`===========================================`);
-    console.log(`K2Go Dashboard active on port ${PORT}`);
+    console.log(`K2Go REST core active on port ${PORT}`);
     console.log(`===========================================`);
     // ADFA-4838: resume any content jobs that were mid-flight before a restart.
     try { jobs.reconcileOnBoot(); } catch (e) { console.error('[jobs] reconcile failed', e); }
@@ -77,30 +39,20 @@ server.listen(PORT, '127.0.0.1', () => {
 // ==========================================
 // Graceful Shutdown
 // ==========================================
-
-// Function to handle the shutdown process
 const gracefulShutdown = (signal: string) => {
     console.log(`\n[System] Received ${signal}. Starting graceful shutdown...`);
 
-    // Stop accepting new connections
     server.close(() => {
         console.log('[System] HTTP server closed. No longer accepting connections.');
-
-        // TODO: Add cleanly stop aria2c or python scripts if they are running
-
         console.log('[System] Cleanup complete. Exiting safely.');
         process.exit(0);
     });
 
-    // If the server takes too long to close (e.g., stuck websockets), force it after 5 seconds
     setTimeout(() => {
         console.error('[System] Could not close connections in time. Forcing shutdown.');
         process.exit(1);
     }, 5000);
 };
 
-// Listen for PDSM pkill
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-
-// Listen for CTRL+C in the terminal
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
