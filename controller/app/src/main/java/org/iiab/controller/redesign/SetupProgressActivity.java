@@ -598,11 +598,13 @@ public class SetupProgressActivity extends AppCompatActivity {
     }
     private void goHome(boolean clearSessions) {
         cancelRedirect();
-        // ADFA-4842: did a proot batch (module management, or maps via Get More) run this session? Its
-        // runroles stop the server, so tell the Library to restart it before landing (see onNewIntent).
-        // Evaluated before the ModuleBatch clear below so moduleInSession() can still see the batch.
-        boolean prootRan = moduleInSession() || mapsInSession()
-                || ModuleQueueRepository.get().current().phase == ModuleQueueState.Phase.DONE;
+        // ADFA-4842: a non-maps proot MODULE batch (kolibri/calibreweb/…) stops services during its
+        // runroles, so the system is down when we leave. Land on a FRESH LibraryActivity (recreate, not
+        // reuse) so its normal cold-boot path runs — boot gate + guarded autostart + wait for the server
+        // — instead of dropping onto a dead home. Maps and REST-only sessions keep the server up, so they
+        // reuse the existing Library (no recreate, no boot-gate flash). Evaluated before the clear below
+        // so moduleInSession() can still see the batch.
+        boolean moduleBatch = moduleInSession();
         if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
         ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
 
@@ -611,9 +613,12 @@ public class SetupProgressActivity extends AppCompatActivity {
         // so CLEAR_TOP lands on the existing Library (dropping Get More + this index). Previously this
         // was a bare finish(), which in the Get More flow fell back to Get More instead of the Library.
         // Only success/Finish reach here; "Run in background" (REST) still just finish()es in place.
-        startActivity(new android.content.Intent(this, LibraryActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .putExtra(LibraryActivity.EXTRA_START_SERVER, prootRan));
+        android.content.Intent home = new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // A module batch recreates Library (CLEAR_TOP alone, standard launchMode → fresh onCreate =
+        // cold-boot). Maps/REST reuse the live instance (add SINGLE_TOP → onNewIntent, no recreate).
+        if (!moduleBatch) home.addFlags(android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(home);
         finish();
     }
 

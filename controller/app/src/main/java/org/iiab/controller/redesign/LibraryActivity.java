@@ -39,9 +39,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     public static final String EXTRA_INSTALLING = "installing";
     /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
     public static final String EXTRA_TAB = "tab";
-    /** ADFA-4842: SetupProgressActivity.goHome sets this after a proot module/maps batch so the Library
-     *  restarts the server the runroles stopped — the way InstallProgress SUCCESS does for the wizard. */
-    public static final String EXTRA_START_SERVER = "start_server";
     private boolean installing = false;
 
     /** ADFA-4799: bottom bar (compact) and rail (medium/expanded) share the NavigationBarView
@@ -64,8 +61,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closing = false;
     private boolean closedDone = false;
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
-    private long handledModuleSeq = 0L;   // ADFA-4842: fire the post-proot server restart once per DONE
-    private boolean prootStartScheduled = false;   // ADFA-4842: dedupe A (observer) + B (onNewIntent)
 
     // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
     private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
@@ -211,20 +206,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 } else {
                     onServerReady(); // FAILED: lift the gate; land on the library (offline)
                 }
-            }
-        });
-
-        // ADFA-4842: a proot module/maps batch (module management, or maps via Get More) completes on
-        // ModuleQueueRepository — NOT InstallProgress — so the SUCCESS handler above never runs for it.
-        // The batch stops the server for its runroles; mirror the restart here so the Library never lands
-        // blocked. Seq-guarded so we react to a genuine DONE in this instance's lifetime, not a stale replay.
-        handledModuleSeq = org.iiab.controller.install.presentation.ModuleQueueRepository.get().current().seq;
-        org.iiab.controller.install.presentation.ModuleQueueRepository.get().state().observe(this, ms -> {
-            if (ms == null) return;
-            if (ms.phase == org.iiab.controller.install.presentation.ModuleQueueState.Phase.DONE
-                    && ms.seq != handledModuleSeq) {
-                handledModuleSeq = ms.seq;
-                maybeStartServerAfterProot();
             }
         });
 
@@ -399,17 +380,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        // ADFA-4842: a proot module/maps batch just finished and CLEAR_TOP'd back here (goHome). The
-        // server was stopped for the runroles; restart it now so the Library lands loading, not blocked.
-        if (intent != null && intent.getBooleanExtra(EXTRA_START_SERVER, false)) {
-            maybeStartServerAfterProot();
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();
@@ -482,24 +452,6 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (!canStartServer()) return;
         targetServerState = Boolean.TRUE;   // make "starting" explicit for the home header
         serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-    }
-
-    /** ADFA-4842: a proot module/maps batch stops the server for its runroles; when it finishes we bring
-     *  the server back so the Library lands loading, not blocked — mirroring the InstallProgress SUCCESS
-     *  path. Kicks an immediate status poll first: the cached "alive" can be stale-true because the poll
-     *  was paused while the install index held the foreground, and handleServerLaunchClick is a toggle
-     *  (a stale-true "alive" would stop it). After the poll reflects the real state, the same guarded
-     *  autostart the fresh-launch path uses (onCreate) starts it if it's really down. Idempotent. */
-    private void maybeStartServerAfterProot() {
-        if (prootStartScheduled) return;   // A (observer) and B (onNewIntent) can both fire on the same batch
-        prootStartScheduled = true;
-        if (serverController != null) serverController.onResume();   // refresh the (possibly stale) server state
-        final Handler h = new Handler(Looper.getMainLooper());
-        h.postDelayed(() -> { prootStartScheduled = false; if (!isFinishing()) startServer(); }, AUTOSTART_DELAY_MS);
-        if (!gateDismissed) {
-            // Behind the boot gate: keep it up until the server answers, with the usual safety timeout.
-            h.postDelayed(() -> { if (!gateDismissed) onServerReady(); }, GATE_SAFETY_MS);
-        }
     }
 
     /** Settings "Turn off K2Go": full-screen closing scene + graceful teardown, then leave. */
