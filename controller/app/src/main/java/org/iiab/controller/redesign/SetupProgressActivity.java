@@ -68,6 +68,11 @@ public class SetupProgressActivity extends AppCompatActivity {
     private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
     private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
     private boolean mapsSeen = false;        // ADFA-4919: latched once the proot (maps) stage is seen
+    // ADFA-4842: module management (non-maps proot modules) — same shape as the maps stage tracking.
+    private boolean moduleLaunched = false;
+    private long moduleLaunchedAt = 0L;
+    private boolean moduleStartFailed = false;
+    private boolean moduleSeen = false;      // latched once a non-maps proot batch is seen
     private int readyPolls = 0;   // ADFA-4874: failed readiness polls so far (slow-start message)
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
@@ -151,7 +156,10 @@ public class SetupProgressActivity extends AppCompatActivity {
     private boolean prootActive() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean mapsTerminal = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
-        return mapsInSession() && !mapsTerminal;
+        boolean moduleTerminal = moduleStartFailed || (moduleInSession() && mq.phase == ModuleQueueState.Phase.DONE);
+        boolean mapsActive = mapsInSession() && !mapsTerminal;
+        boolean moduleActive = moduleInSession() && !moduleTerminal;
+        return mapsActive || moduleActive;
     }
 
     /** ADFA-4919: is the proot (maps) stage part of THIS install session? Latched from the DURABLE
@@ -160,12 +168,30 @@ public class SetupProgressActivity extends AppCompatActivity {
      *  background", and reaches completion, even though it never called drain() itself. (The queue
      *  runs proot modules one at a time; today that is only maps.) */
     private boolean mapsInSession() {
+        // ADFA-4842: maps-SPECIFIC now (was any running queue). A non-maps module batch must not
+        // render as the "Maps" stage, so latch only on the maps provisioner/launch or a running
+        // queue whose current module is maps.
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
         if (mapsLaunched || mapsStartFailed
                 || MapsProvisioner.hasPending(this)
-                || ModuleQueueRepository.get().isRunning()) {
+                || (ModuleQueueRepository.get().isRunning() && "maps".equals(mq.currentModule))) {
             mapsSeen = true;
         }
         return mapsSeen;
+    }
+
+    /** ADFA-4842: is a non-maps proot module batch part of THIS session? Latched from the durable
+     *  batch (ModuleBatch) + provisioner + a running queue on a non-maps module, so a reopened index
+     *  still renders the module rows and reaches completion. */
+    private boolean moduleInSession() {
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        if (moduleLaunched || moduleStartFailed
+                || ModuleProvisioner.hasPending(this)
+                || ModuleBatch.has(this)
+                || (ModuleQueueRepository.get().isRunning() && mq.currentModule != null && !"maps".equals(mq.currentModule))) {
+            moduleSeen = true;
+        }
+        return moduleSeen;
     }
 
     // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
@@ -216,16 +242,26 @@ public class SetupProgressActivity extends AppCompatActivity {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean queueRunning = ModuleQueueRepository.get().isRunning();
 
-        // Stage 1 — maps (proot), exclusive of all REST work (proot tasks run serially via the queue).
+        // Stage 1 — proot (maps and/or module management), exclusive of all REST work (proot tasks
+        // run serially via the queue). Maps (Get More) and modules (module management) are separate
+        // entry points, so at most one has a pending batch in a given session.
         if (MapsProvisioner.hasPending(this)) {
             if (!queueRunning) { MapsProvisioner.drain(this); mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime(); }
             return true;
         }
-        if (queueRunning) return true;                                      // maps runrole in flight
+        if (ModuleProvisioner.hasPending(this)) {   // ADFA-4842: module management batch
+            if (!queueRunning) { ModuleProvisioner.drain(this); moduleLaunched = true; moduleLaunchedAt = SystemClock.elapsedRealtime(); }
+            return true;
+        }
+        if (queueRunning) return true;                                      // a runrole in flight
         if (mapsLaunched && !mapsStartFailed && mq.phase != ModuleQueueState.Phase.DONE) {
             // Launched but the queue hasn't reported RUNNING/DONE yet. Wait, but fail closed if it
             // never starts (ADFA-4900/#1) so the pipeline can't hang on a stage that never began.
             if (SystemClock.elapsedRealtime() - mapsLaunchedAt > MAPS_START_TIMEOUT_MS) mapsStartFailed = true;
+            else return true;
+        }
+        if (moduleLaunched && !moduleStartFailed && mq.phase != ModuleQueueState.Phase.DONE) {
+            if (SystemClock.elapsedRealtime() - moduleLaunchedAt > MAPS_START_TIMEOUT_MS) moduleStartFailed = true;
             else return true;
         }
 
@@ -248,12 +284,15 @@ public class SetupProgressActivity extends AppCompatActivity {
         if (sections == null || showingDetail) return;
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
+        boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
         boolean zimShown = ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0;
         boolean booksShown = BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0;
 
         sections.removeAllViews();
         // ADFA-4900: maps (proot) runs first in the pipeline, so its row leads the list.
         if (mapsShown) sections.addView(mapsRow());
+        // ADFA-4842: one row per module in the batch (proot), each tappable to its install detail.
+        if (moduleShown) for (String k : ModuleBatch.keys(this)) sections.addView(moduleRow(k));
         if (zimShown) sections.addView(streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
                 ZimDownloadService.hasSession(), ZimDownloadService.status(),
                 ZimDownloadService.DONE, ZimDownloadService.FAILED,
@@ -271,25 +310,30 @@ public class SetupProgressActivity extends AppCompatActivity {
         // path keeps its existing drain-based signal untouched.
         boolean noRest = !ZimDownloadService.hasSession() && !BooksDownloadService.hasSession()
                 && ZimWishlist.size(this) == 0 && BooksWishlist.size(this) == 0;
-        boolean mapsTerminal = mapsStartFailed
-                || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
+        // ADFA-4842: proot = maps OR a module batch. A proot-only run finishes when the queue is
+        // terminal, without waiting on any REST drain.
+        boolean prootShown = mapsShown || moduleShown;
+        boolean prootTerminal = mapsStartFailed || moduleStartFailed
+                || (prootShown && mq.phase == ModuleQueueState.Phase.DONE);
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = prootActive();
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
         boolean allComplete;
-        if (noRest && mapsShown) {
-            allComplete = mapsTerminal && !ModuleQueueRepository.get().isRunning();
+        if (noRest && prootShown) {
+            allComplete = prootTerminal && !ModuleQueueRepository.get().isRunning();
         } else {
             allComplete = drained
                     && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
                     && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete());
         }
-        // ADFA-4900: a failed maps runrole must count as a failure too (Finish, not a false success).
-        boolean mapsFailed = mapsStartFailed
-                || (mq.phase == ModuleQueueState.Phase.DONE && mq.failedModules.contains("maps"));
+        // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
+        // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
+        int prootFailed = (mq.phase == ModuleQueueState.Phase.DONE)
+                ? (mq.failedModules == null ? 0 : mq.failedModules.size())
+                : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
                 + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
-                + (mapsFailed ? 1 : 0);
+                + prootFailed;
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
         // message instead of "Starting services" so it doesn't look frozen (ADFA-4874).
@@ -444,6 +488,76 @@ public class SetupProgressActivity extends AppCompatActivity {
         return row;
     }
 
+    /** ADFA-4842: one module's row in the batch. State is derived from the durable batch order plus
+     *  the queue: earlier-than-current = done, current = installing, later = queued; failed modules
+     *  come from failedModules; on queue DONE every non-failed module is done. Tappable once started;
+     *  opens the shared module install detail (its live Ansible terminal). */
+    private View moduleRow(String key) {
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        ModuleCards.Card c = ModuleCards.byKey(key);
+        String name = c != null ? getString(c.titleRes) : key;
+
+        boolean failed = (mq.failedModules != null && mq.failedModules.contains(key)) || moduleStartFailed;
+        boolean queueDone = mq.phase == ModuleQueueState.Phase.DONE;
+        boolean running = !queueDone && !failed && key.equals(mq.currentModule)
+                && mq.phase == ModuleQueueState.Phase.RUNNING;
+        String[] batch = ModuleBatch.keys(this);
+        int me = indexOf(batch, key), cur = indexOf(batch, mq.currentModule);
+        boolean done = !failed && (queueDone || (me >= 0 && cur >= 0 && me < cur));
+        boolean started = running || done || failed;
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout slot = new LinearLayout(this);
+        slot.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams slotLp = new LinearLayout.LayoutParams(px(24), px(24));
+        slotLp.rightMargin = px(10);
+        slot.addView(indicator(started, done || failed, failed ? 1 : 0));
+        row.addView(slot, slotLp);
+
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextView h = new TextView(this);
+        h.setText(name);
+        h.setTypeface(h.getTypeface(), android.graphics.Typeface.BOLD);
+        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
+        h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        col.addView(h);
+        TextView sub = new TextView(this);
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        String state;
+        if (failed) state = getString(R.string.k2go_mod_phase_failed);
+        else if (done) state = getString(R.string.k2go_setup_state_done);
+        else if (running) state = getString(R.string.k2go_mod_phase_installing);
+        else state = getString(R.string.k2go_mod_phase_queued);
+        sub.setText(state);
+        sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        ImageView chev = new ImageView(this);
+        chev.setImageResource(R.drawable.ic_chevron_right);
+        chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
+        chev.setVisibility(started ? View.VISIBLE : View.INVISIBLE);
+        row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
+        if (started) row.setOnClickListener(v -> openDetail("mod:" + key));
+        return row;
+    }
+
+    private static int indexOf(String[] arr, String v) {
+        if (arr == null || v == null) return -1;
+        for (int i = 0; i < arr.length; i++) if (v.equals(arr[i])) return i;
+        return -1;
+    }
+
     private View indicator(boolean sess, boolean complete, int failed) {
         if (!sess) {                                   // waiting for services / drain
             View d = new View(this);
@@ -484,14 +598,27 @@ public class SetupProgressActivity extends AppCompatActivity {
     }
     private void goHome(boolean clearSessions) {
         cancelRedirect();
+        // ADFA-4842: a non-maps proot MODULE batch (kolibri/calibreweb/…) stops services during its
+        // runroles, so the system is down when we leave. Land on a FRESH LibraryActivity (recreate, not
+        // reuse) so its normal cold-boot path runs — boot gate + guarded autostart + wait for the server
+        // — instead of dropping onto a dead home. Maps and REST-only sessions keep the server up, so they
+        // reuse the existing Library (no recreate, no boot-gate flash). Evaluated before the clear below
+        // so moduleInSession() can still see the batch.
+        boolean moduleBatch = moduleInSession();
         if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
+        ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
+
         // ADFA-4919: the natural end of installing content is the Library — go there directly and
         // clear the install screens above it. Both the wizard and Get More launch from LibraryActivity,
         // so CLEAR_TOP lands on the existing Library (dropping Get More + this index). Previously this
         // was a bare finish(), which in the Get More flow fell back to Get More instead of the Library.
         // Only success/Finish reach here; "Run in background" (REST) still just finish()es in place.
-        startActivity(new android.content.Intent(this, LibraryActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        android.content.Intent home = new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        // A module batch recreates Library (CLEAR_TOP alone, standard launchMode → fresh onCreate =
+        // cold-boot). Maps/REST reuse the live instance (add SINGLE_TOP → onNewIntent, no recreate).
+        if (!moduleBatch) home.addFlags(android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(home);
         finish();
     }
 
@@ -499,11 +626,13 @@ public class SetupProgressActivity extends AppCompatActivity {
     private void openDetail(String key) {
         showingDetail = true;
         androidx.fragment.app.Fragment f;
-        if ("zim".equals(key)) f = ZimPreparingFragment.newInstance(true);
-        else if ("maps".equals(key)) f = MapsPreparingFragment.newInstance(true);   // ADFA-4901: observe-only
-        else f = BooksDownloadsFragment.newInstance(true);
-        // ADFA-4919: the proot (maps) detail cannot background either — only Back (to the index).
-        if (detailRunBgBtn != null) detailRunBgBtn.setVisibility("maps".equals(key) ? View.GONE : View.VISIBLE);
+        boolean proot;
+        if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); proot = true; }  // ADFA-4842
+        else if ("zim".equals(key)) { f = ZimPreparingFragment.newInstance(true); proot = false; }
+        else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); proot = true; }   // ADFA-4901: observe-only
+        else { f = BooksDownloadsFragment.newInstance(true); proot = false; }
+        // ADFA-4919/4842: a proot detail (maps or module) cannot background either — only Back (to the index).
+        if (detailRunBgBtn != null) detailRunBgBtn.setVisibility(proot ? View.GONE : View.VISIBLE);
         getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commit();
         indexScroll.setVisibility(View.GONE);
         detailRoot.setVisibility(View.VISIBLE);

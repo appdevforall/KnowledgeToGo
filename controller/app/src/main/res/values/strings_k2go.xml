@@ -109,7 +109,44 @@
     <string name="k2go_settings_power_users">For power users.</string>
     <string name="k2go_settings_sec_system">SYSTEM</string>
     <string name="k2go_settings_module_mgmt">Module management</string>
-    <string name="k2go_settings_module_mgmt_sub">Tier, add modules, hide</string>
+    <string name="k2go_settings_module_mgmt_sub">Add apps to your library</string>
+
+    <!-- ADFA-4842: Module management (proot module installs, Play Store-style cards). -->
+    <string name="k2go_mod_hub_title" translatable="false">Add modules</string>
+    <string name="k2go_mod_hub_sub" translatable="false">Apps you can install on your library. Runs on the device — no internet needed.</string>
+    <string name="k2go_mod_hub_prompt" translatable="false">What would you like to install?</string>
+    <string name="k2go_mod_none" translatable="false">Everything available is already installed.</string>
+    <string name="k2go_mod_proceed_fmt" translatable="false">Install %1$d selected</string>
+    <string name="k2go_mod_schedule" translatable="false">Schedule install</string>
+    <string name="k2go_mod_unschedule" translatable="false">Remove from install</string>
+    <string name="k2go_mod_scheduled" translatable="false">Scheduled</string>
+    <string name="k2go_mod_install_now" translatable="false">Install now</string>
+    <string name="k2go_mod_back" translatable="false">Modules</string>
+    <!-- install/status detail (shared per-module screen) -->
+    <string name="k2go_mod_install_sub" translatable="false">This can take a while. You can leave this screen; it keeps going.</string>
+    <string name="k2go_mod_phase_queued" translatable="false">Waiting…</string>
+    <string name="k2go_mod_phase_installing" translatable="false">Installing…</string>
+    <string name="k2go_mod_phase_done" translatable="false">Installed</string>
+    <string name="k2go_mod_phase_failed" translatable="false">Couldn\'t install</string>
+    <string name="k2go_mod_leave_title" translatable="false">This takes time</string>
+    <string name="k2go_mod_leave_body" translatable="false">Installing a module changes the system and can take a while. It continues even if you leave this screen.</string>
+    <!-- per-module cards: title · subtitle · description -->
+    <string name="k2go_mod_kolibri_title" translatable="false">Course manager</string>
+    <string name="k2go_mod_kolibri_sub" translatable="false">Kolibri</string>
+    <string name="k2go_mod_kolibri_desc" translatable="false">An offline learning platform. Browse and study curated courses, lessons, and exercises on the device — no internet needed once installed.</string>
+    <string name="k2go_mod_calibreweb_title" translatable="false">Books reader</string>
+    <string name="k2go_mod_calibreweb_sub" translatable="false">Calibre-Web</string>
+    <string name="k2go_mod_calibreweb_desc" translatable="false">Read and manage your ebook library in the browser. Organize, search, and read your books offline. Add books from Get More.</string>
+    <string name="k2go_mod_kiwix_title" translatable="false">Content reader</string>
+    <string name="k2go_mod_kiwix_detail_title" translatable="false">Content reader (ZIM files)</string>
+    <string name="k2go_mod_kiwix_sub" translatable="false">Kiwix</string>
+    <string name="k2go_mod_kiwix_desc" translatable="false">Reads offline ZIM archives such as Wikipedia and other reference collections. This installs the reader app; add the actual content from Get More.</string>
+    <string name="k2go_mod_code_title" translatable="false">Code on the Go</string>
+    <string name="k2go_mod_code_sub" translatable="false">AppDevForAll</string>
+    <string name="k2go_mod_code_desc" translatable="false">An offline-first Android IDE. Write, build, and debug Android apps directly on the device.</string>
+    <string name="k2go_mod_matomo_title" translatable="false">Analytics</string>
+    <string name="k2go_mod_matomo_sub" translatable="false">Matomo</string>
+    <string name="k2go_mod_matomo_desc" translatable="false">Private, self-hosted usage analytics for your library. Understand how content is used, all on the device.</string>
     <string name="k2go_settings_backups">Backups &amp; recovery</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
