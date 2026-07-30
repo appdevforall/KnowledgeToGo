@@ -120,4 +120,55 @@ public final class FeedbackFab {
                 .putFloat(KEY_Y, clamp(fab.getY() / availY, 0, 1))
                 .apply();
     }
+
+    /** ADFA-4932: add the draggable feedback FAB to any activity's content root (no per-layout
+     *  edit) and wire tap -> screenshot -> email. Reusable across the redesign screens. Idempotent. */
+    public static void installOn(android.app.Activity activity, String screenTag) {
+        android.view.ViewGroup root = activity.findViewById(android.R.id.content);
+        if (root == null || root.findViewById(org.iiab.controller.R.id.fab_feedback) != null) {
+            return;
+        }
+        FloatingActionButton fab = new FloatingActionButton(activity);
+        fab.setId(org.iiab.controller.R.id.fab_feedback);
+        fab.setImageResource(org.iiab.controller.R.drawable.ic_feedback_24);
+        fab.setContentDescription(activity.getString(org.iiab.controller.R.string.feedback_send));
+        fab.setUseCompatPadding(true);
+        float d = activity.getResources().getDisplayMetrics().density;
+        int m = Math.round(16 * d);
+        android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.Gravity.BOTTOM | android.view.Gravity.END);
+        lp.setMargins(m, m, m, Math.round(88 * d));   // clear the bottom nav
+        root.addView(fab, lp);
+        attach(fab, () -> sendFeedback(activity, screenTag));
+    }
+
+    /** ADFA-4538/4932: capture a screenshot, build the diagnostics payload, and hand it to the
+     *  configured transport (mailto -> mail chooser). Shared by MainActivity and the redesign. */
+    public static void sendFeedback(android.app.Activity activity, String screen) {
+        org.iiab.controller.feedback.data.FeedbackScreenshot.capture(activity, path -> {
+            org.iiab.controller.feedback.domain.FeedbackPayload payload =
+                    org.iiab.controller.feedback.domain.FeedbackPayload
+                            .builder(org.iiab.controller.feedback.domain.FeedbackType.GENERAL)
+                            .appVersion(org.iiab.controller.feedback.data.FeedbackDiagnostics.appVersionName(activity))
+                            .appBuild(org.iiab.controller.feedback.data.FeedbackDiagnostics.appVersionCode(activity))
+                            .androidRelease(android.os.Build.VERSION.RELEASE)
+                            .device(android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL)
+                            .abi(new org.iiab.controller.deviceinfo.domain.GetDeviceArchUseCase(
+                                    new org.iiab.controller.deviceinfo.data.BuildDeviceAbiProvider()).execute())
+                            .binariesTag(org.iiab.controller.feedback.data.FeedbackDiagnostics.binariesTag(activity))
+                            .screen(screen)
+                            .screenshot(path)
+                            .build();
+            boolean ok = org.iiab.controller.feedback.data.FeedbackConfig.create(activity)
+                    .send(activity, payload);
+            if (ok) {
+                org.iiab.controller.analytics.AnalyticsClient.with(activity).logFeedbackSent();
+            } else {
+                android.widget.Toast.makeText(activity, org.iiab.controller.R.string.feedback_no_email_app,
+                        android.widget.Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 }

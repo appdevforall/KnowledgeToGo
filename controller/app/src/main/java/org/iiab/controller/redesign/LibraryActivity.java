@@ -81,6 +81,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
 
         setContentView(R.layout.activity_library);
+        // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
+        org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "library");
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
