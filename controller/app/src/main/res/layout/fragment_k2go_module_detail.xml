@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4842: Module detail (Play Store style). A 16:9 placeholder image, title + subtitle, and a
+     description of what the module is. Primary "Schedule install" banks it and returns to the hub;
+     secondary "Install now" schedules it and proceeds to the install index immediately. No content
+     selector (that's maps-only, later) — the description replaces it. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="24dp">
+
+            <TextView
+                android:id="@+id/k2go_moddet_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_teal" />
+
+            <ImageView
+                android:id="@+id/k2go_moddet_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/k2go_module_placeholder"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/k2go_moddet_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:textColor="@color/k2go_ink" />
+
+            <TextView
+                android:id="@+id/k2go_moddet_sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_muted" />
+
+            <TextView
+                android:id="@+id/k2go_moddet_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:lineSpacingMultiplier="1.2"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/k2go_ink" />
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/k2go_moddet_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"
+        android:backgroundTint="@color/k2go_teal" />
+
+    <Button
+        android:id="@+id/k2go_moddet_install_now"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/k2go_mod_install_now"
+        android:textColor="@color/k2go_teal"
+        android:textAllCaps="false"
+        android:background="@drawable/k2go_getmore_bg" />
+</LinearLayout>

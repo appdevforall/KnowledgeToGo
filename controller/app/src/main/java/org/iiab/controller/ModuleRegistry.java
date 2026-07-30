@@ -37,11 +37,10 @@ public class ModuleRegistry {
             new IiabModule("kiwix", R.string.dash_kiwix, true, "kiwix"),       // YAML uses kiwix_install. TRUE = Hidden on 32-bit!
             new IiabModule("kolibri", R.string.dash_kolibri, false, "kolibri"), // YAML uses kolibri_install
             new IiabModule("maps", R.string.dash_maps, false, "maps"),         // YAML uses maps_install
-            new IiabModule("matomo", R.string.dash_matomo, false, "matomo"),   // YAML uses matomo_install
-
-            // Dashboard isn't formally as a role yet, but we define the key anyway
-            // so the system doesn't break if it gets added in the future.
-            new IiabModule("dashboard", R.string.dash_system, false, "dashboard")
+            new IiabModule("matomo", R.string.dash_matomo, false, "matomo")   // YAML uses matomo_install
+            // ADFA-4842: "dashboard" is intentionally NOT in the roster. It is no longer an
+            // application/module — it became the REST API core of K2Go; without it maps FQR and all
+            // REST content downloads fail. It is part of the core system, not a user-installable module.
     );
 
     /**

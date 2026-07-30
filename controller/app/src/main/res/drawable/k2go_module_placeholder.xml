@@ -1,0 +1,17 @@
+<!-- ADFA-4842: generic 16:9 placeholder for module cards (no product art yet), online-store style.
+     A soft rounded panel with a neutral 2x2 "apps" glyph centered. Theme-aware via k2go colors. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="160"
+    android:viewportHeight="90">
+
+    <path
+        android:pathData="M10,0 L150,0 Q160,0 160,10 L160,80 Q160,90 150,90 L10,90 Q0,90 0,80 L0,10 Q0,0 10,0 Z"
+        android:fillColor="@color/k2go_hairline" />
+
+    <path android:pathData="M61,29 h16 v16 h-16 z" android:fillColor="@color/k2go_muted" />
+    <path android:pathData="M83,29 h16 v16 h-16 z" android:fillColor="@color/k2go_muted" />
+    <path android:pathData="M61,51 h16 v16 h-16 z" android:fillColor="@color/k2go_muted" />
+    <path android:pathData="M83,51 h16 v16 h-16 z" android:fillColor="@color/k2go_teal" />
+</vector>

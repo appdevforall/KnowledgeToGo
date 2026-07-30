@@ -196,7 +196,12 @@ public class SettingsSubFragment extends Fragment {
     private void buildAdvanced(Context ctx, LinearLayout list) {
         SettingsUi.caption(ctx, list, getString(R.string.k2go_settings_power_users));
         SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_system));
-        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_module_mgmt), getString(R.string.k2go_settings_module_mgmt_sub));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_module_mgmt), getString(R.string.k2go_settings_module_mgmt_sub), null, v -> {
+            // ADFA-4842: entry-point-agnostic launch of the module hub (also reachable from Get More).
+            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
+            i.putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true);
+            ctx.startActivity(i);
+        });
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_backups), null);
         SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_developer));
         SettingsUi.preview(ctx, list, "ADB", null);

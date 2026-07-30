@@ -23,6 +23,9 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** Launch extra: skip Step 1 (system) and open Step 2 (content) directly, for when a
      *  system is already installed so adding content never overwrites it. */
     public static final String EXTRA_CONTENT_ONLY = "contentOnly";
+    /** ADFA-4842: open Module management (the proot-module hub) directly. Entry-point-agnostic:
+     *  Settings → Advanced and (later) Get More both launch this same activity with this extra. */
+    public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     // Shared Wikipedia selection so picks survive the A/B flip.
@@ -57,9 +60,13 @@ public class SetupLibraryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
         if (savedInstanceState == null) {
+            boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
             androidx.fragment.app.Fragment first;
-            if (contentOnly) {
+            if (moduleMgmt) {
+                selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
+                first = new ModuleHubFragment();
+            } else if (contentOnly) {
                 selectedTier = readInstalledTier();   // size content against the installed tier
                 first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
             } else {
@@ -335,6 +342,21 @@ public class SetupLibraryActivity extends AppCompatActivity {
         String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
         boolean search = levels != null && levels.length > 3 && levels[3] != null;
         MapsWishlist.save(this, base, sat, ter, search, totalMb);
+        startActivity(new Intent(this, SetupProgressActivity.class));
+    }
+
+    /** ADFA-4842: open a module's detail (Play Store card) from the hub or a deep-link. */
+    public void openModuleDetail(String yamlBaseKey) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, ModuleDetailFragment.newInstance(yamlBaseKey))
+                .addToBackStack("module_detail")
+                .commit();
+    }
+
+    /** ADFA-4842: proceed to the install index for the scheduled modules. The modules are already
+     *  banked in ModuleWishlist; the index drains them through the proot queue (ModuleProvisioner),
+     *  same mechanism as maps. */
+    public void openModuleIndex() {
         startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
