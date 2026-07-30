@@ -393,6 +393,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             int tab = intent.getIntExtra(EXTRA_TAB, -1);
             if (tab != -1) { currentTab = tab; showTab(tab); syncSelection(tab); }
         }
+        // ADFA-4842: Home is a MONITOR, not an actuator — it does NOT start the server here. The server
+        // is started by the actuators: app launch (onCreate boot flow) and the install index at the end
+        // of a module batch. Home only observes ServerStateRepository and reflects it.
     }
 
     @Override

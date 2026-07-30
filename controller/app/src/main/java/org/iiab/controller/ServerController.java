@@ -262,6 +262,60 @@ public class ServerController {
     /** ADFA-4837: true while a graceful stop is in flight; a start must not stack over it. */
     public boolean isStopping() { return stopping; }
 
+    /**
+     * ADFA-4842: UNCONDITIONAL, deterministic boot of the Debian/proot environment (pdsm start).
+     *
+     * <p><b>Why this exists — DO NOT replace calls to it with the toggle {@link #handleServerLaunchClick}.</b>
+     * A proot MODULE install runs each runrole in its own proot with {@code --kill-on-exit}: the role does a
+     * clean start → its tasks → clean stop, and when the runrole's proot exits it also kills any service it
+     * (re)started. So right after a runrole finishes, the environment is DOWN — that is the intended, clean
+     * per-module cycle (start → work → stop), especially when several modules install in series. Only after
+     * the LAST module do we bring the environment back up, and that job belongs to the install index.
+     *
+     * <p>The catch: the app's cached {@link ServerStateRepository} {@code alive} can still read TRUE for a
+     * moment (the 3s poll hasn't seen the runrole proot exit yet). {@code handleServerLaunchClick} is a
+     * TOGGLE — starts if {@code !alive}, STOPS if {@code alive} — so on that stale TRUE it would STOP instead
+     * of start. That is exactly the bug we chased: the index logged "Stopping IIAB environment gracefully"
+     * right after DONE and landed on a dead Home. The index KNOWS the environment must come up now, so it
+     * starts UNCONDITIONALLY here — never via the toggle.
+     *
+     * <p>REST content installs are a different world: they run on the LIVE server (it never goes down), so
+     * none of this applies there. This method is only for the post-module boot driven by the index.
+     */
+    public void startEnvironment() {
+        if (stopping) return;   // a graceful stop is still tearing its proot down — don't stack a second
+        File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        host.addToLog(activity.getString(R.string.log_server_booting_native));
+        activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
+        createFakeSysData(rootfsDir);
+        if (serverEngine != null) serverEngine.killProcess();
+        serverEngine = new PRootEngine();
+        String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
+        serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
+            @Override
+            public void onOutputLine(String line) {
+                activity.runOnUiThread(() -> host.addToLog("[Server] " + line));
+                java.util.regex.Matcher m = PDSM_SVC.matcher(line);
+                if (m.find()) {
+                    final String svc = m.group(1);
+                    activity.runOnUiThread(() -> host.onStartupProgress(svc));
+                }
+            }
+            @Override
+            public void onProcessExit(int exitCode) {
+                activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_engine_shutdown, exitCode)));
+            }
+            @Override
+            public void onError(String error) {
+                activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_error, error)));
+            }
+        });
+        prefs.setWatchdogEnable(true);
+        host.enableSystemProtection();
+        host.addToLog(activity.getString(R.string.watchdog_started));
+        host.startFusionPulse();
+    }
+
     public void handleServerLaunchClick(View v) {
         // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
@@ -294,44 +348,10 @@ public class ServerController {
                 activity.runOnUiThread(host::stopBtnProgress);
                 return;
             }
-            host.addToLog(activity.getString(R.string.log_server_booting_native));
-            activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
-            createFakeSysData(rootfsDir);
-
-            if (serverEngine != null) {
-                serverEngine.killProcess();
-            }
-            serverEngine = new PRootEngine();
-
-            String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
-
-            serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
-                @Override
-                public void onOutputLine(String line) {
-                    activity.runOnUiThread(() -> host.addToLog("[Server] " + line));
-                    // ADFA-4837: surface which service is starting to the boot screen (symmetric to stop).
-                    java.util.regex.Matcher m = PDSM_SVC.matcher(line);
-                    if (m.find()) {
-                        final String svc = m.group(1);
-                        activity.runOnUiThread(() -> host.onStartupProgress(svc));
-                    }
-                }
-
-                @Override
-                public void onProcessExit(int exitCode) {
-                    activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_engine_shutdown, exitCode)));
-                }
-
-                @Override
-                public void onError(String error) {
-                    activity.runOnUiThread(() -> host.addToLog(activity.getString(R.string.log_server_error, error)));
-                }
-            });
-            // --- Watchdog injection / foreground service --- //
-            prefs.setWatchdogEnable(true);
-            host.enableSystemProtection();
-            host.addToLog(activity.getString(R.string.watchdog_started));
-            host.startFusionPulse();
+            // ADFA-4842: the actual boot is the shared, unconditional startEnvironment() (also used by the
+            // install index after the last module). Here it runs only in the !alive branch, so the UI button
+            // keeps its start/stop TOGGLE semantics.
+            startEnvironment();
 
             // Fallback for Oppo/Xiaomi: Notify user if server fails to start
             new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
