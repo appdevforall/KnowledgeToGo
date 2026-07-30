@@ -75,9 +75,10 @@
         android:orientation="vertical"
         android:paddingLeft="28dp"
         android:paddingRight="28dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="56dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="24dp"
         android:elevation="13dp"
+        android:background="@color/k2go_boot_bg"
         android:visibility="gone">
 
         <TextView
@@ -85,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_boot_ink" />
 
         <ProgressBar
@@ -104,9 +105,10 @@
             android:id="@+id/k2go_install_percent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textStyle="bold"
             android:textColor="@color/k2go_boot_ink"
             android:visibility="gone" />
 
