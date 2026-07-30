@@ -635,7 +635,30 @@ public final class InstallService extends Service {
     // ------------------------------------------------------------ module queue
 
     private void runModuleQueue() {
-        installNextModule();
+        // ADFA-4842: a real module runrole (kolibri/calibreweb/…) modifies system packages/config and
+        // restarts services, so it must own the rootfs exclusively — stop the server's SERVICES first
+        // (pdsm stop) so it never runs alongside a live server writing the same DBs/config (the
+        // data-corruption risk). The install index restarts the server after the queue and only then
+        // redirects to a live Library. Maps is the exception: it coexists with a live server (adds
+        // tiles, doesn't touch the REST core), so a maps-only batch skips the stop entirely — no
+        // needless server bounce for the wizard/Get-More maps flow.
+        if (cancelled) return;
+        boolean anyRealModule = false;
+        for (String m : moduleQueue) if (!"maps".equals(m)) { anyRealModule = true; break; }
+        if (!anyRealModule) { installNextModule(); return; }
+        updateNotification(getString(R.string.server_shutting_down));
+        log("[Modules] Stopping server services before runroles (exclusive rootfs)...");
+        if (prootEngine == null) prootEngine = new PRootEngine();
+        prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(),
+                "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'",
+                new PRootEngine.OutputListener() {
+                    @Override public void onOutputLine(String line) { log("[Modules] pdsm stop: " + line); }
+                    @Override public void onProcessExit(int exitCode) { installNextModule(); }
+                    @Override public void onError(String error) {
+                        log("[Modules] pdsm stop error (continuing): " + error);
+                        installNextModule();
+                    }
+                });
     }
 
     /**
@@ -764,6 +787,10 @@ public final class InstallService extends Service {
         if (finished) return;
         finished = true;
         persistClearQueue();
+        // ADFA-4842: clear the durable install guard BEFORE publishing DONE so the LibraryActivity
+        // observer that restarts the server (canStartServer() requires !InstallGuard.inProgress) is not
+        // raced by teardown()'s later clear. teardown() clears it again (idempotent).
+        org.iiab.controller.InstallGuard.end(this);
         ModuleQueueRepository.get().postDone(new java.util.ArrayList<>(failedModules));
         teardown();
     }
