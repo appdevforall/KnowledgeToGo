@@ -56,6 +56,8 @@ public class SetupLibraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
+        // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
+        org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
         if (savedInstanceState == null) {
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
             androidx.fragment.app.Fragment first;

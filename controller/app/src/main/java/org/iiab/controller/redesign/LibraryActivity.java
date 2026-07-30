@@ -297,6 +297,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
         gateDismissed = true;
         hideInstallProgress();
+        // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
+        // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
+        org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
         if (reduceMotion()) { bootGate.setVisibility(View.GONE); return; }
         bootGate.removeAllAnimatorListeners();
         bootGate.setRepeatCount(0);

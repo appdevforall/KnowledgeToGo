@@ -55,6 +55,8 @@ public class WizardActivity extends AppCompatActivity {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_k2go_wizard);
+        // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
+        org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "wizard");
         // ADFA-4797: survive the locale-change recreate — keep the step and re-read the
         // applied language, so we don't flash back to the welcome step.
         langTag = AppLocaleController.currentTag();
