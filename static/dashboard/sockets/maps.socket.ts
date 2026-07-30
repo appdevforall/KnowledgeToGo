@@ -1,5 +1,3 @@
-import { Socket } from 'socket.io';
-import { spawn, ChildProcess } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
@@ -211,84 +209,5 @@ function buildArgs(v: ValidatedCommand): string[] {
     if (v.noninteractive) args.push('noninteractive');
     return args;
 }
-
-export const handleMapsEvents = (socket: Socket) => {
-    let scriptProcess: ChildProcess | null = null;
-
-    socket.on('request_maps_catalog', () => {
-        setTimeout(() => {
-            socket.emit('maps_catalog_ready', getMapsCatalog());
-        }, 800);
-    });
-
-    socket.on('start_command', (config: { rawCommand: string }) => {
-        if (scriptProcess) {
-            socket.emit('terminal_output', '\n[System] A process is already running.\n');
-            return;
-        }
-
-        const validation = validateSecureCommand(config.rawCommand);
-        if (validation.error) {
-            socket.emit('terminal_output', `\n[System] SECURITY ERROR: ${validation.error}\n`);
-            return;
-        }
-
-        const args = buildArgs(validation);
-        const label = validation.type === 'update-json' ? 'update-json' : `${validation.type} ${validation.region}`;
-        socket.emit('terminal_output', `[System] Valid command. Starting action [${label}]...\n`);
-
-        scriptProcess = spawn('sudo', args, { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
-        socket.emit('process_status', { isRunning: true });
-
-        scriptProcess.stdout?.on('data', (data) => socket.emit('terminal_output', data.toString()));
-        scriptProcess.stderr?.on('data', (data) => socket.emit('terminal_output', data.toString()));
-
-        scriptProcess.on('exit', (code) => {
-            scriptProcess = null;
-            socket.emit('terminal_output', `\n[System] Process [${validation.type}] finished with code ${code}\n`);
-            socket.emit('process_status', { isRunning: false });
-            if (code === 0) socket.emit('maps_catalog_ready', getMapsCatalog());
-        });
-    });
-
-    socket.on('delete_map_region', (regionName: string) => {
-        if (scriptProcess) return;
-
-        if (!regionNameRegex.test(regionName)) {
-            socket.emit('terminal_output', `\n[System] ERROR: Invalid region name for deletion: ${regionName}\n`);
-            return;
-        }
-
-        socket.emit('terminal_output', `[System] Starting direct deletion for region: ${regionName}...\n`);
-
-        scriptProcess = spawn('sudo', [EXTRACT_SCRIPT, 'delete', regionName], {
-            env: { ...process.env, PYTHONUNBUFFERED: '1' },
-        });
-        socket.emit('process_status', { isRunning: true });
-
-        scriptProcess.stdout?.on('data', (data) => socket.emit('terminal_output', data.toString()));
-        scriptProcess.stderr?.on('data', (data) => socket.emit('terminal_output', data.toString()));
-        scriptProcess.on('exit', (code) => {
-            scriptProcess = null;
-            if (code === 0) {
-                socket.emit('terminal_output', `\n[System] Region ${regionName} successfully deleted.\n`);
-                socket.emit('maps_catalog_ready', getMapsCatalog());
-            } else {
-                socket.emit('terminal_output', `\n[System] Error deleting region ${regionName}. Code ${code}\n`);
-            }
-            socket.emit('process_status', { isRunning: false });
-        });
-    });
-
-    socket.on('send_input', (input: string) => {
-        if (scriptProcess && scriptProcess.stdin) {
-            scriptProcess.stdin.write(`${input}\n`);
-        }
-    });
-
-    socket.on('disconnect', () => {
-        if (scriptProcess) scriptProcess.kill();
-    });
-};
 
 export { getMapsCatalog, validateSecureCommand, displayBounds, parseBox, buildArgs, parseEstimate };

@@ -47,7 +47,7 @@ public final class BooksDownloadService extends Service {
 
     private static final String CHANNEL_ID = "books_download_channel";
     private static final int NOTIFICATION_ID = 6;
-    private static final String BASE = BoxEndpoints.BASE + "/api/books";
+    private static final String BASE = BoxEndpoints.API + "/books";
     private static final long POLL_MS = 1000L;
 
     public static final String ACTION_START = "org.iiab.controller.BOOKS_DOWNLOAD_START";

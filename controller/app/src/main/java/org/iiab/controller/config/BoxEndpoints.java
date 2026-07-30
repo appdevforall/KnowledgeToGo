@@ -19,4 +19,12 @@ public final class BoxEndpoints {
 
     /** Scheme + host + port of the box's nginx services. No trailing slash. */
     public static final String BASE = "http://localhost:8085";
+
+    /**
+     * REST core (dash-node engine) namespace on the box. ADFA-4933: the engine used to
+     * answer at the root {@code /api}, which shadowed Kolibri's {@code /api} under the
+     * shared :8085 server. It now lives under {@code /k2go-api}. Each REST client appends
+     * its area, e.g. {@code API + "/kiwix"}.
+     */
+    public static final String API = BASE + "/k2go-api";
 }
