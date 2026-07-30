@@ -84,7 +84,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private org.iiab.controller.ServerController serverController;
     private Boolean targetServerState = null;         // ServerController.Host state
     private boolean moduleRestartKicked = false;      // handleServerLaunchClick issued once
-    private boolean moduleServerUp = false;           // REST core answered after the restart (or timed out)
+    private boolean moduleServerUp = false;           // REST core answered after the restart
+    private boolean moduleServerFailed = false;       // restart timed out — surface as failure, not silent success
     private long moduleRestartAt = 0L;                // elapsedRealtime when the restart was kicked
     private org.iiab.controller.util.EllipsisAnimator statusEllipsis;   // ADFA-4842: animated "…" on the amber wait line
 
@@ -367,15 +368,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         if (moduleShown && queueTerminalNotRunning) ensureServerUpForModules();
 
         boolean allComplete;
+        boolean moduleServerSettled = moduleServerUp || moduleServerFailed;   // ADFA-4842: up, or gave up (failure)
         if (noRest && prootShown) {
-            // proot-only: complete when the queue is terminal — plus, for a module batch, once the
-            // server is back (a dead home that wakes up seconds later is exactly what we're avoiding).
-            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerUp);
+            // proot-only: complete when the queue is terminal — plus, for a module batch, once the server
+            // is back (up) or the restart has failed (a dead home that wakes up seconds later is exactly
+            // what we're avoiding; a real failure is surfaced as Finish/error below, not a silent success).
+            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerSettled);
         } else {
             allComplete = drained
                     && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
                     && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete())
-                    && (!moduleShown || moduleServerUp);   // ADFA-4842: also wait for the module server restart
+                    && (!moduleShown || moduleServerSettled);   // ADFA-4842: also wait for the module server restart
         }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
@@ -393,10 +396,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // wording and would suggest we're bringing the server up while runroles own the rootfs. During the
         // runroles show "Modules are installing"; only the real post-DONE restart says "Starting services".
         boolean moduleFlow = moduleInSession();
-        boolean amberWaiting = moduleFlow ? !moduleServerUp : !servicesReady;
-        tint(dot, amberWaiting ? R.color.k2go_amber : R.color.k2go_leaf);
+        // Amber "working" while a module install runs or its post-DONE restart is pending — but NOT once it
+        // failed (that shows the Finish/error controls, no animated wait).
+        boolean amberWaiting = !moduleServerFailed && (moduleFlow ? !moduleServerUp : !servicesReady);
+        tint(dot, (amberWaiting || moduleServerFailed) ? R.color.k2go_amber : R.color.k2go_leaf);
         int statusRes;
-        if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;   // (re)starting the server
+        if (moduleServerFailed) statusRes = R.string.k2go_setup_slow;                            // couldn't bring services online
+        else if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;   // (re)starting the server
         else if (moduleFlow && !moduleServerUp) statusRes = R.string.install_busy_modules;       // runroles in flight
         else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
         else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
@@ -405,9 +411,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         if (amberWaiting) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
-        // Bottom controls.
-        boolean success = allComplete && failedTotal == 0;
-        boolean failure = allComplete && failedTotal > 0;
+        // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
+        // note), never a silent success — so the user is told, not dropped on a dead Home.
+        boolean success = allComplete && failedTotal == 0 && !moduleServerFailed;
+        boolean failure = allComplete && (failedTotal > 0 || moduleServerFailed);
         if (success && !redirectCancelled) {
             show(redirect, true); show(cancel, true);
             show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
@@ -663,26 +670,37 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
      *  once and poll the REST core until it answers. render() gates completion/redirect on
      *  moduleServerUp, so we only leave for the Library once the system is actually live. */
     private void ensureServerUpForModules() {
-        if (moduleServerUp || moduleRestartKicked) return;
+        if (moduleServerUp || moduleServerFailed || moduleRestartKicked) return;
         moduleRestartKicked = true;
         moduleRestartAt = SystemClock.elapsedRealtime();
-        // finishModuleQueue cleared InstallGuard before DONE and the queue is no longer running, so the
-        // start is allowed; the index's own server poll keeps ServerStateRepository fresh so this starts
-        // (never toggles off). The server proot is process-scoped and survives into LibraryActivity.
-        serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+        // ADFA-4842: MECHANISM (proot ≠ REST — do NOT "simplify" this to the toggle; read
+        // ServerController.startEnvironment() first). Each module runrole runs in its own proot with
+        // --kill-on-exit: clean start → its tasks → clean stop, so the environment is DOWN when the batch
+        // finishes (that is the correct per-module cycle, especially with several modules in series). After
+        // the LAST module the INDEX is the actuator: it brings the environment back UNCONDITIONALLY.
+        // We must NOT call handleServerLaunchClick here (it is a TOGGLE): the cached alive can still read
+        // TRUE the instant after the runrole proot exits, and the toggle would then STOP instead of start
+        // (that was the "Stopping IIAB environment gracefully → dead Home" bug from the device log).
+        // startEnvironment() always starts. The server proot is process-scoped, so it survives into
+        // LibraryActivity, which only MONITORS it — Home never starts the server.
+        serverController.startEnvironment();
         main.postDelayed(serverUpPoll, READY_POLL_MS);
     }
 
     private final Runnable serverUpPoll = new Runnable() {
         @Override public void run() {
-            if (isFinishing() || moduleServerUp) return;
+            if (isFinishing() || moduleServerUp || moduleServerFailed) return;
             AppExecutors.get().io().execute(() -> {
                 final boolean up = RestReadiness.apiReady();
                 main.post(() -> {
-                    if (isFinishing() || moduleServerUp) return;
-                    if (up) { moduleServerUp = true; render(); }   // render() now completes → redirect
+                    if (isFinishing() || moduleServerUp || moduleServerFailed) return;
+                    if (up) { moduleServerUp = true; render(); }   // REST core answered → complete → redirect
                     else if (SystemClock.elapsedRealtime() - moduleRestartAt > SERVER_UP_TIMEOUT_MS) {
-                        moduleServerUp = true; render();   // give up waiting; Library owns recovery
+                        // ADFA-4842: the environment didn't come online in time. Do NOT declare success and
+                        // drop the user on a dead Home (the old behavior); surface it as a FAILURE so the
+                        // index shows the Finish/error state (like an Ansible failure). Home is a monitor —
+                        // it won't recover this, so the honest thing is to tell the user here.
+                        moduleServerFailed = true; render();
                     } else main.postDelayed(serverUpPoll, READY_POLL_MS);
                 });
             });
