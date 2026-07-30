@@ -393,6 +393,29 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             int tab = intent.getIntExtra(EXTRA_TAB, -1);
             if (tab != -1) { currentTab = tab; showTab(tab); syncSelection(tab); }
         }
+        // ADFA-4842: an install just CLEAR_TOP'd back here into the REUSED instance — onCreate (with its
+        // server autostart) does NOT run again. Home must never inherit a dead server: a proot module
+        // install stops the server, so if it isn't up on arrival, drive it up now — the same guarded
+        // start onCreate uses for a fresh launch. No-op if it's already alive/starting.
+        maybeAutostartServer();
+    }
+
+    /** ADFA-4842: guarded server (re)start, shared by the fresh-launch (onCreate) and the reused-arrival
+     *  (onNewIntent) paths, so returning Home after an install always drives the server up instead of
+     *  inheriting whatever state was left. Safe/idempotent: only starts when installed, really down, and
+     *  nothing else is in flight (install running / guard set / a start already pending). */
+    private void maybeAutostartServer() {
+        if (!org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this)) return;
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (!isFinishing()
+                    && !ServerStateRepository.get().current().alive
+                    && targetServerState == null
+                    && !InstallProgressRepository.get().isRunning()
+                    && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                    && !org.iiab.controller.InstallGuard.inProgress(this)) {
+                serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+            }
+        }, AUTOSTART_DELAY_MS);
     }
 
     @Override
