@@ -46,6 +46,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     // ADFA-4900: if the maps module queue never reports RUNNING/DONE this long after hand-off, treat
     // it as a start failure so the pipeline can't hang forever waiting on a stage that never began.
     private static final long MAPS_START_TIMEOUT_MS = 30000L;
+    // ADFA-4842: cap the post-module server-restart wait so the index can never trap the user forever
+    // if the server won't come back up; on timeout we proceed to the Library (which owns recovery).
+    private static final long SERVER_UP_TIMEOUT_MS = 45000L;
     // ADFA-4874: after this many failed readiness polls (~30s at 2s each) the status line switches
     // to a soft "taking longer than expected" message, so a stuck engine doesn't look frozen.
     private static final int SLOW_AFTER_POLLS = 15;
@@ -81,7 +84,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private org.iiab.controller.ServerController serverController;
     private Boolean targetServerState = null;         // ServerController.Host state
     private boolean moduleRestartKicked = false;      // handleServerLaunchClick issued once
-    private boolean moduleServerUp = false;           // REST core answered after the restart
+    private boolean moduleServerUp = false;           // REST core answered after the restart (or timed out)
+    private long moduleRestartAt = 0L;                // elapsedRealtime when the restart was kicked
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -169,13 +173,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         super.onBackPressed();
     }
 
-    /** ADFA-4919: a proot module is queued/running (the gate/lock is active). */
+    /** ADFA-4919/4842: is a proot stage still blocking the index? True while a runrole is queued/running
+     *  AND, for a module batch, through the post-DONE server restart — the user must not background or
+     *  Back out (there is no "Run in background" for proot) until the server is confirmed back up
+     *  (moduleServerUp) or the wait times out. */
     private boolean prootActive() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean mapsTerminal = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
-        boolean moduleTerminal = moduleStartFailed || (moduleInSession() && mq.phase == ModuleQueueState.Phase.DONE);
         boolean mapsActive = mapsInSession() && !mapsTerminal;
-        boolean moduleActive = moduleInSession() && !moduleTerminal;
+        // A module session stays active from its runroles through the server restart that follows.
+        boolean moduleActive = (moduleInSession() || moduleStartFailed) && !moduleServerUp;
         return mapsActive || moduleActive;
     }
 
@@ -634,6 +641,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private void ensureServerUpForModules() {
         if (moduleServerUp || moduleRestartKicked) return;
         moduleRestartKicked = true;
+        moduleRestartAt = SystemClock.elapsedRealtime();
         // finishModuleQueue cleared InstallGuard before DONE and the queue is no longer running, so the
         // start is allowed; the index's own server poll keeps ServerStateRepository fresh so this starts
         // (never toggles off). The server proot is process-scoped and survives into LibraryActivity.
@@ -649,7 +657,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 main.post(() -> {
                     if (isFinishing() || moduleServerUp) return;
                     if (up) { moduleServerUp = true; render(); }   // render() now completes → redirect
-                    else main.postDelayed(serverUpPoll, READY_POLL_MS);
+                    else if (SystemClock.elapsedRealtime() - moduleRestartAt > SERVER_UP_TIMEOUT_MS) {
+                        moduleServerUp = true; render();   // give up waiting; Library owns recovery
+                    } else main.postDelayed(serverUpPoll, READY_POLL_MS);
                 });
             });
         }
