@@ -65,6 +65,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closedDone = false;
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
     private long handledModuleSeq = 0L;   // ADFA-4842: fire the post-proot server restart once per DONE
+    private boolean prootStartScheduled = false;   // ADFA-4842: dedupe A (observer) + B (onNewIntent)
 
     // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
     private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
@@ -490,9 +491,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      *  (a stale-true "alive" would stop it). After the poll reflects the real state, the same guarded
      *  autostart the fresh-launch path uses (onCreate) starts it if it's really down. Idempotent. */
     private void maybeStartServerAfterProot() {
+        if (prootStartScheduled) return;   // A (observer) and B (onNewIntent) can both fire on the same batch
+        prootStartScheduled = true;
         if (serverController != null) serverController.onResume();   // refresh the (possibly stale) server state
         final Handler h = new Handler(Looper.getMainLooper());
-        h.postDelayed(() -> { if (!isFinishing()) startServer(); }, AUTOSTART_DELAY_MS);
+        h.postDelayed(() -> { prootStartScheduled = false; if (!isFinishing()) startServer(); }, AUTOSTART_DELAY_MS);
         if (!gateDismissed) {
             // Behind the boot gate: keep it up until the server answers, with the usual safety timeout.
             h.postDelayed(() -> { if (!gateDismissed) onServerReady(); }, GATE_SAFETY_MS);

@@ -49,6 +49,7 @@ public class ModuleHubFragment extends Fragment {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Set<String> installable = new HashSet<>();   // yamlBaseKeys not yet installed
     private int probesPending = 0;
+    private int probeGen = 0;   // ADFA-4842: supersedes an in-flight probe batch (e.g. onResume re-probe)
     private LinearLayout host;
     private Button proceed;
 
@@ -90,6 +91,7 @@ public class ModuleHubFragment extends Fragment {
     /** Probe every presentable module's endpoint; a module is INSTALLABLE when it is NOT reachable
      *  (not installed yet) and its 64-bit requirement is met. */
     private void probeAll() {
+        final int gen = ++probeGen;   // supersede any batch still in flight; its callbacks will bail
         List<ModuleCards.Card> cards = ModuleCards.all();
         final Set<String> found = new HashSet<>();
         probesPending = 0;
@@ -101,7 +103,7 @@ public class ModuleHubFragment extends Fragment {
             AppExecutors.get().io().execute(() -> {
                 final boolean installed = reachable(endpoint);
                 main.post(() -> {
-                    if (!isAdded()) return;
+                    if (!isAdded() || gen != probeGen) return;   // fragment gone or batch superseded
                     if (!installed) found.add(key);
                     probesPending--;
                     if (probesPending <= 0) {
