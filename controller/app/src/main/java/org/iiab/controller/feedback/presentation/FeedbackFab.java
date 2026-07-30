@@ -124,6 +124,12 @@ public final class FeedbackFab {
     /** ADFA-4932: add the draggable feedback FAB to any activity's content root (no per-layout
      *  edit) and wire tap -> screenshot -> email. Reusable across the redesign screens. Idempotent. */
     public static void installOn(android.app.Activity activity, String screenTag) {
+        installOn(activity, screenTag, 16);   // default: flush to the bottom (no bottom nav)
+    }
+
+    /** ADFA-4932: {@code bottomMarginDp} lets screens with a bottom nav (LibraryActivity) lift the
+     *  FAB clear of it; nav-less screens pass the default 16dp. */
+    public static void installOn(android.app.Activity activity, String screenTag, int bottomMarginDp) {
         android.view.ViewGroup root = activity.findViewById(android.R.id.content);
         if (root == null || root.findViewById(org.iiab.controller.R.id.fab_feedback) != null) {
             return;
@@ -139,7 +145,7 @@ public final class FeedbackFab {
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
                 android.view.Gravity.BOTTOM | android.view.Gravity.END);
-        lp.setMargins(m, m, m, Math.round(88 * d));   // clear the bottom nav
+        lp.setMargins(m, m, m, Math.round(bottomMarginDp * d));
         root.addView(fab, lp);
         attach(fab, () -> sendFeedback(activity, screenTag));
     }
@@ -148,6 +154,9 @@ public final class FeedbackFab {
      *  configured transport (mailto -> mail chooser). Shared by MainActivity and the redesign. */
     public static void sendFeedback(android.app.Activity activity, String screen) {
         org.iiab.controller.feedback.data.FeedbackScreenshot.capture(activity, path -> {
+            if (activity.isFinishing() || activity.isDestroyed()) {
+                return;   // ADFA-4932: activity gone between tap and the async capture callback
+            }
             org.iiab.controller.feedback.domain.FeedbackPayload payload =
                     org.iiab.controller.feedback.domain.FeedbackPayload
                             .builder(org.iiab.controller.feedback.domain.FeedbackType.GENERAL)

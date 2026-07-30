@@ -76,8 +76,6 @@ public class SetupProgressActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle s) {
         super.onCreate(s);
         setContentView(R.layout.activity_k2go_setup_progress);
-        // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
-        org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "install-index");
 
         dot = findViewById(R.id.k2go_sp_dot);
         statusText = findViewById(R.id.k2go_sp_status);
