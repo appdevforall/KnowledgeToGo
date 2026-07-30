@@ -31,7 +31,7 @@ import java.nio.charset.StandardCharsets;
 public final class BooksClient {
     private BooksClient() {}
 
-    private static final String BASE = BoxEndpoints.BASE + "/api/books";
+    private static final String BASE = BoxEndpoints.API + "/books";
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
     public interface ArrayCb { void onOk(JSONArray rows); void onErr(String message); }

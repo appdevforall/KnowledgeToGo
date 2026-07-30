@@ -49,7 +49,7 @@ public final class MapsRegionClient {
         void onError(String message);
     }
 
-    private static final String BASE = BoxEndpoints.BASE + "/api/maps";
+    private static final String BASE = BoxEndpoints.API + "/maps";
     private static final long POLL_MS = 1000L;
     private static final int MAX_POLL_ERRORS = 10;
 
