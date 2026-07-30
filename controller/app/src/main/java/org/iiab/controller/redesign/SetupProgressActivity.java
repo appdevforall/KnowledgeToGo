@@ -164,7 +164,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // FIRST Back reassures via a snackbar; every Back after that sends the whole app to the
         // background (home) -- we never walk back through the selection/hub steps into a half-built
         // flow. The install keeps running; reopening the app resumes here.
-        if (prootActive()) {
+        // ADFA-4842: a module (solo-proot) install locks the index for its WHOLE session — moduleInSession()
+        // is durable (survives reopen) and has no gaps, so Back can never walk back through the hub/Settings
+        // steps into a half-built flow. prootActive() keeps covering maps/mixed as before.
+        if (moduleInSession() || prootActive()) {
             if (!leaveWarned) {
                 leaveWarned = true;
                 Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
@@ -230,6 +233,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         @Override public void run() {
             if (probing) return;
             if (isFinishing()) return;
+            // ADFA-4842: a MODULE (solo-proot) install stops the server and runs its OWN proot — there is
+            // no REST engine to wait for, and we must NEVER try to "start services" (a second proot) mid-
+            // runrole. Skip the REST readiness gate entirely: the runrole queue drives progress, and the
+            // server is (re)started only AFTER the queue is DONE (ensureServerUpForModules, via render()).
+            // REST and REST+proot (mixed) keep their serialized apiReady path below, untouched.
+            if (moduleInSession()) {
+                orchestrateStep();   // drains on first entry; harmless no-op once the queue is running
+                render();
+                if (!moduleServerUp) main.postDelayed(readyPoll, READY_POLL_MS);
+                return;
+            }
             // Once the engine is confirmed up, advance the pipeline on the main thread without
             // re-checking apiReady() over HTTP every tick (the build can run for hours). ADFA-4900/#6.
             if (servicesReady) {
@@ -375,13 +389,19 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
         // message instead of "Starting services" so it doesn't look frozen (ADFA-4874). ADFA-4842: while
         // restarting the server after a module batch, show "starting services" (amber) too.
-        boolean amberWaiting = !servicesReady || (moduleRestartKicked && !moduleServerUp);
+        // ADFA-4842: a module (solo-proot) install must never read as "Starting services" — that is REST
+        // wording and would suggest we're bringing the server up while runroles own the rootfs. During the
+        // runroles show "Modules are installing"; only the real post-DONE restart says "Starting services".
+        boolean moduleFlow = moduleInSession();
+        boolean amberWaiting = moduleFlow ? !moduleServerUp : !servicesReady;
         tint(dot, amberWaiting ? R.color.k2go_amber : R.color.k2go_leaf);
         int statusRes;
-        if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;
+        if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;   // (re)starting the server
+        else if (moduleFlow && !moduleServerUp) statusRes = R.string.install_busy_modules;       // runroles in flight
+        else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
         else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
         else statusRes = R.string.k2go_setup_adding;
-        // ADFA-4842: animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
+        // Animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
         if (amberWaiting) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
