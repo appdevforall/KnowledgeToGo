@@ -345,22 +345,23 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // ADFA-4919: a proot module is queued/running (the gate is active).
         boolean prootActive = prootActive();
         if (contextText != null) contextText.setText(prootActive ? R.string.k2go_setup_context_proot : R.string.k2go_setup_context);
+        // ADFA-4842: a terminal MODULE batch stopped the server for its runroles, so the server must be
+        // brought back before we can finish. Kick that here for ANY terminal module session —
+        // independent of the noRest/REST branch below — so ensureServerUpForModules() (and its 45s
+        // safety timeout) always runs and moduleServerUp / prootActive() can never hang. Idempotent.
+        boolean queueTerminalNotRunning = prootTerminal && !ModuleQueueRepository.get().isRunning();
+        if (moduleShown && queueTerminalNotRunning) ensureServerUpForModules();
+
         boolean allComplete;
         if (noRest && prootShown) {
-            boolean queueDone = prootTerminal && !ModuleQueueRepository.get().isRunning();
-            if (queueDone && moduleShown) {
-                // ADFA-4842: a module batch stopped the server for its runroles. Don't declare success
-                // (or start the redirect countdown) until we've restarted it and the REST core answers,
-                // so the user lands on a LIVE Library — not a dead home that wakes up seconds later.
-                ensureServerUpForModules();
-                allComplete = moduleServerUp;
-            } else {
-                allComplete = queueDone;   // maps-only: server stayed up, nothing to wait for
-            }
+            // proot-only: complete when the queue is terminal — plus, for a module batch, once the
+            // server is back (a dead home that wakes up seconds later is exactly what we're avoiding).
+            allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerUp);
         } else {
             allComplete = drained
                     && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
-                    && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete());
+                    && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete())
+                    && (!moduleShown || moduleServerUp);   // ADFA-4842: also wait for the module server restart
         }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
