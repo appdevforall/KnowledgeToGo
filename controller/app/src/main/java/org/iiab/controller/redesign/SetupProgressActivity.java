@@ -86,6 +86,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private boolean moduleRestartKicked = false;      // handleServerLaunchClick issued once
     private boolean moduleServerUp = false;           // REST core answered after the restart (or timed out)
     private long moduleRestartAt = 0L;                // elapsedRealtime when the restart was kicked
+    private org.iiab.controller.util.EllipsisAnimator statusEllipsis;   // ADFA-4842: animated "…" on the amber wait line
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -96,6 +97,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
 
         dot = findViewById(R.id.k2go_sp_dot);
         statusText = findViewById(R.id.k2go_sp_status);
+        statusEllipsis = new org.iiab.controller.util.EllipsisAnimator(statusText);
         sections = findViewById(R.id.k2go_sp_sections);
         redirect = findViewById(R.id.k2go_sp_redirect);
         cancel = findViewById(R.id.k2go_sp_cancel);
@@ -145,7 +147,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         super.onPause();
         main.removeCallbacks(readyPoll);
         main.removeCallbacks(serverUpPoll);   // ADFA-4842
-        stopStatusEllipsis();                 // ADFA-4842
+        if (statusEllipsis != null) statusEllipsis.stop();   // ADFA-4842
         cancelRedirect();
         if (serverController != null) serverController.onPause();   // ADFA-4842: stop the status poll (not the server)
         if (!showingDetail) {
@@ -379,8 +381,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
         else statusRes = R.string.k2go_setup_adding;
         // ADFA-4842: animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
-        if (amberWaiting) startStatusEllipsis(getString(statusRes));
-        else { stopStatusEllipsis(); statusText.setText(statusRes); }
+        if (amberWaiting) statusEllipsis.start(getString(statusRes));
+        else { statusEllipsis.stop(); statusText.setText(statusRes); }
 
         // Bottom controls.
         boolean success = allComplete && failedTotal == 0;
@@ -639,30 +641,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     /** ADFA-4842: after a module batch (the server was pdsm-stopped for the runroles), start the server
      *  once and poll the REST core until it answers. render() gates completion/redirect on
      *  moduleServerUp, so we only leave for the Library once the system is actually live. */
-    // ADFA-4842: animated ellipsis on the amber "starting/waiting" status line (dots appear & disappear).
-    private Runnable statusEllipsis;
-    private String ellipsisBase;
-    private int ellipsisFrame = 0;
-    private void startStatusEllipsis(String fullText) {
-        String base = fullText.replaceAll("[.…]+$", "");   // strip trailing dots/ellipsis
-        if (statusEllipsis != null && base.equals(ellipsisBase)) return;   // already animating this text
-        stopStatusEllipsis();
-        ellipsisBase = base;
-        ellipsisFrame = 0;
-        statusEllipsis = new Runnable() {
-            private final String[] frames = {"", ".", "..", "..."};
-            @Override public void run() {
-                if (statusText != null) statusText.setText(ellipsisBase + frames[ellipsisFrame % frames.length]);
-                ellipsisFrame++;
-                main.postDelayed(this, 450L);
-            }
-        };
-        main.post(statusEllipsis);
-    }
-    private void stopStatusEllipsis() {
-        if (statusEllipsis != null) { main.removeCallbacks(statusEllipsis); statusEllipsis = null; ellipsisBase = null; }
-    }
-
     private void ensureServerUpForModules() {
         if (moduleServerUp || moduleRestartKicked) return;
         moduleRestartKicked = true;
