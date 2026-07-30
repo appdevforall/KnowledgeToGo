@@ -598,19 +598,25 @@ public class SetupProgressActivity extends AppCompatActivity {
     }
     private void goHome(boolean clearSessions) {
         cancelRedirect();
+        // ADFA-4842: a proot MODULE batch ran 'pdsm stop' before its runroles, so the server is
+        // deterministically DOWN now. Land on a FRESH LibraryActivity (recreate: CLEAR_TOP WITHOUT
+        // SINGLE_TOP, standard launchMode → fresh onCreate) so its normal cold-boot runs — boot gate +
+        // guarded autostart (reliable now, since the server really is down) + wait for the server, then
+        // reveal the live home. Maps and REST-only sessions keep the server up, so they reuse the live
+        // Library (add SINGLE_TOP, no recreate, no boot-gate flash). Evaluated before the clear below so
+        // moduleInSession() can still see the batch.
+        boolean moduleBatch = moduleInSession();
         if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
         ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
 
-        // ADFA-4919: the natural end of installing content is the Library — go there directly and
-        // clear the install screens above it. Both the wizard and Get More launch from LibraryActivity,
-        // so CLEAR_TOP + SINGLE_TOP lands on the existing Library (dropping Get More + this index).
-        // Previously this was a bare finish(), which in the Get More flow fell back to Get More instead
-        // of the Library. Only success/Finish reach here; "Run in background" (REST) still finish()es in
-        // place. ADFA-4842: for a module batch, the server was stopped for the runroles — LibraryActivity's
-        // module-queue observer blocks the UI during the run and restarts the server on DONE, so we just
-        // return to the live Library here (no cold-boot recreate).
-        startActivity(new android.content.Intent(this, LibraryActivity.class)
-                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        // ADFA-4919: the natural end of installing is the Library — go there directly and clear the
+        // install screens above it. Both the wizard and Get More launch from LibraryActivity, so
+        // CLEAR_TOP lands on it (dropping Get More + this index). Only success/Finish reach here; "Run in
+        // background" (REST) still finish()es in place.
+        android.content.Intent home = new android.content.Intent(this, LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (!moduleBatch) home.addFlags(android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(home);
         finish();
     }
 
