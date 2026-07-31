@@ -100,6 +100,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         currentTab = (savedInstanceState != null)
                 ? savedInstanceState.getInt(STATE_TAB, R.id.nav_library)
                 : getIntent().getIntExtra(EXTRA_TAB, R.id.nav_library);   // ADFA-4777
+        // ADFA-4957: a live clone RECEIVE is app-scoped in SyncProgressRepository (unlike the send
+        // daemon, still Fragment-scoped). On a plain reopen (no explicit tab requested) land on the
+        // Clone tab so CloneFragment re-binds to the in-progress transfer instead of showing Home.
+        if (savedInstanceState == null && !getIntent().hasExtra(EXTRA_TAB)
+                && org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()) {
+            currentTab = R.id.nav_clone;
+        }
         showTab(currentTab);
         syncSelection(currentTab);
 
