@@ -37,7 +37,7 @@ public class SyncStateViewModel extends ViewModel {
     // ADFA-4960: process-scoped (was per-ViewModel) so an in-flight clone survives the Activity being
     // finished (e.g. the user swipes the app away). The transport's native rsync child is kept alive by
     // CloneShareService; making it per-ViewModel meant onCleared() below killed it on every swipe.
-    private static TransportEngine transport;
+    private static volatile TransportEngine transport;
 
     // ADFA-4492 step 4: the pre-transfer probe + dry-run run here (Activity-scoped), not in the
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
@@ -49,8 +49,17 @@ public class SyncStateViewModel extends ViewModel {
 
     /** The single transport instance for this Activity; created lazily, reused across recreations. */
     public TransportEngine getTransport() {
-        if (transport == null) transport = new RsyncManager();
-        return transport;
+        // ADFA-4960 (review): the field is now process-global and reachable from the main thread and a
+        // probe's IO thread, so guard the lazy init (double-checked, field is volatile) to never build
+        // two RsyncManager instances that would leak a stray rsync child a later stop() can't reach.
+        TransportEngine t = transport;
+        if (t == null) {
+            synchronized (SyncStateViewModel.class) {
+                t = transport;
+                if (t == null) { t = new RsyncManager(); transport = t; }
+            }
+        }
+        return t;
     }
 
     public SyncHandshakeHelper.SyncCredentials getPendingCreds() { return pendingCreds; }
