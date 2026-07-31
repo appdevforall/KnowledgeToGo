@@ -160,6 +160,20 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             startActivity(new android.content.Intent(this, SetupProgressActivity.class));
         }
 
+        // ADFA-4957: same idea for a live deep-env op (backup/restore). A fresh LibraryActivity — from
+        // the notification, or a swipe-away relaunch — must land back on the op screen, not Home/Library
+        // (which fights the gate and would try to boot the server mid-op). Route straight to the
+        // backup/restore index; BackupJobFragment re-binds to the live op from DeepOpProgressRepository.
+        if (!installing && !recovering
+                && org.iiab.controller.deepop.DeepOpProgressRepository.get().isRunning()) {
+            org.iiab.controller.deepop.DeepOpState dop = org.iiab.controller.deepop.DeepOpProgressRepository.get().current();
+            String brMode = dop.owner == org.iiab.controller.env.EnvironmentLock.Owner.RESTORE
+                    ? BackupJobFragment.MODE_RESTORE : BackupJobFragment.MODE_BACKUP;
+            startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
+                    .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true)
+                    .putExtra(SetupLibraryActivity.EXTRA_BR_JOB_MODE, brMode));
+        }
+
         serverController = new ServerController(this, this);
         serverController.start();
 

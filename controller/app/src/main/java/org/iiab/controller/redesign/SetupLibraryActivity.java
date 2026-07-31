@@ -34,6 +34,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
     /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
     public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
+    /** ADFA-4957: open BackupJobFragment(mode) directly — used to deep-link back to a LIVE backup/restore
+     *  (from LibraryActivity's routing when the app is reopened / the notification is tapped). */
+    public static final String EXTRA_BR_JOB_MODE = "brJobMode";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     // Shared Wikipedia selection so picks survive the A/B flip.
@@ -75,8 +78,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
             boolean backupRestore = getIntent().getBooleanExtra(EXTRA_BACKUP_RESTORE, false);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
+            String brJobMode = getIntent().getStringExtra(EXTRA_BR_JOB_MODE);   // ADFA-4957
             androidx.fragment.app.Fragment first;
-            if (backupRestore) {
+            if (brJobMode != null) {
+                first = BackupJobFragment.newInstance(brJobMode);   // ADFA-4957: land on the live op screen
+            } else if (backupRestore) {
                 first = new BackupRestoreFragment();   // ADFA-4952
             } else if (moduleMgmt) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
