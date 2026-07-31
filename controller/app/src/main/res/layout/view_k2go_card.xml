@@ -1,62 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4799: i18n-robust card. Fixed height (2-line worst case), title max 2 lines +
-     autosize, status 1 line, icon fixed — so translated labels never skew the grid. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- ADFA-4799 / ADFA-4958: i18n-robust experience card. Fixed height (2-line worst case); title
+     autosizes; status 1 line; icon fixed. FrameLayout root adds a top-right overflow (⋮) that opens
+     the module action sheet (ADFA-4958); the whole card stays clickable for open/route. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/k2go_card_height"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_margin="8dp"
-    android:padding="16dp"
     android:background="@drawable/k2go_card_bg"
     android:clickable="true"
     android:focusable="true">
 
-    <ImageView
-        android:id="@+id/k2go_card_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:tint="@color/k2go_teal"
-        android:contentDescription="@null" />
-
-    <TextView
-        android:id="@+id/k2go_card_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:minLines="2"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:textAppearance="?attr/textAppearanceTitleLarge"
-        android:textColor="@color/k2go_ink"
-        app:autoSizeTextType="uniform"
-        app:autoSizeMinTextSize="12sp"
-        app:autoSizeMaxTextSize="18sp"
-        app:autoSizeStepGranularity="1sp" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp">
 
-        <View
-            android:id="@+id/k2go_card_dot"
-            android:layout_width="9dp"
-            android:layout_height="9dp"
-            android:background="@drawable/k2go_dot" />
+        <ImageView
+            android:id="@+id/k2go_card_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:tint="@color/k2go_teal"
+            android:contentDescription="@null" />
 
         <TextView
-            android:id="@+id/k2go_card_status"
+            android:id="@+id/k2go_card_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:minLines="2"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="@color/k2go_ink"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="18sp"
+            app:autoSizeStepGranularity="1sp" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="@color/k2go_muted" />
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/k2go_card_dot"
+                android:layout_width="9dp"
+                android:layout_height="9dp"
+                android:background="@drawable/k2go_dot" />
+
+            <TextView
+                android:id="@+id/k2go_card_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+    <TextView
+        android:id="@+id/k2go_card_overflow"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:gravity="center"
+        android:text="⋮"
+        android:textSize="20sp"
+        android:textColor="@color/k2go_muted"
+        android:contentDescription="@string/k2go_sheet_more" />
+</FrameLayout>

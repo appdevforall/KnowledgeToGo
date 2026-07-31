@@ -116,7 +116,7 @@
     <string name="k2go_mod_hub_sub" translatable="false">Apps you can install on your library. Runs on the device — no internet needed.</string>
     <string name="k2go_mod_hub_prompt" translatable="false">What would you like to install?</string>
     <string name="k2go_mod_none" translatable="false">Everything available is already installed.</string>
-    <string name="k2go_mod_proceed_fmt" translatable="false">Install %1$d selected</string>
+    <string name="k2go_mod_proceed_fmt" translatable="false">Install %1$d</string>
     <string name="k2go_mod_schedule" translatable="false">Schedule install</string>
     <string name="k2go_mod_unschedule" translatable="false">Remove from install</string>
     <string name="k2go_mod_scheduled" translatable="false">Scheduled</string>
@@ -647,4 +647,36 @@
     <string name="k2go_portal_error_title" translatable="false">Connection Failed</string>
     <string name="k2go_portal_error_body" translatable="false">Unable to reach the secure environment.</string>
     <string name="k2go_portal_error_detail" translatable="false">Error: %1$s</string>
+    <!-- ADFA-4958: module action sheet + Home states -->
+    <string name="k2go_sheet_more" translatable="false">More options</string>
+    <string name="k2go_sheet_open" translatable="false">Open</string>
+    <string name="k2go_sheet_about" translatable="false">About this app</string>
+    <string name="k2go_sheet_install" translatable="false">Install now</string>
+    <string name="k2go_sheet_install_sel" translatable="false">Install selection</string>
+    <string name="k2go_sheet_schedule" translatable="false">Schedule</string>
+    <string name="k2go_sheet_cancel" translatable="false">Cancel schedule</string>
+    <string name="k2go_state_ready" translatable="false">Ready</string>
+    <string name="k2go_state_not_installed" translatable="false">Not installed</string>
+    <string name="k2go_state_scheduled" translatable="false">Scheduled</string>
+    <string name="k2go_mod_time_note" translatable="false">This builds the module into your system, so it takes a few minutes and stays on this screen until it\'s done. Want everything at once? Install the full system version.</string>
+    <string name="k2go_mod_maps_title" translatable="false">Navigate maps</string>
+    <string name="k2go_mod_maps_sub" translatable="false">IIAB Maps</string>
+    <string name="k2go_mod_maps_desc" translatable="false">Offline world maps to browse and search on the device. Pick the layers and region, then it builds into your system.</string>
+    <!-- ADFA-4958 module detail enrichment -->
+    <string name="k2go_mod_runs_offline" translatable="false">Runs offline</string>
+    <string name="k2go_mod_includes_title" translatable="false">What it includes</string>
+    <string name="k2go_mod_license_fmt" translatable="false">License · %1$s</string>
+    <string name="k2go_mod_kolibri_includes" translatable="false">Sample courses included — add more in Get more.</string>
+    <string name="k2go_mod_calibreweb_includes" translatable="false">Reader only — add books in Get more.</string>
+    <string name="k2go_mod_kiwix_includes" translatable="false">Reader only — add Wikipedia and ZIM in Get more.</string>
+    <string name="k2go_mod_code_includes" translatable="false">The code editor itself — your projects live on the device.</string>
+    <string name="k2go_mod_matomo_includes" translatable="false">Analytics for this server — nothing to add.</string>
+    <string name="k2go_mod_maps_includes" translatable="false">Base map — pick the layers and region when you install.</string>
+    <!-- ADFA-4958 hide / restore / management -->
+    <string name="k2go_sheet_hide" translatable="false">Hide</string>
+    <string name="k2go_mod_hidden_header" translatable="false">HIDDEN</string>
+    <string name="k2go_mod_hidden_sub" translatable="false">Hidden from Home</string>
+    <string name="k2go_mod_restore" translatable="false">Restore</string>
+    <string name="k2go_mod_hidden_foot" translatable="false">Modules can\'t be uninstalled — only hidden, then restored here.</string>
+    <string name="k2go_mod_mgmt_helper" translatable="false">Tap to open · tick to install several at once.</string>
 </resources>

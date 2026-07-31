@@ -94,12 +94,7 @@ public class LibraryHomeFragment extends Fragment {
             });
         }
 
-        cards.clear();
-        cards.add(new Card("books",   getString(R.string.k2go_card_books),       false, R.drawable.ic_card_book));
-        cards.add(new Card("code",    getString(R.string.k2go_card_code),    false, R.drawable.ic_card_code));
-        cards.add(new Card("kiwix",   getString(R.string.k2go_card_wikipedia), true,  R.drawable.ic_card_wikipedia));
-        cards.add(new Card("kolibri", getString(R.string.k2go_card_courses),      false, R.drawable.ic_card_courses));
-        cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));
+        populateCards();
 
         cardsHost = root.findViewById(R.id.k2go_cards);
         getMoreFooter = root.findViewById(R.id.k2go_get_more_footer);
@@ -120,6 +115,34 @@ public class LibraryHomeFragment extends Fragment {
      * last grid cell. The card is fixed-height with an autosizing 2-line title, so the grid stays
      * balanced under any translation.
      */
+    // ADFA-4958: build the experience list, dropping modules the user hid from Home (Restore lives
+    // in Module management). Rebuilt on a Hide from the action sheet.
+    private void populateCards() {
+        cards.clear();
+        cards.add(new Card("books",   getString(R.string.k2go_card_books),       false, R.drawable.ic_card_book));
+        cards.add(new Card("code",    getString(R.string.k2go_card_code),    false, R.drawable.ic_card_code));
+        cards.add(new Card("kiwix",   getString(R.string.k2go_card_wikipedia), true,  R.drawable.ic_card_wikipedia));
+        cards.add(new Card("kolibri", getString(R.string.k2go_card_courses),      false, R.drawable.ic_card_courses));
+        cards.add(new Card("maps",    getString(R.string.k2go_card_maps),     false, R.drawable.ic_card_maps));
+        for (java.util.Iterator<Card> it = cards.iterator(); it.hasNext(); ) {
+            Card card = it.next();
+            ModuleCards.Card m = ModuleCards.byEndpoint(card.endpoint);
+            if (m != null && HiddenModules.contains(requireContext(), m.key())) it.remove();
+        }
+    }
+
+    // ADFA-4958: after the action sheet acts — a Hide drops the card (rebuild), a schedule/cancel
+    // just refreshes its label.
+    private void refreshAfterSheet(Card c) {
+        ModuleCards.Card m = ModuleCards.byEndpoint(c.endpoint);
+        if (m != null && HiddenModules.contains(requireContext(), m.key())) {
+            populateCards();
+            relayout();
+        } else {
+            applyState(c, c.state);
+        }
+    }
+
     private void relayout() {
         if (cardsHost == null || !isAdded()) return;
         int columns = getResources().getConfiguration().screenWidthDp >= MEDIUM_MIN_DP ? 3 : 2;
@@ -141,6 +164,11 @@ public class LibraryHomeFragment extends Fragment {
             c.dot = card.findViewById(R.id.k2go_card_dot);
             c.status = card.findViewById(R.id.k2go_card_status);
             card.setOnClickListener(v -> onCardClick(c));
+            View ov = card.findViewById(R.id.k2go_card_overflow);   // ADFA-4958
+            if (ov != null) {
+                if (ModuleCards.byEndpoint(c.endpoint) != null) { ov.setOnClickListener(w -> openSheet(c)); }
+                else ov.setVisibility(View.GONE);   // defensive: a Home card with no backing module (none today)
+            }
             applyState(c, c.state);   // keep the live status across a relayout
             cells.add(card);
         }
@@ -204,7 +232,9 @@ public class LibraryHomeFragment extends Fragment {
             Intent i = new Intent(requireContext(), PortalActivity.class);
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
             startActivity(i);
-        } else {
+        } else if (ModuleCards.byEndpoint(c.endpoint) != null) {   // ADFA-4958: module -> action sheet
+            openSheet(c);
+        } else {   // defensive fallback: non-Ready card with no backing module (none today) — re-probe
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
                 final int st = probe(c.endpoint);
@@ -212,6 +242,23 @@ public class LibraryHomeFragment extends Fragment {
             });
             Toast.makeText(requireContext(), getString(R.string.k2go_retrying), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // ADFA-4958: the module action sheet is the single contextual surface for a module card.
+    private void openSheet(Card c) {
+        ModuleActionSheet.State s;
+        if (c.state == GREEN) s = ModuleActionSheet.State.READY;
+        else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
+        else s = ModuleActionSheet.State.NOT_INSTALLED;
+        ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
+                () -> { if (isAdded()) refreshAfterSheet(c); });   // ADFA-4958: refresh label / drop if hidden
+    }
+
+    private boolean isScheduled(Card c) {
+        ModuleCards.Card m = ModuleCards.byEndpoint(c.endpoint);
+        if (m == null) return false;
+        if (m.hasSelector) return MapsWishlist.has(requireContext());   // ADFA-4958: maps has its own store
+        return ModuleWishlist.contains(requireContext(), m.key());
     }
 
     @Override public void onResume() { super.onResume(); main.post(poll); }
@@ -365,6 +412,11 @@ public class LibraryHomeFragment extends Fragment {
         tint(c.dot, dotColor);
         c.status.setText(label);
         c.status.setTextColor(ContextCompat.getColor(requireContext(), textColor));
+        if (st != GREEN && isScheduled(c)) {   // ADFA-4958
+            tint(c.dot, R.color.k2go_teal);
+            c.status.setText(getString(R.string.k2go_state_scheduled));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        }
     }
 
     private void tint(View v, int colorRes) {
