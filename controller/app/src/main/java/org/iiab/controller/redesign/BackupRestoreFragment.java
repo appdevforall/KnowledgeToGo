@@ -117,8 +117,10 @@ public class BackupRestoreFragment extends Fragment {
 
         TextView msg = new TextView(requireContext());
         msg.setText(getString(R.string.k2go_bj_returning));
-        msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        // ADFA-4961: set the color AFTER the appearance — setTextAppearance() overrides textColor, which
+        // was leaving this line the theme's light default (invisible on the pale info background).
+        msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         bar.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
         TextView cancel = new TextView(requireContext());
