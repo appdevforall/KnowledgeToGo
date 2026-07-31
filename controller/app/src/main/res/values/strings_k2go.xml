@@ -179,6 +179,10 @@
     <string name="deepop_channel_desc" translatable="false">Keeps a backup or restore running safely in the background</string>
     <string name="deepop_notif_title" translatable="false">Backup &amp; restore</string>
     <string name="deepop_notif_cancel" translatable="false">Cancel</string>
+    <string name="k2go_clone_channel_name" translatable="false">Clone</string>
+    <string name="k2go_clone_channel_desc" translatable="false">Keeps a device-to-device transfer running</string>
+    <string name="k2go_clone_notif_title" translatable="false">Knowledge to Go</string>
+    <string name="k2go_clone_notif_text" translatable="false">Transferring between devices — tap to return</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <string name="k2go_dns_toggle_sub" translatable="false">Use a custom DNS. Off = server defaults.</string>

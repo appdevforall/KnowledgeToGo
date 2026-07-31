@@ -40,7 +40,6 @@ import org.iiab.controller.BuildConfig;
 import org.iiab.controller.R;
 import org.iiab.controller.ServerController;
 import org.iiab.controller.SyncHandshakeHelper;
-import org.iiab.controller.WatchdogService;
 import org.iiab.controller.env.EnvironmentLock;
 import org.iiab.controller.sync.domain.ApkShareName;
 import org.iiab.controller.hotspot.LocalHotspotManager;
@@ -265,6 +264,20 @@ public class CloneFragment extends Fragment {
         v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
         v.findViewById(R.id.k2go_clone_fork_receive).setOnClickListener(x -> enterSide(Side.RECEIVE));
         backHeader.setOnClickListener(x -> goToFork());
+        // ADFA-4960: re-bind to a live SEND session. Its rsync daemon is still up in this process (kept
+        // alive by CloneShareService), so a recreated Fragment must land on the share screen — not the
+        // fork. Restore the state the share screen redraws from; daemonStarted=true makes ensureDaemon's
+        // guard skip a re-start. (Receive already re-binds via SyncProgressRepository.)
+        if (CloneSendSession.isActive()) {
+            atFork = false; side = Side.SEND; sendApp = false; stage = Stage.START;
+            mode = CloneSendSession.isHotspot() ? Mode.HOTSPOT : Mode.WIFI;
+            tempPass = CloneSendSession.tempPass();
+            hostHasRootfs = CloneSendSession.hostHasRootfs();
+            shareAnyway = CloneSendSession.shareAnyway();
+            librarySplit = CloneSendSession.split();
+            daemonStarted = true;
+            cloneLockHeld = true;   // the CLONE lock is still held by this process's send session
+        }
         render();
         return v;
     }
@@ -341,7 +354,8 @@ public class CloneFragment extends Fragment {
             act.runOnUiThread(() -> {
                 if (!isAdded()) return;
                 daemonStarting = false; daemonStarted = ok; librarySplit = split;
-                if (!ok) releaseCloneEnv();   // couldn't serve — boot the server back, drop the lock
+                if (ok) CloneSendSession.begin(mode == Mode.HOTSPOT, tempPass, hostHasRootfs, shareAnyway, split);  // ADFA-4960: app-scope the live share so a recreated Fragment re-binds
+                else releaseCloneEnv();   // couldn't serve — boot the server back, drop the lock
                 render();
             });
         }, "clone-share-daemon").start();
@@ -389,11 +403,11 @@ public class CloneFragment extends Fragment {
         if (protectionOn) return;
         Context ctx = getContext();
         if (ctx == null) return;
-        Intent i = new Intent(ctx, WatchdogService.class).setAction(WatchdogService.ACTION_START);
+        Intent i = new Intent(ctx, CloneShareService.class).setAction(CloneShareService.ACTION_START);   // ADFA-4960: clone-specific keep-alive (notification returns to the Clone tab)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) ctx.startForegroundService(i);
         else ctx.startService(i);
         protectionOn = true;
-        Log.i("IIAB-Clone", "watchdog protection ON");
+        Log.i("IIAB-Clone", "clone share protection ON");
     }
 
     private void stopProtection() {
@@ -401,8 +415,8 @@ public class CloneFragment extends Fragment {
         protectionOn = false;
         Context ctx = getContext();
         if (ctx == null) return;   // detached; the service is app-scoped and stops on its own teardown path
-        ctx.startService(new Intent(ctx, WatchdogService.class).setAction(WatchdogService.ACTION_STOP));
-        Log.i("IIAB-Clone", "watchdog protection OFF");
+        ctx.startService(new Intent(ctx, CloneShareService.class).setAction(CloneShareService.ACTION_STOP));
+        Log.i("IIAB-Clone", "clone share protection OFF");
     }
 
     // ------------------------------------------------------------ Deep-env coordination (ADFA-4956)
@@ -952,7 +966,7 @@ public class CloneFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         // ADFA-4782: release protection only when nothing is running; an active share daemon or pull
-        // keeps the (app-scoped) WatchdogService alive so leaving the tab doesn't cut the transfer.
+        // keeps the (app-scoped) CloneShareService alive so leaving the tab doesn't cut the transfer.
         // ADFA-4956: same gate for the deep-env lock — only boot the server back + drop the lock when
         // nothing is in flight; an ongoing share/pull must keep the server down until it ends.
         if (!SyncProgressRepository.get().isActive() && !daemonStarted) { stopProtection(); releaseCloneEnv(); }
@@ -969,6 +983,7 @@ public class CloneFragment extends Fragment {
                     if (transport != null) transport.stop();
                     daemonStarted = false;
                     userStopped = true;   // do not auto-restart on the next render
+                    CloneSendSession.clear();   // ADFA-4960: the send session ended
                     releaseCloneEnv();    // ADFA-4956: boot the server back + drop the deep-env lock
                     render();
                 })

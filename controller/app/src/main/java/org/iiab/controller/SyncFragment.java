@@ -135,9 +135,14 @@ public class SyncFragment extends Fragment implements org.iiab.controller.sync.p
                 && org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()) {
             return;
         }
-        if (transport != null) transport.stop();
+        // ADFA-4960: the transport is now process-global (shared with the redesign clone). Don't stop it
+        // — nor drop the network binding — while a clone is in flight, or this old-UI teardown would kill
+        // the clone's daemon and strand its lock/keep-alive service.
+        boolean cloneActive = org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()
+                || org.iiab.controller.redesign.CloneSendSession.isActive();
+        if (transport != null && !cloneActive) transport.stop();
         shareController.stopApkServerQuietly();
-        syncVm.releaseNetwork(); // ADFA-4496: drop the network binding when the receive is torn down
+        if (!cloneActive) syncVm.releaseNetwork(); // ADFA-4496: drop the network binding when the receive is torn down
         disableSystemProtection(); // S8: ensure the watchdog stops if a transfer was cut short
     }
 

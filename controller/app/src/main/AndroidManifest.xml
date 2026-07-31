@@ -127,6 +127,11 @@
             android:foregroundServiceType="specialUse" />
 
         <service
+            android:name=".redesign.CloneShareService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
+        <service
             android:name=".redesign.ZimDownloadService"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
