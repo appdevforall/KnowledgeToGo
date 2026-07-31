@@ -221,6 +221,21 @@ export async function apiFetch(
     return fetchWithTimeout(`${KOLIBRI_BASE}${pathname}`, { ...init, headers }, timeoutMs);
 }
 
+/** Error de una llamada a la API que llegó a recibir respuesta. Lleva el status para
+ *  que el llamador distinga "sesión caducada" (401/403) de un fallo cualquiera. */
+export class KolibriApiError extends Error {
+    readonly status: number;
+    constructor(status: number, message: string) {
+        super(message);
+        this.name = 'KolibriApiError';
+        this.status = status;
+    }
+    /** Django responde 403 (no 401) a una sesión caducada con CSRF ya inválido. */
+    get isAuthExpired(): boolean {
+        return this.status === 401 || this.status === 403;
+    }
+}
+
 /** apiFetch + parseo JSON + error legible. */
 export async function apiJson<T>(
     session: KolibriSession,
@@ -231,7 +246,8 @@ export async function apiJson<T>(
     const res = await apiFetch(session, pathname, init, timeoutMs);
     const text = await res.text();
     if (!res.ok) {
-        throw new Error(`${init.method ?? 'GET'} ${pathname} → HTTP ${res.status}: ${text.slice(0, 400)}`);
+        throw new KolibriApiError(res.status,
+            `${init.method ?? 'GET'} ${pathname} → HTTP ${res.status}: ${text.slice(0, 400)}`);
     }
     if (!text.trim()) return undefined as unknown as T;
     try {
@@ -255,12 +271,42 @@ function urlVariants(url: string): string[] {
     return [trimmed, `${trimmed}/`];
 }
 
+/** ¿Coincide alguna de las filas con el origen buscado? Pura, testeable sin red. */
+export function matchesOrigin(rows: NetworkLocationRow[], baseUrl: string): boolean {
+    const wanted = new Set(urlVariants(baseUrl));
+    return rows.some((row) => {
+        if (!row.base_url) return false;
+        return wanted.has(row.base_url) || wanted.has(row.base_url.replace(/\/+$/, ''));
+    });
+}
+
 /**
- * Garantiza que exista una NetworkLocation para el origen de contenido.
+ * ¿Existe ya una NetworkLocation para el origen de contenido? SOLO LECTURA.
+ *
+ * Cuenta cualquier location_type, incluidas las 'reserved' que siembra IIAB: el
+ * lookup de Kolibri (known_location_for_address) tampoco filtra por tipo.
+ *
+ * @returns null si no se pudo determinar (Kolibri no respondió al listado).
+ */
+export async function hasContentOrigin(
+    session: KolibriSession,
+    baseUrl: string = STUDIO_URL,
+): Promise<boolean | null> {
+    try {
+        const rows = await apiJson<NetworkLocationRow[] | { results?: NetworkLocationRow[] }>(
+            session, '/api/discovery/networklocation/');
+        const list = Array.isArray(rows) ? rows : (rows.results ?? []);
+        return matchesOrigin(list, baseUrl);
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Garantiza que exista una NetworkLocation para el origen de contenido. ESCRIBE.
  *
  * Sin esto, 'importcontent' cae al fallback que llama a ifaddr y falla bajo proot.
- * Idempotente: si ya hay una fila cuyo base_url coincide (de cualquier
- * location_type, incluidas las 'reserved' que siembra IIAB), no hace nada.
+ * Lo llama el runner, no los endpoints de diagnóstico: un GET no debe mutar estado.
  *
  * @returns 'present' si ya existía, 'created' si la creó, 'failed' si no pudo
  *          (no lanza: el import puede funcionar igual si IIAB ya sembró y solo
@@ -270,21 +316,9 @@ export async function ensureContentOrigin(
     session: KolibriSession,
     baseUrl: string = STUDIO_URL,
 ): Promise<'present' | 'created' | 'failed'> {
-    const wanted = new Set(urlVariants(baseUrl));
-
-    try {
-        // El listado incluye las 'reserved' además de las static/dynamic.
-        const rows = await apiJson<NetworkLocationRow[] | { results?: NetworkLocationRow[] }>(
-            session, '/api/discovery/networklocation/');
-        const list = Array.isArray(rows) ? rows : (rows.results ?? []);
-        for (const row of list) {
-            if (row.base_url && wanted.has(row.base_url.replace(/\/+$/, ''))) return 'present';
-            if (row.base_url && wanted.has(row.base_url)) return 'present';
-        }
-    } catch {
-        // Si no podemos listar, intentamos crear igualmente: crear es idempotente
-        // en la práctica (un duplicado no rompe el lookup).
-    }
+    // null (no se pudo listar) cae al POST: crear es idempotente en la práctica,
+    // porque un duplicado no rompe el lookup.
+    if (await hasContentOrigin(session, baseUrl) === true) return 'present';
 
     try {
         const res = await apiFetch(session, '/api/discovery/staticnetworklocation/', {
@@ -310,7 +344,9 @@ export interface KolibriReadiness {
     authenticated: boolean;
     canManageContent: boolean;
     provisioned: boolean | null;
-    contentOrigin: 'present' | 'created' | 'failed' | 'unknown';
+    /** true presente, false ausente, null indeterminado. Solo se consulta, nunca
+     *  se crea desde aquí: el runner es quien lo garantiza antes de importar. */
+    contentOrigin: boolean | null;
     version: string | null;
     /** Motivos por los que ready es false, en lenguaje accionable. */
     blockers: string[];
@@ -321,8 +357,8 @@ export interface KolibriReadiness {
  * El "gate" que la capa de arranque puede sondear: mientras no devuelva
  * ready=true, no tiene sentido lanzar jobs de contenido.
  *
- * No lanza excepciones: siempre devuelve un diagnóstico. Es un endpoint de estado,
- * no una operación.
+ * No lanza excepciones y NO MUTA NADA: siempre devuelve un diagnóstico. Se puede
+ * sondear en bucle sin efectos secundarios.
  */
 export async function checkReadiness(): Promise<KolibriReadiness> {
     const out: KolibriReadiness = {
@@ -331,7 +367,7 @@ export async function checkReadiness(): Promise<KolibriReadiness> {
         authenticated: false,
         canManageContent: false,
         provisioned: null,
-        contentOrigin: 'unknown',
+        contentOrigin: null,
         version: null,
         blockers: [],
         credentialOrigin: getCredential('kolibri').origin,
@@ -380,13 +416,10 @@ export async function checkReadiness(): Promise<KolibriReadiness> {
         out.provisioned = null;   // no concluyente: no lo marcamos como bloqueador
     }
 
-    // 4. El prerrequisito de proot.
-    out.contentOrigin = await ensureContentOrigin(session);
-    if (out.contentOrigin === 'failed') {
-        out.blockers.push(
-            'No hay NetworkLocation para el origen de contenido y no se pudo crear: '
-            + 'importcontent fallará al resolver el origen bajo proot');
-    }
+    // 4. El prerrequisito de proot, en modo consulta. No es un bloqueador: el runner
+    //    crea la fila si falta (ensureContentOrigin) antes de encolar, así que su
+    //    ausencia aquí no impide arrancar. Se reporta para diagnóstico.
+    out.contentOrigin = await hasContentOrigin(session);
 
     out.ready = out.blockers.length === 0;
     return out;

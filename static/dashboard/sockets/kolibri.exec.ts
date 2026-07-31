@@ -20,7 +20,7 @@
 import { jobs, RunnerContext, CanceledError, JobUpdate } from './jobs';
 import {
     loginForContent, apiJson, apiFetch, ensureContentOrigin,
-    KolibriSession, KolibriAuthError, STUDIO_URL,
+    KolibriSession, KolibriAuthError, KolibriApiError, STUDIO_URL,
 } from './kolibri.session';
 import {
     buildTaskPayload, mapPercent, mapPhase, normalizeUuid, overallPercent,
@@ -49,6 +49,10 @@ const QUEUED_GRACE_MS = envMs('K2GO_KOLIBRI_QUEUED_GRACE_MS', 90_000);
  *  RUNNING eternamente, así que cortamos. Reintentar es seguro y barato: las
  *  descargas se reanudan por HTTP Range. */
 const STALL_TIMEOUT_MS = envMs('K2GO_KOLIBRI_STALL_MS', 15 * 60_000);
+
+/** Reintentos de login por job. Acotado para que una credencial revocada a mitad
+ *  del import no genere un bucle de logins fallidos. */
+const MAX_REAUTH = 3;
 
 interface KolibriItem {
     channelId?: string;
@@ -169,14 +173,30 @@ function authErrorMessage(e: unknown): string {
     }
 }
 
+/** Contenedor mutable de la sesión: un import puede durar horas y sobrevivir a la
+ *  caducidad de la sesión de Django, así que el poll necesita poder reemplazarla. */
+interface SessionHolder { current: KolibriSession }
+
+/** Reautentica in situ. Devuelve false si tampoco se puede ahora. */
+async function reauthenticate(ctx: RunnerContext, holder: SessionHolder): Promise<boolean> {
+    try {
+        holder.current = await loginForContent();
+        ctx.log('sesión caducada: reautenticado');
+        return true;
+    } catch (e) {
+        ctx.log(`no se pudo reautenticar: ${authErrorMessage(e)}`);
+        return false;
+    }
+}
+
 const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     const parsed = parseItems(ctx.items);
 
     ctx.update({ phase: 'queued', percent: 0 });
 
-    let session: KolibriSession;
+    let holder: SessionHolder;
     try {
-        session = await loginForContent();
+        holder = { current: await loginForContent() };
     } catch (e) {
         throw new Error(authErrorMessage(e));
     }
@@ -188,7 +208,7 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     //
     // No abortamos si falla: puede que IIAB ya sembrara la fila 'reserved' y solo
     // fallara nuestra comprobación.
-    const origin = await ensureContentOrigin(session, STUDIO_URL);
+    const origin = await ensureContentOrigin(holder.current, STUDIO_URL);
     ctx.log(`origen de contenido (${STUDIO_URL}): ${origin}`);
     if (origin === 'failed') {
         ctx.log('AVISO: no se pudo garantizar la NetworkLocation del origen. Si el '
@@ -201,7 +221,7 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         index++;
 
         const channelName = item.channelName
-            || await resolveChannelName(session, item.channelId)
+            || await resolveChannelName(holder.current, item.channelId)
             || item.channelId;
 
         const label = parsed.length > 1
@@ -216,19 +236,20 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             channelName,
             nodeIds: item.nodeIds,
             excludeNodeIds: item.excludeNodeIds,
-            // Por defecto sí: una selección parcial sin miniaturas de topics deja la
-            // navegación con huecos visuales.
-            allThumbnails: item.allThumbnails ?? true,
+            // Solo cuando hay selección parcial: ahí las miniaturas de los topics no
+            // seleccionados no vendrían y la navegación quedaría con huecos. En un
+            // canal completo ya vienen, así que pedirlas solo añade descarga.
+            allThumbnails: item.allThumbnails ?? item.nodeIds.length > 0,
         });
 
         const created = await apiJson<KolibriJob | KolibriJob[]>(
-            session, '/api/tasks/tasks/',
+            holder.current, '/api/tasks/tasks/',
             { method: 'POST', body: JSON.stringify(payload) }, 30000);
         const kolibriJob = Array.isArray(created) ? created[0] : created;
         if (!kolibriJob?.id) throw new Error('Kolibri no devolvió un id de job');
         ctx.log(`job de Kolibri: ${kolibriJob.id}`);
 
-        await pollKolibriJob(ctx, session, kolibriJob.id, label, index, parsed.length);
+        await pollKolibriJob(ctx, holder, kolibriJob.id, label, index, parsed.length);
     }
 
     ctx.update({ phase: 'done', percent: 100, detail: null });
@@ -237,7 +258,7 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
 /** Sigue un job de Kolibri hasta su estado terminal, reflejando el progreso. */
 async function pollKolibriJob(
     ctx: RunnerContext,
-    session: KolibriSession,
+    holder: SessionHolder,
     kolibriJobId: string,
     label: string,
     index: number,
@@ -248,10 +269,20 @@ async function pollKolibriJob(
     let lastSampleAt = Date.now();
     let lastProgressAt = Date.now();
     let taken = false;
+    let reauths = 0;
 
     const cancelInKolibri = async (): Promise<void> => {
         try {
-            await apiFetch(session, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
+            await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
+                { method: 'POST', body: '{}' });
+        } catch { /* mejor esfuerzo */ }
+    };
+
+    const clearInKolibri = async (): Promise<void> => {
+        // OJO: DELETE /api/tasks/tasks/<id>/ devuelve 405 — el viewset define
+        // delete() pero no destroy(), así que el router no lo enruta.
+        try {
+            await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/clear/`,
                 { method: 'POST', body: '{}' });
         } catch { /* mejor esfuerzo */ }
     };
@@ -267,8 +298,15 @@ async function pollKolibriJob(
 
         let job: KolibriJob;
         try {
-            job = await apiJson<KolibriJob>(session, `/api/tasks/tasks/${kolibriJobId}/`);
+            job = await apiJson<KolibriJob>(holder.current, `/api/tasks/tasks/${kolibriJobId}/`);
         } catch (e) {
+            // Sesión caducada: un import puede durar horas y sobrevivir a la sesión
+            // de Django. Reautenticar y seguir, en lugar de perder un job que
+            // Kolibri probablemente esté completando.
+            if (e instanceof KolibriApiError && e.isAuthExpired && reauths < MAX_REAUTH) {
+                reauths++;
+                if (await reauthenticate(ctx, holder)) { continue; }
+            }
             // Un fallo puntual de polling no debe matar el job: Kolibri sigue
             // trabajando. Solo abortamos si persiste más allá del stall timeout.
             if (Date.now() - lastProgressAt > STALL_TIMEOUT_MS) {
@@ -327,13 +365,19 @@ async function pollKolibriJob(
         }
 
         if (TERMINAL_STATES.has(job.status)) {
+            // Se limpia en TODOS los caminos terminales, no solo en el éxito: si no,
+            // los jobs fallidos se acumulan en la cola de Kolibri.
             if (job.status === 'FAILED') {
                 const detail = job.exception || 'sin detalle';
                 ctx.log(`FALLO en Kolibri: ${detail}`);
                 if (job.traceback) ctx.log(job.traceback.split('\n').slice(-6).join('\n'));
+                await clearInKolibri();
                 throw new Error(`Kolibri falló importando ${label}: ${detail}`);
             }
-            if (job.status === 'CANCELED') throw new CanceledError();
+            if (job.status === 'CANCELED') {
+                await clearInKolibri();
+                throw new CanceledError();
+            }
 
             // COMPLETED no garantiza que se haya descargado algo: con node_ids
             // inexistentes la tarea termina bien sin transferir un byte.
@@ -341,18 +385,12 @@ async function pollKolibriJob(
             const got = meta.transferred_resources ?? 0;
             const mb = Math.round((meta.transferred_file_size ?? 0) / 1048576);
             ctx.log(`completado: ${got}/${expected} recursos, ${mb} MB`);
+            await clearInKolibri();
             if (expected > 0 && got === 0) {
                 throw new Error(
                     `Kolibri terminó sin transferir nada de ${label}: revisa los nodeIds. `
                     + 'Una selección vacía termina con éxito y sin contenido.');
             }
-
-            // Limpieza. OJO: DELETE /api/tasks/tasks/<id>/ devuelve 405 (el viewset
-            // define delete() pero no destroy(), así que el router no lo enruta).
-            try {
-                await apiFetch(session, `/api/tasks/tasks/${kolibriJobId}/clear/`,
-                    { method: 'POST', body: '{}' });
-            } catch { /* mejor esfuerzo */ }
             return;
         }
 

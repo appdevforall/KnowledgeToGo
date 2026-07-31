@@ -15,7 +15,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { cookieValue, mergeCookies } from './kolibri.session';
+import { cookieValue, mergeCookies, matchesOrigin, KolibriApiError } from './kolibri.session';
 import {
     mapPhase, mapPercent, normalizeUuid, buildTaskPayload, overallPercent, sampleSpeed,
 } from './kolibri.map';
@@ -216,4 +216,64 @@ test('sampleSpeed devuelve null sin avance, para no pisar la velocidad anterior'
 test('sampleSpeed no divide por cero con dos muestras simultáneas', () => {
     const v = sampleSpeed(0, 100, 5000, 5000);
     assert.ok(v !== null && Number.isFinite(v) && v > 0);
+});
+
+// ─── matchesOrigin ───────────────────────────────────────────────────────────
+// Decide si importcontent podrá resolver el origen: si no hay coincidencia se cae
+// al fallback que llama a ifaddr, bloqueado por netlink bajo proot.
+
+const STUDIO = 'https://studio.learningequality.org';
+
+test('matchesOrigin acepta la fila con y sin barra final', () => {
+    assert.equal(matchesOrigin([{ base_url: STUDIO }], STUDIO), true);
+    assert.equal(matchesOrigin([{ base_url: `${STUDIO}/` }], STUDIO), true);
+    // Y también si lo buscado trae la barra y lo almacenado no.
+    assert.equal(matchesOrigin([{ base_url: STUDIO }], `${STUDIO}/`), true);
+});
+
+test('matchesOrigin no depende del location_type: cualquier fila vale', () => {
+    // known_location_for_address() tampoco filtra por tipo, así que una 'static'
+    // creada por nosotros sirve igual que las 'reserved' que siembra IIAB.
+    assert.equal(matchesOrigin([{ base_url: STUDIO, nickname: 'K2Go content origin' }], STUDIO), true);
+});
+
+test('matchesOrigin encuentra la coincidencia entre varias filas', () => {
+    const rows = [
+        { base_url: 'http://192.168.1.50:8080' },
+        { base_url: 'https://kolibridataportal.learningequality.org' },
+        { base_url: `${STUDIO}/` },
+    ];
+    assert.equal(matchesOrigin(rows, STUDIO), true);
+});
+
+test('matchesOrigin rechaza cuando no hay ninguna fila del origen', () => {
+    assert.equal(matchesOrigin([], STUDIO), false);
+    assert.equal(matchesOrigin([{ base_url: 'http://192.168.1.50:8080' }], STUDIO), false);
+    // Un prefijo no es una coincidencia.
+    assert.equal(matchesOrigin([{ base_url: 'https://studio.learningequality.org.evil.test' }], STUDIO), false);
+});
+
+test('matchesOrigin tolera filas sin base_url', () => {
+    assert.equal(matchesOrigin([{}, { base_url: undefined }, { base_url: STUDIO }], STUDIO), true);
+    assert.equal(matchesOrigin([{}, { base_url: undefined }], STUDIO), false);
+});
+
+// ─── KolibriApiError ─────────────────────────────────────────────────────────
+
+test('KolibriApiError distingue sesión caducada de otros fallos', () => {
+    // Django responde 403 (no 401) cuando la sesión murió y el CSRF ya no vale;
+    // ambos deben disparar el re-login del poll.
+    assert.equal(new KolibriApiError(401, 'x').isAuthExpired, true);
+    assert.equal(new KolibriApiError(403, 'x').isAuthExpired, true);
+    assert.equal(new KolibriApiError(404, 'x').isAuthExpired, false);
+    assert.equal(new KolibriApiError(500, 'x').isAuthExpired, false);
+    assert.equal(new KolibriApiError(503, 'x').isAuthExpired, false);
+});
+
+test('KolibriApiError conserva el status y es un Error', () => {
+    const e = new KolibriApiError(418, 'soy una tetera');
+    assert.ok(e instanceof Error);
+    assert.equal(e.status, 418);
+    assert.equal(e.name, 'KolibriApiError');
+    assert.match(e.message, /tetera/);
 });

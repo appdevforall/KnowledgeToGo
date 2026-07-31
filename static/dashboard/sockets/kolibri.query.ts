@@ -43,37 +43,37 @@ export interface InstalledChannel {
 /**
  * Canales presentes en el dispositivo y cuánto de cada uno está disponible.
  *
- * El DISTINCT no es cosmético: un LocalFile puede colgar de varios ContentNode, y
- * un JOIN plano contaría los mismos bytes varias veces.
+ * Un solo recorrido: la CTE reduce content_file × content_contentnode a pares
+ * DISTINCT (channel_id, local_file_id) y luego se agrega una vez. El DISTINCT no es
+ * cosmético — un LocalFile puede colgar de varios ContentNode del mismo canal, y un
+ * JOIN plano contaría sus bytes tantas veces como nodos lo referencien.
+ *
+ * El LEFT JOIN es deliberado: un canal cuyos metadatos están importados pero sin
+ * contenido debe aparecer con ceros, no desaparecer del listado.
  */
 export function listInstalledChannels(): InstalledChannel[] {
     if (!fs.existsSync(MAIN_DB)) return [];
     const db = new Database(MAIN_DB, { readonly: true });
     try {
         const rows = db.prepare(`
+            WITH channel_files AS (
+                SELECT DISTINCT cn.channel_id AS channel_id,
+                                f.local_file_id AS local_file_id
+                FROM content_file f
+                JOIN content_contentnode cn ON cn.id = f.contentnode_id
+            )
             SELECT cm.id      AS id,
                    cm.name    AS name,
                    cm.version AS version,
-                   (SELECT COUNT(*) FROM content_localfile lf WHERE lf.id IN (
-                        SELECT DISTINCT f.local_file_id FROM content_file f
-                        JOIN content_contentnode cn ON cn.id = f.contentnode_id
-                        WHERE cn.channel_id = cm.id))                       AS filesTotal,
-                   (SELECT COUNT(*) FROM content_localfile lf
-                     WHERE lf.available = 1 AND lf.id IN (
-                        SELECT DISTINCT f.local_file_id FROM content_file f
-                        JOIN content_contentnode cn ON cn.id = f.contentnode_id
-                        WHERE cn.channel_id = cm.id))                       AS filesAvailable,
-                   (SELECT COALESCE(SUM(lf.file_size),0) FROM content_localfile lf
-                     WHERE lf.id IN (
-                        SELECT DISTINCT f.local_file_id FROM content_file f
-                        JOIN content_contentnode cn ON cn.id = f.contentnode_id
-                        WHERE cn.channel_id = cm.id))                       AS bytesTotal,
-                   (SELECT COALESCE(SUM(lf.file_size),0) FROM content_localfile lf
-                     WHERE lf.available = 1 AND lf.id IN (
-                        SELECT DISTINCT f.local_file_id FROM content_file f
-                        JOIN content_contentnode cn ON cn.id = f.contentnode_id
-                        WHERE cn.channel_id = cm.id))                       AS bytesAvailable
+                   COUNT(lf.id)                                                   AS filesTotal,
+                   COALESCE(SUM(CASE WHEN lf.available = 1 THEN 1 ELSE 0 END), 0)  AS filesAvailable,
+                   COALESCE(SUM(lf.file_size), 0)                                 AS bytesTotal,
+                   COALESCE(SUM(CASE WHEN lf.available = 1
+                                     THEN lf.file_size ELSE 0 END), 0)            AS bytesAvailable
             FROM content_channelmetadata cm
+            LEFT JOIN channel_files p      ON p.channel_id = cm.id
+            LEFT JOIN content_localfile lf ON lf.id = p.local_file_id
+            GROUP BY cm.id, cm.name, cm.version
             ORDER BY cm.name
         `).all() as Array<Omit<InstalledChannel, 'complete'>>;
         return rows.map((r) => ({
@@ -85,8 +85,18 @@ export function listInstalledChannels(): InstalledChannel[] {
     }
 }
 
-/** Bytes ya materializados en disco, excluyendo transferencias en curso.
- *  Es la única fuente fiable de progreso si algún día se necesita sin la API. */
+/**
+ * Bytes ya materializados en disco, excluyendo transferencias en curso.
+ *
+ * NO LLAMAR DESDE UN HANDLER REST. Es un recorrido sincrónico del árbol de
+ * contenido: en un dispositivo poblado son decenas de miles de ficheros, y Node es
+ * monohilo, así que bloquearía todos los demás endpoints —incluidos los jobs de
+ * kiwix/maps/books— durante el recorrido.
+ *
+ * Se conserva porque es la única fuente de progreso que no depende de la API de
+ * Kolibri (su columna `available` se marca de golpe al final del import). Si algún
+ * día se necesita en vivo, hay que pasarlo a fs.promises y cachearlo.
+ */
 export function contentBytesOnDisk(): number {
     const storage = path.join(CONTENT_DIR, 'storage');
     let total = 0;
@@ -288,7 +298,10 @@ export async function deleteChannel(channelId: string, channelName?: string): Pr
 
 /** Diagnóstico ampliado: readiness + estado local. Lo consume /kolibri/preflight.
  *  checkReadiness() no lanza: siempre devuelve un diagnóstico, así que un Kolibri
- *  caído se refleja en los campos en lugar de romper la respuesta. */
+ *  caído se refleja en los campos en lugar de romper la respuesta.
+ *
+ *  Los bytes salen de SQLite, no del disco: sumar bytesAvailable da el mismo dato
+ *  que recorrer content/storage y no bloquea el event loop. */
 export async function preflight(): Promise<Record<string, unknown>> {
     const readiness = await checkReadiness();
     let installed: InstalledChannel[] = [];
@@ -300,7 +313,8 @@ export async function preflight(): Promise<Record<string, unknown>> {
         contentDir: CONTENT_DIR,
         installedChannels: installed.length,
         channels: installed,
-        bytesOnDisk: (() => { try { return contentBytesOnDisk(); } catch { return null; } })(),
+        bytesAvailable: installed.reduce((sum, c) => sum + c.bytesAvailable, 0),
+        bytesTotal: installed.reduce((sum, c) => sum + c.bytesTotal, 0),
     };
 }
 
