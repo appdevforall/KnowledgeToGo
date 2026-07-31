@@ -204,21 +204,9 @@ public class SettingsSubFragment extends Fragment {
 
     // ---- Advanced (power-user features — preview for now) ----
     private void buildAdvanced(Context ctx, LinearLayout list) {
+        // ADFA-4968: System (Module management, Backups & recovery) moved to the Settings top level.
+        // With System gone the DEVELOPER header is redundant, so Advanced is just the developer tools.
         SettingsUi.caption(ctx, list, getString(R.string.k2go_settings_power_users));
-        SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_system));
-        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_module_mgmt), getString(R.string.k2go_settings_module_mgmt_sub), null, v -> {
-            // ADFA-4842: entry-point-agnostic launch of the module hub (also reachable from Get More).
-            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
-            i.putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true);
-            ctx.startActivity(i);
-        });
-        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_backups), getString(R.string.k2go_br_row_sub), null, v -> {
-            // ADFA-4952: Backup & restore hub (SAF, one step per direction).
-            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
-            i.putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true);
-            ctx.startActivity(i);
-        });
-        SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_developer));
         SettingsUi.preview(ctx, list, "ADB", null);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_network_dns), getString(R.string.setup_dns_hint), null, v -> openSub("dns"));
         SettingsUi.row(ctx, list, "Terminal (Debian)", null, null, v -> openTerminal(ctx));

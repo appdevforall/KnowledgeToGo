@@ -3,6 +3,11 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:background="@color/k2go_paper">
 
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="@string/k2go_tab_settings"
+        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="14dp" android:paddingBottom="6dp"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall" android:textColor="@color/k2go_ink" />
+
     <ScrollView android:layout_width="match_parent" android:layout_height="0dp"
         android:layout_weight="1" android:fillViewport="true">
         <LinearLayout android:id="@+id/k2go_settings_list" android:layout_width="match_parent"

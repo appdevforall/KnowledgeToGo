@@ -93,7 +93,7 @@
     <string name="k2go_settings_theme">Theme</string>
     <string name="k2go_settings_help">Help</string>
     <string name="k2go_settings_send_feedback">Send feedback</string>
-    <string name="k2go_settings_advanced_sub">System, backups, developer tools</string>
+    <string name="k2go_settings_advanced_sub">Developer tools</string>
     <string name="k2go_theme_light">Light</string>
     <string name="k2go_theme_system">Follow system</string>
     <string name="k2go_theme_dark">Dark</string>
