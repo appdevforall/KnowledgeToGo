@@ -9,6 +9,14 @@ import { spawn } from 'child_process';
 import { jobs, Job, JobType } from './sockets/jobs';
 import { searchCatalog, listLibrary, removeBook, listLanguages } from './sockets/books.query';
 import { parseBox, parseEstimate } from './sockets/maps.socket';
+import {
+    preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
+    browseChannelTree, estimateSelection, deleteChannel, verifyCredentials,
+} from './sockets/kolibri.query';
+import { checkReadiness, KolibriAuthError } from './sockets/kolibri.session';
+import {
+    describeCredential, setCredential, clearCredential, isServiceName,
+} from './sockets/credentials';
 
 // ADFA-4879: FQR helpers reached from the app (in-app region download/delete instead of the
 // copy-paste-into-a-terminal flow). tile-extract.py is installed on the box by the upstream maps
@@ -17,7 +25,7 @@ import { parseBox, parseEstimate } from './sockets/maps.socket';
 const MAPS_SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const MAPS_NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
 
-const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books'];
+const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri'];
 function isType(t: string): t is JobType {
     return (VALID_TYPES as string[]).includes(t);
 }
@@ -151,6 +159,206 @@ apiRouter.post('/maps/delete', (req: Request, res: Response): void => {
         if (code === 0) res.json({ ok: true });
         else res.status(500).json({ error: err.trim() || `delete exited ${code}` });
     });
+});
+
+// --- Kolibri: readiness, catálogo y selección (ADFA-4949) -------------------------
+// Consultas directas (no-job). La descarga en sí es un job durable
+// (POST /kolibri/download), que sale gratis al añadir 'kolibri' a VALID_TYPES.
+//
+// Nota de puertos y prefijos: nginx expone Kolibri en /kolibri/ y además le enruta
+// /api/, /content/, /device/ y /learn/ en el :8085 compartido. Nosotros hablamos
+// con Kolibri directamente en 127.0.0.1:8009 desde dentro, así que no hay colisión.
+
+/** Traduce un KolibriAuthError al status HTTP correcto. */
+function authStatus(e: unknown): number {
+    if (e instanceof KolibriAuthError) {
+        switch (e.reason) {
+            case 'unreachable': return 503;   // el servicio no está listo
+            case 'credentials': return 401;
+            case 'permission': return 403;
+            default: return 502;
+        }
+    }
+    return 500;
+}
+
+// El "gate" de arranque: mientras ready sea false, no tiene sentido lanzar jobs.
+// Nunca lanza: siempre devuelve un diagnóstico con los bloqueadores en claro.
+apiRouter.get('/kolibri/ready', async (_req: Request, res: Response): Promise<void> => {
+    try {
+        const readiness = await checkReadiness();
+        // 200 siempre: es un endpoint de estado, no una operación. El cliente mira
+        // el campo `ready`, no el status.
+        res.json(readiness);
+    } catch (e: any) {
+        res.status(500).json({ ready: false, blockers: [e?.message || 'readiness failed'] });
+    }
+});
+
+// Diagnóstico ampliado: readiness + estado local (canales, bytes en disco, rutas).
+apiRouter.get('/kolibri/preflight', async (_req: Request, res: Response): Promise<void> => {
+    try {
+        res.json(await preflight());
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'preflight failed' });
+    }
+});
+
+// Qué hay ya en el dispositivo. Lectura local en readonly: no necesita ni sesión
+// ni que Kolibri esté arriba.
+apiRouter.get('/kolibri/channels', (_req: Request, res: Response): void => {
+    try {
+        res.json(listInstalledChannels());
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'channel list failed' });
+    }
+});
+
+// Catálogo remoto para el selector del wizard. ?keyword= y ?language= opcionales.
+apiRouter.get('/kolibri/catalog', async (req: Request, res: Response): Promise<void> => {
+    try {
+        res.json(await browseRemoteChannels({
+            keyword: req.query.keyword ? String(req.query.keyword) : undefined,
+            language: req.query.language ? String(req.query.language) : undefined,
+        }));
+    } catch (e: any) {
+        res.status(authStatus(e)).json({ error: e?.message || 'catalog fetch failed' });
+    }
+});
+
+// Resuelve un token (xxxxx-xxxxx) o un UUID a su canal. El usuario copia tokens de
+// Studio, pero las tareas exigen el hex de 32.
+apiRouter.get('/kolibri/resolve/:identifier', async (req: Request, res: Response): Promise<void> => {
+    try {
+        res.json(await resolveIdentifier(String(req.params.identifier)));
+    } catch (e: any) {
+        const status = e instanceof KolibriAuthError ? authStatus(e) : 404;
+        res.status(status).json({ error: e?.message || 'not found' });
+    }
+});
+
+// Un nivel del árbol del canal, para elegir subárboles.
+// PRECONDICIÓN: los metadatos del canal deben estar ya en la base local, o sea que
+// hay que haber importado el canal antes. Es el mismo flujo que la UI de Kolibri:
+// primero los metadatos (MB), luego la selección del contenido (GB).
+apiRouter.get('/kolibri/tree/:channelId', async (req: Request, res: Response): Promise<void> => {
+    try {
+        const nodeId = req.query.nodeId ? String(req.query.nodeId) : undefined;
+        res.json(await browseChannelTree(String(req.params.channelId), nodeId));
+    } catch (e: any) {
+        res.status(authStatus(e)).json({ error: e?.message || 'tree fetch failed' });
+    }
+});
+
+// Tamaño exacto de una selección + espacio libre, para el paso de consentimiento.
+// Body: { channelId, nodeIds?, excludeNodeIds? }
+apiRouter.post('/kolibri/estimate', async (req: Request, res: Response): Promise<void> => {
+    const body = req.body as { channelId?: unknown; nodeIds?: unknown; excludeNodeIds?: unknown };
+    const channelId = String(body?.channelId ?? '').trim();
+    if (!channelId) { res.status(400).json({ error: 'channelId required' }); return; }
+    try {
+        res.json(await estimateSelection(
+            channelId,
+            Array.isArray(body.nodeIds) ? body.nodeIds.map(String) : undefined,
+            Array.isArray(body.excludeNodeIds) ? body.excludeNodeIds.map(String) : undefined,
+        ));
+    } catch (e: any) {
+        res.status(authStatus(e)).json({ error: e?.message || 'estimate failed' });
+    }
+});
+
+// Borrar un canal. Devuelve el id del job de Kolibri, no del motor local: es una
+// operación corta y no merece un job durable.
+apiRouter.post('/kolibri/delete', async (req: Request, res: Response): Promise<void> => {
+    const body = req.body as { channelId?: unknown; channelName?: unknown };
+    const channelId = String(body?.channelId ?? '').trim();
+    if (!channelId) { res.status(400).json({ error: 'channelId required' }); return; }
+    try {
+        const jobId = await deleteChannel(channelId,
+            body.channelName ? String(body.channelName) : undefined);
+        res.json({ ok: true, kolibriJobId: jobId });
+    } catch (e: any) {
+        res.status(authStatus(e)).json({ error: e?.message || 'delete failed' });
+    }
+});
+
+// --- Credenciales de servicios (ADFA-4949) ---------------------------------------
+// Permite al webview actualizar usuario/contraseña sin recompilar. La contraseña
+// NUNCA se devuelve: el GET solo dice qué usuario hay y de dónde sale.
+
+apiRouter.get('/credentials/:service', (req: Request, res: Response): void => {
+    const service = String(req.params.service);
+    if (!isServiceName(service)) { res.status(404).json({ error: 'unknown service' }); return; }
+    try {
+        res.json(describeCredential(service));
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'read failed' });
+    }
+});
+
+// Valida ANTES de persistir: así el error aparece en el formulario donde se cometió,
+// no media hora después en una descarga fallida.
+//   401 → credenciales rechazadas (no se guarda nada)
+//   403 → autentica pero no puede gestionar contenido (no se guarda nada)
+//   503 → Kolibri no responde; la capa de arranque debe resolverlo primero
+apiRouter.post('/credentials/:service', async (req: Request, res: Response): Promise<void> => {
+    const service = String(req.params.service);
+    if (!isServiceName(service)) { res.status(404).json({ error: 'unknown service' }); return; }
+
+    const body = req.body as { username?: unknown; password?: unknown };
+    const username = String(body?.username ?? '').trim();
+    const password = String(body?.password ?? '');
+    if (!username || !password) {
+        res.status(400).json({ error: 'username and password required' });
+        return;
+    }
+
+    // Por ahora solo Kolibri se valida en vivo. Para otros servicios se guarda tal
+    // cual (calibre sigue con sus constantes hasta que se migre en su propio PR).
+    if (service !== 'kolibri') {
+        try {
+            setCredential(service, { username, password });
+            res.json({ ok: true, verified: false, service });
+        } catch (e: any) {
+            res.status(500).json({ error: e?.message || 'save failed' });
+        }
+        return;
+    }
+
+    try {
+        const check = await verifyCredentials(username, password);
+        if (!check.canManageContent) {
+            // Distinguir esto de "contraseña mala" ahorra horas de diagnóstico: el
+            // usuario existe y la clave es correcta, pero no puede importar contenido.
+            res.status(403).json({
+                error: `'${username}' autentica pero no tiene permiso para gestionar contenido`,
+                saved: false,
+            });
+            return;
+        }
+        setCredential('kolibri', { username, password });
+        res.json({ ok: true, verified: true, service, username: check.username });
+    } catch (e: any) {
+        const status = authStatus(e);
+        res.status(status).json({
+            error: status === 401
+                ? 'Kolibri rechazó estas credenciales'
+                : (e?.message || 'verification failed'),
+            saved: false,
+        });
+    }
+});
+
+// Volver al valor de fábrica (o a la variable de entorno, si está puesta).
+apiRouter.delete('/credentials/:service', (req: Request, res: Response): void => {
+    const service = String(req.params.service);
+    if (!isServiceName(service)) { res.status(404).json({ error: 'unknown service' }); return; }
+    try {
+        clearCredential(service);
+        res.json({ ok: true, ...describeCredential(service) });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'reset failed' });
+    }
 });
 
 // Start a content job → 202 { ...job }

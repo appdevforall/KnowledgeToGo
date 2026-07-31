@@ -8,6 +8,7 @@ import { jobs } from './sockets/jobs';
 import './sockets/kiwix.exec';
 import './sockets/maps.exec';
 import './sockets/books.exec';
+import './sockets/kolibri.exec';
 import { apiRouter } from './routes';
 
 const app = express();

@@ -13,7 +13,7 @@ import fs from 'fs';
 import path from 'path';
 import { RollingLog, LogSlice } from './rolling-log';
 
-export type JobType = 'kiwix' | 'maps' | 'books';
+export type JobType = 'kiwix' | 'maps' | 'books' | 'kolibri';
 export type JobPhase =
     | 'queued' | 'downloading' | 'indexing' | 'processing'
     | 'done' | 'error' | 'canceled';
