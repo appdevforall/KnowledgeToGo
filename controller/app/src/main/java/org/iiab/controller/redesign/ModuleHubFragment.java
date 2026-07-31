@@ -121,6 +121,14 @@ public class ModuleHubFragment extends Fragment {
     private void buildCards() {
         if (host == null) return;
         host.removeAllViews();
+        TextView helper = new TextView(requireContext());   // ADFA-4958
+        helper.setText(R.string.k2go_mod_mgmt_helper);
+        helper.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        helper.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        LinearLayout.LayoutParams helperLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        helperLp.bottomMargin = px(8);
+        host.addView(helper, helperLp);
 
         List<ModuleCards.Card> items = new ArrayList<>();
         for (ModuleCards.Card c : ModuleCards.all()) if (installable.contains(c.key())) items.add(c);
@@ -232,6 +240,21 @@ public class ModuleHubFragment extends Fragment {
                 ((SetupLibraryActivity) getActivity()).openModuleDetail(c.key());
             }
         });
+
+        if (!c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector)
+            com.google.android.material.checkbox.MaterialCheckBox cb =
+                    new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
+            cb.setChecked(ModuleWishlist.contains(requireContext(), c.key()));
+            cb.setOnCheckedChangeListener((b, chk) -> {
+                if (chk) ModuleWishlist.add(requireContext(), c.key());
+                else ModuleWishlist.remove(requireContext(), c.key());
+                refreshProceed();
+            });
+            LinearLayout.LayoutParams cblp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            cblp.rightMargin = px(4);
+            row.addView(cb, cblp);
+        }
 
         LinearLayout col = new LinearLayout(requireContext());
         col.setOrientation(LinearLayout.VERTICAL);
