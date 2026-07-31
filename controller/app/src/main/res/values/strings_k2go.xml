@@ -150,6 +150,12 @@
     <string name="k2go_settings_backups">Backups &amp; recovery</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
+    <string name="k2go_dns_toggle_sub" translatable="false">Use a custom DNS. Off = server defaults.</string>
+    <string name="k2go_dns_required" translatable="false">Required</string>
+    <string name="k2go_dns_optional" translatable="false">Optional</string>
+    <string name="k2go_dns_default_title" translatable="false">Using default DNS</string>
+    <string name="k2go_dns_default_note" translatable="false">Cloudflare · Google. Written on server start.</string>
+    <string name="k2go_dns_testing" translatable="false">Testing DNS reachability…</string>
     <!-- ADFA-4795: redesign dialogs, toasts, Step2/Library setText (sweep 2) -->
     <string name="k2go_clone_switch_title">Switch to %1$s?</string>
     <string name="k2go_clone_switch_msg">This stops any copy in progress. The other phone can start again by rescanning the new code.</string>
