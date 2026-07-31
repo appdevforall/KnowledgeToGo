@@ -217,44 +217,9 @@ public class ServerController {
     // --- fake /proc sysdata for the container -----------------------------------
 
     public void createFakeSysData(File rootfsDir) {
-        try {
-            File procDir = new File(rootfsDir, "proc");
-            if (!procDir.exists()) procDir.mkdirs();
-
-            long uptimeMillis = android.os.SystemClock.elapsedRealtime();
-            long bootTimeSeconds = (System.currentTimeMillis() - uptimeMillis) / 1000;
-            double uptimeSeconds = uptimeMillis / 1000.0;
-
-            File uptimeFile = new File(procDir, ".uptime");
-            if (uptimeFile.exists()) uptimeFile.delete();
-            java.io.FileOutputStream fosUp = new java.io.FileOutputStream(uptimeFile);
-            fosUp.write(String.format(java.util.Locale.US, "%.2f %.2f\n", uptimeSeconds, uptimeSeconds).getBytes());
-            fosUp.close();
-
-            File versionFile = new File(procDir, ".version");
-            if (!versionFile.exists()) {
-                java.io.FileOutputStream fosVer = new java.io.FileOutputStream(versionFile);
-                fosVer.write("Linux version 6.17.0-PRoot-IIAB (builder@iiab) (Android NDK) #1 SMP PREEMPT Thu Apr 30 20:00:00 UTC 2026\n".getBytes());
-                fosVer.close();
-            }
-
-            File statFile = new File(procDir, ".stat");
-            if (statFile.exists()) statFile.delete();
-            java.io.FileOutputStream fosStat = new java.io.FileOutputStream(statFile);
-            String statContent = "cpu  1000 0 1000 10000 0 0 0 0 0 0\n" +
-                    "btime " + bootTimeSeconds + "\n";
-            fosStat.write(statContent.getBytes());
-            fosStat.close();
-
-            File loadavgFile = new File(procDir, ".loadavg");
-            if (!loadavgFile.exists()) {
-                java.io.FileOutputStream fosLoad = new java.io.FileOutputStream(loadavgFile);
-                fosLoad.write("0.00 0.00 0.00 1/1 1\n".getBytes());
-                fosLoad.close();
-            }
-        } catch (Exception e) {
-            android.util.Log.e(TAG, "Failed to create dynamic fake sysdata", e);
-        }
+        // ADFA-4957: single implementation lives in EnvironmentControl so the deep-op foreground
+        // service can write the same fake /proc data when it boots the environment off-UI.
+        org.iiab.controller.env.EnvironmentControl.createFakeSysData(rootfsDir);
     }
 
     // --- server start / stop (the control button) -------------------------------
