@@ -148,6 +148,33 @@
     <string name="k2go_mod_matomo_sub" translatable="false">Matomo</string>
     <string name="k2go_mod_matomo_desc" translatable="false">Private, self-hosted usage analytics for your library. Understand how content is used, all on the device.</string>
     <string name="k2go_settings_backups">Backups &amp; recovery</string>
+    <!-- ADFA-4952: Backup &amp; restore -->
+    <string name="k2go_br_row_sub" translatable="false">Save your system to a file, or restore it</string>
+    <string name="k2go_br_title" translatable="false">Backup &amp; restore</string>
+    <string name="k2go_br_desc" translatable="false">Save your whole system to a file you can keep or move, or restore it from one. The server stops while this runs.</string>
+    <string name="k2go_br_prompt" translatable="false">What do you want to do?</string>
+    <string name="k2go_br_backup_title" translatable="false">Back up</string>
+    <string name="k2go_br_backup_sub" translatable="false">Save the current system to a file</string>
+    <string name="k2go_br_restore_title" translatable="false">Restore</string>
+    <string name="k2go_br_restore_sub" translatable="false">Replace the system from a file</string>
+    <string name="k2go_br_soon" translatable="false">Coming in the next build</string>
+    <string name="k2go_br_start" translatable="false">Start</string>
+    <string name="k2go_br_backup_warn" translatable="false">Starting the backup stops the server and blocks other operations until it finishes.</string>
+    <string name="k2go_br_status_stopping" translatable="false">Stopping services</string>
+    <string name="k2go_br_status_backing" translatable="false">Backing up</string>
+    <string name="k2go_br_backup_done" translatable="false">Backup saved</string>
+    <string name="k2go_br_backup_failed" translatable="false">Backup failed — try again</string>
+    <string name="k2go_br_done" translatable="false">Done</string>
+    <string name="k2go_br_done_title" translatable="false">Done</string>
+    <string name="k2go_br_failed_title" translatable="false">Something went wrong</string>
+    <string name="k2go_br_restore_pick" translatable="false">Choose a file &amp; restore</string>
+    <string name="k2go_br_status_checking" translatable="false">Checking the file</string>
+    <string name="k2go_br_status_restoring" translatable="false">Restoring</string>
+    <string name="k2go_br_restore_warn" translatable="false">This replaces your current system with the chosen backup. It can\'t be undone, and the server stops while it runs.</string>
+    <string name="k2go_br_restore_confirm" translatable="false">Replace system</string>
+    <string name="k2go_br_restore_done" translatable="false">System restored</string>
+    <string name="k2go_br_restore_failed" translatable="false">Restore failed</string>
+    <string name="k2go_br_busy_wait" translatable="false">This is running and can\'t be interrupted — please wait.</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <string name="k2go_dns_toggle_sub" translatable="false">Use a custom DNS. Off = server defaults.</string>

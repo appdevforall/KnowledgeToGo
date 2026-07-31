@@ -212,7 +212,12 @@ public class SettingsSubFragment extends Fragment {
             i.putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true);
             ctx.startActivity(i);
         });
-        SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_backups), null);
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_backups), getString(R.string.k2go_br_row_sub), null, v -> {
+            // ADFA-4952: Backup & restore hub (SAF, one step per direction).
+            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
+            i.putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true);
+            ctx.startActivity(i);
+        });
         SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_developer));
         SettingsUi.preview(ctx, list, "ADB", null);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_network_dns), getString(R.string.setup_dns_hint), null, v -> openSub("dns"));
