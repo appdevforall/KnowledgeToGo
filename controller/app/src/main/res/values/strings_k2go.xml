@@ -664,8 +664,8 @@
     <string name="k2go_mod_kolibri_includes" translatable="false">Sample courses included — add more in Get more.</string>
     <string name="k2go_mod_calibreweb_includes" translatable="false">Reader only — add books in Get more.</string>
     <string name="k2go_mod_kiwix_includes" translatable="false">Reader only — add Wikipedia and ZIM in Get more.</string>
-    <string name="k2go_mod_code_includes" translatable="false">The IDE itself — your projects live on the device.</string>
-    <string name="k2go_mod_matomo_includes" translatable="false">Analytics for the box — nothing to add.</string>
+    <string name="k2go_mod_code_includes" translatable="false">The code editor itself — your projects live on the device.</string>
+    <string name="k2go_mod_matomo_includes" translatable="false">Analytics for this server — nothing to add.</string>
     <string name="k2go_mod_maps_includes" translatable="false">Base map — pick the layers and region when you install.</string>
     <!-- ADFA-4958 hide / restore / management -->
     <string name="k2go_sheet_hide" translatable="false">Hide</string>
