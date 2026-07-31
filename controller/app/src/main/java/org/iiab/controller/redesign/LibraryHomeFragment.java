@@ -141,6 +141,11 @@ public class LibraryHomeFragment extends Fragment {
             c.dot = card.findViewById(R.id.k2go_card_dot);
             c.status = card.findViewById(R.id.k2go_card_status);
             card.setOnClickListener(v -> onCardClick(c));
+            View ov = card.findViewById(R.id.k2go_card_overflow);   // ADFA-4958
+            if (ov != null) {
+                if (ModuleCards.byEndpoint(c.endpoint) != null) { ov.setOnClickListener(w -> openSheet(c)); }
+                else ov.setVisibility(View.GONE);   // non-module card (maps): no module sheet
+            }
             applyState(c, c.state);   // keep the live status across a relayout
             cells.add(card);
         }
@@ -204,6 +209,8 @@ public class LibraryHomeFragment extends Fragment {
             Intent i = new Intent(requireContext(), PortalActivity.class);
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
             startActivity(i);
+        } else if (ModuleCards.byEndpoint(c.endpoint) != null) {   // ADFA-4958: module -> action sheet
+            openSheet(c);
         } else {
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
@@ -212,6 +219,21 @@ public class LibraryHomeFragment extends Fragment {
             });
             Toast.makeText(requireContext(), getString(R.string.k2go_retrying), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    // ADFA-4958: the module action sheet is the single contextual surface for a module card.
+    private void openSheet(Card c) {
+        ModuleActionSheet.State s;
+        if (c.state == GREEN) s = ModuleActionSheet.State.READY;
+        else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
+        else s = ModuleActionSheet.State.NOT_INSTALLED;
+        ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
+                () -> { if (isAdded()) applyState(c, c.state); });   // refresh the Scheduled label
+    }
+
+    private boolean isScheduled(Card c) {
+        ModuleCards.Card m = ModuleCards.byEndpoint(c.endpoint);
+        return m != null && ModuleWishlist.contains(requireContext(), m.key());
     }
 
     @Override public void onResume() { super.onResume(); main.post(poll); }
@@ -365,6 +387,11 @@ public class LibraryHomeFragment extends Fragment {
         tint(c.dot, dotColor);
         c.status.setText(label);
         c.status.setTextColor(ContextCompat.getColor(requireContext(), textColor));
+        if (st != GREEN && isScheduled(c)) {   // ADFA-4958
+            tint(c.dot, R.color.k2go_teal);
+            c.status.setText(getString(R.string.k2go_state_scheduled));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        }
     }
 
     private void tint(View v, int colorRes) {
