@@ -5,15 +5,17 @@
 // download_books_batch handler (auth/CSRF + fetch + upload), made durable and reporting
 // structured per-book progress. A job item is { id, title, url }.
 import { jobs, RunnerContext } from './jobs';
+import { getCredential } from './credentials';
 import fs from 'fs';
 import path from 'path';
 
 const CALIBRE_WEB_LOCAL_URL = 'http://127.0.0.1:8083';
 const TMP_DIR = '/tmp/books_downloader/';
 const SYSTEM_USER_AGENT = 'K2Go Dashboard/1.0 (https://github.com/appdevforall/KnowledgeToGo)';
-// Defaults match the Phase 1 handler; a credential override can be added later if needed.
-const CALIBRE_WEB_USER = 'Admin';
-const CALIBRE_WEB_PASS = 'changeme';
+// ADFA-4949: the credential override the original comment anticipated. Values now
+// come from the shared store (env -> persisted override -> the same Admin/changeme
+// factory default), so a device whose Calibre-Web password changed keeps working
+// without a rebuild. Behaviour on an untouched device is identical.
 
 interface BookItem { id?: string; title?: string; url?: string; }
 
@@ -29,8 +31,9 @@ async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string 
 
     const loginData = new URLSearchParams();
     loginData.append('csrf_token', csrfToken);
-    loginData.append('username', CALIBRE_WEB_USER);
-    loginData.append('password', CALIBRE_WEB_PASS);
+    const cred = getCredential('calibre');
+    loginData.append('username', cred.username);
+    loginData.append('password', cred.password);
 
     const authRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`, {
         method: 'POST',

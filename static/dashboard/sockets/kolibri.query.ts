@@ -23,6 +23,7 @@ import {
     loginForContent, login, apiJson, apiFetch, checkReadiness,
     KolibriSession, STUDIO_URL,
 } from './kolibri.session';
+import { TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent } from './kolibri.map';
 
 const KOLIBRI_HOME = process.env.KOLIBRI_HOME || '/library/kolibri';
 const MAIN_DB = path.join(KOLIBRI_HOME, 'db.sqlite3');
@@ -281,19 +282,53 @@ export async function estimateSelection(
     };
 }
 
-/** Borra un canal completo (metadatos + archivos) vía la tarea de Kolibri. */
+/**
+ * Borra un canal completo (metadatos + archivos) vía la tarea de Kolibri.
+ *
+ * Devuelve el id del job DE KOLIBRI, no del motor local: es una operación corta y
+ * no merece un job durable. Se consulta con getKolibriTask() / GET /kolibri/task/:id.
+ */
 export async function deleteChannel(channelId: string, channelName?: string): Promise<string> {
     const session = await loginForContent();
     const job = await apiJson<{ id?: string }>(session, '/api/tasks/tasks/', {
         method: 'POST',
         body: JSON.stringify({
-            type: 'kolibri.core.content.tasks.deletechannel',
+            type: TASK_DELETE_CHANNEL,
             channel_id: channelId,
             channel_name: channelName || channelId,
         }),
     }, 30000);
     if (!job?.id) throw new Error('Kolibri no devolvió un id de job');
     return job.id;
+}
+
+export interface KolibriTaskStatus {
+    id: string;
+    status: string;
+    /** 0-100 entero, o -1 si Kolibri no reporta progreso para esta tarea. */
+    percent: number;
+    exception: string | null;
+    done: boolean;
+}
+
+/**
+ * Estado de una tarea de Kolibri lanzada fuera del motor de jobs (hoy, el borrado).
+ *
+ * Sin esto, deleteChannel() devolvía un id que ningún endpoint nuestro sabía
+ * consultar: el cliente recibía un identificador inútil.
+ */
+export async function getKolibriTask(taskId: string): Promise<KolibriTaskStatus> {
+    const session = await loginForContent();
+    const job = await apiJson<{
+        id: string; status: string; percentage: number | null; exception: string | null;
+    }>(session, `/api/tasks/tasks/${encodeURIComponent(taskId)}/`);
+    return {
+        id: job.id,
+        status: job.status,
+        percent: mapPercent(job.percentage),
+        exception: job.exception ?? null,
+        done: TERMINAL_STATES.has(job.status),
+    };
 }
 
 /** Diagnóstico ampliado: readiness + estado local. Lo consume /kolibri/preflight.

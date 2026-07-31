@@ -57,12 +57,21 @@ export function isServiceName(s: string): s is ServiceName {
 type Store = Partial<Record<ServiceName, Credential>>;
 
 /** Lectura tolerante: un fichero ausente o corrupto degrada a los defaults, no
- *  rompe el arranque del dashboard. */
+ *  rompe el arranque del dashboard.
+ *
+ *  Pero la degradación se REGISTRA. Silenciarla convierte "el fichero se corrompió"
+ *  en "las credenciales dejaron de funcionar sin motivo", que es media hora de
+ *  diagnóstico por un mensaje que costaba una línea. Un fichero ausente es normal
+ *  (nadie ha puesto override todavía) y no se registra. */
 function readStore(): Store {
     try {
         const raw = fs.readFileSync(STORE_PATH, 'utf8');
         const parsed = JSON.parse(raw) as unknown;
-        if (!parsed || typeof parsed !== 'object') return {};
+        if (!parsed || typeof parsed !== 'object') {
+            console.warn(`[credentials] ${STORE_PATH} no contiene un objeto JSON; `
+                + 'se usan los valores de fábrica');
+            return {};
+        }
         const out: Store = {};
         for (const svc of SERVICES) {
             const entry = (parsed as Record<string, unknown>)[svc];
@@ -74,7 +83,15 @@ function readStore(): Store {
             }
         }
         return out;
-    } catch {
+    } catch (e) {
+        // ENOENT es el caso normal: aún no hay override. Cualquier otra cosa
+        // (JSON roto, permisos) sí merece un aviso.
+        const code = (e as NodeJS.ErrnoException)?.code;
+        if (code !== 'ENOENT') {
+            console.warn(`[credentials] no se pudo leer ${STORE_PATH} `
+                + `(${e instanceof Error ? e.message : String(e)}); `
+                + 'se usan los valores de fábrica');
+        }
         return {};
     }
 }

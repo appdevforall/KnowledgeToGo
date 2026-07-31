@@ -9,6 +9,7 @@
 // The cover URL is DERIVED from the Gutenberg id (standard Gutenberg cover path) so we never
 // bloat the catalog with image blobs; the client loads it online with an offline fallback.
 import Database from 'better-sqlite3';
+import { getCredential } from './credentials';
 import fs from 'fs';
 import path from 'path';
 
@@ -18,8 +19,7 @@ const BOOKS_DIR = '/library/dashboard/books/';
 const CATALOG_DB_PATH = path.join(BOOKS_DIR, 'catalog.db');
 
 const CALIBRE_WEB_LOCAL_URL = 'http://127.0.0.1:8083';
-const CALIBRE_WEB_USER = 'Admin';
-const CALIBRE_WEB_PASS = 'changeme';
+// ADFA-4949: credentials come from the shared store (see sockets/credentials.ts).
 
 export interface CatalogBook {
     gutenberg_id: number | string;
@@ -117,8 +117,9 @@ async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string 
 
     const loginData = new URLSearchParams();
     loginData.append('csrf_token', csrfToken);
-    loginData.append('username', CALIBRE_WEB_USER);
-    loginData.append('password', CALIBRE_WEB_PASS);
+    const cred = getCredential('calibre');
+    loginData.append('username', cred.username);
+    loginData.append('password', cred.password);
 
     const authRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`, {
         method: 'POST',
