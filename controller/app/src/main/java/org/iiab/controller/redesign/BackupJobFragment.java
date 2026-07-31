@@ -69,6 +69,9 @@ public class BackupJobFragment extends Fragment {
     private Button primary, done;
     private org.iiab.controller.util.EllipsisAnimator statusDots;
     private boolean running = false;
+    // ADFA-4952: hard gate — while an op runs, back is consumed so a half-applied backup/restore can't
+    // be abandoned (that would leave the environment in a torn state). Enabled only while running.
+    private androidx.activity.OnBackPressedCallback backGate;
 
     private final ActivityResultLauncher<String> createDoc =
             registerForActivityResult(new ActivityResultContracts.CreateDocument("application/gzip"), uri -> {
@@ -149,6 +152,15 @@ public class BackupJobFragment extends Fragment {
         done.setVisibility(View.GONE);
         done.setOnClickListener(v -> goLibraryHome());
 
+        // ADFA-4952: intercept system/gesture back too (the back link already guards on `running`).
+        backGate = new androidx.activity.OnBackPressedCallback(false) {
+            @Override public void handleOnBackPressed() {
+                android.widget.Toast.makeText(requireContext(), getString(R.string.k2go_br_busy_wait),
+                        android.widget.Toast.LENGTH_SHORT).show();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGate);
+
         showReady();
         return scroll;
     }
@@ -156,6 +168,7 @@ public class BackupJobFragment extends Fragment {
     /** Idle "ready to start" state: title + warning + a Start button. */
     private void showReady() {
         running = false;
+        if (backGate != null) backGate.setEnabled(false);   // ADFA-4952: idle → back allowed
         if (statusDots != null) statusDots.stop();
         title.setText(getString(isRestore() ? R.string.k2go_br_restore_title : R.string.k2go_br_backup_title));
         status.setText(getString(R.string.k2go_br_backup_warn));   // both stop the server
@@ -278,6 +291,7 @@ public class BackupJobFragment extends Fragment {
 
     private void beginRunning() {
         running = true;
+        if (backGate != null) backGate.setEnabled(true);   // ADFA-4952: hard gate on
         primary.setVisibility(View.GONE);
         done.setVisibility(View.GONE);
         if (anim != null && !reduceMotion()) { anim.setRepeatCount(LottieDrawable.INFINITE); anim.playAnimation(); }
@@ -285,6 +299,7 @@ public class BackupJobFragment extends Fragment {
 
     private void finishResult(boolean ok, String okMsg, String failMsg) {
         running = false;
+        if (backGate != null) backGate.setEnabled(false);   // ADFA-4952: done → back allowed (Done button)
         if (anim != null) anim.pauseAnimation();
         if (statusDots != null) statusDots.stop();
         title.setText(getString(ok ? R.string.k2go_br_done_title : R.string.k2go_br_failed_title));
