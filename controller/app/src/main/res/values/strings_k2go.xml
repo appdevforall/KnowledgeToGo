@@ -28,7 +28,7 @@
     <string name="k2go_internet_download">Internet download</string>
     <string name="k2go_just_scan">Just scan — no need to type!</string>
     <string name="k2go_perm_keep_running">Keep running</string>
-    <string name="k2go_brand" translatable="false">Knowledge To Go</string>
+    <string name="k2go_brand" translatable="false">Knowledge to Go</string>
     <string name="k2go_connect_subtitle">Let a nearby device browse your library.</string>
     <string name="k2go_perm_nearby_note">Nearby devices is asked later, only when sharing.</string>
     <string name="k2go_next">Next</string>
@@ -50,8 +50,8 @@
     <string name="k2go_step2b_breadcrumb">1 ✓ System → 2 Content</string>
     <string name="k2go_step2a_breadcrumb">1 ✓ System → 2 Content</string>
     <string name="k2go_det_text">Text only</string>
-    <string name="k2go_clone_headsup">The K2Go library on the other phone (if any) is replaced with this one.</string>
-    <string name="k2go_step1_note">These are apps — the programs that open content. You\'ll choose the content itself in Step 2.</string>
+    <string name="k2go_clone_headsup">If there\'s a K2Go library on the other phone, it will be replaced with this one.</string>
+    <string name="k2go_step1_note">Apps are the programs that open content. Select the ones you want. You can add the content for the apps in Step 2.</string>
     <string name="k2go_connect_shownext">They\'re connected — show next ›</string>
     <string name="k2go_clone_total">Total copy</string>
     <string name="k2go_clone_receive_hdr">WHAT THEY\'LL RECEIVE</string>
@@ -98,7 +98,7 @@
     <string name="k2go_theme_system">Follow system</string>
     <string name="k2go_theme_dark">Dark</string>
     <string name="k2go_settings_turnoff_title">Turn off K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">This stops the library and closes the app. (Home or back only minimize it — it keeps running in the background.)</string>
+    <string name="k2go_settings_turnoff_msg">This stops the library and closes the app. (When you press the Home or Back buttons, the app is minimized but keeps running in the background.)</string>
     <string name="k2go_settings_turnoff_confirm">Turn off</string>
     <string name="k2go_settings_lang_caption">Sets the app language and the default content language.</string>
     <string name="k2go_settings_app_version">App version</string>
@@ -123,13 +123,13 @@
     <string name="k2go_mod_install_now" translatable="false">Install now</string>
     <string name="k2go_mod_back" translatable="false">Modules</string>
     <!-- install/status detail (shared per-module screen) -->
-    <string name="k2go_mod_install_sub" translatable="false">This can take a while. You can leave this screen; it keeps going.</string>
+    <string name="k2go_mod_install_sub" translatable="false">Installing a module can take a while. You can safely leave the screen; the installation will keep going in the background.</string>
     <string name="k2go_mod_phase_queued" translatable="false">Waiting…</string>
     <string name="k2go_mod_phase_installing" translatable="false">Installing…</string>
     <string name="k2go_mod_phase_done" translatable="false">Installed</string>
     <string name="k2go_mod_phase_failed" translatable="false">Couldn\'t install</string>
-    <string name="k2go_mod_leave_title" translatable="false">This takes time</string>
-    <string name="k2go_mod_leave_body" translatable="false">Installing a module changes the system and can take a while. It continues even if you leave this screen.</string>
+    <string name="k2go_mod_leave_title" translatable="false">This can take a while — thanks for your patience.</string>
+    <string name="k2go_mod_leave_body" translatable="false">Installing a module changes the system and can take a while. You can safely leave the screen; the installation continues in the background.</string>
     <!-- per-module cards: title · subtitle · description -->
     <string name="k2go_mod_kolibri_title" translatable="false">Course manager</string>
     <string name="k2go_mod_kolibri_sub" translatable="false">Kolibri</string>
@@ -143,7 +143,7 @@
     <string name="k2go_mod_kiwix_desc" translatable="false">Reads offline ZIM archives such as Wikipedia and other reference collections. This installs the reader app; add the actual content from Get More.</string>
     <string name="k2go_mod_code_title" translatable="false">Code on the Go</string>
     <string name="k2go_mod_code_sub" translatable="false">AppDevForAll</string>
-    <string name="k2go_mod_code_desc" translatable="false">An offline-first Android IDE. Write, build, and debug Android apps directly on the device.</string>
+    <string name="k2go_mod_code_desc" translatable="false">An offline-first Android IDE. Write, debug, and build  Android apps directly on the phone or tablet, without needing internet access.</string>
     <string name="k2go_mod_matomo_title" translatable="false">Analytics</string>
     <string name="k2go_mod_matomo_sub" translatable="false">Matomo</string>
     <string name="k2go_mod_matomo_desc" translatable="false">Private, self-hosted usage analytics for your library. Understand how content is used, all on the device.</string>
@@ -179,7 +179,7 @@
     <!-- ADFA-4795: Clone/Connect extracted literals (EN); translated in follow-up commits. -->
     <string name="k2go_clone_full_copy_note">A full copy of the other phone\'s library.</string>
     <string name="k2go_clone_all_apps">All applications and their content</string>
-    <string name="k2go_clone_already_wifi_skip">Already on the same Wi-Fi?  Skip ›</string>
+    <string name="k2go_clone_already_wifi_skip">Already on the same Wi-Fi? You can skip this step›</string>
     <string name="k2go_clone_camera_note">Camera not working? Connect to the other phone\'s Wi-Fi in Settings, then Skip.</string>
     <string name="k2go_clone_camera_q">Camera not working?</string>
     <string name="k2go_clone_cant_scan">Can\'t scan? Share the app another way  ›</string>
@@ -194,13 +194,13 @@
     <string name="k2go_clone_installed_copy">Installed? Copy the library</string>
     <string name="k2go_clone_incompat_why_long">K2Go\'s library includes programs built to match a phone\'s hardware. When two phones are built differently, the programs from one can\'t run on the other, so copying the library wouldn\'t work.</string>
     <string name="k2go_clone_nothing_to_replace">Nothing to replace</string>
-    <string name="k2go_clone_once_installed">Once it\'s installed there, come back and copy your library.</string>
+    <string name="k2go_clone_once_installed">Once it\'s installed, come back and copy the library.</string>
     <string name="k2go_clone_one_android_step">One Android step</string>
     <string name="k2go_clone_other_no_app">Other phone doesn\'t have K2Go yet?</string>
     <string name="k2go_clone_receive_from">Receive from another phone  ›</string>
     <string name="k2go_clone_sharing_now">SHARING NOW</string>
-    <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter code as text  ▸</string>
-    <string name="k2go_clone_scan_show_text">Scan didn\'t work? Show code as text  ▸</string>
+    <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter the code as text  ▸</string>
+    <string name="k2go_clone_scan_show_text">Scan didn\'t work? Show the code as text  ▸</string>
     <string name="k2go_clone_scan_their_codes">Scan their codes to get a copy here.</string>
     <string name="k2go_clone_scan_get_app">Scan to get the app</string>
     <string name="k2go_clone_scan_to_join">Scan to join</string>
@@ -209,11 +209,11 @@
     <string name="k2go_clone_sending_whole">Sending your whole library</string>
     <string name="k2go_clone_share_wifi_settings">Share Wi-Fi via Android settings</string>
     <string name="k2go_clone_share_action">Share ›</string>
-    <string name="k2go_clone_show_codes">Show codes; the other phone scans them.</string>
+    <string name="k2go_clone_show_codes">Show codes for the other phone to scan.</string>
     <string name="k2go_clone_sizes_estimates">Sizes are estimates.</string>
     <string name="k2go_lbl_system">System</string>
     <string name="k2go_clone_technical_details">Technical details  ▾</string>
-    <string name="k2go_clone_app_separate_step">The app goes by a separate quick step, then copy the library.</string>
+    <string name="k2go_clone_app_separate_step">First, the K2Go app is installed. You\'ll copy the library in a later step.</string>
     <string name="k2go_clone_other_downloads">The other phone downloads K2Go from this code.</string>
     <string name="k2go_clone_allow_install_note">The other phone taps "allow install from this source" — a one-time step.</string>
     <string name="k2go_clone_incompat_title">These phones aren\'t compatible</string>
@@ -362,17 +362,17 @@
     <string name="k2go_lang_content_label">CONTENT LANGUAGE</string>
     <string name="k2go_lang_app_helper">Menus, buttons, and messages.</string>
     <string name="k2go_lang_content_helper">The default language when you add content (Wikipedia, books, maps).</string>
-    <string name="k2go_lang_content_note">You can still pick a different language for each content item when you add it.</string>
+    <string name="k2go_lang_content_note">You can pick a different language for each content item when you add it.</string>
     <string name="k2go_lang_same_as_app">Same as app language</string>
     <string name="k2go_lang_choose_content_title">Choose content language</string>
     <string name="k2go_hide">Hide</string>
-    <string name="k2go_home_no_library">No library yet — open Get more to install and add content</string>
-    <string name="k2go_home_ready_empty">Library ready — open Get more to add content</string>
+    <string name="k2go_home_no_library">No library yet — tap Get more to install and add content</string>
+    <string name="k2go_home_ready_empty">Library ready — tap Get more to add content</string>
     <string name="k2go_rate_per_second">/s</string>
 
     <!-- ADFA-4848: Get More content hub (WIP; translatable=false until the l10n pass). -->
     <string name="k2go_gm_hub_title" translatable="false">Get more</string>
-    <string name="k2go_gm_hub_sub" translatable="false">Add content to your library. All offline.</string>
+    <string name="k2go_gm_hub_sub" translatable="false">Add content to your offline library.</string>
     <string name="k2go_gm_hub_prompt" translatable="false">What would you like to add?</string>
     <string name="k2go_gm_wikipedia_title" translatable="false">Wikipedia &amp; ZIM content</string>
     <string name="k2go_gm_wikipedia_desc" translatable="false">Articles, video, media</string>
@@ -439,7 +439,7 @@
     <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
     <string name="k2go_maps_phase_finishing" translatable="false">Finishing up</string>
     <string name="k2go_maps_phase_ready" translatable="false">Ready</string>
-    <string name="k2go_maps_phase_failed" translatable="false">Couldn\'t build maps — check space and connection, then retry</string>
+    <string name="k2go_maps_phase_failed" translatable="false">Couldn\'t build maps — check space and connection, then retry.</string>
 
     <!-- ADFA-4849: Wikipedia & ZIM content (WIP; translate in a later l10n pass) -->
     <string name="k2go_zim_title" translatable="false">Wikipedia &amp; ZIM content</string>
@@ -476,7 +476,7 @@
     <string name="k2go_zim_fits_fmt" translatable="false">Fits: %1$s of %2$s free</string>
     <string name="k2go_zim_nofit_fmt" translatable="false">Doesn’t fit: needs %1$s, %2$s free</string>
     <string name="k2go_zim_takes_title" translatable="false">This takes time</string>
-    <string name="k2go_zim_takes_body" translatable="false">ZIM files are large — this can run for hours on a slow link. It keeps going in the background and resumes if interrupted.</string>
+    <string name="k2go_zim_takes_body" translatable="false">ZIM files are large and can take a long time to download, especially on a slow connection. The download keeps going in the background and resumes if interrupted.</string>
     <string name="k2go_zim_start_fmt" translatable="false">Start download · %1$s</string>
     <string name="k2go_zim_preparing_title" translatable="false">Preparing content…</string>
     <string name="k2go_zim_preparing_sub" translatable="false">Large downloads. You can leave it running.</string>
@@ -503,7 +503,7 @@
     <!-- ADFA-4919: shown when the user tries to start a proot module while another install job is running. -->
     <string name="k2go_install_busy" translatable="false">An install is already running — please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
-    <string name="k2go_setup_leave_hint" translatable="false">Still setting up on the system. You can leave the app — it keeps going and will be ready when you come back.</string>
+    <string name="k2go_setup_leave_hint" translatable="false">Still setting up the system. You can leave the app — it keeps going and will be ready when you come back.</string>
     <!-- ADFA-4919 (2c-ii): shown when a proot install was killed and the system can't start. -->
     <string name="k2go_damaged_title" translatable="false">Installation interrupted</string>
     <string name="k2go_damaged_body" translatable="false">The setup was stopped before it finished, and the system can\u2019t start. To fix it, reinstall the app and run setup again.</string>
