@@ -103,7 +103,12 @@ public class BackupJobFragment extends Fragment {
         // Hard gate: while the op runs, back is consumed with a styled snackbar (module-index behavior).
         backGate = new androidx.activity.OnBackPressedCallback(false) {
             @Override public void handleOnBackPressed() {
-                Snackbars.make(v, R.string.k2go_br_busy_wait).show();
+                // ADFA-4961 (B): the op keeps running in DeepOpService, so leaving doesn't interrupt it.
+                // Show a soft, mode-specific hint (anchored to the activity so it survives the pop) and
+                // return to the bifurcation — no hard block. The notification brings the user back.
+                Snackbars.make(requireActivity().findViewById(android.R.id.content),
+                        isRestore() ? R.string.k2go_br_leave_restore : R.string.k2go_br_leave_backup).show();
+                popToIntro(false);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGate);
@@ -227,17 +232,15 @@ public class BackupJobFragment extends Fragment {
      *  index-style "returning to Home" countdown. */
     private void popToIntro(boolean fromFinish) {
         if (!isAdded()) return;
+        if (fromFinish) BackupRestoreFragment.armReturnCountdown();
         androidx.fragment.app.FragmentManager fm = requireActivity().getSupportFragmentManager();
         if (fm.getBackStackEntryCount() > 0) {
-            if (fromFinish) BackupRestoreFragment.armReturnCountdown();
             fm.popBackStack();
         } else {
             // Deep-linked straight to the job screen (no bifurcation underneath, e.g. the notification
-            // reopen) — there is nowhere to pop to, so go Home directly.
-            startActivity(new android.content.Intent(requireContext(), LibraryActivity.class)
-                    .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));
-            requireActivity().finish();
+            // reopen) — show the bifurcation so Finish always lands there (which then runs the countdown
+            // to Home), never jumping straight Home.
+            fm.beginTransaction().replace(R.id.k2go_setup_host, new BackupRestoreFragment()).commit();
         }
     }
 
