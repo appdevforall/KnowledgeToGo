@@ -25,7 +25,7 @@ Several operations touch the Debian **rootfs and its services exclusively** — 
 A single coordination lock that every deep-environment operation acquires before touching the rootfs/services and releases on a terminal state (success / failure / cancel).
 
 - **Owner + since:** records which job holds it — `INSTALL | MODULE | BACKUP | RESTORE | CLONE` — and when it started.
-- **Durable on disk** (like today's `InstallGuard` marker): survives a process kill, so the existing *damaged-install* detection/recovery still applies to a job killed mid-run.
+- **Session-scoped coordination** (not damage recovery): the owner marker carries a token unique to the process launch. A marker left by a process that was later killed reads as *stale* and self-heals (clears) — after a kill no op is actually running, so the lock must never stay held forever. Recovering from *damage* left by an interrupted **write** op is a separate concern owned by the durable `InstallGuard` + its recovery. A write op sets **both** (EnvironmentLock for coordination, InstallGuard for damage); read-only ops (backup, clone-send) set only the lock.
 - **`isHeld()` / `owner()`:** every deep-env op checks this **first** and refuses to start while it is held.
 - Generalizes and replaces the fragmented `InstallGuard` (durable "install in progress") + `InstallJobs.isBusy()`.
 
@@ -40,7 +40,7 @@ The lock **owner governs the server** (stop-before / start-after), reusing the A
 3. **The owner governs the server.** Stop-before / start-after via `startEnvironment()`; the app never relies on the alive heuristic to decide safety.
 4. **Confirm at the action, not on entry.** Opening a screen is read-only and safe. Only pressing **Start** warns ("this stops the server and blocks other operations") and then acquires the lock + stops the server.
 5. **The screen is the gate for hard ops** (see §4): while a write op runs, its screen traps the user (Back → background; reopening returns to it), like the module install index (`SetupProgressActivity`).
-6. **Durable + recovery.** The lock marker survives a process kill; a job killed mid-run leaves it set, and the existing damaged-install recovery detects/handles it.
+6. **Stale-marker self-heal + damage recovery are separate.** The coordination lock is session-scoped: a marker from a dead process is stale and cleared automatically (the lock never stays held after a kill). Damage from an interrupted **write** op (a half-applied restore/runrole) is recovered via the durable `InstallGuard` + its existing recovery — so write ops set **both**.
 7. **REST content download is exempt.** ZIM/Books downloads run *on the live server* (in-process, no proot, no rootfs takeover) — they do **not** touch the lock and are never blocked by it.
 
 ---

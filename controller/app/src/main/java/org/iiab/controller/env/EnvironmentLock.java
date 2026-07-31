@@ -15,9 +15,19 @@
  *               it is TRUE while a deep-env op is in progress, regardless of the server state.
  *
  *               Generalizes the older, fragmented pieces: InstallGuard (durable "install in progress"
- *               marker, still used for damaged-install recovery) + InstallJobs.isBusy() (process-scoped
- *               "a runrole/download is running"). Adds a durable OWNER marker for ops that have no
- *               process-scoped repository of their own (backup/restore/clone).
+ *               marker) + InstallJobs.isBusy() (process-scoped "a runrole/download is running"). Adds a
+ *               durable OWNER marker for ops that have no process-scoped repository of their own
+ *               (backup/restore/clone).
+ *
+ *               COORDINATION vs DAMAGE-RECOVERY (important — do not conflate):
+ *               the owner marker is a *coordination* lock and is SESSION-SCOPED. It carries a token
+ *               unique to this process launch; a marker left by a process that was later killed reads
+ *               as stale and is self-healed (cleared) here — because after a kill NO op is actually
+ *               running, so the lock must not stay held forever. Recovering from *damage* left by an
+ *               interrupted WRITE op (a half-applied restore/runrole) is a SEPARATE concern owned by the
+ *               DURABLE InstallGuard + its recovery (LibraryActivity). So a write op should set BOTH:
+ *               EnvironmentLock (coordination) AND InstallGuard (damage recovery). Read-only ops
+ *               (backup, clone-send) leave no damage, so the session-scoped lock alone is enough.
  *
  *               Content download (ZIM/Books, REST) is NOT a deep-env op — it runs on the live server —
  *               but a deep-env op would kill it (by stopping the server), so isBusyNow() still reports
@@ -32,14 +42,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.UUID;
 
 public final class EnvironmentLock {
 
     /** Who holds (or would hold) the lock. */
     public enum Owner { INSTALL, MODULE, BACKUP, RESTORE, CLONE }
 
-    // Durable owner marker: line 1 = Owner.name(), line 2 = epoch millis. Survives a process kill.
+    // Owner marker: line 1 = Owner.name(), line 2 = epoch millis, line 3 = session token.
     private static final String MARKER = ".env_lock";
+    // Unique per process launch: re-generated when the class is (re)loaded in a fresh process, so a
+    // marker written by a process that was later killed no longer matches → treated as stale.
+    private static final String SESSION = UUID.randomUUID().toString();
 
     private EnvironmentLock() {}
 
@@ -64,51 +78,82 @@ public final class EnvironmentLock {
     /**
      * The single question every deep-env operation asks before starting: is a deep-environment
      * operation already in progress (or is it unsafe to start one)? Combines the process-scoped signal,
-     * the durable install guard, and the durable owner marker (backup/restore/clone). Ask THIS, not
+     * the durable install guard, and this-process's owner marker. Ask THIS, not
      * {@code ServerStateRepository.alive}.
      */
     public static boolean isHeld(Context ctx) {
         return isBusyNow()
                 || org.iiab.controller.InstallGuard.inProgress(ctx)
-                || marker(ctx).exists();
+                || ownerHeld(ctx);
     }
 
-    /** Claim the lock for {@code owner}. Durable; call {@link #release} on the terminal state. Callers
-     *  must have already confirmed {@code !isHeld()} (this does not enforce it — it records intent). */
+    /**
+     * True only when THIS process's owner marker is present. A marker left by a now-dead process is
+     * stale (its session token won't match) and is cleared here so the lock can never stay held forever
+     * after a kill. Any damage from an interrupted write op is InstallGuard's concern, not this.
+     */
+    public static synchronized boolean ownerHeld(Context ctx) {
+        String[] rec = read(ctx);
+        if (rec == null) return false;
+        if (SESSION.equals(rec[2])) return true;
+        //noinspection ResultOfMethodCallIgnored
+        marker(ctx).delete();   // stale (written by a process that is no longer alive) → self-heal
+        return false;
+    }
+
+    /** Claim the lock for {@code owner}. Durable file, session-scoped validity; call {@link #release} on
+     *  the terminal state. Callers must have already confirmed {@code !isHeld()} (this records intent,
+     *  it does not enforce exclusion). A write op should also set InstallGuard for damage recovery. */
     public static synchronized void acquire(Context ctx, Owner owner) {
         try (FileWriter w = new FileWriter(marker(ctx), false)) {
-            w.write(owner.name() + "\n" + System.currentTimeMillis());
+            w.write(owner.name() + "\n" + System.currentTimeMillis() + "\n" + SESSION);
         } catch (Exception ignored) {
             // Best-effort: if we can't write the marker, isHeld() degrades to the process-scoped signal.
         }
     }
 
-    /** Release the durable owner marker (success / failure / cancel). Idempotent. */
+    /** Release the owner marker (success / failure / cancel). Idempotent. */
     public static synchronized void release(Context ctx) {
         //noinspection ResultOfMethodCallIgnored
         marker(ctx).delete();
     }
 
-    /** The explicit owner from the durable marker, or null (a process-scoped signal has no owner tag). */
-    public static Owner currentOwner(Context ctx) {
+    /** The current owner if THIS process holds the lock, else null (not held, or stale/self-healed). */
+    public static synchronized Owner currentOwner(Context ctx) {
+        if (!ownerHeld(ctx)) return null;
+        String[] rec = read(ctx);
+        if (rec == null) return null;
+        try {
+            return Owner.valueOf(rec[0].trim());
+        } catch (Exception ignored) {
+            return null;   // garbled owner line
+        }
+    }
+
+    /** Epoch millis when this-process's owner acquired the lock, or 0 if not held (or stale). */
+    public static synchronized long heldSince(Context ctx) {
+        if (!ownerHeld(ctx)) return 0L;
+        String[] rec = read(ctx);
+        if (rec == null) return 0L;
+        try {
+            return Long.parseLong(rec[1].trim());
+        } catch (Exception ignored) {
+            return 0L;
+        }
+    }
+
+    /** Read the 3 marker lines {owner, millis, session}, or null if absent/unreadable. Callers hold the
+     *  class monitor (via the synchronized public methods), so this never races a write. */
+    private static String[] read(Context ctx) {
         File f = marker(ctx);
         if (!f.exists()) return null;
         try (BufferedReader r = new BufferedReader(new FileReader(f))) {
-            String line = r.readLine();
-            if (line != null) return Owner.valueOf(line.trim());
-        } catch (Exception ignored) { /* unreadable/garbled marker → treat as no explicit owner */ }
-        return null;
-    }
-
-    /** Epoch millis when the durable owner acquired the lock, or 0 if not held by an explicit owner. */
-    public static long heldSince(Context ctx) {
-        File f = marker(ctx);
-        if (!f.exists()) return 0L;
-        try (BufferedReader r = new BufferedReader(new FileReader(f))) {
-            r.readLine();                 // owner
-            String ts = r.readLine();     // epoch millis
-            if (ts != null) return Long.parseLong(ts.trim());
-        } catch (Exception ignored) { /* unreadable */ }
-        return 0L;
+            String o = r.readLine();
+            String t = r.readLine();
+            String s = r.readLine();
+            return new String[]{o == null ? "" : o, t == null ? "" : t, s == null ? "" : s};
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 }
