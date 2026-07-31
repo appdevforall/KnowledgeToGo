@@ -148,6 +148,16 @@
     <string name="k2go_mod_matomo_sub" translatable="false">Matomo</string>
     <string name="k2go_mod_matomo_desc" translatable="false">Private, self-hosted usage analytics for your library. Understand how content is used, all on the device.</string>
     <string name="k2go_settings_backups">Backups &amp; recovery</string>
+    <!-- ADFA-4952: Backup &amp; restore -->
+    <string name="k2go_br_row_sub">Save your system to a file, or restore it</string>
+    <string name="k2go_br_title">Backup &amp; restore</string>
+    <string name="k2go_br_desc">Save your whole system to a file you can keep or move, or restore it from one. The server stops while this runs.</string>
+    <string name="k2go_br_prompt">What do you want to do?</string>
+    <string name="k2go_br_backup_title">Back up</string>
+    <string name="k2go_br_backup_sub">Save the current system to a file</string>
+    <string name="k2go_br_restore_title">Restore</string>
+    <string name="k2go_br_restore_sub">Replace the system from a file</string>
+    <string name="k2go_br_soon">Coming in the next build</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <!-- ADFA-4795: redesign dialogs, toasts, Step2/Library setText (sweep 2) -->

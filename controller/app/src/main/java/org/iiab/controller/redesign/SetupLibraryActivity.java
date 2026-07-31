@@ -26,6 +26,8 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** ADFA-4842: open Module management (the proot-module hub) directly. Entry-point-agnostic:
      *  Settings → Advanced and (later) Get More both launch this same activity with this extra. */
     public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
+    /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
+    public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     // Shared Wikipedia selection so picks survive the A/B flip.
@@ -63,9 +65,12 @@ public class SetupLibraryActivity extends AppCompatActivity {
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
         if (savedInstanceState == null) {
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
+            boolean backupRestore = getIntent().getBooleanExtra(EXTRA_BACKUP_RESTORE, false);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
             androidx.fragment.app.Fragment first;
-            if (moduleMgmt) {
+            if (backupRestore) {
+                first = new BackupRestoreFragment();   // ADFA-4952
+            } else if (moduleMgmt) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
                 first = new ModuleHubFragment();
             } else if (contentOnly) {
