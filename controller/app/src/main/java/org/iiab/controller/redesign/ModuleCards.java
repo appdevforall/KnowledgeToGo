@@ -109,7 +109,7 @@ public final class ModuleCards {
             case "kiwix":      return "GPL-3.0";
             case "code":       return "MIT";
             case "matomo":     return "GPL-3.0";
-            case "maps":       return "ODbL";
+            case "maps":       return "Mixed data licenses";   // ADFA-4958: OSM ODbL + Natural Earth (PD) + satellite CC BY-NC-SA 4.0 + GeoNames CC BY 4.0
             default: return null;
         }
     }
