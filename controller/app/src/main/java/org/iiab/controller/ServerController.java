@@ -305,7 +305,8 @@ public class ServerController {
         // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
                 || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || InstallGuard.inProgress(activity)) {   // ADFA-4811: durable guard survives a mid-install kill
+                || InstallGuard.inProgress(activity)   // ADFA-4811: durable guard survives a mid-install kill
+                || org.iiab.controller.env.EnvironmentLock.isHeld(activity)) {   // ADFA-4957: never toggle the server while a deep-env op (backup/restore/clone) holds the lock
             host.setTargetServerState(null);
             activity.runOnUiThread(host::stopBtnProgress);
             host.refreshServerUi();
