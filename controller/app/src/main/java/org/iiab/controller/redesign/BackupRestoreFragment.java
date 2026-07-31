@@ -3,18 +3,25 @@
  * Name        : BackupRestoreFragment.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4952. Backup & restore intro — a Clone-style screen: title + description +
- *               "what do you want to do?" with two cards (Back up / Restore). Each card opens its own
- *               dedicated job screen (BackupJobFragment) with the working Lottie + status. Hosted in
- *               SetupLibraryActivity (which owns the ServerController + coordinates via EnvironmentLock).
+ * Description : ADFA-4952 / 4961. Backup & restore bifurcation — title + description + "what do you
+ *               want to do?" with two icon cards (Back up / Restore). Tapping a card IS the Start: it
+ *               opens BackupJobFragment, which auto-opens the file picker. ADFA-4961: after an op
+ *               finishes and its screen taps Finish, this bifurcation shows the module-index-style
+ *               "returning to Home" countdown with a Cancel (armed via armReturnCountdown()). Hosted in
+ *               SetupLibraryActivity.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +34,14 @@ import androidx.fragment.app.Fragment;
 import org.iiab.controller.R;
 
 public class BackupRestoreFragment extends Fragment {
+
+    // ADFA-4961: one-shot flag set by BackupJobFragment's Finish, consumed here to run the "returning
+    // to Home" countdown. Process-scoped: the bifurcation is recreated when the job screen pops.
+    private static boolean sReturnPending = false;
+    public static void armReturnCountdown() { sReturnPending = true; }
+
+    private final Handler main = new Handler(Looper.getMainLooper());
+    private Runnable homeRunnable;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -63,10 +78,18 @@ public class BackupRestoreFragment extends Fragment {
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         clp.topMargin = px(10);
         col.addView(cards, clp);
-        cards.addView(card(R.string.k2go_br_backup_title, R.string.k2go_br_backup_sub,
+        cards.addView(card(R.drawable.ic_archive, R.string.k2go_br_backup_title, R.string.k2go_br_backup_sub,
                 v -> open(BackupJobFragment.MODE_BACKUP)));
-        cards.addView(card(R.string.k2go_br_restore_title, R.string.k2go_br_restore_sub,
+        cards.addView(card(R.drawable.ic_unarchive, R.string.k2go_br_restore_title, R.string.k2go_br_restore_sub,
                 v -> open(BackupJobFragment.MODE_RESTORE)));
+
+        // ADFA-4961: returning from a finished op → index-style "returning to Home" countdown + Cancel.
+        if (sReturnPending) {
+            sReturnPending = false;
+            col.addView(buildReturnBar());
+            homeRunnable = this::goHome;
+            main.postDelayed(homeRunnable, 3000L);
+        }
 
         return scroll;
     }
@@ -75,6 +98,44 @@ public class BackupRestoreFragment extends Fragment {
         if (getActivity() instanceof SetupLibraryActivity) {
             ((SetupLibraryActivity) getActivity()).openBackupJob(jobMode);
         }
+    }
+
+    private View buildReturnBar() {
+        LinearLayout bar = new LinearLayout(requireContext());
+        bar.setOrientation(LinearLayout.HORIZONTAL);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setBackgroundResource(R.drawable.k2go_info_bg);
+        bar.setPadding(px(14), px(12), px(14), px(12));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = px(16);
+        bar.setLayoutParams(lp);
+
+        TextView msg = new TextView(requireContext());
+        msg.setText(getString(R.string.k2go_bj_returning));
+        msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        bar.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+        TextView cancel = new TextView(requireContext());
+        cancel.setText(getString(R.string.cancel));
+        cancel.setTypeface(cancel.getTypeface(), android.graphics.Typeface.BOLD);
+        cancel.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        cancel.setPadding(px(12), px(4), px(4), px(4));
+        cancel.setOnClickListener(v -> {
+            if (homeRunnable != null) main.removeCallbacks(homeRunnable);
+            bar.setVisibility(View.GONE);
+        });
+        bar.addView(cancel);
+        return bar;
+    }
+
+    private void goHome() {
+        if (!isAdded()) return;
+        startActivity(new Intent(requireContext(), LibraryActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));
+        requireActivity().finish();
     }
 
     private TextView heading(String text, boolean bold, int appearance, int colorRes, int topDp) {
@@ -90,9 +151,10 @@ public class BackupRestoreFragment extends Fragment {
         return t;
     }
 
-    private View card(int titleRes, int subRes, View.OnClickListener onClick) {
+    private View card(int iconRes, int titleRes, int subRes, View.OnClickListener onClick) {
         LinearLayout row = new LinearLayout(requireContext());
-        row.setOrientation(LinearLayout.VERTICAL);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
         row.setBackgroundResource(R.drawable.k2go_card_bg);
         row.setPadding(px(16), px(16), px(16), px(16));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -102,12 +164,23 @@ public class BackupRestoreFragment extends Fragment {
         row.setClickable(true);
         row.setOnClickListener(onClick);
 
+        ImageView icon = new ImageView(requireContext());
+        icon.setImageResource(iconRes);
+        icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(px(28), px(28));
+        ilp.rightMargin = px(14);
+        row.addView(icon, ilp);
+
+        LinearLayout textCol = new LinearLayout(requireContext());
+        textCol.setOrientation(LinearLayout.VERTICAL);
+        row.addView(textCol, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
         TextView t = new TextView(requireContext());
         t.setText(getString(titleRes));
         t.setTypeface(t.getTypeface(), android.graphics.Typeface.BOLD);
         t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
-        row.addView(t);
+        textCol.addView(t);
 
         TextView sub = new TextView(requireContext());
         sub.setText(getString(subRes));
@@ -116,7 +189,12 @@ public class BackupRestoreFragment extends Fragment {
         LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         slp.topMargin = px(4);
-        row.addView(sub, slp);
+        textCol.addView(sub, slp);
         return row;
+    }
+
+    @Override public void onDestroyView() {
+        if (homeRunnable != null) main.removeCallbacks(homeRunnable);
+        super.onDestroyView();
     }
 }

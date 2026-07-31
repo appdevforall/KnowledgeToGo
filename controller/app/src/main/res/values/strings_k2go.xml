@@ -183,6 +183,10 @@
     <string name="k2go_clone_channel_desc" translatable="false">Keeps a device-to-device transfer running</string>
     <string name="k2go_clone_notif_title" translatable="false">Knowledge to Go</string>
     <string name="k2go_clone_notif_text" translatable="false">Transferring between devices — tap to return</string>
+    <string name="k2go_bj_finish" translatable="false">Finish</string>
+    <string name="k2go_bj_wait_title" translatable="false">This can take a while</string>
+    <string name="k2go_bj_wait_body" translatable="false">Keep K2Go open. You can leave — it keeps running in the background, and the notification brings you back.</string>
+    <string name="k2go_bj_returning" translatable="false">Done — returning to Home…</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <string name="k2go_dns_toggle_sub" translatable="false">Use a custom DNS. Off = server defaults.</string>
