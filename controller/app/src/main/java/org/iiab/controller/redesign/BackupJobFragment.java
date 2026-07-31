@@ -70,6 +70,7 @@ public class BackupJobFragment extends Fragment {
     private org.iiab.controller.util.EllipsisAnimator statusDots;
     private boolean running = false;
     private long lastSeq = -1L;
+    private boolean leaveWarned = false;   // ADFA-4971: first Back reassures, later Backs background the app
     private androidx.activity.OnBackPressedCallback backGate;
 
     private final ActivityResultLauncher<String> createDoc =
@@ -108,12 +109,18 @@ public class BackupJobFragment extends Fragment {
         // Hard gate: while the op runs, back is consumed with a styled snackbar (module-index behavior).
         backGate = new androidx.activity.OnBackPressedCallback(false) {
             @Override public void handleOnBackPressed() {
-                // ADFA-4961 (B): the op keeps running in DeepOpService, so leaving doesn't interrupt it.
-                // Show a soft, mode-specific hint (anchored to the activity so it survives the pop) and
-                // return to the bifurcation — no hard block. The notification brings the user back.
-                Snackbars.make(requireActivity().findViewById(android.R.id.content),
-                        isRestore() ? R.string.k2go_br_leave_restore : R.string.k2go_br_leave_backup).show();
-                popToIntro(false);
+                // ADFA-4971: confine like the module index (SetupProgressActivity.onBackPressed). The op
+                // runs with the server stopped in DeepOpService; walking Back to a (server-down) Home is
+                // what triggered the false "reinstall" recovery. First Back reassures with the soft,
+                // mode-specific hint; every Back after sends the app to the background — never in-app
+                // navigation to Home. The op keeps running; the notification returns the user here.
+                if (!leaveWarned) {
+                    leaveWarned = true;
+                    Snackbars.make(requireActivity().findViewById(android.R.id.content),
+                            isRestore() ? R.string.k2go_br_leave_restore : R.string.k2go_br_leave_backup).show();
+                } else {
+                    requireActivity().moveTaskToBack(true);
+                }
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGate);
@@ -212,6 +219,7 @@ public class BackupJobFragment extends Fragment {
 
     private void beginRunning() {
         running = true;
+        leaveWarned = false;   // ADFA-4971: each op's first Back re-warns before backgrounding
         if (backGate != null) backGate.setEnabled(true);
         finish.setVisibility(View.GONE);
         if (anim != null) anim.playAnimation();
