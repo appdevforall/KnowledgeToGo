@@ -119,7 +119,14 @@ public final class ModuleCards {
      *  value. 0 -> fall back to the measured ModuleSizes value. */
     public static int sizeLabelRes(String key) {
         if ("maps".equals(key)) return R.string.k2go_mod_maps_size;
+        if ("matomo".equals(key)) return R.string.k2go_mod_matomo_size;   // ADFA-4958: curated (~114 MB, incl. MariaDB + tarball)
         return 0;
+    }
+
+    /** ADFA-4958: matomo ships as a demo/example module — it runs, but it is not a real production
+     *  feature; flagged so the detail can show a "Demo" chip. */
+    public static boolean isDemo(String key) {
+        return "matomo".equals(key);
     }
 
     /** ADFA-4958: "What it includes" line — makes module-vs-content explicit. 0 -> hide. */

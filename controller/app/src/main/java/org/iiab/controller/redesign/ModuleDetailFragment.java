@@ -75,6 +75,7 @@ public class ModuleDetailFragment extends Fragment {
         String ver = ModuleCards.version(c.key());
         if (ver != null) chips.addView(chip("v" + ver, R.color.k2go_teal));
         chips.addView(chip(getString(R.string.k2go_mod_runs_offline), R.color.k2go_leaf));
+        if (ModuleCards.isDemo(c.key())) chips.addView(chip(getString(R.string.k2go_mod_demo), R.color.k2go_amber_text));   // ADFA-4958
 
         int inc = ModuleCards.includesRes(c.key());
         if (inc != 0) {

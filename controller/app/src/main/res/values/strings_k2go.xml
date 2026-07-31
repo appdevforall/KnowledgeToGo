@@ -665,6 +665,8 @@
     <!-- ADFA-4958 module detail enrichment -->
     <string name="k2go_mod_runs_offline" translatable="false">Runs offline</string>
     <string name="k2go_mod_maps_size" translatable="false">200 MB+</string>
+    <string name="k2go_mod_matomo_size" translatable="false">≈ 114 MB</string>
+    <string name="k2go_mod_demo" translatable="false">Demo</string>
     <string name="k2go_mod_includes_title" translatable="false">What it includes</string>
     <string name="k2go_mod_license_fmt" translatable="false">License · %1$s</string>
     <string name="k2go_mod_kolibri_includes" translatable="false">Sample courses included — add more in Get more.</string>
