@@ -261,12 +261,12 @@ public class SettingsSubFragment extends Fragment {
         int p16 = SettingsUi.dp(ctx, 16);
         defaultCard.setPadding(p16, p16, p16, p16);
         defaultCard.addView(dnsText(ctx, getString(R.string.k2go_dns_default_title),
-                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_ink));
+                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_teal));
         final TextView defaultLine = dnsText(ctx, "",
-                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink);
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_teal);
         defaultCard.addView(defaultLine);
         defaultCard.addView(dnsText(ctx, getString(R.string.k2go_dns_default_note),
-                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_teal));
         LinearLayout.LayoutParams dclp = new LinearLayout.LayoutParams(-1, -2);
         dclp.topMargin = SettingsUi.dp(ctx, 8);
         list.addView(defaultCard, dclp);
