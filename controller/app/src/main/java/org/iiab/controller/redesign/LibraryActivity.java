@@ -61,6 +61,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closing = false;
     private boolean closedDone = false;
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
+    private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
 
     // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
     // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
@@ -159,6 +160,20 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             startActivity(new android.content.Intent(this, SetupProgressActivity.class));
         }
 
+        // ADFA-4957: same idea for a live deep-env op (backup/restore). A fresh LibraryActivity — from
+        // the notification, or a swipe-away relaunch — must land back on the op screen, not Home/Library
+        // (which fights the gate and would try to boot the server mid-op). Route straight to the
+        // backup/restore index; BackupJobFragment re-binds to the live op from DeepOpProgressRepository.
+        if (!installing && !recovering
+                && org.iiab.controller.deepop.DeepOpProgressRepository.get().isRunning()) {
+            org.iiab.controller.deepop.DeepOpState dop = org.iiab.controller.deepop.DeepOpProgressRepository.get().current();
+            String brMode = dop.owner == org.iiab.controller.env.EnvironmentLock.Owner.RESTORE
+                    ? BackupJobFragment.MODE_RESTORE : BackupJobFragment.MODE_BACKUP;
+            startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
+                    .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true)
+                    .putExtra(SetupLibraryActivity.EXTRA_BR_JOB_MODE, brMode));
+        }
+
         serverController = new ServerController(this, this);
         serverController.start();
 
@@ -208,6 +223,22 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     }, GATE_SAFETY_MS);
                 } else {
                     onServerReady(); // FAILED: lift the gate; land on the library (offline)
+                }
+            }
+        });
+
+        // ADFA-4957: a deep-env op (backup/restore) runs with the server stopped and, on finishing,
+        // releases the lock but does NOT boot the server (it isn't the owner — see DeepOpService). If
+        // we're on Home when that terminal arrives, boot it here, once per op. While the op is still
+        // running the lock is held, so handleServerLaunchClick refuses (no mid-op collision); a FAILED
+        // restore keeps InstallGuard set, so the recovery path repairs it instead of us booting.
+        org.iiab.controller.deepop.DeepOpProgressRepository.get().state().observe(this, st -> {
+            if (st == null || closing || serverController == null) return;
+            if (st.isTerminal() && st.seq > lastDeepOpSeq) {
+                lastDeepOpSeq = st.seq;
+                if (!ServerStateRepository.get().current().alive && targetServerState == null
+                        && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {   // ADFA-4957: same predicate as the toggle guard
+                    serverController.handleServerLaunchClick(findViewById(android.R.id.content));
                 }
             }
         });

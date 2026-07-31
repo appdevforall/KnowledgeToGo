@@ -3,13 +3,19 @@
  * Name        : BackupJobFragment.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4952. Dedicated per-operation screen for Backup OR Restore (mode arg), with the
- *               shared "working" Lottie + an animated status line — the intro's two cards each open one.
- *               Backup: SAF CreateDocument -> stream tar|gzip to the external file (no temp). Restore:
- *               SAF OpenDocument -> copy to temp -> validate (RootfsArchiveValidator) -> confirm
- *               (destructive) -> extract over the rootfs. Both hold the EnvironmentLock and run with the
- *               server stopped (stopEnvironment) and boot it back after (startEnvironment). Restore also
- *               sets InstallGuard so an interrupted (damaging) extract is recoverable.
+ * Description : ADFA-4952 / ADFA-4957. Dedicated per-operation screen for Backup OR Restore (mode arg),
+ *               with the shared "working" Lottie + an animated status line. The heavy, kill-sensitive
+ *               work is now OWNED by the foreground DeepOpService (not this Fragment): the screen just
+ *               starts it and OBSERVES DeepOpProgressRepository — the app-scoped single source of truth
+ *               — so the UI (status line, hard gate, Done) re-binds after a recreation or backgrounding
+ *               and a notification tap can land back here.
+ *
+ *               Backup: SAF CreateDocument -> DeepOpService.startBackup (stop -> stream tar|gzip -> done).
+ *               Restore: SAF OpenDocument -> copy to temp + validate + destructive confirm HERE (the
+ *               pre-extract work is safe to lose on a kill) -> DeepOpService.startRestore (stop ->
+ *               extract -> done). The service brackets EnvironmentLock (+ InstallGuard for restore); it
+ *               does NOT boot the environment — LibraryActivity's auto-start boots it when the user
+ *               returns Home (a failed restore keeps InstallGuard set, so recovery repairs it instead).
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -38,8 +44,10 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 
 import org.iiab.controller.R;
-import org.iiab.controller.TarExtractor;
 import org.iiab.controller.backup.domain.BackupEngine;
+import org.iiab.controller.deepop.DeepOpProgressRepository;
+import org.iiab.controller.deepop.DeepOpService;
+import org.iiab.controller.deepop.DeepOpState;
 import org.iiab.controller.env.EnvironmentLock;
 import org.iiab.controller.ui.dialog.BrandDialog;
 import org.iiab.controller.util.AppExecutors;
@@ -69,13 +77,14 @@ public class BackupJobFragment extends Fragment {
     private Button primary, done;
     private org.iiab.controller.util.EllipsisAnimator statusDots;
     private boolean running = false;
+    private long lastSeq = -1L;   // ADFA-4957: only react to NEW terminal transitions from the repo
     // ADFA-4952: hard gate — while an op runs, back is consumed so a half-applied backup/restore can't
-    // be abandoned (that would leave the environment in a torn state). Enabled only while running.
+    // be abandoned. Enabled only while running.
     private androidx.activity.OnBackPressedCallback backGate;
 
     private final ActivityResultLauncher<String> createDoc =
             registerForActivityResult(new ActivityResultContracts.CreateDocument("application/gzip"), uri -> {
-                if (uri != null) runBackup(uri); else showReady();
+                if (uri != null) startBackup(uri); else showReady();
             });
     private final ActivityResultLauncher<String[]> openDoc =
             registerForActivityResult(new ActivityResultContracts.OpenDocument(), uri -> {
@@ -84,6 +93,7 @@ public class BackupJobFragment extends Fragment {
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
     private boolean isRestore() { return MODE_RESTORE.equals(mode); }
+    private EnvironmentLock.Owner myOwner() { return isRestore() ? EnvironmentLock.Owner.RESTORE : EnvironmentLock.Owner.BACKUP; }
 
     @Nullable
     @Override
@@ -162,6 +172,10 @@ public class BackupJobFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backGate);
 
         showReady();
+        // ADFA-4957: bind to the app-scoped op state. Seed lastSeq so a terminal from a PREVIOUS op
+        // (already the current value) doesn't fire a stale "done"; only new transitions count.
+        lastSeq = DeepOpProgressRepository.get().current().seq;
+        DeepOpProgressRepository.get().state().observe(getViewLifecycleOwner(), this::onDeepOpState);
         return scroll;
     }
 
@@ -186,39 +200,21 @@ public class BackupJobFragment extends Fragment {
         else createDoc.launch(BackupEngine.suggestedFileName(requireContext()));
     }
 
-    // ---- BACKUP ----
-    private void runBackup(Uri uri) {
+    // ---- BACKUP: hand off to the service; the observer drives the UI from here ----
+    private void startBackup(Uri uri) {
         if (!isAdded()) return;
-        EnvironmentLock.acquire(requireContext(), EnvironmentLock.Owner.BACKUP);
-        final SetupLibraryActivity host = host();
         beginRunning();
-        host.enableSystemProtection();
         setStatusAnimated(getString(R.string.k2go_br_status_stopping));
-        host.server().stopEnvironment(() -> {
-            if (!isAdded()) { restartAndRelease(host, EnvironmentLock.Owner.BACKUP); return; }
-            setStatusAnimated(getString(R.string.k2go_br_status_backing));
-            AppExecutors.get().io().execute(() -> {
-                boolean ok;
-                try (OutputStream os = requireContext().getContentResolver().openOutputStream(uri)) {
-                    ok = os != null && BackupEngine.streamBackup(requireContext(), os);
-                } catch (Exception e) { ok = false; }
-                final boolean success = ok;
-                main.post(() -> {
-                    restartAndRelease(host, EnvironmentLock.Owner.BACKUP);
-                    finishResult(success, getString(R.string.k2go_br_backup_done), getString(R.string.k2go_br_backup_failed));
-                });
-            });
-        });
+        DeepOpService.startBackup(requireContext(), uri);
     }
 
-    // ---- RESTORE ----
+    // ---- RESTORE: copy + validate + confirm HERE (pre-extract, safe to lose), then the service ----
     private void prepareRestore(Uri uri) {
         if (!isAdded()) return;
         beginRunning();
         setStatusAnimated(getString(R.string.k2go_br_status_checking));
-        final SetupLibraryActivity host = host();
         AppExecutors.get().io().execute(() -> {
-            // Copy the SAF stream to a temp file — the validator and TarExtractor both need a path.
+            // Copy the SAF stream to a temp file — the validator (and the service's extractor) need a path.
             File temp = new File(requireContext().getCacheDir(), "restore.tar.gz");
             boolean copied = false;
             try (InputStream in = requireContext().getContentResolver().openInputStream(uri);
@@ -232,11 +228,12 @@ public class BackupJobFragment extends Fragment {
             org.iiab.controller.deploy.data.RootfsArchiveValidator.Result vr = !copied
                     ? org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.UNREADABLE
                     : org.iiab.controller.deploy.data.RootfsArchiveValidator.validate(requireContext(), temp.getAbsolutePath());
-            main.post(() -> onValidated(host, temp, vr));
+            main.post(() -> onValidated(temp, vr));
         });
     }
 
-    private void onValidated(SetupLibraryActivity host, File temp, org.iiab.controller.deploy.data.RootfsArchiveValidator.Result vr) {
+    private void onValidated(File temp, org.iiab.controller.deploy.data.RootfsArchiveValidator.Result vr) {
+        if (!isAdded()) return;
         boolean ok = vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK
                 || vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK_NO_MANIFEST
                 || vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.OK_NO_CHECKSUM;
@@ -245,48 +242,32 @@ public class BackupJobFragment extends Fragment {
             int msg = vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.WRONG_ARCH ? R.string.install_error_wrong_arch
                     : vr == org.iiab.controller.deploy.data.RootfsArchiveValidator.Result.CORRUPT ? R.string.install_error_corrupt
                     : R.string.install_error_not_rootfs;
-            finishResult(false, "", getString(msg));
+            finishResult(false, getString(msg));
             return;
         }
-        // Valid → confirm the destructive replace.
+        // Valid → confirm the destructive replace, then hand the validated temp path to the service.
         new BrandDialog(requireContext())
                 .setTitle(getString(R.string.k2go_br_restore_title))
                 .setMessage(getString(R.string.k2go_br_restore_warn))
-                .setPositive(R.string.k2go_br_restore_confirm, BrandDialog.Role.DESTRUCTIVE, () -> runRestore(host, temp))
+                .setPositive(R.string.k2go_br_restore_confirm, BrandDialog.Role.DESTRUCTIVE, () -> {
+                    setStatusAnimated(getString(R.string.k2go_br_status_stopping));
+                    DeepOpService.startRestore(requireContext(), temp.getAbsolutePath());
+                })
                 .setNegative(R.string.cancel, () -> { if (temp.exists()) temp.delete(); showReady(); })
                 .show();
     }
 
-    private void runRestore(SetupLibraryActivity host, File temp) {
-        EnvironmentLock.acquire(requireContext(), EnvironmentLock.Owner.RESTORE);
-        org.iiab.controller.InstallGuard.begin(requireContext());   // damage recovery for a killed extract
-        host.enableSystemProtection();
-        setStatusAnimated(getString(R.string.k2go_br_status_stopping));
-        host.server().stopEnvironment(() -> {
-            setStatusAnimated(getString(R.string.k2go_br_status_restoring));
-            File iiabRootDir = new File(requireContext().getFilesDir(), "rootfs");
-            new TarExtractor().startExtraction(requireContext(), temp.getAbsolutePath(), iiabRootDir.getAbsolutePath(), true,
-                    new TarExtractor.ExtractionListener() {
-                        @Override public void onComplete(String destDir) { main.post(() -> endRestore(host, temp, true)); }
-                        @Override public void onError(String error) { main.post(() -> endRestore(host, temp, false)); }
-                        @Override public void onProgress(String line) { }
-                    });
-        });
-    }
-
-    private void endRestore(SetupLibraryActivity host, File temp, boolean ok) {
-        if (temp.exists()) temp.delete();
-        org.iiab.controller.InstallGuard.end(requireContext());
-        restartAndRelease(host, EnvironmentLock.Owner.RESTORE);
-        finishResult(ok, getString(R.string.k2go_br_restore_done), getString(R.string.k2go_br_restore_failed));
-    }
-
-    // ---- shared ----
-    private SetupLibraryActivity host() { return (SetupLibraryActivity) requireActivity(); }
-
-    private void restartAndRelease(SetupLibraryActivity host, EnvironmentLock.Owner owner) {
-        if (host.server() != null) host.server().startEnvironment();   // boot the (restored) system
-        EnvironmentLock.release(host);
+    // ---- observe the app-scoped op state (the service is the writer) ----
+    private void onDeepOpState(DeepOpState st) {
+        if (st == null || !isAdded()) return;
+        if (st.owner != myOwner()) return;   // ignore an op for the other direction
+        if (st.isRunning()) {
+            if (!running) beginRunning();
+            setStatusAnimated(st.step);
+        } else if (st.isTerminal() && st.seq > lastSeq) {
+            lastSeq = st.seq;
+            finishResult(st.phase == DeepOpState.Phase.SUCCESS, st.message);
+        }
     }
 
     private void beginRunning() {
@@ -297,13 +278,13 @@ public class BackupJobFragment extends Fragment {
         if (anim != null && !reduceMotion()) { anim.setRepeatCount(LottieDrawable.INFINITE); anim.playAnimation(); }
     }
 
-    private void finishResult(boolean ok, String okMsg, String failMsg) {
+    private void finishResult(boolean ok, String message) {
         running = false;
         if (backGate != null) backGate.setEnabled(false);   // ADFA-4952: done → back allowed (Done button)
         if (anim != null) anim.pauseAnimation();
         if (statusDots != null) statusDots.stop();
         title.setText(getString(ok ? R.string.k2go_br_done_title : R.string.k2go_br_failed_title));
-        status.setText(ok ? okMsg : failMsg);
+        status.setText(message);
         status.setTextColor(ContextCompat.getColor(requireContext(), ok ? R.color.k2go_leaf : R.color.k2go_amber_text));
         status.setVisibility(View.VISIBLE);
         done.setVisibility(View.VISIBLE);
