@@ -38,8 +38,10 @@ import java.io.File;
 import org.iiab.controller.ApkServer;
 import org.iiab.controller.BuildConfig;
 import org.iiab.controller.R;
+import org.iiab.controller.ServerController;
 import org.iiab.controller.SyncHandshakeHelper;
 import org.iiab.controller.WatchdogService;
+import org.iiab.controller.env.EnvironmentLock;
 import org.iiab.controller.sync.domain.ApkShareName;
 import org.iiab.controller.hotspot.LocalHotspotManager;
 import org.iiab.controller.sync.domain.ShareConfig;
@@ -78,6 +80,8 @@ public class CloneFragment extends Fragment {
     private TextView sizeSys, sizeContent, sizeTotal;
     private boolean userStopped = false;  // true after Stop, prevents auto-restart on the next render
     private boolean protectionOn = false; // ADFA-4782: foreground WatchdogService currently held
+    private boolean cloneLockHeld = false;  // ADFA-4956: this fragment holds EnvironmentLock(CLONE)
+    private boolean cloneGuardHeld = false; // ADFA-4956: a receive (destructive write) also set InstallGuard
     private boolean shareAnyway = false;  // ADFA-4786: user chose to share even with no library installed
     // ADFA-4785: "Send the app" sub-screen (bootstrap a phone with no K2Go) — serves the APK over HTTP.
     private boolean sendApp = false;
@@ -314,6 +318,13 @@ public class CloneFragment extends Fragment {
         File rootfsDir = new File(requireContext().getFilesDir(), "rootfs/installed-rootfs/iiab");
         boolean hasLib = rootfsPresent();
         if (!hasLib && !shareAnyway) return;   // ADFA-4786: don't silently share an empty library; renderStartState shows the notice
+        // ADFA-4956: serving a live rootfs yields a torn clone. Coordinate as a deep-env op — refuse if
+        // another one (install/backup/restore) holds the lock, else acquire(CLONE) and stop the server
+        // so the served tree is static; the daemon starts only after the stop completes.
+        if (!cloneLockHeld && EnvironmentLock.isHeld(requireContext())) {
+            Toast.makeText(requireContext(), getString(R.string.k2go_install_busy), Toast.LENGTH_LONG).show();
+            return;
+        }
         daemonStarting = true;
         tempPass = SyncHandshakeHelper.generateSecurePassword();
         hostHasRootfs = hasLib;
@@ -322,14 +333,21 @@ public class CloneFragment extends Fragment {
         final Context app = requireContext().getApplicationContext();
         final androidx.fragment.app.FragmentActivity act = requireActivity();  // capture before the thread
         final File iiabRoot = rootfsDir;  // effectively final for the worker
-        new Thread(() -> {
+        EnvironmentLock.acquire(app, EnvironmentLock.Owner.CLONE);
+        cloneLockHeld = true;
+        final Runnable startDaemon = () -> new Thread(() -> {
             final boolean ok = transport.startServer(app, shareConfig, tempPass, shareDir);
             final LibrarySize.Split split = LibrarySize.compute(iiabRoot);  // ADFA-4780: approx sizes for the QR + overview
             act.runOnUiThread(() -> {
                 if (!isAdded()) return;
-                daemonStarting = false; daemonStarted = ok; librarySplit = split; render();
+                daemonStarting = false; daemonStarted = ok; librarySplit = split;
+                if (!ok) releaseCloneEnv();   // couldn't serve — boot the server back, drop the lock
+                render();
             });
         }, "clone-share-daemon").start();
+        ServerController sc = server();
+        if (sc != null) sc.stopEnvironment(startDaemon);   // quiesce first, THEN serve a static tree
+        else startDaemon.run();
     }
 
     /** ADFA-4786: true only when a real library is installed (dir exists and is non-empty). */
@@ -385,6 +403,29 @@ public class CloneFragment extends Fragment {
         if (ctx == null) return;   // detached; the service is app-scoped and stops on its own teardown path
         ctx.startService(new Intent(ctx, WatchdogService.class).setAction(WatchdogService.ACTION_STOP));
         Log.i("IIAB-Clone", "watchdog protection OFF");
+    }
+
+    // ------------------------------------------------------------ Deep-env coordination (ADFA-4956)
+    // Clone owns the rootfs exclusively while it runs: Send serves a live tree (torn copy) and Receive
+    // overwrites the live system (destructive, like Restore). Both must hold EnvironmentLock(CLONE) and
+    // run with the server stopped, then boot it back after. Receive also sets InstallGuard so a killed
+    // extract is recoverable. Uses the unconditional start/stopEnvironment (never the toggle).
+    private ServerController server() {
+        return (getActivity() instanceof LibraryActivity) ? ((LibraryActivity) getActivity()).server() : null;
+    }
+
+    /** Boot the (possibly replaced) system back and drop the deep-env lock. Idempotent; no-op if we
+     *  don't hold it. Called on every terminal path (stop / complete / cancel / detach-when-idle). */
+    private void releaseCloneEnv() {
+        if (!cloneLockHeld) return;
+        Context ctx = getContext();
+        if (cloneGuardHeld && ctx != null) org.iiab.controller.InstallGuard.end(ctx);
+        cloneGuardHeld = false;
+        ServerController sc = server();
+        if (sc != null) sc.startEnvironment();
+        if (ctx != null) EnvironmentLock.release(ctx);
+        cloneLockHeld = false;
+        Log.i("IIAB-Clone", "clone env released (server booting, lock dropped)");
     }
 
     private void render() {
@@ -712,6 +753,7 @@ public class CloneFragment extends Fragment {
         SyncTransferState st = SyncProgressRepository.get().current();
         if (st != null && st.phase == SyncTransferState.Phase.TRANSFERRING) {
             transport.stop();
+            releaseCloneEnv();   // ADFA-4956: overwrite aborted mid-pull — boot back, end guard, drop lock
             syncVm.releaseNetwork();
             SyncProgressRepository.get().postIdle();
         } else {
@@ -869,16 +911,28 @@ public class CloneFragment extends Fragment {
             renderReceive();
             return;
         }
+        // ADFA-4956: pulling overwrites the live rootfs — destructive like Restore. Hold the deep-env
+        // lock + InstallGuard (recover a killed extract) and stop the server, THEN pull into a static
+        // tree. releaseCloneEnv() on the terminal state boots the replaced system back.
+        EnvironmentLock.acquire(app, EnvironmentLock.Owner.CLONE);
+        cloneLockHeld = true;
+        org.iiab.controller.InstallGuard.begin(app);
+        cloneGuardHeld = true;
         SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
-        transport.startClient(app, shareConfig, creds.ip, creds.port, creds.user, creds.pass, dest.getAbsolutePath(),
+        final String destPath = dest.getAbsolutePath();
+        final SyncHandshakeHelper.SyncCredentials fcreds = creds;
+        final Runnable pull = () -> transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath,
                 new TransportEngine.SyncListener() {
                     @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
                     @Override public void onComplete(String message) { SyncProgressRepository.get().postSuccess(message); }
                     @Override public void onError(String error) { SyncProgressRepository.get().postFailed(error); }
                 });
+        ServerController sc = server();
+        if (sc != null) sc.stopEnvironment(pull); else pull.run();
     }
 
     private void showReceiveTerminal(boolean ok, String message) {
+        releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
         String body = (message != null) ? message : "";
         // ADFA-4782: if rsync was SIGKILLed (exit 137, phantom-process killer), guide the user.
@@ -899,7 +953,9 @@ public class CloneFragment extends Fragment {
         super.onDestroyView();
         // ADFA-4782: release protection only when nothing is running; an active share daemon or pull
         // keeps the (app-scoped) WatchdogService alive so leaving the tab doesn't cut the transfer.
-        if (!SyncProgressRepository.get().isActive() && !daemonStarted) stopProtection();
+        // ADFA-4956: same gate for the deep-env lock — only boot the server back + drop the lock when
+        // nothing is in flight; an ongoing share/pull must keep the server down until it ends.
+        if (!SyncProgressRepository.get().isActive() && !daemonStarted) { stopProtection(); releaseCloneEnv(); }
         if (!SyncProgressRepository.get().isActive()) syncVm.releaseNetwork();
         stopApkServer();   // ADFA-4785
     }
@@ -913,6 +969,7 @@ public class CloneFragment extends Fragment {
                     if (transport != null) transport.stop();
                     daemonStarted = false;
                     userStopped = true;   // do not auto-restart on the next render
+                    releaseCloneEnv();    // ADFA-4956: boot the server back + drop the deep-env lock
                     render();
                 })
                 .show();

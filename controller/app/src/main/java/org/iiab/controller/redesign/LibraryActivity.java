@@ -466,6 +466,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         return Boolean.TRUE.equals(targetServerState);
     }
 
+    /** ADFA-4956: expose the ServerController so Clone can quiesce/boot the environment via the
+     *  unconditional startEnvironment()/stopEnvironment() (never the toggle). */
+    public ServerController server() { return serverController; }
+
     /** ADFA-4837: can we safely (re)start the server from the Library home? Only when it's installed,
      *  really idle, and nothing else is in flight — so a retry can never stack over a stop/install. */
     public boolean canStartServer() {
