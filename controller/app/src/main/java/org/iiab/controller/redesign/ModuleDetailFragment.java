@@ -66,9 +66,10 @@ public class ModuleDetailFragment extends Fragment {
 
         // ADFA-4958: meta chips (size / version / Runs offline), "What it includes", and license.
         LinearLayout chips = root.findViewById(R.id.k2go_moddet_chips);
+        int sizeRes = ModuleCards.sizeLabelRes(c.key());   // ADFA-4958: maps uses a curated "200 MB+" floor
         long bytes = ModuleSizes.bytesFor(requireContext(), c.key());
-        String sizeText = (bytes >= 0)
-                ? "\u2248 " + org.iiab.controller.util.ByteFormatter.toHuman(bytes)
+        String sizeText = (sizeRes != 0) ? getString(sizeRes)
+                : (bytes >= 0) ? "\u2248 " + org.iiab.controller.util.ByteFormatter.toHuman(bytes)
                 : "\u2248 NA";
         chips.addView(chip(sizeText, R.color.k2go_teal));
         String ver = ModuleCards.version(c.key());

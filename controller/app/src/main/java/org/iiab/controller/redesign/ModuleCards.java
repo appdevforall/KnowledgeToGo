@@ -114,6 +114,14 @@ public final class ModuleCards {
         }
     }
 
+    /** ADFA-4958: curated size label for modules whose real footprint is selection-dependent
+     *  (maps grows with the layers/levels the user picks), shown instead of a single measured
+     *  value. 0 -> fall back to the measured ModuleSizes value. */
+    public static int sizeLabelRes(String key) {
+        if ("maps".equals(key)) return R.string.k2go_mod_maps_size;
+        return 0;
+    }
+
     /** ADFA-4958: "What it includes" line — makes module-vs-content explicit. 0 -> hide. */
     public static int includesRes(String key) {
         if (key == null) return 0;

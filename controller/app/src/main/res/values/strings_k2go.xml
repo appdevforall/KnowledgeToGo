@@ -664,6 +664,7 @@
     <string name="k2go_mod_maps_desc" translatable="false">Offline world maps to browse and search on the device. Pick the layers and region, then it builds into your system.</string>
     <!-- ADFA-4958 module detail enrichment -->
     <string name="k2go_mod_runs_offline" translatable="false">Runs offline</string>
+    <string name="k2go_mod_maps_size" translatable="false">200 MB+</string>
     <string name="k2go_mod_includes_title" translatable="false">What it includes</string>
     <string name="k2go_mod_license_fmt" translatable="false">License · %1$s</string>
     <string name="k2go_mod_kolibri_includes" translatable="false">Sample courses included — add more in Get more.</string>
