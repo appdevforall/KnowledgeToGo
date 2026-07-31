@@ -53,6 +53,24 @@ public class ModuleHubFragment extends Fragment {
     private LinearLayout host;
     private Button proceed;
 
+    /** ADFA-4958 §5.2: outlined state pill (transparent fill, state-colored 1.4dp stroke, full radius). */
+    private TextView statePill(String text, int colorRes) {
+        int color = ContextCompat.getColor(requireContext(), colorRes);
+        TextView pill = new TextView(requireContext());
+        pill.setText(text);
+        pill.setTextColor(color);
+        pill.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
+        pill.setPadding(px(10), px(3), px(10), px(3));
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        bg.setColor(android.graphics.Color.TRANSPARENT);
+        bg.setCornerRadius(px(20));
+        int strokeW = Math.max(1, Math.round(1.4f * getResources().getDisplayMetrics().density));
+        bg.setStroke(strokeW, color);
+        pill.setBackground(bg);
+        return pill;
+    }
+
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
     private static boolean is64Bit() {
@@ -285,20 +303,15 @@ public class ModuleHubFragment extends Fragment {
 
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());
-        TextView tail = new TextView(requireContext());
-        tail.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        if (scheduled) {
-            tail.setText("✓ " + getString(R.string.k2go_mod_scheduled));
-            tail.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
-        } else {
-            tail.setText("›");
-            tail.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        }
+        boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());   // ADFA-4958 §5.2: state pill
+        TextView pill = statePill(
+                scheduled ? getString(R.string.k2go_mod_scheduled)
+                          : getString(R.string.k2go_state_not_installed),
+                scheduled ? R.color.k2go_teal : R.color.k2go_muted);
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);
-        row.addView(tail, tlp);
+        row.addView(pill, tlp);
         return row;
     }
 
