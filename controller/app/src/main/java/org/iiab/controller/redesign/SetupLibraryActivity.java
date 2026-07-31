@@ -26,6 +26,8 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** ADFA-4842: open Module management (the proot-module hub) directly. Entry-point-agnostic:
      *  Settings → Advanced and (later) Get More both launch this same activity with this extra. */
     public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
+    /** ADFA-4958: deep-link to a specific module's detail from Home (opens the hub, then the detail). */
+    public static final String EXTRA_MODULE_DETAIL = "moduleDetail";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     // Shared Wikipedia selection so picks survive the A/B flip.
@@ -63,9 +65,10 @@ public class SetupLibraryActivity extends AppCompatActivity {
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
         if (savedInstanceState == null) {
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
+            final String moduleDetail = getIntent().getStringExtra(EXTRA_MODULE_DETAIL);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
             androidx.fragment.app.Fragment first;
-            if (moduleMgmt) {
+            if (moduleMgmt || moduleDetail != null) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
                 first = new ModuleHubFragment();
             } else if (contentOnly) {
@@ -82,6 +85,9 @@ public class SetupLibraryActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.k2go_setup_host, first)
                     .commit();
+            if (moduleDetail != null) {
+                findViewById(R.id.k2go_setup_host).post(() -> openModuleDetail(moduleDetail));
+            }
         }
     }
 

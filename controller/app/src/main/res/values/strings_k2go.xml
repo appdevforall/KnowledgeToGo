@@ -606,4 +606,14 @@
     <string name="k2go_portal_error_title" translatable="false">Connection Failed</string>
     <string name="k2go_portal_error_body" translatable="false">Unable to reach the secure environment.</string>
     <string name="k2go_portal_error_detail" translatable="false">Error: %1$s</string>
+    <!-- ADFA-4958: module action sheet + Home states -->
+    <string name="k2go_sheet_open" translatable="false">Open</string>
+    <string name="k2go_sheet_about" translatable="false">About this app</string>
+    <string name="k2go_sheet_install" translatable="false">Install now</string>
+    <string name="k2go_sheet_install_sel" translatable="false">Install selection</string>
+    <string name="k2go_sheet_schedule" translatable="false">Schedule</string>
+    <string name="k2go_sheet_cancel" translatable="false">Cancel schedule</string>
+    <string name="k2go_state_ready" translatable="false">Ready</string>
+    <string name="k2go_state_not_installed" translatable="false">Not installed</string>
+    <string name="k2go_state_scheduled" translatable="false">Scheduled</string>
 </resources>
