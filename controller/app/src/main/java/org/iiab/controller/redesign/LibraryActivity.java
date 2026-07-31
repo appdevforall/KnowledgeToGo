@@ -62,10 +62,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closedDone = false;
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
 
-    // ADFA-4837: animated "…" on the boot status line so the long pre-pdsm silence doesn't look frozen.
-    private final Handler ellipsisHandler = new Handler(Looper.getMainLooper());
-    private Runnable ellipsisRunnable;
-    private String bootBaseText;
+    // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
+    // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
+    private org.iiab.controller.util.EllipsisAnimator bootEllipsis;
+    private org.iiab.controller.util.EllipsisAnimator readingEllipsis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +108,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
         installPercent = findViewById(R.id.k2go_install_percent);
+        // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
+        bootEllipsis = new org.iiab.controller.util.EllipsisAnimator(installStatus, true);
+        readingEllipsis = new org.iiab.controller.util.EllipsisAnimator(installDetail, true);
         // ADFA-4915: extract detail is one middle-ellipsized line so long file names never overlap.
         installDetail.setMaxLines(1);
         installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
@@ -410,6 +413,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (serverController != null) serverController.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        // ADFA-4947: stop the ellipsis animators so their self-reposting Runnable can't outlive the
+        // Activity (the Handler would otherwise keep a reference to this screen via the TextViews).
+        if (bootEllipsis != null) bootEllipsis.stop();
+        if (readingEllipsis != null) readingEllipsis.stop();
+        super.onDestroy();
+    }
+
     /** ADFA-4919 (2c-ii): after the recovery timeout, decide whether a killed proot install left the
      *  system usable (stale marker -> proceed) or damaged (-> tell the user to reinstall). */
     private void evaluateRecovery() {
@@ -576,60 +588,21 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (installDetail != null) installDetail.setText(service);
     }
 
-    /** ADFA-4837: cycle "Starting your library" + . / .. / … on the boot status line. */
+    /** ADFA-4837/4947: cycle "Starting your library" + . / .. / … on the boot status line. */
     private void startBootEllipsis() {
-        if (ellipsisRunnable != null) return;   // already animating
-        if (bootBaseText == null) {
-            bootBaseText = getString(R.string.k2go_starting_library).replaceAll("[\\s.…]+$", "");
-        }
-        ellipsisRunnable = new Runnable() {
-            int i = 0;
-            // Fixed 3-slot suffix: dots padded with spaces so the total width never changes. The
-            // suffix is rendered monospaced (space == dot advance) so the centered message stays put.
-            final String[] frames = {".  ", ".. ", "..."};
-            @Override public void run() {
-                if (installStatus != null) {
-                    String suffix = frames[i % frames.length];
-                    android.text.SpannableString sp = new android.text.SpannableString(bootBaseText + suffix);
-                    sp.setSpan(new android.text.style.TypefaceSpan("monospace"),
-                            bootBaseText.length(), bootBaseText.length() + suffix.length(),
-                            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    installStatus.setText(sp);
-                }
-                i++;
-                ellipsisHandler.postDelayed(this, 450L);
-            }
-        };
-        ellipsisHandler.post(ellipsisRunnable);
+        if (readingEllipsis != null) readingEllipsis.stop();   // boot and reading never run at once
+        if (bootEllipsis != null) bootEllipsis.start(getString(R.string.k2go_starting_library));
     }
 
     private void stopBootEllipsis() {
-        if (ellipsisRunnable != null) ellipsisHandler.removeCallbacks(ellipsisRunnable);
-        ellipsisRunnable = null;
+        if (bootEllipsis != null) bootEllipsis.stop();
+        if (readingEllipsis != null) readingEllipsis.stop();
     }
 
-    /** ADFA-4915: animate "reading" + . / .. / … on the DETAIL line while the archive is being
-     *  listed. Reuses the ellipsis handler (boot and reading never run at once) without touching
-     *  {@code bootBaseText}. */
+    /** ADFA-4915/4947: animate "reading" + . / .. / … on the DETAIL line while the archive is listed. */
     private void startReadingEllipsis(final String base) {
-        stopBootEllipsis();
-        ellipsisRunnable = new Runnable() {
-            int i = 0;
-            final String[] frames = {"   ", ".  ", ".. ", "..."};   // 0..3 dots, fixed 3-slot width (monospace)
-            @Override public void run() {
-                if (installDetail != null) {
-                    String suffix = frames[i % frames.length];
-                    android.text.SpannableString sp = new android.text.SpannableString(base + " " + suffix);
-                    sp.setSpan(new android.text.style.TypefaceSpan("monospace"),
-                            base.length() + 1, base.length() + 1 + suffix.length(),
-                            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    installDetail.setText(sp);
-                }
-                i++;
-                ellipsisHandler.postDelayed(this, 450L);
-            }
-        };
-        ellipsisHandler.post(ellipsisRunnable);
+        if (bootEllipsis != null) bootEllipsis.stop();
+        if (readingEllipsis != null) readingEllipsis.start(base);
     }
 
     @Override
