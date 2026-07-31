@@ -164,6 +164,16 @@
     <string name="k2go_br_status_backing">Backing up</string>
     <string name="k2go_br_backup_done">Backup saved</string>
     <string name="k2go_br_backup_failed">Backup failed — try again</string>
+    <string name="k2go_br_done">Done</string>
+    <string name="k2go_br_done_title">Done</string>
+    <string name="k2go_br_failed_title">Something went wrong</string>
+    <string name="k2go_br_restore_pick">Choose a file &amp; restore</string>
+    <string name="k2go_br_status_checking">Checking the file</string>
+    <string name="k2go_br_status_restoring">Restoring</string>
+    <string name="k2go_br_restore_warn">This replaces your current system with the chosen backup. It can\'t be undone, and the server stops while it runs.</string>
+    <string name="k2go_br_restore_confirm">Replace system</string>
+    <string name="k2go_br_restore_done">System restored</string>
+    <string name="k2go_br_restore_failed">Restore failed</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <!-- ADFA-4795: redesign dialogs, toasts, Step2/Library setText (sweep 2) -->

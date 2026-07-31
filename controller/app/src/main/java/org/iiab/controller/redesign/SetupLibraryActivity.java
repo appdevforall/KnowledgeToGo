@@ -375,6 +375,14 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
+    /** ADFA-4952: open the dedicated backup/restore job screen (mode = MODE_BACKUP / MODE_RESTORE). */
+    public void openBackupJob(String mode) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, BackupJobFragment.newInstance(mode))
+                .addToBackStack("backup_job")
+                .commit();
+    }
+
     /** @deprecated ADFA-4919: the STANDALONE Get More Maps route (shows MapsPreparingFragment with
      *  its own "Run in background", no index, no gate). Superseded by openMapsIndex(). Left UNUSED
      *  on purpose (not deleted): ADFA-4842 (reactivate proot modules via module management) may want
