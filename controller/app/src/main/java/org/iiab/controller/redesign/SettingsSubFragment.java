@@ -1,47 +1,4 @@
-                switch (st.status) {
-                    case TESTING:
-                        accept.setEnabled(false); accept.setAlpha(0.5f);
-                        spinner.setVisibility(View.VISIBLE);
-                        statusIcon.setVisibility(View.GONE);
-                        statusCard.setBackground(null);
-                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
-                        statusText.setText(getString(R.string.k2go_dns_testing));
-                        statusCard.setVisibility(View.VISIBLE);
-                        break;
-                    case APPLIED:
-                        accept.setEnabled(true); accept.setAlpha(1f);
-                        spinner.setVisibility(View.GONE);
-                        statusIcon.setImageResource(R.drawable.ic_check_circle);
-                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_leaf));
-                        statusIcon.setVisibility(View.VISIBLE);
-                        statusCard.setBackgroundResource(R.drawable.k2go_ok_bg);
-                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_leaf));
-                        statusText.setText(getString(R.string.dns_status_ok));
-                        statusCard.setVisibility(View.VISIBLE);
-                        break;
-                    case UNREACHABLE:
-                        accept.setEnabled(true); accept.setAlpha(1f);
-                        spinner.setVisibility(View.GONE);
-                        statusIcon.setImageResource(R.drawable.ic_warning_24);
-                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_amber_text));
-                        statusIcon.setVisibility(View.VISIBLE);
-                        statusCard.setBackgroundResource(R.drawable.k2go_warn_bg);
-                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_amber_text));
-                        statusText.setText(st.message == null ? "" : st.message);
-                        statusCard.setVisibility(View.VISIBLE);
-                        break;
-                    case INVALID:
-                        accept.setEnabled(true); accept.setAlpha(1f);
-                        statusCard.setVisibility(View.GONE);
-                        errorText.setText(st.message == null ? "" : st.message);
-                        errorText.setVisibility(View.VISIBLE);
-                        break;
-                    case IDLE:
-                    default:
-                        accept.setEnabled(true); accept.setAlpha(1f);
-                        statusCard.setVisibility(View.GONE);
-                        break;
-                }package org.iiab.controller.redesign;
+package org.iiab.controller.redesign;
 
 import android.app.Activity;
 import android.content.Context;
@@ -69,10 +26,10 @@ import org.iiab.controller.delivery.data.AnalyticsConsent;
 import android.view.Gravity;
 import android.widget.EditText;
 import android.widget.ImageView;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import org.iiab.controller.network.presentation.DnsSettingsViewModel;
 import org.iiab.controller.network.presentation.DnsSettingsViewModelFactory;
 
@@ -277,7 +234,6 @@ public class SettingsSubFragment extends Fragment {
 
         SettingsUi.caption(ctx, list, getString(R.string.setup_dns_hint));
 
-        // Setup DNS toggle (own row so we can reflect state changes, e.g. revert on unreachable).
         LinearLayout toggleRow = new LinearLayout(ctx);
         toggleRow.setOrientation(LinearLayout.HORIZONTAL);
         toggleRow.setGravity(Gravity.CENTER_VERTICAL);
@@ -299,7 +255,6 @@ public class SettingsSubFragment extends Fragment {
         trlp.topMargin = SettingsUi.dp(ctx, 8);
         list.addView(toggleRow, trlp);
 
-        // Default-DNS info card (shown when custom is off).
         final LinearLayout defaultCard = new LinearLayout(ctx);
         defaultCard.setOrientation(LinearLayout.VERTICAL);
         defaultCard.setBackgroundResource(R.drawable.k2go_info_bg);
@@ -316,7 +271,6 @@ public class SettingsSubFragment extends Fragment {
         dclp.topMargin = SettingsUi.dp(ctx, 8);
         list.addView(defaultCard, dclp);
 
-        // Fields (shown when custom is on).
         final LinearLayout fields = new LinearLayout(ctx);
         fields.setOrientation(LinearLayout.VERTICAL);
         list.addView(fields, new LinearLayout.LayoutParams(-1, -2));
@@ -349,7 +303,6 @@ public class SettingsSubFragment extends Fragment {
         aclp.topMargin = SettingsUi.dp(ctx, 20);
         fields.addView(accept, aclp);
 
-        // Status card (testing / applied / unreachable).
         final LinearLayout statusCard = new LinearLayout(ctx);
         statusCard.setOrientation(LinearLayout.HORIZONTAL);
         statusCard.setGravity(Gravity.CENTER_VERTICAL);
@@ -392,38 +345,45 @@ public class SettingsSubFragment extends Fragment {
                 errorText.setVisibility(View.GONE);
                 switch (st.status) {
                     case TESTING:
-                        accept.setEnabled(false);
+                        accept.setEnabled(false); accept.setAlpha(0.5f);
                         spinner.setVisibility(View.VISIBLE);
+                        statusIcon.setVisibility(View.GONE);
                         statusCard.setBackground(null);
                         statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
                         statusText.setText(getString(R.string.k2go_dns_testing));
                         statusCard.setVisibility(View.VISIBLE);
                         break;
                     case APPLIED:
-                        accept.setEnabled(true);
+                        accept.setEnabled(true); accept.setAlpha(1f);
                         spinner.setVisibility(View.GONE);
+                        statusIcon.setImageResource(R.drawable.ic_check_circle);
+                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_leaf));
+                        statusIcon.setVisibility(View.VISIBLE);
                         statusCard.setBackgroundResource(R.drawable.k2go_ok_bg);
                         statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_leaf));
-                        statusText.setText("✓  " + getString(R.string.dns_status_ok));
+                        statusText.setText(getString(R.string.dns_status_ok));
                         statusCard.setVisibility(View.VISIBLE);
                         break;
                     case UNREACHABLE:
-                        accept.setEnabled(true);
+                        accept.setEnabled(true); accept.setAlpha(1f);
                         spinner.setVisibility(View.GONE);
+                        statusIcon.setImageResource(R.drawable.ic_warning_24);
+                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_amber_text));
+                        statusIcon.setVisibility(View.VISIBLE);
                         statusCard.setBackgroundResource(R.drawable.k2go_warn_bg);
                         statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_amber_text));
-                        statusText.setText("⚠  " + (st.message == null ? "" : st.message));
+                        statusText.setText(st.message == null ? "" : st.message);
                         statusCard.setVisibility(View.VISIBLE);
                         break;
                     case INVALID:
-                        accept.setEnabled(true);
+                        accept.setEnabled(true); accept.setAlpha(1f);
                         statusCard.setVisibility(View.GONE);
                         errorText.setText(st.message == null ? "" : st.message);
                         errorText.setVisibility(View.VISIBLE);
                         break;
                     case IDLE:
                     default:
-                        accept.setEnabled(true);
+                        accept.setEnabled(true); accept.setAlpha(1f);
                         statusCard.setVisibility(View.GONE);
                         break;
                 }
