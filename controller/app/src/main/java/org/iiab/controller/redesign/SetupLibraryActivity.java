@@ -16,9 +16,15 @@ import org.iiab.controller.install.presentation.InstallService;
  * shared tier + content picks so the two Step-2 layouts (A expandable+bar, B 5-step+gauge)
  * carry selections across the hidden tap-5x flip.
  */
-public class SetupLibraryActivity extends AppCompatActivity {
+public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
 
     private InstallationPlanner.Tier selectedTier = InstallationPlanner.Tier.STANDARD;
+
+    // ADFA-4952: this host owns a ServerController so backup/restore can stop the environment before the
+    // job (a static rootfs) and boot it after (startEnvironment). The server proot is process-scoped, so
+    // it survives back to LibraryActivity, which only monitors it.
+    private org.iiab.controller.ServerController serverController;
+    private Boolean targetServerState = null;   // ServerController.Host state
 
     /** Launch extra: skip Step 1 (system) and open Step 2 (content) directly, for when a
      *  system is already installed so adding content never overwrites it. */
@@ -61,6 +67,8 @@ public class SetupLibraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
+        serverController = new org.iiab.controller.ServerController(this, this);   // ADFA-4952
+        serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
         if (savedInstanceState == null) {
@@ -381,6 +389,45 @@ public class SetupLibraryActivity extends AppCompatActivity {
 
     /** ADFA-4900: true while Maps runs inside the wizard (pre-install) — Confirm banks the selection. */
     public boolean isMapsWizard() { return mapsWizard; }
+
+    // ---- ADFA-4952: server lifecycle for backup/restore ----
+    /** The host's ServerController (backup/restore use stopEnvironment()/startEnvironment()). */
+    public org.iiab.controller.ServerController server() { return serverController; }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (serverController != null) serverController.onResume();
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        if (serverController != null) serverController.onPause();
+    }
+
+    // ServerController.Host (minimal — this host has no server LEDs/pulse UI; backup/restore show their
+    // own status). The two protection methods drive the WatchdogService so the job isn't killed.
+    @Override public void addToLog(String message) { Log.d("K2Go-SetupLibrary", message); }
+    @Override public void startFusionPulse() { }
+    @Override public void startExitPulse() { }
+    @Override public void stopBtnProgress() { }
+    @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
+    @Override public void refreshServerUi() { }
+    @Override public Boolean getTargetServerState() { return targetServerState; }
+    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
+    @Override public boolean isNegotiating() { return false; }
+
+    @Override public void enableSystemProtection() {
+        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
+    }
+
+    @Override public void disableSystemProtection() {
+        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
+        startService(i);
+    }
 
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */
