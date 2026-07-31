@@ -71,7 +71,7 @@ public class ModuleHubFragment extends Fragment {
         back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
         proceed.setOnClickListener(v -> {
-            if (InstallJobs.isBusy()) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
+            if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
             if (getActivity() instanceof SetupLibraryActivity) {
                 ((SetupLibraryActivity) getActivity()).openModuleIndex();
             }
