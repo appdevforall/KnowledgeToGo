@@ -40,8 +40,13 @@ public class BackupRestoreFragment extends Fragment {
     private static boolean sReturnPending = false;
     public static void armReturnCountdown() { sReturnPending = true; }
 
+    // ADFA-4961: like the module index, wait for the environment to actually be live before redirecting.
+    private static final long READY_POLL_MS = 2000L;
+    private static final long READY_TIMEOUT_MS = 45000L;
     private final Handler main = new Handler(Looper.getMainLooper());
-    private Runnable homeRunnable;
+    private Runnable readyPoll;
+    private boolean returnCancelled = false;
+    private long returnStartMs = 0L;
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -87,8 +92,7 @@ public class BackupRestoreFragment extends Fragment {
         if (sReturnPending) {
             sReturnPending = false;
             col.addView(buildReturnBar());
-            homeRunnable = this::goHome;
-            main.postDelayed(homeRunnable, 3000L);
+            startReturnToHome();
         }
 
         return scroll;
@@ -123,11 +127,44 @@ public class BackupRestoreFragment extends Fragment {
         cancel.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         cancel.setPadding(px(12), px(4), px(4), px(4));
         cancel.setOnClickListener(v -> {
-            if (homeRunnable != null) main.removeCallbacks(homeRunnable);
+            returnCancelled = true;
+            if (readyPoll != null) main.removeCallbacks(readyPoll);
             bar.setVisibility(View.GONE);
         });
         bar.addView(cancel);
         return bar;
+    }
+
+    /**
+     * ADFA-4961: mirror the module index — boot the environment (startEnvironment, never the toggle)
+     * and WAIT for RestReadiness.apiReady() before redirecting, so we never drop the user on a Home that
+     * is still starting. Cancel keeps them here; a READY_TIMEOUT_MS fallback still goes Home so the user
+     * is never trapped (Home's boot gate then owns the rest).
+     */
+    private void startReturnToHome() {
+        returnCancelled = false;
+        returnStartMs = android.os.SystemClock.elapsedRealtime();
+        if (getActivity() instanceof SetupLibraryActivity) {
+            org.iiab.controller.ServerController sc = ((SetupLibraryActivity) getActivity()).server();
+            if (sc != null) sc.startEnvironment();
+        }
+        readyPoll = new Runnable() {
+            @Override public void run() {
+                if (returnCancelled || !isAdded()) return;
+                org.iiab.controller.util.AppExecutors.get().io().execute(() -> {
+                    final boolean up = RestReadiness.apiReady();
+                    main.post(() -> {
+                        if (returnCancelled || !isAdded()) return;
+                        if (up || android.os.SystemClock.elapsedRealtime() - returnStartMs > READY_TIMEOUT_MS) {
+                            goHome();   // live (or timed out → Home's boot gate takes over)
+                        } else {
+                            main.postDelayed(readyPoll, READY_POLL_MS);
+                        }
+                    });
+                });
+            }
+        };
+        main.postDelayed(readyPoll, READY_POLL_MS);
     }
 
     private void goHome() {
@@ -194,7 +231,7 @@ public class BackupRestoreFragment extends Fragment {
     }
 
     @Override public void onDestroyView() {
-        if (homeRunnable != null) main.removeCallbacks(homeRunnable);
+        if (readyPoll != null) main.removeCallbacks(readyPoll);
         super.onDestroyView();
     }
 }
