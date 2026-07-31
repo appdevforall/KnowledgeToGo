@@ -237,7 +237,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             if (st.isTerminal() && st.seq > lastDeepOpSeq) {
                 lastDeepOpSeq = st.seq;
                 if (!ServerStateRepository.get().current().alive && targetServerState == null
-                        && !org.iiab.controller.env.EnvironmentLock.isHeld(this)) {
+                        && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {   // ADFA-4957: same predicate as the toggle guard
                     serverController.handleServerLaunchClick(findViewById(android.R.id.content));
                 }
             }

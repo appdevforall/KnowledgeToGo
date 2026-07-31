@@ -306,7 +306,7 @@ public class ServerController {
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
                 || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
                 || InstallGuard.inProgress(activity)   // ADFA-4811: durable guard survives a mid-install kill
-                || org.iiab.controller.env.EnvironmentLock.isHeld(activity)) {   // ADFA-4957: never toggle the server while a deep-env op (backup/restore/clone) holds the lock
+                || org.iiab.controller.env.EnvironmentLock.ownerHeld(activity)) {   // ADFA-4957: never toggle the server while a deep-env op (backup/restore/clone) OWNS the lock. Uses ownerHeld (not isHeld) so a live content download — which runs on the server and holds no owner marker — doesn't block turn-off.
             host.setTargetServerState(null);
             activity.runOnUiThread(host::stopBtnProgress);
             host.refreshServerUi();
