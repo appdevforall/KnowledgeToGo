@@ -410,6 +410,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (serverController != null) serverController.onPause();
     }
 
+    @Override
+    protected void onDestroy() {
+        // ADFA-4947: stop the ellipsis animators so their self-reposting Runnable can't outlive the
+        // Activity (the Handler would otherwise keep a reference to this screen via the TextViews).
+        if (bootEllipsis != null) bootEllipsis.stop();
+        if (readingEllipsis != null) readingEllipsis.stop();
+        super.onDestroy();
+    }
+
     /** ADFA-4919 (2c-ii): after the recovery timeout, decide whether a killed proot install left the
      *  system usable (stale marker -> proceed) or damaged (-> tell the user to reinstall). */
     private void evaluateRecovery() {
