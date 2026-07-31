@@ -20,6 +20,7 @@
     <color name="k2go_clay">#C4462F</color>
     <color name="k2go_notice_ink">#3A2320</color>  <!-- fixed dark; notice bg is always light pink -->
     <color name="k2go_info_ink">#0E5C63</color>  <!-- ADFA-4955: fixed dark teal for text over k2go_info_bg (fixed-light); no values-night override so it stays readable in dark. -->
+    <color name="k2go_warn_ink">#8A5A00</color>  <!-- ADFA-4958: fixed dark amber for text over k2go_warn_bg (fixed-light); no values-night override. -->
     <!-- ADFA-4901: install log terminal — fixed dark surface + light-green text in both themes
          (reused by all proot module install logs). -->
     <color name="k2go_terminal_bg">#0F1512</color>

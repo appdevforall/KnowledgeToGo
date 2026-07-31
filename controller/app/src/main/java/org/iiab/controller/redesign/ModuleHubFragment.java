@@ -140,8 +140,8 @@ public class ModuleHubFragment extends Fragment {
         TextView note = new TextView(requireContext());
         note.setText(R.string.k2go_mod_time_note);
         note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_info_ink));
-        note.setBackgroundResource(R.drawable.k2go_info_bg);
+        note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
+        note.setBackgroundResource(R.drawable.k2go_warn_bg);
         note.setPadding(px(16), px(14), px(16), px(14));
         LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
