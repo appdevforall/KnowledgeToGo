@@ -36,6 +36,18 @@ public class SettingsFragment extends Fragment {
         SettingsUi.preview(ctx, list, getString(R.string.k2go_settings_help), null);
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_send_feedback), null, null, v -> openFeedback());
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_about), null, versionName(), v -> openSub("about"));
+        // ADFA-4968: promote the System block (was inside Advanced) to the top level, below About.
+        SettingsUi.sectionHeader(ctx, list, getString(R.string.k2go_settings_sec_system));
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_module_mgmt), getString(R.string.k2go_settings_module_mgmt_sub), null, v -> {
+            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
+            i.putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true);
+            ctx.startActivity(i);
+        });
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_backups), getString(R.string.k2go_br_row_sub), null, v -> {
+            android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
+            i.putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true);
+            ctx.startActivity(i);
+        });
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_advanced), getString(R.string.k2go_settings_advanced_sub), null, v -> openSub("advanced"));
 
         buildFooter(ctx, footer);
