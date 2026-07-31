@@ -133,21 +133,85 @@ public class ModuleHubFragment extends Fragment {
             msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
             msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : R.string.k2go_mod_none);
             host.addView(msg);
-            return;
+        } else {
+            // ADFA-4958: last informed step before the locked install index. A build takes time.
+            TextView note = new TextView(requireContext());
+            note.setText(R.string.k2go_mod_time_note);
+            note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
+            note.setBackgroundResource(R.drawable.k2go_warn_bg);
+            note.setPadding(px(16), px(14), px(16), px(14));
+            LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            nlp.bottomMargin = px(12);
+            host.addView(note, nlp);
+            for (ModuleCards.Card c : items) host.addView(cardRow(c));
+        }
+        addHiddenSection();
+    }
+
+    // ADFA-4958: HIDDEN -> Restore. Modules can't be uninstalled; Hide only declutters Home and this
+    // is where they come back. Lists every hidden module (regardless of install state).
+    private void addHiddenSection() {
+        if (HiddenModules.isEmpty(requireContext())) return;
+
+        TextView header = new TextView(requireContext());
+        header.setText(R.string.k2go_mod_hidden_header);
+        header.setAllCaps(true);
+        header.setLetterSpacing(0.08f);
+        header.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
+        header.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        hlp.topMargin = px(18); hlp.bottomMargin = px(6);
+        host.addView(header, hlp);
+
+        for (final String key : HiddenModules.keys(requireContext())) {
+            ModuleCards.Card c = ModuleCards.byKey(key);
+            if (c == null) continue;
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setBackgroundResource(R.drawable.k2go_card_bg);
+            row.setPadding(px(16), px(14), px(16), px(14));
+            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rlp.bottomMargin = px(12);
+            row.setLayoutParams(rlp);
+
+            LinearLayout col = new LinearLayout(requireContext());
+            col.setOrientation(LinearLayout.VERTICAL);
+            TextView name = new TextView(requireContext());
+            name.setText(getString(c.titleRes));
+            name.setTypeface(name.getTypeface(), android.graphics.Typeface.BOLD);
+            name.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+            name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+            col.addView(name);
+            TextView sub = new TextView(requireContext());
+            sub.setText(R.string.k2go_mod_hidden_sub);
+            sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            col.addView(sub);
+            row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            TextView restore = new TextView(requireContext());
+            restore.setText(R.string.k2go_mod_restore);
+            restore.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+            restore.setBackgroundResource(R.drawable.k2go_chip_bg);
+            restore.setPadding(px(14), px(6), px(14), px(6));
+            restore.setOnClickListener(v -> { HiddenModules.remove(requireContext(), key); buildCards(); });
+            row.addView(restore);
+            host.addView(row);
         }
 
-        // ADFA-4958: last informed step before the locked install index. A build takes time.
-        TextView note = new TextView(requireContext());
-        note.setText(R.string.k2go_mod_time_note);
-        note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
-        note.setBackgroundResource(R.drawable.k2go_warn_bg);
-        note.setPadding(px(16), px(14), px(16), px(14));
-        LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
+        TextView foot = new TextView(requireContext());
+        foot.setText(R.string.k2go_mod_hidden_foot);
+        foot.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        foot.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        nlp.bottomMargin = px(12);
-        host.addView(note, nlp);
-        for (ModuleCards.Card c : items) host.addView(cardRow(c));
+        flp.topMargin = px(4);
+        host.addView(foot, flp);
     }
 
     /** A full-width tappable module row: title + subtitle + one-line description, with a "Scheduled"

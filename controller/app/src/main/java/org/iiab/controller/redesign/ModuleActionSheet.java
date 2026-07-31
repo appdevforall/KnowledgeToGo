@@ -138,6 +138,14 @@ public final class ModuleActionSheet {
                 break;
         }
 
+        if (state != State.SCHEDULED && key != null) {   // ADFA-4958: Hide declutters Home; Restore lives in management
+            content.addView(row(ctx, R.drawable.ic_hide_24, act.getString(R.string.k2go_sheet_hide),
+                    R.color.k2go_ink, false, v -> {
+                        HiddenModules.add(ctx, key);
+                        dlg.dismiss();
+                        if (onChanged != null) onChanged.run();
+                    }));
+        }
         dlg.setContentView(content);
         dlg.show();
     }

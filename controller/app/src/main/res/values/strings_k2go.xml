@@ -667,4 +667,11 @@
     <string name="k2go_mod_code_includes" translatable="false">The IDE itself — your projects live on the device.</string>
     <string name="k2go_mod_matomo_includes" translatable="false">Analytics for the box — nothing to add.</string>
     <string name="k2go_mod_maps_includes" translatable="false">Base map — pick the layers and region when you install.</string>
+    <!-- ADFA-4958 hide / restore / management -->
+    <string name="k2go_sheet_hide" translatable="false">Hide</string>
+    <string name="k2go_mod_hidden_header" translatable="false">HIDDEN</string>
+    <string name="k2go_mod_hidden_sub" translatable="false">Hidden from Home</string>
+    <string name="k2go_mod_restore" translatable="false">Restore</string>
+    <string name="k2go_mod_hidden_foot" translatable="false">Modules can't be uninstalled — only hidden, then restored here.</string>
+    <string name="k2go_mod_mgmt_helper" translatable="false">Tap to open · tick to install several at once.</string>
 </resources>
