@@ -653,4 +653,5 @@
     <string name="k2go_state_ready" translatable="false">Ready</string>
     <string name="k2go_state_not_installed" translatable="false">Not installed</string>
     <string name="k2go_state_scheduled" translatable="false">Scheduled</string>
+    <string name="k2go_mod_time_note" translatable="false">Installing modules builds them into the system, so it takes time — the app stays on the install screen until it finishes. To get everything quickly, install the full system version instead.</string>
 </resources>
