@@ -42,15 +42,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
 
+            <!-- ADFA-4961: the mode-specific loop (backup / restore) is set in code; the app logo is
+                 composited on top by the scaffold below (not baked into the animation). -->
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/k2go_bj_anim"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                app:lottie_rawRes="@raw/k2go_working_loop"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true" />
+                android:scaleType="fitCenter" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -90,6 +90,11 @@ public class BackupJobFragment extends Fragment {
         mode = getArguments() != null ? getArguments().getString(ARG_MODE, MODE_BACKUP) : MODE_BACKUP;
         View v = inflater.inflate(R.layout.fragment_k2go_backup_job, container, false);
         anim = v.findViewById(R.id.k2go_bj_anim);
+        // ADFA-4961: mode-specific working loop (box + streaming dots + glow); the app logo is composited
+        // on top by the layout scaffold, same as the module-install template.
+        anim.setAnimation(isRestore() ? R.raw.k2go_restore_loop : R.raw.k2go_backup_loop);
+        anim.setRepeatCount(com.airbnb.lottie.LottieDrawable.INFINITE);
+        anim.playAnimation();
         title = v.findViewById(R.id.k2go_bj_title);
         sub = v.findViewById(R.id.k2go_bj_sub);
         status = v.findViewById(R.id.k2go_bj_status);
