@@ -75,5 +75,5 @@
         android:text="⋮"
         android:textSize="20sp"
         android:textColor="@color/k2go_muted"
-        android:contentDescription="@string/k2go_sheet_about" />
+        android:contentDescription="@string/k2go_sheet_more" />
 </FrameLayout>

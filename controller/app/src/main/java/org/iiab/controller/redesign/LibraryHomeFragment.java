@@ -167,7 +167,7 @@ public class LibraryHomeFragment extends Fragment {
             View ov = card.findViewById(R.id.k2go_card_overflow);   // ADFA-4958
             if (ov != null) {
                 if (ModuleCards.byEndpoint(c.endpoint) != null) { ov.setOnClickListener(w -> openSheet(c)); }
-                else ov.setVisibility(View.GONE);   // non-module card (maps): no module sheet
+                else ov.setVisibility(View.GONE);   // defensive: a Home card with no backing module (none today)
             }
             applyState(c, c.state);   // keep the live status across a relayout
             cells.add(card);
@@ -234,7 +234,7 @@ public class LibraryHomeFragment extends Fragment {
             startActivity(i);
         } else if (ModuleCards.byEndpoint(c.endpoint) != null) {   // ADFA-4958: module -> action sheet
             openSheet(c);
-        } else {
+        } else {   // defensive fallback: non-Ready card with no backing module (none today) — re-probe
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
                 final int st = probe(c.endpoint);

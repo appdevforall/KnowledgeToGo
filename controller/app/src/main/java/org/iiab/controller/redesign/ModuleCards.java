@@ -84,7 +84,7 @@ public final class ModuleCards {
     }
 
     /** ADFA-4958: map a Home card's endpoint (e.g. "books") to its module card, or null if the
-     *  endpoint is not a presentable module (e.g. "maps" is content, not a module). */
+     *  endpoint has no backing module. Every current Home card maps to one (maps included). */
     public static Card byEndpoint(String endpoint) {
         if (endpoint == null) return null;
         for (Card c : CATALOG) if (c.module != null && endpoint.equals(c.module.endpoint)) return c;
