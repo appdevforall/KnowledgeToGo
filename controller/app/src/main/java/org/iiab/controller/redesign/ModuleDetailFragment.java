@@ -71,12 +71,18 @@ public class ModuleDetailFragment extends Fragment {
             requireActivity().getOnBackPressedDispatcher().onBackPressed();   // back to the hub (shows ✓)
         });
 
+        if (c.hasSelector) schedule.setVisibility(View.GONE);   // ADFA-4958: maps schedules via its selector, not here
+
         Button installNow = root.findViewById(R.id.k2go_moddet_install_now);
         installNow.setOnClickListener(v -> {
             if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
-            ModuleWishlist.add(requireContext(), c.key());
             if (getActivity() instanceof SetupLibraryActivity) {
-                ((SetupLibraryActivity) getActivity()).openModuleIndex();
+                if (c.hasSelector) {
+                    ((SetupLibraryActivity) getActivity()).openMapsChoose();   // ADFA-4958: maps needs its content selector first
+                } else {
+                    ModuleWishlist.add(requireContext(), c.key());
+                    ((SetupLibraryActivity) getActivity()).openModuleIndex();
+                }
             }
         });
 

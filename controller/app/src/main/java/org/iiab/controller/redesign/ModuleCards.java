@@ -66,6 +66,9 @@ public final class ModuleCards {
             new Card("matomo",     R.string.k2go_mod_matomo_title,     R.string.k2go_mod_matomo_title,
                     R.string.k2go_mod_matomo_sub,     R.string.k2go_mod_matomo_desc,
                     R.drawable.k2go_module_placeholder, false),
+            new Card("maps",       R.string.k2go_mod_maps_title,       R.string.k2go_mod_maps_title,
+                    R.string.k2go_mod_maps_sub,       R.string.k2go_mod_maps_desc,
+                    R.drawable.k2go_module_placeholder, true),   // ADFA-4958: proot module WITH a content selector
     };
 
     /** All presentable module cards (roster-backed), in display order. */

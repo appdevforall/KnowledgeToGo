@@ -233,7 +233,9 @@ public class LibraryHomeFragment extends Fragment {
 
     private boolean isScheduled(Card c) {
         ModuleCards.Card m = ModuleCards.byEndpoint(c.endpoint);
-        return m != null && ModuleWishlist.contains(requireContext(), m.key());
+        if (m == null) return false;
+        if (m.hasSelector) return MapsWishlist.has(requireContext());   // ADFA-4958: maps has its own store
+        return ModuleWishlist.contains(requireContext(), m.key());
     }
 
     @Override public void onResume() { super.onResume(); main.post(poll); }

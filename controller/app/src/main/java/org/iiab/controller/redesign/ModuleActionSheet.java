@@ -44,6 +44,7 @@ public final class ModuleActionSheet {
         final Context ctx = act;
         final ModuleCards.Card card = ModuleCards.byEndpoint(endpoint);
         final String key = card != null ? card.key() : null;
+        final boolean sel = card != null && card.hasSelector;   // ADFA-4958: maps = module WITH a content selector
 
         final BottomSheetDialog dlg = new BottomSheetDialog(ctx);
         LinearLayout content = new LinearLayout(ctx);
@@ -102,10 +103,11 @@ public final class ModuleActionSheet {
                 String installLabel = act.getString(
                         n > 1 ? R.string.k2go_sheet_install_sel : R.string.k2go_sheet_install);
                 content.addView(row(ctx, R.drawable.ic_download_24, installLabel,
-                        R.color.k2go_teal, false, v -> { dlg.dismiss(); openHub(act); }));
+                        R.color.k2go_teal, false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
                 content.addView(row(ctx, R.drawable.ic_close_24, act.getString(R.string.k2go_sheet_cancel),
                         R.color.k2go_clay, false, v -> {
-                            if (key != null) ModuleWishlist.remove(ctx, key);
+                            if (sel) MapsWishlist.clear(ctx);
+                            else if (key != null) ModuleWishlist.remove(ctx, key);
                             dlg.dismiss();
                             if (onChanged != null) onChanged.run();
                         }));
@@ -115,18 +117,24 @@ public final class ModuleActionSheet {
             default:
                 content.addView(row(ctx, R.drawable.ic_info_24, act.getString(R.string.k2go_sheet_about),
                         R.color.k2go_ink, true, v -> { dlg.dismiss(); openDetail(act, key); }));
-                content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                        R.color.k2go_teal, false, v -> {
-                            if (key != null) ModuleWishlist.add(ctx, key);
-                            dlg.dismiss();
-                            openHub(act);
-                        }));
-                content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
-                        R.color.k2go_ink, false, v -> {
-                            if (key != null) ModuleWishlist.add(ctx, key);
-                            dlg.dismiss();
-                            if (onChanged != null) onChanged.run();
-                        }));
+                if (sel) {
+                    // maps: installing needs the content selector; route there (schedule lives in the wizard).
+                    content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
+                            R.color.k2go_teal, false, v -> { dlg.dismiss(); openMapsSetup(act); }));
+                } else {
+                    content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
+                            R.color.k2go_teal, false, v -> {
+                                if (key != null) ModuleWishlist.add(ctx, key);
+                                dlg.dismiss();
+                                openHub(act);
+                            }));
+                    content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
+                            R.color.k2go_ink, false, v -> {
+                                if (key != null) ModuleWishlist.add(ctx, key);
+                                dlg.dismiss();
+                                if (onChanged != null) onChanged.run();
+                            }));
+                }
                 break;
         }
 
@@ -197,6 +205,11 @@ public final class ModuleActionSheet {
     private static void openHub(Activity act) {
         act.startActivity(new Intent(act, SetupLibraryActivity.class)
                 .putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true));
+    }
+
+    private static void openMapsSetup(Activity act) {
+        act.startActivity(new Intent(act, SetupLibraryActivity.class)
+                .putExtra(SetupLibraryActivity.EXTRA_MAPS_SETUP, true));
     }
 
     private static int dp(Context ctx, int dp) {
