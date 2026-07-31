@@ -55,6 +55,15 @@ public final class CloneShareService extends Service {
             stopSelf();
             return START_NOT_STICKY;
         }
+        // ADFA-4960: a START_STICKY restart delivers a null intent. After a true process kill the clone
+        // is gone (the session + native daemon died with the process), so don't resurrect a stale
+        // "transferring" notification / re-hold locks for a transfer that no longer exists.
+        if (intent == null
+                && !CloneSendSession.isActive()
+                && !org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
         startForeground(NOTIFICATION_ID, buildNotification());
         acquireHardwareLocks();
         Log.i(TAG, "clone share protection ON");

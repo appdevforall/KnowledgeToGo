@@ -28,12 +28,12 @@ public final class CloneSendSession {
 
     public static synchronized void begin(boolean hotspot, String tempPass, boolean hostHasRootfs,
                                           boolean shareAnyway, LibrarySize.Split split) {
-        CloneSendSession.active = true;
         CloneSendSession.hotspot = hotspot;
         CloneSendSession.tempPass = tempPass;
         CloneSendSession.hostHasRootfs = hostHasRootfs;
         CloneSendSession.shareAnyway = shareAnyway;
         CloneSendSession.split = split;
+        CloneSendSession.active = true;   // volatile publish LAST so a reader seeing active=true sees the rest
     }
 
     public static synchronized void clear() {
