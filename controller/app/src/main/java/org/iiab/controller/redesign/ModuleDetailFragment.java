@@ -122,8 +122,14 @@ public class ModuleDetailFragment extends Fragment {
         TextView t = new TextView(requireContext());
         t.setText(text);
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
-        t.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
-        t.setBackgroundResource(R.drawable.k2go_chip_bg);
+        int color = ContextCompat.getColor(requireContext(), colorRes);   // ADFA-4958 §5.4: outlined pill (teal-on-teal fill was invisible)
+        t.setTextColor(color);
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        bg.setColor(android.graphics.Color.TRANSPARENT);
+        bg.setCornerRadius(11 * d);
+        bg.setStroke(Math.max(1, Math.round(1.4f * d)), color);
+        t.setBackground(bg);
         int hp = Math.round(10 * d), vp = Math.round(5 * d);
         t.setPadding(hp, vp, hp, vp);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
