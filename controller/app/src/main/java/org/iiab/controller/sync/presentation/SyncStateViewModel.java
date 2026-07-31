@@ -34,7 +34,10 @@ public class SyncStateViewModel extends ViewModel {
 
     private static final String TAG = "IIAB-SyncStateVM";
 
-    private TransportEngine transport;
+    // ADFA-4960: process-scoped (was per-ViewModel) so an in-flight clone survives the Activity being
+    // finished (e.g. the user swipes the app away). The transport's native rsync child is kept alive by
+    // CloneShareService; making it per-ViewModel meant onCleared() below killed it on every swipe.
+    private static TransportEngine transport;
 
     // ADFA-4492 step 4: the pre-transfer probe + dry-run run here (Activity-scoped), not in the
     // fragment, so a theme toggle during the sondeo no longer drops it. The fragment kicks it via
@@ -137,6 +140,12 @@ public class SyncStateViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         super.onCleared();
+        // ADFA-4960: do NOT tear down an in-flight clone when the Activity finishes (e.g. the user
+        // swipes the app away). The transport + its native rsync child are process-scoped and kept
+        // alive by CloneShareService; stopping them here is exactly what cut a transfer on swipe. Only
+        // clean up when nothing is running (send session idle AND no receive in flight).
+        if (org.iiab.controller.redesign.CloneSendSession.isActive()
+                || SyncProgressRepository.get().isActive()) return;
         releaseNetwork();
         if (transport != null) {
             transport.stop();

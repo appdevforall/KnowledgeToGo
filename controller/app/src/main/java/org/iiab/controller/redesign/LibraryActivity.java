@@ -262,6 +262,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // verdict runs. If the server comes up first, the observer above clears the marker.
             serverController.handleServerLaunchClick(findViewById(android.R.id.content));
             main.postDelayed(this::evaluateRecovery, GATE_SAFETY_MS);
+        } else if (org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {
+            // ADFA-4960: a deep-env op (clone/backup/restore) holds the lock, so the server is
+            // intentionally STOPPED. Don't sit behind the boot gate waiting for a server that won't
+            // come up (that was the "reopen during a clone loads forever" bug) — lift it now and show
+            // the UI we routed to (e.g. the Clone tab). The op boots the server when it finishes
+            // (CloneFragment.releaseCloneEnv / the DeepOp terminal observer), never the boot gate.
+            onServerReady();
         } else {
             // If the stack isn't up after one poll cycle, start it.
             if (systemInstalled) {
