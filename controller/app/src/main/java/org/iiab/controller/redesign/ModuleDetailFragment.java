@@ -73,7 +73,7 @@ public class ModuleDetailFragment extends Fragment {
 
         Button installNow = root.findViewById(R.id.k2go_moddet_install_now);
         installNow.setOnClickListener(v -> {
-            if (InstallJobs.isBusy()) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
+            if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
             ModuleWishlist.add(requireContext(), c.key());
             if (getActivity() instanceof SetupLibraryActivity) {
                 ((SetupLibraryActivity) getActivity()).openModuleIndex();

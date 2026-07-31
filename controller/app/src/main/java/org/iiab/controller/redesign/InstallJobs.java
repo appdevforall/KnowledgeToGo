@@ -17,17 +17,15 @@
  */
 package org.iiab.controller.redesign;
 
-import org.iiab.controller.install.presentation.ModuleQueueRepository;
-
 public final class InstallJobs {
 
     private InstallJobs() {}
 
-    /** True while a proot runrole is in flight OR a REST download session is still going. */
+    /** True while a proot runrole is in flight OR a REST download session is still going.
+     *  ADFA-4951: now the process-scoped half of {@link org.iiab.controller.env.EnvironmentLock}; kept
+     *  as a thin alias so existing callers are unchanged. New code should prefer
+     *  {@code EnvironmentLock.isHeld(ctx)} (which also covers the durable install guard + owner marker). */
     public static boolean isBusy() {
-        if (ModuleQueueRepository.get().isRunning()) return true;                          // proot module runrole
-        if (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete()) return true;
-        if (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete()) return true;
-        return false;
+        return org.iiab.controller.env.EnvironmentLock.isBusyNow();
     }
 }
