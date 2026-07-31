@@ -657,4 +657,14 @@
     <string name="k2go_mod_maps_title" translatable="false">Navigate maps</string>
     <string name="k2go_mod_maps_sub" translatable="false">OpenStreetMap</string>
     <string name="k2go_mod_maps_desc" translatable="false">Offline world maps to browse and search on the device. Pick the layers and region, then it builds them into the system.</string>
+    <!-- ADFA-4958 module detail enrichment -->
+    <string name="k2go_mod_runs_offline" translatable="false">Runs offline</string>
+    <string name="k2go_mod_includes_title" translatable="false">What it includes</string>
+    <string name="k2go_mod_license_fmt" translatable="false">License · %1$s</string>
+    <string name="k2go_mod_kolibri_includes" translatable="false">Sample courses included — add more in Get more.</string>
+    <string name="k2go_mod_calibreweb_includes" translatable="false">Reader only — add books in Get more.</string>
+    <string name="k2go_mod_kiwix_includes" translatable="false">Reader only — add Wikipedia and ZIM in Get more.</string>
+    <string name="k2go_mod_code_includes" translatable="false">The IDE itself — your projects live on the device.</string>
+    <string name="k2go_mod_matomo_includes" translatable="false">Analytics for the box — nothing to add.</string>
+    <string name="k2go_mod_maps_includes" translatable="false">Base map — pick the layers and region when you install.</string>
 </resources>

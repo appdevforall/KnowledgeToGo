@@ -91,6 +91,43 @@ public final class ModuleCards {
         return null;
     }
 
+    /** ADFA-4958: curated version (manual for now; sources differ per module). null -> no chip. */
+    public static String version(String key) {
+        if (key == null) return null;
+        switch (key) {
+            case "kolibri": return "0.19";
+            default: return null;
+        }
+    }
+
+    /** ADFA-4958: curated license (verified). */
+    public static String license(String key) {
+        if (key == null) return null;
+        switch (key) {
+            case "kolibri":    return "MIT";
+            case "calibreweb": return "GPL-3.0";
+            case "kiwix":      return "GPL-3.0";
+            case "code":       return "MIT";
+            case "matomo":     return "GPL-3.0";
+            case "maps":       return "ODbL";
+            default: return null;
+        }
+    }
+
+    /** ADFA-4958: "What it includes" line — makes module-vs-content explicit. 0 -> hide. */
+    public static int includesRes(String key) {
+        if (key == null) return 0;
+        switch (key) {
+            case "kolibri":    return R.string.k2go_mod_kolibri_includes;
+            case "calibreweb": return R.string.k2go_mod_calibreweb_includes;
+            case "kiwix":      return R.string.k2go_mod_kiwix_includes;
+            case "code":       return R.string.k2go_mod_code_includes;
+            case "matomo":     return R.string.k2go_mod_matomo_includes;
+            case "maps":       return R.string.k2go_mod_maps_includes;
+            default: return 0;
+        }
+    }
+
     private static ModuleRegistry.IiabModule find(String yamlKey) {
         for (ModuleRegistry.IiabModule m : ModuleRegistry.MASTER_ROSTER) {
             if (m.yamlBaseKey.equals(yamlKey)) return m;
