@@ -79,7 +79,14 @@ public final class ModuleActionSheet {
         hcol.addView(tv);
         TextView subtitle = new TextView(ctx);
         String project = (card != null) ? act.getString(card.subRes) : "";
-        subtitle.setText(project.isEmpty() ? stateLabel(act, state) : project + "  ·  " + stateLabel(act, state));
+        int sizeRes = ModuleCards.sizeLabelRes(key);   // ADFA-4958 §5.3: subtitle is project · state · size
+        long bytes = ModuleSizes.bytesFor(ctx, key);
+        StringBuilder sub = new StringBuilder();
+        if (!project.isEmpty()) sub.append(project).append("  ·  ");
+        sub.append(stateLabel(act, state));
+        if (sizeRes != 0) sub.append("  ·  ").append(act.getString(sizeRes));
+        else if (bytes >= 0) sub.append("  ·  ≈ ").append(org.iiab.controller.util.ByteFormatter.toHuman(bytes));
+        subtitle.setText(sub.toString());
         subtitle.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         subtitle.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
         hcol.addView(subtitle);

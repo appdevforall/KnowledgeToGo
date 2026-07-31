@@ -66,14 +66,16 @@ public class ModuleDetailFragment extends Fragment {
 
         // ADFA-4958: meta chips (size / version / Runs offline), "What it includes", and license.
         LinearLayout chips = root.findViewById(R.id.k2go_moddet_chips);
+        int sizeRes = ModuleCards.sizeLabelRes(c.key());   // ADFA-4958: maps uses a curated "200 MB+" floor
         long bytes = ModuleSizes.bytesFor(requireContext(), c.key());
-        String sizeText = (bytes >= 0)
-                ? "\u2248 " + org.iiab.controller.util.ByteFormatter.toHuman(bytes)
+        String sizeText = (sizeRes != 0) ? getString(sizeRes)
+                : (bytes >= 0) ? "\u2248 " + org.iiab.controller.util.ByteFormatter.toHuman(bytes)
                 : "\u2248 NA";
         chips.addView(chip(sizeText, R.color.k2go_teal));
         String ver = ModuleCards.version(c.key());
         if (ver != null) chips.addView(chip("v" + ver, R.color.k2go_teal));
         chips.addView(chip(getString(R.string.k2go_mod_runs_offline), R.color.k2go_leaf));
+        if (ModuleCards.isDemo(c.key())) chips.addView(chip(getString(R.string.k2go_mod_demo), R.color.k2go_amber_text));   // ADFA-4958
 
         int inc = ModuleCards.includesRes(c.key());
         if (inc != 0) {
@@ -120,8 +122,14 @@ public class ModuleDetailFragment extends Fragment {
         TextView t = new TextView(requireContext());
         t.setText(text);
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
-        t.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
-        t.setBackgroundResource(R.drawable.k2go_chip_bg);
+        int color = ContextCompat.getColor(requireContext(), colorRes);   // ADFA-4958 §5.4: outlined pill (teal-on-teal fill was invisible)
+        t.setTextColor(color);
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        bg.setColor(android.graphics.Color.TRANSPARENT);
+        bg.setCornerRadius(11 * d);
+        bg.setStroke(Math.max(1, Math.round(1.4f * d)), color);
+        t.setBackground(bg);
         int hp = Math.round(10 * d), vp = Math.round(5 * d);
         t.setPadding(hp, vp, hp, vp);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(

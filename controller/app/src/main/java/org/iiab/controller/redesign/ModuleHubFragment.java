@@ -220,10 +220,7 @@ public class ModuleHubFragment extends Fragment {
             col.addView(sub);
             row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-            TextView restore = new TextView(requireContext());
-            restore.setText(R.string.k2go_mod_restore);
-            restore.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-            restore.setBackgroundResource(R.drawable.k2go_chip_bg);
+            TextView restore = statePill(getString(R.string.k2go_mod_restore), R.color.k2go_teal);   // ADFA-4958 §5.7: outlined teal pill
             restore.setPadding(px(14), px(6), px(14), px(6));
             restore.setOnClickListener(v -> { HiddenModules.remove(requireContext(), key); buildCards(); });
             row.addView(restore);
