@@ -217,44 +217,9 @@ public class ServerController {
     // --- fake /proc sysdata for the container -----------------------------------
 
     public void createFakeSysData(File rootfsDir) {
-        try {
-            File procDir = new File(rootfsDir, "proc");
-            if (!procDir.exists()) procDir.mkdirs();
-
-            long uptimeMillis = android.os.SystemClock.elapsedRealtime();
-            long bootTimeSeconds = (System.currentTimeMillis() - uptimeMillis) / 1000;
-            double uptimeSeconds = uptimeMillis / 1000.0;
-
-            File uptimeFile = new File(procDir, ".uptime");
-            if (uptimeFile.exists()) uptimeFile.delete();
-            java.io.FileOutputStream fosUp = new java.io.FileOutputStream(uptimeFile);
-            fosUp.write(String.format(java.util.Locale.US, "%.2f %.2f\n", uptimeSeconds, uptimeSeconds).getBytes());
-            fosUp.close();
-
-            File versionFile = new File(procDir, ".version");
-            if (!versionFile.exists()) {
-                java.io.FileOutputStream fosVer = new java.io.FileOutputStream(versionFile);
-                fosVer.write("Linux version 6.17.0-PRoot-IIAB (builder@iiab) (Android NDK) #1 SMP PREEMPT Thu Apr 30 20:00:00 UTC 2026\n".getBytes());
-                fosVer.close();
-            }
-
-            File statFile = new File(procDir, ".stat");
-            if (statFile.exists()) statFile.delete();
-            java.io.FileOutputStream fosStat = new java.io.FileOutputStream(statFile);
-            String statContent = "cpu  1000 0 1000 10000 0 0 0 0 0 0\n" +
-                    "btime " + bootTimeSeconds + "\n";
-            fosStat.write(statContent.getBytes());
-            fosStat.close();
-
-            File loadavgFile = new File(procDir, ".loadavg");
-            if (!loadavgFile.exists()) {
-                java.io.FileOutputStream fosLoad = new java.io.FileOutputStream(loadavgFile);
-                fosLoad.write("0.00 0.00 0.00 1/1 1\n".getBytes());
-                fosLoad.close();
-            }
-        } catch (Exception e) {
-            android.util.Log.e(TAG, "Failed to create dynamic fake sysdata", e);
-        }
+        // ADFA-4957: single implementation lives in EnvironmentControl so the deep-op foreground
+        // service can write the same fake /proc data when it boots the environment off-UI.
+        org.iiab.controller.env.EnvironmentControl.createFakeSysData(rootfsDir);
     }
 
     // --- server start / stop (the control button) -------------------------------
@@ -316,11 +281,32 @@ public class ServerController {
         host.startFusionPulse();
     }
 
+    /**
+     * ADFA-4952: quiesce the environment's SERVICES (pdsm stop) so a backup/restore reads or writes a
+     * STATIC rootfs (no service writing to it mid-archive). Deterministic and minimal — it does not tear
+     * down the watchdog or the container; the caller brings services back with {@link #startEnvironment()}.
+     * {@code onDone} runs on the main thread when pdsm stop exits (or errors — we proceed either way, the
+     * point is that no service is left writing). Reuses the same pdsm command as the graceful stop.
+     */
+    public void stopEnvironment(Runnable onDone) {
+        File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        host.addToLog(activity.getString(R.string.log_server_stopping_gracefully));
+        PRootEngine stopEngine = new PRootEngine();
+        stopEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(),
+                "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'",
+                new PRootEngine.OutputListener() {
+                    @Override public void onOutputLine(String line) { activity.runOnUiThread(() -> host.addToLog("[PDSM Stop] " + line)); }
+                    @Override public void onProcessExit(int exitCode) { activity.runOnUiThread(onDone); }
+                    @Override public void onError(String error) { activity.runOnUiThread(onDone); }
+                });
+    }
+
     public void handleServerLaunchClick(View v) {
         // ADFA-4621 safety net: never start/stop the server during a rootfs/module install.
         if (org.iiab.controller.install.presentation.InstallProgressRepository.get().isRunning()
                 || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || InstallGuard.inProgress(activity)) {   // ADFA-4811: durable guard survives a mid-install kill
+                || InstallGuard.inProgress(activity)   // ADFA-4811: durable guard survives a mid-install kill
+                || org.iiab.controller.env.EnvironmentLock.ownerHeld(activity)) {   // ADFA-4957: never toggle the server while a deep-env op (backup/restore/clone) OWNS the lock. Uses ownerHeld (not isHeld) so a live content download — which runs on the server and holds no owner marker — doesn't block turn-off.
             host.setTargetServerState(null);
             activity.runOnUiThread(host::stopBtnProgress);
             host.refreshServerUi();

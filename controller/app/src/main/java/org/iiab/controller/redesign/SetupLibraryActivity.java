@@ -16,9 +16,15 @@ import org.iiab.controller.install.presentation.InstallService;
  * shared tier + content picks so the two Step-2 layouts (A expandable+bar, B 5-step+gauge)
  * carry selections across the hidden tap-5x flip.
  */
-public class SetupLibraryActivity extends AppCompatActivity {
+public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
 
     private InstallationPlanner.Tier selectedTier = InstallationPlanner.Tier.STANDARD;
+
+    // ADFA-4952: this host owns a ServerController so backup/restore can stop the environment before the
+    // job (a static rootfs) and boot it after (startEnvironment). The server proot is process-scoped, so
+    // it survives back to LibraryActivity, which only monitors it.
+    private org.iiab.controller.ServerController serverController;
+    private Boolean targetServerState = null;   // ServerController.Host state
 
     /** Launch extra: skip Step 1 (system) and open Step 2 (content) directly, for when a
      *  system is already installed so adding content never overwrites it. */
@@ -28,6 +34,11 @@ public class SetupLibraryActivity extends AppCompatActivity {
     public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
     /** ADFA-4958: deep-link to a specific module's detail from Home (opens the hub, then the detail). */
     public static final String EXTRA_MODULE_DETAIL = "moduleDetail";
+    /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
+    public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
+    /** ADFA-4957: open BackupJobFragment(mode) directly — used to deep-link back to a LIVE backup/restore
+     *  (from LibraryActivity's routing when the app is reopened / the notification is tapped). */
+    public static final String EXTRA_BR_JOB_MODE = "brJobMode";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     // Shared Wikipedia selection so picks survive the A/B flip.
@@ -61,14 +72,22 @@ public class SetupLibraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
+        serverController = new org.iiab.controller.ServerController(this, this);   // ADFA-4952
+        serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
         if (savedInstanceState == null) {
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
             final String moduleDetail = getIntent().getStringExtra(EXTRA_MODULE_DETAIL);
+            boolean backupRestore = getIntent().getBooleanExtra(EXTRA_BACKUP_RESTORE, false);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
+            String brJobMode = getIntent().getStringExtra(EXTRA_BR_JOB_MODE);   // ADFA-4957
             androidx.fragment.app.Fragment first;
-            if (moduleMgmt || moduleDetail != null) {
+            if (brJobMode != null) {
+                first = BackupJobFragment.newInstance(brJobMode);   // ADFA-4957: land on the live op screen
+            } else if (backupRestore) {
+                first = new BackupRestoreFragment();   // ADFA-4952
+            } else if (moduleMgmt || moduleDetail != null) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
                 first = new ModuleHubFragment();
             } else if (contentOnly) {
@@ -368,6 +387,14 @@ public class SetupLibraryActivity extends AppCompatActivity {
         startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
+    /** ADFA-4952: open the dedicated backup/restore job screen (mode = MODE_BACKUP / MODE_RESTORE). */
+    public void openBackupJob(String mode) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, BackupJobFragment.newInstance(mode))
+                .addToBackStack("backup_job")
+                .commit();
+    }
+
     /** @deprecated ADFA-4919: the STANDALONE Get More Maps route (shows MapsPreparingFragment with
      *  its own "Run in background", no index, no gate). Superseded by openMapsIndex(). Left UNUSED
      *  on purpose (not deleted): ADFA-4842 (reactivate proot modules via module management) may want
@@ -382,6 +409,45 @@ public class SetupLibraryActivity extends AppCompatActivity {
 
     /** ADFA-4900: true while Maps runs inside the wizard (pre-install) — Confirm banks the selection. */
     public boolean isMapsWizard() { return mapsWizard; }
+
+    // ---- ADFA-4952: server lifecycle for backup/restore ----
+    /** The host's ServerController (backup/restore use stopEnvironment()/startEnvironment()). */
+    public org.iiab.controller.ServerController server() { return serverController; }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (serverController != null) serverController.onResume();
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        if (serverController != null) serverController.onPause();
+    }
+
+    // ServerController.Host (minimal — this host has no server LEDs/pulse UI; backup/restore show their
+    // own status). The two protection methods drive the WatchdogService so the job isn't killed.
+    @Override public void addToLog(String message) { Log.d("K2Go-SetupLibrary", message); }
+    @Override public void startFusionPulse() { }
+    @Override public void startExitPulse() { }
+    @Override public void stopBtnProgress() { }
+    @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
+    @Override public void refreshServerUi() { }
+    @Override public Boolean getTargetServerState() { return targetServerState; }
+    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
+    @Override public boolean isNegotiating() { return false; }
+
+    @Override public void enableSystemProtection() {
+        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
+    }
+
+    @Override public void disableSystemProtection() {
+        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
+        startService(i);
+    }
 
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */
