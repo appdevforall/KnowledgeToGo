@@ -147,13 +147,22 @@ export async function login(
             `Kolibri cortó la conexión durante el login: ${e instanceof Error ? e.message : String(e)}`);
     }
 
-    if (res.status === 401 || res.status === 400) {
+    if (res.status === 401) {
         // 401 también aparece en "app mode" si allow_other_browsers_to_connect=False
         // y no hay cookie de app-key. En un box servido por nginx no aplica, pero el
         // mensaje lo menciona para que el diagnóstico no lleve horas.
         throw new KolibriAuthError('credentials',
-            `Kolibri rechazó las credenciales de '${cred.username}' (HTTP ${res.status}). `
+            `Kolibri rechazó las credenciales de '${cred.username}'. `
             + 'Si el dispositivo está en modo aplicación, revisa allow_other_browsers_to_connect.');
+    }
+    if (res.status === 400) {
+        // 400 es el serializer rechazando la petición (campo ausente, facility
+        // desconocida...), no una contraseña incorrecta. Reportarlo como credencial
+        // inválida manda al operador a cambiar una contraseña que estaba bien.
+        const detail = await res.text().catch(() => '');
+        throw new KolibriAuthError('protocol',
+            `Kolibri rechazó la petición de login (HTTP 400), no las credenciales: `
+            + (detail.slice(0, 200) || 'sin detalle'));
     }
     if (!res.ok) {
         throw new KolibriAuthError('protocol', `Login devolvió HTTP ${res.status}`);

@@ -11,9 +11,9 @@ import { searchCatalog, listLibrary, removeBook, listLanguages } from './sockets
 import { parseBox, parseEstimate } from './sockets/maps.socket';
 import {
     preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
-    browseChannelTree, estimateSelection, deleteChannel, verifyCredentials,
+    browseChannelTree, estimateSelection, deleteChannel, getKolibriTask, verifyCredentials,
 } from './sockets/kolibri.query';
-import { checkReadiness, KolibriAuthError } from './sockets/kolibri.session';
+import { checkReadiness, KolibriAuthError, KolibriApiError } from './sockets/kolibri.session';
 import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
@@ -179,6 +179,17 @@ function authStatus(e: unknown): number {
             default: return 502;
         }
     }
+    // Kolibri respondió, pero con error: propagamos su semántica en lugar de un 500.
+    if (e instanceof KolibriApiError) {
+        if (e.status === 401 || e.status === 403) return e.status;
+        return e.status >= 500 ? 502 : 502;   // upstream en mal estado
+    }
+    // fetch aborta por timeout (AbortError) o no conecta (TypeError). Eso es
+    // "Kolibri no está listo", no "nuestro servidor se rompió": 503, no 500.
+    if (e instanceof Error && (e.name === 'AbortError' || e.name === 'TimeoutError'
+        || e instanceof TypeError)) {
+        return 503;
+    }
     return 500;
 }
 
@@ -276,9 +287,21 @@ apiRouter.post('/kolibri/delete', async (req: Request, res: Response): Promise<v
     try {
         const jobId = await deleteChannel(channelId,
             body.channelName ? String(body.channelName) : undefined);
-        res.json({ ok: true, kolibriJobId: jobId });
+        // El id es de Kolibri, no del motor local; se consulta en /kolibri/task/:id.
+        res.json({ ok: true, kolibriJobId: jobId, statusUrl: `/kolibri/task/${jobId}` });
     } catch (e: any) {
         res.status(authStatus(e)).json({ error: e?.message || 'delete failed' });
+    }
+});
+
+// Estado de una tarea lanzada directamente en Kolibri (hoy solo el borrado). Sin
+// esto, /kolibri/delete devolvía un id que ningún endpoint sabía consultar.
+apiRouter.get('/kolibri/task/:id', async (req: Request, res: Response): Promise<void> => {
+    try {
+        res.json(await getKolibriTask(String(req.params.id)));
+    } catch (e: any) {
+        const status = e instanceof KolibriApiError && e.status === 404 ? 404 : authStatus(e);
+        res.status(status).json({ error: e?.message || 'task lookup failed' });
     }
 });
 
