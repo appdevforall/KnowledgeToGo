@@ -12,11 +12,18 @@
  *               single source of truth the op screen observes. Clone adoption + the fragment migration
  *               (return-to-op routing) land next; this commit is the engine.
  *
+ *               BOOT HANDOFF (ADFA-4957 review #2): the service does NOT boot the environment. Like
+ *               InstallService (whose server restart is owned by the install index, not the service),
+ *               DeepOpService leaves the environment stopped and the hosting Activity boots it via
+ *               serverController.startEnvironment() on return / next launch — so the service and
+ *               ServerController never both own the proot container.
+ *
  *               Job shapes:
- *                 BACKUP  (EXTRA_URI  = SAF dest)  : stop services -> stream tar|gzip to the file -> boot.
- *                 RESTORE (EXTRA_PATH = temp file) : stop services -> extract over the rootfs -> boot.
+ *                 BACKUP  (EXTRA_URI  = SAF dest)  : stop services -> stream tar|gzip -> post terminal.
+ *                 RESTORE (EXTRA_PATH = temp file) : stop services -> extract over the rootfs -> terminal.
  *               For restore the caller (UI) has already copied + validated the archive and shown the
  *               destructive confirm; the service owns the kill-sensitive extract and sets InstallGuard.
+ *               Backup is cancellable from the notification (read-only); restore is not (hard gate).
  * ============================================================================
  */
 package org.iiab.controller.deepop;
@@ -40,7 +47,6 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import org.iiab.controller.InstallGuard;
-import org.iiab.controller.PRootEngine;
 import org.iiab.controller.R;
 import org.iiab.controller.TarExtractor;
 import org.iiab.controller.backup.domain.BackupEngine;
@@ -68,14 +74,10 @@ public final class DeepOpService extends Service {
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
     private volatile boolean started = false;
-    private volatile boolean finished = false;
+    private volatile boolean finished = false;   // notification teardown reached
+    private volatile boolean done = false;       // terminal reached (cancel OR natural) — clean up once
     private EnvironmentLock.Owner owner;
     private String stepText = "";
-    // Held so the booted environment's `tail -f` proot isn't GC'd after the service tears down; the
-    // process itself is app-scoped (it lives on until the app process dies), the activity's
-    // ServerController then reflects it on the next poll.
-    @SuppressWarnings("unused")
-    private static PRootEngine sBootEngine;
 
     /** Start a backup: stream a gzip'd tar of the rootfs to the SAF destination. */
     public static void startBackup(Context ctx, Uri dest) {
@@ -104,7 +106,7 @@ public final class DeepOpService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) { stopSelf(); return START_NOT_STICKY; }
         final String action = intent.getAction();
-        if (ACTION_CANCEL.equals(action)) { teardown(); return START_NOT_STICKY; }
+        if (ACTION_CANCEL.equals(action)) { if (started) cancel(); else stopSelf(); return START_NOT_STICKY; }
         if (started) return START_NOT_STICKY;   // one op per service instance
         started = true;
 
@@ -127,8 +129,9 @@ public final class DeepOpService extends Service {
         return START_NOT_STICKY;
     }
 
-    // ---- BACKUP ----
+    // ---- BACKUP (read-only) ----
     private void runBackup(final String uriStr) {
+        if (done) return;
         setStep(getString(R.string.k2go_br_status_backing), -1);
         AppExecutors.get().io().execute(() -> {
             boolean ok;
@@ -144,8 +147,9 @@ public final class DeepOpService extends Service {
         });
     }
 
-    // ---- RESTORE ----
+    // ---- RESTORE (destructive) ----
     private void runRestore(final String path) {
+        if (done) return;
         setStep(getString(R.string.k2go_br_status_restoring), -1);
         final File destParent = new File(getFilesDir(), "rootfs");
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
@@ -162,15 +166,33 @@ public final class DeepOpService extends Service {
         finishJob(ok, getString(R.string.k2go_br_restore_done), getString(R.string.k2go_br_restore_failed));
     }
 
-    // ---- shared terminal ----
+    // ---- single terminal path (natural completion OR cancel), run once ----
+    /**
+     * The service does NOT boot the environment (review #2): the hosting Activity owns that
+     * (serverController.startEnvironment on return / next launch), so the service and ServerController
+     * never both own the container. A CLEAN restore clears InstallGuard; a FAILED restore leaves it set
+     * so next-launch recovery repairs the torn rootfs.
+     */
     private void finishJob(boolean ok, String okMsg, String failMsg) {
-        // Boot the (possibly replaced) environment back; the returned engine is app-scoped.
-        sBootEngine = EnvironmentControl.start(this, this::log);
-        if (owner == EnvironmentLock.Owner.RESTORE) InstallGuard.end(this);
+        if (done) return;
+        done = true;
+        if (owner == EnvironmentLock.Owner.RESTORE && ok) InstallGuard.end(this);
         EnvironmentLock.release(this);
         if (ok) DeepOpProgressRepository.get().postSuccess(owner, okMsg);
         else DeepOpProgressRepository.get().postFailed(owner, failMsg);
         teardown();
+    }
+
+    /**
+     * Notification "Cancel" — offered only for BACKUP (read-only, safe to abandon). Restore has no
+     * Cancel action (destructive, hard gate). The in-flight backup stream sees {@code done} and no-ops
+     * on completion. Runs the same cleanup as a failure so the lock is released and the op ends.
+     */
+    private void cancel() {
+        if (owner == EnvironmentLock.Owner.BACKUP) {
+            finishJob(false, "", getString(R.string.k2go_br_backup_failed));
+        }
+        // A stray CANCEL for restore (which has no cancel action) is ignored — the extract must finish.
     }
 
     private void teardown() {
@@ -226,19 +248,22 @@ public final class DeepOpService extends Service {
     private Notification buildNotification(String text) {
         Intent open = new Intent(this, LibraryActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
-        Intent cancel = new Intent(this, DeepOpService.class).setAction(ACTION_CANCEL);
-        PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.deepop_notif_title))
                 .setContentText(text)
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOnlyAlertOnce(true)
-                .addAction(0, getString(R.string.deepop_notif_cancel), cancelIntent)
-                .build();
+                .setOnlyAlertOnce(true);
+        // Cancel only for backup (read-only). Restore is destructive → uncancellable (hard gate).
+        if (owner == EnvironmentLock.Owner.BACKUP) {
+            Intent cancel = new Intent(this, DeepOpService.class).setAction(ACTION_CANCEL);
+            PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
+                    PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+            b.addAction(0, getString(R.string.deepop_notif_cancel), cancelIntent);
+        }
+        return b.build();
     }
 
     private void updateNotification(final String text) {

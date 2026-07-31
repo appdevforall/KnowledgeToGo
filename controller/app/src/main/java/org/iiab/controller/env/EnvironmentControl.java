@@ -3,13 +3,12 @@
  * Name        : EnvironmentControl.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4957. Context-based control of the Debian environment SERVICES (pdsm start/stop),
- *               extracted from ServerController so a foreground service (DeepOpService) can quiesce and
- *               boot the environment off ANY Activity — the same deterministic pdsm commands the UI
- *               path uses. start() first writes the fake /proc data the container expects, then runs
- *               `pdsm start && tail -f /dev/null` (the tail holds the container); stop() runs
- *               `pdsm stop`. Callbacks fire on the PRootEngine worker thread (a service is already off
- *               the UI thread). ServerController.createFakeSysData delegates here so there is one copy.
+ * Description : ADFA-4957. Context-based quiescing of the Debian environment SERVICES (pdsm stop),
+ *               extracted from ServerController so a foreground service (DeepOpService) can stop the
+ *               environment off ANY Activity — the same deterministic pdsm command the UI path uses.
+ *               stop() runs `pdsm stop`; callbacks fire on the PRootEngine worker thread. Booting is
+ *               deliberately NOT here: the hosting Activity boots via ServerController.startEnvironment()
+ *               (which shares createFakeSysData below, so the fake /proc data has a single copy).
  * ============================================================================
  */
 package org.iiab.controller.env;
@@ -30,7 +29,6 @@ public final class EnvironmentControl {
     private static final String PATH_ENV =
             "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc ";
     private static final String CMD_STOP = PATH_ENV + "'/usr/local/bin/pdsm stop'";
-    private static final String CMD_START = PATH_ENV + "'/usr/local/bin/pdsm start && tail -f /dev/null'";
 
     private EnvironmentControl() {}
 
@@ -54,23 +52,6 @@ public final class EnvironmentControl {
                     @Override public void onProcessExit(int exitCode) { if (onDone != null) onDone.run(); }
                     @Override public void onError(String error) { if (onDone != null) onDone.run(); }
                 });
-    }
-
-    /**
-     * Boot the environment's services (pdsm start). Writes the fake /proc data first. Returns the
-     * engine, which the caller must keep referenced: the `tail -f /dev/null` keeps the container alive.
-     */
-    public static PRootEngine start(Context ctx, final LineSink log) {
-        File rootfsDir = rootfs(ctx);
-        createFakeSysData(rootfsDir);
-        PRootEngine engine = new PRootEngine();
-        engine.executeInContainer(ctx.getApplicationContext(), rootfsDir.getAbsolutePath(), CMD_START,
-                new PRootEngine.OutputListener() {
-                    @Override public void onOutputLine(String line) { if (log != null) log.onLine("[Server] " + line); }
-                    @Override public void onProcessExit(int exitCode) { if (log != null) log.onLine("[Server] engine exit " + exitCode); }
-                    @Override public void onError(String error) { if (log != null) log.onLine("[Server] error " + error); }
-                });
-        return engine;
     }
 
     /**
