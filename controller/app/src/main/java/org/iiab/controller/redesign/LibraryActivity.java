@@ -301,8 +301,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     }
                 }, AUTOSTART_DELAY_MS);
             }
-            // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install
-            // (a live download/extraction drives its own dismissal on SUCCESS via the terminal path).
+            // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
+            // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
+            // dismissal here; the gate is lifted only when the install reaches a terminal state (the
+            // InstallProgressRepository observer: SUCCESS starts the server then opens, FAILED opens
+            // to the offline library) — the same contract as the first-run `if (installing)` branch,
+            // which also has no safety net. A genuinely hung install (no terminal) is a separate
+            // concern owned by the installer, not something to paper over by opening a broken system.
             main.postDelayed(() -> {
                 if (!gateDismissed && !installing) {
                     onServerReady();
