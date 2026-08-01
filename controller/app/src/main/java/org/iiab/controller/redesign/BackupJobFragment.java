@@ -109,17 +109,25 @@ public class BackupJobFragment extends Fragment {
         // Hard gate: while the op runs, back is consumed with a styled snackbar (module-index behavior).
         backGate = new androidx.activity.OnBackPressedCallback(false) {
             @Override public void handleOnBackPressed() {
-                // ADFA-4971: confine like the module index (SetupProgressActivity.onBackPressed). The op
-                // runs with the server stopped in DeepOpService; walking Back to a (server-down) Home is
-                // what triggered the false "reinstall" recovery. First Back reassures with the soft,
-                // mode-specific hint; every Back after sends the app to the background — never in-app
-                // navigation to Home. The op keeps running; the notification returns the user here.
-                if (!leaveWarned) {
-                    leaveWarned = true;
-                    Snackbars.make(requireActivity().findViewById(android.R.id.content),
-                            isRestore() ? R.string.k2go_br_leave_restore : R.string.k2go_br_leave_backup).show();
+                // ADFA-4971: confine like the module index (SetupProgressActivity.onBackPressed) — but
+                // only once the SERVICE owns the op (there is a notification and the work survives
+                // backgrounding). Then the op runs with the server stopped, and walking Back to a
+                // server-down Home is what triggered the false "reinstall" recovery: first Back
+                // reassures with the soft hint, every Back after sends the app to the background — never
+                // in-app nav to Home. During the pre-service copy+validate phase (restore) there's no
+                // notification yet and nothing is destructive, so a Back there just cancels to the
+                // bifurcation.
+                DeepOpState cur = DeepOpProgressRepository.get().current();
+                if (cur.owner == myOwner() && cur.isRunning()) {
+                    if (!leaveWarned) {
+                        leaveWarned = true;
+                        Snackbars.make(requireActivity().findViewById(android.R.id.content),
+                                isRestore() ? R.string.k2go_br_leave_restore : R.string.k2go_br_leave_backup).show();
+                    } else {
+                        requireActivity().moveTaskToBack(true);
+                    }
                 } else {
-                    requireActivity().moveTaskToBack(true);
+                    popToIntro(false);
                 }
             }
         };
