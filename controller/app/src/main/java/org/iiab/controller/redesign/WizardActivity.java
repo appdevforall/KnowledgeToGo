@@ -61,6 +61,10 @@ public class WizardActivity extends AppCompatActivity {
         // applied language, so we don't flash back to the welcome step.
         langTag = AppLocaleController.currentTag();
         if (b != null) step = b.getInt("step", 0);
+        // ADFA-4982: a fresh launch that isn't complete yet but already has permissions means the user
+        // passed language + permissions and only bailed from the setup choice / edition selection —
+        // resume at the setup choice (step 3), not welcome/language/permissions all over again.
+        else if (!prefs().getBoolean(getString(R.string.pref_key_setup_complete), false) && allPermsGranted()) step = 3;
         title = findViewById(R.id.wiz_title);
         subtitle = findViewById(R.id.wiz_subtitle);
         primary = findViewById(R.id.wiz_primary);
@@ -88,7 +92,9 @@ public class WizardActivity extends AppCompatActivity {
 
         // set-up-library choices
         findViewById(R.id.setup_download).setOnClickListener(v -> {
-            markComplete();
+            // ADFA-4982: do NOT mark setup complete here — only a real install does (startWizardInstall).
+            // If the user bails during edition/size selection, the next launch resumes at this setup
+            // choice (see onCreate) instead of stranding them on an empty Home.
             startActivity(new Intent(this, SetupLibraryActivity.class));
             finish();
         });
