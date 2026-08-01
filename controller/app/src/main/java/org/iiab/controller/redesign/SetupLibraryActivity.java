@@ -218,6 +218,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  the install is companion=false (OS/tier only; maps ships in the image), replacing the old
      *  Step 2 "Download library" trigger. */
     public void startWizardInstall() {
+        // ADFA-4982: the real install is starting — mark setup complete NOW (it is no longer set at the
+        // wizard's "download" choice, so bailing before this resumes the wizard). This also lets the
+        // install LibraryActivity below show progress instead of redirecting back to the wizard.
+        getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
+                .edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
         Intent i = new Intent(this, InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());

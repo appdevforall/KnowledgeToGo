@@ -86,9 +86,9 @@ public class Step1SystemFragment extends Fragment {
         });
 
         root.findViewById(R.id.k2go_step1_back).setOnClickListener(v -> {
-            // Setup was already marked complete when the wizard launched this; route to the
-            // library (reusing it if it is under us) instead of a bare finish() that would
-            // drop the user to the Android home screen.
+            // ADFA-4982: setup is NOT complete until the install actually starts, so routing to
+            // LibraryActivity here (which sees !complete) sends the user back to the wizard's setup
+            // choice — resuming where they were, instead of a bare finish() to the Android home screen.
             android.content.Intent i = new android.content.Intent(requireContext(), LibraryActivity.class);
             i.addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(i);
