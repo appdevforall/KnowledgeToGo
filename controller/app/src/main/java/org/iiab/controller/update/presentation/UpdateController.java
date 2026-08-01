@@ -48,8 +48,15 @@ public class UpdateController {
 
     private static final String TAG = "IIAB-UpdateController";
     private static final long COOLDOWN_MS = 10_000L;
-    private static final String UPDATE_JSON = "https://iiab.switnet.org/android/apk/update.json";
-    private static final String APK_BASE_URL = "https://iiab.switnet.org/android/apk/";
+    // ADFA-4984: OTA split. The manifest (with the minimal release notes) and the APK binaries
+    // both live in the k2go-download R2 bucket as separate objects, decoupled from the old
+    // iiab.switnet.org host. update.json is a fixed key (overwritten each tag -> always latest);
+    // the APKs carry version-specific filenames (they accumulate, never overwrite). The install is
+    // still gated by same-certificate signature verification (ApkVerifier), so the binary can live
+    // on any server without a manifest hash. Installs on the old host (<= vCode 52) are migrated
+    // once via a bridge manifest+APK seeded at the old switnet location.
+    private static final String UPDATE_JSON = "https://k2go-download.appdevforall.org/update.json";
+    private static final String APK_BASE_URL = "https://k2go-download.appdevforall.org/";
 
     private final AppCompatActivity activity;
 
@@ -162,6 +169,9 @@ public class UpdateController {
     }
 
     private void showUpdateDialog(String versionName, String changelog, String downloadUrl) {
+        // The check runs async; by the time it returns the Activity may be finishing/destroyed.
+        // Showing a dialog on a dead window throws BadTokenException, so bail out quietly.
+        if (activity.isFinishing() || activity.isDestroyed()) return;
         new BrandDialog(activity)
                 .setTitle(activity.getString(R.string.update_dialog_title, versionName))
                 .setMessage(activity.getString(R.string.update_dialog_message, changelog))

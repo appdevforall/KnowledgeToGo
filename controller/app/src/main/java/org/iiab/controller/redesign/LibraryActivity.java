@@ -63,6 +63,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
     private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
 
+    // ADFA-4984: own the OTA self-updater (revived; entry point is Settings -> About). We forward the
+    // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
+    private org.iiab.controller.update.presentation.UpdateController updateController;
+    private boolean otaAutoChecked = false;
+
     // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
     // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
     private org.iiab.controller.util.EllipsisAnimator bootEllipsis;
@@ -82,6 +87,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
 
         setContentView(R.layout.activity_library);
+
+        // ADFA-4984: OTA self-updater, active on the library screen. The manual entry lives in
+        // Settings -> About; onResume runs one silent check and wires the download receiver.
+        updateController = new org.iiab.controller.update.presentation.UpdateController(this);
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
@@ -352,6 +361,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
         gateDismissed = true;
         hideInstallProgress();
+        maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
@@ -457,12 +467,29 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();
+        if (updateController != null) updateController.registerDownloadReceiver();
+        maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (serverController != null) serverController.onPause();
+        if (updateController != null) updateController.unregisterDownloadReceiver();
+    }
+
+    /** ADFA-4984: exposed so Settings -> About can trigger a manual "Check for updates". */
+    public org.iiab.controller.update.presentation.UpdateController updateController() {
+        return updateController;
+    }
+
+    /** ADFA-4984: one silent OTA check per launch, but only once the boot gate has opened (so an
+     *  "update available" dialog never lands over the gate) and never during a first install. Called
+     *  from onResume and from onServerReady, whichever settles last; guarded to run at most once. */
+    private void maybeAutoCheckUpdate() {
+        if (updateController == null || otaAutoChecked || installing || !gateDismissed) return;
+        otaAutoChecked = true;
+        updateController.checkForUpdates(false);
     }
 
     @Override

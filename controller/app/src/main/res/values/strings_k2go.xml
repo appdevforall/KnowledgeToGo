@@ -102,6 +102,7 @@
     <string name="k2go_settings_turnoff_confirm">Turn off</string>
     <string name="k2go_settings_lang_caption">Sets the app language and the default content language.</string>
     <string name="k2go_settings_app_version">App version</string>
+    <string name="k2go_settings_check_updates" translatable="false">Check for updates</string>
     <string name="k2go_settings_permissions">Permissions</string>
     <string name="k2go_settings_usage_stats">Share usage statistics</string>
     <string name="k2go_settings_licenses">Open-source licenses</string>
