@@ -337,9 +337,9 @@
     <string name="k2go_edition_basic">Basic</string>
     <string name="k2go_edition_standard">Standard</string>
     <string name="k2go_edition_full">Full</string>
-    <string name="k2go_edition_basic_desc">Wikipedia reader app + Books app</string>
+    <string name="k2go_edition_basic_desc">Wikipedia reader app + Maps app</string>
     <string name="k2go_edition_standard_desc">Basic plus Courses app</string>
-    <string name="k2go_edition_full_desc">Standard plus Maps app (all apps)</string>
+    <string name="k2go_edition_full_desc">Standard plus Books app (all apps)</string>
     <string name="k2go_connect_hotspot_unsupported">Hotspot needs Android 8 or newer</string>
     <string name="k2go_connect_try_wifi">Try the Wi-Fi option instead.</string>
     <string name="k2go_connect_starting_hotspot">Starting hotspot…</string>
