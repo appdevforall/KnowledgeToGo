@@ -63,6 +63,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
     private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
 
+    // ADFA-4984: own the OTA self-updater (revived; entry point is Settings -> About). We forward the
+    // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
+    private org.iiab.controller.update.presentation.UpdateController updateController;
+    private boolean otaAutoChecked = false;
+
     // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
     // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
     private org.iiab.controller.util.EllipsisAnimator bootEllipsis;
@@ -82,6 +87,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
 
         setContentView(R.layout.activity_library);
+
+        // ADFA-4984: OTA self-updater, active on the library screen. The manual entry lives in
+        // Settings -> About; onResume runs one silent check and wires the download receiver.
+        updateController = new org.iiab.controller.update.presentation.UpdateController(this);
 
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
@@ -457,12 +466,26 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();
+        if (updateController != null) {
+            updateController.registerDownloadReceiver();
+            // One silent auto-check per launch; skip while a first install is running to avoid noise.
+            if (!otaAutoChecked && !installing) {
+                otaAutoChecked = true;
+                updateController.checkForUpdates(false);
+            }
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (serverController != null) serverController.onPause();
+        if (updateController != null) updateController.unregisterDownloadReceiver();
+    }
+
+    /** ADFA-4984: exposed so Settings -> About can trigger a manual "Check for updates". */
+    public org.iiab.controller.update.presentation.UpdateController updateController() {
+        return updateController;
     }
 
     @Override

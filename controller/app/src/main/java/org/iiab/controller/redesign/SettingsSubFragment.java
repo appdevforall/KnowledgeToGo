@@ -178,6 +178,14 @@ public class SettingsSubFragment extends Fragment {
     // ---- About ----
     private void buildAbout(Context ctx, LinearLayout list) {
         SettingsUi.infoRow(ctx, list, getString(R.string.k2go_settings_app_version), versionName(ctx));
+        // ADFA-4984: manual OTA entry ("update on the air"). LibraryActivity owns the UpdateController.
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_check_updates), null, null, v -> {
+            if (getActivity() instanceof LibraryActivity) {
+                org.iiab.controller.update.presentation.UpdateController uc =
+                        ((LibraryActivity) getActivity()).updateController();
+                if (uc != null) uc.checkForUpdatesManual();
+            }
+        });
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_permissions), null, null, v -> openAppSettings(ctx));
         SettingsUi.toggle(ctx, list, getString(R.string.k2go_settings_usage_stats), AnalyticsConsent.isEnabled(ctx), checked -> {
             AnalyticsConsent.setEnabled(ctx, checked);
