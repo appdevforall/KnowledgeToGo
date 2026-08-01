@@ -160,6 +160,10 @@ jobs:
           APK_ARM32=$(find_apk "armeabi-v7a")
           APK_UNIVERSAL=$(find_apk "universal")
           echo "arm64=$APK_ARM64 | arm32=$APK_ARM32 | universal=$APK_UNIVERSAL"
+          if [ -z "$APK_ARM64" ] || [ -z "$APK_ARM32" ] || [ -z "$APK_UNIVERSAL" ]; then
+            echo "::error::Missing one or more built APKs (arm64='$APK_ARM64' arm32='$APK_ARM32' universal='$APK_UNIVERSAL'); aborting instead of publishing an incomplete manifest."
+            exit 1
+          fi
 
           # jq escapes the multiline changelog safely into a JSON string.
           jq -n \

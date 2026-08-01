@@ -169,6 +169,9 @@ public class UpdateController {
     }
 
     private void showUpdateDialog(String versionName, String changelog, String downloadUrl) {
+        // The check runs async; by the time it returns the Activity may be finishing/destroyed.
+        // Showing a dialog on a dead window throws BadTokenException, so bail out quietly.
+        if (activity.isFinishing() || activity.isDestroyed()) return;
         new BrandDialog(activity)
                 .setTitle(activity.getString(R.string.update_dialog_title, versionName))
                 .setMessage(activity.getString(R.string.update_dialog_message, changelog))

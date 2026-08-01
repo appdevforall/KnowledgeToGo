@@ -361,6 +361,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
         gateDismissed = true;
         hideInstallProgress();
+        maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
@@ -466,14 +467,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();
-        if (updateController != null) {
-            updateController.registerDownloadReceiver();
-            // One silent auto-check per launch; skip while a first install is running to avoid noise.
-            if (!otaAutoChecked && !installing) {
-                otaAutoChecked = true;
-                updateController.checkForUpdates(false);
-            }
-        }
+        if (updateController != null) updateController.registerDownloadReceiver();
+        maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
     }
 
     @Override
@@ -486,6 +481,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     /** ADFA-4984: exposed so Settings -> About can trigger a manual "Check for updates". */
     public org.iiab.controller.update.presentation.UpdateController updateController() {
         return updateController;
+    }
+
+    /** ADFA-4984: one silent OTA check per launch, but only once the boot gate has opened (so an
+     *  "update available" dialog never lands over the gate) and never during a first install. Called
+     *  from onResume and from onServerReady, whichever settles last; guarded to run at most once. */
+    private void maybeAutoCheckUpdate() {
+        if (updateController == null || otaAutoChecked || installing || !gateDismissed) return;
+        otaAutoChecked = true;
+        updateController.checkForUpdates(false);
     }
 
     @Override
