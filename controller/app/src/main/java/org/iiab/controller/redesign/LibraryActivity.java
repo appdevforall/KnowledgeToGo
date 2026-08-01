@@ -132,7 +132,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // ADFA-4915: extract detail is one middle-ellipsized line so long file names never overlap.
         installDetail.setMaxLines(1);
         installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
-        installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false);
+        // ADFA-4986: also treat a live install as "installing" even when re-entered WITHOUT the extra
+        // (tapping the install notification, or a relaunch). isRunning() covers DOWNLOADING/EXTRACTING/
+        // PROVISIONING. Otherwise the gate takes the normal-boot path and its autostart/safety timers
+        // start the server and OPEN over a system that is still provisioning -> a broken library.
+        installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false)
+                || InstallProgressRepository.get().current().isRunning();
         // The Lottie has a text layer (OPEN/CLOSED sign). Use the system typeface (Noto-based,
         // global script fallback) so localized words render in any language; a TextDelegate maps
         // the OPEN/CLOSED source text to the localized @string values.
@@ -288,16 +293,23 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // If the stack isn't up after one poll cycle, start it.
             if (systemInstalled) {
                 main.postDelayed(() -> {
-                    if (!isFinishing()
+                    // ADFA-4986: never autostart the server if an install went live after onCreate.
+                    if (!isFinishing() && !installing
                             && !ServerStateRepository.get().current().alive
                             && targetServerState == null) {
                         serverController.handleServerLaunchClick(findViewById(android.R.id.content));
                     }
                 }, AUTOSTART_DELAY_MS);
             }
-            // Safety: never trap the user behind the gate.
+            // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
+            // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
+            // dismissal here; the gate is lifted only when the install reaches a terminal state (the
+            // InstallProgressRepository observer: SUCCESS starts the server then opens, FAILED opens
+            // to the offline library) — the same contract as the first-run `if (installing)` branch,
+            // which also has no safety net. A genuinely hung install (no terminal) is a separate
+            // concern owned by the installer, not something to paper over by opening a broken system.
             main.postDelayed(() -> {
-                if (!gateDismissed) {
+                if (!gateDismissed && !installing) {
                     onServerReady();
                 }
             }, systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
