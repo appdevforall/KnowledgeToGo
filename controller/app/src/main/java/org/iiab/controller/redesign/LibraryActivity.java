@@ -153,7 +153,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         recovering = !installing
                 && org.iiab.controller.InstallGuard.inProgress(this)
                 && !InstallProgressRepository.get().current().isRunning()
-                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning();
+                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                // ADFA-4971: a LIVE deep-env op (backup/restore, clone-receive) legitimately holds
+                // InstallGuard. Without this it was mistaken for a killed install → false "reinstall"
+                // dialog, and (via the !recovering guard) it blocked the return-to-op routing so a
+                // reopen fell to the boot gate instead of the op screen. ownerHeld self-heals after a
+                // true kill, so a genuinely interrupted restore still enters recovery.
+                && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this);
         android.util.Log.i("K2Go-Recover", "onCreate recovering=" + recovering
                 + " marker=" + org.iiab.controller.InstallGuard.inProgress(this)
                 + " systemInstalled=" + systemInstalled
