@@ -583,6 +583,18 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
                 View coord = findViewById(R.id.main_coordinator);
                 if (coord != null) coord.setBackgroundColor(0xFF000000);
                 attachTerminalOnlyFinish();
+            } else {
+                // ADFA-4987: defensive symmetry — a reused instance opened NOT in terminal-only mode must
+                // show the dashboard and restore the theme background (undo any prior terminal-only chrome).
+                View dash = findViewById(R.id.main_dashboard);
+                if (dash != null) dash.setVisibility(View.VISIBLE);
+                View coord = findViewById(R.id.main_coordinator);
+                if (coord != null) {
+                    android.util.TypedValue tv = new android.util.TypedValue();
+                    getTheme().resolveAttribute(android.R.attr.windowBackground, tv, true);
+                    if (tv.resourceId != 0) coord.setBackgroundResource(tv.resourceId);
+                    else coord.setBackgroundColor(tv.data);
+                }
             }
         };
         if (root != null) root.post(open);

@@ -226,7 +226,7 @@ public final class ZimDownloadService extends Service {
     private Notification buildNotification(String currentLabel) {
         Intent open = new Intent(this, SetupProgressActivity.class)   // ADFA-4987: redesign downloads view, not legacy UI
                 .putExtra(SetupProgressActivity.EXTRA_OPEN_STREAM, "zim")
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Intent cancel = new Intent(this, ZimDownloadService.class).setAction(ACTION_CANCEL);
