@@ -45,6 +45,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
      *  ("books" -> BooksDownloadsFragment, "zim" -> ZimPreparingFragment). */
     public static final String EXTRA_OPEN_STREAM = "openStream";
 
+    /** ADFA-4988: hint from a content confirm — open this stream's detail iff it is the only active one. */
+    public static final String EXTRA_HINT_STREAM = "hintStream";
+
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
     // ADFA-4900: if the maps module queue never reports RUNNING/DONE this long after hand-off, treat
@@ -134,11 +137,26 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // so a proot-only install could finish without the index ever updating to Finish/redirect.
         ModuleQueueRepository.get().state().observe(this, st -> render());
 
-        // ADFA-4987: a download notification tapped -> land on that stream's detail (not the legacy UI).
+        // ADFA-4987: a download notification tapped -> force that stream's detail (not the legacy UI).
+        // ADFA-4988: a content confirm hints its stream -> open its detail only when it is the sole
+        // active stream, otherwise show the index.
         if (s == null) {
             String openStream = getIntent().getStringExtra(EXTRA_OPEN_STREAM);
+            String hintStream = getIntent().getStringExtra(EXTRA_HINT_STREAM);
             if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
+            else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
         }
+    }
+
+    /** ADFA-4988: open the just-confirmed REST stream's detail directly when it is the ONLY active work;
+     *  otherwise keep the index. The hinted stream may not have registered its session yet (it just
+     *  started), so trust the hint and inspect only the OTHER streams, which started earlier. */
+    private void openHintedStream(String hint) {
+        boolean otherProot = mapsInSession() || moduleInSession();
+        boolean otherZim = !"zim".equals(hint) && (ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0);
+        boolean otherBooks = !"books".equals(hint) && (BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0);
+        if (otherProot || otherZim || otherBooks) return;   // several streams -> keep the index
+        openDetail(hint);
     }
 
     @Override
