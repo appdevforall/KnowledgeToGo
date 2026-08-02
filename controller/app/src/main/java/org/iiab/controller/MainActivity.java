@@ -572,6 +572,12 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
                 // ADFA-4987: opened from the redesign -> hide the legacy dashboard behind the sheet and
                 // paint the root black, so a PARTIAL swipe-down reveals black (seamless with the terminal),
                 // never the old STATUS/USAGE/INSTALL/SHARE UI. A full swipe still finish()es to the caller.
+                //
+                // TODO (terminal, follow-up): the black fill is a TEMPORARY stand-in. The complete fix is to
+                // show the NEW UI behind the terminal (host the redesign Home/Library surface here) so a
+                // partial swipe-down reveals the new UI instead of a black void. Left black for now because
+                // embedding a redesign view inside this legacy MainActivity is a larger change. When the
+                // terminal is next revisited, this is the spot. See ADFA-4987.
                 View dash = findViewById(R.id.main_dashboard);
                 if (dash != null) dash.setVisibility(View.GONE);
                 View coord = findViewById(R.id.main_coordinator);
