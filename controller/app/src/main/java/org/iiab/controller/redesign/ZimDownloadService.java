@@ -30,7 +30,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-import org.iiab.controller.MainActivity;
 import org.iiab.controller.R;
 import org.iiab.controller.content.RestContentClient;
 
@@ -225,8 +224,11 @@ public final class ZimDownloadService extends Service {
     }
 
     private Notification buildNotification(String currentLabel) {
-        Intent open = new Intent(this, MainActivity.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
+        Intent open = new Intent(this, SetupProgressActivity.class)   // ADFA-4987: redesign downloads view, not legacy UI
+                .putExtra(SetupProgressActivity.EXTRA_OPEN_STREAM, "zim")
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         Intent cancel = new Intent(this, ZimDownloadService.class).setAction(ACTION_CANCEL);
         PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

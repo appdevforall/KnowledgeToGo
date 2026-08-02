@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-import org.iiab.controller.MainActivity;
 import org.iiab.controller.R;
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.util.AppExecutors;
@@ -235,8 +234,11 @@ public final class BooksDownloadService extends Service {
     }
 
     private Notification buildNotification(String title) {
-        PendingIntent open = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
+        Intent openI = new Intent(this, SetupProgressActivity.class)   // ADFA-4987: redesign downloads view, not legacy UI
+                .putExtra(SetupProgressActivity.EXTRA_OPEN_STREAM, "books")
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent open = PendingIntent.getActivity(this, 0, openI,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent cancel = PendingIntent.getService(this, 1,
                 new Intent(this, BooksDownloadService.class).setAction(ACTION_CANCEL),
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

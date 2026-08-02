@@ -41,6 +41,10 @@ import org.iiab.controller.util.AppExecutors;
 
 public class SetupProgressActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
 
+    /** ADFA-4987: deep-link from a background-download notification straight to a stream detail
+     *  ("books" -> BooksDownloadsFragment, "zim" -> ZimPreparingFragment). */
+    public static final String EXTRA_OPEN_STREAM = "openStream";
+
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
     // ADFA-4900: if the maps module queue never reports RUNNING/DONE this long after hand-off, treat
@@ -129,6 +133,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // re-renders the index. The REST streams have service listeners; the proot stage had none,
         // so a proot-only install could finish without the index ever updating to Finish/redirect.
         ModuleQueueRepository.get().state().observe(this, st -> render());
+
+        // ADFA-4987: a download notification tapped -> land on that stream's detail (not the legacy UI).
+        if (s == null) {
+            String openStream = getIntent().getStringExtra(EXTRA_OPEN_STREAM);
+            if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
+        }
     }
 
     @Override

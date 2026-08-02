@@ -142,7 +142,7 @@ public class WatchdogService extends Service {
     }
 
     private Notification createNotification() {
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(this, org.iiab.controller.redesign.LibraryActivity.class);   // ADFA-4987: redesign, not legacy UI
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_IMMUTABLE);
 
