@@ -329,18 +329,14 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
             titles.add(v != null && v.length > 0 ? v[0] : "");
             urls.add(v != null && v.length > 2 ? v[2] : "");
         }
-        int count = ids.size();
         booksCart.clear();
         BooksDownloadService.start(getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
-        // ADFA-4910: mirror the wizard's confirm — hand the picks to the background service and
-        // return to the Get More home (drop landing + confirm off the stack), instead of stranding
-        // the user on the downloads screen. The download keeps running; the landing's "View
-        // downloads" link (and the notification) let them check progress later.
-        getSupportFragmentManager().popBackStack("getmore_books",
-                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        android.widget.Toast.makeText(this,
-                getString(R.string.k2go_books_dl_started_fmt, count), android.widget.Toast.LENGTH_SHORT).show();
+        // ADFA-4988: go to the downloads screen (its per-item list with download -> done checks),
+        // matching ZIM/maps/modules — instead of returning to Get More and downloading invisibly.
+        // Hint "books": the index opens the books detail when books is the only stream, else the cards.
+        startActivity(new Intent(this, SetupProgressActivity.class)
+                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "books"));
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
