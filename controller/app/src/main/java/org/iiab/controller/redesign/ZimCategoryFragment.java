@@ -275,7 +275,8 @@ public class ZimCategoryFragment extends Fragment {
 
     private void chip(TextView t, boolean on) {
         t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
+        // ADFA-4910: white on the selected (teal) chip (same fix as Books / MapsChoose).
+        t.setTextColor(ContextCompat.getColor(requireContext(), on ? android.R.color.white : R.color.k2go_ink));
     }
 
     private View row(Entry e, String labelText, int indent) {
