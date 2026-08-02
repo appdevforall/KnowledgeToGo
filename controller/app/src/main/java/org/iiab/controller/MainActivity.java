@@ -581,6 +581,11 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         if (sheet == null) return;
         com.google.android.material.bottomsheet.BottomSheetBehavior<View> b =
                 com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet);
+        // ADFA-4987: no intermediate COLLAPSED/peek stop in terminal-only mode. Without this the
+        // swipe-down parks at the peek first, exposing the legacy dashboard behind the sheet; skipping
+        // it means swipe-down goes straight to HIDDEN -> finish() -> back to the redesign caller.
+        b.setHideable(true);
+        b.setSkipCollapsed(true);
         b.addBottomSheetCallback(new com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@androidx.annotation.NonNull View bottomSheet, int newState) {
