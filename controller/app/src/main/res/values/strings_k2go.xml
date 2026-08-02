@@ -455,6 +455,7 @@
     <string name="k2go_maps_fqr_pill_online" translatable="false">Online</string>
     <string name="k2go_maps_fqr_compact" translatable="false">Full-Quality Regions — later, in Maps.</string>
     <string name="k2go_maps_fqr_show" translatable="false">Show</string>
+    <string name="k2go_maps_fqr_dismiss_cd" translatable="false">Dismiss</string>
     <string name="k2go_maps_sec_global" translatable="false">GLOBAL HIGH DETAIL, BAKED IN</string>
     <string name="k2go_maps_rebuild_title" translatable="false">Rebuild the full maps</string>
     <string name="k2go_maps_rebuild_desc" translatable="false">Add global satellite, 3D terrain and higher detail, at the quality you choose.</string>

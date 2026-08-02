@@ -162,11 +162,11 @@
 
                     <ImageView
                         android:id="@+id/k2go_maps_fqr_dismiss"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:padding="4dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="14dp"
                         android:src="@drawable/ic_close_24"
-                        android:contentDescription="@null"
+                        android:contentDescription="@string/k2go_maps_fqr_dismiss_cd"
                         android:clickable="true"
                         android:focusable="true"
                         android:background="?android:attr/selectableItemBackgroundBorderless"
