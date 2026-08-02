@@ -568,7 +568,16 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         View root = findViewById(android.R.id.content);
         Runnable open = () -> {
             terminalController.openFullTerminal();
-            if (terminalOnlyMode) attachTerminalOnlyFinish();
+            if (terminalOnlyMode) {
+                // ADFA-4987: opened from the redesign -> hide the legacy dashboard behind the sheet and
+                // paint the root black, so a PARTIAL swipe-down reveals black (seamless with the terminal),
+                // never the old STATUS/USAGE/INSTALL/SHARE UI. A full swipe still finish()es to the caller.
+                View dash = findViewById(R.id.main_dashboard);
+                if (dash != null) dash.setVisibility(View.GONE);
+                View coord = findViewById(R.id.main_coordinator);
+                if (coord != null) coord.setBackgroundColor(0xFF000000);
+                attachTerminalOnlyFinish();
+            }
         };
         if (root != null) root.post(open);
         else open.run();
