@@ -436,12 +436,34 @@
 
     <!-- ADFA-4848: Maps Get More flow (WIP; translatable=false until the l10n pass). -->
     <string name="k2go_maps_scr_title" translatable="false">Maps</string>
-    <string name="k2go_maps_landing_sub" translatable="false">Set up your offline maps.</string>
+    <string name="k2go_maps_landing_sub" translatable="false">Manage your offline maps.</string>
     <string name="k2go_maps_install_title" translatable="false">Install or update maps</string>
     <string name="k2go_maps_install_desc" translatable="false">Base map, satellite, 3D terrain, search \u2014 pick quality &amp; size, then build.</string>
     <string name="k2go_maps_choose_cta" translatable="false">Choose layers &amp; quality \u203a</string>
     <string name="k2go_maps_choose_title" translatable="false">Choose layers &amp; quality</string>
     <string name="k2go_maps_choose_sub" translatable="false">More detail means a bigger download.</string>
+    <!-- ADFA-4910: Maps landing v3 (richer landing + dismissible Full-Quality Regions card). -->
+    <string name="k2go_maps_basic_title" translatable="false">Basic maps are included</string>
+    <string name="k2go_maps_basic_badge" translatable="false">Included</string>
+    <string name="k2go_maps_basic_desc" translatable="false">A basic, functional map of the whole world ships with your system. Build on it only if you need to.</string>
+    <string name="k2go_maps_sec_sharp" translatable="false">SHARP DETAIL FOR ONE AREA</string>
+    <string name="k2go_maps_fqr_title" translatable="false">Full-Quality Regions</string>
+    <string name="k2go_maps_fqr_desc" translatable="false">Once installed, open Maps and add any area in sharp detail — online, in minutes. No rebuild needed.</string>
+    <string name="k2go_maps_fqr_sub" translatable="false">Built into the basic maps — works even on the lightest one.</string>
+    <string name="k2go_maps_fqr_pill_after" translatable="false">After setup · in Maps</string>
+    <string name="k2go_maps_fqr_pill_light" translatable="false">Light</string>
+    <string name="k2go_maps_fqr_pill_online" translatable="false">Online</string>
+    <string name="k2go_maps_fqr_compact" translatable="false">Full-Quality Regions — later, in Maps.</string>
+    <string name="k2go_maps_fqr_show" translatable="false">Show</string>
+    <string name="k2go_maps_fqr_dismiss_cd" translatable="false">Dismiss</string>
+    <string name="k2go_maps_sec_global" translatable="false">GLOBAL HIGH DETAIL, BAKED IN</string>
+    <string name="k2go_maps_rebuild_title" translatable="false">Rebuild the full maps</string>
+    <string name="k2go_maps_rebuild_desc" translatable="false">Add global satellite, 3D terrain and higher detail, at the quality you choose.</string>
+    <string name="k2go_maps_rebuild_sub" translatable="false">Big build — minutes to hours, tens to hundreds of GB.</string>
+    <string name="k2go_maps_rebuild_pill_heavy" translatable="false">Heavy</string>
+    <string name="k2go_maps_rebuild_pill_offline" translatable="false">Offline build</string>
+    <string name="k2go_maps_landing_foot" translatable="false">Regions are added later, from Maps. Rebuilding is the only maps action during setup.</string>
+    <string name="k2go_maps_landing_ready" translatable="false">You\'re set with basic maps — add more anytime.</string>
     <string name="k2go_maps_grp_base" translatable="false">Base map</string>
     <string name="k2go_maps_grp_base_hint" translatable="false">streets &amp; places</string>
     <string name="k2go_maps_grp_sat" translatable="false">Satellite</string>

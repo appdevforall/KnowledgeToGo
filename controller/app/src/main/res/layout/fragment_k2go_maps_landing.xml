@@ -1,11 +1,400 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4848 (slice 2): Maps entry in Get More. No FQR fork — FQR moves into the maps
-     WebView later. This is just the install/update entry into Choose (Option B). -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- ADFA-4848 / ADFA-4910: Maps landing (v3). Basic maps + Rebuild always stay; the Full-Quality
+     Regions card is dismissible (x) and its state is persisted (returning users get the compact
+     "Show" row). "Rebuild the full maps" opens Choose; "Continue" leaves with basic maps. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/k2go_maps_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_teal" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_card_maps"
+                    android:contentDescription="@null"
+                    app:tint="@color/k2go_teal" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/k2go_maps_scr_title"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                    android:textColor="@color/k2go_ink" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/k2go_maps_landing_sub"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="@color/k2go_muted" />
+
+            <!-- Basic maps are included -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/k2go_card_bg">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_check_circle"
+                        android:contentDescription="@null"
+                        app:tint="@color/k2go_leaf" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/k2go_maps_basic_title"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textStyle="bold"
+                        android:textColor="@color/k2go_ink" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:background="@drawable/k2go_pill_leaf"
+                        android:text="@string/k2go_maps_basic_badge"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_leaf" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/k2go_maps_basic_desc"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/k2go_muted" />
+            </LinearLayout>
+
+            <!-- SHARP DETAIL FOR ONE AREA -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/k2go_maps_sec_sharp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:textColor="@color/k2go_teal" />
+
+            <!-- Full-Quality Regions (dismissible) -->
+            <LinearLayout
+                android:id="@+id/k2go_maps_fqr_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/k2go_card_teal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_card_maps"
+                        android:contentDescription="@null"
+                        app:tint="@color/k2go_teal" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/k2go_maps_fqr_title"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textStyle="bold"
+                        android:textColor="@color/k2go_ink" />
+
+                    <ImageView
+                        android:id="@+id/k2go_maps_fqr_dismiss"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="14dp"
+                        android:src="@drawable/ic_close_24"
+                        android:contentDescription="@string/k2go_maps_fqr_dismiss_cd"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        app:tint="@color/k2go_muted" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/k2go_maps_fqr_desc"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/k2go_muted" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/k2go_maps_fqr_sub"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:background="@drawable/k2go_pill_teal"
+                        android:text="@string/k2go_maps_fqr_pill_after"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_teal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:background="@drawable/k2go_pill_teal"
+                        android:text="@string/k2go_maps_fqr_pill_light"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_teal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:background="@drawable/k2go_pill_teal"
+                        android:text="@string/k2go_maps_fqr_pill_online"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_teal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Compact FQR row (shown when dismissed) -->
+            <LinearLayout
+                android:id="@+id/k2go_maps_fqr_compact_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="@drawable/k2go_card_bg"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_info_24"
+                    android:contentDescription="@null"
+                    app:tint="@color/k2go_muted" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/k2go_maps_fqr_compact"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+
+                <TextView
+                    android:id="@+id/k2go_maps_fqr_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="@string/k2go_maps_fqr_show"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textStyle="bold"
+                    android:textColor="@color/k2go_teal" />
+            </LinearLayout>
+
+            <!-- GLOBAL HIGH DETAIL, BAKED IN -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/k2go_maps_sec_global"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:textColor="@color/k2go_amber" />
+
+            <!-- Rebuild the full maps (opens Choose) -->
+            <LinearLayout
+                android:id="@+id/k2go_maps_rebuild_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/k2go_card_amber"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_cat_build"
+                        android:contentDescription="@null"
+                        app:tint="@color/k2go_amber" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/k2go_maps_rebuild_title"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textStyle="bold"
+                        android:textColor="@color/k2go_ink" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_chevron_right"
+                        android:contentDescription="@null"
+                        app:tint="@color/k2go_amber" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/k2go_maps_rebuild_desc"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/k2go_muted" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/k2go_maps_rebuild_sub"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="@color/k2go_amber" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:background="@drawable/k2go_pill_amber"
+                        android:text="@string/k2go_maps_rebuild_pill_heavy"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_amber" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
+                        android:background="@drawable/k2go_pill_amber"
+                        android:text="@string/k2go_maps_rebuild_pill_offline"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/k2go_amber" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/k2go_maps_landing_foot"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,80 +402,25 @@
         android:orientation="vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="20dp"
-        android:paddingBottom="24dp">
-
-        <TextView
-            android:id="@+id/k2go_maps_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_teal" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_card_maps"
-                android:contentDescription="@null"
-                app:tint="@color/k2go_teal" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/k2go_maps_scr_title"
-                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textColor="@color/k2go_ink" />
-        </LinearLayout>
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@string/k2go_maps_landing_sub"
-            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:text="@string/k2go_maps_landing_ready"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_muted" />
 
-        <LinearLayout
+        <Button
+            android:id="@+id/k2go_maps_continue"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical"
-            android:padding="18dp"
-            android:background="@drawable/k2go_card_bg">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/k2go_maps_install_title"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:textColor="@color/k2go_ink" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="@string/k2go_maps_install_desc"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="@color/k2go_muted" />
-
-            <Button
-                android:id="@+id/k2go_maps_choose_btn"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/k2go_maps_choose_cta"
-                android:textColor="@android:color/white"
-                android:textAllCaps="false"
-                android:backgroundTint="@color/k2go_teal" />
-        </LinearLayout>
+            android:layout_height="52dp"
+            android:text="@string/k2go_wizard_continue"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/k2go_teal" />
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
