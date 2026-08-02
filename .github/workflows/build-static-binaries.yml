@@ -92,16 +92,16 @@ jobs:
         files: ${{ github.workspace }}/termux-binaries-latest.zip
         prerelease: true
 
-    - name: Cleanup old binaries releases (keep last 3)
+    - name: Cleanup old binaries releases (keep last 6)
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Replaces dev-drprasad/delete-older-releases (Node 20). Keep the 3 newest
+        # Replaces dev-drprasad/delete-older-releases (Node 20). Keep the 6 newest
         # binaries-* releases; delete older ones (release + its tag) via gh CLI.
         gh release list --repo "$GITHUB_REPOSITORY" --limit 200 \
           --json tagName,createdAt --jq 'sort_by(.createdAt) | reverse | .[].tagName' \
           | grep '^binaries-' \
-          | tail -n +4 \
+          | tail -n +7 \
           | while read -r tag; do
               echo "Deleting old release + tag: $tag"
               gh release delete "$tag" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
