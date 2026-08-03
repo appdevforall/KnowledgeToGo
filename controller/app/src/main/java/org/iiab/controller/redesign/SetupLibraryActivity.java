@@ -36,6 +36,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public static final String EXTRA_MODULE_DETAIL = "moduleDetail";
     /** ADFA-4958: open the maps content selector directly from Home (maps is a module with a selector step). */
     public static final String EXTRA_MAPS_SETUP = "mapsSetup";
+    /** ADFA-5004: open the Wikipedia & ZIM content screen directly (from the reader's Get-more shortcut). */
+    public static final String EXTRA_ZIM_SETUP = "zimSetup";
     /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
     public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
     /** ADFA-4957: open BackupJobFragment(mode) directly — used to deep-link back to a LIVE backup/restore
@@ -82,6 +84,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
             final String moduleDetail = getIntent().getStringExtra(EXTRA_MODULE_DETAIL);
             boolean mapsSetup = getIntent().getBooleanExtra(EXTRA_MAPS_SETUP, false);
+            boolean zimSetup = getIntent().getBooleanExtra(EXTRA_ZIM_SETUP, false);
             boolean backupRestore = getIntent().getBooleanExtra(EXTRA_BACKUP_RESTORE, false);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
             String brJobMode = getIntent().getStringExtra(EXTRA_BR_JOB_MODE);   // ADFA-4957
@@ -96,6 +99,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
             } else if (mapsSetup) {
                 selectedTier = readInstalledTier();   // ADFA-4958: maps content selector, entered from Home
                 first = new MapsChooseFragment();
+            } else if (zimSetup) {
+                selectedTier = readInstalledTier();   // ADFA-5004: Wikipedia & ZIM content, from the reader
+                first = new ZimLandingFragment();
             } else if (contentOnly) {
                 selectedTier = readInstalledTier();   // size content against the installed tier
                 first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub

@@ -713,6 +713,7 @@
 
     <!-- ADFA-5004: in-app management (list + delete) of installed Kiwix ZIMs (KiwixManageController). -->
     <string name="k2go_zim_manage_action">Manage downloads</string>
+    <string name="k2go_zim_get_more">Get more content</string>
     <string name="k2go_zim_manage_title">Downloaded content</string>
     <string name="k2go_zim_manage_loading">Loading downloaded content…</string>
     <string name="k2go_zim_empty">No downloaded content yet.</string>

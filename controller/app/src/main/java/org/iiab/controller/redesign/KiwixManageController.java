@@ -8,9 +8,10 @@
  *               is kiwix-serve (upstream) and carries no delete control of its own, this overlays a
  *               NATIVE trash button on the shared PortalActivity WebView, shown only while the
  *               /kiwix/ page is loaded. Tapping it opens a ~45% bottom sheet (title + search + the
- *               installed-ZIM list, each row with a "✕" delete in the M3 error colour) backed by the
- *               REST endpoints (KiwixClient GET /kiwix/library, POST /kiwix/delete). After a delete
- *               the WebView reloads so kiwix-serve stops showing the removed book.
+ *               installed-ZIM list, each row with a Material delete icon in the M3 error colour, plus
+ *               a pinned "Get more content" button to the Wikipedia & ZIM screen) backed by the REST
+ *               endpoints (KiwixClient GET /kiwix/library, POST /kiwix/delete). After a delete the
+ *               WebView reloads so kiwix-serve stops showing the removed book.
  *
  *               Lifecycle mirrors FqrController: PortalActivity forwards onPageFinished(url) (arm on
  *               the kiwix page, disarm elsewhere) and onDestroy -> detach(). Theming uses a
@@ -21,6 +22,7 @@ package org.iiab.controller.redesign;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -31,11 +33,13 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -125,7 +129,7 @@ public final class KiwixManageController {
     private void showTrigger() {
         if (trigger != null) return;
         FloatingActionButton fab = new FloatingActionButton(themed);
-        fab.setImageResource(R.drawable.ic_delete_24);
+        fab.setImageResource(R.drawable.ic_content_library_24);   // opens the manager (list + add + delete), not a delete-only action
         fab.setContentDescription(activity.getString(R.string.k2go_zim_manage_action));
         fab.setOnClickListener(v -> openSheet());
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
@@ -168,14 +172,14 @@ public final class KiwixManageController {
         title.setTypeface(title.getTypeface(), Typeface.BOLD);
         title.setTextSize(16);
         header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        TextView close = new TextView(themed);
-        close.setText("✕");
-        close.setTextColor(cOnSurfaceVariant);
-        close.setTextSize(18);
-        close.setPadding(dp(12), 0, dp(4), 0);
+        ImageView close = new ImageView(themed);
+        close.setImageResource(R.drawable.ic_close_24);
+        close.setColorFilter(cOnSurfaceVariant);
+        int closePad = dp(6);
+        close.setPadding(closePad, closePad, closePad, closePad);
         close.setContentDescription(activity.getString(android.R.string.cancel));
         close.setOnClickListener(v -> hideSheet());
-        header.addView(close);
+        header.addView(close, new LinearLayout.LayoutParams(dp(36), dp(36)));
         sheet.addView(header);
 
         searchField = new EditText(themed);
@@ -201,6 +205,21 @@ public final class KiwixManageController {
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f);
         svlp.topMargin = dp(8);
         sheet.addView(sv, svlp);
+
+        // Pinned footer: jump to the Wikipedia & ZIM content screen (adding lives there, not here).
+        MaterialButton more = new MaterialButton(themed);
+        more.setText(R.string.k2go_zim_get_more);
+        more.setIconResource(R.drawable.ic_arrow_right);
+        more.setIconGravity(MaterialButton.ICON_GRAVITY_TEXT_END);
+        more.setOnClickListener(v -> {
+            hideSheet();
+            activity.startActivity(new Intent(activity, SetupLibraryActivity.class)
+                    .putExtra(SetupLibraryActivity.EXTRA_ZIM_SETUP, true));
+        });
+        LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mlp.topMargin = dp(8);
+        sheet.addView(more, mlp);
 
         int h = Math.round(activity.getResources().getDisplayMetrics().heightPixels * SHEET_FRACTION);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, h);
@@ -268,14 +287,14 @@ public final class KiwixManageController {
         col.addView(sz);
         row.addView(col, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
-        TextView x = new TextView(themed);
-        x.setText("✕");
-        x.setTextColor(cError);
-        x.setTextSize(16);
-        x.setPadding(dp(16), dp(4), dp(8), dp(4));
-        x.setContentDescription(activity.getString(R.string.k2go_zim_delete));
-        x.setOnClickListener(v -> confirmDelete(name));
-        row.addView(x);
+        ImageView del = new ImageView(themed);
+        del.setImageResource(R.drawable.ic_delete_24);
+        del.setColorFilter(cError);
+        int delPad = dp(8);
+        del.setPadding(delPad, delPad, delPad, delPad);
+        del.setContentDescription(activity.getString(R.string.k2go_zim_delete));
+        del.setOnClickListener(v -> confirmDelete(name));
+        row.addView(del, new LinearLayout.LayoutParams(dp(40), dp(40)));
         return row;
     }
 
