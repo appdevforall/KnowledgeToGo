@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Rejesha</string>
     <string name="k2go_mod_hidden_foot">Moduli haziwezi kuondolewa — hufichwa tu, kisha kurejeshwa hapa.</string>
     <string name="k2go_mod_mgmt_helper">Gusa ili kufungua · tiki ili kusakinisha kadhaa kwa mara moja.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Dhibiti vipakuliwa</string>
+    <string name="k2go_zim_get_more">Pata maudhui zaidi</string>
+    <string name="k2go_zim_manage_title">Maudhui yaliyopakuliwa</string>
+    <string name="k2go_zim_manage_loading">Inapakia maudhui yaliyopakuliwa…</string>
+    <string name="k2go_zim_empty">Bado hakuna maudhui yaliyopakuliwa.</string>
+    <string name="k2go_zim_no_matches">Hakuna zinazolingana.</string>
+    <string name="k2go_zim_load_failed">Imeshindwa kupakia maudhui yaliyopakuliwa.</string>
+    <string name="k2go_zim_summary_fmt">Vipengele %1$d · %2$s</string>
+    <string name="k2go_zim_delete">Futa</string>
+    <string name="k2go_zim_delete_confirm_title">Ufute %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Hii huondoa faili na kusasisha maktaba ya maudhui. Unaweza kuipakua tena baadaye.</string>
+    <string name="k2go_zim_deleting">Inafuta…</string>
+    <string name="k2go_zim_deleted">%1$s imefutwa</string>
+    <string name="k2go_zim_deleted_deferred">Imefutwa — imefichwa kwa sasa, itaondolewa kabisa upakuaji wa sasa utakapokamilika.</string>
+    <string name="k2go_zim_delete_failed">Imeshindwa kufuta. Tafadhali jaribu tena.</string>
 </resources>

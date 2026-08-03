@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Herstellen</string>
     <string name="k2go_mod_hidden_foot">Modules kunnen niet worden verwijderd — alleen verborgen en hier hersteld.</string>
     <string name="k2go_mod_mgmt_helper">Tik om te openen · vink aan om er meerdere tegelijk te installeren.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Downloads beheren</string>
+    <string name="k2go_zim_get_more">Meer inhoud ophalen</string>
+    <string name="k2go_zim_manage_title">Gedownloade inhoud</string>
+    <string name="k2go_zim_manage_loading">Gedownloade inhoud laden…</string>
+    <string name="k2go_zim_empty">Nog geen gedownloade inhoud.</string>
+    <string name="k2go_zim_no_matches">Geen resultaten.</string>
+    <string name="k2go_zim_load_failed">Kan gedownloade inhoud niet laden.</string>
+    <string name="k2go_zim_summary_fmt">%1$d item(s) · %2$s</string>
+    <string name="k2go_zim_delete">Verwijderen</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s verwijderen?</string>
+    <string name="k2go_zim_delete_confirm_msg">Hiermee wordt het bestand verwijderd en de inhoudsbibliotheek bijgewerkt. Je kunt het later opnieuw downloaden.</string>
+    <string name="k2go_zim_deleting">Verwijderen…</string>
+    <string name="k2go_zim_deleted">%1$s verwijderd</string>
+    <string name="k2go_zim_deleted_deferred">Verwijderd — voorlopig verborgen, volledig verwijderd zodra de huidige download klaar is.</string>
+    <string name="k2go_zim_delete_failed">Verwijderen mislukt. Probeer het opnieuw.</string>
 </resources>

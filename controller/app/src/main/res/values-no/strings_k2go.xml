@@ -667,4 +667,20 @@
     <string name="k2go_mod_restore">Gjenopprett</string>
     <string name="k2go_mod_hidden_foot">Moduler kan ikke avinstalleres — bare skjules, og gjenopprettes her.</string>
     <string name="k2go_mod_mgmt_helper">Trykk for å åpne · huk av for å installere flere på én gang.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Administrer nedlastinger</string>
+    <string name="k2go_zim_get_more">Hent mer innhold</string>
+    <string name="k2go_zim_manage_title">Nedlastet innhold</string>
+    <string name="k2go_zim_manage_loading">Laster nedlastet innhold…</string>
+    <string name="k2go_zim_empty">Ingen nedlastet innhold ennå.</string>
+    <string name="k2go_zim_no_matches">Ingen treff.</string>
+    <string name="k2go_zim_load_failed">Kunne ikke laste nedlastet innhold.</string>
+    <string name="k2go_zim_summary_fmt">%1$d element(er) · %2$s</string>
+    <string name="k2go_zim_delete">Slett</string>
+    <string name="k2go_zim_delete_confirm_title">Slette %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Dette fjerner filen og oppdaterer innholdsbiblioteket. Du kan laste den ned igjen senere.</string>
+    <string name="k2go_zim_deleting">Sletter…</string>
+    <string name="k2go_zim_deleted">%1$s slettet</string>
+    <string name="k2go_zim_deleted_deferred">Slettet — skjult foreløpig, fjernes helt når den pågående nedlastingen er ferdig.</string>
+    <string name="k2go_zim_delete_failed">Kunne ikke slette. Prøv igjen.</string>
 </resources>

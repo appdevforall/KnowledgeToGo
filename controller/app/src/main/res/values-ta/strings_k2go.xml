@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">மீட்டமை</string>
     <string name="k2go_mod_hidden_foot">தொகுதிகளை நிறுவல் நீக்க முடியாது — மறைக்க மட்டுமே முடியும், பிறகு இங்கே மீட்டமைக்கலாம்.</string>
     <string name="k2go_mod_mgmt_helper">திறக்க தட்டவும் · பலவற்றை ஒரே நேரத்தில் நிறுவ டிக் செய்யவும்.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">பதிவிறக்கங்களை நிர்வகி</string>
+    <string name="k2go_zim_get_more">மேலும் உள்ளடக்கம் பெறு</string>
+    <string name="k2go_zim_manage_title">பதிவிறக்கிய உள்ளடக்கம்</string>
+    <string name="k2go_zim_manage_loading">பதிவிறக்கிய உள்ளடக்கம் ஏற்றப்படுகிறது…</string>
+    <string name="k2go_zim_empty">இதுவரை பதிவிறக்கிய உள்ளடக்கம் இல்லை.</string>
+    <string name="k2go_zim_no_matches">பொருத்தம் இல்லை.</string>
+    <string name="k2go_zim_load_failed">பதிவிறக்கிய உள்ளடக்கத்தை ஏற்ற முடியவில்லை.</string>
+    <string name="k2go_zim_summary_fmt">%1$d உருப்படி · %2$s</string>
+    <string name="k2go_zim_delete">நீக்கு</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s ஐ நீக்கவா?</string>
+    <string name="k2go_zim_delete_confirm_msg">இது கோப்பை அகற்றி உள்ளடக்க நூலகத்தைப் புதுப்பிக்கும். பிறகு மீண்டும் பதிவிறக்கலாம்.</string>
+    <string name="k2go_zim_deleting">நீக்குகிறது…</string>
+    <string name="k2go_zim_deleted">%1$s நீக்கப்பட்டது</string>
+    <string name="k2go_zim_deleted_deferred">நீக்கப்பட்டது — தற்போது மறைக்கப்பட்டது, தற்போதைய பதிவிறக்கம் முடிந்ததும் முழுமையாக அகற்றப்படும்.</string>
+    <string name="k2go_zim_delete_failed">நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</string>
 </resources>

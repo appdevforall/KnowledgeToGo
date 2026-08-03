@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Bərpa et</string>
     <string name="k2go_mod_hidden_foot">Modullar silinə bilməz — yalnız gizlədilir, sonra burada bərpa olunur.</string>
     <string name="k2go_mod_mgmt_helper">Açmaq üçün toxun · bir neçəsini birdən quraşdırmaq üçün işarələ.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Endirmələri idarə et</string>
+    <string name="k2go_zim_get_more">Daha çox məzmun əldə et</string>
+    <string name="k2go_zim_manage_title">Endirilmiş məzmun</string>
+    <string name="k2go_zim_manage_loading">Endirilmiş məzmun yüklənir…</string>
+    <string name="k2go_zim_empty">Hələ endirilmiş məzmun yoxdur.</string>
+    <string name="k2go_zim_no_matches">Uyğunluq yoxdur.</string>
+    <string name="k2go_zim_load_failed">Endirilmiş məzmun yüklənə bilmədi.</string>
+    <string name="k2go_zim_summary_fmt">%1$d element · %2$s</string>
+    <string name="k2go_zim_delete">Sil</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s silinsin?</string>
+    <string name="k2go_zim_delete_confirm_msg">Bu, faylı silir və məzmun kitabxanasını yeniləyir. Sonra yenidən endirə bilərsiniz.</string>
+    <string name="k2go_zim_deleting">Silinir…</string>
+    <string name="k2go_zim_deleted">%1$s silindi</string>
+    <string name="k2go_zim_deleted_deferred">Silindi — hələlik gizlədilib, cari endirmə bitdikdə tam silinəcək.</string>
+    <string name="k2go_zim_delete_failed">Silinmədi. Zəhmət olmasa yenidən cəhd edin.</string>
 </resources>

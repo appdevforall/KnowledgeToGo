@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Восстановить</string>
     <string name="k2go_mod_hidden_foot">Модули нельзя удалить — только скрыть, а затем восстановить здесь.</string>
     <string name="k2go_mod_mgmt_helper">Нажмите, чтобы открыть · отметьте, чтобы установить несколько сразу.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Управление загрузками</string>
+    <string name="k2go_zim_get_more">Получить больше контента</string>
+    <string name="k2go_zim_manage_title">Загруженный контент</string>
+    <string name="k2go_zim_manage_loading">Загрузка скачанного контента…</string>
+    <string name="k2go_zim_empty">Пока нет загруженного контента.</string>
+    <string name="k2go_zim_no_matches">Нет совпадений.</string>
+    <string name="k2go_zim_load_failed">Не удалось загрузить скачанный контент.</string>
+    <string name="k2go_zim_summary_fmt">%1$d элем. · %2$s</string>
+    <string name="k2go_zim_delete">Удалить</string>
+    <string name="k2go_zim_delete_confirm_title">Удалить %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Файл будет удалён, а библиотека контента обновлена. Вы сможете скачать его снова позже.</string>
+    <string name="k2go_zim_deleting">Удаление…</string>
+    <string name="k2go_zim_deleted">%1$s удалён</string>
+    <string name="k2go_zim_deleted_deferred">Удалено — пока скрыто, полностью удалится после завершения текущей загрузки.</string>
+    <string name="k2go_zim_delete_failed">Не удалось удалить. Повторите попытку.</string>
 </resources>

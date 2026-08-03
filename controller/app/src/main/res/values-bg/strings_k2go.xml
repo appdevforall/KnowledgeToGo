@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Възстанови</string>
     <string name="k2go_mod_hidden_foot">Модулите не могат да се деинсталират — само да се скрият, а после да се възстановят тук.</string>
     <string name="k2go_mod_mgmt_helper">Докоснете за отваряне · отметнете, за да инсталирате няколко наведнъж.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Управление на изтеглянията</string>
+    <string name="k2go_zim_get_more">Вземи още съдържание</string>
+    <string name="k2go_zim_manage_title">Изтеглено съдържание</string>
+    <string name="k2go_zim_manage_loading">Зареждане на изтегленото съдържание…</string>
+    <string name="k2go_zim_empty">Все още няма изтеглено съдържание.</string>
+    <string name="k2go_zim_no_matches">Няма съвпадения.</string>
+    <string name="k2go_zim_load_failed">Изтегленото съдържание не можа да се зареди.</string>
+    <string name="k2go_zim_summary_fmt">%1$d елемент(а) · %2$s</string>
+    <string name="k2go_zim_delete">Изтрий</string>
+    <string name="k2go_zim_delete_confirm_title">Да се изтрие ли %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Това премахва файла и актуализира библиотеката със съдържание. Можете да го изтеглите отново по-късно.</string>
+    <string name="k2go_zim_deleting">Изтриване…</string>
+    <string name="k2go_zim_deleted">%1$s е изтрит</string>
+    <string name="k2go_zim_deleted_deferred">Изтрито — засега скрито, напълно премахнато след завършване на текущото изтегляне.</string>
+    <string name="k2go_zim_delete_failed">Изтриването не бе успешно. Опитайте отново.</string>
 </resources>

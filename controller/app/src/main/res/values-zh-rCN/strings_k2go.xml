@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">恢复</string>
     <string name="k2go_mod_hidden_foot">模块无法卸载 — 只能隐藏，然后在此处恢复。</string>
     <string name="k2go_mod_mgmt_helper">点按打开 · 勾选以一次安装多个。</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">管理下载</string>
+    <string name="k2go_zim_get_more">获取更多内容</string>
+    <string name="k2go_zim_manage_title">已下载内容</string>
+    <string name="k2go_zim_manage_loading">正在加载已下载内容…</string>
+    <string name="k2go_zim_empty">尚无已下载内容。</string>
+    <string name="k2go_zim_no_matches">无匹配项。</string>
+    <string name="k2go_zim_load_failed">无法加载已下载内容。</string>
+    <string name="k2go_zim_summary_fmt">%1$d 项 · %2$s</string>
+    <string name="k2go_zim_delete">删除</string>
+    <string name="k2go_zim_delete_confirm_title">删除 %1$s？</string>
+    <string name="k2go_zim_delete_confirm_msg">这将移除文件并更新内容库。稍后可重新下载。</string>
+    <string name="k2go_zim_deleting">正在删除…</string>
+    <string name="k2go_zim_deleted">已删除 %1$s</string>
+    <string name="k2go_zim_deleted_deferred">已删除 —— 暂时隐藏，当前下载完成后将彻底移除。</string>
+    <string name="k2go_zim_delete_failed">无法删除。请重试。</string>
 </resources>

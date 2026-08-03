@@ -667,4 +667,20 @@
     <string name="k2go_mod_restore">Atkurti</string>
     <string name="k2go_mod_hidden_foot">Modulių pašalinti negalima — tik paslėpti, o paskui čia atkurti.</string>
     <string name="k2go_mod_mgmt_helper">Bakstelėkite, kad atidarytumėte · pažymėkite, kad įdiegtumėte kelis iš karto.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Tvarkyti atsisiuntimus</string>
+    <string name="k2go_zim_get_more">Gauti daugiau turinio</string>
+    <string name="k2go_zim_manage_title">Atsisiųstas turinys</string>
+    <string name="k2go_zim_manage_loading">Įkeliamas atsisiųstas turinys…</string>
+    <string name="k2go_zim_empty">Kol kas nėra atsisiųsto turinio.</string>
+    <string name="k2go_zim_no_matches">Nėra atitikmenų.</string>
+    <string name="k2go_zim_load_failed">Nepavyko įkelti atsisiųsto turinio.</string>
+    <string name="k2go_zim_summary_fmt">%1$d elem. · %2$s</string>
+    <string name="k2go_zim_delete">Ištrinti</string>
+    <string name="k2go_zim_delete_confirm_title">Ištrinti %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Tai pašalina failą ir atnaujina turinio biblioteką. Vėliau galėsite jį atsisiųsti dar kartą.</string>
+    <string name="k2go_zim_deleting">Trinama…</string>
+    <string name="k2go_zim_deleted">%1$s ištrinta</string>
+    <string name="k2go_zim_deleted_deferred">Ištrinta — kol kas paslėpta, visiškai pašalinta pasibaigus dabartiniam atsisiuntimui.</string>
+    <string name="k2go_zim_delete_failed">Nepavyko ištrinti. Bandykite dar kartą.</string>
 </resources>

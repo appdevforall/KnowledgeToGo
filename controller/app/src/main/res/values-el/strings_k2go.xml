@@ -658,4 +658,20 @@
     <string name="k2go_mod_restore">Επαναφορά</string>
     <string name="k2go_mod_hidden_foot">Οι μονάδες δεν μπορούν να απεγκατασταθούν — μόνο να κρυφτούν και μετά να επαναφερθούν εδώ.</string>
     <string name="k2go_mod_mgmt_helper">Πατήστε για άνοιγμα · επιλέξτε για εγκατάσταση πολλών ταυτόχρονα.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Διαχείριση λήψεων</string>
+    <string name="k2go_zim_get_more">Λήψη περισσότερου περιεχομένου</string>
+    <string name="k2go_zim_manage_title">Ληφθέν περιεχόμενο</string>
+    <string name="k2go_zim_manage_loading">Φόρτωση ληφθέντος περιεχομένου…</string>
+    <string name="k2go_zim_empty">Δεν υπάρχει ακόμη ληφθέν περιεχόμενο.</string>
+    <string name="k2go_zim_no_matches">Καμία αντιστοιχία.</string>
+    <string name="k2go_zim_load_failed">Δεν ήταν δυνατή η φόρτωση του ληφθέντος περιεχομένου.</string>
+    <string name="k2go_zim_summary_fmt">%1$d στοιχείο(-α) · %2$s</string>
+    <string name="k2go_zim_delete">Διαγραφή</string>
+    <string name="k2go_zim_delete_confirm_title">Διαγραφή %1$s;</string>
+    <string name="k2go_zim_delete_confirm_msg">Αυτό αφαιρεί το αρχείο και ενημερώνει τη βιβλιοθήκη περιεχομένου. Μπορείτε να το κατεβάσετε ξανά αργότερα.</string>
+    <string name="k2go_zim_deleting">Διαγραφή…</string>
+    <string name="k2go_zim_deleted">Διαγράφηκε %1$s</string>
+    <string name="k2go_zim_deleted_deferred">Διαγράφηκε — προς το παρόν κρυφό, θα αφαιρεθεί πλήρως μόλις ολοκληρωθεί η τρέχουσα λήψη.</string>
+    <string name="k2go_zim_delete_failed">Η διαγραφή απέτυχε. Δοκιμάστε ξανά.</string>
 </resources>

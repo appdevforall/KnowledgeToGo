@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">復元</string>
     <string name="k2go_mod_hidden_foot">モジュールはアンインストールできません — 非表示にしてから、ここで復元するだけです。</string>
     <string name="k2go_mod_mgmt_helper">タップして開く · チェックして複数を一度にインストール。</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">ダウンロードを管理</string>
+    <string name="k2go_zim_get_more">コンテンツを追加取得</string>
+    <string name="k2go_zim_manage_title">ダウンロード済みコンテンツ</string>
+    <string name="k2go_zim_manage_loading">ダウンロード済みコンテンツを読み込み中…</string>
+    <string name="k2go_zim_empty">ダウンロード済みのコンテンツはまだありません。</string>
+    <string name="k2go_zim_no_matches">一致するものがありません。</string>
+    <string name="k2go_zim_load_failed">ダウンロード済みコンテンツを読み込めませんでした。</string>
+    <string name="k2go_zim_summary_fmt">%1$d 件 · %2$s</string>
+    <string name="k2go_zim_delete">削除</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s を削除しますか?</string>
+    <string name="k2go_zim_delete_confirm_msg">ファイルを削除し、コンテンツライブラリを更新します。後で再度ダウンロードできます。</string>
+    <string name="k2go_zim_deleting">削除しています…</string>
+    <string name="k2go_zim_deleted">%1$s を削除しました</string>
+    <string name="k2go_zim_deleted_deferred">削除しました — 現在は非表示です。進行中のダウンロードが完了すると完全に削除されます。</string>
+    <string name="k2go_zim_delete_failed">削除できませんでした。もう一度お試しください。</string>
 </resources>
