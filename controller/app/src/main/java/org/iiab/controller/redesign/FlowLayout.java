@@ -12,10 +12,14 @@
 package org.iiab.controller.redesign;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
 public class FlowLayout extends ViewGroup {
+
+    /** Default gap (dp) between pills when inflated from XML, matching the sibling Choose screen. */
+    private static final int DEFAULT_GAP_DP = 8;
 
     private final int hGap;
     private final int vGap;
@@ -24,6 +28,17 @@ public class FlowLayout extends ViewGroup {
         super(c);
         this.hGap = hGap;
         this.vGap = vGap;
+    }
+
+    /**
+     * ADFA-4999. XML-inflatable constructor: uses an 8dp horizontal/vertical gap between children,
+     * so the Maps landing pill rows can wrap from XML instead of clipping on narrow screens.
+     */
+    public FlowLayout(Context c, AttributeSet attrs) {
+        super(c, attrs);
+        int gap = Math.round(DEFAULT_GAP_DP * c.getResources().getDisplayMetrics().density);
+        this.hGap = gap;
+        this.vGap = gap;
     }
 
     @Override
