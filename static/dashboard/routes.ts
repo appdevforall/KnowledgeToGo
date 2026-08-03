@@ -6,6 +6,8 @@
 // none of these calls hold state — a client can drop and re-attach by polling the id.
 import express, { Router, Request, Response } from 'express';
 import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 import { jobs, Job, JobType } from './sockets/jobs';
 import { searchCatalog, listLibrary, removeBook, listLanguages } from './sockets/books.query';
 import { parseBox, parseEstimate } from './sockets/maps.socket';
@@ -24,6 +26,14 @@ import {
 // maps.exec.ts already spawns): `extract` (interactive, for the estimate) and `delete`.
 const MAPS_SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const MAPS_NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
+
+// ADFA-5004: Kiwix ZIM management (list + delete), reached from the app so users can free space
+// without the retired web dashboard. ZIMS_DIR/KIWIX_INDEXER mirror sockets/kiwix.exec.ts — keep in
+// sync. ZIM_NAME_RE only ever matches a plain "<file>.zim" (no path separators), so a delete can
+// never escape ZIMS_DIR.
+const ZIMS_DIR = '/library/zims/content/';
+const KIWIX_INDEXER = '/usr/bin/iiab-make-kiwix-lib';
+const ZIM_NAME_RE = /^[A-Za-z0-9._-]{1,150}\.zim$/;
 
 const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri'];
 function isType(t: string): t is JobType {
@@ -159,6 +169,54 @@ apiRouter.post('/maps/delete', (req: Request, res: Response): void => {
         if (code === 0) res.json({ ok: true });
         else res.status(500).json({ error: err.trim() || `delete exited ${code}` });
     });
+});
+
+// --- Kiwix: list installed ZIMs + delete (ADFA-5004) ------------------------------------------
+// Direct (non-job) ops mirroring /maps/delete; the download itself stays a durable job
+// (POST /kiwix/download). Ported from the retired dashboard socket handler (delete_zim): remove the
+// .zim from disk, then rebuild the Kiwix library index so the deleted book stops being served.
+// Declared before the generic /:type/* routes so these literal paths win.
+
+// The ZIMs currently on disk (name + bytes), newest first. Drives the in-app manage list.
+apiRouter.get('/kiwix/library', (_req: Request, res: Response): void => {
+    try {
+        if (!fs.existsSync(ZIMS_DIR)) { res.json([]); return; }
+        const rows = fs.readdirSync(ZIMS_DIR)
+            .filter((f) => f.endsWith('.zim'))
+            .map((name) => {
+                let bytes = 0, mtime = 0;
+                try { const st = fs.statSync(path.join(ZIMS_DIR, name)); bytes = st.size; mtime = st.mtimeMs; }
+                catch { /* file vanished between readdir and stat — skip */ }
+                return { name, bytes, mtime };
+            })
+            .sort((a, b) => b.mtime - a.mtime);
+        res.json(rows);
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'library read failed' });
+    }
+});
+
+// Delete one installed ZIM, then rebuild the Kiwix index so kiwix-serve stops serving it.
+apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
+    const name = String((req.body as { name?: unknown })?.name ?? '').trim();
+    // Strict name + basename guard: only a plain "<file>.zim" inside ZIMS_DIR, never a path.
+    if (!ZIM_NAME_RE.test(name) || name !== path.basename(name)) {
+        res.status(400).json({ error: 'invalid zim name' }); return;
+    }
+    const filePath = path.join(ZIMS_DIR, name);
+    if (!fs.existsSync(filePath)) { res.status(404).json({ error: 'not found' }); return; }
+    try {
+        fs.unlinkSync(filePath);
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'delete failed' }); return;
+    }
+    // No indexer on the box: the file is gone, report success without a reindex.
+    if (!fs.existsSync(KIWIX_INDEXER)) { res.json({ ok: true, reindexed: false }); return; }
+    // Rebuild the library index; respond when it exits (mirrors /maps/delete's process wait). Its
+    // exit code is advisory — kiwix.exec.ts treats it the same — so the unlink is the real signal.
+    const idx = spawn(KIWIX_INDEXER, [], { env: { ...process.env } });
+    idx.on('error', (e) => { if (!res.headersSent) res.status(500).json({ error: String(e) }); });
+    idx.on('exit', () => { if (!res.headersSent) res.json({ ok: true, reindexed: true }); });
 });
 
 // --- Kolibri: readiness, catálogo y selección (ADFA-4949) -------------------------
