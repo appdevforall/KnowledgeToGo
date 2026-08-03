@@ -69,6 +69,7 @@ public class PortalActivity extends AppCompatActivity {
 
     private GestureWebView webView;
     private org.iiab.controller.redesign.FqrController fqr;   // ADFA-4879: FQR maps (only on /maps/)
+    private org.iiab.controller.redesign.KiwixManageController kiwixMgr;   // ADFA-5004: ZIM delete (only on /kiwix/)
     private static final long AUTO_HIDE_MS = 4000L;   // ADFA-4887: nav-bar auto-hide after inactivity
     private boolean fullscreenOn = false;             // ADFA-4887: Home button toggles fullscreen
     private Handler hideHandler;                      // ADFA-4887: nav-bar auto-hide (cleared in onDestroy)
@@ -223,6 +224,8 @@ public class PortalActivity extends AppCompatActivity {
 
                 // ADFA-4879: arm/disarm in-app FQR maps depending on whether this is /maps/.
                 if (fqr != null) fqr.onPageFinished(url);
+                // ADFA-5004: arm/disarm in-app ZIM manager depending on whether this is /kiwix/.
+                if (kiwixMgr != null) kiwixMgr.onPageFinished(url);
             }
 
             @Override
@@ -331,6 +334,10 @@ public class PortalActivity extends AppCompatActivity {
         fqr = new org.iiab.controller.redesign.FqrController(this, webView);
         fqr.prepareForUrl(finalTargetUrl);
 
+        // ADFA-5004: ZIM manager lives in this same shared WebView but activates only on /kiwix/
+        // (gated in KiwixManageController#onPageFinished).
+        kiwixMgr = new org.iiab.controller.redesign.KiwixManageController(this, webView);
+
         // Native architecture: content is served locally; load it directly.
         webView.loadUrl(finalTargetUrl);
     }
@@ -414,6 +421,7 @@ public class PortalActivity extends AppCompatActivity {
         // ADFA-4879: stop FQR polling + drop its overlay/dialog so we don't leak the activity.
         // The durable server job (if any) keeps running and shows up on the next /maps/ reload.
         if (fqr != null) fqr.detach();
+        if (kiwixMgr != null) kiwixMgr.detach();   // ADFA-5004
         if (hideHandler != null && hideRunnable != null) hideHandler.removeCallbacks(hideRunnable);   // ADFA-4887
         super.onDestroy();
     }
