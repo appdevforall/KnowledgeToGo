@@ -212,9 +212,15 @@ apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
     }
     // No indexer on the box: the file is gone, report success without a reindex.
     if (!fs.existsSync(KIWIX_INDEXER)) { res.json({ ok: true, reindexed: false }); return; }
-    // Rebuild the library index; respond when it exits (mirrors /maps/delete's process wait). Its
-    // exit code is advisory — kiwix.exec.ts treats it the same — so the unlink is the real signal.
+    // Rebuild the library index — the SAME step the download runner (kiwix.exec.ts) uses to make
+    // content show up, so it also makes a deleted ZIM disappear (no kiwix-serve restart needed).
+    // We MUST drain stdout/stderr: with the default piped stdio, a chatty indexer fills the ~64KB
+    // pipe buffer and blocks forever (never exits, library never rebuilt) — exactly what left a
+    // deleted ZIM still served. Its exit code is advisory (kiwix.exec.ts treats it the same), so the
+    // unlink is the real signal; we respond when it finishes.
     const idx = spawn(KIWIX_INDEXER, [], { env: { ...process.env } });
+    idx.stdout?.on('data', () => { /* drain so the indexer never blocks on a full pipe */ });
+    idx.stderr?.on('data', () => { /* drain */ });
     idx.on('error', (e) => { if (!res.headersSent) res.status(500).json({ error: String(e) }); });
     idx.on('exit', () => { if (!res.headersSent) res.json({ ok: true, reindexed: true }); });
 });
