@@ -212,6 +212,15 @@ apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
     }
     // No indexer on the box: the file is gone, report success without a reindex.
     if (!fs.existsSync(KIWIX_INDEXER)) { res.json({ ok: true, reindexed: false }); return; }
+    // ADFA-5004: don't run a second indexer while a kiwix download/index job is in flight. The jobs
+    // engine does NOT serialize (each runner is its own promise) and this delete runs outside it, so
+    // spawning iiab-make-kiwix-lib now could race that job's own end-of-run reindex on library.xml
+    // (and pick up an incomplete, still-downloading .zim). The file is already unlinked, so the
+    // active job's reindex — which reads the current disk state — will reflect the deletion when it
+    // finishes. See ADR-4832 (proot/index collisions).
+    const kiwixBusy = jobs.list('kiwix').some((j) =>
+        j.phase === 'queued' || j.phase === 'downloading' || j.phase === 'indexing' || j.phase === 'processing');
+    if (kiwixBusy) { res.json({ ok: true, reindexed: false, deferred: true }); return; }
     // Rebuild the library index — the SAME step the download runner (kiwix.exec.ts) uses to make
     // content show up, so it also makes a deleted ZIM disappear (no kiwix-serve restart needed).
     // We MUST drain stdout/stderr: with the default piped stdio, a chatty indexer fills the ~64KB

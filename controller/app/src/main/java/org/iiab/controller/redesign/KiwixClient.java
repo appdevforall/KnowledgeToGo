@@ -35,7 +35,9 @@ public final class KiwixClient {
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
     public interface ArrayCb { void onOk(JSONArray rows); void onErr(String message); }
-    public interface OkCb { void onOk(); void onErr(String message); }
+    /** {@code deferred} = the file was removed but the reindex was skipped (a download is in
+     *  progress); kiwix-serve reflects it after that download's own reindex. */
+    public interface OkCb { void onOk(boolean deferred); void onErr(String message); }
 
     /** The ZIMs currently installed on the box (rows: { name, bytes, mtime }), newest first. */
     public static void library(ArrayCb cb) {
@@ -54,8 +56,9 @@ public final class KiwixClient {
     public static void delete(String name, OkCb cb) {
         AppExecutors.get().io().execute(() -> {
             try {
-                httpPostJson(BASE + "/delete", new JSONObject().put("name", name));
-                MAIN.post(cb::onOk);
+                String resp = httpPostJson(BASE + "/delete", new JSONObject().put("name", name));
+                final boolean deferred = !resp.isEmpty() && new JSONObject(resp).optBoolean("deferred", false);
+                MAIN.post(() -> cb.onOk(deferred));
             } catch (Exception e) {
                 MAIN.post(() -> cb.onErr("delete failed"));
             }
@@ -78,7 +81,8 @@ public final class KiwixClient {
         }
     }
 
-    private static void httpPostJson(String urlStr, JSONObject body) throws Exception {
+    /** POST a JSON body and return the response text (for reading fields like {@code deferred}). */
+    private static String httpPostJson(String urlStr, JSONObject body) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
         try {
             c.setUseCaches(false);
@@ -92,10 +96,9 @@ public final class KiwixClient {
             byte[] payload = body.toString().getBytes(StandardCharsets.UTF_8);
             try (OutputStream os = c.getOutputStream()) { os.write(payload); }
             int code = c.getResponseCode();
-            if (code < 200 || code >= 400) {
-                String text = readAll(c.getErrorStream());
-                throw new Exception("HTTP " + code + ": " + text);
-            }
+            String text = readAll(code >= 200 && code < 400 ? c.getInputStream() : c.getErrorStream());
+            if (code < 200 || code >= 400) throw new Exception("HTTP " + code + ": " + text);
+            return text;
         } finally {
             c.disconnect();
         }

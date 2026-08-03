@@ -42,12 +42,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.iiab.controller.R;
 import org.iiab.controller.util.ByteFormatter;
+import org.iiab.controller.util.Snackbars;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public final class KiwixManageController {
 
@@ -64,6 +67,9 @@ public final class KiwixManageController {
     private EditText searchField;
     private LinearLayout listContainer;
     private final List<JSONObject> items = new ArrayList<>();
+    // ZIM file-name stems deleted while a download was in progress: hidden cosmetically in the reader
+    // until that download's reindex removes them for real. Re-applied on every kiwix page load.
+    private final Set<String> pendingHidden = new HashSet<>();
 
     public KiwixManageController(Activity activity, WebView webView) {
         this.activity = activity;
@@ -85,8 +91,12 @@ public final class KiwixManageController {
     public void onPageFinished(String url) {
         active = isKiwixPage(url);
         if (active) {
-            showTrigger();
+            // Don't drop the FAB on top of an open sheet — a delete triggers webView.reload(), whose
+            // onPageFinished lands here while the sheet is still up. The sheet restores the FAB on close.
+            if (deleteSheet == null) showTrigger();
+            applyHide();   // re-apply cosmetic hides after any reload/navigation within kiwix
         } else {
+            pendingHidden.clear();   // left the reader; deleted books are gone for real by next visit
             hideSheet();
             hideTrigger();
         }
@@ -277,11 +287,22 @@ public final class KiwixManageController {
                 .setPositiveButton(R.string.k2go_zim_delete, (d, w) -> {
                     Toast.makeText(activity, R.string.k2go_zim_deleting, Toast.LENGTH_SHORT).show();
                     KiwixClient.delete(name, new KiwixClient.OkCb() {
-                        @Override public void onOk() {
+                        @Override public void onOk(boolean deferred) {
                             if (activity.isFinishing()) return;
-                            Toast.makeText(activity, activity.getString(R.string.k2go_zim_deleted, prettyName(name)), Toast.LENGTH_SHORT).show();
-                            webView.reload();   // kiwix-serve redraws its library without the ZIM
-                            refresh();
+                            refresh();   // the overlay list reads disk, so the item is gone either way
+                            if (deferred) {
+                                // File removed, but a download is in progress so we skipped the reindex;
+                                // kiwix-serve still shows it until that download's reindex. Don't reload
+                                // (it would just re-render the ghost) — hide it cosmetically now and
+                                // explain the wait; the real removal lands with that download's reindex.
+                                pendingHidden.add(stemOf(name));
+                                applyHide();
+                                Snackbars.make(activity.findViewById(android.R.id.content),
+                                        R.string.k2go_zim_deleted_deferred).show();
+                            } else {
+                                Toast.makeText(activity, activity.getString(R.string.k2go_zim_deleted, prettyName(name)), Toast.LENGTH_SHORT).show();
+                                webView.reload();   // kiwix-serve redraws its library without the ZIM
+                            }
                         }
                         @Override public void onErr(String message) {
                             if (activity.isFinishing()) return;
@@ -318,6 +339,34 @@ public final class KiwixManageController {
         if (zim == null) return "";
         String n = zim.endsWith(".zim") ? zim.substring(0, zim.length() - 4) : zim;
         return n.replace('_', ' ');
+    }
+
+    /** ZIM file-name without the ".zim" — kiwix-serve names a book by this stem, so we match its card
+     *  link on it. */
+    private static String stemOf(String zim) {
+        if (zim == null) return "";
+        return zim.endsWith(".zim") ? zim.substring(0, zim.length() - 4) : zim;
+    }
+
+    /** Cosmetically hide, in the kiwix-serve reader, the cards for ZIMs deleted while a download is in
+     *  progress (their real removal waits for that download's reindex). Best-effort + fail-safe: it
+     *  matches the book link by the ZIM's file-name stem; if kiwix's markup doesn't match, nothing is
+     *  hidden (no harm) and the ghost simply lingers until the reindex. Re-applied on every kiwix load. */
+    private void applyHide() {
+        if (pendingHidden.isEmpty()) return;
+        StringBuilder stems = new StringBuilder("[");
+        boolean first = true;
+        for (String s : pendingHidden) {
+            if (!first) stems.append(',');
+            stems.append(JSONObject.quote(s));
+            first = false;
+        }
+        stems.append(']');
+        String js = "(function(){try{var S=" + stems + ";S.forEach(function(st){"
+                + "document.querySelectorAll('a[href*=\"'+st+'\"]').forEach(function(a){"
+                + "var c=a.closest('li, .book, .book-tile, .book__item, article')||a;"
+                + "if(c)c.style.display='none';});});}catch(e){}})();";
+        webView.evaluateJavascript(js, null);
     }
 
     private GradientDrawable rounded(int color, float radiusDp, boolean topOnly) {

@@ -727,5 +727,8 @@
     <string name="k2go_zim_deleting">Deleting…</string>
     <!-- %1$s = content name -->
     <string name="k2go_zim_deleted">Deleted %1$s</string>
+    <!-- Shown when a download is in progress: the file is already gone and hidden in the reader, but
+         the real removal waits for that download's reindex. -->
+    <string name="k2go_zim_deleted_deferred">Deleted — hidden for now, fully removed once the current download finishes.</string>
     <string name="k2go_zim_delete_failed">Couldn\'t delete. Please try again.</string>
 </resources>
