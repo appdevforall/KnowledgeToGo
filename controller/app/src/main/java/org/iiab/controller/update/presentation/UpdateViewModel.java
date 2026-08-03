@@ -65,19 +65,27 @@ public class UpdateViewModel extends ViewModel {
         stopPolling();
         poller = new Runnable() {
             @Override public void run() {
-                DownloadProgress p = gateway.query(downloadId);
-                state.setValue(UpdateUiState.fromDownload(p));
-                if (p.isTerminal()) {
-                    if (!terminalFired) {
-                        terminalFired = true;
-                        if (onTerminal != null) onTerminal.run();
-                    }
-                } else {
-                    handler.postDelayed(this, POLL_MS);
+                PollOutcome o = decidePoll(gateway.query(downloadId), terminalFired);
+                if (o.state != null) state.setValue(o.state);
+                if (o.fireTerminal) {
+                    terminalFired = true;
+                    if (onTerminal != null) onTerminal.run();
                 }
+                if (o.keepPolling) handler.postDelayed(this, POLL_MS);
             }
         };
         handler.post(poller);
+    }
+
+    /**
+     * Called by the controller when completion has been handled via the
+     * DownloadManager broadcast (the fast path). Marks the terminal state as
+     * already handled and stops polling, so a later poll tick cannot regress the
+     * dialog (e.g. overwrite a freshly-posted READY back to VERIFYING).
+     */
+    public void markTerminalHandled() {
+        terminalFired = true;
+        stopPolling();
     }
 
     public void onReady() { state.setValue(UpdateUiState.ready()); }
@@ -91,6 +99,36 @@ public class UpdateViewModel extends ViewModel {
         downloadId = -1;
         terminalFired = false;
         state.setValue(UpdateUiState.idle());
+    }
+
+    /**
+     * Pure decision for a single poll tick — no Android, so it is unit-testable.
+     * Once a terminal state has already been handled (by an earlier poll or by the
+     * broadcast fast path), a later terminal observation must NOT re-emit VERIFYING;
+     * that is what previously regressed a completed READY back to "verifying" and
+     * re-hung the dialog. In that case emit no state and stop polling.
+     */
+    static PollOutcome decidePoll(DownloadProgress p, boolean terminalAlreadyHandled) {
+        if (p.isTerminal()) {
+            if (terminalAlreadyHandled) {
+                return new PollOutcome(null, false, false);
+            }
+            return new PollOutcome(UpdateUiState.fromDownload(p), true, false);
+        }
+        return new PollOutcome(UpdateUiState.fromDownload(p), false, true);
+    }
+
+    /** Result of one poll tick: which state to emit (null = none), whether to fire the terminal callback, whether to keep polling. */
+    static final class PollOutcome {
+        final UpdateUiState state;
+        final boolean fireTerminal;
+        final boolean keepPolling;
+
+        PollOutcome(UpdateUiState state, boolean fireTerminal, boolean keepPolling) {
+            this.state = state;
+            this.fireTerminal = fireTerminal;
+            this.keepPolling = keepPolling;
+        }
     }
 
     private void stopPolling() {

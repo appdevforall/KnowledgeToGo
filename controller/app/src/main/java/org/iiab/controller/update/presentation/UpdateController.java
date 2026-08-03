@@ -244,6 +244,9 @@ public class UpdateController {
             return;
         }
         downloadCompletionHandled = true;
+        // Stop the poller and mark terminal as handled so a later poll tick can't
+        // regress a freshly-posted READY back to VERIFYING (broadcast-first race).
+        getUpdateViewModel().markTerminalHandled();
 
         AppExecutors.get().io().execute(() -> {
             // F15: only install if the download actually SUCCEEDED. DownloadManager
