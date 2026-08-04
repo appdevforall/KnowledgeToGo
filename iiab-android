@@ -415,6 +415,35 @@ install_demo_contents() {
 }
 
 #-----------------------------
+# K2Go welcome ZIM (post-install)
+#-----------------------------
+# Runs AFTER Ansible, so it never touches state during the role run. The
+# upstream iiab/iiab kiwix role drops a placeholder test.zim "when
+# kiwix_zims.matched == 0"; here we remove it, drop in our multilingual welcome
+# ZIM (shipped in the cloned repo under static/zim/), and rebuild the Kiwix
+# library ONCE so library.xml reflects the final state.
+install_welcome_zim() {
+  is_role_enabled "kiwix" || { log "Kiwix off; skipping welcome ZIM."; return 0; }
+  local src="${K2GO_OPT_DIR}/static/zim/k2go_welcome.zim"
+  local zim_dir="/library/zims/content"
+  # Ansible already created this dir when kiwix installed; we never create it.
+  [ -d "$zim_dir" ] || { warn "No $zim_dir (kiwix not installed?); skipping."; return 0; }
+
+  rm -f "$zim_dir/test.zim"                     # drop the upstream placeholder
+  if [ -f "$src" ]; then
+    cp -a "$src" "$zim_dir/k2go_welcome.zim"    # ships in the cloned repo
+  else
+    warn "Welcome ZIM not found at $src; nothing installed."
+  fi
+
+  if command -v iiab-make-kiwix-lib >/dev/null 2>&1; then
+    iiab-make-kiwix-lib                          # rebuild library.xml once
+  else
+    warn "iiab-make-kiwix-lib not found; library not rebuilt."
+  fi
+}
+
+#-----------------------------
 # Install IIAB-oA Dashboard
 #-----------------------------
 
@@ -654,6 +683,9 @@ if [ "$ENABLE_DEMO_CONTENTS" -eq 1 ]; then
 else
   log "Skipping the demo content installation (ENABLE_DEMO_CONTENTS=0)."
 fi
+
+# Replace the upstream placeholder test.zim with the K2Go welcome ZIM.
+install_welcome_zim
 
 # Install dashboard
 install_iiaboa_dashboard
