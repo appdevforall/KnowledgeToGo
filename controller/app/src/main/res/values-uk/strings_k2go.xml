@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s видалено</string>
     <string name="k2go_zim_deleted_deferred">Видалено — поки що приховано, повністю видалиться після завершення поточного завантаження.</string>
     <string name="k2go_zim_delete_failed">Не вдалося видалити. Спробуйте ще раз.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Перезбирання панелі…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Ядро REST</string>
+    <string name="k2go_dash_card_sub_fmt">Ядро REST · встановлено v%1$s</string>
+    <string name="k2go_dash_rebuild">Перезібрати</string>
+    <string name="k2go_dash_rebuild_confirm_title">Перезібрати ядро REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Оновлює dash-node до найновішої версії. Під час перезбирання сервер ненадовго недоступний; не залишайте цей екран, доки воно не завершиться.</string>
+    <string name="k2go_dash_needs_internet">Для перезбирання потрібне з\'єднання з інтернетом.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Ядро системи · завжди встановлено</string>
+    <string name="k2go_dash_detail_desc">Панель — це ядро REST API пристрою (dash-node): невеликий сервіс Node на 127.0.0.1:4000, який обслуговує nginx і контролює pdsm. Воно забезпечує всі дії бібліотеки в застосунку: перегляд і завантаження Книг, додавання й видалення вмісту Wikipedia та ZIM, сесії Kolibri, Карти та стан системи. На відміну від модулів вмісту, його не встановлюють і не видаляють — воно постачається з пристроєм і завжди присутнє. Коли доступна новіша версія, ви можете перезібрати його на місці.</string>
+    <string name="k2go_dash_includes">Кінцеві точки REST для Книг, Wikipedia/ZIM, Kolibri та Карт; vhost nginx; а також кінцеві точки версії системи та перезбирання — усе на 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Ядро системи</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Перезбирання завершено — переходимо до вашої бібліотеки…</string>
+    <string name="k2go_dash_rebuild_building">Збирання, тестування та заміна на місці…</string>
+    <string name="k2go_dash_rebuild_failed">Не вдалося перезібрати</string>
+    <string name="k2go_dash_services_failed">Перезібрано, але служби не запустилися вчасно</string>
 </resources>

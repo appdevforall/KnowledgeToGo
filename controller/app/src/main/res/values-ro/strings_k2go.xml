@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s șters</string>
     <string name="k2go_zim_deleted_deferred">Șters — ascuns momentan, eliminat complet după ce se termină descărcarea curentă.</string>
     <string name="k2go_zim_delete_failed">Ștergerea a eșuat. Încearcă din nou.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Se reconstruiește panoul…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Nucleu REST</string>
+    <string name="k2go_dash_card_sub_fmt">Nucleu REST · instalat v%1$s</string>
+    <string name="k2go_dash_rebuild">Reconstruiește</string>
+    <string name="k2go_dash_rebuild_confirm_title">Reconstruiești nucleul REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Actualizează dash-node la cea mai recentă versiune. Serverul este indisponibil pentru scurt timp în timpul reconstruirii; nu părăsi acest ecran până nu se termină.</string>
+    <string name="k2go_dash_needs_internet">Reconstruirea necesită o conexiune la internet.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Nucleul sistemului · întotdeauna instalat</string>
+    <string name="k2go_dash_detail_desc">Panoul este nucleul API REST al cutiei (dash-node): un mic serviciu Node la 127.0.0.1:4000, servit de nginx și supravegheat de pdsm. Alimentează fiecare acțiune a bibliotecii din aplicație: răsfoirea și descărcarea Cărților, adăugarea și ștergerea conținutului Wikipedia și ZIM, sesiunile Kolibri, Hărțile și starea sistemului. Spre deosebire de modulele de conținut, nu se instalează și nu se elimină — vine cu cutia și este întotdeauna prezent. Când este disponibilă o versiune mai nouă, îl poți reconstrui pe loc.</string>
+    <string name="k2go_dash_includes">Puncte finale REST pentru Cărți, Wikipedia/ZIM, Kolibri și Hărți; vhost-ul nginx; și punctele finale pentru versiunea sistemului și reconstruire — toate servite la 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Nucleul sistemului</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Reconstruire finalizată — te ducem la biblioteca ta…</string>
+    <string name="k2go_dash_rebuild_building">Se compilează, se testează și se înlocuiește pe loc…</string>
+    <string name="k2go_dash_rebuild_failed">Reconstruirea a eșuat</string>
+    <string name="k2go_dash_services_failed">Reconstruit, dar serviciile nu au pornit la timp</string>
 </resources>

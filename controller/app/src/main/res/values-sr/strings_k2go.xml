@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s обрисано</string>
     <string name="k2go_zim_deleted_deferred">Обрисано — за сада сакривено, потпуно уклоњено када се заврши тренутно преузимање.</string>
     <string name="k2go_zim_delete_failed">Брисање није успело. Покушајте поново.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Поновно грађење контролне табле…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST језгро</string>
+    <string name="k2go_dash_card_sub_fmt">REST језгро · инсталирана v%1$s</string>
+    <string name="k2go_dash_rebuild">Поново изгради</string>
+    <string name="k2go_dash_rebuild_confirm_title">Поново изградити REST језгро?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Ажурира dash-node на најновију верзију. Сервер је накратко недоступан током поновне изградње; не напуштајте овај екран док се не заврши.</string>
+    <string name="k2go_dash_needs_internet">Поновна изградња захтева интернет везу.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Системско језгро · увек инсталирано</string>
+    <string name="k2go_dash_detail_desc">Контролна табла је REST API језгро уређаја (dash-node): мала Node услуга на 127.0.0.1:4000, коју опслужује nginx а надгледа pdsm. Покреће сваку радњу библиотеке у апликацији: прегледање и преузимање Књига, додавање и брисање садржаја Wikipedia и ZIM, Kolibri сесије, Мапе и стање система. За разлику од модула садржаја, не инсталира се нити уклања — долази уз уређај и увек је присутна. Када је доступна новија верзија, можете је поново изградити на лицу места.</string>
+    <string name="k2go_dash_includes">REST крајње тачке за Књиге, Wikipedia/ZIM, Kolibri и Мапе; nginx vhost; и крајње тачке за верзију система и поновну изградњу — све на 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Системско језгро</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Поновна изградња завршена — водимо вас у вашу библиотеку…</string>
+    <string name="k2go_dash_rebuild_building">Изградња, тестирање и замена на лицу места…</string>
+    <string name="k2go_dash_rebuild_failed">Поновна изградња није успела</string>
+    <string name="k2go_dash_services_failed">Поново изграђено, али услуге нису покренуте на време</string>
 </resources>

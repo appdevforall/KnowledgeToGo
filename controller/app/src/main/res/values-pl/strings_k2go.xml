@@ -683,4 +683,24 @@
     <string name="k2go_zim_deleted">Usunięto %1$s</string>
     <string name="k2go_zim_deleted_deferred">Usunięto — na razie ukryte, zostanie całkowicie usunięte po zakończeniu bieżącego pobierania.</string>
     <string name="k2go_zim_delete_failed">Nie udało się usunąć. Spróbuj ponownie.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Przebudowa pulpitu…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Rdzeń REST</string>
+    <string name="k2go_dash_card_sub_fmt">Rdzeń REST · zainstalowano v%1$s</string>
+    <string name="k2go_dash_rebuild">Przebuduj</string>
+    <string name="k2go_dash_rebuild_confirm_title">Przebudować rdzeń REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Aktualizuje dash-node do najnowszej wersji. Serwer jest przez chwilę niedostępny podczas przebudowy; nie opuszczaj tego ekranu, dopóki się nie zakończy.</string>
+    <string name="k2go_dash_needs_internet">Przebudowa wymaga połączenia z internetem.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Rdzeń systemu · zawsze zainstalowany</string>
+    <string name="k2go_dash_detail_desc">Pulpit to rdzeń interfejsu REST API urządzenia (dash-node) — mała usługa Node pod adresem 127.0.0.1:4000, obsługiwana przez nginx i nadzorowana przez pdsm. Napędza każdą akcję biblioteki w aplikacji: przeglądanie i pobieranie Książek, dodawanie i usuwanie treści Wikipedii oraz ZIM, sesje Kolibri, Mapy i stan systemu. W przeciwieństwie do modułów treści nie instaluje się go ani nie usuwa — jest dostarczany z urządzeniem i zawsze obecny. Gdy dostępna jest nowsza wersja, możesz przebudować go w miejscu.</string>
+    <string name="k2go_dash_includes">Punkty końcowe REST Książek, Wikipedii/ZIM, Kolibri i Map; vhost nginx; oraz punkty końcowe wersji systemu i przebudowy — wszystkie pod 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Rdzeń systemu</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Przebudowa zakończona — przenosimy Cię do biblioteki…</string>
+    <string name="k2go_dash_rebuild_building">Budowanie, testowanie i podmiana w miejscu…</string>
+    <string name="k2go_dash_rebuild_failed">Przebudowa nie powiodła się</string>
+    <string name="k2go_dash_services_failed">Przebudowano, ale usługi nie uruchomiły się na czas</string>
 </resources>

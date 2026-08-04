@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s eliminado</string>
     <string name="k2go_zim_deleted_deferred">Eliminado — oculto por ahora, se quitará por completo cuando termine la descarga actual.</string>
     <string name="k2go_zim_delete_failed">No se pudo eliminar. Inténtalo de nuevo.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Reconstruyendo el dashboard…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Núcleo REST</string>
+    <string name="k2go_dash_card_sub_fmt">Núcleo REST · instalado v%1$s</string>
+    <string name="k2go_dash_rebuild">Reconstruir</string>
+    <string name="k2go_dash_rebuild_confirm_title">¿Reconstruir el núcleo REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Actualiza dash-node a la última versión. El servidor queda brevemente no disponible mientras se reconstruye; no salgas de esta pantalla hasta que termine.</string>
+    <string name="k2go_dash_needs_internet">La reconstrucción necesita conexión a internet.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Núcleo del sistema · siempre instalado</string>
+    <string name="k2go_dash_detail_desc">El dashboard es el núcleo de la API REST de la caja (dash-node): un pequeño servicio Node en 127.0.0.1:4000, servido por nginx y supervisado por pdsm. Impulsa cada acción de la biblioteca en la app: explorar y descargar Libros, añadir y eliminar contenido de Wikipedia y ZIM, sesiones de Kolibri, Mapas y el estado del sistema. A diferencia de los módulos de contenido, no es algo que instales o quites: viene con la caja y siempre está presente. Cuando hay una versión más reciente, puedes reconstruirlo en el sitio.</string>
+    <string name="k2go_dash_includes">Endpoints REST de Libros, Wikipedia/ZIM, Kolibri y Mapas; el vhost de nginx; y los endpoints de versión y reconstrucción del sistema, todo servido en 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Núcleo del sistema</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Reconstrucción completa — te llevamos a tu biblioteca…</string>
+    <string name="k2go_dash_rebuild_building">Compilando, probando y sustituyendo en el sitio…</string>
+    <string name="k2go_dash_rebuild_failed">Falló la reconstrucción</string>
+    <string name="k2go_dash_services_failed">Reconstruido, pero los servicios no arrancaron a tiempo</string>
 </resources>

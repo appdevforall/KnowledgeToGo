@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">تم حذف %1$s</string>
     <string name="k2go_zim_deleted_deferred">تم الحذف — مخفي الآن، وسيُزال بالكامل بعد انتهاء التنزيل الحالي.</string>
     <string name="k2go_zim_delete_failed">تعذّر الحذف. يُرجى المحاولة مرة أخرى.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">إعادة بناء لوحة التحكم…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">نواة REST</string>
+    <string name="k2go_dash_card_sub_fmt">نواة REST · مثبَّت v%1$s</string>
+    <string name="k2go_dash_rebuild">إعادة البناء</string>
+    <string name="k2go_dash_rebuild_confirm_title">إعادة بناء نواة REST؟</string>
+    <string name="k2go_dash_rebuild_confirm_msg">تُحدِّث dash-node إلى أحدث إصدار. يكون الخادم غير متاح لفترة وجيزة أثناء إعادة البناء؛ لا تغادر هذه الشاشة حتى تنتهي.</string>
+    <string name="k2go_dash_needs_internet">تتطلب إعادة البناء اتصالاً بالإنترنت.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">نواة النظام · مثبَّتة دائمًا</string>
+    <string name="k2go_dash_detail_desc">لوحة التحكم هي نواة واجهة REST API للجهاز (dash-node): خدمة Node صغيرة على 127.0.0.1:4000، يقدّمها nginx ويشرف عليها pdsm. تُشغِّل كل إجراء للمكتبة داخل التطبيق: تصفّح الكتب وتنزيلها، وإضافة محتوى Wikipedia وZIM وحذفه، وجلسات Kolibri، والخرائط، وحالة النظام. على عكس وحدات المحتوى، لا تُثبَّت ولا تُزال — فهي تأتي مع الجهاز وموجودة دائمًا. عند توفّر إصدار أحدث يمكنك إعادة بنائها في مكانها.</string>
+    <string name="k2go_dash_includes">نقاط نهاية REST للكتب وWikipedia/ZIM وKolibri والخرائط؛ ومضيف nginx الافتراضي؛ ونقاط نهاية إصدار النظام وإعادة البناء — كلها على 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">نواة النظام</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">اكتملت إعادة البناء — يتم نقلك إلى مكتبتك…</string>
+    <string name="k2go_dash_rebuild_building">يتم البناء والاختبار والاستبدال في المكان…</string>
+    <string name="k2go_dash_rebuild_failed">فشلت إعادة البناء</string>
+    <string name="k2go_dash_services_failed">تمت إعادة البناء لكن الخدمات لم تبدأ في الوقت المناسب</string>
 </resources>

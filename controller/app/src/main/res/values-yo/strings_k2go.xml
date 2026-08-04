@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">A ti paarẹ́ %1$s</string>
     <string name="k2go_zim_deleted_deferred">A ti paarẹ́ — a fi pamọ́ fún ìsinsìnyí, yóò yọ kúrò pátápátá nígbà tí ìgbàsílẹ̀ lọ́wọ́lọ́wọ́ bá parí.</string>
     <string name="k2go_zim_delete_failed">Kò lè paarẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansi.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Atúnkọ́ dasibọ́ọ̀dù…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Kókó REST</string>
+    <string name="k2go_dash_card_sub_fmt">Kókó REST · fi sori ẹrọ v%1$s</string>
+    <string name="k2go_dash_rebuild">Tún kọ́</string>
+    <string name="k2go_dash_rebuild_confirm_title">Tún kókó REST kọ́?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Ó ń ṣe àfikún dash-node sí ẹ̀yà tuntun. Sáfà kì yóò sí fún ìgbà díẹ̀ nígbà tí ó ń tún kọ́; má ṣe kúrò ní ojú-iwé yìí títí yóò fi parí.</string>
+    <string name="k2go_dash_needs_internet">Àtúnkọ́ nílò ìsopọ̀ íntánẹ́ẹ̀tì.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Kókó ètò · fi sori ẹrọ nígbà gbogbo</string>
+    <string name="k2go_dash_detail_desc">Dasibọ́ọ̀dù ni kókó REST API ti àpótí náà (dash-node): iṣẹ́ Node kékeré kan ní 127.0.0.1:4000, tí nginx ń ṣe ìránṣẹ́ tí pdsm sì ń bójútó. Ó ń ṣe àtìlẹ́yìn fún gbogbo iṣẹ́ ilé-ìkàwé nínú áàpù: ríràwo àti gbígba Àwọn Ìwé, fífi kún àti pípa àkóónú Wikipedia àti ZIM rẹ́, àwọn ìpàdé Kolibri, Àwọn Máàpù àti ipò ètò. Yàtọ̀ sí àwọn módù àkóónú, kì í ṣe ohun tí o fi sori ẹrọ tàbí yọ kúrò — ó wá pẹ̀lú àpótí náà ó sì wà nígbà gbogbo. Nígbà tí ẹ̀yà tuntun bá wà, o lè tún un kọ́ níbẹ̀.</string>
+    <string name="k2go_dash_includes">Àwọn ojú-ọ̀nà REST fún Àwọn Ìwé, Wikipedia/ZIM, Kolibri àti Àwọn Máàpù; vhost nginx; àti àwọn ojú-ọ̀nà ẹ̀yà ètò àti àtúnkọ́ — gbogbo rẹ̀ ní 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Kókó ètò</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Àtúnkọ́ parí — a ń mú ọ lọ sí ilé-ìkàwé rẹ…</string>
+    <string name="k2go_dash_rebuild_building">Ń kọ́, ń dánwò, ń pààrọ̀ níbẹ̀…</string>
+    <string name="k2go_dash_rebuild_failed">Àtúnkọ́ kùnà</string>
+    <string name="k2go_dash_services_failed">A tún un kọ́, ṣùgbọ́n àwọn iṣẹ́ kò bẹ̀rẹ̀ ní àkókò</string>
 </resources>

@@ -674,4 +674,24 @@
     <string name="k2go_zim_deleted">%1$s gelöscht</string>
     <string name="k2go_zim_deleted_deferred">Gelöscht – vorerst ausgeblendet, vollständig entfernt, sobald der aktuelle Download abgeschlossen ist.</string>
     <string name="k2go_zim_delete_failed">Löschen fehlgeschlagen. Bitte versuche es erneut.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Dashboard wird neu erstellt…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST-Kern</string>
+    <string name="k2go_dash_card_sub_fmt">REST-Kern · installiert v%1$s</string>
+    <string name="k2go_dash_rebuild">Neu erstellen</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST-Kern neu erstellen?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Aktualisiert dash-node auf die neueste Version. Der Server ist während der Neuerstellung kurz nicht verfügbar; verlassen Sie diesen Bildschirm nicht, bis es fertig ist.</string>
+    <string name="k2go_dash_needs_internet">Für die Neuerstellung ist eine Internetverbindung nötig.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Systemkern · immer installiert</string>
+    <string name="k2go_dash_detail_desc">Das Dashboard ist der REST-API-Kern der Box (dash-node) — ein kleiner Node-Dienst auf 127.0.0.1:4000, bereitgestellt über nginx und überwacht von pdsm. Er treibt jede Bibliotheksaktion in der App an: Bücher durchsuchen und herunterladen, Wikipedia- und ZIM-Inhalte hinzufügen und löschen, Kolibri-Sitzungen, Karten und Systemstatus. Anders als die Inhaltsmodule wird er nicht installiert oder entfernt — er gehört zur Box und ist immer vorhanden. Wenn eine neuere Version verfügbar ist, können Sie ihn an Ort und Stelle neu erstellen.</string>
+    <string name="k2go_dash_includes">REST-Endpunkte für Bücher, Wikipedia/ZIM, Kolibri und Karten; der nginx-vhost; sowie Endpunkte für Systemversion und Neuerstellung — alle unter 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Systemkern</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Neuerstellung abgeschlossen — weiter zu Ihrer Bibliothek…</string>
+    <string name="k2go_dash_rebuild_building">Erstellen, Testen und Austauschen vor Ort…</string>
+    <string name="k2go_dash_rebuild_failed">Neuerstellung fehlgeschlagen</string>
+    <string name="k2go_dash_services_failed">Neu erstellt, aber die Dienste wurden nicht rechtzeitig gestartet</string>
 </resources>

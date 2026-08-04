@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s நீக்கப்பட்டது</string>
     <string name="k2go_zim_deleted_deferred">நீக்கப்பட்டது — தற்போது மறைக்கப்பட்டது, தற்போதைய பதிவிறக்கம் முடிந்ததும் முழுமையாக அகற்றப்படும்.</string>
     <string name="k2go_zim_delete_failed">நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">டாஷ்போர்டு மீண்டும் உருவாக்கப்படுகிறது…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST கரு</string>
+    <string name="k2go_dash_card_sub_fmt">REST கரு · நிறுவப்பட்டது v%1$s</string>
+    <string name="k2go_dash_rebuild">மீண்டும் உருவாக்கு</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST கருவை மீண்டும் உருவாக்கவா?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node ஐ சமீபத்திய பதிப்பிற்குப் புதுப்பிக்கிறது. மீண்டும் உருவாக்கும்போது சேவையகம் சிறிது நேரம் கிடைக்காது; முடியும் வரை இந்தத் திரையை விட்டு வெளியேறாதீர்கள்.</string>
+    <string name="k2go_dash_needs_internet">மீண்டும் உருவாக்க இணைய இணைப்பு தேவை.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">கணினி கரு · எப்போதும் நிறுவப்பட்டது</string>
+    <string name="k2go_dash_detail_desc">டாஷ்போர்டு என்பது பெட்டியின் REST API கரு (dash-node): 127.0.0.1:4000 இல் இயங்கும் ஒரு சிறிய Node சேவை, nginx வழங்கி pdsm மேற்பார்வையிடுகிறது. இது பயன்பாட்டில் ஒவ்வொரு நூலக செயலையும் இயக்குகிறது: புத்தகங்களை உலாவுதல் மற்றும் பதிவிறக்குதல், Wikipedia மற்றும் ZIM உள்ளடக்கத்தைச் சேர்த்தல் மற்றும் நீக்குதல், Kolibri அமர்வுகள், வரைபடங்கள் மற்றும் கணினி நிலை. உள்ளடக்க தொகுதிகளைப் போலல்லாமல், இதை நிறுவவோ அகற்றவோ முடியாது — இது பெட்டியுடன் வருகிறது, எப்போதும் இருக்கும். புதிய பதிப்பு கிடைக்கும்போது அதை இடத்திலேயே மீண்டும் உருவாக்கலாம்.</string>
+    <string name="k2go_dash_includes">புத்தகங்கள், Wikipedia/ZIM, Kolibri மற்றும் வரைபடங்களுக்கான REST இறுதிப்புள்ளிகள்; nginx vhost; மற்றும் கணினி பதிப்பு மற்றும் மீண்டும் உருவாக்கும் இறுதிப்புள்ளிகள் — அனைத்தும் 127.0.0.1:4000 இல்.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">கணினி கரு</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">மீண்டும் உருவாக்கம் முடிந்தது — உங்கள் நூலகத்திற்கு அனுப்பப்படுகிறீர்கள்…</string>
+    <string name="k2go_dash_rebuild_building">இடத்திலேயே உருவாக்கப்பட்டு, சோதிக்கப்பட்டு, மாற்றப்படுகிறது…</string>
+    <string name="k2go_dash_rebuild_failed">மீண்டும் உருவாக்கம் தோல்வியடைந்தது</string>
+    <string name="k2go_dash_services_failed">மீண்டும் உருவாக்கப்பட்டது, ஆனால் சேவைகள் சரியான நேரத்தில் தொடங்கவில்லை</string>
 </resources>

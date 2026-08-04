@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s dihapus</string>
     <string name="k2go_zim_deleted_deferred">Dihapus — disembunyikan untuk saat ini, dihapus sepenuhnya setelah unduhan saat ini selesai.</string>
     <string name="k2go_zim_delete_failed">Tidak dapat menghapus. Silakan coba lagi.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Membangun ulang dasbor…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Inti REST</string>
+    <string name="k2go_dash_card_sub_fmt">Inti REST · terpasang v%1$s</string>
+    <string name="k2go_dash_rebuild">Bangun ulang</string>
+    <string name="k2go_dash_rebuild_confirm_title">Bangun ulang inti REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Memperbarui dash-node ke versi terbaru. Server sebentar tidak tersedia saat dibangun ulang; jangan tinggalkan layar ini sampai selesai.</string>
+    <string name="k2go_dash_needs_internet">Membangun ulang memerlukan koneksi internet.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Inti sistem · selalu terpasang</string>
+    <string name="k2go_dash_detail_desc">Dasbor adalah inti REST API dari box (dash-node): layanan Node kecil di 127.0.0.1:4000, disajikan oleh nginx dan diawasi oleh pdsm. Ia menggerakkan setiap tindakan pustaka di dalam aplikasi: menjelajahi dan mengunduh Buku, menambah dan menghapus konten Wikipedia dan ZIM, sesi Kolibri, Peta, dan status sistem. Berbeda dengan modul konten, ia tidak dipasang atau dihapus — ia hadir bersama box dan selalu ada. Saat versi lebih baru tersedia, Anda dapat membangunnya ulang di tempat.</string>
+    <string name="k2go_dash_includes">Endpoint REST untuk Buku, Wikipedia/ZIM, Kolibri, dan Peta; vhost nginx; serta endpoint versi sistem dan bangun ulang — semuanya di 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Inti sistem</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Bangun ulang selesai — mengarahkan Anda ke pustaka…</string>
+    <string name="k2go_dash_rebuild_building">Membangun, menguji, dan mengganti di tempat…</string>
+    <string name="k2go_dash_rebuild_failed">Bangun ulang gagal</string>
+    <string name="k2go_dash_services_failed">Dibangun ulang, tetapi layanan tidak dimulai tepat waktu</string>
 </resources>

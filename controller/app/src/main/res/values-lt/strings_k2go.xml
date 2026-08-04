@@ -683,4 +683,24 @@
     <string name="k2go_zim_deleted">%1$s ištrinta</string>
     <string name="k2go_zim_deleted_deferred">Ištrinta — kol kas paslėpta, visiškai pašalinta pasibaigus dabartiniam atsisiuntimui.</string>
     <string name="k2go_zim_delete_failed">Nepavyko ištrinti. Bandykite dar kartą.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Skydelis atkuriamas…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST branduolys</string>
+    <string name="k2go_dash_card_sub_fmt">REST branduolys · įdiegta v%1$s</string>
+    <string name="k2go_dash_rebuild">Atkurti</string>
+    <string name="k2go_dash_rebuild_confirm_title">Atkurti REST branduolį?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Atnaujina dash-node į naujausią versiją. Atkūrimo metu serveris trumpam nepasiekiamas; nepalikite šio ekrano, kol nebus baigta.</string>
+    <string name="k2go_dash_needs_internet">Atkūrimui reikia interneto ryšio.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Sistemos branduolys · visada įdiegtas</string>
+    <string name="k2go_dash_detail_desc">Skydelis yra įrenginio REST API branduolys (dash-node): maža Node paslauga adresu 127.0.0.1:4000, aptarnaujama nginx ir prižiūrima pdsm. Jis palaiko kiekvieną bibliotekos veiksmą programoje: Knygų naršymą ir atsisiuntimą, Wikipedia ir ZIM turinio pridėjimą bei šalinimą, Kolibri sesijas, Žemėlapius ir sistemos būseną. Skirtingai nei turinio moduliai, jis nediegiamas ir nešalinamas — pateikiamas su įrenginiu ir visada yra. Kai pasiekiama naujesnė versija, galite jį atkurti vietoje.</string>
+    <string name="k2go_dash_includes">REST galiniai taškai Knygoms, Wikipedia/ZIM, Kolibri ir Žemėlapiams; nginx vhost; ir sistemos versijos bei atkūrimo galiniai taškai — visi adresu 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Sistemos branduolys</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Atkūrimas baigtas — nukreipiame į jūsų biblioteką…</string>
+    <string name="k2go_dash_rebuild_building">Kuriama, testuojama ir keičiama vietoje…</string>
+    <string name="k2go_dash_rebuild_failed">Atkurti nepavyko</string>
+    <string name="k2go_dash_services_failed">Atkurta, bet paslaugos nepasileido laiku</string>
 </resources>

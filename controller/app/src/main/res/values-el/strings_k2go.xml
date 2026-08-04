@@ -674,4 +674,24 @@
     <string name="k2go_zim_deleted">Διαγράφηκε %1$s</string>
     <string name="k2go_zim_deleted_deferred">Διαγράφηκε — προς το παρόν κρυφό, θα αφαιρεθεί πλήρως μόλις ολοκληρωθεί η τρέχουσα λήψη.</string>
     <string name="k2go_zim_delete_failed">Η διαγραφή απέτυχε. Δοκιμάστε ξανά.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Ανασυγκρότηση του πίνακα…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Πυρήνας REST</string>
+    <string name="k2go_dash_card_sub_fmt">Πυρήνας REST · εγκατεστημένη v%1$s</string>
+    <string name="k2go_dash_rebuild">Ανασυγκρότηση</string>
+    <string name="k2go_dash_rebuild_confirm_title">Ανασυγκρότηση του πυρήνα REST;</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Ενημερώνει το dash-node στην πιο πρόσφατη έκδοση. Ο διακομιστής είναι για λίγο μη διαθέσιμος κατά την ανασυγκρότηση· μην φύγετε από αυτήν την οθόνη μέχρι να ολοκληρωθεί.</string>
+    <string name="k2go_dash_needs_internet">Η ανασυγκρότηση χρειάζεται σύνδεση στο διαδίκτυο.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Πυρήνας συστήματος · πάντα εγκατεστημένος</string>
+    <string name="k2go_dash_detail_desc">Ο πίνακας είναι ο πυρήνας REST API της συσκευής (dash-node): μια μικρή υπηρεσία Node στο 127.0.0.1:4000, που εξυπηρετείται από το nginx και επιβλέπεται από το pdsm. Τροφοδοτεί κάθε ενέργεια της βιβλιοθήκης στην εφαρμογή: περιήγηση και λήψη Βιβλίων, προσθήκη και διαγραφή περιεχομένου Wikipedia και ZIM, συνεδρίες Kolibri, Χάρτες και κατάσταση συστήματος. Σε αντίθεση με τις μονάδες περιεχομένου, δεν εγκαθίσταται ούτε αφαιρείται — συνοδεύει τη συσκευή και είναι πάντα παρών. Όταν υπάρχει νεότερη έκδοση, μπορείτε να τον ανασυγκροτήσετε επιτόπου.</string>
+    <string name="k2go_dash_includes">Σημεία REST για Βιβλία, Wikipedia/ZIM, Kolibri και Χάρτες· το vhost του nginx· και σημεία έκδοσης συστήματος και ανασυγκρότησης — όλα στο 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Πυρήνας συστήματος</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Η ανασυγκρότηση ολοκληρώθηκε — μετάβαση στη βιβλιοθήκη σας…</string>
+    <string name="k2go_dash_rebuild_building">Κατασκευή, δοκιμή και επιτόπια αντικατάσταση…</string>
+    <string name="k2go_dash_rebuild_failed">Η ανασυγκρότηση απέτυχε</string>
+    <string name="k2go_dash_services_failed">Ανασυγκροτήθηκε, αλλά οι υπηρεσίες δεν ξεκίνησαν εγκαίρως</string>
 </resources>

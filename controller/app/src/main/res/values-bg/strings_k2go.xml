@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s е изтрит</string>
     <string name="k2go_zim_deleted_deferred">Изтрито — засега скрито, напълно премахнато след завършване на текущото изтегляне.</string>
     <string name="k2go_zim_delete_failed">Изтриването не бе успешно. Опитайте отново.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Пресъздаване на таблото…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST ядро</string>
+    <string name="k2go_dash_card_sub_fmt">REST ядро · инсталирана v%1$s</string>
+    <string name="k2go_dash_rebuild">Пресъздаване</string>
+    <string name="k2go_dash_rebuild_confirm_title">Да се пресъздаде ли REST ядрото?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Актуализира dash-node до най-новата версия. Сървърът е за кратко недостъпен по време на пресъздаването; не напускайте този екран, докато не приключи.</string>
+    <string name="k2go_dash_needs_internet">Пресъздаването изисква интернет връзка.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Системно ядро · винаги инсталирано</string>
+    <string name="k2go_dash_detail_desc">Таблото е REST API ядрото на устройството (dash-node): малка Node услуга на 127.0.0.1:4000, обслужвана от nginx и наблюдавана от pdsm. То захранва всяко действие на библиотеката в приложението: разглеждане и изтегляне на Книги, добавяне и изтриване на съдържание от Wikipedia и ZIM, сесии на Kolibri, Карти и състояние на системата. За разлика от модулите за съдържание, то не се инсталира и не се премахва — идва с устройството и винаги присъства. Когато има по-нова версия, можете да го пресъздадете на място.</string>
+    <string name="k2go_dash_includes">REST крайни точки за Книги, Wikipedia/ZIM, Kolibri и Карти; nginx vhost; и крайни точки за системна версия и пресъздаване — всички на 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Системно ядро</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Пресъздаването завърши — насочваме ви към библиотеката…</string>
+    <string name="k2go_dash_rebuild_building">Компилиране, тестване и замяна на място…</string>
+    <string name="k2go_dash_rebuild_failed">Пресъздаването е неуспешно</string>
+    <string name="k2go_dash_services_failed">Пресъздадено, но услугите не се стартираха навреме</string>
 </resources>

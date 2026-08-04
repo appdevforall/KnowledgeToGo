@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s excluído</string>
     <string name="k2go_zim_deleted_deferred">Excluído — oculto por ora, removido totalmente quando o download atual terminar.</string>
     <string name="k2go_zim_delete_failed">Não foi possível excluir. Tente novamente.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Recompilando o dashboard…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Núcleo REST</string>
+    <string name="k2go_dash_card_sub_fmt">Núcleo REST · instalado v%1$s</string>
+    <string name="k2go_dash_rebuild">Recompilar</string>
+    <string name="k2go_dash_rebuild_confirm_title">Recompilar o núcleo REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Atualiza o dash-node para a versão mais recente. O servidor fica brevemente indisponível durante a recompilação; não saia desta tela até terminar.</string>
+    <string name="k2go_dash_needs_internet">A recompilação precisa de conexão com a internet.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Núcleo do sistema · sempre instalado</string>
+    <string name="k2go_dash_detail_desc">O dashboard é o núcleo da API REST da caixa (dash-node): um pequeno serviço Node em 127.0.0.1:4000, servido pelo nginx e supervisionado pelo pdsm. Ele impulsiona todas as ações da biblioteca no app: navegar e baixar Livros, adicionar e excluir conteúdo da Wikipedia e ZIM, sessões do Kolibri, Mapas e status do sistema. Ao contrário dos módulos de conteúdo, ele não é instalado nem removido: vem com a caixa e está sempre presente. Quando há uma versão mais recente, você pode recompilá-lo no local.</string>
+    <string name="k2go_dash_includes">Endpoints REST de Livros, Wikipedia/ZIM, Kolibri e Mapas; o vhost do nginx; e os endpoints de versão e recompilação do sistema, todos servidos em 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Núcleo do sistema</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Recompilação concluída — indo para a sua biblioteca…</string>
+    <string name="k2go_dash_rebuild_building">Compilando, testando e substituindo no local…</string>
+    <string name="k2go_dash_rebuild_failed">Falha na recompilação</string>
+    <string name="k2go_dash_services_failed">Recompilado, mas os serviços não iniciaram a tempo</string>
 </resources>
