@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s odstraněno</string>
     <string name="k2go_zim_deleted_deferred">Odstraněno — prozatím skryto, zcela odstraněno po dokončení aktuálního stahování.</string>
     <string name="k2go_zim_delete_failed">Odstranění se nezdařilo. Zkuste to znovu.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Přestavba nástěnky…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Jádro REST</string>
+    <string name="k2go_dash_card_sub_fmt">Jádro REST · nainstalováno v%1$s</string>
+    <string name="k2go_dash_rebuild">Přestavět</string>
+    <string name="k2go_dash_rebuild_confirm_title">Přestavět jádro REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Aktualizuje dash-node na nejnovější verzi. Server je během přestavby krátce nedostupný; neopouštějte tuto obrazovku, dokud neskončí.</string>
+    <string name="k2go_dash_needs_internet">Přestavba vyžaduje připojení k internetu.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Jádro systému · vždy nainstalováno</string>
+    <string name="k2go_dash_detail_desc">Nástěnka je jádro REST API zařízení (dash-node) — malá služba Node na 127.0.0.1:4000, obsluhovaná nginx a řízená pdsm. Pohání každou akci knihovny v aplikaci: procházení a stahování Knih, přidávání a mazání obsahu Wikipedie a ZIM, relace Kolibri, Mapy a stav systému. Na rozdíl od modulů obsahu se neinstaluje ani neodstraňuje — je součástí zařízení a je vždy přítomna. Když je k dispozici novější verze, můžete ji přestavět na místě.</string>
+    <string name="k2go_dash_includes">REST koncové body Knih, Wikipedie/ZIM, Kolibri a Map; nginx vhost; a koncové body verze systému a přestavby — vše na 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Jádro systému</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Přestavba dokončena — přesměrováváme vás do knihovny…</string>
+    <string name="k2go_dash_rebuild_building">Sestavování, testování a výměna na místě…</string>
+    <string name="k2go_dash_rebuild_failed">Přestavba selhala</string>
+    <string name="k2go_dash_services_failed">Přestavěno, ale služby se nespustily včas</string>
 </resources>

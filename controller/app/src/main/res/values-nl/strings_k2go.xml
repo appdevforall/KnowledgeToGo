@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s verwijderd</string>
     <string name="k2go_zim_deleted_deferred">Verwijderd — voorlopig verborgen, volledig verwijderd zodra de huidige download klaar is.</string>
     <string name="k2go_zim_delete_failed">Verwijderen mislukt. Probeer het opnieuw.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Dashboard opnieuw opbouwen…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST-kern</string>
+    <string name="k2go_dash_card_sub_fmt">REST-kern · geïnstalleerd v%1$s</string>
+    <string name="k2go_dash_rebuild">Opnieuw opbouwen</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST-kern opnieuw opbouwen?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Werkt dash-node bij naar de nieuwste versie. De server is tijdens het opnieuw opbouwen kort niet beschikbaar; verlaat dit scherm niet totdat het klaar is.</string>
+    <string name="k2go_dash_needs_internet">Opnieuw opbouwen vereist een internetverbinding.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Systeemkern · altijd geïnstalleerd</string>
+    <string name="k2go_dash_detail_desc">Het dashboard is de REST-API-kern van de box (dash-node): een kleine Node-service op 127.0.0.1:4000, aangeboden via nginx en beheerd door pdsm. Het drijft elke bibliotheekactie in de app aan: Boeken bladeren en downloaden, Wikipedia- en ZIM-inhoud toevoegen en verwijderen, Kolibri-sessies, Kaarten en systeemstatus. Anders dan de inhoudsmodules installeer of verwijder je het niet: het hoort bij de box en is altijd aanwezig. Als er een nieuwere versie beschikbaar is, kun je het ter plekke opnieuw opbouwen.</string>
+    <string name="k2go_dash_includes">REST-endpoints voor Boeken, Wikipedia/ZIM, Kolibri en Kaarten; de nginx-vhost; en endpoints voor systeemversie en opnieuw opbouwen, allemaal op 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Systeemkern</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Opnieuw opbouwen voltooid — je gaat naar je bibliotheek…</string>
+    <string name="k2go_dash_rebuild_building">Bouwen, testen en ter plekke vervangen…</string>
+    <string name="k2go_dash_rebuild_failed">Opnieuw opbouwen mislukt</string>
+    <string name="k2go_dash_services_failed">Opnieuw opgebouwd, maar de services zijn niet op tijd gestart</string>
 </resources>

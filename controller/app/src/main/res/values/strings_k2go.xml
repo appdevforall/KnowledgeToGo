@@ -712,6 +712,31 @@
     <string name="k2go_mod_mgmt_helper">Tap to open · tick to install several at once.</string>
 
     <!-- ADFA-5004: in-app management (list + delete) of installed Kiwix ZIMs (KiwixManageController). -->
+    <!-- ADFA-5011: dash-node REST-core rebuild (system module). -->
+    <string name="k2go_dash_rebuilding">Rebuilding dashboard…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST core</string>
+    <!-- %1$s = installed version, e.g. "REST core · installed v1.1.0" -->
+    <string name="k2go_dash_card_sub_fmt">REST core · installed v%1$s</string>
+    <string name="k2go_dash_rebuild">Rebuild</string>
+    <string name="k2go_dash_rebuild_confirm_title">Rebuild the REST core?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Updates dash-node to the latest version. The server is briefly unavailable while it rebuilds; don\'t leave this screen until it finishes.</string>
+    <string name="k2go_dash_needs_internet">Rebuild needs an internet connection.</string>
+    <!-- ADFA-5011: dashboard detail card (Play Store-style, Rebuild-only). -->
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">System core · always installed</string>
+    <string name="k2go_dash_detail_desc">The dashboard is the box\'s REST API core (dash-node) — a small Node service on 127.0.0.1:4000, fronted by nginx and supervised by pdsm. It powers every in-app library action: browsing and downloading Books, adding and deleting Wikipedia and ZIM content, Kolibri sessions, Maps, and system status. Unlike the content modules, it isn\'t something you install or remove — it ships with the box and is always present. When a newer build is available you can rebuild it in place.</string>
+    <string name="k2go_dash_includes">Books, Wikipedia/ZIM, Kolibri and Maps REST endpoints; the nginx vhost; and system version + rebuild endpoints — all served on 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">System core</string>
+    <!-- dash-node ships as first-party code under the project license. -->
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <!-- ADFA-5011: rebuild progress row/status on the setup screen. -->
+    <string name="k2go_dash_redirect">Rebuild complete — sending you to your library…</string>
+    <string name="k2go_dash_rebuild_building">Building, testing and swapping in place…</string>
+    <string name="k2go_dash_rebuild_failed">Rebuild failed</string>
+    <string name="k2go_dash_services_failed">Rebuilt, but services didn\'t come up in time</string>
+
     <string name="k2go_zim_manage_action">Manage downloads</string>
     <string name="k2go_zim_get_more">Get more content</string>
     <string name="k2go_zim_manage_title">Downloaded content</string>

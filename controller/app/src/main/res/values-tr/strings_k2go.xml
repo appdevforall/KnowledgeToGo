@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s silindi</string>
     <string name="k2go_zim_deleted_deferred">Silindi — şimdilik gizlendi, geçerli indirme tamamlanınca tamamen kaldırılacak.</string>
     <string name="k2go_zim_delete_failed">Silinemedi. Lütfen tekrar deneyin.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Pano yeniden oluşturuluyor…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST çekirdeği</string>
+    <string name="k2go_dash_card_sub_fmt">REST çekirdeği · v%1$s yüklü</string>
+    <string name="k2go_dash_rebuild">Yeniden oluştur</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST çekirdeği yeniden oluşturulsun mu?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node\'u en son sürüme günceller. Yeniden oluşturma sırasında sunucu kısa süre kullanılamaz; bitene kadar bu ekrandan ayrılmayın.</string>
+    <string name="k2go_dash_needs_internet">Yeniden oluşturma için internet bağlantısı gerekir.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Sistem çekirdeği · her zaman yüklü</string>
+    <string name="k2go_dash_detail_desc">Pano, kutunun REST API çekirdeğidir (dash-node): 127.0.0.1:4000 üzerinde çalışan, nginx tarafından sunulan ve pdsm tarafından denetlenen küçük bir Node hizmeti. Uygulamadaki her kitaplık eylemini çalıştırır: Kitaplara göz atma ve indirme, Wikipedia ve ZIM içeriği ekleme ve silme, Kolibri oturumları, Haritalar ve sistem durumu. İçerik modüllerinin aksine yüklenmez veya kaldırılmaz — kutuyla birlikte gelir ve her zaman mevcuttur. Daha yeni bir sürüm olduğunda onu yerinde yeniden oluşturabilirsiniz.</string>
+    <string name="k2go_dash_includes">Kitaplar, Wikipedia/ZIM, Kolibri ve Haritalar için REST uç noktaları; nginx vhost; ve sistem sürümü ile yeniden oluşturma uç noktaları — tümü 127.0.0.1:4000 üzerinde.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Sistem çekirdeği</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Yeniden oluşturma tamamlandı — kitaplığınıza yönlendiriliyorsunuz…</string>
+    <string name="k2go_dash_rebuild_building">Yerinde oluşturuluyor, test ediliyor ve değiştiriliyor…</string>
+    <string name="k2go_dash_rebuild_failed">Yeniden oluşturma başarısız</string>
+    <string name="k2go_dash_services_failed">Yeniden oluşturuldu ama hizmetler zamanında başlamadı</string>
 </resources>

@@ -683,4 +683,24 @@
     <string name="k2go_zim_deleted">%1$s slettet</string>
     <string name="k2go_zim_deleted_deferred">Slettet — skjult foreløpig, fjernes helt når den pågående nedlastingen er ferdig.</string>
     <string name="k2go_zim_delete_failed">Kunne ikke slette. Prøv igjen.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Bygger kontrollpanelet på nytt…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST-kjerne</string>
+    <string name="k2go_dash_card_sub_fmt">REST-kjerne · installert v%1$s</string>
+    <string name="k2go_dash_rebuild">Bygg på nytt</string>
+    <string name="k2go_dash_rebuild_confirm_title">Bygge REST-kjernen på nytt?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Oppdaterer dash-node til nyeste versjon. Serveren er kort utilgjengelig mens den bygges på nytt; ikke forlat denne skjermen før den er ferdig.</string>
+    <string name="k2go_dash_needs_internet">Ombygging krever internettforbindelse.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Systemkjerne · alltid installert</string>
+    <string name="k2go_dash_detail_desc">Kontrollpanelet er boksens REST-API-kjerne (dash-node): en liten Node-tjeneste på 127.0.0.1:4000, levert av nginx og overvåket av pdsm. Den driver alle bibliotekhandlinger i appen: bla i og laste ned Bøker, legge til og slette Wikipedia- og ZIM-innhold, Kolibri-økter, Kart og systemstatus. I motsetning til innholdsmodulene installeres eller fjernes den ikke — den følger med boksen og er alltid til stede. Når en nyere versjon er tilgjengelig, kan du bygge den på nytt på stedet.</string>
+    <string name="k2go_dash_includes">REST-endepunkter for Bøker, Wikipedia/ZIM, Kolibri og Kart; nginx-vhost; og endepunkter for systemversjon og ombygging — alle på 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Systemkjerne</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Ombygging fullført — sender deg til biblioteket ditt…</string>
+    <string name="k2go_dash_rebuild_building">Bygger, tester og bytter ut på stedet…</string>
+    <string name="k2go_dash_rebuild_failed">Ombygging mislyktes</string>
+    <string name="k2go_dash_services_failed">Bygd på nytt, men tjenestene startet ikke i tide</string>
 </resources>

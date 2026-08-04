@@ -57,12 +57,13 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:textColor="@color/k2go_muted" />
 
-            <LinearLayout
+            <!-- ADFA-5011: FlowLayout so the meta chips wrap to a 2nd line on narrow screens instead of
+                 clipping the last pill off the right edge (same fix as ADFA-4999). -->
+            <org.iiab.controller.redesign.FlowLayout
                 android:id="@+id/k2go_moddet_chips"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal" />
+                android:layout_marginTop="12dp" />
 
             <TextView
                 android:id="@+id/k2go_moddet_desc"

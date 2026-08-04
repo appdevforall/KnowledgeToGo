@@ -26,7 +26,9 @@ app.use(helmet({
 app.use(express.json());
 app.use('/api', apiRouter);
 
-const PORT = 4000;
+// ADFA-5011: PORT is env-overridable so a staged build can be smoke-tested on a temp port
+// (e.g. 4010) before it is swapped live on 4000 — see tools/rebuild-dashboard.sh.
+const PORT = Number(process.env.PORT) || 4000;
 // ADFA-4839/4933: bind to loopback only. nginx (localhost) proxies /k2go-api to us;
 // there is no reason to expose :4000 on the device's network interfaces.
 server.listen(PORT, '127.0.0.1', () => {

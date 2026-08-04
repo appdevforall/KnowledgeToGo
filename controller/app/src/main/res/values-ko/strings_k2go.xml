@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s 삭제됨</string>
     <string name="k2go_zim_deleted_deferred">삭제됨 — 지금은 숨김 상태이며, 현재 다운로드가 완료되면 완전히 제거됩니다.</string>
     <string name="k2go_zim_delete_failed">삭제하지 못했습니다. 다시 시도해 주세요.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">대시보드 재빌드 중…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST 코어</string>
+    <string name="k2go_dash_card_sub_fmt">REST 코어 · 설치됨 v%1$s</string>
+    <string name="k2go_dash_rebuild">재빌드</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST 코어를 재빌드할까요?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node를 최신 버전으로 업데이트합니다. 재빌드하는 동안 서버를 잠시 사용할 수 없습니다. 완료될 때까지 이 화면을 떠나지 마세요.</string>
+    <string name="k2go_dash_needs_internet">재빌드하려면 인터넷 연결이 필요합니다.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">시스템 코어 · 항상 설치됨</string>
+    <string name="k2go_dash_detail_desc">대시보드는 박스의 REST API 코어(dash-node)입니다. 127.0.0.1:4000에서 실행되는 작은 Node 서비스로, nginx가 제공하고 pdsm이 관리합니다. 앱의 모든 라이브러리 작업을 구동합니다: 도서 탐색 및 다운로드, Wikipedia 및 ZIM 콘텐츠 추가 및 삭제, Kolibri 세션, 지도, 시스템 상태. 콘텐츠 모듈과 달리 설치하거나 제거하지 않습니다 — 박스와 함께 제공되며 항상 존재합니다. 새 빌드가 있으면 제자리에서 재빌드할 수 있습니다.</string>
+    <string name="k2go_dash_includes">도서, Wikipedia/ZIM, Kolibri, 지도의 REST 엔드포인트, nginx vhost, 시스템 버전 및 재빌드 엔드포인트 — 모두 127.0.0.1:4000에서 제공됩니다.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">시스템 코어</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">재빌드 완료 — 라이브러리로 이동합니다…</string>
+    <string name="k2go_dash_rebuild_building">제자리에서 빌드, 테스트, 교체 중…</string>
+    <string name="k2go_dash_rebuild_failed">재빌드 실패</string>
+    <string name="k2go_dash_services_failed">재빌드했지만 서비스가 제때 시작되지 않았습니다</string>
 </resources>

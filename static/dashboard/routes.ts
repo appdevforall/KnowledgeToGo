@@ -234,6 +234,48 @@ apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
     idx.on('exit', () => { if (!res.headersSent) res.json({ ok: true, reindexed: true }); });
 });
 
+// --- System: dash-node version + self-rebuild (ADFA-5011) -------------------------------------
+// The dashboard REST core can rebuild ITSELF from the on-device clone without a rootfs rebuild:
+// git fetch+reset -> build in a staging dir -> smoke-test the staged build -> atomically swap it
+// live only if it passes (tools/rebuild-dashboard.sh). The rebuild runs DETACHED (setsid) so
+// restarting dash-node mid-run never kills it. Declared before the generic /:type/* routes.
+const REBUILD_SCRIPT = '/opt/iiab-android/tools/rebuild-dashboard.sh';
+const REBUILD_STATUS_FILE = '/var/run/dash-rebuild.status';
+
+// Installed dash-node version (from package.json), so the module card can show it + compare.
+apiRouter.get('/system/version', (_req: Request, res: Response): void => {
+    try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
+        res.json({ version: String(pkg.version || 'unknown') });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'version read failed' });
+    }
+});
+
+// Current rebuild state: idle | running | done | error (read from the status file the script writes).
+apiRouter.get('/system/dashboard/rebuild/status', (_req: Request, res: Response): void => {
+    let state = 'idle';
+    try { state = (fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'); } catch { /* no file yet */ }
+    res.json({ state });
+});
+
+// Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
+// the app then polls /system/version + RestReadiness until the API is back on the new version.
+apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (running) { res.status(409).json({ error: 'a rebuild is already running' }); return; }
+    if (!fs.existsSync(REBUILD_SCRIPT)) { res.status(500).json({ error: 'rebuild script not found' }); return; }
+    try {
+        // setsid => own session, so `pdsm restart dash-node` inside the script can't kill this run.
+        const child = spawn('setsid', ['sh', REBUILD_SCRIPT], { detached: true, stdio: 'ignore' });
+        child.unref();
+        res.status(202).json({ ok: true, state: 'running' });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'could not start rebuild' });
+    }
+});
+
 // --- Kolibri: readiness, catálogo y selección (ADFA-4949) -------------------------
 // Consultas directas (no-job). La descarga en sí es un job durable
 // (POST /kolibri/download), que sale gratis al añadir 'kolibri' a VALID_TYPES.

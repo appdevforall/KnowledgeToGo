@@ -15,6 +15,7 @@
  */
 package org.iiab.controller.redesign;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -147,6 +148,10 @@ public class ModuleHubFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         helperLp.bottomMargin = px(8);
         host.addView(helper, helperLp);
+
+        // ADFA-5011: the dash-node REST core is a system module — always present (not installable/
+        // removable), with a single Rebuild action. Shown at the top, above the installable list.
+        addSystemDashboardCard();
 
         List<ModuleCards.Card> items = new ArrayList<>();
         for (ModuleCards.Card c : ModuleCards.all()) if (installable.contains(c.key())) items.add(c);
@@ -310,6 +315,68 @@ public class ModuleHubFragment extends Fragment {
         tlp.leftMargin = px(10);
         row.addView(pill, tlp);
         return row;
+    }
+
+    // ---- ADFA-5011: dash-node "system module" card (Rebuild-only) -------------------------------
+
+    private void addSystemDashboardCard() {
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout col = new LinearLayout(requireContext());
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextView title = new TextView(requireContext());
+        title.setText(R.string.k2go_dash_card_title);
+        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
+        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+        title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        col.addView(title);
+        TextView sub = new TextView(requireContext());
+        sub.setText(R.string.k2go_dash_version_unknown);
+        sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        // Tapping the card opens the dashboard detail (what it is + full description); the pill is the
+        // quick Rebuild action. Both route rebuilds through the shared DashboardRebuild gate.
+        row.setClickable(true);
+        row.setOnClickListener(v -> {
+            if (getActivity() instanceof SetupLibraryActivity) {
+                ((SetupLibraryActivity) getActivity()).openDashboardDetail();
+            }
+        });
+
+        TextView rebuild = statePill(getString(R.string.k2go_dash_rebuild), R.color.k2go_teal);
+        rebuild.setPadding(px(14), px(6), px(14), px(6));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host));
+        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        tlp.leftMargin = px(10);
+        row.addView(rebuild, tlp);
+
+        host.addView(row);
+        fetchDashVersion(sub);
+    }
+
+    /** Show the installed dash-node version on the card. Read from the rootfs package.json on disk
+     *  (authoritative, always present) rather than the REST endpoint — that endpoint only exists in
+     *  newer builds, so on an older install it 404s and the version silently never appeared. */
+    private void fetchDashVersion(final TextView sub) {
+        final Context ctx = requireContext().getApplicationContext();
+        AppExecutors.get().io().execute(() -> {
+            final String ver = DashboardVersion.installed(ctx);
+            main.post(() -> {
+                if (isAdded() && ver != null) sub.setText(getString(R.string.k2go_dash_card_sub_fmt, ver));
+            });
+        });
     }
 
     private void refreshProceed() {

@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">Đã xóa %1$s</string>
     <string name="k2go_zim_deleted_deferred">Đã xóa — tạm ẩn, sẽ bị xóa hoàn toàn khi tải xuống hiện tại hoàn tất.</string>
     <string name="k2go_zim_delete_failed">Không thể xóa. Vui lòng thử lại.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Đang xây dựng lại bảng điều khiển…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Lõi REST</string>
+    <string name="k2go_dash_card_sub_fmt">Lõi REST · đã cài v%1$s</string>
+    <string name="k2go_dash_rebuild">Xây dựng lại</string>
+    <string name="k2go_dash_rebuild_confirm_title">Xây dựng lại lõi REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Cập nhật dash-node lên phiên bản mới nhất. Máy chủ tạm thời không khả dụng trong khi xây dựng lại; đừng rời màn hình này cho đến khi hoàn tất.</string>
+    <string name="k2go_dash_needs_internet">Việc xây dựng lại cần kết nối internet.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Lõi hệ thống · luôn được cài đặt</string>
+    <string name="k2go_dash_detail_desc">Bảng điều khiển là lõi REST API của hộp (dash-node): một dịch vụ Node nhỏ tại 127.0.0.1:4000, do nginx phục vụ và pdsm giám sát. Nó cung cấp mọi thao tác thư viện trong ứng dụng: duyệt và tải Sách, thêm và xóa nội dung Wikipedia và ZIM, phiên Kolibri, Bản đồ và trạng thái hệ thống. Khác với các mô-đun nội dung, nó không được cài đặt hay gỡ bỏ — nó đi kèm với hộp và luôn hiện diện. Khi có bản mới hơn, bạn có thể xây dựng lại nó tại chỗ.</string>
+    <string name="k2go_dash_includes">Các điểm cuối REST cho Sách, Wikipedia/ZIM, Kolibri và Bản đồ; vhost nginx; và các điểm cuối phiên bản hệ thống và xây dựng lại — tất cả tại 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Lõi hệ thống</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Xây dựng lại hoàn tất — đang đưa bạn đến thư viện…</string>
+    <string name="k2go_dash_rebuild_building">Đang xây dựng, kiểm thử và thay thế tại chỗ…</string>
+    <string name="k2go_dash_rebuild_failed">Xây dựng lại thất bại</string>
+    <string name="k2go_dash_services_failed">Đã xây dựng lại, nhưng các dịch vụ không khởi động kịp thời</string>
 </resources>

@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s imefutwa</string>
     <string name="k2go_zim_deleted_deferred">Imefutwa — imefichwa kwa sasa, itaondolewa kabisa upakuaji wa sasa utakapokamilika.</string>
     <string name="k2go_zim_delete_failed">Imeshindwa kufuta. Tafadhali jaribu tena.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Inajenga upya dashibodi…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Kiini cha REST</string>
+    <string name="k2go_dash_card_sub_fmt">Kiini cha REST · imesakinishwa v%1$s</string>
+    <string name="k2go_dash_rebuild">Jenga upya</string>
+    <string name="k2go_dash_rebuild_confirm_title">Ujenge upya kiini cha REST?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Inasasisha dash-node hadi toleo jipya zaidi. Seva haipatikani kwa muda mfupi wakati wa kujengwa upya; usiondoke skrini hii hadi ikamilike.</string>
+    <string name="k2go_dash_needs_internet">Kujenga upya kunahitaji muunganisho wa intaneti.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Kiini cha mfumo · kimesakinishwa daima</string>
+    <string name="k2go_dash_detail_desc">Dashibodi ni kiini cha REST API cha kisanduku (dash-node): huduma ndogo ya Node kwenye 127.0.0.1:4000, inayotolewa na nginx na kusimamiwa na pdsm. Inaendesha kila kitendo cha maktaba ndani ya programu: kuvinjari na kupakua Vitabu, kuongeza na kufuta maudhui ya Wikipedia na ZIM, vipindi vya Kolibri, Ramani na hali ya mfumo. Tofauti na moduli za maudhui, haisakinishwi wala kuondolewa — inakuja na kisanduku na ipo daima. Toleo jipya linapopatikana, unaweza kukijenga upya papo hapo.</string>
+    <string name="k2go_dash_includes">Ncha za REST za Vitabu, Wikipedia/ZIM, Kolibri na Ramani; vhost ya nginx; na ncha za toleo la mfumo na kujenga upya — zote kwenye 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Kiini cha mfumo</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Kujenga upya kumekamilika — tunakupeleka kwenye maktaba yako…</string>
+    <string name="k2go_dash_rebuild_building">Inajenga, inajaribu na kubadilisha papo hapo…</string>
+    <string name="k2go_dash_rebuild_failed">Kujenga upya kumeshindwa</string>
+    <string name="k2go_dash_services_failed">Imejengwa upya, lakini huduma hazikuanza kwa wakati</string>
 </resources>

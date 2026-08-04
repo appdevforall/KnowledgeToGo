@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s törölve</string>
     <string name="k2go_zim_deleted_deferred">Törölve — egyelőre elrejtve, a jelenlegi letöltés befejeztével teljesen eltávolítva.</string>
     <string name="k2go_zim_delete_failed">A törlés sikertelen. Próbáld újra.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Irányítópult újraépítése…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST mag</string>
+    <string name="k2go_dash_card_sub_fmt">REST mag · telepítve v%1$s</string>
+    <string name="k2go_dash_rebuild">Újraépítés</string>
+    <string name="k2go_dash_rebuild_confirm_title">Újraépíti a REST magot?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Frissíti a dash-node-ot a legújabb verzióra. A szerver az újraépítés alatt rövid ideig nem elérhető; ne hagyd el ezt a képernyőt, amíg be nem fejeződik.</string>
+    <string name="k2go_dash_needs_internet">Az újraépítéshez internetkapcsolat szükséges.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Rendszermag · mindig telepítve</string>
+    <string name="k2go_dash_detail_desc">Az irányítópult a doboz REST API magja (dash-node): egy kis Node szolgáltatás a 127.0.0.1:4000 címen, amelyet az nginx szolgál ki és a pdsm felügyel. Ez működteti az alkalmazás minden könyvtári műveletét: Könyvek böngészése és letöltése, Wikipédia- és ZIM-tartalom hozzáadása és törlése, Kolibri munkamenetek, Térképek és rendszerállapot. A tartalommoduloktól eltérően nem telepíted vagy távolítod el — a dobozzal érkezik és mindig jelen van. Ha újabb verzió érhető el, helyben újraépítheted.</string>
+    <string name="k2go_dash_includes">Könyvek, Wikipédia/ZIM, Kolibri és Térképek REST végpontjai; az nginx vhost; valamint a rendszerverzió és újraépítés végpontjai — mind a 127.0.0.1:4000 címen.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Rendszermag</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Újraépítés kész — átirányítunk a könyvtáradba…</string>
+    <string name="k2go_dash_rebuild_building">Fordítás, tesztelés és helyben csere…</string>
+    <string name="k2go_dash_rebuild_failed">Az újraépítés sikertelen</string>
+    <string name="k2go_dash_services_failed">Újraépítve, de a szolgáltatások nem indultak el időben</string>
 </resources>

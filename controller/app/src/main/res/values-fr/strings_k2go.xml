@@ -683,4 +683,24 @@
     <string name="k2go_zim_deleted">%1$s supprimé</string>
     <string name="k2go_zim_deleted_deferred">Supprimé — masqué pour l\'instant, entièrement retiré une fois le téléchargement en cours terminé.</string>
     <string name="k2go_zim_delete_failed">Échec de la suppression. Veuillez réessayer.</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">Reconstruction du dashboard…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">Cœur REST</string>
+    <string name="k2go_dash_card_sub_fmt">Cœur REST · v%1$s installée</string>
+    <string name="k2go_dash_rebuild">Reconstruire</string>
+    <string name="k2go_dash_rebuild_confirm_title">Reconstruire le cœur REST ?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Met à jour dash-node vers la dernière version. Le serveur est brièvement indisponible pendant la reconstruction ; ne quittez pas cet écran avant la fin.</string>
+    <string name="k2go_dash_needs_internet">La reconstruction nécessite une connexion internet.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">Cœur du système · toujours installé</string>
+    <string name="k2go_dash_detail_desc">Le dashboard est le cœur de l\'API REST du boîtier (dash-node) : un petit service Node sur 127.0.0.1:4000, servi par nginx et supervisé par pdsm. Il alimente chaque action de la bibliothèque dans l\'app : parcourir et télécharger des Livres, ajouter et supprimer du contenu Wikipedia et ZIM, les sessions Kolibri, les Cartes et l\'état du système. Contrairement aux modules de contenu, il ne s\'installe ni ne se supprime : il est fourni avec le boîtier et toujours présent. Lorsqu\'une version plus récente est disponible, vous pouvez le reconstruire sur place.</string>
+    <string name="k2go_dash_includes">Points de terminaison REST des Livres, Wikipedia/ZIM, Kolibri et Cartes ; le vhost nginx ; et les points de terminaison de version et de reconstruction du système, tous servis sur 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">Cœur du système</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">Reconstruction terminée — direction votre bibliothèque…</string>
+    <string name="k2go_dash_rebuild_building">Compilation, tests et remplacement sur place…</string>
+    <string name="k2go_dash_rebuild_failed">Échec de la reconstruction</string>
+    <string name="k2go_dash_services_failed">Reconstruit, mais les services n\'ont pas démarré à temps</string>
 </resources>

@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s を削除しました</string>
     <string name="k2go_zim_deleted_deferred">削除しました — 現在は非表示です。進行中のダウンロードが完了すると完全に削除されます。</string>
     <string name="k2go_zim_delete_failed">削除できませんでした。もう一度お試しください。</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">ダッシュボードを再構築中…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST コア</string>
+    <string name="k2go_dash_card_sub_fmt">REST コア · インストール済み v%1$s</string>
+    <string name="k2go_dash_rebuild">再構築</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST コアを再構築しますか？</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node を最新バージョンに更新します。再構築中はサーバーが一時的に利用できなくなります。完了するまでこの画面を離れないでください。</string>
+    <string name="k2go_dash_needs_internet">再構築にはインターネット接続が必要です。</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">システムコア · 常にインストール済み</string>
+    <string name="k2go_dash_detail_desc">ダッシュボードはボックスの REST API コア（dash-node）です。127.0.0.1:4000 で動作する小さな Node サービスで、nginx が配信し pdsm が監視します。アプリ内のすべてのライブラリ操作を支えます。書籍の閲覧とダウンロード、Wikipedia と ZIM コンテンツの追加と削除、Kolibri セッション、地図、システム状態などです。コンテンツモジュールとは異なり、インストールや削除はできません。ボックスに付属し、常に存在します。新しいビルドが利用可能になると、その場で再構築できます。</string>
+    <string name="k2go_dash_includes">書籍、Wikipedia/ZIM、Kolibri、地図の REST エンドポイント、nginx の vhost、システムバージョンと再構築のエンドポイント — すべて 127.0.0.1:4000 上。</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">システムコア</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">再構築が完了しました — ライブラリに移動します…</string>
+    <string name="k2go_dash_rebuild_building">その場でビルド・テスト・入れ替え中…</string>
+    <string name="k2go_dash_rebuild_failed">再構築に失敗しました</string>
+    <string name="k2go_dash_services_failed">再構築しましたが、サービスが時間内に起動しませんでした</string>
 </resources>

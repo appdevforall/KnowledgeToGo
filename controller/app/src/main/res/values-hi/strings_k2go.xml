@@ -673,4 +673,24 @@
     <string name="k2go_zim_deleted">%1$s हटाया गया</string>
     <string name="k2go_zim_deleted_deferred">हटाया गया — फ़िलहाल छिपाया गया, मौजूदा डाउनलोड पूरा होने पर पूरी तरह हटा दिया जाएगा।</string>
     <string name="k2go_zim_delete_failed">हटाया नहीं जा सका। कृपया पुनः प्रयास करें।</string>
+    <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
+    <string name="k2go_dash_rebuilding">डैशबोर्ड फिर से बनाया जा रहा है…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST कोर</string>
+    <string name="k2go_dash_card_sub_fmt">REST कोर · स्थापित v%1$s</string>
+    <string name="k2go_dash_rebuild">फिर से बनाएँ</string>
+    <string name="k2go_dash_rebuild_confirm_title">REST कोर फिर से बनाएँ?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node को नवीनतम संस्करण में अपडेट करता है. फिर से बनाने के दौरान सर्वर थोड़ी देर के लिए अनुपलब्ध रहता है; समाप्त होने तक यह स्क्रीन न छोड़ें.</string>
+    <string name="k2go_dash_needs_internet">फिर से बनाने के लिए इंटरनेट कनेक्शन आवश्यक है.</string>
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">सिस्टम कोर · हमेशा स्थापित</string>
+    <string name="k2go_dash_detail_desc">डैशबोर्ड बॉक्स का REST API कोर है (dash-node): 127.0.0.1:4000 पर एक छोटी Node सेवा, जिसे nginx परोसता है और pdsm देखरेख करता है. यह ऐप में हर लाइब्रेरी क्रिया को सक्षम करता है: किताबें ब्राउज़ और डाउनलोड करना, Wikipedia और ZIM सामग्री जोड़ना और हटाना, Kolibri सत्र, मानचित्र और सिस्टम स्थिति. सामग्री मॉड्यूल के विपरीत, इसे स्थापित या हटाया नहीं जाता — यह बॉक्स के साथ आता है और हमेशा मौजूद रहता है. जब कोई नया संस्करण उपलब्ध हो, आप इसे यथास्थान फिर से बना सकते हैं.</string>
+    <string name="k2go_dash_includes">किताबें, Wikipedia/ZIM, Kolibri और मानचित्र के REST एंडपॉइंट; nginx vhost; और सिस्टम संस्करण व फिर से बनाने के एंडपॉइंट — सभी 127.0.0.1:4000 पर.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">सिस्टम कोर</string>
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <string name="k2go_dash_redirect">फिर से बनाना पूरा हुआ — आपकी लाइब्रेरी पर ले जाया जा रहा है…</string>
+    <string name="k2go_dash_rebuild_building">यथास्थान बनाया, परखा और बदला जा रहा है…</string>
+    <string name="k2go_dash_rebuild_failed">फिर से बनाना विफल</string>
+    <string name="k2go_dash_services_failed">फिर से बनाया गया, लेकिन सेवाएँ समय पर शुरू नहीं हुईं</string>
 </resources>
