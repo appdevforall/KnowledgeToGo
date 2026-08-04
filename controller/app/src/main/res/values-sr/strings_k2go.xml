@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Врати</string>
     <string name="k2go_mod_hidden_foot">Модули се не могу деинсталирати — само сакрити, па овде вратити.</string>
     <string name="k2go_mod_mgmt_helper">Додирните да отворите · означите да инсталирате више одједном.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Управљање преузимањима</string>
+    <string name="k2go_zim_get_more">Преузми још садржаја</string>
+    <string name="k2go_zim_manage_title">Преузети садржај</string>
+    <string name="k2go_zim_manage_loading">Учитавање преузетог садржаја…</string>
+    <string name="k2go_zim_empty">Још нема преузетог садржаја.</string>
+    <string name="k2go_zim_no_matches">Нема подударања.</string>
+    <string name="k2go_zim_load_failed">Није могуће учитати преузети садржај.</string>
+    <string name="k2go_zim_summary_fmt">%1$d ставки · %2$s</string>
+    <string name="k2go_zim_delete">Обриши</string>
+    <string name="k2go_zim_delete_confirm_title">Обрисати %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Ово уклања датотеку и ажурира библиотеку садржаја. Можете је поново преузети касније.</string>
+    <string name="k2go_zim_deleting">Брисање…</string>
+    <string name="k2go_zim_deleted">%1$s обрисано</string>
+    <string name="k2go_zim_deleted_deferred">Обрисано — за сада сакривено, потпуно уклоњено када се заврши тренутно преузимање.</string>
+    <string name="k2go_zim_delete_failed">Брисање није успело. Покушајте поново.</string>
 </resources>

@@ -667,4 +667,20 @@
     <string name="k2go_mod_restore">Przywróć</string>
     <string name="k2go_mod_hidden_foot">Modułów nie można odinstalować — tylko ukryć, a potem tu przywrócić.</string>
     <string name="k2go_mod_mgmt_helper">Dotknij, aby otworzyć · zaznacz, aby zainstalować kilka naraz.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Zarządzaj pobranymi</string>
+    <string name="k2go_zim_get_more">Pobierz więcej treści</string>
+    <string name="k2go_zim_manage_title">Pobrana zawartość</string>
+    <string name="k2go_zim_manage_loading">Ładowanie pobranej zawartości…</string>
+    <string name="k2go_zim_empty">Brak pobranej zawartości.</string>
+    <string name="k2go_zim_no_matches">Brak wyników.</string>
+    <string name="k2go_zim_load_failed">Nie udało się załadować pobranej zawartości.</string>
+    <string name="k2go_zim_summary_fmt">%1$d element(y) · %2$s</string>
+    <string name="k2go_zim_delete">Usuń</string>
+    <string name="k2go_zim_delete_confirm_title">Usunąć %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Spowoduje to usunięcie pliku i aktualizację biblioteki treści. Możesz pobrać go ponownie później.</string>
+    <string name="k2go_zim_deleting">Usuwanie…</string>
+    <string name="k2go_zim_deleted">Usunięto %1$s</string>
+    <string name="k2go_zim_deleted_deferred">Usunięto — na razie ukryte, zostanie całkowicie usunięte po zakończeniu bieżącego pobierania.</string>
+    <string name="k2go_zim_delete_failed">Nie udało się usunąć. Spróbuj ponownie.</string>
 </resources>

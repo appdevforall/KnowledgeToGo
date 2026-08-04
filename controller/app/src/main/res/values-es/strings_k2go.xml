@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Restaurar</string>
     <string name="k2go_mod_hidden_foot">Los módulos no se pueden desinstalar — solo ocultar, y luego restaurar aquí.</string>
     <string name="k2go_mod_mgmt_helper">Toca para abrir · marca para instalar varios a la vez.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Gestionar descargas</string>
+    <string name="k2go_zim_get_more">Obtener más contenido</string>
+    <string name="k2go_zim_manage_title">Contenido descargado</string>
+    <string name="k2go_zim_manage_loading">Cargando contenido descargado…</string>
+    <string name="k2go_zim_empty">Aún no hay contenido descargado.</string>
+    <string name="k2go_zim_no_matches">Sin coincidencias.</string>
+    <string name="k2go_zim_load_failed">No se pudo cargar el contenido descargado.</string>
+    <string name="k2go_zim_summary_fmt">%1$d elemento(s) · %2$s</string>
+    <string name="k2go_zim_delete">Eliminar</string>
+    <string name="k2go_zim_delete_confirm_title">¿Eliminar %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Esto elimina el archivo y actualiza la biblioteca de contenido. Podrás descargarlo de nuevo más tarde.</string>
+    <string name="k2go_zim_deleting">Eliminando…</string>
+    <string name="k2go_zim_deleted">%1$s eliminado</string>
+    <string name="k2go_zim_deleted_deferred">Eliminado — oculto por ahora, se quitará por completo cuando termine la descarga actual.</string>
+    <string name="k2go_zim_delete_failed">No se pudo eliminar. Inténtalo de nuevo.</string>
 </resources>

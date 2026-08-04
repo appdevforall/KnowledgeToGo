@@ -710,4 +710,26 @@
     <string name="k2go_mod_restore">Restore</string>
     <string name="k2go_mod_hidden_foot">Modules can\'t be uninstalled — only hidden, then restored here.</string>
     <string name="k2go_mod_mgmt_helper">Tap to open · tick to install several at once.</string>
+
+    <!-- ADFA-5004: in-app management (list + delete) of installed Kiwix ZIMs (KiwixManageController). -->
+    <string name="k2go_zim_manage_action">Manage downloads</string>
+    <string name="k2go_zim_get_more">Get more content</string>
+    <string name="k2go_zim_manage_title">Downloaded content</string>
+    <string name="k2go_zim_manage_loading">Loading downloaded content…</string>
+    <string name="k2go_zim_empty">No downloaded content yet.</string>
+    <string name="k2go_zim_no_matches">No matches.</string>
+    <string name="k2go_zim_load_failed">Couldn\'t load downloaded content.</string>
+    <!-- %1$d = count, %2$s = human size, e.g. "3 item(s) · 12.4 GB" -->
+    <string name="k2go_zim_summary_fmt">%1$d item(s) · %2$s</string>
+    <string name="k2go_zim_delete">Delete</string>
+    <!-- %1$s = content name -->
+    <string name="k2go_zim_delete_confirm_title">Delete %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">This removes the file and updates the content library. You can download it again later.</string>
+    <string name="k2go_zim_deleting">Deleting…</string>
+    <!-- %1$s = content name -->
+    <string name="k2go_zim_deleted">Deleted %1$s</string>
+    <!-- Shown when a download is in progress: the file is already gone and hidden in the reader, but
+         the real removal waits for that download's reindex. -->
+    <string name="k2go_zim_deleted_deferred">Deleted — hidden for now, fully removed once the current download finishes.</string>
+    <string name="k2go_zim_delete_failed">Couldn\'t delete. Please try again.</string>
 </resources>

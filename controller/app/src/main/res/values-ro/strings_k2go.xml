@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Restaurează</string>
     <string name="k2go_mod_hidden_foot">Modulele nu pot fi dezinstalate — doar ascunse, apoi restaurate aici.</string>
     <string name="k2go_mod_mgmt_helper">Atinge pentru a deschide · bifează pentru a instala mai multe deodată.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Gestionează descărcările</string>
+    <string name="k2go_zim_get_more">Obține mai mult conținut</string>
+    <string name="k2go_zim_manage_title">Conținut descărcat</string>
+    <string name="k2go_zim_manage_loading">Se încarcă conținutul descărcat…</string>
+    <string name="k2go_zim_empty">Încă nu există conținut descărcat.</string>
+    <string name="k2go_zim_no_matches">Nicio potrivire.</string>
+    <string name="k2go_zim_load_failed">Conținutul descărcat nu a putut fi încărcat.</string>
+    <string name="k2go_zim_summary_fmt">%1$d element(e) · %2$s</string>
+    <string name="k2go_zim_delete">Șterge</string>
+    <string name="k2go_zim_delete_confirm_title">Ștergi %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Aceasta elimină fișierul și actualizează biblioteca de conținut. Îl poți descărca din nou mai târziu.</string>
+    <string name="k2go_zim_deleting">Se șterge…</string>
+    <string name="k2go_zim_deleted">%1$s șters</string>
+    <string name="k2go_zim_deleted_deferred">Șters — ascuns momentan, eliminat complet după ce se termină descărcarea curentă.</string>
+    <string name="k2go_zim_delete_failed">Ștergerea a eșuat. Încearcă din nou.</string>
 </resources>

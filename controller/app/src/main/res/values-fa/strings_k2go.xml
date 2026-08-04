@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">بازگرداندن</string>
     <string name="k2go_mod_hidden_foot">ماژول‌ها قابل حذف نصب نیستند — فقط می‌توان آن‌ها را پنهان و سپس اینجا بازگرداند.</string>
     <string name="k2go_mod_mgmt_helper">برای باز کردن ضربه بزنید · برای نصب چند مورد به‌طور همزمان تیک بزنید.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">مدیریت دانلودها</string>
+    <string name="k2go_zim_get_more">دریافت محتوای بیشتر</string>
+    <string name="k2go_zim_manage_title">محتوای دانلودشده</string>
+    <string name="k2go_zim_manage_loading">در حال بارگذاری محتوای دانلودشده…</string>
+    <string name="k2go_zim_empty">هنوز محتوای دانلودشده‌ای وجود ندارد.</string>
+    <string name="k2go_zim_no_matches">موردی یافت نشد.</string>
+    <string name="k2go_zim_load_failed">بارگذاری محتوای دانلودشده ممکن نشد.</string>
+    <string name="k2go_zim_summary_fmt">%1$d مورد · %2$s</string>
+    <string name="k2go_zim_delete">حذف</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s حذف شود؟</string>
+    <string name="k2go_zim_delete_confirm_msg">این کار فایل را حذف و کتابخانهٔ محتوا را به‌روزرسانی می‌کند. می‌توانید بعداً دوباره آن را دانلود کنید.</string>
+    <string name="k2go_zim_deleting">در حال حذف…</string>
+    <string name="k2go_zim_deleted">%1$s حذف شد</string>
+    <string name="k2go_zim_deleted_deferred">حذف شد — فعلاً پنهان شده، پس از پایان دانلود فعلی به‌طور کامل حذف می‌شود.</string>
+    <string name="k2go_zim_delete_failed">حذف ممکن نشد. لطفاً دوباره تلاش کنید.</string>
 </resources>

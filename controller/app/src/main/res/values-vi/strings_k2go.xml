@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Khôi phục</string>
     <string name="k2go_mod_hidden_foot">Không thể gỡ cài đặt mô-đun — chỉ có thể ẩn, rồi khôi phục ở đây.</string>
     <string name="k2go_mod_mgmt_helper">Chạm để mở · đánh dấu để cài nhiều cùng lúc.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Quản lý tải xuống</string>
+    <string name="k2go_zim_get_more">Nhận thêm nội dung</string>
+    <string name="k2go_zim_manage_title">Nội dung đã tải</string>
+    <string name="k2go_zim_manage_loading">Đang tải nội dung đã tải xuống…</string>
+    <string name="k2go_zim_empty">Chưa có nội dung nào được tải.</string>
+    <string name="k2go_zim_no_matches">Không có kết quả.</string>
+    <string name="k2go_zim_load_failed">Không thể tải nội dung đã tải xuống.</string>
+    <string name="k2go_zim_summary_fmt">%1$d mục · %2$s</string>
+    <string name="k2go_zim_delete">Xóa</string>
+    <string name="k2go_zim_delete_confirm_title">Xóa %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Thao tác này sẽ xóa tệp và cập nhật thư viện nội dung. Bạn có thể tải lại sau.</string>
+    <string name="k2go_zim_deleting">Đang xóa…</string>
+    <string name="k2go_zim_deleted">Đã xóa %1$s</string>
+    <string name="k2go_zim_deleted_deferred">Đã xóa — tạm ẩn, sẽ bị xóa hoàn toàn khi tải xuống hiện tại hoàn tất.</string>
+    <string name="k2go_zim_delete_failed">Không thể xóa. Vui lòng thử lại.</string>
 </resources>

@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Pulihkan</string>
     <string name="k2go_mod_hidden_foot">Modul tidak bisa dihapus — hanya disembunyikan, lalu dipulihkan di sini.</string>
     <string name="k2go_mod_mgmt_helper">Ketuk untuk membuka · centang untuk memasang beberapa sekaligus.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Kelola unduhan</string>
+    <string name="k2go_zim_get_more">Dapatkan konten lainnya</string>
+    <string name="k2go_zim_manage_title">Konten yang diunduh</string>
+    <string name="k2go_zim_manage_loading">Memuat konten yang diunduh…</string>
+    <string name="k2go_zim_empty">Belum ada konten yang diunduh.</string>
+    <string name="k2go_zim_no_matches">Tidak ada kecocokan.</string>
+    <string name="k2go_zim_load_failed">Tidak dapat memuat konten yang diunduh.</string>
+    <string name="k2go_zim_summary_fmt">%1$d item · %2$s</string>
+    <string name="k2go_zim_delete">Hapus</string>
+    <string name="k2go_zim_delete_confirm_title">Hapus %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Ini menghapus file dan memperbarui pustaka konten. Anda dapat mengunduhnya lagi nanti.</string>
+    <string name="k2go_zim_deleting">Menghapus…</string>
+    <string name="k2go_zim_deleted">%1$s dihapus</string>
+    <string name="k2go_zim_deleted_deferred">Dihapus — disembunyikan untuk saat ini, dihapus sepenuhnya setelah unduhan saat ini selesai.</string>
+    <string name="k2go_zim_delete_failed">Tidak dapat menghapus. Silakan coba lagi.</string>
 </resources>

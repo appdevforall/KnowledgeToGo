@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">পুনরুদ্ধার করুন</string>
     <string name="k2go_mod_hidden_foot">মডিউল আনইনস্টল করা যায় না — শুধু লুকানো যায়, তারপর এখানে পুনরুদ্ধার করা যায়।</string>
     <string name="k2go_mod_mgmt_helper">খুলতে ট্যাপ করুন · একসাথে একাধিক ইনস্টল করতে টিক দিন।</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">ডাউনলোড পরিচালনা করুন</string>
+    <string name="k2go_zim_get_more">আরও কনটেন্ট পান</string>
+    <string name="k2go_zim_manage_title">ডাউনলোড করা কনটেন্ট</string>
+    <string name="k2go_zim_manage_loading">ডাউনলোড করা কনটেন্ট লোড হচ্ছে…</string>
+    <string name="k2go_zim_empty">এখনও কোনো ডাউনলোড করা কনটেন্ট নেই।</string>
+    <string name="k2go_zim_no_matches">কোনো মিল নেই।</string>
+    <string name="k2go_zim_load_failed">ডাউনলোড করা কনটেন্ট লোড করা যায়নি।</string>
+    <string name="k2go_zim_summary_fmt">%1$d টি আইটেম · %2$s</string>
+    <string name="k2go_zim_delete">মুছুন</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s মুছবেন?</string>
+    <string name="k2go_zim_delete_confirm_msg">এটি ফাইলটি সরিয়ে দেয় এবং কনটেন্ট লাইব্রেরি আপডেট করে। আপনি পরে আবার এটি ডাউনলোড করতে পারবেন।</string>
+    <string name="k2go_zim_deleting">মুছে ফেলা হচ্ছে…</string>
+    <string name="k2go_zim_deleted">%1$s মুছে ফেলা হয়েছে</string>
+    <string name="k2go_zim_deleted_deferred">মুছে ফেলা হয়েছে — আপাতত লুকানো, বর্তমান ডাউনলোড শেষ হলে সম্পূর্ণ সরিয়ে ফেলা হবে।</string>
+    <string name="k2go_zim_delete_failed">মুছে ফেলা যায়নি। আবার চেষ্টা করুন।</string>
 </resources>

@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Mú padà</string>
     <string name="k2go_mod_hidden_foot">A kò lè yọ àwọn mọ́díù kúrò — a lè fi pamọ́ nìkan, lẹ́yìn náà mú padà níbí.</string>
     <string name="k2go_mod_mgmt_helper">Tẹ láti ṣí · fàmì láti fi ọ̀pọ̀lọpọ̀ sórí ẹ̀rọ lẹ́ẹ̀kan.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Ṣàkóso àwọn ìgbàsílẹ̀</string>
+    <string name="k2go_zim_get_more">Rí àkóónú síi</string>
+    <string name="k2go_zim_manage_title">Àkóónú tí a gbà sílẹ̀</string>
+    <string name="k2go_zim_manage_loading">Ń gbé àkóónú tí a gbà sílẹ̀ wọlé…</string>
+    <string name="k2go_zim_empty">Kò sí àkóónú tí a gbà sílẹ̀ síbẹ̀.</string>
+    <string name="k2go_zim_no_matches">Kò sí ìbámu.</string>
+    <string name="k2go_zim_load_failed">Kò lè gbé àkóónú tí a gbà sílẹ̀ wọlé.</string>
+    <string name="k2go_zim_summary_fmt">%1$d nǹkan · %2$s</string>
+    <string name="k2go_zim_delete">Parẹ́</string>
+    <string name="k2go_zim_delete_confirm_title">Paarẹ́ %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Èyí máa yọ fáìlì náà kúrò yóò sì ṣàtúnṣe àká àkóónú. O lè tún gbà á sílẹ̀ nígbà mìíràn.</string>
+    <string name="k2go_zim_deleting">Ń paarẹ́…</string>
+    <string name="k2go_zim_deleted">A ti paarẹ́ %1$s</string>
+    <string name="k2go_zim_deleted_deferred">A ti paarẹ́ — a fi pamọ́ fún ìsinsìnyí, yóò yọ kúrò pátápátá nígbà tí ìgbàsílẹ̀ lọ́wọ́lọ́wọ́ bá parí.</string>
+    <string name="k2go_zim_delete_failed">Kò lè paarẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansi.</string>
 </resources>

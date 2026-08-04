@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">استعادة</string>
     <string name="k2go_mod_hidden_foot">لا يمكن إلغاء تثبيت الوحدات — يمكن إخفاؤها فقط، ثم استعادتها هنا.</string>
     <string name="k2go_mod_mgmt_helper">انقر للفتح · ضع علامة لتثبيت عدة وحدات دفعة واحدة.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">إدارة التنزيلات</string>
+    <string name="k2go_zim_get_more">الحصول على المزيد من المحتوى</string>
+    <string name="k2go_zim_manage_title">المحتوى المُنزَّل</string>
+    <string name="k2go_zim_manage_loading">جارٍ تحميل المحتوى المُنزَّل…</string>
+    <string name="k2go_zim_empty">لا يوجد محتوى مُنزَّل بعد.</string>
+    <string name="k2go_zim_no_matches">لا توجد نتائج.</string>
+    <string name="k2go_zim_load_failed">تعذّر تحميل المحتوى المُنزَّل.</string>
+    <string name="k2go_zim_summary_fmt">%1$d عنصر · %2$s</string>
+    <string name="k2go_zim_delete">حذف</string>
+    <string name="k2go_zim_delete_confirm_title">حذف %1$s؟</string>
+    <string name="k2go_zim_delete_confirm_msg">يؤدي هذا إلى إزالة الملف وتحديث مكتبة المحتوى. يمكنك تنزيله مرة أخرى لاحقًا.</string>
+    <string name="k2go_zim_deleting">جارٍ الحذف…</string>
+    <string name="k2go_zim_deleted">تم حذف %1$s</string>
+    <string name="k2go_zim_deleted_deferred">تم الحذف — مخفي الآن، وسيُزال بالكامل بعد انتهاء التنزيل الحالي.</string>
+    <string name="k2go_zim_delete_failed">تعذّر الحذف. يُرجى المحاولة مرة أخرى.</string>
 </resources>

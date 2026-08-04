@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">पुनर्स्थापित करें</string>
     <string name="k2go_mod_hidden_foot">मॉड्यूल अनइंस्टॉल नहीं किए जा सकते — केवल छिपाए, फिर यहाँ पुनर्स्थापित किए जा सकते हैं।</string>
     <string name="k2go_mod_mgmt_helper">खोलने के लिए टैप करें · एक साथ कई इंस्टॉल करने के लिए टिक करें।</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">डाउनलोड प्रबंधित करें</string>
+    <string name="k2go_zim_get_more">और सामग्री प्राप्त करें</string>
+    <string name="k2go_zim_manage_title">डाउनलोड की गई सामग्री</string>
+    <string name="k2go_zim_manage_loading">डाउनलोड की गई सामग्री लोड हो रही है…</string>
+    <string name="k2go_zim_empty">अभी तक कोई डाउनलोड की गई सामग्री नहीं।</string>
+    <string name="k2go_zim_no_matches">कोई मिलान नहीं।</string>
+    <string name="k2go_zim_load_failed">डाउनलोड की गई सामग्री लोड नहीं हो सकी।</string>
+    <string name="k2go_zim_summary_fmt">%1$d आइटम · %2$s</string>
+    <string name="k2go_zim_delete">हटाएँ</string>
+    <string name="k2go_zim_delete_confirm_title">%1$s हटाएँ?</string>
+    <string name="k2go_zim_delete_confirm_msg">इससे फ़ाइल हट जाती है और सामग्री लाइब्रेरी अपडेट हो जाती है। आप इसे बाद में फिर से डाउनलोड कर सकते हैं।</string>
+    <string name="k2go_zim_deleting">हटाया जा रहा है…</string>
+    <string name="k2go_zim_deleted">%1$s हटाया गया</string>
+    <string name="k2go_zim_deleted_deferred">हटाया गया — फ़िलहाल छिपाया गया, मौजूदा डाउनलोड पूरा होने पर पूरी तरह हटा दिया जाएगा।</string>
+    <string name="k2go_zim_delete_failed">हटाया नहीं जा सका। कृपया पुनः प्रयास करें।</string>
 </resources>

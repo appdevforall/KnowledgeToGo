@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Obnovit</string>
     <string name="k2go_mod_hidden_foot">Moduly nelze odinstalovat — pouze skrýt a zde znovu obnovit.</string>
     <string name="k2go_mod_mgmt_helper">Klepnutím otevřete · zaškrtnutím nainstalujete několik najednou.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Spravovat stažené</string>
+    <string name="k2go_zim_get_more">Získat další obsah</string>
+    <string name="k2go_zim_manage_title">Stažený obsah</string>
+    <string name="k2go_zim_manage_loading">Načítání staženého obsahu…</string>
+    <string name="k2go_zim_empty">Zatím žádný stažený obsah.</string>
+    <string name="k2go_zim_no_matches">Žádné shody.</string>
+    <string name="k2go_zim_load_failed">Nepodařilo se načíst stažený obsah.</string>
+    <string name="k2go_zim_summary_fmt">%1$d položek · %2$s</string>
+    <string name="k2go_zim_delete">Odstranit</string>
+    <string name="k2go_zim_delete_confirm_title">Odstranit %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Tímto se soubor odstraní a aktualizuje se knihovna obsahu. Později jej můžete stáhnout znovu.</string>
+    <string name="k2go_zim_deleting">Odstraňování…</string>
+    <string name="k2go_zim_deleted">%1$s odstraněno</string>
+    <string name="k2go_zim_deleted_deferred">Odstraněno — prozatím skryto, zcela odstraněno po dokončení aktuálního stahování.</string>
+    <string name="k2go_zim_delete_failed">Odstranění se nezdařilo. Zkuste to znovu.</string>
 </resources>

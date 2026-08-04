@@ -657,4 +657,20 @@
     <string name="k2go_mod_restore">Visszaállítás</string>
     <string name="k2go_mod_hidden_foot">A modulok nem távolíthatók el — csak elrejthetők, majd itt visszaállíthatók.</string>
     <string name="k2go_mod_mgmt_helper">Koppints a megnyitáshoz · pipáld be, hogy egyszerre többet telepíts.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Letöltések kezelése</string>
+    <string name="k2go_zim_get_more">További tartalom letöltése</string>
+    <string name="k2go_zim_manage_title">Letöltött tartalom</string>
+    <string name="k2go_zim_manage_loading">Letöltött tartalom betöltése…</string>
+    <string name="k2go_zim_empty">Még nincs letöltött tartalom.</string>
+    <string name="k2go_zim_no_matches">Nincs találat.</string>
+    <string name="k2go_zim_load_failed">A letöltött tartalmat nem sikerült betölteni.</string>
+    <string name="k2go_zim_summary_fmt">%1$d elem · %2$s</string>
+    <string name="k2go_zim_delete">Törlés</string>
+    <string name="k2go_zim_delete_confirm_title">Törli a következőt: %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">Ez eltávolítja a fájlt, és frissíti a tartalomtárat. Később újra letöltheted.</string>
+    <string name="k2go_zim_deleting">Törlés…</string>
+    <string name="k2go_zim_deleted">%1$s törölve</string>
+    <string name="k2go_zim_deleted_deferred">Törölve — egyelőre elrejtve, a jelenlegi letöltés befejeztével teljesen eltávolítva.</string>
+    <string name="k2go_zim_delete_failed">A törlés sikertelen. Próbáld újra.</string>
 </resources>

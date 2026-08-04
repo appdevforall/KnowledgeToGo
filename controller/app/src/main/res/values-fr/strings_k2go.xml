@@ -667,4 +667,20 @@
     <string name="k2go_mod_restore">Restaurer</string>
     <string name="k2go_mod_hidden_foot">Les modules ne peuvent pas être désinstallés — seulement masqués, puis restaurés ici.</string>
     <string name="k2go_mod_mgmt_helper">Appuyez pour ouvrir · cochez pour en installer plusieurs à la fois.</string>
+    <!-- ADFA-5004: in-app ZIM manager -->
+    <string name="k2go_zim_manage_action">Gérer les téléchargements</string>
+    <string name="k2go_zim_get_more">Obtenir plus de contenu</string>
+    <string name="k2go_zim_manage_title">Contenu téléchargé</string>
+    <string name="k2go_zim_manage_loading">Chargement du contenu téléchargé…</string>
+    <string name="k2go_zim_empty">Aucun contenu téléchargé pour l\'instant.</string>
+    <string name="k2go_zim_no_matches">Aucun résultat.</string>
+    <string name="k2go_zim_load_failed">Impossible de charger le contenu téléchargé.</string>
+    <string name="k2go_zim_summary_fmt">%1$d élément(s) · %2$s</string>
+    <string name="k2go_zim_delete">Supprimer</string>
+    <string name="k2go_zim_delete_confirm_title">Supprimer %1$s ?</string>
+    <string name="k2go_zim_delete_confirm_msg">Cela supprime le fichier et met à jour la bibliothèque de contenu. Vous pourrez le télécharger à nouveau plus tard.</string>
+    <string name="k2go_zim_deleting">Suppression…</string>
+    <string name="k2go_zim_deleted">%1$s supprimé</string>
+    <string name="k2go_zim_deleted_deferred">Supprimé — masqué pour l\'instant, entièrement retiré une fois le téléchargement en cours terminé.</string>
+    <string name="k2go_zim_delete_failed">Échec de la suppression. Veuillez réessayer.</string>
 </resources>
