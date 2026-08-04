@@ -65,7 +65,8 @@ public class ModuleDetailFragment extends Fragment {
         ((TextView) root.findViewById(R.id.k2go_moddet_desc)).setText(c.descRes);
 
         // ADFA-4958: meta chips (size / version / Runs offline), "What it includes", and license.
-        LinearLayout chips = root.findViewById(R.id.k2go_moddet_chips);
+        // ADFA-5011: FlowLayout (typed as ViewGroup) so the chips wrap to a 2nd line instead of clipping.
+        ViewGroup chips = root.findViewById(R.id.k2go_moddet_chips);
         int sizeRes = ModuleCards.sizeLabelRes(c.key());   // ADFA-4958: maps uses a curated "200 MB+" floor
         long bytes = ModuleSizes.bytesFor(requireContext(), c.key());
         String sizeText = (sizeRes != 0) ? getString(sizeRes)

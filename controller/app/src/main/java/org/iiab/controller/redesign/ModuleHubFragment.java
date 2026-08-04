@@ -15,6 +15,7 @@
  */
 package org.iiab.controller.redesign;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -344,9 +345,18 @@ public class ModuleHubFragment extends Fragment {
         col.addView(sub);
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
+        // Tapping the card opens the dashboard detail (what it is + full description); the pill is the
+        // quick Rebuild action. Both route rebuilds through the shared DashboardRebuild gate.
+        row.setClickable(true);
+        row.setOnClickListener(v -> {
+            if (getActivity() instanceof SetupLibraryActivity) {
+                ((SetupLibraryActivity) getActivity()).openDashboardDetail();
+            }
+        });
+
         TextView rebuild = statePill(getString(R.string.k2go_dash_rebuild), R.color.k2go_teal);
         rebuild.setPadding(px(14), px(6), px(14), px(6));
-        rebuild.setOnClickListener(v -> onRebuildClicked());
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host));
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);
@@ -356,71 +366,17 @@ public class ModuleHubFragment extends Fragment {
         fetchDashVersion(sub);
     }
 
-    private void onRebuildClicked() {
-        if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
-            Snackbars.make(host, R.string.k2go_install_busy).show();
-            return;
-        }
-        if (!hasInternet()) {
-            Snackbars.make(host, R.string.k2go_dash_needs_internet).show();
-            return;
-        }
-        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.k2go_dash_rebuild_confirm_title)
-                .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> startRebuild())
-                .show();
-    }
-
-    private void startRebuild() {
-        android.content.Intent svc = new android.content.Intent(requireContext(),
-                org.iiab.controller.install.presentation.InstallService.class)
-                .setAction(org.iiab.controller.install.presentation.InstallService.ACTION_REBUILD_DASHBOARD);
-        ContextCompat.startForegroundService(requireContext(), svc);
-        // Open the guarded status window (same one installs use): it blocks leaving mid-op and
-        // returns here on re-entry, driven by InstallProgressRepository.
-        startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class));
-    }
-
-    /** Best-effort: show the installed dash-node version on the card (GET /system/version). */
+    /** Show the installed dash-node version on the card. Read from the rootfs package.json on disk
+     *  (authoritative, always present) rather than the REST endpoint — that endpoint only exists in
+     *  newer builds, so on an older install it 404s and the version silently never appeared. */
     private void fetchDashVersion(final TextView sub) {
+        final Context ctx = requireContext().getApplicationContext();
         AppExecutors.get().io().execute(() -> {
-            String v = null;
-            HttpURLConnection c = null;
-            try {
-                URL u = new URL(BoxEndpoints.API + "/system/version");
-                c = (HttpURLConnection) u.openConnection();
-                c.setUseCaches(false);
-                c.setConnectTimeout(1500);
-                c.setReadTimeout(1500);
-                if (c.getResponseCode() == 200) {
-                    java.io.BufferedReader r = new java.io.BufferedReader(new java.io.InputStreamReader(c.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = r.readLine()) != null) sb.append(line);
-                    r.close();
-                    v = new org.json.JSONObject(sb.toString()).optString("version", null);
-                }
-            } catch (Exception ignored) {
-            } finally {
-                if (c != null) c.disconnect();
-            }
-            final String ver = v;
+            final String ver = DashboardVersion.installed(ctx);
             main.post(() -> {
-                if (isAdded() && ver != null && !ver.isEmpty()) sub.setText(getString(R.string.k2go_dash_card_sub_fmt, ver));
+                if (isAdded() && ver != null) sub.setText(getString(R.string.k2go_dash_card_sub_fmt, ver));
             });
         });
-    }
-
-    private boolean hasInternet() {
-        android.net.ConnectivityManager cm = (android.net.ConnectivityManager)
-                requireContext().getSystemService(android.content.Context.CONNECTIVITY_SERVICE);
-        if (cm == null) return true;   // can't tell → let the preflight decide
-        android.net.Network n = cm.getActiveNetwork();
-        if (n == null) return false;
-        android.net.NetworkCapabilities caps = cm.getNetworkCapabilities(n);
-        return caps != null && caps.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET);
     }
 
     private void refreshProceed() {

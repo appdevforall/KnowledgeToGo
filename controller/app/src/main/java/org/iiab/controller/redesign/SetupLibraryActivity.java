@@ -393,6 +393,14 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
+    /** ADFA-5011: open the dash-node REST core's detail (Play Store-style card, Rebuild-only). */
+    public void openDashboardDetail() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new DashboardDetailFragment())
+                .addToBackStack("dashboard_detail")
+                .commit();
+    }
+
     /** ADFA-4842: proceed to the install index for the scheduled modules. The modules are already
      *  banked in ModuleWishlist; the index drains them through the proot queue (ModuleProvisioner),
      *  same mechanism as maps. */

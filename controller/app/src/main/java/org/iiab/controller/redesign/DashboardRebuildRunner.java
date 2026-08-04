@@ -6,7 +6,8 @@
  * Description : ADFA-5011. App-orchestrated rebuild of the dash-node REST core (Track A of ADR-5011).
  *               The app is the surgeon and the box is the asleep patient: because
  *               PRootEngine#executeInContainer launches a proot, we own the rootfs exclusively, so —
- *               like a module runrole — we STOP the box services first, then work, then START them.
+ *               like a module runrole — we STOP the box services first, then work, and leave the box
+ *               stopped for the INDEX to boot persistently afterwards (see "Who starts the box" below).
  *
  *               Bootstrap without shipping code in the APK: the newest scripts are pulled straight
  *               from the on-device clone's remote via `git fetch` + `git show origin/<branch>:tools/…`
@@ -18,7 +19,16 @@
  *                 -> git fetch + extract preflight/rebuild/smoke to /tmp/k2go + run preflight
  *                 -> (only if preflight OK) run rebuild-dashboard.sh (git reset --hard -> build ->
  *                    staged smoke test -> back up live dist -> atomic swap -> verify -> rollback)
- *                 -> pdsm start
+ *                 -> leave the box STOPPED (the INDEX boots it persistently — see below)
+ *
+ *               Who starts the box back up: NOT this runner. Every proot here is transient with
+ *               --kill-on-exit, so a service-side `pdsm start` would start services and then kill them
+ *               the instant the proot exits (the "dead Home" bug). Instead, exactly like a proot MODULE
+ *               install, the install INDEX (SetupProgressActivity) is the actuator: after we finish it
+ *               calls ServerController.startEnvironment() ('pdsm start && tail -f /dev/null'), a PERSISTENT
+ *               process-scoped proot that keeps the services alive, then waits for the REST core to answer
+ *               before redirecting. So we own the rootfs (stop) for the rebuild and hand the boot back to
+ *               the index.
  *
  *               Preflight is non-destructive and gates the rest: it refuses on a dirty clone (so a
  *               user's local edits are never discarded by the reset), no internet, or low disk. The
@@ -94,11 +104,12 @@ public final class DashboardRebuildRunner {
                         if (r.ok && exitCode == 0) {
                             runRebuild(cb);
                         } else {
-                            // Nothing was touched — wake the box back up and report why.
-                            startServices(() -> cb.onError(r.reasonSummary()));
+                            // Nothing was touched. Leave the box stopped — the INDEX brings the
+                            // environment back up persistently (see class note); just report why.
+                            cb.onError(r.reasonSummary());
                         }
                     }
-                    @Override public void onError(String error) { startServices(() -> cb.onError(error)); }
+                    @Override public void onError(String error) { cb.onError(error); }
                 });
     }
 
@@ -111,15 +122,17 @@ public final class DashboardRebuildRunner {
                 new PRootEngine.OutputListener() {
                     @Override public void onOutputLine(String line) { cb.onLog(line); }
                     @Override public void onProcessExit(int exitCode) {
-                        // rebuild.sh already restarts dash-node+nginx; bring the rest of the box back too.
-                        startServices(() -> { if (exitCode == 0) cb.onDone(); else cb.onError("rebuild failed"); });
+                        // Leave the box STOPPED. rebuild.sh's pdsm restarts run in a transient proot and
+                        // die with --kill-on-exit, so a service-side start would only start-then-kill. The
+                        // INDEX is the actuator that boots the environment persistently after we finish
+                        // (startEnvironment: 'pdsm start && tail -f /dev/null'), exactly like the module flow.
+                        if (exitCode == 0) cb.onDone(); else cb.onError("rebuild failed");
                     }
-                    @Override public void onError(String error) { startServices(() -> cb.onError(error)); }
+                    @Override public void onError(String error) { cb.onError(error); }
                 });
     }
 
     private void stopServices(Runnable then) { pdsm("stop", then); }
-    private void startServices(Runnable then) { pdsm("start", then); }
 
     private void pdsm(String action, Runnable then) {
         engine.executeInContainer(ctx, rootfsDir, SHELL + " '/usr/local/bin/pdsm " + action + "'",

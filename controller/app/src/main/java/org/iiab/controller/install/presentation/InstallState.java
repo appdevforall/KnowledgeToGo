@@ -17,8 +17,10 @@ public final class InstallState {
 
     public enum Phase { IDLE, DOWNLOADING, EXTRACTING, PROVISIONING, SUCCESS, FAILED }
 
-    /** Which long-running operation this state belongs to (ADFA-4476). */
-    public enum Op { INSTALL, RESET }
+    /** Which long-running operation this state belongs to (ADFA-4476). ADFA-5011 adds REBUILD
+     *  (dash-node REST-core rebuild) so the progress screen can tell a rebuild apart from an install
+     *  and stay put (blocking) until it reaches SUCCESS/FAILED. */
+    public enum Op { INSTALL, RESET, REBUILD }
 
     public final Phase phase;
     public final Op op;

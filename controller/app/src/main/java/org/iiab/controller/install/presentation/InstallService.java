@@ -155,6 +155,9 @@ public final class InstallService extends Service {
             if (prootEngine == null) prootEngine = new PRootEngine();
             startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.k2go_dash_rebuilding)));
             acquireHardwareLocks();
+            // ADFA-5011: tag posts as REBUILD so SetupProgressActivity treats this as a blocking rebuild
+            // session (stays on the animation, no premature "nothing to do → redirect").
+            InstallProgressRepository.get().beginRebuild();
             InstallProgressRepository.get().postProvisioning(getString(R.string.k2go_dash_rebuilding));
             new Thread(this::runDashboardRebuild, "dash-rebuild-service").start();
             return START_NOT_STICKY;
