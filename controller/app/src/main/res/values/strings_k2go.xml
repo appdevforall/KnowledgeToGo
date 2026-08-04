@@ -712,6 +712,17 @@
     <string name="k2go_mod_mgmt_helper">Tap to open · tick to install several at once.</string>
 
     <!-- ADFA-5004: in-app management (list + delete) of installed Kiwix ZIMs (KiwixManageController). -->
+    <!-- ADFA-5011: dash-node REST-core rebuild (system module). -->
+    <string name="k2go_dash_rebuilding">Rebuilding dashboard…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST core</string>
+    <!-- %1$s = installed version, e.g. "REST core · installed v1.1.0" -->
+    <string name="k2go_dash_card_sub_fmt">REST core · installed v%1$s</string>
+    <string name="k2go_dash_rebuild">Rebuild</string>
+    <string name="k2go_dash_rebuild_confirm_title">Rebuild the REST core?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Updates dash-node to the latest version. The server is briefly unavailable while it rebuilds; don\'t leave this screen until it finishes.</string>
+    <string name="k2go_dash_needs_internet">Rebuild needs an internet connection.</string>
+
     <string name="k2go_zim_manage_action">Manage downloads</string>
     <string name="k2go_zim_get_more">Get more content</string>
     <string name="k2go_zim_manage_title">Downloaded content</string>

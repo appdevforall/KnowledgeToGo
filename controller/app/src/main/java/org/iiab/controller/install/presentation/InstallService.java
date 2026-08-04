@@ -66,6 +66,9 @@ public final class InstallService extends Service {
     public static final String ACTION_CANCEL = "org.iiab.controller.INSTALL_CANCEL";
     // Per-module install queue (ADFA-4476 slice 3): distinct from the rootfs ACTION_START.
     public static final String ACTION_START_MODULES = "org.iiab.controller.INSTALL_START_MODULES";
+    /** ADFA-5011: rebuild the dash-node REST core in place (no rootfs rebuild). Reuses this service's
+     *  guard/foreground/status-window so the op can't be killed mid-rebuild. */
+    public static final String ACTION_REBUILD_DASHBOARD = "org.iiab.controller.REBUILD_DASHBOARD";
 
     // Broadcast of per-line provisioning output (best-effort in-app log).
     public static final String ACTION_INSTALL_LOG = "org.iiab.controller.INSTALL_LOG";
@@ -140,6 +143,20 @@ public final class InstallService extends Service {
         String action = intent != null ? intent.getAction() : null;
         if (ACTION_CANCEL.equals(action)) {
             doCancel();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_REBUILD_DASHBOARD.equals(action)) {
+            if (started) return START_NOT_STICKY;
+            started = true;
+            rebuildMode = true;
+            org.iiab.controller.InstallGuard.begin(this);   // exclusive: no concurrent proot op
+            iiabRootDir = new File(getFilesDir(), "rootfs");
+            debianRootfs = new File(iiabRootDir, "installed-rootfs/iiab");
+            if (prootEngine == null) prootEngine = new PRootEngine();
+            startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.k2go_dash_rebuilding)));
+            acquireHardwareLocks();
+            InstallProgressRepository.get().postProvisioning(getString(R.string.k2go_dash_rebuilding));
+            new Thread(this::runDashboardRebuild, "dash-rebuild-service").start();
             return START_NOT_STICKY;
         }
         boolean isModules = ACTION_START_MODULES.equals(action);
@@ -806,6 +823,26 @@ public final class InstallService extends Service {
                 .putString("pending_modules", "").putBoolean("is_batch_installing", false).apply();
     }
 
+    // ---------------------------------------------------------------- dashboard rebuild (ADFA-5011)
+
+    /** True while this service is running a dash-node rebuild (skips install-only analytics/finish). */
+    private boolean rebuildMode = false;
+
+    /** Drive DashboardRebuildRunner (pdsm stop -> preflight -> rebuild -> pdsm start) on the service's
+     *  guarded, foreground lifecycle. Terminal states reuse finishSuccess()/fail() so the guard, the
+     *  status window and teardown behave exactly like an install. */
+    private void runDashboardRebuild() {
+        new org.iiab.controller.redesign.DashboardRebuildRunner(this, prootEngine, debianRootfs.getAbsolutePath())
+                .start(new org.iiab.controller.redesign.DashboardRebuildRunner.Callback() {
+                    @Override public void onLog(String line) { log(line); }
+                    @Override public void onPreflight(org.iiab.controller.redesign.DashboardRebuildRunner.PreflightResult r) {
+                        log("[rebuild] preflight ok=" + r.ok + " installed=" + r.installed + " available=" + r.available);
+                    }
+                    @Override public void onDone() { log("[rebuild] complete"); finishSuccess(); }
+                    @Override public void onError(String reason) { log("[rebuild] error: " + reason); fail(reason); }
+                });
+    }
+
     // ---------------------------------------------------------------- terminal
 
     private void finishSuccess() {
@@ -814,7 +851,7 @@ public final class InstallService extends Service {
         // ADFA-4811: clear the install guard BEFORE publishing SUCCESS, so the UI observer can
         // start the server for this session (handleServerLaunchClick refuses while the guard is set).
         org.iiab.controller.InstallGuard.end(this);
-        if (!resetMode && !moduleMode) {
+        if (!resetMode && !moduleMode && !rebuildMode) {
             // ADFA-4466 Phase 1: operational analytics (no-op unless the operator opted in).
             org.iiab.controller.analytics.AnalyticsClient.with(this)
                     .logInstallCompleted(tier != null ? tier.name() : null, true);
