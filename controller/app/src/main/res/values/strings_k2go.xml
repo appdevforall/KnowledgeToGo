@@ -732,6 +732,7 @@
     <!-- dash-node ships as first-party code under the project license. -->
     <string name="k2go_dash_license">GPL-2.0</string>
     <!-- ADFA-5011: rebuild progress row/status on the setup screen. -->
+    <string name="k2go_dash_redirect">Rebuild complete — sending you to your library…</string>
     <string name="k2go_dash_rebuild_building">Building, testing and swapping in place…</string>
     <string name="k2go_dash_rebuild_failed">Rebuild failed</string>
     <string name="k2go_dash_services_failed">Rebuilt, but services didn\'t come up in time</string>

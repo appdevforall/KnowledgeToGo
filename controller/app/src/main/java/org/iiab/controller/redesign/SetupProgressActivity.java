@@ -331,9 +331,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                     rebuildServerAt = SystemClock.elapsedRealtime();
                     serverController.startEnvironment();
                 }
+                render();   // sets rebuildRunningSeen once the running state is observed
                 // On success, probe the REST core (read-only) until it answers or the wait times out —
-                // so we redirect only once services are truly up, never onto a dead Home.
-                if (rebuiltOk && !rebuildServerUp && !rebuildServerFailed && !probing) {
+                // so we redirect only once services are truly up, never onto a dead Home. Reschedule from
+                // INSIDE the probe callback (not below): apiReady() can block up to ~5s while the server
+                // boots — longer than READY_POLL_MS — and the top `if (probing) return` would otherwise
+                // strand the loop if we also scheduled here.
+                if (rebuiltOk && !rebuildServerUp && !rebuildServerFailed) {
                     probing = true;
                     AppExecutors.get().io().execute(() -> {
                         final boolean up = RestReadiness.apiReady();
@@ -343,12 +347,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                             if (up) rebuildServerUp = true;
                             else if (SystemClock.elapsedRealtime() - rebuildServerAt > SERVER_UP_TIMEOUT_MS) rebuildServerFailed = true;
                             render();
+                            if (!rebuildServerUp && !rebuildServerFailed) main.postDelayed(readyPoll, READY_POLL_MS);
                         });
                     });
+                    return;
                 }
-                render();   // sets rebuildRunningSeen once the running state is observed
-                boolean settled = rebuiltFail
-                        || (rebuiltOk && (rebuildServerUp || rebuildServerFailed));
+                // Building, or terminal-and-settled. Keep polling only while still building.
+                boolean settled = rebuiltFail || (rebuiltOk && (rebuildServerUp || rebuildServerFailed));
                 if (!settled) main.postDelayed(readyPoll, READY_POLL_MS);
                 return;
             }
@@ -598,6 +603,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         }
 
         if (done && !redirectCancelled) {
+            redirect.setText(R.string.k2go_dash_redirect);   // rebuild-specific wording (not "Installation complete")
             show(redirect, true); show(cancel, true);
             show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
             scheduleRedirect();

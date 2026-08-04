@@ -54,7 +54,7 @@ public final class DashboardRebuildRunner {
     private static final String SHELL =
             "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc";
     private static final String CLONE = "/opt/iiab-android";
-    private static final String BRANCH = "feat/ADFA-5011-dashboard-rebuild";        // TODO(ADFA-5011): override for pre-merge testing
+    private static final String BRANCH = "main";       // the rebuild always tracks the mainline dashboard
     private static final String TMP = "/tmp/k2go";       // where we drop the newest scripts to run them
 
     public interface Callback {
