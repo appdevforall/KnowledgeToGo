@@ -123,6 +123,30 @@ public class SeedPlanTest {
     }
 
     @Test
+    public void requiredBytesScalesTheRemainderInsteadOfTruncatingIt() {
+        // A size divisible by 100 cannot tell "* margin / 100" from "/ 100 * margin",
+        // so the original test passed while the second, wrong, ordering was in place.
+        // 1099 does distinguish them: truncating first gives 1100, scaling gives 1208.
+        SeedPlan p = SeedPlan.of(
+                Collections.singletonList(ChannelSelection.wholeChannel(STORYBOOK)),
+                sizes(STORYBOOK, 1099L));
+        assertEquals(1208L, p.requiredBytes());
+        assertEquals(1648L, p.requiredBytes(150));
+    }
+
+    @Test
+    public void requiredBytesDoesNotOverflowOnACatalogSizedPlan() {
+        // The whole public catalog is ~775 GB; multiplying before dividing has to stay
+        // inside long. 8.3e11 * 150 is 1.2e14, well under the 9.2e18 ceiling.
+        SeedPlan p = SeedPlan.of(
+                Collections.singletonList(ChannelSelection.wholeChannel(STORYBOOK)),
+                sizes(STORYBOOK, 775L * GB));
+        long required = p.requiredBytes(150);
+        assertTrue("overflowed to a negative", required > 0L);
+        assertEquals(775L * GB / 100L * 150L, required);
+    }
+
+    @Test
     public void aMarginBelowOneHundredIsClampedNotHonoured() {
         // Planning to use less space than the content needs is never right.
         SeedPlan p = SeedPlan.of(

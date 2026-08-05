@@ -173,7 +173,11 @@ public final class SeedPlan {
      */
     public long requiredBytes(int marginPercent) {
         int margin = Math.max(100, marginPercent);
-        return estimatedBytes() / 100L * margin;
+        // Multiply first: dividing by 100 up front truncates the remainder before it
+        // is scaled, losing up to ~99 bytes per call. No overflow risk — the whole
+        // public catalog is ~775 GB (8.3e11), and 8.3e11 * 150 is 1.2e14 against a
+        // long ceiling of 9.2e18.
+        return estimatedBytes() * margin / 100L;
     }
 
     /**

@@ -131,10 +131,12 @@ public final class KolibriRestClient {
      */
     public void seed(@NonNull SeedPlan plan, @NonNull Listener l) {
         this.listener = l;
+        resetRunState();
         if (plan.isEmpty()) {
             // Nothing queued is a success, not an error: the caller drained an
-            // empty wishlist.
-            main.post(l::onDone);
+            // empty wishlist. Routed through done() so the double-callback guard is
+            // armed rather than left open.
+            done();
             return;
         }
         AppExecutors.get().io().execute(() -> {
@@ -154,11 +156,35 @@ public final class KolibriRestClient {
         });
     }
 
-    /** Re-attaches to a job started earlier, e.g. after the service was restarted. */
+    /**
+     * Re-attaches to a job started earlier, e.g. after the service was restarted.
+     *
+     * <p>Resets the run state first, and that ordering matters: {@code finished}
+     * short-circuits both {@link #pollOnce()} and {@link #fail(String)}, so on an
+     * instance that already completed a seed this method would otherwise go
+     * completely silent — no polling, no error, no callback.
+     */
     public void attach(@NonNull String existingJobId, @NonNull Listener l) {
         this.listener = l;
-        this.jobId = existingJobId;
+        resetRunState();
+
+        String id = existingJobId.trim();
+        if (id.isEmpty()) {
+            // Fail with the real cause. Left to the poller, an empty id would 404
+            // ten times and surface as "lost contact with the content service",
+            // pointing at the network instead of at the missing id.
+            fail("no job to re-attach to");
+            return;
+        }
+        this.jobId = id;
         main.postDelayed(pollTask, POLL_MS);
+    }
+
+    /** Clears the per-run flags so the instance can start or re-attach again. */
+    private void resetRunState() {
+        finished = false;
+        indexing = false;
+        pollErrors = 0;
     }
 
     /** The id of the in-flight job, or null. Persist it to survive a restart. */
@@ -208,6 +234,12 @@ public final class KolibriRestClient {
 
             switch (phase) {
                 case "downloading":
+                    // Cleared on the way in, not only set on the way out: a job that
+                    // seeds several channels re-enters processing once per channel,
+                    // and a latching flag would announce the phase for the first
+                    // channel only. The ZIM client can latch because it handles one
+                    // item; this one cannot.
+                    indexing = false;
                     if (percent >= 0) {
                         final int p = percent;
                         final String rate = formatRate(speed);
