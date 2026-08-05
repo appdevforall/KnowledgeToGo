@@ -93,7 +93,7 @@
     <string name="k2go_settings_theme">Theme</string>
     <string name="k2go_settings_help">Help</string>
     <string name="k2go_settings_send_feedback">Send feedback</string>
-    <string name="k2go_settings_advanced_sub">System, backups, developer tools</string>
+    <string name="k2go_settings_advanced_sub">Developer tools</string>
     <string name="k2go_theme_light">Light</string>
     <string name="k2go_theme_system">Follow system</string>
     <string name="k2go_theme_dark">Dark</string>
@@ -102,6 +102,7 @@
     <string name="k2go_settings_turnoff_confirm">Turn off</string>
     <string name="k2go_settings_lang_caption">Sets the app language and the default content language.</string>
     <string name="k2go_settings_app_version">App version</string>
+    <string name="k2go_settings_check_updates">Check for updates</string>
     <string name="k2go_settings_permissions">Permissions</string>
     <string name="k2go_settings_usage_stats">Share usage statistics</string>
     <string name="k2go_settings_licenses">Open-source licenses</string>
@@ -112,44 +113,96 @@
     <string name="k2go_settings_module_mgmt_sub">Add apps to your library</string>
 
     <!-- ADFA-4842: Module management (proot module installs, Play Store-style cards). -->
-    <string name="k2go_mod_hub_title" translatable="false">Add modules</string>
-    <string name="k2go_mod_hub_sub" translatable="false">Apps you can install on your library. Runs on the device — no internet needed.</string>
-    <string name="k2go_mod_hub_prompt" translatable="false">What would you like to install?</string>
-    <string name="k2go_mod_none" translatable="false">Everything available is already installed.</string>
-    <string name="k2go_mod_proceed_fmt" translatable="false">Install %1$d selected</string>
-    <string name="k2go_mod_schedule" translatable="false">Schedule install</string>
-    <string name="k2go_mod_unschedule" translatable="false">Remove from install</string>
-    <string name="k2go_mod_scheduled" translatable="false">Scheduled</string>
-    <string name="k2go_mod_install_now" translatable="false">Install now</string>
-    <string name="k2go_mod_back" translatable="false">Modules</string>
+    <string name="k2go_mod_hub_title">Add modules</string>
+    <string name="k2go_mod_hub_sub">Apps you can install on your library. Runs on the device — no internet needed.</string>
+    <string name="k2go_mod_hub_prompt">What would you like to install?</string>
+    <string name="k2go_mod_none">Everything available is already installed.</string>
+    <string name="k2go_mod_proceed_fmt">Install %1$d</string>
+    <string name="k2go_mod_schedule">Schedule install</string>
+    <string name="k2go_mod_unschedule">Remove from install</string>
+    <string name="k2go_mod_scheduled">Scheduled</string>
+    <string name="k2go_mod_install_now">Install now</string>
+    <string name="k2go_mod_back">Modules</string>
     <!-- install/status detail (shared per-module screen) -->
-    <string name="k2go_mod_install_sub" translatable="false">Installing a module can take a while. You can safely leave the screen; the installation will keep going in the background.</string>
-    <string name="k2go_mod_phase_queued" translatable="false">Waiting…</string>
-    <string name="k2go_mod_phase_installing" translatable="false">Installing…</string>
-    <string name="k2go_mod_phase_done" translatable="false">Installed</string>
-    <string name="k2go_mod_phase_failed" translatable="false">Couldn\'t install</string>
-    <string name="k2go_mod_leave_title" translatable="false">This can take a while — thanks for your patience.</string>
-    <string name="k2go_mod_leave_body" translatable="false">Installing a module changes the system and can take a while. You can safely leave the screen; the installation continues in the background.</string>
+    <string name="k2go_mod_install_sub">Installing a module can take a while. You can safely leave the screen; the installation will keep going in the background.</string>
+    <string name="k2go_mod_phase_queued">Waiting…</string>
+    <string name="k2go_mod_phase_installing">Installing…</string>
+    <string name="k2go_mod_phase_done">Installed</string>
+    <string name="k2go_mod_phase_failed">Couldn\'t install</string>
+    <string name="k2go_mod_leave_title">This can take a while — thanks for your patience.</string>
+    <string name="k2go_mod_leave_body">Installing a module changes the system and can take a while. You can safely leave the screen; the installation continues in the background.</string>
     <!-- per-module cards: title · subtitle · description -->
-    <string name="k2go_mod_kolibri_title" translatable="false">Course manager</string>
-    <string name="k2go_mod_kolibri_sub" translatable="false">Kolibri</string>
-    <string name="k2go_mod_kolibri_desc" translatable="false">An offline learning platform. Browse and study curated courses, lessons, and exercises on the device — no internet needed once installed.</string>
-    <string name="k2go_mod_calibreweb_title" translatable="false">Books reader</string>
-    <string name="k2go_mod_calibreweb_sub" translatable="false">Calibre-Web</string>
-    <string name="k2go_mod_calibreweb_desc" translatable="false">Read and manage your ebook library in the browser. Organize, search, and read your books offline. Add books from Get More.</string>
-    <string name="k2go_mod_kiwix_title" translatable="false">Content reader</string>
-    <string name="k2go_mod_kiwix_detail_title" translatable="false">Content reader (ZIM files)</string>
-    <string name="k2go_mod_kiwix_sub" translatable="false">Kiwix</string>
-    <string name="k2go_mod_kiwix_desc" translatable="false">Reads offline ZIM archives such as Wikipedia and other reference collections. This installs the reader app; add the actual content from Get More.</string>
+    <string name="k2go_mod_kolibri_title">Course manager</string>
+    <string name="k2go_mod_kolibri_sub">Kolibri</string>
+    <string name="k2go_mod_kolibri_desc">An offline learning platform. Browse and study curated courses, lessons, and exercises on the device — no internet needed once installed.</string>
+    <string name="k2go_mod_calibreweb_title">Books reader</string>
+    <string name="k2go_mod_calibreweb_sub">Calibre-Web</string>
+    <string name="k2go_mod_calibreweb_desc">Read and manage your ebook library in the browser. Organize, search, and read your books offline. Add books from Get More.</string>
+    <string name="k2go_mod_kiwix_title">Content reader</string>
+    <string name="k2go_mod_kiwix_detail_title">Content reader (ZIM files)</string>
+    <string name="k2go_mod_kiwix_sub">Kiwix</string>
+    <string name="k2go_mod_kiwix_desc">Reads offline ZIM archives such as Wikipedia and other reference collections. This installs the reader app; add the actual content from Get More.</string>
     <string name="k2go_mod_code_title" translatable="false">Code on the Go</string>
     <string name="k2go_mod_code_sub" translatable="false">AppDevForAll</string>
-    <string name="k2go_mod_code_desc" translatable="false">An offline-first Android IDE. Write, debug, and build  Android apps directly on the phone or tablet, without needing internet access.</string>
-    <string name="k2go_mod_matomo_title" translatable="false">Analytics</string>
-    <string name="k2go_mod_matomo_sub" translatable="false">Matomo</string>
-    <string name="k2go_mod_matomo_desc" translatable="false">Private, self-hosted usage analytics for your library. Understand how content is used, all on the device.</string>
+    <string name="k2go_mod_code_desc">An offline-first Android IDE. Write, debug, and build  Android apps directly on the phone or tablet, without needing internet access.</string>
+    <string name="k2go_mod_matomo_title">Analytics</string>
+    <string name="k2go_mod_matomo_sub">Matomo</string>
+    <string name="k2go_mod_matomo_desc">Private, self-hosted usage analytics for your library. Understand how content is used, all on the device.</string>
     <string name="k2go_settings_backups">Backups &amp; recovery</string>
+    <!-- ADFA-4952: Backup &amp; restore -->
+    <string name="k2go_br_row_sub">Save your system to a file, restore it, or reinstall from scratch</string>
+    <string name="k2go_br_title">Backup &amp; restore</string>
+    <string name="k2go_br_desc">Save your whole system to a file you can keep or move, restore it from one, or reinstall from scratch. The server stops while this runs.</string>
+    <string name="k2go_br_prompt">What do you want to do?</string>
+    <string name="k2go_br_backup_title">Back up</string>
+    <string name="k2go_br_backup_sub">Save the current system to a file</string>
+    <string name="k2go_br_restore_title">Restore</string>
+    <string name="k2go_br_restore_sub">Replace the system from a file</string>
+    <!-- ADFA-5023: reinstall-from-scratch (delete + fresh install) — destructive recovery / clean slate. -->
+    <string name="k2go_reinstall_title">Reinstall the system</string>
+    <string name="k2go_reinstall_sub">Erase everything and install a fresh system from scratch</string>
+    <string name="k2go_reinstall_confirm_title">Reinstall from scratch?</string>
+    <string name="k2go_reinstall_confirm_msg">This erases the current system and everything in it — books, maps, downloads and settings — then installs a clean copy. It can\'t be undone. Back up first if you want to keep anything. Needs an internet connection.</string>
+    <string name="k2go_reinstall_confirm_yes">Erase and reinstall</string>
+    <string name="k2go_br_soon">Coming in the next build</string>
+    <string name="k2go_br_start">Start</string>
+    <string name="k2go_br_backup_warn">Starting the backup stops the server and blocks other operations until it finishes.</string>
+    <string name="k2go_br_status_stopping">Stopping services</string>
+    <string name="k2go_br_status_backing">Backing up</string>
+    <string name="k2go_br_backup_done">Backup saved</string>
+    <string name="k2go_br_backup_failed">Backup failed — try again</string>
+    <string name="k2go_br_done">Done</string>
+    <string name="k2go_br_done_title">Done</string>
+    <string name="k2go_br_failed_title">Something went wrong</string>
+    <string name="k2go_br_restore_pick">Choose a file &amp; restore</string>
+    <string name="k2go_br_status_checking">Checking the file</string>
+    <string name="k2go_br_status_restoring">Restoring</string>
+    <string name="k2go_br_restore_warn">This replaces your current system with the chosen backup. It can\'t be undone, and the server stops while it runs.</string>
+    <string name="k2go_br_restore_confirm">Replace system</string>
+    <string name="k2go_br_restore_done">System restored</string>
+    <string name="k2go_br_restore_failed">Restore failed</string>
+    <string name="deepop_channel_name">Backup &amp; restore</string>
+    <string name="deepop_channel_desc">Keeps a backup or restore running safely in the background</string>
+    <string name="deepop_notif_title">Backup &amp; restore</string>
+    <string name="deepop_notif_cancel">Cancel</string>
+    <string name="k2go_clone_channel_name">Clone</string>
+    <string name="k2go_clone_channel_desc">Keeps a device-to-device transfer running</string>
+    <string name="k2go_clone_notif_title" translatable="false">Knowledge to Go</string>
+    <string name="k2go_clone_notif_text">Transferring between devices — tap to return</string>
+    <string name="k2go_bj_finish">Finish</string>
+    <string name="k2go_bj_wait_title">This can take a while</string>
+    <string name="k2go_bj_wait_body">Keep K2Go open. You can leave — it keeps running in the background, and the notification brings you back.</string>
+    <string name="k2go_bj_returning">Done — returning to Home…</string>
+    <string name="k2go_br_leave_backup">Backup is running — you can leave; it keeps going and will be ready when you come back.</string>
+    <string name="k2go_br_leave_restore">Restore is running — you can leave; it keeps going and will be ready when you come back.</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
+    <string name="k2go_dns_toggle_sub">Use a custom DNS. Off = server defaults.</string>
+    <string name="k2go_dns_required">Required</string>
+    <string name="k2go_dns_optional">Optional</string>
+    <string name="k2go_dns_default_title">Using default DNS</string>
+    <string name="k2go_dns_default_note">Cloudflare · Google. Written on server start.</string>
+    <string name="k2go_dns_testing">Testing DNS reachability…</string>
     <!-- ADFA-4795: redesign dialogs, toasts, Step2/Library setText (sweep 2) -->
     <string name="k2go_clone_switch_title">Switch to %1$s?</string>
     <string name="k2go_clone_switch_msg">This stops any copy in progress. The other phone can start again by rescanning the new code.</string>
@@ -291,9 +344,9 @@
     <string name="k2go_edition_basic">Basic</string>
     <string name="k2go_edition_standard">Standard</string>
     <string name="k2go_edition_full">Full</string>
-    <string name="k2go_edition_basic_desc">Wikipedia reader app + Books app</string>
+    <string name="k2go_edition_basic_desc">Wikipedia reader app + Maps app</string>
     <string name="k2go_edition_standard_desc">Basic plus Courses app</string>
-    <string name="k2go_edition_full_desc">Standard plus Maps app (all apps)</string>
+    <string name="k2go_edition_full_desc">Standard plus Books app (all apps)</string>
     <string name="k2go_connect_hotspot_unsupported">Hotspot needs Android 8 or newer</string>
     <string name="k2go_connect_try_wifi">Try the Wi-Fi option instead.</string>
     <string name="k2go_connect_starting_hotspot">Starting hotspot…</string>
@@ -311,7 +364,7 @@
     <string name="k2go_step2b_info_review">Review your library, then download.</string>
     <string name="k2go_setting_up_library">Setting up your library…</string>
     <!-- ADFA-4915: minimalist indicator during the archive "reading/listing" sub-phase. Technical term, not localized for now. -->
-    <string name="k2go_reading" translatable="false">reading</string>
+    <string name="k2go_reading">reading</string>
     <string name="k2go_clone_hide_code">Hide code  ▴</string>
     <string name="k2go_clone_chooser_send_code">Send transfer code</string>
     <string name="k2go_clone_scan_prompt_receive">Scan the other phone\'s transfer code</string>
@@ -371,239 +424,350 @@
     <string name="k2go_rate_per_second">/s</string>
 
     <!-- ADFA-4848: Get More content hub (WIP; translatable=false until the l10n pass). -->
-    <string name="k2go_gm_hub_title" translatable="false">Get more</string>
-    <string name="k2go_gm_hub_sub" translatable="false">Add content to your offline library.</string>
-    <string name="k2go_gm_hub_prompt" translatable="false">What would you like to add?</string>
-    <string name="k2go_gm_wikipedia_title" translatable="false">Wikipedia &amp; ZIM content</string>
-    <string name="k2go_gm_wikipedia_desc" translatable="false">Articles, video, media</string>
-    <string name="k2go_gm_books_title" translatable="false">Books</string>
-    <string name="k2go_gm_books_desc" translatable="false">Gutenberg &amp; more</string>
-    <string name="k2go_gm_maps_title" translatable="false">Maps</string>
-    <string name="k2go_gm_maps_desc" translatable="false">Vector, satellite, 3D</string>
-    <string name="k2go_gm_courses_title" translatable="false">Courses</string>
-    <string name="k2go_gm_courses_desc" translatable="false">Kolibri lessons</string>
-    <string name="k2go_gm_wikipedia_note" translatable="false">Many collections</string>
-    <string name="k2go_gm_books_note" translatable="false">Thousands, tiny</string>
-    <string name="k2go_gm_maps_note" translatable="false">Choose quality</string>
-    <string name="k2go_gm_courses_note" translatable="false">In-app: TBD</string>
+    <string name="k2go_gm_hub_title">Get more</string>
+    <string name="k2go_gm_hub_sub">Add content to your offline library.</string>
+    <string name="k2go_gm_hub_prompt">What would you like to add?</string>
+    <string name="k2go_gm_wikipedia_title">Wikipedia &amp; ZIM content</string>
+    <string name="k2go_gm_wikipedia_desc">Articles, video, media</string>
+    <string name="k2go_gm_books_title">Books</string>
+    <string name="k2go_gm_books_desc">Gutenberg &amp; more</string>
+    <string name="k2go_gm_maps_title">Maps</string>
+    <string name="k2go_gm_maps_desc">Vector, satellite, 3D</string>
+    <string name="k2go_gm_courses_title">Courses</string>
+    <string name="k2go_gm_courses_desc">Kolibri lessons</string>
+    <string name="k2go_gm_wikipedia_note">Many collections</string>
+    <string name="k2go_gm_books_note">Thousands, tiny</string>
+    <string name="k2go_gm_maps_note">Choose quality</string>
+    <string name="k2go_gm_courses_note">In-app: TBD</string>
 
     <!-- ADFA-4848: Maps Get More flow (WIP; translatable=false until the l10n pass). -->
-    <string name="k2go_maps_scr_title" translatable="false">Maps</string>
-    <string name="k2go_maps_landing_sub" translatable="false">Set up your offline maps.</string>
-    <string name="k2go_maps_install_title" translatable="false">Install or update maps</string>
-    <string name="k2go_maps_install_desc" translatable="false">Base map, satellite, 3D terrain, search \u2014 pick quality &amp; size, then build.</string>
-    <string name="k2go_maps_choose_cta" translatable="false">Choose layers &amp; quality \u203a</string>
-    <string name="k2go_maps_choose_title" translatable="false">Choose layers &amp; quality</string>
-    <string name="k2go_maps_choose_sub" translatable="false">More detail means a bigger download.</string>
-    <string name="k2go_maps_grp_base" translatable="false">Base map</string>
-    <string name="k2go_maps_grp_base_hint" translatable="false">streets &amp; places</string>
-    <string name="k2go_maps_grp_sat" translatable="false">Satellite</string>
-    <string name="k2go_maps_grp_sat_hint" translatable="false">aerial photos</string>
-    <string name="k2go_maps_grp_terrain" translatable="false">3D terrain</string>
-    <string name="k2go_maps_grp_terrain_hint" translatable="false">elevation</string>
-    <string name="k2go_maps_grp_search" translatable="false">Search</string>
-    <string name="k2go_maps_grp_search_hint" translatable="false">find places</string>
-    <string name="k2go_maps_lvl_off" translatable="false">Off</string>
-    <string name="k2go_maps_lvl_low" translatable="false">Low</string>
-    <string name="k2go_maps_lvl_standard" translatable="false">Standard</string>
-    <string name="k2go_maps_lvl_high" translatable="false">High</string>
-    <string name="k2go_maps_lvl_max" translatable="false">Max</string>
-    <string name="k2go_maps_lvl_cities" translatable="false">Cities</string>
-    <string name="k2go_maps_free" translatable="false">Free space %1$s</string>
-    <string name="k2go_maps_fits" translatable="false">Fits: %1$s of %2$s free</string>
-    <string name="k2go_maps_nospace" translatable="false">Not enough space \u2014 needs %1$s, %2$s free</string>
-    <string name="k2go_maps_download" translatable="false">Download \u00b7 %1$s</string>
+    <string name="k2go_maps_scr_title">Maps</string>
+    <string name="k2go_maps_landing_sub">Manage your offline maps.</string>
+    <string name="k2go_maps_install_title">Install or update maps</string>
+    <string name="k2go_maps_install_desc">Base map, satellite, 3D terrain, search \u2014 pick quality &amp; size, then build.</string>
+    <string name="k2go_maps_choose_cta">Choose layers &amp; quality \u203a</string>
+    <string name="k2go_maps_choose_title">Choose layers &amp; quality</string>
+    <string name="k2go_maps_choose_sub">More detail means a bigger download.</string>
+    <!-- ADFA-4910: Maps landing v3 (richer landing + dismissible Full-Quality Regions card). -->
+    <string name="k2go_maps_basic_title">Basic maps are included</string>
+    <string name="k2go_maps_basic_badge">Included</string>
+    <string name="k2go_maps_basic_desc">A basic, functional map of the whole world ships with your system. Build on it only if you need to.</string>
+    <string name="k2go_maps_sec_sharp">SHARP DETAIL FOR ONE AREA</string>
+    <string name="k2go_maps_fqr_title">Full-Quality Regions</string>
+    <string name="k2go_maps_fqr_desc">Once installed, open Maps and add any area in sharp detail — online, in minutes. No rebuild needed.</string>
+    <string name="k2go_maps_fqr_sub">Built into the basic maps — works even on the lightest one.</string>
+    <string name="k2go_maps_fqr_pill_after">After setup · in Maps</string>
+    <string name="k2go_maps_fqr_pill_light">Light</string>
+    <string name="k2go_maps_fqr_pill_online">Online</string>
+    <string name="k2go_maps_fqr_compact">Full-Quality Regions — later, in Maps.</string>
+    <string name="k2go_maps_fqr_show">Show</string>
+    <string name="k2go_maps_fqr_dismiss_cd">Dismiss</string>
+    <string name="k2go_maps_sec_global">GLOBAL HIGH DETAIL, BAKED IN</string>
+    <string name="k2go_maps_rebuild_title">Rebuild the full maps</string>
+    <string name="k2go_maps_rebuild_desc">Add global satellite, 3D terrain and higher detail, at the quality you choose.</string>
+    <string name="k2go_maps_rebuild_sub">Big build — minutes to hours, tens to hundreds of GB.</string>
+    <string name="k2go_maps_rebuild_pill_heavy">Heavy</string>
+    <string name="k2go_maps_rebuild_pill_offline">Offline build</string>
+    <string name="k2go_maps_landing_foot">Regions are added later, from Maps. Rebuilding is the only maps action during setup.</string>
+    <string name="k2go_maps_landing_ready">You\'re set with basic maps — add more anytime.</string>
+    <string name="k2go_maps_grp_base">Base map</string>
+    <string name="k2go_maps_grp_base_hint">streets &amp; places</string>
+    <string name="k2go_maps_grp_sat">Satellite</string>
+    <string name="k2go_maps_grp_sat_hint">aerial photos</string>
+    <string name="k2go_maps_grp_terrain">3D terrain</string>
+    <string name="k2go_maps_grp_terrain_hint">elevation</string>
+    <string name="k2go_maps_grp_search">Search</string>
+    <string name="k2go_maps_grp_search_hint">find places</string>
+    <string name="k2go_maps_lvl_off">Off</string>
+    <string name="k2go_maps_lvl_low">Low</string>
+    <string name="k2go_maps_lvl_standard">Standard</string>
+    <string name="k2go_maps_lvl_high">High</string>
+    <string name="k2go_maps_lvl_max">Max</string>
+    <string name="k2go_maps_lvl_cities">Cities</string>
+    <string name="k2go_maps_free">Free space %1$s</string>
+    <string name="k2go_maps_fits">Fits: %1$s of %2$s free</string>
+    <string name="k2go_maps_nospace">Not enough space \u2014 needs %1$s, %2$s free</string>
+    <string name="k2go_maps_download">Download \u00b7 %1$s</string>
 
     <!-- ADFA-4848 (slice 3): Maps Confirm + Preparing (WIP; translatable=false). -->
-    <string name="k2go_maps_confirm_title" translatable="false">Ready to build your maps?</string>
-    <string name="k2go_maps_confirm_sub" translatable="false">Here is what will be added.</string>
-    <string name="k2go_maps_total" translatable="false">Total</string>
-    <string name="k2go_maps_takes_time_title" translatable="false">This takes time</string>
-    <string name="k2go_maps_takes_time_body" translatable="false">A large download and build \u2014 minutes to a few hours. It keeps working in the background and resumes if interrupted.</string>
-    <string name="k2go_maps_use_wifi" translatable="false">Use Wi-Fi</string>
-    <string name="k2go_maps_keep_charged" translatable="false">Keep charged</string>
-    <string name="k2go_maps_start_building" translatable="false">Start building \u00b7 %1$s</string>
-    <string name="k2go_maps_add_setup_fmt" translatable="false">Add to your setup \u00b7 %1$s</string>
-    <string name="k2go_maps_keep_using" translatable="false">You can keep using the app meanwhile.</string>
-    <string name="k2go_maps_preparing_title" translatable="false">Preparing your maps\u2026</string>
-    <string name="k2go_maps_preparing_sub" translatable="false">This can take a while \u2014 please keep this screen open.</string>
+    <string name="k2go_maps_confirm_title">Ready to build your maps?</string>
+    <string name="k2go_maps_confirm_sub">Here is what will be added.</string>
+    <string name="k2go_maps_total">Total</string>
+    <string name="k2go_maps_takes_time_title">This takes time</string>
+    <string name="k2go_maps_takes_time_body">A large download and build \u2014 minutes to a few hours. It keeps working in the background and resumes if interrupted.</string>
+    <string name="k2go_maps_use_wifi">Use Wi-Fi</string>
+    <string name="k2go_maps_keep_charged">Keep charged</string>
+    <string name="k2go_maps_start_building">Start building \u00b7 %1$s</string>
+    <string name="k2go_maps_add_setup_fmt">Add to your setup \u00b7 %1$s</string>
+    <string name="k2go_maps_keep_using">You can keep using the app meanwhile.</string>
+    <string name="k2go_maps_preparing_title">Preparing your maps\u2026</string>
+    <string name="k2go_maps_preparing_sub">This can take a while \u2014 please keep this screen open.</string>
     <!-- ADFA-4919: honest wording — proot installs run on the live system and cannot background. Kept generic for any proot module. -->
-    <string name="k2go_maps_leave_title" translatable="false">Keep this screen open</string>
-    <string name="k2go_maps_leave_body" translatable="false">This installs directly on the system, so it can\u2019t run in the background. Please keep this screen open until it finishes.</string>
-    <string name="k2go_maps_run_bg" translatable="false">Run in background</string>
+    <string name="k2go_maps_leave_title">Keep this screen open</string>
+    <string name="k2go_maps_leave_body">This installs directly on the system, so it can\u2019t run in the background. Please keep this screen open until it finishes.</string>
+    <string name="k2go_maps_run_bg">Run in background</string>
     <!-- ADFA-4901: collapsible install log (reusable across proot modules). -->
-    <string name="k2go_maps_log_show" translatable="false">Show details</string>
-    <string name="k2go_maps_log_hide" translatable="false">Hide details</string>
-    <string name="k2go_maps_phase_prepared" translatable="false">Prepared the list</string>
-    <string name="k2go_maps_phase_downloading" translatable="false">Downloading map data</string>
-    <string name="k2go_maps_phase_building" translatable="false">Building the map tiles</string>
-    <string name="k2go_maps_phase_finishing" translatable="false">Finishing up</string>
-    <string name="k2go_maps_phase_ready" translatable="false">Ready</string>
-    <string name="k2go_maps_phase_failed" translatable="false">Couldn\'t build maps — check space and connection, then retry.</string>
+    <string name="k2go_maps_log_show">Show details</string>
+    <string name="k2go_maps_log_hide">Hide details</string>
+    <string name="k2go_maps_phase_prepared">Prepared the list</string>
+    <string name="k2go_maps_phase_downloading">Downloading map data</string>
+    <string name="k2go_maps_phase_building">Building the map tiles</string>
+    <string name="k2go_maps_phase_finishing">Finishing up</string>
+    <string name="k2go_maps_phase_ready">Ready</string>
+    <string name="k2go_maps_phase_failed">Couldn\'t build maps — check space and connection, then retry.</string>
 
     <!-- ADFA-4849: Wikipedia & ZIM content (WIP; translate in a later l10n pass) -->
-    <string name="k2go_zim_title" translatable="false">Wikipedia &amp; ZIM content</string>
-    <string name="k2go_zim_lang_fmt" translatable="false">Language: %1$s</string>
-    <string name="k2go_zim_lang_sub" translatable="false">From system · filters the catalog</string>
-    <string name="k2go_zim_lang_sub_manual" translatable="false">Manually selected · filters the catalog</string>
-    <string name="k2go_zim_change" translatable="false">Change</string>
-    <string name="k2go_zim_storage" translatable="false">STORAGE</string>
-    <string name="k2go_zim_storage_fmt" translatable="false">Used %1$s · Your selection %2$s · Free %3$s</string>
-    <string name="k2go_zim_search_hint" translatable="false">Search titles…</string>
-    <string name="k2go_zim_browse" translatable="false">Browse categories</string>
-    <string name="k2go_zim_loading" translatable="false">Loading catalog…</string>
-    <string name="k2go_zim_unavailable" translatable="false">Couldn’t reach the content mirror. Check your connection and try again.</string>
-    <string name="k2go_zim_cat_unavailable" translatable="false">Not available</string>
-    <string name="k2go_zim_see_all_fmt" translatable="false">See all %1$d categories · %2$d items</string>
-    <string name="k2go_zim_no_match" translatable="false">No categories match your search.</string>
-    <string name="k2go_zc_sub_fmt" translatable="false">%1$s · %2$d items</string>
-    <string name="k2go_zc_sort_size" translatable="false">By size</string>
-    <string name="k2go_zc_sort_name" translatable="false">A–Z</string>
-    <string name="k2go_zc_search_hint" translatable="false">Search in %1$s</string>
-    <string name="k2go_zc_add_fmt" translatable="false">Add to selection · %1$s</string>
-    <string name="k2go_zc_nospace" translatable="false">Not enough space — needs %1$s, %2$s free</string>
-    <string name="k2go_zc_lang_fmt" translatable="false">%1$s · %2$d</string>
-    <string name="k2go_zc_sort_name_desc" translatable="false">Z–A</string>
-    <string name="k2go_zc_sort_group" translatable="false">Grouped</string>
-    <string name="k2go_zc_group_topics" translatable="false">Topics</string>
-    <string name="k2go_zim_lang_mul" translatable="false">Multiple languages</string>
-    <string name="k2go_zc_none" translatable="false">No items in this language. Try another — e.g. Multiple languages.</string>
-    <string name="k2go_zim_review_fmt" translatable="false">Review selection · %1$s</string>
-    <string name="k2go_zim_confirm_title" translatable="false">Ready to download?</string>
-    <string name="k2go_zim_confirm_sub" translatable="false">Your selection across categories.</string>
-    <string name="k2go_zim_total" translatable="false">Total</string>
-    <string name="k2go_zim_items_fmt" translatable="false">%1$d items</string>
-    <string name="k2go_zim_fits_fmt" translatable="false">Fits: %1$s of %2$s free</string>
-    <string name="k2go_zim_nofit_fmt" translatable="false">Doesn’t fit: needs %1$s, %2$s free</string>
-    <string name="k2go_zim_takes_title" translatable="false">This takes time</string>
-    <string name="k2go_zim_takes_body" translatable="false">ZIM files are large and can take a long time to download, especially on a slow connection. The download keeps going in the background and resumes if interrupted.</string>
-    <string name="k2go_zim_start_fmt" translatable="false">Start download · %1$s</string>
-    <string name="k2go_zim_preparing_title" translatable="false">Preparing content…</string>
-    <string name="k2go_zim_preparing_sub" translatable="false">Large downloads. You can leave it running.</string>
-    <string name="k2go_zim_downloading_fmt" translatable="false">Downloading %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt" translatable="false">%1$s of %2$s%3$s · %4$d of %5$d items · resumes if it drops</string>
-    <string name="k2go_zim_leave_title" translatable="false">Leave it running</string>
-    <string name="k2go_zim_leave_body" translatable="false">We’ll notify you when your content is ready.</string>
-    <string name="k2go_zim_run_bg" translatable="false">Run in background</string>
-    <string name="k2go_zim_dl_channel_name" translatable="false">Content downloads</string>
-    <string name="k2go_zim_dl_notif_title" translatable="false">Downloading content</string>
-    <string name="k2go_zim_notif_cancel" translatable="false">Cancel</string>
-    <string name="k2go_zim_all_ready" translatable="false">All content ready</string>
-    <string name="k2go_zim_item_failed_suffix" translatable="false">  · Failed</string>
-    <string name="k2go_zim_finish" translatable="false">Finish</string>
-    <string name="k2go_zim_retry" translatable="false">Retry</string>
+    <string name="k2go_zim_title">Wikipedia &amp; ZIM content</string>
+    <string name="k2go_zim_lang_fmt">Language: %1$s</string>
+    <string name="k2go_zim_lang_sub">From system · filters the catalog</string>
+    <string name="k2go_zim_lang_sub_manual">Manually selected · filters the catalog</string>
+    <string name="k2go_zim_change">Change</string>
+    <string name="k2go_zim_storage">STORAGE</string>
+    <string name="k2go_zim_storage_fmt">Used %1$s · Your selection %2$s · Free %3$s</string>
+    <string name="k2go_zim_search_hint">Search titles…</string>
+    <string name="k2go_zim_browse">Browse categories</string>
+    <string name="k2go_zim_loading">Loading catalog…</string>
+    <string name="k2go_zim_unavailable">Couldn’t reach the content mirror. Check your connection and try again.</string>
+    <string name="k2go_zim_cat_unavailable">Not available</string>
+    <string name="k2go_zim_see_all_fmt">See all %1$d categories · %2$d items</string>
+    <string name="k2go_zim_no_match">No categories match your search.</string>
+    <string name="k2go_zc_sub_fmt">%1$s · %2$d items</string>
+    <string name="k2go_zc_sort_size">By size</string>
+    <string name="k2go_zc_sort_name">A–Z</string>
+    <string name="k2go_zc_search_hint">Search in %1$s</string>
+    <string name="k2go_zc_add_fmt">Add to selection · %1$s</string>
+    <string name="k2go_zc_nospace">Not enough space — needs %1$s, %2$s free</string>
+    <string name="k2go_zc_lang_fmt">%1$s · %2$d</string>
+    <string name="k2go_zc_sort_name_desc">Z–A</string>
+    <string name="k2go_zc_sort_group">Grouped</string>
+    <string name="k2go_zc_group_topics">Topics</string>
+    <string name="k2go_zim_lang_mul">Multiple languages</string>
+    <string name="k2go_zc_none">No items in this language. Try another — e.g. Multiple languages.</string>
+    <string name="k2go_zim_review_fmt">Review selection · %1$s</string>
+    <string name="k2go_zim_confirm_title">Ready to download?</string>
+    <string name="k2go_zim_confirm_sub">Your selection across categories.</string>
+    <string name="k2go_zim_total">Total</string>
+    <string name="k2go_zim_items_fmt">%1$d items</string>
+    <string name="k2go_zim_fits_fmt">Fits: %1$s of %2$s free</string>
+    <string name="k2go_zim_nofit_fmt">Doesn’t fit: needs %1$s, %2$s free</string>
+    <string name="k2go_zim_takes_title">This takes time</string>
+    <string name="k2go_zim_takes_body">ZIM files are large and can take a long time to download, especially on a slow connection. The download keeps going in the background and resumes if interrupted.</string>
+    <string name="k2go_zim_start_fmt">Start download · %1$s</string>
+    <string name="k2go_zim_preparing_title">Preparing content…</string>
+    <string name="k2go_zim_preparing_sub">Large downloads. You can leave it running.</string>
+    <string name="k2go_zim_downloading_fmt">Downloading %1$s</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s of %2$s%3$s · %4$d of %5$d items · resumes if it drops</string>
+    <string name="k2go_zim_leave_title">Leave it running</string>
+    <string name="k2go_zim_leave_body">We’ll notify you when your content is ready.</string>
+    <string name="k2go_zim_run_bg">Run in background</string>
+    <string name="k2go_zim_dl_channel_name">Content downloads</string>
+    <string name="k2go_zim_dl_notif_title">Downloading content</string>
+    <string name="k2go_zim_notif_cancel">Cancel</string>
+    <string name="k2go_zim_all_ready">All content ready</string>
+    <string name="k2go_zim_item_failed_suffix">  · Failed</string>
+    <string name="k2go_zim_finish">Finish</string>
+    <string name="k2go_zim_retry">Retry</string>
 
     <!-- ADFA-4850: Get More hub — module-gated cards -->
-    <string name="k2go_gm_checking" translatable="false">Checking installed modules…</string>
-    <string name="k2go_wizard_continue" translatable="false">Continue</string>
-    <string name="k2go_setup_progress_title" translatable="false">Finishing setup</string>
-    <string name="k2go_setup_context" translatable="false">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
+    <string name="k2go_gm_checking">Checking installed modules…</string>
+    <string name="k2go_wizard_continue">Continue</string>
+    <string name="k2go_setup_progress_title">Finishing setup</string>
+    <string name="k2go_setup_context">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
     <!-- ADFA-4919: proot (Maps) runs on the live system and cannot background; keep the user here. -->
-    <string name="k2go_setup_context_proot" translatable="false">It will redirect you automatically when finished. Keep the app on this screen while it installs — this part can’t run in the background.</string>
+    <string name="k2go_setup_context_proot">It will redirect you automatically when finished. Keep the app on this screen while it installs — this part can’t run in the background.</string>
     <!-- ADFA-4919: shown when the user tries to start a proot module while another install job is running. -->
-    <string name="k2go_install_busy" translatable="false">An install is already running — please wait for it to finish.</string>
+    <string name="k2go_install_busy">An install is already running — please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
-    <string name="k2go_setup_leave_hint" translatable="false">Still setting up the system. You can leave the app — it keeps going and will be ready when you come back.</string>
+    <string name="k2go_setup_leave_hint">Still setting up the system. You can leave the app — it keeps going and will be ready when you come back.</string>
     <!-- ADFA-4919 (2c-ii): shown when a proot install was killed and the system can't start. -->
-    <string name="k2go_damaged_title" translatable="false">Installation interrupted</string>
-    <string name="k2go_damaged_body" translatable="false">The setup was stopped before it finished, and the system can\u2019t start. To fix it, reinstall the app and run setup again.</string>
-    <string name="k2go_damaged_close" translatable="false">Close</string>
-    <string name="k2go_setup_starting" translatable="false">Starting services</string>
-    <string name="k2go_setup_adding" translatable="false">Adding your content</string>
-    <string name="k2go_setup_slow" translatable="false">Starting services — this is taking longer than usual</string>
-    <string name="k2go_setup_redirect" translatable="false">Installation complete — sending you to your library…</string>
-    <string name="k2go_setup_cancel" translatable="false">Cancel</string>
-    <string name="k2go_setup_finish_note" translatable="false">You can review failed tasks later in the background jobs monitor.</string>
-    <string name="k2go_setup_state_done" translatable="false">Done</string>
-    <string name="k2go_setup_state_queued" translatable="false">Queued</string>
-    <string name="k2go_setup_state_failed_fmt" translatable="false">%1$d failed</string>
-    <string name="k2go_setup_state_progress_fmt" translatable="false">%1$d of %2$d</string>
-    <string name="k2go_setup_back" translatable="false">Back</string>
-    <string name="k2go_setup_finish_q" translatable="false">Finish setup?</string>
-    <string name="k2go_setup_finish_msg" translatable="false">Anything still downloading keeps going in the background; items with errors won\'t be retried.</string>
-    <string name="k2go_zim_add_setup_fmt" translatable="false">Add to your setup (%1$s)</string>
-    <string name="k2go_gm_none" translatable="false">No content modules are installed yet.</string>
+    <string name="k2go_damaged_title">Installation interrupted</string>
+    <string name="k2go_damaged_body">The setup was stopped before it finished, and the system can\u2019t start. You can restore a backup or reinstall the system from scratch to recover.</string>
+    <string name="k2go_damaged_recover">Recover\u2026</string>
+    <string name="k2go_damaged_close">Close</string>
+    <string name="k2go_setup_starting">Starting services</string>
+    <string name="k2go_setup_adding">Adding your content</string>
+    <string name="k2go_setup_slow">Starting services — this is taking longer than usual</string>
+    <string name="k2go_setup_redirect">Installation complete — sending you to your library…</string>
+    <string name="k2go_setup_cancel">Cancel</string>
+    <string name="k2go_setup_finish_note">You can review failed tasks later in the background jobs monitor.</string>
+    <string name="k2go_setup_state_done">Done</string>
+    <string name="k2go_setup_state_queued">Queued</string>
+    <string name="k2go_setup_state_failed_fmt">%1$d failed</string>
+    <string name="k2go_setup_state_progress_fmt">%1$d of %2$d</string>
+    <string name="k2go_setup_back">Back</string>
+    <string name="k2go_setup_finish_q">Finish setup?</string>
+    <string name="k2go_setup_finish_msg">Anything still downloading keeps going in the background; items with errors won\'t be retried.</string>
+    <string name="k2go_zim_add_setup_fmt">Add to your setup (%1$s)</string>
+    <string name="k2go_gm_none">No content modules are installed yet.</string>
 
     <!-- ADFA-4850: Get More Books / Project Gutenberg -->
-    <string name="k2go_books_title" translatable="false">Books</string>
-    <string name="k2go_books_search_hint" translatable="false">Search books</string>
-    <string name="k2go_books_chip_popular" translatable="false">Popular</string>
-    <string name="k2go_books_chip_edu" translatable="false">Educational</string>
-    <string name="k2go_books_chip_local" translatable="false">My books</string>
-    <string name="k2go_books_lang_all" translatable="false">All languages</string>
-    <string name="k2go_books_lang_fmt" translatable="false">Language: %1$s</string>
-    <string name="k2go_books_lang_title" translatable="false">Choose a language</string>
-    <string name="k2go_books_local_none" translatable="false">No books in your library yet.</string>
-    <string name="k2go_books_local_hint" translatable="false">Tap a book to open it in the library.</string>
-    <string name="k2go_books_loading" translatable="false">Loading…</string>
-    <string name="k2go_books_unavailable" translatable="false">Couldn\'t reach the content service.</string>
-    <string name="k2go_books_offline_error" translatable="false">Couldn\'t read the offline catalog.</string>
-    <string name="k2go_books_none" translatable="false">No books found.</string>
-    <string name="k2go_books_in_library" translatable="false">In your books</string>
-    <string name="k2go_books_selected" translatable="false">Selected</string>
-    <string name="k2go_books_add_fmt" translatable="false">Add %1$d to library</string>
-    <string name="k2go_books_add_setup_fmt" translatable="false">Add %1$d to your setup</string>
-    <string name="k2go_books_added" translatable="false">Added</string>
-    <string name="k2go_books_add_none" translatable="false">Select books to add</string>
-    <string name="k2go_books_view_downloads" translatable="false">View downloads</string>
+    <string name="k2go_books_title">Books</string>
+    <string name="k2go_books_search_hint">Search books</string>
+    <string name="k2go_books_chip_popular">Popular</string>
+    <string name="k2go_books_chip_edu">Educational</string>
+    <string name="k2go_books_chip_local">My books</string>
+    <string name="k2go_books_lang_all">All languages</string>
+    <string name="k2go_books_lang_fmt">Language: %1$s</string>
+    <string name="k2go_books_lang_title">Choose a language</string>
+    <string name="k2go_books_local_none">No books in your library yet.</string>
+    <string name="k2go_books_local_hint">Tap a book to open it in the library.</string>
+    <string name="k2go_books_loading">Loading…</string>
+    <string name="k2go_books_unavailable">Couldn\'t reach the content service.</string>
+    <string name="k2go_books_offline_error">Couldn\'t read the offline catalog.</string>
+    <string name="k2go_books_none">No books found.</string>
+    <string name="k2go_books_in_library">In your books</string>
+    <string name="k2go_books_selected">Selected</string>
+    <string name="k2go_books_add_fmt">Add %1$d to library</string>
+    <string name="k2go_books_add_setup_fmt">Add %1$d to your setup</string>
+    <string name="k2go_books_added">Added</string>
+    <string name="k2go_books_add_none">Select books to add</string>
+    <string name="k2go_books_view_downloads">View downloads</string>
     <!-- ADFA-4910: Books Confirm (review step between landing and download/bank). -->
-    <string name="k2go_books_review_fmt" translatable="false">Review selection (%1$d)</string>
-    <string name="k2go_books_back_title" translatable="false">Books</string>
-    <string name="k2go_books_confirm_title" translatable="false">Ready to add these books?</string>
-    <string name="k2go_books_confirm_sub" translatable="false">Your selection.</string>
-    <string name="k2go_books_confirm_note_title" translatable="false">One at a time</string>
-    <string name="k2go_books_total_fmt" translatable="false">%1$d books</string>
-    <string name="k2go_books_dl_title" translatable="false">Downloads</string>
-    <string name="k2go_books_dl_sub" translatable="false">Added one at a time — kind to Project Gutenberg.</string>
-    <string name="k2go_books_dl_started_fmt" translatable="false">Downloading %1$d books in the background…</string>
-    <string name="k2go_books_dl_detail_fmt" translatable="false">%1$d of %2$d books</string>
-    <string name="k2go_books_state_queued" translatable="false">Queued</string>
-    <string name="k2go_books_state_downloading" translatable="false">Downloading…</string>
-    <string name="k2go_books_state_adding" translatable="false">Adding to your library…</string>
-    <string name="k2go_books_state_done" translatable="false">In your books</string>
-    <string name="k2go_books_state_failed" translatable="false">Couldn\'t add — tap Retry</string>
-    <string name="k2go_books_dl_channel_name" translatable="false">Book downloads</string>
-    <string name="k2go_books_dl_notif_title" translatable="false">Adding books to your library</string>
+    <string name="k2go_books_review_fmt">Review selection (%1$d)</string>
+    <string name="k2go_books_back_title">Books</string>
+    <string name="k2go_books_confirm_title">Ready to add these books?</string>
+    <string name="k2go_books_confirm_sub">Your selection.</string>
+    <string name="k2go_books_confirm_note_title">One at a time</string>
+    <string name="k2go_books_total_fmt">%1$d books</string>
+    <string name="k2go_books_dl_title">Downloads</string>
+    <string name="k2go_books_dl_sub">Added one at a time — kind to Project Gutenberg.</string>
+    <string name="k2go_books_dl_started_fmt">Downloading %1$d books in the background…</string>
+    <string name="k2go_books_dl_detail_fmt">%1$d of %2$d books</string>
+    <string name="k2go_books_state_queued">Queued</string>
+    <string name="k2go_books_state_downloading">Downloading…</string>
+    <string name="k2go_books_state_adding">Adding to your library…</string>
+    <string name="k2go_books_state_done">In your books</string>
+    <string name="k2go_books_state_failed">Couldn\'t add — tap Retry</string>
+    <string name="k2go_books_dl_channel_name">Book downloads</string>
+    <string name="k2go_books_dl_notif_title">Adding books to your library</string>
 
     <!-- ADFA-4884: in-app FQR maps overlays/dialogs (extracted from FqrController for i18n;
          translatable=false until the l10n pass, matching the rest of this file). -->
-    <string name="k2go_fqr_invalid" translatable="false">That region name or area looks invalid.</string>
-    <string name="k2go_fqr_calculating" translatable="false">Calculating download size…</string>
-    <string name="k2go_fqr_estimate_error_title" translatable="false">Can\'t download this region</string>
-    <string name="k2go_fqr_consent_title" translatable="false">Download this region?</string>
-    <string name="k2go_fqr_consent_sub" translatable="false">“%1$s” — %2$s to download, %3$s on disk.</string>
-    <string name="k2go_fqr_consent_legend" translatable="false">This region: %1$s  ·  Free after: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit" translatable="false">This region may not fit — only %1$s would be free afterward.</string>
-    <string name="k2go_fqr_download" translatable="false">Download</string>
-    <string name="k2go_fqr_not_now" translatable="false">Not now</string>
-    <string name="k2go_fqr_downloading" translatable="false">Downloading “%1$s”</string>
-    <string name="k2go_fqr_show" translatable="false">Show</string>
-    <string name="k2go_fqr_starting" translatable="false">Starting…</string>
-    <string name="k2go_fqr_working" translatable="false">Working…</string>
-    <string name="k2go_fqr_percent" translatable="false">%1$d%%</string>
-    <string name="k2go_fqr_region_added" translatable="false">Region added</string>
-    <string name="k2go_fqr_download_failed" translatable="false">Download failed</string>
-    <string name="k2go_fqr_delete_list_title" translatable="false">Downloaded regions</string>
-    <string name="k2go_fqr_search_hint" translatable="false">Search by name</string>
-    <string name="k2go_fqr_empty" translatable="false">No downloaded regions yet.</string>
-    <string name="k2go_fqr_no_matches" translatable="false">No matches.</string>
-    <string name="k2go_fqr_delete_confirm_title" translatable="false">Delete “%1$s”?</string>
-    <string name="k2go_fqr_delete_confirm_msg" translatable="false">This full-quality region will be removed from this device.</string>
-    <string name="k2go_fqr_delete" translatable="false">Delete</string>
-    <string name="k2go_fqr_deleted" translatable="false">Deleted “%1$s”</string>
-    <string name="k2go_fqr_delete_failed" translatable="false">Delete failed</string>
+    <string name="k2go_fqr_invalid">That region name or area looks invalid.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” is already used — pick a different name.</string>
+    <string name="k2go_fqr_calculating">Calculating download size…</string>
+    <string name="k2go_fqr_estimate_error_title">Can\'t download this region</string>
+    <string name="k2go_fqr_consent_title">Download this region?</string>
+    <string name="k2go_fqr_consent_sub">“%1$s” — %2$s to download, %3$s on disk.</string>
+    <string name="k2go_fqr_consent_legend">This region: %1$s  ·  Free after: %2$s</string>
+    <string name="k2go_fqr_consent_wont_fit">This region may not fit — only %1$s would be free afterward.</string>
+    <string name="k2go_fqr_download">Download</string>
+    <string name="k2go_fqr_not_now">Not now</string>
+    <string name="k2go_fqr_downloading">Downloading “%1$s”</string>
+    <string name="k2go_fqr_show">Show</string>
+    <string name="k2go_fqr_starting">Starting…</string>
+    <string name="k2go_fqr_working">Working…</string>
+    <string name="k2go_fqr_percent">%1$d%%</string>
+    <string name="k2go_fqr_region_added">Region added</string>
+    <string name="k2go_fqr_download_failed">Download failed</string>
+    <string name="k2go_fqr_delete_list_title">Downloaded regions</string>
+    <string name="k2go_fqr_search_hint">Search by name</string>
+    <string name="k2go_fqr_empty">No downloaded regions yet.</string>
+    <string name="k2go_fqr_no_matches">No matches.</string>
+    <string name="k2go_fqr_delete_confirm_title">Delete “%1$s”?</string>
+    <string name="k2go_fqr_delete_confirm_msg">This full-quality region will be removed from this device.</string>
+    <string name="k2go_fqr_delete">Delete</string>
+    <string name="k2go_fqr_deleted">Deleted “%1$s”</string>
+    <string name="k2go_fqr_delete_failed">Delete failed</string>
 
     <!-- ADFA-4886: WebView nav bar (icon-only buttons) contentDescription + error page.
          translatable=false until the l10n pass, matching the rest of this file. -->
-    <string name="k2go_nav_back" translatable="false">Back</string>
-    <string name="k2go_nav_forward" translatable="false">Forward</string>
-    <string name="k2go_nav_fullscreen" translatable="false">Fullscreen</string>
-    <string name="k2go_nav_reload" translatable="false">Reload</string>
-    <string name="k2go_nav_stop" translatable="false">Stop loading</string>
-    <string name="k2go_nav_exit" translatable="false">Exit</string>
-    <string name="k2go_nav_show_bar" translatable="false">Show navigation bar</string>
-    <string name="k2go_nav_hide_bar" translatable="false">Hide navigation bar</string>
-    <string name="k2go_portal_error_title" translatable="false">Connection Failed</string>
-    <string name="k2go_portal_error_body" translatable="false">Unable to reach the secure environment.</string>
-    <string name="k2go_portal_error_detail" translatable="false">Error: %1$s</string>
+    <string name="k2go_nav_back">Back</string>
+    <string name="k2go_nav_forward">Forward</string>
+    <string name="k2go_nav_fullscreen">Fullscreen</string>
+    <string name="k2go_nav_reload">Reload</string>
+    <string name="k2go_nav_stop">Stop loading</string>
+    <string name="k2go_nav_exit">Exit</string>
+    <string name="k2go_nav_show_bar">Show navigation bar</string>
+    <string name="k2go_nav_hide_bar">Hide navigation bar</string>
+    <string name="k2go_portal_error_title">Connection Failed</string>
+    <string name="k2go_portal_error_body">Unable to reach the secure environment.</string>
+    <string name="k2go_portal_error_detail">Error: %1$s</string>
+    <!-- ADFA-4958: module action sheet + Home states -->
+    <string name="k2go_sheet_more">More options</string>
+    <string name="k2go_sheet_open">Open</string>
+    <string name="k2go_sheet_about">About this app</string>
+    <string name="k2go_sheet_install">Install now</string>
+    <string name="k2go_sheet_install_sel">Install selection</string>
+    <string name="k2go_sheet_schedule">Schedule</string>
+    <string name="k2go_sheet_cancel">Cancel schedule</string>
+    <string name="k2go_state_ready">Ready</string>
+    <string name="k2go_state_not_installed">Not installed</string>
+    <string name="k2go_state_scheduled">Scheduled</string>
+    <string name="k2go_mod_time_note">This builds the module into your system, so it takes a few minutes and stays on this screen until it\'s done. Want everything at once? Install the full system version.</string>
+    <string name="k2go_mod_maps_title">Navigate maps</string>
+    <string name="k2go_mod_maps_sub">IIAB Maps</string>
+    <string name="k2go_mod_maps_desc">Offline world maps to browse and search on the device. Pick the layers and region, then it builds into your system.</string>
+    <!-- ADFA-4958 module detail enrichment -->
+    <string name="k2go_mod_runs_offline">Runs offline</string>
+    <string name="k2go_mod_maps_size">200 MB+</string>
+    <string name="k2go_mod_matomo_size">≈ 114 MB</string>
+    <string name="k2go_mod_demo">Demo</string>
+    <string name="k2go_mod_includes_title">What it includes</string>
+    <string name="k2go_mod_license_fmt">License · %1$s</string>
+    <string name="k2go_mod_kolibri_includes">Sample courses included — add more in Get more.</string>
+    <string name="k2go_mod_calibreweb_includes">Reader only — add books in Get more.</string>
+    <string name="k2go_mod_kiwix_includes">Reader only — add Wikipedia and ZIM in Get more.</string>
+    <string name="k2go_mod_code_includes">The code editor itself — your projects live on the device.</string>
+    <string name="k2go_mod_matomo_includes">Analytics for this server — nothing to add.</string>
+    <string name="k2go_mod_maps_includes">Base map — pick the layers and region when you install.</string>
+    <!-- ADFA-4958 hide / restore / management -->
+    <string name="k2go_sheet_hide">Hide</string>
+    <string name="k2go_mod_hidden_header">HIDDEN</string>
+    <string name="k2go_mod_hidden_sub">Hidden from Home</string>
+    <string name="k2go_mod_restore">Restore</string>
+    <string name="k2go_mod_hidden_foot">Modules can\'t be uninstalled — only hidden, then restored here.</string>
+    <string name="k2go_mod_mgmt_helper">Tap to open · tick to install several at once.</string>
+
+    <!-- ADFA-5004: in-app management (list + delete) of installed Kiwix ZIMs (KiwixManageController). -->
+    <!-- ADFA-5011: dash-node REST-core rebuild (system module). -->
+    <string name="k2go_dash_rebuilding">Rebuilding dashboard…</string>
+    <string name="k2go_dash_card_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_version_unknown">REST core</string>
+    <!-- %1$s = installed version, e.g. "REST core · installed v1.1.0" -->
+    <string name="k2go_dash_card_sub_fmt">REST core · installed v%1$s</string>
+    <string name="k2go_dash_rebuild">Rebuild</string>
+    <string name="k2go_dash_rebuild_confirm_title">Rebuild the REST core?</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Updates dash-node to the latest version. The server is briefly unavailable while it rebuilds; don\'t leave this screen until it finishes.</string>
+    <string name="k2go_dash_needs_internet">Rebuild needs an internet connection.</string>
+    <!-- ADFA-5011: dashboard detail card (Play Store-style, Rebuild-only). -->
+    <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
+    <string name="k2go_dash_detail_sub">System core · always installed</string>
+    <string name="k2go_dash_detail_desc">The dashboard is the box\'s REST API core (dash-node) — a small Node service on 127.0.0.1:4000, fronted by nginx and supervised by pdsm. It powers every in-app library action: browsing and downloading Books, adding and deleting Wikipedia and ZIM content, Kolibri sessions, Maps, and system status. Unlike the content modules, it isn\'t something you install or remove — it ships with the box and is always present. When a newer build is available you can rebuild it in place.</string>
+    <string name="k2go_dash_includes">Books, Wikipedia/ZIM, Kolibri and Maps REST endpoints; the nginx vhost; and system version + rebuild endpoints — all served on 127.0.0.1:4000.</string>
+    <string name="k2go_dash_chip_rest">REST API</string>
+    <string name="k2go_dash_chip_core">System core</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Checking…</string>
+    <string name="k2go_dash_chip_uptodate">Up to date</string>
+    <string name="k2go_dash_chip_update">Update available</string>
+    <string name="k2go_dash_uptodate_hint">You\'re on the latest build — a rebuild isn\'t needed.</string>
+    <!-- dash-node ships as first-party code under the project license. -->
+    <string name="k2go_dash_license">GPL-2.0</string>
+    <!-- ADFA-5011: rebuild progress row/status on the setup screen. -->
+    <string name="k2go_dash_redirect">Rebuild complete — sending you to your library…</string>
+    <string name="k2go_dash_rebuild_building">Building, testing and swapping in place…</string>
+    <string name="k2go_dash_rebuild_failed">Rebuild failed</string>
+    <string name="k2go_dash_services_failed">Rebuilt, but services didn\'t come up in time</string>
+
+    <string name="k2go_zim_manage_action">Manage downloads</string>
+    <string name="k2go_zim_get_more">Get more content</string>
+    <string name="k2go_zim_manage_title">Downloaded content</string>
+    <string name="k2go_zim_manage_loading">Loading downloaded content…</string>
+    <string name="k2go_zim_empty">No downloaded content yet.</string>
+    <string name="k2go_zim_no_matches">No matches.</string>
+    <string name="k2go_zim_load_failed">Couldn\'t load downloaded content.</string>
+    <!-- %1$d = count, %2$s = human size, e.g. "3 item(s) · 12.4 GB" -->
+    <string name="k2go_zim_summary_fmt">%1$d item(s) · %2$s</string>
+    <string name="k2go_zim_delete">Delete</string>
+    <!-- %1$s = content name -->
+    <string name="k2go_zim_delete_confirm_title">Delete %1$s?</string>
+    <string name="k2go_zim_delete_confirm_msg">This removes the file and updates the content library. You can download it again later.</string>
+    <string name="k2go_zim_deleting">Deleting…</string>
+    <!-- %1$s = content name -->
+    <string name="k2go_zim_deleted">Deleted %1$s</string>
+    <!-- Shown when a download is in progress: the file is already gone and hidden in the reader, but
+         the real removal waits for that download's reindex. -->
+    <string name="k2go_zim_deleted_deferred">Deleted — hidden for now, fully removed once the current download finishes.</string>
+    <string name="k2go_zim_delete_failed">Couldn\'t delete. Please try again.</string>
 </resources>

@@ -61,6 +61,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean closing = false;
     private boolean closedDone = false;
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
+    private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
+
+    // ADFA-4984: own the OTA self-updater (revived; entry point is Settings -> About). We forward the
+    // DownloadManager receiver via onResume/onPause and run one silent auto-check per launch.
+    private org.iiab.controller.update.presentation.UpdateController updateController;
+    private boolean otaAutoChecked = false;
 
     // ADFA-4837/4947: animated "…" on the boot status + extract-detail lines, via the shared
     // EllipsisAnimator (fixed-width mode so the centered lines don't jiggle as the dots grow).
@@ -82,6 +88,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
         setContentView(R.layout.activity_library);
 
+        // ADFA-4984: OTA self-updater, active on the library screen. The manual entry lives in
+        // Settings -> About; onResume runs one silent check and wires the download receiver.
+        updateController = new org.iiab.controller.update.presentation.UpdateController(this);
+
         bottomNav = findViewById(R.id.k2go_bottom_nav);
         railNav = findViewById(R.id.k2go_nav_rail);
         NavigationBarView.OnItemSelectedListener navListener = item -> {
@@ -99,6 +109,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         currentTab = (savedInstanceState != null)
                 ? savedInstanceState.getInt(STATE_TAB, R.id.nav_library)
                 : getIntent().getIntExtra(EXTRA_TAB, R.id.nav_library);   // ADFA-4777
+        // ADFA-4957/4960: a live clone is app-scoped — RECEIVE in SyncProgressRepository, SEND in
+        // CloneSendSession. On a plain reopen (no explicit tab requested) land on the Clone tab so
+        // CloneFragment re-binds to the in-progress transfer/share instead of showing Home.
+        if (savedInstanceState == null && !getIntent().hasExtra(EXTRA_TAB)
+                && (org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()
+                    || CloneSendSession.isActive())) {   // ADFA-4960: also a live SEND
+            currentTab = R.id.nav_clone;
+        }
         showTab(currentTab);
         syncSelection(currentTab);
 
@@ -114,7 +132,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // ADFA-4915: extract detail is one middle-ellipsized line so long file names never overlap.
         installDetail.setMaxLines(1);
         installDetail.setEllipsize(android.text.TextUtils.TruncateAt.MIDDLE);
-        installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false);
+        // ADFA-4986: also treat a live install as "installing" even when re-entered WITHOUT the extra
+        // (tapping the install notification, or a relaunch). isRunning() covers DOWNLOADING/EXTRACTING/
+        // PROVISIONING. Otherwise the gate takes the normal-boot path and its autostart/safety timers
+        // start the server and OPEN over a system that is still provisioning -> a broken library.
+        installing = getIntent().getBooleanExtra(EXTRA_INSTALLING, false)
+                || InstallProgressRepository.get().current().isRunning();
         // The Lottie has a text layer (OPEN/CLOSED sign). Use the system typeface (Noto-based,
         // global script fallback) so localized words render in any language; a TextDelegate maps
         // the OPEN/CLOSED source text to the localized @string values.
@@ -144,7 +167,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         recovering = !installing
                 && org.iiab.controller.InstallGuard.inProgress(this)
                 && !InstallProgressRepository.get().current().isRunning()
-                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning();
+                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                // ADFA-4971: a LIVE deep-env op (backup/restore, clone-receive) legitimately holds
+                // InstallGuard. Without this it was mistaken for a killed install → false "reinstall"
+                // dialog, and (via the !recovering guard) it blocked the return-to-op routing so a
+                // reopen fell to the boot gate instead of the op screen. ownerHeld self-heals after a
+                // true kill, so a genuinely interrupted restore still enters recovery.
+                && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this);
         android.util.Log.i("K2Go-Recover", "onCreate recovering=" + recovering
                 + " marker=" + org.iiab.controller.InstallGuard.inProgress(this)
                 + " systemInstalled=" + systemInstalled
@@ -157,6 +186,20 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (!installing && !recovering
                 && org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
             startActivity(new android.content.Intent(this, SetupProgressActivity.class));
+        }
+
+        // ADFA-4957: same idea for a live deep-env op (backup/restore). A fresh LibraryActivity — from
+        // the notification, or a swipe-away relaunch — must land back on the op screen, not Home/Library
+        // (which fights the gate and would try to boot the server mid-op). Route straight to the
+        // backup/restore index; BackupJobFragment re-binds to the live op from DeepOpProgressRepository.
+        if (!installing && !recovering
+                && org.iiab.controller.deepop.DeepOpProgressRepository.get().isRunning()) {
+            org.iiab.controller.deepop.DeepOpState dop = org.iiab.controller.deepop.DeepOpProgressRepository.get().current();
+            String brMode = dop.owner == org.iiab.controller.env.EnvironmentLock.Owner.RESTORE
+                    ? BackupJobFragment.MODE_RESTORE : BackupJobFragment.MODE_BACKUP;
+            startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
+                    .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true)
+                    .putExtra(SetupLibraryActivity.EXTRA_BR_JOB_MODE, brMode));
         }
 
         serverController = new ServerController(this, this);
@@ -212,6 +255,22 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             }
         });
 
+        // ADFA-4957: a deep-env op (backup/restore) runs with the server stopped and, on finishing,
+        // releases the lock but does NOT boot the server (it isn't the owner — see DeepOpService). If
+        // we're on Home when that terminal arrives, boot it here, once per op. While the op is still
+        // running the lock is held, so handleServerLaunchClick refuses (no mid-op collision); a FAILED
+        // restore keeps InstallGuard set, so the recovery path repairs it instead of us booting.
+        org.iiab.controller.deepop.DeepOpProgressRepository.get().state().observe(this, st -> {
+            if (st == null || closing || serverController == null) return;
+            if (st.isTerminal() && st.seq > lastDeepOpSeq) {
+                lastDeepOpSeq = st.seq;
+                if (!ServerStateRepository.get().current().alive && targetServerState == null
+                        && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {   // ADFA-4957: same predicate as the toggle guard
+                    serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+                }
+            }
+        });
+
         Handler main = new Handler(Looper.getMainLooper());
         if (installing) {
             // A download is in progress: keep the gate and show live progress; dismissal
@@ -223,20 +282,34 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // verdict runs. If the server comes up first, the observer above clears the marker.
             serverController.handleServerLaunchClick(findViewById(android.R.id.content));
             main.postDelayed(this::evaluateRecovery, GATE_SAFETY_MS);
+        } else if (org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {
+            // ADFA-4960: a deep-env op (clone/backup/restore) holds the lock, so the server is
+            // intentionally STOPPED. Don't sit behind the boot gate waiting for a server that won't
+            // come up (that was the "reopen during a clone loads forever" bug) — lift it now and show
+            // the UI we routed to (e.g. the Clone tab). The op boots the server when it finishes
+            // (CloneFragment.releaseCloneEnv / the DeepOp terminal observer), never the boot gate.
+            onServerReady();
         } else {
             // If the stack isn't up after one poll cycle, start it.
             if (systemInstalled) {
                 main.postDelayed(() -> {
-                    if (!isFinishing()
+                    // ADFA-4986: never autostart the server if an install went live after onCreate.
+                    if (!isFinishing() && !installing
                             && !ServerStateRepository.get().current().alive
                             && targetServerState == null) {
                         serverController.handleServerLaunchClick(findViewById(android.R.id.content));
                     }
                 }, AUTOSTART_DELAY_MS);
             }
-            // Safety: never trap the user behind the gate.
+            // Safety: never trap the user behind the gate — but ADFA-4986: don't lift it mid-install.
+            // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
+            // dismissal here; the gate is lifted only when the install reaches a terminal state (the
+            // InstallProgressRepository observer: SUCCESS starts the server then opens, FAILED opens
+            // to the offline library) — the same contract as the first-run `if (installing)` branch,
+            // which also has no safety net. A genuinely hung install (no terminal) is a separate
+            // concern owned by the installer, not something to paper over by opening a broken system.
             main.postDelayed(() -> {
-                if (!gateDismissed) {
+                if (!gateDismissed && !installing) {
                     onServerReady();
                 }
             }, systemInstalled ? GATE_SAFETY_MS : NO_SYSTEM_GATE_MS);
@@ -300,6 +373,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
         gateDismissed = true;
         hideInstallProgress();
+        maybeAutoCheckUpdate();   // ADFA-4984: gate is open now — safe to run the one-per-launch check
         // ADFA-4932: mount the feedback FAB only once the library is usable — never over the boot
         // gate / install progress. 88dp bottom margin clears the bottom nav. Idempotent.
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "library", 88);
@@ -405,12 +479,29 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onResume() {
         super.onResume();
         if (serverController != null) serverController.onResume();
+        if (updateController != null) updateController.registerDownloadReceiver();
+        maybeAutoCheckUpdate();   // ADFA-4984: deferred until the boot gate has opened
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         if (serverController != null) serverController.onPause();
+        if (updateController != null) updateController.unregisterDownloadReceiver();
+    }
+
+    /** ADFA-4984: exposed so Settings -> About can trigger a manual "Check for updates". */
+    public org.iiab.controller.update.presentation.UpdateController updateController() {
+        return updateController;
+    }
+
+    /** ADFA-4984: one silent OTA check per launch, but only once the boot gate has opened (so an
+     *  "update available" dialog never lands over the gate) and never during a first install. Called
+     *  from onResume and from onServerReady, whichever settles last; guarded to run at most once. */
+    private void maybeAutoCheckUpdate() {
+        if (updateController == null || otaAutoChecked || installing || !gateDismissed) return;
+        otaAutoChecked = true;
+        updateController.checkForUpdates(false);
     }
 
     @Override
@@ -440,16 +531,33 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
     }
 
-    /** ADFA-4919 (2c-ii): a proot install was killed and the system can't start. There is no in-app
-     *  wipe/repair yet, so the honest remedy is to reinstall the app. Blocking, non-cancelable. */
+    /** ADFA-4919 (2c-ii) / ADFA-5023: a proot install was killed and the system can't start. Instead of
+     *  the old dead-end (only "Close" -> finishAffinity, which dumped the user out of the app), offer an
+     *  in-app recovery: open Backup & restore, where they can restore a backup OR reinstall from scratch.
+     *  Both paths work without a healthy rootfs. Blocking, non-cancelable; "Close" still exits. */
     private void showDamagedDialog() {
         if (isFinishing()) return;
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle(R.string.k2go_damaged_title)
                 .setMessage(R.string.k2go_damaged_body)
-                .setPositiveButton(R.string.k2go_damaged_close, (d, w) -> finishAffinity())
+                .setPositiveButton(R.string.k2go_damaged_recover, (d, w) -> {
+                    startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
+                            .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true));
+                    finish();
+                })
+                .setNegativeButton(R.string.k2go_damaged_close, (d, w) -> finishAffinity())
                 .show();
+    }
+
+    /** ADFA-5023: while the boot gate is up during an install/reinstall (e.g. "wiping old system"), Back
+     *  must NOT walk back out through the setup screens — you're in "let me work" territory. Send the app
+     *  to the background instead (reopening resumes the gate); the install keeps running. Outside an
+     *  install, Back behaves normally. */
+    @Override
+    public void onBackPressed() {
+        if (installing && !gateDismissed) { moveTaskToBack(true); return; }
+        super.onBackPressed();
     }
 
     private boolean reduceMotion() {
@@ -465,6 +573,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     public boolean isServerStarting() {
         return Boolean.TRUE.equals(targetServerState);
     }
+
+    /** ADFA-4956: expose the ServerController so Clone can quiesce/boot the environment via the
+     *  unconditional startEnvironment()/stopEnvironment() (never the toggle). */
+    public ServerController server() { return serverController; }
 
     /** ADFA-4837: can we safely (re)start the server from the Library home? Only when it's installed,
      *  really idle, and nothing else is in flight — so a retry can never stack over a stop/install. */

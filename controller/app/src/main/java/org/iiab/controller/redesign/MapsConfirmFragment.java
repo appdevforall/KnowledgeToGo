@@ -87,9 +87,9 @@ public class MapsConfirmFragment extends Fragment {
                 SetupLibraryActivity act = (SetupLibraryActivity) getActivity();
                 if (act.isMapsWizard()) {
                     act.mapsWizardConfirm(levels, totalMb);
-                } else if (InstallJobs.isBusy()) {
-                    // ADFA-4919: proot (Maps) acts on the live system, so it must not overlap a
-                    // running proot runrole or a REST download. Refuse and tell the user to wait.
+                } else if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
+                    // ADFA-4919/4951: proot (Maps) acts on the live system, so it must not overlap ANY
+                    // deep-env op (runrole, download, backup/restore/clone). Refuse and tell the user to wait.
                     Snackbars.make(v, R.string.k2go_install_busy).show();
                 } else {
                     // ADFA-4919: route Get More Maps through the install index (gated), same as the

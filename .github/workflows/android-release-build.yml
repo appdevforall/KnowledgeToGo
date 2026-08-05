@@ -120,6 +120,69 @@ jobs:
               --content-type "application/vnd.android.package-archive"
           done
 
+      # --- OTA MANIFEST (update.json) ---
+      # ADFA-4984: publish the OTA manifest LAST, after the APKs are already in R2, so it never
+      # points at a missing binary. update.json is a fixed key -> it overwrites the previous manifest
+      # and always resolves to the latest release (no .1/.2 copies). The changelog is copied verbatim
+      # from the top entry of controller/ci/ota-release-notes.md, which must match the release tag.
+      - name: Generate and upload update.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: ${{ github.workspace }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          BUCKET_NAME: "iiaboa-apk-repo"
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF#refs/tags/}"
+          echo "Release tag: $TAG"
+
+          # versionCodeBase = the app module's raw versionCode (the app divides the installed,
+          # ABI-multiplied code by 10 to compare). First versionCode in controller/app/build.gradle.
+          VCODE=$(grep -oE 'versionCode[[:space:]]+[0-9]+' controller/app/build.gradle | head -1 | grep -oE '[0-9]+')
+          echo "versionCodeBase: $VCODE"
+
+          # Top entry of controller/ci/ota-release-notes.md; its header must equal the tag (guard against stale notes).
+          HEADER=$(grep -m1 '^## ' controller/ci/ota-release-notes.md | sed 's/^##[[:space:]]*//')
+          if [ "$HEADER" != "$TAG" ]; then
+            echo "::error::controller/ci/ota-release-notes.md top entry '$HEADER' does not match tag '$TAG'. Update the notes before tagging."
+            exit 1
+          fi
+          # Body = the lines between the first '## ' header and the next one (blank lines trimmed).
+          CHANGELOG=$(awk '/^## /{n++; next} n==1{print}' controller/ci/ota-release-notes.md | sed '/^[[:space:]]*$/d')
+          echo "Changelog:"; printf '%s\n' "$CHANGELOG"
+
+          # Built APK basenames per ABI (the binaries just uploaded to R2).
+          find_apk() { find controller -path "*/build/outputs/apk/release/*$1*.apk" -printf '%f\n' | head -1; }
+          APK_ARM64=$(find_apk "arm64-v8a")
+          APK_ARM32=$(find_apk "armeabi-v7a")
+          APK_UNIVERSAL=$(find_apk "universal")
+          echo "arm64=$APK_ARM64 | arm32=$APK_ARM32 | universal=$APK_UNIVERSAL"
+          if [ -z "$APK_ARM64" ] || [ -z "$APK_ARM32" ] || [ -z "$APK_UNIVERSAL" ]; then
+            echo "::error::Missing one or more built APKs (arm64='$APK_ARM64' arm32='$APK_ARM32' universal='$APK_UNIVERSAL'); aborting instead of publishing an incomplete manifest."
+            exit 1
+          fi
+
+          # jq escapes the multiline changelog safely into a JSON string.
+          jq -n \
+            --argjson vcode "$VCODE" \
+            --arg vname "$TAG" \
+            --arg changelog "$CHANGELOG" \
+            --arg arm64 "$APK_ARM64" \
+            --arg arm32 "$APK_ARM32" \
+            --arg universal "$APK_UNIVERSAL" \
+            '{versionCodeBase: $vcode, versionName: $vname, changelog: $changelog,
+              apk_arm64_v8a: $arm64, apk_armeabi_v7a: $arm32, apk_universal: $universal}' \
+            > update.json
+          echo "----- update.json -----"; cat update.json
+
+          # Upload LAST (after the APKs). Fixed key -> overwrites the previous manifest.
+          aws s3 cp update.json "s3://$BUCKET_NAME/update.json" \
+            --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+            --content-type "application/json"
+
       # TODO (Future): Add Jira finalization step here to automatically mark
       # the Jira version as "Released" and close the corresponding tickets.
 

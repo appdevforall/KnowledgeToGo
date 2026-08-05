@@ -48,8 +48,15 @@ public class UpdateController {
 
     private static final String TAG = "IIAB-UpdateController";
     private static final long COOLDOWN_MS = 10_000L;
-    private static final String UPDATE_JSON = "https://iiab.switnet.org/android/apk/update.json";
-    private static final String APK_BASE_URL = "https://iiab.switnet.org/android/apk/";
+    // ADFA-4984: OTA split. The manifest (with the minimal release notes) and the APK binaries
+    // both live in the k2go-download R2 bucket as separate objects, decoupled from the old
+    // iiab.switnet.org host. update.json is a fixed key (overwritten each tag -> always latest);
+    // the APKs carry version-specific filenames (they accumulate, never overwrite). The install is
+    // still gated by same-certificate signature verification (ApkVerifier), so the binary can live
+    // on any server without a manifest hash. Installs on the old host (<= vCode 52) are migrated
+    // once via a bridge manifest+APK seeded at the old switnet location.
+    private static final String UPDATE_JSON = "https://k2go-download.appdevforall.org/update.json";
+    private static final String APK_BASE_URL = "https://k2go-download.appdevforall.org/";
 
     private final AppCompatActivity activity;
 
@@ -57,6 +64,10 @@ public class UpdateController {
     private BrandDialog.Handle updateProgressDialog;
     private UpdateViewModel updateViewModel;
     private long lastUpdateCheckTime = 0;
+    // ADFA-5000: guards the post-download verify/install hand-off so the two
+    // completion triggers (the ViewModel poller and the DownloadManager broadcast)
+    // run it at most once. Reset when a new download starts.
+    private boolean downloadCompletionHandled = false;
 
     public UpdateController(AppCompatActivity activity) {
         this.activity = activity;
@@ -162,6 +173,9 @@ public class UpdateController {
     }
 
     private void showUpdateDialog(String versionName, String changelog, String downloadUrl) {
+        // The check runs async; by the time it returns the Activity may be finishing/destroyed.
+        // Showing a dialog on a dead window throws BadTokenException, so bail out quietly.
+        if (activity.isFinishing() || activity.isDestroyed()) return;
         new BrandDialog(activity)
                 .setTitle(activity.getString(R.string.update_dialog_title, versionName))
                 .setMessage(activity.getString(R.string.update_dialog_message, changelog))
@@ -197,6 +211,7 @@ public class UpdateController {
         android.app.DownloadManager manager =
                 (android.app.DownloadManager) activity.getSystemService(Context.DOWNLOAD_SERVICE);
         if (manager != null) {
+            downloadCompletionHandled = false;
             updateDownloadId = manager.enqueue(request);
             getUpdateViewModel().track(updateDownloadId);
             showUpdateProgressDialog();
@@ -210,23 +225,49 @@ public class UpdateController {
             if (id != updateDownloadId) {
                 return;
             }
+            // Fast path: the broadcast arrived. Funnel through the same idempotent
+            // handler as the ViewModel poller so verification runs exactly once.
+            handleDownloadComplete();
+        }
+    };
+
+    /**
+     * ADFA-5000: single, idempotent post-download hand-off. Invoked by BOTH the
+     * DownloadManager broadcast (fast path) and the ViewModel poller (reliable
+     * fallback that fires even when the broadcast is never delivered — the cause
+     * of the dialog getting stuck on "verifying"). The first caller wins; the
+     * rest are no-ops. Signature verification is I/O + a PackageManager APK parse,
+     * so it runs off the main thread and the result is posted back to the UI.
+     */
+    private void handleDownloadComplete() {
+        if (downloadCompletionHandled) {
+            return;
+        }
+        downloadCompletionHandled = true;
+        // Stop the poller and mark terminal as handled so a later poll tick can't
+        // regress a freshly-posted READY back to VERIFYING (broadcast-first race).
+        getUpdateViewModel().markTerminalHandled();
+
+        AppExecutors.get().io().execute(() -> {
             // F15: only install if the download actually SUCCEEDED. DownloadManager
             // reports completion even when the server returned an error/HTML page.
-            if (isDownloadSuccessful(id)) {
-                File apk = verifyDownloadedApk();
-                if (apk != null) {
+            boolean success = isDownloadSuccessful(updateDownloadId);
+            File apk = success ? verifyDownloadedApk() : null;
+
+            activity.runOnUiThread(() -> {
+                if (!success) {
+                    Log.e(TAG, "OTA: download did not complete successfully; not installing.");
+                    getUpdateViewModel().onError(activity.getString(R.string.ota_error_download_failed));
+                    Toast.makeText(activity, R.string.ota_error_download_failed, Toast.LENGTH_LONG).show();
+                } else if (apk != null) {
                     getUpdateViewModel().onReady();
                 } else {
                     getUpdateViewModel().onError(activity.getString(R.string.ota_error_verify_failed));
-                    Toast.makeText(context, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity, R.string.ota_error_verify_failed, Toast.LENGTH_LONG).show();
                 }
-            } else {
-                getUpdateViewModel().onError(activity.getString(R.string.ota_error_download_failed));
-                Log.e(TAG, "OTA: download did not complete successfully; not installing.");
-                Toast.makeText(context, R.string.ota_error_download_failed, Toast.LENGTH_LONG).show();
-            }
-        }
-    };
+            });
+        });
+    }
 
     /** Did the DownloadManager job with this id finish with STATUS_SUCCESSFUL? */
     private boolean isDownloadSuccessful(long id) {
@@ -322,6 +363,9 @@ public class UpdateController {
             updateViewModel = new ViewModelProvider(activity, new UpdateViewModelFactory(activity))
                     .get(UpdateViewModel.class);
             updateViewModel.state().observe(activity, this::renderUpdateState);
+            // Reliable completion signal (fires even if the DownloadManager broadcast
+            // is lost) -> run the same idempotent verify/install hand-off.
+            updateViewModel.setOnTerminal(this::handleDownloadComplete);
         }
         return updateViewModel;
     }

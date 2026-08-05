@@ -34,12 +34,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.R;
+import org.iiab.controller.install.presentation.InstallProgressRepository;
+import org.iiab.controller.install.presentation.InstallState;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.install.presentation.ModuleQueueState;
 import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
 
 public class SetupProgressActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
+
+    /** ADFA-4987: deep-link from a background-download notification straight to a stream detail
+     *  ("books" -> BooksDownloadsFragment, "zim" -> ZimPreparingFragment). */
+    public static final String EXTRA_OPEN_STREAM = "openStream";
+
+    /** ADFA-4988: hint from a content confirm — open this stream's detail iff it is the only active one. */
+    public static final String EXTRA_HINT_STREAM = "hintStream";
+
+    /** ADFA-5011: this screen is driving a dash-node REST-core rebuild (not an install/content drain).
+     *  Latched so the screen stays on the animation and blocks leaving until the rebuild is SUCCESS/FAILED. */
+    public static final String EXTRA_REBUILD = "rebuild";
 
     private static final long READY_POLL_MS = 2000L;
     private static final long REDIRECT_MS = 3000L;
@@ -67,6 +80,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private boolean showingDetail = false;
     private boolean leaveWarned = false;   // ADFA-4919 (2c): captured the first exit-Back once
     private boolean probing = false;
+    private boolean rebuildSeen = false;    // ADFA-5011: latched once this screen is a rebuild session
+    private boolean rebuildRunningSeen = false;   // ADFA-5011: latched once we've seen THIS rebuild running,
+    //  so a STALE terminal state from a previous rebuild can't trigger a premature done/redirect on entry
+    // ADFA-5011: after the rebuild build+swap succeeds, WAIT for the REST core to actually answer before
+    // redirecting — else we land on a dead Home while pdsm-started services are still coming up. We only
+    // POLL apiReady() here (read-only); the service already did pdsm start, so we never toggle/stop.
+    private boolean rebuildStartKicked = false;     // ADFA-5011: index booted the environment once (actuator)
+    private boolean rebuildServerUp = false;        // REST core answered after the rebuild
+    private boolean rebuildServerFailed = false;    // services didn't answer within the timeout
+    private long rebuildServerAt = 0L;              // elapsedRealtime when the post-success wait began
     private boolean mapsLaunched = false;   // ADFA-4900: maps (proot) stage has been handed to the queue
     private long mapsLaunchedAt = 0L;       // ADFA-4900: elapsedRealtime when maps was handed off
     private boolean mapsStartFailed = false; // ADFA-4900: queue never started within the timeout
@@ -129,6 +152,31 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // re-renders the index. The REST streams have service listeners; the proot stage had none,
         // so a proot-only install could finish without the index ever updating to Finish/redirect.
         ModuleQueueRepository.get().state().observe(this, st -> render());
+
+        // ADFA-5011: observe the rebuild pipeline so its running→terminal transitions re-render (and,
+        // on SUCCESS, trigger the redirect). Guarded so it only acts while this is a rebuild session.
+        InstallProgressRepository.get().state().observe(this, st -> { if (rebuildInSession()) render(); });
+
+        // ADFA-4987: a download notification tapped -> force that stream's detail (not the legacy UI).
+        // ADFA-4988: a content confirm hints its stream -> open its detail only when it is the sole
+        // active stream, otherwise show the index.
+        if (s == null) {
+            String openStream = getIntent().getStringExtra(EXTRA_OPEN_STREAM);
+            String hintStream = getIntent().getStringExtra(EXTRA_HINT_STREAM);
+            if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
+            else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
+        }
+    }
+
+    /** ADFA-4988: open the just-confirmed REST stream's detail directly when it is the ONLY active work;
+     *  otherwise keep the index. The hinted stream may not have registered its session yet (it just
+     *  started), so trust the hint and inspect only the OTHER streams, which started earlier. */
+    private void openHintedStream(String hint) {
+        boolean otherProot = mapsInSession() || moduleInSession();
+        boolean otherZim = !"zim".equals(hint) && (ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0);
+        boolean otherBooks = !"books".equals(hint) && (BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0);
+        if (otherProot || otherZim || otherBooks) return;   // several streams -> keep the index
+        openDetail(hint);
     }
 
     @Override
@@ -160,6 +208,25 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     @Override
     public void onBackPressed() {
         if (showingDetail) { backToIndex(); return; }
+        // ADFA-5011: a rebuild owns the rootfs and can't be abandoned mid-run — same gate as proot. Block
+        // while building AND through the post-success wait for services to come up (so we never drop the
+        // user onto a Library showing a half-rebuilt / not-yet-started server). First Back reassures; a
+        // second backgrounds the app (the rebuild keeps going and reopening resumes here).
+        if (rebuildInSession()) {
+            InstallState rst = InstallProgressRepository.get().current();
+            boolean rebuiltOk = rebuildRunningSeen && rst.phase == InstallState.Phase.SUCCESS;
+            boolean stillWorking = InstallProgressRepository.get().isRunning()
+                    || (rebuiltOk && !rebuildServerUp && !rebuildServerFailed);
+            if (stillWorking) {
+                if (!leaveWarned) {
+                    leaveWarned = true;
+                    Snackbars.make(findViewById(android.R.id.content), R.string.k2go_setup_leave_hint).show();
+                } else {
+                    moveTaskToBack(true);
+                }
+                return;
+            }
+        }
         // ADFA-4919 (2c): the index is the LAST barrier for a proot install (runs on the live system,
         // can't be abandoned mid-run). No up-front confirm (that would spoil the friendly flow). The
         // FIRST Back reassures via a snackbar; every Back after that sends the whole app to the
@@ -225,6 +292,18 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         return moduleSeen;
     }
 
+    /** ADFA-5011: is a dash-node rebuild the operation driving THIS screen? Latched from the launch
+     *  extra (primary signal) or a LIVE REBUILD op in InstallProgressRepository (covers a reopen while
+     *  the rebuild runs; a stale terminal REBUILD is excluded by the isRunning() check). Once latched it
+     *  stays for the screen's life so the terminal result (done/failed) is shown, not skipped. */
+    private boolean rebuildInSession() {
+        if (rebuildSeen) return true;
+        if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_REBUILD, false)) { rebuildSeen = true; return true; }
+        if (InstallProgressRepository.get().currentOp() == InstallState.Op.REBUILD
+                && InstallProgressRepository.get().isRunning()) { rebuildSeen = true; return true; }
+        return false;
+    }
+
     // ---- readiness gate + serialized install pipeline (ADFA-4900) ----
     // Once the REST engine is up, run the install tasks as an ORDERED, serialized pipeline:
     // maps (proot / runrole) exclusively first, then ZIM, then Books, auto-continuing between
@@ -234,6 +313,50 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         @Override public void run() {
             if (probing) return;
             if (isFinishing()) return;
+            // ADFA-5011: a dashboard rebuild owns the rootfs (the service does pdsm stop → build → swap and
+            // leaves the box STOPPED). Skip the normal install readiness/orchestrate path entirely — it has
+            // nothing to drain and would see the server still up in the first seconds, declare "nothing to
+            // do" and redirect (the original bug). Instead: re-render from the rebuild state; and once the
+            // rebuild is terminal, the INDEX boots the environment persistently and waits for it (below).
+            if (rebuildInSession()) {
+                InstallState cur = InstallProgressRepository.get().current();
+                boolean rebuiltOk = rebuildRunningSeen && cur.phase == InstallState.Phase.SUCCESS;
+                boolean rebuiltFail = rebuildRunningSeen && cur.phase == InstallState.Phase.FAILED;
+                // Rebuild done → the INDEX is the actuator that boots the environment PERSISTENTLY
+                // (startEnvironment = 'pdsm start && tail -f /dev/null'), exactly like the module flow.
+                // The rebuild service left the box stopped (its transient proots would kill any service
+                // they started via --kill-on-exit), so nothing else brings it up. Kick it exactly once.
+                if ((rebuiltOk || rebuiltFail) && !rebuildStartKicked) {
+                    rebuildStartKicked = true;
+                    rebuildServerAt = SystemClock.elapsedRealtime();
+                    serverController.startEnvironment();
+                }
+                render();   // sets rebuildRunningSeen once the running state is observed
+                // On success, probe the REST core (read-only) until it answers or the wait times out —
+                // so we redirect only once services are truly up, never onto a dead Home. Reschedule from
+                // INSIDE the probe callback (not below): apiReady() can block up to ~5s while the server
+                // boots — longer than READY_POLL_MS — and the top `if (probing) return` would otherwise
+                // strand the loop if we also scheduled here.
+                if (rebuiltOk && !rebuildServerUp && !rebuildServerFailed) {
+                    probing = true;
+                    AppExecutors.get().io().execute(() -> {
+                        final boolean up = RestReadiness.apiReady();
+                        main.post(() -> {
+                            probing = false;
+                            if (isFinishing()) return;
+                            if (up) rebuildServerUp = true;
+                            else if (SystemClock.elapsedRealtime() - rebuildServerAt > SERVER_UP_TIMEOUT_MS) rebuildServerFailed = true;
+                            render();
+                            if (!rebuildServerUp && !rebuildServerFailed) main.postDelayed(readyPoll, READY_POLL_MS);
+                        });
+                    });
+                    return;
+                }
+                // Building, or terminal-and-settled. Keep polling only while still building.
+                boolean settled = rebuiltFail || (rebuiltOk && (rebuildServerUp || rebuildServerFailed));
+                if (!settled) main.postDelayed(readyPoll, READY_POLL_MS);
+                return;
+            }
             // ADFA-4842: a MODULE (solo-proot) install stops the server and runs its OWN proot — there is
             // no REST engine to wait for, and we must NEVER try to "start services" (a second proot) mid-
             // runrole. Skip the REST readiness gate entirely: the runrole queue drives progress, and the
@@ -324,6 +447,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     // ---- render ----
     private void render() {
         if (sections == null || showingDetail) return;
+
+        // ADFA-5011: a rebuild has its own, simpler surface (one row + status), driven by
+        // InstallProgressRepository — never the install/content completion logic below.
+        if (rebuildInSession()) { renderRebuild(); return; }
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
@@ -432,6 +559,104 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             show(runBgBtn, !prootActive);   // ADFA-4919: no "Run in background" while a proot module runs — the index is the gate
             show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
         }
+    }
+
+    /** ADFA-5011: dedicated render for a dashboard rebuild — one row + a status line driven by
+     *  InstallProgressRepository. While running the screen is the gate (no Run in background, Back is
+     *  softened then backgrounds the app); on SUCCESS it redirects to a live Library; on FAILED it
+     *  shows Finish + the note (never a silent success on a half-rebuilt server). */
+    private void renderRebuild() {
+        InstallState st = InstallProgressRepository.get().current();
+        if (st.isRunning()) rebuildRunningSeen = true;
+        // Only honor a terminal state once THIS rebuild has been seen running — otherwise a stale
+        // SUCCESS/FAILED from a previous rebuild would flash on entry and trigger a premature redirect.
+        boolean rebuiltOk = rebuildRunningSeen && st.phase == InstallState.Phase.SUCCESS;
+        boolean rebuildFailed = rebuildRunningSeen && st.phase == InstallState.Phase.FAILED;
+
+        // Note: the post-success wait for the REST core (apiReady poll) is driven by readyPoll, which is
+        // lifecycle-managed (posted in onResume, cleared in onPause). This method only reflects state.
+        boolean serverWait = rebuiltOk && !rebuildServerUp && !rebuildServerFailed;  // rebuilt, services coming up
+        boolean done = rebuiltOk && rebuildServerUp;                                 // rebuilt + REST core answered
+        boolean error = rebuildFailed || (rebuiltOk && rebuildServerFailed);         // rebuild failed, or services never came up
+        boolean working = !done && !error;                                          // building OR waiting for services
+
+        String sub;
+        if (error) sub = rebuildFailed
+                ? ((st.message != null && !st.message.isEmpty()) ? st.message : getString(R.string.k2go_dash_rebuild_failed))
+                : getString(R.string.k2go_dash_services_failed);
+        else if (done) sub = getString(R.string.k2go_setup_state_done);
+        else if (serverWait) sub = getString(R.string.k2go_setup_starting);
+        else sub = getString(R.string.k2go_dash_rebuild_building);
+
+        sections.removeAllViews();
+        sections.addView(rebuildRow(rebuiltOk && !error, error, sub));   // check once the build succeeded; alert on error
+
+        if (contextText != null) contextText.setText(R.string.k2go_setup_context_proot);
+
+        tint(dot, done ? R.color.k2go_leaf : R.color.k2go_amber);
+        if (working) {
+            statusEllipsis.start(getString(serverWait ? R.string.k2go_setup_starting : R.string.k2go_dash_rebuilding));
+        } else {
+            statusEllipsis.stop();
+            statusText.setText(done ? R.string.k2go_setup_state_done
+                    : (rebuildFailed ? R.string.k2go_dash_rebuild_failed : R.string.k2go_dash_services_failed));
+        }
+
+        if (done && !redirectCancelled) {
+            redirect.setText(R.string.k2go_dash_redirect);   // rebuild-specific wording (not "Installation complete")
+            show(redirect, true); show(cancel, true);
+            show(finishBtn, false); show(finishNote, false); show(runBgBtn, false);
+            scheduleRedirect();
+        } else if (done) {   // cancelled by the user — stay, reveal Finish
+            cancelRedirect();
+            show(finishBtn, true); show(runBgBtn, false);
+            show(redirect, false); show(cancel, false); show(finishNote, false);
+        } else if (error) {
+            cancelRedirect();
+            show(finishBtn, true); show(finishNote, true); show(runBgBtn, false);
+            show(redirect, false); show(cancel, false);
+        } else {   // building or waiting for services — the screen is the gate; no leaving.
+            cancelRedirect();
+            show(runBgBtn, false); show(finishBtn, false); show(finishNote, false);
+            show(redirect, false); show(cancel, false);
+        }
+    }
+
+    /** ADFA-5011: the single dashboard-rebuild row: spinner while working → check (build done) / amber
+     *  alert (failed), with the given status subtitle. */
+    private View rebuildRow(boolean check, boolean alert, String subText) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout slot = new LinearLayout(this);
+        slot.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams slotLp = new LinearLayout.LayoutParams(px(24), px(24));
+        slotLp.rightMargin = px(10);
+        slot.addView(indicator(true, check || alert, alert ? 1 : 0));
+        row.addView(slot, slotLp);
+
+        LinearLayout col = new LinearLayout(this);
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextView h = new TextView(this);
+        h.setText(R.string.k2go_dash_card_title);
+        h.setTypeface(h.getTypeface(), android.graphics.Typeface.BOLD);
+        h.setTextColor(ContextCompat.getColor(this, R.color.k2go_ink));
+        h.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        col.addView(h);
+        TextView sub = new TextView(this);
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        sub.setText(subText);
+        sub.setTextColor(ContextCompat.getColor(this, alert ? R.color.k2go_amber_text : R.color.k2go_muted));
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        return row;
     }
 
     private static int failedCount(int[] status, int failedVal) {

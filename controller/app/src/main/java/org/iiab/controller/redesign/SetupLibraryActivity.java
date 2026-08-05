@@ -16,9 +16,15 @@ import org.iiab.controller.install.presentation.InstallService;
  * shared tier + content picks so the two Step-2 layouts (A expandable+bar, B 5-step+gauge)
  * carry selections across the hidden tap-5x flip.
  */
-public class SetupLibraryActivity extends AppCompatActivity {
+public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
 
     private InstallationPlanner.Tier selectedTier = InstallationPlanner.Tier.STANDARD;
+
+    // ADFA-4952: this host owns a ServerController so backup/restore can stop the environment before the
+    // job (a static rootfs) and boot it after (startEnvironment). The server proot is process-scoped, so
+    // it survives back to LibraryActivity, which only monitors it.
+    private org.iiab.controller.ServerController serverController;
+    private Boolean targetServerState = null;   // ServerController.Host state
 
     /** Launch extra: skip Step 1 (system) and open Step 2 (content) directly, for when a
      *  system is already installed so adding content never overwrites it. */
@@ -26,6 +32,25 @@ public class SetupLibraryActivity extends AppCompatActivity {
     /** ADFA-4842: open Module management (the proot-module hub) directly. Entry-point-agnostic:
      *  Settings → Advanced and (later) Get More both launch this same activity with this extra. */
     public static final String EXTRA_MODULE_MGMT = "moduleMgmt";
+    /** ADFA-4958: deep-link to a specific module's detail from Home (opens the hub, then the detail). */
+    public static final String EXTRA_MODULE_DETAIL = "moduleDetail";
+    /** ADFA-4958: open the maps content selector directly from Home (maps is a module with a selector step). */
+    public static final String EXTRA_MAPS_SETUP = "mapsSetup";
+    /** ADFA-5004: open the Wikipedia & ZIM content screen directly (from the reader's Get-more shortcut). */
+    public static final String EXTRA_ZIM_SETUP = "zimSetup";
+    /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
+    public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
+    /** ADFA-5023: run the install wizard in REINSTALL mode — the normal flow, but the final install
+     *  wipes the existing rootfs first (delete + install). Reached from Backup & restore's third card
+     *  and from the damaged-system recovery. */
+    public static final String EXTRA_REINSTALL_SETUP = "reinstallSetup";
+    /** ADFA-5023: true for the whole wizard when launched in reinstall mode; read by startWizardInstall. */
+    private boolean reinstallMode = false;
+    /** ADFA-5023: debounce the wizard's "Continue" so repeat taps can't launch duplicate installs. */
+    private boolean installStarting = false;
+    /** ADFA-4957: open BackupJobFragment(mode) directly — used to deep-link back to a LIVE backup/restore
+     *  (from LibraryActivity's routing when the app is reopened / the notification is tapped). */
+    public static final String EXTRA_BR_JOB_MODE = "brJobMode";
     private boolean contentEverything = false; // legacy (kept for compat; unused by the picker)
     private boolean contentPictures = true;    // legacy
     // Shared Wikipedia selection so picks survive the A/B flip.
@@ -59,18 +84,43 @@ public class SetupLibraryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
+        serverController = new org.iiab.controller.ServerController(this, this);   // ADFA-4952
+        serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
+        // ADFA-5023: read reinstall mode from the intent every onCreate (survives a config-change
+        // recreation) so the wizard's final install wipes first.
+        reinstallMode = getIntent().getBooleanExtra(EXTRA_REINSTALL_SETUP, false);
         if (savedInstanceState == null) {
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
+            final String moduleDetail = getIntent().getStringExtra(EXTRA_MODULE_DETAIL);
+            boolean mapsSetup = getIntent().getBooleanExtra(EXTRA_MAPS_SETUP, false);
+            boolean zimSetup = getIntent().getBooleanExtra(EXTRA_ZIM_SETUP, false);
+            boolean backupRestore = getIntent().getBooleanExtra(EXTRA_BACKUP_RESTORE, false);
             boolean contentOnly = getIntent().getBooleanExtra(EXTRA_CONTENT_ONLY, false);
+            String brJobMode = getIntent().getStringExtra(EXTRA_BR_JOB_MODE);   // ADFA-4957
             androidx.fragment.app.Fragment first;
-            if (moduleMgmt) {
+            if (brJobMode != null) {
+                first = BackupJobFragment.newInstance(brJobMode);   // ADFA-4957: land on the live op screen
+            } else if (backupRestore) {
+                first = new BackupRestoreFragment();   // ADFA-4952
+            } else if (moduleMgmt || moduleDetail != null) {
                 selectedTier = readInstalledTier();   // ADFA-4842: module management hub (proot apps)
                 first = new ModuleHubFragment();
+            } else if (mapsSetup) {
+                selectedTier = readInstalledTier();   // ADFA-4958: maps content selector, entered from Home
+                first = new MapsChooseFragment();
+            } else if (zimSetup) {
+                selectedTier = readInstalledTier();   // ADFA-5004: Wikipedia & ZIM content, from the reader
+                first = new ZimLandingFragment();
             } else if (contentOnly) {
                 selectedTier = readInstalledTier();   // size content against the installed tier
                 first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
+            } else if (reinstallMode) {
+                // ADFA-5023: reinstall = the normal first-run wizard, but the final install wipes first.
+                BooksWishlist.clear(this);
+                ZimWishlist.clear(this);
+                first = new Step1SystemFragment();
             } else {
                 // ADFA-4874: a fresh wizard run — drop any wishlist left by an aborted first-run so
                 // we never drain stale pre-install picks after a later install. Safe here: the user
@@ -82,6 +132,9 @@ public class SetupLibraryActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.k2go_setup_host, first)
                     .commit();
+            if (moduleDetail != null) {
+                findViewById(R.id.k2go_setup_host).post(() -> openModuleDetail(moduleDetail));
+            }
         }
     }
 
@@ -187,15 +240,33 @@ public class SetupLibraryActivity extends AppCompatActivity {
      *  the install is companion=false (OS/tier only; maps ships in the image), replacing the old
      *  Step 2 "Download library" trigger. */
     public void startWizardInstall() {
+        // ADFA-5023: the Continue button had NO debounce; combined with a brief start delay this let a
+        // desperate user double/triple-tap, launching duplicate install activities ("two offset screens").
+        // Fire exactly once. (The install service also dedupes the actual install via its `started` guard.)
+        if (installStarting) return;
+        installStarting = true;
+        // ADFA-4982: the real install is starting — mark setup complete NOW (it is no longer set at the
+        // wizard's "download" choice, so bailing before this resumes the wizard). This also lets the
+        // install LibraryActivity below show progress instead of redirecting back to the wizard.
+        getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
+                .edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
         Intent i = new Intent(this, InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());
         i.putExtra(InstallService.EXTRA_COMPANION, false);
         i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(this));
-        i.putExtra(InstallService.EXTRA_REINSTALL, false);
+        // ADFA-5023: reinstall wipes the existing rootfs first. Stopping a LIVE server before the wipe is
+        // done by the SERVICE (InstallService.runPipeline) — NOT here — so this navigation stays instant:
+        // one tap goes straight to the boot gate instead of the wizard sitting there during stopEnvironment.
+        i.putExtra(InstallService.EXTRA_REINSTALL, reinstallMode);
         i.putExtra(InstallService.EXTRA_SKIP_MAPS, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
         else startService(i);
+        // ADFA-5023: plain startActivity so a FRESH LibraryActivity is created and reads EXTRA_INSTALLING
+        // in onCreate → the boot gate. (An earlier CLEAR_TOP reused the existing Library sitting on the
+        // Settings tab, which doesn't re-read the extra via onNewIntent, and dumped the user back on
+        // Settings.) Backing out mid-install is prevented by LibraryActivity.onBackPressed, not by
+        // clearing the stack.
         startActivity(new Intent(this, LibraryActivity.class).putExtra(LibraryActivity.EXTRA_INSTALLING, true));
         finish();
     }
@@ -293,18 +364,14 @@ public class SetupLibraryActivity extends AppCompatActivity {
             titles.add(v != null && v.length > 0 ? v[0] : "");
             urls.add(v != null && v.length > 2 ? v[2] : "");
         }
-        int count = ids.size();
         booksCart.clear();
         BooksDownloadService.start(getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
-        // ADFA-4910: mirror the wizard's confirm — hand the picks to the background service and
-        // return to the Get More home (drop landing + confirm off the stack), instead of stranding
-        // the user on the downloads screen. The download keeps running; the landing's "View
-        // downloads" link (and the notification) let them check progress later.
-        getSupportFragmentManager().popBackStack("getmore_books",
-                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        android.widget.Toast.makeText(this,
-                getString(R.string.k2go_books_dl_started_fmt, count), android.widget.Toast.LENGTH_SHORT).show();
+        // ADFA-4988: go to the downloads screen (its per-item list with download -> done checks),
+        // matching ZIM/maps/modules — instead of returning to Get More and downloading invisibly.
+        // Hint "books": the index opens the books detail when books is the only stream, else the cards.
+        startActivity(new Intent(this, SetupProgressActivity.class)
+                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "books"));
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
@@ -355,11 +422,35 @@ public class SetupLibraryActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /** ADFA-5023: start the install wizard in REINSTALL mode (delete + fresh install). Launched from
+     *  the Backup & restore reinstall card, after the destructive confirm. A new activity instance so
+     *  the wizard back stack is clean. */
+    public void openReinstallWizard() {
+        startActivity(new Intent(this, SetupLibraryActivity.class)
+                .putExtra(EXTRA_REINSTALL_SETUP, true));
+    }
+
+    /** ADFA-5011: open the dash-node REST core's detail (Play Store-style card, Rebuild-only). */
+    public void openDashboardDetail() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, new DashboardDetailFragment())
+                .addToBackStack("dashboard_detail")
+                .commit();
+    }
+
     /** ADFA-4842: proceed to the install index for the scheduled modules. The modules are already
      *  banked in ModuleWishlist; the index drains them through the proot queue (ModuleProvisioner),
      *  same mechanism as maps. */
     public void openModuleIndex() {
         startActivity(new Intent(this, SetupProgressActivity.class));
+    }
+
+    /** ADFA-4952: open the dedicated backup/restore job screen (mode = MODE_BACKUP / MODE_RESTORE). */
+    public void openBackupJob(String mode) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host, BackupJobFragment.newInstance(mode))
+                .addToBackStack("backup_job")
+                .commit();
     }
 
     /** @deprecated ADFA-4919: the STANDALONE Get More Maps route (shows MapsPreparingFragment with
@@ -376,6 +467,45 @@ public class SetupLibraryActivity extends AppCompatActivity {
 
     /** ADFA-4900: true while Maps runs inside the wizard (pre-install) — Confirm banks the selection. */
     public boolean isMapsWizard() { return mapsWizard; }
+
+    // ---- ADFA-4952: server lifecycle for backup/restore ----
+    /** The host's ServerController (backup/restore use stopEnvironment()/startEnvironment()). */
+    public org.iiab.controller.ServerController server() { return serverController; }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (serverController != null) serverController.onResume();
+    }
+
+    @Override protected void onPause() {
+        super.onPause();
+        if (serverController != null) serverController.onPause();
+    }
+
+    // ServerController.Host (minimal — this host has no server LEDs/pulse UI; backup/restore show their
+    // own status). The two protection methods drive the WatchdogService so the job isn't killed.
+    @Override public void addToLog(String message) { Log.d("K2Go-SetupLibrary", message); }
+    @Override public void startFusionPulse() { }
+    @Override public void startExitPulse() { }
+    @Override public void stopBtnProgress() { }
+    @Override public void updateConnectivityLeds(boolean wifiOn, boolean hotspotOn) { }
+    @Override public void refreshServerUi() { }
+    @Override public Boolean getTargetServerState() { return targetServerState; }
+    @Override public void setTargetServerState(Boolean target) { targetServerState = target; }
+    @Override public boolean isNegotiating() { return false; }
+
+    @Override public void enableSystemProtection() {
+        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
+        else startService(i);
+    }
+
+    @Override public void disableSystemProtection() {
+        Intent i = new Intent(this, org.iiab.controller.WatchdogService.class);
+        i.setAction(org.iiab.controller.WatchdogService.ACTION_STOP);
+        startService(i);
+    }
 
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */

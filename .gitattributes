@@ -30,3 +30,4 @@
 *.zip  binary
 *.tar.gz binary
 *.meta4 binary
+*.zim  binary

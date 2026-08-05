@@ -200,7 +200,9 @@ public class BooksLandingFragment extends Fragment {
         t.setText(text);
         t.setPadding(px(14), px(8), px(14), px(8));
         t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
+        // ADFA-4910: white on the selected (teal) chip — same as MapsChooseFragment. The theme-split
+        // k2go_on_teal could resolve to its dark night value in light mode, killing the contrast.
+        t.setTextColor(ContextCompat.getColor(requireContext(), on ? android.R.color.white : R.color.k2go_ink));
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         t.setClickable(true);
         t.setOnClickListener(v -> onClick.run());

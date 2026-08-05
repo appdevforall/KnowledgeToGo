@@ -568,7 +568,34 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         View root = findViewById(android.R.id.content);
         Runnable open = () -> {
             terminalController.openFullTerminal();
-            if (terminalOnlyMode) attachTerminalOnlyFinish();
+            if (terminalOnlyMode) {
+                // ADFA-4987: opened from the redesign -> hide the legacy dashboard behind the sheet and
+                // paint the root black, so a PARTIAL swipe-down reveals black (seamless with the terminal),
+                // never the old STATUS/USAGE/INSTALL/SHARE UI. A full swipe still finish()es to the caller.
+                //
+                // TODO (terminal, follow-up): the black fill is a TEMPORARY stand-in. The complete fix is to
+                // show the NEW UI behind the terminal (host the redesign Home/Library surface here) so a
+                // partial swipe-down reveals the new UI instead of a black void. Left black for now because
+                // embedding a redesign view inside this legacy MainActivity is a larger change. When the
+                // terminal is next revisited, this is the spot. See ADFA-4987.
+                View dash = findViewById(R.id.main_dashboard);
+                if (dash != null) dash.setVisibility(View.GONE);
+                View coord = findViewById(R.id.main_coordinator);
+                if (coord != null) coord.setBackgroundColor(0xFF000000);
+                attachTerminalOnlyFinish();
+            } else {
+                // ADFA-4987: defensive symmetry — a reused instance opened NOT in terminal-only mode must
+                // show the dashboard and restore the theme background (undo any prior terminal-only chrome).
+                View dash = findViewById(R.id.main_dashboard);
+                if (dash != null) dash.setVisibility(View.VISIBLE);
+                View coord = findViewById(R.id.main_coordinator);
+                if (coord != null) {
+                    android.util.TypedValue tv = new android.util.TypedValue();
+                    getTheme().resolveAttribute(android.R.attr.windowBackground, tv, true);
+                    if (tv.resourceId != 0) coord.setBackgroundResource(tv.resourceId);
+                    else coord.setBackgroundColor(tv.data);
+                }
+            }
         };
         if (root != null) root.post(open);
         else open.run();
@@ -581,6 +608,11 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         if (sheet == null) return;
         com.google.android.material.bottomsheet.BottomSheetBehavior<View> b =
                 com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet);
+        // ADFA-4987: no intermediate COLLAPSED/peek stop in terminal-only mode. Without this the
+        // swipe-down parks at the peek first, exposing the legacy dashboard behind the sheet; skipping
+        // it means swipe-down goes straight to HIDDEN -> finish() -> back to the redesign caller.
+        b.setHideable(true);
+        b.setSkipCollapsed(true);
         b.addBottomSheetCallback(new com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@androidx.annotation.NonNull View bottomSheet, int newState) {

@@ -15,6 +15,7 @@
  */
 package org.iiab.controller.redesign;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,6 +54,24 @@ public class ModuleHubFragment extends Fragment {
     private LinearLayout host;
     private Button proceed;
 
+    /** ADFA-4958 §5.2: outlined state pill (transparent fill, state-colored 1.4dp stroke, full radius). */
+    private TextView statePill(String text, int colorRes) {
+        int color = ContextCompat.getColor(requireContext(), colorRes);
+        TextView pill = new TextView(requireContext());
+        pill.setText(text);
+        pill.setTextColor(color);
+        pill.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
+        pill.setPadding(px(10), px(3), px(10), px(3));
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        bg.setColor(android.graphics.Color.TRANSPARENT);
+        bg.setCornerRadius(px(20));
+        int strokeW = Math.max(1, Math.round(1.4f * getResources().getDisplayMetrics().density));
+        bg.setStroke(strokeW, color);
+        pill.setBackground(bg);
+        return pill;
+    }
+
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
     private static boolean is64Bit() {
@@ -71,7 +90,7 @@ public class ModuleHubFragment extends Fragment {
         back.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
         proceed.setOnClickListener(v -> {
-            if (InstallJobs.isBusy()) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
+            if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
             if (getActivity() instanceof SetupLibraryActivity) {
                 ((SetupLibraryActivity) getActivity()).openModuleIndex();
             }
@@ -121,6 +140,18 @@ public class ModuleHubFragment extends Fragment {
     private void buildCards() {
         if (host == null) return;
         host.removeAllViews();
+        TextView helper = new TextView(requireContext());   // ADFA-4958
+        helper.setText(R.string.k2go_mod_mgmt_helper);
+        helper.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        helper.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        LinearLayout.LayoutParams helperLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        helperLp.bottomMargin = px(8);
+        host.addView(helper, helperLp);
+
+        // ADFA-5011: the dash-node REST core is a system module — always present (not installable/
+        // removable), with a single Rebuild action. Shown at the top, above the installable list.
+        addSystemDashboardCard();
 
         List<ModuleCards.Card> items = new ArrayList<>();
         for (ModuleCards.Card c : ModuleCards.all()) if (installable.contains(c.key())) items.add(c);
@@ -133,10 +164,82 @@ public class ModuleHubFragment extends Fragment {
             msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
             msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : R.string.k2go_mod_none);
             host.addView(msg);
-            return;
+        } else {
+            // ADFA-4958: last informed step before the locked install index. A build takes time.
+            TextView note = new TextView(requireContext());
+            note.setText(R.string.k2go_mod_time_note);
+            note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
+            note.setBackgroundResource(R.drawable.k2go_warn_bg);
+            note.setPadding(px(16), px(14), px(16), px(14));
+            LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            nlp.bottomMargin = px(12);
+            host.addView(note, nlp);
+            for (ModuleCards.Card c : items) host.addView(cardRow(c));
+        }
+        addHiddenSection();
+    }
+
+    // ADFA-4958: HIDDEN -> Restore. Modules can't be uninstalled; Hide only declutters Home and this
+    // is where they come back. Lists every hidden module (regardless of install state).
+    private void addHiddenSection() {
+        if (HiddenModules.isEmpty(requireContext())) return;
+
+        TextView header = new TextView(requireContext());
+        header.setText(R.string.k2go_mod_hidden_header);
+        header.setAllCaps(true);
+        header.setLetterSpacing(0.08f);
+        header.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
+        header.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        hlp.topMargin = px(18); hlp.bottomMargin = px(6);
+        host.addView(header, hlp);
+
+        for (final String key : HiddenModules.keys(requireContext())) {
+            ModuleCards.Card c = ModuleCards.byKey(key);
+            if (c == null) continue;
+            LinearLayout row = new LinearLayout(requireContext());
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setBackgroundResource(R.drawable.k2go_card_bg);
+            row.setPadding(px(16), px(14), px(16), px(14));
+            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rlp.bottomMargin = px(12);
+            row.setLayoutParams(rlp);
+
+            LinearLayout col = new LinearLayout(requireContext());
+            col.setOrientation(LinearLayout.VERTICAL);
+            TextView name = new TextView(requireContext());
+            name.setText(getString(c.titleRes));
+            name.setTypeface(name.getTypeface(), android.graphics.Typeface.BOLD);
+            name.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+            name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+            col.addView(name);
+            TextView sub = new TextView(requireContext());
+            sub.setText(R.string.k2go_mod_hidden_sub);
+            sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            col.addView(sub);
+            row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            TextView restore = statePill(getString(R.string.k2go_mod_restore), R.color.k2go_teal);   // ADFA-4958 §5.7: outlined teal pill
+            restore.setPadding(px(14), px(6), px(14), px(6));
+            restore.setOnClickListener(v -> { HiddenModules.remove(requireContext(), key); buildCards(); });
+            row.addView(restore);
+            host.addView(row);
         }
 
-        for (ModuleCards.Card c : items) host.addView(cardRow(c));
+        TextView foot = new TextView(requireContext());
+        foot.setText(R.string.k2go_mod_hidden_foot);
+        foot.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        foot.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        flp.topMargin = px(4);
+        host.addView(foot, flp);
     }
 
     /** A full-width tappable module row: title + subtitle + one-line description, with a "Scheduled"
@@ -157,6 +260,21 @@ public class ModuleHubFragment extends Fragment {
                 ((SetupLibraryActivity) getActivity()).openModuleDetail(c.key());
             }
         });
+
+        if (!c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector)
+            com.google.android.material.checkbox.MaterialCheckBox cb =
+                    new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
+            cb.setChecked(ModuleWishlist.contains(requireContext(), c.key()));
+            cb.setOnCheckedChangeListener((b, chk) -> {
+                if (chk) ModuleWishlist.add(requireContext(), c.key());
+                else ModuleWishlist.remove(requireContext(), c.key());
+                refreshProceed();
+            });
+            LinearLayout.LayoutParams cblp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            cblp.rightMargin = px(4);
+            row.addView(cb, cblp);
+        }
 
         LinearLayout col = new LinearLayout(requireContext());
         col.setOrientation(LinearLayout.VERTICAL);
@@ -187,21 +305,78 @@ public class ModuleHubFragment extends Fragment {
 
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());
-        TextView tail = new TextView(requireContext());
-        tail.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        if (scheduled) {
-            tail.setText("✓ " + getString(R.string.k2go_mod_scheduled));
-            tail.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
-        } else {
-            tail.setText("›");
-            tail.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        }
+        boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());   // ADFA-4958 §5.2: state pill
+        TextView pill = statePill(
+                scheduled ? getString(R.string.k2go_mod_scheduled)
+                          : getString(R.string.k2go_state_not_installed),
+                scheduled ? R.color.k2go_teal : R.color.k2go_muted);
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);
-        row.addView(tail, tlp);
+        row.addView(pill, tlp);
         return row;
+    }
+
+    // ---- ADFA-5011: dash-node "system module" card (Rebuild-only) -------------------------------
+
+    private void addSystemDashboardCard() {
+        LinearLayout row = new LinearLayout(requireContext());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        row.setPadding(px(16), px(14), px(16), px(14));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.bottomMargin = px(12);
+        row.setLayoutParams(lp);
+
+        LinearLayout col = new LinearLayout(requireContext());
+        col.setOrientation(LinearLayout.VERTICAL);
+        TextView title = new TextView(requireContext());
+        title.setText(R.string.k2go_dash_card_title);
+        title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
+        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+        title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        col.addView(title);
+        TextView sub = new TextView(requireContext());
+        sub.setText(R.string.k2go_dash_version_unknown);
+        sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        col.addView(sub);
+        row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+        // Tapping the card opens the dashboard detail (what it is + full description); the pill is the
+        // quick Rebuild action. Both route rebuilds through the shared DashboardRebuild gate.
+        row.setClickable(true);
+        row.setOnClickListener(v -> {
+            if (getActivity() instanceof SetupLibraryActivity) {
+                ((SetupLibraryActivity) getActivity()).openDashboardDetail();
+            }
+        });
+
+        TextView rebuild = statePill(getString(R.string.k2go_dash_rebuild), R.color.k2go_teal);
+        rebuild.setPadding(px(14), px(6), px(14), px(6));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host));
+        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        tlp.leftMargin = px(10);
+        row.addView(rebuild, tlp);
+
+        host.addView(row);
+        fetchDashVersion(sub);
+    }
+
+    /** Show the installed dash-node version on the card. Read from the rootfs package.json on disk
+     *  (authoritative, always present) rather than the REST endpoint — that endpoint only exists in
+     *  newer builds, so on an older install it 404s and the version silently never appeared. */
+    private void fetchDashVersion(final TextView sub) {
+        final Context ctx = requireContext().getApplicationContext();
+        AppExecutors.get().io().execute(() -> {
+            final String ver = DashboardVersion.installed(ctx);
+            main.post(() -> {
+                if (isAdded() && ver != null) sub.setText(getString(R.string.k2go_dash_card_sub_fmt, ver));
+            });
+        });
     }
 
     private void refreshProceed() {

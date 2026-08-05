@@ -40,6 +40,9 @@ public final class InstallProgressRepository {
     /** Marks the upcoming posts as belonging to the scratch-reset pipeline. */
     public void beginReset() { currentOp = InstallState.Op.RESET; }
 
+    /** ADFA-5011: marks the upcoming posts as belonging to a dash-node REST-core rebuild. */
+    public void beginRebuild() { currentOp = InstallState.Op.REBUILD; }
+
     /** The operation the current state belongs to (INSTALL when idle). */
     public InstallState.Op currentOp() { return current().op; }
 

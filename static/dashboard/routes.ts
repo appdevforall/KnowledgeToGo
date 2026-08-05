@@ -6,6 +6,8 @@
 // none of these calls hold state — a client can drop and re-attach by polling the id.
 import express, { Router, Request, Response } from 'express';
 import { spawn } from 'child_process';
+import fs from 'fs';
+import path from 'path';
 import { jobs, Job, JobType } from './sockets/jobs';
 import { searchCatalog, listLibrary, removeBook, listLanguages } from './sockets/books.query';
 import { parseBox, parseEstimate } from './sockets/maps.socket';
@@ -24,6 +26,14 @@ import {
 // maps.exec.ts already spawns): `extract` (interactive, for the estimate) and `delete`.
 const MAPS_SCRIPT = '/opt/iiab/maps/tile-extract/tile-extract.py';
 const MAPS_NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
+
+// ADFA-5004: Kiwix ZIM management (list + delete), reached from the app so users can free space
+// without the retired web dashboard. ZIMS_DIR/KIWIX_INDEXER mirror sockets/kiwix.exec.ts — keep in
+// sync. ZIM_NAME_RE only ever matches a plain "<file>.zim" (no path separators), so a delete can
+// never escape ZIMS_DIR.
+const ZIMS_DIR = '/library/zims/content/';
+const KIWIX_INDEXER = '/usr/bin/iiab-make-kiwix-lib';
+const ZIM_NAME_RE = /^[A-Za-z0-9._-]{1,150}\.zim$/;
 
 const VALID_TYPES: JobType[] = ['kiwix', 'maps', 'books', 'kolibri'];
 function isType(t: string): t is JobType {
@@ -159,6 +169,181 @@ apiRouter.post('/maps/delete', (req: Request, res: Response): void => {
         if (code === 0) res.json({ ok: true });
         else res.status(500).json({ error: err.trim() || `delete exited ${code}` });
     });
+});
+
+// --- Kiwix: list installed ZIMs + delete (ADFA-5004) ------------------------------------------
+// Direct (non-job) ops mirroring /maps/delete; the download itself stays a durable job
+// (POST /kiwix/download). Ported from the retired dashboard socket handler (delete_zim): remove the
+// .zim from disk, then rebuild the Kiwix library index so the deleted book stops being served.
+// Declared before the generic /:type/* routes so these literal paths win.
+
+// The ZIMs currently on disk (name + bytes), newest first. Drives the in-app manage list.
+apiRouter.get('/kiwix/library', (_req: Request, res: Response): void => {
+    try {
+        if (!fs.existsSync(ZIMS_DIR)) { res.json([]); return; }
+        const rows = fs.readdirSync(ZIMS_DIR)
+            .filter((f) => f.endsWith('.zim'))
+            .map((name) => {
+                let bytes = 0, mtime = 0;
+                try { const st = fs.statSync(path.join(ZIMS_DIR, name)); bytes = st.size; mtime = st.mtimeMs; }
+                catch { /* file vanished between readdir and stat — skip */ }
+                return { name, bytes, mtime };
+            })
+            .sort((a, b) => b.mtime - a.mtime);
+        res.json(rows);
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'library read failed' });
+    }
+});
+
+// Delete one installed ZIM, then rebuild the Kiwix index so kiwix-serve stops serving it.
+apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
+    const name = String((req.body as { name?: unknown })?.name ?? '').trim();
+    // Strict name + basename guard: only a plain "<file>.zim" inside ZIMS_DIR, never a path.
+    if (!ZIM_NAME_RE.test(name) || name !== path.basename(name)) {
+        res.status(400).json({ error: 'invalid zim name' }); return;
+    }
+    const filePath = path.join(ZIMS_DIR, name);
+    if (!fs.existsSync(filePath)) { res.status(404).json({ error: 'not found' }); return; }
+    try {
+        fs.unlinkSync(filePath);
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'delete failed' }); return;
+    }
+    // No indexer on the box: the file is gone, report success without a reindex.
+    if (!fs.existsSync(KIWIX_INDEXER)) { res.json({ ok: true, reindexed: false }); return; }
+    // ADFA-5004: don't run a second indexer while a kiwix download/index job is in flight. The jobs
+    // engine does NOT serialize (each runner is its own promise) and this delete runs outside it, so
+    // spawning iiab-make-kiwix-lib now could race that job's own end-of-run reindex on library.xml
+    // (and pick up an incomplete, still-downloading .zim). The file is already unlinked, so the
+    // active job's reindex — which reads the current disk state — will reflect the deletion when it
+    // finishes. See ADR-4832 (proot/index collisions).
+    const kiwixBusy = jobs.list('kiwix').some((j) =>
+        j.phase === 'queued' || j.phase === 'downloading' || j.phase === 'indexing' || j.phase === 'processing');
+    if (kiwixBusy) { res.json({ ok: true, reindexed: false, deferred: true }); return; }
+    // Rebuild the library index — the SAME step the download runner (kiwix.exec.ts) uses to make
+    // content show up, so it also makes a deleted ZIM disappear (no kiwix-serve restart needed).
+    // We MUST drain stdout/stderr: with the default piped stdio, a chatty indexer fills the ~64KB
+    // pipe buffer and blocks forever (never exits, library never rebuilt) — exactly what left a
+    // deleted ZIM still served. Its exit code is advisory (kiwix.exec.ts treats it the same), so the
+    // unlink is the real signal; we respond when it finishes.
+    const idx = spawn(KIWIX_INDEXER, [], { env: { ...process.env } });
+    idx.stdout?.on('data', () => { /* drain so the indexer never blocks on a full pipe */ });
+    idx.stderr?.on('data', () => { /* drain */ });
+    idx.on('error', (e) => { if (!res.headersSent) res.status(500).json({ error: String(e) }); });
+    idx.on('exit', () => { if (!res.headersSent) res.json({ ok: true, reindexed: true }); });
+});
+
+// --- System: dash-node version + self-rebuild (ADFA-5011) -------------------------------------
+// The dashboard REST core can rebuild ITSELF from the on-device clone without a rootfs rebuild:
+// git fetch+reset -> build in a staging dir -> smoke-test the staged build -> atomically swap it
+// live only if it passes (tools/rebuild-dashboard.sh). The rebuild runs DETACHED (setsid) so
+// restarting dash-node mid-run never kills it. Declared before the generic /:type/* routes.
+const REBUILD_SCRIPT = '/opt/iiab-android/tools/rebuild-dashboard.sh';
+const REBUILD_STATUS_FILE = '/var/run/dash-rebuild.status';
+
+// Installed dash-node version (from package.json), so the module card can show it + compare.
+apiRouter.get('/system/version', (_req: Request, res: Response): void => {
+    try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
+        res.json({ version: String(pkg.version || 'unknown') });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'version read failed' });
+    }
+});
+
+// Current rebuild state: idle | running | done | error (read from the status file the script writes).
+apiRouter.get('/system/dashboard/rebuild/status', (_req: Request, res: Response): void => {
+    let state = 'idle';
+    try { state = (fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'); } catch { /* no file yet */ }
+    res.json({ state });
+});
+
+// Trigger a rebuild. Fire-and-forget: launches the orchestrator DETACHED and returns 202 at once;
+// the app then polls /system/version + RestReadiness until the API is back on the new version.
+apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void => {
+    let running = false;
+    try { running = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() === 'running'; } catch { /* none */ }
+    if (running) { res.status(409).json({ error: 'a rebuild is already running' }); return; }
+    if (!fs.existsSync(REBUILD_SCRIPT)) { res.status(500).json({ error: 'rebuild script not found' }); return; }
+    try {
+        // setsid => own session, so `pdsm restart dash-node` inside the script can't kill this run.
+        const child = spawn('setsid', ['sh', REBUILD_SCRIPT], { detached: true, stdio: 'ignore' });
+        child.unref();
+        res.status(202).json({ ok: true, state: 'running' });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'could not start rebuild' });
+    }
+});
+
+// ADFA-5026: live "is a newer dash-node available?" check. Unlike /system/version (which reads the
+// installed package.json off disk, offline), this compares the installed version against the mainline
+// remote: git fetch + read origin/main's static/dashboard/package.json. Everything stays in the rootfs
+// clone and reuses its existing git auth (like the rebuild). Network-bound, so it runs with a timeout
+// and returns 503 (not 500) when the remote can't be reached, letting the app keep its last-known state.
+const UPDATE_CLONE_DIR = '/opt/iiab-android';
+const UPDATE_BRANCH = 'main';
+const UPDATE_PKG_IN_CLONE = 'static/dashboard/package.json';
+
+/** Run git inside the on-device clone with a hard timeout; resolves stdout, rejects on non-zero/timeout. */
+function gitInClone(args: string[], timeoutMs: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const p = spawn('git', ['-C', UPDATE_CLONE_DIR, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+        let out = '', err = '';
+        const timer = setTimeout(() => { p.kill('SIGKILL'); reject(new Error('git timed out')); }, timeoutMs);
+        p.stdout.on('data', (d) => { out += d; });
+        p.stderr.on('data', (d) => { err += d; });
+        p.on('error', (e) => { clearTimeout(timer); reject(e); });
+        p.on('close', (code) => {
+            clearTimeout(timer);
+            if (code === 0) resolve(out); else reject(new Error(err.trim() || ('git exited ' + code)));
+        });
+    });
+}
+
+/** True when {@code a} is a strictly newer semantic version than {@code b} (major.minor.patch).
+ *  Pre-release/build suffixes are ignored (e.g. "1.1.0-beta" compares as "1.1.0") — fine for the
+ *  plain x.y.z versions dash-node uses today; revisit if a suffixed tag is ever shipped. */
+function versionGt(a: string, b: string): boolean {
+    const pa = a.split('.').map((n) => parseInt(n, 10) || 0);
+    const pb = b.split('.').map((n) => parseInt(n, 10) || 0);
+    for (let i = 0; i < 3; i++) {
+        const x = pa[i] || 0, y = pb[i] || 0;
+        if (x !== y) return x > y;
+    }
+    return false;
+}
+
+apiRouter.get('/system/dashboard/update-check', async (_req: Request, res: Response): Promise<void> => {
+    let installed = 'unknown';
+    try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
+        installed = String(pkg.version || 'unknown');
+    } catch { /* leave 'unknown'; the remote check below still runs */ }
+
+    // Don't fetch while a rebuild owns the clone (it runs `git reset --hard`): a concurrent fetch
+    // could collide on git's locks. Report installed-only and let the app keep its last-known state.
+    let rebuilding = false;
+    try { rebuilding = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() === 'running'; } catch { /* no file yet */ }
+    if (rebuilding) {
+        res.status(503).json({ installed, available: 'unknown', updateAvailable: false, error: 'rebuild in progress' });
+        return;
+    }
+
+    try {
+        await gitInClone(['fetch', '--quiet', 'origin', UPDATE_BRANCH], 20000);
+        const remotePkg = await gitInClone(['show', `origin/${UPDATE_BRANCH}:${UPDATE_PKG_IN_CLONE}`], 10000);
+        const available = String(JSON.parse(remotePkg).version || 'unknown');
+        const updateAvailable = installed !== 'unknown' && available !== 'unknown' && versionGt(available, installed);
+        res.json({ installed, available, updateAvailable });
+    } catch (e: any) {
+        // Offline / no remote / clone missing: not a server fault, and git stderr can echo the remote
+        // URL (which may carry the clone's auth token). Keep the detail server-side; return a generic
+        // reason. 503 so the app falls back to its last-known state rather than a hard error.
+        console.error('[update-check] ' + (e?.message || e));
+        res.status(503).json({ installed, available: 'unknown', updateAvailable: false,
+            error: 'update check unavailable' });
+    }
 });
 
 // --- Kolibri: readiness, catálogo y selección (ADFA-4949) -------------------------
