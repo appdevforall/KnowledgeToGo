@@ -84,9 +84,14 @@ public class BackupRestoreFragment extends Fragment {
         clp.topMargin = px(10);
         col.addView(cards, clp);
         cards.addView(card(R.drawable.ic_archive, R.string.k2go_br_backup_title, R.string.k2go_br_backup_sub,
-                v -> open(BackupJobFragment.MODE_BACKUP)));
+                R.color.k2go_teal, R.color.k2go_ink, v -> open(BackupJobFragment.MODE_BACKUP)));
         cards.addView(card(R.drawable.ic_unarchive, R.string.k2go_br_restore_title, R.string.k2go_br_restore_sub,
-                v -> open(BackupJobFragment.MODE_RESTORE)));
+                R.color.k2go_teal, R.color.k2go_ink, v -> open(BackupJobFragment.MODE_RESTORE)));
+        // ADFA-5023: destructive third option — reinstall from scratch. Hairline-separated and red so it
+        // reads as distinct/dangerous; a strong confirm precedes the wipe (delete + fresh install).
+        cards.addView(hairline());
+        cards.addView(card(R.drawable.ic_refresh, R.string.k2go_reinstall_title, R.string.k2go_reinstall_sub,
+                R.color.k2go_nav_exit, R.color.k2go_nav_exit, v -> confirmReinstall()));
 
         // ADFA-4961: returning from a finished op → index-style "returning to Home" countdown + Cancel.
         if (sReturnPending) {
@@ -190,7 +195,32 @@ public class BackupRestoreFragment extends Fragment {
         return t;
     }
 
-    private View card(int iconRes, int titleRes, int subRes, View.OnClickListener onClick) {
+    /** ADFA-5023: a thin divider so the destructive reinstall card reads as separate from backup/restore. */
+    private View hairline() {
+        View v = new View(requireContext());
+        v.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.k2go_hairline));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, Math.max(1, px(1)));
+        lp.topMargin = px(2); lp.bottomMargin = px(16);
+        v.setLayoutParams(lp);
+        return v;
+    }
+
+    /** ADFA-5023: strong confirm before a from-scratch reinstall (wipes everything), then the wizard. */
+    private void confirmReinstall() {
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.k2go_reinstall_confirm_title)
+                .setMessage(R.string.k2go_reinstall_confirm_msg)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.k2go_reinstall_confirm_yes, (d, w) -> {
+                    if (getActivity() instanceof SetupLibraryActivity) {
+                        ((SetupLibraryActivity) getActivity()).openReinstallWizard();
+                    }
+                })
+                .show();
+    }
+
+    private View card(int iconRes, int titleRes, int subRes, int iconColorRes, int titleColorRes, View.OnClickListener onClick) {
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -205,7 +235,7 @@ public class BackupRestoreFragment extends Fragment {
 
         ImageView icon = new ImageView(requireContext());
         icon.setImageResource(iconRes);
-        icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        icon.setColorFilter(ContextCompat.getColor(requireContext(), iconColorRes));
         LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(px(28), px(28));
         ilp.rightMargin = px(14);
         row.addView(icon, ilp);
@@ -217,7 +247,7 @@ public class BackupRestoreFragment extends Fragment {
         TextView t = new TextView(requireContext());
         t.setText(getString(titleRes));
         t.setTypeface(t.getTypeface(), android.graphics.Typeface.BOLD);
-        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+        t.setTextColor(ContextCompat.getColor(requireContext(), titleColorRes));
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
         textCol.addView(t);
 
