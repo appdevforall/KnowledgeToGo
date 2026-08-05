@@ -696,6 +696,11 @@
     <string name="k2go_dash_includes">REST galiniai taškai Knygoms, Wikipedia/ZIM, Kolibri ir Žemėlapiams; nginx vhost; ir sistemos versijos bei atkūrimo galiniai taškai — visi adresu 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Sistemos branduolys</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Tikrinama…</string>
+    <string name="k2go_dash_chip_uptodate">Naujausia</string>
+    <string name="k2go_dash_chip_update">Yra atnaujinimas</string>
+    <string name="k2go_dash_uptodate_hint">Naudojate naujausią versiją — perkurti nereikia.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Atkūrimas baigtas — nukreipiame į jūsų biblioteką…</string>
     <string name="k2go_dash_rebuild_building">Kuriama, testuojama ir keičiama vietoje…</string>

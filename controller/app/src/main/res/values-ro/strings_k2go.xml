@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">Puncte finale REST pentru Cărți, Wikipedia/ZIM, Kolibri și Hărți; vhost-ul nginx; și punctele finale pentru versiunea sistemului și reconstruire — toate servite la 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Nucleul sistemului</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Se verifică…</string>
+    <string name="k2go_dash_chip_uptodate">La zi</string>
+    <string name="k2go_dash_chip_update">Actualizare disponibilă</string>
+    <string name="k2go_dash_uptodate_hint">Ai cea mai recentă versiune — nu e nevoie de reconstruire.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Reconstruire finalizată — te ducem la biblioteca ta…</string>
     <string name="k2go_dash_rebuild_building">Se compilează, se testează și se înlocuiește pe loc…</string>

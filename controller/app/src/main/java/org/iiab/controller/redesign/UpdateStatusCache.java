@@ -1,0 +1,45 @@
+/*
+ * ============================================================================
+ * Name        : UpdateStatusCache.java
+ * Author      : AppDevForAll
+ * Copyright   : Copyright (c) 2026 AppDevForAll
+ * Description : ADFA-5026. Last-known dash-node update status, so the card can still show "Up to date"
+ *               / "Update available" when a fresh check can't run (box stopped or offline) instead of
+ *               a blank/"checking" pill. Written whenever a live /system/dashboard/update-check
+ *               succeeds; read as the fallback when it fails. Tiny SharedPreferences store.
+ * ============================================================================
+ */
+package org.iiab.controller.redesign;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+public final class UpdateStatusCache {
+    private UpdateStatusCache() {}
+
+    private static final String PREFS = "k2go_dash_update";
+    private static final String KEY_HAS = "has_value";
+    private static final String KEY_UPDATE_AVAILABLE = "update_available";
+
+    private static SharedPreferences prefs(Context ctx) {
+        return ctx.getApplicationContext().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+    }
+
+    /** Persist the outcome of a successful live check. */
+    public static void save(Context ctx, boolean updateAvailable) {
+        prefs(ctx).edit()
+                .putBoolean(KEY_HAS, true)
+                .putBoolean(KEY_UPDATE_AVAILABLE, updateAvailable)
+                .apply();
+    }
+
+    /** True once at least one live check has succeeded (so a cached state exists to show). */
+    public static boolean has(Context ctx) {
+        return prefs(ctx).getBoolean(KEY_HAS, false);
+    }
+
+    /** Last-known "a newer build is available" flag (false when never checked). */
+    public static boolean updateAvailable(Context ctx) {
+        return prefs(ctx).getBoolean(KEY_UPDATE_AVAILABLE, false);
+    }
+}

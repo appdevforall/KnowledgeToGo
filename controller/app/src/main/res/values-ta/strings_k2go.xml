@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">புத்தகங்கள், Wikipedia/ZIM, Kolibri மற்றும் வரைபடங்களுக்கான REST இறுதிப்புள்ளிகள்; nginx vhost; மற்றும் கணினி பதிப்பு மற்றும் மீண்டும் உருவாக்கும் இறுதிப்புள்ளிகள் — அனைத்தும் 127.0.0.1:4000 இல்.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">கணினி கரு</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">சரிபார்க்கிறது…</string>
+    <string name="k2go_dash_chip_uptodate">புதுப்பித்த நிலையில்</string>
+    <string name="k2go_dash_chip_update">புதுப்பிப்பு உள்ளது</string>
+    <string name="k2go_dash_uptodate_hint">நீங்கள் சமீபத்திய பதிப்பில் உள்ளீர்கள் — மீண்டும் உருவாக்க வேண்டியதில்லை.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">மீண்டும் உருவாக்கம் முடிந்தது — உங்கள் நூலகத்திற்கு அனுப்பப்படுகிறீர்கள்…</string>
     <string name="k2go_dash_rebuild_building">இடத்திலேயே உருவாக்கப்பட்டு, சோதிக்கப்பட்டு, மாற்றப்படுகிறது…</string>

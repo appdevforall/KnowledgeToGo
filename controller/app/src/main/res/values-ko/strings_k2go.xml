@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">도서, Wikipedia/ZIM, Kolibri, 지도의 REST 엔드포인트, nginx vhost, 시스템 버전 및 재빌드 엔드포인트 — 모두 127.0.0.1:4000에서 제공됩니다.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">시스템 코어</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">확인 중…</string>
+    <string name="k2go_dash_chip_uptodate">최신 상태</string>
+    <string name="k2go_dash_chip_update">업데이트 있음</string>
+    <string name="k2go_dash_uptodate_hint">최신 빌드입니다 — 다시 빌드할 필요가 없습니다.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">재빌드 완료 — 라이브러리로 이동합니다…</string>
     <string name="k2go_dash_rebuild_building">제자리에서 빌드, 테스트, 교체 중…</string>

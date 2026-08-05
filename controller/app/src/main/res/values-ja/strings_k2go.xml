@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">書籍、Wikipedia/ZIM、Kolibri、地図の REST エンドポイント、nginx の vhost、システムバージョンと再構築のエンドポイント — すべて 127.0.0.1:4000 上。</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">システムコア</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">確認中…</string>
+    <string name="k2go_dash_chip_uptodate">最新です</string>
+    <string name="k2go_dash_chip_update">更新があります</string>
+    <string name="k2go_dash_uptodate_hint">最新のビルドです — 再構築は不要です。</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">再構築が完了しました — ライブラリに移動します…</string>
     <string name="k2go_dash_rebuild_building">その場でビルド・テスト・入れ替え中…</string>
