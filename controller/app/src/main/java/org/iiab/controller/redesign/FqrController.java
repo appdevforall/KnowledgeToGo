@@ -147,7 +147,7 @@ public final class FqrController {
     /** Arm (or disarm) on each page load, based on whether this is the /maps/ page. */
     public void onPageFinished(String url) {
         active = isMapsPage(url);
-        if (active) { deleteToolOn = false; webView.evaluateJavascript(BRIDGE_JS, null); }
+        if (active) { deleteToolOn = false; webView.evaluateJavascript(BRIDGE_JS, null); pushRegionNames(); }
     }
 
     /** True when the URL's path is the box's maps page. Pure string parsing (no android.net.Uri) so
@@ -192,38 +192,22 @@ public final class FqrController {
         activity.runOnUiThread(() -> openDeleteList(n));
     }
 
+    /** ADFA-5025: the bridge JS caught a duplicate name at "Next" and returned to the name field;
+     *  tell the user why with a Snackbar (duration scaled to reading time, per the app convention). */
+    @JavascriptInterface
+    public void onNameTaken(String name) {
+        if (!active) return;
+        final String n = name == null ? "" : name.trim();
+        activity.runOnUiThread(() -> snackbar(str(R.string.k2go_fqr_name_taken, n)));
+    }
+
     private void handleExtract(String name, String box) {
+        // ADFA-5025: reached only for a FREE name — the injected bridge JS filters out a name that
+        // already exists (window.__k2goRegions) at "Next" and never calls onExtractRequested for it.
         if (!validName(name) || !validBox(box)) {
             toast(str(R.string.k2go_fqr_invalid));
             return;
         }
-        // ADFA-5025: reject a name that is already used BEFORE the estimate/consent/download. The map
-        // popup is still open (fireExtract no longer hides it), so on a clash we just show a message
-        // and the user edits the name and presses Next again — no reload. Hide the popup and proceed
-        // only once the name is confirmed free. If the catalog can't be read, don't block (the server
-        // still guards a true clash at download time).
-        client.listRegions(new MapsRegionClient.RegionsListener() {
-            @Override public void onRegions(JSONObject regions) {
-                if (regions.has(name)) {
-                    toast(str(R.string.k2go_fqr_name_taken, name));
-                    return;   // popup stays open, name field intact
-                }
-                hidePopup();
-                proceedEstimate(name, box);
-            }
-            @Override public void onError(String message) {
-                hidePopup();
-                proceedEstimate(name, box);
-            }
-        });
-    }
-
-    /** Tell the map WebView to hide the region popup — only once the name is confirmed free. */
-    private void hidePopup() {
-        webView.evaluateJavascript("window.__k2goHidePopup&&window.__k2goHidePopup();", null);
-    }
-
-    private void proceedEstimate(String name, String box) {
         // "Calculating size…" while the server runs its dry-run.
         showCalculating();
         client.estimate(box, new MapsRegionClient.EstimateListener() {
@@ -239,6 +223,19 @@ public final class FqrController {
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
             }
+        });
+    }
+
+    /** ADFA-5025: fetch the existing region names and hand them to the bridge JS, so the "Next"
+     *  handler can reject a duplicate name synchronously (no round-trip, no raw-command flash). */
+    private void pushRegionNames() {
+        client.listRegions(new MapsRegionClient.RegionsListener() {
+            @Override public void onRegions(JSONObject regions) {
+                JSONArray names = new JSONArray();
+                for (Iterator<String> it = regions.keys(); it.hasNext(); ) names.put(it.next());
+                webView.evaluateJavascript("window.__k2goSetRegions&&window.__k2goSetRegions(" + names + ");", null);
+            }
+            @Override public void onError(String m) { /* leave the JS list as-is; the server still guards at download */ }
         });
     }
 
@@ -652,6 +649,13 @@ public final class FqrController {
 
     private void toast(String m) { Toast.makeText(activity, m, Toast.LENGTH_SHORT).show(); }
 
+    /** ADFA-5025: standardized Snackbar with reading-time duration (util.SnackbarDuration). */
+    private void snackbar(String m) {
+        com.google.android.material.snackbar.Snackbar
+                .make(webView, m, org.iiab.controller.util.SnackbarDuration.millisForText(m))
+                .show();
+    }
+
     private String str(int resId, Object... args) {
         return args.length == 0 ? activity.getString(resId) : activity.getString(resId, args);
     }
@@ -680,12 +684,18 @@ public final class FqrController {
             // Extract: the command <pre> is rebuilt on EVERY keystroke, so firing from the observer
             // captured after the first letter. Fire only when the user presses Next (name is final);
             // read the <pre> then — it's already updated live with the full name.
-            // ADFA-5025: do NOT hide the popup here. Native checks the name against the existing
-            // regions first and hides the popup (via __k2goHidePopup) only once it is free; on a
-            // name clash the popup stays open so the user edits the name and presses Next again.
+            // ADFA-5025: on Next, check the name against the existing regions (pushed from native via
+            // __k2goSetRegions). Duplicate -> click the map's "Back" to return to the name field (so the
+            // user just edits the name and retries) and tell native to show a Snackbar; the raw command
+            // is never shown. Free -> hide the raw-command popup and hand off to native as before.
             "function fireExtract(){try{var pre=sr.querySelector('.maplibregl-popup pre');if(!pre)return;" +
-            "var m=(pre.textContent||'').match(EX);if(!m)return;" +
-            "if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(m[1],m[2]);}}catch(e){}}" +
+            "var m=(pre.textContent||'').match(EX);if(!m)return;var nm=m[1];" +
+            "if(window.__k2goRegions&&window.__k2goRegions.indexOf(nm)>=0){" +
+            "var pop=pre.closest?pre.closest('.maplibregl-popup'):null;" +
+            "if(pop){var bs=pop.querySelectorAll('button');for(var i=0;i<bs.length;i++){if((bs[i].textContent||'').trim()==='Back'){bs[i].click();break;}}}" +
+            "if(window.K2GoFQR&&K2GoFQR.onNameTaken){K2GoFQR.onNameTaken(nm);}return;}" +
+            "hidePop(pre);" +
+            "if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(nm,m[2]);}}catch(e){}}" +
             // Delete: the delete popup shows a complete command (no typing) -> observe + fire.
             "function handleDelete(pre){try{var d=(pre.textContent||'').match(DE);if(!d)return false;hidePop(pre);" +
             "if(window.K2GoFQR&&K2GoFQR.onDeleteRequested){K2GoFQR.onDeleteRequested(d[1]);}return true;}catch(e){return false;}}" +
@@ -708,8 +718,9 @@ public final class FqrController {
             "var el=mm.getContainer?mm.getContainer():null;var H=el?el.clientHeight:0;" +
             "var pb=Math.round(H*(frac||0))+40;" +   // reserve the sheet's area at the bottom
             "mm.fitBounds([[a,b],[c,d]],{padding:{top:40,left:40,right:40,bottom:pb},duration:600});}catch(e){}};" +
-            // ADFA-5025: native calls this to hide the region popup once the name is confirmed free.
-            "window.__k2goHidePopup=function(){try{var pre=sr.querySelector('.maplibregl-popup pre');if(pre)hidePop(pre);}catch(e){}};" +
+            // ADFA-5025: native pushes the existing region names here so fireExtract can reject a
+            // duplicate name synchronously (see the Next handler).
+            "window.__k2goSetRegions=function(arr){try{window.__k2goRegions=arr||[];}catch(e){}};" +
             "console.log('K2Go-FQR bridge armed');" +
             "}catch(e){try{console.log('K2Go-FQR fatal '+e);}catch(_){}}})();";
 }
