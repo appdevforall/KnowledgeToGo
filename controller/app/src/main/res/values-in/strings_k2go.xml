@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Unduhan buku</string>
     <string name="k2go_books_dl_notif_title">Menambahkan buku ke pustaka Anda</string>
     <string name="k2go_fqr_invalid">Nama wilayah atau area itu tampaknya tidak valid.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” sudah digunakan — pilih nama lain.</string>
     <string name="k2go_fqr_calculating">Menghitung ukuran unduhan…</string>
     <string name="k2go_fqr_estimate_error_title">Tidak bisa mengunduh wilayah ini</string>
     <string name="k2go_fqr_consent_title">Unduh wilayah ini?</string>

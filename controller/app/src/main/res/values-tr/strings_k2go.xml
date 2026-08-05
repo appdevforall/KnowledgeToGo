@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Kitap indirmeleri</string>
     <string name="k2go_books_dl_notif_title">Kitaplar kitaplığınıza ekleniyor</string>
     <string name="k2go_fqr_invalid">Bu bölge adı veya alanı geçersiz görünüyor.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” zaten kullanımda — farklı bir ad seç.</string>
     <string name="k2go_fqr_calculating">İndirme boyutu hesaplanıyor…</string>
     <string name="k2go_fqr_estimate_error_title">Bu bölge indirilemiyor</string>
     <string name="k2go_fqr_consent_title">Bu bölge indirilsin mi?</string>

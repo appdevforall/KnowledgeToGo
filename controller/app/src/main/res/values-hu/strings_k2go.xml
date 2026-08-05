@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Könyvletöltések</string>
     <string name="k2go_books_dl_notif_title">Könyvek hozzáadása a könyvtáradhoz</string>
     <string name="k2go_fqr_invalid">A régió neve vagy területe érvénytelennek tűnik.</string>
+    <string name="k2go_fqr_name_taken">A(z) „%1$s” már foglalt — válassz másik nevet.</string>
     <string name="k2go_fqr_calculating">Letöltési méret kiszámítása…</string>
     <string name="k2go_fqr_estimate_error_title">Ez a régió nem tölthető le</string>
     <string name="k2go_fqr_consent_title">Letöltöd ezt a régiót?</string>

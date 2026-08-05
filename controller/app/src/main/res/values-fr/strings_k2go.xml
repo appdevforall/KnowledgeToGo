@@ -596,6 +596,7 @@
     <string name="k2go_books_dl_notif_title">Ajout de livres à votre bibliothèque</string>
 
     <string name="k2go_fqr_invalid">Ce nom de région ou cette zone semble invalide.</string>
+    <string name="k2go_fqr_name_taken">« %1$s » est déjà utilisé — choisissez un autre nom.</string>
     <string name="k2go_fqr_calculating">Calcul de la taille du téléchargement…</string>
     <string name="k2go_fqr_estimate_error_title">Impossible de télécharger cette région</string>
     <string name="k2go_fqr_consent_title">Télécharger cette région ?</string>

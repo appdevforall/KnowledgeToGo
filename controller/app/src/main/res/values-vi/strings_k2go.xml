@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Tải sách</string>
     <string name="k2go_books_dl_notif_title">Đang thêm sách vào thư viện của bạn</string>
     <string name="k2go_fqr_invalid">Tên khu vực hoặc vùng đó có vẻ không hợp lệ.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” đã được dùng — hãy chọn tên khác.</string>
     <string name="k2go_fqr_calculating">Đang tính kích thước tải…</string>
     <string name="k2go_fqr_estimate_error_title">Không thể tải khu vực này</string>
     <string name="k2go_fqr_consent_title">Tải khu vực này?</string>

@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">دانلودهای کتاب</string>
     <string name="k2go_books_dl_notif_title">در حال افزودن کتاب‌ها به کتابخانه شما</string>
     <string name="k2go_fqr_invalid">نام یا محدوده آن منطقه نامعتبر به‌نظر می‌رسد.</string>
+    <string name="k2go_fqr_name_taken">«%1$s» قبلاً استفاده شده — نام دیگری انتخاب کنید.</string>
     <string name="k2go_fqr_calculating">در حال محاسبه حجم دانلود…</string>
     <string name="k2go_fqr_estimate_error_title">دانلود این منطقه ممکن نیست</string>
     <string name="k2go_fqr_consent_title">این منطقه دانلود شود؟</string>

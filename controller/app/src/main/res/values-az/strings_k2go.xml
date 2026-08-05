@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Kitab yükləmələri</string>
     <string name="k2go_books_dl_notif_title">Kitablar kitabxananıza əlavə olunur</string>
     <string name="k2go_fqr_invalid">Bu region adı və ya ərazi etibarsız görünür.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” artıq istifadə olunur — başqa ad seçin.</string>
     <string name="k2go_fqr_calculating">Yükləmə ölçüsü hesablanır…</string>
     <string name="k2go_fqr_estimate_error_title">Bu region yüklənə bilmir</string>
     <string name="k2go_fqr_consent_title">Bu region yüklənsin?</string>

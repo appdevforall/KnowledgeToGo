@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Àwọn gbígbà ìwé sílẹ̀</string>
     <string name="k2go_books_dl_notif_title">Ń fi àwọn ìwé kún ilé-ìkàwé rẹ</string>
     <string name="k2go_fqr_invalid">Orúkọ agbègbè tàbí agbègbè yẹn dàbí èyí tí kò tọ́.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” ti wà ní lílò — yan orúkọ mìíràn.</string>
     <string name="k2go_fqr_calculating">Ń ṣírò ìwọ̀n gbígbà sílẹ̀…</string>
     <string name="k2go_fqr_estimate_error_title">Kò lè gba agbègbè yìí sílẹ̀</string>
     <string name="k2go_fqr_consent_title">Gba agbègbè yìí sílẹ̀?</string>

@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Boekdownloads</string>
     <string name="k2go_books_dl_notif_title">Boeken toevoegen aan je bibliotheek</string>
     <string name="k2go_fqr_invalid">Die regionaam of dat gebied lijkt ongeldig.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” is al in gebruik — kies een andere naam.</string>
     <string name="k2go_fqr_calculating">Downloadgrootte berekenen…</string>
     <string name="k2go_fqr_estimate_error_title">Kan deze regio niet downloaden</string>
     <string name="k2go_fqr_consent_title">Deze regio downloaden?</string>

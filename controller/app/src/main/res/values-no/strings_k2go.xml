@@ -596,6 +596,7 @@
     <string name="k2go_books_dl_notif_title">Legger bøker til i biblioteket ditt</string>
 
     <string name="k2go_fqr_invalid">Det regionnavnet eller området ser ugyldig ut.</string>
+    <string name="k2go_fqr_name_taken">«%1$s» er allerede i bruk — velg et annet navn.</string>
     <string name="k2go_fqr_calculating">Beregner nedlastingsstørrelse…</string>
     <string name="k2go_fqr_estimate_error_title">Kan ikke laste ned denne regionen</string>
     <string name="k2go_fqr_consent_title">Laste ned denne regionen?</string>

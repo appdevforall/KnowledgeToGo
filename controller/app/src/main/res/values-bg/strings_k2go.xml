@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Изтегляния на книги</string>
     <string name="k2go_books_dl_notif_title">Добавяне на книги към библиотеката ви</string>
     <string name="k2go_fqr_invalid">Това име или област на региона изглежда невалидно.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ вече се използва — изберете друго име.</string>
     <string name="k2go_fqr_calculating">Изчисляване на размера за изтегляне…</string>
     <string name="k2go_fqr_estimate_error_title">Този регион не може да се изтегли</string>
     <string name="k2go_fqr_consent_title">Изтегляне на този регион?</string>

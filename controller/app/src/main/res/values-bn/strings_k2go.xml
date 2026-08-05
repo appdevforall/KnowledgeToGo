@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">বই ডাউনলোড</string>
     <string name="k2go_books_dl_notif_title">আপনার লাইব্রেরিতে বই যোগ করা হচ্ছে</string>
     <string name="k2go_fqr_invalid">সেই অঞ্চলের নাম বা এলাকা অবৈধ মনে হচ্ছে।</string>
+    <string name="k2go_fqr_name_taken">“%1$s” ইতিমধ্যে ব্যবহৃত হচ্ছে — অন্য একটি নাম বেছে নিন।</string>
     <string name="k2go_fqr_calculating">ডাউনলোডের আকার গণনা করা হচ্ছে…</string>
     <string name="k2go_fqr_estimate_error_title">এই অঞ্চল ডাউনলোড করা যাচ্ছে না</string>
     <string name="k2go_fqr_consent_title">এই অঞ্চল ডাউনলোড করবেন?</string>

@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">도서 다운로드</string>
     <string name="k2go_books_dl_notif_title">라이브러리에 도서를 추가하는 중</string>
     <string name="k2go_fqr_invalid">그 지역 이름 또는 영역이 유효하지 않은 것 같습니다.</string>
+    <string name="k2go_fqr_name_taken">“%1$s”은(는) 이미 사용 중입니다 — 다른 이름을 선택하세요.</string>
     <string name="k2go_fqr_calculating">다운로드 크기를 계산하는 중…</string>
     <string name="k2go_fqr_estimate_error_title">이 지역을 다운로드할 수 없음</string>
     <string name="k2go_fqr_consent_title">이 지역을 다운로드하시겠어요?</string>

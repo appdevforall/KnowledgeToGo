@@ -596,6 +596,7 @@
     <string name="k2go_books_dl_notif_title">Knygos pridedamos į biblioteką</string>
 
     <string name="k2go_fqr_invalid">Šis regiono pavadinimas arba sritis atrodo netinkami.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ jau naudojamas — pasirinkite kitą pavadinimą.</string>
     <string name="k2go_fqr_calculating">Skaičiuojamas atsisiuntimo dydis…</string>
     <string name="k2go_fqr_estimate_error_title">Šio regiono atsisiųsti negalima</string>
     <string name="k2go_fqr_consent_title">Atsisiųsti šį regioną?</string>

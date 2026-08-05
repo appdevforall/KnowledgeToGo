@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">图书下载</string>
     <string name="k2go_books_dl_notif_title">正在将图书添加到您的图书馆</string>
     <string name="k2go_fqr_invalid">该区域名称或范围似乎无效。</string>
+    <string name="k2go_fqr_name_taken">“%1$s”已被使用 — 请选择其他名称。</string>
     <string name="k2go_fqr_calculating">正在计算下载大小…</string>
     <string name="k2go_fqr_estimate_error_title">无法下载此区域</string>
     <string name="k2go_fqr_consent_title">下载此区域？</string>
