@@ -24,7 +24,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -161,16 +160,15 @@ public final class KiwixManageController {
         sheet.setOrientation(LinearLayout.VERTICAL);
         sheet.setBackground(rounded(cSurface, 16f, true));   // rounded top, flat bottom
         sheet.setElevation(dp(12));
-        sheet.setPadding(dp(16), dp(14), dp(16), dp(12));
+        sheet.setPadding(dp(16), dp(16), dp(16), dp(12));   // ADFA-5027: 4dp grid
 
         LinearLayout header = new LinearLayout(themed);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
         TextView title = new TextView(themed);
         title.setText(R.string.k2go_zim_manage_title);
-        title.setTextColor(cOnSurface);
-        title.setTypeface(title.getTypeface(), Typeface.BOLD);
-        title.setTextSize(16);
+        // ADFA-5027: M3 title role (medium weight built in — no manual BOLD/sp size). Icons unchanged.
+        m3text(title, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
         header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         ImageView close = new ImageView(themed);
         close.setImageResource(R.drawable.ic_close_24);
@@ -271,19 +269,18 @@ public final class KiwixManageController {
         LinearLayout row = new LinearLayout(themed);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(10), dp(12), dp(6), dp(12));
+        row.setPadding(dp(12), dp(12), dp(12), dp(12));   // ADFA-5027: 4dp grid
 
         LinearLayout col = new LinearLayout(themed);
         col.setOrientation(LinearLayout.VERTICAL);
         TextView tt = new TextView(themed);
         tt.setText(prettyName(name));
-        tt.setTextColor(cOnSurface);
-        tt.setTextSize(14);
+        // ADFA-5027: M3 list-item primary + supporting text roles.
+        m3text(tt, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, cOnSurface);
         col.addView(tt);
         TextView sz = new TextView(themed);
         sz.setText(ByteFormatter.toHuman(bytes));
-        sz.setTextColor(cOnSurfaceVariant);
-        sz.setTextSize(12);
+        m3text(sz, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cOnSurfaceVariant);
         col.addView(sz);
         row.addView(col, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -348,9 +345,16 @@ public final class KiwixManageController {
     private TextView note(String text) {
         TextView t = new TextView(themed);
         t.setText(text);
-        t.setTextColor(cOnSurfaceVariant);
-        t.setPadding(dp(10), dp(14), dp(10), dp(14));
+        m3text(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
+        t.setPadding(dp(12), dp(16), dp(12), dp(16));   // ADFA-5027: 4dp grid
         return t;
+    }
+
+    /** ADFA-5027: put overlay text on the M3 type scale (roles) instead of fixed sp sizes.
+     *  setTextAppearance also applies a color, so re-apply our theme color afterwards. */
+    private void m3text(TextView t, int appearanceRes, int color) {
+        t.setTextAppearance(appearanceRes);
+        t.setTextColor(color);
     }
 
     /** "wikipedia_en_all_maxi_2024-01.zim" -> "wikipedia en all maxi 2024-01" (display only). */
