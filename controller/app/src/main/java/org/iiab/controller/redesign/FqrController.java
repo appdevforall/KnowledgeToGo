@@ -29,7 +29,6 @@ package org.iiab.controller.redesign;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
@@ -39,6 +38,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -54,6 +54,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.iiab.controller.R;
+import org.iiab.controller.util.M3Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -242,7 +243,7 @@ public final class FqrController {
     // ---- Consent -----------------------------------------------------------------------------
     private void showCalculating() {
         dismissDialog();
-        LinearLayout row = dialogContent(dp(20));
+        LinearLayout row = dialogContent(dp(24));   // ADFA-5027: M3 dialog inset (4dp grid)
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
         CircularProgressIndicator spin = new CircularProgressIndicator(themed);
@@ -252,22 +253,25 @@ public final class FqrController {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         TextView t = new TextView(themed);
         t.setText(R.string.k2go_fqr_calculating);
-        t.setPadding(dp(14), 0, 0, 0);
-        t.setTextColor(cOnSurface);
+        t.setPadding(dp(16), 0, 0, 0);
+        M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
         row.addView(t);
         dialog = new MaterialAlertDialogBuilder(themed).setView(row).setCancelable(true).show();
     }
 
     private void showConsent(String name, String box, long transfer, long archive, long free, long freeAfter) {
-        LinearLayout body = dialogContent(dp(4));
+        // ADFA-5027: M3 dialog spacing — content aligned to the title (24dp) with 4dp-grid vertical
+        // breathing room, so it isn't cramped against the edges/title/buttons.
+        LinearLayout body = dialogContent(dp(24), dp(8));
 
         TextView sub = new TextView(themed);
         sub.setText(str(R.string.k2go_fqr_consent_sub, name, human(transfer), human(archive)));
-        sub.setTextColor(cOnSurface);
-        sub.setPadding(0, 0, 0, dp(14));
+        M3Text.apply(sub, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
+        sub.setPadding(0, 0, 0, dp(16));
         body.addView(sub);
 
-        // Free-space bar: how much of the current free space this region takes.
+        // Free-space bar: how much of the current free space this region takes. Rounded into an M3
+        // pill and clipped so the used/free segments follow the corners.
         LinearLayout bar = new LinearLayout(themed);
         bar.setOrientation(LinearLayout.HORIZONTAL);
         long denom = Math.max(free, archive + freeAfter);
@@ -276,25 +280,27 @@ public final class FqrController {
         used.setBackgroundColor(cPrimary);        // this region (leaf)
         View freeSeg = new View(themed);
         freeSeg.setBackgroundColor(cSurfaceHighest); // free after
-        int h = dp(12);
+        int h = dp(16);
+        bar.setBackground(rounded(cSurfaceHighest, 8f, false));   // pill: half of the 16dp height
+        bar.setClipToOutline(true);
         bar.addView(used, new LinearLayout.LayoutParams(0, h, Math.max(1f, archive)));
         bar.addView(freeSeg, new LinearLayout.LayoutParams(0, h, Math.max(1f, Math.max(0, denom - archive))));
-        body.addView(bar);
+        LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, h);
+        barLp.topMargin = dp(4);
+        body.addView(bar, barLp);
 
         TextView legend = new TextView(themed);
         legend.setText(str(R.string.k2go_fqr_consent_legend, human(archive), human(Math.max(0, freeAfter))));
-        legend.setTextColor(cOnSurfaceVariant);
-        legend.setTextSize(11);
-        legend.setPadding(0, dp(8), 0, 0);
+        M3Text.apply(legend, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cOnSurfaceVariant);
+        legend.setPadding(0, dp(12), 0, 0);
         body.addView(legend);
 
         // ADFA-4884: warn when the region wouldn't fit (negative free-after = disk almost full).
         if (freeAfter < 0) {
             TextView warn = new TextView(themed);
             warn.setText(str(R.string.k2go_fqr_consent_wont_fit, human(-freeAfter)));
-            warn.setTextColor(cError);
-            warn.setTextSize(12);
-            warn.setPadding(0, dp(10), 0, 0);
+            M3Text.apply(warn, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cError);
+            warn.setPadding(0, dp(12), 0, 0);
             body.addView(warn);
         }
 
@@ -350,13 +356,12 @@ public final class FqrController {
         final String title = str(R.string.k2go_fqr_downloading, name)
                 + (sizeBytes > 0 ? "  ·  " + human(sizeBytes) : "");   // "Downloading “x” · 2.1 GB"
         overlayTitle.setText(title);
-        overlayTitle.setTextColor(cOnSurface);
-        overlayTitle.setTypeface(overlayTitle.getTypeface(), Typeface.BOLD);
+        // ADFA-5027: M3 title role (carries its own medium weight — no manual BOLD).
+        M3Text.apply(overlayTitle, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
         top.addView(overlayTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         overlayMin = new TextView(themed);
         overlayMin.setText(R.string.k2go_hide);   // minimize to a compact card; tap again to Show
-        overlayMin.setTextColor(cPrimary);
-        overlayMin.setTextSize(13);
+        M3Text.apply(overlayMin, com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, cPrimary);
         overlayMin.setPadding(dp(12), 0, dp(4), 0);
         overlayMin.setOnClickListener(v -> toggleMinimize());
         top.addView(overlayMin);
@@ -378,7 +383,7 @@ public final class FqrController {
         rlp.topMargin = dp(8);
         overlayPct = new TextView(themed);
         overlayPct.setText(R.string.k2go_fqr_starting);
-        overlayPct.setTextColor(cOnSurfaceVariant);
+        M3Text.apply(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
         row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         MaterialButton cancel = new MaterialButton(themed, null,
                 com.google.android.material.R.attr.materialButtonOutlinedStyle);
@@ -459,24 +464,26 @@ public final class FqrController {
         sheet.setOrientation(LinearLayout.VERTICAL);
         sheet.setBackground(rounded(cSurface, 16f, true));   // rounded top corners, flat bottom
         sheet.setElevation(dp(12));
-        sheet.setPadding(dp(16), dp(14), dp(16), dp(12));
+        sheet.setPadding(dp(16), dp(16), dp(16), dp(12));   // ADFA-5027: 4dp grid
 
         LinearLayout header = new LinearLayout(themed);
         header.setOrientation(LinearLayout.HORIZONTAL);
         header.setGravity(Gravity.CENTER_VERTICAL);
         TextView title = new TextView(themed);
         title.setText(R.string.k2go_fqr_delete_list_title);
-        title.setTextColor(cOnSurface);
-        title.setTypeface(title.getTypeface(), Typeface.BOLD);
-        title.setTextSize(16);
+        // ADFA-5027: M3 title role (medium weight built in — no manual BOLD/sp size).
+        M3Text.apply(title, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
         header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        TextView close = new TextView(themed);
-        close.setText("✕");
-        close.setTextColor(cOnSurfaceVariant);
-        close.setTextSize(18);
-        close.setPadding(dp(12), 0, dp(4), 0);
+        // ADFA-5027: official M3 close icon instead of a "✕" text glyph — homologated with the Kiwix
+        // manager (KiwixManageController), which already uses ic_close_24. Close ≠ delete.
+        ImageView close = new ImageView(themed);
+        close.setImageResource(R.drawable.ic_close_24);
+        close.setColorFilter(cOnSurfaceVariant);
+        int closePad = dp(6);
+        close.setPadding(closePad, closePad, closePad, closePad);
+        close.setContentDescription(activity.getString(R.string.k2go_cancel));
         close.setOnClickListener(v -> hideDeleteSheet());
-        header.addView(close);
+        header.addView(close, new LinearLayout.LayoutParams(dp(36), dp(36)));
         sheet.addView(header);
 
         searchField = new EditText(themed);
@@ -562,21 +569,24 @@ public final class FqrController {
         LinearLayout row = new LinearLayout(themed);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(10), dp(12), dp(10), dp(12));
+        row.setPadding(dp(12), dp(12), dp(12), dp(12));   // ADFA-5027: 4dp grid
         if (r.name.equals(highlight)) row.setBackgroundColor(ColorUtils.setAlphaComponent(cPrimary, 0x33));
         TextView name = new TextView(themed);
         name.setText(r.name);
-        name.setTextColor(cOnSurface);
-        name.setTextSize(14);
+        // ADFA-5027: M3 list-item primary text role.
+        M3Text.apply(name, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, cOnSurface);
         row.addView(name, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         row.setOnClickListener(v -> flyTo(r));   // tapping a row flies the map behind to that region
-        TextView x = new TextView(themed);
-        x.setText("✕");
-        x.setTextColor(cError);
-        x.setTextSize(16);
-        x.setPadding(dp(16), dp(2), dp(6), dp(2));
-        x.setOnClickListener(v -> confirmDelete(r.name));
-        row.addView(x);
+        // ADFA-5027: official M3 delete (trash) icon in the error colour instead of a red "✕" glyph —
+        // homologated with the Kiwix manager's per-row delete (KiwixManageController uses ic_delete_24).
+        ImageView del = new ImageView(themed);
+        del.setImageResource(R.drawable.ic_delete_24);
+        del.setColorFilter(cError);
+        int delPad = dp(8);
+        del.setPadding(delPad, delPad, delPad, delPad);
+        del.setContentDescription(str(R.string.k2go_fqr_delete_confirm_title, r.name));
+        del.setOnClickListener(v -> confirmDelete(r.name));
+        row.addView(del, new LinearLayout.LayoutParams(dp(40), dp(40)));
         return row;
     }
 
@@ -616,10 +626,13 @@ public final class FqrController {
 
     // ---- helpers -----------------------------------------------------------------------------
     /** Padded, transparent container for MaterialAlertDialog setView (the dialog paints the surface). */
-    private LinearLayout dialogContent(int pad) {
+    private LinearLayout dialogContent(int pad) { return dialogContent(pad, pad); }
+
+    /** Vertical content holder with horizontal/vertical insets (4dp grid). */
+    private LinearLayout dialogContent(int hpad, int vpad) {
         LinearLayout l = new LinearLayout(themed);
         l.setOrientation(LinearLayout.VERTICAL);
-        l.setPadding(pad, pad, pad, pad);
+        l.setPadding(hpad, vpad, hpad, vpad);
         return l;
     }
 
