@@ -276,6 +276,76 @@ apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void
     }
 });
 
+// ADFA-5026: live "is a newer dash-node available?" check. Unlike /system/version (which reads the
+// installed package.json off disk, offline), this compares the installed version against the mainline
+// remote: git fetch + read origin/main's static/dashboard/package.json. Everything stays in the rootfs
+// clone and reuses its existing git auth (like the rebuild). Network-bound, so it runs with a timeout
+// and returns 503 (not 500) when the remote can't be reached, letting the app keep its last-known state.
+const UPDATE_CLONE_DIR = '/opt/iiab-android';
+const UPDATE_BRANCH = 'main';
+const UPDATE_PKG_IN_CLONE = 'static/dashboard/package.json';
+
+/** Run git inside the on-device clone with a hard timeout; resolves stdout, rejects on non-zero/timeout. */
+function gitInClone(args: string[], timeoutMs: number): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const p = spawn('git', ['-C', UPDATE_CLONE_DIR, ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+        let out = '', err = '';
+        const timer = setTimeout(() => { p.kill('SIGKILL'); reject(new Error('git timed out')); }, timeoutMs);
+        p.stdout.on('data', (d) => { out += d; });
+        p.stderr.on('data', (d) => { err += d; });
+        p.on('error', (e) => { clearTimeout(timer); reject(e); });
+        p.on('close', (code) => {
+            clearTimeout(timer);
+            if (code === 0) resolve(out); else reject(new Error(err.trim() || ('git exited ' + code)));
+        });
+    });
+}
+
+/** True when {@code a} is a strictly newer semantic version than {@code b} (major.minor.patch).
+ *  Pre-release/build suffixes are ignored (e.g. "1.1.0-beta" compares as "1.1.0") — fine for the
+ *  plain x.y.z versions dash-node uses today; revisit if a suffixed tag is ever shipped. */
+function versionGt(a: string, b: string): boolean {
+    const pa = a.split('.').map((n) => parseInt(n, 10) || 0);
+    const pb = b.split('.').map((n) => parseInt(n, 10) || 0);
+    for (let i = 0; i < 3; i++) {
+        const x = pa[i] || 0, y = pb[i] || 0;
+        if (x !== y) return x > y;
+    }
+    return false;
+}
+
+apiRouter.get('/system/dashboard/update-check', async (_req: Request, res: Response): Promise<void> => {
+    let installed = 'unknown';
+    try {
+        const pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
+        installed = String(pkg.version || 'unknown');
+    } catch { /* leave 'unknown'; the remote check below still runs */ }
+
+    // Don't fetch while a rebuild owns the clone (it runs `git reset --hard`): a concurrent fetch
+    // could collide on git's locks. Report installed-only and let the app keep its last-known state.
+    let rebuilding = false;
+    try { rebuilding = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() === 'running'; } catch { /* no file yet */ }
+    if (rebuilding) {
+        res.status(503).json({ installed, available: 'unknown', updateAvailable: false, error: 'rebuild in progress' });
+        return;
+    }
+
+    try {
+        await gitInClone(['fetch', '--quiet', 'origin', UPDATE_BRANCH], 20000);
+        const remotePkg = await gitInClone(['show', `origin/${UPDATE_BRANCH}:${UPDATE_PKG_IN_CLONE}`], 10000);
+        const available = String(JSON.parse(remotePkg).version || 'unknown');
+        const updateAvailable = installed !== 'unknown' && available !== 'unknown' && versionGt(available, installed);
+        res.json({ installed, available, updateAvailable });
+    } catch (e: any) {
+        // Offline / no remote / clone missing: not a server fault, and git stderr can echo the remote
+        // URL (which may carry the clone's auth token). Keep the detail server-side; return a generic
+        // reason. 503 so the app falls back to its last-known state rather than a hard error.
+        console.error('[update-check] ' + (e?.message || e));
+        res.status(503).json({ installed, available: 'unknown', updateAvailable: false,
+            error: 'update check unavailable' });
+    }
+});
+
 // --- Kolibri: readiness, catálogo y selección (ADFA-4949) -------------------------
 // Consultas directas (no-job). La descarga en sí es un job durable
 // (POST /kolibri/download), que sale gratis al añadir 'kolibri' a VALID_TYPES.
