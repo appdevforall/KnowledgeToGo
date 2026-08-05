@@ -64,7 +64,11 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden" />
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:windowSoftInputMode="adjustResize" /> <!-- ADFA-5024-followup: the terminal lives in a
+            BottomSheet/CoordinatorLayout (ADFA-4987); without an explicit mode the system defaulted to
+            adjustPan, so the IME covered the ExtraKeys bar and the text stuck. adjustResize shrinks the
+            window so the extra-keys bar + terminal sit above the keyboard. -->
 
         <activity
             android:name=".PortalActivity"
