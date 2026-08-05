@@ -197,6 +197,33 @@ public final class FqrController {
             toast(str(R.string.k2go_fqr_invalid));
             return;
         }
+        // ADFA-5025: reject a name that is already used BEFORE the estimate/consent/download. The map
+        // popup is still open (fireExtract no longer hides it), so on a clash we just show a message
+        // and the user edits the name and presses Next again — no reload. Hide the popup and proceed
+        // only once the name is confirmed free. If the catalog can't be read, don't block (the server
+        // still guards a true clash at download time).
+        client.listRegions(new MapsRegionClient.RegionsListener() {
+            @Override public void onRegions(JSONObject regions) {
+                if (regions.has(name)) {
+                    toast(str(R.string.k2go_fqr_name_taken, name));
+                    return;   // popup stays open, name field intact
+                }
+                hidePopup();
+                proceedEstimate(name, box);
+            }
+            @Override public void onError(String message) {
+                hidePopup();
+                proceedEstimate(name, box);
+            }
+        });
+    }
+
+    /** Tell the map WebView to hide the region popup — only once the name is confirmed free. */
+    private void hidePopup() {
+        webView.evaluateJavascript("window.__k2goHidePopup&&window.__k2goHidePopup();", null);
+    }
+
+    private void proceedEstimate(String name, String box) {
         // "Calculating size…" while the server runs its dry-run.
         showCalculating();
         client.estimate(box, new MapsRegionClient.EstimateListener() {
@@ -653,8 +680,11 @@ public final class FqrController {
             // Extract: the command <pre> is rebuilt on EVERY keystroke, so firing from the observer
             // captured after the first letter. Fire only when the user presses Next (name is final);
             // read the <pre> then — it's already updated live with the full name.
+            // ADFA-5025: do NOT hide the popup here. Native checks the name against the existing
+            // regions first and hides the popup (via __k2goHidePopup) only once it is free; on a
+            // name clash the popup stays open so the user edits the name and presses Next again.
             "function fireExtract(){try{var pre=sr.querySelector('.maplibregl-popup pre');if(!pre)return;" +
-            "var m=(pre.textContent||'').match(EX);if(!m)return;hidePop(pre);" +
+            "var m=(pre.textContent||'').match(EX);if(!m)return;" +
             "if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(m[1],m[2]);}}catch(e){}}" +
             // Delete: the delete popup shows a complete command (no typing) -> observe + fire.
             "function handleDelete(pre){try{var d=(pre.textContent||'').match(DE);if(!d)return false;hidePop(pre);" +
@@ -678,6 +708,8 @@ public final class FqrController {
             "var el=mm.getContainer?mm.getContainer():null;var H=el?el.clientHeight:0;" +
             "var pb=Math.round(H*(frac||0))+40;" +   // reserve the sheet's area at the bottom
             "mm.fitBounds([[a,b],[c,d]],{padding:{top:40,left:40,right:40,bottom:pb},duration:600});}catch(e){}};" +
+            // ADFA-5025: native calls this to hide the region popup once the name is confirmed free.
+            "window.__k2goHidePopup=function(){try{var pre=sr.querySelector('.maplibregl-popup pre');if(pre)hidePop(pre);}catch(e){}};" +
             "console.log('K2Go-FQR bridge armed');" +
             "}catch(e){try{console.log('K2Go-FQR fatal '+e);}catch(_){}}})();";
 }

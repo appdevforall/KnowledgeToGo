@@ -644,6 +644,8 @@
     <!-- ADFA-4884: in-app FQR maps overlays/dialogs (extracted from FqrController for i18n;
          translatable=false until the l10n pass, matching the rest of this file). -->
     <string name="k2go_fqr_invalid">That region name or area looks invalid.</string>
+    <!-- ADFA-5025: translatable=false for this focused PR; add to the next l10n pass. -->
+    <string name="k2go_fqr_name_taken" translatable="false">“%1$s” is already used — pick a different name.</string>
     <string name="k2go_fqr_calculating">Calculating download size…</string>
     <string name="k2go_fqr_estimate_error_title">Can\'t download this region</string>
     <string name="k2go_fqr_consent_title">Download this region?</string>
