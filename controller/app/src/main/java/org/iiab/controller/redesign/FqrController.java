@@ -54,6 +54,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.iiab.controller.R;
+import org.iiab.controller.util.M3Text;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -253,20 +254,19 @@ public final class FqrController {
         TextView t = new TextView(themed);
         t.setText(R.string.k2go_fqr_calculating);
         t.setPadding(dp(16), 0, 0, 0);
-        m3text(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
+        M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
         row.addView(t);
         dialog = new MaterialAlertDialogBuilder(themed).setView(row).setCancelable(true).show();
     }
 
     private void showConsent(String name, String box, long transfer, long archive, long free, long freeAfter) {
-        LinearLayout body = dialogContent(dp(4));
-        // ADFA-5027: M3 dialog spacing — align the content to the title (24dp) and use the 4dp grid,
-        // so it isn't cramped against the edges/title/buttons.
-        body.setPadding(dp(24), dp(8), dp(24), dp(8));
+        // ADFA-5027: M3 dialog spacing — content aligned to the title (24dp) with 4dp-grid vertical
+        // breathing room, so it isn't cramped against the edges/title/buttons.
+        LinearLayout body = dialogContent(dp(24), dp(8));
 
         TextView sub = new TextView(themed);
         sub.setText(str(R.string.k2go_fqr_consent_sub, name, human(transfer), human(archive)));
-        m3text(sub, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
+        M3Text.apply(sub, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
         sub.setPadding(0, 0, 0, dp(16));
         body.addView(sub);
 
@@ -291,7 +291,7 @@ public final class FqrController {
 
         TextView legend = new TextView(themed);
         legend.setText(str(R.string.k2go_fqr_consent_legend, human(archive), human(Math.max(0, freeAfter))));
-        m3text(legend, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cOnSurfaceVariant);
+        M3Text.apply(legend, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cOnSurfaceVariant);
         legend.setPadding(0, dp(12), 0, 0);
         body.addView(legend);
 
@@ -299,7 +299,7 @@ public final class FqrController {
         if (freeAfter < 0) {
             TextView warn = new TextView(themed);
             warn.setText(str(R.string.k2go_fqr_consent_wont_fit, human(-freeAfter)));
-            m3text(warn, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cError);
+            M3Text.apply(warn, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cError);
             warn.setPadding(0, dp(12), 0, 0);
             body.addView(warn);
         }
@@ -357,11 +357,11 @@ public final class FqrController {
                 + (sizeBytes > 0 ? "  ·  " + human(sizeBytes) : "");   // "Downloading “x” · 2.1 GB"
         overlayTitle.setText(title);
         // ADFA-5027: M3 title role (carries its own medium weight — no manual BOLD).
-        m3text(overlayTitle, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
+        M3Text.apply(overlayTitle, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
         top.addView(overlayTitle, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         overlayMin = new TextView(themed);
         overlayMin.setText(R.string.k2go_hide);   // minimize to a compact card; tap again to Show
-        m3text(overlayMin, com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, cPrimary);
+        M3Text.apply(overlayMin, com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, cPrimary);
         overlayMin.setPadding(dp(12), 0, dp(4), 0);
         overlayMin.setOnClickListener(v -> toggleMinimize());
         top.addView(overlayMin);
@@ -383,7 +383,7 @@ public final class FqrController {
         rlp.topMargin = dp(8);
         overlayPct = new TextView(themed);
         overlayPct.setText(R.string.k2go_fqr_starting);
-        m3text(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
+        M3Text.apply(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
         row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         MaterialButton cancel = new MaterialButton(themed, null,
                 com.google.android.material.R.attr.materialButtonOutlinedStyle);
@@ -472,7 +472,7 @@ public final class FqrController {
         TextView title = new TextView(themed);
         title.setText(R.string.k2go_fqr_delete_list_title);
         // ADFA-5027: M3 title role (medium weight built in — no manual BOLD/sp size).
-        m3text(title, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
+        M3Text.apply(title, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
         header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         // ADFA-5027: official M3 close icon instead of a "✕" text glyph — homologated with the Kiwix
         // manager (KiwixManageController), which already uses ic_close_24. Close ≠ delete.
@@ -574,7 +574,7 @@ public final class FqrController {
         TextView name = new TextView(themed);
         name.setText(r.name);
         // ADFA-5027: M3 list-item primary text role.
-        m3text(name, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, cOnSurface);
+        M3Text.apply(name, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, cOnSurface);
         row.addView(name, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         row.setOnClickListener(v -> flyTo(r));   // tapping a row flies the map behind to that region
         // ADFA-5027: official M3 delete (trash) icon in the error colour instead of a red "✕" glyph —
@@ -584,7 +584,7 @@ public final class FqrController {
         del.setColorFilter(cError);
         int delPad = dp(8);
         del.setPadding(delPad, delPad, delPad, delPad);
-        del.setContentDescription(activity.getString(R.string.k2go_fqr_delete));
+        del.setContentDescription(str(R.string.k2go_fqr_delete_confirm_title, r.name));
         del.setOnClickListener(v -> confirmDelete(r.name));
         row.addView(del, new LinearLayout.LayoutParams(dp(40), dp(40)));
         return row;
@@ -626,10 +626,13 @@ public final class FqrController {
 
     // ---- helpers -----------------------------------------------------------------------------
     /** Padded, transparent container for MaterialAlertDialog setView (the dialog paints the surface). */
-    private LinearLayout dialogContent(int pad) {
+    private LinearLayout dialogContent(int pad) { return dialogContent(pad, pad); }
+
+    /** Vertical content holder with horizontal/vertical insets (4dp grid). */
+    private LinearLayout dialogContent(int hpad, int vpad) {
         LinearLayout l = new LinearLayout(themed);
         l.setOrientation(LinearLayout.VERTICAL);
-        l.setPadding(pad, pad, pad, pad);
+        l.setPadding(hpad, vpad, hpad, vpad);
         return l;
     }
 
@@ -658,13 +661,6 @@ public final class FqrController {
     }
 
     private void toast(String m) { Toast.makeText(activity, m, Toast.LENGTH_SHORT).show(); }
-
-    /** ADFA-5027: put overlay text on the M3 type scale (roles) instead of fixed sp sizes.
-     *  setTextAppearance also applies a color, so re-apply our theme color afterwards. */
-    private void m3text(TextView t, int appearanceRes, int color) {
-        t.setTextAppearance(appearanceRes);
-        t.setTextColor(color);
-    }
 
     /** ADFA-5025: standardized Snackbar with reading-time duration (util.SnackbarDuration). */
     private void snackbar(String m) {

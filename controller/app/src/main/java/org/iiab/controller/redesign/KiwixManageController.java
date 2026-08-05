@@ -45,6 +45,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.iiab.controller.R;
 import org.iiab.controller.util.ByteFormatter;
+import org.iiab.controller.util.M3Text;
 import org.iiab.controller.util.Snackbars;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -168,7 +169,7 @@ public final class KiwixManageController {
         TextView title = new TextView(themed);
         title.setText(R.string.k2go_zim_manage_title);
         // ADFA-5027: M3 title role (medium weight built in — no manual BOLD/sp size). Icons unchanged.
-        m3text(title, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
+        M3Text.apply(title, com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, cOnSurface);
         header.addView(title, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         ImageView close = new ImageView(themed);
         close.setImageResource(R.drawable.ic_close_24);
@@ -276,11 +277,11 @@ public final class KiwixManageController {
         TextView tt = new TextView(themed);
         tt.setText(prettyName(name));
         // ADFA-5027: M3 list-item primary + supporting text roles.
-        m3text(tt, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, cOnSurface);
+        M3Text.apply(tt, com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, cOnSurface);
         col.addView(tt);
         TextView sz = new TextView(themed);
         sz.setText(ByteFormatter.toHuman(bytes));
-        m3text(sz, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cOnSurfaceVariant);
+        M3Text.apply(sz, com.google.android.material.R.style.TextAppearance_Material3_BodySmall, cOnSurfaceVariant);
         col.addView(sz);
         row.addView(col, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
 
@@ -289,7 +290,7 @@ public final class KiwixManageController {
         del.setColorFilter(cError);
         int delPad = dp(8);
         del.setPadding(delPad, delPad, delPad, delPad);
-        del.setContentDescription(activity.getString(R.string.k2go_zim_delete));
+        del.setContentDescription(activity.getString(R.string.k2go_zim_delete_confirm_title, prettyName(name)));
         del.setOnClickListener(v -> confirmDelete(name));
         row.addView(del, new LinearLayout.LayoutParams(dp(40), dp(40)));
         return row;
@@ -345,16 +346,9 @@ public final class KiwixManageController {
     private TextView note(String text) {
         TextView t = new TextView(themed);
         t.setText(text);
-        m3text(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
+        M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
         t.setPadding(dp(12), dp(16), dp(12), dp(16));   // ADFA-5027: 4dp grid
         return t;
-    }
-
-    /** ADFA-5027: put overlay text on the M3 type scale (roles) instead of fixed sp sizes.
-     *  setTextAppearance also applies a color, so re-apply our theme color afterwards. */
-    private void m3text(TextView t, int appearanceRes, int color) {
-        t.setTextAppearance(appearanceRes);
-        t.setTextColor(color);
     }
 
     /** "wikipedia_en_all_maxi_2024-01.zim" -> "wikipedia en all maxi 2024-01" (display only). */
