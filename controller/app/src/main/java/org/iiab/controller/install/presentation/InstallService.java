@@ -261,16 +261,26 @@ public final class InstallService extends Service {
                 return;
             }
             if (reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
-                postProvisioning(getString(R.string.install_status_wiping_old));
-                try {
-                    ProcessRunner.Result wipe = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
-                    if (!wipe.isSuccess()) {
-                        Log.w(TAG, "rm -rf rootfs (reinstall) failed (exit " + wipe.exitCode + "): " + wipe.output);
-                    }
-                } catch (Exception e) {
-                    Log.w(TAG, "rm -rf rootfs (reinstall) failed", e);
+                // ADFA-5023: a reinstall wipes the LIVE rootfs. Doing rm -rf while the server proot is up
+                // is the corruption the legacy reset/delete guarded against (they refused when alive). If a
+                // server is running, quiesce it (pdsm stop) FIRST, then wipe + download; the stop is async
+                // so we continue in wipeAndInstall() from its callback. Server down (recovery path) → wipe now.
+                if (org.iiab.controller.ServerStateRepository.get().current().alive) {
+                    postProvisioning(getString(R.string.server_shutting_down));
+                    if (prootEngine == null) prootEngine = new PRootEngine();
+                    prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(),
+                            "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm stop'",
+                            new PRootEngine.OutputListener() {
+                                @Override public void onOutputLine(String line) { log("[Reinstall] pdsm stop: " + line); }
+                                @Override public void onProcessExit(int exitCode) { wipeAndInstall(); }
+                                @Override public void onError(String error) { log("[Reinstall] pdsm stop error (continuing): " + error); wipeAndInstall(); }
+                            });
+                    return;   // continues in wipeAndInstall()
                 }
+                wipeAndInstall();
+                return;
             }
+            // Fresh install (no rootfs present) — nothing to wipe or stop.
             if (cancelled) return;
             persistInstalledTier();
             startRootfsDownload();
@@ -279,6 +289,24 @@ public final class InstallService extends Service {
             org.iiab.controller.analytics.AnalyticsClient.with(this).logInstallFailed("download", "exception");
             fail(getString(R.string.install_error_download, String.valueOf(e.getMessage())));
         }
+    }
+
+    /** ADFA-5023: wipe the existing rootfs then start the fresh download. Split out so a reinstall over a
+     *  live system can run this AFTER the async pdsm stop completes (server proot no longer writing). */
+    private void wipeAndInstall() {
+        if (cancelled) return;
+        postProvisioning(getString(R.string.install_status_wiping_old));
+        try {
+            ProcessRunner.Result wipe = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
+            if (!wipe.isSuccess()) {
+                Log.w(TAG, "rm -rf rootfs (reinstall) failed (exit " + wipe.exitCode + "): " + wipe.output);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "rm -rf rootfs (reinstall) failed", e);
+        }
+        if (cancelled) return;
+        persistInstalledTier();
+        startRootfsDownload();
     }
 
     private void startRootfsDownload() {

@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Analítica de uso privada y autoalojada para tu biblioteca. Descubre cómo se usa el contenido, todo en el dispositivo.</string>
     <string name="k2go_settings_backups">Copias de seguridad y recuperación</string>
-    <string name="k2go_br_row_sub">Guarda tu sistema en un archivo, o restáuralo</string>
     <string name="k2go_br_title">Copia de seguridad y restauración</string>
-    <string name="k2go_br_desc">Guarda todo tu sistema en un archivo que puedes conservar o mover, o restáuralo desde uno. El servidor se detiene mientras esto se ejecuta.</string>
     <string name="k2go_br_prompt">¿Qué quieres hacer?</string>
     <string name="k2go_br_backup_title">Hacer copia</string>
     <string name="k2go_br_backup_sub">Guardar el sistema actual en un archivo</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Ya hay una instalación en curso — espera a que termine.</string>
     <string name="k2go_setup_leave_hint">Aún configurando el sistema. Puedes salir de la app — sigue en marcha y estará lista cuando vuelvas.</string>
     <string name="k2go_damaged_title">Instalación interrumpida</string>
-    <string name="k2go_damaged_body">La configuración se detuvo antes de terminar, y el sistema no puede iniciarse. Para solucionarlo, reinstala la app y ejecuta la configuración de nuevo.</string>
     <string name="k2go_damaged_close">Cerrar</string>
     <string name="k2go_setup_starting">Iniciando servicios</string>
     <string name="k2go_setup_adding">Añadiendo tu contenido</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Compilando, probando y sustituyendo en el sitio…</string>
     <string name="k2go_dash_rebuild_failed">Falló la reconstrucción</string>
     <string name="k2go_dash_services_failed">Reconstruido, pero los servicios no arrancaron a tiempo</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Guarda tu sistema en un archivo, restáuralo, o reinstala desde cero</string>
+    <string name="k2go_br_desc">Guarda todo tu sistema en un archivo que puedes conservar o mover, restáuralo desde uno, o reinstala desde cero. El servidor se detiene mientras esto se ejecuta.</string>
+    <string name="k2go_damaged_body">La instalación se detuvo antes de terminar y el sistema no puede iniciar. Puedes restaurar un respaldo o reinstalar el sistema desde cero para recuperarlo.</string>
+    <string name="k2go_damaged_recover">Recuperar…</string>
+    <string name="k2go_reinstall_title">Reinstalar el sistema</string>
+    <string name="k2go_reinstall_sub">Borra todo e instala un sistema nuevo desde cero</string>
+    <string name="k2go_reinstall_confirm_title">¿Reinstalar desde cero?</string>
+    <string name="k2go_reinstall_confirm_msg">Esto borra el sistema actual y todo lo que contiene —libros, mapas, descargas y ajustes— y luego instala una copia limpia. No se puede deshacer. Haz un respaldo primero si quieres conservar algo. Necesita conexión a internet.</string>
+    <string name="k2go_reinstall_confirm_yes">Borrar y reinstalar</string>
 </resources>

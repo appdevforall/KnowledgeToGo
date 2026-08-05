@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">ライブラリ用の、プライベートでセルフホストの使用状況分析です。コンテンツがどのように使われているかを、すべてデバイス上で把握できます。</string>
     <string name="k2go_settings_backups">バックアップと復元</string>
-    <string name="k2go_br_row_sub">システムをファイルに保存、または復元します</string>
     <string name="k2go_br_title">バックアップと復元</string>
-    <string name="k2go_br_desc">システム全体を、保存や移動が可能なファイルに保存したり、ファイルから復元したりします。実行中はサーバーが停止します。</string>
     <string name="k2go_br_prompt">何をしますか？</string>
     <string name="k2go_br_backup_title">バックアップ</string>
     <string name="k2go_br_backup_sub">現在のシステムをファイルに保存</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">すでにインストールが実行中です — 完了までお待ちください。</string>
     <string name="k2go_setup_leave_hint">まだシステムをセットアップ中です。アプリを離れても構いません — 続行され、戻ったときに準備ができています。</string>
     <string name="k2go_damaged_title">インストールが中断されました</string>
-    <string name="k2go_damaged_body">セットアップが完了する前に停止され、システムを起動できません。修正するには、アプリを再インストールしてセットアップをもう一度実行してください。</string>
     <string name="k2go_damaged_close">閉じる</string>
     <string name="k2go_setup_starting">サービスを開始中</string>
     <string name="k2go_setup_adding">コンテンツを追加中</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">その場でビルド・テスト・入れ替え中…</string>
     <string name="k2go_dash_rebuild_failed">再構築に失敗しました</string>
     <string name="k2go_dash_services_failed">再構築しましたが、サービスが時間内に起動しませんでした</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">システムをファイルに保存、復元、または最初から再インストール</string>
+    <string name="k2go_br_desc">システム全体を保管や移動ができるファイルに保存したり、ファイルから復元したり、最初から再インストールしたりできます。実行中はサーバーが停止します。</string>
+    <string name="k2go_damaged_body">セットアップが完了前に停止し、システムを起動できません。復旧するには、バックアップを復元するか、システムを最初から再インストールできます。</string>
+    <string name="k2go_damaged_recover">復旧…</string>
+    <string name="k2go_reinstall_title">システムを再インストール</string>
+    <string name="k2go_reinstall_sub">すべて消去して最初から新しいシステムをインストールします</string>
+    <string name="k2go_reinstall_confirm_title">最初から再インストールしますか？</string>
+    <string name="k2go_reinstall_confirm_msg">これは現在のシステムとその中のすべて — 書籍、地図、ダウンロード、設定 — を消去し、クリーンなコピーをインストールします。元に戻せません。何か残したい場合は先にバックアップしてください。インターネット接続が必要です。</string>
+    <string name="k2go_reinstall_confirm_yes">消去して再インストール</string>
 </resources>

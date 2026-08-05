@@ -140,9 +140,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Privati, savarankiškai talpinama jūsų bibliotekos naudojimo analitika. Sužinokite, kaip naudojamas turinys, viskas įrenginyje.</string>
     <string name="k2go_settings_backups">Atsarginės kopijos ir atkūrimas</string>
-    <string name="k2go_br_row_sub">Įrašykite sistemą į failą arba ją atkurkite</string>
     <string name="k2go_br_title">Atsarginė kopija ir atkūrimas</string>
-    <string name="k2go_br_desc">Įrašykite visą sistemą į failą, kurį galite laikyti ar perkelti, arba atkurkite ją iš tokio failo. Kol tai vyksta, serveris sustoja.</string>
     <string name="k2go_br_prompt">Ką norite daryti?</string>
     <string name="k2go_br_backup_title">Kurti atsarginę kopiją</string>
     <string name="k2go_br_backup_sub">Įrašyti dabartinę sistemą į failą</string>
@@ -541,7 +539,6 @@
     <string name="k2go_install_busy">Jau vyksta diegimas — palaukite, kol jis baigsis.</string>
     <string name="k2go_setup_leave_hint">Sistema vis dar ruošiama. Galite išeiti iš programos — ji tęsis ir bus paruošta jums grįžus.</string>
     <string name="k2go_damaged_title">Įdiegimas nutrauktas</string>
-    <string name="k2go_damaged_body">Sąranka buvo sustabdyta nepasibaigus, todėl sistema negali pasileisti. Kad tai ištaisytumėte, iš naujo įdiekite programą ir vėl paleiskite sąranką.</string>
     <string name="k2go_damaged_close">Uždaryti</string>
     <string name="k2go_setup_starting">Paleidžiamos paslaugos</string>
     <string name="k2go_setup_adding">Pridedamas turinys</string>
@@ -703,4 +700,14 @@
     <string name="k2go_dash_rebuild_building">Kuriama, testuojama ir keičiama vietoje…</string>
     <string name="k2go_dash_rebuild_failed">Atkurti nepavyko</string>
     <string name="k2go_dash_services_failed">Atkurta, bet paslaugos nepasileido laiku</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Įrašykite sistemą į failą, atkurkite ją arba įdiekite iš naujo nuo nulio</string>
+    <string name="k2go_br_desc">Įrašykite visą sistemą į failą, kurį galite laikyti ar perkelti, atkurkite ją iš failo arba įdiekite iš naujo nuo nulio. Operacijos metu serveris sustabdomas.</string>
+    <string name="k2go_damaged_body">Diegimas buvo nutrauktas prieš pabaigą ir sistema nepasileidžia. Norėdami atkurti, galite atkurti atsarginę kopiją arba iš naujo įdiegti sistemą nuo nulio.</string>
+    <string name="k2go_damaged_recover">Atkurti…</string>
+    <string name="k2go_reinstall_title">Įdiegti sistemą iš naujo</string>
+    <string name="k2go_reinstall_sub">Ištrina viską ir įdiegia švarią sistemą nuo nulio</string>
+    <string name="k2go_reinstall_confirm_title">Įdiegti iš naujo nuo nulio?</string>
+    <string name="k2go_reinstall_confirm_msg">Tai ištrina dabartinę sistemą ir viską joje — knygas, žemėlapius, atsisiuntimus ir nustatymus — ir įdiegia švarią kopiją. Negalima atšaukti. Pirmiausia sukurkite atsarginę kopiją, jei norite ką nors išsaugoti. Reikia interneto ryšio.</string>
+    <string name="k2go_reinstall_confirm_yes">Ištrinti ir įdiegti iš naujo</string>
 </resources>

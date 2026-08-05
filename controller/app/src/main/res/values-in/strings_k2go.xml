@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Analitik penggunaan pribadi yang di-host sendiri untuk pustaka Anda. Pahami cara konten digunakan, semua di perangkat.</string>
     <string name="k2go_settings_backups">Cadangan &amp; pemulihan</string>
-    <string name="k2go_br_row_sub">Simpan sistem Anda ke berkas, atau pulihkan</string>
     <string name="k2go_br_title">Cadangkan &amp; pulihkan</string>
-    <string name="k2go_br_desc">Simpan seluruh sistem Anda ke berkas yang bisa disimpan atau dipindahkan, atau pulihkan dari berkas. Server berhenti selama proses ini berjalan.</string>
     <string name="k2go_br_prompt">Apa yang ingin Anda lakukan?</string>
     <string name="k2go_br_backup_title">Cadangkan</string>
     <string name="k2go_br_backup_sub">Simpan sistem saat ini ke berkas</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Pemasangan sedang berjalan — mohon tunggu sampai selesai.</string>
     <string name="k2go_setup_leave_hint">Masih menyiapkan sistem. Anda boleh meninggalkan aplikasi — proses berlanjut dan akan siap saat Anda kembali.</string>
     <string name="k2go_damaged_title">Pemasangan terputus</string>
-    <string name="k2go_damaged_body">Penyiapan dihentikan sebelum selesai, dan sistem tidak bisa dimulai. Untuk memperbaikinya, pasang ulang aplikasi dan jalankan penyiapan lagi.</string>
     <string name="k2go_damaged_close">Tutup</string>
     <string name="k2go_setup_starting">Memulai layanan</string>
     <string name="k2go_setup_adding">Menambahkan konten Anda</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Membangun, menguji, dan mengganti di tempat…</string>
     <string name="k2go_dash_rebuild_failed">Bangun ulang gagal</string>
     <string name="k2go_dash_services_failed">Dibangun ulang, tetapi layanan tidak dimulai tepat waktu</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Simpan sistem ke sebuah file, pulihkan, atau instal ulang dari awal</string>
+    <string name="k2go_br_desc">Simpan seluruh sistem ke file yang bisa Anda simpan atau pindahkan, pulihkan dari sebuah file, atau instal ulang dari awal. Server berhenti selama proses ini berjalan.</string>
+    <string name="k2go_damaged_body">Penyiapan berhenti sebelum selesai dan sistem tidak bisa dijalankan. Untuk memulihkan, Anda dapat memulihkan cadangan atau menginstal ulang sistem dari awal.</string>
+    <string name="k2go_damaged_recover">Pulihkan…</string>
+    <string name="k2go_reinstall_title">Instal ulang sistem</string>
+    <string name="k2go_reinstall_sub">Hapus semuanya dan instal sistem baru dari awal</string>
+    <string name="k2go_reinstall_confirm_title">Instal ulang dari awal?</string>
+    <string name="k2go_reinstall_confirm_msg">Ini menghapus sistem saat ini dan semua isinya — buku, peta, unduhan, dan pengaturan — lalu menginstal salinan bersih. Tidak dapat dibatalkan. Cadangkan dulu jika ingin menyimpan sesuatu. Perlu koneksi internet.</string>
+    <string name="k2go_reinstall_confirm_yes">Hapus dan instal ulang</string>
 </resources>

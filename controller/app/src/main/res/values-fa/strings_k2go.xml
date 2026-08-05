@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">تحلیل استفاده خصوصی و خودمیزبان برای کتابخانه شما. بفهمید محتوا چگونه استفاده می‌شود، همه روی دستگاه.</string>
     <string name="k2go_settings_backups">پشتیبان‌ها و بازیابی</string>
-    <string name="k2go_br_row_sub">سیستم خود را در یک فایل ذخیره کنید یا آن را بازیابی کنید</string>
     <string name="k2go_br_title">پشتیبان‌گیری و بازیابی</string>
-    <string name="k2go_br_desc">کل سیستم خود را در فایلی ذخیره کنید که بتوانید نگه دارید یا جابه‌جا کنید، یا آن را از چنین فایلی بازیابی کنید. در حین اجرا، سرور متوقف می‌شود.</string>
     <string name="k2go_br_prompt">می‌خواهید چه کاری انجام دهید؟</string>
     <string name="k2go_br_backup_title">پشتیبان‌گیری</string>
     <string name="k2go_br_backup_sub">ذخیره سیستم فعلی در یک فایل</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">یک نصب از قبل در حال اجراست — لطفاً تا پایان آن صبر کنید.</string>
     <string name="k2go_setup_leave_hint">سیستم هنوز در حال راه‌اندازی است. می‌توانید از برنامه خارج شوید — ادامه می‌یابد و هنگام بازگشت آماده خواهد بود.</string>
     <string name="k2go_damaged_title">نصب قطع شد</string>
-    <string name="k2go_damaged_body">راه‌اندازی پیش از پایان متوقف شد و سیستم نمی‌تواند شروع شود. برای رفع آن، برنامه را دوباره نصب و راه‌اندازی را از نو اجرا کنید.</string>
     <string name="k2go_damaged_close">بستن</string>
     <string name="k2go_setup_starting">در حال شروع سرویس‌ها</string>
     <string name="k2go_setup_adding">در حال افزودن محتوای شما</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">در حال ساخت، آزمایش و جایگزینی در محل…</string>
     <string name="k2go_dash_rebuild_failed">بازسازی ناموفق بود</string>
     <string name="k2go_dash_services_failed">بازسازی شد، اما سرویس‌ها به‌موقع راه‌اندازی نشدند</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">سیستم خود را در یک فایل ذخیره کنید، بازیابی کنید یا از ابتدا نصب مجدد کنید</string>
+    <string name="k2go_br_desc">کل سیستم خود را در فایلی که می‌توانید نگه دارید یا جابه‌جا کنید ذخیره کنید، از یک فایل بازیابی کنید یا از ابتدا نصب مجدد کنید. سرور در حین اجرا متوقف می‌شود.</string>
+    <string name="k2go_damaged_body">راه‌اندازی پیش از اتمام متوقف شد و سیستم شروع نمی‌شود. برای بازیابی می‌توانید یک نسخهٔ پشتیبان را بازیابی کنید یا سیستم را از ابتدا نصب مجدد کنید.</string>
+    <string name="k2go_damaged_recover">بازیابی…</string>
+    <string name="k2go_reinstall_title">نصب مجدد سیستم</string>
+    <string name="k2go_reinstall_sub">همه چیز را پاک می‌کند و یک سیستم تازه از ابتدا نصب می‌کند</string>
+    <string name="k2go_reinstall_confirm_title">نصب مجدد از ابتدا؟</string>
+    <string name="k2go_reinstall_confirm_msg">این کار سیستم فعلی و همه چیز داخل آن — کتاب‌ها، نقشه‌ها، دانلودها و تنظیمات — را پاک می‌کند و سپس یک نسخهٔ تمیز نصب می‌کند. قابل بازگشت نیست. اگر می‌خواهید چیزی را نگه دارید ابتدا نسخهٔ پشتیبان بگیرید. به اتصال اینترنت نیاز دارد.</string>
+    <string name="k2go_reinstall_confirm_yes">پاک کردن و نصب مجدد</string>
 </resources>

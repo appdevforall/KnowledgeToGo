@@ -140,9 +140,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Private, selbst gehostete Nutzungsanalysen für deine Bibliothek. Verstehe, wie Inhalte genutzt werden — alles auf dem Gerät.</string>
     <string name="k2go_settings_backups">Backups &amp; Wiederherstellung</string>
-    <string name="k2go_br_row_sub">Sichere dein System in einer Datei oder stelle es wieder her</string>
     <string name="k2go_br_title">Sichern &amp; wiederherstellen</string>
-    <string name="k2go_br_desc">Sichere dein ganzes System in einer Datei, die du aufbewahren oder verschieben kannst, oder stelle es daraus wieder her. Der Server stoppt währenddessen.</string>
     <string name="k2go_br_prompt">Was möchtest du tun?</string>
     <string name="k2go_br_backup_title">Sichern</string>
     <string name="k2go_br_backup_sub">Das aktuelle System in einer Datei sichern</string>
@@ -535,7 +533,6 @@
     <string name="k2go_install_busy">Eine Installation läuft bereits — bitte warte, bis sie fertig ist.</string>
     <string name="k2go_setup_leave_hint">Das System wird noch eingerichtet. Du kannst die App verlassen — es läuft weiter und ist fertig, wenn du zurückkommst.</string>
     <string name="k2go_damaged_title">Installation unterbrochen</string>
-    <string name="k2go_damaged_body">Die Einrichtung wurde vor dem Abschluss gestoppt, und das System kann nicht starten. Zur Behebung installiere die App neu und führe die Einrichtung erneut aus.</string>
     <string name="k2go_damaged_close">Schließen</string>
     <string name="k2go_setup_starting">Dienste werden gestartet</string>
     <string name="k2go_setup_adding">Deine Inhalte werden hinzugefügt</string>
@@ -694,4 +691,14 @@
     <string name="k2go_dash_rebuild_building">Erstellen, Testen und Austauschen vor Ort…</string>
     <string name="k2go_dash_rebuild_failed">Neuerstellung fehlgeschlagen</string>
     <string name="k2go_dash_services_failed">Neu erstellt, aber die Dienste wurden nicht rechtzeitig gestartet</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Sichern Sie Ihr System in einer Datei, stellen Sie es wieder her oder installieren Sie es neu</string>
+    <string name="k2go_br_desc">Sichern Sie Ihr ganzes System in einer Datei, die Sie behalten oder verschieben können, stellen Sie es aus einer Datei wieder her oder installieren Sie es von Grund auf neu. Der Server wird währenddessen angehalten.</string>
+    <string name="k2go_damaged_body">Die Einrichtung wurde vor dem Abschluss gestoppt und das System kann nicht starten. Zur Wiederherstellung können Sie ein Backup einspielen oder das System neu installieren.</string>
+    <string name="k2go_damaged_recover">Wiederherstellen…</string>
+    <string name="k2go_reinstall_title">System neu installieren</string>
+    <string name="k2go_reinstall_sub">Alles löschen und ein frisches System von Grund auf installieren</string>
+    <string name="k2go_reinstall_confirm_title">Von Grund auf neu installieren?</string>
+    <string name="k2go_reinstall_confirm_msg">Dies löscht das aktuelle System und alles darin — Bücher, Karten, Downloads und Einstellungen — und installiert dann eine saubere Kopie. Das kann nicht rückgängig gemacht werden. Erstellen Sie zuerst ein Backup, wenn Sie etwas behalten möchten. Erfordert eine Internetverbindung.</string>
+    <string name="k2go_reinstall_confirm_yes">Löschen und neu installieren</string>
 </resources>

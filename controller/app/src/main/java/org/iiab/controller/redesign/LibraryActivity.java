@@ -531,16 +531,33 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         }
     }
 
-    /** ADFA-4919 (2c-ii): a proot install was killed and the system can't start. There is no in-app
-     *  wipe/repair yet, so the honest remedy is to reinstall the app. Blocking, non-cancelable. */
+    /** ADFA-4919 (2c-ii) / ADFA-5023: a proot install was killed and the system can't start. Instead of
+     *  the old dead-end (only "Close" -> finishAffinity, which dumped the user out of the app), offer an
+     *  in-app recovery: open Backup & restore, where they can restore a backup OR reinstall from scratch.
+     *  Both paths work without a healthy rootfs. Blocking, non-cancelable; "Close" still exits. */
     private void showDamagedDialog() {
         if (isFinishing()) return;
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle(R.string.k2go_damaged_title)
                 .setMessage(R.string.k2go_damaged_body)
-                .setPositiveButton(R.string.k2go_damaged_close, (d, w) -> finishAffinity())
+                .setPositiveButton(R.string.k2go_damaged_recover, (d, w) -> {
+                    startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
+                            .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true));
+                    finish();
+                })
+                .setNegativeButton(R.string.k2go_damaged_close, (d, w) -> finishAffinity())
                 .show();
+    }
+
+    /** ADFA-5023: while the boot gate is up during an install/reinstall (e.g. "wiping old system"), Back
+     *  must NOT walk back out through the setup screens — you're in "let me work" territory. Send the app
+     *  to the background instead (reopening resumes the gate); the install keeps running. Outside an
+     *  install, Back behaves normally. */
+    @Override
+    public void onBackPressed() {
+        if (installing && !gateDismissed) { moveTaskToBack(true); return; }
+        super.onBackPressed();
     }
 
     private boolean reduceMotion() {

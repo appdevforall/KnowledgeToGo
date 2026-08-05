@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Приватна аналитика коришћења за вашу библиотеку, на сопственом серверу. Сазнајте како се садржај користи, све на уређају.</string>
     <string name="k2go_settings_backups">Резервне копије и опоравак</string>
-    <string name="k2go_br_row_sub">Сачувајте систем у датотеку или га вратите</string>
     <string name="k2go_br_title">Резервна копија и враћање</string>
-    <string name="k2go_br_desc">Сачувајте цео систем у датотеку коју можете чувати или преместити, или га вратите из ње. Сервер се зауставља током овог поступка.</string>
     <string name="k2go_br_prompt">Шта желите да урадите?</string>
     <string name="k2go_br_backup_title">Направи резервну копију</string>
     <string name="k2go_br_backup_sub">Сачувајте тренутни систем у датотеку</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Инсталација је већ у току — молимо сачекајте да се заврши.</string>
     <string name="k2go_setup_leave_hint">Систем се још подешава. Можете напустити апликацију — наставља се и биће готово када се вратите.</string>
     <string name="k2go_damaged_title">Инсталација прекинута</string>
-    <string name="k2go_damaged_body">Подешавање је заустављено пре завршетка и систем не може да се покрене. Да бисте то поправили, поново инсталирајте апликацију и покрените подешавање.</string>
     <string name="k2go_damaged_close">Затвори</string>
     <string name="k2go_setup_starting">Покретање услуга</string>
     <string name="k2go_setup_adding">Додавање вашег садржаја</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Изградња, тестирање и замена на лицу места…</string>
     <string name="k2go_dash_rebuild_failed">Поновна изградња није успела</string>
     <string name="k2go_dash_services_failed">Поново изграђено, али услуге нису покренуте на време</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Сачувајте систем у датотеку, вратите га или поново инсталирајте из почетка</string>
+    <string name="k2go_br_desc">Сачувајте цео систем у датотеку коју можете да задржите или преместите, вратите га из датотеке или поново инсталирајте из почетка. Сервер се зауставља током операције.</string>
+    <string name="k2go_damaged_body">Инсталација је заустављена пре завршетка и систем не може да се покрене. За опоравак можете да вратите резервну копију или да поново инсталирате систем из почетка.</string>
+    <string name="k2go_damaged_recover">Опорави…</string>
+    <string name="k2go_reinstall_title">Поново инсталирај систем</string>
+    <string name="k2go_reinstall_sub">Брише све и инсталира нов систем из почетка</string>
+    <string name="k2go_reinstall_confirm_title">Поново инсталирати из почетка?</string>
+    <string name="k2go_reinstall_confirm_msg">Ово брише тренутни систем и све у њему — књиге, мапе, преузимања и подешавања — а затим инсталира чисту копију. Не може се опозвати. Прво направите резервну копију ако желите нешто да задржите. Захтева интернет везу.</string>
+    <string name="k2go_reinstall_confirm_yes">Обриши и поново инсталирај</string>
 </resources>

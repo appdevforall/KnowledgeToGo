@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">تحليلات استخدام خاصّة ومستضافة ذاتيًا لمكتبتك. افهم كيفية استخدام المحتوى، كل ذلك على الجهاز.</string>
     <string name="k2go_settings_backups">النسخ الاحتياطي والاسترداد</string>
-    <string name="k2go_br_row_sub">احفظ نظامك في ملف، أو استعده</string>
     <string name="k2go_br_title">النسخ الاحتياطي والاستعادة</string>
-    <string name="k2go_br_desc">احفظ نظامك بالكامل في ملف يمكنك الاحتفاظ به أو نقله، أو استعده من ملف. يتوقّف الخادم أثناء تنفيذ ذلك.</string>
     <string name="k2go_br_prompt">ماذا تريد أن تفعل؟</string>
     <string name="k2go_br_backup_title">نسخ احتياطي</string>
     <string name="k2go_br_backup_sub">احفظ النظام الحالي في ملف</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">هناك تثبيت قيد التشغيل بالفعل — يُرجى انتظار انتهائه.</string>
     <string name="k2go_setup_leave_hint">لا يزال إعداد النظام جاريًا. يمكنك مغادرة التطبيق — يستمر وسيكون جاهزًا عند عودتك.</string>
     <string name="k2go_damaged_title">انقطع التثبيت</string>
-    <string name="k2go_damaged_body">توقّف الإعداد قبل انتهائه، ولا يمكن للنظام البدء. لإصلاح ذلك، أعد تثبيت التطبيق وشغّل الإعداد مجددًا.</string>
     <string name="k2go_damaged_close">إغلاق</string>
     <string name="k2go_setup_starting">جارٍ بدء الخدمات</string>
     <string name="k2go_setup_adding">جارٍ إضافة محتواك</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">يتم البناء والاختبار والاستبدال في المكان…</string>
     <string name="k2go_dash_rebuild_failed">فشلت إعادة البناء</string>
     <string name="k2go_dash_services_failed">تمت إعادة البناء لكن الخدمات لم تبدأ في الوقت المناسب</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">احفظ نظامك في ملف، أو استعِده، أو أعِد التثبيت من الصفر</string>
+    <string name="k2go_br_desc">احفظ نظامك بالكامل في ملف يمكنك الاحتفاظ به أو نقله، أو استعِده من ملف، أو أعِد التثبيت من الصفر. يتوقف الخادم أثناء تنفيذ ذلك.</string>
+    <string name="k2go_damaged_body">توقّف الإعداد قبل أن يكتمل، ولا يمكن للنظام أن يبدأ. للاسترداد يمكنك استعادة نسخة احتياطية أو إعادة تثبيت النظام من الصفر.</string>
+    <string name="k2go_damaged_recover">استرداد…</string>
+    <string name="k2go_reinstall_title">إعادة تثبيت النظام</string>
+    <string name="k2go_reinstall_sub">يمحو كل شيء ويثبّت نظامًا جديدًا من الصفر</string>
+    <string name="k2go_reinstall_confirm_title">إعادة التثبيت من الصفر؟</string>
+    <string name="k2go_reinstall_confirm_msg">هذا يمحو النظام الحالي وكل ما فيه — الكتب والخرائط والتنزيلات والإعدادات — ثم يثبّت نسخة نظيفة. لا يمكن التراجع عنه. أنشئ نسخة احتياطية أولاً إذا أردت الاحتفاظ بأي شيء. يتطلب اتصالاً بالإنترنت.</string>
+    <string name="k2go_reinstall_confirm_yes">محو وإعادة تثبيت</string>
 </resources>

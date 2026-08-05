@@ -40,6 +40,14 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public static final String EXTRA_ZIM_SETUP = "zimSetup";
     /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
     public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
+    /** ADFA-5023: run the install wizard in REINSTALL mode — the normal flow, but the final install
+     *  wipes the existing rootfs first (delete + install). Reached from Backup & restore's third card
+     *  and from the damaged-system recovery. */
+    public static final String EXTRA_REINSTALL_SETUP = "reinstallSetup";
+    /** ADFA-5023: true for the whole wizard when launched in reinstall mode; read by startWizardInstall. */
+    private boolean reinstallMode = false;
+    /** ADFA-5023: debounce the wizard's "Continue" so repeat taps can't launch duplicate installs. */
+    private boolean installStarting = false;
     /** ADFA-4957: open BackupJobFragment(mode) directly — used to deep-link back to a LIVE backup/restore
      *  (from LibraryActivity's routing when the app is reopened / the notification is tapped). */
     public static final String EXTRA_BR_JOB_MODE = "brJobMode";
@@ -80,6 +88,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "getmore");
+        // ADFA-5023: read reinstall mode from the intent every onCreate (survives a config-change
+        // recreation) so the wizard's final install wipes first.
+        reinstallMode = getIntent().getBooleanExtra(EXTRA_REINSTALL_SETUP, false);
         if (savedInstanceState == null) {
             boolean moduleMgmt = getIntent().getBooleanExtra(EXTRA_MODULE_MGMT, false);
             final String moduleDetail = getIntent().getStringExtra(EXTRA_MODULE_DETAIL);
@@ -105,6 +116,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
             } else if (contentOnly) {
                 selectedTier = readInstalledTier();   // size content against the installed tier
                 first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
+            } else if (reinstallMode) {
+                // ADFA-5023: reinstall = the normal first-run wizard, but the final install wipes first.
+                BooksWishlist.clear(this);
+                ZimWishlist.clear(this);
+                first = new Step1SystemFragment();
             } else {
                 // ADFA-4874: a fresh wizard run — drop any wishlist left by an aborted first-run so
                 // we never drain stale pre-install picks after a later install. Safe here: the user
@@ -224,6 +240,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  the install is companion=false (OS/tier only; maps ships in the image), replacing the old
      *  Step 2 "Download library" trigger. */
     public void startWizardInstall() {
+        // ADFA-5023: the Continue button had NO debounce; combined with a brief start delay this let a
+        // desperate user double/triple-tap, launching duplicate install activities ("two offset screens").
+        // Fire exactly once. (The install service also dedupes the actual install via its `started` guard.)
+        if (installStarting) return;
+        installStarting = true;
         // ADFA-4982: the real install is starting — mark setup complete NOW (it is no longer set at the
         // wizard's "download" choice, so bailing before this resumes the wizard). This also lets the
         // install LibraryActivity below show progress instead of redirecting back to the wizard.
@@ -234,10 +255,18 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());
         i.putExtra(InstallService.EXTRA_COMPANION, false);
         i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(this));
-        i.putExtra(InstallService.EXTRA_REINSTALL, false);
+        // ADFA-5023: reinstall wipes the existing rootfs first. Stopping a LIVE server before the wipe is
+        // done by the SERVICE (InstallService.runPipeline) — NOT here — so this navigation stays instant:
+        // one tap goes straight to the boot gate instead of the wizard sitting there during stopEnvironment.
+        i.putExtra(InstallService.EXTRA_REINSTALL, reinstallMode);
         i.putExtra(InstallService.EXTRA_SKIP_MAPS, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
         else startService(i);
+        // ADFA-5023: plain startActivity so a FRESH LibraryActivity is created and reads EXTRA_INSTALLING
+        // in onCreate → the boot gate. (An earlier CLEAR_TOP reused the existing Library sitting on the
+        // Settings tab, which doesn't re-read the extra via onNewIntent, and dumped the user back on
+        // Settings.) Backing out mid-install is prevented by LibraryActivity.onBackPressed, not by
+        // clearing the stack.
         startActivity(new Intent(this, LibraryActivity.class).putExtra(LibraryActivity.EXTRA_INSTALLING, true));
         finish();
     }
@@ -391,6 +420,14 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .replace(R.id.k2go_setup_host, ModuleDetailFragment.newInstance(yamlBaseKey))
                 .addToBackStack("module_detail")
                 .commit();
+    }
+
+    /** ADFA-5023: start the install wizard in REINSTALL mode (delete + fresh install). Launched from
+     *  the Backup & restore reinstall card, after the destructive confirm. A new activity instance so
+     *  the wizard back stack is clean. */
+    public void openReinstallWizard() {
+        startActivity(new Intent(this, SetupLibraryActivity.class)
+                .putExtra(EXTRA_REINSTALL_SETUP, true));
     }
 
     /** ADFA-5011: open the dash-node REST core's detail (Play Store-style card, Rebuild-only). */

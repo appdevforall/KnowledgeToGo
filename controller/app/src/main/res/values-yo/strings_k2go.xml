@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Ìtúpalẹ̀ ìlò aládàáni tí ara-ẹni ń gbàlejò fún ilé-ìkàwé rẹ. Lóye bí a ṣe ń lo àkóónú, gbogbo rẹ̀ lórí ẹ̀rọ.</string>
     <string name="k2go_settings_backups">Àfẹ̀yìntì &amp; ìmúpadà</string>
-    <string name="k2go_br_row_sub">Fi ẹ̀rọ rẹ pamọ́ sí fáìlì, tàbí mú un padà</string>
     <string name="k2go_br_title">Àfẹ̀yìntì &amp; ìmúpadà</string>
-    <string name="k2go_br_desc">Fi gbogbo ẹ̀rọ rẹ pamọ́ sí fáìlì tí o lè pa mọ́ tàbí kó, tàbí mú un padà láti ọ̀kan. Sáà ń dúró nígbà tí èyí bá ń ṣiṣẹ́.</string>
     <string name="k2go_br_prompt">Kí ni o fẹ́ ṣe?</string>
     <string name="k2go_br_backup_title">Fi pamọ́</string>
     <string name="k2go_br_backup_sub">Fi ẹ̀rọ ìsinsìnyí pamọ́ sí fáìlì</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Fífi sórí ẹ̀rọ ti ń lọ tẹ́lẹ̀ — jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_setup_leave_hint">Ṣì ń ṣètò ẹ̀rọ. O lè fi áàpù náà sílẹ̀ — óò tẹ̀síwájú yóò sì múra tán nígbà tí o bá padà.</string>
     <string name="k2go_damaged_title">A dí fífi sórí ẹ̀rọ lọ́wọ́</string>
-    <string name="k2go_damaged_body">A dá ìṣètò dúró kí ó tó parí, ẹ̀rọ kò sì lè bẹ̀rẹ̀. Láti tún un ṣe, tún áàpù náà fi sórí ẹ̀rọ kí o sì tún ìṣètò ṣe.</string>
     <string name="k2go_damaged_close">Ti</string>
     <string name="k2go_setup_starting">Ń bẹ̀rẹ̀ àwọn iṣẹ́</string>
     <string name="k2go_setup_adding">Ń fi àkóónú rẹ kún</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Ń kọ́, ń dánwò, ń pààrọ̀ níbẹ̀…</string>
     <string name="k2go_dash_rebuild_failed">Àtúnkọ́ kùnà</string>
     <string name="k2go_dash_services_failed">A tún un kọ́, ṣùgbọ́n àwọn iṣẹ́ kò bẹ̀rẹ̀ ní àkókò</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Fi ètò rẹ pamọ́ sínú fáìlì kan, mú un padà bọ̀, tàbí tún un fi sori ẹrọ láti ìbẹ̀rẹ̀</string>
+    <string name="k2go_br_desc">Fi gbogbo ètò rẹ pamọ́ sínú fáìlì tí o lè pa mọ́ tàbí gbé, mú un padà bọ̀ láti fáìlì kan, tàbí tún un fi sori ẹrọ láti ìbẹ̀rẹ̀. Sáfà máa dúró nígbà tí èyí ń ṣẹlẹ̀.</string>
+    <string name="k2go_damaged_body">Ìtòlẹ́sẹẹsẹ dúró kí ó tó parí, ètò náà kò sì lè bẹ̀rẹ̀. Láti gbà á padà, o lè mú àkọsílẹ̀ ìdáàbòbò padà bọ̀ tàbí tún ètò náà fi sori ẹrọ láti ìbẹ̀rẹ̀.</string>
+    <string name="k2go_damaged_recover">Gbà padà…</string>
+    <string name="k2go_reinstall_title">Tún ètò náà fi sori ẹrọ</string>
+    <string name="k2go_reinstall_sub">Pa gbogbo rẹ̀ rẹ́ kí o sì fi ètò tuntun sori ẹrọ láti ìbẹ̀rẹ̀</string>
+    <string name="k2go_reinstall_confirm_title">Tún fi sori ẹrọ láti ìbẹ̀rẹ̀?</string>
+    <string name="k2go_reinstall_confirm_msg">Èyí ń pa ètò tí ó wà lọ́wọ́lọ́wọ́ àti gbogbo ohun tí ó wà nínú rẹ̀ rẹ́ — àwọn ìwé, àwọn máàpù, àwọn ohun tí a gbà sílẹ̀ àti àwọn ètò — lẹ́yìn náà ó fi ẹ̀dà mímọ́ sori ẹrọ. Kò ṣeé yí padà. Kọ́kọ́ ṣe àkọsílẹ̀ ìdáàbòbò bí o bá fẹ́ pa ohunkóhun mọ́. Ó nílò ìsopọ̀ íntánẹ́ẹ̀tì.</string>
+    <string name="k2go_reinstall_confirm_yes">Pa rẹ́ kí o sì tún fi sori ẹrọ</string>
 </resources>

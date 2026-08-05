@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Kitabxananız üçün özəl, öz serverinizdə saxlanan istifadə analitikası. Məzmunun necə istifadə olunduğunu anlayın — hamısı cihazda.</string>
     <string name="k2go_settings_backups">Ehtiyat nüsxələr &amp; bərpa</string>
-    <string name="k2go_br_row_sub">Sisteminizi fayla yadda saxlayın və ya bərpa edin</string>
     <string name="k2go_br_title">Ehtiyat nüsxə &amp; bərpa</string>
-    <string name="k2go_br_desc">Bütün sisteminizi saxlaya və ya köçürə biləcəyiniz fayla yadda saxlayın, yaxud belə bir fayldan bərpa edin. Bu icra olunarkən server dayanır.</string>
     <string name="k2go_br_prompt">Nə etmək istəyirsiniz?</string>
     <string name="k2go_br_backup_title">Ehtiyat nüsxə çıxar</string>
     <string name="k2go_br_backup_sub">Cari sistemi fayla yadda saxla</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Bir quraşdırma artıq işləyir — zəhmət olmasa bitməsini gözləyin.</string>
     <string name="k2go_setup_leave_hint">Sistem hələ qurulur. Tətbiqi tərk edə bilərsiniz — davam edir və qayıtdıqda hazır olacaq.</string>
     <string name="k2go_damaged_title">Quraşdırma yarımçıq qaldı</string>
-    <string name="k2go_damaged_body">Qurulum bitmədən dayandırıldı və sistem başlaya bilmir. Düzəltmək üçün tətbiqi yenidən quraşdırın və qurulumu təzədən işə salın.</string>
     <string name="k2go_damaged_close">Bağla</string>
     <string name="k2go_setup_starting">Xidmətlər başladılır</string>
     <string name="k2go_setup_adding">Məzmununuz əlavə olunur</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Yerində qurulur, sınaqdan keçirilir və dəyişdirilir…</string>
     <string name="k2go_dash_rebuild_failed">Yenidən qurma alınmadı</string>
     <string name="k2go_dash_services_failed">Yenidən quruldu, lakin xidmətlər vaxtında başlamadı</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Sisteminizi fayla saxlayın, bərpa edin və ya sıfırdan yenidən quraşdırın</string>
+    <string name="k2go_br_desc">Bütün sisteminizi saxlaya və ya köçürə biləcəyiniz fayla yadda saxlayın, fayldan bərpa edin və ya sıfırdan yenidən quraşdırın. Bu icra olunarkən server dayanır.</string>
+    <string name="k2go_damaged_body">Quraşdırma bitməzdən əvvəl dayandırıldı və sistem başlamır. Bərpa etmək üçün ehtiyat nüsxəni bərpa edə və ya sistemi sıfırdan yenidən quraşdıra bilərsiniz.</string>
+    <string name="k2go_damaged_recover">Bərpa et…</string>
+    <string name="k2go_reinstall_title">Sistemi yenidən quraşdır</string>
+    <string name="k2go_reinstall_sub">Hər şeyi silir və sıfırdan təzə sistem quraşdırır</string>
+    <string name="k2go_reinstall_confirm_title">Sıfırdan yenidən quraşdırılsın?</string>
+    <string name="k2go_reinstall_confirm_msg">Bu, cari sistemi və içindəki hər şeyi — kitablar, xəritələr, endirmələr və parametrlər — silir, sonra təmiz nüsxə quraşdırır. Geri qaytarıla bilməz. Nə isə saxlamaq istəyirsinizsə, əvvəlcə ehtiyat nüsxə çıxarın. İnternet bağlantısı tələb olunur.</string>
+    <string name="k2go_reinstall_confirm_yes">Sil və yenidən quraşdır</string>
 </resources>

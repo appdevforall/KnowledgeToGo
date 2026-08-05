@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">为您的图书馆提供的私密自托管使用分析。全部在设备上了解内容的使用情况。</string>
     <string name="k2go_settings_backups">备份与恢复</string>
-    <string name="k2go_br_row_sub">将系统保存到文件，或从中恢复</string>
     <string name="k2go_br_title">备份与恢复</string>
-    <string name="k2go_br_desc">将整个系统保存到可保留或移动的文件中，或从文件恢复。运行期间服务器会停止。</string>
     <string name="k2go_br_prompt">您想做什么？</string>
     <string name="k2go_br_backup_title">备份</string>
     <string name="k2go_br_backup_sub">将当前系统保存到文件</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">已有安装正在运行 — 请等待其完成。</string>
     <string name="k2go_setup_leave_hint">仍在设置系统。您可以离开应用 — 它会继续，并在您返回时准备就绪。</string>
     <string name="k2go_damaged_title">安装已中断</string>
-    <string name="k2go_damaged_body">设置在完成前被停止，系统无法启动。要修复，请重新安装应用并再次运行设置。</string>
     <string name="k2go_damaged_close">关闭</string>
     <string name="k2go_setup_starting">正在启动服务</string>
     <string name="k2go_setup_adding">正在添加您的内容</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">正在就地构建、测试并替换…</string>
     <string name="k2go_dash_rebuild_failed">重建失败</string>
     <string name="k2go_dash_services_failed">已重建，但服务未能及时启动</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">将系统保存到文件、还原，或从头重新安装</string>
+    <string name="k2go_br_desc">将整个系统保存到可保留或移动的文件、从文件还原，或从头重新安装。执行期间服务器会停止。</string>
+    <string name="k2go_damaged_body">安装在完成前被停止，系统无法启动。若要恢复，你可以还原备份或从头重新安装系统。</string>
+    <string name="k2go_damaged_recover">恢复…</string>
+    <string name="k2go_reinstall_title">重新安装系统</string>
+    <string name="k2go_reinstall_sub">清除所有内容并从头安装一个全新系统</string>
+    <string name="k2go_reinstall_confirm_title">从头重新安装？</string>
+    <string name="k2go_reinstall_confirm_msg">这会清除当前系统及其中的所有内容——图书、地图、下载和设置——然后安装一个干净的副本。此操作无法撤销。如果想保留任何内容，请先备份。需要互联网连接。</string>
+    <string name="k2go_reinstall_confirm_yes">清除并重新安装</string>
 </resources>

@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">आपकी लाइब्रेरी के लिए निजी, सेल्फ़-होस्टेड उपयोग एनालिटिक्स। सामग्री कैसे इस्तेमाल होती है यह समझें, सब कुछ डिवाइस पर।</string>
     <string name="k2go_settings_backups">बैकअप और रिकवरी</string>
-    <string name="k2go_br_row_sub">अपने सिस्टम को फ़ाइल में सहेजें, या पुनर्स्थापित करें</string>
     <string name="k2go_br_title">बैकअप और पुनर्स्थापना</string>
-    <string name="k2go_br_desc">अपने पूरे सिस्टम को ऐसी फ़ाइल में सहेजें जिसे आप रख या स्थानांतरित कर सकें, या किसी फ़ाइल से पुनर्स्थापित करें। यह चलने के दौरान सर्वर रुक जाता है।</string>
     <string name="k2go_br_prompt">आप क्या करना चाहते हैं?</string>
     <string name="k2go_br_backup_title">बैकअप लें</string>
     <string name="k2go_br_backup_sub">मौजूदा सिस्टम को फ़ाइल में सहेजें</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">एक इंस्टॉल पहले से चल रहा है — कृपया इसके पूरा होने की प्रतीक्षा करें।</string>
     <string name="k2go_setup_leave_hint">सिस्टम अभी भी सेट हो रहा है। आप ऐप छोड़ सकते हैं — यह चलता रहता है और आपके लौटने पर तैयार होगा।</string>
     <string name="k2go_damaged_title">इंस्टॉलेशन बाधित हुआ</string>
-    <string name="k2go_damaged_body">सेटअप पूरा होने से पहले रुक गया, और सिस्टम शुरू नहीं हो सकता। इसे ठीक करने के लिए, ऐप फिर से इंस्टॉल करें और सेटअप दोबारा चलाएँ।</string>
     <string name="k2go_damaged_close">बंद करें</string>
     <string name="k2go_setup_starting">सेवाएँ शुरू हो रही हैं</string>
     <string name="k2go_setup_adding">आपकी सामग्री जोड़ी जा रही है</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">यथास्थान बनाया, परखा और बदला जा रहा है…</string>
     <string name="k2go_dash_rebuild_failed">फिर से बनाना विफल</string>
     <string name="k2go_dash_services_failed">फिर से बनाया गया, लेकिन सेवाएँ समय पर शुरू नहीं हुईं</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">अपने सिस्टम को फ़ाइल में सहेजें, पुनर्स्थापित करें, या शुरू से फिर से इंस्टॉल करें</string>
+    <string name="k2go_br_desc">अपने पूरे सिस्टम को एक फ़ाइल में सहेजें जिसे आप रख या स्थानांतरित कर सकते हैं, किसी फ़ाइल से पुनर्स्थापित करें, या शुरू से फिर से इंस्टॉल करें. यह चलने के दौरान सर्वर रुक जाता है.</string>
+    <string name="k2go_damaged_body">सेटअप पूरा होने से पहले रुक गया और सिस्टम शुरू नहीं हो पा रहा है. पुनर्प्राप्ति के लिए आप बैकअप पुनर्स्थापित कर सकते हैं या सिस्टम को शुरू से फिर से इंस्टॉल कर सकते हैं.</string>
+    <string name="k2go_damaged_recover">पुनर्प्राप्त करें…</string>
+    <string name="k2go_reinstall_title">सिस्टम फिर से इंस्टॉल करें</string>
+    <string name="k2go_reinstall_sub">सब कुछ मिटाकर शुरू से एक नया सिस्टम इंस्टॉल करें</string>
+    <string name="k2go_reinstall_confirm_title">शुरू से फिर से इंस्टॉल करें?</string>
+    <string name="k2go_reinstall_confirm_msg">यह वर्तमान सिस्टम और उसमें मौजूद सब कुछ — किताबें, मानचित्र, डाउनलोड और सेटिंग्स — मिटा देता है, फिर एक साफ़ प्रति इंस्टॉल करता है. इसे पूर्ववत नहीं किया जा सकता. अगर आप कुछ रखना चाहते हैं तो पहले बैकअप बनाएँ. इंटरनेट कनेक्शन आवश्यक है.</string>
+    <string name="k2go_reinstall_confirm_yes">मिटाएँ और फिर से इंस्टॉल करें</string>
 </resources>

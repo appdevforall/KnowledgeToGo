@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Uchanganuzi wa matumizi wa faragha unaojisimamia kwa maktaba yako. Elewa jinsi maudhui yanavyotumika, yote kwenye kifaa.</string>
     <string name="k2go_settings_backups">Nakala rudufu &amp; urejeshaji</string>
-    <string name="k2go_br_row_sub">Hifadhi mfumo wako kwenye faili, au urejeshe</string>
     <string name="k2go_br_title">Hifadhi &amp; rejesha</string>
-    <string name="k2go_br_desc">Hifadhi mfumo wako mzima kwenye faili unayoweza kuweka au kuhamisha, au urejeshe kutoka kwa moja. Seva husimama wakati hii inaendelea.</string>
     <string name="k2go_br_prompt">Unataka kufanya nini?</string>
     <string name="k2go_br_backup_title">Hifadhi</string>
     <string name="k2go_br_backup_sub">Hifadhi mfumo wa sasa kwenye faili</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Usakinishaji tayari unaendelea — tafadhali subiri umalize.</string>
     <string name="k2go_setup_leave_hint">Bado inasanidi mfumo. Unaweza kuondoka kwenye programu — inaendelea na itakuwa tayari utakaporudi.</string>
     <string name="k2go_damaged_title">Usakinishaji umekatizwa</string>
-    <string name="k2go_damaged_body">Usanidi ulisimamishwa kabla haujamalizika, na mfumo hauwezi kuanza. Ili kurekebisha, sakinisha upya programu na uendeshe usanidi tena.</string>
     <string name="k2go_damaged_close">Funga</string>
     <string name="k2go_setup_starting">Inaanzisha huduma</string>
     <string name="k2go_setup_adding">Inaongeza maudhui yako</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Inajenga, inajaribu na kubadilisha papo hapo…</string>
     <string name="k2go_dash_rebuild_failed">Kujenga upya kumeshindwa</string>
     <string name="k2go_dash_services_failed">Imejengwa upya, lakini huduma hazikuanza kwa wakati</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Hifadhi mfumo wako kwenye faili, urejeshe, au usakinishe upya kutoka mwanzo</string>
+    <string name="k2go_br_desc">Hifadhi mfumo wako wote kwenye faili unaoweza kuweka au kuhamisha, urejeshe kutoka kwa faili, au usakinishe upya kutoka mwanzo. Seva husimama wakati hii inaendeshwa.</string>
+    <string name="k2go_damaged_body">Usanidi ulisimamishwa kabla ya kukamilika na mfumo hauwezi kuanza. Ili kurejesha, unaweza kurejesha nakala rudufu au kusakinisha upya mfumo kutoka mwanzo.</string>
+    <string name="k2go_damaged_recover">Rejesha…</string>
+    <string name="k2go_reinstall_title">Sakinisha upya mfumo</string>
+    <string name="k2go_reinstall_sub">Futa kila kitu na usakinishe mfumo mpya kutoka mwanzo</string>
+    <string name="k2go_reinstall_confirm_title">Kusakinisha upya kutoka mwanzo?</string>
+    <string name="k2go_reinstall_confirm_msg">Hii inafuta mfumo wa sasa na kila kitu ndani yake — vitabu, ramani, vipakuliwa na mipangilio — kisha inasakinisha nakala safi. Haiwezi kutenduliwa. Hifadhi nakala rudufu kwanza ikiwa unataka kuweka chochote. Inahitaji muunganisho wa intaneti.</string>
+    <string name="k2go_reinstall_confirm_yes">Futa na usakinishe upya</string>
 </resources>

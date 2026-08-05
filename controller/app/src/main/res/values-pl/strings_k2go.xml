@@ -140,9 +140,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Prywatna, samodzielnie hostowana analityka użytkowania Twojej biblioteki. Zrozum, jak wykorzystywana jest treść — wszystko na urządzeniu.</string>
     <string name="k2go_settings_backups">Kopie zapasowe &amp; odzyskiwanie</string>
-    <string name="k2go_br_row_sub">Zapisz system do pliku lub przywróć go</string>
     <string name="k2go_br_title">Kopia zapasowa &amp; przywracanie</string>
-    <string name="k2go_br_desc">Zapisz cały system do pliku, który możesz zachować lub przenieść, albo przywróć go z takiego pliku. Serwer zatrzymuje się na czas tej operacji.</string>
     <string name="k2go_br_prompt">Co chcesz zrobić?</string>
     <string name="k2go_br_backup_title">Utwórz kopię</string>
     <string name="k2go_br_backup_sub">Zapisz bieżący system do pliku</string>
@@ -541,7 +539,6 @@
     <string name="k2go_install_busy">Instalacja jest już w toku — poczekaj na jej zakończenie.</string>
     <string name="k2go_setup_leave_hint">System jest wciąż konfigurowany. Możesz opuścić aplikację — działa dalej i będzie gotowy, gdy wrócisz.</string>
     <string name="k2go_damaged_title">Instalacja przerwana</string>
-    <string name="k2go_damaged_body">Konfiguracja została zatrzymana przed zakończeniem i system nie może się uruchomić. Aby to naprawić, zainstaluj aplikację ponownie i uruchom konfigurację jeszcze raz.</string>
     <string name="k2go_damaged_close">Zamknij</string>
     <string name="k2go_setup_starting">Uruchamianie usług</string>
     <string name="k2go_setup_adding">Dodawanie treści</string>
@@ -703,4 +700,14 @@
     <string name="k2go_dash_rebuild_building">Budowanie, testowanie i podmiana w miejscu…</string>
     <string name="k2go_dash_rebuild_failed">Przebudowa nie powiodła się</string>
     <string name="k2go_dash_services_failed">Przebudowano, ale usługi nie uruchomiły się na czas</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Zapisz system do pliku, przywróć go lub zainstaluj od nowa</string>
+    <string name="k2go_br_desc">Zapisz cały system do pliku, który możesz zachować lub przenieść, przywróć go z pliku albo zainstaluj od nowa. Serwer zatrzymuje się na czas tej operacji.</string>
+    <string name="k2go_damaged_body">Instalacja została przerwana przed zakończeniem i system nie uruchamia się. Aby odzyskać, możesz przywrócić kopię zapasową lub zainstalować system od nowa.</string>
+    <string name="k2go_damaged_recover">Odzyskaj…</string>
+    <string name="k2go_reinstall_title">Zainstaluj system od nowa</string>
+    <string name="k2go_reinstall_sub">Usuń wszystko i zainstaluj świeży system od zera</string>
+    <string name="k2go_reinstall_confirm_title">Zainstalować od nowa?</string>
+    <string name="k2go_reinstall_confirm_msg">Spowoduje to usunięcie bieżącego systemu i całej jego zawartości — książek, map, pobrań i ustawień — a następnie instalację czystej kopii. Nie można tego cofnąć. Najpierw wykonaj kopię zapasową, jeśli chcesz coś zachować. Wymaga połączenia z internetem.</string>
+    <string name="k2go_reinstall_confirm_yes">Usuń i zainstaluj od nowa</string>
 </resources>

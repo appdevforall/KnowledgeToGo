@@ -140,9 +140,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Privat, egenhostet bruksanalyse for biblioteket ditt. Forstå hvordan innhold brukes, alt på enheten.</string>
     <string name="k2go_settings_backups">Sikkerhetskopier &amp; gjenoppretting</string>
-    <string name="k2go_br_row_sub">Lagre systemet til en fil, eller gjenopprett det</string>
     <string name="k2go_br_title">Sikkerhetskopiering &amp; gjenoppretting</string>
-    <string name="k2go_br_desc">Lagre hele systemet til en fil du kan beholde eller flytte, eller gjenopprett det fra en. Serveren stopper mens dette kjører.</string>
     <string name="k2go_br_prompt">Hva vil du gjøre?</string>
     <string name="k2go_br_backup_title">Sikkerhetskopier</string>
     <string name="k2go_br_backup_sub">Lagre det gjeldende systemet til en fil</string>
@@ -541,7 +539,6 @@
     <string name="k2go_install_busy">En installasjon kjører allerede — vent til den er ferdig.</string>
     <string name="k2go_setup_leave_hint">Setter fortsatt opp systemet. Du kan forlate appen — den fortsetter og er klar når du kommer tilbake.</string>
     <string name="k2go_damaged_title">Installasjon avbrutt</string>
-    <string name="k2go_damaged_body">Oppsettet ble stoppet før det var ferdig, og systemet kan ikke starte. For å fikse det, installer appen på nytt og kjør oppsettet igjen.</string>
     <string name="k2go_damaged_close">Lukk</string>
     <string name="k2go_setup_starting">Starter tjenester</string>
     <string name="k2go_setup_adding">Legger til innholdet ditt</string>
@@ -703,4 +700,14 @@
     <string name="k2go_dash_rebuild_building">Bygger, tester og bytter ut på stedet…</string>
     <string name="k2go_dash_rebuild_failed">Ombygging mislyktes</string>
     <string name="k2go_dash_services_failed">Bygd på nytt, men tjenestene startet ikke i tide</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Lagre systemet til en fil, gjenopprett det, eller installer på nytt fra bunnen</string>
+    <string name="k2go_br_desc">Lagre hele systemet til en fil du kan beholde eller flytte, gjenopprett det fra en fil, eller installer på nytt fra bunnen. Serveren stopper mens dette kjører.</string>
+    <string name="k2go_damaged_body">Oppsettet ble stoppet før det ble ferdig, og systemet starter ikke. For å gjenopprette kan du gjenopprette en sikkerhetskopi eller installere systemet på nytt fra bunnen.</string>
+    <string name="k2go_damaged_recover">Gjenopprett…</string>
+    <string name="k2go_reinstall_title">Installer systemet på nytt</string>
+    <string name="k2go_reinstall_sub">Slett alt og installer et rent system fra bunnen</string>
+    <string name="k2go_reinstall_confirm_title">Installere på nytt fra bunnen?</string>
+    <string name="k2go_reinstall_confirm_msg">Dette sletter det nåværende systemet og alt i det — bøker, kart, nedlastinger og innstillinger — og installerer så en ren kopi. Det kan ikke angres. Ta en sikkerhetskopi først hvis du vil beholde noe. Krever internettforbindelse.</string>
+    <string name="k2go_reinstall_confirm_yes">Slett og installer på nytt</string>
 </resources>
