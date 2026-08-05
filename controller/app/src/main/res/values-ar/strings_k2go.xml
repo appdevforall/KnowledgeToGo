@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">تنزيلات الكتب</string>
     <string name="k2go_books_dl_notif_title">جارٍ إضافة الكتب إلى مكتبتك</string>
     <string name="k2go_fqr_invalid">يبدو اسم المنطقة أو مساحتها غير صالح.</string>
+    <string name="k2go_fqr_name_taken">«%1$s» مُستخدم بالفعل — اختر اسمًا آخر.</string>
     <string name="k2go_fqr_calculating">جارٍ حساب حجم التنزيل…</string>
     <string name="k2go_fqr_estimate_error_title">لا يمكن تنزيل هذه المنطقة</string>
     <string name="k2go_fqr_consent_title">تنزيل هذه المنطقة؟</string>

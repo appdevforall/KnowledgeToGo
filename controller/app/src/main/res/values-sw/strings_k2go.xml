@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Upakuaji wa vitabu</string>
     <string name="k2go_books_dl_notif_title">Inaongeza vitabu kwenye maktaba yako</string>
     <string name="k2go_fqr_invalid">Jina la eneo au eneo hilo linaonekana si sahihi.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” tayari inatumika — chagua jina lingine.</string>
     <string name="k2go_fqr_calculating">Inakokotoa ukubwa wa upakuaji…</string>
     <string name="k2go_fqr_estimate_error_title">Haiwezi kupakua eneo hili</string>
     <string name="k2go_fqr_consent_title">Pakua eneo hili?</string>

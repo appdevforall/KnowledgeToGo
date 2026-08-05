@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">પુસ્તક ડાઉનલોડ</string>
     <string name="k2go_books_dl_notif_title">તમારી લાઇબ્રેરીમાં પુસ્તકો ઉમેરાઈ રહ્યાં છે</string>
     <string name="k2go_fqr_invalid">તે પ્રદેશનું નામ કે વિસ્તાર અમાન્ય લાગે છે.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” પહેલેથી વપરાયેલું છે — બીજું નામ પસંદ કરો.</string>
     <string name="k2go_fqr_calculating">ડાઉનલોડ કદની ગણતરી થઈ રહી છે…</string>
     <string name="k2go_fqr_estimate_error_title">આ પ્રદેશ ડાઉનલોડ કરી શકાતો નથી</string>
     <string name="k2go_fqr_consent_title">આ પ્રદેશ ડાઉનલોડ કરવો છે?</string>

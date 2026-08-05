@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Stahování knih</string>
     <string name="k2go_books_dl_notif_title">Přidávání knih do knihovny</string>
     <string name="k2go_fqr_invalid">Tento název oblasti nebo plocha vypadá neplatně.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ se už používá — zvolte jiný název.</string>
     <string name="k2go_fqr_calculating">Výpočet velikosti stahování…</string>
     <string name="k2go_fqr_estimate_error_title">Tuto oblast nelze stáhnout</string>
     <string name="k2go_fqr_consent_title">Stáhnout tuto oblast?</string>

@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">書籍のダウンロード</string>
     <string name="k2go_books_dl_notif_title">書籍をライブラリに追加中</string>
     <string name="k2go_fqr_invalid">その地域名またはエリアは無効なようです。</string>
+    <string name="k2go_fqr_name_taken">「%1$s」は既に使われています — 別の名前を選んでください。</string>
     <string name="k2go_fqr_calculating">ダウンロードサイズを計算中…</string>
     <string name="k2go_fqr_estimate_error_title">この地域をダウンロードできません</string>
     <string name="k2go_fqr_consent_title">この地域をダウンロードしますか？</string>

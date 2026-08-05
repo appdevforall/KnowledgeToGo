@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Transferências de livros</string>
     <string name="k2go_books_dl_notif_title">A adicionar livros à sua biblioteca</string>
     <string name="k2go_fqr_invalid">Esse nome de região ou área parece inválido.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” já está em uso — escolhe outro nome.</string>
     <string name="k2go_fqr_calculating">A calcular o tamanho da transferência…</string>
     <string name="k2go_fqr_estimate_error_title">Não é possível transferir esta região</string>
     <string name="k2go_fqr_consent_title">Transferir esta região?</string>

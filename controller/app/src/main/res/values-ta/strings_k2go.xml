@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">புத்தகப் பதிவிறக்கங்கள்</string>
     <string name="k2go_books_dl_notif_title">உங்கள் நூலகத்தில் புத்தகங்கள் சேர்க்கப்படுகின்றன</string>
     <string name="k2go_fqr_invalid">அந்தப் பகுதியின் பெயர் அல்லது பரப்பு செல்லுபடியாகாதது போல் தெரிகிறது.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” ஏற்கனவே பயன்பாட்டில் உள்ளது — வேறு பெயரைத் தேர்ந்தெடுக்கவும்.</string>
     <string name="k2go_fqr_calculating">பதிவிறக்க அளவு கணக்கிடப்படுகிறது…</string>
     <string name="k2go_fqr_estimate_error_title">இந்தப் பகுதியைப் பதிவிறக்க முடியாது</string>
     <string name="k2go_fqr_consent_title">இந்தப் பகுதியைப் பதிவிறக்கவா?</string>

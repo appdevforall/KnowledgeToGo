@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Преузимања књига</string>
     <string name="k2go_books_dl_notif_title">Додавање књига у вашу библиотеку</string>
     <string name="k2go_fqr_invalid">Тај назив региона или подручје изгледа неважеће.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ се већ користи — изаберите друго име.</string>
     <string name="k2go_fqr_calculating">Израчунавање величине преузимања…</string>
     <string name="k2go_fqr_estimate_error_title">Није могуће преузети овај регион</string>
     <string name="k2go_fqr_consent_title">Преузети овај регион?</string>

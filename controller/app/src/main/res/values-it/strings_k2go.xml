@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Download dei libri</string>
     <string name="k2go_books_dl_notif_title">Aggiunta di libri alla tua libreria</string>
     <string name="k2go_fqr_invalid">Quel nome di regione o area sembra non valido.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” è già in uso — scegli un altro nome.</string>
     <string name="k2go_fqr_calculating">Calcolo della dimensione del download…</string>
     <string name="k2go_fqr_estimate_error_title">Impossibile scaricare questa regione</string>
     <string name="k2go_fqr_consent_title">Scaricare questa regione?</string>

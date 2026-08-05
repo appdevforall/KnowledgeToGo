@@ -588,6 +588,7 @@
     <string name="k2go_books_dl_channel_name">Λήψεις βιβλίων</string>
     <string name="k2go_books_dl_notif_title">Προσθήκη βιβλίων στη βιβλιοθήκη σας</string>
     <string name="k2go_fqr_invalid">Το όνομα ή η περιοχή αυτή φαίνεται μη έγκυρη.</string>
+    <string name="k2go_fqr_name_taken">Το «%1$s» χρησιμοποιείται ήδη — διάλεξε άλλο όνομα.</string>
     <string name="k2go_fqr_calculating">Υπολογισμός μεγέθους λήψης…</string>
     <string name="k2go_fqr_estimate_error_title">Δεν είναι δυνατή η λήψη αυτής της περιοχής</string>
     <string name="k2go_fqr_consent_title">Λήψη αυτής της περιοχής;</string>

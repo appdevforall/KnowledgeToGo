@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Descărcări de cărți</string>
     <string name="k2go_books_dl_notif_title">Se adaugă cărți în biblioteca ta</string>
     <string name="k2go_fqr_invalid">Numele sau zona regiunii pare invalid.</string>
+    <string name="k2go_fqr_name_taken">„%1$s” este deja folosit — alege alt nume.</string>
     <string name="k2go_fqr_calculating">Se calculează dimensiunea descărcării…</string>
     <string name="k2go_fqr_estimate_error_title">Nu se poate descărca această regiune</string>
     <string name="k2go_fqr_consent_title">Descarci această regiune?</string>

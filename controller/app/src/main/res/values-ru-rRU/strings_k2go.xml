@@ -587,6 +587,7 @@
     <string name="k2go_books_dl_channel_name">Загрузки книг</string>
     <string name="k2go_books_dl_notif_title">Добавление книг в вашу библиотеку</string>
     <string name="k2go_fqr_invalid">Имя региона или область выглядят недействительными.</string>
+    <string name="k2go_fqr_name_taken">«%1$s» уже используется — выберите другое имя.</string>
     <string name="k2go_fqr_calculating">Подсчёт размера загрузки…</string>
     <string name="k2go_fqr_estimate_error_title">Не удаётся загрузить этот регион</string>
     <string name="k2go_fqr_consent_title">Загрузить этот регион?</string>

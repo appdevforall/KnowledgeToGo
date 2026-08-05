@@ -596,6 +596,7 @@
     <string name="k2go_books_dl_notif_title">Dodawanie książek do biblioteki</string>
 
     <string name="k2go_fqr_invalid">Ta nazwa regionu lub obszar wygląda na nieprawidłowe.</string>
+    <string name="k2go_fqr_name_taken">„%1$s” jest już używana — wybierz inną nazwę.</string>
     <string name="k2go_fqr_calculating">Obliczanie rozmiaru pobierania…</string>
     <string name="k2go_fqr_estimate_error_title">Nie można pobrać tego regionu</string>
     <string name="k2go_fqr_consent_title">Pobrać ten region?</string>
