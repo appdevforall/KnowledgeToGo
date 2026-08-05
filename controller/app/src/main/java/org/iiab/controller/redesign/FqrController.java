@@ -690,9 +690,13 @@ public final class FqrController {
             // is never shown. Free -> hide the raw-command popup and hand off to native as before.
             "function fireExtract(){try{var pre=sr.querySelector('.maplibregl-popup pre');if(!pre)return;" +
             "var m=(pre.textContent||'').match(EX);if(!m)return;var nm=m[1];" +
+            // The map's popup buttons have no stable id/class (verified live: FQRegionsControl builds
+            // plain <button>s), so we match "Back" by text. If it isn't found, fall back to hiding the
+            // popup so the raw tile-extract command is never left on screen.
             "if(window.__k2goRegions&&window.__k2goRegions.indexOf(nm)>=0){" +
-            "var pop=pre.closest?pre.closest('.maplibregl-popup'):null;" +
-            "if(pop){var bs=pop.querySelectorAll('button');for(var i=0;i<bs.length;i++){if((bs[i].textContent||'').trim()==='Back'){bs[i].click();break;}}}" +
+            "var pop=pre.closest?pre.closest('.maplibregl-popup'):null;var backed=false;" +
+            "if(pop){var bs=pop.querySelectorAll('button');for(var i=0;i<bs.length;i++){if((bs[i].textContent||'').trim()==='Back'){bs[i].click();backed=true;break;}}}" +
+            "if(!backed)hidePop(pre);" +
             "if(window.K2GoFQR&&K2GoFQR.onNameTaken){K2GoFQR.onNameTaken(nm);}return;}" +
             "hidePop(pre);" +
             "if(window.K2GoFQR&&K2GoFQR.onExtractRequested){K2GoFQR.onExtractRequested(nm,m[2]);}}catch(e){}}" +
