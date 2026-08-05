@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Kitaplığınız için özel, kendi barındırılan kullanım analitiği. İçeriğin nasıl kullanıldığını anlayın, tamamı cihazda.</string>
     <string name="k2go_settings_backups">Yedekler &amp; kurtarma</string>
-    <string name="k2go_br_row_sub">Sisteminizi bir dosyaya kaydedin veya geri yükleyin</string>
     <string name="k2go_br_title">Yedekle &amp; geri yükle</string>
-    <string name="k2go_br_desc">Tüm sisteminizi saklayabileceğiniz veya taşıyabileceğiniz bir dosyaya kaydedin ya da bir dosyadan geri yükleyin. Bu işlem sürerken sunucu durur.</string>
     <string name="k2go_br_prompt">Ne yapmak istersiniz?</string>
     <string name="k2go_br_backup_title">Yedekle</string>
     <string name="k2go_br_backup_sub">Mevcut sistemi bir dosyaya kaydedin</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Zaten bir kurulum çalışıyor — lütfen bitmesini bekleyin.</string>
     <string name="k2go_setup_leave_hint">Sistem hâlâ ayarlanıyor. Uygulamadan ayrılabilirsiniz — devam eder ve döndüğünüzde hazır olur.</string>
     <string name="k2go_damaged_title">Kurulum kesildi</string>
-    <string name="k2go_damaged_body">Kurulum bitmeden durduruldu ve sistem başlatılamıyor. Düzeltmek için uygulamayı yeniden kurun ve kurulumu tekrar çalıştırın.</string>
     <string name="k2go_damaged_close">Kapat</string>
     <string name="k2go_setup_starting">Hizmetler başlatılıyor</string>
     <string name="k2go_setup_adding">İçeriğiniz ekleniyor</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Yerinde oluşturuluyor, test ediliyor ve değiştiriliyor…</string>
     <string name="k2go_dash_rebuild_failed">Yeniden oluşturma başarısız</string>
     <string name="k2go_dash_services_failed">Yeniden oluşturuldu ama hizmetler zamanında başlamadı</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Sisteminizi bir dosyaya kaydedin, geri yükleyin veya sıfırdan yeniden kurun</string>
+    <string name="k2go_br_desc">Tüm sisteminizi saklayabileceğiniz veya taşıyabileceğiniz bir dosyaya kaydedin, bir dosyadan geri yükleyin ya da sıfırdan yeniden kurun. Bu işlem sırasında sunucu durur.</string>
+    <string name="k2go_damaged_body">Kurulum tamamlanmadan durdu ve sistem başlamıyor. Kurtarmak için bir yedeği geri yükleyebilir veya sistemi sıfırdan yeniden kurabilirsiniz.</string>
+    <string name="k2go_damaged_recover">Kurtar…</string>
+    <string name="k2go_reinstall_title">Sistemi yeniden kur</string>
+    <string name="k2go_reinstall_sub">Her şeyi siler ve sıfırdan yeni bir sistem kurar</string>
+    <string name="k2go_reinstall_confirm_title">Sıfırdan yeniden kurulsun mu?</string>
+    <string name="k2go_reinstall_confirm_msg">Bu, mevcut sistemi ve içindeki her şeyi — kitaplar, haritalar, indirmeler ve ayarlar — siler, ardından temiz bir kopya kurar. Geri alınamaz. Bir şey saklamak istiyorsanız önce yedek alın. İnternet bağlantısı gerekir.</string>
+    <string name="k2go_reinstall_confirm_yes">Sil ve yeniden kur</string>
 </resources>

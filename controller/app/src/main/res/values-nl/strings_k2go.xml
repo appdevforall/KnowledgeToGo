@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Privé, zelf-gehoste gebruiksanalyse voor je bibliotheek. Begrijp hoe inhoud wordt gebruikt, volledig op het apparaat.</string>
     <string name="k2go_settings_backups">Back-ups &amp; herstel</string>
-    <string name="k2go_br_row_sub">Sla je systeem op in een bestand of herstel het</string>
     <string name="k2go_br_title">Back-up &amp; herstel</string>
-    <string name="k2go_br_desc">Sla je hele systeem op in een bestand dat je kunt bewaren of verplaatsen, of herstel het daaruit. De server stopt terwijl dit loopt.</string>
     <string name="k2go_br_prompt">Wat wil je doen?</string>
     <string name="k2go_br_backup_title">Back-up maken</string>
     <string name="k2go_br_backup_sub">Sla het huidige systeem op in een bestand</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Er loopt al een installatie — wacht tot deze klaar is.</string>
     <string name="k2go_setup_leave_hint">Het systeem wordt nog ingesteld. Je kunt de app verlaten — het gaat door en is klaar als je terugkomt.</string>
     <string name="k2go_damaged_title">Installatie onderbroken</string>
-    <string name="k2go_damaged_body">De installatie is gestopt voordat deze klaar was en het systeem kan niet starten. Installeer de app opnieuw en voer de installatie nogmaals uit om dit op te lossen.</string>
     <string name="k2go_damaged_close">Sluiten</string>
     <string name="k2go_setup_starting">Services starten</string>
     <string name="k2go_setup_adding">Je inhoud toevoegen</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Bouwen, testen en ter plekke vervangen…</string>
     <string name="k2go_dash_rebuild_failed">Opnieuw opbouwen mislukt</string>
     <string name="k2go_dash_services_failed">Opnieuw opgebouwd, maar de services zijn niet op tijd gestart</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Sla je systeem op in een bestand, herstel het, of installeer opnieuw vanaf nul</string>
+    <string name="k2go_br_desc">Sla je hele systeem op in een bestand dat je kunt bewaren of verplaatsen, herstel het uit een bestand, of installeer opnieuw vanaf nul. De server stopt terwijl dit draait.</string>
+    <string name="k2go_damaged_body">De installatie is voor de voltooiing gestopt en het systeem kan niet starten. Om te herstellen kun je een back-up terugzetten of het systeem opnieuw vanaf nul installeren.</string>
+    <string name="k2go_damaged_recover">Herstellen…</string>
+    <string name="k2go_reinstall_title">Systeem opnieuw installeren</string>
+    <string name="k2go_reinstall_sub">Wis alles en installeer een vers systeem vanaf nul</string>
+    <string name="k2go_reinstall_confirm_title">Opnieuw installeren vanaf nul?</string>
+    <string name="k2go_reinstall_confirm_msg">Dit wist het huidige systeem en alles erin — boeken, kaarten, downloads en instellingen — en installeert dan een schone kopie. Dit kan niet ongedaan worden gemaakt. Maak eerst een back-up als je iets wilt bewaren. Vereist een internetverbinding.</string>
+    <string name="k2go_reinstall_confirm_yes">Wissen en opnieuw installeren</string>
 </resources>

@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Privát, saját üzemeltetésű használati analitika a könyvtáradhoz. Értsd meg, hogyan használják a tartalmat, mindezt az eszközön.</string>
     <string name="k2go_settings_backups">Biztonsági mentés &amp; helyreállítás</string>
-    <string name="k2go_br_row_sub">Mentsd a rendszered fájlba, vagy állítsd vissza</string>
     <string name="k2go_br_title">Biztonsági mentés &amp; visszaállítás</string>
-    <string name="k2go_br_desc">Mentsd az egész rendszered egy fájlba, amelyet megőrizhetsz vagy áthelyezhetsz, vagy állítsd vissza egyből. A szerver leáll, amíg ez fut.</string>
     <string name="k2go_br_prompt">Mit szeretnél tenni?</string>
     <string name="k2go_br_backup_title">Mentés</string>
     <string name="k2go_br_backup_sub">A jelenlegi rendszer mentése fájlba</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Már fut egy telepítés — kérjük, várd meg, amíg befejeződik.</string>
     <string name="k2go_setup_leave_hint">A rendszer beállítása még folyamatban. Elhagyhatod az appot — tovább fut, és kész lesz, mire visszatérsz.</string>
     <string name="k2go_damaged_title">A telepítés megszakadt</string>
-    <string name="k2go_damaged_body">A beállítás a befejezés előtt leállt, és a rendszer nem tud elindulni. A javításához telepítsd újra az appot, és futtasd újra a beállítást.</string>
     <string name="k2go_damaged_close">Bezárás</string>
     <string name="k2go_setup_starting">Szolgáltatások indítása</string>
     <string name="k2go_setup_adding">A tartalmad hozzáadása</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Fordítás, tesztelés és helyben csere…</string>
     <string name="k2go_dash_rebuild_failed">Az újraépítés sikertelen</string>
     <string name="k2go_dash_services_failed">Újraépítve, de a szolgáltatások nem indultak el időben</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Mentsd a rendszert fájlba, állítsd vissza, vagy telepítsd újra a nulláról</string>
+    <string name="k2go_br_desc">Mentsd a teljes rendszert egy fájlba, amelyet megőrizhetsz vagy áthelyezhetsz, állítsd vissza egy fájlból, vagy telepítsd újra a nulláról. A kiszolgáló a művelet idejére leáll.</string>
+    <string name="k2go_damaged_body">A telepítés befejezés előtt leállt, és a rendszer nem indul el. A helyreállításhoz visszaállíthatsz egy biztonsági mentést, vagy újratelepítheted a rendszert a nulláról.</string>
+    <string name="k2go_damaged_recover">Helyreállítás…</string>
+    <string name="k2go_reinstall_title">Rendszer újratelepítése</string>
+    <string name="k2go_reinstall_sub">Mindent töröl, és tiszta rendszert telepít a nulláról</string>
+    <string name="k2go_reinstall_confirm_title">Újratelepítés a nulláról?</string>
+    <string name="k2go_reinstall_confirm_msg">Ez törli a jelenlegi rendszert és mindent benne — könyvek, térképek, letöltések és beállítások —, majd tiszta másolatot telepít. Nem vonható vissza. Előbb készíts biztonsági mentést, ha meg akarsz tartani valamit. Internetkapcsolat szükséges.</string>
+    <string name="k2go_reinstall_confirm_yes">Törlés és újratelepítés</string>
 </resources>

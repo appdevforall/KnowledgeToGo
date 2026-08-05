@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Приватная, размещённая на своём сервере аналитика использования вашей библиотеки. Узнайте, как используется контент, — всё на устройстве.</string>
     <string name="k2go_settings_backups">Резервные копии и восстановление</string>
-    <string name="k2go_br_row_sub">Сохраните систему в файл или восстановите её</string>
     <string name="k2go_br_title">Резервное копирование и восстановление</string>
-    <string name="k2go_br_desc">Сохраните всю систему в файл, который можно хранить или перенести, или восстановите её из файла. На время операции сервер останавливается.</string>
     <string name="k2go_br_prompt">Что вы хотите сделать?</string>
     <string name="k2go_br_backup_title">Создать копию</string>
     <string name="k2go_br_backup_sub">Сохранить текущую систему в файл</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Установка уже выполняется — пожалуйста, дождитесь её завершения.</string>
     <string name="k2go_setup_leave_hint">Система ещё настраивается. Можно выйти из приложения — процесс продолжится и будет готов, когда вы вернётесь.</string>
     <string name="k2go_damaged_title">Установка прервана</string>
-    <string name="k2go_damaged_body">Настройка была остановлена до завершения, и система не может запуститься. Чтобы исправить, переустановите приложение и запустите настройку снова.</string>
     <string name="k2go_damaged_close">Закрыть</string>
     <string name="k2go_setup_starting">Запуск служб</string>
     <string name="k2go_setup_adding">Добавление вашего контента</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Сборка, тестирование и замена на месте…</string>
     <string name="k2go_dash_rebuild_failed">Не удалось пересобрать</string>
     <string name="k2go_dash_services_failed">Пересобрано, но службы не запустились вовремя</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Сохраните систему в файл, восстановите её или переустановите с нуля</string>
+    <string name="k2go_br_desc">Сохраните всю систему в файл, который можно хранить или переместить, восстановите её из файла или переустановите с нуля. На время выполнения сервер останавливается.</string>
+    <string name="k2go_damaged_body">Установка была прервана до завершения, и система не запускается. Для восстановления можно восстановить резервную копию или переустановить систему с нуля.</string>
+    <string name="k2go_damaged_recover">Восстановить…</string>
+    <string name="k2go_reinstall_title">Переустановить систему</string>
+    <string name="k2go_reinstall_sub">Стереть всё и установить новую систему с нуля</string>
+    <string name="k2go_reinstall_confirm_title">Переустановить с нуля?</string>
+    <string name="k2go_reinstall_confirm_msg">Это сотрёт текущую систему и всё её содержимое — книги, карты, загрузки и настройки — и установит чистую копию. Отменить нельзя. Сначала сделайте резервную копию, если хотите что-то сохранить. Требуется подключение к интернету.</string>
+    <string name="k2go_reinstall_confirm_yes">Стереть и переустановить</string>
 </resources>

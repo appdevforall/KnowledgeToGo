@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Súkromná, vlastne hostovaná analytika používania vašej knižnice. Zistite, ako sa obsah používa, všetko v zariadení.</string>
     <string name="k2go_settings_backups">Zálohy &amp; obnova</string>
-    <string name="k2go_br_row_sub">Uložte systém do súboru alebo ho obnovte</string>
     <string name="k2go_br_title">Zálohovanie &amp; obnova</string>
-    <string name="k2go_br_desc">Uložte celý systém do súboru, ktorý si môžete ponechať alebo presunúť, alebo ho z neho obnovte. Počas toho sa server zastaví.</string>
     <string name="k2go_br_prompt">Čo chcete urobiť?</string>
     <string name="k2go_br_backup_title">Zálohovať</string>
     <string name="k2go_br_backup_sub">Uložiť aktuálny systém do súboru</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Inštalácia už prebieha — počkajte, kým sa dokončí.</string>
     <string name="k2go_setup_leave_hint">Systém sa stále nastavuje. Aplikáciu môžete opustiť — pokračuje ďalej a bude pripravená, keď sa vrátite.</string>
     <string name="k2go_damaged_title">Inštalácia prerušená</string>
-    <string name="k2go_damaged_body">Nastavenie bolo zastavené pred dokončením a systém sa nemôže spustiť. Ak to chcete opraviť, preinštalujte aplikáciu a spustite nastavenie znova.</string>
     <string name="k2go_damaged_close">Zavrieť</string>
     <string name="k2go_setup_starting">Spúšťajú sa služby</string>
     <string name="k2go_setup_adding">Pridáva sa váš obsah</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Zostavovanie, testovanie a výmena na mieste…</string>
     <string name="k2go_dash_rebuild_failed">Prestavba zlyhala</string>
     <string name="k2go_dash_services_failed">Prestavané, ale služby sa nespustili včas</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Uložte systém do súboru, obnovte ho alebo preinštalujte od začiatku</string>
+    <string name="k2go_br_desc">Uložte celý systém do súboru, ktorý môžete uchovať alebo presunúť, obnovte ho zo súboru alebo preinštalujte od začiatku. Server sa počas operácie zastaví.</string>
+    <string name="k2go_damaged_body">Inštalácia bola prerušená pred dokončením a systém sa nedá spustiť. Na obnovu môžete obnoviť zálohu alebo preinštalovať systém od začiatku.</string>
+    <string name="k2go_damaged_recover">Obnoviť…</string>
+    <string name="k2go_reinstall_title">Preinštalovať systém</string>
+    <string name="k2go_reinstall_sub">Vymazať všetko a nainštalovať čistý systém od začiatku</string>
+    <string name="k2go_reinstall_confirm_title">Preinštalovať od začiatku?</string>
+    <string name="k2go_reinstall_confirm_msg">Týmto sa vymaže aktuálny systém a všetko v ňom — knihy, mapy, stiahnuté súbory a nastavenia — a nainštaluje sa čistá kópia. Nedá sa vrátiť späť. Ak si chcete niečo ponechať, najprv vytvorte zálohu. Vyžaduje pripojenie na internet.</string>
+    <string name="k2go_reinstall_confirm_yes">Vymazať a preinštalovať</string>
 </resources>

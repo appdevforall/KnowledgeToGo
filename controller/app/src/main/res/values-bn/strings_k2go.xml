@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">আপনার লাইব্রেরির জন্য ব্যক্তিগত, স্ব-হোস্টেড ব্যবহার বিশ্লেষণ। কনটেন্ট কীভাবে ব্যবহৃত হয় তা বুঝুন, সবই ডিভাইসে।</string>
     <string name="k2go_settings_backups">ব্যাকআপ ও পুনরুদ্ধার</string>
-    <string name="k2go_br_row_sub">আপনার সিস্টেম একটি ফাইলে সংরক্ষণ করুন, বা পুনরুদ্ধার করুন</string>
     <string name="k2go_br_title">ব্যাকআপ ও পুনরুদ্ধার</string>
-    <string name="k2go_br_desc">আপনার পুরো সিস্টেম এমন একটি ফাইলে সংরক্ষণ করুন যা রাখতে বা সরাতে পারবেন, অথবা একটি ফাইল থেকে পুনরুদ্ধার করুন। এটি চলার সময় সার্ভার বন্ধ থাকে।</string>
     <string name="k2go_br_prompt">আপনি কী করতে চান?</string>
     <string name="k2go_br_backup_title">ব্যাকআপ নিন</string>
     <string name="k2go_br_backup_sub">বর্তমান সিস্টেম একটি ফাইলে সংরক্ষণ করুন</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">একটি ইনস্টল ইতিমধ্যে চলছে — অনুগ্রহ করে এটি শেষ হওয়ার জন্য অপেক্ষা করুন।</string>
     <string name="k2go_setup_leave_hint">এখনো সিস্টেম সেট আপ হচ্ছে। আপনি অ্যাপ ছেড়ে যেতে পারেন — এটি চলতে থাকবে এবং আপনি ফিরে এলে প্রস্তুত থাকবে।</string>
     <string name="k2go_damaged_title">ইনস্টলেশন বাধাপ্রাপ্ত হয়েছে</string>
-    <string name="k2go_damaged_body">সেটআপ শেষ হওয়ার আগেই থামানো হয়েছে, এবং সিস্টেম শুরু করা যাচ্ছে না। ঠিক করতে, অ্যাপটি পুনরায় ইনস্টল করে আবার সেটআপ চালান।</string>
     <string name="k2go_damaged_close">বন্ধ করুন</string>
     <string name="k2go_setup_starting">পরিষেবা শুরু হচ্ছে</string>
     <string name="k2go_setup_adding">আপনার কনটেন্ট যোগ করা হচ্ছে</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">জায়গাতেই তৈরি, পরীক্ষা ও প্রতিস্থাপন হচ্ছে…</string>
     <string name="k2go_dash_rebuild_failed">পুনর্নির্মাণ ব্যর্থ</string>
     <string name="k2go_dash_services_failed">পুনর্নির্মিত, কিন্তু পরিষেবাগুলি সময়মতো চালু হয়নি</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">আপনার সিস্টেম একটি ফাইলে সংরক্ষণ করুন, পুনরুদ্ধার করুন, বা গোড়া থেকে পুনরায় ইনস্টল করুন</string>
+    <string name="k2go_br_desc">আপনার পুরো সিস্টেম এমন একটি ফাইলে সংরক্ষণ করুন যা রাখতে বা সরাতে পারেন, একটি ফাইল থেকে পুনরুদ্ধার করুন, বা গোড়া থেকে পুনরায় ইনস্টল করুন। এটি চলাকালীন সার্ভার বন্ধ থাকে।</string>
+    <string name="k2go_damaged_body">সেটআপ শেষ হওয়ার আগেই বন্ধ হয়ে গিয়েছিল এবং সিস্টেম চালু হচ্ছে না। পুনরুদ্ধারের জন্য আপনি একটি ব্যাকআপ পুনরুদ্ধার করতে পারেন বা সিস্টেম গোড়া থেকে পুনরায় ইনস্টল করতে পারেন।</string>
+    <string name="k2go_damaged_recover">পুনরুদ্ধার…</string>
+    <string name="k2go_reinstall_title">সিস্টেম পুনরায় ইনস্টল করুন</string>
+    <string name="k2go_reinstall_sub">সবকিছু মুছে গোড়া থেকে একটি নতুন সিস্টেম ইনস্টল করে</string>
+    <string name="k2go_reinstall_confirm_title">গোড়া থেকে পুনরায় ইনস্টল করবেন?</string>
+    <string name="k2go_reinstall_confirm_msg">এটি বর্তমান সিস্টেম এবং এর মধ্যে থাকা সবকিছু — বই, মানচিত্র, ডাউনলোড এবং সেটিংস — মুছে ফেলে, তারপর একটি পরিষ্কার কপি ইনস্টল করে। এটি ফেরানো যায় না। কিছু রাখতে চাইলে আগে ব্যাকআপ নিন। ইন্টারনেট সংযোগ প্রয়োজন।</string>
+    <string name="k2go_reinstall_confirm_yes">মুছুন এবং পুনরায় ইনস্টল করুন</string>
 </resources>

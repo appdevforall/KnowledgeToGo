@@ -140,9 +140,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Ιδιωτικά, αυτο-φιλοξενούμενα αναλυτικά στοιχεία χρήσης για τη βιβλιοθήκη σας. Κατανοήστε πώς χρησιμοποιείται το περιεχόμενο, όλα στη συσκευή.</string>
     <string name="k2go_settings_backups">Αντίγραφα ασφαλείας &amp; επαναφορά</string>
-    <string name="k2go_br_row_sub">Αποθηκεύστε το σύστημά σας σε αρχείο ή επαναφέρετέ το</string>
     <string name="k2go_br_title">Αντίγραφο ασφαλείας &amp; επαναφορά</string>
-    <string name="k2go_br_desc">Αποθηκεύστε ολόκληρο το σύστημά σας σε ένα αρχείο που μπορείτε να κρατήσετε ή να μετακινήσετε, ή επαναφέρετέ το από ένα. Ο διακομιστής σταματά όσο εκτελείται αυτό.</string>
     <string name="k2go_br_prompt">Τι θέλετε να κάνετε;</string>
     <string name="k2go_br_backup_title">Δημιουργία αντιγράφου</string>
     <string name="k2go_br_backup_sub">Αποθήκευση του τρέχοντος συστήματος σε αρχείο</string>
@@ -535,7 +533,6 @@
     <string name="k2go_install_busy">Μια εγκατάσταση εκτελείται ήδη — περιμένετε να ολοκληρωθεί.</string>
     <string name="k2go_setup_leave_hint">Η ρύθμιση του συστήματος συνεχίζεται. Μπορείτε να φύγετε από την εφαρμογή — συνεχίζεται και θα είναι έτοιμη όταν επιστρέψετε.</string>
     <string name="k2go_damaged_title">Η εγκατάσταση διακόπηκε</string>
-    <string name="k2go_damaged_body">Η ρύθμιση σταμάτησε πριν ολοκληρωθεί και το σύστημα δεν μπορεί να ξεκινήσει. Για να το διορθώσετε, εγκαταστήστε ξανά την εφαρμογή και εκτελέστε ξανά τη ρύθμιση.</string>
     <string name="k2go_damaged_close">Κλείσιμο</string>
     <string name="k2go_setup_starting">Έναρξη υπηρεσιών</string>
     <string name="k2go_setup_adding">Προσθήκη του περιεχομένου σας</string>
@@ -694,4 +691,14 @@
     <string name="k2go_dash_rebuild_building">Κατασκευή, δοκιμή και επιτόπια αντικατάσταση…</string>
     <string name="k2go_dash_rebuild_failed">Η ανασυγκρότηση απέτυχε</string>
     <string name="k2go_dash_services_failed">Ανασυγκροτήθηκε, αλλά οι υπηρεσίες δεν ξεκίνησαν εγκαίρως</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Αποθηκεύστε το σύστημα σε αρχείο, επαναφέρετέ το ή επανεγκαταστήστε από την αρχή</string>
+    <string name="k2go_br_desc">Αποθηκεύστε ολόκληρο το σύστημα σε ένα αρχείο που μπορείτε να κρατήσετε ή να μετακινήσετε, επαναφέρετέ το από ένα αρχείο ή επανεγκαταστήστε από την αρχή. Ο διακομιστής σταματά όσο εκτελείται.</string>
+    <string name="k2go_damaged_body">Η εγκατάσταση διακόπηκε πριν ολοκληρωθεί και το σύστημα δεν ξεκινά. Για ανάκτηση μπορείτε να επαναφέρετε ένα αντίγραφο ασφαλείας ή να επανεγκαταστήσετε το σύστημα από την αρχή.</string>
+    <string name="k2go_damaged_recover">Ανάκτηση…</string>
+    <string name="k2go_reinstall_title">Επανεγκατάσταση συστήματος</string>
+    <string name="k2go_reinstall_sub">Διαγράφει τα πάντα και εγκαθιστά ένα καθαρό σύστημα από την αρχή</string>
+    <string name="k2go_reinstall_confirm_title">Επανεγκατάσταση από την αρχή;</string>
+    <string name="k2go_reinstall_confirm_msg">Αυτό διαγράφει το τρέχον σύστημα και ό,τι περιέχει — βιβλία, χάρτες, λήψεις και ρυθμίσεις — και έπειτα εγκαθιστά ένα καθαρό αντίγραφο. Δεν αναιρείται. Κάντε πρώτα αντίγραφο ασφαλείας αν θέλετε να κρατήσετε κάτι. Απαιτεί σύνδεση στο διαδίκτυο.</string>
+    <string name="k2go_reinstall_confirm_yes">Διαγραφή και επανεγκατάσταση</string>
 </resources>

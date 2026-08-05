@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Phân tích sử dụng riêng tư, tự lưu trữ cho thư viện của bạn. Hiểu cách nội dung được sử dụng, tất cả trên thiết bị.</string>
     <string name="k2go_settings_backups">Sao lưu &amp; phục hồi</string>
-    <string name="k2go_br_row_sub">Lưu hệ thống của bạn vào tệp, hoặc phục hồi nó</string>
     <string name="k2go_br_title">Sao lưu &amp; khôi phục</string>
-    <string name="k2go_br_desc">Lưu toàn bộ hệ thống của bạn vào một tệp để giữ hoặc di chuyển, hoặc khôi phục từ tệp đó. Máy chủ dừng trong khi thực hiện.</string>
     <string name="k2go_br_prompt">Bạn muốn làm gì?</string>
     <string name="k2go_br_backup_title">Sao lưu</string>
     <string name="k2go_br_backup_sub">Lưu hệ thống hiện tại vào một tệp</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Một quá trình cài đang chạy — vui lòng chờ nó hoàn tất.</string>
     <string name="k2go_setup_leave_hint">Vẫn đang thiết lập hệ thống. Bạn có thể rời ứng dụng — nó tiếp tục và sẽ sẵn sàng khi bạn quay lại.</string>
     <string name="k2go_damaged_title">Cài đặt bị gián đoạn</string>
-    <string name="k2go_damaged_body">Quá trình thiết lập bị dừng trước khi hoàn tất, và hệ thống không thể khởi động. Để khắc phục, cài lại ứng dụng và chạy thiết lập lại.</string>
     <string name="k2go_damaged_close">Đóng</string>
     <string name="k2go_setup_starting">Đang khởi động dịch vụ</string>
     <string name="k2go_setup_adding">Đang thêm nội dung của bạn</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Đang xây dựng, kiểm thử và thay thế tại chỗ…</string>
     <string name="k2go_dash_rebuild_failed">Xây dựng lại thất bại</string>
     <string name="k2go_dash_services_failed">Đã xây dựng lại, nhưng các dịch vụ không khởi động kịp thời</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Lưu hệ thống vào một tệp, khôi phục nó, hoặc cài đặt lại từ đầu</string>
+    <string name="k2go_br_desc">Lưu toàn bộ hệ thống vào một tệp bạn có thể giữ hoặc di chuyển, khôi phục từ một tệp, hoặc cài đặt lại từ đầu. Máy chủ sẽ dừng trong khi thực hiện.</string>
+    <string name="k2go_damaged_body">Quá trình cài đặt đã dừng trước khi hoàn tất và hệ thống không khởi động. Để khôi phục, bạn có thể phục hồi một bản sao lưu hoặc cài đặt lại hệ thống từ đầu.</string>
+    <string name="k2go_damaged_recover">Khôi phục…</string>
+    <string name="k2go_reinstall_title">Cài đặt lại hệ thống</string>
+    <string name="k2go_reinstall_sub">Xóa mọi thứ và cài đặt một hệ thống mới từ đầu</string>
+    <string name="k2go_reinstall_confirm_title">Cài đặt lại từ đầu?</string>
+    <string name="k2go_reinstall_confirm_msg">Thao tác này xóa hệ thống hiện tại và mọi thứ trong đó — sách, bản đồ, tải xuống và cài đặt — rồi cài một bản sạch. Không thể hoàn tác. Hãy sao lưu trước nếu bạn muốn giữ lại thứ gì đó. Cần kết nối internet.</string>
+    <string name="k2go_reinstall_confirm_yes">Xóa và cài đặt lại</string>
 </resources>

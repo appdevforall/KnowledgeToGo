@@ -139,9 +139,7 @@
     <string name="k2go_mod_matomo_sub">Matomo</string>
     <string name="k2go_mod_matomo_desc">Лични, самостоятелно хоствани анализи за използването на библиотеката ви. Разберете как се използва съдържанието — всичко на устройството.</string>
     <string name="k2go_settings_backups">Резервни копия и възстановяване</string>
-    <string name="k2go_br_row_sub">Запазете системата си във файл или я възстановете</string>
     <string name="k2go_br_title">Резервно копие и възстановяване</string>
-    <string name="k2go_br_desc">Запазете цялата си система във файл, който можете да съхранявате или преместите, или я възстановете от такъв. Сървърът спира, докато това се изпълнява.</string>
     <string name="k2go_br_prompt">Какво искате да направите?</string>
     <string name="k2go_br_backup_title">Създай резервно копие</string>
     <string name="k2go_br_backup_sub">Запазете текущата система във файл</string>
@@ -534,7 +532,6 @@
     <string name="k2go_install_busy">Вече се изпълнява инсталиране — моля, изчакайте да приключи.</string>
     <string name="k2go_setup_leave_hint">Системата все още се настройва. Можете да напуснете приложението — то продължава и ще е готово, когато се върнете.</string>
     <string name="k2go_damaged_title">Инсталирането е прекъснато</string>
-    <string name="k2go_damaged_body">Настройката беше спряна, преди да завърши, и системата не може да стартира. За да го поправите, инсталирайте отново приложението и стартирайте настройката пак.</string>
     <string name="k2go_damaged_close">Затвори</string>
     <string name="k2go_setup_starting">Стартиране на услугите</string>
     <string name="k2go_setup_adding">Добавяне на съдържанието ви</string>
@@ -693,4 +690,14 @@
     <string name="k2go_dash_rebuild_building">Компилиране, тестване и замяна на място…</string>
     <string name="k2go_dash_rebuild_failed">Пресъздаването е неуспешно</string>
     <string name="k2go_dash_services_failed">Пресъздадено, но услугите не се стартираха навреме</string>
+    <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
+    <string name="k2go_br_row_sub">Запазете системата във файл, възстановете я или преинсталирайте от нулата</string>
+    <string name="k2go_br_desc">Запазете цялата система във файл, който можете да съхранявате или преместите, възстановете я от файл или преинсталирайте от нулата. Сървърът спира по време на операцията.</string>
+    <string name="k2go_damaged_body">Инсталацията беше спряна преди да завърши и системата не стартира. За възстановяване можете да възстановите резервно копие или да преинсталирате системата от нулата.</string>
+    <string name="k2go_damaged_recover">Възстановяване…</string>
+    <string name="k2go_reinstall_title">Преинсталиране на системата</string>
+    <string name="k2go_reinstall_sub">Изтрива всичко и инсталира нова система от нулата</string>
+    <string name="k2go_reinstall_confirm_title">Преинсталиране от нулата?</string>
+    <string name="k2go_reinstall_confirm_msg">Това изтрива текущата система и всичко в нея — книги, карти, изтегляния и настройки — и инсталира чисто копие. Не може да се отмени. Първо направете резервно копие, ако искате да запазите нещо. Изисква интернет връзка.</string>
+    <string name="k2go_reinstall_confirm_yes">Изтриване и преинсталиране</string>
 </resources>
