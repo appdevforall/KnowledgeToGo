@@ -124,8 +124,14 @@ public class DashboardDetailFragment extends Fragment {
         hint.setText(R.string.k2go_dash_uptodate_hint);
         hint.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         hint.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        int pad = Math.round(4 * d);
-        hint.setPadding(0, pad, 0, pad);
+        // Align with the body text + Rebuild button (both inset 20dp); left-aligned like the rest.
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        int side = Math.round(20 * d);
+        lp.leftMargin = side;
+        lp.rightMargin = side;
+        lp.topMargin = Math.round(8 * d);
+        hint.setLayoutParams(lp);
         hint.setVisibility(View.GONE);
         parent.addView(hint, parent.indexOfChild(rebuildBtn));
         return hint;
