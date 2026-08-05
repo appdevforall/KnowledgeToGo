@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">પુસ્તકો, Wikipedia/ZIM, Kolibri અને નકશા માટે REST એન્ડપોઇન્ટ; nginx vhost; અને સિસ્ટમ સંસ્કરણ અને ફરીથી બનાવવાના એન્ડપોઇન્ટ — બધા 127.0.0.1:4000 પર.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">સિસ્ટમ કોર</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">તપાસી રહ્યું છે…</string>
+    <string name="k2go_dash_chip_uptodate">અદ્યતન</string>
+    <string name="k2go_dash_chip_update">અપડેટ ઉપલબ્ધ</string>
+    <string name="k2go_dash_uptodate_hint">તમે નવીનતમ સંસ્કરણ પર છો — પુનઃનિર્માણની જરૂર નથી.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">ફરીથી બનાવવું પૂર્ણ — તમને તમારી લાઇબ્રેરીમાં લઈ જવાઈ રહ્યા છે…</string>
     <string name="k2go_dash_rebuild_building">સ્થળ પર બનાવાઈ, ચકાસાઈ અને બદલાઈ રહ્યું છે…</string>

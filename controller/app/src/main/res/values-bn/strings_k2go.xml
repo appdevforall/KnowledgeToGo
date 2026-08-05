@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">বই, Wikipedia/ZIM, Kolibri এবং মানচিত্রের REST এন্ডপয়েন্ট; nginx vhost; এবং সিস্টেম সংস্করণ ও পুনর্নির্মাণ এন্ডপয়েন্ট — সবই 127.0.0.1:4000-এ।</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">সিস্টেম কোর</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">যাচাই করা হচ্ছে…</string>
+    <string name="k2go_dash_chip_uptodate">হালনাগাদ</string>
+    <string name="k2go_dash_chip_update">আপডেট উপলব্ধ</string>
+    <string name="k2go_dash_uptodate_hint">আপনি সর্বশেষ সংস্করণে আছেন — পুনরায় তৈরি করার প্রয়োজন নেই।</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">পুনর্নির্মাণ সম্পন্ন — আপনার লাইব্রেরিতে নিয়ে যাওয়া হচ্ছে…</string>
     <string name="k2go_dash_rebuild_building">জায়গাতেই তৈরি, পরীক্ষা ও প্রতিস্থাপন হচ্ছে…</string>

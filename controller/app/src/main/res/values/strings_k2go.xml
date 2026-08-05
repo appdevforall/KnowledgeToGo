@@ -737,6 +737,11 @@
     <string name="k2go_dash_includes">Books, Wikipedia/ZIM, Kolibri and Maps REST endpoints; the nginx vhost; and system version + rebuild endpoints — all served on 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">System core</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Checking…</string>
+    <string name="k2go_dash_chip_uptodate">Up to date</string>
+    <string name="k2go_dash_chip_update">Update available</string>
+    <string name="k2go_dash_uptodate_hint">You\'re on the latest build — a rebuild isn\'t needed.</string>
     <!-- dash-node ships as first-party code under the project license. -->
     <string name="k2go_dash_license">GPL-2.0</string>
     <!-- ADFA-5011: rebuild progress row/status on the setup screen. -->

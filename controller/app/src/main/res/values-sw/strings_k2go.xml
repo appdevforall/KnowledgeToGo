@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">Ncha za REST za Vitabu, Wikipedia/ZIM, Kolibri na Ramani; vhost ya nginx; na ncha za toleo la mfumo na kujenga upya — zote kwenye 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Kiini cha mfumo</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Inakagua…</string>
+    <string name="k2go_dash_chip_uptodate">Imesasishwa</string>
+    <string name="k2go_dash_chip_update">Sasisho linapatikana</string>
+    <string name="k2go_dash_uptodate_hint">Uko kwenye toleo jipya zaidi — hakuna haja ya kujenga upya.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Kujenga upya kumekamilika — tunakupeleka kwenye maktaba yako…</string>
     <string name="k2go_dash_rebuild_building">Inajenga, inajaribu na kubadilisha papo hapo…</string>

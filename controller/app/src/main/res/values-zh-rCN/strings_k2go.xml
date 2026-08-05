@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">图书、Wikipedia/ZIM、Kolibri 和地图的 REST 端点；nginx 虚拟主机；以及系统版本和重建端点——全部位于 127.0.0.1:4000。</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">系统核心</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">检查中…</string>
+    <string name="k2go_dash_chip_uptodate">已是最新</string>
+    <string name="k2go_dash_chip_update">有可用更新</string>
+    <string name="k2go_dash_uptodate_hint">您已是最新版本 — 无需重新构建。</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">重建完成 — 正在带你前往你的库…</string>
     <string name="k2go_dash_rebuild_building">正在就地构建、测试并替换…</string>

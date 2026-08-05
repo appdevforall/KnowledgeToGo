@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">Các điểm cuối REST cho Sách, Wikipedia/ZIM, Kolibri và Bản đồ; vhost nginx; và các điểm cuối phiên bản hệ thống và xây dựng lại — tất cả tại 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Lõi hệ thống</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Đang kiểm tra…</string>
+    <string name="k2go_dash_chip_uptodate">Đã cập nhật</string>
+    <string name="k2go_dash_chip_update">Có bản cập nhật</string>
+    <string name="k2go_dash_uptodate_hint">Bạn đang dùng bản mới nhất — không cần dựng lại.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Xây dựng lại hoàn tất — đang đưa bạn đến thư viện…</string>
     <string name="k2go_dash_rebuild_building">Đang xây dựng, kiểm thử và thay thế tại chỗ…</string>

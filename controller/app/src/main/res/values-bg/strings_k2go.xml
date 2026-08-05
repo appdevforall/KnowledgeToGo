@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">REST крайни точки за Книги, Wikipedia/ZIM, Kolibri и Карти; nginx vhost; и крайни точки за системна версия и пресъздаване — всички на 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Системно ядро</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Проверява се…</string>
+    <string name="k2go_dash_chip_uptodate">Актуално</string>
+    <string name="k2go_dash_chip_update">Налична е актуализация</string>
+    <string name="k2go_dash_uptodate_hint">Използвате най-новата версия — не е нужно повторно изграждане.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Пресъздаването завърши — насочваме ви към библиотеката…</string>
     <string name="k2go_dash_rebuild_building">Компилиране, тестване и замяна на място…</string>

@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">REST koncové body Kníh, Wikipédie/ZIM, Kolibri a Máp; nginx vhost; a koncové body verzie systému a prestavby — všetko na 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Jadro systému</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Kontroluje sa…</string>
+    <string name="k2go_dash_chip_uptodate">Aktuálne</string>
+    <string name="k2go_dash_chip_update">Dostupná aktualizácia</string>
+    <string name="k2go_dash_uptodate_hint">Máte najnovšiu verziu — opätovné zostavenie nie je potrebné.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Prestavba dokončená — presmerúvame vás do knižnice…</string>
     <string name="k2go_dash_rebuild_building">Zostavovanie, testovanie a výmena na mieste…</string>

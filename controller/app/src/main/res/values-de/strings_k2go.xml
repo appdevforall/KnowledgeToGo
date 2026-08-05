@@ -687,6 +687,11 @@
     <string name="k2go_dash_includes">REST-Endpunkte für Bücher, Wikipedia/ZIM, Kolibri und Karten; der nginx-vhost; sowie Endpunkte für Systemversion und Neuerstellung — alle unter 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Systemkern</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Wird geprüft…</string>
+    <string name="k2go_dash_chip_uptodate">Aktuell</string>
+    <string name="k2go_dash_chip_update">Update verfügbar</string>
+    <string name="k2go_dash_uptodate_hint">Du hast die neueste Version — ein Neuaufbau ist nicht nötig.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Neuerstellung abgeschlossen — weiter zu Ihrer Bibliothek…</string>
     <string name="k2go_dash_rebuild_building">Erstellen, Testen und Austauschen vor Ort…</string>

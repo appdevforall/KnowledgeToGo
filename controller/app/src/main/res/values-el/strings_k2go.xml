@@ -687,6 +687,11 @@
     <string name="k2go_dash_includes">Σημεία REST για Βιβλία, Wikipedia/ZIM, Kolibri και Χάρτες· το vhost του nginx· και σημεία έκδοσης συστήματος και ανασυγκρότησης — όλα στο 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Πυρήνας συστήματος</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Έλεγχος…</string>
+    <string name="k2go_dash_chip_uptodate">Ενημερωμένο</string>
+    <string name="k2go_dash_chip_update">Διαθέσιμη ενημέρωση</string>
+    <string name="k2go_dash_uptodate_hint">Έχετε την πιο πρόσφατη έκδοση — δεν χρειάζεται αναδόμηση.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Η ανασυγκρότηση ολοκληρώθηκε — μετάβαση στη βιβλιοθήκη σας…</string>
     <string name="k2go_dash_rebuild_building">Κατασκευή, δοκιμή και επιτόπια αντικατάσταση…</string>

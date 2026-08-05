@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">Könyvek, Wikipédia/ZIM, Kolibri és Térképek REST végpontjai; az nginx vhost; valamint a rendszerverzió és újraépítés végpontjai — mind a 127.0.0.1:4000 címen.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Rendszermag</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Ellenőrzés…</string>
+    <string name="k2go_dash_chip_uptodate">Naprakész</string>
+    <string name="k2go_dash_chip_update">Frissítés érhető el</string>
+    <string name="k2go_dash_uptodate_hint">A legújabb verziót használja — nincs szükség újraépítésre.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Újraépítés kész — átirányítunk a könyvtáradba…</string>
     <string name="k2go_dash_rebuild_building">Fordítás, tesztelés és helyben csere…</string>

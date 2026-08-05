@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">Àwọn ojú-ọ̀nà REST fún Àwọn Ìwé, Wikipedia/ZIM, Kolibri àti Àwọn Máàpù; vhost nginx; àti àwọn ojú-ọ̀nà ẹ̀yà ètò àti àtúnkọ́ — gbogbo rẹ̀ ní 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Kókó ètò</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Ń ṣàyẹ̀wò…</string>
+    <string name="k2go_dash_chip_uptodate">Ó ti wà lọ́wọ́lọ́wọ́</string>
+    <string name="k2go_dash_chip_update">Ìmúdójúìwọ̀n wà</string>
+    <string name="k2go_dash_uptodate_hint">O wà lórí ẹ̀dà tuntun jùlọ — kò sí ìdí láti tún kọ́ ọ.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Àtúnkọ́ parí — a ń mú ọ lọ sí ilé-ìkàwé rẹ…</string>
     <string name="k2go_dash_rebuild_building">Ń kọ́, ń dánwò, ń pààrọ̀ níbẹ̀…</string>

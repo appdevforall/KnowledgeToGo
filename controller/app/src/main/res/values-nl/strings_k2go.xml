@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">REST-endpoints voor Boeken, Wikipedia/ZIM, Kolibri en Kaarten; de nginx-vhost; en endpoints voor systeemversie en opnieuw opbouwen, allemaal op 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Systeemkern</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Controleren…</string>
+    <string name="k2go_dash_chip_uptodate">Up-to-date</string>
+    <string name="k2go_dash_chip_update">Update beschikbaar</string>
+    <string name="k2go_dash_uptodate_hint">Je hebt de nieuwste versie — opnieuw bouwen is niet nodig.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Opnieuw opbouwen voltooid — je gaat naar je bibliotheek…</string>
     <string name="k2go_dash_rebuild_building">Bouwen, testen en ter plekke vervangen…</string>

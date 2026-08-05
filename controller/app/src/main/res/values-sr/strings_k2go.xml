@@ -686,6 +686,11 @@
     <string name="k2go_dash_includes">REST крајње тачке за Књиге, Wikipedia/ZIM, Kolibri и Мапе; nginx vhost; и крајње тачке за верзију система и поновну изградњу — све на 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Системско језгро</string>
+    <!-- ADFA-5026: live update-status pill on the REST API card + "no rebuild needed" hint. -->
+    <string name="k2go_dash_chip_checking">Провера…</string>
+    <string name="k2go_dash_chip_uptodate">Ажурно</string>
+    <string name="k2go_dash_chip_update">Доступна је исправка</string>
+    <string name="k2go_dash_uptodate_hint">Имате најновију верзију — поновна изградња није потребна.</string>
     <string name="k2go_dash_license">GPL-2.0</string>
     <string name="k2go_dash_redirect">Поновна изградња завршена — водимо вас у вашу библиотеку…</string>
     <string name="k2go_dash_rebuild_building">Изградња, тестирање и замена на лицу места…</string>
