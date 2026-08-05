@@ -550,6 +550,16 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 .show();
     }
 
+    /** ADFA-5023: while the boot gate is up during an install/reinstall (e.g. "wiping old system"), Back
+     *  must NOT walk back out through the setup screens — you're in "let me work" territory. Send the app
+     *  to the background instead (reopening resumes the gate); the install keeps running. Outside an
+     *  install, Back behaves normally. */
+    @Override
+    public void onBackPressed() {
+        if (installing && !gateDismissed) { moveTaskToBack(true); return; }
+        super.onBackPressed();
+    }
+
     private boolean reduceMotion() {
         try {
             return android.provider.Settings.Global.getFloat(getContentResolver(),
