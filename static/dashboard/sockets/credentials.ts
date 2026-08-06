@@ -1,22 +1,18 @@
-// sockets/credentials.ts — almacén de credenciales de servicios del box
+// sockets/credentials.ts — credential store for the box's local services
 //
-// Motivación: las credenciales de los servicios locales estaban embebidas en el
-// código (books.exec.ts:15-16, books.query.ts:22, con el comentario "a credential
-// override can be added later if needed"). Este módulo es ese override: si el
-// operador cambia la contraseña de Kolibri en el dispositivo, se actualiza aquí y
-// el mecanismo sigue funcionando sin recompilar ni redeployar.
+// Why this exists: credentials for the local services were hardcoded
+// (books.exec.ts:15-16, books.query.ts:22, with the comment "a credential override
+// can be added later if needed"). This module is that override: if the operator
+// changes Kolibri's password on the device, it is updated here and everything keeps
+// working without a rebuild or a redeploy.
 //
-// Precedencia (gana el primero que exista):
-//   1. variable de entorno   K2GO_<SERVICIO>_USER / K2GO_<SERVICIO>_PASS
-//   2. override persistido   /library/dashboard/credentials.json
-//   3. default de fábrica    Admin / changeme (lo que provisiona Ansible en IIAB)
+// Precedence (first one that exists wins):
+//   1. environment variable   K2GO_<SERVICE>_USER / K2GO_<SERVICE>_PASS
+//   2. persisted override     /library/dashboard/credentials.json
+//   3. factory default        Admin / changeme (what IIAB's Ansible provisions)
 //
-// El fichero se escribe con 0600 y de forma atómica (write + rename), para que un
-// corte a media escritura no deje un JSON truncado que impida autenticarse.
-//
-// Nota de alcance: por ahora solo Kolibri lo consume. Los runners de books siguen
-// con sus constantes; migrarlos es un cambio aparte porque toca código que ya
-// funciona en producción.
+// The file is written 0600 and atomically (write + rename), so a crash mid-write
+// cannot leave a truncated JSON that locks authentication out.
 import fs from 'fs';
 import path from 'path';
 
@@ -27,7 +23,7 @@ export interface Credential {
     password: string;
 }
 
-/** De dónde salió la credencial que se está usando. Útil para diagnóstico. */
+/** Where the credential in use came from. Useful for diagnostics. */
 export type CredentialOrigin = 'env' | 'override' | 'default';
 
 export interface ResolvedCredential extends Credential {
@@ -37,7 +33,7 @@ export interface ResolvedCredential extends Credential {
 const STORE_PATH = process.env.K2GO_CREDENTIALS_FILE
     || '/library/dashboard/credentials.json';
 
-/** Lo que provisiona el rol de Ansible de IIAB en el build del rootfs. */
+/** What IIAB's Ansible role provisions during the rootfs build. */
 const DEFAULTS: Record<ServiceName, Credential> = {
     kolibri: { username: 'Admin', password: 'changeme' },
     calibre: { username: 'Admin', password: 'changeme' },
@@ -56,20 +52,20 @@ export function isServiceName(s: string): s is ServiceName {
 
 type Store = Partial<Record<ServiceName, Credential>>;
 
-/** Lectura tolerante: un fichero ausente o corrupto degrada a los defaults, no
- *  rompe el arranque del dashboard.
+/** Tolerant read: a missing or corrupt file degrades to the defaults rather than
+ *  breaking dashboard startup.
  *
- *  Pero la degradación se REGISTRA. Silenciarla convierte "el fichero se corrompió"
- *  en "las credenciales dejaron de funcionar sin motivo", que es media hora de
- *  diagnóstico por un mensaje que costaba una línea. Un fichero ausente es normal
- *  (nadie ha puesto override todavía) y no se registra. */
+ *  But the degradation is LOGGED. Silencing it turns "the file was corrupted" into
+ *  "the credentials stopped working for no reason", which is half an hour of
+ *  diagnosis for the sake of a one-line message. A missing file is the normal case
+ *  (nobody has set an override yet) and is not logged. */
 function readStore(): Store {
     try {
         const raw = fs.readFileSync(STORE_PATH, 'utf8');
         const parsed = JSON.parse(raw) as unknown;
         if (!parsed || typeof parsed !== 'object') {
-            console.warn(`[credentials] ${STORE_PATH} no contiene un objeto JSON; `
-                + 'se usan los valores de fábrica');
+            console.warn(`[credentials] ${STORE_PATH} does not contain a JSON object; `
+                + 'falling back to the factory values');
             return {};
         }
         const out: Store = {};
@@ -84,13 +80,13 @@ function readStore(): Store {
         }
         return out;
     } catch (e) {
-        // ENOENT es el caso normal: aún no hay override. Cualquier otra cosa
-        // (JSON roto, permisos) sí merece un aviso.
+        // ENOENT is the normal case: no override yet. Anything else (broken JSON,
+        // permissions) does deserve a warning.
         const code = (e as NodeJS.ErrnoException)?.code;
         if (code !== 'ENOENT') {
-            console.warn(`[credentials] no se pudo leer ${STORE_PATH} `
+            console.warn(`[credentials] could not read ${STORE_PATH} `
                 + `(${e instanceof Error ? e.message : String(e)}); `
-                + 'se usan los valores de fábrica');
+                + 'falling back to the factory values');
         }
         return {};
     }
@@ -99,15 +95,15 @@ function readStore(): Store {
 function writeStore(store: Store): void {
     const dir = path.dirname(STORE_PATH);
     fs.mkdirSync(dir, { recursive: true });
-    // Escritura atómica: si el proceso muere a medias, el fichero antiguo sigue
-    // siendo válido en lugar de quedar un JSON a medio escribir.
+    // Atomic write: if the process dies halfway, the old file stays valid instead
+    // of leaving a half-written JSON behind.
     const tmp = `${STORE_PATH}.tmp-${process.pid}`;
     fs.writeFileSync(tmp, JSON.stringify(store, null, 2) + '\n', { mode: 0o600 });
     fs.renameSync(tmp, STORE_PATH);
     try { fs.chmodSync(STORE_PATH, 0o600); } catch { /* best effort */ }
 }
 
-/** La credencial efectiva de un servicio, con su procedencia. */
+/** The effective credential for a service, with its provenance. */
 export function getCredential(service: ServiceName): ResolvedCredential {
     const envUser = process.env[`${ENV_PREFIX[service]}_USER`];
     const envPass = process.env[`${ENV_PREFIX[service]}_PASS`];
@@ -119,8 +115,8 @@ export function getCredential(service: ServiceName): ResolvedCredential {
     return { ...DEFAULTS[service], origin: 'default' };
 }
 
-/** Persiste un override. NO valida contra el servicio: eso lo hace la ruta REST,
- *  que solo llama aquí después de un login correcto. */
+/** Persists an override. Does NOT validate against the service: the REST route
+ *  does that, and only calls in here after a successful login. */
 export function setCredential(service: ServiceName, cred: Credential): void {
     const username = cred.username.trim();
     if (!username) throw new Error('username required');
@@ -130,17 +126,18 @@ export function setCredential(service: ServiceName, cred: Credential): void {
     writeStore(store);
 }
 
-/** Vuelve al default de fábrica (o a la variable de entorno, si está puesta). */
+/** Reverts to the factory default (or to the environment variable, if set). */
 export function clearCredential(service: ServiceName): void {
     const store = readStore();
     delete store[service];
     writeStore(store);
 }
 
-/** Vista para la UI. La contraseña personalizada NUNCA se devuelve. Excepción (ADFA-5044): cuando el
- *  servicio sigue con el default de fábrica —que es público y documentado (Admin/changeme en IIAB)— se
- *  incluye para que el formulario pueda prellenar el sign-in completo. En cuanto hay un override, se
- *  omite de nuevo. Es seguro porque no expone ningún secreto real y el API es localhost-only. */
+/** View for the UI. A custom password is NEVER returned. Exception (ADFA-5044):
+ *  while the service is still on the factory default — which is public and
+ *  documented (Admin/changeme in IIAB) — it is included so the form can prefill the
+ *  whole sign-in. As soon as an override exists it is omitted again. This is safe
+ *  because it exposes no real secret and the API is localhost-only. */
 export function describeCredential(service: ServiceName): {
     service: ServiceName;
     username: string;
@@ -149,7 +146,7 @@ export function describeCredential(service: ServiceName): {
     password?: string;
 } {
     const c = getCredential(service);
-    // Señal para que la UI pueda avisar "sigues con la contraseña de fábrica".
+    // Signal so the UI can warn "you are still on the factory password".
     const isDefault = c.origin === 'default'
         || (c.username === DEFAULTS[service].username
             && c.password === DEFAULTS[service].password);

@@ -2,13 +2,13 @@
 //
 // sockets/credentials.test.ts — ADFA-4949
 //
-// El almacén de credenciales es el único módulo nuevo que maneja un secreto, así
-// que merece cobertura propia. Solo toca fs, sin dependencias nativas, de modo que
-// corre bajo `npm ci --ignore-scripts` igual que el resto de la suite.
+// The credentials store is the only new module that handles a secret, so it
+// deserves coverage of its own. It touches fs alone, with no native dependencies,
+// so it runs under `npm ci --ignore-scripts` like the rest of the suite.
 //
-// El módulo lee la ruta del store en tiempo de importación (K2GO_CREDENTIALS_FILE),
-// así que cada caso usa un fichero temporal fijado ANTES del require, y el módulo se
-// recarga limpiando la caché de require.
+// The module reads the store path at import time (K2GO_CREDENTIALS_FILE), so each
+// case uses a temporary file set BEFORE the require, and the module is reloaded by
+// clearing the require cache.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -28,7 +28,7 @@ interface CredentialsModule {
     CREDENTIALS_STORE_PATH: string;
 }
 
-/** Carga el módulo con un store temporal y el entorno indicado. */
+/** Loads the module with a temporary store and the given environment. */
 function load(env: Record<string, string | undefined> = {}): {
     mod: CredentialsModule; storePath: string; cleanup: () => void;
 } {
@@ -62,9 +62,9 @@ function load(env: Record<string, string | undefined> = {}): {
     };
 }
 
-// ─── Precedencia ─────────────────────────────────────────────────────────────
+// ─── Precedence ──────────────────────────────────────────────────────────────
 
-test('sin override ni env, devuelve el default de fábrica de IIAB', () => {
+test('with no override and no env, returns the IIAB factory default', () => {
     const { mod, cleanup } = load();
     try {
         const c = mod.getCredential('kolibri');
@@ -74,41 +74,41 @@ test('sin override ni env, devuelve el default de fábrica de IIAB', () => {
     } finally { cleanup(); }
 });
 
-test('el override persistido gana sobre el default', () => {
+test('the persisted override wins over the default', () => {
     const { mod, cleanup } = load();
     try {
-        mod.setCredential('kolibri', { username: 'operador', password: 's3cr3t' });
+        mod.setCredential('kolibri', { username: 'operator', password: 's3cr3t' });
         const c = mod.getCredential('kolibri');
-        assert.equal(c.username, 'operador');
+        assert.equal(c.username, 'operator');
         assert.equal(c.password, 's3cr3t');
         assert.equal(c.origin, 'override');
     } finally { cleanup(); }
 });
 
-test('el entorno gana sobre el override persistido', () => {
-    // Precedencia declarada: env > override > default. Es lo que permite fijar la
-    // credencial desde el servicio PDSM sin tocar el fichero.
+test('the environment wins over the persisted override', () => {
+    // Declared precedence: env > override > default. This is what allows the
+    // credential to be set from the PDSM service without touching the file.
     const { mod, cleanup } = load({
-        K2GO_KOLIBRI_USER: 'desde-env', K2GO_KOLIBRI_PASS: 'env-pass',
+        K2GO_KOLIBRI_USER: 'from-env', K2GO_KOLIBRI_PASS: 'env-pass',
     });
     try {
-        mod.setCredential('kolibri', { username: 'operador', password: 's3cr3t' });
+        mod.setCredential('kolibri', { username: 'operator', password: 's3cr3t' });
         const c = mod.getCredential('kolibri');
-        assert.equal(c.username, 'desde-env');
+        assert.equal(c.username, 'from-env');
         assert.equal(c.origin, 'env');
     } finally { cleanup(); }
 });
 
-test('el entorno solo aplica si están usuario Y contraseña', () => {
-    // Media credencial no es una credencial: con solo el usuario hay que caer al
-    // siguiente nivel, no intentar autenticar sin contraseña.
-    const { mod, cleanup } = load({ K2GO_KOLIBRI_USER: 'solo-usuario' });
+test('the environment only applies if both username AND password are set', () => {
+    // Half a credential is not a credential: with only the username we must fall
+    // to the next level, not try to authenticate without a password.
+    const { mod, cleanup } = load({ K2GO_KOLIBRI_USER: 'user-only' });
     try {
         assert.equal(mod.getCredential('kolibri').origin, 'default');
     } finally { cleanup(); }
 });
 
-test('los servicios no se pisan entre sí', () => {
+test('services do not overwrite each other', () => {
     const { mod, cleanup } = load();
     try {
         mod.setCredential('kolibri', { username: 'k', password: 'kp' });
@@ -117,22 +117,22 @@ test('los servicios no se pisan entre sí', () => {
     } finally { cleanup(); }
 });
 
-test('clearCredential vuelve al default', () => {
+test('clearCredential returns to the default', () => {
     const { mod, cleanup } = load();
     try {
-        mod.setCredential('kolibri', { username: 'operador', password: 's3cr3t' });
+        mod.setCredential('kolibri', { username: 'operator', password: 's3cr3t' });
         mod.clearCredential('kolibri');
         assert.equal(mod.getCredential('kolibri').origin, 'default');
         assert.equal(mod.getCredential('kolibri').username, 'Admin');
     } finally { cleanup(); }
 });
 
-// ─── Persistencia ────────────────────────────────────────────────────────────
+// ─── Persistence ─────────────────────────────────────────────────────────────
 
-test('el fichero se escribe con permisos 0600', () => {
+test('the file is written with 0600 permissions', () => {
     const { mod, storePath, cleanup } = load();
     try {
-        mod.setCredential('kolibri', { username: 'operador', password: 's3cr3t' });
+        mod.setCredential('kolibri', { username: 'operator', password: 's3cr3t' });
         assert.ok(fs.existsSync(storePath));
         if (process.platform !== 'win32') {
             assert.equal(fs.statSync(storePath).mode & 0o777, 0o600);
@@ -140,8 +140,8 @@ test('el fichero se escribe con permisos 0600', () => {
     } finally { cleanup(); }
 });
 
-test('no quedan ficheros temporales tras escribir', () => {
-    // La escritura es write+rename para que un corte no deje un JSON truncado.
+test('no temporary files are left behind after writing', () => {
+    // The write is write+rename so an interruption cannot leave a truncated JSON.
     const { mod, storePath, cleanup } = load();
     try {
         mod.setCredential('kolibri', { username: 'a', password: 'b' });
@@ -152,7 +152,7 @@ test('no quedan ficheros temporales tras escribir', () => {
     } finally { cleanup(); }
 });
 
-test('un JSON corrupto degrada al default en vez de romper', () => {
+test('a corrupt JSON degrades to the default instead of breaking', () => {
     const { mod, storePath, cleanup } = load();
     try {
         fs.writeFileSync(storePath, '{ esto no es json', { mode: 0o600 });
@@ -162,22 +162,22 @@ test('un JSON corrupto degrada al default en vez de romper', () => {
     } finally { cleanup(); }
 });
 
-test('un JSON válido pero con forma inesperada se ignora', () => {
+test('a valid JSON with an unexpected shape is ignored', () => {
     const { mod, storePath, cleanup } = load();
     try {
-        // Entradas sin password, o de tipo equivocado, no deben adoptarse a medias.
+        // Entries with no password, or of the wrong type, must not be half-adopted.
         fs.writeFileSync(storePath, JSON.stringify({
             kolibri: { username: 'x' },
-            calibre: 'no-soy-un-objeto',
+            calibre: 'not-an-object',
         }), { mode: 0o600 });
         assert.equal(mod.getCredential('kolibri').origin, 'default');
         assert.equal(mod.getCredential('calibre').origin, 'default');
     } finally { cleanup(); }
 });
 
-// ─── Validación de entrada ───────────────────────────────────────────────────
+// ─── Input validation ────────────────────────────────────────────────────────
 
-test('setCredential rechaza usuario o contraseña vacíos', () => {
+test('setCredential rejects an empty username or password', () => {
     const { mod, cleanup } = load();
     try {
         assert.throws(() => mod.setCredential('kolibri', { username: '', password: 'x' }));
@@ -186,43 +186,43 @@ test('setCredential rechaza usuario o contraseña vacíos', () => {
     } finally { cleanup(); }
 });
 
-test('setCredential recorta espacios del usuario, no de la contraseña', () => {
-    // La contraseña se guarda literal: recortarla rompería una que empiece o acabe
-    // en espacio, y el usuario nunca sabría por qué falla el login.
+test('setCredential trims spaces from the username, not from the password', () => {
+    // The password is stored verbatim: trimming it would break one starting or
+    // ending in a space, and the user would never know why the login fails.
     const { mod, cleanup } = load();
     try {
-        mod.setCredential('kolibri', { username: '  operador  ', password: '  con espacios  ' });
+        mod.setCredential('kolibri', { username: '  operator  ', password: '  with spaces  ' });
         const c = mod.getCredential('kolibri');
-        assert.equal(c.username, 'operador');
-        assert.equal(c.password, '  con espacios  ');
+        assert.equal(c.username, 'operator');
+        assert.equal(c.password, '  with spaces  ');
     } finally { cleanup(); }
 });
 
-// ─── describeCredential: lo que ve el webview ────────────────────────────────
+// ─── describeCredential: what the webview sees ───────────────────────────────
 
-test('describeCredential nunca expone la contraseña', () => {
+test('describeCredential never exposes the password', () => {
     const { mod, cleanup } = load();
     try {
-        mod.setCredential('kolibri', { username: 'operador', password: 'no-debe-salir' });
+        mod.setCredential('kolibri', { username: 'operator', password: 'must-not-leak' });
         const d = mod.describeCredential('kolibri') as Record<string, unknown>;
-        assert.equal(JSON.stringify(d).includes('no-debe-salir'), false);
+        assert.equal(JSON.stringify(d).includes('must-not-leak'), false);
         assert.equal('password' in d, false);
-        assert.equal(d.username, 'operador');
+        assert.equal(d.username, 'operator');
     } finally { cleanup(); }
 });
 
-test('isDefault avisa de que sigue la credencial de fábrica', () => {
+test('isDefault warns that the factory credential is still in place', () => {
     const { mod, cleanup } = load();
     try {
         assert.equal(mod.describeCredential('kolibri').isDefault, true);
-        mod.setCredential('kolibri', { username: 'operador', password: 's3cr3t' });
+        mod.setCredential('kolibri', { username: 'operator', password: 's3cr3t' });
         assert.equal(mod.describeCredential('kolibri').isDefault, false);
     } finally { cleanup(); }
 });
 
-test('isDefault sigue siendo true si se reescribe la credencial de fábrica', () => {
-    // Guardar Admin/changeme a mano no deja de ser la credencial de fábrica: el
-    // aviso de la UI tiene que seguir apareciendo.
+test('isDefault stays true if the factory credential is written again', () => {
+    // Saving Admin/changeme by hand is still the factory credential: the UI
+    // warning has to keep appearing.
     const { mod, cleanup } = load();
     try {
         mod.setCredential('kolibri', { username: 'Admin', password: 'changeme' });
@@ -232,7 +232,7 @@ test('isDefault sigue siendo true si se reescribe la credencial de fábrica', ()
 
 // ─── isServiceName ───────────────────────────────────────────────────────────
 
-test('isServiceName acota los servicios conocidos', () => {
+test('isServiceName limits to the known services', () => {
     const { mod, cleanup } = load();
     try {
         assert.equal(mod.isServiceName('kolibri'), true);
