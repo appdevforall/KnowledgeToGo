@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">புதிதாக மீண்டும் நிறுவவா?</string>
     <string name="k2go_reinstall_confirm_msg">இது தற்போதைய அமைப்பையும் அதிலுள்ள அனைத்தையும் — புத்தகங்கள், வரைபடங்கள், பதிவிறக்கங்கள் மற்றும் அமைப்புகள் — அழித்து, பிறகு ஒரு சுத்தமான நகலை நிறுவும். இதைத் திரும்பப்பெற முடியாது. ஏதேனும் வைத்திருக்க விரும்பினால் முதலில் காப்புப்பிரதி எடுக்கவும். இணைய இணைப்பு தேவை.</string>
     <string name="k2go_reinstall_confirm_yes">அழித்து மீண்டும் நிறுவு</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">கணினியிலிருந்து</string>
+    <string name="k2go_zim_lang_state_manual">கைமுறையாக தேர்ந்தெடுக்கப்பட்டது</string>
+    <string name="k2go_zim_most_content">அதிக உள்ளடக்கம்</string>
+    <string name="k2go_zim_see_all_cats_fmt">அனைத்து %1$d வகைகளையும் காண்க</string>
+    <string name="k2go_zim_unavail_line_fmt">%2$s இல் %1$d வகைகள் கிடைக்கவில்லை · மொழியை மாற்று</string>
+    <string name="k2go_zim_unavail_row_fmt">%1$s இல் கிடைக்கவில்லை</string>
+    <string name="k2go_zim_grp_all">அனைத்தும்</string>
+    <string name="k2go_zim_grp_reference">குறிப்பு</string>
+    <string name="k2go_zim_grp_reference_hdr">குறிப்பு மற்றும் கலைக்களஞ்சியம்</string>
+    <string name="k2go_zim_grp_learning">கற்றல்</string>
+    <string name="k2go_zim_grp_learning_hdr">கற்றல் மற்றும் உருவாக்கம்</string>
+    <string name="k2go_zim_grp_tools">கருவிகள்</string>
+    <string name="k2go_zim_grp_tools_hdr">கருவிகள் மற்றும் தொழில்நுட்பம்</string>
+    <string name="k2go_zim_grp_media">ஊடகம்</string>
+    <string name="k2go_zim_grp_media_hdr">ஊடகம் மற்றும் மேலும்</string>
+    <string name="k2go_zim_grp_kids">குழந்தைகள்</string>
+    <string name="k2go_zim_grp_kids_hdr">குழந்தைகள்</string>
+    <string name="k2go_zc_count_items">%1$d உருப்படிகள்</string>
+    <string name="k2go_zc_count_results">%1$d முடிவுகள்</string>
 </resources>

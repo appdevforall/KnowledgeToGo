@@ -2,6 +2,7 @@
 <!-- ADFA-4849: ZIM category detail (screen 2). Fixed header + fixed bottom bar; only the list
      scrolls. Rows are built programmatically into k2go_zc_list. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -75,7 +76,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_expand_more"
-                android:tint="@color/k2go_teal"
+                app:tint="@color/k2go_teal"
                 android:importantForAccessibility="no" />
         </LinearLayout>
 

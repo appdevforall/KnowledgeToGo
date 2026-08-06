@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Přeinstalovat od začátku?</string>
     <string name="k2go_reinstall_confirm_msg">Tímto se smaže aktuální systém a vše v něm — knihy, mapy, stažené soubory a nastavení — a nainstaluje se čistá kopie. Nelze vzít zpět. Pokud si chcete něco ponechat, nejprve vytvořte zálohu. Vyžaduje připojení k internetu.</string>
     <string name="k2go_reinstall_confirm_yes">Smazat a přeinstalovat</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Ze systému</string>
+    <string name="k2go_zim_lang_state_manual">Ručně vybráno</string>
+    <string name="k2go_zim_most_content">NEJVÍCE OBSAHU</string>
+    <string name="k2go_zim_see_all_cats_fmt">Zobrazit všech %1$d kategorií</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d kategorií není dostupných v jazyce %2$s · Změnit jazyk</string>
+    <string name="k2go_zim_unavail_row_fmt">Není dostupné v jazyce %1$s</string>
+    <string name="k2go_zim_grp_all">Vše</string>
+    <string name="k2go_zim_grp_reference">Referenční</string>
+    <string name="k2go_zim_grp_reference_hdr">REFERENČNÍ A ENCYKLOPEDIE</string>
+    <string name="k2go_zim_grp_learning">Učení</string>
+    <string name="k2go_zim_grp_learning_hdr">UČENÍ A TVORBA</string>
+    <string name="k2go_zim_grp_tools">Nástroje</string>
+    <string name="k2go_zim_grp_tools_hdr">NÁSTROJE A TECHNIKA</string>
+    <string name="k2go_zim_grp_media">Média</string>
+    <string name="k2go_zim_grp_media_hdr">MÉDIA A DALŠÍ</string>
+    <string name="k2go_zim_grp_kids">Děti</string>
+    <string name="k2go_zim_grp_kids_hdr">DĚTI</string>
+    <string name="k2go_zc_count_items">%1$d položek</string>
+    <string name="k2go_zc_count_results">%1$d výsledků</string>
 </resources>

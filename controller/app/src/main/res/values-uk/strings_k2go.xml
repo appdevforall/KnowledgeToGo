@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Перевстановити з нуля?</string>
     <string name="k2go_reinstall_confirm_msg">Це зітре поточну систему й увесь її вміст — книги, карти, завантаження та налаштування — і встановить чисту копію. Скасувати неможливо. Спочатку зробіть резервну копію, якщо хочете щось зберегти. Потрібне підключення до інтернету.</string>
     <string name="k2go_reinstall_confirm_yes">Стерти та перевстановити</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Із системи</string>
+    <string name="k2go_zim_lang_state_manual">Вибрано вручну</string>
+    <string name="k2go_zim_most_content">НАЙБІЛЬШЕ ВМІСТУ</string>
+    <string name="k2go_zim_see_all_cats_fmt">Показати всі %1$d категорії</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d категорій недоступні мовою %2$s · Змінити мову</string>
+    <string name="k2go_zim_unavail_row_fmt">Недоступно мовою %1$s</string>
+    <string name="k2go_zim_grp_all">Усі</string>
+    <string name="k2go_zim_grp_reference">Довідники</string>
+    <string name="k2go_zim_grp_reference_hdr">ДОВІДНИКИ ТА ЕНЦИКЛОПЕДІЇ</string>
+    <string name="k2go_zim_grp_learning">Навчання</string>
+    <string name="k2go_zim_grp_learning_hdr">НАВЧАННЯ ТА ТВОРЧІСТЬ</string>
+    <string name="k2go_zim_grp_tools">Інструменти</string>
+    <string name="k2go_zim_grp_tools_hdr">ІНСТРУМЕНТИ ТА ТЕХНОЛОГІЇ</string>
+    <string name="k2go_zim_grp_media">Медіа</string>
+    <string name="k2go_zim_grp_media_hdr">МЕДІА ТА ІНШЕ</string>
+    <string name="k2go_zim_grp_kids">Діти</string>
+    <string name="k2go_zim_grp_kids_hdr">ДІТИ</string>
+    <string name="k2go_zc_count_items">%1$d елементів</string>
+    <string name="k2go_zc_count_results">%1$d результатів</string>
 </resources>

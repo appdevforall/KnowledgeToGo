@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Tún fi sori ẹrọ láti ìbẹ̀rẹ̀?</string>
     <string name="k2go_reinstall_confirm_msg">Èyí ń pa ètò tí ó wà lọ́wọ́lọ́wọ́ àti gbogbo ohun tí ó wà nínú rẹ̀ rẹ́ — àwọn ìwé, àwọn máàpù, àwọn ohun tí a gbà sílẹ̀ àti àwọn ètò — lẹ́yìn náà ó fi ẹ̀dà mímọ́ sori ẹrọ. Kò ṣeé yí padà. Kọ́kọ́ ṣe àkọsílẹ̀ ìdáàbòbò bí o bá fẹ́ pa ohunkóhun mọ́. Ó nílò ìsopọ̀ íntánẹ́ẹ̀tì.</string>
     <string name="k2go_reinstall_confirm_yes">Pa rẹ́ kí o sì tún fi sori ẹrọ</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Láti inú ẹ̀rọ</string>
+    <string name="k2go_zim_lang_state_manual">Yíyàn pẹ̀lú ọwọ́</string>
+    <string name="k2go_zim_most_content">AKÓÓNÚ TÓ PỌ̀ JÙ</string>
+    <string name="k2go_zim_see_all_cats_fmt">Wo gbogbo ẹ̀ka %1$d</string>
+    <string name="k2go_zim_unavail_line_fmt">Ẹ̀ka %1$d kò sí ní %2$s · Yí èdè padà</string>
+    <string name="k2go_zim_unavail_row_fmt">Kò sí ní %1$s</string>
+    <string name="k2go_zim_grp_all">Gbogbo</string>
+    <string name="k2go_zim_grp_reference">Ìtọ́kasí</string>
+    <string name="k2go_zim_grp_reference_hdr">ÌTỌ́KASÍ ATI ÌWÉ-ÌMỌ̀</string>
+    <string name="k2go_zim_grp_learning">Ìkẹ́kọ̀ọ́</string>
+    <string name="k2go_zim_grp_learning_hdr">ÌKẸ́KỌ̀Ọ́ ATI ÌṢẸ̀DÁ</string>
+    <string name="k2go_zim_grp_tools">Irinṣẹ́</string>
+    <string name="k2go_zim_grp_tools_hdr">IRINṢẸ́ ATI ÌMỌ̀-ẸROTECH</string>
+    <string name="k2go_zim_grp_media">Mídíà</string>
+    <string name="k2go_zim_grp_media_hdr">MÍDÍÀ ATI SÍWÁJÚ</string>
+    <string name="k2go_zim_grp_kids">Àwọn ọmọdé</string>
+    <string name="k2go_zim_grp_kids_hdr">ÀWỌN ỌMỌDÉ</string>
+    <string name="k2go_zc_count_items">%1$d nǹkan</string>
+    <string name="k2go_zc_count_results">%1$d àbájáde</string>
 </resources>

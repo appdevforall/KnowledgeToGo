@@ -3,6 +3,7 @@
      selection' button is pinned to the bottom so it's always reachable. 'See all N categories'
      sits at the end of the scrolling list. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -79,7 +80,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_expand_more"
-                    android:tint="@color/k2go_teal"
+                    app:tint="@color/k2go_teal"
                     android:importantForAccessibility="no" />
             </LinearLayout>
 

@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">처음부터 다시 설치할까요?</string>
     <string name="k2go_reinstall_confirm_msg">현재 시스템과 그 안의 모든 것 — 도서, 지도, 다운로드, 설정 — 을 지우고 깨끗한 사본을 설치합니다. 되돌릴 수 없습니다. 무언가를 남기려면 먼저 백업하세요. 인터넷 연결이 필요합니다.</string>
     <string name="k2go_reinstall_confirm_yes">지우고 다시 설치</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">시스템에서</string>
+    <string name="k2go_zim_lang_state_manual">직접 선택</string>
+    <string name="k2go_zim_most_content">콘텐츠 많은 순</string>
+    <string name="k2go_zim_see_all_cats_fmt">%1$d개 카테고리 모두 보기</string>
+    <string name="k2go_zim_unavail_line_fmt">%2$s에서 %1$d개 카테고리를 사용할 수 없습니다 · 언어 변경</string>
+    <string name="k2go_zim_unavail_row_fmt">%1$s에서 사용할 수 없음</string>
+    <string name="k2go_zim_grp_all">전체</string>
+    <string name="k2go_zim_grp_reference">참고</string>
+    <string name="k2go_zim_grp_reference_hdr">참고 및 백과사전</string>
+    <string name="k2go_zim_grp_learning">학습</string>
+    <string name="k2go_zim_grp_learning_hdr">학습 및 제작</string>
+    <string name="k2go_zim_grp_tools">도구</string>
+    <string name="k2go_zim_grp_tools_hdr">도구 및 기술</string>
+    <string name="k2go_zim_grp_media">미디어</string>
+    <string name="k2go_zim_grp_media_hdr">미디어 및 기타</string>
+    <string name="k2go_zim_grp_kids">어린이</string>
+    <string name="k2go_zim_grp_kids_hdr">어린이</string>
+    <string name="k2go_zc_count_items">%1$d개 항목</string>
+    <string name="k2go_zc_count_results">%1$d개 결과</string>
 </resources>

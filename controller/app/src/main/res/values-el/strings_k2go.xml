@@ -707,4 +707,24 @@
     <string name="k2go_reinstall_confirm_title">Επανεγκατάσταση από την αρχή;</string>
     <string name="k2go_reinstall_confirm_msg">Αυτό διαγράφει το τρέχον σύστημα και ό,τι περιέχει — βιβλία, χάρτες, λήψεις και ρυθμίσεις — και έπειτα εγκαθιστά ένα καθαρό αντίγραφο. Δεν αναιρείται. Κάντε πρώτα αντίγραφο ασφαλείας αν θέλετε να κρατήσετε κάτι. Απαιτεί σύνδεση στο διαδίκτυο.</string>
     <string name="k2go_reinstall_confirm_yes">Διαγραφή και επανεγκατάσταση</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Από το σύστημα</string>
+    <string name="k2go_zim_lang_state_manual">Μη αυτόματη επιλογή</string>
+    <string name="k2go_zim_most_content">ΠΕΡΙΣΣΟΤΕΡΟ ΠΕΡΙΕΧΟΜΕΝΟ</string>
+    <string name="k2go_zim_see_all_cats_fmt">Δείτε και τις %1$d κατηγορίες</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d κατηγορίες δεν είναι διαθέσιμες στα %2$s · Αλλαγή γλώσσας</string>
+    <string name="k2go_zim_unavail_row_fmt">Μη διαθέσιμο στα %1$s</string>
+    <string name="k2go_zim_grp_all">Όλα</string>
+    <string name="k2go_zim_grp_reference">Αναφορά</string>
+    <string name="k2go_zim_grp_reference_hdr">ΑΝΑΦΟΡΑ ΚΑΙ ΕΓΚΥΚΛΟΠΑΙΔΕΙΑ</string>
+    <string name="k2go_zim_grp_learning">Μάθηση</string>
+    <string name="k2go_zim_grp_learning_hdr">ΜΑΘΗΣΗ ΚΑΙ ΔΗΜΙΟΥΡΓΙΑ</string>
+    <string name="k2go_zim_grp_tools">Εργαλεία</string>
+    <string name="k2go_zim_grp_tools_hdr">ΕΡΓΑΛΕΙΑ ΚΑΙ ΤΕΧΝΟΛΟΓΙΑ</string>
+    <string name="k2go_zim_grp_media">Πολυμέσα</string>
+    <string name="k2go_zim_grp_media_hdr">ΠΟΛΥΜΕΣΑ ΚΑΙ ΑΛΛΑ</string>
+    <string name="k2go_zim_grp_kids">Παιδιά</string>
+    <string name="k2go_zim_grp_kids_hdr">ΠΑΙΔΙΑ</string>
+    <string name="k2go_zc_count_items">%1$d στοιχεία</string>
+    <string name="k2go_zc_count_results">%1$d αποτελέσματα</string>
 </resources>

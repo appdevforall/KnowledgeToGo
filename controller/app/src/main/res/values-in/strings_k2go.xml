@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Instal ulang dari awal?</string>
     <string name="k2go_reinstall_confirm_msg">Ini menghapus sistem saat ini dan semua isinya — buku, peta, unduhan, dan pengaturan — lalu menginstal salinan bersih. Tidak dapat dibatalkan. Cadangkan dulu jika ingin menyimpan sesuatu. Perlu koneksi internet.</string>
     <string name="k2go_reinstall_confirm_yes">Hapus dan instal ulang</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Dari sistem</string>
+    <string name="k2go_zim_lang_state_manual">Dipilih manual</string>
+    <string name="k2go_zim_most_content">PALING BANYAK KONTEN</string>
+    <string name="k2go_zim_see_all_cats_fmt">Lihat semua %1$d kategori</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d kategori tidak tersedia dalam %2$s · Ubah bahasa</string>
+    <string name="k2go_zim_unavail_row_fmt">Tidak tersedia dalam %1$s</string>
+    <string name="k2go_zim_grp_all">Semua</string>
+    <string name="k2go_zim_grp_reference">Referensi</string>
+    <string name="k2go_zim_grp_reference_hdr">REFERENSI &amp; ENSIKLOPEDIA</string>
+    <string name="k2go_zim_grp_learning">Pembelajaran</string>
+    <string name="k2go_zim_grp_learning_hdr">PEMBELAJARAN &amp; KREASI</string>
+    <string name="k2go_zim_grp_tools">Alat</string>
+    <string name="k2go_zim_grp_tools_hdr">ALAT &amp; TEKNOLOGI</string>
+    <string name="k2go_zim_grp_media">Media</string>
+    <string name="k2go_zim_grp_media_hdr">MEDIA &amp; LAINNYA</string>
+    <string name="k2go_zim_grp_kids">Anak</string>
+    <string name="k2go_zim_grp_kids_hdr">ANAK</string>
+    <string name="k2go_zc_count_items">%1$d item</string>
+    <string name="k2go_zc_count_results">%1$d hasil</string>
 </resources>

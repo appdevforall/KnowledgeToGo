@@ -716,4 +716,24 @@
     <string name="k2go_reinstall_confirm_title">Zainstalować od nowa?</string>
     <string name="k2go_reinstall_confirm_msg">Spowoduje to usunięcie bieżącego systemu i całej jego zawartości — książek, map, pobrań i ustawień — a następnie instalację czystej kopii. Nie można tego cofnąć. Najpierw wykonaj kopię zapasową, jeśli chcesz coś zachować. Wymaga połączenia z internetem.</string>
     <string name="k2go_reinstall_confirm_yes">Usuń i zainstaluj od nowa</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Z systemu</string>
+    <string name="k2go_zim_lang_state_manual">Wybrano ręcznie</string>
+    <string name="k2go_zim_most_content">NAJWIĘCEJ TREŚCI</string>
+    <string name="k2go_zim_see_all_cats_fmt">Zobacz wszystkie kategorie: %1$d</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d kategorii nie jest dostępnych w języku %2$s · Zmień język</string>
+    <string name="k2go_zim_unavail_row_fmt">Niedostępne w języku %1$s</string>
+    <string name="k2go_zim_grp_all">Wszystko</string>
+    <string name="k2go_zim_grp_reference">Źródła</string>
+    <string name="k2go_zim_grp_reference_hdr">ŹRÓDŁA I ENCYKLOPEDIE</string>
+    <string name="k2go_zim_grp_learning">Nauka</string>
+    <string name="k2go_zim_grp_learning_hdr">NAUKA I TWORZENIE</string>
+    <string name="k2go_zim_grp_tools">Narzędzia</string>
+    <string name="k2go_zim_grp_tools_hdr">NARZĘDZIA I TECHNOLOGIA</string>
+    <string name="k2go_zim_grp_media">Multimedia</string>
+    <string name="k2go_zim_grp_media_hdr">MULTIMEDIA I WIĘCEJ</string>
+    <string name="k2go_zim_grp_kids">Dzieci</string>
+    <string name="k2go_zim_grp_kids_hdr">DZIECI</string>
+    <string name="k2go_zc_count_items">%1$d elementów</string>
+    <string name="k2go_zc_count_results">%1$d wyników</string>
 </resources>

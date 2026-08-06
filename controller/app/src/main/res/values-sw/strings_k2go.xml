@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Kusakinisha upya kutoka mwanzo?</string>
     <string name="k2go_reinstall_confirm_msg">Hii inafuta mfumo wa sasa na kila kitu ndani yake — vitabu, ramani, vipakuliwa na mipangilio — kisha inasakinisha nakala safi. Haiwezi kutenduliwa. Hifadhi nakala rudufu kwanza ikiwa unataka kuweka chochote. Inahitaji muunganisho wa intaneti.</string>
     <string name="k2go_reinstall_confirm_yes">Futa na usakinishe upya</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Kutoka kwa mfumo</string>
+    <string name="k2go_zim_lang_state_manual">Imechaguliwa mwenyewe</string>
+    <string name="k2go_zim_most_content">MAUDHUI MENGI ZAIDI</string>
+    <string name="k2go_zim_see_all_cats_fmt">Ona kategoria zote %1$d</string>
+    <string name="k2go_zim_unavail_line_fmt">Kategoria %1$d hazipatikani kwa %2$s · Badilisha lugha</string>
+    <string name="k2go_zim_unavail_row_fmt">Haipatikani kwa %1$s</string>
+    <string name="k2go_zim_grp_all">Zote</string>
+    <string name="k2go_zim_grp_reference">Marejeleo</string>
+    <string name="k2go_zim_grp_reference_hdr">MAREJELEO NA ENSAIKLOPIDIA</string>
+    <string name="k2go_zim_grp_learning">Kujifunza</string>
+    <string name="k2go_zim_grp_learning_hdr">KUJIFUNZA NA KUUNDA</string>
+    <string name="k2go_zim_grp_tools">Zana</string>
+    <string name="k2go_zim_grp_tools_hdr">ZANA NA TEKNOLOJIA</string>
+    <string name="k2go_zim_grp_media">Media</string>
+    <string name="k2go_zim_grp_media_hdr">MEDIA NA ZAIDI</string>
+    <string name="k2go_zim_grp_kids">Watoto</string>
+    <string name="k2go_zim_grp_kids_hdr">WATOTO</string>
+    <string name="k2go_zc_count_items">vipengele %1$d</string>
+    <string name="k2go_zc_count_results">matokeo %1$d</string>
 </resources>

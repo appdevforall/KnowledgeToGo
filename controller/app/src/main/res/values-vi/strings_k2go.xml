@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Cài đặt lại từ đầu?</string>
     <string name="k2go_reinstall_confirm_msg">Thao tác này xóa hệ thống hiện tại và mọi thứ trong đó — sách, bản đồ, tải xuống và cài đặt — rồi cài một bản sạch. Không thể hoàn tác. Hãy sao lưu trước nếu bạn muốn giữ lại thứ gì đó. Cần kết nối internet.</string>
     <string name="k2go_reinstall_confirm_yes">Xóa và cài đặt lại</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Từ hệ thống</string>
+    <string name="k2go_zim_lang_state_manual">Chọn thủ công</string>
+    <string name="k2go_zim_most_content">NHIỀU NỘI DUNG NHẤT</string>
+    <string name="k2go_zim_see_all_cats_fmt">Xem tất cả %1$d danh mục</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d danh mục không có bằng %2$s · Đổi ngôn ngữ</string>
+    <string name="k2go_zim_unavail_row_fmt">Không có bằng %1$s</string>
+    <string name="k2go_zim_grp_all">Tất cả</string>
+    <string name="k2go_zim_grp_reference">Tham khảo</string>
+    <string name="k2go_zim_grp_reference_hdr">THAM KHẢO VÀ BÁCH KHOA</string>
+    <string name="k2go_zim_grp_learning">Học tập</string>
+    <string name="k2go_zim_grp_learning_hdr">HỌC TẬP VÀ SÁNG TẠO</string>
+    <string name="k2go_zim_grp_tools">Công cụ</string>
+    <string name="k2go_zim_grp_tools_hdr">CÔNG CỤ VÀ CÔNG NGHỆ</string>
+    <string name="k2go_zim_grp_media">Phương tiện</string>
+    <string name="k2go_zim_grp_media_hdr">PHƯƠNG TIỆN VÀ HƠN THẾ</string>
+    <string name="k2go_zim_grp_kids">Trẻ em</string>
+    <string name="k2go_zim_grp_kids_hdr">TRẺ EM</string>
+    <string name="k2go_zc_count_items">%1$d mục</string>
+    <string name="k2go_zc_count_results">%1$d kết quả</string>
 </resources>

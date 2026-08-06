@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Újratelepítés a nulláról?</string>
     <string name="k2go_reinstall_confirm_msg">Ez törli a jelenlegi rendszert és mindent benne — könyvek, térképek, letöltések és beállítások —, majd tiszta másolatot telepít. Nem vonható vissza. Előbb készíts biztonsági mentést, ha meg akarsz tartani valamit. Internetkapcsolat szükséges.</string>
     <string name="k2go_reinstall_confirm_yes">Törlés és újratelepítés</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Rendszerből</string>
+    <string name="k2go_zim_lang_state_manual">Kézzel kiválasztva</string>
+    <string name="k2go_zim_most_content">LEGTÖBB TARTALOM</string>
+    <string name="k2go_zim_see_all_cats_fmt">Mind a(z) %1$d kategória</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d kategória nem érhető el ezen: %2$s · Nyelv módosítása</string>
+    <string name="k2go_zim_unavail_row_fmt">Nem érhető el ezen: %1$s</string>
+    <string name="k2go_zim_grp_all">Mind</string>
+    <string name="k2go_zim_grp_reference">Referencia</string>
+    <string name="k2go_zim_grp_reference_hdr">REFERENCIA ÉS ENCIKLOPÉDIA</string>
+    <string name="k2go_zim_grp_learning">Tanulás</string>
+    <string name="k2go_zim_grp_learning_hdr">TANULÁS ÉS ALKOTÁS</string>
+    <string name="k2go_zim_grp_tools">Eszközök</string>
+    <string name="k2go_zim_grp_tools_hdr">ESZKÖZÖK ÉS TECHNIKA</string>
+    <string name="k2go_zim_grp_media">Média</string>
+    <string name="k2go_zim_grp_media_hdr">MÉDIA ÉS TÖBB</string>
+    <string name="k2go_zim_grp_kids">Gyerekek</string>
+    <string name="k2go_zim_grp_kids_hdr">GYEREKEK</string>
+    <string name="k2go_zc_count_items">%1$d elem</string>
+    <string name="k2go_zc_count_results">%1$d találat</string>
 </resources>

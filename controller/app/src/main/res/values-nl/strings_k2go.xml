@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Opnieuw installeren vanaf nul?</string>
     <string name="k2go_reinstall_confirm_msg">Dit wist het huidige systeem en alles erin — boeken, kaarten, downloads en instellingen — en installeert dan een schone kopie. Dit kan niet ongedaan worden gemaakt. Maak eerst een back-up als je iets wilt bewaren. Vereist een internetverbinding.</string>
     <string name="k2go_reinstall_confirm_yes">Wissen en opnieuw installeren</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Van systeem</string>
+    <string name="k2go_zim_lang_state_manual">Handmatig geselecteerd</string>
+    <string name="k2go_zim_most_content">MEESTE INHOUD</string>
+    <string name="k2go_zim_see_all_cats_fmt">Alle %1$d categorieën bekijken</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d categorieën zijn niet beschikbaar in %2$s · Taal wijzigen</string>
+    <string name="k2go_zim_unavail_row_fmt">Niet beschikbaar in %1$s</string>
+    <string name="k2go_zim_grp_all">Alle</string>
+    <string name="k2go_zim_grp_reference">Naslag</string>
+    <string name="k2go_zim_grp_reference_hdr">NASLAG &amp; ENCYCLOPEDIE</string>
+    <string name="k2go_zim_grp_learning">Leren</string>
+    <string name="k2go_zim_grp_learning_hdr">LEREN &amp; MAKEN</string>
+    <string name="k2go_zim_grp_tools">Gereedschap</string>
+    <string name="k2go_zim_grp_tools_hdr">GEREEDSCHAP &amp; TECH</string>
+    <string name="k2go_zim_grp_media">Media</string>
+    <string name="k2go_zim_grp_media_hdr">MEDIA &amp; MEER</string>
+    <string name="k2go_zim_grp_kids">Kinderen</string>
+    <string name="k2go_zim_grp_kids_hdr">KINDEREN</string>
+    <string name="k2go_zc_count_items">%1$d items</string>
+    <string name="k2go_zc_count_results">%1$d resultaten</string>
 </resources>

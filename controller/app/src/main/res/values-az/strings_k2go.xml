@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Sıfırdan yenidən quraşdırılsın?</string>
     <string name="k2go_reinstall_confirm_msg">Bu, cari sistemi və içindəki hər şeyi — kitablar, xəritələr, endirmələr və parametrlər — silir, sonra təmiz nüsxə quraşdırır. Geri qaytarıla bilməz. Nə isə saxlamaq istəyirsinizsə, əvvəlcə ehtiyat nüsxə çıxarın. İnternet bağlantısı tələb olunur.</string>
     <string name="k2go_reinstall_confirm_yes">Sil və yenidən quraşdır</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Sistemdən</string>
+    <string name="k2go_zim_lang_state_manual">Əl ilə seçilib</string>
+    <string name="k2go_zim_most_content">ƏN ÇOX MƏZMUN</string>
+    <string name="k2go_zim_see_all_cats_fmt">Bütün %1$d kateqoriyaya baxın</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d kateqoriya %2$s dilində mövcud deyil · Dili dəyişin</string>
+    <string name="k2go_zim_unavail_row_fmt">%1$s dilində mövcud deyil</string>
+    <string name="k2go_zim_grp_all">Hamısı</string>
+    <string name="k2go_zim_grp_reference">İstinad</string>
+    <string name="k2go_zim_grp_reference_hdr">İSTİNAD VƏ ENSİKLOPEDİYA</string>
+    <string name="k2go_zim_grp_learning">Öyrənmə</string>
+    <string name="k2go_zim_grp_learning_hdr">ÖYRƏNMƏ VƏ YARATMA</string>
+    <string name="k2go_zim_grp_tools">Alətlər</string>
+    <string name="k2go_zim_grp_tools_hdr">ALƏTLƏR VƏ TEXNOLOGİYA</string>
+    <string name="k2go_zim_grp_media">Media</string>
+    <string name="k2go_zim_grp_media_hdr">MEDİA VƏ DAHA ÇOX</string>
+    <string name="k2go_zim_grp_kids">Uşaqlar</string>
+    <string name="k2go_zim_grp_kids_hdr">UŞAQLAR</string>
+    <string name="k2go_zc_count_items">%1$d element</string>
+    <string name="k2go_zc_count_results">%1$d nəticə</string>
 </resources>

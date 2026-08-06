@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">从头重新安装？</string>
     <string name="k2go_reinstall_confirm_msg">这会清除当前系统及其中的所有内容——图书、地图、下载和设置——然后安装一个干净的副本。此操作无法撤销。如果想保留任何内容，请先备份。需要互联网连接。</string>
     <string name="k2go_reinstall_confirm_yes">清除并重新安装</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">来自系统</string>
+    <string name="k2go_zim_lang_state_manual">手动选择</string>
+    <string name="k2go_zim_most_content">内容最多</string>
+    <string name="k2go_zim_see_all_cats_fmt">查看全部 %1$d 个分类</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d 个分类在 %2$s 中不可用 · 更改语言</string>
+    <string name="k2go_zim_unavail_row_fmt">在 %1$s 中不可用</string>
+    <string name="k2go_zim_grp_all">全部</string>
+    <string name="k2go_zim_grp_reference">参考</string>
+    <string name="k2go_zim_grp_reference_hdr">参考与百科</string>
+    <string name="k2go_zim_grp_learning">学习</string>
+    <string name="k2go_zim_grp_learning_hdr">学习与创作</string>
+    <string name="k2go_zim_grp_tools">工具</string>
+    <string name="k2go_zim_grp_tools_hdr">工具与技术</string>
+    <string name="k2go_zim_grp_media">媒体</string>
+    <string name="k2go_zim_grp_media_hdr">媒体与更多</string>
+    <string name="k2go_zim_grp_kids">儿童</string>
+    <string name="k2go_zim_grp_kids_hdr">儿童</string>
+    <string name="k2go_zc_count_items">%1$d 个项目</string>
+    <string name="k2go_zc_count_results">%1$d 个结果</string>
 </resources>

@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">إعادة التثبيت من الصفر؟</string>
     <string name="k2go_reinstall_confirm_msg">هذا يمحو النظام الحالي وكل ما فيه — الكتب والخرائط والتنزيلات والإعدادات — ثم يثبّت نسخة نظيفة. لا يمكن التراجع عنه. أنشئ نسخة احتياطية أولاً إذا أردت الاحتفاظ بأي شيء. يتطلب اتصالاً بالإنترنت.</string>
     <string name="k2go_reinstall_confirm_yes">محو وإعادة تثبيت</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">من النظام</string>
+    <string name="k2go_zim_lang_state_manual">محدد يدويًا</string>
+    <string name="k2go_zim_most_content">أكثر المحتوى</string>
+    <string name="k2go_zim_see_all_cats_fmt">عرض كل %1$d فئة</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d فئات غير متوفرة بـ %2$s · تغيير اللغة</string>
+    <string name="k2go_zim_unavail_row_fmt">غير متوفر بـ %1$s</string>
+    <string name="k2go_zim_grp_all">الكل</string>
+    <string name="k2go_zim_grp_reference">مرجع</string>
+    <string name="k2go_zim_grp_reference_hdr">مرجع وموسوعة</string>
+    <string name="k2go_zim_grp_learning">تعلّم</string>
+    <string name="k2go_zim_grp_learning_hdr">التعلّم والصناعة</string>
+    <string name="k2go_zim_grp_tools">أدوات</string>
+    <string name="k2go_zim_grp_tools_hdr">أدوات وتقنية</string>
+    <string name="k2go_zim_grp_media">وسائط</string>
+    <string name="k2go_zim_grp_media_hdr">وسائط والمزيد</string>
+    <string name="k2go_zim_grp_kids">أطفال</string>
+    <string name="k2go_zim_grp_kids_hdr">أطفال</string>
+    <string name="k2go_zc_count_items">%1$d عنصرًا</string>
+    <string name="k2go_zc_count_results">%1$d نتيجة</string>
 </resources>
