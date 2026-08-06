@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">TRẺ EM</string>
     <string name="k2go_zc_count_items">%1$d mục</string>
     <string name="k2go_zc_count_results">%1$d kết quả</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Xác thực</string>
+    <string name="k2go_settings_authentication_sub">Đăng nhập cho Sách và Khóa học</string>
+    <string name="k2go_auth_hint">Thông tin đăng nhập quản trị mà box dùng cho Sách và Khóa học. Cập nhật tại đây nếu bạn đổi mật khẩu của một dịch vụ.</string>
+    <string name="k2go_auth_username">Tên đăng nhập</string>
+    <string name="k2go_auth_password">Mật khẩu</string>
+    <string name="k2go_auth_show">Hiện</string>
+    <string name="k2go_auth_hide">Ẩn</string>
+    <string name="k2go_auth_save">Lưu</string>
+    <string name="k2go_auth_reset">Đặt lại về mặc định</string>
+    <string name="k2go_auth_using_default">Đang dùng mặc định của box</string>
+    <string name="k2go_auth_custom">Đăng nhập tùy chỉnh</string>
+    <string name="k2go_auth_need_both">Nhập tên đăng nhập và mật khẩu</string>
+    <string name="k2go_auth_saving">Đang lưu…</string>
+    <string name="k2go_auth_saved">Đã lưu</string>
+    <string name="k2go_auth_verified">Đã xác minh và lưu</string>
+    <string name="k2go_auth_bad">Sai tên đăng nhập hoặc mật khẩu</string>
+    <string name="k2go_auth_noperm">Tài khoản đó không thể quản lý nội dung</string>
+    <string name="k2go_auth_failed">Không lưu được — thử lại</string>
+    <string name="k2go_auth_reset_done">Đã đặt lại về mặc định của box</string>
+    <string name="k2go_auth_load_failed">Không tải được — dịch vụ có đang chạy không?</string>
 </resources>

@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">ÇOCUKLAR</string>
     <string name="k2go_zc_count_items">%1$d öğe</string>
     <string name="k2go_zc_count_results">%1$d sonuç</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Kimlik doğrulama</string>
+    <string name="k2go_settings_authentication_sub">Kitaplar ve Kurslar için oturum bilgileri</string>
+    <string name="k2go_auth_hint">Kutunun Kitaplar ve Kurslar için kullandığı yönetici oturum bilgileri. Bir hizmetin parolasını değiştirirseniz buradan güncelleyin.</string>
+    <string name="k2go_auth_username">Kullanıcı adı</string>
+    <string name="k2go_auth_password">Parola</string>
+    <string name="k2go_auth_show">Göster</string>
+    <string name="k2go_auth_hide">Gizle</string>
+    <string name="k2go_auth_save">Kaydet</string>
+    <string name="k2go_auth_reset">Varsayılana sıfırla</string>
+    <string name="k2go_auth_using_default">Kutunun varsayılanı kullanılıyor</string>
+    <string name="k2go_auth_custom">Özel oturum</string>
+    <string name="k2go_auth_need_both">Kullanıcı adı ve parola girin</string>
+    <string name="k2go_auth_saving">Kaydediliyor…</string>
+    <string name="k2go_auth_saved">Kaydedildi</string>
+    <string name="k2go_auth_verified">Doğrulandı ve kaydedildi</string>
+    <string name="k2go_auth_bad">Kullanıcı adı veya parola yanlış</string>
+    <string name="k2go_auth_noperm">Bu hesap içerik yönetemiyor</string>
+    <string name="k2go_auth_failed">Kaydedilemedi — tekrar deneyin</string>
+    <string name="k2go_auth_reset_done">Kutunun varsayılanına sıfırlandı</string>
+    <string name="k2go_auth_load_failed">Yüklenemedi — hizmet çalışıyor mu?</string>
 </resources>

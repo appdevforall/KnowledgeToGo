@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">ÀWỌN ỌMỌDÉ</string>
     <string name="k2go_zc_count_items">%1$d nǹkan</string>
     <string name="k2go_zc_count_results">%1$d àbájáde</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Ìfọwọ́sí</string>
+    <string name="k2go_settings_authentication_sub">Ìwọlé fún Ìwé àti Ẹ̀kọ́</string>
+    <string name="k2go_auth_hint">Ìwọlé alábòójútó tí ẹ̀rọ náà lò fún Ìwé àti Ẹ̀kọ́. Ṣàtúnṣe rẹ̀ níbí tí o bá yí ọ̀rọ̀ìgbaniwọlé iṣẹ́ kan padà.</string>
+    <string name="k2go_auth_username">Orúkọ olùmúlò</string>
+    <string name="k2go_auth_password">Ọ̀rọ̀ìgbaniwọlé</string>
+    <string name="k2go_auth_show">Fi hàn</string>
+    <string name="k2go_auth_hide">Fi pamọ́</string>
+    <string name="k2go_auth_save">Fipamọ́</string>
+    <string name="k2go_auth_reset">Tún padà sí àpèsè</string>
+    <string name="k2go_auth_using_default">Ń lo àpèsè ẹ̀rọ náà</string>
+    <string name="k2go_auth_custom">Ìwọlé àkànṣe</string>
+    <string name="k2go_auth_need_both">Tẹ orúkọ olùmúlò àti ọ̀rọ̀ìgbaniwọlé</string>
+    <string name="k2go_auth_saving">Ń fipamọ́…</string>
+    <string name="k2go_auth_saved">Ti fipamọ́</string>
+    <string name="k2go_auth_verified">Ti ṣàyẹ̀wò tí a sì fipamọ́</string>
+    <string name="k2go_auth_bad">Orúkọ olùmúlò tàbí ọ̀rọ̀ìgbaniwọlé kò tọ́</string>
+    <string name="k2go_auth_noperm">Àkáǹtì yẹn kò lè ṣàkóso àkóónú</string>
+    <string name="k2go_auth_failed">Kò lè fipamọ́ — gbìyànjú lẹ́ẹ̀kansí</string>
+    <string name="k2go_auth_reset_done">Ti tún padà sí àpèsè ẹ̀rọ náà</string>
+    <string name="k2go_auth_load_failed">Kò lè gbé wọlé — ṣé iṣẹ́ náà ń ṣiṣẹ́?</string>
 </resources>

@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">শিশু</string>
     <string name="k2go_zc_count_items">%1$dটি আইটেম</string>
     <string name="k2go_zc_count_results">%1$dটি ফলাফল</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">প্রমাণীকরণ</string>
+    <string name="k2go_settings_authentication_sub">বই ও কোর্সের জন্য সাইন-ইন</string>
+    <string name="k2go_auth_hint">বই ও কোর্সের জন্য বক্স যে অ্যাডমিন সাইন-ইন ব্যবহার করে। কোনো পরিষেবার পাসওয়ার্ড পরিবর্তন করলে এখানে আপডেট করুন।</string>
+    <string name="k2go_auth_username">ইউজারনেম</string>
+    <string name="k2go_auth_password">পাসওয়ার্ড</string>
+    <string name="k2go_auth_show">দেখান</string>
+    <string name="k2go_auth_hide">লুকান</string>
+    <string name="k2go_auth_save">সংরক্ষণ</string>
+    <string name="k2go_auth_reset">ডিফল্টে রিসেট করুন</string>
+    <string name="k2go_auth_using_default">বক্সের ডিফল্ট ব্যবহৃত হচ্ছে</string>
+    <string name="k2go_auth_custom">কাস্টম সাইন-ইন</string>
+    <string name="k2go_auth_need_both">ইউজারনেম ও পাসওয়ার্ড লিখুন</string>
+    <string name="k2go_auth_saving">সংরক্ষণ হচ্ছে…</string>
+    <string name="k2go_auth_saved">সংরক্ষিত</string>
+    <string name="k2go_auth_verified">যাচাই ও সংরক্ষিত</string>
+    <string name="k2go_auth_bad">ভুল ইউজারনেম বা পাসওয়ার্ড</string>
+    <string name="k2go_auth_noperm">এই অ্যাকাউন্ট কনটেন্ট পরিচালনা করতে পারে না</string>
+    <string name="k2go_auth_failed">সংরক্ষণ ব্যর্থ — আবার চেষ্টা করুন</string>
+    <string name="k2go_auth_reset_done">বক্সের ডিফল্টে রিসেট হয়েছে</string>
+    <string name="k2go_auth_load_failed">লোড ব্যর্থ — পরিষেবা কি চালু আছে?</string>
 </resources>

@@ -86,6 +86,7 @@ public class SettingsSubFragment extends Fragment {
             case "about":    title.setText(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
             case "advanced": title.setText(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
             case "dns":      title.setText(getString(R.string.k2go_settings_network_dns)); buildDns(ctx, list); break;
+            case "authentication": title.setText(getString(R.string.k2go_settings_authentication)); buildAuthentication(ctx, list); break;
             default:         title.setText(getString(R.string.k2go_tab_settings));
         }
         return root;
@@ -391,6 +392,142 @@ public class SettingsSubFragment extends Fragment {
             });
             vm.load();
         });
+    }
+
+    // ---- Authentication (ADFA-5044): manage the admin sign-ins the box uses for Books (Calibre-Web)
+    //      and Courses (Kolibri) — the same store the WebView auto-login (ADFA-5043) relies on. One
+    //      block per service, wired to /k2go-api/credentials/:service via CredentialsClient. ----
+    private void buildAuthentication(Context ctx, LinearLayout list) {
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_hint));
+        serviceCredentialCard(ctx, list, "calibre", getString(R.string.k2go_card_books), "Calibre-Web");
+        serviceCredentialCard(ctx, list, "kolibri", getString(R.string.k2go_card_courses), "Kolibri");
+    }
+
+    private void serviceCredentialCard(Context ctx, LinearLayout list, String service, String name, String platform) {
+        LinearLayout card = new LinearLayout(ctx);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = SettingsUi.dp(ctx, 16);
+        card.setPadding(p16, p16, p16, p16);
+        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(-1, -2);
+        clp.topMargin = SettingsUi.dp(ctx, 12);
+        list.addView(card, clp);
+
+        card.addView(dnsText(ctx, name,
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink));
+        card.addView(dnsText(ctx, platform,
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+        final TextView stateLine = dnsText(ctx, "",
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        card.addView(stateLine);
+
+        card.addView(dnsFieldLabel(ctx, getString(R.string.k2go_auth_username), ""));
+        final EditText username = dnsInput(ctx);
+        card.addView(username);
+
+        card.addView(dnsFieldLabel(ctx, getString(R.string.k2go_auth_password), ""));
+        final EditText password = dnsInput(ctx);
+        password.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
+        card.addView(password);
+        final TextView reveal = dnsText(ctx, getString(R.string.k2go_auth_show),
+                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        reveal.setClickable(true);
+        LinearLayout.LayoutParams rvlp = new LinearLayout.LayoutParams(-2, -2);
+        rvlp.topMargin = SettingsUi.dp(ctx, 6);
+        reveal.setLayoutParams(rvlp);
+        reveal.setOnClickListener(v -> {
+            boolean shown = password.getTransformationMethod() == null;
+            password.setTransformationMethod(shown
+                    ? android.text.method.PasswordTransformationMethod.getInstance() : null);
+            reveal.setText(getString(shown ? R.string.k2go_auth_show : R.string.k2go_auth_hide));
+            password.setSelection(password.getText().length());
+        });
+        card.addView(reveal);
+
+        final TextView status = dnsText(ctx, "",
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        status.setVisibility(View.GONE);
+
+        final TextView save = new TextView(ctx);
+        save.setText(getString(R.string.k2go_auth_save));
+        save.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        save.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_on_teal));
+        save.setGravity(Gravity.CENTER);
+        save.setBackgroundResource(R.drawable.k2go_primary_bg);
+        int ap = SettingsUi.dp(ctx, 14);
+        save.setPadding(ap, ap, ap, ap);
+        save.setClickable(true);
+        LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(-1, -2);
+        svlp.topMargin = SettingsUi.dp(ctx, 16);
+        card.addView(save, svlp);
+
+        final TextView reset = dnsText(ctx, getString(R.string.k2go_auth_reset),
+                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        reset.setClickable(true);
+        reset.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams rslp = new LinearLayout.LayoutParams(-1, -2);
+        rslp.topMargin = SettingsUi.dp(ctx, 10);
+        reset.setLayoutParams(rslp);
+        card.addView(reset);
+        card.addView(status);
+
+        // Prefill the current username + default/custom state (the box never returns the password).
+        CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
+            @Override public void onOk(String user, boolean isDefault) {
+                if (!isAdded()) return;   // left the screen mid-request
+                username.setText(user);
+                stateLine.setText(getString(isDefault ? R.string.k2go_auth_using_default : R.string.k2go_auth_custom));
+            }
+            @Override public void onErr() {
+                if (!isAdded()) return;
+                stateLine.setText(getString(R.string.k2go_auth_load_failed));
+            }
+        });
+
+        save.setOnClickListener(v -> {
+            String u = username.getText().toString().trim();
+            String p = password.getText().toString();
+            if (u.isEmpty() || p.isEmpty()) { setStatus(status, getString(R.string.k2go_auth_need_both), R.color.k2go_clay); return; }
+            setStatus(status, getString(R.string.k2go_auth_saving), R.color.k2go_muted);
+            CredentialsClient.save(service, u, p, new CredentialsClient.SaveCb() {
+                @Override public void onOk(boolean verified) {
+                    if (!isAdded()) return;
+                    setStatus(status, getString(verified ? R.string.k2go_auth_verified : R.string.k2go_auth_saved), R.color.k2go_teal);
+                    stateLine.setText(getString(R.string.k2go_auth_custom));
+                }
+                @Override public void onErr(int code) {
+                    if (!isAdded()) return;
+                    int msg = code == 401 ? R.string.k2go_auth_bad
+                            : code == 403 ? R.string.k2go_auth_noperm : R.string.k2go_auth_failed;
+                    setStatus(status, getString(msg), R.color.k2go_clay);
+                }
+            });
+        });
+
+        reset.setOnClickListener(v -> {
+            setStatus(status, getString(R.string.k2go_auth_saving), R.color.k2go_muted);
+            CredentialsClient.reset(service, new CredentialsClient.ResetCb() {
+                @Override public void onOk(String user, boolean isDefault) {
+                    if (!isAdded()) return;
+                    username.setText(user);
+                    password.setText("");
+                    stateLine.setText(getString(isDefault ? R.string.k2go_auth_using_default : R.string.k2go_auth_custom));
+                    setStatus(status, getString(R.string.k2go_auth_reset_done), R.color.k2go_teal);
+                }
+                @Override public void onErr() {
+                    if (!isAdded()) return;
+                    setStatus(status, getString(R.string.k2go_auth_failed), R.color.k2go_clay);
+                }
+            });
+        });
+    }
+
+    private void setStatus(TextView status, String text, int colorRes) {
+        status.setText(text);
+        status.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
+        status.setVisibility(View.VISIBLE);
     }
 
     private TextView dnsText(Context ctx, String s, int appearance, int colorRes) {

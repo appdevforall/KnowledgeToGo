@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">બાળકો</string>
     <string name="k2go_zc_count_items">%1$d આઇટમ</string>
     <string name="k2go_zc_count_results">%1$d પરિણામ</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">પ્રમાણીકરણ</string>
+    <string name="k2go_settings_authentication_sub">પુસ્તકો અને અભ્યાસક્રમો માટે સાઇન-ઇન</string>
+    <string name="k2go_auth_hint">બોક્સ પુસ્તકો અને અભ્યાસક્રમો માટે વાપરે છે તે એડમિન સાઇન-ઇન. કોઈ સેવાનો પાસવર્ડ બદલો તો અહીં અપડેટ કરો.</string>
+    <string name="k2go_auth_username">વપરાશકર્તાનામ</string>
+    <string name="k2go_auth_password">પાસવર્ડ</string>
+    <string name="k2go_auth_show">બતાવો</string>
+    <string name="k2go_auth_hide">છુપાવો</string>
+    <string name="k2go_auth_save">સાચવો</string>
+    <string name="k2go_auth_reset">ડિફોલ્ટ પર રીસેટ કરો</string>
+    <string name="k2go_auth_using_default">બોક્સનું ડિફોલ્ટ વપરાય છે</string>
+    <string name="k2go_auth_custom">કસ્ટમ સાઇન-ઇન</string>
+    <string name="k2go_auth_need_both">વપરાશકર્તાનામ અને પાસવર્ડ દાખલ કરો</string>
+    <string name="k2go_auth_saving">સાચવી રહ્યું છે…</string>
+    <string name="k2go_auth_saved">સાચવ્યું</string>
+    <string name="k2go_auth_verified">ચકાસ્યું અને સાચવ્યું</string>
+    <string name="k2go_auth_bad">ખોટું વપરાશકર્તાનામ અથવા પાસવર્ડ</string>
+    <string name="k2go_auth_noperm">આ ખાતું સામગ્રી સંચાલિત કરી શકતું નથી</string>
+    <string name="k2go_auth_failed">સાચવી શકાયું નહીં — ફરી પ્રયાસ કરો</string>
+    <string name="k2go_auth_reset_done">બોક્સના ડિફોલ્ટ પર રીસેટ થયું</string>
+    <string name="k2go_auth_load_failed">લોડ થઈ શક્યું નહીં — સેવા ચાલુ છે?</string>
 </resources>

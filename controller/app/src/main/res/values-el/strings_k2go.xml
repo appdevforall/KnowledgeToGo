@@ -727,4 +727,25 @@
     <string name="k2go_zim_grp_kids_hdr">ΠΑΙΔΙΑ</string>
     <string name="k2go_zc_count_items">%1$d στοιχεία</string>
     <string name="k2go_zc_count_results">%1$d αποτελέσματα</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Έλεγχος ταυτότητας</string>
+    <string name="k2go_settings_authentication_sub">Συνδέσεις για Βιβλία και Μαθήματα</string>
+    <string name="k2go_auth_hint">Τα στοιχεία σύνδεσης διαχειριστή που χρησιμοποιεί το box για Βιβλία και Μαθήματα. Ενημερώστε τα εδώ αν αλλάξετε τον κωδικό μιας υπηρεσίας.</string>
+    <string name="k2go_auth_username">Όνομα χρήστη</string>
+    <string name="k2go_auth_password">Κωδικός πρόσβασης</string>
+    <string name="k2go_auth_show">Εμφάνιση</string>
+    <string name="k2go_auth_hide">Απόκρυψη</string>
+    <string name="k2go_auth_save">Αποθήκευση</string>
+    <string name="k2go_auth_reset">Επαναφορά προεπιλογής</string>
+    <string name="k2go_auth_using_default">Χρησιμοποιείται η προεπιλογή του box</string>
+    <string name="k2go_auth_custom">Προσαρμοσμένη σύνδεση</string>
+    <string name="k2go_auth_need_both">Εισαγάγετε όνομα χρήστη και κωδικό</string>
+    <string name="k2go_auth_saving">Αποθήκευση…</string>
+    <string name="k2go_auth_saved">Αποθηκεύτηκε</string>
+    <string name="k2go_auth_verified">Επαληθεύτηκε και αποθηκεύτηκε</string>
+    <string name="k2go_auth_bad">Λάθος όνομα χρήστη ή κωδικός</string>
+    <string name="k2go_auth_noperm">Αυτός ο λογαριασμός δεν μπορεί να διαχειριστεί περιεχόμενο</string>
+    <string name="k2go_auth_failed">Η αποθήκευση απέτυχε — δοκιμάστε ξανά</string>
+    <string name="k2go_auth_reset_done">Έγινε επαναφορά στην προεπιλογή του box</string>
+    <string name="k2go_auth_load_failed">Η φόρτωση απέτυχε — εκτελείται η υπηρεσία;</string>
 </resources>

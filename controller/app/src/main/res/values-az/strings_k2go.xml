@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">UŞAQLAR</string>
     <string name="k2go_zc_count_items">%1$d element</string>
     <string name="k2go_zc_count_results">%1$d nəticə</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Kimlik doğrulama</string>
+    <string name="k2go_settings_authentication_sub">Kitablar və Kurslar üçün girişlər</string>
+    <string name="k2go_auth_hint">Qutunun Kitablar və Kurslar üçün istifadə etdiyi admin girişləri. Bir xidmətin parolunu dəyişsəniz, onları burada yeniləyin.</string>
+    <string name="k2go_auth_username">İstifadəçi adı</string>
+    <string name="k2go_auth_password">Parol</string>
+    <string name="k2go_auth_show">Göstər</string>
+    <string name="k2go_auth_hide">Gizlət</string>
+    <string name="k2go_auth_save">Yadda saxla</string>
+    <string name="k2go_auth_reset">Defolta sıfırla</string>
+    <string name="k2go_auth_using_default">Qutunun defoltu istifadə olunur</string>
+    <string name="k2go_auth_custom">Fərdi giriş</string>
+    <string name="k2go_auth_need_both">İstifadəçi adı və parol daxil edin</string>
+    <string name="k2go_auth_saving">Yadda saxlanılır…</string>
+    <string name="k2go_auth_saved">Yadda saxlanıldı</string>
+    <string name="k2go_auth_verified">Doğrulandı və saxlanıldı</string>
+    <string name="k2go_auth_bad">Yanlış istifadəçi adı və ya parol</string>
+    <string name="k2go_auth_noperm">Bu hesab məzmunu idarə edə bilmir</string>
+    <string name="k2go_auth_failed">Saxlanmadı — yenidən cəhd edin</string>
+    <string name="k2go_auth_reset_done">Qutunun defoltuna sıfırlandı</string>
+    <string name="k2go_auth_load_failed">Yüklənmədi — xidmət işləyirmi?</string>
 </resources>

@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">குழந்தைகள்</string>
     <string name="k2go_zc_count_items">%1$d உருப்படிகள்</string>
     <string name="k2go_zc_count_results">%1$d முடிவுகள்</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">அங்கீகாரம்</string>
+    <string name="k2go_settings_authentication_sub">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கான உள்நுழைவுகள்</string>
+    <string name="k2go_auth_hint">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கு பாக்ஸ் பயன்படுத்தும் நிர்வாகி உள்நுழைவுகள். ஒரு சேவையின் கடவுச்சொல்லை மாற்றினால் இங்கே புதுப்பிக்கவும்.</string>
+    <string name="k2go_auth_username">பயனர்பெயர்</string>
+    <string name="k2go_auth_password">கடவுச்சொல்</string>
+    <string name="k2go_auth_show">காட்டு</string>
+    <string name="k2go_auth_hide">மறை</string>
+    <string name="k2go_auth_save">சேமி</string>
+    <string name="k2go_auth_reset">இயல்புநிலைக்கு மீட்டமை</string>
+    <string name="k2go_auth_using_default">பாக்ஸின் இயல்புநிலை பயன்படுத்தப்படுகிறது</string>
+    <string name="k2go_auth_custom">தனிப்பயன் உள்நுழைவு</string>
+    <string name="k2go_auth_need_both">பயனர்பெயர் மற்றும் கடவுச்சொல்லை உள்ளிடவும்</string>
+    <string name="k2go_auth_saving">சேமிக்கிறது…</string>
+    <string name="k2go_auth_saved">சேமிக்கப்பட்டது</string>
+    <string name="k2go_auth_verified">சரிபார்க்கப்பட்டு சேமிக்கப்பட்டது</string>
+    <string name="k2go_auth_bad">தவறான பயனர்பெயர் அல்லது கடவுச்சொல்</string>
+    <string name="k2go_auth_noperm">இந்தக் கணக்கு உள்ளடக்கத்தை நிர்வகிக்க முடியாது</string>
+    <string name="k2go_auth_failed">சேமிக்க முடியவில்லை — மீண்டும் முயற்சிக்கவும்</string>
+    <string name="k2go_auth_reset_done">பாக்ஸின் இயல்புநிலைக்கு மீட்டமைக்கப்பட்டது</string>
+    <string name="k2go_auth_load_failed">ஏற்ற முடியவில்லை — சேவை இயங்குகிறதா?</string>
 </resources>

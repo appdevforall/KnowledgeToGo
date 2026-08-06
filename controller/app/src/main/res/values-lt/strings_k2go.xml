@@ -736,4 +736,25 @@
     <string name="k2go_zim_grp_kids_hdr">VAIKAI</string>
     <string name="k2go_zc_count_items">%1$d elementų</string>
     <string name="k2go_zc_count_results">%1$d rezultatų</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Tapatybės nustatymas</string>
+    <string name="k2go_settings_authentication_sub">Prisijungimai prie Knygų ir Kursų</string>
+    <string name="k2go_auth_hint">Administratoriaus prisijungimai, kuriuos box naudoja Knygoms ir Kursams. Atnaujinkite juos čia, jei pakeisite paslaugos slaptažodį.</string>
+    <string name="k2go_auth_username">Naudotojo vardas</string>
+    <string name="k2go_auth_password">Slaptažodis</string>
+    <string name="k2go_auth_show">Rodyti</string>
+    <string name="k2go_auth_hide">Slėpti</string>
+    <string name="k2go_auth_save">Įrašyti</string>
+    <string name="k2go_auth_reset">Atkurti numatytuosius</string>
+    <string name="k2go_auth_using_default">Naudojama box numatytoji reikšmė</string>
+    <string name="k2go_auth_custom">Pasirinktinis prisijungimas</string>
+    <string name="k2go_auth_need_both">Įveskite naudotojo vardą ir slaptažodį</string>
+    <string name="k2go_auth_saving">Įrašoma…</string>
+    <string name="k2go_auth_saved">Įrašyta</string>
+    <string name="k2go_auth_verified">Patikrinta ir įrašyta</string>
+    <string name="k2go_auth_bad">Neteisingas naudotojo vardas arba slaptažodis</string>
+    <string name="k2go_auth_noperm">Ši paskyra negali tvarkyti turinio</string>
+    <string name="k2go_auth_failed">Nepavyko įrašyti — bandykite dar kartą</string>
+    <string name="k2go_auth_reset_done">Atkurta box numatytoji reikšmė</string>
+    <string name="k2go_auth_load_failed">Nepavyko įkelti — ar paslauga veikia?</string>
 </resources>

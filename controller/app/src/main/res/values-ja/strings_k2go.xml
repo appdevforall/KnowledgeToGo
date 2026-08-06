@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">子ども</string>
     <string name="k2go_zc_count_items">%1$d件</string>
     <string name="k2go_zc_count_results">%1$d件の結果</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">認証</string>
+    <string name="k2go_settings_authentication_sub">ブックスとコースのサインイン</string>
+    <string name="k2go_auth_hint">ブックスとコースでボックスが使う管理者サインイン。サービスのパスワードを変更したらここで更新してください。</string>
+    <string name="k2go_auth_username">ユーザー名</string>
+    <string name="k2go_auth_password">パスワード</string>
+    <string name="k2go_auth_show">表示</string>
+    <string name="k2go_auth_hide">非表示</string>
+    <string name="k2go_auth_save">保存</string>
+    <string name="k2go_auth_reset">デフォルトに戻す</string>
+    <string name="k2go_auth_using_default">ボックスのデフォルトを使用中</string>
+    <string name="k2go_auth_custom">カスタムサインイン</string>
+    <string name="k2go_auth_need_both">ユーザー名とパスワードを入力してください</string>
+    <string name="k2go_auth_saving">保存中…</string>
+    <string name="k2go_auth_saved">保存しました</string>
+    <string name="k2go_auth_verified">確認して保存しました</string>
+    <string name="k2go_auth_bad">ユーザー名またはパスワードが違います</string>
+    <string name="k2go_auth_noperm">このアカウントはコンテンツを管理できません</string>
+    <string name="k2go_auth_failed">保存できませんでした — もう一度お試しください</string>
+    <string name="k2go_auth_reset_done">ボックスのデフォルトに戻しました</string>
+    <string name="k2go_auth_load_failed">読み込めませんでした — サービスは動作していますか？</string>
 </resources>

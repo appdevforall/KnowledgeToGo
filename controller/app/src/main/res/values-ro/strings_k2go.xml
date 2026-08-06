@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">COPII</string>
     <string name="k2go_zc_count_items">%1$d elemente</string>
     <string name="k2go_zc_count_results">%1$d rezultate</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Autentificare</string>
+    <string name="k2go_settings_authentication_sub">Autentificări pentru Cărți și Cursuri</string>
+    <string name="k2go_auth_hint">Datele de autentificare admin pe care box le folosește pentru Cărți și Cursuri. Actualizează-le aici dacă schimbi parola unui serviciu.</string>
+    <string name="k2go_auth_username">Nume de utilizator</string>
+    <string name="k2go_auth_password">Parolă</string>
+    <string name="k2go_auth_show">Afișează</string>
+    <string name="k2go_auth_hide">Ascunde</string>
+    <string name="k2go_auth_save">Salvează</string>
+    <string name="k2go_auth_reset">Resetează la implicit</string>
+    <string name="k2go_auth_using_default">Se folosește valoarea implicită a box-ului</string>
+    <string name="k2go_auth_custom">Autentificare personalizată</string>
+    <string name="k2go_auth_need_both">Introdu numele de utilizator și parola</string>
+    <string name="k2go_auth_saving">Se salvează…</string>
+    <string name="k2go_auth_saved">Salvat</string>
+    <string name="k2go_auth_verified">Verificat și salvat</string>
+    <string name="k2go_auth_bad">Nume de utilizator sau parolă greșite</string>
+    <string name="k2go_auth_noperm">Acest cont nu poate gestiona conținut</string>
+    <string name="k2go_auth_failed">Salvarea a eșuat — încearcă din nou</string>
+    <string name="k2go_auth_reset_done">Resetat la valoarea implicită a box-ului</string>
+    <string name="k2go_auth_load_failed">Încărcarea a eșuat — serviciul rulează?</string>
 </resources>

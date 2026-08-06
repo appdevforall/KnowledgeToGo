@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">GYEREKEK</string>
     <string name="k2go_zc_count_items">%1$d elem</string>
     <string name="k2go_zc_count_results">%1$d találat</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Hitelesítés</string>
+    <string name="k2go_settings_authentication_sub">Bejelentkezések a Könyvekhez és Kurzusokhoz</string>
+    <string name="k2go_auth_hint">A rendszergazdai bejelentkezések, amelyeket a box a Könyvekhez és Kurzusokhoz használ. Frissítsd itt, ha megváltoztatod egy szolgáltatás jelszavát.</string>
+    <string name="k2go_auth_username">Felhasználónév</string>
+    <string name="k2go_auth_password">Jelszó</string>
+    <string name="k2go_auth_show">Megjelenítés</string>
+    <string name="k2go_auth_hide">Elrejtés</string>
+    <string name="k2go_auth_save">Mentés</string>
+    <string name="k2go_auth_reset">Visszaállítás alapértelmezettre</string>
+    <string name="k2go_auth_using_default">A box alapértelmezettje van használatban</string>
+    <string name="k2go_auth_custom">Egyéni bejelentkezés</string>
+    <string name="k2go_auth_need_both">Adj meg felhasználónevet és jelszót</string>
+    <string name="k2go_auth_saving">Mentés…</string>
+    <string name="k2go_auth_saved">Mentve</string>
+    <string name="k2go_auth_verified">Ellenőrizve és mentve</string>
+    <string name="k2go_auth_bad">Hibás felhasználónév vagy jelszó</string>
+    <string name="k2go_auth_noperm">Ez a fiók nem kezelhet tartalmat</string>
+    <string name="k2go_auth_failed">A mentés nem sikerült — próbáld újra</string>
+    <string name="k2go_auth_reset_done">Visszaállítva a box alapértelmezettjére</string>
+    <string name="k2go_auth_load_failed">A betöltés nem sikerült — fut a szolgáltatás?</string>
 </resources>

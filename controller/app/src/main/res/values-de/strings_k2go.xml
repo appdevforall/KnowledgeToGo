@@ -727,4 +727,25 @@
     <string name="k2go_zim_grp_kids_hdr">KINDER</string>
     <string name="k2go_zc_count_items">%1$d Elemente</string>
     <string name="k2go_zc_count_results">%1$d Ergebnisse</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Authentifizierung</string>
+    <string name="k2go_settings_authentication_sub">Anmeldungen für Bücher und Kurse</string>
+    <string name="k2go_auth_hint">Die Admin-Anmeldungen, die die Box für Bücher und Kurse verwendet. Aktualisiere sie hier, wenn du das Passwort eines Dienstes änderst.</string>
+    <string name="k2go_auth_username">Benutzername</string>
+    <string name="k2go_auth_password">Passwort</string>
+    <string name="k2go_auth_show">Anzeigen</string>
+    <string name="k2go_auth_hide">Verbergen</string>
+    <string name="k2go_auth_save">Speichern</string>
+    <string name="k2go_auth_reset">Auf Standard zurücksetzen</string>
+    <string name="k2go_auth_using_default">Standard der Box wird verwendet</string>
+    <string name="k2go_auth_custom">Eigene Anmeldung</string>
+    <string name="k2go_auth_need_both">Benutzername und Passwort eingeben</string>
+    <string name="k2go_auth_saving">Wird gespeichert…</string>
+    <string name="k2go_auth_saved">Gespeichert</string>
+    <string name="k2go_auth_verified">Geprüft und gespeichert</string>
+    <string name="k2go_auth_bad">Falscher Benutzername oder Passwort</string>
+    <string name="k2go_auth_noperm">Dieses Konto kann keine Inhalte verwalten</string>
+    <string name="k2go_auth_failed">Speichern fehlgeschlagen — erneut versuchen</string>
+    <string name="k2go_auth_reset_done">Auf Standard der Box zurückgesetzt</string>
+    <string name="k2go_auth_load_failed">Laden fehlgeschlagen — läuft der Dienst?</string>
 </resources>

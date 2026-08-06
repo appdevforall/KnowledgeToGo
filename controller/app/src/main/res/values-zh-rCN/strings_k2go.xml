@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">儿童</string>
     <string name="k2go_zc_count_items">%1$d 个项目</string>
     <string name="k2go_zc_count_results">%1$d 个结果</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">身份验证</string>
+    <string name="k2go_settings_authentication_sub">图书和课程的登录信息</string>
+    <string name="k2go_auth_hint">盒子用于图书和课程的管理员登录信息。如果更改了某个服务的密码，请在此更新。</string>
+    <string name="k2go_auth_username">用户名</string>
+    <string name="k2go_auth_password">密码</string>
+    <string name="k2go_auth_show">显示</string>
+    <string name="k2go_auth_hide">隐藏</string>
+    <string name="k2go_auth_save">保存</string>
+    <string name="k2go_auth_reset">重置为默认</string>
+    <string name="k2go_auth_using_default">正在使用盒子默认值</string>
+    <string name="k2go_auth_custom">自定义登录</string>
+    <string name="k2go_auth_need_both">请输入用户名和密码</string>
+    <string name="k2go_auth_saving">正在保存…</string>
+    <string name="k2go_auth_saved">已保存</string>
+    <string name="k2go_auth_verified">已验证并保存</string>
+    <string name="k2go_auth_bad">用户名或密码错误</string>
+    <string name="k2go_auth_noperm">该账户无法管理内容</string>
+    <string name="k2go_auth_failed">保存失败 — 请重试</string>
+    <string name="k2go_auth_reset_done">已重置为盒子默认值</string>
+    <string name="k2go_auth_load_failed">加载失败 — 服务在运行吗？</string>
 </resources>

@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">NIÑOS</string>
     <string name="k2go_zc_count_items">%1$d elementos</string>
     <string name="k2go_zc_count_results">%1$d resultados</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Autenticación</string>
+    <string name="k2go_settings_authentication_sub">Accesos para Libros y Cursos</string>
+    <string name="k2go_auth_hint">Los accesos de administrador que la caja usa para Libros y Cursos. Actualízalos aquí si cambias la contraseña de un servicio.</string>
+    <string name="k2go_auth_username">Usuario</string>
+    <string name="k2go_auth_password">Contraseña</string>
+    <string name="k2go_auth_show">Mostrar</string>
+    <string name="k2go_auth_hide">Ocultar</string>
+    <string name="k2go_auth_save">Guardar</string>
+    <string name="k2go_auth_reset">Restablecer al valor predeterminado</string>
+    <string name="k2go_auth_using_default">Usando el valor predeterminado de la caja</string>
+    <string name="k2go_auth_custom">Acceso personalizado</string>
+    <string name="k2go_auth_need_both">Escribe usuario y contraseña</string>
+    <string name="k2go_auth_saving">Guardando…</string>
+    <string name="k2go_auth_saved">Guardado</string>
+    <string name="k2go_auth_verified">Verificado y guardado</string>
+    <string name="k2go_auth_bad">Usuario o contraseña incorrectos</string>
+    <string name="k2go_auth_noperm">Esa cuenta no puede administrar contenido</string>
+    <string name="k2go_auth_failed">No se pudo guardar — inténtalo de nuevo</string>
+    <string name="k2go_auth_reset_done">Restablecido al valor predeterminado de la caja</string>
+    <string name="k2go_auth_load_failed">No se pudo cargar — ¿el servicio está activo?</string>
 </resources>

@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">WATOTO</string>
     <string name="k2go_zc_count_items">vipengele %1$d</string>
     <string name="k2go_zc_count_results">matokeo %1$d</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Uthibitishaji</string>
+    <string name="k2go_settings_authentication_sub">Kuingia kwa Vitabu na Kozi</string>
+    <string name="k2go_auth_hint">Taarifa za kuingia za msimamizi ambazo boksi hutumia kwa Vitabu na Kozi. Zisasishe hapa ukibadilisha nenosiri la huduma.</string>
+    <string name="k2go_auth_username">Jina la mtumiaji</string>
+    <string name="k2go_auth_password">Nenosiri</string>
+    <string name="k2go_auth_show">Onyesha</string>
+    <string name="k2go_auth_hide">Ficha</string>
+    <string name="k2go_auth_save">Hifadhi</string>
+    <string name="k2go_auth_reset">Weka upya kwa chaguo-msingi</string>
+    <string name="k2go_auth_using_default">Inatumia chaguo-msingi la boksi</string>
+    <string name="k2go_auth_custom">Kuingia maalum</string>
+    <string name="k2go_auth_need_both">Weka jina la mtumiaji na nenosiri</string>
+    <string name="k2go_auth_saving">Inahifadhi…</string>
+    <string name="k2go_auth_saved">Imehifadhiwa</string>
+    <string name="k2go_auth_verified">Imethibitishwa na kuhifadhiwa</string>
+    <string name="k2go_auth_bad">Jina la mtumiaji au nenosiri si sahihi</string>
+    <string name="k2go_auth_noperm">Akaunti hiyo haiwezi kudhibiti maudhui</string>
+    <string name="k2go_auth_failed">Imeshindwa kuhifadhi — jaribu tena</string>
+    <string name="k2go_auth_reset_done">Imewekwa upya kwa chaguo-msingi la boksi</string>
+    <string name="k2go_auth_load_failed">Imeshindwa kupakia — je, huduma inafanya kazi?</string>
 </resources>

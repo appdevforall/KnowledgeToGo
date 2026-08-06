@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">BAMBINI</string>
     <string name="k2go_zc_count_items">%1$d elementi</string>
     <string name="k2go_zc_count_results">%1$d risultati</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Autenticazione</string>
+    <string name="k2go_settings_authentication_sub">Accessi per Libri e Corsi</string>
+    <string name="k2go_auth_hint">Gli accessi admin che il box usa per Libri e Corsi. Aggiornali qui se cambi la password di un servizio.</string>
+    <string name="k2go_auth_username">Nome utente</string>
+    <string name="k2go_auth_password">Password</string>
+    <string name="k2go_auth_show">Mostra</string>
+    <string name="k2go_auth_hide">Nascondi</string>
+    <string name="k2go_auth_save">Salva</string>
+    <string name="k2go_auth_reset">Ripristina predefiniti</string>
+    <string name="k2go_auth_using_default">In uso il valore predefinito del box</string>
+    <string name="k2go_auth_custom">Accesso personalizzato</string>
+    <string name="k2go_auth_need_both">Inserisci nome utente e password</string>
+    <string name="k2go_auth_saving">Salvataggio…</string>
+    <string name="k2go_auth_saved">Salvato</string>
+    <string name="k2go_auth_verified">Verificato e salvato</string>
+    <string name="k2go_auth_bad">Nome utente o password errati</string>
+    <string name="k2go_auth_noperm">Questo account non può gestire i contenuti</string>
+    <string name="k2go_auth_failed">Salvataggio non riuscito — riprova</string>
+    <string name="k2go_auth_reset_done">Ripristinato al valore predefinito del box</string>
+    <string name="k2go_auth_load_failed">Caricamento non riuscito — il servizio è attivo?</string>
 </resources>

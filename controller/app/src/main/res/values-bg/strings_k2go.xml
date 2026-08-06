@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">ДЕЦА</string>
     <string name="k2go_zc_count_items">%1$d елемента</string>
     <string name="k2go_zc_count_results">%1$d резултата</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Удостоверяване</string>
+    <string name="k2go_settings_authentication_sub">Данни за вход за Книги и Курсове</string>
+    <string name="k2go_auth_hint">Администраторските данни за вход, които устройството използва за Книги и Курсове. Обновете ги тук, ако смените паролата на услуга.</string>
+    <string name="k2go_auth_username">Потребителско име</string>
+    <string name="k2go_auth_password">Парола</string>
+    <string name="k2go_auth_show">Показване</string>
+    <string name="k2go_auth_hide">Скриване</string>
+    <string name="k2go_auth_save">Запази</string>
+    <string name="k2go_auth_reset">Връщане към стандартните</string>
+    <string name="k2go_auth_using_default">Използва се стандартната стойност</string>
+    <string name="k2go_auth_custom">Персонализиран вход</string>
+    <string name="k2go_auth_need_both">Въведете потребителско име и парола</string>
+    <string name="k2go_auth_saving">Запазване…</string>
+    <string name="k2go_auth_saved">Запазено</string>
+    <string name="k2go_auth_verified">Проверено и запазено</string>
+    <string name="k2go_auth_bad">Грешно потребителско име или парола</string>
+    <string name="k2go_auth_noperm">Този акаунт не може да управлява съдържание</string>
+    <string name="k2go_auth_failed">Неуспешно запазване — опитайте отново</string>
+    <string name="k2go_auth_reset_done">Върнато към стандартните стойности</string>
+    <string name="k2go_auth_load_failed">Неуспешно зареждане — услугата работи ли?</string>
 </resources>

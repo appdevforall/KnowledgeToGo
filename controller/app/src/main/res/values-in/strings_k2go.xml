@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">ANAK</string>
     <string name="k2go_zc_count_items">%1$d item</string>
     <string name="k2go_zc_count_results">%1$d hasil</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Autentikasi</string>
+    <string name="k2go_settings_authentication_sub">Info masuk untuk Buku dan Kursus</string>
+    <string name="k2go_auth_hint">Info masuk admin yang box gunakan untuk Buku dan Kursus. Perbarui di sini jika Anda mengubah kata sandi layanan.</string>
+    <string name="k2go_auth_username">Nama pengguna</string>
+    <string name="k2go_auth_password">Kata sandi</string>
+    <string name="k2go_auth_show">Tampilkan</string>
+    <string name="k2go_auth_hide">Sembunyikan</string>
+    <string name="k2go_auth_save">Simpan</string>
+    <string name="k2go_auth_reset">Setel ulang ke default</string>
+    <string name="k2go_auth_using_default">Menggunakan default box</string>
+    <string name="k2go_auth_custom">Info masuk khusus</string>
+    <string name="k2go_auth_need_both">Masukkan nama pengguna dan kata sandi</string>
+    <string name="k2go_auth_saving">Menyimpan…</string>
+    <string name="k2go_auth_saved">Tersimpan</string>
+    <string name="k2go_auth_verified">Diverifikasi dan disimpan</string>
+    <string name="k2go_auth_bad">Nama pengguna atau kata sandi salah</string>
+    <string name="k2go_auth_noperm">Akun itu tidak dapat mengelola konten</string>
+    <string name="k2go_auth_failed">Gagal menyimpan — coba lagi</string>
+    <string name="k2go_auth_reset_done">Disetel ulang ke default box</string>
+    <string name="k2go_auth_load_failed">Gagal memuat — apakah layanan berjalan?</string>
 </resources>

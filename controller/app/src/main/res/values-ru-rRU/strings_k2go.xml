@@ -726,4 +726,25 @@
     <string name="k2go_zim_grp_kids_hdr">ДЕТИ</string>
     <string name="k2go_zc_count_items">%1$d элементов</string>
     <string name="k2go_zc_count_results">%1$d результатов</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Аутентификация</string>
+    <string name="k2go_settings_authentication_sub">Учётные данные для Книг и Курсов</string>
+    <string name="k2go_auth_hint">Учётные данные администратора, которые box использует для Книг и Курсов. Обновите их здесь, если изменили пароль сервиса.</string>
+    <string name="k2go_auth_username">Имя пользователя</string>
+    <string name="k2go_auth_password">Пароль</string>
+    <string name="k2go_auth_show">Показать</string>
+    <string name="k2go_auth_hide">Скрыть</string>
+    <string name="k2go_auth_save">Сохранить</string>
+    <string name="k2go_auth_reset">Сбросить по умолчанию</string>
+    <string name="k2go_auth_using_default">Используется значение по умолчанию</string>
+    <string name="k2go_auth_custom">Своя учётная запись</string>
+    <string name="k2go_auth_need_both">Введите имя пользователя и пароль</string>
+    <string name="k2go_auth_saving">Сохранение…</string>
+    <string name="k2go_auth_saved">Сохранено</string>
+    <string name="k2go_auth_verified">Проверено и сохранено</string>
+    <string name="k2go_auth_bad">Неверное имя пользователя или пароль</string>
+    <string name="k2go_auth_noperm">Эта учётная запись не может управлять контентом</string>
+    <string name="k2go_auth_failed">Не удалось сохранить — повторите</string>
+    <string name="k2go_auth_reset_done">Сброшено к значению по умолчанию</string>
+    <string name="k2go_auth_load_failed">Не удалось загрузить — сервис запущен?</string>
 </resources>

@@ -736,4 +736,25 @@
     <string name="k2go_zim_grp_kids_hdr">DZIECI</string>
     <string name="k2go_zc_count_items">%1$d elementów</string>
     <string name="k2go_zc_count_results">%1$d wyników</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Uwierzytelnianie</string>
+    <string name="k2go_settings_authentication_sub">Logowania do Książek i Kursów</string>
+    <string name="k2go_auth_hint">Loginy administratora, których box używa do Książek i Kursów. Zaktualizuj je tutaj, jeśli zmienisz hasło usługi.</string>
+    <string name="k2go_auth_username">Nazwa użytkownika</string>
+    <string name="k2go_auth_password">Hasło</string>
+    <string name="k2go_auth_show">Pokaż</string>
+    <string name="k2go_auth_hide">Ukryj</string>
+    <string name="k2go_auth_save">Zapisz</string>
+    <string name="k2go_auth_reset">Przywróć domyślne</string>
+    <string name="k2go_auth_using_default">Używana domyślna wartość boxa</string>
+    <string name="k2go_auth_custom">Niestandardowe logowanie</string>
+    <string name="k2go_auth_need_both">Wpisz nazwę użytkownika i hasło</string>
+    <string name="k2go_auth_saving">Zapisywanie…</string>
+    <string name="k2go_auth_saved">Zapisano</string>
+    <string name="k2go_auth_verified">Zweryfikowano i zapisano</string>
+    <string name="k2go_auth_bad">Nieprawidłowa nazwa użytkownika lub hasło</string>
+    <string name="k2go_auth_noperm">To konto nie może zarządzać treścią</string>
+    <string name="k2go_auth_failed">Nie udało się zapisać — spróbuj ponownie</string>
+    <string name="k2go_auth_reset_done">Przywrócono domyślną wartość boxa</string>
+    <string name="k2go_auth_load_failed">Nie udało się wczytać — czy usługa działa?</string>
 </resources>

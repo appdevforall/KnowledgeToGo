@@ -94,6 +94,27 @@
     <string name="k2go_settings_help">Help</string>
     <string name="k2go_settings_send_feedback">Send feedback</string>
     <string name="k2go_settings_advanced_sub">Developer tools</string>
+    <!-- ADFA-5044: Settings → Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Authentication</string>
+    <string name="k2go_settings_authentication_sub">Sign-ins for Books and Courses</string>
+    <string name="k2go_auth_hint">The admin sign-ins the box uses for Books and Courses. Update them here if you change a service\'s password.</string>
+    <string name="k2go_auth_username">Username</string>
+    <string name="k2go_auth_password">Password</string>
+    <string name="k2go_auth_show">Show</string>
+    <string name="k2go_auth_hide">Hide</string>
+    <string name="k2go_auth_save">Save</string>
+    <string name="k2go_auth_reset">Reset to default</string>
+    <string name="k2go_auth_using_default">Using the box default</string>
+    <string name="k2go_auth_custom">Custom sign-in</string>
+    <string name="k2go_auth_need_both">Enter a username and password</string>
+    <string name="k2go_auth_saving">Saving…</string>
+    <string name="k2go_auth_saved">Saved</string>
+    <string name="k2go_auth_verified">Verified and saved</string>
+    <string name="k2go_auth_bad">Wrong username or password</string>
+    <string name="k2go_auth_noperm">That account can\'t manage content</string>
+    <string name="k2go_auth_failed">Couldn\'t save — try again</string>
+    <string name="k2go_auth_reset_done">Reset to the box default</string>
+    <string name="k2go_auth_load_failed">Couldn\'t load — is the service running?</string>
     <string name="k2go_theme_light">Light</string>
     <string name="k2go_theme_system">Follow system</string>
     <string name="k2go_theme_dark">Dark</string>
