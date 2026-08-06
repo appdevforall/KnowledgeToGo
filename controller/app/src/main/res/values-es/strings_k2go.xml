@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">¿Reconstruir el núcleo REST?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Actualiza dash-node a la última versión. El servidor queda brevemente no disponible mientras se reconstruye; no salgas de esta pantalla hasta que termine.</string>
     <string name="k2go_dash_needs_internet">La reconstrucción necesita conexión a internet.</string>
+    <string name="k2go_dash_live_title">Actualizando el panel</string>
+    <string name="k2go_dash_live_running">Actualizando en el sitio… el panel se reinicia brevemente.</string>
+    <string name="k2go_dash_live_done">Panel actualizado.</string>
+    <string name="k2go_dash_live_error">La actualización falló — se conservó la versión anterior.</string>
+    <string name="k2go_dash_live_timeout">Esto está tardando más de lo normal. Terminará en segundo plano — revisa la versión en un momento.</string>
+    <string name="k2go_dash_live_start_failed">No se pudo iniciar la actualización. Inténtalo de nuevo.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Núcleo del sistema · siempre instalado</string>
     <string name="k2go_dash_detail_desc">El dashboard es el núcleo de la API REST de la caja (dash-node): un pequeño servicio Node en 127.0.0.1:4000, servido por nginx y supervisado por pdsm. Impulsa cada acción de la biblioteca en la app: explorar y descargar Libros, añadir y eliminar contenido de Wikipedia y ZIM, sesiones de Kolibri, Mapas y el estado del sistema. A diferencia de los módulos de contenido, no es algo que instales o quites: viene con la caja y siempre está presente. Cuando hay una versión más reciente, puedes reconstruirlo en el sitio.</string>

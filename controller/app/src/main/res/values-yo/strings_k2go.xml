@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Tún kókó REST kọ́?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Ó ń ṣe àfikún dash-node sí ẹ̀yà tuntun. Sáfà kì yóò sí fún ìgbà díẹ̀ nígbà tí ó ń tún kọ́; má ṣe kúrò ní ojú-iwé yìí títí yóò fi parí.</string>
     <string name="k2go_dash_needs_internet">Àtúnkọ́ nílò ìsopọ̀ íntánẹ́ẹ̀tì.</string>
+    <string name="k2go_dash_live_title">Ń ṣàtúnṣe dáàṣíbọ́ọ̀dù</string>
+    <string name="k2go_dash_live_running">Ń ṣàtúnṣe níbí… dáàṣíbọ́ọ̀dù yóò tún bẹ̀rẹ̀ fún ìgbà díẹ̀.</string>
+    <string name="k2go_dash_live_done">A ti ṣàtúnṣe dáàṣíbọ́ọ̀dù.</string>
+    <string name="k2go_dash_live_error">Àtúnṣe kùnà — a pa ẹ̀yà tí ó ṣáájú mọ́.</string>
+    <string name="k2go_dash_live_timeout">Èyí ń gba àkókò ju ti àtẹ̀yìnwá lọ. Yóò parí ní ẹ̀yìn — ṣàyẹ̀wò ẹ̀yà náà láìpẹ́.</string>
+    <string name="k2go_dash_live_start_failed">Kò lè bẹ̀rẹ̀ àtúnṣe. Gbìyànjú lẹ́ẹ̀kansi.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kókó ètò · fi sori ẹrọ nígbà gbogbo</string>
     <string name="k2go_dash_detail_desc">Dasibọ́ọ̀dù ni kókó REST API ti àpótí náà (dash-node): iṣẹ́ Node kékeré kan ní 127.0.0.1:4000, tí nginx ń ṣe ìránṣẹ́ tí pdsm sì ń bójútó. Ó ń ṣe àtìlẹ́yìn fún gbogbo iṣẹ́ ilé-ìkàwé nínú áàpù: ríràwo àti gbígba Àwọn Ìwé, fífi kún àti pípa àkóónú Wikipedia àti ZIM rẹ́, àwọn ìpàdé Kolibri, Àwọn Máàpù àti ipò ètò. Yàtọ̀ sí àwọn módù àkóónú, kì í ṣe ohun tí o fi sori ẹrọ tàbí yọ kúrò — ó wá pẹ̀lú àpótí náà ó sì wà nígbà gbogbo. Nígbà tí ẹ̀yà tuntun bá wà, o lè tún un kọ́ níbẹ̀.</string>

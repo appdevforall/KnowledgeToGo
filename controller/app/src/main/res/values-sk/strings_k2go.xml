@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Prestavať jadro REST?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Aktualizuje dash-node na najnovšiu verziu. Server je počas prestavby krátko nedostupný; neopúšťajte túto obrazovku, kým sa neskončí.</string>
     <string name="k2go_dash_needs_internet">Prestavba vyžaduje pripojenie na internet.</string>
+    <string name="k2go_dash_live_title">Aktualizácia nástenky</string>
+    <string name="k2go_dash_live_running">Aktualizácia na mieste… nástenka sa nakrátko reštartuje.</string>
+    <string name="k2go_dash_live_done">Nástenka je aktualizovaná.</string>
+    <string name="k2go_dash_live_error">Aktualizácia zlyhala — ponechala sa predchádzajúca verzia.</string>
+    <string name="k2go_dash_live_timeout">Trvá to dlhšie ako zvyčajne. Dokončí sa na pozadí — o chvíľu skontrolujte verziu.</string>
+    <string name="k2go_dash_live_start_failed">Aktualizáciu sa nepodarilo spustiť. Skúste to znova.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Jadro systému · vždy nainštalované</string>
     <string name="k2go_dash_detail_desc">Nástenka je jadro REST API zariadenia (dash-node) — malá služba Node na 127.0.0.1:4000, obsluhovaná nginx a riadená pdsm. Poháňa každú akciu knižnice v aplikácii: prehliadanie a sťahovanie Kníh, pridávanie a mazanie obsahu Wikipédie a ZIM, relácie Kolibri, Mapy a stav systému. Na rozdiel od obsahových modulov sa neinštaluje ani neodstraňuje — je súčasťou zariadenia a je vždy prítomná. Keď je dostupná novšia verzia, môžete ju prestavať na mieste.</string>

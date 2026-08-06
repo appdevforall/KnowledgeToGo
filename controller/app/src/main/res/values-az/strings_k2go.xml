@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">REST nüvəsi yenidən qurulsun?</string>
     <string name="k2go_dash_rebuild_confirm_msg">dash-node-u ən son versiyaya yeniləyir. Yenidən qurma zamanı server qısa müddət əlçatmaz olur; bitənə qədər bu ekranı tərk etməyin.</string>
     <string name="k2go_dash_needs_internet">Yenidən qurma internet bağlantısı tələb edir.</string>
+    <string name="k2go_dash_live_title">İdarə paneli yenilənir</string>
+    <string name="k2go_dash_live_running">Yerində yenilənir… idarə paneli qısa müddət yenidən başladılacaq.</string>
+    <string name="k2go_dash_live_done">İdarə paneli yeniləndi.</string>
+    <string name="k2go_dash_live_error">Yeniləmə alınmadı — əvvəlki versiya saxlanıldı.</string>
+    <string name="k2go_dash_live_timeout">Bu adətən olduğundan uzun çəkir. Arxa planda tamamlanacaq — bir azdan versiyanı yoxlayın.</string>
+    <string name="k2go_dash_live_start_failed">Yeniləməni başlatmaq alınmadı. Yenidən cəhd edin.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistem nüvəsi · həmişə quraşdırılıb</string>
     <string name="k2go_dash_detail_desc">Panel qutunun REST API nüvəsidir (dash-node): 127.0.0.1:4000 ünvanında işləyən, nginx tərəfindən təqdim edilən və pdsm tərəfindən idarə olunan kiçik Node xidmətidir. O, tətbiqdəki bütün kitabxana əməliyyatlarını işə salır: Kitablara baxış və endirmə, Wikipedia və ZIM məzmununun əlavə edilməsi və silinməsi, Kolibri sessiyaları, Xəritələr və sistem vəziyyəti. Məzmun modullarından fərqli olaraq quraşdırılmır və silinmir — qutu ilə birlikdə gəlir və həmişə mövcuddur. Daha yeni versiya olduqda onu yerində yenidən qura bilərsiniz.</string>

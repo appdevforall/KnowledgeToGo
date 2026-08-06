@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">إعادة بناء نواة REST؟</string>
     <string name="k2go_dash_rebuild_confirm_msg">تُحدِّث dash-node إلى أحدث إصدار. يكون الخادم غير متاح لفترة وجيزة أثناء إعادة البناء؛ لا تغادر هذه الشاشة حتى تنتهي.</string>
     <string name="k2go_dash_needs_internet">تتطلب إعادة البناء اتصالاً بالإنترنت.</string>
+    <string name="k2go_dash_live_title">جارٍ تحديث لوحة التحكم</string>
+    <string name="k2go_dash_live_running">جارٍ التحديث في مكانه… ستُعاد تشغيل لوحة التحكم لفترة وجيزة.</string>
+    <string name="k2go_dash_live_done">تم تحديث لوحة التحكم.</string>
+    <string name="k2go_dash_live_error">فشل التحديث — تم الاحتفاظ بالإصدار السابق.</string>
+    <string name="k2go_dash_live_timeout">يستغرق هذا وقتًا أطول من المعتاد. سيكتمل في الخلفية — تحقّق من الإصدار بعد قليل.</string>
+    <string name="k2go_dash_live_start_failed">تعذّر بدء التحديث. حاول مرة أخرى.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">نواة النظام · مثبَّتة دائمًا</string>
     <string name="k2go_dash_detail_desc">لوحة التحكم هي نواة واجهة REST API للجهاز (dash-node): خدمة Node صغيرة على 127.0.0.1:4000، يقدّمها nginx ويشرف عليها pdsm. تُشغِّل كل إجراء للمكتبة داخل التطبيق: تصفّح الكتب وتنزيلها، وإضافة محتوى Wikipedia وZIM وحذفه، وجلسات Kolibri، والخرائط، وحالة النظام. على عكس وحدات المحتوى، لا تُثبَّت ولا تُزال — فهي تأتي مع الجهاز وموجودة دائمًا. عند توفّر إصدار أحدث يمكنك إعادة بنائها في مكانها.</string>

@@ -783,6 +783,13 @@
     <string name="k2go_dash_rebuild_confirm_title">Rebuild the REST core?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Updates dash-node to the latest version. The server is briefly unavailable while it rebuilds; don\'t leave this screen until it finishes.</string>
     <string name="k2go_dash_needs_internet">Rebuild needs an internet connection.</string>
+    <!-- ADFA-5051: live REST self-update progress (dash-node >= 1.2.0). -->
+    <string name="k2go_dash_live_title">Updating the dashboard</string>
+    <string name="k2go_dash_live_running">Updating in place… the dashboard restarts briefly.</string>
+    <string name="k2go_dash_live_done">Dashboard updated.</string>
+    <string name="k2go_dash_live_error">Update failed — the previous version was kept.</string>
+    <string name="k2go_dash_live_timeout">This is taking longer than usual. It will finish in the background — check the version in a moment.</string>
+    <string name="k2go_dash_live_start_failed">Couldn\'t start the update. Try again.</string>
     <!-- ADFA-5011: dashboard detail card (Play Store-style, Rebuild-only). -->
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">System core · always installed</string>

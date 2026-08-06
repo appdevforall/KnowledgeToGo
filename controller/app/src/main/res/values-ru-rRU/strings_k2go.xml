@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Пересобрать ядро REST?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Обновляет dash-node до последней версии. Во время пересборки сервер ненадолго недоступен; не покидайте этот экран, пока она не завершится.</string>
     <string name="k2go_dash_needs_internet">Для пересборки нужно подключение к интернету.</string>
+    <string name="k2go_dash_live_title">Обновление панели</string>
+    <string name="k2go_dash_live_running">Обновление на месте… панель ненадолго перезапустится.</string>
+    <string name="k2go_dash_live_done">Панель обновлена.</string>
+    <string name="k2go_dash_live_error">Не удалось обновить — сохранена предыдущая версия.</string>
+    <string name="k2go_dash_live_timeout">Это занимает больше времени, чем обычно. Завершится в фоне — проверьте версию через минуту.</string>
+    <string name="k2go_dash_live_start_failed">Не удалось запустить обновление. Повторите попытку.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Ядро системы · всегда установлено</string>
     <string name="k2go_dash_detail_desc">Панель — это ядро REST API устройства (dash-node): небольшой сервис Node на 127.0.0.1:4000, обслуживаемый nginx и управляемый pdsm. Оно обеспечивает все действия библиотеки в приложении: просмотр и загрузку Книг, добавление и удаление контента Wikipedia и ZIM, сессии Kolibri, Карты и состояние системы. В отличие от модулей контента, его нельзя установить или удалить — оно поставляется с устройством и всегда присутствует. Когда доступна более новая версия, вы можете пересобрать его на месте.</string>

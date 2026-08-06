@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Поново изградити REST језгро?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Ажурира dash-node на најновију верзију. Сервер је накратко недоступан током поновне изградње; не напуштајте овај екран док се не заврши.</string>
     <string name="k2go_dash_needs_internet">Поновна изградња захтева интернет везу.</string>
+    <string name="k2go_dash_live_title">Ажурирање контролне табле</string>
+    <string name="k2go_dash_live_running">Ажурирање на лицу места… контролна табла ће се накратко поново покренути.</string>
+    <string name="k2go_dash_live_done">Контролна табла је ажурирана.</string>
+    <string name="k2go_dash_live_error">Ажурирање није успело — задржана је претходна верзија.</string>
+    <string name="k2go_dash_live_timeout">Ово траје дуже него обично. Завршиће се у позадини — проверите верзију за тренутак.</string>
+    <string name="k2go_dash_live_start_failed">Ажурирање није могло да почне. Покушајте поново.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системско језгро · увек инсталирано</string>
     <string name="k2go_dash_detail_desc">Контролна табла је REST API језгро уређаја (dash-node): мала Node услуга на 127.0.0.1:4000, коју опслужује nginx а надгледа pdsm. Покреће сваку радњу библиотеке у апликацији: прегледање и преузимање Књига, додавање и брисање садржаја Wikipedia и ZIM, Kolibri сесије, Мапе и стање система. За разлику од модула садржаја, не инсталира се нити уклања — долази уз уређај и увек је присутна. Када је доступна новија верзија, можете је поново изградити на лицу места.</string>

@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">REST કોર ફરીથી બનાવવો?</string>
     <string name="k2go_dash_rebuild_confirm_msg">dash-node ને નવીનતમ સંસ્કરણમાં અપડેટ કરે છે. ફરીથી બનાવતી વખતે સર્વર થોડા સમય માટે અનુપલબ્ધ રહે છે; પૂર્ણ ન થાય ત્યાં સુધી આ સ્ક્રીન છોડશો નહીં.</string>
     <string name="k2go_dash_needs_internet">ફરીથી બનાવવા માટે ઇન્ટરનેટ કનેક્શન જરૂરી છે.</string>
+    <string name="k2go_dash_live_title">ડેશબોર્ડ અપડેટ થઈ રહ્યું છે</string>
+    <string name="k2go_dash_live_running">સ્થળ પર જ અપડેટ થઈ રહ્યું છે… ડેશબોર્ડ થોડી વાર માટે રીસ્ટાર્ટ થશે.</string>
+    <string name="k2go_dash_live_done">ડેશબોર્ડ અપડેટ થયું.</string>
+    <string name="k2go_dash_live_error">અપડેટ નિષ્ફળ — અગાઉની આવૃત્તિ જાળવી રાખી.</string>
+    <string name="k2go_dash_live_timeout">આ સામાન્ય કરતાં વધુ સમય લઈ રહ્યું છે. તે પૃષ્ઠભૂમિમાં પૂર્ણ થશે — થોડી વારમાં આવૃત્તિ તપાસો.</string>
+    <string name="k2go_dash_live_start_failed">અપડેટ શરૂ કરી શકાયું નહીં. ફરી પ્રયાસ કરો.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">સિસ્ટમ કોર · હંમેશા સ્થાપિત</string>
     <string name="k2go_dash_detail_desc">ડેશબોર્ડ એ બોક્સનું REST API કોર છે (dash-node): 127.0.0.1:4000 પર એક નાની Node સેવા, જેને nginx પીરસે છે અને pdsm દેખરેખ રાખે છે. તે એપમાં દરેક લાઇબ્રેરી ક્રિયા ચલાવે છે: પુસ્તકો બ્રાઉઝ અને ડાઉનલોડ, Wikipedia અને ZIM સામગ્રી ઉમેરવી અને કાઢી નાખવી, Kolibri સત્રો, નકશા અને સિસ્ટમ સ્થિતિ. સામગ્રી મોડ્યુલોથી વિપરીત, તે સ્થાપિત કે દૂર કરાતું નથી — તે બોક્સ સાથે આવે છે અને હંમેશા હાજર રહે છે. જ્યારે નવું સંસ્કરણ ઉપલબ્ધ હોય, ત્યારે તમે તેને સ્થળ પર જ ફરીથી બનાવી શકો છો.</string>

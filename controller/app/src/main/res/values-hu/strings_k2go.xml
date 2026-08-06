@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Újraépíti a REST magot?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Frissíti a dash-node-ot a legújabb verzióra. A szerver az újraépítés alatt rövid ideig nem elérhető; ne hagyd el ezt a képernyőt, amíg be nem fejeződik.</string>
     <string name="k2go_dash_needs_internet">Az újraépítéshez internetkapcsolat szükséges.</string>
+    <string name="k2go_dash_live_title">Irányítópult frissítése</string>
+    <string name="k2go_dash_live_running">Frissítés helyben… az irányítópult röviden újraindul.</string>
+    <string name="k2go_dash_live_done">Az irányítópult frissült.</string>
+    <string name="k2go_dash_live_error">A frissítés sikertelen — az előző verzió megmaradt.</string>
+    <string name="k2go_dash_live_timeout">Ez a szokásosnál tovább tart. A háttérben befejeződik — nézze meg a verziót egy pillanat múlva.</string>
+    <string name="k2go_dash_live_start_failed">A frissítést nem sikerült elindítani. Próbálja újra.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rendszermag · mindig telepítve</string>
     <string name="k2go_dash_detail_desc">Az irányítópult a doboz REST API magja (dash-node): egy kis Node szolgáltatás a 127.0.0.1:4000 címen, amelyet az nginx szolgál ki és a pdsm felügyel. Ez működteti az alkalmazás minden könyvtári műveletét: Könyvek böngészése és letöltése, Wikipédia- és ZIM-tartalom hozzáadása és törlése, Kolibri munkamenetek, Térképek és rendszerállapot. A tartalommoduloktól eltérően nem telepíted vagy távolítod el — a dobozzal érkezik és mindig jelen van. Ha újabb verzió érhető el, helyben újraépítheted.</string>
