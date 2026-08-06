@@ -61,14 +61,11 @@ public final class ZimProvisioner {
         for (int i = 0; i < order.length(); i++) {
             JSONObject o = order.optJSONObject(i);
             if (o == null) continue;
-            String[] p = o.optString("key", "").split("\\|", 3);   // project | lang | entryKey
-            if (p.length < 3) continue;
-            JSONObject ld = KiwixCatalog.langData(catalog, p[0], p[1]);
-            JSONObject v = ld != null ? ld.optJSONObject(p[2]) : null;
-            if (v == null) continue;
-            files.add(v.optString("file"));
-            labels.add(label(p[0], v.optString("creator"), v.optString("flavour")));
-            bytes.add(v.optLong("size", o.optLong("bytes", 0)));
+            ZimSelection.Item it = ZimSelection.resolve(catalog, o.optString("key", ""));
+            if (it == null) continue;
+            files.add(it.id);   // "<project>/<file>" (ADFA-5042)
+            labels.add(label(it.project, it.entry.optString("creator"), it.entry.optString("flavour")));
+            bytes.add(it.entry.optLong("size", o.optLong("bytes", 0)));
         }
         if (files.isEmpty()) { Log.w(TAG, "zim drain: nothing resolved from wishlist"); ZimWishlist.clear(app); return; }
         long[] b = new long[bytes.size()];
