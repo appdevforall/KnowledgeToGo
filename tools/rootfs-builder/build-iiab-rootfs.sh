@@ -81,10 +81,14 @@ SELF="$(readlink -f "$0" 2>/dev/null || echo "$0")"   # absolute path to this sc
 
 # ----------------------------- Colors / log ----------------------------------
 RED="\033[31m"; YEL="\033[33m"; GRN="\033[32m"; BLU="\033[34m"; RST="\033[0m"; BOLD="\033[1m"
-ok()   { printf "${GRN}[build]${RST} %s\n" "$*"; }
-log()  { printf "${BLU}[build]${RST} %s\n" "$*"; }
-warn() { printf "${YEL}[build] WARN:${RST} %s\n" "$*" >&2; }
-die()  { printf "${RED}[build] ERROR:${RST} %s\n" "$*" >&2; exit 1; }
+# Global-progress tag: in a multi-build run (--all-*), the parent exports BUILD_PROGRESS="NN/MM" and
+# every [build] line (parent + the child it spawns) carries "(NN/MM)", so a single build's lines can
+# be located among the thousands a full matrix emits. Empty for a single build — nothing added.
+_ptag() { [[ -n "${BUILD_PROGRESS:-}" ]] && printf '(%s)' "$BUILD_PROGRESS"; }
+ok()   { printf "${GRN}[build]$(_ptag)${RST} %s\n" "$*"; }
+log()  { printf "${BLU}[build]$(_ptag)${RST} %s\n" "$*"; }
+warn() { printf "${YEL}[build]$(_ptag) WARN:${RST} %s\n" "$*" >&2; }
+die()  { printf "${RED}[build]$(_ptag) ERROR:${RST} %s\n" "$*" >&2; exit 1; }
 
 # ----------------------------- Timing -----------------------------------------
 BUILD_START_EPOCH="$(date +%s)"
@@ -235,6 +239,9 @@ if [[ "$ALL_ARCH" -eq 1 || "$ALL_TIER" -eq 1 ]]; then
   for _arch in "${build_archs[@]}"; do
     for _tier in "${build_tiers[@]}"; do
       MULTI_N=$((MULTI_N + 1))
+      # Tag this combo's lines with the global NN/MM. Exported, so the child build inherits it and
+      # its [build] lines carry the same tag; the parent's own lines below pick it up via _ptag too.
+      export BUILD_PROGRESS="$(printf '%02d/%02d' "$MULTI_N" "$MULTI_TOTAL")"
       log "$(printf 'Rootfs global status [%02d/%02d]' "$MULTI_N" "$MULTI_TOTAL")  ==> tier=${_tier}  arch=${_arch}"
       log "==================== BUILD  tier=${_tier}  arch=${_arch} ===================="
       if bash "$SELF" "${PASS[@]}" --arch "$_arch" --tier "$_tier"; then
@@ -244,6 +251,7 @@ if [[ "$ALL_ARCH" -eq 1 || "$ALL_TIER" -eq 1 ]]; then
       fi
     done
   done
+  unset BUILD_PROGRESS   # the closing summary is not part of any single combo
   log "Multi-build finished in $(fmt_dur $(( $(date +%s) - BUILD_START_EPOCH ))). Overall: $([[ $MULTI_RC -eq 0 ]] && echo 'ALL CLEAN' || echo 'SOME FAILURES - check logs')"
   exit "$MULTI_RC"
 fi
