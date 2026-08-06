@@ -48,6 +48,8 @@ public class SettingsFragment extends Fragment {
             i.putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true);
             ctx.startActivity(i);
         });
+        // ADFA-5044: manage the box's per-service admin sign-ins (Books/Calibre-Web, Courses/Kolibri).
+        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_authentication), getString(R.string.k2go_settings_authentication_sub), null, v -> openSub("authentication"));
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_advanced), getString(R.string.k2go_settings_advanced_sub), null, v -> openSub("advanced"));
 
         buildFooter(ctx, footer);

@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">NIÑOS</string>
     <string name="k2go_zc_count_items">%1$d elementos</string>
     <string name="k2go_zc_count_results">%1$d resultados</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Autenticación</string>
+    <string name="k2go_settings_authentication_sub">Accesos para Libros y Cursos</string>
+    <string name="k2go_auth_hint">Los accesos que K2Go usa para Libros y Cursos. Actualiza uno si cambió la contraseña de su servicio.</string>
+    <string name="k2go_auth_username">Usuario</string>
+    <string name="k2go_auth_password">Contraseña</string>
+    <string name="k2go_auth_save">Guardar</string>
+    <string name="k2go_auth_reset">Restablecer al valor predeterminado de la caja</string>
+    <string name="k2go_auth_using_default">Se usa el acceso predeterminado de la caja.</string>
+    <string name="k2go_auth_need_both">Escribe usuario y contraseña</string>
+    <string name="k2go_auth_saving">Guardando…</string>
+    <string name="k2go_auth_saved">Guardado</string>
+    <string name="k2go_auth_verified">Verificado y guardado</string>
+    <string name="k2go_auth_bad">Usuario o contraseña incorrectos</string>
+    <string name="k2go_auth_noperm">Esa cuenta no puede administrar contenido</string>
+    <string name="k2go_auth_failed">No se pudo guardar — inténtalo de nuevo</string>
+    <string name="k2go_auth_load_failed">No se pudo cargar — ¿el servicio está activo?</string>
+    <string name="k2go_auth_svc_books">Leer un libro</string>
+    <string name="k2go_auth_svc_courses">Tomar cursos</string>
+    <string name="k2go_auth_custom_toggle">Usar un acceso personalizado</string>
+    <string name="k2go_auth_not_running">Este servicio aún no está activo. Los cambios se guardan ahora y se aplican en cuanto esté instalado y en funcionamiento.</string>
+    <string name="k2go_auth_list_note">Los servicios no instalados siguen siendo accesibles — puedes preconfigurar el acceso. Las credenciales se guardan en este dispositivo.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · el acceso que K2Go usa para abrir tus libros.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · el acceso que K2Go usa para abrir tus cursos.</string>
+    <string name="k2go_auth_toggle_hint">Activa un acceso personalizado solo si cambió la contraseña.</string>
+    <string name="k2go_auth_eye_hint">Toca el ojo para mostrarla.</string>
+    <string name="k2go_auth_chip_default">Predeterminado</string>
+    <string name="k2go_auth_chip_custom">Personalizado</string>
+    <string name="k2go_auth_chip_notinstalled">No instalado</string>
 </resources>

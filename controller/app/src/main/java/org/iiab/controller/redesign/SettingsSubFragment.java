@@ -86,6 +86,9 @@ public class SettingsSubFragment extends Fragment {
             case "about":    title.setText(getString(R.string.k2go_settings_about));    buildAbout(ctx, list);    break;
             case "advanced": title.setText(getString(R.string.k2go_settings_advanced)); buildAdvanced(ctx, list); break;
             case "dns":      title.setText(getString(R.string.k2go_settings_network_dns)); buildDns(ctx, list); break;
+            case "authentication": title.setText(getString(R.string.k2go_settings_authentication)); buildAuthentication(ctx, list); break;
+            case "auth:calibre": title.setText(getString(R.string.k2go_auth_svc_books)); buildServiceAuth(ctx, list, "calibre"); break;
+            case "auth:kolibri": title.setText(getString(R.string.k2go_auth_svc_courses)); buildServiceAuth(ctx, list, "kolibri"); break;
             default:         title.setText(getString(R.string.k2go_tab_settings));
         }
         return root;
@@ -391,6 +394,330 @@ public class SettingsSubFragment extends Fragment {
             });
             vm.load();
         });
+    }
+
+    // ---- Authentication (ADFA-5044): manage the admin sign-ins the box uses for Books (Calibre-Web)
+    //      and Courses (Kolibri) — the same store the WebView auto-login (ADFA-5043) relies on.
+    //      List → per-service editor with the DNS-style "use a custom sign-in" switch (off = box
+    //      default, on = reveal fields). Wired to /k2go-api/credentials/:service via CredentialsClient. ----
+    private void buildAuthentication(Context ctx, LinearLayout list) {
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_hint));
+        authServiceRow(ctx, list, "calibre", getString(R.string.k2go_auth_svc_books), "Calibre-Web");
+        authServiceRow(ctx, list, "kolibri", getString(R.string.k2go_auth_svc_courses), "Kolibri");
+        SettingsUi.caption(ctx, list, getString(R.string.k2go_auth_list_note));
+    }
+
+    /** A navigable row per service with a state chip (Default / Custom / Not installed). A service
+     *  that isn't reachable is dimmed but stays tappable so the sign-in can be pre-set. */
+    private void authServiceRow(Context ctx, LinearLayout list, String service, String name, String platform) {
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p14 = SettingsUi.dp(ctx, 14);
+        row.setPadding(p14, p14, p14, p14);
+        row.setClickable(true);
+        row.setOnClickListener(v -> openSub("auth:" + service));
+        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(-1, -2);
+        rlp.topMargin = SettingsUi.dp(ctx, 8);
+        list.addView(row, rlp);
+
+        LinearLayout col = new LinearLayout(ctx);
+        col.setOrientation(LinearLayout.VERTICAL);
+        col.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1f));
+        col.addView(dnsText(ctx, name,
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink));
+        col.addView(dnsText(ctx, platform,
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted));
+        row.addView(col);
+
+        final TextView chip = new TextView(ctx);
+        chip.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelSmall);
+        chip.setPadding(SettingsUi.dp(ctx, 10), SettingsUi.dp(ctx, 4), SettingsUi.dp(ctx, 10), SettingsUi.dp(ctx, 4));
+        chip.setVisibility(View.GONE);
+        LinearLayout.LayoutParams chlp = new LinearLayout.LayoutParams(-2, -2);
+        chlp.rightMargin = SettingsUi.dp(ctx, 8);
+        row.addView(chip, chlp);
+
+        TextView chev = new TextView(ctx);
+        chev.setText("›");
+        chev.setTextSize(18);
+        chev.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+        row.addView(chev);
+
+        row.setAlpha(0.5f);
+        probeService(service, reachable -> {
+            if (!isAdded()) return;
+            row.setAlpha(reachable ? 1f : 0.5f);
+            if (!reachable) {
+                setChip(chip, getString(R.string.k2go_auth_chip_notinstalled), R.drawable.k2go_pill_bg, R.color.k2go_muted);
+                return;
+            }
+            CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
+                @Override public void onOk(String user, boolean isDefault) {
+                    if (!isAdded()) return;
+                    if (isDefault) setChip(chip, getString(R.string.k2go_auth_chip_default), R.drawable.k2go_pill_bg, R.color.k2go_muted);
+                    else setChip(chip, getString(R.string.k2go_auth_chip_custom), R.drawable.k2go_pill_teal, R.color.k2go_teal);
+                }
+                @Override public void onErr() { /* leave the chip hidden on a load error */ }
+            });
+        });
+    }
+
+    /** Style + reveal a state chip (Default / Custom / Not installed). */
+    private void setChip(TextView chip, String text, int bgRes, int colorRes) {
+        chip.setText(text);
+        chip.setBackgroundResource(bgRes);
+        chip.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
+        chip.setVisibility(View.VISIBLE);
+    }
+
+    private void buildServiceAuth(Context ctx, LinearLayout list, String service) {
+        final int subRes = "calibre".equals(service) ? R.string.k2go_auth_sub_books : R.string.k2go_auth_sub_courses;
+        SettingsUi.caption(ctx, list, getString(subRes));
+
+        // Subtle "not running yet" line (no banner) — only shown when the service isn't reachable.
+        final TextView note = dnsText(ctx, getString(R.string.k2go_auth_not_running),
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        note.setVisibility(View.GONE);
+        LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(-1, -2);
+        nlp.topMargin = SettingsUi.dp(ctx, 4);
+        list.addView(note, nlp);
+
+        // The single control: "Use a custom sign-in".
+        LinearLayout toggleRow = new LinearLayout(ctx);
+        toggleRow.setOrientation(LinearLayout.HORIZONTAL);
+        toggleRow.setGravity(Gravity.CENTER_VERTICAL);
+        toggleRow.setBackgroundResource(R.drawable.k2go_card_bg);
+        int p16 = SettingsUi.dp(ctx, 16);
+        toggleRow.setPadding(p16, p16, p16, p16);
+        toggleRow.addView(dnsText(ctx, getString(R.string.k2go_auth_custom_toggle),
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_ink),
+                new LinearLayout.LayoutParams(0, -2, 1f));
+        final MaterialSwitch sw = new MaterialSwitch(ctx);
+        sw.setMinimumHeight(0);
+        toggleRow.addView(sw, new LinearLayout.LayoutParams(-2, -2));
+        LinearLayout.LayoutParams trlp = new LinearLayout.LayoutParams(-1, -2);
+        trlp.topMargin = SettingsUi.dp(ctx, 16);
+        list.addView(toggleRow, trlp);
+
+        // OFF group: a subtle status line (check + text) + a short hint. Not a big banner.
+        final LinearLayout offGroup = new LinearLayout(ctx);
+        offGroup.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams oglp = new LinearLayout.LayoutParams(-1, -2);
+        oglp.topMargin = SettingsUi.dp(ctx, 16);
+        list.addView(offGroup, oglp);
+
+        LinearLayout statusRow = new LinearLayout(ctx);
+        statusRow.setOrientation(LinearLayout.HORIZONTAL);
+        statusRow.setGravity(Gravity.CENTER_VERTICAL);
+        TextView check = dnsText(ctx, "✓",
+                com.google.android.material.R.style.TextAppearance_Material3_TitleMedium, R.color.k2go_leaf);
+        LinearLayout.LayoutParams cklp = new LinearLayout.LayoutParams(-2, -2);
+        cklp.rightMargin = SettingsUi.dp(ctx, 8);
+        check.setLayoutParams(cklp);
+        statusRow.addView(check);
+        statusRow.addView(dnsText(ctx, getString(R.string.k2go_auth_using_default),
+                com.google.android.material.R.style.TextAppearance_Material3_BodyLarge, R.color.k2go_ink));
+        offGroup.addView(statusRow);
+
+        TextView toggleHint = dnsText(ctx, getString(R.string.k2go_auth_toggle_hint),
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        LinearLayout.LayoutParams thlp = new LinearLayout.LayoutParams(-1, -2);
+        thlp.topMargin = SettingsUi.dp(ctx, 12);
+        toggleHint.setLayoutParams(thlp);
+        offGroup.addView(toggleHint);
+
+        // ON group: the edit fields.
+        final LinearLayout fields = new LinearLayout(ctx);
+        fields.setOrientation(LinearLayout.VERTICAL);
+        fields.setVisibility(View.GONE);
+        list.addView(fields, new LinearLayout.LayoutParams(-1, -2));
+
+        fields.addView(dnsFieldLabel(ctx, getString(R.string.k2go_auth_username), ""));
+        final EditText username = dnsInput(ctx);
+        fields.addView(username);
+
+        fields.addView(dnsFieldLabel(ctx, getString(R.string.k2go_auth_password), ""));
+        final EditText password = dnsInput(ctx);
+        password.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                | android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        password.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
+        attachEyeToggle(password);   // eye lives inside the field (no floating "Show")
+        fields.addView(password);
+
+        TextView eyeHint = dnsText(ctx, getString(R.string.k2go_auth_eye_hint),
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        LinearLayout.LayoutParams ehlp = new LinearLayout.LayoutParams(-2, -2);
+        ehlp.topMargin = SettingsUi.dp(ctx, 6);
+        eyeHint.setLayoutParams(ehlp);
+        fields.addView(eyeHint);
+
+        final TextView save = new TextView(ctx);
+        save.setText(getString(R.string.k2go_auth_save));
+        save.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        save.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_on_teal));
+        save.setGravity(Gravity.CENTER);
+        save.setBackgroundResource(R.drawable.k2go_primary_bg);
+        int ap = SettingsUi.dp(ctx, 14);
+        save.setPadding(ap, ap, ap, ap);
+        LinearLayout.LayoutParams svlp = new LinearLayout.LayoutParams(-1, -2);
+        svlp.topMargin = SettingsUi.dp(ctx, 16);
+        fields.addView(save, svlp);
+
+        // Reset = revert to the box default = simply flip the switch off.
+        final TextView reset = dnsText(ctx, getString(R.string.k2go_auth_reset),
+                com.google.android.material.R.style.TextAppearance_Material3_LabelLarge, R.color.k2go_teal);
+        reset.setClickable(true);
+        reset.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams rslp = new LinearLayout.LayoutParams(-1, -2);
+        rslp.topMargin = SettingsUi.dp(ctx, 12);
+        reset.setLayoutParams(rslp);
+        fields.addView(reset);
+
+        final TextView status = dnsText(ctx, "",
+                com.google.android.material.R.style.TextAppearance_Material3_BodySmall, R.color.k2go_muted);
+        status.setVisibility(View.GONE);
+        fields.addView(status);
+
+        // Save is enabled only once a password is typed (the box never returns the stored one).
+        final Runnable refreshSave = () -> {
+            boolean ok = password.getText().length() > 0;
+            save.setEnabled(ok);
+            save.setClickable(ok);
+            save.setAlpha(ok ? 1f : 0.5f);
+        };
+        password.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {}
+            @Override public void afterTextChanged(android.text.Editable s) { refreshSave.run(); }
+        });
+        refreshSave.run();
+
+        final boolean[] suppress = {false};   // avoid the reset side-effect during programmatic toggles
+        sw.setOnCheckedChangeListener((b, on) -> {
+            fields.setVisibility(on ? View.VISIBLE : View.GONE);
+            offGroup.setVisibility(on ? View.GONE : View.VISIBLE);
+            if (on) { refreshSave.run(); return; }
+            if (suppress[0]) return;
+            // Turning custom off = go back to the box default.
+            CredentialsClient.reset(service, new CredentialsClient.ResetCb() {
+                @Override public void onOk(String user, boolean isDefault) {
+                    if (!isAdded()) return;
+                    username.setText(user);
+                    password.setText("");
+                }
+                @Override public void onErr() { /* the box keeps the previous value on error */ }
+            });
+        });
+
+        save.setOnClickListener(v -> {
+            String u = username.getText().toString().trim();
+            String p = password.getText().toString();
+            if (u.isEmpty() || p.isEmpty()) { setStatus(status, getString(R.string.k2go_auth_need_both), R.color.k2go_clay); return; }
+            setStatus(status, getString(R.string.k2go_auth_saving), R.color.k2go_muted);
+            CredentialsClient.save(service, u, p, new CredentialsClient.SaveCb() {
+                @Override public void onOk(boolean verified) {
+                    if (!isAdded()) return;
+                    setStatus(status, getString(verified ? R.string.k2go_auth_verified : R.string.k2go_auth_saved), R.color.k2go_teal);
+                }
+                @Override public void onErr(int code) {
+                    if (!isAdded()) return;
+                    int msg = code == 401 ? R.string.k2go_auth_bad
+                            : code == 403 ? R.string.k2go_auth_noperm : R.string.k2go_auth_failed;
+                    setStatus(status, getString(msg), R.color.k2go_clay);
+                }
+            });
+        });
+
+        reset.setOnClickListener(v -> sw.setChecked(false));   // the switch listener does the revert
+
+        // Initial state: switch reflects default (off) vs custom (on); username prefilled either way.
+        CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
+            @Override public void onOk(String user, boolean isDefault) {
+                if (!isAdded()) return;
+                username.setText(user);
+                suppress[0] = true;
+                sw.setChecked(!isDefault);
+                suppress[0] = false;
+                fields.setVisibility(isDefault ? View.GONE : View.VISIBLE);
+                offGroup.setVisibility(isDefault ? View.VISIBLE : View.GONE);
+                refreshSave.run();
+            }
+            @Override public void onErr() {
+                if (!isAdded()) return;
+                // Surface on `note` (always present) — `status` lives inside the fields, hidden in default state.
+                note.setText(getString(R.string.k2go_auth_load_failed));
+                note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
+                note.setVisibility(View.VISIBLE);
+            }
+        });
+        probeService(service, reachable -> { if (isAdded()) note.setVisibility(reachable ? View.GONE : View.VISIBLE); });
+    }
+
+    /** Wire the Material "visibility" eye as the end drawable inside a password field (tap to toggle).
+     *  The icons ship white-filled (repo convention) and are tinted to the muted colour at usage. */
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    private void attachEyeToggle(final EditText field) {
+        final android.content.res.ColorStateList tint = android.content.res.ColorStateList.valueOf(
+                ContextCompat.getColor(field.getContext(), R.color.k2go_muted));
+        field.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.outline_visibility_24, 0);
+        androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(field, tint);
+        field.setOnTouchListener((v, ev) -> {
+            if (ev.getAction() != android.view.MotionEvent.ACTION_UP) return false;
+            android.graphics.drawable.Drawable d = field.getCompoundDrawablesRelative()[2];
+            if (d == null) return false;
+            int dw = d.getBounds().width();
+            // The end drawable sits on the right in LTR and on the left in RTL; hit-test the correct edge.
+            boolean rtl = field.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+            boolean hit = rtl
+                    ? ev.getX() <= field.getPaddingStart() + dw
+                    : ev.getX() >= field.getWidth() - field.getPaddingEnd() - dw;
+            if (!hit) return false;
+            boolean hidden = field.getTransformationMethod() != null;
+            if (hidden) {
+                field.setTransformationMethod(null);
+                field.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.outline_visibility_off_24, 0);
+            } else {
+                field.setTransformationMethod(android.text.method.PasswordTransformationMethod.getInstance());
+                field.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.outline_visibility_24, 0);
+            }
+            androidx.core.widget.TextViewCompat.setCompoundDrawableTintList(field, tint);
+            field.setSelection(field.getText().length());
+            v.performClick();
+            return true;
+        });
+    }
+
+    /** Best-effort reachability probe of a service page (calibre → /books/, kolibri → /kolibri/). */
+    private void probeService(String service, Probe cb) {
+        final String endpoint = "calibre".equals(service) ? "books" : service;
+        final String url = org.iiab.controller.config.BoxEndpoints.BASE + "/" + endpoint + "/";
+        final android.os.Handler main = new android.os.Handler(android.os.Looper.getMainLooper());
+        org.iiab.controller.util.AppExecutors.get().io().execute(() -> {
+            boolean ok = false;
+            java.net.HttpURLConnection c = null;
+            try {
+                c = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+                c.setConnectTimeout(2500);
+                c.setReadTimeout(2500);
+                int code = c.getResponseCode();
+                ok = code >= 200 && code < 500;   // any answer (even 401/403) means the service is up
+            } catch (Exception ignore) {
+            } finally {
+                if (c != null) c.disconnect();
+            }
+            final boolean r = ok;
+            main.post(() -> cb.onResult(r));
+        });
+    }
+
+    private interface Probe { void onResult(boolean reachable); }
+
+    private void setStatus(TextView status, String text, int colorRes) {
+        status.setText(text);
+        status.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
+        status.setVisibility(View.VISIBLE);
     }
 
     private TextView dnsText(Context ctx, String s, int appearance, int colorRes) {

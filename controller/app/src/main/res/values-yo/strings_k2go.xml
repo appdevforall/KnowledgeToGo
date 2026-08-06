@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">ÀWỌN ỌMỌDÉ</string>
     <string name="k2go_zc_count_items">%1$d nǹkan</string>
     <string name="k2go_zc_count_results">%1$d àbájáde</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Ìfọwọ́sí</string>
+    <string name="k2go_settings_authentication_sub">Ìwọlé fún Ìwé àti Ẹ̀kọ́</string>
+    <string name="k2go_auth_hint">Àwọn ìwọlé tí K2Go ń lò fún Ìwé àti Ẹ̀kọ́. Ṣàtúnṣe ọ̀kan bí ọ̀rọ̀ìgbaniwọlé iṣẹ́ rẹ̀ bá yí padà.</string>
+    <string name="k2go_auth_username">Orúkọ olùmúlò</string>
+    <string name="k2go_auth_password">Ọ̀rọ̀ìgbaniwọlé</string>
+    <string name="k2go_auth_save">Fipamọ́</string>
+    <string name="k2go_auth_reset">Tún padà sí àbùdá ẹ̀rọ</string>
+    <string name="k2go_auth_using_default">Ìwọlé àbùdá ẹ̀rọ ni à ń lò.</string>
+    <string name="k2go_auth_need_both">Tẹ orúkọ olùmúlò àti ọ̀rọ̀ìgbaniwọlé</string>
+    <string name="k2go_auth_saving">Ń fipamọ́…</string>
+    <string name="k2go_auth_saved">Ti fipamọ́</string>
+    <string name="k2go_auth_verified">Ti ṣàyẹ̀wò tí a sì fipamọ́</string>
+    <string name="k2go_auth_bad">Orúkọ olùmúlò tàbí ọ̀rọ̀ìgbaniwọlé kò tọ́</string>
+    <string name="k2go_auth_noperm">Àkáǹtì yẹn kò lè ṣàkóso àkóónú</string>
+    <string name="k2go_auth_failed">Kò lè fipamọ́ — gbìyànjú lẹ́ẹ̀kansí</string>
+    <string name="k2go_auth_load_failed">Kò lè gbé wọlé — ṣé iṣẹ́ náà ń ṣiṣẹ́?</string>
+    <string name="k2go_auth_svc_books">Ka ìwé</string>
+    <string name="k2go_auth_svc_courses">Kópa nínú àwọn ẹ̀kọ́</string>
+    <string name="k2go_auth_custom_toggle">Lo ìwọlé àdáni</string>
+    <string name="k2go_auth_not_running">Iṣẹ́ yìí kò tíì ń ṣiṣẹ́. A ó fi àwọn àyípadà pamọ́ báyìí, wọn yóò sì ṣiṣẹ́ nígbà tí ó bá ti fi sórí ẹ̀rọ tí ó sì ń ṣiṣẹ́.</string>
+    <string name="k2go_auth_list_note">Àwọn iṣẹ́ tí a kò tíì fi sórí ẹ̀rọ ṣì wà ní àrọ́wọ́tó — o lè ṣàkóso ìwọlé ṣáájú. A ó tọ́jú àwọn ẹ̀rí ìdánimọ̀ sórí ẹ̀rọ yìí.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · ìwọlé tí K2Go ń lò láti ṣí àwọn ìwé rẹ.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · ìwọlé tí K2Go ń lò láti ṣí àwọn ẹ̀kọ́ rẹ.</string>
+    <string name="k2go_auth_toggle_hint">Tan ìwọlé àdáni nìkan bí ọ̀rọ̀ìgbaniwọlé bá yí padà.</string>
+    <string name="k2go_auth_eye_hint">Fọwọ́ kàn ojú láti fi hàn.</string>
+    <string name="k2go_auth_chip_default">Àbùdá</string>
+    <string name="k2go_auth_chip_custom">Àdáni</string>
+    <string name="k2go_auth_chip_notinstalled">Kò tíì fi sórí ẹ̀rọ</string>
 </resources>

@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">बच्चे</string>
     <string name="k2go_zc_count_items">%1$d आइटम</string>
     <string name="k2go_zc_count_results">%1$d परिणाम</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">प्रमाणीकरण</string>
+    <string name="k2go_settings_authentication_sub">पुस्तकें और पाठ्यक्रम के लिए साइन-इन</string>
+    <string name="k2go_auth_hint">K2Go किताबों और कोर्स के लिए जिन साइन-इन का उपयोग करता है। किसी सेवा का पासवर्ड बदलने पर उसे अपडेट करें।</string>
+    <string name="k2go_auth_username">उपयोगकर्ता नाम</string>
+    <string name="k2go_auth_password">पासवर्ड</string>
+    <string name="k2go_auth_save">सहेजें</string>
+    <string name="k2go_auth_reset">बॉक्स के डिफ़ॉल्ट पर रीसेट करें</string>
+    <string name="k2go_auth_using_default">बॉक्स का डिफ़ॉल्ट साइन-इन उपयोग हो रहा है।</string>
+    <string name="k2go_auth_need_both">उपयोगकर्ता नाम और पासवर्ड दर्ज करें</string>
+    <string name="k2go_auth_saving">सहेजा जा रहा है…</string>
+    <string name="k2go_auth_saved">सहेजा गया</string>
+    <string name="k2go_auth_verified">सत्यापित और सहेजा गया</string>
+    <string name="k2go_auth_bad">गलत उपयोगकर्ता नाम या पासवर्ड</string>
+    <string name="k2go_auth_noperm">यह खाता सामग्री प्रबंधित नहीं कर सकता</string>
+    <string name="k2go_auth_failed">सहेजा नहीं जा सका — फिर से प्रयास करें</string>
+    <string name="k2go_auth_load_failed">लोड नहीं हो सका — क्या सेवा चल रही है?</string>
+    <string name="k2go_auth_svc_books">किताब पढ़ें</string>
+    <string name="k2go_auth_svc_courses">कोर्स करें</string>
+    <string name="k2go_auth_custom_toggle">कस्टम साइन-इन का उपयोग करें</string>
+    <string name="k2go_auth_not_running">यह सेवा अभी चालू नहीं है। बदलाव अभी सहेजे जाते हैं और इसके इंस्टॉल होकर चालू होने पर लागू होंगे।</string>
+    <string name="k2go_auth_list_note">बिना इंस्टॉल सेवाएँ भी पहुँच में रहती हैं — आप साइन-इन पहले से सेट कर सकते हैं। क्रेडेंशियल इस डिवाइस पर सहेजे जाते हैं।</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · वह साइन-इन जिसे K2Go आपकी किताबें खोलने के लिए उपयोग करता है।</string>
+    <string name="k2go_auth_sub_courses">Kolibri · वह साइन-इन जिसे K2Go आपके कोर्स खोलने के लिए उपयोग करता है।</string>
+    <string name="k2go_auth_toggle_hint">कस्टम साइन-इन तभी चालू करें जब पासवर्ड बदला गया हो।</string>
+    <string name="k2go_auth_eye_hint">इसे दिखाने के लिए आँख पर टैप करें।</string>
+    <string name="k2go_auth_chip_default">डिफ़ॉल्ट</string>
+    <string name="k2go_auth_chip_custom">कस्टम</string>
+    <string name="k2go_auth_chip_notinstalled">इंस्टॉल नहीं है</string>
 </resources>

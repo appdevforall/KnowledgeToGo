@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">WATOTO</string>
     <string name="k2go_zc_count_items">vipengele %1$d</string>
     <string name="k2go_zc_count_results">matokeo %1$d</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Uthibitishaji</string>
+    <string name="k2go_settings_authentication_sub">Kuingia kwa Vitabu na Kozi</string>
+    <string name="k2go_auth_hint">Maingizo ambayo K2Go hutumia kwa Vitabu na Kozi. Sasisha moja ikiwa nenosiri la huduma yake limebadilika.</string>
+    <string name="k2go_auth_username">Jina la mtumiaji</string>
+    <string name="k2go_auth_password">Nenosiri</string>
+    <string name="k2go_auth_save">Hifadhi</string>
+    <string name="k2go_auth_reset">Rejesha kwa chaguo-msingi la kisanduku</string>
+    <string name="k2go_auth_using_default">Inatumia ingizo chaguo-msingi la kisanduku.</string>
+    <string name="k2go_auth_need_both">Weka jina la mtumiaji na nenosiri</string>
+    <string name="k2go_auth_saving">Inahifadhi…</string>
+    <string name="k2go_auth_saved">Imehifadhiwa</string>
+    <string name="k2go_auth_verified">Imethibitishwa na kuhifadhiwa</string>
+    <string name="k2go_auth_bad">Jina la mtumiaji au nenosiri si sahihi</string>
+    <string name="k2go_auth_noperm">Akaunti hiyo haiwezi kudhibiti maudhui</string>
+    <string name="k2go_auth_failed">Imeshindwa kuhifadhi — jaribu tena</string>
+    <string name="k2go_auth_load_failed">Imeshindwa kupakia — je, huduma inafanya kazi?</string>
+    <string name="k2go_auth_svc_books">Soma kitabu</string>
+    <string name="k2go_auth_svc_courses">Chukua kozi</string>
+    <string name="k2go_auth_custom_toggle">Tumia ingizo maalum</string>
+    <string name="k2go_auth_not_running">Huduma hii bado haijaanza kufanya kazi. Mabadiliko yanahifadhiwa sasa na yataanza kutumika mara itakaposakinishwa na kuanza kufanya kazi.</string>
+    <string name="k2go_auth_list_note">Huduma zisizosakinishwa hubaki zinafikika — unaweza kuweka ingizo mapema. Vitambulisho huhifadhiwa kwenye kifaa hiki.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · ingizo ambalo K2Go hutumia kufungua vitabu vyako.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · ingizo ambalo K2Go hutumia kufungua kozi zako.</string>
+    <string name="k2go_auth_toggle_hint">Washa ingizo maalum tu ikiwa nenosiri limebadilika.</string>
+    <string name="k2go_auth_eye_hint">Gusa jicho ili kuionyesha.</string>
+    <string name="k2go_auth_chip_default">Chaguo-msingi</string>
+    <string name="k2go_auth_chip_custom">Maalum</string>
+    <string name="k2go_auth_chip_notinstalled">Haijasakinishwa</string>
 </resources>

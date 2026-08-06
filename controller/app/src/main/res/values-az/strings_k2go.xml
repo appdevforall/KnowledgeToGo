@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">UŞAQLAR</string>
     <string name="k2go_zc_count_items">%1$d element</string>
     <string name="k2go_zc_count_results">%1$d nəticə</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Kimlik doğrulama</string>
+    <string name="k2go_settings_authentication_sub">Kitablar və Kurslar üçün girişlər</string>
+    <string name="k2go_auth_hint">K2Go-nun Kitablar və Kurslar üçün istifadə etdiyi girişlər. Xidmətin parolu dəyişibsə birini yeniləyin.</string>
+    <string name="k2go_auth_username">İstifadəçi adı</string>
+    <string name="k2go_auth_password">Parol</string>
+    <string name="k2go_auth_save">Yadda saxla</string>
+    <string name="k2go_auth_reset">Qutunun standartına sıfırla</string>
+    <string name="k2go_auth_using_default">Qutunun standart girişi istifadə olunur.</string>
+    <string name="k2go_auth_need_both">İstifadəçi adı və parol daxil edin</string>
+    <string name="k2go_auth_saving">Yadda saxlanılır…</string>
+    <string name="k2go_auth_saved">Yadda saxlanıldı</string>
+    <string name="k2go_auth_verified">Doğrulandı və saxlanıldı</string>
+    <string name="k2go_auth_bad">Yanlış istifadəçi adı və ya parol</string>
+    <string name="k2go_auth_noperm">Bu hesab məzmunu idarə edə bilmir</string>
+    <string name="k2go_auth_failed">Saxlanmadı — yenidən cəhd edin</string>
+    <string name="k2go_auth_load_failed">Yüklənmədi — xidmət işləyirmi?</string>
+    <string name="k2go_auth_svc_books">Kitab oxu</string>
+    <string name="k2go_auth_svc_courses">Kurslar keç</string>
+    <string name="k2go_auth_custom_toggle">Fərdi giriş istifadə edin</string>
+    <string name="k2go_auth_not_running">Bu xidmət hələ işləmir. Dəyişikliklər indi saxlanılır və o quraşdırılıb işə düşdükdə tətbiq olunur.</string>
+    <string name="k2go_auth_list_note">Quraşdırılmamış xidmətlərə çıxış mümkündür — girişi əvvəlcədən təyin edə bilərsiniz. Etimadnamələr bu cihazda saxlanılır.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go-nun kitablarınızı açmaq üçün istifadə etdiyi giriş.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go-nun kurslarınızı açmaq üçün istifadə etdiyi giriş.</string>
+    <string name="k2go_auth_toggle_hint">Yalnız parol dəyişdirilibsə fərdi girişi aktiv edin.</string>
+    <string name="k2go_auth_eye_hint">Göstərmək üçün gözə toxunun.</string>
+    <string name="k2go_auth_chip_default">Standart</string>
+    <string name="k2go_auth_chip_custom">Fərdi</string>
+    <string name="k2go_auth_chip_notinstalled">Quraşdırılmayıb</string>
 </resources>

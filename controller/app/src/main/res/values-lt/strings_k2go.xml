@@ -736,4 +736,33 @@
     <string name="k2go_zim_grp_kids_hdr">VAIKAI</string>
     <string name="k2go_zc_count_items">%1$d elementų</string>
     <string name="k2go_zc_count_results">%1$d rezultatų</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Tapatybės nustatymas</string>
+    <string name="k2go_settings_authentication_sub">Prisijungimai prie Knygų ir Kursų</string>
+    <string name="k2go_auth_hint">Prisijungimai, kuriuos K2Go naudoja Knygoms ir Kursams. Atnaujinkite vieną, jei pasikeitė tos paslaugos slaptažodis.</string>
+    <string name="k2go_auth_username">Naudotojo vardas</string>
+    <string name="k2go_auth_password">Slaptažodis</string>
+    <string name="k2go_auth_save">Įrašyti</string>
+    <string name="k2go_auth_reset">Atkurti dėžutės numatytąjį</string>
+    <string name="k2go_auth_using_default">Naudojamas numatytasis dėžutės prisijungimas.</string>
+    <string name="k2go_auth_need_both">Įveskite naudotojo vardą ir slaptažodį</string>
+    <string name="k2go_auth_saving">Įrašoma…</string>
+    <string name="k2go_auth_saved">Įrašyta</string>
+    <string name="k2go_auth_verified">Patikrinta ir įrašyta</string>
+    <string name="k2go_auth_bad">Neteisingas naudotojo vardas arba slaptažodis</string>
+    <string name="k2go_auth_noperm">Ši paskyra negali tvarkyti turinio</string>
+    <string name="k2go_auth_failed">Nepavyko įrašyti — bandykite dar kartą</string>
+    <string name="k2go_auth_load_failed">Nepavyko įkelti — ar paslauga veikia?</string>
+    <string name="k2go_auth_svc_books">Skaityti knygą</string>
+    <string name="k2go_auth_svc_courses">Mokytis kursuose</string>
+    <string name="k2go_auth_custom_toggle">Naudoti pasirinktinį prisijungimą</string>
+    <string name="k2go_auth_not_running">Ši paslauga dar neveikia. Pakeitimai išsaugomi dabar ir įsigalioja, kai ji bus įdiegta ir paleista.</string>
+    <string name="k2go_auth_list_note">Neįdiegtos paslaugos lieka pasiekiamos — prisijungimą galite nustatyti iš anksto. Prisijungimo duomenys saugomi šiame įrenginyje.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · prisijungimas, kurį K2Go naudoja jūsų knygoms atverti.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · prisijungimas, kurį K2Go naudoja jūsų kursams atverti.</string>
+    <string name="k2go_auth_toggle_hint">Įjunkite pasirinktinį prisijungimą tik jei buvo pakeistas slaptažodis.</string>
+    <string name="k2go_auth_eye_hint">Palieskite akį, kad parodytumėte.</string>
+    <string name="k2go_auth_chip_default">Numatytasis</string>
+    <string name="k2go_auth_chip_custom">Pasirinktinis</string>
+    <string name="k2go_auth_chip_notinstalled">Neįdiegta</string>
 </resources>

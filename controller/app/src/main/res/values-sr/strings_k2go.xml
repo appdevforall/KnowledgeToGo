@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">ДЕЦА</string>
     <string name="k2go_zc_count_items">%1$d ставки</string>
     <string name="k2go_zc_count_results">%1$d резултата</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Потврда идентитета</string>
+    <string name="k2go_settings_authentication_sub">Пријаве за Књиге и Курсеве</string>
+    <string name="k2go_auth_hint">Пријаве које K2Go користи за Књиге и Курсеве. Ажурирајте једну ако је лозинка те услуге промењена.</string>
+    <string name="k2go_auth_username">Корисничко име</string>
+    <string name="k2go_auth_password">Лозинка</string>
+    <string name="k2go_auth_save">Сачувај</string>
+    <string name="k2go_auth_reset">Врати на подразумевано за уређај</string>
+    <string name="k2go_auth_using_default">Користи се подразумевана пријава уређаја.</string>
+    <string name="k2go_auth_need_both">Унесите корисничко име и лозинку</string>
+    <string name="k2go_auth_saving">Чување…</string>
+    <string name="k2go_auth_saved">Сачувано</string>
+    <string name="k2go_auth_verified">Проверено и сачувано</string>
+    <string name="k2go_auth_bad">Погрешно корисничко име или лозинка</string>
+    <string name="k2go_auth_noperm">Овај налог не може да управља садржајем</string>
+    <string name="k2go_auth_failed">Чување није успело — покушајте поново</string>
+    <string name="k2go_auth_load_failed">Учитавање није успело — да ли услуга ради?</string>
+    <string name="k2go_auth_svc_books">Прочитајте књигу</string>
+    <string name="k2go_auth_svc_courses">Похађајте курсеве</string>
+    <string name="k2go_auth_custom_toggle">Користи прилагођену пријаву</string>
+    <string name="k2go_auth_not_running">Ова услуга још није покренута. Промене се сада чувају и примењују се чим буде инсталирана и покренута.</string>
+    <string name="k2go_auth_list_note">Неинсталиране услуге остају доступне — пријаву можете унапред подесити. Акредитиви се чувају на овом уређају.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · пријава коју K2Go користи за отварање ваших књига.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · пријава коју K2Go користи за отварање ваших курсева.</string>
+    <string name="k2go_auth_toggle_hint">Укључите прилагођену пријаву само ако је лозинка промењена.</string>
+    <string name="k2go_auth_eye_hint">Додирните око да бисте је приказали.</string>
+    <string name="k2go_auth_chip_default">Подразумевано</string>
+    <string name="k2go_auth_chip_custom">Прилагођено</string>
+    <string name="k2go_auth_chip_notinstalled">Није инсталирано</string>
 </resources>

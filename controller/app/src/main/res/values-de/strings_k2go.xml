@@ -727,4 +727,33 @@
     <string name="k2go_zim_grp_kids_hdr">KINDER</string>
     <string name="k2go_zc_count_items">%1$d Elemente</string>
     <string name="k2go_zc_count_results">%1$d Ergebnisse</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Authentifizierung</string>
+    <string name="k2go_settings_authentication_sub">Anmeldungen für Bücher und Kurse</string>
+    <string name="k2go_auth_hint">Anmeldungen, die K2Go für Bücher und Kurse verwendet. Aktualisiere eine, wenn sich das Passwort ihres Dienstes geändert hat.</string>
+    <string name="k2go_auth_username">Benutzername</string>
+    <string name="k2go_auth_password">Passwort</string>
+    <string name="k2go_auth_save">Speichern</string>
+    <string name="k2go_auth_reset">Auf Box-Standard zurücksetzen</string>
+    <string name="k2go_auth_using_default">Standard-Anmeldung der Box wird verwendet.</string>
+    <string name="k2go_auth_need_both">Benutzername und Passwort eingeben</string>
+    <string name="k2go_auth_saving">Wird gespeichert…</string>
+    <string name="k2go_auth_saved">Gespeichert</string>
+    <string name="k2go_auth_verified">Geprüft und gespeichert</string>
+    <string name="k2go_auth_bad">Falscher Benutzername oder Passwort</string>
+    <string name="k2go_auth_noperm">Dieses Konto kann keine Inhalte verwalten</string>
+    <string name="k2go_auth_failed">Speichern fehlgeschlagen — erneut versuchen</string>
+    <string name="k2go_auth_load_failed">Laden fehlgeschlagen — läuft der Dienst?</string>
+    <string name="k2go_auth_svc_books">Ein Buch lesen</string>
+    <string name="k2go_auth_svc_courses">Kurse belegen</string>
+    <string name="k2go_auth_custom_toggle">Eigene Anmeldung verwenden</string>
+    <string name="k2go_auth_not_running">Dieser Dienst läuft noch nicht. Änderungen werden jetzt gespeichert und wirksam, sobald er installiert ist und läuft.</string>
+    <string name="k2go_auth_list_note">Nicht installierte Dienste bleiben erreichbar — du kannst die Anmeldung vorab festlegen. Die Zugangsdaten werden auf diesem Gerät gespeichert.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · die Anmeldung, mit der K2Go deine Bücher öffnet.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · die Anmeldung, mit der K2Go deine Kurse öffnet.</string>
+    <string name="k2go_auth_toggle_hint">Aktiviere eine eigene Anmeldung nur, wenn das Passwort geändert wurde.</string>
+    <string name="k2go_auth_eye_hint">Zum Anzeigen auf das Auge tippen.</string>
+    <string name="k2go_auth_chip_default">Standard</string>
+    <string name="k2go_auth_chip_custom">Eigene</string>
+    <string name="k2go_auth_chip_notinstalled">Nicht installiert</string>
 </resources>

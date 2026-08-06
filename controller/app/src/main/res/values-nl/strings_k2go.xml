@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">KINDEREN</string>
     <string name="k2go_zc_count_items">%1$d items</string>
     <string name="k2go_zc_count_results">%1$d resultaten</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Verificatie</string>
+    <string name="k2go_settings_authentication_sub">Aanmeldingen voor Boeken en Cursussen</string>
+    <string name="k2go_auth_hint">De aanmeldingen die K2Go gebruikt voor Boeken en Cursussen. Werk er een bij als het wachtwoord van die service is gewijzigd.</string>
+    <string name="k2go_auth_username">Gebruikersnaam</string>
+    <string name="k2go_auth_password">Wachtwoord</string>
+    <string name="k2go_auth_save">Opslaan</string>
+    <string name="k2go_auth_reset">Terugzetten naar standaard van de box</string>
+    <string name="k2go_auth_using_default">Standaardaanmelding van de box wordt gebruikt.</string>
+    <string name="k2go_auth_need_both">Voer een gebruikersnaam en wachtwoord in</string>
+    <string name="k2go_auth_saving">Opslaan…</string>
+    <string name="k2go_auth_saved">Opgeslagen</string>
+    <string name="k2go_auth_verified">Geverifieerd en opgeslagen</string>
+    <string name="k2go_auth_bad">Onjuiste gebruikersnaam of wachtwoord</string>
+    <string name="k2go_auth_noperm">Dat account kan geen inhoud beheren</string>
+    <string name="k2go_auth_failed">Opslaan mislukt — probeer opnieuw</string>
+    <string name="k2go_auth_load_failed">Laden mislukt — draait de service?</string>
+    <string name="k2go_auth_svc_books">Een boek lezen</string>
+    <string name="k2go_auth_svc_courses">Cursussen volgen</string>
+    <string name="k2go_auth_custom_toggle">Aangepaste aanmelding gebruiken</string>
+    <string name="k2go_auth_not_running">Deze service draait nog niet. Wijzigingen worden nu opgeslagen en worden van kracht zodra deze is geïnstalleerd en draait.</string>
+    <string name="k2go_auth_list_note">Niet-geïnstalleerde services blijven bereikbaar — je kunt de aanmelding vooraf instellen. De inloggegevens worden op dit apparaat opgeslagen.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · de aanmelding die K2Go gebruikt om je boeken te openen.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · de aanmelding die K2Go gebruikt om je cursussen te openen.</string>
+    <string name="k2go_auth_toggle_hint">Schakel een aangepaste aanmelding alleen in als het wachtwoord is gewijzigd.</string>
+    <string name="k2go_auth_eye_hint">Tik op het oog om het te tonen.</string>
+    <string name="k2go_auth_chip_default">Standaard</string>
+    <string name="k2go_auth_chip_custom">Aangepast</string>
+    <string name="k2go_auth_chip_notinstalled">Niet geïnstalleerd</string>
 </resources>

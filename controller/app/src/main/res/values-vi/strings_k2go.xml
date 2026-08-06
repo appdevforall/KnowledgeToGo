@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">TRẺ EM</string>
     <string name="k2go_zc_count_items">%1$d mục</string>
     <string name="k2go_zc_count_results">%1$d kết quả</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">Xác thực</string>
+    <string name="k2go_settings_authentication_sub">Đăng nhập cho Sách và Khóa học</string>
+    <string name="k2go_auth_hint">Các thông tin đăng nhập K2Go dùng cho Sách và Khóa học. Cập nhật một mục nếu mật khẩu dịch vụ đã thay đổi.</string>
+    <string name="k2go_auth_username">Tên đăng nhập</string>
+    <string name="k2go_auth_password">Mật khẩu</string>
+    <string name="k2go_auth_save">Lưu</string>
+    <string name="k2go_auth_reset">Đặt lại về mặc định của hộp</string>
+    <string name="k2go_auth_using_default">Đang dùng thông tin đăng nhập mặc định của hộp.</string>
+    <string name="k2go_auth_need_both">Nhập tên đăng nhập và mật khẩu</string>
+    <string name="k2go_auth_saving">Đang lưu…</string>
+    <string name="k2go_auth_saved">Đã lưu</string>
+    <string name="k2go_auth_verified">Đã xác minh và lưu</string>
+    <string name="k2go_auth_bad">Sai tên đăng nhập hoặc mật khẩu</string>
+    <string name="k2go_auth_noperm">Tài khoản đó không thể quản lý nội dung</string>
+    <string name="k2go_auth_failed">Không lưu được — thử lại</string>
+    <string name="k2go_auth_load_failed">Không tải được — dịch vụ có đang chạy không?</string>
+    <string name="k2go_auth_svc_books">Đọc sách</string>
+    <string name="k2go_auth_svc_courses">Học khóa học</string>
+    <string name="k2go_auth_custom_toggle">Dùng thông tin đăng nhập tùy chỉnh</string>
+    <string name="k2go_auth_not_running">Dịch vụ này chưa chạy. Các thay đổi được lưu ngay bây giờ và có hiệu lực khi dịch vụ được cài đặt và chạy.</string>
+    <string name="k2go_auth_list_note">Các dịch vụ chưa cài đặt vẫn có thể truy cập — bạn có thể đặt trước thông tin đăng nhập. Thông tin xác thực được lưu trên thiết bị này.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · thông tin đăng nhập K2Go dùng để mở sách của bạn.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · thông tin đăng nhập K2Go dùng để mở khóa học của bạn.</string>
+    <string name="k2go_auth_toggle_hint">Chỉ bật thông tin đăng nhập tùy chỉnh nếu mật khẩu đã thay đổi.</string>
+    <string name="k2go_auth_eye_hint">Chạm vào biểu tượng mắt để hiển thị.</string>
+    <string name="k2go_auth_chip_default">Mặc định</string>
+    <string name="k2go_auth_chip_custom">Tùy chỉnh</string>
+    <string name="k2go_auth_chip_notinstalled">Chưa cài đặt</string>
 </resources>

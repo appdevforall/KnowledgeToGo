@@ -726,4 +726,33 @@
     <string name="k2go_zim_grp_kids_hdr">儿童</string>
     <string name="k2go_zc_count_items">%1$d 个项目</string>
     <string name="k2go_zc_count_results">%1$d 个结果</string>
+    <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
+    <string name="k2go_settings_authentication">身份验证</string>
+    <string name="k2go_settings_authentication_sub">图书和课程的登录信息</string>
+    <string name="k2go_auth_hint">K2Go 用于图书和课程的登录。如果某项服务的密码已更改，请更新对应的登录。</string>
+    <string name="k2go_auth_username">用户名</string>
+    <string name="k2go_auth_password">密码</string>
+    <string name="k2go_auth_save">保存</string>
+    <string name="k2go_auth_reset">重置为设备默认值</string>
+    <string name="k2go_auth_using_default">正在使用设备默认登录。</string>
+    <string name="k2go_auth_need_both">请输入用户名和密码</string>
+    <string name="k2go_auth_saving">正在保存…</string>
+    <string name="k2go_auth_saved">已保存</string>
+    <string name="k2go_auth_verified">已验证并保存</string>
+    <string name="k2go_auth_bad">用户名或密码错误</string>
+    <string name="k2go_auth_noperm">该账户无法管理内容</string>
+    <string name="k2go_auth_failed">保存失败 — 请重试</string>
+    <string name="k2go_auth_load_failed">加载失败 — 服务在运行吗？</string>
+    <string name="k2go_auth_svc_books">读一本书</string>
+    <string name="k2go_auth_svc_courses">学习课程</string>
+    <string name="k2go_auth_custom_toggle">使用自定义登录</string>
+    <string name="k2go_auth_not_running">此服务尚未运行。更改会立即保存，并在其安装并运行后生效。</string>
+    <string name="k2go_auth_list_note">未安装的服务仍可访问 — 您可以预先设置登录。凭据存储在本设备上。</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go 用来打开您书籍的登录。</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go 用来打开您课程的登录。</string>
+    <string name="k2go_auth_toggle_hint">仅当密码已更改时才开启自定义登录。</string>
+    <string name="k2go_auth_eye_hint">点按眼睛图标即可显示。</string>
+    <string name="k2go_auth_chip_default">默认</string>
+    <string name="k2go_auth_chip_custom">自定义</string>
+    <string name="k2go_auth_chip_notinstalled">未安装</string>
 </resources>
