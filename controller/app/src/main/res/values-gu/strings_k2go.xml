@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">પ્રમાણીકરણ</string>
     <string name="k2go_settings_authentication_sub">પુસ્તકો અને અભ્યાસક્રમો માટે સાઇન-ઇન</string>
-    <string name="k2go_auth_hint">બોક્સ પુસ્તકો અને અભ્યાસક્રમો માટે વાપરે છે તે એડમિન સાઇન-ઇન. કોઈ સેવાનો પાસવર્ડ બદલો તો અહીં અપડેટ કરો.</string>
+    <string name="k2go_auth_hint">K2Go પુસ્તકો અને કોર્સ માટે વાપરે તે સાઇન-ઇન. કોઈ સેવાનો પાસવર્ડ બદલાય તો તેને અપડેટ કરો.</string>
     <string name="k2go_auth_username">વપરાશકર્તાનામ</string>
     <string name="k2go_auth_password">પાસવર્ડ</string>
-    <string name="k2go_auth_show">બતાવો</string>
-    <string name="k2go_auth_hide">છુપાવો</string>
     <string name="k2go_auth_save">સાચવો</string>
-    <string name="k2go_auth_reset">ડિફોલ્ટ પર રીસેટ કરો</string>
-    <string name="k2go_auth_using_default">બોક્સનું ડિફોલ્ટ વપરાય છે</string>
-    <string name="k2go_auth_custom">કસ્ટમ સાઇન-ઇન</string>
+    <string name="k2go_auth_reset">બૉક્સના ડિફૉલ્ટ પર રીસેટ કરો</string>
+    <string name="k2go_auth_using_default">બૉક્સનું ડિફૉલ્ટ સાઇન-ઇન વપરાય છે.</string>
     <string name="k2go_auth_need_both">વપરાશકર્તાનામ અને પાસવર્ડ દાખલ કરો</string>
     <string name="k2go_auth_saving">સાચવી રહ્યું છે…</string>
     <string name="k2go_auth_saved">સાચવ્યું</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">ખોટું વપરાશકર્તાનામ અથવા પાસવર્ડ</string>
     <string name="k2go_auth_noperm">આ ખાતું સામગ્રી સંચાલિત કરી શકતું નથી</string>
     <string name="k2go_auth_failed">સાચવી શકાયું નહીં — ફરી પ્રયાસ કરો</string>
-    <string name="k2go_auth_reset_done">બોક્સના ડિફોલ્ટ પર રીસેટ થયું</string>
     <string name="k2go_auth_load_failed">લોડ થઈ શક્યું નહીં — સેવા ચાલુ છે?</string>
+    <string name="k2go_auth_svc_books">પુસ્તક વાંચો</string>
+    <string name="k2go_auth_svc_courses">કોર્સ કરો</string>
+    <string name="k2go_auth_custom_toggle">કસ્ટમ સાઇન-ઇન વાપરો</string>
+    <string name="k2go_auth_not_running">આ સેવા હજી ચાલુ નથી. ફેરફારો હમણાં સાચવાય છે અને તે ઇન્સ્ટોલ થઈને ચાલુ થાય ત્યારે લાગુ થશે.</string>
+    <string name="k2go_auth_list_note">ઇન્સ્ટૉલ ન થયેલી સેવાઓ પણ પહોંચમાં રહે છે — તમે સાઇન-ઇન અગાઉથી સેટ કરી શકો છો. ઓળખપત્રો આ ડિવાઇસ પર સંગ્રહાય છે.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go તમારાં પુસ્તકો ખોલવા જે સાઇન-ઇન વાપરે છે.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go તમારા કોર્સ ખોલવા જે સાઇન-ઇન વાપરે છે.</string>
+    <string name="k2go_auth_toggle_hint">પાસવર્ડ બદલાયો હોય તો જ કસ્ટમ સાઇન-ઇન ચાલુ કરો.</string>
+    <string name="k2go_auth_eye_hint">તે બતાવવા આંખ પર ટૅપ કરો.</string>
+    <string name="k2go_auth_chip_default">ડિફૉલ્ટ</string>
+    <string name="k2go_auth_chip_custom">કસ્ટમ</string>
+    <string name="k2go_auth_chip_notinstalled">ઇન્સ્ટૉલ થયેલ નથી</string>
 </resources>

@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autentikasi</string>
     <string name="k2go_settings_authentication_sub">Info masuk untuk Buku dan Kursus</string>
-    <string name="k2go_auth_hint">Info masuk admin yang box gunakan untuk Buku dan Kursus. Perbarui di sini jika Anda mengubah kata sandi layanan.</string>
+    <string name="k2go_auth_hint">Info masuk yang dipakai K2Go untuk Buku dan Kursus. Perbarui salah satu jika kata sandi layanannya berubah.</string>
     <string name="k2go_auth_username">Nama pengguna</string>
     <string name="k2go_auth_password">Kata sandi</string>
-    <string name="k2go_auth_show">Tampilkan</string>
-    <string name="k2go_auth_hide">Sembunyikan</string>
     <string name="k2go_auth_save">Simpan</string>
-    <string name="k2go_auth_reset">Setel ulang ke default</string>
-    <string name="k2go_auth_using_default">Menggunakan default box</string>
-    <string name="k2go_auth_custom">Info masuk khusus</string>
+    <string name="k2go_auth_reset">Setel ulang ke default kotak</string>
+    <string name="k2go_auth_using_default">Menggunakan info masuk default kotak.</string>
     <string name="k2go_auth_need_both">Masukkan nama pengguna dan kata sandi</string>
     <string name="k2go_auth_saving">Menyimpan…</string>
     <string name="k2go_auth_saved">Tersimpan</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">Nama pengguna atau kata sandi salah</string>
     <string name="k2go_auth_noperm">Akun itu tidak dapat mengelola konten</string>
     <string name="k2go_auth_failed">Gagal menyimpan — coba lagi</string>
-    <string name="k2go_auth_reset_done">Disetel ulang ke default box</string>
     <string name="k2go_auth_load_failed">Gagal memuat — apakah layanan berjalan?</string>
+    <string name="k2go_auth_svc_books">Baca buku</string>
+    <string name="k2go_auth_svc_courses">Ikuti kursus</string>
+    <string name="k2go_auth_custom_toggle">Gunakan info masuk khusus</string>
+    <string name="k2go_auth_not_running">Layanan ini belum berjalan. Perubahan disimpan sekarang dan berlaku setelah terpasang dan berjalan.</string>
+    <string name="k2go_auth_list_note">Layanan yang belum terpasang tetap dapat diakses — Anda bisa mengatur info masuk lebih dulu. Kredensial disimpan di perangkat ini.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · info masuk yang dipakai K2Go untuk membuka buku Anda.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · info masuk yang dipakai K2Go untuk membuka kursus Anda.</string>
+    <string name="k2go_auth_toggle_hint">Aktifkan info masuk khusus hanya jika kata sandi berubah.</string>
+    <string name="k2go_auth_eye_hint">Ketuk mata untuk menampilkannya.</string>
+    <string name="k2go_auth_chip_default">Default</string>
+    <string name="k2go_auth_chip_custom">Khusus</string>
+    <string name="k2go_auth_chip_notinstalled">Belum terpasang</string>
 </resources>

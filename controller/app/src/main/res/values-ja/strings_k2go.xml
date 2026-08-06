@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">認証</string>
     <string name="k2go_settings_authentication_sub">ブックスとコースのサインイン</string>
-    <string name="k2go_auth_hint">ブックスとコースでボックスが使う管理者サインイン。サービスのパスワードを変更したらここで更新してください。</string>
+    <string name="k2go_auth_hint">K2Go が本とコースに使うサインイン。サービスのパスワードが変わったら更新してください。</string>
     <string name="k2go_auth_username">ユーザー名</string>
     <string name="k2go_auth_password">パスワード</string>
-    <string name="k2go_auth_show">表示</string>
-    <string name="k2go_auth_hide">非表示</string>
     <string name="k2go_auth_save">保存</string>
-    <string name="k2go_auth_reset">デフォルトに戻す</string>
-    <string name="k2go_auth_using_default">ボックスのデフォルトを使用中</string>
-    <string name="k2go_auth_custom">カスタムサインイン</string>
+    <string name="k2go_auth_reset">ボックスの既定値に戻す</string>
+    <string name="k2go_auth_using_default">ボックスの既定のサインインを使用しています。</string>
     <string name="k2go_auth_need_both">ユーザー名とパスワードを入力してください</string>
     <string name="k2go_auth_saving">保存中…</string>
     <string name="k2go_auth_saved">保存しました</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">ユーザー名またはパスワードが違います</string>
     <string name="k2go_auth_noperm">このアカウントはコンテンツを管理できません</string>
     <string name="k2go_auth_failed">保存できませんでした — もう一度お試しください</string>
-    <string name="k2go_auth_reset_done">ボックスのデフォルトに戻しました</string>
     <string name="k2go_auth_load_failed">読み込めませんでした — サービスは動作していますか？</string>
+    <string name="k2go_auth_svc_books">本を読む</string>
+    <string name="k2go_auth_svc_courses">コースを受講</string>
+    <string name="k2go_auth_custom_toggle">カスタムサインインを使用する</string>
+    <string name="k2go_auth_not_running">このサービスはまだ実行されていません。変更は今すぐ保存され、インストールされて実行されると反映されます。</string>
+    <string name="k2go_auth_list_note">未インストールのサービスも利用可能です — サインインを事前に設定できます。認証情報はこの端末に保存されます。</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go が本を開くために使うサインイン。</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go がコースを開くために使うサインイン。</string>
+    <string name="k2go_auth_toggle_hint">パスワードが変更された場合のみ、カスタムサインインをオンにします。</string>
+    <string name="k2go_auth_eye_hint">目のアイコンをタップして表示します。</string>
+    <string name="k2go_auth_chip_default">デフォルト</string>
+    <string name="k2go_auth_chip_custom">カスタム</string>
+    <string name="k2go_auth_chip_notinstalled">未インストール</string>
 </resources>

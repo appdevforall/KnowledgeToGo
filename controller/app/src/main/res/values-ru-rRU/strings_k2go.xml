@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Аутентификация</string>
     <string name="k2go_settings_authentication_sub">Учётные данные для Книг и Курсов</string>
-    <string name="k2go_auth_hint">Учётные данные администратора, которые box использует для Книг и Курсов. Обновите их здесь, если изменили пароль сервиса.</string>
+    <string name="k2go_auth_hint">Входы, которые K2Go использует для Книг и Курсов. Обновите один, если пароль его службы изменился.</string>
     <string name="k2go_auth_username">Имя пользователя</string>
     <string name="k2go_auth_password">Пароль</string>
-    <string name="k2go_auth_show">Показать</string>
-    <string name="k2go_auth_hide">Скрыть</string>
     <string name="k2go_auth_save">Сохранить</string>
-    <string name="k2go_auth_reset">Сбросить по умолчанию</string>
-    <string name="k2go_auth_using_default">Используется значение по умолчанию</string>
-    <string name="k2go_auth_custom">Своя учётная запись</string>
+    <string name="k2go_auth_reset">Сбросить к настройке по умолчанию</string>
+    <string name="k2go_auth_using_default">Используется вход по умолчанию.</string>
     <string name="k2go_auth_need_both">Введите имя пользователя и пароль</string>
     <string name="k2go_auth_saving">Сохранение…</string>
     <string name="k2go_auth_saved">Сохранено</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">Неверное имя пользователя или пароль</string>
     <string name="k2go_auth_noperm">Эта учётная запись не может управлять контентом</string>
     <string name="k2go_auth_failed">Не удалось сохранить — повторите</string>
-    <string name="k2go_auth_reset_done">Сброшено к значению по умолчанию</string>
     <string name="k2go_auth_load_failed">Не удалось загрузить — сервис запущен?</string>
+    <string name="k2go_auth_svc_books">Читать книгу</string>
+    <string name="k2go_auth_svc_courses">Проходить курсы</string>
+    <string name="k2go_auth_custom_toggle">Использовать свой вход</string>
+    <string name="k2go_auth_not_running">Эта служба ещё не запущена. Изменения сохраняются сейчас и вступят в силу после её установки и запуска.</string>
+    <string name="k2go_auth_list_note">Неустановленные службы остаются доступными — вход можно задать заранее. Учётные данные хранятся на этом устройстве.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · вход, который K2Go использует для открытия ваших книг.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · вход, который K2Go использует для открытия ваших курсов.</string>
+    <string name="k2go_auth_toggle_hint">Включайте свой вход, только если пароль изменился.</string>
+    <string name="k2go_auth_eye_hint">Нажмите на глаз, чтобы показать.</string>
+    <string name="k2go_auth_chip_default">По умолчанию</string>
+    <string name="k2go_auth_chip_custom">Свой</string>
+    <string name="k2go_auth_chip_notinstalled">Не установлено</string>
 </resources>

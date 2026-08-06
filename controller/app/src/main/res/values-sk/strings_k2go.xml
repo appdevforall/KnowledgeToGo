@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Overenie</string>
     <string name="k2go_settings_authentication_sub">Prihlásenia pre Knihy a Kurzy</string>
-    <string name="k2go_auth_hint">Prihlasovacie údaje správcu, ktoré box používa pre Knihy a Kurzy. Aktualizujte ich tu, ak zmeníte heslo služby.</string>
+    <string name="k2go_auth_hint">Prihlásenia, ktoré K2Go používa pre Knihy a Kurzy. Aktualizujte niektoré, ak sa zmenilo heslo danej služby.</string>
     <string name="k2go_auth_username">Používateľské meno</string>
     <string name="k2go_auth_password">Heslo</string>
-    <string name="k2go_auth_show">Zobraziť</string>
-    <string name="k2go_auth_hide">Skryť</string>
     <string name="k2go_auth_save">Uložiť</string>
-    <string name="k2go_auth_reset">Obnoviť predvolené</string>
-    <string name="k2go_auth_using_default">Používa sa predvolená hodnota boxu</string>
-    <string name="k2go_auth_custom">Vlastné prihlásenie</string>
+    <string name="k2go_auth_reset">Obnoviť na predvolené nastavenie boxu</string>
+    <string name="k2go_auth_using_default">Používa sa predvolené prihlásenie boxu.</string>
     <string name="k2go_auth_need_both">Zadajte používateľské meno a heslo</string>
     <string name="k2go_auth_saving">Ukladanie…</string>
     <string name="k2go_auth_saved">Uložené</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">Nesprávne používateľské meno alebo heslo</string>
     <string name="k2go_auth_noperm">Tento účet nemôže spravovať obsah</string>
     <string name="k2go_auth_failed">Uloženie zlyhalo — skúste znova</string>
-    <string name="k2go_auth_reset_done">Obnovené na predvolenú hodnotu boxu</string>
     <string name="k2go_auth_load_failed">Načítanie zlyhalo — beží služba?</string>
+    <string name="k2go_auth_svc_books">Prečítať knihu</string>
+    <string name="k2go_auth_svc_courses">Absolvovať kurzy</string>
+    <string name="k2go_auth_custom_toggle">Použiť vlastné prihlásenie</string>
+    <string name="k2go_auth_not_running">Táto služba zatiaľ nebeží. Zmeny sa uložia teraz a prejavia sa, keď bude nainštalovaná a spustená.</string>
+    <string name="k2go_auth_list_note">Nenainštalované služby zostávajú dostupné — prihlásenie môžete nastaviť vopred. Prihlasovacie údaje sú uložené v tomto zariadení.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · prihlásenie, ktoré K2Go používa na otváranie vašich kníh.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · prihlásenie, ktoré K2Go používa na otváranie vašich kurzov.</string>
+    <string name="k2go_auth_toggle_hint">Vlastné prihlásenie zapnite, len ak sa zmenilo heslo.</string>
+    <string name="k2go_auth_eye_hint">Klepnutím na oko ho zobrazíte.</string>
+    <string name="k2go_auth_chip_default">Predvolené</string>
+    <string name="k2go_auth_chip_custom">Vlastné</string>
+    <string name="k2go_auth_chip_notinstalled">Nenainštalované</string>
 </resources>

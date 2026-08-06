@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">المصادقة</string>
     <string name="k2go_settings_authentication_sub">تسجيلات الدخول للكتب والدورات</string>
-    <string name="k2go_auth_hint">بيانات دخول المسؤول التي يستخدمها الجهاز للكتب والدورات. حدّثها هنا إذا غيّرت كلمة مرور خدمة.</string>
+    <string name="k2go_auth_hint">عمليات تسجيل الدخول التي يستخدمها K2Go للكتب والدورات. حدِّث واحدة إذا تغيّرت كلمة مرور خدمتها.</string>
     <string name="k2go_auth_username">اسم المستخدم</string>
     <string name="k2go_auth_password">كلمة المرور</string>
-    <string name="k2go_auth_show">إظهار</string>
-    <string name="k2go_auth_hide">إخفاء</string>
     <string name="k2go_auth_save">حفظ</string>
-    <string name="k2go_auth_reset">إعادة التعيين إلى الافتراضي</string>
-    <string name="k2go_auth_using_default">يُستخدم الإعداد الافتراضي للجهاز</string>
-    <string name="k2go_auth_custom">تسجيل دخول مخصص</string>
+    <string name="k2go_auth_reset">إعادة التعيين إلى إعداد الصندوق الافتراضي</string>
+    <string name="k2go_auth_using_default">يتم استخدام تسجيل الدخول الافتراضي للصندوق.</string>
     <string name="k2go_auth_need_both">أدخل اسم المستخدم وكلمة المرور</string>
     <string name="k2go_auth_saving">جارٍ الحفظ…</string>
     <string name="k2go_auth_saved">تم الحفظ</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">اسم المستخدم أو كلمة المرور غير صحيحة</string>
     <string name="k2go_auth_noperm">هذا الحساب لا يمكنه إدارة المحتوى</string>
     <string name="k2go_auth_failed">تعذّر الحفظ — حاول مرة أخرى</string>
-    <string name="k2go_auth_reset_done">تمت إعادة التعيين إلى الافتراضي</string>
     <string name="k2go_auth_load_failed">تعذّر التحميل — هل الخدمة تعمل؟</string>
+    <string name="k2go_auth_svc_books">اقرأ كتابًا</string>
+    <string name="k2go_auth_svc_courses">التحق بالدورات</string>
+    <string name="k2go_auth_custom_toggle">استخدام تسجيل دخول مخصص</string>
+    <string name="k2go_auth_not_running">هذه الخدمة لا تعمل بعد. يتم حفظ التغييرات الآن وتُطبَّق بمجرد تثبيتها وتشغيلها.</string>
+    <string name="k2go_auth_list_note">تظل الخدمات غير المثبَّتة قابلة للوصول — يمكنك ضبط تسجيل الدخول مسبقًا. تُخزَّن بيانات الاعتماد على هذا الجهاز.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · تسجيل الدخول الذي يستخدمه K2Go لفتح كتبك.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · تسجيل الدخول الذي يستخدمه K2Go لفتح دوراتك.</string>
+    <string name="k2go_auth_toggle_hint">فعِّل تسجيل دخول مخصصًا فقط إذا تغيّرت كلمة المرور.</string>
+    <string name="k2go_auth_eye_hint">اضغط على العين لإظهارها.</string>
+    <string name="k2go_auth_chip_default">افتراضي</string>
+    <string name="k2go_auth_chip_custom">مخصص</string>
+    <string name="k2go_auth_chip_notinstalled">غير مثبَّت</string>
 </resources>

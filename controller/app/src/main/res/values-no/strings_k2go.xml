@@ -739,15 +739,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autentisering</string>
     <string name="k2go_settings_authentication_sub">Innlogginger for Bøker og Kurs</string>
-    <string name="k2go_auth_hint">Admin-innloggingene boksen bruker for Bøker og Kurs. Oppdater dem her hvis du endrer passordet til en tjeneste.</string>
+    <string name="k2go_auth_hint">Påloggingene K2Go bruker for Bøker og Kurs. Oppdater en hvis passordet til tjenesten er endret.</string>
     <string name="k2go_auth_username">Brukernavn</string>
     <string name="k2go_auth_password">Passord</string>
-    <string name="k2go_auth_show">Vis</string>
-    <string name="k2go_auth_hide">Skjul</string>
     <string name="k2go_auth_save">Lagre</string>
-    <string name="k2go_auth_reset">Tilbakestill til standard</string>
-    <string name="k2go_auth_using_default">Bruker boksens standard</string>
-    <string name="k2go_auth_custom">Egendefinert innlogging</string>
+    <string name="k2go_auth_reset">Tilbakestill til boksens standard</string>
+    <string name="k2go_auth_using_default">Bruker boksens standardpålogging.</string>
     <string name="k2go_auth_need_both">Skriv inn brukernavn og passord</string>
     <string name="k2go_auth_saving">Lagrer…</string>
     <string name="k2go_auth_saved">Lagret</string>
@@ -755,6 +752,17 @@
     <string name="k2go_auth_bad">Feil brukernavn eller passord</string>
     <string name="k2go_auth_noperm">Den kontoen kan ikke administrere innhold</string>
     <string name="k2go_auth_failed">Kunne ikke lagre — prøv igjen</string>
-    <string name="k2go_auth_reset_done">Tilbakestilt til boksens standard</string>
     <string name="k2go_auth_load_failed">Kunne ikke laste — kjører tjenesten?</string>
+    <string name="k2go_auth_svc_books">Les en bok</string>
+    <string name="k2go_auth_svc_courses">Ta kurs</string>
+    <string name="k2go_auth_custom_toggle">Bruk en egendefinert pålogging</string>
+    <string name="k2go_auth_not_running">Denne tjenesten kjører ikke ennå. Endringer lagres nå og trer i kraft når den er installert og kjører.</string>
+    <string name="k2go_auth_list_note">Tjenester som ikke er installert, er fortsatt tilgjengelige — du kan forhåndsinnstille påloggingen. Legitimasjonen lagres på denne enheten.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · påloggingen K2Go bruker for å åpne bøkene dine.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · påloggingen K2Go bruker for å åpne kursene dine.</string>
+    <string name="k2go_auth_toggle_hint">Slå på en egendefinert pålogging bare hvis passordet er endret.</string>
+    <string name="k2go_auth_eye_hint">Trykk på øyet for å vise det.</string>
+    <string name="k2go_auth_chip_default">Standard</string>
+    <string name="k2go_auth_chip_custom">Egendefinert</string>
+    <string name="k2go_auth_chip_notinstalled">Ikke installert</string>
 </resources>

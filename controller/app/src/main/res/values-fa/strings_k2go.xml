@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">احراز هویت</string>
     <string name="k2go_settings_authentication_sub">ورود برای کتاب‌ها و دوره‌ها</string>
-    <string name="k2go_auth_hint">اطلاعات ورود مدیر که دستگاه برای کتاب‌ها و دوره‌ها استفاده می‌کند. اگر رمز سرویسی را تغییر دادید، اینجا به‌روزرسانی کنید.</string>
+    <string name="k2go_auth_hint">ورودهایی که K2Go برای کتاب‌ها و دوره‌ها استفاده می‌کند. اگر گذرواژهٔ سرویسی تغییر کرد، آن را به‌روزرسانی کنید.</string>
     <string name="k2go_auth_username">نام کاربری</string>
     <string name="k2go_auth_password">رمز عبور</string>
-    <string name="k2go_auth_show">نمایش</string>
-    <string name="k2go_auth_hide">پنهان‌کردن</string>
     <string name="k2go_auth_save">ذخیره</string>
-    <string name="k2go_auth_reset">بازنشانی به پیش‌فرض</string>
-    <string name="k2go_auth_using_default">پیش‌فرض دستگاه در حال استفاده است</string>
-    <string name="k2go_auth_custom">ورود سفارشی</string>
+    <string name="k2go_auth_reset">بازنشانی به پیش‌فرض دستگاه</string>
+    <string name="k2go_auth_using_default">از ورود پیش‌فرض دستگاه استفاده می‌شود.</string>
     <string name="k2go_auth_need_both">نام کاربری و رمز عبور را وارد کنید</string>
     <string name="k2go_auth_saving">در حال ذخیره…</string>
     <string name="k2go_auth_saved">ذخیره شد</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">نام کاربری یا رمز عبور نادرست</string>
     <string name="k2go_auth_noperm">این حساب نمی‌تواند محتوا را مدیریت کند</string>
     <string name="k2go_auth_failed">ذخیره نشد — دوباره تلاش کنید</string>
-    <string name="k2go_auth_reset_done">به پیش‌فرض دستگاه بازنشانی شد</string>
     <string name="k2go_auth_load_failed">بارگیری نشد — آیا سرویس فعال است؟</string>
+    <string name="k2go_auth_svc_books">یک کتاب بخوانید</string>
+    <string name="k2go_auth_svc_courses">شرکت در دوره‌ها</string>
+    <string name="k2go_auth_custom_toggle">استفاده از ورود سفارشی</string>
+    <string name="k2go_auth_not_running">این سرویس هنوز اجرا نمی‌شود. تغییرات اکنون ذخیره می‌شوند و پس از نصب و اجرا اعمال می‌گردند.</string>
+    <string name="k2go_auth_list_note">سرویس‌های نصب‌نشده هم در دسترس می‌مانند — می‌توانید ورود را از پیش تنظیم کنید. اطلاعات ورود روی این دستگاه ذخیره می‌شوند.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · ورودی که K2Go برای باز کردن کتاب‌های شما استفاده می‌کند.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · ورودی که K2Go برای باز کردن دوره‌های شما استفاده می‌کند.</string>
+    <string name="k2go_auth_toggle_hint">فقط در صورت تغییر گذرواژه، ورود سفارشی را روشن کنید.</string>
+    <string name="k2go_auth_eye_hint">برای نمایش روی چشم ضربه بزنید.</string>
+    <string name="k2go_auth_chip_default">پیش‌فرض</string>
+    <string name="k2go_auth_chip_custom">سفارشی</string>
+    <string name="k2go_auth_chip_notinstalled">نصب‌نشده</string>
 </resources>

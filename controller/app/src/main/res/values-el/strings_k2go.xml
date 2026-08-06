@@ -730,15 +730,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Έλεγχος ταυτότητας</string>
     <string name="k2go_settings_authentication_sub">Συνδέσεις για Βιβλία και Μαθήματα</string>
-    <string name="k2go_auth_hint">Τα στοιχεία σύνδεσης διαχειριστή που χρησιμοποιεί το box για Βιβλία και Μαθήματα. Ενημερώστε τα εδώ αν αλλάξετε τον κωδικό μιας υπηρεσίας.</string>
+    <string name="k2go_auth_hint">Οι συνδέσεις που χρησιμοποιεί το K2Go για Βιβλία και Μαθήματα. Ενημερώστε μία αν άλλαξε ο κωδικός της υπηρεσίας της.</string>
     <string name="k2go_auth_username">Όνομα χρήστη</string>
     <string name="k2go_auth_password">Κωδικός πρόσβασης</string>
-    <string name="k2go_auth_show">Εμφάνιση</string>
-    <string name="k2go_auth_hide">Απόκρυψη</string>
     <string name="k2go_auth_save">Αποθήκευση</string>
-    <string name="k2go_auth_reset">Επαναφορά προεπιλογής</string>
-    <string name="k2go_auth_using_default">Χρησιμοποιείται η προεπιλογή του box</string>
-    <string name="k2go_auth_custom">Προσαρμοσμένη σύνδεση</string>
+    <string name="k2go_auth_reset">Επαναφορά στην προεπιλογή του κουτιού</string>
+    <string name="k2go_auth_using_default">Χρησιμοποιείται η προεπιλεγμένη σύνδεση του κουτιού.</string>
     <string name="k2go_auth_need_both">Εισαγάγετε όνομα χρήστη και κωδικό</string>
     <string name="k2go_auth_saving">Αποθήκευση…</string>
     <string name="k2go_auth_saved">Αποθηκεύτηκε</string>
@@ -746,6 +743,17 @@
     <string name="k2go_auth_bad">Λάθος όνομα χρήστη ή κωδικός</string>
     <string name="k2go_auth_noperm">Αυτός ο λογαριασμός δεν μπορεί να διαχειριστεί περιεχόμενο</string>
     <string name="k2go_auth_failed">Η αποθήκευση απέτυχε — δοκιμάστε ξανά</string>
-    <string name="k2go_auth_reset_done">Έγινε επαναφορά στην προεπιλογή του box</string>
     <string name="k2go_auth_load_failed">Η φόρτωση απέτυχε — εκτελείται η υπηρεσία;</string>
+    <string name="k2go_auth_svc_books">Διαβάστε ένα βιβλίο</string>
+    <string name="k2go_auth_svc_courses">Παρακολουθήστε μαθήματα</string>
+    <string name="k2go_auth_custom_toggle">Χρήση προσαρμοσμένης σύνδεσης</string>
+    <string name="k2go_auth_not_running">Αυτή η υπηρεσία δεν εκτελείται ακόμη. Οι αλλαγές αποθηκεύονται τώρα και εφαρμόζονται μόλις εγκατασταθεί και εκτελεστεί.</string>
+    <string name="k2go_auth_list_note">Οι μη εγκατεστημένες υπηρεσίες παραμένουν προσβάσιμες — μπορείτε να ορίσετε εκ των προτέρων τη σύνδεση. Τα διαπιστευτήρια αποθηκεύονται σε αυτή τη συσκευή.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · η σύνδεση που χρησιμοποιεί το K2Go για να ανοίγει τα βιβλία σας.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · η σύνδεση που χρησιμοποιεί το K2Go για να ανοίγει τα μαθήματά σας.</string>
+    <string name="k2go_auth_toggle_hint">Ενεργοποιήστε προσαρμοσμένη σύνδεση μόνο αν άλλαξε ο κωδικός.</string>
+    <string name="k2go_auth_eye_hint">Πατήστε το μάτι για εμφάνιση.</string>
+    <string name="k2go_auth_chip_default">Προεπιλογή</string>
+    <string name="k2go_auth_chip_custom">Προσαρμοσμένο</string>
+    <string name="k2go_auth_chip_notinstalled">Δεν έχει εγκατασταθεί</string>
 </resources>

@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Kimlik doğrulama</string>
     <string name="k2go_settings_authentication_sub">Kitaplar ve Kurslar için oturum bilgileri</string>
-    <string name="k2go_auth_hint">Kutunun Kitaplar ve Kurslar için kullandığı yönetici oturum bilgileri. Bir hizmetin parolasını değiştirirseniz buradan güncelleyin.</string>
+    <string name="k2go_auth_hint">K2Go\'nun Kitaplar ve Kurslar için kullandığı oturum açmalar. Hizmetin parolası değiştiyse birini güncelleyin.</string>
     <string name="k2go_auth_username">Kullanıcı adı</string>
     <string name="k2go_auth_password">Parola</string>
-    <string name="k2go_auth_show">Göster</string>
-    <string name="k2go_auth_hide">Gizle</string>
     <string name="k2go_auth_save">Kaydet</string>
-    <string name="k2go_auth_reset">Varsayılana sıfırla</string>
-    <string name="k2go_auth_using_default">Kutunun varsayılanı kullanılıyor</string>
-    <string name="k2go_auth_custom">Özel oturum</string>
+    <string name="k2go_auth_reset">Kutu varsayılanına sıfırla</string>
+    <string name="k2go_auth_using_default">Kutunun varsayılan oturum açması kullanılıyor.</string>
     <string name="k2go_auth_need_both">Kullanıcı adı ve parola girin</string>
     <string name="k2go_auth_saving">Kaydediliyor…</string>
     <string name="k2go_auth_saved">Kaydedildi</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">Kullanıcı adı veya parola yanlış</string>
     <string name="k2go_auth_noperm">Bu hesap içerik yönetemiyor</string>
     <string name="k2go_auth_failed">Kaydedilemedi — tekrar deneyin</string>
-    <string name="k2go_auth_reset_done">Kutunun varsayılanına sıfırlandı</string>
     <string name="k2go_auth_load_failed">Yüklenemedi — hizmet çalışıyor mu?</string>
+    <string name="k2go_auth_svc_books">Kitap oku</string>
+    <string name="k2go_auth_svc_courses">Kurs al</string>
+    <string name="k2go_auth_custom_toggle">Özel oturum açma kullan</string>
+    <string name="k2go_auth_not_running">Bu hizmet henüz çalışmıyor. Değişiklikler şimdi kaydedilir ve kurulup çalışmaya başladığında geçerli olur.</string>
+    <string name="k2go_auth_list_note">Yüklü olmayan hizmetlere de erişilebilir — oturum açmayı önceden ayarlayabilirsiniz. Kimlik bilgileri bu cihazda saklanır.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go\'nun kitaplarınızı açmak için kullandığı oturum açma.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go\'nun kurslarınızı açmak için kullandığı oturum açma.</string>
+    <string name="k2go_auth_toggle_hint">Özel oturum açmayı yalnızca parola değiştiyse açın.</string>
+    <string name="k2go_auth_eye_hint">Göstermek için göze dokunun.</string>
+    <string name="k2go_auth_chip_default">Varsayılan</string>
+    <string name="k2go_auth_chip_custom">Özel</string>
+    <string name="k2go_auth_chip_notinstalled">Yüklü değil</string>
 </resources>

@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">அங்கீகாரம்</string>
     <string name="k2go_settings_authentication_sub">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கான உள்நுழைவுகள்</string>
-    <string name="k2go_auth_hint">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கு பாக்ஸ் பயன்படுத்தும் நிர்வாகி உள்நுழைவுகள். ஒரு சேவையின் கடவுச்சொல்லை மாற்றினால் இங்கே புதுப்பிக்கவும்.</string>
+    <string name="k2go_auth_hint">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கு K2Go பயன்படுத்தும் உள்நுழைவுகள். ஒரு சேவையின் கடவுச்சொல் மாறினால் அதைப் புதுப்பிக்கவும்.</string>
     <string name="k2go_auth_username">பயனர்பெயர்</string>
     <string name="k2go_auth_password">கடவுச்சொல்</string>
-    <string name="k2go_auth_show">காட்டு</string>
-    <string name="k2go_auth_hide">மறை</string>
     <string name="k2go_auth_save">சேமி</string>
-    <string name="k2go_auth_reset">இயல்புநிலைக்கு மீட்டமை</string>
-    <string name="k2go_auth_using_default">பாக்ஸின் இயல்புநிலை பயன்படுத்தப்படுகிறது</string>
-    <string name="k2go_auth_custom">தனிப்பயன் உள்நுழைவு</string>
+    <string name="k2go_auth_reset">பெட்டியின் இயல்புநிலைக்கு மீட்டமை</string>
+    <string name="k2go_auth_using_default">பெட்டியின் இயல்புநிலை உள்நுழைவு பயன்படுத்தப்படுகிறது.</string>
     <string name="k2go_auth_need_both">பயனர்பெயர் மற்றும் கடவுச்சொல்லை உள்ளிடவும்</string>
     <string name="k2go_auth_saving">சேமிக்கிறது…</string>
     <string name="k2go_auth_saved">சேமிக்கப்பட்டது</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">தவறான பயனர்பெயர் அல்லது கடவுச்சொல்</string>
     <string name="k2go_auth_noperm">இந்தக் கணக்கு உள்ளடக்கத்தை நிர்வகிக்க முடியாது</string>
     <string name="k2go_auth_failed">சேமிக்க முடியவில்லை — மீண்டும் முயற்சிக்கவும்</string>
-    <string name="k2go_auth_reset_done">பாக்ஸின் இயல்புநிலைக்கு மீட்டமைக்கப்பட்டது</string>
     <string name="k2go_auth_load_failed">ஏற்ற முடியவில்லை — சேவை இயங்குகிறதா?</string>
+    <string name="k2go_auth_svc_books">ஒரு புத்தகம் படி</string>
+    <string name="k2go_auth_svc_courses">பாடநெறிகளை எடு</string>
+    <string name="k2go_auth_custom_toggle">தனிப்பயன் உள்நுழைவைப் பயன்படுத்தவும்</string>
+    <string name="k2go_auth_not_running">இந்தச் சேவை இன்னும் இயங்கவில்லை. மாற்றங்கள் இப்போது சேமிக்கப்படும், அது நிறுவப்பட்டு இயங்கத் தொடங்கியதும் அமலுக்கு வரும்.</string>
+    <string name="k2go_auth_list_note">நிறுவப்படாத சேவைகளும் அணுகக்கூடியதாக இருக்கும் — உள்நுழைவை முன்கூட்டியே அமைக்கலாம். சான்றுகள் இந்தச் சாதனத்தில் சேமிக்கப்படும்.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · உங்கள் புத்தகங்களைத் திறக்க K2Go பயன்படுத்தும் உள்நுழைவு.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · உங்கள் பாடநெறிகளைத் திறக்க K2Go பயன்படுத்தும் உள்நுழைவு.</string>
+    <string name="k2go_auth_toggle_hint">கடவுச்சொல் மாற்றப்பட்டால் மட்டுமே தனிப்பயன் உள்நுழைவை இயக்கவும்.</string>
+    <string name="k2go_auth_eye_hint">அதைக் காட்ட கண்ணைத் தட்டவும்.</string>
+    <string name="k2go_auth_chip_default">இயல்புநிலை</string>
+    <string name="k2go_auth_chip_custom">தனிப்பயன்</string>
+    <string name="k2go_auth_chip_notinstalled">நிறுவப்படவில்லை</string>
 </resources>

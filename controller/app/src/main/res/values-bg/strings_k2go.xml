@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Удостоверяване</string>
     <string name="k2go_settings_authentication_sub">Данни за вход за Книги и Курсове</string>
-    <string name="k2go_auth_hint">Администраторските данни за вход, които устройството използва за Книги и Курсове. Обновете ги тук, ако смените паролата на услуга.</string>
+    <string name="k2go_auth_hint">Входовете, които K2Go използва за Книги и Курсове. Обновете някой, ако паролата на услугата му се е променила.</string>
     <string name="k2go_auth_username">Потребителско име</string>
     <string name="k2go_auth_password">Парола</string>
-    <string name="k2go_auth_show">Показване</string>
-    <string name="k2go_auth_hide">Скриване</string>
     <string name="k2go_auth_save">Запази</string>
-    <string name="k2go_auth_reset">Връщане към стандартните</string>
-    <string name="k2go_auth_using_default">Използва се стандартната стойност</string>
-    <string name="k2go_auth_custom">Персонализиран вход</string>
+    <string name="k2go_auth_reset">Връщане към стойността по подразбиране на кутията</string>
+    <string name="k2go_auth_using_default">Използва се входът по подразбиране на кутията.</string>
     <string name="k2go_auth_need_both">Въведете потребителско име и парола</string>
     <string name="k2go_auth_saving">Запазване…</string>
     <string name="k2go_auth_saved">Запазено</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">Грешно потребителско име или парола</string>
     <string name="k2go_auth_noperm">Този акаунт не може да управлява съдържание</string>
     <string name="k2go_auth_failed">Неуспешно запазване — опитайте отново</string>
-    <string name="k2go_auth_reset_done">Върнато към стандартните стойности</string>
     <string name="k2go_auth_load_failed">Неуспешно зареждане — услугата работи ли?</string>
+    <string name="k2go_auth_svc_books">Прочетете книга</string>
+    <string name="k2go_auth_svc_courses">Посещавайте курсове</string>
+    <string name="k2go_auth_custom_toggle">Използвайте персонализиран вход</string>
+    <string name="k2go_auth_not_running">Тази услуга още не работи. Промените се запазват сега и влизат в сила, щом бъде инсталирана и стартирана.</string>
+    <string name="k2go_auth_list_note">Неинсталираните услуги остават достъпни — можете да зададете входа предварително. Данните за вход се съхраняват на това устройство.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · входът, който K2Go използва, за да отваря книгите ви.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · входът, който K2Go използва, за да отваря курсовете ви.</string>
+    <string name="k2go_auth_toggle_hint">Включете персонализиран вход само ако паролата е променена.</string>
+    <string name="k2go_auth_eye_hint">Докоснете окото, за да я покажете.</string>
+    <string name="k2go_auth_chip_default">По подразбиране</string>
+    <string name="k2go_auth_chip_custom">Персонализиран</string>
+    <string name="k2go_auth_chip_notinstalled">Не е инсталирано</string>
 </resources>

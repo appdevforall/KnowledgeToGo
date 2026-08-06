@@ -729,15 +729,12 @@
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Hitelesítés</string>
     <string name="k2go_settings_authentication_sub">Bejelentkezések a Könyvekhez és Kurzusokhoz</string>
-    <string name="k2go_auth_hint">A rendszergazdai bejelentkezések, amelyeket a box a Könyvekhez és Kurzusokhoz használ. Frissítsd itt, ha megváltoztatod egy szolgáltatás jelszavát.</string>
+    <string name="k2go_auth_hint">A K2Go által a Könyvekhez és Kurzusokhoz használt bejelentkezések. Frissítse valamelyiket, ha az adott szolgáltatás jelszava megváltozott.</string>
     <string name="k2go_auth_username">Felhasználónév</string>
     <string name="k2go_auth_password">Jelszó</string>
-    <string name="k2go_auth_show">Megjelenítés</string>
-    <string name="k2go_auth_hide">Elrejtés</string>
     <string name="k2go_auth_save">Mentés</string>
-    <string name="k2go_auth_reset">Visszaállítás alapértelmezettre</string>
-    <string name="k2go_auth_using_default">A box alapértelmezettje van használatban</string>
-    <string name="k2go_auth_custom">Egyéni bejelentkezés</string>
+    <string name="k2go_auth_reset">Visszaállítás a box alapértékére</string>
+    <string name="k2go_auth_using_default">A box alapértelmezett bejelentkezése van használatban.</string>
     <string name="k2go_auth_need_both">Adj meg felhasználónevet és jelszót</string>
     <string name="k2go_auth_saving">Mentés…</string>
     <string name="k2go_auth_saved">Mentve</string>
@@ -745,6 +742,17 @@
     <string name="k2go_auth_bad">Hibás felhasználónév vagy jelszó</string>
     <string name="k2go_auth_noperm">Ez a fiók nem kezelhet tartalmat</string>
     <string name="k2go_auth_failed">A mentés nem sikerült — próbáld újra</string>
-    <string name="k2go_auth_reset_done">Visszaállítva a box alapértelmezettjére</string>
     <string name="k2go_auth_load_failed">A betöltés nem sikerült — fut a szolgáltatás?</string>
+    <string name="k2go_auth_svc_books">Olvass egy könyvet</string>
+    <string name="k2go_auth_svc_courses">Végezz kurzusokat</string>
+    <string name="k2go_auth_custom_toggle">Egyéni bejelentkezés használata</string>
+    <string name="k2go_auth_not_running">Ez a szolgáltatás még nem fut. A módosítások most mentődnek, és akkor lépnek életbe, amint telepítve van és fut.</string>
+    <string name="k2go_auth_list_note">A nem telepített szolgáltatások is elérhetők maradnak — a bejelentkezést előre beállíthatja. A hitelesítő adatok ezen az eszközön tárolódnak.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · a bejelentkezés, amellyel a K2Go megnyitja a könyveidet.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · a bejelentkezés, amellyel a K2Go megnyitja a kurzusaidat.</string>
+    <string name="k2go_auth_toggle_hint">Csak akkor kapcsoljon be egyéni bejelentkezést, ha a jelszó megváltozott.</string>
+    <string name="k2go_auth_eye_hint">Koppintson a szemre a megjelenítéshez.</string>
+    <string name="k2go_auth_chip_default">Alapértelmezett</string>
+    <string name="k2go_auth_chip_custom">Egyéni</string>
+    <string name="k2go_auth_chip_notinstalled">Nincs telepítve</string>
 </resources>
