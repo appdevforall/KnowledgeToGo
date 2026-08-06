@@ -11,7 +11,11 @@ import fs from 'fs';
 import path from 'path';
 
 const ZIMS_DIR = '/library/zims/content/';
-const BASE_URL = 'https://download.kiwix.org/zim/wikipedia/';
+// ADFA-5042: root of the Kiwix ZIM mirror. Each requested id MUST carry its own project subdirectory
+// (e.g. "zimit/foo.zim", "other/bar.zim", "gutenberg/baz.zim") — ZIMs are not all under wikipedia/.
+const BASE_URL = 'https://download.kiwix.org/zim/';
+// Allowed id shape: subdir segment(s) + filename. Guards the outbound URL (no "..", no traversal).
+const SAFE_ID = /^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/;
 const INDEXER = '/usr/bin/iiab-make-kiwix-lib';
 const SAFETY_BUFFER_BYTES = 5 * 1024 * 1024 * 1024; // keep >=5 GB free
 
@@ -75,15 +79,24 @@ function cleanupMetadata(): void {
 }
 
 const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
-    const zims = ctx.ids.map((z) => path.basename(z)).filter((z) => z.endsWith('.zim'));
-    if (zims.length === 0) throw new Error('no ZIMs requested');
+    // ADFA-5042: keep each id's project subdir for the URL; use basename only for the local file/display.
+    const ids = ctx.ids.map(String).map((z) => z.replace(/^\/+/, '')).filter((z) => z.endsWith('.zim'));
+    if (ids.length === 0) throw new Error('no ZIMs requested');
+    for (const id of ids) {
+        // Require the project subdir — every ZIM on the mirror lives under one (/zim/<project>/…).
+        if (id.includes('..') || !id.includes('/') || !SAFE_ID.test(id)) {
+            throw new Error(`invalid ZIM id (expected "<project>/<file>.zim"): ${id}`);
+        }
+    }
+    const files = ids.map((z) => path.basename(z));
 
     assertFreeSpace();
     ctx.throwIfCanceled();
 
     // --- Download phase -----------------------------------------------------
-    ctx.update({ phase: 'downloading', percent: 0, speed: 0, detail: zims.join(', ') });
-    const urls = zims.map((z) => BASE_URL + z);
+    ctx.update({ phase: 'downloading', percent: 0, speed: 0, detail: files.join(', ') });
+    // Each id already carries its project subdir on the mirror (/zim/<project>/<file>).
+    const urls = ids.map((z) => BASE_URL + z);
 
     await new Promise<void>((resolve, reject) => {
         const dl = ctx.spawn('/usr/bin/aria2c', [...ARIA2_ARGS, ...urls]);
