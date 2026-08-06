@@ -137,24 +137,31 @@ export function clearCredential(service: ServiceName): void {
     writeStore(store);
 }
 
-/** Vista segura para la UI: nunca devuelve la contraseña, solo si hay una y de
- *  dónde viene. Es lo que el webview necesita para pintar el formulario. */
+/** Vista para la UI. La contraseña personalizada NUNCA se devuelve. Excepción (ADFA-5044): cuando el
+ *  servicio sigue con el default de fábrica —que es público y documentado (Admin/changeme en IIAB)— se
+ *  incluye para que el formulario pueda prellenar el sign-in completo. En cuanto hay un override, se
+ *  omite de nuevo. Es seguro porque no expone ningún secreto real y el API es localhost-only. */
 export function describeCredential(service: ServiceName): {
     service: ServiceName;
     username: string;
     origin: CredentialOrigin;
     isDefault: boolean;
+    password?: string;
 } {
     const c = getCredential(service);
-    return {
-        service,
-        username: c.username,
-        origin: c.origin,
-        // Señal para que la UI pueda avisar "sigues con la contraseña de fábrica".
-        isDefault: c.origin === 'default'
-            || (c.username === DEFAULTS[service].username
-                && c.password === DEFAULTS[service].password),
-    };
+    // Señal para que la UI pueda avisar "sigues con la contraseña de fábrica".
+    const isDefault = c.origin === 'default'
+        || (c.username === DEFAULTS[service].username
+            && c.password === DEFAULTS[service].password);
+    const out: {
+        service: ServiceName;
+        username: string;
+        origin: CredentialOrigin;
+        isDefault: boolean;
+        password?: string;
+    } = { service, username: c.username, origin: c.origin, isDefault };
+    if (isDefault) out.password = DEFAULTS[service].password;
+    return out;
 }
 
 export const CREDENTIALS_STORE_PATH = STORE_PATH;

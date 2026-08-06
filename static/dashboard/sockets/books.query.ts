@@ -107,7 +107,11 @@ export function listLibrary(): any[] {
     }
 }
 
-export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string }> {
+/** Log into Calibre-Web with the given credentials and return the authenticated session.
+ *  A successful login answers with a 302/303 redirect; anything else means the credentials were
+ *  rejected (thrown as 'Invalid Calibre-Web credentials'). A connection error (service down) throws
+ *  the underlying fetch error, so callers can tell "wrong password" from "not running". */
+async function loginCalibre(username: string, password: string): Promise<{ cookie: string; csrfToken: string }> {
     const loginPageRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`);
     const initialCookies = loginPageRes.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
     const loginHtml = await loginPageRes.text();
@@ -117,9 +121,8 @@ export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: 
 
     const loginData = new URLSearchParams();
     loginData.append('csrf_token', csrfToken);
-    const cred = getCredential('calibre');
-    loginData.append('username', cred.username);
-    loginData.append('password', cred.password);
+    loginData.append('username', username);
+    loginData.append('password', password);
     // ADFA-5043: request Flask-Login's persistent "remember me" so the response also sets a
     // `remember_token` cookie. Calibre-Web allows anonymous (guest) browsing, so the session cookie
     // alone doesn't stick in the WebView; the remember_token re-authenticates as admin reliably.
@@ -143,6 +146,18 @@ export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: 
         homeHtml.match(/name="csrf_token"\s+value="([^"]+)"/i) ||
         homeHtml.match(/value="([^"]+)"\s+name="csrf_token"/i);
     return { cookie: authCookieString, csrfToken: finalCsrfMatch ? finalCsrfMatch[1] : csrfToken };
+}
+
+export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string }> {
+    const cred = getCredential('calibre');
+    return loginCalibre(cred.username, cred.password);
+}
+
+/** ADFA-5044: check credentials against the live Calibre-Web before persisting them. Resolves on a
+ *  successful login; throws 'Invalid Calibre-Web credentials' when rejected, or the fetch error when
+ *  the service is unreachable (so the route can save-unverified instead of reporting a bad password). */
+export async function verifyCalibreCredentials(username: string, password: string): Promise<void> {
+    await loginCalibre(username, password);
 }
 
 /** Remove a book from Calibre-Web by its library id. */
