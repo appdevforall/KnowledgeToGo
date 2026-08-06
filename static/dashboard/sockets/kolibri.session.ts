@@ -1,31 +1,31 @@
-// sockets/kolibri.session.ts — sesión autenticada contra la API de Kolibri
+// sockets/kolibri.session.ts — authenticated session against the Kolibri API
 //
-// Mismo patrón que getCalibreSession() en books.exec.ts: nos autenticamos contra un
-// servicio local por HTTP y conservamos cookie + CSRF. Kolibri difiere de
-// Calibre-Web en cuatro cosas que hacen fallar el primer intento si no se saben:
+// Same pattern as getCalibreSession() in books.exec.ts: we authenticate against a
+// local service over HTTP and keep cookie + CSRF. Kolibri differs from
+// Calibre-Web in four things that break the first attempt if you do not know them:
 //
-//   1. Las cookies NO son las estándar de Django:
-//        sesión → 'kolibri'             (no 'sessionid')
-//        CSRF   → 'kolibri_csrftoken'   (no 'csrftoken')
-//   2. Django ROTA el token CSRF al hacer login. Hay que releerlo después.
-//   3. El login es JSON (no form-urlencoded como Calibre-Web) y devuelve
-//      'can_manage_content', que es el permiso que de verdad hace falta para
-//      importar contenido: un usuario puede autenticarse y NO poder importar.
-//   4. El viewset exige 'Referer' del mismo origen (csrf_protect).
+//   1. The cookies are NOT the Django standard ones:
+//        session → 'kolibri'             (not 'sessionid')
+//        CSRF    → 'kolibri_csrftoken'   (not 'csrftoken')
+//   2. Django ROTATES the CSRF token on login. It has to be re-read afterwards.
+//   3. Login is JSON (not form-urlencoded like Calibre-Web) and returns
+//      'can_manage_content', which is the permission actually needed to
+//      import content: a user can authenticate and still NOT be able to import.
+//   4. The viewset demands a same-origin 'Referer' (csrf_protect).
 //
-// Además aquí vive el requisito de proot que no es obvio: 'importcontent' llama
-// SIEMPRE a lookup_channel_listing_status(), que pasa por
-// NetworkClient.discover_from_address(). Si no existe una NetworkLocation cuyo
-// base_url coincida con el origen del contenido, ese camino cae al fallback de
-// variaciones de URL, que invoca ifaddr.get_adapters() — y netlink está bloqueado
-// bajo proot en Android >= 13, así que revienta tras decenas de segundos.
+// The non-obvious proot requirement also lives here: 'importcontent' ALWAYS
+// calls lookup_channel_listing_status(), which goes through
+// NetworkClient.discover_from_address(). If no NetworkLocation exists whose
+// base_url matches the content origin, that path falls to the URL-variations
+// fallback, which invokes ifaddr.get_adapters() — and netlink is blocked
+// under proot on Android >= 13, so it blows up after tens of seconds.
 //
-// En IIAB eso se resuelve sembrando filas 'reserved' con `kolibri manage shell`.
-// No lo necesitamos: known_location_for_address() es
+// IIAB solves that by seeding 'reserved' rows with `kolibri manage shell`.
+// We do not need to: known_location_for_address() is
 //     NetworkLocation.objects.filter(base_url__in=candidates).first()
-// y NO filtra por location_type. Una NetworkLocation 'static' creada por REST
-// satisface el lookup igual, y StaticNetworkLocationViewSet es un ModelViewSet
-// completo. Por eso ensureContentOrigin() puede hacerlo sin salir de HTTP.
+// and does NOT filter by location_type. A 'static' NetworkLocation created over
+// REST satisfies the lookup just as well, and StaticNetworkLocationViewSet is a
+// full ModelViewSet. That is why ensureContentOrigin() can do it over HTTP alone.
 import { getCredential } from './credentials';
 
 export const KOLIBRI_BASE = process.env.K2GO_KOLIBRI_URL || 'http://127.0.0.1:8009';
@@ -36,21 +36,21 @@ const SESSION_COOKIE = 'kolibri';
 const CSRF_COOKIE = 'kolibri_csrftoken';
 const CSRF_HEADER = 'X-CSRFToken';
 
-/** Loopback: generoso para el arranque de Django, corto para no colgar la UI. */
+/** Loopback: generous for Django's startup, short enough not to hang the UI. */
 const DEFAULT_TIMEOUT_MS = 8000;
 
 export interface KolibriSession {
-    /** Cabecera Cookie ya montada para reusar en cada petición. */
+    /** Cookie header, already assembled, to reuse on every request. */
     cookie: string;
     csrfToken: string;
     username: string;
     canManageContent: boolean;
 }
 
-/** Error con la causa distinguible, para que las rutas devuelvan el status correcto:
- *  'unreachable' → 503 (el servicio no está listo; problema de la capa de arranque)
- *  'credentials' → 401 (usuario o contraseña incorrectos)
- *  'permission'  → 403 (autentica, pero no puede gestionar contenido) */
+/** Error with a distinguishable cause, so the routes return the right status:
+ *  'unreachable' → 503 (the service is not ready; a startup-layer problem)
+ *  'credentials' → 401 (wrong username or password)
+ *  'permission'  → 403 (authenticates, but cannot manage content) */
 export type KolibriAuthReason = 'unreachable' | 'credentials' | 'permission' | 'protocol';
 
 export class KolibriAuthError extends Error {
@@ -62,7 +62,7 @@ export class KolibriAuthError extends Error {
     }
 }
 
-/** Extrae el valor de una cookie de las cabeceras Set-Cookie de una respuesta. */
+/** Extracts a cookie value from the Set-Cookie headers of a response. */
 export function cookieValue(setCookies: string[], name: string): string | null {
     for (const raw of setCookies) {
         const first = raw.split(';')[0];
@@ -73,8 +73,8 @@ export function cookieValue(setCookies: string[], name: string): string | null {
     return null;
 }
 
-/** Fusiona pares nombre=valor en una sola cabecera Cookie, con el último ganando.
- *  Exportada porque es lógica pura y se testea sin red. */
+/** Merges name=value pairs into a single Cookie header, the last one winning.
+ *  Exported because it is pure logic and is tested without the network. */
 export function mergeCookies(existing: string, setCookies: string[]): string {
     const jar = new Map<string, string>();
     for (const part of existing.split(';')) {
@@ -96,23 +96,23 @@ async function fetchWithTimeout(
     init: RequestInit = {},
     timeoutMs = DEFAULT_TIMEOUT_MS,
 ): Promise<Response> {
-    // AbortSignal.timeout existe en Node 18+; el rootfs corre Node 22.
+    // AbortSignal.timeout exists in Node 18+; the rootfs runs Node 22.
     return fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) });
 }
 
 /**
- * Autentica contra Kolibri y devuelve una sesión reutilizable.
+ * Authenticates against Kolibri and returns a reusable session.
  *
- * @param override credenciales explícitas (las usa el endpoint de validación antes
- *                 de persistirlas); si se omite, se toman del almacén.
+ * @param override explicit credentials (used by the validation endpoint before
+ *                 persisting them); if omitted, they are taken from the store.
  */
 export async function login(
     override?: { username: string; password: string },
 ): Promise<KolibriSession> {
     const cred = override ?? getCredential('kolibri');
 
-    // 1. Sembrar la cookie CSRF. El viewset de sesión lleva @ensure_csrf_cookie,
-    //    así que un GET basta.
+    // 1. Seed the CSRF cookie. The session viewset carries @ensure_csrf_cookie,
+    //    so a GET is enough.
     let cookie = '';
     let csrfToken: string | null = null;
     try {
@@ -122,14 +122,14 @@ export async function login(
         csrfToken = cookieValue(setCookies, CSRF_COOKIE);
     } catch (e) {
         throw new KolibriAuthError('unreachable',
-            `Kolibri no respondió en ${KOLIBRI_BASE}: ${e instanceof Error ? e.message : String(e)}`);
+            `Kolibri did not respond at ${KOLIBRI_BASE}: ${e instanceof Error ? e.message : String(e)}`);
     }
     if (!csrfToken) {
         throw new KolibriAuthError('protocol',
-            `Kolibri no devolvió la cookie ${CSRF_COOKIE}`);
+            `Kolibri did not return the ${CSRF_COOKIE} cookie`);
     }
 
-    // 2. Login. JSON, con Referer del mismo origen (csrf_protect lo exige).
+    // 2. Login. JSON, with a same-origin Referer (csrf_protect demands it).
     let res: Response;
     try {
         res = await fetchWithTimeout(`${KOLIBRI_BASE}/api/auth/session/`, {
@@ -144,39 +144,39 @@ export async function login(
         });
     } catch (e) {
         throw new KolibriAuthError('unreachable',
-            `Kolibri cortó la conexión durante el login: ${e instanceof Error ? e.message : String(e)}`);
+            `Kolibri dropped the connection during login: ${e instanceof Error ? e.message : String(e)}`);
     }
 
     if (res.status === 401) {
-        // 401 también aparece en "app mode" si allow_other_browsers_to_connect=False
-        // y no hay cookie de app-key. En un box servido por nginx no aplica, pero el
-        // mensaje lo menciona para que el diagnóstico no lleve horas.
+        // 401 also shows up in "app mode" if allow_other_browsers_to_connect=False
+        // and there is no app-key cookie. On an nginx-served box it does not apply,
+        // but the message mentions it so the diagnosis does not take hours.
         throw new KolibriAuthError('credentials',
-            `Kolibri rechazó las credenciales de '${cred.username}'. `
-            + 'Si el dispositivo está en modo aplicación, revisa allow_other_browsers_to_connect.');
+            `Kolibri rejected the credentials for '${cred.username}'. `
+            + 'If the device is in app mode, check allow_other_browsers_to_connect.');
     }
     if (res.status === 400) {
-        // 400 es el serializer rechazando la petición (campo ausente, facility
-        // desconocida...), no una contraseña incorrecta. Reportarlo como credencial
-        // inválida manda al operador a cambiar una contraseña que estaba bien.
+        // 400 is the serializer rejecting the request (missing field, unknown
+        // facility...), not a wrong password. Reporting it as an invalid credential
+        // sends the operator off to change a password that was already fine.
         const detail = await res.text().catch(() => '');
         throw new KolibriAuthError('protocol',
-            `Kolibri rechazó la petición de login (HTTP 400), no las credenciales: `
-            + (detail.slice(0, 200) || 'sin detalle'));
+            `Kolibri rejected the login request (HTTP 400), not the credentials: `
+            + (detail.slice(0, 200) || 'no detail'));
     }
     if (!res.ok) {
-        throw new KolibriAuthError('protocol', `Login devolvió HTTP ${res.status}`);
+        throw new KolibriAuthError('protocol', `Login returned HTTP ${res.status}`);
     }
 
-    // 3. Django rota el token CSRF al hacer login: hay que releerlo o el primer
-    //    POST posterior fallará con 403.
+    // 3. Django rotates the CSRF token on login: it has to be re-read or the first
+    //    POST after it will fail with 403.
     const loginCookies = res.headers.getSetCookie();
     cookie = mergeCookies(cookie, loginCookies);
     csrfToken = cookieValue(loginCookies, CSRF_COOKIE) ?? csrfToken;
 
     if (!cookie.includes(`${SESSION_COOKIE}=`)) {
         throw new KolibriAuthError('protocol',
-            `El login no devolvió la cookie de sesión '${SESSION_COOKIE}'`);
+            `Login did not return the session cookie '${SESSION_COOKIE}'`);
     }
 
     let canManageContent = false;
@@ -186,28 +186,28 @@ export async function login(
         canManageContent = data.can_manage_content === true;
         if (typeof data.username === 'string') username = data.username;
     } catch {
-        // Cuerpo inesperado: no invalidamos la sesión, pero el permiso queda en false
-        // y el llamador decidirá. Mejor eso que asumir que sí puede.
+        // Unexpected body: we do not invalidate the session, but the permission stays
+        // false and the caller decides. Better that than assuming it can.
     }
 
     return { cookie, csrfToken, username, canManageContent };
 }
 
-/** Igual que login(), pero exige además el permiso de gestión de contenido.
- *  Es lo que usa el runner: sin can_manage_content, /api/tasks/ rechazará el job. */
+/** Same as login(), but also demands the content-management permission.
+ *  Used by the runner: without can_manage_content, /api/tasks/ rejects the job. */
 export async function loginForContent(
     override?: { username: string; password: string },
 ): Promise<KolibriSession> {
     const session = await login(override);
     if (!session.canManageContent) {
         throw new KolibriAuthError('permission',
-            `El usuario '${session.username}' autentica pero no tiene can_manage_content, `
-            + 'así que no puede importar contenido.');
+            `User '${session.username}' authenticates but does not have can_manage_content, `
+            + 'so it cannot import content.');
     }
     return session;
 }
 
-/** Petición autenticada. Reinyecta cookie + CSRF + Referer en cada llamada. */
+/** Authenticated request. Re-injects cookie + CSRF + Referer on every call. */
 export async function apiFetch(
     session: KolibriSession,
     pathname: string,
@@ -230,8 +230,8 @@ export async function apiFetch(
     return fetchWithTimeout(`${KOLIBRI_BASE}${pathname}`, { ...init, headers }, timeoutMs);
 }
 
-/** Error de una llamada a la API que llegó a recibir respuesta. Lleva el status para
- *  que el llamador distinga "sesión caducada" (401/403) de un fallo cualquiera. */
+/** Error from an API call that did receive a response. It carries the status so the
+ *  caller can tell an "expired session" (401/403) from any other failure. */
 export class KolibriApiError extends Error {
     readonly status: number;
     constructor(status: number, message: string) {
@@ -239,13 +239,13 @@ export class KolibriApiError extends Error {
         this.name = 'KolibriApiError';
         this.status = status;
     }
-    /** Django responde 403 (no 401) a una sesión caducada con CSRF ya inválido. */
+    /** Django answers 403 (not 401) to an expired session with an invalid CSRF. */
     get isAuthExpired(): boolean {
         return this.status === 401 || this.status === 403;
     }
 }
 
-/** apiFetch + parseo JSON + error legible. */
+/** apiFetch + JSON parsing + readable error. */
 export async function apiJson<T>(
     session: KolibriSession,
     pathname: string,
@@ -262,11 +262,11 @@ export async function apiJson<T>(
     try {
         return JSON.parse(text) as T;
     } catch {
-        throw new Error(`${pathname} devolvió algo que no es JSON: ${text.slice(0, 200)}`);
+        throw new Error(`${pathname} returned something that is not JSON: ${text.slice(0, 200)}`);
     }
 }
 
-// ─── Origen de contenido (el prerrequisito de proot) ────────────────────────────
+// ─── Content origin (the proot prerequisite) ────────────────────────────────────
 
 interface NetworkLocationRow {
     id?: string;
@@ -274,13 +274,13 @@ interface NetworkLocationRow {
     nickname?: string;
 }
 
-/** Variaciones que Kolibri considera equivalentes: con y sin barra final. */
+/** Variants Kolibri treats as equivalent: with and without a trailing slash. */
 function urlVariants(url: string): string[] {
     const trimmed = url.replace(/\/+$/, '');
     return [trimmed, `${trimmed}/`];
 }
 
-/** ¿Coincide alguna de las filas con el origen buscado? Pura, testeable sin red. */
+/** Does any of the rows match the origin we want? Pure, testable without a network. */
 export function matchesOrigin(rows: NetworkLocationRow[], baseUrl: string): boolean {
     const wanted = new Set(urlVariants(baseUrl));
     return rows.some((row) => {
@@ -290,12 +290,12 @@ export function matchesOrigin(rows: NetworkLocationRow[], baseUrl: string): bool
 }
 
 /**
- * ¿Existe ya una NetworkLocation para el origen de contenido? SOLO LECTURA.
+ * Is there already a NetworkLocation for the content origin? READ ONLY.
  *
- * Cuenta cualquier location_type, incluidas las 'reserved' que siembra IIAB: el
- * lookup de Kolibri (known_location_for_address) tampoco filtra por tipo.
+ * Any location_type counts, including the 'reserved' rows IIAB seeds: Kolibri's
+ * own lookup (known_location_for_address) does not filter by type either.
  *
- * @returns null si no se pudo determinar (Kolibri no respondió al listado).
+ * @returns null if it could not be determined (Kolibri did not answer the listing).
  */
 export async function hasContentOrigin(
     session: KolibriSession,
@@ -312,21 +312,21 @@ export async function hasContentOrigin(
 }
 
 /**
- * Garantiza que exista una NetworkLocation para el origen de contenido. ESCRIBE.
+ * Guarantees a NetworkLocation exists for the content origin. THIS WRITES.
  *
- * Sin esto, 'importcontent' cae al fallback que llama a ifaddr y falla bajo proot.
- * Lo llama el runner, no los endpoints de diagnóstico: un GET no debe mutar estado.
+ * Without this, 'importcontent' falls to the ifaddr fallback and fails under proot.
+ * The runner calls it, not the diagnostic endpoints: a GET must not mutate state.
  *
- * @returns 'present' si ya existía, 'created' si la creó, 'failed' si no pudo
- *          (no lanza: el import puede funcionar igual si IIAB ya sembró y solo
- *          falló nuestra comprobación).
+ * @returns 'present' if it already existed, 'created' if it created it, 'failed'
+ *          if it could not (does not throw: the import may still work if IIAB
+ *          already seeded the row and only our check failed).
  */
 export async function ensureContentOrigin(
     session: KolibriSession,
     baseUrl: string = STUDIO_URL,
 ): Promise<'present' | 'created' | 'failed'> {
-    // null (no se pudo listar) cae al POST: crear es idempotente en la práctica,
-    // porque un duplicado no rompe el lookup.
+    // null (the listing failed) falls through to the POST: creating is idempotent
+    // in practice, because a duplicate does not break the lookup.
     if (await hasContentOrigin(session, baseUrl) === true) return 'present';
 
     try {
@@ -338,7 +338,7 @@ export async function ensureContentOrigin(
             }),
         }, 15000);
         if (res.ok) return 'created';
-        // 400 suele significar "ya existe" (unique) o validación del serializer.
+        // 400 usually means "already exists" (unique) or serializer validation.
         return 'failed';
     } catch {
         return 'failed';
@@ -353,21 +353,21 @@ export interface KolibriReadiness {
     authenticated: boolean;
     canManageContent: boolean;
     provisioned: boolean | null;
-    /** true presente, false ausente, null indeterminado. Solo se consulta, nunca
-     *  se crea desde aquí: el runner es quien lo garantiza antes de importar. */
+    /** true present, false absent, null undetermined. Only read, never created
+     *  from here: the runner is the one that guarantees it before importing. */
     contentOrigin: boolean | null;
     version: string | null;
-    /** Motivos por los que ready es false, en lenguaje accionable. */
+    /** Reasons why ready is false, in actionable language. */
     blockers: string[];
     credentialOrigin: string;
 }
 
 /**
- * El "gate" que la capa de arranque puede sondear: mientras no devuelva
- * ready=true, no tiene sentido lanzar jobs de contenido.
+ * The "gate" the startup layer can poll: as long as it does not return
+ * ready=true, there is no point launching content jobs.
  *
- * No lanza excepciones y NO MUTA NADA: siempre devuelve un diagnóstico. Se puede
- * sondear en bucle sin efectos secundarios.
+ * It throws no exceptions and MUTATES NOTHING: it always returns a diagnosis. It
+ * can be polled in a loop with no side effects.
  */
 export async function checkReadiness(): Promise<KolibriReadiness> {
     const out: KolibriReadiness = {
@@ -382,7 +382,7 @@ export async function checkReadiness(): Promise<KolibriReadiness> {
         credentialOrigin: getCredential('kolibri').origin,
     };
 
-    // 1. ¿Responde? /api/public/info no requiere autenticación y es barato.
+    // 1. Does it respond? /api/public/info needs no authentication and is cheap.
     try {
         const info = await fetchWithTimeout(`${KOLIBRI_BASE}/api/public/info`, {}, 5000);
         out.reachable = info.ok;
@@ -390,14 +390,14 @@ export async function checkReadiness(): Promise<KolibriReadiness> {
             const body = await info.json() as Record<string, unknown>;
             if (typeof body.kolibri_version === 'string') out.version = body.kolibri_version;
         } else {
-            out.blockers.push(`Kolibri respondió HTTP ${info.status} en /api/public/info`);
+            out.blockers.push(`Kolibri returned HTTP ${info.status} at /api/public/info`);
         }
     } catch (e) {
-        out.blockers.push(`Kolibri no responde en ${KOLIBRI_BASE}`);
-        return out;   // sin servicio no hay nada más que comprobar
+        out.blockers.push(`Kolibri is not responding at ${KOLIBRI_BASE}`);
+        return out;   // with no service there is nothing else to check
     }
 
-    // 2. ¿Autentica y puede gestionar contenido?
+    // 2. Does it authenticate and can it manage content?
     let session: KolibriSession;
     try {
         session = await login();
@@ -405,29 +405,29 @@ export async function checkReadiness(): Promise<KolibriReadiness> {
         out.canManageContent = session.canManageContent;
         if (!session.canManageContent) {
             out.blockers.push(
-                `'${session.username}' autentica pero no tiene can_manage_content`);
+                `'${session.username}' authenticates but lacks can_manage_content`);
         }
     } catch (e) {
         const reason = e instanceof KolibriAuthError ? e.reason : 'protocol';
         out.blockers.push(reason === 'credentials'
-            ? 'Credenciales de Kolibri incorrectas (actualízalas en /credentials/kolibri)'
-            : `Login contra Kolibri falló: ${e instanceof Error ? e.message : String(e)}`);
+            ? 'Wrong Kolibri credentials (update them at /credentials/kolibri)'
+            : `Login against Kolibri failed: ${e instanceof Error ? e.message : String(e)}`);
         return out;
     }
 
-    // 3. ¿Está provisionado el dispositivo? Sin esto la UI mostraría el asistente.
+    // 3. Is the device provisioned? Without this the UI would show the wizard.
     try {
         const dev = await apiJson<Record<string, unknown>>(session, '/api/device/deviceinfo/');
-        // El endpoint solo responde en un dispositivo provisionado; que conteste ya
-        // es la señal. Guardamos el nombre si viene, por diagnóstico.
+        // The endpoint only responds on a provisioned device; an answer is itself
+        // the signal. We keep the name if it comes, for diagnostics.
         out.provisioned = !!dev;
     } catch {
-        out.provisioned = null;   // no concluyente: no lo marcamos como bloqueador
+        out.provisioned = null;   // inconclusive: we do not mark it as a blocker
     }
 
-    // 4. El prerrequisito de proot, en modo consulta. No es un bloqueador: el runner
-    //    crea la fila si falta (ensureContentOrigin) antes de encolar, así que su
-    //    ausencia aquí no impide arrancar. Se reporta para diagnóstico.
+    // 4. The proot prerequisite, in read mode. Not a blocker: the runner creates
+    //    the row if it is missing (ensureContentOrigin) before queueing, so its
+    //    absence here does not prevent starting. Reported for diagnostics.
     out.contentOrigin = await hasContentOrigin(session);
 
     out.ready = out.blockers.length === 0;

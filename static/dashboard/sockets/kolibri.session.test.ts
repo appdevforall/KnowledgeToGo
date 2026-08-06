@@ -1,16 +1,16 @@
 // sockets/kolibri.session.test.ts
 //
-// Tests de los helpers PUROS del camino de Kolibri, en la línea de
-// maps.socket.test.ts y rolling-log.test.ts: sin red, sin SQLite, sin Kolibri.
-// Cubren justamente las trampas que hacen fallar el primer intento — nombres de
-// cookie no estándar, rotación del token CSRF, percentage 0-1 vs 0-100, y el
-// payload que Kolibri rechaza si se manda 'peer': null.
+// Tests for the PURE helpers on the Kolibri path, in the same line as
+// maps.socket.test.ts and rolling-log.test.ts: no network, no SQLite, no Kolibri.
+// They cover exactly the traps that make the first attempt fail — non-standard
+// cookie names, CSRF token rotation, percentage 0-1 vs 0-100, and the payload
+// Kolibri rejects if 'peer': null is sent.
 //
-// Ejecutar:  npm test   (añade este fichero al script "test" de package.json)
+// Run:  npm test   (add this file to the "test" script in package.json)
 //
-// Importa SOLO de kolibri.session.ts y kolibri.map.ts. Ninguno de los dos arrastra
-// jobs.ts, así que no se necesita el binario nativo de better-sqlite3 — el CI
-// instala con `npm ci --ignore-scripts` y no lo compila.
+// Imports ONLY from kolibri.session.ts and kolibri.map.ts. Neither of them pulls
+// in jobs.ts, so the better-sqlite3 native binary is not needed — CI installs
+// with `npm ci --ignore-scripts` and does not compile it.
 /// <reference types="node" />
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -22,53 +22,53 @@ import {
 
 // ─── cookieValue ─────────────────────────────────────────────────────────────
 
-test('cookieValue encuentra la cookie CSRF de Kolibri, que no se llama csrftoken', () => {
+test('cookieValue finds the Kolibri CSRF cookie, which is not called csrftoken', () => {
     const setCookies = [
         'kolibri_csrftoken=abc123; expires=Fri, 01 Jan 2027 00:00:00 GMT; Path=/; SameSite=Lax',
         'kolibri=sess789; expires=Fri, 01 Jan 2027 00:00:00 GMT; HttpOnly; Path=/',
     ];
     assert.equal(cookieValue(setCookies, 'kolibri_csrftoken'), 'abc123');
     assert.equal(cookieValue(setCookies, 'kolibri'), 'sess789');
-    // Los nombres de Django estándar NO existen en Kolibri: si alguien los busca,
-    // debe obtener null en lugar de un falso positivo.
+    // The standard Django names do NOT exist in Kolibri: anyone looking for them
+    // must get null instead of a false positive.
     assert.equal(cookieValue(setCookies, 'csrftoken'), null);
     assert.equal(cookieValue(setCookies, 'sessionid'), null);
 });
 
-test('cookieValue tolera cabeceras raras', () => {
+test('cookieValue tolerates odd headers', () => {
     assert.equal(cookieValue([], 'kolibri'), null);
-    assert.equal(cookieValue(['sin-signo-igual'], 'kolibri'), null);
-    // Un valor con '=' dentro (base64) debe conservarse completo.
+    assert.equal(cookieValue(['no-equals-sign'], 'kolibri'), null);
+    // A value with '=' inside it (base64) must be kept whole.
     assert.equal(cookieValue(['kolibri=a=b=c; Path=/'], 'kolibri'), 'a=b=c');
 });
 
 // ─── mergeCookies ────────────────────────────────────────────────────────────
 
-test('mergeCookies aplica la rotación del token CSRF tras el login', () => {
-    // Django rota el token al autenticar: el valor nuevo debe ganar, o el primer
-    // POST posterior fallaría con 403.
+test('mergeCookies applies the CSRF token rotation after login', () => {
+    // Django rotates the token on authentication: the new value must win, or the
+    // first POST afterwards would fail with 403.
     const before = 'kolibri_csrftoken=viejo';
-    const afterLogin = ['kolibri_csrftoken=nuevo; Path=/', 'kolibri=sesion; Path=/'];
+    const afterLogin = ['kolibri_csrftoken=fresh; Path=/', 'kolibri=session; Path=/'];
     const merged = mergeCookies(before, afterLogin);
-    assert.match(merged, /kolibri_csrftoken=nuevo/);
+    assert.match(merged, /kolibri_csrftoken=fresh/);
     assert.doesNotMatch(merged, /viejo/);
-    assert.match(merged, /kolibri=sesion/);
+    assert.match(merged, /kolibri=session/);
 });
 
-test('mergeCookies conserva cookies previas no reemplazadas', () => {
-    const merged = mergeCookies('otra=conservada; kolibri_csrftoken=v1', ['kolibri_csrftoken=v2']);
-    assert.match(merged, /otra=conservada/);
+test('mergeCookies keeps previous cookies that were not replaced', () => {
+    const merged = mergeCookies('other=kept; kolibri_csrftoken=v1', ['kolibri_csrftoken=v2']);
+    assert.match(merged, /other=kept/);
     assert.match(merged, /kolibri_csrftoken=v2/);
 });
 
-test('mergeCookies parte de vacío sin generar basura', () => {
+test('mergeCookies starts from empty without generating junk', () => {
     const merged = mergeCookies('', ['kolibri=s; HttpOnly']);
     assert.equal(merged, 'kolibri=s');
 });
 
 // ─── mapPhase ────────────────────────────────────────────────────────────────
 
-test('mapPhase cubre los nueve estados de Kolibri', () => {
+test('mapPhase covers the nine Kolibri states', () => {
     assert.equal(mapPhase('PENDING'), 'queued');
     assert.equal(mapPhase('SCHEDULED'), 'queued');
     assert.equal(mapPhase('QUEUED'), 'queued');
@@ -80,34 +80,34 @@ test('mapPhase cubre los nueve estados de Kolibri', () => {
     assert.equal(mapPhase('CANCELED'), 'canceled');
 });
 
-test('mapPhase degrada un estado desconocido sin romper', () => {
-    assert.equal(mapPhase('ALGO_NUEVO'), 'processing');
+test('mapPhase degrades an unknown state without breaking', () => {
+    assert.equal(mapPhase('SOMETHING_NEW'), 'processing');
 });
 
 // ─── mapPercent ──────────────────────────────────────────────────────────────
 
-test('mapPercent convierte el float 0-1 de Kolibri a 0-100 entero', () => {
-    // Es la confusión más fácil de cometer: percentage NO es 0-100.
+test('mapPercent converts the Kolibri 0-1 float to a 0-100 integer', () => {
+    // This is the easiest mix-up to make: percentage is NOT 0-100.
     assert.equal(mapPercent(0), 0);
     assert.equal(mapPercent(0.5), 50);
     assert.equal(mapPercent(0.333), 33);
     assert.equal(mapPercent(1), 100);
 });
 
-test('mapPercent devuelve -1 (indeterminado) cuando no hay dato', () => {
+test('mapPercent returns -1 (indeterminate) when there is no data', () => {
     assert.equal(mapPercent(null), -1);
     assert.equal(mapPercent(undefined), -1);
     assert.equal(mapPercent(NaN), -1);
 });
 
-test('mapPercent acota valores fuera de rango', () => {
+test('mapPercent clamps out-of-range values', () => {
     assert.equal(mapPercent(1.5), 100);
     assert.equal(mapPercent(-0.2), 0);
 });
 
 // ─── normalizeUuid ───────────────────────────────────────────────────────────
 
-test('normalizeUuid acepta hex de 32 y también con guiones', () => {
+test('normalizeUuid accepts 32-char hex and also the hyphenated form', () => {
     const hex = '95a52b386f2c485cb97dd60901674a98';
     assert.equal(normalizeUuid(hex), hex);
     assert.equal(normalizeUuid('95A52B386F2C485CB97DD60901674A98'), hex);
@@ -115,9 +115,9 @@ test('normalizeUuid acepta hex de 32 y también con guiones', () => {
     assert.equal(normalizeUuid(`  ${hex}  `), hex);
 });
 
-test('normalizeUuid rechaza tokens: hay que resolverlos antes de encolar', () => {
-    // Un token proquint no es un channel_id. Pasarlo tal cual acabaría en un 404
-    // del descargador sin mensaje claro.
+test('normalizeUuid rejects tokens: they must be resolved before queueing', () => {
+    // A proquint token is not a channel_id. Passing it through would end in a 404
+    // from the downloader with no clear message.
     assert.equal(normalizeUuid('bisan-sukod'), null);
     assert.equal(normalizeUuid('bisansukod'), null);
     assert.equal(normalizeUuid(''), null);
@@ -130,26 +130,26 @@ test('normalizeUuid rechaza tokens: hay que resolverlos antes de encolar', () =>
 
 const CH = '95a52b386f2c485cb97dd60901674a98';
 
-test('buildTaskPayload usa remoteimport y siempre manda channel_name', () => {
+test('buildTaskPayload uses remoteimport and always sends channel_name', () => {
     const p = buildTaskPayload({ channelId: CH, channelName: 'Khan Academy' });
     assert.equal(p.type, 'kolibri.core.content.tasks.remoteimport');
     assert.equal(p.channel_id, CH);
-    // Obligatorio: sin él, Kolibri responde 400 aunque solo sea decorativo.
+    // Mandatory: without it Kolibri answers 400, even though it is decorative.
     assert.equal(p.channel_name, 'Khan Academy');
     assert.equal(p.fail_on_error, true);
 });
 
-test('buildTaskPayload NUNCA incluye peer', () => {
-    // 'peer' es PrimaryKeyRelatedField sin allow_null: mandar null da 400
-    // "This field may not be null". Hay que omitir la clave.
+test('buildTaskPayload NEVER includes peer', () => {
+    // 'peer' is a PrimaryKeyRelatedField without allow_null: sending null gives 400
+    // "This field may not be null". The key has to be omitted.
     const p = buildTaskPayload({ channelId: CH, channelName: 'x' });
     assert.equal('peer' in p, false);
 });
 
-test('buildTaskPayload omite node_ids cuando no hay selección', () => {
-    // Distinción crítica de Kolibri: node_ids=[] significa CERO NODOS, mientras que
-    // ausente significa TODO EL CANAL. Mandar una lista vacía descargaría nada con
-    // éxito aparente.
+test('buildTaskPayload omits node_ids when there is no selection', () => {
+    // Critical Kolibri distinction: node_ids=[] means ZERO NODES, whereas absent
+    // means THE WHOLE CHANNEL. Sending an empty list would download nothing with
+    // apparent success.
     const p = buildTaskPayload({ channelId: CH, channelName: 'x', nodeIds: [] });
     assert.equal('node_ids' in p, false);
 
@@ -157,87 +157,87 @@ test('buildTaskPayload omite node_ids cuando no hay selección', () => {
     assert.equal('node_ids' in q, false);
 });
 
-test('buildTaskPayload incluye la selección cuando existe', () => {
+test('buildTaskPayload includes the selection when there is one', () => {
     const nodes = ['aaaa1111bbbb2222cccc3333dddd4444'];
     const p = buildTaskPayload({ channelId: CH, channelName: 'x', nodeIds: nodes });
     assert.deepEqual(p.node_ids, nodes);
 });
 
-test('buildTaskPayload solo manda all_thumbnails si se pide', () => {
-    const sin = buildTaskPayload({ channelId: CH, channelName: 'x' });
-    assert.equal('all_thumbnails' in sin, false);
+test('buildTaskPayload only sends all_thumbnails when requested', () => {
+    const omitted = buildTaskPayload({ channelId: CH, channelName: 'x' });
+    assert.equal('all_thumbnails' in omitted, false);
 
-    const con = buildTaskPayload({ channelId: CH, channelName: 'x', allThumbnails: true });
-    assert.equal(con.all_thumbnails, true);
+    const requested = buildTaskPayload({ channelId: CH, channelName: 'x', allThumbnails: true });
+    assert.equal(requested.all_thumbnails, true);
 });
 
-test('buildTaskPayload omite exclude_node_ids vacío', () => {
+test('buildTaskPayload omits an empty exclude_node_ids', () => {
     const p = buildTaskPayload({ channelId: CH, channelName: 'x', excludeNodeIds: [] });
     assert.equal('exclude_node_ids' in p, false);
 });
 
 // ─── overallPercent ──────────────────────────────────────────────────────────
 
-test('overallPercent no toca el valor cuando hay un solo canal', () => {
+test('overallPercent leaves the value alone when there is a single channel', () => {
     assert.equal(overallPercent(1, 1, 42), 42);
     assert.equal(overallPercent(1, 1, -1), -1);
 });
 
-test('overallPercent reparte la barra en franjas por canal', () => {
-    // Con 3 canales, el primero al 0% es 0 global y al 100% es 33 global; así la
-    // barra sube una sola vez en lugar de reiniciarse tres veces.
+test('overallPercent splits the bar into per-channel bands', () => {
+    // With 3 channels, the first at 0% is 0 overall and at 100% is 33 overall; so
+    // the bar rises once instead of restarting three times.
     assert.equal(overallPercent(1, 3, 0), 0);
     assert.equal(overallPercent(1, 3, 100), 33);
     assert.equal(overallPercent(2, 3, 0), 33);
     assert.equal(overallPercent(3, 3, 50), 83);
 });
 
-test('overallPercent se acota a 99: el 100 lo pone el final del runner', () => {
+test('overallPercent is clamped to 99: the end of the runner sets the 100', () => {
     assert.equal(overallPercent(3, 3, 100), 99);
 });
 
-test('overallPercent propaga el indeterminado', () => {
+test('overallPercent propagates the indeterminate value', () => {
     assert.equal(overallPercent(2, 3, -1), -1);
 });
 
 // ─── sampleSpeed ─────────────────────────────────────────────────────────────
 
-test('sampleSpeed calcula bytes por segundo entre dos muestras', () => {
-    // 1 MiB en 2 s → ~524 288 B/s
+test('sampleSpeed computes bytes per second between two samples', () => {
+    // 1 MiB in 2 s → ~524 288 B/s
     assert.equal(sampleSpeed(0, 1048576, 1000, 3000), 524288);
 });
 
-test('sampleSpeed devuelve null sin avance, para no pisar la velocidad anterior', () => {
-    // Devolver 0 haría parpadear la UI a "0 B/s" en cada poll sin progreso.
+test('sampleSpeed returns null with no progress, so the previous speed stands', () => {
+    // Returning 0 would flicker the UI to "0 B/s" on every poll with no progress.
     assert.equal(sampleSpeed(1000, 1000, 0, 2000), null);
     assert.equal(sampleSpeed(1000, 500, 0, 2000), null);
 });
 
-test('sampleSpeed no divide por cero con dos muestras simultáneas', () => {
+test('sampleSpeed does not divide by zero with two simultaneous samples', () => {
     const v = sampleSpeed(0, 100, 5000, 5000);
     assert.ok(v !== null && Number.isFinite(v) && v > 0);
 });
 
 // ─── matchesOrigin ───────────────────────────────────────────────────────────
-// Decide si importcontent podrá resolver el origen: si no hay coincidencia se cae
-// al fallback que llama a ifaddr, bloqueado por netlink bajo proot.
+// Decides whether importcontent can resolve the origin: with no match it drops to
+// the fallback that calls ifaddr, blocked by netlink under proot.
 
 const STUDIO = 'https://studio.learningequality.org';
 
-test('matchesOrigin acepta la fila con y sin barra final', () => {
+test('matchesOrigin accepts the row with and without a trailing slash', () => {
     assert.equal(matchesOrigin([{ base_url: STUDIO }], STUDIO), true);
     assert.equal(matchesOrigin([{ base_url: `${STUDIO}/` }], STUDIO), true);
-    // Y también si lo buscado trae la barra y lo almacenado no.
+    // And also if the searched value carries the slash and the stored one does not.
     assert.equal(matchesOrigin([{ base_url: STUDIO }], `${STUDIO}/`), true);
 });
 
-test('matchesOrigin no depende del location_type: cualquier fila vale', () => {
-    // known_location_for_address() tampoco filtra por tipo, así que una 'static'
-    // creada por nosotros sirve igual que las 'reserved' que siembra IIAB.
+test('matchesOrigin does not depend on location_type: any row will do', () => {
+    // known_location_for_address() does not filter by type either, so a 'static'
+    // one created by us serves as well as the 'reserved' ones IIAB seeds.
     assert.equal(matchesOrigin([{ base_url: STUDIO, nickname: 'K2Go content origin' }], STUDIO), true);
 });
 
-test('matchesOrigin encuentra la coincidencia entre varias filas', () => {
+test('matchesOrigin finds the match among several rows', () => {
     const rows = [
         { base_url: 'http://192.168.1.50:8080' },
         { base_url: 'https://kolibridataportal.learningequality.org' },
@@ -246,23 +246,23 @@ test('matchesOrigin encuentra la coincidencia entre varias filas', () => {
     assert.equal(matchesOrigin(rows, STUDIO), true);
 });
 
-test('matchesOrigin rechaza cuando no hay ninguna fila del origen', () => {
+test('matchesOrigin rejects when there is no row for the origin', () => {
     assert.equal(matchesOrigin([], STUDIO), false);
     assert.equal(matchesOrigin([{ base_url: 'http://192.168.1.50:8080' }], STUDIO), false);
-    // Un prefijo no es una coincidencia.
+    // A prefix is not a match.
     assert.equal(matchesOrigin([{ base_url: 'https://studio.learningequality.org.evil.test' }], STUDIO), false);
 });
 
-test('matchesOrigin tolera filas sin base_url', () => {
+test('matchesOrigin tolerates rows without base_url', () => {
     assert.equal(matchesOrigin([{}, { base_url: undefined }, { base_url: STUDIO }], STUDIO), true);
     assert.equal(matchesOrigin([{}, { base_url: undefined }], STUDIO), false);
 });
 
 // ─── KolibriApiError ─────────────────────────────────────────────────────────
 
-test('KolibriApiError distingue sesión caducada de otros fallos', () => {
-    // Django responde 403 (no 401) cuando la sesión murió y el CSRF ya no vale;
-    // ambos deben disparar el re-login del poll.
+test('KolibriApiError tells an expired session from other failures', () => {
+    // Django answers 403 (not 401) when the session died and the CSRF is stale;
+    // both must trigger the re-login from the poll.
     assert.equal(new KolibriApiError(401, 'x').isAuthExpired, true);
     assert.equal(new KolibriApiError(403, 'x').isAuthExpired, true);
     assert.equal(new KolibriApiError(404, 'x').isAuthExpired, false);
@@ -270,10 +270,10 @@ test('KolibriApiError distingue sesión caducada de otros fallos', () => {
     assert.equal(new KolibriApiError(503, 'x').isAuthExpired, false);
 });
 
-test('KolibriApiError conserva el status y es un Error', () => {
-    const e = new KolibriApiError(418, 'soy una tetera');
+test('KolibriApiError keeps the status and is an Error', () => {
+    const e = new KolibriApiError(418, 'i am a teapot');
     assert.ok(e instanceof Error);
     assert.equal(e.status, 418);
     assert.equal(e.name, 'KolibriApiError');
-    assert.match(e.message, /tetera/);
+    assert.match(e.message, /teapot/);
 });

@@ -1,22 +1,22 @@
-// sockets/kolibri.exec.ts — runner de Kolibri para el motor de jobs durable
+// sockets/kolibri.exec.ts — Kolibri runner for the durable jobs engine
 //
-// Siembra contenido en Kolibri encolando tareas en SU API REST y haciendo polling.
-// A diferencia de kiwix/maps, aquí no se hace spawn de ningún binario: el trabajo
-// lo ejecuta el propio Kolibri, que ya está corriendo dentro del proot.
+// Seeds content into Kolibri by queueing tasks on ITS REST API and polling.
+// Unlike kiwix/maps, no binary is spawned here: the work is done by Kolibri
+// itself, which is already running inside the proot.
 //
-// Ventaja concreta de esta vía sobre invocar la CLI: Kolibri reporta progreso
-// estructurado (percentage, transferred_file_size, total_resources). Su CLI no
-// reporta nada parseable — usa click.progressbar sin etiqueta, y en modo no-TTY la
-// salida de un import completo es literalmente una línea vacía.
+// Concrete advantage of this route over invoking the CLI: Kolibri reports
+// structured progress (percentage, transferred_file_size, total_resources). Its
+// CLI reports nothing parseable — it uses click.progressbar with no label, and in
+// non-TTY mode the output of a full import is literally one empty line.
 //
-// Un item del job es:
+// A job item is:
 //   { channelId, channelName?, nodeIds?, excludeNodeIds?, allThumbnails? }
-// Se procesan en SECUENCIA: dos imports simultáneos solo generan contención sobre
-// la misma db.sqlite3.
+// They are processed in SEQUENCE: two simultaneous imports only create contention
+// on the same db.sqlite3.
 //
-// PRECONDICIÓN: la capa de arranque garantiza que Kolibri está vivo y sus workers
-// activos. El runner lo verifica igualmente y falla con un mensaje accionable en
-// lugar de colgarse indefinidamente.
+// PRECONDITION: the startup layer guarantees Kolibri is alive and its workers
+// active. The runner checks it anyway and fails with an actionable message
+// instead of hanging indefinitely.
 import { jobs, RunnerContext, CanceledError, JobUpdate } from './jobs';
 import {
     loginForContent, apiJson, apiFetch, ensureContentOrigin,
@@ -27,8 +27,8 @@ import {
     sampleSpeed, PRE_RUN_STATES, TERMINAL_STATES,
 } from './kolibri.map';
 
-/** Enteros positivos desde el entorno, con default. Ajustables en operación
- *  (redes muy lentas) y en tests. */
+/** Positive integers from the environment, with a default. Adjustable in
+ *  operation (very slow networks) and in tests. */
 function envMs(name: string, def: number): number {
     const raw = process.env[name];
     if (!raw) return def;
@@ -38,20 +38,20 @@ function envMs(name: string, def: number): number {
 
 const POLL_MS = envMs('K2GO_KOLIBRI_POLL_MS', 2000);
 
-/** Si un job sigue sin ser tomado tras esto, casi seguro los workers no están
- *  vivos: encolar solo escribe una fila en job_storage.sqlite3; sin un
- *  WorkerSupervisor nadie la ejecuta y el job queda en QUEUED para siempre. */
+/** If a job is still not picked up after this, the workers are almost certainly
+ *  not alive: queueing only writes a row in job_storage.sqlite3; without a
+ *  WorkerSupervisor nobody runs it and the job stays QUEUED forever. */
 const QUEUED_GRACE_MS = envMs('K2GO_KOLIBRI_QUEUED_GRACE_MS', 90_000);
 
-/** Sin avance de bytes durante este tiempo, el transporte de Kolibri está en su
- *  bucle de reintentos —que NO tiene límite: espera 30 s y reintenta ante
- *  ConnectionError, Timeout y HTTP 502/503/504/521-524—. El estado seguiría en
- *  RUNNING eternamente, así que cortamos. Reintentar es seguro y barato: las
- *  descargas se reanudan por HTTP Range. */
+/** With no byte progress for this long, Kolibri's transport is in its retry
+ *  loop —which has NO limit: it waits 30 s and retries on ConnectionError,
+ *  Timeout and HTTP 502/503/504/521-524—. The state would stay in RUNNING
+ *  forever, so we cut it off. Retrying is safe and cheap: downloads resume
+ *  over HTTP Range. */
 const STALL_TIMEOUT_MS = envMs('K2GO_KOLIBRI_STALL_MS', 15 * 60_000);
 
-/** Reintentos de login por job. Acotado para que una credencial revocada a mitad
- *  del import no genere un bucle de logins fallidos. */
+/** Login retries per job. Bounded so a credential revoked halfway through the
+ *  import does not produce a loop of failed logins. */
 const MAX_REAUTH = 3;
 
 interface KolibriItem {
@@ -90,37 +90,37 @@ function sleep(ms: number): Promise<void> {
     return new Promise((r) => setTimeout(r, ms));
 }
 
-/** Duración legible: evita "0 min" cuando el umbral se baja para pruebas. */
+/** Readable duration: avoids "0 min" when the threshold is lowered for tests. */
 function humanMs(ms: number): string {
     return ms < 60_000
         ? `${Math.round(ms / 1000)} s`
         : `${Math.round(ms / 60_000)} min`;
 }
 
-/** Valida y normaliza los items del job. Falla ruidosamente: es mejor rechazar en
- *  el encolado que descargar cero bytes con éxito aparente. */
+/** Validates and normalises the job items. Fails loudly: better to reject at
+ *  queue time than to download zero bytes with apparent success. */
 export function parseItems(rawItems: unknown[]): ParsedItem[] {
     const parsed: ParsedItem[] = [];
     for (const raw of rawItems) {
-        // Por comodidad se acepta también un channelId suelto, como hace kiwix.
+        // For convenience a bare channelId is also accepted, as kiwix does.
         const item: KolibriItem = typeof raw === 'string'
             ? { channelId: raw }
             : ((raw ?? {}) as KolibriItem);
 
         const channelId = normalizeUuid(item.channelId);
         if (!channelId) {
-            throw new Error(`channelId inválido: ${String(item.channelId)} — se espera `
-                + 'un UUID hex de 32; resuelve los tokens antes de encolar');
+            throw new Error(`invalid channelId: ${String(item.channelId)} — a 32-char `
+                + 'hex UUID is expected; resolve the tokens before queueing');
         }
 
         const requestedNodes = item.nodeIds ?? [];
         const nodeIds = requestedNodes
             .map(normalizeUuid)
             .filter((x): x is string => x !== null);
-        // Si se pidió una selección y ningún id es válido, la tarea terminaría con
-        // éxito sin descargar nada. Preferimos fallar aquí.
+        // If a selection was requested and no id is valid, the task would finish
+        // successfully without downloading anything. We prefer to fail here.
         if (requestedNodes.length > 0 && nodeIds.length === 0) {
-            throw new Error(`ningún nodeId válido para el canal ${channelId}`);
+            throw new Error(`no valid nodeId for channel ${channelId}`);
         }
 
         const excludeNodeIds = (item.excludeNodeIds ?? [])
@@ -139,13 +139,13 @@ export function parseItems(rawItems: unknown[]): ParsedItem[] {
     return parsed;
 }
 
-/** Nombre del canal según el propio dispositivo (proxy a Studio, cacheado 5 min).
- *  Devuelve null si no se puede resolver; el llamador usará el id como nombre. */
+/** Channel name according to the device itself (proxy to Studio, cached 5 min).
+ *  Returns null if it cannot be resolved; the caller will use the id as name. */
 async function resolveChannelName(
     session: KolibriSession, channelId: string,
 ): Promise<string | null> {
     try {
-        // Devuelve 503 {"status":"offline"} sin red; apiJson lanza y caemos a null.
+        // With no network it returns 503 {"status":"offline"}; apiJson throws, so null.
         const data = await apiJson<Record<string, unknown> | Array<Record<string, unknown>>>(
             session, `/api/content/remotechannel/${channelId}/`, {}, 20000);
         const row = Array.isArray(data) ? data[0] : data;
@@ -156,35 +156,35 @@ async function resolveChannelName(
     }
 }
 
-/** Traduce un fallo de autenticación en un mensaje que dice qué hacer. */
+/** Turns an authentication failure into a message that says what to do. */
 function authErrorMessage(e: unknown): string {
     if (!(e instanceof KolibriAuthError)) {
-        return `No se pudo autenticar contra Kolibri: ${e instanceof Error ? e.message : String(e)}`;
+        return `Could not authenticate against Kolibri: ${e instanceof Error ? e.message : String(e)}`;
     }
     switch (e.reason) {
         case 'unreachable':
-            return 'Kolibri no está disponible; reintenta cuando el servicio esté listo';
+            return 'Kolibri is not available; retry when the service is ready';
         case 'credentials':
-            return 'Credenciales de Kolibri incorrectas: actualízalas en /credentials/kolibri';
+            return 'Wrong Kolibri credentials: update them at /credentials/kolibri';
         case 'permission':
             return e.message;
         default:
-            return `No se pudo autenticar contra Kolibri: ${e.message}`;
+            return `Could not authenticate against Kolibri: ${e.message}`;
     }
 }
 
-/** Contenedor mutable de la sesión: un import puede durar horas y sobrevivir a la
- *  caducidad de la sesión de Django, así que el poll necesita poder reemplazarla. */
+/** Mutable session container: an import can run for hours and outlive the Django
+ *  session expiry, so the poll needs to be able to replace it. */
 interface SessionHolder { current: KolibriSession }
 
-/** Reautentica in situ. Devuelve false si tampoco se puede ahora. */
+/** Re-authenticates in place. Returns false if it cannot be done now either. */
 async function reauthenticate(ctx: RunnerContext, holder: SessionHolder): Promise<boolean> {
     try {
         holder.current = await loginForContent();
-        ctx.log('sesión caducada: reautenticado');
+        ctx.log('session expired: re-authenticated');
         return true;
     } catch (e) {
-        ctx.log(`no se pudo reautenticar: ${authErrorMessage(e)}`);
+        ctx.log(`could not re-authenticate: ${authErrorMessage(e)}`);
         return false;
     }
 }
@@ -201,18 +201,18 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         throw new Error(authErrorMessage(e));
     }
 
-    // Prerrequisito de proot: 'importcontent' llama SIEMPRE a
-    // lookup_channel_listing_status() → NetworkClient.discover_from_address(). Sin
-    // una NetworkLocation cuyo base_url coincida con el origen, ese camino cae al
-    // fallback que invoca ifaddr.get_adapters(), y netlink está bloqueado bajo proot.
+    // proot prerequisite: 'importcontent' ALWAYS calls
+    // lookup_channel_listing_status() → NetworkClient.discover_from_address(). With
+    // no NetworkLocation whose base_url matches the origin, that path falls to the
+    // fallback that calls ifaddr.get_adapters(), and netlink is blocked under proot.
     //
-    // No abortamos si falla: puede que IIAB ya sembrara la fila 'reserved' y solo
-    // fallara nuestra comprobación.
+    // We do not abort on failure: IIAB may already have seeded the 'reserved' row
+    // and only our check failed.
     const origin = await ensureContentOrigin(holder.current, STUDIO_URL);
-    ctx.log(`origen de contenido (${STUDIO_URL}): ${origin}`);
+    ctx.log(`content origin (${STUDIO_URL}): ${origin}`);
     if (origin === 'failed') {
-        ctx.log('AVISO: no se pudo garantizar la NetworkLocation del origen. Si el '
-            + 'import falla al resolver el origen, ésta es la causa probable.');
+        ctx.log('WARNING: could not ensure the NetworkLocation for the origin. If the '
+            + 'import fails to resolve the origin, this is the likely cause.');
     }
 
     let index = 0;
@@ -229,16 +229,16 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             : channelName;
 
         ctx.update({ phase: 'queued', detail: label });
-        ctx.log(`encolando import de ${item.channelId} — ${channelName}`);
+        ctx.log(`queueing import of ${item.channelId} — ${channelName}`);
 
         const payload = buildTaskPayload({
             channelId: item.channelId,
             channelName,
             nodeIds: item.nodeIds,
             excludeNodeIds: item.excludeNodeIds,
-            // Solo cuando hay selección parcial: ahí las miniaturas de los topics no
-            // seleccionados no vendrían y la navegación quedaría con huecos. En un
-            // canal completo ya vienen, así que pedirlas solo añade descarga.
+            // Only on a partial selection: there the thumbnails of the unselected
+            // topics would not come and the browse would have gaps. On a full
+            // channel they already come, so asking for them only adds download.
             allThumbnails: item.allThumbnails ?? item.nodeIds.length > 0,
         });
 
@@ -246,8 +246,8 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             holder.current, '/api/tasks/tasks/',
             { method: 'POST', body: JSON.stringify(payload) }, 30000);
         const kolibriJob = Array.isArray(created) ? created[0] : created;
-        if (!kolibriJob?.id) throw new Error('Kolibri no devolvió un id de job');
-        ctx.log(`job de Kolibri: ${kolibriJob.id}`);
+        if (!kolibriJob?.id) throw new Error('Kolibri did not return a job id');
+        ctx.log(`Kolibri job: ${kolibriJob.id}`);
 
         await pollKolibriJob(ctx, holder, kolibriJob.id, label, index, parsed.length);
     }
@@ -255,7 +255,7 @@ const kolibriRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.update({ phase: 'done', percent: 100, detail: null });
 };
 
-/** Sigue un job de Kolibri hasta su estado terminal, reflejando el progreso. */
+/** Follows a Kolibri job to its terminal state, mirroring the progress. */
 async function pollKolibriJob(
     ctx: RunnerContext,
     holder: SessionHolder,
@@ -275,24 +275,24 @@ async function pollKolibriJob(
         try {
             await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/cancel/`,
                 { method: 'POST', body: '{}' });
-        } catch { /* mejor esfuerzo */ }
+        } catch { /* best effort */ }
     };
 
     const clearInKolibri = async (): Promise<void> => {
-        // OJO: DELETE /api/tasks/tasks/<id>/ devuelve 405 — el viewset define
-        // delete() pero no destroy(), así que el router no lo enruta.
+        // CAREFUL: DELETE /api/tasks/tasks/<id>/ returns 405 — the viewset defines
+        // delete() but not destroy(), so the router does not route it.
         try {
             await apiFetch(holder.current, `/api/tasks/tasks/${kolibriJobId}/clear/`,
                 { method: 'POST', body: '{}' });
-        } catch { /* mejor esfuerzo */ }
+        } catch { /* best effort */ }
     };
 
     for (;;) {
         if (ctx.isCanceled()) {
-            // Cancelar también en Kolibri: si no, seguiría descargando en segundo
-            // plano aunque nuestro job ya figure como cancelado.
+            // Cancel in Kolibri too: otherwise it would keep downloading in the
+            // background even though our job already shows as canceled.
             await cancelInKolibri();
-            ctx.log(`job ${kolibriJobId} cancelado en Kolibri`);
+            ctx.log(`job ${kolibriJobId} canceled in Kolibri`);
             throw new CanceledError();
         }
 
@@ -300,17 +300,17 @@ async function pollKolibriJob(
         try {
             job = await apiJson<KolibriJob>(holder.current, `/api/tasks/tasks/${kolibriJobId}/`);
         } catch (e) {
-            // Sesión caducada: un import puede durar horas y sobrevivir a la sesión
-            // de Django. Reautenticar y seguir, en lugar de perder un job que
-            // Kolibri probablemente esté completando.
+            // Expired session: an import can run for hours and outlive the Django
+            // session. Re-authenticate and carry on, instead of losing a job that
+            // Kolibri is probably completing.
             if (e instanceof KolibriApiError && e.isAuthExpired && reauths < MAX_REAUTH) {
                 reauths++;
                 if (await reauthenticate(ctx, holder)) { continue; }
             }
-            // Un fallo puntual de polling no debe matar el job: Kolibri sigue
-            // trabajando. Solo abortamos si persiste más allá del stall timeout.
+            // A one-off polling failure must not kill the job: Kolibri keeps
+            // working. We only abort if it persists beyond the stall timeout.
             if (Date.now() - lastProgressAt > STALL_TIMEOUT_MS) {
-                throw new Error(`el polling de ${kolibriJobId} falló de forma sostenida: `
+                throw new Error(`polling of ${kolibriJobId} failed persistently: `
                     + (e instanceof Error ? e.message : String(e)));
             }
             await sleep(POLL_MS);
@@ -337,21 +337,21 @@ async function pollKolibriJob(
         }
         ctx.update(patch);
 
-        // La gracia de cola solo aplica ANTES de que un worker tome el job. Si ya
-        // corrió y volvió a QUEUED, es el reintento propio de Kolibri
-        // (enqueue_args.max_retries) y es legítimo: no lo confundimos con workers
-        // caídos.
+        // The queued grace only applies BEFORE a worker takes the job. If it has
+        // already run and went back to QUEUED, that is Kolibri's own retry
+        // (enqueue_args.max_retries) and it is legitimate: we do not confuse it
+        // with dead workers.
         if (PRE_RUN_STATES.has(job.status) && !taken) {
             if (now - started > QUEUED_GRACE_MS) {
                 throw new Error(
-                    `El job ${kolibriJobId} sigue en ${job.status} tras `
-                    + `${Math.round((now - started) / 1000)} s: los workers de Kolibri no `
-                    + 'parecen estar activos (kolibri start los incluye; kolibri services '
-                    + 'los arranca sin HTTP).');
+                    `Job ${kolibriJobId} is still in ${job.status} after `
+                    + `${Math.round((now - started) / 1000)} s: the Kolibri workers do `
+                    + 'not seem to be active (kolibri start includes them; kolibri services '
+                    + 'starts them without HTTP).');
             }
         } else if (!taken) {
-            // Acaba de pasar a RUNNING: reiniciamos el reloj de estancamiento para
-            // no contar el tiempo que estuvo en cola.
+            // It has just moved to RUNNING: we reset the stall clock so as not to
+            // count the time it spent queued.
             taken = true;
             lastProgressAt = now;
         }
@@ -359,37 +359,37 @@ async function pollKolibriJob(
         if (job.status === 'RUNNING' && now - lastProgressAt > STALL_TIMEOUT_MS) {
             await cancelInKolibri();
             throw new Error(
-                `Sin avance durante ${humanMs(STALL_TIMEOUT_MS)}: Kolibri está `
-                + 'reintentando la descarga en bucle (red inestable). Job cancelado; '
-                + 'al reintentar se reanuda donde quedó.');
+                `No progress for ${humanMs(STALL_TIMEOUT_MS)}: Kolibri is `
+                + 'retrying the download in a loop (unstable network). Job canceled; '
+                + 'on retry it resumes where it left off.');
         }
 
         if (TERMINAL_STATES.has(job.status)) {
-            // Se limpia en TODOS los caminos terminales, no solo en el éxito: si no,
-            // los jobs fallidos se acumulan en la cola de Kolibri.
+            // Cleared on ALL terminal paths, not only on success: otherwise the
+            // failed jobs pile up in Kolibri's queue.
             if (job.status === 'FAILED') {
-                const detail = job.exception || 'sin detalle';
-                ctx.log(`FALLO en Kolibri: ${detail}`);
+                const detail = job.exception || 'no detail';
+                ctx.log(`FAILURE in Kolibri: ${detail}`);
                 if (job.traceback) ctx.log(job.traceback.split('\n').slice(-6).join('\n'));
                 await clearInKolibri();
-                throw new Error(`Kolibri falló importando ${label}: ${detail}`);
+                throw new Error(`Kolibri failed importing ${label}: ${detail}`);
             }
             if (job.status === 'CANCELED') {
                 await clearInKolibri();
                 throw new CanceledError();
             }
 
-            // COMPLETED no garantiza que se haya descargado algo: con node_ids
-            // inexistentes la tarea termina bien sin transferir un byte.
+            // COMPLETED does NOT guarantee anything was downloaded: with
+            // non-existent node_ids the task ends fine without transferring a byte.
             const expected = meta.total_resources ?? 0;
             const got = meta.transferred_resources ?? 0;
             const mb = Math.round((meta.transferred_file_size ?? 0) / 1048576);
-            ctx.log(`completado: ${got}/${expected} recursos, ${mb} MB`);
+            ctx.log(`completed: ${got}/${expected} resources, ${mb} MB`);
             await clearInKolibri();
             if (expected > 0 && got === 0) {
                 throw new Error(
-                    `Kolibri terminó sin transferir nada de ${label}: revisa los nodeIds. `
-                    + 'Una selección vacía termina con éxito y sin contenido.');
+                    `Kolibri finished without transferring anything of ${label}: check the nodeIds. `
+                    + 'An empty selection finishes successfully and with no content.');
             }
             return;
         }

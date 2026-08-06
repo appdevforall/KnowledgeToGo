@@ -1,21 +1,21 @@
-// sockets/kolibri.query.ts — consultas directas (no-job) de Kolibri
+// sockets/kolibri.query.ts — direct (non-job) Kolibri queries
 //
-// Mismo papel que books.query.ts: lo que la UI necesita para decidir QUÉ descargar,
-// separado del job que lo descarga.
+// Same role as books.query.ts: what the UI needs in order to decide WHAT to
+// download, kept separate from the job that downloads it.
 //
-//   listInstalledChannels()  qué hay ya en el dispositivo, con bytes disponibles
-//   browseRemoteChannels()   catálogo remoto para el selector del wizard
-//   resolveIdentifier()      token o UUID → canal (los tokens los pide el usuario,
-//                            la CLI y las tareas exigen UUID)
-//   browseChannelTree()      árbol granular para elegir subárboles
-//   estimateSelection()      bytes exactos de una selección, antes de bajarla
-//   deleteChannel()          quitar un canal
+//   listInstalledChannels()  what is already on the device, with available bytes
+//   browseRemoteChannels()   remote catalogue for the wizard's picker
+//   resolveIdentifier()      token or UUID → channel (users supply the tokens,
+//                            the CLI and the tasks demand a UUID)
+//   browseChannelTree()      granular tree for choosing subtrees
+//   estimateSelection()      exact bytes of a selection, before downloading it
+//   deleteChannel()          remove a channel
 //
-// Los totales locales se leen de SQLite en readonly (patrón de books.query.ts) en
-// lugar de por HTTP: es más barato y no necesita sesión. OJO con una trampa: la
-// columna 'available' vive en db.sqlite3, NO en el .sqlite3 del canal, y se marca
-// de golpe al FINAL del import — así que sirve para "¿está completo?" pero no como
-// fuente de progreso en vivo.
+// Local totals are read from SQLite in readonly (the books.query.ts pattern) rather
+// than over HTTP: it is cheaper and needs no session. Watch out for one trap: the
+// 'available' column lives in db.sqlite3, NOT in the channel's .sqlite3, and is set
+// in one go at the END of the import — so it answers "is it complete?" but is no
+// source of live progress.
 import Database from 'better-sqlite3';
 import fs from 'fs';
 import path from 'path';
@@ -42,15 +42,15 @@ export interface InstalledChannel {
 }
 
 /**
- * Canales presentes en el dispositivo y cuánto de cada uno está disponible.
+ * Channels present on the device and how much of each one is available.
  *
- * Un solo recorrido: la CTE reduce content_file × content_contentnode a pares
- * DISTINCT (channel_id, local_file_id) y luego se agrega una vez. El DISTINCT no es
- * cosmético — un LocalFile puede colgar de varios ContentNode del mismo canal, y un
- * JOIN plano contaría sus bytes tantas veces como nodos lo referencien.
+ * A single pass: the CTE reduces content_file × content_contentnode to DISTINCT
+ * (channel_id, local_file_id) pairs and then aggregates once. The DISTINCT is not
+ * cosmetic — a LocalFile can hang off several ContentNode rows of the same channel,
+ * and a flat JOIN would count its bytes once per node that references it.
  *
- * El LEFT JOIN es deliberado: un canal cuyos metadatos están importados pero sin
- * contenido debe aparecer con ceros, no desaparecer del listado.
+ * The LEFT JOIN is deliberate: a channel whose metadata is imported but which has
+ * no content must show up with zeros, not vanish from the listing.
  */
 export function listInstalledChannels(): InstalledChannel[] {
     if (!fs.existsSync(MAIN_DB)) return [];
@@ -87,16 +87,16 @@ export function listInstalledChannels(): InstalledChannel[] {
 }
 
 /**
- * Bytes ya materializados en disco, excluyendo transferencias en curso.
+ * Bytes already materialised on disk, excluding transfers in progress.
  *
- * NO LLAMAR DESDE UN HANDLER REST. Es un recorrido sincrónico del árbol de
- * contenido: en un dispositivo poblado son decenas de miles de ficheros, y Node es
- * monohilo, así que bloquearía todos los demás endpoints —incluidos los jobs de
- * kiwix/maps/books— durante el recorrido.
+ * DO NOT CALL FROM A REST HANDLER. This is a synchronous walk of the content
+ * tree: on a populated device that is tens of thousands of files, and Node is
+ * single-threaded, so it would block every other endpoint —including the
+ * kiwix/maps/books jobs— for the whole walk.
  *
- * Se conserva porque es la única fuente de progreso que no depende de la API de
- * Kolibri (su columna `available` se marca de golpe al final del import). Si algún
- * día se necesita en vivo, hay que pasarlo a fs.promises y cachearlo.
+ * It is kept because it is the only source of progress that does not depend on the
+ * Kolibri API (whose `available` column is set in one go at the end of the import).
+ * If it is ever needed live, it has to move to fs.promises and be cached.
  */
 export function contentBytesOnDisk(): number {
     const storage = path.join(CONTENT_DIR, 'storage');
@@ -107,9 +107,9 @@ export function contentBytesOnDisk(): number {
         for (const e of entries) {
             const p = path.join(dir, e.name);
             if (e.isDirectory()) { walk(p); continue; }
-            // .transfer y .chunks son descargas a medias; no cuentan como presentes.
+            // .transfer and .chunks are partial downloads; they do not count as present.
             if (e.name.endsWith('.transfer') || e.name.endsWith('.chunks')) continue;
-            try { total += fs.statSync(p).size; } catch { /* desapareció */ }
+            try { total += fs.statSync(p).size; } catch { /* it vanished */ }
         }
     };
     walk(storage);
@@ -142,12 +142,12 @@ function toRemoteChannel(row: Record<string, unknown>): RemoteChannel {
 }
 
 /**
- * Catálogo remoto para el selector del wizard, vía el proxy del propio dispositivo.
+ * Remote catalogue for the wizard's picker, through the device's own proxy.
  *
- * Se usa /api/content/remotechannel/ en lugar de ir directo a Studio para que el
- * origen y la caché sean los de Kolibri (cachea 5 min) y para no duplicar la
- * política de red. Devuelve 503 {"status":"offline"} si no hay conectividad, que
- * aquí se traduce en una excepción legible.
+ * /api/content/remotechannel/ is used instead of going straight to Studio so that
+ * the origin and the cache are Kolibri's (it caches for 5 min) and so the network
+ * policy is not duplicated. It returns 503 {"status":"offline"} when there is no
+ * connectivity, which is turned into a readable exception here.
  */
 export async function browseRemoteChannels(
     opts: { keyword?: string; language?: string } = {},
@@ -166,11 +166,11 @@ export async function browseRemoteChannels(
 }
 
 /**
- * Resuelve un token (xxxxx-xxxxx o xxxxxxxxxx) o un UUID a su canal.
+ * Resolves a token (xxxxx-xxxxx or xxxxxxxxxx) or a UUID to its channel.
  *
- * Necesario porque el usuario copia tokens de Studio, pero las tareas y la CLI
- * exigen el hex de 32. Los guiones son puramente presentacionales: Studio guarda
- * el proquint sin guion.
+ * Needed because users copy tokens from Studio, but the tasks and the CLI demand
+ * the 32-char hex. The hyphens are purely presentational: Studio stores the
+ * proquint without a hyphen.
  */
 export async function resolveIdentifier(identifier: string): Promise<RemoteChannel> {
     const session = await loginForContent();
@@ -178,9 +178,9 @@ export async function resolveIdentifier(identifier: string): Promise<RemoteChann
     const data = await apiJson<unknown>(
         session, `/api/content/remotechannel/${encodeURIComponent(normalized)}/`, {}, 30000);
     const row = Array.isArray(data) ? data[0] : data;
-    if (!row || typeof row !== 'object') throw new Error(`no se encontró el canal '${identifier}'`);
+    if (!row || typeof row !== 'object') throw new Error(`channel '${identifier}' not found`);
     const channel = toRemoteChannel(row as Record<string, unknown>);
-    if (!channel.id) throw new Error(`no se encontró el canal '${identifier}'`);
+    if (!channel.id) throw new Error(`channel '${identifier}' not found`);
     return channel;
 }
 
@@ -212,13 +212,13 @@ function toTreeNode(row: Record<string, unknown>): TreeNode {
 }
 
 /**
- * Un nivel del árbol del canal, para que el wizard permita elegir subárboles.
+ * One level of the channel tree, so the wizard can offer a choice of subtrees.
  *
- * PRECONDICIÓN: los metadatos del canal ya tienen que estar en la base local, o
- * sea que hay que haber corrido un import de canal antes. Es el mismo flujo que la
- * UI de Kolibri: primero baja los metadatos (MB), luego deja elegir el contenido (GB).
+ * PRECONDITION: the channel metadata has to be in the local database already, which
+ * means a channel import must have run first. This is the same flow as Kolibri's
+ * own UI: it downloads the metadata first (MB), then it lets you pick content (GB).
  *
- * Si no se pasa nodeId, se usa la raíz del canal.
+ * When no nodeId is passed, the channel root is used.
  */
 export async function browseChannelTree(
     channelId: string, nodeId?: string,
@@ -230,8 +230,8 @@ export async function browseChannelTree(
             session, `/api/content/channel/${channelId}/`);
         const root = channel?.root;
         if (typeof root !== 'string') {
-            throw new Error(`el canal ${channelId} no está en la base local: `
-                + 'importa primero sus metadatos');
+            throw new Error(`channel ${channelId} is not in the local database: `
+                + 'import its metadata first');
         }
         target = root;
     }
@@ -248,10 +248,10 @@ export interface SelectionSize {
 }
 
 /**
- * Tamaño exacto de una selección antes de comprometer bytes, más el espacio libre.
+ * Exact size of a selection before committing bytes, plus the free space.
  *
- * OJO con el prefijo: este endpoint NO está bajo /api/ sino bajo /device/api/,
- * porque lo publica el plugin 'device'.
+ * Watch the prefix: this endpoint is NOT under /api/ but under /device/api/,
+ * because the 'device' plugin publishes it.
  */
 export async function estimateSelection(
     channelId: string, nodeIds?: string[], excludeNodeIds?: string[],
@@ -269,24 +269,24 @@ export async function estimateSelection(
     try {
         const fs2 = await apiJson<{ freespace?: number }>(session, '/api/device/freespace/');
         freeSpace = typeof fs2.freespace === 'number' ? fs2.freespace : null;
-    } catch { /* no bloqueante */ }
+    } catch { /* non-blocking */ }
 
     const fileSize = size.file_size ?? 0;
     return {
         resourceCount: size.resource_count ?? 0,
         fileSize,
         freeSpace,
-        // Kolibri ya resta su colchón (MINIMUM_DISK_SPACE, 250 MB) al calcular
-        // freespace, así que comparar directo es correcto.
+        // Kolibri already subtracts its buffer (MINIMUM_DISK_SPACE, 250 MB) when
+        // computing freespace, so comparing directly is correct.
         fitsOnDevice: freeSpace === null ? null : freeSpace > fileSize,
     };
 }
 
 /**
- * Borra un canal completo (metadatos + archivos) vía la tarea de Kolibri.
+ * Deletes a whole channel (metadata + files) through the Kolibri task.
  *
- * Devuelve el id del job DE KOLIBRI, no del motor local: es una operación corta y
- * no merece un job durable. Se consulta con getKolibriTask() / GET /kolibri/task/:id.
+ * It returns the KOLIBRI job id, not the local engine's: this is a short operation
+ * and needs no durable job. Query it with getKolibriTask() / GET /kolibri/task/:id.
  */
 export async function deleteChannel(channelId: string, channelName?: string): Promise<string> {
     const session = await loginForContent();
@@ -298,24 +298,24 @@ export async function deleteChannel(channelId: string, channelName?: string): Pr
             channel_name: channelName || channelId,
         }),
     }, 30000);
-    if (!job?.id) throw new Error('Kolibri no devolvió un id de job');
+    if (!job?.id) throw new Error('Kolibri did not return a job id');
     return job.id;
 }
 
 export interface KolibriTaskStatus {
     id: string;
     status: string;
-    /** 0-100 entero, o -1 si Kolibri no reporta progreso para esta tarea. */
+    /** 0-100 integer, or -1 if Kolibri reports no progress for this task. */
     percent: number;
     exception: string | null;
     done: boolean;
 }
 
 /**
- * Estado de una tarea de Kolibri lanzada fuera del motor de jobs (hoy, el borrado).
+ * Status of a Kolibri task started outside the job engine (today, the deletion).
  *
- * Sin esto, deleteChannel() devolvía un id que ningún endpoint nuestro sabía
- * consultar: el cliente recibía un identificador inútil.
+ * Without this, deleteChannel() returned an id that none of our endpoints knew
+ * how to query: the client got a useless identifier.
  */
 export async function getKolibriTask(taskId: string): Promise<KolibriTaskStatus> {
     const session = await loginForContent();
@@ -331,16 +331,16 @@ export async function getKolibriTask(taskId: string): Promise<KolibriTaskStatus>
     };
 }
 
-/** Diagnóstico ampliado: readiness + estado local. Lo consume /kolibri/preflight.
- *  checkReadiness() no lanza: siempre devuelve un diagnóstico, así que un Kolibri
- *  caído se refleja en los campos en lugar de romper la respuesta.
+/** Extended diagnostics: readiness + local state. Consumed by /kolibri/preflight.
+ *  checkReadiness() does not throw: it always returns a diagnostic, so a Kolibri
+ *  that is down shows up in the fields instead of breaking the response.
  *
- *  Los bytes salen de SQLite, no del disco: sumar bytesAvailable da el mismo dato
- *  que recorrer content/storage y no bloquea el event loop. */
+ *  The bytes come from SQLite, not from disk: summing bytesAvailable gives the same
+ *  figure as walking content/storage and does not block the event loop. */
 export async function preflight(): Promise<Record<string, unknown>> {
     const readiness = await checkReadiness();
     let installed: InstalledChannel[] = [];
-    try { installed = listInstalledChannels(); } catch { /* base ausente */ }
+    try { installed = listInstalledChannels(); } catch { /* database absent */ }
     return {
         ...readiness,
         studioUrl: STUDIO_URL,
@@ -353,7 +353,7 @@ export async function preflight(): Promise<Record<string, unknown>> {
     };
 }
 
-/** Comprueba unas credenciales sin persistirlas. Lo usa POST /credentials/kolibri. */
+/** Checks credentials without persisting them. Used by POST /credentials/kolibri. */
 export async function verifyCredentials(
     username: string, password: string,
 ): Promise<{ ok: boolean; canManageContent: boolean; username: string }> {

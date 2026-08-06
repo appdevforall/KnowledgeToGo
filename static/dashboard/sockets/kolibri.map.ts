@@ -1,27 +1,27 @@
-// sockets/kolibri.map.ts — helpers puros de traducción Kolibri ↔ motor de jobs
+// sockets/kolibri.map.ts — pure translation helpers, Kolibri <-> the jobs engine
 //
-// Separado de kolibri.exec.ts por la misma razón que maps.socket.ts está separado
-// de maps.exec.ts: aquí no hay red, ni SQLite, ni dependencias nativas, así que se
-// puede testear con `node --test` sin compilar better-sqlite3 — que es justo lo que
-// hace el CI con `npm ci --ignore-scripts`.
+// Split out from kolibri.exec.ts for the same reason maps.socket.ts is split from
+// maps.exec.ts: there is no network, no SQLite and no native dependency here, so it
+// can be tested with `node --test` without building better-sqlite3 — which is
+// exactly what CI does with `npm ci --ignore-scripts`.
 //
-// Todo lo que vive aquí encapsula una trampa concreta de la API de Kolibri.
+// Everything in this file encapsulates one specific trap in Kolibri's API.
 
-/** Tarea que importa metadatos + archivos en un solo job.
- *  Los nombres antiguos (startremotechannelimport, startchannelupdate…) son de una
- *  API anterior a la 0.15 y ya no existen en el backend: solo sobreviven en tests
- *  del frontend de Kolibri. */
+/** The task that imports metadata + files in a single job.
+ *  The old names (startremotechannelimport, startchannelupdate...) belong to a
+ *  pre-0.15 API and no longer exist in the backend: they survive only in Kolibri's
+ *  frontend tests. */
 export const TASK_REMOTE_IMPORT = 'kolibri.core.content.tasks.remoteimport';
 export const TASK_DELETE_CHANNEL = 'kolibri.core.content.tasks.deletechannel';
 
-/** Estados terminales de Kolibri (kolibri/core/tasks/job.py, class State). */
+/** Kolibri's terminal states (kolibri/core/tasks/job.py, class State). */
 export const TERMINAL_STATES = new Set(['COMPLETED', 'FAILED', 'CANCELED']);
 
-/** Estados en los que el job todavía no ha sido tomado por un worker. */
+/** States in which the job has not yet been picked up by a worker. */
 export const PRE_RUN_STATES = new Set(['PENDING', 'SCHEDULED', 'QUEUED']);
 
-/** Fases del motor de jobs de K2Go. Se replica el tipo en lugar de importarlo de
- *  jobs.ts para no arrastrar better-sqlite3 a este módulo puro. */
+/** Phases of the K2Go jobs engine. The type is duplicated rather than imported
+ *  from jobs.ts so this pure module does not drag in better-sqlite3. */
 export type Phase =
     | 'queued' | 'downloading' | 'indexing' | 'processing'
     | 'done' | 'error' | 'canceled';
@@ -29,12 +29,13 @@ export type Phase =
 const HEX32 = /^[0-9a-f]{32}$/;
 
 /**
- * Normaliza un identificador de canal o nodo a hex de 32 minúsculas.
+ * Normalises a channel or node identifier to 32 lowercase hex characters.
  *
- * Kolibri acepta UUID con o sin guiones y los normaliza (HexOnlyUUIDField), pero
- * validar aquí evita encolar basura y da el error en el sitio correcto. Devuelve
- * null para tokens proquint: no son channel_id, y pasarlos tal cual acabaría en un
- * 404 del descargador sin mensaje claro.
+ * Kolibri accepts UUIDs with or without hyphens and normalises them itself
+ * (HexOnlyUUIDField), but validating here keeps rubbish out of the queue and
+ * reports the error where it belongs. Returns null for proquint tokens: those are
+ * not channel_ids, and passing one through would end in an unexplained 404 from
+ * the downloader.
  */
 export function normalizeUuid(raw: unknown): string | null {
     if (typeof raw !== 'string') return null;
@@ -42,7 +43,7 @@ export function normalizeUuid(raw: unknown): string | null {
     return HEX32.test(v) ? v : null;
 }
 
-/** Traduce el estado de Kolibri a la fase del motor de jobs. */
+/** Translates a Kolibri state into a jobs-engine phase. */
 export function mapPhase(kolibriStatus: string): Phase {
     switch (kolibriStatus) {
         case 'PENDING':
@@ -60,24 +61,24 @@ export function mapPhase(kolibriStatus: string): Phase {
         case 'CANCELED':
             return 'canceled';
         default:
-            // Estado nuevo en una versión futura: no romper, seguir mostrando avance.
+            // A state added in some future version: do not break, keep reporting progress.
             return 'processing';
     }
 }
 
 /**
- * Kolibri devuelve `percentage` como float 0–1; el motor de jobs usa entero 0–100.
- * Confundirlos es el error más fácil de cometer con esta API.
- * Devuelve -1 (indeterminado, la convención de jobs.ts) si no hay dato.
+ * Kolibri reports `percentage` as a 0-1 float; the jobs engine uses a 0-100 int.
+ * Conflating the two is the easiest mistake to make against this API.
+ * Returns -1 (indeterminate, the jobs.ts convention) when there is no value.
  */
 export function mapPercent(percentage: number | null | undefined): number {
     if (typeof percentage !== 'number' || Number.isNaN(percentage)) return -1;
     return Math.max(0, Math.min(100, Math.round(percentage * 100)));
 }
 
-/** Progreso global cuando un job de K2Go abarca varios canales: cada canal ocupa
- *  su franja, de modo que la barra sube 0→100 una sola vez en lugar de reiniciarse.
- *  Se acota a 99 para que el 100 lo ponga el final del runner. */
+/** Overall progress when one K2Go job spans several channels: each channel gets
+ *  its own band, so the bar climbs 0->100 once instead of resetting per channel.
+ *  Capped at 99 so that the runner's completion is what sets 100. */
 export function overallPercent(index: number, total: number, localPercent: number): number {
     if (total <= 1) return localPercent;
     if (localPercent < 0) return -1;
@@ -93,24 +94,26 @@ export interface TaskPayloadInput {
 }
 
 /**
- * Construye el cuerpo del POST a /api/tasks/tasks/.
+ * Builds the body of the POST to /api/tasks/tasks/.
  *
- * Encapsula tres trampas verificadas en el código de Kolibri:
+ * Encapsulates three traps verified against Kolibri's source:
  *
- *   1. `channel_name` es OBLIGATORIO (serializers.CharField sin required=False).
- *      Omitirlo da 400 aunque el campo solo se use para metadatos de presentación.
- *   2. `peer` NO admite null (PrimaryKeyRelatedField sin allow_null=True): mandar
- *      `"peer": null` da 400 "This field may not be null". Hay que OMITIR la clave.
- *   3. `node_ids: []` significa CERO NODOS, no "todo el canal". Ausente significa
- *      todo. Una lista vacía descargaría nada terminando con éxito.
+ *   1. `channel_name` is MANDATORY (serializers.CharField with no required=False).
+ *      Omitting it returns 400 even though the field is only used for display
+ *      metadata.
+ *   2. `peer` does NOT accept null (PrimaryKeyRelatedField with no
+ *      allow_null=True): sending `"peer": null` returns 400 "This field may not be
+ *      null". The key must be OMITTED.
+ *   3. `node_ids: []` means ZERO NODES, not "the whole channel". Absent means the
+ *      whole channel. An empty list would download nothing and report success.
  */
 export function buildTaskPayload(item: TaskPayloadInput): Record<string, unknown> {
     const payload: Record<string, unknown> = {
         type: TASK_REMOTE_IMPORT,
         channel_id: item.channelId,
         channel_name: item.channelName,
-        // Sin esto los errores 404 / ENOENT / nombre inválido se cuentan como
-        // "skipped" y la tarea termina como COMPLETED.
+        // Without this, 404 / ENOENT / invalid-name errors are counted as
+        // "skipped" and the task finishes as COMPLETED.
         fail_on_error: true,
         renderable_only: true,
     };
@@ -118,14 +121,15 @@ export function buildTaskPayload(item: TaskPayloadInput): Record<string, unknown
     if (item.excludeNodeIds && item.excludeNodeIds.length > 0) {
         payload.exclude_node_ids = item.excludeNodeIds;
     }
-    // Con selección parcial, sin esto la navegación por temas queda con huecos:
-    // las miniaturas de los topics no seleccionados no se descargan.
+    // On a partial selection, without this the topic browse has gaps: thumbnails
+    // for unselected topics are never downloaded.
     if (item.allThumbnails) payload.all_thumbnails = true;
     return payload;
 }
 
-/** Bytes por segundo a partir de dos muestras de `transferred_file_size`.
- *  Devuelve null si no hubo avance, para no pisar la velocidad anterior con un 0. */
+/** Bytes per second from two samples of `transferred_file_size`.
+ *  Returns null when there was no progress, so a 0 does not overwrite the previous
+ *  reading. */
 export function sampleSpeed(
     prevBytes: number, nextBytes: number, prevAtMs: number, nextAtMs: number,
 ): number | null {
