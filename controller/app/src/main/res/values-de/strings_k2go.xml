@@ -707,4 +707,24 @@
     <string name="k2go_reinstall_confirm_title">Von Grund auf neu installieren?</string>
     <string name="k2go_reinstall_confirm_msg">Dies löscht das aktuelle System und alles darin — Bücher, Karten, Downloads und Einstellungen — und installiert dann eine saubere Kopie. Das kann nicht rückgängig gemacht werden. Erstellen Sie zuerst ein Backup, wenn Sie etwas behalten möchten. Erfordert eine Internetverbindung.</string>
     <string name="k2go_reinstall_confirm_yes">Löschen und neu installieren</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Vom System</string>
+    <string name="k2go_zim_lang_state_manual">Manuell ausgewählt</string>
+    <string name="k2go_zim_most_content">MEISTE INHALTE</string>
+    <string name="k2go_zim_see_all_cats_fmt">Alle %1$d Kategorien anzeigen</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d Kategorien sind auf %2$s nicht verfügbar · Sprache ändern</string>
+    <string name="k2go_zim_unavail_row_fmt">Nicht verfügbar auf %1$s</string>
+    <string name="k2go_zim_grp_all">Alle</string>
+    <string name="k2go_zim_grp_reference">Referenz</string>
+    <string name="k2go_zim_grp_reference_hdr">REFERENZ &amp; ENZYKLOPÄDIE</string>
+    <string name="k2go_zim_grp_learning">Lernen</string>
+    <string name="k2go_zim_grp_learning_hdr">LERNEN &amp; MACHEN</string>
+    <string name="k2go_zim_grp_tools">Werkzeuge</string>
+    <string name="k2go_zim_grp_tools_hdr">WERKZEUGE &amp; TECHNIK</string>
+    <string name="k2go_zim_grp_media">Medien</string>
+    <string name="k2go_zim_grp_media_hdr">MEDIEN &amp; MEHR</string>
+    <string name="k2go_zim_grp_kids">Kinder</string>
+    <string name="k2go_zim_grp_kids_hdr">KINDER</string>
+    <string name="k2go_zc_count_items">%1$d Elemente</string>
+    <string name="k2go_zc_count_results">%1$d Ergebnisse</string>
 </resources>

@@ -2,6 +2,7 @@
 <!-- ADFA-4849: ZIM category detail (screen 2). Fixed header + fixed bottom bar; only the list
      scrolls. Rows are built programmatically into k2go_zc_list. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -24,43 +25,27 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_teal" />
 
-        <LinearLayout
+        <!-- ADFA-5033: title only. The count moved to the list-controls row (below), and the language
+             lives in the selector box — dropped the redundant "‹lang› · N" pill next to the title. -->
+        <TextView
+            android:id="@+id/k2go_zc_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
 
-            <TextView
-                android:id="@+id/k2go_zc_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:textColor="@color/k2go_ink" />
-
-            <!-- Informative label only (language · count). NOT a button. -->
-            <TextView
-                android:id="@+id/k2go_zc_lang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:background="@drawable/k2go_pill_bg"
-                android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/k2go_teal" />
-        </LinearLayout>
-
-        <!-- Language selector (same control as the catalog landing). -->
+        <!-- ADFA-5033: same one-control language selector as the catalog landing — whole box opens the
+             picker (▼), no inner Change button (no button-in-button). Two lines; source in Title-Case. -->
         <LinearLayout
+            android:id="@+id/k2go_zc_lang_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
             android:padding="12dp"
             android:background="@drawable/k2go_getmore_bg">
 
@@ -82,18 +67,17 @@
                     android:id="@+id/k2go_zc_lang_sub"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/k2go_zim_lang_sub"
                     android:textAppearance="?attr/textAppearanceBodySmall"
                     android:textColor="@color/k2go_muted" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/k2go_zc_change"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/k2go_zim_change"
-                android:textAllCaps="false" />
+            <ImageView
+                android:id="@+id/k2go_zc_lang_caret"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_expand_more"
+                app:tint="@color/k2go_teal"
+                android:importantForAccessibility="no" />
         </LinearLayout>
 
         <EditText
@@ -134,6 +118,17 @@
                 android:text="@string/k2go_zc_sort_group"
                 android:textAppearance="?attr/textAppearanceBodySmall" />
         </LinearLayout>
+
+        <!-- ADFA-5033: count on its OWN line (design board k2go-count-overflow-v1) so it never shares the
+             scrollable/variable chip row — can't wrap on es/de + small screens. Right-aligned, tabular;
+             live "N results" while searching. -->
+        <TextView android:id="@+id/k2go_zc_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="end"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
     </LinearLayout>
 
     <!-- Scrolling list (the only scrollable region) -->

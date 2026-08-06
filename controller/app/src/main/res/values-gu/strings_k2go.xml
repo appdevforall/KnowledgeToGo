@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">શરૂઆતથી ફરીથી ઇન્સ્ટોલ કરવું?</string>
     <string name="k2go_reinstall_confirm_msg">આ વર્તમાન સિસ્ટમ અને તેમાંનું બધું — પુસ્તકો, નકશા, ડાઉનલોડ અને સેટિંગ્સ — ભૂંસી નાખે છે, પછી એક સ્વચ્છ નકલ ઇન્સ્ટોલ કરે છે. તેને પાછું લઈ શકાતું નથી. કંઈક રાખવું હોય તો પહેલાં બેકઅપ લો. ઇન્ટરનેટ કનેક્શન જરૂરી છે.</string>
     <string name="k2go_reinstall_confirm_yes">ભૂંસો અને ફરીથી ઇન્સ્ટોલ કરો</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">સિસ્ટમમાંથી</string>
+    <string name="k2go_zim_lang_state_manual">મેન્યુઅલી પસંદ કરેલ</string>
+    <string name="k2go_zim_most_content">સૌથી વધુ સામગ્રી</string>
+    <string name="k2go_zim_see_all_cats_fmt">બધી %1$d શ્રેણીઓ જુઓ</string>
+    <string name="k2go_zim_unavail_line_fmt">%2$s માં %1$d શ્રેણીઓ ઉપલબ્ધ નથી · ભાષા બદલો</string>
+    <string name="k2go_zim_unavail_row_fmt">%1$s માં ઉપલબ્ધ નથી</string>
+    <string name="k2go_zim_grp_all">બધું</string>
+    <string name="k2go_zim_grp_reference">સંદર્ભ</string>
+    <string name="k2go_zim_grp_reference_hdr">સંદર્ભ અને જ્ઞાનકોશ</string>
+    <string name="k2go_zim_grp_learning">શિક્ષણ</string>
+    <string name="k2go_zim_grp_learning_hdr">શિક્ષણ અને સર્જન</string>
+    <string name="k2go_zim_grp_tools">સાધનો</string>
+    <string name="k2go_zim_grp_tools_hdr">સાધનો અને ટેક</string>
+    <string name="k2go_zim_grp_media">મીડિયા</string>
+    <string name="k2go_zim_grp_media_hdr">મીડિયા અને વધુ</string>
+    <string name="k2go_zim_grp_kids">બાળકો</string>
+    <string name="k2go_zim_grp_kids_hdr">બાળકો</string>
+    <string name="k2go_zc_count_items">%1$d આઇટમ</string>
+    <string name="k2go_zc_count_results">%1$d પરિણામ</string>
 </resources>

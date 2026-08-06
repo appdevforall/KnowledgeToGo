@@ -72,7 +72,7 @@ public class ZimCategoryFragment extends Fragment {
     private long freeMb = 0, totalMb = 0;
 
     private LinearLayout list;
-    private TextView freeLabel, sortSize, sortName, sortGroup, langChip, langCurrent, langSub;
+    private TextView freeLabel, sortSize, sortName, sortGroup, count, langCurrent, langSub;
     private ProgressBar bar;
     private Button add;
 
@@ -101,10 +101,10 @@ public class ZimCategoryFragment extends Fragment {
         sortSize = root.findViewById(R.id.k2go_zc_sort_size);
         sortName = root.findViewById(R.id.k2go_zc_sort_name);
         sortGroup = root.findViewById(R.id.k2go_zc_sort_group);
-        langChip = root.findViewById(R.id.k2go_zc_lang);   // informative label only (not a button)
+        count = root.findViewById(R.id.k2go_zc_count);   // ADFA-5033: item count, list metadata
         langCurrent = root.findViewById(R.id.k2go_zc_lang_current);
         langSub = root.findViewById(R.id.k2go_zc_lang_sub);
-        root.findViewById(R.id.k2go_zc_change).setOnClickListener(v -> pickLanguage());
+        root.findViewById(R.id.k2go_zc_lang_box).setOnClickListener(v -> pickLanguage());   // ADFA-5033: whole-row control
 
         android.widget.EditText search = root.findViewById(R.id.k2go_zc_search);
         search.setHint(getString(R.string.k2go_zc_search_hint, cat != null ? cat.title : project));
@@ -181,11 +181,14 @@ public class ZimCategoryFragment extends Fragment {
     }
 
     private void render() {
-        langChip.setText(getString(R.string.k2go_zc_lang_fmt, langDisplay(lang), entries.size()));
+        int shownCount = 0;
+        for (Entry e : entries) if (passes(e)) shownCount++;
+        // ADFA-5033: "N items" normally, live "N results" while searching — no language (that's the selector).
+        count.setText(getString(query.isEmpty() ? R.string.k2go_zc_count_items : R.string.k2go_zc_count_results, shownCount));
         langCurrent.setText(getString(R.string.k2go_zim_lang_fmt, langDisplay(lang)));
         boolean manual = (getActivity() instanceof SetupLibraryActivity)
                 && ((SetupLibraryActivity) getActivity()).isZimLangManual();
-        langSub.setText(manual ? R.string.k2go_zim_lang_sub_manual : R.string.k2go_zim_lang_sub);
+        langSub.setText(manual ? R.string.k2go_zim_lang_state_manual : R.string.k2go_zim_lang_state_system);
         sortSize.setText(getString(R.string.k2go_zc_sort_size) + (sizeDir < 0 ? " ▼" : " ▲"));
         sortName.setText((nameDir > 0 ? getString(R.string.k2go_zc_sort_name) : getString(R.string.k2go_zc_sort_name_desc))
                 + (nameDir > 0 ? " ▼" : " ▲"));
@@ -279,57 +282,91 @@ public class ZimCategoryFragment extends Fragment {
         t.setTextColor(ContextCompat.getColor(requireContext(), on ? android.R.color.white : R.color.k2go_ink));
     }
 
+    // ADFA-5033: flat list row (spec §10) — a simple line with a hairline between rows, NOT a card.
+    // The only rounded/filled shape is the SELECTED row's highlight; unselected rows are plain.
     private View row(Entry e, String labelText, int indent) {
         boolean fits = freeMb <= 0 || (e.bytes / (1024L * 1024L)) <= freeMb;
+        boolean selected = e.checked && fits;
 
-        LinearLayout r = new LinearLayout(requireContext());
-        r.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+        LinearLayout wrap = new LinearLayout(requireContext());
+        wrap.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        rlp.bottomMargin = px(8); rlp.leftMargin = indent;
-        r.setLayoutParams(rlp);
-        r.setBackgroundResource(R.drawable.k2go_card_bg);
-        r.setPadding(px(12), px(10), px(12), px(10));
+        wlp.leftMargin = indent;
+        wrap.setLayoutParams(wlp);
+
+        LinearLayout content = new LinearLayout(requireContext());
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(px(12), px(10), px(12), px(10));
+        if (selected) content.setBackground(selectedHighlight());   // the one rounded/filled shape
 
         LinearLayout top = new LinearLayout(requireContext());
         top.setOrientation(LinearLayout.HORIZONTAL);
         top.setGravity(Gravity.CENTER_VERTICAL);
+        top.setMinimumHeight(px(36));
 
         CheckBox cb = new CheckBox(requireContext());
-        cb.setChecked(e.checked && fits);
+        cb.setChecked(selected);
         cb.setEnabled(fits);
         cb.setClickable(false);
         cb.setFocusable(false);
         top.addView(cb);
 
         TextView name = new TextView(requireContext());
-        name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
         name.setText(labelText);
         name.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+        if (selected) name.setTypeface(name.getTypeface(), android.graphics.Typeface.BOLD);
         LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-        nlp.leftMargin = px(6);
+        nlp.leftMargin = px(8);
         top.addView(name, nlp);
 
         TextView size = new TextView(requireContext());
-        size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
         size.setText(gb(e.bytes / (1024L * 1024L)));
         size.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        size.setGravity(Gravity.END);
         top.addView(size);
-        r.addView(top);
+        content.addView(top);
 
         if (!fits) {
             TextView warn = new TextView(requireContext());
             warn.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
             warn.setText(getString(R.string.k2go_zc_nospace, gb(e.bytes / (1024L * 1024L)), gb(freeMb)));
             warn.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
-            LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams warnLp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            wlp.topMargin = px(2); wlp.leftMargin = px(34);
-            r.addView(warn, wlp);
+            warnLp.topMargin = px(2); warnLp.leftMargin = px(36);
+            content.addView(warn, warnLp);
         } else {
-            r.setOnClickListener(v -> { e.checked = !e.checked; cb.setChecked(e.checked); updateTotals(); });
+            content.setOnClickListener(v -> {
+                e.checked = !e.checked;
+                cb.setChecked(e.checked);   // fits is true in this branch
+                content.setBackground(e.checked ? selectedHighlight() : null);
+                name.setTypeface(null, e.checked ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+                updateTotals();
+            });
         }
-        return r;
+
+        wrap.addView(content);
+        wrap.addView(hairline());
+        return wrap;
+    }
+
+    /** Rounded, subtly-filled highlight for the selected row (the only non-flat shape in the list). */
+    private android.graphics.drawable.GradientDrawable selectedHighlight() {
+        android.graphics.drawable.GradientDrawable g = new android.graphics.drawable.GradientDrawable();
+        g.setCornerRadius(px(10));
+        g.setColor(androidx.core.graphics.ColorUtils.setAlphaComponent(
+                ContextCompat.getColor(requireContext(), R.color.k2go_teal), 0x33));
+        return g;
+    }
+
+    private View hairline() {
+        View v = new View(requireContext());
+        v.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.k2go_hairline));
+        v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, px(1)));
+        return v;
     }
 
     private long checkedMb() {

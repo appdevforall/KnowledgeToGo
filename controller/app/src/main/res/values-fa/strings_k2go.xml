@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">نصب مجدد از ابتدا؟</string>
     <string name="k2go_reinstall_confirm_msg">این کار سیستم فعلی و همه چیز داخل آن — کتاب‌ها، نقشه‌ها، دانلودها و تنظیمات — را پاک می‌کند و سپس یک نسخهٔ تمیز نصب می‌کند. قابل بازگشت نیست. اگر می‌خواهید چیزی را نگه دارید ابتدا نسخهٔ پشتیبان بگیرید. به اتصال اینترنت نیاز دارد.</string>
     <string name="k2go_reinstall_confirm_yes">پاک کردن و نصب مجدد</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">از سیستم</string>
+    <string name="k2go_zim_lang_state_manual">انتخاب دستی</string>
+    <string name="k2go_zim_most_content">بیشترین محتوا</string>
+    <string name="k2go_zim_see_all_cats_fmt">دیدن همه %1$d دسته</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d دسته به زبان %2$s در دسترس نیست · تغییر زبان</string>
+    <string name="k2go_zim_unavail_row_fmt">به زبان %1$s در دسترس نیست</string>
+    <string name="k2go_zim_grp_all">همه</string>
+    <string name="k2go_zim_grp_reference">مرجع</string>
+    <string name="k2go_zim_grp_reference_hdr">مرجع و دانشنامه</string>
+    <string name="k2go_zim_grp_learning">یادگیری</string>
+    <string name="k2go_zim_grp_learning_hdr">یادگیری و ساخت</string>
+    <string name="k2go_zim_grp_tools">ابزارها</string>
+    <string name="k2go_zim_grp_tools_hdr">ابزارها و فناوری</string>
+    <string name="k2go_zim_grp_media">رسانه</string>
+    <string name="k2go_zim_grp_media_hdr">رسانه و بیشتر</string>
+    <string name="k2go_zim_grp_kids">کودکان</string>
+    <string name="k2go_zim_grp_kids_hdr">کودکان</string>
+    <string name="k2go_zc_count_items">%1$d مورد</string>
+    <string name="k2go_zc_count_results">%1$d نتیجه</string>
 </resources>

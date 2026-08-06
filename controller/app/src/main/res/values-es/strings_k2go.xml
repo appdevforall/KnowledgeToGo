@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">¿Reinstalar desde cero?</string>
     <string name="k2go_reinstall_confirm_msg">Esto borra el sistema actual y todo lo que contiene —libros, mapas, descargas y ajustes— y luego instala una copia limpia. No se puede deshacer. Haz un respaldo primero si quieres conservar algo. Necesita conexión a internet.</string>
     <string name="k2go_reinstall_confirm_yes">Borrar y reinstalar</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Del sistema</string>
+    <string name="k2go_zim_lang_state_manual">Seleccionado manualmente</string>
+    <string name="k2go_zim_most_content">MÁS CONTENIDO</string>
+    <string name="k2go_zim_see_all_cats_fmt">Ver las %1$d categorías</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d categorías no están disponibles en %2$s · Cambiar idioma</string>
+    <string name="k2go_zim_unavail_row_fmt">No disponible en %1$s</string>
+    <string name="k2go_zim_grp_all">Todo</string>
+    <string name="k2go_zim_grp_reference">Referencia</string>
+    <string name="k2go_zim_grp_reference_hdr">REFERENCIA Y ENCICLOPEDIA</string>
+    <string name="k2go_zim_grp_learning">Aprendizaje</string>
+    <string name="k2go_zim_grp_learning_hdr">APRENDIZAJE Y CREACIÓN</string>
+    <string name="k2go_zim_grp_tools">Herramientas</string>
+    <string name="k2go_zim_grp_tools_hdr">HERRAMIENTAS Y TECNOLOGÍA</string>
+    <string name="k2go_zim_grp_media">Multimedia</string>
+    <string name="k2go_zim_grp_media_hdr">MULTIMEDIA Y MÁS</string>
+    <string name="k2go_zim_grp_kids">Niños</string>
+    <string name="k2go_zim_grp_kids_hdr">NIÑOS</string>
+    <string name="k2go_zc_count_items">%1$d elementos</string>
+    <string name="k2go_zc_count_results">%1$d resultados</string>
 </resources>

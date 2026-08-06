@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Reinstalezi de la zero?</string>
     <string name="k2go_reinstall_confirm_msg">Aceasta șterge sistemul actual și tot ce conține — cărți, hărți, descărcări și setări — apoi instalează o copie curată. Nu poate fi anulată. Fă mai întâi o copie de rezervă dacă vrei să păstrezi ceva. Necesită o conexiune la internet.</string>
     <string name="k2go_reinstall_confirm_yes">Șterge și reinstalează</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Din sistem</string>
+    <string name="k2go_zim_lang_state_manual">Selectat manual</string>
+    <string name="k2go_zim_most_content">CEL MAI MULT CONȚINUT</string>
+    <string name="k2go_zim_see_all_cats_fmt">Vezi toate cele %1$d categorii</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d categorii nu sunt disponibile în %2$s · Schimbă limba</string>
+    <string name="k2go_zim_unavail_row_fmt">Indisponibil în %1$s</string>
+    <string name="k2go_zim_grp_all">Toate</string>
+    <string name="k2go_zim_grp_reference">Referință</string>
+    <string name="k2go_zim_grp_reference_hdr">REFERINȚĂ ȘI ENCICLOPEDIE</string>
+    <string name="k2go_zim_grp_learning">Învățare</string>
+    <string name="k2go_zim_grp_learning_hdr">ÎNVĂȚARE ȘI CREAȚIE</string>
+    <string name="k2go_zim_grp_tools">Instrumente</string>
+    <string name="k2go_zim_grp_tools_hdr">INSTRUMENTE ȘI TEHNOLOGIE</string>
+    <string name="k2go_zim_grp_media">Media</string>
+    <string name="k2go_zim_grp_media_hdr">MEDIA ȘI ALTELE</string>
+    <string name="k2go_zim_grp_kids">Copii</string>
+    <string name="k2go_zim_grp_kids_hdr">COPII</string>
+    <string name="k2go_zc_count_items">%1$d elemente</string>
+    <string name="k2go_zc_count_results">%1$d rezultate</string>
 </resources>

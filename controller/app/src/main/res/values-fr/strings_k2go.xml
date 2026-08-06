@@ -716,4 +716,24 @@
     <string name="k2go_reinstall_confirm_title">Réinstaller à neuf ?</string>
     <string name="k2go_reinstall_confirm_msg">Ceci efface le système actuel et tout son contenu — livres, cartes, téléchargements et réglages — puis installe une copie propre. C\'est irréversible. Sauvegardez d\'abord si vous voulez conserver quelque chose. Nécessite une connexion internet.</string>
     <string name="k2go_reinstall_confirm_yes">Effacer et réinstaller</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Du système</string>
+    <string name="k2go_zim_lang_state_manual">Sélectionné manuellement</string>
+    <string name="k2go_zim_most_content">PLUS DE CONTENU</string>
+    <string name="k2go_zim_see_all_cats_fmt">Voir les %1$d catégories</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d catégories ne sont pas disponibles en %2$s · Changer de langue</string>
+    <string name="k2go_zim_unavail_row_fmt">Non disponible en %1$s</string>
+    <string name="k2go_zim_grp_all">Tout</string>
+    <string name="k2go_zim_grp_reference">Référence</string>
+    <string name="k2go_zim_grp_reference_hdr">RÉFÉRENCE ET ENCYCLOPÉDIE</string>
+    <string name="k2go_zim_grp_learning">Apprentissage</string>
+    <string name="k2go_zim_grp_learning_hdr">APPRENTISSAGE ET CRÉATION</string>
+    <string name="k2go_zim_grp_tools">Outils</string>
+    <string name="k2go_zim_grp_tools_hdr">OUTILS ET TECH</string>
+    <string name="k2go_zim_grp_media">Médias</string>
+    <string name="k2go_zim_grp_media_hdr">MÉDIAS ET PLUS</string>
+    <string name="k2go_zim_grp_kids">Enfants</string>
+    <string name="k2go_zim_grp_kids_hdr">ENFANTS</string>
+    <string name="k2go_zc_count_items">%1$d éléments</string>
+    <string name="k2go_zc_count_results">%1$d résultats</string>
 </resources>

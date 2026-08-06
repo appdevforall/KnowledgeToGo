@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">Преинсталиране от нулата?</string>
     <string name="k2go_reinstall_confirm_msg">Това изтрива текущата система и всичко в нея — книги, карти, изтегляния и настройки — и инсталира чисто копие. Не може да се отмени. Първо направете резервно копие, ако искате да запазите нещо. Изисква интернет връзка.</string>
     <string name="k2go_reinstall_confirm_yes">Изтриване и преинсталиране</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">От системата</string>
+    <string name="k2go_zim_lang_state_manual">Ръчно избрано</string>
+    <string name="k2go_zim_most_content">НАЙ-МНОГО СЪДЪРЖАНИЕ</string>
+    <string name="k2go_zim_see_all_cats_fmt">Всички %1$d категории</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d категории не са налични на %2$s · Смяна на езика</string>
+    <string name="k2go_zim_unavail_row_fmt">Не е налично на %1$s</string>
+    <string name="k2go_zim_grp_all">Всички</string>
+    <string name="k2go_zim_grp_reference">Справочници</string>
+    <string name="k2go_zim_grp_reference_hdr">СПРАВОЧНИЦИ И ЕНЦИКЛОПЕДИИ</string>
+    <string name="k2go_zim_grp_learning">Обучение</string>
+    <string name="k2go_zim_grp_learning_hdr">ОБУЧЕНИЕ И ТВОРЧЕСТВО</string>
+    <string name="k2go_zim_grp_tools">Инструменти</string>
+    <string name="k2go_zim_grp_tools_hdr">ИНСТРУМЕНТИ И ТЕХНОЛОГИИ</string>
+    <string name="k2go_zim_grp_media">Медия</string>
+    <string name="k2go_zim_grp_media_hdr">МЕДИЯ И ОЩЕ</string>
+    <string name="k2go_zim_grp_kids">Деца</string>
+    <string name="k2go_zim_grp_kids_hdr">ДЕЦА</string>
+    <string name="k2go_zc_count_items">%1$d елемента</string>
+    <string name="k2go_zc_count_results">%1$d резултата</string>
 </resources>

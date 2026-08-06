@@ -716,4 +716,24 @@
     <string name="k2go_reinstall_confirm_title">Įdiegti iš naujo nuo nulio?</string>
     <string name="k2go_reinstall_confirm_msg">Tai ištrina dabartinę sistemą ir viską joje — knygas, žemėlapius, atsisiuntimus ir nustatymus — ir įdiegia švarią kopiją. Negalima atšaukti. Pirmiausia sukurkite atsarginę kopiją, jei norite ką nors išsaugoti. Reikia interneto ryšio.</string>
     <string name="k2go_reinstall_confirm_yes">Ištrinti ir įdiegti iš naujo</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">Iš sistemos</string>
+    <string name="k2go_zim_lang_state_manual">Pasirinkta rankiniu būdu</string>
+    <string name="k2go_zim_most_content">DAUGIAUSIA TURINIO</string>
+    <string name="k2go_zim_see_all_cats_fmt">Rodyti visas %1$d kategorijas</string>
+    <string name="k2go_zim_unavail_line_fmt">%1$d kategorijų nėra kalba %2$s · Keisti kalbą</string>
+    <string name="k2go_zim_unavail_row_fmt">Nepasiekiama kalba %1$s</string>
+    <string name="k2go_zim_grp_all">Visi</string>
+    <string name="k2go_zim_grp_reference">Žinynas</string>
+    <string name="k2go_zim_grp_reference_hdr">ŽINYNAS IR ENCIKLOPEDIJA</string>
+    <string name="k2go_zim_grp_learning">Mokymasis</string>
+    <string name="k2go_zim_grp_learning_hdr">MOKYMASIS IR KŪRYBA</string>
+    <string name="k2go_zim_grp_tools">Įrankiai</string>
+    <string name="k2go_zim_grp_tools_hdr">ĮRANKIAI IR TECHNOLOGIJOS</string>
+    <string name="k2go_zim_grp_media">Medija</string>
+    <string name="k2go_zim_grp_media_hdr">MEDIJA IR DAUGIAU</string>
+    <string name="k2go_zim_grp_kids">Vaikai</string>
+    <string name="k2go_zim_grp_kids_hdr">VAIKAI</string>
+    <string name="k2go_zc_count_items">%1$d elementų</string>
+    <string name="k2go_zc_count_results">%1$d rezultatų</string>
 </resources>

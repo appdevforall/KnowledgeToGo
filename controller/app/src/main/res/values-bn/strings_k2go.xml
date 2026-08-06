@@ -706,4 +706,24 @@
     <string name="k2go_reinstall_confirm_title">গোড়া থেকে পুনরায় ইনস্টল করবেন?</string>
     <string name="k2go_reinstall_confirm_msg">এটি বর্তমান সিস্টেম এবং এর মধ্যে থাকা সবকিছু — বই, মানচিত্র, ডাউনলোড এবং সেটিংস — মুছে ফেলে, তারপর একটি পরিষ্কার কপি ইনস্টল করে। এটি ফেরানো যায় না। কিছু রাখতে চাইলে আগে ব্যাকআপ নিন। ইন্টারনেট সংযোগ প্রয়োজন।</string>
     <string name="k2go_reinstall_confirm_yes">মুছুন এবং পুনরায় ইনস্টল করুন</string>
+    <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
+    <string name="k2go_zim_lang_state_system">সিস্টেম থেকে</string>
+    <string name="k2go_zim_lang_state_manual">ম্যানুয়ালি নির্বাচিত</string>
+    <string name="k2go_zim_most_content">সর্বাধিক কনটেন্ট</string>
+    <string name="k2go_zim_see_all_cats_fmt">সব %1$dটি বিভাগ দেখুন</string>
+    <string name="k2go_zim_unavail_line_fmt">%2$s ভাষায় %1$dটি বিভাগ উপলব্ধ নয় · ভাষা পরিবর্তন করুন</string>
+    <string name="k2go_zim_unavail_row_fmt">%1$s ভাষায় উপলব্ধ নয়</string>
+    <string name="k2go_zim_grp_all">সব</string>
+    <string name="k2go_zim_grp_reference">রেফারেন্স</string>
+    <string name="k2go_zim_grp_reference_hdr">রেফারেন্স ও বিশ্বকোষ</string>
+    <string name="k2go_zim_grp_learning">শেখা</string>
+    <string name="k2go_zim_grp_learning_hdr">শেখা ও তৈরি</string>
+    <string name="k2go_zim_grp_tools">সরঞ্জাম</string>
+    <string name="k2go_zim_grp_tools_hdr">সরঞ্জাম ও প্রযুক্তি</string>
+    <string name="k2go_zim_grp_media">মিডিয়া</string>
+    <string name="k2go_zim_grp_media_hdr">মিডিয়া ও আরও</string>
+    <string name="k2go_zim_grp_kids">শিশু</string>
+    <string name="k2go_zim_grp_kids_hdr">শিশু</string>
+    <string name="k2go_zc_count_items">%1$dটি আইটেম</string>
+    <string name="k2go_zc_count_results">%1$dটি ফলাফল</string>
 </resources>
