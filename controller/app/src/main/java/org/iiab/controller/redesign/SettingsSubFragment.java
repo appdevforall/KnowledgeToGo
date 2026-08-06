@@ -602,10 +602,12 @@ public class SettingsSubFragment extends Fragment {
             if (suppress[0]) return;
             // Turning custom off = go back to the box default.
             CredentialsClient.reset(service, new CredentialsClient.ResetCb() {
-                @Override public void onOk(String user, boolean isDefault) {
+                @Override public void onOk(String user, String pass, boolean isDefault) {
                     if (!isAdded()) return;
                     username.setText(user);
-                    password.setText("");
+                    // Re-prefill the default sign-in (same as first entry), so re-enabling custom
+                    // shows the full pair instead of a blank password.
+                    password.setText(pass);
                 }
                 @Override public void onErr() { /* the box keeps the previous value on error */ }
             });
