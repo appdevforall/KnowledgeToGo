@@ -454,7 +454,7 @@ public class SettingsSubFragment extends Fragment {
                 return;
             }
             CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
-                @Override public void onOk(String user, boolean isDefault) {
+                @Override public void onOk(String user, String pass, boolean isDefault) {
                     if (!isAdded()) return;
                     if (isDefault) setChip(chip, getString(R.string.k2go_auth_chip_default), R.drawable.k2go_pill_bg, R.color.k2go_muted);
                     else setChip(chip, getString(R.string.k2go_auth_chip_custom), R.drawable.k2go_pill_teal, R.color.k2go_teal);
@@ -634,9 +634,12 @@ public class SettingsSubFragment extends Fragment {
 
         // Initial state: switch reflects default (off) vs custom (on); username prefilled either way.
         CredentialsClient.describe(service, new CredentialsClient.DescribeCb() {
-            @Override public void onOk(String user, boolean isDefault) {
+            @Override public void onOk(String user, String pass, boolean isDefault) {
                 if (!isAdded()) return;
                 username.setText(user);
+                // The box returns the password only while still at the factory default, so the form
+                // can prefill the full sign-in; a custom password never comes back and stays blank.
+                if (!pass.isEmpty()) password.setText(pass);
                 suppress[0] = true;
                 sw.setChecked(!isDefault);
                 suppress[0] = false;
