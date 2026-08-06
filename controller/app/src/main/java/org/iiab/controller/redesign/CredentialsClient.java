@@ -34,10 +34,14 @@ public final class CredentialsClient {
 
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
-    public interface DescribeCb { void onOk(String username, boolean isDefault); void onErr(); }
+    /** {@code password} is only non-empty when the service is still at the factory default (the box
+     *  returns the public default so the form can prefill it); a custom password is never returned. */
+    public interface DescribeCb { void onOk(String username, String password, boolean isDefault); void onErr(); }
     /** {@code verified} = the box confirmed the credentials against the live service (Kolibri today). */
     public interface SaveCb { void onOk(boolean verified); void onErr(int status); }
-    public interface ResetCb { void onOk(String username, boolean isDefault); void onErr(); }
+    /** {@code password} carries the (public) factory default the reset landed on, so the form can
+     *  re-prefill the full sign-in — same contract as {@link DescribeCb}. */
+    public interface ResetCb { void onOk(String username, String password, boolean isDefault); void onErr(); }
 
     private static String url(String service) { return BoxEndpoints.API + "/credentials/" + service; }
 
@@ -47,8 +51,9 @@ public final class CredentialsClient {
             try {
                 JSONObject o = new JSONObject(request("GET", url(service), null));
                 final String user = o.optString("username", "");
+                final String pass = o.optString("password", "");   // present only while default
                 final boolean isDefault = o.optBoolean("isDefault", false);
-                MAIN.post(() -> cb.onOk(user, isDefault));
+                MAIN.post(() -> cb.onOk(user, pass, isDefault));
             } catch (Exception e) {
                 MAIN.post(cb::onErr);
             }
@@ -77,8 +82,9 @@ public final class CredentialsClient {
             try {
                 JSONObject o = new JSONObject(request("DELETE", url(service), null));
                 final String user = o.optString("username", "");
+                final String pass = o.optString("password", "");   // the default it landed on
                 final boolean isDefault = o.optBoolean("isDefault", false);
-                MAIN.post(() -> cb.onOk(user, isDefault));
+                MAIN.post(() -> cb.onOk(user, pass, isDefault));
             } catch (Exception e) {
                 MAIN.post(cb::onErr);
             }
