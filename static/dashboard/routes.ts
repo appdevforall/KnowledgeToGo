@@ -569,10 +569,11 @@ apiRouter.delete('/credentials/:service', (req: Request, res: Response): void =>
     }
 });
 
-// ADFA-5043: hand the app a service session cookie so it can inject it into the WebView and land the
-// user already authenticated as the box admin (Calibre-Web / Kolibri). The login runs server-side with
-// the stored credentials — the password never leaves the box. no-store so the session cookie is never
-// cached by the proxy or the client.
+// ADFA-5043: server-side login with the stored creds -> session cookie for the app to inject into the
+// WebView (auto-login as box admin: Calibre-Web / Kolibri). Password never leaves the box; no-store so
+// the cookie isn't cached; service not installed/ready -> 503 (app then opens the card without a cookie).
+// Mints an admin cookie, so it relies on /k2go-api staying localhost-only (nginx deny all in
+// dash-node-nginx.conf) — never expose /k2go-api to the LAN.
 apiRouter.get('/auth/:service/session', async (req: Request, res: Response): Promise<void> => {
     res.set('Cache-Control', 'no-store');
     const service = String(req.params.service);
