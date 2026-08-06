@@ -9,13 +9,13 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { jobs, Job, JobType } from './sockets/jobs';
-import { searchCatalog, listLibrary, removeBook, listLanguages } from './sockets/books.query';
+import { searchCatalog, listLibrary, removeBook, listLanguages, getCalibreSession } from './sockets/books.query';
 import { parseBox, parseEstimate } from './sockets/maps.socket';
 import {
     preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
     browseChannelTree, estimateSelection, deleteChannel, getKolibriTask, verifyCredentials,
 } from './sockets/kolibri.query';
-import { checkReadiness, KolibriAuthError, KolibriApiError } from './sockets/kolibri.session';
+import { checkReadiness, KolibriAuthError, KolibriApiError, login as kolibriLogin } from './sockets/kolibri.session';
 import {
     describeCredential, setCredential, clearCredential, isServiceName,
 } from './sockets/credentials';
@@ -566,6 +566,40 @@ apiRouter.delete('/credentials/:service', (req: Request, res: Response): void =>
         res.json({ ok: true, ...describeCredential(service) });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'reset failed' });
+    }
+});
+
+// ADFA-5043: server-side login with the stored creds -> session cookie for the app to inject into the
+// WebView (auto-login as box admin: Calibre-Web / Kolibri). Password never leaves the box; no-store so
+// the cookie isn't cached; service not installed/ready -> 503 (app then opens the card without a cookie).
+// Mints an admin cookie, so it relies on /k2go-api staying localhost-only (nginx deny all in
+// dash-node-nginx.conf) — never expose /k2go-api to the LAN.
+apiRouter.get('/auth/:service/session', async (req: Request, res: Response): Promise<void> => {
+    res.set('Cache-Control', 'no-store');
+    const service = String(req.params.service);
+    try {
+        if (service === 'kolibri') {
+            const s = await kolibriLogin();
+            res.json({ service: 'kolibri', cookie: s.cookie });
+            return;
+        }
+        if (service === 'calibre' || service === 'books') {
+            const s = await getCalibreSession();
+            res.json({ service: 'calibre', cookie: s.cookie });
+            return;
+        }
+        res.status(404).json({ error: 'unknown service' });
+    } catch (e: any) {
+        // Keep the detail server-side; the app only needs the status + a generic reason.
+        console.error('[auth] ' + (e?.message || e));
+        if (e instanceof KolibriAuthError) {
+            const status = e.reason === 'credentials' ? 401 : e.reason === 'permission' ? 403 : 503;
+            res.status(status).json({ error: 'sign-in failed' });
+            return;
+        }
+        // Calibre login throws generic errors; treat a clear bad-credential signal as 401, else 503.
+        const status = /invalid.*cred/i.test(e?.message || '') ? 401 : 503;
+        res.status(status).json({ error: 'sign-in failed' });
     }
 });
 

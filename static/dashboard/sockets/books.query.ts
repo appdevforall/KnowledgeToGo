@@ -107,7 +107,7 @@ export function listLibrary(): any[] {
     }
 }
 
-async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string }> {
+export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: string }> {
     const loginPageRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`);
     const initialCookies = loginPageRes.headers.getSetCookie().map((c) => c.split(';')[0]).join('; ');
     const loginHtml = await loginPageRes.text();
