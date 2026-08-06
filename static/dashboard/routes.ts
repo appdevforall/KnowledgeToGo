@@ -521,9 +521,22 @@ apiRouter.post('/credentials/:service', async (req: Request, res: Response): Pro
         return;
     }
 
+    // Persist + respond in one place so the verified/unverified branches can't drift apart.
+    const saveAndRespond = (verified: boolean): void => {
+        try {
+            setCredential(service, { username, password });
+            res.json({ ok: true, verified, service, username });
+        } catch (e: any) {
+            res.status(500).json({ error: e?.message || 'save failed' });
+        }
+    };
+
     // ADFA-5044: Calibre-Web is now validated live too. If it authenticates we save verified; if it
     // rejects the credentials we return 401 (nothing saved); if it's unreachable (not installed yet)
     // we save unverified so the sign-in can be pre-set and applies once the service is up.
+    // Note: unlike Kolibri (which also checks canManageContent -> 403), this only checks that the
+    // credentials authenticate, not that the account can manage content — Calibre-Web role-checking
+    // is a separate, heavier step and login success is a reasonable bar for the admin sign-in.
     if (service === 'calibre') {
         try {
             await verifyCalibreCredentials(username, password);
@@ -532,31 +545,21 @@ apiRouter.post('/credentials/:service', async (req: Request, res: Response): Pro
                 res.status(401).json({ error: 'Calibre-Web rejected these credentials', saved: false });
                 return;
             }
-            try {
-                setCredential('calibre', { username, password });
-                res.json({ ok: true, verified: false, service });
-            } catch (se: any) {
-                res.status(500).json({ error: se?.message || 'save failed' });
-            }
+            // Service unreachable (not installed/running) or its login form couldn't be parsed. We
+            // still save so the sign-in can be pre-set, but log it: a parse failure while the service
+            // is up would otherwise be an invisible "saved but never verified".
+            console.warn('[credentials] calibre verify skipped: '
+                + (e?.message || e) + ' — saving unverified');
+            saveAndRespond(false);
             return;
         }
-        try {
-            setCredential('calibre', { username, password });
-            res.json({ ok: true, verified: true, service, username });
-        } catch (e: any) {
-            res.status(500).json({ error: e?.message || 'save failed' });
-        }
+        saveAndRespond(true);
         return;
     }
 
     // Any other (future) service that has no live check yet is stored as-is.
     if (service !== 'kolibri') {
-        try {
-            setCredential(service, { username, password });
-            res.json({ ok: true, verified: false, service });
-        } catch (e: any) {
-            res.status(500).json({ error: e?.message || 'save failed' });
-        }
+        saveAndRespond(false);
         return;
     }
 
