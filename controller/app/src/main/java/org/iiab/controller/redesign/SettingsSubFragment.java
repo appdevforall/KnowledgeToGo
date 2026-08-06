@@ -644,7 +644,13 @@ public class SettingsSubFragment extends Fragment {
                 offGroup.setVisibility(isDefault ? View.VISIBLE : View.GONE);
                 refreshSave.run();
             }
-            @Override public void onErr() { if (isAdded()) setStatus(status, getString(R.string.k2go_auth_load_failed), R.color.k2go_clay); }
+            @Override public void onErr() {
+                if (!isAdded()) return;
+                // Surface on `note` (always present) — `status` lives inside the fields, hidden in default state.
+                note.setText(getString(R.string.k2go_auth_load_failed));
+                note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
+                note.setVisibility(View.VISIBLE);
+            }
         });
         probeService(service, reachable -> { if (isAdded()) note.setVisibility(reachable ? View.GONE : View.VISIBLE); });
     }
@@ -661,7 +667,12 @@ public class SettingsSubFragment extends Fragment {
             if (ev.getAction() != android.view.MotionEvent.ACTION_UP) return false;
             android.graphics.drawable.Drawable d = field.getCompoundDrawablesRelative()[2];
             if (d == null) return false;
-            boolean hit = ev.getX() >= field.getWidth() - field.getPaddingEnd() - d.getBounds().width();
+            int dw = d.getBounds().width();
+            // The end drawable sits on the right in LTR and on the left in RTL; hit-test the correct edge.
+            boolean rtl = field.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+            boolean hit = rtl
+                    ? ev.getX() <= field.getPaddingStart() + dw
+                    : ev.getX() >= field.getWidth() - field.getPaddingEnd() - dw;
             if (!hit) return false;
             boolean hidden = field.getTransformationMethod() != null;
             if (hidden) {
@@ -685,14 +696,17 @@ public class SettingsSubFragment extends Fragment {
         final android.os.Handler main = new android.os.Handler(android.os.Looper.getMainLooper());
         org.iiab.controller.util.AppExecutors.get().io().execute(() -> {
             boolean ok = false;
+            java.net.HttpURLConnection c = null;
             try {
-                java.net.HttpURLConnection c = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+                c = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
                 c.setConnectTimeout(2500);
                 c.setReadTimeout(2500);
                 int code = c.getResponseCode();
-                c.disconnect();
                 ok = code >= 200 && code < 500;   // any answer (even 401/403) means the service is up
-            } catch (Exception ignore) { }
+            } catch (Exception ignore) {
+            } finally {
+                if (c != null) c.disconnect();
+            }
             final boolean r = ok;
             main.post(() -> cb.onResult(r));
         });
