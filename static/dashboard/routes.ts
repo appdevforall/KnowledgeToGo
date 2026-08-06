@@ -241,6 +241,11 @@ apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
 // restarting dash-node mid-run never kills it. Declared before the generic /:type/* routes.
 const REBUILD_SCRIPT = '/opt/iiab-android/tools/rebuild-dashboard.sh';
 const REBUILD_STATUS_FILE = '/var/run/dash-rebuild.status';
+// ADFA-5051: the remote branch that update-check compares against AND the rebuild pulls. Defaults to
+// mainline; set K2GO_DASH_BRANCH in the dash-node env to point a test box at a feature branch (e.g.
+// to exercise the live self-update before merging to main) without touching code. Keep it unset in
+// production so both always track main.
+const DASH_BRANCH = process.env.K2GO_DASH_BRANCH || 'main';
 
 // Installed dash-node version (from package.json), so the module card can show it + compare.
 apiRouter.get('/system/version', (_req: Request, res: Response): void => {
@@ -268,7 +273,11 @@ apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void
     if (!fs.existsSync(REBUILD_SCRIPT)) { res.status(500).json({ error: 'rebuild script not found' }); return; }
     try {
         // setsid => own session, so `pdsm restart dash-node` inside the script can't kill this run.
-        const child = spawn('setsid', ['sh', REBUILD_SCRIPT], { detached: true, stdio: 'ignore' });
+        // Pass the tracked branch so the REST rebuild and update-check always agree on the source.
+        const child = spawn('setsid', ['sh', REBUILD_SCRIPT], {
+            detached: true, stdio: 'ignore',
+            env: { ...process.env, K2GO_BRANCH: DASH_BRANCH },
+        });
         child.unref();
         res.status(202).json({ ok: true, state: 'running' });
     } catch (e: any) {
@@ -282,7 +291,7 @@ apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void
 // clone and reuses its existing git auth (like the rebuild). Network-bound, so it runs with a timeout
 // and returns 503 (not 500) when the remote can't be reached, letting the app keep its last-known state.
 const UPDATE_CLONE_DIR = '/opt/iiab-android';
-const UPDATE_BRANCH = 'main';
+const UPDATE_BRANCH = DASH_BRANCH;   // ADFA-5051: same branch the rebuild pulls (K2GO_DASH_BRANCH override)
 const UPDATE_PKG_IN_CLONE = 'static/dashboard/package.json';
 
 /** Run git inside the on-device clone with a hard timeout; resolves stdout, rejects on non-zero/timeout. */
