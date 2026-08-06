@@ -338,8 +338,62 @@ public class PortalActivity extends AppCompatActivity {
         // (gated in KiwixManageController#onPageFinished).
         kiwixMgr = new org.iiab.controller.redesign.KiwixManageController(this, webView);
 
-        // Native architecture: content is served locally; load it directly.
-        webView.loadUrl(finalTargetUrl);
+        // ADFA-5043: Books (Calibre-Web) / Courses (Kolibri) auto-login as box admin — fetch a session
+        // cookie, inject it into the WebView CookieManager, THEN load, so the card opens already
+        // authenticated. Degrades gracefully: if the service isn't installed/ready, just load without it.
+        String authService = getIntent().getStringExtra("AUTH_SERVICE");
+        if (authService != null && !authService.isEmpty()) {
+            autoLoginThenLoad(authService, finalTargetUrl);
+        } else {
+            // Native architecture: content is served locally; load it directly.
+            webView.loadUrl(finalTargetUrl);
+        }
+    }
+
+    /** ADFA-5043: get an admin session cookie for the service, inject it, then load the page. On any
+     *  failure (service absent/not ready) load without a cookie — the card still opens. */
+    private void autoLoginThenLoad(String service, String targetUrl) {
+        showAuthOverlay();
+        org.iiab.controller.redesign.AuthClient.session(service, new org.iiab.controller.redesign.AuthClient.SessionCb() {
+            @Override public void onOk(String cookie) {
+                android.webkit.CookieManager cm = android.webkit.CookieManager.getInstance();
+                cm.setAcceptCookie(true);
+                // Host-wide on the box origin so every request under the service prefix carries it.
+                for (String pair : cookie.split(";")) {
+                    String p = pair.trim();
+                    if (!p.isEmpty()) cm.setCookie(BoxEndpoints.BASE + "/", p + "; path=/");
+                }
+                cm.flush();
+                hideAuthOverlay();
+                webView.loadUrl(targetUrl);
+            }
+            @Override public void onErr() {
+                hideAuthOverlay();
+                webView.loadUrl(targetUrl);
+            }
+        });
+    }
+
+    private android.view.View authOverlay;
+
+    private void showAuthOverlay() {
+        android.widget.FrameLayout f = new android.widget.FrameLayout(this);
+        f.setClickable(true);   // swallow taps while signing in
+        android.widget.ProgressBar pb = new android.widget.ProgressBar(this);
+        f.addView(pb, new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT, android.view.Gravity.CENTER));
+        authOverlay = f;
+        addContentView(f, new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT));
+    }
+
+    private void hideAuthOverlay() {
+        if (authOverlay == null) return;
+        android.view.ViewParent parent = authOverlay.getParent();
+        if (parent instanceof android.view.ViewGroup) ((android.view.ViewGroup) parent).removeView(authOverlay);
+        authOverlay = null;
     }
 
     /**
