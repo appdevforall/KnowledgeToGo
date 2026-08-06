@@ -120,6 +120,10 @@ export async function getCalibreSession(): Promise<{ cookie: string; csrfToken: 
     const cred = getCredential('calibre');
     loginData.append('username', cred.username);
     loginData.append('password', cred.password);
+    // ADFA-5043: request Flask-Login's persistent "remember me" so the response also sets a
+    // `remember_token` cookie. Calibre-Web allows anonymous (guest) browsing, so the session cookie
+    // alone doesn't stick in the WebView; the remember_token re-authenticates as admin reliably.
+    loginData.append('remember_me', 'on');
 
     const authRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/login`, {
         method: 'POST',
