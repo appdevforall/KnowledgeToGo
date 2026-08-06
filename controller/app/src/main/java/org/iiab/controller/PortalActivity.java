@@ -356,6 +356,7 @@ public class PortalActivity extends AppCompatActivity {
         showAuthOverlay();
         org.iiab.controller.redesign.AuthClient.session(service, new org.iiab.controller.redesign.AuthClient.SessionCb() {
             @Override public void onOk(String cookie) {
+                if (isFinishing() || isDestroyed()) return;   // ADFA-5043: left mid-sign-in; don't touch dead views
                 android.webkit.CookieManager cm = android.webkit.CookieManager.getInstance();
                 cm.setAcceptCookie(true);
                 // Host-wide on the box origin so every request under the service prefix carries it.
@@ -368,6 +369,7 @@ public class PortalActivity extends AppCompatActivity {
                 webView.loadUrl(targetUrl);
             }
             @Override public void onErr() {
+                if (isFinishing() || isDestroyed()) return;   // ADFA-5043: left mid-sign-in; don't touch dead views
                 hideAuthOverlay();
                 webView.loadUrl(targetUrl);
             }
