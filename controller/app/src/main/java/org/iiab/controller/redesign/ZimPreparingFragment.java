@@ -119,14 +119,11 @@ public class ZimPreparingFragment extends Fragment {
         List<String> labels = new ArrayList<>();
         List<Long> bytes = new ArrayList<>();
         for (Map.Entry<String, Long> e : cart().entrySet()) {
-            String[] p = e.getKey().split("\\|", 3);   // project | lang | entryKey
-            if (p.length < 3) continue;
-            JSONObject ld = KiwixCatalog.langData(catalog, p[0], p[1]);
-            JSONObject v = ld != null ? ld.optJSONObject(p[2]) : null;
-            if (v == null) continue;
-            files.add(v.optString("file"));
-            labels.add(itemLabel(p[0], v.optString("creator"), v.optString("flavour")));
-            bytes.add(v.optLong("size", e.getValue()));
+            ZimSelection.Item it = ZimSelection.resolve(catalog, e.getKey());
+            if (it == null) continue;
+            files.add(it.id);   // "<project>/<file>" (ADFA-5042)
+            labels.add(itemLabel(it.project, it.entry.optString("creator"), it.entry.optString("flavour")));
+            bytes.add(it.entry.optLong("size", e.getValue()));
         }
         if (files.isEmpty()) return;
         long[] b = new long[bytes.size()];
