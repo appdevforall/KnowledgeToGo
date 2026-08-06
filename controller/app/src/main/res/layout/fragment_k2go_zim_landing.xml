@@ -38,13 +38,17 @@
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/k2go_ink" />
 
-            <!-- Language row -->
+            <!-- ADFA-5033: language = ONE control. The whole box opens the picker (▼ affordance,
+                 matches the Language screen selector); no inner "Change" button, so no button-in-button. -->
             <LinearLayout
+                android:id="@+id/k2go_zim_lang_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
                 android:padding="12dp"
                 android:background="@drawable/k2go_getmore_bg">
 
@@ -66,18 +70,17 @@
                         android:id="@+id/k2go_zim_lang_sub"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/k2go_zim_lang_sub"
                         android:textAppearance="?attr/textAppearanceBodySmall"
                         android:textColor="@color/k2go_muted" />
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/k2go_zim_change"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/k2go_zim_change"
-                    android:textAllCaps="false" />
+                <ImageView
+                    android:id="@+id/k2go_zim_lang_caret"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_expand_more"
+                    android:tint="@color/k2go_teal"
+                    android:importantForAccessibility="no" />
             </LinearLayout>
 
             <!-- Storage -->
@@ -122,14 +125,22 @@
                 android:textColor="@color/k2go_ink"
                 android:textColorHint="@color/k2go_muted" />
 
-            <TextView
+            <!-- ADFA-5033: theme filter chips — ONE horizontally-scrollable line, never wraps to a
+                 2nd row (keeps the header light on small screens). Built in code from KiwixGroups. -->
+            <HorizontalScrollView
+                android:id="@+id/k2go_zim_chips_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/k2go_zim_browse"
-                android:textStyle="bold"
-                android:textAppearance="?attr/textAppearanceTitleSmall"
-                android:textColor="@color/k2go_ink" />
+                android:layout_marginTop="14dp"
+                android:scrollbars="none"
+                android:overScrollMode="never">
+
+                <LinearLayout
+                    android:id="@+id/k2go_zim_chips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/k2go_zim_status"

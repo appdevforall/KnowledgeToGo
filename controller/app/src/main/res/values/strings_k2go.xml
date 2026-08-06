@@ -521,6 +521,10 @@
     <string name="k2go_zim_lang_fmt">Language: %1$s</string>
     <string name="k2go_zim_lang_sub">From system · filters the catalog</string>
     <string name="k2go_zim_lang_sub_manual">Manually selected · filters the catalog</string>
+    <!-- ADFA-5033: language source as the sub-line of the one-control selector (drops "filters the
+         catalog"). translatable=false is temporary, same as the other ADFA-5033 preview strings. -->
+    <string name="k2go_zim_lang_state_system" translatable="false">From System</string>
+    <string name="k2go_zim_lang_state_manual" translatable="false">Manually Selected</string>
     <string name="k2go_zim_change">Change</string>
     <string name="k2go_zim_storage">STORAGE</string>
     <string name="k2go_zim_storage_fmt">Used %1$s · Your selection %2$s · Free %3$s</string>
@@ -531,6 +535,27 @@
     <string name="k2go_zim_cat_unavailable">Not available</string>
     <string name="k2go_zim_see_all_fmt">See all %1$d categories · %2$d items</string>
     <string name="k2go_zim_no_match">No categories match your search.</string>
+    <!-- ADFA-5033: catalog browse "breathe" — sections, chips, See-all, unavailable collapse.
+         translatable=false is TEMPORARY while the group map/labels are under team review; flip to
+         translatable + run the 33-locale l10n once the wording is signed off. -->
+    <string name="k2go_zim_most_content" translatable="false">MOST CONTENT</string>
+    <string name="k2go_zim_see_all_cats_fmt" translatable="false">See all %1$d categories</string>
+    <string name="k2go_zim_unavail_line_fmt" translatable="false">%1$d categories aren\'t available in %2$s · Change language</string>
+    <string name="k2go_zim_unavail_row_fmt" translatable="false">Not available in %1$s</string>
+    <string name="k2go_zim_grp_all" translatable="false">All</string>
+    <string name="k2go_zim_grp_reference" translatable="false">Reference</string>
+    <string name="k2go_zim_grp_reference_hdr" translatable="false">REFERENCE &amp; ENCYCLOPEDIA</string>
+    <string name="k2go_zim_grp_learning" translatable="false">Learning</string>
+    <string name="k2go_zim_grp_learning_hdr" translatable="false">LEARNING &amp; MAKING</string>
+    <string name="k2go_zim_grp_tools" translatable="false">Tools</string>
+    <string name="k2go_zim_grp_tools_hdr" translatable="false">TOOLS &amp; TECH</string>
+    <string name="k2go_zim_grp_media" translatable="false">Media</string>
+    <string name="k2go_zim_grp_media_hdr" translatable="false">MEDIA &amp; MORE</string>
+    <string name="k2go_zim_grp_kids" translatable="false">Kids</string>
+    <string name="k2go_zim_grp_kids_hdr" translatable="false">KIDS</string>
+    <!-- ADFA-5033: item count as list metadata (replaces the redundant "‹lang› · N" title pill). -->
+    <string name="k2go_zc_count_items" translatable="false">%1$d items</string>
+    <string name="k2go_zc_count_results" translatable="false">%1$d results</string>
     <string name="k2go_zc_sub_fmt">%1$s · %2$d items</string>
     <string name="k2go_zc_sort_size">By size</string>
     <string name="k2go_zc_sort_name">A–Z</string>

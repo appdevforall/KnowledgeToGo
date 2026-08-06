@@ -41,17 +41,19 @@ import java.util.Set;
 
 public class ZimLandingFragment extends Fragment {
 
-    private static final int COLLAPSED = 15;
+    private static final int TOP_N = 6;   // ADFA-5033: categories shown by default before "See all"
 
     private JSONObject catalog;
     private long freeMb = 0, totalMb = 0;
     private LinearLayout cats;
+    private LinearLayout chipRow;
     private TextView status, langLabel, langSub, storageLabel;
     private ProgressBar storageBar;
     private Button review;
     private View bottomBar;
     private String query = "";
     private boolean expanded = false;
+    private String selectedGroup = null;   // ADFA-5033: null = "All"; otherwise a KiwixGroups key
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
 
@@ -72,6 +74,7 @@ public class ZimLandingFragment extends Fragment {
         back.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
         cats = root.findViewById(R.id.k2go_zim_cats);
+        chipRow = root.findViewById(R.id.k2go_zim_chips);
         status = root.findViewById(R.id.k2go_zim_status);
         langLabel = root.findViewById(R.id.k2go_zim_lang);
         langSub = root.findViewById(R.id.k2go_zim_lang_sub);
@@ -92,7 +95,7 @@ public class ZimLandingFragment extends Fragment {
             }
             @Override public void afterTextChanged(android.text.Editable s) {}
         });
-        root.findViewById(R.id.k2go_zim_change).setOnClickListener(v -> pickLanguage());
+        root.findViewById(R.id.k2go_zim_lang_box).setOnClickListener(v -> pickLanguage());
 
         try {
             StatFs st = new StatFs(requireContext().getFilesDir().getPath());
@@ -102,6 +105,7 @@ public class ZimLandingFragment extends Fragment {
 
         updateLangLabel();
         updateStorage();
+        buildChips();
         status.setText(R.string.k2go_zim_loading);
 
         KiwixCatalog.getOrFetch(requireContext(), new KiwixCatalog.Listener() {
@@ -129,10 +133,12 @@ public class ZimLandingFragment extends Fragment {
     }
 
     private void updateLangLabel() {
+        // ADFA-5033: one-control selector — bold language + a muted source sub-line ("From system" /
+        // "Manually selected"); the "· filters the catalog" clause is dropped (redundant).
         langLabel.setText(getString(R.string.k2go_zim_lang_fmt, langDisplay(lang())));
         boolean manual = (getActivity() instanceof SetupLibraryActivity)
                 && ((SetupLibraryActivity) getActivity()).isZimLangManual();
-        langSub.setText(manual ? R.string.k2go_zim_lang_sub_manual : R.string.k2go_zim_lang_sub);
+        langSub.setText(manual ? R.string.k2go_zim_lang_state_manual : R.string.k2go_zim_lang_state_system);
     }
 
     private String langDisplay(String code) {
@@ -169,33 +175,126 @@ public class ZimLandingFragment extends Fragment {
         return org.iiab.controller.util.ByteFormatter.humanMb(mb);
     }
 
+    // ADFA-5033: "breathe" — show less by default (top-N + See all), group in See-all, filter by chip,
+    // and collapse unavailable categories out of the flow instead of greying them in place.
     private void buildRows() {
+        if (catalog == null) return;
         cats.removeAllViews();
-        String lang = lang();
+        final String L = lang();
 
-        // Counts + ordering reflect the SELECTED language (not the all-languages total), so the
-        // language selector is meaningful: e.g. Wikipedia in Spanish shows its ~dozens, not 2,465.
-        final String L = lang;
-        List<KiwixCategories.Category> ordered = new ArrayList<>();
-        Collections.addAll(ordered, KiwixCategories.ALL);
-        Collections.sort(ordered, (a, b) ->
-                Integer.compare(KiwixCatalog.count(catalog, b.key, L), KiwixCatalog.count(catalog, a.key, L)));
-
-        List<KiwixCategories.Category> shown = new ArrayList<>();
-        for (KiwixCategories.Category c : ordered) if (matches(c, query)) shown.add(c);
-
-        // Collapse to the first 15 only when not searching; searching shows every match so a
-        // low-count category (e.g. TED) is always findable even though it sorts far down.
-        boolean limiting = query.isEmpty() && !expanded && shown.size() > COLLAPSED;
-        int limit = limiting ? COLLAPSED : shown.size();
-
-        for (int i = 0; i < limit; i++) {
-            KiwixCategories.Category c = shown.get(i);
-            cats.addView(categoryRow(c, KiwixCatalog.count(catalog, c.key, L)));
+        // Search overrides everything: a flat list of matching categories across the whole catalog.
+        if (!query.isEmpty()) {
+            int shown = 0;
+            for (KiwixCategories.Category c : availableSorted(L)) {
+                if (!matches(c, query)) continue;
+                cats.addView(categoryRow(c, countOf(c, L)));
+                shown++;
+            }
+            status.setText(shown == 0 ? getString(R.string.k2go_zim_no_match) : "");
+            return;
         }
-        if (limiting) cats.addView(seeAllRow(ordered.size(), totalItems(ordered, L)));
-        if (shown.isEmpty()) status.setText(getString(R.string.k2go_zim_no_match));
-        else status.setText("");
+        status.setText("");
+
+        List<KiwixCategories.Category> available = availableSorted(L);
+        int unavailable = KiwixCategories.ALL.length - available.size();
+
+        // A group chip is selected: just that group's available categories (already filtered). Add the
+        // header only once we know the group has at least one available category (no empty header).
+        if (selectedGroup != null) {
+            KiwixGroups.Group g = KiwixGroups.byKey(selectedGroup);
+            boolean headerAdded = false;
+            for (KiwixCategories.Category c : available) {
+                if (!selectedGroup.equals(KiwixGroups.groupOf(c.key))) continue;
+                if (!headerAdded && g != null) { cats.addView(sectionHeader(getString(g.headerLabel))); headerAdded = true; }
+                cats.addView(categoryRow(c, countOf(c, L)));
+            }
+            // Nothing in this group is available in the current language → offer to change language.
+            if (!headerAdded && unavailable > 0) cats.addView(unavailableLine(unavailable, L));
+            return;
+        }
+
+        // "All": default = MOST CONTENT top-N + See all; expanded = grouped by theme.
+        if (!expanded) {
+            cats.addView(sectionHeader(getString(R.string.k2go_zim_most_content)));
+            int top = Math.min(TOP_N, available.size());
+            for (int i = 0; i < top; i++) cats.addView(categoryRow(available.get(i), countOf(available.get(i), L)));
+            cats.addView(seeAllRow(KiwixCategories.ALL.length));
+            if (unavailable > 0) cats.addView(unavailableLine(unavailable, L));
+        } else {
+            for (KiwixGroups.Group g : KiwixGroups.ALL) {
+                boolean headerAdded = false;
+                for (KiwixCategories.Category c : available) {
+                    if (!g.key.equals(KiwixGroups.groupOf(c.key))) continue;
+                    if (!headerAdded) { cats.addView(sectionHeader(getString(g.headerLabel))); headerAdded = true; }
+                    cats.addView(categoryRow(c, countOf(c, L)));
+                }
+            }
+            if (unavailable > 0) cats.addView(unavailableRow(unavailable, L));
+        }
+    }
+
+    private int countOf(KiwixCategories.Category c, String L) { return KiwixCatalog.count(catalog, c.key, L); }
+
+    /** Categories with content in the current language, most first. Unavailable ones drop out here. */
+    private List<KiwixCategories.Category> availableSorted(String L) {
+        List<KiwixCategories.Category> list = new ArrayList<>();
+        for (KiwixCategories.Category c : KiwixCategories.ALL) if (countOf(c, L) > 0) list.add(c);
+        Collections.sort(list, (a, b) -> Integer.compare(countOf(b, L), countOf(a, L)));
+        return list;
+    }
+
+    // ---- chips (one horizontally-scrollable line; never wraps) -----------------------------------
+
+    private void buildChips() {
+        if (chipRow == null) return;
+        chipRow.removeAllViews();
+        chipRow.addView(chip(getString(R.string.k2go_zim_grp_all), null));
+        for (KiwixGroups.Group g : KiwixGroups.ALL) chipRow.addView(chip(getString(g.chipLabel), g.key));
+    }
+
+    private View chip(String label, String groupKey) {
+        boolean selected = (groupKey == null) ? (selectedGroup == null) : groupKey.equals(selectedGroup);
+        int teal = ContextCompat.getColor(requireContext(), R.color.k2go_teal);
+        TextView t = new TextView(requireContext());
+        t.setText(label);
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        t.setGravity(Gravity.CENTER);
+        t.setMinHeight(px(48));   // ADFA-5033: ≥48dp tap target (spec §9)
+        t.setPadding(px(14), px(6), px(14), px(6));
+        android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+        bg.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        bg.setCornerRadius(px(24));   // full pill at 48dp
+        if (selected) {
+            bg.setColor(teal);
+            t.setTextColor(android.graphics.Color.WHITE);
+        } else {
+            bg.setColor(android.graphics.Color.TRANSPARENT);
+            bg.setStroke(Math.max(1, Math.round(1.4f * getResources().getDisplayMetrics().density)), teal);
+            t.setTextColor(teal);
+        }
+        t.setBackground(bg);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.rightMargin = px(8);
+        t.setLayoutParams(lp);
+        t.setOnClickListener(v -> {
+            selectedGroup = groupKey;
+            expanded = false;
+            buildChips();
+            buildRows();
+        });
+        return t;
+    }
+
+    /** Teal caps section header (MOST CONTENT / group headers). */
+    private View sectionHeader(String label) {
+        TextView t = new TextView(requireContext());
+        t.setText(label);
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
+        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        t.setLetterSpacing(0.06f);
+        t.setPadding(0, px(16), 0, px(8));
+        return t;
     }
 
     /** Material icon per category (first pass; the team can refine the set later). */
@@ -233,43 +332,95 @@ public class ZimLandingFragment extends Fragment {
                 || c.key.toLowerCase(Locale.ROOT).contains(q);
     }
 
-    private int totalItems(List<KiwixCategories.Category> all, String lang) {
-        int n = 0;
-        for (KiwixCategories.Category c : all) n += KiwixCatalog.count(catalog, c.key, lang);
-        return n;
+    /** "See all N categories ›" — expands the default list into the grouped view. */
+    private View seeAllRow(int catCount) {
+        LinearLayout wrap = new LinearLayout(requireContext());
+        wrap.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout row = flatRow();
+        TextView label = new TextView(requireContext());
+        label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        label.setText(getString(R.string.k2go_zim_see_all_cats_fmt, catCount));
+        row.addView(label, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(chevron());
+        row.setOnClickListener(v -> { expanded = true; buildRows(); });
+        wrap.addView(row);
+        wrap.addView(hairline());
+        return wrap;
     }
 
-    private View seeAllRow(int catCount, int itemCount) {
+    /** Default state: one muted line summarizing the categories hidden by the current language. */
+    private View unavailableLine(int count, String L) {
         TextView t = new TextView(requireContext());
-        t.setText(getString(R.string.k2go_zim_see_all_fmt, catCount, itemCount));
-        t.setGravity(Gravity.CENTER);
-        t.setPadding(px(12), px(12), px(12), px(12));
-        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-        t.setTypeface(t.getTypeface(), android.graphics.Typeface.BOLD);
-        t.setClickable(true);
-        t.setOnClickListener(v -> { expanded = true; buildRows(); });
+        t.setText(getString(R.string.k2go_zim_unavail_line_fmt, count, langDisplay(L)));
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        t.setPadding(0, px(14), 0, px(4));
+        t.setOnClickListener(v -> pickLanguage());
         return t;
     }
 
-    private View categoryRow(KiwixCategories.Category c, int n) {
-        boolean enabled = n > 0;
+    /** See-all state: the unavailable categories collapsed into a single muted row (tap = change lang). */
+    private View unavailableRow(int count, String L) {
+        LinearLayout wrap = new LinearLayout(requireContext());
+        wrap.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout row = flatRow();
+        TextView label = new TextView(requireContext());
+        label.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
+        label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        label.setText(getString(R.string.k2go_zim_unavail_row_fmt, langDisplay(L)));
+        row.addView(label, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        TextView n = new TextView(requireContext());
+        n.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        n.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        n.setText(String.valueOf(count));
+        row.addView(n);
+        row.addView(chevron());
+        row.setOnClickListener(v -> pickLanguage());
+        wrap.addView(row);
+        wrap.addView(hairline());
+        return wrap;
+    }
 
+    /** A flat, horizontal content row (no card): centred vertically, ≥56dp, grid padding. */
+    private LinearLayout flatRow() {
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        rlp.bottomMargin = px(8);
-        row.setLayoutParams(rlp);
-        row.setBackgroundResource(R.drawable.k2go_card_bg);
-        row.setPadding(px(14), px(12), px(14), px(12));
-        row.setAlpha(enabled ? 1f : 0.5f);
+        row.setMinimumHeight(px(56));
+        row.setPadding(0, px(10), 0, px(10));
+        return row;
+    }
+
+    private View hairline() {
+        View v = new View(requireContext());
+        v.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.k2go_hairline));
+        v.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, px(1)));
+        return v;
+    }
+
+    private TextView chevron() {
+        TextView ch = new TextView(requireContext());
+        ch.setText("›");
+        ch.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_TitleMedium);
+        ch.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        ch.setPadding(px(10), 0, 0, 0);
+        return ch;
+    }
+
+    // ADFA-5033: flat, light row — no per-row card. Icon + name/subtitle + right-aligned count column
+    // (teal, redundant with the number) + chevron, over a hairline. Only available categories reach here.
+    private View categoryRow(KiwixCategories.Category c, int n) {
+        LinearLayout wrap = new LinearLayout(requireContext());
+        wrap.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout row = flatRow();
 
         ImageView icon = new ImageView(requireContext());
         icon.setImageResource(iconFor(c.key));
         icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
-        LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(px(26), px(26));
-        ilp.rightMargin = px(12);
+        LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(px(24), px(24));
+        ilp.rightMargin = px(16);
         row.addView(icon, ilp);
 
         LinearLayout text = new LinearLayout(requireContext());
@@ -278,20 +429,24 @@ public class ZimLandingFragment extends Fragment {
         text.addView(text(c.subtitle, R.color.k2go_muted, false));
         row.addView(text, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        TextView right = new TextView(requireContext());
-        right.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-        right.setTextColor(ContextCompat.getColor(requireContext(), enabled ? R.color.k2go_ink : R.color.k2go_muted));
-        right.setText(enabled ? (n + "   ›") : getString(R.string.k2go_zim_cat_unavailable));
-        row.addView(right);
+        TextView count = new TextView(requireContext());
+        count.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        count.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        count.setText(String.valueOf(n));
+        count.setGravity(Gravity.END);
+        count.setMinWidth(px(28));
+        row.addView(count);
+        row.addView(chevron());
 
-        if (enabled) {
-            row.setOnClickListener(v -> {
-                if (getActivity() instanceof SetupLibraryActivity) {
-                    ((SetupLibraryActivity) getActivity()).openZimCategory(c.key);
-                }
-            });
-        }
-        return row;
+        row.setOnClickListener(v -> {
+            if (getActivity() instanceof SetupLibraryActivity) {
+                ((SetupLibraryActivity) getActivity()).openZimCategory(c.key);
+            }
+        });
+
+        wrap.addView(row);
+        wrap.addView(hairline());
+        return wrap;
     }
 
     private TextView text(String s, int color, boolean bold) {
