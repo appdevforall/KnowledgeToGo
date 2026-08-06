@@ -134,12 +134,21 @@ public final class FeedbackFab {
         if (root == null || root.findViewById(org.iiab.controller.R.id.fab_feedback) != null) {
             return;
         }
+        float d = activity.getResources().getDisplayMetrics().density;
         FloatingActionButton fab = new FloatingActionButton(activity);
         fab.setId(org.iiab.controller.R.id.fab_feedback);
         fab.setImageResource(org.iiab.controller.R.drawable.ic_feedback_24);
         fab.setContentDescription(activity.getString(org.iiab.controller.R.string.feedback_send));
         fab.setUseCompatPadding(true);
-        float d = activity.getResources().getDisplayMetrics().density;
+        // ADFA-4947: the default FAB background resolved to the same surface as k2go_card_bg
+        // (k2go_surface) in both themes, so this floating, draggable button blended into whatever card
+        // it hovered over. Tint it with the teal accent + on-teal icon (both flip day/night) so it
+        // stays clearly distinct from the cards in either theme (the FAB's default elevation already
+        // gives the floating shadow).
+        fab.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(activity, org.iiab.controller.R.color.k2go_teal)));
+        fab.setImageTintList(android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(activity, org.iiab.controller.R.color.k2go_on_teal)));
         int m = Math.round(16 * d);
         android.widget.FrameLayout.LayoutParams lp = new android.widget.FrameLayout.LayoutParams(
                 android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
