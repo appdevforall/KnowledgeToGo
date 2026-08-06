@@ -11,6 +11,7 @@ package org.iiab.controller.kolibri.data;
 
 import android.util.Log;
 
+import org.iiab.controller.kolibri.domain.ChannelId;
 import org.iiab.controller.kolibri.domain.TopicNode;
 import org.json.JSONObject;
 
@@ -66,10 +67,17 @@ public final class StudioTreeSource {
      *         a usable node
      */
     public TopicNode fetchTree(String nodeId) {
-        if (nodeId == null || nodeId.trim().isEmpty()) {
+        // Validate before the id reaches a URL path, not after. Every caller
+        // today passes an already-normalised Channel.rootNodeId(), but this
+        // method is public and a value with a slash or a query string in it
+        // would build a request to somewhere else entirely. Fail closed, the
+        // way ModuleName, AdbShellCommand and ArchiveEntry do at their own
+        // boundaries.
+        String id = ChannelId.normalise(nodeId);
+        if (id == null) {
             return null;
         }
-        String url = baseUrl + "/api/public/v2/contentnode_tree/" + nodeId.trim();
+        String url = baseUrl + "/api/public/v2/contentnode_tree/" + id;
         try {
             String body = httpGet(url);
             if (body.isEmpty()) {
@@ -105,19 +113,21 @@ public final class StudioTreeSource {
         if (is == null) {
             return "";
         }
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        byte[] chunk = new byte[8192];
-        int n;
-        int total = 0;
-        while ((n = is.read(chunk)) != -1) {
-            total += n;
-            if (total > MAX_BYTES) {
-                is.close();
-                throw new Exception("response over " + (MAX_BYTES / (1024 * 1024)) + " MB");
+        // try-with-resources rather than a close() at each exit: a read() that
+        // throws part-way used to leak the stream.
+        try (InputStream in = is) {
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            byte[] chunk = new byte[8192];
+            int n;
+            int total = 0;
+            while ((n = in.read(chunk)) != -1) {
+                total += n;
+                if (total > MAX_BYTES) {
+                    throw new Exception("response over " + (MAX_BYTES / (1024 * 1024)) + " MB");
+                }
+                buf.write(chunk, 0, n);
             }
-            buf.write(chunk, 0, n);
+            return buf.toString(StandardCharsets.UTF_8.name());
         }
-        is.close();
-        return buf.toString(StandardCharsets.UTF_8.name());
     }
 }
