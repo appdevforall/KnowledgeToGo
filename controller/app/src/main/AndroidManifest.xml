@@ -145,6 +145,14 @@
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
+        <!-- ADFA-4954: seeds Kolibri channels through the in-server REST job engine. Same shape as
+             the ZIM and Books services above: not exported, and specialUse because the work runs
+             inside the co-located proot rather than being a stock data transfer. -->
+        <service
+            android:name=".kolibri.presentation.KolibriSeedService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <activity
             android:name=".redesign.SetupProgressActivity"
             android:exported="false"

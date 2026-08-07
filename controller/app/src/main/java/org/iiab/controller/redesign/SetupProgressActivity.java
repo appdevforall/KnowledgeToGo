@@ -38,6 +38,12 @@ import org.iiab.controller.install.presentation.InstallProgressRepository;
 import org.iiab.controller.install.presentation.InstallState;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.install.presentation.ModuleQueueState;
+import org.iiab.controller.kolibri.data.KolibriWishlist;
+import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
+import org.iiab.controller.kolibri.presentation.KolibriSeedRepository;
+import org.iiab.controller.kolibri.presentation.KolibriSeedService;
+import org.iiab.controller.kolibri.presentation.KolibriSeedState;
+import org.iiab.controller.kolibri.presentation.KolibriSeedingFragment;
 import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
 
@@ -430,13 +436,20 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             else return true;
         }
 
-        // Stage 2 — REST: ZIM and Books run CONCURRENTLY (both are REST calls and don't conflict);
-        // only proot (maps) needs exclusivity. Keep polling until both are complete.
+        // Stage 2 — REST. ADFA-4954 (ADR-4954 D8): the three live streams now serialize against
+        // each other as well. Each measures free space independently and at a different moment,
+        // so all three could pass their own check and jointly fill the disk. Each provisioner
+        // defers while another holds a session; calling them in a fixed order means the first
+        // one starts and the rest retry on a later pass. Keep polling until all are complete.
         if (ZimProvisioner.hasPending(this)) ZimProvisioner.drain(this);
         if (BooksProvisioner.hasPending(this)) BooksProvisioner.drain(this);
+        if (KolibriProvisioner.hasPending(this)) KolibriProvisioner.drain(this);
+        KolibriSeedRepository kolibri = KolibriSeedRepository.get();
         boolean restBusy = (ZimDownloadService.hasSession() && !ZimDownloadService.isComplete())
                 || (BooksDownloadService.hasSession() && !BooksDownloadService.isComplete())
-                || ZimProvisioner.hasPending(this) || BooksProvisioner.hasPending(this);
+                || (kolibri.hasSession() && !kolibri.isComplete())
+                || ZimProvisioner.hasPending(this) || BooksProvisioner.hasPending(this)
+                || KolibriProvisioner.hasPending(this);
         if (restBusy) return true;
 
         // Every stage has been started and is complete.
@@ -456,6 +469,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
         boolean zimShown = ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0;
         boolean booksShown = BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0;
+        // ADFA-4954: read the snapshot once so the row and the completion checks below agree —
+        // it is published from the service's callbacks and can change between two reads.
+        KolibriSeedState kolibriState = KolibriSeedRepository.get().current();
+        boolean kolibriShown = kolibriState.hasSession() || KolibriWishlist.size(this) > 0;
 
         sections.removeAllViews();
         // ADFA-4900: maps (proot) runs first in the pipeline, so its row leads the list.
@@ -470,6 +487,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 BooksDownloadService.hasSession(), BooksDownloadService.status(),
                 BooksDownloadService.DONE, BooksDownloadService.FAILED,
                 BooksDownloadService.hasSession() && BooksDownloadService.isComplete(), BooksWishlist.size(this)));
+        // ADFA-4954. Statuses come from an observable snapshot rather than static arrays, so the
+        // ordinals are mapped to the checklist's PENDING=0 / doneVal / failedVal convention here.
+        if (kolibriShown) sections.addView(streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
+                kolibriState.hasSession(), kolibriState.statusOrdinals(),
+                KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
+                kolibriState.hasSession() && kolibriState.isComplete(), KolibriWishlist.size(this)));
 
         // Overall state. Completion is stage-based.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
@@ -505,6 +528,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             allComplete = drained
                     && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
                     && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete())
+                    && (!kolibriState.hasSession() || kolibriState.isComplete())   // ADFA-4954
                     && (!moduleShown || moduleServerSettled);   // ADFA-4842: also wait for the module server restart
         }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
@@ -514,6 +538,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
                 + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
+                + kolibriState.failedCount()   // ADFA-4954
                 + prootFailed;
 
         // Status dot + line. While waiting, a long-stuck engine shows a softer "taking longer"
@@ -934,7 +959,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
 
     private void goHome(boolean clearSessions) {
         cancelRedirect();
-        if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); }
+        if (clearSessions) { ZimDownloadService.finishSession(); BooksDownloadService.finishSession(); KolibriSeedService.finishSession(); }
         ModuleBatch.clear(this);   // ADFA-4842: this run's module batch is done
 
         // ADFA-4919: the natural end of installing is the Library — go there directly and clear the
@@ -956,6 +981,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         boolean proot;
         if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); proot = true; }  // ADFA-4842
         else if ("zim".equals(key)) { f = ZimPreparingFragment.newInstance(true); proot = false; }
+        else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); proot = false; }   // ADFA-4954: observe-only
         else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); proot = true; }   // ADFA-4901: observe-only
         else { f = BooksDownloadsFragment.newInstance(true); proot = false; }
         // ADFA-4919/4842: a proot detail (maps or module) cannot background either — only Back (to the index).

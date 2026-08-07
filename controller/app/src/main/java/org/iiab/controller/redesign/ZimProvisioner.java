@@ -45,6 +45,13 @@ public final class ZimProvisioner {
             return;
         }
         if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()) return;
+        // ADFA-4954 (ADR-4954 D8): the live REST streams also serialize against each other.
+        // Each measures free space independently and at a different moment, so all of them can
+        // pass their own check and jointly fill the disk. A Kolibri channel runs to tens of GB.
+        if (org.iiab.controller.kolibri.presentation.KolibriSeedRepository.get().hasSession()) {
+            Log.d(TAG, "zim drain deferred: a Kolibri seeding session is active");
+            return;
+        }
         if (ZimWishlist.size(ctx) == 0) return;
         final Context app = ctx.getApplicationContext();
         Log.i(TAG, "zim drain: " + ZimWishlist.size(app) + " in wishlist; loading catalog");
