@@ -23,7 +23,9 @@ import {
     loginForContent, login, apiJson, apiFetch, checkReadiness,
     KolibriSession, STUDIO_URL,
 } from './kolibri.session';
-import { TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent } from './kolibri.map';
+import {
+    TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent, toRemoteChannel, RemoteChannel,
+} from './kolibri.map';
 
 const KOLIBRI_HOME = process.env.KOLIBRI_HOME || '/library/kolibri';
 const MAIN_DB = path.join(KOLIBRI_HOME, 'db.sqlite3');
@@ -116,30 +118,10 @@ export function contentBytesOnDisk(): number {
     return total;
 }
 
-export interface RemoteChannel {
-    id: string;
-    name: string;
-    description: string;
-    version: number | null;
-    language: string | null;
-    totalResources: number | null;
-    publishedSize: number | null;
-}
-
-function toRemoteChannel(row: Record<string, unknown>): RemoteChannel {
-    const num = (v: unknown): number | null =>
-        typeof v === 'number' ? v : (typeof v === 'string' && v.trim() !== '' ? Number(v) : null);
-    return {
-        id: String(row.id ?? ''),
-        name: String(row.name ?? ''),
-        description: String(row.description ?? ''),
-        version: num(row.version),
-        language: typeof row.lang_code === 'string' ? row.lang_code
-            : (typeof row.language === 'string' ? row.language : null),
-        totalResources: num(row.total_resource_count),
-        publishedSize: num(row.published_size),
-    };
-}
+// RemoteChannel and toRemoteChannel now live in kolibri.map.ts: the mapper is
+// pure, and the two competing sets of field names it reconciles deserve a unit
+// test rather than a comment. Re-exported so the routes keep their import path.
+export { RemoteChannel };
 
 /**
  * Remote catalogue for the wizard's picker, through the device's own proxy.
@@ -248,14 +230,34 @@ export interface SelectionSize {
 }
 
 /**
- * Exact size of a selection before committing bytes, plus the free space.
+ * What a selection still has to transfer, plus the free space.
  *
- * Watch the prefix: this endpoint is NOT under /api/ but under /device/api/,
- * because the 'device' plugin publishes it.
+ * Two things about this endpoint that a device test made plain, and that its
+ * name does not suggest:
+ *
+ *   1. **It only answers for a channel already on the device.** Internally it
+ *      reaches `_calculate_batch_params`, which reads `max_rght` from local
+ *      `ContentNode` rows and multiplies it without a null check; for a channel
+ *      that was never imported that is `250 * None` and Kolibri returns a bare
+ *      HTTP 500. So the caller is turned away here with a usable message rather
+ *      than being handed an opaque server error.
+ *   2. **`fileSize` is what is OUTSTANDING, not the channel's size.** The view
+ *      filters to unavailable files, so a fully downloaded channel correctly
+ *      reports 0. It answers "how much more do I need?", never "how big is it?"
+ *      — the size of something not yet installed comes from the catalog.
+ *
+ * Watch the prefix too: this is NOT under /api/ but under /device/api/, because
+ * the 'device' plugin publishes it.
  */
 export async function estimateSelection(
     channelId: string, nodeIds?: string[], excludeNodeIds?: string[],
 ): Promise<SelectionSize> {
+    if (!isChannelInstalled(channelId)) {
+        throw new Error(
+            `channel ${channelId} is not on the device: its remaining size can only be `
+            + 'measured once its metadata has been imported');
+    }
+
     const session = await loginForContent();
     const body: Record<string, unknown> = { channel_id: channelId };
     if (nodeIds && nodeIds.length) body.node_ids = nodeIds;
@@ -267,7 +269,12 @@ export async function estimateSelection(
 
     let freeSpace: number | null = null;
     try {
-        const fs2 = await apiJson<{ freespace?: number }>(session, '/api/device/freespace/');
+        // ?path=Content is MANDATORY: FreeSpaceView.list answers 400 "Invalid path"
+        // for anything else, including no parameter at all. Without it this call
+        // threw on every request, the catch below swallowed it, and freeSpace was
+        // permanently null — so fitsOnDevice could never be anything but null.
+        const fs2 = await apiJson<{ freespace?: number }>(
+            session, '/api/device/freespace/?path=Content');
         freeSpace = typeof fs2.freespace === 'number' ? fs2.freespace : null;
     } catch { /* non-blocking */ }
 
@@ -280,6 +287,31 @@ export async function estimateSelection(
         // computing freespace, so comparing directly is correct.
         fitsOnDevice: freeSpace === null ? null : freeSpace > fileSize,
     };
+}
+
+/**
+ * Whether the channel's metadata is in the local content database.
+ *
+ * A single-row lookup, not the full inventory query: this runs before every
+ * estimate and only needs a yes or no.
+ */
+function isChannelInstalled(channelId: string): boolean {
+    if (!fs.existsSync(MAIN_DB)) return false;
+    try {
+        const db = new Database(MAIN_DB, { readonly: true });
+        try {
+            const row = db.prepare(
+                'SELECT 1 FROM content_channelmetadata WHERE id = ? LIMIT 1',
+            ).get(channelId);
+            return row !== undefined;
+        } finally {
+            db.close();
+        }
+    } catch {
+        // Unreadable database: treat as not installed, which produces the same
+        // actionable message rather than an opaque 500 from Kolibri.
+        return false;
+    }
 }
 
 /**

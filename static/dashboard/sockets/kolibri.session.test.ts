@@ -18,6 +18,7 @@ import assert from 'node:assert/strict';
 import { cookieValue, mergeCookies, matchesOrigin, KolibriApiError } from './kolibri.session';
 import {
     mapPhase, mapPercent, normalizeUuid, buildTaskPayload, overallPercent, sampleSpeed,
+    toRemoteChannel, failureMessage,
 } from './kolibri.map';
 
 // ─── cookieValue ─────────────────────────────────────────────────────────────
@@ -276,4 +277,87 @@ test('KolibriApiError keeps the status and is an Error', () => {
     assert.equal(e.status, 418);
     assert.equal(e.name, 'KolibriApiError');
     assert.match(e.message, /teapot/);
+});
+
+// ─── toRemoteChannel ─────────────────────────────────────────────────────────
+
+test('toRemoteChannel reads the names Kolibri\'s proxy uses', () => {
+    // The bug this guards: /api/content/remotechannel/ renames Studio's fields,
+    // and reading only Studio's names returned null for size and resource count
+    // on every row. Caught on a device, not in review.
+    const c = toRemoteChannel({
+        id: 'c150ea1d69495d37b5b0ac6f017e9bfb',
+        name: '3asafeer',
+        total_resources: 160,
+        total_file_size: 3417837270,
+        lang_code: 'ar',
+        version: 9,
+    });
+    assert.equal(c.totalResources, 160);
+    assert.equal(c.publishedSize, 3417837270);
+    assert.equal(c.language, 'ar');
+    assert.equal(c.version, 9);
+});
+
+test('toRemoteChannel still reads the names Studio uses', () => {
+    // Both spellings have to work: the same mapper serves the proxy and Studio.
+    const c = toRemoteChannel({
+        id: 'c150ea1d69495d37b5b0ac6f017e9bfb',
+        total_resource_count: 37,
+        published_size: 1740285,
+        language: 'en',
+    });
+    assert.equal(c.totalResources, 37);
+    assert.equal(c.publishedSize, 1740285);
+    assert.equal(c.language, 'en');
+});
+
+test('toRemoteChannel prefers the proxy names when a row carries both', () => {
+    const c = toRemoteChannel({
+        id: 'c150ea1d69495d37b5b0ac6f017e9bfb',
+        total_resources: 10, total_resource_count: 99,
+        total_file_size: 100, published_size: 999,
+    });
+    assert.equal(c.totalResources, 10);
+    assert.equal(c.publishedSize, 100);
+});
+
+test('toRemoteChannel yields null, not zero, when neither name is present', () => {
+    // A missing figure must stay distinguishable from a real zero: the picker
+    // shows "size unknown" for one and "0 B" for the other.
+    const c = toRemoteChannel({ id: 'c150ea1d69495d37b5b0ac6f017e9bfb' });
+    assert.equal(c.totalResources, null);
+    assert.equal(c.publishedSize, null);
+    assert.equal(c.name, '');
+});
+
+// ─── failureMessage ──────────────────────────────────────────────────────────
+
+test('failureMessage digs the real cause out of the traceback', () => {
+    // Kolibri reports the class name alone. A device test produced exactly this:
+    // "Kolibri failed importing Nope: HTTPError", which tells the reader nothing.
+    const msg = failureMessage('HTTPError',
+        'Traceback (most recent call last):\n'
+        + '  File "/x/y.py", line 3, in run\n'
+        + 'requests.exceptions.HTTPError: 404 Client Error: Not Found for url: /api/x');
+    assert.equal(msg, 'HTTPError: 404 Client Error: Not Found for url: /api/x');
+});
+
+test('failureMessage falls back to the class name when there is no traceback', () => {
+    assert.equal(failureMessage('HTTPError', null), 'HTTPError');
+    assert.equal(failureMessage('HTTPError', '   '), 'HTTPError');
+});
+
+test('failureMessage says something even with nothing to work from', () => {
+    assert.equal(failureMessage(null, null), 'no detail');
+    assert.equal(failureMessage('', ''), 'no detail');
+});
+
+test('failureMessage keeps a detail line that does not match the usual shape', () => {
+    assert.equal(failureMessage('RuntimeError', 'Traceback:\n  disk quota exceeded'),
+        'disk quota exceeded');
+});
+
+test('failureMessage does not echo the class name back as if it were detail', () => {
+    assert.equal(failureMessage('HTTPError', 'Traceback:\nHTTPError'), 'HTTPError');
 });
