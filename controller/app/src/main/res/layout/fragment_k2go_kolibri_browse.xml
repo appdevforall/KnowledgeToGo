@@ -101,12 +101,21 @@
             android:textColor="@color/k2go_ink"
             android:textColorHint="@color/k2go_muted" />
 
-        <!-- One horizontally-scrollable line, never wraps: All + one chip per theme group. -->
+        <!-- One horizontally-scrollable line, never wraps: All + one chip per theme group.
+
+             GONE on purpose. The theme groups are not authored yet, so the row would hold
+             nothing but `All` — a second line of pills that filters nothing, competing with
+             the sort toggles right below it for the same visual weight. Flip this single
+             attribute to `visible` when KolibriGroups exists; the code that fills the row
+             is live and needs no change. -->
         <HorizontalScrollView
+            android:id="@+id/k2go_kbrowse_chips_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:scrollbars="none">
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/k2go_kbrowse_chips"
@@ -128,8 +137,6 @@
                 android:id="@+id/k2go_kbrowse_sort_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:paddingTop="8dp"
@@ -141,8 +148,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:minHeight="48dp"
-                android:gravity="center"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 android:paddingTop="8dp"

@@ -70,7 +70,9 @@ public class KolibriCatalogViewModel extends ViewModel {
     private List<String> allLanguages = Collections.emptyList();
     private java.util.Map<String, String> allLanguageNames = Collections.emptyMap();
     private CatalogQuery query = CatalogQuery.all();
-    private Sort sort = Sort.NAME_ASC;
+    // Largest first is the default, not A–Z: on this screen the question is what fits,
+    // so the rows that decide the budget belong at the top.
+    private Sort sort = Sort.SIZE_DESC;
 
     /** The last filtered result, unsorted, so a sort tap costs nothing but a sort. */
     private List<Channel> lastResult = Collections.emptyList();

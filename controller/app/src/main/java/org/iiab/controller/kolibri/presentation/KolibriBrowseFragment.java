@@ -346,11 +346,12 @@ public final class KolibriBrowseFragment extends Fragment {
      * taken from the catalog: Studio publishes {@code categories: []}, and the
      * grouping was never a projection of the source taxonomy anyway.
      *
-     * <p>Those groups are not defined yet, so for now the row holds only
-     * {@code All}. The language is deliberately <em>not</em> here — it filters from
-     * the selector above, and putting it in both places was the earlier mistake.
-     * When the groups land, add them beside {@code All} and filter on
-     * {@link #groupFilter}; the rest of the row needs no change.
+     * <p>Those groups are not defined yet, so the row would hold nothing but
+     * {@code All} and is {@code gone} in the layout — an unused second line of pills
+     * next to the sort toggles is weight without a job. This method still runs, so
+     * flipping that one attribute is all it takes to bring the row back. The language
+     * is deliberately <em>not</em> here: it filters from the selector above, and
+     * putting it in both places was the earlier mistake.
      */
     private void buildChips(KolibriCatalogUiState s) {
         chips.removeAllViews();
