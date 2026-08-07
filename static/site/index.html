@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#0E5C63" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#17302E" media="(prefers-color-scheme: dark)">
     <title>Knowledge to Go (Internet-in-a-Box on Android)</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- ADFA-5059: apply the saved theme before first paint so there is no light/dark flash. -->
+    <script>try{var m=localStorage.getItem('k2go-theme');if(m==='light'||m==='dark'){document.documentElement.setAttribute('data-theme',m);}}catch(e){}</script>
 </head>
 <body>
 
@@ -13,59 +18,94 @@
         <h1 class="product-name">Knowledge to Go</h1>
         <p class="product-subtitle" data-i18n="powered_by">powered by Internet-in-a-Box</p>
     </div>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Theme">
+        <span class="theme-ico" aria-hidden="true">🌓</span>
+    </button>
 </header>
 
-<div id="loadingOverlay">
-    <div class="spinner"></div>
-    <div class="loading-text" id="loadingText">Loading...</div>
-</div>
-
-<div id="backend-status" class="status-banner hidden" style="display: none; background-color: #ff4444; color: white; padding: 10px; text-align: center; width: 100%; position: absolute; top: 80px; z-index: 1000;">
-    ⚠️ 
+<div id="backend-status" class="status-banner hidden" role="status">
+    <span aria-hidden="true">⚠️</span>
     <span data-i18n="backend_error">The backend server is not responding. Please verify it's started. Please go to the Termux App and run</span>
     <code>iiab-termux --start</code>
 </div>
 
-<div class="menu-container">
-    <a href="/books" class="btn btn-books">
-        <span>📖</span>
-        <span data-i18n="books">Books</span>
+<main class="card-grid" id="cardGrid">
+    <a href="/books" class="card card-books hidden">
+        <span class="card-icon" aria-hidden="true">📖</span>
+        <span class="card-text">
+            <span class="card-name" data-i18n="books">Books</span>
+            <span class="card-sub" data-i18n="books_sub">Read a book</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/code" class="btn btn-code">
-        <img src="img/cogo.svg" class="app-logo">
-        <span data-i18n="code">Code on the Go</span>
+    <a href="/code" class="card card-code hidden">
+        <img src="img/cogo.svg" class="card-icon-img" alt="" aria-hidden="true">
+        <span class="card-text">
+            <span class="card-name" data-i18n="code">Code on the Go</span>
+            <span class="card-sub" data-i18n="code_sub">Code in your browser</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/kiwix" class="btn btn-kiwix">
-        <img src="img/kiwix_logo.svg" class="app-logo">
-        <span data-i18n="kiwix">Kiwix</span>
+    <a href="/kiwix" class="card card-kiwix hidden">
+        <img src="img/kiwix_logo.svg" class="card-icon-img" alt="" aria-hidden="true">
+        <span class="card-text">
+            <span class="card-name" data-i18n="kiwix">Kiwix</span>
+            <span class="card-sub" data-i18n="kiwix_sub">Offline Wikipedia &amp; more</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/kolibri" class="btn btn-kolibri">
-        <img src="img/kolibri_logo.svg" class="app-logo">
-        <span data-i18n="kolibri">Kolibri</span>
+    <a href="/kolibri" class="card card-kolibri hidden">
+        <img src="img/kolibri_logo.svg" class="card-icon-img" alt="" aria-hidden="true">
+        <span class="card-text">
+            <span class="card-name" data-i18n="kolibri">Kolibri</span>
+            <span class="card-sub" data-i18n="kolibri_sub">Take courses</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/maps" class="btn btn-maps">
-        <span>🗺️</span>
-        <span data-i18n="maps">IIAB Maps</span>
+    <a href="/maps" class="card card-maps hidden">
+        <span class="card-icon" aria-hidden="true">🗺️</span>
+        <span class="card-text">
+            <span class="card-name" data-i18n="maps">IIAB Maps</span>
+            <span class="card-sub" data-i18n="maps_sub">Explore offline maps</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/matomo" class="btn btn-matomo">
-        <span>📊</span>
-        <span data-i18n="matomo">Matomo</span>
+    <a href="/matomo" class="card card-matomo hidden">
+        <span class="card-icon" aria-hidden="true">📊</span>
+        <span class="card-text">
+            <span class="card-name" data-i18n="matomo">Matomo</span>
+            <span class="card-sub" data-i18n="matomo_sub">Usage analytics</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/k2go-docs/" class="btn btn-k2go-docs">
-        <img src="img/k2go-docs.svg" class="app-logo">
-        <span data-i18n="k2go_docs">K2Go docs</span>
+    <a href="/k2go-docs/" class="card card-k2go-docs hidden">
+        <img src="img/k2go-docs.svg" class="card-icon-img" alt="" aria-hidden="true">
+        <span class="card-text">
+            <span class="card-name" data-i18n="k2go_docs">K2Go docs</span>
+            <span class="card-sub" data-i18n="k2go_docs_sub">Help &amp; guides</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
 
-    <a href="/dashboard/" class="btn btn-dashboard">
-        <span>⚙️</span>
-        <span data-i18n="admin_dashboard">System Dashboard</span>
+    <a href="/dashboard/" class="card card-dashboard hidden">
+        <span class="card-icon" aria-hidden="true">⚙️</span>
+        <span class="card-text">
+            <span class="card-name" data-i18n="admin_dashboard">System Dashboard</span>
+            <span class="card-sub" data-i18n="admin_dashboard_sub">Manage your box</span>
+        </span>
+        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting…</span></span>
     </a>
+</main>
+
+<div id="loadingOverlay">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText" data-i18n="loading">Loading…</div>
 </div>
 
 <script src="js/app.js"></script>
