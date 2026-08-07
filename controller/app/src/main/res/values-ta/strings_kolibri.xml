@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">உங்கள் பாடநெறிகள் சேர்க்கப்படுகின்றன</string>
     <string name="k2go_kolibri_unavailable">பயன்பாட்டுடன் வந்த பாடநெறி பட்டியலைப் படிக்க முடியவில்லை.</string>
     <string name="k2go_kolibri_no_match">உங்கள் தேடலுக்குப் பொருந்தும் பாடநெறிகள் இல்லை.</string>
-    <string name="k2go_kolibri_lang_all">அனைத்து மொழிகள்</string>
-    <string name="k2go_kolibri_lang_pick">மொழி வாரியாக வடிகட்டு</string>
     <string name="k2go_kolibri_size_unknown">அளவு தெரியவில்லை</string>
     <string name="k2go_kolibri_confirm_sub">நீங்கள் தேர்ந்தெடுத்த பாடநெறிகள்.</string>
     <string name="k2go_kolibri_fit_unknown">சில அளவுகள் வெளியிடப்படவில்லை, எனவே மொத்தம் அதிகமாக இருக்கலாம். தொடரலாம்.</string>
     <string name="k2go_kolibri_takes_body">பாடநெறிகள் மிகப் பெரியதாக இருக்கலாம், குறிப்பாக மெதுவான இணைப்பில் பதிவிறக்க நீண்ட நேரம் ஆகலாம். உங்கள் அமைப்பு நிறுவப்பட்ட பிறகு பதிவிறக்கம் தொடங்கும், பின்னணியில் தொடரும், தடைபட்டால் மீண்டும் தொடரும்.</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s இல் இன்னும் பாடநெறிகள் இல்லை · மொழியை மாற்று</string>
 </resources>

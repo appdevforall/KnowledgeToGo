@@ -177,6 +177,16 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         zimLang = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
         zimLangManual = false;
     }
+    // ADFA-4954: the wizard has ONE content language; the fields above are named for
+    // ZIM only because ZIM was the first catalog to use them. These neutral aliases let
+    // a new content type read the same value without spelling "Zim" inside its own
+    // package. Additive on purpose — the existing names stay so ZIM is untouched.
+    /** The wizard's content language, shared by every catalog. */
+    public String getContentLang() { return getZimLang(); }
+    /** True when that language was picked manually rather than followed from the system. */
+    public boolean isContentLangManual() { return isZimLangManual(); }
+    public void setContentLang(String l) { setZimLang(l); }
+
     public java.util.LinkedHashMap<String, Long> getZimCart() { return zimCart; }
 
     private InstallationPlanner.Tier readInstalledTier() {

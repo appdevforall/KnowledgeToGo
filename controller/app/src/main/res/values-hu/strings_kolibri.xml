@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">A kurzusaid hozzáadása</string>
     <string name="k2go_kolibri_unavailable">Az alkalmazással érkező kurzuskatalógus nem olvasható.</string>
     <string name="k2go_kolibri_no_match">Nincs a keresésnek megfelelő kurzus.</string>
-    <string name="k2go_kolibri_lang_all">Minden nyelv</string>
-    <string name="k2go_kolibri_lang_pick">Szűrés nyelv szerint</string>
     <string name="k2go_kolibri_size_unknown">A méret nem ismert</string>
     <string name="k2go_kolibri_confirm_sub">Az általad választott kurzusok.</string>
     <string name="k2go_kolibri_fit_unknown">Egyes méretek nincsenek közzétéve, így az összeg nagyobb lehet. Folytathatod.</string>
     <string name="k2go_kolibri_takes_body">A kurzusok nagyon nagyok lehetnek, és a letöltés sokáig tarthat, különösen lassú kapcsolaton. A letöltés a rendszer telepítése után indul, a háttérben folytatódik, és megszakadás után újraindul.</string>
+    <string name="k2go_kolibri_none_in_lang">Még nincs tanfolyam ezen a nyelven: %1$s · Nyelv módosítása</string>
 </resources>

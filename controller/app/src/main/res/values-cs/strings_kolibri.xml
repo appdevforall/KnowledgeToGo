@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">Přidávání vašich kurzů</string>
     <string name="k2go_kolibri_unavailable">Katalog kurzů dodaný s aplikací se nepodařilo přečíst.</string>
     <string name="k2go_kolibri_no_match">Vašemu hledání neodpovídají žádné kurzy.</string>
-    <string name="k2go_kolibri_lang_all">Všechny jazyky</string>
-    <string name="k2go_kolibri_lang_pick">Filtrovat podle jazyka</string>
     <string name="k2go_kolibri_size_unknown">Velikost není známa</string>
     <string name="k2go_kolibri_confirm_sub">Kurzy, které jste vybrali.</string>
     <string name="k2go_kolibri_fit_unknown">Některé velikosti nejsou zveřejněny, celek proto může být větší. Můžete pokračovat.</string>
     <string name="k2go_kolibri_takes_body">Kurzy mohou být velmi velké a stahování může trvat dlouho, zvlášť na pomalém připojení. Stahování začne po instalaci systému, pokračuje na pozadí a po přerušení se obnoví.</string>
+    <string name="k2go_kolibri_none_in_lang">V jazyce %1$s zatím nejsou žádné kurzy · Změnit jazyk</string>
 </resources>

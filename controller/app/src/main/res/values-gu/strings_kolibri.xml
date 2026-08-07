@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">તમારા કોર્સ ઉમેરાઈ રહ્યા છે</string>
     <string name="k2go_kolibri_unavailable">એપ સાથે આવેલો કોર્સ કૅટલોગ વાંચી શકાયો નથી.</string>
     <string name="k2go_kolibri_no_match">તમારી શોધ સાથે મેળ ખાતો કોઈ કોર્સ નથી.</string>
-    <string name="k2go_kolibri_lang_all">બધી ભાષાઓ</string>
-    <string name="k2go_kolibri_lang_pick">ભાષા પ્રમાણે ફિલ્ટર</string>
     <string name="k2go_kolibri_size_unknown">માપ અજ્ઞાત</string>
     <string name="k2go_kolibri_confirm_sub">તમે પસંદ કરેલા કોર્સ.</string>
     <string name="k2go_kolibri_fit_unknown">કેટલાંક માપ પ્રકાશિત નથી, તેથી કુલ વધુ હોઈ શકે. તમે ચાલુ રાખી શકો છો.</string>
     <string name="k2go_kolibri_takes_body">કોર્સ ઘણા મોટા હોઈ શકે અને ડાઉનલોડ થવામાં લાંબો સમય લાગી શકે, ખાસ કરીને ધીમા જોડાણ પર. સિસ્ટમ ઇન્સ્ટોલ થયા પછી ડાઉનલોડ શરૂ થાય છે, પૃષ્ઠભૂમિમાં ચાલુ રહે છે અને વિક્ષેપ પડે તો ફરી શરૂ થાય છે.</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s માં હજી કોઈ કોર્સ નથી · ભાષા બદલો</string>
 </resources>

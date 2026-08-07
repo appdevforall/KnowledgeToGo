@@ -42,9 +42,39 @@ public class KolibriCatalogViewModel extends ViewModel {
     private final MutableLiveData<KolibriCatalogUiState> state =
             new MutableLiveData<>(KolibriCatalogUiState.loading());
 
+    /**
+     * How the list is ordered. A view preference, not a business rule, so it lives
+     * here rather than in the use case — and re-sorting never re-reads the asset.
+     */
+    public enum Sort {
+        SIZE_DESC, SIZE_ASC, NAME_ASC, NAME_DESC;
+
+        boolean isSize() {
+            return this == SIZE_DESC || this == SIZE_ASC;
+        }
+
+        boolean isName() {
+            return this == NAME_ASC || this == NAME_DESC;
+        }
+
+        Sort flipped() {
+            switch (this) {
+                case SIZE_DESC: return SIZE_ASC;
+                case SIZE_ASC:  return SIZE_DESC;
+                case NAME_ASC:  return NAME_DESC;
+                default:        return NAME_ASC;
+            }
+        }
+    }
+
     private List<String> allLanguages = Collections.emptyList();
     private java.util.Map<String, String> allLanguageNames = Collections.emptyMap();
     private CatalogQuery query = CatalogQuery.all();
+    private Sort sort = Sort.NAME_ASC;
+
+    /** The last filtered result, unsorted, so a sort tap costs nothing but a sort. */
+    private List<Channel> lastResult = Collections.emptyList();
+    private String lastGeneratedOn = "";
 
     public KolibriCatalogViewModel(GetChannelCatalogUseCase getCatalog) {
         this.getCatalog = getCatalog;
@@ -75,12 +105,56 @@ public class KolibriCatalogViewModel extends ViewModel {
                     allLanguageNames = getCatalog.languageNames();
                 }
                 GetChannelCatalogUseCase.Result r = getCatalog.execute(query);
+                lastResult = r.channels();
+                lastGeneratedOn = r.generatedOn();
                 state.postValue(KolibriCatalogUiState.ready(
-                        r.channels(), allLanguages, allLanguageNames, r.generatedOn()));
+                        sorted(), allLanguages, allLanguageNames, lastGeneratedOn));
             } catch (Exception e) {
                 state.postValue(KolibriCatalogUiState.error(e.getMessage()));
             }
         });
+    }
+
+    public Sort sort() {
+        return sort;
+    }
+
+    /**
+     * Reorders what is already on screen. Called from a click listener, so the
+     * result is published with {@code setValue} on the main thread; ~142 rows makes
+     * the sort itself immeasurable, and it avoids a pointless re-read of the asset.
+     */
+    public void setSort(Sort next) {
+        if (next == null || next == sort) {
+            return;
+        }
+        sort = next;
+        KolibriCatalogUiState current = state.getValue();
+        if (current != null && !current.isLoading() && !current.hasError()) {
+            state.setValue(KolibriCatalogUiState.ready(
+                    sorted(), allLanguages, allLanguageNames, lastGeneratedOn));
+        }
+    }
+
+    /**
+     * The current result in the current order. Channels whose size Studio does not
+     * publish sort last in both size directions: they have no position on that axis,
+     * and putting them first would read as "smallest".
+     */
+    private List<Channel> sorted() {
+        List<Channel> out = new java.util.ArrayList<>(lastResult);
+        Collections.sort(out, (a, b) -> {
+            if (sort.isName()) {
+                int c = a.name().compareToIgnoreCase(b.name());
+                return sort == Sort.NAME_ASC ? c : -c;
+            }
+            if (a.hasKnownSize() != b.hasKnownSize()) {
+                return a.hasKnownSize() ? -1 : 1;
+            }
+            int c = Long.compare(a.publishedSize(), b.publishedSize());
+            return sort == Sort.SIZE_ASC ? c : -c;
+        });
+        return out;
     }
 
     /** Keeps the language filter, replaces the keyword. */

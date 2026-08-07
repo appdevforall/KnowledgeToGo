@@ -10,7 +10,6 @@
  */
 package org.iiab.controller.kolibri.presentation;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -36,6 +35,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.iiab.controller.R;
+import org.iiab.controller.applang.data.ContentLanguage;
 import org.iiab.controller.kolibri.domain.Channel;
 import org.iiab.controller.redesign.SetupLibraryActivity;
 import org.iiab.controller.redesign.ZimLanguageDialog;
@@ -67,6 +67,9 @@ import java.util.List;
  */
 public final class KolibriBrowseFragment extends Fragment {
 
+    /** Studio's code for a channel that is not in one language. Its own filter value. */
+    private static final String MULTI = "mul";
+
     private KolibriCatalogViewModel vm;
 
     private TextView langLabel;
@@ -76,16 +79,15 @@ public final class KolibriBrowseFragment extends Fragment {
     private TextView storageLabel;
     private ProgressBar storageBar;
     private LinearLayout chips;
+    private TextView sortSize;
+    private TextView sortName;
     private LinearLayout list;
     private Button review;
 
     private long freeMb = 0L;
     private long totalMb = 0L;
-    /** Language comes from the selector above the list, never from the chip row. */
-    private String langFilter = "";
     /** The chip row's axis: {@code ""} is All. Only All exists until the groups are authored. */
     private String groupFilter = "";
-    private boolean searching = false;
 
     @Nullable
     @Override
@@ -103,6 +105,8 @@ public final class KolibriBrowseFragment extends Fragment {
         storageLabel = v.findViewById(R.id.k2go_kbrowse_storage_label);
         storageBar = v.findViewById(R.id.k2go_kbrowse_storage_bar);
         chips = v.findViewById(R.id.k2go_kbrowse_chips);
+        sortSize = v.findViewById(R.id.k2go_kbrowse_sort_size);
+        sortName = v.findViewById(R.id.k2go_kbrowse_sort_name);
         list = v.findViewById(R.id.k2go_kbrowse_list);
         review = v.findViewById(R.id.k2go_kbrowse_review);
 
@@ -125,17 +129,62 @@ public final class KolibriBrowseFragment extends Fragment {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) { }
             @Override public void afterTextChanged(Editable s) {
-                String q = s == null ? "" : s.toString().trim();
-                searching = !q.isEmpty();
-                vm.search(q);
+                vm.search(s == null ? "" : s.toString().trim());
             }
         });
 
+        // Tapping the active toggle reverses it; tapping the other switches axis and
+        // starts at its natural direction (largest first / A–Z).
+        sortSize.setOnClickListener(x -> vm.setSort(vm.sort().isSize()
+                ? vm.sort().flipped() : KolibriCatalogViewModel.Sort.SIZE_DESC));
+        sortName.setOnClickListener(x -> vm.setSort(vm.sort().isName()
+                ? vm.sort().flipped() : KolibriCatalogViewModel.Sort.NAME_ASC));
+
         vm.state().observe(getViewLifecycleOwner(), this::render);
-        if (vm.state().getValue() == null || vm.state().getValue().isLoading()) {
-            vm.load();
+
+        // The catalog opens in the language the wizard already settled on — the same
+        // preference the install path reads — not on "all languages". Coming back from
+        // confirm keeps whatever is loaded, unless the language changed while away.
+        KolibriCatalogUiState now = vm.state().getValue();
+        if (now == null || now.isLoading()
+                || !vm.query().langCodes().contains(lang())) {
+            vm.filterLanguage(lang());
         }
-        updateLangControl(null);
+        updateLangControl();
+        updateSortControls();
+    }
+
+    /** The wizard's content language, shared with the ZIM catalog. Never null. */
+    private String lang() {
+        if (getActivity() instanceof SetupLibraryActivity) {
+            return ((SetupLibraryActivity) getActivity()).getContentLang();
+        }
+        return ContentLanguage.systemDefault();
+    }
+
+    /**
+     * A language code as a person reads it, matching the ZIM screens: the endonym,
+     * capitalized. Studio's own {@code lang_name} is not used — it disagrees with
+     * itself across region variants ("Português", "Português (Brasil)") that collapse
+     * to one code, and {@code mul} has a name of its own in the app.
+     */
+    private String langDisplay(String code) {
+        if (code == null || code.isEmpty()) {
+            return "";
+        }
+        if (MULTI.equals(code)) {
+            return getString(R.string.k2go_zim_lang_mul);
+        }
+        try {
+            java.util.Locale l = new java.util.Locale(code);
+            String n = l.getDisplayName(l);
+            if (n == null || n.isEmpty()) {
+                return code;
+            }
+            return n.substring(0, 1).toUpperCase(l) + n.substring(1);
+        } catch (Exception e) {
+            return code;
+        }
     }
 
     private void readFreeSpace() {
@@ -153,7 +202,8 @@ public final class KolibriBrowseFragment extends Fragment {
         if (list == null || s == null) {
             return;
         }
-        updateLangControl(s);
+        updateLangControl();
+        updateSortControls();
         buildChips(s);
 
         list.removeAllViews();
@@ -161,8 +211,15 @@ public final class KolibriBrowseFragment extends Fragment {
             showStatus(R.string.k2go_zim_loading);
         } else if (s.hasError()) {
             showStatus(R.string.k2go_kolibri_unavailable);
-        } else if (s.isEmptyResult()) {
+        } else if (s.isEmptyResult() && vm.query().hasKeyword()) {
             showStatus(R.string.k2go_kolibri_no_match);
+        } else if (s.isEmptyResult()) {
+            // Nothing in this language at all: 21 of Studio's languages have a public
+            // channel, so a perfectly ordinary device language can land here. Say which
+            // language emptied the list, and make the line change it.
+            status.setVisibility(View.VISIBLE);
+            status.setText(getString(R.string.k2go_kolibri_none_in_lang, langDisplay(lang())));
+            status.setOnClickListener(x -> pickLanguage());
         } else {
             status.setVisibility(View.GONE);
             List<Channel> rows = s.channels();
@@ -174,8 +231,10 @@ public final class KolibriBrowseFragment extends Fragment {
             }
         }
 
-        count.setText(getString(
-                searching ? R.string.k2go_zc_count_results : R.string.k2go_zc_count_items,
+        // "N items" normally, live "N results" while searching. Read from the query, not
+        // from a local flag, so a recreated view can't disagree with what is displayed.
+        count.setText(getString(vm.query().hasKeyword()
+                        ? R.string.k2go_zc_count_results : R.string.k2go_zc_count_items,
                 s.channels().size()));
         updateStorage();
     }
@@ -183,6 +242,28 @@ public final class KolibriBrowseFragment extends Fragment {
     private void showStatus(int stringRes) {
         status.setVisibility(View.VISIBLE);
         status.setText(stringRes);
+        status.setOnClickListener(null);
+        status.setClickable(false);
+    }
+
+    /** Labels + selected state of the two sort toggles, arrows included. */
+    private void updateSortControls() {
+        KolibriCatalogViewModel.Sort s = vm.sort();
+        sortSize.setText(getString(R.string.k2go_zc_sort_size)
+                + (s == KolibriCatalogViewModel.Sort.SIZE_ASC ? " ▲" : " ▼"));
+        boolean desc = s == KolibriCatalogViewModel.Sort.NAME_DESC;
+        sortName.setText(getString(desc
+                ? R.string.k2go_zc_sort_name_desc : R.string.k2go_zc_sort_name)
+                + (desc ? " ▲" : " ▼"));
+        pill(sortSize, s.isSize());
+        pill(sortName, s.isName());
+    }
+
+    /** The one pill style in the app: teal filled when on, hairline outline when off. */
+    private void pill(TextView t, boolean on) {
+        t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
+        t.setTextColor(ContextCompat.getColor(requireContext(),
+                on ? android.R.color.white : R.color.k2go_ink));
     }
 
     /**
@@ -280,28 +361,13 @@ public final class KolibriBrowseFragment extends Fragment {
     }
 
     private View chip(String label, final String group) {
-        boolean selected = group.equals(groupFilter);
-        int teal = ContextCompat.getColor(requireContext(), R.color.k2go_teal);
-
         TextView t = new TextView(requireContext());
         t.setText(label);
-        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         t.setGravity(Gravity.CENTER);
         t.setMinHeight(px(48));   // tap target, even though the pill looks smaller
-        t.setPadding(px(14), px(6), px(14), px(6));
-
-        GradientDrawable bg = new GradientDrawable();
-        bg.setShape(GradientDrawable.RECTANGLE);
-        bg.setCornerRadius(px(24));
-        if (selected) {
-            bg.setColor(teal);
-            t.setTextColor(Color.WHITE);
-        } else {
-            bg.setColor(Color.TRANSPARENT);
-            bg.setStroke(px(1), ContextCompat.getColor(requireContext(), R.color.k2go_hairline));
-            t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-        }
-        t.setBackground(bg);
+        t.setPadding(px(14), px(8), px(14), px(8));
+        pill(t, group.equals(groupFilter));
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -334,21 +400,29 @@ public final class KolibriBrowseFragment extends Fragment {
         review.setText(getString(R.string.k2go_zim_review_fmt, ByteFormatter.toHuman(bytes)));
     }
 
-    /** Two lines: the value in bold, then where the choice came from, Title-Case. */
-    private void updateLangControl(KolibriCatalogUiState s) {
-        String value = langFilter.isEmpty()
-                ? getString(R.string.k2go_kolibri_lang_all)
-                : (s == null ? langFilter : s.languageName(langFilter));
-        langLabel.setText(getString(R.string.k2go_zim_lang_fmt, value));
-        langSub.setText(langFilter.isEmpty()
-                ? R.string.k2go_zim_lang_sub
-                : R.string.k2go_zim_lang_sub_manual);
+    /**
+     * Two lines: the language in bold, then where the choice came from, Title-Case.
+     * The same two strings the ZIM screens use — no "filters the catalog" clause,
+     * which was dropped in ADFA-5033 as redundant with the control itself.
+     */
+    private void updateLangControl() {
+        langLabel.setText(getString(R.string.k2go_zim_lang_fmt, langDisplay(lang())));
+        boolean manual = (getActivity() instanceof SetupLibraryActivity)
+                && ((SetupLibraryActivity) getActivity()).isContentLangManual();
+        langSub.setText(manual
+                ? R.string.k2go_zim_lang_state_manual
+                : R.string.k2go_zim_lang_state_system);
     }
 
     /**
      * The searchable language picker, reusing the ZIM flow's dialog. Its name says
      * Zim but nothing inside it does; a second copy for one more caller would be
      * worse than the misleading name.
+     *
+     * <p>Choosing a language changes it for the whole wizard, exactly as the ZIM
+     * screens do, because there is one content language and not one per catalog.
+     * The reset option follows the system again rather than showing every language:
+     * "all" is not a language, and a mixed list is what the selector exists to avoid.
      */
     private void pickLanguage() {
         KolibriCatalogUiState s = vm.state().getValue();
@@ -356,16 +430,20 @@ public final class KolibriBrowseFragment extends Fragment {
             return;
         }
         ZimLanguageDialog.show(requireContext(),
-                getString(R.string.k2go_kolibri_lang_pick),
-                s.languages(), s::languageName, langFilter,
+                getString(R.string.k2go_zim_change),
+                s.languages(), this::langDisplay, lang(),
                 code -> {
-                    langFilter = code == null ? "" : code;
-                    vm.filterLanguage(langFilter);
+                    if (getActivity() instanceof SetupLibraryActivity) {
+                        ((SetupLibraryActivity) getActivity()).setContentLang(code);
+                    }
+                    vm.filterLanguage(lang());
                 },
-                getString(R.string.k2go_kolibri_lang_all),
+                getString(R.string.k2go_lang_follow_system),
                 () -> {
-                    langFilter = "";
-                    vm.filterLanguage("");
+                    if (getActivity() instanceof SetupLibraryActivity) {
+                        ((SetupLibraryActivity) getActivity()).followSystemLang();
+                    }
+                    vm.filterLanguage(lang());
                 });
     }
 

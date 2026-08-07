@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">Προσθήκη των μαθημάτων σας</string>
     <string name="k2go_kolibri_unavailable">Δεν ήταν δυνατή η ανάγνωση του καταλόγου μαθημάτων της εφαρμογής.</string>
     <string name="k2go_kolibri_no_match">Κανένα μάθημα δεν ταιριάζει με την αναζήτησή σας.</string>
-    <string name="k2go_kolibri_lang_all">Όλες οι γλώσσες</string>
-    <string name="k2go_kolibri_lang_pick">Φιλτράρισμα κατά γλώσσα</string>
     <string name="k2go_kolibri_size_unknown">Άγνωστο μέγεθος</string>
     <string name="k2go_kolibri_confirm_sub">Τα μαθήματα που επιλέξατε.</string>
     <string name="k2go_kolibri_fit_unknown">Ορισμένα μεγέθη δεν δημοσιεύονται, άρα το σύνολο μπορεί να είναι μεγαλύτερο. Μπορείτε να συνεχίσετε.</string>
     <string name="k2go_kolibri_takes_body">Τα μαθήματα μπορεί να είναι πολύ μεγάλα και η λήψη να διαρκέσει πολύ, ειδικά σε αργή σύνδεση. Η λήψη ξεκινά αφού εγκατασταθεί το σύστημά σας, συνεχίζεται στο παρασκήνιο και συνεχίζει από εκεί που έμεινε.</string>
+    <string name="k2go_kolibri_none_in_lang">Δεν υπάρχουν ακόμη μαθήματα στα %1$s · Αλλαγή γλώσσας</string>
 </resources>

@@ -26,14 +26,17 @@
 
     <!-- Courses picker (ADFA-4954). Only the strings whose text is genuinely about
          courses live here; the picker reuses the ZIM family's generic ones
-         (k2go_zim_search_hint, _loading, _lang_fmt, _lang_sub, _storage_fmt,
-         _review_fmt, _confirm_title, _total, _fits_fmt, _nofit_fmt, _add_setup_fmt,
-         _grp_all, k2go_zc_count_items, k2go_zc_count_results, k2go_zc_nospace),
-         whose wording says nothing about ZIM. -->
+         (k2go_zim_search_hint, _loading, _lang_fmt, _lang_state_system,
+         _lang_state_manual, _lang_mul, _change, _storage_fmt, _review_fmt,
+         _confirm_title, _total, _fits_fmt, _nofit_fmt, _add_setup_fmt, _grp_all,
+         k2go_lang_follow_system, k2go_zc_sort_size, k2go_zc_sort_name,
+         k2go_zc_sort_name_desc, k2go_zc_count_items, k2go_zc_count_results,
+         k2go_zc_nospace), whose wording says nothing about ZIM.
+
+         Sharing the language strings is not just thrift: the wizard has ONE content
+         language, so both catalogs must describe it identically. -->
     <string name="k2go_kolibri_unavailable">Couldn\'t read the course catalog included with the app.</string>
     <string name="k2go_kolibri_no_match">No courses match your search.</string>
-    <string name="k2go_kolibri_lang_all">All languages</string>
-    <string name="k2go_kolibri_lang_pick">Filter by language</string>
     <string name="k2go_kolibri_size_unknown">Size unknown</string>
     <string name="k2go_kolibri_confirm_sub">The courses you chose.</string>
     <!-- The third fit state: the total is a floor, not a figure, because at least one
@@ -41,4 +44,5 @@
     <string name="k2go_kolibri_fit_unknown">Some sizes aren\'t published, so this total may be higher. You can continue.</string>
     <string name="k2go_kolibri_takes_body">Courses can be very large and take a long time to download, especially on a slow connection. The download starts after your system is installed, keeps going in the background, and resumes if interrupted.</string>
 
+    <string name="k2go_kolibri_none_in_lang">No courses in %1$s yet · Change language</string>
 </resources>

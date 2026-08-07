@@ -223,6 +223,18 @@ the whole rule.
   while the searchable, language-filtered flat list of 142 channels carries the
   browsing. The language filters from the header selector and is never a chip.
 
+  The picker **inherits** the wizard's content language rather than opening on "all
+  languages": 21 of Studio's languages have a public channel, and showing all 142 in
+  a language soup is what the selector exists to prevent. Since only 21 are populated,
+  an ordinary device language can empty the list, so that case gets its own tappable
+  line ("No courses in <language> yet · Change language") instead of the search-miss
+  message.
+
+  With no index, the picker **is** the ZIM item list — the second screen, not the
+  first — so it takes that screen's furniture: the sort toggles (`By size` / `A–Z`)
+  and storage at the bottom, where a list with sizes and checkboxes puts them.
+  `Grouped` is omitted because a channel has no editions to collapse.
+
   The language list is **derived from the catalog**, not from Studio's labels
   endpoint. That endpoint offers 120+ languages, but only **21** are used by any
   public channel — it reports the available vocabulary, not what exists. Offering

@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">A adicionar os seus cursos</string>
     <string name="k2go_kolibri_unavailable">Não foi possível ler o catálogo de cursos incluído na aplicação.</string>
     <string name="k2go_kolibri_no_match">Nenhum curso corresponde à sua pesquisa.</string>
-    <string name="k2go_kolibri_lang_all">Todos os idiomas</string>
-    <string name="k2go_kolibri_lang_pick">Filtrar por idioma</string>
     <string name="k2go_kolibri_size_unknown">Tamanho desconhecido</string>
     <string name="k2go_kolibri_confirm_sub">Os cursos que escolheu.</string>
     <string name="k2go_kolibri_fit_unknown">Alguns tamanhos não são publicados, pelo que o total pode ser maior. Pode continuar.</string>
     <string name="k2go_kolibri_takes_body">Os cursos podem ser muito grandes e demorar muito a transferir, sobretudo numa ligação lenta. A transferência começa depois de o seu sistema estar instalado, continua em segundo plano e retoma se for interrompida.</string>
+    <string name="k2go_kolibri_none_in_lang">Ainda não há cursos em %1$s · Alterar idioma</string>
 </resources>

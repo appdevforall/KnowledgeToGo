@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">Kurslarınız əlavə olunur</string>
     <string name="k2go_kolibri_unavailable">Tətbiqlə gələn kurs kataloqu oxunmadı.</string>
     <string name="k2go_kolibri_no_match">Axtarışınıza uyğun kurs yoxdur.</string>
-    <string name="k2go_kolibri_lang_all">Bütün dillər</string>
-    <string name="k2go_kolibri_lang_pick">Dilə görə süz</string>
     <string name="k2go_kolibri_size_unknown">Ölçü bilinmir</string>
     <string name="k2go_kolibri_confirm_sub">Seçdiyiniz kurslar.</string>
     <string name="k2go_kolibri_fit_unknown">Bəzi ölçülər dərc olunmayıb, ona görə cəmi daha böyük ola bilər. Davam edə bilərsiniz.</string>
     <string name="k2go_kolibri_takes_body">Kurslar çox böyük ola bilər və yüklənməsi uzun sürə bilər, xüsusən yavaş bağlantıda. Yükləmə sisteminiz quraşdırıldıqdan sonra başlayır, arxa fonda davam edir və kəsilsə bərpa olunur.</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s dilində hələ kurs yoxdur · Dili dəyişin</string>
 </resources>

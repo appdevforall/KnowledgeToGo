@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">در حال افزودن دوره‌های شما</string>
     <string name="k2go_kolibri_unavailable">خواندن فهرست دوره‌های همراه برنامه ممکن نشد.</string>
     <string name="k2go_kolibri_no_match">هیچ دوره‌ای با جست‌وجوی شما مطابقت ندارد.</string>
-    <string name="k2go_kolibri_lang_all">همه زبان‌ها</string>
-    <string name="k2go_kolibri_lang_pick">پالایش بر پایه زبان</string>
     <string name="k2go_kolibri_size_unknown">اندازه نامعلوم</string>
     <string name="k2go_kolibri_confirm_sub">دوره‌هایی که انتخاب کردید.</string>
     <string name="k2go_kolibri_fit_unknown">برخی اندازه‌ها منتشر نشده‌اند، پس مجموع می‌تواند بیشتر باشد. می‌توانید ادامه دهید.</string>
     <string name="k2go_kolibri_takes_body">دوره‌ها می‌توانند بسیار بزرگ باشند و دانلودشان طول بکشد، خصوصاً با اتصال کند. دانلود پس از نصب سیستم آغاز می‌شود، در پس‌زمینه ادامه می‌یابد و در صورت قطع شدن از سر گرفته می‌شود.</string>
+    <string name="k2go_kolibri_none_in_lang">هنوز دوره‌ای به زبان %1$s وجود ندارد · تغییر زبان</string>
 </resources>

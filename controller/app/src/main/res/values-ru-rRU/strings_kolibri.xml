@@ -10,10 +10,9 @@
     <string name="k2go_kolibri_seeding_title">Добавление ваших курсов</string>
     <string name="k2go_kolibri_unavailable">Не удалось прочитать каталог курсов, входящий в приложение.</string>
     <string name="k2go_kolibri_no_match">Нет курсов, соответствующих вашему запросу.</string>
-    <string name="k2go_kolibri_lang_all">Все языки</string>
-    <string name="k2go_kolibri_lang_pick">Фильтр по языку</string>
     <string name="k2go_kolibri_size_unknown">Размер неизвестен</string>
     <string name="k2go_kolibri_confirm_sub">Выбранные вами курсы.</string>
     <string name="k2go_kolibri_fit_unknown">Некоторые размеры не опубликованы, поэтому итог может быть больше. Можно продолжить.</string>
     <string name="k2go_kolibri_takes_body">Курсы могут быть очень большими, и их загрузка может занять много времени, особенно при медленном соединении. Загрузка начнётся после установки системы, продолжится в фоне и возобновится при обрыве.</string>
+    <string name="k2go_kolibri_none_in_lang">Курсов на %1$s пока нет · Изменить язык</string>
 </resources>

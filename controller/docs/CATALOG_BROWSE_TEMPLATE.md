@@ -33,6 +33,14 @@ counts, and its own `*Groups` map — do not redesign the screen.
   button** (that is the button-in-button we removed). Same control in the index and in the detail.
 - **No redundant language pill.** The language lives only in the selector. Do not repeat it next to the
   title.
+- **One content language for the whole wizard, inherited — never "all languages".** The selector opens
+  on the language the wizard already settled on (`SetupLibraryActivity.getContentLang()`, backed by the
+  `selected_lang_minimal` preference the install path reads), so the list arrives already narrowed to
+  what the user reads. Changing it here changes it for every catalog; the pinned reset row is
+  `Follow system language`, not an "all languages" catch-all — "all" is not a language, and a mixed-
+  language list is the thing the selector exists to prevent. A content type whose catalog is empty in
+  the current language says so on one tappable line that opens the picker; it does not fall back to
+  showing everything.
 - **Storage = one line + thin bar**: `used · free · selection N`. Context, not a hero.
 
 ### Category index — show less, then search / see-all
@@ -70,6 +78,19 @@ counts, and its own `*Groups` map — do not redesign the screen.
 - **Sort vs. group is one axis at a time** (mutually exclusive toggles): `By size` / `A–Z` are **flat**
   (one item per row, no collapse); `Grouped` is **by subject** (language-dependent) and is the only place
   variant-collapse lives (editions/sizes as chips).
+- **The sort toggles belong to this screen, and only to this screen.** They are part of the item list
+  because this is where rows carry a size and a checkbox; the category index has neither and must not
+  grow them (it orders itself by count and groups by theme). Within the item list they are **required**,
+  not a nicety: this is the screen the user has to read row by row. `Grouped` is the one toggle that
+  drops out when there is nothing to collapse — ZIM hides it outside Wikipedia, Kolibri never shows it,
+  because a channel has no editions. Tapping the active toggle reverses it (`▲`/`▼`, `A–Z` ⇄ `Z–A`);
+  tapping the other switches axis and starts at its natural direction. Items whose size is unpublished
+  sort **last** in both size directions — they have no position on that axis, and first would read as
+  "smallest".
+- **A content type with no category index lands straight here**, so this screen must be complete on its
+  own: selector, search, chip row, sorts, count, storage and the fixed action. What it must *not* do is
+  borrow the index's furniture — storage stays at the **bottom** in the item list (it is at the top in the
+  index), and the theme chips stay a filter rather than becoming a hierarchy.
 - **Storage guard**: disable/grey items that don't fit and say why (`Not enough space — needs X, Y free`).
 - **Count = list metadata, on its own line.** Right-aligned above the list, **not** at the end of the
   scrollable chip row (it would wrap in es/de — see `k2go-count-overflow-v1`). Live: `N items` →
