@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Onderwerpen kiezen</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d onderwerpen gekozen</string>
     <string name="k2go_kolibri_whole_course">Hele cursus</string>
+    <string name="k2go_kolibri_live_not_yet">Voorlopig alleen bekijken. Cursussen hiervandaan toevoegen komt in de volgende update; nu worden ze gekozen tijdens het instellen van je systeem.</string>
 </resources>

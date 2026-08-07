@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Choisir des thèmes</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d thèmes sélectionnés</string>
     <string name="k2go_kolibri_whole_course">Cours entier</string>
+    <string name="k2go_kolibri_live_not_yet">Consultation seulement pour l’instant. L’ajout de cours depuis cet écran arrivera dans la prochaine mise à jour ; pour le moment ils se choisissent pendant l’installation.</string>
 </resources>

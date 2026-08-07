@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">தலைப்புகளைத் தேர்வுசெய்</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d தலைப்புகள் தேர்ந்தெடுக்கப்பட்டன</string>
     <string name="k2go_kolibri_whole_course">முழுப் பாடநெறி</string>
+    <string name="k2go_kolibri_live_not_yet">தற்போது பார்ப்பதற்கு மட்டும். இங்கிருந்து பாடநெறிகளைச் சேர்ப்பது அடுத்த புதுப்பிப்பில் வரும்; தற்சமயம் அவை கணினி அமைக்கப்படும்போது தேர்வு செய்யப்படுகின்றன.</string>
 </resources>

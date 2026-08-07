@@ -76,6 +76,12 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     // banks the picks to BooksWishlist instead of starting a live download.
     private boolean booksWizard = false;
 
+    // ADFA-4954: true while the Courses flow runs inside the wizard (pre-install). The Confirm step
+    // then banks the order to KolibriWishlist, which KolibriProvisioner drains after the install.
+    // False means the Get More door: browsing works, but nothing is queued from there yet, because
+    // the drain is only triggered from SetupProgressActivity.
+    private boolean kolibriWizard = false;
+
     // ADFA-4910: the Books selection handed from the landing to the Confirm screen:
     // gutenberg_id -> {title, author, download_url}.
     private final java.util.LinkedHashMap<String, String[]> booksCart = new java.util.LinkedHashMap<>();
@@ -206,10 +212,15 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         zimWizard = false;   // live (post-install) path; the ZIM terminal downloads, not wishlists
         mapsWizard = false;  // ADFA-4900: live (post-install) path; Maps installs, not wishlists
         booksWizard = false; // ADFA-4910: live (post-install) path; Books download, not wishlists
+        kolibriWizard = false; // ADFA-4954: live (post-install) path; browse only for now
         androidx.fragment.app.Fragment f;
         if ("maps".equals(key)) f = new MapsLandingFragment();
         else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
         else if ("books".equals(key)) f = new BooksLandingFragment();     // ADFA-4850: Books / Gutenberg
+        // ADFA-4954: Courses. The same picker the wizard uses — the bundled catalog and Studio's
+        // tree need no server, so it works identically here. Only the forward action differs.
+        else if ("courses".equals(key))
+            f = new org.iiab.controller.kolibri.presentation.KolibriBrowseFragment();
         else f = PlaceholderFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, f)
@@ -309,8 +320,12 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
+    /** True while the Courses picker is running pre-install, so Confirm banks instead of downloads. */
+    public boolean isKolibriWizard() { return kolibriWizard; }
+
     /** ADFA-4954: the Courses picker (browse -> confirm), wizard door. */
     public void openKolibriWizard() {
+        kolibriWizard = true;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host,
                         new org.iiab.controller.kolibri.presentation.KolibriBrowseFragment())

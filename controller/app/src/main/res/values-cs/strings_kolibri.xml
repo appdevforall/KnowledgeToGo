@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Vybrat témata</string>
     <string name="k2go_kolibri_narrowed_fmt">Vybráno %1$d témat</string>
     <string name="k2go_kolibri_whole_course">Celý kurz</string>
+    <string name="k2go_kolibri_live_not_yet">Zatím jen prohlížení. Přidávání kurzů odsud přijde v další aktualizaci; nyní se vybírají při nastavování systému.</string>
 </resources>

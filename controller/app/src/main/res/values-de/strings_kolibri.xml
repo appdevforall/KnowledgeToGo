@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Themen wählen</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d Themen ausgewählt</string>
     <string name="k2go_kolibri_whole_course">Ganzer Kurs</string>
+    <string name="k2go_kolibri_live_not_yet">Vorerst nur zum Ansehen. Kurse von hier hinzuzufügen kommt im nächsten Update; derzeit werden sie beim Einrichten des Systems gewählt.</string>
 </resources>

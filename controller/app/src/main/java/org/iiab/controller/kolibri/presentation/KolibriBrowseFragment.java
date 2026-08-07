@@ -111,8 +111,12 @@ public final class KolibriBrowseFragment extends Fragment {
         list = v.findViewById(R.id.k2go_kbrowse_list);
         review = v.findViewById(R.id.k2go_kbrowse_review);
 
+        // Same screen, two doors: the wizard step goes Back, the Get More door names
+        // where it returns to, exactly as the ZIM and Books landings do.
         TextView back = v.findViewById(R.id.k2go_kbrowse_back);
-        back.setText(R.string.k2go_back);
+        back.setText(isWizard()
+                ? getString(R.string.k2go_back)
+                : "‹ " + getString(R.string.k2go_gm_hub_title));
         back.setOnClickListener(x -> back());
 
         // The whole box opens the picker — not an inner "Change" button.
@@ -378,6 +382,13 @@ public final class KolibriBrowseFragment extends Fragment {
             });
         }
         return content;
+    }
+
+    /** Pre-install (wizard) versus the Get More door. Only the wording and the
+     *  forward action differ; the catalog and the tree behave the same either way. */
+    private boolean isWizard() {
+        return !(getActivity() instanceof SetupLibraryActivity)
+                || ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     /**

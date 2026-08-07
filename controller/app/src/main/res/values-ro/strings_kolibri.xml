@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Alege teme</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d teme selectate</string>
     <string name="k2go_kolibri_whole_course">Cursul întreg</string>
+    <string name="k2go_kolibri_live_not_yet">Deocamdată doar pentru explorare. Adăugarea cursurilor de aici vine în următoarea actualizare; acum se aleg în timpul configurării sistemului.</string>
 </resources>

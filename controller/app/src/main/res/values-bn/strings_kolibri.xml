@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">বিষয় বেছে নিন</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$dটি বিষয় নির্বাচিত</string>
     <string name="k2go_kolibri_whole_course">সম্পূর্ণ কোর্স</string>
+    <string name="k2go_kolibri_live_not_yet">এখন শুধু ব্রাউজ করা যাবে। এখান থেকে কোর্স যোগ করার সুবিধা পরের আপডেটে আসবে; আপাতত সিস্টেম সেটআপের সময় সেগুলো বেছে নেওয়া হয়।</string>
 </resources>

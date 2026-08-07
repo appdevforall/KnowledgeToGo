@@ -137,6 +137,23 @@ public final class KolibriConfirmFragment extends Fragment {
         confirm.setText(getString(R.string.k2go_zim_add_setup_fmt,
                 ByteFormatter.toHuman(plan.estimatedBytes())));
         confirm.setOnClickListener(x -> bankAndReturn(chosen));
+
+        if (!isWizard()) {
+            // Get More door: browsing and picking work, but there is nothing to hand
+            // the order to yet. Banking it would look like the button did nothing —
+            // KolibriProvisioner.drain() is only called from SetupProgressActivity,
+            // so a wishlist written here would sit until some later install. Refuse
+            // visibly instead, and say why.
+            confirm.setEnabled(false);
+            fits.setText(R.string.k2go_kolibri_live_not_yet);
+            paint(R.color.k2go_muted, R.drawable.k2go_card_bg);
+        }
+    }
+
+    /** Pre-install (wizard) versus the Get More door; only the forward action differs. */
+    private boolean isWizard() {
+        return !(getActivity() instanceof SetupLibraryActivity)
+                || ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     /** The scope line under a course: whole thing, or how many topics were picked. */

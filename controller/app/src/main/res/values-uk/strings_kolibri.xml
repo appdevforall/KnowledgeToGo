@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Вибрати теми</string>
     <string name="k2go_kolibri_narrowed_fmt">Вибрано тем: %1$d</string>
     <string name="k2go_kolibri_whole_course">Увесь курс</string>
+    <string name="k2go_kolibri_live_not_yet">Поки що лише перегляд. Додавання курсів звідси з’явиться в наступному оновленні; зараз їх обирають під час налаштування системи.</string>
 </resources>

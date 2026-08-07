@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">选择主题</string>
     <string name="k2go_kolibri_narrowed_fmt">已选择 %1$d 个主题</string>
     <string name="k2go_kolibri_whole_course">整个课程</string>
+    <string name="k2go_kolibri_live_not_yet">目前仅供浏览。从这里添加课程将在下次更新中支持；现阶段课程在系统安装时选择。</string>
 </resources>
