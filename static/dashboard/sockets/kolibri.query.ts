@@ -230,6 +230,21 @@ export interface SelectionSize {
 }
 
 /**
+ * The request was well formed but the channel is not on the device yet.
+ *
+ * A distinct type so the route can answer 409 rather than 500: the caller asked
+ * for something that needs a precondition it has not met, which is not the
+ * server breaking. Without this the readable message still arrived wrapped in an
+ * "internal error", which is as misleading as the bare 500 it replaced.
+ */
+export class ChannelNotInstalledError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'ChannelNotInstalledError';
+    }
+}
+
+/**
  * What a selection still has to transfer, plus the free space.
  *
  * Two things about this endpoint that a device test made plain, and that its
@@ -253,7 +268,7 @@ export async function estimateSelection(
     channelId: string, nodeIds?: string[], excludeNodeIds?: string[],
 ): Promise<SelectionSize> {
     if (!isChannelInstalled(channelId)) {
-        throw new Error(
+        throw new ChannelNotInstalledError(
             `channel ${channelId} is not on the device: its remaining size can only be `
             + 'measured once its metadata has been imported');
     }
