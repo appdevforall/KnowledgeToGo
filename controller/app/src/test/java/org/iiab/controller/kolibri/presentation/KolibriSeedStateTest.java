@@ -120,15 +120,31 @@ public class KolibriSeedStateTest {
 
     @Test
     public void isCompleteNeedsEveryItemTerminalAndNothingInFlight() {
-        KolibriSeedState s = three().finishItem(0, true).finishItem(1, true);
-        assertFalse(s.isComplete());
+        // Each item is started before it is finished, which is what the service
+        // does: startingItem is the only thing that marks the session running, so
+        // a state built by finishing items that were never started would never
+        // have been running and would go complete a step early.
+        KolibriSeedState s = three()
+                .startingItem(0).finishItem(0, true)
+                .startingItem(1).finishItem(1, true);
+        assertFalse("one item is still pending", s.isComplete());
 
-        s = s.finishItem(2, false);
-        assertFalse("still marked running", s.isComplete());
+        s = s.startingItem(2).finishItem(2, false);
+        assertFalse("every item is terminal, but the loop has not stopped", s.isComplete());
 
         s = s.stopped();
         assertTrue(s.isComplete());
         assertEquals(1, s.failedCount());
+    }
+
+    @Test
+    public void aSessionThatNeverStartedIsNotHeldOpen() {
+        // The mirror of the case above. Nothing ever ran, so there is no loop to
+        // wait for and every item being terminal is the whole story.
+        KolibriSeedState s = three()
+                .finishItem(0, true).finishItem(1, true).finishItem(2, true);
+        assertFalse(s.isRunning());
+        assertTrue(s.isComplete());
     }
 
     @Test
