@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">REST कोर फिर से बनाएँ?</string>
     <string name="k2go_dash_rebuild_confirm_msg">dash-node को नवीनतम संस्करण में अपडेट करता है. फिर से बनाने के दौरान सर्वर थोड़ी देर के लिए अनुपलब्ध रहता है; समाप्त होने तक यह स्क्रीन न छोड़ें.</string>
     <string name="k2go_dash_needs_internet">फिर से बनाने के लिए इंटरनेट कनेक्शन आवश्यक है.</string>
+    <string name="k2go_dash_live_title">डैशबोर्ड अपडेट हो रहा है</string>
+    <string name="k2go_dash_live_running">यहीं अपडेट हो रहा है… डैशबोर्ड थोड़ी देर के लिए पुनः शुरू होगा।</string>
+    <string name="k2go_dash_live_done">डैशबोर्ड अपडेट हो गया।</string>
+    <string name="k2go_dash_live_error">अपडेट विफल — पिछला संस्करण रखा गया।</string>
+    <string name="k2go_dash_live_timeout">यह सामान्य से अधिक समय ले रहा है। यह पृष्ठभूमि में पूरा होगा — थोड़ी देर में संस्करण जांचें।</string>
+    <string name="k2go_dash_live_start_failed">अपडेट शुरू नहीं हो सका। फिर से प्रयास करें।</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">सिस्टम कोर · हमेशा स्थापित</string>
     <string name="k2go_dash_detail_desc">डैशबोर्ड बॉक्स का REST API कोर है (dash-node): 127.0.0.1:4000 पर एक छोटी Node सेवा, जिसे nginx परोसता है और pdsm देखरेख करता है. यह ऐप में हर लाइब्रेरी क्रिया को सक्षम करता है: किताबें ब्राउज़ और डाउनलोड करना, Wikipedia और ZIM सामग्री जोड़ना और हटाना, Kolibri सत्र, मानचित्र और सिस्टम स्थिति. सामग्री मॉड्यूल के विपरीत, इसे स्थापित या हटाया नहीं जाता — यह बॉक्स के साथ आता है और हमेशा मौजूद रहता है. जब कोई नया संस्करण उपलब्ध हो, आप इसे यथास्थान फिर से बना सकते हैं.</string>

@@ -27,6 +27,21 @@ import java.io.FileReader;
 public final class DashboardVersion {
     private DashboardVersion() {}
 
+    /** ADFA-5051: true when {@code version} (x.y.z, any suffix ignored) is >= major.minor.patch.
+     *  A null/unparseable version returns false, so callers default to the safe (proot) path. */
+    public static boolean atLeast(@Nullable String version, int major, int minor, int patch) {
+        if (version == null) return false;
+        String core = version.split("[-+]", 2)[0];   // drop any "-beta"/"+build" suffix
+        String[] p = core.split("\\.");
+        int[] want = {major, minor, patch};
+        for (int i = 0; i < 3; i++) {
+            int have = 0;
+            if (i < p.length) { try { have = Integer.parseInt(p[i].trim()); } catch (NumberFormatException e) { have = 0; } }
+            if (have != want[i]) return have > want[i];
+        }
+        return true;   // exactly equal
+    }
+
     /** Installed dash-node version from the rootfs package.json, or null if not found/parseable. */
     @Nullable
     public static String installed(@NonNull Context ctx) {

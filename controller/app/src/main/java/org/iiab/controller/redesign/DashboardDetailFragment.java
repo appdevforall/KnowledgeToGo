@@ -37,6 +37,7 @@ public class DashboardDetailFragment extends Fragment {
     private final Handler main = new Handler(Looper.getMainLooper());
     private ViewGroup chips;   // FlowLayout in XML — typed as ViewGroup so it wraps chips to 2 lines
     private TextView statusChip;   // ADFA-5026: live "Up to date / Update available" pill (restyled in place)
+    private TextView versionChip;  // ADFA-5051: "v<version>" chip, updated in place after a live update
     private Button rebuild;        // de-emphasized when already on the latest
     private TextView rebuildHint;  // "no rebuild needed" note, shown only when on the latest
 
@@ -72,7 +73,7 @@ public class DashboardDetailFragment extends Fragment {
         // "Rebuild"; hide the secondary "Install now".
         rebuild = root.findViewById(R.id.k2go_moddet_schedule);
         rebuild.setText(R.string.k2go_dash_rebuild);
-        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root, this::refreshAfterLiveUpdate));
         root.findViewById(R.id.k2go_moddet_install_now).setVisibility(View.GONE);
         rebuildHint = buildRebuildHint(rebuild);   // ADFA-5026: "no rebuild needed" note (hidden until on-latest)
 
@@ -138,17 +139,29 @@ public class DashboardDetailFragment extends Fragment {
     }
 
     /** Read the installed version from the rootfs package.json on disk (authoritative, always present;
-     *  no network/proot) and, if found, prepend a "v<version>" chip. */
+     *  no network/proot) and show a "v<version>" chip. ADFA-5051: reuses the same chip on refresh so a
+     *  live update updates it in place instead of prepending a duplicate. */
     private void fetchVersionChip() {
         final Context ctx = requireContext().getApplicationContext();
         AppExecutors.get().io().execute(() -> {
             final String ver = DashboardVersion.installed(ctx);
             main.post(() -> {
-                if (isAdded() && chips != null && ver != null) {
-                    chips.addView(chip("v" + ver, R.color.k2go_teal), 0);
+                if (!isAdded() || chips == null || ver == null) return;
+                if (versionChip == null) {
+                    versionChip = chip("v" + ver, R.color.k2go_teal);
+                    chips.addView(versionChip, 0);
+                } else {
+                    styleChip(versionChip, "v" + ver, R.color.k2go_teal);
                 }
             });
         });
+    }
+
+    /** ADFA-5051: after a successful live (REST) update, refresh the version chip + update pill in
+     *  place so the card reflects the new version immediately (no need to leave and re-open). */
+    private void refreshAfterLiveUpdate() {
+        fetchVersionChip();
+        fetchUpdateStatus();
     }
 
     /** Small outlined pill for the meta-chip row (matches ModuleDetailFragment). */

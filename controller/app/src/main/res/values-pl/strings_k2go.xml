@@ -690,6 +690,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Przebudować rdzeń REST?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Aktualizuje dash-node do najnowszej wersji. Serwer jest przez chwilę niedostępny podczas przebudowy; nie opuszczaj tego ekranu, dopóki się nie zakończy.</string>
     <string name="k2go_dash_needs_internet">Przebudowa wymaga połączenia z internetem.</string>
+    <string name="k2go_dash_live_title">Aktualizowanie panelu</string>
+    <string name="k2go_dash_live_running">Aktualizacja w miejscu… panel na chwilę się zrestartuje.</string>
+    <string name="k2go_dash_live_done">Panel zaktualizowany.</string>
+    <string name="k2go_dash_live_error">Aktualizacja nie powiodła się — zachowano poprzednią wersję.</string>
+    <string name="k2go_dash_live_timeout">To trwa dłużej niż zwykle. Zakończy się w tle — sprawdź wersję za chwilę.</string>
+    <string name="k2go_dash_live_start_failed">Nie można rozpocząć aktualizacji. Spróbuj ponownie.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rdzeń systemu · zawsze zainstalowany</string>
     <string name="k2go_dash_detail_desc">Pulpit to rdzeń interfejsu REST API urządzenia (dash-node) — mała usługa Node pod adresem 127.0.0.1:4000, obsługiwana przez nginx i nadzorowana przez pdsm. Napędza każdą akcję biblioteki w aplikacji: przeglądanie i pobieranie Książek, dodawanie i usuwanie treści Wikipedii oraz ZIM, sesje Kolibri, Mapy i stan systemu. W przeciwieństwie do modułów treści nie instaluje się go ani nie usuwa — jest dostarczany z urządzeniem i zawsze obecny. Gdy dostępna jest nowsza wersja, możesz przebudować go w miejscu.</string>

@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Xây dựng lại lõi REST?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Cập nhật dash-node lên phiên bản mới nhất. Máy chủ tạm thời không khả dụng trong khi xây dựng lại; đừng rời màn hình này cho đến khi hoàn tất.</string>
     <string name="k2go_dash_needs_internet">Việc xây dựng lại cần kết nối internet.</string>
+    <string name="k2go_dash_live_title">Đang cập nhật bảng điều khiển</string>
+    <string name="k2go_dash_live_running">Đang cập nhật tại chỗ… bảng điều khiển khởi động lại trong giây lát.</string>
+    <string name="k2go_dash_live_done">Đã cập nhật bảng điều khiển.</string>
+    <string name="k2go_dash_live_error">Cập nhật thất bại — phiên bản trước đã được giữ lại.</string>
+    <string name="k2go_dash_live_timeout">Việc này lâu hơn bình thường. Nó sẽ hoàn tất ở chế độ nền — kiểm tra phiên bản trong giây lát.</string>
+    <string name="k2go_dash_live_start_failed">Không thể bắt đầu cập nhật. Hãy thử lại.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Lõi hệ thống · luôn được cài đặt</string>
     <string name="k2go_dash_detail_desc">Bảng điều khiển là lõi REST API của hộp (dash-node): một dịch vụ Node nhỏ tại 127.0.0.1:4000, do nginx phục vụ và pdsm giám sát. Nó cung cấp mọi thao tác thư viện trong ứng dụng: duyệt và tải Sách, thêm và xóa nội dung Wikipedia và ZIM, phiên Kolibri, Bản đồ và trạng thái hệ thống. Khác với các mô-đun nội dung, nó không được cài đặt hay gỡ bỏ — nó đi kèm với hộp và luôn hiện diện. Khi có bản mới hơn, bạn có thể xây dựng lại nó tại chỗ.</string>

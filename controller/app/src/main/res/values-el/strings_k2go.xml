@@ -681,6 +681,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Ανασυγκρότηση του πυρήνα REST;</string>
     <string name="k2go_dash_rebuild_confirm_msg">Ενημερώνει το dash-node στην πιο πρόσφατη έκδοση. Ο διακομιστής είναι για λίγο μη διαθέσιμος κατά την ανασυγκρότηση· μην φύγετε από αυτήν την οθόνη μέχρι να ολοκληρωθεί.</string>
     <string name="k2go_dash_needs_internet">Η ανασυγκρότηση χρειάζεται σύνδεση στο διαδίκτυο.</string>
+    <string name="k2go_dash_live_title">Ενημέρωση πίνακα</string>
+    <string name="k2go_dash_live_running">Ενημέρωση επιτόπου… ο πίνακας επανεκκινείται για λίγο.</string>
+    <string name="k2go_dash_live_done">Ο πίνακας ενημερώθηκε.</string>
+    <string name="k2go_dash_live_error">Η ενημέρωση απέτυχε — διατηρήθηκε η προηγούμενη έκδοση.</string>
+    <string name="k2go_dash_live_timeout">Αυτό διαρκεί περισσότερο από το συνηθισμένο. Θα ολοκληρωθεί στο παρασκήνιο — ελέγξτε την έκδοση σε λίγο.</string>
+    <string name="k2go_dash_live_start_failed">Δεν ήταν δυνατή η έναρξη της ενημέρωσης. Δοκιμάστε ξανά.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Πυρήνας συστήματος · πάντα εγκατεστημένος</string>
     <string name="k2go_dash_detail_desc">Ο πίνακας είναι ο πυρήνας REST API της συσκευής (dash-node): μια μικρή υπηρεσία Node στο 127.0.0.1:4000, που εξυπηρετείται από το nginx και επιβλέπεται από το pdsm. Τροφοδοτεί κάθε ενέργεια της βιβλιοθήκης στην εφαρμογή: περιήγηση και λήψη Βιβλίων, προσθήκη και διαγραφή περιεχομένου Wikipedia και ZIM, συνεδρίες Kolibri, Χάρτες και κατάσταση συστήματος. Σε αντίθεση με τις μονάδες περιεχομένου, δεν εγκαθίσταται ούτε αφαιρείται — συνοδεύει τη συσκευή και είναι πάντα παρών. Όταν υπάρχει νεότερη έκδοση, μπορείτε να τον ανασυγκροτήσετε επιτόπου.</string>

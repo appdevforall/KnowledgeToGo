@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">重建 REST 核心？</string>
     <string name="k2go_dash_rebuild_confirm_msg">将 dash-node 更新到最新版本。重建期间服务器会短暂不可用；完成前请勿离开此界面。</string>
     <string name="k2go_dash_needs_internet">重建需要互联网连接。</string>
+    <string name="k2go_dash_live_title">正在更新仪表板</string>
+    <string name="k2go_dash_live_running">正在原地更新… 仪表板会短暂重启。</string>
+    <string name="k2go_dash_live_done">仪表板已更新。</string>
+    <string name="k2go_dash_live_error">更新失败 — 已保留先前版本。</string>
+    <string name="k2go_dash_live_timeout">这比平常花的时间更长。它会在后台完成 — 稍后查看版本。</string>
+    <string name="k2go_dash_live_start_failed">无法开始更新。请重试。</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">系统核心 · 始终已安装</string>
     <string name="k2go_dash_detail_desc">仪表板是设备的 REST API 核心（dash-node）：运行在 127.0.0.1:4000 上的小型 Node 服务，由 nginx 提供并由 pdsm 监管。它驱动应用内的每一项库操作：浏览和下载图书、添加和删除 Wikipedia 和 ZIM 内容、Kolibri 会话、地图以及系统状态。与内容模块不同，它无法安装或删除——它随设备提供且始终存在。有更新版本时，你可以就地重建它。</string>

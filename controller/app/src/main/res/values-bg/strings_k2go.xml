@@ -680,6 +680,12 @@
     <string name="k2go_dash_rebuild_confirm_title">Да се пресъздаде ли REST ядрото?</string>
     <string name="k2go_dash_rebuild_confirm_msg">Актуализира dash-node до най-новата версия. Сървърът е за кратко недостъпен по време на пресъздаването; не напускайте този екран, докато не приключи.</string>
     <string name="k2go_dash_needs_internet">Пресъздаването изисква интернет връзка.</string>
+    <string name="k2go_dash_live_title">Обновяване на таблото</string>
+    <string name="k2go_dash_live_running">Обновяване на място… таблото се рестартира за кратко.</string>
+    <string name="k2go_dash_live_done">Таблото е обновено.</string>
+    <string name="k2go_dash_live_error">Обновяването е неуспешно — предишната версия е запазена.</string>
+    <string name="k2go_dash_live_timeout">Това отнема повече от обичайното. Ще завърши на заден план — проверете версията след малко.</string>
+    <string name="k2go_dash_live_start_failed">Обновяването не можа да започне. Опитайте отново.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системно ядро · винаги инсталирано</string>
     <string name="k2go_dash_detail_desc">Таблото е REST API ядрото на устройството (dash-node): малка Node услуга на 127.0.0.1:4000, обслужвана от nginx и наблюдавана от pdsm. То захранва всяко действие на библиотеката в приложението: разглеждане и изтегляне на Книги, добавяне и изтриване на съдържание от Wikipedia и ZIM, сесии на Kolibri, Карти и състояние на системата. За разлика от модулите за съдържание, то не се инсталира и не се премахва — идва с устройството и винаги присъства. Когато има по-нова версия, можете да го пресъздадете на място.</string>
