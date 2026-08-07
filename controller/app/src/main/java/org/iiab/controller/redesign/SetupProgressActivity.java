@@ -158,6 +158,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // re-renders the index. The REST streams have service listeners; the proot stage had none,
         // so a proot-only install could finish without the index ever updating to Finish/redirect.
         ModuleQueueRepository.get().state().observe(this, st -> render());
+        // ADFA-4954: the Kolibri stream publishes state instead of pinging a listener,
+        // so the index observes it here. Without this the row only refreshed while the
+        // readiness poll happened to be ticking, and froze the moment it stopped.
+        KolibriSeedRepository.get().state().observe(this, st -> render());
 
         // ADFA-5011: observe the rebuild pipeline so its running→terminal transitions re-render (and,
         // on SUCCESS, trigger the redirect). Guarded so it only acts while this is a rebuild session.

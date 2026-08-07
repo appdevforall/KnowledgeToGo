@@ -47,23 +47,56 @@ public final class KolibriSeedState {
         private final String channelId;
         private final String label;
         private final long bytes;
+        private final List<String> nodeIds;
         private final Status status;
         private final int percent;
 
-        Item(String channelId, String label, long bytes, Status status, int percent) {
+        Item(String channelId, String label, long bytes, List<String> nodeIds,
+             Status status, int percent) {
             this.channelId = channelId;
             this.label = label == null ? "" : label;
             this.bytes = Math.max(0L, bytes);
+            this.nodeIds = nodeIds == null
+                    ? Collections.<String>emptyList()
+                    : Collections.unmodifiableList(new ArrayList<>(nodeIds));
             this.status = status == null ? Status.PENDING : status;
             this.percent = percent;
         }
 
+        /** The whole channel. */
         public static Item pending(String channelId, String label, long bytes) {
-            return new Item(channelId, label, bytes, Status.PENDING, 0);
+            return pending(channelId, label, bytes, null);
+        }
+
+        /**
+         * @param nodeIds subtree roots to import, or null/empty for the whole channel
+         */
+        public static Item pending(String channelId, String label, long bytes,
+                                   List<String> nodeIds) {
+            return new Item(channelId, label, bytes, nodeIds, Status.PENDING, 0);
         }
 
         public String channelId() {
             return channelId;
+        }
+
+        /**
+         * Subtree roots to import; empty means the whole channel.
+         *
+         * <p>Carried on the item rather than held by the service on purpose. The
+         * service stops itself when the queue drains, so a Retry starts a fresh
+         * instance — anything kept in a service field is gone by then, and the
+         * selection would silently widen to the whole channel. On a 62 GB channel
+         * that is tens of gigabytes nobody asked for, with nothing failing to
+         * signal it.
+         */
+        public List<String> nodeIds() {
+            return nodeIds;
+        }
+
+        /** True when the whole channel was queued rather than selected subtrees. */
+        public boolean isWholeChannel() {
+            return nodeIds.isEmpty();
         }
 
         /** What the checklist row shows. Never null. */
@@ -90,7 +123,7 @@ public final class KolibriSeedState {
         }
 
         Item with(Status s, int pct) {
-            return new Item(channelId, label, bytes, s, pct);
+            return new Item(channelId, label, bytes, nodeIds, s, pct);
         }
     }
 

@@ -7,8 +7,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -212,6 +214,48 @@ public class KolibriSeedStateTest {
         try {
             before.items().add(item(KHAN, "x", 1L));
             fail("expected the item list to be immutable");
+        } catch (UnsupportedOperationException expected) {
+            // as designed
+        }
+    }
+
+    @Test
+    public void theSubtreeSelectionSurvivesEveryStatusTransition() {
+        // The regression this guards: the selection used to live in a field of the
+        // service. The service stops itself when the queue drains, so a Retry ran
+        // in a fresh instance with that field empty and the import silently widened
+        // to the whole channel — tens of GB nobody asked for, with nothing failing.
+        List<String> nodes = Arrays.asList(
+                "23a7dc9c73635cd2abbd3e8aab13c3ca", "a3eac3983b085e1594eeb18d1f173260");
+        KolibriSeedState s = KolibriSeedState.of(Collections.singletonList(
+                KolibriSeedState.Item.pending(KHAN, "Khan Academy", 60L * GB, nodes)));
+
+        s = s.startingItem(0).progress(0, 40, 1024L).finishItem(0, false).stopped().retry(0);
+
+        KolibriSeedState.Item after = s.items().get(0);
+        assertEquals(KolibriSeedState.Status.PENDING, after.status());
+        assertEquals(nodes, after.nodeIds());
+        assertFalse(after.isWholeChannel());
+    }
+
+    @Test
+    public void noSelectionMeansTheWholeChannel() {
+        assertTrue(KolibriSeedState.Item.pending(KHAN, "x", 1L).isWholeChannel());
+        assertTrue(KolibriSeedState.Item.pending(KHAN, "x", 1L, null).isWholeChannel());
+        assertTrue(KolibriSeedState.Item.pending(KHAN, "x", 1L,
+                Collections.<String>emptyList()).isWholeChannel());
+    }
+
+    @Test
+    public void theSelectionIsCopiedAndCannotBeMutatedLater() {
+        List<String> caller = new ArrayList<>();
+        caller.add("23a7dc9c73635cd2abbd3e8aab13c3ca");
+        KolibriSeedState.Item i = KolibriSeedState.Item.pending(KHAN, "x", 1L, caller);
+        caller.add("a3eac3983b085e1594eeb18d1f173260");
+        assertEquals(1, i.nodeIds().size());
+        try {
+            i.nodeIds().add("f9d3e0e46ea25789bbed672ff6a399ed");
+            fail("expected the node id list to be immutable");
         } catch (UnsupportedOperationException expected) {
             // as designed
         }

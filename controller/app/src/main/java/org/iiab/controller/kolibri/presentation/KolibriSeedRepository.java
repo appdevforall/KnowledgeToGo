@@ -42,6 +42,23 @@ public final class KolibriSeedRepository {
 
     private final MutableLiveData<KolibriSeedState> state =
             new MutableLiveData<>(KolibriSeedState.idle());
+
+    /**
+     * The authoritative state, guarded by this object's monitor.
+     *
+     * <p>Not read back from the LiveData. {@code postValue} defers delivery to the
+     * main thread, so {@code getValue()} still returns the previous snapshot until
+     * that runnable executes. Since every transition here is derived from the
+     * current one — progress, finish, retry all build on what came before — two
+     * writes arriving before the main thread drains would both read the same stale
+     * base and the second would overwrite the first. A finish landing on the heels
+     * of a progress update would simply be lost.
+     *
+     * <p>{@code ModuleQueueRepository} publishes with {@code postValue} too, but
+     * its callers hand it complete states rather than deriving them, so it does not
+     * have this problem to solve.
+     */
+    private KolibriSeedState currentState = KolibriSeedState.idle();
     private long seq = 0L;
 
     private KolibriSeedRepository() {
@@ -53,9 +70,8 @@ public final class KolibriSeedRepository {
     }
 
     /** The current snapshot. Never null. */
-    public KolibriSeedState current() {
-        KolibriSeedState s = state.getValue();
-        return s != null ? s : KolibriSeedState.idle();
+    public synchronized KolibriSeedState current() {
+        return currentState;
     }
 
     public boolean isRunning() {
@@ -72,21 +88,37 @@ public final class KolibriSeedRepository {
 
     // ---- writes (service only) --------------------------------------------
 
+    /**
+     * Every mutation is read-transform-write inside one lock. Splitting it — the
+     * shape {@code post(current().finishItem(i))} — would let two callbacks read
+     * the same base state and have the second discard the first's transition.
+     */
+    private synchronized void mutate(Transition t) {
+        currentState = t.apply(currentState).withSeq(++seq);
+        // postValue, not setValue: the REST client's callbacks do not all arrive
+        // on the main thread. Observers see the same snapshot, just slightly later.
+        state.postValue(currentState);
+    }
+
+    private interface Transition {
+        KolibriSeedState apply(KolibriSeedState from);
+    }
+
     /** Replaces any previous session. */
     public void startSession(List<KolibriSeedState.Item> queued) {
-        post(KolibriSeedState.of(queued));
+        mutate(from -> KolibriSeedState.of(queued));
     }
 
     public void itemStarted(int index) {
-        post(current().startingItem(index));
+        mutate(from -> from.startingItem(index));
     }
 
     public void itemProgress(int index, int percent, long speedBytesPerSec) {
-        post(current().progress(index, percent, speedBytesPerSec));
+        mutate(from -> from.progress(index, percent, speedBytesPerSec));
     }
 
     public void itemFinished(int index, boolean ok) {
-        post(current().finishItem(index, ok));
+        mutate(from -> from.finishItem(index, ok));
     }
 
     /**
@@ -95,24 +127,16 @@ public final class KolibriSeedRepository {
      * pass.
      */
     public void retryItem(int index) {
-        post(current().retry(index));
+        mutate(from -> from.retry(index));
     }
 
     /** The loop stopped, whether finished or cancelled. */
     public void sessionStopped() {
-        post(current().stopped());
+        mutate(KolibriSeedState::stopped);
     }
 
     /** Clears the session so a new selection can start clean. */
     public void clearSession() {
-        post(KolibriSeedState.idle());
-    }
-
-    /**
-     * {@code postValue} rather than {@code setValue}: the writers are the REST
-     * client's callbacks, which do not all arrive on the main thread.
-     */
-    private synchronized void post(KolibriSeedState s) {
-        state.postValue(s.withSeq(++seq));
+        mutate(from -> KolibriSeedState.idle());
     }
 }

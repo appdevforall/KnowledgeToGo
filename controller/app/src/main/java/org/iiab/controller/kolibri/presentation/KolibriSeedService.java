@@ -75,7 +75,6 @@ public final class KolibriSeedService extends Service {
     private static final long RETRY_DELAY_MS = 4000L;
 
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final Map<String, List<String>> nodesByChannel = new HashMap<>();
 
     private KolibriRestClient client;
     private int attempts;
@@ -173,13 +172,15 @@ public final class KolibriSeedService extends Service {
         long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
         String[] nodes = intent.getStringArrayExtra(EXTRA_NODE_IDS);
 
-        nodesByChannel.clear();
         List<KolibriSeedState.Item> queued = new ArrayList<>();
         for (int i = 0; i < ids.length; i++) {
             String label = labels != null && i < labels.length ? labels[i] : ids[i];
             long size = bytes != null && i < bytes.length ? bytes[i] : 0L;
-            queued.add(KolibriSeedState.Item.pending(ids[i], label, size));
-            nodesByChannel.put(ids[i], splitCsv(nodes != null && i < nodes.length ? nodes[i] : null));
+            // The selection travels on the item, not in a field of this service:
+            // the service stops itself when the queue drains, so a Retry runs in a
+            // fresh instance and anything held here would be gone.
+            List<String> selected = splitCsv(nodes != null && i < nodes.length ? nodes[i] : null);
+            queued.add(KolibriSeedState.Item.pending(ids[i], label, size, selected));
         }
         repo.startSession(queued);
         return true;
@@ -283,11 +284,10 @@ public final class KolibriSeedService extends Service {
     // ---- helpers -----------------------------------------------------------
 
     private SeedPlan planFor(KolibriSeedState.Item item) {
-        List<String> nodes = nodesByChannel.get(item.channelId());
         try {
-            ChannelSelection sel = nodes == null || nodes.isEmpty()
+            ChannelSelection sel = item.isWholeChannel()
                     ? ChannelSelection.wholeChannel(item.channelId())
-                    : ChannelSelection.ofSubtrees(item.channelId(), nodes);
+                    : ChannelSelection.ofSubtrees(item.channelId(), item.nodeIds());
             Map<String, Long> sizes = new HashMap<>();
             sizes.put(sel.channelId(), item.bytes());
             return SeedPlan.of(Collections.singletonList(sel), sizes);
