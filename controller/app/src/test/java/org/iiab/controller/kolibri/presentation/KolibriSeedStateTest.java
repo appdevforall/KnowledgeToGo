@@ -105,6 +105,28 @@ public class KolibriSeedStateTest {
     }
 
     @Test
+    public void theBarAndTheCaptionReadFromTheSameNumbers() {
+        // They used to sum the queue separately and the caption omitted the
+        // in-flight fraction, so a 60 GB channel at the halfway mark showed a bar
+        // at 51% above a line reading "3 GB of 64 GB".
+        KolibriSeedState s = three().finishItem(1, true).startingItem(0).progress(0, 50, 0L);
+
+        assertEquals(64L * GB, s.totalBytes());
+        assertEquals(33L * GB, s.transferredBytes());
+        assertEquals(1, s.terminalCount());
+        // The caption's own percentage, derived from those two, must equal the bar's.
+        assertEquals(s.overallPercent(),
+                (int) (s.transferredBytes() * 100L / s.totalBytes()));
+    }
+
+    @Test
+    public void transferredBytesIgnoresAnIndeterminateItem() {
+        KolibriSeedState s = three().startingItem(0).progress(0, -1, 0L);
+        assertEquals(0L, s.transferredBytes());
+        assertEquals(64L * GB, s.totalBytes());
+    }
+
+    @Test
     public void withNoKnownSizesProgressFallsBackToCountingItems() {
         KolibriSeedState s = KolibriSeedState.of(Arrays.asList(
                 item(KHAN, "a", 0L), item(ASAF, "b", 0L)));
