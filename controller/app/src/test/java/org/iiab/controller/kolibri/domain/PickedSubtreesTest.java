@@ -62,20 +62,38 @@ public class PickedSubtreesTest {
 
     @Test
     public void pickingAnAncestorReplacesTheDescendantsItCovers() {
+        // Two SIBLINGS under Mathematics, not one nested in the other: picking a node
+        // inside an already-picked one is refused outright, so the only way to end up
+        // with several descendants of the same parent is to pick them side by side.
         PickedSubtrees p = PickedSubtrees.empty()
                 .add(FRACTIONS, Arrays.asList(MATH), 5 * MB, true)
-                .add(HALVES, Arrays.asList(MATH, FRACTIONS), 2 * MB, true)
+                .add(HALVES, Arrays.asList(MATH), 2 * MB, true)
                 .add(SCIENCE, Collections.<String>emptyList(), 7 * MB, true);
 
         assertEquals(3, p.size());
         assertEquals(14 * MB, p.totalBytes());
 
-        // Widening to the parent must drop both descendants, or the total counts
-        // them twice and the request contradicts itself.
+        // Widening to the parent must drop both siblings, or the total counts them
+        // twice and the request carries ids that contradict their own parent.
         PickedSubtrees widened = p.add(MATH, Collections.<String>emptyList(), 20 * MB, true);
 
         assertEquals(Arrays.asList(SCIENCE, MATH), widened.nodeIds());
         assertEquals(27 * MB, widened.totalBytes());
+    }
+
+    @Test
+    public void aSecondBranchUnderAPickedOneIsRefusedNotStacked() {
+        // The case that made the sibling test above necessary, stated on its own:
+        // Fractions is picked, so Halves — which lives inside it — adds nothing.
+        PickedSubtrees p = PickedSubtrees.empty()
+                .add(FRACTIONS, Arrays.asList(MATH), 5 * MB, true);
+
+        PickedSubtrees after = p.add(HALVES, Arrays.asList(MATH, FRACTIONS), 2 * MB, true);
+
+        assertSame(p, after);
+        assertEquals(1, after.size());
+        assertEquals(5 * MB, after.totalBytes());
+        assertTrue(after.covers(HALVES, Arrays.asList(MATH, FRACTIONS)));
     }
 
     @Test
