@@ -378,10 +378,15 @@ function authStatus(e: unknown): number {
             default: return 502;
         }
     }
-    // Kolibri answered, but with an error: pass its semantics through instead of a 500.
+    // Kolibri answered, but with an error. 502 in every case that is not an auth
+    // one: whatever Kolibri's status was, from here it is an upstream we could not
+    // get a usable answer from, and echoing its 4xx would blame the app's caller
+    // for a request the app itself composed. (This used to read
+    // `e.status >= 500 ? 502 : 502` — both arms the same, so the distinction it
+    // implied never existed.)
     if (e instanceof KolibriApiError) {
         if (e.status === 401 || e.status === 403) return e.status;
-        return e.status >= 500 ? 502 : 502;   // upstream in a bad state
+        return 502;
     }
     // The request was well formed but a precondition is not met — the channel is
     // not on the device. That is the caller's state, not a server fault, so it

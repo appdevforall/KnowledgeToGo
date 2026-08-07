@@ -24,8 +24,9 @@ import {
     KolibriSession, STUDIO_URL,
 } from './kolibri.session';
 import {
-    TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent, toRemoteChannel, RemoteChannel,
+    TASK_DELETE_CHANNEL, TERMINAL_STATES, mapPercent, toRemoteChannel,
 } from './kolibri.map';
+import type { RemoteChannel } from './kolibri.map';
 
 const KOLIBRI_HOME = process.env.KOLIBRI_HOME || '/library/kolibri';
 const MAIN_DB = path.join(KOLIBRI_HOME, 'db.sqlite3');
@@ -120,8 +121,11 @@ export function contentBytesOnDisk(): number {
 
 // RemoteChannel and toRemoteChannel now live in kolibri.map.ts: the mapper is
 // pure, and the two competing sets of field names it reconciles deserve a unit
-// test rather than a comment. Re-exported so the routes keep their import path.
-export { RemoteChannel };
+// test rather than a comment. Re-exported so the routes keep their import path —
+// as `export type`, because RemoteChannel is an interface with no runtime value
+// and a plain re-export stops compiling the day isolatedModules or
+// verbatimModuleSyntax is switched on.
+export type { RemoteChannel };
 
 /**
  * Remote catalogue for the wizard's picker, through the device's own proxy.
@@ -267,7 +271,9 @@ export class ChannelNotInstalledError extends Error {
 export async function estimateSelection(
     channelId: string, nodeIds?: string[], excludeNodeIds?: string[],
 ): Promise<SelectionSize> {
-    if (!isChannelInstalled(channelId)) {
+    // ABSENT is a fact about the request; UNKNOWN is a fact about us. Only the
+    // first one is the caller's problem, so only the first one refuses.
+    if (installedState(channelId) === 'absent') {
         throw new ChannelNotInstalledError(
             `channel ${channelId} is not on the device: its remaining size can only be `
             + 'measured once its metadata has been imported');
@@ -310,22 +316,28 @@ export async function estimateSelection(
  * A single-row lookup, not the full inventory query: this runs before every
  * estimate and only needs a yes or no.
  */
-function isChannelInstalled(channelId: string): boolean {
-    if (!fs.existsSync(MAIN_DB)) return false;
+function installedState(channelId: string): 'present' | 'absent' | 'unknown' {
+    // No database at all means nothing has ever been imported, which is a real
+    // answer rather than a failure to look.
+    if (!fs.existsSync(MAIN_DB)) return 'absent';
     try {
         const db = new Database(MAIN_DB, { readonly: true });
         try {
             const row = db.prepare(
                 'SELECT 1 FROM content_channelmetadata WHERE id = ? LIMIT 1',
             ).get(channelId);
-            return row !== undefined;
+            return row === undefined ? 'absent' : 'present';
         } finally {
             db.close();
         }
     } catch {
-        // Unreadable database: treat as not installed, which produces the same
-        // actionable message rather than an opaque 500 from Kolibri.
-        return false;
+        // The database exists but could not be read — SQLITE_BUSY while Kolibri
+        // writes during an import is the realistic case. Reporting "not installed"
+        // here would tell the user to import a channel they may already have. Say
+        // we do not know, and let the request through: Kolibri is the authority,
+        // and if the channel really is missing it answers its own 500, which is
+        // where we started but only in the case we cannot rule out.
+        return 'unknown';
     }
 }
 
