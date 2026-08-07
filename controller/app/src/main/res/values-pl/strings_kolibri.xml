@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Żaden kurs nie odpowiada Twojemu wyszukiwaniu.</string>
     <string name="k2go_kolibri_lang_all">Wszystkie języki</string>
     <string name="k2go_kolibri_lang_pick">Filtruj według języka</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d zasobów</string>
     <string name="k2go_kolibri_size_unknown">Nieznany rozmiar</string>
     <string name="k2go_kolibri_confirm_sub">Wybrane przez Ciebie kursy.</string>
     <string name="k2go_kolibri_fit_unknown">Niektóre rozmiary nie są podane, więc suma może być większa. Możesz kontynuować.</string>

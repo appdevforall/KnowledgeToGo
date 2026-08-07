@@ -213,10 +213,15 @@ the whole rule.
   *An earlier draft of this ADR had this the other way round — asset as
   fallback, Studio as the primary source. It was written before the payload was
   measured; the 97 % is what reversed it.*
-- **D2. Browse by language and keyword, not by subject.** The Landing screen
-  cannot mirror `KiwixCategories`; there is no populated taxonomy to mirror. A
-  searchable, language-filtered flat list of 142 channels is both honest and
-  small enough to work. Revisit if Studio ever populates `categories`.
+- **D2. Browse by language and keyword; the chip groups come later.** The Landing
+  screen cannot mirror `KiwixCategories`: there is no populated taxonomy to mirror.
+  That does not remove the chip row, because the groups in it were never a
+  projection of the source taxonomy — they are an artificial grouping we author so a
+  long list can be crossed in a few jumps (see `CATALOG_BROWSE_TEMPLATE.md`). For
+  Kolibri that grouping has to be authored over the **channels** themselves, five
+  groups plus `All`. It is not authored yet, so the picker ships with only `All`
+  while the searchable, language-filtered flat list of 142 channels carries the
+  browsing. The language filters from the header selector and is never a chip.
 
   The language list is **derived from the catalog**, not from Studio's labels
   endpoint. That endpoint offers 120+ languages, but only **21** are used by any

@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">உங்கள் தேடலுக்குப் பொருந்தும் பாடநெறிகள் இல்லை.</string>
     <string name="k2go_kolibri_lang_all">அனைத்து மொழிகள்</string>
     <string name="k2go_kolibri_lang_pick">மொழி வாரியாக வடிகட்டு</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d வளங்கள்</string>
     <string name="k2go_kolibri_size_unknown">அளவு தெரியவில்லை</string>
     <string name="k2go_kolibri_confirm_sub">நீங்கள் தேர்ந்தெடுத்த பாடநெறிகள்.</string>
     <string name="k2go_kolibri_fit_unknown">சில அளவுகள் வெளியிடப்படவில்லை, எனவே மொத்தம் அதிகமாக இருக்கலாம். தொடரலாம்.</string>

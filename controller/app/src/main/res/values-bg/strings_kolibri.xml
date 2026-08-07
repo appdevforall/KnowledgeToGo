@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Няма курсове, отговарящи на търсенето.</string>
     <string name="k2go_kolibri_lang_all">Всички езици</string>
     <string name="k2go_kolibri_lang_pick">Филтриране по език</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d ресурса</string>
     <string name="k2go_kolibri_size_unknown">Размерът е неизвестен</string>
     <string name="k2go_kolibri_confirm_sub">Курсовете, които избрахте.</string>
     <string name="k2go_kolibri_fit_unknown">Някои размери не са публикувани, така че общото може да е по-голямо. Можете да продължите.</string>

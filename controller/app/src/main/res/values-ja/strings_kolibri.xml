@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">検索に一致するコースはありません。</string>
     <string name="k2go_kolibri_lang_all">すべての言語</string>
     <string name="k2go_kolibri_lang_pick">言語で絞り込む</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d 件のリソース</string>
     <string name="k2go_kolibri_size_unknown">サイズ不明</string>
     <string name="k2go_kolibri_confirm_sub">選択したコース。</string>
     <string name="k2go_kolibri_fit_unknown">一部のサイズが公開されていないため、合計はこれより大きくなる場合があります。続行できます。</string>

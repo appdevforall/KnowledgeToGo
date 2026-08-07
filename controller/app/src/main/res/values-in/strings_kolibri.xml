@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Tidak ada kursus yang cocok dengan pencarian Anda.</string>
     <string name="k2go_kolibri_lang_all">Semua bahasa</string>
     <string name="k2go_kolibri_lang_pick">Filter menurut bahasa</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d sumber daya</string>
     <string name="k2go_kolibri_size_unknown">Ukuran tidak diketahui</string>
     <string name="k2go_kolibri_confirm_sub">Kursus yang Anda pilih.</string>
     <string name="k2go_kolibri_fit_unknown">Beberapa ukuran tidak dipublikasikan, jadi totalnya bisa lebih besar. Anda dapat melanjutkan.</string>

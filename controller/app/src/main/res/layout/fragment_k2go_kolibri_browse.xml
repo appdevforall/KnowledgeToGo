@@ -1,95 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4954: Courses picker. A flat searchable list rather than the ZIM category grid,
-     because Studio's public library leaves the subject taxonomy empty — there is nothing
-     to group by. Language is the axis that selects anything, and it comes from the catalog.
-     Rows are added at runtime by KolibriBrowseFragment. -->
+<!-- ADFA-4954: Courses picker, following CATALOG_BROWSE_TEMPLATE.md.
+
+     The template's shape is a category index followed by an item list. The chip row's theme
+     groups are an artificial grouping we author ourselves (as KiwixGroups does for ZIM) and
+     are not defined yet, so the row holds only All and this screen is the item list. The
+     language filters from the selector, not from a chip. Every other agreement holds:
+     language selector as one whole-row control,
+     flat rows with hairlines, leading checkbox, right-aligned size, count on its own line,
+     one fixed bottom bar. Rows and chips are added at runtime. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Header: back + title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingLeft="12dp"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="12dp">
-
-        <ImageView
-            android:id="@+id/k2go_kbrowse_back"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_arrow_left"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/k2go_back" />
+        android:paddingTop="16dp">
 
         <TextView
-            android:layout_width="0dp"
+            android:id="@+id/k2go_kbrowse_back"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="4dp"
+            android:padding="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_teal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@string/k2go_gm_courses_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium"
             android:textColor="@color/k2go_ink" />
-    </LinearLayout>
 
-    <!-- Language filter -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="8dp">
-
-        <TextView
-            android:id="@+id/k2go_kbrowse_lang"
-            android:layout_width="0dp"
+        <!-- One whole-row control. The box opens the picker; there is no inner button. -->
+        <LinearLayout
+            android:id="@+id/k2go_kbrowse_lang_box"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="@color/k2go_ink" />
-
-        <TextView
-            android:id="@+id/k2go_kbrowse_change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/k2go_getmore_bg"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
+            android:minHeight="48dp"
+            android:padding="12dp"
+            android:background="@drawable/k2go_getmore_bg">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/k2go_kbrowse_lang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textAppearance="?attr/textAppearanceTitleSmall"
+                    android:textColor="@color/k2go_ink" />
+
+                <TextView
+                    android:id="@+id/k2go_kbrowse_lang_sub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_expand_more"
+                app:tint="@color/k2go_teal"
+                android:importantForAccessibility="no" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/k2go_kbrowse_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/k2go_chip_bg"
+            android:hint="@string/k2go_zim_search_hint"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:minHeight="48dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:text="@string/k2go_zim_change"
-            android:textAppearance="?attr/textAppearanceLabelLarge"
-            android:textColor="@color/k2go_teal" />
-    </LinearLayout>
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_ink"
+            android:textColorHint="@color/k2go_muted" />
 
-    <EditText
-        android:id="@+id/k2go_kbrowse_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/k2go_chip_bg"
-        android:hint="@string/k2go_zim_search_hint"
-        android:importantForAutofill="no"
-        android:inputType="text"
-        android:maxLines="1"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textColor="@color/k2go_ink"
-        android:textColorHint="@color/k2go_muted" />
+        <!-- One horizontally-scrollable line, never wraps: All + one chip per theme group. -->
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/k2go_kbrowse_chips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <!-- Count on its own line so it can never share the scrollable chip row. -->
+        <TextView
+            android:id="@+id/k2go_kbrowse_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="end"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/k2go_kbrowse_status"
@@ -102,14 +135,13 @@
         android:textColor="@color/k2go_muted"
         android:visibility="gone" />
 
-    <!-- The channel list -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="12dp">
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp">
 
         <LinearLayout
             android:id="@+id/k2go_kbrowse_list"
@@ -119,7 +151,7 @@
             android:paddingBottom="12dp" />
     </ScrollView>
 
-    <!-- Storage projection + review, pinned -->
+    <!-- Storage is context, not a hero: one line + a thin bar. Then the fixed bar. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -127,14 +159,14 @@
         android:background="@color/surface_card"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="16dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="14dp">
 
         <ProgressBar
             android:id="@+id/k2go_kbrowse_storage_bar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
-            android:layout_height="8dp"
+            android:layout_height="4dp"
             android:max="100"
             android:progress="0"
             android:progressTint="@color/k2go_teal"
@@ -144,7 +176,7 @@
             android:id="@+id/k2go_kbrowse_storage_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
@@ -152,7 +184,8 @@
             android:id="@+id/k2go_kbrowse_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
+            android:minHeight="48dp"
             android:enabled="false" />
     </LinearLayout>
 </LinearLayout>

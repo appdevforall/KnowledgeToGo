@@ -52,6 +52,16 @@ counts, and its own `*Groups` map — do not redesign the screen.
   header light on small screens / long locales like es, de). `All` + one chip per group; filters
   client-side; `All` resets.
 - **Tap target ≥ 48dp** (even if the pill looks smaller).
+- **The groups are ours, not the catalog's.** They are an *artificial* grouping we author — kitchen,
+  living room, bedroom — so a long list can be crossed in big jumps: **five groups plus `All`**, never
+  a long tail. They do not have to exist in the source data, and a content type whose catalog ships no
+  taxonomy at all (Kolibri: Studio returns `categories: []`) groups its **items** instead. Aim for five
+  so nothing has to fall into an "Other".
+- **The language is never a chip.** It filters from the selector in the header; putting it in both
+  places duplicates one axis and steals the row from the groups.
+- **Shipping with only `All` is allowed** while the groups are still being authored — the row, the
+  language selector, the search field and the storage bar all stay. What is not allowed is filling the
+  row with some other axis to make it look populated.
 
 ### Item list (inside a category) — a selectable list with a budget
 - **Flat rows, not cards.** Whole-row tap toggles selection; leading checkbox shows state; name +

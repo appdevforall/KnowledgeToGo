@@ -129,8 +129,9 @@ public final class KolibriConfirmFragment extends Fragment {
             confirm.setEnabled(!chosen.isEmpty());
         }
 
+        // Per the template the forward action carries the SIZE, not the count.
         confirm.setText(getString(R.string.k2go_zim_add_setup_fmt,
-                getString(R.string.k2go_zim_items_fmt, chosen.size())));
+                ByteFormatter.toHuman(plan.estimatedBytes())));
         confirm.setOnClickListener(x -> bankAndReturn(chosen));
     }
 

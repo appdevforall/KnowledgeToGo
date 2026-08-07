@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Không có khóa học nào khớp với tìm kiếm của bạn.</string>
     <string name="k2go_kolibri_lang_all">Tất cả ngôn ngữ</string>
     <string name="k2go_kolibri_lang_pick">Lọc theo ngôn ngữ</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d tài nguyên</string>
     <string name="k2go_kolibri_size_unknown">Không rõ dung lượng</string>
     <string name="k2go_kolibri_confirm_sub">Các khóa học bạn đã chọn.</string>
     <string name="k2go_kolibri_fit_unknown">Một số dung lượng chưa được công bố, nên tổng có thể lớn hơn. Bạn vẫn có thể tiếp tục.</string>

@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Geen cursussen passen bij je zoekopdracht.</string>
     <string name="k2go_kolibri_lang_all">Alle talen</string>
     <string name="k2go_kolibri_lang_pick">Filteren op taal</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d bronnen</string>
     <string name="k2go_kolibri_size_unknown">Grootte onbekend</string>
     <string name="k2go_kolibri_confirm_sub">De cursussen die je koos.</string>
     <string name="k2go_kolibri_fit_unknown">Sommige groottes zijn niet gepubliceerd, dus het totaal kan hoger zijn. Je kunt doorgaan.</string>

@@ -3,13 +3,16 @@
  * Name        : KolibriBrowseFragment.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4954. The Courses picker: a searchable, language-filtered
- *               list of Kolibri channels read from the bundled catalog. Replaces
- *               the PlaceholderFragment the wizard used to show.
+ * Description : ADFA-4954. The Courses picker, following the conventions in
+ *               controller/docs/CATALOG_BROWSE_TEMPLATE.md. Replaces the
+ *               PlaceholderFragment the wizard used to show.
  * ============================================================================
  */
 package org.iiab.controller.kolibri.presentation;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.StatFs;
 import android.text.Editable;
@@ -28,6 +31,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -37,37 +41,51 @@ import org.iiab.controller.redesign.SetupLibraryActivity;
 import org.iiab.controller.redesign.ZimLanguageDialog;
 import org.iiab.controller.util.ByteFormatter;
 
+import java.util.List;
+
 /**
  * Browse and pick whole Kolibri channels.
  *
- * <p>A flat searchable list rather than the category grid the ZIM flow uses, for
- * a measured reason: Studio's public library leaves the `le_utils` subject
- * taxonomy empty, so there is nothing to group by. Language is the axis that
- * actually selects anything, and it is derived from the catalog — only 21 of the
- * 120-odd languages Studio lists as filterable are used by a real channel.
+ * <p><b>How this instantiates the catalog-browse template.</b> The template's shape
+ * is a category index followed by an item list. There is no index here yet: the
+ * chip row's theme groups are an artificial grouping we author ourselves — the ZIM
+ * flow groups Kiwix's categories, this one would group the channels themselves —
+ * and those groups are still to be defined, so the row holds only {@code All} and
+ * this screen is the item list. Language filters from the selector above; it is not
+ * a chip.
  *
- * <p>Reads nothing itself: {@link KolibriCatalogViewModel} owns the catalog and
- * the selection, and this observes it. The ViewModel is scoped to the activity so
- * the selection survives the trip to the confirm screen and back.
+ * <p>Everything else follows the agreements: the language selector is one whole-row
+ * control with no inner button, rows are flat with hairlines between them and a
+ * leading checkbox and a right-aligned size, the only rounded fill is the selected
+ * row's highlight, the count lives on its own line, and there is one fixed bottom
+ * bar. See {@code controller/docs/CATALOG_BROWSE_TEMPLATE.md}.
  *
- * <p>Sizes come from the catalog and free space from {@code StatFs}; no server is
- * involved, which is what lets this run in the wizard before anything exists.
+ * <p>Reads nothing itself: {@link KolibriCatalogViewModel} owns the catalog and the
+ * selection. It is scoped to the activity so the selection survives the trip to
+ * confirm and back. Sizes come from the bundled catalog and free space from
+ * {@code StatFs} — no server, which is what lets this run in the wizard.
  */
 public final class KolibriBrowseFragment extends Fragment {
 
     private KolibriCatalogViewModel vm;
 
-    private EditText search;
     private TextView langLabel;
+    private TextView langSub;
     private TextView status;
+    private TextView count;
     private TextView storageLabel;
     private ProgressBar storageBar;
+    private LinearLayout chips;
     private LinearLayout list;
     private Button review;
 
     private long freeMb = 0L;
     private long totalMb = 0L;
+    /** Language comes from the selector above the list, never from the chip row. */
     private String langFilter = "";
+    /** The chip row's axis: {@code ""} is All. Only All exists until the groups are authored. */
+    private String groupFilter = "";
+    private boolean searching = false;
 
     @Nullable
     @Override
@@ -78,16 +96,22 @@ public final class KolibriBrowseFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
-        search = v.findViewById(R.id.k2go_kbrowse_search);
         langLabel = v.findViewById(R.id.k2go_kbrowse_lang);
+        langSub = v.findViewById(R.id.k2go_kbrowse_lang_sub);
         status = v.findViewById(R.id.k2go_kbrowse_status);
+        count = v.findViewById(R.id.k2go_kbrowse_count);
         storageLabel = v.findViewById(R.id.k2go_kbrowse_storage_label);
         storageBar = v.findViewById(R.id.k2go_kbrowse_storage_bar);
+        chips = v.findViewById(R.id.k2go_kbrowse_chips);
         list = v.findViewById(R.id.k2go_kbrowse_list);
         review = v.findViewById(R.id.k2go_kbrowse_review);
 
-        v.findViewById(R.id.k2go_kbrowse_back).setOnClickListener(x -> back());
-        v.findViewById(R.id.k2go_kbrowse_change).setOnClickListener(x -> pickLanguage());
+        TextView back = v.findViewById(R.id.k2go_kbrowse_back);
+        back.setText(R.string.k2go_back);
+        back.setOnClickListener(x -> back());
+
+        // The whole box opens the picker — not an inner "Change" button.
+        v.findViewById(R.id.k2go_kbrowse_lang_box).setOnClickListener(x -> pickLanguage());
         review.setOnClickListener(x -> openConfirm());
 
         readFreeSpace();
@@ -96,11 +120,14 @@ public final class KolibriBrowseFragment extends Fragment {
                 new KolibriCatalogViewModelFactory(requireContext()))
                 .get(KolibriCatalogViewModel.class);
 
+        EditText search = v.findViewById(R.id.k2go_kbrowse_search);
         search.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) { }
             @Override public void onTextChanged(CharSequence s, int a, int b, int c) { }
             @Override public void afterTextChanged(Editable s) {
-                vm.search(s == null ? "" : s.toString());
+                String q = s == null ? "" : s.toString().trim();
+                searching = !q.isEmpty();
+                vm.search(q);
             }
         });
 
@@ -108,7 +135,7 @@ public final class KolibriBrowseFragment extends Fragment {
         if (vm.state().getValue() == null || vm.state().getValue().isLoading()) {
             vm.load();
         }
-        updateLangLabel();
+        updateLangControl(null);
     }
 
     private void readFreeSpace() {
@@ -126,120 +153,167 @@ public final class KolibriBrowseFragment extends Fragment {
         if (list == null || s == null) {
             return;
         }
+        updateLangControl(s);
+        buildChips(s);
+
+        list.removeAllViews();
         if (s.isLoading()) {
-            status.setVisibility(View.VISIBLE);
-            status.setText(R.string.k2go_zim_loading);
-            list.removeAllViews();
-            updateStorage();
-            return;
-        }
-        if (s.hasError()) {
-            status.setVisibility(View.VISIBLE);
-            status.setText(R.string.k2go_kolibri_unavailable);
-            list.removeAllViews();
-            updateStorage();
-            return;
-        }
-        if (s.isEmptyResult()) {
-            status.setVisibility(View.VISIBLE);
-            status.setText(R.string.k2go_kolibri_no_match);
-            list.removeAllViews();
-            updateStorage();
-            return;
+            showStatus(R.string.k2go_zim_loading);
+        } else if (s.hasError()) {
+            showStatus(R.string.k2go_kolibri_unavailable);
+        } else if (s.isEmptyResult()) {
+            showStatus(R.string.k2go_kolibri_no_match);
+        } else {
+            status.setVisibility(View.GONE);
+            List<Channel> rows = s.channels();
+            for (int i = 0; i < rows.size(); i++) {
+                if (i > 0) {
+                    list.addView(hairline());
+                }
+                list.addView(channelRow(rows.get(i)));
+            }
         }
 
-        status.setVisibility(View.GONE);
-        list.removeAllViews();
-        for (Channel c : s.channels()) {
-            list.addView(channelRow(c));
-        }
+        count.setText(getString(
+                searching ? R.string.k2go_zc_count_results : R.string.k2go_zc_count_items,
+                s.channels().size()));
         updateStorage();
     }
 
-    /**
-     * One selectable channel. Rows are built by hand rather than through a
-     * RecyclerView adapter to match the other content screens; the list is 142
-     * rows at most, all of them cheap.
-     */
-    private View channelRow(final Channel c) {
-        LinearLayout row = new LinearLayout(requireContext());
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setBackgroundResource(R.drawable.k2go_card_bg);
-        row.setPadding(px(12), px(12), px(12), px(12));
-        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        rlp.bottomMargin = px(8);
-        row.setLayoutParams(rlp);
-
-        LinearLayout col = new LinearLayout(requireContext());
-        col.setOrientation(LinearLayout.VERTICAL);
-
-        TextView title = new TextView(requireContext());
-        title.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
-        title.setText(c.name());
-        title.setMaxLines(2);
-        title.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-        col.addView(title);
-
-        TextView sub = new TextView(requireContext());
-        sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        sub.setText(subtitle(c));
-        sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-        col.addView(sub);
-
-        row.addView(col, new LinearLayout.LayoutParams(0,
-                LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
-
-        final CheckBox box = new CheckBox(requireContext());
-        box.setChecked(vm.isPicked(c.id()));
-
-        // A channel bigger than the free space cannot be queued: it would fail
-        // mid-download after occupying the device for however long it took to get
-        // there. Refusing here is the honest moment.
-        final boolean fits = freeMb <= 0L || mb(c.publishedSize()) <= freeMb;
-        if (!fits) {
-            box.setEnabled(false);
-            sub.setText(getString(R.string.k2go_zc_nospace,
-                    ByteFormatter.toHuman(c.publishedSize()),
-                    ByteFormatter.humanMb(freeMb)));
-            sub.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
-        } else {
-            box.setOnClickListener(x -> {
-                vm.toggle(c);
-                box.setChecked(vm.isPicked(c.id()));
-                updateStorage();
-            });
-            row.setOnClickListener(x -> {
-                box.setChecked(vm.toggle(c));
-                updateStorage();
-            });
-        }
-        row.addView(box);
-        return row;
+    private void showStatus(int stringRes) {
+        status.setVisibility(View.VISIBLE);
+        status.setText(stringRes);
     }
 
-    /** "Español · 1.2 GB · 340 resources", omitting whatever is unknown. */
-    private String subtitle(Channel c) {
-        StringBuilder sb = new StringBuilder();
-        if (!c.langName().isEmpty()) {
-            sb.append(c.langName());
-        } else if (!c.langCode().isEmpty()) {
-            sb.append(c.langCode());
+    /**
+     * One flat selectable row: leading checkbox, name, right-aligned size. No card —
+     * the air comes from alignment and the hairline, and the only rounded fill on
+     * the screen is a selected row's highlight.
+     */
+    private View channelRow(final Channel c) {
+        final boolean fits = freeMb <= 0L || mb(c.publishedSize()) <= freeMb;
+        final boolean selected = vm.isPicked(c.id()) && fits;
+
+        final LinearLayout content = new LinearLayout(requireContext());
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPadding(px(12), px(10), px(12), px(10));
+        if (selected) {
+            content.setBackground(selectedHighlight());
         }
-        if (c.hasKnownSize()) {
-            if (sb.length() > 0) {
-                sb.append(" · ");
+
+        LinearLayout top = new LinearLayout(requireContext());
+        top.setOrientation(LinearLayout.HORIZONTAL);
+        top.setGravity(Gravity.CENTER_VERTICAL);
+        top.setMinimumHeight(px(36));
+
+        final CheckBox cb = new CheckBox(requireContext());
+        cb.setChecked(selected);
+        cb.setEnabled(fits);
+        cb.setClickable(false);
+        cb.setFocusable(false);
+        top.addView(cb);
+
+        final TextView name = new TextView(requireContext());
+        name.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
+        name.setText(c.name());
+        name.setMaxLines(2);
+        name.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+        if (selected) {
+            name.setTypeface(name.getTypeface(), Typeface.BOLD);
+        }
+        LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        nlp.leftMargin = px(8);
+        top.addView(name, nlp);
+
+        TextView size = new TextView(requireContext());
+        size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        size.setText(c.hasKnownSize() ? ByteFormatter.toHuman(c.publishedSize())
+                : getString(R.string.k2go_kolibri_size_unknown));
+        size.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        size.setGravity(Gravity.END);
+        top.addView(size);
+        content.addView(top);
+
+        if (!fits) {
+            TextView warn = new TextView(requireContext());
+            warn.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            warn.setText(getString(R.string.k2go_zc_nospace,
+                    ByteFormatter.toHuman(c.publishedSize()), ByteFormatter.humanMb(freeMb)));
+            warn.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
+            LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            wlp.topMargin = px(2);
+            wlp.leftMargin = px(36);
+            content.addView(warn, wlp);
+        } else {
+            content.setOnClickListener(x -> {
+                boolean now = vm.toggle(c);
+                cb.setChecked(now);
+                content.setBackground(now ? selectedHighlight() : null);
+                name.setTypeface(null, now ? Typeface.BOLD : Typeface.NORMAL);
+                updateStorage();
+            });
+        }
+        return content;
+    }
+
+    /**
+     * The group axis. Per the template the chip row carries <em>theme groups</em> —
+     * an artificial five-or-so grouping we author ourselves so a long catalog can be
+     * crossed in big jumps, exactly as {@code KiwixGroups} does for ZIM. It is not
+     * taken from the catalog: Studio publishes {@code categories: []}, and the
+     * grouping was never a projection of the source taxonomy anyway.
+     *
+     * <p>Those groups are not defined yet, so for now the row holds only
+     * {@code All}. The language is deliberately <em>not</em> here — it filters from
+     * the selector above, and putting it in both places was the earlier mistake.
+     * When the groups land, add them beside {@code All} and filter on
+     * {@link #groupFilter}; the rest of the row needs no change.
+     */
+    private void buildChips(KolibriCatalogUiState s) {
+        chips.removeAllViews();
+        if (s.isLoading()) {
+            return;
+        }
+        chips.addView(chip(getString(R.string.k2go_zim_grp_all), ""));
+    }
+
+    private View chip(String label, final String group) {
+        boolean selected = group.equals(groupFilter);
+        int teal = ContextCompat.getColor(requireContext(), R.color.k2go_teal);
+
+        TextView t = new TextView(requireContext());
+        t.setText(label);
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        t.setGravity(Gravity.CENTER);
+        t.setMinHeight(px(48));   // tap target, even though the pill looks smaller
+        t.setPadding(px(14), px(6), px(14), px(6));
+
+        GradientDrawable bg = new GradientDrawable();
+        bg.setShape(GradientDrawable.RECTANGLE);
+        bg.setCornerRadius(px(24));
+        if (selected) {
+            bg.setColor(teal);
+            t.setTextColor(Color.WHITE);
+        } else {
+            bg.setColor(Color.TRANSPARENT);
+            bg.setStroke(px(1), ContextCompat.getColor(requireContext(), R.color.k2go_hairline));
+            t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
+        }
+        t.setBackground(bg);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.rightMargin = px(8);
+        t.setLayoutParams(lp);
+        t.setOnClickListener(x -> {
+            if (!group.equals(groupFilter)) {
+                groupFilter = group;
+                render(vm.state().getValue());
             }
-            sb.append(ByteFormatter.toHuman(c.publishedSize()));
-        }
-        if (c.totalResources() > 0) {
-            if (sb.length() > 0) {
-                sb.append(" · ");
-            }
-            sb.append(getString(R.string.k2go_kolibri_resources_fmt, c.totalResources()));
-        }
-        return sb.toString();
+        });
+        return t;
     }
 
     private void updateStorage() {
@@ -253,24 +327,27 @@ public final class KolibriBrowseFragment extends Fragment {
                 ByteFormatter.humanMb(used), ByteFormatter.humanMb(sel),
                 ByteFormatter.humanMb(freeMb)));
 
-        int n = vm == null ? 0 : vm.selectionCount();
-        review.setEnabled(n > 0);
-        // Nested format so the count reads "3 items" in every language rather than a
-        // bare number, reusing the ZIM strings whose text says nothing about ZIM.
-        review.setText(getString(R.string.k2go_zim_review_fmt,
-                getString(R.string.k2go_zim_items_fmt, n)));
+        // The bar carries the SIZE, per the template, not the count: it is the
+        // number the next screen has to justify.
+        long bytes = vm == null ? 0L : vm.selectionBytes();
+        review.setEnabled(vm != null && vm.selectionCount() > 0);
+        review.setText(getString(R.string.k2go_zim_review_fmt, ByteFormatter.toHuman(bytes)));
     }
 
-    private void updateLangLabel() {
-        KolibriCatalogUiState s = vm == null ? null : vm.state().getValue();
-        langLabel.setText(langFilter.isEmpty() || s == null
+    /** Two lines: the value in bold, then where the choice came from, Title-Case. */
+    private void updateLangControl(KolibriCatalogUiState s) {
+        String value = langFilter.isEmpty()
                 ? getString(R.string.k2go_kolibri_lang_all)
-                : s.languageName(langFilter));
+                : (s == null ? langFilter : s.languageName(langFilter));
+        langLabel.setText(getString(R.string.k2go_zim_lang_fmt, value));
+        langSub.setText(langFilter.isEmpty()
+                ? R.string.k2go_zim_lang_sub
+                : R.string.k2go_zim_lang_sub_manual);
     }
 
     /**
-     * The language picker, reusing the ZIM flow's searchable dialog. Its name says
-     * Zim but nothing in it does; duplicating it for one more caller would be
+     * The searchable language picker, reusing the ZIM flow's dialog. Its name says
+     * Zim but nothing inside it does; a second copy for one more caller would be
      * worse than the misleading name.
      */
     private void pickLanguage() {
@@ -283,15 +360,29 @@ public final class KolibriBrowseFragment extends Fragment {
                 s.languages(), s::languageName, langFilter,
                 code -> {
                     langFilter = code == null ? "" : code;
-                    updateLangLabel();
                     vm.filterLanguage(langFilter);
                 },
                 getString(R.string.k2go_kolibri_lang_all),
                 () -> {
                     langFilter = "";
-                    updateLangLabel();
                     vm.filterLanguage("");
                 });
+    }
+
+    private GradientDrawable selectedHighlight() {
+        GradientDrawable g = new GradientDrawable();
+        g.setCornerRadius(px(10));
+        g.setColor(ColorUtils.setAlphaComponent(
+                ContextCompat.getColor(requireContext(), R.color.k2go_teal), 0x33));
+        return g;
+    }
+
+    private View hairline() {
+        View v = new View(requireContext());
+        v.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.k2go_hairline));
+        v.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, px(1)));
+        return v;
     }
 
     private void openConfirm() {

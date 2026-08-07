@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">لا توجد دورات تطابق بحثك.</string>
     <string name="k2go_kolibri_lang_all">كل اللغات</string>
     <string name="k2go_kolibri_lang_pick">تصفية حسب اللغة</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d مورد</string>
     <string name="k2go_kolibri_size_unknown">الحجم غير معروف</string>
     <string name="k2go_kolibri_confirm_sub">الدورات التي اخترتها.</string>
     <string name="k2go_kolibri_fit_unknown">بعض الأحجام غير منشورة، لذا قد يكون الإجمالي أكبر. يمكنك المتابعة.</string>

@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Axtarışınıza uyğun kurs yoxdur.</string>
     <string name="k2go_kolibri_lang_all">Bütün dillər</string>
     <string name="k2go_kolibri_lang_pick">Dilə görə süz</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d resurs</string>
     <string name="k2go_kolibri_size_unknown">Ölçü bilinmir</string>
     <string name="k2go_kolibri_confirm_sub">Seçdiyiniz kurslar.</string>
     <string name="k2go_kolibri_fit_unknown">Bəzi ölçülər dərc olunmayıb, ona görə cəmi daha böyük ola bilər. Davam edə bilərsiniz.</string>

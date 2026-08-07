@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Нема курсева који одговарају вашој претрази.</string>
     <string name="k2go_kolibri_lang_all">Сви језици</string>
     <string name="k2go_kolibri_lang_pick">Филтрирај по језику</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d ресурса</string>
     <string name="k2go_kolibri_size_unknown">Величина непозната</string>
     <string name="k2go_kolibri_confirm_sub">Курсеви које сте изабрали.</string>
     <string name="k2go_kolibri_fit_unknown">Неке величине нису објављене, па укупно може бити више. Можете да наставите.</string>

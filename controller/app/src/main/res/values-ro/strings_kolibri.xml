@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Niciun curs nu corespunde căutării tale.</string>
     <string name="k2go_kolibri_lang_all">Toate limbile</string>
     <string name="k2go_kolibri_lang_pick">Filtrează după limbă</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d resurse</string>
     <string name="k2go_kolibri_size_unknown">Dimensiune necunoscută</string>
     <string name="k2go_kolibri_confirm_sub">Cursurile pe care le-ai ales.</string>
     <string name="k2go_kolibri_fit_unknown">Unele dimensiuni nu sunt publicate, așa că totalul poate fi mai mare. Poți continua.</string>

@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Nessun corso corrisponde alla tua ricerca.</string>
     <string name="k2go_kolibri_lang_all">Tutte le lingue</string>
     <string name="k2go_kolibri_lang_pick">Filtra per lingua</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d risorse</string>
     <string name="k2go_kolibri_size_unknown">Dimensione sconosciuta</string>
     <string name="k2go_kolibri_confirm_sub">I corsi che hai scelto.</string>
     <string name="k2go_kolibri_fit_unknown">Alcune dimensioni non sono pubblicate, quindi il totale può essere maggiore. Puoi continuare.</string>

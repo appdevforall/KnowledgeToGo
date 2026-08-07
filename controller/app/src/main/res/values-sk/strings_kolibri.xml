@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">Vášmu hľadaniu nezodpovedajú žiadne kurzy.</string>
     <string name="k2go_kolibri_lang_all">Všetky jazyky</string>
     <string name="k2go_kolibri_lang_pick">Filtrovať podľa jazyka</string>
-    <string name="k2go_kolibri_resources_fmt">%1$d zdrojov</string>
     <string name="k2go_kolibri_size_unknown">Veľkosť nie je známa</string>
     <string name="k2go_kolibri_confirm_sub">Kurzy, ktoré ste vybrali.</string>
     <string name="k2go_kolibri_fit_unknown">Niektoré veľkosti nie sú zverejnené, celok preto môže byť väčší. Môžete pokračovať.</string>

@@ -12,7 +12,6 @@
     <string name="k2go_kolibri_no_match">검색과 일치하는 강좌가 없습니다.</string>
     <string name="k2go_kolibri_lang_all">모든 언어</string>
     <string name="k2go_kolibri_lang_pick">언어로 필터링</string>
-    <string name="k2go_kolibri_resources_fmt">리소스 %1$d개</string>
     <string name="k2go_kolibri_size_unknown">크기 알 수 없음</string>
     <string name="k2go_kolibri_confirm_sub">선택한 강좌입니다.</string>
     <string name="k2go_kolibri_fit_unknown">일부 크기가 공개되지 않아 합계가 더 클 수 있습니다. 계속할 수 있습니다.</string>
