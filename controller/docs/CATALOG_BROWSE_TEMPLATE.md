@@ -105,6 +105,26 @@ counts, and its own `*Groups` map — do not redesign the screen.
   scrollable chip row (it would wrap in es/de — see `k2go-count-overflow-v1`). Live: `N items` →
   `N results` while searching. No language in it.
 
+### Drilling into an item (content types with a tree)
+Some content types have structure *inside* an item — a Kolibri channel is a tree of topics, and a
+school wants two units of a 60 GB course. That is a **third screen**, reached from the item list, and it
+is the item list again with four differences:
+
+- **A chevron at the end of the row opens it; the row tap still selects the whole item.** One gesture,
+  one meaning. Never a long-press: nobody discovers it.
+- **No sort toggles.** The children arrive in the order the item's author arranged them (unit 1, unit 2,
+  week 3). That order is content, not presentation — re-sorting it makes a curriculum unreadable. Sorts
+  belong where nobody authored an order.
+- **A muted breadcrumb line** under the title says where you are; going up is the Back affordance, not a
+  tappable crumb.
+- **What an ancestor already covers shows as ticked and disabled**, with a one-line note. Selecting a
+  parent brings its whole subtree, so a child inside it is coming but is not itself a member — and a
+  checkbox must not offer to un-tick something that was never set.
+
+Back in the item list, a narrowed item must **quote what will actually download**, not its full size, and
+say so on its own line. A row that reads 60 GB after the user picked two units is a lie the storage bar
+then repeats.
+
 ### Forward action
 - **One fixed bottom bar** — `Review selection · <size>` (index) / `Add to selection · <size>` (detail),
   pinned, never scrolls off; content scrolls under it.

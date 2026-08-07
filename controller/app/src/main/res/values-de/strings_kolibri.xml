@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">Einige Größen sind nicht veröffentlicht, die Summe kann also höher sein. Du kannst fortfahren.</string>
     <string name="k2go_kolibri_takes_body">Kurse können sehr groß sein und lange zum Herunterladen brauchen, besonders bei langsamer Verbindung. Der Download startet nach der Installation deines Systems, läuft im Hintergrund weiter und wird nach einer Unterbrechung fortgesetzt.</string>
     <string name="k2go_kolibri_none_in_lang">Noch keine Kurse auf %1$s · Sprache ändern</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d Ressourcen</string>
+    <string name="k2go_kolibri_tree_offline">Die Kursbibliothek ist nicht erreichbar. Zum erneuten Versuch tippen.</string>
+    <string name="k2go_kolibri_topic_empty">In diesem Ordner ist noch nichts.</string>
+    <string name="k2go_kolibri_included">Im Ordner darüber enthalten</string>
+    <string name="k2go_kolibri_open_topic">Ordner öffnen</string>
+    <string name="k2go_kolibri_choose_topics">Themen wählen</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d Themen ausgewählt</string>
+    <string name="k2go_kolibri_whole_course">Ganzer Kurs</string>
 </resources>

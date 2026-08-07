@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -272,7 +273,10 @@ public final class KolibriBrowseFragment extends Fragment {
      * the screen is a selected row's highlight.
      */
     private View channelRow(final Channel c) {
-        final boolean fits = freeMb <= 0L || mb(c.publishedSize()) <= freeMb;
+        // The fit question is about what will be downloaded, so a narrowed channel is
+        // measured by its picked subtrees — a 60 GB channel narrowed to 2 GB fits.
+        final long rowBytes = vm.bytesFor(c);
+        final boolean fits = freeMb <= 0L || mb(rowBytes) <= freeMb;
         final boolean selected = vm.isPicked(c.id()) && fits;
 
         final LinearLayout content = new LinearLayout(requireContext());
@@ -307,20 +311,51 @@ public final class KolibriBrowseFragment extends Fragment {
         nlp.leftMargin = px(8);
         top.addView(name, nlp);
 
+        // Once narrowed, the row must quote what will actually come down, not the
+        // channel's full published size — otherwise picking two units of a 60 GB
+        // channel still reads as 60 GB.
+        final boolean narrowed = vm.isNarrowed(c.id());
         TextView size = new TextView(requireContext());
         size.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-        size.setText(c.hasKnownSize() ? ByteFormatter.toHuman(c.publishedSize())
-                : getString(R.string.k2go_kolibri_size_unknown));
+        size.setText(vm.sizeUnknownFor(c)
+                ? getString(R.string.k2go_kolibri_size_unknown)
+                : ByteFormatter.toHuman(vm.bytesFor(c)));
         size.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         size.setGravity(Gravity.END);
         top.addView(size);
+
+        // The chevron opens the tree; the row itself still toggles the whole channel.
+        // One gesture, one meaning — the split the category index already uses.
+        ImageView chevron = new ImageView(requireContext());
+        chevron.setImageResource(R.drawable.ic_chevron_right);
+        chevron.setColorFilter(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        chevron.setContentDescription(getString(R.string.k2go_kolibri_choose_topics));
+        chevron.setPadding(px(8), px(8), px(8), px(8));
+        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(px(40), px(40));
+        clp.leftMargin = px(4);
+        chevron.setOnClickListener(x -> openTopics(c));
+        top.addView(chevron, clp);
         content.addView(top);
+
+        if (narrowed) {
+            TextView note = new TextView(requireContext());
+            note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            note.setText(getString(R.string.k2go_kolibri_narrowed_fmt,
+                    vm.subtreesFor(c.id()).size()));
+            note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+            LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            tlp.topMargin = px(2);
+            tlp.leftMargin = px(36);
+            content.addView(note, tlp);
+        }
 
         if (!fits) {
             TextView warn = new TextView(requireContext());
             warn.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
             warn.setText(getString(R.string.k2go_zc_nospace,
-                    ByteFormatter.toHuman(c.publishedSize()), ByteFormatter.humanMb(freeMb)));
+                    ByteFormatter.toHuman(rowBytes), ByteFormatter.humanMb(freeMb)));
             warn.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
             LinearLayout.LayoutParams wlp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -333,10 +368,27 @@ public final class KolibriBrowseFragment extends Fragment {
                 cb.setChecked(now);
                 content.setBackground(now ? selectedHighlight() : null);
                 name.setTypeface(null, now ? Typeface.BOLD : Typeface.NORMAL);
+                if (!now) {
+                    // Un-ticking also dropped the topic picks, so the row's size and
+                    // its "topics selected" note are stale — redraw rather than patch.
+                    render(vm.state().getValue());
+                    return;
+                }
                 updateStorage();
             });
         }
         return content;
+    }
+
+    /**
+     * Opens the tree for one channel. The chevron is enabled whatever the row's
+     * state: narrowing is precisely how an over-large channel becomes installable,
+     * so a row that does not fit is the one that most needs this door.
+     */
+    private void openTopics(Channel c) {
+        if (getActivity() instanceof SetupLibraryActivity) {
+            ((SetupLibraryActivity) getActivity()).openKolibriTopics(c.id());
+        }
     }
 
     /**

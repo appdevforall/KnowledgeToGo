@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">Niektoré veľkosti nie sú zverejnené, celok preto môže byť väčší. Môžete pokračovať.</string>
     <string name="k2go_kolibri_takes_body">Kurzy môžu byť veľmi veľké a stahovanie môže trvať dlho, najmä pri pomalom pripojení. Stahovanie začne po inštalácii systému, pokračuje na pozadí a po prerušení sa obnoví.</string>
     <string name="k2go_kolibri_none_in_lang">V jazyku %1$s zatiaľ nie sú žiadne kurzy · Zmeniť jazyk</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d zdrojov</string>
+    <string name="k2go_kolibri_tree_offline">Knižnicu kurzov sa nepodarilo načítať. Ťuknutím to zkúste znova.</string>
+    <string name="k2go_kolibri_topic_empty">V tejto zložke ešte nič nie je.</string>
+    <string name="k2go_kolibri_included">Súčasť zložky vyššie</string>
+    <string name="k2go_kolibri_open_topic">Otvoriť zložku</string>
+    <string name="k2go_kolibri_choose_topics">Vybrať témy</string>
+    <string name="k2go_kolibri_narrowed_fmt">Vybraných tém: %1$d</string>
+    <string name="k2go_kolibri_whole_course">Celý kurz</string>
 </resources>

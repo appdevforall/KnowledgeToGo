@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">Unele dimensiuni nu sunt publicate, așa că totalul poate fi mai mare. Poți continua.</string>
     <string name="k2go_kolibri_takes_body">Cursurile pot fi foarte mari și descărcarea poate dura mult, mai ales pe o conexiune lentă. Descărcarea începe după instalarea sistemului, continuă în fundal și se reia dacă este întreruptă.</string>
     <string name="k2go_kolibri_none_in_lang">Încă nu există cursuri în %1$s · Schimbă limba</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d resurse</string>
+    <string name="k2go_kolibri_tree_offline">Biblioteca de cursuri nu poate fi accesată. Atinge pentru a reîncerca.</string>
+    <string name="k2go_kolibri_topic_empty">În acest dosar nu este încă nimic.</string>
+    <string name="k2go_kolibri_included">Inclus cu dosarul de mai sus</string>
+    <string name="k2go_kolibri_open_topic">Deschide dosarul</string>
+    <string name="k2go_kolibri_choose_topics">Alege teme</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d teme selectate</string>
+    <string name="k2go_kolibri_whole_course">Cursul întreg</string>
 </resources>

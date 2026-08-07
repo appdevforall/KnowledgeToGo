@@ -45,4 +45,12 @@
     <string name="k2go_kolibri_takes_body">Courses can be very large and take a long time to download, especially on a slow connection. The download starts after your system is installed, keeps going in the background, and resumes if interrupted.</string>
 
     <string name="k2go_kolibri_none_in_lang">No courses in %1$s yet · Change language</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d resources</string>
+    <string name="k2go_kolibri_tree_offline">Couldn\'t reach the course library. Tap to try again.</string>
+    <string name="k2go_kolibri_topic_empty">Nothing inside this folder yet.</string>
+    <string name="k2go_kolibri_included">Included with the folder above</string>
+    <string name="k2go_kolibri_open_topic">Open folder</string>
+    <string name="k2go_kolibri_choose_topics">Choose topics</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d topics selected</string>
+    <string name="k2go_kolibri_whole_course">Whole course</string>
 </resources>
