@@ -23,8 +23,8 @@ import {
     KolibriSession, KolibriAuthError, KolibriApiError, STUDIO_URL,
 } from './kolibri.session';
 import {
-    buildTaskPayload, mapPercent, mapPhase, normalizeUuid, overallPercent,
-    sampleSpeed, PRE_RUN_STATES, TERMINAL_STATES,
+    buildTaskPayload, failureMessage, mapPercent, mapPhase, normalizeUuid,
+    overallPercent, sampleSpeed, PRE_RUN_STATES, TERMINAL_STATES,
 } from './kolibri.map';
 
 /** Positive integers from the environment, with a default. Adjustable in
@@ -368,7 +368,10 @@ async function pollKolibriJob(
             // Cleared on ALL terminal paths, not only on success: otherwise the
             // failed jobs pile up in Kolibri's queue.
             if (job.status === 'FAILED') {
-                const detail = job.exception || 'no detail';
+                // job.exception is only the class name — a bad channel id reports
+                // a bare "HTTPError". failureMessage digs the real line out of the
+                // traceback so the operator is told what actually went wrong.
+                const detail = failureMessage(job.exception, job.traceback);
                 ctx.log(`FAILURE in Kolibri: ${detail}`);
                 if (job.traceback) ctx.log(job.traceback.split('\n').slice(-6).join('\n'));
                 await clearInKolibri();

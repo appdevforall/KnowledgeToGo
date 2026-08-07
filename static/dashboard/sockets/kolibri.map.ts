@@ -127,6 +127,91 @@ export function buildTaskPayload(item: TaskPayloadInput): Record<string, unknown
     return payload;
 }
 
+/**
+ * The most informative message available for a failed Kolibri task.
+ *
+ * Kolibri's `exception` field is the class name alone — a job that failed on a
+ * channel that does not exist reports `HTTPError`, which tells the reader
+ * nothing. The detail is in the last line of `traceback`, in Python's usual
+ * `module.ExceptionType: message` form, so that line is preferred when it says
+ * more than the class name already did. The module prefix is dropped: an
+ * operator does not need `requests.exceptions.` to understand the problem.
+ *
+ * Falls back to the class name, and then to a plain marker, so the caller always
+ * has something to put in front of a person.
+ */
+export function failureMessage(exception?: string | null,
+                               traceback?: string | null): string {
+    const cls = (exception || '').trim();
+
+    const lastLine = (traceback || '')
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l.length > 0)
+        .pop() || '';
+
+    // "requests.exceptions.HTTPError: 404 Client Error" -> "HTTPError: 404 Client Error"
+    const match = /^([\w.]*?)(\w+(?:Error|Exception|Warning)):\s*(.+)$/.exec(lastLine);
+    if (match && match[3]) {
+        return `${match[2]}: ${match[3]}`;
+    }
+
+    // A traceback line that carries detail without matching the usual shape is
+    // still better than a bare class name, as long as it is not the class name.
+    if (lastLine && lastLine !== cls) {
+        return lastLine;
+    }
+    return cls || 'no detail';
+}
+
+/** A channel as the picker needs it, whichever endpoint it came from. */
+export interface RemoteChannel {
+    id: string;
+    name: string;
+    description: string;
+    version: number | null;
+    language: string | null;
+    totalResources: number | null;
+    publishedSize: number | null;
+}
+
+/**
+ * Reads a channel row into {@link RemoteChannel}.
+ *
+ * Lives here rather than next to the fetch because of the trap it encapsulates:
+ * **the same channel arrives under two different sets of field names.** Studio's
+ * own API says `total_resource_count` and `published_size`; Kolibri's
+ * `/api/content/remotechannel/` proxy renames them to `total_resources` and
+ * `total_file_size` on the way through. Reading only Studio's names against the
+ * proxy silently yields `null` for both — which is exactly what shipped, and
+ * what a device test caught. Both spellings are accepted, Kolibri's first,
+ * because that is the endpoint the box actually calls.
+ *
+ * Pure: no network here, so the renaming is covered by a unit test and cannot
+ * regress unnoticed.
+ */
+export function toRemoteChannel(row: Record<string, unknown>): RemoteChannel {
+    const num = (v: unknown): number | null =>
+        typeof v === 'number' ? v : (typeof v === 'string' && v.trim() !== '' ? Number(v) : null);
+    const first = (...vs: unknown[]): number | null => {
+        for (const v of vs) {
+            const n = num(v);
+            if (n !== null) return n;
+        }
+        return null;
+    };
+    return {
+        id: String(row.id ?? ''),
+        name: String(row.name ?? ''),
+        description: String(row.description ?? ''),
+        version: num(row.version),
+        language: typeof row.lang_code === 'string' ? row.lang_code
+            : (typeof row.language === 'string' ? row.language : null),
+        totalResources: first(row.total_resources, row.total_resource_count),
+        publishedSize: first(row.total_file_size, row.published_size),
+    };
+}
+
 /** Bytes per second from two samples of `transferred_file_size`.
  *  Returns null when there was no progress, so a 0 does not overwrite the previous
  *  reading. */
