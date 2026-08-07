@@ -59,6 +59,7 @@ public final class KolibriConfirmFragment extends Fragment {
 
     private LinearLayout breakdown;
     private TextView fits;
+    private TextView liveNote;
     private Button confirm;
 
     @Nullable
@@ -72,6 +73,7 @@ public final class KolibriConfirmFragment extends Fragment {
     public void onViewCreated(@NonNull View v, @Nullable Bundle savedInstanceState) {
         breakdown = v.findViewById(R.id.k2go_kconf_breakdown);
         fits = v.findViewById(R.id.k2go_kconf_fits);
+        liveNote = v.findViewById(R.id.k2go_kconf_live_note);
         confirm = v.findViewById(R.id.k2go_kconf_confirm);
         v.findViewById(R.id.k2go_kconf_back).setOnClickListener(x -> back());
 
@@ -137,6 +139,29 @@ public final class KolibriConfirmFragment extends Fragment {
         confirm.setText(getString(R.string.k2go_zim_add_setup_fmt,
                 ByteFormatter.toHuman(plan.estimatedBytes())));
         confirm.setOnClickListener(x -> bankAndReturn(chosen));
+
+        if (!isWizard()) {
+            // Get More door: browsing and picking work, but there is nothing to hand
+            // the order to yet. Banking it would look like the button did nothing —
+            // KolibriProvisioner.drain() is only called from SetupProgressActivity,
+            // so a wishlist written here would sit until some later install. Refuse
+            // visibly instead, and say why — without erasing the fit verdict above,
+            // which is the one figure this screen exists to state.
+            confirm.setEnabled(false);
+            liveNote.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Pre-install (wizard) versus the Get More door; only the forward action differs.
+     *
+     * <p>Fails <em>closed</em>: an unrecognised host is treated as the live door, so
+     * the default is the mode that writes nothing. Defaulting the other way would
+     * have an unexpected host persist an order to the wishlist.
+     */
+    private boolean isWizard() {
+        return getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     /** The scope line under a course: whole thing, or how many topics were picked. */

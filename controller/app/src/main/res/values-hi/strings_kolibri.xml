@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">विषय चुनें</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d विषय चुने गए</string>
     <string name="k2go_kolibri_whole_course">पूरा कोर्स</string>
+    <string name="k2go_kolibri_live_not_yet">अभी सिर्फ़ देखने के लिए। यहाँ से कोर्स जोड़ना अगले अपडेट में आएगा; फ़िलहाल वे सिस्टम सेटअप के दौरान चुने जाते हैं।</string>
 </resources>

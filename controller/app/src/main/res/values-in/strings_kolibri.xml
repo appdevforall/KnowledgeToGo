@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Pilih topik</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d topik dipilih</string>
     <string name="k2go_kolibri_whole_course">Seluruh kursus</string>
+    <string name="k2go_kolibri_live_not_yet">Untuk sekarang hanya menjelajah. Menambahkan kursus dari sini akan hadir pada pembaruan berikutnya; saat ini kursus dipilih ketika sistem disiapkan.</string>
 </resources>

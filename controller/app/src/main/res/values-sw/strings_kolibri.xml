@@ -23,4 +23,5 @@
     <string name="k2go_kolibri_choose_topics">Chagua mada</string>
     <string name="k2go_kolibri_narrowed_fmt">Mada %1$d zimechaguliwa</string>
     <string name="k2go_kolibri_whole_course">Kozi yote</string>
+    <string name="k2go_kolibri_live_not_yet">Kwa sasa ni kutazama tu. Kuongeza kozi kutoka hapa kutakuja katika sasisho lijalo; kwa sasa huchaguliwa mfumo unapowekwa.</string>
 </resources>

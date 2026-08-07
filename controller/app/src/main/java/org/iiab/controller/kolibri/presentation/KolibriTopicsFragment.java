@@ -37,6 +37,7 @@ import org.iiab.controller.R;
 import org.iiab.controller.kolibri.domain.Channel;
 import org.iiab.controller.kolibri.domain.PickedSubtrees;
 import org.iiab.controller.kolibri.domain.TopicNode;
+import org.iiab.controller.redesign.SetupLibraryActivity;
 import org.iiab.controller.util.ByteFormatter;
 
 import java.util.ArrayList;
@@ -445,12 +446,25 @@ public final class KolibriTopicsFragment extends Fragment {
 
         // The action carries the size of THIS channel's narrowing, not the whole
         // cart: it is the number this screen is responsible for.
+        //
+        // Except on the Get More door, where nothing can be added yet: promising
+        // "Add to your setup" here and then refusing one screen later is a
+        // contradiction the user meets two taps apart. It just says Continue.
         long bytes = picks.isEmpty() ? channelBytes() : picks.totalBytes();
-        done.setText(getString(R.string.k2go_zim_add_setup_fmt, ByteFormatter.toHuman(bytes)));
+        done.setText(isWizard()
+                ? getString(R.string.k2go_zim_add_setup_fmt, ByteFormatter.toHuman(bytes))
+                : getString(R.string.k2go_continue));
     }
 
     private long channelBytes() {
         return channel == null ? 0L : channel.publishedSize();
+    }
+
+    /** Pre-install (wizard) versus the Get More door. Fails closed, as the other
+     *  two Courses screens do: an unrecognised host is the door that writes nothing. */
+    private boolean isWizard() {
+        return getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     /**
