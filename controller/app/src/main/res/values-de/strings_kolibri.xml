@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Kurse werden hinzugefügt</string>
     <string name="k2go_kolibri_notif_cancel">Abbrechen</string>
     <string name="k2go_kolibri_seeding_title">Deine Kurse werden hinzugefügt</string>
+    <string name="k2go_kolibri_unavailable">Der mit der App gelieferte Kurskatalog konnte nicht gelesen werden.</string>
+    <string name="k2go_kolibri_no_match">Keine Kurse passen zu deiner Suche.</string>
+    <string name="k2go_kolibri_size_unknown">Größe unbekannt</string>
+    <string name="k2go_kolibri_confirm_sub">Die von dir gewählten Kurse.</string>
+    <string name="k2go_kolibri_fit_unknown">Einige Größen sind nicht veröffentlicht, die Summe kann also höher sein. Du kannst fortfahren.</string>
+    <string name="k2go_kolibri_takes_body">Kurse können sehr groß sein und lange zum Herunterladen brauchen, besonders bei langsamer Verbindung. Der Download startet nach der Installation deines Systems, läuft im Hintergrund weiter und wird nach einer Unterbrechung fortgesetzt.</string>
+    <string name="k2go_kolibri_none_in_lang">Noch keine Kurse auf %1$s · Sprache ändern</string>
 </resources>

@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Se adaugă cursuri</string>
     <string name="k2go_kolibri_notif_cancel">Anulează</string>
     <string name="k2go_kolibri_seeding_title">Se adaugă cursurile tale</string>
+    <string name="k2go_kolibri_unavailable">Catalogul de cursuri inclus în aplicație nu a putut fi citit.</string>
+    <string name="k2go_kolibri_no_match">Niciun curs nu corespunde căutării tale.</string>
+    <string name="k2go_kolibri_size_unknown">Dimensiune necunoscută</string>
+    <string name="k2go_kolibri_confirm_sub">Cursurile pe care le-ai ales.</string>
+    <string name="k2go_kolibri_fit_unknown">Unele dimensiuni nu sunt publicate, așa că totalul poate fi mai mare. Poți continua.</string>
+    <string name="k2go_kolibri_takes_body">Cursurile pot fi foarte mari și descărcarea poate dura mult, mai ales pe o conexiune lentă. Descărcarea începe după instalarea sistemului, continuă în fundal și se reia dacă este întreruptă.</string>
+    <string name="k2go_kolibri_none_in_lang">Încă nu există cursuri în %1$s · Schimbă limba</string>
 </resources>

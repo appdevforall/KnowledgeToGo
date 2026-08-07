@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Ajout des cours</string>
     <string name="k2go_kolibri_notif_cancel">Annuler</string>
     <string name="k2go_kolibri_seeding_title">Ajout de vos cours</string>
+    <string name="k2go_kolibri_unavailable">Impossible de lire le catalogue de cours fourni avec l\'application.</string>
+    <string name="k2go_kolibri_no_match">Aucun cours ne correspond à votre recherche.</string>
+    <string name="k2go_kolibri_size_unknown">Taille inconnue</string>
+    <string name="k2go_kolibri_confirm_sub">Les cours que vous avez choisis.</string>
+    <string name="k2go_kolibri_fit_unknown">Certaines tailles ne sont pas publiées, le total peut donc être plus élevé. Vous pouvez continuer.</string>
+    <string name="k2go_kolibri_takes_body">Les cours peuvent être très volumineux et longs à télécharger, surtout sur une connexion lente. Le téléchargement démarre après l\'installation de votre système, se poursuit en arrière-plan et reprend s\'il est interrompu.</string>
+    <string name="k2go_kolibri_none_in_lang">Aucun cours en %1$s pour l’instant · Changer de langue</string>
 </resources>

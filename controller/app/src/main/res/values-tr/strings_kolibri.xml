@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Kurslar ekleniyor</string>
     <string name="k2go_kolibri_notif_cancel">İptal</string>
     <string name="k2go_kolibri_seeding_title">Kurslarınız ekleniyor</string>
+    <string name="k2go_kolibri_unavailable">Uygulamayla gelen kurs kataloğu okunamadı.</string>
+    <string name="k2go_kolibri_no_match">Aramanızla eşleşen kurs yok.</string>
+    <string name="k2go_kolibri_size_unknown">Boyut bilinmiyor</string>
+    <string name="k2go_kolibri_confirm_sub">Seçtiğiniz kurslar.</string>
+    <string name="k2go_kolibri_fit_unknown">Bazı boyutlar yayınlanmadığı için toplam daha yüksek olabilir. Devam edebilirsiniz.</string>
+    <string name="k2go_kolibri_takes_body">Kurslar çok büyük olabilir ve özellikle yavaş bağlantıda indirilmesi uzun sürebilir. İndirme, sisteminiz kurulduktan sonra başlar, arka planda sürer ve kesilirse kaldığı yerden devam eder.</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s dilinde henüz kurs yok · Dili değiştir</string>
 </resources>

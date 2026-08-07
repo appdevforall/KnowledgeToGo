@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Añadiendo cursos</string>
     <string name="k2go_kolibri_notif_cancel">Cancelar</string>
     <string name="k2go_kolibri_seeding_title">Añadiendo tus cursos</string>
+    <string name="k2go_kolibri_unavailable">No se pudo leer el catálogo de cursos incluido en la aplicación.</string>
+    <string name="k2go_kolibri_no_match">Ningún curso coincide con tu búsqueda.</string>
+    <string name="k2go_kolibri_size_unknown">Tamaño desconocido</string>
+    <string name="k2go_kolibri_confirm_sub">Los cursos que elegiste.</string>
+    <string name="k2go_kolibri_fit_unknown">Algunos tamaños no están publicados, así que el total puede ser mayor. Puedes continuar.</string>
+    <string name="k2go_kolibri_takes_body">Los cursos pueden ser muy grandes y tardar mucho en descargarse, sobre todo con una conexión lenta. La descarga empieza después de instalar tu sistema, sigue en segundo plano y se reanuda si se interrumpe.</string>
+    <string name="k2go_kolibri_none_in_lang">Aún no hay cursos en %1$s · Cambiar idioma</string>
 </resources>

@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">コースを追加中</string>
     <string name="k2go_kolibri_notif_cancel">キャンセル</string>
     <string name="k2go_kolibri_seeding_title">コースを追加中</string>
+    <string name="k2go_kolibri_unavailable">アプリに含まれるコースカタログを読み込めませんでした。</string>
+    <string name="k2go_kolibri_no_match">検索に一致するコースはありません。</string>
+    <string name="k2go_kolibri_size_unknown">サイズ不明</string>
+    <string name="k2go_kolibri_confirm_sub">選択したコース。</string>
+    <string name="k2go_kolibri_fit_unknown">一部のサイズが公開されていないため、合計はこれより大きくなる場合があります。続行できます。</string>
+    <string name="k2go_kolibri_takes_body">コースは非常に大きく、特に低速な接続ではダウンロードに時間がかかることがあります。ダウンロードはシステムのインストール後に始まり、バックグラウンドで続行し、中断しても再開します。</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s のコースはまだありません · 言語を変更</string>
 </resources>

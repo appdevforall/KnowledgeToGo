@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Menambahkan kursus</string>
     <string name="k2go_kolibri_notif_cancel">Batal</string>
     <string name="k2go_kolibri_seeding_title">Menambahkan kursus Anda</string>
+    <string name="k2go_kolibri_unavailable">Katalog kursus yang disertakan dengan aplikasi tidak dapat dibaca.</string>
+    <string name="k2go_kolibri_no_match">Tidak ada kursus yang cocok dengan pencarian Anda.</string>
+    <string name="k2go_kolibri_size_unknown">Ukuran tidak diketahui</string>
+    <string name="k2go_kolibri_confirm_sub">Kursus yang Anda pilih.</string>
+    <string name="k2go_kolibri_fit_unknown">Beberapa ukuran tidak dipublikasikan, jadi totalnya bisa lebih besar. Anda dapat melanjutkan.</string>
+    <string name="k2go_kolibri_takes_body">Kursus bisa sangat besar dan lama diunduh, terutama pada koneksi lambat. Unduhan dimulai setelah sistem Anda terpasang, terus berjalan di latar belakang, dan berlanjut jika terputus.</string>
+    <string name="k2go_kolibri_none_in_lang">Belum ada kursus dalam bahasa %1$s · Ubah bahasa</string>
 </resources>

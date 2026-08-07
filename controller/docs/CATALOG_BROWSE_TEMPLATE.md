@@ -33,6 +33,14 @@ counts, and its own `*Groups` map — do not redesign the screen.
   button** (that is the button-in-button we removed). Same control in the index and in the detail.
 - **No redundant language pill.** The language lives only in the selector. Do not repeat it next to the
   title.
+- **One content language for the whole wizard, inherited — never "all languages".** The selector opens
+  on the language the wizard already settled on (`SetupLibraryActivity.getContentLang()`, backed by the
+  `selected_lang_minimal` preference the install path reads), so the list arrives already narrowed to
+  what the user reads. Changing it here changes it for every catalog; the pinned reset row is
+  `Follow system language`, not an "all languages" catch-all — "all" is not a language, and a mixed-
+  language list is the thing the selector exists to prevent. A content type whose catalog is empty in
+  the current language says so on one tappable line that opens the picker; it does not fall back to
+  showing everything.
 - **Storage = one line + thin bar**: `used · free · selection N`. Context, not a hero.
 
 ### Category index — show less, then search / see-all
@@ -52,6 +60,18 @@ counts, and its own `*Groups` map — do not redesign the screen.
   header light on small screens / long locales like es, de). `All` + one chip per group; filters
   client-side; `All` resets.
 - **Tap target ≥ 48dp** (even if the pill looks smaller).
+- **The groups are ours, not the catalog's.** They are an *artificial* grouping we author — kitchen,
+  living room, bedroom — so a long list can be crossed in big jumps: **five groups plus `All`**, never
+  a long tail. They do not have to exist in the source data, and a content type whose catalog ships no
+  taxonomy at all (Kolibri: Studio returns `categories: []`) groups its **items** instead. Aim for five
+  so nothing has to fall into an "Other".
+- **The language is never a chip.** It filters from the selector in the header; putting it in both
+  places duplicates one axis and steals the row from the groups.
+- **A row that would hold only `All` ships hidden**, not visible. While the groups are still being
+  authored the chip row filters nothing, and a second line of pills competing with the sort toggles for
+  the same weight is cost without a job — so the row is `gone` in the layout (one attribute to flip) while
+  the code that fills it stays live. The language selector, the search field, the sorts and the storage
+  bar all stay. What is never allowed is filling the row with some other axis to make it look populated.
 
 ### Item list (inside a category) — a selectable list with a budget
 - **Flat rows, not cards.** Whole-row tap toggles selection; leading checkbox shows state; name +
@@ -60,6 +80,26 @@ counts, and its own `*Groups` map — do not redesign the screen.
 - **Sort vs. group is one axis at a time** (mutually exclusive toggles): `By size` / `A–Z` are **flat**
   (one item per row, no collapse); `Grouped` is **by subject** (language-dependent) and is the only place
   variant-collapse lives (editions/sizes as chips).
+- **The sort toggles belong to this screen, and only to this screen.** They are part of the item list
+  because this is where rows carry a size and a checkbox; the category index has neither and must not
+  grow them (it orders itself by count and groups by theme). Within the item list they are **required**,
+  not a nicety: this is the screen the user has to read row by row. `Grouped` is the one toggle that
+  drops out when there is nothing to collapse — ZIM hides it outside Wikipedia, Kolibri never shows it,
+  because a channel has no editions. Tapping the active toggle reverses it (`▲`/`▼`, `A–Z` ⇄ `Z–A`);
+  tapping the other switches axis and starts at its natural direction. Items whose size is unpublished
+  sort **last** in both size directions — they have no position on that axis, and first would read as
+  "smallest".
+- **`By size`, largest first, is the default.** This screen spends a budget, so the rows that decide
+  whether the budget survives belong at the top. `A–Z` is for finding a title you already know, which is
+  what the search field is for.
+- **Sort pills are thinner than filter chips** — ZIM's metrics (12dp/8dp padding, `bodySmall`, no
+  minimum height), which fall under the 48dp target the chips keep. Copied deliberately so Kolibri
+  matches ZIM today; if the target is raised it must be raised for both at once, as one styling pass, not
+  drifted into on one screen.
+- **A content type with no category index lands straight here**, so this screen must be complete on its
+  own: selector, search, chip row, sorts, count, storage and the fixed action. What it must *not* do is
+  borrow the index's furniture — storage stays at the **bottom** in the item list (it is at the top in the
+  index), and the theme chips stay a filter rather than becoming a hierarchy.
 - **Storage guard**: disable/grey items that don't fit and say why (`Not enough space — needs X, Y free`).
 - **Count = list metadata, on its own line.** Right-aligned above the list, **not** at the end of the
   scrollable chip row (it would wrap in es/de — see `k2go-count-overflow-v1`). Live: `N items` →

@@ -121,7 +121,14 @@ public class GetMoreHubFragment extends Fragment {
         boolean full = (getActivity() instanceof SetupLibraryActivity)
                 && ((SetupLibraryActivity) getActivity()).getSelectedTier() == InstallationPlanner.Tier.FULL;
         if (full) available.add("books");
-        // courses: hidden until determined
+        // ADFA-4954: Kolibri ships in Full and Standard, not in Basic, so Courses is offered
+        // for those two. Offering it in Basic would let the user pick content that would have
+        // nowhere to land, and the post-install drain would fail with nothing to explain it.
+        InstallationPlanner.Tier tier = (getActivity() instanceof SetupLibraryActivity)
+                ? ((SetupLibraryActivity) getActivity()).getSelectedTier() : null;
+        if (tier == InstallationPlanner.Tier.FULL || tier == InstallationPlanner.Tier.STANDARD) {
+            available.add("courses");
+        }
     }
 
     @Override
@@ -166,6 +173,9 @@ public class GetMoreHubFragment extends Fragment {
         }
         gb += MapsWishlist.mb(requireContext()) / 1024.0;     // ADFA-4910: count the banked maps size
         gb += BooksWishlist.size(requireContext()) * 0.003;
+        // ADFA-4954: the banked Courses order carries real catalog bytes, so it needs no estimate.
+        gb += org.iiab.controller.kolibri.data.KolibriWishlist.totalBytes(requireContext())
+                / (1024.0 * 1024.0 * 1024.0);
         return gb;
     }
 

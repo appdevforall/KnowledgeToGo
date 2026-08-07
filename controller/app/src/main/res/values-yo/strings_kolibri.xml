@@ -8,4 +8,11 @@
     <string name="k2go_kolibri_dl_notif_title">Ń fi àwọn ẹ̀kọ́ kún</string>
     <string name="k2go_kolibri_notif_cancel">Fagilé</string>
     <string name="k2go_kolibri_seeding_title">Ń fi àwọn ẹ̀kọ́ rẹ kún</string>
+    <string name="k2go_kolibri_unavailable">A kò lè ka àkójọ àwọn ẹ̀kọ́ tí ó wà nínú áàpù náà.</string>
+    <string name="k2go_kolibri_no_match">Kò sí ẹ̀kọ́ tí ó bá ìwádìí rẹ mu.</string>
+    <string name="k2go_kolibri_size_unknown">Ìwọ̀n kò mọ̀</string>
+    <string name="k2go_kolibri_confirm_sub">Àwọn ẹ̀kọ́ tí o yàn.</string>
+    <string name="k2go_kolibri_fit_unknown">Àwọn ìwọ̀n kan kò tí ì jáde, nítorí náà àpapọ̀ lè pọ̀ jù. O lè tẹ̀síwájú.</string>
+    <string name="k2go_kolibri_takes_body">Àwọn ẹ̀kọ́ lè tóbi gan-an kí ó sì gba àkókò gígùn láti gbà sílẹ̀, pàápàá lórí ìsopọ̀ lọ́ra. Ìgbàsílẹ̀ máa bẹ̀rẹ̀ lẹ́yìn tí a ti fi ẹ̀rọ rẹ sílẹ̀, ó máa tẹ̀síwájú ní ẹ̀yìn, ó sì máa tún bẹ̀rẹ̀ bí ó bá dá.</string>
+    <string name="k2go_kolibri_none_in_lang">Kò sí ìdánilẹ́kọ̀ọ́ ní %1$s síbẹ̀ · Yí èdè padà</string>
 </resources>
