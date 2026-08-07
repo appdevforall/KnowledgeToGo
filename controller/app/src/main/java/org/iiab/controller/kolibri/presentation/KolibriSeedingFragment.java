@@ -105,24 +105,19 @@ public final class KolibriSeedingFragment extends Fragment {
     /**
      * "4.2 GB of 61 GB · 2 of 5 items · resumes if it drops", reusing the ZIM
      * format so the two streams read identically when both are on screen.
+     *
+     * <p>The byte figures come from the state, not from a second sum computed
+     * here: the caption and the progress bar have to agree, and they did not when
+     * each derived its own total.
      */
     private String detailLine(KolibriSeedState s) {
-        long total = 0L;
-        long done = 0L;
-        int terminal = 0;
-        for (KolibriSeedState.Item i : s.items()) {
-            total += i.bytes();
-            if (i.isTerminal()) {
-                done += i.bytes();
-                terminal++;
-            }
-        }
         String speed = s.speedBytesPerSec() > 0
                 ? "  " + ByteFormatter.toHuman(s.speedBytesPerSec())
                 + getString(R.string.k2go_rate_per_second)
                 : "";
         return getString(R.string.k2go_zim_prep_detail_fmt,
-                ByteFormatter.toHuman(done), ByteFormatter.toHuman(total), speed,
-                terminal, s.size());
+                ByteFormatter.toHuman(s.transferredBytes()),
+                ByteFormatter.toHuman(s.totalBytes()),
+                speed, s.terminalCount(), s.size());
     }
 }

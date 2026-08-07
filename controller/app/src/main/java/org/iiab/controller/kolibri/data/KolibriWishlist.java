@@ -46,6 +46,11 @@ import java.util.List;
  *       pick and the drain still reports a size.</li>
  * </ul>
  *
+ * <p>Every read re-parses the stored JSON, so callers on the main thread should
+ * read once per pass rather than per use. The underlying {@code SharedPreferences}
+ * is memory-cached after the first load, so this is parsing cost rather than disk
+ * I/O — cheap for a handful of channels, but not free inside a render loop.
+ *
  * <p><b>{@code nodeIds} absent means the whole channel</b>, and it is never
  * written as an empty array. Kolibri reads {@code node_ids: []} as zero nodes and
  * completes successfully having transferred nothing; keeping the empty case

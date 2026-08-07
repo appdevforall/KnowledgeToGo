@@ -476,7 +476,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // ADFA-4954: read the snapshot once so the row and the completion checks below agree —
         // it is published from the service's callbacks and can change between two reads.
         KolibriSeedState kolibriState = KolibriSeedRepository.get().current();
-        boolean kolibriShown = kolibriState.hasSession() || KolibriWishlist.size(this) > 0;
+        // Read once: size() re-parses the stored JSON on every call, and render()
+        // runs on every state change — roughly once a second while a job is live.
+        int kolibriBanked = KolibriWishlist.size(this);
+        boolean kolibriShown = kolibriState.hasSession() || kolibriBanked > 0;
 
         sections.removeAllViews();
         // ADFA-4900: maps (proot) runs first in the pipeline, so its row leads the list.
@@ -496,7 +499,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         if (kolibriShown) sections.addView(streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
                 kolibriState.hasSession(), kolibriState.statusOrdinals(),
                 KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
-                kolibriState.hasSession() && kolibriState.isComplete(), KolibriWishlist.size(this)));
+                kolibriState.hasSession() && kolibriState.isComplete(), kolibriBanked));
 
         // Overall state. Completion is stage-based.
         ModuleQueueState mq = ModuleQueueRepository.get().current();

@@ -229,6 +229,48 @@ public final class KolibriSeedState {
         return running && index >= 0 && index < items.size() ? items.get(index) : null;
     }
 
+    /** Sum of every queued channel's published size. 0 when none is known. */
+    public long totalBytes() {
+        long total = 0L;
+        for (Item i : items) {
+            total += i.bytes();
+        }
+        return total;
+    }
+
+    /**
+     * Bytes considered transferred so far: every terminal item in full, plus the
+     * fraction of the one in flight.
+     *
+     * <p>The single source for both the progress bar and the "X of Y" caption.
+     * They used to compute this separately, and the caption left out the in-flight
+     * fraction — so a 60 GB channel at the halfway mark showed a bar at 51 % above
+     * a line reading "3 GB of 64 GB". Two numbers contradicting each other on one
+     * screen.
+     */
+    public long transferredBytes() {
+        long done = 0L;
+        for (Item i : items) {
+            if (i.isTerminal()) {
+                done += i.bytes();
+            } else if (i.status() == Status.ACTIVE && i.percent() > 0) {
+                done += i.bytes() * i.percent() / 100L;
+            }
+        }
+        return done;
+    }
+
+    /** How many items have finished, successfully or not. */
+    public int terminalCount() {
+        int n = 0;
+        for (Item i : items) {
+            if (i.isTerminal()) {
+                n++;
+            }
+        }
+        return n;
+    }
+
     /**
      * Overall progress, 0-100, weighted by published size.
      *
@@ -242,28 +284,11 @@ public final class KolibriSeedState {
         if (items.isEmpty()) {
             return 0;
         }
-        long total = 0L;
-        for (Item i : items) {
-            total += i.bytes();
-        }
+        long total = totalBytes();
         if (total <= 0L) {
-            int terminal = 0;
-            for (Item i : items) {
-                if (i.isTerminal()) {
-                    terminal++;
-                }
-            }
-            return terminal * 100 / items.size();
+            return terminalCount() * 100 / items.size();
         }
-        long done = 0L;
-        for (Item i : items) {
-            if (i.isTerminal()) {
-                done += i.bytes();
-            } else if (i.status() == Status.ACTIVE && i.percent() > 0) {
-                done += i.bytes() * i.percent() / 100L;
-            }
-        }
-        return (int) Math.min(100L, done * 100L / total);
+        return (int) Math.min(100L, transferredBytes() * 100L / total);
     }
 
     /**

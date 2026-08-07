@@ -245,9 +245,13 @@ the whole rule.
   the new structure, legacy when we touch it. We are not touching them.
 - **D6. The fit check needs no box.** Studio's `published_size` plus `StatFs` on
   `getFilesDir()` — which `ZimLandingFragment` already does — answers "does this
-  fit?" in the wizard. `/kolibri/estimate` keeps its role in Get More, where it
-  contributes what the app cannot know: files already on disk and shared between
-  channels by checksum, and Kolibri's own 250 MB `MINIMUM_DISK_SPACE` cushion.
+  fit?" in the wizard.
+
+  *Amended after device testing — see "Correction to D6" below.* The original
+  text claimed `/kolibri/estimate` would contribute the checksum-shared-files
+  discount and Kolibri's cushion in the Get More door. It cannot: it answers only
+  for channels already installed, and returns bytes still outstanding rather than
+  a channel's size.
 
 ### The three layers, and why the app owns the Studio client
 
@@ -318,6 +322,20 @@ More path, not a reason to route the wizard through the box.
   `SetupProgressActivity.orchestrateStep()` calls them in a fixed order, so the
   first one starts and the rest wait.
 
+  **Known consequence: the feature packages now depend on each other.**
+  `org.iiab.controller.kolibri` imports from `redesign` (the two sibling services
+  and `MapsProvisioner` for the guard, plus `ProvisioningChecklist` and
+  `SetupProgressActivity` for the UI), and `redesign` imports from `kolibri` for
+  the integration. That cycle means the Kolibri package is not self-contained,
+  which is what CLAUDE.md's one-feature-one-package rule is trying to buy.
+
+  Part of it is inherent — a guard that serialises three streams has to know
+  about all three — and part is legitimate reuse. The clean form would be a
+  shared "content stream" port that all three implement, so each defers to an
+  interface rather than to its siblings by name. That is a refactor across three
+  features and is not attempted here; recorded so the next person to touch this
+  does not mistake it for an accident.
+
   Rejected for now: enforcing the queue inside `jobs.ts`. That is the deeper fix
   and would let `routes.ts:215`'s manual workaround be retired, but it changes
   shared infrastructure and the behaviour of two features that did not ask for
@@ -360,7 +378,13 @@ largest risk in the design and it is now closed.
 bundled asset said version 2, 1 740 285 bytes, 37 resources; the device reported
 version 2, 1 740 285 bytes, 37 files. Byte for byte.
 
-### Defects found, none of them fixed yet
+### Defects found
+
+All four are in the in-server dashboard (`static/dashboard`), none in the app,
+and none is fixed yet. They are deliberately **not** part of the Android PRs:
+they belong to a separate dashboard change, which also has to bump the version in
+`static/dashboard/CHANGELOG.md` because two of them alter what the REST surface
+returns.
 
 1. **`freeSpace` is always `null`.** `kolibri.query.ts` calls
    `/api/device/freespace/` without a query parameter, but `FreeSpaceView.list`
