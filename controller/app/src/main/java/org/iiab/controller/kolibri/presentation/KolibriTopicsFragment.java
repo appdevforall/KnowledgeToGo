@@ -24,11 +24,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import org.iiab.controller.R;
@@ -120,21 +122,74 @@ public final class KolibriTopicsFragment extends Fragment {
         catalogVm = provider.get(KolibriCatalogViewModel.class);
         treeVm = provider.get(KolibriTopicTreeViewModel.class);
 
-        channel = resolveChannel();
-        if (channel == null) {
-            // Nothing to browse — the catalog was not loaded, or the id is stale.
-            // Leaving is the only honest response; an empty tree screen would lie.
-            // Posted rather than immediate: popping the stack from inside
-            // onViewCreated runs during the transaction that put us here.
-            v.post(this::leave);
-            return;
-        }
-        picks = catalogVm.subtreesFor(channel.id());
-
         back.setText(R.string.k2go_back);
         back.setOnClickListener(x -> goUpOrLeave());
         done.setOnClickListener(x -> commitAndLeave());
 
+        // The system gesture has to mean what the on-screen Back means, or the two
+        // disagree from level three: one walks up the tree, the other abandons it.
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (!treeVm.up()) {
+                            setEnabled(false);
+                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                        }
+                    }
+                });
+
+        bindChannel(v);
+    }
+
+    /**
+     * Resolves the channel, waiting for the catalog if it is still loading.
+     *
+     * <p>It can legitimately be mid-reload: changing the language re-runs the query,
+     * and a chevron tapped before that lands would otherwise find an empty result
+     * and bounce the user straight back out with no explanation.
+     */
+    private void bindChannel(final View v) {
+        channel = resolveChannel();
+        if (channel != null) {
+            start();
+            return;
+        }
+        KolibriCatalogUiState s = catalogVm.state().getValue();
+        if (s != null && !s.isLoading()) {
+            // The catalog is settled and the channel is not in it: the id is stale.
+            // Posted rather than immediate — popping the stack from inside
+            // onViewCreated runs during the transaction that put us here.
+            v.post(this::leave);
+            return;
+        }
+        showStatus(getString(R.string.k2go_zim_loading), false);
+        catalogVm.state().observe(getViewLifecycleOwner(),
+                new Observer<KolibriCatalogUiState>() {
+                    @Override
+                    public void onChanged(KolibriCatalogUiState settled) {
+                        if (settled == null || settled.isLoading()) {
+                            return;
+                        }
+                        catalogVm.state().removeObserver(this);
+                        channel = resolveChannel();
+                        if (channel == null) {
+                            leave();
+                        } else {
+                            start();
+                        }
+                    }
+                });
+    }
+
+    /**
+     * Begins browsing. The tree observer is registered here rather than in
+     * {@code onViewCreated} because the view model is activity-scoped and may
+     * already hold a level from an earlier visit — rendering rows before the
+     * channel is known would build taps that go nowhere.
+     */
+    private void start() {
+        picks = catalogVm.subtreesFor(channel.id());
         treeVm.state().observe(getViewLifecycleOwner(), this::render);
         treeVm.open(channel);
         updateStorage();
@@ -256,6 +311,13 @@ public final class KolibriTopicsFragment extends Fragment {
         final boolean picked = picks.contains(node.id());
         final boolean covered = !picked && picks.covers(node.id(), ancestors);
 
+        // The storage guard the item list owes, with one difference from the channel
+        // row: a subtree whose size Studio did not publish cannot be declared too
+        // big. Refusing on a figure we do not have would block content that fits.
+        // Already-picked rows stay enabled so a mistake can always be undone.
+        final boolean tooBig = !picked && !covered && node.hasSubtreeSize()
+                && freeMb > 0L && mb(node.subtreeBytes()) > freeMb;
+
         final LinearLayout content = new LinearLayout(requireContext());
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(px(12), px(10), px(12), px(10));
@@ -270,7 +332,7 @@ public final class KolibriTopicsFragment extends Fragment {
 
         final CheckBox cb = new CheckBox(requireContext());
         cb.setChecked(picked || covered);
-        cb.setEnabled(!covered);
+        cb.setEnabled(!covered && !tooBig);
         cb.setClickable(false);
         cb.setFocusable(false);
         top.addView(cb);
@@ -311,13 +373,23 @@ public final class KolibriTopicsFragment extends Fragment {
         if (covered) {
             content.addView(note(getString(R.string.k2go_kolibri_included),
                     R.color.k2go_muted));
+        } else if (tooBig) {
+            // Same sentence the channel row uses, so "doesn't fit" reads the same
+            // wherever the user meets it.
+            content.addView(note(getString(R.string.k2go_zc_nospace,
+                            ByteFormatter.toHuman(node.subtreeBytes()),
+                            ByteFormatter.humanMb(freeMb)),
+                    R.color.k2go_amber_text));
         } else if (!node.hasSubtreeSize()) {
             // Say it once, on the row, rather than letting a blank size imply zero.
             content.addView(note(getString(R.string.k2go_kolibri_size_unknown),
                     R.color.k2go_muted));
         }
 
-        if (!covered) {
+        // A row that does not fit still opens: going deeper is exactly how an
+        // over-large folder becomes installable, so the chevron above stays live
+        // while the row itself refuses to be picked whole.
+        if (!covered && !tooBig) {
             content.setOnClickListener(x -> {
                 picks = picks.contains(node.id())
                         ? picks.remove(node.id())

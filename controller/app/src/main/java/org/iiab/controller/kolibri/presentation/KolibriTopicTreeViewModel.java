@@ -9,6 +9,9 @@
  */
 package org.iiab.controller.kolibri.presentation;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -17,11 +20,7 @@ import org.iiab.controller.kolibri.domain.Channel;
 import org.iiab.controller.kolibri.domain.GetTopicTreeUseCase;
 import org.iiab.controller.kolibri.domain.TopicNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -31,48 +30,29 @@ import java.util.concurrent.Executors;
  * <p>Deliberately narrow. It does <em>not</em> own what the user picked — that is
  * {@link KolibriCatalogViewModel}, which already owns "the selection" and has to
  * survive the trip to the confirm screen. This one owns only where in the tree the
- * user is, so the two can be reasoned about separately.
+ * user is, and it delegates even that bookkeeping to {@link TopicTreeCursor} so the
+ * path, the level cache and the fetch ticket can be tested without a looper.
  *
- * <p>Two things here exist because of the network rather than the design:
- *
- * <ul>
- *   <li><b>Levels are cached.</b> Going back up must not re-fetch: on the
- *       connections this product targets a round trip is seconds, and the tree
- *       does not change while a wizard screen is open. The cache is capped so a
- *       deep browse cannot grow without bound on a phone.</li>
- *   <li><b>Late answers are dropped.</b> Each fetch carries a ticket; if the user
- *       has navigated since, the answer is discarded instead of published. Without
- *       this a slow request lands on top of the level the user is now looking
- *       at — the same class of bug as the {@code postValue} race already fixed in
- *       {@code KolibriSeedRepository}.</li>
- * </ul>
+ * <p><b>Everything is published on the main thread.</b> Not for thread-safety —
+ * {@code postValue} is safe — but because the ticket check and the publish have to
+ * be one indivisible step. Checking on the IO thread and then handing the value to
+ * {@code postValue} leaves a window where the user navigates in between, and a
+ * pending {@code postValue} delivered after a {@code setValue} overwrites it. That
+ * exact interleaving is what went wrong in {@code KolibriSeedRepository}, so here
+ * the answer is carried to the main looper and re-checked there.
  */
 public class KolibriTopicTreeViewModel extends ViewModel {
 
     /** Enough for a deep browse; a Kolibri tree is rarely more than a few levels. */
     private static final int MAX_CACHED_LEVELS = 32;
 
-    /** One step of the path: the node and the label the breadcrumb shows for it. */
-    private static final class Crumb {
-        final String id;
-        final String title;
-
-        Crumb(String id, String title) {
-            this.id = id;
-            this.title = title;
-        }
-    }
-
     private final GetTopicTreeUseCase getTree;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler main = new Handler(Looper.getMainLooper());
     private final MutableLiveData<KolibriTopicsUiState> state = new MutableLiveData<>();
-
-    private final Map<String, TopicNode> cache = new LinkedHashMap<>();
-    private final List<Crumb> path = new ArrayList<>();
+    private final TopicTreeCursor cursor = new TopicTreeCursor(MAX_CACHED_LEVELS);
 
     private String channelId = "";
-    /** Written on the main thread, read on the executor — hence volatile. */
-    private volatile long ticket = 0L;
 
     public KolibriTopicTreeViewModel(GetTopicTreeUseCase getTree) {
         this.getTree = getTree;
@@ -98,17 +78,12 @@ public class KolibriTopicTreeViewModel extends ViewModel {
         if (channel == null) {
             return;
         }
-        if (channel.id().equals(channelId) && !path.isEmpty()) {
-            publishCurrent();
+        if (cursor.isOn(channel.id())) {
+            load();
             return;
         }
         channelId = channel.id();
-        // Invalidate any in-flight answer for the previous channel before dropping
-        // its levels, or a late reply could repopulate the cache of a tree we left.
-        ticket++;
-        clearCache();
-        path.clear();
-        path.add(new Crumb(channel.rootNodeId(), channel.name()));
+        cursor.reset(channel.id(), channel.rootNodeId(), channel.name());
         load();
     }
 
@@ -117,7 +92,7 @@ public class KolibriTopicTreeViewModel extends ViewModel {
         if (topic == null || topic.isLeaf()) {
             return;
         }
-        path.add(new Crumb(topic.id(), topic.title()));
+        cursor.push(topic.id(), topic.title());
         load();
     }
 
@@ -128,120 +103,69 @@ public class KolibriTopicTreeViewModel extends ViewModel {
      *         gesture fall through to leaving the screen
      */
     public boolean up() {
-        if (path.size() <= 1) {
+        if (!cursor.pop()) {
             return false;
         }
-        path.remove(path.size() - 1);
         load();
         return true;
     }
 
     /** Re-reads the current level, forgetting any cached copy of it. */
     public void retry() {
-        if (path.isEmpty()) {
+        String id = cursor.currentId();
+        if (id == null) {
             return;
         }
-        forget(current().id);
+        cursor.forget(id);
         load();
     }
 
-    /** Ids above the level on screen, outermost first. Empty at the root. */
-    private List<String> ancestorsOfCurrent() {
-        if (path.size() <= 1) {
-            return Collections.emptyList();
-        }
-        List<String> out = new ArrayList<>();
-        for (int i = 0; i < path.size() - 1; i++) {
-            out.add(path.get(i).id);
-        }
-        return out;
-    }
-
-    private List<String> trail() {
-        List<String> out = new ArrayList<>();
-        for (Crumb c : path) {
-            out.add(c.title);
-        }
-        return out;
-    }
-
-    private Crumb current() {
-        return path.get(path.size() - 1);
-    }
-
-    /** Publishes the cached level without touching the network. */
-    private void publishCurrent() {
-        TopicNode cached = cached(current().id);
-        if (cached != null) {
-            state.setValue(KolibriTopicsUiState.level(
-                    cached, current().title, ancestorsOfCurrent(), trail()));
-        } else {
-            load();
-        }
-    }
-
+    /**
+     * Shows the current level, from the cache when it is there and from Studio when
+     * it is not. Must be called on the main thread.
+     */
     private void load() {
-        final Crumb here = current();
-        final List<String> ancestors = ancestorsOfCurrent();
-        final List<String> trail = trail();
+        final String id = cursor.currentId();
+        if (id == null) {
+            return;
+        }
+        final String levelTitle = cursor.currentTitle();
+        final List<String> ancestors = cursor.ancestorIds();
+        final List<String> trail = cursor.trail();
 
-        TopicNode cached = cached(here.id);
-        if (cached != null) {
-            state.setValue(KolibriTopicsUiState.level(cached, here.title, ancestors, trail));
+        TopicNode hit = cursor.cached(id);
+        if (hit != null) {
+            // A cached level is not a fetch, so it takes no ticket — but it does
+            // make any fetch still in flight stale, or that answer would replace
+            // the level the user just came back to.
+            cursor.begin();
+            state.setValue(KolibriTopicsUiState.level(hit, levelTitle, ancestors, trail));
             return;
         }
 
-        final long mine = ++ticket;
-        state.setValue(KolibriTopicsUiState.loading(here.title, trail));
+        final long mine = cursor.begin();
+        state.setValue(KolibriTopicsUiState.loading(levelTitle, trail));
         executor.execute(() -> {
-            GetTopicTreeUseCase.Result r = getTree.execute(here.id);
-            // The user may have moved on while this was in flight; a stale answer
-            // must not overwrite the level they are looking at now.
-            if (mine != ticket) {
-                return;
-            }
-            if (r.isUnavailable()) {
-                state.postValue(KolibriTopicsUiState.unavailable(here.title, trail));
-                return;
-            }
-            remember(here.id, r.node());
-            state.postValue(KolibriTopicsUiState.level(
-                    r.node(), here.title, ancestors, trail));
+            final GetTopicTreeUseCase.Result r = getTree.execute(id);
+            // Check and publish in one step, on the thread that publishes.
+            main.post(() -> {
+                if (!cursor.isCurrent(mine)) {
+                    return;
+                }
+                if (r.isUnavailable()) {
+                    state.setValue(KolibriTopicsUiState.unavailable(levelTitle, trail));
+                    return;
+                }
+                cursor.remember(id, r.node());
+                state.setValue(
+                        KolibriTopicsUiState.level(r.node(), levelTitle, ancestors, trail));
+            });
         });
-    }
-
-    // The cache is written on the executor and read on the main thread, so every
-    // access goes through these three and nothing touches the map directly.
-
-    private synchronized TopicNode cached(String id) {
-        return cache.get(id);
-    }
-
-    private synchronized void forget(String id) {
-        cache.remove(id);
-    }
-
-    private synchronized void clearCache() {
-        cache.clear();
-    }
-
-    /** Caches a level, evicting the oldest once the cap is reached. */
-    private synchronized void remember(String id, TopicNode node) {
-        if (node == null) {
-            return;
-        }
-        if (cache.size() >= MAX_CACHED_LEVELS) {
-            java.util.Iterator<String> it = cache.keySet().iterator();
-            if (it.hasNext()) {
-                it.next();
-                it.remove();
-            }
-        }
-        cache.put(id, node);
     }
 
     @Override
     protected void onCleared() {
+        main.removeCallbacksAndMessages(null);
         executor.shutdownNow();
     }
 }
