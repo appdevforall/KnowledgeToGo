@@ -15,7 +15,9 @@ import androidx.lifecycle.ViewModel;
 
 import org.iiab.controller.kolibri.domain.CatalogQuery;
 import org.iiab.controller.kolibri.domain.Channel;
+import org.iiab.controller.kolibri.domain.ChannelSelection;
 import org.iiab.controller.kolibri.domain.GetChannelCatalogUseCase;
+import org.iiab.controller.kolibri.domain.PickedSubtrees;
 
 import java.util.Collections;
 import java.util.List;
@@ -183,16 +185,65 @@ public class KolibriCatalogViewModel extends ViewModel {
     private final java.util.LinkedHashMap<String, Channel> picked =
             new java.util.LinkedHashMap<>();
 
+    /**
+     * Per-channel narrowing: which subtrees of a chosen channel to import.
+     *
+     * <p>A channel with no entry here, or an empty one, means the whole channel —
+     * the same reading {@link PickedSubtrees#toSelection} applies, so the
+     * {@code node_ids: []} that Kolibri treats as zero nodes can never be built.
+     */
+    private final java.util.LinkedHashMap<String, PickedSubtrees> subtrees =
+            new java.util.LinkedHashMap<>();
+
     /** Adds or removes a channel. Returns true when it is now selected. */
     public boolean toggle(Channel c) {
         if (c == null) {
             return false;
         }
         if (picked.remove(c.id()) != null) {
+            // Un-ticking the channel drops its topic picks too. Keeping them would
+            // leave a narrowing attached to something no longer being downloaded,
+            // ready to reappear on the next tap without the user asking for it.
+            subtrees.remove(c.id());
             return false;
         }
         picked.put(c.id(), c);
         return true;
+    }
+
+    /** Selects a channel whole, whether or not it already was. Idempotent. */
+    public void select(Channel c) {
+        if (c != null) {
+            picked.put(c.id(), c);
+        }
+    }
+
+    /** What was picked inside a channel. Never null; empty means the whole channel. */
+    public PickedSubtrees subtreesFor(String channelId) {
+        PickedSubtrees p = channelId == null ? null : subtrees.get(channelId);
+        return p == null ? PickedSubtrees.empty() : p;
+    }
+
+    /**
+     * Records a narrowing for a channel, and selects the channel if it was not
+     * already — choosing topics inside something is a clear enough statement that
+     * you want it, and leaving the row unticked would silently discard the work.
+     */
+    public void setSubtrees(Channel channel, PickedSubtrees p) {
+        if (channel == null) {
+            return;
+        }
+        if (p == null || p.isEmpty()) {
+            subtrees.remove(channel.id());
+        } else {
+            subtrees.put(channel.id(), p);
+            picked.put(channel.id(), channel);
+        }
+    }
+
+    /** True when the channel is queued with only part of its tree. */
+    public boolean isNarrowed(String channelId) {
+        return !subtreesFor(channelId).isEmpty();
     }
 
     public boolean isPicked(String channelId) {
@@ -208,11 +259,16 @@ public class KolibriCatalogViewModel extends ViewModel {
         return picked.size();
     }
 
-    /** Sum of the published sizes of everything chosen. */
+    /**
+     * Sum of what will actually be downloaded: a narrowed channel contributes its
+     * picked subtrees, not the whole published size, or the screen would quote a
+     * figure many times what the user asked for.
+     */
     public long selectionBytes() {
         long total = 0L;
         for (Channel c : picked.values()) {
-            total += c.publishedSize();
+            PickedSubtrees p = subtreesFor(c.id());
+            total += p.isEmpty() ? c.publishedSize() : p.totalBytes();
         }
         return total;
     }
@@ -220,15 +276,34 @@ public class KolibriCatalogViewModel extends ViewModel {
     /** True when any chosen channel has no published size, so the total is a floor. */
     public boolean selectionHasUnknownSize() {
         for (Channel c : picked.values()) {
-            if (!c.hasKnownSize()) {
+            PickedSubtrees p = subtreesFor(c.id());
+            if (p.isEmpty() ? !c.hasKnownSize() : p.hasUnknownSize()) {
                 return true;
             }
         }
         return false;
     }
 
+    /** The request for one chosen channel: the whole thing, or the picked subtrees. */
+    public ChannelSelection selectionFor(Channel c) {
+        return subtreesFor(c.id()).toSelection(c.id());
+    }
+
+    /** Bytes attributable to one chosen channel, under the current narrowing. */
+    public long bytesFor(Channel c) {
+        PickedSubtrees p = subtreesFor(c.id());
+        return p.isEmpty() ? c.publishedSize() : p.totalBytes();
+    }
+
+    /** True when the figure for this channel is a floor rather than a number. */
+    public boolean sizeUnknownFor(Channel c) {
+        PickedSubtrees p = subtreesFor(c.id());
+        return p.isEmpty() ? !c.hasKnownSize() : p.hasUnknownSize();
+    }
+
     public void clearSelection() {
         picked.clear();
+        subtrees.clear();
     }
 
     @Override

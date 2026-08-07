@@ -87,10 +87,14 @@ public final class KolibriConfirmFragment extends Fragment {
         breakdown.removeAllViews();
 
         for (Channel c : chosen) {
+            // A narrowed channel is listed by what it will actually bring, and says
+            // so: "Whole course" versus "N topics" is the difference between a 60 GB
+            // download and a 2 GB one, and the line must not hide which one it is.
             breakdown.addView(row(c.name(),
-                    c.hasKnownSize() ? ByteFormatter.toHuman(c.publishedSize())
-                            : getString(R.string.k2go_kolibri_size_unknown),
+                    vm.sizeUnknownFor(c) ? getString(R.string.k2go_kolibri_size_unknown)
+                            : ByteFormatter.toHuman(vm.bytesFor(c)),
                     false));
+            breakdown.addView(scopeNote(c));
             breakdown.addView(divider());
         }
         breakdown.addView(row(getString(R.string.k2go_zim_total),
@@ -135,13 +139,28 @@ public final class KolibriConfirmFragment extends Fragment {
         confirm.setOnClickListener(x -> bankAndReturn(chosen));
     }
 
+    /** The scope line under a course: whole thing, or how many topics were picked. */
+    private View scopeNote(Channel c) {
+        TextView t = new TextView(requireContext());
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        boolean narrowed = vm.isNarrowed(c.id());
+        t.setText(narrowed
+                ? getString(R.string.k2go_kolibri_narrowed_fmt, vm.subtreesFor(c.id()).size())
+                : getString(R.string.k2go_kolibri_whole_course));
+        t.setTextColor(ContextCompat.getColor(requireContext(),
+                narrowed ? R.color.k2go_teal : R.color.k2go_muted));
+        return t;
+    }
+
     private SeedPlan planOf(List<Channel> chosen) {
         List<ChannelSelection> sels = new ArrayList<>();
         Map<String, Long> sizes = new HashMap<>();
         for (Channel c : chosen) {
-            // C1 queues whole channels only; subtree selection is a later change.
-            sels.add(ChannelSelection.wholeChannel(c.id()));
-            sizes.put(c.id(), c.publishedSize());
+            // Whole channel or picked subtrees — the view model answers, and the rule
+            // that an empty narrowing means "everything" lives in PickedSubtrees, so
+            // node_ids: [] (which Kolibri reads as zero nodes) can never be built.
+            sels.add(vm.selectionFor(c));
+            sizes.put(c.id(), vm.bytesFor(c));
         }
         return SeedPlan.of(sels, sizes);
     }
@@ -161,8 +180,11 @@ public final class KolibriConfirmFragment extends Fragment {
      */
     private void bankAndReturn(List<Channel> chosen) {
         for (Channel c : chosen) {
+            // nodeIds null/empty is written as "no nodeIds key at all", which the
+            // provisioner reads as the whole channel — see KolibriWishlist.
+            List<String> nodeIds = vm.subtreesFor(c.id()).nodeIds();
             KolibriWishlist.add(requireContext(), c.id(), c.version(), c.name(),
-                    c.publishedSize(), null);
+                    vm.bytesFor(c), nodeIds.isEmpty() ? null : nodeIds);
         }
         vm.clearSelection();
         if (getActivity() instanceof SetupLibraryActivity) {

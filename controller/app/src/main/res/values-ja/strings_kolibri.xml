@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">一部のサイズが公開されていないため、合計はこれより大きくなる場合があります。続行できます。</string>
     <string name="k2go_kolibri_takes_body">コースは非常に大きく、特に低速な接続ではダウンロードに時間がかかることがあります。ダウンロードはシステムのインストール後に始まり、バックグラウンドで続行し、中断しても再開します。</string>
     <string name="k2go_kolibri_none_in_lang">%1$s のコースはまだありません · 言語を変更</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d 件のリソース</string>
+    <string name="k2go_kolibri_tree_offline">コースライブラリに接続できませんでした。タップして再試行します。</string>
+    <string name="k2go_kolibri_topic_empty">このフォルダーにはまだ何もありません。</string>
+    <string name="k2go_kolibri_included">上のフォルダーに含まれます</string>
+    <string name="k2go_kolibri_open_topic">フォルダーを開く</string>
+    <string name="k2go_kolibri_choose_topics">トピックを選ぶ</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d 件のトピックを選択</string>
+    <string name="k2go_kolibri_whole_course">コース全体</string>
 </resources>

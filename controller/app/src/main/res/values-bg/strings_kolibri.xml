@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">Някои размери не са публикувани, така че общото може да е по-голямо. Можете да продължите.</string>
     <string name="k2go_kolibri_takes_body">Курсовете могат да са много големи и изтеглянето да отнеме дълго, особено при бавна връзка. Изтеглянето започва след инсталирането на системата, продължава във фонов режим и се възобновява при прекъсване.</string>
     <string name="k2go_kolibri_none_in_lang">Все още няма курсове на %1$s · Смяна на езика</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d ресурса</string>
+    <string name="k2go_kolibri_tree_offline">Библиотеката с курсове е недостъпна. Докоснете, за да опитате отново.</string>
+    <string name="k2go_kolibri_topic_empty">В тази папка още няма нищо.</string>
+    <string name="k2go_kolibri_included">Включено с папката по-горе</string>
+    <string name="k2go_kolibri_open_topic">Отваряне на папката</string>
+    <string name="k2go_kolibri_choose_topics">Избор на теми</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d избрани теми</string>
+    <string name="k2go_kolibri_whole_course">Целия курс</string>
 </resources>

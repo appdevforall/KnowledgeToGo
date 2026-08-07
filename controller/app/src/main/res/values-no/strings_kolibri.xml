@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">Noen størrelser er ikke oppgitt, så totalen kan være høyere. Du kan fortsette.</string>
     <string name="k2go_kolibri_takes_body">Kurs kan være svært store og ta lang tid å laste ned, særlig på en treg forbindelse. Nedlastingen starter etter at systemet er installert, fortsetter i bakgrunnen og gjenopptas hvis den avbrytes.</string>
     <string name="k2go_kolibri_none_in_lang">Ingen kurs på %1$s ennå · Endre språk</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d ressurser</string>
+    <string name="k2go_kolibri_tree_offline">Fikk ikke kontakt med kursbiblioteket. Trykk for å prøve igjen.</string>
+    <string name="k2go_kolibri_topic_empty">Det er ennå ingenting i denne mappen.</string>
+    <string name="k2go_kolibri_included">Inkludert med mappen over</string>
+    <string name="k2go_kolibri_open_topic">Åpne mappe</string>
+    <string name="k2go_kolibri_choose_topics">Velg emner</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d emner valgt</string>
+    <string name="k2go_kolibri_whole_course">Hele kurset</string>
 </resources>

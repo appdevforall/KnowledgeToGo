@@ -242,6 +242,20 @@ the whole rule.
 - **D3. Scope control on the channel row**: Full channel / Selected topics /
   Metadata only — and **all three work in the wizard**, because the tree comes
   from Studio, not from the box.
+
+  As built, the first two are one control rather than a toggle: the row tap selects
+  the whole channel and a **chevron** opens the topic tree, which is the split the
+  category index already uses and keeps 142 rows to one line each. A channel with a
+  narrowing says so under its name and quotes the narrowed size, not the published
+  one. Metadata only is C3 — it needs `remotechannelimport`, which the dashboard's
+  task map does not yet expose.
+
+  The rule that makes a partial selection trustworthy is `PickedSubtrees`: because
+  a node id expands to its whole subtree, the set of picks is kept **disjoint**.
+  Picking inside an already-picked topic is a no-op; picking a parent absorbs its
+  picked descendants. Without that the total double-counts and the request carries
+  ids that contradict their own parent. The topic tree is shown in Studio's order
+  and never re-sorted — the author's sequence is content.
 - **D7. Session state lives in an observable repository**, `KolibriSeedRepository`,
   following `ModuleQueueRepository`. The service writes; screens observe and
   detach with their own lifecycle. Not a new pattern: the repo already has five

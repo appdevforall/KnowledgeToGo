@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4954: topic picker — the same item list as the Courses picker, one level of a
+     channel's tree at a time.
+
+     No sort toggles here, on purpose. Studio reports children in the order the channel's
+     author arranged them (unit 1, unit 2, week 3); re-ordering by size or alphabetically
+     would destroy a curriculum's sequence. The flat channel catalog has no such order to
+     protect, which is why it does have them.
+
+     Fixed header + fixed bottom bar; only the list scrolls. Rows are built at runtime. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:id="@+id/k2go_ktopics_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:gravity="center_vertical"
+            android:padding="4dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_teal" />
+
+        <TextView
+            android:id="@+id/k2go_ktopics_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:maxLines="2"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <!-- The path walked so far. Muted and single-line: it says where you are, it is
+             not a control — going up is the Back affordance above. -->
+        <TextView
+            android:id="@+id/k2go_ktopics_trail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="start"
+            android:maxLines="1"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <!-- Count on its own line, right-aligned, same as the Courses picker. -->
+        <TextView
+            android:id="@+id/k2go_ktopics_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="end"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+    </LinearLayout>
+
+    <!-- One line for loading / empty / unreachable. Tappable in the unreachable case,
+         which is the only one the user can do anything about. -->
+    <TextView
+        android:id="@+id/k2go_ktopics_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="12dp"
+        android:minHeight="48dp"
+        android:gravity="center_vertical"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="@color/k2go_muted"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="4dp">
+
+        <LinearLayout
+            android:id="@+id/k2go_ktopics_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp" />
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/k2go_ktopics_storage_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <ProgressBar
+            android:id="@+id/k2go_ktopics_storage_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="@color/k2go_teal"
+            android:progressBackgroundTint="@color/k2go_hairline" />
+
+        <Button
+            android:id="@+id/k2go_ktopics_done"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/k2go_teal" />
+    </LinearLayout>
+</LinearLayout>

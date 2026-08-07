@@ -318,6 +318,20 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
+    /**
+     * ADFA-4954: the topic picker for one channel. Reached from the chevron on a
+     * channel row; the choice it makes lands in the activity-scoped catalog view
+     * model, so this only has to put the screen on the stack.
+     */
+    public void openKolibriTopics(String channelId) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host,
+                        org.iiab.controller.kolibri.presentation.KolibriTopicsFragment
+                                .forChannel(channelId))
+                .addToBackStack("kolibri_topics")
+                .commit();
+    }
+
     /** ADFA-4954: review step of the Courses picker. */
     public void openKolibriConfirm() {
         getSupportFragmentManager().beginTransaction()

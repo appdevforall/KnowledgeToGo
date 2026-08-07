@@ -15,4 +15,12 @@
     <string name="k2go_kolibri_fit_unknown">Неке величине нису објављене, па укупно може бити више. Можете да наставите.</string>
     <string name="k2go_kolibri_takes_body">Курсеви могу бити веома велики и преузимање може дуго трајати, посебно на слабој вези. Преузимање почиње након инсталације система, настављa се у позадини и обнавља се ако буде прекинуто.</string>
     <string name="k2go_kolibri_none_in_lang">Још нема курсева на %1$s · Промени језик</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d ресурса</string>
+    <string name="k2go_kolibri_tree_offline">Библиотека курсева није доступна. Додирните да покушате поново.</string>
+    <string name="k2go_kolibri_topic_empty">У овој фасцикли још нема ничега.</string>
+    <string name="k2go_kolibri_included">Укључено са фасциклом изнад</string>
+    <string name="k2go_kolibri_open_topic">Отвори фасциклу</string>
+    <string name="k2go_kolibri_choose_topics">Изабери теме</string>
+    <string name="k2go_kolibri_narrowed_fmt">Изабрано тема: %1$d</string>
+    <string name="k2go_kolibri_whole_course">Цео курс</string>
 </resources>

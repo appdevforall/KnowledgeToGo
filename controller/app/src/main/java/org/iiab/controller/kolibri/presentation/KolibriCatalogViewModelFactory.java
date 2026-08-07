@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import org.iiab.controller.kolibri.data.CatalogRepositoryImpl;
 import org.iiab.controller.kolibri.domain.CatalogRepository;
 import org.iiab.controller.kolibri.domain.GetChannelCatalogUseCase;
+import org.iiab.controller.kolibri.domain.GetTopicTreeUseCase;
 
 /**
  * Composes Data → Domain → Presentation by hand, like
@@ -39,6 +40,13 @@ public class KolibriCatalogViewModelFactory implements ViewModelProvider.Factory
         if (modelClass.isAssignableFrom(KolibriCatalogViewModel.class)) {
             CatalogRepository repository = new CatalogRepositoryImpl(appContext);
             return (T) new KolibriCatalogViewModel(new GetChannelCatalogUseCase(repository));
+        }
+        // The topic picker's navigation state. Same factory rather than a second one:
+        // both view models compose from the same repository, and one composition root
+        // per feature is the point.
+        if (modelClass.isAssignableFrom(KolibriTopicTreeViewModel.class)) {
+            CatalogRepository repository = new CatalogRepositoryImpl(appContext);
+            return (T) new KolibriTopicTreeViewModel(new GetTopicTreeUseCase(repository));
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
