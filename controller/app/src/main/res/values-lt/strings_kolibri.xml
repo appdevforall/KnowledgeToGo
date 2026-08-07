@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">Pridedami kursai</string>
     <string name="k2go_kolibri_notif_cancel">Atšaukti</string>
     <string name="k2go_kolibri_seeding_title">Pridedami jūsų kursai</string>
+    <string name="k2go_kolibri_unavailable">Nepavyko nuskaityti su programa pateikto kursų katalogo.</string>
+    <string name="k2go_kolibri_no_match">Jokie kursai neatitinka jūsų paieškos.</string>
+    <string name="k2go_kolibri_lang_all">Visos kalbos</string>
+    <string name="k2go_kolibri_lang_pick">Filtruoti pagal kalbą</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d išteklių</string>
+    <string name="k2go_kolibri_size_unknown">Dydis nežinomas</string>
+    <string name="k2go_kolibri_confirm_sub">Jūsų pasirinkti kursai.</string>
+    <string name="k2go_kolibri_fit_unknown">Kai kurie dydžiai neskelbiami, todėl bendra suma gali būti didesnė. Galite tęsti.</string>
+    <string name="k2go_kolibri_takes_body">Kursai gali būti labai dideli ir siųstis ilgai, ypač esant lėtam ryšiui. Siuntimas pradedamas įdiegus sistemą, tęsiasi fone ir atsinaujina, jei nutrūksta.</string>
 </resources>

@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">正在添加课程</string>
     <string name="k2go_kolibri_notif_cancel">取消</string>
     <string name="k2go_kolibri_seeding_title">正在添加您的课程</string>
+    <string name="k2go_kolibri_unavailable">无法读取随应用提供的课程目录。</string>
+    <string name="k2go_kolibri_no_match">没有课程与您的搜索匹配。</string>
+    <string name="k2go_kolibri_lang_all">所有语言</string>
+    <string name="k2go_kolibri_lang_pick">按语言筛选</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d 个资源</string>
+    <string name="k2go_kolibri_size_unknown">大小未知</string>
+    <string name="k2go_kolibri_confirm_sub">您选择的课程。</string>
+    <string name="k2go_kolibri_fit_unknown">部分大小未公布，因此总量可能更高。您可以继续。</string>
+    <string name="k2go_kolibri_takes_body">课程可能非常大，下载耗时较长，在慢速连接下尤其明显。下载将在系统安装完成后开始，在后台继续，中断后会自动续传。</string>
 </resources>

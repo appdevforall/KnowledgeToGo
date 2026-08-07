@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">कोर्स जोड़े जा रहे हैं</string>
     <string name="k2go_kolibri_notif_cancel">रद्द करें</string>
     <string name="k2go_kolibri_seeding_title">आपके कोर्स जोड़े जा रहे हैं</string>
+    <string name="k2go_kolibri_unavailable">ऐप के साथ आया कोर्स कैटलॉग नहीं पढ़ा जा सका।</string>
+    <string name="k2go_kolibri_no_match">आपकी खोज से मेल खाता कोई कोर्स नहीं है।</string>
+    <string name="k2go_kolibri_lang_all">सभी भाषाएँ</string>
+    <string name="k2go_kolibri_lang_pick">भाषा से फ़िल्टर करें</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d संसाधन</string>
+    <string name="k2go_kolibri_size_unknown">आकार अज्ञात</string>
+    <string name="k2go_kolibri_confirm_sub">आपने जो कोर्स चुने।</string>
+    <string name="k2go_kolibri_fit_unknown">कुछ आकार प्रकाशित नहीं हैं, इसलिए कुल अधिक हो सकता है। आप जारी रख सकते हैं।</string>
+    <string name="k2go_kolibri_takes_body">कोर्स बहुत बड़े हो सकते हैं और डाउनलोड होने में लंबा समय ले सकते हैं, खासकर धीमे कनेक्शन पर। डाउनलोड आपका सिस्टम इंस्टॉल होने के बाद शुरू होता है, पृष्ठभूमि में चलता रहता है और बाधित होने पर फिर शुरू हो जाता है।</string>
 </resources>

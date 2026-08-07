@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">কোর্স যোগ করা হচ্ছে</string>
     <string name="k2go_kolibri_notif_cancel">বাতিল</string>
     <string name="k2go_kolibri_seeding_title">আপনার কোর্স যোগ করা হচ্ছে</string>
+    <string name="k2go_kolibri_unavailable">অ্যাপের সাথে আসা কোর্স ক্যাটালগ পড়া যায়নি।</string>
+    <string name="k2go_kolibri_no_match">আপনার অনুসন্ধানের সাথে মেলে এমন কোনো কোর্স নেই।</string>
+    <string name="k2go_kolibri_lang_all">সব ভাষা</string>
+    <string name="k2go_kolibri_lang_pick">ভাষা অনুযায়ী ফিল্টার</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d রিসোর্স</string>
+    <string name="k2go_kolibri_size_unknown">আকার অজানা</string>
+    <string name="k2go_kolibri_confirm_sub">আপনি যে কোর্সগুলো বেছে নিয়েছেন।</string>
+    <string name="k2go_kolibri_fit_unknown">কিছু আকার প্রকাশিত নয়, তাই মোট বেশি হতে পারে। আপনি চালিয়ে যেতে পারেন।</string>
+    <string name="k2go_kolibri_takes_body">কোর্স খুব বড় হতে পারে এবং ডাউনলোড হতে অনেক সময় লাগতে পারে, বিশেষত ধীর সংযোগে। সিস্টেম ইনস্টল হওয়ার পর ডাউনলোড শুরু হয়, ব্যাকগ্রাউন্ডে চলতে থাকে এবং বাধা পেলে আবার শুরু হয়।</string>
 </resources>

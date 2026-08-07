@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">Legger til kurs</string>
     <string name="k2go_kolibri_notif_cancel">Avbryt</string>
     <string name="k2go_kolibri_seeding_title">Legger til kursene dine</string>
+    <string name="k2go_kolibri_unavailable">Kurskatalogen som følger med appen kunne ikke leses.</string>
+    <string name="k2go_kolibri_no_match">Ingen kurs samsvarer med søket ditt.</string>
+    <string name="k2go_kolibri_lang_all">Alle språk</string>
+    <string name="k2go_kolibri_lang_pick">Filtrer etter språk</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d ressurser</string>
+    <string name="k2go_kolibri_size_unknown">Ukjent størrelse</string>
+    <string name="k2go_kolibri_confirm_sub">Kursene du valgte.</string>
+    <string name="k2go_kolibri_fit_unknown">Noen størrelser er ikke oppgitt, så totalen kan være høyere. Du kan fortsette.</string>
+    <string name="k2go_kolibri_takes_body">Kurs kan være svært store og ta lang tid å laste ned, særlig på en treg forbindelse. Nedlastingen starter etter at systemet er installert, fortsetter i bakgrunnen og gjenopptas hvis den avbrytes.</string>
 </resources>

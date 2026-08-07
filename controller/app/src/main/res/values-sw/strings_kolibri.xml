@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">Inaongeza kozi</string>
     <string name="k2go_kolibri_notif_cancel">Ghairi</string>
     <string name="k2go_kolibri_seeding_title">Inaongeza kozi zako</string>
+    <string name="k2go_kolibri_unavailable">Katalogi ya kozi iliyokuja na programu haikuweza kusomwa.</string>
+    <string name="k2go_kolibri_no_match">Hakuna kozi zinazolingana na utafutaji wako.</string>
+    <string name="k2go_kolibri_lang_all">Lugha zote</string>
+    <string name="k2go_kolibri_lang_pick">Chuja kwa lugha</string>
+    <string name="k2go_kolibri_resources_fmt">Rasilimali %1$d</string>
+    <string name="k2go_kolibri_size_unknown">Ukubwa haujulikani</string>
+    <string name="k2go_kolibri_confirm_sub">Kozi ulizochagua.</string>
+    <string name="k2go_kolibri_fit_unknown">Ukubwa wa baadhi haujachapishwa, kwa hivyo jumla inaweza kuwa kubwa zaidi. Unaweza kuendelea.</string>
+    <string name="k2go_kolibri_takes_body">Kozi zinaweza kuwa kubwa sana na kuchukua muda mrefu kupakua, hasa kwa muunganisho wa polepole. Upakuaji huanza baada ya mfumo wako kusanikishwa, huendelea chinichini, na huanza tena ikikatika.</string>
 </resources>

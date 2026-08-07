@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">강좌 추가 중</string>
     <string name="k2go_kolibri_notif_cancel">취소</string>
     <string name="k2go_kolibri_seeding_title">강좌 추가 중</string>
+    <string name="k2go_kolibri_unavailable">앱에 포함된 강좌 카탈로그를 읽을 수 없습니다.</string>
+    <string name="k2go_kolibri_no_match">검색과 일치하는 강좌가 없습니다.</string>
+    <string name="k2go_kolibri_lang_all">모든 언어</string>
+    <string name="k2go_kolibri_lang_pick">언어로 필터링</string>
+    <string name="k2go_kolibri_resources_fmt">리소스 %1$d개</string>
+    <string name="k2go_kolibri_size_unknown">크기 알 수 없음</string>
+    <string name="k2go_kolibri_confirm_sub">선택한 강좌입니다.</string>
+    <string name="k2go_kolibri_fit_unknown">일부 크기가 공개되지 않아 합계가 더 클 수 있습니다. 계속할 수 있습니다.</string>
+    <string name="k2go_kolibri_takes_body">강좌는 매우 클 수 있고, 특히 느린 연결에서는 다운로드가 오래 걸립니다. 다운로드는 시스템 설치 후 시작되어 백그라운드에서 계속되며, 중단되면 이어서 진행됩니다.</string>
 </resources>

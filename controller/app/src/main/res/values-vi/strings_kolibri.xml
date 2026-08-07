@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">Đang thêm khóa học</string>
     <string name="k2go_kolibri_notif_cancel">Hủy</string>
     <string name="k2go_kolibri_seeding_title">Đang thêm khóa học của bạn</string>
+    <string name="k2go_kolibri_unavailable">Không thể đọc danh mục khóa học kèm theo ứng dụng.</string>
+    <string name="k2go_kolibri_no_match">Không có khóa học nào khớp với tìm kiếm của bạn.</string>
+    <string name="k2go_kolibri_lang_all">Tất cả ngôn ngữ</string>
+    <string name="k2go_kolibri_lang_pick">Lọc theo ngôn ngữ</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d tài nguyên</string>
+    <string name="k2go_kolibri_size_unknown">Không rõ dung lượng</string>
+    <string name="k2go_kolibri_confirm_sub">Các khóa học bạn đã chọn.</string>
+    <string name="k2go_kolibri_fit_unknown">Một số dung lượng chưa được công bố, nên tổng có thể lớn hơn. Bạn vẫn có thể tiếp tục.</string>
+    <string name="k2go_kolibri_takes_body">Khóa học có thể rất lớn và mất nhiều thời gian để tải, đặc biệt khi kết nối chậm. Việc tải bắt đầu sau khi hệ thống được cài đặt, tiếp tục ở chế độ nền và tiếp tục lại nếu bị ngắt.</string>
 </resources>

@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">Cursussen toevoegen</string>
     <string name="k2go_kolibri_notif_cancel">Annuleren</string>
     <string name="k2go_kolibri_seeding_title">Je cursussen toevoegen</string>
+    <string name="k2go_kolibri_unavailable">De met de app meegeleverde cursuscatalogus kon niet worden gelezen.</string>
+    <string name="k2go_kolibri_no_match">Geen cursussen passen bij je zoekopdracht.</string>
+    <string name="k2go_kolibri_lang_all">Alle talen</string>
+    <string name="k2go_kolibri_lang_pick">Filteren op taal</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d bronnen</string>
+    <string name="k2go_kolibri_size_unknown">Grootte onbekend</string>
+    <string name="k2go_kolibri_confirm_sub">De cursussen die je koos.</string>
+    <string name="k2go_kolibri_fit_unknown">Sommige groottes zijn niet gepubliceerd, dus het totaal kan hoger zijn. Je kunt doorgaan.</string>
+    <string name="k2go_kolibri_takes_body">Cursussen kunnen erg groot zijn en lang duren om te downloaden, vooral op een langzame verbinding. De download begint nadat je systeem is geïnstalleerd, gaat door op de achtergrond en wordt hervat na een onderbreking.</string>
 </resources>

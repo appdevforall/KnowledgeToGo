@@ -24,4 +24,21 @@
     <!-- Seeding detail screen, reached from the progress index or the notification. -->
     <string name="k2go_kolibri_seeding_title">Adding your courses</string>
 
+    <!-- Courses picker (ADFA-4954). Only the strings whose text is genuinely about
+         courses live here; the picker reuses the ZIM family's generic ones
+         (k2go_zim_search_hint, _loading, _confirm_title, _total, _fits_fmt,
+         _nofit_fmt, _add_setup_fmt, _review_fmt, _items_fmt, k2go_zc_nospace),
+         whose wording says nothing about ZIM. -->
+    <string name="k2go_kolibri_unavailable">Couldn\'t read the course catalog included with the app.</string>
+    <string name="k2go_kolibri_no_match">No courses match your search.</string>
+    <string name="k2go_kolibri_lang_all">All languages</string>
+    <string name="k2go_kolibri_lang_pick">Filter by language</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d resources</string>
+    <string name="k2go_kolibri_size_unknown">Size unknown</string>
+    <string name="k2go_kolibri_confirm_sub">The courses you chose.</string>
+    <!-- The third fit state: the total is a floor, not a figure, because at least one
+         chosen course publishes no size. Warn, but do not block. -->
+    <string name="k2go_kolibri_fit_unknown">Some sizes aren\'t published, so this total may be higher. You can continue.</string>
+    <string name="k2go_kolibri_takes_body">Courses can be very large and take a long time to download, especially on a slow connection. The download starts after your system is installed, keeps going in the background, and resumes if interrupted.</string>
+
 </resources>

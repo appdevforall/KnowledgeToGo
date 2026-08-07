@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Resolves the channel list for a given filter.
@@ -122,5 +123,33 @@ public final class GetChannelCatalogUseCase {
             }
         }
         return Collections.unmodifiableList(new ArrayList<>(codes));
+    }
+
+    /**
+     * Language code to the name Studio publishes for it, e.g. {@code es} to
+     * {@code Español}.
+     *
+     * <p>Taken from the catalog rather than derived from {@code Locale}: these are
+     * the names the content's own publishers chose, in the language itself, and
+     * they cover codes a JVM locale renders as the bare code — {@code mul} for
+     * multilingual channels being the obvious one. Codes with no name fall back to
+     * themselves so a caller never has to handle a null.
+     */
+    public Map<String, String> languageNames() {
+        LinkedHashMap<String, String> names = new LinkedHashMap<>();
+        List<Channel> all = repository.channels();
+        if (all != null) {
+            for (Channel c : all) {
+                if (c == null || c.langCode().isEmpty()) {
+                    continue;
+                }
+                String existing = names.get(c.langCode());
+                if (existing == null || existing.isEmpty()) {
+                    names.put(c.langCode(),
+                            c.langName().isEmpty() ? c.langCode() : c.langName());
+                }
+            }
+        }
+        return Collections.unmodifiableMap(names);
     }
 }

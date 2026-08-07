@@ -120,6 +120,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 // ADFA-5023: reinstall = the normal first-run wizard, but the final install wipes first.
                 BooksWishlist.clear(this);
                 ZimWishlist.clear(this);
+                org.iiab.controller.kolibri.data.KolibriWishlist.clear(this);   // ADFA-4954
                 first = new Step1SystemFragment();
             } else {
                 // ADFA-4874: a fresh wizard run — drop any wishlist left by an aborted first-run so
@@ -127,6 +128,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 // has not chosen anything yet in this run.
                 BooksWishlist.clear(this);
                 ZimWishlist.clear(this);
+                org.iiab.controller.kolibri.data.KolibriWishlist.clear(this);   // ADFA-4954
                 first = new Step1SystemFragment();
             }
             getSupportFragmentManager().beginTransaction()
@@ -287,10 +289,43 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         // ADFA-4900: in the wizard there is no rootfs yet, so Maps cannot run runrole. It banks the
         // per-layer selection (MapsWishlist) like Books/ZIM and MapsProvisioner applies it post-install.
         if ("maps".equals(key)) { openContentType(key, title); mapsWizard = true; return; }
+        // ADFA-4954: Courses. No server exists in the wizard, so the picker reads the
+        // bundled catalog and banks the order in KolibriWishlist; KolibriProvisioner
+        // drains it post-install.
+        if ("courses".equals(key)) { openKolibriWizard(); return; }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, PlaceholderFragment.newInstance(title))
                 .addToBackStack("wizard_" + key)
                 .commit();
+    }
+
+    /** ADFA-4954: the Courses picker (browse -> confirm), wizard door. */
+    public void openKolibriWizard() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host,
+                        new org.iiab.controller.kolibri.presentation.KolibriBrowseFragment())
+                .addToBackStack("wizard_courses")
+                .commit();
+    }
+
+    /** ADFA-4954: review step of the Courses picker. */
+    public void openKolibriConfirm() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.k2go_setup_host,
+                        new org.iiab.controller.kolibri.presentation.KolibriConfirmFragment())
+                .addToBackStack("kolibri_confirm")
+                .commit();
+    }
+
+    /**
+     * ADFA-4954: the order is already written to KolibriWishlist by the confirm
+     * screen, so this only unwinds the picker back to the content hub — the same
+     * shape as zimWizardConfirm, minus the cart, because the selection lives in the
+     * activity-scoped ViewModel rather than in a field here.
+     */
+    public void kolibriWizardConfirm() {
+        getSupportFragmentManager().popBackStack("wizard_courses",
+                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     /** ADFA-4853: ZIM in wizard mode — same offline browse (kiwix_catalog.csv), but the terminal

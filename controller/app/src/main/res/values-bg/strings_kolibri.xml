@@ -8,4 +8,13 @@
     <string name="k2go_kolibri_dl_notif_title">Добавяне на курсове</string>
     <string name="k2go_kolibri_notif_cancel">Отказ</string>
     <string name="k2go_kolibri_seeding_title">Добавяне на вашите курсове</string>
+    <string name="k2go_kolibri_unavailable">Каталогът с курсове, включен в приложението, не можа да бъде прочетен.</string>
+    <string name="k2go_kolibri_no_match">Няма курсове, отговарящи на търсенето.</string>
+    <string name="k2go_kolibri_lang_all">Всички езици</string>
+    <string name="k2go_kolibri_lang_pick">Филтриране по език</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d ресурса</string>
+    <string name="k2go_kolibri_size_unknown">Размерът е неизвестен</string>
+    <string name="k2go_kolibri_confirm_sub">Курсовете, които избрахте.</string>
+    <string name="k2go_kolibri_fit_unknown">Някои размери не са публикувани, така че общото може да е по-голямо. Можете да продължите.</string>
+    <string name="k2go_kolibri_takes_body">Курсовете могат да са много големи и изтеглянето да отнеме дълго, особено при бавна връзка. Изтеглянето започва след инсталирането на системата, продължава във фонов режим и се възобновява при прекъсване.</string>
 </resources>
