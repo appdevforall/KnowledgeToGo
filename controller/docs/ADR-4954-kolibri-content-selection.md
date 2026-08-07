@@ -245,9 +245,13 @@ the whole rule.
   the new structure, legacy when we touch it. We are not touching them.
 - **D6. The fit check needs no box.** Studio's `published_size` plus `StatFs` on
   `getFilesDir()` — which `ZimLandingFragment` already does — answers "does this
-  fit?" in the wizard. `/kolibri/estimate` keeps its role in Get More, where it
-  contributes what the app cannot know: files already on disk and shared between
-  channels by checksum, and Kolibri's own 250 MB `MINIMUM_DISK_SPACE` cushion.
+  fit?" in the wizard.
+
+  *Amended after device testing — see "Correction to D6" below.* The original
+  text claimed `/kolibri/estimate` would contribute the checksum-shared-files
+  discount and Kolibri's cushion in the Get More door. It cannot: it answers only
+  for channels already installed, and returns bytes still outstanding rather than
+  a channel's size.
 
 ### The three layers, and why the app owns the Studio client
 
@@ -318,6 +322,20 @@ More path, not a reason to route the wizard through the box.
   `SetupProgressActivity.orchestrateStep()` calls them in a fixed order, so the
   first one starts and the rest wait.
 
+  **Known consequence: the feature packages now depend on each other.**
+  `org.iiab.controller.kolibri` imports from `redesign` (the two sibling services
+  and `MapsProvisioner` for the guard, plus `ProvisioningChecklist` and
+  `SetupProgressActivity` for the UI), and `redesign` imports from `kolibri` for
+  the integration. That cycle means the Kolibri package is not self-contained,
+  which is what CLAUDE.md's one-feature-one-package rule is trying to buy.
+
+  Part of it is inherent — a guard that serialises three streams has to know
+  about all three — and part is legitimate reuse. The clean form would be a
+  shared "content stream" port that all three implement, so each defers to an
+  interface rather than to its siblings by name. That is a refactor across three
+  features and is not attempted here; recorded so the next person to touch this
+  does not mistake it for an accident.
+
   Rejected for now: enforcing the queue inside `jobs.ts`. That is the deeper fix
   and would let `routes.ts:215`'s manual workaround be retired, but it changes
   shared infrastructure and the behaviour of two features that did not ask for
@@ -334,6 +352,77 @@ More path, not a reason to route the wizard through the box.
   later change because a pure-translation diff can be read straight through and
   confirmed to touch no logic, which a mixed diff cannot. The Android side is
   already English and needs nothing.
+
+## Verified on a device (2026-08-07)
+
+The server side was exercised over `curl` against a real Kolibri 0.19.5 under
+proot on Android 15, with no UI involved. Everything below is observed, not
+inferred.
+
+**Confirmed working.** The authenticated session, including Kolibri's
+non-standard cookie names and the CSRF rotation on login. The job engine, runner
+registration, polling and cancellation. Two channels inside one job, processed
+strictly in sequence. The `listInstalledChannels` CTE against a real content
+database. Channel deletion. Both fail-closed validations, with the messages they
+were written to produce: `no valid nodeId for channel …` and `invalid channelId:
+… resolve the tokens before queueing`.
+
+**The proot prerequisite works.** The job log recorded
+`content origin (https://studio.learningequality.org): created` on the first
+run and `present` on the second. Creating a *static* `NetworkLocation` over REST
+does satisfy `lookup_channel_listing_status()`, and it is idempotent. That whole
+chain had been reasoned out of Kolibri's source and never executed; it was the
+largest risk in the design and it is now closed.
+
+**The catalog matches reality.** For `5d53b37cc90e50128a40e293d9fadb27` the
+bundled asset said version 2, 1 740 285 bytes, 37 resources; the device reported
+version 2, 1 740 285 bytes, 37 files. Byte for byte.
+
+### Defects found
+
+All four are in the in-server dashboard (`static/dashboard`), none in the app,
+and none is fixed yet. They are deliberately **not** part of the Android PRs:
+they belong to a separate dashboard change, which also has to bump the version in
+`static/dashboard/CHANGELOG.md` because two of them alter what the REST surface
+returns.
+
+1. **`freeSpace` is always `null`.** `kolibri.query.ts` calls
+   `/api/device/freespace/` without a query parameter, but `FreeSpaceView.list`
+   rejects anything where `path != "Content"` with a 400. The call throws, the
+   non-blocking `try/catch` swallows it, and `fitsOnDevice` degrades to `null`
+   for ever. Fix: `?path=Content`.
+2. **`/kolibri/catalog` reports `null` for size and resource count.**
+   `toRemoteChannel` reads Studio's field names, but that endpoint is Kolibri's
+   `remotechannel` proxy, which renames `total_resource_count` to
+   `total_resources` and `published_size` to `total_file_size`. Read both,
+   preferring Kolibri's.
+3. **`Kolibri failed importing <name>: HTTPError`** is the exception's class name
+   with no detail. Extract the response body instead.
+4. **Kolibri returns 500 when asked to size a channel it does not have.**
+   `_calculate_batch_params` computes `max_rght` from local `ContentNode` rows
+   and multiplies it without a null check, so an absent channel raises
+   `TypeError`. Upstream's bug, but ours to avoid: do not call it for a channel
+   that is not installed, and translate the failure.
+
+### Correction to D6
+
+D6 said `/kolibri/estimate` would contribute the checksum-shared-files discount
+and Kolibri's own cushion in the Get More door. Its role is narrower than that:
+it answers only for channels **already installed** (see defect 4), and what it
+returns is the bytes still *outstanding*, not the channel's size — the view
+filters to unavailable files, so a fully downloaded channel correctly reports 0.
+The fit check therefore rests on Studio's `published_size` plus `StatFs`, as the
+rest of D6 says, and `/kolibri/estimate` is useful only for adding topics to a
+channel the device already holds.
+
+### Still unproven
+
+Every line of the Android side. `KolibriRestClient`, `KolibriSeedService` and
+`KolibriSeedRepository` have never run, because nothing populates the wishlist
+until the picker exists. Note also that the two-channel test exercised the
+server's own sequencing and `overallPercent` banding — which the app
+deliberately bypasses by posting one job per channel, so that code path will not
+be reached from the app.
 
 ## What the REST surface still needs
 

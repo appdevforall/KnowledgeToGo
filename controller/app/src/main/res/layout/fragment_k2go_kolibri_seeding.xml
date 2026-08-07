@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4954: Kolibri seeding detail, hosted by SetupProgressActivity. Observe-only —
+     overall progress plus the per-channel checklist rendered by ProvisioningChecklist.
+     Deliberately plainer than fragment_k2go_zim_preparing: this view is only ever reached
+     from the progress index or the notification, where the host already owns the chrome
+     (title bar, Back, Run in background). Colours come from theme attributes and spacing
+     sits on the 4dp grid, per the Material 3 convention in CLAUDE.md. -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/k2go_kolibri_seeding_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/k2go_zim_preparing_sub"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/k2go_muted" />
+
+        <TextView
+            android:id="@+id/k2go_kseed_pct"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/k2go_ink" />
+
+        <ProgressBar
+            android:id="@+id/k2go_kseed_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="@color/k2go_teal"
+            android:progressBackgroundTint="@color/k2go_hairline" />
+
+        <TextView
+            android:id="@+id/k2go_kseed_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="@color/k2go_muted" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/k2go_hairline" />
+
+        <!-- Rows are added at runtime by ProvisioningChecklist. -->
+        <LinearLayout
+            android:id="@+id/k2go_kseed_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+</ScrollView>

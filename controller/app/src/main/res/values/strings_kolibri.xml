@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADFA-4954 — strings owned by the Kolibri (Courses) content feature.
+
+  A per-feature file rather than more rows in strings_k2go.xml: every feature that
+  edits the shared file collides with every other one, and Android merges all
+  <resources> files anyway.
+
+  Deliberately small. The seeding screen reuses the generic strings the ZIM flow
+  already owns — k2go_zim_prep_detail_fmt, k2go_zim_all_ready,
+  k2go_zim_item_failed_suffix, k2go_zim_retry, k2go_zim_preparing_sub,
+  k2go_zim_run_bg — whose text says nothing about ZIM. Duplicating them under a
+  kolibri_ prefix would mean the same English sentence translated twice into 33
+  languages and drifting apart. Renaming them properly is a separate change: it
+  touches every locale file for a feature this PR is not otherwise editing.
+-->
+<resources>
+
+    <!-- Foreground-service notification while channels are being seeded. -->
+    <string name="k2go_kolibri_dl_channel_name">Course downloads</string>
+    <string name="k2go_kolibri_dl_notif_title">Adding courses</string>
+    <string name="k2go_kolibri_notif_cancel">Cancel</string>
+
+    <!-- Seeding detail screen, reached from the progress index or the notification. -->
+    <string name="k2go_kolibri_seeding_title">Adding your courses</string>
+
+</resources>

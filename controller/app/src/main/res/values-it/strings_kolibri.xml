@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-4954. See values/strings_kolibri.xml for why this file is per-feature.
+     "Cancel" is copied from this locale's existing k2go_zim_notif_cancel so the two
+     notifications cannot disagree; the rest follow the wording this locale already uses
+     for "Courses" and for "Adding your content". -->
+<resources>
+    <string name="k2go_kolibri_dl_channel_name">Download dei corsi</string>
+    <string name="k2go_kolibri_dl_notif_title">Aggiunta dei corsi</string>
+    <string name="k2go_kolibri_notif_cancel">Annulla</string>
+    <string name="k2go_kolibri_seeding_title">Aggiunta dei tuoi corsi</string>
+</resources>
