@@ -78,6 +78,7 @@ public final class FqrController {
 
     private volatile boolean active = false;   // written on UI thread, read on the WebView binder thread
     private AlertDialog dialog;       // "calculating" / consent (one at a time)
+    private boolean estimateCanceled; // ADFA-5043: set when the user backs out of "Calculating…" so a late estimate is dropped
     private View overlay;             // floating progress card (null when hidden)
     private LinearProgressIndicator overlayBar;
     private TextView overlayPct, overlayTitle;
@@ -209,14 +210,18 @@ public final class FqrController {
             toast(str(R.string.k2go_fqr_invalid));
             return;
         }
-        // "Calculating size…" while the server runs its dry-run.
+        // "Calculating size…" while the server runs its dry-run. ADFA-5043: arm the cancel flag so a
+        // bail-out here (the dialog is cancelable) drops the late estimate instead of popping consent.
+        estimateCanceled = false;
         showCalculating();
         client.estimate(box, new MapsRegionClient.EstimateListener() {
             @Override public void onEstimate(long transfer, long archive, long free, long freeAfter) {
+                if (estimateCanceled) return;   // user backed out of "Calculating…"; map already reset
                 dismissDialog();
                 showConsent(name, box, transfer, archive, free, freeAfter);
             }
             @Override public void onError(String message) {
+                if (estimateCanceled) return;
                 dismissDialog();
                 new MaterialAlertDialogBuilder(themed)
                         .setTitle(R.string.k2go_fqr_estimate_error_title)
@@ -240,6 +245,16 @@ public final class FqrController {
         });
     }
 
+    /** ADFA-5043: tell the map to cancel the in-progress FQR selection (clear the drawn area + turn the
+     *  extract tool off), mirroring the name dialog's own Cancel. Called when the user bails out of the
+     *  native estimate/consent step, which otherwise leaves the crosshair + selection armed. No-op if the
+     *  bridge isn't present (non-maps page). */
+    private void resetMapSelection() {
+        if (webView != null) {
+            webView.evaluateJavascript("window.__k2goCancelExtract&&window.__k2goCancelExtract();", null);
+        }
+    }
+
     // ---- Consent -----------------------------------------------------------------------------
     private void showCalculating() {
         dismissDialog();
@@ -256,7 +271,13 @@ public final class FqrController {
         t.setPadding(dp(16), 0, 0, 0);
         M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurface);
         row.addView(t);
-        dialog = new MaterialAlertDialogBuilder(themed).setView(row).setCancelable(true).show();
+        // ADFA-5043: canceling while estimating must drop the pending estimate AND clear the map's
+        // selection — otherwise the crosshair lingers and a late estimate could still pop the consent.
+        dialog = new MaterialAlertDialogBuilder(themed)
+                .setView(row)
+                .setCancelable(true)
+                .setOnCancelListener(d -> { estimateCanceled = true; resetMapSelection(); })
+                .show();
     }
 
     private void showConsent(String name, String box, long transfer, long archive, long free, long freeAfter) {
@@ -307,8 +328,12 @@ public final class FqrController {
         dialog = new MaterialAlertDialogBuilder(themed)
                 .setTitle(R.string.k2go_fqr_consent_title)
                 .setView(body)
-                .setNegativeButton(R.string.k2go_fqr_not_now, (d, w) -> d.dismiss())
+                // ADFA-5043: bailing out here (Not now / tap-outside) must also clear the map's FQR
+                // selection + tool — the same reset the name dialog's Cancel does — or the crosshair and
+                // the drawn area linger with a stale "download this region" button on top.
+                .setNegativeButton(R.string.k2go_fqr_not_now, (d, w) -> { d.dismiss(); resetMapSelection(); })
                 .setPositiveButton(R.string.k2go_fqr_download, (d, w) -> startDownload(name))
+                .setOnCancelListener(d -> resetMapSelection())
                 .setCancelable(true)
                 .show();
 
@@ -738,6 +763,20 @@ public final class FqrController {
             // ADFA-5025: native pushes the existing region names here so fireExtract can reject a
             // duplicate name synchronously (see the Next handler).
             "window.__k2goSetRegions=function(arr){try{window.__k2goRegions=arr||[];}catch(e){}};" +
+            // ADFA-5043: native calls this when the user bails out of the estimate/consent step, to cancel
+            // the FQR selection the same way the name dialog's Cancel does. Buttons have no stable id/class
+            // (same as fireExtract), so match by text. We hid the popup on Next, but a programmatic click
+            // still fires on a display:none button. Prefer a direct Cancel; else go Back to the name stage
+            // (where the working Cancel lives) and click it there; else fall back to the popup close (×).
+            "window.__k2goCancelExtract=function(){try{" +
+            "function pop(){var ps=sr.querySelectorAll('.maplibregl-popup');return ps.length?ps[ps.length-1]:null;}" +
+            "function clickText(p,txts){if(!p)return false;var bs=p.querySelectorAll('button');" +
+            "for(var j=0;j<bs.length;j++){var t=(bs[j].textContent||'').trim();for(var k=0;k<txts.length;k++){if(t===txts[k]){bs[j].click();return true;}}}return false;}" +
+            "var p=pop();if(!p)return false;" +
+            "if(clickText(p,['Cancel','Cancelar','Close']))return true;" +
+            "if(clickText(p,['Back'])){setTimeout(function(){try{var q=pop();if(q&&!clickText(q,['Cancel','Cancelar','Close'])){var cb=q.querySelector('.maplibregl-popup-close-button');if(cb)cb.click();}}catch(e){}},50);return true;}" +
+            "var cb=p.querySelector('.maplibregl-popup-close-button');if(cb){cb.click();return true;}" +
+            "return false;}catch(e){return false;}};" +
             "console.log('K2Go-FQR bridge armed');" +
             "}catch(e){try{console.log('K2Go-FQR fatal '+e);}catch(_){}}})();";
 }
