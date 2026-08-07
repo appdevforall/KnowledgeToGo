@@ -87,7 +87,7 @@ RED="\033[31m"; YEL="\033[33m"; GRN="\033[32m"; BLU="\033[34m"; RST="\033[0m"; B
 # BUILD_TAG is computed once (children inherit a fixed BUILD_PROGRESS; the parent re-runs _set_tag per
 # combo) so the log helpers don't fork a subshell per line.
 BUILD_TAG=""
-_set_tag() { BUILD_TAG=""; [[ -n "${BUILD_PROGRESS:-}" ]] && BUILD_TAG="(${BUILD_PROGRESS})"; }
+_set_tag() { BUILD_TAG=""; [[ -n "${BUILD_PROGRESS:-}" ]] && BUILD_TAG="(${BUILD_PROGRESS})"; return 0; }  # return 0: never let the && list make this fn return 1 under set -e
 _set_tag   # pick up an inherited BUILD_PROGRESS (this is a child build spawned by the parent)
 ok()   { printf "${GRN}[build]${BUILD_TAG}${RST} %s\n" "$*"; }
 log()  { printf "${BLU}[build]${BUILD_TAG}${RST} %s\n" "$*"; }
