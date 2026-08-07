@@ -385,10 +385,11 @@ public final class KolibriBrowseFragment extends Fragment {
     }
 
     /** Pre-install (wizard) versus the Get More door. Only the wording and the
-     *  forward action differ; the catalog and the tree behave the same either way. */
+     *  forward action differ; the catalog and the tree behave the same either way.
+     *  Fails closed on an unrecognised host, matching the confirm screen. */
     private boolean isWizard() {
-        return !(getActivity() instanceof SetupLibraryActivity)
-                || ((SetupLibraryActivity) getActivity()).isKolibriWizard();
+        return getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     /**

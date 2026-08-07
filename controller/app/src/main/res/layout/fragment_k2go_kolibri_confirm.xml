@@ -74,6 +74,21 @@
                 android:padding="12dp"
                 android:textAppearance="?attr/textAppearanceBodyMedium" />
 
+            <!-- ADFA-4954: the Get More door's notice. Its own view rather than reusing
+                 the fit banner: the size-versus-free-space verdict is the one thing this
+                 screen exists to state, and overwriting it to say "not yet" removed it. -->
+            <TextView
+                android:id="@+id/k2go_kconf_live_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"
+                android:background="@drawable/k2go_info_bg"
+                android:text="@string/k2go_kolibri_live_not_yet"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/k2go_info_ink"
+                android:visibility="gone" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
