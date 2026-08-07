@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -47,8 +48,11 @@ public final class DashboardRebuild {
     private static final long POLL_MS = 2500L;
     private static final int MAX_POLLS = 160;   // ~6.5 min
 
-    /** Gate then confirm then start. {@code anchor} is where a "busy"/"no internet" snackbar shows. */
-    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor) {
+    /** Gate then confirm then start. {@code anchor} is where a "busy"/"no internet" snackbar shows.
+     *  {@code onLiveUpdated} (nullable) runs after a successful LIVE (REST) update so the caller can
+     *  refresh its version chip / update pill in place (ADFA-5051). */
+    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor,
+                                       @Nullable Runnable onLiveUpdated) {
         Context ctx = host.requireContext();
         if (org.iiab.controller.env.EnvironmentLock.isHeld(ctx)) {
             Snackbars.make(anchor, R.string.k2go_install_busy).show();
@@ -62,21 +66,21 @@ public final class DashboardRebuild {
                 .setTitle(R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor))
+                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor, onLiveUpdated))
                 .show();
     }
 
     /** ADFA-5051: route by the installed dash-node version. >= 1.2.0 updates live over REST; older
      *  installs take the proot rebuild once as a bridge to 1.2.0. The version read hits disk, so it
      *  runs off the main thread; the routing itself is posted back to the UI. */
-    private static void start(@NonNull Fragment host, @NonNull View anchor) {
+    private static void start(@NonNull Fragment host, @NonNull View anchor, @Nullable Runnable onLiveUpdated) {
         final Context app = host.requireContext().getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
         AppExecutors.get().io().execute(() -> {
             final boolean rest = DashboardVersion.atLeast(DashboardVersion.installed(app), 1, 2, 0);
             main.post(() -> {
                 if (!host.isAdded()) return;
-                if (rest) startRest(host, anchor);
+                if (rest) startRest(host, anchor, onLiveUpdated);
                 else startProot(host);
             });
         });
@@ -96,7 +100,7 @@ public final class DashboardRebuild {
 
     /** ADFA-5051: live REST update. Trigger the in-server rebuild, then show a non-cancelable progress
      *  dialog that polls the state until done/error (tolerating the brief restart window). */
-    private static void startRest(@NonNull Fragment host, @NonNull View anchor) {
+    private static void startRest(@NonNull Fragment host, @NonNull View anchor, @Nullable Runnable onLiveUpdated) {
         Context ctx = host.requireContext();
         LinearLayout box = new LinearLayout(ctx);
         box.setOrientation(LinearLayout.HORIZONTAL);
@@ -123,7 +127,7 @@ public final class DashboardRebuild {
         DashboardClient.rebuildStart(new DashboardClient.RebuildStartCb() {
             @Override public void onStarted(boolean alreadyRunning) {
                 if (!host.isAdded()) { safeDismiss(dialog); return; }
-                pollStatus(host, dialog, poller, new int[]{0});
+                pollStatus(host, dialog, poller, new int[]{0}, onLiveUpdated);
             }
             @Override public void onErr(String message) {
                 safeDismiss(dialog);
@@ -137,14 +141,14 @@ public final class DashboardRebuild {
      *  NOT a failure: the rebuild runs detached server-side and may still finish, so we show a distinct
      *  "still working in the background" message rather than the rollback/failure one. */
     private static void pollStatus(@NonNull Fragment host, @NonNull AlertDialog dialog,
-                                   @NonNull Handler poller, int[] tries) {
+                                   @NonNull Handler poller, int[] tries, @Nullable Runnable onLiveUpdated) {
         if (!host.isAdded()) { safeDismiss(dialog); return; }
-        if (tries[0]++ >= MAX_POLLS) { finishRest(host, dialog, R.string.k2go_dash_live_timeout); return; }
+        if (tries[0]++ >= MAX_POLLS) { finishRest(host, dialog, R.string.k2go_dash_live_timeout, onLiveUpdated); return; }
         DashboardClient.rebuildStatus(new DashboardClient.RebuildStatusCb() {
             @Override public void onState(String state) {
                 if (!host.isAdded()) { safeDismiss(dialog); return; }
-                if ("done".equals(state)) { finishRest(host, dialog, R.string.k2go_dash_live_done); return; }
-                if ("error".equals(state)) { finishRest(host, dialog, R.string.k2go_dash_live_error); return; }
+                if ("done".equals(state)) { finishRest(host, dialog, R.string.k2go_dash_live_done, onLiveUpdated); return; }
+                if ("error".equals(state)) { finishRest(host, dialog, R.string.k2go_dash_live_error, onLiveUpdated); return; }
                 schedule();
             }
             @Override public void onErr(String message) {
@@ -152,15 +156,19 @@ public final class DashboardRebuild {
                 schedule();   // API likely restarting mid-swap; keep waiting
             }
             private void schedule() {
-                poller.postDelayed(() -> pollStatus(host, dialog, poller, tries), POLL_MS);
+                poller.postDelayed(() -> pollStatus(host, dialog, poller, tries, onLiveUpdated), POLL_MS);
             }
         });
     }
 
-    /** Swap the progress dialog for a simple result dialog carrying {@code msgRes} (done/error/timeout). */
-    private static void finishRest(@NonNull Fragment host, @NonNull AlertDialog dialog, int msgRes) {
+    /** Swap the progress dialog for a simple result dialog carrying {@code msgRes} (done/error/timeout).
+     *  On success, fire {@code onLiveUpdated} (ADFA-5051) so the caller refreshes its version/pill in
+     *  place — otherwise the card keeps showing "update available" and users re-tap Rebuild. */
+    private static void finishRest(@NonNull Fragment host, @NonNull AlertDialog dialog, int msgRes,
+                                   @Nullable Runnable onLiveUpdated) {
         safeDismiss(dialog);
         if (!host.isAdded()) return;
+        if (msgRes == R.string.k2go_dash_live_done && onLiveUpdated != null) onLiveUpdated.run();
         new MaterialAlertDialogBuilder(host.requireContext())
                 .setTitle(R.string.k2go_dash_live_title)
                 .setMessage(msgRes)

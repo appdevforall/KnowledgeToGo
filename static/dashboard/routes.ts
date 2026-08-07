@@ -279,6 +279,10 @@ apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void
             env: { ...process.env, K2GO_BRANCH: DASH_BRANCH },
         });
         child.unref();
+        // ADFA-5051: mark "running" synchronously here, before we answer. The detached script also sets
+        // it, but not until it starts — so a client that polls immediately could otherwise read the
+        // PREVIOUS run's "done"/"error" and report a false instant success. Writing it now closes that race.
+        try { fs.writeFileSync(REBUILD_STATUS_FILE, 'running'); } catch { /* best effort */ }
         res.status(202).json({ ok: true, state: 'running' });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'could not start rebuild' });
