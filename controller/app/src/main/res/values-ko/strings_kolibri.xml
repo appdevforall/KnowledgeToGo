@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">주제 선택</string>
     <string name="k2go_kolibri_narrowed_fmt">주제 %1$d개 선택됨</string>
     <string name="k2go_kolibri_whole_course">전체 강의</string>
-    <string name="k2go_kolibri_live_not_yet">지금은 살펴보기만 됩니다. 여기서 강의를 추가하는 기능은 다음 업데이트에 들어갑니다. 현재는 시스템 설정 중에 선택합니다.</string>
+    <string name="k2go_kolibri_checking">이 기기가 무엇을 할 수 있는지 확인하는 중…</string>
+    <string name="k2go_kolibri_not_installed">이 시스템에 강의가 설치되어 있지 않아 콘텐츠를 추가할 수 없습니다.</string>
+    <string name="k2go_kolibri_system_damaged">콘텐츠를 추가하기 전에 시스템을 복구해야 합니다.</string>
+    <string name="k2go_kolibri_start_system_first">먼저 시스템을 시작하세요. 그러면 이 다운로드를 시작할 수 있습니다.</string>
+    <string name="k2go_kolibri_busy">다른 다운로드가 진행 중입니다. 끝난 뒤 다시 시도하세요.</string>
+    <string name="k2go_kolibri_already_here">이미 이 기기에 있습니다</string>
+    <string name="k2go_kolibri_partly_here">일부만 이 기기에 있습니다</string>
+    <string name="k2go_kolibri_nothing_to_add">선택하신 항목은 모두 이미 이 기기에 있습니다.</string>
 </resources>

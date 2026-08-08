@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">Alege teme</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d teme selectate</string>
     <string name="k2go_kolibri_whole_course">Cursul întreg</string>
-    <string name="k2go_kolibri_live_not_yet">Deocamdată doar pentru explorare. Adăugarea cursurilor de aici vine în următoarea actualizare; acum se aleg în timpul configurării sistemului.</string>
+    <string name="k2go_kolibri_checking">Se verifică ce poate face acest dispozitiv…</string>
+    <string name="k2go_kolibri_not_installed">Cursuri nu este instalat pe acest sistem, deci nu se poate adăuga conținut.</string>
+    <string name="k2go_kolibri_system_damaged">Sistemul trebuie reparat înainte de a adăuga conținut.</string>
+    <string name="k2go_kolibri_start_system_first">Pornește mai întâi sistemul, apoi descărcarea poate începe.</string>
+    <string name="k2go_kolibri_busy">Rulează altă descărcare. Încearcă din nou când se termină.</string>
+    <string name="k2go_kolibri_already_here">Deja pe acest dispozitiv</string>
+    <string name="k2go_kolibri_partly_here">Parțial pe acest dispozitiv</string>
+    <string name="k2go_kolibri_nothing_to_add">Tot ce ai ales este deja pe acest dispozitiv.</string>
 </resources>

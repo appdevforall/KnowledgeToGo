@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">トピックを選ぶ</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d 件のトピックを選択</string>
     <string name="k2go_kolibri_whole_course">コース全体</string>
-    <string name="k2go_kolibri_live_not_yet">今のところ閲覧のみです。ここからコースを追加できるのは次の更新から。現在はシステムの設定中に選びます。</string>
+    <string name="k2go_kolibri_checking">この端末にできることを確認しています…</string>
+    <string name="k2go_kolibri_not_installed">このシステムにコースがインストールされていないため、コンテンツを追加できません。</string>
+    <string name="k2go_kolibri_system_damaged">コンテンツを追加する前にシステムを修復する必要があります。</string>
+    <string name="k2go_kolibri_start_system_first">先にシステムを起動してください。その後ダウンロードを開始できます。</string>
+    <string name="k2go_kolibri_busy">別のダウンロードが実行中です。終了してからお試しください。</string>
+    <string name="k2go_kolibri_already_here">すでにこの端末にあります</string>
+    <string name="k2go_kolibri_partly_here">一部がこの端末にあります</string>
+    <string name="k2go_kolibri_nothing_to_add">選択したものはすべて、すでにこの端末にあります。</string>
 </resources>

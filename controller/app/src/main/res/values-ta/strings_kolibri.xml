@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">தலைப்புகளைத் தேர்வுசெய்</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d தலைப்புகள் தேர்ந்தெடுக்கப்பட்டன</string>
     <string name="k2go_kolibri_whole_course">முழுப் பாடநெறி</string>
-    <string name="k2go_kolibri_live_not_yet">தற்போது பார்ப்பதற்கு மட்டும். இங்கிருந்து பாடநெறிகளைச் சேர்ப்பது அடுத்த புதுப்பிப்பில் வரும்; தற்சமயம் அவை கணினி அமைக்கப்படும்போது தேர்வு செய்யப்படுகின்றன.</string>
+    <string name="k2go_kolibri_checking">இந்தச் சாதனம் என்ன செய்ய முடியும் எனப் பார்க்கப்படுகிறது…</string>
+    <string name="k2go_kolibri_not_installed">இந்த அமைப்பில் பாடநெறிகள் நிறுவப்படவில்லை, எனவே உள்ளடக்கம் சேர்க்க முடியாது.</string>
+    <string name="k2go_kolibri_system_damaged">உள்ளடக்கம் சேர்ப்பதற்கு முன் உங்கள் அமைப்பு சரிசெய்யப்பட வேண்டும்.</string>
+    <string name="k2go_kolibri_start_system_first">முதலில் உங்கள் அமைப்பைத் தொடங்குங்கள், பிறகு இந்தப் பதிவிறக்கம் தொடங்கும்.</string>
+    <string name="k2go_kolibri_busy">மற்றொரு பதிவிறக்கம் நடக்கிறது. முடிந்ததும் மீண்டும் முயற்சிக்கவும்.</string>
+    <string name="k2go_kolibri_already_here">ஏற்கெனவே இந்தச் சாதனத்தில் உள்ளது</string>
+    <string name="k2go_kolibri_partly_here">பகுதியாக இந்தச் சாதனத்தில் உள்ளது</string>
+    <string name="k2go_kolibri_nothing_to_add">நீங்கள் தேர்ந்தெடுத்தவை அனைத்தும் ஏற்கெனவே இந்தச் சாதனத்தில் உள்ளன.</string>
 </resources>

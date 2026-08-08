@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">Vybrať témy</string>
     <string name="k2go_kolibri_narrowed_fmt">Vybraných tém: %1$d</string>
     <string name="k2go_kolibri_whole_course">Celý kurz</string>
-    <string name="k2go_kolibri_live_not_yet">Zatiaľ len prehliadanie. Pridávanie kurzov odtiaľto príde v ďalšej aktualizácii; teraz sa vyberajú počas nastavovania systému.</string>
+    <string name="k2go_kolibri_checking">Zisťuje sa, čo toto zariadenie dokáže…</string>
+    <string name="k2go_kolibri_not_installed">Kurzy nie sú v tomto systéme nainštalované, obsah teda nemožno pridať.</string>
+    <string name="k2go_kolibri_system_damaged">Než bude možné pridať obsah, systém treba opraviť.</string>
+    <string name="k2go_kolibri_start_system_first">Najprv spustite systém, potom sa môže sťahovanie začať.</string>
+    <string name="k2go_kolibri_busy">Prebieha iné sťahovanie. Skúste to znova, keď skončí.</string>
+    <string name="k2go_kolibri_already_here">Už je v tomto zariadení</string>
+    <string name="k2go_kolibri_partly_here">Čiastočne v tomto zariadení</string>
+    <string name="k2go_kolibri_nothing_to_add">Všetko, čo ste vybrali, už v tomto zariadení je.</string>
 </resources>

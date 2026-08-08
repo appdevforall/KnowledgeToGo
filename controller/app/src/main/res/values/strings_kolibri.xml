@@ -53,5 +53,12 @@
     <string name="k2go_kolibri_choose_topics">Choose topics</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d topics selected</string>
     <string name="k2go_kolibri_whole_course">Whole course</string>
-    <string name="k2go_kolibri_live_not_yet">Browsing only for now. Adding courses from here lands in the next update; for the moment they are chosen while your system is being set up.</string>
+    <string name="k2go_kolibri_checking">Checking what this device can do…</string>
+    <string name="k2go_kolibri_not_installed">Courses isn\'t installed on this system, so content can\'t be added.</string>
+    <string name="k2go_kolibri_system_damaged">Your system needs to be repaired before content can be added.</string>
+    <string name="k2go_kolibri_start_system_first">Start your system first, then this download can begin.</string>
+    <string name="k2go_kolibri_busy">Another download is running. Try again when it finishes.</string>
+    <string name="k2go_kolibri_already_here">Already on this device</string>
+    <string name="k2go_kolibri_partly_here">Partly on this device</string>
+    <string name="k2go_kolibri_nothing_to_add">Everything you picked is already on this device.</string>
 </resources>

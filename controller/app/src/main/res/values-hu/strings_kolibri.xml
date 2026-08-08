@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">Témák kiválasztása</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d téma kiválasztva</string>
     <string name="k2go_kolibri_whole_course">Teljes tanfolyam</string>
-    <string name="k2go_kolibri_live_not_yet">Egyelőre csak böngészés. A tanfolyamok innen való hozzáadása a következő frissítésben jön; most a rendszer beállításakor választhatók.</string>
+    <string name="k2go_kolibri_checking">Ellenőrizzük, mire képes ez az eszköz…</string>
+    <string name="k2go_kolibri_not_installed">A Tanfolyamok nincs telepítve ezen a rendszeren, így nem adható hozzá tartalom.</string>
+    <string name="k2go_kolibri_system_damaged">A rendszert meg kell javítani, mielőtt tartalmat adna hozzá.</string>
+    <string name="k2go_kolibri_start_system_first">Indítsa el előbb a rendszert, utána kezdődhet a letöltés.</string>
+    <string name="k2go_kolibri_busy">Másik letöltés van folyamatban. Próbálja újra, ha befejeződött.</string>
+    <string name="k2go_kolibri_already_here">Már ezen az eszközön van</string>
+    <string name="k2go_kolibri_partly_here">Részben ezen az eszközön van</string>
+    <string name="k2go_kolibri_nothing_to_add">Minden kiválasztott elem már ezen az eszközön van.</string>
 </resources>

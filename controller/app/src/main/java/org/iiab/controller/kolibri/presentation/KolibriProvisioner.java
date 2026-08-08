@@ -64,24 +64,48 @@ public final class KolibriProvisioner {
      * retry, and {@code SetupProgressActivity.orchestrateStep()} calls the
      * provisioners in a fixed order, so the first one starts and the rest wait.
      */
-    public static void drain(Context ctx) {
+    /**
+     * @return true when the order was handed to {@code KolibriSeedService}. False
+     *         means it was deferred or there was nothing to do — which the
+     *         post-install screen can ignore, because it calls again on the next
+     *         pass, but a caller that just pressed a button cannot: it has to say
+     *         why nothing happened rather than look broken. (ADFA-4954, live door.)
+     */
+    /**
+     * ADFA-4954: whether a drain would proceed <em>right now</em>, without writing
+     * anything.
+     *
+     * <p>Exists so a caller can ask before it commits. The post-install screen can
+     * write an order and let the drain defer, because it calls again on every pass.
+     * The live door cannot: if it banks an order and the drain then refuses, the
+     * order stays in the wishlist and is downloaded at some later, unrelated moment
+     * that nobody asked for. Asking first is the difference between telling the user
+     * "not now" and quietly promising something for later.
+     *
+     * <p>The rule stays here rather than being restated at the call site — that is
+     * how the four {@code *Wizard} booleans went wrong.
+     */
+    public static boolean canDrainNow(Context ctx) {
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
                 || MapsProvisioner.hasPending(ctx)) {
-            Log.d(TAG, "kolibri drain deferred: proot (runrole) work is pending/running");
-            return;
+            Log.d(TAG, "kolibri drain blocked: proot (runrole) work is pending/running");
+            return false;
         }
         if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()
                 || BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
-            Log.d(TAG, "kolibri drain deferred: another content stream is active");
-            return;
+            Log.d(TAG, "kolibri drain blocked: another content stream is active");
+            return false;
         }
-
         KolibriSeedRepository repo = KolibriSeedRepository.get();
-        if (repo.isRunning() || repo.hasSession()) {
-            return;
+        return !repo.isRunning() && !repo.hasSession();
+    }
+
+    public static boolean drain(Context ctx) {
+        if (!canDrainNow(ctx)) {
+            return false;
         }
         if (KolibriWishlist.size(ctx) == 0) {
-            return;
+            return false;
         }
 
         final Context app = ctx.getApplicationContext();
@@ -115,7 +139,7 @@ public final class KolibriProvisioner {
         if (ids.isEmpty()) {
             Log.w(TAG, "kolibri drain: nothing resolved from wishlist");
             KolibriWishlist.clear(app);
-            return;
+            return false;
         }
 
         long[] b = new long[bytes.size()];
@@ -134,6 +158,7 @@ public final class KolibriProvisioner {
         // both the wishlist and the session are lost (orphaned partial). The durable
         // background-jobs monitor should own this hand-off so it survives process death.
         KolibriWishlist.clear(app);
+        return true;
     }
 
     /** Node ids as a comma-joined string; empty means the whole channel. */

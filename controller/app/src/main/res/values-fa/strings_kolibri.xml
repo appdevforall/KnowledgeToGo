@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">انتخاب موضوع‌ها</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d موضوع انتخاب شد</string>
     <string name="k2go_kolibri_whole_course">کل دوره</string>
-    <string name="k2go_kolibri_live_not_yet">فعلاً فقط برای مرور. افزودن دوره‌ها از اینجا در به‌روزرسانی بعدی می‌آید؛ در حال حاضر هنگام راه‌اندازی سیستم انتخاب می‌شوند.</string>
+    <string name="k2go_kolibri_checking">در حال بررسی توانایی این دستگاه…</string>
+    <string name="k2go_kolibri_not_installed">دوره‌ها روی این سیستم نصب نیست، بنابراین نمی‌توان محتوا افزود.</string>
+    <string name="k2go_kolibri_system_damaged">پیش از افزودن محتوا باید سیستم شما تعمیر شود.</string>
+    <string name="k2go_kolibri_start_system_first">ابتدا سیستم را روشن کنید تا این دانلود آغاز شود.</string>
+    <string name="k2go_kolibri_busy">دانلود دیگری در جریان است. پس از پایان دوباره تلاش کنید.</string>
+    <string name="k2go_kolibri_already_here">از پیش روی این دستگاه است</string>
+    <string name="k2go_kolibri_partly_here">بخشی از آن روی این دستگاه است</string>
+    <string name="k2go_kolibri_nothing_to_add">هر آنچه انتخاب کردید از پیش روی این دستگاه است.</string>
 </resources>

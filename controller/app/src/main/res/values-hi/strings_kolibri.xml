@@ -23,5 +23,12 @@
     <string name="k2go_kolibri_choose_topics">विषय चुनें</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d विषय चुने गए</string>
     <string name="k2go_kolibri_whole_course">पूरा कोर्स</string>
-    <string name="k2go_kolibri_live_not_yet">अभी सिर्फ़ देखने के लिए। यहाँ से कोर्स जोड़ना अगले अपडेट में आएगा; फ़िलहाल वे सिस्टम सेटअप के दौरान चुने जाते हैं।</string>
+    <string name="k2go_kolibri_checking">देखा जा रहा है कि यह डिवाइस क्या कर सकता है…</string>
+    <string name="k2go_kolibri_not_installed">इस सिस्टम पर कोर्स इंस्टॉल नहीं है, इसलिए सामग्री नहीं जोड़ी जा सकती।</string>
+    <string name="k2go_kolibri_system_damaged">सामग्री जोड़ने से पहले आपके सिस्टम की मरम्मत ज़रूरी है।</string>
+    <string name="k2go_kolibri_start_system_first">पहले अपना सिस्टम चालू करें, फिर यह डाउनलोड शुरू हो सकेगा।</string>
+    <string name="k2go_kolibri_busy">एक और डाउनलोड चल रहा है। पूरा होने पर फिर कोशिश करें।</string>
+    <string name="k2go_kolibri_already_here">पहले से इस डिवाइस पर है</string>
+    <string name="k2go_kolibri_partly_here">आंशिक रूप से इस डिवाइस पर है</string>
+    <string name="k2go_kolibri_nothing_to_add">आपने जो चुना वह सब पहले से इस डिवाइस पर है।</string>
 </resources>
