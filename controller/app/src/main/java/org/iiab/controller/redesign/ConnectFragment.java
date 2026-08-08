@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import org.iiab.controller.R;
 import org.iiab.controller.hotspot.LocalHotspotManager;
 import org.iiab.controller.sync.transport.NetworkInterfaces;
+import org.iiab.controller.sync.transport.NetworkStateLiveData;
 import org.iiab.controller.sync.transport.QrCodec;
 
 /**
@@ -95,6 +96,9 @@ public class ConnectFragment extends Fragment {
         });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
+        // ADFA-5064: redraw when the device's network changes from outside the app (e.g. the user
+        // turns Wi-Fi on after landing on a blank QR); render() re-reads the IP via discover().
+        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), s -> render());
 
         setMode(Mode.HOTSPOT);
         return v;
