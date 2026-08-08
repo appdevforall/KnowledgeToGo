@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Karten navigieren",
     "matomo": "Nutzungsstatistik",
     "k2go_docs": "Hilfe und Anleitungen",
-    "admin_dashboard": "Box verwalten",
     "connecting": "Verbindet",
     "loading": "Laden…",
     "opening": "Öffnen",

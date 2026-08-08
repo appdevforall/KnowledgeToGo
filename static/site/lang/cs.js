@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Navigovat v mapách",
     "matomo": "Analýza využití",
     "k2go_docs": "Nápověda a průvodci",
-    "admin_dashboard": "Spravovat zařízení",
     "connecting": "Připojování",
     "loading": "Načítání…",
     "opening": "Otevírání",

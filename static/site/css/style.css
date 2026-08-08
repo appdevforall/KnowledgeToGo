@@ -131,8 +131,7 @@ body {
 .card.hidden,
 .card.not-installed { display: none; }
 
-.card-icon { font-size: 28px; line-height: 1; width: 34px; text-align: center; flex: 0 0 auto; }
-.card-icon-svg { width: 28px; height: 28px; flex: 0 0 auto; color: var(--primary); }   /* app ic_card_* (currentColor) */
+.card-icon-svg { width: 28px; height: 28px; flex: 0 0 auto; color: var(--primary); }   /* app ic_card_* + M3 icons (currentColor) */
 .card-name { font-size: 1.02rem; font-weight: 600; flex: 1 1 auto; min-width: 0; }      /* natural label, same as the app */
 
 /* Per-card status: a dot + text. Ready = subtle green dot, no text.

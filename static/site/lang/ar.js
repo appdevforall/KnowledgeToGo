@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "تصفّح الخرائط",
     "matomo": "تحليلات الاستخدام",
     "k2go_docs": "مساعدة وأدلة",
-    "admin_dashboard": "أدر جهازك",
     "connecting": "جارٍ الاتصال",
     "loading": "جارٍ التحميل…",
     "opening": "جارٍ الفتح",

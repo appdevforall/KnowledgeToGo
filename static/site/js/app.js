@@ -79,8 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         'kolibri': '/kolibri/',
         'maps': '/maps/',
         'matomo': '/matomo/',
-        'k2go-docs': '/k2go-docs/',
-        'dashboard': '/dashboard/'
+        'k2go-docs': '/k2go-docs/'
     };
 
     const statusBanner = document.getElementById("backend-status");

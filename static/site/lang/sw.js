@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Tumia ramani",
     "matomo": "Uchambuzi wa matumizi",
     "k2go_docs": "Msaada na miongozo",
-    "admin_dashboard": "Dhibiti kisanduku chako",
     "connecting": "Inaunganisha",
     "loading": "Inapakia…",
     "opening": "Inafungua",

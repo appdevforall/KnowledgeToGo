@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Haritalarda gezin",
     "matomo": "Kullanım analizi",
     "k2go_docs": "Yardım ve kılavuzlar",
-    "admin_dashboard": "Kutunu yönet",
     "connecting": "Bağlanıyor",
     "loading": "Yükleniyor…",
     "opening": "Açılıyor",

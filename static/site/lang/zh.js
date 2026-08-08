@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "浏览地图",
     "matomo": "使用分析",
     "k2go_docs": "帮助与指南",
-    "admin_dashboard": "管理你的设备",
     "connecting": "正在连接",
     "loading": "加载中…",
     "opening": "正在打开",

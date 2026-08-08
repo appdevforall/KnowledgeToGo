@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "지도 탐색",
     "matomo": "사용 분석",
     "k2go_docs": "도움말 및 가이드",
-    "admin_dashboard": "박스 관리",
     "connecting": "연결 중",
     "loading": "로드 중…",
     "opening": "여는 중",

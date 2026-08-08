@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Naršyti žemėlapius",
     "matomo": "Naudojimo analizė",
     "k2go_docs": "Pagalba ir vadovai",
-    "admin_dashboard": "Tvarkyk įrenginį",
     "connecting": "Jungiamasi",
     "loading": "Įkeliama…",
     "opening": "Atveriama",

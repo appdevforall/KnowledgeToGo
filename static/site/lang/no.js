@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Naviger i kart",
     "matomo": "Bruksanalyse",
     "k2go_docs": "Hjelp og veiledninger",
-    "admin_dashboard": "Administrer boksen",
     "connecting": "Kobler til",
     "loading": "Laster…",
     "opening": "Åpner",

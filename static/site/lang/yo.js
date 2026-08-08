@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Tọ́ka máàpù",
     "matomo": "Ìtúpalẹ̀ ìlò",
     "k2go_docs": "Ìrànlọ́wọ́ àti àwọn ìtọ́sọ́nà",
-    "admin_dashboard": "Ṣàkóso àpótí rẹ",
     "connecting": "Ń so pọ̀",
     "loading": "Ń gbé…",
     "opening": "Ń ṣílẹ̀",

@@ -65,22 +65,19 @@
     </a>
 
     <a href="/matomo" class="card card-matomo hidden">
-        <span class="card-icon" aria-hidden="true">📊</span>
+        <svg class="card-icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 9.2h3V19H5zM10.5 5h3v14h-3zM16 13h3v6h-3z"/></svg>
         <span class="card-name" data-i18n="matomo">Usage analytics</span>
         <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting</span></span>
     </a>
 
     <a href="/k2go-docs/" class="card card-k2go-docs hidden">
-        <span class="card-icon" aria-hidden="true">📘</span>
+        <svg class="card-icon-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
         <span class="card-name" data-i18n="k2go_docs">Help &amp; guides</span>
         <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting</span></span>
     </a>
 
-    <a href="/dashboard/" class="card card-dashboard hidden">
-        <span class="card-icon" aria-hidden="true">⚙️</span>
-        <span class="card-name" data-i18n="admin_dashboard">Manage your box</span>
-        <span class="card-status" aria-hidden="true"><span class="dot"></span><span class="card-status-text" data-i18n="connecting">Connecting</span></span>
-    </a>
+    <!-- The dashboard is a REST API consumed by the app (not a navigable web module), so there is no
+         page to link to from the browser landing — no card here. -->
 </main>
 
 <div id="loadingOverlay">

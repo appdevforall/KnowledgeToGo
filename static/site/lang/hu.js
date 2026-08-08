@@ -8,7 +8,6 @@ window.i18n = {
     "maps": "Navigálj a térképeken",
     "matomo": "Használati elemzés",
     "k2go_docs": "Súgó és útmutatók",
-    "admin_dashboard": "Kezeld a dobozod",
     "connecting": "Csatlakozás",
     "loading": "Betöltés…",
     "opening": "Megnyitás",
