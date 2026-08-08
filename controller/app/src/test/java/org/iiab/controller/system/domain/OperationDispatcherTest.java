@@ -72,11 +72,39 @@ public class OperationDispatcherTest {
     @Test
     public void anIntactButStoppedBoxIsStartedRatherThanTreatedAsAbsent() {
         // Today every Get More probe fails in this state and an intact system looks
-        // identical to one with no modules at all. It is neither: start it, then run.
+        // identical to one with no modules at all. It is neither: make sure the box
+        // is up, then run.
         Dispatch d = OperationDispatcher.resolve(SEED_COURSES, OFF, true);
-        assertEquals(Dispatch.START_THEN_RUN_LIVE, d);
+        assertEquals(Dispatch.ENSURE_SERVER_THEN_RUN_LIVE, d);
         assertTrue(OperationDispatcher.willRun(d));
         assertFalse(OperationDispatcher.isDeferred(d));
+    }
+
+    @Test
+    public void notHavingAskedTheServerGetsTheSameAnswerAsBeingDown() {
+        // "Nobody has polled yet" and "polled and found down" need the same action —
+        // make sure it is up — so they share an answer. What they must NOT share is
+        // RUN_LIVE, which would POST into a box that may not be listening.
+        SystemFacts notAsked = SystemFacts.serverUnknown(true, true);
+        assertFalse(notAsked.isServerStateKnown());
+        assertEquals(Dispatch.ENSURE_SERVER_THEN_RUN_LIVE,
+                OperationDispatcher.resolve(SEED_COURSES, notAsked, true));
+    }
+
+    @Test
+    public void contentThatRunsStoppedNeedsNoServer() {
+        // Legal on purpose: "stopped" does not always mean "stops the whole box" —
+        // the Maps runrole coexists with a live server. So a stopped content op is
+        // answered before the reachability question, not after it.
+        Operation stoppedContent = Operation.of("maps",
+                Operation.Kind.CONTENT, Operation.ExecutionClass.STOPPED);
+        assertEquals(Dispatch.RUN_STOPPED,
+                OperationDispatcher.resolve(stoppedContent, OFF, true));
+        assertEquals(Dispatch.RUN_STOPPED,
+                OperationDispatcher.resolve(stoppedContent, RUNNING, true));
+        // It is still content, so an absent platform still refuses it.
+        assertEquals(Dispatch.UNAVAILABLE,
+                OperationDispatcher.resolve(stoppedContent, RUNNING, false));
     }
 
     // ---- a platform the tier never installed --------------------------------

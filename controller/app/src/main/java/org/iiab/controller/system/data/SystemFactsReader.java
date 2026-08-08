@@ -14,7 +14,10 @@ import android.content.Context;
 import org.iiab.controller.InstallGuard;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.SystemStateEvaluator;
+import org.iiab.controller.env.EnvironmentLock;
 import org.iiab.controller.install.domain.InterruptedInstallDetector;
+import org.iiab.controller.install.presentation.InstallProgressRepository;
+import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.system.domain.SystemFacts;
 
 import java.io.File;
@@ -47,30 +50,41 @@ import java.io.File;
  */
 public final class SystemFactsReader {
 
-    /** Where the rootfs lands. The same path {@code SystemStateEvaluator} uses. */
-    private static final String ROOTFS_PATH = "rootfs/installed-rootfs/iiab";
-
     private SystemFactsReader() {
     }
 
     /**
      * The current facts.
      *
-     * <p>Health is the verdict {@code InterruptedInstallDetector} already gives the
-     * boot check, asked the same way: an install marker that is still set while the
-     * server is not answering means the install was killed half-way. Reusing it
-     * keeps one definition of "damaged" instead of inventing a second.
+     * <p>Health is {@code InterruptedInstallDetector}'s verdict, asked with <b>all</b>
+     * of its preconditions rather than the marker alone. The marker is also held,
+     * quite legitimately, by a running install, a running module queue and by a live
+     * backup, restore or clone; reading it bare would call a backup in progress a
+     * damaged system. That mistake has been made before and cost a false "reinstall"
+     * dialog (ADFA-4971), which is why the rule now lives inside the detector with
+     * its conditions attached instead of being restated by each caller.
+     *
+     * <p>The server answer comes from the poll's cache, which is only running while
+     * an activity is. Before its first pass the honest answer is "not asked", not
+     * "down" — see {@link SystemFacts#isServerStateKnown()}.
      */
     public static SystemFacts read(Context ctx) {
         if (ctx == null) {
             return SystemFacts.none();
         }
-        boolean serverUp = ServerStateRepository.get().current().alive;
+        ServerStateRepository server = ServerStateRepository.get();
+        boolean serverUp = server.current().alive;
         boolean installed = SystemStateEvaluator.isSystemInstalled(ctx);
         boolean healthy = InterruptedInstallDetector.evaluate(
-                InstallGuard.inProgress(ctx), serverUp)
-                == InterruptedInstallDetector.Verdict.OK;
-        return SystemFacts.of(installed, healthy, serverUp);
+                InstallGuard.inProgress(ctx),
+                InstallProgressRepository.get().isRunning(),
+                ModuleQueueRepository.get().isRunning(),
+                EnvironmentLock.ownerHeld(ctx),
+                serverUp) == InterruptedInstallDetector.Verdict.OK;
+
+        return server.hasObservation()
+                ? SystemFacts.of(installed, healthy, serverUp)
+                : SystemFacts.serverUnknown(installed, healthy);
     }
 
     /**
@@ -86,7 +100,7 @@ public final class SystemFactsReader {
         if (ctx == null) {
             return false;
         }
-        File dir = new File(ctx.getFilesDir(), ROOTFS_PATH);
+        File dir = SystemStateEvaluator.rootfsDir(ctx);
         return dir.exists() && dir.isDirectory();
     }
 }

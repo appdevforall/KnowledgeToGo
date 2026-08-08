@@ -33,6 +33,14 @@ package org.iiab.controller.system.domain;
  *       all.</li>
  * </ul>
  *
+ * <p><b>Not knowing is carried too.</b> The server answer comes from a poll that
+ * only runs while an activity is alive, so before its first pass — or in a process
+ * that never started it — "down" and "not yet asked" are the same {@code false}.
+ * Flattening those is the mistake this whole model exists to stop, so
+ * {@link #isServerStateKnown()} keeps them apart. The dispatcher deliberately gives
+ * both the same answer, because the action is identical: make sure the box is up
+ * before running against it.
+ *
  * <p>Whether a particular <em>platform</em> is present — Kolibri, Books, Maps — is
  * not here. It is per-operation rather than per-box (the rootfs carries software,
  * not content, and the tier decides which platforms it carries), so it is passed to
@@ -42,25 +50,38 @@ package org.iiab.controller.system.domain;
  */
 public final class SystemFacts {
 
-    private static final SystemFacts NOTHING = new SystemFacts(false, true, false);
+    private static final SystemFacts NOTHING = new SystemFacts(false, true, false, true);
 
     private final boolean installed;
     private final boolean healthy;
     private final boolean serverUp;
+    private final boolean serverStateKnown;
 
-    private SystemFacts(boolean installed, boolean healthy, boolean serverUp) {
+    private SystemFacts(boolean installed, boolean healthy,
+                        boolean serverUp, boolean serverStateKnown) {
         this.installed = installed;
         this.healthy = healthy;
         this.serverUp = serverUp;
+        this.serverStateKnown = serverStateKnown;
     }
 
+    /** Facts where the server answer is a real observation. */
     public static SystemFacts of(boolean installed, boolean healthy, boolean serverUp) {
-        return new SystemFacts(installed, healthy, serverUp);
+        return new SystemFacts(installed, healthy, serverUp, true);
+    }
+
+    /**
+     * Facts where nobody has asked the server yet. {@code serverUp} reads false, as
+     * it must, but {@link #isServerStateKnown()} says why.
+     */
+    public static SystemFacts serverUnknown(boolean installed, boolean healthy) {
+        return new SystemFacts(installed, healthy, false, false);
     }
 
     /**
      * No system at all — a fresh device, and the state the wizard runs in.
-     * Healthy is true because there is nothing to be damaged.
+     * Healthy is true because there is nothing to be damaged; the server is known to
+     * be down for the same reason.
      */
     public static SystemFacts none() {
         return NOTHING;
@@ -76,9 +97,14 @@ public final class SystemFacts {
         return healthy;
     }
 
-    /** Something answers on the box. */
+    /** Something answers on the box. False also covers "nobody has asked yet". */
     public boolean isServerUp() {
         return serverUp;
+    }
+
+    /** Whether {@link #isServerUp()} is an observation rather than an absence of one. */
+    public boolean isServerStateKnown() {
+        return serverStateKnown;
     }
 
     /** Installed, whole, and not currently being repaired. */
@@ -90,7 +116,8 @@ public final class SystemFacts {
     public String toString() {
         return "SystemFacts{installed=" + installed
                 + ", healthy=" + healthy
-                + ", serverUp=" + serverUp + "}";
+                + ", server=" + (serverStateKnown ? (serverUp ? "up" : "down") : "unknown")
+                + "}";
     }
 
     @Override
@@ -102,11 +129,13 @@ public final class SystemFacts {
             return false;
         }
         SystemFacts f = (SystemFacts) o;
-        return installed == f.installed && healthy == f.healthy && serverUp == f.serverUp;
+        return installed == f.installed && healthy == f.healthy
+                && serverUp == f.serverUp && serverStateKnown == f.serverStateKnown;
     }
 
     @Override
     public int hashCode() {
-        return (installed ? 4 : 0) + (healthy ? 2 : 0) + (serverUp ? 1 : 0);
+        return (installed ? 8 : 0) + (healthy ? 4 : 0)
+                + (serverUp ? 2 : 0) + (serverStateKnown ? 1 : 0);
     }
 }

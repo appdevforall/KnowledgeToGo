@@ -50,6 +50,27 @@ public class SystemFactsTest {
     }
 
     @Test
+    public void notAskedIsNotTheSameAsDown() {
+        SystemFacts down = SystemFacts.of(true, true, false);
+        SystemFacts notAsked = SystemFacts.serverUnknown(true, true);
+
+        // Both read "not up", which they must — but only one of them is an
+        // observation, and flattening the difference is the mistake this whole model
+        // exists to stop.
+        assertFalse(down.isServerUp());
+        assertFalse(notAsked.isServerUp());
+        assertTrue(down.isServerStateKnown());
+        assertFalse(notAsked.isServerStateKnown());
+        assertNotEquals(down, notAsked);
+    }
+
+    @Test
+    public void aFreshDeviceKnowsItsServerIsDown() {
+        // Nothing is installed, so "not running" is a fact, not an absence of one.
+        assertTrue(SystemFacts.none().isServerStateKnown());
+    }
+
+    @Test
     public void factsWithTheSameValuesAreEqual() {
         assertEquals(SystemFacts.of(true, true, false), SystemFacts.of(true, true, false));
         assertEquals(SystemFacts.of(false, true, false), SystemFacts.none());

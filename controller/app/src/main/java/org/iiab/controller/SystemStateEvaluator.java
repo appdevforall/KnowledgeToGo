@@ -22,6 +22,15 @@ public final class SystemStateEvaluator {
     private SystemStateEvaluator() {
     }
 
+    /** Where the installed rootfs lives, under the app's files dir. */
+    private static final String ROOTFS_PATH = "rootfs/installed-rootfs/iiab";
+
+    /** ADFA-5061: the one place the rootfs path is spelled, so a reader elsewhere
+     *  does not have to write it out again and drift from this one. */
+    public static java.io.File rootfsDir(Context ctx) {
+        return new File(ctx.getFilesDir(), ROOTFS_PATH);
+    }
+
     private static volatile String cachedTermuxArch;
     private static volatile String cachedDebianArch;
     private static volatile boolean archCalculated;
@@ -34,14 +43,14 @@ public final class SystemStateEvaluator {
         if (InstallGuard.inProgress(ctx)) {
             return false;
         }
-        File rootfsDir = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        File rootfsDir = rootfsDir(ctx);
         return new File(rootfsDir, "bin/bash").exists()
                 || new File(rootfsDir, "usr/local/pdsm/flag_install_ready").exists();
     }
 
     /** Server responding → ONLINE; else derive from the rootfs on disk. */
     public static DashboardFragment.SystemState evaluate(Context ctx, boolean serverAlive) {
-        File rootfsDir = new File(ctx.getFilesDir(), "rootfs/installed-rootfs/iiab");
+        File rootfsDir = rootfsDir(ctx);
         File debianBash = new File(rootfsDir, "bin/bash");
         File flagIiabReady = new File(rootfsDir, "usr/local/pdsm/flag_install_ready");
 

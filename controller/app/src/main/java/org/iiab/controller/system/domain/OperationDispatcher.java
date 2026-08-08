@@ -49,8 +49,21 @@ public final class OperationDispatcher {
     public enum Dispatch {
         /** Run it now, over REST, with the box up. */
         RUN_LIVE,
-        /** Everything is in place but the box is off: start it, then run live. */
-        START_THEN_RUN_LIVE,
+        /**
+         * Everything is in place, but the box is not known to be up: make sure it is
+         * — probe, start it if it is down, wait — and then run live.
+         *
+         * <p>Deliberately the same answer for "off" and for "nobody has asked yet",
+         * because the action is identical. It is <em>not</em> the same as
+         * {@link #RUN_LIVE}: a caller that treats it as such will POST into a box
+         * that is not listening.
+         *
+         * <p>Nothing implements this contract yet — {@code ServerController} can
+         * start the environment and {@code RestReadiness} can probe it, but no one
+         * composes the two. Until they do, a caller must not silently downgrade this
+         * to {@code RUN_LIVE}.
+         */
+        ENSURE_SERVER_THEN_RUN_LIVE,
         /** Take the box down and run it under proot. */
         RUN_STOPPED,
         /** There is nothing to run it against yet: queue it and drain after the install. */
@@ -116,10 +129,18 @@ public final class OperationDispatcher {
         if (!platformPresent) {
             return Dispatch.UNAVAILABLE;
         }
-        if (!facts.isServerUp()) {
-            return Dispatch.START_THEN_RUN_LIVE;
+        // A content operation that runs with the box stopped is legal — the model
+        // has to allow it, because "stopped" does not always mean "stops the whole
+        // box" (the Maps runrole coexists with a live server). It needs no server,
+        // so it is answered before the reachability question.
+        if (!op.isLive()) {
+            return Dispatch.RUN_STOPPED;
         }
-        return op.isLive() ? Dispatch.RUN_LIVE : Dispatch.RUN_STOPPED;
+        if (!facts.isServerUp()) {
+            // Covers both "known down" and "never asked": same action either way.
+            return Dispatch.ENSURE_SERVER_THEN_RUN_LIVE;
+        }
+        return Dispatch.RUN_LIVE;
     }
 
     /**
@@ -130,10 +151,10 @@ public final class OperationDispatcher {
         return d == Dispatch.DEFER;
     }
 
-    /** Whether the answer will end up running, now or after the box is started. */
+    /** Whether the answer will end up running, now or once the box is up. */
     public static boolean willRun(Dispatch d) {
         return d == Dispatch.RUN_LIVE
-                || d == Dispatch.START_THEN_RUN_LIVE
+                || d == Dispatch.ENSURE_SERVER_THEN_RUN_LIVE
                 || d == Dispatch.RUN_STOPPED;
     }
 }

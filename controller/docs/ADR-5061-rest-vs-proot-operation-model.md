@@ -187,6 +187,14 @@ screen. Subtle, not in-your-face: the lights change, buttons appear or don't.
    Defined once here and consumed by ADFA-4758, which asks for the same thing as "persist and surface
    the installed tier/state". Agreeing it late means building it twice, in two shapes.
 
+   A fifth thing has to be carried alongside them: **whether the fact is known at all**. The server
+   answer comes from a poll that only runs while an activity is alive, and its seed value reports
+   "not up" — so before the first pass, and in any process that never started it, "down" and "never
+   asked" are the same boolean. Flattening those is the same mistake at a smaller scale, so
+   `ServerStateRepository.hasObservation()` keeps them apart. The dispatcher then gives both the same
+   answer on purpose, because the action is identical: make sure the box is up before running against
+   it. Sharing an answer is a decision; sharing a representation is an accident.
+
 9. **Consolidating the nine checks must not homogenise them.** Some are loose on purpose:
    `InstallService.runPipeline():258` asks "is there a directory to wipe", which is a legitimate and
    *different* question from "is there a healthy system". Silently upgrading it would change when a
