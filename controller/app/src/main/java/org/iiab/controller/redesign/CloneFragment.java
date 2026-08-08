@@ -48,6 +48,7 @@ import org.iiab.controller.sync.presentation.SyncProgressRepository;
 import org.iiab.controller.sync.presentation.SyncStateViewModel;
 import org.iiab.controller.sync.presentation.SyncTransferState;
 import org.iiab.controller.sync.transport.NetworkInterfaces;
+import org.iiab.controller.sync.transport.NetworkStateLiveData;
 import org.iiab.controller.sync.transport.QrCodec;
 import org.iiab.controller.sync.transport.TransportEngine;
 
@@ -247,6 +248,10 @@ public class CloneFragment extends Fragment {
         rcvShowPaste.setOnClickListener(x -> { pasteExpanded = !pasteExpanded; renderReceive(); });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
+        // ADFA-5064: same rescue as Connect — redraw the handshake/URL QR when the device's network
+        // changes from outside the app (Wi-Fi turned on/off, roam, new IP lease). render() re-reads
+        // the IP via discover(), so a QR that was blank for "no network" fills in once one appears.
+        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), net -> render());
         SyncTransferState cur = SyncProgressRepository.get().current();
         lastSeq = (cur != null) ? cur.seq : -1L;   // only fire dialogs on NEW transitions
         SyncProgressRepository.get().state().observe(getViewLifecycleOwner(), this::onTransferState);
