@@ -87,6 +87,7 @@ body {
     margin: 8px auto 0;
     padding: 12px 16px;
     border-radius: 12px;
+    background: var(--surface);                                   /* fallback for browsers without color-mix */
     background: color-mix(in srgb, var(--error) 14%, var(--surface));
     border: 1px solid var(--error);
     color: var(--ink);
@@ -130,11 +131,9 @@ body {
 .card.hidden,
 .card.not-installed { display: none; }
 
-.card-icon { font-size: 30px; line-height: 1; width: 40px; text-align: center; flex: 0 0 auto; }
-.card-icon-img { width: 40px; height: 40px; object-fit: contain; flex: 0 0 auto; }
-.card-text { display: flex; flex-direction: column; min-width: 0; flex: 1 1 auto; }
-.card-name { font-size: 1.02rem; font-weight: 600; }
-.card-sub { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.card-icon { font-size: 28px; line-height: 1; width: 34px; text-align: center; flex: 0 0 auto; }
+.card-icon-svg { width: 28px; height: 28px; flex: 0 0 auto; color: var(--primary); }   /* app ic_card_* (currentColor) */
+.card-name { font-size: 1.02rem; font-weight: 600; flex: 1 1 auto; min-width: 0; }      /* natural label, same as the app */
 
 /* Per-card status: a dot + text. Ready = subtle green dot, no text.
    Connecting (installed but the server isn't answering yet) = amber pulsing
@@ -152,6 +151,7 @@ body {
 #loadingOverlay {
     display: none;
     position: fixed; inset: 0;
+    background: var(--bg);                                        /* fallback for browsers without color-mix */
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     backdrop-filter: blur(2px);
     z-index: 1000;

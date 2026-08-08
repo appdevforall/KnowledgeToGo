@@ -54,12 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
         'sr', 'lt', 'no', 'hu', 'az', 'bn', 'gu', 'ta', 'sw', 'yo'];
     const RTL_LANGS = ['ar', 'fa'];
 
+    // Same cache-bust token index.html carries, so the lang file is refetched after a deploy too.
+    const bust = (window.__CACHEBUST__ && window.__CACHEBUST__ !== "__CB_TOKEN__") ? ("?v=" + window.__CACHEBUST__) : "";
     const loadScript = (lang) => {
         const finalLang = supportedLangs.includes(lang) ? lang : 'en';
         document.documentElement.lang = finalLang;
         document.documentElement.dir = RTL_LANGS.includes(finalLang) ? 'rtl' : 'ltr';
         const script = document.createElement('script');
-        script.src = `lang/${finalLang}.js`;
+        script.src = `lang/${finalLang}.js${bust}`;
         script.onload = applyTranslations;
         document.head.appendChild(script);
     };
@@ -123,7 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 else { btn.classList.add("disabled"); }                                   // connecting
             } catch (error) { btn.classList.add("disabled"); }
         }
-        if (allDown) {
+        // Only claim "backend down" when there is actually something to monitor — a box with nothing
+        // installed leaves `services` empty, and the loop above wouldn't flip allDown, so without this
+        // guard the red banner would show with no monitored services.
+        const monitored = Object.keys(services).length;
+        if (monitored > 0 && allDown) {
             statusBanner.classList.remove("hidden");
             currentInterval = MIN_INTERVAL;
         } else {

@@ -1,71 +1,35 @@
 #!/bin/bash
+# static/site/site-updater.sh — deploy the box landing page to the nginx home.
+#
+# Mirrors static/site/ -> /library/www/html/home. ADFA-5059: uses tar (proot-safe; rsync's
+# fchmodat2 chmod isn't translated inside proot, so a plain rsync -a can fail there — same reason
+# tools/dev-push-dashboard.sh switched to tar), and stamps a per-deploy cache-bust token into the
+# served index.html + app.js so browsers across the fleet fetch fresh CSS/JS/lang after an update
+# instead of serving a stale cached copy. The repo files keep the literal __CACHEBUST__ placeholder.
+set -eu
 
-# ==========================================
-# Terminal Color Codes
-# ==========================================
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+RED='\033[0;31m'; GREEN='\033[0;32m'; CYAN='\033[0;36m'; NC='\033[0m'
 
-# ==========================================
-# Configuration Variables
-# ==========================================
-# Dynamically resolve the repository root based on the script's location
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SITE_SRC="$REPO_DIR/"
+SITE_SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DEST_DIR="/library/www/html/home"
 
-printf "\n${CYAN}Starting site deployment and synchronization...${NC}\n"
+printf "\n${CYAN}Deploying the landing site...${NC}\n"
 
-# Ensure source directory exists before attempting to sync
-if [ ! -d "$SITE_SRC" ]; then
-    printf "${RED}Fatal Error: Source directory not found at $SITE_SRC.${NC}"
-    exit 1
-fi
+[ -d "$SITE_SRC" ] || { printf "${RED}Source not found: $SITE_SRC${NC}\n"; exit 1; }
+mkdir -p "$DEST_DIR"
 
-# Ensure destination directory exists, create if it does not
-if [ ! -d "$DEST_DIR" ]; then
-    printf "Destination directory $DEST_DIR does not exist. Creating it now...\n"
-    mkdir -p "$DEST_DIR"
-fi
+# Mirror: clear the destination, then copy via tar (proot-safe). Excludes this script and any *.sh.
+printf "Mirroring %s -> %s ...\n" "$SITE_SRC" "$DEST_DIR"
+find "$DEST_DIR" -mindepth 1 -delete 2>/dev/null || true
+( cd "$SITE_SRC" && tar --exclude='*.sh' -cf - . ) | ( cd "$DEST_DIR" && tar -xf - )
 
-# ==========================================
-# Audit Phase: Detect Destination Drift
-# ==========================================
-printf "Auditing $DEST_DIR for local modifications or orphaned files...\n"
+# Cache-bust: stamp ONLY the served index.html (it carries the asset ?v= refs and the runtime token
+# window.__CACHEBUST__). app.js is intentionally NOT stamped — it reads the token at runtime and
+# compares against the "__CB_TOKEN__" placeholder to know it's unstamped, so stamping it would break
+# that guard. Prefer the git short SHA (stable per commit, keeps caches warm on a same-commit
+# redeploy); fall back to a timestamp if git isn't available.
+TOKEN="$(git -C "$SITE_SRC" rev-parse --short HEAD 2>/dev/null || date +%s)"
+sed -i "s/__CB_TOKEN__/${TOKEN}/g" "$DEST_DIR/index.html"
+printf "Cache-bust token: %s\n" "$TOKEN"
 
-# Perform a dry-run rsync (-n) to detect differences.
-# Detects & delete files that are different at the destination not origin.
-LOCAL_MODS=$(rsync -ani --delete "$SITE_SRC/" "$DEST_DIR/" | grep -E '^>fc|^\*deleting')
-
-if [ -n "$LOCAL_MODS" ]; then
-    printf "\n${YELLOW}WARNING: Destination drift detected.${NC}\n"
-    printf "The following files in the live directory will be OVERWRITTEN or DELETED to match the clean repository state:\n"
-    
-    # Format the rsync output for readability
-    echo "$LOCAL_MODS" | awk '{print "  - " $2}'
-    echo ""
-    
-    read -p "Acknowledge and proceed with deployment? (y/N): " -n 1 -r
-    echo ""
-    
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        printf "${RED}Deployment aborted by user. The live site remains unchanged.${NC}\n"
-        exit 1
-    fi
-else
-    printf "No conflicts detected. Destination is clean or ready for new files.\n"
-fi
-
-# ==========================================
-# Synchronization Phase
-# ==========================================
-printf "Synchronizing landing site data from local repository...\n"
-
-# Execute the actual sync. The --delete flag ensures orphaned files are removed.
-rsync -a --delete "$SITE_SRC/" "$DEST_DIR/"
-
-printf "${GREEN}Deployment completed successfully.\n"
-printf "The landing page has been mirrored from the local repository.${NC}\n"
+printf "${GREEN}Done. No nginx restart needed (static files served directly).${NC}\n"
