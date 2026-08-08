@@ -71,20 +71,37 @@ public final class KolibriProvisioner {
      *         pass, but a caller that just pressed a button cannot: it has to say
      *         why nothing happened rather than look broken. (ADFA-4954, live door.)
      */
-    public static boolean drain(Context ctx) {
+    /**
+     * ADFA-4954: whether a drain would proceed <em>right now</em>, without writing
+     * anything.
+     *
+     * <p>Exists so a caller can ask before it commits. The post-install screen can
+     * write an order and let the drain defer, because it calls again on every pass.
+     * The live door cannot: if it banks an order and the drain then refuses, the
+     * order stays in the wishlist and is downloaded at some later, unrelated moment
+     * that nobody asked for. Asking first is the difference between telling the user
+     * "not now" and quietly promising something for later.
+     *
+     * <p>The rule stays here rather than being restated at the call site — that is
+     * how the four {@code *Wizard} booleans went wrong.
+     */
+    public static boolean canDrainNow(Context ctx) {
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
                 || MapsProvisioner.hasPending(ctx)) {
-            Log.d(TAG, "kolibri drain deferred: proot (runrole) work is pending/running");
+            Log.d(TAG, "kolibri drain blocked: proot (runrole) work is pending/running");
             return false;
         }
         if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()
                 || BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
-            Log.d(TAG, "kolibri drain deferred: another content stream is active");
+            Log.d(TAG, "kolibri drain blocked: another content stream is active");
             return false;
         }
-
         KolibriSeedRepository repo = KolibriSeedRepository.get();
-        if (repo.isRunning() || repo.hasSession()) {
+        return !repo.isRunning() && !repo.hasSession();
+    }
+
+    public static boolean drain(Context ctx) {
+        if (!canDrainNow(ctx)) {
             return false;
         }
         if (KolibriWishlist.size(ctx) == 0) {

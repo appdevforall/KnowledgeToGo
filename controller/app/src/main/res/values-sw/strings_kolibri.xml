@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">Kuna upakuaji mwingine unaoendelea. Jaribu tena ukiisha.</string>
     <string name="k2go_kolibri_already_here">Tayari kiko kwenye kifaa hiki</string>
     <string name="k2go_kolibri_partly_here">Kipo kwa sehemu kwenye kifaa hiki</string>
+    <string name="k2go_kolibri_nothing_to_add">Kila ulichochagua tayari kipo kwenye kifaa hiki.</string>
 </resources>

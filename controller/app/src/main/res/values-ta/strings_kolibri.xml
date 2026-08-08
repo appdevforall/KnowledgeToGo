@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">மற்றொரு பதிவிறக்கம் நடக்கிறது. முடிந்ததும் மீண்டும் முயற்சிக்கவும்.</string>
     <string name="k2go_kolibri_already_here">ஏற்கெனவே இந்தச் சாதனத்தில் உள்ளது</string>
     <string name="k2go_kolibri_partly_here">பகுதியாக இந்தச் சாதனத்தில் உள்ளது</string>
+    <string name="k2go_kolibri_nothing_to_add">நீங்கள் தேர்ந்தெடுத்தவை அனைத்தும் ஏற்கெனவே இந்தச் சாதனத்தில் உள்ளன.</string>
 </resources>

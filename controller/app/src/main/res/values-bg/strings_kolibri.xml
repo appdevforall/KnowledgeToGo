@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">Тече друго изтегляне. Опитайте отново, когато приключи.</string>
     <string name="k2go_kolibri_already_here">Вече е на това устройство</string>
     <string name="k2go_kolibri_partly_here">Частично на това устройство</string>
+    <string name="k2go_kolibri_nothing_to_add">Всичко избрано вече е на това устройство.</string>
 </resources>

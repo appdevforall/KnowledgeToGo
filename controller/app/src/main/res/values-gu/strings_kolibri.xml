@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">બીજું ડાઉનલોડ ચાલુ છે. તે પૂરું થાય પછી ફરી પ્રયાસ કરો.</string>
     <string name="k2go_kolibri_already_here">પહેલેથી આ ઉપકરણ પર છે</string>
     <string name="k2go_kolibri_partly_here">આંશિક રીતે આ ઉપકરણ પર છે</string>
+    <string name="k2go_kolibri_nothing_to_add">તમે પસંદ કરેલું બધું પહેલેથી આ ઉપકરણ પર છે.</string>
 </resources>

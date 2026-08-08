@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">আরেকটি ডাউনলোড চলছে। শেষ হলে আবার চেষ্টা করুন।</string>
     <string name="k2go_kolibri_already_here">ইতিমধ্যে এই ডিভাইসে আছে</string>
     <string name="k2go_kolibri_partly_here">আংশিকভাবে এই ডিভাইসে আছে</string>
+    <string name="k2go_kolibri_nothing_to_add">আপনি যা বেছে নিয়েছেন সবই ইতিমধ্যে এই ডিভাইসে আছে।</string>
 </resources>

@@ -9,6 +9,7 @@
  */
 package org.iiab.controller.kolibri.presentation;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.StatFs;
 import android.view.Gravity;
@@ -32,6 +33,7 @@ import org.iiab.controller.kolibri.domain.ChannelSelection;
 import org.iiab.controller.kolibri.domain.InstalledChannel;
 import org.iiab.controller.kolibri.domain.SeedPlan;
 import org.iiab.controller.redesign.SetupLibraryActivity;
+import org.iiab.controller.util.AppExecutors;
 import org.iiab.controller.util.ByteFormatter;
 
 import java.util.ArrayList;
@@ -123,7 +125,9 @@ public final class KolibriConfirmFragment extends Fragment {
      * lives in one place: this screen only turns its answer into words.
      */
     private void applyFitState(List<Channel> chosen) {
-        SeedPlan plan = planOf(chosen);
+        // The fit question is about what will be downloaded, so it is asked of the
+        // plan that will actually be sent — without the channels already here.
+        SeedPlan plan = planToSend(chosen);
         Long freeBytes = readFreeBytes();
         Boolean verdict = plan.fitsIn(freeBytes);
         final boolean fitAllows;
@@ -168,8 +172,7 @@ public final class KolibriConfirmFragment extends Fragment {
      */
     private void applyDispatch(List<Channel> chosen, boolean allowedByFit) {
         if (ready == null || ready.isChecking()) {
-            confirm.setEnabled(false);
-            note(R.string.k2go_kolibri_checking);
+            refuse(R.string.k2go_kolibri_checking);
             return;
         }
 
@@ -183,6 +186,14 @@ public final class KolibriConfirmFragment extends Fragment {
                 break;
 
             case RUN_LIVE:
+                if (!chosen.isEmpty() && missingOnly(chosen).isEmpty()) {
+                    // Everything picked is already here in full. Say so before the
+                    // press rather than after it.
+                    confirm.setEnabled(false);
+                    confirm.setOnClickListener(null);
+                    note(R.string.k2go_kolibri_nothing_to_add);
+                    break;
+                }
                 liveNote.setVisibility(View.GONE);
                 confirm.setEnabled(allowedByFit);
                 confirm.setOnClickListener(x -> startLive(chosen));
@@ -203,18 +214,15 @@ public final class KolibriConfirmFragment extends Fragment {
                 // Courses is not on this system — a Basic tier, or the module never
                 // installed. No future moment makes a queued order runnable, so it
                 // is refused rather than banked.
-                confirm.setEnabled(false);
-                note(R.string.k2go_kolibri_not_installed);
+                refuse(R.string.k2go_kolibri_not_installed);
                 break;
 
             case BLOCKED_DAMAGED:
-                confirm.setEnabled(false);
-                note(R.string.k2go_kolibri_system_damaged);
+                refuse(R.string.k2go_kolibri_system_damaged);
                 break;
 
             default:
-                confirm.setEnabled(false);
-                note(R.string.k2go_kolibri_checking);
+                refuse(R.string.k2go_kolibri_checking);
                 break;
         }
     }
@@ -223,6 +231,19 @@ public final class KolibriConfirmFragment extends Fragment {
     private void note(int stringRes) {
         liveNote.setText(stringRes);
         liveNote.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Refuses the action and says why.
+     *
+     * <p>Clears the listener as well as disabling: leaving a stale one attached under
+     * a disabled button is harmless only for as long as nobody enables the button
+     * from somewhere else.
+     */
+    private void refuse(int stringRes) {
+        confirm.setEnabled(false);
+        confirm.setOnClickListener(null);
+        note(stringRes);
     }
 
     /**
@@ -274,6 +295,11 @@ public final class KolibriConfirmFragment extends Fragment {
         return SeedPlan.of(sels, sizes);
     }
 
+    /** The plan for what will actually be sent — the complete ones dropped. */
+    private SeedPlan planToSend(List<Channel> chosen) {
+        return planOf(missingOnly(chosen));
+    }
+
     /** The whole order, priced against what the device already holds. */
     private long totalCost(List<Channel> chosen) {
         long total = 0L;
@@ -297,7 +323,10 @@ public final class KolibriConfirmFragment extends Fragment {
      * has no server yet, so this is the "leave a food order" half of ADR-4853.
      */
     private void bankAndReturn(List<Channel> chosen) {
-        bank(chosen);
+        // Same filter as the live door. In the wizard the library is unknown, so
+        // nothing is dropped — but the two doors should not disagree about what an
+        // order contains just because one of them happens to know more.
+        bank(missingOnly(chosen));
         vm.clearSelection();
         if (getActivity() instanceof SetupLibraryActivity) {
             ((SetupLibraryActivity) getActivity()).kolibriWizardConfirm();
@@ -319,16 +348,102 @@ public final class KolibriConfirmFragment extends Fragment {
      * be left with silence, so the refusal is shown.
      */
     private void startLive(List<Channel> chosen) {
-        bank(chosen);
-        if (!KolibriProvisioner.drain(requireContext())) {
+        // Ask BEFORE writing. Banking first and being refused afterwards leaves the
+        // order in the wishlist, to be downloaded at some later moment nobody asked
+        // for — the same orphan this screen refuses to create when the box is off.
+        if (!KolibriProvisioner.canDrainNow(requireContext())) {
             note(R.string.k2go_kolibri_busy);
             confirm.setEnabled(false);
+            return;
+        }
+        final List<Channel> toDownload = missingOnly(chosen);
+        if (toDownload.isEmpty()) {
+            refuse(R.string.k2go_kolibri_nothing_to_add);
+            return;
+        }
+
+        // The order is read off the view model here, on the main thread, and written
+        // on the IO pool: SharedPreferences plus a foreground service start is small
+        // but it is still disk at the moment of a tap.
+        final List<Order> order = new ArrayList<>();
+        for (Channel c : toDownload) {
+            List<String> nodeIds = vm.subtreesFor(c.id()).nodeIds();
+            order.add(new Order(c.id(), c.version(), c.name(), costOf(c),
+                    nodeIds.isEmpty() ? null : nodeIds));
+        }
+        final Context app = requireContext().getApplicationContext();
+        confirm.setEnabled(false);
+        note(R.string.k2go_kolibri_checking);
+
+        AppExecutors.get().io().execute(() -> {
+            for (Order o : order) {
+                KolibriWishlist.add(app, o.id, o.version, o.name, o.bytes, o.nodeIds);
+            }
+            final boolean handed = KolibriProvisioner.drain(app);
+            if (!handed) {
+                // Lost the race with another stream between asking and writing. Rare,
+                // but the order must not be left behind, because nothing here would
+                // drain it. Removed one by one rather than cleared: a wizard order
+                // could still be waiting in the same list and is not ours to discard.
+                for (Order o : order) {
+                    KolibriWishlist.remove(app, o.id);
+                }
+            }
+            View v = getView();
+            if (v != null) {
+                v.post(() -> finishStart(handed));
+            }
+        });
+    }
+
+    /** Back on the main thread with the outcome of the hand-off. */
+    private void finishStart(boolean handed) {
+        if (!isAdded()) {
+            return;
+        }
+        if (!handed) {
+            refuse(R.string.k2go_kolibri_busy);
             return;
         }
         vm.clearSelection();
         if (getActivity() instanceof SetupLibraryActivity) {
             ((SetupLibraryActivity) getActivity()).openKolibriSeeding();
         }
+    }
+
+    /** One line of the order, read on the main thread so the write needs no view model. */
+    private static final class Order {
+        final String id;
+        final int version;
+        final String name;
+        final long bytes;
+        final List<String> nodeIds;
+
+        Order(String id, int version, String name, long bytes, List<String> nodeIds) {
+            this.id = id;
+            this.version = version;
+            this.name = name;
+            this.bytes = bytes;
+            this.nodeIds = nodeIds;
+        }
+    }
+
+    /**
+     * The chosen channels minus the ones already fully on the device.
+     *
+     * <p>A complete channel costs zero and downloads nothing, so sending it would
+     * put a 0-byte row on the progress screen and tell the user a download had
+     * started that cannot do anything. It is dropped from the order, and the row on
+     * this screen already says why it is not coming.
+     */
+    private List<Channel> missingOnly(List<Channel> chosen) {
+        List<Channel> out = new ArrayList<>();
+        for (Channel c : chosen) {
+            if (ready == null || !ready.library().isComplete(c.id())) {
+                out.add(c);
+            }
+        }
+        return out;
     }
 
     /** Writes the order. Identical on both doors — only the draining differs. */

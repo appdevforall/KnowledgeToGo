@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">У току је друго преузимање. Покушајте поново када се заврши.</string>
     <string name="k2go_kolibri_already_here">Већ је на овом уређају</string>
     <string name="k2go_kolibri_partly_here">Делимично је на овом уређају</string>
+    <string name="k2go_kolibri_nothing_to_add">Све што сте изабрали већ је на овом уређају.</string>
 </resources>

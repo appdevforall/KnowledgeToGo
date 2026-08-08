@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">En annen nedlasting pågår. Prøv igjen når den er ferdig.</string>
     <string name="k2go_kolibri_already_here">Allerede på denne enheten</string>
     <string name="k2go_kolibri_partly_here">Delvis på denne enheten</string>
+    <string name="k2go_kolibri_nothing_to_add">Alt du valgte er allerede på denne enheten.</string>
 </resources>

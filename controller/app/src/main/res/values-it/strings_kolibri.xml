@@ -30,4 +30,5 @@
     <string name="k2go_kolibri_busy">È in corso un altro download. Riprova quando sarà finito.</string>
     <string name="k2go_kolibri_already_here">Già su questo dispositivo</string>
     <string name="k2go_kolibri_partly_here">In parte su questo dispositivo</string>
+    <string name="k2go_kolibri_nothing_to_add">Tutto ciò che hai scelto è già su questo dispositivo.</string>
 </resources>
