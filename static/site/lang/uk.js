@@ -1,12 +1,20 @@
-// Machine-translated (uk) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Виберіть вміст",
     "powered_by": "на базі Internet-in-a-Box",
-    "books": "Книги",
+    "books": "Читати книгу",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Карти",
-    "matomo": "Matomo",
+    "kiwix": "Досліджувати Wikipedia",
+    "kolibri": "Проходити курси",
+    "maps": "Орієнтуватися по картах",
+    "matomo": "Аналітика використання",
+    "k2go_docs": "Довідка та посібники",
+    "ready": "Готово",
+    "connecting": "Підключення",
+    "loading": "Завантаження…",
+    "opening": "Відкриття",
+    "theme_label": "Тема",
+    "theme_system": "Системна",
+    "theme_light": "Світла",
+    "theme_dark": "Темна",
     "backend_error": "Сервер бекенду не відповідає. Переконайтеся, що він запущений. Відкрийте застосунок Termux і виконайте"
 };

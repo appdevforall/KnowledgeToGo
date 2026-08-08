@@ -1,12 +1,20 @@
-// Machine-translated (sw) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Chagua Maudhui",
     "powered_by": "inaendeshwa na Internet-in-a-Box",
-    "books": "Vitabu",
+    "books": "Soma kitabu",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Ramani",
-    "matomo": "Matomo",
+    "kiwix": "Chunguza Wikipedia",
+    "kolibri": "Chukua kozi",
+    "maps": "Tumia ramani",
+    "matomo": "Uchambuzi wa matumizi",
+    "k2go_docs": "Msaada na miongozo",
+    "ready": "Tayari",
+    "connecting": "Inaunganisha",
+    "loading": "Inapakia…",
+    "opening": "Inafungua",
+    "theme_label": "Mandhari",
+    "theme_system": "Mfumo",
+    "theme_light": "Nyepesi",
+    "theme_dark": "Nyeusi",
     "backend_error": "Seva ya nyuma haijibu. Tafadhali hakikisha imeanzishwa. Fungua programu ya Termux na uendeshe"
 };

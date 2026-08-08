@@ -1,12 +1,20 @@
-// Machine-translated (ko) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "콘텐츠 선택",
     "powered_by": "Internet-in-a-Box 제공",
-    "books": "도서",
+    "books": "책 읽기",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB 지도",
-    "matomo": "Matomo",
+    "kiwix": "Wikipedia 탐색",
+    "kolibri": "강좌 수강",
+    "maps": "지도 탐색",
+    "matomo": "사용 분석",
+    "k2go_docs": "도움말 및 가이드",
+    "ready": "준비됨",
+    "connecting": "연결 중",
+    "loading": "로드 중…",
+    "opening": "여는 중",
+    "theme_label": "테마",
+    "theme_system": "시스템",
+    "theme_light": "라이트",
+    "theme_dark": "다크",
     "backend_error": "백엔드 서버가 응답하지 않습니다. 서버가 시작되었는지 확인하세요. Termux 앱을 열고 다음을 실행하세요"
 };

@@ -1,12 +1,20 @@
-// Machine-translated (ar) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "اختر المحتوى",
     "powered_by": "مدعوم بواسطة Internet-in-a-Box",
-    "books": "الكتب",
+    "books": "اقرأ كتابًا",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB الخرائط",
-    "matomo": "Matomo",
+    "kiwix": "استكشف Wikipedia",
+    "kolibri": "التحق بالدورات",
+    "maps": "تصفّح الخرائط",
+    "matomo": "تحليلات الاستخدام",
+    "k2go_docs": "مساعدة وأدلة",
+    "ready": "جاهز",
+    "connecting": "جارٍ الاتصال",
+    "loading": "جارٍ التحميل…",
+    "opening": "جارٍ الفتح",
+    "theme_label": "السمة",
+    "theme_system": "النظام",
+    "theme_light": "فاتح",
+    "theme_dark": "داكن",
     "backend_error": "خادم الواجهة الخلفية لا يستجيب. يرجى التأكد من أنه قيد التشغيل. افتح تطبيق Termux ونفّذ"
 };

@@ -1,12 +1,20 @@
-// Machine-translated (ru) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Выберите контент",
     "powered_by": "на базе Internet-in-a-Box",
-    "books": "Книги",
+    "books": "Читать книгу",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Карты",
-    "matomo": "Matomo",
+    "kiwix": "Изучать Wikipedia",
+    "kolibri": "Проходить курсы",
+    "maps": "Ориентироваться по картам",
+    "matomo": "Аналитика использования",
+    "k2go_docs": "Справка и руководства",
+    "ready": "Готово",
+    "connecting": "Подключение",
+    "loading": "Загрузка…",
+    "opening": "Открытие",
+    "theme_label": "Тема",
+    "theme_system": "Системная",
+    "theme_light": "Светлая",
+    "theme_dark": "Тёмная",
     "backend_error": "Сервер бэкенда не отвечает. Убедитесь, что он запущен. Откройте приложение Termux и выполните"
 };

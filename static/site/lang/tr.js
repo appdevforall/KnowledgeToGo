@@ -1,12 +1,20 @@
-// Machine-translated (tr) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "İçerik Seç",
     "powered_by": "Internet-in-a-Box tarafından desteklenmektedir",
-    "books": "Kitaplar",
+    "books": "Kitap oku",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Haritalar",
-    "matomo": "Matomo",
+    "kiwix": "Wikipedia'yı keşfet",
+    "kolibri": "Kurs al",
+    "maps": "Haritalarda gezin",
+    "matomo": "Kullanım analizi",
+    "k2go_docs": "Yardım ve kılavuzlar",
+    "ready": "Hazır",
+    "connecting": "Bağlanıyor",
+    "loading": "Yükleniyor…",
+    "opening": "Açılıyor",
+    "theme_label": "Tema",
+    "theme_system": "Sistem",
+    "theme_light": "Açık",
+    "theme_dark": "Koyu",
     "backend_error": "Arka uç sunucusu yanıt vermiyor. Lütfen başlatıldığından emin olun. Termux uygulamasına gidin ve şunu çalıştırın"
 };

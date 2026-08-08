@@ -1,12 +1,20 @@
-// Machine-translated (pl) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Wybierz treść",
     "powered_by": "napędzane przez Internet-in-a-Box",
-    "books": "Książki",
+    "books": "Przeczytaj książkę",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Mapy",
-    "matomo": "Matomo",
+    "kiwix": "Odkrywaj Wikipedię",
+    "kolibri": "Ucz się na kursach",
+    "maps": "Przeglądaj mapy",
+    "matomo": "Analityka użycia",
+    "k2go_docs": "Pomoc i przewodniki",
+    "ready": "Gotowe",
+    "connecting": "Łączenie",
+    "loading": "Ładowanie…",
+    "opening": "Otwieranie",
+    "theme_label": "Motyw",
+    "theme_system": "Systemowy",
+    "theme_light": "Jasny",
+    "theme_dark": "Ciemny",
     "backend_error": "Serwer backendu nie odpowiada. Upewnij się, że został uruchomiony. Otwórz aplikację Termux i uruchom"
 };

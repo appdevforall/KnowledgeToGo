@@ -1,12 +1,20 @@
-// Machine-translated (fa) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "محتوا را انتخاب کنید",
     "powered_by": "قدرت‌گرفته از Internet-in-a-Box",
-    "books": "کتاب‌ها",
+    "books": "یک کتاب بخوانید",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB نقشه‌ها",
-    "matomo": "Matomo",
+    "kiwix": "کاوش در Wikipedia",
+    "kolibri": "شرکت در دوره‌ها",
+    "maps": "پیمایش نقشه‌ها",
+    "matomo": "تحلیل استفاده",
+    "k2go_docs": "راهنما و راهنماها",
+    "ready": "آماده",
+    "connecting": "در حال اتصال",
+    "loading": "در حال بارگذاری…",
+    "opening": "در حال باز کردن",
+    "theme_label": "پوسته",
+    "theme_system": "سیستم",
+    "theme_light": "روشن",
+    "theme_dark": "تیره",
     "backend_error": "سرور بک‌اند پاسخ نمی‌دهد. لطفاً مطمئن شوید که راه‌اندازی شده است. برنامه Termux را باز کنید و اجرا کنید"
 };

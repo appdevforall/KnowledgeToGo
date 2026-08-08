@@ -1,12 +1,20 @@
-// Machine-translated (bn) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "কন্টেন্ট নির্বাচন করুন",
     "powered_by": "Internet-in-a-Box দ্বারা চালিত",
-    "books": "বই",
+    "books": "একটি বই পড়ুন",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB মানচিত্র",
-    "matomo": "Matomo",
+    "kiwix": "Wikipedia অন্বেষণ করুন",
+    "kolibri": "কোর্স করুন",
+    "maps": "মানচিত্রে চলাচল করুন",
+    "matomo": "ব্যবহার বিশ্লেষণ",
+    "k2go_docs": "সহায়তা ও নির্দেশিকা",
+    "ready": "প্রস্তুত",
+    "connecting": "সংযোগ হচ্ছে",
+    "loading": "লোড হচ্ছে…",
+    "opening": "খোলা হচ্ছে",
+    "theme_label": "থিম",
+    "theme_system": "সিস্টেম",
+    "theme_light": "লাইট",
+    "theme_dark": "ডার্ক",
     "backend_error": "ব্যাকএন্ড সার্ভার সাড়া দিচ্ছে না। এটি চালু আছে কিনা নিশ্চিত করুন। Termux অ্যাপ খুলুন এবং চালান"
 };

@@ -1,12 +1,20 @@
-// Machine-translated (cs) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Vyberte obsah",
     "powered_by": "poháněno technologií Internet-in-a-Box",
-    "books": "Knihy",
+    "books": "Přečíst knihu",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Mapy",
-    "matomo": "Matomo",
+    "kiwix": "Prozkoumat Wikipedia",
+    "kolibri": "Absolvovat kurzy",
+    "maps": "Navigovat v mapách",
+    "matomo": "Analýza využití",
+    "k2go_docs": "Nápověda a průvodci",
+    "ready": "Připraveno",
+    "connecting": "Připojování",
+    "loading": "Načítání…",
+    "opening": "Otevírání",
+    "theme_label": "Motiv",
+    "theme_system": "Systémový",
+    "theme_light": "Světlý",
+    "theme_dark": "Tmavý",
     "backend_error": "Server backendu neodpovídá. Ověřte, že je spuštěn. Otevřete aplikaci Termux a spusťte"
 };

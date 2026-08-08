@@ -1,12 +1,20 @@
-// Machine-translated (lt) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Pasirinkite turinį",
     "powered_by": "veikia su Internet-in-a-Box",
-    "books": "Knygos",
+    "books": "Skaityti knygą",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Žemėlapiai",
-    "matomo": "Matomo",
+    "kiwix": "Naršyti Wikipedia",
+    "kolibri": "Mokytis kursuose",
+    "maps": "Naršyti žemėlapius",
+    "matomo": "Naudojimo analizė",
+    "k2go_docs": "Pagalba ir vadovai",
+    "ready": "Paruošta",
+    "connecting": "Jungiamasi",
+    "loading": "Įkeliama…",
+    "opening": "Atveriama",
+    "theme_label": "Tema",
+    "theme_system": "Sisteminė",
+    "theme_light": "Šviesi",
+    "theme_dark": "Tamsi",
     "backend_error": "Vidinis serveris neatsako. Įsitikinkite, kad jis paleistas. Atidarykite Termux programėlę ir paleiskite"
 };

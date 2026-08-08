@@ -1,12 +1,20 @@
-// Machine-translated (id) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Pilih Konten",
     "powered_by": "didukung oleh Internet-in-a-Box",
-    "books": "Buku",
+    "books": "Baca buku",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Peta",
-    "matomo": "Matomo",
+    "kiwix": "Jelajahi Wikipedia",
+    "kolibri": "Ikuti kursus",
+    "maps": "Navigasi peta",
+    "matomo": "Analitik penggunaan",
+    "k2go_docs": "Bantuan dan panduan",
+    "ready": "Siap",
+    "connecting": "Menyambungkan",
+    "loading": "Memuat…",
+    "opening": "Membuka",
+    "theme_label": "Tema",
+    "theme_system": "Sistem",
+    "theme_light": "Terang",
+    "theme_dark": "Gelap",
     "backend_error": "Server backend tidak merespons. Harap pastikan sudah dijalankan. Buka aplikasi Termux dan jalankan"
 };

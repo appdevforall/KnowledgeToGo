@@ -1,12 +1,20 @@
-// Machine-translated (az) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Məzmun seçin",
     "powered_by": "Internet-in-a-Box tərəfindən dəstəklənir",
-    "books": "Kitablar",
+    "books": "Kitab oxu",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Xəritələr",
-    "matomo": "Matomo",
+    "kiwix": "Wikipedia-nı kəşf et",
+    "kolibri": "Kurslar keç",
+    "maps": "Xəritələrdə gəz",
+    "matomo": "İstifadə analitikası",
+    "k2go_docs": "Kömək və bələdçilər",
+    "ready": "Hazır",
+    "connecting": "Qoşulur",
+    "loading": "Yüklənir…",
+    "opening": "Açılır",
+    "theme_label": "Mövzu",
+    "theme_system": "Sistem",
+    "theme_light": "İşıqlı",
+    "theme_dark": "Qaranlıq",
     "backend_error": "Backend server cavab vermir. Zəhmət olmasa onun işə salındığını yoxlayın. Termux tətbiqini açın və işə salın"
 };

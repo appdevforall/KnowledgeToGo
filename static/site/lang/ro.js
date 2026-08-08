@@ -1,12 +1,20 @@
-// Machine-translated (ro) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Alege conținutul",
     "powered_by": "propulsat de Internet-in-a-Box",
-    "books": "Cărți",
+    "books": "Citește o carte",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Hărți",
-    "matomo": "Matomo",
+    "kiwix": "Explorează Wikipedia",
+    "kolibri": "Urmează cursuri",
+    "maps": "Navighează pe hărți",
+    "matomo": "Analiză de utilizare",
+    "k2go_docs": "Ajutor și ghiduri",
+    "ready": "Gata",
+    "connecting": "Se conectează",
+    "loading": "Se încarcă…",
+    "opening": "Se deschide",
+    "theme_label": "Temă",
+    "theme_system": "Sistem",
+    "theme_light": "Luminos",
+    "theme_dark": "Întunecat",
     "backend_error": "Serverul backend nu răspunde. Verificați că este pornit. Deschideți aplicația Termux și rulați"
 };

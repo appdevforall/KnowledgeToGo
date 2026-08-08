@@ -1,12 +1,20 @@
-// Machine-translated (el) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Επιλέξτε περιεχόμενο",
     "powered_by": "με την υποστήριξη του Internet-in-a-Box",
-    "books": "Βιβλία",
+    "books": "Διαβάστε ένα βιβλίο",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Χάρτες",
-    "matomo": "Matomo",
+    "kiwix": "Εξερευνήστε τη Wikipedia",
+    "kolibri": "Παρακολουθήστε μαθήματα",
+    "maps": "Πλοηγηθείτε σε χάρτες",
+    "matomo": "Ανάλυση χρήσης",
+    "k2go_docs": "Βοήθεια και οδηγοί",
+    "ready": "Έτοιμο",
+    "connecting": "Σύνδεση",
+    "loading": "Φόρτωση…",
+    "opening": "Άνοιγμα",
+    "theme_label": "Θέμα",
+    "theme_system": "Σύστημα",
+    "theme_light": "Φωτεινό",
+    "theme_dark": "Σκοτεινό",
     "backend_error": "Ο διακομιστής backend δεν αποκρίνεται. Βεβαιωθείτε ότι έχει ξεκινήσει. Ανοίξτε την εφαρμογή Termux και εκτελέστε"
 };

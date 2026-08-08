@@ -1,12 +1,20 @@
-// Machine-translated (hi) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "सामग्री चुनें",
     "powered_by": "Internet-in-a-Box द्वारा संचालित",
-    "books": "किताबें",
+    "books": "किताब पढ़ें",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB मानचित्र",
-    "matomo": "Matomo",
+    "kiwix": "Wikipedia एक्सप्लोर करें",
+    "kolibri": "कोर्स करें",
+    "maps": "मैप्स पर नेविगेट करें",
+    "matomo": "उपयोग विश्लेषण",
+    "k2go_docs": "मदद और गाइड",
+    "ready": "तैयार",
+    "connecting": "कनेक्ट हो रहा है",
+    "loading": "लोड हो रहा है…",
+    "opening": "खोल रहे हैं",
+    "theme_label": "थीम",
+    "theme_system": "सिस्टम",
+    "theme_light": "लाइट",
+    "theme_dark": "डार्क",
     "backend_error": "बैकएंड सर्वर प्रतिक्रिया नहीं दे रहा है। कृपया सुनिश्चित करें कि यह शुरू हो चुका है। कृपया Termux ऐप में जाएँ और चलाएँ"
 };

@@ -1,12 +1,20 @@
-// Machine-translated (bg) — pending human review. See ADFA-4537.
 window.i18n = {
     "title": "Изберете съдържание",
     "powered_by": "задвижвано от Internet-in-a-Box",
-    "books": "Книги",
+    "books": "Прочетете книга",
     "code": "Code on the Go",
-    "kiwix": "Kiwix",
-    "kolibri": "Kolibri",
-    "maps": "IIAB Карти",
-    "matomo": "Matomo",
+    "kiwix": "Разгледайте Wikipedia",
+    "kolibri": "Посещавайте курсове",
+    "maps": "Навигирайте по картите",
+    "matomo": "Анализ на употребата",
+    "k2go_docs": "Помощ и ръководства",
+    "ready": "Готово",
+    "connecting": "Свързване",
+    "loading": "Зареждане…",
+    "opening": "Отваряне",
+    "theme_label": "Тема",
+    "theme_system": "Системна",
+    "theme_light": "Светла",
+    "theme_dark": "Тъмна",
     "backend_error": "Бекенд сървърът не отговаря. Уверете се, че е стартиран. Отворете приложението Termux и изпълнете"
 };
