@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Częściowo na tym urządzeniu</string>
     <string name="k2go_kolibri_nothing_to_add">Wszystko, co wybrano, jest już na tym urządzeniu.</string>
     <string name="k2go_kolibri_go_to_library">Gotowe — przejdź do biblioteki</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d kursów nie ukończono.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Ponów nieudane przed wyjściem — wyjście czyści tę listę.</string>
 </resources>

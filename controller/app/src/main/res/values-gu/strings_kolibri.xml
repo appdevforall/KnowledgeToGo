@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">આંશિક રીતે આ ઉપકરણ પર છે</string>
     <string name="k2go_kolibri_nothing_to_add">તમે પસંદ કરેલું બધું પહેલેથી આ ઉપકરણ પર છે.</string>
     <string name="k2go_kolibri_go_to_library">પૂર્ણ — મારી લાઇબ્રેરીમાં જાઓ</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d કોર્સ પૂરા થયા નથી.</string>
+    <string name="k2go_kolibri_retry_before_leaving">જતાં પહેલાં નિષ્ફળ થયેલા ફરી પ્રયાસ કરો — જવાથી આ યાદી ભૂંસાઈ જશે.</string>
 </resources>

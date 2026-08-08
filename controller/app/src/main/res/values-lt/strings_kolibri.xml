@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Iš dalies yra šiame įrenginyje</string>
     <string name="k2go_kolibri_nothing_to_add">Viskas, ką pasirinkote, jau yra šiame įrenginyje.</string>
     <string name="k2go_kolibri_go_to_library">Baigta — eiti į biblioteką</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d kursų nebaigta.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Prieš išeidami pakartokite nepavykusius — išėjus šis sąrašas išvalomas.</string>
 </resources>

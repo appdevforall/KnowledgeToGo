@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-4954: Kolibri seeding detail, hosted by SetupProgressActivity. Observe-only —
-     overall progress plus the per-channel checklist rendered by ProvisioningChecklist.
-     Deliberately plainer than fragment_k2go_zim_preparing: this view is only ever reached
-     from the progress index or the notification, where the host already owns the chrome
-     (title bar, Back, Run in background). Colours come from theme attributes and spacing
-     sits on the 4dp grid, per the Material 3 convention in CLAUDE.md. -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- ADFA-4954: Kolibri seeding detail — overall progress plus the per-channel checklist
+     rendered by ProvisioningChecklist.
+
+     Reached two ways, and they differ. From the post-install index (or the notification)
+     the host owns the chrome — title bar, Back, Run in background — and this is a detail
+     view. From Get More it is the whole screen and there is no host chrome at all, so it
+     carries its own way out in the fixed bar below: pinned rather than at the end of the
+     list, because the forward action must not scroll off (CATALOG_BROWSE_TEMPLATE.md).
+
+     Colours come from theme attributes and spacing sits on the 4dp grid, per the Material 3
+     convention in CLAUDE.md. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
     android:fillViewport="true">
 
     <LinearLayout
@@ -75,20 +86,50 @@
             android:layout_marginTop="12dp"
             android:orientation="vertical" />
 
-        <!-- ADFA-4954: the way out, and only on the live door. The post-install host owns
-             its own chrome and its Finish already clears the session; reached from Get More
-             there is no host chrome at all, so without this the screen is a dead end AND the
-             session is never cleared — which then blocks every later download. -->
-        <Button
-            android:id="@+id/k2go_kseed_done"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="24dp"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/k2go_teal"
-            android:text="@string/k2go_kolibri_go_to_library"
-            android:visibility="gone" />
-
     </LinearLayout>
 </ScrollView>
+
+<!-- ADFA-4954: the way out, and only on the live door. The post-install host owns its own
+     chrome and its Finish already clears the session; reached from Get More there is no host
+     chrome at all, so without this the screen is a dead end AND the session is never cleared,
+     which then blocks every later download.
+
+     Offered only when nothing failed: "all terminal" includes failures, and clearing the
+     session there would throw away the retry rows that are the only way to recover them. -->
+<LinearLayout
+    android:id="@+id/k2go_kseed_footer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/k2go_hairline" />
+
+    <TextView
+        android:id="@+id/k2go_kseed_footer_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="@color/k2go_amber_text"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/k2go_kseed_done"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/k2go_teal"
+        android:text="@string/k2go_kolibri_go_to_library" />
+</LinearLayout>
+</LinearLayout>

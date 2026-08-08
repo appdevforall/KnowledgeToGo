@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Delvis på denne enheten</string>
     <string name="k2go_kolibri_nothing_to_add">Alt du valgte er allerede på denne enheten.</string>
     <string name="k2go_kolibri_go_to_library">Ferdig — gå til biblioteket</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d kurs ble ikke ferdige.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Prøv de mislykkede på nytt før du går — å gå tømmer denne listen.</string>
 </resources>

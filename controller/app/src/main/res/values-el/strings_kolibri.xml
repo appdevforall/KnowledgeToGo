@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Εν μέρει σε αυτή τη συσκευή</string>
     <string name="k2go_kolibri_nothing_to_add">Όσα επιλέξατε υπάρχουν ήδη σε αυτή τη συσκευή.</string>
     <string name="k2go_kolibri_go_to_library">Έτοιμο — στη βιβλιοθήκη μου</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d μαθήματα δεν ολοκληρώθηκαν.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Δοκιμάστε ξανά όσα απέτυχαν πριν φύγετε — η έξοδος διαγράφει αυτή τη λίστα.</string>
 </resources>

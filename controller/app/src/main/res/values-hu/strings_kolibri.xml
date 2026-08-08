@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Részben ezen az eszközön van</string>
     <string name="k2go_kolibri_nothing_to_add">Minden kiválasztott elem már ezen az eszközön van.</string>
     <string name="k2go_kolibri_go_to_library">Kész — a könyvtáramhoz</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d tanfolyam nem fejeződött be.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Távozás előtt próbálja újra a sikerteleneket — a kilépés törli ezt a listát.</string>
 </resources>

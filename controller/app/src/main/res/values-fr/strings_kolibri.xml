@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">En partie sur cet appareil</string>
     <string name="k2go_kolibri_nothing_to_add">Tout ce que vous avez choisi est déjà sur cet appareil.</string>
     <string name="k2go_kolibri_go_to_library">Terminé — aller à ma bibliothèque</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d cours ne se sont pas terminés.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Réessayez ceux qui ont échoué avant de partir : quitter efface cette liste.</string>
 </resources>

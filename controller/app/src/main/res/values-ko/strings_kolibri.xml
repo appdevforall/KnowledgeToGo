@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">일부만 이 기기에 있습니다</string>
     <string name="k2go_kolibri_nothing_to_add">선택하신 항목은 모두 이미 이 기기에 있습니다.</string>
     <string name="k2go_kolibri_go_to_library">완료 — 내 라이브러리로</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d개 강의가 완료되지 않았습니다.</string>
+    <string name="k2go_kolibri_retry_before_leaving">나가기 전에 실패한 항목을 다시 시도하세요. 나가면 이 목록이 지워집니다.</string>
 </resources>

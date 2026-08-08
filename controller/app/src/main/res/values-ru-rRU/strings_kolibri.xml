@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Частично на этом устройстве</string>
     <string name="k2go_kolibri_nothing_to_add">Всё выбранное уже есть на этом устройстве.</string>
     <string name="k2go_kolibri_go_to_library">Готово — в мою библиотеку</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d курс(ов) не завершились.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Повторите неудавшиеся перед выходом — выход очищает этот список.</string>
 </resources>

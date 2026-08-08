@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">আংশিকভাবে এই ডিভাইসে আছে</string>
     <string name="k2go_kolibri_nothing_to_add">আপনি যা বেছে নিয়েছেন সবই ইতিমধ্যে এই ডিভাইসে আছে।</string>
     <string name="k2go_kolibri_go_to_library">সম্পন্ন — আমার লাইব্রেরিতে যান</string>
+    <string name="k2go_kolibri_failed_fmt">%1$dটি কোর্স শেষ হয়নি।</string>
+    <string name="k2go_kolibri_retry_before_leaving">চলে যাওয়ার আগে ব্যর্থগুলো আবার চেষ্টা করুন — চলে গেলে এই তালিকা মুছে যাবে।</string>
 </resources>

@@ -32,4 +32,6 @@
     <string name="k2go_kolibri_partly_here">Parțial pe acest dispozitiv</string>
     <string name="k2go_kolibri_nothing_to_add">Tot ce ai ales este deja pe acest dispozitiv.</string>
     <string name="k2go_kolibri_go_to_library">Gata — mergi la biblioteca mea</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d cursuri nu s-au terminat.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Reîncearcă-le pe cele eșuate înainte să pleci — plecarea șterge lista.</string>
 </resources>
