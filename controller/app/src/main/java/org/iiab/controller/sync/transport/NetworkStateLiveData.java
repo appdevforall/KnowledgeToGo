@@ -55,7 +55,9 @@ public final class NetworkStateLiveData extends LiveData<Long> {
 
     private final ConnectivityManager cm;
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final Runnable emit = () -> setValue(System.nanoTime());
+    // Skip stragglers: a callback in flight on a binder thread can post here just after
+    // onInactive() unregistered, so only emit while a tab is actually observing.
+    private final Runnable emit = () -> { if (hasActiveObservers()) setValue(System.nanoTime()); };
     private ConnectivityManager.NetworkCallback callback;
 
     private NetworkStateLiveData(Context appCtx) {
