@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Pilih topik</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d topik dipilih</string>
     <string name="k2go_kolibri_whole_course">Seluruh kursus</string>
-    <string name="k2go_kolibri_live_not_yet">Untuk sekarang hanya menjelajah. Menambahkan kursus dari sini akan hadir pada pembaruan berikutnya; saat ini kursus dipilih ketika sistem disiapkan.</string>
+    <string name="k2go_kolibri_checking">Memeriksa apa yang bisa dilakukan perangkat ini…</string>
+    <string name="k2go_kolibri_not_installed">Kursus tidak terpasang di sistem ini, jadi konten tidak bisa ditambahkan.</string>
+    <string name="k2go_kolibri_system_damaged">Sistem Anda perlu diperbaiki sebelum konten bisa ditambahkan.</string>
+    <string name="k2go_kolibri_start_system_first">Nyalakan sistem Anda dulu, lalu unduhan ini bisa dimulai.</string>
+    <string name="k2go_kolibri_busy">Ada unduhan lain yang berjalan. Coba lagi setelah selesai.</string>
+    <string name="k2go_kolibri_already_here">Sudah ada di perangkat ini</string>
+    <string name="k2go_kolibri_partly_here">Sebagian ada di perangkat ini</string>
 </resources>

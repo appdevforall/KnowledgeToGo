@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Chagua mada</string>
     <string name="k2go_kolibri_narrowed_fmt">Mada %1$d zimechaguliwa</string>
     <string name="k2go_kolibri_whole_course">Kozi yote</string>
-    <string name="k2go_kolibri_live_not_yet">Kwa sasa ni kutazama tu. Kuongeza kozi kutoka hapa kutakuja katika sasisho lijalo; kwa sasa huchaguliwa mfumo unapowekwa.</string>
+    <string name="k2go_kolibri_checking">Inaangalia kifaa hiki kinaweza nini…</string>
+    <string name="k2go_kolibri_not_installed">Kozi hazijasakinishwa kwenye mfumo huu, kwa hivyo maudhui hayawezi kuongezwa.</string>
+    <string name="k2go_kolibri_system_damaged">Mfumo wako unahitaji kurekebishwa kabla ya kuongeza maudhui.</string>
+    <string name="k2go_kolibri_start_system_first">Washa mfumo wako kwanza, kisha upakuaji huu utaweza kuanza.</string>
+    <string name="k2go_kolibri_busy">Kuna upakuaji mwingine unaoendelea. Jaribu tena ukiisha.</string>
+    <string name="k2go_kolibri_already_here">Tayari kiko kwenye kifaa hiki</string>
+    <string name="k2go_kolibri_partly_here">Kipo kwa sehemu kwenye kifaa hiki</string>
 </resources>

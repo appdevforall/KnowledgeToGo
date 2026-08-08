@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Изабери теме</string>
     <string name="k2go_kolibri_narrowed_fmt">Изабрано тема: %1$d</string>
     <string name="k2go_kolibri_whole_course">Цео курс</string>
-    <string name="k2go_kolibri_live_not_yet">За сада само прегледање. Додавање курсева одавде долази у следећем ажурирању; сада се бирају током подешавања система.</string>
+    <string name="k2go_kolibri_checking">Проверава се шта овај уређај може…</string>
+    <string name="k2go_kolibri_not_installed">Курсеви нису инсталирани на овом систему, па се садржај не може додати.</string>
+    <string name="k2go_kolibri_system_damaged">Систем мора бити поправљен пре додавања садржаја.</string>
+    <string name="k2go_kolibri_start_system_first">Прво покрените систем, затим ће преузимање моћи да почне.</string>
+    <string name="k2go_kolibri_busy">У току је друго преузимање. Покушајте поново када се заврши.</string>
+    <string name="k2go_kolibri_already_here">Већ је на овом уређају</string>
+    <string name="k2go_kolibri_partly_here">Делимично је на овом уређају</string>
 </resources>

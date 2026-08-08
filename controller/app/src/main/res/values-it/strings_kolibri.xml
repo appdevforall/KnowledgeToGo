@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Scegli argomenti</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d argomenti selezionati</string>
     <string name="k2go_kolibri_whole_course">Corso intero</string>
-    <string name="k2go_kolibri_live_not_yet">Per ora solo consultazione. Aggiungere corsi da qui arriverà nel prossimo aggiornamento; al momento si scelgono durante l’installazione.</string>
+    <string name="k2go_kolibri_checking">Verifica di cosa può fare questo dispositivo…</string>
+    <string name="k2go_kolibri_not_installed">Corsi non è installato su questo sistema, quindi non si possono aggiungere contenuti.</string>
+    <string name="k2go_kolibri_system_damaged">Il sistema va riparato prima di poter aggiungere contenuti.</string>
+    <string name="k2go_kolibri_start_system_first">Avvia prima il sistema, poi questo download potrà iniziare.</string>
+    <string name="k2go_kolibri_busy">È in corso un altro download. Riprova quando sarà finito.</string>
+    <string name="k2go_kolibri_already_here">Già su questo dispositivo</string>
+    <string name="k2go_kolibri_partly_here">In parte su questo dispositivo</string>
 </resources>

@@ -64,24 +64,31 @@ public final class KolibriProvisioner {
      * retry, and {@code SetupProgressActivity.orchestrateStep()} calls the
      * provisioners in a fixed order, so the first one starts and the rest wait.
      */
-    public static void drain(Context ctx) {
+    /**
+     * @return true when the order was handed to {@code KolibriSeedService}. False
+     *         means it was deferred or there was nothing to do — which the
+     *         post-install screen can ignore, because it calls again on the next
+     *         pass, but a caller that just pressed a button cannot: it has to say
+     *         why nothing happened rather than look broken. (ADFA-4954, live door.)
+     */
+    public static boolean drain(Context ctx) {
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
                 || MapsProvisioner.hasPending(ctx)) {
             Log.d(TAG, "kolibri drain deferred: proot (runrole) work is pending/running");
-            return;
+            return false;
         }
         if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()
                 || BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
             Log.d(TAG, "kolibri drain deferred: another content stream is active");
-            return;
+            return false;
         }
 
         KolibriSeedRepository repo = KolibriSeedRepository.get();
         if (repo.isRunning() || repo.hasSession()) {
-            return;
+            return false;
         }
         if (KolibriWishlist.size(ctx) == 0) {
-            return;
+            return false;
         }
 
         final Context app = ctx.getApplicationContext();
@@ -115,7 +122,7 @@ public final class KolibriProvisioner {
         if (ids.isEmpty()) {
             Log.w(TAG, "kolibri drain: nothing resolved from wishlist");
             KolibriWishlist.clear(app);
-            return;
+            return false;
         }
 
         long[] b = new long[bytes.size()];
@@ -134,6 +141,7 @@ public final class KolibriProvisioner {
         // both the wishlist and the session are lost (orphaned partial). The durable
         // background-jobs monitor should own this hand-off so it survives process death.
         KolibriWishlist.clear(app);
+        return true;
     }
 
     /** Node ids as a comma-joined string; empty means the whole channel. */

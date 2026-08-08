@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Pasirinkti temas</string>
     <string name="k2go_kolibri_narrowed_fmt">Pasirinkta temų: %1$d</string>
     <string name="k2go_kolibri_whole_course">Visas kursas</string>
-    <string name="k2go_kolibri_live_not_yet">Kol kas tik apžvalgai. Kursų pridėjimas iš čia atsiras kitame atnaujinime; dabar jie pasirenkami sistemos nustatymo metu.</string>
+    <string name="k2go_kolibri_checking">Tikrinama, ką gali šis įrenginys…</string>
+    <string name="k2go_kolibri_not_installed">Kursai šioje sistemoje neįdiegti, todėl turinio pridėti negalima.</string>
+    <string name="k2go_kolibri_system_damaged">Prieš pridedant turinį, sistemą reikia sutaisyti.</string>
+    <string name="k2go_kolibri_start_system_first">Pirmiausia paleiskite sistemą, tada šis atsisiuntimas galės prasidėti.</string>
+    <string name="k2go_kolibri_busy">Vyksta kitas atsisiuntimas. Pabandykite, kai jis baigsis.</string>
+    <string name="k2go_kolibri_already_here">Jau yra šiame įrenginyje</string>
+    <string name="k2go_kolibri_partly_here">Iš dalies yra šiame įrenginyje</string>
 </resources>

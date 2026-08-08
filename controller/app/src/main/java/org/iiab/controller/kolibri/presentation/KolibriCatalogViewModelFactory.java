@@ -48,6 +48,11 @@ public class KolibriCatalogViewModelFactory implements ViewModelProvider.Factory
             CatalogRepository repository = new CatalogRepositoryImpl(appContext);
             return (T) new KolibriTopicTreeViewModel(new GetTopicTreeUseCase(repository));
         }
+        // ADFA-5061's model, asked on behalf of Courses: can this order run, and
+        // what does the device already hold?
+        if (modelClass.isAssignableFrom(KolibriReadinessViewModel.class)) {
+            return (T) new KolibriReadinessViewModel(appContext);
+        }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }
 }

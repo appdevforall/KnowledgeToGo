@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Mövzuları seç</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d mövzu seçildi</string>
     <string name="k2go_kolibri_whole_course">Bütün kurs</string>
-    <string name="k2go_kolibri_live_not_yet">Hələlik yalnız baxış üçün. Kursların buradan əlavə edilməsi növbəti güncəlləmədə olacaq; hazırda onlar sistem quraşdırılarkən seçilir.</string>
+    <string name="k2go_kolibri_checking">Bu cihazın nə edə biləcəyi yoxlanılır…</string>
+    <string name="k2go_kolibri_not_installed">Kurslar bu sistemdə quraşdırılmayıb, ona görə məzmun əlavə etmək olmaz.</string>
+    <string name="k2go_kolibri_system_damaged">Məzmun əlavə etməzdən əvvəl sisteminiz bərpa olunmalıdır.</string>
+    <string name="k2go_kolibri_start_system_first">Əvvəlcə sisteminizi başladın, sonra bu endirmə başlaya bilər.</string>
+    <string name="k2go_kolibri_busy">Başqa endirmə davam edir. Bitdikdə yenidən cəhd edin.</string>
+    <string name="k2go_kolibri_already_here">Artıq bu cihazdadır</string>
+    <string name="k2go_kolibri_partly_here">Qismən bu cihazdadır</string>
 </resources>

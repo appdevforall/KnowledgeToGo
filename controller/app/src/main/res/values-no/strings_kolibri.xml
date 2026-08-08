@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Velg emner</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d emner valgt</string>
     <string name="k2go_kolibri_whole_course">Hele kurset</string>
-    <string name="k2go_kolibri_live_not_yet">Bare til gjennomsyn foreløpig. Å legge til kurs herfra kommer i neste oppdatering; nå velges de mens systemet settes opp.</string>
+    <string name="k2go_kolibri_checking">Sjekker hva denne enheten kan…</string>
+    <string name="k2go_kolibri_not_installed">Kurs er ikke installert på dette systemet, så innhold kan ikke legges til.</string>
+    <string name="k2go_kolibri_system_damaged">Systemet må repareres før innhold kan legges til.</string>
+    <string name="k2go_kolibri_start_system_first">Start systemet først, så kan nedlastingen begynne.</string>
+    <string name="k2go_kolibri_busy">En annen nedlasting pågår. Prøv igjen når den er ferdig.</string>
+    <string name="k2go_kolibri_already_here">Allerede på denne enheten</string>
+    <string name="k2go_kolibri_partly_here">Delvis på denne enheten</string>
 </resources>

@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Επιλογή θεμάτων</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d θέματα επιλέχθηκαν</string>
     <string name="k2go_kolibri_whole_course">Όλο το μάθημα</string>
-    <string name="k2go_kolibri_live_not_yet">Προς το παρόν μόνο περιήγηση. Η προσθήκη μαθημάτων από εδώ έρχεται στην επόμενη ενημέρωση· τώρα επιλέγονται κατά τη ρύθμιση του συστήματος.</string>
+    <string name="k2go_kolibri_checking">Γίνεται έλεγχος τι μπορεί αυτή η συσκευή…</string>
+    <string name="k2go_kolibri_not_installed">Τα μαθήματα δεν είναι εγκατεστημένα σε αυτό το σύστημα, οπότε δεν μπορεί να προστεθεί περιεχόμενο.</string>
+    <string name="k2go_kolibri_system_damaged">Το σύστημά σας χρειάζεται επιδιόρθωση πριν προστεθεί περιεχόμενο.</string>
+    <string name="k2go_kolibri_start_system_first">Ξεκινήστε πρώτα το σύστημά σας και μετά μπορεί να αρχίσει η λήψη.</string>
+    <string name="k2go_kolibri_busy">Εκτελείται άλλη λήψη. Δοκιμάστε ξανά όταν τελειώσει.</string>
+    <string name="k2go_kolibri_already_here">Υπάρχει ήδη σε αυτή τη συσκευή</string>
+    <string name="k2go_kolibri_partly_here">Εν μέρει σε αυτή τη συσκευή</string>
 </resources>

@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">Onderwerpen kiezen</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d onderwerpen gekozen</string>
     <string name="k2go_kolibri_whole_course">Hele cursus</string>
-    <string name="k2go_kolibri_live_not_yet">Voorlopig alleen bekijken. Cursussen hiervandaan toevoegen komt in de volgende update; nu worden ze gekozen tijdens het instellen van je systeem.</string>
+    <string name="k2go_kolibri_checking">Er wordt gekeken wat dit apparaat kan…</string>
+    <string name="k2go_kolibri_not_installed">Cursussen is niet geïnstalleerd op dit systeem, dus er kan geen inhoud worden toegevoegd.</string>
+    <string name="k2go_kolibri_system_damaged">Uw systeem moet worden hersteld voordat er inhoud kan worden toegevoegd.</string>
+    <string name="k2go_kolibri_start_system_first">Start eerst uw systeem, daarna kan deze download beginnen.</string>
+    <string name="k2go_kolibri_busy">Er loopt een andere download. Probeer het opnieuw als die klaar is.</string>
+    <string name="k2go_kolibri_already_here">Staat al op dit apparaat</string>
+    <string name="k2go_kolibri_partly_here">Staat deels op dit apparaat</string>
 </resources>

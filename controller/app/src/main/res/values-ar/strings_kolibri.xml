@@ -23,5 +23,11 @@
     <string name="k2go_kolibri_choose_topics">اختيار المواضيع</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d مواضيع مختارة</string>
     <string name="k2go_kolibri_whole_course">الدورة كاملة</string>
-    <string name="k2go_kolibri_live_not_yet">للاستعراض فقط في الوقت الحالي. إضافة الدورات من هنا ستأتي في التحديث القادم؛ حاليًا تُختار أثناء إعداد نظامك.</string>
+    <string name="k2go_kolibri_checking">جارٍ التحقق مما يمكن لهذا الجهاز فعله…</string>
+    <string name="k2go_kolibri_not_installed">الدورات غير مثبّتة على هذا النظام، لذا لا يمكن إضافة محتوى.</string>
+    <string name="k2go_kolibri_system_damaged">يجب إصلاح نظامك قبل إضافة أي محتوى.</string>
+    <string name="k2go_kolibri_start_system_first">شغّل نظامك أولًا، ثم يمكن أن يبدأ هذا التنزيل.</string>
+    <string name="k2go_kolibri_busy">هناك تنزيل آخر قيد التشغيل. حاول مرة أخرى عند انتهائه.</string>
+    <string name="k2go_kolibri_already_here">موجود بالفعل على هذا الجهاز</string>
+    <string name="k2go_kolibri_partly_here">موجود جزئيًا على هذا الجهاز</string>
 </resources>

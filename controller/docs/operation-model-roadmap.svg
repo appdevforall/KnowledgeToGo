@@ -71,8 +71,8 @@
 <text class="sub" x="396" y="147">(platform, kind, class, reversibility).</text>
 <text class="note" x="396" y="167">Start here — everything else reads it.</text>
 
-<circle class="s-doing" cx="396" cy="192" r="5.5"/><text class="item" x="410" y="196">One reader for the system facts</text>
-<circle class="s-doing" cx="396" cy="214" r="5.5"/><text class="item" x="410" y="218">Pure resolver: live / stopped / deferred</text>
+<circle class="s-done" cx="396" cy="192" r="5.5"/><text class="item" x="410" y="196">One reader for the system facts</text>
+<circle class="s-done" cx="396" cy="214" r="5.5"/><text class="item" x="410" y="218">Pure resolver: live / stopped / deferred</text>
 <circle class="s-todo"  cx="396" cy="236" r="5.5"/><text class="item" x="410" y="240">kind / class type on each operation</text>
 <circle class="s-todo"  cx="396" cy="258" r="5.5"/><text class="item" x="410" y="262">UX tokens: colour, gates, progress</text>
 <circle class="s-todo"  cx="396" cy="280" r="5.5"/><text class="item" x="410" y="284">Apply to the dashboard Rebuild fork</text>
