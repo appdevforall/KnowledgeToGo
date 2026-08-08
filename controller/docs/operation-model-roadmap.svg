@@ -1,0 +1,134 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 640" width="1060" height="640" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<title>Operation model — ticket map and progress</title>
+<desc>How ADFA-4954, ADFA-5061, ADFA-5062, ADFA-5063 and ADFA-4758 relate, in what order to take them, and what is done so far. Update the class on each item dot as work lands: s-done, s-doing or s-todo.</desc>
+
+<style>
+  .bg    { fill: #F7F8F9; }
+  .card  { fill: #FFFFFF; stroke: #D5D8DC; stroke-width: 1.5; rx: 10; }
+  .card-hi { fill: #FFFFFF; stroke: #0E7C86; stroke-width: 2.5; rx: 10; }
+  .h1    { font-size: 19px; font-weight: 700; fill: #1F2328; }
+  .h2    { font-size: 14.5px; font-weight: 700; fill: #1F2328; }
+  .sub   { font-size: 11.5px; fill: #5B636B; }
+  .item  { font-size: 11.5px; fill: #1F2328; }
+  .note  { font-size: 11px; fill: #5B636B; font-style: italic; }
+  .lnk   { stroke: #9AA0A6; stroke-width: 1.6; fill: none; }
+  .lnk-hi{ stroke: #0E7C86; stroke-width: 2; fill: none; }
+  .lnklbl{ font-size: 10.5px; fill: #5B636B; }
+
+  /* ---- the three states: change an item's class to move it ---- */
+  .s-done { fill: #1B7F4B; stroke: none; }
+  .s-doing{ fill: #C77700; stroke: none; }
+  .s-todo { fill: #FFFFFF; stroke: #9AA0A6; stroke-width: 1.5; }
+
+  .badge  { fill: #0E7C86; }
+  .badgetx{ font-size: 12px; font-weight: 700; fill: #FFFFFF; }
+  .chip   { rx: 9; }
+  .chiptx { font-size: 10.5px; font-weight: 700; }
+</style>
+
+<defs>
+  <marker id="arw" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,1 L8,4.5 L0,8 Z" fill="#9AA0A6"/>
+  </marker>
+  <marker id="arwhi" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,1 L8,4.5 L0,8 Z" fill="#0E7C86"/>
+  </marker>
+  <marker id="arwhiS" markerWidth="9" markerHeight="9" refX="1" refY="4.5" orient="auto">
+    <path d="M8,1 L0,4.5 L8,8 Z" fill="#0E7C86"/>
+  </marker>
+</defs>
+
+<rect class="bg" x="0" y="0" width="1060" height="640"/>
+
+<text class="h1" x="24" y="34">Operation model — ticket map</text>
+<text class="sub" x="24" y="54">Which ticket owns what, what blocks what, and how far each one has got.</text>
+
+<!-- legend -->
+<circle class="s-done"  cx="742" cy="30" r="6"/><text class="sub" x="754" y="34">done</text>
+<circle class="s-doing" cx="812" cy="30" r="6"/><text class="sub" x="824" y="34">in progress</text>
+<circle class="s-todo"  cx="912" cy="30" r="6"/><text class="sub" x="924" y="34">not started</text>
+<text class="note" x="742" y="54">Edit the dot's class in this file as work lands.</text>
+
+<!-- ============ ADFA-4954 ============ -->
+<rect class="card" x="24" y="80" width="320" height="212"/>
+<rect class="chip" x="40" y="96" width="112" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="110" fill="#C0392B">RUNS IN PARALLEL</text>
+<text class="h2" x="40" y="139">ADFA-4954 · Kolibri seeding</text>
+<text class="sub" x="40" y="157">Where the model gets applied, and</text>
+<text class="sub" x="40" y="172">where the evidence came from.</text>
+
+<circle class="s-done" cx="48" cy="196" r="5.5"/><text class="item" x="62" y="200">C1 — browse and whole channels</text>
+<circle class="s-done" cx="48" cy="218" r="5.5"/><text class="item" x="62" y="222">C2 — topic selection over Studio's tree</text>
+<circle class="s-done" cx="48" cy="240" r="5.5"/><text class="item" x="62" y="244">Get More door (browse only)</text>
+<circle class="s-todo" cx="48" cy="262" r="5.5"/><text class="item" x="62" y="266">Live download from Get More</text>
+<circle class="s-todo" cx="48" cy="284" r="5.5"/><text class="item" x="62" y="288">Metadata-only scope</text>
+
+<!-- ============ ADFA-5061 ============ -->
+<rect class="card-hi" x="372" y="80" width="320" height="284"/>
+<circle class="badge" cx="396" cy="105" r="13"/><text class="badgetx" x="392" y="110">1</text>
+<text class="h2" x="418" y="110">ADFA-5061 · Operation model</text>
+<text class="sub" x="396" y="132">One declared source of truth for</text>
+<text class="sub" x="396" y="147">(platform, kind, class, reversibility).</text>
+<text class="note" x="396" y="167">Start here — everything else reads it.</text>
+
+<circle class="s-doing" cx="396" cy="192" r="5.5"/><text class="item" x="410" y="196">One reader for the system facts</text>
+<circle class="s-doing" cx="396" cy="214" r="5.5"/><text class="item" x="410" y="218">Pure resolver: live / stopped / deferred</text>
+<circle class="s-todo"  cx="396" cy="236" r="5.5"/><text class="item" x="410" y="240">kind / class type on each operation</text>
+<circle class="s-todo"  cx="396" cy="258" r="5.5"/><text class="item" x="410" y="262">UX tokens: colour, gates, progress</text>
+<circle class="s-todo"  cx="396" cy="280" r="5.5"/><text class="item" x="410" y="284">Apply to the dashboard Rebuild fork</text>
+<circle class="s-todo"  cx="396" cy="302" r="5.5"/><text class="item" x="410" y="306">Apply to Kolibri (install vs seeding)</text>
+<circle class="s-todo"  cx="396" cy="324" r="5.5"/><text class="item" x="410" y="328">Retire the four *Wizard booleans</text>
+<text class="note" x="410" y="348">facts: installed · healthy · server up · platform present</text>
+
+<!-- ============ ADFA-5062 ============ -->
+<rect class="card" x="720" y="80" width="316" height="192"/>
+<circle class="badge" cx="744" cy="105" r="13"/><text class="badgetx" x="740" y="110">2</text>
+<text class="h2" x="766" y="110">ADFA-5062 · Retire derivations</text>
+<text class="sub" x="744" y="132">The surfaces that still guess.</text>
+
+<circle class="s-todo" cx="744" cy="156" r="5.5"/><text class="item" x="758" y="160">ModuleActionSheet: Open vs Install</text>
+<circle class="s-todo" cx="744" cy="178" r="5.5"/><text class="item" x="758" y="182">Home cards: app install vs content</text>
+<circle class="s-todo" cx="744" cy="200" r="5.5"/><text class="item" x="758" y="204">SetupProgressActivity key switch</text>
+<circle class="s-todo" cx="744" cy="222" r="5.5"/><text class="item" x="758" y="226">Maps: two mechanisms, one name</text>
+<circle class="s-todo" cx="744" cy="244" r="5.5"/><text class="item" x="758" y="248">5 more call sites onto the one reader</text>
+
+<!-- ============ ADFA-5063 ============ -->
+<rect class="card" x="720" y="292" width="316" height="146"/>
+<circle class="badge" cx="744" cy="317" r="13"/><text class="badgetx" x="740" y="322">3</text>
+<text class="h2" x="766" y="322">ADFA-5063 · Reversibility</text>
+<text class="sub" x="744" y="344">A decision, not a migration.</text>
+
+<circle class="s-todo" cx="744" cy="368" r="5.5"/><text class="item" x="758" y="372">reversibility field in the model</text>
+<circle class="s-todo" cx="744" cy="390" r="5.5"/><text class="item" x="758" y="394">Decide: can a module be uninstalled?</text>
+<circle class="s-todo" cx="744" cy="412" r="5.5"/><text class="item" x="758" y="416">One verb for “remove”, everywhere</text>
+
+<!-- ============ ADFA-4758 ============ -->
+<rect class="card" x="372" y="392" width="320" height="170"/>
+<text class="h2" x="396" y="418">ADFA-4758 · Split the install pipeline</text>
+<text class="sub" x="396" y="436">Independent of the model, but easier</text>
+<text class="sub" x="396" y="451">once it has the vocabulary.</text>
+
+<circle class="s-done" cx="396" cy="476" r="5.5"/><text class="item" x="410" y="480">Guard: no OS re-extract by default</text>
+<circle class="s-done" cx="396" cy="498" r="5.5"/><text class="item" x="410" y="502">Persist the installed tier</text>
+<circle class="s-todo" cx="396" cy="520" r="5.5"/><text class="item" x="410" y="524">Two separately invoked installers</text>
+<circle class="s-todo" cx="396" cy="542" r="5.5"/><text class="item" x="410" y="546">Safe system change + data migration</text>
+
+<text class="note" x="24" y="480">Do not close 4758 as superseded:</text>
+<text class="note" x="24" y="496">the migration half is the one that</text>
+<text class="note" x="24" y="512">can lose a user's content.</text>
+
+<!-- ============ links ============ -->
+<path class="lnk-hi" d="M344,186 L372,186" marker-end="url(#arwhi)" marker-start="url(#arwhiS)"/>
+<text class="lnklbl" x="240" y="176">evidence ⇄ applied to</text>
+
+<path class="lnk-hi" d="M692,160 L720,160" marker-end="url(#arwhi)"/>
+<text class="lnklbl" x="694" y="152">blocks</text>
+
+<path class="lnk-hi" d="M692,320 C706,320 706,360 720,360" marker-end="url(#arwhi)"/>
+<text class="lnklbl" x="694" y="378">blocks</text>
+
+<path class="lnk" d="M532,364 L532,392" marker-end="url(#arw)"/>
+<text class="lnklbl" x="542" y="384">gives it the vocabulary</text>
+
+<text class="note" x="24" y="600">Order: land 5061 first, keep 4954 moving alongside it, then 5062, then 5063. 4758 can run whenever, but reads better after 5061.</text>
+</svg>
