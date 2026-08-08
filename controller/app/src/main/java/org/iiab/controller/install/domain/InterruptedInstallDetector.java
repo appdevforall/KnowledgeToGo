@@ -35,7 +35,38 @@ public final class InterruptedInstallDetector {
     private InterruptedInstallDetector() {}
 
     public static Verdict evaluate(boolean markerPresent, boolean serverReachable) {
+        return evaluate(markerPresent, false, false, false, serverReachable);
+    }
+
+    /**
+     * ADFA-5061: the full rule, with the preconditions that make the marker mean
+     * "killed" rather than "in use".
+     *
+     * <p>The two-argument form above reads the marker alone, which is correct only
+     * where the caller has already established that nobody owns it — the boot check
+     * does exactly that before calling, in {@code LibraryActivity.onCreate}. Any
+     * other caller has to say so, because the marker is <em>also</em> held, quite
+     * legitimately, by a running install, a running module queue and by a live
+     * backup/restore/clone. Mistaking the last of those for a killed install is
+     * ADFA-4971, already paid for once: it produced a false "reinstall" dialog.
+     *
+     * <p>Kept here, next to the verdict it qualifies, rather than restated by each
+     * caller — restating it is how it went wrong the first time.
+     *
+     * @param markerPresent      InstallGuard's {@code .install_in_progress}
+     * @param installerRunning   an install pipeline is alive in this process
+     * @param moduleQueueRunning a module queue is alive in this process
+     * @param deepOpHoldsLock    a backup, restore or clone holds the environment lock
+     * @param serverReachable    the server answered within the caller's window
+     */
+    public static Verdict evaluate(boolean markerPresent,
+                                   boolean installerRunning,
+                                   boolean moduleQueueRunning,
+                                   boolean deepOpHoldsLock,
+                                   boolean serverReachable) {
         if (!markerPresent) return Verdict.OK;      // nothing was mid-flight
+        // Someone is legitimately holding it. Work in progress is not damage.
+        if (installerRunning || moduleQueueRunning || deepOpHoldsLock) return Verdict.OK;
         if (serverReachable) return Verdict.OK;     // system boots -> usable; the stale marker is cleared by the caller
         return Verdict.DAMAGED_REINSTALL;           // never finished and won't come up
     }
