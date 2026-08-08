@@ -8,6 +8,7 @@ window.i18n = {
     "maps": "地図をナビゲート",
     "matomo": "利用状況の分析",
     "k2go_docs": "ヘルプとガイド",
+    "ready": "準備完了",
     "connecting": "接続中",
     "loading": "読み込み中…",
     "opening": "開いています",

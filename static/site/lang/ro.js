@@ -8,6 +8,7 @@ window.i18n = {
     "maps": "Navighează pe hărți",
     "matomo": "Analiză de utilizare",
     "k2go_docs": "Ajutor și ghiduri",
+    "ready": "Gata",
     "connecting": "Se conectează",
     "loading": "Se încarcă…",
     "opening": "Se deschide",

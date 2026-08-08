@@ -101,22 +101,28 @@ body {
 .status-banner.hidden { display: none; }
 
 /* ------------------------------ Card grid ------------------------------ */
+/* Mirrors the app's LibraryHome: a 2-column grid of vertical tiles (icon on
+   top, centered label, status line below). 2-up on phones, more on wider. */
 .card-grid {
     max-width: 900px;
     margin: 0 auto;
     padding: 12px 16px 40px;
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
 }
-@media (min-width: 560px) { .card-grid { grid-template-columns: 1fr 1fr; } }
-@media (min-width: 860px) { .card-grid { grid-template-columns: 1fr 1fr 1fr; } }
+@media (min-width: 700px) { .card-grid { grid-template-columns: 1fr 1fr 1fr; } }
+@media (min-width: 960px) { .card-grid { grid-template-columns: 1fr 1fr 1fr 1fr; } }
 
 .card {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
-    padding: 16px;
+    justify-content: center;
+    text-align: center;
+    gap: 12px;
+    padding: 22px 12px 18px;
+    min-height: 150px;
     border-radius: var(--radius);
     background: var(--surface);
     border: 1px solid var(--hairline);
@@ -131,18 +137,21 @@ body {
 .card.hidden,
 .card.not-installed { display: none; }
 
-.card-icon-svg { width: 28px; height: 28px; flex: 0 0 auto; color: var(--primary); }   /* app ic_card_* + M3 icons (currentColor) */
-.card-name { font-size: 1.02rem; font-weight: 600; flex: 1 1 auto; min-width: 0; }      /* natural label, same as the app */
+.card-icon-svg { width: 40px; height: 40px; flex: 0 0 auto; color: var(--primary); }   /* app ic_card_* + M3 icons (currentColor) */
+.card-name { font-size: 1.05rem; font-weight: 600; line-height: 1.25; }                 /* natural label, same as the app */
 
-/* Per-card status: a dot + text. Ready = subtle green dot, no text.
-   Connecting (installed but the server isn't answering yet) = amber pulsing
-   dot + "Connecting…". Driven by the .disabled class app.js already toggles. */
-.card-status { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+/* Per-card status line (dot + text), like the app: green "Ready" when the
+   server answers, amber pulsing "Connecting" while it's coming up. The
+   .disabled class (toggled by app.js) flips between the two. */
+.card-status { display: inline-flex; align-items: center; gap: 6px; }
 .card-status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); flex: 0 0 auto; }
-.card-status-text { font-size: .74rem; color: var(--warn); display: none; }
+.card-status-text { font-size: .8rem; }
+.status-ready { color: var(--ok); display: inline; }
+.status-connecting { color: var(--warn); display: none; }
 .card.disabled { cursor: default; }
 .card.disabled .dot { background: var(--warn); animation: pulse 1.2s ease-in-out infinite; }
-.card.disabled .card-status-text { display: inline; }
+.card.disabled .status-ready { display: none; }
+.card.disabled .status-connecting { display: inline; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
 @media (prefers-reduced-motion: reduce) { .card.disabled .dot { animation: none; } }
 

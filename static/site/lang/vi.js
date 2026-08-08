@@ -8,6 +8,7 @@ window.i18n = {
     "maps": "Xem bản đồ",
     "matomo": "Phân tích sử dụng",
     "k2go_docs": "Trợ giúp và hướng dẫn",
+    "ready": "Sẵn sàng",
     "connecting": "Đang kết nối",
     "loading": "Đang tải…",
     "opening": "Đang mở",

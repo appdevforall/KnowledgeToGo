@@ -8,6 +8,7 @@ window.i18n = {
     "maps": "Navigasi peta",
     "matomo": "Analitik penggunaan",
     "k2go_docs": "Bantuan dan panduan",
+    "ready": "Siap",
     "connecting": "Menyambungkan",
     "loading": "Memuat…",
     "opening": "Membuka",

@@ -8,6 +8,7 @@ window.i18n = {
     "maps": "Xəritələrdə gəz",
     "matomo": "İstifadə analitikası",
     "k2go_docs": "Kömək və bələdçilər",
+    "ready": "Hazır",
     "connecting": "Qoşulur",
     "loading": "Yüklənir…",
     "opening": "Açılır",
