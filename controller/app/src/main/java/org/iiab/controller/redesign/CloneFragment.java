@@ -251,7 +251,7 @@ public class CloneFragment extends Fragment {
         // ADFA-5064: same rescue as Connect — redraw the handshake/URL QR when the device's network
         // changes from outside the app (Wi-Fi turned on/off, roam, new IP lease). render() re-reads
         // the IP via discover(), so a QR that was blank for "no network" fills in once one appears.
-        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), s -> render());
+        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), net -> render());
         SyncTransferState cur = SyncProgressRepository.get().current();
         lastSeq = (cur != null) ? cur.seq : -1L;   // only fire dialogs on NEW transitions
         SyncProgressRepository.get().state().observe(getViewLifecycleOwner(), this::onTransferState);

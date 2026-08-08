@@ -98,7 +98,7 @@ public class ConnectFragment extends Fragment {
         hs.state().observe(getViewLifecycleOwner(), st -> render());
         // ADFA-5064: redraw when the device's network changes from outside the app (e.g. the user
         // turns Wi-Fi on after landing on a blank QR); render() re-reads the IP via discover().
-        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), s -> render());
+        NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), net -> render());
 
         setMode(Mode.HOTSPOT);
         return v;
