@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,7 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.iiab.controller.R;
+import org.iiab.controller.redesign.LibraryActivity;
 import org.iiab.controller.redesign.ProvisioningChecklist;
+import org.iiab.controller.redesign.SetupLibraryActivity;
 import org.iiab.controller.util.ByteFormatter;
 
 import java.util.List;
@@ -48,6 +51,7 @@ public final class KolibriSeedingFragment extends Fragment {
     private TextView detailView;
     private ProgressBar bar;
     private LinearLayout list;
+    private Button done;
 
     @Nullable
     @Override
@@ -62,8 +66,41 @@ public final class KolibriSeedingFragment extends Fragment {
         detailView = v.findViewById(R.id.k2go_kseed_detail);
         bar = v.findViewById(R.id.k2go_kseed_bar);
         list = v.findViewById(R.id.k2go_kseed_list);
+        done = v.findViewById(R.id.k2go_kseed_done);
+        done.setOnClickListener(x -> finishAndGoToLibrary());
 
         KolibriSeedRepository.get().state().observe(getViewLifecycleOwner(), this::render);
+    }
+
+    /**
+     * The end of the live flow: clear the session and land in the library.
+     *
+     * <p>Both halves matter. Without the navigation the screen simply stops, with
+     * nothing to press. Without {@code finishSession()} the finished session stays
+     * on the repository, {@code hasSession()} keeps reporting true, and every later
+     * download is refused with "another download is running" — a dead end that
+     * outlives the screen. The post-install host does this in its own Finish; on
+     * this door nobody was doing it.
+     */
+    private void finishAndGoToLibrary() {
+        KolibriSeedService.finishSession();
+        if (getActivity() == null) {
+            return;
+        }
+        startActivity(new android.content.Intent(getActivity(), LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));
+        getActivity().finish();
+    }
+
+    /**
+     * True when this screen is the whole flow rather than a detail inside the
+     * post-install index — which is the case reached from Get More, where no host
+     * chrome exists to offer a way out.
+     */
+    private boolean isLiveDoor() {
+        return getActivity() instanceof SetupLibraryActivity;
     }
 
     private void render(KolibriSeedState s) {
@@ -79,6 +116,9 @@ public final class KolibriSeedingFragment extends Fragment {
         } else {
             detailView.setText(detailLine(s));
         }
+        // Only once everything is terminal, and only where there is no host chrome
+        // to offer a way out.
+        done.setVisibility(s.isComplete() && isLiveDoor() ? View.VISIBLE : View.GONE);
 
         List<KolibriSeedState.Item> items = s.items();
         ProvisioningChecklist.render(requireContext(), list, items.size(), s.statusOrdinals(),

@@ -61,4 +61,5 @@
     <string name="k2go_kolibri_already_here">Already on this device</string>
     <string name="k2go_kolibri_partly_here">Partly on this device</string>
     <string name="k2go_kolibri_nothing_to_add">Everything you picked is already on this device.</string>
+    <string name="k2go_kolibri_go_to_library">Done — go to my library</string>
 </resources>

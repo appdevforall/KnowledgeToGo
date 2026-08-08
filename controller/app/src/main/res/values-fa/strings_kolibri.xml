@@ -31,4 +31,5 @@
     <string name="k2go_kolibri_already_here">از پیش روی این دستگاه است</string>
     <string name="k2go_kolibri_partly_here">بخشی از آن روی این دستگاه است</string>
     <string name="k2go_kolibri_nothing_to_add">هر آنچه انتخاب کردید از پیش روی این دستگاه است.</string>
+    <string name="k2go_kolibri_go_to_library">انجام شد — به کتابخانه‌ام برو</string>
 </resources>

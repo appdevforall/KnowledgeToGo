@@ -75,5 +75,20 @@
             android:layout_marginTop="12dp"
             android:orientation="vertical" />
 
+        <!-- ADFA-4954: the way out, and only on the live door. The post-install host owns
+             its own chrome and its Finish already clears the session; reached from Get More
+             there is no host chrome at all, so without this the screen is a dead end AND the
+             session is never cleared — which then blocks every later download. -->
+        <Button
+            android:id="@+id/k2go_kseed_done"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="24dp"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/k2go_teal"
+            android:text="@string/k2go_kolibri_go_to_library"
+            android:visibility="gone" />
+
     </LinearLayout>
 </ScrollView>

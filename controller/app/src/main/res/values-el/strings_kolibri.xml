@@ -31,4 +31,5 @@
     <string name="k2go_kolibri_already_here">Υπάρχει ήδη σε αυτή τη συσκευή</string>
     <string name="k2go_kolibri_partly_here">Εν μέρει σε αυτή τη συσκευή</string>
     <string name="k2go_kolibri_nothing_to_add">Όσα επιλέξατε υπάρχουν ήδη σε αυτή τη συσκευή.</string>
+    <string name="k2go_kolibri_go_to_library">Έτοιμο — στη βιβλιοθήκη μου</string>
 </resources>

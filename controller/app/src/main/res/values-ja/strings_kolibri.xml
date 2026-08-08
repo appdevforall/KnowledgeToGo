@@ -31,4 +31,5 @@
     <string name="k2go_kolibri_already_here">すでにこの端末にあります</string>
     <string name="k2go_kolibri_partly_here">一部がこの端末にあります</string>
     <string name="k2go_kolibri_nothing_to_add">選択したものはすべて、すでにこの端末にあります。</string>
+    <string name="k2go_kolibri_go_to_library">完了 — ライブラリへ</string>
 </resources>

@@ -31,4 +31,5 @@
     <string name="k2go_kolibri_already_here">Už je v tomto zařízení</string>
     <string name="k2go_kolibri_partly_here">Částečně v tomto zařízení</string>
     <string name="k2go_kolibri_nothing_to_add">Vše, co jste vybrali, už v tomto zařízení je.</string>
+    <string name="k2go_kolibri_go_to_library">Hotovo — přejít do knihovny</string>
 </resources>

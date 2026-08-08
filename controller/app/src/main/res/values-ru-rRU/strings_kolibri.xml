@@ -31,4 +31,5 @@
     <string name="k2go_kolibri_already_here">Уже на этом устройстве</string>
     <string name="k2go_kolibri_partly_here">Частично на этом устройстве</string>
     <string name="k2go_kolibri_nothing_to_add">Всё выбранное уже есть на этом устройстве.</string>
+    <string name="k2go_kolibri_go_to_library">Готово — в мою библиотеку</string>
 </resources>
