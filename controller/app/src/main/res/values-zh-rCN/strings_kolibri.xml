@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">选择主题</string>
     <string name="k2go_kolibri_narrowed_fmt">已选择 %1$d 个主题</string>
     <string name="k2go_kolibri_whole_course">整个课程</string>
-    <string name="k2go_kolibri_live_not_yet">目前仅供浏览。从这里添加课程将在下次更新中支持；现阶段课程在系统安装时选择。</string>
+    <string name="k2go_kolibri_checking">正在检查此设备可以做什么…</string>
+    <string name="k2go_kolibri_not_installed">本系统未安装课程，因此无法添加内容。</string>
+    <string name="k2go_kolibri_system_damaged">需要先修复系统，才能添加内容。</string>
+    <string name="k2go_kolibri_start_system_first">请先启动系统，然后才能开始下载。</string>
+    <string name="k2go_kolibri_busy">另一项下载正在进行。结束后请重试。</string>
+    <string name="k2go_kolibri_already_here">此设备上已有</string>
+    <string name="k2go_kolibri_partly_here">此设备上有部分</string>
+    <string name="k2go_kolibri_nothing_to_add">您选择的内容都已在此设备上。</string>
+    <string name="k2go_kolibri_go_to_library">完成 — 前往我的图书馆</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d 门课程未完成。</string>
+    <string name="k2go_kolibri_retry_before_leaving">离开前请重试失败的项目——离开会清空此列表。</string>
 </resources>

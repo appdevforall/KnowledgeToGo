@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Wybierz tematy</string>
     <string name="k2go_kolibri_narrowed_fmt">Wybrano %1$d tematów</string>
     <string name="k2go_kolibri_whole_course">Cały kurs</string>
-    <string name="k2go_kolibri_live_not_yet">Na razie tylko przeglądanie. Dodawanie kursów z tego miejsca pojawi się w następnej aktualizacji; obecnie wybiera się je podczas konfiguracji systemu.</string>
+    <string name="k2go_kolibri_checking">Sprawdzanie, co potrafi to urządzenie…</string>
+    <string name="k2go_kolibri_not_installed">Kursy nie są zainstalowane w tym systemie, więc nie można dodać treści.</string>
+    <string name="k2go_kolibri_system_damaged">System wymaga naprawy, zanim będzie można dodać treści.</string>
+    <string name="k2go_kolibri_start_system_first">Najpierw uruchom system, wtedy pobieranie będzie mogło się zacząć.</string>
+    <string name="k2go_kolibri_busy">Trwa inne pobieranie. Spróbuj ponownie, gdy się zakończy.</string>
+    <string name="k2go_kolibri_already_here">Już na tym urządzeniu</string>
+    <string name="k2go_kolibri_partly_here">Częściowo na tym urządzeniu</string>
+    <string name="k2go_kolibri_nothing_to_add">Wszystko, co wybrano, jest już na tym urządzeniu.</string>
+    <string name="k2go_kolibri_go_to_library">Gotowe — przejdź do biblioteki</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d kursów nie ukończono.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Ponów nieudane przed wyjściem — wyjście czyści tę listę.</string>
 </resources>

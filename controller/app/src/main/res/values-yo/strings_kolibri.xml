@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Yan àwọn àkòrí</string>
     <string name="k2go_kolibri_narrowed_fmt">Àkòrí %1$d ti yàn</string>
     <string name="k2go_kolibri_whole_course">Gbogbo ìdánilẹ́kọ̀ọ́</string>
-    <string name="k2go_kolibri_live_not_yet">Ìwòye nìkan ni fún ìsinsìnyí. Ìfikún àwọn ìdánilẹ́kọ̀ọ́ láti ibí yìí máa dé ní ìmúdójúìwọ̀n tó ń bọ̀; nísinsìnyí a yàn wọ́n nígbà tí a ń ṣètò ẹ̀rọ rẹ.</string>
+    <string name="k2go_kolibri_checking">À ń yẹ ohun tí ẹ̀rọ yìí lè ṣe wò…</string>
+    <string name="k2go_kolibri_not_installed">Ìdánilẹ́kọ̀ọ́ kò sí lórí ètò yìí, nítorí náà a kò lè fi àkóónú kún un.</string>
+    <string name="k2go_kolibri_system_damaged">Ètò rẹ gbọ́dọ̀ tún ṣe kí a tó lè fi àkóónú kún un.</string>
+    <string name="k2go_kolibri_start_system_first">Bẹ̀rẹ̀ ètò rẹ ná, lẹ́yìn náà ni ìgbàsílẹ̀ yìí lè bẹ̀rẹ̀.</string>
+    <string name="k2go_kolibri_busy">Ìgbàsílẹ̀ mìíràn ń lọ. Tún gbìyànjú nígbà tí ó bá parí.</string>
+    <string name="k2go_kolibri_already_here">Ó ti wà lórí ẹ̀rọ yìí</string>
+    <string name="k2go_kolibri_partly_here">Apá kan rẹ̀ wà lórí ẹ̀rọ yìí</string>
+    <string name="k2go_kolibri_nothing_to_add">Gbogbo ohun tí o yàn ti wà lórí ẹ̀rọ yìí.</string>
+    <string name="k2go_kolibri_go_to_library">Ó parí — lọ sí ibi ìkàwé mi</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d ìdánilẹ́kọ̀ọ́ kò parí.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Tún gbìyànjú àwọn tí ó kùnà kí o tó lọ — lílọ máa pa àtòjọ yìí rẹ́.</string>
 </resources>

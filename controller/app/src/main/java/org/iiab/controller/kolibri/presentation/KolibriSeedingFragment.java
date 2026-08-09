@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,7 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import org.iiab.controller.R;
+import org.iiab.controller.redesign.LibraryActivity;
 import org.iiab.controller.redesign.ProvisioningChecklist;
+import org.iiab.controller.redesign.SetupLibraryActivity;
 import org.iiab.controller.util.ByteFormatter;
 
 import java.util.List;
@@ -48,6 +51,9 @@ public final class KolibriSeedingFragment extends Fragment {
     private TextView detailView;
     private ProgressBar bar;
     private LinearLayout list;
+    private LinearLayout footer;
+    private TextView footerNote;
+    private Button done;
 
     @Nullable
     @Override
@@ -62,8 +68,70 @@ public final class KolibriSeedingFragment extends Fragment {
         detailView = v.findViewById(R.id.k2go_kseed_detail);
         bar = v.findViewById(R.id.k2go_kseed_bar);
         list = v.findViewById(R.id.k2go_kseed_list);
+        footer = v.findViewById(R.id.k2go_kseed_footer);
+        footerNote = v.findViewById(R.id.k2go_kseed_footer_note);
+        done = v.findViewById(R.id.k2go_kseed_done);
+        done.setOnClickListener(x -> finishAndGoToLibrary());
 
         KolibriSeedRepository.get().state().observe(getViewLifecycleOwner(), this::render);
+    }
+
+    /**
+     * The pinned footer: shown only on the live door, and only once the run is
+     * settled.
+     *
+     * <p>With failures the exit is withheld rather than relabelled. Leaving would
+     * clear the session, and the session is what holds the failed rows and their
+     * inline retry — the only way to recover them. So the screen says what failed
+     * and keeps the retries reachable; the user leaves by going back, which loses
+     * nothing.
+     */
+    private void renderFooter(boolean settled, int failed) {
+        boolean offerExit = settled && failed == 0 && isLiveDoor();
+        footer.setVisibility(settled && isLiveDoor() ? View.VISIBLE : View.GONE);
+        done.setVisibility(offerExit ? View.VISIBLE : View.GONE);
+        if (settled && failed > 0 && isLiveDoor()) {
+            footerNote.setVisibility(View.VISIBLE);
+            footerNote.setText(R.string.k2go_kolibri_retry_before_leaving);
+        } else {
+            footerNote.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * The end of the live flow: clear the session and land in the library.
+     *
+     * <p>Both halves matter. Without the navigation the screen simply stops, with
+     * nothing to press. Without {@code finishSession()} the finished session stays
+     * on the repository, {@code hasSession()} keeps reporting true, and every later
+     * download is refused with "another download is running" — a dead end that
+     * outlives the screen. The post-install host does this in its own Finish; on
+     * this door nobody was doing it.
+     */
+    private void finishAndGoToLibrary() {
+        KolibriSeedService.finishSession();
+        if (getActivity() == null) {
+            return;
+        }
+        // CLEAR_TOP + SINGLE_TOP lands on the Library already below in the stack and
+        // drops the screens above it, this one included — the same navigation
+        // SetupProgressActivity.goHome uses, and for the same reason.
+        startActivity(new android.content.Intent(getActivity(), LibraryActivity.class)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_library));
+        // Finished as well as cleared, exactly as goHome does: CLEAR_TOP only drops
+        // us when the Library is already below in the stack, and it is not always.
+        getActivity().finish();
+    }
+
+    /**
+     * True when this screen is the whole flow rather than a detail inside the
+     * post-install index — which is the case reached from Get More, where no host
+     * chrome exists to offer a way out.
+     */
+    private boolean isLiveDoor() {
+        return getActivity() instanceof SetupLibraryActivity;
     }
 
     private void render(KolibriSeedState s) {
@@ -74,11 +142,19 @@ public final class KolibriSeedingFragment extends Fragment {
         bar.setProgress(Math.max(0, pct));
         percentView.setText(getString(R.string.k2go_zim_downloading_fmt, pct + "%"));
 
-        if (s.isComplete()) {
+        // "Complete" means every item is terminal, and terminal includes FAILED — so
+        // it is not the same as "everything arrived". Saying "all content ready" over
+        // a run with failures is the lie that the exit button below would then act on.
+        boolean settled = s.isComplete();
+        int failed = s.failedCount();
+        if (settled && failed == 0) {
             detailView.setText(R.string.k2go_zim_all_ready);
+        } else if (settled) {
+            detailView.setText(getString(R.string.k2go_kolibri_failed_fmt, failed));
         } else {
             detailView.setText(detailLine(s));
         }
+        renderFooter(settled, failed);
 
         List<KolibriSeedState.Item> items = s.items();
         ProvisioningChecklist.render(requireContext(), list, items.size(), s.statusOrdinals(),

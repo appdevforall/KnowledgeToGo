@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Konu seç</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d konu seçildi</string>
     <string name="k2go_kolibri_whole_course">Kursun tamamı</string>
-    <string name="k2go_kolibri_live_not_yet">Şimdilik yalnızca göz atmak için. Kursları buradan eklemek sonraki güncellemede geliyor; şu an sistem kurulurken seçiliyorlar.</string>
+    <string name="k2go_kolibri_checking">Bu cihazın neler yapabildiği denetleniyor…</string>
+    <string name="k2go_kolibri_not_installed">Kurslar bu sistemde kurulu değil, bu yüzden içerik eklenemez.</string>
+    <string name="k2go_kolibri_system_damaged">İçerik eklenmeden önce sisteminizin onarılması gerekiyor.</string>
+    <string name="k2go_kolibri_start_system_first">Önce sisteminizi başlatın, ardından bu indirme başlayabilir.</string>
+    <string name="k2go_kolibri_busy">Başka bir indirme sürüyor. Bittiğinde yeniden deneyin.</string>
+    <string name="k2go_kolibri_already_here">Zaten bu cihazda</string>
+    <string name="k2go_kolibri_partly_here">Kısmen bu cihazda</string>
+    <string name="k2go_kolibri_nothing_to_add">Seçtiğiniz her şey zaten bu cihazda.</string>
+    <string name="k2go_kolibri_go_to_library">Tamam — kitaplığıma git</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d kurs tamamlanmadı.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Ayrılmadan önce başarısız olanları yeniden deneyin — ayrılmak bu listeyi siler.</string>
 </resources>

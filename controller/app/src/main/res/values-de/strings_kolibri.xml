@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Themen wählen</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d Themen ausgewählt</string>
     <string name="k2go_kolibri_whole_course">Ganzer Kurs</string>
-    <string name="k2go_kolibri_live_not_yet">Vorerst nur zum Ansehen. Kurse von hier hinzuzufügen kommt im nächsten Update; derzeit werden sie beim Einrichten des Systems gewählt.</string>
+    <string name="k2go_kolibri_checking">Es wird geprüft, was dieses Gerät kann…</string>
+    <string name="k2go_kolibri_not_installed">Kurse sind auf diesem System nicht installiert, daher lassen sich keine Inhalte hinzufügen.</string>
+    <string name="k2go_kolibri_system_damaged">Ihr System muss repariert werden, bevor Inhalte hinzugefügt werden können.</string>
+    <string name="k2go_kolibri_start_system_first">Starten Sie zuerst Ihr System, dann kann dieser Download beginnen.</string>
+    <string name="k2go_kolibri_busy">Ein anderer Download läuft. Versuchen Sie es danach erneut.</string>
+    <string name="k2go_kolibri_already_here">Bereits auf diesem Gerät</string>
+    <string name="k2go_kolibri_partly_here">Teilweise auf diesem Gerät</string>
+    <string name="k2go_kolibri_nothing_to_add">Alles Ausgewählte ist bereits auf diesem Gerät.</string>
+    <string name="k2go_kolibri_go_to_library">Fertig — zu meiner Bibliothek</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d Kurse wurden nicht fertig.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Wiederholen Sie die fehlgeschlagenen, bevor Sie gehen — beim Verlassen wird diese Liste gelöscht.</string>
 </resources>

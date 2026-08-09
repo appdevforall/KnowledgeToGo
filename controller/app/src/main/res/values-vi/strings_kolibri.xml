@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Chọn chủ đề</string>
     <string name="k2go_kolibri_narrowed_fmt">Đã chọn %1$d chủ đề</string>
     <string name="k2go_kolibri_whole_course">Toàn bộ khóa học</string>
-    <string name="k2go_kolibri_live_not_yet">Hiện chỉ để xem. Thêm khóa học từ đây sẽ có trong bản cập nhật tới; hiện tại chúng được chọn khi thiết lập hệ thống.</string>
+    <string name="k2go_kolibri_checking">Đang kiểm tra thiết bị này làm được gì…</string>
+    <string name="k2go_kolibri_not_installed">Khóa học chưa được cài trên hệ thống này nên không thể thêm nội dung.</string>
+    <string name="k2go_kolibri_system_damaged">Hệ thống của bạn cần được sửa trước khi thêm nội dung.</string>
+    <string name="k2go_kolibri_start_system_first">Hãy khởi động hệ thống trước, rồi lượt tải này mới bắt đầu được.</string>
+    <string name="k2go_kolibri_busy">Đang có lượt tải khác. Hãy thử lại khi nó xong.</string>
+    <string name="k2go_kolibri_already_here">Đã có trên thiết bị này</string>
+    <string name="k2go_kolibri_partly_here">Có một phần trên thiết bị này</string>
+    <string name="k2go_kolibri_nothing_to_add">Mọi thứ bạn chọn đã có trên thiết bị này.</string>
+    <string name="k2go_kolibri_go_to_library">Xong — tới thư viện của tôi</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d khóa học chưa hoàn tất.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Hãy thử lại những mục lỗi trước khi rời đi — rời đi sẽ xóa danh sách này.</string>
 </resources>

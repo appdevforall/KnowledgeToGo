@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Escolher tópicos</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d tópicos selecionados</string>
     <string name="k2go_kolibri_whole_course">Curso completo</string>
-    <string name="k2go_kolibri_live_not_yet">Por enquanto apenas para explorar. Adicionar cursos daqui chega na próxima atualização; por ora eles são escolhidos durante a configuração do sistema.</string>
+    <string name="k2go_kolibri_checking">Verificando o que este dispositivo pode fazer…</string>
+    <string name="k2go_kolibri_not_installed">Cursos não está instalado neste sistema, então não é possível adicionar conteúdo.</string>
+    <string name="k2go_kolibri_system_damaged">Seu sistema precisa ser reparado antes de adicionar conteúdo.</string>
+    <string name="k2go_kolibri_start_system_first">Inicie seu sistema primeiro e este download poderá começar.</string>
+    <string name="k2go_kolibri_busy">Há outro download em andamento. Tente de novo quando terminar.</string>
+    <string name="k2go_kolibri_already_here">Já está neste dispositivo</string>
+    <string name="k2go_kolibri_partly_here">Parcialmente neste dispositivo</string>
+    <string name="k2go_kolibri_nothing_to_add">Tudo o que você escolheu já está neste dispositivo.</string>
+    <string name="k2go_kolibri_go_to_library">Pronto — ir para minha biblioteca</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d curso(s) não terminaram.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Tente de novo os que falharam antes de sair: sair apaga esta lista.</string>
 </resources>

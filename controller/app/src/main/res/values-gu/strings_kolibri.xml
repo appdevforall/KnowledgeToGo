@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">વિષયો પસંદ કરો</string>
     <string name="k2go_kolibri_narrowed_fmt">%1$d વિષયો પસંદ કર્યા</string>
     <string name="k2go_kolibri_whole_course">સંપૂર્ણ કોર્સ</string>
-    <string name="k2go_kolibri_live_not_yet">હાલ પૂરતું ફક્ત જોવા માટે. અહીંથી કોર્સ ઉમેરવાનું આગામી અપડેટમાં આવશે; હાલ તે સિસ્ટમ સેટઅપ વખતે પસંદ થાય છે.</string>
+    <string name="k2go_kolibri_checking">આ ઉપકરણ શું કરી શકે તે તપાસાઈ રહ્યું છે…</string>
+    <string name="k2go_kolibri_not_installed">આ સિસ્ટમ પર કોર્સ ઇન્સ્ટોલ નથી, તેથી સામગ્રી ઉમેરી શકાતી નથી.</string>
+    <string name="k2go_kolibri_system_damaged">સામગ્રી ઉમેરતાં પહેલાં તમારી સિસ્ટમ સુધારવી પડશે.</string>
+    <string name="k2go_kolibri_start_system_first">પહેલાં તમારી સિસ્ટમ ચાલુ કરો, પછી આ ડાઉનલોડ શરૂ થઈ શકશે.</string>
+    <string name="k2go_kolibri_busy">બીજું ડાઉનલોડ ચાલુ છે. તે પૂરું થાય પછી ફરી પ્રયાસ કરો.</string>
+    <string name="k2go_kolibri_already_here">પહેલેથી આ ઉપકરણ પર છે</string>
+    <string name="k2go_kolibri_partly_here">આંશિક રીતે આ ઉપકરણ પર છે</string>
+    <string name="k2go_kolibri_nothing_to_add">તમે પસંદ કરેલું બધું પહેલેથી આ ઉપકરણ પર છે.</string>
+    <string name="k2go_kolibri_go_to_library">પૂર્ણ — મારી લાઇબ્રેરીમાં જાઓ</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d કોર્સ પૂરા થયા નથી.</string>
+    <string name="k2go_kolibri_retry_before_leaving">જતાં પહેલાં નિષ્ફળ થયેલા ફરી પ્રયાસ કરો — જવાથી આ યાદી ભૂંસાઈ જશે.</string>
 </resources>

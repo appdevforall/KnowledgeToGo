@@ -23,5 +23,15 @@
     <string name="k2go_kolibri_choose_topics">Выбрать темы</string>
     <string name="k2go_kolibri_narrowed_fmt">Выбрано тем: %1$d</string>
     <string name="k2go_kolibri_whole_course">Весь курс</string>
-    <string name="k2go_kolibri_live_not_yet">Пока только просмотр. Добавление курсов отсюда появится в следующем обновлении; сейчас они выбираются во время настройки системы.</string>
+    <string name="k2go_kolibri_checking">Проверяем, что может это устройство…</string>
+    <string name="k2go_kolibri_not_installed">Курсы не установлены в этой системе, поэтому добавить содержимое нельзя.</string>
+    <string name="k2go_kolibri_system_damaged">Прежде чем добавлять содержимое, систему нужно восстановить.</string>
+    <string name="k2go_kolibri_start_system_first">Сначала запустите систему, тогда загрузка сможет начаться.</string>
+    <string name="k2go_kolibri_busy">Идёт другая загрузка. Повторите попытку, когда она закончится.</string>
+    <string name="k2go_kolibri_already_here">Уже на этом устройстве</string>
+    <string name="k2go_kolibri_partly_here">Частично на этом устройстве</string>
+    <string name="k2go_kolibri_nothing_to_add">Всё выбранное уже есть на этом устройстве.</string>
+    <string name="k2go_kolibri_go_to_library">Готово — в мою библиотеку</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d курс(ов) не завершились.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Повторите неудавшиеся перед выходом — выход очищает этот список.</string>
 </resources>
