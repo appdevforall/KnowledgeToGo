@@ -90,6 +90,10 @@ public final class KolibriBrowseFragment extends Fragment {
     /** The chip row's axis: {@code ""} is All. Only All exists until the groups are authored. */
     private String groupFilter = "";
 
+    /** ADFA-5061: whether this screen banks rather than downloads, resolved on first use
+     *  and dropped with the view — see {@link #isWizard()}. Null means "not asked yet". */
+    private Boolean banksCache = null;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -386,16 +390,23 @@ public final class KolibriBrowseFragment extends Fragment {
 
     /** Pre-install (wizard) versus the Get More door. Only the wording and the
      *  forward action differ; the catalog and the tree behave the same either way.
-     *  Fails closed on an unrecognised host, matching the confirm screen.
      *
-     *  <p>ADFA-5061: read from the system rather than from a flag set when the picker
-     *  was opened. "Pre-install" is not a mode the app remembers, it is the state of
-     *  having no box to download against — so it is asked, not stored. */
+     *  <p>ADFA-5061: read from the system rather than from a flag set when the picker was
+     *  opened. "Pre-install" is not a mode the app remembers, it is the state of having no
+     *  box to download against. An unrecognised host declares no replacement and the facts
+     *  answer alone.
+     *
+     *  <p>Resolved once per view creation: the answer costs three filesystem reads, and it
+     *  cannot change while this screen is up. Being a field is safe here because it is
+     *  derived on creation — the flags this replaced were written by navigation, which is
+     *  why they did not survive one. */
     private boolean isWizard() {
-        boolean replacing = getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
-        return org.iiab.controller.system.data.ContentDoor.banks(
-                requireContext(), org.iiab.controller.system.domain.ContentType.COURSES, replacing);
+        if (banksCache == null) {
+            banksCache = org.iiab.controller.system.data.ContentDoor.banks(
+                    requireContext(), org.iiab.controller.system.domain.ContentType.COURSES,
+                    SetupLibraryActivity.replacingSystem(this));
+        }
+        return banksCache;
     }
 
     /**

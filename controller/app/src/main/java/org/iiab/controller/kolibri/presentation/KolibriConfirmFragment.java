@@ -121,8 +121,7 @@ public final class KolibriConfirmFragment extends Fragment {
      * already say defer.
      */
     private boolean isWizard() {
-        return getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
+        return SetupLibraryActivity.replacingSystem(this);
     }
 
     private void render() {

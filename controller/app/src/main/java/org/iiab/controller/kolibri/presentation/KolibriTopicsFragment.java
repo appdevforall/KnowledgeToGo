@@ -88,6 +88,10 @@ public final class KolibriTopicsFragment extends Fragment {
     private long freeMb = 0L;
     private long totalMb = 0L;
 
+    /** ADFA-5061: whether this screen banks rather than downloads, resolved on first use
+     *  and dropped with the view — see {@link #isWizard()}. Null means "not asked yet". */
+    private Boolean banksCache = null;
+
     /** @param channelId the channel to browse; the fragment resolves it from the catalog */
     public static KolibriTopicsFragment forChannel(String channelId) {
         KolibriTopicsFragment f = new KolibriTopicsFragment();
@@ -460,16 +464,20 @@ public final class KolibriTopicsFragment extends Fragment {
         return channel == null ? 0L : channel.publishedSize();
     }
 
-    /** Pre-install (wizard) versus the Get More door. Fails closed, as the other
-     *  two Courses screens do: an unrecognised host is the door that writes nothing.
+    /** Pre-install (wizard) versus the Get More door — see {@code KolibriBrowseFragment}.
      *
-     *  <p>ADFA-5061: asked of the system, not remembered from the door — see
-     *  {@code KolibriBrowseFragment.isWizard()}. */
+     *  <p>ADFA-5061: resolved once per view creation rather than on every call.
+     *  {@code updateStorage()} runs on each topic tick, and the answer now costs three
+     *  filesystem reads; the flag it replaced was free. Caching it does not bring the old
+     *  problem back, because the danger was never that it was a field — it was that
+     *  navigation wrote it. This one is derived, so a recreation recomputes it. */
     private boolean isWizard() {
-        boolean replacing = getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
-        return org.iiab.controller.system.data.ContentDoor.banks(
-                requireContext(), org.iiab.controller.system.domain.ContentType.COURSES, replacing);
+        if (banksCache == null) {
+            banksCache = org.iiab.controller.system.data.ContentDoor.banks(
+                    requireContext(), org.iiab.controller.system.domain.ContentType.COURSES,
+                    SetupLibraryActivity.replacingSystem(this));
+        }
+        return banksCache;
     }
 
     /**

@@ -319,6 +319,18 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      */
     public boolean isReplacingSystem() { return reinstallMode; }
 
+    /**
+     * The same answer for a fragment that may or may not be hosted here.
+     *
+     * <p>Six content screens need it and were each writing the instanceof-and-cast
+     * themselves. One expression, one place — an unrecognised host answers "not
+     * replacing", and the facts then decide on their own.
+     */
+    public static boolean replacingSystem(androidx.fragment.app.Fragment f) {
+        return f != null && f.getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) f.getActivity()).isReplacingSystem();
+    }
+
     /** ADFA-4954: the Courses picker (browse -> confirm), wizard door. */
     public void openKolibriWizard() {
         getSupportFragmentManager().beginTransaction()

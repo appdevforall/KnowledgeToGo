@@ -91,32 +91,23 @@ public class ZimConfirmFragment extends Fragment {
         // ADFA-5061: asked of the system, not of the door. This used to read isZimWizard(),
         // a field lost on every activity recreation — after a rotation the screen believed
         // it was on the live path and tried to download against a system that did not exist.
-        boolean wiz = banksInsteadOfDownloading();
+        // Resolved once here and reused: the label and the action are then the same answer
+        // by construction, and it is re-derived on every recreation because this method runs
+        // again. A field is only dangerous when navigation writes it.
+        final boolean banks = org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.ZIM,
+                SetupLibraryActivity.replacingSystem(this));
         Button start = root.findViewById(R.id.k2go_zconf_start);
-        start.setText(getString(wiz ? R.string.k2go_zim_add_setup_fmt : R.string.k2go_zim_start_fmt, gb(totalMb)));
+        start.setText(getString(banks ? R.string.k2go_zim_add_setup_fmt : R.string.k2go_zim_start_fmt, gb(totalMb)));
         start.setEnabled(fits && total > 0);
         start.setOnClickListener(v -> {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
-            // Asked again at the press: the answer is cheap and the system can have
-            // changed since the screen was drawn.
-            if (banksInsteadOfDownloading()) a.zimWizardConfirm();   // no box yet: bank it
-            else a.openZimPreparing();                               // live: download now
+            if (banks) a.zimWizardConfirm();   // no box yet: bank it
+            else a.openZimPreparing();         // live: download now
         });
 
         return root;
-    }
-
-    /**
-     * ADFA-5061: whether the selection should be written down rather than downloaded —
-     * true when there is no box to download against yet, or when the one that is there
-     * is about to be replaced.
-     */
-    private boolean banksInsteadOfDownloading() {
-        boolean replacing = (getActivity() instanceof SetupLibraryActivity)
-                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
-        return org.iiab.controller.system.data.ContentDoor.banks(
-                requireContext(), org.iiab.controller.system.domain.ContentType.ZIM, replacing);
     }
 
     private View row(String name, String sub, String size, boolean totalRow) {

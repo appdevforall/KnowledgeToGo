@@ -310,6 +310,13 @@ most expensive by the third platform. A is B done safely over time.
           not, and it is the only thing distinguishing a real download from a no-op. The rate is not
           on the device (the server does the transfer), so it has to be derived from the bytes and
           the poll timestamps we already hold, or asked of the REST core.
+
+          Also converge the **two ways the dispatcher is currently consumed**. The Courses confirm
+          maps all five answers to five behaviours; ZIM, Books and Maps collapse them to a boolean
+          through `ContentDoor.banks()` and drop the rest. That is deliberate for now — acting on
+          "damaged" or "platform absent" means writing the refusal copy, which is this item — but
+          left unnamed it becomes "why does ZIM not tell me the system is damaged?". The boolean is
+          a staging post, not the destination.
 3. [ ] Apply to the dashboard card / Rebuild: make the REST/proot fork explicit; align colour + gates +
        progress to the resolved class; remove the silent proot fallback.
 4. [ ] Apply to Kolibri (coordinate with ADFA-4954): install = STOPPED, seeding = LIVE, each presented
