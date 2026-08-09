@@ -166,12 +166,12 @@ public class OperationDispatcherTest {
     public void pendingReplacementIsNotAFactAboutTheBox() {
         SystemFacts plain = SystemFacts.of(true, true, true);
         assertFalse(plain.isReplacementPending());
-        assertTrue(plain.withReplacementPending().isReplacementPending());
+        SystemFacts doomed = plain.withReplacementPending();
+        assertTrue(doomed.isReplacementPending());
         // Same box, different answer — so the two must not compare equal.
-        assertNotEquals(plain, plain.withReplacementPending());
+        assertNotEquals(plain, doomed);
         // Idempotent: asking twice is the same decision, not a second one.
-        assertSame(plain.withReplacementPending(),
-                plain.withReplacementPending().withReplacementPending());
+        assertSame(doomed, doomed.withReplacementPending());
     }
 
     // ---- damaged -------------------------------------------------------------
