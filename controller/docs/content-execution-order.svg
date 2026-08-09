@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 620" width="980" height="620" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 790" width="980" height="790" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Content installation — mechanism and order</title>
 <desc>How the four content types install: which mechanism each uses, why they are serialised, where the server is stopped, and what is still unsolved. Companion to operation-model-roadmap.svg, which tracks ticket state rather than behaviour. Update when the behaviour changes, not when a ticket moves.</desc>
 
@@ -30,7 +30,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="980" height="620"/>
+<rect class="bg" x="0" y="0" width="980" height="790"/>
 
 <text class="h1" x="24" y="34">Content installation — mechanism and order</text>
 <text class="sub" x="24" y="54">Four content types, two mechanisms. What runs when, what waits for what, and why.</text>
@@ -97,7 +97,19 @@
 <text class="h3" x="112" y="536">No run-level disk budget</text>
 <text class="item" x="40" y="560">Each selector does block: it compares its own total against StatFs at the moment it is opened. But a banked order is not on disk yet, so two</text>
 <text class="item" x="40" y="576">selections can each fit and jointly overflow — and the one that drains second dies mid-download with tens of GB already written.</text>
-<text class="code" x="40" y="592">ZimConfirmFragment:94 · MapsChooseFragment:270 · KolibriConfirmFragment:211 — three readings, three moments, no total</text>
+<text class="item" x="40" y="592">The wizard DOES show the running total ("Your picks 9.4 GB"); what none of them does is subtract it before deciding. The sum informs, it does not guard.</text>
+<text class="code" x="40" y="608">ZimConfirmFragment:94 · MapsChooseFragment:270 · KolibriConfirmFragment:211 — three readings, three moments, no total</text>
+
+<!-- ================= two doors ================= -->
+<rect class="card-open" x="24" y="636" width="932" height="134"/>
+<rect class="chip" x="40" y="648" width="60" height="19" fill="#FBE4E4" stroke="none"/>
+<text class="chiptx" x="48" y="662" fill="#C0392B">OPEN</text>
+<text class="h3" x="112" y="662">Two doors, two patterns — and the live one has no way back</text>
+<text class="item" x="40" y="686">The wizard QUEUES: wishlist → drain → an index with a card per item. Get More ATTENDS LIVE, and not even consistently:</text>
+<text class="item" x="40" y="702">ZIM and Books open the index but always with a hint, so they land straight in the detail and the list is never seen; Courses skip</text>
+<text class="item" x="40" y="718">the shared index altogether and use their own screen.</text>
+<text class="item" x="40" y="740">Consequence: a live operation has no index to return to, so Back walks the user out of it while it is still running — and there is</text>
+<text class="item" x="40" y="756">no door into the index either. The queue pattern exists because the wizard had no system yet; with four content types it is the one that scales.</text>
 
 <!-- ================= which type is which ================= -->
 <rect class="card" x="24" y="242" width="212" height="244"/>
