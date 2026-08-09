@@ -65,15 +65,15 @@
 
 <!-- ============ stale content state (found by testing 4954) ============ -->
 <rect class="card" x="24" y="322" width="320" height="168"/>
-<rect class="chip" x="40" y="338" width="52" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="352" fill="#1B7F4B">NEXT</text>
+<rect class="chip" x="40" y="338" width="88" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="352" fill="#1B7F4B">VERIFIED</text>
 <text class="h2" x="40" y="381">ADFA-5070 · Stale content state</text>
 <text class="sub" x="40" y="399">A session outlives the system it</text>
 <text class="sub" x="40" y="414">was about. Found while testing 4954.</text>
 
-<circle class="s-doing" cx="48" cy="438" r="5.5"/><text class="item" x="62" y="442">Wipe content sessions when replaced</text>
-<circle class="s-todo"  cx="48" cy="460" r="5.5"/><text class="item" x="62" y="464">Decide the fate of the wishlists</text>
-<circle class="s-todo"  cx="48" cy="482" r="5.5"/><text class="item" x="62" y="486">5 destructive routes, only 2 hooked</text>
+<circle class="s-done" cx="48" cy="438" r="5.5"/><text class="item" x="62" y="442">Wipe content sessions when replaced</text>
+<circle class="s-done" cx="48" cy="460" r="5.5"/><text class="item" x="62" y="464">Orders discarded, except the wizard’s</text>
+<circle class="s-done" cx="48" cy="482" r="5.5"/><text class="item" x="62" y="486">All 5 destructive routes hooked</text>
 
 <!-- ============ ADFA-5061 ============ -->
 <rect class="card-hi" x="372" y="80" width="320" height="284"/>

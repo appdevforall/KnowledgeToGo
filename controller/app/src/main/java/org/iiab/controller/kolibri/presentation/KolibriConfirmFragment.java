@@ -96,7 +96,25 @@ public final class KolibriConfirmFragment extends Fragment {
             ready = s;
             render();
         });
-        readiness.refresh();
+        readiness.refresh(isWizard());
+    }
+
+    /**
+     * Whether this screen was reached through the setup wizard, which is about to
+     * install or replace the system.
+     *
+     * <p>Not something the device can be asked: during a reinstall the old system is
+     * still installed, healthy and answering, so every readable fact says "run it
+     * now" while the user is two taps from wiping it. Reading only those facts made
+     * the picker download live onto the doomed system and leave the wizard, so the
+     * reinstall never happened at all.
+     *
+     * <p>Fails closed: an unrecognised host is treated as the live door, which
+     * cannot bank an order it has nowhere to drain.
+     */
+    private boolean isWizard() {
+        return getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     private void render() {

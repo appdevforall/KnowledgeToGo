@@ -3,6 +3,8 @@ package org.iiab.controller.system.domain;
 import static org.iiab.controller.system.domain.OperationDispatcher.Dispatch;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -124,6 +126,52 @@ public class OperationDispatcherTest {
         // Would be circular: the app install is what puts the platform there.
         assertEquals(Dispatch.RUN_STOPPED,
                 OperationDispatcher.resolve(INSTALL_COURSES, RUNNING, false));
+    }
+
+    // ---- a replacement already agreed -----------------------------------------
+
+    @Test
+    public void contentIsDeferredWhileAReplacementIsPending() {
+        // The reinstall wizard. Every readable fact says the box is fine — it is
+        // installed, healthy and answering — and all of it is about to be wiped.
+        // Reading only those facts downloaded live onto the doomed system and took
+        // the user out of the wizard, so the reinstall never ran.
+        SystemFacts doomed = RUNNING.withReplacementPending();
+        assertTrue(doomed.isInstalled());
+        assertTrue(doomed.isServerUp());
+        assertEquals(Dispatch.DEFER, OperationDispatcher.resolve(SEED_COURSES, doomed, true));
+    }
+
+    @Test
+    public void aPendingReplacementOutranksEveryOtherFactAboutTheBox() {
+        // Whatever the box looks like, it is going away: the answer cannot depend on
+        // the state of something with its days numbered.
+        for (SystemFacts f : new SystemFacts[]{FRESH, RUNNING, OFF, DAMAGED}) {
+            SystemFacts doomed = f.withReplacementPending();
+            assertEquals("with " + doomed, Dispatch.DEFER,
+                    OperationDispatcher.resolve(SEED_COURSES, doomed, true));
+            assertEquals("with " + doomed, Dispatch.DEFER,
+                    OperationDispatcher.resolve(INSTALL_COURSES, doomed, false));
+        }
+    }
+
+    @Test
+    public void theReplacementItselfStillRuns() {
+        // The system operation IS the replacement, so it must survive its own flag.
+        assertEquals(Dispatch.RUN_STOPPED,
+                OperationDispatcher.resolve(INSTALL_SYSTEM, RUNNING.withReplacementPending(), true));
+    }
+
+    @Test
+    public void pendingReplacementIsNotAFactAboutTheBox() {
+        SystemFacts plain = SystemFacts.of(true, true, true);
+        assertFalse(plain.isReplacementPending());
+        assertTrue(plain.withReplacementPending().isReplacementPending());
+        // Same box, different answer — so the two must not compare equal.
+        assertNotEquals(plain, plain.withReplacementPending());
+        // Idempotent: asking twice is the same decision, not a second one.
+        assertSame(plain.withReplacementPending(),
+                plain.withReplacementPending().withReplacementPending());
     }
 
     // ---- damaged -------------------------------------------------------------
