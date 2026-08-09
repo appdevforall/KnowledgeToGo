@@ -96,7 +96,34 @@ public final class KolibriConfirmFragment extends Fragment {
             ready = s;
             render();
         });
-        readiness.refresh();
+        readiness.refresh(isWizard());
+    }
+
+    /**
+     * Whether this screen was reached through the setup wizard, which is about to
+     * install or replace the system.
+     *
+     * <p>Not something the device can be asked: during a reinstall the old system is
+     * still installed, healthy and answering, so every readable fact says "run it
+     * now" while the user is two taps from wiping it. Reading only those facts made
+     * the picker download live onto the doomed system and leave the wizard, so the
+     * reinstall never happened at all.
+     *
+     * <p>Fails closed: an unrecognised host is treated as the live door, which
+     * cannot bank an order it has nowhere to drain.
+     *
+     * <p><b>The carrier here is provisional.</b> {@code kolibriWizard} is one of the
+     * four activity booleans ADR-5061 exists to retire, and it does not survive the
+     * process being killed — so after a process death mid-reinstall this reads false
+     * again and the hijack returns. Reading a different activity field instead would
+     * be correct in form and wrong in substance: still a screen answering a question
+     * about the system. The durable fix is a persisted declaration of intent,
+     * sibling to {@code InstallGuard}, and it lands with the retirement of the four
+     * booleans (ADR-5061, decision 10 and migration item 5). Do not patch it here.
+     */
+    private boolean isWizard() {
+        return getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
     }
 
     private void render() {

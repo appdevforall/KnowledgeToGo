@@ -204,6 +204,28 @@ screen. Subtle, not in-your-face: the lights change, buttons appear or don't.
    `DashboardFragment`'s hand-copied evaluator, both of which are supposed to agree with the canonical
    answer and today may not.
 
+10. **A pending replacement is a fact, and it needs a durable home.** Decision 8 lists what is true
+   about the box. This one is not: it is what has already been **decided** about it. During a
+   reinstall every readable fact still says the old system is installed, healthy and answering, right
+   up to the moment it is wiped — so a decision made from those facts alone will happily act on a
+   system that is about to stop existing. That is not hypothetical: it shipped, and the Courses picker
+   downloaded live onto the doomed system and took the user out of the wizard, so the reinstall never
+   ran (ADFA-4954, PR #371).
+
+   The fix carries the fact through `SystemFacts.withReplacementPending()` and answers `DEFER` above
+   every other check. What it does **not** yet fix is where the fact comes from: the screen reads it
+   from `SetupLibraryActivity.kolibriWizard` — one of the four booleans this ADR exists to retire.
+   Hardening it by reading a different activity field instead would be correct in form and wrong in
+   substance: still a screen answering a question about the system, still not covering first install,
+   and one more half-durable carrier to migrate later.
+
+   So it is deliberately left as-is until item 5 below. When the booleans are retired, this fact
+   becomes a **persisted declaration of intent**, sibling to `InstallGuard` (which already records "an
+   install is running" and survives the process being killed). Its lifecycle is the actual work, and
+   must be stated before it is built: who writes it (the wizard, on committing to the install), who
+   clears it (completion **and** abandonment), and what happens if the process dies in between. A
+   marker nobody clears blocks every live download forever — worse than the flag it replaces.
+
 ## Options considered
 
 ### Option A — Explicit operation model + hybrid UX contract, incremental migration (chosen)
@@ -278,7 +300,11 @@ most expensive by the third platform. A is B done safely over time.
 4. [ ] Apply to Kolibri (coordinate with ADFA-4954): install = STOPPED, seeding = LIVE, each presented
        per its class.
 5. [ ] Express deferral in the model and retire the four `*Wizard` booleans on `SetupLibraryActivity`,
-       deriving the answer from whether a system is installed.
+       deriving the answer from whether a system is installed. Includes giving **pending replacement**
+       (decision 10) a durable home with a stated lifecycle — who sets it, who clears it on completion
+       *and* on abandonment, and what happens if the process dies in between. Until then
+       `KolibriConfirmFragment.isWizard()` reads one of these booleans on purpose; do not harden it in
+       place.
 6. [ ] ADFA-5062: migrate `ModuleActionSheet`, the Home cards (split app-install vs content), the
        `SetupProgressActivity` key switch, Maps' two mechanisms under one name, and the five remaining
        call sites that probe the disk themselves (`InstallController`, `ShareController`,

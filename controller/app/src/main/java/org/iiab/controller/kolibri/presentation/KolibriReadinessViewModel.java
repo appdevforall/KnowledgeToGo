@@ -62,16 +62,28 @@ public class KolibriReadinessViewModel extends ViewModel {
     /**
      * Asks again. Cheap enough to call whenever the screen is shown: two short HTTP
      * calls against localhost and two filesystem checks.
+     *
+     * @param replacementPending whether the caller is inside a setup wizard that
+     *                           will install or replace the system. The reader
+     *                           cannot know this — it is a decision the user has
+     *                           made, not a state of the box, and during a reinstall
+     *                           every fact the reader can see still says the old
+     *                           system is fine. Only the screen knows which door it
+     *                           came through.
      */
-    public void refresh() {
+    public void refresh(boolean replacementPending) {
         state.setValue(KolibriReadinessUiState.checking());
         executor.execute(() -> {
             SystemFacts facts = SystemFactsReader.read(appContext);
+            if (replacementPending) {
+                facts = facts.withReplacementPending();
+            }
 
-            // Only worth asking once there is a system: with nothing installed the
-            // probe would fail for the uninteresting reason, and the dispatcher
-            // answers DEFER without consulting it anyway.
-            boolean present = facts.isInstalled() && KolibriPlatformProbe.isPresent();
+            // Only worth asking once there is a system that is staying: with nothing
+            // installed, or one about to be replaced, the dispatcher answers DEFER
+            // without consulting the platform anyway.
+            boolean present = facts.isInstalled() && !facts.isReplacementPending()
+                    && KolibriPlatformProbe.isPresent();
             InstalledLibrary library = present
                     ? InstalledChannelsSource.read()
                     : InstalledLibrary.unknown();

@@ -24,10 +24,10 @@ package org.iiab.controller.system.domain;
  * <ul>
  *   <li><b>Deferral.</b> Seeding a Kolibri channel is a live operation on both
  *       doors — the same POST to the same REST core. In the wizard there is simply
- *       no box yet, so the order is written to a wishlist and drained after the
- *       install. Four content flows already do this, and before this class the
- *       distinction was carried by four booleans on an activity that did not
- *       survive being restored.</li>
+ *       no box yet, or the one that is there is about to be replaced, so the order
+ *       is written to a wishlist and drained after the install. Four content flows
+ *       already do this, and before this class the distinction was carried by four
+ *       booleans on an activity that did not survive being restored.</li>
  *   <li><b>The box is off.</b> Everything is installed and nothing is wrong; the
  *       server just is not running. That is not deferral — nothing needs to be
  *       queued — it is "start it first". Today this reads as absence: every Get
@@ -104,6 +104,20 @@ public final class OperationDispatcher {
         // answered before the health check rather than after it.
         if (op.kind() == Operation.Kind.SYSTEM) {
             return Dispatch.RUN_STOPPED;
+        }
+
+        // A replacement has already been agreed and has not run yet: the user is in a
+        // wizard that will install or wipe the box. Whatever is on it now is going
+        // away, so nothing may be done TO it — the order is taken and carried out
+        // against the system that is about to exist.
+        //
+        // This is checked before anything else about the box, because during a
+        // reinstall every other fact says yes: the old system is installed, healthy
+        // and answering right up to the moment it is wiped. Reading only those, the
+        // picker downloaded live onto a system that was about to be destroyed and
+        // took the user out of the wizard, so the reinstall never ran at all.
+        if (facts.isReplacementPending()) {
+            return Dispatch.DEFER;
         }
 
         // Installed but half-baked: it will not boot, and running anything over it

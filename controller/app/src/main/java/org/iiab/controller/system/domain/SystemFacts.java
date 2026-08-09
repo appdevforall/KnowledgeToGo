@@ -50,24 +50,27 @@ package org.iiab.controller.system.domain;
  */
 public final class SystemFacts {
 
-    private static final SystemFacts NOTHING = new SystemFacts(false, true, false, true);
+    private static final SystemFacts NOTHING =
+            new SystemFacts(false, true, false, true, false);
 
     private final boolean installed;
     private final boolean healthy;
     private final boolean serverUp;
     private final boolean serverStateKnown;
+    private final boolean replacementPending;
 
-    private SystemFacts(boolean installed, boolean healthy,
-                        boolean serverUp, boolean serverStateKnown) {
+    private SystemFacts(boolean installed, boolean healthy, boolean serverUp,
+                        boolean serverStateKnown, boolean replacementPending) {
         this.installed = installed;
         this.healthy = healthy;
         this.serverUp = serverUp;
         this.serverStateKnown = serverStateKnown;
+        this.replacementPending = replacementPending;
     }
 
     /** Facts where the server answer is a real observation. */
     public static SystemFacts of(boolean installed, boolean healthy, boolean serverUp) {
-        return new SystemFacts(installed, healthy, serverUp, true);
+        return new SystemFacts(installed, healthy, serverUp, true, false);
     }
 
     /**
@@ -75,7 +78,19 @@ public final class SystemFacts {
      * it must, but {@link #isServerStateKnown()} says why.
      */
     public static SystemFacts serverUnknown(boolean installed, boolean healthy) {
-        return new SystemFacts(installed, healthy, false, false);
+        return new SystemFacts(installed, healthy, false, false, false);
+    }
+
+    /**
+     * The same facts, with a system replacement already agreed.
+     *
+     * <p>Separate from the rest because it is not an observation of the box: the box
+     * may be installed, healthy and answering, and all of that is about to stop
+     * being true because the user is halfway through a wizard that will wipe it.
+     */
+    public SystemFacts withReplacementPending() {
+        return replacementPending ? this
+                : new SystemFacts(installed, healthy, serverUp, serverStateKnown, true);
     }
 
     /**
@@ -107,6 +122,19 @@ public final class SystemFacts {
         return serverStateKnown;
     }
 
+    /**
+     * A system operation has been agreed and has not run yet — the user is inside a
+     * setup wizard that will install or replace the box.
+     *
+     * <p>The one fact here that is not about the present. Everything else describes
+     * what the box is; this describes what has already been decided about it, and
+     * the two can disagree completely: during a reinstall the old system is present,
+     * healthy and answering right up to the moment it is wiped.
+     */
+    public boolean isReplacementPending() {
+        return replacementPending;
+    }
+
     /** Installed, whole, and not currently being repaired. */
     public boolean isUsable() {
         return installed && healthy;
@@ -117,6 +145,7 @@ public final class SystemFacts {
         return "SystemFacts{installed=" + installed
                 + ", healthy=" + healthy
                 + ", server=" + (serverStateKnown ? (serverUp ? "up" : "down") : "unknown")
+                + (replacementPending ? ", replacement pending" : "")
                 + "}";
     }
 
@@ -130,12 +159,13 @@ public final class SystemFacts {
         }
         SystemFacts f = (SystemFacts) o;
         return installed == f.installed && healthy == f.healthy
-                && serverUp == f.serverUp && serverStateKnown == f.serverStateKnown;
+                && serverUp == f.serverUp && serverStateKnown == f.serverStateKnown
+                && replacementPending == f.replacementPending;
     }
 
     @Override
     public int hashCode() {
-        return (installed ? 8 : 0) + (healthy ? 4 : 0)
-                + (serverUp ? 2 : 0) + (serverStateKnown ? 1 : 0);
+        return (installed ? 16 : 0) + (healthy ? 8 : 0) + (serverUp ? 4 : 0)
+                + (serverStateKnown ? 2 : 0) + (replacementPending ? 1 : 0);
     }
 }
