@@ -295,6 +295,13 @@ most expensive by the third platform. A is B done safely over time.
           `InterruptedInstallDetector` already is (no emulator);
        c. the `kind`/`class` type on each operation, handling the version-gate and maps-no-stop cases;
        d. the UX-contract tokens (colour, navigable/gated, background affordance, progress surface).
+          Include a **terminal state that survives not being watched**: a LIVE operation is meant to
+          be left alone, so the user usually arrives after it finished and finds a bare "Done" with
+          no evidence anything happened. A finished card should keep at least the average transfer
+          rate and the elapsed time — "838 MB · 32 MB/s" reads as proof of work in a way "Done" does
+          not, and it is the only thing distinguishing a real download from a no-op. The rate is not
+          on the device (the server does the transfer), so it has to be derived from the bytes and
+          the poll timestamps we already hold, or asked of the REST core.
 3. [ ] Apply to the dashboard card / Rebuild: make the REST/proot fork explicit; align colour + gates +
        progress to the resolved class; remove the silent proot fallback.
 4. [ ] Apply to Kolibri (coordinate with ADFA-4954): install = STOPPED, seeding = LIVE, each presented
