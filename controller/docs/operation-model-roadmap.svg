@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 640" width="1060" height="640" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
-<desc>How ADFA-4954, ADFA-5061, ADFA-5062, ADFA-5063 and ADFA-4758 relate, in what order to take them, and what is done so far. Update the class on each item dot as work lands: s-done, s-doing or s-todo.</desc>
+<desc>How ADFA-4954, ADFA-5061, ADFA-5062, ADFA-5063, ADFA-5070 and ADFA-4758 relate, in what order to take them, and what is done so far. Update the class on each item dot as work lands: s-done, s-doing or s-todo.</desc>
 
 <style>
   .bg    { fill: #F7F8F9; }
@@ -60,8 +60,20 @@
 <circle class="s-done" cx="48" cy="196" r="5.5"/><text class="item" x="62" y="200">C1 — browse and whole channels</text>
 <circle class="s-done" cx="48" cy="218" r="5.5"/><text class="item" x="62" y="222">C2 — topic selection over Studio's tree</text>
 <circle class="s-done" cx="48" cy="240" r="5.5"/><text class="item" x="62" y="244">Get More door (browse only)</text>
-<circle class="s-todo" cx="48" cy="262" r="5.5"/><text class="item" x="62" y="266">Live download from Get More</text>
+<circle class="s-done" cx="48" cy="262" r="5.5"/><text class="item" x="62" y="266">Live download from Get More</text>
 <circle class="s-todo" cx="48" cy="284" r="5.5"/><text class="item" x="62" y="288">Metadata-only scope</text>
+
+<!-- ============ stale content state (found by testing 4954) ============ -->
+<rect class="card" x="24" y="322" width="320" height="168"/>
+<rect class="chip" x="40" y="338" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="352" fill="#1B7F4B">NEXT</text>
+<text class="h2" x="40" y="381">ADFA-5070 · Stale content state</text>
+<text class="sub" x="40" y="399">A session outlives the system it</text>
+<text class="sub" x="40" y="414">was about. Found while testing 4954.</text>
+
+<circle class="s-doing" cx="48" cy="438" r="5.5"/><text class="item" x="62" y="442">Wipe content sessions when replaced</text>
+<circle class="s-todo"  cx="48" cy="460" r="5.5"/><text class="item" x="62" y="464">Decide the fate of the wishlists</text>
+<circle class="s-todo"  cx="48" cy="482" r="5.5"/><text class="item" x="62" y="486">5 destructive routes, only 2 hooked</text>
 
 <!-- ============ ADFA-5061 ============ -->
 <rect class="card-hi" x="372" y="80" width="320" height="284"/>
@@ -113,9 +125,8 @@
 <circle class="s-todo" cx="396" cy="520" r="5.5"/><text class="item" x="410" y="524">Two separately invoked installers</text>
 <circle class="s-todo" cx="396" cy="542" r="5.5"/><text class="item" x="410" y="546">Safe system change + data migration</text>
 
-<text class="note" x="24" y="480">Do not close 4758 as superseded:</text>
-<text class="note" x="24" y="496">the migration half is the one that</text>
-<text class="note" x="24" y="512">can lose a user's content.</text>
+<text class="note" x="24" y="522">Do not close 4758 as superseded: the migration half</text>
+<text class="note" x="24" y="538">is the one that can lose a user's content.</text>
 
 <!-- ============ links ============ -->
 <path class="lnk-hi" d="M344,186 L372,186" marker-end="url(#arwhi)" marker-start="url(#arwhiS)"/>
@@ -129,6 +140,9 @@
 
 <path class="lnk" d="M532,364 L532,392" marker-end="url(#arw)"/>
 <text class="lnklbl" x="542" y="384">gives it the vocabulary</text>
+
+<path class="lnk" d="M372,300 C356,300 356,312 344,322" marker-end="url(#arw)"/>
+<text class="lnklbl" x="196" y="316">a SYSTEM op invalidates content state</text>
 
 <text class="note" x="24" y="600">Order: land 5061 first, keep 4954 moving alongside it, then 5062, then 5063. 4758 can run whenever, but reads better after 5061.</text>
 </svg>

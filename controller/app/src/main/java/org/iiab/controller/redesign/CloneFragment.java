@@ -937,6 +937,10 @@ public class CloneFragment extends Fragment {
         cloneLockHeld = true;
         org.iiab.controller.InstallGuard.begin(app);
         cloneGuardHeld = true;
+        // ADFA-5070: the rootfs arriving from the other device replaces this one, so
+        // what the app held about the local system no longer describes anything.
+        org.iiab.controller.system.data.ContentStateInvalidator.systemReplaced(app,
+                org.iiab.controller.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
         SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
         final String destPath = dest.getAbsolutePath();
         final SyncHandshakeHelper.SyncCredentials fcreds = creds;

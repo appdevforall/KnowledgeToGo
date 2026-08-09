@@ -150,6 +150,11 @@ public final class DeepOpService extends Service {
     // ---- RESTORE (destructive) ----
     private void runRestore(final String path) {
         if (done) return;
+        // ADFA-5070: the backup brings its own content, so everything the app was
+        // holding about the current rootfs — sessions and pending orders alike —
+        // stops being true the moment the tar starts overwriting it.
+        org.iiab.controller.system.data.ContentStateInvalidator.systemReplaced(this,
+                org.iiab.controller.system.domain.SystemReplacement.Cause.RESTORE);
         setStep(getString(R.string.k2go_br_status_restoring), -1);
         final File destParent = new File(getFilesDir(), "rootfs");
         new TarExtractor().startExtraction(this, path, destParent.getAbsolutePath(), true,
