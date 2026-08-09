@@ -115,7 +115,7 @@ public final class ContentStateInvalidator {
             return;
         }
         Context app = ctx.getApplicationContext();
-        int discarded = PendingContent.bankedCount(app);
+        int discarded = PendingContent.read(app).bankedCount();
 
         PendingContent.clearAll(app);
 

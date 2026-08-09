@@ -38,12 +38,13 @@ import org.iiab.controller.install.presentation.InstallProgressRepository;
 import org.iiab.controller.install.presentation.InstallState;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.install.presentation.ModuleQueueState;
-import org.iiab.controller.kolibri.data.KolibriWishlist;
 import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
 import org.iiab.controller.kolibri.presentation.KolibriSeedRepository;
 import org.iiab.controller.kolibri.presentation.KolibriSeedService;
 import org.iiab.controller.kolibri.presentation.KolibriSeedState;
 import org.iiab.controller.kolibri.presentation.KolibriSeedingFragment;
+import org.iiab.controller.system.data.PendingContent;
+import org.iiab.controller.system.domain.ContentType;
 import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
 
@@ -184,9 +185,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private void openHintedStream(String hint) {
         boolean otherProot = mapsInSession() || moduleInSession();
         // ADFA-4954: courses were missing from this list, so confirming a ZIM download while a
-        // seeding session was running opened the ZIM detail and hid the courses row.
-        boolean otherLive =
-                org.iiab.controller.system.data.PendingContent.anyLiveOtherThan(this, hint);
+        // seeding session was running opened the ZIM detail and hid the courses row. A fresh
+        // snapshot is right here — this is a one-off decision at a single moment, not a pass.
+        boolean otherLive = PendingContent.anyLiveOtherThan(this, hint);
         if (otherProot || otherLive) return;   // several streams -> keep the index
         openDetail(hint);
     }
@@ -473,29 +474,35 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
-        boolean zimShown = ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0;
-        boolean booksShown = BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0;
-        // ADFA-4954: read the snapshot once so the row and the completion checks below agree —
-        // it is published from the service's callbacks and can change between two reads.
-        KolibriSeedState kolibriState = KolibriSeedRepository.get().current();
-        // Read once: size() re-parses the stored JSON on every call, and render()
-        // runs on every state change — roughly once a second while a job is live.
-        int kolibriBanked = KolibriWishlist.size(this);
-        boolean kolibriShown = kolibriState.hasSession() || kolibriBanked > 0;
+        // ADFA-4954: ONE reading of every content type for the whole pass. The wishlists
+        // re-parse their JSON on every access and the session states are published from
+        // service callbacks, so asking twice in one render can draw a row from one answer
+        // and compute completion from another. render() runs about once a second while a
+        // job is live, so this is also the difference between one parse and several.
+        PendingContent.Snapshot content = PendingContent.read(this);
+        boolean zimShown = content.inPlay(ContentType.ZIM);
+        boolean booksShown = content.inPlay(ContentType.BOOKS);
+        KolibriSeedState kolibriState = content.courses();
+        int kolibriBanked = content.banked(ContentType.COURSES);
+        boolean kolibriShown = content.inPlay(ContentType.COURSES);
 
         sections.removeAllViews();
         // ADFA-4900: maps (proot) runs first in the pipeline, so its row leads the list.
         if (mapsShown) sections.addView(mapsRow());
         // ADFA-4842: one row per module in the batch (proot), each tappable to its install detail.
         if (moduleShown) for (String k : ModuleBatch.keys(this)) sections.addView(moduleRow(k));
+        // ADFA-4954: session and banked count come from the pass snapshot, so a row can no
+        // longer be drawn from a different reading than the one that decided to show it.
+        boolean zimSession = content.hasSession(ContentType.ZIM);
+        boolean booksSession = content.hasSession(ContentType.BOOKS);
         if (zimShown) sections.addView(streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
-                ZimDownloadService.hasSession(), ZimDownloadService.status(),
+                zimSession, ZimDownloadService.status(),
                 ZimDownloadService.DONE, ZimDownloadService.FAILED,
-                ZimDownloadService.hasSession() && ZimDownloadService.isComplete(), ZimWishlist.size(this)));
+                zimSession && ZimDownloadService.isComplete(), content.banked(ContentType.ZIM)));
         if (booksShown) sections.addView(streamRow(getString(R.string.k2go_gm_books_title), "books",
-                BooksDownloadService.hasSession(), BooksDownloadService.status(),
+                booksSession, BooksDownloadService.status(),
                 BooksDownloadService.DONE, BooksDownloadService.FAILED,
-                BooksDownloadService.hasSession() && BooksDownloadService.isComplete(), BooksWishlist.size(this)));
+                booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS)));
         // ADFA-4954. Statuses come from an observable snapshot rather than static arrays, so the
         // ordinals are mapped to the checklist's PENDING=0 / doneVal / failedVal convention here.
         if (kolibriShown) sections.addView(streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
@@ -509,11 +516,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // REST drain -- its completion is simply the maps (proot) stage going terminal. Otherwise the
         // index never reaches success/failure and can't show redirect/Cancel/Finish. The REST/mixed
         // path keeps its existing drain-based signal untouched.
-        // ADFA-4954: asked through PendingContent, because this list previously read ZIM +
-        // Books only. A run mixing courses with a proot batch therefore counted as "no REST
-        // content" and could declare itself complete on the queue alone, while the courses
-        // were still downloading.
-        boolean noRest = !org.iiab.controller.system.data.PendingContent.anyLive(this);
+        // ADFA-4954: read off the same snapshot as the rows above, because this list used to
+        // be ZIM + Books only. A run mixing courses with a proot batch therefore counted as
+        // "no REST content" and could declare itself complete on the queue alone while the
+        // courses were still downloading.
+        boolean noRest = !content.anyLive();
         // ADFA-4842: proot = maps OR a module batch. A proot-only run finishes when the queue is
         // terminal, without waiting on any REST drain.
         boolean prootShown = mapsShown || moduleShown;
@@ -538,8 +545,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             allComplete = queueTerminalNotRunning && (!moduleShown || moduleServerSettled);
         } else {
             allComplete = drained
-                    && (!ZimDownloadService.hasSession() || ZimDownloadService.isComplete())
-                    && (!BooksDownloadService.hasSession() || BooksDownloadService.isComplete())
+                    && (!zimSession || ZimDownloadService.isComplete())
+                    && (!booksSession || BooksDownloadService.isComplete())
                     && (!kolibriState.hasSession() || kolibriState.isComplete())   // ADFA-4954
                     && (!moduleShown || moduleServerSettled);   // ADFA-4842: also wait for the module server restart
         }
@@ -556,8 +563,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 : (mq.phase == ModuleQueueState.Phase.DONE)
                         ? (mq.failedModules == null ? 0 : mq.failedModules.size())
                         : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
-        int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
-                + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
+        int failedTotal = failedCount(zimSession ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
+                + failedCount(booksSession ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
                 + kolibriState.failedCount()   // ADFA-4954
                 + prootFailed;
 

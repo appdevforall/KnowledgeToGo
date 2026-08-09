@@ -3,8 +3,7 @@
  * Name        : PendingContent.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : The one place that knows every kind of content a run can be
- *               carrying (ADFA-4954).
+ * Description : Reads, in one pass, what content a run is carrying (ADFA-4954).
  * ============================================================================
  */
 package org.iiab.controller.system.data;
@@ -13,59 +12,40 @@ import android.content.Context;
 import android.util.Log;
 
 import org.iiab.controller.kolibri.data.KolibriWishlist;
-import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
 import org.iiab.controller.kolibri.presentation.KolibriSeedRepository;
+import org.iiab.controller.kolibri.presentation.KolibriSeedState;
 import org.iiab.controller.redesign.BooksDownloadService;
-import org.iiab.controller.redesign.BooksProvisioner;
 import org.iiab.controller.redesign.BooksWishlist;
-import org.iiab.controller.redesign.MapsProvisioner;
 import org.iiab.controller.redesign.MapsWishlist;
 import org.iiab.controller.redesign.ZimDownloadService;
-import org.iiab.controller.redesign.ZimProvisioner;
 import org.iiab.controller.redesign.ZimWishlist;
+import org.iiab.controller.system.domain.ContentType;
 
 /**
- * Answers "is this run carrying content, and of what sort?" for every content type
- * at once.
+ * Reads what content this run is carrying — all types, in one pass.
  *
- * <p><b>Why this exists.</b> Four content types were added one at a time — ZIM,
- * Books, Maps, then Courses — and each arrival had to be registered by hand in every
- * screen that asks whether there is anything to drain. Nobody found them all. A
- * survey for ADFA-4954 turned up five places listing the types, with three different
- * subsets:
+ * <p><b>Which types exist, and which of them are live, is not decided here.</b> That
+ * belongs to {@link ContentType} in the domain, where it is a plain enum and can be
+ * unit-tested without a device. This class only knows <em>where each fact is stored
+ * on Android</em>: a wishlist in SharedPreferences, a static on a running service, an
+ * observable repository.
  *
- * <ul>
- *   <li>{@code LibraryActivity} decided whether to open "Finishing setup" from
- *       Books + ZIM + Maps. Courses were missing, so a wizard run that chose only
- *       courses never opened that screen, {@code KolibriProvisioner} was never
- *       called, and the content the user picked was simply never downloaded.</li>
- *   <li>{@code SetupProgressActivity}'s "no REST content in this run" test read
- *       ZIM + Books only, so a run mixing courses with a proot module batch could
- *       declare itself complete while the courses were still downloading.</li>
- *   <li>{@code SetupLibraryActivity} cleared Books + ZIM + Courses when a fresh
- *       wizard run starts, but not Maps — leaving an aborted run's map selection to
- *       be drained later against a system it was not chosen for.</li>
- * </ul>
+ * <p><b>Read once, decide from the snapshot.</b> Every value here can change under
+ * the caller: the wishlists are re-parsed from JSON on each access, and the session
+ * states are published from service callbacks. A screen that asks the same question
+ * twice in one pass can get two answers and contradict itself — which is precisely
+ * what happened when {@code SetupProgressActivity} drew a Courses row from one read
+ * and computed completion from another. So the entry point is {@link #read} and
+ * everything is derived from the returned {@link Snapshot}. The convenience methods
+ * that take a {@code Context} are for callers that ask exactly one question at one
+ * moment, and each of them is a fresh snapshot.
  *
- * <p>Each of those was a one-line omission, and each was invisible until someone
- * exercised that exact combination. The fix is not three more lines: it is that the
- * list lives once, so a fifth content type is registered here and every caller
- * follows.
- *
- * <p><b>What is deliberately not merged.</b> There are two different questions here
- * and they must not collapse into one:
- *
- * <ul>
- *   <li>{@link #anyBanked} — is there an <em>order</em> waiting, of any kind. Maps
- *       counts: it is content the user chose.</li>
- *   <li>{@link #anyLive} — is there <b>live (REST)</b> content in this run, either
- *       running or banked. Maps does <em>not</em> count here, because it installs
- *       with the system stopped (runrole under proot) and its completion is tracked
- *       by the module queue, not by a download stream.</li>
- * </ul>
- *
- * <p>A caller that asks the wrong one gets a wrong answer that looks plausible, so
- * they are named after what they are for rather than after the lists they read.
+ * <p><b>Known layering debt.</b> {@link KolibriSeedRepository} and the two download
+ * services live in presentation packages, so this data-layer class reaches upward to
+ * consult them. That inversion predates this class ({@code ContentStateInvalidator}
+ * has it too) and is not worth a private fix here: it disappears when the session
+ * state moves behind the operation model (ADR-5061). Keeping the policy in
+ * {@link ContentType} is what stops that debt from spreading.
  */
 public final class PendingContent {
 
@@ -75,93 +55,162 @@ public final class PendingContent {
     }
 
     /**
-     * Whether any content order is waiting to be provisioned — live or stopped.
+     * One consistent reading of every content type: what is banked, and what is
+     * already running.
      *
-     * <p>The question "should the post-install screen open at all?".
+     * <p>Immutable, and cheap to hold for the length of a render pass.
      */
-    public static boolean anyBanked(Context ctx) {
-        if (ctx == null) {
+    public static final class Snapshot {
+
+        private final int zimBanked;
+        private final int booksBanked;
+        private final int coursesBanked;
+        private final boolean mapsBanked;
+        private final boolean zimSession;
+        private final boolean booksSession;
+        private final KolibriSeedState courses;
+
+        private Snapshot(int zimBanked, int booksBanked, int coursesBanked, boolean mapsBanked,
+                         boolean zimSession, boolean booksSession, KolibriSeedState courses) {
+            this.zimBanked = zimBanked;
+            this.booksBanked = booksBanked;
+            this.coursesBanked = coursesBanked;
+            this.mapsBanked = mapsBanked;
+            this.zimSession = zimSession;
+            this.booksSession = booksSession;
+            this.courses = courses;
+        }
+
+        /** How many orders of this type are waiting. Maps has no per-item count. */
+        public int banked(ContentType type) {
+            switch (type) {
+                case ZIM: return zimBanked;
+                case BOOKS: return booksBanked;
+                case COURSES: return coursesBanked;
+                case MAPS: return mapsBanked ? 1 : 0;
+                default: return 0;
+            }
+        }
+
+        /** Whether a stream for this type is already running. Never true for Maps,
+         *  whose progress belongs to the module queue rather than to a stream. */
+        public boolean hasSession(ContentType type) {
+            switch (type) {
+                case ZIM: return zimSession;
+                case BOOKS: return booksSession;
+                case COURSES: return courses.hasSession();
+                default: return false;
+            }
+        }
+
+        /** Anything of this type in play at all. */
+        public boolean inPlay(ContentType type) {
+            return hasSession(type) || banked(type) > 0;
+        }
+
+        /**
+         * Any content order waiting, of any type — the question "should the
+         * post-install screen open at all?". Maps counts: the user chose it.
+         */
+        public boolean anyBanked() {
+            for (ContentType t : ContentType.values()) {
+                if (banked(t) > 0) {
+                    return true;
+                }
+            }
             return false;
         }
-        Context app = ctx.getApplicationContext();
-        return ZimProvisioner.hasPending(app)
-                || BooksProvisioner.hasPending(app)
-                || KolibriProvisioner.hasPending(app)
-                || MapsProvisioner.hasPending(app);
-    }
 
-    /**
-     * Whether this run carries <b>live</b> content: a REST stream that is running, or
-     * an order for one that has not been handed over yet.
-     *
-     * <p>Maps is excluded on purpose — see the class note. The question "can this run
-     * finish on the proot queue alone?" is the negation of this one.
-     */
-    public static boolean anyLive(Context ctx) {
-        // Excluding nothing. Kept as one implementation so the list of live types is
-        // written once even here — two copies inside the same class would be the same
-        // mistake at a smaller scale.
-        return anyLiveOtherThan(ctx, null);
-    }
+        /**
+         * Any <b>live</b> content in play: a REST stream running, or an order for one
+         * not yet handed over. Maps is excluded by its class, not by a special case —
+         * the question "can this run finish on the proot queue alone?" is the negation
+         * of this one.
+         */
+        public boolean anyLive() {
+            return anyLiveOtherThan(null);
+        }
 
-    /**
-     * The same question as {@link #anyLive}, ignoring one stream.
-     *
-     * <p>For "is this the only live thing happening?", asked by a screen that has just
-     * started a stream and wants to know whether to open its detail or stay on the
-     * index. The stream that was just confirmed may not have registered its session
-     * yet, so it is excluded by name rather than by looking.
-     *
-     * @param key one of {@code "zim"}, {@code "books"}, {@code "kolibri"} — the same
-     *            keys the progress rows use. An unknown key excludes nothing, which
-     *            keeps the caller on the index: the safe side of this question.
-     */
-    public static boolean anyLiveOtherThan(Context ctx, String key) {
-        if (ctx == null) {
+        /**
+         * {@link #anyLive} ignoring one stream, for "is this the only live thing
+         * happening?" — asked by a screen that has just started a stream and wants to
+         * know whether to open its detail or stay on the index. The stream just
+         * confirmed may not have registered a session yet, so it is excluded by name.
+         *
+         * @param key a {@link ContentType#key()}. An unrecognised name (or
+         *            {@code null}) excludes nothing, which keeps the caller on the
+         *            index — the safe side of this question.
+         */
+        public boolean anyLiveOtherThan(String key) {
+            ContentType excluded = ContentType.byKey(key);
+            for (ContentType t : ContentType.values()) {
+                if (t.isLive() && t != excluded && inPlay(t)) {
+                    return true;
+                }
+            }
             return false;
         }
-        Context app = ctx.getApplicationContext();
-        boolean zim = !"zim".equals(key)
-                && (ZimDownloadService.hasSession() || ZimProvisioner.hasPending(app));
-        boolean books = !"books".equals(key)
-                && (BooksDownloadService.hasSession() || BooksProvisioner.hasPending(app));
-        boolean kolibri = !"kolibri".equals(key)
-                && (KolibriSeedRepository.get().hasSession() || KolibriProvisioner.hasPending(app));
-        return zim || books || kolibri;
+
+        /** How many orders are banked in total. For logging and copy, never for a
+         *  decision — a decision should ask {@link #anyBanked}. */
+        public int bankedCount() {
+            int n = 0;
+            for (ContentType t : ContentType.values()) {
+                n += banked(t);
+            }
+            return n;
+        }
+
+        /** The Courses session as it was at snapshot time. Callers that draw a row
+         *  and then judge completion must use this one object for both. */
+        public KolibriSeedState courses() {
+            return courses;
+        }
     }
 
     /**
-     * How many orders are banked. Maps has no per-item count — it is one selection of
-     * several layers — so it contributes 1.
-     *
-     * <p>For logging and for "N items waiting" style copy; never for a decision, which
-     * should use {@link #anyBanked}.
+     * Reads every content type once. Safe to call on the main thread: four
+     * SharedPreferences reads and three field reads.
      */
-    public static int bankedCount(Context ctx) {
+    public static Snapshot read(Context ctx) {
         if (ctx == null) {
-            return 0;
+            return new Snapshot(0, 0, 0, false, false, false, KolibriSeedRepository.get().current());
         }
         Context app = ctx.getApplicationContext();
-        int n = 0;
+        int zim = 0, books = 0, courses = 0;
+        boolean maps = false;
         try {
-            n += ZimWishlist.size(app);
-            n += BooksWishlist.size(app);
-            n += KolibriWishlist.size(app);
-            n += MapsWishlist.has(app) ? 1 : 0;
+            zim = ZimWishlist.size(app);
+            books = BooksWishlist.size(app);
+            courses = KolibriWishlist.size(app);
+            maps = MapsWishlist.has(app);
         } catch (Exception e) {
-            // Counting is never the point of the call; do not let it stop the caller.
-            Log.w(TAG, "could not count banked orders: " + e.getMessage());
+            // A wishlist that will not parse must not take a screen down with it; the
+            // worst case is that we under-report and the drain finds it on a later pass.
+            Log.w(TAG, "could not read a wishlist: " + e.getMessage());
         }
-        return n;
+        return new Snapshot(zim, books, courses, maps,
+                ZimDownloadService.hasSession(), BooksDownloadService.hasSession(),
+                KolibriSeedRepository.get().current());
+    }
+
+    /** One-shot: is any content order waiting? */
+    public static boolean anyBanked(Context ctx) {
+        return read(ctx).anyBanked();
+    }
+
+    /** One-shot: is any live content in play other than {@code key}? */
+    public static boolean anyLiveOtherThan(Context ctx, String key) {
+        return read(ctx).anyLiveOtherThan(key);
     }
 
     /**
      * Discards every banked order, of every type.
      *
-     * <p>Two callers, for the same reason in two moments: a fresh wizard run drops
+     * <p>Two callers for the same reason at two moments: a fresh wizard run drops
      * whatever an abandoned earlier run left behind, and a completed system
-     * replacement drops the orders that were placed against the system that is gone.
-     * Both used to enumerate the types themselves, and both were missing one.
+     * replacement drops the orders placed against the system that is gone. Both used
+     * to enumerate the types themselves, and both were missing one.
      */
     public static void clearAll(Context ctx) {
         if (ctx == null) {
