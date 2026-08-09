@@ -57,11 +57,12 @@
 <text class="sub" x="40" y="157">Where the model gets applied, and</text>
 <text class="sub" x="40" y="172">where the evidence came from.</text>
 
-<circle class="s-done" cx="48" cy="196" r="5.5"/><text class="item" x="62" y="200">C1 — browse and whole channels</text>
-<circle class="s-done" cx="48" cy="218" r="5.5"/><text class="item" x="62" y="222">C2 — topic selection over Studio's tree</text>
-<circle class="s-done" cx="48" cy="240" r="5.5"/><text class="item" x="62" y="244">Get More door (browse only)</text>
-<circle class="s-done" cx="48" cy="262" r="5.5"/><text class="item" x="62" y="266">Live download from Get More</text>
-<circle class="s-todo" cx="48" cy="284" r="5.5"/><text class="item" x="62" y="288">Metadata-only scope</text>
+<circle class="s-done" cx="48" cy="192" r="5.5"/><text class="item" x="62" y="196">C1 — browse and whole channels</text>
+<circle class="s-done" cx="48" cy="210" r="5.5"/><text class="item" x="62" y="214">C2 — topic selection over Studio's tree</text>
+<circle class="s-done" cx="48" cy="228" r="5.5"/><text class="item" x="62" y="232">Get More door (browse only)</text>
+<circle class="s-done" cx="48" cy="246" r="5.5"/><text class="item" x="62" y="250">Live download from Get More</text>
+<circle class="s-todo" cx="48" cy="264" r="5.5"/><text class="item" x="62" y="268">Drain a courses-only wizard run</text>
+<circle class="s-todo" cx="48" cy="282" r="5.5"/><text class="item" x="62" y="286">Metadata-only scope</text>
 
 <!-- ============ stale content state (found by testing 4954) ============ -->
 <rect class="card" x="24" y="322" width="320" height="168"/>
@@ -89,7 +90,7 @@
 <circle class="s-todo"  cx="396" cy="258" r="5.5"/><text class="item" x="410" y="262">UX tokens: colour, gates, progress</text>
 <circle class="s-todo"  cx="396" cy="280" r="5.5"/><text class="item" x="410" y="284">Apply to the dashboard Rebuild fork</text>
 <circle class="s-todo"  cx="396" cy="302" r="5.5"/><text class="item" x="410" y="306">Apply to Kolibri (install vs seeding)</text>
-<circle class="s-todo"  cx="396" cy="324" r="5.5"/><text class="item" x="410" y="328">Retire the four *Wizard booleans</text>
+<circle class="s-todo"  cx="396" cy="324" r="5.5"/><text class="item" x="410" y="328">Retire *Wizard booleans + durable intent</text>
 <text class="note" x="410" y="348">facts: installed · healthy · server up · platform present</text>
 
 <!-- ============ ADFA-5062 ============ -->

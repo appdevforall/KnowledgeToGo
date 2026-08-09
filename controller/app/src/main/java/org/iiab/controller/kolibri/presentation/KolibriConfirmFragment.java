@@ -111,6 +111,15 @@ public final class KolibriConfirmFragment extends Fragment {
      *
      * <p>Fails closed: an unrecognised host is treated as the live door, which
      * cannot bank an order it has nowhere to drain.
+     *
+     * <p><b>The carrier here is provisional.</b> {@code kolibriWizard} is one of the
+     * four activity booleans ADR-5061 exists to retire, and it does not survive the
+     * process being killed — so after a process death mid-reinstall this reads false
+     * again and the hijack returns. Reading a different activity field instead would
+     * be correct in form and wrong in substance: still a screen answering a question
+     * about the system. The durable fix is a persisted declaration of intent,
+     * sibling to {@code InstallGuard}, and it lands with the retirement of the four
+     * booleans (ADR-5061, decision 10 and migration item 5). Do not patch it here.
      */
     private boolean isWizard() {
         return getActivity() instanceof SetupLibraryActivity
