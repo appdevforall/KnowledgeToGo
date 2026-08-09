@@ -545,9 +545,17 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         }
         // ADFA-4900/4842: failed proot runroles count as failures too (Finish, not a false success).
         // On DONE the queue's failedModules covers maps + modules; before DONE, a start-timeout counts.
-        int prootFailed = (mq.phase == ModuleQueueState.Phase.DONE)
-                ? (mq.failedModules == null ? 0 : mq.failedModules.size())
-                : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
+        // ADFA-4954: ModuleQueueRepository is process-scoped, so a DONE phase left by an
+        // earlier run kept reporting its failed modules to runs that launched no proot work
+        // at all. A ZIM-only wizard run then showed Finish + "review failed tasks" over a
+        // clean, finished download instead of redirecting to the library. Only read the
+        // queue's verdict when it belongs to THIS run — the same three signals prootTerminal
+        // already uses, so the two stay in agreement.
+        boolean queueVerdictIsOurs = prootShown || mapsStartFailed || moduleStartFailed;
+        int prootFailed = !queueVerdictIsOurs ? 0
+                : (mq.phase == ModuleQueueState.Phase.DONE)
+                        ? (mq.failedModules == null ? 0 : mq.failedModules.size())
+                        : ((mapsStartFailed ? 1 : 0) + (moduleStartFailed ? 1 : 0));
         int failedTotal = failedCount(ZimDownloadService.hasSession() ? ZimDownloadService.status() : null, ZimDownloadService.FAILED)
                 + failedCount(BooksDownloadService.hasSession() ? BooksDownloadService.status() : null, BooksDownloadService.FAILED)
                 + kolibriState.failedCount()   // ADFA-4954
