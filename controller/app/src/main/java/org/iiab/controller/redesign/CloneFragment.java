@@ -937,19 +937,30 @@ public class CloneFragment extends Fragment {
         cloneLockHeld = true;
         org.iiab.controller.InstallGuard.begin(app);
         cloneGuardHeld = true;
-        // ADFA-5070: the rootfs arriving from the other device replaces this one, so
-        // what the app held about the local system no longer describes anything.
-        org.iiab.controller.system.data.ContentStateInvalidator.systemReplaced(app,
-                org.iiab.controller.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
         SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
         final String destPath = dest.getAbsolutePath();
         final SyncHandshakeHelper.SyncCredentials fcreds = creds;
-        final Runnable pull = () -> transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath,
+        final Runnable pull = () -> {
+            // ADFA-5070: the rootfs arriving from the other device replaces this one.
+            // Done here rather than at the tap: this runs off the main thread, and
+            // the invalidator touches SharedPreferences. Sessions only — a transfer
+            // that dies on the first byte leaves the system intact, so the pending
+            // orders are not discarded until it actually completes.
+            org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(app,
+                    org.iiab.controller.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
+            transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath,
                 new TransportEngine.SyncListener() {
                     @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
-                    @Override public void onComplete(String message) { SyncProgressRepository.get().postSuccess(message); }
+                    @Override public void onComplete(String message) {
+                        // The local rootfs is now the other device's, so anything this
+                        // one had pending was placed against a system that is gone.
+                        org.iiab.controller.system.data.ContentStateInvalidator.replacementSucceeded(app,
+                                org.iiab.controller.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
+                        SyncProgressRepository.get().postSuccess(message);
+                    }
                     @Override public void onError(String error) { SyncProgressRepository.get().postFailed(error); }
                 });
+        };
         ServerController sc = server();
         if (sc != null) sc.stopEnvironment(pull); else pull.run();
     }

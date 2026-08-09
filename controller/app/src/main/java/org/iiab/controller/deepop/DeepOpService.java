@@ -150,10 +150,11 @@ public final class DeepOpService extends Service {
     // ---- RESTORE (destructive) ----
     private void runRestore(final String path) {
         if (done) return;
-        // ADFA-5070: the backup brings its own content, so everything the app was
-        // holding about the current rootfs — sessions and pending orders alike —
-        // stops being true the moment the tar starts overwriting it.
-        org.iiab.controller.system.data.ContentStateInvalidator.systemReplaced(this,
+        // ADFA-5070: stop the downloads before the tar starts overwriting the rootfs
+        // they were writing into. The pending orders are not touched yet — a tar that
+        // will not open leaves the system intact, and discarding them here would have
+        // thrown away what the user asked for over an operation that never happened.
+        org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(this,
                 org.iiab.controller.system.domain.SystemReplacement.Cause.RESTORE);
         setStep(getString(R.string.k2go_br_status_restoring), -1);
         final File destParent = new File(getFilesDir(), "rootfs");
@@ -166,6 +167,12 @@ public final class DeepOpService extends Service {
     }
 
     private void endRestore(String tempPath, boolean ok) {
+        if (ok) {
+            // ADFA-5070: the rootfs really was replaced, and the content that arrived
+            // is the backup's — so the orders placed against the old one are stale.
+            org.iiab.controller.system.data.ContentStateInvalidator.replacementSucceeded(this,
+                    org.iiab.controller.system.domain.SystemReplacement.Cause.RESTORE);
+        }
         File temp = new File(tempPath);
         if (temp.exists()) temp.delete();
         finishJob(ok, getString(R.string.k2go_br_restore_done), getString(R.string.k2go_br_restore_failed));

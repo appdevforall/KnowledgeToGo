@@ -157,12 +157,17 @@ public final class ResetDeleteController {
                                 // mainAct rather than fragment.requireContext(): this runs on a
                                 // worker thread and the fragment may have detached by now.
                                 org.iiab.controller.system.data.ContentStateInvalidator
-                                        .systemReplaced(mainAct,
+                                        .replacementStarting(mainAct,
                                                 org.iiab.controller.system.domain
                                                         .SystemReplacement.Cause.DELETE);
                                 ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
                                 if (!wipeResult.isSuccess()) {
                                     Log.w(TAG, "rm -rf rootfs (delete) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
+                                } else {
+                                    org.iiab.controller.system.data.ContentStateInvalidator
+                                            .replacementSucceeded(mainAct,
+                                                    org.iiab.controller.system.domain
+                                                            .SystemReplacement.Cause.DELETE);
                                 }
                             } catch (Exception e) {
                                 mainAct.runOnUiThread(() -> Snackbars.make(fragment.getView(), fragment.getString(R.string.install_error_delete, e.getMessage())).show());
