@@ -64,23 +64,12 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     private boolean zimLangManual = false; // false = following the wizard/system default
     private final java.util.LinkedHashMap<String, Long> zimCart = new java.util.LinkedHashMap<>();
 
-    // ADFA-4853: true while the ZIM flow runs inside the wizard (pre-install). The terminal step
-    // then persists the cart to ZimWishlist instead of starting a live download.
-    private boolean zimWizard = false;
-
-    // ADFA-4900: true while the Maps flow runs inside the wizard (pre-install). The Confirm step then
-    // banks the per-layer selection to MapsWishlist instead of starting a live runrole.
-    private boolean mapsWizard = false;
-
-    // ADFA-4910: true while the Books flow runs inside the wizard (pre-install). The Confirm step then
-    // banks the picks to BooksWishlist instead of starting a live download.
-    private boolean booksWizard = false;
-
-    // ADFA-4954: true while the Courses flow runs inside the wizard (pre-install). The Confirm step
-    // then banks the order to KolibriWishlist, which KolibriProvisioner drains after the install.
-    // False means the Get More door: browsing works, but nothing is queued from there yet, because
-    // the drain is only triggered from SetupProgressActivity.
-    private boolean kolibriWizard = false;
+    // ADFA-5061: the four `*Wizard` booleans that used to live here are gone. Each said
+    // "this flow was opened from the wizard, so bank instead of download" — a description
+    // of the door the user came through, not of the system, and lost on every activity
+    // recreation. The Confirm screens now ask `ContentDoor`, which resolves it from facts
+    // that are re-read rather than remembered. `reinstallMode` above is the one thing they
+    // still need from here, and it survives because it is read back from the Intent.
 
     // ADFA-4910: the Books selection handed from the landing to the Confirm screen:
     // gutenberg_id -> {title, author, download_url}.
@@ -209,10 +198,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     /** ADFA-4848: open a content type's screen from the Get More hub. Maps is wired to its flow;
      *  the rest are navigable placeholders for now so the hub is reviewable. */
     public void openContentType(String key, String title) {
-        zimWizard = false;   // live (post-install) path; the ZIM terminal downloads, not wishlists
-        mapsWizard = false;  // ADFA-4900: live (post-install) path; Maps installs, not wishlists
-        booksWizard = false; // ADFA-4910: live (post-install) path; Books download, not wishlists
-        kolibriWizard = false; // ADFA-4954: live (post-install) path; browse only for now
+        // ADFA-5061: nothing to reset. This used to clear four flags so the Confirm screens
+        // would download rather than bank; they now ask whether a system exists, and on this
+        // path one does.
         androidx.fragment.app.Fragment f;
         if ("maps".equals(key)) f = new MapsLandingFragment();
         else if ("wikipedia".equals(key)) f = new ZimLandingFragment();   // Wikipedia & ZIM content
@@ -309,7 +297,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         if ("wikipedia".equals(key)) { openZimWizard(); return; }
         // ADFA-4900: in the wizard there is no rootfs yet, so Maps cannot run runrole. It banks the
         // per-layer selection (MapsWishlist) like Books/ZIM and MapsProvisioner applies it post-install.
-        if ("maps".equals(key)) { openContentType(key, title); mapsWizard = true; return; }
+        if ("maps".equals(key)) { openContentType(key, title); return; }
         // ADFA-4954: Courses. No server exists in the wizard, so the picker reads the
         // bundled catalog and banks the order in KolibriWishlist; KolibriProvisioner
         // drains it post-install.
@@ -320,12 +308,19 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
-    /** True while the Courses picker is running pre-install, so Confirm banks instead of downloads. */
-    public boolean isKolibriWizard() { return kolibriWizard; }
+    /**
+     * ADFA-5061: whether this run is going to replace the system.
+     *
+     * <p>The one thing a content screen still has to ask the activity, because it is
+     * not observable on the device: during a reinstall the old box stays installed,
+     * healthy and answering right up to the moment it is wiped. Read back from the
+     * Intent on every {@code onCreate}, so unlike the flags it replaced it survives
+     * both a config-change recreation and the process being killed and restored.
+     */
+    public boolean isReplacingSystem() { return reinstallMode; }
 
     /** ADFA-4954: the Courses picker (browse -> confirm), wizard door. */
     public void openKolibriWizard() {
-        kolibriWizard = true;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host,
                         new org.iiab.controller.kolibri.presentation.KolibriBrowseFragment())
@@ -383,14 +378,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     /** ADFA-4853: ZIM in wizard mode — same offline browse (kiwix_catalog.csv), but the terminal
      *  step persists the cart to ZimWishlist instead of downloading live. */
     public void openZimWizard() {
-        zimWizard = true;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, new ZimLandingFragment())
                 .addToBackStack("wizard_wikipedia")
                 .commit();
     }
-
-    public boolean isZimWizard() { return zimWizard; }
 
     /** ADFA-4853: ZIM Confirm terminal in wizard mode — bank the selection and return to the hub. */
     public void zimWizardConfirm() {
@@ -402,14 +394,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
 
     /** ADFA-4853: open Books in wizard mode (pre-install, offline catalog -> wishlist). */
     public void openBooksWizard() {
-        booksWizard = true;
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.k2go_setup_host, BooksLandingFragment.newInstance(true))
                 .addToBackStack("wizard_books")
                 .commit();
     }
-
-    public boolean isBooksWizard() { return booksWizard; }
 
     /** ADFA-4910: the Books selection cart (gutenberg_id -> {title, author, download_url}), set by
      *  the landing when the user taps "Review" and read by BooksConfirmFragment. */
@@ -551,9 +540,6 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .addToBackStack("maps_preparing")
                 .commit();
     }
-
-    /** ADFA-4900: true while Maps runs inside the wizard (pre-install) — Confirm banks the selection. */
-    public boolean isMapsWizard() { return mapsWizard; }
 
     // ---- ADFA-4952: server lifecycle for backup/restore ----
     /** The host's ServerController (backup/restore use stopEnvironment()/startEnvironment()). */

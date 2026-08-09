@@ -109,21 +109,20 @@ public final class KolibriConfirmFragment extends Fragment {
      * the picker download live onto the doomed system and leave the wizard, so the
      * reinstall never happened at all.
      *
-     * <p>Fails closed: an unrecognised host is treated as the live door, which
-     * cannot bank an order it has nowhere to drain.
+     * <p>Fails closed: an unrecognised host cannot declare a replacement, and the
+     * dispatcher then answers from the facts alone.
      *
-     * <p><b>The carrier here is provisional.</b> {@code kolibriWizard} is one of the
-     * four activity booleans ADR-5061 exists to retire, and it does not survive the
-     * process being killed — so after a process death mid-reinstall this reads false
-     * again and the hijack returns. Reading a different activity field instead would
-     * be correct in form and wrong in substance: still a screen answering a question
-     * about the system. The durable fix is a persisted declaration of intent,
-     * sibling to {@code InstallGuard}, and it lands with the retirement of the four
-     * booleans (ADR-5061, decision 10 and migration item 5). Do not patch it here.
+     * <p><b>ADFA-5061.</b> This used to read {@code kolibriWizard}, a plain field set
+     * when the picker was opened from the wizard — lost on every activity recreation,
+     * which is how the reinstall hijack came back. {@code reinstallMode} is read from
+     * the Intent on every {@code onCreate}, and Android keeps that Intent in the task
+     * record, so it survives both a rotation and the process being killed and
+     * restored. A first install needs nothing here: with no system on disk the facts
+     * already say defer.
      */
     private boolean isWizard() {
         return getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
+                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
     }
 
     private void render() {

@@ -386,10 +386,16 @@ public final class KolibriBrowseFragment extends Fragment {
 
     /** Pre-install (wizard) versus the Get More door. Only the wording and the
      *  forward action differ; the catalog and the tree behave the same either way.
-     *  Fails closed on an unrecognised host, matching the confirm screen. */
+     *  Fails closed on an unrecognised host, matching the confirm screen.
+     *
+     *  <p>ADFA-5061: read from the system rather than from a flag set when the picker
+     *  was opened. "Pre-install" is not a mode the app remembers, it is the state of
+     *  having no box to download against — so it is asked, not stored. */
     private boolean isWizard() {
-        return getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
+        boolean replacing = getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
+        return org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.COURSES, replacing);
     }
 
     /**

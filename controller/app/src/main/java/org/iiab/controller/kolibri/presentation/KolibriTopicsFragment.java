@@ -461,10 +461,15 @@ public final class KolibriTopicsFragment extends Fragment {
     }
 
     /** Pre-install (wizard) versus the Get More door. Fails closed, as the other
-     *  two Courses screens do: an unrecognised host is the door that writes nothing. */
+     *  two Courses screens do: an unrecognised host is the door that writes nothing.
+     *
+     *  <p>ADFA-5061: asked of the system, not remembered from the door — see
+     *  {@code KolibriBrowseFragment.isWizard()}. */
     private boolean isWizard() {
-        return getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isKolibriWizard();
+        boolean replacing = getActivity() instanceof SetupLibraryActivity
+                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
+        return org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.COURSES, replacing);
     }
 
     /**

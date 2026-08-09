@@ -66,18 +66,30 @@ public class BooksConfirmFragment extends Fragment {
         }
         box.addView(row(getString(R.string.k2go_books_total_fmt, cart.size()), "", true));
 
-        boolean wiz = (getActivity() instanceof SetupLibraryActivity) && ((SetupLibraryActivity) getActivity()).isBooksWizard();
+        // ADFA-5061: asked of the system, not of the door — see banksInsteadOfDownloading().
+        boolean wiz = banksInsteadOfDownloading();
         Button add = root.findViewById(R.id.k2go_bconf_add);
         add.setText(getString(wiz ? R.string.k2go_books_add_setup_fmt : R.string.k2go_books_add_fmt, cart.size()));
         add.setEnabled(!cart.isEmpty());
         add.setOnClickListener(v -> {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
-            if (a.isBooksWizard()) a.booksWizardConfirm();   // pre-install: bank the selection
-            else a.startBooksDownload();                     // live: download now
+            if (banksInsteadOfDownloading()) a.booksWizardConfirm();   // no box yet: bank it
+            else a.startBooksDownload();                               // live: download now
         });
 
         return root;
+    }
+
+    /**
+     * ADFA-5061: whether the picks should be written down rather than downloaded. Was
+     * {@code isBooksWizard()}, a field on the activity that did not survive a recreation.
+     */
+    private boolean banksInsteadOfDownloading() {
+        boolean replacing = (getActivity() instanceof SetupLibraryActivity)
+                && ((SetupLibraryActivity) getActivity()).isReplacingSystem();
+        return org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.BOOKS, replacing);
     }
 
     private View row(String name, String sub, boolean totalRow) {
