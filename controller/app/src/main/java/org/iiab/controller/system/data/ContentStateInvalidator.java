@@ -15,14 +15,10 @@ import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
-import org.iiab.controller.kolibri.data.KolibriWishlist;
 import org.iiab.controller.kolibri.presentation.KolibriSeedRepository;
 import org.iiab.controller.kolibri.presentation.KolibriSeedService;
 import org.iiab.controller.redesign.BooksDownloadService;
-import org.iiab.controller.redesign.BooksWishlist;
-import org.iiab.controller.redesign.MapsWishlist;
 import org.iiab.controller.redesign.ZimDownloadService;
-import org.iiab.controller.redesign.ZimWishlist;
 import org.iiab.controller.system.domain.SystemReplacement;
 
 /**
@@ -119,14 +115,9 @@ public final class ContentStateInvalidator {
             return;
         }
         Context app = ctx.getApplicationContext();
-        int discarded = pendingOrders(app);
+        int discarded = PendingContent.bankedCount(app);
 
-        ZimWishlist.clear(app);
-        BooksWishlist.clear(app);
-        KolibriWishlist.clear(app);
-        // ADFA-5070: Maps was missing from the wizard's own clearing too. The other
-        // three were added one at a time and this one never followed.
-        MapsWishlist.clear(app);
+        PendingContent.clearAll(app);
 
         Log.i(TAG, "after " + cause + ": " + discarded + " pending order(s) discarded");
     }
@@ -149,18 +140,4 @@ public final class ContentStateInvalidator {
         }
     }
 
-    /** How many orders are about to be thrown away, for the log line. */
-    private static int pendingOrders(Context app) {
-        int n = 0;
-        try {
-            n += ZimWishlist.size(app);
-            n += BooksWishlist.size(app);
-            n += KolibriWishlist.size(app);
-            n += MapsWishlist.has(app) ? 1 : 0;
-        } catch (Exception e) {
-            // Counting is for the log only; never let it stop the invalidation.
-            Log.w(TAG, "could not count pending orders: " + e.getMessage());
-        }
-        return n;
-    }
 }

@@ -21,6 +21,7 @@ import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.WatchdogService;
 import org.iiab.controller.install.presentation.InstallProgressRepository;
 import org.iiab.controller.install.presentation.InstallState;
+import org.iiab.controller.system.data.PendingContent;
 
 /**
  * New content-first UI shell (ADFA-4725). Owns the server lifecycle for the new UI:
@@ -241,9 +242,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     // ADFA-4853: if the wizard banked content, go straight to Finishing setup
                     // (over the library) — no brief stop on the home. That screen shows
                     // "Starting services…" and drains the wishlists when the engine is up.
-                    // ADFA-4901: include MapsWishlist — a maps-only wizard run must still open
-                    // Finishing setup so MapsProvisioner can drain it (otherwise maps never installs).
-                    if (BooksWishlist.size(this) > 0 || ZimWishlist.size(this) > 0 || MapsWishlist.has(this)) {
+                    // ADFA-4901 asked for maps here, ADFA-4954 for courses; the list is now kept
+                    // in one place, because a type missing from THIS line is a type that is never
+                    // drained at all — the screen that would have drained it never opens.
+                    if (PendingContent.anyBanked(this)) {
                         startActivity(new android.content.Intent(this, SetupProgressActivity.class));
                     }
                     new Handler(Looper.getMainLooper()).postDelayed(() -> {

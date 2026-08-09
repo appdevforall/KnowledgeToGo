@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 620" width="980" height="620" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<title>Content installation — mechanism and order</title>
+<desc>How the four content types install: which mechanism each uses, why they are serialised, where the server is stopped, and what is still unsolved. Companion to operation-model-roadmap.svg, which tracks ticket state rather than behaviour. Update when the behaviour changes, not when a ticket moves.</desc>
+
+<style>
+  .bg    { fill: #F7F8F9; }
+  .card  { fill: #FFFFFF; stroke: #D5D8DC; stroke-width: 1.5; rx: 10; }
+  .card-hi { fill: #FFFFFF; stroke: #0E7C86; stroke-width: 2.5; rx: 10; }
+  .card-warn { fill: #FFFBF3; stroke: #C77700; stroke-width: 2; rx: 10; }
+  .card-open { fill: #FDF4F4; stroke: #C0392B; stroke-width: 2; rx: 10; }
+  .h1    { font-size: 19px; font-weight: 700; fill: #1F2328; }
+  .h2    { font-size: 14.5px; font-weight: 700; fill: #1F2328; }
+  .h3    { font-size: 12.5px; font-weight: 700; fill: #1F2328; }
+  .sub   { font-size: 11.5px; fill: #5B636B; }
+  .item  { font-size: 11.5px; fill: #1F2328; }
+  .note  { font-size: 11px; fill: #5B636B; font-style: italic; }
+  .code  { font-size: 10.5px; fill: #5B636B; font-family: Consolas, monospace; }
+  .lnk   { stroke: #0E7C86; stroke-width: 2; fill: none; }
+  .lnkw  { stroke: #C77700; stroke-width: 1.6; fill: none; stroke-dasharray: 4 3; }
+  .chip  { rx: 9; }
+  .chiptx{ font-size: 10.5px; font-weight: 700; }
+</style>
+
+<defs>
+  <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,1 L8,4.5 L0,8 Z" fill="#0E7C86"/>
+  </marker>
+  <marker id="aw" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+    <path d="M0,1 L8,4.5 L0,8 Z" fill="#C77700"/>
+  </marker>
+</defs>
+
+<rect class="bg" x="0" y="0" width="980" height="620"/>
+
+<text class="h1" x="24" y="34">Content installation — mechanism and order</text>
+<text class="sub" x="24" y="54">Four content types, two mechanisms. What runs when, what waits for what, and why.</text>
+<text class="note" x="24" y="72">Companion to operation-model-roadmap.svg: that one tracks tickets, this one tracks behaviour. Cite a file:line before changing a box.</text>
+
+<!-- ================= the line ================= -->
+<rect class="card" x="24" y="96" width="204" height="104"/>
+<text class="h3" x="40" y="120">1 · System install</text>
+<text class="item" x="40" y="142">The rootfs is laid down.</text>
+<text class="sub" x="40" y="160">Nothing else can be running:</text>
+<text class="sub" x="40" y="176">there is no box yet. Orders</text>
+<text class="sub" x="40" y="192">chosen before this are banked.</text>
+
+<path class="lnk" d="M232,148 L258,148" marker-end="url(#a)"/>
+
+<rect class="card-hi" x="266" y="96" width="204" height="104"/>
+<text class="h3" x="282" y="120">2 · proot — Ansible</text>
+<text class="item" x="282" y="142">Maps and app modules.</text>
+<text class="sub" x="282" y="160">A runrole owns the rootfs.</text>
+<text class="sub" x="282" y="176">Always first: everything REST</text>
+<text class="sub" x="282" y="192">waits until this is idle.</text>
+
+<path class="lnk" d="M474,148 L500,148" marker-end="url(#a)"/>
+
+<rect class="card" x="508" y="96" width="164" height="104"/>
+<text class="h3" x="524" y="120">3 · Server up</text>
+<text class="item" x="524" y="142">Started, or already up.</text>
+<text class="sub" x="524" y="160">The REST core answers</text>
+<text class="sub" x="524" y="176">at /k2go-api/.</text>
+
+<path class="lnk" d="M676,148 L702,148" marker-end="url(#a)"/>
+
+<rect class="card-hi" x="710" y="96" width="246" height="104"/>
+<text class="h3" x="726" y="120">4 · REST — in-server</text>
+<text class="item" x="726" y="142">ZIM · Books · Courses.</text>
+<text class="sub" x="726" y="160">One at a time: each defers while</text>
+<text class="sub" x="726" y="176">another holds a session, so three</text>
+<text class="sub" x="726" y="192">size checks cannot all pass at once.</text>
+
+<!-- ================= why they wait ================= -->
+<path class="lnkw" d="M368,206 L368,238" marker-end="url(#aw)"/>
+<rect class="card-warn" x="266" y="242" width="440" height="86"/>
+<rect class="chip" x="282" y="254" width="132" height="19" fill="#FDF1DC" stroke="none"/>
+<text class="chiptx" x="290" y="268" fill="#C77700">WHY REST WAITS</text>
+<text class="item" x="282" y="292">Ansible forks background processes, so concurrent REST work</text>
+<text class="item" x="282" y="308">risks corruption — not because the server is down.</text>
+<text class="code" x="282" y="324">ADFA-4900 · ZimProvisioner.drain():42</text>
+
+<!-- ================= the deviation ================= -->
+<path class="lnkw" d="M368,328 L368,360" marker-end="url(#aw)"/>
+<rect class="card-warn" x="266" y="364" width="440" height="122"/>
+<rect class="chip" x="282" y="376" width="176" height="19" fill="#FDF1DC" stroke="none"/>
+<text class="chiptx" x="290" y="390" fill="#C77700">DELIBERATE DEVIATION</text>
+<text class="h3" x="282" y="414">A maps-only batch does NOT stop the server</text>
+<text class="item" x="282" y="434">Maps adds tiles and never touches the REST core, so it is</text>
+<text class="item" x="282" y="450">carved out to avoid a pointless bounce. Any other module</text>
+<text class="item" x="282" y="466">(courses app, calibre-web) still does stop → runroles → restart.</text>
+<text class="code" x="282" y="482">InstallService.runModuleQueue():704</text>
+
+<!-- ================= what is not solved ================= -->
+<rect class="card-open" x="24" y="510" width="932" height="88"/>
+<rect class="chip" x="40" y="522" width="60" height="19" fill="#FBE4E4" stroke="none"/>
+<text class="chiptx" x="48" y="536" fill="#C0392B">OPEN</text>
+<text class="h3" x="112" y="536">No run-level disk budget</text>
+<text class="item" x="40" y="560">Each selector does block: it compares its own total against StatFs at the moment it is opened. But a banked order is not on disk yet, so two</text>
+<text class="item" x="40" y="576">selections can each fit and jointly overflow — and the one that drains second dies mid-download with tens of GB already written.</text>
+<text class="code" x="40" y="592">ZimConfirmFragment:94 · MapsChooseFragment:270 · KolibriConfirmFragment:211 — three readings, three moments, no total</text>
+
+<!-- ================= which type is which ================= -->
+<rect class="card" x="24" y="242" width="212" height="244"/>
+<text class="h3" x="40" y="266">Which type is which</text>
+<circle cx="48" cy="292" r="5.5" fill="#C77700"/><text class="item" x="62" y="296">Maps — proot</text>
+<text class="sub" x="62" y="312">runrole, tiles</text>
+<circle cx="48" cy="338" r="5.5" fill="#0E7C86"/><text class="item" x="62" y="342">ZIM / Wikipedia — REST</text>
+<circle cx="48" cy="366" r="5.5" fill="#0E7C86"/><text class="item" x="62" y="370">Books — REST</text>
+<circle cx="48" cy="394" r="5.5" fill="#0E7C86"/><text class="item" x="62" y="398">Courses (Kolibri) — REST</text>
+<text class="note" x="40" y="428">The courses APP is a proot module;</text>
+<text class="note" x="40" y="444">its CONTENT is REST. One name,</text>
+<text class="note" x="40" y="460">two mechanisms — the distinction</text>
+<text class="note" x="40" y="476">the operation model exists for.</text>
+
+<!-- ================= the naming caveat ================= -->
+<rect class="card" x="710" y="242" width="246" height="244"/>
+<text class="h3" x="726" y="266">Caveat on the names</text>
+<text class="item" x="726" y="290">The model calls the two classes</text>
+<text class="item" x="726" y="306">LIVE and STOPPED, which names</text>
+<text class="item" x="726" y="322">them after the consequence.</text>
+<text class="item" x="726" y="346">Maps breaks that: it runs under</text>
+<text class="item" x="726" y="362">proot and the server stays up.</text>
+<text class="item" x="726" y="386">The real axis is the mechanism</text>
+<text class="item" x="726" y="402">(proot vs REST); stopping the box</text>
+<text class="item" x="726" y="418">is a consequence that depends on</text>
+<text class="item" x="726" y="434">which module is in the batch.</text>
+<text class="note" x="726" y="460">Reading it the other way is what</text>
+<text class="note" x="726" y="476">this map exists to prevent.</text>
+
+</svg>

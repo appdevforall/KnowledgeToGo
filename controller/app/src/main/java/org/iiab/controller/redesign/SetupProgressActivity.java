@@ -183,9 +183,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
      *  started), so trust the hint and inspect only the OTHER streams, which started earlier. */
     private void openHintedStream(String hint) {
         boolean otherProot = mapsInSession() || moduleInSession();
-        boolean otherZim = !"zim".equals(hint) && (ZimDownloadService.hasSession() || ZimWishlist.size(this) > 0);
-        boolean otherBooks = !"books".equals(hint) && (BooksDownloadService.hasSession() || BooksWishlist.size(this) > 0);
-        if (otherProot || otherZim || otherBooks) return;   // several streams -> keep the index
+        // ADFA-4954: courses were missing from this list, so confirming a ZIM download while a
+        // seeding session was running opened the ZIM detail and hid the courses row.
+        boolean otherLive =
+                org.iiab.controller.system.data.PendingContent.anyLiveOtherThan(this, hint);
+        if (otherProot || otherLive) return;   // several streams -> keep the index
         openDetail(hint);
     }
 
@@ -507,8 +509,11 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // REST drain -- its completion is simply the maps (proot) stage going terminal. Otherwise the
         // index never reaches success/failure and can't show redirect/Cancel/Finish. The REST/mixed
         // path keeps its existing drain-based signal untouched.
-        boolean noRest = !ZimDownloadService.hasSession() && !BooksDownloadService.hasSession()
-                && ZimWishlist.size(this) == 0 && BooksWishlist.size(this) == 0;
+        // ADFA-4954: asked through PendingContent, because this list previously read ZIM +
+        // Books only. A run mixing courses with a proot batch therefore counted as "no REST
+        // content" and could declare itself complete on the queue alone, while the courses
+        // were still downloading.
+        boolean noRest = !org.iiab.controller.system.data.PendingContent.anyLive(this);
         // ADFA-4842: proot = maps OR a module batch. A proot-only run finishes when the queue is
         // terminal, without waiting on any REST drain.
         boolean prootShown = mapsShown || moduleShown;

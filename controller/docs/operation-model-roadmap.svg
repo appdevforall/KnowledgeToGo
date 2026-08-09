@@ -61,7 +61,7 @@
 <circle class="s-done" cx="48" cy="210" r="5.5"/><text class="item" x="62" y="214">C2 — topic selection over Studio's tree</text>
 <circle class="s-done" cx="48" cy="228" r="5.5"/><text class="item" x="62" y="232">Get More door (browse only)</text>
 <circle class="s-done" cx="48" cy="246" r="5.5"/><text class="item" x="62" y="250">Live download from Get More</text>
-<circle class="s-todo" cx="48" cy="264" r="5.5"/><text class="item" x="62" y="268">Drain a courses-only wizard run</text>
+<circle class="s-doing" cx="48" cy="264" r="5.5"/><text class="item" x="62" y="268">Drain a courses-only wizard run</text>
 <circle class="s-todo" cx="48" cy="282" r="5.5"/><text class="item" x="62" y="286">Metadata-only scope</text>
 
 <!-- ============ stale content state (found by testing 4954) ============ -->
