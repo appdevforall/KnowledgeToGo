@@ -295,6 +295,12 @@ public final class InstallService extends Service {
      *  live system can run this AFTER the async pdsm stop completes (server proot no longer writing). */
     private void wipeAndInstall() {
         if (cancelled) return;
+        // ADFA-5070: the system about to be destroyed is what the content sessions
+        // describe. Only the sessions — the orders are kept on this route, because
+        // the wizard cleared them on entry and the user has just refilled them for
+        // the system this is about to create.
+        org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(this,
+                org.iiab.controller.system.domain.SystemReplacement.Cause.REINSTALL);
         postProvisioning(getString(R.string.install_status_wiping_old));
         try {
             ProcessRunner.Result wipe = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
@@ -575,6 +581,10 @@ public final class InstallService extends Service {
      */
     private void runResetPipeline() {
         try {
+            // ADFA-5070: stop and forget the downloads before the rootfs they were
+            // writing into goes away.
+            org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(this,
+                    org.iiab.controller.system.domain.SystemReplacement.Cause.RESET);
             // 1. WIPE
             postProvisioning(getString(R.string.install_status_wiping_old));
             try {
@@ -582,6 +592,10 @@ public final class InstallService extends Service {
                 if (!wipe.isSuccess()) {
                     Log.w(TAG, "rm -rf rootfs (reset) failed (exit " + wipe.exitCode + "): " + wipe.output);
                 }
+                // The system is gone from here on, and no wizard ran before a reset,
+                // so any order still pending was placed against what was just wiped.
+                org.iiab.controller.system.data.ContentStateInvalidator.replacementSucceeded(this,
+                        org.iiab.controller.system.domain.SystemReplacement.Cause.RESET);
             } catch (Exception e) {
                 Log.w(TAG, "rm -rf rootfs (reset) failed", e);
             }

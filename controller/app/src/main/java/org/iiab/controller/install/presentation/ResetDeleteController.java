@@ -101,7 +101,32 @@ public final class ResetDeleteController {
         });
     }
 
+    /**
+     * ADFA-5070: the legacy "fast delete" is switched off, not deleted.
+     *
+     * <p>It is the only destructive route that removes the rootfs without taking the
+     * shared {@code EnvironmentLock} or planting {@code InstallGuard}'s marker. It
+     * has its own ad-hoc gating — server alive, host busy, a local protection flag —
+     * but because it holds neither shared lock it is invisible to every other flow,
+     * and a delete killed half-way leaves no marker, so the boot check cannot detect
+     * the wreckage it leaves.
+     *
+     * <p>It is also legacy surface: {@code ResetDeleteController} is instantiated
+     * only by {@code DeployFragment}, the pre-redesign god class. The current flow
+     * reaches the same outcome through the wizard's reinstall, which is guarded.
+     *
+     * <p>One flag rather than a deletion, so turning it back on for debugging is a
+     * one-line change and the code stays readable while the screen is retired.
+     */
+    private static final boolean LEGACY_FAST_DELETE_ENABLED = false;
+
     private void bindDeleteButtonLogic() {
+        if (!LEGACY_FAST_DELETE_ENABLED) {
+            // Hidden rather than disabled: updateDynamicButtons re-enables buttons and
+            // resets their alpha, but never touches visibility, so this survives.
+            btnFastDelete.setVisibility(android.view.View.GONE);
+            return;
+        }
         btnFastDelete.setOnClickListener(v -> {
             if (org.iiab.controller.ServerStateRepository.get().current().alive) {
                 Snackbars.make(v, R.string.install_msg_server_running_lock).show();
@@ -126,9 +151,23 @@ public final class ResetDeleteController {
                         new Thread(() -> {
                             host.enableSystemProtection();
                             try {
+                                // ADFA-5070: unreachable while LEGACY_FAST_DELETE_ENABLED is
+                                // false, and wired anyway — flipping the flag back on must
+                                // not also bring back the stale state it used to leave.
+                                // mainAct rather than fragment.requireContext(): this runs on a
+                                // worker thread and the fragment may have detached by now.
+                                org.iiab.controller.system.data.ContentStateInvalidator
+                                        .replacementStarting(mainAct,
+                                                org.iiab.controller.system.domain
+                                                        .SystemReplacement.Cause.DELETE);
                                 ProcessRunner.Result wipeResult = ProcessRunner.run(new String[]{"rm", "-rf", debianRootfs.getAbsolutePath()});
                                 if (!wipeResult.isSuccess()) {
                                     Log.w(TAG, "rm -rf rootfs (delete) failed (exit " + wipeResult.exitCode + "): " + wipeResult.output);
+                                } else {
+                                    org.iiab.controller.system.data.ContentStateInvalidator
+                                            .replacementSucceeded(mainAct,
+                                                    org.iiab.controller.system.domain
+                                                            .SystemReplacement.Cause.DELETE);
                                 }
                             } catch (Exception e) {
                                 mainAct.runOnUiThread(() -> Snackbars.make(fragment.getView(), fragment.getString(R.string.install_error_delete, e.getMessage())).show());
