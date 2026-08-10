@@ -144,19 +144,24 @@ public final class PendingContent {
         }
 
         /**
-         * Whether any <b>other</b> live type has unfinished work — the whole
-         * cross-stream serialisation rule, in one place.
+         * Whether any live type still has work to do — the whole serialisation rule, in
+         * one place and with no exceptions.
          *
          * <p>Each of the three provisioners used to spell this out itself, and each
-         * spelled it differently: two of them blocked on a merely registered session, and
-         * the courses one had to be edited by hand when a third type appeared. Asking
-         * here means a fourth content type is one line in {@link ContentType}.
+         * spelled it differently: two blocked on a merely registered session, and the
+         * courses one had to be edited by hand when a third type appeared. Asking here
+         * means a fourth content type is one line in {@link ContentType}.
          *
-         * @param self the type about to start, excluded from the check
+         * <p><b>No "except me" clause.</b> A first attempt kept one: a stream could not
+         * start while a session of its own kind was registered, on the grounds that a new
+         * one would overwrite results the user might still be reading. That reasoning put
+         * an invented protection above an explicit request — the user had already left
+         * that list, its work had finished, and they were asking for another download. The
+         * only thing worth protecting is work in flight, whoever owns it.
          */
-        public boolean anyUnfinishedOtherThan(ContentType self) {
+        public boolean anyUnfinished() {
             for (ContentType t : ContentType.values()) {
-                if (t.isLive() && t != self && hasUnfinishedWork(t)) {
+                if (t.isLive() && hasUnfinishedWork(t)) {
                     return true;
                 }
             }
@@ -301,9 +306,9 @@ public final class PendingContent {
         return read(ctx).anyLiveOtherThan(key);
     }
 
-    /** One-shot: does any live type other than {@code self} still have work to do? */
-    public static boolean anyUnfinishedOtherThan(Context ctx, ContentType self) {
-        return read(ctx).anyUnfinishedOtherThan(self);
+    /** One-shot: does any live content type still have work to do? */
+    public static boolean anyUnfinished(Context ctx) {
+        return read(ctx).anyUnfinished();
     }
 
     /** One-shot: is a content stream actually running right now? */

@@ -44,9 +44,6 @@ public final class ZimProvisioner {
             Log.d(TAG, "zim drain deferred: proot (runrole) work is pending/running");
             return;
         }
-        // Against itself: any registered session, finished or not — a second one would
-        // overwrite the list the user may still be reading.
-        if (ZimDownloadService.hasSession()) return;
         // ADFA-4954 (ADR-4954 D8): the live REST streams also serialize against each other.
         // Each measures free space independently and at a different moment, so all of them can
         // pass their own check and jointly fill the disk. A Kolibri channel runs to tens of GB.
@@ -54,9 +51,8 @@ public final class ZimProvisioner {
         // session — a finished stream has already been absorbed by the disk, and blocking on
         // it refused downloads with nothing running. Also means a fourth content type is one
         // line in ContentType instead of an edit here.
-        if (org.iiab.controller.system.data.PendingContent.anyUnfinishedOtherThan(
-                ctx, org.iiab.controller.system.domain.ContentType.ZIM)) {
-            Log.d(TAG, "zim drain deferred: another content stream still has work to do");
+        if (org.iiab.controller.system.data.PendingContent.anyUnfinished(ctx)) {
+            Log.d(TAG, "zim drain deferred: a content stream still has work to do");
             return;
         }
         if (ZimWishlist.size(ctx) == 0) return;

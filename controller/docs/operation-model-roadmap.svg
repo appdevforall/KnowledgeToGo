@@ -128,14 +128,15 @@
 <circle class="s-todo" cx="396" cy="542" r="5.5"/><text class="item" x="410" y="546">Safe system change + data migration</text>
 
 <!-- ============ ADFA-5074 ============ -->
-<rect class="card" x="720" y="452" width="316" height="136"/>
+<rect class="card" x="720" y="452" width="316" height="160"/>
 <circle class="badge" cx="744" cy="477" r="13"/><text class="badgetx" x="740" y="482">2</text>
 <text class="h2" x="766" y="482">ADFA-5074 · Content surface</text>
 <text class="sub" x="744" y="504">Five landings for one kind of work.</text>
 
 <circle class="s-done" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
 <circle class="s-doing" cx="744" cy="548" r="5.5"/><text class="item" x="758" y="552">A session gates only work in flight</text>
-<circle class="s-todo" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">One host for every progress screen</text>
+<circle class="s-todo" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">Get More notices a platform arriving</text>
+<circle class="s-todo" cx="744" cy="592" r="5.5"/><text class="item" x="758" y="596">One host for every progress screen</text>
 
 <text class="note" x="24" y="522">Do not close 4758 as superseded: the migration half</text>
 <text class="note" x="24" y="538">is the one that can lose a user's content.</text>

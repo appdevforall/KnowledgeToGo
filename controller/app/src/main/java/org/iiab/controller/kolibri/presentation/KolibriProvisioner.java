@@ -54,8 +54,9 @@ public final class KolibriProvisioner {
      *       measures free space independently and at a different moment, so all
      *       of them can pass their own check and jointly fill the disk. A Kolibri
      *       channel runs to tens of GB, which makes it the one most likely to be
-     *       the straw. Books and ZIM now defer to a Kolibri session in the same
-     *       way, so the guard is symmetric.</li>
+     *       the straw. ADFA-5074: the rule is now one call for all three, and it
+     *       asks about <em>unfinished</em> work — a stream that has finished has
+     *       already been absorbed by the disk and protects nothing.</li>
      * </ul>
      *
      * <p>No deadlock is possible: deferring means returning so a later pass can
@@ -95,14 +96,11 @@ public final class KolibriProvisioner {
         // way out was force-stopping the app, because these are process statics.
         // Serialising exists because each stream measures free space at its own moment;
         // one that has finished has already been absorbed by the disk.
-        if (org.iiab.controller.system.data.PendingContent.anyUnfinishedOtherThan(
-                ctx, org.iiab.controller.system.domain.ContentType.COURSES)) {
-            Log.d(TAG, "kolibri drain blocked: another content stream still has work to do");
+        if (org.iiab.controller.system.data.PendingContent.anyUnfinished(ctx)) {
+            Log.d(TAG, "kolibri drain blocked: a content stream still has work to do");
             return false;
         }
-        // Against itself the older question is the right one: starting a second session
-        // overwrites the list the user may still be reading, finished or not.
-        return !KolibriSeedRepository.get().hasSession();
+        return true;
     }
 
     public static boolean drain(Context ctx) {
