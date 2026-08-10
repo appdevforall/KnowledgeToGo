@@ -23,16 +23,20 @@ import java.util.Set;
 public final class MapsRunroleCommand {
     private MapsRunroleCommand() {}
 
-    private static final Set<String> VECTOR_OK = new HashSet<>(Arrays.asList("nat-z8", "osm-z11", "osm-z14"));
+    // Keys mirror the upstream maps catalog (iiab/iiab roles/maps, PR #4462): vector nat-z8/11/14,
+    // ne6 6, terrain 0-none (off), satellite 7/9/11/13 + "none" (the role special-cases satellite
+    // "none" by dropping the symlink; terrain has no such case, its off value is the real "0-none" key).
+    // The catalog also has satellite 12, but the wizard doesn't offer it, so it's not in the allowlist.
+    private static final Set<String> VECTOR_OK = new HashSet<>(Arrays.asList("nat-z8", "11", "14"));
     private static final Set<String> SAT_OK = new HashSet<>(Arrays.asList("none", "7", "9", "11", "13"));
-    private static final Set<String> TERRAIN_OK = new HashSet<>(Arrays.asList("none", "7", "8", "9", "10"));
+    private static final Set<String> TERRAIN_OK = new HashSet<>(Arrays.asList("0-none", "7", "8", "9", "10"));
     private static final String LV = "/etc/iiab/local_vars.yml";
 
     /** Build the sed-delete + echo (append-if-missing) + runrole command for the given selection. */
     public static String build(String vector, String sat, String terrain, boolean searchOn) {
-        String vq = VECTOR_OK.contains(vector) ? vector : "osm-z11";
+        String vq = VECTOR_OK.contains(vector) ? vector : "11";
         String s = SAT_OK.contains(sat) ? sat : "none";
-        String t = TERRAIN_OK.contains(terrain) ? terrain : "none";
+        String t = TERRAIN_OK.contains(terrain) ? terrain : "0-none";
         String engine = searchOn ? "static" : "";
         return "sed -i -E '/^[[:space:]]*maps_(install|enabled|region_downloader|vector_quality|" +
                 "satellite_zoom|terrain_zoom|search_engine|search_static_db|search_nominatim_db|" +
@@ -46,7 +50,7 @@ public final class MapsRunroleCommand {
                 " && echo 'maps_search_engine: \"" + engine + "\"' >> " + LV +
                 " && echo 'maps_search_static_db: pop-1k-cities' >> " + LV +
                 " && echo 'maps_search_nominatim_db: basic' >> " + LV +
-                " && echo 'maps_ne6_zoom: full' >> " + LV +
+                " && echo 'maps_ne6_zoom: 6' >> " + LV +
                 " && echo 'maps_preset_full_quality_regions: []' >> " + LV +
                 " && cd /opt/iiab/iiab && ./runrole --reinstall maps";
     }

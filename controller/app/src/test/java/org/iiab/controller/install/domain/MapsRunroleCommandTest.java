@@ -18,9 +18,9 @@ public class MapsRunroleCommandTest {
 
     @Test
     public void writesSelectedLayersAndForcesReinstall() {
-        String cmd = MapsRunroleCommand.build("osm-z14", "11", "10", true);
-        assertTrue(cmd.contains("maps_vector_quality: osm-z14"));
-        assertTrue(cmd.contains("maps_satellite_zoom: 11"));
+        String cmd = MapsRunroleCommand.build("14", "13", "10", true);
+        assertTrue(cmd.contains("maps_vector_quality: 14"));
+        assertTrue(cmd.contains("maps_satellite_zoom: 13"));
         assertTrue(cmd.contains("maps_terrain_zoom: 10"));
         assertTrue(cmd.contains("maps_search_engine: \"static\""));
         assertTrue(cmd.contains("maps_region_downloader: True"));
@@ -29,29 +29,29 @@ public class MapsRunroleCommandTest {
 
     @Test
     public void offLayersMapToNoneAndSearchEngineEmpty() {
-        String cmd = MapsRunroleCommand.build("nat-z8", null, "none", false);
+        String cmd = MapsRunroleCommand.build("nat-z8", null, "0-none", false);
         assertTrue(cmd.contains("maps_vector_quality: nat-z8"));
         assertTrue(cmd.contains("maps_satellite_zoom: none"));
-        assertTrue(cmd.contains("maps_terrain_zoom: none"));
+        assertTrue(cmd.contains("maps_terrain_zoom: 0-none"));
         assertTrue(cmd.contains("maps_search_engine: \"\""));
     }
 
     @Test
     public void invalidValuesFallBackToSafeDefaults() {
         String cmd = MapsRunroleCommand.build("bogus", "99", "42", true);
-        assertTrue(cmd.contains("maps_vector_quality: osm-z11"));
+        assertTrue(cmd.contains("maps_vector_quality: 11"));
         assertTrue(cmd.contains("maps_satellite_zoom: none"));
-        assertTrue(cmd.contains("maps_terrain_zoom: none"));
+        assertTrue(cmd.contains("maps_terrain_zoom: 0-none"));
     }
 
     @Test
     public void alwaysWritesEveryVarTheRoleReferences() {
-        String cmd = MapsRunroleCommand.build("osm-z11", "9", "7", true);
+        String cmd = MapsRunroleCommand.build("11", "9", "7", true);
         for (String var : new String[]{
                 "maps_install: True", "maps_enabled: True", "maps_region_downloader: True",
                 "maps_vector_quality:", "maps_satellite_zoom:", "maps_terrain_zoom:",
                 "maps_search_engine:", "maps_search_static_db: pop-1k-cities",
-                "maps_search_nominatim_db: basic", "maps_ne6_zoom: full",
+                "maps_search_nominatim_db: basic", "maps_ne6_zoom: 6",
                 "maps_preset_full_quality_regions: []"}) {
             assertTrue("missing " + var, cmd.contains(var));
         }

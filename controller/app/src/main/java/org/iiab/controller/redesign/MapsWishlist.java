@@ -31,18 +31,30 @@ public final class MapsWishlist {
     public static void save(Context ctx, String base, String sat, String terrain, boolean search, long mb) {
         prefs(ctx).edit()
                 .putBoolean("has", true)
-                .putString("base", base == null ? "osm-z11" : base)
+                .putString("base", base == null ? "11" : base)
                 .putString("sat", sat == null ? "none" : sat)
-                .putString("terrain", terrain == null ? "none" : terrain)
+                .putString("terrain", terrain == null ? "0-none" : terrain)
                 .putBoolean("search", search)
                 .putLong("mb", Math.max(0, mb))
                 .apply();
     }
 
     public static boolean has(Context ctx) { return prefs(ctx).getBoolean("has", false); }
-    public static String base(Context ctx) { return prefs(ctx).getString("base", "osm-z11"); }
+    public static String base(Context ctx) { return migrateBase(prefs(ctx).getString("base", "11")); }
     public static String sat(Context ctx) { return prefs(ctx).getString("sat", "none"); }
-    public static String terrain(Context ctx) { return prefs(ctx).getString("terrain", "none"); }
+    public static String terrain(Context ctx) { return migrateTerrain(prefs(ctx).getString("terrain", "0-none")); }
+
+    // ADFA-5075: a selection banked by an older app version holds the pre-rename keys. Translate them
+    // on read so a pre-update pick keeps its quality (osm-z14 stays "high", not silently the default)
+    // instead of falling through the runrole allowlist to the fallback. Satellite keys never changed.
+    private static String migrateBase(String v) {
+        if ("osm-z11".equals(v)) return "11";
+        if ("osm-z14".equals(v)) return "14";
+        return v;
+    }
+    private static String migrateTerrain(String v) {
+        return "none".equals(v) ? "0-none" : v;
+    }
     public static boolean search(Context ctx) { return prefs(ctx).getBoolean("search", false); }
     /** Total download size (MB) of the banked selection; 0 if unknown. */
     public static long mb(Context ctx) { return prefs(ctx).getLong("mb", 0); }

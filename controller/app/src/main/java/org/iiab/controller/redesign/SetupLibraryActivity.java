@@ -498,9 +498,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  bypassed the index. The server is up during Get More, so the index's readiness latches and
      *  the drain proceeds. This is the entry ADFA-4842 (module management) should generalize. */
     public void openMapsIndex(String[] levels, long totalMb) {
-        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
         String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
-        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
         boolean search = levels != null && levels.length > 3 && levels[3] != null;
         MapsWishlist.save(this, base, sat, ter, search, totalMb);
         startActivity(new Intent(this, SetupProgressActivity.class));
@@ -599,9 +599,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     /** ADFA-4900: Maps Confirm terminal in wizard mode — bank the per-layer selection to MapsWishlist
      *  (MapsProvisioner applies it post-install) and return to the Get More hub. No live runrole. */
     public void mapsWizardConfirm(String[] levels, long totalMb) {
-        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
         String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
-        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
         boolean search = levels != null && levels.length > 3 && levels[3] != null;
         MapsWishlist.save(this, base, sat, ter, search, totalMb);
         getSupportFragmentManager().popBackStack("getmore_maps",
@@ -617,9 +617,9 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  with the shared success/failure verdict, revert-on-fail and observable progress. {@code levels}
      *  is aligned to the Choose groups [base, satellite, terrain, search]; null = off. */
     public void startMapsInstall(String[] levels) {
-        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "osm-z11";
+        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
         String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
-        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "none";
+        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
         boolean search = levels != null && levels.length > 3 && levels[3] != null;
         Intent i = new Intent(this, InstallService.class);
         i.setAction(InstallService.ACTION_START_MODULES);
