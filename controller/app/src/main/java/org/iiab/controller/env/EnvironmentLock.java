@@ -72,6 +72,17 @@ public final class EnvironmentLock {
                 && !org.iiab.controller.redesign.ZimDownloadService.isComplete()) return true;
         if (org.iiab.controller.redesign.BooksDownloadService.hasSession()
                 && !org.iiab.controller.redesign.BooksDownloadService.isComplete()) return true;
+        // ADFA-5074: Courses were never added here. A backup, restore, clone or maps runrole
+        // could start on top of a live seeding session and stop the server underneath it —
+        // exactly what the note above says this guard exists to prevent. The third content
+        // type arrived after the list and nobody registered it, the same way it was missed in
+        // the post-install drain and in the index's completion check.
+        //
+        // Same idiom as its neighbours on purpose: a session that has FINISHED protects
+        // nothing, so it must not gate a deep-env op. Only work in flight does.
+        org.iiab.controller.kolibri.presentation.KolibriSeedRepository kolibri =
+                org.iiab.controller.kolibri.presentation.KolibriSeedRepository.get();
+        if (kolibri.hasSession() && !kolibri.isComplete()) return true;
         return false;
     }
 
