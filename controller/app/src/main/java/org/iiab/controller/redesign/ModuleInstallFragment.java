@@ -68,6 +68,7 @@ public class ModuleInstallFragment extends Fragment {
 
         status = root.findViewById(R.id.k2go_modinst_status);
         logLabel = root.findViewById(R.id.k2go_modinst_log_label);
+        ProgressVisuals.applyForModule(root);   // ADFA-5074
         logChevron = root.findViewById(R.id.k2go_modinst_log_chevron);
         logScroll = root.findViewById(R.id.k2go_modinst_log_scroll);
         logText = root.findViewById(R.id.k2go_modinst_log_text);

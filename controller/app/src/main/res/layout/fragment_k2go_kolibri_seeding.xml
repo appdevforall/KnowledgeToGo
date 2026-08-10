@@ -45,6 +45,10 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_muted" />
 
+        <!-- ADFA-5074: Courses was the one card without the working animation, which is what
+             a per-layout copy gets you. Same block, same place as the others. -->
+        <include layout="@layout/view_k2go_working_anim" />
+
         <TextView
             android:id="@+id/k2go_kseed_pct"
             android:layout_width="match_parent"
