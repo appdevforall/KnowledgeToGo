@@ -21,14 +21,23 @@ import java.util.LinkedHashMap;
  * {@code SetupLibraryActivity}. Fields die with the activity instance, and this one is
  * recreated whenever the configuration changes in a way it does not declare —
  * {@code uiMode} is absent from its {@code configChanges}, so a light/dark change
- * recreates it, as do "Don't keep activities" and a process death with task restore.
- * The user came back to an empty cart with no explanation, having picked their way
- * across several category screens to fill it.
+ * recreates it. The user came back to an empty cart with no explanation, having picked
+ * their way across several category screens to fill it. (Rotation does not do this:
+ * {@code orientation} <em>is</em> declared.)
  *
- * <p>A {@code ViewModel} scoped to the activity outlives exactly those recreations and
- * is cleared when the activity really finishes, which is the lifetime this state should
- * have had from the start. It is the shape Courses already uses, and this brings ZIM
- * and Books level with it.
+ * <p>A {@code ViewModel} scoped to the activity outlives that and is cleared when the
+ * activity really finishes, which is the lifetime this state should have had from the
+ * start. It is the shape Courses already uses, and this brings ZIM and Books level with
+ * it.
+ *
+ * <p><b>What this does NOT cover, stated plainly.</b> A {@code ViewModel} survives
+ * <em>configuration changes only</em>: the store is handed on through
+ * {@code onRetainNonConfigurationInstance()}, and {@code onDestroy} clears it when the
+ * destruction is not a configuration change. So "Don't keep activities" and a real
+ * process death still lose the cart. Closing that needs the selection written to
+ * {@code onSaveInstanceState} through a {@code SavedStateHandle}, which is a larger
+ * change and a separate one — recorded rather than implied, because a comment claiming
+ * more coverage than the code has is worse than no comment.
  *
  * <p><b>Note on the ADFA-5061 flags.</b> Retiring the four {@code *Wizard} booleans was
  * a different fix for a related symptom: those held a <em>decision</em>, and a decision
