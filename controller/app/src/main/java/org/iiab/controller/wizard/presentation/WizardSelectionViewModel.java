@@ -10,6 +10,7 @@
 package org.iiab.controller.wizard.presentation;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
@@ -49,6 +50,16 @@ import java.util.LinkedHashMap;
  * Android actually asks. Saving on each edit would have meant routing every mutation
  * through this class and rewriting those screens.
  *
+ * <p><b>How long a selection lasts, decided rather than inherited.</b> Because saved
+ * state belongs to the task, a wizard the user walked away from comes back with its
+ * cart intact — days later, from the recents card, if the task survived. That is
+ * deliberate: choosing content is slow work across several catalogs, and losing it is
+ * the failure this class exists to prevent, whether the gap was four seconds or four
+ * days. It stops being the right answer only when the user wants a clean sheet, and
+ * that is a decision they should make on purpose rather than one we make for them by
+ * throwing the cart away on a timer — so the counterpart is an explicit "start over",
+ * not an expiry.
+ *
  * <p><b>Note on the ADFA-5061 flags.</b> Retiring the four {@code *Wizard} booleans was
  * a different fix for a related symptom: those held a <em>decision</em>, and a decision
  * should be asked rather than remembered, which is why they became {@code ContentDoor}.
@@ -67,6 +78,8 @@ import java.util.LinkedHashMap;
  * silence.
  */
 public class WizardSelectionViewModel extends ViewModel {
+
+    private static final String TAG = "K2Go-WizardSelection";
 
     /** "project|lang|flavour" -> size in bytes, accumulated across ZIM category screens. */
     private final LinkedHashMap<String, Long> zimCart = new LinkedHashMap<>();
@@ -118,11 +131,18 @@ public class WizardSelectionViewModel extends ViewModel {
         if (b == null) {
             return;
         }
-        SelectionSnapshot.restoreZim(zimCart,
-                b.getStringArray(K_ZIM_KEYS), b.getLongArray(K_ZIM_SIZES));
-        SelectionSnapshot.restoreBooks(booksCart,
+        // Both fail closed: arrays that do not agree restore nothing rather than half a
+        // cart. Say so — the user just sees an empty cart, and without this line the
+        // report is "it lost my picks" with nothing to go on.
+        if (!SelectionSnapshot.restoreZim(zimCart,
+                b.getStringArray(K_ZIM_KEYS), b.getLongArray(K_ZIM_SIZES))) {
+            Log.w(TAG, "saved ZIM selection did not restore; starting empty");
+        }
+        if (!SelectionSnapshot.restoreBooks(booksCart,
                 b.getStringArray(K_BOOK_IDS), b.getStringArray(K_BOOK_TITLES),
-                b.getStringArray(K_BOOK_AUTHORS), b.getStringArray(K_BOOK_URLS));
+                b.getStringArray(K_BOOK_AUTHORS), b.getStringArray(K_BOOK_URLS))) {
+            Log.w(TAG, "saved Books selection did not restore; starting empty");
+        }
         // A language chosen before the kill outranks the one the factory just resolved
         // from the preference: the user picked it, and the preference did not change.
         String lang = b.getString(K_LANG);
