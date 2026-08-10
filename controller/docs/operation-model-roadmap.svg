@@ -90,7 +90,7 @@
 <circle class="s-todo"  cx="396" cy="258" r="5.5"/><text class="item" x="410" y="262">UX tokens: colour, gates, progress</text>
 <circle class="s-todo"  cx="396" cy="280" r="5.5"/><text class="item" x="410" y="284">Apply to the dashboard Rebuild fork</text>
 <circle class="s-todo"  cx="396" cy="302" r="5.5"/><text class="item" x="410" y="306">Apply to Kolibri (install vs seeding)</text>
-<circle class="s-doing" cx="396" cy="324" r="5.5"/><text class="item" x="410" y="328">Retire the four *Wizard booleans</text>
+<circle class="s-done" cx="396" cy="324" r="5.5"/><text class="item" x="410" y="328">Retire the four *Wizard booleans</text>
 <text class="note" x="410" y="348">facts: installed · healthy · server up · platform present</text>
 
 <!-- ============ ADFA-5062 ============ -->
