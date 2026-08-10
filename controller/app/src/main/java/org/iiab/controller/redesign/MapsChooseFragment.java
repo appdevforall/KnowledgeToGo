@@ -51,8 +51,8 @@ public class MapsChooseFragment extends Fragment {
     // resolveSizes() overwrites them with the packaged maps_sizes.csv at runtime.
     private final Grp[] GROUPS = {
             new Grp(R.drawable.ic_maps_base, R.string.k2go_maps_grp_base, R.string.k2go_maps_grp_base_hint, "base", new Opt[]{
-                    new Opt(R.string.k2go_maps_lvl_low, "nat-z8", 85), new Opt(R.string.k2go_maps_lvl_standard, "osm-z11", 8602),
-                    new Opt(R.string.k2go_maps_lvl_high, "osm-z14", 83354) }, 1),
+                    new Opt(R.string.k2go_maps_lvl_low, "nat-z8", 85), new Opt(R.string.k2go_maps_lvl_standard, "11", 8602),
+                    new Opt(R.string.k2go_maps_lvl_high, "14", 83354) }, 1),
             new Grp(R.drawable.ic_maps_satellite, R.string.k2go_maps_grp_sat, R.string.k2go_maps_grp_sat_hint, "satellite", new Opt[]{
                     new Opt(R.string.k2go_maps_lvl_off, null, 0), new Opt(R.string.k2go_maps_lvl_low, "7", 85),
                     new Opt(R.string.k2go_maps_lvl_standard, "9", 1229), new Opt(R.string.k2go_maps_lvl_high, "11", 21299),

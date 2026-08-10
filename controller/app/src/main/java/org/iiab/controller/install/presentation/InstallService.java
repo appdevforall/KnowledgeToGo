@@ -93,9 +93,9 @@ public final class InstallService extends Service {
     // "maps" module writes the full maps_* var set to local_vars (from the wizard selection) before
     // runrole, instead of the generic <key>_install/_enabled echo. Values are validated against a
     // fixed allowlist before interpolation (D2).
-    public static final String EXTRA_MAPS_VECTOR = "mapsVector";   // nat-z8 | osm-z11 | osm-z14
-    public static final String EXTRA_MAPS_SAT = "mapsSat";         // 7|9|11|13 | none
-    public static final String EXTRA_MAPS_TERRAIN = "mapsTerrain"; // 7|8|9|10 | none
+    public static final String EXTRA_MAPS_VECTOR = "mapsVector";   // nat-z8 | 11 | 14
+    public static final String EXTRA_MAPS_SAT = "mapsSat";         // 7|9|11|12|13 | none
+    public static final String EXTRA_MAPS_TERRAIN = "mapsTerrain"; // 7|8|9|10 | 0-none
     public static final String EXTRA_MAPS_SEARCH = "mapsSearch";   // boolean: static pop-1k-cities on/off
 
     private PowerManager.WakeLock wakeLock;
@@ -554,11 +554,11 @@ public final class InstallService extends Service {
             text = text.replaceAll("(?m)^maps_enabled:\\s*.*", "maps_enabled: True");
 
             if (tier == InstallationPlanner.Tier.STANDARD) {
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: osm-z11");
+                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: 11");
                 text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
                 text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 7");
             } else if (tier == InstallationPlanner.Tier.FULL) {
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: osm-z11");
+                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: 11");
                 text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
                 text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 8");
             }

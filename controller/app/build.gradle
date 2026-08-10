@@ -623,8 +623,8 @@ task refreshMapsSizes {
         // "group|level" -> mirror file name (whole-world pmtiles; search is a tarball).
         def files = [
                 'base|nat-z8'          : "naturalearth-openmaptiles.${slowDate}.z00-z08.pmtiles",
-                'base|osm-z11'         : "openstreetmap-openmaptiles.${vectorDate}.z00-z11.pmtiles",
-                'base|osm-z14'         : "openstreetmap-openmaptiles.${vectorDate}.z00-z14.pmtiles",
+                'base|11'              : "openstreetmap-openmaptiles.${vectorDate}.z00-z11.pmtiles",
+                'base|14'              : "openstreetmap-openmaptiles.${vectorDate}.z00-z14.pmtiles",
                 'satellite|7'          : "s2maps-sentinel2-2023.${slowDate}.z00-z07.pmtiles",
                 'satellite|9'          : "s2maps-sentinel2-2023.${slowDate}.z00-z09.pmtiles",
                 'satellite|11'         : "s2maps-sentinel2-2023.${slowDate}.z00-z11.pmtiles",
