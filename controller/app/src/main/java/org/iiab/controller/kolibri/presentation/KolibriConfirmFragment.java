@@ -116,9 +116,12 @@ public final class KolibriConfirmFragment extends Fragment {
      * when the picker was opened from the wizard — lost on every activity recreation,
      * which is how the reinstall hijack came back. {@code reinstallMode} is read from
      * the Intent on every {@code onCreate}, and Android keeps that Intent in the task
-     * record, so it survives both a rotation and the process being killed and
-     * restored. A first install needs nothing here: with no system on disk the facts
-     * already say defer.
+     * record, so it survives the recreations that lost the flag: a light/dark change
+     * ({@code uiMode} is not in this activity's {@code configChanges}), "Don't keep
+     * activities", and a process death with task restore. Rotation is not one of them
+     * — {@code orientation} is declared, so the activity is never recreated for it.
+     * A first install needs nothing here: with no system on disk the facts already
+     * say defer.
      */
     private boolean isWizard() {
         return SetupLibraryActivity.replacingSystem(this);

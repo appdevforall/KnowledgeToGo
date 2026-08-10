@@ -195,6 +195,10 @@ dependencies {
     // Java artifacts — no Kotlin required.
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.8.7'
     implementation 'androidx.lifecycle:lifecycle-livedata:2.8.7'
+    // ADFA-5061: SavedStateHandle. A ViewModel alone survives a configuration change but
+    // not the system killing the app in the background — which on the low-RAM hardware this
+    // targets is ordinary, not exotic, and the wizard is long enough to be caught by it.
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7'
     implementation 'androidx.work:work-runtime:2.9.1'
     // WorkManager's Worker API returns guava ListenableFuture. Full guava (pulled by
     // :termux-core) forces the empty com.google.guava:listenablefuture stub to win
