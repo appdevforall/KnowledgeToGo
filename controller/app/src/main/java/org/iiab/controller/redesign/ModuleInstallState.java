@@ -12,6 +12,8 @@ package org.iiab.controller.redesign;
 import android.content.Context;
 import android.util.Log;
 
+import org.iiab.controller.install.presentation.ModuleQueueRepository;
+
 /**
  * Everything the module-install flow remembers between screens, in one place to forget.
  *
@@ -49,7 +51,7 @@ public final class ModuleInstallState {
     private ModuleInstallState() {
     }
 
-    /** Whether either store still holds something. */
+    /** Whether either persisted store still holds something. */
     public static boolean any(Context ctx) {
         return ctx != null && (ModuleWishlist.has(ctx) || ModuleBatch.has(ctx));
     }
@@ -71,6 +73,20 @@ public final class ModuleInstallState {
         // message. Both clears are idempotent, so there is nothing to guard.
         ModuleWishlist.clear(app);
         ModuleBatch.clear(app);
-        Log.i(TAG, "module install state discarded (scheduled list + batch)");
+
+        // ADFA-5074: and the queue's own verdict, which is held in memory for the life of the
+        // process. A finished install leaves it on DONE, and the install index reads that phase
+        // to decide whether a row is complete — so a new run drew a green check over a maps
+        // install that had not started, and only corrected itself when the real runrole
+        // published RUNNING. The row was trusting a verdict without asking whose it was.
+        //
+        // Never over a live one: a runrole in flight owns this state, and posting idle under it
+        // would replace a true report with a false one. On a replacement the queue has already
+        // been stopped; on a fresh wizard run there is nothing to stop.
+        ModuleQueueRepository queue = ModuleQueueRepository.get();
+        if (!queue.isRunning()) {
+            queue.postIdle();
+        }
+        Log.i(TAG, "module install state discarded (scheduled list, batch, queue verdict)");
     }
 }
