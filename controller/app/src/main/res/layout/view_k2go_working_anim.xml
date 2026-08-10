@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-5074: the "working" animation, once.
+<!-- ADFA-5074: the "working" animation, for the four progress cards.
+
+     NOT every animation in the app: BackupJobFragment picks k2go_backup_loop or
+     k2go_restore_loop from its mode (ADFA-4961) and keeps its own block. That is the same
+     principle written earlier — layout declares none, code decides from the operation — and
+     it is left alone on purpose: backup and restore are system operations, not content, and
+     folding them in is a wider change than this one. So the visual model is incomplete by
+     design for now: four assets exist, ProgressVisual names two.
 
      It was copied verbatim into three card layouts (ZIM, Maps, module install) and missing
      from Courses entirely — which is how a type ends up without one, and how three copies

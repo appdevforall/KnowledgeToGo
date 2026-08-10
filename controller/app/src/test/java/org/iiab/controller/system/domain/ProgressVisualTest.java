@@ -42,6 +42,46 @@ public class ProgressVisualTest {
         assertEquals(ProgressVisual.BUILD, ProgressVisual.forOperation(Operation.system()));
     }
 
+    // ---- the row keys ------------------------------------------------------
+
+    @Test
+    public void theIndexRowKeysMapToTheRightVisual() {
+        assertEquals(ProgressVisual.DOWNLOAD, ProgressVisual.forKey("zim"));
+        assertEquals(ProgressVisual.DOWNLOAD, ProgressVisual.forKey("books"));
+        assertEquals(ProgressVisual.DOWNLOAD, ProgressVisual.forKey("kolibri"));
+        assertEquals(ProgressVisual.BUILD, ProgressVisual.forKey("maps"));
+    }
+
+    @Test
+    public void aModuleRowIsABuildWhateverTheModuleIs() {
+        // "mod:<name>" is how the index names a proot module row. The prefix is the part
+        // that breaks quietly — an off-by-one in the substring would silently classify
+        // every module as content and show it a download animation.
+        assertEquals(ProgressVisual.BUILD, ProgressVisual.forKey("mod:calibreweb"));
+        assertEquals(ProgressVisual.BUILD, ProgressVisual.forKey("mod:kolibri"));
+        assertEquals(ProgressVisual.BUILD, ProgressVisual.forKey("mod:"));
+    }
+
+    @Test
+    public void anUnknownKeyIsTreatedAsContent() {
+        // Not a crash and not a build: three of the four types are downloads, so an
+        // unrecognised row draws the common case rather than claiming to build something.
+        assertEquals(ProgressVisual.DOWNLOAD, ProgressVisual.forKey("banana"));
+        assertEquals(ProgressVisual.DOWNLOAD, ProgressVisual.forKey(""));
+        assertEquals(ProgressVisual.DOWNLOAD, ProgressVisual.forKey(null));
+    }
+
+    @Test
+    public void aModuleKeyReachesThePerPlatformHook() {
+        // The reason forModuleInstall takes the name at all: the exception point in
+        // forOperation matches on platform(), so handing it an empty name would make the
+        // hook unreachable from the one place most likely to need it.
+        assertEquals("calibreweb",
+                Operation.appInstall("calibreweb").platform());
+        assertEquals(ProgressVisual.BUILD, ProgressVisual.forModuleInstall("calibreweb"));
+        assertEquals(ProgressVisual.BUILD, ProgressVisual.forModuleInstall(null));
+    }
+
     @Test
     public void nothingToGoOnFallsBackToTheCommonCase() {
         // A screen asking this only wants something to draw; refusing to answer would be

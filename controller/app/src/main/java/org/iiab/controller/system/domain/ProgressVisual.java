@@ -61,4 +61,41 @@ public enum ProgressVisual {
     public static ProgressVisual forContent(ContentType type) {
         return type == null ? DOWNLOAD : forOperation(type.operation());
     }
+
+    /** The visual for installing a platform's app — a runrole, so always a build. */
+    public static ProgressVisual forModuleInstall(String moduleKey) {
+        return forOperation(Operation.appInstall(moduleKey == null ? "" : moduleKey));
+    }
+
+    /**
+     * The visual for one of the progress index's row keys.
+     *
+     * <p>The keys are {@code "zim"}, {@code "books"}, {@code "kolibri"}, {@code "maps"} and
+     * {@code "mod:<name>"} for a proot module. {@link ContentType} already owns the first
+     * four, so the prefix is parsed here rather than in presentation — and the parsing is
+     * the part that breaks quietly, so it is the part with a test.
+     *
+     * <p>An unrecognised key is treated as content, which is the case three of the four
+     * types are in.
+     */
+    public static ProgressVisual forKey(String key) {
+        if (key == null) {
+            return DOWNLOAD;
+        }
+        if (key.startsWith(MODULE_PREFIX)) {
+            return forModuleInstall(key.substring(MODULE_PREFIX.length()));
+        }
+        return forContent(ContentType.byKey(key));
+    }
+
+    /** Prefix the progress index uses for a proot module row. */
+    public static final String MODULE_PREFIX = "mod:";
+
+    // TODO(ADFA-5074): this model is deliberately incomplete. The app has four working
+    // animations — k2go_working_loop, k2go_backup_loop, k2go_restore_loop — and this enum
+    // names two. BackupJobFragment (ADFA-4961) already resolves its own from the mode, by
+    // the same principle: the layout declares no asset and the code decides from what the
+    // operation is. It was written first and is not folded in here because backup and
+    // restore are system operations rather than content, which is a wider change. Whoever
+    // extends this should extend that precedent rather than build a third mechanism.
 }

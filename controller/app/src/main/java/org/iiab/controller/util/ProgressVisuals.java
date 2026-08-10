@@ -7,13 +7,12 @@
  *               The one place a file name appears (ADFA-5074).
  * ============================================================================
  */
-package org.iiab.controller.redesign;
+package org.iiab.controller.util;
 
 import androidx.annotation.RawRes;
 
 import org.iiab.controller.R;
 import org.iiab.controller.system.domain.ContentType;
-import org.iiab.controller.system.domain.Operation;
 import org.iiab.controller.system.domain.ProgressVisual;
 
 /**
@@ -28,9 +27,6 @@ public final class ProgressVisuals {
 
     private ProgressVisuals() {
     }
-
-    /** Prefix the install index uses for a proot module row. */
-    private static final String MODULE_PREFIX = "mod:";
 
     /**
      * The asset for an intent.
@@ -49,30 +45,11 @@ public final class ProgressVisuals {
         }
     }
 
-    /**
-     * The intent for one of the index's row keys.
-     *
-     * <p>The keys are a presentation vocabulary — {@code "zim"}, {@code "books"},
-     * {@code "kolibri"}, {@code "maps"}, and {@code "mod:<name>"} for a proot module — so
-     * turning one into an {@link Operation} belongs here rather than in the domain. Anything
-     * unrecognised is treated as content, which is the case three of the four types are in.
-     */
-    public static ProgressVisual visualForKey(String key) {
-        if (key == null) {
-            return ProgressVisual.DOWNLOAD;
-        }
-        if (key.startsWith(MODULE_PREFIX)) {
-            return ProgressVisual.forOperation(
-                    Operation.appInstall(key.substring(MODULE_PREFIX.length())));
-        }
-        ContentType type = ContentType.byKey(key);
-        return type == null ? ProgressVisual.DOWNLOAD : ProgressVisual.forContent(type);
-    }
 
     /** The asset for one of the index's row keys, in one call. */
     @RawRes
     public static int rawResForKey(String key) {
-        return rawResFor(visualForKey(key));
+        return rawResFor(ProgressVisual.forKey(key));
     }
 
     /**
@@ -98,8 +75,16 @@ public final class ProgressVisuals {
         anim.playAnimation();
     }
 
-    /** The same, for a proot module install rather than a content type. */
-    public static void applyForModule(android.view.View root) {
+    /**
+     * The same, for a proot module install.
+     *
+     * @param moduleKey which module. Passed on rather than dropped: the per-platform
+     *                  exception in {@link ProgressVisual#forOperation} matches on the
+     *                  platform name, and a module is the likeliest thing to want art of
+     *                  its own — handing it an empty name would have made that hook
+     *                  unreachable from the one place it is for.
+     */
+    public static void applyForModule(android.view.View root, String moduleKey) {
         if (root == null) {
             return;
         }
@@ -107,7 +92,7 @@ public final class ProgressVisuals {
         if (anim == null) {
             return;
         }
-        anim.setAnimation(rawResFor(ProgressVisual.forOperation(Operation.appInstall(""))));
+        anim.setAnimation(rawResFor(ProgressVisual.forModuleInstall(moduleKey)));
         anim.playAnimation();
     }
 }

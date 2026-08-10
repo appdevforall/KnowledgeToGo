@@ -33,8 +33,14 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_muted" />
 
-        <!-- ADFA-5074: shared block; the asset is chosen by ProgressVisuals. -->
-        <include layout="@layout/view_k2go_working_anim" />
+        <!-- ADFA-5074: shared block; the asset is chosen by ProgressVisuals. The margin is
+             overridden because this card always spaced it at 16dp, not the shared 12dp —
+             overriding layout attrs on an <include> requires restating width and height. -->
+        <include
+            layout="@layout/view_k2go_working_anim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
         <TextView
             android:id="@+id/k2go_modinst_status"

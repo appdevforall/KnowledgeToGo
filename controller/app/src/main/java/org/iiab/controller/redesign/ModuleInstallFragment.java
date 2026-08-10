@@ -68,7 +68,8 @@ public class ModuleInstallFragment extends Fragment {
 
         status = root.findViewById(R.id.k2go_modinst_status);
         logLabel = root.findViewById(R.id.k2go_modinst_log_label);
-        ProgressVisuals.applyForModule(root);   // ADFA-5074
+        // ADFA-5074: the key is passed so a module that earns its own art can be matched.
+        org.iiab.controller.util.ProgressVisuals.applyForModule(root, key);
         logChevron = root.findViewById(R.id.k2go_modinst_log_chevron);
         logScroll = root.findViewById(R.id.k2go_modinst_log_scroll);
         logText = root.findViewById(R.id.k2go_modinst_log_text);

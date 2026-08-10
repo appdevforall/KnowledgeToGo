@@ -77,7 +77,7 @@ public class ZimPreparingFragment extends Fragment {
         bar = root.findViewById(R.id.k2go_zprep_bar);
         listv = root.findViewById(R.id.k2go_zprep_list);
         // ADFA-5074: the shared animation block declares no asset; the rule picks it.
-        ProgressVisuals.apply(root, org.iiab.controller.system.domain.ContentType.ZIM);
+        org.iiab.controller.util.ProgressVisuals.apply(root, org.iiab.controller.system.domain.ContentType.ZIM);
 
         runBgBtn = root.findViewById(R.id.k2go_zprep_run_bg);
         runBgBtn.setOnClickListener(v -> {
