@@ -16,9 +16,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.iiab.controller.kolibri.data.KolibriWishlist;
-import org.iiab.controller.redesign.BooksDownloadService;
 import org.iiab.controller.redesign.MapsProvisioner;
-import org.iiab.controller.redesign.ZimDownloadService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -91,13 +89,20 @@ public final class KolibriProvisioner {
             Log.d(TAG, "kolibri drain blocked: proot (runrole) work is pending/running");
             return false;
         }
-        if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()
-                || BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
-            Log.d(TAG, "kolibri drain blocked: another content stream is active");
+        // ADFA-5074: unfinished work only. This read a merely registered session, so a
+        // download that had already completed and was waiting to be dismissed refused the
+        // next one with "something else is downloading" while nothing was — and the only
+        // way out was force-stopping the app, because these are process statics.
+        // Serialising exists because each stream measures free space at its own moment;
+        // one that has finished has already been absorbed by the disk.
+        if (org.iiab.controller.system.data.PendingContent.anyUnfinishedOtherThan(
+                ctx, org.iiab.controller.system.domain.ContentType.COURSES)) {
+            Log.d(TAG, "kolibri drain blocked: another content stream still has work to do");
             return false;
         }
-        KolibriSeedRepository repo = KolibriSeedRepository.get();
-        return !repo.isRunning() && !repo.hasSession();
+        // Against itself the older question is the right one: starting a second session
+        // overwrites the list the user may still be reading, finished or not.
+        return !KolibriSeedRepository.get().hasSession();
     }
 
     public static boolean drain(Context ctx) {
