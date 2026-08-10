@@ -38,13 +38,15 @@ public final class MapsRunroleCommand {
         String s = SAT_OK.contains(sat) ? sat : "none";
         String t = TERRAIN_OK.contains(terrain) ? terrain : "0-none";
         String engine = searchOn ? "static" : "";
-        return "sed -i -E '/^[[:space:]]*maps_(install|enabled|region_downloader|vector_quality|" +
+        // ADFA-5075: purge both the current key (vector_zoom) and the pre-rename one (vector_quality)
+        // so a box that already wrote the old line doesn't trip the role's transition guard.
+        return "sed -i -E '/^[[:space:]]*maps_(install|enabled|region_downloader|vector_zoom|vector_quality|" +
                 "satellite_zoom|terrain_zoom|search_engine|search_static_db|search_nominatim_db|" +
                 "ne6_zoom|preset_full_quality_regions)[[:space:]]*:/d' " + LV +
                 " && echo 'maps_install: True' >> " + LV +
                 " && echo 'maps_enabled: True' >> " + LV +
                 " && echo 'maps_region_downloader: True' >> " + LV +
-                " && echo 'maps_vector_quality: " + vq + "' >> " + LV +
+                " && echo 'maps_vector_zoom: " + vq + "' >> " + LV +
                 " && echo 'maps_satellite_zoom: " + s + "' >> " + LV +
                 " && echo 'maps_terrain_zoom: " + t + "' >> " + LV +
                 " && echo 'maps_search_engine: \"" + engine + "\"' >> " + LV +
