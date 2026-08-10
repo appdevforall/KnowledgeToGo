@@ -42,7 +42,7 @@
     <string name="k2go_starting_library">正在启动您的图书馆…</string>
     <string name="k2go_home_failed">无法启动 — 点按重试</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
-         install index. Translations below are machine-generated, not human-reviewed. -->
+         install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">正在添加内容 — 点按查看进度</string>
     <string name="k2go_perm_storage">存储访问</string>
     <string name="k2go_storage">存储</string>

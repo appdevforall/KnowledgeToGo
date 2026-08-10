@@ -195,9 +195,16 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // getIntent() is what rebuildInSession() and the rest read; leave the stale one in
         // place and they keep answering about the start before last.
         setIntent(intent);
-        routeFromIntent(intent);
-        render();
+        // NOT routed here. By the time this arrives the activity has been through
+        // onSaveInstanceState, so the FragmentManager still has its state saved —
+        // openDetail()'s commit() would throw IllegalStateException, and it would throw on
+        // the ordinary path, because the notification exists for a user who has already
+        // left. onResume runs after onStart has cleared that, so the route waits there.
+        pendingRoute = intent;
     }
+
+    /** A start that arrived while the fragment manager could not take a transaction. */
+    private android.content.Intent pendingRoute = null;
 
     /**
      * Where a start says to land: a stream's detail when it was asked for by name, or the
@@ -230,6 +237,15 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     @Override
     protected void onResume() {
         super.onResume();
+        // ADFA-5074: a start delivered to onNewIntent, applied now that the fragment manager
+        // will take a transaction again. Consumed once — onResume runs on every return, and
+        // without clearing it the user would be dropped back into that detail every time.
+        if (pendingRoute != null) {
+            android.content.Intent route = pendingRoute;
+            pendingRoute = null;
+            routeFromIntent(route);
+            render();
+        }
         if (serverController != null) serverController.onResume();   // ADFA-4842: keep ServerState fresh
         if (!showingDetail) {
             ZimDownloadService.setListener(this::render);

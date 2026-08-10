@@ -42,7 +42,7 @@
     <string name="k2go_starting_library">Ń bẹ̀rẹ̀ ilé-ìkàwé rẹ…</string>
     <string name="k2go_home_failed">Kò lè bẹ̀rẹ̀ — tẹ̀ láti tún gbìyànjú</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
-         install index. Translations below are machine-generated, not human-reviewed. -->
+         install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Ń fi àkóónú kún un — tẹ̀ láti wo ìlọsíwájú</string>
     <string name="k2go_perm_storage">Ìwọlé sí ibi ìtọ́jú</string>
     <string name="k2go_storage">Ibi ìtọ́jú</string>
