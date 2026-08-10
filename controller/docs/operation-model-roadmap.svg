@@ -133,7 +133,7 @@
 <text class="h2" x="766" y="482">ADFA-5074 · Content surface</text>
 <text class="sub" x="744" y="504">Five landings for one kind of work.</text>
 
-<circle class="s-todo" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
+<circle class="s-done" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
 <circle class="s-todo" cx="744" cy="548" r="5.5"/><text class="item" x="758" y="552">Leaving always releases the session</text>
 <circle class="s-todo" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">One host for every progress screen</text>
 
