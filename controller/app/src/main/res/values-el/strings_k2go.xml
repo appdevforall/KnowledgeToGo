@@ -42,6 +42,9 @@
     <string name="k2go_setup_library_title">Ρυθμίστε τη βιβλιοθήκη σας</string>
     <string name="k2go_starting_library">Εκκίνηση της βιβλιοθήκης σας…</string>
     <string name="k2go_home_failed">Δεν ήταν δυνατή η εκκίνηση — πατήστε για επανάληψη</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. Translations below are machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">Προσθήκη περιεχομένου — πατήστε για την πρόοδο</string>
     <string name="k2go_perm_storage">Πρόσβαση στον χώρο αποθήκευσης</string>
     <string name="k2go_storage">Αποθηκευτικός χώρος</string>
     <string name="k2go_lang_system_default">Προεπιλογή συστήματος</string>

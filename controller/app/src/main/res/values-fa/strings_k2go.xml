@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">کتابخانه خود را راه‌اندازی کنید</string>
     <string name="k2go_starting_library">در حال راه‌اندازی کتابخانه شما…</string>
     <string name="k2go_home_failed">شروع نشد — برای تلاش مجدد ضربه بزنید</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. Translations below are machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">در حال افزودن محتوا — برای دیدن پیشرفت ضربه بزنید</string>
     <string name="k2go_perm_storage">دسترسی به حافظه</string>
     <string name="k2go_storage">حافظه</string>
     <string name="k2go_lang_system_default">پیش‌فرض سیستم</string>

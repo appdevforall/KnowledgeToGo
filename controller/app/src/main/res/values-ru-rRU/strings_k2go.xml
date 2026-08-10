@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">Настройте библиотеку</string>
     <string name="k2go_starting_library">Запуск библиотеки…</string>
     <string name="k2go_home_failed">Не удалось запустить — нажмите, чтобы повторить</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. Translations below are machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">Добавление контента — нажмите, чтобы увидеть ход</string>
     <string name="k2go_perm_storage">Доступ к хранилищу</string>
     <string name="k2go_storage">Хранилище</string>
     <string name="k2go_lang_system_default">Системный по умолчанию</string>

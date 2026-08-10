@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">আপনার লাইব্রেরি সেট আপ করুন</string>
     <string name="k2go_starting_library">আপনার লাইব্রেরি শুরু হচ্ছে…</string>
     <string name="k2go_home_failed">শুরু করা যায়নি — আবার চেষ্টা করতে ট্যাপ করুন</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. Translations below are machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">কনটেন্ট যোগ করা হচ্ছে — অগ্রগতি দেখতে ট্যাপ করুন</string>
     <string name="k2go_perm_storage">স্টোরেজ অ্যাক্সেস</string>
     <string name="k2go_storage">স্টোরেজ</string>
     <string name="k2go_lang_system_default">সিস্টেম ডিফল্ট</string>

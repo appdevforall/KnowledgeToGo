@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">Configurează-ți biblioteca</string>
     <string name="k2go_starting_library">Se pornește biblioteca…</string>
     <string name="k2go_home_failed">Nu a pornit — atinge pentru a reîncerca</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. Translations below are machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">Se adaugă conținut — atinge pentru a vedea progresul</string>
     <string name="k2go_perm_storage">Acces la stocare</string>
     <string name="k2go_storage">Stocare</string>
     <string name="k2go_lang_system_default">Implicit sistem</string>

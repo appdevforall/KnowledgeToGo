@@ -172,11 +172,46 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // ADFA-4988: a content confirm hints its stream -> open its detail only when it is the sole
         // active stream, otherwise show the index.
         if (s == null) {
-            String openStream = getIntent().getStringExtra(EXTRA_OPEN_STREAM);
-            String hintStream = getIntent().getStringExtra(EXTRA_HINT_STREAM);
-            if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
-            else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
+            routeFromIntent(getIntent());
         }
+    }
+
+    /**
+     * ADFA-5074: the same routing when the task is resumed rather than created.
+     *
+     * <p>This activity is {@code singleTask}, so a second start — tapping a download
+     * notification while an instance is already alive — does not run {@code onCreate}.
+     * It arrives here, and without this the deep-link extra was read once at creation
+     * and never again: the user asked for a stream and got whatever the screen happened
+     * to be showing. Which is the common case, because the notification exists precisely
+     * for when the user has already been here and left.
+     */
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        if (intent == null) {
+            return;
+        }
+        // getIntent() is what rebuildInSession() and the rest read; leave the stale one in
+        // place and they keep answering about the start before last.
+        setIntent(intent);
+        routeFromIntent(intent);
+        render();
+    }
+
+    /**
+     * Where a start says to land: a stream's detail when it was asked for by name, or the
+     * hinted stream when it is the only thing running. Neither means "go to the index" —
+     * that is where the screen already is.
+     */
+    private void routeFromIntent(android.content.Intent intent) {
+        if (intent == null) {
+            return;
+        }
+        String openStream = intent.getStringExtra(EXTRA_OPEN_STREAM);
+        String hintStream = intent.getStringExtra(EXTRA_HINT_STREAM);
+        if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
+        else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
     }
 
     /** ADFA-4988: open the just-confirmed REST stream's detail directly when it is the ONLY active work;

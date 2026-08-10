@@ -85,17 +85,18 @@
 <text class="note" x="396" y="167">Start here — everything else reads it.</text>
 
 <circle class="s-done" cx="396" cy="192" r="5.5"/><text class="item" x="410" y="196">One reader for the system facts</text>
-<circle class="s-done" cx="396" cy="214" r="5.5"/><text class="item" x="410" y="218">Pure resolver: live / stopped / deferred</text>
-<circle class="s-doing" cx="396" cy="236" r="5.5"/><text class="item" x="410" y="240">kind / class type on each operation</text>
-<circle class="s-todo"  cx="396" cy="258" r="5.5"/><text class="item" x="410" y="262">UX tokens: colour, gates, progress</text>
-<circle class="s-todo"  cx="396" cy="280" r="5.5"/><text class="item" x="410" y="284">Apply to the dashboard Rebuild fork</text>
-<circle class="s-todo"  cx="396" cy="302" r="5.5"/><text class="item" x="410" y="306">Apply to Kolibri (install vs seeding)</text>
-<circle class="s-done" cx="396" cy="324" r="5.5"/><text class="item" x="410" y="328">Retire the four *Wizard booleans</text>
-<text class="note" x="410" y="348">facts: installed · healthy · server up · platform present</text>
+<circle class="s-done" cx="396" cy="211" r="5.5"/><text class="item" x="410" y="215">Pure resolver: live / stopped / deferred</text>
+<circle class="s-doing" cx="396" cy="230" r="5.5"/><text class="item" x="410" y="234">kind / class type on each operation</text>
+<circle class="s-todo"  cx="396" cy="249" r="5.5"/><text class="item" x="410" y="253">UX tokens → ADFA-5074</text>
+<circle class="s-todo"  cx="396" cy="268" r="5.5"/><text class="item" x="410" y="272">Apply to the dashboard Rebuild fork</text>
+<circle class="s-todo"  cx="396" cy="287" r="5.5"/><text class="item" x="410" y="291">Apply to Kolibri (install vs seeding)</text>
+<circle class="s-done" cx="396" cy="306" r="5.5"/><text class="item" x="410" y="310">Retire the four *Wizard booleans</text>
+<circle class="s-done" cx="396" cy="325" r="5.5"/><text class="item" x="410" y="329">Wizard selection survives being killed</text>
+<text class="note" x="410" y="347">facts: installed · healthy · server up · platform present</text>
 
 <!-- ============ ADFA-5062 ============ -->
 <rect class="card" x="720" y="80" width="316" height="192"/>
-<circle class="badge" cx="744" cy="105" r="13"/><text class="badgetx" x="740" y="110">2</text>
+<circle class="badge" cx="744" cy="105" r="13"/><text class="badgetx" x="740" y="110">3</text>
 <text class="h2" x="766" y="110">ADFA-5062 · Retire derivations</text>
 <text class="sub" x="744" y="132">The surfaces that still guess.</text>
 
@@ -107,7 +108,7 @@
 
 <!-- ============ ADFA-5063 ============ -->
 <rect class="card" x="720" y="292" width="316" height="146"/>
-<circle class="badge" cx="744" cy="317" r="13"/><text class="badgetx" x="740" y="322">3</text>
+<circle class="badge" cx="744" cy="317" r="13"/><text class="badgetx" x="740" y="322">4</text>
 <text class="h2" x="766" y="322">ADFA-5063 · Reversibility</text>
 <text class="sub" x="744" y="344">A decision, not a migration.</text>
 
@@ -125,6 +126,16 @@
 <circle class="s-done" cx="396" cy="498" r="5.5"/><text class="item" x="410" y="502">Persist the installed tier</text>
 <circle class="s-todo" cx="396" cy="520" r="5.5"/><text class="item" x="410" y="524">Two separately invoked installers</text>
 <circle class="s-todo" cx="396" cy="542" r="5.5"/><text class="item" x="410" y="546">Safe system change + data migration</text>
+
+<!-- ============ ADFA-5074 ============ -->
+<rect class="card" x="720" y="452" width="316" height="136"/>
+<circle class="badge" cx="744" cy="477" r="13"/><text class="badgetx" x="740" y="482">2</text>
+<text class="h2" x="766" y="482">ADFA-5074 · Content surface</text>
+<text class="sub" x="744" y="504">Five landings for one kind of work.</text>
+
+<circle class="s-todo" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
+<circle class="s-todo" cx="744" cy="548" r="5.5"/><text class="item" x="758" y="552">Leaving always releases the session</text>
+<circle class="s-todo" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">One host for every progress screen</text>
 
 <text class="note" x="24" y="522">Do not close 4758 as superseded: the migration half</text>
 <text class="note" x="24" y="538">is the one that can lose a user's content.</text>
@@ -145,5 +156,6 @@
 <path class="lnk" d="M372,300 C356,300 356,312 344,322" marker-end="url(#arw)"/>
 <text class="lnklbl" x="196" y="316">a SYSTEM op invalidates content state</text>
 
-<text class="note" x="24" y="600">Order: land 5061 first, keep 4954 moving alongside it, then 5062, then 5063. 4758 can run whenever, but reads better after 5061.</text>
+<text class="note" x="24" y="600">Order: 5061 first, 4954 alongside it, then 5074, then 5062, then 5063. 5074 comes before 5062 because 5062 migrates the SetupProgressActivity</text>
+<text class="note" x="24" y="616">key switch — work thrown away if the hosting changes after it. 4758 can run whenever, but reads better after 5061.</text>
 </svg>

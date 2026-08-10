@@ -151,6 +151,24 @@ public final class PendingContent {
             return false;
         }
 
+        /**
+         * Whether a content stream is <b>actually in flight</b> right now.
+         *
+         * <p>Deliberately narrower than {@link #anyLive}, which also counts an order that
+         * is banked and waiting. The question here is "is there something to go back
+         * to?", asked by the Home header that offers the way into the install index. A
+         * banked order that has not started has no screen to show and, if its drain is
+         * blocked, would leave the header claiming work forever.
+         */
+        public boolean anyRunning() {
+            for (ContentType t : ContentType.values()) {
+                if (t.isLive() && hasSession(t)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /** How many orders are banked in total. For logging and copy, never for a
          *  decision — a decision should ask {@link #anyBanked}. */
         public int bankedCount() {
@@ -202,6 +220,11 @@ public final class PendingContent {
     /** One-shot: is any live content in play other than {@code key}? */
     public static boolean anyLiveOtherThan(Context ctx, String key) {
         return read(ctx).anyLiveOtherThan(key);
+    }
+
+    /** One-shot: is a content stream actually running right now? */
+    public static boolean anyRunning(Context ctx) {
+        return read(ctx).anyRunning();
     }
 
     /**
