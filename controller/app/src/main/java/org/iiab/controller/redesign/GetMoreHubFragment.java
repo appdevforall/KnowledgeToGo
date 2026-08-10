@@ -243,9 +243,14 @@ public class GetMoreHubFragment extends Fragment {
         AppExecutors.get().io().execute(() -> {
             final boolean ok = reachable(it.endpoint);
             main.post(() -> {
+                // ADFA-5074: decremented BEFORE the isAdded() check. The counter describes
+                // probes launched, not views present, and the rescan will not run while it
+                // reads above zero — a probe that came back to a detached fragment used to
+                // leave it high, which would have turned the rescan off for good and left
+                // the empty state saying "checking…" forever.
+                probesPending--;
                 if (!isAdded()) return;
                 if (ok) available.add(it.key);
-                probesPending--;
                 buildCards();
             });
         });

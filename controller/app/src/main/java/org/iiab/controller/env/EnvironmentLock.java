@@ -86,6 +86,19 @@ public final class EnvironmentLock {
         return false;
     }
 
+    // TODO(ADFA-5074, PR 3): "unfinished work" is spelled out twice — here, and in
+    // PendingContent.hasUnfinishedWork(), for the same three types. Two definitions that
+    // have to agree, so a type that changes its notion of complete has to be remembered in
+    // both. This one is not routed through PendingContent yet because isBusyNow() is asked
+    // from very early paths and the initialisation order was not worth risking in a fix;
+    // it belongs with the other "is anything happening?" duplication between Home and the
+    // install index, which PR 3 unifies.
+    //
+    // TODO(ADFA-4874): a session left non-terminal — the service killed without reaching
+    // sessionComplete() — reads as work in flight forever, and now blocks here, the Home
+    // header and all three drains, with no way out but force-stopping the app. The durable
+    // background-jobs monitor is what gives a stuck session an expiry.
+
     /**
      * The single question every deep-env operation asks before starting: is a deep-environment
      * operation already in progress (or is it unsafe to start one)? Combines the process-scoped signal,
