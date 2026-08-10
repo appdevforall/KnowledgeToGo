@@ -25,9 +25,16 @@ import org.iiab.controller.system.domain.SystemReplacement;
  * The one place that forgets content state when the system is replaced.
  *
  * <p>{@link SystemReplacement} decides <em>what</em>; this carries it out against
- * the seven stores that actually hold it — three in-memory download sessions (ZIM,
- * Books, Kolibri) and four on-disk orders (those three plus Maps). Maps has no
- * session of its own: it keeps no download progress in the app, only a wishlist.
+ * the nine stores that actually hold it — three in-memory download sessions (ZIM,
+ * Books, Kolibri), four on-disk orders (those three plus Maps), and the module-install
+ * flow's own two, behind {@code ModuleInstallState}. Maps has no session of its own: it
+ * keeps no download progress in the app, only a wishlist.
+ *
+ * <p><b>The name undersells it now</b> (ADFA-5074). It began as content only, and the
+ * module stores were added when a stale batch was found drawing a row for a module from an
+ * unrelated install. Renaming it would touch every destructive route for no behavioural
+ * gain, so the name stays and this note carries the truth: what it forgets is state that
+ * described the system that went away, whether or not that state is content.
  *
  * <p><b>Two moments, because they have different costs.</b>
  *
@@ -118,6 +125,10 @@ public final class ContentStateInvalidator {
         int discarded = PendingContent.read(app).bankedCount();
 
         PendingContent.clearAll(app);
+        // ADFA-5074: the module-install flow keeps two stores of its own and neither was in
+        // this enumeration, because a module is not content. They describe work arranged
+        // against the system that just went away, which is exactly what this method is for.
+        org.iiab.controller.redesign.ModuleInstallState.clearAll(app);
 
         Log.i(TAG, "after " + cause + ": " + discarded + " pending order(s) discarded");
     }
