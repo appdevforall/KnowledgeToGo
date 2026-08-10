@@ -15,12 +15,14 @@ import java.util.LinkedHashMap;
  */
 public class WizardSelectionViewModelTest {
 
+    // A null handle means "no saved state": the flattening that goes into one is tested
+    // in SelectionSnapshotTest, which needs no Bundle and so runs on a plain JVM too.
     private static WizardSelectionViewModel following() {
-        return new WizardSelectionViewModel("en", "en");
+        return new WizardSelectionViewModel("en", "en", null);
     }
 
     private static WizardSelectionViewModel chosen() {
-        return new WizardSelectionViewModel("es", "en");
+        return new WizardSelectionViewModel("es", "en", null);
     }
 
     // ---- the carts ----------------------------------------------------------
@@ -102,7 +104,7 @@ public class WizardSelectionViewModelTest {
         assertEquals("en", vm.contentLang());
         assertFalse(vm.isContentLangManual());
 
-        WizardSelectionViewModel unknown = new WizardSelectionViewModel(null, null);
+        WizardSelectionViewModel unknown = new WizardSelectionViewModel(null, null, null);
         assertEquals("", unknown.contentLang());
         assertFalse(unknown.isContentLangManual());
     }

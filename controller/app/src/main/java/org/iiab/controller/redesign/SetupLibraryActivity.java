@@ -76,7 +76,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     private org.iiab.controller.wizard.presentation.WizardSelectionViewModel selection() {
         if (selection == null) {
             selection = new androidx.lifecycle.ViewModelProvider(this,
-                    new org.iiab.controller.wizard.presentation.WizardSelectionViewModelFactory(this))
+                    new org.iiab.controller.wizard.presentation.WizardSelectionViewModelFactory(this, this))
                     .get(org.iiab.controller.wizard.presentation.WizardSelectionViewModel.class);
         }
         return selection;
