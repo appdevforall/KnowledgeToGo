@@ -33,7 +33,14 @@ import android.util.Log;
  *
  * <p>The content side already had this — four wishlists behind {@code PendingContent} — and
  * these two were simply not in that enumeration, because a module install is not content.
- * Rather than teach two more call sites to list them, they are cleared together here.
+ * Rather than teach two more call sites to list them, they are cleared together here, and
+ * both facades sit behind {@code PendingWork} so no caller enumerates anything.
+ *
+ * <p><b>Not {@code HiddenModules}</b>, which also persists module keys. That one records which
+ * modules the user chose not to see on Home — a preference about the app, not work arranged
+ * against a system — so it is meant to outlive a wipe. Named here because it looks like a
+ * third store to anyone grepping for module keys, and the next person should not have to work
+ * out why it was left alone.
  */
 public final class ModuleInstallState {
 
@@ -59,11 +66,11 @@ public final class ModuleInstallState {
             return;
         }
         Context app = ctx.getApplicationContext();
-        boolean had = any(app);
+        // Unconditional: asking first cost two SharedPreferences reads purely to decide
+        // whether to log, and one caller is the wizard's onCreate — main-thread disk for a
+        // message. Both clears are idempotent, so there is nothing to guard.
         ModuleWishlist.clear(app);
         ModuleBatch.clear(app);
-        if (had) {
-            Log.i(TAG, "module install state discarded (scheduled list + batch)");
-        }
+        Log.i(TAG, "module install state discarded (scheduled list + batch)");
     }
 }

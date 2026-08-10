@@ -124,11 +124,10 @@ public final class ContentStateInvalidator {
         Context app = ctx.getApplicationContext();
         int discarded = PendingContent.read(app).bankedCount();
 
-        PendingContent.clearAll(app);
-        // ADFA-5074: the module-install flow keeps two stores of its own and neither was in
-        // this enumeration, because a module is not content. They describe work arranged
-        // against the system that just went away, which is exactly what this method is for.
-        org.iiab.controller.redesign.ModuleInstallState.clearAll(app);
+        // ADFA-5074: through PendingWork, so this and the wizard's own clear-on-open ask the
+        // same question. Listing the facades here as well would put the enumeration back in
+        // two places, which is how the module stores came to be missing from it.
+        PendingWork.clearAll(app);
 
         Log.i(TAG, "after " + cause + ": " + discarded + " pending order(s) discarded");
     }
