@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">Kitabxananızı qurun</string>
     <string name="k2go_starting_library">Kitabxananız başladılır…</string>
     <string name="k2go_home_failed">Başlamadı — yenidən cəhd üçün toxun</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. This translation is machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">Məzmun əlavə edilir — gedişatı görmək üçün toxunun</string>
     <string name="k2go_perm_storage">Yaddaşa giriş</string>
     <string name="k2go_storage">Yaddaş</string>
     <string name="k2go_lang_system_default">Sistem defoltu</string>

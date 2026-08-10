@@ -68,16 +68,21 @@ public final class PendingContent {
         private final boolean mapsBanked;
         private final boolean zimSession;
         private final boolean booksSession;
+        private final boolean zimRunning;
+        private final boolean booksRunning;
         private final KolibriSeedState courses;
 
         private Snapshot(int zimBanked, int booksBanked, int coursesBanked, boolean mapsBanked,
-                         boolean zimSession, boolean booksSession, KolibriSeedState courses) {
+                         boolean zimSession, boolean booksSession,
+                         boolean zimRunning, boolean booksRunning, KolibriSeedState courses) {
             this.zimBanked = zimBanked;
             this.booksBanked = booksBanked;
             this.coursesBanked = coursesBanked;
             this.mapsBanked = mapsBanked;
             this.zimSession = zimSession;
             this.booksSession = booksSession;
+            this.zimRunning = zimRunning;
+            this.booksRunning = booksRunning;
             this.courses = courses;
         }
 
@@ -92,8 +97,30 @@ public final class PendingContent {
             }
         }
 
-        /** Whether a stream for this type is already running. Never true for Maps,
-         *  whose progress belongs to the module queue rather than to a stream. */
+        /**
+         * Whether a stream for this type is <b>in flight</b> right now.
+         *
+         * <p>Not the same as {@link #hasSession}, and the difference is the whole reason
+         * both exist. A session stays registered after the work finishes, until the user
+         * dismisses it with Finish — so a screen that asks "is anything happening?" and
+         * reads {@code hasSession} will keep saying yes over a download that ended
+         * yesterday. Never true for Maps, whose progress belongs to the module queue.
+         */
+        public boolean isRunning(ContentType type) {
+            switch (type) {
+                case ZIM: return zimRunning;
+                case BOOKS: return booksRunning;
+                case COURSES: return courses.isRunning();
+                default: return false;
+            }
+        }
+
+        /**
+         * Whether a session for this type is registered — running, or finished and not
+         * yet dismissed. The right question for "did this run carry REST content?",
+         * because a finished stream still did; the wrong one for "is something
+         * happening?". Never true for Maps.
+         */
         public boolean hasSession(ContentType type) {
             switch (type) {
                 case ZIM: return zimSession;
@@ -151,6 +178,25 @@ public final class PendingContent {
             return false;
         }
 
+        /**
+         * Whether a content stream is <b>actually in flight</b> right now.
+         *
+         * <p>Narrower than {@link #anyLive} on both counts: it excludes an order that is
+         * only banked, and it excludes a session that has finished and is merely waiting
+         * to be dismissed. The question is "is there something happening to go back to?",
+         * asked by the Home header that offers the way into the install index. A banked
+         * order has no screen to show; a finished one would leave the header announcing
+         * work that ended, with a tap that leads to a completed list.
+         */
+        public boolean anyRunning() {
+            for (ContentType t : ContentType.values()) {
+                if (t.isLive() && isRunning(t)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /** How many orders are banked in total. For logging and copy, never for a
          *  decision — a decision should ask {@link #anyBanked}. */
         public int bankedCount() {
@@ -174,7 +220,8 @@ public final class PendingContent {
      */
     public static Snapshot read(Context ctx) {
         if (ctx == null) {
-            return new Snapshot(0, 0, 0, false, false, false, KolibriSeedRepository.get().current());
+            return new Snapshot(0, 0, 0, false, false, false, false, false,
+                    KolibriSeedRepository.get().current());
         }
         Context app = ctx.getApplicationContext();
         int zim = 0, books = 0, courses = 0;
@@ -191,6 +238,7 @@ public final class PendingContent {
         }
         return new Snapshot(zim, books, courses, maps,
                 ZimDownloadService.hasSession(), BooksDownloadService.hasSession(),
+                ZimDownloadService.isRunning(), BooksDownloadService.isRunning(),
                 KolibriSeedRepository.get().current());
     }
 
@@ -202,6 +250,11 @@ public final class PendingContent {
     /** One-shot: is any live content in play other than {@code key}? */
     public static boolean anyLiveOtherThan(Context ctx, String key) {
         return read(ctx).anyLiveOtherThan(key);
+    }
+
+    /** One-shot: is a content stream actually running right now? */
+    public static boolean anyRunning(Context ctx) {
+        return read(ctx).anyRunning();
     }
 
     /**

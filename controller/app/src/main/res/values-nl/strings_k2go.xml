@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">Stel je bibliotheek in</string>
     <string name="k2go_starting_library">Je bibliotheek starten…</string>
     <string name="k2go_home_failed">Starten mislukt — tik om opnieuw te proberen</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. This translation is machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">Inhoud toevoegen — tik om de voortgang te zien</string>
     <string name="k2go_perm_storage">Opslagtoegang</string>
     <string name="k2go_storage">Opslag</string>
     <string name="k2go_lang_system_default">Systeemstandaard</string>

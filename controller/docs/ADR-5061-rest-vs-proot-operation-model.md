@@ -311,6 +311,39 @@ most expensive by the third platform. A is B done safely over time.
           on the device (the server does the transfer), so it has to be derived from the bytes and
           the poll timestamps we already hold, or asked of the REST core.
 
+          **The progress screens are already shared; the hosting is not.** A survey for ADFA-5074
+          corrected an earlier reading here. `SetupProgressActivity.openDetail()` hosts the very
+          same fragments the live doors use — `ZimPreparingFragment`, `BooksDownloadsFragment`,
+          `MapsPreparingFragment`, `KolibriSeedingFragment` — each carrying a `fromIndex` flag that
+          hides its own buttons when it lives inside the index. There is no second implementation
+          to merge.
+
+          What differs is **which host the user lands in**, and it differs per type: Get More sends
+          ZIM and Courses to a fragment inside `SetupLibraryActivity`, Books to the index with a
+          hint that jumps straight to the detail, and Maps to the index list; the wizard banks and
+          shows no progress surface at all. Five landings for one kind of work. So the unification
+          is hosting, navigation and re-entry rather than rewriting screens — and where the chrome
+          around the same fragment differs it is levelled **up**, since ZIM's live door has a "Run
+          in background" that Courses lacks while Courses has a terminal action and a
+          retry-before-leaving note the others lack. **ADFA-5074 owns this.**
+
+          Also decide **which lifetime each piece of state gets**. Three mechanisms are in use and
+          nothing says which is for what: a `ViewModel` (survives a configuration change only), a
+          `SavedStateHandle` (also survives a process death, riding the task's instance state), and
+          a process-scoped singleton such as `KolibriSeedRepository` (survives neither). Two
+          consequences are already visible:
+          - **Courses is no longer the reference for a picker selection.** ADFA-5061 gave the ZIM
+            and Books carts a `SavedStateHandle`; `KolibriCatalogViewModel` has none. Levelling it
+            is not the same edit: those carts are flat maps, while Kolibri holds `Channel` objects
+            plus a `PickedSubtrees` per channel. Saving the channels themselves would put a stale
+            copy of the catalogue in the bundle, so the shape is to save **ids only** and re-resolve
+            once the catalogue loads. The cost is the timing, not the serialising, and a channel
+            that vanished between sessions needs an answer.
+          - **Running download sessions are a separate, shared gap.** `ZimDownloadService` and
+            `BooksDownloadService` keep their state in statics, so they do not survive a process
+            death either; `KolibriSeedRepository` is no worse. That is the durable background-jobs
+            monitor already noted in `ZimProvisioner` (ADFA-4874), not a Kolibri defect.
+
           Also converge the **two ways the dispatcher is currently consumed**. The Courses confirm
           maps all five answers to five behaviours; ZIM, Books and Maps collapse them to a boolean
           through `ContentDoor.banks()` and drop the rest. That is deliberate for now — acting on

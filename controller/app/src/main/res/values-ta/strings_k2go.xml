@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">உங்கள் நூலகத்தை அமைக்கவும்</string>
     <string name="k2go_starting_library">உங்கள் நூலகம் தொடங்கப்படுகிறது…</string>
     <string name="k2go_home_failed">தொடங்க முடியவில்லை — மீண்டும் முயற தட்டவும்</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. This translation is machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">உள்ளடக்கம் சேர்க்கப்படுகிறது — முன்னேற்றத்தைக் காண தட்டவும்</string>
     <string name="k2go_perm_storage">சேமிப்பக அணுகல்</string>
     <string name="k2go_storage">சேமிப்பகம்</string>
     <string name="k2go_lang_system_default">கணினி இயல்பு</string>

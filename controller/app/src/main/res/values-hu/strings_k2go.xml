@@ -41,6 +41,9 @@
     <string name="k2go_setup_library_title">Állítsd be a könyvtárad</string>
     <string name="k2go_starting_library">A könyvtárad indítása…</string>
     <string name="k2go_home_failed">Nem sikerült elindítani — koppints az újrapróbáláshoz</string>
+    <!-- ADFA-5074. Home header when a content install is running; tapping opens the
+         install index. This translation is machine-generated, not human-reviewed. -->
+    <string name="k2go_home_installing">Tartalom hozzáadása — koppintson a folyamathoz</string>
     <string name="k2go_perm_storage">Tárhely-hozzáférés</string>
     <string name="k2go_storage">Tárhely</string>
     <string name="k2go_lang_system_default">Rendszer alapértelmezett</string>

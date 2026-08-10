@@ -104,12 +104,12 @@
 <rect class="card-open" x="24" y="636" width="932" height="134"/>
 <rect class="chip" x="40" y="648" width="60" height="19" fill="#FBE4E4" stroke="none"/>
 <text class="chiptx" x="48" y="662" fill="#C0392B">OPEN</text>
-<text class="h3" x="112" y="662">Two doors, two patterns — and the live one has no way back</text>
-<text class="item" x="40" y="686">The wizard QUEUES: wishlist → drain → an index with a card per item. Get More ATTENDS LIVE, and not even consistently:</text>
-<text class="item" x="40" y="702">ZIM and Books open the index but always with a hint, so they land straight in the detail and the list is never seen; Courses skip</text>
-<text class="item" x="40" y="718">the shared index altogether and use their own screen.</text>
-<text class="item" x="40" y="740">Consequence: a live operation has no index to return to, so Back walks the user out of it while it is still running — and there is</text>
-<text class="item" x="40" y="756">no door into the index either. The queue pattern exists because the wizard had no system yet; with four content types it is the one that scales.</text>
+<text class="h3" x="112" y="662">Five landings for one kind of work — owned by ADFA-5074</text>
+<text class="item" x="40" y="686">Wizard, all four types: the order is banked and the user returns to the hub. No progress surface at all until after the install.</text>
+<text class="item" x="40" y="702">Get More: ZIM → ZimPreparingFragment inside SetupLibraryActivity · Books → the index, with a hint that jumps straight to the detail ·</text>
+<text class="item" x="40" y="718">Maps → the index list · Courses → KolibriSeedingFragment inside SetupLibraryActivity.</text>
+<text class="item" x="40" y="740">The screens are NOT duplicated: SetupProgressActivity.openDetail() hosts those same fragments, with a fromIndex flag for the chrome.</text>
+<text class="item" x="40" y="756">What differs is the host — so Back walks out of a live download, a notification returns you elsewhere, and nothing opens the index at all.</text>
 
 <!-- ================= which type is which ================= -->
 <rect class="card" x="24" y="242" width="212" height="244"/>

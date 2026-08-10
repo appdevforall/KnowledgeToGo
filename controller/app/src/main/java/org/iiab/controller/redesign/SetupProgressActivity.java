@@ -172,11 +172,53 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // ADFA-4988: a content confirm hints its stream -> open its detail only when it is the sole
         // active stream, otherwise show the index.
         if (s == null) {
-            String openStream = getIntent().getStringExtra(EXTRA_OPEN_STREAM);
-            String hintStream = getIntent().getStringExtra(EXTRA_HINT_STREAM);
-            if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
-            else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
+            routeFromIntent(getIntent());
         }
+    }
+
+    /**
+     * ADFA-5074: the same routing when the task is resumed rather than created.
+     *
+     * <p>This activity is {@code singleTask}, so a second start — tapping a download
+     * notification while an instance is already alive — does not run {@code onCreate}.
+     * It arrives here, and without this the deep-link extra was read once at creation
+     * and never again: the user asked for a stream and got whatever the screen happened
+     * to be showing. Which is the common case, because the notification exists precisely
+     * for when the user has already been here and left.
+     */
+    @Override
+    protected void onNewIntent(android.content.Intent intent) {
+        super.onNewIntent(intent);
+        if (intent == null) {
+            return;
+        }
+        // getIntent() is what rebuildInSession() and the rest read; leave the stale one in
+        // place and they keep answering about the start before last.
+        setIntent(intent);
+        // NOT routed here. By the time this arrives the activity has been through
+        // onSaveInstanceState, so the FragmentManager still has its state saved —
+        // openDetail()'s commit() would throw IllegalStateException, and it would throw on
+        // the ordinary path, because the notification exists for a user who has already
+        // left. onResume runs after onStart has cleared that, so the route waits there.
+        pendingRoute = intent;
+    }
+
+    /** A start that arrived while the fragment manager could not take a transaction. */
+    private android.content.Intent pendingRoute = null;
+
+    /**
+     * Where a start says to land: a stream's detail when it was asked for by name, or the
+     * hinted stream when it is the only thing running. Neither means "go to the index" —
+     * that is where the screen already is.
+     */
+    private void routeFromIntent(android.content.Intent intent) {
+        if (intent == null) {
+            return;
+        }
+        String openStream = intent.getStringExtra(EXTRA_OPEN_STREAM);
+        String hintStream = intent.getStringExtra(EXTRA_HINT_STREAM);
+        if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
+        else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
     }
 
     /** ADFA-4988: open the just-confirmed REST stream's detail directly when it is the ONLY active work;
@@ -195,6 +237,15 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     @Override
     protected void onResume() {
         super.onResume();
+        // ADFA-5074: a start delivered to onNewIntent, applied now that the fragment manager
+        // will take a transaction again. Consumed once — onResume runs on every return, and
+        // without clearing it the user would be dropped back into that detail every time.
+        if (pendingRoute != null) {
+            android.content.Intent route = pendingRoute;
+            pendingRoute = null;
+            routeFromIntent(route);
+            render();
+        }
         if (serverController != null) serverController.onResume();   // ADFA-4842: keep ServerState fresh
         if (!showingDetail) {
             ZimDownloadService.setListener(this::render);

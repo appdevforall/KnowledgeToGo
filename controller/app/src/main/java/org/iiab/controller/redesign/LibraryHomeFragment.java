@@ -39,7 +39,12 @@ public class LibraryHomeFragment extends Fragment {
     private static final int GRAY = 0, AMBER = 1, GREEN = 2, RED = 3;
     // ADFA-4828: header (aggregate) states — distinct from the per-card states above.
     // ADFA-4837: H_FAILED = installed but the server isn't running and isn't starting.
-    private static final int H_NO_LIBRARY = 0, H_STARTING = 1, H_READY = 2, H_READY_EMPTY = 3, H_FAILED = 4;
+    // ADFA-5074: H_INSTALLING = content is being added right now. Tapping opens the install
+    // index — the only way in that does not start new work. Until this existed the index
+    // could only be arrived at, never opened, so a user who left a running download had no
+    // route back to it.
+    private static final int H_NO_LIBRARY = 0, H_STARTING = 1, H_READY = 2, H_READY_EMPTY = 3,
+            H_FAILED = 4, H_INSTALLING = 5;
     // ADFA-4837: how long a card stays amber (patient) once the box is up before it's called stuck.
     private static final long CARD_RED_GRACE_MS = 60000L;
 
@@ -83,6 +88,13 @@ public class LibraryHomeFragment extends Fragment {
         // when it's genuinely safe (LibraryActivity.canStartServer guards against stacking a 2nd proot).
         if (homeStatusRow != null) {
             homeStatusRow.setOnClickListener(v -> {
+                // ADFA-5074: the way back into a running install. Opens the index without
+                // starting anything — every other route to it begins new work.
+                if (headerState == H_INSTALLING) {
+                    startActivity(new android.content.Intent(
+                            requireContext(), SetupProgressActivity.class));
+                    return;
+                }
                 if (headerState != H_FAILED) return;
                 if (getActivity() instanceof LibraryActivity) {
                     LibraryActivity act = (LibraryActivity) getActivity();
@@ -373,6 +385,16 @@ public class LibraryHomeFragment extends Fragment {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
         if (!installed) { setHeader(H_NO_LIBRARY); return; }
+        // ADFA-5074: content being added outranks everything below. It is the only state
+        // the user can act on from here, and reporting "ready" over a running install is
+        // how the install became unreachable in the first place. Sessions only, not banked
+        // orders: a banked one has no screen to open, and a blocked drain would leave this
+        // claiming work that is not happening.
+        if (org.iiab.controller.system.data.PendingContent.anyRunning(requireContext())
+                || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+            setHeader(H_INSTALLING);
+            return;
+        }
         if (!alive) {
             // ADFA-4837: "Starting…" only while a start is really in progress; otherwise the server
             // isn't coming up on its own → "Couldn't start — tap to retry".
@@ -401,12 +423,14 @@ public class LibraryHomeFragment extends Fragment {
             case H_READY:       text = getString(R.string.k2go_home_ready);       dotColor = R.color.k2go_leaf;  break;
             case H_READY_EMPTY: text = getString(R.string.k2go_home_ready_empty); dotColor = R.color.k2go_leaf;  break;
             case H_FAILED:      text = getString(R.string.k2go_home_failed);      dotColor = R.color.k2go_clay;  break;
+            case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_amber; break;
             default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
         }
         homeStatus.setText(text);
         if (homeStatusDot != null) tint(homeStatusDot, dotColor);
         // ADFA-4837: only the failed state is tappable (retry); keep others inert.
-        if (homeStatusRow != null) homeStatusRow.setClickable(h == H_FAILED);
+        // ADFA-5074: and the installing state, which is the way back into a running install.
+        if (homeStatusRow != null) homeStatusRow.setClickable(h == H_FAILED || h == H_INSTALLING);
     }
 
     private void applyState(Card c, int st) {
