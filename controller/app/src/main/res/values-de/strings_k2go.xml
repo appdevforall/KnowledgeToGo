@@ -404,11 +404,11 @@
     <string name="k2go_gm_maps_title">Karten</string>
     <string name="k2go_gm_maps_desc">Vektor, Satellit, 3D</string>
     <string name="k2go_gm_courses_title">Kurse</string>
-    <string name="k2go_gm_courses_desc">Kolibri-Lektionen</string>
+    <string name="k2go_gm_courses_desc">Lektionen, Videos, Übungen</string>
     <string name="k2go_gm_wikipedia_note">Viele Sammlungen</string>
     <string name="k2go_gm_books_note">Tausende, winzig</string>
     <string name="k2go_gm_maps_note">Qualität wählen</string>
-    <string name="k2go_gm_courses_note">In-App: offen</string>
+    <string name="k2go_gm_courses_note">Themen wählen</string>
     <string name="k2go_maps_scr_title">Karten</string>
     <string name="k2go_maps_landing_sub">Verwalte deine Offline-Karten.</string>
     <string name="k2go_maps_install_title">Karten installieren oder aktualisieren</string>

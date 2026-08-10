@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">地图</string>
     <string name="k2go_gm_maps_desc">矢量、卫星、3D</string>
     <string name="k2go_gm_courses_title">课程</string>
-    <string name="k2go_gm_courses_desc">Kolibri 课时</string>
+    <string name="k2go_gm_courses_desc">课程、视频、练习</string>
     <string name="k2go_gm_wikipedia_note">众多合集</string>
     <string name="k2go_gm_books_note">数千本，小巧</string>
     <string name="k2go_gm_maps_note">选择质量</string>
-    <string name="k2go_gm_courses_note">应用内：待定</string>
+    <string name="k2go_gm_courses_note">选择主题</string>
     <string name="k2go_maps_scr_title">地图</string>
     <string name="k2go_maps_landing_sub">管理您的离线地图。</string>
     <string name="k2go_maps_install_title">安装或更新地图</string>

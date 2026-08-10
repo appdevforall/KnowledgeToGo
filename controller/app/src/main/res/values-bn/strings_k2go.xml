@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">মানচিত্র</string>
     <string name="k2go_gm_maps_desc">ভেক্টর, স্যাটেলাইট, 3D</string>
     <string name="k2go_gm_courses_title">কোর্স</string>
-    <string name="k2go_gm_courses_desc">Kolibri পাঠ</string>
+    <string name="k2go_gm_courses_desc">পাঠ, ভিডিও, অনুশীলন</string>
     <string name="k2go_gm_wikipedia_note">অনেক সংগ্রহ</string>
     <string name="k2go_gm_books_note">হাজার হাজার, ছোট</string>
     <string name="k2go_gm_maps_note">মান বেছে নিন</string>
-    <string name="k2go_gm_courses_note">অ্যাপে: নির্ধারিত হবে</string>
+    <string name="k2go_gm_courses_note">বিষয় বেছে নিন</string>
     <string name="k2go_maps_scr_title">মানচিত্র</string>
     <string name="k2go_maps_landing_sub">আপনার অফলাইন মানচিত্র পরিচালনা করুন।</string>
     <string name="k2go_maps_install_title">মানচিত্র ইনস্টল বা আপডেট করুন</string>

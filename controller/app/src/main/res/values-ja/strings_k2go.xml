@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">地図</string>
     <string name="k2go_gm_maps_desc">ベクター、衛星、3D</string>
     <string name="k2go_gm_courses_title">コース</string>
-    <string name="k2go_gm_courses_desc">Kolibri のレッスン</string>
+    <string name="k2go_gm_courses_desc">レッスン、動画、演習</string>
     <string name="k2go_gm_wikipedia_note">多数のコレクション</string>
     <string name="k2go_gm_books_note">数千冊、軽量</string>
     <string name="k2go_gm_maps_note">品質を選択</string>
-    <string name="k2go_gm_courses_note">アプリ内：未定</string>
+    <string name="k2go_gm_courses_note">トピックを選択</string>
     <string name="k2go_maps_scr_title">地図</string>
     <string name="k2go_maps_landing_sub">オフライン地図を管理します。</string>
     <string name="k2go_maps_install_title">地図をインストールまたは更新</string>

@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">வரைபடங்கள்</string>
     <string name="k2go_gm_maps_desc">வெக்டர், செயற்கைக்கோள், 3D</string>
     <string name="k2go_gm_courses_title">பாடநெறிகள்</string>
-    <string name="k2go_gm_courses_desc">Kolibri பாடங்கள்</string>
+    <string name="k2go_gm_courses_desc">பாடங்கள், வீடியோக்கள், பயிற்சிகள்</string>
     <string name="k2go_gm_wikipedia_note">பல தொகுப்புகள்</string>
     <string name="k2go_gm_books_note">ஆயிரக்கணக்கானவை, சிறியவை</string>
     <string name="k2go_gm_maps_note">தரத்தைத் தேர்வுசெய்</string>
-    <string name="k2go_gm_courses_note">செயலிக்குள்: தீர்மானிக்கப்படும்</string>
+    <string name="k2go_gm_courses_note">தலைப்புகளைத் தேர்வுசெய்க</string>
     <string name="k2go_maps_scr_title">வரைபடங்கள்</string>
     <string name="k2go_maps_landing_sub">உங்கள் ஆஃப்லைன் வரைபடங்களை நிர்வகி.</string>
     <string name="k2go_maps_install_title">வரைபடங்களை நிறுவு அல்லது புதுப்பி</string>

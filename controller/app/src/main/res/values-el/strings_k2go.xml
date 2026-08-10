@@ -404,11 +404,11 @@
     <string name="k2go_gm_maps_title">Χάρτες</string>
     <string name="k2go_gm_maps_desc">Διανυσματικά, δορυφορικά, 3D</string>
     <string name="k2go_gm_courses_title">Μαθήματα</string>
-    <string name="k2go_gm_courses_desc">Μαθήματα Kolibri</string>
+    <string name="k2go_gm_courses_desc">Μαθήματα, βίντεο, ασκήσεις</string>
     <string name="k2go_gm_wikipedia_note">Πολλές συλλογές</string>
     <string name="k2go_gm_books_note">Χιλιάδες, μικροσκοπικά</string>
     <string name="k2go_gm_maps_note">Επιλέξτε ποιότητα</string>
-    <string name="k2go_gm_courses_note">Εντός εφαρμογής: TBD</string>
+    <string name="k2go_gm_courses_note">Επιλέξτε θέματα</string>
     <string name="k2go_maps_scr_title">Χάρτες</string>
     <string name="k2go_maps_landing_sub">Διαχειριστείτε τους χάρτες σας εκτός σύνδεσης.</string>
     <string name="k2go_maps_install_title">Εγκατάσταση ή ενημέρωση χαρτών</string>

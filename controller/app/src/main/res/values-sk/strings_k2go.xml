@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Mapy</string>
     <string name="k2go_gm_maps_desc">Vektorové, satelitné, 3D</string>
     <string name="k2go_gm_courses_title">Kurzy</string>
-    <string name="k2go_gm_courses_desc">Lekcie Kolibri</string>
+    <string name="k2go_gm_courses_desc">Lekcie, videá, cvičenia</string>
     <string name="k2go_gm_wikipedia_note">Množstvo zbierok</string>
     <string name="k2go_gm_books_note">Tisíce, malé</string>
     <string name="k2go_gm_maps_note">Vyberte kvalitu</string>
-    <string name="k2go_gm_courses_note">V aplikácii: TBD</string>
+    <string name="k2go_gm_courses_note">Vyberte témy</string>
     <string name="k2go_maps_scr_title">Mapy</string>
     <string name="k2go_maps_landing_sub">Spravujte svoje offline mapy.</string>
     <string name="k2go_maps_install_title">Nainštalovať alebo aktualizovať mapy</string>

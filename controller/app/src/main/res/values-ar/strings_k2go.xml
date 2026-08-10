@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">الخرائط</string>
     <string name="k2go_gm_maps_desc">متجهية وأقمار صناعية وثلاثية الأبعاد</string>
     <string name="k2go_gm_courses_title">الدورات</string>
-    <string name="k2go_gm_courses_desc">دروس Kolibri</string>
+    <string name="k2go_gm_courses_desc">دروس وفيديوهات وتمارين</string>
     <string name="k2go_gm_wikipedia_note">مجموعات عديدة</string>
     <string name="k2go_gm_books_note">آلاف، صغيرة الحجم</string>
     <string name="k2go_gm_maps_note">اختر الجودة</string>
-    <string name="k2go_gm_courses_note">داخل التطبيق: يُحدَّد لاحقًا</string>
+    <string name="k2go_gm_courses_note">اختر الموضوعات</string>
     <string name="k2go_maps_scr_title">الخرائط</string>
     <string name="k2go_maps_landing_sub">أدِر خرائطك غير المتصلة.</string>
     <string name="k2go_maps_install_title">تثبيت الخرائط أو تحديثها</string>

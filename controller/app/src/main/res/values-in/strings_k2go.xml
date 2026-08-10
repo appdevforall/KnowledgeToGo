@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Peta</string>
     <string name="k2go_gm_maps_desc">Vektor, satelit, 3D</string>
     <string name="k2go_gm_courses_title">Kursus</string>
-    <string name="k2go_gm_courses_desc">Pelajaran Kolibri</string>
+    <string name="k2go_gm_courses_desc">Pelajaran, video, latihan</string>
     <string name="k2go_gm_wikipedia_note">Banyak koleksi</string>
     <string name="k2go_gm_books_note">Ribuan, mungil</string>
     <string name="k2go_gm_maps_note">Pilih kualitas</string>
-    <string name="k2go_gm_courses_note">Dalam aplikasi: TBD</string>
+    <string name="k2go_gm_courses_note">Pilih topik</string>
     <string name="k2go_maps_scr_title">Peta</string>
     <string name="k2go_maps_landing_sub">Kelola peta offline Anda.</string>
     <string name="k2go_maps_install_title">Pasang atau perbarui peta</string>

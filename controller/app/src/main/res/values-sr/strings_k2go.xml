@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Мапе</string>
     <string name="k2go_gm_maps_desc">Векторске, сателитске, 3D</string>
     <string name="k2go_gm_courses_title">Курсеви</string>
-    <string name="k2go_gm_courses_desc">Kolibri лекције</string>
+    <string name="k2go_gm_courses_desc">Лекције, видео, вежбе</string>
     <string name="k2go_gm_wikipedia_note">Много збирки</string>
     <string name="k2go_gm_books_note">Хиљаде, ситне</string>
     <string name="k2go_gm_maps_note">Изаберите квалитет</string>
-    <string name="k2go_gm_courses_note">У апликацији: биће одређено</string>
+    <string name="k2go_gm_courses_note">Изаберите теме</string>
     <string name="k2go_maps_scr_title">Мапе</string>
     <string name="k2go_maps_landing_sub">Управљајте офлајн мапама.</string>
     <string name="k2go_maps_install_title">Инсталирај или ажурирај мапе</string>
