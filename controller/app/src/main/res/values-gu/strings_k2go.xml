@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">નકશા</string>
     <string name="k2go_gm_maps_desc">વેક્ટર, સૅટેલાઇટ, 3D</string>
     <string name="k2go_gm_courses_title">કોર્સ</string>
-    <string name="k2go_gm_courses_desc">Kolibri પાઠ</string>
+    <string name="k2go_gm_courses_desc">પાઠ, વિડિયો, કસરતો</string>
     <string name="k2go_gm_wikipedia_note">ઘણા સંગ્રહો</string>
     <string name="k2go_gm_books_note">હજારો, નાના</string>
     <string name="k2go_gm_maps_note">ગુણવત્તા પસંદ કરો</string>
-    <string name="k2go_gm_courses_note">ઍપમાં: નક્કી થવાનું</string>
+    <string name="k2go_gm_courses_note">વિષયો પસંદ કરો</string>
     <string name="k2go_maps_scr_title">નકશા</string>
     <string name="k2go_maps_landing_sub">તમારા ઑફલાઇન નકશા મૅનેજ કરો.</string>
     <string name="k2go_maps_install_title">નકશા ઇન્સ્ટોલ કે અપડેટ કરો</string>

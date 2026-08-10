@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Bản đồ</string>
     <string name="k2go_gm_maps_desc">Vector, vệ tinh, 3D</string>
     <string name="k2go_gm_courses_title">Khóa học</string>
-    <string name="k2go_gm_courses_desc">Bài học Kolibri</string>
+    <string name="k2go_gm_courses_desc">Bài học, video, bài tập</string>
     <string name="k2go_gm_wikipedia_note">Nhiều bộ sưu tập</string>
     <string name="k2go_gm_books_note">Hàng nghìn, dung lượng nhỏ</string>
     <string name="k2go_gm_maps_note">Chọn chất lượng</string>
-    <string name="k2go_gm_courses_note">Trong ứng dụng: chưa xác định</string>
+    <string name="k2go_gm_courses_note">Chọn chủ đề</string>
     <string name="k2go_maps_scr_title">Bản đồ</string>
     <string name="k2go_maps_landing_sub">Quản lý bản đồ ngoại tuyến của bạn.</string>
     <string name="k2go_maps_install_title">Cài hoặc cập nhật bản đồ</string>

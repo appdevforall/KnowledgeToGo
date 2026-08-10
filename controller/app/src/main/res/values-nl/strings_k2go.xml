@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Kaarten</string>
     <string name="k2go_gm_maps_desc">Vector, satelliet, 3D</string>
     <string name="k2go_gm_courses_title">Cursussen</string>
-    <string name="k2go_gm_courses_desc">Kolibri-lessen</string>
+    <string name="k2go_gm_courses_desc">Lessen, video\'s, oefeningen</string>
     <string name="k2go_gm_wikipedia_note">Veel collecties</string>
     <string name="k2go_gm_books_note">Duizenden, klein</string>
     <string name="k2go_gm_maps_note">Kies kwaliteit</string>
-    <string name="k2go_gm_courses_note">In-app: nog te bepalen</string>
+    <string name="k2go_gm_courses_note">Kies onderwerpen</string>
     <string name="k2go_maps_scr_title">Kaarten</string>
     <string name="k2go_maps_landing_sub">Beheer je offline kaarten.</string>
     <string name="k2go_maps_install_title">Kaarten installeren of bijwerken</string>

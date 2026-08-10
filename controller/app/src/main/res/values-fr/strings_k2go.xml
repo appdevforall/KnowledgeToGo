@@ -406,11 +406,11 @@
     <string name="k2go_gm_maps_title">Cartes</string>
     <string name="k2go_gm_maps_desc">Vectoriel, satellite, 3D</string>
     <string name="k2go_gm_courses_title">Cours</string>
-    <string name="k2go_gm_courses_desc">Leçons Kolibri</string>
+    <string name="k2go_gm_courses_desc">Leçons, vidéos, exercices</string>
     <string name="k2go_gm_wikipedia_note">Nombreuses collections</string>
     <string name="k2go_gm_books_note">Des milliers, minuscules</string>
     <string name="k2go_gm_maps_note">Choisir la qualité</string>
-    <string name="k2go_gm_courses_note">Dans l\'appli : à venir</string>
+    <string name="k2go_gm_courses_note">Choisir des sujets</string>
 
     <string name="k2go_maps_scr_title">Cartes</string>
     <string name="k2go_maps_landing_sub">Gérez vos cartes hors ligne.</string>

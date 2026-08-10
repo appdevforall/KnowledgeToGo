@@ -72,8 +72,32 @@ public final class EnvironmentLock {
                 && !org.iiab.controller.redesign.ZimDownloadService.isComplete()) return true;
         if (org.iiab.controller.redesign.BooksDownloadService.hasSession()
                 && !org.iiab.controller.redesign.BooksDownloadService.isComplete()) return true;
+        // ADFA-5074: Courses were never added here. A backup, restore, clone or maps runrole
+        // could start on top of a live seeding session and stop the server underneath it —
+        // exactly what the note above says this guard exists to prevent. The third content
+        // type arrived after the list and nobody registered it, the same way it was missed in
+        // the post-install drain and in the index's completion check.
+        //
+        // Same idiom as its neighbours on purpose: a session that has FINISHED protects
+        // nothing, so it must not gate a deep-env op. Only work in flight does.
+        org.iiab.controller.kolibri.presentation.KolibriSeedRepository kolibri =
+                org.iiab.controller.kolibri.presentation.KolibriSeedRepository.get();
+        if (kolibri.hasSession() && !kolibri.isComplete()) return true;
         return false;
     }
+
+    // TODO(ADFA-5074, PR 3): "unfinished work" is spelled out twice — here, and in
+    // PendingContent.hasUnfinishedWork(), for the same three types. Two definitions that
+    // have to agree, so a type that changes its notion of complete has to be remembered in
+    // both. This one is not routed through PendingContent yet because isBusyNow() is asked
+    // from very early paths and the initialisation order was not worth risking in a fix;
+    // it belongs with the other "is anything happening?" duplication between Home and the
+    // install index, which PR 3 unifies.
+    //
+    // TODO(ADFA-4874): a session left non-terminal — the service killed without reaching
+    // sessionComplete() — reads as work in flight forever, and now blocks here, the Home
+    // header and all three drains, with no way out but force-stopping the app. The durable
+    // background-jobs monitor is what gives a stuck session an expiry.
 
     /**
      * The single question every deep-env operation asks before starting: is a deep-environment

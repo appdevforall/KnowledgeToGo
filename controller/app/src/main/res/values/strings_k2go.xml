@@ -466,11 +466,11 @@
     <string name="k2go_gm_maps_title">Maps</string>
     <string name="k2go_gm_maps_desc">Vector, satellite, 3D</string>
     <string name="k2go_gm_courses_title">Courses</string>
-    <string name="k2go_gm_courses_desc">Kolibri lessons</string>
+    <string name="k2go_gm_courses_desc">Lessons, videos, exercises</string>
     <string name="k2go_gm_wikipedia_note">Many collections</string>
     <string name="k2go_gm_books_note">Thousands, tiny</string>
     <string name="k2go_gm_maps_note">Choose quality</string>
-    <string name="k2go_gm_courses_note">In-app: TBD</string>
+    <string name="k2go_gm_courses_note">Choose topics</string>
 
     <!-- ADFA-4848: Maps Get More flow (WIP; translatable=false until the l10n pass). -->
     <string name="k2go_maps_scr_title">Maps</string>

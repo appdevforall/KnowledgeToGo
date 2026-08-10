@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">نقشه‌ها</string>
     <string name="k2go_gm_maps_desc">برداری، ماهواره‌ای، سه‌بعدی</string>
     <string name="k2go_gm_courses_title">دوره‌ها</string>
-    <string name="k2go_gm_courses_desc">درس‌های Kolibri</string>
+    <string name="k2go_gm_courses_desc">درس‌ها، ویدیوها، تمرین‌ها</string>
     <string name="k2go_gm_wikipedia_note">مجموعه‌های فراوان</string>
     <string name="k2go_gm_books_note">هزاران، کم‌حجم</string>
     <string name="k2go_gm_maps_note">انتخاب کیفیت</string>
-    <string name="k2go_gm_courses_note">درون‌برنامه‌ای: نامشخص</string>
+    <string name="k2go_gm_courses_note">موضوع‌ها را انتخاب کنید</string>
     <string name="k2go_maps_scr_title">نقشه‌ها</string>
     <string name="k2go_maps_landing_sub">نقشه‌های آفلاین خود را مدیریت کنید.</string>
     <string name="k2go_maps_install_title">نصب یا به‌روزرسانی نقشه‌ها</string>

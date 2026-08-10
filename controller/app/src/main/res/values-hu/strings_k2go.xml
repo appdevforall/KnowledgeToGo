@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Térképek</string>
     <string name="k2go_gm_maps_desc">Vektor, műhold, 3D</string>
     <string name="k2go_gm_courses_title">Kurzusok</string>
-    <string name="k2go_gm_courses_desc">Kolibri leckék</string>
+    <string name="k2go_gm_courses_desc">Leckék, videók, gyakorlatok</string>
     <string name="k2go_gm_wikipedia_note">Sok gyűjtemény</string>
     <string name="k2go_gm_books_note">Több ezer, apró</string>
     <string name="k2go_gm_maps_note">Válassz minőséget</string>
-    <string name="k2go_gm_courses_note">Appon belül: később</string>
+    <string name="k2go_gm_courses_note">Témák választása</string>
     <string name="k2go_maps_scr_title">Térképek</string>
     <string name="k2go_maps_landing_sub">Kezeld az offline térképeidet.</string>
     <string name="k2go_maps_install_title">Térképek telepítése vagy frissítése</string>

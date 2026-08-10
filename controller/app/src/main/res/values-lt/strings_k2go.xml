@@ -406,11 +406,11 @@
     <string name="k2go_gm_maps_title">Žemėlapiai</string>
     <string name="k2go_gm_maps_desc">Vektorinis, palydovinis, 3D</string>
     <string name="k2go_gm_courses_title">Kursai</string>
-    <string name="k2go_gm_courses_desc">Kolibri pamokos</string>
+    <string name="k2go_gm_courses_desc">Pamokos, vaizdo įrašai, užduotys</string>
     <string name="k2go_gm_wikipedia_note">Daug kolekcijų</string>
     <string name="k2go_gm_books_note">Tūkstančiai, maži</string>
     <string name="k2go_gm_maps_note">Pasirinkite kokybę</string>
-    <string name="k2go_gm_courses_note">Programoje: bus nurodyta</string>
+    <string name="k2go_gm_courses_note">Pasirinkite temas</string>
 
     <string name="k2go_maps_scr_title">Žemėlapiai</string>
     <string name="k2go_maps_landing_sub">Tvarkykite neprisijungus veikiančius žemėlapius.</string>

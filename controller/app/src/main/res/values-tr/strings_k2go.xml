@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Haritalar</string>
     <string name="k2go_gm_maps_desc">Vektör, uydu, 3D</string>
     <string name="k2go_gm_courses_title">Kurslar</string>
-    <string name="k2go_gm_courses_desc">Kolibri dersleri</string>
+    <string name="k2go_gm_courses_desc">Dersler, videolar, alıştırmalar</string>
     <string name="k2go_gm_wikipedia_note">Birçok koleksiyon</string>
     <string name="k2go_gm_books_note">Binlerce, minik</string>
     <string name="k2go_gm_maps_note">Kalite seçin</string>
-    <string name="k2go_gm_courses_note">Uygulama içi: Belirlenecek</string>
+    <string name="k2go_gm_courses_note">Konu seçin</string>
     <string name="k2go_maps_scr_title">Haritalar</string>
     <string name="k2go_maps_landing_sub">Çevrimdışı haritalarınızı yönetin.</string>
     <string name="k2go_maps_install_title">Haritaları kur veya güncelle</string>

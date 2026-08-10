@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Ramani</string>
     <string name="k2go_gm_maps_desc">Vekta, satelaiti, 3D</string>
     <string name="k2go_gm_courses_title">Kozi</string>
-    <string name="k2go_gm_courses_desc">Masomo ya Kolibri</string>
+    <string name="k2go_gm_courses_desc">Masomo, video, mazoezi</string>
     <string name="k2go_gm_wikipedia_note">Makusanyo mengi</string>
     <string name="k2go_gm_books_note">Maelfu, madogo</string>
     <string name="k2go_gm_maps_note">Chagua ubora</string>
-    <string name="k2go_gm_courses_note">Ndani ya programu: TBD</string>
+    <string name="k2go_gm_courses_note">Chagua mada</string>
     <string name="k2go_maps_scr_title">Ramani</string>
     <string name="k2go_maps_landing_sub">Simamia ramani zako zisizo za mtandaoni.</string>
     <string name="k2go_maps_install_title">Sakinisha au sasisha ramani</string>

@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">지도</string>
     <string name="k2go_gm_maps_desc">벡터, 위성, 3D</string>
     <string name="k2go_gm_courses_title">강좌</string>
-    <string name="k2go_gm_courses_desc">Kolibri 수업</string>
+    <string name="k2go_gm_courses_desc">강의, 영상, 연습문제</string>
     <string name="k2go_gm_wikipedia_note">다양한 모음</string>
     <string name="k2go_gm_books_note">수천 권, 작음</string>
     <string name="k2go_gm_maps_note">품질 선택</string>
-    <string name="k2go_gm_courses_note">앱 내: 미정</string>
+    <string name="k2go_gm_courses_note">주제 선택</string>
     <string name="k2go_maps_scr_title">지도</string>
     <string name="k2go_maps_landing_sub">오프라인 지도를 관리합니다.</string>
     <string name="k2go_maps_install_title">지도 설치 또는 업데이트</string>

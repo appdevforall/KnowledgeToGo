@@ -406,11 +406,11 @@
     <string name="k2go_gm_maps_title">Kart</string>
     <string name="k2go_gm_maps_desc">Vektor, satellitt, 3D</string>
     <string name="k2go_gm_courses_title">Kurs</string>
-    <string name="k2go_gm_courses_desc">Kolibri-leksjoner</string>
+    <string name="k2go_gm_courses_desc">Leksjoner, videoer, oppgaver</string>
     <string name="k2go_gm_wikipedia_note">Mange samlinger</string>
     <string name="k2go_gm_books_note">Tusenvis, små</string>
     <string name="k2go_gm_maps_note">Velg kvalitet</string>
-    <string name="k2go_gm_courses_note">I appen: kommer</string>
+    <string name="k2go_gm_courses_note">Velg emner</string>
 
     <string name="k2go_maps_scr_title">Kart</string>
     <string name="k2go_maps_landing_sub">Administrer de frakoblede kartene dine.</string>

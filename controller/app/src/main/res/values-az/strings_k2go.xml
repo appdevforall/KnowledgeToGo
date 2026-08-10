@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Xəritələr</string>
     <string name="k2go_gm_maps_desc">Vektor, peyk, 3D</string>
     <string name="k2go_gm_courses_title">Kurslar</string>
-    <string name="k2go_gm_courses_desc">Kolibri dərsləri</string>
+    <string name="k2go_gm_courses_desc">Dərslər, videolar, çalışmalar</string>
     <string name="k2go_gm_wikipedia_note">Çoxlu kolleksiya</string>
     <string name="k2go_gm_books_note">Minlərlə, kiçik</string>
     <string name="k2go_gm_maps_note">Keyfiyyət seç</string>
-    <string name="k2go_gm_courses_note">Tətbiqdaxili: müəyyən edilməyib</string>
+    <string name="k2go_gm_courses_note">Mövzuları seçin</string>
     <string name="k2go_maps_scr_title">Xəritələr</string>
     <string name="k2go_maps_landing_sub">Oflayn xəritələrinizi idarə edin.</string>
     <string name="k2go_maps_install_title">Xəritələri quraşdır və ya yenilə</string>

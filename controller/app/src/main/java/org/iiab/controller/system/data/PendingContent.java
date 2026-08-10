@@ -70,11 +70,16 @@ public final class PendingContent {
         private final boolean booksSession;
         private final boolean zimRunning;
         private final boolean booksRunning;
+        private final boolean zimComplete;
+        private final boolean booksComplete;
         private final KolibriSeedState courses;
 
         private Snapshot(int zimBanked, int booksBanked, int coursesBanked, boolean mapsBanked,
                          boolean zimSession, boolean booksSession,
-                         boolean zimRunning, boolean booksRunning, KolibriSeedState courses) {
+                         boolean zimRunning, boolean booksRunning,
+                         boolean zimComplete, boolean booksComplete, KolibriSeedState courses) {
+            this.zimComplete = zimComplete;
+            this.booksComplete = booksComplete;
             this.zimBanked = zimBanked;
             this.booksBanked = booksBanked;
             this.coursesBanked = coursesBanked;
@@ -113,6 +118,54 @@ public final class PendingContent {
                 case COURSES: return courses.isRunning();
                 default: return false;
             }
+        }
+
+        /**
+         * Whether this type's session still has work to do — registered, and not every
+         * item terminal.
+         *
+         * <p>The question a serialisation guard should ask. Two live streams must not run
+         * at once: each measures free space at its own moment, so both can pass their own
+         * check and jointly fill the disk, and a Kolibri channel runs to tens of GB. But
+         * a session whose items are all done protects nothing — the disk has already
+         * absorbed it — and blocking on that is what refused a download with "something
+         * else is downloading" when nothing was.
+         */
+        public boolean hasUnfinishedWork(ContentType type) {
+            if (!hasSession(type)) {
+                return false;
+            }
+            switch (type) {
+                case ZIM: return !zimComplete;
+                case BOOKS: return !booksComplete;
+                case COURSES: return !courses.isComplete();
+                default: return false;
+            }
+        }
+
+        /**
+         * Whether any live type still has work to do — the whole serialisation rule, in
+         * one place and with no exceptions.
+         *
+         * <p>Each of the three provisioners used to spell this out itself, and each
+         * spelled it differently: two blocked on a merely registered session, and the
+         * courses one had to be edited by hand when a third type appeared. Asking here
+         * means a fourth content type is one line in {@link ContentType}.
+         *
+         * <p><b>No "except me" clause.</b> A first attempt kept one: a stream could not
+         * start while a session of its own kind was registered, on the grounds that a new
+         * one would overwrite results the user might still be reading. That reasoning put
+         * an invented protection above an explicit request — the user had already left
+         * that list, its work had finished, and they were asking for another download. The
+         * only thing worth protecting is work in flight, whoever owns it.
+         */
+        public boolean anyUnfinished() {
+            for (ContentType t : ContentType.values()) {
+                if (t.isLive() && hasUnfinishedWork(t)) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /**
@@ -220,7 +273,7 @@ public final class PendingContent {
      */
     public static Snapshot read(Context ctx) {
         if (ctx == null) {
-            return new Snapshot(0, 0, 0, false, false, false, false, false,
+            return new Snapshot(0, 0, 0, false, false, false, false, false, true, true,
                     KolibriSeedRepository.get().current());
         }
         Context app = ctx.getApplicationContext();
@@ -239,6 +292,7 @@ public final class PendingContent {
         return new Snapshot(zim, books, courses, maps,
                 ZimDownloadService.hasSession(), BooksDownloadService.hasSession(),
                 ZimDownloadService.isRunning(), BooksDownloadService.isRunning(),
+                ZimDownloadService.isComplete(), BooksDownloadService.isComplete(),
                 KolibriSeedRepository.get().current());
     }
 
@@ -250,6 +304,11 @@ public final class PendingContent {
     /** One-shot: is any live content in play other than {@code key}? */
     public static boolean anyLiveOtherThan(Context ctx, String key) {
         return read(ctx).anyLiveOtherThan(key);
+    }
+
+    /** One-shot: does any live content type still have work to do? */
+    public static boolean anyUnfinished(Context ctx) {
+        return read(ctx).anyUnfinished();
     }
 
     /** One-shot: is a content stream actually running right now? */

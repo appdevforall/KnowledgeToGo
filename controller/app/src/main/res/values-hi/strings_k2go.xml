@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">मैप्स</string>
     <string name="k2go_gm_maps_desc">वेक्टर, सैटेलाइट, 3D</string>
     <string name="k2go_gm_courses_title">कोर्स</string>
-    <string name="k2go_gm_courses_desc">Kolibri पाठ</string>
+    <string name="k2go_gm_courses_desc">पाठ, वीडियो, अभ्यास</string>
     <string name="k2go_gm_wikipedia_note">कई संग्रह</string>
     <string name="k2go_gm_books_note">हज़ारों, छोटी</string>
     <string name="k2go_gm_maps_note">गुणवत्ता चुनें</string>
-    <string name="k2go_gm_courses_note">ऐप में: तय होना बाकी</string>
+    <string name="k2go_gm_courses_note">विषय चुनें</string>
     <string name="k2go_maps_scr_title">मैप्स</string>
     <string name="k2go_maps_landing_sub">अपने ऑफ़लाइन मैप्स प्रबंधित करें।</string>
     <string name="k2go_maps_install_title">मैप्स इंस्टॉल या अपडेट करें</string>

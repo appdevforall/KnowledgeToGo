@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Mapas</string>
     <string name="k2go_gm_maps_desc">Vetorial, satélite, 3D</string>
     <string name="k2go_gm_courses_title">Cursos</string>
-    <string name="k2go_gm_courses_desc">Lições Kolibri</string>
+    <string name="k2go_gm_courses_desc">Lições, vídeos, exercícios</string>
     <string name="k2go_gm_wikipedia_note">Muitas coleções</string>
     <string name="k2go_gm_books_note">Milhares, minúsculos</string>
     <string name="k2go_gm_maps_note">Escolha a qualidade</string>
-    <string name="k2go_gm_courses_note">Na app: por definir</string>
+    <string name="k2go_gm_courses_note">Escolha tópicos</string>
     <string name="k2go_maps_scr_title">Mapas</string>
     <string name="k2go_maps_landing_sub">Faça a gestão dos seus mapas offline.</string>
     <string name="k2go_maps_install_title">Instalar ou atualizar mapas</string>

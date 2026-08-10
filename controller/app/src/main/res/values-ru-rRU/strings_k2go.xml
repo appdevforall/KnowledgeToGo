@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Карты</string>
     <string name="k2go_gm_maps_desc">Векторные, спутник, 3D</string>
     <string name="k2go_gm_courses_title">Курсы</string>
-    <string name="k2go_gm_courses_desc">Уроки Kolibri</string>
+    <string name="k2go_gm_courses_desc">Уроки, видео, упражнения</string>
     <string name="k2go_gm_wikipedia_note">Множество коллекций</string>
     <string name="k2go_gm_books_note">Тысячи, крошечные</string>
     <string name="k2go_gm_maps_note">Выберите качество</string>
-    <string name="k2go_gm_courses_note">В приложении: уточняется</string>
+    <string name="k2go_gm_courses_note">Выберите темы</string>
     <string name="k2go_maps_scr_title">Карты</string>
     <string name="k2go_maps_landing_sub">Управляйте офлайн-картами.</string>
     <string name="k2go_maps_install_title">Установить или обновить карты</string>

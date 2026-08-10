@@ -135,7 +135,35 @@ public class GetMoreHubFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (wizard && getView() != null) refreshStorage(getView());   // picks may have changed
+        // ADFA-5074: keep asking while this screen is up. A platform can arrive after the
+        // hub opened — Kolibri is Python and takes noticeably longer to answer than the
+        // rest — and a card that was absent stayed absent until the user left and came
+        // back. Home has always polled; this screen never did, for no reason beyond which
+        // one was written first.
+        if (!wizard) main.post(rescan);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        main.removeCallbacks(rescan);   // no probing a screen nobody is looking at
+    }
+
+    /** Re-probe while the hub is on screen, so a platform that finishes starting appears. */
+    private final Runnable rescan = new Runnable() {
+        @Override public void run() {
+            if (!isAdded()) return;
+            // Only the ones still missing: a card that answered does not un-answer, and
+            // re-probing all of them every few seconds would be four requests for nothing.
+            // And only when nothing is already in flight, so the pass on open (probeAll)
+            // and this one do not ask the same endpoint twice.
+            if (probesPending == 0 && available.size() < ITEMS.length) probeMissing();
+            main.postDelayed(this, RESCAN_MS);
+        }
+    };
+
+    /** ADFA-5074: how often the hub re-checks for a platform that was still starting. */
+    private static final long RESCAN_MS = 3000L;
 
     /** Wizard-only storage projection: System (tier OS) + Your picks (wishlists) vs device free. */
     private void refreshStorage(View root) {
@@ -189,16 +217,43 @@ public class GetMoreHubFragment extends Fragment {
     private void probeAll() {
         probesPending = ITEMS.length;
         for (final Item it : ITEMS) {
-            AppExecutors.get().io().execute(() -> {
-                final boolean ok = reachable(it.endpoint);
-                main.post(() -> {
-                    if (!isAdded()) return;
-                    if (ok) available.add(it.key);
-                    probesPending--;
-                    buildCards();
-                });
-            });
+            probe(it);
         }
+    }
+
+    /**
+     * ADFA-5074: probe only the platforms that have not answered yet.
+     *
+     * <p>Called on a timer while the hub is visible. {@code probesPending} is what makes
+     * the empty state say "checking…" rather than "nothing available", so it is raised by
+     * exactly the number of probes about to run — a rescan that reused the first count
+     * would leave the screen claiming to be checking forever.
+     */
+    private void probeMissing() {
+        List<Item> missing = new ArrayList<>();
+        for (Item it : ITEMS) if (!available.contains(it.key)) missing.add(it);
+        if (missing.isEmpty()) return;
+        probesPending += missing.size();
+        for (final Item it : missing) {
+            probe(it);
+        }
+    }
+
+    private void probe(final Item it) {
+        AppExecutors.get().io().execute(() -> {
+            final boolean ok = reachable(it.endpoint);
+            main.post(() -> {
+                // ADFA-5074: decremented BEFORE the isAdded() check. The counter describes
+                // probes launched, not views present, and the rescan will not run while it
+                // reads above zero — a probe that came back to a detached fragment used to
+                // leave it high, which would have turned the rescan off for good and left
+                // the empty state saying "checking…" forever.
+                probesPending--;
+                if (!isAdded()) return;
+                if (ok) available.add(it.key);
+                buildCards();
+            });
+        });
     }
 
     /** The items to show: those whose module answered, in the declared order. */

@@ -16,9 +16,7 @@ import android.content.Context;
 import android.util.Log;
 
 import org.iiab.controller.kolibri.data.KolibriWishlist;
-import org.iiab.controller.redesign.BooksDownloadService;
 import org.iiab.controller.redesign.MapsProvisioner;
-import org.iiab.controller.redesign.ZimDownloadService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -56,8 +54,9 @@ public final class KolibriProvisioner {
      *       measures free space independently and at a different moment, so all
      *       of them can pass their own check and jointly fill the disk. A Kolibri
      *       channel runs to tens of GB, which makes it the one most likely to be
-     *       the straw. Books and ZIM now defer to a Kolibri session in the same
-     *       way, so the guard is symmetric.</li>
+     *       the straw. ADFA-5074: the rule is now one call for all three, and it
+     *       asks about <em>unfinished</em> work — a stream that has finished has
+     *       already been absorbed by the disk and protects nothing.</li>
      * </ul>
      *
      * <p>No deadlock is possible: deferring means returning so a later pass can
@@ -91,13 +90,17 @@ public final class KolibriProvisioner {
             Log.d(TAG, "kolibri drain blocked: proot (runrole) work is pending/running");
             return false;
         }
-        if (ZimDownloadService.isRunning() || ZimDownloadService.hasSession()
-                || BooksDownloadService.isRunning() || BooksDownloadService.hasSession()) {
-            Log.d(TAG, "kolibri drain blocked: another content stream is active");
+        // ADFA-5074: unfinished work only. This read a merely registered session, so a
+        // download that had already completed and was waiting to be dismissed refused the
+        // next one with "something else is downloading" while nothing was — and the only
+        // way out was force-stopping the app, because these are process statics.
+        // Serialising exists because each stream measures free space at its own moment;
+        // one that has finished has already been absorbed by the disk.
+        if (org.iiab.controller.system.data.PendingContent.anyUnfinished(ctx)) {
+            Log.d(TAG, "kolibri drain blocked: a content stream still has work to do");
             return false;
         }
-        KolibriSeedRepository repo = KolibriSeedRepository.get();
-        return !repo.isRunning() && !repo.hasSession();
+        return true;
     }
 
     public static boolean drain(Context ctx) {

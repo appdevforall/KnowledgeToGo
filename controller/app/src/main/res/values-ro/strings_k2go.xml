@@ -403,11 +403,11 @@
     <string name="k2go_gm_maps_title">Hărți</string>
     <string name="k2go_gm_maps_desc">Vectorial, satelit, 3D</string>
     <string name="k2go_gm_courses_title">Cursuri</string>
-    <string name="k2go_gm_courses_desc">Lecții Kolibri</string>
+    <string name="k2go_gm_courses_desc">Lecții, videoclipuri, exerciții</string>
     <string name="k2go_gm_wikipedia_note">Multe colecții</string>
     <string name="k2go_gm_books_note">Mii, mici</string>
     <string name="k2go_gm_maps_note">Alege calitatea</string>
-    <string name="k2go_gm_courses_note">În aplicație: de stabilit</string>
+    <string name="k2go_gm_courses_note">Alege subiecte</string>
     <string name="k2go_maps_scr_title">Hărți</string>
     <string name="k2go_maps_landing_sub">Gestionează-ți hărțile offline.</string>
     <string name="k2go_maps_install_title">Instalează sau actualizează hărțile</string>
