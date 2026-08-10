@@ -24,9 +24,16 @@ import org.iiab.controller.system.domain.SystemFacts;
  * {@code zimWizard}, {@code mapsWizard}, {@code booksWizard}, {@code kolibriWizard} —
  * each set when a flow was opened from the wizard's content step and each read by
  * that flow's Confirm screen. They did not describe the system; they described
- * <em>which door the user walked through</em>, and they were plain fields, so a
- * rotation or a theme toggle lost them. What came back was a screen that believed it
+ * <em>which door the user walked through</em>, and they were plain fields, so any
+ * recreation of the activity lost them. What came back was a screen that believed it
  * was on the live path and tried to download against a system that did not exist yet.
+ *
+ * <p><b>Which recreations, precisely</b> — the imprecise version of this note sent
+ * someone testing the wrong gesture. {@code SetupLibraryActivity} declares
+ * {@code orientation|screenSize|screenLayout|keyboardHidden}, so <em>rotating does
+ * not recreate it</em> and the flags survived that. What does recreate it: a
+ * light/dark change, because {@code uiMode} is not in that list; the "Don't keep
+ * activities" developer option; and a process death with task restore.
  *
  * <p>The honest question was never "which door was this?" but "is there a box to run
  * against?", and {@link OperationDispatcher} already answers it from

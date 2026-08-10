@@ -89,8 +89,11 @@ public class ZimConfirmFragment extends Fragment {
         fitsView.setCompoundDrawablesRelativeWithIntrinsicBounds(fits ? R.drawable.ic_check_circle : 0, 0, 0, 0);
 
         // ADFA-5061: asked of the system, not of the door. This used to read isZimWizard(),
-        // a field lost on every activity recreation — after a rotation the screen believed
-        // it was on the live path and tried to download against a system that did not exist.
+        // a field lost on every activity recreation — the screen came back believing it was
+        // on the live path and tried to download against a system that did not exist yet.
+        // NOT on rotation: SetupLibraryActivity declares orientation|screenSize, so it is not
+        // recreated for that. It IS recreated by a light/dark change (uiMode is absent from
+        // that list), by "Don't keep activities", and by a process death with task restore.
         // Resolved once here and reused: the label and the action are then the same answer
         // by construction, and it is re-derived on every recreation because this method runs
         // again. A field is only dangerous when navigation writes it.

@@ -67,6 +67,21 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     // as the seam so the catalog screens are untouched.
     private org.iiab.controller.wizard.presentation.WizardSelectionViewModel selection;
 
+    /**
+     * ADFA-5061: resolved on first use rather than assigned in {@code onCreate}.
+     * {@code super.onCreate()} dispatches {@code onCreate()} to restored fragments, so a
+     * field assigned after it would be null for anything that reads a cart that early —
+     * an ordering trap in the exact path this state was moved to survive.
+     */
+    private org.iiab.controller.wizard.presentation.WizardSelectionViewModel selection() {
+        if (selection == null) {
+            selection = new androidx.lifecycle.ViewModelProvider(this,
+                    new org.iiab.controller.wizard.presentation.WizardSelectionViewModelFactory(this))
+                    .get(org.iiab.controller.wizard.presentation.WizardSelectionViewModel.class);
+        }
+        return selection;
+    }
+
     // ADFA-5061: the four `*Wizard` booleans that used to live here are gone. Each said
     // "this flow was opened from the wizard, so bank instead of download" — a description
     // of the door the user came through, not of the system, and lost on every activity
@@ -81,10 +96,6 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_k2go_setup);
-        // ADFA-5061: before anything can read a cart. Scoped to this activity, so it outlives
-        // every recreation and is cleared only when the wizard really finishes.
-        selection = new androidx.lifecycle.ViewModelProvider(this)
-                .get(org.iiab.controller.wizard.presentation.WizardSelectionViewModel.class);
         serverController = new org.iiab.controller.ServerController(this, this);   // ADFA-4952
         serverController.start();
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
@@ -155,29 +166,16 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public String getWikiView() { return wikiView; }
     public void setWikiView(String v) { wikiView = v; }
 
-    public String getZimLang() {
-        if (selection.contentLang() == null) {
-            // Default to the wizard's content language (same pref the install path uses), falling
-            // back to the system language. "Manually selected" = it differs from the phone system.
-            String sys = org.iiab.controller.applang.data.ContentLanguage.systemDefault();
-            String stored = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
-                    .getString("selected_lang_minimal", sys);
-            String lang = org.iiab.controller.applang.data.ContentLanguage.normalize(stored);
-            selection.setContentLang(lang, !lang.equals(sys));
-        }
-        return selection.contentLang();
-    }
+    // ADFA-5061: these used to read the preference, normalise it and work out what counted
+    // as a manual choice, here, on behalf of a screen. The starting point is now resolved by
+    // WizardSelectionViewModelFactory and the rule lives with the value; what is left is
+    // delegation.
+    public String getZimLang() { return selection().contentLang(); }
     /** True when the content language was picked manually (differs from the system default). */
-    public boolean isZimLangManual() { getZimLang(); return selection.isContentLangManual(); }
-    public void setZimLang(String l) {
-        selection.setContentLang(l,
-                !l.equals(org.iiab.controller.applang.data.ContentLanguage.systemDefault()));
-    }
+    public boolean isZimLangManual() { return selection().isContentLangManual(); }
+    public void setZimLang(String l) { selection().setContentLang(l); }
     /** Re-align the content language to the system/wizard default. */
-    public void followSystemLang() {
-        selection.setContentLang(
-                org.iiab.controller.applang.data.ContentLanguage.systemDefault(), false);
-    }
+    public void followSystemLang() { selection().followSystemLang(); }
     // ADFA-4954: the wizard has ONE content language; the fields above are named for
     // ZIM only because ZIM was the first catalog to use them. These neutral aliases let
     // a new content type read the same value without spelling "Zim" inside its own
@@ -188,7 +186,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public boolean isContentLangManual() { return isZimLangManual(); }
     public void setContentLang(String l) { setZimLang(l); }
 
-    public java.util.LinkedHashMap<String, Long> getZimCart() { return selection.zimCart(); }
+    public java.util.LinkedHashMap<String, Long> getZimCart() { return selection().zimCart(); }
 
     private InstallationPlanner.Tier readInstalledTier() {
         String t = getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
@@ -404,8 +402,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
 
     /** ADFA-4853: ZIM Confirm terminal in wizard mode — bank the selection and return to the hub. */
     public void zimWizardConfirm() {
-        ZimWishlist.add(this, selection.zimCart());
-        selection.zimCart().clear();
+        ZimWishlist.add(this, selection().zimCart());
+        selection().zimCart().clear();
         getSupportFragmentManager().popBackStack("wizard_wikipedia",
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
@@ -420,10 +418,10 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
 
     /** ADFA-4910: the Books selection cart (gutenberg_id -> {title, author, download_url}), set by
      *  the landing when the user taps "Review" and read by BooksConfirmFragment. */
-    public java.util.LinkedHashMap<String, String[]> getBooksCart() { return selection.booksCart(); }
+    public java.util.LinkedHashMap<String, String[]> getBooksCart() { return selection().booksCart(); }
     public void setBooksCart(java.util.LinkedHashMap<String, String[]> picks) {
-        selection.booksCart().clear();
-        if (picks != null) selection.booksCart().putAll(picks);
+        selection().booksCart().clear();
+        if (picks != null) selection().booksCart().putAll(picks);
     }
 
     /** ADFA-4910: Books landing "Review" -> Confirm (list + total + honest note). */
@@ -436,13 +434,13 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
 
     /** ADFA-4910: Books Confirm terminal in wizard mode — bank the picks and return to the hub. */
     public void booksWizardConfirm() {
-        for (java.util.Map.Entry<String, String[]> e : selection.booksCart().entrySet()) {
+        for (java.util.Map.Entry<String, String[]> e : selection().booksCart().entrySet()) {
             String[] v = e.getValue();
             String title = v != null && v.length > 0 ? v[0] : "";
             String url = v != null && v.length > 2 ? v[2] : "";
             BooksWishlist.add(this, e.getKey(), title, url);
         }
-        selection.booksCart().clear();
+        selection().booksCart().clear();
         getSupportFragmentManager().popBackStack("wizard_books",
                 androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
@@ -452,13 +450,13 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public void startBooksDownload() {
         java.util.List<String> ids = new java.util.ArrayList<>(), titles = new java.util.ArrayList<>(),
                 urls = new java.util.ArrayList<>();
-        for (java.util.Map.Entry<String, String[]> e : selection.booksCart().entrySet()) {
+        for (java.util.Map.Entry<String, String[]> e : selection().booksCart().entrySet()) {
             String[] v = e.getValue();
             ids.add(e.getKey());
             titles.add(v != null && v.length > 0 ? v[0] : "");
             urls.add(v != null && v.length > 2 ? v[2] : "");
         }
-        selection.booksCart().clear();
+        selection().booksCart().clear();
         BooksDownloadService.start(getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
         // ADFA-4988: go to the downloads screen (its per-item list with download -> done checks),

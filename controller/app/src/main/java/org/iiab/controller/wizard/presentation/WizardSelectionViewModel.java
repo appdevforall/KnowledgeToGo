@@ -21,25 +21,31 @@ import java.util.LinkedHashMap;
  * {@code SetupLibraryActivity}. Fields die with the activity instance, and this one is
  * recreated whenever the configuration changes in a way it does not declare —
  * {@code uiMode} is absent from its {@code configChanges}, so a light/dark change
- * recreates it, as does "Don't keep activities" and a process death with task restore.
+ * recreates it, as do "Don't keep activities" and a process death with task restore.
  * The user came back to an empty cart with no explanation, having picked their way
  * across several category screens to fill it.
  *
  * <p>A {@code ViewModel} scoped to the activity outlives exactly those recreations and
- * is cleared when the activity really finishes, which is the lifetime this state
- * should have had from the start. It is the same shape Courses already uses, and this
- * is the change that brings ZIM and Books level with it.
+ * is cleared when the activity really finishes, which is the lifetime this state should
+ * have had from the start. It is the shape Courses already uses, and this brings ZIM
+ * and Books level with it.
  *
  * <p><b>Note on the ADFA-5061 flags.</b> Retiring the four {@code *Wizard} booleans was
- * a different fix for a related symptom: those described a decision and were replaced
- * by asking the system, because a decision should never have been remembered. A cart
- * is not a decision — it is the user's work, and there is nowhere else to get it back
- * from. So this one is kept, and kept properly.
+ * a different fix for a related symptom: those held a <em>decision</em>, and a decision
+ * should be asked rather than remembered, which is why they became {@code ContentDoor}.
+ * A cart is the user's <em>work</em>, and there is nowhere else to recover it from. So
+ * one was deleted and this one is kept properly.
+ *
+ * <p><b>No Android here.</b> The starting language and the phone's language are handed
+ * in by {@link WizardSelectionViewModelFactory}, so this class needs no {@code Context}
+ * and is unit-tested on a plain JVM. "Manual" is derived rather than stored: a flag
+ * beside the value can drift out of step with it, and this rule is one comparison.
  *
  * <p><b>Retained shape.</b> The maps are returned live and mutated in place by the
- * catalog screens, exactly as they were on the activity. Handing out immutable copies
- * would be better and is a larger change across those screens; it is not smuggled in
- * here.
+ * catalog screens, exactly as they were on the activity. Handing out copies would be
+ * better and is a larger change across those screens; it is not smuggled in here — and
+ * the test pins the identity so a well-meaning change cannot break accumulation in
+ * silence.
  */
 public class WizardSelectionViewModel extends ViewModel {
 
@@ -49,11 +55,16 @@ public class WizardSelectionViewModel extends ViewModel {
     /** gutenberg_id -> {title, author, download_url}, handed from the Books landing. */
     private final LinkedHashMap<String, String[]> booksCart = new LinkedHashMap<>();
 
-    /** The wizard's content language. Null until first resolved by the activity. */
-    private String contentLang = null;
+    /** The phone's language, for the "follow the system" reset and the manual test. */
+    private final String systemDefault;
 
-    /** Whether that language was chosen rather than followed from the system. */
-    private boolean contentLangManual = false;
+    /** The wizard's content language, shared by every catalog. */
+    private String contentLang;
+
+    WizardSelectionViewModel(String initialLang, String systemDefault) {
+        this.systemDefault = systemDefault == null ? "" : systemDefault;
+        this.contentLang = initialLang == null ? this.systemDefault : initialLang;
+    }
 
     public LinkedHashMap<String, Long> zimCart() {
         return zimCart;
@@ -67,12 +78,20 @@ public class WizardSelectionViewModel extends ViewModel {
         return contentLang;
     }
 
+    /**
+     * Whether the language reads as a choice rather than as following the phone. The
+     * wizard says so in words under the selector, so it has to mean exactly this.
+     */
     public boolean isContentLangManual() {
-        return contentLangManual;
+        return !systemDefault.equals(contentLang);
     }
 
-    public void setContentLang(String lang, boolean manual) {
-        this.contentLang = lang;
-        this.contentLangManual = manual;
+    public void setContentLang(String lang) {
+        this.contentLang = lang == null ? systemDefault : lang;
+    }
+
+    /** Re-align to the phone's language. */
+    public void followSystemLang() {
+        this.contentLang = systemDefault;
     }
 }
