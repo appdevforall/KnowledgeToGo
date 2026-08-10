@@ -219,12 +219,20 @@ screen. Subtle, not in-your-face: the lights change, buttons appear or don't.
    substance: still a screen answering a question about the system, still not covering first install,
    and one more half-durable carrier to migrate later.
 
-   So it is deliberately left as-is until item 5 below. When the booleans are retired, this fact
-   becomes a **persisted declaration of intent**, sibling to `InstallGuard` (which already records "an
-   install is running" and survives the process being killed). Its lifecycle is the actual work, and
-   must be stated before it is built: who writes it (the wizard, on committing to the install), who
-   clears it (completion **and** abandonment), and what happens if the process dies in between. A
-   marker nobody clears blocks every live download forever — worse than the flag it replaces.
+   **Resolved, and not the way this decision first proposed.** The original text here called for a
+   *persisted declaration of intent*, sibling to `InstallGuard`, on the grounds that the flag had to
+   survive the process being killed. That premise was wrong on inspection. `reinstallMode` is read
+   back from the Intent on every `onCreate`, and Android keeps the Intent in the task record — so it
+   survives a config-change recreation **and** a process death with task restore. And where the task
+   is not restored, the user is no longer inside the wizard at all, so there is no picker open to
+   hijack.
+
+   Building the persisted marker would therefore have invented durable state to cover a case that
+   does not occur, with the failure mode this decision itself warned about: a marker nobody clears
+   blocks every live download forever. The fact is carried by `SetupLibraryActivity.isReplacingSystem()`,
+   which reads `reinstallMode`, and nothing is persisted. Recorded here rather than quietly dropped,
+   because the reasoning is the useful part: *durable* and *persisted* are not synonyms, and the
+   cheapest durable carrier already existed.
 
 ## Options considered
 
@@ -302,6 +310,13 @@ most expensive by the third platform. A is B done safely over time.
           not, and it is the only thing distinguishing a real download from a no-op. The rate is not
           on the device (the server does the transfer), so it has to be derived from the bytes and
           the poll timestamps we already hold, or asked of the REST core.
+
+          Also converge the **two ways the dispatcher is currently consumed**. The Courses confirm
+          maps all five answers to five behaviours; ZIM, Books and Maps collapse them to a boolean
+          through `ContentDoor.banks()` and drop the rest. That is deliberate for now — acting on
+          "damaged" or "platform absent" means writing the refusal copy, which is this item — but
+          left unnamed it becomes "why does ZIM not tell me the system is damaged?". The boolean is
+          a staging post, not the destination.
 3. [ ] Apply to the dashboard card / Rebuild: make the REST/proot fork explicit; align colour + gates +
        progress to the resolved class; remove the silent proot fallback.
 4. [ ] Apply to Kolibri (coordinate with ADFA-4954): install = STOPPED, seeding = LIVE, each presented

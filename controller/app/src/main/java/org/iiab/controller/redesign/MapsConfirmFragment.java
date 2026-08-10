@@ -77,15 +77,20 @@ public class MapsConfirmFragment extends Fragment {
         final String[] levels = a != null ? a.getStringArray(ARG_LEVELS) : null;
 
         // ADFA-4900: in the wizard (pre-install) Maps banks the selection; post-install it installs.
-        final boolean wizard = getActivity() instanceof SetupLibraryActivity
-                && ((SetupLibraryActivity) getActivity()).isMapsWizard();
+        // ADFA-5061: which of the two is decided from the system rather than from a flag set when
+        // the flow was opened. Maps is STOPPED content — a runrole, not a download — so once a
+        // system exists the dispatcher answers RUN_STOPPED; only DEFER means "bank it", which is
+        // exactly what the flag used to say. Resolved once so the label and the action agree.
+        final boolean wizard = org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.MAPS,
+                SetupLibraryActivity.replacingSystem(this));
 
         Button start = root.findViewById(R.id.k2go_start_btn);
         start.setText(getString(wizard ? R.string.k2go_maps_add_setup_fmt : R.string.k2go_maps_start_building, fmt(total)));
         start.setOnClickListener(v -> {
             if (getActivity() instanceof SetupLibraryActivity) {
                 SetupLibraryActivity act = (SetupLibraryActivity) getActivity();
-                if (act.isMapsWizard()) {
+                if (wizard) {
                     act.mapsWizardConfirm(levels, totalMb);
                 } else if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
                     // ADFA-4919/4951: proot (Maps) acts on the live system, so it must not overlap ANY

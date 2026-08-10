@@ -88,15 +88,23 @@ public class ZimConfirmFragment extends Fragment {
         fitsView.setBackgroundResource(fits ? R.drawable.k2go_ok_bg : R.drawable.k2go_warn_bg);
         fitsView.setCompoundDrawablesRelativeWithIntrinsicBounds(fits ? R.drawable.ic_check_circle : 0, 0, 0, 0);
 
-        boolean wiz = (getActivity() instanceof SetupLibraryActivity) && ((SetupLibraryActivity) getActivity()).isZimWizard();
+        // ADFA-5061: asked of the system, not of the door. This used to read isZimWizard(),
+        // a field lost on every activity recreation — after a rotation the screen believed
+        // it was on the live path and tried to download against a system that did not exist.
+        // Resolved once here and reused: the label and the action are then the same answer
+        // by construction, and it is re-derived on every recreation because this method runs
+        // again. A field is only dangerous when navigation writes it.
+        final boolean banks = org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.ZIM,
+                SetupLibraryActivity.replacingSystem(this));
         Button start = root.findViewById(R.id.k2go_zconf_start);
-        start.setText(getString(wiz ? R.string.k2go_zim_add_setup_fmt : R.string.k2go_zim_start_fmt, gb(totalMb)));
+        start.setText(getString(banks ? R.string.k2go_zim_add_setup_fmt : R.string.k2go_zim_start_fmt, gb(totalMb)));
         start.setEnabled(fits && total > 0);
         start.setOnClickListener(v -> {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
-            if (a.isZimWizard()) a.zimWizardConfirm();   // pre-install: bank the selection
-            else a.openZimPreparing();                   // live: download now
+            if (banks) a.zimWizardConfirm();   // no box yet: bank it
+            else a.openZimPreparing();         // live: download now
         });
 
         return root;

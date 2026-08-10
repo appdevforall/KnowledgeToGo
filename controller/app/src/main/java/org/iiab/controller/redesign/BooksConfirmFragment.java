@@ -66,15 +66,20 @@ public class BooksConfirmFragment extends Fragment {
         }
         box.addView(row(getString(R.string.k2go_books_total_fmt, cart.size()), "", true));
 
-        boolean wiz = (getActivity() instanceof SetupLibraryActivity) && ((SetupLibraryActivity) getActivity()).isBooksWizard();
+        // ADFA-5061: asked of the system, not of the door. Was isBooksWizard(), a field on
+        // the activity that did not survive a recreation. Resolved once here so the label
+        // and the action are the same answer, and re-derived whenever the view is rebuilt.
+        final boolean banks = org.iiab.controller.system.data.ContentDoor.banks(
+                requireContext(), org.iiab.controller.system.domain.ContentType.BOOKS,
+                SetupLibraryActivity.replacingSystem(this));
         Button add = root.findViewById(R.id.k2go_bconf_add);
-        add.setText(getString(wiz ? R.string.k2go_books_add_setup_fmt : R.string.k2go_books_add_fmt, cart.size()));
+        add.setText(getString(banks ? R.string.k2go_books_add_setup_fmt : R.string.k2go_books_add_fmt, cart.size()));
         add.setEnabled(!cart.isEmpty());
         add.setOnClickListener(v -> {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
-            if (a.isBooksWizard()) a.booksWizardConfirm();   // pre-install: bank the selection
-            else a.startBooksDownload();                     // live: download now
+            if (banks) a.booksWizardConfirm();   // no box yet: bank it
+            else a.startBooksDownload();         // live: download now
         });
 
         return root;
