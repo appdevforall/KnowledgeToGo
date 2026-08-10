@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ADFA-5074: the "working" animation, for the four progress cards.
+
+     NOT every animation in the app: BackupJobFragment picks k2go_backup_loop or
+     k2go_restore_loop from its mode (ADFA-4961) and keeps its own block. That is the same
+     principle written earlier — layout declares none, code decides from the operation — and
+     it is left alone on purpose: backup and restore are system operations, not content, and
+     folding them in is a wider change than this one. So the visual model is incomplete by
+     design for now: four assets exist, ProgressVisual names two.
+
+     It was copied verbatim into three card layouts (ZIM, Maps, module install) and missing
+     from Courses entirely — which is how a type ends up without one, and how three copies
+     drift apart. Each card includes this and still decides WHERE it sits; the asset is
+     chosen by ProgressVisuals from the operation's execution class, so the file name lives
+     in exactly one place and Maps can be given art of its own without touching any XML.
+
+     ADFA-4910 (kept from the original): the animation ships WITHOUT the logo (see SPEC); the
+     K2Go launcher foreground is composited on top, over the built-in green glow, positioned
+     by a weighted scaffold so it tracks the art at any width. adjustViewBounds locks the
+     600:368 ratio; Lottie falls back to a static first frame when system animations are off. -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="12dp">
+
+    <!-- No lottie_rawRes on purpose: ProgressVisuals sets it. -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/k2go_working_anim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
+
+    <!-- Logo overlay (fills the art rect). The weights are the knobs: vertical
+         top/logo/bottom and horizontal left/logo/right centre the logo at ~0.80W / 0.54H,
+         sized to sit over the green glow. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="300" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="480"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="680" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="295"
+                android:src="@drawable/ic_launcher_foreground"
+                android:scaleType="fitCenter"
+                android:contentDescription="@null" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="25" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="220" />
+    </LinearLayout>
+</FrameLayout>

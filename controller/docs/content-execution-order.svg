@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 790" width="980" height="790" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 806" width="980" height="806" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Content installation — mechanism and order</title>
 <desc>How the four content types install: which mechanism each uses, why they are serialised, where the server is stopped, and what is still unsolved. Companion to operation-model-roadmap.svg, which tracks ticket state rather than behaviour. Update when the behaviour changes, not when a ticket moves.</desc>
 
@@ -30,7 +30,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="980" height="790"/>
+<rect class="bg" x="0" y="0" width="980" height="806"/>
 
 <text class="h1" x="24" y="34">Content installation — mechanism and order</text>
 <text class="sub" x="24" y="54">Four content types, two mechanisms. What runs when, what waits for what, and why.</text>
@@ -101,7 +101,7 @@
 <text class="code" x="40" y="608">ZimConfirmFragment:94 · MapsChooseFragment:270 · KolibriConfirmFragment:211 — three readings, three moments, no total</text>
 
 <!-- ================= two doors ================= -->
-<rect class="card-open" x="24" y="636" width="932" height="134"/>
+<rect class="card-open" x="24" y="636" width="932" height="150"/>
 <rect class="chip" x="40" y="648" width="60" height="19" fill="#FBE4E4" stroke="none"/>
 <text class="chiptx" x="48" y="662" fill="#C0392B">OPEN</text>
 <text class="h3" x="112" y="662">Five landings for one kind of work — owned by ADFA-5074</text>
@@ -109,7 +109,8 @@
 <text class="item" x="40" y="702">Get More: ZIM → ZimPreparingFragment inside SetupLibraryActivity · Books → the index, with a hint that jumps straight to the detail ·</text>
 <text class="item" x="40" y="718">Maps → the index list · Courses → KolibriSeedingFragment inside SetupLibraryActivity.</text>
 <text class="item" x="40" y="740">The screens are NOT duplicated: SetupProgressActivity.openDetail() hosts those same fragments, with a fromIndex flag for the chrome.</text>
-<text class="item" x="40" y="756">What differs is the host — so Back walks out of a live download, a notification returns you elsewhere, and nothing opens the index at all.</text>
+<text class="item" x="40" y="756">What differs is the host, so Back still walks out of a live download and a notification returns you to a different screen than you left.</text>
+<text class="code" x="40" y="772">Closed already: the Home header opens the index (PR 1) · a finished session no longer gates anything (PR 2). Hosting is what remains.</text>
 
 <!-- ================= which type is which ================= -->
 <rect class="card" x="24" y="242" width="212" height="244"/>

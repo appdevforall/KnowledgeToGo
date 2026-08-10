@@ -327,6 +327,32 @@ most expensive by the third platform. A is B done safely over time.
           in background" that Courses lacks while Courses has a terminal action and a
           retry-before-leaving note the others lack. **ADFA-5074 owns this.**
 
+          **The progress animation is resolved, not placed.** Today the Lottie
+          (`k2go_working_loop` — cloud sending data to the device) lives in
+          `fragment_k2go_zim_preparing.xml` and nowhere else, so Courses has none. Copying it
+          into the Courses layout would recreate exactly the drift this item exists to remove:
+          two hand-kept copies that agree until someone edits one.
+
+          But "one animation for all four" would trade a duplication for a lie. That cloud is
+          literal for ZIM, Books and Courses — the server downloads. Maps is an Ansible
+          runrole building tiles with the server stopped, and it already has its own
+          collapsible log; a download animation over it would describe something that is not
+          happening.
+
+          So it is shared along the axis that already exists: **the execution class decides**,
+          not the content type. The shape agreed with Luis (ADFA-5074):
+          - the domain answers *which visual* an operation gets — an enum (`DOWNLOAD` for
+            LIVE, `BUILD` for STOPPED), pure and unit-testable, with room for a per-module
+            override when one earns it;
+          - presentation maps that answer to a raw resource, in one place;
+          - the host reads it and puts it above the fragment slot, so no per-type layout owns
+            an animation and ZIM's copy goes away.
+
+          For now `BUILD` deliberately resolves to the same file: Maps wants a different one
+          and does not have it yet, and shipping a placeholder beats shipping a second copy.
+          The point of the indirection is that changing it later is one line, and that a
+          module which turns out to need its own can have it without anyone touching a layout.
+
           Also decide **which lifetime each piece of state gets**. Three mechanisms are in use and
           nothing says which is for what: a `ViewModel` (survives a configuration change only), a
           `SavedStateHandle` (also survives a process death, riding the task's instance state), and

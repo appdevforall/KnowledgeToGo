@@ -127,6 +127,7 @@ public class MapsPreparingFragment extends Fragment {
         // ADFA-4901: collapsible live log. The status line mirrors the latest line; expanding shows
         // the full terminal (LogRepository snapshot + live appends), auto-scrolled.
         logLabel = root.findViewById(R.id.k2go_prep_log_label);
+        org.iiab.controller.util.ProgressVisuals.apply(root, org.iiab.controller.system.domain.ContentType.MAPS);   // ADFA-5074
         logChevron = root.findViewById(R.id.k2go_prep_log_chevron);
         logScroll = root.findViewById(R.id.k2go_prep_log_scroll);
         logText = root.findViewById(R.id.k2go_prep_log_text);

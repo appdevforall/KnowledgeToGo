@@ -135,7 +135,7 @@
 
 <circle class="s-done" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
 <circle class="s-done" cx="744" cy="548" r="5.5"/><text class="item" x="758" y="552">A session gates only work in flight</text>
-<circle class="s-doing" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">Get More notices a platform arriving</text>
+<circle class="s-done" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">Get More notices a platform arriving</text>
 <circle class="s-todo" cx="744" cy="592" r="5.5"/><text class="item" x="758" y="596">One host for every progress screen</text>
 
 <text class="note" x="24" y="522">Do not close 4758 as superseded: the migration half</text>

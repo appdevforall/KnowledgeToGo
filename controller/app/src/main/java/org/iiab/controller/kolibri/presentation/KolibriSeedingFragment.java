@@ -68,6 +68,8 @@ public final class KolibriSeedingFragment extends Fragment {
         detailView = v.findViewById(R.id.k2go_kseed_detail);
         bar = v.findViewById(R.id.k2go_kseed_bar);
         list = v.findViewById(R.id.k2go_kseed_list);
+        org.iiab.controller.util.ProgressVisuals.apply(
+                v, org.iiab.controller.system.domain.ContentType.COURSES);   // ADFA-5074
         footer = v.findViewById(R.id.k2go_kseed_footer);
         footerNote = v.findViewById(R.id.k2go_kseed_footer_note);
         done = v.findViewById(R.id.k2go_kseed_done);
