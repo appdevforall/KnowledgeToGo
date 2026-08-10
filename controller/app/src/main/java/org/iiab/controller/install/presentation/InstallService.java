@@ -94,7 +94,7 @@ public final class InstallService extends Service {
     // runrole, instead of the generic <key>_install/_enabled echo. Values are validated against a
     // fixed allowlist before interpolation (D2).
     public static final String EXTRA_MAPS_VECTOR = "mapsVector";   // nat-z8 | 11 | 14
-    public static final String EXTRA_MAPS_SAT = "mapsSat";         // 7|9|11|12|13 | none
+    public static final String EXTRA_MAPS_SAT = "mapsSat";         // 7|9|11|13 | none
     public static final String EXTRA_MAPS_TERRAIN = "mapsTerrain"; // 7|8|9|10 | 0-none
     public static final String EXTRA_MAPS_SEARCH = "mapsSearch";   // boolean: static pop-1k-cities on/off
 

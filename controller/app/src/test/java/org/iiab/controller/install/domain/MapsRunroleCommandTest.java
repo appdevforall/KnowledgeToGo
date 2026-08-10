@@ -18,9 +18,9 @@ public class MapsRunroleCommandTest {
 
     @Test
     public void writesSelectedLayersAndForcesReinstall() {
-        String cmd = MapsRunroleCommand.build("14", "12", "10", true);
+        String cmd = MapsRunroleCommand.build("14", "13", "10", true);
         assertTrue(cmd.contains("maps_vector_quality: 14"));
-        assertTrue(cmd.contains("maps_satellite_zoom: 12"));
+        assertTrue(cmd.contains("maps_satellite_zoom: 13"));
         assertTrue(cmd.contains("maps_terrain_zoom: 10"));
         assertTrue(cmd.contains("maps_search_engine: \"static\""));
         assertTrue(cmd.contains("maps_region_downloader: True"));

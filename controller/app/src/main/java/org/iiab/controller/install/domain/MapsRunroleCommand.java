@@ -24,10 +24,11 @@ public final class MapsRunroleCommand {
     private MapsRunroleCommand() {}
 
     // Keys mirror the upstream maps catalog (iiab/iiab roles/maps, PR #4462): vector nat-z8/11/14,
-    // ne6 6, terrain 0-none (off), satellite 7/9/11/12/13 + "none" (the role special-cases satellite
+    // ne6 6, terrain 0-none (off), satellite 7/9/11/13 + "none" (the role special-cases satellite
     // "none" by dropping the symlink; terrain has no such case, its off value is the real "0-none" key).
+    // The catalog also has satellite 12, but the wizard doesn't offer it, so it's not in the allowlist.
     private static final Set<String> VECTOR_OK = new HashSet<>(Arrays.asList("nat-z8", "11", "14"));
-    private static final Set<String> SAT_OK = new HashSet<>(Arrays.asList("none", "7", "9", "11", "12", "13"));
+    private static final Set<String> SAT_OK = new HashSet<>(Arrays.asList("none", "7", "9", "11", "13"));
     private static final Set<String> TERRAIN_OK = new HashSet<>(Arrays.asList("0-none", "7", "8", "9", "10"));
     private static final String LV = "/etc/iiab/local_vars.yml";
 
