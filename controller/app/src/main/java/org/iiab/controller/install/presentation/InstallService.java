@@ -554,11 +554,11 @@ public final class InstallService extends Service {
             text = text.replaceAll("(?m)^maps_enabled:\\s*.*", "maps_enabled: True");
 
             if (tier == InstallationPlanner.Tier.STANDARD) {
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: 11");
+                text = text.replaceAll("(?m)^maps_vector_(quality|zoom):\\s*.*", "maps_vector_zoom: 11");
                 text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
                 text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 7");
             } else if (tier == InstallationPlanner.Tier.FULL) {
-                text = text.replaceAll("(?m)^maps_vector_quality:\\s*.*", "maps_vector_quality: 11");
+                text = text.replaceAll("(?m)^maps_vector_(quality|zoom):\\s*.*", "maps_vector_zoom: 11");
                 text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
                 text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 8");
             }
