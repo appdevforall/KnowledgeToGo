@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Спремно</string>
     <string name="k2go_card_connecting">Повезивање</string>
     <string name="k2go_card_unavailable">Недоступно · додирните за поновни покушај</string>
+    <string name="k2go_card_adding">Додавање садржаја</string>
     <string name="k2go_card_not_installed">Није инсталирано</string>
     <string name="k2go_edition_basic">Основно</string>
     <string name="k2go_edition_standard">Стандардно</string>

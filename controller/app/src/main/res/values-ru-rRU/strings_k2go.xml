@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Готово</string>
     <string name="k2go_card_connecting">Подключение</string>
     <string name="k2go_card_unavailable">Недоступно · нажмите для повтора</string>
+    <string name="k2go_card_adding">Добавление контента</string>
     <string name="k2go_card_not_installed">Не установлено</string>
     <string name="k2go_edition_basic">Базовая</string>
     <string name="k2go_edition_standard">Стандартная</string>

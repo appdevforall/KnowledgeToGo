@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">آماده</string>
     <string name="k2go_card_connecting">در حال اتصال</string>
     <string name="k2go_card_unavailable">در دسترس نیست · برای تلاش مجدد ضربه بزنید</string>
+    <string name="k2go_card_adding">در حال افزودن محتوا</string>
     <string name="k2go_card_not_installed">نصب نشده</string>
     <string name="k2go_edition_basic">پایه</string>
     <string name="k2go_edition_standard">استاندارد</string>

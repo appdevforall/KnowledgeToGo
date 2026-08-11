@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Tayari</string>
     <string name="k2go_card_connecting">Inaunganisha</string>
     <string name="k2go_card_unavailable">Haipatikani · gusa ili kujaribu tena</string>
+    <string name="k2go_card_adding">Inaongeza maudhui</string>
     <string name="k2go_card_not_installed">Haijasakinishwa</string>
     <string name="k2go_edition_basic">Msingi</string>
     <string name="k2go_edition_standard">Kawaida</string>

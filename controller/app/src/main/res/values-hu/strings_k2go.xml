@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Kész</string>
     <string name="k2go_card_connecting">Csatlakozás</string>
     <string name="k2go_card_unavailable">Nem érhető el · koppints az újrapróbáláshoz</string>
+    <string name="k2go_card_adding">Tartalom hozzáadása</string>
     <string name="k2go_card_not_installed">Nincs telepítve</string>
     <string name="k2go_edition_basic">Alap</string>
     <string name="k2go_edition_standard">Normál</string>

@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">جاهز</string>
     <string name="k2go_card_connecting">جارٍ الاتصال</string>
     <string name="k2go_card_unavailable">غير متاح · انقر لإعادة المحاولة</string>
+    <string name="k2go_card_adding">جارٍ إضافة المحتوى</string>
     <string name="k2go_card_not_installed">غير مثبّت</string>
     <string name="k2go_edition_basic">أساسي</string>
     <string name="k2go_edition_standard">قياسي</string>

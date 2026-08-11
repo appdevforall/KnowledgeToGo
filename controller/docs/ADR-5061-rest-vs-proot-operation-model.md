@@ -550,10 +550,33 @@ most expensive by the third platform. A is B done safely over time.
           already maintains. No observation yet is treated as stopped rather than as empty:
           a guess either way, and this is the guess that sends the user somewhere useful.
 
-          Worth noting for the pattern rather than the fix: two screens asked the same
-          question, both concluded "not installed" from silence, and neither consulted a fact
-          it already had in hand. The probe-answers-with-a-boolean shape is what made both
-          easy to write.
+          **And a third, which turned the pattern into a rule.** While courses were
+          downloading, the Home card alternated between "Ready" and "Unavailable" every few
+          seconds. The alternation is the diagnosis: a platform that had gone down would stay
+          red. Kolibri is a Django app importing a channel under proot on a phone — it keeps
+          serving and sometimes takes longer than the 1500 ms the probe allows, so a timeout
+          was being read as a verdict on health twice a minute. The card now says what is
+          actually happening, which is both truthful and stable: there is no race to win, so
+          there is no flicker. The tap follows, since a card that reads "Adding content" and
+          then opens an install sheet is the same disagreement one level down.
+
+          A convention came out of that card, and it is worth keeping: **the dot answers "can
+          I use this?" and the label answers "what is happening?"** Two questions, two
+          channels. So a card receiving content stays green — importing a channel database and
+          serving content are different jobs inside Kolibri, browsing is read-only, and there
+          is nothing to warn about or block. Amber was the first choice here and it was wrong:
+          on a card amber means "degraded, wait", a claim we have no evidence for, and it had
+          been copied from the header, where amber means something else entirely ("this screen
+          is not final yet"). Colour is the severity channel — neutral or green for
+          information, amber for a warning, red for a block — and the text is free to say
+          more without changing what the colour promises.
+
+          Three screens, one mistake: **a probe that answers with a boolean invites the caller
+          to treat silence as a verdict.** In each case the fact needed to do better was
+          already in hand — a running session, a cached server state — and in each case the
+          screen next to it was already saying the right thing. Worth remembering when the
+          remaining surfaces migrate under ADFA-5062: the derivation to retire is not just
+          "guessing instead of asking the model", it is this specific shape.
 
           **Still open, and the fuller answer:** the app is asking a disk question over HTTP.
           `local_vars.yml` carries `<key>_install: True`, is readable from the app's own

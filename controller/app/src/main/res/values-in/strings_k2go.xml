@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Siap</string>
     <string name="k2go_card_connecting">Menyambungkan</string>
     <string name="k2go_card_unavailable">Tidak tersedia · ketuk untuk coba lagi</string>
+    <string name="k2go_card_adding">Menambahkan konten</string>
     <string name="k2go_card_not_installed">Belum terpasang</string>
     <string name="k2go_edition_basic">Dasar</string>
     <string name="k2go_edition_standard">Standar</string>

@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Pronto</string>
     <string name="k2go_card_connecting">Connessione</string>
     <string name="k2go_card_unavailable">Non disponibile · tocca per riprovare</string>
+    <string name="k2go_card_adding">Aggiunta di contenuti</string>
     <string name="k2go_card_not_installed">Non installato</string>
     <string name="k2go_edition_basic">Base</string>
     <string name="k2go_edition_standard">Standard</string>

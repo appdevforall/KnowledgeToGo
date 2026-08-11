@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Připraveno</string>
     <string name="k2go_card_connecting">Připojování</string>
     <string name="k2go_card_unavailable">Nedostupné · klepnutím opakujte</string>
+    <string name="k2go_card_adding">Přidávání obsahu</string>
     <string name="k2go_card_not_installed">Nenainstalováno</string>
     <string name="k2go_edition_basic">Základní</string>
     <string name="k2go_edition_standard">Standardní</string>

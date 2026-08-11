@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">준비됨</string>
     <string name="k2go_card_connecting">연결 중</string>
     <string name="k2go_card_unavailable">사용 불가 · 탭하여 다시 시도</string>
+    <string name="k2go_card_adding">콘텐츠 추가 중</string>
     <string name="k2go_card_not_installed">설치되지 않음</string>
     <string name="k2go_edition_basic">베이직</string>
     <string name="k2go_edition_standard">스탠다드</string>

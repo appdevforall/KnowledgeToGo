@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Sẵn sàng</string>
     <string name="k2go_card_connecting">Đang kết nối</string>
     <string name="k2go_card_unavailable">Không khả dụng · chạm để thử lại</string>
+    <string name="k2go_card_adding">Đang thêm nội dung</string>
     <string name="k2go_card_not_installed">Chưa cài</string>
     <string name="k2go_edition_basic">Cơ bản</string>
     <string name="k2go_edition_standard">Tiêu chuẩn</string>

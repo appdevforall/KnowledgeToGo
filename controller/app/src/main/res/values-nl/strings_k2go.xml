@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Klaar</string>
     <string name="k2go_card_connecting">Verbinden</string>
     <string name="k2go_card_unavailable">Niet beschikbaar · tik om opnieuw te proberen</string>
+    <string name="k2go_card_adding">Inhoud toevoegen</string>
     <string name="k2go_card_not_installed">Niet geïnstalleerd</string>
     <string name="k2go_edition_basic">Basis</string>
     <string name="k2go_edition_standard">Standaard</string>

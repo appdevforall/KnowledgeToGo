@@ -319,6 +319,7 @@
     <string name="k2go_card_ready">Paruošta</string>
     <string name="k2go_card_connecting">Jungiamasi</string>
     <string name="k2go_card_unavailable">Nepasiekiama · bakstelėkite, kad bandytumėte dar kartą</string>
+    <string name="k2go_card_adding">Pridedamas turinys</string>
     <string name="k2go_card_not_installed">Neįdiegta</string>
     <string name="k2go_edition_basic">Bazinis</string>
     <string name="k2go_edition_standard">Standartinis</string>

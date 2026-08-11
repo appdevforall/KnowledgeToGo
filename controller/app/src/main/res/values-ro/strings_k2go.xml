@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Gata</string>
     <string name="k2go_card_connecting">Se conectează</string>
     <string name="k2go_card_unavailable">Indisponibil · atinge pentru a reîncerca</string>
+    <string name="k2go_card_adding">Se adaugă conținut</string>
     <string name="k2go_card_not_installed">Neinstalat</string>
     <string name="k2go_edition_basic">De bază</string>
     <string name="k2go_edition_standard">Standard</string>

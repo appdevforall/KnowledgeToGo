@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">તૈયાર</string>
     <string name="k2go_card_connecting">કનેક્ટ થઈ રહ્યું છે</string>
     <string name="k2go_card_unavailable">અનુપલબ્ધ · ફરી પ્રયાસ કરવા ટૅપ કરો</string>
+    <string name="k2go_card_adding">સામગ્રી ઉમેરાઈ રહી છે</string>
     <string name="k2go_card_not_installed">ઇન્સ્ટોલ નથી</string>
     <string name="k2go_edition_basic">બેઝિક</string>
     <string name="k2go_edition_standard">સ્ટાન્ડર્ડ</string>

@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">就绪</string>
     <string name="k2go_card_connecting">正在连接</string>
     <string name="k2go_card_unavailable">不可用 · 点按重试</string>
+    <string name="k2go_card_adding">正在添加内容</string>
     <string name="k2go_card_not_installed">未安装</string>
     <string name="k2go_edition_basic">基础版</string>
     <string name="k2go_edition_standard">标准版</string>

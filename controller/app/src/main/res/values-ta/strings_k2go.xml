@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">தயார்</string>
     <string name="k2go_card_connecting">இணைக்கப்படுகிறது</string>
     <string name="k2go_card_unavailable">கிடைக்கவில்லை · மீண்டும் முயற தட்டவும்</string>
+    <string name="k2go_card_adding">உள்ளடக்கம் சேர்க்கப்படுகிறது</string>
     <string name="k2go_card_not_installed">நிறுவப்படவில்லை</string>
     <string name="k2go_edition_basic">அடிப்படை</string>
     <string name="k2go_edition_standard">நிலையான</string>

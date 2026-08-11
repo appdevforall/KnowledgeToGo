@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Hazır</string>
     <string name="k2go_card_connecting">Qoşulur</string>
     <string name="k2go_card_unavailable">Əlçatmaz · yenidən cəhd üçün toxun</string>
+    <string name="k2go_card_adding">Məzmun əlavə olunur</string>
     <string name="k2go_card_not_installed">Quraşdırılmayıb</string>
     <string name="k2go_edition_basic">Əsas</string>
     <string name="k2go_edition_standard">Standart</string>

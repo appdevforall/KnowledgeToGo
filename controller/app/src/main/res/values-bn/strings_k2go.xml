@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">প্রস্তুত</string>
     <string name="k2go_card_connecting">সংযোগ হচ্ছে</string>
     <string name="k2go_card_unavailable">অনুপলব্ধ · আবার চেষ্টা করতে ট্যাপ করুন</string>
+    <string name="k2go_card_adding">কনটেন্ট যোগ করা হচ্ছে</string>
     <string name="k2go_card_not_installed">ইনস্টল করা নেই</string>
     <string name="k2go_edition_basic">বেসিক</string>
     <string name="k2go_edition_standard">স্ট্যান্ডার্ড</string>

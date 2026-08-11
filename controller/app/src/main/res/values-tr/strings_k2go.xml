@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Hazır</string>
     <string name="k2go_card_connecting">Bağlanıyor</string>
     <string name="k2go_card_unavailable">Kullanılamıyor · yeniden denemek için dokunun</string>
+    <string name="k2go_card_adding">İçerik ekleniyor</string>
     <string name="k2go_card_not_installed">Kurulu değil</string>
     <string name="k2go_edition_basic">Temel</string>
     <string name="k2go_edition_standard">Standart</string>

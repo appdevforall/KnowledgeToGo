@@ -241,7 +241,11 @@ public class LibraryHomeFragment extends Fragment {
     }
 
     private void onCardClick(Card c) {
-        if (c.state == GREEN) {
+        // ADFA-5061: a card whose content is downloading opens the platform, whatever the
+        // last probe said. Without this the label and the tap disagree — the card reads
+        // "Adding content" and a tap that lost the probe race opens the install sheet for a
+        // platform that is demonstrably installed.
+        if (c.state == GREEN || contentInFlight(c)) {
             Intent i = new Intent(requireContext(), PortalActivity.class);
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
             // ADFA-5043: Books (Calibre-Web) and Courses (Kolibri) auto-login as box admin in the WebView.
@@ -470,6 +474,47 @@ public class LibraryHomeFragment extends Fragment {
             c.status.setText(getString(R.string.k2go_state_scheduled));
             c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         }
+        // ADFA-5061: content in flight for this card wins over whatever the probe said, and
+        // it applies whether the probe answered or not.
+        //
+        // Observed on device: while courses were downloading, the card alternated between
+        // "Ready" and "Unavailable" every few seconds. Kolibri is not going down and coming
+        // back — it is a Django app importing a channel under proot on a phone, so it keeps
+        // serving but sometimes takes longer than the 1500 ms this probe allows. Treating a
+        // timeout as a verdict on health turned "slow" into "broken", twice a minute.
+        //
+        // Saying what is actually happening is both truthful and stable: no race to win, so
+        // no flicker. The header three centimetres above already said "Adding content" while
+        // the card said "Unavailable" — one screen, two answers, and the header's was right.
+        // Green, not amber. The dot answers "can I use this?" and the label answers "what is
+        // happening?" — two questions that do not have to share a channel. Importing a
+        // channel database and serving content are different jobs inside Kolibri, and
+        // browsing is read-only, so there is nothing to warn about and nothing to block.
+        // Amber would say "degraded, wait"; that is a claim we have no evidence for, and it
+        // was only chosen here by copying the header, where amber means something else
+        // entirely ("this screen is not final yet").
+        if (contentInFlight(c)) {
+            tint(c.dot, R.color.k2go_leaf);
+            c.status.setText(getString(R.string.k2go_card_adding));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
+        }
+    }
+
+    /**
+     * ADFA-5061: whether this card's content type has a stream running right now.
+     *
+     * <p>Proof that the platform is there, the same argument the courses confirm screen
+     * makes: we are watching it process a job we submitted. The card endpoints and the
+     * content keys disagree on one name — the Wikipedia card is {@code kiwix} and its
+     * content type is {@code zim} — which is the sort of thing ADFA-5062 exists to retire.
+     */
+    private boolean contentInFlight(Card c) {
+        if (c == null || c.endpoint == null) return false;
+        String key = "kiwix".equals(c.endpoint) ? "zim" : c.endpoint;
+        org.iiab.controller.system.domain.ContentType type =
+                org.iiab.controller.system.domain.ContentType.byKey(key);
+        return type != null && org.iiab.controller.system.data.PendingContent
+                .isRunning(requireContext(), type);
     }
 
     private void tint(View v, int colorRes) {

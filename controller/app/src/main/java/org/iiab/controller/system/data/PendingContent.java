@@ -315,6 +315,11 @@ public final class PendingContent {
         return read(ctx).anyRunning();
     }
 
+    /** One-shot: is <em>this</em> type's stream running right now? (ADFA-5061) */
+    public static boolean isRunning(Context ctx, ContentType type) {
+        return type != null && read(ctx).isRunning(type);
+    }
+
     /**
      * Discards every banked order, of every type.
      *

@@ -319,6 +319,7 @@
     <string name="k2go_card_ready">Klar</string>
     <string name="k2go_card_connecting">Kobler til</string>
     <string name="k2go_card_unavailable">Utilgjengelig · trykk for å prøve igjen</string>
+    <string name="k2go_card_adding">Legger til innhold</string>
     <string name="k2go_card_not_installed">Ikke installert</string>
     <string name="k2go_edition_basic">Enkel</string>
     <string name="k2go_edition_standard">Standard</string>

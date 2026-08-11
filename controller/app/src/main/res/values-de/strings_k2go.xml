@@ -318,6 +318,7 @@
     <string name="k2go_card_ready">Bereit</string>
     <string name="k2go_card_connecting">Verbindet</string>
     <string name="k2go_card_unavailable">Nicht verfügbar · tippen zum Wiederholen</string>
+    <string name="k2go_card_adding">Inhalte werden hinzugefügt</string>
     <string name="k2go_card_not_installed">Nicht installiert</string>
     <string name="k2go_edition_basic">Basis</string>
     <string name="k2go_edition_standard">Standard</string>
