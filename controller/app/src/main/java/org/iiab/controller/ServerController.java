@@ -253,19 +253,19 @@ public class ServerController {
         activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
-        // ADFA-5061: and an environment we have no handle on. `serverEngine` is a field on this
-        // Activity-scoped controller, so after an app restart — or simply another Activity — it is
-        // null while the proot it started is still running: nothing in the app stops the
-        // environment when the app closes. Starting then stacks a second proot over a live one,
-        // sharing /tmp, /dev/shm and ports, which is the collision ADR-4832 documents.
+        // ADFA-5061: an EnvironmentProcess.killOrphan(activity) call sat here and was removed on
+        // the device. It was meant for the environment this controller has no handle on —
+        // `serverEngine` is a field on an Activity-scoped controller, so a second controller sees
+        // a live proot as an orphan. That much is real. What it could not tell apart is an
+        // environment THIS process started seconds ago: on one launch it killed a proot 3.5 s into
+        // its own `pdsm start`, mid-boot, and the services had to come up twice.
         //
-        // Reachable in the field, not only from a terminal: `pdsm stop` — or services dying on
-        // their own — leaves the environment up and the ping down, and every screen reads that as
-        // "nothing is running". The matcher requires the environment's own command tail, so an
-        // install's runrole against the same rootfs is not a candidate for this.
-        if (org.iiab.controller.env.EnvironmentProcess.killOrphan(activity)) {
-            host.addToLog("[Server] stopped an environment left running without a handle");
-        }
+        // Doing it properly needs three things this line could not have: the handle held per
+        // process rather than per Activity, `startEnvironment` meaning "ensure it is up" rather
+        // than "start" — which is what all six of its callers actually want — and a boot grace,
+        // because "proot alive, services not answering" and "proot alive, still starting" are the
+        // same observation for the first several seconds. EnvironmentProcess and its matcher stay,
+        // unwired and tested, as the detection half of that work.
         serverEngine = new PRootEngine();
         String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
         serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {

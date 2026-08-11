@@ -34,6 +34,14 @@ import java.io.FileInputStream;
  * <p>Read-only by default. {@link #killOrphan} exists because knowing is not enough on the one
  * path that matters — an environment we did not start and cannot talk to has to go before a new
  * one can come up.
+ *
+ * <p><b>Not wired yet, deliberately.</b> {@code ServerController.startEnvironment} called
+ * {@link #killOrphan} for one build and it was removed after a device run: it cannot tell an
+ * abandoned environment from one this same process started seconds earlier, and it killed a proot
+ * 3.5 s into its own boot. Detection is the easy half. The rest — a handle held per process rather
+ * than per Activity, "ensure it is up" instead of "start", and a grace period while services are
+ * still coming up — is the ticket this class was written for. Read {@link #isRunning} freely; do
+ * not reach for {@link #killOrphan} until that decision exists to hold it.
  */
 public final class EnvironmentProcess {
 

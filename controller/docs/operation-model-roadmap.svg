@@ -216,7 +216,8 @@
 <text class="item" x="40" y="852">The consequence is not cosmetic: LibraryActivity.canStartServer() reads "not answering" as "nothing is running", so Retry can start a SECOND</text>
 <text class="item" x="40" y="870">proot over a live one — the collision class ADR-4832 documents (shared /tmp, /dev/shm, ports). Reachable after any app restart, because the</text>
 <text class="item" x="40" y="888">handle that would have stopped the first one is a field on an Activity-scoped ServerController.</text>
-<text class="code" x="40" y="912">The environment already tells us it exited — startEnvironment's onProcessExit only logs it. Nothing kills the proot when the app closes.</text>
+<text class="code" x="40" y="910">The environment already tells us it exited — startEnvironment's onProcessExit only logs it. Nothing kills the proot when the app closes.</text>
+<text class="code" x="40" y="928">Detection exists and is tested (EnvironmentProcess). Wiring it needs: the handle per process, "ensure up" not "start", and a boot grace.</text>
 
 <!-- ============================================================ -->
 <rect class="card" x="24" y="964" width="1232" height="164"/>

@@ -906,7 +906,48 @@ most expensive by the third platform. A is B done safely over time.
        is the same gap as the run-level disk budget noted in item 2d, seen from the other end: there
        is no one place to put the budget because there is no one place that reads the disk.
 7. [ ] ADFA-5063: the reversibility field, and the decision on real module uninstallation.
-8. [ ] **One shared answer to "is this platform there".** Lifted out of item 2d, where it was
+9. [ ] **The app cannot tell a stopped service from a stopped environment.** Found while testing
+       the status line, and worth its own item because a guard written for it had to be taken out
+       again — the detection is easy and the decision on top of it is not.
+
+       `pdsm stop` stops the services inside the container; the proot environment keeps running.
+       The app's only runtime signal is an HTTP ping to `/home` with a 1.5 s timeout, so
+       "services down, environment alive" and "everything down" are one observation, and
+       `SystemStateEvaluator` reports both as OFFLINE. `LibraryActivity.canStartServer()` reads
+       that as "nothing is running", so a start can stack a second proot over a live one — the
+       collision ADR-4832 documents. `startEnvironment` does kill its own previous engine first,
+       but `serverEngine` is a field on an Activity-scoped controller, so a second controller has
+       nothing to kill.
+
+       **Detection is done and unwired.** `EnvironmentProcess` finds our environment by walking the
+       host's `/proc` for a cmdline carrying our rootfs path and the environment's own command tail
+       — the technique `RsyncManager` already uses for its lingering children, with no container,
+       no ptrace and nothing mutated. `EnvironmentProcessMatcher` is pure and tested, and the tests
+       are about the one thing that must not go wrong: an install's runrole against the same rootfs
+       must never match.
+
+       **What the device taught, after `killOrphan` was wired into `startEnvironment` for one
+       build.** It killed a proot 3.5 s into its own `pdsm start`, mid-boot, and the services came
+       up twice. Detection cannot distinguish an abandoned environment from one this same process
+       started seconds ago, so the wiring needs three things the call did not have:
+
+       - the environment handle held **per process**, not per Activity;
+       - `startEnvironment` meaning **"ensure it is up"** rather than "start" — which is what all
+         six of its callers actually want, and would make a redundant call a no-op instead of a
+         restart;
+       - a **boot grace**, because "alive but not answering" and "alive and still starting" are the
+         same observation for the first seconds, and that is exactly when the wrong answer is
+         destructive.
+
+       **Two smaller findings from the same session, recorded so they are not re-derived.** A
+       second boot within 3.5 s was observed once, after a force-close where Android restored the
+       Activity stack; a clean relaunch through the Settings **Turn Off K2Go** button shows a
+       single boot and finds no orphan, so that button does leave the environment closed and is
+       the honest way to end a session. And whatever wires this must not run a `/proc` walk on the
+       main thread: `startEnvironment` is called from six places, all of them on it, one being a
+       tap.
+
+10. [ ] **One shared answer to "is this platform there".** Lifted out of item 2d, where it was
        buried in a sub-bullet about UX tokens and 5062's owner would not have found it.
 
        Six probes exist — `LibraryHomeFragment.probe`, `GetMoreHubFragment.reachable`,
