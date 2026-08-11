@@ -25,7 +25,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.iiab.controller.util.AppExecutors;
-import org.iiab.controller.util.Snackbars;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -254,6 +253,19 @@ public class ServerController {
         activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
+        // ADFA-5061: and an environment we have no handle on. `serverEngine` is a field on this
+        // Activity-scoped controller, so after an app restart — or simply another Activity — it is
+        // null while the proot it started is still running: nothing in the app stops the
+        // environment when the app closes. Starting then stacks a second proot over a live one,
+        // sharing /tmp, /dev/shm and ports, which is the collision ADR-4832 documents.
+        //
+        // Reachable in the field, not only from a terminal: `pdsm stop` — or services dying on
+        // their own — leaves the environment up and the ping down, and every screen reads that as
+        // "nothing is running". The matcher requires the environment's own command tail, so an
+        // install's runrole against the same rootfs is not a candidate for this.
+        if (org.iiab.controller.env.EnvironmentProcess.killOrphan(activity)) {
+            host.addToLog("[Server] stopped an environment left running without a handle");
+        }
         serverEngine = new PRootEngine();
         String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
         serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
@@ -339,12 +351,18 @@ public class ServerController {
             // keeps its start/stop TOGGLE semantics.
             startEnvironment();
 
-            // Fallback for Oppo/Xiaomi: Notify user if server fails to start
-            new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (host.getTargetServerState() != null && !ServerStateRepository.get().current().alive) {
-                    Snackbars.make(v, R.string.termux_stuck_warning).show();
-                }
-            }, activity.getResources().getInteger(R.integer.server_snackbar_delay_ms));
+            // ADFA-5061: a 20 s timer used to fire a snackbar here — "Termux not opening? Enable
+            // Master Watchdog to force it to gain focus." Removed, because every part of it is now
+            // false. The environment is not Termux and has not been for some time; nothing has to
+            // gain focus, since the server runs in a proot this process owns rather than in another
+            // app; and the Master Watchdog keeps services alive while the screen is off, which has
+            // no bearing on whether a start succeeds. It was advice from an era when starting the
+            // server meant handing off to a second app that Oppo and Xiaomi would refuse to
+            // foreground.
+            //
+            // It also fired on elapsed time alone, so on any slow device it told a user that
+            // nothing was happening while the start was happening. The honest report of a start
+            // that did not take is the timeout above, which is still here and still runs.
 
         } else {
             if (stopping) return;   // ADFA-4834: a stop is already in flight; ignore repeat taps

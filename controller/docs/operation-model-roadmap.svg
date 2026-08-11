@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1010" width="1280" height="1010" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1226" width="1280" height="1226" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
 <desc>Which ticket owns what, what blocks what, and how far each has got. Update the class on each item dot as work lands: s-done, s-doing or s-todo. The canvas is deliberately not page-sized — grow it rather than dropping items.</desc>
 
@@ -40,7 +40,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="1280" height="1010"/>
+<rect class="bg" x="0" y="0" width="1280" height="1226"/>
 
 <text class="h1" x="24" y="34">Operation model — ticket map</text>
 <text class="sub" x="24" y="54">Which ticket owns what, what blocks what, and how far each one has got.</text>
@@ -203,19 +203,35 @@
 <!-- ============================================================ -->
 <!-- carried, not blocking                                         -->
 <!-- ============================================================ -->
-<rect class="card" x="24" y="752" width="1232" height="164"/>
-<rect class="chip" x="40" y="768" width="150" height="19" fill="#F0F1F3" stroke="none"/>
-<text class="chiptx" x="48" y="782" fill="#5B636B">CARRIED, NOT BLOCKING</text>
-<text class="h3" x="204" y="782">Found in the last two days; recorded so they are met on purpose</text>
+<!-- ============================================================ -->
+<!-- new, and not a footnote                                       -->
+<!-- ============================================================ -->
+<rect class="card" x="24" y="752" width="1232" height="180" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="768" width="132" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="782" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="188" y="783">The app cannot tell a stopped service from a stopped environment</text>
 
-<circle class="s-todo" cx="48" cy="806" r="5.5"/><text class="item" x="62" y="810">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<circle class="s-todo" cx="48" cy="828" r="5.5"/><text class="item" x="62" y="832">No run-level disk budget. Ten places read free space by hand, so there is nowhere to put one.</text>
-<circle class="s-todo" cx="48" cy="850" r="5.5"/><text class="item" x="62" y="854">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
-<circle class="s-todo" cx="48" cy="872" r="5.5"/><text class="item" x="62" y="876">Books reports no transfer rate; the maps card cannot show "adding content" because its progress belongs to the module queue.</text>
-<circle class="s-todo" cx="48" cy="894" r="5.5"/><text class="item" x="62" y="898">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+<text class="item" x="40" y="810">`pdsm stop` stops the services inside the container; the proot environment keeps running. The app has one runtime signal — an HTTP ping to</text>
+<text class="item" x="40" y="828">/home with a 1.5 s timeout — so "services down, proot alive" and "everything down" are the same observable state, and both render as OFFLINE.</text>
+<text class="item" x="40" y="852">The consequence is not cosmetic: LibraryActivity.canStartServer() reads "not answering" as "nothing is running", so Retry can start a SECOND</text>
+<text class="item" x="40" y="870">proot over a live one — the collision class ADR-4832 documents (shared /tmp, /dev/shm, ports). Reachable after any app restart, because the</text>
+<text class="item" x="40" y="888">handle that would have stopped the first one is a field on an Activity-scoped ServerController.</text>
+<text class="code" x="40" y="912">The environment already tells us it exited — startEnvironment's onProcessExit only logs it. Nothing kills the proot when the app closes.</text>
 
-<text class="note" x="24" y="944">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
-<text class="note" x="24" y="960">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
-<text class="note" x="24" y="982">4758 can run whenever and reads better after 5061; do not close it as superseded, it is the one that can lose a user's content.</text>
-<text class="note" x="24" y="998">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
+<!-- ============================================================ -->
+<rect class="card" x="24" y="964" width="1232" height="164"/>
+<rect class="chip" x="40" y="980" width="150" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="48" y="994" fill="#5B636B">CARRIED, NOT BLOCKING</text>
+<text class="h3" x="204" y="994">Found in the last two days; recorded so they are met on purpose</text>
+
+<circle class="s-todo" cx="48" cy="1018" r="5.5"/><text class="item" x="62" y="1022">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
+<circle class="s-todo" cx="48" cy="1040" r="5.5"/><text class="item" x="62" y="1044">No run-level disk budget. Ten places read free space by hand, so there is nowhere to put one.</text>
+<circle class="s-todo" cx="48" cy="1062" r="5.5"/><text class="item" x="62" y="1066">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
+<circle class="s-todo" cx="48" cy="1084" r="5.5"/><text class="item" x="62" y="1088">Books reports no transfer rate; the maps card cannot show "adding content" because its progress belongs to the module queue.</text>
+<circle class="s-todo" cx="48" cy="1106" r="5.5"/><text class="item" x="62" y="1110">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+
+<text class="note" x="24" y="1156">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
+<text class="note" x="24" y="1172">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
+<text class="note" x="24" y="1194">4758 can run whenever and reads better after 5061; do not close it as superseded, it is the one that can lose a user's content.</text>
+<text class="note" x="24" y="1210">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
 </svg>
