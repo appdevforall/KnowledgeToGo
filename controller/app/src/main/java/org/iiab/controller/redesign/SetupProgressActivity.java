@@ -545,26 +545,46 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // longer be drawn from a different reading than the one that decided to show it.
         boolean zimSession = content.hasSession(ContentType.ZIM);
         boolean booksSession = content.hasSession(ContentType.BOOKS);
-        // ADFA-5074: each row carries its transfer rate, the one thing that separates "slow" from
-        // "stopped" for someone who left and came back. Books reports none (its service tracks
-        // whole files, not bytes in flight), so its row simply omits it — 0 means "say nothing".
-        if (zimShown) sections.addView(streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
-                zimSession, ZimDownloadService.status(),
-                ZimDownloadService.DONE, ZimDownloadService.FAILED,
-                zimSession && ZimDownloadService.isComplete(), content.banked(ContentType.ZIM),
-                ZimDownloadService.speed()));
-        if (booksShown) sections.addView(streamRow(getString(R.string.k2go_gm_books_title), "books",
-                booksSession, BooksDownloadService.status(),
-                BooksDownloadService.DONE, BooksDownloadService.FAILED,
-                booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS),
-                0L));
+        // ADFA-5074: started above, waiting below.
+        //
+        // The order used to be fixed by content type, which expressed nothing and did no harm
+        // while everything began at once. With a queue it reads as sequence, and it read wrong:
+        // a ZIM order banked behind a running Courses download drew above it, so the first thing
+        // on screen was the one that had not started.
+        //
+        // Two buckets only, with the type order kept inside each. A finer sort — done last, say
+        // — would reshuffle the list every time something finished, which is the opposite of
+        // what this screen is for: it is glanced at, minutes or hours apart, and rows that move
+        // between glances have to be re-read. Started rows never change places; a queued one
+        // moves up exactly once, when it starts, which is a real event worth showing.
+        //
+        // Each row also carries its transfer rate — the one thing that separates "slow" from
+        // "stopped". Books reports none (its service tracks whole files, not bytes in flight),
+        // so its row omits it: 0 means "say nothing".
+        java.util.List<View> started = new java.util.ArrayList<>();
+        java.util.List<View> waiting = new java.util.ArrayList<>();
+        if (zimShown) (zimSession ? started : waiting).add(
+                streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
+                        zimSession, ZimDownloadService.status(),
+                        ZimDownloadService.DONE, ZimDownloadService.FAILED,
+                        zimSession && ZimDownloadService.isComplete(), content.banked(ContentType.ZIM),
+                        ZimDownloadService.speed()));
+        if (booksShown) (booksSession ? started : waiting).add(
+                streamRow(getString(R.string.k2go_gm_books_title), "books",
+                        booksSession, BooksDownloadService.status(),
+                        BooksDownloadService.DONE, BooksDownloadService.FAILED,
+                        booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS),
+                        0L));
         // ADFA-4954. Statuses come from an observable snapshot rather than static arrays, so the
         // ordinals are mapped to the checklist's PENDING=0 / doneVal / failedVal convention here.
-        if (kolibriShown) sections.addView(streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
-                kolibriState.hasSession(), kolibriState.statusOrdinals(),
-                KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
-                kolibriState.hasSession() && kolibriState.isComplete(), kolibriBanked,
-                kolibriState.speedBytesPerSec()));
+        if (kolibriShown) (kolibriState.hasSession() ? started : waiting).add(
+                streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
+                        kolibriState.hasSession(), kolibriState.statusOrdinals(),
+                        KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
+                        kolibriState.hasSession() && kolibriState.isComplete(), kolibriBanked,
+                        kolibriState.speedBytesPerSec()));
+        for (View v : started) sections.addView(v);
+        for (View v : waiting) sections.addView(v);
 
         // Overall state. Completion is stage-based.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
@@ -854,11 +874,35 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         col.addView(h);
         TextView sub = new TextView(this);
         sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        // ADFA-5074: one row per content type, and the subtitle carries the mix of states inside
+        // it — "1 Done · 1 Queued", "0 of 1 · 21 MiB/s · 1 Queued".
+        //
+        // There is one row per type, not one per order: the services hold a single session at a
+        // time and the wishlist is a bag of items, so there is no order with an identity to draw.
+        // That stayed invisible until the queue existed. With a session present this row was
+        // built entirely from it and wishlistCount was dropped, so a second ZIM asked for while
+        // the first was downloading left no trace at all — four queued orders drew two rows with
+        // nothing to show for two of them.
+        //
+        // Grouping the index by state instead was considered and rejected: a type can be in two
+        // states at once (courses done AND courses queued), so it would appear in two sections,
+        // which is the confusion of a row-per-order with extra structure — and the list would
+        // reflow on every transition, which this screen must not do. The type is the stable
+        // anchor; the states are counts within it.
+        //
+        // Composed from existing labels plus numbers. The project has no <plurals> and
+        // MissingTranslation is a hard error, so a new string costs 34 locale files.
         String state;
-        if (!sess) state = getString(R.string.k2go_setup_state_queued);
-        else if (complete && failed > 0) state = getString(R.string.k2go_setup_state_failed_fmt, failed);
-        else if (complete) state = getString(R.string.k2go_setup_state_done);
-        else state = getString(R.string.k2go_setup_state_progress_fmt, done, n) + rateSuffix(bytesPerSec);
+        if (!sess) {
+            state = n + " " + getString(R.string.k2go_setup_state_queued);
+        } else {
+            if (complete && failed > 0) state = getString(R.string.k2go_setup_state_failed_fmt, failed);
+            else if (complete) state = done + " " + getString(R.string.k2go_setup_state_done);
+            else state = getString(R.string.k2go_setup_state_progress_fmt, done, n) + rateSuffix(bytesPerSec);
+            if (wishlistCount > 0) {
+                state += "  ·  " + wishlistCount + " " + getString(R.string.k2go_setup_state_queued);
+            }
+        }
         sub.setText(state);
         sub.setTextColor(ContextCompat.getColor(this, (sess && failed > 0) ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
@@ -867,6 +911,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         ImageView chev = new ImageView(this);
         chev.setImageResource(R.drawable.ic_chevron_right);
         chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
+        // ADFA-5074: no chevron on a row that does not open. It was always drawn, which was
+        // harmless while a queued row was a brief state during an install; with a real queue a
+        // row can sit "Queued" for an hour, offering to be tapped and doing nothing.
+        chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
         if (sess) row.setOnClickListener(v -> openDetail(key));   // detail only once there's a live session

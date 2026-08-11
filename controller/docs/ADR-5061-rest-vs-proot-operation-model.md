@@ -443,6 +443,41 @@ most expensive by the third platform. A is B done safely over time.
           Fixed first; then `KolibriConfirmFragment` simply stopped rolling its order back, which
           made the change mostly a deletion, and `canDrainNow` went back to being internal.
 
+          **The row order had to change with it.** Spotted by Luis on the first queued run: the
+          rows were ordered by content type, which expressed nothing while everything started at
+          once, but a queue makes a list read as a sequence — and the banked ZIM drew above the
+          running Courses. Now started rows come first and waiting ones last, with the type order
+          kept inside each bucket. Deliberately only two buckets: sorting finished rows to the
+          bottom as well would reshuffle the list every time something completed, and this screen
+          is glanced at hours apart, so a row that moves between glances has to be re-read.
+
+          **One row per type, not per order — and it has to say so.** Luis queued four things
+          (courses, ZIM, courses, ZIM) and saw two rows. The log showed the queue itself working
+          perfectly: each order banked, deferred while another held the line, and started in turn.
+          What was wrong was the drawing. A row is built from the session when there is one, and
+          the banked count was simply dropped in that branch — so a second ZIM asked for while the
+          first was downloading left no trace on screen.
+
+          One row per order is not available cheaply and probably not desirable: the services hold
+          a single session at a time and the wishlist is a bag of items, so there is no order with
+          an identity to draw, and four rows for two types would say less, not more.
+
+          **Grouping the index by state was considered and rejected.** It is the natural next
+          thought — Done / In progress / Queued sections — and it breaks on the case that prompted
+          it: a type can be in two states at once, so Courses-done-and-Courses-queued would appear
+          in two sections. That is the confusion of a row-per-order with extra structure on top,
+          and the sections would reflow on every transition, which is what this screen must not do.
+
+          What landed instead, Luis' own simplification: the type stays the stable anchor and the
+          **states become counts inside its subtitle** — "1 Done · 1 Queued", "0 of 1 · 21 MiB/s ·
+          1 Queued". Nothing moves, and the mix reads at a glance. Composed from the existing
+          labels plus numbers, because the project has no `<plurals>` and `MissingTranslation` is
+          a hard error, so a new string costs 34 locale files.
+
+          A queued row also stopped drawing a chevron. It was always there, harmless while
+          "Queued" was a brief state during an install; with a real queue a row can sit that way
+          for an hour, offering a tap that does nothing.
+
           **ZIM turned out to have a third copy of one rule.** Routing its door through
           `ZimWishlist` + `ZimProvisioner.drain` — the shape Courses already had — deleted the
           resolution this ticket had moved out of `ZimPreparingFragment` two commits earlier.
