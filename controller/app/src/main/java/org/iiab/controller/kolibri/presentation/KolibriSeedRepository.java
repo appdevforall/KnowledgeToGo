@@ -61,6 +61,15 @@ public final class KolibriSeedRepository {
     private KolibriSeedState currentState = KolibriSeedState.idle();
     private long seq = 0L;
 
+    /**
+     * ADFA-5074: when the current session started, on the monotonic clock.
+     *
+     * <p>Only used to derive a transfer rate the box does not report. {@code elapsedRealtime}
+     * rather than wall time because it is immune to the clock being adjusted mid-download, and
+     * a download is exactly long enough for that to happen.
+     */
+    private long startedAtMs = 0L;
+
     private KolibriSeedRepository() {
     }
 
@@ -105,7 +114,8 @@ public final class KolibriSeedRepository {
     }
 
     /** Replaces any previous session. */
-    public void startSession(List<KolibriSeedState.Item> queued) {
+    public synchronized void startSession(List<KolibriSeedState.Item> queued) {
+        startedAtMs = android.os.SystemClock.elapsedRealtime();
         mutate(from -> KolibriSeedState.of(queued));
     }
 
@@ -113,8 +123,34 @@ public final class KolibriSeedRepository {
         mutate(from -> from.startingItem(index));
     }
 
-    public void itemProgress(int index, int percent, long speedBytesPerSec) {
-        mutate(from -> from.progress(index, percent, speedBytesPerSec));
+    /**
+     * ADFA-5074: fills in a rate when the box does not send one.
+     *
+     * <p>The Kolibri job endpoint answers with a phase and a percentage; {@code speed} comes
+     * back 0, so the Courses caption showed a percentage and nothing else. On a channel that
+     * takes hours over a link whose speed is varying, that is not enough to tell a slow download
+     * from a stopped one — which is the question being asked when someone opens this screen.
+     *
+     * <p>Only ever a fallback. If the box learns to report a rate, its value wins with no change
+     * here: a real instant rate beats a derived average, and the two must not fight.
+     *
+     * <p>The clock is read here rather than in {@code TransferRate} or the state so that both
+     * stay pure — the rule is testable on a JVM, and only this class knows when the session
+     * began.
+     */
+    public synchronized void itemProgress(int index, int percent, long speedBytesPerSec) {
+        final long now = android.os.SystemClock.elapsedRealtime();
+        mutate(from -> {
+            KolibriSeedState next = from.progress(index, percent, speedBytesPerSec);
+            if (speedBytesPerSec > 0L || startedAtMs <= 0L) {
+                // No start time means no session was opened through this object, so "elapsed"
+                // would be time since the device booted and the rate would be fiction.
+                return next;
+            }
+            long derived = org.iiab.controller.system.domain.TransferRate.perSecond(
+                    next.transferredBytes(), now - startedAtMs);
+            return derived > 0L ? next.withSpeed(derived) : next;
+        });
     }
 
     public void itemFinished(int index, boolean ok) {
@@ -136,7 +172,8 @@ public final class KolibriSeedRepository {
     }
 
     /** Clears the session so a new selection can start clean. */
-    public void clearSession() {
+    public synchronized void clearSession() {
+        startedAtMs = 0L;   // ADFA-5074: the next session brings its own start time
         mutate(from -> KolibriSeedState.idle());
     }
 }

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 888" width="980" height="888" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 1030" width="980" height="1030" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Content installation — mechanism and order</title>
 <desc>How the four content types install: which mechanism each uses, why they are serialised, where the server is stopped, and what is still unsolved. Companion to operation-model-roadmap.svg, which tracks ticket state rather than behaviour. Update when the behaviour changes, not when a ticket moves.</desc>
 
@@ -30,7 +30,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="980" height="888"/>
+<rect class="bg" x="0" y="0" width="980" height="1030"/>
 
 <text class="h1" x="24" y="34">Content installation — mechanism and order</text>
 <text class="sub" x="24" y="54">Four content types, two mechanisms. What runs when, what waits for what, and why.</text>
@@ -115,6 +115,17 @@
 <text class="item" x="40" y="820">STILL A SECOND HOST: the Books landing's "downloads" link opens BooksDownloadsFragment inside SetupLibraryActivity. It is a viewer,</text>
 <text class="item" x="40" y="836">not a landing — and the index cannot replace it until the index can be opened with nothing in flight (today it would redirect home).</text>
 <text class="code" x="40" y="852">Left in the ticket: that viewer · the Books-style hint (detail or card list?) · a queue, so a busy door banks instead of refusing.</text>
+
+<!-- ================= the completion chain ================= -->
+<rect class="card-warn" x="24" y="886" width="932" height="122"/>
+<rect class="chip" x="40" y="898" width="150" height="19" fill="#FDF1DC" stroke="none"/>
+<text class="chiptx" x="48" y="912" fill="#C77700">FIXED — WAS SUBTLE</text>
+<text class="h3" x="204" y="912">A finished run could not close itself</text>
+<text class="item" x="40" y="936">Completion is a fact about the run. It was gated on three things that are about something else, and each alone stalled the redirect:</text>
+<text class="item" x="40" y="956">servicesReady — a gate on STARTING work, gating the admission that work had ENDED. Its probe gives the box 2.5 s while the box is</text>
+<text class="item" x="40" y="972">busy serving the very download in question, so a slow link read as "Starting services." over a green Done row. REST starts nothing.</text>
+<text class="item" x="40" y="992">The poll was posted only when the index was on top — but the hint route opens a detail during onCreate. And render() returned early</text>
+<text class="code" x="40" y="1008">under a detail, so a run finishing there had nowhere to say so. nothingToStart() · onResume posts unconditionally · render steps back.</text>
 
 <!-- ================= which type is which ================= -->
 <rect class="card" x="24" y="242" width="212" height="244"/>

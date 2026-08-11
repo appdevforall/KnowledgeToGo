@@ -351,6 +351,19 @@ public final class KolibriSeedState {
         return new KolibriSeedState(items, running, index, speedBytesPerSec, s);
     }
 
+    /**
+     * ADFA-5074: the rate, supplied rather than reported.
+     *
+     * <p>The Kolibri job endpoint sends a phase and a percentage but no speed, so
+     * {@link #speedBytesPerSec()} was always 0 and the caption silently dropped it — the one
+     * screen where a user most needs to know whether anything is moving. The repository fills
+     * it in from {@code TransferRate} when the box says nothing, which is why this takes a value
+     * instead of computing one: the clock belongs to the caller, and this type stays a snapshot.
+     */
+    KolibriSeedState withSpeed(long bytesPerSec) {
+        return new KolibriSeedState(items, running, index, Math.max(0L, bytesPerSec), seq);
+    }
+
     /** Index of the first item still waiting, or -1. */
     public int firstPending() {
         for (int i = 0; i < items.size(); i++) {

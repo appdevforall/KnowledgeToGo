@@ -370,6 +370,64 @@ most expensive by the third platform. A is B done safely over time.
           produced `"Wikipedia · "`, a label ending on a separator: the "say All instead of nothing"
           guard only fired when the creator repeated the project. Widened, with the test.
 
+          **A finished run could not close itself — three links in one chain.** Found on device
+          once the hosting landed and Luis started using the two doors for real: a completed ZIM
+          run and a completed Courses run, on two different phones, both sitting on the index with
+          a green Done row under the header "Starting services." for minutes, then redirecting.
+
+          The wording was the tell, and Luis called it: REST content does not start services. It
+          indexes. Nothing was being started, so the header was describing a state the run was not
+          in — and the same flag it was describing is what held the redirect.
+
+          - **A start gate was gating completion.** `servicesReady` exists so the pipeline never
+            POSTs a job before the engine answers. But `orchestrateStep()` — which sets `drained`,
+            which `allComplete` requires — only runs once that flag is true, so a screen with
+            nothing left to start still had to pass a readiness probe to admit that it was done.
+            Worse, the probe competes with the work: `apiReady()` gives the box 2.5 s to answer
+            while the box is busy serving the download being waited on. Fixed by asking the right
+            question first — if no provisioner has anything pending there is nothing to launch, so
+            the gate has no purpose (`nothingToStart()`). It also makes the header truthful,
+            without editing a string.
+          - **The pipeline ran only when the index was on top.** `onResume` posted the poll inside
+            `if (!showingDetail)`. That held while a detail could only be reached by tapping a row
+            — you had been on the index, so the loop was already going. The hint route broke it:
+            a Get More download opens its detail during `onCreate`, so `onResume` found the flag
+            already true and never started the loop at all.
+          - **`render()` returned early under a detail.** Completion is a fact about the run, not
+            about which screen is in front, but the whole computation sat behind that guard. A run
+            finishing while its detail was open had nowhere to say so. It now steps back to the
+            index and lets the normal pass draw the summary and the countdown, rather than sending
+            the user home from under a screen they were reading.
+
+          Which of the three fired on the two phones is not settled — the header says the first,
+          and the redirect arriving the instant Luis took a screenshot points at a lifecycle event
+          restarting the loop, which is the second. The fix removes the dependency either way.
+
+          **Courses had no transfer rate, and the reason is upstream.** ZIM's caption shows one;
+          Courses' did not, and the two client/service pairs are structural copies — same
+          `onProgress(percent, speed)`, same `formatRate`/`parseRate` round trip. The difference
+          is what the box sends: `/api/kiwix/jobs/:id` carries a `speed` because aria2 measures
+          one, while `/k2go-api/kolibri/jobs/:id` returns 0 because Kolibri's importer reports a
+          phase and a percentage and nothing else.
+
+          It is worth having rather than deferring to a server change, because a percentage alone
+          cannot separate "slow" from "stopped" — which is the question a user opens this screen
+          to answer, and the one Luis could not answer on a link that had been fast hours earlier.
+          So the rate is derived on the device from what the session already holds: bytes
+          transferred over time elapsed (`TransferRate`, pure and tested).
+
+          That makes it an **average over the session**, deliberately. Kolibri reports whole
+          percents, so on a large channel one report can mean hundreds of megabytes; an instant
+          rate computed from that reads zero between reports and absurd on one. An average is
+          stable and still falls visibly when the link slows, which is the signal that matters. It
+          is a fallback only — if the box ever reports a real rate, that value wins with no change
+          on the device, and it should, because an instant rate is the better answer.
+
+          Not labelled "avg" on screen, on purpose: ZIM's is instantaneous and Courses' is not, and
+          labelling one of the two invites the question rather than answering it. The finished-card
+          average described earlier in this item is where the labelling gets decided for all four
+          at once.
+
           **A fifth entry surfaced, and it is not a landing.** The Books landing screen has a
           "downloads" link (`BooksLandingFragment.openDownloads` → `SetupLibraryActivity
           .openBooksDownloads`) that opens `BooksDownloadsFragment` inside that activity without

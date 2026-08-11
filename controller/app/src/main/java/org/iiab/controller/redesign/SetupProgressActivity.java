@@ -247,10 +247,20 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             render();
         }
         if (serverController != null) serverController.onResume();   // ADFA-4842: keep ServerState fresh
+        // ADFA-5074: the pipeline runs whatever is on top. It used to be started only when the
+        // index was showing, which was fine while a detail could only be opened by tapping a row
+        // — you had already been on the index, so the loop was already going. The hint route
+        // broke that: a Get More download now opens its detail during onCreate, so onResume found
+        // showingDetail already true and never posted the poll at all. Nothing advanced, and the
+        // run could not complete while the user watched it. Removing the callback first keeps
+        // this to one chain, since the runnable re-arms itself.
+        main.removeCallbacks(readyPoll);
+        main.post(readyPoll);
         if (!showingDetail) {
+            // The listeners are the one thing that IS about who is on screen: while a detail is
+            // open the fragment owns the single listener slot (see backToIndex).
             ZimDownloadService.setListener(this::render);
             BooksDownloadService.setListener(this::render);
-            main.post(readyPoll);
             render();
         }
     }
@@ -432,6 +442,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 if (!moduleServerUp) main.postDelayed(readyPoll, READY_POLL_MS);
                 return;
             }
+            // ADFA-5074: nothing to start means nothing to wait for. The readiness probe exists so
+            // we never POST a job before the engine answers — it is a gate on STARTING work. When
+            // every stream is already in flight there is no job to post, and the probe stops being
+            // free: it is an HTTP request to a server that is busy serving the very download it is
+            // being asked about. Observed on device with the network throttled — a finished ZIM and
+            // a finished Courses run both sat under "Starting services." with a green Done row,
+            // because apiReady() kept timing out at 2.5s, servicesReady stayed false, orchestrateStep
+            // never ran, `drained` was never set, and the completion the screen was waiting for could
+            // not be reached. Both redirected the moment the link freed up, minutes late.
+            //
+            // So: if no provisioner has anything pending, the pipeline has nothing to launch and can
+            // advance on what it can already see. This is also the truthful answer — the box is
+            // demonstrably up, it is downloading — and it stops the header claiming otherwise.
+            if (!servicesReady && nothingToStart()) servicesReady = true;
+
             // Once the engine is confirmed up, advance the pipeline on the main thread without
             // re-checking apiReady() over HTTP every tick (the build can run for hours). ADFA-4900/#6.
             if (servicesReady) {
@@ -460,6 +485,23 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             });
         }
     };
+
+    /**
+     * ADFA-5074: no stage has anything left to launch.
+     *
+     * <p>Exactly the set of "hasPending" questions {@link #orchestrateStep()} asks before it
+     * starts anything, and asked in one place so the two cannot drift: if this is true, that
+     * method can only observe. Deliberately not "is the run finished" — work already in flight
+     * is not pending, which is the whole point. A Get More download reaches this screen with its
+     * wishlist already drained by the door, so there is nothing to gate.
+     */
+    private boolean nothingToStart() {
+        return !MapsProvisioner.hasPending(this)
+                && !ModuleProvisioner.hasPending(this)
+                && !ZimProvisioner.hasPending(this)
+                && !BooksProvisioner.hasPending(this)
+                && !KolibriProvisioner.hasPending(this);
+    }
 
     /**
      * ADFA-4900: one step of the serialized install pipeline. Starts the next stage only when the
@@ -517,11 +559,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
 
     // ---- render ----
     private void render() {
-        if (sections == null || showingDetail) return;
+        if (sections == null) return;
 
         // ADFA-5011: a rebuild has its own, simpler surface (one row + status), driven by
         // InstallProgressRepository — never the install/content completion logic below.
-        if (rebuildInSession()) { renderRebuild(); return; }
+        // A rebuild never opens a detail, so it keeps the plain guard.
+        if (rebuildInSession()) { if (!showingDetail) renderRebuild(); return; }
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
@@ -640,6 +683,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // Animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
         if (amberWaiting) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
+
+        // ADFA-5074: a detail card is covering the index. Everything above still had to be
+        // computed — whether the run finished is a fact about the run, not about which screen is
+        // in front — but the controls below are not on screen, so a run that completed here would
+        // have nowhere to say so and would simply sit there. Step back to the index and let the
+        // normal pass run: the user gets the summary, the countdown and its Cancel, rather than
+        // being sent home from under a screen they were reading.
+        //
+        // backToIndex() calls render() again with the flag cleared, so the work below happens on
+        // that pass. Reachable only from the main thread — while a detail is open the index does
+        // not hold the service listener, so the callers here are the poll and the courses LiveData.
+        if (showingDetail) {
+            if (allComplete) backToIndex();
+            return;
+        }
 
         // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
         // note), never a silent success — so the user is told, not dropped on a dead Home.
