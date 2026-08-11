@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">Kontrolujú sa nainštalované moduly…</string>
     <string name="k2go_wizard_continue">Pokračovať</string>
     <string name="k2go_setup_progress_title">Dokončuje sa nastavenie</string>
-    <string name="k2go_setup_context">Po dokončení vás automaticky presmeruje. Aplikáciu môžete ďalej používať tak, že necháte inštaláciu bežať na pozadí.</string>
-    <string name="k2go_setup_context_proot">Po dokončení vás automaticky presmeruje. Počas inštalácie nechajte aplikáciu na tejto obrazovke — táto časť nemôže bežať na pozadí.</string>
+    <string name="k2go_setup_context">Po dokončení nastavenia budete automaticky presmerovaní do svojej knižnice. Aplikáciu môžete ďalej používať tak, že necháte inštaláciu bežať na pozadí.</string>
+    <string name="k2go_setup_context_proot">Po dokončení nastavenia budete automaticky presmerovaní do svojej knižnice. Počas inštalácie nechajte aplikáciu na tejto obrazovke — táto časť nemôže bežať na pozadí.</string>
     <string name="k2go_install_busy">Inštalácia už prebieha — počkajte, kým sa dokončí.</string>
     <string name="k2go_setup_leave_hint">Systém sa stále nastavuje. Aplikáciu môžete opustiť — pokračuje ďalej a bude pripravená, keď sa vrátite.</string>
     <string name="k2go_damaged_title">Inštalácia prerušená</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">Aktualizácia na mieste… nástenka sa nakrátko reštartuje.</string>
     <string name="k2go_dash_live_done">Nástenka je aktualizovaná.</string>
     <string name="k2go_dash_live_error">Aktualizácia zlyhala — ponechala sa predchádzajúca verzia.</string>
-    <string name="k2go_dash_live_timeout">Trvá to dlhšie ako zvyčajne. Dokončí sa na pozadí — o chvíľu skontrolujte verziu.</string>
+    <string name="k2go_dash_live_timeout">Aktualizácia trvá dlhšie ako zvyčajne. Dokončí sa na pozadí — o chvíľu skontrolujte verziu.</string>
     <string name="k2go_dash_live_start_failed">Aktualizáciu sa nepodarilo spustiť. Skúste to znova.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Jadro systému · vždy nainštalované</string>

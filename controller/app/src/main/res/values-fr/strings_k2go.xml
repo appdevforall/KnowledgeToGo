@@ -538,8 +538,8 @@
     <string name="k2go_gm_checking">Vérification des modules installés…</string>
     <string name="k2go_wizard_continue">Continuer</string>
     <string name="k2go_setup_progress_title">Finalisation de la configuration</string>
-    <string name="k2go_setup_context">Vous serez redirigé automatiquement une fois terminé. Vous pouvez continuer à utiliser l\'appli en exécutant l\'installation en arrière-plan.</string>
-    <string name="k2go_setup_context_proot">Vous serez redirigé automatiquement une fois terminé. Gardez l\'appli sur cet écran pendant l\'installation — cette partie ne peut pas s\'exécuter en arrière-plan.</string>
+    <string name="k2go_setup_context">Vous serez redirigé automatiquement vers votre bibliothèque une fois la configuration terminée. Vous pouvez continuer à utiliser l\'appli en exécutant l\'installation en arrière-plan.</string>
+    <string name="k2go_setup_context_proot">Vous serez redirigé automatiquement vers votre bibliothèque une fois la configuration terminée. Gardez l\'appli sur cet écran pendant l\'installation — cette partie ne peut pas s\'exécuter en arrière-plan.</string>
     <string name="k2go_install_busy">Une installation est déjà en cours — veuillez attendre qu\'elle se termine.</string>
     <string name="k2go_setup_leave_hint">Configuration du système encore en cours. Vous pouvez quitter l\'appli — elle continue et sera prête à votre retour.</string>
     <string name="k2go_damaged_title">Installation interrompue</string>
@@ -699,7 +699,7 @@
     <string name="k2go_dash_live_running">Mise à jour sur place… le tableau de bord redémarre brièvement.</string>
     <string name="k2go_dash_live_done">Tableau de bord mis à jour.</string>
     <string name="k2go_dash_live_error">Échec de la mise à jour — la version précédente a été conservée.</string>
-    <string name="k2go_dash_live_timeout">Cela prend plus de temps que d\'habitude. La mise à jour se terminera en arrière-plan — vérifiez la version dans un instant.</string>
+    <string name="k2go_dash_live_timeout">La mise à jour prend plus de temps que d\'habitude. La mise à jour se terminera en arrière-plan — vérifiez la version dans un instant.</string>
     <string name="k2go_dash_live_start_failed">Impossible de démarrer la mise à jour. Réessayez.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Cœur du système · toujours installé</string>

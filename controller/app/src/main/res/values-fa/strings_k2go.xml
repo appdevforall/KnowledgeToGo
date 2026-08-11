@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">در حال بررسی ماژول‌های نصب‌شده…</string>
     <string name="k2go_wizard_continue">ادامه</string>
     <string name="k2go_setup_progress_title">در حال اتمام راه‌اندازی</string>
-    <string name="k2go_setup_context">پس از پایان، به‌طور خودکار شما را هدایت می‌کند. می‌توانید با اجرای نصب در پس‌زمینه، همچنان از برنامه استفاده کنید.</string>
-    <string name="k2go_setup_context_proot">پس از پایان، به‌طور خودکار شما را هدایت می‌کند. در حین نصب، برنامه را روی این صفحه نگه دارید — این بخش نمی‌تواند در پس‌زمینه اجرا شود.</string>
+    <string name="k2go_setup_context">با پایان راه‌اندازی، به‌طور خودکار به کتابخانه‌تان برده می‌شوید. می‌توانید با اجرای نصب در پس‌زمینه، همچنان از برنامه استفاده کنید.</string>
+    <string name="k2go_setup_context_proot">با پایان راه‌اندازی، به‌طور خودکار به کتابخانه‌تان برده می‌شوید. در حین نصب، برنامه را روی این صفحه نگه دارید — این بخش نمی‌تواند در پس‌زمینه اجرا شود.</string>
     <string name="k2go_install_busy">یک نصب از قبل در حال اجراست — لطفاً تا پایان آن صبر کنید.</string>
     <string name="k2go_setup_leave_hint">سیستم هنوز در حال راه‌اندازی است. می‌توانید از برنامه خارج شوید — ادامه می‌یابد و هنگام بازگشت آماده خواهد بود.</string>
     <string name="k2go_damaged_title">نصب قطع شد</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">به‌روزرسانی در محل… داشبورد برای لحظه‌ای دوباره راه‌اندازی می‌شود.</string>
     <string name="k2go_dash_live_done">داشبورد به‌روزرسانی شد.</string>
     <string name="k2go_dash_live_error">به‌روزرسانی ناموفق بود — نسخهٔ قبلی حفظ شد.</string>
-    <string name="k2go_dash_live_timeout">این کار بیشتر از حد معمول طول می‌کشد. در پس‌زمینه تمام می‌شود — کمی بعد نسخه را بررسی کنید.</string>
+    <string name="k2go_dash_live_timeout">به‌روزرسانی بیشتر از حد معمول طول می‌کشد. در پس‌زمینه تمام می‌شود — کمی بعد نسخه را بررسی کنید.</string>
     <string name="k2go_dash_live_start_failed">شروع به‌روزرسانی ممکن نشد. دوباره تلاش کنید.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">هستهٔ سیستم · همیشه نصب‌شده</string>

@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">Inakagua moduli zilizosakinishwa…</string>
     <string name="k2go_wizard_continue">Endelea</string>
     <string name="k2go_setup_progress_title">Inamaliza usanidi</string>
-    <string name="k2go_setup_context">Itakuelekeza otomatiki ikimaliza. Unaweza kuendelea kutumia programu kwa kuendesha usakinishaji chinichini.</string>
-    <string name="k2go_setup_context_proot">Itakuelekeza otomatiki ikimaliza. Weka programu kwenye skrini hii inaposakinisha — sehemu hii haiwezi kufanya kazi chinichini.</string>
+    <string name="k2go_setup_context">Usanidi ukikamilika, utapelekwa kwenye maktaba yako otomatiki. Unaweza kuendelea kutumia programu kwa kuendesha usakinishaji chinichini.</string>
+    <string name="k2go_setup_context_proot">Usanidi ukikamilika, utapelekwa kwenye maktaba yako otomatiki. Weka programu kwenye skrini hii inaposakinisha — sehemu hii haiwezi kufanya kazi chinichini.</string>
     <string name="k2go_install_busy">Usakinishaji tayari unaendelea — tafadhali subiri umalize.</string>
     <string name="k2go_setup_leave_hint">Bado inasanidi mfumo. Unaweza kuondoka kwenye programu — inaendelea na itakuwa tayari utakaporudi.</string>
     <string name="k2go_damaged_title">Usakinishaji umekatizwa</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">Inasasisha papo hapo… dashibodi itaanza upya kwa muda mfupi.</string>
     <string name="k2go_dash_live_done">Dashibodi imesasishwa.</string>
     <string name="k2go_dash_live_error">Sasisho limeshindwa — toleo la awali limehifadhiwa.</string>
-    <string name="k2go_dash_live_timeout">Hii inachukua muda mrefu kuliko kawaida. Itakamilika chinichini — angalia toleo baada ya muda mfupi.</string>
+    <string name="k2go_dash_live_timeout">Sasisho linachukua muda mrefu kuliko kawaida. Itakamilika chinichini — angalia toleo baada ya muda mfupi.</string>
     <string name="k2go_dash_live_start_failed">Imeshindwa kuanzisha sasisho. Jaribu tena.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kiini cha mfumo · kimesakinishwa daima</string>

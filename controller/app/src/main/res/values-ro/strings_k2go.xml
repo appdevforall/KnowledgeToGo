@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">Se verifică modulele instalate…</string>
     <string name="k2go_wizard_continue">Continuă</string>
     <string name="k2go_setup_progress_title">Se finalizează configurarea</string>
-    <string name="k2go_setup_context">Te va redirecționa automat la finalizare. Poți folosi aplicația în continuare rulând instalarea în fundal.</string>
-    <string name="k2go_setup_context_proot">Te va redirecționa automat la finalizare. Ține aplicația pe acest ecran cât timp se instalează — această parte nu poate rula în fundal.</string>
+    <string name="k2go_setup_context">Când configurarea se termină, vei fi dus automat în biblioteca ta. Poți folosi aplicația în continuare rulând instalarea în fundal.</string>
+    <string name="k2go_setup_context_proot">Când configurarea se termină, vei fi dus automat în biblioteca ta. Ține aplicația pe acest ecran cât timp se instalează — această parte nu poate rula în fundal.</string>
     <string name="k2go_install_busy">O instalare este deja în curs — te rugăm să aștepți să se termine.</string>
     <string name="k2go_setup_leave_hint">Sistemul încă se configurează. Poți părăsi aplicația — continuă și va fi gata când revii.</string>
     <string name="k2go_damaged_title">Instalare întreruptă</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">Se actualizează pe loc… panoul repornește pentru scurt timp.</string>
     <string name="k2go_dash_live_done">Panoul a fost actualizat.</string>
     <string name="k2go_dash_live_error">Actualizarea a eșuat — a fost păstrată versiunea anterioară.</string>
-    <string name="k2go_dash_live_timeout">Durează mai mult decât de obicei. Se va finaliza în fundal — verificați versiunea într-un moment.</string>
+    <string name="k2go_dash_live_timeout">Actualizarea durează mai mult decât de obicei. Se va finaliza în fundal — verificați versiunea într-un moment.</string>
     <string name="k2go_dash_live_start_failed">Actualizarea nu a putut porni. Încercați din nou.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Nucleul sistemului · întotdeauna instalat</string>

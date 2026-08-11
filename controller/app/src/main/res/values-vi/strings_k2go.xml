@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">Đang kiểm tra các mô-đun đã cài…</string>
     <string name="k2go_wizard_continue">Tiếp tục</string>
     <string name="k2go_setup_progress_title">Đang hoàn tất thiết lập</string>
-    <string name="k2go_setup_context">Sẽ tự động chuyển hướng bạn khi hoàn tất. Bạn có thể tiếp tục dùng ứng dụng bằng cách chạy quá trình cài ở chế độ nền.</string>
-    <string name="k2go_setup_context_proot">Sẽ tự động chuyển hướng bạn khi hoàn tất. Giữ ứng dụng ở màn hình này trong khi cài — phần này không thể chạy nền.</string>
+    <string name="k2go_setup_context">Khi thiết lập hoàn tất, bạn sẽ được đưa đến thư viện của mình một cách tự động. Bạn có thể tiếp tục dùng ứng dụng bằng cách chạy quá trình cài ở chế độ nền.</string>
+    <string name="k2go_setup_context_proot">Khi thiết lập hoàn tất, bạn sẽ được đưa đến thư viện của mình một cách tự động. Giữ ứng dụng ở màn hình này trong khi cài — phần này không thể chạy nền.</string>
     <string name="k2go_install_busy">Một quá trình cài đang chạy — vui lòng chờ nó hoàn tất.</string>
     <string name="k2go_setup_leave_hint">Vẫn đang thiết lập hệ thống. Bạn có thể rời ứng dụng — nó tiếp tục và sẽ sẵn sàng khi bạn quay lại.</string>
     <string name="k2go_damaged_title">Cài đặt bị gián đoạn</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">Đang cập nhật tại chỗ… bảng điều khiển khởi động lại trong giây lát.</string>
     <string name="k2go_dash_live_done">Đã cập nhật bảng điều khiển.</string>
     <string name="k2go_dash_live_error">Cập nhật thất bại — phiên bản trước đã được giữ lại.</string>
-    <string name="k2go_dash_live_timeout">Việc này lâu hơn bình thường. Nó sẽ hoàn tất ở chế độ nền — kiểm tra phiên bản trong giây lát.</string>
+    <string name="k2go_dash_live_timeout">Bản cập nhật đang lâu hơn bình thường. Nó sẽ hoàn tất ở chế độ nền — kiểm tra phiên bản trong giây lát.</string>
     <string name="k2go_dash_live_start_failed">Không thể bắt đầu cập nhật. Hãy thử lại.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Lõi hệ thống · luôn được cài đặt</string>

@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">جارٍ التحقّق من الوحدات المثبّتة…</string>
     <string name="k2go_wizard_continue">متابعة</string>
     <string name="k2go_setup_progress_title">جارٍ إنهاء الإعداد</string>
-    <string name="k2go_setup_context">سيعيد توجيهك تلقائيًا عند الانتهاء. يمكنك متابعة استخدام التطبيق بتشغيل التثبيت في الخلفية.</string>
-    <string name="k2go_setup_context_proot">سيعيد توجيهك تلقائيًا عند الانتهاء. أبقِ التطبيق على هذه الشاشة أثناء التثبيت — لا يمكن تشغيل هذا الجزء في الخلفية.</string>
+    <string name="k2go_setup_context">سيتم نقلك إلى مكتبتك تلقائيًا عند انتهاء الإعداد. يمكنك متابعة استخدام التطبيق بتشغيل التثبيت في الخلفية.</string>
+    <string name="k2go_setup_context_proot">سيتم نقلك إلى مكتبتك تلقائيًا عند انتهاء الإعداد. أبقِ التطبيق على هذه الشاشة أثناء التثبيت — لا يمكن تشغيل هذا الجزء في الخلفية.</string>
     <string name="k2go_install_busy">هناك تثبيت قيد التشغيل بالفعل — يُرجى انتظار انتهائه.</string>
     <string name="k2go_setup_leave_hint">لا يزال إعداد النظام جاريًا. يمكنك مغادرة التطبيق — يستمر وسيكون جاهزًا عند عودتك.</string>
     <string name="k2go_damaged_title">انقطع التثبيت</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">جارٍ التحديث في مكانه… ستُعاد تشغيل لوحة التحكم لفترة وجيزة.</string>
     <string name="k2go_dash_live_done">تم تحديث لوحة التحكم.</string>
     <string name="k2go_dash_live_error">فشل التحديث — تم الاحتفاظ بالإصدار السابق.</string>
-    <string name="k2go_dash_live_timeout">يستغرق هذا وقتًا أطول من المعتاد. سيكتمل في الخلفية — تحقّق من الإصدار بعد قليل.</string>
+    <string name="k2go_dash_live_timeout">يستغرق التحديث وقتًا أطول من المعتاد. سيكتمل في الخلفية — تحقّق من الإصدار بعد قليل.</string>
     <string name="k2go_dash_live_start_failed">تعذّر بدء التحديث. حاول مرة أخرى.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">نواة النظام · مثبَّتة دائمًا</string>

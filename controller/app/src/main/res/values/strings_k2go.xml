@@ -629,9 +629,9 @@
     <string name="k2go_gm_checking">Checking installed modules…</string>
     <string name="k2go_wizard_continue">Continue</string>
     <string name="k2go_setup_progress_title">Finishing setup</string>
-    <string name="k2go_setup_context">It will redirect you automatically when finished. You can keep using the app by running the installation in the background.</string>
+    <string name="k2go_setup_context">You\'ll be taken to your library automatically when setup finishes. You can keep using the app by running the installation in the background.</string>
     <!-- ADFA-4919: proot (Maps) runs on the live system and cannot background; keep the user here. -->
-    <string name="k2go_setup_context_proot">It will redirect you automatically when finished. Keep the app on this screen while it installs — this part can’t run in the background.</string>
+    <string name="k2go_setup_context_proot">You\'ll be taken to your library automatically when setup finishes. Keep the app on this screen while it installs — this part can’t run in the background.</string>
     <!-- ADFA-4919: shown when the user tries to start a proot module while another install job is running. -->
     <string name="k2go_install_busy">An install is already running — please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
@@ -793,7 +793,7 @@
     <string name="k2go_dash_live_running">Updating in place… the dashboard restarts briefly.</string>
     <string name="k2go_dash_live_done">Dashboard updated.</string>
     <string name="k2go_dash_live_error">Update failed — the previous version was kept.</string>
-    <string name="k2go_dash_live_timeout">This is taking longer than usual. It will finish in the background — check the version in a moment.</string>
+    <string name="k2go_dash_live_timeout">The update is taking longer than usual. It will finish in the background — check the version in a moment.</string>
     <string name="k2go_dash_live_start_failed">Couldn\'t start the update. Try again.</string>
     <!-- ADFA-5011: dashboard detail card (Play Store-style, Rebuild-only). -->
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
