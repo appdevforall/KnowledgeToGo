@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">予約をキャンセル</string>
     <string name="k2go_state_ready">準備完了</string>
     <string name="k2go_state_not_installed">未インストール</string>
-    <string name="k2go_state_no_answer">応答なし</string>
+    <string name="k2go_state_no_answer">状態不明</string>
     <string name="k2go_state_scheduled">予約済み</string>
     <string name="k2go_mod_time_note">これはモジュールをシステムにビルドするため、数分かかり、完了するまでこの画面のままになります。すべて一度に必要ですか？ フルシステムバージョンをインストールしてください。</string>
     <string name="k2go_mod_maps_title">地図をナビゲート</string>

@@ -27,6 +27,7 @@ import org.iiab.controller.R;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
+import org.iiab.controller.system.domain.PlatformPresence;
 import org.iiab.controller.util.AppExecutors;
 
 /**
@@ -52,6 +53,17 @@ public class LibraryHomeFragment extends Fragment {
     private static final class Card {
         final String endpoint; final String title; final boolean requires64; final int iconRes;
         View dot; TextView status; int state = GRAY;
+        /**
+         * ADFA-5061: what the last probe established, or null when nothing has been asked yet.
+         *
+         * <p>Null is the value {@code state} could not hold, and its absence was a bug: the field
+         * seeded to GRAY, GRAY was read as "a 404 said it is not installed", and in the window
+         * between building the cards and the first probe returning — up to a second and a half
+         * per card, on a perfectly healthy box — the action sheet offered to install platforms
+         * that were installed. Decision 8 names this exact flattening: "down" and "never asked"
+         * are not the same answer, and a boolean cannot tell them apart.
+         */
+        PlatformPresence.Evidence evidence;
         Card(String e, String t, boolean r, int i) { endpoint = e; title = t; requires64 = r; iconRes = i; }
     }
 
@@ -272,19 +284,29 @@ public class LibraryHomeFragment extends Fragment {
         return null;
     }
 
-    // ADFA-4958: the module action sheet is the single contextual surface for a module card.
+    /**
+     * ADFA-4958: the module action sheet is the single contextual surface for a module card.
+     *
+     * <p>ADFA-5061: the state comes from the evidence, not from the dot. A first attempt read
+     * {@code c.state == GRAY} and asserted that grey meant a 404 — it does not. Grey has three
+     * other producers: an unsupported module, a box with no system, and the value the field
+     * holds before anything has been asked. Reading the colour therefore offered to install
+     * platforms that were installed, in the ordinary window before the first probe returns.
+     *
+     * <p>Content in flight is checked first and outranks everything, for the reason
+     * {@code onCardClick} already uses it: a platform we are watching work cannot be missing.
+     * That path bypasses this method, so without it the overflow menu could say "not
+     * responding" about a card reading "Adding content" two centimetres away.
+     */
     private void openSheet(Card c) {
         ModuleActionSheet.State s;
-        if (c.state == GREEN) s = ModuleActionSheet.State.READY;
+        if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
-        // ADFA-5061: GRAY is a 404 — the endpoint answered that there is nothing there, which
-        // is the only evidence that justifies offering to install. AMBER and RED mean the
-        // probe got no answer, and that used to fall through to "not installed": the app
-        // offered to install a platform that was merely slow, and during a Kolibri import it
-        // offered to install Kolibri while Kolibri was downloading. This probe already made
-        // the distinction; only the sheet was discarding it.
-        else if (c.state == GRAY) s = ModuleActionSheet.State.NOT_INSTALLED;
-        else s = ModuleActionSheet.State.UNKNOWN;
+        else if (c.evidence != null && !PlatformPresence.resolve(c.evidence)) {
+            s = ModuleActionSheet.State.NOT_INSTALLED;
+        } else {
+            s = ModuleActionSheet.State.UNKNOWN;
+        }
         ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
                 () -> { if (isAdded()) refreshAfterSheet(c); });   // ADFA-4958: refresh label / drop if hidden
     }
@@ -338,6 +360,10 @@ public class LibraryHomeFragment extends Fragment {
         // and the header points to Get more (set in updateHeaderFromCards).
         if (!installed) {
             for (final Card c : cards) {
+                // ADFA-5061: with no system at all, nothing is installed — and that is a fact,
+                // not a failed probe. This is the one path where ABSENT is set without asking
+                // anyone, and it is the path where offering an install is exactly right.
+                c.evidence = unsupported(c) ? null : PlatformPresence.Evidence.ABSENT;
                 applyState(c, GRAY);
                 if (unsupported(c) && c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
             }
@@ -392,6 +418,11 @@ public class LibraryHomeFragment extends Fragment {
 
         for (final Card c : cards) {
             if (unsupported(c)) {
+                // ADFA-5061: grey, but not "absent". A 64-bit module on a 32-bit device is not
+                // missing — it is never going to be there, which is why the sheet must not offer
+                // to install it. Leaving the evidence unset is what stops that: "nothing
+                // established" withholds the offer, where ABSENT would have made it.
+                c.evidence = null;
                 applyState(c, GRAY);
                 if (c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
                 continue;
@@ -399,14 +430,15 @@ public class LibraryHomeFragment extends Fragment {
             // ADFA-4828: system is installed. Before the first probe resolves (or while the server
             // is still coming up) show "Connecting", never "Not installed" — the latter only appears
             // once a probe actually reports the content is absent (404 -> GRAY).
-            if (!alive) { applyState(c, AMBER); continue; }
+            if (!alive) { c.evidence = null; applyState(c, AMBER); continue; }
             AppExecutors.get().io().execute(() -> {
-                final int st = probe(c.endpoint);
+                final PlatformPresence.Evidence ev = probe(c.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
-                    if (st == GREEN || st == GRAY) {
-                        applyState(c, st);
-                    } else {
+                    c.evidence = ev;
+                    if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
+                    else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
+                    else {
                         // ADFA-4837: stay amber (patient) while the box is warming up; only fall to red
                         // once the server has been alive past the grace and this service still won't answer.
                         long aliveMs = serverAliveSinceMs > 0L
@@ -565,7 +597,17 @@ public class LibraryHomeFragment extends Fragment {
         v.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), colorRes)));
     }
 
-    private static int probe(String endpoint) {
+    /**
+     * ADFA-5061: what the endpoint said, in the model's words.
+     *
+     * <p>This used to return dot colours — GREEN, GRAY, AMBER — which is
+     * {@code PRESENT}/{@code ABSENT}/{@code NONE} computed identically and named after paint.
+     * The sheet then read the paint back out and re-derived the verdict, so one rule existed in
+     * three places and the two a user could hit were the copies. It reports evidence now;
+     * {@link PlatformPresence} owns what the evidence is worth, and the colour is chosen from
+     * the answer rather than being the answer.
+     */
+    private static PlatformPresence.Evidence probe(String endpoint) {
         HttpURLConnection c = null;
         try {
             URL u = new URL(BoxEndpoints.BASE + "/" + endpoint + "/");
@@ -575,11 +617,11 @@ public class LibraryHomeFragment extends Fragment {
             c.setReadTimeout(1500);
             c.setRequestMethod("GET");
             int code = c.getResponseCode();
-            if (code >= 200 && code < 400) return GREEN;
-            if (code == 404) return GRAY;
-            return AMBER;
+            if (code >= 200 && code < 400) return PlatformPresence.Evidence.PRESENT;
+            return code == 404 ? PlatformPresence.Evidence.ABSENT
+                    : PlatformPresence.Evidence.NONE;
         } catch (Exception e) {
-            return AMBER;
+            return PlatformPresence.Evidence.NONE;
         } finally {
             if (c != null) c.disconnect();
         }

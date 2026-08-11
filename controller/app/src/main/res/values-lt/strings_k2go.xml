@@ -648,7 +648,7 @@
     <string name="k2go_sheet_cancel">Atšaukti planą</string>
     <string name="k2go_state_ready">Paruošta</string>
     <string name="k2go_state_not_installed">Neįdiegta</string>
-    <string name="k2go_state_no_answer">Neatsako</string>
+    <string name="k2go_state_no_answer">Būsena nežinoma</string>
     <string name="k2go_state_scheduled">Suplanuota</string>
     <string name="k2go_mod_time_note">Tai įtraukia modulį į jūsų sistemą, todėl užtrunka kelias minutes ir lieka šiame ekrane, kol bus baigta. Norite visko iš karto? Įdiekite pilną sistemos versiją.</string>
     <string name="k2go_mod_maps_title">Naršyti žemėlapius</string>

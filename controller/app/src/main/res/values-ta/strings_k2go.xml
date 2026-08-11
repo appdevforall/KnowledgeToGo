@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">திட்டமிடலை ரத்துசெய்</string>
     <string name="k2go_state_ready">தயார்</string>
     <string name="k2go_state_not_installed">நிறுவப்படவில்லை</string>
-    <string name="k2go_state_no_answer">பதிலளிக்கவில்லை</string>
+    <string name="k2go_state_no_answer">நிலை தெரியவில்லை</string>
     <string name="k2go_state_scheduled">திட்டமிடப்பட்டது</string>
     <string name="k2go_mod_time_note">இது தொகுதியை உங்கள் அமைப்பில் கட்டமைக்கிறது, எனவே சில நிமிடங்கள் எடுக்கும், முடியும் வரை இந்தத் திரையிலேயே இருக்கும். அனைத்தையும் ஒரே நேரத்தில் வேண்டுமா? முழு அமைப்பு பதிப்பை நிறுவுங்கள்.</string>
     <string name="k2go_mod_maps_title">வரைபடங்களில் வழிசெலுத்து</string>

@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">لغو زمان‌بندی</string>
     <string name="k2go_state_ready">آماده</string>
     <string name="k2go_state_not_installed">نصب نشده</string>
-    <string name="k2go_state_no_answer">پاسخ نمی‌دهد</string>
+    <string name="k2go_state_no_answer">وضعیت نامعلوم</string>
     <string name="k2go_state_scheduled">زمان‌بندی‌شده</string>
     <string name="k2go_mod_time_note">این کار ماژول را در سیستم شما می‌سازد، بنابراین چند دقیقه طول می‌کشد و تا پایان روی این صفحه می‌ماند. همه را یک‌جا می‌خواهید؟ نسخه کامل سیستم را نصب کنید.</string>
     <string name="k2go_mod_maps_title">پیمایش نقشه‌ها</string>

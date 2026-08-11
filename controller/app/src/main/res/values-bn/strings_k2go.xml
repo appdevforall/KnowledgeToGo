@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">নির্ধারণ বাতিল করুন</string>
     <string name="k2go_state_ready">প্রস্তুত</string>
     <string name="k2go_state_not_installed">ইনস্টল করা নেই</string>
-    <string name="k2go_state_no_answer">সাড়া দিচ্ছে না</string>
+    <string name="k2go_state_no_answer">অবস্থা অজানা</string>
     <string name="k2go_state_scheduled">নির্ধারিত</string>
     <string name="k2go_mod_time_note">এটি মডিউলটিকে আপনার সিস্টেমে তৈরি করে, তাই এতে কয়েক মিনিট লাগে এবং শেষ না হওয়া পর্যন্ত এই স্ক্রিনে থাকে। সবকিছু একসাথে চান? সম্পূর্ণ সিস্টেম সংস্করণ ইনস্টল করুন।</string>
     <string name="k2go_mod_maps_title">মানচিত্রে চলাচল করুন</string>

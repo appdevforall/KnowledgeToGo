@@ -801,7 +801,47 @@ most expensive by the third platform. A is B done safely over time.
        whose sheet offers a LIVE "Open" and a STOPPED "Install" as two identically styled rows, which
        is the same work as the first two items of ADFA-5062.
 
-       **The action sheet (done).** The last place in this area where the two classes shared
+       **The action sheet (done, after a rewrite the review forced).** The first attempt is worth
+       recording, because it is the clearest example in this effort of the failure the two-pass
+       convention exists to catch: the local result was good, the design moved backwards, and the
+       commit subject claimed the opposite. It said the sheet "reads the operation". It did not —
+       it read a dot colour, and the execution class was typed by hand into a private `Tone` enum
+       in a view class, at four call sites, with `Operation.appInstall(key)` in scope at every one
+       of them. `Tone` also collapsed severity and execution class into one enum and then mapped
+       its two class values to the same colour to undo the collapse. And the rule it restated —
+       404 means absent, silence means nothing established — had shipped in `system/domain` two
+       commits earlier under this same ticket.
+
+       What it looks like now. Severity is a property of the row (`Emphasis`, colour only); the
+       class is a property of the operation and is asked for. Exactly **one** row corresponds to
+       an operation — Install is `Operation.appInstall`; Open navigates to a platform that is
+       already running, which is a consequence of an operation rather than one itself; About,
+       Schedule, Hide and Cancel write a preference. So there is one question, `!op.isLive()`,
+       and the model answers it.
+
+       And the presence rule is read rather than restated: the Home probe returns
+       `PlatformPresence.Evidence` instead of dot colours, `Card` carries it, and `openSheet`
+       calls `resolve`. That deleted the false invariant the first attempt documented — "GRAY is
+       a 404" — and with it two real bugs that assertion was hiding. `Card.state` seeded to GRAY
+       and was not set before the probes returned, so in the ordinary window on a healthy box the
+       sheet offered to install platforms that were installed; and a 64-bit module on a 32-bit
+       device is painted grey too, so it offered an install that could never succeed. Both are
+       the flattening decision 8 warns about: "down" and "never asked" are not one answer, and
+       `Evidence` being nullable is what tells them apart.
+
+       Three more from the review. Schedule is offered in the unknown state — withholding it was
+       collateral, since it writes a preference, is undone by Cancel, and with the box stopped
+       every card is in that state, which left the most natural thing to do from a stopped box
+       unreachable. The size is hidden in that state too, not just when installed: there is no
+       Install row for a price to attach to. And the sheet scrolls, because its tallest
+       configuration already clipped its bottom rows in landscape and at large font scales, and
+       this change added a row.
+
+       Left as a follow-up: a red card reads "Unavailable · tap to retry" and the sheet has no
+       retry to offer. Either the label or the sheet should change; both are copy plus one row,
+       and neither is this ticket.
+
+       **What the sheet was for.** The last place in this area where the two classes shared
        presentation. Open is LIVE and Install is STOPPED, and they were two identical teal rows
        — same icon weight, same colour, nothing to tell a user that one of them stops the box.
 

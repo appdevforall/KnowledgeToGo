@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Отмени планирането</string>
     <string name="k2go_state_ready">Готово</string>
     <string name="k2go_state_not_installed">Не е инсталирано</string>
-    <string name="k2go_state_no_answer">Не отговаря</string>
+    <string name="k2go_state_no_answer">Неизвестно състояние</string>
     <string name="k2go_state_scheduled">Планирано</string>
     <string name="k2go_mod_time_note">Това вгражда модула в системата ви, затова отнема няколко минути и остава на този екран, докато приключи. Искате всичко наведнъж? Инсталирайте пълната системна версия.</string>
     <string name="k2go_mod_maps_title">Навигирайте по картите</string>

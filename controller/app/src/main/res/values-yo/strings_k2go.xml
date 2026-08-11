@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Fagilé àkókò</string>
     <string name="k2go_state_ready">Ó múra tán</string>
     <string name="k2go_state_not_installed">Kò sí lórí ẹ̀rọ</string>
-    <string name="k2go_state_no_answer">Kò dáhùn</string>
+    <string name="k2go_state_no_answer">Ipò kò hàn</string>
     <string name="k2go_state_scheduled">A ti ṣètò àkókò</string>
     <string name="k2go_mod_time_note">Èyí ń kọ́ mọ́díù náà sínú ẹ̀rọ rẹ, nítorí náà ó ń gba ìṣẹ́jú díẹ̀ ó sì ń dúró lórí ojú-ìwé yìí títí tí yóò fi parí. Ṣé o fẹ́ ohun gbogbo lẹ́ẹ̀kan? Fi ẹ̀dà ẹ̀rọ pípé sórí ẹ̀rọ.</string>
     <string name="k2go_mod_maps_title">Tọ́ka máàpù</string>

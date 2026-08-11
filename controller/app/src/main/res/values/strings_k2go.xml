@@ -752,7 +752,7 @@
     <string name="k2go_sheet_cancel">Cancel schedule</string>
     <string name="k2go_state_ready">Ready</string>
     <string name="k2go_state_not_installed">Not installed</string>
-    <string name="k2go_state_no_answer">Not responding</string>
+    <string name="k2go_state_no_answer">Status unknown</string>
     <string name="k2go_state_scheduled">Scheduled</string>
     <string name="k2go_mod_time_note">This builds the module into your system, so it takes a few minutes and stays on this screen until it\'s done. Want everything at once? Install the full system version.</string>
     <string name="k2go_mod_maps_title">Navigate maps</string>

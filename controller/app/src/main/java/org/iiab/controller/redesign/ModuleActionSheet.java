@@ -26,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import org.iiab.controller.R;
 import org.iiab.controller.config.BoxEndpoints;
+import org.iiab.controller.system.domain.Operation;
 
 public final class ModuleActionSheet {
 
@@ -45,37 +46,39 @@ public final class ModuleActionSheet {
     public enum State { READY, NOT_INSTALLED, SCHEDULED, UNKNOWN }
 
     /**
-     * How a row is presented.
+     * How prominent a row is. Colour only — the severity channel, per the convention the Home
+     * card established: neutral or accented for information, and one colour for the action that
+     * throws something away.
      *
-     * <p>The sheet used to hand-pick a colour at each of its nine call sites, inside a switch
-     * with one branch per state — so adding a distinction between a live action and one that
-     * stops the box would have meant a fourth variant of the same assembly, and the Maps
-     * exception already appeared inline in two branches. The rows are chosen per state; how
-     * they look is decided once, here.
-     *
-     * <p>Only two of the actions are operations on the box: Open is LIVE, Install is STOPPED.
-     * About, Schedule, Hide and Cancel are app-local — they write a preference and nothing
-     * else — so they carry no execution class and get no signal that suggests they do.
-     *
-     * <p>LIVE and STOPPED share a colour on purpose. Colour is the severity channel, and
-     * neither is a warning: installing is a normal thing to ask for. What differs is the
-     * consequence, and a consequence is a sentence, not a hue — so the STOPPED row is the one
-     * with a note under it.
+     * <p>ADFA-5061: this replaced a four-valued {@code Tone} that also carried LIVE and STOPPED.
+     * A review caught that for what it was — the execution class typed by hand into a view
+     * class, at four call sites, while {@code Operation.appInstall(key)} was in scope at every
+     * one of them. Worse, it collapsed two orthogonal axes into one enum and then mapped LIVE
+     * and STOPPED to the same colour to undo the collapse. Severity is a property of the row;
+     * the class is a property of the operation. They are asked separately now.
      */
-    private enum Tone { LIVE, STOPPED, NEUTRAL, DESTRUCTIVE }
+    private enum Emphasis { ACCENT, PLAIN, DESTRUCTIVE }
 
-    private static int colorOf(Tone t) {
-        switch (t) {
-            case LIVE:
-            case STOPPED:     return R.color.k2go_teal;
+    private static int colorOf(Emphasis e) {
+        switch (e) {
+            case ACCENT:      return R.color.k2go_teal;
             case DESTRUCTIVE: return R.color.k2go_clay;
             default:          return R.color.k2go_ink;
         }
     }
 
-    /** The only row whose operation costs the user something they should hear about first. */
-    private static Integer noteOf(Tone t) {
-        return t == Tone.STOPPED ? R.string.k2go_sheet_install_note : null;
+    /**
+     * The consequence a row has to state before it is tapped, read from the operation.
+     *
+     * <p>Exactly one of this sheet's rows corresponds to an operation on the box: Install, which
+     * is {@code Operation.appInstall}. Open navigates to a platform that is already running —
+     * that is not an operation, it is a consequence of one — and About, Schedule, Hide and
+     * Cancel write a preference and nothing else. So there is one question here and the model
+     * answers it: an operation that is not live takes the services down while it runs, and the
+     * user should hear that from the row rather than discover it from the screen it leads to.
+     */
+    private static Integer noticeFor(Operation op) {
+        return op != null && !op.isLive() ? R.string.k2go_sheet_install_note : null;
     }
 
     /**
@@ -128,9 +131,12 @@ public final class ModuleActionSheet {
         if (!project.isEmpty()) sub.append(project).append("  ·  ");
         sub.append(stateLabel(act, state));
         // ADFA-4958 §5.3 put the download size here unconditionally. ADFA-5061: only while it
-        // is still a price. On an installed platform that cost was paid once, and repeating it
-        // every time the sheet opens reads as something the user might still owe.
-        if (state != State.READY) {
+        // is still a price — which means only where there is something to buy. On an installed
+        // platform that cost was paid once, and repeating it reads as something still owed; in
+        // UNKNOWN there is no Install row for it to attach to and the platform is probably
+        // installed, which is the whole argument for that state. Named states rather than
+        // "not READY", so a fifth state has to decide for itself.
+        if (state == State.NOT_INSTALLED || state == State.SCHEDULED) {
             int sizeRes = ModuleCards.sizeLabelRes(key);
             long bytes = ModuleSizes.bytesFor(ctx, key);
             if (sizeRes != 0) sub.append("  ·  ").append(act.getString(sizeRes));
@@ -149,12 +155,12 @@ public final class ModuleActionSheet {
         // One vocabulary of actions; the state chooses which of them appear. Nothing below
         // decides how a row looks — Tone does, in one place.
         final View about = row(ctx, R.drawable.ic_info_24, act.getString(R.string.k2go_sheet_about),
-                Tone.NEUTRAL, true, v -> { dlg.dismiss(); openDetail(act, key); });
+                Emphasis.PLAIN, null, true, v -> { dlg.dismiss(); openDetail(act, key); });
 
         switch (state) {
             case READY:
                 content.addView(row(ctx, R.drawable.ic_arrow_right, act.getString(R.string.k2go_sheet_open),
-                        Tone.LIVE, false, v -> { dlg.dismiss(); openContent(act, endpoint); }));
+                        Emphasis.ACCENT, null, false, v -> { dlg.dismiss(); openContent(act, endpoint); }));
                 content.addView(about);
                 break;
             case SCHEDULED: {
@@ -163,9 +169,9 @@ public final class ModuleActionSheet {
                 String installLabel = act.getString(
                         n > 1 ? R.string.k2go_sheet_install_sel : R.string.k2go_sheet_install);
                 content.addView(row(ctx, R.drawable.ic_download_24, installLabel,
-                        Tone.STOPPED, false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
+                        Emphasis.ACCENT, Operation.appInstall(key), false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
                 content.addView(row(ctx, R.drawable.ic_close_24, act.getString(R.string.k2go_sheet_cancel),
-                        Tone.DESTRUCTIVE, false, v -> {
+                        Emphasis.DESTRUCTIVE, null, false, v -> {
                             if (sel) MapsWishlist.clear(ctx);
                             else if (key != null) ModuleWishlist.remove(ctx, key);
                             dlg.dismiss();
@@ -174,11 +180,26 @@ public final class ModuleActionSheet {
                 break;
             }
             case UNKNOWN:
-                // The platform did not answer, which is not the same as not being there.
-                // Everything offered here is safe without knowing: reading about it, and
-                // hiding the card. Install is withheld rather than guessed — offering it
-                // over an installed platform is how this state was noticed.
+                // Nothing was established about the platform, which is not the same as it not
+                // being there. Install is withheld rather than guessed — offering it over an
+                // installed platform is how this state was noticed.
+                //
+                // Schedule is offered, and a first version withheld it too. That was collateral:
+                // it writes ModuleWishlist and nothing else, it is undone by Cancel schedule, and
+                // with the box stopped every card is in this state — so withholding it left the
+                // most natural thing to do from a stopped box, queue an install for later, with
+                // no way to ask for it. The asymmetry is the point: guessing wrong about Install
+                // starts a runrole nobody wanted; guessing wrong about Schedule costs a
+                // preference the user can clear.
                 content.addView(about);
+                if (!sel && key != null) {
+                    content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
+                            Emphasis.PLAIN, null, false, v -> {
+                                ModuleWishlist.add(ctx, key);
+                                dlg.dismiss();
+                                if (onChanged != null) onChanged.run();
+                            }));
+                }
                 break;
             case NOT_INSTALLED:
             default:
@@ -186,16 +207,16 @@ public final class ModuleActionSheet {
                 if (sel) {
                     // maps: installing needs the content selector; route there (schedule lives in the wizard).
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                            Tone.STOPPED, false, v -> { dlg.dismiss(); openMapsSetup(act); }));
+                            Emphasis.ACCENT, Operation.appInstall(key), false, v -> { dlg.dismiss(); openMapsSetup(act); }));
                 } else {
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                            Tone.STOPPED, false, v -> {
+                            Emphasis.ACCENT, Operation.appInstall(key), false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
                                 dlg.dismiss();
                                 openHub(act);
                             }));
                     content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
-                            Tone.NEUTRAL, false, v -> {
+                            Emphasis.PLAIN, null, false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
                                 dlg.dismiss();
                                 if (onChanged != null) onChanged.run();
@@ -206,20 +227,29 @@ public final class ModuleActionSheet {
 
         if (state != State.SCHEDULED && key != null) {   // ADFA-4958: Hide declutters Home; Restore lives in management
             content.addView(row(ctx, R.drawable.ic_hide_24, act.getString(R.string.k2go_sheet_hide),
-                    Tone.NEUTRAL, false, v -> {
+                    Emphasis.PLAIN, null, false, v -> {
                         HiddenModules.add(ctx, key);
                         dlg.dismiss();
                         if (onChanged != null) onChanged.run();
                     }));
         }
-        dlg.setContentView(content);
+        // ADFA-5061: scrollable. The sheet was a plain LinearLayout in a FrameLayout, so its
+        // tallest configuration — About, a two-line Install, Schedule and Hide under a header
+        // whose subtitle can wrap in a verbose locale — clipped its bottom rows in landscape and
+        // at large font scales, with no way to reach them. Adding a row made that reachable
+        // rather than theoretical, and the fix belongs here rather than in a row budget.
+        androidx.core.widget.NestedScrollView scroller = new androidx.core.widget.NestedScrollView(ctx);
+        scroller.addView(content, new android.widget.FrameLayout.LayoutParams(
+                android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+                android.widget.FrameLayout.LayoutParams.WRAP_CONTENT));
+        dlg.setContentView(scroller);
         dlg.show();
     }
 
-    private static View row(Context ctx, int iconRes, String label, Tone tone,
-                            boolean chevron, View.OnClickListener onClick) {
-        final int colorRes = colorOf(tone);
-        final Integer noteRes = noteOf(tone);
+    private static View row(Context ctx, int iconRes, String label, Emphasis emphasis,
+                            Operation op, boolean chevron, View.OnClickListener onClick) {
+        final int colorRes = colorOf(emphasis);
+        final Integer noteRes = noticeFor(op);
         LinearLayout row = new LinearLayout(ctx);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);

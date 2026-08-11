@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Anulează programarea</string>
     <string name="k2go_state_ready">Gata</string>
     <string name="k2go_state_not_installed">Neinstalat</string>
-    <string name="k2go_state_no_answer">Nu răspunde</string>
+    <string name="k2go_state_no_answer">Stare necunoscută</string>
     <string name="k2go_state_scheduled">Programat</string>
     <string name="k2go_mod_time_note">Aceasta integrează modulul în sistemul tău, așa că durează câteva minute și rămâne pe acest ecran până se termină. Vrei tot deodată? Instalează versiunea completă a sistemului.</string>
     <string name="k2go_mod_maps_title">Navighează pe hărți</string>

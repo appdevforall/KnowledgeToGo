@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Cancelar programación</string>
     <string name="k2go_state_ready">Listo</string>
     <string name="k2go_state_not_installed">No instalado</string>
-    <string name="k2go_state_no_answer">Sin respuesta</string>
+    <string name="k2go_state_no_answer">Estado desconocido</string>
     <string name="k2go_state_scheduled">Programado</string>
     <string name="k2go_mod_time_note">Esto integra el módulo en tu sistema, así que tarda unos minutos y permanece en esta pantalla hasta que termina. ¿Lo quieres todo de una vez? Instala la versión completa del sistema.</string>
     <string name="k2go_mod_maps_title">Navegar mapas</string>

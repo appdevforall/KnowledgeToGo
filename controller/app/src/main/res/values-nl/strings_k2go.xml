@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Planning annuleren</string>
     <string name="k2go_state_ready">Klaar</string>
     <string name="k2go_state_not_installed">Niet geïnstalleerd</string>
-    <string name="k2go_state_no_answer">Reageert niet</string>
+    <string name="k2go_state_no_answer">Status onbekend</string>
     <string name="k2go_state_scheduled">Gepland</string>
     <string name="k2go_mod_time_note">Hiermee wordt de module in je systeem gebouwd, dus het duurt een paar minuten en blijft op dit scherm totdat het klaar is. Alles in één keer? Installeer de volledige systeemversie.</string>
     <string name="k2go_mod_maps_title">Kaarten navigeren</string>

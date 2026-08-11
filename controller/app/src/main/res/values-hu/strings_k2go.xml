@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Ütemezés törlése</string>
     <string name="k2go_state_ready">Kész</string>
     <string name="k2go_state_not_installed">Nincs telepítve</string>
-    <string name="k2go_state_no_answer">Nem válaszol</string>
+    <string name="k2go_state_no_answer">Állapot ismeretlen</string>
     <string name="k2go_state_scheduled">Ütemezve</string>
     <string name="k2go_mod_time_note">Ez beépíti a modult a rendszeredbe, ezért néhány percet vesz igénybe, és ezen a képernyőn marad, amíg el nem készül. Mindent egyszerre szeretnél? Telepítsd a teljes rendszerverziót.</string>
     <string name="k2go_mod_maps_title">Navigálj a térképeken</string>

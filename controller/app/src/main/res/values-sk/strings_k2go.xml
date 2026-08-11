@@ -638,7 +638,7 @@
     <string name="k2go_sheet_cancel">Zrušiť plán</string>
     <string name="k2go_state_ready">Pripravené</string>
     <string name="k2go_state_not_installed">Nenainštalované</string>
-    <string name="k2go_state_no_answer">Neodpovedá</string>
+    <string name="k2go_state_no_answer">Neznámy stav</string>
     <string name="k2go_state_scheduled">Naplánované</string>
     <string name="k2go_mod_time_note">Toto zabuduje modul do vášho systému, takže to trvá niekoľko minút a zostane na tejto obrazovke, kým sa nedokončí. Chcete všetko naraz? Nainštalujte úplnú systémovú verziu.</string>
     <string name="k2go_mod_maps_title">Prehliadať mapy</string>

@@ -648,7 +648,7 @@
     <string name="k2go_sheet_cancel">Anuluj plan</string>
     <string name="k2go_state_ready">Gotowe</string>
     <string name="k2go_state_not_installed">Nie zainstalowano</string>
-    <string name="k2go_state_no_answer">Brak odpowiedzi</string>
+    <string name="k2go_state_no_answer">Nieznany stan</string>
     <string name="k2go_state_scheduled">Zaplanowano</string>
     <string name="k2go_mod_time_note">To wbudowuje moduł w Twój system, więc zajmuje kilka minut i pozostaje na tym ekranie do zakończenia. Chcesz wszystko naraz? Zainstaluj pełną wersję systemu.</string>
     <string name="k2go_mod_maps_title">Przeglądaj mapy</string>

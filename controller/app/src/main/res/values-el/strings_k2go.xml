@@ -639,7 +639,7 @@
     <string name="k2go_sheet_cancel">Ακύρωση προγραμματισμού</string>
     <string name="k2go_state_ready">Έτοιμο</string>
     <string name="k2go_state_not_installed">Δεν έχει εγκατασταθεί</string>
-    <string name="k2go_state_no_answer">Δεν αποκρίνεται</string>
+    <string name="k2go_state_no_answer">Άγνωστη κατάσταση</string>
     <string name="k2go_state_scheduled">Προγραμματίστηκε</string>
     <string name="k2go_mod_time_note">Αυτό ενσωματώνει τη μονάδα στο σύστημά σας, οπότε διαρκεί μερικά λεπτά και παραμένει σε αυτή την οθόνη μέχρι να ολοκληρωθεί. Θέλετε τα πάντα μαζί; Εγκαταστήστε την πλήρη έκδοση συστήματος.</string>
     <string name="k2go_mod_maps_title">Πλοηγηθείτε σε χάρτες</string>
