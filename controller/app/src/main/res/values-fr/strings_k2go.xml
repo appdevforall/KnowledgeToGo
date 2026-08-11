@@ -642,7 +642,7 @@
     <string name="k2go_sheet_open">Ouvrir</string>
     <string name="k2go_sheet_about">À propos de cette appli</string>
     <string name="k2go_sheet_install">Installer maintenant</string>
-    <string name="k2go_sheet_install_note">Votre système se met en pause pendant l'installation.</string>
+    <string name="k2go_sheet_install_note">Votre système se met en pause pendant l\'installation.</string>
     <string name="k2go_sheet_install_sel">Installer la sélection</string>
     <string name="k2go_sheet_schedule">Planifier</string>
     <string name="k2go_sheet_cancel">Annuler la planification</string>
