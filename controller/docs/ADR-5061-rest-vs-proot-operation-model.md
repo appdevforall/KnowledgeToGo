@@ -820,8 +820,8 @@ most expensive by the third platform. A is B done safely over time.
        and the model answers it.
 
        And the presence rule is read rather than restated: the Home probe returns
-       `PlatformPresence.Evidence` instead of dot colours, `Card` carries it, and `openSheet`
-       calls `resolve`. That deleted the false invariant the first attempt documented — "GRAY is
+       `PlatformPresence.Evidence` instead of dot colours, and `openSheet` calls `resolve`. That
+       deleted the false invariant the first attempt documented — "GRAY is
        a 404" — and with it two real bugs that assertion was hiding. `Card.state` seeded to GRAY
        and was not set before the probes returned, so in the ordinary window on a healthy box the
        sheet offered to install platforms that were installed; and a 64-bit module on a 32-bit
@@ -829,13 +829,29 @@ most expensive by the third platform. A is B done safely over time.
        the flattening decision 8 warns about: "down" and "never asked" are not one answer, and
        `Evidence` being nullable is what tells them apart.
 
-       Three more from the review. Schedule is offered in the unknown state — withholding it was
-       collateral, since it writes a preference, is undone by Cancel, and with the box stopped
-       every card is in that state, which left the most natural thing to do from a stopped box
-       unreachable. The size is hidden in that state too, not just when installed: there is no
-       Install row for a price to attach to. And the sheet scrolls, because its tallest
-       configuration already clipped its bottom rows in landscape and at large font scales, and
-       this change added a row.
+       Two more from the review. The size is hidden in the unknown and stopped states, not just
+       when installed: there is no Install row for a price to attach to. And the sheet scrolls,
+       because its tallest configuration already clipped its bottom rows in landscape and at
+       large font scales, and this change added a row.
+
+       **Schedule, and the reversal.** The review put Schedule back into the unknown state on the
+       grounds that it only writes a preference and is undone by Cancel. On the device that read
+       wrong, and Luis named why: with the box stopped we withhold Install because we do not know
+       whether the platform is there — and Schedule *is* Install, deferred. Offering the deferred
+       form of an action we just refused to offer is the same claim made quietly. So unknown and
+       stopped now carry About and Hide and nothing else: two states where we have no verdict, and
+       a sheet that says so rather than proposing work on a platform it cannot see.
+
+       **How long an answer lives.** The evidence started as a field on the Home `Card` and that
+       was too short a life. `populateCards()` runs in `onCreateView`, so switching tabs rebuilds
+       every card — and the server is stopped from Settings, which makes the one journey that
+       needs the memory the one that erased it. On the device, a platform known absent by a 404
+       came back reading "Stopped" beside four that had really been running, and its sheet stopped
+       offering the install it should still offer. The answers moved to
+       `system/data/PlatformEvidence`, process-scoped: a probe result is a fact about the box, and
+       the box does not change because a tab did. Not persisted across launches — the rootfs may
+       have been replaced, and a stale "installed" is worse than asking again. This is the memory
+       half of action item 10 and should be grown into it, not joined by a seventh place to ask.
 
        Left as a follow-up: a red card reads "Unavailable · tap to retry" and the sheet has no
        retry to offer. Either the label or the sheet should change; both are copy plus one row,

@@ -27,6 +27,7 @@ import org.iiab.controller.R;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
+import org.iiab.controller.system.data.PlatformEvidence;
 import org.iiab.controller.system.domain.PlatformPresence;
 import org.iiab.controller.util.AppExecutors;
 
@@ -53,17 +54,6 @@ public class LibraryHomeFragment extends Fragment {
     private static final class Card {
         final String endpoint; final String title; final boolean requires64; final int iconRes;
         View dot; TextView status; int state = GRAY;
-        /**
-         * ADFA-5061: what the last probe established, or null when nothing has been asked yet.
-         *
-         * <p>Null is the value {@code state} could not hold, and its absence was a bug: the field
-         * seeded to GRAY, GRAY was read as "a 404 said it is not installed", and in the window
-         * between building the cards and the first probe returning — up to a second and a half
-         * per card, on a perfectly healthy box — the action sheet offered to install platforms
-         * that were installed. Decision 8 names this exact flattening: "down" and "never asked"
-         * are not the same answer, and a boolean cannot tell them apart.
-         */
-        PlatformPresence.Evidence evidence;
         Card(String e, String t, boolean r, int i) { endpoint = e; title = t; requires64 = r; iconRes = i; }
     }
 
@@ -277,7 +267,6 @@ public class LibraryHomeFragment extends Fragment {
             openSheet(c);
         } else {   // defensive fallback: non-Ready card with no backing module (none today) — re-probe
             applyState(c, AMBER);
-            c.evidence = null;
             AppExecutors.get().io().execute(() -> {
                 final PlatformPresence.Evidence ev = probe(c.endpoint);
                 main.post(() -> {
@@ -285,7 +274,7 @@ public class LibraryHomeFragment extends Fragment {
                     // Same mapping as the poll's, and the evidence is recorded rather than
                     // thrown away: a re-probe that answers has to leave the card as informed as
                     // the poll would, or the next tap on the sheet reads a stale nothing.
-                    c.evidence = ev;
+                    PlatformEvidence.record(c.endpoint, ev);
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
                     else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
                     else applyState(c, AMBER);
@@ -308,9 +297,14 @@ public class LibraryHomeFragment extends Fragment {
      *
      * <p>ADFA-5061: the state comes from the evidence, not from the dot. A first attempt read
      * {@code c.state == GRAY} and asserted that grey meant a 404 — it does not. Grey has three
-     * other producers: an unsupported module, a box with no system, and the value the field
-     * holds before anything has been asked. Reading the colour therefore offered to install
-     * platforms that were installed, in the ordinary window before the first probe returns.
+     * other producers: an unsupported module, a box with no system, and the colour a card wears
+     * before anything has been asked. Reading the colour therefore offered to install platforms
+     * that were installed, in the ordinary window before the first probe returns.
+     *
+     * <p>The evidence is read from {@link PlatformEvidence}, not from this fragment. It began as
+     * a field on the card and that life was too short: the cards are rebuilt in {@code
+     * onCreateView}, so a trip to Settings — where the server is stopped — forgot the one answer
+     * the next sheet needed.
      *
      * <p>Content in flight is checked first and outranks everything, for the reason
      * {@code onCardClick} already uses it: a platform we are watching work cannot be missing.
@@ -321,7 +315,8 @@ public class LibraryHomeFragment extends Fragment {
         ModuleActionSheet.State s;
         if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
-        else if (c.evidence != null && !PlatformPresence.resolve(c.evidence)) {
+        else if (PlatformEvidence.last(c.endpoint) != null
+                && !PlatformPresence.resolve(PlatformEvidence.last(c.endpoint))) {
             // Known absent, and still known absent with the box off — that is the state where
             // installing is exactly the right offer.
             s = ModuleActionSheet.State.NOT_INSTALLED;
@@ -387,7 +382,7 @@ public class LibraryHomeFragment extends Fragment {
                 // ADFA-5061: with no system at all, nothing is installed — and that is a fact,
                 // not a failed probe. This is the one path where ABSENT is set without asking
                 // anyone, and it is the path where offering an install is exactly right.
-                c.evidence = unsupported(c) ? null : PlatformPresence.Evidence.ABSENT;
+                if (!unsupported(c)) PlatformEvidence.record(c.endpoint, PlatformPresence.Evidence.ABSENT);
                 applyState(c, GRAY);
                 if (unsupported(c) && c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
             }
@@ -444,9 +439,8 @@ public class LibraryHomeFragment extends Fragment {
             if (unsupported(c)) {
                 // ADFA-5061: grey, but not "absent". A 64-bit module on a 32-bit device is not
                 // missing — it is never going to be there, which is why the sheet must not offer
-                // to install it. Leaving the evidence unset is what stops that: "nothing
-                // established" withholds the offer, where ABSENT would have made it.
-                c.evidence = null;
+                // to install it. Nothing is recorded, so "nothing established" withholds the
+                // offer where ABSENT would have made it.
                 applyState(c, GRAY);
                 if (c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
                 continue;
@@ -466,7 +460,7 @@ public class LibraryHomeFragment extends Fragment {
                 final PlatformPresence.Evidence ev = probe(c.endpoint);
                 main.post(() -> {
                     if (!isAdded()) return;
-                    c.evidence = ev;
+                    PlatformEvidence.record(c.endpoint, ev);
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
                     else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
                     else {
@@ -627,7 +621,7 @@ public class LibraryHomeFragment extends Fragment {
         // Except over a platform we know is absent. With no system installed the box does not
         // answer either, and "Stopped" would be the wrong half of the truth — there is nothing
         // to start, and "Not installed" is what the user needs to read. Knowing beats knowing why.
-        if (c.evidence != PlatformPresence.Evidence.ABSENT
+        if (PlatformEvidence.last(c.endpoint) != PlatformPresence.Evidence.ABSENT
                 && !org.iiab.controller.system.data.SystemFactsReader.serverAnswering()) {
             tint(c.dot, R.color.k2go_amber);
             c.status.setText(getString(R.string.k2go_card_stopped));
