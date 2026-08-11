@@ -3,73 +3,50 @@
  * Name        : ZimPreparingFragment.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4849. ZIM Preparing (screen 4). Drives the real download of the selection
- *               cart through ZimDownloadService (foreground; sequential per ZIM via the REST job
- *               engine, continuing past failures). Shows a contained placeholder spinner + a REAL
- *               progress bar (weighted by bytes) + "X of N items" + a per-item checklist (round
- *               check when done, teal dot while active/indexing, amber when failed). The service
- *               is the source of truth, so this screen re-attaches to an in-flight session and
- *               "Run in background" leaves it running.
+ * Description : ADFA-4849 / ADFA-5074. The ZIM stream's detail view, hosted by
+ *               SetupProgressActivity. Observe-only: it draws the session ZimDownloadService
+ *               owns — a progress bar weighted by bytes, "X of N items", and a per-item
+ *               checklist with inline retry. The service is the source of truth, so this
+ *               re-attaches to an in-flight session and leaving does not stop it.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.iiab.controller.R;
-import org.json.JSONObject;
 
 public class ZimPreparingFragment extends Fragment {
 
     private TextView label, pct, detail;
     private ProgressBar bar;
     private LinearLayout listv;
-    private Button finishBtn, runBgBtn;
-    private boolean fromIndex;   // hosted by the Finishing-setup index: hide own buttons, only observe
 
-    /** Open as a detail card inside the Finishing-setup index (host owns Back/Finish; observe only). */
-    public static ZimPreparingFragment newInstance(boolean fromIndex) {
-        ZimPreparingFragment f = new ZimPreparingFragment();
-        Bundle b = new Bundle();
-        b.putBoolean("fromIndex", fromIndex);
-        f.setArguments(b);
-        return f;
-    }
-
-    private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
-
-    @SuppressWarnings("unchecked")
-    private LinkedHashMap<String, Long> cart() {
-        return (getActivity() instanceof SetupLibraryActivity)
-                ? ((SetupLibraryActivity) getActivity()).getZimCart() : new LinkedHashMap<>();
-    }
-
+    /**
+     * ADFA-5074: {@code newInstance(boolean fromIndex)} used to live here, and every caller now
+     * passes what that flag meant. The flag hid this screen's own Finish and Run-in-background
+     * buttons, and — the part that mattered — suppressed starting the download, because when the
+     * Get More door hosted this fragment the fragment itself was what started it. Reopening a
+     * screen that starts work is a question with no good answer, which is why the flag existed.
+     * The door starts the work now ({@code SetupLibraryActivity.startZimDownload}), so this is
+     * only ever an observer and there is nothing left to switch on.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle s) {
         View root = inflater.inflate(R.layout.fragment_k2go_zim_preparing, container, false);
-        fromIndex = getArguments() != null && getArguments().getBoolean("fromIndex", false);
 
         label = root.findViewById(R.id.k2go_zprep_label);
         pct = root.findViewById(R.id.k2go_zprep_pct);
@@ -79,73 +56,10 @@ public class ZimPreparingFragment extends Fragment {
         // ADFA-5074: the shared animation block declares no asset; the rule picks it.
         org.iiab.controller.util.ProgressVisuals.apply(root, org.iiab.controller.system.domain.ContentType.ZIM);
 
-        runBgBtn = root.findViewById(R.id.k2go_zprep_run_bg);
-        runBgBtn.setOnClickListener(v -> {
-            ZimDownloadService.setListener(null);           // stop observing; server keeps going
-            if (getActivity() instanceof SetupLibraryActivity) ((SetupLibraryActivity) getActivity()).backToGetMoreHubZim();
-        });
-        finishBtn = root.findViewById(R.id.k2go_zprep_finish);
-        finishBtn.setOnClickListener(v -> {
-            ZimDownloadService.finishSession();             // clear the session; free it for a new list
-            if (getActivity() instanceof SetupLibraryActivity) {
-                ((SetupLibraryActivity) getActivity()).getZimCart().clear();
-                ((SetupLibraryActivity) getActivity()).backToGetMoreHubZim();
-            }
-        });
-
-        if (fromIndex) {   // the index host provides Back/Finish; this card only observes
-            finishBtn.setVisibility(View.GONE);
-            runBgBtn.setVisibility(View.GONE);
-        }
-
-        // Start (or re-attach to) the download session, then observe its state.
-        KiwixCatalog.getOrFetch(requireContext(), new KiwixCatalog.Listener() {
-            @Override public void onReady(JSONObject catalog) {
-                if (!isAdded()) return;
-                if (!fromIndex && !ZimDownloadService.isRunning()) startSession(catalog);
-                ZimDownloadService.setListener(ZimPreparingFragment.this::render);
-                render();
-            }
-            @Override public void onError(String m) {
-                if (!isAdded()) return;
-                ZimDownloadService.setListener(ZimPreparingFragment.this::render);
-                render();
-            }
-        });
+        // Observe the session; the service is the source of truth and outlives this view.
+        ZimDownloadService.setListener(this::render);
+        render();
         return root;
-    }
-
-    /** Resolve the cart to (filename, label, bytes) triples and start the foreground service. */
-    private void startSession(JSONObject catalog) {
-        List<String> files = new ArrayList<>();
-        List<String> labels = new ArrayList<>();
-        List<Long> bytes = new ArrayList<>();
-        for (Map.Entry<String, Long> e : cart().entrySet()) {
-            ZimSelection.Item it = ZimSelection.resolve(catalog, e.getKey());
-            if (it == null) continue;
-            files.add(it.id);   // "<project>/<file>" (ADFA-5042)
-            labels.add(itemLabel(it.project, it.entry.optString("creator"), it.entry.optString("flavour")));
-            bytes.add(it.entry.optLong("size", e.getValue()));
-        }
-        if (files.isEmpty()) return;
-        long[] b = new long[bytes.size()];
-        for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
-        ZimDownloadService.start(requireContext().getApplicationContext(),
-                files.toArray(new String[0]), labels.toArray(new String[0]), b);
-    }
-
-    private String itemLabel(String project, String creator, String flavour) {
-        KiwixCategories.Category c = KiwixCategories.byKey(project);
-        String cat = c != null ? c.title : project;
-        if (creator == null) creator = "";
-        if (flavour == null || flavour.isEmpty()) flavour = "all";
-        boolean creatorIsProject = creator.equalsIgnoreCase(project)
-                || creator.toLowerCase(Locale.ROOT).startsWith(project.toLowerCase(Locale.ROOT));
-        String tail = "all".equals(flavour) ? creator : (creatorIsProject
-                ? flavour.replace('_', ' ').replace('-', ' ')
-                : creator + " · " + flavour.replace('_', ' ').replace('-', ' '));
-        if ("all".equals(flavour) && creatorIsProject) tail = "All";
-        return cat + " · " + tail;
     }
 
     private void render() {
@@ -185,12 +99,6 @@ public class ZimPreparingFragment extends Fragment {
                 gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), speedPart, doneCount, n));
 
         drawChecklist(labels, status);
-
-        if (!fromIndex) {
-            boolean complete = ZimDownloadService.isComplete();
-            finishBtn.setEnabled(complete);
-            runBgBtn.setVisibility(complete ? View.GONE : View.VISIBLE);
-        }
     }
 
     private void drawChecklist(String[] labels, int[] status) {

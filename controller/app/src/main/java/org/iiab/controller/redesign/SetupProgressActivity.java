@@ -50,12 +50,17 @@ import org.iiab.controller.util.AppExecutors;
 
 public class SetupProgressActivity extends AppCompatActivity implements org.iiab.controller.ServerController.Host {
 
-    /** ADFA-4987: deep-link from a background-download notification straight to a stream detail
-     *  ("books" -> BooksDownloadsFragment, "zim" -> ZimPreparingFragment). */
-    public static final String EXTRA_OPEN_STREAM = "openStream";
-
-    /** ADFA-4988: hint from a content confirm — open this stream's detail iff it is the only active one. */
-    public static final String EXTRA_HINT_STREAM = "hintStream";
+    // ADFA-5074: two extras used to live here — EXTRA_OPEN_STREAM (ADFA-4987, a notification
+    // deep-linking to a stream's detail) and EXTRA_HINT_STREAM (ADFA-4988, a confirm asking for
+    // its detail if it was the only stream running). Both are gone, and with them the question
+    // "where does this download land?", which used to have three answers depending on state the
+    // user could not see.
+    //
+    // This screen is the router. It is the only surface that can end a run — Finish, the
+    // countdown to the Library, Run in background — and the real usage is set-and-forget: the
+    // downloads take hours, so the user starts one, leaves, and comes back to ask "is it going
+    // well?". One destination answers that whatever brought them here. A detail is a deliberate
+    // zoom-in, reached by tapping a row, never somewhere you arrive.
 
     /** ADFA-5011: this screen is driving a dash-node REST-core rebuild (not an install/content drain).
      *  Latched so the screen stays on the animation and blocks leaving until the rebuild is SUCCESS/FAILED. */
@@ -168,23 +173,25 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // on SUCCESS, trigger the redirect). Guarded so it only acts while this is a rebuild session.
         InstallProgressRepository.get().state().observe(this, st -> { if (rebuildInSession()) render(); });
 
-        // ADFA-4987: a download notification tapped -> force that stream's detail (not the legacy UI).
-        // ADFA-4988: a content confirm hints its stream -> open its detail only when it is the sole
-        // active stream, otherwise show the index.
-        if (s == null) {
-            routeFromIntent(getIntent());
-        }
     }
 
     /**
-     * ADFA-5074: the same routing when the task is resumed rather than created.
+     * ADFA-5074: a second start while this instance is alive.
      *
-     * <p>This activity is {@code singleTask}, so a second start — tapping a download
-     * notification while an instance is already alive — does not run {@code onCreate}.
-     * It arrives here, and without this the deep-link extra was read once at creation
-     * and never again: the user asked for a stream and got whatever the screen happened
-     * to be showing. Which is the common case, because the notification exists precisely
-     * for when the user has already been here and left.
+     * <p>The activity is {@code singleTask}, so tapping a download notification when the screen
+     * already exists arrives here rather than in {@code onCreate}. There is no routing left to
+     * do — every entry point lands on this screen — so this only keeps {@code getIntent()}
+     * current, which {@code rebuildInSession()} and the rest read.
+     *
+     * <p>Deliberately does not force the index when a detail is open. The notification means
+     * "take me back to my download", and someone who is inside a detail is already there, one
+     * level deeper by their own choice; yanking them out would be the screen overruling them.
+     *
+     * <p>And deliberately does not render. This runs before {@code onStart}, so the
+     * FragmentManager still has its state saved — and {@code render()} is no longer free of
+     * transactions: it can call {@code backToIndex()}, whose {@code commitNow()} would throw
+     * exactly the {@code IllegalStateException} the routing this replaced had to defer around.
+     * {@code onResume} follows immediately and renders anyway, so there was nothing to gain.
      */
     @Override
     protected void onNewIntent(android.content.Intent intent) {
@@ -192,65 +199,27 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         if (intent == null) {
             return;
         }
-        // getIntent() is what rebuildInSession() and the rest read; leave the stale one in
-        // place and they keep answering about the start before last.
         setIntent(intent);
-        // NOT routed here. By the time this arrives the activity has been through
-        // onSaveInstanceState, so the FragmentManager still has its state saved —
-        // openDetail()'s commit() would throw IllegalStateException, and it would throw on
-        // the ordinary path, because the notification exists for a user who has already
-        // left. onResume runs after onStart has cleared that, so the route waits there.
-        pendingRoute = intent;
-    }
-
-    /** A start that arrived while the fragment manager could not take a transaction. */
-    private android.content.Intent pendingRoute = null;
-
-    /**
-     * Where a start says to land: a stream's detail when it was asked for by name, or the
-     * hinted stream when it is the only thing running. Neither means "go to the index" —
-     * that is where the screen already is.
-     */
-    private void routeFromIntent(android.content.Intent intent) {
-        if (intent == null) {
-            return;
-        }
-        String openStream = intent.getStringExtra(EXTRA_OPEN_STREAM);
-        String hintStream = intent.getStringExtra(EXTRA_HINT_STREAM);
-        if (openStream != null && !openStream.isEmpty()) openDetail(openStream);
-        else if (hintStream != null && !hintStream.isEmpty()) openHintedStream(hintStream);
-    }
-
-    /** ADFA-4988: open the just-confirmed REST stream's detail directly when it is the ONLY active work;
-     *  otherwise keep the index. The hinted stream may not have registered its session yet (it just
-     *  started), so trust the hint and inspect only the OTHER streams, which started earlier. */
-    private void openHintedStream(String hint) {
-        boolean otherProot = mapsInSession() || moduleInSession();
-        // ADFA-4954: courses were missing from this list, so confirming a ZIM download while a
-        // seeding session was running opened the ZIM detail and hid the courses row. A fresh
-        // snapshot is right here — this is a one-off decision at a single moment, not a pass.
-        boolean otherLive = PendingContent.anyLiveOtherThan(this, hint);
-        if (otherProot || otherLive) return;   // several streams -> keep the index
-        openDetail(hint);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // ADFA-5074: a start delivered to onNewIntent, applied now that the fragment manager
-        // will take a transaction again. Consumed once — onResume runs on every return, and
-        // without clearing it the user would be dropped back into that detail every time.
-        if (pendingRoute != null) {
-            android.content.Intent route = pendingRoute;
-            pendingRoute = null;
-            routeFromIntent(route);
-            render();
-        }
         if (serverController != null) serverController.onResume();   // ADFA-4842: keep ServerState fresh
+        // ADFA-5074: the pipeline runs whatever is on top. It used to be started only when the
+        // index was showing, which was fine while a detail could only be opened by tapping a row
+        // — you had already been on the index, so the loop was already going. The hint route
+        // broke that: a Get More download now opens its detail during onCreate, so onResume found
+        // showingDetail already true and never posted the poll at all. Nothing advanced, and the
+        // run could not complete while the user watched it. Removing the callback first keeps
+        // this to one chain, since the runnable re-arms itself.
+        main.removeCallbacks(readyPoll);
+        main.post(readyPoll);
         if (!showingDetail) {
+            // The listeners are the one thing that IS about who is on screen: while a detail is
+            // open the fragment owns the single listener slot (see backToIndex).
             ZimDownloadService.setListener(this::render);
             BooksDownloadService.setListener(this::render);
-            main.post(readyPoll);
             render();
         }
     }
@@ -432,6 +401,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 if (!moduleServerUp) main.postDelayed(readyPoll, READY_POLL_MS);
                 return;
             }
+            // ADFA-5074: nothing to start means nothing to wait for. The readiness probe exists so
+            // we never POST a job before the engine answers — it is a gate on STARTING work. When
+            // every stream is already in flight there is no job to post, and the probe stops being
+            // free: it is an HTTP request to a server that is busy serving the very download it is
+            // being asked about. Observed on device with the network throttled — a finished ZIM and
+            // a finished Courses run both sat under "Starting services." with a green Done row,
+            // because apiReady() kept timing out at 2.5s, servicesReady stayed false, orchestrateStep
+            // never ran, `drained` was never set, and the completion the screen was waiting for could
+            // not be reached. Both redirected the moment the link freed up, minutes late.
+            //
+            // So: if no provisioner has anything pending, the pipeline has nothing to launch and can
+            // advance on what it can already see. This is also the truthful answer — the box is
+            // demonstrably up, it is downloading — and it stops the header claiming otherwise.
+            if (!servicesReady && nothingToStart()) servicesReady = true;
+
             // Once the engine is confirmed up, advance the pipeline on the main thread without
             // re-checking apiReady() over HTTP every tick (the build can run for hours). ADFA-4900/#6.
             if (servicesReady) {
@@ -460,6 +444,23 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             });
         }
     };
+
+    /**
+     * ADFA-5074: no stage has anything left to launch.
+     *
+     * <p>Exactly the set of "hasPending" questions {@link #orchestrateStep()} asks before it
+     * starts anything, and asked in one place so the two cannot drift: if this is true, that
+     * method can only observe. Deliberately not "is the run finished" — work already in flight
+     * is not pending, which is the whole point. A Get More download reaches this screen with its
+     * wishlist already drained by the door, so there is nothing to gate.
+     */
+    private boolean nothingToStart() {
+        return !MapsProvisioner.hasPending(this)
+                && !ModuleProvisioner.hasPending(this)
+                && !ZimProvisioner.hasPending(this)
+                && !BooksProvisioner.hasPending(this)
+                && !KolibriProvisioner.hasPending(this);
+    }
 
     /**
      * ADFA-4900: one step of the serialized install pipeline. Starts the next stage only when the
@@ -517,11 +518,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
 
     // ---- render ----
     private void render() {
-        if (sections == null || showingDetail) return;
+        if (sections == null) return;
 
         // ADFA-5011: a rebuild has its own, simpler surface (one row + status), driven by
         // InstallProgressRepository — never the install/content completion logic below.
-        if (rebuildInSession()) { renderRebuild(); return; }
+        // A rebuild never opens a detail, so it keeps the plain guard.
+        if (rebuildInSession()) { if (!showingDetail) renderRebuild(); return; }
 
         boolean mapsShown = mapsInSession();   // ADFA-4900 / ADFA-4919 (durable across index instances)
         boolean moduleShown = moduleInSession();   // ADFA-4842: non-maps proot module batch
@@ -546,20 +548,46 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // longer be drawn from a different reading than the one that decided to show it.
         boolean zimSession = content.hasSession(ContentType.ZIM);
         boolean booksSession = content.hasSession(ContentType.BOOKS);
-        if (zimShown) sections.addView(streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
-                zimSession, ZimDownloadService.status(),
-                ZimDownloadService.DONE, ZimDownloadService.FAILED,
-                zimSession && ZimDownloadService.isComplete(), content.banked(ContentType.ZIM)));
-        if (booksShown) sections.addView(streamRow(getString(R.string.k2go_gm_books_title), "books",
-                booksSession, BooksDownloadService.status(),
-                BooksDownloadService.DONE, BooksDownloadService.FAILED,
-                booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS)));
+        // ADFA-5074: started above, waiting below.
+        //
+        // The order used to be fixed by content type, which expressed nothing and did no harm
+        // while everything began at once. With a queue it reads as sequence, and it read wrong:
+        // a ZIM order banked behind a running Courses download drew above it, so the first thing
+        // on screen was the one that had not started.
+        //
+        // Two buckets only, with the type order kept inside each. A finer sort — done last, say
+        // — would reshuffle the list every time something finished, which is the opposite of
+        // what this screen is for: it is glanced at, minutes or hours apart, and rows that move
+        // between glances have to be re-read. Started rows never change places; a queued one
+        // moves up exactly once, when it starts, which is a real event worth showing.
+        //
+        // Each row also carries its transfer rate — the one thing that separates "slow" from
+        // "stopped". Books reports none (its service tracks whole files, not bytes in flight),
+        // so its row omits it: 0 means "say nothing".
+        java.util.List<View> started = new java.util.ArrayList<>();
+        java.util.List<View> waiting = new java.util.ArrayList<>();
+        if (zimShown) (zimSession ? started : waiting).add(
+                streamRow(getString(R.string.k2go_gm_wikipedia_title), "zim",
+                        zimSession, ZimDownloadService.status(),
+                        ZimDownloadService.DONE, ZimDownloadService.FAILED,
+                        zimSession && ZimDownloadService.isComplete(), content.banked(ContentType.ZIM),
+                        ZimDownloadService.speed()));
+        if (booksShown) (booksSession ? started : waiting).add(
+                streamRow(getString(R.string.k2go_gm_books_title), "books",
+                        booksSession, BooksDownloadService.status(),
+                        BooksDownloadService.DONE, BooksDownloadService.FAILED,
+                        booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS),
+                        0L));
         // ADFA-4954. Statuses come from an observable snapshot rather than static arrays, so the
         // ordinals are mapped to the checklist's PENDING=0 / doneVal / failedVal convention here.
-        if (kolibriShown) sections.addView(streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
-                kolibriState.hasSession(), kolibriState.statusOrdinals(),
-                KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
-                kolibriState.hasSession() && kolibriState.isComplete(), kolibriBanked));
+        if (kolibriShown) (kolibriState.hasSession() ? started : waiting).add(
+                streamRow(getString(R.string.k2go_gm_courses_title), "kolibri",
+                        kolibriState.hasSession(), kolibriState.statusOrdinals(),
+                        KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
+                        kolibriState.hasSession() && kolibriState.isComplete(), kolibriBanked,
+                        kolibriState.speedBytesPerSec()));
+        for (View v : started) sections.addView(v);
+        for (View v : waiting) sections.addView(v);
 
         // Overall state. Completion is stage-based.
         ModuleQueueState mq = ModuleQueueRepository.get().current();
@@ -640,6 +668,37 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // Animate a "…" (dots appear/disappear) on the amber waiting line so it never looks frozen.
         if (amberWaiting) statusEllipsis.start(getString(statusRes));
         else { statusEllipsis.stop(); statusText.setText(statusRes); }
+
+        // ADFA-5074: a detail card is covering the index. Everything above still had to be
+        // computed — whether the run finished is a fact about the run, not about which screen is
+        // in front — but the controls below are not on screen, so a run that completed here would
+        // have nowhere to say so and would simply sit there. Step back to the index and let the
+        // normal pass run: the user gets the summary, the countdown and its Cancel, rather than
+        // being sent home from under a screen they were reading.
+        //
+        // Two conditions on that step-back, both from the review, both cases this got wrong:
+        //
+        // Armed once per opening. The check is on a level, not an edge, so it used to fire on
+        // every pass while the run stayed complete — a user who cancelled the countdown and
+        // tapped a finished row was thrown straight back out, and worst of all on a failed run,
+        // where the detail is the only place the per-item retry lives. `bounceOnComplete` is set
+        // when a detail is opened over work still in flight and cleared when it fires, so a
+        // detail opened deliberately over a finished run is never taken away.
+        //
+        // Only while resumed. render() has callers that outlive onPause: the two poll callbacks
+        // re-post from their own IO continuations, and onPause keeps the Zim/Books listeners
+        // whenever a detail is open — which for a courses, maps or module detail means the index
+        // still owns them. A publish() arriving then would run commitNow() on a stopped
+        // FragmentManager. Deferring costs nothing: onResume posts the poll, which renders.
+        lastAllComplete = allComplete;
+        if (showingDetail) {
+            if (allComplete && bounceOnComplete
+                    && getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
+                bounceOnComplete = false;
+                backToIndex();
+            }
+            return;
+        }
 
         // Bottom controls. ADFA-4842: a failed post-module server restart counts as a failure (Finish +
         // note), never a silent success — so the user is told, not dropped on a dead Home.
@@ -780,8 +839,28 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     }
 
     /** A stream summary row: waiting dot / spinner / check / alert, title, "X of N", chevron. */
+    /**
+     * ADFA-5074: the rate, appended to a running row's subtitle.
+     *
+     * <p>The one thing the index was missing for the way these screens are actually used. The
+     * downloads run for hours, so the user leaves and comes back to ask a single question: is
+     * this still moving, or has it died? "2 of 5" cannot answer it — the count sits still for
+     * an hour on a large item either way.
+     *
+     * <p>Only the rate, and only while running. The bytes, the per-item checklist and the
+     * retries stay in the detail: the index is a control point, not a smaller copy of the card.
+     * That distinction is the ticket's, and it is easy to erode one field at a time.
+     */
+    private String rateSuffix(long bytesPerSec) {
+        if (bytesPerSec <= 0L) {
+            return "";
+        }
+        return "  ·  " + org.iiab.controller.util.ByteFormatter.toHuman(bytesPerSec)
+                + getString(R.string.k2go_rate_per_second);
+    }
+
     private View streamRow(String heading, String key, boolean sess, int[] status, int doneVal, int failedVal,
-                           boolean complete, int wishlistCount) {
+                           boolean complete, int wishlistCount, long bytesPerSec) {
         int n = sess && status != null ? status.length : wishlistCount;
         int done = 0, failed = 0;
         if (sess && status != null) for (int st : status) { if (st == doneVal) done++; else if (st == failedVal) failed++; }
@@ -814,11 +893,35 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         col.addView(h);
         TextView sub = new TextView(this);
         sub.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        // ADFA-5074: one row per content type, and the subtitle carries the mix of states inside
+        // it — "1 Done · 1 Queued", "0 of 1 · 21 MiB/s · 1 Queued".
+        //
+        // There is one row per type, not one per order: the services hold a single session at a
+        // time and the wishlist is a bag of items, so there is no order with an identity to draw.
+        // That stayed invisible until the queue existed. With a session present this row was
+        // built entirely from it and wishlistCount was dropped, so a second ZIM asked for while
+        // the first was downloading left no trace at all — four queued orders drew two rows with
+        // nothing to show for two of them.
+        //
+        // Grouping the index by state instead was considered and rejected: a type can be in two
+        // states at once (courses done AND courses queued), so it would appear in two sections,
+        // which is the confusion of a row-per-order with extra structure — and the list would
+        // reflow on every transition, which this screen must not do. The type is the stable
+        // anchor; the states are counts within it.
+        //
+        // Composed from existing labels plus numbers. The project has no <plurals> and
+        // MissingTranslation is a hard error, so a new string costs 34 locale files.
         String state;
-        if (!sess) state = getString(R.string.k2go_setup_state_queued);
-        else if (complete && failed > 0) state = getString(R.string.k2go_setup_state_failed_fmt, failed);
-        else if (complete) state = getString(R.string.k2go_setup_state_done);
-        else state = getString(R.string.k2go_setup_state_progress_fmt, done, n);
+        if (!sess) {
+            state = n + " " + getString(R.string.k2go_setup_state_queued);
+        } else {
+            if (complete && failed > 0) state = getString(R.string.k2go_setup_state_failed_fmt, failed);
+            else if (complete) state = done + " " + getString(R.string.k2go_setup_state_done);
+            else state = getString(R.string.k2go_setup_state_progress_fmt, done, n) + rateSuffix(bytesPerSec);
+            if (wishlistCount > 0) {
+                state += "  ·  " + wishlistCount + " " + getString(R.string.k2go_setup_state_queued);
+            }
+        }
         sub.setText(state);
         sub.setTextColor(ContextCompat.getColor(this, (sess && failed > 0) ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
@@ -827,6 +930,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         ImageView chev = new ImageView(this);
         chev.setImageResource(R.drawable.ic_chevron_right);
         chev.setColorFilter(ContextCompat.getColor(this, R.color.k2go_muted));
+        // ADFA-5074: no chevron on a row that does not open. It was always drawn, which was
+        // harmless while a queued row was a brief state during an install; with a real queue a
+        // row can sit "Queued" for an hour, offering to be tapped and doing nothing.
+        chev.setVisibility(sess ? View.VISIBLE : View.INVISIBLE);
         row.addView(chev, new LinearLayout.LayoutParams(px(24), px(24)));
 
         if (sess) row.setOnClickListener(v -> openDetail(key));   // detail only once there's a live session
@@ -1059,19 +1166,40 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         finish();
     }
 
+    /**
+     * ADFA-5074: whether a completed run should take this detail away again.
+     *
+     * <p>Armed when a detail is opened over work still in flight, cleared when it fires. A
+     * detail opened over a run that had already finished is a deliberate look at the result —
+     * usually at a failed row, whose retry lives only there — and must not be closed underneath
+     * the user.
+     */
+    private boolean bounceOnComplete = false;
+
+    /** The last completion verdict, so opening a detail can tell "still working" from "finished". */
+    private boolean lastAllComplete = false;
+
     // ---- detail: host the real per-module card ----
     private void openDetail(String key) {
         showingDetail = true;
+        bounceOnComplete = !lastAllComplete;
         androidx.fragment.app.Fragment f;
         boolean proot;
         if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); proot = true; }  // ADFA-4842
-        else if ("zim".equals(key)) { f = ZimPreparingFragment.newInstance(true); proot = false; }
+        else if ("zim".equals(key)) { f = new ZimPreparingFragment(); proot = false; }   // ADFA-5074: observe-only
         else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); proot = false; }   // ADFA-4954: observe-only
         else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); proot = true; }   // ADFA-4901: observe-only
         else { f = BooksDownloadsFragment.newInstance(true); proot = false; }
         // ADFA-4919/4842: a proot detail (maps or module) cannot background either — only Back (to the index).
         if (detailRunBgBtn != null) detailRunBgBtn.setVisibility(proot ? View.GONE : View.VISIBLE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commit();
+        // ADFA-5074: commitNow, to match backToIndex. With an async commit a render() landing in
+        // between set showingDetail back to false and found nothing to remove, and the queued
+        // transaction then added the fragment into a hidden host — where ZimPreparingFragment
+        // takes the service listener with nobody left to reclaim it, freezing the index's row.
+        // The mirror image of the bug backToIndex's commitNow already exists for. Only reachable
+        // from a row tap now that the intent routing is gone, so the activity is resumed and the
+        // synchronous commit is safe.
+        getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commitNow();
         indexScroll.setVisibility(View.GONE);
         detailRoot.setVisibility(View.VISIBLE);
     }

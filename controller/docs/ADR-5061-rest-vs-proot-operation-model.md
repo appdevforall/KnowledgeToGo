@@ -327,6 +327,250 @@ most expensive by the third platform. A is B done safely over time.
           in background" that Courses lacks while Courses has a terminal action and a
           retry-before-leaving note the others lack. **ADFA-5074 owns this.**
 
+          Sizing it turned out better than that reads: **maps and the modules already land on the
+          index**, so only two routes actually move, and both are REST. The hosting work therefore
+          costs no proot testing — which matters, because a module install can take an hour and had
+          been making this the expensive item.
+
+          **Courses moved first (done).** `KolibriConfirmFragment` now starts `SetupProgressActivity`
+          with `EXTRA_HINT_STREAM = "kolibri"`, the same call `SetupLibraryActivity.startBooksDownload`
+          already made, and `openKolibriSeeding()` is gone. Levelling up went one way only, and the
+          host won every comparison: its Finish clears all three content sessions rather than only
+          this one, and it redirects by itself when the run succeeded, where the seeding footer made
+          the user press a button to leave a run that had finished cleanly. The one rule not carried
+          over is deliberate — Courses withheld the exit while a channel had failed, to keep the
+          retry rows reachable, and an index answering for four streams cannot withhold the exit for
+          one without stranding the other three. The failure case is the host's Finish-plus-note.
+
+          **ZIM moved next (done), and it was the one with something underneath.** Courses and Books
+          already had a door that started the work before navigating; ZIM did not — *the preparing
+          fragment itself* started the download from its own `onCreateView`, resolving the cart
+          against the Kiwix catalogue. That is what the `fromIndex` flag was really for: reopening a
+          screen that starts work poses a question ("start it again?") that has no good answer, so
+          the flag suppressed it. Moving the start into `SetupLibraryActivity.startZimDownload()`
+          made the flag meaningless and it is gone; the fragment is now an observer like the other
+          three. The catalogue is a baked CSV cached per process and the user reached the confirm
+          screen by browsing it, so resolving costs a main-thread pass — no network, nothing to
+          time out.
+
+          The extraction also carried a guard that was easy to miss because it read as part of the
+          flag: `if (!fromIndex && !ZimDownloadService.isRunning())`. The second half is load-bearing
+          — `ACTION_START` overwrites the session arrays outright, so starting over a live download
+          loses its bookkeeping — and unlike Courses, ZIM's door asks nothing about who else is busy,
+          so a second order is reachable (index, Back, Get More, pick again). What changed is the
+          dishonesty: the old code dropped the new picks in silence and showed the user the previous
+          session's progress as if it were theirs. The cart is now kept, so the picks survive to be
+          confirmed later. **This is precisely the case the queue in item 4 exists for.**
+
+          Two more things fell out of the extraction and are worth naming, because neither was
+          visible while the code sat inside a screen. The item-label rules (which of creator and flavour is
+          redundant) became `ZimItemLabel`, pure and unit-tested — they had to move somewhere that
+          is not the screen, since the labels are now computed once at hand-off and displayed later
+          by a different screen. And a catalogue entry with no creator and the "all" flavour
+          produced `"Wikipedia · "`, a label ending on a separator: the "say All instead of nothing"
+          guard only fired when the creator repeated the project. Widened, with the test.
+
+          **A finished run could not close itself — three links in one chain.** Found on device
+          once the hosting landed and Luis started using the two doors for real: a completed ZIM
+          run and a completed Courses run, on two different phones, both sitting on the index with
+          a green Done row under the header "Starting services." for minutes, then redirecting.
+
+          The wording was the tell, and Luis called it: REST content does not start services. It
+          indexes. Nothing was being started, so the header was describing a state the run was not
+          in — and the same flag it was describing is what held the redirect.
+
+          - **A start gate was gating completion.** `servicesReady` exists so the pipeline never
+            POSTs a job before the engine answers. But `orchestrateStep()` — which sets `drained`,
+            which `allComplete` requires — only runs once that flag is true, so a screen with
+            nothing left to start still had to pass a readiness probe to admit that it was done.
+            Worse, the probe competes with the work: `apiReady()` gives the box 2.5 s to answer
+            while the box is busy serving the download being waited on. Fixed by asking the right
+            question first — if no provisioner has anything pending there is nothing to launch, so
+            the gate has no purpose (`nothingToStart()`). It also makes the header truthful,
+            without editing a string.
+          - **The pipeline ran only when the index was on top.** `onResume` posted the poll inside
+            `if (!showingDetail)`. That held while a detail could only be reached by tapping a row
+            — you had been on the index, so the loop was already going. The hint route broke it:
+            a Get More download opens its detail during `onCreate`, so `onResume` found the flag
+            already true and never started the loop at all.
+          - **`render()` returned early under a detail.** Completion is a fact about the run, not
+            about which screen is in front, but the whole computation sat behind that guard. A run
+            finishing while its detail was open had nowhere to say so. It now steps back to the
+            index and lets the normal pass draw the summary and the countdown, rather than sending
+            the user home from under a screen they were reading.
+
+          Which of the three fired on the two phones is not settled — the header says the first,
+          and the redirect arriving the instant Luis took a screenshot points at a lifecycle event
+          restarting the loop, which is the second. The fix removes the dependency either way.
+
+          **Courses had no transfer rate, and the reason is upstream.** ZIM's caption shows one;
+          Courses' did not, and the two client/service pairs are structural copies — same
+          `onProgress(percent, speed)`, same `formatRate`/`parseRate` round trip. The difference
+          is what the box sends: `/api/kiwix/jobs/:id` carries a `speed` because aria2 measures
+          one, while `/k2go-api/kolibri/jobs/:id` returns 0 because Kolibri's importer reports a
+          phase and a percentage and nothing else.
+
+          It is worth having rather than deferring to a server change, because a percentage alone
+          cannot separate "slow" from "stopped" — which is the question a user opens this screen
+          to answer, and the one Luis could not answer on a link that had been fast hours earlier.
+          So the rate is derived on the device from what the session already holds: bytes
+          transferred over time elapsed (`TransferRate`, pure and tested).
+
+          That makes it an **average over the session**, deliberately. Kolibri reports whole
+          percents, so on a large channel one report can mean hundreds of megabytes; an instant
+          rate computed from that reads zero between reports and absurd on one. An average is
+          stable and still falls visibly when the link slows, which is the signal that matters. It
+          is a fallback only — if the box ever reports a real rate, that value wins with no change
+          on the device, and it should, because an instant rate is the better answer.
+
+          Not labelled "avg" on screen, on purpose: ZIM's is instantaneous and Courses' is not, and
+          labelling one of the two invites the question rather than answering it. The finished-card
+          average described earlier in this item is where the labelling gets decided for all four
+          at once.
+
+          **The queue: a busy door banks instead of refusing (done).** "Another download is
+          running. Try again when it finishes." was the honest message for a door with nowhere to
+          show a queue. It stopped being honest once every door landed on the index, where a
+          banked order already draws its row as "Queued".
+
+          Almost none of it was new machinery. **The wishlist is the queue** — each provisioner
+          defers while another stream holds the line (ADR-4954 D8) and the order stays banked
+          until a later pass takes it. What was missing was a pump outside the index:
+          `LibraryHomeFragment` has drained Books, ZIM and Maps since ADFA-4853 and **courses were
+          never added**, so a banked courses order sat until someone happened to open the progress
+          screen. That is both a standing bug — a wizard courses order could be left waiting — and
+          the reason a queue was impossible: a door cannot promise "added" if nothing drains it.
+          Fixed first; then `KolibriConfirmFragment` simply stopped rolling its order back, which
+          made the change mostly a deletion, and `canDrainNow` went back to being internal.
+
+          **The row order had to change with it.** Spotted by Luis on the first queued run: the
+          rows were ordered by content type, which expressed nothing while everything started at
+          once, but a queue makes a list read as a sequence — and the banked ZIM drew above the
+          running Courses. Now started rows come first and waiting ones last, with the type order
+          kept inside each bucket. Deliberately only two buckets: sorting finished rows to the
+          bottom as well would reshuffle the list every time something completed, and this screen
+          is glanced at hours apart, so a row that moves between glances has to be re-read.
+
+          **One row per type, not per order — and it has to say so.** Luis queued four things
+          (courses, ZIM, courses, ZIM) and saw two rows. The log showed the queue itself working
+          perfectly: each order banked, deferred while another held the line, and started in turn.
+          What was wrong was the drawing. A row is built from the session when there is one, and
+          the banked count was simply dropped in that branch — so a second ZIM asked for while the
+          first was downloading left no trace on screen.
+
+          One row per order is not available cheaply and probably not desirable: the services hold
+          a single session at a time and the wishlist is a bag of items, so there is no order with
+          an identity to draw, and four rows for two types would say less, not more.
+
+          **Grouping the index by state was considered and rejected.** It is the natural next
+          thought — Done / In progress / Queued sections — and it breaks on the case that prompted
+          it: a type can be in two states at once, so Courses-done-and-Courses-queued would appear
+          in two sections. That is the confusion of a row-per-order with extra structure on top,
+          and the sections would reflow on every transition, which is what this screen must not do.
+
+          What landed instead, Luis' own simplification: the type stays the stable anchor and the
+          **states become counts inside its subtitle** — "1 Done · 1 Queued", "0 of 1 · 21 MiB/s ·
+          1 Queued". Nothing moves, and the mix reads at a glance. Composed from the existing
+          labels plus numbers, because the project has no `<plurals>` and `MissingTranslation` is
+          a hard error, so a new string costs 34 locale files.
+
+          A queued row also stopped drawing a chevron. It was always there, harmless while
+          "Queued" was a brief state during an install; with a real queue a row can sit that way
+          for an hour, offering a tap that does nothing.
+
+          **ZIM turned out to have a third copy of one rule.** Routing its door through
+          `ZimWishlist` + `ZimProvisioner.drain` — the shape Courses already had — deleted the
+          resolution this ticket had moved out of `ZimPreparingFragment` two commits earlier.
+          `ZimProvisioner` had been doing exactly that for the wizard since ADFA-4853: resolve the
+          catalogue, build the triples, hand them to the service. Worth naming because the two
+          copies had already drifted where nobody would look: they built item labels differently,
+          one combining creator and flavour and the other not, so the same ZIM was named one way
+          from the wizard and another from Get More. Both are now `ZimItemLabel`. It also retires
+          the special case for a second order arriving over a live one — the provisioner defers
+          rather than letting `ACTION_START` overwrite a running session.
+
+          **Carried out of the review, not fixed.** Each was judged real but not this ticket's,
+          and each is written down so it is found deliberately rather than rediscovered:
+
+          - `ZimProvisioner.resolveAndStart` **clears the wishlist when nothing resolves**, so an
+            order whose catalogue keys have drifted vanishes with no message. Pre-existing on the
+            wizard path; ADFA-5074 made it reachable from a tap. Unreachable with today's baked
+            CSV, since the keys come from the same file.
+          - `showingDetail` is **not in saved instance state**. `configChanges` covers rotation,
+            so this only bites under process death or "Don't keep activities": the FragmentManager
+            restores the detail, the flag does not, and the restored fragment holds the ZIM
+            listener behind a visible index.
+          - `servicesReady` is now **evidence, not a probe**, which is right for the completion
+            gate but makes it a weaker claim: re-entering a maps run whose wishlist an earlier
+            activity already drained shows the green "Adding your content" during a runrole. Only
+            `prootActive` still gates the background button there.
+          - The `probing` latch in `readyPoll` has **no timeout and no lifecycle reset**. If the
+            IO executor ever rejected the task the poll would never run again. `apiReady()` swallows
+            `Exception`, so it is theoretical.
+          - The wishlists are **read twice per pass** — once by `nothingToStart()` and once by
+            `PendingContent.read` — which contradicts the "one reading per render" rule from
+            ADFA-4954 stated a few lines above it.
+          - The derived courses rate **restarts its baseline only on a new session**, not on
+            `sessionStopped` or `ACTION_RETRY`, so a retry hours after a failure divides by the
+            idle hours and reads near zero. The cumulative average also decays as 1/t rather than
+            dropping when a transfer stalls; both are the known cost of not having an instant rate
+            from the box.
+          - `KolibriWishlist.add` and `ZimWishlist.add` are **load-modify-save with no lock**, and
+            courses now writes from the IO pool while both pumps clear from the main thread. The
+            losing interleaving would re-download a channel already handed off. Narrow, but it is
+            the shape that only shows up under load.
+
+          **A fifth entry surfaced, and it is not a landing.** The Books landing screen has a
+          "downloads" link (`BooksLandingFragment.openDownloads` → `SetupLibraryActivity
+          .openBooksDownloads`) that opens `BooksDownloadsFragment` inside that activity without
+          starting anything. It survived ADFA-4988 because that ticket moved the *confirm* landing,
+          and it is genuinely a different thing: a viewer for "what am I downloading?", reachable
+          when nothing is running at all. The index cannot take it over yet — opened with no work
+          in flight it reads the run as complete and redirects home. So the order is: teach the
+          index an idle state, then this link points at it. Until then it is the one remaining
+          fragment that hosts itself, and it keeps its footer.
+
+          **The landing decision, settled: always the index.** Decided with Luis after using both
+          doors on device. The hint (`EXTRA_HINT_STREAM`) and the notification deep-link
+          (`EXTRA_OPEN_STREAM`) are both gone, so `openDetail` is reachable only by tapping a row.
+          Three reasons, in the order that decided it:
+
+          - **One destination, whatever the state.** The hint opened a detail "when this is the
+            only stream running" — a landing that depended on something the user cannot see. That
+            is the same defect the hosting work removed, in miniature.
+          - **The index is the only surface that can end a run.** Finish, the countdown to the
+            Library, Run in background. A detail is a dead end by construction.
+          - **The real usage is set-and-forget.** Luis' framing, and it reframes the question:
+            these downloads take hours, so the dominant case is starting one and leaving, not
+            watching. Someone who was never going to look does not care about the extra tap; what
+            they need is the screen that finishes the job while they are away and answers "is this
+            going well?" when they come back.
+
+          The wizard already behaved this way — it banks and, after the install, shows the index
+          with its rows and never a detail — so this aligns Get More with it rather than inventing
+          anything.
+
+          Two consequences worth stating so they are not eroded later. **The index gained the
+          transfer rate and nothing else.** "2 of 5" cannot separate slow from stopped: on a large
+          item the count sits still for an hour either way. The bytes, the per-item checklist and
+          the retries stay in the detail — the index is a control point, not a smaller copy of the
+          card, and that boundary erodes one field at a time. And **the notification does not force
+          the index when a detail is already open**: it means "take me back to my download", and
+          someone inside a detail is already there by their own choice.
+
+          Explicitly *not* done, and not because it was forgotten: the notification says very
+          little, and for a set-and-forget flow it — not either screen — is the primary experience.
+          Redesigning it is the right next step and there is no time before the deadline, so the
+          decision was to make the index the reliable control point and leave the notification as
+          it is.
+
+          Recorded while doing it, for the landing decision below: leaving the index by Back returns
+          to the picker's **confirm screen with its cart already cleared** — a spent step. Books has
+          behaved this way since ADFA-4988 and nobody has reported it, and Courses now inherits it,
+          which is the point: the wart is shared rather than per-type. The fix is to pop the picker
+          to the hub before leaving, and it belongs with the hint decision so all four get the same
+          answer, not with the type that happened to expose it.
+
           **The progress animation is resolved, not placed.** Today the Lottie
           (`k2go_working_loop` — cloud sending data to the device) lives in
           `fragment_k2go_zim_preparing.xml` and nowhere else, so Courses has none. Copying it

@@ -74,7 +74,8 @@ public final class ZimProvisioner {
             ZimSelection.Item it = ZimSelection.resolve(catalog, o.optString("key", ""));
             if (it == null) continue;
             files.add(it.id);   // "<project>/<file>" (ADFA-5042)
-            labels.add(label(it.project, it.entry.optString("creator"), it.entry.optString("flavour")));
+            labels.add(ZimItemLabel.of(it.project,
+                    it.entry.optString("creator"), it.entry.optString("flavour")));
             bytes.add(it.entry.optLong("size", o.optLong("bytes", 0)));
         }
         if (files.isEmpty()) { Log.w(TAG, "zim drain: nothing resolved from wishlist"); ZimWishlist.clear(app); return; }
@@ -88,12 +89,10 @@ public final class ZimProvisioner {
         ZimWishlist.clear(app);   // handed off; the service owns retry from here
     }
 
-    private static String label(String project, String creator, String flavour) {
-        KiwixCategories.Category c = KiwixCategories.byKey(project);
-        String cat = c != null ? c.title : project;
-        if (flavour == null || flavour.isEmpty() || "all".equalsIgnoreCase(flavour)) {
-            return (creator == null || creator.isEmpty()) ? cat : cat + " · " + creator;
-        }
-        return cat + " · " + flavour.replace('_', ' ').replace('-', ' ');
-    }
+    // ADFA-5074: a private label() lived here and a different one lived in the Get More path, so
+    // the same ZIM was named one way when it came from the wizard and another from Get More —
+    // this one never combined creator and flavour, the other did. Both are now ZimItemLabel,
+    // which is pure and has the rules under test. Nothing else about this class changed: it was
+    // already the single resolution for a banked order, and Get More now goes through it too
+    // instead of keeping a third copy.
 }

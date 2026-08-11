@@ -351,6 +351,39 @@ public final class KolibriSeedState {
         return new KolibriSeedState(items, running, index, speedBytesPerSec, s);
     }
 
+    /**
+     * ADFA-5074: the rate, supplied rather than reported.
+     *
+     * <p>The Kolibri job endpoint sends a phase and a percentage but no speed, so
+     * {@link #speedBytesPerSec()} was always 0 and the caption silently dropped it — the one
+     * screen where a user most needs to know whether anything is moving. The repository fills
+     * it in from {@code TransferRate} when the box says nothing, which is why this takes a value
+     * instead of computing one: the clock belongs to the caller, and this type stays a snapshot.
+     */
+    /**
+     * ADFA-5074: bytes that actually arrived, for deriving a transfer rate.
+     *
+     * <p>Not {@link #transferredBytes()}, which counts a terminal item's full size and treats
+     * FAILED as terminal. That is right for the progress bar — a failed item is finished with,
+     * and the bar should not stall on it — and wrong for a rate: a 60 GB channel failing four
+     * seconds in would credit the session with 60 GB of transfer and report tens of GB/s.
+     */
+    long transferredForRate() {
+        long done = 0L;
+        for (Item i : items) {
+            if (i.status() == Status.DONE) {
+                done += i.bytes();
+            } else if (i.status() == Status.ACTIVE && i.percent() > 0) {
+                done += i.bytes() * i.percent() / 100L;
+            }
+        }
+        return done;
+    }
+
+    KolibriSeedState withSpeed(long bytesPerSec) {
+        return new KolibriSeedState(items, running, index, Math.max(0L, bytesPerSec), seq);
+    }
+
     /** Index of the first item still waiting, or -1. */
     public int firstPending() {
         for (int i = 0; i < items.size(); i++) {

@@ -236,18 +236,35 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
-    /** ADFA-4849: Confirm -> Preparing (contained animation + real progress; mock until backend). */
-    public void openZimPreparing() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, new ZimPreparingFragment())
-                .addToBackStack("zim_preparing")
-                .commit();
-    }
-
-    /** ADFA-4849: "Run in background" from ZIM Preparing -> back to the Get More hub. */
-    public void backToGetMoreHubZim() {
-        getSupportFragmentManager().popBackStack("getmore_wikipedia",
-                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    /**
+     * ADFA-4849 / ADFA-5074: the ZIM Confirm terminal in live mode — bank the order, ask for it
+     * to start, and go to the index.
+     *
+     * <p>This used to be {@code openZimPreparing()}, which pushed the preparing fragment into
+     * this activity and let <em>the fragment</em> start the download from its own
+     * {@code onCreateView}, resolving the cart against the Kiwix catalogue as it went. Two
+     * things were wrong with that. The screen was a second host with no chrome, so it grew its
+     * own Finish and Run-in-background; and a screen that starts work cannot be reopened
+     * without deciding whether to start it again, which is what the {@code fromIndex} flag was
+     * really guarding.
+     *
+     * <p>The first fix moved that resolution here. The second deleted it: {@link ZimProvisioner}
+     * has done exactly this since ADFA-4853 for the wizard's banked orders — resolve the
+     * catalogue, build the triples, hand them to the service — so moving it here made a third
+     * copy of one rule. The two copies had already drifted: they built item labels differently,
+     * so the same ZIM was named one way when it came from the wizard and another from Get More.
+     *
+     * <p>Writing to {@link ZimWishlist} and draining is also what makes ZIM queue. The wishlist
+     * IS the queue: the provisioner defers while another stream holds the line and the order
+     * stays banked until a later pass takes it, which the index and the Home both run. That
+     * replaces the special case this method used to carry — a second order arriving over a live
+     * one, which {@code ACTION_START} would have overwritten.
+     */
+    public void startZimDownload() {
+        ZimWishlist.add(this, selection().zimCart());
+        selection().zimCart().clear();   // handed over; keeping it would re-offer the same picks
+        ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
+        startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
     /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked
@@ -358,18 +375,10 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
-    /**
-     * ADFA-4954: the live download's progress screen, reached from the Get More
-     * door. The same observe-only fragment the post-install index shows — the
-     * download is one mechanism, so it gets one screen; only the way in differs.
-     */
-    public void openKolibriSeeding() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host,
-                        new org.iiab.controller.kolibri.presentation.KolibriSeedingFragment())
-                .addToBackStack("kolibri_seeding")
-                .commit();
-    }
+    // ADFA-5074: openKolibriSeeding() lived here — it hosted the seeding fragment inside
+    // this activity for the Get More door. It was the same fragment the progress index
+    // shows, so what it really added was a second host with no chrome. KolibriConfirmFragment
+    // now starts SetupProgressActivity instead, as Books does.
 
     /** ADFA-4954: review step of the Courses picker. */
     public void openKolibriConfirm() {
@@ -448,22 +457,27 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     /** ADFA-4910: Books Confirm terminal in live mode — hand the picks to the download service and
      *  open the downloads screen (per-book checklist + retry). */
     public void startBooksDownload() {
-        java.util.List<String> ids = new java.util.ArrayList<>(), titles = new java.util.ArrayList<>(),
-                urls = new java.util.ArrayList<>();
         for (java.util.Map.Entry<String, String[]> e : selection().booksCart().entrySet()) {
             String[] v = e.getValue();
-            ids.add(e.getKey());
-            titles.add(v != null && v.length > 0 ? v[0] : "");
-            urls.add(v != null && v.length > 2 ? v[2] : "");
+            BooksWishlist.add(this, e.getKey(),
+                    v != null && v.length > 0 ? v[0] : "",
+                    v != null && v.length > 2 ? v[2] : "");
         }
         selection().booksCart().clear();
-        BooksDownloadService.start(getApplicationContext(),
-                ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
-        // ADFA-4988: go to the downloads screen (its per-item list with download -> done checks),
-        // matching ZIM/maps/modules — instead of returning to Get More and downloading invisibly.
-        // Hint "books": the index opens the books detail when books is the only stream, else the cards.
-        startActivity(new Intent(this, SetupProgressActivity.class)
-                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "books"));
+        // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
+        // calling its service directly, and that had a real consequence beyond symmetry: the
+        // service registers its session asynchronously in onStartCommand, so for a moment nothing
+        // was pending and nothing was in session. The index reads exactly that pair to decide the
+        // run is over — nothingToStart() plus an empty orchestrateStep — and could declare a
+        // just-started download complete and count down to the Library. Writing the wishlist first
+        // makes hasPending true synchronously, before the index is even launched, so that window
+        // does not exist. It also makes Books queue behind a busy line instead of overwriting.
+        BooksProvisioner.drain(this);
+        // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
+        // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
+        // detail "when books is the only stream" made the landing depend on state the user cannot
+        // see, and the index is what ends the run.
+        startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */
@@ -634,7 +648,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
 
     /** @deprecated ADFA-4919: only used by the standalone Get More "Run in background" button, which
      *  the index gate removes for proot. Unreachable once Get More routes through openMapsIndex().
-     *  Kept UNUSED pending ADFA-4842 (see openMapsPreparing). (ZIM uses backToGetMoreHubZim, separate.)
+     *  Kept UNUSED pending ADFA-4842 (see openMapsPreparing). (ADFA-5074 removed the ZIM twin,
+     *  backToGetMoreHubZim, along with the ZIM live door that was the only thing calling it.)
      *  ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
      *  stack and return to the Get More hub; the build keeps running. */
     public void backToGetMoreHub() {

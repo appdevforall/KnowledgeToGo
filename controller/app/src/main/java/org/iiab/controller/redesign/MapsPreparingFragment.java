@@ -48,7 +48,9 @@ public class MapsPreparingFragment extends Fragment {
 
     /** ADFA-4901: open as the maps detail inside the Finishing-setup index — observe only, never
      *  (re)start the install, and hide this fragment's own "Run in background" button (the index
-     *  host provides Back/Finish). Mirrors ZimPreparingFragment.newInstance(fromIndex). */
+     *  host provides Back/Finish). ADFA-5074: ZIM used to have the same flag and no longer needs
+     *  one — the index is its only host. This one is still passed false by the deprecated
+     *  standalone route (openMapsPreparing), so the flag survives until that route goes. */
     public static MapsPreparingFragment newInstance(boolean fromIndex) {
         MapsPreparingFragment f = new MapsPreparingFragment();
         Bundle b = new Bundle();

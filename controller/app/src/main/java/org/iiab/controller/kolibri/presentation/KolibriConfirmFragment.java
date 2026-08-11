@@ -33,6 +33,7 @@ import org.iiab.controller.kolibri.domain.ChannelSelection;
 import org.iiab.controller.kolibri.domain.InstalledChannel;
 import org.iiab.controller.kolibri.domain.SeedPlan;
 import org.iiab.controller.redesign.SetupLibraryActivity;
+import org.iiab.controller.redesign.SetupProgressActivity;
 import org.iiab.controller.util.AppExecutors;
 import org.iiab.controller.util.ByteFormatter;
 
@@ -376,14 +377,6 @@ public final class KolibriConfirmFragment extends Fragment {
      * be left with silence, so the refusal is shown.
      */
     private void startLive(List<Channel> chosen) {
-        // Ask BEFORE writing. Banking first and being refused afterwards leaves the
-        // order in the wishlist, to be downloaded at some later moment nobody asked
-        // for — the same orphan this screen refuses to create when the box is off.
-        if (!KolibriProvisioner.canDrainNow(requireContext())) {
-            note(R.string.k2go_kolibri_busy);
-            confirm.setEnabled(false);
-            return;
-        }
         final List<Channel> toDownload = missingOnly(chosen);
         if (toDownload.isEmpty()) {
             refuse(R.string.k2go_kolibri_nothing_to_add);
@@ -407,36 +400,50 @@ public final class KolibriConfirmFragment extends Fragment {
             for (Order o : order) {
                 KolibriWishlist.add(app, o.id, o.version, o.name, o.bytes, o.nodeIds);
             }
-            final boolean handed = KolibriProvisioner.drain(app);
-            if (!handed) {
-                // Lost the race with another stream between asking and writing. Rare,
-                // but the order must not be left behind, because nothing here would
-                // drain it. Removed one by one rather than cleared: a wizard order
-                // could still be waiting in the same list and is not ours to discard.
-                for (Order o : order) {
-                    KolibriWishlist.remove(app, o.id);
-                }
-            }
+            // ADFA-5074: the order is written, then started if the line is free. It used to be
+            // rolled back when another stream held the line, and the screen said "Another
+            // download is running. Try again when it finishes." — an honest message for a door
+            // with nowhere to show a queue, and a bad one now that there is somewhere. Nothing
+            // here decides whether it runs; the wishlist IS the queue, and the index and the Home
+            // both drain it as the line frees (ADR-4954 D8 fixes the order).
+            //
+            // The rollback existed because nothing outside the progress index drained a courses
+            // wishlist, so a refused order would have sat unnoticed. That was fixed first:
+            // LibraryHomeFragment now pumps courses like the other three. Landing on the index
+            // makes the wait visible either way — a banked order draws its row as "Queued".
+            KolibriProvisioner.drain(app);
             View v = getView();
             if (v != null) {
-                v.post(() -> finishStart(handed));
+                v.post(this::finishStart);
             }
         });
     }
 
-    /** Back on the main thread with the outcome of the hand-off. */
-    private void finishStart(boolean handed) {
+    /**
+     * Back on the main thread once the order is written.
+     *
+     * <p>ADFA-5074: a started download lands on the progress index, the same place
+     * Books goes ({@code SetupLibraryActivity.startBooksDownload}) and the same
+     * place the notification and the Home header already point at. It used to open
+     * the seeding fragment inside this activity instead, which is the identical
+     * screen under a host with no chrome — so Back walked straight out of a live
+     * download and the only way to end the session was one button the index also
+     * has. One mechanism, one landing.
+     *
+     * <p>The index, not the courses detail. The detail is a deliberate zoom-in, reached
+     * by tapping the row; the index is the only surface that can end the run, and these
+     * downloads run for hours, so the user starts one and leaves. What they need on the
+     * way out is the screen that will finish the job for them.
+     */
+    private void finishStart() {
         if (!isAdded()) {
             return;
         }
-        if (!handed) {
-            refuse(R.string.k2go_kolibri_busy);
+        vm.clearSelection();
+        if (getActivity() == null) {
             return;
         }
-        vm.clearSelection();
-        if (getActivity() instanceof SetupLibraryActivity) {
-            ((SetupLibraryActivity) getActivity()).openKolibriSeeding();
-        }
+        startActivity(new android.content.Intent(getActivity(), SetupProgressActivity.class));
     }
 
     /** One line of the order, read on the main thread so the write needs no view model. */
