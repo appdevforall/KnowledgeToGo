@@ -309,8 +309,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
             // ordered; Books clears its cart at the same point, for the same reason.
             selection().zimCart().clear();
         }
-        startActivity(new Intent(this, SetupProgressActivity.class)
-                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "zim"));
+        startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
     /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked
@@ -514,11 +513,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         selection().booksCart().clear();
         BooksDownloadService.start(getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
-        // ADFA-4988: go to the downloads screen (its per-item list with download -> done checks),
-        // matching ZIM/maps/modules — instead of returning to Get More and downloading invisibly.
-        // Hint "books": the index opens the books detail when books is the only stream, else the cards.
-        startActivity(new Intent(this, SetupProgressActivity.class)
-                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "books"));
+        // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
+        // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
+        // detail "when books is the only stream" made the landing depend on state the user cannot
+        // see, and the index is what ends the run.
+        startActivity(new Intent(this, SetupProgressActivity.class));
     }
 
     /** ADFA-4850: Books landing -> the download manager screen (per-book checklist + retry). */

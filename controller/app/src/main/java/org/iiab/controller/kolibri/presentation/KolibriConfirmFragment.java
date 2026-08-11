@@ -436,10 +436,10 @@ public final class KolibriConfirmFragment extends Fragment {
      * download and the only way to end the session was one button the index also
      * has. One mechanism, one landing.
      *
-     * <p>The hint rather than {@code EXTRA_OPEN_STREAM}: with courses the only
-     * stream running the index opens the courses detail, and with something else
-     * already running it keeps the card list, where both are visible. Naming the
-     * stream outright would hide the other one.
+     * <p>The index, not the courses detail. The detail is a deliberate zoom-in, reached
+     * by tapping the row; the index is the only surface that can end the run, and these
+     * downloads run for hours, so the user starts one and leaves. What they need on the
+     * way out is the screen that will finish the job for them.
      */
     private void finishStart(boolean handed) {
         if (!isAdded()) {
@@ -453,8 +453,7 @@ public final class KolibriConfirmFragment extends Fragment {
         if (getActivity() == null) {
             return;
         }
-        startActivity(new android.content.Intent(getActivity(), SetupProgressActivity.class)
-                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "kolibri"));
+        startActivity(new android.content.Intent(getActivity(), SetupProgressActivity.class));
     }
 
     /** One line of the order, read on the main thread so the write needs no view model. */

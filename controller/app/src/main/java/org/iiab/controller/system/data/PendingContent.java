@@ -301,10 +301,9 @@ public final class PendingContent {
         return read(ctx).anyBanked();
     }
 
-    /** One-shot: is any live content in play other than {@code key}? */
-    public static boolean anyLiveOtherThan(Context ctx, String key) {
-        return read(ctx).anyLiveOtherThan(key);
-    }
+    // ADFA-5074: the one-shot anyLiveOtherThan(ctx, key) was removed with its only caller, the
+    // index's "open this stream's detail if it is the only one running" hint. The Snapshot method
+    // it wrapped stays — anyLive() is written in terms of it.
 
     /** One-shot: does any live content type still have work to do? */
     public static boolean anyUnfinished(Context ctx) {

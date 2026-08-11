@@ -224,8 +224,9 @@ public final class ZimDownloadService extends Service {
     }
 
     private Notification buildNotification(String currentLabel) {
-        Intent open = new Intent(this, SetupProgressActivity.class)   // ADFA-4987: redesign downloads view, not legacy UI
-                .putExtra(SetupProgressActivity.EXTRA_OPEN_STREAM, "zim")
+        // ADFA-4987: the redesign progress screen, not the legacy UI. ADFA-5074: the index, not
+        // this stream's detail — it is the only surface that can end the run.
+        Intent open = new Intent(this, SetupProgressActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

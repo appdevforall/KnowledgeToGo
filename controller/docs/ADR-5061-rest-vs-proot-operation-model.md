@@ -438,6 +438,40 @@ most expensive by the third platform. A is B done safely over time.
           index an idle state, then this link points at it. Until then it is the one remaining
           fragment that hosts itself, and it keeps its footer.
 
+          **The landing decision, settled: always the index.** Decided with Luis after using both
+          doors on device. The hint (`EXTRA_HINT_STREAM`) and the notification deep-link
+          (`EXTRA_OPEN_STREAM`) are both gone, so `openDetail` is reachable only by tapping a row.
+          Three reasons, in the order that decided it:
+
+          - **One destination, whatever the state.** The hint opened a detail "when this is the
+            only stream running" — a landing that depended on something the user cannot see. That
+            is the same defect the hosting work removed, in miniature.
+          - **The index is the only surface that can end a run.** Finish, the countdown to the
+            Library, Run in background. A detail is a dead end by construction.
+          - **The real usage is set-and-forget.** Luis' framing, and it reframes the question:
+            these downloads take hours, so the dominant case is starting one and leaving, not
+            watching. Someone who was never going to look does not care about the extra tap; what
+            they need is the screen that finishes the job while they are away and answers "is this
+            going well?" when they come back.
+
+          The wizard already behaved this way — it banks and, after the install, shows the index
+          with its rows and never a detail — so this aligns Get More with it rather than inventing
+          anything.
+
+          Two consequences worth stating so they are not eroded later. **The index gained the
+          transfer rate and nothing else.** "2 of 5" cannot separate slow from stopped: on a large
+          item the count sits still for an hour either way. The bytes, the per-item checklist and
+          the retries stay in the detail — the index is a control point, not a smaller copy of the
+          card, and that boundary erodes one field at a time. And **the notification does not force
+          the index when a detail is already open**: it means "take me back to my download", and
+          someone inside a detail is already there by their own choice.
+
+          Explicitly *not* done, and not because it was forgotten: the notification says very
+          little, and for a set-and-forget flow it — not either screen — is the primary experience.
+          Redesigning it is the right next step and there is no time before the deadline, so the
+          decision was to make the index the reliable control point and leave the notification as
+          it is.
+
           Recorded while doing it, for the landing decision below: leaving the index by Back returns
           to the picker's **confirm screen with its cart already cleared** — a spent step. Books has
           behaved this way since ADFA-4988 and nobody has reported it, and Courses now inherits it,

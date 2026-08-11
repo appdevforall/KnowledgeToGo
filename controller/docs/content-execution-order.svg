@@ -112,9 +112,9 @@
 <text class="item" x="40" y="766">Get More, all four types: the door starts the work and hands off to SetupProgressActivity. Maps and the modules always did; Books</text>
 <text class="item" x="40" y="782">since ADFA-4988; Courses and ZIM moved here. What differed was the host, so Back walked out of a live download and a notification</text>
 <text class="item" x="40" y="798">returned you to a screen you had not left. The screens themselves never were duplicated — openDetail() hosted the same fragments.</text>
-<text class="item" x="40" y="820">STILL A SECOND HOST: the Books landing's "downloads" link opens BooksDownloadsFragment inside SetupLibraryActivity. It is a viewer,</text>
-<text class="item" x="40" y="836">not a landing — and the index cannot replace it until the index can be opened with nothing in flight (today it would redirect home).</text>
-<text class="code" x="40" y="852">Left in the ticket: that viewer · the Books-style hint (detail or card list?) · a queue, so a busy door banks instead of refusing.</text>
+<text class="item" x="40" y="820">The index is now the router: every door and every notification lands here, so openDetail() is reachable only by tapping a row. The</text>
+<text class="item" x="40" y="836">row carries the transfer rate — the one thing that separates "slow" from "stopped" for someone who left and came back in an hour.</text>
+<text class="code" x="40" y="852">Left: the Books landing's "downloads" link (a viewer, needs an idle index) · a queue, so a busy door banks instead of refusing.</text>
 
 <!-- ================= the completion chain ================= -->
 <rect class="card-warn" x="24" y="886" width="932" height="122"/>

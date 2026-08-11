@@ -234,8 +234,9 @@ public final class BooksDownloadService extends Service {
     }
 
     private Notification buildNotification(String title) {
-        Intent openI = new Intent(this, SetupProgressActivity.class)   // ADFA-4987: redesign downloads view, not legacy UI
-                .putExtra(SetupProgressActivity.EXTRA_OPEN_STREAM, "books")
+        // ADFA-4987: the redesign progress screen, not the legacy UI. ADFA-5074: the index, not
+        // this stream's detail — it is the only surface that can end the run.
+        Intent openI = new Intent(this, SetupProgressActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent open = PendingIntent.getActivity(this, 0, openI,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

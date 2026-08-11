@@ -364,8 +364,9 @@ public final class KolibriSeedService extends Service {
     }
 
     private Notification buildNotification(String label) {
+        // ADFA-5074: the index, not this stream's detail — it is the only surface that can end
+        // the run, and a notification is how someone comes back to ask whether it is going well.
         Intent open = new Intent(this, SetupProgressActivity.class)
-                .putExtra(SetupProgressActivity.EXTRA_OPEN_STREAM, "kolibri")
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
