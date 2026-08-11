@@ -130,7 +130,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 first = new GetMoreHubFragment();     // ADFA-4848: Get More opens the content hub
             } else if (reinstallMode) {
                 // ADFA-5023: reinstall = the normal first-run wizard, but the final install wipes first.
-                org.iiab.controller.system.data.PendingContent.clearAll(this);
+                org.iiab.controller.system.data.PendingWork.clearAll(this);
                 first = new Step1SystemFragment();
             } else {
                 // ADFA-4874: a fresh wizard run — drop any wishlist left by an aborted first-run so
@@ -140,7 +140,7 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 // others were, so an abandoned run's map selection survived into the next one.
                 // The maps selector reached from Home takes the mapsSetup branch above and is
                 // unaffected.
-                org.iiab.controller.system.data.PendingContent.clearAll(this);
+                org.iiab.controller.system.data.PendingWork.clearAll(this);
                 first = new Step1SystemFragment();
             }
             getSupportFragmentManager().beginTransaction()

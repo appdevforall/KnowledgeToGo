@@ -353,6 +353,20 @@ most expensive by the third platform. A is B done safely over time.
           The point of the indirection is that changing it later is one line, and that a
           module which turns out to need its own can have it without anyone touching a layout.
 
+          **Serialising is not the net it looks like** (noted, not blocking). The three live
+          streams are meant to run one at a time, which was the poor man's stand-in for a disk
+          budget: if only one runs, each selector's free-space reading is roughly valid.
+          `ZimProvisioner.drain` starts asynchronously, though — it fetches the Kiwix catalogue
+          first and only starts the service from the callback — so within one
+          `orchestrateStep` pass Books and Courses look at a ZIM that has no session yet and
+          start too. Three at once, observed on device.
+
+          Not urgent and deliberately not part of ADFA-5074: the fix would have the guard count
+          an order already handed to a drain, not just a session in flight, and that changes
+          serialisation semantics with a real risk of two flows waiting on each other. And it
+          would still only be a stand-in — the honest answer is the run-level budget above.
+          Recorded so it is not rediscovered as a surprise.
+
           Also decide **which lifetime each piece of state gets**. Three mechanisms are in use and
           nothing says which is for what: a `ViewModel` (survives a configuration change only), a
           `SavedStateHandle` (also survives a process death, riding the task's instance state), and

@@ -50,20 +50,26 @@ public class GetMoreHubFragment extends Fragment {
 
     /** One content type on the hub. {@code key} is what SetupLibraryActivity routes on;
      *  {@code endpoint} is the server path probed to decide whether the module is installed
-     *  (so the card shows); {@code note} is the second (bold) line, {@code amber} tints it. */
+     *  (so the card shows); {@code note} is the second (bold) line.
+     *
+     *  <p>ADFA-5074: there was an {@code amber} flag here that tinted the note as a warning.
+     *  Courses was the only card using it, to mark "In-app: TBD" as not ready. The card now
+     *  names what it offers, so the tint had stopped meaning "unfinished" and started meaning
+     *  "something is wrong with this one". A future not-ready card should reintroduce the flag
+     *  deliberately rather than inherit a colour nobody chose. */
     private static final class Item {
         final String key; final String endpoint; final int icon;
-        final int title; final int desc; final int note; final boolean amber;
-        Item(String k, String e, int i, int t, int d, int n, boolean a) {
-            key = k; endpoint = e; icon = i; title = t; desc = d; note = n; amber = a;
+        final int title; final int desc; final int note;
+        Item(String k, String e, int i, int t, int d, int n) {
+            key = k; endpoint = e; icon = i; title = t; desc = d; note = n;
         }
     }
 
     private static final Item[] ITEMS = {
-            new Item("wikipedia", "kiwix",   R.drawable.ic_card_wikipedia, R.string.k2go_gm_wikipedia_title, R.string.k2go_gm_wikipedia_desc, R.string.k2go_gm_wikipedia_note, false),
-            new Item("books",     "books",   R.drawable.ic_card_book,      R.string.k2go_gm_books_title,     R.string.k2go_gm_books_desc,     R.string.k2go_gm_books_note,     false),
-            new Item("maps",      "maps",    R.drawable.ic_card_maps,      R.string.k2go_gm_maps_title,      R.string.k2go_gm_maps_desc,      R.string.k2go_gm_maps_note,      false),
-            new Item("courses",   "kolibri", R.drawable.ic_card_courses,   R.string.k2go_gm_courses_title,   R.string.k2go_gm_courses_desc,   R.string.k2go_gm_courses_note,   true),
+            new Item("wikipedia", "kiwix",   R.drawable.ic_card_wikipedia, R.string.k2go_gm_wikipedia_title, R.string.k2go_gm_wikipedia_desc, R.string.k2go_gm_wikipedia_note),
+            new Item("books",     "books",   R.drawable.ic_card_book,      R.string.k2go_gm_books_title,     R.string.k2go_gm_books_desc,     R.string.k2go_gm_books_note),
+            new Item("maps",      "maps",    R.drawable.ic_card_maps,      R.string.k2go_gm_maps_title,      R.string.k2go_gm_maps_desc,      R.string.k2go_gm_maps_note),
+            new Item("courses",   "kolibri", R.drawable.ic_card_courses,   R.string.k2go_gm_courses_title,   R.string.k2go_gm_courses_desc,   R.string.k2go_gm_courses_note),
     };
 
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -293,8 +299,8 @@ public class GetMoreHubFragment extends Fragment {
                 ((TextView) card.findViewById(R.id.k2go_gm_card_desc)).setText(it.desc);
                 TextView note = card.findViewById(R.id.k2go_gm_card_note);
                 note.setText(it.note);
-                note.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(),
-                        it.amber ? R.color.k2go_amber_text : R.color.k2go_muted));
+                note.setTextColor(androidx.core.content.ContextCompat.getColor(
+                        requireContext(), R.color.k2go_muted));
                 card.setOnClickListener(v -> {
                     if (!(getActivity() instanceof SetupLibraryActivity)) return;
                     SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
