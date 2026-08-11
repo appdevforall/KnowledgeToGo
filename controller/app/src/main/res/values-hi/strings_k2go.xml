@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">खोलें</string>
     <string name="k2go_sheet_about">इस ऐप के बारे में</string>
     <string name="k2go_sheet_install">अभी इंस्टॉल करें</string>
+    <string name="k2go_sheet_install_note">इंस्टॉल होने के दौरान आपका सिस्टम रुका रहता है।</string>
     <string name="k2go_sheet_install_sel">चयन इंस्टॉल करें</string>
     <string name="k2go_sheet_schedule">शेड्यूल करें</string>
     <string name="k2go_sheet_cancel">शेड्यूल रद्द करें</string>
     <string name="k2go_state_ready">तैयार</string>
     <string name="k2go_state_not_installed">इंस्टॉल नहीं है</string>
+    <string name="k2go_state_no_answer">प्रतिक्रिया नहीं</string>
     <string name="k2go_state_scheduled">शेड्यूल किया गया</string>
     <string name="k2go_mod_time_note">यह मॉड्यूल को आपके सिस्टम में बनाता है, इसलिए इसमें कुछ मिनट लगते हैं और पूरा होने तक यह इस स्क्रीन पर रहता है। सब कुछ एक साथ चाहिए? पूर्ण सिस्टम संस्करण इंस्टॉल करें।</string>
     <string name="k2go_mod_maps_title">मैप्स पर नेविगेट करें</string>

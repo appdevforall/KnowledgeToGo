@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Fungua</string>
     <string name="k2go_sheet_about">Kuhusu programu hii</string>
     <string name="k2go_sheet_install">Sakinisha sasa</string>
+    <string name="k2go_sheet_install_note">Mfumo wako husimama kwa muda wakati wa usakinishaji.</string>
     <string name="k2go_sheet_install_sel">Sakinisha uliochagua</string>
     <string name="k2go_sheet_schedule">Panga</string>
     <string name="k2go_sheet_cancel">Ghairi ratiba</string>
     <string name="k2go_state_ready">Tayari</string>
     <string name="k2go_state_not_installed">Haijasakinishwa</string>
+    <string name="k2go_state_no_answer">Haijibu</string>
     <string name="k2go_state_scheduled">Imepangwa</string>
     <string name="k2go_mod_time_note">Hii hujenga moduli ndani ya mfumo wako, hivyo huchukua dakika chache na hubaki kwenye skrini hii hadi imalize. Unataka vyote kwa mara moja? Sakinisha toleo la mfumo kamili.</string>
     <string name="k2go_mod_maps_title">Tumia ramani</string>

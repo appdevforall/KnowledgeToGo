@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Otevřít</string>
     <string name="k2go_sheet_about">O této aplikaci</string>
     <string name="k2go_sheet_install">Nainstalovat nyní</string>
+    <string name="k2go_sheet_install_note">Během instalace se systém pozastaví.</string>
     <string name="k2go_sheet_install_sel">Nainstalovat výběr</string>
     <string name="k2go_sheet_schedule">Naplánovat</string>
     <string name="k2go_sheet_cancel">Zrušit plán</string>
     <string name="k2go_state_ready">Připraveno</string>
     <string name="k2go_state_not_installed">Nenainstalováno</string>
+    <string name="k2go_state_no_answer">Neodpovídá</string>
     <string name="k2go_state_scheduled">Naplánováno</string>
     <string name="k2go_mod_time_note">Tímto se modul zabuduje do systému, takže to zabere několik minut a zůstane na této obrazovce, dokud se nedokončí. Chcete vše najednou? Nainstalujte plnou systémovou verzi.</string>
     <string name="k2go_mod_maps_title">Navigovat v mapách</string>

@@ -31,7 +31,52 @@ public final class ModuleActionSheet {
 
     private ModuleActionSheet() {}
 
-    public enum State { READY, NOT_INSTALLED, SCHEDULED }
+    /**
+     * What the sheet is looking at.
+     *
+     * <p>ADFA-5061: {@link #UNKNOWN} is new, and it is the point. The other three were
+     * derived from a Home card's dot, and a card whose endpoint failed to answer read as
+     * NOT_INSTALLED — so the app would offer to install a platform that is installed, and
+     * during a Kolibri import it offered to install Kolibri while Kolibri was downloading.
+     * The Home probe already tells a 404 (really absent) from silence (nothing established);
+     * only this sheet was throwing that away. Silence now has its own state, and its actions
+     * are the ones that are safe when you do not know.
+     */
+    public enum State { READY, NOT_INSTALLED, SCHEDULED, UNKNOWN }
+
+    /**
+     * How a row is presented.
+     *
+     * <p>The sheet used to hand-pick a colour at each of its nine call sites, inside a switch
+     * with one branch per state — so adding a distinction between a live action and one that
+     * stops the box would have meant a fourth variant of the same assembly, and the Maps
+     * exception already appeared inline in two branches. The rows are chosen per state; how
+     * they look is decided once, here.
+     *
+     * <p>Only two of the actions are operations on the box: Open is LIVE, Install is STOPPED.
+     * About, Schedule, Hide and Cancel are app-local — they write a preference and nothing
+     * else — so they carry no execution class and get no signal that suggests they do.
+     *
+     * <p>LIVE and STOPPED share a colour on purpose. Colour is the severity channel, and
+     * neither is a warning: installing is a normal thing to ask for. What differs is the
+     * consequence, and a consequence is a sentence, not a hue — so the STOPPED row is the one
+     * with a note under it.
+     */
+    private enum Tone { LIVE, STOPPED, NEUTRAL, DESTRUCTIVE }
+
+    private static int colorOf(Tone t) {
+        switch (t) {
+            case LIVE:
+            case STOPPED:     return R.color.k2go_teal;
+            case DESTRUCTIVE: return R.color.k2go_clay;
+            default:          return R.color.k2go_ink;
+        }
+    }
+
+    /** The only row whose operation costs the user something they should hear about first. */
+    private static Integer noteOf(Tone t) {
+        return t == Tone.STOPPED ? R.string.k2go_sheet_install_note : null;
+    }
 
     /**
      * Open the sheet for a Home experience card. {@code endpoint} is the card's server path
@@ -79,13 +124,18 @@ public final class ModuleActionSheet {
         hcol.addView(tv);
         TextView subtitle = new TextView(ctx);
         String project = (card != null) ? act.getString(card.subRes) : "";
-        int sizeRes = ModuleCards.sizeLabelRes(key);   // ADFA-4958 §5.3: subtitle is project · state · size
-        long bytes = ModuleSizes.bytesFor(ctx, key);
         StringBuilder sub = new StringBuilder();
         if (!project.isEmpty()) sub.append(project).append("  ·  ");
         sub.append(stateLabel(act, state));
-        if (sizeRes != 0) sub.append("  ·  ").append(act.getString(sizeRes));
-        else if (bytes >= 0) sub.append("  ·  ≈ ").append(org.iiab.controller.util.ByteFormatter.toHuman(bytes));
+        // ADFA-4958 §5.3 put the download size here unconditionally. ADFA-5061: only while it
+        // is still a price. On an installed platform that cost was paid once, and repeating it
+        // every time the sheet opens reads as something the user might still owe.
+        if (state != State.READY) {
+            int sizeRes = ModuleCards.sizeLabelRes(key);
+            long bytes = ModuleSizes.bytesFor(ctx, key);
+            if (sizeRes != 0) sub.append("  ·  ").append(act.getString(sizeRes));
+            else if (bytes >= 0) sub.append("  ·  ≈ ").append(org.iiab.controller.util.ByteFormatter.toHuman(bytes));
+        }
         subtitle.setText(sub.toString());
         subtitle.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
         subtitle.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
@@ -96,23 +146,26 @@ public final class ModuleActionSheet {
         headlp.bottomMargin = dp(ctx, 8);
         content.addView(header, headlp);
 
+        // One vocabulary of actions; the state chooses which of them appear. Nothing below
+        // decides how a row looks — Tone does, in one place.
+        final View about = row(ctx, R.drawable.ic_info_24, act.getString(R.string.k2go_sheet_about),
+                Tone.NEUTRAL, true, v -> { dlg.dismiss(); openDetail(act, key); });
+
         switch (state) {
             case READY:
                 content.addView(row(ctx, R.drawable.ic_arrow_right, act.getString(R.string.k2go_sheet_open),
-                        R.color.k2go_teal, false, v -> { dlg.dismiss(); openContent(act, endpoint); }));
-                content.addView(row(ctx, R.drawable.ic_info_24, act.getString(R.string.k2go_sheet_about),
-                        R.color.k2go_ink, true, v -> { dlg.dismiss(); openDetail(act, key); }));
+                        Tone.LIVE, false, v -> { dlg.dismiss(); openContent(act, endpoint); }));
+                content.addView(about);
                 break;
             case SCHEDULED: {
-                content.addView(row(ctx, R.drawable.ic_info_24, act.getString(R.string.k2go_sheet_about),
-                        R.color.k2go_ink, true, v -> { dlg.dismiss(); openDetail(act, key); }));
+                content.addView(about);
                 int n = ModuleWishlist.size(ctx);
                 String installLabel = act.getString(
                         n > 1 ? R.string.k2go_sheet_install_sel : R.string.k2go_sheet_install);
                 content.addView(row(ctx, R.drawable.ic_download_24, installLabel,
-                        R.color.k2go_teal, false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
+                        Tone.STOPPED, false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
                 content.addView(row(ctx, R.drawable.ic_close_24, act.getString(R.string.k2go_sheet_cancel),
-                        R.color.k2go_clay, false, v -> {
+                        Tone.DESTRUCTIVE, false, v -> {
                             if (sel) MapsWishlist.clear(ctx);
                             else if (key != null) ModuleWishlist.remove(ctx, key);
                             dlg.dismiss();
@@ -120,23 +173,29 @@ public final class ModuleActionSheet {
                         }));
                 break;
             }
+            case UNKNOWN:
+                // The platform did not answer, which is not the same as not being there.
+                // Everything offered here is safe without knowing: reading about it, and
+                // hiding the card. Install is withheld rather than guessed — offering it
+                // over an installed platform is how this state was noticed.
+                content.addView(about);
+                break;
             case NOT_INSTALLED:
             default:
-                content.addView(row(ctx, R.drawable.ic_info_24, act.getString(R.string.k2go_sheet_about),
-                        R.color.k2go_ink, true, v -> { dlg.dismiss(); openDetail(act, key); }));
+                content.addView(about);
                 if (sel) {
                     // maps: installing needs the content selector; route there (schedule lives in the wizard).
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                            R.color.k2go_teal, false, v -> { dlg.dismiss(); openMapsSetup(act); }));
+                            Tone.STOPPED, false, v -> { dlg.dismiss(); openMapsSetup(act); }));
                 } else {
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                            R.color.k2go_teal, false, v -> {
+                            Tone.STOPPED, false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
                                 dlg.dismiss();
                                 openHub(act);
                             }));
                     content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
-                            R.color.k2go_ink, false, v -> {
+                            Tone.NEUTRAL, false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
                                 dlg.dismiss();
                                 if (onChanged != null) onChanged.run();
@@ -147,7 +206,7 @@ public final class ModuleActionSheet {
 
         if (state != State.SCHEDULED && key != null) {   // ADFA-4958: Hide declutters Home; Restore lives in management
             content.addView(row(ctx, R.drawable.ic_hide_24, act.getString(R.string.k2go_sheet_hide),
-                    R.color.k2go_ink, false, v -> {
+                    Tone.NEUTRAL, false, v -> {
                         HiddenModules.add(ctx, key);
                         dlg.dismiss();
                         if (onChanged != null) onChanged.run();
@@ -157,8 +216,10 @@ public final class ModuleActionSheet {
         dlg.show();
     }
 
-    private static View row(Context ctx, int iconRes, String label, int colorRes,
+    private static View row(Context ctx, int iconRes, String label, Tone tone,
                             boolean chevron, View.OnClickListener onClick) {
+        final int colorRes = colorOf(tone);
+        final Integer noteRes = noteOf(tone);
         LinearLayout row = new LinearLayout(ctx);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -180,11 +241,23 @@ public final class ModuleActionSheet {
         ilp.rightMargin = dp(ctx, 14);
         row.addView(ic, ilp);
 
+        // The label, and under it the consequence when the action has one. A column rather
+        // than a single line so the note reads as belonging to this row and not to the sheet.
+        LinearLayout col = new LinearLayout(ctx);
+        col.setOrientation(LinearLayout.VERTICAL);
         TextView t = new TextView(ctx);
         t.setText(label);
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
         t.setTextColor(ContextCompat.getColor(ctx, colorRes));
-        row.addView(t, new LinearLayout.LayoutParams(0, -2, 1f));
+        col.addView(t);
+        if (noteRes != null) {
+            TextView note = new TextView(ctx);
+            note.setText(noteRes);
+            note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            note.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_muted));
+            col.addView(note);
+        }
+        row.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
 
         if (chevron) {
             TextView chev = new TextView(ctx);
@@ -200,6 +273,7 @@ public final class ModuleActionSheet {
         switch (s) {
             case READY: return act.getString(R.string.k2go_state_ready);
             case SCHEDULED: return act.getString(R.string.k2go_state_scheduled);
+            case UNKNOWN: return act.getString(R.string.k2go_state_no_answer);
             case NOT_INSTALLED:
             default: return act.getString(R.string.k2go_state_not_installed);
         }

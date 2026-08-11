@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Отвори</string>
     <string name="k2go_sheet_about">О овој апликацији</string>
     <string name="k2go_sheet_install">Инсталирај сада</string>
+    <string name="k2go_sheet_install_note">Ваш систем се паузира током инсталације.</string>
     <string name="k2go_sheet_install_sel">Инсталирај избор</string>
     <string name="k2go_sheet_schedule">Закажи</string>
     <string name="k2go_sheet_cancel">Откажи заказивање</string>
     <string name="k2go_state_ready">Спремно</string>
     <string name="k2go_state_not_installed">Није инсталирано</string>
+    <string name="k2go_state_no_answer">Не одговара</string>
     <string name="k2go_state_scheduled">Заказано</string>
     <string name="k2go_mod_time_note">Ово уграђује модул у ваш систем, па траје неколико минута и остаје на овом екрану док се не заврши. Желите све одједном? Инсталирајте пуну системску верзију.</string>
     <string name="k2go_mod_maps_title">Крећите се кроз мапе</string>

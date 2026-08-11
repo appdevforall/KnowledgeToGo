@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Mở</string>
     <string name="k2go_sheet_about">Giới thiệu về ứng dụng này</string>
     <string name="k2go_sheet_install">Cài ngay</string>
+    <string name="k2go_sheet_install_note">Hệ thống của bạn tạm dừng trong khi cài đặt.</string>
     <string name="k2go_sheet_install_sel">Cài các mục đã chọn</string>
     <string name="k2go_sheet_schedule">Lên lịch</string>
     <string name="k2go_sheet_cancel">Hủy lịch</string>
     <string name="k2go_state_ready">Sẵn sàng</string>
     <string name="k2go_state_not_installed">Chưa cài</string>
+    <string name="k2go_state_no_answer">Không phản hồi</string>
     <string name="k2go_state_scheduled">Đã lên lịch</string>
     <string name="k2go_mod_time_note">Thao tác này xây dựng mô-đun vào hệ thống của bạn, nên mất vài phút và ở lại màn hình này đến khi xong. Muốn tất cả cùng lúc? Cài phiên bản hệ thống đầy đủ.</string>
     <string name="k2go_mod_maps_title">Xem bản đồ</string>

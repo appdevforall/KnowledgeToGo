@@ -746,11 +746,13 @@
     <string name="k2go_sheet_open">Open</string>
     <string name="k2go_sheet_about">About this app</string>
     <string name="k2go_sheet_install">Install now</string>
+    <string name="k2go_sheet_install_note">Your system pauses while this installs.</string>
     <string name="k2go_sheet_install_sel">Install selection</string>
     <string name="k2go_sheet_schedule">Schedule</string>
     <string name="k2go_sheet_cancel">Cancel schedule</string>
     <string name="k2go_state_ready">Ready</string>
     <string name="k2go_state_not_installed">Not installed</string>
+    <string name="k2go_state_no_answer">Not responding</string>
     <string name="k2go_state_scheduled">Scheduled</string>
     <string name="k2go_mod_time_note">This builds the module into your system, so it takes a few minutes and stays on this screen until it\'s done. Want everything at once? Install the full system version.</string>
     <string name="k2go_mod_maps_title">Navigate maps</string>

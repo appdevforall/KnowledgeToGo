@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Aç</string>
     <string name="k2go_sheet_about">Bu uygulama hakkında</string>
     <string name="k2go_sheet_install">Şimdi kur</string>
+    <string name="k2go_sheet_install_note">Kurulum sırasında sisteminiz duraklar.</string>
     <string name="k2go_sheet_install_sel">Seçimi kur</string>
     <string name="k2go_sheet_schedule">Zamanla</string>
     <string name="k2go_sheet_cancel">Zamanlamayı iptal et</string>
     <string name="k2go_state_ready">Hazır</string>
     <string name="k2go_state_not_installed">Kurulu değil</string>
+    <string name="k2go_state_no_answer">Yanıt vermiyor</string>
     <string name="k2go_state_scheduled">Zamanlandı</string>
     <string name="k2go_mod_time_note">Bu, modülü sisteminize gömer; bu yüzden birkaç dakika sürer ve bitene kadar bu ekranda kalır. Her şeyi bir kerede mi istiyorsunuz? Tam sistem sürümünü kurun.</string>
     <string name="k2go_mod_maps_title">Haritalarda gezin</string>

@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Buka</string>
     <string name="k2go_sheet_about">Tentang aplikasi ini</string>
     <string name="k2go_sheet_install">Pasang sekarang</string>
+    <string name="k2go_sheet_install_note">Sistem Anda berhenti sementara saat ini dipasang.</string>
     <string name="k2go_sheet_install_sel">Pasang pilihan</string>
     <string name="k2go_sheet_schedule">Jadwalkan</string>
     <string name="k2go_sheet_cancel">Batalkan jadwal</string>
     <string name="k2go_state_ready">Siap</string>
     <string name="k2go_state_not_installed">Belum terpasang</string>
+    <string name="k2go_state_no_answer">Tidak merespons</string>
     <string name="k2go_state_scheduled">Terjadwal</string>
     <string name="k2go_mod_time_note">Ini membangun modul ke dalam sistem Anda, jadi butuh beberapa menit dan tetap di layar ini sampai selesai. Ingin semuanya sekaligus? Pasang versi sistem penuh.</string>
     <string name="k2go_mod_maps_title">Navigasi peta</string>

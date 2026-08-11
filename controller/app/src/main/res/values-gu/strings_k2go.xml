@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">ખોલો</string>
     <string name="k2go_sheet_about">આ ઍપ વિશે</string>
     <string name="k2go_sheet_install">હમણાં ઇન્સ્ટોલ કરો</string>
+    <string name="k2go_sheet_install_note">ઇન્સ્ટોલ થાય ત્યાં સુધી તમારી સિસ્ટમ થોભે છે.</string>
     <string name="k2go_sheet_install_sel">પસંદગી ઇન્સ્ટોલ કરો</string>
     <string name="k2go_sheet_schedule">શેડ્યૂલ કરો</string>
     <string name="k2go_sheet_cancel">શેડ્યૂલ રદ કરો</string>
     <string name="k2go_state_ready">તૈયાર</string>
     <string name="k2go_state_not_installed">ઇન્સ્ટોલ નથી</string>
+    <string name="k2go_state_no_answer">જવાબ આપતું નથી</string>
     <string name="k2go_state_scheduled">શેડ્યૂલ થયું</string>
     <string name="k2go_mod_time_note">આ મૉડ્યુલને તમારી સિસ્ટમમાં બિલ્ડ કરે છે, તેથી થોડી મિનિટો લાગે છે અને પૂરું ન થાય ત્યાં સુધી આ સ્ક્રીન પર રહે છે. બધું એકસાથે જોઈએ છે? સંપૂર્ણ સિસ્ટમ વર્ઝન ઇન્સ્ટોલ કરો.</string>
     <string name="k2go_mod_maps_title">નકશા નૅવિગેટ કરો</string>

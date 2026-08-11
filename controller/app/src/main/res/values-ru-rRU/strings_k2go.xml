@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Открыть</string>
     <string name="k2go_sheet_about">Об этом приложении</string>
     <string name="k2go_sheet_install">Установить сейчас</string>
+    <string name="k2go_sheet_install_note">На время установки система приостанавливается.</string>
     <string name="k2go_sheet_install_sel">Установить выбранное</string>
     <string name="k2go_sheet_schedule">Запланировать</string>
     <string name="k2go_sheet_cancel">Отменить планирование</string>
     <string name="k2go_state_ready">Готово</string>
     <string name="k2go_state_not_installed">Не установлено</string>
+    <string name="k2go_state_no_answer">Не отвечает</string>
     <string name="k2go_state_scheduled">Запланировано</string>
     <string name="k2go_mod_time_note">Это встраивает модуль в вашу систему, поэтому занимает несколько минут и остаётся на этом экране до завершения. Хотите всё сразу? Установите полную версию системы.</string>
     <string name="k2go_mod_maps_title">Ориентироваться по картам</string>

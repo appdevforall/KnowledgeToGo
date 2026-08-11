@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">打开</string>
     <string name="k2go_sheet_about">关于此应用</string>
     <string name="k2go_sheet_install">立即安装</string>
+    <string name="k2go_sheet_install_note">安装期间系统会暂停。</string>
     <string name="k2go_sheet_install_sel">安装所选</string>
     <string name="k2go_sheet_schedule">安排</string>
     <string name="k2go_sheet_cancel">取消安排</string>
     <string name="k2go_state_ready">就绪</string>
     <string name="k2go_state_not_installed">未安装</string>
+    <string name="k2go_state_no_answer">无响应</string>
     <string name="k2go_state_scheduled">已安排</string>
     <string name="k2go_mod_time_note">这会将模块构建到您的系统中，因此需要几分钟，并会停留在此屏幕直到完成。想一次性全部安装？请安装完整系统版本。</string>
     <string name="k2go_mod_maps_title">浏览地图</string>

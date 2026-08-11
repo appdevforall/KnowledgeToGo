@@ -801,6 +801,31 @@ most expensive by the third platform. A is B done safely over time.
        whose sheet offers a LIVE "Open" and a STOPPED "Install" as two identically styled rows, which
        is the same work as the first two items of ADFA-5062.
 
+       **The action sheet (done).** The last place in this area where the two classes shared
+       presentation. Open is LIVE and Install is STOPPED, and they were two identical teal rows
+       — same icon weight, same colour, nothing to tell a user that one of them stops the box.
+
+       The instinct was to give them different colours, and it was wrong for the reason the
+       card taught us: colour is the severity channel and neither is a warning — installing is
+       a normal thing to ask for. What differs is the **consequence**, and a consequence is a
+       sentence. So the STOPPED row carries a note and the colours stay the same.
+
+       Luis' concern shaped the rest: different flows breed duplication and derivations that
+       drift. The code already had that shape — a switch with one branch per state, nine
+       hand-picked colours, and the Maps exception written inline twice — so a fourth variant
+       for LIVE-vs-STOPPED would have made it worse. The rows are now chosen per state from one
+       vocabulary and presented by one `Tone` mapping. Only two of the six actions are
+       operations on the box at all; About, Schedule, Hide and Cancel write a preference and
+       nothing else, so they carry no class and get no signal suggesting they do.
+
+       Two more from the same session. The download size left the subtitle of an installed
+       platform — that cost was paid once, and repeating it reads as something still owed. And
+       the sheet gained an **UNKNOWN** state: it derived NOT_INSTALLED from a Home card's dot,
+       so a platform that merely failed to answer was offered an install, and during a Kolibri
+       import the app offered to install Kolibri while Kolibri was downloading. The Home probe
+       already separates a 404 from silence; only this sheet discarded it. Install is withheld
+       rather than guessed.
+
        ADFA-4954 itself is closed. Its one open scope, metadata-only, is now **ADFA-5094**
        ("Kolibri: topic display should not depend on reaching Studio via internet"), low
        priority under Epic ADFA-1028. Reframed while splitting it, because the original wording

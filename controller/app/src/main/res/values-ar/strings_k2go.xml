@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">فتح</string>
     <string name="k2go_sheet_about">حول هذا التطبيق</string>
     <string name="k2go_sheet_install">تثبيت الآن</string>
+    <string name="k2go_sheet_install_note">يتوقف نظامك مؤقتًا أثناء التثبيت.</string>
     <string name="k2go_sheet_install_sel">تثبيت المحدّد</string>
     <string name="k2go_sheet_schedule">جدولة</string>
     <string name="k2go_sheet_cancel">إلغاء الجدولة</string>
     <string name="k2go_state_ready">جاهز</string>
     <string name="k2go_state_not_installed">غير مثبّت</string>
+    <string name="k2go_state_no_answer">لا يستجيب</string>
     <string name="k2go_state_scheduled">مجدول</string>
     <string name="k2go_mod_time_note">يبني هذا الوحدة داخل نظامك، لذا يستغرق بضع دقائق ويبقى على هذه الشاشة حتى ينتهي. تريد كل شيء دفعة واحدة؟ ثبّت نسخة النظام الكاملة.</string>
     <string name="k2go_mod_maps_title">تصفّح الخرائط</string>

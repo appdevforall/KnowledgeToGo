@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Ṣí</string>
     <string name="k2go_sheet_about">Nípa áàpù yìí</string>
     <string name="k2go_sheet_install">Fi sórí ẹ̀rọ báyìí</string>
+    <string name="k2go_sheet_install_note">Ẹ̀rọ rẹ yóò dúró nígbà tí èyí ń fi sí.</string>
     <string name="k2go_sheet_install_sel">Fi àyàn sórí ẹ̀rọ</string>
     <string name="k2go_sheet_schedule">Ṣètò àkókò</string>
     <string name="k2go_sheet_cancel">Fagilé àkókò</string>
     <string name="k2go_state_ready">Ó múra tán</string>
     <string name="k2go_state_not_installed">Kò sí lórí ẹ̀rọ</string>
+    <string name="k2go_state_no_answer">Kò dáhùn</string>
     <string name="k2go_state_scheduled">A ti ṣètò àkókò</string>
     <string name="k2go_mod_time_note">Èyí ń kọ́ mọ́díù náà sínú ẹ̀rọ rẹ, nítorí náà ó ń gba ìṣẹ́jú díẹ̀ ó sì ń dúró lórí ojú-ìwé yìí títí tí yóò fi parí. Ṣé o fẹ́ ohun gbogbo lẹ́ẹ̀kan? Fi ẹ̀dà ẹ̀rọ pípé sórí ẹ̀rọ.</string>
     <string name="k2go_mod_maps_title">Tọ́ka máàpù</string>

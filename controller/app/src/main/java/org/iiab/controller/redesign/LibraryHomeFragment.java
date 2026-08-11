@@ -277,7 +277,14 @@ public class LibraryHomeFragment extends Fragment {
         ModuleActionSheet.State s;
         if (c.state == GREEN) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
-        else s = ModuleActionSheet.State.NOT_INSTALLED;
+        // ADFA-5061: GRAY is a 404 — the endpoint answered that there is nothing there, which
+        // is the only evidence that justifies offering to install. AMBER and RED mean the
+        // probe got no answer, and that used to fall through to "not installed": the app
+        // offered to install a platform that was merely slow, and during a Kolibri import it
+        // offered to install Kolibri while Kolibri was downloading. This probe already made
+        // the distinction; only the sheet was discarding it.
+        else if (c.state == GRAY) s = ModuleActionSheet.State.NOT_INSTALLED;
+        else s = ModuleActionSheet.State.UNKNOWN;
         ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
                 () -> { if (isAdded()) refreshAfterSheet(c); });   // ADFA-4958: refresh label / drop if hidden
     }

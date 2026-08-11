@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Aç</string>
     <string name="k2go_sheet_about">Bu tətbiq haqqında</string>
     <string name="k2go_sheet_install">İndi quraşdır</string>
+    <string name="k2go_sheet_install_note">Quraşdırma zamanı sisteminiz fasilə verir.</string>
     <string name="k2go_sheet_install_sel">Seçimi quraşdır</string>
     <string name="k2go_sheet_schedule">Planla</string>
     <string name="k2go_sheet_cancel">Planı ləğv et</string>
     <string name="k2go_state_ready">Hazır</string>
     <string name="k2go_state_not_installed">Quraşdırılmayıb</string>
+    <string name="k2go_state_no_answer">Cavab vermir</string>
     <string name="k2go_state_scheduled">Planlanıb</string>
     <string name="k2go_mod_time_note">Bu, modulu sisteminizə qurur, ona görə bir neçə dəqiqə çəkir və bitənə qədər bu ekranda qalır. Hər şeyi birdən istəyirsiniz? Tam sistem versiyasını quraşdırın.</string>
     <string name="k2go_mod_maps_title">Xəritələrdə gəz</string>

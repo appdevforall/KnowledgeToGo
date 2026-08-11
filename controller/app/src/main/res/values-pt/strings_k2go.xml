@@ -632,11 +632,13 @@
     <string name="k2go_sheet_open">Abrir</string>
     <string name="k2go_sheet_about">Acerca desta app</string>
     <string name="k2go_sheet_install">Instalar agora</string>
+    <string name="k2go_sheet_install_note">O seu sistema pausa durante a instalação.</string>
     <string name="k2go_sheet_install_sel">Instalar seleção</string>
     <string name="k2go_sheet_schedule">Agendar</string>
     <string name="k2go_sheet_cancel">Cancelar agendamento</string>
     <string name="k2go_state_ready">Pronto</string>
     <string name="k2go_state_not_installed">Não instalado</string>
+    <string name="k2go_state_no_answer">Não responde</string>
     <string name="k2go_state_scheduled">Agendado</string>
     <string name="k2go_mod_time_note">Isto integra o módulo no seu sistema, por isso demora alguns minutos e permanece neste ecrã até terminar. Quer tudo de uma vez? Instale a versão completa do sistema.</string>
     <string name="k2go_mod_maps_title">Navegar mapas</string>
