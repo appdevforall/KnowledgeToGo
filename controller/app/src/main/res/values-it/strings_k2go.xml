@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Verifica dei moduli installati…</string>
     <string name="k2go_wizard_continue">Continua</string>
     <string name="k2go_setup_progress_title">Completamento della configurazione</string>
-    <string name="k2go_setup_context">Ti reindirizzerà automaticamente al termine. Puoi continuare a usare l\'app eseguendo l\'installazione in background.</string>
-    <string name="k2go_setup_context_proot">Ti reindirizzerà automaticamente al termine. Tieni l\'app su questa schermata durante l\'installazione — questa parte non può funzionare in background.</string>
+    <string name="k2go_setup_context">Al termine della configurazione, verrai portato automaticamente alla tua libreria. Puoi continuare a usare l\'app eseguendo l\'installazione in background.</string>
+    <string name="k2go_setup_context_proot">Al termine della configurazione, verrai portato automaticamente alla tua libreria. Tieni l\'app su questa schermata durante l\'installazione — questa parte non può funzionare in background.</string>
     <string name="k2go_install_busy">Un\'installazione è già in corso — attendi che termini.</string>
     <string name="k2go_setup_leave_hint">Configurazione del sistema ancora in corso. Puoi uscire dall\'app — continua e sarà pronta quando torni.</string>
     <string name="k2go_damaged_title">Installazione interrotta</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Aggiornamento sul posto… la dashboard si riavvia brevemente.</string>
     <string name="k2go_dash_live_done">Dashboard aggiornata.</string>
     <string name="k2go_dash_live_error">Aggiornamento non riuscito — è stata mantenuta la versione precedente.</string>
-    <string name="k2go_dash_live_timeout">Sta impiegando più del solito. Terminerà in background — controlla la versione tra un momento.</string>
+    <string name="k2go_dash_live_timeout">L\'aggiornamento sta impiegando più del solito. Terminerà in background — controlla la versione tra un momento.</string>
     <string name="k2go_dash_live_start_failed">Impossibile avviare l\'aggiornamento. Riprova.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Nucleo di sistema · sempre installato</string>

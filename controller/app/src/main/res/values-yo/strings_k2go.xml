@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Ń ṣàyẹ̀wò àwọn mọ́díù tó wà lórí ẹ̀rọ…</string>
     <string name="k2go_wizard_continue">Tẹ̀síwájú</string>
     <string name="k2go_setup_progress_title">Ń parí ìṣètò</string>
-    <string name="k2go_setup_context">Ó óò darí ọ láifọwọ́sìn nígbà tí ó bá parí. O lè máa lo áàpù náà lọ nípa ṣíṣe fífi sórí ẹ̀rọ lẹ́yìn ẹ̀rọ.</string>
-    <string name="k2go_setup_context_proot">Ó óò darí ọ láifọwọ́sìn nígbà tí ó bá parí. Jẹ́ kí áàpù wà lórí ojú-ìwé yìí nígbà tí ó bá ń fi sórí ẹ̀rọ — apá yìí kò lè ṣiṣẹ́ lẹ́yìn ẹ̀rọ.</string>
+    <string name="k2go_setup_context">Nígbà tí ìṣètò bá parí, a óò mú ọ lọ sí ibi ìkówèésí rẹ láìfọwọ́sìn. O lè máa lo áàpù náà lọ nípa ṣíṣe fífi sórí ẹ̀rọ lẹ́yìn ẹ̀rọ.</string>
+    <string name="k2go_setup_context_proot">Nígbà tí ìṣètò bá parí, a óò mú ọ lọ sí ibi ìkówèésí rẹ láìfọwọ́sìn. Jẹ́ kí áàpù wà lórí ojú-ìwé yìí nígbà tí ó bá ń fi sórí ẹ̀rọ — apá yìí kò lè ṣiṣẹ́ lẹ́yìn ẹ̀rọ.</string>
     <string name="k2go_install_busy">Fífi sórí ẹ̀rọ ti ń lọ tẹ́lẹ̀ — jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_setup_leave_hint">Ṣì ń ṣètò ẹ̀rọ. O lè fi áàpù náà sílẹ̀ — óò tẹ̀síwájú yóò sì múra tán nígbà tí o bá padà.</string>
     <string name="k2go_damaged_title">A dí fífi sórí ẹ̀rọ lọ́wọ́</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Ń ṣàtúnṣe níbí… dáàṣíbọ́ọ̀dù yóò tún bẹ̀rẹ̀ fún ìgbà díẹ̀.</string>
     <string name="k2go_dash_live_done">A ti ṣàtúnṣe dáàṣíbọ́ọ̀dù.</string>
     <string name="k2go_dash_live_error">Àtúnṣe kùnà — a pa ẹ̀yà tí ó ṣáájú mọ́.</string>
-    <string name="k2go_dash_live_timeout">Èyí ń gba àkókò ju ti àtẹ̀yìnwá lọ. Yóò parí ní ẹ̀yìn — ṣàyẹ̀wò ẹ̀yà náà láìpẹ́.</string>
+    <string name="k2go_dash_live_timeout">Ìmúdójúìwọ̀n náà ń gba àkókò ju ti àtẹ̀yìnwá lọ. Yóò parí ní ẹ̀yìn — ṣàyẹ̀wò ẹ̀yà náà láìpẹ́.</string>
     <string name="k2go_dash_live_start_failed">Kò lè bẹ̀rẹ̀ àtúnṣe. Gbìyànjú lẹ́ẹ̀kansi.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kókó ètò · fi sori ẹrọ nígbà gbogbo</string>

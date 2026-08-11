@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Перевірка встановлених модулів…</string>
     <string name="k2go_wizard_continue">Продовжити</string>
     <string name="k2go_setup_progress_title">Завершення налаштування</string>
-    <string name="k2go_setup_context">Після завершення вас буде автоматично перенаправлено. Ви можете й далі користуватися застосунком, виконуючи встановлення у фоні.</string>
-    <string name="k2go_setup_context_proot">Після завершення вас буде автоматично перенаправлено. Тримайте застосунок на цьому екрані під час встановлення — ця частина не може виконуватися у фоні.</string>
+    <string name="k2go_setup_context">Після завершення налаштування вас буде автоматично перенесено до вашої бібліотеки. Ви можете й далі користуватися застосунком, виконуючи встановлення у фоні.</string>
+    <string name="k2go_setup_context_proot">Після завершення налаштування вас буде автоматично перенесено до вашої бібліотеки. Тримайте застосунок на цьому екрані під час встановлення — ця частина не може виконуватися у фоні.</string>
     <string name="k2go_install_busy">Встановлення вже виконується — зачекайте, доки воно завершиться.</string>
     <string name="k2go_setup_leave_hint">Система ще налаштовується. Ви можете вийти із застосунку — процес триватиме й буде готовий, коли ви повернетеся.</string>
     <string name="k2go_damaged_title">Встановлення перервано</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Оновлення на місці… панель ненадовго перезапуститься.</string>
     <string name="k2go_dash_live_done">Панель оновлено.</string>
     <string name="k2go_dash_live_error">Не вдалося оновити — збережено попередню версію.</string>
-    <string name="k2go_dash_live_timeout">Це триває довше, ніж зазвичай. Завершиться у фоні — перевірте версію за мить.</string>
+    <string name="k2go_dash_live_timeout">Оновлення триває довше, ніж зазвичай. Завершиться у фоні — перевірте версію за мить.</string>
     <string name="k2go_dash_live_start_failed">Не вдалося розпочати оновлення. Спробуйте ще раз.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Ядро системи · завжди встановлено</string>

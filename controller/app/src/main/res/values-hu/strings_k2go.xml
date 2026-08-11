@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Telepített modulok ellenőrzése…</string>
     <string name="k2go_wizard_continue">Folytatás</string>
     <string name="k2go_setup_progress_title">Beállítás befejezése</string>
-    <string name="k2go_setup_context">Automatikusan átirányít, amikor elkészül. Tovább használhatod az appot, ha a telepítést a háttérben futtatod.</string>
-    <string name="k2go_setup_context_proot">Automatikusan átirányít, amikor elkészül. Tartsd az appot ezen a képernyőn, amíg telepít — ez a rész nem futhat a háttérben.</string>
+    <string name="k2go_setup_context">A beállítás befejeztével automatikusan a könyvtáradhoz jutsz. Tovább használhatod az appot, ha a telepítést a háttérben futtatod.</string>
+    <string name="k2go_setup_context_proot">A beállítás befejeztével automatikusan a könyvtáradhoz jutsz. Tartsd az appot ezen a képernyőn, amíg telepít — ez a rész nem futhat a háttérben.</string>
     <string name="k2go_install_busy">Már fut egy telepítés — kérjük, várd meg, amíg befejeződik.</string>
     <string name="k2go_setup_leave_hint">A rendszer beállítása még folyamatban. Elhagyhatod az appot — tovább fut, és kész lesz, mire visszatérsz.</string>
     <string name="k2go_damaged_title">A telepítés megszakadt</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Frissítés helyben… az irányítópult röviden újraindul.</string>
     <string name="k2go_dash_live_done">Az irányítópult frissült.</string>
     <string name="k2go_dash_live_error">A frissítés sikertelen — az előző verzió megmaradt.</string>
-    <string name="k2go_dash_live_timeout">Ez a szokásosnál tovább tart. A háttérben befejeződik — nézze meg a verziót egy pillanat múlva.</string>
+    <string name="k2go_dash_live_timeout">A frissítés a szokásosnál tovább tart. A háttérben befejeződik — nézze meg a verziót egy pillanat múlva.</string>
     <string name="k2go_dash_live_start_failed">A frissítést nem sikerült elindítani. Próbálja újra.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rendszermag · mindig telepítve</string>

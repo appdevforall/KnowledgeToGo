@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Kontrola nainstalovaných modulů…</string>
     <string name="k2go_wizard_continue">Pokračovat</string>
     <string name="k2go_setup_progress_title">Dokončování nastavení</string>
-    <string name="k2go_setup_context">Po dokončení vás automaticky přesměruje. Aplikaci můžete dál používat, když necháte instalaci běžet na pozadí.</string>
-    <string name="k2go_setup_context_proot">Po dokončení vás automaticky přesměruje. Během instalace nechte aplikaci na této obrazovce — tato část nemůže běžet na pozadí.</string>
+    <string name="k2go_setup_context">Po dokončení nastavení budete automaticky přesměrováni do své knihovny. Aplikaci můžete dál používat, když necháte instalaci běžet na pozadí.</string>
+    <string name="k2go_setup_context_proot">Po dokončení nastavení budete automaticky přesměrováni do své knihovny. Během instalace nechte aplikaci na této obrazovce — tato část nemůže běžet na pozadí.</string>
     <string name="k2go_install_busy">Instalace už probíhá — počkejte prosím, než se dokončí.</string>
     <string name="k2go_setup_leave_hint">Systém se stále nastavuje. Aplikaci můžete opustit — pokračuje dál a bude hotová, až se vrátíte.</string>
     <string name="k2go_damaged_title">Instalace přerušena</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Aktualizace na místě… nástěnka se na chvíli restartuje.</string>
     <string name="k2go_dash_live_done">Nástěnka je aktualizována.</string>
     <string name="k2go_dash_live_error">Aktualizace selhala — předchozí verze byla zachována.</string>
-    <string name="k2go_dash_live_timeout">Trvá to déle než obvykle. Dokončí se na pozadí — za chvíli zkontrolujte verzi.</string>
+    <string name="k2go_dash_live_timeout">Aktualizace trvá déle než obvykle. Dokončí se na pozadí — za chvíli zkontrolujte verzi.</string>
     <string name="k2go_dash_live_start_failed">Aktualizaci se nepodařilo spustit. Zkuste to znovu.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Jádro systému · vždy nainstalováno</string>

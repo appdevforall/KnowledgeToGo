@@ -541,8 +541,8 @@
     <string name="k2go_gm_checking">Sjekker installerte moduler…</string>
     <string name="k2go_wizard_continue">Fortsett</string>
     <string name="k2go_setup_progress_title">Fullfører oppsett</string>
-    <string name="k2go_setup_context">Den omdirigerer deg automatisk når den er ferdig. Du kan fortsette å bruke appen ved å kjøre installasjonen i bakgrunnen.</string>
-    <string name="k2go_setup_context_proot">Den omdirigerer deg automatisk når den er ferdig. Hold appen på denne skjermen mens den installerer — denne delen kan ikke kjøre i bakgrunnen.</string>
+    <string name="k2go_setup_context">Når oppsettet er ferdig, blir du automatisk tatt til biblioteket ditt. Du kan fortsette å bruke appen ved å kjøre installasjonen i bakgrunnen.</string>
+    <string name="k2go_setup_context_proot">Når oppsettet er ferdig, blir du automatisk tatt til biblioteket ditt. Hold appen på denne skjermen mens den installerer — denne delen kan ikke kjøre i bakgrunnen.</string>
     <string name="k2go_install_busy">En installasjon kjører allerede — vent til den er ferdig.</string>
     <string name="k2go_setup_leave_hint">Setter fortsatt opp systemet. Du kan forlate appen — den fortsetter og er klar når du kommer tilbake.</string>
     <string name="k2go_damaged_title">Installasjon avbrutt</string>
@@ -704,7 +704,7 @@
     <string name="k2go_dash_live_running">Oppdaterer på stedet… dashbordet starter kort på nytt.</string>
     <string name="k2go_dash_live_done">Dashbordet er oppdatert.</string>
     <string name="k2go_dash_live_error">Oppdateringen mislyktes — forrige versjon ble beholdt.</string>
-    <string name="k2go_dash_live_timeout">Dette tar lengre tid enn vanlig. Det fullføres i bakgrunnen — sjekk versjonen om et øyeblikk.</string>
+    <string name="k2go_dash_live_timeout">Oppdateringen tar lengre tid enn vanlig. Det fullføres i bakgrunnen — sjekk versjonen om et øyeblikk.</string>
     <string name="k2go_dash_live_start_failed">Kunne ikke starte oppdateringen. Prøv igjen.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systemkjerne · alltid installert</string>

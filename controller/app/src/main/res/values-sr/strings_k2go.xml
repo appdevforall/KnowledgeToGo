@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Провера инсталираних модула…</string>
     <string name="k2go_wizard_continue">Настави</string>
     <string name="k2go_setup_progress_title">Завршавање подешавања</string>
-    <string name="k2go_setup_context">Аутоматски ће вас преусмерити када се заврши. Можете наставити да користите апликацију тако што ћете инсталацију покренути у позадини.</string>
-    <string name="k2go_setup_context_proot">Аутоматски ће вас преусмерити када се заврши. Држите апликацију на овом екрану током инсталације — овај део не може да ради у позадини.</string>
+    <string name="k2go_setup_context">Када се подешавање заврши, бићете аутоматски одведени у своју библиотеку. Можете наставити да користите апликацију тако што ћете инсталацију покренути у позадини.</string>
+    <string name="k2go_setup_context_proot">Када се подешавање заврши, бићете аутоматски одведени у своју библиотеку. Држите апликацију на овом екрану током инсталације — овај део не може да ради у позадини.</string>
     <string name="k2go_install_busy">Инсталација је већ у току — молимо сачекајте да се заврши.</string>
     <string name="k2go_setup_leave_hint">Систем се још подешава. Можете напустити апликацију — наставља се и биће готово када се вратите.</string>
     <string name="k2go_damaged_title">Инсталација прекинута</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Ажурирање на лицу места… контролна табла ће се накратко поново покренути.</string>
     <string name="k2go_dash_live_done">Контролна табла је ажурирана.</string>
     <string name="k2go_dash_live_error">Ажурирање није успело — задржана је претходна верзија.</string>
-    <string name="k2go_dash_live_timeout">Ово траје дуже него обично. Завршиће се у позадини — проверите верзију за тренутак.</string>
+    <string name="k2go_dash_live_timeout">Ажурирање траје дуже него обично. Завршиће се у позадини — проверите верзију за тренутак.</string>
     <string name="k2go_dash_live_start_failed">Ажурирање није могло да почне. Покушајте поново.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системско језгро · увек инсталирано</string>

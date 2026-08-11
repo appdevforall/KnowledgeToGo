@@ -541,8 +541,8 @@
     <string name="k2go_gm_checking">Tikrinami įdiegti moduliai…</string>
     <string name="k2go_wizard_continue">Tęsti</string>
     <string name="k2go_setup_progress_title">Baigiama sąranka</string>
-    <string name="k2go_setup_context">Baigus jus automatiškai peradresuos. Galite toliau naudotis programa, vykdydami įdiegimą fone.</string>
-    <string name="k2go_setup_context_proot">Baigus jus automatiškai peradresuos. Diegimo metu palikite programą šiame ekrane — ši dalis fone veikti negali.</string>
+    <string name="k2go_setup_context">Baigus sąranką būsite automatiškai nukreipti į savo biblioteką. Galite toliau naudotis programa, vykdydami įdiegimą fone.</string>
+    <string name="k2go_setup_context_proot">Baigus sąranką būsite automatiškai nukreipti į savo biblioteką. Diegimo metu palikite programą šiame ekrane — ši dalis fone veikti negali.</string>
     <string name="k2go_install_busy">Jau vyksta diegimas — palaukite, kol jis baigsis.</string>
     <string name="k2go_setup_leave_hint">Sistema vis dar ruošiama. Galite išeiti iš programos — ji tęsis ir bus paruošta jums grįžus.</string>
     <string name="k2go_damaged_title">Įdiegimas nutrauktas</string>
@@ -704,7 +704,7 @@
     <string name="k2go_dash_live_running">Atnaujinama vietoje… sąsaja trumpam paleidžiama iš naujo.</string>
     <string name="k2go_dash_live_done">Sąsaja atnaujinta.</string>
     <string name="k2go_dash_live_error">Atnaujinti nepavyko — palikta ankstesnė versija.</string>
-    <string name="k2go_dash_live_timeout">Tai užtrunka ilgiau nei įprastai. Bus baigta fone — netrukus patikrinkite versiją.</string>
+    <string name="k2go_dash_live_timeout">Atnaujinimas trunka ilgiau nei įprastai. Bus baigta fone — netrukus patikrinkite versiją.</string>
     <string name="k2go_dash_live_start_failed">Nepavyko pradėti atnaujinimo. Bandykite dar kartą.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistemos branduolys · visada įdiegtas</string>

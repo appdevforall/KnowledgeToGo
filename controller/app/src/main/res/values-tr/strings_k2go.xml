@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Kurulu modüller denetleniyor…</string>
     <string name="k2go_wizard_continue">Devam</string>
     <string name="k2go_setup_progress_title">Kurulum tamamlanıyor</string>
-    <string name="k2go_setup_context">Bittiğinde sizi otomatik olarak yönlendirir. Kurulumu arka planda çalıştırarak uygulamayı kullanmaya devam edebilirsiniz.</string>
-    <string name="k2go_setup_context_proot">Bittiğinde sizi otomatik olarak yönlendirir. Kurulum sürerken uygulamayı bu ekranda tutun — bu kısım arka planda çalışamaz.</string>
+    <string name="k2go_setup_context">Kurulum bittiğinde otomatik olarak kitaplığınıza götürülürsünüz. Kurulumu arka planda çalıştırarak uygulamayı kullanmaya devam edebilirsiniz.</string>
+    <string name="k2go_setup_context_proot">Kurulum bittiğinde otomatik olarak kitaplığınıza götürülürsünüz. Kurulum sürerken uygulamayı bu ekranda tutun — bu kısım arka planda çalışamaz.</string>
     <string name="k2go_install_busy">Zaten bir kurulum çalışıyor — lütfen bitmesini bekleyin.</string>
     <string name="k2go_setup_leave_hint">Sistem hâlâ ayarlanıyor. Uygulamadan ayrılabilirsiniz — devam eder ve döndüğünüzde hazır olur.</string>
     <string name="k2go_damaged_title">Kurulum kesildi</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Yerinde güncelleniyor… pano kısa süre yeniden başlar.</string>
     <string name="k2go_dash_live_done">Pano güncellendi.</string>
     <string name="k2go_dash_live_error">Güncelleme başarısız — önceki sürüm korundu.</string>
-    <string name="k2go_dash_live_timeout">Bu her zamankinden uzun sürüyor. Arka planda tamamlanacak — birazdan sürümü kontrol edin.</string>
+    <string name="k2go_dash_live_timeout">Güncelleme her zamankinden uzun sürüyor. Arka planda tamamlanacak — birazdan sürümü kontrol edin.</string>
     <string name="k2go_dash_live_start_failed">Güncelleme başlatılamadı. Tekrar deneyin.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistem çekirdeği · her zaman yüklü</string>

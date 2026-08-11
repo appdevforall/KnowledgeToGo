@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Quraşdırılmış modullar yoxlanılır…</string>
     <string name="k2go_wizard_continue">Davam et</string>
     <string name="k2go_setup_progress_title">Qurulum tamamlanır</string>
-    <string name="k2go_setup_context">Bitdikdə sizi avtomatik yönləndirəcək. Quraşdırmanı arxa planda işlədərək tətbiqdən istifadə etməyə davam edə bilərsiniz.</string>
-    <string name="k2go_setup_context_proot">Bitdikdə sizi avtomatik yönləndirəcək. Quraşdırıldığı müddətdə tətbiqi bu ekranda saxlayın — bu hissə arxa planda işləyə bilmir.</string>
+    <string name="k2go_setup_context">Quraşdırma bitdikdə avtomatik olaraq kitabxananıza aparılacaqsınız. Quraşdırmanı arxa planda işlədərək tətbiqdən istifadə etməyə davam edə bilərsiniz.</string>
+    <string name="k2go_setup_context_proot">Quraşdırma bitdikdə avtomatik olaraq kitabxananıza aparılacaqsınız. Quraşdırıldığı müddətdə tətbiqi bu ekranda saxlayın — bu hissə arxa planda işləyə bilmir.</string>
     <string name="k2go_install_busy">Bir quraşdırma artıq işləyir — zəhmət olmasa bitməsini gözləyin.</string>
     <string name="k2go_setup_leave_hint">Sistem hələ qurulur. Tətbiqi tərk edə bilərsiniz — davam edir və qayıtdıqda hazır olacaq.</string>
     <string name="k2go_damaged_title">Quraşdırma yarımçıq qaldı</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Yerində yenilənir… idarə paneli qısa müddət yenidən başladılacaq.</string>
     <string name="k2go_dash_live_done">İdarə paneli yeniləndi.</string>
     <string name="k2go_dash_live_error">Yeniləmə alınmadı — əvvəlki versiya saxlanıldı.</string>
-    <string name="k2go_dash_live_timeout">Bu adətən olduğundan uzun çəkir. Arxa planda tamamlanacaq — bir azdan versiyanı yoxlayın.</string>
+    <string name="k2go_dash_live_timeout">Yeniləmə adətən olduğundan uzun çəkir. Arxa planda tamamlanacaq — bir azdan versiyanı yoxlayın.</string>
     <string name="k2go_dash_live_start_failed">Yeniləməni başlatmaq alınmadı. Yenidən cəhd edin.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistem nüvəsi · həmişə quraşdırılıb</string>

@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Comprobando módulos instalados…</string>
     <string name="k2go_wizard_continue">Continuar</string>
     <string name="k2go_setup_progress_title">Finalizando la configuración</string>
-    <string name="k2go_setup_context">Te redirigirá automáticamente cuando termine. Puedes seguir usando la app ejecutando la instalación en segundo plano.</string>
-    <string name="k2go_setup_context_proot">Te redirigirá automáticamente cuando termine. Mantén la app en esta pantalla mientras se instala — esta parte no puede ejecutarse en segundo plano.</string>
+    <string name="k2go_setup_context">Cuando termine la configuración, se te llevará a tu biblioteca automáticamente. Puedes seguir usando la app ejecutando la instalación en segundo plano.</string>
+    <string name="k2go_setup_context_proot">Cuando termine la configuración, se te llevará a tu biblioteca automáticamente. Mantén la app en esta pantalla mientras se instala — esta parte no puede ejecutarse en segundo plano.</string>
     <string name="k2go_install_busy">Ya hay una instalación en curso — espera a que termine.</string>
     <string name="k2go_setup_leave_hint">Aún configurando el sistema. Puedes salir de la app — sigue en marcha y estará lista cuando vuelvas.</string>
     <string name="k2go_damaged_title">Instalación interrumpida</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Actualizando en el sitio… el panel se reinicia brevemente.</string>
     <string name="k2go_dash_live_done">Panel actualizado.</string>
     <string name="k2go_dash_live_error">La actualización falló — se conservó la versión anterior.</string>
-    <string name="k2go_dash_live_timeout">Esto está tardando más de lo normal. Terminará en segundo plano — revisa la versión en un momento.</string>
+    <string name="k2go_dash_live_timeout">La actualización está tardando más de lo normal. Terminará en segundo plano — revisa la versión en un momento.</string>
     <string name="k2go_dash_live_start_failed">No se pudo iniciar la actualización. Inténtalo de nuevo.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Núcleo del sistema · siempre instalado</string>

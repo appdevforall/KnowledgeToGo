@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Проверка на инсталираните модули…</string>
     <string name="k2go_wizard_continue">Продължи</string>
     <string name="k2go_setup_progress_title">Приключване на настройката</string>
-    <string name="k2go_setup_context">Ще бъдете пренасочени автоматично, когато приключи. Можете да продължите да използвате приложението, като изпълните инсталирането във фонов режим.</string>
-    <string name="k2go_setup_context_proot">Ще бъдете пренасочени автоматично, когато приключи. Оставете приложението на този екран, докато се инсталира — тази част не може да работи във фонов режим.</string>
+    <string name="k2go_setup_context">Когато настройката приключи, автоматично ще бъдете отведени до вашата библиотека. Можете да продължите да използвате приложението, като изпълните инсталирането във фонов режим.</string>
+    <string name="k2go_setup_context_proot">Когато настройката приключи, автоматично ще бъдете отведени до вашата библиотека. Оставете приложението на този екран, докато се инсталира — тази част не може да работи във фонов режим.</string>
     <string name="k2go_install_busy">Вече се изпълнява инсталиране — моля, изчакайте да приключи.</string>
     <string name="k2go_setup_leave_hint">Системата все още се настройва. Можете да напуснете приложението — то продължава и ще е готово, когато се върнете.</string>
     <string name="k2go_damaged_title">Инсталирането е прекъснато</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Обновяване на място… таблото се рестартира за кратко.</string>
     <string name="k2go_dash_live_done">Таблото е обновено.</string>
     <string name="k2go_dash_live_error">Обновяването е неуспешно — предишната версия е запазена.</string>
-    <string name="k2go_dash_live_timeout">Това отнема повече от обичайното. Ще завърши на заден план — проверете версията след малко.</string>
+    <string name="k2go_dash_live_timeout">Актуализацията отнема повече от обичайното. Ще завърши на заден план — проверете версията след малко.</string>
     <string name="k2go_dash_live_start_failed">Обновяването не можа да започне. Опитайте отново.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системно ядро · винаги инсталирано</string>

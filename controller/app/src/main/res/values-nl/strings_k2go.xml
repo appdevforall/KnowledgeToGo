@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">Geïnstalleerde modules controleren…</string>
     <string name="k2go_wizard_continue">Doorgaan</string>
     <string name="k2go_setup_progress_title">Installatie afronden</string>
-    <string name="k2go_setup_context">Je wordt automatisch doorgestuurd wanneer het klaar is. Je kunt de app blijven gebruiken door de installatie op de achtergrond te laten draaien.</string>
-    <string name="k2go_setup_context_proot">Je wordt automatisch doorgestuurd wanneer het klaar is. Houd de app op dit scherm tijdens de installatie — dit deel kan niet op de achtergrond draaien.</string>
+    <string name="k2go_setup_context">Wanneer de installatie klaar is, word je automatisch naar je bibliotheek gebracht. Je kunt de app blijven gebruiken door de installatie op de achtergrond te laten draaien.</string>
+    <string name="k2go_setup_context_proot">Wanneer de installatie klaar is, word je automatisch naar je bibliotheek gebracht. Houd de app op dit scherm tijdens de installatie — dit deel kan niet op de achtergrond draaien.</string>
     <string name="k2go_install_busy">Er loopt al een installatie — wacht tot deze klaar is.</string>
     <string name="k2go_setup_leave_hint">Het systeem wordt nog ingesteld. Je kunt de app verlaten — het gaat door en is klaar als je terugkomt.</string>
     <string name="k2go_damaged_title">Installatie onderbroken</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">Bijwerken ter plekke… het dashboard start kort opnieuw op.</string>
     <string name="k2go_dash_live_done">Dashboard bijgewerkt.</string>
     <string name="k2go_dash_live_error">Bijwerken mislukt — de vorige versie is behouden.</string>
-    <string name="k2go_dash_live_timeout">Dit duurt langer dan normaal. Het wordt op de achtergrond voltooid — controleer de versie zo meteen.</string>
+    <string name="k2go_dash_live_timeout">De update duurt langer dan normaal. Het wordt op de achtergrond voltooid — controleer de versie zo meteen.</string>
     <string name="k2go_dash_live_start_failed">Kan de update niet starten. Probeer het opnieuw.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systeemkern · altijd geïnstalleerd</string>

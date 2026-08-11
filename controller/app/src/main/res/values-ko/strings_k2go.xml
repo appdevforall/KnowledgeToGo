@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">설치된 모듈을 확인하는 중…</string>
     <string name="k2go_wizard_continue">계속</string>
     <string name="k2go_setup_progress_title">설정을 완료하는 중</string>
-    <string name="k2go_setup_context">완료되면 자동으로 이동합니다. 설치를 백그라운드에서 실행하여 앱을 계속 사용할 수 있습니다.</string>
-    <string name="k2go_setup_context_proot">완료되면 자동으로 이동합니다. 설치되는 동안 앱을 이 화면에 두세요 — 이 부분은 백그라운드에서 실행할 수 없습니다.</string>
+    <string name="k2go_setup_context">설정이 완료되면 자동으로 라이브러리로 이동합니다. 설치를 백그라운드에서 실행하여 앱을 계속 사용할 수 있습니다.</string>
+    <string name="k2go_setup_context_proot">설정이 완료되면 자동으로 라이브러리로 이동합니다. 설치되는 동안 앱을 이 화면에 두세요 — 이 부분은 백그라운드에서 실행할 수 없습니다.</string>
     <string name="k2go_install_busy">이미 설치가 실행 중입니다 — 완료될 때까지 기다려 주세요.</string>
     <string name="k2go_setup_leave_hint">아직 시스템을 설정하는 중입니다. 앱을 벗어나도 됩니다 — 계속 진행되며 돌아오면 준비되어 있습니다.</string>
     <string name="k2go_damaged_title">설치가 중단됨</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">제자리에서 업데이트 중… 대시보드가 잠시 다시 시작됩니다.</string>
     <string name="k2go_dash_live_done">대시보드가 업데이트되었습니다.</string>
     <string name="k2go_dash_live_error">업데이트 실패 — 이전 버전을 유지했습니다.</string>
-    <string name="k2go_dash_live_timeout">평소보다 오래 걸리고 있습니다. 백그라운드에서 완료됩니다 — 잠시 후 버전을 확인하세요.</string>
+    <string name="k2go_dash_live_timeout">업데이트가 평소보다 오래 걸리고 있습니다. 백그라운드에서 완료됩니다 — 잠시 후 버전을 확인하세요.</string>
     <string name="k2go_dash_live_start_failed">업데이트를 시작할 수 없습니다. 다시 시도하세요.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">시스템 코어 · 항상 설치됨</string>

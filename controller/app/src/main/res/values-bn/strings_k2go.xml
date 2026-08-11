@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">ইনস্টল করা মডিউল পরীক্ষা করা হচ্ছে…</string>
     <string name="k2go_wizard_continue">চালিয়ে যান</string>
     <string name="k2go_setup_progress_title">সেটআপ শেষ হচ্ছে</string>
-    <string name="k2go_setup_context">শেষ হলে এটি আপনাকে স্বয়ংক্রিয়ভাবে পুনর্নির্দেশ করবে। ইনস্টলেশন ব্যাকগ্রাউন্ডে চালিয়ে অ্যাপটি ব্যবহার চালিয়ে যেতে পারেন।</string>
-    <string name="k2go_setup_context_proot">শেষ হলে এটি আপনাকে স্বয়ংক্রিয়ভাবে পুনর্নির্দেশ করবে। ইনস্টল চলাকালীন অ্যাপটি এই স্ক্রিনে রাখুন — এই অংশটি ব্যাকগ্রাউন্ডে চলতে পারে না।</string>
+    <string name="k2go_setup_context">সেটআপ শেষ হলে আপনাকে স্বয়ংক্রিয়ভাবে আপনার লাইব্রেরিতে নিয়ে যাওয়া হবে। ইনস্টলেশন ব্যাকগ্রাউন্ডে চালিয়ে অ্যাপটি ব্যবহার চালিয়ে যেতে পারেন।</string>
+    <string name="k2go_setup_context_proot">সেটআপ শেষ হলে আপনাকে স্বয়ংক্রিয়ভাবে আপনার লাইব্রেরিতে নিয়ে যাওয়া হবে। ইনস্টল চলাকালীন অ্যাপটি এই স্ক্রিনে রাখুন — এই অংশটি ব্যাকগ্রাউন্ডে চলতে পারে না।</string>
     <string name="k2go_install_busy">একটি ইনস্টল ইতিমধ্যে চলছে — অনুগ্রহ করে এটি শেষ হওয়ার জন্য অপেক্ষা করুন।</string>
     <string name="k2go_setup_leave_hint">এখনো সিস্টেম সেট আপ হচ্ছে। আপনি অ্যাপ ছেড়ে যেতে পারেন — এটি চলতে থাকবে এবং আপনি ফিরে এলে প্রস্তুত থাকবে।</string>
     <string name="k2go_damaged_title">ইনস্টলেশন বাধাপ্রাপ্ত হয়েছে</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">স্থানেই আপডেট হচ্ছে… ড্যাশবোর্ড কিছুক্ষণের জন্য রিস্টার্ট হবে।</string>
     <string name="k2go_dash_live_done">ড্যাশবোর্ড আপডেট হয়েছে।</string>
     <string name="k2go_dash_live_error">আপডেট ব্যর্থ হয়েছে — পূর্ববর্তী সংস্করণটি রাখা হয়েছে।</string>
-    <string name="k2go_dash_live_timeout">এটি স্বাভাবিকের চেয়ে বেশি সময় নিচ্ছে। এটি ব্যাকগ্রাউন্ডে সম্পন্ন হবে — একটু পরে সংস্করণটি দেখুন।</string>
+    <string name="k2go_dash_live_timeout">আপডেটটি স্বাভাবিকের চেয়ে বেশি সময় নিচ্ছে। এটি ব্যাকগ্রাউন্ডে সম্পন্ন হবে — একটু পরে সংস্করণটি দেখুন।</string>
     <string name="k2go_dash_live_start_failed">আপডেট শুরু করা যায়নি। আবার চেষ্টা করুন।</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">সিস্টেম কোর · সর্বদা ইনস্টল করা</string>

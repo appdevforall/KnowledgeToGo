@@ -534,8 +534,8 @@
     <string name="k2go_gm_checking">इंस्टॉल किए मॉड्यूल जाँचे जा रहे हैं…</string>
     <string name="k2go_wizard_continue">जारी रखें</string>
     <string name="k2go_setup_progress_title">सेटअप पूरा हो रहा है</string>
-    <string name="k2go_setup_context">पूरा होने पर यह आपको अपने-आप रीडायरेक्ट कर देगा। इंस्टॉलेशन को बैकग्राउंड में चलाकर आप ऐप इस्तेमाल करते रह सकते हैं।</string>
-    <string name="k2go_setup_context_proot">पूरा होने पर यह आपको अपने-आप रीडायरेक्ट कर देगा। इंस्टॉल होने के दौरान ऐप को इस स्क्रीन पर रखें — यह हिस्सा बैकग्राउंड में नहीं चल सकता।</string>
+    <string name="k2go_setup_context">सेटअप पूरा होने पर आपको अपने-आप आपकी लाइब्रेरी पर ले जाया जाएगा। इंस्टॉलेशन को बैकग्राउंड में चलाकर आप ऐप इस्तेमाल करते रह सकते हैं।</string>
+    <string name="k2go_setup_context_proot">सेटअप पूरा होने पर आपको अपने-आप आपकी लाइब्रेरी पर ले जाया जाएगा। इंस्टॉल होने के दौरान ऐप को इस स्क्रीन पर रखें — यह हिस्सा बैकग्राउंड में नहीं चल सकता।</string>
     <string name="k2go_install_busy">एक इंस्टॉल पहले से चल रहा है — कृपया इसके पूरा होने की प्रतीक्षा करें।</string>
     <string name="k2go_setup_leave_hint">सिस्टम अभी भी सेट हो रहा है। आप ऐप छोड़ सकते हैं — यह चलता रहता है और आपके लौटने पर तैयार होगा।</string>
     <string name="k2go_damaged_title">इंस्टॉलेशन बाधित हुआ</string>
@@ -694,7 +694,7 @@
     <string name="k2go_dash_live_running">यहीं अपडेट हो रहा है… डैशबोर्ड थोड़ी देर के लिए पुनः शुरू होगा।</string>
     <string name="k2go_dash_live_done">डैशबोर्ड अपडेट हो गया।</string>
     <string name="k2go_dash_live_error">अपडेट विफल — पिछला संस्करण रखा गया।</string>
-    <string name="k2go_dash_live_timeout">यह सामान्य से अधिक समय ले रहा है। यह पृष्ठभूमि में पूरा होगा — थोड़ी देर में संस्करण जांचें।</string>
+    <string name="k2go_dash_live_timeout">अपडेट सामान्य से अधिक समय ले रहा है। यह पृष्ठभूमि में पूरा होगा — थोड़ी देर में संस्करण जांचें।</string>
     <string name="k2go_dash_live_start_failed">अपडेट शुरू नहीं हो सका। फिर से प्रयास करें।</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">सिस्टम कोर · हमेशा स्थापित</string>
