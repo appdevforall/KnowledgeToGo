@@ -237,78 +237,33 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     }
 
     /**
-     * ADFA-4849 / ADFA-5074: ZIM Confirm terminal in live mode — resolve the cart, hand it to
-     * the download service and open the progress index.
+     * ADFA-4849 / ADFA-5074: the ZIM Confirm terminal in live mode — bank the order, ask for it
+     * to start, and go to the index.
      *
      * <p>This used to be {@code openZimPreparing()}, which pushed the preparing fragment into
-     * this activity and let <em>the fragment</em> start the service from its own
-     * {@code onCreateView}. Two things were wrong with that. The screen was a second host with
-     * no chrome, so it had to grow its own Finish and Run-in-background; and a screen that
-     * starts the work cannot be reopened without deciding whether this time it should start it
-     * again — which is what the {@code fromIndex} flag was really guarding.
+     * this activity and let <em>the fragment</em> start the download from its own
+     * {@code onCreateView}, resolving the cart against the Kiwix catalogue as it went. Two
+     * things were wrong with that. The screen was a second host with no chrome, so it grew its
+     * own Finish and Run-in-background; and a screen that starts work cannot be reopened
+     * without deciding whether to start it again, which is what the {@code fromIndex} flag was
+     * really guarding.
      *
-     * <p>Starting here instead makes ZIM the same shape as Books and Courses: the door starts
-     * the work, then navigates to the one place that shows work.
+     * <p>The first fix moved that resolution here. The second deleted it: {@link ZimProvisioner}
+     * has done exactly this since ADFA-4853 for the wizard's banked orders — resolve the
+     * catalogue, build the triples, hand them to the service — so moving it here made a third
+     * copy of one rule. The two copies had already drifted: they built item labels differently,
+     * so the same ZIM was named one way when it came from the wizard and another from Get More.
      *
-     * <p>The catalogue read is a baked CSV cached in the process ({@code KiwixCatalog.inMemory}),
-     * and the user reached this screen by browsing it, so the callback runs on the next main-thread
-     * pass — no network, no spinner, nothing to time out.
+     * <p>Writing to {@link ZimWishlist} and draining is also what makes ZIM queue. The wishlist
+     * IS the queue: the provisioner defers while another stream holds the line and the order
+     * stays banked until a later pass takes it, which the index and the Home both run. That
+     * replaces the special case this method used to carry — a second order arriving over a live
+     * one, which {@code ACTION_START} would have overwritten.
      */
     public void startZimDownload() {
-        final java.util.LinkedHashMap<String, Long> cart =
-                new java.util.LinkedHashMap<>(selection().zimCart());
-        KiwixCatalog.getOrFetch(this, new KiwixCatalog.Listener() {
-            @Override public void onReady(org.json.JSONObject catalog) { handOff(catalog, cart); }
-            @Override public void onError(String m) { handOff(null, cart); }
-        });
-    }
-
-    /**
-     * Resolve the cart against the catalogue and start the service, then go to the index.
-     *
-     * <p>The index is opened whatever happens above. It is the honest surface: it shows the
-     * session that actually exists, which beats a progress screen counting to nothing.
-     */
-    private void handOff(org.json.JSONObject catalog, java.util.LinkedHashMap<String, Long> cart) {
-        if (isFinishing() || isDestroyed()) return;
-        java.util.List<String> files = new java.util.ArrayList<>();
-        java.util.List<String> labels = new java.util.ArrayList<>();
-        java.util.List<Long> bytes = new java.util.ArrayList<>();
-        for (java.util.Map.Entry<String, Long> e : cart.entrySet()) {
-            ZimSelection.Item it = catalog == null ? null : ZimSelection.resolve(catalog, e.getKey());
-            if (it == null) continue;
-            files.add(it.id);   // "<project>/<file>" (ADFA-5042)
-            labels.add(ZimItemLabel.of(it.project,
-                    it.entry.optString("creator"), it.entry.optString("flavour")));
-            bytes.add(it.entry.optLong("size", e.getValue()));
-        }
-
-        // ADFA-5074: this guard came with the code, from ZimPreparingFragment's
-        // "if (!fromIndex && !ZimDownloadService.isRunning()) startSession(...)". It has to be
-        // carried, not dropped: ACTION_START overwrites the session arrays outright, so starting
-        // over a live one loses the running download's bookkeeping. ZIM's door, unlike Courses',
-        // asks nothing about who else is busy, so a second order IS reachable — index, Back, Get
-        // More, pick again.
-        //
-        // What it cannot do is pretend. The old code dropped the new picks in silence and showed
-        // the user the previous session's progress as if it were theirs. The cart is kept here
-        // instead, so the picks survive and can be confirmed once the current list finishes.
-        // The real answer is the queue in item 4 of ADFA-5074 — this is the case it exists for.
-        boolean busy = ZimDownloadService.isRunning();
-        if (busy) {
-            android.util.Log.w("K2Go-Zim", "zim start deferred: a session is already running; "
-                    + files.size() + " pick(s) kept in the cart");
-        } else if (files.isEmpty()) {
-            android.util.Log.w("K2Go-Zim", "zim start: nothing resolved from a cart of " + cart.size());
-        } else {
-            long[] b = new long[bytes.size()];
-            for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
-            ZimDownloadService.start(getApplicationContext(),
-                    files.toArray(new String[0]), labels.toArray(new String[0]), b);
-            // Handed over. Keeping it would re-offer the same picks as if they had never been
-            // ordered; Books clears its cart at the same point, for the same reason.
-            selection().zimCart().clear();
-        }
+        ZimWishlist.add(this, selection().zimCart());
+        selection().zimCart().clear();   // handed over; keeping it would re-offer the same picks
+        ZimProvisioner.drain(this);      // starts now if the line is free, banks it if not
         startActivity(new Intent(this, SetupProgressActivity.class));
     }
 

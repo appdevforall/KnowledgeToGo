@@ -43,48 +43,21 @@ public final class KolibriProvisioner {
     }
 
     /**
-     * Hands the wishlist to {@link KolibriSeedService} and clears it.
-     *
-     * <p>Two deferrals, for different reasons:
-     * <ul>
-     *   <li><b>proot</b> (ADFA-4900) — Ansible forks background processes and
-     *       concurrent REST work risks corruption, so no REST stream may run
-     *       while a runrole is pending or in flight.</li>
-     *   <li><b>the other live REST streams</b> (ADR-4954 D8) — each of the three
-     *       measures free space independently and at a different moment, so all
-     *       of them can pass their own check and jointly fill the disk. A Kolibri
-     *       channel runs to tens of GB, which makes it the one most likely to be
-     *       the straw. ADFA-5074: the rule is now one call for all three, and it
-     *       asks about <em>unfinished</em> work — a stream that has finished has
-     *       already been absorbed by the disk and protects nothing.</li>
-     * </ul>
-     *
-     * <p>No deadlock is possible: deferring means returning so a later pass can
-     * retry, and {@code SetupProgressActivity.orchestrateStep()} calls the
-     * provisioners in a fixed order, so the first one starts and the rest wait.
-     */
-    /**
-     * @return true when the order was handed to {@code KolibriSeedService}. False
-     *         means it was deferred or there was nothing to do — which the
-     *         post-install screen can ignore, because it calls again on the next
-     *         pass, but a caller that just pressed a button cannot: it has to say
-     *         why nothing happened rather than look broken. (ADFA-4954, live door.)
-     */
-    /**
      * ADFA-4954: whether a drain would proceed <em>right now</em>, without writing
      * anything.
      *
-     * <p>Exists so a caller can ask before it commits. The post-install screen can
-     * write an order and let the drain defer, because it calls again on every pass.
-     * The live door cannot: if it banks an order and the drain then refuses, the
-     * order stays in the wishlist and is downloaded at some later, unrelated moment
-     * that nobody asked for. Asking first is the difference between telling the user
-     * "not now" and quietly promising something for later.
+     * <p>Now only {@link #drain} asks. It used to be public API for the live door, which
+     * checked before writing so it could refuse with "Another download is running" rather
+     * than bank an order that nothing would pick up — true at the time, because the courses
+     * wishlist was drained only by the progress index. ADFA-5074 made the Home pump courses
+     * too and gave every door the index as its landing, so a deferred order is both drained
+     * and visible ("Queued" on its row). The door banks and lets this defer; a queue is a
+     * better answer than a refusal, and the honest one now that something drains it.
      *
      * <p>The rule stays here rather than being restated at the call site — that is
      * how the four {@code *Wizard} booleans went wrong.
      */
-    public static boolean canDrainNow(Context ctx) {
+    static boolean canDrainNow(Context ctx) {
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
                 || MapsProvisioner.hasPending(ctx)) {
             Log.d(TAG, "kolibri drain blocked: proot (runrole) work is pending/running");
@@ -103,6 +76,36 @@ public final class KolibriProvisioner {
         return true;
     }
 
+    /**
+     * Hands the wishlist to {@link KolibriSeedService} and clears it.
+     *
+     * <p>ADFA-5074: this javadoc lived above {@code canDrainNow}, together with a second,
+     * orphaned block describing a return value. Both are folded here, where the method is.
+     *
+     * <p>Two deferrals, for different reasons:
+     * <ul>
+     *   <li><b>proot</b> (ADFA-4900) — Ansible forks background processes and
+     *       concurrent REST work risks corruption, so no REST stream may run
+     *       while a runrole is pending or in flight.</li>
+     *   <li><b>the other live REST streams</b> (ADR-4954 D8) — each of the three
+     *       measures free space independently and at a different moment, so all
+     *       of them can pass their own check and jointly fill the disk. A Kolibri
+     *       channel runs to tens of GB, which makes it the one most likely to be
+     *       the straw. ADFA-5074: the rule is now one call for all three, and it
+     *       asks about <em>unfinished</em> work — a stream that has finished has
+     *       already been absorbed by the disk and protects nothing.</li>
+     * </ul>
+     *
+     * <p>No deadlock is possible: deferring means returning so a later pass can retry, and
+     * both pumps — {@code SetupProgressActivity.orchestrateStep()} and the Home's fallback in
+     * {@code LibraryHomeFragment} — call the provisioners in a fixed order, so the first one
+     * starts and the rest wait.
+     *
+     * @return true when the order was handed to {@code KolibriSeedService}; false when it was
+     *         deferred or there was nothing to do. Deferred is not a failure: the order stays
+     *         in the wishlist and the next pass picks it up. Callers that once treated false
+     *         as "tell the user no" no longer exist — that is what the queue replaced.
+     */
     public static boolean drain(Context ctx) {
         if (!canDrainNow(ctx)) {
             return false;

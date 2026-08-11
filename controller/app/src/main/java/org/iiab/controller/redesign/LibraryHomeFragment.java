@@ -26,6 +26,7 @@ import org.iiab.controller.PortalActivity;
 import org.iiab.controller.R;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.config.BoxEndpoints;
+import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
 import org.iiab.controller.util.AppExecutors;
 
 /**
@@ -324,9 +325,15 @@ public class LibraryHomeFragment extends Fragment {
         // on :4000) may still be warming up — POSTing then returns 502 Bad Gateway and the jobs
         // fail with no content installed. So gate the drain on the REST API actually answering;
         // the wishlist is untouched until then, and this poll (~3s) retries until it's ready.
+        // ADFA-5074: courses were missing from this pump. Everything below is what makes a banked
+        // order eventually run when the progress index is not on screen — so a courses order sat
+        // in its wishlist until someone happened to open the index, which is also what made a
+        // queue impossible: a door cannot honestly say "added to the queue" if nothing outside
+        // that one screen ever drains it.
         if (alive && !provisionProbing
                 && (BooksProvisioner.hasPending(requireContext()) || ZimProvisioner.hasPending(requireContext())
-                    || MapsProvisioner.hasPending(requireContext()))) {   // ADFA-4900
+                    || MapsProvisioner.hasPending(requireContext())                       // ADFA-4900
+                    || KolibriProvisioner.hasPending(requireContext()))) {                // ADFA-5074
             provisionProbing = true;
             AppExecutors.get().io().execute(() -> {
                 final boolean ready = RestReadiness.apiReady();
@@ -341,6 +348,10 @@ public class LibraryHomeFragment extends Fragment {
                     if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
                     if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
                     if (MapsProvisioner.hasPending(requireContext())) MapsProvisioner.drain(requireContext()); // ADFA-4900
+                    // ADFA-5074: last on purpose. Each provisioner refuses while another stream
+                    // holds the line (ADR-4954 D8), so the order here is the order they start in,
+                    // and courses is the longest of the three — it should not make the others wait.
+                    if (KolibriProvisioner.hasPending(requireContext())) KolibriProvisioner.drain(requireContext());
                 });
             });
         }

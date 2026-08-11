@@ -428,6 +428,32 @@ most expensive by the third platform. A is B done safely over time.
           average described earlier in this item is where the labelling gets decided for all four
           at once.
 
+          **The queue: a busy door banks instead of refusing (done).** "Another download is
+          running. Try again when it finishes." was the honest message for a door with nowhere to
+          show a queue. It stopped being honest once every door landed on the index, where a
+          banked order already draws its row as "Queued".
+
+          Almost none of it was new machinery. **The wishlist is the queue** — each provisioner
+          defers while another stream holds the line (ADR-4954 D8) and the order stays banked
+          until a later pass takes it. What was missing was a pump outside the index:
+          `LibraryHomeFragment` has drained Books, ZIM and Maps since ADFA-4853 and **courses were
+          never added**, so a banked courses order sat until someone happened to open the progress
+          screen. That is both a standing bug — a wizard courses order could be left waiting — and
+          the reason a queue was impossible: a door cannot promise "added" if nothing drains it.
+          Fixed first; then `KolibriConfirmFragment` simply stopped rolling its order back, which
+          made the change mostly a deletion, and `canDrainNow` went back to being internal.
+
+          **ZIM turned out to have a third copy of one rule.** Routing its door through
+          `ZimWishlist` + `ZimProvisioner.drain` — the shape Courses already had — deleted the
+          resolution this ticket had moved out of `ZimPreparingFragment` two commits earlier.
+          `ZimProvisioner` had been doing exactly that for the wizard since ADFA-4853: resolve the
+          catalogue, build the triples, hand them to the service. Worth naming because the two
+          copies had already drifted where nobody would look: they built item labels differently,
+          one combining creator and flavour and the other not, so the same ZIM was named one way
+          from the wizard and another from Get More. Both are now `ZimItemLabel`. It also retires
+          the special case for a second order arriving over a live one — the provisioner defers
+          rather than letting `ACTION_START` overwrite a running session.
+
           **A fifth entry surfaced, and it is not a landing.** The Books landing screen has a
           "downloads" link (`BooksLandingFragment.openDownloads` → `SetupLibraryActivity
           .openBooksDownloads`) that opens `BooksDownloadsFragment` inside that activity without
