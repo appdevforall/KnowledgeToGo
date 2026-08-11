@@ -107,25 +107,9 @@
                 android:textColor="@color/k2go_teal" />
         </LinearLayout>
 
-        <!-- Enabled once the whole list is terminal (done/failed); clears the session + cart. -->
-        <Button
-            android:id="@+id/k2go_zprep_finish"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="14dp"
-            android:text="@string/k2go_zim_finish"
-            android:textColor="@android:color/white"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/k2go_teal" />
-
-        <Button
-            android:id="@+id/k2go_zprep_run_bg"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/k2go_zim_run_bg"
-            android:textColor="@color/k2go_teal"
-            android:textAllCaps="false"
-            android:background="@drawable/k2go_getmore_bg" />
+        <!-- ADFA-5074: a Finish and a Run-in-background button used to sit here, for the Get More
+             door that hosted this fragment inside SetupLibraryActivity. SetupProgressActivity is
+             now the only host and owns both, for all four streams at once. The reassurance box
+             above stays: it is a statement about the download, not chrome. -->
     </LinearLayout>
 </ScrollView>

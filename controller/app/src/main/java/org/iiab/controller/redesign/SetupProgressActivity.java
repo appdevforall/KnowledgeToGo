@@ -1065,7 +1065,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         androidx.fragment.app.Fragment f;
         boolean proot;
         if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); proot = true; }  // ADFA-4842
-        else if ("zim".equals(key)) { f = ZimPreparingFragment.newInstance(true); proot = false; }
+        else if ("zim".equals(key)) { f = new ZimPreparingFragment(); proot = false; }   // ADFA-5074: observe-only
         else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); proot = false; }   // ADFA-4954: observe-only
         else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); proot = true; }   // ADFA-4901: observe-only
         else { f = BooksDownloadsFragment.newInstance(true); proot = false; }

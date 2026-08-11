@@ -342,6 +342,44 @@ most expensive by the third platform. A is B done safely over time.
           retry rows reachable, and an index answering for four streams cannot withhold the exit for
           one without stranding the other three. The failure case is the host's Finish-plus-note.
 
+          **ZIM moved next (done), and it was the one with something underneath.** Courses and Books
+          already had a door that started the work before navigating; ZIM did not — *the preparing
+          fragment itself* started the download from its own `onCreateView`, resolving the cart
+          against the Kiwix catalogue. That is what the `fromIndex` flag was really for: reopening a
+          screen that starts work poses a question ("start it again?") that has no good answer, so
+          the flag suppressed it. Moving the start into `SetupLibraryActivity.startZimDownload()`
+          made the flag meaningless and it is gone; the fragment is now an observer like the other
+          three. The catalogue is a baked CSV cached per process and the user reached the confirm
+          screen by browsing it, so resolving costs a main-thread pass — no network, nothing to
+          time out.
+
+          The extraction also carried a guard that was easy to miss because it read as part of the
+          flag: `if (!fromIndex && !ZimDownloadService.isRunning())`. The second half is load-bearing
+          — `ACTION_START` overwrites the session arrays outright, so starting over a live download
+          loses its bookkeeping — and unlike Courses, ZIM's door asks nothing about who else is busy,
+          so a second order is reachable (index, Back, Get More, pick again). What changed is the
+          dishonesty: the old code dropped the new picks in silence and showed the user the previous
+          session's progress as if it were theirs. The cart is now kept, so the picks survive to be
+          confirmed later. **This is precisely the case the queue in item 4 exists for.**
+
+          Two more things fell out of the extraction and are worth naming, because neither was
+          visible while the code sat inside a screen. The item-label rules (which of creator and flavour is
+          redundant) became `ZimItemLabel`, pure and unit-tested — they had to move somewhere that
+          is not the screen, since the labels are now computed once at hand-off and displayed later
+          by a different screen. And a catalogue entry with no creator and the "all" flavour
+          produced `"Wikipedia · "`, a label ending on a separator: the "say All instead of nothing"
+          guard only fired when the creator repeated the project. Widened, with the test.
+
+          **A fifth entry surfaced, and it is not a landing.** The Books landing screen has a
+          "downloads" link (`BooksLandingFragment.openDownloads` → `SetupLibraryActivity
+          .openBooksDownloads`) that opens `BooksDownloadsFragment` inside that activity without
+          starting anything. It survived ADFA-4988 because that ticket moved the *confirm* landing,
+          and it is genuinely a different thing: a viewer for "what am I downloading?", reachable
+          when nothing is running at all. The index cannot take it over yet — opened with no work
+          in flight it reads the run as complete and redirects home. So the order is: teach the
+          index an idle state, then this link points at it. Until then it is the one remaining
+          fragment that hosts itself, and it keeps its footer.
+
           Recorded while doing it, for the landing decision below: leaving the index by Back returns
           to the picker's **confirm screen with its cart already cleared** — a spent step. Books has
           behaved this way since ADFA-4988 and nobody has reported it, and Courses now inherits it,

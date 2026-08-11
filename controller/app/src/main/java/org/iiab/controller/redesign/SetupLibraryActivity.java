@@ -236,18 +236,81 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
-    /** ADFA-4849: Confirm -> Preparing (contained animation + real progress; mock until backend). */
-    public void openZimPreparing() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host, new ZimPreparingFragment())
-                .addToBackStack("zim_preparing")
-                .commit();
+    /**
+     * ADFA-4849 / ADFA-5074: ZIM Confirm terminal in live mode — resolve the cart, hand it to
+     * the download service and open the progress index.
+     *
+     * <p>This used to be {@code openZimPreparing()}, which pushed the preparing fragment into
+     * this activity and let <em>the fragment</em> start the service from its own
+     * {@code onCreateView}. Two things were wrong with that. The screen was a second host with
+     * no chrome, so it had to grow its own Finish and Run-in-background; and a screen that
+     * starts the work cannot be reopened without deciding whether this time it should start it
+     * again — which is what the {@code fromIndex} flag was really guarding.
+     *
+     * <p>Starting here instead makes ZIM the same shape as Books and Courses: the door starts
+     * the work, then navigates to the one place that shows work.
+     *
+     * <p>The catalogue read is a baked CSV cached in the process ({@code KiwixCatalog.inMemory}),
+     * and the user reached this screen by browsing it, so the callback runs on the next main-thread
+     * pass — no network, no spinner, nothing to time out.
+     */
+    public void startZimDownload() {
+        final java.util.LinkedHashMap<String, Long> cart =
+                new java.util.LinkedHashMap<>(selection().zimCart());
+        KiwixCatalog.getOrFetch(this, new KiwixCatalog.Listener() {
+            @Override public void onReady(org.json.JSONObject catalog) { handOff(catalog, cart); }
+            @Override public void onError(String m) { handOff(null, cart); }
+        });
     }
 
-    /** ADFA-4849: "Run in background" from ZIM Preparing -> back to the Get More hub. */
-    public void backToGetMoreHubZim() {
-        getSupportFragmentManager().popBackStack("getmore_wikipedia",
-                androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    /**
+     * Resolve the cart against the catalogue and start the service, then go to the index.
+     *
+     * <p>The index is opened whatever happens above. It is the honest surface: it shows the
+     * session that actually exists, which beats a progress screen counting to nothing.
+     */
+    private void handOff(org.json.JSONObject catalog, java.util.LinkedHashMap<String, Long> cart) {
+        if (isFinishing() || isDestroyed()) return;
+        java.util.List<String> files = new java.util.ArrayList<>();
+        java.util.List<String> labels = new java.util.ArrayList<>();
+        java.util.List<Long> bytes = new java.util.ArrayList<>();
+        for (java.util.Map.Entry<String, Long> e : cart.entrySet()) {
+            ZimSelection.Item it = catalog == null ? null : ZimSelection.resolve(catalog, e.getKey());
+            if (it == null) continue;
+            files.add(it.id);   // "<project>/<file>" (ADFA-5042)
+            labels.add(ZimItemLabel.of(it.project,
+                    it.entry.optString("creator"), it.entry.optString("flavour")));
+            bytes.add(it.entry.optLong("size", e.getValue()));
+        }
+
+        // ADFA-5074: this guard came with the code, from ZimPreparingFragment's
+        // "if (!fromIndex && !ZimDownloadService.isRunning()) startSession(...)". It has to be
+        // carried, not dropped: ACTION_START overwrites the session arrays outright, so starting
+        // over a live one loses the running download's bookkeeping. ZIM's door, unlike Courses',
+        // asks nothing about who else is busy, so a second order IS reachable — index, Back, Get
+        // More, pick again.
+        //
+        // What it cannot do is pretend. The old code dropped the new picks in silence and showed
+        // the user the previous session's progress as if it were theirs. The cart is kept here
+        // instead, so the picks survive and can be confirmed once the current list finishes.
+        // The real answer is the queue in item 4 of ADFA-5074 — this is the case it exists for.
+        boolean busy = ZimDownloadService.isRunning();
+        if (busy) {
+            android.util.Log.w("K2Go-Zim", "zim start deferred: a session is already running; "
+                    + files.size() + " pick(s) kept in the cart");
+        } else if (files.isEmpty()) {
+            android.util.Log.w("K2Go-Zim", "zim start: nothing resolved from a cart of " + cart.size());
+        } else {
+            long[] b = new long[bytes.size()];
+            for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
+            ZimDownloadService.start(getApplicationContext(),
+                    files.toArray(new String[0]), labels.toArray(new String[0]), b);
+            // Handed over. Keeping it would re-offer the same picks as if they had never been
+            // ordered; Books clears its cart at the same point, for the same reason.
+            selection().zimCart().clear();
+        }
+        startActivity(new Intent(this, SetupProgressActivity.class)
+                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "zim"));
     }
 
     /** ADFA-4853: the wizard's "Continue" — install the system now; content (Books/ZIM) is banked
@@ -626,7 +689,8 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
 
     /** @deprecated ADFA-4919: only used by the standalone Get More "Run in background" button, which
      *  the index gate removes for proot. Unreachable once Get More routes through openMapsIndex().
-     *  Kept UNUSED pending ADFA-4842 (see openMapsPreparing). (ZIM uses backToGetMoreHubZim, separate.)
+     *  Kept UNUSED pending ADFA-4842 (see openMapsPreparing). (ADFA-5074 removed the ZIM twin,
+     *  backToGetMoreHubZim, along with the ZIM live door that was the only thing calling it.)
      *  ADFA-4848: "Run in background" from Preparing -> drop the whole Maps flow off the back
      *  stack and return to the Get More hub; the build keeps running. */
     public void backToGetMoreHub() {
