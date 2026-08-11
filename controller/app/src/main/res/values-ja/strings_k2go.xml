@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">インストール済みモジュールを確認中…</string>
     <string name="k2go_wizard_continue">続行</string>
     <string name="k2go_setup_progress_title">セットアップを完了中</string>
-    <string name="k2go_setup_context">完了すると自動的にリダイレクトされます。インストールをバックグラウンドで実行することで、アプリを使い続けられます。</string>
-    <string name="k2go_setup_context_proot">完了すると自動的にリダイレクトされます。インストール中はアプリをこの画面のままにしてください — この部分はバックグラウンドで実行できません。</string>
+    <string name="k2go_setup_context">セットアップが完了すると、自動的にライブラリに移動します。インストールをバックグラウンドで実行することで、アプリを使い続けられます。</string>
+    <string name="k2go_setup_context_proot">セットアップが完了すると、自動的にライブラリに移動します。インストール中はアプリをこの画面のままにしてください — この部分はバックグラウンドで実行できません。</string>
     <string name="k2go_install_busy">すでにインストールが実行中です — 完了までお待ちください。</string>
     <string name="k2go_setup_leave_hint">まだシステムをセットアップ中です。アプリを離れても構いません — 続行され、戻ったときに準備ができています。</string>
     <string name="k2go_damaged_title">インストールが中断されました</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">その場で更新中… ダッシュボードが少しの間再起動します。</string>
     <string name="k2go_dash_live_done">ダッシュボードを更新しました。</string>
     <string name="k2go_dash_live_error">更新に失敗しました — 以前のバージョンを維持しました。</string>
-    <string name="k2go_dash_live_timeout">通常より時間がかかっています。バックグラウンドで完了します — 少し後にバージョンを確認してください。</string>
+    <string name="k2go_dash_live_timeout">更新に通常より時間がかかっています。バックグラウンドで完了します — 少し後にバージョンを確認してください。</string>
     <string name="k2go_dash_live_start_failed">更新を開始できませんでした。もう一度お試しください。</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">システムコア · 常にインストール済み</string>

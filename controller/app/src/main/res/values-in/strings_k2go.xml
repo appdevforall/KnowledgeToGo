@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">Memeriksa modul terpasang…</string>
     <string name="k2go_wizard_continue">Lanjutkan</string>
     <string name="k2go_setup_progress_title">Menyelesaikan penyiapan</string>
-    <string name="k2go_setup_context">Anda akan dialihkan otomatis saat selesai. Anda bisa terus menggunakan aplikasi dengan menjalankan pemasangan di latar belakang.</string>
-    <string name="k2go_setup_context_proot">Anda akan dialihkan otomatis saat selesai. Biarkan aplikasi di layar ini selama pemasangan — bagian ini tidak bisa berjalan di latar belakang.</string>
+    <string name="k2go_setup_context">Saat penyiapan selesai, Anda akan dibawa ke perpustakaan Anda secara otomatis. Anda bisa terus menggunakan aplikasi dengan menjalankan pemasangan di latar belakang.</string>
+    <string name="k2go_setup_context_proot">Saat penyiapan selesai, Anda akan dibawa ke perpustakaan Anda secara otomatis. Biarkan aplikasi di layar ini selama pemasangan — bagian ini tidak bisa berjalan di latar belakang.</string>
     <string name="k2go_install_busy">Pemasangan sedang berjalan — mohon tunggu sampai selesai.</string>
     <string name="k2go_setup_leave_hint">Masih menyiapkan sistem. Anda boleh meninggalkan aplikasi — proses berlanjut dan akan siap saat Anda kembali.</string>
     <string name="k2go_damaged_title">Pemasangan terputus</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">Memperbarui di tempat… dasbor dimulai ulang sebentar.</string>
     <string name="k2go_dash_live_done">Dasbor diperbarui.</string>
     <string name="k2go_dash_live_error">Pembaruan gagal — versi sebelumnya dipertahankan.</string>
-    <string name="k2go_dash_live_timeout">Ini memakan waktu lebih lama dari biasanya. Akan selesai di latar belakang — periksa versinya sebentar lagi.</string>
+    <string name="k2go_dash_live_timeout">Pembaruan memakan waktu lebih lama dari biasanya. Akan selesai di latar belakang — periksa versinya sebentar lagi.</string>
     <string name="k2go_dash_live_start_failed">Tidak dapat memulai pembaruan. Coba lagi.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Inti sistem · selalu terpasang</string>

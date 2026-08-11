@@ -538,8 +538,8 @@
     <string name="k2go_gm_checking">Sprawdzanie zainstalowanych modułów…</string>
     <string name="k2go_wizard_continue">Kontynuuj</string>
     <string name="k2go_setup_progress_title">Kończenie konfiguracji</string>
-    <string name="k2go_setup_context">Po zakończeniu nastąpi automatyczne przekierowanie. Możesz nadal korzystać z aplikacji, uruchamiając instalację w tle.</string>
-    <string name="k2go_setup_context_proot">Po zakończeniu nastąpi automatyczne przekierowanie. Pozostaw aplikację na tym ekranie podczas instalacji — ta część nie może działać w tle.</string>
+    <string name="k2go_setup_context">Po zakończeniu konfiguracji zostaniesz automatycznie przeniesiony do swojej biblioteki. Możesz nadal korzystać z aplikacji, uruchamiając instalację w tle.</string>
+    <string name="k2go_setup_context_proot">Po zakończeniu konfiguracji zostaniesz automatycznie przeniesiony do swojej biblioteki. Pozostaw aplikację na tym ekranie podczas instalacji — ta część nie może działać w tle.</string>
     <string name="k2go_install_busy">Instalacja jest już w toku — poczekaj na jej zakończenie.</string>
     <string name="k2go_setup_leave_hint">System jest wciąż konfigurowany. Możesz opuścić aplikację — działa dalej i będzie gotowy, gdy wrócisz.</string>
     <string name="k2go_damaged_title">Instalacja przerwana</string>
@@ -699,7 +699,7 @@
     <string name="k2go_dash_live_running">Aktualizacja w miejscu… panel na chwilę się zrestartuje.</string>
     <string name="k2go_dash_live_done">Panel zaktualizowany.</string>
     <string name="k2go_dash_live_error">Aktualizacja nie powiodła się — zachowano poprzednią wersję.</string>
-    <string name="k2go_dash_live_timeout">To trwa dłużej niż zwykle. Zakończy się w tle — sprawdź wersję za chwilę.</string>
+    <string name="k2go_dash_live_timeout">Aktualizacja trwa dłużej niż zwykle. Zakończy się w tle — sprawdź wersję za chwilę.</string>
     <string name="k2go_dash_live_start_failed">Nie można rozpocząć aktualizacji. Spróbuj ponownie.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rdzeń systemu · zawsze zainstalowany</string>

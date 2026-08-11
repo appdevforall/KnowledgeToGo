@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">正在检查已安装的模块…</string>
     <string name="k2go_wizard_continue">继续</string>
     <string name="k2go_setup_progress_title">正在完成设置</string>
-    <string name="k2go_setup_context">完成后会自动为您跳转。您可以让安装在后台运行，从而继续使用应用。</string>
-    <string name="k2go_setup_context_proot">完成后会自动为您跳转。安装期间请让应用停留在此屏幕 — 此部分无法在后台运行。</string>
+    <string name="k2go_setup_context">设置完成后，会自动带您进入您的库。您可以让安装在后台运行，从而继续使用应用。</string>
+    <string name="k2go_setup_context_proot">设置完成后，会自动带您进入您的库。安装期间请让应用停留在此屏幕 — 此部分无法在后台运行。</string>
     <string name="k2go_install_busy">已有安装正在运行 — 请等待其完成。</string>
     <string name="k2go_setup_leave_hint">仍在设置系统。您可以离开应用 — 它会继续，并在您返回时准备就绪。</string>
     <string name="k2go_damaged_title">安装已中断</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">正在原地更新… 仪表板会短暂重启。</string>
     <string name="k2go_dash_live_done">仪表板已更新。</string>
     <string name="k2go_dash_live_error">更新失败 — 已保留先前版本。</string>
-    <string name="k2go_dash_live_timeout">这比平常花的时间更长。它会在后台完成 — 稍后查看版本。</string>
+    <string name="k2go_dash_live_timeout">更新用时比平常更长。它会在后台完成 — 稍后查看版本。</string>
     <string name="k2go_dash_live_start_failed">无法开始更新。请重试。</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">系统核心 · 始终已安装</string>

@@ -531,8 +531,8 @@
     <string name="k2go_gm_checking">ઇન્સ્ટોલ કરેલા મૉડ્યુલ તપાસાઈ રહ્યા છે…</string>
     <string name="k2go_wizard_continue">ચાલુ રાખો</string>
     <string name="k2go_setup_progress_title">સેટઅપ પૂર્ણ થઈ રહ્યું છે</string>
-    <string name="k2go_setup_context">પૂરું થાય એટલે તે તમને આપોઆપ રીડાયરેક્ટ કરશે. ઇન્સ્ટોલેશન બૅકગ્રાઉન્ડમાં ચલાવીને તમે ઍપ વાપરવાનું ચાલુ રાખી શકો છો.</string>
-    <string name="k2go_setup_context_proot">પૂરું થાય એટલે તે તમને આપોઆપ રીડાયરેક્ટ કરશે. તે ઇન્સ્ટોલ થાય ત્યાં સુધી ઍપ આ સ્ક્રીન પર રાખો — આ ભાગ બૅકગ્રાઉન્ડમાં ચાલી શકતો નથી.</string>
+    <string name="k2go_setup_context">સેટઅપ પૂરું થાય એટલે તમને આપોઆપ તમારી લાઇબ્રેરીમાં લઈ જવાશે। ઇન્સ્ટોલેશન બૅકગ્રાઉન્ડમાં ચલાવીને તમે ઍપ વાપરવાનું ચાલુ રાખી શકો છો.</string>
+    <string name="k2go_setup_context_proot">સેટઅપ પૂરું થાય એટલે તમને આપોઆપ તમારી લાઇબ્રેરીમાં લઈ જવાશે। તે ઇન્સ્ટોલ થાય ત્યાં સુધી ઍપ આ સ્ક્રીન પર રાખો — આ ભાગ બૅકગ્રાઉન્ડમાં ચાલી શકતો નથી.</string>
     <string name="k2go_install_busy">એક ઇન્સ્ટોલ પહેલેથી ચાલી રહ્યું છે — કૃપા કરીને તે પૂરું થાય ત્યાં સુધી રાહ જુઓ.</string>
     <string name="k2go_setup_leave_hint">હજી સિસ્ટમ સેટ થઈ રહી છે. તમે ઍપ છોડી શકો છો — તે ચાલુ રહે છે અને તમે પાછા આવો ત્યારે તૈયાર હશે.</string>
     <string name="k2go_damaged_title">ઇન્સ્ટોલેશન વિક્ષેપ પામ્યું</string>
@@ -689,7 +689,7 @@
     <string name="k2go_dash_live_running">સ્થળ પર જ અપડેટ થઈ રહ્યું છે… ડેશબોર્ડ થોડી વાર માટે રીસ્ટાર્ટ થશે.</string>
     <string name="k2go_dash_live_done">ડેશબોર્ડ અપડેટ થયું.</string>
     <string name="k2go_dash_live_error">અપડેટ નિષ્ફળ — અગાઉની આવૃત્તિ જાળવી રાખી.</string>
-    <string name="k2go_dash_live_timeout">આ સામાન્ય કરતાં વધુ સમય લઈ રહ્યું છે. તે પૃષ્ઠભૂમિમાં પૂર્ણ થશે — થોડી વારમાં આવૃત્તિ તપાસો.</string>
+    <string name="k2go_dash_live_timeout">અપડેટ સામાન્ય કરતાં વધુ સમય લઈ રહ્યું છે। તે પૃષ્ઠભૂમિમાં પૂર્ણ થશે — થોડી વારમાં આવૃત્તિ તપાસો.</string>
     <string name="k2go_dash_live_start_failed">અપડેટ શરૂ કરી શકાયું નહીં. ફરી પ્રયાસ કરો.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">સિસ્ટમ કોર · હંમેશા સ્થાપિત</string>
