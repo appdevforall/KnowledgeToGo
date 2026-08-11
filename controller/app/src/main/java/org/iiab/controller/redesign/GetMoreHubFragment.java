@@ -293,7 +293,12 @@ public class GetMoreHubFragment extends Fragment {
             //
             // No observation yet is treated as stopped rather than as empty. It is a guess
             // either way, and this is the guess that sends the user somewhere useful.
-            int empty = serverAnswering() ? R.string.k2go_gm_none : R.string.k2go_gm_server_off;
+            // Only distinguishes a stopped box from an empty one. A box that is up while every
+            // platform is too slow to answer still lands on "nothing installed" — the same
+            // lie, for the harder-to-see case. Fixing that properly means one shared presence
+            // answer rather than a fourth reading here; recorded in ADR-5061 item 2d.
+            int empty = org.iiab.controller.system.data.SystemFactsReader.serverAnswering()
+                    ? R.string.k2go_gm_none : R.string.k2go_gm_server_off;
             msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : empty);
             host.addView(msg);
             return;
@@ -338,17 +343,9 @@ public class GetMoreHubFragment extends Fragment {
 
     }
 
-    /**
-     * ADFA-5061: whether the box is answering at all, from the poll's cached observation.
-     *
-     * <p>No request of its own — {@code ServerStateRepository} is kept fresh by the server
-     * poll, and this is the same fact {@code SystemFactsReader} reads. Only consulted when
-     * the card list came out empty, to tell "nothing is installed" from "nothing answered".
-     */
-    private boolean serverAnswering() {
-        org.iiab.controller.ServerStateRepository repo = org.iiab.controller.ServerStateRepository.get();
-        return repo.hasObservation() && repo.current().alive;
-    }
+    // ADFA-5061: this asked ServerStateRepository directly, in two lines identical to the
+    // ones inside SystemFactsReader — and said so in its own javadoc, which is the shape of
+    // divergence decision 9 exists to end. It calls the reader now.
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }
 

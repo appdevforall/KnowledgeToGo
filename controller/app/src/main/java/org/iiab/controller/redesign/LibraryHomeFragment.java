@@ -302,9 +302,25 @@ public class LibraryHomeFragment extends Fragment {
     // ADFA-4874: the REST readiness probe now lives in RestReadiness (shared with
     // SetupProgressActivity) so there is a single definition of the drain gate.
 
+    /**
+     * ADFA-5061: one content reading for the whole pass.
+     *
+     * <p>{@code PendingContent} asks for exactly this — read once, decide from the snapshot,
+     * because a screen that asks twice in one pass can get two answers and contradict itself.
+     * The card labels and the header both need it, and a first version had each of them take
+     * its own snapshot: four wishlist JSON parses per card per poll on the main thread, for a
+     * question that reads three cheap fields, and a real chance of the header and a card
+     * disagreeing about a stream that finished between the two reads.
+     *
+     * <p>Null between passes, and every reader tolerates that — {@code applyState} runs from
+     * paths that are not part of a pass at all.
+     */
+    private org.iiab.controller.system.data.PendingContent.Snapshot passContent;
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
+        passContent = org.iiab.controller.system.data.PendingContent.read(requireContext());
 
         // ADFA-4837: track when the server first came up; the card red-grace is measured from here.
         if (alive) { if (serverAliveSinceMs == 0L) serverAliveSinceMs = android.os.SystemClock.elapsedRealtime(); }
@@ -412,7 +428,12 @@ public class LibraryHomeFragment extends Fragment {
         // how the install became unreachable in the first place. Sessions only, not banked
         // orders: a banked one has no screen to open, and a blocked drain would leave this
         // claiming work that is not happening.
-        if (org.iiab.controller.system.data.PendingContent.anyRunning(requireContext())
+        // ADFA-5061: from the pass snapshot, so the header and the cards cannot answer this
+        // from two different readings taken moments apart.
+        boolean contentRunning = passContent != null
+                ? passContent.anyRunning()
+                : org.iiab.controller.system.data.PendingContent.anyRunning(requireContext());
+        if (contentRunning
                 || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
             setHeader(H_INSTALLING);
             return;
@@ -445,7 +466,13 @@ public class LibraryHomeFragment extends Fragment {
             case H_READY:       text = getString(R.string.k2go_home_ready);       dotColor = R.color.k2go_leaf;  break;
             case H_READY_EMPTY: text = getString(R.string.k2go_home_ready_empty); dotColor = R.color.k2go_leaf;  break;
             case H_FAILED:      text = getString(R.string.k2go_home_failed);      dotColor = R.color.k2go_clay;  break;
-            case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_amber; break;
+            // ADFA-5061: green, not amber. H_INSTALLING is set from PendingContent.anyRunning
+            // — the same condition the cards test — so leaving this amber while a card
+            // receiving content is green put two opposite colours on one screen for one event.
+            // Under the convention the cards now follow, colour is the severity channel and
+            // content arriving blocks nothing: the library works, and it is getting bigger.
+            // The label carries the news, and the row stays tappable as the way into progress.
+            case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_leaf;  break;
             default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
         }
         homeStatus.setText(text);
@@ -503,18 +530,28 @@ public class LibraryHomeFragment extends Fragment {
     /**
      * ADFA-5061: whether this card's content type has a stream running right now.
      *
-     * <p>Proof that the platform is there, the same argument the courses confirm screen
-     * makes: we are watching it process a job we submitted. The card endpoints and the
-     * content keys disagree on one name — the Wikipedia card is {@code kiwix} and its
-     * content type is {@code zim} — which is the sort of thing ADFA-5062 exists to retire.
+     * <p>Read from the pass snapshot, never with a fresh read of its own — see
+     * {@link #passContent}. False when there is no pass in progress, which is the safe
+     * direction: the label falls back to whatever the probe said.
+     *
+     * <p><b>Maps is always false here</b>, and deliberately so upstream: its progress belongs
+     * to the module queue rather than to a content stream, so {@code Snapshot.isRunning} has
+     * no case for it. The maps card therefore keeps showing the probe's verdict while a
+     * runrole builds tiles — the same defect this fixed for the other three, still open for
+     * one. Recorded rather than papered over, because the right answer is the module queue,
+     * not a fourth reading here.
+     *
+     * <p>The card endpoints and the content keys disagree on one name — the Wikipedia card is
+     * {@code kiwix} and its content type is {@code zim}. That belongs on {@code ContentType}
+     * as an endpoint field; it is exactly what ADFA-5062 exists to retire, and this adds one
+     * more instance of it.
      */
     private boolean contentInFlight(Card c) {
-        if (c == null || c.endpoint == null) return false;
+        if (c == null || c.endpoint == null || passContent == null) return false;
         String key = "kiwix".equals(c.endpoint) ? "zim" : c.endpoint;
         org.iiab.controller.system.domain.ContentType type =
                 org.iiab.controller.system.domain.ContentType.byKey(key);
-        return type != null && org.iiab.controller.system.data.PendingContent
-                .isRunning(requireContext(), type);
+        return type != null && passContent.isRunning(type);
     }
 
     private void tint(View v, int colorRes) {

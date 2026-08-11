@@ -315,10 +315,11 @@ public final class PendingContent {
         return read(ctx).anyRunning();
     }
 
-    /** One-shot: is <em>this</em> type's stream running right now? (ADFA-5061) */
-    public static boolean isRunning(Context ctx, ContentType type) {
-        return type != null && read(ctx).isRunning(type);
-    }
+    // ADFA-5061: a one-shot isRunning(ctx, type) was added here and removed in review. It
+    // would have been the only one-shot whose answer needs none of the four wishlist parses
+    // read() performs — and its one caller asked it per card per poll, which is the
+    // "same question twice in one pass" this class opens by warning against. Callers that
+    // need it per type hold a Snapshot instead.
 
     /**
      * Discards every banked order, of every type.

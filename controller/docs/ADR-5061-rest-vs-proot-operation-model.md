@@ -560,6 +560,41 @@ most expensive by the third platform. A is B done safely over time.
           there is no flicker. The tap follows, since a card that reads "Adding content" and
           then opens an install sheet is the same disagreement one level down.
 
+          **What the two-pass review changed, after the fact.** The first pass found edge
+          cases; the second projected the design, and it was right on four counts worth
+          recording because each is a mistake with a name:
+
+          - **`PlatformPresence` was in `kolibri/domain`, and the value it produces is consumed
+            by `system/domain`.** Decision 8 calls platform presence the fourth system fact,
+            and a fact with one owner cannot have Kolibri as that owner. Under a per-platform
+            package it would have read as "Kolibri's answer" and been re-implemented for books
+            and kiwix rather than reused. Moved, one `git mv`, while there was one caller.
+          - **The `workInFlight` argument is gone**, and this is the one that matters. It
+            claimed a platform processing our job cannot be missing — true, and wrong to use.
+            It is an inference from the user's own activity, which is the implicit derivation
+            this ADR exists to remove; the class it sat in says so two paragraphs above. It
+            added nothing to the bug it was written for, since a timeout is already "nothing
+            established" and already reports present, so it bought only the power to override
+            an outright 404. And it had **no lifecycle**: the running flag lives in process
+            memory, so over a download measured in hours process death is the ordinary case,
+            and the proof evaporated exactly when it was needed longest. It also widened
+            `platformPresent` from "installed" to "installed-or-busy" with no way for a reader
+            to tell which it got.
+          - **The header contradicted the card it was cited as being right about.**
+            `H_INSTALLING` is set from the same condition the cards test, and it was left amber
+            while a card receiving content went green: two opposite colours for one event on
+            one screen. Now green, with the label carrying the news.
+          - **The content reading was taken per card per poll.** Four wishlist JSON parses per
+            card, on the main thread, for a question that reads three cheap fields — and it
+            broke the rule `PendingContent` opens by stating, so the header and a card could
+            answer from two readings taken moments apart. One snapshot per pass now, which is
+            what that class asks for. The one-shot added for it was removed with it.
+
+          Also from the review, and honest about what was not fixed: the Get More hub's fix is
+          shallower than it first read. Only the *message* changed; `reachable()` is still a
+          boolean, so a box that is up while every platform is too slow still lands on "no
+          content modules are installed". Action item 8 owns the real answer.
+
           A convention came out of that card, and it is worth keeping: **the dot answers "can
           I use this?" and the label answers "what is happening?"** Two questions, two
           channels. So a card receiving content stays green — importing a channel database and
@@ -766,7 +801,15 @@ most expensive by the third platform. A is B done safely over time.
        whose sheet offers a LIVE "Open" and a STOPPED "Install" as two identically styled rows, which
        is the same work as the first two items of ADFA-5062.
 
-       ADFA-4954 itself is closed. Its one open scope, metadata-only, was split to its own ticket:
+       ADFA-4954 itself is closed. Its one open scope, metadata-only, is now **ADFA-5094**
+       ("Kolibri: topic display should not depend on reaching Studio via internet"), low
+       priority under Epic ADFA-1028. Reframed while splitting it, because the original wording
+       described something we already have: the channel catalogue is bundled in the APK and
+       works offline, but only at channel level. The *topic tree* is fetched live from Studio
+       every time a channel is opened to narrow it, so what is missing is depth, not the
+       catalogue. It helps a poor or intermittent link rather than the absence of one —
+       downloading content needs a connection regardless — which is exactly why it is low
+       priority and still worth doing. The mechanics behind it:
        it needs `remotechannelimport` in the dashboard's task map (`kolibri.map.ts` hardcodes
        `remoteimport` and `buildTaskPayload` cannot vary it), and on the device a third way to
        express a selection — `ChannelSelection.ofSubtrees` rejects an empty node list on purpose,
@@ -798,6 +841,34 @@ most expensive by the third platform. A is B done safely over time.
        is the same gap as the run-level disk budget noted in item 2d, seen from the other end: there
        is no one place to put the budget because there is no one place that reads the disk.
 7. [ ] ADFA-5063: the reversibility field, and the decision on real module uninstallation.
+8. [ ] **One shared answer to "is this platform there".** Lifted out of item 2d, where it was
+       buried in a sub-bullet about UX tokens and 5062's owner would not have found it.
+
+       Six probes exist — `LibraryHomeFragment.probe`, `GetMoreHubFragment.reachable`,
+       `ModuleHubFragment.reachable` (a byte-for-byte copy of the previous one, its comment
+       says so), `KolibriPlatformProbe`, `HttpServerReachability`, and `RestReadiness` (that
+       last one asks a different question and is fine). Five use a 1500 ms timeout and the
+       same status range. Three now weigh silence correctly and three still collapse it.
+
+       Worse than the count: five answers with **three different staleness policies** — the
+       hub's is monotonic per fragment instance ("a card that answered does not un-answer"),
+       the Home card's is a probe plus a 60-second red grace, the confirm screen's is a fresh
+       probe every time, and `ContentDoor` simply asserts `platformPresent = true`. So the
+       "one question, two memories" disagreement is still reachable: nginx up and Kolibri
+       restarting shows Courses on the hub and "not installed" on the confirm screen.
+
+       Shape: a `PlatformPresenceRepository` in `system/data` as the only thing that probes,
+       holding `{platform → (evidence, observedAtMs)}`, folded into `SystemFactsReader` so the
+       value reaches `OperationDispatcher` through the channel that already exists. Then one
+       staleness policy in one file, and two of the five call sites disappear rather than
+       migrate. `PlatformPresence` (already in `system/domain`) is the verdict half and does
+       not change.
+
+       **The rule to carry, because it is not only about probes:** a check that answers with a
+       boolean invites its caller to treat silence as a verdict. Three screens made that
+       mistake independently, and in each one the fact needed to do better was already in
+       hand. When 5062 migrates a surface, the derivation to retire is not just "guessing
+       instead of asking the model" — it is this specific shape.
 8. [x] Diagram: `operation-model-roadmap.svg` — ticket map, dependencies and per-item progress. A
        surfaces to operations to class map of the *current* code is still to draw.
 

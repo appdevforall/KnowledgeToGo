@@ -10,7 +10,7 @@
 package org.iiab.controller.kolibri.data;
 
 import org.iiab.controller.config.BoxEndpoints;
-import org.iiab.controller.kolibri.domain.PlatformPresence;
+import org.iiab.controller.system.domain.PlatformPresence;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,13 +51,14 @@ public final class KolibriPlatformProbe {
     }
 
     /**
-     * Asks the box, and reports what it said in the domain's words. Blocking.
+     * Asks the box, and reports the evidence rather than a verdict. Blocking.
      *
-     * <p>2xx/3xx is yes; 404 is no; everything else says nothing — including 5xx, which is
-     * what nginx returns while the platform behind it restarts, and a timeout, which is
-     * what a busy platform returns. {@link PlatformPresence} decides what to do with each.
+     * <p>2xx/3xx is present; 404 is absent; everything else establishes nothing — including
+     * 5xx, which is what nginx returns while the platform behind it restarts, and a timeout,
+     * which is what a busy platform returns. {@link PlatformPresence} decides what each one
+     * is worth.
      */
-    public static PlatformPresence.Answered probe() {
+    public static PlatformPresence.Evidence probe() {
         HttpURLConnection c = null;
         try {
             c = (HttpURLConnection) new URL(URL_PATH).openConnection();
@@ -67,12 +68,12 @@ public final class KolibriPlatformProbe {
             c.setRequestMethod("GET");
             int code = c.getResponseCode();
             if (code >= 200 && code < 400) {
-                return PlatformPresence.Answered.YES;
+                return PlatformPresence.Evidence.PRESENT;
             }
-            return code == 404 ? PlatformPresence.Answered.NO
-                    : PlatformPresence.Answered.NOTHING;
+            return code == 404 ? PlatformPresence.Evidence.ABSENT
+                    : PlatformPresence.Evidence.NONE;
         } catch (Exception e) {
-            return PlatformPresence.Answered.NOTHING;
+            return PlatformPresence.Evidence.NONE;
         } finally {
             if (c != null) {
                 c.disconnect();
