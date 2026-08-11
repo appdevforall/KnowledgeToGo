@@ -1,13 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 640" width="1060" height="640" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1010" width="1280" height="1010" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
-<desc>How ADFA-4954, ADFA-5061, ADFA-5062, ADFA-5063, ADFA-5070 and ADFA-4758 relate, in what order to take them, and what is done so far. Update the class on each item dot as work lands: s-done, s-doing or s-todo.</desc>
+<desc>Which ticket owns what, what blocks what, and how far each has got. Update the class on each item dot as work lands: s-done, s-doing or s-todo. The canvas is deliberately not page-sized — grow it rather than dropping items.</desc>
 
 <style>
   .bg    { fill: #F7F8F9; }
   .card  { fill: #FFFFFF; stroke: #D5D8DC; stroke-width: 1.5; rx: 10; }
   .card-hi { fill: #FFFFFF; stroke: #0E7C86; stroke-width: 2.5; rx: 10; }
+  .card-park { fill: #FBFBFC; stroke: #C8CDD2; stroke-width: 1.5; stroke-dasharray: 5 4; rx: 10; }
   .h1    { font-size: 19px; font-weight: 700; fill: #1F2328; }
   .h2    { font-size: 14.5px; font-weight: 700; fill: #1F2328; }
+  .h3    { font-size: 12.5px; font-weight: 700; fill: #1F2328; }
   .sub   { font-size: 11.5px; fill: #5B636B; }
   .item  { font-size: 11.5px; fill: #1F2328; }
   .note  { font-size: 11px; fill: #5B636B; font-style: italic; }
@@ -38,125 +40,182 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="1060" height="640"/>
+<rect class="bg" x="0" y="0" width="1280" height="1010"/>
 
 <text class="h1" x="24" y="34">Operation model — ticket map</text>
 <text class="sub" x="24" y="54">Which ticket owns what, what blocks what, and how far each one has got.</text>
 
 <!-- legend -->
-<circle class="s-done"  cx="742" cy="30" r="6"/><text class="sub" x="754" y="34">done</text>
-<circle class="s-doing" cx="812" cy="30" r="6"/><text class="sub" x="824" y="34">in progress</text>
-<circle class="s-todo"  cx="912" cy="30" r="6"/><text class="sub" x="924" y="34">not started</text>
-<text class="note" x="742" y="54">Edit the dot's class in this file as work lands.</text>
+<circle class="s-done"  cx="962" cy="30" r="6"/><text class="sub" x="974" y="34">done</text>
+<circle class="s-doing" cx="1032" cy="30" r="6"/><text class="sub" x="1044" y="34">in progress</text>
+<circle class="s-todo"  cx="1132" cy="30" r="6"/><text class="sub" x="1144" y="34">not started</text>
+<text class="note" x="962" y="54">Edit the dot's class in this file as work lands.</text>
 
-<!-- ============ ADFA-4954 ============ -->
-<rect class="card" x="24" y="80" width="320" height="212"/>
-<rect class="chip" x="40" y="96" width="112" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="110" fill="#C0392B">RUNS IN PARALLEL</text>
-<text class="h2" x="40" y="139">ADFA-4954 · Kolibri seeding</text>
-<text class="sub" x="40" y="157">Where the model gets applied, and</text>
-<text class="sub" x="40" y="172">where the evidence came from.</text>
+<!-- ============================================================ -->
+<!-- COLUMN 1 — delivered                                          -->
+<!-- ============================================================ -->
+<text class="h3" x="24" y="80">DELIVERED</text>
 
-<circle class="s-done" cx="48" cy="192" r="5.5"/><text class="item" x="62" y="196">C1 — browse and whole channels</text>
-<circle class="s-done" cx="48" cy="210" r="5.5"/><text class="item" x="62" y="214">C2 — topic selection over Studio's tree</text>
-<circle class="s-done" cx="48" cy="228" r="5.5"/><text class="item" x="62" y="232">Get More door (browse only)</text>
-<circle class="s-done" cx="48" cy="246" r="5.5"/><text class="item" x="62" y="250">Live download from Get More</text>
-<circle class="s-done" cx="48" cy="264" r="5.5"/><text class="item" x="62" y="268">Drain a courses-only wizard run</text>
-<circle class="s-todo" cx="48" cy="282" r="5.5"/><text class="item" x="62" y="286">Metadata-only scope</text>
+<!-- ADFA-4954 -->
+<rect class="card" x="24" y="90" width="392" height="212"/>
+<rect class="chip" x="40" y="106" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="120" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="149">ADFA-4954 · Kolibri seeding</text>
+<text class="sub" x="40" y="167">Where the model got applied, and</text>
+<text class="sub" x="40" y="182">where most of the evidence came from.</text>
 
-<!-- ============ stale content state (found by testing 4954) ============ -->
-<rect class="card" x="24" y="322" width="320" height="168"/>
-<rect class="chip" x="40" y="338" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="352" fill="#1B7F4B">VERIFIED</text>
+<circle class="s-done" cx="48" cy="202" r="5.5"/><text class="item" x="62" y="206">Browse and whole channels</text>
+<circle class="s-done" cx="48" cy="221" r="5.5"/><text class="item" x="62" y="225">Topic selection over Studio's tree</text>
+<circle class="s-done" cx="48" cy="240" r="5.5"/><text class="item" x="62" y="244">Get More door + live download</text>
+<circle class="s-done" cx="48" cy="259" r="5.5"/><text class="item" x="62" y="263">Drain a courses-only wizard run</text>
+<text class="note" x="40" y="286">Metadata-only scope split out — see the new card opposite.</text>
+
+<!-- ADFA-5070 -->
+<rect class="card" x="24" y="322" width="392" height="152"/>
+<rect class="chip" x="40" y="338" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="352" fill="#1B7F4B">DONE</text>
 <text class="h2" x="40" y="381">ADFA-5070 · Stale content state</text>
-<text class="sub" x="40" y="399">A session outlives the system it</text>
-<text class="sub" x="40" y="414">was about. Found while testing 4954.</text>
+<text class="sub" x="40" y="399">A session outliving the system it was</text>
+<text class="sub" x="40" y="414">about. Found while testing 4954.</text>
 
-<circle class="s-done" cx="48" cy="438" r="5.5"/><text class="item" x="62" y="442">Wipe content sessions when replaced</text>
-<circle class="s-done" cx="48" cy="460" r="5.5"/><text class="item" x="62" y="464">Orders discarded, except the wizard’s</text>
-<circle class="s-done" cx="48" cy="482" r="5.5"/><text class="item" x="62" y="486">All 5 destructive routes hooked</text>
+<circle class="s-done" cx="48" cy="434" r="5.5"/><text class="item" x="62" y="438">Wipe content sessions when replaced</text>
+<circle class="s-done" cx="48" cy="453" r="5.5"/><text class="item" x="62" y="457">All five destructive routes hooked</text>
 
-<!-- ============ ADFA-5061 ============ -->
-<rect class="card-hi" x="372" y="80" width="320" height="284"/>
-<circle class="badge" cx="396" cy="105" r="13"/><text class="badgetx" x="392" y="110">1</text>
-<text class="h2" x="418" y="110">ADFA-5061 · Operation model</text>
-<text class="sub" x="396" y="132">One declared source of truth for</text>
-<text class="sub" x="396" y="147">(platform, kind, class, reversibility).</text>
-<text class="note" x="396" y="167">Start here — everything else reads it.</text>
+<!-- ADFA-5074 -->
+<rect class="card" x="24" y="494" width="392" height="226"/>
+<rect class="chip" x="40" y="510" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="524" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="553">ADFA-5074 · Content surface</text>
+<text class="sub" x="40" y="571">One landing, one host, one queue.</text>
 
-<circle class="s-done" cx="396" cy="192" r="5.5"/><text class="item" x="410" y="196">One reader for the system facts</text>
-<circle class="s-done" cx="396" cy="211" r="5.5"/><text class="item" x="410" y="215">Pure resolver: live / stopped / deferred</text>
-<circle class="s-doing" cx="396" cy="230" r="5.5"/><text class="item" x="410" y="234">kind / class type on each operation</text>
-<circle class="s-todo"  cx="396" cy="249" r="5.5"/><text class="item" x="410" y="253">UX tokens → ADFA-5074</text>
-<circle class="s-todo"  cx="396" cy="268" r="5.5"/><text class="item" x="410" y="272">Apply to the dashboard Rebuild fork</text>
-<circle class="s-todo"  cx="396" cy="287" r="5.5"/><text class="item" x="410" y="291">Apply to Kolibri (install vs seeding)</text>
-<circle class="s-done" cx="396" cy="306" r="5.5"/><text class="item" x="410" y="310">Retire the four *Wizard booleans</text>
-<circle class="s-done" cx="396" cy="325" r="5.5"/><text class="item" x="410" y="329">Wizard selection survives being killed</text>
-<text class="note" x="410" y="347">facts: installed · healthy · server up · platform present</text>
+<circle class="s-done" cx="48" cy="592" r="5.5"/><text class="item" x="62" y="596">Front door + re-entry</text>
+<circle class="s-done" cx="48" cy="611" r="5.5"/><text class="item" x="62" y="615">A session gates only work in flight</text>
+<circle class="s-done" cx="48" cy="630" r="5.5"/><text class="item" x="62" y="634">Get More notices a platform arriving</text>
+<circle class="s-done" cx="48" cy="649" r="5.5"/><text class="item" x="62" y="653">One host for every progress screen</text>
+<text class="note" x="40" y="678">Grew past its plan: the index as router, a real queue,</text>
+<text class="note" x="40" y="694">per-state rows, a transfer rate, and a completion chain</text>
+<text class="note" x="40" y="710">that could not close itself.</text>
 
-<!-- ============ ADFA-5062 ============ -->
-<rect class="card" x="720" y="80" width="316" height="192"/>
-<circle class="badge" cx="744" cy="105" r="13"/><text class="badgetx" x="740" y="110">3</text>
-<text class="h2" x="766" y="110">ADFA-5062 · Retire derivations</text>
-<text class="sub" x="744" y="132">The surfaces that still guess.</text>
+<!-- ============================================================ -->
+<!-- COLUMN 2 — the model                                          -->
+<!-- ============================================================ -->
+<text class="h3" x="444" y="80">THE SPINE — everything else reads it</text>
 
-<circle class="s-todo" cx="744" cy="156" r="5.5"/><text class="item" x="758" y="160">ModuleActionSheet: Open vs Install</text>
-<circle class="s-todo" cx="744" cy="178" r="5.5"/><text class="item" x="758" y="182">Home cards: app install vs content</text>
-<circle class="s-todo" cx="744" cy="200" r="5.5"/><text class="item" x="758" y="204">SetupProgressActivity key switch</text>
-<circle class="s-todo" cx="744" cy="222" r="5.5"/><text class="item" x="758" y="226">Maps: two mechanisms, one name</text>
-<circle class="s-todo" cx="744" cy="244" r="5.5"/><text class="item" x="758" y="248">5 more call sites onto the one reader</text>
+<rect class="card-hi" x="444" y="90" width="392" height="446"/>
+<circle class="badge" cx="468" cy="115" r="13"/><text class="badgetx" x="464" y="120">1</text>
+<text class="h2" x="490" y="120">ADFA-5061 · Operation model</text>
+<text class="sub" x="468" y="142">One declared source of truth for</text>
+<text class="sub" x="468" y="157">(platform, kind, class).</text>
+<text class="note" x="468" y="177">facts: installed · healthy · server up · platform present</text>
 
-<!-- ============ ADFA-5063 ============ -->
-<rect class="card" x="720" y="292" width="316" height="146"/>
-<circle class="badge" cx="744" cy="317" r="13"/><text class="badgetx" x="740" y="322">4</text>
-<text class="h2" x="766" y="322">ADFA-5063 · Reversibility</text>
-<text class="sub" x="744" y="344">A decision, not a migration.</text>
+<circle class="s-done"  cx="468" cy="202" r="5.5"/><text class="item" x="482" y="206">One reader for the system facts</text>
+<circle class="s-done"  cx="468" cy="221" r="5.5"/><text class="item" x="482" y="225">Pure resolver: live / stopped / deferred</text>
+<circle class="s-doing" cx="468" cy="240" r="5.5"/><text class="item" x="482" y="244">kind / class type on each operation</text>
+<circle class="s-done"  cx="468" cy="259" r="5.5"/><text class="item" x="482" y="263">Retire the four *Wizard booleans</text>
+<circle class="s-done"  cx="468" cy="278" r="5.5"/><text class="item" x="482" y="282">Wizard selection survives being killed</text>
+<circle class="s-doing" cx="468" cy="297" r="5.5"/><text class="item" x="482" y="301">UX contract tokens</text>
+<text class="note" x="482" y="318">5074 landed the animation and the progress surface;</text>
+<text class="note" x="482" y="333">colour tokens and the finished-card rate are left.</text>
+<circle class="s-doing" cx="468" cy="354" r="5.5"/><text class="item" x="482" y="358">Apply to Kolibri (install vs seeding)</text>
+<text class="note" x="482" y="375">Seeding is the showcase. The app install never reaches</text>
+<text class="note" x="482" y="390">the model — Operation.appInstall has one caller, and it</text>
+<text class="note" x="482" y="405">only picks an animation.</text>
+<circle class="s-todo"  cx="468" cy="426" r="5.5"/><text class="item" x="482" y="430">One shared answer to "is the platform there"</text>
+<text class="note" x="482" y="447">Six probes, five answers, three staleness policies.</text>
+<circle class="s-todo"  cx="468" cy="468" r="5.5"/><text class="item" x="482" y="472">Dashboard Rebuild: the REST/proot fork</text>
+<text class="note" x="482" y="489">Untouched since before this ADR existed. An unreadable</text>
+<text class="note" x="482" y="504">version silently takes the route that stops the box, and</text>
+<text class="note" x="482" y="519">the LIVE route is presented as if it were STOPPED.</text>
 
-<circle class="s-todo" cx="744" cy="368" r="5.5"/><text class="item" x="758" y="372">reversibility field in the model</text>
-<circle class="s-todo" cx="744" cy="390" r="5.5"/><text class="item" x="758" y="394">Decide: can a module be uninstalled?</text>
-<circle class="s-todo" cx="744" cy="412" r="5.5"/><text class="item" x="758" y="416">One verb for “remove”, everywhere</text>
+<!-- NEW — catalogue depth (split out of 4954) -->
+<rect class="card" x="444" y="556" width="392" height="164"/>
+<rect class="chip" x="460" y="572" width="60" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="468" y="586" fill="#1B5E8F">SPLIT OUT</text>
+<text class="h2" x="460" y="615">ADFA-5094 · Kolibri topic display</text>
+<text class="sub" x="460" y="633">Should not depend on reaching Studio</text>
+<text class="sub" x="460" y="648">over the internet. Low priority, real gap.</text>
 
-<!-- ============ ADFA-4758 ============ -->
-<rect class="card" x="372" y="392" width="320" height="170"/>
-<text class="h2" x="396" y="418">ADFA-4758 · Split the install pipeline</text>
-<text class="sub" x="396" y="436">Independent of the model, but easier</text>
-<text class="sub" x="396" y="451">once it has the vocabulary.</text>
+<circle class="s-todo" cx="468" cy="668" r="5.5"/><text class="item" x="482" y="672">Task map learns the metadata-only import</text>
+<circle class="s-todo" cx="468" cy="687" r="5.5"/><text class="item" x="482" y="691">The box serves the tree it imported</text>
+<circle class="s-todo" cx="468" cy="706" r="5.5"/><text class="item" x="482" y="710">The picker prefers the box, falls back to Studio</text>
 
-<circle class="s-done" cx="396" cy="476" r="5.5"/><text class="item" x="410" y="480">Guard: no OS re-extract by default</text>
-<circle class="s-done" cx="396" cy="498" r="5.5"/><text class="item" x="410" y="502">Persist the installed tier</text>
-<circle class="s-todo" cx="396" cy="520" r="5.5"/><text class="item" x="410" y="524">Two separately invoked installers</text>
-<circle class="s-todo" cx="396" cy="542" r="5.5"/><text class="item" x="410" y="546">Safe system change + data migration</text>
+<!-- ============================================================ -->
+<!-- COLUMN 3 — next, and the one that can lose data               -->
+<!-- ============================================================ -->
+<text class="h3" x="864" y="80">NEXT</text>
 
-<!-- ============ ADFA-5074 ============ -->
-<rect class="card" x="720" y="452" width="316" height="160"/>
-<circle class="badge" cx="744" cy="477" r="13"/><text class="badgetx" x="740" y="482">2</text>
-<text class="h2" x="766" y="482">ADFA-5074 · Content surface</text>
-<text class="sub" x="744" y="504">Five landings for one kind of work.</text>
+<!-- ADFA-5062 -->
+<rect class="card" x="864" y="90" width="392" height="250"/>
+<circle class="badge" cx="888" cy="115" r="13"/><text class="badgetx" x="884" y="120">2</text>
+<text class="h2" x="910" y="120">ADFA-5062 · Retire derivations</text>
+<text class="sub" x="888" y="142">The surfaces that still guess. All five</text>
+<text class="sub" x="888" y="157">re-verified against the code, 11 Aug.</text>
 
-<circle class="s-done" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
-<circle class="s-done" cx="744" cy="548" r="5.5"/><text class="item" x="758" y="552">A session gates only work in flight</text>
-<circle class="s-done" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">Get More notices a platform arriving</text>
-<circle class="s-todo" cx="744" cy="592" r="5.5"/><text class="item" x="758" y="596">One host for every progress screen</text>
+<circle class="s-todo" cx="888" cy="182" r="5.5"/><text class="item" x="902" y="186">ModuleActionSheet: Open vs Install</text>
+<circle class="s-todo" cx="888" cy="204" r="5.5"/><text class="item" x="902" y="208">Home cards: app install vs content</text>
+<circle class="s-todo" cx="888" cy="226" r="5.5"/><text class="item" x="902" y="230">SetupProgressActivity key switch</text>
+<circle class="s-todo" cx="888" cy="248" r="5.5"/><text class="item" x="902" y="252">Maps: two mechanisms, one name</text>
+<circle class="s-todo" cx="888" cy="270" r="5.5"/><text class="item" x="902" y="274">5 sites that probe the rootfs themselves</text>
+<text class="note" x="888" y="298">The rule to carry: a check that answers with a boolean</text>
+<text class="note" x="888" y="313">invites its caller to treat silence as a verdict. Three</text>
+<text class="note" x="888" y="328">screens made that mistake independently.</text>
 
-<text class="note" x="24" y="522">Do not close 4758 as superseded: the migration half</text>
-<text class="note" x="24" y="538">is the one that can lose a user's content.</text>
+<!-- ADFA-4758 -->
+<rect class="card" x="864" y="360" width="392" height="190"/>
+<rect class="chip" x="880" y="376" width="112" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="888" y="390" fill="#C0392B">CAN LOSE CONTENT</text>
+<text class="h2" x="880" y="419">ADFA-4758 · Tier change</text>
+<text class="sub" x="880" y="437">Independent of the model, but easier</text>
+<text class="sub" x="880" y="452">once it has the vocabulary.</text>
 
-<!-- ============ links ============ -->
-<path class="lnk-hi" d="M344,186 L372,186" marker-end="url(#arwhi)" marker-start="url(#arwhiS)"/>
-<text class="lnklbl" x="240" y="176">evidence ⇄ applied to</text>
+<circle class="s-done" cx="888" cy="472" r="5.5"/><text class="item" x="902" y="476">Guard: no OS re-extract by default</text>
+<circle class="s-done" cx="888" cy="491" r="5.5"/><text class="item" x="902" y="495">Persist the installed tier</text>
+<circle class="s-todo" cx="888" cy="510" r="5.5"/><text class="item" x="902" y="514">Two separately invoked installers</text>
+<circle class="s-todo" cx="888" cy="529" r="5.5"/><text class="item" x="902" y="533">Safe system change + data migration</text>
 
-<path class="lnk-hi" d="M692,160 L720,160" marker-end="url(#arwhi)"/>
-<text class="lnklbl" x="694" y="152">blocks</text>
+<!-- ADFA-5063 — parked, out of the model's flow -->
+<rect class="card-park" x="864" y="570" width="392" height="150"/>
+<rect class="chip" x="880" y="586" width="74" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="888" y="600" fill="#5B636B">NOT NOW</text>
+<text class="h2" x="880" y="629">ADFA-5063 · Reversibility</text>
+<text class="sub" x="880" y="647">Real work, but not the model's. Taken out</text>
+<text class="sub" x="880" y="662">of the flow: nothing here blocks it and it</text>
+<text class="sub" x="880" y="677">blocks nothing.</text>
 
-<path class="lnk-hi" d="M692,320 C706,320 706,360 720,360" marker-end="url(#arwhi)"/>
-<text class="lnklbl" x="694" y="378">blocks</text>
+<circle class="s-todo" cx="888" cy="697" r="5.5"/><text class="item" x="902" y="701">Decide: can a module be uninstalled?</text>
+<text class="note" x="902" y="716">Seven verbs for "remove" today; two name one action.</text>
 
-<path class="lnk" d="M532,364 L532,392" marker-end="url(#arw)"/>
-<text class="lnklbl" x="542" y="384">gives it the vocabulary</text>
+<!-- ============================================================ -->
+<!-- links                                                         -->
+<!-- ============================================================ -->
+<path class="lnk-hi" d="M416,196 L440,196" marker-end="url(#arwhi)" marker-start="url(#arwhiS)"/>
+<text class="lnklbl" x="330" y="186">evidence ⇄ applied to</text>
 
-<path class="lnk" d="M372,300 C356,300 356,312 344,322" marker-end="url(#arw)"/>
-<text class="lnklbl" x="196" y="316">a SYSTEM op invalidates content state</text>
+<path class="lnk-hi" d="M836,170 L860,170" marker-end="url(#arwhi)"/>
+<text class="lnklbl" x="838" y="162">blocks</text>
 
-<text class="note" x="24" y="600">Order: 5061 first, 4954 alongside it, then 5074, then 5062, then 5063. 5074 comes before 5062 because 5062 migrates the SetupProgressActivity</text>
-<text class="note" x="24" y="616">key switch — work thrown away if the hosting changes after it. 4758 can run whenever, but reads better after 5061.</text>
+<path class="lnk" d="M640,536 L640,552" marker-end="url(#arw)"/>
+<text class="lnklbl" x="650" y="548">needs the box first</text>
+
+<path class="lnk" d="M416,600 C430,600 430,300 440,290" marker-end="url(#arw)"/>
+<text class="lnklbl" x="240" y="600">a SYSTEM op invalidates content state</text>
+
+<!-- ============================================================ -->
+<!-- carried, not blocking                                         -->
+<!-- ============================================================ -->
+<rect class="card" x="24" y="752" width="1232" height="164"/>
+<rect class="chip" x="40" y="768" width="150" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="48" y="782" fill="#5B636B">CARRIED, NOT BLOCKING</text>
+<text class="h3" x="204" y="782">Found in the last two days; recorded so they are met on purpose</text>
+
+<circle class="s-todo" cx="48" cy="806" r="5.5"/><text class="item" x="62" y="810">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
+<circle class="s-todo" cx="48" cy="828" r="5.5"/><text class="item" x="62" y="832">No run-level disk budget. Ten places read free space by hand, so there is nowhere to put one.</text>
+<circle class="s-todo" cx="48" cy="850" r="5.5"/><text class="item" x="62" y="854">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
+<circle class="s-todo" cx="48" cy="872" r="5.5"/><text class="item" x="62" y="876">Books reports no transfer rate; the maps card cannot show "adding content" because its progress belongs to the module queue.</text>
+<circle class="s-todo" cx="48" cy="894" r="5.5"/><text class="item" x="62" y="898">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+
+<text class="note" x="24" y="944">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
+<text class="note" x="24" y="960">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
+<text class="note" x="24" y="982">4758 can run whenever and reads better after 5061; do not close it as superseded, it is the one that can lose a user's content.</text>
+<text class="note" x="24" y="998">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
 </svg>

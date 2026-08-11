@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">준비됨</string>
     <string name="k2go_card_connecting">연결 중</string>
     <string name="k2go_card_unavailable">사용 불가 · 탭하여 다시 시도</string>
+    <string name="k2go_card_adding">콘텐츠 추가 중</string>
     <string name="k2go_card_not_installed">설치되지 않음</string>
     <string name="k2go_edition_basic">베이직</string>
     <string name="k2go_edition_standard">스탠다드</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">아직 다운로드 중인 것은 백그라운드에서 계속됩니다. 오류가 있는 항목은 다시 시도되지 않습니다.</string>
     <string name="k2go_zim_add_setup_fmt">설정에 추가 (%1$s)</string>
     <string name="k2go_gm_none">아직 설치된 콘텐츠 모듈이 없습니다.</string>
+    <string name="k2go_gm_server_off">시스템이 정지되어 있습니다. 추가할 수 있는 항목을 보려면 시작하세요.</string>
     <string name="k2go_books_title">도서</string>
     <string name="k2go_books_search_hint">도서 검색</string>
     <string name="k2go_books_chip_popular">인기</string>

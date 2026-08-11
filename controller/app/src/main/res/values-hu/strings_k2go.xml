@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Kész</string>
     <string name="k2go_card_connecting">Csatlakozás</string>
     <string name="k2go_card_unavailable">Nem érhető el · koppints az újrapróbáláshoz</string>
+    <string name="k2go_card_adding">Tartalom hozzáadása</string>
     <string name="k2go_card_not_installed">Nincs telepítve</string>
     <string name="k2go_edition_basic">Alap</string>
     <string name="k2go_edition_standard">Normál</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">Ami még tölt, a háttérben tovább folytatódik; a hibás elemeket nem próbáljuk újra.</string>
     <string name="k2go_zim_add_setup_fmt">Hozzáadás a beállításodhoz (%1$s)</string>
     <string name="k2go_gm_none">Még nincs telepítve tartalommodul.</string>
+    <string name="k2go_gm_server_off">A rendszer le van állítva. Indítsa el, hogy lássa, mit adhat hozzá.</string>
     <string name="k2go_books_title">Könyvek</string>
     <string name="k2go_books_search_hint">Könyvek keresése</string>
     <string name="k2go_books_chip_popular">Népszerű</string>

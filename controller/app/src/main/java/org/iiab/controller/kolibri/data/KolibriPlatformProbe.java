@@ -10,6 +10,7 @@
 package org.iiab.controller.kolibri.data;
 
 import org.iiab.controller.config.BoxEndpoints;
+import org.iiab.controller.system.domain.PlatformPresence;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,10 +30,17 @@ import java.net.URL;
  * does imply the platform is present — but that is precisely the kind of implicit
  * derivation ADR-5061 exists to remove.
  *
- * <p>A probe failure reads as absent. That is wrong when the box is merely off, and
- * deliberately so at this layer: the caller has the {@code installed} and
- * {@code serverUp} facts to tell the two apart, and this class is not the place to
- * guess.
+ * <p>ADFA-5061: this used to return a boolean, and a probe failure read as absent. The
+ * javadoc said the caller had the facts to tell "off" from "not installed" apart — and
+ * the one caller did not, so a box that was off, busy, slow, or behind a 502 during a
+ * restart was indistinguishable from a Basic tier with no Kolibri module. Since the
+ * dispatcher treats "absent" as terminal, a courses order asked for while an earlier
+ * one was still downloading was refused with "not installed" and discarded.
+ *
+ * <p>So the answer is now three-valued, and the third value is the honest one: an
+ * endpoint that does not reply has not told us anything. Note that a 404 <em>is</em> an
+ * answer — nginx replying "no such location" is real evidence of absence, and the Home
+ * cards have always distinguished it. Collapsing it with a timeout threw that away.
  */
 public final class KolibriPlatformProbe {
 
@@ -42,8 +50,15 @@ public final class KolibriPlatformProbe {
     private KolibriPlatformProbe() {
     }
 
-    /** True when Kolibri answers on the box. Blocking. */
-    public static boolean isPresent() {
+    /**
+     * Asks the box, and reports the evidence rather than a verdict. Blocking.
+     *
+     * <p>2xx/3xx is present; 404 is absent; everything else establishes nothing — including
+     * 5xx, which is what nginx returns while the platform behind it restarts, and a timeout,
+     * which is what a busy platform returns. {@link PlatformPresence} decides what each one
+     * is worth.
+     */
+    public static PlatformPresence.Evidence probe() {
         HttpURLConnection c = null;
         try {
             c = (HttpURLConnection) new URL(URL_PATH).openConnection();
@@ -52,9 +67,13 @@ public final class KolibriPlatformProbe {
             c.setReadTimeout(TIMEOUT_MS);
             c.setRequestMethod("GET");
             int code = c.getResponseCode();
-            return code >= 200 && code < 400;
+            if (code >= 200 && code < 400) {
+                return PlatformPresence.Evidence.PRESENT;
+            }
+            return code == 404 ? PlatformPresence.Evidence.ABSENT
+                    : PlatformPresence.Evidence.NONE;
         } catch (Exception e) {
-            return false;
+            return PlatformPresence.Evidence.NONE;
         } finally {
             if (c != null) {
                 c.disconnect();

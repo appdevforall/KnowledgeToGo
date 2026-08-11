@@ -241,7 +241,11 @@ public class LibraryHomeFragment extends Fragment {
     }
 
     private void onCardClick(Card c) {
-        if (c.state == GREEN) {
+        // ADFA-5061: a card whose content is downloading opens the platform, whatever the
+        // last probe said. Without this the label and the tap disagree — the card reads
+        // "Adding content" and a tap that lost the probe race opens the install sheet for a
+        // platform that is demonstrably installed.
+        if (c.state == GREEN || contentInFlight(c)) {
             Intent i = new Intent(requireContext(), PortalActivity.class);
             i.putExtra("TARGET_URL", BoxEndpoints.BASE + "/" + c.endpoint + "/");
             // ADFA-5043: Books (Calibre-Web) and Courses (Kolibri) auto-login as box admin in the WebView.
@@ -298,9 +302,25 @@ public class LibraryHomeFragment extends Fragment {
     // ADFA-4874: the REST readiness probe now lives in RestReadiness (shared with
     // SetupProgressActivity) so there is a single definition of the drain gate.
 
+    /**
+     * ADFA-5061: one content reading for the whole pass.
+     *
+     * <p>{@code PendingContent} asks for exactly this — read once, decide from the snapshot,
+     * because a screen that asks twice in one pass can get two answers and contradict itself.
+     * The card labels and the header both need it, and a first version had each of them take
+     * its own snapshot: four wishlist JSON parses per card per poll on the main thread, for a
+     * question that reads three cheap fields, and a real chance of the header and a card
+     * disagreeing about a stream that finished between the two reads.
+     *
+     * <p>Null between passes, and every reader tolerates that — {@code applyState} runs from
+     * paths that are not part of a pass at all.
+     */
+    private org.iiab.controller.system.data.PendingContent.Snapshot passContent;
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         boolean alive = ServerStateRepository.get().current().alive;
+        passContent = org.iiab.controller.system.data.PendingContent.read(requireContext());
 
         // ADFA-4837: track when the server first came up; the card red-grace is measured from here.
         if (alive) { if (serverAliveSinceMs == 0L) serverAliveSinceMs = android.os.SystemClock.elapsedRealtime(); }
@@ -408,7 +428,12 @@ public class LibraryHomeFragment extends Fragment {
         // how the install became unreachable in the first place. Sessions only, not banked
         // orders: a banked one has no screen to open, and a blocked drain would leave this
         // claiming work that is not happening.
-        if (org.iiab.controller.system.data.PendingContent.anyRunning(requireContext())
+        // ADFA-5061: from the pass snapshot, so the header and the cards cannot answer this
+        // from two different readings taken moments apart.
+        boolean contentRunning = passContent != null
+                ? passContent.anyRunning()
+                : org.iiab.controller.system.data.PendingContent.anyRunning(requireContext());
+        if (contentRunning
                 || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
             setHeader(H_INSTALLING);
             return;
@@ -441,7 +466,13 @@ public class LibraryHomeFragment extends Fragment {
             case H_READY:       text = getString(R.string.k2go_home_ready);       dotColor = R.color.k2go_leaf;  break;
             case H_READY_EMPTY: text = getString(R.string.k2go_home_ready_empty); dotColor = R.color.k2go_leaf;  break;
             case H_FAILED:      text = getString(R.string.k2go_home_failed);      dotColor = R.color.k2go_clay;  break;
-            case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_amber; break;
+            // ADFA-5061: green, not amber. H_INSTALLING is set from PendingContent.anyRunning
+            // — the same condition the cards test — so leaving this amber while a card
+            // receiving content is green put two opposite colours on one screen for one event.
+            // Under the convention the cards now follow, colour is the severity channel and
+            // content arriving blocks nothing: the library works, and it is getting bigger.
+            // The label carries the news, and the row stays tappable as the way into progress.
+            case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_leaf;  break;
             default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
         }
         homeStatus.setText(text);
@@ -470,6 +501,57 @@ public class LibraryHomeFragment extends Fragment {
             c.status.setText(getString(R.string.k2go_state_scheduled));
             c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         }
+        // ADFA-5061: content in flight for this card wins over whatever the probe said, and
+        // it applies whether the probe answered or not.
+        //
+        // Observed on device: while courses were downloading, the card alternated between
+        // "Ready" and "Unavailable" every few seconds. Kolibri is not going down and coming
+        // back — it is a Django app importing a channel under proot on a phone, so it keeps
+        // serving but sometimes takes longer than the 1500 ms this probe allows. Treating a
+        // timeout as a verdict on health turned "slow" into "broken", twice a minute.
+        //
+        // Saying what is actually happening is both truthful and stable: no race to win, so
+        // no flicker. The header three centimetres above already said "Adding content" while
+        // the card said "Unavailable" — one screen, two answers, and the header's was right.
+        // Green, not amber. The dot answers "can I use this?" and the label answers "what is
+        // happening?" — two questions that do not have to share a channel. Importing a
+        // channel database and serving content are different jobs inside Kolibri, and
+        // browsing is read-only, so there is nothing to warn about and nothing to block.
+        // Amber would say "degraded, wait"; that is a claim we have no evidence for, and it
+        // was only chosen here by copying the header, where amber means something else
+        // entirely ("this screen is not final yet").
+        if (contentInFlight(c)) {
+            tint(c.dot, R.color.k2go_leaf);
+            c.status.setText(getString(R.string.k2go_card_adding));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
+        }
+    }
+
+    /**
+     * ADFA-5061: whether this card's content type has a stream running right now.
+     *
+     * <p>Read from the pass snapshot, never with a fresh read of its own — see
+     * {@link #passContent}. False when there is no pass in progress, which is the safe
+     * direction: the label falls back to whatever the probe said.
+     *
+     * <p><b>Maps is always false here</b>, and deliberately so upstream: its progress belongs
+     * to the module queue rather than to a content stream, so {@code Snapshot.isRunning} has
+     * no case for it. The maps card therefore keeps showing the probe's verdict while a
+     * runrole builds tiles — the same defect this fixed for the other three, still open for
+     * one. Recorded rather than papered over, because the right answer is the module queue,
+     * not a fourth reading here.
+     *
+     * <p>The card endpoints and the content keys disagree on one name — the Wikipedia card is
+     * {@code kiwix} and its content type is {@code zim}. That belongs on {@code ContentType}
+     * as an endpoint field; it is exactly what ADFA-5062 exists to retire, and this adds one
+     * more instance of it.
+     */
+    private boolean contentInFlight(Card c) {
+        if (c == null || c.endpoint == null || passContent == null) return false;
+        String key = "kiwix".equals(c.endpoint) ? "zim" : c.endpoint;
+        org.iiab.controller.system.domain.ContentType type =
+                org.iiab.controller.system.domain.ContentType.byKey(key);
+        return type != null && passContent.isRunning(type);
     }
 
     private void tint(View v, int colorRes) {

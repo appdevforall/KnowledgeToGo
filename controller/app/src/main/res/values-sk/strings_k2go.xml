@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Pripravené</string>
     <string name="k2go_card_connecting">Pripája sa</string>
     <string name="k2go_card_unavailable">Nedostupné · klepnite pre opakovanie</string>
+    <string name="k2go_card_adding">Pridáva sa obsah</string>
     <string name="k2go_card_not_installed">Nenainštalované</string>
     <string name="k2go_edition_basic">Základná</string>
     <string name="k2go_edition_standard">Štandardná</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">Čokoľvek, čo sa ešte sťahuje, pokračuje na pozadí; položky s chybami sa nezopakujú.</string>
     <string name="k2go_zim_add_setup_fmt">Pridať do nastavenia (%1$s)</string>
     <string name="k2go_gm_none">Zatiaľ nie sú nainštalované žiadne moduly obsahu.</string>
+    <string name="k2go_gm_server_off">Váš systém je zastavený. Spustite ho, aby ste videli, čo môžete pridať.</string>
     <string name="k2go_books_title">Knihy</string>
     <string name="k2go_books_search_hint">Hľadať knihy</string>
     <string name="k2go_books_chip_popular">Populárne</string>

@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">প্রস্তুত</string>
     <string name="k2go_card_connecting">সংযোগ হচ্ছে</string>
     <string name="k2go_card_unavailable">অনুপলব্ধ · আবার চেষ্টা করতে ট্যাপ করুন</string>
+    <string name="k2go_card_adding">কনটেন্ট যোগ করা হচ্ছে</string>
     <string name="k2go_card_not_installed">ইনস্টল করা নেই</string>
     <string name="k2go_edition_basic">বেসিক</string>
     <string name="k2go_edition_standard">স্ট্যান্ডার্ড</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">যা এখনো ডাউনলোড হচ্ছে তা ব্যাকগ্রাউন্ডে চলতে থাকে; ত্রুটিযুক্ত আইটেম আবার চেষ্টা করা হবে না।</string>
     <string name="k2go_zim_add_setup_fmt">আপনার সেটআপে যোগ করুন (%1$s)</string>
     <string name="k2go_gm_none">এখনো কোনো কনটেন্ট মডিউল ইনস্টল করা হয়নি।</string>
+    <string name="k2go_gm_server_off">আপনার সিস্টেম বন্ধ আছে। কী যোগ করা যায় দেখতে এটি চালু করুন।</string>
     <string name="k2go_books_title">বই</string>
     <string name="k2go_books_search_hint">বই খুঁজুন</string>
     <string name="k2go_books_chip_popular">জনপ্রিয়</string>

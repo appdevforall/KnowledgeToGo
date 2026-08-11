@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Hazır</string>
     <string name="k2go_card_connecting">Bağlanıyor</string>
     <string name="k2go_card_unavailable">Kullanılamıyor · yeniden denemek için dokunun</string>
+    <string name="k2go_card_adding">İçerik ekleniyor</string>
     <string name="k2go_card_not_installed">Kurulu değil</string>
     <string name="k2go_edition_basic">Temel</string>
     <string name="k2go_edition_standard">Standart</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">İndirilmeye devam edenler arka planda sürer; hatalı ögeler yeniden denenmez.</string>
     <string name="k2go_zim_add_setup_fmt">Kurulumunuza ekle (%1$s)</string>
     <string name="k2go_gm_none">Henüz içerik modülü kurulu değil.</string>
+    <string name="k2go_gm_server_off">Sisteminiz durdurulmuş. Neler ekleyebileceğinizi görmek için başlatın.</string>
     <string name="k2go_books_title">Kitaplar</string>
     <string name="k2go_books_search_hint">Kitapları ara</string>
     <string name="k2go_books_chip_popular">Popüler</string>

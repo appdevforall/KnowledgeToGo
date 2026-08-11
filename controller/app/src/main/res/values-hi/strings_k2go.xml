@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">तैयार</string>
     <string name="k2go_card_connecting">कनेक्ट हो रहा है</string>
     <string name="k2go_card_unavailable">अनुपलब्ध · फिर कोशिश के लिए टैप करें</string>
+    <string name="k2go_card_adding">सामग्री जोड़ी जा रही है</string>
     <string name="k2go_card_not_installed">इंस्टॉल नहीं है</string>
     <string name="k2go_edition_basic">बेसिक</string>
     <string name="k2go_edition_standard">स्टैंडर्ड</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">जो कुछ अभी डाउनलोड हो रहा है वह बैकग्राउंड में चलता रहता है; त्रुटि वाले आइटम दोबारा कोशिश नहीं किए जाएँगे।</string>
     <string name="k2go_zim_add_setup_fmt">अपने सेटअप में जोड़ें (%1$s)</string>
     <string name="k2go_gm_none">अभी कोई सामग्री मॉड्यूल इंस्टॉल नहीं है।</string>
+    <string name="k2go_gm_server_off">आपका सिस्टम रुका हुआ है। क्या जोड़ा जा सकता है यह देखने के लिए इसे शुरू करें।</string>
     <string name="k2go_books_title">किताबें</string>
     <string name="k2go_books_search_hint">किताबें खोजें</string>
     <string name="k2go_books_chip_popular">लोकप्रिय</string>

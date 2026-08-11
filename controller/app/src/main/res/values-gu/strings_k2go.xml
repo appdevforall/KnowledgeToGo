@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">તૈયાર</string>
     <string name="k2go_card_connecting">કનેક્ટ થઈ રહ્યું છે</string>
     <string name="k2go_card_unavailable">અનુપલબ્ધ · ફરી પ્રયાસ કરવા ટૅપ કરો</string>
+    <string name="k2go_card_adding">સામગ્રી ઉમેરાઈ રહી છે</string>
     <string name="k2go_card_not_installed">ઇન્સ્ટોલ નથી</string>
     <string name="k2go_edition_basic">બેઝિક</string>
     <string name="k2go_edition_standard">સ્ટાન્ડર્ડ</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">હજી ડાઉનલોડ થઈ રહ્યું હોય તે બૅકગ્રાઉન્ડમાં ચાલુ રહે છે; ભૂલવાળી આઇટમ ફરી પ્રયાસ કરવામાં નહીં આવે.</string>
     <string name="k2go_zim_add_setup_fmt">તમારા સેટઅપમાં ઉમેરો (%1$s)</string>
     <string name="k2go_gm_none">હજી કોઈ કન્ટેન્ટ મૉડ્યુલ ઇન્સ્ટોલ થયા નથી.</string>
+    <string name="k2go_gm_server_off">તમારી સિસ્ટમ બંધ છે. શું ઉમેરી શકાય તે જોવા માટે તેને શરૂ કરો.</string>
     <string name="k2go_books_title">પુસ્તકો</string>
     <string name="k2go_books_search_hint">પુસ્તકો શોધો</string>
     <string name="k2go_books_chip_popular">લોકપ્રિય</string>

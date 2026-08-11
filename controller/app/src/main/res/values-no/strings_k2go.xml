@@ -319,6 +319,7 @@
     <string name="k2go_card_ready">Klar</string>
     <string name="k2go_card_connecting">Kobler til</string>
     <string name="k2go_card_unavailable">Utilgjengelig · trykk for å prøve igjen</string>
+    <string name="k2go_card_adding">Legger til innhold</string>
     <string name="k2go_card_not_installed">Ikke installert</string>
     <string name="k2go_edition_basic">Enkel</string>
     <string name="k2go_edition_standard">Standard</string>
@@ -558,6 +559,7 @@
     <string name="k2go_setup_finish_msg">Alt som fortsatt lastes ned, fortsetter i bakgrunnen; elementer med feil forsøkes ikke på nytt.</string>
     <string name="k2go_zim_add_setup_fmt">Legg til i oppsettet ditt (%1$s)</string>
     <string name="k2go_gm_none">Ingen innholdsmoduler er installert ennå.</string>
+    <string name="k2go_gm_server_off">Systemet ditt er stoppet. Start det for å se hva du kan legge til.</string>
 
     <string name="k2go_books_title">Bøker</string>
     <string name="k2go_books_search_hint">Søk i bøker</string>

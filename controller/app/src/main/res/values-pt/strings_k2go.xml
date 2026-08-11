@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Pronto</string>
     <string name="k2go_card_connecting">A ligar</string>
     <string name="k2go_card_unavailable">Indisponível · toque para tentar de novo</string>
+    <string name="k2go_card_adding">A adicionar conteúdo</string>
     <string name="k2go_card_not_installed">Não instalado</string>
     <string name="k2go_edition_basic">Básica</string>
     <string name="k2go_edition_standard">Padrão</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">O que ainda estiver a transferir continua em segundo plano; os itens com erros não serão repetidos.</string>
     <string name="k2go_zim_add_setup_fmt">Adicionar à sua configuração (%1$s)</string>
     <string name="k2go_gm_none">Ainda não há módulos de conteúdo instalados.</string>
+    <string name="k2go_gm_server_off">O seu sistema está parado. Inicie-o para ver o que pode adicionar.</string>
     <string name="k2go_books_title">Livros</string>
     <string name="k2go_books_search_hint">Procurar livros</string>
     <string name="k2go_books_chip_popular">Popular</string>

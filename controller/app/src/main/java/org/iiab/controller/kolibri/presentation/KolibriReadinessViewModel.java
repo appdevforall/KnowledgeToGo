@@ -21,6 +21,7 @@ import org.iiab.controller.kolibri.domain.InstalledLibrary;
 import org.iiab.controller.system.data.SystemFactsReader;
 import org.iiab.controller.system.domain.Operation;
 import org.iiab.controller.system.domain.OperationDispatcher;
+import org.iiab.controller.system.domain.PlatformPresence;
 import org.iiab.controller.system.domain.SystemFacts;
 
 import java.util.concurrent.ExecutorService;
@@ -36,10 +37,14 @@ import java.util.concurrent.Executors;
  * possible answers become four behaviours rather than two.
  *
  * <p>Three reads, one round trip each, all off the main thread: the system facts,
- * whether Kolibri is on this box at all, and what it already holds. The last is
- * only worth asking when the platform answered, and its failure is
+ * whether Kolibri is on this box at all, and what it already holds. Its failure is
  * {@link InstalledLibrary#unknown()} rather than "nothing installed" — a picker
  * acting on the wrong one of those would offer content the device already has.
+ *
+ * <p>ADFA-5061: the listing read used to be skipped whenever the platform did not answer,
+ * which since "silence is not absence" would mean it ran precisely when the box was least
+ * able to serve it — two timeouts in series, several seconds of "checking" for a value that
+ * comes back unknown either way. It is now gated on the server being up instead.
  */
 public class KolibriReadinessViewModel extends ViewModel {
 
@@ -82,9 +87,18 @@ public class KolibriReadinessViewModel extends ViewModel {
             // Only worth asking once there is a system that is staying: with nothing
             // installed, or one about to be replaced, the dispatcher answers DEFER
             // without consulting the platform anyway.
+            //
+            // ADFA-5061: this is where the collapse used to happen. The probe returned a
+            // boolean and any failure meant "absent", which the dispatcher treats as
+            // terminal — so a courses order asked for while an earlier one was still
+            // downloading was refused with "not installed" and thrown away. The probe now
+            // reports evidence rather than a verdict, and PlatformPresence weighs it.
             boolean present = facts.isInstalled() && !facts.isReplacementPending()
-                    && KolibriPlatformProbe.isPresent();
-            InstalledLibrary library = present
+                    && PlatformPresence.resolve(KolibriPlatformProbe.probe());
+            // Gated on the server, not on the probe. Asking a box that is not answering costs
+            // another full timeout in series and comes back unknown regardless — which is
+            // what the picker gets here anyway.
+            InstalledLibrary library = present && facts.isServerUp()
                     ? InstalledChannelsSource.read()
                     : InstalledLibrary.unknown();
 

@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Готово</string>
     <string name="k2go_card_connecting">Підключення</string>
     <string name="k2go_card_unavailable">Недоступно · торкніться, щоб повторити</string>
+    <string name="k2go_card_adding">Додавання вмісту</string>
     <string name="k2go_card_not_installed">Не встановлено</string>
     <string name="k2go_edition_basic">Базова</string>
     <string name="k2go_edition_standard">Стандартна</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">Усе, що ще завантажується, триватиме у фоні; елементи з помилками не повторюватимуться.</string>
     <string name="k2go_zim_add_setup_fmt">Додати до налаштування (%1$s)</string>
     <string name="k2go_gm_none">Поки не встановлено жодного модуля контенту.</string>
+    <string name="k2go_gm_server_off">Вашу систему зупинено. Запустіть її, щоб побачити, що можна додати.</string>
     <string name="k2go_books_title">Книги</string>
     <string name="k2go_books_search_hint">Пошук книг</string>
     <string name="k2go_books_chip_popular">Популярне</string>

@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">就绪</string>
     <string name="k2go_card_connecting">正在连接</string>
     <string name="k2go_card_unavailable">不可用 · 点按重试</string>
+    <string name="k2go_card_adding">正在添加内容</string>
     <string name="k2go_card_not_installed">未安装</string>
     <string name="k2go_edition_basic">基础版</string>
     <string name="k2go_edition_standard">标准版</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">仍在下载的项目会在后台继续；有错误的项目不会重试。</string>
     <string name="k2go_zim_add_setup_fmt">添加到您的设置 (%1$s)</string>
     <string name="k2go_gm_none">尚未安装任何内容模块。</string>
+    <string name="k2go_gm_server_off">您的系统已停止。启动后即可查看可添加的内容。</string>
     <string name="k2go_books_title">图书</string>
     <string name="k2go_books_search_hint">搜索图书</string>
     <string name="k2go_books_chip_popular">热门</string>

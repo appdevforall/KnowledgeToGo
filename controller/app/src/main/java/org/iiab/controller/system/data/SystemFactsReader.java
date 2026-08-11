@@ -88,6 +88,24 @@ public final class SystemFactsReader {
     }
 
     /**
+     * ADFA-5061: whether the box is observed to be answering — one fact, no disk.
+     *
+     * <p>{@link #read} is the way to get the facts, and callers that need several should use
+     * it. This exists for the ones that need only this one and would otherwise hand-copy the
+     * two lines above — which is how {@code DashboardFragment} came to hold its own version
+     * of the installed check, the divergence decision 9 exists to end. Same source, same
+     * treatment of "not observed yet": unknown is not up.
+     *
+     * <p>Cheap enough for a render pass: {@code ServerStateRepository} is the cached
+     * observation the server poll already maintains, so this opens no socket and reads no
+     * file, which {@link #read} cannot promise.
+     */
+    public static boolean serverAnswering() {
+        ServerStateRepository server = ServerStateRepository.get();
+        return server.hasObservation() && server.current().alive;
+    }
+
+    /**
      * Whether anything at all sits at the rootfs path — a directory that exists, no
      * more than that.
      *

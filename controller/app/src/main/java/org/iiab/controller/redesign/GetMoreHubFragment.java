@@ -274,13 +274,32 @@ public class GetMoreHubFragment extends Fragment {
         host.removeAllViews();
         List<Item> items = visibleItems();
 
-        if (items.isEmpty()) {                       // still checking, or nothing installed
+        if (items.isEmpty()) {
             TextView msg = new TextView(requireContext());
             msg.setGravity(Gravity.CENTER);
             msg.setPadding(0, dp(24), 0, dp(24));
             msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
             msg.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-            msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : R.string.k2go_gm_none);
+            // ADFA-5061: three cases, not two. This read "still checking, or nothing
+            // installed", and a stopped box fell into the second — every endpoint failed to
+            // answer, so the screen concluded the modules were not there. Found on device
+            // by stopping the engine and opening Get More: "No content modules are
+            // installed yet" over a box that has all of them.
+            //
+            // Same mistake as the courses confirm screen, one floor up, and the same fix in
+            // spirit: an endpoint that does not answer has said nothing. Here the box's own
+            // state settles it, and it costs no request — ServerStateRepository is the
+            // cached observation the server poll already maintains.
+            //
+            // No observation yet is treated as stopped rather than as empty. It is a guess
+            // either way, and this is the guess that sends the user somewhere useful.
+            // Only distinguishes a stopped box from an empty one. A box that is up while every
+            // platform is too slow to answer still lands on "nothing installed" — the same
+            // lie, for the harder-to-see case. Fixing that properly means one shared presence
+            // answer rather than a fourth reading here; recorded in ADR-5061 item 2d.
+            int empty = org.iiab.controller.system.data.SystemFactsReader.serverAnswering()
+                    ? R.string.k2go_gm_none : R.string.k2go_gm_server_off;
+            msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : empty);
             host.addView(msg);
             return;
         }
@@ -323,6 +342,10 @@ public class GetMoreHubFragment extends Fragment {
         }
 
     }
+
+    // ADFA-5061: this asked ServerStateRepository directly, in two lines identical to the
+    // ones inside SystemFactsReader — and said so in its own javadoc, which is the shape of
+    // divergence decision 9 exists to end. It calls the reader now.
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }
 

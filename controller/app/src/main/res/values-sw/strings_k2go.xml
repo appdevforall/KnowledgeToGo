@@ -317,6 +317,7 @@
     <string name="k2go_card_ready">Tayari</string>
     <string name="k2go_card_connecting">Inaunganisha</string>
     <string name="k2go_card_unavailable">Haipatikani · gusa ili kujaribu tena</string>
+    <string name="k2go_card_adding">Inaongeza maudhui</string>
     <string name="k2go_card_not_installed">Haijasakinishwa</string>
     <string name="k2go_edition_basic">Msingi</string>
     <string name="k2go_edition_standard">Kawaida</string>
@@ -551,6 +552,7 @@
     <string name="k2go_setup_finish_msg">Chochote kinachopakuliwa bado huendelea chinichini; vipengele vyenye hitilafu havitajaribiwa tena.</string>
     <string name="k2go_zim_add_setup_fmt">Ongeza kwenye usanidi wako (%1$s)</string>
     <string name="k2go_gm_none">Bado hakuna moduli za maudhui zilizosakinishwa.</string>
+    <string name="k2go_gm_server_off">Mfumo wako umesimama. Uanzishe ili kuona unaweza kuongeza nini.</string>
     <string name="k2go_books_title">Vitabu</string>
     <string name="k2go_books_search_hint">Tafuta vitabu</string>
     <string name="k2go_books_chip_popular">Maarufu</string>
