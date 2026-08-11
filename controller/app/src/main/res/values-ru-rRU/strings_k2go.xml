@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Всё, что ещё загружается, продолжится в фоне; элементы с ошибками не будут повторяться.</string>
     <string name="k2go_zim_add_setup_fmt">Добавить к настройке (%1$s)</string>
     <string name="k2go_gm_none">Модули контента ещё не установлены.</string>
+    <string name="k2go_gm_server_off">Ваша система остановлена. Запустите её, чтобы увидеть, что можно добавить.</string>
     <string name="k2go_books_title">Книги</string>
     <string name="k2go_books_search_hint">Поиск книг</string>
     <string name="k2go_books_chip_popular">Популярное</string>

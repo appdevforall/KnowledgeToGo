@@ -558,6 +558,7 @@
     <string name="k2go_setup_finish_msg">Wszystko, co się jeszcze pobiera, działa dalej w tle; elementy z błędami nie będą ponawiane.</string>
     <string name="k2go_zim_add_setup_fmt">Dodaj do konfiguracji (%1$s)</string>
     <string name="k2go_gm_none">Nie zainstalowano jeszcze żadnych modułów treści.</string>
+    <string name="k2go_gm_server_off">Twój system jest zatrzymany. Uruchom go, aby zobaczyć, co możesz dodać.</string>
 
     <string name="k2go_books_title">Książki</string>
     <string name="k2go_books_search_hint">Szukaj książek</string>

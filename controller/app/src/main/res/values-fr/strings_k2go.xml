@@ -558,6 +558,7 @@
     <string name="k2go_setup_finish_msg">Tout téléchargement en cours continue en arrière-plan ; les éléments comportant des erreurs ne seront pas réessayés.</string>
     <string name="k2go_zim_add_setup_fmt">Ajouter à votre configuration (%1$s)</string>
     <string name="k2go_gm_none">Aucun module de contenu n\'est encore installé.</string>
+    <string name="k2go_gm_server_off">Votre système est arrêté. Démarrez-le pour voir ce que vous pouvez ajouter.</string>
 
     <string name="k2go_books_title">Livres</string>
     <string name="k2go_books_search_hint">Rechercher des livres</string>

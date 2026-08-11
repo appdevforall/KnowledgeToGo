@@ -655,6 +655,7 @@
     <string name="k2go_setup_finish_msg">Anything still downloading keeps going in the background; items with errors won\'t be retried.</string>
     <string name="k2go_zim_add_setup_fmt">Add to your setup (%1$s)</string>
     <string name="k2go_gm_none">No content modules are installed yet.</string>
+    <string name="k2go_gm_server_off">Your system is stopped. Start it to see what you can add.</string>
 
     <!-- ADFA-4850: Get More Books / Project Gutenberg -->
     <string name="k2go_books_title">Books</string>

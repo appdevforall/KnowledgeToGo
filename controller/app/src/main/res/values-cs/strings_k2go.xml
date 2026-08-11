@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Vše, co se ještě stahuje, pokračuje na pozadí; položky s chybami nebudou opakovány.</string>
     <string name="k2go_zim_add_setup_fmt">Přidat do nastavení (%1$s)</string>
     <string name="k2go_gm_none">Zatím nejsou nainstalovány žádné moduly obsahu.</string>
+    <string name="k2go_gm_server_off">Váš systém je zastavený. Spusťte jej, abyste viděli, co lze přidat.</string>
     <string name="k2go_books_title">Knihy</string>
     <string name="k2go_books_search_hint">Hledat knihy</string>
     <string name="k2go_books_chip_popular">Populární</string>

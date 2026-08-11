@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Alles wat nog downloadt gaat op de achtergrond door; items met fouten worden niet opnieuw geprobeerd.</string>
     <string name="k2go_zim_add_setup_fmt">Toevoegen aan je installatie (%1$s)</string>
     <string name="k2go_gm_none">Er zijn nog geen inhoudsmodules geïnstalleerd.</string>
+    <string name="k2go_gm_server_off">Je systeem is gestopt. Start het om te zien wat je kunt toevoegen.</string>
     <string name="k2go_books_title">Boeken</string>
     <string name="k2go_books_search_hint">Boeken zoeken</string>
     <string name="k2go_books_chip_popular">Populair</string>

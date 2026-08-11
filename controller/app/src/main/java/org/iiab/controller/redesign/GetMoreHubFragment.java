@@ -274,13 +274,27 @@ public class GetMoreHubFragment extends Fragment {
         host.removeAllViews();
         List<Item> items = visibleItems();
 
-        if (items.isEmpty()) {                       // still checking, or nothing installed
+        if (items.isEmpty()) {
             TextView msg = new TextView(requireContext());
             msg.setGravity(Gravity.CENTER);
             msg.setPadding(0, dp(24), 0, dp(24));
             msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
             msg.setTextColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-            msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : R.string.k2go_gm_none);
+            // ADFA-5061: three cases, not two. This read "still checking, or nothing
+            // installed", and a stopped box fell into the second — every endpoint failed to
+            // answer, so the screen concluded the modules were not there. Found on device
+            // by stopping the engine and opening Get More: "No content modules are
+            // installed yet" over a box that has all of them.
+            //
+            // Same mistake as the courses confirm screen, one floor up, and the same fix in
+            // spirit: an endpoint that does not answer has said nothing. Here the box's own
+            // state settles it, and it costs no request — ServerStateRepository is the
+            // cached observation the server poll already maintains.
+            //
+            // No observation yet is treated as stopped rather than as empty. It is a guess
+            // either way, and this is the guess that sends the user somewhere useful.
+            int empty = serverAnswering() ? R.string.k2go_gm_none : R.string.k2go_gm_server_off;
+            msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : empty);
             host.addView(msg);
             return;
         }
@@ -322,6 +336,18 @@ public class GetMoreHubFragment extends Fragment {
             }
         }
 
+    }
+
+    /**
+     * ADFA-5061: whether the box is answering at all, from the poll's cached observation.
+     *
+     * <p>No request of its own — {@code ServerStateRepository} is kept fresh by the server
+     * poll, and this is the same fact {@code SystemFactsReader} reads. Only consulted when
+     * the card list came out empty, to tell "nothing is installed" from "nothing answered".
+     */
+    private boolean serverAnswering() {
+        org.iiab.controller.ServerStateRepository repo = org.iiab.controller.ServerStateRepository.get();
+        return repo.hasObservation() && repo.current().alive;
     }
 
     private int dp(int v) { return Math.round(v * getResources().getDisplayMetrics().density); }

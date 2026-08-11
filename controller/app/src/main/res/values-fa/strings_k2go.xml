@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">هر آنچه هنوز در حال دانلود است در پس‌زمینه ادامه می‌یابد؛ موارد دارای خطا دوباره تلاش نمی‌شوند.</string>
     <string name="k2go_zim_add_setup_fmt">افزودن به راه‌اندازی شما (%1$s)</string>
     <string name="k2go_gm_none">هنوز هیچ ماژول محتوایی نصب نشده است.</string>
+    <string name="k2go_gm_server_off">سیستم شما متوقف است. آن را روشن کنید تا ببینید چه چیزی می‌توانید اضافه کنید.</string>
     <string name="k2go_books_title">کتاب‌ها</string>
     <string name="k2go_books_search_hint">جستجوی کتاب‌ها</string>
     <string name="k2go_books_chip_popular">محبوب</string>

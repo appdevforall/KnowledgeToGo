@@ -541,6 +541,20 @@ most expensive by the third platform. A is B done safely over time.
           so. And with a down box the screen now makes two failing calls instead of one (the
           probe, then the installed-channels read), so "checking" lasts a little longer.
 
+          **The same mistake was one floor up.** Found immediately after, by stopping the
+          engine and opening Get More: "No content modules are installed yet", over a box that
+          has all of them. The hub probes each endpoint on the same 1500 ms timeout and its
+          empty state had two cases — still checking, or nothing installed — so a stopped box
+          fell into the second. It now has three, and the box's own state settles it at no
+          cost, since `ServerStateRepository` is the cached observation the server poll
+          already maintains. No observation yet is treated as stopped rather than as empty:
+          a guess either way, and this is the guess that sends the user somewhere useful.
+
+          Worth noting for the pattern rather than the fix: two screens asked the same
+          question, both concluded "not installed" from silence, and neither consulted a fact
+          it already had in hand. The probe-answers-with-a-boolean shape is what made both
+          easy to write.
+
           **Still open, and the fuller answer:** the app is asking a disk question over HTTP.
           `local_vars.yml` carries `<key>_install: True`, is readable from the app's own
           storage with no network, no proot and no permissions, and already has a tested pure

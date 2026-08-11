@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">இன்னும் பதிவிறக்கப்படுவது பின்னணியில் தொடரும்; பிழையுள்ள பொருள்கள் மீண்டும் முயற்சிக்கப்படாது.</string>
     <string name="k2go_zim_add_setup_fmt">உங்கள் அமைவில் சேர் (%1$s)</string>
     <string name="k2go_gm_none">இன்னும் உள்ளடக்கத் தொகுதிகள் எதுவும் நிறுவப்படவில்லை.</string>
+    <string name="k2go_gm_server_off">உங்கள் அமைப்பு நிறுத்தப்பட்டுள்ளது. என்ன சேர்க்க முடியும் என்று பார்க்க அதைத் தொடங்குங்கள்.</string>
     <string name="k2go_books_title">புத்தகங்கள்</string>
     <string name="k2go_books_search_hint">புத்தகங்களைத் தேடு</string>
     <string name="k2go_books_chip_popular">பிரபலமானவை</string>

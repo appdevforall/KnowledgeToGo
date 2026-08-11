@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Ohunkóhun tó ṣì ń gbà sílẹ̀ óò tẹ̀síwájú lẹ́yìn ẹ̀rọ; a kò ní tún àwọn nkan tó ní àṣìṣe gbìyànjú.</string>
     <string name="k2go_zim_add_setup_fmt">Fi kún ìṣètò rẹ (%1$s)</string>
     <string name="k2go_gm_none">Kò sí àwọn mọ́díù àkóónú lórí ẹ̀rọ síbẹ̀.</string>
+    <string name="k2go_gm_server_off">Ẹ̀rọ rẹ ti dúró. Bẹ̀rẹ̀ rẹ̀ láti rí ohun tí o lè fi kún.</string>
     <string name="k2go_books_title">Ìwé</string>
     <string name="k2go_books_search_hint">Wá àwọn ìwé</string>
     <string name="k2go_books_chip_popular">Gbajúmọ̀</string>

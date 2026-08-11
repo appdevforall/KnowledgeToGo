@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Всичко, което все още се изтегля, продължава във фонов режим; елементите с грешки няма да бъдат повторени.</string>
     <string name="k2go_zim_add_setup_fmt">Добави към настройката (%1$s)</string>
     <string name="k2go_gm_none">Все още няма инсталирани модули за съдържание.</string>
+    <string name="k2go_gm_server_off">Системата ви е спряна. Стартирайте я, за да видите какво можете да добавите.</string>
     <string name="k2go_books_title">Книги</string>
     <string name="k2go_books_search_hint">Търсене на книги</string>
     <string name="k2go_books_chip_popular">Популярни</string>

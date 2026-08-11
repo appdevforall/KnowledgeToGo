@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Todo lo que aún se esté descargando sigue en segundo plano; los elementos con errores no se reintentarán.</string>
     <string name="k2go_zim_add_setup_fmt">Añadir a tu configuración (%1$s)</string>
     <string name="k2go_gm_none">Aún no hay módulos de contenido instalados.</string>
+    <string name="k2go_gm_server_off">Tu sistema está detenido. Inícialo para ver qué puedes agregar.</string>
     <string name="k2go_books_title">Libros</string>
     <string name="k2go_books_search_hint">Buscar libros</string>
     <string name="k2go_books_chip_popular">Populares</string>

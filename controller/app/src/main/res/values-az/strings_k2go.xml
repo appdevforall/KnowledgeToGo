@@ -551,6 +551,7 @@
     <string name="k2go_setup_finish_msg">Hələ yüklənən hər şey arxa planda davam edir; xətalı elementlər üçün yenidən cəhd edilməyəcək.</string>
     <string name="k2go_zim_add_setup_fmt">Qurulumunuza əlavə et (%1$s)</string>
     <string name="k2go_gm_none">Hələ heç bir məzmun modulu quraşdırılmayıb.</string>
+    <string name="k2go_gm_server_off">Sisteminiz dayandırılıb. Nə əlavə edə biləcəyinizi görmək üçün onu başladın.</string>
     <string name="k2go_books_title">Kitablar</string>
     <string name="k2go_books_search_hint">Kitab axtar</string>
     <string name="k2go_books_chip_popular">Populyar</string>
