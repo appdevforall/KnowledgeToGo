@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel;
 import org.iiab.controller.kolibri.data.InstalledChannelsSource;
 import org.iiab.controller.kolibri.data.KolibriPlatformProbe;
 import org.iiab.controller.kolibri.domain.InstalledLibrary;
+import org.iiab.controller.kolibri.domain.PlatformPresence;
 import org.iiab.controller.system.data.SystemFactsReader;
 import org.iiab.controller.system.domain.Operation;
 import org.iiab.controller.system.domain.OperationDispatcher;
@@ -82,8 +83,17 @@ public class KolibriReadinessViewModel extends ViewModel {
             // Only worth asking once there is a system that is staying: with nothing
             // installed, or one about to be replaced, the dispatcher answers DEFER
             // without consulting the platform anyway.
+            //
+            // ADFA-5061: this is where the collapse used to happen. The probe returned a
+            // boolean and any failure meant "absent", which the dispatcher treats as
+            // terminal — so a courses order asked for while an earlier one was still
+            // downloading was refused with "not installed" and thrown away. The probe now
+            // reports what the box actually said, and PlatformPresence decides, with the
+            // running session as proof: a platform we are watching process a job cannot be
+            // missing, whatever a 1500 ms GET has to say about it.
             boolean present = facts.isInstalled() && !facts.isReplacementPending()
-                    && KolibriPlatformProbe.isPresent();
+                    && PlatformPresence.resolve(KolibriPlatformProbe.probe(),
+                            KolibriSeedRepository.get().isRunning());
             InstalledLibrary library = present
                     ? InstalledChannelsSource.read()
                     : InstalledLibrary.unknown();

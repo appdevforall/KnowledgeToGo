@@ -116,7 +116,7 @@
 <text class="item" x="40" y="836">row carries the transfer rate — the one thing that separates "slow" from "stopped" for someone who left and came back in an hour.</text>
 <text class="item" x="40" y="856">A busy door now BANKS instead of refusing. The wishlist is the queue — each provisioner defers while another stream holds the line,</text>
 <text class="item" x="40" y="872">and two pumps drain it: the index, and the Home (which had never included courses, so a banked courses order could sit forever).</text>
-<text class="code" x="40" y="892">Left: the Books landing's "downloads" link — a viewer, not a landing; it needs an index that can be opened with nothing in flight.</text>
+<text class="code" x="40" y="892">ADFA-5074 is closed. Follow-ups: the Books "downloads" viewer (needs an idle index) · a busy Kolibri reads as absent · no rate for Books.</text>
 
 <!-- ================= the completion chain ================= -->
 <rect class="card-warn" x="24" y="926" width="932" height="122"/>

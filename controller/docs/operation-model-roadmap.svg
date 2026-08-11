@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 640" width="1060" height="640" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 676" width="1060" height="676" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
 <desc>How ADFA-4954, ADFA-5061, ADFA-5062, ADFA-5063, ADFA-5070 and ADFA-4758 relate, in what order to take them, and what is done so far. Update the class on each item dot as work lands: s-done, s-doing or s-todo.</desc>
 
@@ -38,7 +38,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="1060" height="640"/>
+<rect class="bg" x="0" y="0" width="1060" height="676"/>
 
 <text class="h1" x="24" y="34">Operation model — ticket map</text>
 <text class="sub" x="24" y="54">Which ticket owns what, what blocks what, and how far each one has got.</text>
@@ -51,10 +51,10 @@
 
 <!-- ============ ADFA-4954 ============ -->
 <rect class="card" x="24" y="80" width="320" height="212"/>
-<rect class="chip" x="40" y="96" width="112" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="110" fill="#C0392B">RUNS IN PARALLEL</text>
+<rect class="chip" x="40" y="96" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="110" fill="#1B7F4B">DONE</text>
 <text class="h2" x="40" y="139">ADFA-4954 · Kolibri seeding</text>
-<text class="sub" x="40" y="157">Where the model gets applied, and</text>
+<text class="sub" x="40" y="157">Where the model got applied, and</text>
 <text class="sub" x="40" y="172">where the evidence came from.</text>
 
 <circle class="s-done" cx="48" cy="192" r="5.5"/><text class="item" x="62" y="196">C1 — browse and whole channels</text>
@@ -62,7 +62,7 @@
 <circle class="s-done" cx="48" cy="228" r="5.5"/><text class="item" x="62" y="232">Get More door (browse only)</text>
 <circle class="s-done" cx="48" cy="246" r="5.5"/><text class="item" x="62" y="250">Live download from Get More</text>
 <circle class="s-done" cx="48" cy="264" r="5.5"/><text class="item" x="62" y="268">Drain a courses-only wizard run</text>
-<circle class="s-todo" cx="48" cy="282" r="5.5"/><text class="item" x="62" y="286">Metadata-only scope</text>
+<text class="note" x="48" y="286">Metadata-only scope split out — needs remotechannelimport</text>
 
 <!-- ============ stale content state (found by testing 4954) ============ -->
 <rect class="card" x="24" y="322" width="320" height="168"/>
@@ -128,15 +128,16 @@
 <circle class="s-todo" cx="396" cy="542" r="5.5"/><text class="item" x="410" y="546">Safe system change + data migration</text>
 
 <!-- ============ ADFA-5074 ============ -->
-<rect class="card" x="720" y="452" width="316" height="160"/>
+<rect class="card" x="720" y="452" width="316" height="182"/>
 <circle class="badge" cx="744" cy="477" r="13"/><text class="badgetx" x="740" y="482">2</text>
-<text class="h2" x="766" y="482">ADFA-5074 · Content surface</text>
-<text class="sub" x="744" y="504">Five landings for one kind of work.</text>
+<text class="h2" x="766" y="482">ADFA-5074 · Content surface — DONE</text>
+<text class="sub" x="744" y="504">One landing, one host, one queue.</text>
 
 <circle class="s-done" cx="744" cy="526" r="5.5"/><text class="item" x="758" y="530">Front door + re-entry (onNewIntent)</text>
 <circle class="s-done" cx="744" cy="548" r="5.5"/><text class="item" x="758" y="552">A session gates only work in flight</text>
 <circle class="s-done" cx="744" cy="570" r="5.5"/><text class="item" x="758" y="574">Get More notices a platform arriving</text>
-<circle class="s-todo" cx="744" cy="592" r="5.5"/><text class="item" x="758" y="596">One host for every progress screen</text>
+<circle class="s-done" cx="744" cy="592" r="5.5"/><text class="item" x="758" y="596">One host for every progress screen</text>
+<text class="note" x="744" y="616">Grew: the index as router, a real queue, per-state rows.</text>
 
 <text class="note" x="24" y="522">Do not close 4758 as superseded: the migration half</text>
 <text class="note" x="24" y="538">is the one that can lose a user's content.</text>
@@ -157,6 +158,8 @@
 <path class="lnk" d="M372,300 C356,300 356,312 344,322" marker-end="url(#arw)"/>
 <text class="lnklbl" x="196" y="316">a SYSTEM op invalidates content state</text>
 
-<text class="note" x="24" y="600">Order: 5061 first, 4954 alongside it, then 5074, then 5062, then 5063. 5074 comes before 5062 because 5062 migrates the SetupProgressActivity</text>
-<text class="note" x="24" y="616">key switch — work thrown away if the hosting changes after it. 4758 can run whenever, but reads better after 5061.</text>
+<text class="note" x="24" y="600">Order: 5061 first, 4954 alongside it, then 5074 (done), then 5062, then 5063. 5074 came before 5062 because 5062 migrates the</text>
+<text class="note" x="24" y="616">SetupProgressActivity key switch — thrown away if the hosting changed after it. 4758 can run whenever; reads better after 5061.</text>
+<text class="note" x="24" y="638">Left 5074 as follow-ups, not blockers: the Books "downloads" viewer (needs an index that opens with nothing in flight) · a busy</text>
+<text class="note" x="24" y="654">Kolibri reading as an absent one · no transfer rate for Books. All three described in ADR-5061 item 2d.</text>
 </svg>
