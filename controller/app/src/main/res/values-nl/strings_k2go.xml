@@ -40,10 +40,12 @@
     <string name="k2go_send">Verzenden</string>
     <string name="k2go_setup_library_title">Stel je bibliotheek in</string>
     <string name="k2go_starting_library">Je bibliotheek starten…</string>
-    <string name="k2go_home_failed">Starten mislukt — tik om opnieuw te proberen</string>
+    <string name="k2go_home_failed">Starten mislukt</string>
+    <string name="k2go_home_see_progress">Voortgang</string>
+    <string name="k2go_home_retry">Opnieuw</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Inhoud toevoegen — tik om de voortgang te zien</string>
+    <string name="k2go_home_installing">Inhoud toevoegen</string>
     <string name="k2go_perm_storage">Opslagtoegang</string>
     <string name="k2go_storage">Opslag</string>
     <string name="k2go_lang_system_default">Systeemstandaard</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Klaar om te verkennen</string>
     <string name="k2go_card_ready">Klaar</string>
     <string name="k2go_card_connecting">Verbinden</string>
+    <string name="k2go_card_stopped">Gestopt</string>
     <string name="k2go_card_unavailable">Niet beschikbaar · tik om opnieuw te proberen</string>
     <string name="k2go_card_adding">Inhoud toevoegen</string>
     <string name="k2go_card_not_installed">Niet geïnstalleerd</string>

@@ -117,7 +117,6 @@
     <string name="maintenance_write_failed">Ошибка записи при обслуживании</string>
     <string name="session_started">СЕАНС СЕРДЦЕБИЕНИЯ ЗАПУЩЕН</string>
     <string name="session_stopped">СЕАНС СЕРДЦЕБИЕНИЯ ОСТАНОВЛЕН</string>
-    <string name="termux_stuck_warning">Окружение не запускается? Включите Мастер Watchdog, чтобы принудительно вывести его на передний план.</string>
 
     <string name="end_of_history">--- Конец истории ---</string>
     <string name="error_reading_history">Ошибка чтения истории: %s</string>

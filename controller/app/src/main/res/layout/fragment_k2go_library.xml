@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -24,12 +25,20 @@
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:textColor="@color/k2go_ink" />
 
+            <!-- ADFA-5061: status is information, the action is a control.
+                 The whole row used to be clickable, with the invitation written into the status
+                 itself ("Couldn't start — tap to retry"). That is prose doing a button's job:
+                 nothing looks tappable, the two states that do nothing look identical to the two
+                 that do something, and it puts an action in the one place that is supposed to
+                 report. The dot carries the state colour; the label is a plain statement; the
+                 action, when there is one, is a trailing button in the brand colour. -->
             <LinearLayout
                 android:id="@+id/k2go_home_status_row"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:orientation="horizontal">
 
                 <View
@@ -40,12 +49,39 @@
 
                 <TextView
                     android:id="@+id/k2go_home_status"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
+                    android:layout_weight="1"
                     android:text="@string/k2go_starting_library"
                     android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:textColor="@color/k2go_muted" />
+
+                <!-- Passive states get this instead of a button: "Connecting…" is something the
+                     app is doing, not something to press. -->
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/k2go_home_status_spinner"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:indeterminate="true"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/k2go_muted"
+                    app:indicatorSize="20dp"
+                    app:trackThickness="2dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/k2go_home_status_action"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:minHeight="40dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/k2go_teal"
+                    android:visibility="gone"
+                    app:strokeColor="@color/k2go_teal" />
             </LinearLayout>
 
             <LinearLayout

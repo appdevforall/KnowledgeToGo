@@ -40,10 +40,12 @@
     <string name="k2go_send">Odeslat</string>
     <string name="k2go_setup_library_title">Nastavte svou knihovnu</string>
     <string name="k2go_starting_library">Spouštění knihovny…</string>
-    <string name="k2go_home_failed">Nepodařilo se spustit — klepnutím opakujte</string>
+    <string name="k2go_home_failed">Nepodařilo se spustit</string>
+    <string name="k2go_home_see_progress">Zobrazit průběh</string>
+    <string name="k2go_home_retry">Zkusit znovu</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Přidává se obsah — klepnutím zobrazíte průběh</string>
+    <string name="k2go_home_installing">Přidává se obsah</string>
     <string name="k2go_perm_storage">Přístup k úložišti</string>
     <string name="k2go_storage">Úložiště</string>
     <string name="k2go_lang_system_default">Výchozí nastavení systému</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Připraveno k prozkoumání</string>
     <string name="k2go_card_ready">Připraveno</string>
     <string name="k2go_card_connecting">Připojování</string>
+    <string name="k2go_card_stopped">Zastaveno</string>
     <string name="k2go_card_unavailable">Nedostupné · klepnutím opakujte</string>
     <string name="k2go_card_adding">Přidávání obsahu</string>
     <string name="k2go_card_not_installed">Nenainstalováno</string>

@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Uandishi wa matengenezo umeshindwa</string>
     <string name="session_started">KIPINDI CHA HEARTBEAT KIMEANZA</string>
     <string name="session_stopped">KIPINDI CHA HEARTBEAT KIMESIMAMA</string>
-    <string name="termux_stuck_warning">Termux haifunguki? Washa Master Watchdog ili kuilazimisha kupata umakini.</string>
     <string name="end_of_history">--- Mwisho wa Historia ---</string>
     <string name="error_reading_history">Hitilafu wakati wa kusoma historia: %s</string>
     <string name="failed_write_blackbox">Kuandika kwenye BlackBox kumeshindwa</string>

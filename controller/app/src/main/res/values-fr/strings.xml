@@ -117,7 +117,6 @@
     <string name="maintenance_write_failed">Échec de l\'écriture de maintenance</string>
     <string name="session_started">SESSION DE BATTEMENT DÉMARRÉE</string>
     <string name="session_stopped">SESSION DE BATTEMENT ARRÊTÉE</string>
-    <string name="termux_stuck_warning">L\'environnement ne démarre pas ? Activez le Watchdog maître pour forcer le focus.</string>
 
     <string name="end_of_history">--- Fin de l\'historique ---</string>
     <string name="error_reading_history">Erreur lors de la lecture de l\'historique : %s</string>

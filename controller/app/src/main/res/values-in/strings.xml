@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Penulisan pemeliharaan gagal</string>
     <string name="session_started">SESI HEARTBEAT DIMULAI</string>
     <string name="session_stopped">SESI HEARTBEAT DIHENTIKAN</string>
-    <string name="termux_stuck_warning">Termux tidak terbuka? Aktifkan Master Watchdog untuk memaksanya mendapatkan fokus.</string>
     <string name="end_of_history">--- Akhir Riwayat ---</string>
     <string name="error_reading_history">Kesalahan membaca riwayat: %s</string>
     <string name="failed_write_blackbox">Gagal menulis ke BlackBox</string>

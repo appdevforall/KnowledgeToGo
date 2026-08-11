@@ -112,7 +112,6 @@
     <string name="maintenance_write_failed">Fallo en la escritura de mantenimiento</string>
     <string name="session_started">SESIÓN DE LATIDO INICIADA</string>
     <string name="session_stopped">SESIÓN DE LATIDO DETENIDA</string>
-    <string name="termux_stuck_warning">¿El entorno no inicia? Habilite Watchdog Maestro para forzar que obtenga foco.</string>
 
     <string name="end_of_history">--- Fin del Historial ---</string>
     <string name="error_reading_history">Error al leer el historial: %s</string>

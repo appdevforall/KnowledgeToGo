@@ -117,7 +117,6 @@
     <string name="maintenance_write_failed">Falha na escrita de manutenção</string>
     <string name="session_started">SESSÃO DE HEARTBEAT INICIADA</string>
     <string name="session_stopped">SESSÃO DE HEARTBEAT PARADA</string>
-    <string name="termux_stuck_warning">O ambiente não inicia? Ative o Watchdog Mestre para forçar o foco.</string>
 
     <string name="end_of_history">--- Fim do Histórico ---</string>
     <string name="error_reading_history">Erro ao ler o histórico: %s</string>

@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">A karbantartási írás sikertelen</string>
     <string name="session_started">HEARTBEAT MUNKAMENET ELINDULT</string>
     <string name="session_stopped">HEARTBEAT MUNKAMENET LEÁLLT</string>
-    <string name="termux_stuck_warning">A Termux nem nyílik meg? Kapcsolja be a Master Watchdogot, hogy fókuszt kényszerítsen rá.</string>
     <string name="end_of_history">--- Előzmények vége ---</string>
     <string name="error_reading_history">Hiba az előzmények olvasásakor: %s</string>
     <string name="failed_write_blackbox">Nem sikerült a BlackBoxba írni</string>

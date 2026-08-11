@@ -40,10 +40,12 @@
     <string name="k2go_send">Siųsti</string>
     <string name="k2go_setup_library_title">Paruoškite biblioteką</string>
     <string name="k2go_starting_library">Paleidžiama biblioteka…</string>
-    <string name="k2go_home_failed">Nepavyko paleisti — bakstelėkite, kad bandytumėte dar kartą</string>
+    <string name="k2go_home_failed">Nepavyko paleisti</string>
+    <string name="k2go_home_see_progress">Žiūrėti eigą</string>
+    <string name="k2go_home_retry">Bandyti dar kartą</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Pridedamas turinys — bakstelėkite, kad matytumėte eigą</string>
+    <string name="k2go_home_installing">Pridedamas turinys</string>
     <string name="k2go_perm_storage">Prieiga prie saugyklos</string>
     <string name="k2go_storage">Saugykla</string>
     <string name="k2go_lang_system_default">Sistemos numatytoji</string>
@@ -318,6 +320,7 @@
     <string name="k2go_home_ready">Paruošta naršyti</string>
     <string name="k2go_card_ready">Paruošta</string>
     <string name="k2go_card_connecting">Jungiamasi</string>
+    <string name="k2go_card_stopped">Sustabdyta</string>
     <string name="k2go_card_unavailable">Nepasiekiama · bakstelėkite, kad bandytumėte dar kartą</string>
     <string name="k2go_card_adding">Pridedamas turinys</string>
     <string name="k2go_card_not_installed">Neįdiegta</string>

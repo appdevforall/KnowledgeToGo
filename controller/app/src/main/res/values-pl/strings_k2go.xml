@@ -40,10 +40,12 @@
     <string name="k2go_send">Wyślij</string>
     <string name="k2go_setup_library_title">Skonfiguruj swoją bibliotekę</string>
     <string name="k2go_starting_library">Uruchamianie biblioteki…</string>
-    <string name="k2go_home_failed">Nie udało się uruchomić — dotknij, aby spróbować ponownie</string>
+    <string name="k2go_home_failed">Nie udało się uruchomić</string>
+    <string name="k2go_home_see_progress">Zobacz postęp</string>
+    <string name="k2go_home_retry">Ponów</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Dodawanie treści — dotknij, aby zobaczyć postęp</string>
+    <string name="k2go_home_installing">Dodawanie treści</string>
     <string name="k2go_perm_storage">Dostęp do pamięci</string>
     <string name="k2go_storage">Pamięć</string>
     <string name="k2go_lang_system_default">Domyślny systemu</string>
@@ -318,6 +320,7 @@
     <string name="k2go_home_ready">Gotowe do odkrywania</string>
     <string name="k2go_card_ready">Gotowe</string>
     <string name="k2go_card_connecting">Łączenie</string>
+    <string name="k2go_card_stopped">Zatrzymane</string>
     <string name="k2go_card_unavailable">Niedostępne · dotknij, aby ponowić</string>
     <string name="k2go_card_adding">Dodawanie treści</string>
     <string name="k2go_card_not_installed">Nie zainstalowano</string>

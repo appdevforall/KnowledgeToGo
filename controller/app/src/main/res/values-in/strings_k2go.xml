@@ -40,10 +40,12 @@
     <string name="k2go_send">Kirim</string>
     <string name="k2go_setup_library_title">Siapkan pustaka Anda</string>
     <string name="k2go_starting_library">Memulai pustaka Anda…</string>
-    <string name="k2go_home_failed">Tidak bisa memulai — ketuk untuk coba lagi</string>
+    <string name="k2go_home_failed">Tidak bisa memulai</string>
+    <string name="k2go_home_see_progress">Lihat progres</string>
+    <string name="k2go_home_retry">Coba lagi</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Menambahkan konten — ketuk untuk melihat progres</string>
+    <string name="k2go_home_installing">Menambahkan konten</string>
     <string name="k2go_perm_storage">Akses penyimpanan</string>
     <string name="k2go_storage">Penyimpanan</string>
     <string name="k2go_lang_system_default">Default sistem</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Siap menjelajah</string>
     <string name="k2go_card_ready">Siap</string>
     <string name="k2go_card_connecting">Menyambungkan</string>
+    <string name="k2go_card_stopped">Berhenti</string>
     <string name="k2go_card_unavailable">Tidak tersedia · ketuk untuk coba lagi</string>
     <string name="k2go_card_adding">Menambahkan konten</string>
     <string name="k2go_card_not_installed">Belum terpasang</string>

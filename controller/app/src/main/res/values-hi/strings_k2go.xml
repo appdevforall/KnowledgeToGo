@@ -40,10 +40,12 @@
     <string name="k2go_send">भेजें</string>
     <string name="k2go_setup_library_title">अपनी लाइब्रेरी सेट करें</string>
     <string name="k2go_starting_library">आपकी लाइब्रेरी शुरू हो रही है…</string>
-    <string name="k2go_home_failed">शुरू नहीं हो सका — फिर कोशिश के लिए टैप करें</string>
+    <string name="k2go_home_failed">शुरू नहीं हो सका</string>
+    <string name="k2go_home_see_progress">प्रगति देखें</string>
+    <string name="k2go_home_retry">पुनः प्रयास</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">सामग्री जोड़ी जा रही है — प्रगति देखने के लिए टैप करें</string>
+    <string name="k2go_home_installing">सामग्री जोड़ी जा रही है</string>
     <string name="k2go_perm_storage">स्टोरेज एक्सेस</string>
     <string name="k2go_storage">स्टोरेज</string>
     <string name="k2go_lang_system_default">सिस्टम डिफ़ॉल्ट</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">एक्सप्लोर के लिए तैयार</string>
     <string name="k2go_card_ready">तैयार</string>
     <string name="k2go_card_connecting">कनेक्ट हो रहा है</string>
+    <string name="k2go_card_stopped">रुका हुआ</string>
     <string name="k2go_card_unavailable">अनुपलब्ध · फिर कोशिश के लिए टैप करें</string>
     <string name="k2go_card_adding">सामग्री जोड़ी जा रही है</string>
     <string name="k2go_card_not_installed">इंस्टॉल नहीं है</string>

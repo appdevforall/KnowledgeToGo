@@ -77,6 +77,10 @@ public class LibraryHomeFragment extends Fragment {
     private TextView homeStatus;
     private View homeStatusDot;
     private View homeStatusRow;
+    /** ADFA-5061: the action, when the state has one. Never the status text. */
+    private com.google.android.material.button.MaterialButton homeStatusAction;
+    /** Shown instead of a button while the app is doing something the user cannot press. */
+    private View homeStatusSpinner;
     private LinearLayout cardsHost;
     private View getMoreFooter;
 
@@ -97,10 +101,13 @@ public class LibraryHomeFragment extends Fragment {
         homeStatus = root.findViewById(R.id.k2go_home_status);
         homeStatusDot = root.findViewById(R.id.k2go_home_status_dot);
         homeStatusRow = root.findViewById(R.id.k2go_home_status_row);
-        // ADFA-4837: when the header reports the server couldn't start, tapping it retries — but only
-        // when it's genuinely safe (LibraryActivity.canStartServer guards against stacking a 2nd proot).
-        if (homeStatusRow != null) {
-            homeStatusRow.setOnClickListener(v -> {
+        homeStatusAction = root.findViewById(R.id.k2go_home_status_action);
+        homeStatusSpinner = root.findViewById(R.id.k2go_home_status_spinner);
+        // ADFA-5061: the action moved off the status text and onto a button. The row itself is
+        // no longer clickable — a line of prose that silently doubles as a control is the thing
+        // this change is undoing, and leaving the old target in place would keep half of it.
+        if (homeStatusAction != null) {
+            homeStatusAction.setOnClickListener(v -> {
                 // ADFA-5074: the way back into a running install. Opens the index without
                 // starting anything — every other route to it begins new work.
                 if (headerState == H_INSTALLING) {
@@ -108,6 +115,8 @@ public class LibraryHomeFragment extends Fragment {
                             requireContext(), SetupProgressActivity.class));
                     return;
                 }
+                // ADFA-4837: retry only when it is genuinely safe — canStartServer guards
+                // against stacking a second proot over a live one.
                 if (headerState != H_FAILED) return;
                 if (getActivity() instanceof LibraryActivity) {
                     LibraryActivity act = (LibraryActivity) getActivity();
@@ -526,9 +535,25 @@ public class LibraryHomeFragment extends Fragment {
         }
         homeStatus.setText(text);
         if (homeStatusDot != null) tint(homeStatusDot, dotColor);
-        // ADFA-4837: only the failed state is tappable (retry); keep others inert.
-        // ADFA-5074: and the installing state, which is the way back into a running install.
-        if (homeStatusRow != null) homeStatusRow.setClickable(h == H_FAILED || h == H_INSTALLING);
+
+        // ADFA-5061: the trailing slot. Two states offer an action and get a button; one is the
+        // app working and gets a spinner; the rest are statements and get nothing. The status
+        // colour lives on the dot only — the button wears the brand colour, because it is a
+        // control rather than a severity.
+        int action = h == H_FAILED ? R.string.k2go_home_retry
+                : h == H_INSTALLING ? R.string.k2go_home_see_progress : 0;
+        if (homeStatusAction != null) {
+            homeStatusAction.setVisibility(action != 0 ? View.VISIBLE : View.GONE);
+            if (action != 0) homeStatusAction.setText(action);
+        }
+        if (homeStatusSpinner != null) {
+            homeStatusSpinner.setVisibility(h == H_STARTING ? View.VISIBLE : View.GONE);
+        }
+        // The row reports; it does not act. Kept explicit so a future edit has to mean it.
+        if (homeStatusRow != null) {
+            homeStatusRow.setClickable(false);
+            homeStatusRow.setFocusable(false);
+        }
     }
 
     private void applyState(Card c, int st) {
@@ -573,6 +598,28 @@ public class LibraryHomeFragment extends Fragment {
             tint(c.dot, R.color.k2go_leaf);
             c.status.setText(getString(R.string.k2go_card_adding));
             c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
+        }
+        // ADFA-5061: stopped, not connecting. When the box is not answering, every card sat in
+        // amber saying "Connecting" — a claim about an attempt that is not happening, and the
+        // header two centimetres above was already saying the system could not start.
+        //
+        // This is not the unknown case and must not borrow its words. `alive` comes from a ping
+        // to /home, which is nginx itself: if the front door is dark, nothing behind it can
+        // answer, and all five platforms are behind it. That is a fact we hold, not an inference
+        // — so the card says what is true rather than hedging. "Status unknown" belongs to the
+        // other silence, a box that answers while one platform does not.
+        //
+        // Last of the overrides on purpose: content in flight cannot be real over a box that is
+        // not answering, so if the two ever disagree, this one is right.
+        //
+        // Except over a platform we know is absent. With no system installed the box does not
+        // answer either, and "Stopped" would be the wrong half of the truth — there is nothing
+        // to start, and "Not installed" is what the user needs to read. Knowing beats knowing why.
+        if (c.evidence != PlatformPresence.Evidence.ABSENT
+                && !org.iiab.controller.system.data.SystemFactsReader.serverAnswering()) {
+            tint(c.dot, R.color.k2go_amber);
+            c.status.setText(getString(R.string.k2go_card_stopped));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
         }
     }
 

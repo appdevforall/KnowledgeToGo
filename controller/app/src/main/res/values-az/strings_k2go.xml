@@ -40,10 +40,12 @@
     <string name="k2go_send">Göndər</string>
     <string name="k2go_setup_library_title">Kitabxananızı qurun</string>
     <string name="k2go_starting_library">Kitabxananız başladılır…</string>
-    <string name="k2go_home_failed">Başlamadı — yenidən cəhd üçün toxun</string>
+    <string name="k2go_home_failed">Başlamadı</string>
+    <string name="k2go_home_see_progress">Gedişata bax</string>
+    <string name="k2go_home_retry">Yenidən cəhd</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Məzmun əlavə edilir — gedişatı görmək üçün toxunun</string>
+    <string name="k2go_home_installing">Məzmun əlavə edilir</string>
     <string name="k2go_perm_storage">Yaddaşa giriş</string>
     <string name="k2go_storage">Yaddaş</string>
     <string name="k2go_lang_system_default">Sistem defoltu</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Kəşfə hazır</string>
     <string name="k2go_card_ready">Hazır</string>
     <string name="k2go_card_connecting">Qoşulur</string>
+    <string name="k2go_card_stopped">Dayandırılıb</string>
     <string name="k2go_card_unavailable">Əlçatmaz · yenidən cəhd üçün toxun</string>
     <string name="k2go_card_adding">Məzmun əlavə olunur</string>
     <string name="k2go_card_not_installed">Quraşdırılmayıb</string>

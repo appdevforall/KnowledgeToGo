@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">유지 관리 쓰기 실패</string>
     <string name="session_started">HEARTBEAT 세션 시작됨</string>
     <string name="session_stopped">HEARTBEAT 세션 중지됨</string>
-    <string name="termux_stuck_warning">Termux가 열리지 않나요? 마스터 워치독을 활성화하여 강제로 포커스를 잡게 하세요.</string>
     <string name="end_of_history">--- 기록 끝 ---</string>
     <string name="error_reading_history">기록 읽기 오류: %s</string>
     <string name="failed_write_blackbox">BlackBox에 쓰기 실패</string>

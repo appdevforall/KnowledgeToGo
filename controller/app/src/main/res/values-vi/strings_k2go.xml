@@ -40,10 +40,12 @@
     <string name="k2go_send">Gửi</string>
     <string name="k2go_setup_library_title">Thiết lập thư viện của bạn</string>
     <string name="k2go_starting_library">Đang khởi động thư viện…</string>
-    <string name="k2go_home_failed">Không thể khởi động — chạm để thử lại</string>
+    <string name="k2go_home_failed">Không thể khởi động</string>
+    <string name="k2go_home_see_progress">Xem tiến trình</string>
+    <string name="k2go_home_retry">Thử lại</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Đang thêm nội dung — chạm để xem tiến trình</string>
+    <string name="k2go_home_installing">Đang thêm nội dung</string>
     <string name="k2go_perm_storage">Truy cập bộ nhớ</string>
     <string name="k2go_storage">Bộ nhớ</string>
     <string name="k2go_lang_system_default">Mặc định hệ thống</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Sẵn sàng khám phá</string>
     <string name="k2go_card_ready">Sẵn sàng</string>
     <string name="k2go_card_connecting">Đang kết nối</string>
+    <string name="k2go_card_stopped">Đã dừng</string>
     <string name="k2go_card_unavailable">Không khả dụng · chạm để thử lại</string>
     <string name="k2go_card_adding">Đang thêm nội dung</string>
     <string name="k2go_card_not_installed">Chưa cài</string>

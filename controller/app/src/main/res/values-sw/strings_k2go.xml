@@ -40,10 +40,12 @@
     <string name="k2go_send">Tuma</string>
     <string name="k2go_setup_library_title">Sanidi maktaba yako</string>
     <string name="k2go_starting_library">Inaanzisha maktaba yako…</string>
-    <string name="k2go_home_failed">Haikuweza kuanza — gusa ili kujaribu tena</string>
+    <string name="k2go_home_failed">Haikuweza kuanza</string>
+    <string name="k2go_home_see_progress">Ona maendeleo</string>
+    <string name="k2go_home_retry">Jaribu tena</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Inaongeza maudhui — gusa ili kuona maendeleo</string>
+    <string name="k2go_home_installing">Inaongeza maudhui</string>
     <string name="k2go_perm_storage">Ufikiaji wa hifadhi</string>
     <string name="k2go_storage">Hifadhi</string>
     <string name="k2go_lang_system_default">Chaguo-msingi la mfumo</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Tayari kuchunguza</string>
     <string name="k2go_card_ready">Tayari</string>
     <string name="k2go_card_connecting">Inaunganisha</string>
+    <string name="k2go_card_stopped">Imesimama</string>
     <string name="k2go_card_unavailable">Haipatikani · gusa ili kujaribu tena</string>
     <string name="k2go_card_adding">Inaongeza maudhui</string>
     <string name="k2go_card_not_installed">Haijasakinishwa</string>

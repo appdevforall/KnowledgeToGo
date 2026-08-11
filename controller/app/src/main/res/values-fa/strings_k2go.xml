@@ -40,10 +40,12 @@
     <string name="k2go_send">ارسال</string>
     <string name="k2go_setup_library_title">کتابخانه خود را راه‌اندازی کنید</string>
     <string name="k2go_starting_library">در حال راه‌اندازی کتابخانه شما…</string>
-    <string name="k2go_home_failed">شروع نشد — برای تلاش مجدد ضربه بزنید</string>
+    <string name="k2go_home_failed">شروع نشد</string>
+    <string name="k2go_home_see_progress">مشاهده پیشرفت</string>
+    <string name="k2go_home_retry">تلاش دوباره</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">در حال افزودن محتوا — برای دیدن پیشرفت ضربه بزنید</string>
+    <string name="k2go_home_installing">در حال افزودن محتوا</string>
     <string name="k2go_perm_storage">دسترسی به حافظه</string>
     <string name="k2go_storage">حافظه</string>
     <string name="k2go_lang_system_default">پیش‌فرض سیستم</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">آماده کاوش</string>
     <string name="k2go_card_ready">آماده</string>
     <string name="k2go_card_connecting">در حال اتصال</string>
+    <string name="k2go_card_stopped">متوقف</string>
     <string name="k2go_card_unavailable">در دسترس نیست · برای تلاش مجدد ضربه بزنید</string>
     <string name="k2go_card_adding">در حال افزودن محتوا</string>
     <string name="k2go_card_not_installed">نصب نشده</string>

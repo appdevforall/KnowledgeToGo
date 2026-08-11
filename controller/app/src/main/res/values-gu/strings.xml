@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">જાળવણી લખાણ નિષ્ફળ</string>
     <string name="session_started">HEARTBEAT સત્ર શરૂ થયું</string>
     <string name="session_stopped">HEARTBEAT સત્ર બંધ થયું</string>
-    <string name="termux_stuck_warning">Termux ખૂલતું નથી? તેને ફોકસ મેળવવા ફરજ પાડવા Master Watchdog ચાલુ કરો.</string>
     <string name="end_of_history">--- ઇતિહાસનો અંત ---</string>
     <string name="error_reading_history">ઇતિહાસ વાંચવામાં ભૂલ: %s</string>
     <string name="failed_write_blackbox">BlackBox માં લખવામાં નિષ્ફળ</string>

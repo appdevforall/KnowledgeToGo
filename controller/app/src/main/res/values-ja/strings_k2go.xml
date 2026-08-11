@@ -40,10 +40,12 @@
     <string name="k2go_send">送信</string>
     <string name="k2go_setup_library_title">ライブラリをセットアップ</string>
     <string name="k2go_starting_library">ライブラリを起動しています…</string>
-    <string name="k2go_home_failed">起動できませんでした — タップして再試行</string>
+    <string name="k2go_home_failed">起動できませんでした</string>
+    <string name="k2go_home_see_progress">進行状況</string>
+    <string name="k2go_home_retry">再試行</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">コンテンツを追加中 — タップして進行状況を表示</string>
+    <string name="k2go_home_installing">コンテンツを追加中</string>
     <string name="k2go_perm_storage">ストレージへのアクセス</string>
     <string name="k2go_storage">ストレージ</string>
     <string name="k2go_lang_system_default">システムの既定</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">探索の準備完了</string>
     <string name="k2go_card_ready">準備完了</string>
     <string name="k2go_card_connecting">接続中</string>
+    <string name="k2go_card_stopped">停止中</string>
     <string name="k2go_card_unavailable">利用不可 · タップして再試行</string>
     <string name="k2go_card_adding">コンテンツを追加中</string>
     <string name="k2go_card_not_installed">未インストール</string>

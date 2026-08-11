@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">メンテナンスの書き込みに失敗しました</string>
     <string name="session_started">ハートビートセッション開始</string>
     <string name="session_stopped">ハートビートセッション停止</string>
-    <string name="termux_stuck_warning">Termux が開かない？ マスターウォッチドッグを有効にして強制的にフォーカスを取得させてください。</string>
     <string name="end_of_history">--- 履歴の終わり ---</string>
     <string name="error_reading_history">履歴の読み取りエラー: %s</string>
     <string name="failed_write_blackbox">BlackBox への書き込みに失敗しました</string>

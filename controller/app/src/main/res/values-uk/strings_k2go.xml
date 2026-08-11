@@ -40,10 +40,12 @@
     <string name="k2go_send">Надіслати</string>
     <string name="k2go_setup_library_title">Налаштуйте свою бібліотеку</string>
     <string name="k2go_starting_library">Запуск бібліотеки…</string>
-    <string name="k2go_home_failed">Не вдалося запустити — торкніться, щоб повторити</string>
+    <string name="k2go_home_failed">Не вдалося запустити</string>
+    <string name="k2go_home_see_progress">Переглянути</string>
+    <string name="k2go_home_retry">Повторити</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Додавання вмісту — торкніться, щоб побачити перебіг</string>
+    <string name="k2go_home_installing">Додавання вмісту</string>
     <string name="k2go_perm_storage">Доступ до сховища</string>
     <string name="k2go_storage">Сховище</string>
     <string name="k2go_lang_system_default">Системна за замовчуванням</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Готово до вивчення</string>
     <string name="k2go_card_ready">Готово</string>
     <string name="k2go_card_connecting">Підключення</string>
+    <string name="k2go_card_stopped">Зупинено</string>
     <string name="k2go_card_unavailable">Недоступно · торкніться, щоб повторити</string>
     <string name="k2go_card_adding">Додавання вмісту</string>
     <string name="k2go_card_not_installed">Не встановлено</string>
