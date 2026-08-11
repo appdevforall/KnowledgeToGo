@@ -489,6 +489,37 @@ most expensive by the third platform. A is B done safely over time.
           the special case for a second order arriving over a live one — the provisioner defers
           rather than letting `ACTION_START` overwrite a running session.
 
+          **Carried out of the review, not fixed.** Each was judged real but not this ticket's,
+          and each is written down so it is found deliberately rather than rediscovered:
+
+          - `ZimProvisioner.resolveAndStart` **clears the wishlist when nothing resolves**, so an
+            order whose catalogue keys have drifted vanishes with no message. Pre-existing on the
+            wizard path; ADFA-5074 made it reachable from a tap. Unreachable with today's baked
+            CSV, since the keys come from the same file.
+          - `showingDetail` is **not in saved instance state**. `configChanges` covers rotation,
+            so this only bites under process death or "Don't keep activities": the FragmentManager
+            restores the detail, the flag does not, and the restored fragment holds the ZIM
+            listener behind a visible index.
+          - `servicesReady` is now **evidence, not a probe**, which is right for the completion
+            gate but makes it a weaker claim: re-entering a maps run whose wishlist an earlier
+            activity already drained shows the green "Adding your content" during a runrole. Only
+            `prootActive` still gates the background button there.
+          - The `probing` latch in `readyPoll` has **no timeout and no lifecycle reset**. If the
+            IO executor ever rejected the task the poll would never run again. `apiReady()` swallows
+            `Exception`, so it is theoretical.
+          - The wishlists are **read twice per pass** — once by `nothingToStart()` and once by
+            `PendingContent.read` — which contradicts the "one reading per render" rule from
+            ADFA-4954 stated a few lines above it.
+          - The derived courses rate **restarts its baseline only on a new session**, not on
+            `sessionStopped` or `ACTION_RETRY`, so a retry hours after a failure divides by the
+            idle hours and reads near zero. The cumulative average also decays as 1/t rather than
+            dropping when a transfer stalls; both are the known cost of not having an instant rate
+            from the box.
+          - `KolibriWishlist.add` and `ZimWishlist.add` are **load-modify-save with no lock**, and
+            courses now writes from the IO pool while both pumps clear from the main thread. The
+            losing interleaving would re-download a channel already handed off. Narrow, but it is
+            the shape that only shows up under load.
+
           **A fifth entry surfaced, and it is not a landing.** The Books landing screen has a
           "downloads" link (`BooksLandingFragment.openDownloads` → `SetupLibraryActivity
           .openBooksDownloads`) that opens `BooksDownloadsFragment` inside that activity without

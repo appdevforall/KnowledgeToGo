@@ -457,17 +457,22 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     /** ADFA-4910: Books Confirm terminal in live mode — hand the picks to the download service and
      *  open the downloads screen (per-book checklist + retry). */
     public void startBooksDownload() {
-        java.util.List<String> ids = new java.util.ArrayList<>(), titles = new java.util.ArrayList<>(),
-                urls = new java.util.ArrayList<>();
         for (java.util.Map.Entry<String, String[]> e : selection().booksCart().entrySet()) {
             String[] v = e.getValue();
-            ids.add(e.getKey());
-            titles.add(v != null && v.length > 0 ? v[0] : "");
-            urls.add(v != null && v.length > 2 ? v[2] : "");
+            BooksWishlist.add(this, e.getKey(),
+                    v != null && v.length > 0 ? v[0] : "",
+                    v != null && v.length > 2 ? v[2] : "");
         }
         selection().booksCart().clear();
-        BooksDownloadService.start(getApplicationContext(),
-                ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
+        // ADFA-5074: through the wishlist, like ZIM and Courses. Books was the last door still
+        // calling its service directly, and that had a real consequence beyond symmetry: the
+        // service registers its session asynchronously in onStartCommand, so for a moment nothing
+        // was pending and nothing was in session. The index reads exactly that pair to decide the
+        // run is over — nothingToStart() plus an empty orchestrateStep — and could declare a
+        // just-started download complete and count down to the Library. Writing the wishlist first
+        // makes hasPending true synchronously, before the index is even launched, so that window
+        // does not exist. It also makes Books queue behind a busy line instead of overwriting.
+        BooksProvisioner.drain(this);
         // ADFA-4988: go to the progress screen instead of returning to Get More and downloading
         // invisibly. ADFA-5074: to the index, not the books detail. The hint that used to open the
         // detail "when books is the only stream" made the landing depend on state the user cannot

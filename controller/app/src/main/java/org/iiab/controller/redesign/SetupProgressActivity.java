@@ -186,8 +186,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
      * <p>Deliberately does not force the index when a detail is open. The notification means
      * "take me back to my download", and someone who is inside a detail is already there, one
      * level deeper by their own choice; yanking them out would be the screen overruling them.
-     * It would also be a fragment transaction after {@code onSaveInstanceState}, which is what
-     * the routing this replaces had to defer around.
+     *
+     * <p>And deliberately does not render. This runs before {@code onStart}, so the
+     * FragmentManager still has its state saved — and {@code render()} is no longer free of
+     * transactions: it can call {@code backToIndex()}, whose {@code commitNow()} would throw
+     * exactly the {@code IllegalStateException} the routing this replaced had to defer around.
+     * {@code onResume} follows immediately and renders anyway, so there was nothing to gain.
      */
     @Override
     protected void onNewIntent(android.content.Intent intent) {
@@ -196,7 +200,6 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             return;
         }
         setIntent(intent);
-        render();
     }
 
     @Override
@@ -673,11 +676,27 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // normal pass run: the user gets the summary, the countdown and its Cancel, rather than
         // being sent home from under a screen they were reading.
         //
-        // backToIndex() calls render() again with the flag cleared, so the work below happens on
-        // that pass. Reachable only from the main thread — while a detail is open the index does
-        // not hold the service listener, so the callers here are the poll and the courses LiveData.
+        // Two conditions on that step-back, both from the review, both cases this got wrong:
+        //
+        // Armed once per opening. The check is on a level, not an edge, so it used to fire on
+        // every pass while the run stayed complete — a user who cancelled the countdown and
+        // tapped a finished row was thrown straight back out, and worst of all on a failed run,
+        // where the detail is the only place the per-item retry lives. `bounceOnComplete` is set
+        // when a detail is opened over work still in flight and cleared when it fires, so a
+        // detail opened deliberately over a finished run is never taken away.
+        //
+        // Only while resumed. render() has callers that outlive onPause: the two poll callbacks
+        // re-post from their own IO continuations, and onPause keeps the Zim/Books listeners
+        // whenever a detail is open — which for a courses, maps or module detail means the index
+        // still owns them. A publish() arriving then would run commitNow() on a stopped
+        // FragmentManager. Deferring costs nothing: onResume posts the poll, which renders.
+        lastAllComplete = allComplete;
         if (showingDetail) {
-            if (allComplete) backToIndex();
+            if (allComplete && bounceOnComplete
+                    && getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
+                bounceOnComplete = false;
+                backToIndex();
+            }
             return;
         }
 
@@ -1147,9 +1166,23 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         finish();
     }
 
+    /**
+     * ADFA-5074: whether a completed run should take this detail away again.
+     *
+     * <p>Armed when a detail is opened over work still in flight, cleared when it fires. A
+     * detail opened over a run that had already finished is a deliberate look at the result —
+     * usually at a failed row, whose retry lives only there — and must not be closed underneath
+     * the user.
+     */
+    private boolean bounceOnComplete = false;
+
+    /** The last completion verdict, so opening a detail can tell "still working" from "finished". */
+    private boolean lastAllComplete = false;
+
     // ---- detail: host the real per-module card ----
     private void openDetail(String key) {
         showingDetail = true;
+        bounceOnComplete = !lastAllComplete;
         androidx.fragment.app.Fragment f;
         boolean proot;
         if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); proot = true; }  // ADFA-4842
@@ -1159,7 +1192,14 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         else { f = BooksDownloadsFragment.newInstance(true); proot = false; }
         // ADFA-4919/4842: a proot detail (maps or module) cannot background either — only Back (to the index).
         if (detailRunBgBtn != null) detailRunBgBtn.setVisibility(proot ? View.GONE : View.VISIBLE);
-        getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commit();
+        // ADFA-5074: commitNow, to match backToIndex. With an async commit a render() landing in
+        // between set showingDetail back to false and found nothing to remove, and the queued
+        // transaction then added the fragment into a hidden host — where ZimPreparingFragment
+        // takes the service listener with nobody left to reclaim it, freezing the index's row.
+        // The mirror image of the bug backToIndex's commitNow already exists for. Only reachable
+        // from a row tap now that the intent routing is gone, so the activity is resumed and the
+        // synchronous commit is safe.
+        getSupportFragmentManager().beginTransaction().replace(R.id.k2go_sp_fraghost, f).commitNow();
         indexScroll.setVisibility(View.GONE);
         detailRoot.setVisibility(View.VISIBLE);
     }

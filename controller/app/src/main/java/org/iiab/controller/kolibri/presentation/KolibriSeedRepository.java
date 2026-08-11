@@ -148,7 +148,7 @@ public final class KolibriSeedRepository {
                 return next;
             }
             long derived = org.iiab.controller.system.domain.TransferRate.perSecond(
-                    next.transferredBytes(), now - startedAtMs);
+                    next.transferredForRate(), now - startedAtMs);
             return derived > 0L ? next.withSpeed(derived) : next;
         });
     }

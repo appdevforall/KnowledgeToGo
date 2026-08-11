@@ -347,11 +347,18 @@ public class LibraryHomeFragment extends Fragment {
                     android.util.Log.i("K2Go-Provision", "REST API ready -> draining wishlists (home fallback)");
                     if (BooksProvisioner.hasPending(requireContext())) BooksProvisioner.drain(requireContext());
                     if (ZimProvisioner.hasPending(requireContext())) ZimProvisioner.drain(requireContext());
-                    if (MapsProvisioner.hasPending(requireContext())) MapsProvisioner.drain(requireContext()); // ADFA-4900
-                    // ADFA-5074: last on purpose. Each provisioner refuses while another stream
-                    // holds the line (ADR-4954 D8), so the order here is the order they start in,
-                    // and courses is the longest of the three — it should not make the others wait.
+                    // ADFA-5074: courses must go BEFORE maps, with the other REST streams.
+                    //
+                    // It was placed last, reasoning that courses is the longest stream and should
+                    // not make the others wait. That reasoning is about the REST-vs-REST axis and
+                    // misses the proot one: MapsProvisioner.drain clears MapsWishlist synchronously
+                    // and only startForegroundService()s, so ModuleQueueRepository is still not
+                    // running on the next line. Courses would then see no proot work pending, pass
+                    // its own guard, and start a REST download on top of a maps runrole spinning up
+                    // — the concurrency ADFA-4900 exists to prevent. Books and ZIM were only ever
+                    // safe because they came first.
                     if (KolibriProvisioner.hasPending(requireContext())) KolibriProvisioner.drain(requireContext());
+                    if (MapsProvisioner.hasPending(requireContext())) MapsProvisioner.drain(requireContext()); // ADFA-4900
                 });
             });
         }
