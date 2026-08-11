@@ -107,13 +107,13 @@
 <rect class="card-open" x="24" y="700" width="932" height="150"/>
 <rect class="chip" x="40" y="712" width="60" height="19" fill="#FBE4E4" stroke="none"/>
 <text class="chiptx" x="48" y="726" fill="#C0392B">OPEN</text>
-<text class="h3" x="112" y="726">Five landings for one kind of work — owned by ADFA-5074</text>
+<text class="h3" x="112" y="726">One landing left to move — owned by ADFA-5074</text>
 <text class="item" x="40" y="750">Wizard, all four types: the order is banked and the user returns to the hub. No progress surface at all until after the install.</text>
-<text class="item" x="40" y="766">Get More: ZIM → ZimPreparingFragment inside SetupLibraryActivity · Books → the index, with a hint that jumps straight to the detail ·</text>
-<text class="item" x="40" y="782">Maps → the index list · Courses → KolibriSeedingFragment inside SetupLibraryActivity.</text>
+<text class="item" x="40" y="766">Get More: Maps and the app modules already land on the index · Books → the index, with a hint that jumps straight to the detail ·</text>
+<text class="item" x="40" y="782">Courses → the index (moved) · ZIM → still ZimPreparingFragment inside SetupLibraryActivity. That last one is what remains.</text>
 <text class="item" x="40" y="804">The screens are NOT duplicated: SetupProgressActivity.openDetail() hosts those same fragments, with a fromIndex flag for the chrome.</text>
-<text class="item" x="40" y="820">What differs is the host, so Back still walks out of a live download and a notification returns you to a different screen than you left.</text>
-<text class="code" x="40" y="836">Closed already: the Home header opens the index (PR 1) · a finished session no longer gates anything (PR 2). Hosting is what remains.</text>
+<text class="item" x="40" y="820">What differed was the host, so Back walked out of a live download and a notification returned you to a screen you had not left.</text>
+<text class="code" x="40" y="836">Home header opens the index · a finished session gates nothing · Courses lands on the index. Left: ZIM, the hint, and a queue for Get More.</text>
 
 <!-- ================= which type is which ================= -->
 <rect class="card" x="24" y="242" width="212" height="244"/>

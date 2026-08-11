@@ -93,47 +93,9 @@
     </LinearLayout>
 </ScrollView>
 
-<!-- ADFA-4954: the way out, and only on the live door. The post-install host owns its own
-     chrome and its Finish already clears the session; reached from Get More there is no host
-     chrome at all, so without this the screen is a dead end AND the session is never cleared,
-     which then blocks every later download.
-
-     Offered only when nothing failed: "all terminal" includes failures, and clearing the
-     session there would throw away the retry rows that are the only way to recover them. -->
-<LinearLayout
-    android:id="@+id/k2go_kseed_footer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:visibility="gone">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/k2go_hairline" />
-
-    <TextView
-        android:id="@+id/k2go_kseed_footer_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="12dp"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="@color/k2go_amber_text"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/k2go_kseed_done"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="16dp"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/k2go_teal"
-        android:text="@string/k2go_kolibri_go_to_library" />
-</LinearLayout>
+<!-- ADFA-5074: a footer used to sit here (a hairline, a failure note and a "Go to library"
+     button), shown only when the host was SetupLibraryActivity. That host is gone: every way
+     into this screen now goes through SetupProgressActivity, which owns the exit for all four
+     streams at once. A detail fragment that draws its own chrome is what made two hosts look
+     necessary in the first place. -->
 </LinearLayout>

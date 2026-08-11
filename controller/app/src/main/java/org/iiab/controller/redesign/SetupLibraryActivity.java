@@ -358,18 +358,10 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
                 .commit();
     }
 
-    /**
-     * ADFA-4954: the live download's progress screen, reached from the Get More
-     * door. The same observe-only fragment the post-install index shows — the
-     * download is one mechanism, so it gets one screen; only the way in differs.
-     */
-    public void openKolibriSeeding() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.k2go_setup_host,
-                        new org.iiab.controller.kolibri.presentation.KolibriSeedingFragment())
-                .addToBackStack("kolibri_seeding")
-                .commit();
-    }
+    // ADFA-5074: openKolibriSeeding() lived here — it hosted the seeding fragment inside
+    // this activity for the Get More door. It was the same fragment the progress index
+    // shows, so what it really added was a second host with no chrome. KolibriConfirmFragment
+    // now starts SetupProgressActivity instead, as Books does.
 
     /** ADFA-4954: review step of the Courses picker. */
     public void openKolibriConfirm() {

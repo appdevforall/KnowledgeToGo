@@ -327,6 +327,28 @@ most expensive by the third platform. A is B done safely over time.
           in background" that Courses lacks while Courses has a terminal action and a
           retry-before-leaving note the others lack. **ADFA-5074 owns this.**
 
+          Sizing it turned out better than that reads: **maps and the modules already land on the
+          index**, so only two routes actually move, and both are REST. The hosting work therefore
+          costs no proot testing — which matters, because a module install can take an hour and had
+          been making this the expensive item.
+
+          **Courses moved first (done).** `KolibriConfirmFragment` now starts `SetupProgressActivity`
+          with `EXTRA_HINT_STREAM = "kolibri"`, the same call `SetupLibraryActivity.startBooksDownload`
+          already made, and `openKolibriSeeding()` is gone. Levelling up went one way only, and the
+          host won every comparison: its Finish clears all three content sessions rather than only
+          this one, and it redirects by itself when the run succeeded, where the seeding footer made
+          the user press a button to leave a run that had finished cleanly. The one rule not carried
+          over is deliberate — Courses withheld the exit while a channel had failed, to keep the
+          retry rows reachable, and an index answering for four streams cannot withhold the exit for
+          one without stranding the other three. The failure case is the host's Finish-plus-note.
+
+          Recorded while doing it, for the landing decision below: leaving the index by Back returns
+          to the picker's **confirm screen with its cart already cleared** — a spent step. Books has
+          behaved this way since ADFA-4988 and nobody has reported it, and Courses now inherits it,
+          which is the point: the wart is shared rather than per-type. The fix is to pop the picker
+          to the hub before leaving, and it belongs with the hint decision so all four get the same
+          answer, not with the type that happened to expose it.
+
           **The progress animation is resolved, not placed.** Today the Lottie
           (`k2go_working_loop` — cloud sending data to the device) lives in
           `fragment_k2go_zim_preparing.xml` and nowhere else, so Courses has none. Copying it

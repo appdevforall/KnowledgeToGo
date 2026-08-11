@@ -33,6 +33,7 @@ import org.iiab.controller.kolibri.domain.ChannelSelection;
 import org.iiab.controller.kolibri.domain.InstalledChannel;
 import org.iiab.controller.kolibri.domain.SeedPlan;
 import org.iiab.controller.redesign.SetupLibraryActivity;
+import org.iiab.controller.redesign.SetupProgressActivity;
 import org.iiab.controller.util.AppExecutors;
 import org.iiab.controller.util.ByteFormatter;
 
@@ -424,7 +425,22 @@ public final class KolibriConfirmFragment extends Fragment {
         });
     }
 
-    /** Back on the main thread with the outcome of the hand-off. */
+    /**
+     * Back on the main thread with the outcome of the hand-off.
+     *
+     * <p>ADFA-5074: a started download lands on the progress index, the same place
+     * Books goes ({@code SetupLibraryActivity.startBooksDownload}) and the same
+     * place the notification and the Home header already point at. It used to open
+     * the seeding fragment inside this activity instead, which is the identical
+     * screen under a host with no chrome — so Back walked straight out of a live
+     * download and the only way to end the session was one button the index also
+     * has. One mechanism, one landing.
+     *
+     * <p>The hint rather than {@code EXTRA_OPEN_STREAM}: with courses the only
+     * stream running the index opens the courses detail, and with something else
+     * already running it keeps the card list, where both are visible. Naming the
+     * stream outright would hide the other one.
+     */
     private void finishStart(boolean handed) {
         if (!isAdded()) {
             return;
@@ -434,9 +450,11 @@ public final class KolibriConfirmFragment extends Fragment {
             return;
         }
         vm.clearSelection();
-        if (getActivity() instanceof SetupLibraryActivity) {
-            ((SetupLibraryActivity) getActivity()).openKolibriSeeding();
+        if (getActivity() == null) {
+            return;
         }
+        startActivity(new android.content.Intent(getActivity(), SetupProgressActivity.class)
+                .putExtra(SetupProgressActivity.EXTRA_HINT_STREAM, "kolibri"));
     }
 
     /** One line of the order, read on the main thread so the write needs no view model. */
