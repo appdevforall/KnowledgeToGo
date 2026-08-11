@@ -322,7 +322,12 @@ public class LibraryHomeFragment extends Fragment {
         if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
         else if (c.evidence != null && !PlatformPresence.resolve(c.evidence)) {
+            // Known absent, and still known absent with the box off — that is the state where
+            // installing is exactly the right offer.
             s = ModuleActionSheet.State.NOT_INSTALLED;
+        } else if (!org.iiab.controller.system.data.SystemFactsReader.serverAnswering()) {
+            // We know why this one is silent, so we say so rather than shrugging.
+            s = ModuleActionSheet.State.STOPPED;
         } else {
             s = ModuleActionSheet.State.UNKNOWN;
         }
@@ -449,7 +454,14 @@ public class LibraryHomeFragment extends Fragment {
             // ADFA-4828: system is installed. Before the first probe resolves (or while the server
             // is still coming up) show "Connecting", never "Not installed" — the latter only appears
             // once a probe actually reports the content is absent (404 -> GRAY).
-            if (!alive) { c.evidence = null; applyState(c, AMBER); continue; }
+            // ADFA-5061: the box being down does not unlearn what a probe already established.
+            // This cleared the evidence, and the cost showed on the device: a platform that had
+            // answered 404 — known absent — went back to "unknown" the moment the server stopped,
+            // so its card read "Stopped" alongside four that really had been running, and its
+            // sheet stopped offering the install it should still offer. Turning the box off does
+            // not install anything, and it does not uninstall anything either. Keep the last
+            // answer; only a fresh probe replaces it.
+            if (!alive) { applyState(c, AMBER); continue; }
             AppExecutors.get().io().execute(() -> {
                 final PlatformPresence.Evidence ev = probe(c.endpoint);
                 main.post(() -> {

@@ -43,7 +43,19 @@ public final class ModuleActionSheet {
      * only this sheet was throwing that away. Silence now has its own state, and its actions
      * are the ones that are safe when you do not know.
      */
-    public enum State { READY, NOT_INSTALLED, SCHEDULED, UNKNOWN }
+    public enum State {
+        READY, NOT_INSTALLED, SCHEDULED,
+        /** The platform did not answer and nothing else says why. */
+        UNKNOWN,
+        /**
+         * The box is not answering at all, so neither is this platform.
+         *
+         * <p>Shares {@link #UNKNOWN}'s actions — with the services down there is nothing to open
+         * and nothing safe to install — but not its words. "Status unknown" over a platform we
+         * watched running five seconds ago is a worse answer than the one we have.
+         */
+        STOPPED
+    }
 
     /**
      * How prominent a row is. Colour only — the severity channel, per the convention the Home
@@ -180,26 +192,21 @@ public final class ModuleActionSheet {
                 break;
             }
             case UNKNOWN:
-                // Nothing was established about the platform, which is not the same as it not
-                // being there. Install is withheld rather than guessed — offering it over an
-                // installed platform is how this state was noticed.
+            case STOPPED:
+                // Nothing established, or the box is down — either way we cannot say whether this
+                // platform is installed, so neither Install nor Schedule is offered.
                 //
-                // Schedule is offered, and a first version withheld it too. That was collateral:
-                // it writes ModuleWishlist and nothing else, it is undone by Cancel schedule, and
-                // with the box stopped every card is in this state — so withholding it left the
-                // most natural thing to do from a stopped box, queue an install for later, with
-                // no way to ask for it. The asymmetry is the point: guessing wrong about Install
-                // starts a runrole nobody wanted; guessing wrong about Schedule costs a
-                // preference the user can clear.
+                // A middle version offered Schedule here, on the grounds that it only writes a
+                // preference and leaving the state with nothing to do was harsh. Luis took that
+                // apart: Schedule is Install deferred. Withholding one and offering the other
+                // grades the same wrong guess by when it hurts, not by whether it is wrong, and a
+                // scheduled install for a platform that turns out to be installed still runs.
+                //
+                // What made this affordable is that "we know it is absent" no longer collapses
+                // into this state. Evidence survives the box going down, so a platform that
+                // answered 404 stays NOT_INSTALLED with both actions — which is where wanting to
+                // queue an install from a stopped box actually lands.
                 content.addView(about);
-                if (!sel && key != null) {
-                    content.addView(row(ctx, R.drawable.ic_schedule_24, act.getString(R.string.k2go_sheet_schedule),
-                            Emphasis.PLAIN, null, false, v -> {
-                                ModuleWishlist.add(ctx, key);
-                                dlg.dismiss();
-                                if (onChanged != null) onChanged.run();
-                            }));
-                }
                 break;
             case NOT_INSTALLED:
             default:
@@ -304,6 +311,7 @@ public final class ModuleActionSheet {
             case READY: return act.getString(R.string.k2go_state_ready);
             case SCHEDULED: return act.getString(R.string.k2go_state_scheduled);
             case UNKNOWN: return act.getString(R.string.k2go_state_no_answer);
+            case STOPPED: return act.getString(R.string.k2go_card_stopped);
             case NOT_INSTALLED:
             default: return act.getString(R.string.k2go_state_not_installed);
         }
