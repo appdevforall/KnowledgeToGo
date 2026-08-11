@@ -268,9 +268,19 @@ public class LibraryHomeFragment extends Fragment {
             openSheet(c);
         } else {   // defensive fallback: non-Ready card with no backing module (none today) — re-probe
             applyState(c, AMBER);
+            c.evidence = null;
             AppExecutors.get().io().execute(() -> {
-                final int st = probe(c.endpoint);
-                main.post(() -> { if (isAdded()) applyState(c, (st == GREEN || st == GRAY) ? st : AMBER); });
+                final PlatformPresence.Evidence ev = probe(c.endpoint);
+                main.post(() -> {
+                    if (!isAdded()) return;
+                    // Same mapping as the poll's, and the evidence is recorded rather than
+                    // thrown away: a re-probe that answers has to leave the card as informed as
+                    // the poll would, or the next tap on the sheet reads a stale nothing.
+                    c.evidence = ev;
+                    if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
+                    else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
+                    else applyState(c, AMBER);
+                });
             });
             Toast.makeText(requireContext(), getString(R.string.k2go_retrying), Toast.LENGTH_SHORT).show();
         }
