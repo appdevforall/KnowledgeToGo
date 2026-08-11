@@ -659,7 +659,14 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             show(redirect, false); show(cancel, false);
         } else {   // starting or running
             cancelRedirect();
-            show(runBgBtn, !prootActive);   // ADFA-4919: no "Run in background" while a proot module runs — the index is the gate
+            // ADFA-4919: no "Run in background" while a proot module runs — the index is the gate.
+            // ADFA-5074: and not before the run's shape is known either. prootActive() reads a latch
+            // that only engages once the proot work registers — launched, batched, or reported by the
+            // queue — so on entry it is false even for a run that is about to install a module, and
+            // the screen offered an escape it was going to withdraw. Waiting for servicesReady costs
+            // nothing: until the engine answers there is no live work to leave running anyway, and
+            // the header already says "Starting services…".
+            show(runBgBtn, servicesReady && !prootActive);
             show(finishBtn, false); show(finishNote, false); show(redirect, false); show(cancel, false);
         }
     }
