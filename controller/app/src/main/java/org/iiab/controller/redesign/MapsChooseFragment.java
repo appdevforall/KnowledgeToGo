@@ -18,7 +18,6 @@ package org.iiab.controller.redesign;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.StatFs;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,11 +108,9 @@ public class MapsChooseFragment extends Fragment {
         fit = root.findViewById(R.id.k2go_fit);
         download = root.findViewById(R.id.k2go_download_btn);
 
-        try {
-            freeMb = new StatFs(requireContext().getFilesDir().getPath()).getAvailableBytes() / (1024L * 1024L);
-        } catch (Exception e) {
-            freeMb = 0;
-        }
+        // ADFA-5105: read free space through the shared probe, not a per-screen StatFs copy.
+        Long fb = org.iiab.controller.storage.StorageProbe.freeBytes(requireContext());
+        freeMb = (fb == null ? 0L : fb) / (1024L * 1024L);
 
         resolveSizes();
         buildGroups(root.findViewById(R.id.k2go_maps_groups));

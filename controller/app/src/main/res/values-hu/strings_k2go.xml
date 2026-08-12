@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Alapértelmezett</string>
     <string name="k2go_auth_chip_custom">Egyéni</string>
     <string name="k2go_auth_chip_notinstalled">Nincs telepítve</string>
+    <string name="k2go_mod_needs_system">A modulok egy rendszerbe települnek, és még nincs ilyen. Először telepítsen egy rendszert.</string>
 </resources>

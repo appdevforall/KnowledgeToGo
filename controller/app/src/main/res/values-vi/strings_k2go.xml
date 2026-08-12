@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Mặc định</string>
     <string name="k2go_auth_chip_custom">Tùy chỉnh</string>
     <string name="k2go_auth_chip_notinstalled">Chưa cài đặt</string>
+    <string name="k2go_mod_needs_system">Các mô-đun được cài vào một hệ thống, và hiện chưa có hệ thống nào. Hãy cài hệ thống trước.</string>
 </resources>

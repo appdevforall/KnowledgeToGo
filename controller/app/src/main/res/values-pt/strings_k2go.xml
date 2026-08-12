@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Predefinição</string>
     <string name="k2go_auth_chip_custom">Personalizado</string>
     <string name="k2go_auth_chip_notinstalled">Não instalado</string>
+    <string name="k2go_mod_needs_system">Os módulos são instalados dentro de um sistema, e ainda não existe um. Instale primeiro um sistema.</string>
 </resources>

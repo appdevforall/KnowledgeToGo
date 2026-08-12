@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">По умолчанию</string>
     <string name="k2go_auth_chip_custom">Свой</string>
     <string name="k2go_auth_chip_notinstalled">Не установлено</string>
+    <string name="k2go_mod_needs_system">Модули устанавливаются в систему, а её ещё нет. Сначала установите систему.</string>
 </resources>

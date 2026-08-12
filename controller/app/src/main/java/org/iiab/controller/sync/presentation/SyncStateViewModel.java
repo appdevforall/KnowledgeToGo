@@ -111,9 +111,14 @@ public class SyncStateViewModel extends ViewModel {
                         @Override
                         public void onCalculated(long bytesToTransfer) {
                             double gigabytes = bytesToTransfer / (1024.0 * 1024.0 * 1024.0);
-                            double freeSpaceGb = android.os.Environment.getDataDirectory().getFreeSpace()
-                                    / (1024.0 * 1024.0 * 1024.0);
-                            if (gigabytes > (freeSpaceGb - 5.0)) {
+                            // ADFA-5105: one margin (StorageGuard) on the real write target (StorageProbe),
+                            // not a second -5 GB copy. Clone-receive overwrites the library, so refuse on
+                            // UNKNOWN free space too (anything but FITS).
+                            Long freeBytes = org.iiab.controller.storage.StorageProbe.freeBytes(appCtx);
+                            if (org.iiab.controller.storage.StorageGuard.evaluate(freeBytes, bytesToTransfer)
+                                    != org.iiab.controller.storage.StorageGuard.Verdict.FITS) {
+                                double freeSpaceGb = (freeBytes == null ? 0.0 : freeBytes)
+                                        / (1024.0 * 1024.0 * 1024.0);
                                 repo.postAborted(appCtx.getString(R.string.sync_error_storage_title),
                                         appCtx.getString(R.string.sync_error_storage_msg, gigabytes, freeSpaceGb));
                                 return;
