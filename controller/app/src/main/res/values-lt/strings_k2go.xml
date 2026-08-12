@@ -782,4 +782,7 @@
     <string name="k2go_auth_chip_custom">Pasirinktinis</string>
     <string name="k2go_auth_chip_notinstalled">Neįdiegta</string>
     <string name="k2go_mod_needs_system">Moduliai diegiami į sistemą, o jos dar nėra. Pirmiausia įdiekite sistemą.</string>
+    <string name="k2go_verifying_files">Tikrinami failai…</string>
+    <string name="k2go_eta_min">liko apie %1$d min.</string>
+    <string name="k2go_eta_almost">beveik baigta</string>
 </resources>

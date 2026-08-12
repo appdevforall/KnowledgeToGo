@@ -49,4 +49,38 @@ public class ExtractProgressTest {
         assertEquals("", ExtractProgress.fileLabel(""));
         assertEquals("", ExtractProgress.fileLabel(null));
     }
+
+    @Test public void etaSecondsUnknownWhenNoBasis() {
+        assertEquals(-1L, ExtractProgress.etaSeconds(0, 1000, 100));   // nothing moved
+        assertEquals(-1L, ExtractProgress.etaSeconds(500, 0, 100));    // unknown total
+        assertEquals(-1L, ExtractProgress.etaSeconds(500, 1000, 0));   // no honest rate
+    }
+
+    @Test public void etaSecondsDividesRemainingByRate() {
+        assertEquals(5L, ExtractProgress.etaSeconds(500, 1000, 100));   // 500 left / 100 = 5s
+        assertEquals(0L, ExtractProgress.etaSeconds(1000, 1000, 100));  // already there
+        assertEquals(0L, ExtractProgress.etaSeconds(1500, 1000, 100));  // overshoot -> 0, never negative
+    }
+
+    @Test public void unifiedPercentSplitsTheBar() {
+        assertEquals(0, ExtractProgress.unifiedPercent(0, false));    // verify start
+        assertEquals(25, ExtractProgress.unifiedPercent(50, false));  // verify half -> 25
+        assertEquals(49, ExtractProgress.unifiedPercent(99, false));  // verify near end
+        assertEquals(50, ExtractProgress.unifiedPercent(0, true));    // extract start
+        assertEquals(75, ExtractProgress.unifiedPercent(50, true));   // extract half -> 75
+        assertEquals(99, ExtractProgress.unifiedPercent(100, true));  // capped until completion
+    }
+
+    @Test public void unifiedPercentClampsAndStaysMonotone() {
+        assertEquals(0, ExtractProgress.unifiedPercent(-10, false));
+        assertEquals(99, ExtractProgress.unifiedPercent(999, true));
+        int prev = 0;
+        for (int p = 0; p <= 100; p += 7) {
+            int v = ExtractProgress.unifiedPercent(p, false);
+            assertTrue("verify half must not regress", v >= prev);
+            prev = v;
+        }
+        assertTrue("handoff stays monotone",
+                ExtractProgress.unifiedPercent(0, true) >= ExtractProgress.unifiedPercent(99, false));
+    }
 }

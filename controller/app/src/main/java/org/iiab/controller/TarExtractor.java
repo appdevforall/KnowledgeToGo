@@ -31,6 +31,10 @@ public class TarExtractor {
     private Process tarProcess;
     private boolean isExtracting = false;
 
+    /** ADFA-5118: the two passes the app makes over the same .tar.gz — the safety/listing pass
+     *  ({@code VERIFY}, {@link #listEntries}) and the extraction pass ({@code EXTRACT}). */
+    public enum Phase { VERIFY, EXTRACT }
+
     public interface ExtractionListener {
         void onComplete(String destDir);
 
@@ -46,6 +50,33 @@ public class TarExtractor {
          * tar line (may be empty). Default no-op.
          */
         default void onProgress(int percent, long done, long total, String line) { }
+
+        /**
+         * ADFA-5118: byte-based progress for the unified verify+extract bar (gzip path only).
+         * Both passes stream the whole .tar.gz, so progress is measured by compressed bytes
+         * consumed against the archive size on disk. {@code passPercent} is 0..99 within the
+         * given {@code phase}; {@code etaSeconds} is that phase's live estimate, or -1 when not
+         * yet estimable; {@code line} is the current member (may be empty). Default no-op, so
+         * callers on the non-gzip path (e.g. .xz restores) keep the member-count behavior.
+         */
+        default void onExtractPhase(Phase phase, int passPercent, long etaSeconds, String line) { }
+    }
+
+    /** ADFA-5118: counts bytes pulled from the underlying (compressed) stream, so the feeders can
+     *  measure progress against the archive size on disk without a sidecar. */
+    private static final class CountingInputStream extends java.io.FilterInputStream {
+        volatile long count = 0L;
+        CountingInputStream(java.io.InputStream in) { super(in); }
+        @Override public int read() throws java.io.IOException {
+            int b = super.read();
+            if (b >= 0) count++;
+            return b;
+        }
+        @Override public int read(byte[] b, int off, int len) throws java.io.IOException {
+            int n = super.read(b, off, len);
+            if (n > 0) count += n;
+            return n;
+        }
     }
 
     public void startExtraction(Context context, String archivePath, String destDir, ExtractionListener listener) {
@@ -81,7 +112,7 @@ public class TarExtractor {
                 // bail out (without extracting anything) if any member is absolute
                 // or climbs out of destDir via "..". An imported/restored backup is
                 // untrusted, so this runs for every extraction.
-                List<String> entries = listEntries(tarBinary, archivePath, isGzip);
+                List<String> entries = listEntries(tarBinary, archivePath, isGzip, listener);
                 for (String entry : entries) {
                     if (ArchiveEntry.escapesRoot(entry)) {
                         throw new Exception("Unsafe archive entry (path traversal): " + entry);
@@ -132,6 +163,12 @@ public class TarExtractor {
                 // ADFA-4544: retain the last output lines (stderr is merged) for diagnostics.
                 final java.util.concurrent.ConcurrentLinkedDeque<String> tarTail = new java.util.concurrent.ConcurrentLinkedDeque<>();
                 final Handler uiHandler = new Handler(Looper.getMainLooper());
+                // ADFA-5118: EXTRACT-pass byte progress. The current member comes from the reader
+                // thread (below); the compressed byte count comes from the feeder (further below),
+                // measured against the archive size on disk — the same currency as the VERIFY pass.
+                final String[] lastExtractFile = {""};
+                final long extractStartMs = System.currentTimeMillis();
+                final long compressedTotalBytes = new File(archivePath).length();
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
                     long[] lastLog = {0L};
@@ -143,6 +180,7 @@ public class TarExtractor {
                             // it does not flood logcat and get dropped "over proc quota" (ADFA-4544).
                             tarTail.addLast(line);
                             while (tarTail.size() > 20) tarTail.pollFirst();
+                            lastExtractFile[0] = line;   // ADFA-5118: current member for the byte-based emit
                             long now = System.currentTimeMillis();
                             if (now - lastLog[0] >= 250) {
                                 lastLog[0] = now;
@@ -174,7 +212,10 @@ public class TarExtractor {
                     // try-with-resources): once tar dies its stdin flush/close re-throws EPIPE,
                     // which would escape to the outer catch and hide tar's real cause (ADFA-4544).
                     OutputStream tarInput = tarProcess.getOutputStream();
-                    try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(archivePath))) {
+                    // ADFA-5118: count compressed bytes pulled from disk for the EXTRACT-pass bar.
+                    final CountingInputStream cis = new CountingInputStream(new FileInputStream(archivePath));
+                    long lastByteEmit = 0L;
+                    try (GZIPInputStream gis = new GZIPInputStream(cis)) {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
@@ -182,6 +223,12 @@ public class TarExtractor {
                             try {
                                 tarInput.write(buffer, 0, bytesRead);
                                 totalWritten += bytesRead;
+                                long now = System.currentTimeMillis();
+                                if (compressedTotalBytes > 0L && now - lastByteEmit >= 200) {
+                                    lastByteEmit = now;
+                                    emitPhase(listener, uiHandler, Phase.EXTRACT,
+                                            cis.count, compressedTotalBytes, now - extractStartMs, lastExtractFile[0]);
+                                }
                             } catch (java.io.IOException pipe) {
                                 // ADFA-4544: tar (the pipe reader) closed its stdin early -> it
                                 // failed or was killed. Don't report a generic decompression error;
@@ -243,11 +290,31 @@ public class TarExtractor {
 
 
     /**
+     * ADFA-5118: compute this pass's percent + a live ETA (rate averaged by TransferRate over the
+     * pass so far) and hand them to the listener on the UI thread. Used by both the VERIFY and the
+     * EXTRACT feeder; the unified 0..100 mapping is done by the presentation layer.
+     */
+    private static void emitPhase(ExtractionListener listener, Handler uiHandler, Phase phase,
+                                  long done, long total, long elapsedMs, String line) {
+        final long rate = org.iiab.controller.system.domain.TransferRate.perSecond(done, elapsedMs);
+        final int pct = ExtractProgress.percent(done, total);
+        final long eta = ExtractProgress.etaSeconds(done, total, rate);
+        final String l = line == null ? "" : line;
+        uiHandler.post(() -> listener.onExtractPhase(phase, pct, eta, l));
+    }
+
+    /**
      * D11: enumerate the archive's member names without extracting, so we can
      * reject path-traversal before any file is written. Mirrors the extraction
      * invocation (gzip is decompressed in Java and piped to {@code tar -t}).
+     *
+     * <p>ADFA-5118: this is the VERIFY pass of the unified bar. On the gzip path it counts
+     * compressed bytes consumed against the archive size on disk and emits determinate
+     * progress + an ETA (via {@code onExtractPhase}); {@code tar -t} already streams each
+     * member name, so the current file is surfaced too — symmetric with the extract pass.
      */
-    private List<String> listEntries(String tarBinary, String archivePath, boolean isGzip) throws Exception {
+    private List<String> listEntries(String tarBinary, String archivePath, boolean isGzip,
+                                     ExtractionListener listener) throws Exception {
         List<String> names = new ArrayList<>();
         List<String> listCmd = new ArrayList<>();
         listCmd.add(tarBinary);
@@ -262,15 +329,29 @@ public class TarExtractor {
 
         Process listProcess = new ProcessBuilder(listCmd).start();
 
+        // ADFA-5118: archive size on disk = the exact denominator for compressed-bytes progress.
+        final long compressedTotal = new File(archivePath).length();
+        final Handler uiHandler = new Handler(Looper.getMainLooper());
+        final long startMs = System.currentTimeMillis();
+        final String[] lastFile = {""};
+
         Thread feeder = null;
         if (isGzip) {
             feeder = new Thread(() -> {
-                try (GZIPInputStream gis = new GZIPInputStream(new FileInputStream(archivePath));
+                try (CountingInputStream cis = new CountingInputStream(new FileInputStream(archivePath));
+                     GZIPInputStream gis = new GZIPInputStream(cis);
                      OutputStream os = listProcess.getOutputStream()) {
                     byte[] buffer = new byte[8192];
                     int read;
+                    long lastEmit = 0L;
                     while ((read = gis.read(buffer)) != -1) {
                         os.write(buffer, 0, read);
+                        long now = System.currentTimeMillis();
+                        if (compressedTotal > 0L && now - lastEmit >= 200) {
+                            lastEmit = now;
+                            emitPhase(listener, uiHandler, Phase.VERIFY,
+                                    cis.count, compressedTotal, now - startMs, lastFile[0]);
+                        }
                     }
                     os.flush();
                 } catch (Exception ignored) {
@@ -283,6 +364,7 @@ public class TarExtractor {
             String line;
             while ((line = reader.readLine()) != null) {
                 names.add(line);
+                lastFile[0] = line;   // ADFA-5118: the member tar -t is listing right now
             }
         }
 

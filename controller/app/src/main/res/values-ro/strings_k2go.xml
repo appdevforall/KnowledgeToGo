@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Personalizat</string>
     <string name="k2go_auth_chip_notinstalled">Neinstalat</string>
     <string name="k2go_mod_needs_system">Modulele se instalează într-un sistem, iar acesta încă nu există. Instalați mai întâi un sistem.</string>
+    <string name="k2go_verifying_files">Se verifică fișierele…</string>
+    <string name="k2go_eta_min">mai sunt aproximativ %1$d min</string>
+    <string name="k2go_eta_almost">aproape gata</string>
 </resources>

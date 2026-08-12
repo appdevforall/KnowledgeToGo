@@ -358,7 +358,9 @@ public final class InstallService extends Service {
     }
 
     private void onRootfsDownloaded(String downloadPath) {
-        InstallProgressRepository.get().postExtracting(-1, "");   // ADFA-4915: -1 = indeterminate "reading/listing" until the first member is extracted
+        // ADFA-5118: the archive-listing pass is now the determinate VERIFY phase of the unified bar.
+        // Start indeterminate (-1) until the first byte lands; the gzip feeder then drives real % + ETA.
+        InstallProgressRepository.get().postVerifying(-1, "", "");
         updateNotification(getString(R.string.install_status_extracting));
 
         File downloadDir = new File(downloadPath);
@@ -372,9 +374,27 @@ public final class InstallService extends Service {
         File downloadedArchive = archives[0];
         new TarExtractor().startExtraction(this, downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(),
                 new TarExtractor.ExtractionListener() {
+                    // ADFA-5118: once byte-based progress arrives (gzip path), it owns the unified bar;
+                    // the member-count callback is only the fallback for a non-gzip archive.
+                    private volatile boolean byteSeen = false;
+
+                    @Override
+                    public void onExtractPhase(TarExtractor.Phase phase, int passPercent, long etaSeconds, String line) {
+                        byteSeen = true;
+                        boolean extract = phase == TarExtractor.Phase.EXTRACT;
+                        int unified = org.iiab.controller.deploy.domain.ExtractProgress.unifiedPercent(passPercent, extract);
+                        String eta = formatEta(etaSeconds);
+                        if (extract) {
+                            InstallProgressRepository.get().postExtracting(unified, line, eta);
+                        } else {
+                            InstallProgressRepository.get().postVerifying(unified, line, eta);
+                        }
+                    }
+
                     @Override
                     public void onProgress(int percent, long done, long total, String line) {
-                        InstallProgressRepository.get().postExtracting(percent, line);
+                        if (byteSeen) return;   // gzip path drives the unified bar; ignore member % there
+                        InstallProgressRepository.get().postExtracting(percent, line);   // non-gzip fallback
                     }
 
                     @Override
@@ -945,6 +965,18 @@ public final class InstallService extends Service {
         fail(getString(R.string.install_error_no_storage) + " ("
                 + org.iiab.controller.util.ByteFormatter.toHuman(pf.amountToReport()) + ")");
         return false;
+    }
+
+    /**
+     * ADFA-5118: resolve an ETA in seconds to a short localized "time left" string for the unified
+     * bar. Empty when unknown ({@code <0}), "almost done" under a minute, else "about N min left"
+     * (ceil to whole minutes — a rounded-up estimate reads better than a jittery countdown).
+     */
+    private String formatEta(long seconds) {
+        if (seconds < 0L) return "";
+        if (seconds < 60L) return getString(R.string.k2go_eta_almost);
+        long minutes = (seconds + 59L) / 60L;
+        return getString(R.string.k2go_eta_min, (int) minutes);
     }
 
     private void doCancel() {

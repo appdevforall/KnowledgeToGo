@@ -334,26 +334,29 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
             installDetail.setText(pct(st.percent) + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
-        } else if (st.phase == InstallState.Phase.EXTRACTING) {
-            // Keep the "Extracting System…" legend on the status line for both sub-phases.
+        } else if (st.phase == InstallState.Phase.VERIFYING || st.phase == InstallState.Phase.EXTRACTING) {
+            // ADFA-5118: the unified verify+extract bar. Both passes render identically — determinate
+            // bar + % + ETA + current file — so there is no "first nothing, then detail" asymmetry.
+            // Only the verb on the status line changes at the handoff.
+            boolean verifying = st.phase == InstallState.Phase.VERIFYING;
             installStatus.setText(org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
-                    getString(R.string.install_status_extracting)));
+                    getString(verifying ? R.string.k2go_verifying_files : R.string.install_status_extracting)));
             if (st.percent < 0) {
-                // ADFA-4915: "reading/listing" sub-phase. listEntries() scans the whole archive
-                // (~1 min; longer on low-end devices). Indeterminate bar + an animated "reading …"
-                // on the DETAIL line (where the % goes), not on the status legend.
+                // Indeterminate fallback: before the first byte lands, or an archive whose size we
+                // couldn't read (no byte-based %). Animated hint on the DETAIL line (where the % goes).
                 installBar.setIndeterminate(true);
                 startReadingEllipsis(getString(R.string.k2go_reading));
             } else {
-                // ADFA-4915: determinate extract — real % plus just the current file's basename
-                // (no internal path, no counter): one ellipsized line that never overlaps.
+                // Determinate — real % plus the current file's basename (no path, no counter): one
+                // ellipsized line that never overlaps.
                 installBar.setIndeterminate(false);
                 installBar.setProgress(st.percent);
                 // ADFA-4910: the % lives on its own fixed line (always the same spot); the file
                 // name gets the line below, so it can grow/shrink without moving the number.
+                // ADFA-5118: the ETA rides beside the % (st.speed), as DOWNLOADING shows its rate.
                 if (installPercent != null) {
                     installPercent.setVisibility(View.VISIBLE);
-                    installPercent.setText(pct(st.percent));
+                    installPercent.setText(pct(st.percent) + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
                 }
                 installDetail.setText(org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message));
             }

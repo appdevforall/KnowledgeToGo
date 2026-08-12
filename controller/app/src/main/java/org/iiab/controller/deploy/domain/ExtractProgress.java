@@ -9,6 +9,10 @@
  *               - firstLine(text): the first line of a multi-line label.
  *               - fileLabel(line): basename of a verbose tar line (files only;
  *                 "" for directory entries or empty input).
+ *               ADFA-5118 adds two pure rules for the unified verify+extract bar:
+ *               - etaSeconds(done,total,rate): seconds left for a byte pass.
+ *               - unifiedPercent(passPercent,secondPass): map a single pass onto
+ *                 the two-pass [0,100] bar (verify = [0,50), extract = [50,100)).
  *               Pure JVM (no android.*) => unit-testable.
  * ============================================================================
  */
@@ -29,6 +33,33 @@ public final class ExtractProgress {
         if (p < 0L) return 0;
         if (p > 99L) return 99;
         return (int) p;
+    }
+
+    /**
+     * ADFA-5118: seconds remaining for a byte-based pass, or {@code -1} when it cannot be
+     * honestly estimated yet — unknown total, nothing moved, or no rate (see TransferRate,
+     * which returns 0 until it has enough elapsed time to be meaningful). {@code ratePerSec}
+     * is bytes/second. Returns 0 once the pass has already moved everything.
+     */
+    public static long etaSeconds(long done, long total, long ratePerSec) {
+        if (total <= 0L || done <= 0L || ratePerSec <= 0L) return -1L;
+        long remaining = total - done;
+        if (remaining <= 0L) return 0L;
+        return remaining / ratePerSec;
+    }
+
+    /**
+     * ADFA-5118: map a single pass's percent onto the unified two-pass bar. Verify owns
+     * [0,50), extract owns [50,100). {@code passPercent} is that pass's own 0..100; it is
+     * clamped, halved, and offset by 50 for the second pass. The result is capped at 99 so
+     * only true completion (set by the caller) reaches 100. This keeps the bar monotone
+     * across the handoff: verify ends near 49, extract starts at 50.
+     */
+    public static int unifiedPercent(int passPercent, boolean secondPass) {
+        if (passPercent < 0) passPercent = 0;
+        if (passPercent > 100) passPercent = 100;
+        int v = (secondPass ? 50 : 0) + passPercent / 2;
+        return v > 99 ? 99 : v;
     }
 
     /** First line of a possibly multi-line label, trimmed. Null-safe. */
