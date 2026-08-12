@@ -260,6 +260,10 @@ public final class InstallService extends Service {
                 else finishSuccess();
                 return;
             }
+            // ADFA-5105: from here on the pipeline extracts a rootfs (and, on reinstall, wipes the
+            // existing one first). Refuse before any destructive step when it plainly won't fit —
+            // UNKNOWN free space refuses too (a wipe that then runs out of disk leaves no bootable OS).
+            if (!ensureSpaceForRootfs()) return;
             if (reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
                 // ADFA-5023: a reinstall wipes the LIVE rootfs. Doing rm -rf while the server proot is up
                 // is the corruption the legacy reset/delete guarded against (they refused when alive). If a
@@ -581,6 +585,9 @@ public final class InstallService extends Service {
      */
     private void runResetPipeline() {
         try {
+            // ADFA-5105: reset wipes the rootfs and re-extracts a base one. Refuse before the wipe
+            // when it won't fit (fail-safe on UNKNOWN free space too).
+            if (!ensureSpaceForRootfs()) return;
             // ADFA-5070: stop and forget the downloads before the rootfs they were
             // writing into goes away.
             org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(this,
@@ -910,6 +917,28 @@ public final class InstallService extends Service {
         finished = true;
         InstallProgressRepository.get().postFailed(message);
         teardown();
+    }
+
+    /**
+     * ADFA-5105: destructive-run free-space preflight. The rootfs extract's "needed" is the
+     * UNCOMPRESSED size for this tier+abi (measured via ADFA-5110's sidecar when published,
+     * otherwise a conservative estimate). Returns true to proceed; on a refusal it reports the
+     * shortfall through fail() and returns false so the caller stops before wiping.
+     */
+    private boolean ensureSpaceForRootfs() {
+        if (cancelled) return false;
+        org.iiab.controller.rootfs.data.RootfsCatalog cat =
+                new org.iiab.controller.rootfs.data.RootfsCatalog(this);
+        org.iiab.controller.rootfs.domain.RootfsTier rTier =
+                (tier == null) ? org.iiab.controller.rootfs.domain.RootfsTier.BASIC
+                               : org.iiab.controller.rootfs.domain.RootfsTier.valueOf(tier.name());
+        long needed = cat.installedBytes(rTier, cat.detectAbi());
+        org.iiab.controller.storage.FreeSpacePreflight.Result pf =
+                org.iiab.controller.storage.FreeSpacePreflight.check(this, needed);
+        if (pf.ok) return true;
+        fail(getString(R.string.install_error_no_storage) + " ("
+                + org.iiab.controller.util.ByteFormatter.toHuman(pf.amountToReport()) + ")");
+        return false;
     }
 
     private void doCancel() {

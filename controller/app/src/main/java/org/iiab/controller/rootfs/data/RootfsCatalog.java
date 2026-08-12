@@ -29,16 +29,33 @@ public class RootfsCatalog {
     private static final String CSV_ASSET = "rootfs_sizes.csv";
     private static final String BASE_URL = "https://iiab.switnet.org/android/rootfs/";
 
-    // Emergency-net fallbacks (used only if the CSV is missing/unreadable).
-    private static final long FALLBACK_BASIC_ARM64 = 1_219_422_532L;    // 1.14 GiB
-    private static final long FALLBACK_STANDARD_ARM64 = 1_428_970_336L; // 1.33 GiB
-    private static final long FALLBACK_FULL_ARM64 = 2_926_676_923L;     // 2.73 GiB
-    private static final long FALLBACK_BASIC_ARMV7 = 1_220_401_364L;    // 1.14 GiB
-    private static final long FALLBACK_STANDARD_ARMV7 = 1_429_892_132L; // 1.33 GiB
-    private static final long FALLBACK_FULL_ARMV7 = 2_917_715_443L;     // 2.72 GiB
+    // Emergency-net COMPRESSED (download) fallbacks — used only if the CSV is missing/unreadable.
+    // Captured from latest_*.meta4, build 2026.224 (sha 8d15d79, 2026-08-12).
+    private static final long FALLBACK_BASIC_ARM64 = 1_936_814_083L;    // ~1.80 GiB
+    private static final long FALLBACK_STANDARD_ARM64 = 2_146_100_011L; // ~2.00 GiB
+    private static final long FALLBACK_FULL_ARM64 = 2_841_912_764L;     // ~2.65 GiB
+    private static final long FALLBACK_BASIC_ARMV7 = 1_937_574_673L;    // ~1.80 GiB
+    private static final long FALLBACK_STANDARD_ARMV7 = 2_146_813_777L; // ~2.00 GiB
+    private static final long FALLBACK_FULL_ARMV7 = 2_833_106_837L;     // ~2.64 GiB
 
-    /** Parsed CSV, loaded once per process. Empty map => use the emergency-net constants. */
+    // Emergency-net UNCOMPRESSED (installed) fallbacks — the destructive guard's "needed", measured
+    // by the builder (ADFA-5110) and published as latest_*.installed. Same build as above.
+    private static final long INSTALLED_BASIC_ARM64 = 3_294_993_334L;    // ~3.07 GiB
+    private static final long INSTALLED_STANDARD_ARM64 = 3_675_639_489L; // ~3.42 GiB
+    private static final long INSTALLED_FULL_ARM64 = 5_103_603_118L;     // ~4.75 GiB
+    private static final long INSTALLED_BASIC_ARMV7 = 3_162_669_853L;    // ~2.95 GiB
+    private static final long INSTALLED_STANDARD_ARMV7 = 3_542_808_901L; // ~3.30 GiB
+    private static final long INSTALLED_FULL_ARMV7 = 4_856_267_277L;     // ~4.52 GiB
+
+    // ADFA-5105: the destructive free-space guard needs the UNCOMPRESSED (installed) footprint —
+    // what an extraction actually writes — not the compressed download above. It comes from the
+    // installed_bytes CSV column (refreshed from the latest_*.installed sidecar the builder now
+    // publishes, ADFA-5110), with the measured emergency-net constants above as the offline fallback.
+
+    /** Parsed CSV of COMPRESSED download sizes, loaded once per process. Empty => emergency-net. */
     private static volatile Map<String, Long> csvSizes;
+    /** Parsed CSV of UNCOMPRESSED sizes (optional 5th column, ADFA-5110). Absent => estimate. */
+    private static volatile Map<String, Long> csvInstalled;
 
     /** No-arg: emergency-net only (no CSV). Kept for callers without a Context. */
     public RootfsCatalog() { }
@@ -51,6 +68,7 @@ public class RootfsCatalog {
         synchronized (RootfsCatalog.class) {
             if (csvSizes != null) return;
             Map<String, Long> m = new HashMap<>();
+            Map<String, Long> mi = new HashMap<>();
             try (BufferedReader r = new BufferedReader(
                     new InputStreamReader(context.getAssets().open(CSV_ASSET)))) {
                 String line;
@@ -63,11 +81,19 @@ public class RootfsCatalog {
                             m.put(key(p[0].trim(), p[1].trim()), Long.parseLong(p[2].trim()));
                         } catch (NumberFormatException ignore) { /* skip malformed row */ }
                     }
+                    // Optional installed_bytes column (ADFA-5110). Absent in the current CSV, so this
+                    // stays empty until the build publishes it; installedBytes() then estimates.
+                    if (p.length >= 5) {
+                        try {
+                            mi.put(key(p[0].trim(), p[1].trim()), Long.parseLong(p[4].trim()));
+                        } catch (NumberFormatException ignore) { /* not the installed column yet */ }
+                    }
                 }
             } catch (Exception e) {
                 Log.w(TAG, "rootfs_sizes.csv not read (" + e.getMessage() + "); using emergency-net sizes");
             }
             csvSizes = m;
+            csvInstalled = mi;
         }
     }
 
@@ -78,6 +104,45 @@ public class RootfsCatalog {
     /** Builds the stable Metalink URL, e.g. {@code .../latest_basic_arm64-v8a.meta4}. */
     public String metaUrl(RootfsTier tier, RootfsAbi abi) {
         return BASE_URL + "latest_" + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".meta4";
+    }
+
+    /** Stable sidecar URL for the UNCOMPRESSED size (ADFA-5110),
+     *  e.g. {@code .../latest_full_arm64-v8a.installed} — a single integer, bytes. */
+    public String installedUrl(RootfsTier tier, RootfsAbi abi) {
+        return BASE_URL + "latest_" + tier.name().toLowerCase(Locale.US) + "_" + abi.id() + ".installed";
+    }
+
+    /**
+     * Uncompressed (installed) size in bytes for a tier+abi — what an extraction actually writes,
+     * and the "needed" figure the destructive free-space guard (ADFA-5105) checks. Prefers the
+     * measured value from the CSV installed column (ADFA-5110); until that is published it returns a
+     * conservative estimate from the compressed download size. Never returns {@code <= 0}.
+     */
+    public long installedBytes(RootfsTier tier, RootfsAbi abi) {
+        Map<String, Long> csv = csvInstalled;
+        if (csv != null) {
+            Long v = csv.get(key(tier.name(), abi.id()));
+            if (v != null && v > 0) return v;
+        }
+        return installedFallbackBytes(tier, abi);
+    }
+
+    /** Last-known measured uncompressed size (emergency net) for a tier+abi. Never {@code <= 0}. */
+    private long installedFallbackBytes(RootfsTier tier, RootfsAbi abi) {
+        if (abi == RootfsAbi.ARMEABI_V7A) {
+            switch (tier) {
+                case BASIC: return INSTALLED_BASIC_ARMV7;
+                case STANDARD: return INSTALLED_STANDARD_ARMV7;
+                case FULL: return INSTALLED_FULL_ARMV7;
+            }
+        } else {
+            switch (tier) {
+                case BASIC: return INSTALLED_BASIC_ARM64;
+                case STANDARD: return INSTALLED_STANDARD_ARM64;
+                case FULL: return INSTALLED_FULL_ARM64;
+            }
+        }
+        return INSTALLED_BASIC_ARM64;
     }
 
     /** Last-known fallback size in bytes for a tier+abi: CSV first, constants as the net. */

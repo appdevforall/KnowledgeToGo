@@ -321,7 +321,7 @@
     <string name="install_msg_export_failed">Export failed: %1$s</string>
 
     <string name="install_error_no_tier">Hey! Select an edition to install (Basic, Standard, or Full).</string>
-    <string name="install_error_no_storage">Not enough storage! Please free up space or choose a smaller edition. (5GB safety buffer required)</string>
+    <string name="install_error_no_storage">Not enough storage. Free up space or choose a smaller edition, then try again.</string>
     <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
     <string name="install_status_extracting">Extracting System...\n(This takes a while)</string>
     <string name="install_error_no_archive">Error: Downloaded archive not found.</string>
@@ -401,7 +401,7 @@
 
     <string name="sync_msg_calculating">Analyzing system differences...\nThis may take a couple of minutes.</string>
     <string name="sync_error_storage_title">Insufficient Storage</string>
-    <string name="sync_error_storage_msg">The update requires %1$.2f GB, but you only have %2$.2f GB available (considering a 5GB safety buffer).</string>
+    <string name="sync_error_storage_msg">The update requires %1$.2f GB, but only %2$.2f GB is available (with a safety margin).</string>
     <string name="sync_title_update">Update System</string>
     <string name="sync_title_install">Install System</string>
     <string name="sync_msg_confirm_transfer">You are about to download %.2f GB.\nYou have enough storage space.\n\nDo you want to start the transfer now?</string>

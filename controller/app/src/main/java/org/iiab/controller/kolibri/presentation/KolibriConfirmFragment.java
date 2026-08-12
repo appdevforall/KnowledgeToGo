@@ -11,7 +11,6 @@ package org.iiab.controller.kolibri.presentation;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.StatFs;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -341,7 +340,7 @@ public final class KolibriConfirmFragment extends Fragment {
     /** Free bytes on the data partition, or null when it cannot be read. */
     private Long readFreeBytes() {
         try {
-            return new StatFs(requireContext().getFilesDir().getPath()).getAvailableBytes();
+            return org.iiab.controller.storage.StorageProbe.freeBytes(requireContext());   // ADFA-5105: shared probe
         } catch (Exception e) {
             return null;
         }

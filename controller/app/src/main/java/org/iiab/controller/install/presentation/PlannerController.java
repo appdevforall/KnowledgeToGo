@@ -332,7 +332,14 @@ public final class PlannerController {
                 double pKiwix = (host.getSelectedTier() == null || !is64Bit) ? 0.0 : projection.kiwixSize;
                 double pTotal = pOs + pMaps + pKiwix;
 
-                host.setStorageSafe(pTotal <= (freeSpaceGb - 5.0));
+                // ADFA-5105: same margin as the destructive guard (StorageGuard), measured on the
+                // real write target (StorageProbe), instead of a second -5 GB copy. This is the
+                // advisory UI gate, so UNKNOWN free space stays "safe" (allow) — the hard preflight
+                // in InstallService refuses for real before any wipe.
+                long neededBytes = (long) Math.ceil(pTotal * 1024.0 * 1024.0 * 1024.0);
+                Long freeBytes = org.iiab.controller.storage.StorageProbe.freeBytes(fragment.requireContext());
+                host.setStorageSafe(org.iiab.controller.storage.StorageGuard.evaluate(freeBytes, neededBytes)
+                        != org.iiab.controller.storage.StorageGuard.Verdict.DOES_NOT_FIT);
 
                 if (txtLegendIiab != null)
                     txtLegendIiab.setText(String.format(java.util.Locale.US, "%.1fG", pOs));

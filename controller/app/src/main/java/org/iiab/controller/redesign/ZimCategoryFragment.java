@@ -15,7 +15,6 @@
 package org.iiab.controller.redesign;
 
 import android.os.Bundle;
-import android.os.StatFs;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,11 +120,11 @@ public class ZimCategoryFragment extends Fragment {
         sortGroup.setOnClickListener(v -> { view = "group"; render(); });
         sortGroup.setVisibility(isWiki() ? View.VISIBLE : View.GONE);
 
-        try {
-            StatFs st = new StatFs(requireContext().getFilesDir().getPath());
-            freeMb = st.getAvailableBytes() / (1024L * 1024L);
-            totalMb = st.getTotalBytes() / (1024L * 1024L);
-        } catch (Exception e) { freeMb = 0; totalMb = 0; }
+        // ADFA-5105: shared free-space probe instead of a per-screen StatFs copy.
+        Long fb = org.iiab.controller.storage.StorageProbe.freeBytes(requireContext());
+        Long tb = org.iiab.controller.storage.StorageProbe.totalBytes(requireContext());
+        freeMb = (fb == null ? 0L : fb) / (1024L * 1024L);
+        totalMb = (tb == null ? 0L : tb) / (1024L * 1024L);
 
         KiwixCatalog.getOrFetch(requireContext(), new KiwixCatalog.Listener() {
             @Override public void onReady(JSONObject c) { if (!isAdded()) return; catalog = c; rebuild(); }
