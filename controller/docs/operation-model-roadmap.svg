@@ -101,7 +101,7 @@
 <!-- ============================================================ -->
 <text class="h3" x="444" y="80">THE SPINE — everything else reads it</text>
 
-<rect class="card-hi" x="444" y="90" width="392" height="446"/>
+<rect class="card-hi" x="444" y="90" width="392" height="332"/>
 <circle class="badge" cx="468" cy="115" r="13"/><text class="badgetx" x="464" y="120">1</text>
 <text class="h2" x="490" y="120">ADFA-5061 · Operation model</text>
 <text class="sub" x="468" y="142">One declared source of truth for</text>
@@ -120,12 +120,15 @@
 <text class="note" x="482" y="375">Both halves reach it: seeding through the dispatcher and</text>
 <text class="note" x="482" y="390">ContentDoor, the install through SystemDoor. The blocker</text>
 <text class="note" x="482" y="405">noted here was removed by that same change.</text>
-<circle class="s-todo"  cx="468" cy="426" r="5.5"/><text class="item" x="482" y="430">One shared answer to "is the platform there"</text>
-<text class="note" x="482" y="447">Six probes, five answers, three staleness policies.</text>
-<circle class="s-todo"  cx="468" cy="468" r="5.5"/><text class="item" x="482" y="472">Dashboard Rebuild: the REST/proot fork</text>
-<text class="note" x="482" y="489">Untouched since before this ADR existed. An unreadable</text>
-<text class="note" x="482" y="504">version silently takes the route that stops the box, and</text>
-<text class="note" x="482" y="519">the LIVE route is presented as if it were STOPPED.</text>
+
+<path class="lnk" d="M640,422 L640,448" marker-end="url(#arw)"/>
+<text class="lnklbl" x="650" y="442">follow up</text>
+
+<rect class="card" x="444" y="450" width="392" height="98" stroke="#5F5E5A" stroke-dasharray="4 3"/>
+<text class="h3" x="460" y="472">FOLLOW-UP — out of 5061 so it can close, not dropped</text>
+<circle class="s-todo" cx="468" cy="491" r="5.5"/><text class="item" x="482" y="495">One shared answer to "is the platform there"</text>
+<text class="note" x="482" y="511">Its visible face is the module-management card below.</text>
+<circle class="s-todo" cx="468" cy="529" r="5.5"/><text class="item" x="482" y="533">Dashboard Rebuild: the REST/proot fork</text>
 
 <!-- NEW — catalogue depth (split out of 4954) -->
 <rect class="card" x="444" y="556" width="392" height="164"/>
@@ -133,7 +136,7 @@
 <text class="chiptx" x="468" y="586" fill="#1B5E8F">SPLIT OUT</text>
 <text class="h2" x="460" y="615">ADFA-5094 · Kolibri topic display</text>
 <text class="sub" x="460" y="633">Should not depend on reaching Studio</text>
-<text class="sub" x="460" y="648">over the internet. Low priority, real gap.</text>
+<text class="sub" x="460" y="648">over the internet. Needs the box first.</text>
 
 <circle class="s-todo" cx="468" cy="668" r="5.5"/><text class="item" x="482" y="672">Task map learns the metadata-only import</text>
 <circle class="s-todo" cx="468" cy="687" r="5.5"/><text class="item" x="482" y="691">The box serves the tree it imported</text>
@@ -194,8 +197,6 @@
 <path class="lnk-hi" d="M836,170 L860,170" marker-end="url(#arwhi)"/>
 <text class="lnklbl" x="838" y="162">blocks</text>
 
-<path class="lnk" d="M640,536 L640,552" marker-end="url(#arw)"/>
-<text class="lnklbl" x="650" y="548">needs the box first</text>
 
 <path class="lnk" d="M416,600 C430,600 430,300 440,290" marker-end="url(#arw)"/>
 <text class="lnklbl" x="240" y="600">a SYSTEM op invalidates content state</text>

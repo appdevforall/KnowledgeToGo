@@ -165,6 +165,28 @@ screen. Subtle, not in-your-face: the lights change, buttons appear or don't.
    are built by the same function and sit next to each other for the user to compare, and that is
    where the rule is applied once instead of typed per row.
 
+   **Two things accepted with open eyes, written down so they are not rediscovered as bugs.**
+
+   *Amber now says two things on two surfaces.* On the Home cards amber is a status — "connecting",
+   "stopped". On this row it is a warning about cost. The contexts are far apart and the sheet draws
+   no status dots, so the collision was judged acceptable; but if colour tokens ever get unified,
+   this is the knot to untie first.
+
+   *The two axes are separated only in prose.* Every STOPPED operation we ship is also an expensive
+   one, so `CAUTION` and `!op.isLive()` select the same rows in every screen currently drawn. Nothing
+   in the code keeps them apart — `CAUTION` is chosen per row by hand, exactly the shape the earlier
+   review condemned when the class was typed per row. It is deliberate: deriving from `isLive()`
+   would be the collapse a third time. The durable fix is for "this is expensive" to become a
+   property of `Operation`, next to `kind` and `executionClass`, and for the sheet to read it the way
+   it already reads the notice. Until then the distinction is a convention, and conventions do not
+   survive contributors who cannot see them.
+
+   *And one measurement, recorded rather than acted on.* `k2go_amber_text` gives 3.30:1 against
+   `k2go_surface` in light mode, where teal gives 6.47:1 and the dark twin gives 6.68:1 — under AA
+   for body text. Read on device and judged legible, so it ships. It is noted because the token pins
+   24 sites at that same ratio and this is the first one where it carries a warning rather than a
+   status; the fix, if reports say so, is the token's light value, not this row.
+
    The rest of the contract — navigable, background affordance, progress surface — is unchanged and
    still reads from the class.
 
@@ -1149,6 +1171,23 @@ most expensive by the third platform. A is B done safely over time.
        services with three different starting points, and it kept this item amber for reasons
        that had nothing to do with tokens. Its own card on the roadmap: "A finished run leaves no
        evidence it happened".
+
+15. [ ] **Two items moved out of 5061 so it can close** — a follow-up card on the roadmap, joined
+       to the ticket by an arrow, because "out of scope" and "forgotten" look identical six months
+       later and only one of them is a decision.
+
+       - **One shared answer to "is the platform there"** (item 10). Its visible face is already a
+         standalone card: module management treats silence as absence and offers to reinstall what
+         is installed. The plumbing and the defect are one pass.
+       - **Dashboard Rebuild, the REST/proot fork** (decision 5). Untouched since before this ADR
+         existed: an unreadable version silently takes the route that stops the box, and the LIVE
+         route is presented as if it were STOPPED. It is the sharpest mixing example in the app and
+         it was named as the first place to apply the model; it is also the only item here that
+         needs a version resolver rather than the facts.
+
+       Everything else 5061 set out to do is delivered: the facts reader, the pure resolver, both
+       execution classes dispatching through it, the wizard booleans retired, selection surviving
+       process death, the UX contract settled, and Kolibri covered on both classes.
 
 11. [ ] **Small things the second review pass left standing.** None of them is worth a ticket on
        its own; they belong to whichever ticket next opens these files.
