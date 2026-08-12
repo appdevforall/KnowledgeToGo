@@ -20,6 +20,8 @@ import android.util.Log;
 
 import org.iiab.controller.install.presentation.InstallService;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
+import org.iiab.controller.system.data.SystemDoor;
+import org.iiab.controller.system.domain.OperationDispatcher;
 
 public final class MapsProvisioner {
     private MapsProvisioner() {}
@@ -37,6 +39,14 @@ public final class MapsProvisioner {
         if (!MapsWishlist.has(ctx)) return;
         if (ModuleQueueRepository.get().isRunning()) return;
         final Context app = ctx.getApplicationContext();
+        // ADFA-5061: same gate as ModuleProvisioner — see SystemDoor. Maps is the one runrole
+        // that coexists with a live server, but "coexists with a live server" is not "runs over
+        // a rootfs that will not boot", and that is the case this refuses. Selection kept.
+        OperationDispatcher.Dispatch verdict = SystemDoor.dispatch(app, "maps");
+        if (!OperationDispatcher.mayRunStopped(verdict)) {
+            Log.i(TAG, "maps drain: held, the box says " + verdict + " (selection still banked)");
+            return;
+        }
         Intent i = new Intent(app, InstallService.class);
         i.setAction(InstallService.ACTION_START_MODULES);
         i.putExtra(InstallService.EXTRA_MODULES, new String[]{"maps"});

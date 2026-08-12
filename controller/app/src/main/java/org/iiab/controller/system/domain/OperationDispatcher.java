@@ -165,6 +165,20 @@ public final class OperationDispatcher {
         return d == Dispatch.DEFER;
     }
 
+    /**
+     * Whether the answer means a stopped run may start <em>now</em>.
+     *
+     * <p>Strictly {@link Dispatch#RUN_STOPPED}, and the strictness is the point.
+     * {@link #willRun} is the wrong question at this door: it also accepts
+     * {@link Dispatch#ENSURE_SERVER_THEN_RUN_LIVE}, which is a live operation waiting on a box
+     * that is not up, and a caller that treated the two alike would take the box down to run
+     * something that needed it running. {@link Dispatch#DEFER} is a no too, but a kind one —
+     * the order stays banked.
+     */
+    public static boolean mayRunStopped(Dispatch d) {
+        return d == Dispatch.RUN_STOPPED;
+    }
+
     /** Whether the answer will end up running, now or once the box is up. */
     public static boolean willRun(Dispatch d) {
         return d == Dispatch.RUN_LIVE

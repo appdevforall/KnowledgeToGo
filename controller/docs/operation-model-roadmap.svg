@@ -110,7 +110,7 @@
 
 <circle class="s-done"  cx="468" cy="202" r="5.5"/><text class="item" x="482" y="206">One reader for the system facts</text>
 <circle class="s-done"  cx="468" cy="221" r="5.5"/><text class="item" x="482" y="225">Pure resolver: live / stopped / deferred</text>
-<circle class="s-doing" cx="468" cy="240" r="5.5"/><text class="item" x="482" y="244">kind / class type on each operation</text>
+<circle class="s-done"  cx="468" cy="240" r="5.5"/><text class="item" x="482" y="244">Both classes dispatch through the model</text>
 <circle class="s-done"  cx="468" cy="259" r="5.5"/><text class="item" x="482" y="263">Retire the four *Wizard booleans</text>
 <circle class="s-done"  cx="468" cy="278" r="5.5"/><text class="item" x="482" y="282">Wizard selection survives being killed</text>
 <circle class="s-doing" cx="468" cy="297" r="5.5"/><text class="item" x="482" y="301">UX contract tokens</text>

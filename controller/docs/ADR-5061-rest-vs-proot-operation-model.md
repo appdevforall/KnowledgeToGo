@@ -1008,6 +1008,40 @@ most expensive by the third platform. A is B done safely over time.
        mistake independently, and in each one the fact needed to do better was already in
        hand. When 5062 migrates a surface, the derivation to retire is not just "guessing
        instead of asking the model" — it is this specific shape.
+12. [x] **Both execution classes now dispatch through the model** (`system/data/SystemDoor`).
+
+       Until this, `OperationDispatcher.resolve` had two callers in production —
+       `KolibriReadinessViewModel` and `ContentDoor` — and both were LIVE.
+       `Operation.system()` had none outside tests, and `Operation.appInstall(...)` was used
+       only to decide whether a bottom-sheet row printed a warning. A model that answers for one
+       of its two classes is a description of the system, not a source of truth about it, and
+       the class it did not answer for is the one that takes the box down.
+
+       `SystemDoor` is `ContentDoor`'s counterpart: it reads the facts and resolves
+       `Operation.appInstall(platform)`. Both module drains — `ModuleProvisioner.drain` and
+       `MapsProvisioner.drain` — ask it before handing anything to `InstallService`. They
+       previously checked two things, a non-empty wishlist and no queue already running, and
+       neither is a fact about the box. So a drain would start runroles over a half-installed
+       rootfs that will not boot, producing a second failure in place of the repair, and over a
+       system that does not exist yet, where the honest answer is to leave the order where it is.
+       A refusal returns before the wishlist is cleared, so nothing is lost.
+
+       `mayRunStopped` is strictly `RUN_STOPPED`, and the strictness is the point:
+       `willRun` also accepts `ENSURE_SERVER_THEN_RUN_LIVE`, and a door that treated them alike
+       would take the box down to run something that needed it up. Tested in
+       `OperationDispatcherTest`.
+
+       **The legacy seam stays.** `InstallController.startModuleQueue()`, reached from
+       `DeployFragment`'s launch button, still enqueues without asking. That is the strangler
+       boundary, not an oversight — the god class is migrated when a feature touches it.
+       `SetupLibraryActivity.startMapsInstall` is a fourth sender with no reachable caller.
+
+       **What this door still does not gate:** `EnvironmentLock.Owner.MODULE` exists and nothing
+       acquires it. Clone and DeepOp take their locks; a module run relies on `InstallGuard` plus
+       `ModuleQueueRepository.isRunning()`, and `SetupProgressActivity.orchestrateStep` re-checks
+       only the latter — so the three UI doors that do check `isHeld()` lose it between the door
+       and the drain. Its own ticket.
+
 11. [ ] **Small things the second review pass left standing.** None of them is worth a ticket on
        its own; they belong to whichever ticket next opens these files.
 

@@ -23,6 +23,8 @@ import android.util.Log;
 
 import org.iiab.controller.install.presentation.InstallService;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
+import org.iiab.controller.system.data.SystemDoor;
+import org.iiab.controller.system.domain.OperationDispatcher;
 
 public final class ModuleProvisioner {
     private ModuleProvisioner() {}
@@ -41,6 +43,18 @@ public final class ModuleProvisioner {
         if (ModuleQueueRepository.get().isRunning()) return;
         final Context app = ctx.getApplicationContext();
         String[] modules = ModuleWishlist.keys(app);
+        if (modules.length == 0) return;   // has() said yes and keys() said no; nothing to hand over
+        // ADFA-5061: ask the model before handing work to the engine. The two checks above are
+        // about this class's own bookkeeping; neither is about the box. Without this a drain
+        // would start runroles over a half-installed rootfs that cannot boot, and over a system
+        // that does not exist yet. The wishlist is deliberately left alone on a refusal — the
+        // order stays banked and the next drain takes it.
+        OperationDispatcher.Dispatch verdict = SystemDoor.dispatch(app, modules[0]);
+        if (!OperationDispatcher.mayRunStopped(verdict)) {
+            Log.i(TAG, "module drain: held, the box says " + verdict
+                    + " (" + modules.length + " module(s) still banked)");
+            return;
+        }
         // Record the ordered batch so the install index can render a row per module (the queue only
         // reports the current module + remaining, not the full list).
         ModuleBatch.save(app, modules);
