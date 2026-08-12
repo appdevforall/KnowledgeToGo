@@ -733,6 +733,7 @@ log "iiab/iiab id: ${IIAB_SHA}  [source: ${IIAB_SRC}]"
 
 ARTIFACT="iiab-oa_${STAMP}_${TIER_NAME}_${IIAB_SHA}_${ARCH}.tar.gz"
 META4="latest_${TIER_NAME}_${ARCH}.meta4"
+INSTALLED="latest_${TIER_NAME}_${ARCH}.installed"   # ADFA-5110: stable uncompressed-size sidecar
 
 # ----------------------------- 4) Package (top-level installed-rootfs/iiab/) ----
 log "[4/5] Packaging ${ARTIFACT} ..."
@@ -818,6 +819,15 @@ SIZE_BYTES="$(stat -c%s "${OUTDIR}/${ARTIFACT}")"
 SHA256="$(sha256sum "${OUTDIR}/${ARTIFACT}" | awk '{print $1}')"
 echo "$SHA256  $ARTIFACT" > "${OUTDIR}/${ARTIFACT}.sha256"
 
+# ADFA-5110: the extract writes the UNCOMPRESSED tree, which is larger than the .tar.gz above.
+# Capture its real on-disk footprint (apparent bytes) so the app can guard free space before a
+# destructive run instead of guessing from the compressed size. Published as a stable sidecar the
+# app can read pre-download (latest_<tier>_<arch>.installed = a single integer, bytes).
+UNCOMPRESSED_BYTES="$(du -sb "${WORKDIR}/installed-rootfs" 2>/dev/null | awk '{print $1}')"
+[[ -n "$UNCOMPRESSED_BYTES" ]] || UNCOMPRESSED_BYTES=0
+printf '%s\n' "$UNCOMPRESSED_BYTES" > "${OUTDIR}/${ARTIFACT}.installed"
+cp -f "${OUTDIR}/${ARTIFACT}.installed" "${OUTDIR}/${INSTALLED}"
+
 # ----------------------------- 5) Generate .meta4 (Metalink, via mkmetalink) --
 # mkmetalink (Go) builds a valid Metalink v4 (.meta4) + matching .torrent.
 #   https://github.com/chapmanjacobd/mkmetalink
@@ -855,6 +865,7 @@ printf "  iiab/iiab id ...... %s  [%s]\n" "$IIAB_SHA" "$IIAB_SRC"
 printf "  proot ............. %s\n" "$PROOT"
 printf "  Validation ........ %s\n" "$([[ $PASS -eq 1 ]] && echo 'CLEAN - OK' || echo 'HAS FAILURES - check log')"
 printf "  Artifact .......... %s (%s bytes)\n" "${OUTDIR}/${ARTIFACT}" "$SIZE_BYTES"
+printf "  Installed size .... %s bytes (uncompressed, for the app's free-space guard)\n" "$UNCOMPRESSED_BYTES"
 printf "  SHA-256 ........... %s\n" "$SHA256"
 printf "  Metalink (stable) . %s\n" "${OUTDIR}/${META4}"
 printf "  Primary ........... %s\n" "${PUBLISH_URL%/}/"
@@ -873,10 +884,10 @@ echo
 # (Cloudflare / mirror / GitHub release). HOLD = validation not clean -> hold back.
 PUB_STATUS="$([[ "$PASS" -eq 1 ]] && echo READY || echo HOLD)"
 QUEUE="${OUTDIR}/PUBLISH_QUEUE.tsv"
-[[ -f "$QUEUE" ]] || printf 'built_utc\tstatus\ttier\tarch\tiiab_sha\tartifact\tsize_bytes\tbuild_seconds\tsha256\tmeta4\n' > "$QUEUE"
-printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+[[ -f "$QUEUE" ]] || printf 'built_utc\tstatus\ttier\tarch\tiiab_sha\tartifact\tsize_bytes\tuncompressed_bytes\tbuild_seconds\tsha256\tmeta4\n' > "$QUEUE"
+printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
   "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$PUB_STATUS" "$TIER_NAME" "$ARCH" "$IIAB_SHA" \
-  "$ARTIFACT" "$SIZE_BYTES" "$BUILD_SECONDS" "$SHA256" "$META4" >> "$QUEUE"
+  "$ARTIFACT" "$SIZE_BYTES" "$UNCOMPRESSED_BYTES" "$BUILD_SECONDS" "$SHA256" "$META4" >> "$QUEUE"
 
 printf "${BOLD}Staged in %s  —  status: %s  —  NOT published.${RST}\n" "$OUTDIR" "$PUB_STATUS"
 echo "This script only BUILDS; it never uploads. A GitHub Actions workflow could"
@@ -885,6 +896,8 @@ echo "Pending-publish queue: ${QUEUE}"
 echo "When published, files must land so the baked-in .meta4 URLs resolve:"
 echo "  primary: ${PUBLISH_URL%/}/${ARTIFACT}"
 for _mu in "${MIRRORS[@]}"; do [[ -n "$_mu" ]] && echo "  mirror : ${_mu%/}/${ARTIFACT}"; done
+echo "Also publish the stable sidecars beside latest_${TIER_NAME}_${ARCH}.meta4 so the app can read them:"
+echo "  ${INSTALLED}  (uncompressed size, ADFA-5110)"
 echo "  stable pointer the APK reads: ${PUBLISH_URL%/}/${META4}"
 
 # ---------- Housekeeping: don't leave build garbage behind ---------------------
