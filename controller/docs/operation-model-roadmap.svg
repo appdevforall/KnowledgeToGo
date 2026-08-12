@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 2266" width="1280" height="2266" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 2558" width="1280" height="2558" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
 <desc>Which ticket owns what, what blocks what, and how far each has got. Update the class on each item dot as work lands: s-done, s-doing or s-todo. The canvas is deliberately not page-sized — grow it rather than dropping items.</desc>
 
@@ -40,7 +40,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="1280" height="1226"/>
+<rect class="bg" x="0" y="0" width="1280" height="2558"/>
 
 <text class="h1" x="24" y="34">Operation model — ticket map</text>
 <text class="sub" x="24" y="54">Which ticket owns what, what blocks what, and how far each one has got.</text>
@@ -221,97 +221,116 @@
 <text class="code" x="40" y="910">The environment already tells us it exited — startEnvironment's onProcessExit only logs it. Nothing kills the proot when the app closes.</text>
 <text class="code" x="40" y="928">Detection exists and is tested (EnvironmentProcess). Wiring it needs: the handle per process, "ensure up" not "start", and a boot grace.</text>
 
+<!-- link: 5103 -> 5119. Same method, and 5103's /proc read upgrades 5119's clock into a fact. -->
+<path class="lnk" d="M640,932 L640,960" marker-end="url(#arw)"/>
+<text class="lnklbl" x="652" y="952">same launch sequence · liveness upgrades the clock</text>
+
+<!-- ============================================================ -->
+<!-- ADFA-5119 — the boot gate's other blind spot                  -->
+<!-- ============================================================ -->
+<rect class="card" x="24" y="964" width="1232" height="196" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="980" width="88" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="48" y="994" fill="#1B5E8F">ADFA-5119</text>
+<text class="h2" x="188" y="995">A hung install holds the boot gate, and the recovery it needs is already built</text>
+
+<text class="item" x="40" y="1022">The gate lifts only on SUCCESS or FAILED. That is deliberate and stated in the code — a 2-3 GB download must not lose to a timeout — but it means a run</text>
+<text class="item" x="40" y="1040">that stops reporting holds the gate with nothing behind it. InstallService runs in the foreground, so a stalled run keeps its own process alive and the</text>
+<text class="item" x="40" y="1058">repository goes on answering "running". This is the one dead end in the app that survives closing it: force-stop is the only exit, and force-stop leaves</text>
+<text class="item" x="40" y="1076">the install marker set, so the next launch opens in recovery.</text>
+<text class="code" x="40" y="1100">The way out already exists and is good: evaluateRecovery() → InterruptedInstallDetector → the damaged dialog, which since ADFA-5023 opens Backup &amp;</text>
+<text class="code" x="40" y="1118">restore instead of exiting. It is scheduled on the recovering branch only, and that branch requires both install repositories to be idle — so it is</text>
+<text class="code" x="40" y="1136">unreachable in exactly the case it would help. InstallState carries a seq but no timestamp, so nothing can say how long a phase has been silent.</text>
 
 <!-- ============================================================ -->
 <!-- second standalone: its own ticket, one pass                   -->
 <!-- ============================================================ -->
-<rect class="card" x="24" y="964" width="1232" height="182" stroke="#1B7F4B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="980" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="994" fill="#1B7F4B">ADFA-5104</text>
-<text class="h2" x="188" y="995">Module management reads what is installed, and says so — DONE</text>
+<rect class="card" x="24" y="1192" width="1232" height="182" stroke="#1B7F4B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1208" width="88" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1222" fill="#1B7F4B">ADFA-5104</text>
+<text class="h2" x="188" y="1223">Module management reads what is installed, and says so — DONE</text>
 
-<text class="item" x="40" y="1022">The screen answered "what is installed" by asking "what is answering", so with the box stopped every module was offered, installed ones</text>
-<text class="item" x="40" y="1040">included — an offer that stops the box for hours to rebuild what was there. It reads etc/iiab/local_vars.yml on the rootfs now: the</text>
-<text class="item" x="40" y="1058">installer's own record, readable with the services down, and invalidated for free by any reset, restore or clone because it lives inside</text>
-<text class="item" x="40" y="1076">the rootfs it describes. Installs only add, so a remembered answer is safe here where a remembered "is it running" would not be.</text>
-<text class="code" x="40" y="1100">Three facts, no longer one: a system must exist before modules mean anything; what is installed comes from disk; whether it runs gates</text>
-<text class="code" x="40" y="1118">neither. Silence keeps its own name — an unreadable file is "unknown", not "absent". The probe survives, add-only. The list stops hiding</text>
-<text class="code" x="40" y="1136">what you have, and the detail agrees with it. GetMoreHub keeps its copy of the probe: add-only there, so not the same defect.</text>
+<text class="item" x="40" y="1250">The screen answered "what is installed" by asking "what is answering", so with the box stopped every module was offered, installed ones</text>
+<text class="item" x="40" y="1268">included — an offer that stops the box for hours to rebuild what was there. It reads etc/iiab/local_vars.yml on the rootfs now: the</text>
+<text class="item" x="40" y="1286">installer's own record, readable with the services down, and invalidated for free by any reset, restore or clone because it lives inside</text>
+<text class="item" x="40" y="1304">the rootfs it describes. Installs only add, so a remembered answer is safe here where a remembered "is it running" would not be.</text>
+<text class="code" x="40" y="1328">Three facts, no longer one: a system must exist before modules mean anything; what is installed comes from disk; whether it runs gates</text>
+<text class="code" x="40" y="1346">neither. Silence keeps its own name — an unreadable file is "unknown", not "absent". The probe survives, add-only. The list stops hiding</text>
+<text class="code" x="40" y="1364">what you have, and the detail agrees with it. GetMoreHub keeps its copy of the probe: add-only there, so not the same defect.</text>
 
 
 
 <!-- ============================================================ -->
 <!-- ADFA-5105 — delivered -->
-<rect class="card" x="24" y="1178" width="1232" height="130" stroke="#1B7F4B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1194" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="1208" fill="#1B7F4B">ADFA-5105</text>
-<text class="h2" x="144" y="1209">Free space is checked before a destructive run — DONE</text>
-<text class="item" x="40" y="1236">Sixteen hand-rolled readers, four APIs, two magic margins, and only two of them gated anything — never the wizard install, the reinstall,</text>
-<text class="item" x="40" y="1254">restore or reset. A wipe followed by an extract that ran out of disk left a rootfs that would not boot. One reader, one margin, measured on</text>
-<text class="item" x="40" y="1272">the filesystem actually written to, and the refusal happens before anything is deleted.</text>
-<text class="code" x="40" y="1294">Still open, and no longer named by anyone: a run-level budget that sums a whole queued batch. 5105 put it out of scope deliberately.</text>
+<rect class="card" x="24" y="1406" width="1232" height="130" stroke="#1B7F4B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1422" width="88" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1436" fill="#1B7F4B">ADFA-5105</text>
+<text class="h2" x="144" y="1437">Free space is checked before a destructive run — DONE</text>
+<text class="item" x="40" y="1464">Sixteen hand-rolled readers, four APIs, two magic margins, and only two of them gated anything — never the wizard install, the reinstall,</text>
+<text class="item" x="40" y="1482">restore or reset. A wipe followed by an extract that ran out of disk left a rootfs that would not boot. One reader, one margin, measured on</text>
+<text class="item" x="40" y="1500">the filesystem actually written to, and the refusal happens before anything is deleted.</text>
+<text class="code" x="40" y="1522">Still open, and no longer named by anyone: a run-level budget that sums a whole queued batch. 5105 put it out of scope deliberately.</text>
 
 <!-- ADFA-5110 — delivered, the producer half -->
-<rect class="card" x="24" y="1340" width="1232" height="112" stroke="#1B7F4B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1356" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="1370" fill="#1B7F4B">ADFA-5110</text>
-<text class="h2" x="144" y="1371">The build publishes the uncompressed rootfs size — DONE</text>
-<text class="item" x="40" y="1398">Every free-space estimate was built on the compressed artifact size, because that is what rootfs_sizes.csv and the meta4 carry. The extract</text>
-<text class="item" x="40" y="1416">writes the larger uncompressed tree, so every estimate under-counted — which is what made 5105's preflight need a real figure.</text>
-<text class="code" x="40" y="1438">The builder had the tree in hand already. Producer only: it publishes a sidecar the app can read before downloading or wiping anything.</text>
+<rect class="card" x="24" y="1568" width="1232" height="112" stroke="#1B7F4B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1584" width="88" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1598" fill="#1B7F4B">ADFA-5110</text>
+<text class="h2" x="144" y="1599">The build publishes the uncompressed rootfs size — DONE</text>
+<text class="item" x="40" y="1626">Every free-space estimate was built on the compressed artifact size, because that is what rootfs_sizes.csv and the meta4 carry. The extract</text>
+<text class="item" x="40" y="1644">writes the larger uncompressed tree, so every estimate under-counted — which is what made 5105's preflight need a real figure.</text>
+<text class="code" x="40" y="1666">The builder had the tree in hand already. Producer only: it publishes a sidecar the app can read before downloading or wiping anything.</text>
 
 <!-- ADFA-5106 — open -->
-<rect class="card" x="24" y="1484" width="1232" height="128" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1500" width="88" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="48" y="1514" fill="#1B5E8F">ADFA-5106</text>
-<text class="h2" x="144" y="1515">A download measured in hours has no durable record</text>
-<text class="item" x="40" y="1542">Content sessions live in static memory inside their services. If the process dies mid-download, the job state and the wishlist that ordered</text>
-<text class="item" x="40" y="1560">it both go, and the user comes back to a screen that knows nothing about work that may have run for an afternoon.</text>
-<text class="code" x="40" y="1582">ADFA-4874 found this on 27 July, deferred it to a background-jobs monitor that was never opened, and closed the same day. Unowned until now.</text>
+<rect class="card" x="24" y="1712" width="1232" height="128" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1728" width="88" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="48" y="1742" fill="#1B5E8F">ADFA-5106</text>
+<text class="h2" x="144" y="1743">A download measured in hours has no durable record</text>
+<text class="item" x="40" y="1770">Content sessions live in static memory inside their services. If the process dies mid-download, the job state and the wishlist that ordered</text>
+<text class="item" x="40" y="1788">it both go, and the user comes back to a screen that knows nothing about work that may have run for an afternoon.</text>
+<text class="code" x="40" y="1810">ADFA-4874 found this on 27 July, deferred it to a background-jobs monitor that was never opened, and closed the same day. Unowned until now.</text>
 
 <!-- ============================================================ -->
 <!-- third standalone: its own ticket, one pass                    -->
 <!-- ============================================================ -->
-<rect class="card" x="24" y="1580" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1596" width="132" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="1610" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="188" y="1611">A finished run leaves no evidence it happened</text>
+<rect class="card" x="24" y="1872" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1888" width="132" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="1902" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="188" y="1903">A finished run leaves no evidence it happened</text>
 
-<text class="item" x="40" y="1638">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare "3 Done". The rate is dropped at completion</text>
-<text class="item" x="40" y="1656">by design — rateSuffix is called only from the not-complete branch — and "838 MB · 32 MB/s · 4 min" is the only thing that tells a real</text>
-<text class="item" x="40" y="1674">download from a no-op. Split out of the UX-contract item because it is not a token: it is instrumentation, in three services with three</text>
-<text class="item" x="40" y="1692">different starting points, and pretending otherwise kept it amber on a card it did not belong to.</text>
-<text class="code" x="40" y="1716">Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed on its service. The only</text>
-<text class="code" x="40" y="1734">start timestamp in main/ is KolibriSeedRepository.startedAtMs, private and unreachable from the row renderer. Also here: the maps card</text>
-<text class="code" x="40" y="1752">cannot show "adding content", because its progress belongs to the module queue rather than to a content stream.</text>
+<text class="item" x="40" y="1930">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare "3 Done". The rate is dropped at completion</text>
+<text class="item" x="40" y="1948">by design — rateSuffix is called only from the not-complete branch — and "838 MB · 32 MB/s · 4 min" is the only thing that tells a real</text>
+<text class="item" x="40" y="1966">download from a no-op. Split out of the UX-contract item because it is not a token: it is instrumentation, in three services with three</text>
+<text class="item" x="40" y="1984">different starting points, and pretending otherwise kept it amber on a card it did not belong to.</text>
+<text class="code" x="40" y="2008">Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed on its service. The only</text>
+<text class="code" x="40" y="2026">start timestamp in main/ is KolibriSeedRepository.startedAtMs, private and unreachable from the row renderer. Also here: the maps card</text>
+<text class="code" x="40" y="2044">cannot show "adding content", because its progress belongs to the module queue rather than to a content stream.</text>
 
 
 <!-- ============================================================ -->
 <!-- fourth standalone: moved out of 4758, its own ticket, one pass -->
 <!-- ============================================================ -->
-<rect class="card" x="24" y="1794" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1810" width="132" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="1824" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="188" y="1825">Replacing the system, and the installer that does it — no ticket on purpose</text>
+<rect class="card" x="24" y="2086" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="2102" width="132" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="2116" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="188" y="2117">Replacing the system, and the installer that does it — no ticket on purpose</text>
 
-<text class="item" x="40" y="1852">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow</text>
-<text class="item" x="40" y="1870">that works. Recorded here so they are picked up on their own terms rather than as somebody else's leftovers.</text>
-<circle class="s-todo" cx="48" cy="1894" r="5.5"/><text class="item" x="62" y="1898">Two separately invoked installers. One ACTION_START becomes five pipelines through four booleans set by three unrelated senders.</text>
-<circle class="s-todo" cx="48" cy="1916" r="5.5"/><text class="item" x="62" y="1920">Content-only backup, so a reinstall at another tier can keep what the user added. From zero: the box wipes and rewrites.</text>
-<text class="code" x="40" y="1944">Not blocked by this: the tier picker reports success while doing nothing when a rootfs directory exists — implemented and wrong</text>
-<text class="code" x="40" y="1962">today, so it is a bug with its own ticket, not part of the work above.</text>
+<text class="item" x="40" y="2144">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow</text>
+<text class="item" x="40" y="2162">that works. Recorded here so they are picked up on their own terms rather than as somebody else's leftovers.</text>
+<circle class="s-todo" cx="48" cy="2186" r="5.5"/><text class="item" x="62" y="2190">Two separately invoked installers. One ACTION_START becomes five pipelines through four booleans set by three unrelated senders.</text>
+<circle class="s-todo" cx="48" cy="2208" r="5.5"/><text class="item" x="62" y="2212">Content-only backup, so a reinstall at another tier can keep what the user added. From zero: the box wipes and rewrites.</text>
+<text class="code" x="40" y="2236">Not blocked by this: the tier picker reports success while doing nothing when a rootfs directory exists — implemented and wrong</text>
+<text class="code" x="40" y="2254">today, so it is a bug with its own ticket, not part of the work above.</text>
 
 <!-- ============================================================ -->
-<rect class="card" x="24" y="2008" width="1232" height="142"/>
-<rect class="chip" x="40" y="2024" width="150" height="19" fill="#F0F1F3" stroke="none"/>
-<text class="chiptx" x="48" y="2038" fill="#5B636B">CARRIED, NOT BLOCKING</text>
-<text class="h3" x="204" y="2038">Found in the last two days; recorded so they are met on purpose</text>
+<rect class="card" x="24" y="2300" width="1232" height="142"/>
+<rect class="chip" x="40" y="2316" width="150" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="48" y="2330" fill="#5B636B">CARRIED, NOT BLOCKING</text>
+<text class="h3" x="204" y="2330">Found in the last two days; recorded so they are met on purpose</text>
 
-<circle class="s-todo" cx="48" cy="2062" r="5.5"/><text class="item" x="62" y="2066">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<circle class="s-todo" cx="48" cy="2106" r="5.5"/><text class="item" x="62" y="2110">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
+<circle class="s-todo" cx="48" cy="2354" r="5.5"/><text class="item" x="62" y="2358">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
+<circle class="s-todo" cx="48" cy="2398" r="5.5"/><text class="item" x="62" y="2402">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
 
-<text class="note" x="24" y="2178">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
-<text class="note" x="24" y="2194">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
-<text class="note" x="24" y="2216">4758 closed on its real objective: software and content are chosen separately. What it had absorbed was never its goal — see the card below.</text>
-<text class="note" x="24" y="2232">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
+<text class="note" x="24" y="2470">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
+<text class="note" x="24" y="2486">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
+<text class="note" x="24" y="2508">4758 closed on its real objective: software and content are chosen separately. What it had absorbed was never its goal — see the card below.</text>
+<text class="note" x="24" y="2524">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
 </svg>

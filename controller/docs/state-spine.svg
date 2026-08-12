@@ -230,7 +230,7 @@
 <text class="can" x="44" y="1350">the foreground, so a run that stops reporting keeps its own process alive and InstallProgressRepository keeps saying "running" — this is the one finding here that</text>
 <text class="can" x="44" y="1370">does not clear itself when the app is closed. Force-stop is the only way out, and force-stop does not clear the install marker, so the next launch lands in recovery.</text>
 <text class="code" x="44" y="1396">redesign/LibraryActivity.java:277-280, 306-312 (the trade-off is stated), 559-563 (Back → moveTaskToBack) · InstallService.java:221 (startForeground).</text>
-<text class="note" x="44" y="1420">Opens with: a long backstop that shows the recovery dialog rather than lifting the gate — the honest answer for a run that stopped reporting.</text>
+<text class="note" x="44" y="1420">Opens with: a long backstop that shows the recovery dialog rather than lifting the gate — the honest answer for a run that stopped reporting. Owned by ADFA-5119; the /proc read in ADFA-5103 later turns that clock into a fact.</text>
 
 <rect class="st-bad" x="24" y="1466" width="1672" height="158" rx="12"/>
 <text class="h2" x="44" y="1494">2 · HIDDEN EXIT — a stale "busy" flag refuses every deep operation, and the way out has no name</text>
