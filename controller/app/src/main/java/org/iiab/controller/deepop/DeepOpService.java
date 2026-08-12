@@ -150,6 +150,20 @@ public final class DeepOpService extends Service {
     // ---- RESTORE (destructive) ----
     private void runRestore(final String path) {
         if (done) return;
+        // ADFA-5105: the restore overwrites the rootfs with the backup's contents. Refuse before
+        // anything is touched when the uncompressed backup plainly won't fit (fail-safe on UNKNOWN
+        // free space too). The "needed" is estimated from the backup archive already on disk.
+        long needed = org.iiab.controller.storage.SpaceEstimate.fromCompressed(new File(path).length());
+        org.iiab.controller.storage.FreeSpacePreflight.Result pf =
+                org.iiab.controller.storage.FreeSpacePreflight.check(this, needed);
+        if (!pf.ok) {
+            File tmp = new File(path);
+            if (tmp.exists()) tmp.delete();
+            finishJob(false, getString(R.string.k2go_br_restore_done),
+                    getString(R.string.install_error_no_storage) + " ("
+                            + org.iiab.controller.util.ByteFormatter.toHuman(pf.amountToReport()) + ")");
+            return;
+        }
         // ADFA-5070: stop the downloads before the tar starts overwriting the rootfs
         // they were writing into. The pending orders are not touched yet — a tar that
         // will not open leaves the system intact, and discarding them here would have

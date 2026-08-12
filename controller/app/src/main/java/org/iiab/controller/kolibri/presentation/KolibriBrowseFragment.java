@@ -13,7 +13,6 @@ package org.iiab.controller.kolibri.presentation;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.os.StatFs;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -198,9 +197,10 @@ public final class KolibriBrowseFragment extends Fragment {
 
     private void readFreeSpace() {
         try {
-            StatFs st = new StatFs(requireContext().getFilesDir().getPath());
-            freeMb = st.getAvailableBytes() / (1024L * 1024L);
-            totalMb = st.getTotalBytes() / (1024L * 1024L);
+            Long fb = org.iiab.controller.storage.StorageProbe.freeBytes(requireContext());   // ADFA-5105: shared probe
+            Long tb = org.iiab.controller.storage.StorageProbe.totalBytes(requireContext());
+            freeMb = (fb == null ? 0L : fb) / (1024L * 1024L);
+            totalMb = (tb == null ? 0L : tb) / (1024L * 1024L);
         } catch (Exception e) {
             freeMb = 0L;
             totalMb = 0L;

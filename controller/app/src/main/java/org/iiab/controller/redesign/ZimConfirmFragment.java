@@ -13,7 +13,6 @@ package org.iiab.controller.redesign;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.StatFs;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,9 +74,9 @@ public class ZimConfirmFragment extends Fragment {
         box.addView(row(getString(R.string.k2go_zim_total), "", gb(total / (1024L * 1024L)), true));
 
         long totalMb = total / (1024L * 1024L);
-        long freeMb;
-        try { freeMb = new StatFs(requireContext().getFilesDir().getPath()).getAvailableBytes() / (1024L * 1024L); }
-        catch (Exception e) { freeMb = 0; }
+        // ADFA-5105: shared free-space probe instead of a per-screen StatFs copy.
+        Long fb = org.iiab.controller.storage.StorageProbe.freeBytes(requireContext());
+        long freeMb = (fb == null ? 0L : fb) / (1024L * 1024L);
         boolean fits = freeMb <= 0 || totalMb <= freeMb;
         TextView fitsView = root.findViewById(R.id.k2go_zconf_fits);
         fitsView.setText(fits
