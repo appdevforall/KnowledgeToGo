@@ -781,4 +781,5 @@
     <string name="k2go_auth_chip_default">Domyślne</string>
     <string name="k2go_auth_chip_custom">Niestandardowe</string>
     <string name="k2go_auth_chip_notinstalled">Niezainstalowane</string>
+    <string name="k2go_mod_needs_system">Moduły instalują się w systemie, a tego jeszcze nie ma. Najpierw zainstaluj system.</string>
 </resources>

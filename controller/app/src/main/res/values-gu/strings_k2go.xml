@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">ડિફૉલ્ટ</string>
     <string name="k2go_auth_chip_custom">કસ્ટમ</string>
     <string name="k2go_auth_chip_notinstalled">ઇન્સ્ટૉલ થયેલ નથી</string>
+    <string name="k2go_mod_needs_system">મોડ્યુલ સિસ્ટમની અંદર ઇન્સ્ટોલ થાય છે, અને હજી કોઈ સિસ્ટમ નથી. પહેલાં સિસ્ટમ ઇન્સ્ટોલ કરો.</string>
 </resources>

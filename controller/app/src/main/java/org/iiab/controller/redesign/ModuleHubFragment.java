@@ -49,6 +49,22 @@ public class ModuleHubFragment extends Fragment {
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Set<String> installable = new HashSet<>();   // yamlBaseKeys not yet installed
+    /**
+     * ADFA-5104: whether there is a system to install modules into.
+     *
+     * <p>The precondition nobody was asking. A module install lays files into the rootfs and runs
+     * a runrole inside it; with no rootfs there is nothing to install into and nothing to run it
+     * with. The screen still listed all six as installable, because it decided that from a probe
+     * — and with no system nothing answers, so everything looked missing.
+     *
+     * <p>Reachable, not theoretical: {@code pref_key_setup_complete} is only ever written true —
+     * five writers, none of them clears it — so after a reset or a failed restore the app still
+     * routes to the Library, and Settings still opens this screen over an empty rootfs.
+     *
+     * <p>Seeded true so the first frame looks like the ordinary case; the background pass
+     * corrects it before anything is offered.
+     */
+    private boolean systemPresent = true;
     private int probesPending = 0;
     private int probeGen = 0;   // ADFA-4842: supersedes an in-flight probe batch (e.g. onResume re-probe)
     private LinearLayout host;
@@ -111,6 +127,18 @@ public class ModuleHubFragment extends Fragment {
      *  (not installed yet) and its 64-bit requirement is met. */
     private void probeAll() {
         final int gen = ++probeGen;   // supersede any batch still in flight; its callbacks will bail
+        // ADFA-5104: ask whether a system exists before asking what is in it. Touches the disk, so
+        // it runs off the main thread; the probes below only make sense once this says yes.
+        final Context appCtx = requireContext().getApplicationContext();
+        AppExecutors.get().io().execute(() -> {
+            final boolean present =
+                    org.iiab.controller.SystemStateEvaluator.isSystemInstalled(appCtx);
+            main.post(() -> {
+                if (!isAdded() || gen != probeGen) return;
+                systemPresent = present;
+                if (!present) { installable.clear(); probesPending = 0; buildCards(); }
+            });
+        });
         List<ModuleCards.Card> cards = ModuleCards.all();
         final Set<String> found = new HashSet<>();
         probesPending = 0;
@@ -140,6 +168,20 @@ public class ModuleHubFragment extends Fragment {
     private void buildCards() {
         if (host == null) return;
         host.removeAllViews();
+        // ADFA-5104: with no system there is nothing to install into, so nothing is offered and
+        // the screen says why. Listing modules here would be an invitation the box cannot honour.
+        if (!systemPresent) {
+            TextView msg = new TextView(requireContext());
+            msg.setGravity(Gravity.CENTER);
+            msg.setPadding(px(8), px(24), px(8), px(24));
+            msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            msg.setText(R.string.k2go_mod_needs_system);
+            host.addView(msg);
+            addHiddenSection();
+            return;
+        }
+
         TextView helper = new TextView(requireContext());   // ADFA-4958
         helper.setText(R.string.k2go_mod_mgmt_helper);
         helper.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
@@ -149,7 +191,7 @@ public class ModuleHubFragment extends Fragment {
         helperLp.bottomMargin = px(8);
         host.addView(helper, helperLp);
 
-        // ADFA-5011: the dash-node REST core is a system module — always present (not installable/
+        // ADFA-5011: the dash-node REST core is a system module — present once a system is (not installable/
         // removable), with a single Rebuild action. Shown at the top, above the installable list.
         addSystemDashboardCard();
 
@@ -382,6 +424,10 @@ public class ModuleHubFragment extends Fragment {
     private void refreshProceed() {
         if (proceed == null || !isAdded()) return;
         int n = ModuleWishlist.size(requireContext());
+        // ADFA-5104: a banked order cannot be drained into a system that is not there. The drain
+        // itself now refuses (SystemDoor), but offering the button and then refusing is a worse
+        // answer than not offering it.
+        if (!systemPresent) { proceed.setVisibility(View.GONE); return; }
         proceed.setVisibility(n > 0 ? View.VISIBLE : View.GONE);
         proceed.setEnabled(n > 0);
         if (n > 0) proceed.setText(getString(R.string.k2go_mod_proceed_fmt, n));

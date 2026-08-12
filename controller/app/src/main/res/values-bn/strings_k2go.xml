@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">ডিফল্ট</string>
     <string name="k2go_auth_chip_custom">কাস্টম</string>
     <string name="k2go_auth_chip_notinstalled">ইনস্টল করা নেই</string>
+    <string name="k2go_mod_needs_system">মডিউলগুলি একটি সিস্টেমের ভেতরে ইনস্টল হয়, আর এখনো কোনো সিস্টেম নেই। আগে একটি সিস্টেম ইনস্টল করুন।</string>
 </resources>

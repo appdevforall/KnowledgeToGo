@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">默认</string>
     <string name="k2go_auth_chip_custom">自定义</string>
     <string name="k2go_auth_chip_notinstalled">未安装</string>
+    <string name="k2go_mod_needs_system">模块要安装到系统里，而目前还没有系统。请先安装一个系统。</string>
 </resources>

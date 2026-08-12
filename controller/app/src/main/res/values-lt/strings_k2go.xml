@@ -781,4 +781,5 @@
     <string name="k2go_auth_chip_default">Numatytasis</string>
     <string name="k2go_auth_chip_custom">Pasirinktinis</string>
     <string name="k2go_auth_chip_notinstalled">Neįdiegta</string>
+    <string name="k2go_mod_needs_system">Moduliai diegiami į sistemą, o jos dar nėra. Pirmiausia įdiekite sistemą.</string>
 </resources>

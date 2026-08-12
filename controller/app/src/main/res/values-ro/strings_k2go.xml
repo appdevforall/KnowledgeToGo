@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Implicit</string>
     <string name="k2go_auth_chip_custom">Personalizat</string>
     <string name="k2go_auth_chip_notinstalled">Neinstalat</string>
+    <string name="k2go_mod_needs_system">Modulele se instalează într-un sistem, iar acesta încă nu există. Instalați mai întâi un sistem.</string>
 </resources>

@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Standaard</string>
     <string name="k2go_auth_chip_custom">Aangepast</string>
     <string name="k2go_auth_chip_notinstalled">Niet geïnstalleerd</string>
+    <string name="k2go_mod_needs_system">Modules worden in een systeem geïnstalleerd, en dat is er nog niet. Installeer eerst een systeem.</string>
 </resources>
