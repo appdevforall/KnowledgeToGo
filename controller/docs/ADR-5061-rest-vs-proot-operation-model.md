@@ -801,6 +801,87 @@ most expensive by the third platform. A is B done safely over time.
        whose sheet offers a LIVE "Open" and a STOPPED "Install" as two identically styled rows, which
        is the same work as the first two items of ADFA-5062.
 
+       **The action sheet (done, after a rewrite the review forced).** The first attempt is worth
+       recording, because it is the clearest example in this effort of the failure the two-pass
+       convention exists to catch: the local result was good, the design moved backwards, and the
+       commit subject claimed the opposite. It said the sheet "reads the operation". It did not —
+       it read a dot colour, and the execution class was typed by hand into a private `Tone` enum
+       in a view class, at four call sites, with `Operation.appInstall(key)` in scope at every one
+       of them. `Tone` also collapsed severity and execution class into one enum and then mapped
+       its two class values to the same colour to undo the collapse. And the rule it restated —
+       404 means absent, silence means nothing established — had shipped in `system/domain` two
+       commits earlier under this same ticket.
+
+       What it looks like now. Severity is a property of the row (`Emphasis`, colour only); the
+       class is a property of the operation and is asked for. Exactly **one** row corresponds to
+       an operation — Install is `Operation.appInstall`; Open navigates to a platform that is
+       already running, which is a consequence of an operation rather than one itself; About,
+       Schedule, Hide and Cancel write a preference. So there is one question, `!op.isLive()`,
+       and the model answers it.
+
+       And the presence rule is read rather than restated: the Home probe returns
+       `PlatformPresence.Evidence` instead of dot colours, and `openSheet` calls `resolve`. That
+       deleted the false invariant the first attempt documented — "GRAY is
+       a 404" — and with it two real bugs that assertion was hiding. `Card.state` seeded to GRAY
+       and was not set before the probes returned, so in the ordinary window on a healthy box the
+       sheet offered to install platforms that were installed; and a 64-bit module on a 32-bit
+       device is painted grey too, so it offered an install that could never succeed. Both are
+       the flattening decision 8 warns about: "down" and "never asked" are not one answer, and
+       `Evidence` being nullable is what tells them apart.
+
+       Two more from the review. The size is hidden in the unknown and stopped states, not just
+       when installed: there is no Install row for a price to attach to. And the sheet scrolls,
+       because its tallest configuration already clipped its bottom rows in landscape and at
+       large font scales, and this change added a row.
+
+       **Schedule, and the reversal.** The review put Schedule back into the unknown state on the
+       grounds that it only writes a preference and is undone by Cancel. On the device that read
+       wrong, and Luis named why: with the box stopped we withhold Install because we do not know
+       whether the platform is there — and Schedule *is* Install, deferred. Offering the deferred
+       form of an action we just refused to offer is the same claim made quietly. So unknown and
+       stopped now carry About and Hide and nothing else: two states where we have no verdict, and
+       a sheet that says so rather than proposing work on a platform it cannot see.
+
+       **How long an answer lives.** The evidence started as a field on the Home `Card` and that
+       was too short a life. `populateCards()` runs in `onCreateView`, so switching tabs rebuilds
+       every card — and the server is stopped from Settings, which makes the one journey that
+       needs the memory the one that erased it. On the device, a platform known absent by a 404
+       came back reading "Stopped" beside four that had really been running, and its sheet stopped
+       offering the install it should still offer. The answers moved to
+       `system/data/PlatformEvidence`, process-scoped: a probe result is a fact about the box, and
+       the box does not change because a tab did. Not persisted across launches — the rootfs may
+       have been replaced, and a stale "installed" is worse than asking again. This is the memory
+       half of action item 10 and should be grown into it, not joined by a seventh place to ask.
+
+       Left as a follow-up: a red card reads "Unavailable · tap to retry" and the sheet has no
+       retry to offer. Either the label or the sheet should change; both are copy plus one row,
+       and neither is this ticket.
+
+       **What the sheet was for.** The last place in this area where the two classes shared
+       presentation. Open is LIVE and Install is STOPPED, and they were two identical teal rows
+       — same icon weight, same colour, nothing to tell a user that one of them stops the box.
+
+       The instinct was to give them different colours, and it was wrong for the reason the
+       card taught us: colour is the severity channel and neither is a warning — installing is
+       a normal thing to ask for. What differs is the **consequence**, and a consequence is a
+       sentence. So the STOPPED row carries a note and the colours stay the same.
+
+       Luis' concern shaped the rest: different flows breed duplication and derivations that
+       drift. The code already had that shape — a switch with one branch per state, nine
+       hand-picked colours, and the Maps exception written inline twice — so a fourth variant
+       for LIVE-vs-STOPPED would have made it worse. The rows are now chosen per state from one
+       vocabulary and presented by one `Tone` mapping. Only two of the six actions are
+       operations on the box at all; About, Schedule, Hide and Cancel write a preference and
+       nothing else, so they carry no class and get no signal suggesting they do.
+
+       Two more from the same session. The download size left the subtitle of an installed
+       platform — that cost was paid once, and repeating it reads as something still owed. And
+       the sheet gained an **UNKNOWN** state: it derived NOT_INSTALLED from a Home card's dot,
+       so a platform that merely failed to answer was offered an install, and during a Kolibri
+       import the app offered to install Kolibri while Kolibri was downloading. The Home probe
+       already separates a 404 from silence; only this sheet discarded it. Install is withheld
+       rather than guessed.
+
        ADFA-4954 itself is closed. Its one open scope, metadata-only, is now **ADFA-5094**
        ("Kolibri: topic display should not depend on reaching Studio via internet"), low
        priority under Epic ADFA-1028. Reframed while splitting it, because the original wording
@@ -841,7 +922,48 @@ most expensive by the third platform. A is B done safely over time.
        is the same gap as the run-level disk budget noted in item 2d, seen from the other end: there
        is no one place to put the budget because there is no one place that reads the disk.
 7. [ ] ADFA-5063: the reversibility field, and the decision on real module uninstallation.
-8. [ ] **One shared answer to "is this platform there".** Lifted out of item 2d, where it was
+9. [ ] **The app cannot tell a stopped service from a stopped environment.** Found while testing
+       the status line, and worth its own item because a guard written for it had to be taken out
+       again — the detection is easy and the decision on top of it is not.
+
+       `pdsm stop` stops the services inside the container; the proot environment keeps running.
+       The app's only runtime signal is an HTTP ping to `/home` with a 1.5 s timeout, so
+       "services down, environment alive" and "everything down" are one observation, and
+       `SystemStateEvaluator` reports both as OFFLINE. `LibraryActivity.canStartServer()` reads
+       that as "nothing is running", so a start can stack a second proot over a live one — the
+       collision ADR-4832 documents. `startEnvironment` does kill its own previous engine first,
+       but `serverEngine` is a field on an Activity-scoped controller, so a second controller has
+       nothing to kill.
+
+       **Detection is done and unwired.** `EnvironmentProcess` finds our environment by walking the
+       host's `/proc` for a cmdline carrying our rootfs path and the environment's own command tail
+       — the technique `RsyncManager` already uses for its lingering children, with no container,
+       no ptrace and nothing mutated. `EnvironmentProcessMatcher` is pure and tested, and the tests
+       are about the one thing that must not go wrong: an install's runrole against the same rootfs
+       must never match.
+
+       **What the device taught, after `killOrphan` was wired into `startEnvironment` for one
+       build.** It killed a proot 3.5 s into its own `pdsm start`, mid-boot, and the services came
+       up twice. Detection cannot distinguish an abandoned environment from one this same process
+       started seconds ago, so the wiring needs three things the call did not have:
+
+       - the environment handle held **per process**, not per Activity;
+       - `startEnvironment` meaning **"ensure it is up"** rather than "start" — which is what all
+         six of its callers actually want, and would make a redundant call a no-op instead of a
+         restart;
+       - a **boot grace**, because "alive but not answering" and "alive and still starting" are the
+         same observation for the first seconds, and that is exactly when the wrong answer is
+         destructive.
+
+       **Two smaller findings from the same session, recorded so they are not re-derived.** A
+       second boot within 3.5 s was observed once, after a force-close where Android restored the
+       Activity stack; a clean relaunch through the Settings **Turn Off K2Go** button shows a
+       single boot and finds no orphan, so that button does leave the environment closed and is
+       the honest way to end a session. And whatever wires this must not run a `/proc` walk on the
+       main thread: `startEnvironment` is called from six places, all of them on it, one being a
+       tap.
+
+10. [ ] **One shared answer to "is this platform there".** Lifted out of item 2d, where it was
        buried in a sub-bullet about UX tokens and 5062's owner would not have found it.
 
        Six probes exist — `LibraryHomeFragment.probe`, `GetMoreHubFragment.reachable`,
@@ -864,11 +986,46 @@ most expensive by the third platform. A is B done safely over time.
        migrate. `PlatformPresence` (already in `system/domain`) is the verdict half and does
        not change.
 
+       **Half of it already exists — grow it, do not add a seventh.** `system/data/PlatformEvidence`
+       holds `{endpoint → evidence}` for the life of the process, added because the Home card's
+       own field died with the fragment. It is the memory half of the shape above with no
+       timestamps and no policy. Two things it still owes, both belonging to whoever picks this
+       up: `observedAtMs` alongside each answer, and a `clear()` on the destructive routes — the
+       same five ADFA-5070 already hooks for content sessions — since restore, clone, tier change
+       and reinstall swap the rootfs inside a living process and the evidence about the old one
+       survives it. That last one overlaps ADFA-4758's territory, so it is coordination, not just
+       code.
+
+       **And the rule the store must not break.** It holds what a *probe* said, nothing else. A
+       first version also wrote ABSENT for all five platforms when no system was installed, which
+       was true at that instant and wrong forever after: `SystemStateEvaluator` owns that fact, the
+       copy went stale the moment the user installed, and for the whole boot afterwards — no probe
+       runs before the box answers — every sheet offered to install a platform that was there.
+       Facts with a live owner are asked for; the store is only for the ones nobody else keeps.
+
        **The rule to carry, because it is not only about probes:** a check that answers with a
        boolean invites its caller to treat silence as a verdict. Three screens made that
        mistake independently, and in each one the fact needed to do better was already in
        hand. When 5062 migrates a surface, the derivation to retire is not just "guessing
        instead of asking the model" — it is this specific shape.
+11. [ ] **Small things the second review pass left standing.** None of them is worth a ticket on
+       its own; they belong to whichever ticket next opens these files.
+
+       - `EnvironmentProcess.killOrphan` is public, unused, and kills a process. The javadoc says
+         why it must not be wired yet, but a name that reads like the obvious fix is the kind of
+         thing that gets called without reading three paragraphs. Package-private and
+         `@VisibleForTesting` until item 9 needs it.
+       - `ServerController.startEnvironment` carries a thirteen-line comment explaining a call
+         that is no longer there. That file is a documented conflict hotspot and the reasoning
+         already lives here and on the roadmap card; three lines pointing at them would do.
+       - `ModuleActionSheet.stateLabel(STOPPED)` borrows `k2go_card_stopped`, a card string. One
+         word for one state is arguably right, but it ties two surfaces to one resource.
+       - The Home status action button hardcodes `@color/k2go_teal` for text and stroke where
+         `?attr/colorPrimary` would follow the theme.
+       - ADFA-5062's "ModuleActionSheet: Open vs Install" was delivered here: the sheet asks
+         `Operation.appInstall(key)` instead of typing the class by hand. The roadmap dot is
+         updated; 5062 should open without it.
+
 8. [x] Diagram: `operation-model-roadmap.svg` — ticket map, dependencies and per-item progress. A
        surfaces to operations to class map of the *current* code is still to draw.
 

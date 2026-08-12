@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Scrierea de întreținere a eșuat</string>
     <string name="session_started">SESIUNE HEARTBEAT PORNITĂ</string>
     <string name="session_stopped">SESIUNE HEARTBEAT OPRITĂ</string>
-    <string name="termux_stuck_warning">Termux nu se deschide? Activează Master Watchdog pentru a-l forța să obțină focalizarea.</string>
     <string name="end_of_history">--- Sfârșitul istoricului ---</string>
     <string name="error_reading_history">Eroare la citirea istoricului: %s</string>
     <string name="failed_write_blackbox">Scrierea în BlackBox a eșuat</string>

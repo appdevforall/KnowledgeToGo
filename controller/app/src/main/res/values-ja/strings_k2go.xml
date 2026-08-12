@@ -40,10 +40,12 @@
     <string name="k2go_send">送信</string>
     <string name="k2go_setup_library_title">ライブラリをセットアップ</string>
     <string name="k2go_starting_library">ライブラリを起動しています…</string>
-    <string name="k2go_home_failed">起動できませんでした — タップして再試行</string>
+    <string name="k2go_home_failed">起動できませんでした</string>
+    <string name="k2go_home_see_progress">進行状況</string>
+    <string name="k2go_home_retry">再試行</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">コンテンツを追加中 — タップして進行状況を表示</string>
+    <string name="k2go_home_installing">コンテンツを追加中</string>
     <string name="k2go_perm_storage">ストレージへのアクセス</string>
     <string name="k2go_storage">ストレージ</string>
     <string name="k2go_lang_system_default">システムの既定</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">探索の準備完了</string>
     <string name="k2go_card_ready">準備完了</string>
     <string name="k2go_card_connecting">接続中</string>
+    <string name="k2go_card_stopped">停止中</string>
     <string name="k2go_card_unavailable">利用不可 · タップして再試行</string>
     <string name="k2go_card_adding">コンテンツを追加中</string>
     <string name="k2go_card_not_installed">未インストール</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">開く</string>
     <string name="k2go_sheet_about">このアプリについて</string>
     <string name="k2go_sheet_install">今すぐインストール</string>
+    <string name="k2go_sheet_install_note">インストール中はシステムが一時停止します。</string>
     <string name="k2go_sheet_install_sel">選択項目をインストール</string>
     <string name="k2go_sheet_schedule">予約</string>
     <string name="k2go_sheet_cancel">予約をキャンセル</string>
     <string name="k2go_state_ready">準備完了</string>
     <string name="k2go_state_not_installed">未インストール</string>
+    <string name="k2go_state_no_answer">状態不明</string>
     <string name="k2go_state_scheduled">予約済み</string>
     <string name="k2go_mod_time_note">これはモジュールをシステムにビルドするため、数分かかり、完了するまでこの画面のままになります。すべて一度に必要ですか？ フルシステムバージョンをインストールしてください。</string>
     <string name="k2go_mod_maps_title">地図をナビゲート</string>

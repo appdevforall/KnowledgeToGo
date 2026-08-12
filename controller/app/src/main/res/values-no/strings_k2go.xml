@@ -40,10 +40,12 @@
     <string name="k2go_send">Send</string>
     <string name="k2go_setup_library_title">Sett opp biblioteket ditt</string>
     <string name="k2go_starting_library">Starter biblioteket ditt…</string>
-    <string name="k2go_home_failed">Kunne ikke starte — trykk for å prøve igjen</string>
+    <string name="k2go_home_failed">Kunne ikke starte</string>
+    <string name="k2go_home_see_progress">Se fremdrift</string>
+    <string name="k2go_home_retry">Prøv igjen</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Legger til innhold — trykk for å se fremdriften</string>
+    <string name="k2go_home_installing">Legger til innhold</string>
     <string name="k2go_perm_storage">Lagringstilgang</string>
     <string name="k2go_storage">Lagring</string>
     <string name="k2go_lang_system_default">Systemstandard</string>
@@ -318,6 +320,7 @@
     <string name="k2go_home_ready">Klar til å utforske</string>
     <string name="k2go_card_ready">Klar</string>
     <string name="k2go_card_connecting">Kobler til</string>
+    <string name="k2go_card_stopped">Stoppet</string>
     <string name="k2go_card_unavailable">Utilgjengelig · trykk for å prøve igjen</string>
     <string name="k2go_card_adding">Legger til innhold</string>
     <string name="k2go_card_not_installed">Ikke installert</string>
@@ -642,11 +645,13 @@
     <string name="k2go_sheet_open">Åpne</string>
     <string name="k2go_sheet_about">Om denne appen</string>
     <string name="k2go_sheet_install">Installer nå</string>
+    <string name="k2go_sheet_install_note">Systemet settes på pause under installasjonen.</string>
     <string name="k2go_sheet_install_sel">Installer utvalg</string>
     <string name="k2go_sheet_schedule">Planlegg</string>
     <string name="k2go_sheet_cancel">Avbryt planlegging</string>
     <string name="k2go_state_ready">Klar</string>
     <string name="k2go_state_not_installed">Ikke installert</string>
+    <string name="k2go_state_no_answer">Ukjent status</string>
     <string name="k2go_state_scheduled">Planlagt</string>
     <string name="k2go_mod_time_note">Dette bygger modulen inn i systemet ditt, så det tar noen minutter og blir på denne skjermen til det er ferdig. Vil du ha alt på én gang? Installer den fullstendige systemversjonen.</string>
     <string name="k2go_mod_maps_title">Naviger i kart</string>

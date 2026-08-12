@@ -41,10 +41,12 @@
     <string name="k2go_send">Senden</string>
     <string name="k2go_setup_library_title">Richte deine Bibliothek ein</string>
     <string name="k2go_starting_library">Deine Bibliothek wird gestartet…</string>
-    <string name="k2go_home_failed">Start fehlgeschlagen — tippen, um es erneut zu versuchen</string>
+    <string name="k2go_home_failed">Start fehlgeschlagen</string>
+    <string name="k2go_home_see_progress">Fortschritt ansehen</string>
+    <string name="k2go_home_retry">Erneut versuchen</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Inhalte werden hinzugefügt — für Fortschritt tippen</string>
+    <string name="k2go_home_installing">Inhalte werden hinzugefügt</string>
     <string name="k2go_perm_storage">Speicherzugriff</string>
     <string name="k2go_storage">Speicher</string>
     <string name="k2go_lang_system_default">Systemstandard</string>
@@ -317,6 +319,7 @@
     <string name="k2go_home_ready">Bereit zum Entdecken</string>
     <string name="k2go_card_ready">Bereit</string>
     <string name="k2go_card_connecting">Verbindet</string>
+    <string name="k2go_card_stopped">Gestoppt</string>
     <string name="k2go_card_unavailable">Nicht verfügbar · tippen zum Wiederholen</string>
     <string name="k2go_card_adding">Inhalte werden hinzugefügt</string>
     <string name="k2go_card_not_installed">Nicht installiert</string>
@@ -633,11 +636,13 @@
     <string name="k2go_sheet_open">Öffnen</string>
     <string name="k2go_sheet_about">Über diese App</string>
     <string name="k2go_sheet_install">Jetzt installieren</string>
+    <string name="k2go_sheet_install_note">Dein System pausiert während der Installation.</string>
     <string name="k2go_sheet_install_sel">Auswahl installieren</string>
     <string name="k2go_sheet_schedule">Planen</string>
     <string name="k2go_sheet_cancel">Planung abbrechen</string>
     <string name="k2go_state_ready">Bereit</string>
     <string name="k2go_state_not_installed">Nicht installiert</string>
+    <string name="k2go_state_no_answer">Status unbekannt</string>
     <string name="k2go_state_scheduled">Geplant</string>
     <string name="k2go_mod_time_note">Das baut das Modul in dein System ein, daher dauert es ein paar Minuten und bleibt bis zum Abschluss auf diesem Bildschirm. Willst du alles auf einmal? Installiere die vollständige Systemversion.</string>
     <string name="k2go_mod_maps_title">Karten navigieren</string>

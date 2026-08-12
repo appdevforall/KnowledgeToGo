@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Η εγγραφή συντήρησης απέτυχε</string>
     <string name="session_started">Η ΣΥΝΕΔΡΙΑ HEARTBEAT ΞΕΚΙΝΗΣΕ</string>
     <string name="session_stopped">Η ΣΥΝΕΔΡΙΑ HEARTBEAT ΣΤΑΜΑΤΗΣΕ</string>
-    <string name="termux_stuck_warning">Δεν ανοίγει το Termux; Ενεργοποιήστε το Master Watchdog για να το αναγκάσετε να αποκτήσει εστίαση.</string>
     <string name="end_of_history">--- Τέλος ιστορικού ---</string>
     <string name="error_reading_history">Σφάλμα ανάγνωσης ιστορικού: %s</string>
     <string name="failed_write_blackbox">Η εγγραφή στο BlackBox απέτυχε</string>

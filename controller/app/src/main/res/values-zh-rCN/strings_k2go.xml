@@ -40,10 +40,12 @@
     <string name="k2go_send">发送</string>
     <string name="k2go_setup_library_title">设置您的图书馆</string>
     <string name="k2go_starting_library">正在启动您的图书馆…</string>
-    <string name="k2go_home_failed">无法启动 — 点按重试</string>
+    <string name="k2go_home_failed">无法启动</string>
+    <string name="k2go_home_see_progress">查看进度</string>
+    <string name="k2go_home_retry">重试</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">正在添加内容 — 点按查看进度</string>
+    <string name="k2go_home_installing">正在添加内容</string>
     <string name="k2go_perm_storage">存储访问</string>
     <string name="k2go_storage">存储</string>
     <string name="k2go_lang_system_default">系统默认</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">准备探索</string>
     <string name="k2go_card_ready">就绪</string>
     <string name="k2go_card_connecting">正在连接</string>
+    <string name="k2go_card_stopped">已停止</string>
     <string name="k2go_card_unavailable">不可用 · 点按重试</string>
     <string name="k2go_card_adding">正在添加内容</string>
     <string name="k2go_card_not_installed">未安装</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">打开</string>
     <string name="k2go_sheet_about">关于此应用</string>
     <string name="k2go_sheet_install">立即安装</string>
+    <string name="k2go_sheet_install_note">安装期间系统会暂停。</string>
     <string name="k2go_sheet_install_sel">安装所选</string>
     <string name="k2go_sheet_schedule">安排</string>
     <string name="k2go_sheet_cancel">取消安排</string>
     <string name="k2go_state_ready">就绪</string>
     <string name="k2go_state_not_installed">未安装</string>
+    <string name="k2go_state_no_answer">状态未知</string>
     <string name="k2go_state_scheduled">已安排</string>
     <string name="k2go_mod_time_note">这会将模块构建到您的系统中，因此需要几分钟，并会停留在此屏幕直到完成。想一次性全部安装？请安装完整系统版本。</string>
     <string name="k2go_mod_maps_title">浏览地图</string>

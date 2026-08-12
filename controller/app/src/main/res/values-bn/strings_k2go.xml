@@ -40,10 +40,12 @@
     <string name="k2go_send">পাঠান</string>
     <string name="k2go_setup_library_title">আপনার লাইব্রেরি সেট আপ করুন</string>
     <string name="k2go_starting_library">আপনার লাইব্রেরি শুরু হচ্ছে…</string>
-    <string name="k2go_home_failed">শুরু করা যায়নি — আবার চেষ্টা করতে ট্যাপ করুন</string>
+    <string name="k2go_home_failed">শুরু করা যায়নি</string>
+    <string name="k2go_home_see_progress">অগ্রগতি দেখুন</string>
+    <string name="k2go_home_retry">আবার চেষ্টা</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">কনটেন্ট যোগ করা হচ্ছে — অগ্রগতি দেখতে ট্যাপ করুন</string>
+    <string name="k2go_home_installing">কনটেন্ট যোগ করা হচ্ছে</string>
     <string name="k2go_perm_storage">স্টোরেজ অ্যাক্সেস</string>
     <string name="k2go_storage">স্টোরেজ</string>
     <string name="k2go_lang_system_default">সিস্টেম ডিফল্ট</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">অন্বেষণের জন্য প্রস্তুত</string>
     <string name="k2go_card_ready">প্রস্তুত</string>
     <string name="k2go_card_connecting">সংযোগ হচ্ছে</string>
+    <string name="k2go_card_stopped">বন্ধ</string>
     <string name="k2go_card_unavailable">অনুপলব্ধ · আবার চেষ্টা করতে ট্যাপ করুন</string>
     <string name="k2go_card_adding">কনটেন্ট যোগ করা হচ্ছে</string>
     <string name="k2go_card_not_installed">ইনস্টল করা নেই</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">খুলুন</string>
     <string name="k2go_sheet_about">এই অ্যাপ সম্পর্কে</string>
     <string name="k2go_sheet_install">এখনই ইনস্টল করুন</string>
+    <string name="k2go_sheet_install_note">ইনস্টল করার সময় আপনার সিস্টেম সাময়িকভাবে থামে।</string>
     <string name="k2go_sheet_install_sel">নির্বাচন ইনস্টল করুন</string>
     <string name="k2go_sheet_schedule">নির্ধারণ করুন</string>
     <string name="k2go_sheet_cancel">নির্ধারণ বাতিল করুন</string>
     <string name="k2go_state_ready">প্রস্তুত</string>
     <string name="k2go_state_not_installed">ইনস্টল করা নেই</string>
+    <string name="k2go_state_no_answer">অবস্থা অজানা</string>
     <string name="k2go_state_scheduled">নির্ধারিত</string>
     <string name="k2go_mod_time_note">এটি মডিউলটিকে আপনার সিস্টেমে তৈরি করে, তাই এতে কয়েক মিনিট লাগে এবং শেষ না হওয়া পর্যন্ত এই স্ক্রিনে থাকে। সবকিছু একসাথে চান? সম্পূর্ণ সিস্টেম সংস্করণ ইনস্টল করুন।</string>
     <string name="k2go_mod_maps_title">মানচিত্রে চলাচল করুন</string>

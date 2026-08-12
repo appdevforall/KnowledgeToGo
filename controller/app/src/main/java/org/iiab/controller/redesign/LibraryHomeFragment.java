@@ -27,6 +27,8 @@ import org.iiab.controller.R;
 import org.iiab.controller.ServerStateRepository;
 import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.kolibri.presentation.KolibriProvisioner;
+import org.iiab.controller.system.data.PlatformEvidence;
+import org.iiab.controller.system.domain.PlatformPresence;
 import org.iiab.controller.util.AppExecutors;
 
 /**
@@ -65,6 +67,10 @@ public class LibraryHomeFragment extends Fragment {
     private TextView homeStatus;
     private View homeStatusDot;
     private View homeStatusRow;
+    /** ADFA-5061: the action, when the state has one. Never the status text. */
+    private com.google.android.material.button.MaterialButton homeStatusAction;
+    /** Shown instead of a button while the app is doing something the user cannot press. */
+    private View homeStatusSpinner;
     private LinearLayout cardsHost;
     private View getMoreFooter;
 
@@ -85,10 +91,13 @@ public class LibraryHomeFragment extends Fragment {
         homeStatus = root.findViewById(R.id.k2go_home_status);
         homeStatusDot = root.findViewById(R.id.k2go_home_status_dot);
         homeStatusRow = root.findViewById(R.id.k2go_home_status_row);
-        // ADFA-4837: when the header reports the server couldn't start, tapping it retries — but only
-        // when it's genuinely safe (LibraryActivity.canStartServer guards against stacking a 2nd proot).
-        if (homeStatusRow != null) {
-            homeStatusRow.setOnClickListener(v -> {
+        homeStatusAction = root.findViewById(R.id.k2go_home_status_action);
+        homeStatusSpinner = root.findViewById(R.id.k2go_home_status_spinner);
+        // ADFA-5061: the action moved off the status text and onto a button. The row itself is
+        // no longer clickable — a line of prose that silently doubles as a control is the thing
+        // this change is undoing, and leaving the old target in place would keep half of it.
+        if (homeStatusAction != null) {
+            homeStatusAction.setOnClickListener(v -> {
                 // ADFA-5074: the way back into a running install. Opens the index without
                 // starting anything — every other route to it begins new work.
                 if (headerState == H_INSTALLING) {
@@ -96,6 +105,8 @@ public class LibraryHomeFragment extends Fragment {
                             requireContext(), SetupProgressActivity.class));
                     return;
                 }
+                // ADFA-4837: retry only when it is genuinely safe — canStartServer guards
+                // against stacking a second proot over a live one.
                 if (headerState != H_FAILED) return;
                 if (getActivity() instanceof LibraryActivity) {
                     LibraryActivity act = (LibraryActivity) getActivity();
@@ -257,8 +268,17 @@ public class LibraryHomeFragment extends Fragment {
         } else {   // defensive fallback: non-Ready card with no backing module (none today) — re-probe
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
-                final int st = probe(c.endpoint);
-                main.post(() -> { if (isAdded()) applyState(c, (st == GREEN || st == GRAY) ? st : AMBER); });
+                final PlatformPresence.Evidence ev = probe(c.endpoint);
+                // Recorded off the main thread and before any view gate: what an endpoint said
+                // is a fact about the box, and throwing it away because the fragment went is
+                // exactly the case the store exists for.
+                PlatformEvidence.record(c.endpoint, ev);
+                main.post(() -> {
+                    if (!isAdded()) return;
+                    if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
+                    else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
+                    else applyState(c, AMBER);
+                });
             });
             Toast.makeText(requireContext(), getString(R.string.k2go_retrying), Toast.LENGTH_SHORT).show();
         }
@@ -272,12 +292,44 @@ public class LibraryHomeFragment extends Fragment {
         return null;
     }
 
-    // ADFA-4958: the module action sheet is the single contextual surface for a module card.
+    /**
+     * ADFA-4958: the module action sheet is the single contextual surface for a module card.
+     *
+     * <p>ADFA-5061: the state comes from the evidence, not from the dot. A first attempt read
+     * {@code c.state == GRAY} and asserted that grey meant a 404 — it does not. Grey has three
+     * other producers: an unsupported module, a box with no system, and the colour a card wears
+     * before anything has been asked. Reading the colour therefore offered to install platforms
+     * that were installed, in the ordinary window before the first probe returns.
+     *
+     * <p>The evidence is read from {@link PlatformEvidence}, not from this fragment. It began as
+     * a field on the card and that life was too short: the cards are rebuilt in {@code
+     * onCreateView}, so a trip to Settings — where the server is stopped — forgot the one answer
+     * the next sheet needed.
+     *
+     * <p>Content in flight is checked first and outranks everything, for the reason
+     * {@code onCardClick} already uses it: a platform we are watching work cannot be missing.
+     * That path bypasses this method, so without it the overflow menu could say "not
+     * responding" about a card reading "Adding content" two centimetres away.
+     */
     private void openSheet(Card c) {
         ModuleActionSheet.State s;
-        if (c.state == GREEN) s = ModuleActionSheet.State.READY;
+        final PlatformPresence.Evidence ev = PlatformEvidence.last(c.endpoint);
+        if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
-        else s = ModuleActionSheet.State.NOT_INSTALLED;
+        else if (!systemInstalled) {
+            // No system, so nothing is installed. Asked here rather than remembered: the store
+            // holds what a probe said, and no probe has been made.
+            s = ModuleActionSheet.State.NOT_INSTALLED;
+        } else if (ev != null && !PlatformPresence.resolve(ev)) {
+            // Known absent, and still known absent with the box off — that is the state where
+            // installing is exactly the right offer.
+            s = ModuleActionSheet.State.NOT_INSTALLED;
+        } else if (!org.iiab.controller.system.data.SystemFactsReader.serverAnswering()) {
+            // We know why this one is silent, so we say so rather than shrugging.
+            s = ModuleActionSheet.State.STOPPED;
+        } else {
+            s = ModuleActionSheet.State.UNKNOWN;
+        }
         ModuleActionSheet.show(requireActivity(), c.endpoint, c.title, c.iconRes, s,
                 () -> { if (isAdded()) refreshAfterSheet(c); });   // ADFA-4958: refresh label / drop if hidden
     }
@@ -317,8 +369,20 @@ public class LibraryHomeFragment extends Fragment {
      */
     private org.iiab.controller.system.data.PendingContent.Snapshot passContent;
 
+    /**
+     * ADFA-5061: whether a system is installed, read once per pass alongside {@link #passContent}
+     * and for the same reason.
+     *
+     * <p>It was read twice per pass off the disk — once here and once in the header — which
+     * {@code SystemFactsReader} asks callers not to do ("once per decision rather than once per
+     * row"), and it is now also read by {@code applyState} and {@code openSheet}, which would
+     * have made four. Seeded true so the paths that run before the first pass behave as they did.
+     */
+    private boolean systemInstalled = true;
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        systemInstalled = installed;
         boolean alive = ServerStateRepository.get().current().alive;
         passContent = org.iiab.controller.system.data.PendingContent.read(requireContext());
 
@@ -331,6 +395,13 @@ public class LibraryHomeFragment extends Fragment {
         // and the header points to Get more (set in updateHeaderFromCards).
         if (!installed) {
             for (final Card c : cards) {
+                // ADFA-5061: this used to record ABSENT for all five, and the write was right at
+                // the instant it happened and wrong forever after. "No system is installed" is a
+                // fact SystemStateEvaluator owns; copying it into the probe store made a second
+                // holder that nothing updated, so once the user installed the system the store
+                // still said ABSENT — through the whole boot, since no probe runs before the box
+                // answers — and every sheet offered to install a platform that was there. The
+                // fact is asked for where it is needed (applyState, openSheet) instead.
                 applyState(c, GRAY);
                 if (unsupported(c) && c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
             }
@@ -385,6 +456,10 @@ public class LibraryHomeFragment extends Fragment {
 
         for (final Card c : cards) {
             if (unsupported(c)) {
+                // ADFA-5061: grey, but not "absent". A 64-bit module on a 32-bit device is not
+                // missing — it is never going to be there, which is why the sheet must not offer
+                // to install it. Nothing is recorded, so "nothing established" withholds the
+                // offer where ABSENT would have made it.
                 applyState(c, GRAY);
                 if (c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
                 continue;
@@ -392,14 +467,29 @@ public class LibraryHomeFragment extends Fragment {
             // ADFA-4828: system is installed. Before the first probe resolves (or while the server
             // is still coming up) show "Connecting", never "Not installed" — the latter only appears
             // once a probe actually reports the content is absent (404 -> GRAY).
-            if (!alive) { applyState(c, AMBER); continue; }
+            // ADFA-5061: the box being down does not unlearn what a probe already established.
+            // This line cleared the evidence and then painted everything amber, and both halves
+            // were wrong on the device. Clearing it made a platform that had answered 404 go
+            // back to "unknown" the moment the server stopped, so its sheet stopped offering the
+            // install it should still offer. Painting it amber said "Connecting" about a platform
+            // that is not there and is not going to be there when the box returns — a card
+            // claiming to connect two centimetres from a sheet correctly reading "Not installed".
+            // Turning the box off installs nothing and uninstalls nothing: the verdict stands,
+            // and only a fresh probe replaces it.
+            if (!alive) {
+                applyState(c, PlatformEvidence.last(c.endpoint) == PlatformPresence.Evidence.ABSENT
+                        ? GRAY : AMBER);
+                continue;
+            }
             AppExecutors.get().io().execute(() -> {
-                final int st = probe(c.endpoint);
+                final PlatformPresence.Evidence ev = probe(c.endpoint);
+                // Before the view gate, deliberately — see the retry path above.
+                PlatformEvidence.record(c.endpoint, ev);
                 main.post(() -> {
                     if (!isAdded()) return;
-                    if (st == GREEN || st == GRAY) {
-                        applyState(c, st);
-                    } else {
+                    if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
+                    else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
+                    else {
                         // ADFA-4837: stay amber (patient) while the box is warming up; only fall to red
                         // once the server has been alive past the grace and this service still won't answer.
                         long aliveMs = serverAliveSinceMs > 0L
@@ -420,7 +510,7 @@ public class LibraryHomeFragment extends Fragment {
      */
     private void updateHeaderFromCards() {
         if (homeStatus == null || !isAdded()) return;
-        boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        boolean installed = systemInstalled;
         boolean alive = ServerStateRepository.get().current().alive;
         if (!installed) { setHeader(H_NO_LIBRARY); return; }
         // ADFA-5074: content being added outranks everything below. It is the only state
@@ -477,9 +567,25 @@ public class LibraryHomeFragment extends Fragment {
         }
         homeStatus.setText(text);
         if (homeStatusDot != null) tint(homeStatusDot, dotColor);
-        // ADFA-4837: only the failed state is tappable (retry); keep others inert.
-        // ADFA-5074: and the installing state, which is the way back into a running install.
-        if (homeStatusRow != null) homeStatusRow.setClickable(h == H_FAILED || h == H_INSTALLING);
+
+        // ADFA-5061: the trailing slot. Two states offer an action and get a button; one is the
+        // app working and gets a spinner; the rest are statements and get nothing. The status
+        // colour lives on the dot only — the button wears the brand colour, because it is a
+        // control rather than a severity.
+        int action = h == H_FAILED ? R.string.k2go_home_retry
+                : h == H_INSTALLING ? R.string.k2go_home_see_progress : 0;
+        if (homeStatusAction != null) {
+            homeStatusAction.setVisibility(action != 0 ? View.VISIBLE : View.GONE);
+            if (action != 0) homeStatusAction.setText(action);
+        }
+        if (homeStatusSpinner != null) {
+            homeStatusSpinner.setVisibility(h == H_STARTING ? View.VISIBLE : View.GONE);
+        }
+        // The row reports; it does not act. Kept explicit so a future edit has to mean it.
+        if (homeStatusRow != null) {
+            homeStatusRow.setClickable(false);
+            homeStatusRow.setFocusable(false);
+        }
     }
 
     private void applyState(Card c, int st) {
@@ -525,6 +631,31 @@ public class LibraryHomeFragment extends Fragment {
             c.status.setText(getString(R.string.k2go_card_adding));
             c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_leaf));
         }
+        // ADFA-5061: stopped, not connecting. When the box is not answering, every card sat in
+        // amber saying "Connecting" — a claim about an attempt that is not happening, and the
+        // header two centimetres above was already saying the system could not start.
+        //
+        // This is not the unknown case and must not borrow its words. `alive` comes from a ping
+        // to /home, which is nginx itself: if the front door is dark, nothing behind it can
+        // answer, and all five platforms are behind it. That is a fact we hold, not an inference
+        // — so the card says what is true rather than hedging. "Status unknown" belongs to the
+        // other silence, a box that answers while one platform does not.
+        //
+        // Last of the overrides on purpose: content in flight cannot be real over a box that is
+        // not answering, so if the two ever disagree, this one is right.
+        //
+        // Except over a platform we know is absent. With no system installed the box does not
+        // answer either, and "Stopped" would be the wrong half of the truth — there is nothing
+        // to start, and "Not installed" is what the user needs to read. Knowing beats knowing why.
+        // And except when there is no system at all: the box cannot be "stopped" when there is
+        // nothing to run. That case used to be carried by a recorded ABSENT; it is asked for now.
+        if (systemInstalled
+                && PlatformEvidence.last(c.endpoint) != PlatformPresence.Evidence.ABSENT
+                && !org.iiab.controller.system.data.SystemFactsReader.serverAnswering()) {
+            tint(c.dot, R.color.k2go_amber);
+            c.status.setText(getString(R.string.k2go_card_stopped));
+            c.status.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_amber_text));
+        }
     }
 
     /**
@@ -558,7 +689,17 @@ public class LibraryHomeFragment extends Fragment {
         v.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), colorRes)));
     }
 
-    private static int probe(String endpoint) {
+    /**
+     * ADFA-5061: what the endpoint said, in the model's words.
+     *
+     * <p>This used to return dot colours — GREEN, GRAY, AMBER — which is
+     * {@code PRESENT}/{@code ABSENT}/{@code NONE} computed identically and named after paint.
+     * The sheet then read the paint back out and re-derived the verdict, so one rule existed in
+     * three places and the two a user could hit were the copies. It reports evidence now;
+     * {@link PlatformPresence} owns what the evidence is worth, and the colour is chosen from
+     * the answer rather than being the answer.
+     */
+    private static PlatformPresence.Evidence probe(String endpoint) {
         HttpURLConnection c = null;
         try {
             URL u = new URL(BoxEndpoints.BASE + "/" + endpoint + "/");
@@ -568,11 +709,11 @@ public class LibraryHomeFragment extends Fragment {
             c.setReadTimeout(1500);
             c.setRequestMethod("GET");
             int code = c.getResponseCode();
-            if (code >= 200 && code < 400) return GREEN;
-            if (code == 404) return GRAY;
-            return AMBER;
+            if (code >= 200 && code < 400) return PlatformPresence.Evidence.PRESENT;
+            return code == 404 ? PlatformPresence.Evidence.ABSENT
+                    : PlatformPresence.Evidence.NONE;
         } catch (Exception e) {
-            return AMBER;
+            return PlatformPresence.Evidence.NONE;
         } finally {
             if (c != null) c.disconnect();
         }

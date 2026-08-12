@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Techninės priežiūros įrašymas nepavyko</string>
     <string name="session_started">HEARTBEAT SESIJA PRADĖTA</string>
     <string name="session_stopped">HEARTBEAT SESIJA SUSTABDYTA</string>
-    <string name="termux_stuck_warning">Termux neatsidaro? Įjunkite Master Watchdog, kad priverstumėte jį gauti fokusą.</string>
     <string name="end_of_history">--- Istorijos pabaiga ---</string>
     <string name="error_reading_history">Klaida skaitant istoriją: %s</string>
     <string name="failed_write_blackbox">Nepavyko įrašyti į BlackBox</string>

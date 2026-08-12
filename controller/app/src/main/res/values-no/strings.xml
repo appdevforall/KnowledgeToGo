@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Vedlikeholdsskriving mislyktes</string>
     <string name="session_started">HEARTBEAT-ØKT STARTET</string>
     <string name="session_stopped">HEARTBEAT-ØKT STOPPET</string>
-    <string name="termux_stuck_warning">Åpner ikke Termux? Slå på Master Watchdog for å tvinge det til å få fokus.</string>
     <string name="end_of_history">--- Slutt på historikk ---</string>
     <string name="error_reading_history">Feil ved lesing av historikk: %s</string>
     <string name="failed_write_blackbox">Kunne ikke skrive til BlackBox</string>

@@ -40,10 +40,12 @@
     <string name="k2go_send">મોકલો</string>
     <string name="k2go_setup_library_title">તમારી લાઇબ્રેરી સેટ કરો</string>
     <string name="k2go_starting_library">તમારી લાઇબ્રેરી શરૂ થઈ રહી છે…</string>
-    <string name="k2go_home_failed">શરૂ ન થઈ શક્યું — ફરી પ્રયાસ કરવા ટૅપ કરો</string>
+    <string name="k2go_home_failed">શરૂ ન થઈ શક્યું</string>
+    <string name="k2go_home_see_progress">પ્રગતિ જુઓ</string>
+    <string name="k2go_home_retry">ફરી પ્રયાસ</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">સામગ્રી ઉમેરાઈ રહી છે — પ્રગતિ જોવા ટૅપ કરો</string>
+    <string name="k2go_home_installing">સામગ્રી ઉમેરાઈ રહી છે</string>
     <string name="k2go_perm_storage">સ્ટોરેજ ઍક્સેસ</string>
     <string name="k2go_storage">સ્ટોરેજ</string>
     <string name="k2go_lang_system_default">સિસ્ટમ ડિફૉલ્ટ</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">એક્સપ્લોર કરવા તૈયાર</string>
     <string name="k2go_card_ready">તૈયાર</string>
     <string name="k2go_card_connecting">કનેક્ટ થઈ રહ્યું છે</string>
+    <string name="k2go_card_stopped">બંધ</string>
     <string name="k2go_card_unavailable">અનુપલબ્ધ · ફરી પ્રયાસ કરવા ટૅપ કરો</string>
     <string name="k2go_card_adding">સામગ્રી ઉમેરાઈ રહી છે</string>
     <string name="k2go_card_not_installed">ઇન્સ્ટોલ નથી</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">ખોલો</string>
     <string name="k2go_sheet_about">આ ઍપ વિશે</string>
     <string name="k2go_sheet_install">હમણાં ઇન્સ્ટોલ કરો</string>
+    <string name="k2go_sheet_install_note">ઇન્સ્ટોલ થાય ત્યાં સુધી તમારી સિસ્ટમ થોભે છે.</string>
     <string name="k2go_sheet_install_sel">પસંદગી ઇન્સ્ટોલ કરો</string>
     <string name="k2go_sheet_schedule">શેડ્યૂલ કરો</string>
     <string name="k2go_sheet_cancel">શેડ્યૂલ રદ કરો</string>
     <string name="k2go_state_ready">તૈયાર</string>
     <string name="k2go_state_not_installed">ઇન્સ્ટોલ નથી</string>
+    <string name="k2go_state_no_answer">સ્થિતિ અજાણ</string>
     <string name="k2go_state_scheduled">શેડ્યૂલ થયું</string>
     <string name="k2go_mod_time_note">આ મૉડ્યુલને તમારી સિસ્ટમમાં બિલ્ડ કરે છે, તેથી થોડી મિનિટો લાગે છે અને પૂરું ન થાય ત્યાં સુધી આ સ્ક્રીન પર રહે છે. બધું એકસાથે જોઈએ છે? સંપૂર્ણ સિસ્ટમ વર્ઝન ઇન્સ્ટોલ કરો.</string>
     <string name="k2go_mod_maps_title">નકશા નૅવિગેટ કરો</string>

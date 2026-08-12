@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Wartungsschreibvorgang fehlgeschlagen</string>
     <string name="session_started">HEARTBEAT-SITZUNG GESTARTET</string>
     <string name="session_stopped">HEARTBEAT-SITZUNG GESTOPPT</string>
-    <string name="termux_stuck_warning">Termux öffnet nicht? Aktiviere den Master-Watchdog, um den Fokus zu erzwingen.</string>
     <string name="end_of_history">--- Ende des Verlaufs ---</string>
     <string name="error_reading_history">Fehler beim Lesen des Verlaufs: %s</string>
     <string name="failed_write_blackbox">Schreiben in BlackBox fehlgeschlagen</string>

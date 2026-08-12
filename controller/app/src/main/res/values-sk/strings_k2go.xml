@@ -40,10 +40,12 @@
     <string name="k2go_send">Odoslať</string>
     <string name="k2go_setup_library_title">Nastavte svoju knižnicu</string>
     <string name="k2go_starting_library">Spúšťa sa vaša knižnica…</string>
-    <string name="k2go_home_failed">Nepodarilo sa spustiť — klepnite pre opakovanie</string>
+    <string name="k2go_home_failed">Nepodarilo sa spustiť</string>
+    <string name="k2go_home_see_progress">Zobraziť priebeh</string>
+    <string name="k2go_home_retry">Skúsiť znova</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Pridáva sa obsah — ťuknutím zobrazíte priebeh</string>
+    <string name="k2go_home_installing">Pridáva sa obsah</string>
     <string name="k2go_perm_storage">Prístup k úložisku</string>
     <string name="k2go_storage">Úložisko</string>
     <string name="k2go_lang_system_default">Predvolené systémom</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Pripravené na objavovanie</string>
     <string name="k2go_card_ready">Pripravené</string>
     <string name="k2go_card_connecting">Pripája sa</string>
+    <string name="k2go_card_stopped">Zastavené</string>
     <string name="k2go_card_unavailable">Nedostupné · klepnite pre opakovanie</string>
     <string name="k2go_card_adding">Pridáva sa obsah</string>
     <string name="k2go_card_not_installed">Nenainštalované</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Otvoriť</string>
     <string name="k2go_sheet_about">O tejto aplikácii</string>
     <string name="k2go_sheet_install">Inštalovať teraz</string>
+    <string name="k2go_sheet_install_note">Systém sa počas inštalácie pozastaví.</string>
     <string name="k2go_sheet_install_sel">Inštalovať výber</string>
     <string name="k2go_sheet_schedule">Naplánovať</string>
     <string name="k2go_sheet_cancel">Zrušiť plán</string>
     <string name="k2go_state_ready">Pripravené</string>
     <string name="k2go_state_not_installed">Nenainštalované</string>
+    <string name="k2go_state_no_answer">Neznámy stav</string>
     <string name="k2go_state_scheduled">Naplánované</string>
     <string name="k2go_mod_time_note">Toto zabuduje modul do vášho systému, takže to trvá niekoľko minút a zostane na tejto obrazovke, kým sa nedokončí. Chcete všetko naraz? Nainštalujte úplnú systémovú verziu.</string>
     <string name="k2go_mod_maps_title">Prehliadať mapy</string>

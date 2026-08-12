@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">Zápis údržby selhal</string>
     <string name="session_started">RELACE HEARTBEAT SPUŠTĚNA</string>
     <string name="session_stopped">RELACE HEARTBEAT ZASTAVENA</string>
-    <string name="termux_stuck_warning">Termux se neotevírá? Zapněte Master Watchdog, aby jej donutil získat fokus.</string>
     <string name="end_of_history">--- Konec historie ---</string>
     <string name="error_reading_history">Chyba při čtení historie: %s</string>
     <string name="failed_write_blackbox">Zápis do BlackBox selhal</string>

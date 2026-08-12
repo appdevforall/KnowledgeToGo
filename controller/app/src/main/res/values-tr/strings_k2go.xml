@@ -40,10 +40,12 @@
     <string name="k2go_send">Gönder</string>
     <string name="k2go_setup_library_title">Kitaplığınızı ayarlayın</string>
     <string name="k2go_starting_library">Kitaplığınız başlatılıyor…</string>
-    <string name="k2go_home_failed">Başlatılamadı — yeniden denemek için dokunun</string>
+    <string name="k2go_home_failed">Başlatılamadı</string>
+    <string name="k2go_home_see_progress">İlerlemeyi gör</string>
+    <string name="k2go_home_retry">Yeniden dene</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">İçerik ekleniyor — ilerlemeyi görmek için dokunun</string>
+    <string name="k2go_home_installing">İçerik ekleniyor</string>
     <string name="k2go_perm_storage">Depolama erişimi</string>
     <string name="k2go_storage">Depolama</string>
     <string name="k2go_lang_system_default">Sistem varsayılanı</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Keşfetmeye hazır</string>
     <string name="k2go_card_ready">Hazır</string>
     <string name="k2go_card_connecting">Bağlanıyor</string>
+    <string name="k2go_card_stopped">Durduruldu</string>
     <string name="k2go_card_unavailable">Kullanılamıyor · yeniden denemek için dokunun</string>
     <string name="k2go_card_adding">İçerik ekleniyor</string>
     <string name="k2go_card_not_installed">Kurulu değil</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Aç</string>
     <string name="k2go_sheet_about">Bu uygulama hakkında</string>
     <string name="k2go_sheet_install">Şimdi kur</string>
+    <string name="k2go_sheet_install_note">Kurulum sırasında sisteminiz duraklar.</string>
     <string name="k2go_sheet_install_sel">Seçimi kur</string>
     <string name="k2go_sheet_schedule">Zamanla</string>
     <string name="k2go_sheet_cancel">Zamanlamayı iptal et</string>
     <string name="k2go_state_ready">Hazır</string>
     <string name="k2go_state_not_installed">Kurulu değil</string>
+    <string name="k2go_state_no_answer">Durum bilinmiyor</string>
     <string name="k2go_state_scheduled">Zamanlandı</string>
     <string name="k2go_mod_time_note">Bu, modülü sisteminize gömer; bu yüzden birkaç dakika sürer ve bitene kadar bu ekranda kalır. Her şeyi bir kerede mi istiyorsunuz? Tam sistem sürümünü kurun.</string>
     <string name="k2go_mod_maps_title">Haritalarda gezin</string>

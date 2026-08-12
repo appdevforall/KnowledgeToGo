@@ -40,10 +40,12 @@
     <string name="k2go_send">Küldés</string>
     <string name="k2go_setup_library_title">Állítsd be a könyvtárad</string>
     <string name="k2go_starting_library">A könyvtárad indítása…</string>
-    <string name="k2go_home_failed">Nem sikerült elindítani — koppints az újrapróbáláshoz</string>
+    <string name="k2go_home_failed">Nem sikerült elindítani</string>
+    <string name="k2go_home_see_progress">Folyamat</string>
+    <string name="k2go_home_retry">Újra</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Tartalom hozzáadása — koppintson a folyamathoz</string>
+    <string name="k2go_home_installing">Tartalom hozzáadása</string>
     <string name="k2go_perm_storage">Tárhely-hozzáférés</string>
     <string name="k2go_storage">Tárhely</string>
     <string name="k2go_lang_system_default">Rendszer alapértelmezett</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Készen áll a felfedezésre</string>
     <string name="k2go_card_ready">Kész</string>
     <string name="k2go_card_connecting">Csatlakozás</string>
+    <string name="k2go_card_stopped">Leállítva</string>
     <string name="k2go_card_unavailable">Nem érhető el · koppints az újrapróbáláshoz</string>
     <string name="k2go_card_adding">Tartalom hozzáadása</string>
     <string name="k2go_card_not_installed">Nincs telepítve</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Megnyitás</string>
     <string name="k2go_sheet_about">Az appról</string>
     <string name="k2go_sheet_install">Telepítés most</string>
+    <string name="k2go_sheet_install_note">A rendszer szünetel a telepítés alatt.</string>
     <string name="k2go_sheet_install_sel">Kiválasztás telepítése</string>
     <string name="k2go_sheet_schedule">Ütemezés</string>
     <string name="k2go_sheet_cancel">Ütemezés törlése</string>
     <string name="k2go_state_ready">Kész</string>
     <string name="k2go_state_not_installed">Nincs telepítve</string>
+    <string name="k2go_state_no_answer">Állapot ismeretlen</string>
     <string name="k2go_state_scheduled">Ütemezve</string>
     <string name="k2go_mod_time_note">Ez beépíti a modult a rendszeredbe, ezért néhány percet vesz igénybe, és ezen a képernyőn marad, amíg el nem készül. Mindent egyszerre szeretnél? Telepítsd a teljes rendszerverziót.</string>
     <string name="k2go_mod_maps_title">Navigálj a térképeken</string>

@@ -40,10 +40,12 @@
     <string name="k2go_send">Надіслати</string>
     <string name="k2go_setup_library_title">Налаштуйте свою бібліотеку</string>
     <string name="k2go_starting_library">Запуск бібліотеки…</string>
-    <string name="k2go_home_failed">Не вдалося запустити — торкніться, щоб повторити</string>
+    <string name="k2go_home_failed">Не вдалося запустити</string>
+    <string name="k2go_home_see_progress">Переглянути</string>
+    <string name="k2go_home_retry">Повторити</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Додавання вмісту — торкніться, щоб побачити перебіг</string>
+    <string name="k2go_home_installing">Додавання вмісту</string>
     <string name="k2go_perm_storage">Доступ до сховища</string>
     <string name="k2go_storage">Сховище</string>
     <string name="k2go_lang_system_default">Системна за замовчуванням</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Готово до вивчення</string>
     <string name="k2go_card_ready">Готово</string>
     <string name="k2go_card_connecting">Підключення</string>
+    <string name="k2go_card_stopped">Зупинено</string>
     <string name="k2go_card_unavailable">Недоступно · торкніться, щоб повторити</string>
     <string name="k2go_card_adding">Додавання вмісту</string>
     <string name="k2go_card_not_installed">Не встановлено</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Відкрити</string>
     <string name="k2go_sheet_about">Про цей застосунок</string>
     <string name="k2go_sheet_install">Встановити зараз</string>
+    <string name="k2go_sheet_install_note">Під час встановлення систему призупинено.</string>
     <string name="k2go_sheet_install_sel">Встановити вибране</string>
     <string name="k2go_sheet_schedule">Запланувати</string>
     <string name="k2go_sheet_cancel">Скасувати планування</string>
     <string name="k2go_state_ready">Готово</string>
     <string name="k2go_state_not_installed">Не встановлено</string>
+    <string name="k2go_state_no_answer">Невідомий стан</string>
     <string name="k2go_state_scheduled">Заплановано</string>
     <string name="k2go_mod_time_note">Це вбудовує модуль у вашу систему, тож займає кілька хвилин і залишається на цьому екрані до завершення. Хочете все одразу? Встановіть повну системну версію.</string>
     <string name="k2go_mod_maps_title">Орієнтуватися по картах</string>

@@ -40,10 +40,12 @@
     <string name="k2go_send">Fi ránṣẹ́</string>
     <string name="k2go_setup_library_title">Ṣètò ilé-ìkàwé rẹ</string>
     <string name="k2go_starting_library">Ń bẹ̀rẹ̀ ilé-ìkàwé rẹ…</string>
-    <string name="k2go_home_failed">Kò lè bẹ̀rẹ̀ — tẹ̀ láti tún gbìyànjú</string>
+    <string name="k2go_home_failed">Kò lè bẹ̀rẹ̀</string>
+    <string name="k2go_home_see_progress">Wo ìlọsíwájú</string>
+    <string name="k2go_home_retry">Tún gbìyànjú</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Ń fi àkóónú kún un — tẹ̀ láti wo ìlọsíwájú</string>
+    <string name="k2go_home_installing">Ń fi àkóónú kún un</string>
     <string name="k2go_perm_storage">Ìwọlé sí ibi ìtọ́jú</string>
     <string name="k2go_storage">Ibi ìtọ́jú</string>
     <string name="k2go_lang_system_default">Àbùdá ẹ̀rọ</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Ó múra tán láti ṣàwárí</string>
     <string name="k2go_card_ready">Ó múra tán</string>
     <string name="k2go_card_connecting">Ń so pọ̀</string>
+    <string name="k2go_card_stopped">Ó dúró</string>
     <string name="k2go_card_unavailable">Kò sí · tẹ̀ láti tún gbìyànjú</string>
     <string name="k2go_card_adding">Ń fi àkóónú kún</string>
     <string name="k2go_card_not_installed">Kò sí lórí ẹ̀rọ</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Ṣí</string>
     <string name="k2go_sheet_about">Nípa áàpù yìí</string>
     <string name="k2go_sheet_install">Fi sórí ẹ̀rọ báyìí</string>
+    <string name="k2go_sheet_install_note">Ẹ̀rọ rẹ yóò dúró nígbà tí èyí ń fi sí.</string>
     <string name="k2go_sheet_install_sel">Fi àyàn sórí ẹ̀rọ</string>
     <string name="k2go_sheet_schedule">Ṣètò àkókò</string>
     <string name="k2go_sheet_cancel">Fagilé àkókò</string>
     <string name="k2go_state_ready">Ó múra tán</string>
     <string name="k2go_state_not_installed">Kò sí lórí ẹ̀rọ</string>
+    <string name="k2go_state_no_answer">Ipò kò hàn</string>
     <string name="k2go_state_scheduled">A ti ṣètò àkókò</string>
     <string name="k2go_mod_time_note">Èyí ń kọ́ mọ́díù náà sínú ẹ̀rọ rẹ, nítorí náà ó ń gba ìṣẹ́jú díẹ̀ ó sì ń dúró lórí ojú-ìwé yìí títí tí yóò fi parí. Ṣé o fẹ́ ohun gbogbo lẹ́ẹ̀kan? Fi ẹ̀dà ẹ̀rọ pípé sórí ẹ̀rọ.</string>
     <string name="k2go_mod_maps_title">Tọ́ka máàpù</string>

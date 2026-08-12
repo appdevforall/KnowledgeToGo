@@ -25,7 +25,6 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.iiab.controller.util.AppExecutors;
-import org.iiab.controller.util.Snackbars;
 
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -254,6 +253,19 @@ public class ServerController {
         activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
+        // ADFA-5061: an EnvironmentProcess.killOrphan(activity) call sat here and was removed on
+        // the device. It was meant for the environment this controller has no handle on —
+        // `serverEngine` is a field on an Activity-scoped controller, so a second controller sees
+        // a live proot as an orphan. That much is real. What it could not tell apart is an
+        // environment THIS process started seconds ago: on one launch it killed a proot 3.5 s into
+        // its own `pdsm start`, mid-boot, and the services had to come up twice.
+        //
+        // Doing it properly needs three things this line could not have: the handle held per
+        // process rather than per Activity, `startEnvironment` meaning "ensure it is up" rather
+        // than "start" — which is what all six of its callers actually want — and a boot grace,
+        // because "proot alive, services not answering" and "proot alive, still starting" are the
+        // same observation for the first several seconds. EnvironmentProcess and its matcher stay,
+        // unwired and tested, as the detection half of that work.
         serverEngine = new PRootEngine();
         String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
         serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
@@ -339,12 +351,18 @@ public class ServerController {
             // keeps its start/stop TOGGLE semantics.
             startEnvironment();
 
-            // Fallback for Oppo/Xiaomi: Notify user if server fails to start
-            new Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (host.getTargetServerState() != null && !ServerStateRepository.get().current().alive) {
-                    Snackbars.make(v, R.string.termux_stuck_warning).show();
-                }
-            }, activity.getResources().getInteger(R.integer.server_snackbar_delay_ms));
+            // ADFA-5061: a 20 s timer used to fire a snackbar here — "Termux not opening? Enable
+            // Master Watchdog to force it to gain focus." Removed, because every part of it is now
+            // false. The environment is not Termux and has not been for some time; nothing has to
+            // gain focus, since the server runs in a proot this process owns rather than in another
+            // app; and the Master Watchdog keeps services alive while the screen is off, which has
+            // no bearing on whether a start succeeds. It was advice from an era when starting the
+            // server meant handing off to a second app that Oppo and Xiaomi would refuse to
+            // foreground.
+            //
+            // It also fired on elapsed time alone, so on any slow device it told a user that
+            // nothing was happening while the start was happening. The honest report of a start
+            // that did not take is the timeout above, which is still here and still runs.
 
         } else {
             if (stopping) return;   // ADFA-4834: a stop is already in flight; ignore repeat taps

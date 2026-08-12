@@ -43,10 +43,12 @@
     <string name="k2go_send">Send</string>
     <string name="k2go_setup_library_title">Set up your library</string>
     <string name="k2go_starting_library">Starting your library…</string>
-    <string name="k2go_home_failed">Couldn\'t start — tap to retry</string>
+    <string name="k2go_home_failed">Couldn\'t start</string>
+    <string name="k2go_home_see_progress">See progress</string>
+    <string name="k2go_home_retry">Retry</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Adding content — tap to see progress</string>
+    <string name="k2go_home_installing">Adding content</string>
     <string name="k2go_perm_storage">Storage access</string>
     <string name="k2go_storage">Storage</string>
     <string name="k2go_lang_system_default">System default</string>
@@ -371,6 +373,7 @@
     <string name="k2go_home_ready">Ready to explore</string>
     <string name="k2go_card_ready">Ready</string>
     <string name="k2go_card_connecting">Connecting</string>
+    <string name="k2go_card_stopped">Stopped</string>
     <string name="k2go_card_unavailable">Unavailable · tap to retry</string>
     <string name="k2go_card_adding">Adding content</string>
     <string name="k2go_card_not_installed">Not installed</string>
@@ -746,11 +749,13 @@
     <string name="k2go_sheet_open">Open</string>
     <string name="k2go_sheet_about">About this app</string>
     <string name="k2go_sheet_install">Install now</string>
+    <string name="k2go_sheet_install_note">Your system pauses while this installs.</string>
     <string name="k2go_sheet_install_sel">Install selection</string>
     <string name="k2go_sheet_schedule">Schedule</string>
     <string name="k2go_sheet_cancel">Cancel schedule</string>
     <string name="k2go_state_ready">Ready</string>
     <string name="k2go_state_not_installed">Not installed</string>
+    <string name="k2go_state_no_answer">Status unknown</string>
     <string name="k2go_state_scheduled">Scheduled</string>
     <string name="k2go_mod_time_note">This builds the module into your system, so it takes a few minutes and stays on this screen until it\'s done. Want everything at once? Install the full system version.</string>
     <string name="k2go_mod_maps_title">Navigate maps</string>

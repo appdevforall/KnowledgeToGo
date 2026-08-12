@@ -129,7 +129,6 @@
     <string name="maintenance_write_failed">Maintenance write failed</string>
     <string name="session_started">HEARTBEAT SESSION STARTED</string>
     <string name="session_stopped">HEARTBEAT SESSION STOPPED</string>
-    <string name="termux_stuck_warning">Termux not opening? Enable Master Watchdog to force it to gain focus.</string>
 
 
     <string name="end_of_history">--- End of History ---</string>

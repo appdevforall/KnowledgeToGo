@@ -117,7 +117,6 @@
     <string name="maintenance_write_failed">रखरखाव लेखन विफल</string>
     <string name="session_started">हार्टबीट सत्र शुरू हुआ</string>
     <string name="session_stopped">हार्टबीट सत्र बंद हुआ</string>
-    <string name="termux_stuck_warning">क्या वातावरण शुरू नहीं हो रहा है? फोकस बाध्य करने के लिए मास्टर वॉचडॉग सक्षम करें।</string>
 
     <string name="end_of_history">--- इतिहास का अंत ---</string>
     <string name="error_reading_history">इतिहास पढ़ने में त्रुटि: %s</string>

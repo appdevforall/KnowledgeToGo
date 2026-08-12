@@ -40,10 +40,12 @@
     <string name="k2go_send">Göndər</string>
     <string name="k2go_setup_library_title">Kitabxananızı qurun</string>
     <string name="k2go_starting_library">Kitabxananız başladılır…</string>
-    <string name="k2go_home_failed">Başlamadı — yenidən cəhd üçün toxun</string>
+    <string name="k2go_home_failed">Başlamadı</string>
+    <string name="k2go_home_see_progress">Gedişata bax</string>
+    <string name="k2go_home_retry">Yenidən cəhd</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Məzmun əlavə edilir — gedişatı görmək üçün toxunun</string>
+    <string name="k2go_home_installing">Məzmun əlavə edilir</string>
     <string name="k2go_perm_storage">Yaddaşa giriş</string>
     <string name="k2go_storage">Yaddaş</string>
     <string name="k2go_lang_system_default">Sistem defoltu</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Kəşfə hazır</string>
     <string name="k2go_card_ready">Hazır</string>
     <string name="k2go_card_connecting">Qoşulur</string>
+    <string name="k2go_card_stopped">Dayandırılıb</string>
     <string name="k2go_card_unavailable">Əlçatmaz · yenidən cəhd üçün toxun</string>
     <string name="k2go_card_adding">Məzmun əlavə olunur</string>
     <string name="k2go_card_not_installed">Quraşdırılmayıb</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Aç</string>
     <string name="k2go_sheet_about">Bu tətbiq haqqında</string>
     <string name="k2go_sheet_install">İndi quraşdır</string>
+    <string name="k2go_sheet_install_note">Quraşdırma zamanı sisteminiz fasilə verir.</string>
     <string name="k2go_sheet_install_sel">Seçimi quraşdır</string>
     <string name="k2go_sheet_schedule">Planla</string>
     <string name="k2go_sheet_cancel">Planı ləğv et</string>
     <string name="k2go_state_ready">Hazır</string>
     <string name="k2go_state_not_installed">Quraşdırılmayıb</string>
+    <string name="k2go_state_no_answer">Vəziyyət bilinmir</string>
     <string name="k2go_state_scheduled">Planlanıb</string>
     <string name="k2go_mod_time_note">Bu, modulu sisteminizə qurur, ona görə bir neçə dəqiqə çəkir və bitənə qədər bu ekranda qalır. Hər şeyi birdən istəyirsiniz? Tam sistem versiyasını quraşdırın.</string>
     <string name="k2go_mod_maps_title">Xəritələrdə gəz</string>

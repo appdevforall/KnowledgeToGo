@@ -40,10 +40,12 @@
     <string name="k2go_send">Trimite</string>
     <string name="k2go_setup_library_title">Configurează-ți biblioteca</string>
     <string name="k2go_starting_library">Se pornește biblioteca…</string>
-    <string name="k2go_home_failed">Nu a pornit — atinge pentru a reîncerca</string>
+    <string name="k2go_home_failed">Nu a pornit</string>
+    <string name="k2go_home_see_progress">Vezi progresul</string>
+    <string name="k2go_home_retry">Reîncearcă</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Se adaugă conținut — atinge pentru a vedea progresul</string>
+    <string name="k2go_home_installing">Se adaugă conținut</string>
     <string name="k2go_perm_storage">Acces la stocare</string>
     <string name="k2go_storage">Stocare</string>
     <string name="k2go_lang_system_default">Implicit sistem</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Gata de explorat</string>
     <string name="k2go_card_ready">Gata</string>
     <string name="k2go_card_connecting">Se conectează</string>
+    <string name="k2go_card_stopped">Oprit</string>
     <string name="k2go_card_unavailable">Indisponibil · atinge pentru a reîncerca</string>
     <string name="k2go_card_adding">Se adaugă conținut</string>
     <string name="k2go_card_not_installed">Neinstalat</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Deschide</string>
     <string name="k2go_sheet_about">Despre această aplicație</string>
     <string name="k2go_sheet_install">Instalează acum</string>
+    <string name="k2go_sheet_install_note">Sistemul tău se oprește temporar în timpul instalării.</string>
     <string name="k2go_sheet_install_sel">Instalează selecția</string>
     <string name="k2go_sheet_schedule">Programează</string>
     <string name="k2go_sheet_cancel">Anulează programarea</string>
     <string name="k2go_state_ready">Gata</string>
     <string name="k2go_state_not_installed">Neinstalat</string>
+    <string name="k2go_state_no_answer">Stare necunoscută</string>
     <string name="k2go_state_scheduled">Programat</string>
     <string name="k2go_mod_time_note">Aceasta integrează modulul în sistemul tău, așa că durează câteva minute și rămâne pe acest ecran până se termină. Vrei tot deodată? Instalează versiunea completă a sistemului.</string>
     <string name="k2go_mod_maps_title">Navighează pe hărți</string>

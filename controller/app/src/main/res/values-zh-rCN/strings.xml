@@ -103,7 +103,6 @@
     <string name="maintenance_write_failed">维护写入失败</string>
     <string name="session_started">HEARTBEAT 会话已开始</string>
     <string name="session_stopped">HEARTBEAT 会话已停止</string>
-    <string name="termux_stuck_warning">Termux 打不开？启用主看门狗以强制其获取焦点。</string>
     <string name="end_of_history">--- 历史记录结束 ---</string>
     <string name="error_reading_history">读取历史记录出错: %s</string>
     <string name="failed_write_blackbox">写入 BlackBox 失败</string>

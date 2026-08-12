@@ -40,10 +40,12 @@
     <string name="k2go_send">Odeslat</string>
     <string name="k2go_setup_library_title">Nastavte svou knihovnu</string>
     <string name="k2go_starting_library">Spouštění knihovny…</string>
-    <string name="k2go_home_failed">Nepodařilo se spustit — klepnutím opakujte</string>
+    <string name="k2go_home_failed">Nepodařilo se spustit</string>
+    <string name="k2go_home_see_progress">Zobrazit průběh</string>
+    <string name="k2go_home_retry">Zkusit znovu</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
-    <string name="k2go_home_installing">Přidává se obsah — klepnutím zobrazíte průběh</string>
+    <string name="k2go_home_installing">Přidává se obsah</string>
     <string name="k2go_perm_storage">Přístup k úložišti</string>
     <string name="k2go_storage">Úložiště</string>
     <string name="k2go_lang_system_default">Výchozí nastavení systému</string>
@@ -316,6 +318,7 @@
     <string name="k2go_home_ready">Připraveno k prozkoumání</string>
     <string name="k2go_card_ready">Připraveno</string>
     <string name="k2go_card_connecting">Připojování</string>
+    <string name="k2go_card_stopped">Zastaveno</string>
     <string name="k2go_card_unavailable">Nedostupné · klepnutím opakujte</string>
     <string name="k2go_card_adding">Přidávání obsahu</string>
     <string name="k2go_card_not_installed">Nenainstalováno</string>
@@ -632,11 +635,13 @@
     <string name="k2go_sheet_open">Otevřít</string>
     <string name="k2go_sheet_about">O této aplikaci</string>
     <string name="k2go_sheet_install">Nainstalovat nyní</string>
+    <string name="k2go_sheet_install_note">Během instalace se systém pozastaví.</string>
     <string name="k2go_sheet_install_sel">Nainstalovat výběr</string>
     <string name="k2go_sheet_schedule">Naplánovat</string>
     <string name="k2go_sheet_cancel">Zrušit plán</string>
     <string name="k2go_state_ready">Připraveno</string>
     <string name="k2go_state_not_installed">Nenainstalováno</string>
+    <string name="k2go_state_no_answer">Neznámý stav</string>
     <string name="k2go_state_scheduled">Naplánováno</string>
     <string name="k2go_mod_time_note">Tímto se modul zabuduje do systému, takže to zabere několik minut a zůstane na této obrazovce, dokud se nedokončí. Chcete vše najednou? Nainstalujte plnou systémovou verzi.</string>
     <string name="k2go_mod_maps_title">Navigovat v mapách</string>
