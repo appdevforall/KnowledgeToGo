@@ -1,0 +1,284 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1926" width="1560" height="1926" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<title>System lifecycle — the states the whole app shares, and where a user gets stuck</title>
+<desc>States are combinations of facts, not screens: setup_complete, a rootfs on disk, health, whether the server answers, and who holds the environment lock. Edges are labelled with the guard that allows them, cited to file:line. Red states are dead ends. Read this before drawing any per-area diagram, and reuse these state names verbatim.</desc>
+
+<style>
+  .bg     { fill: #F7F8F9; }
+  .st     { fill: #FFFFFF; stroke: #9AA0A6; stroke-width: 1.5; }
+  .st-ok  { fill: #F1F8F4; stroke: #1B7F4B; stroke-width: 2; }
+  .st-bad { fill: #FDECEC; stroke: #C0392B; stroke-width: 2.5; }
+  .st-warn{ fill: #FFF8EC; stroke: #C77700; stroke-width: 2; }
+  .entry  { fill: #E7F1FB; stroke: #1B5E8F; stroke-width: 2; }
+  .h1     { font-size: 25px; font-weight: 600; fill: #14211F; }
+  .h2     { font-size: 15px; font-weight: 600; fill: #14211F; }
+  .h3     { font-size: 12px; font-weight: 600; fill: #5B636B; letter-spacing: .06em; }
+  .facts  { font-size: 11.5px; fill: #1B5E8F; font-family: Consolas, monospace; }
+  .can    { font-size: 12px; fill: #3C4043; }
+  .note   { font-size: 11.5px; fill: #5B636B; }
+  .code   { font-size: 11px; fill: #5B636B; font-family: Consolas, monospace; }
+  .lbl    { font-size: 11px; fill: #3C4043; }
+  .lblg   { font-size: 11px; fill: #1B7F4B; }
+  .lblr   { font-size: 11px; fill: #C0392B; }
+  .sub    { font-size: 13px; fill: #5B636B; }
+  .e      { fill: none; stroke: #6B7278; stroke-width: 1.6; }
+  .e-auto { fill: none; stroke: #6B7278; stroke-width: 1.6; stroke-dasharray: 6 4; }
+  .e-dead { fill: none; stroke: #C0392B; stroke-width: 1.6; stroke-dasharray: 2 3; }
+  .e-oneway { fill: none; stroke: #C0392B; stroke-width: 3.5; }
+</style>
+
+<defs>
+  <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#6B7278"/>
+  </marker>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/>
+  </marker>
+  <marker id="aw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="#C0392B"/>
+  </marker>
+</defs>
+
+<rect class="bg" x="0" y="0" width="1560" height="1926"/>
+<text class="h1" x="24" y="44">System lifecycle — where a user gets stuck</text>
+<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 12 Aug. Every edge cites the guard that allows it.</text>
+
+<!-- legend -->
+<rect x="1040" y="24" width="496" height="106" rx="10" fill="#FFFFFF" stroke="#D3D1C7"/>
+<text class="h3" x="1056" y="46">LEGEND</text>
+<line class="e" x1="1056" y1="64" x2="1096" y2="64" marker-end="url(#a)"/><text class="lbl" x="1104" y="68">user can see and take it</text>
+<line class="e-auto" x1="1056" y1="84" x2="1096" y2="84" marker-end="url(#a)"/><text class="lbl" x="1104" y="88">automatic, the app does it</text>
+<line class="e-dead" x1="1056" y1="104" x2="1096" y2="104" marker-end="url(#ar)"/><text class="lbl" x="1104" y="108">visible control that leads nowhere</text>
+<line class="e-oneway" x1="1290" y1="64" x2="1330" y2="64" marker-end="url(#aw)"/><text class="lbl" x="1338" y="68">one-way</text>
+<rect class="st-bad" x="1290" y="78" width="16" height="12" rx="3"/><text class="lbl" x="1314" y="88">dead end</text>
+<rect class="st-warn" x="1290" y="98" width="16" height="12" rx="3"/><text class="lbl" x="1314" y="108">gated / waiting</text>
+
+<!-- ============================ ENTRY ============================ -->
+<text class="h3" x="24" y="108">ENTRY</text>
+<rect class="entry" x="24" y="120" width="230" height="72" rx="26"/>
+<text class="h2" x="40" y="146">App launch</text>
+<text class="code" x="40" y="164">SplashActivity — 3.5 s, reads</text>
+<text class="code" x="40" y="180">no state, always → Library</text>
+
+<path class="e-auto" d="M139,192 L139,232" marker-end="url(#a)"/>
+<text class="lbl" x="147" y="216">always</text>
+
+<!-- ============================ S0 WIZARD ============================ -->
+<rect class="st" x="24" y="232" width="230" height="156" rx="12"/>
+<text class="h2" x="40" y="258">S0 · First run</text>
+<text class="facts" x="40" y="278">!setup_complete</text>
+<text class="can" x="40" y="300">Welcome, language, permissions,</text>
+<text class="can" x="40" y="318">then the two setup choices.</text>
+<text class="lblg" x="40" y="340">ADFA-5116 closed the Skip exits.</text>
+<text class="note" x="40" y="356">Every path now installs, clones,</text>
+<text class="note" x="40" y="372">or comes back here.</text>
+
+<path class="e" d="M254,272 L316,272" marker-end="url(#a)"/>
+<text class="lblg" x="262" y="264">Download — does not mark</text>
+<text class="code" x="262" y="280">complete · ADFA-4982</text>
+<path class="e-oneway" d="M254,330 L316,330" marker-end="url(#aw)"/>
+<text class="lblr" x="258" y="322">Copy from a phone</text>
+<text class="code" x="258" y="352">marks setup complete before</text>
+<text class="code" x="258" y="366">any transfer exists · Wizard:101</text>
+
+<!-- ============================ S2 INSTALLING ============================ -->
+<rect class="st-warn" x="330" y="232" width="250" height="150" rx="12"/>
+<text class="h2" x="346" y="258">S2 · Installing</text>
+<text class="facts" x="346" y="278">installing</text>
+<text class="can" x="346" y="300">Boot gate with live progress.</text>
+<text class="can" x="346" y="318">Back backgrounds the app.</text>
+<text class="note" x="346" y="342">setup_complete is written when</text>
+<text class="note" x="346" y="358">the install STARTS, not when it</text>
+<text class="note" x="346" y="374">succeeds · SetupLibrary:283</text>
+
+<path class="e-auto" d="M455,382 L455,436" marker-end="url(#a)"/>
+<text class="lblg" x="463" y="404">SUCCESS</text>
+<text class="code" x="463" y="420">LibraryActivity:239</text>
+
+<path class="e-auto" d="M330,300 C280,300 262,430 200,455" marker-end="url(#a)"/>
+<text class="lblr" x="196" y="424">FAILED → offline library,</text>
+<text class="lblr" x="196" y="440">no explanation · :255</text>
+
+<!-- ============================ S1 NO SYSTEM ============================ -->
+<rect class="st-bad" x="24" y="452" width="290" height="230" rx="12"/>
+<text class="h2" x="40" y="478">S1 · No system, setup complete</text>
+<text class="facts" x="40" y="498">setup_complete, !installed</text>
+<text class="can" x="40" y="522">Header: "No library yet — tap Get</text>
+<text class="can" x="40" y="540">more". Text only: no button, and</text>
+<text class="can" x="40" y="558">the row is made non-clickable.</text>
+<text class="code" x="40" y="578">LibraryHome:555, 575, 585-588</text>
+<text class="note" x="40" y="602">All five cards read "Not installed".</text>
+<text class="note" x="40" y="620">Tapping one offers Install and</text>
+<text class="note" x="40" y="638">Schedule — neither can work.</text>
+<text class="code" x="40" y="658">Gate is 900 ms here, not 25 s ·:317</text>
+
+<path class="e-dead" d="M170,682 L170,724" marker-end="url(#ar)"/>
+<text class="lblr" x="178" y="700">Install →</text>
+<text class="lblr" x="178" y="716">refused</text>
+<rect class="st-bad" x="24" y="724" width="290" height="72" rx="12"/>
+<text class="h2" x="40" y="748">Dead control · module sheet</text>
+<text class="note" x="40" y="768">Install routes to the module hub,</text>
+<text class="note" x="40" y="786">which then refuses · ModuleHub:233</text>
+
+<path class="e" d="M314,520 L392,520" marker-end="url(#a)"/>
+<text class="lbl" x="320" y="512">Get more</text>
+<text class="code" x="320" y="536">→ full Step-1 wizard :248</text>
+
+<!-- ============================ S5 DAMAGED ============================ -->
+<rect class="st-bad" x="620" y="452" width="300" height="212" rx="12"/>
+<text class="h2" x="636" y="478">S5 · Damaged</text>
+<text class="facts" x="636" y="498">installed, !healthy</text>
+<text class="can" x="636" y="522">A dialog that cannot be dismissed:</text>
+<text class="can" x="636" y="540">"Recover…" or "Close" (which kills</text>
+<text class="can" x="636" y="558">the whole task).</text>
+<text class="code" x="636" y="578">LibraryActivity:540-553</text>
+<text class="note" x="636" y="602">Only reached 25 s after a launch</text>
+<text class="note" x="636" y="620">that took the recovering branch.</text>
+<text class="note" x="636" y="638">Health is computed everywhere and</text>
+<text class="note" x="636" y="656">acted on by one screen.</text>
+
+<path class="e-oneway" d="M770,664 L770,712" marker-end="url(#aw)"/>
+<text class="lblr" x="778" y="692">reached another way</text>
+<rect class="st-bad" x="620" y="712" width="300" height="112" rx="12"/>
+<text class="h2" x="636" y="736">S5′ · Damaged, never diagnosed</text>
+<text class="note" x="636" y="758">If a lock is held, or an install or queue</text>
+<text class="note" x="636" y="776">is running, the recovery branch never</text>
+<text class="note" x="636" y="794">runs. Lands on S1's screen: no dialog,</text>
+<text class="note" x="636" y="812">no Retry, and no mention of damage.</text>
+
+<!-- ============================ S6-S9 USABLE ============================ -->
+<rect class="st-ok" x="392" y="436" width="196" height="120" rx="12"/>
+<text class="h2" x="408" y="462">S9 · Usable</text>
+<text class="facts" x="408" y="482">installed, healthy,</text>
+<text class="facts" x="408" y="498">serverUp</text>
+<text class="can" x="408" y="522">Open content, add content,</text>
+<text class="can" x="408" y="540">install modules, share.</text>
+
+<rect class="st-warn" x="392" y="588" width="196" height="150" rx="12"/>
+<text class="h2" x="408" y="614">S7 · Server stopped</text>
+<text class="facts" x="408" y="634">installed, !serverUp</text>
+<text class="can" x="408" y="658">Header "Couldn't start" +</text>
+<text class="can" x="408" y="676">Retry. The one exit in the</text>
+<text class="can" x="408" y="694">app that announces itself.</text>
+<text class="code" x="408" y="716">canStartServer():586-593</text>
+
+<path class="e" d="M490,588 L490,556" marker-end="url(#a)"/>
+<text class="lblg" x="498" y="576">Retry</text>
+<path class="e-auto" d="M478,556 L478,588" marker-end="url(#a)"/>
+<text class="lbl" x="352" y="576">stop</text>
+
+<path class="e-dead" d="M392,700 L314,700" marker-end="url(#ar)"/>
+<text class="lblr" x="300" y="690">Get more here shows zero cards</text>
+<text class="lblr" x="300" y="674">and no way to start the box</text>
+
+<!-- ============================ S10 CONTENT ============================ -->
+<rect class="st-warn" x="960" y="232" width="280" height="196" rx="12"/>
+<text class="h2" x="976" y="258">S10 · Work in flight</text>
+<text class="facts" x="976" y="278">anyRunning || queueRunning</text>
+<text class="can" x="976" y="302">Progress index. Back shows a hint</text>
+<text class="can" x="976" y="320">once, then backgrounds the app.</text>
+<text class="can" x="976" y="338">Home offers "See progress".</text>
+<text class="code" x="976" y="360">SetupProgress:272-280</text>
+<text class="note" x="976" y="384">ModuleBatch is durable and cleared</text>
+<text class="note" x="976" y="402">only by goHome(): a batch that ended</text>
+<text class="note" x="976" y="420">elsewhere gates Back forever.</text>
+
+<path class="e" d="M588,470 L960,300" marker-end="url(#a)"/>
+<text class="lbl" x="700" y="386">start an install or a download</text>
+
+<path class="e-auto" d="M960,380 L600,470" marker-end="url(#a)"/>
+<text class="lbl" x="700" y="440">done → goHome()</text>
+
+<!-- ============================ S12 BANKED ============================ -->
+<rect class="st-bad" x="960" y="452" width="280" height="212" rx="12"/>
+<text class="h2" x="976" y="478">S12 · Order banked, nothing running</text>
+<text class="facts" x="976" y="498">anyBanked &amp;&amp; !anyRunning</text>
+<text class="can" x="976" y="522">Looks exactly like S9. No "See</text>
+<text class="can" x="976" y="540">progress", no route to the index,</text>
+<text class="can" x="976" y="558">no list of what was ordered.</text>
+<text class="code" x="976" y="580">LibraryHome:518-529</text>
+<text class="note" x="976" y="604">A banked ZIM, Books or Courses order</text>
+<text class="note" x="976" y="622">has no cancel anywhere: isScheduled()</text>
+<text class="note" x="976" y="640">only looks at maps and modules.</text>
+<text class="code" x="976" y="658">LibraryHome:337-342</text>
+
+<path class="e-auto" d="M1100,428 L1100,452" marker-end="url(#a)"/>
+<text class="lblr" x="1108" y="444">drain refused or deferred</text>
+
+<!-- ============================ S11 LOCK ============================ -->
+<rect class="st-warn" x="1290" y="232" width="246" height="196" rx="12"/>
+<text class="h2" x="1306" y="258">S11 · Deep op holds the lock</text>
+<text class="facts" x="1306" y="278">ownerHeld ∈ {CLONE,</text>
+<text class="facts" x="1306" y="294">BACKUP, RESTORE}</text>
+<text class="can" x="1306" y="318">Gate lifts at once; routed to</text>
+<text class="can" x="1306" y="336">the clone tab or the job screen.</text>
+<text class="note" x="1306" y="360">Handled well: the marker carries a</text>
+<text class="note" x="1306" y="378">session token, so a dead process</text>
+<text class="note" x="1306" y="396">self-heals on the next read.</text>
+<text class="code" x="1306" y="416">EnvironmentLock:122-125</text>
+
+<!-- ============================ S13 STALE ============================ -->
+<rect class="st-bad" x="1290" y="452" width="246" height="212" rx="12"/>
+<text class="h2" x="1306" y="478">S13 · Stale "busy"</text>
+<text class="facts" x="1306" y="498">isBusyNow() stuck true</text>
+<text class="can" x="1306" y="522">Every deep-env door refuses with</text>
+<text class="can" x="1306" y="540">"An install is already running".</text>
+<text class="can" x="1306" y="558">Nothing is running.</text>
+<text class="note" x="1306" y="582">A download service killed before it</text>
+<text class="note" x="1306" y="600">reached a terminal state. No token,</text>
+<text class="note" x="1306" y="618">no expiry, no self-heal.</text>
+<text class="code" x="1306" y="638">EnvironmentLock:97-100 · ADFA-4874</text>
+<text class="lblr" x="1306" y="658">Only exit: force-stop the app.</text>
+
+<!-- ============================ FINDINGS ============================ -->
+<text class="h3" x="24" y="866">DEAD ENDS, WORST FIRST — each with the guard that creates it and what would open it</text>
+
+<rect class="st-bad" x="24" y="884" width="1512" height="128" rx="12"/>
+<text class="h2" x="40" y="910">1 · TRAP — a stale "busy" flag locks every deep operation, permanently</text>
+<text class="can" x="40" y="934">A download service killed before reaching a terminal state leaves EnvironmentLock.isBusyNow() true. Unlike the durable owner marker, it carries no session token,</text>
+<text class="can" x="40" y="952">no timestamp and no expiry, so nothing ever clears it. Clone, backup, restore, module install and the dashboard rebuild all refuse, all with the same wrong message.</text>
+<text class="code" x="40" y="974">env/EnvironmentLock.java:69-87, 97-100 — the file names this itself and points at ADFA-4874.</text>
+<text class="note" x="40" y="996">Opens with: a timestamp on the busy state and an age past which it is ignored, or the durable token treatment the owner marker already has.</text>
+
+<rect class="st-bad" x="24" y="1028" width="1512" height="128" rx="12"/>
+<text class="h2" x="40" y="1054">2 · TRAP — a hung install holds the boot gate with no timeout at all</text>
+<text class="can" x="40" y="1078">Every other gate branch has a safety timer; the installing branch deliberately has none, so the gate lifts only on a terminal install state. If the pipeline never</text>
+<text class="can" x="40" y="1096">posts one, Back backgrounds the app and reopening re-enters the same branch. Force-stop is the only way out, and force-stop does not clear the install marker.</text>
+<text class="code" x="40" y="1118">redesign/LibraryActivity.java:277-280, 306-312 (the trade-off is stated), 559-563 (Back → moveTaskToBack).</text>
+<text class="note" x="40" y="1140">Opens with: a long backstop that shows the recovery dialog rather than lifting the gate — the honest answer for a run that stopped reporting.</text>
+
+<rect class="st-bad" x="24" y="1172" width="1512" height="188" rx="12"/>
+<text class="h2" x="40" y="1198">3 · ONE-WAY — the door a user could choose is shut; the one that opens on failure is not</text>
+<text class="can" x="40" y="1222">ADFA-5116 removed both Skip buttons and it worked: verified on the updated tree, every wizard path now installs, clones, or returns to the wizard. Download</text>
+<text class="can" x="40" y="1240">deliberately does not mark setup complete (ADFA-4982), and Step 1's Back routes through Library, which bounces straight back. Nothing is left to opt out with.</text>
+<text class="can" x="40" y="1262">What remains is not a choice, which is why it is harder to see. "Copy from a phone" marks setup complete before any transfer exists, and a first install marks it</text>
+<text class="can" x="40" y="1280">when the install STARTS rather than when it succeeds — so a failed install, a failed clone, or a reinstall that destroys the rootfs without finishing all land in</text>
+<text class="can" x="40" y="1298">S1. From there the app routes to Library forever and never offers the wizard again, because none of the four writers ever sets the flag false.</text>
+<text class="code" x="40" y="1320">Writers: WizardActivity:308 (Copy) · SetupLibraryActivity:284 (install start) · MainActivity:276 · SetupSectionFragment:245. Read at LibraryActivity:84.</text>
+<text class="note" x="40" y="1342">Opens with: writing it on a verified install rather than on intent, and clearing it wherever a rootfs is destroyed — the five destructive routes ADFA-5070 hooks.</text>
+
+<rect class="st-bad" x="24" y="1334" width="1512" height="128" rx="12"/>
+<text class="h2" x="40" y="1360">4 · HIDDEN EXIT — with no system, the only way forward is named "Get more"</text>
+<text class="can" x="40" y="1384">The header says "No library yet — tap Get more to install and add content", which is honest, but it is text with no button, on a row deliberately made</text>
+<text class="can" x="40" y="1402">non-clickable, pointing at a control at the far bottom of the screen whose name says content rather than system. Meanwhile every card offers Install and Schedule,</text>
+<text class="can" x="40" y="1420">which route to a hub that refuses. A user who does not read is offered two wrong doors and one unlabelled right one.</text>
+<text class="code" x="40" y="1442">LibraryHomeFragment.java:555, 575, 585-588 (no action on H_NO_LIBRARY) · 244-252 (Get more) · ModuleHubFragment.java:233-243 (the refusal).</text>
+
+<rect class="st-bad" x="24" y="1520" width="1512" height="128" rx="12"/>
+<text class="h2" x="40" y="1546">5 · TRAP — a damaged system reached by the wrong door is never diagnosed</text>
+<text class="can" x="40" y="1570">The recovery dialog only runs when the launch takes the "recovering" branch. If a lock is held, or an install or a module queue is running, the branch is skipped</text>
+<text class="can" x="40" y="1588">and the user lands on Home — where the install marker forces isSystemInstalled() false, so it presents as "no system": no dialog, no Retry, no mention of damage.</text>
+<text class="code" x="40" y="1610">LibraryActivity.java:168-177 (the predicate), :187-204 (the redirects that pre-empt it), :287-293 (lock lifts the gate), SystemStateEvaluator:43-45.</text>
+<text class="note" x="40" y="1632">Opens with: computing health where it is displayed rather than only in the launch branch. It is already computed app-wide and read by one screen.</text>
+
+<rect class="st-bad" x="24" y="1664" width="1512" height="110" rx="12"/>
+<text class="h2" x="40" y="1690">6 · DEAD CONTROL — a banked order that is not running is invisible and uncancellable</text>
+<text class="can" x="40" y="1714">"See progress" appears only while something is actually running, and a refused or deferred drain leaves the order banked without running. Nothing lists it. The</text>
+<text class="can" x="40" y="1732">module sheet's Cancel is the only cancel in the app, and it only inspects the maps and module wishlists — a banked ZIM, Books or Courses order cannot be cancelled.</text>
+<text class="code" x="40" y="1754">LibraryHomeFragment.java:518-529 (anyRunning gates the button), :337-342 (isScheduled ignores three of the five wishlists).</text>
+
+<rect class="st-warn" x="24" y="1790" width="1512" height="110" rx="12"/>
+<text class="h2" x="40" y="1816">7 · DEAD CONTROL — Connect hands out a QR for a box that may not exist</text>
+<text class="can" x="40" y="1840">ConnectFragment reads no system fact at all: not isSystemInstalled, not the server state, not the lock. With no system, a damaged one, or the server stopped, the</text>
+<text class="can" x="40" y="1858">whole tab behaves normally and prints a QR pointing at a dead port. It is the largest visible-but-useless surface in the app, and the only one with no message.</text>
+<text class="code" x="40" y="1880">redesign/ConnectFragment.java — browseUrl():126, no reference to SystemFacts, ServerStateRepository or EnvironmentLock anywhere in the file.</text>
+</svg>
