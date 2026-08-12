@@ -142,6 +142,32 @@ screen. Subtle, not in-your-face: the lights change, buttons appear or don't.
    `STOPPED → {colour: amber, navigable: false (gated to the index/card), backgroundAffordance: none,
    progress: full-screen index}`. Presentation reads these from the class; screens stop hand-picking.
 
+   **Amended, 11 Aug — colour is severity, not class.** The colour half of this decision was wrong
+   and the work proved it. `ModuleActionSheet` originally had a four-valued `Tone` carrying LIVE and
+   STOPPED exactly as written here; it collapsed two orthogonal axes into one enum and then mapped
+   both class values to the same colour to undo the collapse. What a user needs to be told about a
+   STOPPED operation is its *consequence*, and a consequence is a sentence — so the class is said in
+   words (`noticeFor` → "Your system pauses while this installs"), read from `op.isLive()`.
+
+   Colour still does real work on that row, for a different reason. Install was teal, the same accent
+   as Open, which reads as "go ahead, this is a tap" for something that can hold the box for an hour
+   and a half. So Install is amber, as a warning about **cost** — severity, which is the axis colour
+   is for. The two agree on every row we ship today, because every STOPPED operation we have is also
+   an expensive one; they are kept apart so that a cheap STOPPED operation would not inherit the
+   warning.
+
+   **And derive only where it can vary.** The other four class-expressing sites — the maps-landing
+   rebuild block and section header, the maps-confirm banner, the module-hub time note — stay literal
+   on purpose. Each is a single-purpose screen: the maps rebuild is always maps, the hub note is
+   always a module install. Their colour cannot drift because there is nothing to drift from, and
+   three of the four are static XML with no model object in scope; deriving a constant is indirection,
+   not a source of truth. `ModuleActionSheet` is the one surface where a LIVE row and a STOPPED row
+   are built by the same function and sit next to each other for the user to compare, and that is
+   where the rule is applied once instead of typed per row.
+
+   The rest of the contract — navigable, background affordance, progress surface — is unchanged and
+   still reads from the class.
+
 4. **One dispatch point per operation** reads the class and selects mechanism + progress surface +
    gates. Kill the implicit per-surface derivation: replace the `SetupProgressActivity` key switch and
    the invisible version fork's *silent* fallback with an **explicit** resolver — and when the class
