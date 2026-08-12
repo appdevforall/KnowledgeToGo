@@ -100,17 +100,35 @@
             android:progressBackgroundTint="@color/k2go_hairline" />
 
         <!-- ADFA-4910: extract % on its own fixed line (below the bar, above the changing
-             file name) so the number never dances as the file name grows/shrinks. -->
-        <TextView
-            android:id="@+id/k2go_install_percent"
+             file name) so the number never dances as the file name grows/shrinks.
+             ADFA-5118: two weighted columns so the ETA can change width without shoving the
+             % — % end-aligned against the centre line, ETA start-aligned after it. start/end
+             (not left/right) keep it correct under RTL. No bold, to match the download line. -->
+        <LinearLayout
+            android:id="@+id/k2go_install_percent_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textStyle="bold"
-            android:textColor="@color/k2go_boot_ink"
-            android:visibility="gone" />
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/k2go_install_percent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_boot_ink" />
+            <TextView
+                android:id="@+id/k2go_install_eta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:gravity="start"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_boot_muted" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/k2go_install_detail"

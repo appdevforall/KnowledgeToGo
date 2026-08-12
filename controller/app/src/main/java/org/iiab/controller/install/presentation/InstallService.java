@@ -377,13 +377,22 @@ public final class InstallService extends Service {
                     // ADFA-5118: once byte-based progress arrives (gzip path), it owns the unified bar;
                     // the member-count callback is only the fallback for a non-gzip archive.
                     private volatile boolean byteSeen = false;
+                    // ADFA-5118: debounce the ETA text so it stops flickering at a boundary; reset at
+                    // the verify->extract handoff, where the estimate restarts.
+                    private final org.iiab.controller.install.domain.EtaSmoother etaSmoother =
+                            new org.iiab.controller.install.domain.EtaSmoother(5000L);
+                    private TarExtractor.Phase lastPhase = null;
 
                     @Override
                     public void onExtractPhase(TarExtractor.Phase phase, int passPercent, long etaSeconds, String line) {
                         byteSeen = true;
+                        if (phase != lastPhase) { etaSmoother.reset(); lastPhase = phase; }
                         boolean extract = phase == TarExtractor.Phase.EXTRACT;
                         int unified = org.iiab.controller.deploy.domain.ExtractProgress.unifiedPercent(passPercent, extract);
-                        String eta = formatEta(etaSeconds);
+                        int bucket = etaSmoother.smooth(
+                                org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
+                                System.currentTimeMillis());
+                        String eta = formatEta(bucket);
                         if (extract) {
                             InstallProgressRepository.get().postExtracting(unified, line, eta);
                         } else {
@@ -968,15 +977,14 @@ public final class InstallService extends Service {
     }
 
     /**
-     * ADFA-5118: resolve an ETA in seconds to a short localized "time left" string for the unified
-     * bar. Empty when unknown ({@code <0}), "almost done" under a minute, else "about N min left"
-     * (ceil to whole minutes — a rounded-up estimate reads better than a jittery countdown).
+     * ADFA-5118: resolve a smoothed ETA bucket (see EtaSmoother) to a short localized "time left"
+     * string for the unified bar. Empty when unknown, "almost done" for bucket 0 (under a minute),
+     * else "about N min left".
      */
-    private String formatEta(long seconds) {
-        if (seconds < 0L) return "";
-        if (seconds < 60L) return getString(R.string.k2go_eta_almost);
-        long minutes = (seconds + 59L) / 60L;
-        return getString(R.string.k2go_eta_min, (int) minutes);
+    private String formatEta(int bucket) {
+        if (bucket == org.iiab.controller.install.domain.EtaSmoother.UNKNOWN) return "";
+        if (bucket == 0) return getString(R.string.k2go_eta_almost);
+        return getString(R.string.k2go_eta_min, bucket);
     }
 
     private void doCancel() {

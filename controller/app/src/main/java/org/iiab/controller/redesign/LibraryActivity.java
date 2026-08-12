@@ -56,7 +56,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private LottieAnimationView bootGate;
     private View installProgress;
-    private android.widget.TextView installStatus, installDetail, installPercent;
+    private android.widget.TextView installStatus, installDetail, installPercent, installEta;
+    private View installPercentRow;   // ADFA-5118: the %/ETA weighted-column row
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
@@ -126,7 +127,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
+        installPercentRow = findViewById(R.id.k2go_install_percent_row);
         installPercent = findViewById(R.id.k2go_install_percent);
+        installEta = findViewById(R.id.k2go_install_eta);
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
         bootEllipsis = new org.iiab.controller.util.EllipsisAnimator(installStatus, true);
         readingEllipsis = new org.iiab.controller.util.EllipsisAnimator(installDetail, true);
@@ -328,7 +331,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
-        if (installPercent != null) installPercent.setVisibility(View.GONE); // ADFA-4910: only the determinate extract shows it
+        if (installPercentRow != null) installPercentRow.setVisibility(View.GONE); // ADFA-4910/5118: only the determinate verify/extract shows it
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
@@ -353,10 +356,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 installBar.setProgress(st.percent);
                 // ADFA-4910: the % lives on its own fixed line (always the same spot); the file
                 // name gets the line below, so it can grow/shrink without moving the number.
-                // ADFA-5118: the ETA rides beside the % (st.speed), as DOWNLOADING shows its rate.
-                if (installPercent != null) {
-                    installPercent.setVisibility(View.VISIBLE);
-                    installPercent.setText(pct(st.percent) + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
+                // ADFA-5118: % and ETA sit in two weighted columns — the ETA (st.speed) can change
+                // width without shoving the %, so the number stays put across "3 min"->"almost done".
+                if (installPercentRow != null) {
+                    installPercentRow.setVisibility(View.VISIBLE);
+                    installPercent.setText(pct(st.percent));
+                    installEta.setText(st.speed.isEmpty() ? "" : "·  " + st.speed);
                 }
                 installDetail.setText(org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message));
             }
