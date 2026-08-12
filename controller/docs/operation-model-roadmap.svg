@@ -116,10 +116,10 @@
 <circle class="s-doing" cx="468" cy="297" r="5.5"/><text class="item" x="482" y="301">UX contract tokens</text>
 <text class="note" x="482" y="318">5074 landed the animation and the progress surface;</text>
 <text class="note" x="482" y="333">colour tokens and the finished-card rate are left.</text>
-<circle class="s-doing" cx="468" cy="354" r="5.5"/><text class="item" x="482" y="358">Apply to Kolibri (install vs seeding)</text>
-<text class="note" x="482" y="375">Seeding is the showcase. The app install never reaches</text>
-<text class="note" x="482" y="390">the model — Operation.appInstall has one caller, and it</text>
-<text class="note" x="482" y="405">only picks an animation.</text>
+<circle class="s-done"  cx="468" cy="354" r="5.5"/><text class="item" x="482" y="358">Apply to Kolibri (install vs seeding)</text>
+<text class="note" x="482" y="375">Both halves reach it: seeding through the dispatcher and</text>
+<text class="note" x="482" y="390">ContentDoor, the install through SystemDoor. The blocker</text>
+<text class="note" x="482" y="405">noted here was removed by that same change.</text>
 <circle class="s-todo"  cx="468" cy="426" r="5.5"/><text class="item" x="482" y="430">One shared answer to "is the platform there"</text>
 <text class="note" x="482" y="447">Six probes, five answers, three staleness policies.</text>
 <circle class="s-todo"  cx="468" cy="468" r="5.5"/><text class="item" x="482" y="472">Dashboard Rebuild: the REST/proot fork</text>

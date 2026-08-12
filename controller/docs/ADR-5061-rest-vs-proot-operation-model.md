@@ -1088,6 +1088,42 @@ most expensive by the third platform. A is B done safely over time.
        only the latter — so the three UI doors that do check `isHeld()` lose it between the door
        and the drain. Its own ticket.
 
+13. [x] **Kolibri, both classes** (decision 6b). Closed by inspection, with no code of its own —
+       recording that is the point, because the item sat amber on a blocker that another change
+       had already removed.
+
+       Seeding is LIVE and reaches the model twice over: `KolibriReadinessViewModel` resolves
+       `Operation.content("kolibri")` through the dispatcher, and the pickers ask `ContentDoor`
+       before they decide to bank or run. The install is STOPPED and reaches it through
+       `ModuleProvisioner` → `SystemDoor` → `Operation.appInstall("kolibri")`, which is item 12.
+       The roadmap note under this item — "the app install never reaches the model,
+       `Operation.appInstall` has one caller and it only picks an animation" — was true when it
+       was written and stopped being true one commit later. Corrected there.
+
+       Not closed by this: the content drains still serialise themselves by hand
+       (`KolibriProvisioner.canDrainNow` checks pending proot work and other live streams). That
+       is a different question — stream against stream, not operation against box — and it is the
+       third bullet of the carried list, not this item.
+
+14. [x] **UX-contract tokens** (item 2d), closed by amending decision 3 rather than implementing it.
+
+       The item had three different things inside it, which is why it stayed amber so long.
+
+       *The colour rule.* Amended above: colour is the severity channel, the class is said in
+       words. Install now goes amber in `ModuleActionSheet` — a warning about cost, not about
+       class — through a new `Emphasis.CAUTION`. Open stays teal. The four static
+       class-expressing sites stay literal, and the ADR now says why instead of leaving the next
+       reader to wonder whether they were missed.
+
+       *The animation.* Already delivered under ADFA-5074: `ProgressVisual.forOperation` returns
+       BUILD or DOWNLOAD from `op.isLive()`, and `ProgressVisuals` maps it. No colour in either,
+       correctly.
+
+       *The terminal state.* Split out. It is not a token — it is instrumentation across three
+       services with three different starting points, and it kept this item amber for reasons
+       that had nothing to do with tokens. Its own card on the roadmap: "A finished run leaves no
+       evidence it happened".
+
 11. [ ] **Small things the second review pass left standing.** None of them is worth a ticket on
        its own; they belong to whichever ticket next opens these files.
 
