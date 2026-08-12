@@ -43,6 +43,15 @@ import org.iiab.controller.system.domain.SystemFacts;
  * be useful and because a per-platform rule (a tier that does not carry a module, say) would
  * land here rather than in the caller.
  *
+ * <p><b>The verdict is returned, not consumed.</b> A first version had each drain ask the door,
+ * log the answer and return void. That put the decision in the wrong layer: the provisioner knew
+ * the verdict and could do nothing with it, while the orchestrator that sequences the stages —
+ * and that has to react — never heard it. The result was worse than the bug it fixed. A refused
+ * drain leaves the wishlist banked, so {@code hasPending} stays true, so
+ * {@code SetupProgressActivity.orchestrateStep} returned "more work" every two seconds forever:
+ * a spinner with no explanation, on a damaged system, which is the case that most needs one.
+ * Both drains hand the verdict back and the orchestrator owns what to do with it.
+ *
  * <p>Not the whole gate. {@code EnvironmentLock.Owner.MODULE} exists and nothing acquires it,
  * so a clone or a deep operation can still collide with a module run; that is its own ticket.
  * This closes the question the model was built to answer, not every question at this door.
@@ -66,15 +75,5 @@ public final class SystemDoor {
         // platformPresent is irrelevant to an APP_INSTALL and the dispatcher says so: the
         // install is what puts the platform there, so requiring it would be circular.
         return OperationDispatcher.resolve(Operation.appInstall(platform), facts, true);
-    }
-
-    /**
-     * Whether the drain may hand this batch to the install engine.
-     *
-     * <p>The direct counterpart of {@code ContentDoor.banks}, inverted because this side is
-     * asking permission rather than asking where to put the order.
-     */
-    public static boolean mayRunNow(Context ctx, String platform) {
-        return OperationDispatcher.mayRunStopped(dispatch(ctx, platform));
     }
 }
