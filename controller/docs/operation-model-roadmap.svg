@@ -209,8 +209,8 @@
 <!-- new, and not a footnote                                       -->
 <!-- ============================================================ -->
 <rect class="card" x="24" y="752" width="1232" height="180" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="768" width="132" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="782" fill="#C0392B">NO TICKET YET</text>
+<rect class="chip" x="40" y="768" width="88" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="48" y="782" fill="#1B5E8F">ADFA-5103</text>
 <text class="h2" x="188" y="783">The app cannot tell a stopped service from a stopped environment</text>
 
 <text class="item" x="40" y="810">`pdsm stop` stops the services inside the container; the proot environment keeps running. The app has one runtime signal — an HTTP ping to</text>
@@ -226,8 +226,8 @@
 <!-- second standalone: its own ticket, one pass                   -->
 <!-- ============================================================ -->
 <rect class="card" x="24" y="964" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="980" width="132" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="994" fill="#C0392B">NO TICKET YET</text>
+<rect class="chip" x="40" y="980" width="88" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="48" y="994" fill="#1B5E8F">ADFA-5104</text>
 <text class="h2" x="188" y="995">Module management offers to reinstall what is already installed</text>
 
 <text class="item" x="40" y="1022">ModuleHubFragment.reachable() returns a boolean: 2xx-3xx is yes, and a 404, a timeout and a refused connection are all the same no. probeAll</text>
@@ -262,7 +262,7 @@
 <rect class="card" x="24" y="1392" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
 <rect class="chip" x="40" y="1408" width="132" height="19" fill="#FDECEC" stroke="none"/>
 <text class="chiptx" x="48" y="1422" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="188" y="1423">Replacing the system, and the installer that does it</text>
+<text class="h2" x="188" y="1423">Replacing the system, and the installer that does it — no ticket on purpose</text>
 
 <text class="item" x="40" y="1450">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow</text>
 <text class="item" x="40" y="1468">that works. Recorded here so they are picked up on their own terms rather than as somebody else's leftovers.</text>
@@ -278,9 +278,9 @@
 <text class="h3" x="204" y="1636">Found in the last two days; recorded so they are met on purpose</text>
 
 <circle class="s-todo" cx="48" cy="1660" r="5.5"/><text class="item" x="62" y="1664">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<circle class="s-todo" cx="48" cy="1682" r="5.5"/><text class="item" x="62" y="1686">No run-level disk budget. Ten places read free space by hand, so there is nowhere to put one.</text>
+<circle class="s-todo" cx="48" cy="1682" r="5.5"/><text class="item" x="62" y="1686">Free space is never checked before a destructive run — ADFA-5105. Sixteen hand-rolled readers; only two gate anything.</text>
 <circle class="s-todo" cx="48" cy="1704" r="5.5"/><text class="item" x="62" y="1708">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
-<circle class="s-todo" cx="48" cy="1726" r="5.5"/><text class="item" x="62" y="1730">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+<circle class="s-todo" cx="48" cy="1726" r="5.5"/><text class="item" x="62" y="1730">Sessions do not survive process death — now ADFA-5106. 4874 deferred it in July and closed; it had no owner until now.</text>
 
 <text class="note" x="24" y="1776">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
 <text class="note" x="24" y="1792">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
