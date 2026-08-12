@@ -127,7 +127,7 @@
 <rect class="card" x="444" y="450" width="392" height="98" stroke="#5F5E5A" stroke-dasharray="4 3"/>
 <text class="h3" x="460" y="472">FOLLOW-UP — out of 5061 so it can close, not dropped</text>
 <circle class="s-todo" cx="468" cy="491" r="5.5"/><text class="item" x="482" y="495">One shared answer to "is the platform there"</text>
-<text class="note" x="482" y="511">Its visible face is the module-management card below.</text>
+<text class="note" x="482" y="511">5104 proved the disk source; the repository is still owed.</text>
 <circle class="s-todo" cx="468" cy="529" r="5.5"/><text class="item" x="482" y="533">Dashboard Rebuild: the REST/proot fork</text>
 
 <!-- NEW — catalogue depth (split out of 4954) -->
@@ -225,18 +225,18 @@
 <!-- ============================================================ -->
 <!-- second standalone: its own ticket, one pass                   -->
 <!-- ============================================================ -->
-<rect class="card" x="24" y="964" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="980" width="88" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="48" y="994" fill="#1B5E8F">ADFA-5104</text>
-<text class="h2" x="188" y="995">Module management offers to reinstall what is already installed</text>
+<rect class="card" x="24" y="964" width="1232" height="182" stroke="#1B7F4B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="980" width="88" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="994" fill="#1B7F4B">ADFA-5104</text>
+<text class="h2" x="188" y="995">Module management reads what is installed, and says so — DONE</text>
 
-<text class="item" x="40" y="1022">ModuleHubFragment.reachable() returns a boolean: 2xx-3xx is yes, and a 404, a timeout and a refused connection are all the same no. probeAll</text>
-<text class="item" x="40" y="1040">turns that no straight into the installable list. So with the box stopped nothing answers and EVERY module is offered — including the ones</text>
-<text class="item" x="40" y="1058">that are installed. This is an action surface, not a label: accepting the offer stops the box and runs a runrole for hours to rebuild what</text>
-<text class="item" x="40" y="1076">was already there. GetMoreHubFragment.reachable() is the same boolean, so both go in one pass or the copy survives.</text>
-<text class="code" x="40" y="1100">The fix already exists next door: PlatformPresence.Evidence and the PlatformEvidence store, keyed by the same endpoints the Home probes —</text>
-<text class="code" x="40" y="1118">so the hub inherits what Home established and keeps it when the box goes down. PlatformEvidence still owes observedAtMs and a clear() on the</text>
-<text class="code" x="40" y="1136">destructive routes; both belong to this pass. Open question for the ticket: what the hub shows when nothing is known.</text>
+<text class="item" x="40" y="1022">The screen answered "what is installed" by asking "what is answering", so with the box stopped every module was offered, installed ones</text>
+<text class="item" x="40" y="1040">included — an offer that stops the box for hours to rebuild what was there. It reads etc/iiab/local_vars.yml on the rootfs now: the</text>
+<text class="item" x="40" y="1058">installer's own record, readable with the services down, and invalidated for free by any reset, restore or clone because it lives inside</text>
+<text class="item" x="40" y="1076">the rootfs it describes. Installs only add, so a remembered answer is safe here where a remembered "is it running" would not be.</text>
+<text class="code" x="40" y="1100">Three facts, no longer one: a system must exist before modules mean anything; what is installed comes from disk; whether it runs gates</text>
+<text class="code" x="40" y="1118">neither. Silence keeps its own name — an unreadable file is "unknown", not "absent". The probe survives, add-only. The list stops hiding</text>
+<text class="code" x="40" y="1136">what you have, and the detail agrees with it. GetMoreHub keeps its copy of the probe: add-only there, so not the same defect.</text>
 
 
 <!-- ============================================================ -->
