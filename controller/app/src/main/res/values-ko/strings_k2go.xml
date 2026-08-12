@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">기본값</string>
     <string name="k2go_auth_chip_custom">맞춤</string>
     <string name="k2go_auth_chip_notinstalled">설치되지 않음</string>
+    <string name="k2go_mod_needs_system">모듈은 시스템 안에 설치되는데 아직 시스템이 없습니다. 먼저 시스템을 설치하세요.</string>
 </resources>

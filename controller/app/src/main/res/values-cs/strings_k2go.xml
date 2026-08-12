@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Výchozí</string>
     <string name="k2go_auth_chip_custom">Vlastní</string>
     <string name="k2go_auth_chip_notinstalled">Nenainstalováno</string>
+    <string name="k2go_mod_needs_system">Moduly se instalují do systému a ten zatím neexistuje. Nejprve nainstalujte systém.</string>
 </resources>

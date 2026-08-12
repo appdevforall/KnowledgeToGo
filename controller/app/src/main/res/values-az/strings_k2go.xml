@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">Standart</string>
     <string name="k2go_auth_chip_custom">Fərdi</string>
     <string name="k2go_auth_chip_notinstalled">Quraşdırılmayıb</string>
+    <string name="k2go_mod_needs_system">Modullar sistemin içinə quraşdırılır, sistem isə hələ yoxdur. Əvvəlcə sistem quraşdırın.</string>
 </resources>

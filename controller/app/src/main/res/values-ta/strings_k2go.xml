@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">இயல்புநிலை</string>
     <string name="k2go_auth_chip_custom">தனிப்பயன்</string>
     <string name="k2go_auth_chip_notinstalled">நிறுவப்படவில்லை</string>
+    <string name="k2go_mod_needs_system">தொகுதிகள் ஒரு அமைப்பினுள் நிறுவப்படுகின்றன, இன்னும் அமைப்பு எதுவும் இல்லை. முதலில் ஒரு அமைப்பை நிறுவுங்கள்.</string>
 </resources>

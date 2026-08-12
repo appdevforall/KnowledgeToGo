@@ -840,4 +840,5 @@
          the real removal waits for that download's reindex. -->
     <string name="k2go_zim_deleted_deferred">Deleted — hidden for now, fully removed once the current download finishes.</string>
     <string name="k2go_zim_delete_failed">Couldn\'t delete. Please try again.</string>
+    <string name="k2go_mod_needs_system">Modules are installed into a system, and there isn\'t one yet. Install a system first.</string>
 </resources>

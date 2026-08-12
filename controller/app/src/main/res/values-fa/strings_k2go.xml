@@ -771,4 +771,5 @@
     <string name="k2go_auth_chip_default">پیش‌فرض</string>
     <string name="k2go_auth_chip_custom">سفارشی</string>
     <string name="k2go_auth_chip_notinstalled">نصب‌نشده</string>
+    <string name="k2go_mod_needs_system">ماژول‌ها درون یک سیستم نصب می‌شوند و هنوز سیستمی وجود ندارد. ابتدا یک سیستم نصب کنید.</string>
 </resources>

@@ -48,7 +48,47 @@ import java.util.Set;
 public class ModuleHubFragment extends Fragment {
 
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final Set<String> installable = new HashSet<>();   // yamlBaseKeys not yet installed
+    /**
+     * ADFA-5104: yamlBaseKeys the installer's flags say are installed.
+     *
+     * <p>Read from {@code local_vars.yml} on disk rather than derived from who answers, so it is
+     * right with the box stopped. A module install only ever adds, so within one system's life
+     * this can grow and cannot shrink — and a system replacement takes the file with it, so the
+     * answer invalidates itself.
+     */
+    private final Set<String> installed = new HashSet<>();
+    /**
+     * ADFA-5104: whether there is a system to install modules into.
+     *
+     * <p>The precondition nobody was asking. A module install lays files into the rootfs and runs
+     * a runrole inside it; with no rootfs there is nothing to install into and nothing to run it
+     * with. The screen still listed all six as installable, because it decided that from a probe
+     * — and with no system nothing answers, so everything looked missing.
+     *
+     * <p>Reachable, not theoretical: {@code pref_key_setup_complete} is only ever written true —
+     * five writers, none of them clears it — so after a reset or a failed restore the app still
+     * routes to the Library, and Settings still opens this screen over an empty rootfs.
+     *
+     * <p>Seeded true so the first frame looks like the ordinary case; the background pass
+     * corrects it before anything is offered.
+     */
+    private boolean systemPresent = true;
+    /**
+     * ADFA-5104: whether the first disk pass has answered.
+     *
+     * <p>Without it the list renders every module as "Not installed" for the instant before the
+     * read returns and then corrects itself — a flicker that says the wrong thing, which is what
+     * this screen is being fixed for. "Checking" is the honest word for that instant.
+     */
+    private boolean loaded = false;
+    /**
+     * ADFA-5104: true when a system exists but its flags could not be read.
+     *
+     * <p>Its own state, not folded into "nothing installed". A half-written or unreadable
+     * local_vars.yml is silence, and reading silence as absence is the defect this screen is
+     * being fixed for — collapsing it here would have reproduced it one layer down.
+     */
+    private boolean stateUnknown = false;
     private int probesPending = 0;
     private int probeGen = 0;   // ADFA-4842: supersedes an in-flight probe batch (e.g. onResume re-probe)
     private LinearLayout host;
@@ -107,39 +147,101 @@ public class ModuleHubFragment extends Fragment {
         refreshProceed();    // scheduled set may have changed (returned from a detail)
     }
 
-    /** Probe every presentable module's endpoint; a module is INSTALLABLE when it is NOT reachable
-     *  (not installed yet) and its 64-bit requirement is met. */
+    /**
+     * ADFA-5104: one pass that asks the disk, then lets a probe add to it.
+     *
+     * <p>It used to be N probes and nothing else, so the screen's answer to "what is installed"
+     * was really "what is answering" — and with the box stopped that is nothing, which is how an
+     * installed module came to be offered for installation.
+     */
     private void probeAll() {
         final int gen = ++probeGen;   // supersede any batch still in flight; its callbacks will bail
-        List<ModuleCards.Card> cards = ModuleCards.all();
-        final Set<String> found = new HashSet<>();
-        probesPending = 0;
-        for (final ModuleCards.Card c : cards) {
+        final Context appCtx = requireContext().getApplicationContext();
+        AppExecutors.get().io().execute(() -> {
+            // Both reads touch the filesystem and neither needs the network or a proot.
+            final boolean present =
+                    org.iiab.controller.SystemStateEvaluator.isSystemInstalled(appCtx);
+            // Null means the flags could not be read; empty means they were read and claim
+            // nothing. The screen must not treat those alike.
+            final Set<String> fromDisk = present
+                    ? org.iiab.controller.system.data.InstalledModulesReader.installedKeys(appCtx)
+                    : java.util.Collections.<String>emptySet();
+            main.post(() -> {
+                if (!isAdded() || gen != probeGen) return;
+                systemPresent = present;
+                loaded = true;
+                stateUnknown = present && fromDisk == null;
+                installed.clear();
+                if (fromDisk != null) installed.addAll(fromDisk);
+                // ADFA-5104: an order for something already installed is moot, and leaving it
+                // banked means the button counts it and the drain would rebuild what is there.
+                // The pill says "Installed"; the button has to agree.
+                for (String key : installed) ModuleWishlist.remove(requireContext(), key);
+                probesPending = 0;
+                buildCards();       // the disk answer is already showable; do not wait on HTTP
+                refreshProceed();
+                // A probe can still rescue the unknown case: it only ever adds, so whatever
+                // answers is real even when the file could not be read.
+                if (present) confirmByProbe(gen);
+            });
+        });
+    }
+
+    /**
+     * Ask the running box, and let it <em>add</em> only.
+     *
+     * <p>A probe that answers proves a platform is there, which is worth having: it covers
+     * anything installed by a route that did not write the flag. A probe that 404s proves much
+     * less — the service can be installed and switched off, and nginx answers the same way — so
+     * it does not demote a module the installer's own flags claim.
+     *
+     * <p>That leaves one known gap, deliberately: {@code InstallService} writes the flag before
+     * the runrole and reverts it if the run fails, so a process death between the two leaves a
+     * claim that never came true, and nothing here will correct it. The alternative is letting a
+     * 404 demote, and that costs more — it is the error that offers a multi-hour reinstall of
+     * something already present, which is the defect this ticket exists to remove.
+     */
+    private void confirmByProbe(final int gen) {
+        final Set<String> answered = new HashSet<>();
+        for (final ModuleCards.Card c : ModuleCards.all()) {
             if (c.requires64Bit() && !is64Bit()) continue;   // hidden on this device
+            if (installed.contains(c.key())) continue;       // disk already says yes
             probesPending++;
             final String key = c.key();
             final String endpoint = c.endpoint();
             AppExecutors.get().io().execute(() -> {
-                final boolean installed = reachable(endpoint);
+                final boolean present = reachable(endpoint);
                 main.post(() -> {
-                    if (!isAdded() || gen != probeGen) return;   // fragment gone or batch superseded
-                    if (!installed) found.add(key);
+                    if (!isAdded() || gen != probeGen) return;
+                    if (present) answered.add(key);
                     probesPending--;
-                    if (probesPending <= 0) {
-                        installable.clear();
-                        installable.addAll(found);
+                    if (probesPending <= 0 && !answered.isEmpty()) {
+                        installed.addAll(answered);
                         buildCards();
                         refreshProceed();
                     }
                 });
             });
         }
-        if (probesPending == 0) { installable.clear(); buildCards(); }
     }
 
     private void buildCards() {
         if (host == null) return;
         host.removeAllViews();
+        // ADFA-5104: with no system there is nothing to install into, so nothing is offered and
+        // the screen says why. Listing modules here would be an invitation the box cannot honour.
+        if (!systemPresent) {
+            TextView msg = new TextView(requireContext());
+            msg.setGravity(Gravity.CENTER);
+            msg.setPadding(px(8), px(24), px(8), px(24));
+            msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            msg.setText(R.string.k2go_mod_needs_system);
+            host.addView(msg);
+            addHiddenSection();
+            return;
+        }
+
         TextView helper = new TextView(requireContext());   // ADFA-4958
         helper.setText(R.string.k2go_mod_mgmt_helper);
         helper.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
@@ -149,34 +251,53 @@ public class ModuleHubFragment extends Fragment {
         helperLp.bottomMargin = px(8);
         host.addView(helper, helperLp);
 
-        // ADFA-5011: the dash-node REST core is a system module — always present (not installable/
-        // removable), with a single Rebuild action. Shown at the top, above the installable list.
+        // ADFA-5011: the dash-node REST core is a system module — present once a system is
+        // (not installable/removable), with a single Rebuild action. Shown at the top.
         addSystemDashboardCard();
 
+        // ADFA-5104: everything presentable, with its state. Hiding installed modules answered a
+        // question nobody asked — "what can I still add" — while users were asking the other one,
+        // "what do I have". A module cannot be uninstalled, so the row is not an offer to undo
+        // anything; it is the only place the answer exists.
         List<ModuleCards.Card> items = new ArrayList<>();
-        for (ModuleCards.Card c : ModuleCards.all()) if (installable.contains(c.key())) items.add(c);
+        for (ModuleCards.Card c : ModuleCards.all()) {
+            if (c.requires64Bit() && !is64Bit()) continue;   // never going to run here
+            items.add(c);
+        }
+        boolean anyInstallable = false;
+        for (ModuleCards.Card c : items) if (!installed.contains(c.key())) { anyInstallable = true; break; }
 
-        if (items.isEmpty()) {
+        // ADFA-5104: k2go_mod_none is gone from here. It said "everything available is already
+        // installed", which was true while the list was filtered to installables and is not now
+        // that the list shows everything — and with the filter gone the branch could only fire on
+        // a device where every module needs 64 bits, where the sentence would be wrong anyway.
+        if (!loaded || items.isEmpty()) {
             TextView msg = new TextView(requireContext());
             msg.setGravity(Gravity.CENTER);
             msg.setPadding(0, px(24), 0, px(24));
             msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
             msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-            msg.setText(probesPending > 0 ? R.string.k2go_gm_checking : R.string.k2go_mod_none);
+            msg.setText(R.string.k2go_gm_checking);
             host.addView(msg);
         } else {
             // ADFA-4958: last informed step before the locked install index. A build takes time.
-            TextView note = new TextView(requireContext());
-            note.setText(R.string.k2go_mod_time_note);
-            note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-            note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
-            note.setBackgroundResource(R.drawable.k2go_warn_bg);
-            note.setPadding(px(16), px(14), px(16), px(14));
-            LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            nlp.bottomMargin = px(12);
-            host.addView(note, nlp);
-            for (ModuleCards.Card c : items) host.addView(cardRow(c));
+            // ADFA-5104: only when something is still installable — over a list of modules that
+            // are all installed, the warning describes work nobody is about to start.
+            if (anyInstallable && !stateUnknown) {
+                TextView note = new TextView(requireContext());
+                note.setText(R.string.k2go_mod_time_note);
+                note.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+                note.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_warn_ink));
+                note.setBackgroundResource(R.drawable.k2go_warn_bg);
+                note.setPadding(px(16), px(14), px(16), px(14));
+                LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                nlp.bottomMargin = px(12);
+                host.addView(note, nlp);
+            }
+            for (ModuleCards.Card c : items) {
+                host.addView(cardRow(c, installed.contains(c.key()), stateUnknown));
+            }
         }
         addHiddenSection();
     }
@@ -244,7 +365,8 @@ public class ModuleHubFragment extends Fragment {
 
     /** A full-width tappable module row: title + subtitle + one-line description, with a "Scheduled"
      *  badge when banked, else a chevron. */
-    private View cardRow(final ModuleCards.Card c) {
+    private View cardRow(final ModuleCards.Card c, final boolean isInstalled,
+                         final boolean unknown) {
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -261,7 +383,12 @@ public class ModuleHubFragment extends Fragment {
             }
         });
 
-        if (!c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector)
+        // ADFA-5104: no tick on an installed module. There is nothing to schedule — installing it
+        // again is not an action the app offers, and a checkbox that does nothing is worse than
+        // no checkbox. The row still opens its detail, which is where "what is this" lives.
+        // ADFA-5104: and no tick when the flags could not be read either. Ticking would bank an
+        // order we have no grounds to take.
+        if (!isInstalled && !unknown && !c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector)
             com.google.android.material.checkbox.MaterialCheckBox cb =
                     new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
             cb.setChecked(ModuleWishlist.contains(requireContext(), c.key()));
@@ -305,11 +432,18 @@ public class ModuleHubFragment extends Fragment {
 
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-        boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());   // ADFA-4958 §5.2: state pill
+        // ADFA-4958 §5.2: state pill. ADFA-5104: installed outranks scheduled — a module that is
+        // already there cannot meaningfully be waiting to be installed, and if a stale wishlist
+        // entry survived an install, saying "Scheduled" over it would be the older lie again.
+        boolean scheduled = !isInstalled && !unknown && ModuleWishlist.contains(requireContext(), c.key());
         TextView pill = statePill(
-                scheduled ? getString(R.string.k2go_mod_scheduled)
-                          : getString(R.string.k2go_state_not_installed),
-                scheduled ? R.color.k2go_teal : R.color.k2go_muted);
+                isInstalled ? getString(R.string.k2go_mod_phase_done)
+                        : unknown ? getString(R.string.k2go_state_no_answer)
+                                : scheduled ? getString(R.string.k2go_mod_scheduled)
+                                        : getString(R.string.k2go_state_not_installed),
+                isInstalled ? R.color.k2go_leaf
+                        : unknown ? R.color.k2go_amber_text
+                                : scheduled ? R.color.k2go_teal : R.color.k2go_muted);
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);
@@ -382,6 +516,10 @@ public class ModuleHubFragment extends Fragment {
     private void refreshProceed() {
         if (proceed == null || !isAdded()) return;
         int n = ModuleWishlist.size(requireContext());
+        // ADFA-5104: a banked order cannot be drained into a system that is not there. The drain
+        // itself now refuses (SystemDoor), but offering the button and then refusing is a worse
+        // answer than not offering it.
+        if (!systemPresent || stateUnknown) { proceed.setVisibility(View.GONE); return; }
         proceed.setVisibility(n > 0 ? View.VISIBLE : View.GONE);
         proceed.setEnabled(n > 0);
         if (n > 0) proceed.setText(getString(R.string.k2go_mod_proceed_fmt, n));
