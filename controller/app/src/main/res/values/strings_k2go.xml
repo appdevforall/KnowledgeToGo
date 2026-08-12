@@ -83,6 +83,9 @@
     <string name="k2go_courses_hint">Kiwix presets exist; Kolibri can\'t be preset yet — set up on the device after install.</string>
     <string name="k2go_added_after">added after install</string>
     <string name="k2go_step2a_hint">Tap a source to Add or Skip it. Skip all = just the system.</string>
+    <!-- ADFA-5116: currently UNUSED in the main flow — the setup "Skip for now" was removed (it let
+         the user reach the Library with no system). Kept for likely reuse; the translations still carry
+         it. Remove this note when it is wired to a screen again. -->
     <string name="k2go_skip_for_now">Skip for now ›</string>
     <string name="k2go_wiz_choose_language">Choose language</string>
     <string name="k2go_wiz_language_sub">Sets app + content language.</string>

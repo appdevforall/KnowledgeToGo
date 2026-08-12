@@ -105,12 +105,6 @@ public class WizardActivity extends AppCompatActivity {
                     .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone));
             finish();
         });
-        findViewById(R.id.wiz_skip_for_now).setOnClickListener(v -> {
-            markComplete();
-            startActivity(new Intent(this, LibraryActivity.class));
-            finish();
-        });
-
         primary.setOnClickListener(v -> onPrimary());
         back.setOnClickListener(v -> goBack());
         render();
