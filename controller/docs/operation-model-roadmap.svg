@@ -151,7 +151,7 @@
 <text class="sub" x="888" y="142">The surfaces that still guess. All five</text>
 <text class="sub" x="888" y="157">re-verified against the code, 11 Aug.</text>
 
-<circle class="s-todo" cx="888" cy="182" r="5.5"/><text class="item" x="902" y="186">ModuleActionSheet: Open vs Install</text>
+<circle class="s-done" cx="888" cy="182" r="5.5"/><text class="item" x="902" y="186">ModuleActionSheet: Open vs Install (5061)</text>
 <circle class="s-todo" cx="888" cy="204" r="5.5"/><text class="item" x="902" y="208">Home cards: app install vs content</text>
 <circle class="s-todo" cx="888" cy="226" r="5.5"/><text class="item" x="902" y="230">SetupProgressActivity key switch</text>
 <circle class="s-todo" cx="888" cy="248" r="5.5"/><text class="item" x="902" y="252">Maps: two mechanisms, one name</text>
@@ -230,6 +230,7 @@
 <circle class="s-todo" cx="48" cy="1062" r="5.5"/><text class="item" x="62" y="1066">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
 <circle class="s-todo" cx="48" cy="1084" r="5.5"/><text class="item" x="62" y="1088">Books reports no transfer rate; the maps card cannot show "adding content" because its progress belongs to the module queue.</text>
 <circle class="s-todo" cx="48" cy="1106" r="5.5"/><text class="item" x="62" y="1110">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+<circle class="s-todo" cx="48" cy="1128" r="5.5"/><text class="item" x="62" y="1132">PlatformEvidence is the memory half of "one shared answer" — it still owes observedAtMs and clear() on the destructive routes.</text>
 
 <text class="note" x="24" y="1156">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
 <text class="note" x="24" y="1172">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>

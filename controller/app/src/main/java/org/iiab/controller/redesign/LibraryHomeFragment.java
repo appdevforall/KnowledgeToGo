@@ -269,12 +269,12 @@ public class LibraryHomeFragment extends Fragment {
             applyState(c, AMBER);
             AppExecutors.get().io().execute(() -> {
                 final PlatformPresence.Evidence ev = probe(c.endpoint);
+                // Recorded off the main thread and before any view gate: what an endpoint said
+                // is a fact about the box, and throwing it away because the fragment went is
+                // exactly the case the store exists for.
+                PlatformEvidence.record(c.endpoint, ev);
                 main.post(() -> {
                     if (!isAdded()) return;
-                    // Same mapping as the poll's, and the evidence is recorded rather than
-                    // thrown away: a re-probe that answers has to leave the card as informed as
-                    // the poll would, or the next tap on the sheet reads a stale nothing.
-                    PlatformEvidence.record(c.endpoint, ev);
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
                     else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
                     else applyState(c, AMBER);
@@ -313,10 +313,14 @@ public class LibraryHomeFragment extends Fragment {
      */
     private void openSheet(Card c) {
         ModuleActionSheet.State s;
+        final PlatformPresence.Evidence ev = PlatformEvidence.last(c.endpoint);
         if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
-        else if (PlatformEvidence.last(c.endpoint) != null
-                && !PlatformPresence.resolve(PlatformEvidence.last(c.endpoint))) {
+        else if (!systemInstalled) {
+            // No system, so nothing is installed. Asked here rather than remembered: the store
+            // holds what a probe said, and no probe has been made.
+            s = ModuleActionSheet.State.NOT_INSTALLED;
+        } else if (ev != null && !PlatformPresence.resolve(ev)) {
             // Known absent, and still known absent with the box off — that is the state where
             // installing is exactly the right offer.
             s = ModuleActionSheet.State.NOT_INSTALLED;
@@ -365,8 +369,20 @@ public class LibraryHomeFragment extends Fragment {
      */
     private org.iiab.controller.system.data.PendingContent.Snapshot passContent;
 
+    /**
+     * ADFA-5061: whether a system is installed, read once per pass alongside {@link #passContent}
+     * and for the same reason.
+     *
+     * <p>It was read twice per pass off the disk — once here and once in the header — which
+     * {@code SystemFactsReader} asks callers not to do ("once per decision rather than once per
+     * row"), and it is now also read by {@code applyState} and {@code openSheet}, which would
+     * have made four. Seeded true so the paths that run before the first pass behave as they did.
+     */
+    private boolean systemInstalled = true;
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        systemInstalled = installed;
         boolean alive = ServerStateRepository.get().current().alive;
         passContent = org.iiab.controller.system.data.PendingContent.read(requireContext());
 
@@ -379,10 +395,13 @@ public class LibraryHomeFragment extends Fragment {
         // and the header points to Get more (set in updateHeaderFromCards).
         if (!installed) {
             for (final Card c : cards) {
-                // ADFA-5061: with no system at all, nothing is installed — and that is a fact,
-                // not a failed probe. This is the one path where ABSENT is set without asking
-                // anyone, and it is the path where offering an install is exactly right.
-                if (!unsupported(c)) PlatformEvidence.record(c.endpoint, PlatformPresence.Evidence.ABSENT);
+                // ADFA-5061: this used to record ABSENT for all five, and the write was right at
+                // the instant it happened and wrong forever after. "No system is installed" is a
+                // fact SystemStateEvaluator owns; copying it into the probe store made a second
+                // holder that nothing updated, so once the user installed the system the store
+                // still said ABSENT — through the whole boot, since no probe runs before the box
+                // answers — and every sheet offered to install a platform that was there. The
+                // fact is asked for where it is needed (applyState, openSheet) instead.
                 applyState(c, GRAY);
                 if (unsupported(c) && c.status != null) c.status.setText(getString(R.string.k2go_not_supported));
             }
@@ -449,18 +468,25 @@ public class LibraryHomeFragment extends Fragment {
             // is still coming up) show "Connecting", never "Not installed" — the latter only appears
             // once a probe actually reports the content is absent (404 -> GRAY).
             // ADFA-5061: the box being down does not unlearn what a probe already established.
-            // This cleared the evidence, and the cost showed on the device: a platform that had
-            // answered 404 — known absent — went back to "unknown" the moment the server stopped,
-            // so its card read "Stopped" alongside four that really had been running, and its
-            // sheet stopped offering the install it should still offer. Turning the box off does
-            // not install anything, and it does not uninstall anything either. Keep the last
-            // answer; only a fresh probe replaces it.
-            if (!alive) { applyState(c, AMBER); continue; }
+            // This line cleared the evidence and then painted everything amber, and both halves
+            // were wrong on the device. Clearing it made a platform that had answered 404 go
+            // back to "unknown" the moment the server stopped, so its sheet stopped offering the
+            // install it should still offer. Painting it amber said "Connecting" about a platform
+            // that is not there and is not going to be there when the box returns — a card
+            // claiming to connect two centimetres from a sheet correctly reading "Not installed".
+            // Turning the box off installs nothing and uninstalls nothing: the verdict stands,
+            // and only a fresh probe replaces it.
+            if (!alive) {
+                applyState(c, PlatformEvidence.last(c.endpoint) == PlatformPresence.Evidence.ABSENT
+                        ? GRAY : AMBER);
+                continue;
+            }
             AppExecutors.get().io().execute(() -> {
                 final PlatformPresence.Evidence ev = probe(c.endpoint);
+                // Before the view gate, deliberately — see the retry path above.
+                PlatformEvidence.record(c.endpoint, ev);
                 main.post(() -> {
                     if (!isAdded()) return;
-                    PlatformEvidence.record(c.endpoint, ev);
                     if (ev == PlatformPresence.Evidence.PRESENT) applyState(c, GREEN);
                     else if (ev == PlatformPresence.Evidence.ABSENT) applyState(c, GRAY);
                     else {
@@ -484,7 +510,7 @@ public class LibraryHomeFragment extends Fragment {
      */
     private void updateHeaderFromCards() {
         if (homeStatus == null || !isAdded()) return;
-        boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        boolean installed = systemInstalled;
         boolean alive = ServerStateRepository.get().current().alive;
         if (!installed) { setHeader(H_NO_LIBRARY); return; }
         // ADFA-5074: content being added outranks everything below. It is the only state
@@ -621,7 +647,10 @@ public class LibraryHomeFragment extends Fragment {
         // Except over a platform we know is absent. With no system installed the box does not
         // answer either, and "Stopped" would be the wrong half of the truth — there is nothing
         // to start, and "Not installed" is what the user needs to read. Knowing beats knowing why.
-        if (PlatformEvidence.last(c.endpoint) != PlatformPresence.Evidence.ABSENT
+        // And except when there is no system at all: the box cannot be "stopped" when there is
+        // nothing to run. That case used to be carried by a recorded ABSENT; it is asked for now.
+        if (systemInstalled
+                && PlatformEvidence.last(c.endpoint) != PlatformPresence.Evidence.ABSENT
                 && !org.iiab.controller.system.data.SystemFactsReader.serverAnswering()) {
             tint(c.dot, R.color.k2go_amber);
             c.status.setText(getString(R.string.k2go_card_stopped));

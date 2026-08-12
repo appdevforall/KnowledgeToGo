@@ -986,11 +986,46 @@ most expensive by the third platform. A is B done safely over time.
        migrate. `PlatformPresence` (already in `system/domain`) is the verdict half and does
        not change.
 
+       **Half of it already exists — grow it, do not add a seventh.** `system/data/PlatformEvidence`
+       holds `{endpoint → evidence}` for the life of the process, added because the Home card's
+       own field died with the fragment. It is the memory half of the shape above with no
+       timestamps and no policy. Two things it still owes, both belonging to whoever picks this
+       up: `observedAtMs` alongside each answer, and a `clear()` on the destructive routes — the
+       same five ADFA-5070 already hooks for content sessions — since restore, clone, tier change
+       and reinstall swap the rootfs inside a living process and the evidence about the old one
+       survives it. That last one overlaps ADFA-4758's territory, so it is coordination, not just
+       code.
+
+       **And the rule the store must not break.** It holds what a *probe* said, nothing else. A
+       first version also wrote ABSENT for all five platforms when no system was installed, which
+       was true at that instant and wrong forever after: `SystemStateEvaluator` owns that fact, the
+       copy went stale the moment the user installed, and for the whole boot afterwards — no probe
+       runs before the box answers — every sheet offered to install a platform that was there.
+       Facts with a live owner are asked for; the store is only for the ones nobody else keeps.
+
        **The rule to carry, because it is not only about probes:** a check that answers with a
        boolean invites its caller to treat silence as a verdict. Three screens made that
        mistake independently, and in each one the fact needed to do better was already in
        hand. When 5062 migrates a surface, the derivation to retire is not just "guessing
        instead of asking the model" — it is this specific shape.
+11. [ ] **Small things the second review pass left standing.** None of them is worth a ticket on
+       its own; they belong to whichever ticket next opens these files.
+
+       - `EnvironmentProcess.killOrphan` is public, unused, and kills a process. The javadoc says
+         why it must not be wired yet, but a name that reads like the obvious fix is the kind of
+         thing that gets called without reading three paragraphs. Package-private and
+         `@VisibleForTesting` until item 9 needs it.
+       - `ServerController.startEnvironment` carries a thirteen-line comment explaining a call
+         that is no longer there. That file is a documented conflict hotspot and the reasoning
+         already lives here and on the roadmap card; three lines pointing at them would do.
+       - `ModuleActionSheet.stateLabel(STOPPED)` borrows `k2go_card_stopped`, a card string. One
+         word for one state is arguably right, but it ties two surfaces to one resource.
+       - The Home status action button hardcodes `@color/k2go_teal` for text and stroke where
+         `?attr/colorPrimary` would follow the theme.
+       - ADFA-5062's "ModuleActionSheet: Open vs Install" was delivered here: the sheet asks
+         `Operation.appInstall(key)` instead of typing the class by hand. The roadmap dot is
+         updated; 5062 should open without it.
+
 8. [x] Diagram: `operation-model-roadmap.svg` — ticket map, dependencies and per-item progress. A
        surfaces to operations to class map of the *current* code is still to draw.
 
