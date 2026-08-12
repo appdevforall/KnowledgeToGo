@@ -18,13 +18,13 @@ public class SpaceEstimateTest {
 
     @Test
     public void appliesTheFactor() {
-        assertEquals(2300L, SpaceEstimate.fromCompressed(1000L));
+        assertEquals(2200L, SpaceEstimate.fromCompressed(1000L));
     }
 
     @Test
     public void isExactOnAwkwardRemainders() {
-        // 2_834_585_013 * 23 / 10 = 6_519_545_529 (floor)
-        assertEquals(6_519_545_529L, SpaceEstimate.fromCompressed(2_834_585_013L));
+        // 2_834_585_013 * 22 / 10 = 6_236_087_028 (floor)
+        assertEquals(6_236_087_028L, SpaceEstimate.fromCompressed(2_834_585_013L));
     }
 
     @Test

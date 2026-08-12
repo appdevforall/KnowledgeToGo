@@ -4,12 +4,16 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-5105. Estimate the extracted (uncompressed) footprint of a
- *               compressed archive when a measured value isn't available yet —
- *               the interim "needed" for the destructive free-space guard until
- *               ADFA-5110 publishes the real rootfs size. One factor, decided
- *               once, deliberately generous so the guard errs toward refusing
- *               (a wipe that runs out of disk leaves an unbootable rootfs). Pure
- *               JVM, unit-testable. Overflow-safe.
+ *               compressed archive when no measured value exists. The rootfs now
+ *               carries a measured size (ADFA-5110), so this only backs RESTORE:
+ *               user backups are created on-device and don't record their
+ *               original size, so all we have is the archive's compressed size
+ *               (File.length() when the file is picked) times a factor. 2.2x sits
+ *               above the ~1.63–1.80x a rootfs-shaped archive expands (the max
+ *               measured across tiers), so the guard errs toward refusing; the
+ *               StorageGuard margin adds more slack on top. A heuristic — a
+ *               principled replacement (read the archive's real size) is a
+ *               follow-up. Pure JVM, unit-testable, overflow-safe.
  * ============================================================================
  */
 package org.iiab.controller.storage;
@@ -18,9 +22,8 @@ public final class SpaceEstimate {
 
     private SpaceEstimate() {}
 
-    // ~2.3x: a debian+iiab rootfs .tar.gz expands roughly 2–2.5x. Kept as a fraction (not a double)
-    // so the math is exact and overflow-safe. Superseded by the measured size once ADFA-5110 lands.
-    public static final int UNCOMPRESSED_NUMERATOR = 23;
+    // 2.2x. Kept as a fraction (not a double) so the math is exact and overflow-safe.
+    public static final int UNCOMPRESSED_NUMERATOR = 22;
     public static final int UNCOMPRESSED_DENOMINATOR = 10;
 
     /** Conservative uncompressed-size estimate from a compressed size, in bytes. */

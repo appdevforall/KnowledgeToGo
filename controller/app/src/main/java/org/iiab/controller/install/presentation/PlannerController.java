@@ -294,6 +294,16 @@ public final class PlannerController {
         }
     }
 
+    /** ADFA-5105: the wizard tier -> the rootfs slice's tier enum (same names, null -> BASIC). */
+    private static org.iiab.controller.rootfs.domain.RootfsTier mapRootfsTier(org.iiab.controller.InstallationPlanner.Tier t) {
+        if (t == null) return org.iiab.controller.rootfs.domain.RootfsTier.BASIC;
+        switch (t) {
+            case FULL: return org.iiab.controller.rootfs.domain.RootfsTier.FULL;
+            case STANDARD: return org.iiab.controller.rootfs.domain.RootfsTier.STANDARD;
+            default: return org.iiab.controller.rootfs.domain.RootfsTier.BASIC;
+        }
+    }
+
     private void onRootfsSizeResolved(RootfsUiState rootfsState) {
         if (!fragment.isAdded() || rootfsState == null) return;
         if (rootfsState.status == RootfsUiState.Status.LOADING) return;
@@ -322,21 +332,33 @@ public final class PlannerController {
                 double totalSpaceGb = path.getTotalSpace() / (1024.0 * 1024.0 * 1024.0);
                 double usedSpaceGb = totalSpaceGb - freeSpaceGb;
 
-                double pOs = (host.getSelectedTier() == null) ? 0.0 : projection.osSize;
-                double pMaps = (host.getSelectedTier() == null) ? 0.0 : projection.mapsSize;
+                final double GB = 1024.0 * 1024.0 * 1024.0;
+                boolean hasTier = host.getSelectedTier() != null;
                 // --- DETECT ARCHITECTURE ---
                 String arch = host.getTermuxArch();
                 boolean is64Bit = arch != null && arch.contains("64");
 
+                // ADFA-5105: size the OS by its UNCOMPRESSED footprint (what actually lands), the
+                // same figure the destructive gate uses — not the compressed download — so the
+                // legend and the "fits" decision agree with the hard preflight in InstallService.
+                org.iiab.controller.rootfs.data.RootfsCatalog rc =
+                        new org.iiab.controller.rootfs.data.RootfsCatalog(fragment.requireContext());
+                org.iiab.controller.rootfs.domain.RootfsAbi rAbi = rc.detectAbi();
+                org.iiab.controller.rootfs.domain.RootfsTier rTier = mapRootfsTier(host.getSelectedTier());
+
+                double pOs = hasTier ? rc.installedBytes(rTier, rAbi) / GB : 0.0;
+                double pMaps = hasTier ? projection.mapsSize : 0.0;
+
                 // --- FORCE KIWIX TO ZERO IN 32-BITS (change if kiwix gets support for 32bits somehow) ---
-                double pKiwix = (host.getSelectedTier() == null || !is64Bit) ? 0.0 : projection.kiwixSize;
+                double pKiwix = (!hasTier || !is64Bit) ? 0.0 : projection.kiwixSize;
                 double pTotal = pOs + pMaps + pKiwix;
 
-                // ADFA-5105: same margin as the destructive guard (StorageGuard), measured on the
-                // real write target (StorageProbe), instead of a second -5 GB copy. This is the
-                // advisory UI gate, so UNKNOWN free space stays "safe" (allow) — the hard preflight
-                // in InstallService refuses for real before any wipe.
-                long neededBytes = (long) Math.ceil(pTotal * 1024.0 * 1024.0 * 1024.0);
+                // Gate on the same PEAK the install needs — the compressed download and the
+                // uncompressed tree coexist during extraction (RootfsCatalog.peakInstallBytes) — plus
+                // the content, on the real write target. UNKNOWN free space stays "safe" (advisory);
+                // the hard preflight in InstallService refuses for real before any wipe.
+                long neededBytes = (hasTier ? rc.peakInstallBytes(rTier, rAbi) : 0L)
+                        + (long) Math.ceil((pMaps + pKiwix) * GB);
                 Long freeBytes = org.iiab.controller.storage.StorageProbe.freeBytes(fragment.requireContext());
                 host.setStorageSafe(org.iiab.controller.storage.StorageGuard.evaluate(freeBytes, neededBytes)
                         != org.iiab.controller.storage.StorageGuard.Verdict.DOES_NOT_FIT);

@@ -127,6 +127,17 @@ public class RootfsCatalog {
         return installedFallbackBytes(tier, abi);
     }
 
+    /**
+     * Peak disk a fresh rootfs install needs (ADFA-5105): the compressed download and the
+     * uncompressed tree COEXIST during extraction (the .tar.gz is only deleted after it finishes),
+     * and the free-space gate runs before the download — so both get written after it. The peak the
+     * device must hold is compressed + uncompressed, not just the final footprint.
+     */
+    public long peakInstallBytes(RootfsTier tier, RootfsAbi abi) {
+        long peak = installedBytes(tier, abi) + fallbackBytes(tier, abi);
+        return peak < 0 ? Long.MAX_VALUE : peak;   // saturate on the (impossible) overflow
+    }
+
     /** Last-known measured uncompressed size (emergency net) for a tier+abi. Never {@code <= 0}. */
     private long installedFallbackBytes(RootfsTier tier, RootfsAbi abi) {
         if (abi == RootfsAbi.ARMEABI_V7A) {

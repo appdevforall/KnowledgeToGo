@@ -406,6 +406,10 @@ public final class InstallService extends Service {
 
                     @Override
                     public void onError(String error) {
+                        // ADFA-5105: don't leave the compressed .tar.gz behind on a failed extract —
+                        // on success it's deleted below, but a failure used to keep it, silently
+                        // holding ~2–3 GB until the next attempt.
+                        downloadedArchive.delete();
                         org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logInstallFailed("extract", "extract_error");
                         fail(getString(R.string.install_error_extraction, error));
                     }
@@ -920,10 +924,12 @@ public final class InstallService extends Service {
     }
 
     /**
-     * ADFA-5105: destructive-run free-space preflight. The rootfs extract's "needed" is the
-     * UNCOMPRESSED size for this tier+abi (measured via ADFA-5110's sidecar when published,
-     * otherwise a conservative estimate). Returns true to proceed; on a refusal it reports the
-     * shortfall through fail() and returns false so the caller stops before wiping.
+     * ADFA-5105: destructive-run free-space preflight. This gate runs BEFORE the download, and the
+     * pipeline then writes the compressed .tar.gz and the uncompressed tree, which coexist during
+     * extraction — so the "needed" is the PEAK (compressed + uncompressed) for this tier+abi, from
+     * RootfsCatalog (measured via ADFA-5110 when published, estimate otherwise). Returns true to
+     * proceed; on a refusal it reports the shortfall through fail() and returns false so the caller
+     * stops before wiping.
      */
     private boolean ensureSpaceForRootfs() {
         if (cancelled) return false;
@@ -932,7 +938,7 @@ public final class InstallService extends Service {
         org.iiab.controller.rootfs.domain.RootfsTier rTier =
                 (tier == null) ? org.iiab.controller.rootfs.domain.RootfsTier.BASIC
                                : org.iiab.controller.rootfs.domain.RootfsTier.valueOf(tier.name());
-        long needed = cat.installedBytes(rTier, cat.detectAbi());
+        long needed = cat.peakInstallBytes(rTier, cat.detectAbi());
         org.iiab.controller.storage.FreeSpacePreflight.Result pf =
                 org.iiab.controller.storage.FreeSpacePreflight.check(this, needed);
         if (pf.ok) return true;
