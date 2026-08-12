@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1448" width="1280" height="1448" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1650" width="1280" height="1650" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
 <desc>Which ticket owns what, what blocks what, and how far each has got. Update the class on each item dot as work lands: s-done, s-doing or s-todo. The canvas is deliberately not page-sized — grow it rather than dropping items.</desc>
 
@@ -101,7 +101,7 @@
 <!-- ============================================================ -->
 <text class="h3" x="444" y="80">THE SPINE — everything else reads it</text>
 
-<rect class="card-hi" x="444" y="90" width="392" height="446"/>
+<rect class="card-hi" x="444" y="90" width="392" height="332"/>
 <circle class="badge" cx="468" cy="115" r="13"/><text class="badgetx" x="464" y="120">1</text>
 <text class="h2" x="490" y="120">ADFA-5061 · Operation model</text>
 <text class="sub" x="468" y="142">One declared source of truth for</text>
@@ -113,19 +113,22 @@
 <circle class="s-done"  cx="468" cy="240" r="5.5"/><text class="item" x="482" y="244">Both classes dispatch through the model</text>
 <circle class="s-done"  cx="468" cy="259" r="5.5"/><text class="item" x="482" y="263">Retire the four *Wizard booleans</text>
 <circle class="s-done"  cx="468" cy="278" r="5.5"/><text class="item" x="482" y="282">Wizard selection survives being killed</text>
-<circle class="s-doing" cx="468" cy="297" r="5.5"/><text class="item" x="482" y="301">UX contract tokens</text>
-<text class="note" x="482" y="318">5074 landed the animation and the progress surface;</text>
-<text class="note" x="482" y="333">colour tokens and the finished-card rate are left.</text>
-<circle class="s-doing" cx="468" cy="354" r="5.5"/><text class="item" x="482" y="358">Apply to Kolibri (install vs seeding)</text>
-<text class="note" x="482" y="375">Seeding is the showcase. The app install never reaches</text>
-<text class="note" x="482" y="390">the model — Operation.appInstall has one caller, and it</text>
-<text class="note" x="482" y="405">only picks an animation.</text>
-<circle class="s-todo"  cx="468" cy="426" r="5.5"/><text class="item" x="482" y="430">One shared answer to "is the platform there"</text>
-<text class="note" x="482" y="447">Six probes, five answers, three staleness policies.</text>
-<circle class="s-todo"  cx="468" cy="468" r="5.5"/><text class="item" x="482" y="472">Dashboard Rebuild: the REST/proot fork</text>
-<text class="note" x="482" y="489">Untouched since before this ADR existed. An unreadable</text>
-<text class="note" x="482" y="504">version silently takes the route that stops the box, and</text>
-<text class="note" x="482" y="519">the LIVE route is presented as if it were STOPPED.</text>
+<circle class="s-done"  cx="468" cy="297" r="5.5"/><text class="item" x="482" y="301">UX contract tokens</text>
+<text class="note" x="482" y="318">Colour is severity, not class — decision 3 amended, not</text>
+<text class="note" x="482" y="333">implemented. The finished-card rate split to its own card.</text>
+<circle class="s-done"  cx="468" cy="354" r="5.5"/><text class="item" x="482" y="358">Apply to Kolibri (install vs seeding)</text>
+<text class="note" x="482" y="375">Both halves reach it: seeding through the dispatcher and</text>
+<text class="note" x="482" y="390">ContentDoor, the install through SystemDoor. The blocker</text>
+<text class="note" x="482" y="405">noted here was removed by that same change.</text>
+
+<path class="lnk" d="M640,422 L640,448" marker-end="url(#arw)"/>
+<text class="lnklbl" x="650" y="442">follow up</text>
+
+<rect class="card" x="444" y="450" width="392" height="98" stroke="#5F5E5A" stroke-dasharray="4 3"/>
+<text class="h3" x="460" y="472">FOLLOW-UP — out of 5061 so it can close, not dropped</text>
+<circle class="s-todo" cx="468" cy="491" r="5.5"/><text class="item" x="482" y="495">One shared answer to "is the platform there"</text>
+<text class="note" x="482" y="511">Its visible face is the module-management card below.</text>
+<circle class="s-todo" cx="468" cy="529" r="5.5"/><text class="item" x="482" y="533">Dashboard Rebuild: the REST/proot fork</text>
 
 <!-- NEW — catalogue depth (split out of 4954) -->
 <rect class="card" x="444" y="556" width="392" height="164"/>
@@ -133,7 +136,7 @@
 <text class="chiptx" x="468" y="586" fill="#1B5E8F">SPLIT OUT</text>
 <text class="h2" x="460" y="615">ADFA-5094 · Kolibri topic display</text>
 <text class="sub" x="460" y="633">Should not depend on reaching Studio</text>
-<text class="sub" x="460" y="648">over the internet. Low priority, real gap.</text>
+<text class="sub" x="460" y="648">over the internet. Needs the box first.</text>
 
 <circle class="s-todo" cx="468" cy="668" r="5.5"/><text class="item" x="482" y="672">Task map learns the metadata-only import</text>
 <circle class="s-todo" cx="468" cy="687" r="5.5"/><text class="item" x="482" y="691">The box serves the tree it imported</text>
@@ -194,8 +197,6 @@
 <path class="lnk-hi" d="M836,170 L860,170" marker-end="url(#arwhi)"/>
 <text class="lnklbl" x="838" y="162">blocks</text>
 
-<path class="lnk" d="M640,536 L640,552" marker-end="url(#arw)"/>
-<text class="lnklbl" x="650" y="548">needs the box first</text>
 
 <path class="lnk" d="M416,600 C430,600 430,300 440,290" marker-end="url(#arw)"/>
 <text class="lnklbl" x="240" y="600">a SYSTEM op invalidates content state</text>
@@ -236,20 +237,36 @@
 <text class="code" x="40" y="1118">so the hub inherits what Home established and keeps it when the box goes down. PlatformEvidence still owes observedAtMs and a clear() on the</text>
 <text class="code" x="40" y="1136">destructive routes; both belong to this pass. Open question for the ticket: what the hub shows when nothing is known.</text>
 
+
 <!-- ============================================================ -->
-<rect class="card" x="24" y="1178" width="1232" height="164"/>
-<rect class="chip" x="40" y="1194" width="150" height="19" fill="#F0F1F3" stroke="none"/>
-<text class="chiptx" x="48" y="1208" fill="#5B636B">CARRIED, NOT BLOCKING</text>
-<text class="h3" x="204" y="1208">Found in the last two days; recorded so they are met on purpose</text>
+<!-- third standalone: its own ticket, one pass                    -->
+<!-- ============================================================ -->
+<rect class="card" x="24" y="1178" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1194" width="132" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="1208" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="188" y="1209">A finished run leaves no evidence it happened</text>
 
-<circle class="s-todo" cx="48" cy="1232" r="5.5"/><text class="item" x="62" y="1236">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<circle class="s-todo" cx="48" cy="1254" r="5.5"/><text class="item" x="62" y="1258">No run-level disk budget. Ten places read free space by hand, so there is nowhere to put one.</text>
-<circle class="s-todo" cx="48" cy="1276" r="5.5"/><text class="item" x="62" y="1280">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
-<circle class="s-todo" cx="48" cy="1298" r="5.5"/><text class="item" x="62" y="1302">Books reports no transfer rate; the maps card cannot show "adding content" because its progress belongs to the module queue.</text>
-<circle class="s-todo" cx="48" cy="1320" r="5.5"/><text class="item" x="62" y="1324">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+<text class="item" x="40" y="1236">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare "3 Done". The rate is dropped at completion</text>
+<text class="item" x="40" y="1254">by design — rateSuffix is called only from the not-complete branch — and "838 MB · 32 MB/s · 4 min" is the only thing that tells a real</text>
+<text class="item" x="40" y="1272">download from a no-op. Split out of the UX-contract item because it is not a token: it is instrumentation, in three services with three</text>
+<text class="item" x="40" y="1290">different starting points, and pretending otherwise kept it amber on a card it did not belong to.</text>
+<text class="code" x="40" y="1314">Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed on its service. The only</text>
+<text class="code" x="40" y="1332">start timestamp in main/ is KolibriSeedRepository.startedAtMs, private and unreachable from the row renderer. Also here: the maps card</text>
+<text class="code" x="40" y="1350">cannot show "adding content", because its progress belongs to the module queue rather than to a content stream.</text>
 
-<text class="note" x="24" y="1370">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
-<text class="note" x="24" y="1386">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
-<text class="note" x="24" y="1408">4758 can run whenever and reads better after 5061; do not close it as superseded, it is the one that can lose a user's content.</text>
-<text class="note" x="24" y="1424">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
+<!-- ============================================================ -->
+<rect class="card" x="24" y="1392" width="1232" height="142"/>
+<rect class="chip" x="40" y="1408" width="150" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="48" y="1422" fill="#5B636B">CARRIED, NOT BLOCKING</text>
+<text class="h3" x="204" y="1422">Found in the last two days; recorded so they are met on purpose</text>
+
+<circle class="s-todo" cx="48" cy="1446" r="5.5"/><text class="item" x="62" y="1450">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
+<circle class="s-todo" cx="48" cy="1468" r="5.5"/><text class="item" x="62" y="1472">No run-level disk budget. Ten places read free space by hand, so there is nowhere to put one.</text>
+<circle class="s-todo" cx="48" cy="1490" r="5.5"/><text class="item" x="62" y="1494">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
+<circle class="s-todo" cx="48" cy="1512" r="5.5"/><text class="item" x="62" y="1516">Sessions do not survive process death (ADFA-4874), so a download measured in hours has no durable record.</text>
+
+<text class="note" x="24" y="1562">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
+<text class="note" x="24" y="1578">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
+<text class="note" x="24" y="1600">4758 can run whenever and reads better after 5061; do not close it as superseded, it is the one that can lose a user's content.</text>
+<text class="note" x="24" y="1616">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
 </svg>

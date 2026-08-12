@@ -68,12 +68,33 @@ public final class ModuleActionSheet {
      * one of them. Worse, it collapsed two orthogonal axes into one enum and then mapped LIVE
      * and STOPPED to the same colour to undo the collapse. Severity is a property of the row;
      * the class is a property of the operation. They are asked separately now.
+     *
+     * <p>{@link #CAUTION} was added afterwards, and it is not that collapse coming back. Install
+     * was teal, the same accent as Open, and that reads as "go ahead, this is a tap" for
+     * something that can hold the box for an hour and a half on a poor link. That is a warning
+     * about cost, which is severity — the axis colour is for. The class is still said in words,
+     * by {@link #noticeFor}, and the two channels answer different questions: the colour says be
+     * careful, the sentence says why.
+     *
+     * <p>It happens that every STOPPED operation we ship today is also a costly one, so the two
+     * axes agree on every row currently drawn. They are kept apart anyway, because the day a
+     * cheap STOPPED operation exists, {@code CAUTION} must not follow it — but note that nothing
+     * enforces that yet. {@code CAUTION} is chosen per row by hand, and until "this is expensive"
+     * is a property of the {@link Operation} rather than of the row, the separation lives in this
+     * paragraph and nowhere else. Do not derive it from {@code isLive()} to save the typing; that
+     * is the collapse, and it would be the third time.
      */
-    private enum Emphasis { ACCENT, PLAIN, DESTRUCTIVE }
+    private enum Emphasis { ACCENT, PLAIN, CAUTION, DESTRUCTIVE }
 
     private static int colorOf(Emphasis e) {
         switch (e) {
             case ACCENT:      return R.color.k2go_teal;
+            // Measured 3.30:1 against k2go_surface in light (teal is 6.47, dark amber is 6.68),
+            // which is under AA for body text on paper. Read on device and judged legible, so it
+            // stands; recorded because this token pins 24 sites at the same ratio and this is the
+            // first one where it carries a warning rather than a status. Revisit with real
+            // reports, or whenever colour tokens get a pass of their own.
+            case CAUTION:     return R.color.k2go_amber_text;
             case DESTRUCTIVE: return R.color.k2go_clay;
             default:          return R.color.k2go_ink;
         }
@@ -181,7 +202,7 @@ public final class ModuleActionSheet {
                 String installLabel = act.getString(
                         n > 1 ? R.string.k2go_sheet_install_sel : R.string.k2go_sheet_install);
                 content.addView(row(ctx, R.drawable.ic_download_24, installLabel,
-                        Emphasis.ACCENT, Operation.appInstall(key), false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
+                        Emphasis.CAUTION, Operation.appInstall(key), false, v -> { dlg.dismiss(); if (sel) openMapsSetup(act); else openHub(act); }));
                 content.addView(row(ctx, R.drawable.ic_close_24, act.getString(R.string.k2go_sheet_cancel),
                         Emphasis.DESTRUCTIVE, null, false, v -> {
                             if (sel) MapsWishlist.clear(ctx);
@@ -197,8 +218,8 @@ public final class ModuleActionSheet {
                 // platform is installed, so neither Install nor Schedule is offered.
                 //
                 // A middle version offered Schedule here, on the grounds that it only writes a
-                // preference and leaving the state with nothing to do was harsh. Luis took that
-                // apart: Schedule is Install deferred. Withholding one and offering the other
+                // preference and leaving the state with nothing to do was harsh. That came apart
+                // on one point: Schedule is Install deferred. Withholding one and offering the other
                 // grades the same wrong guess by when it hurts, not by whether it is wrong, and a
                 // scheduled install for a platform that turns out to be installed still runs.
                 //
@@ -214,10 +235,10 @@ public final class ModuleActionSheet {
                 if (sel) {
                     // maps: installing needs the content selector; route there (schedule lives in the wizard).
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                            Emphasis.ACCENT, Operation.appInstall(key), false, v -> { dlg.dismiss(); openMapsSetup(act); }));
+                            Emphasis.CAUTION, Operation.appInstall(key), false, v -> { dlg.dismiss(); openMapsSetup(act); }));
                 } else {
                     content.addView(row(ctx, R.drawable.ic_download_24, act.getString(R.string.k2go_sheet_install),
-                            Emphasis.ACCENT, Operation.appInstall(key), false, v -> {
+                            Emphasis.CAUTION, Operation.appInstall(key), false, v -> {
                                 if (key != null) ModuleWishlist.add(ctx, key);
                                 dlg.dismiss();
                                 openHub(act);
