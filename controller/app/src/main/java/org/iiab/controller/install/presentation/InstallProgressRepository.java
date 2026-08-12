@@ -26,6 +26,14 @@ public final class InstallProgressRepository {
 
     private final MutableLiveData<InstallState> state = new MutableLiveData<>(InstallState.idle());
     private long seq = 0L;
+
+    /**
+     * ADFA-5119: the last state this repository published, kept here rather than read back from the
+     * LiveData. {@code postValue} hands the value to the main thread, so between two posts from a
+     * worker thread {@code getValue()} still returns the older one — comparing against it would
+     * mistake a burst of real progress for repetition and leave the stamp behind.
+     */
+    private InstallState lastPosted = InstallState.idle();
     // Which operation the upcoming posts belong to (ADFA-4476). Install and reset are
     // mutually exclusive (both gated by isRunning()), so one field is enough: the
     // service stamps it via beginInstall()/beginReset() before posting.
@@ -69,7 +77,23 @@ public final class InstallProgressRepository {
     public void postFailed(String message)                  { post(InstallState.failed(message)); }
     public void postIdle()                                  { post(InstallState.idle()); }
 
+    /**
+     * ADFA-5119: stamps every published state with the moment the run last MOVED.
+     *
+     * <p>A post that describes the same position as the previous one inherits its stamp, so the
+     * figure ages while nothing happens; anything else starts the clock again. That is what lets a
+     * watchdog tell a stalled install from a slow one, which no other field here can: {@code seq}
+     * rises on every post, and a stalled download goes on posting.
+     *
+     * <p>{@code elapsedRealtime} rather than wall clock — it cannot be moved by the user or by an
+     * NTP correction, and it keeps counting while the device sleeps, which a long download does.
+     */
     private synchronized void post(InstallState s) {
-        state.postValue(s.withOp(currentOp).withSeq(++seq));
+        InstallState stamped = s.withOp(currentOp).withSeq(++seq);
+        long movedAt = stamped.samePosition(lastPosted) && lastPosted.progressAtMs != 0L
+                ? lastPosted.progressAtMs
+                : android.os.SystemClock.elapsedRealtime();
+        lastPosted = stamped.withProgressAt(movedAt);
+        state.postValue(lastPosted);
     }
 }

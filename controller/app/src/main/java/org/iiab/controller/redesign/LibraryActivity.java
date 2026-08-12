@@ -36,11 +36,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private static final long GATE_SAFETY_MS = 25000L;
     /** Nothing installed → nothing to boot: dismiss the gate promptly instead of waiting. */
     private static final long NO_SYSTEM_GATE_MS = 900L;
+    /** ADFA-5119: how often the stall watchdog looks. Cheap — it reads one in-memory field. */
+    private static final long STALL_CHECK_MS = 60000L;
     /** Set by the Setup "Download" so the gate waits for the install to finish, not a timeout. */
     public static final String EXTRA_INSTALLING = "installing";
     /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
     public static final String EXTRA_TAB = "tab";
     private boolean installing = false;
+
+    /** ADFA-5119: the stall watchdog's handler and its self-reposting check, so onDestroy can stop
+     *  it. Armed once per run; see {@link #armStallWatch()}. */
+    private Handler stallHandler;
+    private Runnable stallCheck;
 
     /** ADFA-4799: bottom bar (compact) and rail (medium/expanded) share the NavigationBarView
      *  API and the same menu; we just toggle which one is visible by window width. */
@@ -228,6 +235,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 installing = true;
                 recovering = false;   // ADFA-4919: a real install is live — not a killed one
                 showInstallProgress(st);
+                armStallWatch();      // ADFA-5119: an install that went live after onCreate
             } else if (st.isTerminal()) {
                 hideInstallProgress();
                 installing = false; // install finished; let the server-alive observer lift the gate
@@ -278,6 +286,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // A download is in progress: keep the gate and show live progress; dismissal
             // comes from the install reaching SUCCESS/FAILED, not a timeout.
             showInstallProgress(InstallProgressRepository.get().current());
+            armStallWatch();   // ADFA-5119: ...unless it stops reaching anything at all
         } else if (recovering) {
             // ADFA-4919 (2c-ii): keep the gate up while we check a possibly-damaged install. Try to
             // bring the server up (a healthy base just needs starting); after GATE_SAFETY_MS the
@@ -307,9 +316,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // Deliberate trade-off: while an install is live there is intentionally NO safety-timeout
             // dismissal here; the gate is lifted only when the install reaches a terminal state (the
             // InstallProgressRepository observer: SUCCESS starts the server then opens, FAILED opens
-            // to the offline library) — the same contract as the first-run `if (installing)` branch,
-            // which also has no safety net. A genuinely hung install (no terminal) is a separate
-            // concern owned by the installer, not something to paper over by opening a broken system.
+            // to the offline library) — the same contract as the first-run `if (installing)` branch.
+            // ADFA-5119: that contract is unchanged, and it is now finite. It used to have no other
+            // side, so a run that never reached a terminal state held the gate for good; armStallWatch
+            // covers that case without a timeout — it acts on the install going silent, not on the
+            // clock, so a slow install is still never interrupted and a dead one no longer waits.
             main.postDelayed(() -> {
                 if (!gateDismissed && !installing) {
                     onServerReady();
@@ -512,7 +523,92 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // Activity (the Handler would otherwise keep a reference to this screen via the TextViews).
         if (bootEllipsis != null) bootEllipsis.stop();
         if (readingEllipsis != null) readingEllipsis.stop();
+        // ADFA-5119: same reason — the watchdog reposts itself, so it would otherwise keep this
+        // screen reachable through the Handler for as long as an install runs.
+        if (stallHandler != null && stallCheck != null) stallHandler.removeCallbacks(stallCheck);
         super.onDestroy();
+    }
+
+    /**
+     * ADFA-5119: while the gate is held for an install, watch for the install going silent.
+     *
+     * <p>The gate deliberately has no safety timeout during an install — a 2–3 GB download must
+     * not lose to a clock — and the cost of that, until now, was that a run which stopped
+     * reporting held the gate with nothing behind it. Because {@code InstallService} is a
+     * foreground service, its own process stays alive and the repository goes on answering
+     * "running", so this was the one dead end in the app that outlived closing it.
+     *
+     * <p>This does not shorten the contract. It only notices that the contract's other side has
+     * gone quiet for longer than the work could plausibly need ({@code InstallStaleness}), and then
+     * takes the route that already exists for a run that never finished, rather than lifting the
+     * gate onto a system that may not work.
+     *
+     * <p>Idempotent: several places can discover the same install.
+     */
+    private void armStallWatch() {
+        // Nothing to guard once the gate is gone; without this the observer would re-arm on every
+        // emission for the rest of the install, each one waking only to cancel itself.
+        if (stallCheck != null || gateDismissed) return;
+        stallHandler = new Handler(Looper.getMainLooper());
+        stallCheck = () -> {
+            if (isFinishing() || isDestroyed()) return;
+            // The gate is gone, or the install ended: nothing left to guard.
+            if (gateDismissed || !installing) { stallCheck = null; return; }
+            InstallState st = InstallProgressRepository.get().current();
+            long since = st.progressAtMs == 0L
+                    ? -1L   // never stamped: no reading yet, so no verdict
+                    : android.os.SystemClock.elapsedRealtime() - st.progressAtMs;
+            if (org.iiab.controller.install.domain.InstallStaleness.hasStalled(st.work(), since)) {
+                stallCheck = null;
+                onInstallStalled(st, since);
+                return;
+            }
+            if (stallHandler != null && stallCheck != null) {
+                stallHandler.postDelayed(stallCheck, STALL_CHECK_MS);
+            }
+        };
+        stallHandler.postDelayed(stallCheck, STALL_CHECK_MS);
+    }
+
+    /**
+     * ADFA-5119: an install has not moved for longer than its work could need. Stop believing it
+     * and run the same verdict a killed install gets.
+     *
+     * <p>Handing this to {@code evaluateRecovery} is the point: the honest outcomes were already
+     * built for ADFA-4919 and ADFA-5023, and both are right here. If the server is reachable the
+     * system is usable despite the stuck pipeline, so the marker is cleared and the user gets their
+     * library; if it is not, they get the damaged dialog, which opens Backup & restore rather than
+     * closing the app.
+     *
+     * <p>{@code installing} is cleared first because the rest of this screen keys off it — the
+     * terminal observer, the safety dismissal and Back's "send me to the background instead". The
+     * verdict itself does not read it: {@code evaluateRecovery} takes the two-argument form of the
+     * detector, which is documented as correct only where the caller has already established that
+     * nobody owns the marker. That establishment is what this method is. The detector can see that
+     * somebody holds the marker but never whether that somebody is still alive, so deciding it has
+     * gone is the caller's job — and this is the caller doing it deliberately, not by omission.
+     *
+     * <p>Not stopped here: the service itself. It keeps its notification and may still finish or
+     * fail, and killing a proot pipeline from the launch screen is a destructive act that wants its
+     * own decision — see the ticket.
+     */
+    private void onInstallStalled(InstallState st, long silentMs) {
+        android.util.Log.w(TAG, "install has not moved in " + (silentMs / 1000) + "s"
+                + " (phase=" + st.phase + " op=" + st.op + "); treating it as interrupted");
+        installing = false;
+        hideInstallProgress();
+
+        // ADFA-5011 ops rebuild the REST core of a system that already exists and already worked.
+        // A stalled one is not a damaged install, and offering to reinstall over it would be both
+        // wrong and frightening. Lift the gate instead: with the services down the user lands on
+        // "Couldn't start" with a Retry, which is an exit that names itself.
+        if (st.op == InstallState.Op.REBUILD) {
+            onServerReady();
+            return;
+        }
+
+        recovering = true;
+        evaluateRecovery();
     }
 
     /** ADFA-4919 (2c-ii): after the recovery timeout, decide whether a killed proot install left the
