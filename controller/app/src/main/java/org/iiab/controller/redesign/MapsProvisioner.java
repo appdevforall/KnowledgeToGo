@@ -20,6 +20,8 @@ import android.util.Log;
 
 import org.iiab.controller.install.presentation.InstallService;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
+import org.iiab.controller.system.data.SystemDoor;
+import org.iiab.controller.system.domain.OperationDispatcher;
 
 public final class MapsProvisioner {
     private MapsProvisioner() {}
@@ -31,12 +33,25 @@ public final class MapsProvisioner {
         return MapsWishlist.has(ctx);
     }
 
-    /** Hand the banked maps selection to the module-queue engine. No-op if empty or a queue is
-     *  already running. Requires the rootfs (runs runrole maps in the proot). */
-    public static void drain(Context ctx) {
-        if (!MapsWishlist.has(ctx)) return;
-        if (ModuleQueueRepository.get().isRunning()) return;
+    /**
+     * Hand the banked maps selection to the module-queue engine. Requires the rootfs (runs
+     * runrole maps in the proot).
+     *
+     * @return the model's verdict, or {@code null} when the drain was not attempted — nothing
+     *         banked, or a queue already running. See {@code ModuleProvisioner.drain}.
+     */
+    public static OperationDispatcher.Dispatch drain(Context ctx) {
+        if (!MapsWishlist.has(ctx)) return null;
+        if (ModuleQueueRepository.get().isRunning()) return null;
         final Context app = ctx.getApplicationContext();
+        // ADFA-5061: same gate as ModuleProvisioner — see SystemDoor. Maps is the one runrole
+        // that coexists with a live server, but "coexists with a live server" is not "runs over
+        // a rootfs that will not boot", and that is the case this refuses. Selection kept.
+        OperationDispatcher.Dispatch verdict = SystemDoor.dispatch(app, "maps");
+        if (!OperationDispatcher.mayRunStopped(verdict)) {
+            Log.i(TAG, "maps drain: held, the box says " + verdict + " (selection still banked)");
+            return verdict;
+        }
         Intent i = new Intent(app, InstallService.class);
         i.setAction(InstallService.ACTION_START_MODULES);
         i.putExtra(InstallService.EXTRA_MODULES, new String[]{"maps"});
@@ -49,5 +64,6 @@ public final class MapsProvisioner {
         Log.i(TAG, "maps drain: handed the banked selection to InstallService (runrole maps)");
         // Handed off; the module-queue owns the run from here.
         MapsWishlist.clear(app);
+        return verdict;
     }
 }

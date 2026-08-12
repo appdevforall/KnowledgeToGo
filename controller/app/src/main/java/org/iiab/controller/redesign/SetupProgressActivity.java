@@ -44,6 +44,7 @@ import org.iiab.controller.kolibri.presentation.KolibriSeedService;
 import org.iiab.controller.kolibri.presentation.KolibriSeedState;
 import org.iiab.controller.kolibri.presentation.KolibriSeedingFragment;
 import org.iiab.controller.system.data.PendingContent;
+import org.iiab.controller.system.domain.OperationDispatcher;
 import org.iiab.controller.system.domain.ContentType;
 import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
@@ -463,6 +464,19 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     }
 
     /**
+     * ADFA-5061: whether a drain actually handed work over.
+     *
+     * <p>Three outcomes, and the pipeline needs them apart. {@code null} means the drain was not
+     * attempted — nothing banked, or a queue already running — and nothing has changed, so the
+     * caller must not mark a stage either way. {@code RUN_STOPPED} means it went. Anything else
+     * is the model refusing, and a refusal does not become a yes by asking again on the next
+     * tick: the facts it read are the facts, and only a repair or an install changes them.
+     */
+    private static boolean launched(OperationDispatcher.Dispatch verdict) {
+        return verdict != null && OperationDispatcher.mayRunStopped(verdict);
+    }
+
+    /**
      * ADFA-4900: one step of the serialized install pipeline. Starts the next stage only when the
      * previous one has finished; proot (maps) runs exclusively before any REST download, so Ansible's
      * background forks never overlap a live REST job. Returns true while work remains (keep polling),
@@ -475,12 +489,31 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // Stage 1 — proot (maps and/or module management), exclusive of all REST work (proot tasks
         // run serially via the queue). Maps (Get More) and modules (module management) are separate
         // entry points, so at most one has a pending batch in a given session.
-        if (MapsProvisioner.hasPending(this)) {
-            if (!queueRunning) { MapsProvisioner.drain(this); mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime(); }
+        // ADFA-5061: `!mapsStartFailed` retires the stage. Until the drains could refuse, a
+        // pending wishlist always became an empty one on the next pass, so "still pending" was a
+        // safe reason to keep waiting. It is not any more: a refusal leaves the order banked on
+        // purpose, and without this guard the stage would be re-offered every READY_POLL_MS
+        // forever — a spinner with no explanation, on precisely the damaged system that needs one.
+        if (!mapsStartFailed && MapsProvisioner.hasPending(this)) {
+            if (!queueRunning) {
+                if (launched(MapsProvisioner.drain(this))) {
+                    mapsLaunched = true; mapsLaunchedAt = SystemClock.elapsedRealtime();
+                } else {
+                    // Same terminal state as a queue that never started: render() already treats
+                    // it as a failed proot stage, which is the visible answer decision 4 asks for.
+                    mapsStartFailed = true;
+                }
+            }
             return true;
         }
-        if (ModuleProvisioner.hasPending(this)) {   // ADFA-4842: module management batch
-            if (!queueRunning) { ModuleProvisioner.drain(this); moduleLaunched = true; moduleLaunchedAt = SystemClock.elapsedRealtime(); }
+        if (!moduleStartFailed && ModuleProvisioner.hasPending(this)) {   // ADFA-4842: module management batch
+            if (!queueRunning) {
+                if (launched(ModuleProvisioner.drain(this))) {
+                    moduleLaunched = true; moduleLaunchedAt = SystemClock.elapsedRealtime();
+                } else {
+                    moduleStartFailed = true;
+                }
+            }
             return true;
         }
         if (queueRunning) return true;                                      // a runrole in flight

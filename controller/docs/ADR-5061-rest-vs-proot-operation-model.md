@@ -1008,6 +1008,86 @@ most expensive by the third platform. A is B done safely over time.
        mistake independently, and in each one the fact needed to do better was already in
        hand. When 5062 migrates a surface, the derivation to retire is not just "guessing
        instead of asking the model" — it is this specific shape.
+12. [x] **Both execution classes now dispatch through the model** (`system/data/SystemDoor`).
+
+       Until this, `OperationDispatcher.resolve` had two callers in production —
+       `KolibriReadinessViewModel` and `ContentDoor` — and both were LIVE.
+       `Operation.system()` had none outside tests, and `Operation.appInstall(...)` was used
+       only to decide whether a bottom-sheet row printed a warning. A model that answers for one
+       of its two classes is a description of the system, not a source of truth about it, and
+       the class it did not answer for is the one that takes the box down.
+
+       `SystemDoor` is `ContentDoor`'s counterpart: it reads the facts and resolves
+       `Operation.appInstall(platform)`. Both module drains — `ModuleProvisioner.drain` and
+       `MapsProvisioner.drain` — ask it before handing anything to `InstallService`. They
+       previously checked two things, a non-empty wishlist and no queue already running, and
+       neither is a fact about the box. So a drain would start runroles over a half-installed
+       rootfs that will not boot, producing a second failure in place of the repair, and over a
+       system that does not exist yet, where the honest answer is to leave the order where it is.
+       A refusal returns before the wishlist is cleared, so nothing is lost.
+
+       `mayRunStopped` is strictly `RUN_STOPPED`, and the strictness is the point:
+       `willRun` also accepts `ENSURE_SERVER_THEN_RUN_LIVE`, and a door that treated them alike
+       would take the box down to run something that needed it up. Tested in
+       `OperationDispatcherTest`.
+
+       **The legacy seam stays.** `InstallController.startModuleQueue()`, reached from
+       `DeployFragment`'s launch button, still enqueues without asking. That is the strangler
+       boundary, not an oversight — the god class is migrated when a feature touches it.
+       `SetupLibraryActivity.startMapsInstall` is a fourth sender with no reachable caller.
+
+       **What the review round changed, and it was not cosmetic.** The first version had each
+       drain ask the door, log the answer and return `void`. That put the decision one layer below
+       the thing that had to act on it: `SetupProgressActivity.orchestrateStep` sequences the
+       stages, and it never heard the verdict. It was written when a pending wishlist always
+       became an empty one on the next pass, so "still pending" was a safe reason to keep waiting
+       — and a refusal deliberately leaves the order banked. The two facts together produced an
+       infinite loop: `hasPending` true forever, "more work" every two seconds, two filesystem
+       reads and a log line per tick, and a spinner with no explanation on exactly the damaged
+       system that most needs one. That is worse than the bug it fixed; a wrong start at least
+       failed with a message.
+
+       Both drains return the verdict now (`null` = not attempted, so the caller marks nothing),
+       and a refusal retires the stage into `mapsStartFailed` / `moduleStartFailed` — the terminal
+       state `render()` already knows how to show, which is the visible answer decision 4 asks
+       for. The instinct was a third flag; the actual fault was that the answer was being thrown
+       away at the wrong layer, and adding a flag would have kept it there.
+
+       **A note on how the device tests missed it.** All five exercised the path where the door
+       says yes. The three refusals went to the unit tests, and that was the right call — a
+       damaged rootfs costs a reinstall. The gap was not there: it was in not asking what the
+       *caller* does with a "no" that did not exist before.
+
+       **Verified on device**, 11 Aug: maps through Get More, and a module through both entry
+       points (the Home card's sheet and Module management — they converge on the same button, so
+       one run covers both), all reporting `handed` and never `held`. Box-up versus box-down was
+       dropped with reason: `resolve` answers an `APP_INSTALL` before it looks at `serverUp`, so
+       the two cannot differ, and `OperationDispatcherTest` asserts both. The three refusals stay
+       on the unit tests — producing a damaged rootfs on hardware costs a reinstall.
+
+       One trap for whoever re-runs this: the `isRunning()` check sits *above* the gate, so any
+       test performed while a queue is in flight passes for the wrong reason.
+
+       **A module stays banked across a process death and does not run itself.** Confirmed on
+       device: scheduled, app killed by swipe, reopened, thirty seconds on Home — silence — and it
+       drained only when the index was opened deliberately. This is the right behaviour and it is
+       worth naming, because a module install can run for an hour and a half and an app launch is
+       not consent.
+
+       **Maps does not have that property, and that is worth a look.** `LibraryHomeFragment`'s
+       fallback pump drains Books, ZIM, Courses *and* maps once the box answers;
+       `ModuleProvisioner` is deliberately absent from it. So a banked maps selection restarts
+       itself from the Home screen without being asked again, and maps is the most expensive
+       runrole we have. Today that is intentional — it is the wizard's post-install drain — but
+       the wizard case and "the user banked this and walked away" are not distinguished. Belongs
+       with the `EnvironmentLock` ticket, where the rest of this family lives.
+
+       **What this door still does not gate:** `EnvironmentLock.Owner.MODULE` exists and nothing
+       acquires it. Clone and DeepOp take their locks; a module run relies on `InstallGuard` plus
+       `ModuleQueueRepository.isRunning()`, and `SetupProgressActivity.orchestrateStep` re-checks
+       only the latter — so the three UI doors that do check `isHeld()` lose it between the door
+       and the drain. Its own ticket.
+
 11. [ ] **Small things the second review pass left standing.** None of them is worth a ticket on
        its own; they belong to whichever ticket next opens these files.
 

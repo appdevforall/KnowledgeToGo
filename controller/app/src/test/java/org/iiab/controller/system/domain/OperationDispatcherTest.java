@@ -222,4 +222,44 @@ public class OperationDispatcherTest {
             // same
         }
     }
+
+    // ---- the stopped door (ADFA-5061) --------------------------------------
+
+    /**
+     * The gate the module drains use. Strictly RUN_STOPPED: the other answers are all
+     * refusals at this door, including the two that "will run" in some other sense.
+     */
+    @Test
+    public void onlyRunStoppedLetsAStoppedRunStart() {
+        assertTrue(OperationDispatcher.mayRunStopped(Dispatch.RUN_STOPPED));
+        assertFalse(OperationDispatcher.mayRunStopped(Dispatch.RUN_LIVE));
+        assertFalse(OperationDispatcher.mayRunStopped(Dispatch.ENSURE_SERVER_THEN_RUN_LIVE));
+        assertFalse(OperationDispatcher.mayRunStopped(Dispatch.DEFER));
+        assertFalse(OperationDispatcher.mayRunStopped(Dispatch.UNAVAILABLE));
+        assertFalse(OperationDispatcher.mayRunStopped(Dispatch.BLOCKED_DAMAGED));
+    }
+
+    /**
+     * What the drains actually see. An install may start on a healthy box whether or not the
+     * server is up — the queue stops it itself — and must not start over a rootfs that will
+     * not boot or before there is a system at all.
+     */
+    @Test
+    public void aModuleInstallStartsOnlyOnASystemThatCanTakeIt() {
+        assertTrue(OperationDispatcher.mayRunStopped(
+                OperationDispatcher.resolve(INSTALL_COURSES, RUNNING, true)));
+        assertTrue(OperationDispatcher.mayRunStopped(
+                OperationDispatcher.resolve(INSTALL_COURSES, OFF, true)));
+        assertFalse(OperationDispatcher.mayRunStopped(
+                OperationDispatcher.resolve(INSTALL_COURSES, DAMAGED, true)));
+        assertFalse(OperationDispatcher.mayRunStopped(
+                OperationDispatcher.resolve(INSTALL_COURSES, FRESH, true)));
+    }
+
+    /** And a pending replacement holds it too: the box it would install onto is going away. */
+    @Test
+    public void aModuleInstallWaitsForAReplacementToHappen() {
+        assertEquals(Dispatch.DEFER,
+                OperationDispatcher.resolve(INSTALL_COURSES, RUNNING.withReplacementPending(), true));
+    }
 }
