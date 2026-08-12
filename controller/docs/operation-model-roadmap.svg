@@ -278,7 +278,7 @@
 <text class="h3" x="204" y="1636">Found in the last two days; recorded so they are met on purpose</text>
 
 <circle class="s-todo" cx="48" cy="1660" r="5.5"/><text class="item" x="62" y="1664">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<circle class="s-todo" cx="48" cy="1682" r="5.5"/><text class="item" x="62" y="1686">Free space is never checked before a destructive run — ADFA-5105. Sixteen hand-rolled readers; only two gate anything.</text>
+<circle class="s-done" cx="48" cy="1682" r="5.5"/><text class="item" x="62" y="1686">Free space is checked before every destructive run — ADFA-5105 (done; needed size measured at build time by ADFA-5110).</text>
 <circle class="s-todo" cx="48" cy="1704" r="5.5"/><text class="item" x="62" y="1708">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
 <circle class="s-todo" cx="48" cy="1726" r="5.5"/><text class="item" x="62" y="1730">Sessions do not survive process death — now ADFA-5106. 4874 deferred it in July and closed; it had no owner until now.</text>
 
