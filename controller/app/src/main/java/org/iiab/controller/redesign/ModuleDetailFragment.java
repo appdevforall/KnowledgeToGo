@@ -90,7 +90,47 @@ public class ModuleDetailFragment extends Fragment {
         if (lic != null) licView.setText(getString(R.string.k2go_mod_license_fmt, lic));
         else licView.setVisibility(View.GONE);
 
+        // ADFA-5104: the detail offered Install now and Schedule on a module that is already
+        // installed. The hub stopped doing that; this screen is one tap behind it, and it is the
+        // louder of the two — a full-width button reads as an invitation in a way a checkbox does
+        // not. Both actions go, and a chip says why.
+        //
+        // Read off the main thread and applied when it returns: the buttons start hidden rather
+        // than start visible, because showing them and then taking them away is how a user ends
+        // up tapping one in the gap.
+        final Button installNowBtn = root.findViewById(R.id.k2go_moddet_install_now);
+        final ViewGroup chipRow = chips;
+        installNowBtn.setVisibility(View.GONE);
+
         Button schedule = root.findViewById(R.id.k2go_moddet_schedule);
+        schedule.setVisibility(View.GONE);
+
+        final android.content.Context appCtx = requireContext().getApplicationContext();
+        org.iiab.controller.util.AppExecutors.get().io().execute(() -> {
+            final java.util.Set<String> onDisk =
+                    org.iiab.controller.system.data.InstalledModulesReader.installedKeys(appCtx);
+            // Null is "could not read", not "nothing installed" — same distinction the hub keeps.
+            final boolean isInstalled = onDisk != null && onDisk.contains(c.key());
+            final boolean unknown = onDisk == null;
+            // root, not requireView(): inside onCreateView the fragment's view is not set yet,
+            // so requireView() would throw. root is already inflated and its handler is the
+            // main looper's.
+            root.post(() -> {
+                if (!isAdded()) return;
+                if (isInstalled) {
+                    chipRow.addView(chip(getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
+                    return;   // nothing to offer: a module cannot be uninstalled or reinstalled here
+                }
+                if (unknown) {
+                    chipRow.addView(chip(getString(R.string.k2go_state_no_answer),
+                            R.color.k2go_amber_text));
+                    return;   // no grounds to offer work either way
+                }
+                installNowBtn.setVisibility(View.VISIBLE);
+                if (!c.hasSelector) schedule.setVisibility(View.VISIBLE);
+            });
+        });
+
         boolean scheduled = ModuleWishlist.contains(requireContext(), c.key());
         schedule.setText(getString(scheduled ? R.string.k2go_mod_unschedule : R.string.k2go_mod_schedule));
         schedule.setOnClickListener(v -> {
@@ -99,9 +139,10 @@ public class ModuleDetailFragment extends Fragment {
             requireActivity().getOnBackPressedDispatcher().onBackPressed();   // back to the hub (shows ✓)
         });
 
-        if (c.hasSelector) schedule.setVisibility(View.GONE);   // ADFA-4958: maps schedules via its selector, not here
+        // ADFA-4958: maps schedules via its selector, not here — folded into the callback above,
+        // which is now the only thing that makes either button visible.
 
-        Button installNow = root.findViewById(R.id.k2go_moddet_install_now);
+        Button installNow = installNowBtn;
         installNow.setOnClickListener(v -> {
             if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
             if (getActivity() instanceof SetupLibraryActivity) {

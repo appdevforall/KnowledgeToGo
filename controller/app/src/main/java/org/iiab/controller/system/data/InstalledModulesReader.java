@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -101,15 +100,19 @@ public final class InstalledModulesReader {
     }
 
     /**
-     * Which presentable modules the flags claim are installed.
+     * Which presentable modules the flags claim are installed, or {@code null} when the flags
+     * could not be read at all.
      *
-     * <p>Empty when the flags cannot be read, which is why {@link #readFlags} is public: a caller
-     * that needs to tell "none installed" from "we could not look" must ask for the flags itself.
+     * <p>Null rather than an empty set, and the difference is the whole point. "Nothing is
+     * installed" and "I could not look" are different answers, and a caller that receives the
+     * empty set for both will offer to install what is already there the moment the file is
+     * missing, unreadable or half-written — which is the defect this class exists to remove,
+     * reappearing one layer down. An earlier version of this method did exactly that.
      */
     public static Set<String> installedKeys(Context ctx) {
         JSONObject flags = readFlags(ctx);
         if (flags == null) {
-            return Collections.emptySet();
+            return null;
         }
         return InstalledModules.from(flags, ModuleRegistry.validYamlKeys());
     }
