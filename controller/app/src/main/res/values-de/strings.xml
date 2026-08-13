@@ -512,4 +512,5 @@
     <string name="install_error_verify">Die heruntergeladenen Systemdateien haben die Integritätsprüfung nicht bestanden (unvollständig oder beschädigt). Bitte versuchen Sie die Installation erneut.</string>
     <string name="install_btn_select_content">Inhalt auswählen</string>
     <string name="feedback_force_crash">Testabsturz erzwingen (debug)</string>
+    <string name="feedback_share_copied">Berichtstext kopiert — füge ihn ein, falls er nicht ankam</string>
 </resources>

@@ -532,4 +532,5 @@
     <string name="feedback_force_crash">Lazimisha ajali ya jaribio (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_share_copied">Maandishi ya ripoti yamenakiliwa — yabandike ikiwa hayakufika</string>
 </resources>

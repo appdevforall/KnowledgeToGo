@@ -532,4 +532,5 @@
     <string name="feedback_force_crash">சோதனை செயலிழப்பைக் கட்டாயப்படுத்து (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_share_copied">அறிக்கை உரை நகலெடுக்கப்பட்டது — வரவில்லை எனில் ஒட்டவும்</string>
 </resources>

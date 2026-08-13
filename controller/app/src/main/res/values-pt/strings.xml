@@ -591,4 +591,5 @@
     <string name="install_error_verify">Os arquivos de sistema baixados falharam na verificação de integridade (incompletos ou corrompidos). Tente instalar novamente.</string>
     <string name="install_btn_select_content">Selecionar conteúdo</string>
     <string name="feedback_force_crash">Forçar falha de teste (debug)</string>
+    <string name="feedback_share_copied">Texto do relatório copiado — cole se não chegou</string>
 </resources>

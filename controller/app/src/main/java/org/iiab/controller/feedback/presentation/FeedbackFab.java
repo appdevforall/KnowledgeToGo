@@ -159,8 +159,9 @@ public final class FeedbackFab {
         attach(fab, () -> sendFeedback(activity, screenTag));
     }
 
-    /** ADFA-4538/4932: capture a screenshot, build the diagnostics payload, and hand it to the
-     *  configured transport (mailto -> mail chooser). Shared by MainActivity and the redesign. */
+    /** ADFA-4538/4932: capture a screenshot, build the diagnostics payload, and hand it off.
+     *  ADFA-5130: routing is delegated to {@link FeedbackShareRouter} (email vs share-to-app).
+     *  Shared by MainActivity and the redesign. */
     public static void sendFeedback(android.app.Activity activity, String screen) {
         org.iiab.controller.feedback.data.FeedbackScreenshot.capture(activity, path -> {
             if (activity.isFinishing() || activity.isDestroyed()) {
@@ -179,14 +180,11 @@ public final class FeedbackFab {
                             .screen(screen)
                             .screenshot(path)
                             .build();
-            boolean ok = org.iiab.controller.feedback.data.FeedbackConfig.create(activity)
-                    .send(activity, payload);
-            if (ok) {
-                org.iiab.controller.analytics.AnalyticsClient.with(activity).logFeedbackSent();
-            } else {
-                android.widget.Toast.makeText(activity, org.iiab.controller.R.string.feedback_no_email_app,
-                        android.widget.Toast.LENGTH_LONG).show();
-            }
+            // ADFA-5130: route by channel (email keeps the attachment; messaging gets text + the
+            // screenshot on the clipboard) instead of always building the single mail chooser, so
+            // sharing to Slack/WhatsApp no longer drops the report text. Reporting/analytics move
+            // into the router so both channels are handled in one place.
+            FeedbackShareRouter.share(activity, payload);
         });
     }
 }

@@ -513,4 +513,5 @@
     <string name="install_btn_select_content">选择内容</string>
     <string name="feedback_force_crash">强制测试崩溃 (debug)</string>
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_share_copied">报告文本已复制 — 如果没送达就粘贴进去</string>
 </resources>
