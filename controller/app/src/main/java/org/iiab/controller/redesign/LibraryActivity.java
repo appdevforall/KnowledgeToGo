@@ -361,7 +361,16 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 if (installPercentRow != null) {
                     installPercentRow.setVisibility(View.VISIBLE);
                     installPercent.setText(pct(st.percent));
-                    installEta.setText(st.speed.isEmpty() ? "" : "·  " + st.speed);
+                    // ADFA-5118: with no ETA yet (verify, or extract before a rate is known) the %
+                    // owns the whole row — centre it (there is space to spare). Once the ETA appears
+                    // (past the 50% handoff) hide-nothing: the % slides to the ~40% pivot and the ETA
+                    // fills to its right, so the pair reads balanced. Hiding the ETA cell (GONE) lets
+                    // the weighted % cell take the full width to centre against.
+                    boolean hasEta = !st.speed.isEmpty();
+                    installEta.setText(hasEta ? "·  " + st.speed : "");
+                    installEta.setVisibility(hasEta ? View.VISIBLE : View.GONE);
+                    installPercent.setGravity(hasEta
+                            ? android.view.Gravity.END : android.view.Gravity.CENTER_HORIZONTAL);
                 }
                 installDetail.setText(org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message));
             }
