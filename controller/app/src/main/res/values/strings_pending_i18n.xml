@@ -30,6 +30,14 @@
     <!-- Abandons the download AND the tier/wishlist decision, so it is confirmed. -->
     <string name="k2go_dl_cancel" translatable="false">Cancel</string>
 
+    <!-- Status lines for a stop nobody chose (SOFTFAILED). Mapped from Aria2Exit.Kind, never from
+         Aria2Exit.label(), which is documented as English-for-logs. They name the cause only: the
+         Retry button beside them already says what to do about it. -->
+    <string name="k2go_dl_soft_lost" translatable="false">Connection lost</string>
+    <string name="k2go_dl_soft_slow" translatable="false">The connection is too slow</string>
+    <!-- UNKNOWN, including aria2's own code 1. Says only what we know. -->
+    <string name="k2go_dl_soft_stopped" translatable="false">The download stopped</string>
+
     <!-- Status line while stopped by the user. Replaces "Downloading your library…", which would
          be a lie while nothing is moving. -->
     <string name="k2go_dl_paused" translatable="false">Download paused</string>

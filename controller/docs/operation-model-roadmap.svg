@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 2679" width="1280" height="2679" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 2825" width="1280" height="2825" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map, dependencies, and the standing directive</title>
 <desc>Three columns that mean delivered / in flight / next, with arrows for what directs what. Teal cards are hubs: arrows leave them because the rest of the board reads them. The band at the top is the standing directive and its ledger of facts — every change that touches a fact updates a row. Flip a dot's class as work lands: s-done, s-doing, s-todo.</desc>
 <style>
@@ -337,4 +337,12 @@
 <path class="lnk-dash" d="M872,755 H850 V673 H828" marker-end="url(#a)"/>
 <rect x="770" y="739" width="183" height="15" fill="#F7F8F9" opacity="0.95"/>
 <text class="lnklbl" x="861" y="750" text-anchor="middle">same launch file — sequence them</text>
+<rect class="card" x="24" y="2639" width="1228" height="146" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="2655" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="2669" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="40" y="2695">The legacy UI is invisible but still running — open a ticket for it</text>
+<text class="note" x="40" y="2724">Found while writing Cancel (ADFA-5119). The launcher goes SplashActivity → LibraryActivity, and the only door left into the legacy MainActivity is Settings → “Terminal (Debian)”, which passes</text>
+<text class="note" x="40" y="2739">EXTRA_TERMINAL_ONLY so ADFA-4987 keeps the old dashboard hidden behind the terminal sheet. But MainActivity.onCreate builds MainPagerAdapter at :292 and only learns it is terminal-only at :344 —</text>
+<text class="note" x="40" y="2754">so DeployFragment is still constructed and still observes InstallProgressRepository from behind that sheet. Not dead code: invisible code that still runs, which is why its phase switch has to be kept in step.</text>
+<text class="note" x="40" y="2769">The one leak a user can reach: TerminalSessionService:98 opens MainActivity WITHOUT that extra, revealing the whole legacy dashboard with a working install button. Two lines close it — the missing extra, and not building the pager in terminal-only mode. Deleting DeployFragment is the larger piece behind it.</text>
 </svg>

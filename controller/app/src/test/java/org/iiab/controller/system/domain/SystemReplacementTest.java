@@ -38,6 +38,12 @@ public class SystemReplacementTest {
         assertTrue(SystemReplacement.clearsOrders(Cause.RESTORE));
         assertTrue(SystemReplacement.clearsOrders(Cause.CLONE_RECEIVE));
         assertTrue(SystemReplacement.clearsOrders(Cause.DELETE));
+        // ADFA-5119. This one arrives from inside the wizard, which is what makes it worth its own
+        // line: it looks like REINSTALL's twin and behaves like its opposite. A reinstall keeps the
+        // orders because the user filled them for the system about to be built; an abandonment is
+        // the user giving that system up, so the orders go with it — otherwise a wishlist chosen for
+        // one tier drains into whatever they pick next.
+        assertTrue(SystemReplacement.clearsOrders(Cause.ABANDONED_INSTALL));
     }
 
     @Test

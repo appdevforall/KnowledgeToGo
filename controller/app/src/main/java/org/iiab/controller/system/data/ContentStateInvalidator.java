@@ -50,11 +50,15 @@ import org.iiab.controller.system.domain.SystemReplacement;
  *       never happened.</li>
  * </ul>
  *
- * <p><b>Every destructive route calls both</b>, not just the install service. Five
- * routes replace or remove a system and only two go through {@code InstallService}:
- * a reinstall and a reset. Restore extracts a tar over the rootfs from
- * {@code DeepOpService}, clone-receive rsyncs over it from {@code CloneFragment},
- * and the legacy delete removes it outright.
+ * <p><b>Every destructive route calls both</b>, not just the install service. Six
+ * routes replace or remove a system and only three go through {@code InstallService}:
+ * a reinstall, a reset, and an abandoned install (ADFA-5119). Restore extracts a tar
+ * over the rootfs from {@code DeepOpService}, clone-receive rsyncs over it from
+ * {@code CloneFragment}, and the legacy delete removes it outright.
+ *
+ * <p>The sixth is the odd one: nothing is replaced, because the system was never built.
+ * What it has in common with the other five is the only thing that matters here — the
+ * state on file describes a system that is not going to exist.
  *
  * <p>Touches SharedPreferences, so call it off the main thread.
  *

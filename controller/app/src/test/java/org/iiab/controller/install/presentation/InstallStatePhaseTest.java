@@ -42,6 +42,55 @@ public class InstallStatePhaseTest {
         assertFalse(InstallState.cancelled().isRunning());
     }
 
+    /**
+     * SOFTFAILED must count as running for the same reason PAUSED does, and for one more: it is
+     * reached from a FAILURE, so it is the state most likely to be classified as an ending by
+     * reflex. If it were terminal the gate would lift on a dropped transfer and land on a library
+     * with no system — which is the exact dead end this ticket exists to close, arrived at by the
+     * scenic route.
+     */
+    @Test
+    public void softFailedIsRunningBecauseTheOperationHasNotEnded() {
+        assertTrue(InstallState.softFailed(43, "Connection lost").isRunning());
+        assertFalse("a stop that can continue has not finished",
+                InstallState.softFailed(43, "Connection lost").isTerminal());
+    }
+
+    /** The distinction from FAILED is the whole point: one can continue, the other cannot. */
+    @Test
+    public void softFailedAndFailedAreNotTheSameEnding() {
+        assertEquals(Phase.SOFTFAILED, InstallState.softFailed(1, "x").phase);
+        assertEquals(Phase.FAILED, InstallState.failed("x").phase);
+        assertFalse(InstallState.failed("x").isSoftFailed());
+        assertTrue(InstallState.failed("x").isTerminal());
+    }
+
+    /**
+     * Both held states answer isHeld(), and that is what the controls read. A pause and a dropped
+     * transfer resume through the same call, so a screen asking "can this continue?" must not have
+     * to name both phases — the day a third one appears, whoever adds it would be relying on every
+     * call site remembering to grow.
+     */
+    @Test
+    public void heldMeansStoppedAndAbleToContinue() {
+        assertTrue(InstallState.paused(20).isHeld());
+        assertTrue(InstallState.softFailed(20, "x").isHeld());
+        assertFalse(InstallState.downloading(20, "5MiB/s").isHeld());
+        assertFalse(InstallState.failed("x").isHeld());
+        assertFalse(InstallState.cancelled().isHeld());
+    }
+
+    /** A stop nobody chose has to say so; a pause does not, because the user did it. */
+    @Test
+    public void aSoftFailureCarriesItsReasonAndItsPosition() {
+        InstallState s = InstallState.softFailed(43, "Connection lost");
+        assertEquals(43, s.percent);
+        assertEquals("Connection lost", s.message);
+        assertTrue("no rate while nothing moves", s.speed.isEmpty());
+        assertTrue("no estimate while nothing moves", s.eta.isEmpty());
+        assertTrue("a pause needs no explanation", InstallState.paused(43).message.isEmpty());
+    }
+
     // ---- the two are not the same thing ------------------------------------
 
     /**
@@ -122,6 +171,7 @@ public class InstallStatePhaseTest {
             case FAILED:       return InstallState.failed("x");
             case PAUSED:       return InstallState.paused(1);
             case CANCELLED:    return InstallState.cancelled();
+            case SOFTFAILED:   return InstallState.softFailed(1, "x");
             case IDLE:
             default:           return InstallState.idle();
         }

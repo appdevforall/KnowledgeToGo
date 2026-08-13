@@ -85,6 +85,25 @@ public class Aria2Manager {
         }
         void onComplete(String downloadPath);
         void onError(String error);
+
+        /**
+         * ADFA-5119: the same failure, with what aria2 was telling us attached.
+         *
+         * <p>ADFA-4895 added {@link org.iiab.controller.download.domain.Aria2Exit#kindOf(int)} so a
+         * dropped Wi-Fi, a missing mirror and a full disk would stop being one event — and then
+         * dropped the answer into the log, because the listener had nowhere to receive it. Every
+         * non-zero exit still arrived as a plain {@code onError}, so the caller went on failing the
+         * whole install on all of them. This is the seam that was missing.
+         *
+         * <p>Added as a default that forwards, like the numeric {@code onProgress} above, so the
+         * content call sites are untouched. Only a caller that can act differently per kind — offer
+         * a retry rather than give up — overrides it.
+         *
+         * @param kind what sort of stop this was; the caller owns the policy, not this class
+         */
+        default void onError(String error, org.iiab.controller.download.domain.Aria2Exit.Kind kind) {
+            onError(error);
+        }
         /** ADFA-4676: post-download integrity gate failed (size/SHA-256 mismatch). */
         default void onIntegrityFailure(String reason) { onError(reason); }
         /** ADFA-4676: the user stopped the download; a clean stop, not a failure. */
@@ -336,7 +355,10 @@ public class Aria2Manager {
                             org.iiab.controller.download.domain.Aria2Exit.kindOf(exitCode);
                     String reason = org.iiab.controller.download.domain.Aria2Exit.label(exitCode);
                     Log.e(TAG, "aria2 exit " + exitCode + " (" + kind + "): " + reason);
-                    mainHandler.post(() -> listener.onError(reason));
+                    // ADFA-5119: the kind travels with the failure now. Until this line it was
+                    // computed here and read only by the log line above, so the caller could not
+                    // tell a retryable stop from a hopeless one and failed the install on both.
+                    mainHandler.post(() -> listener.onError(reason, kind));
                     return;
                 }
                 // ADFA-4676: never trust the exit code alone. For a Metalink download,

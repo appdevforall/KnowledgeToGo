@@ -19,12 +19,17 @@ public final class InstallState {
     // formerly folded into EXTRACTING as the indeterminate "reading" sub-phase; it is now its own
     // determinate phase so the unified bar can show real progress + an ETA for both passes.
     /**
-     * ADFA-5119 appends PAUSED and CANCELLED rather than inserting them in reading order, so no
-     * ordinal shifts. Neither existed before, which is why pausing and cancelling were the same
-     * code path and a cancellation had to present itself as a failure.
+     * ADFA-5119 appends PAUSED, CANCELLED and SOFTFAILED rather than inserting them in reading
+     * order, so no ordinal shifts. None existed before, which is why pausing and cancelling were the
+     * same code path, a cancellation had to present itself as a failure, and a dropped transfer went
+     * straight to a terminal that lifted the gate onto a library with no system.
+     *
+     * <p>The three name what the model was missing: who stopped it, and whether it can continue.
+     * PAUSED — the user stopped it, it can continue. SOFTFAILED — something else stopped it, it can
+     * continue. CANCELLED — the user gave it up, and there is nothing left to continue from.
      */
     public enum Phase { IDLE, DOWNLOADING, VERIFYING, EXTRACTING, PROVISIONING, SUCCESS, FAILED,
-                        PAUSED, CANCELLED }
+                        PAUSED, CANCELLED, SOFTFAILED }
 
     /** Which long-running operation this state belongs to (ADFA-4476). ADFA-5011 adds REBUILD
      *  (dash-node REST-core rebuild) so the progress screen can tell a rebuild apart from an install
@@ -83,7 +88,7 @@ public final class InstallState {
     public boolean isRunning() {
         return phase == Phase.DOWNLOADING || phase == Phase.VERIFYING
                 || phase == Phase.EXTRACTING || phase == Phase.PROVISIONING
-                || phase == Phase.PAUSED;
+                || phase == Phase.PAUSED || phase == Phase.SOFTFAILED;
     }
 
     /**
@@ -105,6 +110,30 @@ public final class InstallState {
      */
     public boolean isPaused() {
         return phase == Phase.PAUSED;
+    }
+
+    /**
+     * ADFA-5119: stopped on its own, and able to continue. A pause the user did not ask for.
+     *
+     * <p>Mechanically this is {@link #isPaused()}: the partial file, its control file and the tier
+     * and wishlist decision are all still there, and continuing is the same call. It is a phase of
+     * its own rather than a flag inside PAUSED because two things about it differ where the user can
+     * see them — the line has to say what happened (they did not do this, so they need to know), and
+     * the button says Retry rather than Resume. Folding it into PAUSED would also repeat the mistake
+     * this ticket exists to undo: one name covering two events, the way a single boolean once covered
+     * both pause and cancel.
+     *
+     * <p><b>Not terminal, and that is the whole point.</b> A dropped transfer used to become FAILED,
+     * which lifts the gate onto a library with no system — the dead end this closes. The phase sits
+     * beside FAILED in the enum so the pair reads as what it is: not final, and final.
+     */
+    public boolean isSoftFailed() {
+        return phase == Phase.SOFTFAILED;
+    }
+
+    /** ADFA-5119: stopped and waiting for a tap, whoever stopped it. What the controls key off. */
+    public boolean isHeld() {
+        return isPaused() || isSoftFailed();
     }
 
     /** Returns a copy with the given sequence number (the repository assigns it). */
@@ -181,6 +210,22 @@ public final class InstallState {
      */
     public static InstallState cancelled() {
         return new InstallState(Phase.CANCELLED, Op.INSTALL, 0, "", "", 0L, "");
+    }
+
+    /**
+     * ADFA-5119: the transfer stopped on its own and can continue.
+     *
+     * <p>Carries the percentage for the same reason PAUSED does — the bytes are on disk, so the bar
+     * keeps its position and Retry continues rather than starts over. Carries a reason as well,
+     * because the user did not do this and a bar frozen with no explanation is the same dead end in
+     * a quieter form.
+     *
+     * @param message an already-localized line naming what happened. Never {@code Aria2Exit.label()},
+     *                which is deliberately English for logs; the presentation layer maps
+     *                {@code Aria2Exit.Kind} to a resource.
+     */
+    public static InstallState softFailed(int percent, String message) {
+        return new InstallState(Phase.SOFTFAILED, Op.INSTALL, percent, "", message, 0L, "");
     }
 
     public static InstallState provisioning(String message) {

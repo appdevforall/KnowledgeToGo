@@ -61,11 +61,16 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private android.widget.TextView dlPercent, dlRate, dlEta;
     private View downloadRow;
     private View installPercentRow;   // ADFA-5118: the %/ETA weighted-column row
+    // ADFA-5119: the two controls that end the wait. One button, three labels; one confirmation.
+    private View dlActions;
+    private com.google.android.material.button.MaterialButton dlToggle, dlCancel;
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
     private boolean closedDone = false;
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
+    /** ADFA-5119: a failure left no system — nothing may open the door until the user chooses. */
+    private boolean gateHeldForRecovery = false;
     private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
 
     // ADFA-4984: own the OTA self-updater (revived; entry point is Settings -> About). We forward the
@@ -137,6 +142,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         dlPercent = findViewById(R.id.k2go_download_percent);
         dlRate = findViewById(R.id.k2go_download_rate);
         dlEta = findViewById(R.id.k2go_download_eta);
+        // ADFA-5119: Pause / Resume (one button) and Cancel (the one that asks first).
+        dlActions = findViewById(R.id.k2go_dl_actions);
+        dlToggle = findViewById(R.id.k2go_dl_toggle);
+        dlCancel = findViewById(R.id.k2go_dl_cancel);
+        dlToggle.setOnClickListener(v -> onDownloadToggle());
+        dlCancel.setOnClickListener(v -> confirmCancelDownload());
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
         bootEllipsis = new org.iiab.controller.util.EllipsisAnimator(installStatus, true);
         readingEllipsis = new org.iiab.controller.util.EllipsisAnimator(installDetail, true);
@@ -241,6 +252,39 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             } else if (st.isTerminal()) {
                 hideInstallProgress();
                 installing = false; // install finished; let the server-alive observer lift the gate
+                // ADFA-5119: the user gave up on this install. The service has already removed the
+                // partial download, the half-written rootfs and the wishlists, and cleared
+                // setup_complete — so there is no system for the gate to lift onto. Falling through
+                // to the FAILED branch below would land on an empty library, which is the dead end
+                // this ticket exists to close. Go back to the decision instead: the tier and the
+                // content, chosen again from the start.
+                if (st.phase == InstallState.Phase.CANCELLED) {
+                    if (!isFinishing()) {
+                        startActivity(new android.content.Intent(this, SetupLibraryActivity.class));
+                        finish();
+                    }
+                    return;
+                }
+                // ADFA-5119: a failure that leaves no system does not open the door. The service
+                // keeps the install marker for exactly this case, so the test is the same one the
+                // recovery path already uses — and so is the dialog. Its wording ("the setup was
+                // stopped before it finished, and the system can't start") is true here without a
+                // word changed, and from it the user reaches a restore or a fresh choice.
+                //
+                // The reason is deliberately NOT appended to the body: it arrives as
+                // install_error_download wrapped around Aria2Exit.label(), which is documented as
+                // English for logs. Naming the cause on screen needs localized lines per PERMANENT
+                // kind, and that belongs with the reworking of this dialog, not here.
+                if (st.phase == InstallState.Phase.FAILED
+                        && org.iiab.controller.InstallGuard.inProgress(this)) {
+                    // Latched before the dialog, and checked by onServerReady(): the safety timeout
+                    // scheduled at onCreate refuses only while `installing` is true, and the line
+                    // above has just set it false. Without this, an install that went live after
+                    // onCreate (ADFA-4986) would let that timer open the door behind the dialog.
+                    gateHeldForRecovery = true;
+                    showDamagedDialog();
+                    return;
+                }
                 if (st.phase == InstallState.Phase.SUCCESS) {
                     // ADFA-4811: start the server in this same session so the library is usable on
                     // the FIRST run (no relaunch). The install just cleared the guard, so this is
@@ -340,7 +384,31 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
         if (installPercentRow != null) installPercentRow.setVisibility(View.GONE);
         if (downloadRow != null) downloadRow.setVisibility(View.GONE);   // ADFA-4895
-        if (st.phase == InstallState.Phase.DOWNLOADING) {
+        renderDownloadActions(st);   // ADFA-5119
+        if (st.isHeld()) {
+            // ADFA-5119: stopped, and it has to look stopped. The status line says so instead of
+            // "Downloading your library…", which would be a lie while nothing moves, and the bar
+            // keeps its position because the bytes are still on disk — a bar that dropped to zero
+            // would suggest the transfer was lost. Rate and estimate are gone: with nothing moving
+            // there is no rate to report, and an estimate would be a guess about when the user will
+            // press the button. That leaves one figure, so it takes the two-column row.
+            //
+            // Both held states render the same way; only the line differs. A pause needs no
+            // explanation because the user did it, and a stop needs one because they did not — so
+            // SOFTFAILED brings its own already-localized reason and PAUSED reads its label here.
+            installStatus.setText(st.isSoftFailed() && !st.message.isEmpty()
+                    ? st.message : getString(R.string.k2go_dl_paused));
+            installBar.setIndeterminate(false);
+            installBar.setProgress(st.percent);
+            if (installPercentRow != null) {
+                installPercentRow.setVisibility(View.VISIBLE);
+                installPercent.setText(pct(st.percent));
+                installPercent.setGravity(android.view.Gravity.CENTER_HORIZONTAL);
+                installEta.setText("");
+                installEta.setVisibility(View.GONE);
+            }
+            installDetail.setText("");
+        } else if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
@@ -416,10 +484,113 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private void hideInstallProgress() {
         stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
+        if (dlActions != null) dlActions.setVisibility(View.GONE);   // ADFA-5119
+        liftGateForActions(false);
+    }
+
+    /**
+     * ADFA-5119: which of the labels is true right now, and whether the pair is offered at all.
+     *
+     * <p>Only a transfer can be paused or abandoned. Verify, extract and provisioning are not
+     * offered the controls at all — there is no safe point to stop an extract, and a rootfs left
+     * half-written is exactly the unnameable state this ticket exists to remove.
+     */
+    private void renderDownloadActions(InstallState st) {
+        if (dlActions == null) return;
+        boolean offered = st.phase == InstallState.Phase.DOWNLOADING || st.isHeld();
+        dlActions.setVisibility(offered ? View.VISIBLE : View.GONE);
+        liftGateForActions(offered);
+        if (!offered) return;
+        // One button, three labels, and the state picks which one is true. Retry and Resume run the
+        // same code — aria2 continues from its control file either way — so the label is the only
+        // thing that distinguishes "you stopped this" from "something stopped this".
+        dlToggle.setText(st.isSoftFailed() ? R.string.k2go_dl_retry
+                : st.isPaused() ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
+        // Cancel-only during the IPv4/IPv6 probe. It reports as DOWNLOADING with no rate because it
+        // is aria2 measuring the two stacks, not transferring — so there is nothing to suspend and a
+        // control that does nothing is worse than no control. Cancel still works: it is the whole
+        // operation that is being given up, not a transfer. A held state always shows the button:
+        // being unable to continue is the dead end this ticket closes.
+        boolean actionable = st.isHeld() || !st.speed.isEmpty();
+        dlToggle.setVisibility(actionable ? View.VISIBLE : View.GONE);
+    }
+
+    /**
+     * ADFA-5119: make room under the animation for the buttons.
+     *
+     * <p>The progress panel is bottom-anchored over the Lottie, and two more rows of it would cover
+     * the shopfront. Padding on the animation rather than a margin on the panel, because the Lottie
+     * is {@code fitCenter}: padding is what it scales inside, so the drawing shrinks and re-centres
+     * instead of being clipped. Set from here rather than in XML so a normal boot — no install, no
+     * buttons — still uses the full height.
+     */
+    private void liftGateForActions(boolean lifted) {
+        if (bootGate == null) return;
+        int pad = lifted ? Math.round(56 * getResources().getDisplayMetrics().density) : 0;
+        if (bootGate.getPaddingBottom() != pad) {
+            bootGate.setPadding(bootGate.getPaddingLeft(), bootGate.getPaddingTop(),
+                    bootGate.getPaddingRight(), pad);
+        }
+    }
+
+    /** ADFA-5119: Pause and Resume are the same button, so they are the same tap. */
+    private void onDownloadToggle() {
+        InstallState st = InstallProgressRepository.get().current();
+        if (st.isHeld()) {
+            sendToInstallService(org.iiab.controller.install.presentation.InstallService.ACTION_RESUME);
+        } else if (st.phase == InstallState.Phase.DOWNLOADING) {
+            sendToInstallService(org.iiab.controller.install.presentation.InstallService.ACTION_PAUSE);
+        }
+    }
+
+    /**
+     * ADFA-5119: Cancel asks first, because it is not the loud twin of Pause.
+     *
+     * <p>Pause keeps the bytes and the decision behind them; Cancel gives up both — the transfer
+     * starts over from nothing and the tier and content are chosen again. The body names both
+     * losses. It does not repeat the percentage: that figure is on screen behind this dialog, and a
+     * second copy of it here would be a second place formatting the same fact.
+     */
+    private void confirmCancelDownload() {
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.k2go_dl_cancel_title)
+                .setMessage(R.string.k2go_dl_cancel_body)
+                .setNegativeButton(R.string.k2go_dl_cancel_keep, null)
+                .setPositiveButton(R.string.k2go_dl_cancel_confirm, (d, w) ->
+                        sendToInstallService(
+                                org.iiab.controller.install.presentation.InstallService.ACTION_CANCEL))
+                .show();
+    }
+
+    /**
+     * ADFA-5119: plain {@code startService}, deliberately, not {@code startForegroundService}.
+     *
+     * <p>These actions are only ever offered while the service is demonstrably alive — it is the
+     * thing that posted the DOWNLOADING or PAUSED state being rendered. Their branches answer
+     * without calling {@code startForeground}, so promoting the start would leave Android waiting
+     * for a foreground notification that never comes if the service had already gone away:
+     * ForegroundServiceDidNotStartInTimeException, on a stale button tap. The same reasoning is
+     * written out at {@code ContentStateInvalidator.replacementStarting}.
+     */
+    private void sendToInstallService(String action) {
+        try {
+            startService(new Intent(this,
+                    org.iiab.controller.install.presentation.InstallService.class).setAction(action));
+        } catch (Exception e) {
+            Log.w(TAG, "could not deliver " + action + " to the install service", e);
+        }
     }
 
     private void onServerReady() {
         if (gateDismissed || bootGate == null) {
+            return;
+        }
+        // ADFA-5119: a failed build left no system, and the user has a blocking choice on screen.
+        // Every caller of this method — the alive observer, both safety timeouts, the recovery
+        // verdict — means "it is safe to show the library now", and here it is not: there is nothing
+        // behind the gate. One latch, checked at the single place the gate opens, rather than the
+        // same condition repeated at four call sites.
+        if (gateHeldForRecovery) {
             return;
         }
         gateDismissed = true;

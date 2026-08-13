@@ -99,6 +99,17 @@ public final class InstallController {
             // 2. HIGH PRIORITY: if an install is in flight, this button cancels it.
             // The InstallService handles the cancel and posts the terminal state; the
             // observer in DeployFragment resets the button + shows the snackbar.
+            //
+            // ADFA-5119, on reachability: no shipping flow gets here. The launcher goes
+            // SplashActivity -> LibraryActivity, and the only door left into MainActivity is
+            // Settings -> "Terminal (Debian)", which passes EXTRA_TERMINAL_ONLY so ADFA-4987 keeps
+            // the legacy dashboard hidden behind the terminal sheet. The button is therefore
+            // unreachable — but NOT dead: MainActivity.onCreate builds MainPagerAdapter before it
+            // learns it is in terminal-only mode, so DeployFragment is still constructed and still
+            // observes InstallProgressRepository from behind the sheet. That is why its phase switch
+            // is kept in step with the new phases rather than left to rot, and why sealing this off
+            // properly (a terminal host of its own, and the TerminalSessionService notification
+            // passing the same extra) is its own piece of work rather than a line in this file.
             if (host.isDownloadingRootfs()
                     && InstallProgressRepository.get().currentOp() == InstallState.Op.INSTALL) {
                 new BrandDialog(fragment.requireContext())

@@ -178,5 +178,43 @@
             android:gravity="center"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_boot_muted" />
+
+        <!-- ADFA-5119: the two controls that end the wait. The first carries three labels one at a
+             time (Pause / Resume / Retry) because all three mean the same thing to the user — keep
+             this download — and only the current state decides which word is true. Cancel is the
+             other decision: give up the transfer AND the tier/wishlist choice behind it, which is
+             why it is the one that asks for confirmation.
+
+             Colour comes from the boot tokens, not the theme: this surface is deliberately a fixed
+             light paper in both modes (see ADFA-4814 above), so ?attr/colorPrimary would be tuned
+             for a dark background in night mode and land unreadable here. Same reason the labels
+             above use k2go_boot_ink / k2go_boot_muted. -->
+        <LinearLayout
+            android:id="@+id/k2go_dl_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/k2go_dl_toggle"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="132dp"
+                android:textColor="@color/k2go_boot_ink"
+                app:strokeColor="@color/k2go_boot_ink"
+                app:rippleColor="@color/k2go_boot_muted" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/k2go_dl_cancel"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/k2go_dl_cancel"
+                android:textColor="@color/k2go_boot_muted"
+                app:rippleColor="@color/k2go_boot_muted" />
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>
