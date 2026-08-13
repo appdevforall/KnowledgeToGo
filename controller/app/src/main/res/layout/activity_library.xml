@@ -119,23 +119,48 @@
                 android:gravity="end"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/k2go_boot_ink" />
-            <!-- ADFA-4895: the download shows a rate as well, so it needs a cell of its own for
-                 the same reason the ETA has one. A rate swings between "412KiB/s" and "37MiB/s"
-                 several times a second; concatenated into either neighbour it would drag that
-                 text sideways on every tick. GONE for verify and extract, which have no rate,
-                 so those two keep exactly the 2/3 split ADFA-5118 tuned. -->
             <TextView
-                android:id="@+id/k2go_install_rate"
+                android:id="@+id/k2go_install_eta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_marginStart="8dp"
+                android:gravity="start"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_boot_muted" />
+        </LinearLayout>
+
+        <!-- ADFA-4895: a table per line, sized to the line. Two figures use the two-column row
+             above (the IPv4/IPv6 probe: % + which test; verify and extract: % + estimate). Once
+             the transfer starts there are three, and forcing them through a two-column row left
+             them visibly off-balance. Each column is fixed, so the % cannot be moved by a rate
+             swinging between "412KiB/s" and "37MiB/s". Only one of the two rows is ever shown. -->
+        <LinearLayout
+            android:id="@+id/k2go_download_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/k2go_download_percent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="end"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_boot_ink" />
+            <TextView
+                android:id="@+id/k2go_download_rate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:layout_marginStart="8dp"
                 android:gravity="center_horizontal"
-                android:visibility="gone"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/k2go_boot_muted" />
             <TextView
-                android:id="@+id/k2go_install_eta"
+                android:id="@+id/k2go_download_eta"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"

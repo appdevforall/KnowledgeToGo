@@ -56,7 +56,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private LottieAnimationView bootGate;
     private View installProgress;
-    private android.widget.TextView installStatus, installDetail, installPercent, installEta, installRate;
+    private android.widget.TextView installStatus, installDetail, installPercent, installEta;
+    // ADFA-4895: the three-column row, shown only once the transfer is really running.
+    private android.widget.TextView dlPercent, dlRate, dlEta;
+    private View downloadRow;
     private View installPercentRow;   // ADFA-5118: the %/ETA weighted-column row
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
@@ -129,8 +132,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installDetail = findViewById(R.id.k2go_install_detail);
         installPercentRow = findViewById(R.id.k2go_install_percent_row);
         installPercent = findViewById(R.id.k2go_install_percent);
-        installRate = findViewById(R.id.k2go_install_rate);   // ADFA-4895
         installEta = findViewById(R.id.k2go_install_eta);
+        downloadRow = findViewById(R.id.k2go_download_row);     // ADFA-4895
+        dlPercent = findViewById(R.id.k2go_download_percent);
+        dlRate = findViewById(R.id.k2go_download_rate);
+        dlEta = findViewById(R.id.k2go_download_eta);
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
         bootEllipsis = new org.iiab.controller.util.EllipsisAnimator(installStatus, true);
         readingEllipsis = new org.iiab.controller.util.EllipsisAnimator(installDetail, true);
@@ -333,28 +339,33 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
         if (installPercentRow != null) installPercentRow.setVisibility(View.GONE);
-        if (installRate != null) installRate.setVisibility(View.GONE);   // ADFA-4895: only DOWNLOADING has a rate
+        if (downloadRow != null) downloadRow.setVisibility(View.GONE);   // ADFA-4895
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
-            // ADFA-4895: the download joins the weighted row instead of concatenating its figures
-            // into one centred line. It has three of them now — % , rate and estimate — and a rate
-            // that swings between "412KiB/s" and "37MiB/s" would drag everything beside it sideways
-            // on every tick, which is the dance ADFA-4910 and ADFA-5118 already fixed for extract.
-            // Each figure gets its own cell, so none of them can move another.
-            if (installPercentRow != null) {
+            // ADFA-4895: one table per line, sized to the line, rather than one table stretched
+            // over both. Before the transfer starts the line carries two things — "0%" and
+            // "Test IPv4" — and pushing those through a three-column row leaves a visible hole
+            // where the third would be. Once a rate and an estimate are both real there are three,
+            // and they get a row built for three. Either way every figure sits in a fixed column,
+            // so a rate swinging between "412KiB/s" and "37MiB/s" cannot drag the % sideways —
+            // the dance ADFA-4910 and ADFA-5118 already fixed for extract.
+            boolean threeUp = !st.speed.isEmpty() && !st.eta.isEmpty();
+            if (threeUp && downloadRow != null) {
+                downloadRow.setVisibility(View.VISIBLE);
+                dlPercent.setText(pct(st.percent));
+                dlRate.setText(st.speed);
+                dlEta.setText("·  " + st.eta);
+            } else if (installPercentRow != null) {
                 installPercentRow.setVisibility(View.VISIBLE);
                 installPercent.setText(pct(st.percent));
-                boolean hasRate = !st.speed.isEmpty();
-                boolean hasEta = !st.eta.isEmpty();
-                installRate.setText(hasRate ? st.speed : "");
-                installRate.setVisibility(hasRate ? View.VISIBLE : View.GONE);
-                installEta.setText(hasEta ? "·  " + st.eta : "");
-                installEta.setVisibility(hasEta ? View.VISIBLE : View.GONE);
-                // With nothing to its right the % owns the row and centres, exactly as ADFA-5118
-                // does before its own estimate appears.
-                installPercent.setGravity((hasRate || hasEta)
+                boolean hasSecond = !st.speed.isEmpty();
+                installEta.setText(hasSecond ? st.speed : "");
+                installEta.setVisibility(hasSecond ? View.VISIBLE : View.GONE);
+                // Alone, the % owns the row and centres — the rule ADFA-5118 already applies
+                // before its own estimate appears.
+                installPercent.setGravity(hasSecond
                         ? android.view.Gravity.END : android.view.Gravity.CENTER_HORIZONTAL);
             }
             installDetail.setText("");

@@ -326,15 +326,6 @@ public final class InstallService extends Service {
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
         aria2Manager.startDownload(this, directUrl, new Aria2Manager.DownloadListener() {
-            /**
-             * ADFA-4895: a longer dwell than the extract bar's five seconds. That one debounces
-             * files decompressing at different speeds — noise that passes in a moment. A network
-             * degrades and recovers over tens of seconds, so a short window would let the estimate
-             * chase every dip and make the label the least trustworthy thing on the screen.
-             */
-            private final org.iiab.controller.install.domain.EtaSmoother etaSmoother =
-                    new org.iiab.controller.install.domain.EtaSmoother(15000L);
-
             @Override
             public void onProgress(int percentage, String speed, String eta) {
                 // Still live, and not a leftover: Aria2NetworkProfiler reports through this form
@@ -350,9 +341,20 @@ public final class InstallService extends Service {
             public void onProgress(int percentage, String speed, String eta,
                                    long bytesPerSecond, long etaSeconds) {
                 if (cancelled) return;
-                int bucket = etaSmoother.smooth(
-                        org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
-                        android.os.SystemClock.elapsedRealtime());
+                // ADFA-4895: no smoothing here, deliberately, and it is not an oversight — a first
+                // pass used EtaSmoother and the label froze at "about 26 min" for half a download
+                // that took sixty seconds. Two reasons, and the second is the one that matters:
+                // the smoother adopts its first reading immediately, which lands while aria2 is
+                // still ramping and is the worst estimate of the whole run; and its dwell only
+                // advances while the value holds steady, so a figure that moves every tick resets
+                // the window forever and nothing ever replaces that first reading.
+                //
+                // The deeper reason is that this signal does not need it. Extraction wobbles
+                // because files decompress at wildly different speeds; a transfer rate over a
+                // network is comparatively steady — 34 to 40 MiB/s across a whole run, measured.
+                // Fed a steady rate the estimate moves smoothly on its own, and moving is what an
+                // estimate is supposed to do.
+                int bucket = org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds);
                 InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket));
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
             }
