@@ -21,19 +21,32 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * ADFA-5130: shares a feedback report with text + screenshot.
+ * ADFA-5130: shares a feedback report so the text is never lost — text is prioritised over the
+ * screenshot.
  *
- * <p>Everyone gets the rich intent (image + text) — email, WhatsApp, Telegram and Signal all show
- * both. Slack is the one receiver that drops {@code EXTRA_TEXT} whenever an image stream is present
- * (and the {@code *}{@code /*} + composite ClipData coercion did not change that on a real device),
- * so it alone gets a text-only override: with no stream it keeps the full text. This is done through
- * the native share sheet — no custom picker — by excluding Slack's rich entry and adding a text-only
- * one for it. Identifying Slack by package is a deliberate, contained trade-off; if it ever stops
- * matching, Slack falls back to the rich intent (image only) and the clipboard still carries the
- * text. Baking text into the image was rejected (accessibility); per-app branching for every app was
- * rejected (a growing dictionary) — this special-cases exactly one receiver.
+ * <p>Every receiver gets the rich intent (screenshot + text): email, WhatsApp, Telegram and Signal
+ * all keep both. Slack is the lone exception — it drops {@code EXTRA_TEXT} whenever an image stream
+ * is attached — so Slack alone is handed a text-only intent (no stream, so it keeps the full
+ * report). This is done entirely through the native share sheet (no custom picker): Slack's rich
+ * entry is removed with {@code EXTRA_EXCLUDE_COMPONENTS} and a text-only one is added with
+ * {@code EXTRA_INITIAL_INTENTS}. See {@link #addSlackTextOnlyOverride}.
  *
- * <p>The report text is also copied to the clipboard as a deterministic, accessible fallback.
+ * <p><b>Accepted trade-off:</b> excluding Slack's component also removes its Direct Share targets
+ * (the conversation shortcuts), so from Slack the user picks the recipient inside the app. We take
+ * that over losing the text: the report text is the accessible, machine-usable part; the screenshot
+ * is supplementary. The Android share sheet offers no way to keep Direct Share and override the
+ * payload at the same time.
+ *
+ * <p><b>Only Slack is special-cased</b> (matched by package name). If another receiver ever turns
+ * out to have the same defect, add its package to the match — the mechanism generalises without new
+ * code. If Slack is renamed or absent the override simply does not apply, Slack falls back to the
+ * rich intent, and the report text is on the clipboard as a deterministic, accessible fallback.
+ *
+ * <p><b>Rejected alternatives:</b> baking the text into the image (destroys accessibility for screen
+ * readers); a custom picker or a per-app dictionary for every messaging app (maintenance sink); and
+ * an earlier wildcard-type + composite-{@code ClipData} "coercion" meant to make Slack keep the
+ * text — it did not change Slack's behaviour on a real device, so Slack now gets an explicit
+ * text-only intent instead.
  */
 public final class HybridFeedbackSender {
 
@@ -66,6 +79,8 @@ public final class HybridFeedbackSender {
     /** The default: text + screenshot, kept by email and standards-respecting messaging apps. */
     private static Intent buildRichIntent(Activity activity, EmailContent content, String body) {
         Intent rich = new Intent(Intent.ACTION_SEND);
+        // Broad type so the sheet lists email and every messaging app; each keeps image + text.
+        // This is NOT a Slack workaround — Slack is handled separately in addSlackTextOnlyOverride.
         rich.setType("*/*");
         rich.putExtra(Intent.EXTRA_TEXT, body);
         rich.putExtra(Intent.EXTRA_SUBJECT, content.subject());
@@ -116,6 +131,8 @@ public final class HybridFeedbackSender {
         LabeledIntent labeled = new LabeledIntent(textOnly, slack.activityInfo.packageName,
                 slack.loadLabel(pm).toString(), slack.getIconResource());
 
+        // Exclude Slack's rich entry (this also drops its Direct Share targets — accepted, see the
+        // class doc) and add the text-only one in its place, so Slack keeps the text.
         chooser.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, new ComponentName[]{comp});
         chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{labeled});
     }
