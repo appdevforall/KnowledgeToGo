@@ -29,11 +29,18 @@ import org.iiab.controller.download.domain.MetalinkFile;
 import org.iiab.controller.download.domain.DownloadVerifier;
 import org.iiab.controller.download.domain.ByteToken;
 import org.iiab.controller.download.domain.DownloadEta;
+import org.iiab.controller.download.domain.Aria2ProgressLine;
 
 public class Aria2Manager {
 
     private static final String TAG = "IIAB-Aria2-Native";
-    private Process aria2Process;
+    /**
+     * ADFA-4895: volatile for the same reason as the flag below, and it is the more important of
+     * the two. It is assigned on the download thread and read by {@code stopDownload()} on the
+     * caller's, so a stale null there means the process is never destroyed and the user's cancel
+     * does nothing at all.
+     */
+    private volatile Process aria2Process;
     /**
      * ADFA-4895: volatile. It is written by {@code stopDownload()} on the caller's thread and read
      * by the download thread's loop and its catch block, so without this a stop could go unseen and
@@ -238,11 +245,7 @@ public class Aria2Manager {
                 // Regex to capture typical Aria2c output
                 // Example: [#2089b0 400MiB/1.0GiB(39%) CN:4 DL:4.5MiB ETA:2m20s]
                 Pattern pattern = Pattern.compile("\\((\\d+)%\\).*?DL:([^\\s]+).*?ETA:([^\\s\\]]+)");
-                // ADFA-4895: the same line also carries "400MiB/1.0GiB" — completed and total. A
-                // second, separate pattern on purpose: if it fails to match, the estimate is simply
-                // unknown and the progress line above is untouched. Folding it into the pattern
-                // that already works would put a working display at the mercy of a new regex.
-                Pattern sizes = Pattern.compile("([\\d.]+[A-Za-z]*)/([\\d.]+[A-Za-z]*)\\(\\d+%\\)");
+
 
                 while ((line = reader.readLine()) != null) {
                     if (isCancelled) {
@@ -267,17 +270,13 @@ public class Aria2Manager {
                         // string — so nothing downstream could compare it to anything or divide a
                         // remaining size by it.
                         long bytesPerSecond = ByteToken.parse(matcher.group(2));
-                        long etaSeconds = DownloadEta.UNKNOWN;
-                        Matcher sm = sizes.matcher(line);
-                        if (sm.find()) {
-                            long done = ByteToken.parse(sm.group(1));
-                            // The Metalink's size is the authority when we have it: it is what the
-                            // integrity gate will check against, so the estimate and the verdict
-                            // are measured against the same number.
-                            long total = (mf != null && mf.sizeBytes() > 0)
-                                    ? mf.sizeBytes() : ByteToken.parse(sm.group(2));
-                            etaSeconds = DownloadEta.secondsRemaining(done, total, bytesPerSecond);
-                        }
+                        // The Metalink's size is the authority when we have it: it is what the
+                        // integrity gate will check against, so the estimate and the verdict are
+                        // measured against the same number.
+                        long done = Aria2ProgressLine.completedBytes(line);
+                        long total = (mf != null && mf.sizeBytes() > 0)
+                                ? mf.sizeBytes() : Aria2ProgressLine.declaredTotalBytes(line);
+                        long etaSeconds = DownloadEta.secondsRemaining(done, total, bytesPerSecond);
                         final long rate = bytesPerSecond;
                         final long secs = etaSeconds;
                         mainHandler.post(() -> listener.onProgress(percent, speed, eta, rate, secs));

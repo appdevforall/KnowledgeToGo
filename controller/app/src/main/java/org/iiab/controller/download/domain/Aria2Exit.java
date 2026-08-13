@@ -111,9 +111,4 @@ public final class Aria2Exit {
         }
     }
 
-    /** Whether trying the same download again could plausibly end differently. */
-    public static boolean worthAnotherAttempt(int exitCode) {
-        Kind k = kindOf(exitCode);
-        return k == Kind.TRANSIENT || k == Kind.STALLED;
-    }
 }

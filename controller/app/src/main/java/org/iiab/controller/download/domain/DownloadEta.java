@@ -46,35 +46,4 @@ public final class DownloadEta {
         return (totalBytes - completedBytes) / bytesPerSecond;
     }
 
-    /**
-     * Whether the estimate is far enough out to be worth telling the user about.
-     *
-     * <p>Deliberately a comparison against a budget the caller supplies rather than a constant
-     * here: what counts as too long depends on what is being fetched and on what the app intends
-     * to offer, and this class should not know either. It answers the question; it does not decide
-     * that the question was worth asking.
-     *
-     * <p>An {@link #UNKNOWN} estimate is never "too long". Not knowing is not the same as knowing
-     * it is bad, and acting on a rate gap would fire the offer every time a connection hiccups.
-     */
-    public static boolean exceeds(long etaSeconds, long budgetSeconds) {
-        return etaSeconds != UNKNOWN && etaSeconds > budgetSeconds;
-    }
-
-    /**
-     * How the current rate compares with what this same transfer managed at the start, as a
-     * percentage of the baseline. {@link #UNKNOWN} when either figure is missing.
-     *
-     * <p>This is the reading that makes "20 KiB/s" mean something. On its own the number says
-     * nothing — it may be all this link has ever done. Against a baseline of three MiB/s measured
-     * ten minutes ago on the same connection, it says the network changed under us, which is a
-     * different statement and earns a different offer.
-     *
-     * <p>The baseline is the one {@code Aria2NetworkProfiler} already measures before the transfer
-     * starts and currently discards after choosing an IP stack.
-     */
-    public static long percentOfBaseline(long bytesPerSecond, long baselineBytesPerSecond) {
-        if (bytesPerSecond < 0 || baselineBytesPerSecond <= 0) return UNKNOWN;
-        return (bytesPerSecond * 100L) / baselineBytesPerSecond;
-    }
 }

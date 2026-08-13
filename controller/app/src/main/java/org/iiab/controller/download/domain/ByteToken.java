@@ -65,7 +65,9 @@ public final class ByteToken {
         } catch (NumberFormatException e) {
             return UNKNOWN;
         }
-        if (value < 0 || Double.isNaN(value) || Double.isInfinite(value)) return UNKNOWN;
+        // No sign check: the scan above never consumes a '-', so a negative token has
+        // already been rejected before we get here.
+        if (Double.isNaN(value) || Double.isInfinite(value)) return UNKNOWN;
 
         String unit = t.substring(i).trim();
         // aria2 writes a trailing "/s" on some fields; the rate and the size share this parser.

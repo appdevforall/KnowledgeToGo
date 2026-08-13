@@ -107,45 +107,62 @@ public class DownloadEtaTest {
                 (int) DownloadEta.UNKNOWN);
     }
 
-    // ---- the threshold, and what must never trip it -------------------------
+    // ---- reading the figures out of a real line ------------------------------
+
+    private static final String LINE = "[#2089b0 400MiB/1.0GiB(39%) CN:4 DL:4.5MiB ETA:2m20s]";
+
+    /**
+     * The whole point of extracting this from Aria2Manager: the most breakable part of the change
+     * is a regex against a third party's output format, and there it was unreachable by any test.
+     */
+    @Test
+    public void pullsCompletedAndTotalOutOfARealLine() {
+        assertEquals(400 * MI, Aria2ProgressLine.completedBytes(LINE));
+        assertEquals(GI, Aria2ProgressLine.declaredTotalBytes(LINE));
+    }
 
     @Test
-    public void exceedsComparesAgainstTheCallersBudget() {
-        assertTrue(DownloadEta.exceeds(3601, 3600));
-        assertFalse(DownloadEta.exceeds(3600, 3600));
-        assertFalse(DownloadEta.exceeds(60, 3600));
+    public void theWholeChainFromLineToEstimate() {
+        long done = Aria2ProgressLine.completedBytes(LINE);
+        long total = Aria2ProgressLine.declaredTotalBytes(LINE);
+        long rate = ByteToken.parse("4.5MiB");
+        // 1 GiB - 400 MiB left at 4.5 MiB/s
+        assertEquals((total - done) / rate, DownloadEta.secondsRemaining(done, total, rate));
     }
 
     /**
-     * Not knowing is not the same as knowing it is bad. If UNKNOWN tripped the threshold, the offer
-     * would fire on every connection hiccup — which is the automatic behaviour ADR-4893 rejects.
+     * The CN:4 is the trap: a bare "4" beside a slash-free field must not be mistaken for a pair.
+     * The pattern is anchored on the (NN%) that follows the sizes, which is what excludes it.
      */
     @Test
-    public void noEstimateNeverTripsTheThreshold() {
-        assertFalse(DownloadEta.exceeds(DownloadEta.UNKNOWN, 0L));
-        assertFalse(DownloadEta.exceeds(DownloadEta.UNKNOWN, 3600L));
-    }
-
-    // ---- the baseline, which is what makes a rate mean anything -------------
-
-    @Test
-    public void aRateIsReadAgainstWhatThisLinkAlreadyManaged() {
-        assertEquals(100L, DownloadEta.percentOfBaseline(3 * MI, 3 * MI));
-        assertEquals(50L, DownloadEta.percentOfBaseline(MI, 2 * MI));
-        // 20 KiB/s against a 3 MiB/s baseline: under 1%, i.e. the network changed under us.
-        assertTrue(DownloadEta.percentOfBaseline(20 * KI, 3 * MI) < 1L);
+    public void doesNotMatchTheConnectionCountOrAPath() {
+        assertEquals(ByteToken.UNKNOWN, Aria2ProgressLine.completedBytes("[#2089b0 CN:4 DL:4.5MiB]"));
+        assertEquals(ByteToken.UNKNOWN,
+                Aria2ProgressLine.completedBytes("Downloading /data/foo/bar to /data/baz"));
     }
 
     @Test
-    public void aMissingBaselineGivesNoComparison() {
-        assertEquals(DownloadEta.UNKNOWN, DownloadEta.percentOfBaseline(MI, 0L));
-        assertEquals(DownloadEta.UNKNOWN, DownloadEta.percentOfBaseline(MI, -1L));
-        assertEquals(DownloadEta.UNKNOWN, DownloadEta.percentOfBaseline(-1L, MI));
+    public void aLineWithoutTheFiguresGivesUnknownRatherThanZero() {
+        for (String l : new String[]{null, "", "[#2089b0 FileAlloc:0B/0B]", "no numbers here"}) {
+            assertEquals(String.valueOf(l), ByteToken.UNKNOWN, Aria2ProgressLine.completedBytes(l));
+            assertEquals(String.valueOf(l), ByteToken.UNKNOWN, Aria2ProgressLine.declaredTotalBytes(l));
+        }
     }
 
-    /** A stalled transfer is 0% of its baseline, which is a reading — not a missing one. */
+    /**
+     * Documented, not endorsed: a --check-integrity line carries the same shape, so this parser
+     * would read verification progress as transfer progress. Harmless today because the estimate is
+     * recomputed on the next real progress line, and noted so it is a known limit rather than a
+     * surprise. If it ever matters, require DL: on the same line.
+     */
     @Test
-    public void aStalledTransferIsZeroPercentNotUnknown() {
-        assertEquals(0L, DownloadEta.percentOfBaseline(0L, 3 * MI));
+    public void aChecksumLineIsCurrentlyIndistinguishable() {
+        String chk = "[#2089b0 CHK:512MiB/1.0GiB(50%)]";
+        assertEquals(512 * MI, Aria2ProgressLine.completedBytes(chk));
+    }
+
+    @Test
+    public void unitsWithoutTheBinaryMarkerStillParse() {
+        assertEquals(1000_000L, Aria2ProgressLine.completedBytes("[#x 1MB/2MB(50%)]"));
     }
 }

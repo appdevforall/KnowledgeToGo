@@ -63,26 +63,14 @@ public class Aria2ExitTest {
         }
     }
 
-    // ---- the question the caller actually asks ------------------------------
-
-    @Test
-    public void onlyTransientAndStalledAreWorthAnotherAttempt() {
-        assertTrue(Aria2Exit.worthAnotherAttempt(6));
-        assertTrue(Aria2Exit.worthAnotherAttempt(5));
-        assertFalse(Aria2Exit.worthAnotherAttempt(0));
-        assertFalse(Aria2Exit.worthAnotherAttempt(9));
-        assertFalse("unknown must not opt in by default", Aria2Exit.worthAnotherAttempt(1));
-    }
-
     /**
-     * A full disk is the case where retrying is actively harmful: every attempt re-downloads
-     * gigabytes that cannot be written. Pinned separately because it is the one a generous default
-     * would get wrong.
+     * A full disk is the case where retrying would be actively harmful: every attempt re-downloads
+     * gigabytes that cannot be written, on a connection the user may be paying for by the megabyte.
+     * Pinned on its own because it is the one a generous default would get wrong.
      */
     @Test
-    public void aFullDiskIsNeverRetried() {
+    public void aFullDiskIsPermanentAndNotSomethingToTryAgain() {
         assertEquals(Kind.PERMANENT, Aria2Exit.kindOf(9));
-        assertFalse(Aria2Exit.worthAnotherAttempt(9));
     }
 
     // ---- labels -------------------------------------------------------------
