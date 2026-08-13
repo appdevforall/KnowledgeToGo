@@ -15,6 +15,7 @@ import org.iiab.controller.deploy.domain.ExtractProgress;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -167,7 +168,7 @@ public class TarExtractor {
                 // thread (below); the compressed byte count comes from the feeder (further below),
                 // measured against the archive size on disk — the same currency as the VERIFY pass.
                 final String[] lastExtractFile = {""};
-                final long extractStartMs = System.currentTimeMillis();
+                final long extractStartMs = SystemClock.elapsedRealtime();
                 final long compressedTotalBytes = new File(archivePath).length();
                 Thread readerThread = new Thread(() -> {
                     long[] lastEmit = {0L};
@@ -212,10 +213,11 @@ public class TarExtractor {
                     // try-with-resources): once tar dies its stdin flush/close re-throws EPIPE,
                     // which would escape to the outer catch and hide tar's real cause (ADFA-4544).
                     OutputStream tarInput = tarProcess.getOutputStream();
-                    // ADFA-5118: count compressed bytes pulled from disk for the EXTRACT-pass bar.
-                    final CountingInputStream cis = new CountingInputStream(new FileInputStream(archivePath));
                     long lastByteEmit = 0L;
-                    try (GZIPInputStream gis = new GZIPInputStream(cis)) {
+                    // ADFA-5118: count compressed bytes pulled from disk for the EXTRACT-pass bar; cis
+                    // lives in the try-with-resources so it closes even if GZIPInputStream throws.
+                    try (CountingInputStream cis = new CountingInputStream(new FileInputStream(archivePath));
+                         GZIPInputStream gis = new GZIPInputStream(cis)) {
 
                         byte[] buffer = new byte[8192]; // 8KB RAM chunk
                         int bytesRead;
@@ -223,7 +225,7 @@ public class TarExtractor {
                             try {
                                 tarInput.write(buffer, 0, bytesRead);
                                 totalWritten += bytesRead;
-                                long now = System.currentTimeMillis();
+                                long now = SystemClock.elapsedRealtime();
                                 if (compressedTotalBytes > 0L && now - lastByteEmit >= 200) {
                                     lastByteEmit = now;
                                     emitPhase(listener, uiHandler, Phase.EXTRACT,
@@ -332,7 +334,7 @@ public class TarExtractor {
         // ADFA-5118: archive size on disk = the exact denominator for compressed-bytes progress.
         final long compressedTotal = new File(archivePath).length();
         final Handler uiHandler = new Handler(Looper.getMainLooper());
-        final long startMs = System.currentTimeMillis();
+        final long startMs = SystemClock.elapsedRealtime();
         final String[] lastFile = {""};
 
         Thread feeder = null;
@@ -346,7 +348,7 @@ public class TarExtractor {
                     long lastEmit = 0L;
                     while ((read = gis.read(buffer)) != -1) {
                         os.write(buffer, 0, read);
-                        long now = System.currentTimeMillis();
+                        long now = SystemClock.elapsedRealtime();
                         if (compressedTotal > 0L && now - lastEmit >= 200) {
                             lastEmit = now;
                             emitPhase(listener, uiHandler, Phase.VERIFY,

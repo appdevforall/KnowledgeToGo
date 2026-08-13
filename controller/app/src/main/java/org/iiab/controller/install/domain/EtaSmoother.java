@@ -52,11 +52,4 @@ public final class EtaSmoother {
         if (nowMs - pendingSinceMs >= dwellMs) { shown = bucket; return shown; }    // held long enough
         return shown;                                        // still inside the dwell window
     }
-
-    /** Forget the running state — used at the verify->extract handoff, where the estimate restarts. */
-    public void reset() {
-        shown = UNKNOWN;
-        pending = UNKNOWN;
-        pendingSinceMs = 0L;
-    }
 }

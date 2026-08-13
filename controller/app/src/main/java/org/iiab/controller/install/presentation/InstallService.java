@@ -392,7 +392,7 @@ public final class InstallService extends Service {
                         if (extract) {
                             int bucket = etaSmoother.smooth(
                                     org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
-                                    System.currentTimeMillis());
+                                    android.os.SystemClock.elapsedRealtime());
                             InstallProgressRepository.get().postExtracting(unified, line, formatEta(bucket));
                         } else {
                             InstallProgressRepository.get().postVerifying(unified, line, "");   // no countdown during verify

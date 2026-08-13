@@ -58,11 +58,4 @@ public class EtaSmootherTest {
         assertEquals(1, s.smooth(0, 7000L));   // only 4s since re-arm -> still 1 min
         assertEquals(0, s.smooth(0, 8000L));   // now 5s since re-arm -> switch
     }
-
-    @Test public void resetForgetsState() {
-        EtaSmoother s = new EtaSmoother(5000L);
-        s.smooth(2, 0L);
-        s.reset();
-        assertEquals(7, s.smooth(7, 100L));    // adopts the next first value immediately again
-    }
 }
