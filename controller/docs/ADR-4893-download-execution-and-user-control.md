@@ -95,12 +95,20 @@ ADFA-5118 (merged 12 Aug) built an estimate for the **write** side — verify an
 (`postVerifying(percent, message, eta)`), the layout, and the strings in all 34 locales. The
 download leg has none of that, and it is the longest of the three and the one on the worst link.
 
-**Reusing that machinery for the download is a proposal, not a wiring gap**, and the two signals
-are not the same. The extract estimate is derived locally and wobbles because files decompress at
-different speeds; a download estimate wobbles because the network does, which is noise of a
-different kind and duration. The smoother's shape fits — it already keeps the last shown value
-through a rate gap, which is exactly what a stalling transfer produces — but its five-second dwell
-was tuned for the other signal and should not be inherited without a reason.
+**That machinery is not reused, and trying to was instructive.** The two signals are not alike: the
+extract estimate wobbles because files decompress at wildly different speeds, while a transfer rate
+over a network is comparatively steady — 34 to 40 MiB/s across a whole measured run.
+
+A first attempt did put the download through `EtaSmoother`, and the label froze at "about 26 min"
+for the first half of a download that took sixty seconds, then at "almost done" for the rest. Two
+causes, and the second is the general one: the smoother adopts its first reading immediately, and
+that reading lands while aria2 is still ramping at around 1 MB/s; and its dwell only advances while
+the bucket holds steady, so a figure that moves every tick resets the window on every tick and
+nothing ever replaces that first reading.
+
+So the download does not smooth. A steady rate produces an estimate that moves smoothly on its own,
+and moving is what an estimate is for. Verify and extract keep their smoother, because there the
+wobble is real.
 
 **We compute our own estimate rather than adopt aria2's.** aria2 prints one and we parse it, so
 taking it would be free; it is rejected because this document makes the estimate a *decision input*
@@ -204,20 +212,24 @@ gives them nothing to press.
 
 ## Action items
 
-1. Carry aria2's `ETA:` through to the state, so the download leg shows the estimate that verify
-   and extract already show. `postDownloading` gains the argument its caller already receives and
-   discards; `EtaSmoother` and the display come from ADFA-5118 unchanged. Also stop destroying the
-   numeric rate at `Aria2Manager:219`, and keep the profiler's baseline instead of discarding it
-   after the IPv4 decision. **ADFA-4895.**
-2. The control surface — pause, switch network, resume — and a `ConnectivityManager.NetworkCallback`
+1. Stop destroying the numeric rate, and show an estimate on the download leg. **ADFA-4895 — done.**
+   `ByteToken` reads aria2's tokens back into bytes, `Aria2ProgressLine` pulls completed and total
+   off the same line, and `DownloadEta` divides. Not aria2's own `ETA:` — see decision 3. Not
+   smoothed either, for the reason above. The display is a three-column row of its own; ADFA-5118's
+   two-column row is unchanged and still serves the two-figure lines, including the IPv4 probe.
+2. Keep the profiler's baseline instead of discarding it after the IPv4 decision, and read the rate
+   against it. **Not started**, and deliberately not carried in ADFA-4895's first PR: the comparison
+   only means something once something acts on it, and an unused helper is dead code. It arrives
+   with the offer in item 3.
+3. The control surface — pause, switch network, resume — and a `ConnectivityManager.NetworkCallback`
    that resumes on a new validated network. **ADFA-4895**, after 1.
-3. Bring Books to a timeout, an abort wired to cancel, and a ranged resume; give Maps a per-layer
+4. Bring Books to a timeout, an abort wired to cancel, and a ranged resume; give Maps a per-layer
    checkpoint. **ADFA-4894.**
-4. Device-side memory of a live run, and re-attachment on relaunch. **ADFA-4897**. Size it after the
+5. Device-side memory of a live run, and re-attachment on relaunch. **ADFA-4897**. Size it after the
    device test below, not before.
-5. UIDT on API 34+ with a foreground-service fallback, for the rootfs download only. Not yet
+6. UIDT on API 34+ with a foreground-service fallback, for the rootfs download only. Not yet
    ticketed; carries the Android 16 quota exposure.
-6. Decide Kolibri: wrap `importcontent` or accept it as opaque. Not yet ticketed.
+7. Decide Kolibri: wrap `importcontent` or accept it as opaque. Not yet ticketed.
 
 ### Open before any of this is acted on
 
