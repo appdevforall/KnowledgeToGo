@@ -377,26 +377,25 @@ public final class InstallService extends Service {
                     // ADFA-5118: once byte-based progress arrives (gzip path), it owns the unified bar;
                     // the member-count callback is only the fallback for a non-gzip archive.
                     private volatile boolean byteSeen = false;
-                    // ADFA-5118: debounce the ETA text so it stops flickering at a boundary; reset at
-                    // the verify->extract handoff, where the estimate restarts.
+                    // ADFA-5118: the ETA is shown only during EXTRACT. A countdown during VERIFY would
+                    // have to guess the (slower, write-bound) extract time and then jump upward at the
+                    // handoff, so verify shows bar + % + file only. The smoother debounces the single
+                    // extract countdown so its text doesn't flicker at a boundary.
                     private final org.iiab.controller.install.domain.EtaSmoother etaSmoother =
                             new org.iiab.controller.install.domain.EtaSmoother(5000L);
-                    private TarExtractor.Phase lastPhase = null;
 
                     @Override
                     public void onExtractPhase(TarExtractor.Phase phase, int passPercent, long etaSeconds, String line) {
                         byteSeen = true;
-                        if (phase != lastPhase) { etaSmoother.reset(); lastPhase = phase; }
                         boolean extract = phase == TarExtractor.Phase.EXTRACT;
                         int unified = org.iiab.controller.deploy.domain.ExtractProgress.unifiedPercent(passPercent, extract);
-                        int bucket = etaSmoother.smooth(
-                                org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
-                                System.currentTimeMillis());
-                        String eta = formatEta(bucket);
                         if (extract) {
-                            InstallProgressRepository.get().postExtracting(unified, line, eta);
+                            int bucket = etaSmoother.smooth(
+                                    org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
+                                    System.currentTimeMillis());
+                            InstallProgressRepository.get().postExtracting(unified, line, formatEta(bucket));
                         } else {
-                            InstallProgressRepository.get().postVerifying(unified, line, eta);
+                            InstallProgressRepository.get().postVerifying(unified, line, "");   // no countdown during verify
                         }
                     }
 
