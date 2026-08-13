@@ -1,335 +1,248 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 2558" width="1280" height="2558" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 2326" width="1280" height="2326" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>Operation model — ticket map and progress</title>
-<desc>Which ticket owns what, what blocks what, and how far each has got. Update the class on each item dot as work lands: s-done, s-doing or s-todo. The canvas is deliberately not page-sized — grow it rather than dropping items.</desc>
-
+<desc>Three columns and they mean something: left is delivered, middle is what is being worked now, right is what comes next. A card sits in the column its status puts it in. The full-width cards at the bottom are the only things that span the board, and they span it because nobody owns them yet. Flip a dot's class as work lands: s-done, s-doing, s-todo.</desc>
 <style>
   .bg    { fill: #F7F8F9; }
   .card  { fill: #FFFFFF; stroke: #D5D8DC; stroke-width: 1.5; rx: 10; }
-  .card-hi { fill: #FFFFFF; stroke: #0E7C86; stroke-width: 2.5; rx: 10; }
-  .card-park { fill: #FBFBFC; stroke: #C8CDD2; stroke-width: 1.5; stroke-dasharray: 5 4; rx: 10; }
   .h1    { font-size: 19px; font-weight: 700; fill: #1F2328; }
   .h2    { font-size: 14.5px; font-weight: 700; fill: #1F2328; }
-  .h3    { font-size: 12.5px; font-weight: 700; fill: #1F2328; }
+  .h3    { font-size: 12.5px; font-weight: 700; fill: #1F2328; letter-spacing: .04em; }
   .sub   { font-size: 11.5px; fill: #5B636B; }
   .item  { font-size: 11.5px; fill: #1F2328; }
   .note  { font-size: 11px; fill: #5B636B; font-style: italic; }
-  .lnk   { stroke: #9AA0A6; stroke-width: 1.6; fill: none; }
-  .lnk-hi{ stroke: #0E7C86; stroke-width: 2; fill: none; }
-  .lnklbl{ font-size: 10.5px; fill: #5B636B; }
-
-  /* ---- the three states: change an item's class to move it ---- */
   .s-done { fill: #1B7F4B; stroke: none; }
   .s-doing{ fill: #C77700; stroke: none; }
   .s-todo { fill: #FFFFFF; stroke: #9AA0A6; stroke-width: 1.5; }
-
-  .badge  { fill: #0E7C86; }
-  .badgetx{ font-size: 12px; font-weight: 700; fill: #FFFFFF; }
   .chip   { rx: 9; }
   .chiptx { font-size: 10.5px; font-weight: 700; }
 </style>
-
-<defs>
-  <marker id="arw" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
-    <path d="M0,1 L8,4.5 L0,8 Z" fill="#9AA0A6"/>
-  </marker>
-  <marker id="arwhi" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
-    <path d="M0,1 L8,4.5 L0,8 Z" fill="#0E7C86"/>
-  </marker>
-  <marker id="arwhiS" markerWidth="9" markerHeight="9" refX="1" refY="4.5" orient="auto">
-    <path d="M8,1 L0,4.5 L8,8 Z" fill="#0E7C86"/>
-  </marker>
-</defs>
-
-<rect class="bg" x="0" y="0" width="1280" height="2558"/>
-
+<rect class="bg" x="0" y="0" width="1280" height="2326"/>
 <text class="h1" x="24" y="34">Operation model — ticket map</text>
-<text class="sub" x="24" y="54">Which ticket owns what, what blocks what, and how far each one has got.</text>
-
-<!-- legend -->
+<text class="sub" x="24" y="54">Which ticket owns what, how far it got, and where the work is now. A card's column is its status: delivered, in flight, next.</text>
+<text class="sub" x="24" y="72">Re-laid out 13 Aug — cards used to span all three columns regardless of state, so a closed ticket could read as if it were next.</text>
 <circle class="s-done"  cx="962" cy="30" r="6"/><text class="sub" x="974" y="34">done</text>
 <circle class="s-doing" cx="1032" cy="30" r="6"/><text class="sub" x="1044" y="34">in progress</text>
 <circle class="s-todo"  cx="1132" cy="30" r="6"/><text class="sub" x="1144" y="34">not started</text>
-<text class="note" x="962" y="54">Edit the dot's class in this file as work lands.</text>
-
-<!-- ============================================================ -->
-<!-- COLUMN 1 — delivered                                          -->
-<!-- ============================================================ -->
-<text class="h3" x="24" y="80">DELIVERED</text>
-
-<!-- ADFA-4954 -->
-<rect class="card" x="24" y="90" width="392" height="212"/>
-<rect class="chip" x="40" y="106" width="52" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="120" fill="#1B7F4B">DONE</text>
-<text class="h2" x="40" y="149">ADFA-4954 · Kolibri seeding</text>
-<text class="sub" x="40" y="167">Where the model got applied, and</text>
-<text class="sub" x="40" y="182">where most of the evidence came from.</text>
-
-<circle class="s-done" cx="48" cy="202" r="5.5"/><text class="item" x="62" y="206">Browse and whole channels</text>
-<circle class="s-done" cx="48" cy="221" r="5.5"/><text class="item" x="62" y="225">Topic selection over Studio's tree</text>
-<circle class="s-done" cx="48" cy="240" r="5.5"/><text class="item" x="62" y="244">Get More door + live download</text>
-<circle class="s-done" cx="48" cy="259" r="5.5"/><text class="item" x="62" y="263">Drain a courses-only wizard run</text>
-<text class="note" x="40" y="286">Metadata-only scope split out — see the new card opposite.</text>
-
-<!-- ADFA-5070 -->
-<rect class="card" x="24" y="322" width="392" height="152"/>
-<rect class="chip" x="40" y="338" width="52" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="352" fill="#1B7F4B">DONE</text>
-<text class="h2" x="40" y="381">ADFA-5070 · Stale content state</text>
-<text class="sub" x="40" y="399">A session outliving the system it was</text>
-<text class="sub" x="40" y="414">about. Found while testing 4954.</text>
-
-<circle class="s-done" cx="48" cy="434" r="5.5"/><text class="item" x="62" y="438">Wipe content sessions when replaced</text>
-<circle class="s-done" cx="48" cy="453" r="5.5"/><text class="item" x="62" y="457">All five destructive routes hooked</text>
-
-<!-- ADFA-5074 -->
-<rect class="card" x="24" y="494" width="392" height="226"/>
-<rect class="chip" x="40" y="510" width="52" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="524" fill="#1B7F4B">DONE</text>
-<text class="h2" x="40" y="553">ADFA-5074 · Content surface</text>
-<text class="sub" x="40" y="571">One landing, one host, one queue.</text>
-
-<circle class="s-done" cx="48" cy="592" r="5.5"/><text class="item" x="62" y="596">Front door + re-entry</text>
-<circle class="s-done" cx="48" cy="611" r="5.5"/><text class="item" x="62" y="615">A session gates only work in flight</text>
-<circle class="s-done" cx="48" cy="630" r="5.5"/><text class="item" x="62" y="634">Get More notices a platform arriving</text>
-<circle class="s-done" cx="48" cy="649" r="5.5"/><text class="item" x="62" y="653">One host for every progress screen</text>
-<text class="note" x="40" y="678">Grew past its plan: the index as router, a real queue,</text>
-<text class="note" x="40" y="694">per-state rows, a transfer rate, and a completion chain</text>
-<text class="note" x="40" y="710">that could not close itself.</text>
-
-<!-- ============================================================ -->
-<!-- COLUMN 2 — the model                                          -->
-<!-- ============================================================ -->
-<text class="h3" x="444" y="80">THE SPINE — everything else reads it</text>
-
-<rect class="card-hi" x="444" y="90" width="392" height="332"/>
-<circle class="badge" cx="468" cy="115" r="13"/><text class="badgetx" x="464" y="120">1</text>
-<text class="h2" x="490" y="120">ADFA-5061 · Operation model</text>
-<text class="sub" x="468" y="142">One declared source of truth for</text>
-<text class="sub" x="468" y="157">(platform, kind, class).</text>
-<text class="note" x="468" y="177">facts: installed · healthy · server up · platform present</text>
-
-<circle class="s-done"  cx="468" cy="202" r="5.5"/><text class="item" x="482" y="206">One reader for the system facts</text>
-<circle class="s-done"  cx="468" cy="221" r="5.5"/><text class="item" x="482" y="225">Pure resolver: live / stopped / deferred</text>
-<circle class="s-done"  cx="468" cy="240" r="5.5"/><text class="item" x="482" y="244">Both classes dispatch through the model</text>
-<circle class="s-done"  cx="468" cy="259" r="5.5"/><text class="item" x="482" y="263">Retire the four *Wizard booleans</text>
-<circle class="s-done"  cx="468" cy="278" r="5.5"/><text class="item" x="482" y="282">Wizard selection survives being killed</text>
-<circle class="s-done"  cx="468" cy="297" r="5.5"/><text class="item" x="482" y="301">UX contract tokens</text>
-<text class="note" x="482" y="318">Colour is severity, not class — decision 3 amended, not</text>
-<text class="note" x="482" y="333">implemented. The finished-card rate split to its own card.</text>
-<circle class="s-done"  cx="468" cy="354" r="5.5"/><text class="item" x="482" y="358">Apply to Kolibri (install vs seeding)</text>
-<text class="note" x="482" y="375">Both halves reach it: seeding through the dispatcher and</text>
-<text class="note" x="482" y="390">ContentDoor, the install through SystemDoor. The blocker</text>
-<text class="note" x="482" y="405">noted here was removed by that same change.</text>
-
-<path class="lnk" d="M640,422 L640,448" marker-end="url(#arw)"/>
-<text class="lnklbl" x="650" y="442">follow up</text>
-
-<rect class="card" x="444" y="450" width="392" height="98" stroke="#5F5E5A" stroke-dasharray="4 3"/>
-<text class="h3" x="460" y="472">FOLLOW-UP — out of 5061 so it can close, not dropped</text>
-<circle class="s-todo" cx="468" cy="491" r="5.5"/><text class="item" x="482" y="495">One shared answer to "is the platform there"</text>
-<text class="note" x="482" y="511">5104 proved the disk source; the repository is still owed.</text>
-<circle class="s-todo" cx="468" cy="529" r="5.5"/><text class="item" x="482" y="533">Dashboard Rebuild: the REST/proot fork</text>
-
-<!-- NEW — catalogue depth (split out of 4954) -->
-<rect class="card" x="444" y="556" width="392" height="164"/>
-<rect class="chip" x="460" y="572" width="60" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="468" y="586" fill="#1B5E8F">SPLIT OUT</text>
-<text class="h2" x="460" y="615">ADFA-5094 · Kolibri topic display</text>
-<text class="sub" x="460" y="633">Should not depend on reaching Studio</text>
-<text class="sub" x="460" y="648">over the internet. Needs the box first.</text>
-
-<circle class="s-todo" cx="468" cy="668" r="5.5"/><text class="item" x="482" y="672">Task map learns the metadata-only import</text>
-<circle class="s-todo" cx="468" cy="687" r="5.5"/><text class="item" x="482" y="691">The box serves the tree it imported</text>
-<circle class="s-todo" cx="468" cy="706" r="5.5"/><text class="item" x="482" y="710">The picker prefers the box, falls back to Studio</text>
-
-<!-- ============================================================ -->
-<!-- COLUMN 3 — next, and the one that can lose data               -->
-<!-- ============================================================ -->
-<text class="h3" x="864" y="80">NEXT</text>
-
-<!-- ADFA-5062 -->
-<rect class="card" x="864" y="90" width="392" height="250"/>
-<circle class="badge" cx="888" cy="115" r="13"/><text class="badgetx" x="884" y="120">2</text>
-<text class="h2" x="910" y="120">ADFA-5062 · Retire derivations</text>
-<text class="sub" x="888" y="142">The surfaces that still guess. All five</text>
-<text class="sub" x="888" y="157">re-verified against the code, 11 Aug.</text>
-
-<circle class="s-done" cx="888" cy="182" r="5.5"/><text class="item" x="902" y="186">ModuleActionSheet: Open vs Install (5061)</text>
-<circle class="s-todo" cx="888" cy="204" r="5.5"/><text class="item" x="902" y="208">Home cards: app install vs content</text>
-<circle class="s-todo" cx="888" cy="226" r="5.5"/><text class="item" x="902" y="230">SetupProgressActivity key switch</text>
-<circle class="s-todo" cx="888" cy="248" r="5.5"/><text class="item" x="902" y="252">Maps: two mechanisms, one name</text>
-<circle class="s-todo" cx="888" cy="270" r="5.5"/><text class="item" x="902" y="274">5 sites that probe the rootfs themselves</text>
-<text class="note" x="888" y="298">The rule to carry: a check that answers with a boolean</text>
-<text class="note" x="888" y="313">invites its caller to treat silence as a verdict. Three</text>
-<text class="note" x="888" y="328">screens made that mistake independently.</text>
-
-<!-- ADFA-4758 -->
-<rect class="card" x="864" y="360" width="392" height="190"/>
-<rect class="chip" x="880" y="376" width="58" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="888" y="390" fill="#1B7F4B">DONE</text>
-<text class="h2" x="880" y="419">ADFA-4758 · Software and content</text>
-<text class="sub" x="880" y="437">The user is never pinned to a</text>
-<text class="sub" x="880" y="452">preselection. That was the whole ask.</text>
-
-<circle class="s-done" cx="888" cy="472" r="5.5"/><text class="item" x="902" y="476">Modules install on their own</text>
-<circle class="s-done" cx="888" cy="491" r="5.5"/><text class="item" x="902" y="495">Content chosen item by item</text>
-<circle class="s-done" cx="888" cy="510" r="5.5"/><text class="item" x="902" y="514">Guard: no OS re-extract by default</text>
-<text class="note" x="902" y="532">It drifted into installer internals and content migration.</text>
-<text class="note" x="902" y="546">Neither was the goal; both moved out, below.</text>
-
-<!-- ADFA-5063 — parked, out of the model's flow -->
-<rect class="card-park" x="864" y="570" width="392" height="150"/>
-<rect class="chip" x="880" y="586" width="74" height="19" fill="#F0F1F3" stroke="none"/>
-<text class="chiptx" x="888" y="600" fill="#5B636B">NOT NOW</text>
-<text class="h2" x="880" y="629">ADFA-5063 · Reversibility</text>
-<text class="sub" x="880" y="647">Real work, but not the model's. Taken out</text>
-<text class="sub" x="880" y="662">of the flow: nothing here blocks it and it</text>
-<text class="sub" x="880" y="677">blocks nothing.</text>
-
-<circle class="s-todo" cx="888" cy="697" r="5.5"/><text class="item" x="902" y="701">Decide: can a module be uninstalled?</text>
-<text class="note" x="902" y="716">Seven verbs for "remove" today; two name one action.</text>
-
-<!-- ============================================================ -->
-<!-- links                                                         -->
-<!-- ============================================================ -->
-<path class="lnk-hi" d="M416,196 L440,196" marker-end="url(#arwhi)" marker-start="url(#arwhiS)"/>
-<text class="lnklbl" x="330" y="186">evidence ⇄ applied to</text>
-
-<path class="lnk-hi" d="M836,170 L860,170" marker-end="url(#arwhi)"/>
-<text class="lnklbl" x="838" y="162">blocks</text>
-
-
-<path class="lnk" d="M416,600 C430,600 430,300 440,290" marker-end="url(#arw)"/>
-<text class="lnklbl" x="240" y="600">a SYSTEM op invalidates content state</text>
-
-<!-- ============================================================ -->
-<!-- carried, not blocking                                         -->
-<!-- ============================================================ -->
-<!-- ============================================================ -->
-<!-- new, and not a footnote                                       -->
-<!-- ============================================================ -->
-<rect class="card" x="24" y="752" width="1232" height="180" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="768" width="88" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="48" y="782" fill="#1B5E8F">ADFA-5103</text>
-<text class="h2" x="188" y="783">The app cannot tell a stopped service from a stopped environment</text>
-
-<text class="item" x="40" y="810">`pdsm stop` stops the services inside the container; the proot environment keeps running. The app has one runtime signal — an HTTP ping to</text>
-<text class="item" x="40" y="828">/home with a 1.5 s timeout — so "services down, proot alive" and "everything down" are the same observable state, and both render as OFFLINE.</text>
-<text class="item" x="40" y="852">The consequence is not cosmetic: LibraryActivity.canStartServer() reads "not answering" as "nothing is running", so Retry can start a SECOND</text>
-<text class="item" x="40" y="870">proot over a live one — the collision class ADR-4832 documents (shared /tmp, /dev/shm, ports). Reachable after any app restart, because the</text>
-<text class="item" x="40" y="888">handle that would have stopped the first one is a field on an Activity-scoped ServerController.</text>
-<text class="code" x="40" y="910">The environment already tells us it exited — startEnvironment's onProcessExit only logs it. Nothing kills the proot when the app closes.</text>
-<text class="code" x="40" y="928">Detection exists and is tested (EnvironmentProcess). Wiring it needs: the handle per process, "ensure up" not "start", and a boot grace.</text>
-
-<!-- ============================================================ -->
-<!-- ADFA-5119 — belongs to the download contract, not to this board's spine -->
-<!-- ============================================================ -->
-<rect class="card" x="24" y="964" width="1232" height="196" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="980" width="88" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="48" y="994" fill="#1B5E8F">ADFA-5119</text>
-<text class="h2" x="188" y="995">Every leg of the base install ends in an honest terminal — under ADFA-4893, not here</text>
-
-<text class="item" x="40" y="1022">The boot gate lifts only on SUCCESS or FAILED, deliberately, so a 2-3 GB download cannot lose to a timeout. Six legs feed it and they do not agree: the</text>
-<text class="item" x="40" y="1040">module queue examines the exit code and rolls back local_vars (:802-826), bootstrap fails properly (:700-701) — but the kiwix index (:478-479) and maps</text>
-<text class="item" x="40" y="1058">(:545-546) send BOTH exit and error to the next step, so a failed run is reported as a finished install. That is the worse of the two faults; the hung</text>
-<text class="item" x="40" y="1076">gate is the rarer one, and needs waitFor() never to return.</text>
-<text class="code" x="40" y="1100">Rewritten 12 Aug. It was first drafted as a watchdog in LibraryActivity inferring liveness from repeated progress timestamps — reaching for the pan by</text>
-<text class="code" x="40" y="1118">the grill. The truth is at the source: Aria2Manager holds the process and parses DL: on every line, then discards it as a display string (:219), and</text>
-<text class="code" x="40" y="1136">ADFA-4895 already owned "surface stalled state". Download → 4895, maps → 4898, and what is left — kiwix index, extract, the shared contract — is 5119.</text>
-
-<!-- ============================================================ -->
-<!-- second standalone: its own ticket, one pass                   -->
-<!-- ============================================================ -->
-<rect class="card" x="24" y="1192" width="1232" height="182" stroke="#1B7F4B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1208" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="1222" fill="#1B7F4B">ADFA-5104</text>
-<text class="h2" x="188" y="1223">Module management reads what is installed, and says so — DONE</text>
-
-<text class="item" x="40" y="1250">The screen answered "what is installed" by asking "what is answering", so with the box stopped every module was offered, installed ones</text>
-<text class="item" x="40" y="1268">included — an offer that stops the box for hours to rebuild what was there. It reads etc/iiab/local_vars.yml on the rootfs now: the</text>
-<text class="item" x="40" y="1286">installer's own record, readable with the services down, and invalidated for free by any reset, restore or clone because it lives inside</text>
-<text class="item" x="40" y="1304">the rootfs it describes. Installs only add, so a remembered answer is safe here where a remembered "is it running" would not be.</text>
-<text class="code" x="40" y="1328">Three facts, no longer one: a system must exist before modules mean anything; what is installed comes from disk; whether it runs gates</text>
-<text class="code" x="40" y="1346">neither. Silence keeps its own name — an unreadable file is "unknown", not "absent". The probe survives, add-only. The list stops hiding</text>
-<text class="code" x="40" y="1364">what you have, and the detail agrees with it. GetMoreHub keeps its copy of the probe: add-only there, so not the same defect.</text>
-
-
-
-<!-- ============================================================ -->
-<!-- ADFA-5105 — delivered -->
-<rect class="card" x="24" y="1406" width="1232" height="130" stroke="#1B7F4B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1422" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="1436" fill="#1B7F4B">ADFA-5105</text>
-<text class="h2" x="144" y="1437">Free space is checked before a destructive run — DONE</text>
-<text class="item" x="40" y="1464">Sixteen hand-rolled readers, four APIs, two magic margins, and only two of them gated anything — never the wizard install, the reinstall,</text>
-<text class="item" x="40" y="1482">restore or reset. A wipe followed by an extract that ran out of disk left a rootfs that would not boot. One reader, one margin, measured on</text>
-<text class="item" x="40" y="1500">the filesystem actually written to, and the refusal happens before anything is deleted.</text>
-<text class="code" x="40" y="1522">Still open, and no longer named by anyone: a run-level budget that sums a whole queued batch. 5105 put it out of scope deliberately.</text>
-
-<!-- ADFA-5110 — delivered, the producer half -->
-<rect class="card" x="24" y="1568" width="1232" height="112" stroke="#1B7F4B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1584" width="88" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="48" y="1598" fill="#1B7F4B">ADFA-5110</text>
-<text class="h2" x="144" y="1599">The build publishes the uncompressed rootfs size — DONE</text>
-<text class="item" x="40" y="1626">Every free-space estimate was built on the compressed artifact size, because that is what rootfs_sizes.csv and the meta4 carry. The extract</text>
-<text class="item" x="40" y="1644">writes the larger uncompressed tree, so every estimate under-counted — which is what made 5105's preflight need a real figure.</text>
-<text class="code" x="40" y="1666">The builder had the tree in hand already. Producer only: it publishes a sidecar the app can read before downloading or wiping anything.</text>
-
-<!-- ADFA-5106 — open -->
-<rect class="card" x="24" y="1712" width="1232" height="128" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1728" width="88" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="48" y="1742" fill="#1B5E8F">ADFA-5106</text>
-<text class="h2" x="144" y="1743">A download measured in hours has no durable record</text>
-<text class="item" x="40" y="1770">Content sessions live in static memory inside their services. If the process dies mid-download, the job state and the wishlist that ordered</text>
-<text class="item" x="40" y="1788">it both go, and the user comes back to a screen that knows nothing about work that may have run for an afternoon.</text>
-<text class="code" x="40" y="1810">ADFA-4874 found this on 27 July and deferred it to a background-jobs monitor. DUPLICATE: ADFA-4897 (area 4 of the download contract) has owned it</text>
-<text class="code" x="40" y="1828">since 28 July. 5106 was opened on 11 Aug without searching the tracker and claims "unowned until now" — it is not. 4897 survives; linked, 5106 to close.</text>
-
-<!-- ============================================================ -->
-<!-- third standalone: its own ticket, one pass                    -->
-<!-- ============================================================ -->
-<rect class="card" x="24" y="1872" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="1888" width="132" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="1902" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="188" y="1903">A finished run leaves no evidence it happened</text>
-
-<text class="item" x="40" y="1930">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare "3 Done". The rate is dropped at completion</text>
-<text class="item" x="40" y="1948">by design — rateSuffix is called only from the not-complete branch — and "838 MB · 32 MB/s · 4 min" is the only thing that tells a real</text>
-<text class="item" x="40" y="1966">download from a no-op. Split out of the UX-contract item because it is not a token: it is instrumentation, in three services with three</text>
-<text class="item" x="40" y="1984">different starting points, and pretending otherwise kept it amber on a card it did not belong to.</text>
-<text class="code" x="40" y="2008">Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed on its service. The only</text>
-<text class="code" x="40" y="2026">start timestamp in main/ is KolibriSeedRepository.startedAtMs, private and unreachable from the row renderer. Also here: the maps card</text>
-<text class="code" x="40" y="2044">cannot show "adding content", because its progress belongs to the module queue rather than to a content stream.</text>
-
-
-<!-- ============================================================ -->
-<!-- fourth standalone: moved out of 4758, its own ticket, one pass -->
-<!-- ============================================================ -->
-<rect class="card" x="24" y="2086" width="1232" height="182" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="2102" width="132" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="2116" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="188" y="2117">Replacing the system, and the installer that does it — no ticket on purpose</text>
-
-<text class="item" x="40" y="2144">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow</text>
-<text class="item" x="40" y="2162">that works. Recorded here so they are picked up on their own terms rather than as somebody else's leftovers.</text>
-<circle class="s-todo" cx="48" cy="2186" r="5.5"/><text class="item" x="62" y="2190">Two separately invoked installers. One ACTION_START becomes five pipelines through four booleans set by three unrelated senders.</text>
-<circle class="s-todo" cx="48" cy="2208" r="5.5"/><text class="item" x="62" y="2212">Content-only backup, so a reinstall at another tier can keep what the user added. From zero: the box wipes and rewrites.</text>
-<text class="code" x="40" y="2236">Not blocked by this: the tier picker reports success while doing nothing when a rootfs directory exists — implemented and wrong</text>
-<text class="code" x="40" y="2254">today, so it is a bug with its own ticket, not part of the work above.</text>
-
-<!-- ============================================================ -->
-<rect class="card" x="24" y="2300" width="1232" height="142"/>
-<rect class="chip" x="40" y="2316" width="150" height="19" fill="#F0F1F3" stroke="none"/>
-<text class="chiptx" x="48" y="2330" fill="#5B636B">CARRIED, NOT BLOCKING</text>
-<text class="h3" x="204" y="2330">Found in the last two days; recorded so they are met on purpose</text>
-
-<circle class="s-todo" cx="48" cy="2354" r="5.5"/><text class="item" x="62" y="2358">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<circle class="s-todo" cx="48" cy="2398" r="5.5"/><text class="item" x="62" y="2402">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
-
-<text class="note" x="24" y="2438">NEXT, 12 Aug: ADFA-4895 (rootfs download — retry, network change, stalled state), raised to Important. It is area 2 of the download contract ADFA-4893,</text>
-<text class="note" x="24" y="2454">which now owns the install-terminal work this board used to place on the boot gate. 4898 and 5119 follow it; 4894, 4896 and 4899 are later phases.</text>
-<text class="note" x="24" y="2470">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
-<text class="note" x="24" y="2486">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
-<text class="note" x="24" y="2508">4758 closed on its real objective: software and content are chosen separately. What it had absorbed was never its goal — see the card below.</text>
-<text class="note" x="24" y="2524">The canvas is not page-sized on purpose. Grow it when something new belongs here rather than dropping an item to make room.</text>
+<text class="h3" x="24" y="92">DELIVERED</text>
+<rect class="card" x="24" y="108" width="392" height="262"/>
+<rect class="chip" x="40" y="124" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="138" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="164">ADFA-5061 · Operation model</text>
+<text class="sub" x="40" y="188">One declared source of truth for (platform,</text>
+<text class="sub" x="40" y="203">kind, class). Closed 11 Aug.</text>
+<circle class="s-done" cx="48" cy="219" r="5.5"/>
+<text class="item" x="62" y="223">One reader for the system facts</text>
+<circle class="s-done" cx="48" cy="237" r="5.5"/>
+<text class="item" x="62" y="241">Pure resolver: live / stopped / deferred</text>
+<circle class="s-done" cx="48" cy="255" r="5.5"/>
+<text class="item" x="62" y="259">Both classes dispatch through the model</text>
+<circle class="s-done" cx="48" cy="273" r="5.5"/>
+<text class="item" x="62" y="277">Retire the four *Wizard booleans</text>
+<circle class="s-done" cx="48" cy="291" r="5.5"/>
+<text class="item" x="62" y="295">Wizard selection survives being killed</text>
+<circle class="s-done" cx="48" cy="309" r="5.5"/>
+<text class="item" x="62" y="313">UX contract tokens</text>
+<circle class="s-done" cx="48" cy="327" r="5.5"/>
+<text class="item" x="62" y="331">Applied to Kolibri: install vs seeding</text>
+<text class="note" x="40" y="354">Narrowed twice; what left it is the follow-up card opposite.</text>
+<rect class="card" x="24" y="388" width="392" height="193"/>
+<rect class="chip" x="40" y="404" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="418" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="444">ADFA-4954 · Kolibri seeding</text>
+<text class="sub" x="40" y="468">Where the model got applied.</text>
+<circle class="s-done" cx="48" cy="484" r="5.5"/>
+<text class="item" x="62" y="488">Browse and whole channels</text>
+<circle class="s-done" cx="48" cy="502" r="5.5"/>
+<text class="item" x="62" y="506">Topic selection over Studio's tree</text>
+<circle class="s-done" cx="48" cy="520" r="5.5"/>
+<text class="item" x="62" y="524">Get More door + live download</text>
+<circle class="s-done" cx="48" cy="538" r="5.5"/>
+<text class="item" x="62" y="542">Drain a courses-only wizard run</text>
+<text class="note" x="40" y="565">Metadata-only scope split out to ADFA-5094.</text>
+<rect class="card" x="24" y="599" width="392" height="173"/>
+<rect class="chip" x="40" y="615" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="629" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="655">ADFA-5074 · Content surface</text>
+<text class="sub" x="40" y="679">One landing, one host, one queue.</text>
+<circle class="s-done" cx="48" cy="695" r="5.5"/>
+<text class="item" x="62" y="699">Front door + re-entry</text>
+<circle class="s-done" cx="48" cy="713" r="5.5"/>
+<text class="item" x="62" y="717">A session gates only work in flight</text>
+<circle class="s-done" cx="48" cy="731" r="5.5"/>
+<text class="item" x="62" y="735">Get More notices a platform arriving</text>
+<circle class="s-done" cx="48" cy="749" r="5.5"/>
+<text class="item" x="62" y="753">One host for every progress screen</text>
+<rect class="card" x="24" y="790" width="392" height="205"/>
+<rect class="chip" x="40" y="806" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="820" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="846">ADFA-5104 · Installed state from disk</text>
+<text class="sub" x="40" y="870">Asked “what is answering” to learn “what is</text>
+<text class="sub" x="40" y="885">installed”, so a stopped box offered to</text>
+<text class="sub" x="40" y="900">reinstall what was already there.</text>
+<circle class="s-done" cx="48" cy="916" r="5.5"/>
+<text class="item" x="62" y="920">Reads etc/iiab/local_vars.yml on the rootfs</text>
+<circle class="s-done" cx="48" cy="934" r="5.5"/>
+<text class="item" x="62" y="938">Silence keeps its own name: unknown ≠ absent</text>
+<circle class="s-done" cx="48" cy="952" r="5.5"/>
+<text class="item" x="62" y="956">List and detail agree</text>
+<text class="note" x="40" y="979">Invalidated for free: the file lives inside the rootfs.</text>
+<rect class="card" x="24" y="1013" width="392" height="190"/>
+<rect class="chip" x="40" y="1029" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1043" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="1069">ADFA-5105 · Space before a wipe</text>
+<text class="sub" x="40" y="1093">Sixteen readers, four APIs, and only two of</text>
+<text class="sub" x="40" y="1108">them gated anything.</text>
+<circle class="s-done" cx="48" cy="1124" r="5.5"/>
+<text class="item" x="62" y="1128">One reader, one margin</text>
+<circle class="s-done" cx="48" cy="1142" r="5.5"/>
+<text class="item" x="62" y="1146">Measured on the filesystem written to</text>
+<circle class="s-done" cx="48" cy="1160" r="5.5"/>
+<text class="item" x="62" y="1164">Refusal before anything is deleted</text>
+<text class="note" x="40" y="1187">Unowned: a run-level budget summing a whole batch.</text>
+<rect class="card" x="24" y="1221" width="392" height="154"/>
+<rect class="chip" x="40" y="1237" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1251" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="1277">ADFA-5110 · Real rootfs size</text>
+<text class="sub" x="40" y="1301">Estimates used the compressed artifact, so</text>
+<text class="sub" x="40" y="1316">every one under-counted.</text>
+<circle class="s-done" cx="48" cy="1332" r="5.5"/>
+<text class="item" x="62" y="1336">The builder publishes a sidecar</text>
+<text class="note" x="40" y="1359">Producer only. It is what gave 5105 a real figure.</text>
+<rect class="card" x="24" y="1393" width="392" height="137"/>
+<rect class="chip" x="40" y="1409" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1423" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="1449">ADFA-5070 · Stale content state</text>
+<text class="sub" x="40" y="1473">A session outliving the system it described.</text>
+<circle class="s-done" cx="48" cy="1489" r="5.5"/>
+<text class="item" x="62" y="1493">Wipe content sessions when replaced</text>
+<circle class="s-done" cx="48" cy="1507" r="5.5"/>
+<text class="item" x="62" y="1511">All five destructive routes hooked</text>
+<rect class="card" x="24" y="1548" width="392" height="190"/>
+<rect class="chip" x="40" y="1564" width="52" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="1578" fill="#1B7F4B">DONE</text>
+<text class="h2" x="40" y="1604">ADFA-4758 · Software and content</text>
+<text class="sub" x="40" y="1628">The user is never pinned to a preselection.</text>
+<text class="sub" x="40" y="1643">That was the whole ask.</text>
+<circle class="s-done" cx="48" cy="1659" r="5.5"/>
+<text class="item" x="62" y="1663">Modules install on their own</text>
+<circle class="s-done" cx="48" cy="1677" r="5.5"/>
+<text class="item" x="62" y="1681">Content chosen item by item</text>
+<circle class="s-done" cx="48" cy="1695" r="5.5"/>
+<text class="item" x="62" y="1699">Guard: no OS re-extract by default</text>
+<text class="note" x="40" y="1722">What it had absorbed is on the red card below.</text>
+<text class="h3" x="444" y="92">IN FLIGHT — two fronts</text>
+<rect class="card" x="444" y="108" width="392" height="316"/>
+<rect class="chip" x="460" y="124" width="79" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="468" y="138" fill="#1B5E8F">ADFA-4893</text>
+<text class="h2" x="460" y="164">Download contract — the active front</text>
+<text class="sub" x="460" y="188">Every download path honours one contract:</text>
+<text class="sub" x="460" y="203">states, resume, retry, clean cancel, and</text>
+<text class="sub" x="460" y="218">acting on a stall instead of displaying it.</text>
+<circle class="s-doing" cx="468" cy="234" r="5.5"/>
+<text class="item" x="482" y="238">ADFA-4895 · rootfs download — IMPORTANT, NOW</text>
+<circle class="s-todo" cx="468" cy="252" r="5.5"/>
+<text class="item" x="482" y="256">ADFA-4898 · maps runrole swallows failures</text>
+<circle class="s-todo" cx="468" cy="270" r="5.5"/>
+<text class="item" x="482" y="274">ADFA-5119 · base-install legs end honestly</text>
+<circle class="s-todo" cx="468" cy="288" r="5.5"/>
+<text class="item" x="482" y="292">ADFA-4897 · ZIM/Books survive process death</text>
+<circle class="s-todo" cx="468" cy="306" r="5.5"/>
+<text class="item" x="482" y="310">ADFA-4894 / 4896 / 4899 · later phases</text>
+<text class="note" x="460" y="333">Became a front on 12 Aug: the install-terminal work moved</text>
+<text class="note" x="460" y="348">here from the boot gate. Aria2Manager holds the process</text>
+<text class="note" x="460" y="363">and parses the rate, then throws it away as a display string.</text>
+<text class="note" x="460" y="393">ADFA-5106 is a DUPLICATE of 4897 — opened 11 Aug without</text>
+<text class="note" x="460" y="408">searching the tracker; 4897 has owned it since 28 July.</text>
+<rect class="card" x="444" y="442" width="392" height="202"/>
+<rect class="chip" x="460" y="458" width="79" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="468" y="472" fill="#5B636B">FOLLOW UP</text>
+<text class="h2" x="460" y="498">Out of ADFA-5061 so it could close</text>
+<text class="sub" x="460" y="522">Deferred, not dropped. Neither has a ticket,</text>
+<text class="sub" x="460" y="537">and both belong here rather than in NEXT:</text>
+<text class="sub" x="460" y="552">the model is closed but not finished.</text>
+<circle class="s-todo" cx="468" cy="568" r="5.5"/>
+<text class="item" x="482" y="572">One shared answer to “is the platform there”</text>
+<circle class="s-todo" cx="468" cy="586" r="5.5"/>
+<text class="item" x="482" y="590">Dashboard Rebuild: the REST/proot fork</text>
+<text class="note" x="460" y="613">5104 proved the disk source; the repository is still owed.</text>
+<text class="note" x="460" y="628">The Rebuild needs a per-version resolver, not system facts.</text>
+<text class="h3" x="864" y="92">NEXT</text>
+<rect class="card" x="864" y="108" width="392" height="226"/>
+<rect class="chip" x="880" y="124" width="79" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="888" y="138" fill="#1B5E8F">ADFA-5062</text>
+<text class="h2" x="880" y="164">Retire the surfaces that still guess</text>
+<text class="sub" x="880" y="188">All five re-verified against the code, 11 Aug.</text>
+<circle class="s-done" cx="888" cy="204" r="5.5"/>
+<text class="item" x="902" y="208">ModuleActionSheet: Open vs Install (5061)</text>
+<circle class="s-todo" cx="888" cy="222" r="5.5"/>
+<text class="item" x="902" y="226">Home cards: app install vs content</text>
+<circle class="s-todo" cx="888" cy="240" r="5.5"/>
+<text class="item" x="902" y="244">SetupProgressActivity key switch</text>
+<circle class="s-todo" cx="888" cy="258" r="5.5"/>
+<text class="item" x="902" y="262">Maps: two mechanisms, one name</text>
+<circle class="s-todo" cx="888" cy="276" r="5.5"/>
+<text class="item" x="902" y="280">5 sites that probe the rootfs themselves</text>
+<text class="note" x="880" y="303">A check that answers with a boolean invites its caller to</text>
+<text class="note" x="880" y="318">treat silence as a verdict. Three screens did it separately.</text>
+<rect class="card" x="864" y="352" width="392" height="220"/>
+<rect class="chip" x="880" y="368" width="79" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="888" y="382" fill="#1B5E8F">ADFA-5103</text>
+<text class="h2" x="880" y="408">Stopped service vs stopped environment</text>
+<text class="sub" x="880" y="432">pdsm stop leaves the proot running, so Retry</text>
+<text class="sub" x="880" y="447">can stack a second one over a live one.</text>
+<circle class="s-todo" cx="888" cy="463" r="5.5"/>
+<text class="item" x="902" y="467">Environment handle held per process</text>
+<circle class="s-todo" cx="888" cy="481" r="5.5"/>
+<text class="item" x="902" y="485">startEnvironment means “ensure it is up”</text>
+<circle class="s-todo" cx="888" cy="499" r="5.5"/>
+<text class="item" x="902" y="503">A boot grace before any verdict</text>
+<text class="note" x="880" y="526">BLOCKED on a decision: with the proot alive and services</text>
+<text class="note" x="880" y="541">down, do we kill it, or start the services without touching it?</text>
+<text class="note" x="880" y="556">Detection exists and is tested (EnvironmentProcess).</text>
+<rect class="card" x="864" y="590" width="392" height="170"/>
+<rect class="chip" x="880" y="606" width="79" height="19" fill="#E7F1FB" stroke="none"/>
+<text class="chiptx" x="888" y="620" fill="#1B5E8F">SPLIT OUT</text>
+<text class="h2" x="880" y="646">ADFA-5094 · Kolibri topic display</text>
+<text class="sub" x="880" y="670">Narrowing a channel should not depend on</text>
+<text class="sub" x="880" y="685">reaching Studio over the internet.</text>
+<circle class="s-todo" cx="888" cy="701" r="5.5"/>
+<text class="item" x="902" y="705">Task map learns the metadata-only import</text>
+<circle class="s-todo" cx="888" cy="719" r="5.5"/>
+<text class="item" x="902" y="723">The box serves the tree it imported</text>
+<circle class="s-todo" cx="888" cy="737" r="5.5"/>
+<text class="item" x="902" y="741">The picker prefers the box, falls back</text>
+<rect class="card" x="864" y="778" width="392" height="154"/>
+<rect class="chip" x="880" y="794" width="65" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="888" y="808" fill="#5B636B">NOT NOW</text>
+<text class="h2" x="880" y="834">ADFA-5063 · Reversibility</text>
+<text class="sub" x="880" y="858">Real work, but not this model's. Nothing here</text>
+<text class="sub" x="880" y="873">blocks it and it blocks nothing.</text>
+<circle class="s-todo" cx="888" cy="889" r="5.5"/>
+<text class="item" x="902" y="893">Decide: can a module be uninstalled?</text>
+<text class="note" x="880" y="916">Seven verbs for “remove” today; two name one action.</text>
+<text class="h3" x="24" y="1782">SPANS THE BOARD — real work with no ticket, and the small things</text>
+<rect class="card" x="24" y="1798" width="1232" height="146" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1814" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="1828" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="40" y="1854">A finished run leaves no evidence it happened</text>
+<text class="note" x="40" y="1883">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare “3 Done”. The rate is dropped at completion by design — rateSuffix is called only</text>
+<text class="note" x="40" y="1898">from the not-complete branch — and “838 MB · 32 MB/s · 4 min” is the only thing that tells a real download from a no-op.</text>
+<text class="note" x="40" y="1913">Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed. The only start timestamp in main/ is KolibriSeedRepository.startedAtMs,</text>
+<text class="note" x="40" y="1928">private and unreachable from the row renderer. Also here: the maps card cannot show “adding content”, because its progress belongs to the module queue, not to a content stream.</text>
+<rect class="card" x="24" y="1962" width="1232" height="161" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="1978" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="1992" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="40" y="2018">Replacing the system, and the installer that does it — no ticket on purpose</text>
+<text class="note" x="40" y="2047">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow that works. Recorded here so they are picked up on</text>
+<text class="note" x="40" y="2062">their own terms rather than as somebody else's leftovers.</text>
+<text class="note" x="40" y="2077">•  Two separately invoked installers. One ACTION_START becomes five pipelines through four booleans set by three unrelated senders.</text>
+<text class="note" x="40" y="2092">•  Content-only backup, so a reinstall at another tier can keep what the user added. From zero, the box wipes and rewrites.</text>
+<text class="note" x="40" y="2107">Not blocked by this: the tier picker reports success while doing nothing when a rootfs directory exists — implemented and wrong today, so it is a bug with its own ticket.</text>
+<rect class="card" x="24" y="2141" width="1232" height="131"/>
+<rect class="chip" x="40" y="2157" width="65" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="48" y="2171" fill="#5B636B">CARRIED</text>
+<text class="h2" x="40" y="2197">Too small for a card, recorded so they are met on purpose</text>
+<text class="note" x="40" y="2226">•  The Books “downloads” link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
+<text class="note" x="40" y="2241">•  The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
+<text class="note" x="40" y="2256">•  EnvironmentLock.Owner.MODULE is never acquired, and hasUnfinishedWork is duplicated between EnvironmentLock and PendingContent (orphan TODO on a closed ticket).</text>
 </svg>
