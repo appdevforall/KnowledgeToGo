@@ -30,6 +30,12 @@
     <!-- Abandons the download AND the tier/wishlist decision, so it is confirmed. -->
     <string name="k2go_dl_cancel" translatable="false">Cancel</string>
 
+    <!-- An automatic attempt in flight. Shown on the detail row while the phase is still DOWNLOADING,
+         because that is what is happening: we are trying. The count is what makes the wait bearable —
+         the previous behaviour spent the same seconds inside aria2 with a frozen number on screen and
+         nothing to say how many were left. -->
+    <string name="k2go_dl_attempt" translatable="false">Retry %1$d of %2$d</string>
+
     <!-- Status lines for a stop nobody chose (SOFTFAILED). Mapped from Aria2Exit.Kind, never from
          Aria2Exit.label(), which is documented as English-for-logs. They name the cause only: the
          Retry button beside them already says what to do about it. -->

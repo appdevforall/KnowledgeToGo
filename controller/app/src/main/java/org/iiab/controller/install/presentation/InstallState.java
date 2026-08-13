@@ -163,6 +163,22 @@ public final class InstallState {
         return new InstallState(Phase.DOWNLOADING, Op.INSTALL, percent, speed, "", 0L, eta);
     }
 
+    /**
+     * ADFA-5119: an automatic retry, which is still a download.
+     *
+     * <p>The phase is DOWNLOADING because that is what is happening — we are trying. Calling it
+     * SOFTFAILED while an attempt is in flight would make the button say Retry over a transfer that
+     * is already retrying, and would hand the user a decision the app has not finished taking.
+     * SOFTFAILED begins when the attempts run out.
+     *
+     * <p>Carries no rate: the previous attempt died, so any figure would be from a connection that no
+     * longer exists. {@code message} is the already-localized "Retry N of M" line, which the screen
+     * shows on the detail row that DOWNLOADING otherwise leaves empty.
+     */
+    public static InstallState retrying(int percent, String message) {
+        return new InstallState(Phase.DOWNLOADING, Op.INSTALL, percent, "", message, 0L, "");
+    }
+
     public static InstallState extracting(String message) {
         return new InstallState(Phase.EXTRACTING, Op.INSTALL, 0, "", message, 0L);
     }

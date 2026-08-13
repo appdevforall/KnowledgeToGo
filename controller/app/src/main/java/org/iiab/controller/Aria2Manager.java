@@ -265,10 +265,31 @@ public class Aria2Manager {
                 // links this product targets, a slow download is the normal case, and aborting one
                 // with nothing to catch it would be worse than the stall we are trying to detect.
                 // It lands with the retry loop, not before it.
-                command.add("--max-tries=5");
+                // ADFA-5119: fail fast, and let the caller own the waiting.
+                //
+                // These were --max-tries=5 --retry-wait=5 --timeout=60, which is up to five minutes
+                // of a frozen screen before anything is reported. Measured on a device: kill the
+                // Wi-Fi mid-transfer and the rate sits at its last moving average while aria2 works
+                // through its budget in silence. For the rootfs there is nothing else the user can
+                // do — the app has no system yet — so five silent minutes is the whole product
+                // stalled.
+                //
+                // The budget did not shrink, it MOVED. InstallService now retries three times with
+                // the attempt shown on screen ("Retry 2 of 3"), so aria2's job is to give up quickly
+                // and report which kind of stop it was; ours is to decide what that deserves. One try
+                // at ten seconds means a visible answer in about thirty, and nothing waits on a
+                // timeout that a connectivity signal could have answered in one second.
+                //
+                // DIVERGENCE FROM THE DASHBOARD, on purpose. The flag block above is the reference
+                // for the in-server aria2 (ADFA-4832), and these four lines are where the two now
+                // differ: that one downloads content onto a LIVE system, where the user can close
+                // the screen and let it work, so patience is right there and impatience would abort
+                // a slow but healthy transfer. This one is the download you cannot walk away from.
+                // Presence, not politeness, is what sets the numbers — do not "re-align" them.
+                command.add("--max-tries=1");
                 command.add("--retry-wait=5");     // default is 0 — retries hammer a struggling server
-                command.add("--timeout=60");       // per-connection read timeout
-                command.add("--connect-timeout=30");
+                command.add("--timeout=10");       // per-connection read timeout
+                command.add("--connect-timeout=5");
 
                 // Apply network decision
                 if (forceIpv4) {
@@ -279,6 +300,22 @@ public class Aria2Manager {
                 command.add(url);
 
                 ProcessBuilder pb = new ProcessBuilder(command);
+
+                // ADFA-5119 (review): last check before we spawn anything. Everything above this
+                // line — the metalink fetch, the two stack probes — happens with aria2Process still
+                // null, so a stop arriving in that window latches the reason and kills nothing.
+                // Without this the caller's cleanup could delete the download directory and aria2
+                // would then start, recreate it and write fresh residue behind it.
+                if (stopRequest == Stop.CANCEL) {
+                    Log.d(TAG, "Download cancelled before aria2 was started.");
+                    mainHandler.post(listener::onCancelled);
+                    return;
+                }
+                if (stopRequest == Stop.PAUSE) {
+                    Log.d(TAG, "Download paused before aria2 was started.");
+                    mainHandler.post(listener::onPaused);
+                    return;
+                }
 
                 // Redirect errors to the same input stream
                 pb.redirectErrorStream(true);

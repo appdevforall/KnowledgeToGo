@@ -71,6 +71,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private boolean recovering = false;   // ADFA-4919 (2c-ii): checking a possibly-damaged killed install
     /** ADFA-5119: a failure left no system — nothing may open the door until the user chooses. */
     private boolean gateHeldForRecovery = false;
+    /** ADFA-5119: the service has been told a person is here; it only needs telling once per hold. */
+    private boolean userPresenceSent = false;
     private long lastDeepOpSeq = -1L;     // ADFA-4957: boot the server once per finished deep-env op
 
     // ADFA-4984: own the OTA self-updater (revived; entry point is Settings -> About). We forward the
@@ -282,6 +284,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                     // above has just set it false. Without this, an install that went live after
                     // onCreate (ADFA-4986) would let that timer open the door behind the dialog.
                     gateHeldForRecovery = true;
+                    // ADFA-5119 (review): claim the recovery so the timed verdict cannot repeat it.
+                    // The activity is recreated on a dark/light toggle (configChanges has no uiMode);
+                    // onCreate re-derives recovering=true from the marker and schedules
+                    // evaluateRecovery, then the retained FAILED state reaches the fresh observer and
+                    // shows the dialog — and the timer showed a second, stacked, non-cancelable one.
+                    recovering = false;
                     showDamagedDialog();
                     return;
                 }
@@ -336,8 +344,21 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // ADFA-4919 (2c-ii): keep the gate up while we check a possibly-damaged install. Try to
             // bring the server up (a healthy base just needs starting); after GATE_SAFETY_MS the
             // verdict runs. If the server comes up first, the observer above clears the marker.
-            serverController.handleServerLaunchClick(findViewById(android.R.id.content));
-            main.postDelayed(this::evaluateRecovery, GATE_SAFETY_MS);
+            //
+            // ADFA-5119: when there is no rootfs on disk, that wait is 25 seconds of a closed gate
+            // and nothing else — measured on a force-stop during a paused download. Nothing can
+            // start, so the verdict is already known and waiting only delays saying it. Asked of the
+            // disk via rootfsPresent(): isSystemInstalled() cannot answer, because the marker that
+            // put us in recovery is what makes it false.
+            //
+            // The same constant already exists one branch below for this exact reasoning: nothing
+            // installed, nothing to boot, do not sit there.
+            boolean nothingToBoot = !org.iiab.controller.SystemStateEvaluator.rootfsPresent(this);
+            if (!nothingToBoot) {
+                serverController.handleServerLaunchClick(findViewById(android.R.id.content));
+            }
+            main.postDelayed(this::evaluateRecovery,
+                    nothingToBoot ? NO_SYSTEM_GATE_MS : GATE_SAFETY_MS);
         } else if (org.iiab.controller.env.EnvironmentLock.ownerHeld(this)) {
             // ADFA-4960: a deep-env op (clone/backup/restore) holds the lock, so the server is
             // intentionally STOPPED. Don't sit behind the boot gate waiting for a server that won't
@@ -385,6 +406,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         if (installPercentRow != null) installPercentRow.setVisibility(View.GONE);
         if (downloadRow != null) downloadRow.setVisibility(View.GONE);   // ADFA-4895
         renderDownloadActions(st);   // ADFA-5119
+        // Re-arm the presence latch whenever the download is not held: the next hold is a new window
+        // and deserves to be told again.
+        if (!st.isSoftFailed()) userPresenceSent = false;
         if (st.isHeld()) {
             // ADFA-5119: stopped, and it has to look stopped. The status line says so instead of
             // "Downloading your library…", which would be a lie while nothing moves, and the bar
@@ -436,7 +460,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 installPercent.setGravity(hasSecond
                         ? android.view.Gravity.END : android.view.Gravity.CENTER_HORIZONTAL);
             }
-            installDetail.setText("");
+            // ADFA-5119: DOWNLOADING left this row empty, so an automatic retry has somewhere to say
+            // "Retry 2 of 3" without competing with the figures above it. Empty on an ordinary tick.
+            installDetail.setText(st.message);
         } else if (st.phase == InstallState.Phase.VERIFYING || st.phase == InstallState.Phase.EXTRACTING) {
             // ADFA-5118: the unified verify+extract bar. Both passes render identically — determinate
             // bar + % + ETA + current file — so there is no "first nothing, then detail" asymmetry.
@@ -506,31 +532,71 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // thing that distinguishes "you stopped this" from "something stopped this".
         dlToggle.setText(st.isSoftFailed() ? R.string.k2go_dl_retry
                 : st.isPaused() ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
-        // Cancel-only during the IPv4/IPv6 probe. It reports as DOWNLOADING with no rate because it
-        // is aria2 measuring the two stacks, not transferring — so there is nothing to suspend and a
-        // control that does nothing is worse than no control. Cancel still works: it is the whole
-        // operation that is being given up, not a transfer. A held state always shows the button:
-        // being unable to continue is the dead end this ticket closes.
-        boolean actionable = st.isHeld() || !st.speed.isEmpty();
-        dlToggle.setVisibility(actionable ? View.VISIBLE : View.GONE);
+        // Both controls, always. A first pass hid Pause during the IPv4/IPv6 probe on the assumption
+        // that the probe carries no rate — the device showed otherwise: it reports "Test IPv6" in
+        // the rate slot, so the guard never fired. Dropped rather than repaired, because what it was
+        // protecting against turns out to be acceptable. `stopRequest` is latched and cleared per
+        // run (Aria2Manager:125), so a pause tapped during the probe applies to the transfer that
+        // follows and lands at 0% instead of doing nothing. Distinguishing the probe honestly would
+        // mean carrying a "not transferring yet" marker in the state, which is more model for a
+        // button that already behaves.
+        dlToggle.setVisibility(View.VISIBLE);
     }
 
     /**
-     * ADFA-5119: make room under the animation for the buttons.
+     * ADFA-5119: make room under the animation for the panel that covers it.
      *
-     * <p>The progress panel is bottom-anchored over the Lottie, and two more rows of it would cover
-     * the shopfront. Padding on the animation rather than a margin on the panel, because the Lottie
-     * is {@code fitCenter}: padding is what it scales inside, so the drawing shrinks and re-centres
-     * instead of being clipped. Set from here rather than in XML so a normal boot — no install, no
-     * buttons — still uses the full height.
+     * <p>Padding on the animation rather than a margin on the panel, because the Lottie is
+     * {@code fitCenter}: padding is the box it fits inside, so the drawing re-centres instead of
+     * being clipped. Set from here rather than in XML so a normal boot — no install, no panel —
+     * still uses the full height.
+     *
+     * <p><b>The figure is the panel's own height, not a constant.</b> A first pass used 56dp and on
+     * a device nothing moved, which is arithmetic rather than bad luck: fitCenter centres inside
+     * {@code height - padding}, so the drawing's centre sits at {@code (H - P) / 2}. To centre it in
+     * the space above a panel of height {@code A}, P has to equal A — and the panel is well over
+     * 200dp with the status line, the bar, the figures, the detail and now two buttons. Measuring it
+     * also means the animation follows the panel when a row appears or goes.
      */
     private void liftGateForActions(boolean lifted) {
         if (bootGate == null) return;
-        int pad = lifted ? Math.round(56 * getResources().getDisplayMetrics().density) : 0;
+        if (lifted && installProgress != null && installProgress.getHeight() == 0) {
+            // Asked before the panel has been laid out (the first render happens in onCreate). Come
+            // back once it has a height to report — but re-derive `lifted` from the panel rather than
+            // passing true again: if a terminal arrives in between, hideInstallProgress() makes it
+            // GONE, its height stays 0, and a runnable that reposted itself unconditionally would
+            // repost forever and hold the Activity through the view.
+            installProgress.post(() -> {
+                if (installProgress == null || isFinishing()) return;
+                liftGateForActions(installProgress.getVisibility() == View.VISIBLE);
+            });
+            return;
+        }
+        int pad = (lifted && installProgress != null) ? installProgress.getHeight() : 0;
         if (bootGate.getPaddingBottom() != pad) {
             bootGate.setPadding(bootGate.getPaddingLeft(), bootGate.getPaddingTop(),
                     bootGate.getPaddingRight(), pad);
         }
+    }
+
+    /**
+     * ADFA-5119: tell the service somebody is here, once, while the download is held.
+     *
+     * <p>A held download fails through to recovery after a minute so an unattended install cannot sit
+     * there until morning. That protection is wrong the moment there is a person in front of it, and
+     * a touch is the only honest evidence of one — so the first touch drops the clock and the state
+     * then waits as long as they need.
+     *
+     * <p>Latched, because this fires on every touch event and the service only needs telling once.
+     * Reset when the phase leaves the held state, in {@link #showInstallProgress}.
+     */
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+        if (userPresenceSent) return;
+        if (!InstallProgressRepository.get().current().isSoftFailed()) return;
+        userPresenceSent = true;
+        sendToInstallService(org.iiab.controller.install.presentation.InstallService.ACTION_USER_PRESENT);
     }
 
     /** ADFA-5119: Pause and Resume are the same button, so they are the same tap. */

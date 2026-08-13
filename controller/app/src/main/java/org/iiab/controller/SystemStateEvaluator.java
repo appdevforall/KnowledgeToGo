@@ -43,6 +43,22 @@ public final class SystemStateEvaluator {
         if (InstallGuard.inProgress(ctx)) {
             return false;
         }
+        return rootfsPresent(ctx);
+    }
+
+    /**
+     * ADFA-5119: is there a rootfs on disk at all — asked of the disk, not of the guard.
+     *
+     * <p>{@link #isSystemInstalled(Context)} answers false for the whole time an install marker is
+     * set, which is correct for its callers (do not boot, do not treat as ready) but useless to a
+     * caller that needs to know whether there is anything there to boot. Recovery is exactly that
+     * caller: the marker is set by definition when it runs, so the flag can only tell it what it
+     * already knows.
+     *
+     * <p>Split out of the method above rather than written beside it, so the two-file test for
+     * "a rootfs exists" stays in one place.
+     */
+    public static boolean rootfsPresent(Context ctx) {
         File rootfsDir = rootfsDir(ctx);
         return new File(rootfsDir, "bin/bash").exists()
                 || new File(rootfsDir, "usr/local/pdsm/flag_install_ready").exists();

@@ -68,6 +68,14 @@ public final class InstallService extends Service {
     public static final String ACTION_PAUSE = "org.iiab.controller.INSTALL_PAUSE";
     /** ADFA-5119: pick the paused transfer back up from its control file. */
     public static final String ACTION_RESUME = "org.iiab.controller.INSTALL_RESUME";
+    /**
+     * ADFA-5119: somebody is looking at the screen — stop the clock on the held window.
+     *
+     * <p>Sent by the gate on the first touch while the download is held. The service cannot observe
+     * this for itself: presence is a UI fact, and the phase it decides is a service fact, so the fact
+     * travels and the decision stays where the state lives.
+     */
+    public static final String ACTION_USER_PRESENT = "org.iiab.controller.INSTALL_USER_PRESENT";
     // Per-module install queue (ADFA-4476 slice 3): distinct from the rootfs ACTION_START.
     public static final String ACTION_START_MODULES = "org.iiab.controller.INSTALL_START_MODULES";
     /** ADFA-5011: rebuild the dash-node REST core in place (no rootfs rebuild). Reuses this service's
@@ -105,9 +113,21 @@ public final class InstallService extends Service {
     private PowerManager.WakeLock wakeLock;
     private WifiManager.WifiLock wifiLock;
 
-    private Aria2Manager aria2Manager;
+    // ADFA-5119 (review): volatile, because doPause/doResume/doCancel read these on the main thread
+    // while the pipeline threads assign them. The same reason `cancelled` and `stopRequest` are
+    // volatile; leaving two of the four unmarked reads as a finished job.
+    private volatile Aria2Manager aria2Manager;
     private PRootEngine prootEngine;
-    private org.iiab.controller.content.RestContentClient restContentClient;   // ADFA-4840 (was socket.io, ADFA-4832)
+    /**
+     * ADFA-5119 (review): the live extractor, so a cancellation can stop it.
+     *
+     * <p>It used to be created inline and dropped, and {@code stopExtraction()} had no caller
+     * anywhere in the repo — so Cancel during an extract deleted the rootfs directory while tar was
+     * still writing it, and the surviving tree was then adopted by the next install's
+     * non-destructive guard. Exactly the failure the cleanup claims to prevent.
+     */
+    private volatile TarExtractor extractor;
+    private volatile org.iiab.controller.content.RestContentClient restContentClient;   // ADFA-4840 (was socket.io, ADFA-4832); volatile: ADFA-5119 review
 
     private volatile boolean cancelled = false;
     private volatile boolean finished = false;
@@ -122,6 +142,17 @@ public final class InstallService extends Service {
      * {@code ROOTFS_BUILD} at the one point in the pipeline where it becomes certain that no usable
      * system is left — see {@link #startRootfsDownload()}.
      */
+    /** ADFA-5119: automatic attempts made in the open before the decision goes to the user. */
+    private static final int RETRY_ATTEMPTS = 3;
+    /** ADFA-5119: how long a held download waits for a person before failing through to recovery. */
+    private static final long HELD_WINDOW_MS = 60_000L;
+
+    private volatile int softAttempts = 0;
+    private volatile org.iiab.controller.download.domain.Aria2Exit.Kind lastStopKind =
+            org.iiab.controller.download.domain.Aria2Exit.Kind.UNKNOWN;
+    private final Handler heldHandler = new Handler(Looper.getMainLooper());
+    private Runnable heldExpiry;   // main thread only
+
     private volatile org.iiab.controller.install.domain.AbandonedInstall.Work work =
             org.iiab.controller.install.domain.AbandonedInstall.Work.CONTENT;
 
@@ -171,6 +202,16 @@ public final class InstallService extends Service {
         }
         if (ACTION_RESUME.equals(action)) {
             doResume();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_USER_PRESENT.equals(action)) {
+            // ADFA-5119: the window only exists to protect an install nobody is watching. Somebody is
+            // watching, so it goes, and the held state now lasts as long as they need — taking the
+            // choice away mid-thought would be worse than the stall it was guarding against.
+            if (heldExpiry != null) {
+                Log.i(TAG, "held window dropped: the user is on the screen");
+                cancelHeldWindow();
+            }
             return START_NOT_STICKY;
         }
         if (ACTION_REBUILD_DASHBOARD.equals(action)) {
@@ -294,6 +335,18 @@ public final class InstallService extends Service {
                 else finishSuccess();
                 return;
             }
+            // ADFA-5119 (review): a fresh install — nothing on disk — is already building the system
+            // that does not exist, and that is true BEFORE the preflight below, not after. The
+            // storage refusal is the likeliest hard failure of all, and with `work` left at CONTENT
+            // it cleared the install marker and lifted the gate onto an empty library: the very case
+            // this ticket closes, reached by the commonest route.
+            //
+            // A reinstall is deliberately NOT narrowed here. Its old rootfs is still intact and still
+            // bootable until wipeAndInstall() runs, so a refusal on that path must stay recoverable
+            // by simply opening the app again. It is narrowed there instead, after the wipe.
+            if (!debianRootfs.exists() || !debianRootfs.isDirectory()) {
+                work = org.iiab.controller.install.domain.AbandonedInstall.Work.ROOTFS_BUILD;
+            }
             // ADFA-5105: from here on the pipeline extracts a rootfs (and, on reinstall, wipes the
             // existing one first). Refuse before any destructive step when it plainly won't fit —
             // UNKNOWN free space refuses too (a wipe that then runs out of disk leaves no bootable OS).
@@ -394,6 +447,10 @@ public final class InstallService extends Service {
                 // network is comparatively steady — 34 to 40 MiB/s across a whole run, measured.
                 // Fed a steady rate the estimate moves smoothly on its own, and moving is what an
                 // estimate is supposed to do.
+                // ADFA-5119: bytes are moving again, so the attempt budget is spent and refilled. A
+                // transfer that hiccups once an hour over a long download must not arrive at the
+                // third hiccup and hand the user a decision about a link that is working.
+                if (bytesPerSecond > 0) softAttempts = 0;
                 int bucket = org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds);
                 InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket));
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
@@ -413,7 +470,11 @@ public final class InstallService extends Service {
                 // high-performance Wi-Fi lock through it would drain the battery for no transfer at
                 // all; doResume() takes them again.
                 releaseHardwareLocks();
-                updateNotification(getString(R.string.k2go_dl_paused_notif));
+                // The percentage stays, the rate goes — nothing is moving, so there is no rate to
+                // report. Composed rather than a new format string: one less thing to translate for a
+                // file that is not supposed to survive this PR.
+                updateNotification(getString(R.string.k2go_dl_paused_notif) + "  ·  "
+                        + InstallProgressRepository.get().current().percent + "%");
             }
 
             @Override
@@ -446,6 +507,7 @@ public final class InstallService extends Service {
             public void onError(String error,
                                 org.iiab.controller.download.domain.Aria2Exit.Kind kind) {
                 if (cancelled || finished) return;
+                lastStopKind = kind;
                 if (!continuableAfter(kind)) {
                     onError(error);
                     return;
@@ -482,7 +544,10 @@ public final class InstallService extends Service {
         }
 
         File downloadedArchive = archives[0];
-        new TarExtractor().startExtraction(this, downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(),
+        // ADFA-5119 (review): keep the handle. Created inline and dropped, a cancellation had no way
+        // to stop tar, so the cleanup's rm -rf raced a process still writing the tree.
+        extractor = new TarExtractor();
+        extractor.startExtraction(this, downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(),
                 new TarExtractor.ExtractionListener() {
                     // ADFA-5118: once byte-based progress arrives (gzip path), it owns the unified bar;
                     // the member-count callback is only the fallback for a non-gzip archive.
@@ -554,7 +619,17 @@ public final class InstallService extends Service {
                 });
     }
 
+    /**
+     * ADFA-5119 (review): widen {@code work} back before this runs.
+     *
+     * <p>By the time companion data starts, the rootfs is extracted and usable — so from here a
+     * cancellation is content being abandoned, not a system. Left at ROOTFS_BUILD, the notification's
+     * Cancel during a ZIM download or the maps runrole would have deleted a working rootfs and
+     * cleared setup_complete. Reachable only from the legacy {@code companion=true} start; the K2Go
+     * wizard banks content as wishlists and passes false.
+     */
     private void startCompanionData() {
+        work = org.iiab.controller.install.domain.AbandonedInstall.Work.CONTENT;
         editLocalVarsForMaps(debianRootfs, tier);
         SharedPreferences prefs = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
         String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", org.iiab.controller.applang.data.ContentLanguage.systemDefault());
@@ -1121,6 +1196,16 @@ public final class InstallService extends Service {
             Log.i(TAG, "pause ignored: only a download can be paused");
             return;
         }
+        // ADFA-5119 (review): and only the rootfs download. A scratch reset also reports DOWNLOADING,
+        // but its listener does not implement onPaused() — the default is a no-op — so pausing it
+        // killed aria2 and left that pipeline with no terminal at all: isRunning() true forever, the
+        // marker held, the service alive. The reset route is out of scope for this ticket (see the
+        // RESET note in AbandonedInstall), so the honest answer is to refuse rather than to teach a
+        // second pipeline how to pause.
+        if (work != org.iiab.controller.install.domain.AbandonedInstall.Work.ROOTFS_BUILD) {
+            Log.i(TAG, "pause ignored: only the rootfs download can be paused, not " + work);
+            return;
+        }
         if (aria2Manager != null) aria2Manager.pauseDownload();
         // The state is posted by the listener's onPaused(), not here: aria2 has to actually stop
         // first, and it is the one that knows when that happened.
@@ -1154,11 +1239,70 @@ public final class InstallService extends Service {
      */
     private void softFail(org.iiab.controller.download.domain.Aria2Exit.Kind kind, String detail) {
         int percent = InstallProgressRepository.get().current().percent;
+
+        // ADFA-5119: try again ourselves first, in the open. aria2's own budget was cut to one try
+        // (see Aria2Manager) precisely so this loop could exist where the user can see it: the old
+        // five silent retries were the same waiting, spent behind a frozen number.
+        if (softAttempts < RETRY_ATTEMPTS) {
+            softAttempts++;
+            String line = getString(R.string.k2go_dl_attempt, softAttempts, RETRY_ATTEMPTS);
+            Log.w(TAG, "download stopped (" + kind + ") at " + percent + "%: " + detail
+                    + " — automatic " + line);
+            InstallProgressRepository.get().postRetrying(percent, line);
+            updateNotification(line);
+            // Straight back in, no backoff. The wait that a backoff buys was already spent inside
+            // aria2's own timeout, and the case a delay would help with — the network being down — is
+            // answered in a second by the connectivity signal, not by guessing at seconds.
+            startRootfsDownload();
+            return;
+        }
+
+        // Out of attempts. The decision is the user's now, and it stays theirs.
         String line = getString(softFailLine(kind));
-        Log.w(TAG, "download held after a " + kind + " stop at " + percent + "%: " + detail);
+        Log.w(TAG, "download held after " + RETRY_ATTEMPTS + " attempts, last stop " + kind
+                + " at " + percent + "%: " + detail);
         InstallProgressRepository.get().postSoftFailed(percent, line);
         releaseHardwareLocks();
         updateNotification(line);
+        beginHeldWindow();
+    }
+
+    /**
+     * ADFA-5119: the minute in which the download waits for a person, and what happens if none comes.
+     *
+     * <p>A held state with no expiry is the dead end this ticket exists to close, wearing different
+     * clothes: an unattended install that drops at 3 a.m. would sit on SOFTFAILED forever, holding the
+     * marker and a foreground service, and the owner would find it exactly as they left it. So the
+     * window runs out and the operation fails to recovery, where there is a decision to make.
+     *
+     * <p><b>But it is cancelled the moment somebody is actually there.</b> If the user touches the
+     * screen the window is dropped and the state holds indefinitely — taking a choice away from
+     * someone who is mid-thought would be worse than the stall. That is also why nothing draws a
+     * countdown: the only person who could read it is the person whose presence stops it.
+     *
+     * <p>Lifecycle: started here, cancelled by {@link #ACTION_USER_PRESENT} or by leaving the phase,
+     * and it lives in the service rather than the Activity on purpose — the Activity can be paused or
+     * gone while the service still owns the phase. If the process is killed inside the window the
+     * timer dies with it and the install marker takes over, which is the same recovery this would
+     * have routed to.
+     */
+    private void beginHeldWindow() {
+        cancelHeldWindow();
+        heldExpiry = () -> {
+            heldExpiry = null;
+            if (finished || cancelled) return;
+            if (!InstallProgressRepository.get().current().isSoftFailed()) return;
+            Log.i(TAG, "held window expired with nobody watching — failing through to recovery");
+            fail(getString(softFailLine(lastStopKind)));
+        };
+        heldHandler.postDelayed(heldExpiry, HELD_WINDOW_MS);
+    }
+
+    private void cancelHeldWindow() {
+        if (heldExpiry != null) {
+            heldHandler.removeCallbacks(heldExpiry);
+            heldExpiry = null;
+        }
     }
 
     /**
@@ -1189,6 +1333,22 @@ public final class InstallService extends Service {
     private void doResume() {
         if (finished || cancelled) return;
         if (!InstallProgressRepository.get().current().isHeld()) return;
+        // ADFA-5119 (review): leave the held state FIRST, and it is not cosmetic. Nothing posted a new
+        // state until aria2's first progress line, which is after the metalink fetch and the two
+        // six-second stack probes — ten seconds or more in which the button still read "Resume". A
+        // second tap passed the guard above and started a second aria2 over the same partial file,
+        // overwrote aria2Process so the first became unkillable, and took a second wake lock without
+        // releasing the first.
+        //
+        // Posting the state is the debounce, rather than a private "resuming" flag: isHeld() goes
+        // false, so this method's own guard refuses the second tap, and the state model keeps being
+        // the single place that knows whether the download is moving. A flag would be a second one.
+        InstallProgressRepository.get().postDownloading(
+                InstallProgressRepository.get().current().percent, "");
+        // A manual retry is a fresh decision, so it gets a fresh budget — and the window it was
+        // waiting on has been answered.
+        cancelHeldWindow();
+        softAttempts = 0;
         acquireHardwareLocks();
         // The URL is derived from the tier and arch fields, so re-entering the download step is all
         // it takes; its reconcile step finds the .aria2 control file and continues from there.
@@ -1217,6 +1377,10 @@ public final class InstallService extends Service {
         try {
             if (aria2Manager != null) aria2Manager.stopDownload();
             if (restContentClient != null) restContentClient.cancel();   // ADFA-4840
+            // ADFA-5119 (review): stop tar BEFORE the cleanup deletes the tree it is writing into.
+            // Without this the rm -rf below raced a live extraction and the surviving directory was
+            // adopted by the next install's non-destructive guard — a "successful" boot over a wreck.
+            if (extractor != null) extractor.stopExtraction();
         } catch (Exception ignored) {
         }
         if (moduleMode) {
@@ -1337,6 +1501,7 @@ public final class InstallService extends Service {
      *                    cleared setup_complete, so it needs no marker to be recovered from.
      */
     private void teardown(boolean clearMarker) {
+        cancelHeldWindow();   // ADFA-5119: nothing to wait for once this is over
         if (clearMarker) {
             org.iiab.controller.InstallGuard.end(this);
         } else {
@@ -1439,20 +1604,62 @@ public final class InstallService extends Service {
         Intent open = new Intent(this, org.iiab.controller.redesign.LibraryActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open, PendingIntent.FLAG_IMMUTABLE);
 
-        Intent cancel = new Intent(this, InstallService.class).setAction(ACTION_CANCEL);
-        PendingIntent cancelIntent = PendingIntent.getService(this, 1, cancel,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.install_notif_title))
                 .setContentText(text)
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOnlyAlertOnce(true)
-                .addAction(0, getString(R.string.install_notif_cancel), cancelIntent)
-                .build();
+                .setOnlyAlertOnce(true);
+
+        // ADFA-5119: the rootfs download gets Pause/Resume here and NO Cancel.
+        //
+        // Cancel was the only action this notification ever had, and on this path it was the wrong
+        // one twice over: it is destructive — it discards the transfer, the tier and the wishlists —
+        // and it fired straight from the shade with no confirmation, while the same decision on
+        // screen asks first. A control that expensive should not be one stray tap in a crowded
+        // shade, so it stays where it can be confirmed. The notification keeps the cheap, reversible
+        // half; the notification body already carries the percentage and the rate, and loses the
+        // rate on a pause because there is no longer one to report.
+        //
+        // Nothing is offered during verify, extract or provisioning: a pause there would leave a
+        // half-written rootfs, and Cancel is exactly what we just took away. The notification's job
+        // in those phases is to report, and its tap still opens the screen where the choice lives.
+        //
+        // Every other user of this notification — the module queue, the scratch reset, the dashboard
+        // rebuild — keeps Cancel unchanged. They have no pause to offer and Cancel is their only
+        // control.
+        // Keyed on the pipeline, not on `work`. `work` only narrows to ROOTFS_BUILD once the pipeline
+        // has decided, and this notification is posted before that — so keying on it would show
+        // Cancel for the first second of every install, which is one stray tap in the shade doing
+        // the exact destructive thing this change removes.
+        InstallState st = InstallProgressRepository.get().current();
+        boolean installPipeline = !moduleMode && !resetMode && !rebuildMode;
+        if (installPipeline && st.isHeld()) {
+            b.addAction(0, getString(st.isSoftFailed() ? R.string.k2go_dl_retry
+                                                       : R.string.k2go_dl_resume),
+                    serviceAction(ACTION_RESUME, 2));
+        } else if (installPipeline && st.phase == InstallState.Phase.DOWNLOADING) {
+            b.addAction(0, getString(R.string.k2go_dl_pause), serviceAction(ACTION_PAUSE, 3));
+        } else if (!installPipeline) {
+            b.addAction(0, getString(R.string.install_notif_cancel),
+                    serviceAction(ACTION_CANCEL, 1));
+        }
+        return b.build();
+    }
+
+    /**
+     * A notification action that delivers one of our own intents.
+     *
+     * <p>Distinct request codes per action, deliberately: {@code PendingIntent} identity ignores the
+     * action string, so reusing one code would let FLAG_UPDATE_CURRENT hand the same pending intent a
+     * different action — a Pause button that cancels.
+     */
+    private PendingIntent serviceAction(String action, int requestCode) {
+        Intent i = new Intent(this, InstallService.class).setAction(action);
+        return PendingIntent.getService(this, requestCode, i,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void updateNotification(String text) {
