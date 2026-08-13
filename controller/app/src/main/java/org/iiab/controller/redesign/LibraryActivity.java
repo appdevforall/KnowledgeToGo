@@ -412,7 +412,19 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
-        if (installPercentRow != null) installPercentRow.setVisibility(View.GONE);
+        // ADFA-5119: the figure rows RESERVE their line instead of collapsing it. Only one of the two
+        // is ever filled, but a GONE row shortened the panel — and the panel's height is what places
+        // the animation above it, so every phase change nudged the whole screen. INVISIBLE keeps the
+        // line, so the status text, the bar, the figures and the shopfront all hold their positions
+        // from the first byte to the last. Same complaint ADFA-4910 and ADFA-5118 fixed for the
+        // percentage, one level up: nothing should dance.
+        // Exactly ONE of the two is laid out at any moment — the other is GONE — so the panel always
+        // has one figure line and never one or two. INVISIBLE rather than GONE for the default,
+        // because a collapsed row shortened the panel, and the panel's height is what places the
+        // animation above it: every phase change was nudging the whole screen. Reserving the line
+        // holds the status text, the bar, the figures and the shopfront still from the first byte to
+        // the last — the complaint ADFA-4910 and ADFA-5118 already answered for the percentage.
+        if (installPercentRow != null) installPercentRow.setVisibility(View.INVISIBLE);
         if (downloadRow != null) downloadRow.setVisibility(View.GONE);   // ADFA-4895
         renderDownloadActions(st);   // ADFA-5119
         // Re-arm the presence latch whenever the download is not held: the next hold is a new window
@@ -459,6 +471,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             // the dance ADFA-4910 and ADFA-5118 already fixed for extract.
             boolean threeUp = !st.speed.isEmpty() && !st.eta.isEmpty();
             if (threeUp && downloadRow != null) {
+                // The three-column row replaces the two-column one rather than joining it: one line
+                // either way, so the handover does not change the panel's height.
+                if (installPercentRow != null) installPercentRow.setVisibility(View.GONE);
                 downloadRow.setVisibility(View.VISIBLE);
                 dlPercent.setText(pct(st.percent));
                 dlRate.setText(st.speed);
@@ -523,7 +538,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         stopBootEllipsis();   // ADFA-4837
         if (installProgress != null) installProgress.setVisibility(View.GONE);
         if (dlActions != null) dlActions.setVisibility(View.GONE);   // ADFA-5119
-        liftGateForActions(false);
+        // ADFA-5119: the lift is NOT undone here, deliberately. This runs the instant the install
+        // reaches a terminal, and the very next thing is the gate's OPEN flip — so dropping the
+        // animation back down first made it jump once more, on the last frame the user sees. Once an
+        // install has raised it, it stays raised for the life of this Activity; after the flip the
+        // view is GONE and the value stops mattering. A launch with no install never raises it at
+        // all, which is why the ordinary boot still uses the full screen.
     }
 
     /**
@@ -535,9 +555,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      */
     private void renderDownloadActions(InstallState st) {
         if (dlActions == null) return;
+        // ADFA-5119: the buttons RESERVE their row for the whole install, whether or not they are
+        // offered. Verify, extract and provisioning have no control to give, but collapsing the row
+        // there made the panel two rows shorter and dropped the animation by that much at every
+        // handover — a jolt in the middle of an operation whose whole point is that it looks steady.
+        // The space costs nothing: it is the bottom of a screen with nothing else on it.
         boolean offered = st.phase == InstallState.Phase.DOWNLOADING || st.isHeld();
-        dlActions.setVisibility(offered ? View.VISIBLE : View.GONE);
-        liftGateForActions(offered);
+        dlActions.setVisibility(offered ? View.VISIBLE : View.INVISIBLE);
+        liftGateForActions(true);
         if (!offered) return;
         // One button, three labels, and the state picks which one is true. Retry and Resume run the
         // same code — aria2 continues from its control file either way — so the label is the only

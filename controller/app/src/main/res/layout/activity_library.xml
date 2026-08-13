@@ -117,6 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="end"
+                android:minLines="1"
                 android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/k2go_boot_ink" />
             <TextView
@@ -176,6 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:gravity="center"
+            android:minLines="1"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_boot_muted" />
 
