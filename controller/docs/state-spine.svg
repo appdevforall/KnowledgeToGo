@@ -223,6 +223,7 @@
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
 <text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. Only finding 1 survives closing the app — but see its note: the hang is the rarer half of that leg's problem.</text>
+<text class="sub" x="24" y="1292">Findings 1, 2, 3 and 4 are one sentence four times: a fact nobody clears. They are rows in the standing directive's ledger at the top of operation-model-roadmap.svg — fix them there, not here.</text>
 
 <rect class="st-bad" x="24" y="1276" width="1672" height="212" rx="12"/>
 <text class="h2" x="44" y="1304">1 · TRAP — a hung install holds the boot gate, and it keeps itself alive (the rarer half; see the note)</text>
