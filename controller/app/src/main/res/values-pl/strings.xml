@@ -512,4 +512,5 @@
     <string name="install_error_verify">Pobrane pliki systemowe nie przeszły weryfikacji integralności (niekompletne lub uszkodzone). Spróbuj zainstalować ponownie.</string>
     <string name="install_btn_select_content">Wybierz treść</string>
     <string name="feedback_force_crash">Wymuś testową awarię (debug)</string>
+    <string name="feedback_share_copied">Tekst zgłoszenia skopiowany — wklej go, jeśli nie dotarł</string>
 </resources>

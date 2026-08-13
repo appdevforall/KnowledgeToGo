@@ -588,4 +588,5 @@
     <string name="install_error_verify">Загруженные системные файлы не прошли проверку целостности (неполные или повреждённые). Повторите установку.</string>
     <string name="install_btn_select_content">Выбрать контент</string>
     <string name="feedback_force_crash">Принудительный тестовый сбой (debug)</string>
+    <string name="feedback_share_copied">Текст отчёта скопирован — вставьте его, если он не пришёл</string>
 </resources>

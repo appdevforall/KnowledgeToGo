@@ -589,4 +589,5 @@
     <string name="install_error_verify">Les fichiers système téléchargés ont échoué à la vérification d\'intégrité (incomplets ou corrompus). Veuillez réessayer l\'installation.</string>
     <string name="install_btn_select_content">Choisir le contenu</string>
     <string name="feedback_force_crash">Forcer un plantage de test (debug)</string>
+    <string name="feedback_share_copied">Texte du rapport copié — collez-le s’il n’est pas arrivé</string>
 </resources>

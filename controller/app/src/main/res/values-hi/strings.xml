@@ -589,4 +589,5 @@
     <string name="install_error_verify">डाउनलोड की गई सिस्टम फ़ाइलें अखंडता जाँच में विफल रहीं (अपूर्ण या दूषित)। कृपया पुनः इंस्टॉल करने का प्रयास करें।</string>
     <string name="install_btn_select_content">सामग्री चुनें</string>
     <string name="feedback_force_crash">परीक्षण क्रैश बाध्य करें (debug)</string>
+    <string name="feedback_share_copied">रिपोर्ट का टेक्स्ट कॉपी हो गया — न पहुँचे तो पेस्ट करें</string>
 </resources>
