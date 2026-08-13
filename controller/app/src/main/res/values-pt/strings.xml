@@ -246,7 +246,7 @@
     <string name="install_error_no_tier">Ei! Selecione uma edição para instalar (Básica, Padrão ou Completa).</string>
     <string name="install_error_no_storage">Espaço insuficiente! Por favor, libere espaço ou escolha uma edição menor. (É necessário um buffer de segurança de 5 GB)</string>
     <string name="install_status_os_download">SO: %1$d%% | %2$s</string>
-    <string name="install_status_extracting">Extraindo o Sistema...\n(Isso levará um tempo)</string>
+    <string name="install_status_extracting">Extraindo o sistema...\n(Isso levará um tempo)</string>
     <string name="install_error_no_archive">Erro: Arquivo baixado não encontrado.</string>
     <string name="install_error_extraction">A extração falhou: %1$s</string>
     <string name="install_error_download">O download falhou: %1$s</string>

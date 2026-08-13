@@ -265,7 +265,7 @@
     <string name="install_error_no_tier">Habari! Chagua toleo la kusakinisha (Basic, Standard, au Full).</string>
     <string name="install_error_no_storage">Hifadhi haitoshi! Tafadhali fungua nafasi au chagua toleo dogo zaidi. (Nafasi ya usalama ya 5GB inahitajika)</string>
     <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
-    <string name="install_status_extracting">Inatoa Mfumo…\n(Hii inachukua muda)</string>
+    <string name="install_status_extracting">Inatoa mfumo…\n(Hii inachukua muda)</string>
     <string name="install_error_no_archive">Hitilafu: Kumbukumbu iliyopakuliwa haijapatikana.</string>
     <string name="install_error_extraction">Utoaji Umeshindwa: %1$s</string>
     <string name="install_error_download">Upakuaji Umeshindwa: %1$s</string>
