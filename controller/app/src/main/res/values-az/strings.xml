@@ -532,4 +532,8 @@
     <string name="feedback_force_crash">Sınaq çökməsini məcbur et (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_channel_title">Necə göndərmək istəyirsiniz?</string>
+    <string name="feedback_channel_email">E-poçt</string>
+    <string name="feedback_channel_share">Başqa tətbiqlə paylaş</string>
+    <string name="feedback_share_copied">Ekran görüntüsü kopyalandı — istəsəniz söhbətə yapışdırın</string>
 </resources>

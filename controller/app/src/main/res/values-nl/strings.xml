@@ -512,4 +512,8 @@
     <string name="install_error_verify">De gedownloade systeembestanden zijn niet door de integriteitscontrole gekomen (onvolledig of beschadigd). Probeer de installatie opnieuw.</string>
     <string name="install_btn_select_content">Inhoud selecteren</string>
     <string name="feedback_force_crash">Testcrash forceren (debug)</string>
+    <string name="feedback_channel_title">Hoe wil je het versturen?</string>
+    <string name="feedback_channel_email">E-mail</string>
+    <string name="feedback_channel_share">Delen met andere app</string>
+    <string name="feedback_share_copied">Schermafbeelding gekopieerd — plak deze in de chat als je wilt</string>
 </resources>

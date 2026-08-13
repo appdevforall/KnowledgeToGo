@@ -512,4 +512,8 @@
     <string name="install_error_verify">Các tệp hệ thống đã tải xuống không vượt qua kiểm tra tính toàn vẹn (không đầy đủ hoặc bị hỏng). Vui lòng thử cài đặt lại.</string>
     <string name="install_btn_select_content">Chọn nội dung</string>
     <string name="feedback_force_crash">Buộc sự cố thử nghiệm (debug)</string>
+    <string name="feedback_channel_title">Bạn muốn gửi bằng cách nào?</string>
+    <string name="feedback_channel_email">Email</string>
+    <string name="feedback_channel_share">Chia sẻ sang ứng dụng khác</string>
+    <string name="feedback_share_copied">Đã sao chép ảnh chụp màn hình — dán vào cuộc trò chuyện nếu muốn</string>
 </resources>

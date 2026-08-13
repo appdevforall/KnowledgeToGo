@@ -525,4 +525,8 @@
     <string name="feedback_force_crash">Prinudi probni pad (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_channel_title">Како желите да га пошаљете?</string>
+    <string name="feedback_channel_email">Имејл</string>
+    <string name="feedback_channel_share">Дели у другој апликацији</string>
+    <string name="feedback_share_copied">Снимак екрана је копиран — налепите га у ћаскање ако желите</string>
 </resources>

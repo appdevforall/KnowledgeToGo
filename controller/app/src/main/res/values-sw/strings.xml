@@ -532,4 +532,8 @@
     <string name="feedback_force_crash">Lazimisha ajali ya jaribio (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_channel_title">Unataka kuituma vipi?</string>
+    <string name="feedback_channel_email">Barua pepe</string>
+    <string name="feedback_channel_share">Shiriki kwenye programu nyingine</string>
+    <string name="feedback_share_copied">Picha ya skrini imenakiliwa — ibandike kwenye gumzo ukitaka</string>
 </resources>

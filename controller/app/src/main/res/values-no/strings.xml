@@ -512,4 +512,8 @@
     <string name="install_error_verify">De nedlastede systemfilene besto ikke integritetskontrollen (ufullstendige eller skadede). Prøv å installere på nytt.</string>
     <string name="install_btn_select_content">Velg innhold</string>
     <string name="feedback_force_crash">Tving frem testkrasj (debug)</string>
+    <string name="feedback_channel_title">Hvordan vil du sende det?</string>
+    <string name="feedback_channel_email">E-post</string>
+    <string name="feedback_channel_share">Del i en annen app</string>
+    <string name="feedback_share_copied">Skjermbilde kopiert — lim det inn i chatten om du vil</string>
 </resources>

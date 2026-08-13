@@ -519,4 +519,8 @@
     <string name="install_error_verify">Berkas sistem yang diunduh gagal pemeriksaan integritas (tidak lengkap atau rusak). Silakan coba pasang lagi.</string>
     <string name="install_btn_select_content">Pilih konten</string>
     <string name="feedback_force_crash">Paksa crash uji (debug)</string>
+    <string name="feedback_channel_title">Bagaimana Anda ingin mengirimnya?</string>
+    <string name="feedback_channel_email">Email</string>
+    <string name="feedback_channel_share">Bagikan ke aplikasi lain</string>
+    <string name="feedback_share_copied">Tangkapan layar disalin — tempel ke obrolan jika mau</string>
 </resources>

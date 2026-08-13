@@ -512,4 +512,8 @@
     <string name="install_error_verify">فایل‌های سیستمی دانلودشده در بررسی یکپارچگی ناموفق بودند (ناقص یا خراب). لطفاً نصب را دوباره امتحان کنید.</string>
     <string name="install_btn_select_content">انتخاب محتوا</string>
     <string name="feedback_force_crash">اجبار به خرابی آزمایشی (debug)</string>
+    <string name="feedback_channel_title">چطور می‌خواهید آن را ارسال کنید؟</string>
+    <string name="feedback_channel_email">ایمیل</string>
+    <string name="feedback_channel_share">هم‌رسانی با برنامه دیگر</string>
+    <string name="feedback_share_copied">اسکرین‌شات کپی شد — اگر خواستید در گفتگو بچسبانید</string>
 </resources>

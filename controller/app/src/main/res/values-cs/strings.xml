@@ -519,4 +519,8 @@
     <string name="install_error_verify">Stažené systémové soubory neprošly kontrolou integrity (neúplné nebo poškozené). Zkuste instalaci znovu.</string>
     <string name="install_btn_select_content">Vybrat obsah</string>
     <string name="feedback_force_crash">Vynutit testovací pád (debug)</string>
+    <string name="feedback_channel_title">Jak to chcete odeslat?</string>
+    <string name="feedback_channel_email">E-mail</string>
+    <string name="feedback_channel_share">Sdílet do jiné aplikace</string>
+    <string name="feedback_share_copied">Snímek obrazovky zkopírován — vložte jej do chatu, pokud chcete</string>
 </resources>

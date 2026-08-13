@@ -512,4 +512,8 @@
     <string name="install_error_verify">Die heruntergeladenen Systemdateien haben die Integritätsprüfung nicht bestanden (unvollständig oder beschädigt). Bitte versuchen Sie die Installation erneut.</string>
     <string name="install_btn_select_content">Inhalt auswählen</string>
     <string name="feedback_force_crash">Testabsturz erzwingen (debug)</string>
+    <string name="feedback_channel_title">Wie möchtest du es senden?</string>
+    <string name="feedback_channel_email">E-Mail</string>
+    <string name="feedback_channel_share">In anderer App teilen</string>
+    <string name="feedback_share_copied">Screenshot kopiert — füge ihn bei Bedarf in den Chat ein</string>
 </resources>

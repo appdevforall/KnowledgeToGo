@@ -540,6 +540,11 @@
     <string name="feedback_send">Send</string>
     <string name="feedback_empty_message">Please write your feedback first.</string>
     <string name="feedback_no_email_app">No email app found.</string>
+    <!-- ADFA-5130: feedback share channel picker (shown when a screenshot is attached). -->
+    <string name="feedback_channel_title">How do you want to send it?</string>
+    <string name="feedback_channel_email">Email</string>
+    <string name="feedback_channel_share">Share to another app</string>
+    <string name="feedback_share_copied">Screenshot copied — paste it into the chat if you want it</string>
     <string name="crash_report_title">K2Go closed unexpectedly</string>
     <string name="crash_report_subtitle">Send this report to help us fix it? You can review what\'s included below.</string>
     <string name="crash_report_send">Send report</string>

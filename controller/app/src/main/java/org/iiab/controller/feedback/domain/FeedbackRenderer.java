@@ -22,6 +22,17 @@ public final class FeedbackRenderer {
         return new EmailContent(RECIPIENT, subject(p), body(p), p.screenshot());
     }
 
+    /**
+     * ADFA-5130: the whole report as one plain-text block, for the "share to another app"
+     * channel. Messaging apps drop {@code EXTRA_TEXT} when an image stream is attached, so that
+     * path sends text only (the screenshot travels via the clipboard) — this keeps the report as
+     * real, selectable, accessible text instead of baking it into an image. A leading "To:" line
+     * stands in for the recipient field a messaging share does not have. Pure.
+     */
+    public String shareText(FeedbackPayload p) {
+        return "To: " + RECIPIENT + "\n" + subject(p) + "\n\n" + body(p);
+    }
+
     private String subject(FeedbackPayload p) {
         StringBuilder s = new StringBuilder(SUBJECT_PREFIX).append(p.type().label());
         if (p.type() == FeedbackType.CRASH) {

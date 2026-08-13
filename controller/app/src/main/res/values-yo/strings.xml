@@ -532,4 +532,8 @@
     <string name="feedback_force_crash">Fipá mú ìjàǹbá àdánwò (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
+    <string name="feedback_channel_title">Báwo ni o ṣe fẹ́ fi ránṣẹ́?</string>
+    <string name="feedback_channel_email">Ìméèlì</string>
+    <string name="feedback_channel_share">Pín sí ohun-èlò mìíràn</string>
+    <string name="feedback_share_copied">A ti daako fọ́tò-ìbòjú — lẹ̀ ẹ́ sínú ìfọ̀rọ̀wérọ̀ tí o bá fẹ́</string>
 </resources>

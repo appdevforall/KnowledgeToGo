@@ -512,4 +512,8 @@
     <string name="install_error_verify">İndirilen sistem dosyaları bütünlük denetimini geçemedi (eksik veya bozuk). Lütfen kurulumu yeniden deneyin.</string>
     <string name="install_btn_select_content">İçerik seç</string>
     <string name="feedback_force_crash">Test çökmesini zorla (debug)</string>
+    <string name="feedback_channel_title">Nasıl göndermek istersiniz?</string>
+    <string name="feedback_channel_email">E-posta</string>
+    <string name="feedback_channel_share">Başka bir uygulamada paylaş</string>
+    <string name="feedback_share_copied">Ekran görüntüsü kopyalandı — isterseniz sohbete yapıştırın</string>
 </resources>
