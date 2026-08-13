@@ -64,6 +64,14 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     // ADFA-5119: the two controls that end the wait. One button, three labels; one confirmation.
     private View dlActions;
     private com.google.android.material.button.MaterialButton dlToggle, dlCancel;
+    /**
+     * The outlined button's own tint, remembered so the filled state can be undone.
+     *
+     * <p>Setting it to null does not mean "back to the default" — it means no tint at all, and a
+     * MaterialButton with no tint paints its shape opaque instead of transparent. That is how Pause
+     * came out as a black pill with dark text on it.
+     */
+    private android.content.res.ColorStateList dlToggleTint;
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
@@ -148,6 +156,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         dlActions = findViewById(R.id.k2go_dl_actions);
         dlToggle = findViewById(R.id.k2go_dl_toggle);
         dlCancel = findViewById(R.id.k2go_dl_cancel);
+        dlToggleTint = dlToggle.getBackgroundTintList();   // the outlined style's own value
         dlToggle.setOnClickListener(v -> onDownloadToggle());
         dlCancel.setOnClickListener(v -> confirmCancelDownload());
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
@@ -545,10 +554,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // then waits as long as they like. It would be pressuring someone we have just given
         // unlimited time, which is the same reason nothing draws a countdown.
         boolean primary = st.isSoftFailed();
+        // Brand teal, not ink: a filled primary action is the same gesture the wizard's "Internet
+        // download" makes, and it should look like the same app. k2go_boot_accent rather than
+        // k2go_teal because that one flips to a pale turquoise at night and this paper does not.
         dlToggle.setBackgroundTintList(primary
                 ? android.content.res.ColorStateList.valueOf(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.k2go_boot_ink))
-                : null);
+                        androidx.core.content.ContextCompat.getColor(this, R.color.k2go_boot_accent))
+                : dlToggleTint);
         dlToggle.setTextColor(androidx.core.content.ContextCompat.getColor(this,
                 primary ? R.color.k2go_boot_bg : R.color.k2go_boot_ink));
         // Both controls, always. A first pass hid Pause during the IPv4/IPv6 probe on the assumption

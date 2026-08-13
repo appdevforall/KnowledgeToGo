@@ -147,7 +147,22 @@ public final class InstallService extends Service {
     /** ADFA-5119: how long a held download waits for a person before failing through to recovery. */
     private static final long HELD_WINDOW_MS = 60_000L;
 
+    /**
+     * ADFA-5119: how long to wait before each automatic attempt — 3s, then 6s, then 9s.
+     *
+     * <p>A first pass fired them back to back, arguing the wait had already been spent inside aria2's
+     * own timeout. That is true when aria2 takes time to fail, and false in the case this exists for:
+     * with no network, name resolution fails at once, an attempt costs nothing, and all three flashed
+     * past faster than the label could be read. A count nobody can read is not information.
+     *
+     * <p>Escalating rather than fixed, because the two things a delay buys grow together: a longer
+     * gap is a better chance the network came back, and by the third attempt the user has earned a
+     * clearer look at what is happening before the decision passes to them.
+     */
+    private static final long[] RETRY_DELAYS_MS = {3_000L, 6_000L, 9_000L};
+
     private volatile int softAttempts = 0;
+    private Runnable pendingRetry;   // main thread only
     private volatile org.iiab.controller.download.domain.Aria2Exit.Kind lastStopKind =
             org.iiab.controller.download.domain.Aria2Exit.Kind.UNKNOWN;
     private final Handler heldHandler = new Handler(Looper.getMainLooper());
@@ -1212,6 +1227,20 @@ public final class InstallService extends Service {
             Log.i(TAG, "pause ignored: only the rootfs download can be paused, not " + work);
             return;
         }
+        // ADFA-5119: a pause tapped during the gap between attempts. There is no aria2 to signal, so
+        // asking it to stop would latch a request that the next startDownload clears — the tap would
+        // vanish. Drop the queued attempt and go to PAUSED here instead: the user asked to stop, and
+        // nothing is running to argue with.
+        if (pendingRetry != null) {
+            cancelPendingRetry();
+            softAttempts = 0;
+            InstallProgressRepository.get().postPaused(
+                    InstallProgressRepository.get().current().percent);
+            releaseHardwareLocks();
+            updateNotification(getString(R.string.k2go_dl_paused_notif) + "  ·  "
+                    + InstallProgressRepository.get().current().percent + "%");
+            return;
+        }
         if (aria2Manager != null) aria2Manager.pauseDownload();
         // The state is posted by the listener's onPaused(), not here: aria2 has to actually stop
         // first, and it is the one that knows when that happened.
@@ -1256,10 +1285,14 @@ public final class InstallService extends Service {
                     + " — automatic " + line);
             InstallProgressRepository.get().postRetrying(percent, line);
             updateNotification(line);
-            // Straight back in, no backoff. The wait that a backoff buys was already spent inside
-            // aria2's own timeout, and the case a delay would help with — the network being down — is
-            // answered in a second by the connectivity signal, not by guessing at seconds.
-            startRootfsDownload();
+            long delay = RETRY_DELAYS_MS[Math.min(softAttempts - 1, RETRY_DELAYS_MS.length - 1)];
+            cancelPendingRetry();
+            pendingRetry = () -> {
+                pendingRetry = null;
+                if (finished || cancelled) return;
+                startRootfsDownload();
+            };
+            heldHandler.postDelayed(pendingRetry, delay);
             return;
         }
 
@@ -1314,6 +1347,14 @@ public final class InstallService extends Service {
             fail(getString(softFailLine(lastStopKind)));
         };
         heldHandler.postDelayed(heldExpiry, HELD_WINDOW_MS);
+    }
+
+    /** ADFA-5119: drop a retry that has been scheduled but not started. */
+    private void cancelPendingRetry() {
+        if (pendingRetry != null) {
+            heldHandler.removeCallbacks(pendingRetry);
+            pendingRetry = null;
+        }
     }
 
     private void cancelHeldWindow() {
@@ -1519,7 +1560,9 @@ public final class InstallService extends Service {
      *                    cleared setup_complete, so it needs no marker to be recovered from.
      */
     private void teardown(boolean clearMarker) {
-        cancelHeldWindow();   // ADFA-5119: nothing to wait for once this is over
+        // ADFA-5119: nothing to wait for once this is over — neither the window nor a queued attempt.
+        cancelHeldWindow();
+        cancelPendingRetry();
         if (clearMarker) {
             org.iiab.controller.InstallGuard.end(this);
         } else {
