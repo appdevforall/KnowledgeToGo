@@ -512,8 +512,5 @@
     <string name="install_error_verify">Завантажені системні файли не пройшли перевірку цілісності (неповні або пошкоджені). Повторіть встановлення.</string>
     <string name="install_btn_select_content">Вибрати вміст</string>
     <string name="feedback_force_crash">Примусовий тестовий збій (debug)</string>
-    <string name="feedback_channel_title">Як ви хочете це надіслати?</string>
-    <string name="feedback_channel_email">Електронна пошта</string>
-    <string name="feedback_channel_share">Поділитися в іншому застосунку</string>
-    <string name="feedback_share_copied">Знімок екрана скопійовано — вставте його в чат, якщо хочете</string>
+    <string name="feedback_share_copied">Текст звіту скопійовано — вставте його, якщо він не надійшов</string>
 </resources>

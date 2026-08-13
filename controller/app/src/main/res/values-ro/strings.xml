@@ -512,8 +512,5 @@
     <string name="install_error_verify">Fișierele de sistem descărcate nu au trecut verificarea integrității (incomplete sau corupte). Încercați din nou instalarea.</string>
     <string name="install_btn_select_content">Selectează conținut</string>
     <string name="feedback_force_crash">Forțează blocarea de test (debug)</string>
-    <string name="feedback_channel_title">Cum vrei să îl trimiți?</string>
-    <string name="feedback_channel_email">E-mail</string>
-    <string name="feedback_channel_share">Partajează în altă aplicație</string>
-    <string name="feedback_share_copied">Captura de ecran a fost copiată — lipește-o în chat dacă vrei</string>
+    <string name="feedback_share_copied">Textul raportului a fost copiat — lipește-l dacă nu a ajuns</string>
 </resources>

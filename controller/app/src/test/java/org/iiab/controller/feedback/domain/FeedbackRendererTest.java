@@ -18,28 +18,20 @@ public class FeedbackRendererTest {
                 .build();
     }
 
-    @Test public void shareTextCarriesRecipientSubjectAndBody() {
-        String text = new FeedbackRenderer().shareText(payload());
-        // Recipient stand-in first (a messaging share has no "to" field), then subject, then body.
-        assertTrue("has To line", text.startsWith("To: " + FeedbackRenderer.RECIPIENT + "\n"));
-        assertTrue("has subject", text.contains("[K2Go]"));
-        assertTrue("has diagnostics", text.contains("App version: 1.2.3 (build 45)"));
-        assertTrue("has device", text.contains("Device: Acme Phone X"));
-        assertTrue("has the user message", text.contains("It broke when I tapped share"));
-    }
-
-    @Test public void shareTextMatchesTheEmailBody() {
-        FeedbackPayload p = payload();
-        FeedbackRenderer r = new FeedbackRenderer();
-        // The messaging text ends with exactly the email body, so both channels carry the same report.
-        assertTrue(r.shareText(p).endsWith(r.render(p).body()));
-    }
-
-    @Test public void emailBodyUnchanged() {
-        // Guard the existing render() contract while we add the share path.
+    @Test public void bodyCarriesTheDiagnosticsAndMessage() {
+        // ADFA-5130: the hybrid share and the clipboard fallback both send this body verbatim,
+        // so it must hold the whole report as real, extractable text.
         String body = new FeedbackRenderer().render(payload()).body();
         assertTrue(body.startsWith("Product: K2Go\n"));
-        assertTrue(body.contains("\n--- Your message ---\n"));
+        assertTrue(body.contains("App version: 1.2.3 (build 45)"));
+        assertTrue(body.contains("Android: 14"));
+        assertTrue(body.contains("Device: Acme Phone X"));
+        assertTrue(body.contains("ABI: arm64-v8a"));
+        assertTrue(body.contains("\n--- Your message ---\nIt broke when I tapped share\n"));
+    }
+
+    @Test public void subjectIsProductTagged() {
+        assertTrue(new FeedbackRenderer().render(payload()).subject().startsWith("[K2Go]"));
     }
 
     @Test public void recipientIsTheSharedInbox() {

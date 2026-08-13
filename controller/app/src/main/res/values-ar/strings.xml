@@ -512,8 +512,5 @@
     <string name="install_error_verify">فشلت ملفات النظام التي تم تنزيلها في فحص السلامة (غير مكتملة أو تالفة). يرجى محاولة التثبيت مرة أخرى.</string>
     <string name="install_btn_select_content">اختيار المحتوى</string>
     <string name="feedback_force_crash">فرض تعطل تجريبي (debug)</string>
-    <string name="feedback_channel_title">كيف تريد إرساله؟</string>
-    <string name="feedback_channel_email">بريد إلكتروني</string>
-    <string name="feedback_channel_share">المشاركة عبر تطبيق آخر</string>
-    <string name="feedback_share_copied">تم نسخ لقطة الشاشة — الصقها في المحادثة إذا أردت</string>
+    <string name="feedback_share_copied">تم نسخ نص التقرير — الصقه إذا لم يصل</string>
 </resources>

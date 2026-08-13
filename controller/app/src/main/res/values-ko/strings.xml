@@ -513,8 +513,5 @@
     <string name="install_btn_select_content">콘텐츠 선택</string>
     <string name="feedback_force_crash">테스트 충돌 강제 실행 (debug)</string>
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
-    <string name="feedback_channel_title">어떻게 보낼까요?</string>
-    <string name="feedback_channel_email">이메일</string>
-    <string name="feedback_channel_share">다른 앱으로 공유</string>
-    <string name="feedback_share_copied">스크린샷이 복사됨 — 원하면 채팅에 붙여넣으세요</string>
+    <string name="feedback_share_copied">보고서 텍스트가 복사됨 — 전달되지 않았다면 붙여넣으세요</string>
 </resources>

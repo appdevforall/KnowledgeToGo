@@ -589,8 +589,5 @@
     <string name="install_error_verify">Les fichiers système téléchargés ont échoué à la vérification d\'intégrité (incomplets ou corrompus). Veuillez réessayer l\'installation.</string>
     <string name="install_btn_select_content">Choisir le contenu</string>
     <string name="feedback_force_crash">Forcer un plantage de test (debug)</string>
-    <string name="feedback_channel_title">Comment voulez-vous l’envoyer ?</string>
-    <string name="feedback_channel_email">E-mail</string>
-    <string name="feedback_channel_share">Partager dans une autre appli</string>
-    <string name="feedback_share_copied">Capture copiée — collez-la dans le chat si vous voulez</string>
+    <string name="feedback_share_copied">Texte du rapport copié — collez-le s’il n’est pas arrivé</string>
 </resources>

@@ -525,8 +525,5 @@
     <string name="feedback_force_crash">পরীক্ষামূলক ক্র্যাশ বাধ্য করুন (debug)</string>
     <!-- ADFA-4795: arch technical labels l10n. review — machine, verify. -->
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
-    <string name="feedback_channel_title">আপনি কীভাবে এটি পাঠাতে চান?</string>
-    <string name="feedback_channel_email">ইমেল</string>
-    <string name="feedback_channel_share">অন্য অ্যাপে শেয়ার করুন</string>
-    <string name="feedback_share_copied">স্ক্রিনশট কপি করা হয়েছে — চাইলে চ্যাটে পেস্ট করুন</string>
+    <string name="feedback_share_copied">রিপোর্টের লেখা কপি করা হয়েছে — না এলে পেস্ট করুন</string>
 </resources>

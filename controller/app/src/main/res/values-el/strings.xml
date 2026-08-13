@@ -519,8 +519,5 @@
     <string name="install_error_verify">Τα ληφθέντα αρχεία συστήματος απέτυχαν στον έλεγχο ακεραιότητας (ελλιπή ή κατεστραμμένα). Δοκιμάστε ξανά την εγκατάσταση.</string>
     <string name="install_btn_select_content">Επιλογή περιεχομένου</string>
     <string name="feedback_force_crash">Εξαναγκασμός δοκιμαστικής κατάρρευσης (debug)</string>
-    <string name="feedback_channel_title">Πώς θέλετε να το στείλετε;</string>
-    <string name="feedback_channel_email">Email</string>
-    <string name="feedback_channel_share">Κοινοποίηση σε άλλη εφαρμογή</string>
-    <string name="feedback_share_copied">Το στιγμιότυπο αντιγράφηκε — επικολλήστε το στη συνομιλία αν θέλετε</string>
+    <string name="feedback_share_copied">Το κείμενο της αναφοράς αντιγράφηκε — επικολλήστε το αν δεν έφτασε</string>
 </resources>

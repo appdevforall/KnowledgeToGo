@@ -513,8 +513,5 @@
     <string name="install_btn_select_content">コンテンツを選択</string>
     <string name="feedback_force_crash">テストクラッシュを強制 (debug)</string>
     <!-- ADFA-4795: Lottie sign OPEN/CLOSED l10n. review — machine, verify. -->
-    <string name="feedback_channel_title">どのように送信しますか？</string>
-    <string name="feedback_channel_email">メール</string>
-    <string name="feedback_channel_share">他のアプリで共有</string>
-    <string name="feedback_share_copied">スクリーンショットをコピーしました — 必要ならチャットに貼り付けてください</string>
+    <string name="feedback_share_copied">レポートのテキストをコピーしました — 届かなかったら貼り付けてください</string>
 </resources>

@@ -512,8 +512,5 @@
     <string name="install_error_verify">A letöltött rendszerfájlok nem mentek át az integritásellenőrzésen (hiányosak vagy sérültek). Kérjük, próbálja meg újra a telepítést.</string>
     <string name="install_btn_select_content">Tartalom kiválasztása</string>
     <string name="feedback_force_crash">Teszt-összeomlás kényszerítése (debug)</string>
-    <string name="feedback_channel_title">Hogyan szeretné elküldeni?</string>
-    <string name="feedback_channel_email">E-mail</string>
-    <string name="feedback_channel_share">Megosztás másik alkalmazással</string>
-    <string name="feedback_share_copied">Képernyőkép másolva — illessze be a csevegésbe, ha szeretné</string>
+    <string name="feedback_share_copied">A jelentés szövege másolva — illessze be, ha nem érkezett meg</string>
 </resources>

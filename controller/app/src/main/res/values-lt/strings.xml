@@ -519,8 +519,5 @@
     <string name="install_error_verify">Atsisiųsti sistemos failai neišlaikė vientisumo patikros (neišsamūs arba sugadinti). Bandykite įdiegti dar kartą.</string>
     <string name="install_btn_select_content">Pasirinkti turinį</string>
     <string name="feedback_force_crash">Priverstinis bandomasis gedimas (debug)</string>
-    <string name="feedback_channel_title">Kaip norite tai išsiųsti?</string>
-    <string name="feedback_channel_email">El. paštas</string>
-    <string name="feedback_channel_share">Bendrinti kitoje programoje</string>
-    <string name="feedback_share_copied">Ekrano nuotrauka nukopijuota — įklijuokite ją į pokalbį, jei norite</string>
+    <string name="feedback_share_copied">Ataskaitos tekstas nukopijuotas — įklijuokite, jei neatėjo</string>
 </resources>
