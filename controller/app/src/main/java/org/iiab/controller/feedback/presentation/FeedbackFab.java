@@ -163,13 +163,32 @@ public final class FeedbackFab {
      *  ADFA-5130: routing is delegated to {@link FeedbackShareRouter} (email vs share-to-app).
      *  Shared by MainActivity and the redesign. */
     public static void sendFeedback(android.app.Activity activity, String screen) {
+        sendFeedback(activity, screen,
+                org.iiab.controller.feedback.domain.FeedbackType.GENERAL, null);
+    }
+
+    /**
+     * ADFA-5119: the same report, typed and with something already written in it.
+     *
+     * <p>Added for the moment an install gives up. The FAB's version asks the user to explain a
+     * screen they are looking at; this one is offered by a failure, where the app knows what
+     * happened and the user does not — so the description is filled in from the install log rather
+     * than left for someone to guess at. An overload, so the existing call sites are untouched.
+     *
+     * @param type    what kind of report this is; BUG for a failure the user did not cause
+     * @param message a pre-filled description, or null to leave it empty
+     */
+    public static void sendFeedback(android.app.Activity activity, String screen,
+                                    org.iiab.controller.feedback.domain.FeedbackType type,
+                                    String message) {
         org.iiab.controller.feedback.data.FeedbackScreenshot.capture(activity, path -> {
             if (activity.isFinishing() || activity.isDestroyed()) {
                 return;   // ADFA-4932: activity gone between tap and the async capture callback
             }
             org.iiab.controller.feedback.domain.FeedbackPayload payload =
                     org.iiab.controller.feedback.domain.FeedbackPayload
-                            .builder(org.iiab.controller.feedback.domain.FeedbackType.GENERAL)
+                            .builder(type)
+                            .message(message)
                             .appVersion(org.iiab.controller.feedback.data.FeedbackDiagnostics.appVersionName(activity))
                             .appBuild(org.iiab.controller.feedback.data.FeedbackDiagnostics.appVersionCode(activity))
                             .androidRelease(android.os.Build.VERSION.RELEASE)

@@ -34,7 +34,7 @@
          because that is what is happening: we are trying. The count is what makes the wait bearable —
          the previous behaviour spent the same seconds inside aria2 with a frozen number on screen and
          nothing to say how many were left. -->
-    <string name="k2go_dl_attempt" translatable="false">Retry %1$d of %2$d</string>
+    <string name="k2go_dl_attempt" translatable="false">Reconnecting…  %1$d of %2$d</string>
 
     <!-- Status lines for a stop nobody chose (SOFTFAILED). Mapped from Aria2Exit.Kind, never from
          Aria2Exit.label(), which is documented as English-for-logs. They name the cause only: the
@@ -67,5 +67,9 @@
          dismiss gesture sharing a word. "Discard and start over" names the outcome instead. Left as
          the mockup has it until decided, rather than changed here unilaterally. -->
     <string name="k2go_dl_cancel_confirm" translatable="false">Cancel it</string>
+
+    <!-- Third button on the "Installation interrupted" dialog. Neutral, and deliberately not
+         dismissing: reporting is not a decision about the system, so Recover and Close stay. -->
+    <string name="k2go_damaged_report" translatable="false">Report the problem</string>
 
 </resources>

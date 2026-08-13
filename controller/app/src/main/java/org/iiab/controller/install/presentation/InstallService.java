@@ -426,7 +426,12 @@ public final class InstallService extends Service {
                 // an empty override here would blank the status line for the whole probe. It has
                 // no rate and no estimate to carry — those only exist once aria2 is transferring.
                 if (cancelled) return;
-                InstallProgressRepository.get().postDownloading(percentage, speed);
+                // ADFA-5119: the attempt counter travels with every tick of a retried download.
+                // This override is the profiler's path — "Test IPv4", "Test IPv6" — and the profiler
+                // runs again at the start of each attempt, so without carrying the note here the
+                // count is wiped exactly when the user needs it: while the same three probes scroll
+                // past for the third time with nothing to say which time it is.
+                InstallProgressRepository.get().postDownloading(percentage, speed, "", attemptNote());
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
             }
 
@@ -452,7 +457,8 @@ public final class InstallService extends Service {
                 // third hiccup and hand the user a decision about a link that is working.
                 if (bytesPerSecond > 0) softAttempts = 0;
                 int bucket = org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds);
-                InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket));
+                InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket),
+                        attemptNote());
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
             }
 
@@ -1245,7 +1251,7 @@ public final class InstallService extends Service {
         // five silent retries were the same waiting, spent behind a frozen number.
         if (softAttempts < RETRY_ATTEMPTS) {
             softAttempts++;
-            String line = getString(R.string.k2go_dl_attempt, softAttempts, RETRY_ATTEMPTS);
+            String line = attemptNote();
             Log.w(TAG, "download stopped (" + kind + ") at " + percent + "%: " + detail
                     + " — automatic " + line);
             InstallProgressRepository.get().postRetrying(percent, line);
@@ -1286,6 +1292,18 @@ public final class InstallService extends Service {
      * timer dies with it and the install marker takes over, which is the same recovery this would
      * have routed to.
      */
+    /**
+     * ADFA-5119: "Reconnecting… 2 of 3", or empty on an ordinary first attempt.
+     *
+     * <p>One place builds it and every post during a retried download carries it, so it cannot be
+     * wiped by whichever path happens to report next — which is what went wrong when it lived on the
+     * detail row and the profiler posted over it.
+     */
+    private String attemptNote() {
+        if (softAttempts <= 0) return "";
+        return getString(R.string.k2go_dl_attempt, softAttempts, RETRY_ATTEMPTS);
+    }
+
     private void beginHeldWindow() {
         cancelHeldWindow();
         heldExpiry = () -> {

@@ -73,6 +73,8 @@ public final class InstallProgressRepository {
     public void postPaused(int percent)                     { post(InstallState.paused(percent)); }
     /** ADFA-5119: abandoned by the user, residue already removed. A choice, not a failure. */
     public void postCancelled()                             { post(InstallState.cancelled()); }
+    /** ADFA-5119: downloading, carrying a note that owns the status line (the attempt counter). */
+    public void postDownloading(int percent, String speed, String eta, String note) { post(InstallState.downloading(percent, speed, eta, note)); }
     /** ADFA-5119: an automatic retry in flight — still DOWNLOADING, with "Retry N of M". */
     public void postRetrying(int percent, String message) { post(InstallState.retrying(percent, message)); }
     /** ADFA-5119: stopped on its own and able to continue; {@code message} says what happened. */

@@ -233,7 +233,19 @@ public class Aria2Manager {
                 // UI updates are now handled inside the profiler
                 // Skip speed profiling when resuming/repairing an existing file: the
                 // profiler cannot write over a file that has no control file.
-                boolean forceIpv4 = resumeOrRepair ? false
+                // ADFA-5119: a control file on disk is enough to know this is a resume, and it is
+                // known WITHOUT the metalink. That matters, because resumeOrRepair above is decided
+                // from the metalink, and the metalink is fetched over the network — so exactly when
+                // the network is down, the one condition that should skip the probes is unreadable
+                // and both of them run in full. Twelve seconds of measuring two stacks that are
+                // equally unreachable, on every retry, while the user watches the same two labels
+                // scroll past for the third time.
+                //
+                // aria2 resumes from the control file with --continue regardless of whether we
+                // recognised it, which is why the percentage survived and hid this: the transfer was
+                // right, only the preamble was wasted.
+                boolean resuming = resumeOrRepair || hasControlFile(downloadDir);
+                boolean forceIpv4 = resuming ? false
                         : Aria2NetworkProfiler.shouldForceIpv4(aria2Bin, downloadDir, dhtFile, url, mainHandler, listener);
                 // ----------------------------------------------------
 
@@ -579,6 +591,19 @@ public class Aria2Manager {
         } finally {
             if (conn != null) conn.disconnect();
         }
+    }
+
+    /**
+     * ADFA-5119: is there a partial download here, asked of the disk alone?
+     *
+     * <p>aria2 writes a {@code .aria2} control file beside whatever it is downloading and removes it
+     * on completion, so its presence is the one durable "this was interrupted" fact — and unlike the
+     * metalink-derived checks above, reading it needs no network. It is what a resume looks like from
+     * the outside, which is why it survives the app being killed as well.
+     */
+    private static boolean hasControlFile(File downloadDir) {
+        File[] control = downloadDir.listFiles((d, n) -> n.endsWith(".aria2"));
+        return control != null && control.length > 0;
     }
 
     /** ADFA-4676: remove any other rootfs tarball so only the verified artifact remains. */

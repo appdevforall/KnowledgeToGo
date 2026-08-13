@@ -164,6 +164,21 @@ public final class InstallState {
     }
 
     /**
+     * ADFA-5119: downloading, with a note that owns the status line while it lasts.
+     *
+     * <p>Added because the attempt counter had nowhere to survive. It was written to the detail row,
+     * and the IPv4/IPv6 profiler — which runs again at the start of every attempt and reports through
+     * its own path — posted over it within a second. So the one moment the user most needs to know
+     * which try they are watching was the one moment the count could not be seen.
+     *
+     * <p>It rides here rather than in the detail row because it is a statement about what is
+     * happening, which is what the status line is for; the rows below it are figures.
+     */
+    public static InstallState downloading(int percent, String speed, String eta, String note) {
+        return new InstallState(Phase.DOWNLOADING, Op.INSTALL, percent, speed, note, 0L, eta);
+    }
+
+    /**
      * ADFA-5119: an automatic retry, which is still a download.
      *
      * <p>The phase is DOWNLOADING because that is what is happening — we are trying. Calling it

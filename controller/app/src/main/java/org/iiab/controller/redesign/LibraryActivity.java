@@ -433,7 +433,12 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
             }
             installDetail.setText("");
         } else if (st.phase == InstallState.Phase.DOWNLOADING) {
-            installStatus.setText(getString(R.string.k2go_downloading_library));
+            // ADFA-5119: while a retry is in flight the note owns this line. Every attempt restarts
+            // from the IPv4/IPv6 probe, so without it the same three probes scroll past a second and
+            // a third time with nothing to say which time this is — and the count is precisely what
+            // tells the user whether waiting is still worth it.
+            installStatus.setText(st.message.isEmpty()
+                    ? getString(R.string.k2go_downloading_library) : st.message);
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
             // ADFA-4895: one table per line, sized to the line, rather than one table stretched
@@ -460,9 +465,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 installPercent.setGravity(hasSecond
                         ? android.view.Gravity.END : android.view.Gravity.CENTER_HORIZONTAL);
             }
-            // ADFA-5119: DOWNLOADING left this row empty, so an automatic retry has somewhere to say
-            // "Retry 2 of 3" without competing with the figures above it. Empty on an ordinary tick.
-            installDetail.setText(st.message);
+            installDetail.setText("");
         } else if (st.phase == InstallState.Phase.VERIFYING || st.phase == InstallState.Phase.EXTRACTING) {
             // ADFA-5118: the unified verify+extract bar. Both passes render identically — determinate
             // bar + % + ETA + current file — so there is no "first nothing, then detail" asymmetry.
@@ -532,6 +535,22 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // thing that distinguishes "you stopped this" from "something stopped this".
         dlToggle.setText(st.isSoftFailed() ? R.string.k2go_dl_retry
                 : st.isPaused() ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
+        // ADFA-5119: Material 3 says "this is the action now" with emphasis, not with movement —
+        // filled outranks tonal outranks outlined outranks text. During a download, Pause is a
+        // secondary offer beside a transfer doing fine, so it stays outlined. Once the download has
+        // stopped on its own, Retry IS the primary action and takes the filled treatment.
+        //
+        // Deliberately not an attention animation. A pulsing button says "hurry", and the moment the
+        // user reaches for it the hurry is gone — the first touch cancels the window and the state
+        // then waits as long as they like. It would be pressuring someone we have just given
+        // unlimited time, which is the same reason nothing draws a countdown.
+        boolean primary = st.isSoftFailed();
+        dlToggle.setBackgroundTintList(primary
+                ? android.content.res.ColorStateList.valueOf(
+                        androidx.core.content.ContextCompat.getColor(this, R.color.k2go_boot_ink))
+                : null);
+        dlToggle.setTextColor(androidx.core.content.ContextCompat.getColor(this,
+                primary ? R.color.k2go_boot_bg : R.color.k2go_boot_ink));
         // Both controls, always. A first pass hid Pause during the IPv4/IPv6 probe on the assumption
         // that the probe carries no rate — the device showed otherwise: it reports "Test IPv6" in
         // the rate slot, so the guard never fired. Dropped rather than repaired, because what it was
@@ -825,17 +844,50 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      *  Both paths work without a healthy rootfs. Blocking, non-cancelable; "Close" still exits. */
     private void showDamagedDialog() {
         if (isFinishing()) return;
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        androidx.appcompat.app.AlertDialog d = new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setCancelable(false)
                 .setTitle(R.string.k2go_damaged_title)
                 .setMessage(R.string.k2go_damaged_body)
-                .setPositiveButton(R.string.k2go_damaged_recover, (d, w) -> {
+                .setPositiveButton(R.string.k2go_damaged_recover, (dlg, w) -> {
                     startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
                             .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true));
                     finish();
                 })
-                .setNegativeButton(R.string.k2go_damaged_close, (d, w) -> finishAffinity())
-                .show();
+                // ADFA-5119: report it from here, where the user is standing when it matters. The app
+                // knows what happened and they do not, so the description is filled from the install
+                // log rather than left as a blank box in front of someone who just watched a download
+                // give up. The screenshot the report captures is this dialog, which is the right
+                // picture. Routing is ADFA-5130's, so email keeps the attachment and Slack gets the
+                // text.
+                .setNeutralButton(R.string.k2go_damaged_report, null)
+                .setNegativeButton(R.string.k2go_damaged_close, (dlg, w) -> finishAffinity())
+                .create();
+        // Attached after show() so the neutral button does NOT dismiss: reporting is not a decision
+        // about the system, and the two that are — recover, or close — must still be there
+        // afterwards. A dialog that vanished on "Report" would leave the user behind a closed gate
+        // with nothing to press.
+        d.setOnShowListener(dlg -> d.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL)
+                .setOnClickListener(v -> org.iiab.controller.feedback.presentation.FeedbackFab
+                        .sendFeedback(this, "install-failed",
+                                org.iiab.controller.feedback.domain.FeedbackType.BUG,
+                                installFailureReport())));
+        d.show();
+    }
+
+    /**
+     * ADFA-5119: what the install was doing when it gave up, as the body of a report.
+     *
+     * <p>The log is already in memory — {@code LogRepository} collects the pipeline's lines for the
+     * in-app view — and the failure path does not kill the process, so it is still there when this
+     * dialog appears. Only the tail: the interesting part of a download failure is its last seconds,
+     * and a two-thousand-line body is a report nobody reads.
+     */
+    private String installFailureReport() {
+        java.util.List<String> all = org.iiab.controller.LogRepository.get().snapshot();
+        int from = Math.max(0, all.size() - 80);
+        StringBuilder sb = new StringBuilder("Install did not finish. Last lines:\n");
+        for (int i = from; i < all.size(); i++) sb.append(all.get(i)).append('\n');
+        return sb.toString();
     }
 
     /** ADFA-5023: while the boot gate is up during an install/reinstall (e.g. "wiping old system"), Back
