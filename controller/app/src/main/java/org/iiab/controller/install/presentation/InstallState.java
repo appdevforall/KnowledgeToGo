@@ -18,7 +18,13 @@ public final class InstallState {
     // ADFA-5118: VERIFYING is the archive-listing/safety pass that precedes EXTRACTING. It was
     // formerly folded into EXTRACTING as the indeterminate "reading" sub-phase; it is now its own
     // determinate phase so the unified bar can show real progress + an ETA for both passes.
-    public enum Phase { IDLE, DOWNLOADING, VERIFYING, EXTRACTING, PROVISIONING, SUCCESS, FAILED }
+    /**
+     * ADFA-5119 appends PAUSED and CANCELLED rather than inserting them in reading order, so no
+     * ordinal shifts. Neither existed before, which is why pausing and cancelling were the same
+     * code path and a cancellation had to present itself as a failure.
+     */
+    public enum Phase { IDLE, DOWNLOADING, VERIFYING, EXTRACTING, PROVISIONING, SUCCESS, FAILED,
+                        PAUSED, CANCELLED }
 
     /** Which long-running operation this state belongs to (ADFA-4476). ADFA-5011 adds REBUILD
      *  (dash-node REST-core rebuild) so the progress screen can tell a rebuild apart from an install
@@ -60,13 +66,45 @@ public final class InstallState {
         this.seq = seq;
     }
 
+    /**
+     * In flight — there is work that has not finished, so nothing may treat this system as absent
+     * or as a killed install.
+     *
+     * <p><b>PAUSED counts as running, and this is not a detail.</b> Twenty-seven call sites read
+     * this, and one of them is the recovery predicate at {@code LibraryActivity:180}: marker set
+     * AND not running is read as "a proot install was killed" and produces the damaged-system
+     * dialog. If a deliberate pause left this false, pausing a download would offer to reinstall
+     * the system. The gate's own {@code installing} flag reads it too, so a pause would also lift
+     * the gate onto nothing.
+     *
+     * <p>What the UI wants is a different question — is it moving right now — and that is
+     * {@link #isPaused()}, asked separately rather than folded in here.
+     */
     public boolean isRunning() {
         return phase == Phase.DOWNLOADING || phase == Phase.VERIFYING
-                || phase == Phase.EXTRACTING || phase == Phase.PROVISIONING;
+                || phase == Phase.EXTRACTING || phase == Phase.PROVISIONING
+                || phase == Phase.PAUSED;
     }
 
+    /**
+     * Finished, one way or another.
+     *
+     * <p>CANCELLED belongs here: the gate lifts on a terminal, and a cancellation is an ending the
+     * user asked for. Leaving it out would hold the gate on a transfer that no longer exists.
+     */
     public boolean isTerminal() {
-        return phase == Phase.SUCCESS || phase == Phase.FAILED;
+        return phase == Phase.SUCCESS || phase == Phase.FAILED || phase == Phase.CANCELLED;
+    }
+
+    /**
+     * ADFA-5119: stopped by the user, with everything transferred so far kept on disk.
+     *
+     * <p>The distinction from CANCELLED is the whole point of having both: a pause keeps the
+     * partial file, its {@code .aria2} control file and the tier and wishlist decision, so
+     * resuming costs nothing. A cancellation discards all four.
+     */
+    public boolean isPaused() {
+        return phase == Phase.PAUSED;
     }
 
     /** Returns a copy with the given sequence number (the repository assigns it). */
@@ -126,6 +164,23 @@ public final class InstallState {
      */
     public static InstallState extracting(int percent, String message, String eta) {
         return new InstallState(Phase.EXTRACTING, Op.INSTALL, percent, eta, message, 0L);
+    }
+
+    /**
+     * ADFA-5119: paused by the user. Carries the percentage so the bar keeps its position, and
+     * nothing else — there is no rate and no estimate while nothing is moving, and showing the
+     * last ones would be stating a figure that is no longer true.
+     */
+    public static InstallState paused(int percent) {
+        return new InstallState(Phase.PAUSED, Op.INSTALL, percent, "", "", 0L, "");
+    }
+
+    /**
+     * ADFA-5119: cancelled by the user, after the residue is gone. Not a failure — a failure is
+     * something that happened to the user, and this is something the user chose.
+     */
+    public static InstallState cancelled() {
+        return new InstallState(Phase.CANCELLED, Op.INSTALL, 0, "", "", 0L, "");
     }
 
     public static InstallState provisioning(String message) {

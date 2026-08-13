@@ -42,11 +42,27 @@ public class Aria2Manager {
      */
     private volatile Process aria2Process;
     /**
-     * ADFA-4895: volatile. It is written by {@code stopDownload()} on the caller's thread and read
-     * by the download thread's loop and its catch block, so without this a stop could go unseen and
-     * a user cancellation would be reported as a fatal error.
+     * ADFA-5119: why the caller asked us to stop, or {@link Stop#NONE} while running.
+     *
+     * <p>This was a boolean, and that is why pausing and cancelling were the same event: both set
+     * it, both produced {@code onCancelled()}, and the service tore everything down either way. The
+     * two are opposite intentions — one keeps the partial file and the user's decision, the other
+     * discards them — so the reason has to survive as far as the listener.
+     *
+     * <p>Volatile: written on the caller's thread, read by the download thread's loop and its catch
+     * block. Without it a stop could go unseen and be reported as a fatal error.
      */
-    private volatile boolean isCancelled = false;
+    private volatile Stop stopRequest = Stop.NONE;
+
+    /** Why a running download was asked to stop. */
+    public enum Stop {
+        /** Still running. */
+        NONE,
+        /** Keep the partial file and its control file; the caller intends to resume. */
+        PAUSE,
+        /** The caller is abandoning this download. */
+        CANCEL
+    }
 
     public interface DownloadListener {
         void onProgress(int percentage, String speed, String eta);
@@ -73,10 +89,21 @@ public class Aria2Manager {
         default void onIntegrityFailure(String reason) { onError(reason); }
         /** ADFA-4676: the user stopped the download; a clean stop, not a failure. */
         default void onCancelled() { }
+
+        /**
+         * ADFA-5119: stopped on purpose, with everything transferred so far left on disk.
+         *
+         * <p>Distinct from {@link #onCancelled()} because the caller's next move is opposite: after
+         * a pause it will call {@code startDownload} again with the same URL and aria2 will resume
+         * from the control file; after a cancellation it discards the file. Defaulting to
+         * {@code onCancelled()} would be wrong for exactly that reason, so this defaults to nothing
+         * and a listener that offers a pause must handle it.
+         */
+        default void onPaused() { }
     }
 
     public void startDownload(Context context, String url, DownloadListener listener) {
-        isCancelled = false;
+        stopRequest = Stop.NONE;
         Handler mainHandler = new Handler(Looper.getMainLooper());
 
         new Thread(() -> {
@@ -248,7 +275,7 @@ public class Aria2Manager {
 
 
                 while ((line = reader.readLine()) != null) {
-                    if (isCancelled) {
+                    if (stopRequest != Stop.NONE) {
                         aria2Process.destroy();
                         break;
                     }
@@ -286,7 +313,16 @@ public class Aria2Manager {
                 int exitCode = aria2Process.waitFor();
                 Log.d(TAG, "Native Aria2c exited with code: " + exitCode);
 
-                if (isCancelled) {
+                // ADFA-5119: report the intention, not just the fact that it stopped. Checked
+                // before the exit code on purpose: SIGTERM makes aria2 exit non-zero (typically 7,
+                // "unfinished downloads remained"), and a deliberate stop must never surface as an
+                // error.
+                if (stopRequest == Stop.PAUSE) {
+                    Log.d(TAG, "Download paused by user; control file kept for resume.");
+                    mainHandler.post(listener::onPaused);
+                    return;
+                }
+                if (stopRequest == Stop.CANCEL) {
                     Log.d(TAG, "Download cancelled by user.");
                     mainHandler.post(listener::onCancelled);
                     return;
@@ -326,9 +362,14 @@ public class Aria2Manager {
                 mainHandler.post(() -> listener.onComplete(downloadDir.getAbsolutePath()));
 
             } catch (Exception e) {
-                if (isCancelled) {
-                    // The stream was closed by our own stopDownload(); a user stop is a
-                    // clean cancellation, not a fatal error.
+                // The stream was closed by our own stop; a deliberate stop is not a fatal error,
+                // and which of the two it was still matters here (ADFA-5119).
+                if (stopRequest == Stop.PAUSE) {
+                    Log.d(TAG, "Download paused by user.");
+                    mainHandler.post(listener::onPaused);
+                    return;
+                }
+                if (stopRequest == Stop.CANCEL) {
                     Log.d(TAG, "Download cancelled by user.");
                     mainHandler.post(listener::onCancelled);
                     return;
@@ -339,10 +380,33 @@ public class Aria2Manager {
         }).start();
     }
 
+    /** Abandon this download. The partial file is left for the caller to remove. */
     public void stopDownload() {
-        isCancelled = true;
-        if (aria2Process != null) {
-            aria2Process.destroy();
+        requestStop(Stop.CANCEL);
+    }
+
+    /**
+     * ADFA-5119: stop, keeping everything transferred so far.
+     *
+     * <p>Resuming afterwards is a plain {@code startDownload} with the same URL: the reconcile step
+     * at the top of it finds the {@code .aria2} control file and lets {@code --continue} pick up
+     * where this left off.
+     */
+    public void pauseDownload() {
+        requestStop(Stop.PAUSE);
+    }
+
+    /**
+     * <b>{@code destroy()}, never {@code destroyForcibly()}.</b> destroy sends SIGTERM, which aria2
+     * handles by writing its {@code .aria2} control file before exiting; SIGKILL would not give it
+     * the chance, and a pause that loses the control file is a pause that restarts from zero. The
+     * whole promise of the pause rests on this line.
+     */
+    private void requestStop(Stop reason) {
+        stopRequest = reason;
+        Process p = aria2Process;
+        if (p != null) {
+            p.destroy();
         }
     }
 

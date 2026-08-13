@@ -64,6 +64,10 @@ public final class InstallService extends Service {
 
     public static final String ACTION_START = "org.iiab.controller.INSTALL_START";
     public static final String ACTION_CANCEL = "org.iiab.controller.INSTALL_CANCEL";
+    /** ADFA-5119: stop the transfer, keep the partial file and the tier/wishlist decision. */
+    public static final String ACTION_PAUSE = "org.iiab.controller.INSTALL_PAUSE";
+    /** ADFA-5119: pick the paused transfer back up from its control file. */
+    public static final String ACTION_RESUME = "org.iiab.controller.INSTALL_RESUME";
     // Per-module install queue (ADFA-4476 slice 3): distinct from the rootfs ACTION_START.
     public static final String ACTION_START_MODULES = "org.iiab.controller.INSTALL_START_MODULES";
     /** ADFA-5011: rebuild the dash-node REST core in place (no rootfs rebuild). Reuses this service's
@@ -143,6 +147,18 @@ public final class InstallService extends Service {
         String action = intent != null ? intent.getAction() : null;
         if (ACTION_CANCEL.equals(action)) {
             doCancel();
+            return START_NOT_STICKY;
+        }
+        // ADFA-5119: pause and resume are not starts. They arrive while a pipeline is already
+        // running, so they must not fall through to the `started` guard below — and they must not
+        // stop the service: it stays in the foreground precisely so the notification survives a
+        // pause and resume remains reachable from it.
+        if (ACTION_PAUSE.equals(action)) {
+            doPause();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_RESUME.equals(action)) {
+            doResume();
             return START_NOT_STICKY;
         }
         if (ACTION_REBUILD_DASHBOARD.equals(action)) {
@@ -357,6 +373,23 @@ public final class InstallService extends Service {
                 int bucket = org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds);
                 InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket));
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
+            }
+
+            /**
+             * ADFA-5119: a pause is not a cancellation and must not tear anything down. The partial
+             * file and its control file stay on disk, the guard stays held, and the service stays in
+             * the foreground so the notification can offer Resume.
+             */
+            @Override
+            public void onPaused() {
+                if (cancelled) return;
+                InstallProgressRepository.get().postPaused(
+                        InstallProgressRepository.get().current().percent);
+                // Nothing is transferring, and a pause can last hours. Holding a wake lock and a
+                // high-performance Wi-Fi lock through it would drain the battery for no transfer at
+                // all; doResume() takes them again.
+                releaseHardwareLocks();
+                updateNotification(getString(R.string.k2go_dl_paused_notif));
             }
 
             @Override
@@ -1010,6 +1043,35 @@ public final class InstallService extends Service {
         if (bucket == org.iiab.controller.install.domain.EtaSmoother.UNKNOWN) return "";
         if (bucket == 0) return getString(R.string.k2go_eta_almost);
         return getString(R.string.k2go_eta_min, bucket);
+    }
+
+    /**
+     * ADFA-5119: stop the transfer and keep everything.
+     *
+     * <p>Deliberately narrow: only a running download can be paused. Pausing an extract or a
+     * runrole would mean leaving a rootfs half-written on disk with no way to say so, which is the
+     * opposite of what this ticket is for — the state must always be one we can name.
+     */
+    private void doPause() {
+        if (finished || cancelled) return;
+        if (!InstallProgressRepository.get().current().isRunning()) return;
+        if (InstallProgressRepository.get().current().phase != InstallState.Phase.DOWNLOADING) {
+            Log.i(TAG, "pause ignored: only a download can be paused");
+            return;
+        }
+        if (aria2Manager != null) aria2Manager.pauseDownload();
+        // The state is posted by the listener's onPaused(), not here: aria2 has to actually stop
+        // first, and it is the one that knows when that happened.
+    }
+
+    /** ADFA-5119: resume a paused download. aria2 continues from the control file it kept. */
+    private void doResume() {
+        if (finished || cancelled) return;
+        if (!InstallProgressRepository.get().current().isPaused()) return;
+        acquireHardwareLocks();
+        // The URL is derived from the tier and arch fields, so re-entering the download step is all
+        // it takes; its reconcile step finds the .aria2 control file and continues from there.
+        startRootfsDownload();
     }
 
     private void doCancel() {
