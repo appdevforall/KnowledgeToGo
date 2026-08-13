@@ -326,10 +326,34 @@ public final class InstallService extends Service {
 
         if (aria2Manager == null) aria2Manager = new Aria2Manager();
         aria2Manager.startDownload(this, directUrl, new Aria2Manager.DownloadListener() {
+            /**
+             * ADFA-4895: a longer dwell than the extract bar's five seconds. That one debounces
+             * files decompressing at different speeds — noise that passes in a moment. A network
+             * degrades and recovers over tens of seconds, so a short window would let the estimate
+             * chase every dip and make the label the least trustworthy thing on the screen.
+             */
+            private final org.iiab.controller.install.domain.EtaSmoother etaSmoother =
+                    new org.iiab.controller.install.domain.EtaSmoother(15000L);
+
             @Override
             public void onProgress(int percentage, String speed, String eta) {
+                // Still live, and not a leftover: Aria2NetworkProfiler reports through this form
+                // ("Test IPv4", "Test IPv6", then the winner) before the real transfer begins, so
+                // an empty override here would blank the status line for the whole probe. It has
+                // no rate and no estimate to carry — those only exist once aria2 is transferring.
                 if (cancelled) return;
                 InstallProgressRepository.get().postDownloading(percentage, speed);
+                updateNotification(getString(R.string.install_status_os_download, percentage, speed));
+            }
+
+            @Override
+            public void onProgress(int percentage, String speed, String eta,
+                                   long bytesPerSecond, long etaSeconds) {
+                if (cancelled) return;
+                int bucket = etaSmoother.smooth(
+                        org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
+                        android.os.SystemClock.elapsedRealtime());
+                InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket));
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
             }
 

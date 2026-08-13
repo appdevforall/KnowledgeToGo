@@ -27,6 +27,8 @@ import java.net.URL;
 import org.iiab.controller.download.domain.MetalinkSplit;
 import org.iiab.controller.download.domain.MetalinkFile;
 import org.iiab.controller.download.domain.DownloadVerifier;
+import org.iiab.controller.download.domain.ByteToken;
+import org.iiab.controller.download.domain.DownloadEta;
 
 public class Aria2Manager {
 
@@ -41,6 +43,23 @@ public class Aria2Manager {
 
     public interface DownloadListener {
         void onProgress(int percentage, String speed, String eta);
+
+        /**
+         * ADFA-4895: the same tick, with the figures as numbers instead of display text.
+         *
+         * <p>Added rather than replacing the three-argument form so the two content call sites are
+         * untouched: they keep overriding that one and inherit this default, which forwards. Only a
+         * caller that needs to *decide* on the transfer — rather than draw it — overrides this.
+         *
+         * @param bytesPerSecond current rate, or {@link ByteToken#UNKNOWN}
+         * @param etaSeconds     our own estimate, or {@link DownloadEta#UNKNOWN}. Not aria2's:
+         *                       see ADR-4893 for why a figure we cannot explain is a bad one to
+         *                       act on.
+         */
+        default void onProgress(int percentage, String speed, String eta,
+                                long bytesPerSecond, long etaSeconds) {
+            onProgress(percentage, speed, eta);
+        }
         void onComplete(String downloadPath);
         void onError(String error);
         /** ADFA-4676: post-download integrity gate failed (size/SHA-256 mismatch). */
@@ -219,6 +238,11 @@ public class Aria2Manager {
                 // Regex to capture typical Aria2c output
                 // Example: [#2089b0 400MiB/1.0GiB(39%) CN:4 DL:4.5MiB ETA:2m20s]
                 Pattern pattern = Pattern.compile("\\((\\d+)%\\).*?DL:([^\\s]+).*?ETA:([^\\s\\]]+)");
+                // ADFA-4895: the same line also carries "400MiB/1.0GiB" — completed and total. A
+                // second, separate pattern on purpose: if it fails to match, the estimate is simply
+                // unknown and the progress line above is untouched. Folding it into the pattern
+                // that already works would put a working display at the mercy of a new regex.
+                Pattern sizes = Pattern.compile("([\\d.]+[A-Za-z]*)/([\\d.]+[A-Za-z]*)\\(\\d+%\\)");
 
                 while ((line = reader.readLine()) != null) {
                     if (isCancelled) {
@@ -238,7 +262,25 @@ public class Aria2Manager {
                         String speed = matcher.group(2) + context.getString(R.string.k2go_rate_per_second);
                         String eta = matcher.group(3);
 
-                        mainHandler.post(() -> listener.onProgress(percent, speed, eta));
+                        // ADFA-4895: keep the figures as numbers alongside the display text. The
+                        // rate was being destroyed one line above — concatenated into a localized
+                        // string — so nothing downstream could compare it to anything or divide a
+                        // remaining size by it.
+                        long bytesPerSecond = ByteToken.parse(matcher.group(2));
+                        long etaSeconds = DownloadEta.UNKNOWN;
+                        Matcher sm = sizes.matcher(line);
+                        if (sm.find()) {
+                            long done = ByteToken.parse(sm.group(1));
+                            // The Metalink's size is the authority when we have it: it is what the
+                            // integrity gate will check against, so the estimate and the verdict
+                            // are measured against the same number.
+                            long total = (mf != null && mf.sizeBytes() > 0)
+                                    ? mf.sizeBytes() : ByteToken.parse(sm.group(2));
+                            etaSeconds = DownloadEta.secondsRemaining(done, total, bytesPerSecond);
+                        }
+                        final long rate = bytesPerSecond;
+                        final long secs = etaSeconds;
+                        mainHandler.post(() -> listener.onProgress(percent, speed, eta, rate, secs));
                     }
                 }
 
