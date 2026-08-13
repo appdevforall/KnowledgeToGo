@@ -61,8 +61,32 @@ public class Aria2Manager {
         /** Keep the partial file and its control file; the caller intends to resume. */
         PAUSE,
         /** The caller is abandoning this download. */
-        CANCEL
+        CANCEL,
+        /**
+         * ADFA-5119: nothing has arrived for {@link #STALL_MS} and aria2 is not going to say so.
+         *
+         * <p>Not a user intention — the only one here that this class raises by itself. It exists
+         * because a dead transfer looks identical to a healthy idle one from aria2's side: it keeps
+         * the download open, prints zero, and never exits.
+         */
+        STALL
     }
+
+    /**
+     * ADFA-5119: how long the transfer may report nothing before we call it stalled.
+     *
+     * <p>Ten seconds, chosen against a measurement rather than a feeling: on a device the rate decays
+     * over about nine seconds after the connections die (24MiB → 3.0MiB → 172KiB → 0B) before it
+     * reads zero at all, so a shorter window would be reacting to the decay instead of the stall.
+     */
+    private static final long STALL_MS = 10_000L;
+
+    /**
+     * Just the rate field. Deliberately separate from the display pattern, which requires the percent,
+     * the rate AND the ETA together — a stalled line has no ETA, so that pattern cannot see the very
+     * situation this one exists to catch.
+     */
+    private static final Pattern DL_RATE = Pattern.compile("DL:([^\\s\\]]+)");
 
     public interface DownloadListener {
         void onProgress(int percentage, String speed, String eta);
@@ -291,6 +315,20 @@ public class Aria2Manager {
                 command.add("--timeout=10");       // per-connection read timeout
                 command.add("--connect-timeout=5");
 
+                // ADFA-5119: NO --lowest-speed-limit, and this time the reason is measured rather than
+                // assumed. It was added and removed within the hour: on a device, cutting the Wi-Fi
+                // mid-transfer left "CN:0 SD:0 DL:0B" printing once a second for a full minute and the
+                // flag never fired — because it closes CONNECTIONS whose rate is below the floor, and
+                // there were none left to close. It is a per-connection guard, not a watchdog over the
+                // download. Kept out for the original ADFA-4895 reason as well: on the slow links this
+                // product targets it can abort a transfer that is merely slow.
+                //
+                // The same log also shows why aria2 cannot be the one to tell us: with --max-tries=1
+                // its budget was spent on both mirrors, every URI had failed, and it still did not
+                // exit. Two knobs tried, neither produces a terminal. So the stall detector lives in
+                // this class instead — see the zero-rate counter in the read loop below, which has the
+                // one thing aria2's own flags lack: it can tell a dead transfer from a checksum pass.
+
                 // Apply network decision
                 if (forceIpv4) {
                     Log.w(TAG, "Network profiler decided to FORCE IPv4.");
@@ -330,6 +368,13 @@ public class Aria2Manager {
                 Pattern pattern = Pattern.compile("\\((\\d+)%\\).*?DL:([^\\s]+).*?ETA:([^\\s\\]]+)");
 
 
+                // ADFA-5119: the stall watchdog, read off the raw lines rather than the match below.
+                // It has to be here and not on the parsed tick, because the stalled line does not
+                // parse: "[#fb7d84 294MiB/1.9GiB(14%) CN:0 SD:0 DL:0B]" carries no ETA field, and the
+                // pattern requires all three. That is also why the screen froze on its last figure
+                // instead of showing zero — no tick was arriving at all.
+                long zeroSince = 0L;
+
                 while ((line = reader.readLine()) != null) {
                     if (stopRequest != Stop.NONE) {
                         aria2Process.destroy();
@@ -337,6 +382,37 @@ public class Aria2Manager {
                     }
 
                     Log.d(TAG, "[Aria2] " + line);
+
+                    // A progress summary line — the only kind that carries a rate.
+                    if (line.contains("DL:")) {
+                        // A checksum pass legitimately moves no bytes, and on a 1.9 GiB archive it can
+                        // run for a long while: the same device log shows "CN:0 SD:0 DL:0B" beside
+                        // "[Checksum:#fb7d84 102MiB/1.9GiB(4%)]" while aria2 was repairing the file
+                        // perfectly happily. A watchdog that counted those seconds would kill an
+                        // integrity check — the one thing in this pipeline that must never be
+                        // interrupted, since it is what stops a corrupt rootfs from being extracted.
+                        if (line.contains("[Checksum:")) {
+                            zeroSince = 0L;
+                        } else {
+                            java.util.regex.Matcher dl = DL_RATE.matcher(line);
+                            long rate = dl.find() ? ByteToken.parse(dl.group(1)) : ByteToken.UNKNOWN;
+                            if (rate == 0L) {
+                                long now = android.os.SystemClock.elapsedRealtime();
+                                if (zeroSince == 0L) {
+                                    zeroSince = now;
+                                } else if (now - zeroSince >= STALL_MS) {
+                                    Log.w(TAG, "no bytes for " + (STALL_MS / 1000)
+                                            + "s and aria2 still has the download open — calling it stalled");
+                                    requestStop(Stop.STALL);
+                                    break;
+                                }
+                            } else if (rate > 0L) {
+                                zeroSince = 0L;
+                            }
+                            // UNKNOWN (unreadable) neither starts nor clears the window: a line we
+                            // could not parse is not evidence either way.
+                        }
+                    }
 
                     Matcher matcher = pattern.matcher(line);
                     if (matcher.find()) {
@@ -381,6 +457,17 @@ public class Aria2Manager {
                 if (stopRequest == Stop.CANCEL) {
                     Log.d(TAG, "Download cancelled by user.");
                     mainHandler.post(listener::onCancelled);
+                    return;
+                }
+
+                // ADFA-5119: our own verdict, reported in aria2's vocabulary so the caller has one
+                // classifier to reason about. This is what finally makes Kind.STALLED reachable — it
+                // was dead code while it depended on aria2's exit 5, which needs a flag that cannot
+                // fire once the connections are gone.
+                if (stopRequest == Stop.STALL) {
+                    mainHandler.post(() -> listener.onError(
+                            org.iiab.controller.download.domain.Aria2Exit.label(5),
+                            org.iiab.controller.download.domain.Aria2Exit.Kind.STALLED));
                     return;
                 }
 
