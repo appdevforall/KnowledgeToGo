@@ -32,7 +32,12 @@ public class Aria2Manager {
 
     private static final String TAG = "IIAB-Aria2-Native";
     private Process aria2Process;
-    private boolean isCancelled = false;
+    /**
+     * ADFA-4895: volatile. It is written by {@code stopDownload()} on the caller's thread and read
+     * by the download thread's loop and its catch block, so without this a stop could go unseen and
+     * a user cancellation would be reported as a fatal error.
+     */
+    private volatile boolean isCancelled = false;
 
     public interface DownloadListener {
         void onProgress(int percentage, String speed, String eta);
@@ -179,6 +184,20 @@ public class Aria2Manager {
                 command.add("--summary-interval=1");
                 command.add("--download-result=hide");
 
+                // ADFA-4895: aria2 already knows how to survive a bad link; we were not asking it
+                // to. These are set explicitly rather than inherited, so the behaviour is pinned by
+                // this file and does not change under us when the bundled aria2 is rebuilt.
+                //
+                // No --lowest-speed-limit here on purpose. It makes aria2 abort a transfer that
+                // drops below a floor, which is only safe once a caller retries and resumes: on the
+                // links this product targets, a slow download is the normal case, and aborting one
+                // with nothing to catch it would be worse than the stall we are trying to detect.
+                // It lands with the retry loop, not before it.
+                command.add("--max-tries=5");
+                command.add("--retry-wait=5");     // default is 0 — retries hammer a struggling server
+                command.add("--timeout=60");       // per-connection read timeout
+                command.add("--connect-timeout=30");
+
                 // Apply network decision
                 if (forceIpv4) {
                     Log.w(TAG, "Network profiler decided to FORCE IPv4.");
@@ -233,7 +252,14 @@ public class Aria2Manager {
                 }
 
                 if (exitCode != 0) {
-                    mainHandler.post(() -> listener.onError("Aria2c native process failed with code " + exitCode));
+                    // ADFA-4895: say what aria2 said. Every non-zero exit used to produce the same
+                    // sentence, so a full disk, a missing mirror and a dropped Wi-Fi were one
+                    // event, and nothing downstream could tell which of them was worth retrying.
+                    org.iiab.controller.download.domain.Aria2Exit.Kind kind =
+                            org.iiab.controller.download.domain.Aria2Exit.kindOf(exitCode);
+                    String reason = org.iiab.controller.download.domain.Aria2Exit.label(exitCode);
+                    Log.e(TAG, "aria2 exit " + exitCode + " (" + kind + "): " + reason);
+                    mainHandler.post(() -> listener.onError(reason));
                     return;
                 }
                 // ADFA-4676: never trust the exit code alone. For a Metalink download,
