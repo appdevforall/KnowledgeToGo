@@ -96,8 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:max="100"
-            android:progressTint="@color/k2go_teal"
-            android:progressBackgroundTint="@color/k2go_hairline" />
+            android:progressTint="@color/k2go_boot_accent"
+            android:progressBackgroundTint="@color/k2go_boot_track" />
 
         <!-- ADFA-4910: extract % on its own fixed line (below the bar, above the changing
              file name) so the number never dances as the file name grows/shrinks.
