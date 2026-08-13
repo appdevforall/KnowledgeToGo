@@ -62,6 +62,8 @@ public final class InstallProgressRepository {
 
     // All posts are thread-safe (callable from the aria2 / proot worker threads).
     public void postDownloading(int percent, String speed) { post(InstallState.downloading(percent, speed)); }
+    /** ADFA-4895: the rate and our own estimate, together. */
+    public void postDownloading(int percent, String speed, String eta) { post(InstallState.downloading(percent, speed, eta)); }
     public void postExtracting(String message)             { post(InstallState.extracting(message)); }
     public void postExtracting(int percent, String message) { post(InstallState.extracting(percent, message)); }
     // ADFA-5118: unified verify+extract bar — determinate progress with an ETA for both passes.

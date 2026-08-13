@@ -57,6 +57,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     private LottieAnimationView bootGate;
     private View installProgress;
     private android.widget.TextView installStatus, installDetail, installPercent, installEta;
+    // ADFA-4895: the three-column row, shown only once the transfer is really running.
+    private android.widget.TextView dlPercent, dlRate, dlEta;
+    private View downloadRow;
     private View installPercentRow;   // ADFA-5118: the %/ETA weighted-column row
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
@@ -130,6 +133,10 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installPercentRow = findViewById(R.id.k2go_install_percent_row);
         installPercent = findViewById(R.id.k2go_install_percent);
         installEta = findViewById(R.id.k2go_install_eta);
+        downloadRow = findViewById(R.id.k2go_download_row);     // ADFA-4895
+        dlPercent = findViewById(R.id.k2go_download_percent);
+        dlRate = findViewById(R.id.k2go_download_rate);
+        dlEta = findViewById(R.id.k2go_download_eta);
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
         bootEllipsis = new org.iiab.controller.util.EllipsisAnimator(installStatus, true);
         readingEllipsis = new org.iiab.controller.util.EllipsisAnimator(installDetail, true);
@@ -331,12 +338,37 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
-        if (installPercentRow != null) installPercentRow.setVisibility(View.GONE); // ADFA-4910/5118: only the determinate verify/extract shows it
+        if (installPercentRow != null) installPercentRow.setVisibility(View.GONE);
+        if (downloadRow != null) downloadRow.setVisibility(View.GONE);   // ADFA-4895
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
-            installDetail.setText(pct(st.percent) + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
+            // ADFA-4895: one table per line, sized to the line, rather than one table stretched
+            // over both. Before the transfer starts the line carries two things — "0%" and
+            // "Test IPv4" — and pushing those through a three-column row leaves a visible hole
+            // where the third would be. Once a rate and an estimate are both real there are three,
+            // and they get a row built for three. Either way every figure sits in a fixed column,
+            // so a rate swinging between "412KiB/s" and "37MiB/s" cannot drag the % sideways —
+            // the dance ADFA-4910 and ADFA-5118 already fixed for extract.
+            boolean threeUp = !st.speed.isEmpty() && !st.eta.isEmpty();
+            if (threeUp && downloadRow != null) {
+                downloadRow.setVisibility(View.VISIBLE);
+                dlPercent.setText(pct(st.percent));
+                dlRate.setText(st.speed);
+                dlEta.setText("·  " + st.eta);
+            } else if (installPercentRow != null) {
+                installPercentRow.setVisibility(View.VISIBLE);
+                installPercent.setText(pct(st.percent));
+                boolean hasSecond = !st.speed.isEmpty();
+                installEta.setText(hasSecond ? st.speed : "");
+                installEta.setVisibility(hasSecond ? View.VISIBLE : View.GONE);
+                // Alone, the % owns the row and centres — the rule ADFA-5118 already applies
+                // before its own estimate appears.
+                installPercent.setGravity(hasSecond
+                        ? android.view.Gravity.END : android.view.Gravity.CENTER_HORIZONTAL);
+            }
+            installDetail.setText("");
         } else if (st.phase == InstallState.Phase.VERIFYING || st.phase == InstallState.Phase.EXTRACTING) {
             // ADFA-5118: the unified verify+extract bar. Both passes render identically — determinate
             // bar + % + ETA + current file — so there is no "first nothing, then detail" asymmetry.

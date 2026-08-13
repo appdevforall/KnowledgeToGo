@@ -27,15 +27,46 @@ import java.net.URL;
 import org.iiab.controller.download.domain.MetalinkSplit;
 import org.iiab.controller.download.domain.MetalinkFile;
 import org.iiab.controller.download.domain.DownloadVerifier;
+import org.iiab.controller.download.domain.ByteToken;
+import org.iiab.controller.download.domain.DownloadEta;
+import org.iiab.controller.download.domain.Aria2ProgressLine;
 
 public class Aria2Manager {
 
     private static final String TAG = "IIAB-Aria2-Native";
-    private Process aria2Process;
-    private boolean isCancelled = false;
+    /**
+     * ADFA-4895: volatile for the same reason as the flag below, and it is the more important of
+     * the two. It is assigned on the download thread and read by {@code stopDownload()} on the
+     * caller's, so a stale null there means the process is never destroyed and the user's cancel
+     * does nothing at all.
+     */
+    private volatile Process aria2Process;
+    /**
+     * ADFA-4895: volatile. It is written by {@code stopDownload()} on the caller's thread and read
+     * by the download thread's loop and its catch block, so without this a stop could go unseen and
+     * a user cancellation would be reported as a fatal error.
+     */
+    private volatile boolean isCancelled = false;
 
     public interface DownloadListener {
         void onProgress(int percentage, String speed, String eta);
+
+        /**
+         * ADFA-4895: the same tick, with the figures as numbers instead of display text.
+         *
+         * <p>Added rather than replacing the three-argument form so the two content call sites are
+         * untouched: they keep overriding that one and inherit this default, which forwards. Only a
+         * caller that needs to *decide* on the transfer — rather than draw it — overrides this.
+         *
+         * @param bytesPerSecond current rate, or {@link ByteToken#UNKNOWN}
+         * @param etaSeconds     our own estimate, or {@link DownloadEta#UNKNOWN}. Not aria2's:
+         *                       see ADR-4893 for why a figure we cannot explain is a bad one to
+         *                       act on.
+         */
+        default void onProgress(int percentage, String speed, String eta,
+                                long bytesPerSecond, long etaSeconds) {
+            onProgress(percentage, speed, eta);
+        }
         void onComplete(String downloadPath);
         void onError(String error);
         /** ADFA-4676: post-download integrity gate failed (size/SHA-256 mismatch). */
@@ -179,6 +210,20 @@ public class Aria2Manager {
                 command.add("--summary-interval=1");
                 command.add("--download-result=hide");
 
+                // ADFA-4895: aria2 already knows how to survive a bad link; we were not asking it
+                // to. These are set explicitly rather than inherited, so the behaviour is pinned by
+                // this file and does not change under us when the bundled aria2 is rebuilt.
+                //
+                // No --lowest-speed-limit here on purpose. It makes aria2 abort a transfer that
+                // drops below a floor, which is only safe once a caller retries and resumes: on the
+                // links this product targets, a slow download is the normal case, and aborting one
+                // with nothing to catch it would be worse than the stall we are trying to detect.
+                // It lands with the retry loop, not before it.
+                command.add("--max-tries=5");
+                command.add("--retry-wait=5");     // default is 0 — retries hammer a struggling server
+                command.add("--timeout=60");       // per-connection read timeout
+                command.add("--connect-timeout=30");
+
                 // Apply network decision
                 if (forceIpv4) {
                     Log.w(TAG, "Network profiler decided to FORCE IPv4.");
@@ -201,6 +246,7 @@ public class Aria2Manager {
                 // Example: [#2089b0 400MiB/1.0GiB(39%) CN:4 DL:4.5MiB ETA:2m20s]
                 Pattern pattern = Pattern.compile("\\((\\d+)%\\).*?DL:([^\\s]+).*?ETA:([^\\s\\]]+)");
 
+
                 while ((line = reader.readLine()) != null) {
                     if (isCancelled) {
                         aria2Process.destroy();
@@ -219,7 +265,21 @@ public class Aria2Manager {
                         String speed = matcher.group(2) + context.getString(R.string.k2go_rate_per_second);
                         String eta = matcher.group(3);
 
-                        mainHandler.post(() -> listener.onProgress(percent, speed, eta));
+                        // ADFA-4895: keep the figures as numbers alongside the display text. The
+                        // rate was being destroyed one line above — concatenated into a localized
+                        // string — so nothing downstream could compare it to anything or divide a
+                        // remaining size by it.
+                        long bytesPerSecond = ByteToken.parse(matcher.group(2));
+                        // The Metalink's size is the authority when we have it: it is what the
+                        // integrity gate will check against, so the estimate and the verdict are
+                        // measured against the same number.
+                        long done = Aria2ProgressLine.completedBytes(line);
+                        long total = (mf != null && mf.sizeBytes() > 0)
+                                ? mf.sizeBytes() : Aria2ProgressLine.declaredTotalBytes(line);
+                        long etaSeconds = DownloadEta.secondsRemaining(done, total, bytesPerSecond);
+                        final long rate = bytesPerSecond;
+                        final long secs = etaSeconds;
+                        mainHandler.post(() -> listener.onProgress(percent, speed, eta, rate, secs));
                     }
                 }
 
@@ -233,7 +293,14 @@ public class Aria2Manager {
                 }
 
                 if (exitCode != 0) {
-                    mainHandler.post(() -> listener.onError("Aria2c native process failed with code " + exitCode));
+                    // ADFA-4895: say what aria2 said. Every non-zero exit used to produce the same
+                    // sentence, so a full disk, a missing mirror and a dropped Wi-Fi were one
+                    // event, and nothing downstream could tell which of them was worth retrying.
+                    org.iiab.controller.download.domain.Aria2Exit.Kind kind =
+                            org.iiab.controller.download.domain.Aria2Exit.kindOf(exitCode);
+                    String reason = org.iiab.controller.download.domain.Aria2Exit.label(exitCode);
+                    Log.e(TAG, "aria2 exit " + exitCode + " (" + kind + "): " + reason);
+                    mainHandler.post(() -> listener.onError(reason));
                     return;
                 }
                 // ADFA-4676: never trust the exit code alone. For a Metalink download,

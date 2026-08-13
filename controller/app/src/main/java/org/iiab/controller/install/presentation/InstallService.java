@@ -328,8 +328,34 @@ public final class InstallService extends Service {
         aria2Manager.startDownload(this, directUrl, new Aria2Manager.DownloadListener() {
             @Override
             public void onProgress(int percentage, String speed, String eta) {
+                // Still live, and not a leftover: Aria2NetworkProfiler reports through this form
+                // ("Test IPv4", "Test IPv6", then the winner) before the real transfer begins, so
+                // an empty override here would blank the status line for the whole probe. It has
+                // no rate and no estimate to carry — those only exist once aria2 is transferring.
                 if (cancelled) return;
                 InstallProgressRepository.get().postDownloading(percentage, speed);
+                updateNotification(getString(R.string.install_status_os_download, percentage, speed));
+            }
+
+            @Override
+            public void onProgress(int percentage, String speed, String eta,
+                                   long bytesPerSecond, long etaSeconds) {
+                if (cancelled) return;
+                // ADFA-4895: no smoothing here, deliberately, and it is not an oversight — a first
+                // pass used EtaSmoother and the label froze at "about 26 min" for half a download
+                // that took sixty seconds. Two reasons, and the second is the one that matters:
+                // the smoother adopts its first reading immediately, which lands while aria2 is
+                // still ramping and is the worst estimate of the whole run; and its dwell only
+                // advances while the value holds steady, so a figure that moves every tick resets
+                // the window forever and nothing ever replaces that first reading.
+                //
+                // The deeper reason is that this signal does not need it. Extraction wobbles
+                // because files decompress at wildly different speeds; a transfer rate over a
+                // network is comparatively steady — 34 to 40 MiB/s across a whole run, measured.
+                // Fed a steady rate the estimate moves smoothly on its own, and moving is what an
+                // estimate is supposed to do.
+                int bucket = org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds);
+                InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket));
                 updateNotification(getString(R.string.install_status_os_download, percentage, speed));
             }
 

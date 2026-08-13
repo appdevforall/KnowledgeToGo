@@ -34,7 +34,24 @@ public final class InstallState {
     public final String message;  // resolved status text / current file line / error
     public final long seq;        // assigned by the repository; identifies terminal events
 
+    /**
+     * ADFA-4895: resolved "time left" text, or empty. A field of its own because DOWNLOADING has to
+     * show a rate AND an estimate at once, so it cannot borrow the speed slot the way ADFA-5118's
+     * verify/extract states do — those have no rate to display, so the slot was free there.
+     *
+     * <p>The 5118 states are left as they are. When their layout is next touched they should move
+     * onto this field too, so "speed" means a rate everywhere and nothing has to be read twice to
+     * find out what it is carrying.
+     */
+    public final String eta;
+
     private InstallState(Phase phase, Op op, int percent, String speed, String message, long seq) {
+        this(phase, op, percent, speed, message, seq, "");
+    }
+
+    private InstallState(Phase phase, Op op, int percent, String speed, String message, long seq,
+                         String eta) {
+        this.eta = eta != null ? eta : "";
         this.phase = phase;
         this.op = op != null ? op : Op.INSTALL;
         this.percent = percent;
@@ -54,12 +71,12 @@ public final class InstallState {
 
     /** Returns a copy with the given sequence number (the repository assigns it). */
     InstallState withSeq(long seq) {
-        return new InstallState(phase, op, percent, speed, message, seq);
+        return new InstallState(phase, op, percent, speed, message, seq, eta);
     }
 
     /** Returns a copy tagged with the given operation (the repository stamps it). */
     InstallState withOp(Op op) {
-        return new InstallState(phase, op, percent, speed, message, seq);
+        return new InstallState(phase, op, percent, speed, message, seq, eta);
     }
 
     public static InstallState idle() {
@@ -68,6 +85,15 @@ public final class InstallState {
 
     public static InstallState downloading(int percent, String speed) {
         return new InstallState(Phase.DOWNLOADING, Op.INSTALL, percent, speed, "", 0L);
+    }
+
+    /**
+     * ADFA-4895: downloading with an estimate beside the rate. The screen shows all three —
+     * "32%  ·  37MiB/s  ·  about 3 min left" — because on a slow link the percentage barely moves
+     * and the rate alone does not say whether this finishes tonight.
+     */
+    public static InstallState downloading(int percent, String speed, String eta) {
+        return new InstallState(Phase.DOWNLOADING, Op.INSTALL, percent, speed, "", 0L, eta);
     }
 
     public static InstallState extracting(String message) {
