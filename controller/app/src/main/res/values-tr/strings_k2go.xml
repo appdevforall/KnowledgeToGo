@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Özel</string>
     <string name="k2go_auth_chip_notinstalled">Yüklü değil</string>
     <string name="k2go_mod_needs_system">Modüller bir sistemin içine kurulur ve henüz bir sistem yok. Önce bir sistem kurun.</string>
+    <string name="k2go_verifying_files">Dosyalar doğrulanıyor…</string>
+    <string name="k2go_eta_min">yaklaşık %1$d dk kaldı</string>
+    <string name="k2go_eta_almost">neredeyse bitti</string>
 </resources>

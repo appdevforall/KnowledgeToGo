@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">سفارشی</string>
     <string name="k2go_auth_chip_notinstalled">نصب‌نشده</string>
     <string name="k2go_mod_needs_system">ماژول‌ها درون یک سیستم نصب می‌شوند و هنوز سیستمی وجود ندارد. ابتدا یک سیستم نصب کنید.</string>
+    <string name="k2go_verifying_files">در حال بررسی فایل‌ها…</string>
+    <string name="k2go_eta_min">حدود %1$d دقیقه مانده</string>
+    <string name="k2go_eta_almost">تقریباً تمام شد</string>
 </resources>

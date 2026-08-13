@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Прилагођено</string>
     <string name="k2go_auth_chip_notinstalled">Није инсталирано</string>
     <string name="k2go_mod_needs_system">Модули се инсталирају у систем, а њега још нема. Прво инсталирајте систем.</string>
+    <string name="k2go_verifying_files">Провера датотека…</string>
+    <string name="k2go_eta_min">остало око %1$d мин</string>
+    <string name="k2go_eta_almost">скоро готово</string>
 </resources>

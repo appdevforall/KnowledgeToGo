@@ -15,7 +15,10 @@ package org.iiab.controller.install.presentation;
 
 public final class InstallState {
 
-    public enum Phase { IDLE, DOWNLOADING, EXTRACTING, PROVISIONING, SUCCESS, FAILED }
+    // ADFA-5118: VERIFYING is the archive-listing/safety pass that precedes EXTRACTING. It was
+    // formerly folded into EXTRACTING as the indeterminate "reading" sub-phase; it is now its own
+    // determinate phase so the unified bar can show real progress + an ETA for both passes.
+    public enum Phase { IDLE, DOWNLOADING, VERIFYING, EXTRACTING, PROVISIONING, SUCCESS, FAILED }
 
     /** Which long-running operation this state belongs to (ADFA-4476). ADFA-5011 adds REBUILD
      *  (dash-node REST-core rebuild) so the progress screen can tell a rebuild apart from an install
@@ -41,7 +44,8 @@ public final class InstallState {
     }
 
     public boolean isRunning() {
-        return phase == Phase.DOWNLOADING || phase == Phase.EXTRACTING || phase == Phase.PROVISIONING;
+        return phase == Phase.DOWNLOADING || phase == Phase.VERIFYING
+                || phase == Phase.EXTRACTING || phase == Phase.PROVISIONING;
     }
 
     public boolean isTerminal() {
@@ -77,6 +81,25 @@ public final class InstallState {
      */
     public static InstallState extracting(int percent, String message) {
         return new InstallState(Phase.EXTRACTING, Op.INSTALL, percent, "", message, 0L);
+    }
+
+    /**
+     * ADFA-5118: determinate verify (archive-listing) progress. {@code percent} is the unified
+     * bar value [0,99] (or -1 when the archive size is unknown -> indeterminate fallback);
+     * {@code message} is the current member line; {@code eta} is the resolved "time left" text
+     * (may be empty) carried in the speed slot, as DOWNLOADING does for its rate.
+     */
+    public static InstallState verifying(int percent, String message, String eta) {
+        return new InstallState(Phase.VERIFYING, Op.INSTALL, percent, eta, message, 0L);
+    }
+
+    /**
+     * ADFA-5118: determinate extract progress with an ETA. Same as {@link #extracting(int,String)}
+     * but carries the resolved "time left" text in the speed slot (DOWNLOADING uses speed for its
+     * rate); the unified bar reuses this so both passes render identically.
+     */
+    public static InstallState extracting(int percent, String message, String eta) {
+        return new InstallState(Phase.EXTRACTING, Op.INSTALL, percent, eta, message, 0L);
     }
 
     public static InstallState provisioning(String message) {

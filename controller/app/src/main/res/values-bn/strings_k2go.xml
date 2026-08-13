@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">কাস্টম</string>
     <string name="k2go_auth_chip_notinstalled">ইনস্টল করা নেই</string>
     <string name="k2go_mod_needs_system">মডিউলগুলি একটি সিস্টেমের ভেতরে ইনস্টল হয়, আর এখনো কোনো সিস্টেম নেই। আগে একটি সিস্টেম ইনস্টল করুন।</string>
+    <string name="k2go_verifying_files">ফাইল যাচাই করা হচ্ছে…</string>
+    <string name="k2go_eta_min">আনুমানিক %1$d মিনিট বাকি</string>
+    <string name="k2go_eta_almost">প্রায় শেষ</string>
 </resources>

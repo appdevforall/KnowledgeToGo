@@ -323,7 +323,7 @@
     <string name="install_error_no_tier">Hey! Select an edition to install (Basic, Standard, or Full).</string>
     <string name="install_error_no_storage">Not enough storage. Free up space or choose a smaller edition, then try again.</string>
     <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
-    <string name="install_status_extracting">Extracting System...\n(This takes a while)</string>
+    <string name="install_status_extracting">Extracting system...\n(This takes a while)</string>
     <string name="install_error_no_archive">Error: Downloaded archive not found.</string>
     <string name="install_error_extraction">Extraction Failed: %1$s</string>
     <string name="install_error_download">Download Failed: %1$s</string>

@@ -56,7 +56,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
 
     private LottieAnimationView bootGate;
     private View installProgress;
-    private android.widget.TextView installStatus, installDetail, installPercent;
+    private android.widget.TextView installStatus, installDetail, installPercent, installEta;
+    private View installPercentRow;   // ADFA-5118: the %/ETA weighted-column row
     private android.widget.ProgressBar installBar;
     private boolean gateDismissed = false;
     private boolean closing = false;
@@ -126,7 +127,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         installStatus = findViewById(R.id.k2go_install_status);
         installBar = findViewById(R.id.k2go_install_bar);
         installDetail = findViewById(R.id.k2go_install_detail);
+        installPercentRow = findViewById(R.id.k2go_install_percent_row);
         installPercent = findViewById(R.id.k2go_install_percent);
+        installEta = findViewById(R.id.k2go_install_eta);
         // ADFA-4947: shared ellipsis animators (fixed-width so the centered lines don't shift).
         bootEllipsis = new org.iiab.controller.util.EllipsisAnimator(installStatus, true);
         readingEllipsis = new org.iiab.controller.util.EllipsisAnimator(installDetail, true);
@@ -328,32 +331,46 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         stopBootEllipsis();   // ADFA-4837: an install owns the status line; stop the boot animation
         installProgress.setVisibility(View.VISIBLE);
         if (installBar != null) installBar.setVisibility(View.VISIBLE);   // ADFA-4837: boot/shutdown hide it
-        if (installPercent != null) installPercent.setVisibility(View.GONE); // ADFA-4910: only the determinate extract shows it
+        if (installPercentRow != null) installPercentRow.setVisibility(View.GONE); // ADFA-4910/5118: only the determinate verify/extract shows it
         if (st.phase == InstallState.Phase.DOWNLOADING) {
             installStatus.setText(getString(R.string.k2go_downloading_library));
             installBar.setIndeterminate(false);
             installBar.setProgress(st.percent);
             installDetail.setText(pct(st.percent) + (st.speed.isEmpty() ? "" : "  ·  " + st.speed));
-        } else if (st.phase == InstallState.Phase.EXTRACTING) {
-            // Keep the "Extracting System…" legend on the status line for both sub-phases.
+        } else if (st.phase == InstallState.Phase.VERIFYING || st.phase == InstallState.Phase.EXTRACTING) {
+            // ADFA-5118: the unified verify+extract bar. Both passes render identically — determinate
+            // bar + % + ETA + current file — so there is no "first nothing, then detail" asymmetry.
+            // Only the verb on the status line changes at the handoff.
+            boolean verifying = st.phase == InstallState.Phase.VERIFYING;
             installStatus.setText(org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
-                    getString(R.string.install_status_extracting)));
+                    getString(verifying ? R.string.k2go_verifying_files : R.string.install_status_extracting)));
             if (st.percent < 0) {
-                // ADFA-4915: "reading/listing" sub-phase. listEntries() scans the whole archive
-                // (~1 min; longer on low-end devices). Indeterminate bar + an animated "reading …"
-                // on the DETAIL line (where the % goes), not on the status legend.
+                // Indeterminate fallback: before the first byte lands, or an archive whose size we
+                // couldn't read (no byte-based %). Animated hint on the DETAIL line (where the % goes).
                 installBar.setIndeterminate(true);
                 startReadingEllipsis(getString(R.string.k2go_reading));
             } else {
-                // ADFA-4915: determinate extract — real % plus just the current file's basename
-                // (no internal path, no counter): one ellipsized line that never overlaps.
+                // Determinate — real % plus the current file's basename (no path, no counter): one
+                // ellipsized line that never overlaps.
                 installBar.setIndeterminate(false);
                 installBar.setProgress(st.percent);
                 // ADFA-4910: the % lives on its own fixed line (always the same spot); the file
                 // name gets the line below, so it can grow/shrink without moving the number.
-                if (installPercent != null) {
-                    installPercent.setVisibility(View.VISIBLE);
+                // ADFA-5118: % and ETA sit in two weighted columns — the ETA (st.speed) can change
+                // width without shoving the %, so the number stays put across "3 min"->"almost done".
+                if (installPercentRow != null) {
+                    installPercentRow.setVisibility(View.VISIBLE);
                     installPercent.setText(pct(st.percent));
+                    // ADFA-5118: with no ETA yet (verify, or extract before a rate is known) the %
+                    // owns the whole row — centre it (there is space to spare). Once the ETA appears
+                    // (past the 50% handoff) hide-nothing: the % slides to the ~40% pivot and the ETA
+                    // fills to its right, so the pair reads balanced. Hiding the ETA cell (GONE) lets
+                    // the weighted % cell take the full width to centre against.
+                    boolean hasEta = !st.speed.isEmpty();
+                    installEta.setText(hasEta ? "·  " + st.speed : "");
+                    installEta.setVisibility(hasEta ? View.VISIBLE : View.GONE);
+                    installPercent.setGravity(hasEta
+                            ? android.view.Gravity.END : android.view.Gravity.CENTER_HORIZONTAL);
                 }
                 installDetail.setText(org.iiab.controller.deploy.domain.ExtractProgress.fileLabel(st.message));
             }

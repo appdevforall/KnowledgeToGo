@@ -64,6 +64,9 @@ public final class InstallProgressRepository {
     public void postDownloading(int percent, String speed) { post(InstallState.downloading(percent, speed)); }
     public void postExtracting(String message)             { post(InstallState.extracting(message)); }
     public void postExtracting(int percent, String message) { post(InstallState.extracting(percent, message)); }
+    // ADFA-5118: unified verify+extract bar — determinate progress with an ETA for both passes.
+    public void postVerifying(int percent, String message, String eta)  { post(InstallState.verifying(percent, message, eta)); }
+    public void postExtracting(int percent, String message, String eta) { post(InstallState.extracting(percent, message, eta)); }
     public void postProvisioning(String message)           { post(InstallState.provisioning(message)); }
     public void postSuccess()                               { post(InstallState.success()); }
     public void postFailed(String message)                  { post(InstallState.failed(message)); }

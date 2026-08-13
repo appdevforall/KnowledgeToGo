@@ -358,7 +358,9 @@ public final class InstallService extends Service {
     }
 
     private void onRootfsDownloaded(String downloadPath) {
-        InstallProgressRepository.get().postExtracting(-1, "");   // ADFA-4915: -1 = indeterminate "reading/listing" until the first member is extracted
+        // ADFA-5118: the archive-listing pass is now the determinate VERIFY phase of the unified bar.
+        // Start indeterminate (-1) until the first byte lands; the gzip feeder then drives real % + ETA.
+        InstallProgressRepository.get().postVerifying(-1, "", "");
         updateNotification(getString(R.string.install_status_extracting));
 
         File downloadDir = new File(downloadPath);
@@ -372,9 +374,35 @@ public final class InstallService extends Service {
         File downloadedArchive = archives[0];
         new TarExtractor().startExtraction(this, downloadedArchive.getAbsolutePath(), iiabRootDir.getAbsolutePath(),
                 new TarExtractor.ExtractionListener() {
+                    // ADFA-5118: once byte-based progress arrives (gzip path), it owns the unified bar;
+                    // the member-count callback is only the fallback for a non-gzip archive.
+                    private volatile boolean byteSeen = false;
+                    // ADFA-5118: the ETA is shown only during EXTRACT. A countdown during VERIFY would
+                    // have to guess the (slower, write-bound) extract time and then jump upward at the
+                    // handoff, so verify shows bar + % + file only. The smoother debounces the single
+                    // extract countdown so its text doesn't flicker at a boundary.
+                    private final org.iiab.controller.install.domain.EtaSmoother etaSmoother =
+                            new org.iiab.controller.install.domain.EtaSmoother(5000L);
+
+                    @Override
+                    public void onExtractPhase(TarExtractor.Phase phase, int passPercent, long etaSeconds, String line) {
+                        byteSeen = true;
+                        boolean extract = phase == TarExtractor.Phase.EXTRACT;
+                        int unified = org.iiab.controller.deploy.domain.ExtractProgress.unifiedPercent(passPercent, extract);
+                        if (extract) {
+                            int bucket = etaSmoother.smooth(
+                                    org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds),
+                                    android.os.SystemClock.elapsedRealtime());
+                            InstallProgressRepository.get().postExtracting(unified, line, formatEta(bucket));
+                        } else {
+                            InstallProgressRepository.get().postVerifying(unified, line, "");   // no countdown during verify
+                        }
+                    }
+
                     @Override
                     public void onProgress(int percent, long done, long total, String line) {
-                        InstallProgressRepository.get().postExtracting(percent, line);
+                        if (byteSeen) return;   // gzip path drives the unified bar; ignore member % there
+                        InstallProgressRepository.get().postExtracting(percent, line);   // non-gzip fallback
                     }
 
                     @Override
@@ -945,6 +973,17 @@ public final class InstallService extends Service {
         fail(getString(R.string.install_error_no_storage) + " ("
                 + org.iiab.controller.util.ByteFormatter.toHuman(pf.amountToReport()) + ")");
         return false;
+    }
+
+    /**
+     * ADFA-5118: resolve a smoothed ETA bucket (see EtaSmoother) to a short localized "time left"
+     * string for the unified bar. Empty when unknown, "almost done" for bucket 0 (under a minute),
+     * else "about N min left".
+     */
+    private String formatEta(int bucket) {
+        if (bucket == org.iiab.controller.install.domain.EtaSmoother.UNKNOWN) return "";
+        if (bucket == 0) return getString(R.string.k2go_eta_almost);
+        return getString(R.string.k2go_eta_min, bucket);
     }
 
     private void doCancel() {

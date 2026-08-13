@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">مخصص</string>
     <string name="k2go_auth_chip_notinstalled">غير مثبَّت</string>
     <string name="k2go_mod_needs_system">تُثبَّت الوحدات داخل نظام، ولا يوجد نظام بعد. ثبِّت نظامًا أولًا.</string>
+    <string name="k2go_verifying_files">جارٍ التحقق من الملفات…</string>
+    <string name="k2go_eta_min">يتبقى نحو %1$d دقيقة</string>
+    <string name="k2go_eta_almost">على وشك الانتهاء</string>
 </resources>

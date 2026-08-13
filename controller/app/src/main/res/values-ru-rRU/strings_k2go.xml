@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Свой</string>
     <string name="k2go_auth_chip_notinstalled">Не установлено</string>
     <string name="k2go_mod_needs_system">Модули устанавливаются в систему, а её ещё нет. Сначала установите систему.</string>
+    <string name="k2go_verifying_files">Проверка файлов…</string>
+    <string name="k2go_eta_min">осталось около %1$d мин</string>
+    <string name="k2go_eta_almost">почти готово</string>
 </resources>

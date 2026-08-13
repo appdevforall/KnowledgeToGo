@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Khusus</string>
     <string name="k2go_auth_chip_notinstalled">Belum terpasang</string>
     <string name="k2go_mod_needs_system">Modul dipasang ke dalam sebuah sistem, dan belum ada sistem. Pasang sistem terlebih dahulu.</string>
+    <string name="k2go_verifying_files">Memverifikasi file…</string>
+    <string name="k2go_eta_min">sekitar %1$d mnt lagi</string>
+    <string name="k2go_eta_almost">hampir selesai</string>
 </resources>

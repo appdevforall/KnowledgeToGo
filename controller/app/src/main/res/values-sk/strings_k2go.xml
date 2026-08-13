@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Vlastné</string>
     <string name="k2go_auth_chip_notinstalled">Nenainštalované</string>
     <string name="k2go_mod_needs_system">Moduly sa inštalujú do systému a ten zatiaľ neexistuje. Najprv nainštalujte systém.</string>
+    <string name="k2go_verifying_files">Overujú sa súbory…</string>
+    <string name="k2go_eta_min">zostáva približne %1$d min</string>
+    <string name="k2go_eta_almost">takmer hotovo</string>
 </resources>
