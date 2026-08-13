@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">தனிப்பயன்</string>
     <string name="k2go_auth_chip_notinstalled">நிறுவப்படவில்லை</string>
     <string name="k2go_mod_needs_system">தொகுதிகள் ஒரு அமைப்பினுள் நிறுவப்படுகின்றன, இன்னும் அமைப்பு எதுவும் இல்லை. முதலில் ஒரு அமைப்பை நிறுவுங்கள்.</string>
+    <string name="k2go_verifying_files">கோப்புகள் சரிபார்க்கப்படுகின்றன…</string>
+    <string name="k2go_eta_min">சுமார் %1$d நிமிடம் மீதம்</string>
+    <string name="k2go_eta_almost">கிட்டத்தட்ட முடிந்தது</string>
 </resources>

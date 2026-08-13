@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Egyéni</string>
     <string name="k2go_auth_chip_notinstalled">Nincs telepítve</string>
     <string name="k2go_mod_needs_system">A modulok egy rendszerbe települnek, és még nincs ilyen. Először telepítsen egy rendszert.</string>
+    <string name="k2go_verifying_files">Fájlok ellenőrzése…</string>
+    <string name="k2go_eta_min">kb. %1$d perc van hátra</string>
+    <string name="k2go_eta_almost">majdnem kész</string>
 </resources>

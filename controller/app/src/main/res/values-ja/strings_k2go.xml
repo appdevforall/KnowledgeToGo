@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">カスタム</string>
     <string name="k2go_auth_chip_notinstalled">未インストール</string>
     <string name="k2go_mod_needs_system">モジュールはシステムの中にインストールされますが、まだシステムがありません。先にシステムをインストールしてください。</string>
+    <string name="k2go_verifying_files">ファイルを確認中…</string>
+    <string name="k2go_eta_min">残り約 %1$d 分</string>
+    <string name="k2go_eta_almost">まもなく完了</string>
 </resources>

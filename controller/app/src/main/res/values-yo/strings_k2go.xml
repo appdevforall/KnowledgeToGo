@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Àdáni</string>
     <string name="k2go_auth_chip_notinstalled">Kò tíì fi sórí ẹ̀rọ</string>
     <string name="k2go_mod_needs_system">A ń fi àwọn módù sínú ètò kan, kò sì tí ì sí ọ̀kan. Fi ètò kan sílẹ̀ ṣáájú.</string>
+    <string name="k2go_verifying_files">Ń ṣàyẹ̀wò àwọn fáìlì…</string>
+    <string name="k2go_eta_min">nǹkan bí ìṣẹ́jú %1$d ló kù</string>
+    <string name="k2go_eta_almost">ó fẹ́rẹ̀ẹ́ parí</string>
 </resources>

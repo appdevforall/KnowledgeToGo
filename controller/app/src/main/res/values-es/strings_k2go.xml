@@ -772,4 +772,7 @@
     <string name="k2go_auth_chip_custom">Personalizado</string>
     <string name="k2go_auth_chip_notinstalled">No instalado</string>
     <string name="k2go_mod_needs_system">Los módulos se instalan dentro de un sistema, y todavía no hay uno. Instala primero un sistema.</string>
+    <string name="k2go_verifying_files">Verificando archivos…</string>
+    <string name="k2go_eta_min">quedan unos %1$d min</string>
+    <string name="k2go_eta_almost">casi listo</string>
 </resources>

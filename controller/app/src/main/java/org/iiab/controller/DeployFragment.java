@@ -334,6 +334,15 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
             case DOWNLOADING:
                 btnFastInstall.setText(getString(R.string.install_status_os_download, s.percent, s.speed));
                 break;
+            case VERIFYING: {
+                // ADFA-5118: legacy button shows the verify % (or "…" before the first byte).
+                String vlbl = org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
+                        getString(R.string.k2go_verifying_files));
+                btnFastInstall.setText(s.percent < 0
+                        ? (getString(R.string.k2go_reading) + "  …")
+                        : (vlbl + "  " + s.percent + "%"));
+                break;
+            }
             case EXTRACTING: {
                 // ADFA-4915: legacy button shows the extract % (or "…" during the reading sub-phase).
                 String lbl = org.iiab.controller.deploy.domain.ExtractProgress.firstLine(
@@ -392,6 +401,7 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                             + "\n(Tap to Cancel)");
                 }
                 break;
+            case VERIFYING:   // ADFA-5118: reset (if it reinstalls the rootfs) shares the busy label
             case EXTRACTING:
             case PROVISIONING:
                 // Wiping / extracting / bootstrapping: message is supplied by the service.

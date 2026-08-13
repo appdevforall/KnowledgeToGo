@@ -265,7 +265,7 @@
     <string name="install_error_no_tier">Hẹ́! Yan ẹ̀yà kan láti fi sórí ẹ̀rọ (Basic, Standard, tàbí Full).</string>
     <string name="install_error_no_storage">Ibi ìpamọ́ kò tó! Jọ̀wọ́ dá àyè sílẹ̀ tàbí yan ẹ̀yà kékeré. (A nílò ààbò ìṣọ̀wọ́ 5GB)</string>
     <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
-    <string name="install_status_extracting">Ń yọ Ètò jáde…\n(Èyí gba àkókò díẹ̀)</string>
+    <string name="install_status_extracting">Ń yọ ètò jáde…\n(Èyí gba àkókò díẹ̀)</string>
     <string name="install_error_no_archive">Àṣìṣe: A kò rí àkójọpọ̀ tí a gbà sílẹ̀.</string>
     <string name="install_error_extraction">Yíyọjáde Kùnà: %1$s</string>
     <string name="install_error_download">Ìgbàsílẹ̀ Kùnà: %1$s</string>

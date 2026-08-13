@@ -265,7 +265,7 @@
     <string name="install_error_no_tier">Hei! Pilih edisi untuk dipasang (Basic, Standard, atau Full).</string>
     <string name="install_error_no_storage">Penyimpanan tidak cukup! Silakan kosongkan ruang atau pilih edisi yang lebih kecil. (Diperlukan buffer aman 5GB)</string>
     <string name="install_status_os_download">OS: %1$d%% | %2$s</string>
-    <string name="install_status_extracting">Mengekstrak Sistem…\n(Ini memakan waktu)</string>
+    <string name="install_status_extracting">Mengekstrak sistem…\n(Ini memakan waktu)</string>
     <string name="install_error_no_archive">Kesalahan: Arsip yang diunduh tidak ditemukan.</string>
     <string name="install_error_extraction">Ekstraksi Gagal: %1$s</string>
     <string name="install_error_download">Unduhan Gagal: %1$s</string>
