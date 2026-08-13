@@ -282,7 +282,8 @@
 <text class="h2" x="144" y="1743">A download measured in hours has no durable record</text>
 <text class="item" x="40" y="1770">Content sessions live in static memory inside their services. If the process dies mid-download, the job state and the wishlist that ordered</text>
 <text class="item" x="40" y="1788">it both go, and the user comes back to a screen that knows nothing about work that may have run for an afternoon.</text>
-<text class="code" x="40" y="1810">ADFA-4874 found this on 27 July, deferred it to a background-jobs monitor that was never opened, and closed the same day. Unowned until now.</text>
+<text class="code" x="40" y="1810">ADFA-4874 found this on 27 July and deferred it to a background-jobs monitor. DUPLICATE: ADFA-4897 (area 4 of the download contract) has owned it</text>
+<text class="code" x="40" y="1828">since 28 July. 5106 was opened on 11 Aug without searching the tracker and claims "unowned until now" — it is not. 4897 survives; linked, 5106 to close.</text>
 
 <!-- ============================================================ -->
 <!-- third standalone: its own ticket, one pass                    -->
@@ -325,6 +326,8 @@
 <circle class="s-todo" cx="48" cy="2354" r="5.5"/><text class="item" x="62" y="2358">The Books "downloads" link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
 <circle class="s-todo" cx="48" cy="2398" r="5.5"/><text class="item" x="62" y="2402">The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
 
+<text class="note" x="24" y="2438">NEXT, 12 Aug: ADFA-4895 (rootfs download — retry, network change, stalled state), raised to Important. It is area 2 of the download contract ADFA-4893,</text>
+<text class="note" x="24" y="2454">which now owns the install-terminal work this board used to place on the boot gate. 4898 and 5119 follow it; 4894, 4896 and 4899 are later phases.</text>
 <text class="note" x="24" y="2470">Order: 5061 first, 4954 alongside it (done), then 5074 (done), then 5062. 5074 came before 5062 because 5062 migrates the</text>
 <text class="note" x="24" y="2486">SetupProgressActivity key switch — work thrown away if the hosting changed after it.</text>
 <text class="note" x="24" y="2508">4758 closed on its real objective: software and content are chosen separately. What it had absorbed was never its goal — see the card below.</text>
