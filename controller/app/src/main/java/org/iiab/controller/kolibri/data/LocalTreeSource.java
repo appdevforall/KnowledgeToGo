@@ -46,14 +46,35 @@ public final class LocalTreeSource implements TreeSource {
 
     private static final String TAG = "K2Go-Kolibri";
 
-    /** {@code GET /k2go-api/kolibri/tree/<nodeId>} — Studio-shaped tree, served locally. */
-    private static final String BASE = BoxEndpoints.API + "/kolibri/tree/";
+    /** Endpoint under the box API base: {@code /k2go-api/kolibri/tree/<nodeId>}. */
+    private static final String TREE_PATH = "/kolibri/tree/";
+
+    /** Box API base ({@code …:8085/k2go-api}); overridable so a test can point at a mock. */
+    private static final String DEFAULT_BASE = BoxEndpoints.API;
 
     private static final int CONNECT_TIMEOUT_MS = 2000;
     private static final int READ_TIMEOUT_MS = 10000;
 
     /** Refuse absurd payloads rather than filling the heap on a phone. */
     private static final int MAX_BYTES = 8 * 1024 * 1024;
+
+    /** The box API base, without a trailing slash. */
+    private final String baseUrl;
+
+    public LocalTreeSource() {
+        this(DEFAULT_BASE);
+    }
+
+    /**
+     * @param baseUrl the box API base (e.g. {@code http://localhost:8085/k2go-api}); a
+     *                trailing slash is stripped so no URL this builds carries a double slash.
+     *                Exists so a test can point at a {@code MockWebServer}, mirroring
+     *                {@link StudioTreeSource}.
+     */
+    public LocalTreeSource(String baseUrl) {
+        String b = baseUrl == null || baseUrl.trim().isEmpty() ? DEFAULT_BASE : baseUrl.trim();
+        this.baseUrl = b.endsWith("/") ? b.substring(0, b.length() - 1) : b;
+    }
 
     @Override
     public TopicNode fetchTree(String nodeId) {
@@ -65,7 +86,7 @@ public final class LocalTreeSource implements TreeSource {
             return null;
         }
         try {
-            String body = httpGet(BASE + id);
+            String body = httpGet(baseUrl + TREE_PATH + id);
             if (body.isEmpty()) {
                 return null;
             }
