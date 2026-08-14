@@ -226,6 +226,124 @@ export async function browseChannelTree(
     return toTreeNode(node);
 }
 
+// ---- Offline subtree, Studio-shaped, with byte sizes (ADFA-5094) ------------------
+// The app's LocalTreeSource reads this and parses it with the SAME mapper it uses for
+// Studio, so the wire shape here is Studio's public contentnode_tree — not the granular
+// TreeNode above (which the web wizard uses and which carries no bytes).
+//
+// Why raw SQL and not a Kolibri API: the granular endpoint has no byte sizes, and
+// importexportsizeview reports only a selection's OUTSTANDING transfer, never per-node
+// structural size. The per-node bytes live in content_localfile.file_size, so they are
+// summed here over each node's MPTT (lft/rght) range. That is what lets the picker show
+// sizes at every level with no network.
+//
+// NOTE (verification): the SQL runs against a live Kolibri database, which cannot be
+// exercised in CI — it is validated on a box with a metadata-imported channel. If a column
+// or the schema differs, this throws, the route returns 500, and LocalTreeSource falls back
+// to Studio: a wrong query degrades to today's behaviour, it does not break the picker.
+
+interface StudioFile { file_size: number; preset: string; }
+interface StudioNode {
+    id: string;
+    title: string;
+    kind: string;
+    is_leaf: boolean;
+    lft: number;
+    rght: number;
+    files: StudioFile[];
+    children: { more: unknown | null; results: StudioNode[] };
+}
+
+interface CnRow {
+    id: string;
+    parent_id: string | null;
+    title: string;
+    kind: string;
+    lft: number;
+    rght: number;
+}
+interface FileRow { node_id: string; preset: string; file_size: number; }
+
+// A generous ceiling that keeps the JSON well under LocalTreeSource's 8 MB cap while
+// covering ordinary channels whole. A subtree larger than this is truncated and its root
+// is marked incomplete, so the mapper reports the size as unknown rather than under-counting.
+const SUBTREE_NODE_CAP = 20000;
+
+/**
+ * One channel subtree rooted at {@code nodeId}, in Studio's contentnode_tree shape, built
+ * from the local content database. Returns {@code null} when the node is not present — i.e.
+ * the channel's metadata has not been imported — which the app reads as "fall back to Studio".
+ *
+ * The channel is scoped by the root node's own channel_id + MPTT range, so a node id alone
+ * is enough (as with Studio), and no channelId has to be threaded from the caller.
+ */
+export function buildLocalSubtree(nodeId: string): StudioNode | null {
+    if (!fs.existsSync(MAIN_DB)) return null;
+    const db = new Database(MAIN_DB, { readonly: true });
+    try {
+        const root = db.prepare(
+            `SELECT id, parent_id, title, kind, lft, rght, channel_id
+               FROM content_contentnode WHERE id = ?`,
+        ).get(nodeId) as (CnRow & { channel_id: string }) | undefined;
+        if (!root) return null;
+
+        const rows = db.prepare(
+            `SELECT id, parent_id, title, kind, lft, rght
+               FROM content_contentnode
+              WHERE channel_id = ? AND lft >= ? AND rght <= ?
+              ORDER BY lft
+              LIMIT ?`,
+        ).all(root.channel_id, root.lft, root.rght, SUBTREE_NODE_CAP) as CnRow[];
+
+        // Real content files only: thumbnails and supplementary files are excluded so the
+        // sizes match a normal import, the same exclusion StudioCatalogMapper makes.
+        const files = db.prepare(
+            `SELECT f.contentnode_id AS node_id, f.preset AS preset, lf.file_size AS file_size
+               FROM content_file f
+               JOIN content_localfile lf ON lf.id = f.local_file_id
+              WHERE f.thumbnail = 0 AND f.supplementary = 0
+                AND f.contentnode_id IN (
+                    SELECT id FROM content_contentnode
+                     WHERE channel_id = ? AND lft >= ? AND rght <= ? LIMIT ?)`,
+        ).all(root.channel_id, root.lft, root.rght, SUBTREE_NODE_CAP) as FileRow[];
+
+        const filesByNode = new Map<string, StudioFile[]>();
+        for (const f of files) {
+            const arr = filesByNode.get(f.node_id) ?? [];
+            arr.push({ file_size: f.file_size ?? 0, preset: f.preset ?? '' });
+            filesByNode.set(f.node_id, arr);
+        }
+
+        const byId = new Map<string, StudioNode>();
+        for (const r of rows) {
+            byId.set(r.id, {
+                id: r.id,
+                title: r.title ?? '',
+                kind: r.kind ?? '',
+                is_leaf: r.kind !== 'topic',
+                lft: r.lft,
+                rght: r.rght,
+                files: filesByNode.get(r.id) ?? [],
+                children: { more: null, results: [] },
+            });
+        }
+        for (const r of rows) {
+            if (r.id === root.id || !r.parent_id) continue;
+            byId.get(r.parent_id)?.children.results.push(byId.get(r.id)!);
+        }
+
+        const rootNode = byId.get(root.id) ?? null;
+        // Hitting the cap means the deepest nodes were dropped; mark the root incomplete so
+        // the mapper reports its subtree size as unknown rather than silently under-counting.
+        if (rootNode && rows.length >= SUBTREE_NODE_CAP) {
+            rootNode.children.more = { cursor: 'truncated' };
+        }
+        return rootNode;
+    } finally {
+        db.close();
+    }
+}
+
 export interface SelectionSize {
     resourceCount: number;
     fileSize: number;
