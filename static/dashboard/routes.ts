@@ -13,8 +13,8 @@ import { searchCatalog, listLibrary, removeBook, listLanguages, getCalibreSessio
 import { parseBox, parseEstimate } from './sockets/maps.socket';
 import {
     preflight, listInstalledChannels, browseRemoteChannels, resolveIdentifier,
-    browseChannelTree, estimateSelection, deleteChannel, getKolibriTask, verifyCredentials,
-    ChannelNotInstalledError,
+    browseChannelTree, buildLocalSubtree, estimateSelection, deleteChannel, getKolibriTask,
+    verifyCredentials, ChannelNotInstalledError,
 } from './sockets/kolibri.query';
 import { checkReadiness, KolibriAuthError, KolibriApiError, login as kolibriLogin } from './sockets/kolibri.session';
 import {
@@ -469,6 +469,26 @@ apiRouter.get('/kolibri/tree/:channelId', async (req: Request, res: Response): P
         res.json(await browseChannelTree(String(req.params.channelId), nodeId));
     } catch (e: any) {
         res.status(authStatus(e)).json({ error: e?.message || 'tree fetch failed' });
+    }
+});
+
+// Studio-shaped subtree WITH byte sizes, built from the local DB (ADFA-5094). Distinct from
+// /kolibri/tree/:channelId above (granular, for the web wizard, no bytes): the app's
+// LocalTreeSource parses this with the same mapper it uses for Studio, so the picker shows
+// sizes at every level offline. Node-id keyed; 404 when the channel's metadata is not imported,
+// which the app reads as "fall back to Studio".
+apiRouter.get('/kolibri/subtree/:nodeId', (req: Request, res: Response): void => {
+    const nodeId = String(req.params.nodeId);
+    if (!/^[0-9a-f]{32}$/.test(nodeId)) {
+        res.status(400).json({ error: 'invalid node id' });
+        return;
+    }
+    try {
+        const tree = buildLocalSubtree(nodeId);
+        if (!tree) { res.status(404).json({ error: 'channel not imported' }); return; }
+        res.json(tree);
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'subtree build failed' });
     }
 });
 
