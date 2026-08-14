@@ -1749,8 +1749,19 @@ public final class InstallService extends Service {
         } else if (installPipeline && st.phase == InstallState.Phase.DOWNLOADING) {
             b.addAction(0, getString(R.string.k2go_dl_pause), serviceAction(ACTION_PAUSE, 3));
         } else if (!installPipeline) {
-            b.addAction(0, getString(R.string.install_notif_cancel),
-                    serviceAction(ACTION_CANCEL, 1));
+            // ADFA-5119: a module queue, a scratch reset and a dashboard rebuild get a way to LOOK,
+            // never a way to stop. Cancel was the only action they had, and on these three it is a
+            // button that breaks the thing it is attached to: doCancel clears the queue and tears the
+            // service down, but the runrole already inside proot keeps writing — and teardown clears
+            // the install marker, so the app stops standing back while Ansible is still configuring a
+            // module. The result is a half-configured module and a server the app now feels free to
+            // start over it. There is no partial file to discard and nothing to resume from; unlike a
+            // download, this cannot be undone by deleting a file.
+            //
+            // The notification's job here is to report and to offer a way back to the screen. The
+            // body tap already does that; the action makes it visible instead of leaving a
+            // notification that looks inert.
+            b.addAction(0, getString(R.string.k2go_notif_view), contentIntent);
         }
         return b.build();
     }
