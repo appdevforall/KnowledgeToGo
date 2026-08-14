@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Đang xác minh tệp…</string>
     <string name="k2go_eta_min">còn khoảng %1$d phút</string>
     <string name="k2go_eta_almost">sắp xong</string>
+
+    <string name="k2go_dl_pause">Tạm dừng</string>
+    <string name="k2go_dl_resume">Tiếp tục</string>
+    <string name="k2go_dl_retry">Thử lại</string>
+    <string name="k2go_dl_cancel">Hủy</string>
+    <string name="k2go_dl_attempt">Đang kết nối lại…  %1$d / %2$d</string>
+    <string name="k2go_dl_soft_lost">Mất kết nối</string>
+    <string name="k2go_dl_soft_slow">Kết nối quá chậm</string>
+    <string name="k2go_dl_soft_stopped">Đã dừng tải xuống</string>
+    <string name="k2go_dl_paused">Đã tạm dừng tải xuống</string>
+    <string name="k2go_dl_paused_notif">Đã tạm dừng</string>
+    <string name="k2go_dl_cancel_title">Hủy tải xuống?</string>
+    <string name="k2go_dl_cancel_body">Quá trình tải sẽ dừng và bắt đầu lại từ đầu, bạn sẽ thiết lập hệ thống nền và chọn nội dung lần nữa.</string>
+    <string name="k2go_dl_cancel_keep">Tiếp tục tải</string>
+    <string name="k2go_dl_cancel_confirm">Bắt đầu lại</string>
+    <string name="k2go_damaged_report">Báo cáo sự cố</string>
+    <string name="k2go_notif_view">Xem</string>
 </resources>

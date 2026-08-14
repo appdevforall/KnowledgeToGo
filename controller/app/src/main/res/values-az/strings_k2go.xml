@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Fayllar yoxlanılır…</string>
     <string name="k2go_eta_min">təxminən %1$d dəq qalıb</string>
     <string name="k2go_eta_almost">az qalıb</string>
+
+    <string name="k2go_dl_pause">Fasilə</string>
+    <string name="k2go_dl_resume">Davam et</string>
+    <string name="k2go_dl_retry">Yenidən cəhd</string>
+    <string name="k2go_dl_cancel">Ləğv et</string>
+    <string name="k2go_dl_attempt">Yenidən qoşulur…  %1$d / %2$d</string>
+    <string name="k2go_dl_soft_lost">Bağlantı kəsildi</string>
+    <string name="k2go_dl_soft_slow">Bağlantı çox yavaşdır</string>
+    <string name="k2go_dl_soft_stopped">Yükləmə dayandı</string>
+    <string name="k2go_dl_paused">Yükləmə fasilədə</string>
+    <string name="k2go_dl_paused_notif">Fasilədə</string>
+    <string name="k2go_dl_cancel_title">Yükləmə ləğv edilsin?</string>
+    <string name="k2go_dl_cancel_body">Yükləmə dayanacaq və əvvəldən başlayacaq; əsas sistemi və məzmunu yenidən seçəcəksiniz.</string>
+    <string name="k2go_dl_cancel_keep">Yükləməyə davam et</string>
+    <string name="k2go_dl_cancel_confirm">Yenidən başla</string>
+    <string name="k2go_damaged_report">Problemi bildir</string>
+    <string name="k2go_notif_view">Bax</string>
 </resources>

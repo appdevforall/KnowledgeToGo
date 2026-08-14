@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">ফাইল যাচাই করা হচ্ছে…</string>
     <string name="k2go_eta_min">আনুমানিক %1$d মিনিট বাকি</string>
     <string name="k2go_eta_almost">প্রায় শেষ</string>
+
+    <string name="k2go_dl_pause">বিরতি</string>
+    <string name="k2go_dl_resume">চালিয়ে যান</string>
+    <string name="k2go_dl_retry">আবার চেষ্টা</string>
+    <string name="k2go_dl_cancel">বাতিল</string>
+    <string name="k2go_dl_attempt">আবার সংযোগ করা হচ্ছে…  %1$d / %2$d</string>
+    <string name="k2go_dl_soft_lost">সংযোগ বিচ্ছিন্ন হয়েছে</string>
+    <string name="k2go_dl_soft_slow">সংযোগ খুব ধীর</string>
+    <string name="k2go_dl_soft_stopped">ডাউনলোড থেমে গেছে</string>
+    <string name="k2go_dl_paused">ডাউনলোড বিরতিতে</string>
+    <string name="k2go_dl_paused_notif">বিরতিতে</string>
+    <string name="k2go_dl_cancel_title">ডাউনলোড বাতিল করবেন?</string>
+    <string name="k2go_dl_cancel_body">ডাউনলোড বন্ধ হয়ে শুরু থেকে আবার হবে, এবং আপনাকে বেস সিস্টেম ও কন্টেন্ট আবার বেছে নিতে হবে।</string>
+    <string name="k2go_dl_cancel_keep">ডাউনলোড চালিয়ে যান</string>
+    <string name="k2go_dl_cancel_confirm">নতুন করে শুরু</string>
+    <string name="k2go_damaged_report">সমস্যা জানান</string>
+    <string name="k2go_notif_view">দেখুন</string>
 </resources>

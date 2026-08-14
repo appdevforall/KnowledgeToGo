@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Overujú sa súbory…</string>
     <string name="k2go_eta_min">zostáva približne %1$d min</string>
     <string name="k2go_eta_almost">takmer hotovo</string>
+
+    <string name="k2go_dl_pause">Pozastaviť</string>
+    <string name="k2go_dl_resume">Pokračovať</string>
+    <string name="k2go_dl_retry">Skúsiť znova</string>
+    <string name="k2go_dl_cancel">Zrušiť</string>
+    <string name="k2go_dl_attempt">Opätovné pripojenie…  %1$d z %2$d</string>
+    <string name="k2go_dl_soft_lost">Spojenie sa prerušilo</string>
+    <string name="k2go_dl_soft_slow">Pripojenie je príliš pomalé</string>
+    <string name="k2go_dl_soft_stopped">Sťahovanie sa zastavilo</string>
+    <string name="k2go_dl_paused">Sťahovanie pozastavené</string>
+    <string name="k2go_dl_paused_notif">Pozastavené</string>
+    <string name="k2go_dl_cancel_title">Zrušiť sťahovanie?</string>
+    <string name="k2go_dl_cancel_body">Sťahovanie sa zastaví a začne odznova a základný systém aj obsah budete vyberať znova.</string>
+    <string name="k2go_dl_cancel_keep">Pokračovať</string>
+    <string name="k2go_dl_cancel_confirm">Začať odznova</string>
+    <string name="k2go_damaged_report">Nahlásiť problém</string>
+    <string name="k2go_notif_view">Zobraziť</string>
 </resources>

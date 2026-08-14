@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Проверка файлов…</string>
     <string name="k2go_eta_min">осталось около %1$d мин</string>
     <string name="k2go_eta_almost">почти готово</string>
+
+    <string name="k2go_dl_pause">Пауза</string>
+    <string name="k2go_dl_resume">Продолжить</string>
+    <string name="k2go_dl_retry">Повторить</string>
+    <string name="k2go_dl_cancel">Отмена</string>
+    <string name="k2go_dl_attempt">Переподключение…  %1$d из %2$d</string>
+    <string name="k2go_dl_soft_lost">Соединение потеряно</string>
+    <string name="k2go_dl_soft_slow">Соединение слишком медленное</string>
+    <string name="k2go_dl_soft_stopped">Загрузка остановлена</string>
+    <string name="k2go_dl_paused">Загрузка приостановлена</string>
+    <string name="k2go_dl_paused_notif">Приостановлено</string>
+    <string name="k2go_dl_cancel_title">Отменить загрузку?</string>
+    <string name="k2go_dl_cancel_body">Загрузка остановится и начнётся заново, а базовую систему и содержимое нужно будет выбрать снова.</string>
+    <string name="k2go_dl_cancel_keep">Продолжить загрузку</string>
+    <string name="k2go_dl_cancel_confirm">Начать заново</string>
+    <string name="k2go_damaged_report">Сообщить о проблеме</string>
+    <string name="k2go_notif_view">Смотреть</string>
 </resources>

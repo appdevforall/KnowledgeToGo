@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Verificando arquivos…</string>
     <string name="k2go_eta_min">faltam cerca de %1$d min</string>
     <string name="k2go_eta_almost">quase pronto</string>
+
+    <string name="k2go_dl_pause">Pausar</string>
+    <string name="k2go_dl_resume">Retomar</string>
+    <string name="k2go_dl_retry">Tentar de novo</string>
+    <string name="k2go_dl_cancel">Cancelar</string>
+    <string name="k2go_dl_attempt">Reconectando…  %1$d de %2$d</string>
+    <string name="k2go_dl_soft_lost">Conexão perdida</string>
+    <string name="k2go_dl_soft_slow">A conexão está muito lenta</string>
+    <string name="k2go_dl_soft_stopped">O download parou</string>
+    <string name="k2go_dl_paused">Download pausado</string>
+    <string name="k2go_dl_paused_notif">Pausado</string>
+    <string name="k2go_dl_cancel_title">Cancelar o download?</string>
+    <string name="k2go_dl_cancel_body">O download vai parar e começar de novo do início, e você vai configurar o sistema base e escolher seu conteúdo outra vez.</string>
+    <string name="k2go_dl_cancel_keep">Continuar baixando</string>
+    <string name="k2go_dl_cancel_confirm">Começar de novo</string>
+    <string name="k2go_damaged_report">Relatar o problema</string>
+    <string name="k2go_notif_view">Ver</string>
 </resources>

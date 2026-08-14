@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Проверка на файловете…</string>
     <string name="k2go_eta_min">остават около %1$d мин</string>
     <string name="k2go_eta_almost">почти готово</string>
+
+    <string name="k2go_dl_pause">Пауза</string>
+    <string name="k2go_dl_resume">Продължи</string>
+    <string name="k2go_dl_retry">Опитай отново</string>
+    <string name="k2go_dl_cancel">Отказ</string>
+    <string name="k2go_dl_attempt">Повторно свързване…  %1$d от %2$d</string>
+    <string name="k2go_dl_soft_lost">Връзката е прекъсната</string>
+    <string name="k2go_dl_soft_slow">Връзката е твърде бавна</string>
+    <string name="k2go_dl_soft_stopped">Изтеглянето спря</string>
+    <string name="k2go_dl_paused">Изтеглянето е на пауза</string>
+    <string name="k2go_dl_paused_notif">На пауза</string>
+    <string name="k2go_dl_cancel_title">Да се откаже ли изтеглянето?</string>
+    <string name="k2go_dl_cancel_body">Изтеглянето ще спре и ще започне отначало, а базовата система и съдържанието ще трябва да бъдат избрани отново.</string>
+    <string name="k2go_dl_cancel_keep">Продължи изтеглянето</string>
+    <string name="k2go_dl_cancel_confirm">Започни отначало</string>
+    <string name="k2go_damaged_report">Съобщи за проблема</string>
+    <string name="k2go_notif_view">Виж</string>
 </resources>
