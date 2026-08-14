@@ -46,8 +46,10 @@ public final class LocalTreeSource implements TreeSource {
 
     private static final String TAG = "K2Go-Kolibri";
 
-    /** Endpoint under the box API base: {@code /k2go-api/kolibri/tree/<nodeId>}. */
-    private static final String TREE_PATH = "/kolibri/tree/";
+    // Endpoint under the box API base: /k2go-api/kolibri/subtree/<nodeId>. Deliberately NOT
+    // /kolibri/tree/:channelId — that one is the web wizard's granular tree (counts, no bytes).
+    // This one returns Studio-shaped JSON with byte sizes, so StudioCatalogMapper parses it (ADFA-5094).
+    private static final String TREE_PATH = "/kolibri/subtree/";
 
     /** Box API base ({@code …:8085/k2go-api}); overridable so a test can point at a mock. */
     private static final String DEFAULT_BASE = BoxEndpoints.API;

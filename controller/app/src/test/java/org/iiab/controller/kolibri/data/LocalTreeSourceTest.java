@@ -30,7 +30,7 @@ import org.junit.Test;
  * the same treatment {@link StudioTreeSourceTest} gives the internet source.
  *
  * <p>Two things are specific to the local source and worth pinning: it addresses
- * the box's {@code /k2go-api/kolibri/tree/} path, and a 404 — the ordinary case
+ * the box's {@code /k2go-api/kolibri/subtree/} path, and a 404 — the ordinary case
  * where a channel's metadata is not on the box — comes back as {@code null} so
  * {@link FallbackTreeSource} moves on to Studio, rather than as an error. The
  * JSON parsing itself is Studio's mapper and is exercised there; here the focus
@@ -84,7 +84,7 @@ public class LocalTreeSourceTest {
         assertEquals(800L, t.subtreeBytes());
 
         RecordedRequest req = server.takeRequest();
-        assertEquals("/k2go-api/kolibri/tree/" + CH, req.getPath());
+        assertEquals("/k2go-api/kolibri/subtree/" + CH, req.getPath());
         assertEquals("GET", req.getMethod());
         assertEquals("application/json", req.getHeader("Accept"));
     }
@@ -125,6 +125,6 @@ public class LocalTreeSourceTest {
         String noSlash = server.url("/k2go-api").toString();
         server.enqueue(json(treeJson()));
         assertNotNull(new LocalTreeSource(noSlash).fetchTree(CH));
-        assertEquals("/k2go-api/kolibri/tree/" + CH, server.takeRequest().getPath());
+        assertEquals("/k2go-api/kolibri/subtree/" + CH, server.takeRequest().getPath());
     }
 }
