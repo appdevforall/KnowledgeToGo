@@ -297,6 +297,10 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
 
         // Real content files only: thumbnails and supplementary files are excluded so the
         // sizes match a normal import, the same exclusion StudioCatalogMapper makes.
+        // No LIMIT on the subquery (unlike the rows query): it must cover every node the rows
+        // query kept — an ORDER-BY-less LIMIT here could select a different subset and leave a
+        // built node without its files, under-counting its size. Files for nodes past the cap
+        // are simply never looked up.
         const files = db.prepare(
             `SELECT f.contentnode_id AS node_id, f.preset AS preset, lf.file_size AS file_size
                FROM content_file f
@@ -304,8 +308,8 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
               WHERE f.thumbnail = 0 AND f.supplementary = 0
                 AND f.contentnode_id IN (
                     SELECT id FROM content_contentnode
-                     WHERE channel_id = ? AND lft >= ? AND rght <= ? LIMIT ?)`,
-        ).all(root.channel_id, root.lft, root.rght, SUBTREE_NODE_CAP) as FileRow[];
+                     WHERE channel_id = ? AND lft >= ? AND rght <= ?)`,
+        ).all(root.channel_id, root.lft, root.rght) as FileRow[];
 
         const filesByNode = new Map<string, StudioFile[]>();
         for (const f of files) {
@@ -333,10 +337,17 @@ export function buildLocalSubtree(nodeId: string): StudioNode | null {
         }
 
         const rootNode = byId.get(root.id) ?? null;
-        // Hitting the cap means the deepest nodes were dropped; mark the root incomplete so
-        // the mapper reports its subtree size as unknown rather than silently under-counting.
-        if (rootNode && rows.length >= SUBTREE_NODE_CAP) {
-            rootNode.children.more = { cursor: 'truncated' };
+        // Truncation correctness. Rows are ordered by lft and capped, so the dropped nodes are
+        // exactly those with lft beyond the last one kept. Any node whose range (lft..rght)
+        // extends past that cutoff therefore has a missing descendant, so mark it incomplete —
+        // the mapper then reports its subtree size as unknown instead of silently under-counting.
+        // Over-marking is safe; under-marking is the bug. Nodes fully within the cutoff keep a
+        // complete child set and an exact size.
+        if (rows.length >= SUBTREE_NODE_CAP) {
+            const cutoffLft = rows[rows.length - 1].lft;
+            for (const node of byId.values()) {
+                if (node.rght > cutoffLft) node.children.more = { cursor: 'truncated' };
+            }
         }
         return rootNode;
     } finally {
