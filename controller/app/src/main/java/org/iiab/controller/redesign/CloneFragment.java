@@ -20,7 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,6 +29,7 @@ import com.journeyapps.barcodescanner.ScanOptions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -104,7 +104,7 @@ public class CloneFragment extends Fragment {
     private LinearLayout receiveBox, progressBox;
     private EditText paste;
     private TextView receiveStart, pStatus, pFile, pStats, cancel;
-    private ProgressBar pbar;   // ADFA-5143: a LinearProgressIndicator, which is a ProgressBar
+    private LinearProgressIndicator pbar;   // ADFA-5143: typed as itself, so setProgressCompat is available
     private com.airbnb.lottie.LottieAnimationView anim;   // ADFA-5143: the clone loop
     // ADFA-5143: read once — renderReceive() runs on every progress tick and this is a Settings read.
     private boolean reduceMotion = false;
@@ -879,7 +879,10 @@ public class CloneFragment extends Fragment {
             }
             if (ph == SyncTransferState.Phase.TRANSFERRING) {
                 setBarIndeterminate(false);
-                pbar.setProgress(st.percent);
+                // setProgressCompat animates to the new value instead of jumping. The explicit switch
+                // above stays: setProgressCompat can also leave indeterminate mode on its own, but only
+                // after the current cycle, and that path isn't something this screen should depend on.
+                pbar.setProgressCompat(st.percent, true);
                 pStatus.setText(getString(R.string.k2go_clone_copying));
                 pFile.setText(st.file);
                 pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
@@ -1047,6 +1050,11 @@ public class CloneFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        // Re-read the setting here rather than trusting what onCreateView saw: changing it doesn't
+        // recreate the fragment, so a cached answer can outlive the truth. Coming back to the front is
+        // the only moment it can have changed behind our back, and it keeps the read off the tick path.
+        reduceMotion = org.iiab.controller.util.Motion.reduced(getContext());
+        if (anim != null && reduceMotion && anim.isAnimating()) anim.pauseAnimation();
         if (progressBox != null) showProgress(progressBox.getVisibility() == View.VISIBLE);
     }
 
