@@ -222,6 +222,17 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // ADFA-4919 (2c-ii): marker set + no live installer (both install repos IDLE) means a proot
         // install was killed. Enter recovery instead of quietly lifting the gate to an empty library.
         recovering = !installing
+                // ADFA-5143 (plan B): not when the user was brought here to get a system. A killed
+                // clone-receive leaves the marker set, so this predicate was true again the moment
+                // recovery's own suggestion — Reinstall → Copy from a phone — landed on this screen:
+                // dialog, recovery, wizard, clone, dialog. A loop out of the exit.
+                //
+                // The extra already means "the caller knows there is no usable system and is bringing
+                // this person somewhere to fix it", which is exactly when a dialog announcing that the
+                // system is broken has nothing to add and everything to block. Leave and come back
+                // cold and the marker still puts them in recovery, correctly: they are no longer
+                // mid-attempt.
+                && !broughtHereToSetUp
                 && org.iiab.controller.InstallGuard.inProgress(this)
                 && !InstallProgressRepository.get().current().isRunning()
                 && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
