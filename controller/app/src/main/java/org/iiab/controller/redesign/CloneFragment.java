@@ -966,6 +966,19 @@ public class CloneFragment extends Fragment {
     }
 
     private void showReceiveTerminal(boolean ok, String message) {
+        // ADFA-5143: reaching a receive terminal is itself the proof that this side owns the clone
+        // environment — whatever this fragment instance happens to remember. cloneLockHeld and
+        // cloneGuardHeld are fragment fields, so a fragment recreated mid-transfer (app closed and
+        // reopened, then re-attached to the running rsync) arrived here with both false and
+        // releaseCloneEnv() returned on its first line: the install marker stayed set, the lock was
+        // never dropped and the server was never booted. The next launch then read that leftover
+        // marker as a damaged install — of a clone that had in fact completed. Re-derive the two
+        // facts from disk, where they actually live, instead of trusting the fragment's memory.
+        Context termCtx = getContext();
+        if (termCtx != null) {
+            cloneLockHeld = true;   // EnvironmentLock.release() is idempotent and self-heals a stale file
+            cloneGuardHeld = org.iiab.controller.InstallGuard.inProgress(termCtx);
+        }
         releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
         String body = (message != null) ? message : "";
