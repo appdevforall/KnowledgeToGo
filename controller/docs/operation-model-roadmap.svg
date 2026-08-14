@@ -293,6 +293,17 @@
 <circle class="s-todo" cx="896" cy="1245" r="5.5"/>
 <text class="item" x="910" y="1249">Decide: can a module be uninstalled?</text>
 <text class="note" x="888" y="1272">Seven verbs for “remove” today; two name one action.</text>
+<rect class="card" x="448" y="1390" width="380" height="172" stroke="#C0392B" stroke-width="2"/>
+<rect class="chip" x="464" y="1406" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="472" y="1420" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="464" y="1446">Cancelling a module install does not stop it</text>
+<text class="sub" x="464" y="1470">doCancel clears the queue and tears the service</text>
+<text class="sub" x="464" y="1485">down — the runrole inside proot keeps writing.</text>
+<circle class="s-todo" cx="472" cy="1501" r="5.5"/>
+<text class="item" x="486" y="1505">Kill the runrole; hold the marker until it dies</text>
+<text class="note" x="464" y="1528">teardown() clears the install marker, so the app stops standing</text>
+<text class="note" x="464" y="1543">back while Ansible is still configuring. ADFA-5119 replaced the</text>
+<text class="note" x="464" y="1558">notification's Cancel with View: door closed, hazard intact.</text>
 <text class="h3" x="24" y="2117">SPANS THE BOARD — real work with no ticket, and the small things</text>
 <rect class="card" x="24" y="2135" width="1228" height="131" stroke="#C0392B" stroke-width="2.5"/>
 <rect class="chip" x="40" y="2151" width="107" height="19" fill="#FDECEC" stroke="none"/>
