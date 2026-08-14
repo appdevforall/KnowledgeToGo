@@ -1,0 +1,86 @@
+name: Publish content catalogs
+
+# ADFA-5094 (ADR-5094): generate the Kolibri/Kiwix catalogs once a week off the build and
+# publish them + a versioned manifest to Cloudflare R2, so the app can refresh the catalog
+# without an APK release. Reuses the R2 pattern the release build uses for update.json
+# (android-release-build.yml): aws s3 cp with the CLOUDFLARE_* vars, fixed keys that overwrite
+# so a URL always resolves to the latest. Content stays on the Nginx mirror; only the catalog
+# metadata is published here, served from k2go-download.appdevforall.org/catalogs/.
+on:
+  schedule:
+    # Weekly, Monday 06:17 UTC. Off-peak, odd minute (GitHub throttles round-hour crons).
+    - cron: '17 6 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+  publish-catalogs:
+    name: Generate catalogs & upload to Cloudflare R2
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./controller/app
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      # The generators query Studio/Kiwix once, here, on a runner with bandwidth — not from
+      # every release build (ADR-4954 D1). Never fail the job: a blocked fetch keeps the
+      # committed asset, and we simply skip its upload below.
+      - name: Generate catalogs
+        run: |
+          python3 tools/build_kolibri_catalog.py || echo "::warning::kolibri generator failed; its upload will be skipped"
+          python3 tools/build_kiwix_catalog.py   || echo "::warning::kiwix generator failed; its upload will be skipped"
+
+      - name: Build manifests and upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.CLOUDFLARE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          R2_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          BUCKET_NAME: "iiaboa-apk-repo"
+          BASE_URL: "https://k2go-download.appdevforall.org/catalogs"
+        run: |
+          set -euo pipefail
+          ENDPOINT="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          GENERATED="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          VERSION="$(date -u +%Y.%m.%d)"
+
+          # publish <name> <file> <content-type> <items-mode>
+          #   items-mode "jsonl" -> extract per-channel {id,version} for later per-item delta /
+          #   the "a newer version exists" signal; "none" -> file-level hash only (e.g. Kiwix CSV).
+          publish() {
+            name="$1"; file="$2"; ctype="$3"; items_mode="$4"
+            if [ ! -f "$file" ]; then
+              echo "::warning::$file not found; skipping $name (kept whatever is already published)"
+              return 0
+            fi
+            base="$(basename "$file")"
+            hash="sha256:$(sha256sum "$file" | cut -d' ' -f1)"
+            items='[]'
+            if [ "$items_mode" = "jsonl" ]; then
+              items="$(grep -v '"catalog"' "$file" | jq -c '{id, version}' | jq -sc '.')"
+            fi
+            jq -n \
+              --arg catalog "$name" --arg version "$VERSION" --arg generated "$GENERATED" \
+              --arg hash "$hash" --arg url "$BASE_URL/$base" --argjson items "$items" \
+              '{catalog:$catalog, version:$version, generated:$generated, hash:$hash, url:$url, items:$items}' \
+              > "$name.manifest.json"
+            echo "----- $name.manifest.json -----"; cat "$name.manifest.json"
+
+            # Upload the catalog first, then the manifest, so the manifest never points at a
+            # missing file. Fixed keys -> overwrite -> the URL always resolves to the latest.
+            aws s3 cp "$file" "s3://$BUCKET_NAME/catalogs/$base" \
+              --endpoint-url "$ENDPOINT" --content-type "$ctype"
+            aws s3 cp "$name.manifest.json" "s3://$BUCKET_NAME/catalogs/$name.manifest.json" \
+              --endpoint-url "$ENDPOINT" --content-type "application/json"
+          }
+
+          publish kolibri src/main/assets/kolibri_catalog.jsonl "application/x-ndjson" jsonl
+          publish kiwix   src/main/assets/kiwix_catalog.csv     "text/csv"             none
