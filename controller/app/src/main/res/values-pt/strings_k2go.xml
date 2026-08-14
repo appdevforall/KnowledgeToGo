@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Reinstalar o sistema</string>
     <string name="k2go_reinstall_sub">Apaga tudo e instala um sistema novo do zero</string>
     <string name="k2go_reinstall_confirm_title">Reinstalar do zero?</string>
-    <string name="k2go_reinstall_confirm_msg">Isto apaga o sistema atual e tudo nele — livros, mapas, downloads e configurações — e instala uma cópia limpa. Não pode ser desfeito. Faça um backup antes se quiser manter algo. Precisa de conexão com a internet.</string>
+    <string name="k2go_reinstall_confirm_msg">Isto apaga o sistema atual e tudo nele — livros, mapas, downloads e configurações — e instala uma cópia limpa. Não pode ser desfeito. Faça um backup antes se quiser manter algo. Depois você escolhe como: baixar ou copiar de outro telefone.</string>
     <string name="k2go_reinstall_confirm_yes">Apagar e reinstalar</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Do sistema</string>

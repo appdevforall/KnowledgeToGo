@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Přeinstalovat systém</string>
     <string name="k2go_reinstall_sub">Smazat vše a nainstalovat čistý systém od začátku</string>
     <string name="k2go_reinstall_confirm_title">Přeinstalovat od začátku?</string>
-    <string name="k2go_reinstall_confirm_msg">Tímto se smaže aktuální systém a vše v něm — knihy, mapy, stažené soubory a nastavení — a nainstaluje se čistá kopie. Nelze vzít zpět. Pokud si chcete něco ponechat, nejprve vytvořte zálohu. Vyžaduje připojení k internetu.</string>
+    <string name="k2go_reinstall_confirm_msg">Tímto se smaže aktuální systém a vše v něm — knihy, mapy, stažené soubory a nastavení — a nainstaluje se čistá kopie. Nelze vzít zpět. Pokud si chcete něco ponechat, nejprve vytvořte zálohu. Potom zvolíte jak: stáhnout, nebo zkopírovat z jiného telefonu.</string>
     <string name="k2go_reinstall_confirm_yes">Smazat a přeinstalovat</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Ze systému</string>

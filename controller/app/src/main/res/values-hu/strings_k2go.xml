@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Rendszer újratelepítése</string>
     <string name="k2go_reinstall_sub">Mindent töröl, és tiszta rendszert telepít a nulláról</string>
     <string name="k2go_reinstall_confirm_title">Újratelepítés a nulláról?</string>
-    <string name="k2go_reinstall_confirm_msg">Ez törli a jelenlegi rendszert és mindent benne — könyvek, térképek, letöltések és beállítások —, majd tiszta másolatot telepít. Nem vonható vissza. Előbb készíts biztonsági mentést, ha meg akarsz tartani valamit. Internetkapcsolat szükséges.</string>
+    <string name="k2go_reinstall_confirm_msg">Ez törli a jelenlegi rendszert és mindent benne — könyvek, térképek, letöltések és beállítások —, majd tiszta másolatot telepít. Nem vonható vissza. Előbb készíts biztonsági mentést, ha meg akarsz tartani valamit. Utána választ: letölti, vagy másik telefonról átmásolja.</string>
     <string name="k2go_reinstall_confirm_yes">Törlés és újratelepítés</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Rendszerből</string>

@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Cài đặt lại hệ thống</string>
     <string name="k2go_reinstall_sub">Xóa mọi thứ và cài đặt một hệ thống mới từ đầu</string>
     <string name="k2go_reinstall_confirm_title">Cài đặt lại từ đầu?</string>
-    <string name="k2go_reinstall_confirm_msg">Thao tác này xóa hệ thống hiện tại và mọi thứ trong đó — sách, bản đồ, tải xuống và cài đặt — rồi cài một bản sạch. Không thể hoàn tác. Hãy sao lưu trước nếu bạn muốn giữ lại thứ gì đó. Cần kết nối internet.</string>
+    <string name="k2go_reinstall_confirm_msg">Thao tác này xóa hệ thống hiện tại và mọi thứ trong đó — sách, bản đồ, tải xuống và cài đặt — rồi cài một bản sạch. Không thể hoàn tác. Hãy sao lưu trước nếu bạn muốn giữ lại thứ gì đó. Sau đó bạn chọn cách: tải xuống, hoặc sao chép từ điện thoại khác.</string>
     <string name="k2go_reinstall_confirm_yes">Xóa và cài đặt lại</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Từ hệ thống</string>

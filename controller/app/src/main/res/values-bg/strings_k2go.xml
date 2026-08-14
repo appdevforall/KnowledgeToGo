@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Преинсталиране на системата</string>
     <string name="k2go_reinstall_sub">Изтрива всичко и инсталира нова система от нулата</string>
     <string name="k2go_reinstall_confirm_title">Преинсталиране от нулата?</string>
-    <string name="k2go_reinstall_confirm_msg">Това изтрива текущата система и всичко в нея — книги, карти, изтегляния и настройки — и инсталира чисто копие. Не може да се отмени. Първо направете резервно копие, ако искате да запазите нещо. Изисква интернет връзка.</string>
+    <string name="k2go_reinstall_confirm_msg">Това изтрива текущата система и всичко в нея — книги, карти, изтегляния и настройки — и инсталира чисто копие. Не може да се отмени. Първо направете резервно копие, ако искате да запазите нещо. След това избирате как: изтегляне или копиране от друг телефон.</string>
     <string name="k2go_reinstall_confirm_yes">Изтриване и преинсталиране</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">От системата</string>

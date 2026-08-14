@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Переустановить систему</string>
     <string name="k2go_reinstall_sub">Стереть всё и установить новую систему с нуля</string>
     <string name="k2go_reinstall_confirm_title">Переустановить с нуля?</string>
-    <string name="k2go_reinstall_confirm_msg">Это сотрёт текущую систему и всё её содержимое — книги, карты, загрузки и настройки — и установит чистую копию. Отменить нельзя. Сначала сделайте резервную копию, если хотите что-то сохранить. Требуется подключение к интернету.</string>
+    <string name="k2go_reinstall_confirm_msg">Это сотрёт текущую систему и всё её содержимое — книги, карты, загрузки и настройки — и установит чистую копию. Отменить нельзя. Сначала сделайте резервную копию, если хотите что-то сохранить. Затем вы выберете способ: скачать или скопировать с другого телефона.</string>
     <string name="k2go_reinstall_confirm_yes">Стереть и переустановить</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Из системы</string>

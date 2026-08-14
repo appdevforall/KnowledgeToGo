@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">시스템 다시 설치</string>
     <string name="k2go_reinstall_sub">모두 지우고 처음부터 새 시스템을 설치합니다</string>
     <string name="k2go_reinstall_confirm_title">처음부터 다시 설치할까요?</string>
-    <string name="k2go_reinstall_confirm_msg">현재 시스템과 그 안의 모든 것 — 도서, 지도, 다운로드, 설정 — 을 지우고 깨끗한 사본을 설치합니다. 되돌릴 수 없습니다. 무언가를 남기려면 먼저 백업하세요. 인터넷 연결이 필요합니다.</string>
+    <string name="k2go_reinstall_confirm_msg">현재 시스템과 그 안의 모든 것 — 도서, 지도, 다운로드, 설정 — 을 지우고 깨끗한 사본을 설치합니다. 되돌릴 수 없습니다. 무언가를 남기려면 먼저 백업하세요. 그다음 방법을 선택합니다: 다운로드하거나 다른 기기에서 복사.</string>
     <string name="k2go_reinstall_confirm_yes">지우고 다시 설치</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">시스템에서</string>

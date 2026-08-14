@@ -51,9 +51,26 @@ public class WizardActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * ADFA-5143 (plan B): this wizard run is a reinstall, so the install it eventually starts must wipe
+     * the existing rootfs first.
+     *
+     * <p>Recovery used to send "Reinstall the system" straight to the tier chooser, which offers one
+     * way to get a system: download. A killed clone-receive leaves a resumable half-written tree and a
+     * user with no route back to the scan screen — the only offered exit discarded the very thing rsync
+     * could have continued from. Landing one step earlier, at the setup choice, puts "Copy from a phone"
+     * back on the table.
+     *
+     * <p>The flag has to travel because the wipe depends on it: without it, {@code runPipeline}'s
+     * non-destructive guard sees the half-written directory, skips the extract and boots the wreck.
+     */
+    public static final String EXTRA_REINSTALL = "reinstall";
+    private boolean reinstallMode;
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        reinstallMode = getIntent() != null && getIntent().getBooleanExtra(EXTRA_REINSTALL, false);
         setContentView(R.layout.activity_k2go_wizard);
         // ADFA-4932: draggable feedback FAB on this screen (screenshot + email).
         org.iiab.controller.feedback.presentation.FeedbackFab.installOn(this, "wizard");
@@ -64,6 +81,10 @@ public class WizardActivity extends AppCompatActivity {
         // ADFA-4982: a fresh launch that already has permissions means the user passed language +
         // permissions and only bailed from the setup choice / edition selection — resume at the setup
         // choice (step 3), not welcome/language/permissions all over again.
+        //
+        // ADFA-5143 added a second caller — the recovery path's "Reinstall the system" — and it wants
+        // step 3 for the same reason: permissions are long granted and the decision to be made is how
+        // to get a system, not whether to grant notifications again.
         //
         // ADFA-5137 dropped the setup_complete half of this condition, which was always true here:
         // LibraryActivity is the only thing that opens this screen, and it only opens it when there
@@ -99,7 +120,11 @@ public class WizardActivity extends AppCompatActivity {
             // ADFA-4982: do NOT mark setup complete here — only a real install does (startWizardInstall).
             // If the user bails during edition/size selection, the next launch resumes at this setup
             // choice (see onCreate) instead of stranding them on an empty Home.
-            startActivity(new Intent(this, SetupLibraryActivity.class));
+            // ADFA-5143: carry the reinstall intent through. On a recovery run the rootfs on disk is
+            // wreckage, and only this flag makes the pipeline wipe it before extracting.
+            Intent i = new Intent(this, SetupLibraryActivity.class);
+            if (reinstallMode) i.putExtra(SetupLibraryActivity.EXTRA_REINSTALL_SETUP, true);
+            startActivity(i);
             finish();
         });
         findViewById(R.id.setup_copy).setOnClickListener(v -> {

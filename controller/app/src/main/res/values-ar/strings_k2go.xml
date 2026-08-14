@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">إعادة تثبيت النظام</string>
     <string name="k2go_reinstall_sub">يمحو كل شيء ويثبّت نظامًا جديدًا من الصفر</string>
     <string name="k2go_reinstall_confirm_title">إعادة التثبيت من الصفر؟</string>
-    <string name="k2go_reinstall_confirm_msg">هذا يمحو النظام الحالي وكل ما فيه — الكتب والخرائط والتنزيلات والإعدادات — ثم يثبّت نسخة نظيفة. لا يمكن التراجع عنه. أنشئ نسخة احتياطية أولاً إذا أردت الاحتفاظ بأي شيء. يتطلب اتصالاً بالإنترنت.</string>
+    <string name="k2go_reinstall_confirm_msg">هذا يمحو النظام الحالي وكل ما فيه — الكتب والخرائط والتنزيلات والإعدادات — ثم يثبّت نسخة نظيفة. لا يمكن التراجع عنه. أنشئ نسخة احتياطية أولاً إذا أردت الاحتفاظ بأي شيء. ثم تختار الطريقة: التنزيل أو النسخ من هاتف آخر.</string>
     <string name="k2go_reinstall_confirm_yes">محو وإعادة تثبيت</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">من النظام</string>

@@ -734,7 +734,7 @@
     <string name="k2go_reinstall_title">Įdiegti sistemą iš naujo</string>
     <string name="k2go_reinstall_sub">Ištrina viską ir įdiegia švarią sistemą nuo nulio</string>
     <string name="k2go_reinstall_confirm_title">Įdiegti iš naujo nuo nulio?</string>
-    <string name="k2go_reinstall_confirm_msg">Tai ištrina dabartinę sistemą ir viską joje — knygas, žemėlapius, atsisiuntimus ir nustatymus — ir įdiegia švarią kopiją. Negalima atšaukti. Pirmiausia sukurkite atsarginę kopiją, jei norite ką nors išsaugoti. Reikia interneto ryšio.</string>
+    <string name="k2go_reinstall_confirm_msg">Tai ištrina dabartinę sistemą ir viską joje — knygas, žemėlapius, atsisiuntimus ir nustatymus — ir įdiegia švarią kopiją. Negalima atšaukti. Pirmiausia sukurkite atsarginę kopiją, jei norite ką nors išsaugoti. Tada pasirinksite kaip: atsisiųsti arba nukopijuoti iš kito telefono.</string>
     <string name="k2go_reinstall_confirm_yes">Ištrinti ir įdiegti iš naujo</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Iš sistemos</string>

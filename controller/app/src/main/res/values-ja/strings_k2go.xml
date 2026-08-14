@@ -693,7 +693,7 @@
     <string name="k2go_dash_rebuild">再構築</string>
     <string name="k2go_dash_rebuild_confirm_title">REST コアを再構築しますか？</string>
     <string name="k2go_dash_rebuild_confirm_msg">dash-node を最新バージョンに更新します。再構築中はサーバーが一時的に利用できなくなります。完了するまでこの画面を離れないでください。</string>
-    <string name="k2go_dash_needs_internet">再構築にはインターネット接続が必要です。</string>
+    <string name="k2go_dash_needs_internet">再構築にはその後、方法を選びます：ダウンロード、または別の端末からコピー。</string>
     <string name="k2go_dash_live_title">ダッシュボードを更新中</string>
     <string name="k2go_dash_live_running">その場で更新中… ダッシュボードが少しの間再起動します。</string>
     <string name="k2go_dash_live_done">ダッシュボードを更新しました。</string>

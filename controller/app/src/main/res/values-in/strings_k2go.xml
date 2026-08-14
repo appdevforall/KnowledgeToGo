@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Instal ulang sistem</string>
     <string name="k2go_reinstall_sub">Hapus semuanya dan instal sistem baru dari awal</string>
     <string name="k2go_reinstall_confirm_title">Instal ulang dari awal?</string>
-    <string name="k2go_reinstall_confirm_msg">Ini menghapus sistem saat ini dan semua isinya — buku, peta, unduhan, dan pengaturan — lalu menginstal salinan bersih. Tidak dapat dibatalkan. Cadangkan dulu jika ingin menyimpan sesuatu. Perlu koneksi internet.</string>
+    <string name="k2go_reinstall_confirm_msg">Ini menghapus sistem saat ini dan semua isinya — buku, peta, unduhan, dan pengaturan — lalu menginstal salinan bersih. Tidak dapat dibatalkan. Cadangkan dulu jika ingin menyimpan sesuatu. Lalu Anda memilih caranya: mengunduh, atau menyalin dari ponsel lain.</string>
     <string name="k2go_reinstall_confirm_yes">Hapus dan instal ulang</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Dari sistem</string>

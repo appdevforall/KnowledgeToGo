@@ -734,7 +734,7 @@
     <string name="k2go_reinstall_title">Installer systemet på nytt</string>
     <string name="k2go_reinstall_sub">Slett alt og installer et rent system fra bunnen</string>
     <string name="k2go_reinstall_confirm_title">Installere på nytt fra bunnen?</string>
-    <string name="k2go_reinstall_confirm_msg">Dette sletter det nåværende systemet og alt i det — bøker, kart, nedlastinger og innstillinger — og installerer så en ren kopi. Det kan ikke angres. Ta en sikkerhetskopi først hvis du vil beholde noe. Krever internettforbindelse.</string>
+    <string name="k2go_reinstall_confirm_msg">Dette sletter det nåværende systemet og alt i det — bøker, kart, nedlastinger og innstillinger — og installerer så en ren kopi. Det kan ikke angres. Ta en sikkerhetskopi først hvis du vil beholde noe. Deretter velger du hvordan: laste ned, eller kopiere fra en annen telefon.</string>
     <string name="k2go_reinstall_confirm_yes">Slett og installer på nytt</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Fra systemet</string>

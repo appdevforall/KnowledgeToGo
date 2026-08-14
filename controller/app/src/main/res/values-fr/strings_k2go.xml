@@ -734,7 +734,7 @@
     <string name="k2go_reinstall_title">Réinstaller le système</string>
     <string name="k2go_reinstall_sub">Tout effacer et installer un système neuf à partir de zéro</string>
     <string name="k2go_reinstall_confirm_title">Réinstaller à neuf ?</string>
-    <string name="k2go_reinstall_confirm_msg">Ceci efface le système actuel et tout son contenu — livres, cartes, téléchargements et réglages — puis installe une copie propre. C\'est irréversible. Sauvegardez d\'abord si vous voulez conserver quelque chose. Nécessite une connexion internet.</string>
+    <string name="k2go_reinstall_confirm_msg">Ceci efface le système actuel et tout son contenu — livres, cartes, téléchargements et réglages — puis installe une copie propre. C\'est irréversible. Sauvegardez d\'abord si vous voulez conserver quelque chose. Ensuite vous choisissez comment : le télécharger ou le copier depuis un autre téléphone.</string>
     <string name="k2go_reinstall_confirm_yes">Effacer et réinstaller</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Du système</string>

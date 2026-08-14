@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Reinstalează sistemul</string>
     <string name="k2go_reinstall_sub">Șterge tot și instalează un sistem nou de la zero</string>
     <string name="k2go_reinstall_confirm_title">Reinstalezi de la zero?</string>
-    <string name="k2go_reinstall_confirm_msg">Aceasta șterge sistemul actual și tot ce conține — cărți, hărți, descărcări și setări — apoi instalează o copie curată. Nu poate fi anulată. Fă mai întâi o copie de rezervă dacă vrei să păstrezi ceva. Necesită o conexiune la internet.</string>
+    <string name="k2go_reinstall_confirm_msg">Aceasta șterge sistemul actual și tot ce conține — cărți, hărți, descărcări și setări — apoi instalează o copie curată. Nu poate fi anulată. Fă mai întâi o copie de rezervă dacă vrei să păstrezi ceva. Apoi alegeți cum: descărcare sau copiere de pe alt telefon.</string>
     <string name="k2go_reinstall_confirm_yes">Șterge și reinstalează</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Din sistem</string>

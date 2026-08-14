@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">Sistemi yenidən quraşdır</string>
     <string name="k2go_reinstall_sub">Hər şeyi silir və sıfırdan təzə sistem quraşdırır</string>
     <string name="k2go_reinstall_confirm_title">Sıfırdan yenidən quraşdırılsın?</string>
-    <string name="k2go_reinstall_confirm_msg">Bu, cari sistemi və içindəki hər şeyi — kitablar, xəritələr, endirmələr və parametrlər — silir, sonra təmiz nüsxə quraşdırır. Geri qaytarıla bilməz. Nə isə saxlamaq istəyirsinizsə, əvvəlcə ehtiyat nüsxə çıxarın. İnternet bağlantısı tələb olunur.</string>
+    <string name="k2go_reinstall_confirm_msg">Bu, cari sistemi və içindəki hər şeyi — kitablar, xəritələr, endirmələr və parametrlər — silir, sonra təmiz nüsxə quraşdırır. Geri qaytarıla bilməz. Nə isə saxlamaq istəyirsinizsə, əvvəlcə ehtiyat nüsxə çıxarın. Sonra necə olacağını seçirsiniz: yükləmə və ya başqa telefondan kopyalama.</string>
     <string name="k2go_reinstall_confirm_yes">Sil və yenidən quraşdır</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Sistemdən</string>

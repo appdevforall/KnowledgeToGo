@@ -725,7 +725,7 @@
     <string name="k2go_reinstall_title">Επανεγκατάσταση συστήματος</string>
     <string name="k2go_reinstall_sub">Διαγράφει τα πάντα και εγκαθιστά ένα καθαρό σύστημα από την αρχή</string>
     <string name="k2go_reinstall_confirm_title">Επανεγκατάσταση από την αρχή;</string>
-    <string name="k2go_reinstall_confirm_msg">Αυτό διαγράφει το τρέχον σύστημα και ό,τι περιέχει — βιβλία, χάρτες, λήψεις και ρυθμίσεις — και έπειτα εγκαθιστά ένα καθαρό αντίγραφο. Δεν αναιρείται. Κάντε πρώτα αντίγραφο ασφαλείας αν θέλετε να κρατήσετε κάτι. Απαιτεί σύνδεση στο διαδίκτυο.</string>
+    <string name="k2go_reinstall_confirm_msg">Αυτό διαγράφει το τρέχον σύστημα και ό,τι περιέχει — βιβλία, χάρτες, λήψεις και ρυθμίσεις — και έπειτα εγκαθιστά ένα καθαρό αντίγραφο. Δεν αναιρείται. Κάντε πρώτα αντίγραφο ασφαλείας αν θέλετε να κρατήσετε κάτι. Μετά επιλέγετε πώς: λήψη ή αντιγραφή από άλλο τηλέφωνο.</string>
     <string name="k2go_reinstall_confirm_yes">Διαγραφή και επανεγκατάσταση</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Από το σύστημα</string>

@@ -546,8 +546,16 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  the Backup & restore reinstall card, after the destructive confirm. A new activity instance so
      *  the wizard back stack is clean. */
     public void openReinstallWizard() {
-        startActivity(new Intent(this, SetupLibraryActivity.class)
-                .putExtra(EXTRA_REINSTALL_SETUP, true));
+        // ADFA-5143 (plan B): one step earlier than before. This used to open the tier chooser
+        // directly, which offers exactly one way to get a system — download — and that is a trap after
+        // a killed clone-receive: the half-written tree on disk is resumable by rsync, the user has no
+        // route back to the scan screen, and the only exit offered discards it. The setup choice puts
+        // "Copy from a phone" back within reach, and rsync continues from what is already there.
+        //
+        // EXTRA_REINSTALL travels so the wipe survives the extra hop: the download branch forwards it,
+        // and a clone-receive is destructive by its own hand and needs no flag.
+        startActivity(new Intent(this, WizardActivity.class)
+                .putExtra(WizardActivity.EXTRA_REINSTALL, true));
     }
 
     /** ADFA-5011: open the dash-node REST core's detail (Play Store-style card, Rebuild-only). */

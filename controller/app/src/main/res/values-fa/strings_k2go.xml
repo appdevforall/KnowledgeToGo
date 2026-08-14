@@ -724,7 +724,7 @@
     <string name="k2go_reinstall_title">نصب مجدد سیستم</string>
     <string name="k2go_reinstall_sub">همه چیز را پاک می‌کند و یک سیستم تازه از ابتدا نصب می‌کند</string>
     <string name="k2go_reinstall_confirm_title">نصب مجدد از ابتدا؟</string>
-    <string name="k2go_reinstall_confirm_msg">این کار سیستم فعلی و همه چیز داخل آن — کتاب‌ها، نقشه‌ها، دانلودها و تنظیمات — را پاک می‌کند و سپس یک نسخهٔ تمیز نصب می‌کند. قابل بازگشت نیست. اگر می‌خواهید چیزی را نگه دارید ابتدا نسخهٔ پشتیبان بگیرید. به اتصال اینترنت نیاز دارد.</string>
+    <string name="k2go_reinstall_confirm_msg">این کار سیستم فعلی و همه چیز داخل آن — کتاب‌ها، نقشه‌ها، دانلودها و تنظیمات — را پاک می‌کند و سپس یک نسخهٔ تمیز نصب می‌کند. قابل بازگشت نیست. اگر می‌خواهید چیزی را نگه دارید ابتدا نسخهٔ پشتیبان بگیرید. سپس روش را انتخاب می‌کنید: دانلود یا کپی از تلفن دیگر.</string>
     <string name="k2go_reinstall_confirm_yes">پاک کردن و نصب مجدد</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">از سیستم</string>
