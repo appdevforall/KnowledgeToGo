@@ -52,15 +52,15 @@
 <text class="item" x="40" y="272">.install_in_progress</text>
 <text class="item" x="274" y="272">file in filesDir</text>
 <text class="item" x="494" y="272">5 sites</text>
-<text class="item" x="684" y="272">clean teardown; stale verdict</text>
+<text class="item" x="684" y="272">teardown, re-derived from disk</text>
 <text class="item" x="984" y="272">never</text>
-<text class="item" x="1134" y="272" fill="#C77700">partial</text>
+<text class="item" x="1134" y="272" fill="#C77700">partial — clearer needs the UI</text>
 <text class="item" x="40" y="289">EnvironmentLock.isBusyNow()</text>
 <text class="item" x="274" y="289">4 in-memory sources</text>
 <text class="item" x="494" y="289">those sources</text>
 <text class="item" x="684" y="289">nobody</text>
 <text class="item" x="984" y="289">the process</text>
-<text class="item" x="1134" y="289" fill="#C0392B">no lifecycle</text>
+<text class="item" x="1134" y="289" fill="#C77700">ADFA-5146: expiry</text>
 <text class="item" x="40" y="306">installed_tier</text>
 <text class="item" x="274" y="306">SharedPreferences</text>
 <text class="item" x="494" y="306">the install</text>
@@ -304,23 +304,53 @@
 <text class="note" x="464" y="1528">teardown() clears the install marker, so the app stops standing</text>
 <text class="note" x="464" y="1543">back while Ansible is still configuring. ADFA-5119 replaced the</text>
 <text class="note" x="464" y="1558">notification's Cancel with View: door closed, hazard intact.</text>
-<rect class="card" x="872" y="1310" width="380" height="140" stroke="#C0392B" stroke-width="2"/>
-<rect class="chip" x="888" y="1326" width="118" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="896" y="1340" fill="#C0392B">ADFA-5143 · NOW</text>
-<text class="h2" x="888" y="1366">Clone sharing has no name, and its</text>
-<text class="h2" x="888" y="1384">Retry boots the server mid-transfer</text>
-<circle class="s-todo" cx="896" cy="1402" r="5.5"/>
-<text class="item" x="910" y="1406">canStartServer learns about the share</text>
-<circle class="s-todo" cx="896" cy="1420" r="5.5"/>
-<text class="item" x="910" y="1424">Amber header state, with Stop</text>
-<text class="note" x="888" y="1442">Live on main today. The guard first: it is the destructive half.</text>
-<rect class="card" x="872" y="1470" width="380" height="122" stroke="#1B7F4B" stroke-width="2"/>
-<rect class="chip" x="888" y="1486" width="118" height="19" fill="#E6F4EA" stroke="none"/>
-<text class="chiptx" x="896" y="1500" fill="#1B7F4B">ADFA-5137 · DONE</text>
-<text class="h2" x="888" y="1526">setup_complete stops existing</text>
-<text class="sub" x="888" y="1550">Findings 3 and 5 closed, and the first</text>
-<text class="sub" x="888" y="1565">ledger row deleted rather than fixed.</text>
-<text class="note" x="888" y="1584">A derivable fact is removed, not maintained.</text>
+<rect class="card" x="872" y="1310" width="380" height="176" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="888" y="1326" width="122" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="896" y="1340" fill="#1B7F4B">ADFA-5143 · DONE</text>
+<text class="h2" x="888" y="1366">A clone in flight has a name, and</text>
+<text class="h2" x="888" y="1384">a way back into it</text>
+<circle class="s-done" cx="896" cy="1402" r="5.5"/>
+<text class="item" x="910" y="1406">Amber header state, action to the tab</text>
+<circle class="s-done" cx="896" cy="1420" r="5.5"/>
+<text class="item" x="910" y="1424">Recovery lands one step earlier</text>
+<circle class="s-done" cx="896" cy="1438" r="5.5"/>
+<text class="item" x="910" y="1442">Release re-derived from disk</text>
+<text class="note" x="888" y="1462">Finding 8 closed. The Retry never was destructive — a guard was</text>
+<text class="note" x="888" y="1477">already there, and the card said otherwise until the code was read.</text>
+<rect class="card" x="872" y="1506" width="380" height="122" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="888" y="1522" width="118" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="896" y="1536" fill="#1B7F4B">ADFA-5137 · DONE</text>
+<text class="h2" x="888" y="1562">setup_complete stops existing</text>
+<text class="sub" x="888" y="1586">Findings 3 and 5 closed, and the first</text>
+<text class="sub" x="888" y="1601">ledger row deleted rather than fixed.</text>
+<text class="note" x="888" y="1620">A derivable fact is removed, not maintained.</text>
+<rect class="card" x="872" y="1656" width="380" height="196" stroke="#C0392B" stroke-width="2"/>
+<rect class="chip" x="888" y="1672" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="896" y="1686" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="888" y="1712">A clone that finishes off-screen, and</text>
+<text class="h2" x="888" y="1730">what "finished" is allowed to mean</text>
+<circle class="s-todo" cx="896" cy="1748" r="5.5"/>
+<text class="item" x="910" y="1752">Release on the terminal state, not the UI</text>
+<circle class="s-todo" cx="896" cy="1766" r="5.5"/>
+<text class="item" x="910" y="1770">rsync 23: attributes or missing files?</text>
+<circle class="s-todo" cx="896" cy="1784" r="5.5"/>
+<text class="item" x="910" y="1788">Confirm offers to download 0.00 GB</text>
+<text class="note" x="888" y="1808">The release hangs on showReceiveTerminal, so a receive whose tab</text>
+<text class="note" x="888" y="1823">is never reopened keeps the marker. 23 is success for every clone</text>
+<text class="note" x="888" y="1838">today; a re-scan proving "nothing left" is stronger than the code.</text>
+<rect class="card" x="872" y="1872" width="380" height="112" stroke="#C77700" stroke-width="2"/>
+<rect class="chip" x="888" y="1888" width="122" height="19" fill="#FBEEDC" stroke="none"/>
+<text class="chiptx" x="896" y="1902" fill="#C77700">ADFA-5147 · NEXT</text>
+<text class="h2" x="888" y="1928">A damaged system reads as "no system"</text>
+<text class="note" x="888" y="1950">Finding 4. Reached through a held lock or a running queue, the</text>
+<text class="note" x="888" y="1965">marker makes Home say "no library" for a system that is only</text>
+<text class="note" x="888" y="1980">damaged. Compute health where shown. It cost us the 13 Aug night.</text>
+<rect class="card" x="872" y="2004" width="380" height="100" stroke="#C77700" stroke-width="2"/>
+<rect class="chip" x="888" y="2020" width="122" height="19" fill="#FBEEDC" stroke="none"/>
+<text class="chiptx" x="896" y="2034" fill="#C77700">ADFA-5146 · NEXT</text>
+<text class="h2" x="888" y="2060">A killed session blocks every deep op</text>
+<text class="note" x="888" y="2082">Finding 2, the ledger row above. isBusyNow stays true after a kill;</text>
+<text class="note" x="888" y="2097">five ops refuse. In-memory expiry — not 4897's durable record.</text>
 <text class="h3" x="24" y="2117">SPANS THE BOARD — real work with no ticket, and the small things</text>
 <rect class="card" x="24" y="2135" width="1228" height="131" stroke="#C0392B" stroke-width="2.5"/>
 <rect class="chip" x="40" y="2151" width="107" height="19" fill="#FDECEC" stroke="none"/>

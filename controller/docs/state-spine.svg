@@ -222,7 +222,7 @@
 
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
-<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 13 Aug: findings 1, 3 and 5 are closed, and 4 lost one of its three blind spots. Finding 8 was found by using the app, not by reading it.</text>
+<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 14 Aug: findings 1, 3, 5 and 8 are closed, and 4 lost one of its three blind spots. Finding 8 was found by using the app, not by reading it — and one of its claims turned out to be wrong for the same reason.</text>
 <text class="sub" x="24" y="1292">Findings 1, 2, 3 and 4 are one sentence four times: a fact nobody clears. They are rows in the standing directive's ledger at the top of operation-model-roadmap.svg — fix them there, not here.</text>
 
 <rect class="st-ok" x="24" y="1276" width="1672" height="212" rx="12"/>
@@ -241,7 +241,7 @@
 <text class="can" x="44" y="1594">all refuse, all with the same message — "An install is already running" — while nothing is running. It is not durable: every source it reads is in-memory, so closing</text>
 <text class="can" x="44" y="1614">the app clears it. That is the whole problem. The exit exists and nobody will find it, because no one closes an app to unblock a button.</text>
 <text class="code" x="44" y="1640">env/EnvironmentLock.java:69-87 (all four sources are process-scoped), 97-100 (the file names this and points at ADFA-4874).</text>
-<text class="note" x="44" y="1664">Opens with: an age past which a session is ignored, and a message that says what is actually holding the lock. Belongs with ADFA-5106 — the expiry needs the per-session timestamp that ticket produces.</text>
+<text class="note" x="44" y="1664">ADFA-5146. An age past which a session is ignored, and a message that names what is actually holding the lock. The expiry needs only an in-memory timestamp, not the durable record — the stale flag dies with the process, so 4897 is a different problem.</text>
 
 <rect class="st-ok" x="24" y="1710" width="1672" height="190" rx="12"/>
 <text class="h2" x="44" y="1738">3 · CLOSED (13 Aug, ADFA-5137) — the flag that could disagree with reality no longer exists</text>
@@ -259,8 +259,8 @@
 <text class="can" x="44" y="2016">the user lands on Home — where the install marker forces isSystemInstalled() false, so it presents as "no system": no dialog, no Retry, no mention of damage. The</text>
 <text class="can" x="44" y="2036">exits from there are the ones in finding 5, and none of them says anything about a damaged system, so the user is looking for the wrong problem.</text>
 <text class="code" x="44" y="2062">LibraryActivity.java:168-177 (the predicate), :187-204 (the redirects that pre-empt it), :287-293 (a held lock lifts the gate) · SystemStateEvaluator:43-45.</text>
-<text class="note" x="44" y="2086">Opens with: computing health where it is displayed rather than only in the launch branch — it is already computed app-wide and read by exactly one screen. ADFA-5119 removed one of the three pre-emptions: a failure DURING a live install now</text>
-<text class="note" x="44" y="2104">diagnoses itself, because the gate's own observer shows the recovery dialog and latches the gate shut. A held lock and a running module queue still skip the branch.</text>
+<text class="note" x="44" y="2086">ADFA-5147. Compute health where it is displayed rather than only in the launch branch — it is already computed app-wide and read by exactly one screen. ADFA-5119 removed one of the three pre-emptions: a failure DURING a live install now</text>
+<text class="note" x="44" y="2104">diagnoses itself, because the gate's own observer shows the recovery dialog and latches the gate shut. A held lock and a running module queue still skip the branch. ADFA-5143 removed the clone producer, not this misdiagnosis.</text>
 
 <rect class="st-ok" x="24" y="2132" width="1672" height="182" rx="12"/>
 <text class="h2" x="44" y="2160">5 · CLOSED (13 Aug, ADFA-5137) — the state is unrepresentable now, and the screen was given an exit anyway</text>
@@ -287,13 +287,14 @@
 <text class="code" x="44" y="2656">redesign/ConnectFragment.java — browseUrl():126; no reference to SystemFacts, ServerStateRepository or EnvironmentLock anywhere in the file.</text>
 
 
-<rect class="st-bad" x="24" y="2708" width="1672" height="184" rx="12"/>
-<text class="h2" x="44" y="2736">8 · DEAD CONTROL — while a clone is being shared, Home says the system failed to start, and the Retry it offers boots the server mid-transfer</text>
-<text class="can" x="44" y="2762">The server is stopped on purpose while a share runs. The header reads !alive and, with no start in progress, concludes H_FAILED — "Couldn't start — tap to retry" — so it</text>
-<text class="can" x="44" y="2782">states something false about a perfectly healthy device. And canStartServer() checks seven conditions, none of which is CloneSendSession.isActive(), so that Retry passes</text>
-<text class="can" x="44" y="2802">every guard and starts the server on top of a live transfer. Same shape as the module Cancel ADFA-5119 took off the notification: a visible control that breaks the thing</text>
-<text class="can" x="44" y="2822">it is attached to. It also repeats finding 5 in a new place — Stop lives inside the Clone flow, so a user who navigated away cannot end the share, or get their system</text>
-<text class="can" x="44" y="2842">back, from where they now are.</text>
-<text class="code" x="44" y="2866">LibraryActivity.canStartServer():1004-1012 · LibraryHomeFragment.updateHeaderFromCards():519-545 · CloneSendSession.isActive().</text>
-<text class="note" x="44" y="2886">ADFA-5143. The guard first, because it is what removes the destructive control; then an amber header state with Stop. Found on a device, by navigating — no grep would have.</text>
+<rect class="st-ok" x="24" y="2708" width="1672" height="204" rx="12"/>
+<text class="h2" x="44" y="2736">8 · CLOSED — a clone in flight said the system had failed to start, and offered no way back to the transfer</text>
+<text class="can" x="44" y="2762">The server is stopped on purpose while a clone runs. The header read !alive and, with no start in progress, concluded H_FAILED — "Couldn't start — tap to retry" — so it</text>
+<text class="can" x="44" y="2782">stated something false about a perfectly healthy device, and the only route back into the transfer was to remember which tab it lived in. Now H_CLONE_RECEIVING and</text>
+<text class="can" x="44" y="2802">H_CLONE_SHARING are asked before "is anything installed", so a clone in flight has its own amber state and its action returns to the Clone tab.</text>
+<text class="can" x="44" y="2822">One claim written here was wrong and is worth keeping visible: that the Retry would boot the server on top of a live transfer. It would not — handleServerLaunchClick</text>
+<text class="can" x="44" y="2842">refuses while EnvironmentLock.ownerHeld, and the guard was already there. The dead control was a lie on the header, not a destructive one, and it was ranked one</text>
+<text class="can" x="44" y="2862">priority too high until the code was read instead of inferred.</text>
+<text class="code" x="44" y="2886">LibraryHomeFragment.H_CLONE_RECEIVING/H_CLONE_SHARING · LibraryActivity.canStartServer() · openCloneTab() · CloneFragment.showReceiveTerminal().</text>
+<text class="note" x="44" y="2906">ADFA-5143, with the recovery loop and the ownership release. Leftover: the release runs when the UI reaches the terminal, so a receive whose tab is never reopened still keeps the marker.</text>
 </svg>
