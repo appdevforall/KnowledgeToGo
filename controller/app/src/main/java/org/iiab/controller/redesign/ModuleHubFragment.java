@@ -66,10 +66,11 @@ public class ModuleHubFragment extends Fragment {
      * — and with no system nothing answers, so everything looked missing.
      *
      * <p>Reachable, not theoretical — and it stays reachable after ADFA-5137. That ticket removed the
-     * flag this note used to blame ({@code setup_complete}, written true by five sites and cleared by
-     * none), so the app no longer routes to the Library after a reset or a failed restore. But Settings
-     * still opens this screen directly, and it can be opened over an empty rootfs whenever the user
-     * gets there some other way, so the precondition still has to be asked here.
+     * flag this note used to blame ({@code setup_complete}, written true by four sites and cleared by
+     * none), so a device that simply has no system now opens the wizard instead of the Library. What
+     * still lands here is the case where a marker is held: a failed restore keeps it, so the launch
+     * treats the device as having something on the way, reaches the Library, and this screen can be
+     * opened over a rootfs that is empty or half-written. The precondition still has to be asked here.
      *
      * <p>Seeded true so the first frame looks like the ordinary case; the background pass
      * corrects it before anything is offered.

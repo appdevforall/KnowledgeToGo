@@ -269,7 +269,8 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         // old catch wrote the flag true so this branch would stop firing; with the flag gone there is
         // nothing to write, and nothing needs writing — the condition is re-derived every launch, so
         // a missing Activity stops being permanent state and goes back to being a log line.
-        if (!org.iiab.controller.system.data.SystemPresenceReader.hereOrOnTheWay(this)) {
+        if (!terminalOnlyLaunch(getIntent())
+                && !org.iiab.controller.system.data.SystemFactsReader.hereOrOnTheWay(this)) {
             try {
                 startActivity(new Intent(this, SetupActivity.class)
                         .putExtra(SetupActivity.EXTRA_WIZARD_MODE, true));
@@ -559,6 +560,26 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
         super.onNewIntent(intent);
         setIntent(intent);
         maybeOpenTerminalFromIntent(intent);
+    }
+
+    /**
+     * ADFA-5137 (review): was this Activity launched only to show the terminal?
+     *
+     * <p>Asked before the first-run redirect above, because the order matters and it did not use to.
+     * That redirect fired on {@code setup_complete}, which was true on any device that had ever
+     * started an install, so a terminal launch never met it. Now it asks the disk — and with no
+     * system, Settings → Terminal and the terminal's own keep-alive notification would land in the
+     * legacy setup shell in wizard mode with Back blocked, having dropped the extras that said what
+     * they came for.
+     *
+     * <p>Read here rather than deferring to {@code maybeOpenTerminalFromIntent}, which runs much later
+     * in {@code onCreate}: the redirect happens first, so the question has to be answerable first.
+     */
+    private static boolean terminalOnlyLaunch(Intent intent) {
+        // EXTRA_OPEN_TERMINAL alone, not paired with EXTRA_TERMINAL_ONLY: the redesign's Settings entry
+        // sets both, but TerminalSessionService's keep-alive notification sets only the first, and both
+        // came here to open a terminal. What decides the redirect is what the caller came for.
+        return intent != null && intent.getBooleanExtra(EXTRA_OPEN_TERMINAL, false);
     }
 
     /** Open the full terminal when launched from its keep-alive notification (ADFA-4696). */

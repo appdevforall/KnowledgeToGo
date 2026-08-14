@@ -109,8 +109,7 @@ public class LibraryHomeFragment extends Fragment {
                 // place the wizard sends people. Named, on the header, instead of a sentence pointing
                 // at a control at the bottom of the screen called "Get more".
                 if (headerState == H_NO_LIBRARY) {
-                    startActivity(new android.content.Intent(
-                            requireContext(), SetupLibraryActivity.class));
+                    openGetMore();
                     return;
                 }
                 // ADFA-4837: retry only when it is genuinely safe — canStartServer guards
@@ -250,6 +249,26 @@ public class LibraryHomeFragment extends Fragment {
     }
 
     private void openGetMore() {
+        // ADFA-5137 (review): refuse while a deep operation owns the environment, and refuse HERE so
+        // both entrances are covered — the footer control and the header button this ticket added.
+        //
+        // The hole is not theoretical and the header made it one tap wide. isSystemInstalled() is false
+        // for the whole time an install marker is set, and a clone-receive holds both the marker and
+        // the lock — so during a live receive the header reads "no library" and this method would take
+        // the Step-1 branch. That branch starts an install with reinstall=false, InstallService's
+        // non-destructive guard sees the half-received rootfs directory, skips the extract and reports
+        // success, and its teardown clears the marker that a killed receive needs for recovery. That is
+        // exactly the "boot the wreck" failure InstallService's own cleanup comment warns about,
+        // reached from a button labelled as a way out.
+        //
+        // ownerHeld, not isHeld: a live content download holds no owner marker and must not block this
+        // (ADFA-4957 draws the same line for the server toggle).
+        if (org.iiab.controller.env.EnvironmentLock.ownerHeld(requireContext())) {
+            if (getView() != null) {
+                org.iiab.controller.util.Snackbars.make(getView(), R.string.k2go_install_busy).show();
+            }
+            return;
+        }
         // If a system is already installed, skip the destructive system step and go straight
         // to content (Step 2). Otherwise run the full setup from Step 1.
         Intent i = new Intent(requireContext(), SetupLibraryActivity.class);

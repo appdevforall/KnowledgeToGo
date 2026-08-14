@@ -31,8 +31,9 @@ package org.iiab.controller.system.domain;
  * sent back to the wizard on every relaunch, which is the same dead end in the other direction. The
  * question is not "is it finished" but "is anything there or coming".
  *
- * <p>Pure: booleans in, boolean out, no Android. {@code SystemPresenceReader} is what gathers the
- * three facts, and it is the only place that does.
+ * <p>Pure: booleans in, boolean out, no Android. {@code SystemFactsReader.hereOrOnTheWay} gathers the
+ * three facts — the one reader for what is true about the box, so this question does not stand up a
+ * second one beside it.
  */
 public final class SystemPresence {
 

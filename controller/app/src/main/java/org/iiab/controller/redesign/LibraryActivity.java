@@ -3,7 +3,6 @@ package org.iiab.controller.redesign;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,9 +47,13 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      * the user back to the wizard — so before this ticket the wizard wrote {@code setup_complete} to
      * get past the check, and that lie is the entrance to findings 3 and 5.
      *
-     * <p>An Intent extra rather than a stored fact, deliberately: it dies with this navigation. If the
-     * user leaves before scanning anything, the next launch finds no system and no lock and opens the
-     * wizard — which is the truth, because nothing was started.
+     * <p>An Intent extra rather than a stored fact — but its lifetime is the <b>task record</b>, not
+     * this navigation, and the difference is worth stating because a first draft of this comment got it
+     * wrong in both directions. Android replays the launching Intent when the process is killed and the
+     * task is restored, so the extra survives that; swiping the task away is what ends it. And
+     * {@code onNewIntent} calls {@code setIntent}, so a later arrival carrying no {@code settingUp}
+     * replaces it. Both outcomes are truthful — the user lands on Home, which since ADFA-5137 has a
+     * labelled way to install a system — but nobody should read this as "it dies when you navigate".
      */
     public static final String EXTRA_SETTING_UP = "settingUp";
     private boolean installing = false;
@@ -121,7 +124,7 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         boolean broughtHereToSetUp = getIntent() != null
                 && getIntent().getBooleanExtra(EXTRA_SETTING_UP, false);
         if (!broughtHereToSetUp
-                && !org.iiab.controller.system.data.SystemPresenceReader.hereOrOnTheWay(this)) {
+                && !org.iiab.controller.system.data.SystemFactsReader.hereOrOnTheWay(this)) {
             startActivity(new Intent(this, WizardActivity.class));
             finish();
             return;

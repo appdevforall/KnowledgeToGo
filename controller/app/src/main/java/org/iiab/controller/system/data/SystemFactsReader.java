@@ -19,6 +19,7 @@ import org.iiab.controller.install.domain.InterruptedInstallDetector;
 import org.iiab.controller.install.presentation.InstallProgressRepository;
 import org.iiab.controller.install.presentation.ModuleQueueRepository;
 import org.iiab.controller.system.domain.SystemFacts;
+import org.iiab.controller.system.domain.SystemPresence;
 
 import java.io.File;
 
@@ -85,6 +86,46 @@ public final class SystemFactsReader {
         return server.hasObservation()
                 ? SystemFacts.of(installed, healthy, serverUp)
                 : SystemFacts.serverUnknown(installed, healthy);
+    }
+
+    /**
+     * ADFA-5137: does this device have a system, or is one on its way?
+     *
+     * <p>The question the launch path asks before deciding between the library and the first-run
+     * wizard. It replaces {@code setup_complete}, a stored claim about the past that four sites wrote,
+     * none cleared, and all of them wrote when an install <em>started</em> — so it could answer yes on
+     * a device with nothing, and the launch then routed past the wizard forever. Findings 3 and 5 of
+     * {@code state-spine.svg} were both that.
+     *
+     * <p><b>Why it lives here and not next door.</b> A first pass put it in a class of its own, which
+     * made this file's own warning come true: the ADFA-5061 survey found nine answers to "is a system
+     * installed" and said a tenth would be the joke telling itself. There is one reader for what is
+     * true about the box, and this is it.
+     *
+     * <p><b>Why it is a separate method rather than a field on {@link SystemFacts}.</b> Because it is
+     * not derivable from what {@link #read} returns, and that is worth stating rather than discovering
+     * later. {@code isInstalled()} is {@code rootfs && !marker}, so an install in flight and a device
+     * with nothing at all produce the identical tuple — {@code installed=false, healthy=true} — and
+     * telling them apart is the whole point of this question. It needs the three raw facts, which
+     * {@code read} deliberately does not carry.
+     *
+     * <p>The rule itself is {@link SystemPresence}, pure and with its eight-row truth table in tests.
+     * This method is the three reads, and each one is taken from the thing it describes: the rootfs
+     * from the disk, the install from its durable marker, a clone or restore from the lock's owner
+     * marker. None of the three can drift from what it is about, which is the property the flag lacked.
+     *
+     * @return false only when the device has nothing and nothing is coming — the one case where the
+     *         wizard is the right place to be. A null context answers true: the wizard is a decision,
+     *         not something to fall into on a missing argument.
+     */
+    public static boolean hereOrOnTheWay(Context ctx) {
+        if (ctx == null) {
+            return true;
+        }
+        return SystemPresence.hereOrOnTheWay(
+                SystemStateEvaluator.rootfsPresent(ctx),
+                InstallGuard.inProgress(ctx),
+                EnvironmentLock.ownerHeld(ctx));
     }
 
     /**

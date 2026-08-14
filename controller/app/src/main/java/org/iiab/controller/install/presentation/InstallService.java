@@ -1509,7 +1509,7 @@ public final class InstallService extends Service {
     /**
      * ADFA-5119: erase every trace of a system the user decided not to build.
      *
-     * <p>Five things claimed that system existed or was about to. Leaving any one of them behind is
+     * <p>Four things claimed that system existed or was about to. Leaving any one of them behind is
      * a specific bug, not untidiness:
      *
      * <ol>
@@ -1566,7 +1566,7 @@ public final class InstallService extends Service {
             org.iiab.controller.system.data.ContentStateInvalidator.replacementSucceeded(this,
                     org.iiab.controller.system.domain.SystemReplacement.Cause.ABANDONED_INSTALL);
 
-            // 4 + 5. The decision itself, and last on purpose. If the process is killed part-way
+            // 4. The recorded tier, and last on purpose. If the process is killed part-way
             // through this method, everything above it is disposable wreckage and the install marker
             // is still set, so the next launch enters damaged-system recovery — which offers a
             // reinstall. Clearing setup_complete first and dying here would instead send the user to
@@ -1604,7 +1604,7 @@ public final class InstallService extends Service {
      *                    no system, so forgetting that an install happened is exactly what let the
      *                    app open an empty library. Success, cancellation and every module or reset
      *                    path still pass true — a cancellation has already removed the residue and
-     *                    cleared setup_complete, so it needs no marker to be recovered from.
+     *                    removed the residue and left no rootfs, so it needs no marker to say so.
      */
     private void teardown(boolean clearMarker) {
         // ADFA-5119: nothing to wait for once this is over — neither the window nor a queued attempt.
