@@ -776,4 +776,21 @@
     <string name="k2go_verifying_files">Έλεγχος αρχείων…</string>
     <string name="k2go_eta_min">απομένουν περίπου %1$d λεπτά</string>
     <string name="k2go_eta_almost">σχεδόν έτοιμο</string>
+
+    <string name="k2go_dl_pause">Παύση</string>
+    <string name="k2go_dl_resume">Συνέχεια</string>
+    <string name="k2go_dl_retry">Ξανά</string>
+    <string name="k2go_dl_cancel">Άκυρο</string>
+    <string name="k2go_dl_attempt">Επανασύνδεση…  %1$d από %2$d</string>
+    <string name="k2go_dl_soft_lost">Η σύνδεση χάθηκε</string>
+    <string name="k2go_dl_soft_slow">Η σύνδεση είναι πολύ αργή</string>
+    <string name="k2go_dl_soft_stopped">Η λήψη σταμάτησε</string>
+    <string name="k2go_dl_paused">Η λήψη σε παύση</string>
+    <string name="k2go_dl_paused_notif">Σε παύση</string>
+    <string name="k2go_dl_cancel_title">Ακύρωση της λήψης;</string>
+    <string name="k2go_dl_cancel_body">Η λήψη θα σταματήσει και θα ξεκινήσει από την αρχή, και θα ρυθμίσετε ξανά το βασικό σύστημα και θα επιλέξετε ξανά το περιεχόμενό σας.</string>
+    <string name="k2go_dl_cancel_keep">Συνέχεια λήψης</string>
+    <string name="k2go_dl_cancel_confirm">Ξεκινήστε ξανά</string>
+    <string name="k2go_damaged_report">Αναφορά προβλήματος</string>
+    <string name="k2go_notif_view">Προβολή</string>
 </resources>

@@ -222,18 +222,18 @@
 
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
-<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. Only finding 1 survives closing the app — but see its note: the hang is the rarer half of that leg's problem.</text>
+<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 13 Aug: finding 1 is closed, 3 is half closed and 4 lost one of its three blind spots — all three to ADFA-5119. None of the rest survives closing the app.</text>
 <text class="sub" x="24" y="1292">Findings 1, 2, 3 and 4 are one sentence four times: a fact nobody clears. They are rows in the standing directive's ledger at the top of operation-model-roadmap.svg — fix them there, not here.</text>
 
-<rect class="st-bad" x="24" y="1276" width="1672" height="212" rx="12"/>
-<text class="h2" x="44" y="1304">1 · TRAP — a hung install holds the boot gate, and it keeps itself alive (the rarer half; see the note)</text>
-<text class="can" x="44" y="1330">Every other gate branch has a safety timer; the installing branch deliberately has none, so the gate lifts only on a terminal install state. InstallService runs in</text>
-<text class="can" x="44" y="1350">the foreground, so a run that stops reporting keeps its own process alive and InstallProgressRepository keeps saying "running" — this is the one finding here that</text>
-<text class="can" x="44" y="1370">does not clear itself when the app is closed. Force-stop is the only way out, and force-stop does not clear the install marker, so the next launch lands in recovery.</text>
-<text class="code" x="44" y="1396">redesign/LibraryActivity.java:277-280, 306-312 (the trade-off is stated), 559-563 (Back → moveTaskToBack) · InstallService.java:221 (startForeground).</text>
-<text class="note" x="44" y="1420">Corrected 13 Aug: this is the rarer half. A gate that hangs needs waitFor() never to return; far more often the leg terminates and LIES — see the note below.</text>
-<text class="note" x="44" y="1438">Opens with: each leg of the pipeline ending in a terminal that is true, which the module queue already does (:802-826) and the kiwix index (:478-479) and maps (:545-546) do not — they send exit AND error to the next step, so a</text>
-<text class="note" x="44" y="1456">failed run reports as a finished install. Not a watchdog on this screen: the truth is at the source. Download → ADFA-4895, maps → ADFA-4898, the rest → ADFA-5119, all under the download contract ADFA-4893.</text>
+<rect class="st-ok" x="24" y="1276" width="1672" height="212" rx="12"/>
+<text class="h2" x="44" y="1304">1 · CLOSED (13 Aug, ADFA-5119) — the boot gate no longer holds an install nobody can influence</text>
+<text class="can" x="44" y="1330">Was: the installing branch had no safety timer, so the gate lifted only on a terminal state — and a run that stopped reporting kept its own foreground process alive</text>
+<text class="can" x="44" y="1350">while InstallProgressRepository still said "running". Force-stop was the only exit, and it does not clear the install marker, so the next launch landed in recovery.</text>
+<text class="can" x="44" y="1370">Now the download leg cannot go quiet. A transfer that stops moving is caught in ten seconds by our own watchdog — aria2 keeps the download open at 0 B/s and never</text>
+<text class="can" x="44" y="1390">reports it — retried three times in the open, then held with Retry and Cancel on screen; unattended, the held state expires after a minute into recovery.</text>
+<text class="code" x="44" y="1414">Aria2Manager (stall watchdog, Stop.STALL) · InstallService (softFail, the held window, forgetTheAbandonedSystem, teardown keeps the marker) · LibraryActivity (Pause/Retry/Cancel, FAILED → recovery).</text>
+<text class="note" x="44" y="1438">Closed FOR THE DOWNLOAD LEG, which is the one that holds the gate on a first install. Two things behind it are not: verify, extract and provisioning have no watchdog and are deliberately offered no controls, so a genuine hang there</text>
+<text class="note" x="44" y="1456">is still a trap — rarer, and unbounded. And the kiwix index (:478-479) and maps (:545-546) still send exit AND error onward, so a failed companion run reports as a finished install. Maps → ADFA-4898, the rest under ADFA-4893.</text>
 
 <rect class="st-bad" x="24" y="1520" width="1672" height="158" rx="12"/>
 <text class="h2" x="44" y="1548">2 · HIDDEN EXIT — a stale "busy" flag refuses every deep operation, and the way out has no name</text>
@@ -243,23 +243,25 @@
 <text class="code" x="44" y="1640">env/EnvironmentLock.java:69-87 (all four sources are process-scoped), 97-100 (the file names this and points at ADFA-4874).</text>
 <text class="note" x="44" y="1664">Opens with: an age past which a session is ignored, and a message that says what is actually holding the lock. Belongs with ADFA-5106 — the expiry needs the per-session timestamp that ticket produces.</text>
 
-<rect class="st-bad" x="24" y="1710" width="1672" height="200" rx="12"/>
-<text class="h2" x="44" y="1738">3 · ONE-WAY — the door a user could choose is shut; the one that opens on failure is not</text>
+<rect class="st-warn" x="24" y="1710" width="1672" height="222" rx="12"/>
+<text class="h2" x="44" y="1738">3 · HALF CLOSED (13 Aug) — the flag finally has a writer that clears it, on one of the routes that should</text>
 <text class="can" x="44" y="1764">ADFA-5116 removed both Skip buttons and it worked: verified on the updated tree, every wizard path now installs, clones, or returns to the wizard. Download</text>
 <text class="can" x="44" y="1784">deliberately does not mark setup complete (ADFA-4982), and Step 1's Back routes through Library, which bounces straight back. Nothing is left to opt out with.</text>
 <text class="can" x="44" y="1804">What remains is not a choice, which is why it is harder to see. "Copy from a phone" marks setup complete before any transfer exists, and a first install marks it</text>
 <text class="can" x="44" y="1824">when the install STARTS rather than when it succeeds — so a failed install, a failed clone, or a reinstall that destroys the rootfs without finishing all land in</text>
 <text class="can" x="44" y="1844">S1. From there the app routes to Library forever and never offers the wizard again, because none of the four writers ever sets the flag false.</text>
 <text class="code" x="44" y="1870">Writers: WizardActivity:308 (Copy) · SetupLibraryActivity:284 (install start) · MainActivity:276 · SetupSectionFragment:245. Read at LibraryActivity:84.</text>
-<text class="note" x="44" y="1894">Opens with: writing it on a verified install rather than on intent, and clearing it wherever a rootfs is destroyed — the five destructive routes ADFA-5070 hooks.</text>
+<text class="note" x="44" y="1894">ADFA-5119 took the second half: Cancel is the FIRST of the five writers ever to set the flag false, and a failed install now keeps the install marker instead of clearing it, so it lands in recovery rather than in S1. Still open: the flag is</text>
+<text class="note" x="44" y="1912">written on intent rather than on a verified install, so a failed clone — which marks it before any transfer exists — still ends in S1 with no way back to the wizard.</text>
 
-<rect class="st-bad" x="24" y="1942" width="1672" height="158" rx="12"/>
+<rect class="st-bad" x="24" y="1942" width="1672" height="178" rx="12"/>
 <text class="h2" x="44" y="1970">4 · HIDDEN EXIT — a damaged system reached by the wrong door is never diagnosed</text>
 <text class="can" x="44" y="1996">The recovery dialog only runs when the launch takes the "recovering" branch. If a lock is held, or an install or a module queue is running, the branch is skipped and</text>
 <text class="can" x="44" y="2016">the user lands on Home — where the install marker forces isSystemInstalled() false, so it presents as "no system": no dialog, no Retry, no mention of damage. The</text>
 <text class="can" x="44" y="2036">exits from there are the ones in finding 5, and none of them says anything about a damaged system, so the user is looking for the wrong problem.</text>
 <text class="code" x="44" y="2062">LibraryActivity.java:168-177 (the predicate), :187-204 (the redirects that pre-empt it), :287-293 (a held lock lifts the gate) · SystemStateEvaluator:43-45.</text>
-<text class="note" x="44" y="2086">Opens with: computing health where it is displayed rather than only in the launch branch. It is already computed app-wide and read by exactly one screen.</text>
+<text class="note" x="44" y="2086">Opens with: computing health where it is displayed rather than only in the launch branch — it is already computed app-wide and read by exactly one screen. ADFA-5119 removed one of the three pre-emptions: a failure DURING a live install now</text>
+<text class="note" x="44" y="2104">diagnoses itself, because the gate's own observer shows the recovery dialog and latches the gate shut. A held lock and a running module queue still skip the branch.</text>
 
 <rect class="st-bad" x="24" y="2132" width="1672" height="140" rx="12"/>
 <text class="h2" x="44" y="2160">5 · HIDDEN EXIT — with no system, the only way forward is a control named "Get more"</text>

@@ -57,7 +57,19 @@ public final class SystemReplacement {
          * wired to it: turning the flag back on must not also bring back the stale
          * state the route used to leave.
          */
-        DELETE
+        DELETE,
+        /**
+         * ADFA-5119: the user abandoned the install before the system existed. Nothing is replaced —
+         * the system is simply never created — but the consequence for content state is identical,
+         * and it is the reason this cause is not {@link #REINSTALL}'s twin.
+         *
+         * <p>A reinstall keeps the orders because the user filled them on the way in for the system
+         * about to be built. Here that system is exactly what is being given up, so the orders go
+         * with it: keeping them would drain a wishlist chosen for one tier into whatever the user
+         * picks next, which is the stale-wishlist bug ADFA-4874 fixed at the other end of the same
+         * flow.
+         */
+        ABANDONED_INSTALL
     }
 
     private SystemReplacement() {

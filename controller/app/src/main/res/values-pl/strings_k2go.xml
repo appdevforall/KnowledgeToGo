@@ -785,4 +785,21 @@
     <string name="k2go_verifying_files">Weryfikowanie plików…</string>
     <string name="k2go_eta_min">pozostało około %1$d min</string>
     <string name="k2go_eta_almost">prawie gotowe</string>
+
+    <string name="k2go_dl_pause">Wstrzymaj</string>
+    <string name="k2go_dl_resume">Wznów</string>
+    <string name="k2go_dl_retry">Ponów</string>
+    <string name="k2go_dl_cancel">Anuluj</string>
+    <string name="k2go_dl_attempt">Ponowne łączenie…  %1$d z %2$d</string>
+    <string name="k2go_dl_soft_lost">Utracono połączenie</string>
+    <string name="k2go_dl_soft_slow">Połączenie jest zbyt wolne</string>
+    <string name="k2go_dl_soft_stopped">Pobieranie zatrzymane</string>
+    <string name="k2go_dl_paused">Pobieranie wstrzymane</string>
+    <string name="k2go_dl_paused_notif">Wstrzymano</string>
+    <string name="k2go_dl_cancel_title">Anulować pobieranie?</string>
+    <string name="k2go_dl_cancel_body">Pobieranie zostanie zatrzymane i zacznie się od nowa, a system podstawowy i treści trzeba będzie wybrać ponownie.</string>
+    <string name="k2go_dl_cancel_keep">Pobieraj dalej</string>
+    <string name="k2go_dl_cancel_confirm">Zacznij od nowa</string>
+    <string name="k2go_damaged_report">Zgłoś problem</string>
+    <string name="k2go_notif_view">Zobacz</string>
 </resources>

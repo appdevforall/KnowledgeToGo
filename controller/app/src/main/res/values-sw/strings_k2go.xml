@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Inathibitisha faili…</string>
     <string name="k2go_eta_min">yamebaki takribani dakika %1$d</string>
     <string name="k2go_eta_almost">karibu kumaliza</string>
+
+    <string name="k2go_dl_pause">Sitisha</string>
+    <string name="k2go_dl_resume">Endelea</string>
+    <string name="k2go_dl_retry">Jaribu tena</string>
+    <string name="k2go_dl_cancel">Ghairi</string>
+    <string name="k2go_dl_attempt">Inaunganisha tena…  %1$d kati ya %2$d</string>
+    <string name="k2go_dl_soft_lost">Muunganisho umekatika</string>
+    <string name="k2go_dl_soft_slow">Muunganisho ni wa polepole sana</string>
+    <string name="k2go_dl_soft_stopped">Upakuaji umesimama</string>
+    <string name="k2go_dl_paused">Upakuaji umesitishwa</string>
+    <string name="k2go_dl_paused_notif">Imesitishwa</string>
+    <string name="k2go_dl_cancel_title">Ughairi upakuaji?</string>
+    <string name="k2go_dl_cancel_body">Upakuaji utasimama na kuanza upya tangu mwanzo, na utaweka mfumo msingi na kuchagua maudhui tena.</string>
+    <string name="k2go_dl_cancel_keep">Endelea kupakua</string>
+    <string name="k2go_dl_cancel_confirm">Anza upya</string>
+    <string name="k2go_damaged_report">Ripoti tatizo</string>
+    <string name="k2go_notif_view">Tazama</string>
 </resources>

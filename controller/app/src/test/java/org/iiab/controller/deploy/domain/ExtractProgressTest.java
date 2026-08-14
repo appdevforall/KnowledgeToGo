@@ -7,6 +7,42 @@ import org.junit.Test;
 
 public class ExtractProgressTest {
 
+    // ---- ADFA-5119: a name only earns the line if it means something ----------
+
+    /** Seen on a device during a real run: a content-addressed blob inside the rootfs. */
+    @Test
+    public void aContentHashIsNotShown() {
+        assertEquals("", ExtractProgress.fileLabel(
+                "installed-rootfs/iiab/var/kiwix/0418c83b80f7f7bfaec2738bfbaa1d4c62196c0781702f6eddc8.body"));
+    }
+
+    @Test
+    public void ordinaryNamesAreStillShown() {
+        assertEquals("CodeOnTheGo-latest.apk",
+                ExtractProgress.fileLabel("installed-rootfs/iiab/opt/CodeOnTheGo-latest.apk"));
+        assertEquals("libstdc++.so.6", ExtractProgress.fileLabel("usr/lib/libstdc++.so.6"));
+        assertEquals("sources.list", ExtractProgress.fileLabel("etc/apt/sources.list"));
+    }
+
+    /**
+     * The threshold has to clear real words made only of hex letters. "deadbeef" and "facade" are
+     * the classic traps, and a version like 2026.224 is digits with a break in it.
+     */
+    @Test
+    public void shortHexLikeWordsAreNotMistakenForDigests() {
+        assertEquals("deadbeef.conf", ExtractProgress.fileLabel("etc/deadbeef.conf"));
+        assertEquals("facade.png", ExtractProgress.fileLabel("share/facade.png"));
+        assertEquals("iiab-oa_2026.224_standard.tar.gz",
+                ExtractProgress.fileLabel("downloads/iiab-oa_2026.224_standard.tar.gz"));
+    }
+
+    /** Fails open: a name we cannot classify is shown, never hidden on a guess. */
+    @Test
+    public void anythingUnrecognisedIsStillShown() {
+        assertEquals("índice-ñ.txt", ExtractProgress.fileLabel("var/índice-ñ.txt"));
+        assertEquals("a", ExtractProgress.fileLabel("tmp/a"));
+    }
+
     @Test public void zeroWhenUnknownOrEmpty() {
         assertEquals(0, ExtractProgress.percent(0, 0));
         assertEquals(0, ExtractProgress.percent(10, 0));

@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Провера датотека…</string>
     <string name="k2go_eta_min">остало око %1$d мин</string>
     <string name="k2go_eta_almost">скоро готово</string>
+
+    <string name="k2go_dl_pause">Пауза</string>
+    <string name="k2go_dl_resume">Настави</string>
+    <string name="k2go_dl_retry">Покушај поново</string>
+    <string name="k2go_dl_cancel">Откажи</string>
+    <string name="k2go_dl_attempt">Поновно повезивање…  %1$d од %2$d</string>
+    <string name="k2go_dl_soft_lost">Веза је прекинута</string>
+    <string name="k2go_dl_soft_slow">Веза је превише спора</string>
+    <string name="k2go_dl_soft_stopped">Преузимање је заустављено</string>
+    <string name="k2go_dl_paused">Преузимање је паузирано</string>
+    <string name="k2go_dl_paused_notif">Паузирано</string>
+    <string name="k2go_dl_cancel_title">Отказати преузимање?</string>
+    <string name="k2go_dl_cancel_body">Преузимање ће се зауставити и почети испочетка, а основни систем и садржај ћете поново изабрати.</string>
+    <string name="k2go_dl_cancel_keep">Настави преузимање</string>
+    <string name="k2go_dl_cancel_confirm">Почни испочетка</string>
+    <string name="k2go_damaged_report">Пријави проблем</string>
+    <string name="k2go_notif_view">Погледај</string>
 </resources>

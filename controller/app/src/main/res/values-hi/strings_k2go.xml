@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">फ़ाइलें सत्यापित हो रही हैं…</string>
     <string name="k2go_eta_min">लगभग %1$d मिनट बाकी</string>
     <string name="k2go_eta_almost">लगभग पूरा</string>
+
+    <string name="k2go_dl_pause">रोकें</string>
+    <string name="k2go_dl_resume">जारी रखें</string>
+    <string name="k2go_dl_retry">फिर कोशिश करें</string>
+    <string name="k2go_dl_cancel">रद्द करें</string>
+    <string name="k2go_dl_attempt">फिर से जुड़ रहे हैं…  %1$d / %2$d</string>
+    <string name="k2go_dl_soft_lost">कनेक्शन टूट गया</string>
+    <string name="k2go_dl_soft_slow">कनेक्शन बहुत धीमा है</string>
+    <string name="k2go_dl_soft_stopped">डाउनलोड रुक गया</string>
+    <string name="k2go_dl_paused">डाउनलोड रोका गया</string>
+    <string name="k2go_dl_paused_notif">रोका गया</string>
+    <string name="k2go_dl_cancel_title">डाउनलोड रद्द करें?</string>
+    <string name="k2go_dl_cancel_body">डाउनलोड रुक जाएगा और शुरू से चालू होगा, और आपको बेस सिस्टम और सामग्री फिर से चुननी होगी।</string>
+    <string name="k2go_dl_cancel_keep">डाउनलोड जारी रखें</string>
+    <string name="k2go_dl_cancel_confirm">शुरू से करें</string>
+    <string name="k2go_damaged_report">समस्या की रिपोर्ट करें</string>
+    <string name="k2go_notif_view">देखें</string>
 </resources>

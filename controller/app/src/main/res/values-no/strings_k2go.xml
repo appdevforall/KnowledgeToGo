@@ -785,4 +785,21 @@
     <string name="k2go_verifying_files">Kontrollerer filer…</string>
     <string name="k2go_eta_min">omtrent %1$d min igjen</string>
     <string name="k2go_eta_almost">nesten ferdig</string>
+
+    <string name="k2go_dl_pause">Pause</string>
+    <string name="k2go_dl_resume">Fortsett</string>
+    <string name="k2go_dl_retry">Prøv igjen</string>
+    <string name="k2go_dl_cancel">Avbryt</string>
+    <string name="k2go_dl_attempt">Kobler til på nytt…  %1$d av %2$d</string>
+    <string name="k2go_dl_soft_lost">Mistet tilkoblingen</string>
+    <string name="k2go_dl_soft_slow">Tilkoblingen er for treg</string>
+    <string name="k2go_dl_soft_stopped">Nedlastingen stoppet</string>
+    <string name="k2go_dl_paused">Nedlasting satt på pause</string>
+    <string name="k2go_dl_paused_notif">På pause</string>
+    <string name="k2go_dl_cancel_title">Avbryte nedlastingen?</string>
+    <string name="k2go_dl_cancel_body">Nedlastingen stopper og starter forfra, og du må sette opp grunnsystemet og velge innholdet på nytt.</string>
+    <string name="k2go_dl_cancel_keep">Fortsett nedlastingen</string>
+    <string name="k2go_dl_cancel_confirm">Start forfra</string>
+    <string name="k2go_damaged_report">Rapporter problemet</string>
+    <string name="k2go_notif_view">Vis</string>
 </resources>

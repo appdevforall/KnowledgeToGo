@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">در حال بررسی فایل‌ها…</string>
     <string name="k2go_eta_min">حدود %1$d دقیقه مانده</string>
     <string name="k2go_eta_almost">تقریباً تمام شد</string>
+
+    <string name="k2go_dl_pause">توقف موقت</string>
+    <string name="k2go_dl_resume">ادامه</string>
+    <string name="k2go_dl_retry">تلاش دوباره</string>
+    <string name="k2go_dl_cancel">لغو</string>
+    <string name="k2go_dl_attempt">اتصال دوباره…  %1$d از %2$d</string>
+    <string name="k2go_dl_soft_lost">اتصال قطع شد</string>
+    <string name="k2go_dl_soft_slow">اتصال خیلی کند است</string>
+    <string name="k2go_dl_soft_stopped">دانلود متوقف شد</string>
+    <string name="k2go_dl_paused">دانلود متوقف شده است</string>
+    <string name="k2go_dl_paused_notif">متوقف شده</string>
+    <string name="k2go_dl_cancel_title">دانلود لغو شود؟</string>
+    <string name="k2go_dl_cancel_body">دانلود متوقف می‌شود و از ابتدا آغاز می‌شود و باید سیستم پایه و محتوا را دوباره انتخاب کنید.</string>
+    <string name="k2go_dl_cancel_keep">ادامه دانلود</string>
+    <string name="k2go_dl_cancel_confirm">شروع دوباره</string>
+    <string name="k2go_damaged_report">گزارش مشکل</string>
+    <string name="k2go_notif_view">نمایش</string>
 </resources>

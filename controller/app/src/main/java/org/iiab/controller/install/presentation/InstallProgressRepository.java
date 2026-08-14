@@ -69,6 +69,16 @@ public final class InstallProgressRepository {
     // ADFA-5118: unified verify+extract bar — determinate progress with an ETA for both passes.
     public void postVerifying(int percent, String message, String eta)  { post(InstallState.verifying(percent, message, eta)); }
     public void postExtracting(int percent, String message, String eta) { post(InstallState.extracting(percent, message, eta)); }
+    /** ADFA-5119: stopped by the user; the partial file and the decision are kept. */
+    public void postPaused(int percent)                     { post(InstallState.paused(percent)); }
+    /** ADFA-5119: abandoned by the user, residue already removed. A choice, not a failure. */
+    public void postCancelled()                             { post(InstallState.cancelled()); }
+    /** ADFA-5119: downloading, carrying a note that owns the status line (the attempt counter). */
+    public void postDownloading(int percent, String speed, String eta, String note) { post(InstallState.downloading(percent, speed, eta, note)); }
+    /** ADFA-5119: an automatic retry in flight — still DOWNLOADING, with "Retry N of M". */
+    public void postRetrying(int percent, String message) { post(InstallState.retrying(percent, message)); }
+    /** ADFA-5119: stopped on its own and able to continue; {@code message} says what happened. */
+    public void postSoftFailed(int percent, String message) { post(InstallState.softFailed(percent, message)); }
     public void postProvisioning(String message)           { post(InstallState.provisioning(message)); }
     public void postSuccess()                               { post(InstallState.success()); }
     public void postFailed(String message)                  { post(InstallState.failed(message)); }

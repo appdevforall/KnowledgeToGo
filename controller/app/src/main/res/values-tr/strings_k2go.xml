@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Dosyalar doğrulanıyor…</string>
     <string name="k2go_eta_min">yaklaşık %1$d dk kaldı</string>
     <string name="k2go_eta_almost">neredeyse bitti</string>
+
+    <string name="k2go_dl_pause">Duraklat</string>
+    <string name="k2go_dl_resume">Devam et</string>
+    <string name="k2go_dl_retry">Yeniden dene</string>
+    <string name="k2go_dl_cancel">İptal</string>
+    <string name="k2go_dl_attempt">Yeniden bağlanılıyor…  %1$d / %2$d</string>
+    <string name="k2go_dl_soft_lost">Bağlantı koptu</string>
+    <string name="k2go_dl_soft_slow">Bağlantı çok yavaş</string>
+    <string name="k2go_dl_soft_stopped">İndirme durdu</string>
+    <string name="k2go_dl_paused">İndirme duraklatıldı</string>
+    <string name="k2go_dl_paused_notif">Duraklatıldı</string>
+    <string name="k2go_dl_cancel_title">İndirme iptal edilsin mi?</string>
+    <string name="k2go_dl_cancel_body">İndirme duracak ve baştan başlayacak; temel sistemi ve içeriği yeniden seçeceksiniz.</string>
+    <string name="k2go_dl_cancel_keep">İndirmeye devam et</string>
+    <string name="k2go_dl_cancel_confirm">Baştan başla</string>
+    <string name="k2go_damaged_report">Sorunu bildir</string>
+    <string name="k2go_notif_view">Görüntüle</string>
 </resources>

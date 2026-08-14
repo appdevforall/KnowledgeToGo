@@ -775,4 +775,21 @@
     <string name="k2go_verifying_files">Memverifikasi file…</string>
     <string name="k2go_eta_min">sekitar %1$d mnt lagi</string>
     <string name="k2go_eta_almost">hampir selesai</string>
+
+    <string name="k2go_dl_pause">Jeda</string>
+    <string name="k2go_dl_resume">Lanjutkan</string>
+    <string name="k2go_dl_retry">Coba lagi</string>
+    <string name="k2go_dl_cancel">Batal</string>
+    <string name="k2go_dl_attempt">Menyambung ulang…  %1$d dari %2$d</string>
+    <string name="k2go_dl_soft_lost">Koneksi terputus</string>
+    <string name="k2go_dl_soft_slow">Koneksi terlalu lambat</string>
+    <string name="k2go_dl_soft_stopped">Unduhan berhenti</string>
+    <string name="k2go_dl_paused">Unduhan dijeda</string>
+    <string name="k2go_dl_paused_notif">Dijeda</string>
+    <string name="k2go_dl_cancel_title">Batalkan unduhan?</string>
+    <string name="k2go_dl_cancel_body">Unduhan akan berhenti dan dimulai lagi dari awal, dan Anda akan menyiapkan sistem dasar serta memilih konten lagi.</string>
+    <string name="k2go_dl_cancel_keep">Lanjutkan mengunduh</string>
+    <string name="k2go_dl_cancel_confirm">Mulai dari awal</string>
+    <string name="k2go_damaged_report">Laporkan masalah</string>
+    <string name="k2go_notif_view">Lihat</string>
 </resources>

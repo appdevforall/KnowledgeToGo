@@ -353,6 +353,11 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                 break;
             }
             case PROVISIONING:
+            // ADFA-5119: SOFTFAILED counts as running, so the button is already in its progress
+            // state; the message says what stopped it. This screen has no Retry — the control lives
+            // on the boot gate — and grafting one on is not worth it for a screen no shipping flow
+            // reaches (see the reachability note in InstallController).
+            case SOFTFAILED:
                 btnFastInstall.setText(s.message);
                 break;
             case SUCCESS:
@@ -368,6 +373,12 @@ public class DeployFragment extends Fragment implements org.iiab.controller.back
                         ((MainActivity) getActivity()).showSnackbar(getString(R.string.install_success_deployment));
                 }
                 break;
+            // ADFA-5119: a cancelled rootfs build now reports CANCELLED rather than FAILED, and this
+            // screen has to answer it or the button stays stuck showing the last percentage it saw.
+            // Same body as FAILED on purpose: the button goes back to "Install" either way. The
+            // snackbar below is skipped by itself — a cancellation carries no message, because the
+            // user is the one who asked for it and does not need to be told it happened.
+            case CANCELLED:
             case FAILED:
                 installProgressShown = false;
                 btnFastInstall.stopProgress();
