@@ -31,6 +31,14 @@ import org.iiab.controller.settings.AboutFragment;
  */
 public class SetupActivity extends AppCompatActivity {
 
+    /**
+     * ADFA-5137: true opens this screen as the first-run wizard, false as Settings. Set by whoever
+     * opens it, because the mode is a property of the reason for opening it and of nothing else.
+     * Absent means Settings, which is the safe default: a Settings screen is navigable and a wizard
+     * blocks Back.
+     */
+    public static final String EXTRA_WIZARD_MODE = "org.iiab.controller.SETUP_WIZARD_MODE";
+
     private boolean wizardMode;
 
     @Override
@@ -39,9 +47,14 @@ public class SetupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setup);
         org.iiab.controller.help.TooltipWiring.wireAll(getWindow().getDecorView());
 
-        SharedPreferences prefs = getSharedPreferences(
-                getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        wizardMode = !prefs.getBoolean(getString(R.string.pref_key_setup_complete), false);
+        // ADFA-5137: the caller says which mode this is, because only the caller knows.
+        //
+        // It used to read setup_complete, and that was the one reader asking a genuinely different
+        // question: not "is there a system" but "am I the first-run wizard or am I Settings". Two
+        // callers open this screen for those two reasons — MainActivity's first-run redirect and its
+        // Settings button — so the answer belongs in the Intent. Migrating this one to the presence
+        // rule would have produced a Settings screen that believes it is a wizard.
+        wizardMode = getIntent() != null && getIntent().getBooleanExtra(EXTRA_WIZARD_MODE, false);
 
         View rail = findViewById(R.id.setup_rail);
         if (wizardMode) {

@@ -65,9 +65,11 @@ public class ModuleHubFragment extends Fragment {
      * with. The screen still listed all six as installable, because it decided that from a probe
      * — and with no system nothing answers, so everything looked missing.
      *
-     * <p>Reachable, not theoretical: {@code pref_key_setup_complete} is only ever written true —
-     * five writers, none of them clears it — so after a reset or a failed restore the app still
-     * routes to the Library, and Settings still opens this screen over an empty rootfs.
+     * <p>Reachable, not theoretical — and it stays reachable after ADFA-5137. That ticket removed the
+     * flag this note used to blame ({@code setup_complete}, written true by five sites and cleared by
+     * none), so the app no longer routes to the Library after a reset or a failed restore. But Settings
+     * still opens this screen directly, and it can be opened over an empty rootfs whenever the user
+     * gets there some other way, so the precondition still has to be asked here.
      *
      * <p>Seeded true so the first frame looks like the ordinary case; the background pass
      * corrects it before anything is offered.

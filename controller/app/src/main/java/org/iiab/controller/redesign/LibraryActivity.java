@@ -40,6 +40,19 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     public static final String EXTRA_INSTALLING = "installing";
     /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
     public static final String EXTRA_TAB = "tab";
+    /**
+     * ADFA-5137: the caller knows there is no system and is bringing the user here to get one.
+     *
+     * <p>Only the wizard's "Copy from a phone" sets it. That choice has to land on the Clone tab with
+     * nothing installed and nothing yet in flight, which is precisely the state that otherwise sends
+     * the user back to the wizard — so before this ticket the wizard wrote {@code setup_complete} to
+     * get past the check, and that lie is the entrance to findings 3 and 5.
+     *
+     * <p>An Intent extra rather than a stored fact, deliberately: it dies with this navigation. If the
+     * user leaves before scanning anything, the next launch finds no system and no lock and opens the
+     * wizard — which is the truth, because nothing was started.
+     */
+    public static final String EXTRA_SETTING_UP = "settingUp";
     private boolean installing = false;
 
     /** ADFA-4799: bottom bar (compact) and rail (medium/expanded) share the NavigationBarView
@@ -97,10 +110,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Not set up yet? Run the first-run wizard, then it routes back here.
-        SharedPreferences prefs0 = getSharedPreferences(
-                getString(R.string.pref_file_internal), MODE_PRIVATE);
-        if (!prefs0.getBoolean(getString(R.string.pref_key_setup_complete), false)) {
+        // ADFA-5137: nothing here and nothing coming? Run the first-run wizard, then it routes back.
+        //
+        // This used to read setup_complete, a flag written when an install STARTED and cleared by
+        // nobody — so it could say "set up" while the device had no system, and then this branch
+        // routed past the wizard forever. That pair is findings 3 and 5 of state-spine.svg. The
+        // question was never "did setup happen": it is "is there a system, or one on the way", and
+        // that is answerable from the disk and the two markers, none of which can drift from what
+        // they describe.
+        boolean broughtHereToSetUp = getIntent() != null
+                && getIntent().getBooleanExtra(EXTRA_SETTING_UP, false);
+        if (!broughtHereToSetUp
+                && !org.iiab.controller.system.data.SystemPresenceReader.hereOrOnTheWay(this)) {
             startActivity(new Intent(this, WizardActivity.class));
             finish();
             return;

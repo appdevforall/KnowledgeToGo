@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">Não foi possível iniciar</string>
     <string name="k2go_home_see_progress">Ver progresso</string>
     <string name="k2go_home_retry">Tentar novamente</string>
+    <string name="k2go_home_install_system">Instalar um sistema</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Adicionando conteúdo</string>

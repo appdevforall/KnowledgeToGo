@@ -105,6 +105,14 @@ public class LibraryHomeFragment extends Fragment {
                             requireContext(), SetupProgressActivity.class));
                     return;
                 }
+                // ADFA-5137: with no system, the way forward is choosing one — the tier step, the same
+                // place the wizard sends people. Named, on the header, instead of a sentence pointing
+                // at a control at the bottom of the screen called "Get more".
+                if (headerState == H_NO_LIBRARY) {
+                    startActivity(new android.content.Intent(
+                            requireContext(), SetupLibraryActivity.class));
+                    return;
+                }
                 // ADFA-4837: retry only when it is genuinely safe — canStartServer guards
                 // against stacking a second proot over a live one.
                 if (headerState != H_FAILED) return;
@@ -572,8 +580,19 @@ public class LibraryHomeFragment extends Fragment {
         // app working and gets a spinner; the rest are statements and get nothing. The status
         // colour lives on the dot only — the button wears the brand colour, because it is a
         // control rather than a severity.
+        // ADFA-5137: H_NO_LIBRARY gets one too. It was the only state here that offered nothing, and
+        // that is finding 5 of state-spine.svg: the header said "tap Get more to install" while being
+        // plain text, pointing at a control at the far bottom of the screen whose name says content
+        // rather than system. Meanwhile both cards on the way there offer Install and Schedule, and
+        // both refuse.
+        //
+        // ADFA-5137 also closes the way INTO this state, so in principle nobody arrives here any more.
+        // The button stays anyway, because "in principle" is what the last four dead ends had in
+        // common: a state with no exit is a bug whoever reaches it, including by a route that does not
+        // exist yet. One line in a switch that already hands out two other buttons.
         int action = h == H_FAILED ? R.string.k2go_home_retry
-                : h == H_INSTALLING ? R.string.k2go_home_see_progress : 0;
+                : h == H_INSTALLING ? R.string.k2go_home_see_progress
+                : h == H_NO_LIBRARY ? R.string.k2go_home_install_system : 0;
         if (homeStatusAction != null) {
             homeStatusAction.setVisibility(action != 0 ? View.VISIBLE : View.GONE);
             if (action != 0) homeStatusAction.setText(action);

@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">시작할 수 없음</string>
     <string name="k2go_home_see_progress">진행 상황</string>
     <string name="k2go_home_retry">다시 시도</string>
+    <string name="k2go_home_install_system">시스템 설치</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">콘텐츠 추가 중</string>

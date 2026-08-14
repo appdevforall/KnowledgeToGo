@@ -264,16 +264,19 @@ public class MainActivity extends AppCompatActivity implements TerminalControlle
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Intercept launch and redirect to Setup Wizard if first time
-        SharedPreferences internalPrefs = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        if (!internalPrefs.getBoolean(getString(R.string.pref_key_setup_complete), false)) {
+        // Intercept launch and redirect to the legacy Setup Wizard when there is nothing to run.
+        // ADFA-5137: asks the device rather than setup_complete, and says which mode it wants. The
+        // old catch wrote the flag true so this branch would stop firing; with the flag gone there is
+        // nothing to write, and nothing needs writing — the condition is re-derived every launch, so
+        // a missing Activity stops being permanent state and goes back to being a log line.
+        if (!org.iiab.controller.system.data.SystemPresenceReader.hereOrOnTheWay(this)) {
             try {
-                startActivity(new Intent(this, SetupActivity.class));
+                startActivity(new Intent(this, SetupActivity.class)
+                        .putExtra(SetupActivity.EXTRA_WIZARD_MODE, true));
                 finish();
                 return; // We stop the execution of MainActivity right here
             } catch (android.content.ActivityNotFoundException e) {
                 android.util.Log.w(TAG, "SetupActivity not found. Skipping initial setup.");
-                internalPrefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
             }
         }
 

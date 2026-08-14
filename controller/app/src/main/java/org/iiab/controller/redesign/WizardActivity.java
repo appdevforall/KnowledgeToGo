@@ -61,10 +61,14 @@ public class WizardActivity extends AppCompatActivity {
         // applied language, so we don't flash back to the welcome step.
         langTag = AppLocaleController.currentTag();
         if (b != null) step = b.getInt("step", 0);
-        // ADFA-4982: a fresh launch that isn't complete yet but already has permissions means the user
-        // passed language + permissions and only bailed from the setup choice / edition selection —
-        // resume at the setup choice (step 3), not welcome/language/permissions all over again.
-        else if (!prefs().getBoolean(getString(R.string.pref_key_setup_complete), false) && allPermsGranted()) step = 3;
+        // ADFA-4982: a fresh launch that already has permissions means the user passed language +
+        // permissions and only bailed from the setup choice / edition selection — resume at the setup
+        // choice (step 3), not welcome/language/permissions all over again.
+        //
+        // ADFA-5137 dropped the setup_complete half of this condition, which was always true here:
+        // LibraryActivity is the only thing that opens this screen, and it only opens it when there
+        // is no system and none on the way. The permissions check was doing all the work.
+        else if (allPermsGranted()) step = 3;
         title = findViewById(R.id.wiz_title);
         subtitle = findViewById(R.id.wiz_subtitle);
         primary = findViewById(R.id.wiz_primary);
@@ -99,10 +103,14 @@ public class WizardActivity extends AppCompatActivity {
             finish();
         });
         findViewById(R.id.setup_copy).setOnClickListener(v -> {
-            markComplete();
             // ADFA-4777: "Copy from a phone" lands directly on the (now functional) Clone tab.
+            // ADFA-5137: it used to write setup_complete to get past LibraryActivity's check, because
+            // this is the one navigation that must land with no system and nothing yet in flight. It
+            // now says that, instead of claiming setup is finished. The difference is that the extra
+            // dies with this Intent: leave before scanning and the next launch is back here, correctly.
             startActivity(new Intent(this, LibraryActivity.class)
-                    .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone));
+                    .putExtra(LibraryActivity.EXTRA_TAB, R.id.nav_clone)
+                    .putExtra(LibraryActivity.EXTRA_SETTING_UP, true));
             finish();
         });
         primary.setOnClickListener(v -> onPrimary());
@@ -304,7 +312,8 @@ public class WizardActivity extends AppCompatActivity {
     private SharedPreferences prefs() {
         return getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE);
     }
-    private void markComplete() {
-        prefs().edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
-    }
+    // ADFA-5137: markComplete() is gone. It wrote setup_complete on the "Copy from a phone" choice —
+    // before a transfer existed, let alone succeeded — which is the entrance to finding 3 that survived
+    // ADFA-4982 and ADFA-5116. Nothing replaces it: the clone takes the environment lock while it runs,
+    // and that is what SystemPresence reads.
 }

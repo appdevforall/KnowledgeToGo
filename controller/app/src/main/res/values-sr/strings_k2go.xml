@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">Покретање није успело</string>
     <string name="k2go_home_see_progress">Види напредак</string>
     <string name="k2go_home_retry">Покушај поново</string>
+    <string name="k2go_home_install_system">Инсталирај систем</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Додавање садржаја</string>

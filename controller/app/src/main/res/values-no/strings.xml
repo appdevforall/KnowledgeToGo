@@ -133,7 +133,6 @@
     <string name="go_to_settings">Gå til innstillinger</string>
     <string name="app_started">Applikasjon startet</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">Lagret</string>
     <string name="settings_saved">Innstillinger lagret</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
