@@ -399,6 +399,8 @@
     <string name="k2go_lang_choose_content_title">انتخاب زبان محتوا</string>
     <string name="k2go_hide">پنهان کردن</string>
     <string name="k2go_home_no_library">هنوز کتابخانه‌ای نیست — برای نصب و افزودن محتوا روی «دریافت بیشتر» ضربه بزنید</string>
+    <string name="k2go_home_damaged">کتابخانه به تعمیر نیاز دارد — راه‌اندازی آخر کامل نشد</string>
+    <string name="k2go_home_recover">تعمیر</string>
     <string name="k2go_home_ready_empty">کتابخانه آماده است — برای افزودن محتوا روی «دریافت بیشتر» ضربه بزنید</string>
     <string name="k2go_rate_per_second">/ثانیه</string>
     <string name="k2go_gm_hub_title">دریافت بیشتر</string>

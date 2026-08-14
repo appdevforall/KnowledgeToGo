@@ -399,6 +399,8 @@
     <string name="k2go_lang_choose_content_title">콘텐츠 언어 선택</string>
     <string name="k2go_hide">숨기기</string>
     <string name="k2go_home_no_library">아직 라이브러리가 없음 — ‘더 받기’를 탭하여 설치하고 콘텐츠를 추가하세요</string>
+    <string name="k2go_home_damaged">라이브러리 복구가 필요함 — 마지막 설정이 완료되지 않음</string>
+    <string name="k2go_home_recover">복구</string>
     <string name="k2go_home_ready_empty">라이브러리 준비 완료 — ‘더 받기’를 탭하여 콘텐츠를 추가하세요</string>
     <string name="k2go_rate_per_second">/초</string>
     <string name="k2go_gm_hub_title">더 받기</string>

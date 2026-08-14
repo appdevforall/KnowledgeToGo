@@ -399,6 +399,8 @@
     <string name="k2go_lang_choose_content_title">Məzmun dilini seçin</string>
     <string name="k2go_hide">Gizlət</string>
     <string name="k2go_home_no_library">Hələ kitabxana yoxdur — məzmun quraşdırmaq və əlavə etmək üçün Daha çox al-a toxunun</string>
+    <string name="k2go_home_damaged">Kitabxananın təmiri lazımdır — son quraşdırma tamamlanmadı</string>
+    <string name="k2go_home_recover">Bərpa et</string>
     <string name="k2go_home_ready_empty">Kitabxana hazırdır — məzmun əlavə etmək üçün Daha çox al-a toxunun</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Daha çox al</string>

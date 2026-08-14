@@ -399,6 +399,8 @@
     <string name="k2go_lang_choose_content_title">કન્ટેન્ટ ભાષા પસંદ કરો</string>
     <string name="k2go_hide">છુપાવો</string>
     <string name="k2go_home_no_library">હજી કોઈ લાઇબ્રેરી નથી — ઇન્સ્ટોલ કરવા અને કન્ટેન્ટ ઉમેરવા Get more ટૅપ કરો</string>
+    <string name="k2go_home_damaged">લાઇબ્રેરીને સમારકામની જરૂર છે — છેલ્લું સેટઅપ પૂર્ણ થયું નથી</string>
+    <string name="k2go_home_recover">સમારકામ</string>
     <string name="k2go_home_ready_empty">લાઇબ્રેરી તૈયાર — કન્ટેન્ટ ઉમેરવા Get more ટૅપ કરો</string>
     <string name="k2go_rate_per_second">/સે</string>
     <string name="k2go_gm_hub_title">વધુ મેળવો</string>

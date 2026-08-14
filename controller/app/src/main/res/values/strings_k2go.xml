@@ -469,6 +469,10 @@
     <string name="k2go_lang_choose_content_title">Choose content language</string>
     <string name="k2go_hide">Hide</string>
     <string name="k2go_home_no_library">No library yet — tap Get more to install and add content</string>
+    <!-- ADFA-5147: shown when a system is on the phone but was left unbootable (a killed install or
+         clone). Distinct from "no library" — there is something to repair, not to install fresh. -->
+    <string name="k2go_home_damaged">Library needs repair — the last setup didn\'t finish</string>
+    <string name="k2go_home_recover">Recover</string>
     <string name="k2go_home_ready_empty">Library ready — tap Get more to add content</string>
     <string name="k2go_rate_per_second">/s</string>
 
