@@ -3,8 +3,8 @@
  * Name        : CatalogRepositoryImpl.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : Wires the bundled catalog and the live Studio tree behind the
- *               domain port (ADFA-4954).
+ * Description : Wires the bundled catalog and the topic tree (box-served first,
+ *               Studio as fallback) behind the domain port (ADFA-4954, -5094).
  * ============================================================================
  */
 package org.iiab.controller.kolibri.data;
@@ -38,10 +38,13 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
     private static final String BASENAME = BundledCatalogSource.ASSET;
 
     private final BundledCatalogSource bundled;
-    private final StudioTreeSource studio;
+    private final TreeSource tree;
 
     public CatalogRepositoryImpl(Context context) {
-        this(new BundledCatalogSource(context), new StudioTreeSource());
+        // ADFA-5094: prefer the box-served topic tree (offline, whole tree once the channel's
+        // metadata is imported) and fall back to Studio when the box cannot answer.
+        this(new BundledCatalogSource(context),
+                new FallbackTreeSource(new LocalTreeSource(), new StudioTreeSource()));
         // Keep the bundled catalog current: a weekly refresh plus an opportunistic (TTL-gated)
         // check now. Only the Context constructor schedules — the test constructor below does not.
         org.iiab.controller.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
@@ -50,10 +53,10 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
                 context, CATALOG, MANIFEST_URL, BASENAME);
     }
 
-    /** For tests and for pointing the tree source at a mirror. */
-    public CatalogRepositoryImpl(BundledCatalogSource bundled, StudioTreeSource studio) {
+    /** For tests and for pointing the tree source elsewhere (e.g. a local-first composite). */
+    public CatalogRepositoryImpl(BundledCatalogSource bundled, TreeSource tree) {
         this.bundled = bundled;
-        this.studio = studio;
+        this.tree = tree;
     }
 
     @Override
@@ -68,6 +71,6 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
 
     @Override
     public TopicNode fetchTree(String nodeId) {
-        return studio.fetchTree(nodeId);
+        return tree.fetchTree(nodeId);
     }
 }
