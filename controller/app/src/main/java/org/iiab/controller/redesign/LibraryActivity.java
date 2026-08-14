@@ -287,7 +287,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 // English for logs. Naming the cause on screen needs localized lines per PERMANENT
                 // kind, and that belongs with the reworking of this dialog, not here.
                 if (st.phase == InstallState.Phase.FAILED
-                        && org.iiab.controller.InstallGuard.inProgress(this)) {
+                        && org.iiab.controller.InstallGuard.inProgress(this)
+                        && !gateHeldForRecovery) {   // already shown by the recovery verdict
                     // Latched before the dialog, and checked by onServerReady(): the safety timeout
                     // scheduled at onCreate refuses only while `installing` is true, and the line
                     // above has just set it false. Without this, an install that went live after
@@ -646,6 +647,23 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
      * <p>Latched, because this fires on every touch event and the service only needs telling once.
      * Reset when the phase leaves the held state, in {@link #showInstallProgress}.
      */
+    /**
+     * ADFA-5119 (review): presence expires when the screen does.
+     *
+     * <p>The first touch drops the held window; without this, that drop was permanent — touch once,
+     * walk away, and the install waits forever with nobody to answer it. Leaving is the honest end of
+     * "somebody is here", so it hands the clock back.
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (userPresenceSent && InstallProgressRepository.get().current().isSoftFailed()) {
+            userPresenceSent = false;
+            sendToInstallService(
+                    org.iiab.controller.install.presentation.InstallService.ACTION_USER_ABSENT);
+        }
+    }
+
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
@@ -868,6 +886,11 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(marker, reachable);
         android.util.Log.i("K2Go-Recover", "verdict=" + v + " marker=" + marker + " reachable=" + reachable);
         if (v == org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL) {
+            // ADFA-5119 (review): the guard was one-directional. The observer's branch latched
+            // `recovering` before showing the dialog, but this path set neither latch — so a FAILED
+            // post arriving afterwards stacked a second non-cancelable dialog, and with
+            // gateHeldForRecovery unset a server coming up could open the gate behind it.
+            gateHeldForRecovery = true;
             showDamagedDialog();
         } else {
             if (marker) org.iiab.controller.InstallGuard.end(this);   // stale marker — system is usable

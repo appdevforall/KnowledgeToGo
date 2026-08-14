@@ -76,6 +76,8 @@ public final class InstallService extends Service {
      * travels and the decision stays where the state lives.
      */
     public static final String ACTION_USER_PRESENT = "org.iiab.controller.INSTALL_USER_PRESENT";
+    /** ADFA-5119: the screen went away — start the held window again, presence has expired. */
+    public static final String ACTION_USER_ABSENT = "org.iiab.controller.INSTALL_USER_ABSENT";
     // Per-module install queue (ADFA-4476 slice 3): distinct from the rootfs ACTION_START.
     public static final String ACTION_START_MODULES = "org.iiab.controller.INSTALL_START_MODULES";
     /** ADFA-5011: rebuild the dash-node REST core in place (no rootfs rebuild). Reuses this service's
@@ -162,11 +164,17 @@ public final class InstallService extends Service {
     private static final long[] RETRY_DELAYS_MS = {3_000L, 6_000L, 9_000L};
 
     private volatile int softAttempts = 0;
-    private Runnable pendingRetry;   // main thread only
+    /**
+     * The furthest this download has reached. The attempt budget refills only past it, so "we made
+     * progress" means the transfer advanced, not that a rate was printed once.
+     */
+    private volatile long attemptFloorBytes = 0L;
+    // volatile: documented main-thread-only, but teardown() cancels them from four worker threads.
+    private volatile Runnable pendingRetry;
+    private volatile Runnable heldExpiry;
     private volatile org.iiab.controller.download.domain.Aria2Exit.Kind lastStopKind =
             org.iiab.controller.download.domain.Aria2Exit.Kind.UNKNOWN;
     private final Handler heldHandler = new Handler(Looper.getMainLooper());
-    private Runnable heldExpiry;   // main thread only
 
     private volatile org.iiab.controller.install.domain.AbandonedInstall.Work work =
             org.iiab.controller.install.domain.AbandonedInstall.Work.CONTENT;
@@ -217,6 +225,17 @@ public final class InstallService extends Service {
         }
         if (ACTION_RESUME.equals(action)) {
             doResume();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_USER_ABSENT.equals(action)) {
+            // ADFA-5119 (review): presence expires with the screen. A single touch used to disarm the
+            // window for good, so touching it once and walking away left the service in the
+            // foreground holding the marker with no timer and no transition — the same dead end the
+            // window exists to close, reached by being briefly attentive.
+            if (InstallProgressRepository.get().current().isSoftFailed() && heldExpiry == null) {
+                Log.i(TAG, "the user left the screen — the held window starts again");
+                beginHeldWindow();
+            }
             return START_NOT_STICKY;
         }
         if (ACTION_USER_PRESENT.equals(action)) {
@@ -452,7 +471,7 @@ public final class InstallService extends Service {
 
             @Override
             public void onProgress(int percentage, String speed, String eta,
-                                   long bytesPerSecond, long etaSeconds) {
+                                   long bytesPerSecond, long etaSeconds, long completedBytes) {
                 if (cancelled) return;
                 // ADFA-4895: no smoothing here, deliberately, and it is not an oversight — a first
                 // pass used EtaSmoother and the label froze at "about 26 min" for half a download
@@ -470,7 +489,21 @@ public final class InstallService extends Service {
                 // ADFA-5119: bytes are moving again, so the attempt budget is spent and refilled. A
                 // transfer that hiccups once an hour over a long download must not arrive at the
                 // third hiccup and hand the user a decision about a link that is working.
-                if (bytesPerSecond > 0) softAttempts = 0;
+                // ADFA-5119 (review): the budget refills on real ADVANCE, not on a rate being
+                // printed. Resetting on any nonzero tick meant a flapping link — a few bytes, a
+                // stall, a few bytes — went back to "1 of 3" forever and never handed the decision
+                // over. Comparing against where the last attempt stopped is what makes the loop
+                // terminate, and it is what a global ceiling would have papered over with a number
+                // nobody could justify.
+                // Bytes, not percent. A first pass compared whole percentage points, and on a 1.9 GiB
+                // rootfs one point is nineteen megabytes — so a link that pushed five through and
+                // died would have kept escalating with real progress behind it, which is the exact
+                // case a flapping connection produces. A megabyte is the bar: enough that a flicker
+                // does not count, small enough that anything a bad link genuinely delivers does.
+                if (completedBytes > 0 && completedBytes >= attemptFloorBytes + (1L << 20)) {
+                    attemptFloorBytes = completedBytes;
+                    softAttempts = 0;
+                }
                 int bucket = org.iiab.controller.install.domain.EtaSmoother.bucketOf(etaSeconds);
                 InstallProgressRepository.get().postDownloading(percentage, speed, formatEta(bucket),
                         attemptNote());
@@ -1164,6 +1197,9 @@ public final class InstallService extends Service {
     private void fail(String message) {
         if (finished) return;
         finished = true;
+        // ADFA-5119 (review): the report offered at recovery reads the in-app log, so the reason has
+        // to reach it. Log.w alone never did.
+        log("[Install] failed: " + message);
         InstallProgressRepository.get().postFailed(message);
         teardown(!org.iiab.controller.install.domain.AbandonedInstall.leavesNoSystem(work));
     }
@@ -1283,6 +1319,13 @@ public final class InstallService extends Service {
             String line = attemptNote();
             Log.w(TAG, "download stopped (" + kind + ") at " + percent + "%: " + detail
                     + " — automatic " + line);
+            // ADFA-5119 (review): into the in-app log too. Nothing on the download path was writing
+            // there — log() is only called for Ansible and Kiwix output — so the failure report
+            // offered at recovery was sending the tail of the PREVIOUS session's server log: useless
+            // for the failure it was offered on, and capable of carrying unrelated output into a bug
+            // report. These are the lines that describe what actually happened.
+            log("[Download] stopped (" + kind + ") at " + percent + "%: " + detail
+                    + " — retrying, attempt " + softAttempts + " of " + RETRY_ATTEMPTS);
             InstallProgressRepository.get().postRetrying(percent, line);
             updateNotification(line);
             long delay = RETRY_DELAYS_MS[Math.min(softAttempts - 1, RETRY_DELAYS_MS.length - 1)];
@@ -1300,6 +1343,8 @@ public final class InstallService extends Service {
         String line = getString(softFailLine(kind));
         Log.w(TAG, "download held after " + RETRY_ATTEMPTS + " attempts, last stop " + kind
                 + " at " + percent + "%: " + detail);
+        log("[Download] held after " + RETRY_ATTEMPTS + " attempts at " + percent
+                + "%, last stop " + kind + ": " + detail);
         InstallProgressRepository.get().postSoftFailed(percent, line);
         releaseHardwareLocks();
         updateNotification(line);

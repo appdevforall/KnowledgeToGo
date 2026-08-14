@@ -104,7 +104,7 @@ public class Aria2Manager {
          *                       act on.
          */
         default void onProgress(int percentage, String speed, String eta,
-                                long bytesPerSecond, long etaSeconds) {
+                                long bytesPerSecond, long etaSeconds, long completedBytes) {
             onProgress(percentage, speed, eta);
         }
         void onComplete(String downloadPath);
@@ -450,7 +450,8 @@ public class Aria2Manager {
                         long etaSeconds = DownloadEta.secondsRemaining(done, total, bytesPerSecond);
                         final long rate = bytesPerSecond;
                         final long secs = etaSeconds;
-                        mainHandler.post(() -> listener.onProgress(percent, speed, eta, rate, secs));
+                        final long got = done;
+                        mainHandler.post(() -> listener.onProgress(percent, speed, eta, rate, secs, got));
                     }
                 }
 
@@ -532,6 +533,15 @@ public class Aria2Manager {
                     mainHandler.post(listener::onCancelled);
                     return;
                 }
+                // ADFA-5119 (review): a stall latched just before the exception is still a stall.
+                // Without this it surfaced as a hard onError → fail(), turning a transfer that could
+                // have been retried into a trip to recovery.
+                if (stopRequest == Stop.STALL) {
+                    mainHandler.post(() -> listener.onError(
+                            org.iiab.controller.download.domain.Aria2Exit.label(5),
+                            org.iiab.controller.download.domain.Aria2Exit.Kind.STALLED));
+                    return;
+                }
                 Log.e(TAG, "Native Execution Error", e);
                 mainHandler.post(() -> listener.onError("Fatal Error: " + e.getMessage()));
             }
@@ -608,8 +618,14 @@ public class Aria2Manager {
 
     /** ADFA-4676: remove any other rootfs tarball so only the verified artifact remains. */
     private static void pruneStaleSiblings(File downloadDir, String keepName) {
+        // ADFA-5119 (review): control files go too. They were left behind, and hasControlFile() —
+        // which cannot name the file it is looking for without the metalink — reads ANY .aria2 as
+        // "this is a resume", so one orphan from an earlier tier silently disabled the IPv4/IPv6
+        // profiler on every later install. Removing them where their tarball is removed keeps the
+        // two facts from drifting apart.
         File[] stale = downloadDir.listFiles((d, n) ->
-                (n.endsWith(".tar.gz") || n.endsWith(".tar.xz")) && !n.equals(keepName));
+                (n.endsWith(".tar.gz") || n.endsWith(".tar.xz") || n.endsWith(".aria2"))
+                        && !n.equals(keepName) && !n.equals(keepName + ".aria2"));
         if (stale != null) { for (File f : stale) f.delete(); }
     }
 
