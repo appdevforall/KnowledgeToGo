@@ -45,7 +45,9 @@ import java.util.List;
 public final class BundledCatalogSource {
 
     private static final String TAG = "K2Go-Kolibri";
-    private static final String ASSET = "kolibri_catalog.jsonl";
+    // ADFA-5094: also the overlay basename — CatalogRepositoryImpl points the refresh worker at
+    // this same name, so the worker writes the overlay exactly where this source looks for it.
+    static final String ASSET = "kolibri_catalog.jsonl";
 
     /** Marks the header line, so it is never mistaken for a channel. */
     private static final String HEADER_KEY = "catalog";
