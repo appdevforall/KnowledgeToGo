@@ -25,11 +25,22 @@ So the tree can live on the box at a fraction of the content's size.
 onto the box without downloading content. The box then knows the whole tree offline; the
 content is fetched later, subtree by subtree, as it is today.
 
-**D2 — Box serves the tree, Studio-shaped (PR3).** The box answers
-`GET /k2go-api/kolibri/tree/:nodeId` with the **same JSON as Studio's `contentnode_tree`**.
-Not a new shape: `StudioCatalogMapper.tree(JSONObject)` then parses box and Studio
-responses with no branching, and the device side stays a thin read. The box owns the
-translation from Kolibri's own model into that shape.
+**D2 — Box serves the tree, Studio-shaped, from the local DB (PR3).** The box answers
+`GET /k2go-api/kolibri/subtree/:nodeId` with the **same JSON as Studio's `contentnode_tree`**,
+built from the local Kolibri content database. `StudioCatalogMapper.tree(JSONObject)` then
+parses box and Studio responses with no branching, and the device side stays a thin read.
+
+*Corrected after reading the box (PR3 exploration):*
+- **The path is `/kolibri/subtree/:nodeId`, not `/kolibri/tree/:nodeId`.** A
+  `GET /kolibri/tree/:channelId` already exists and serves the web wizard a *granular* tree
+  (`contentnode_granular`: resource counts, camelCase, **no byte sizes**). Reusing it would
+  collide and give the app the wrong shape, so the app path is a distinct, nodeId-keyed one.
+- **Byte sizes come from raw SQL, not a Kolibri API.** The granular endpoint carries no
+  bytes, and `importexportsizeview` reports only a selection's *outstanding* transfer, not
+  per-node structural size. So the box sums `content_localfile.file_size` over each node's
+  MPTT (`lft`/`rght`) range and emits it in Studio's `files[].file_size` field. This is what
+  gives the picker byte sizes at every level offline — the reason for choosing this over an
+  app-side cache of the granular tree.
 
 **D3 — App routes local-first (app, PR2, this PR).** `fetchTree` prefers the box and falls
 back to Studio. Concretely: a `TreeSource` seam with two implementations — `LocalTreeSource`
@@ -39,7 +50,7 @@ Every source keeps the "never throws, null on failure" contract, so a box miss �
 channel not imported — falls through to Studio silently.
 
 **D4 — Two independent PRs.** PR2 is the app side (this). PR3 is the box/dashboard side
-(D1, D2). They are independent: with only PR2 merged the box has no `/tree` endpoint, so
+(D1, D2). They are independent: with only PR2 merged the box has no `/subtree` endpoint, so
 `LocalTreeSource` always misses and behaviour is exactly what it was before — the tree
 comes from Studio. Nothing to gate, nothing to break; PR3 lights the local path up.
 
