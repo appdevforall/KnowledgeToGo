@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1720 2654" width="1720" height="2654" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1720 2714" width="1720" height="2714" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>System lifecycle — the states the whole app shares, and where a user gets stuck</title>
 <desc>States are combinations of facts, not screens: setup_complete, a rootfs on disk, health, whether the server answers, and who holds the environment lock. Edges are labelled with the guard that allows them, cited to file:line. Red states are dead ends. Read this before drawing any per-area diagram, and reuse these state names verbatim.</desc>
 
@@ -38,7 +38,7 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="1720" height="2654"/>
+<rect class="bg" x="0" y="0" width="1720" height="2714"/>
 <text class="h1" x="24" y="44">System lifecycle — where a user gets stuck</text>
 <text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 12 Aug. Every edge cites the guard that allows it.</text>
 
@@ -263,25 +263,28 @@
 <text class="note" x="44" y="2086">Opens with: computing health where it is displayed rather than only in the launch branch — it is already computed app-wide and read by exactly one screen. ADFA-5119 removed one of the three pre-emptions: a failure DURING a live install now</text>
 <text class="note" x="44" y="2104">diagnoses itself, because the gate's own observer shows the recovery dialog and latches the gate shut. A held lock and a running module queue still skip the branch.</text>
 
-<rect class="st-bad" x="24" y="2132" width="1672" height="140" rx="12"/>
-<text class="h2" x="44" y="2160">5 · HIDDEN EXIT — with no system, the only way forward is a control named "Get more"</text>
-<text class="can" x="44" y="2186">The header says "No library yet — tap Get more to install and add content", which is honest, but it is text with no button, on a row deliberately made non-clickable,</text>
-<text class="can" x="44" y="2206">pointing at a control at the far bottom of the screen whose name says content rather than system. Meanwhile every card offers Install and Schedule, which route to a</text>
-<text class="can" x="44" y="2226">hub that refuses. A user who does not read is offered two wrong doors and one unlabelled right one.</text>
-<text class="code" x="44" y="2252">LibraryHomeFragment.java:555, 575, 585-588 (no action on H_NO_LIBRARY) · 244-252 (Get more) · ModuleHubFragment.java:233-243 (the refusal).</text>
+<rect class="st-bad" x="24" y="2132" width="1672" height="200" rx="12"/>
+<text class="h2" x="44" y="2160">5 · STILL OPEN, and now reached almost only through finding 3 — with no system, the only way forward is a control named "Get more"</text>
+<text class="can" x="44" y="2186">Unchanged inside the state: the header reads "No library yet — tap Get more to install and add content", which is honest, but it is text with no button on a row that</text>
+<text class="can" x="44" y="2206">is explicitly non-clickable — the code now says so in a comment, so it is a decision rather than an oversight. Every card still offers Install and Schedule; ADFA-5104</text>
+<text class="can" x="44" y="2226">improved where they land, so the hub explains why it refuses instead of only refusing. Better to read, still a refusal, and still no labelled way to install a system.</text>
+<text class="can" x="44" y="2246">What changed is the way IN. A failed install now keeps the install marker and lands in recovery, and Cancel clears setup_complete and lands in the wizard — so S1 is</text>
+<text class="can" x="44" y="2266">now reached almost only by a failed "Copy from a phone", which marks the flag before any transfer exists. Close finding 3's remaining half and this becomes unreachable</text>
+<text class="can" x="44" y="2286">without touching this screen at all: the fix is not a button on Home, it is not writing setup_complete on intent.</text>
+<text class="code" x="44" y="2372">LibraryHomeFragment.java:515 (!installed → H_NO_LIBRARY, always), :575-590 (no action for it; the row is set non-clickable on purpose) · ModuleHubFragment.java:232-243 (the refusal, now with a reason).</text>
 
-<rect class="st-bad" x="24" y="2304" width="1672" height="140" rx="12"/>
-<text class="h2" x="44" y="2332">6 · DEAD CONTROL — a banked order that is not running is invisible and, for three types, uncancellable</text>
-<text class="can" x="44" y="2358">"See progress" appears only while something is actually running, and a refused or deferred drain leaves the order banked without running. Nothing lists it. The module</text>
-<text class="can" x="44" y="2378">sheet's Cancel is the only cancel in the app, and it only inspects the maps and module wishlists — a banked ZIM, Books or Courses order cannot be cancelled from</text>
-<text class="can" x="44" y="2398">anywhere in the UI.</text>
-<text class="code" x="44" y="2424">LibraryHomeFragment.java:518-529 (anyRunning gates the button), :337-342 (isScheduled ignores three of the five wishlists).</text>
+<rect class="st-bad" x="24" y="2364" width="1672" height="140" rx="12"/>
+<text class="h2" x="44" y="2392">6 · DEAD CONTROL — a banked order that is not running is invisible and, for three types, uncancellable</text>
+<text class="can" x="44" y="2418">"See progress" appears only while something is actually running, and a refused or deferred drain leaves the order banked without running. Nothing lists it. The module</text>
+<text class="can" x="44" y="2438">sheet's Cancel is the only cancel in the app, and it only inspects the maps and module wishlists — a banked ZIM, Books or Courses order cannot be cancelled from</text>
+<text class="can" x="44" y="2458">anywhere in the UI.</text>
+<text class="code" x="44" y="2484">LibraryHomeFragment.java:518-529 (anyRunning gates the button), :337-342 (isScheduled ignores three of the five wishlists).</text>
 
-<rect class="st-warn" x="24" y="2476" width="1672" height="140" rx="12"/>
-<text class="h2" x="44" y="2504">7 · DEAD CONTROL — Connect hands out a QR for a box that may not exist</text>
-<text class="can" x="44" y="2530">ConnectFragment reads no system fact at all: not isSystemInstalled, not the server state, not the lock. With no system, a damaged one, or the server stopped, the whole</text>
-<text class="can" x="44" y="2550">tab behaves normally and prints a QR pointing at a dead port. It is the largest visible-but-useless surface in the app, and the only one that says nothing at all about</text>
-<text class="can" x="44" y="2570">why it will not work.</text>
-<text class="code" x="44" y="2596">redesign/ConnectFragment.java — browseUrl():126; no reference to SystemFacts, ServerStateRepository or EnvironmentLock anywhere in the file.</text>
+<rect class="st-warn" x="24" y="2536" width="1672" height="140" rx="12"/>
+<text class="h2" x="44" y="2564">7 · DEAD CONTROL — Connect hands out a QR for a box that may not exist</text>
+<text class="can" x="44" y="2590">ConnectFragment reads no system fact at all: not isSystemInstalled, not the server state, not the lock. With no system, a damaged one, or the server stopped, the whole</text>
+<text class="can" x="44" y="2610">tab behaves normally and prints a QR pointing at a dead port. It is the largest visible-but-useless surface in the app, and the only one that says nothing at all about</text>
+<text class="can" x="44" y="2630">why it will not work.</text>
+<text class="code" x="44" y="2656">redesign/ConnectFragment.java — browseUrl():126; no reference to SystemFacts, ServerStateRepository or EnvironmentLock anywhere in the file.</text>
 
 </svg>
