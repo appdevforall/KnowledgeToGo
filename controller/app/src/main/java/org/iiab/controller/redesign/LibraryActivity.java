@@ -996,12 +996,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     }
 
     private boolean reduceMotion() {
-        try {
-            return android.provider.Settings.Global.getFloat(getContentResolver(),
-                    android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f;
-        } catch (Exception e) {
-            return false;
-        }
+        // ADFA-5143: the reading moved to util/Motion so the clone screen answers this the same way
+        // this one does, instead of keeping a private copy of the same setting.
+        return org.iiab.controller.util.Motion.reduced(this);
     }
 
     /** ADFA-4837: true while a server start is actually in progress (header shows "Starting…"). */
