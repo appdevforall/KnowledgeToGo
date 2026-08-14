@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">Wo ìlọsíwájú</string>
     <string name="k2go_home_retry">Tún gbìyànjú</string>
     <string name="k2go_home_install_system">Fi ẹ̀rọ sílẹ̀</string>
+    <string name="k2go_home_clone_receiving">Ń dà kọ láti inú fóònù mìíràn</string>
+    <string name="k2go_home_clone_sharing">Ń pín pẹ̀lú fóònù mìíràn</string>
+    <string name="k2go_home_clone_view">Wò ó</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Ń fi àkóónú kún un</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">Tún ètò náà fi sori ẹrọ</string>
     <string name="k2go_reinstall_sub">Pa gbogbo rẹ̀ rẹ́ kí o sì fi ètò tuntun sori ẹrọ láti ìbẹ̀rẹ̀</string>
     <string name="k2go_reinstall_confirm_title">Tún fi sori ẹrọ láti ìbẹ̀rẹ̀?</string>
-    <string name="k2go_reinstall_confirm_msg">Èyí ń pa ètò tí ó wà lọ́wọ́lọ́wọ́ àti gbogbo ohun tí ó wà nínú rẹ̀ rẹ́ — àwọn ìwé, àwọn máàpù, àwọn ohun tí a gbà sílẹ̀ àti àwọn ètò — lẹ́yìn náà ó fi ẹ̀dà mímọ́ sori ẹrọ. Kò ṣeé yí padà. Kọ́kọ́ ṣe àkọsílẹ̀ ìdáàbòbò bí o bá fẹ́ pa ohunkóhun mọ́. Ó nílò ìsopọ̀ íntánẹ́ẹ̀tì.</string>
+    <string name="k2go_reinstall_confirm_msg">Èyí ń pa ètò tí ó wà lọ́wọ́lọ́wọ́ àti gbogbo ohun tí ó wà nínú rẹ̀ rẹ́ — àwọn ìwé, àwọn máàpù, àwọn ohun tí a gbà sílẹ̀ àti àwọn ètò — lẹ́yìn náà ó fi ẹ̀dà mímọ́ sori ẹrọ. Kò ṣeé yí padà. Kọ́kọ́ ṣe àkọsílẹ̀ ìdáàbòbò bí o bá fẹ́ pa ohunkóhun mọ́. Lẹ́yìn náà o yàn ọ̀nà: gbà á sílẹ̀, tàbí dà kọ láti inú fóònù mìíràn.</string>
     <string name="k2go_reinstall_confirm_yes">Pa rẹ́ kí o sì tún fi sori ẹrọ</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Láti inú ẹ̀rọ</string>

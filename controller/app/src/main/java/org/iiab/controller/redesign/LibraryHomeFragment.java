@@ -47,7 +47,10 @@ public class LibraryHomeFragment extends Fragment {
     // could only be arrived at, never opened, so a user who left a running download had no
     // route back to it.
     private static final int H_NO_LIBRARY = 0, H_STARTING = 1, H_READY = 2, H_READY_EMPTY = 3,
-            H_FAILED = 4, H_INSTALLING = 5;
+            H_FAILED = 4, H_INSTALLING = 5,
+            // ADFA-5143: a clone in flight, told apart by side. The receiver is the only one with a
+            // percentage, so it is the one whose loss matters; the donor has a QR and a Stop.
+            H_CLONE_RECEIVING = 6, H_CLONE_SHARING = 7;
     // ADFA-4837: how long a card stays amber (patient) once the box is up before it's called stuck.
     private static final long CARD_RED_GRACE_MS = 60000L;
 
@@ -110,6 +113,15 @@ public class LibraryHomeFragment extends Fragment {
                 // at a control at the bottom of the screen called "Get more".
                 if (headerState == H_NO_LIBRARY) {
                     openGetMore();
+                    return;
+                }
+                // ADFA-5143: both clone states go to the Clone tab. For the receiver that is the only
+                // place the percentage exists — the donor has no progress to lose, only a QR — which
+                // is why this is the half of the ticket that carries the priority.
+                if (headerState == H_CLONE_RECEIVING || headerState == H_CLONE_SHARING) {
+                    if (getActivity() instanceof LibraryActivity) {
+                        ((LibraryActivity) getActivity()).openCloneTab();
+                    }
                     return;
                 }
                 // ADFA-4837: retry only when it is genuinely safe — canStartServer guards
@@ -539,6 +551,18 @@ public class LibraryHomeFragment extends Fragment {
         if (homeStatus == null || !isAdded()) return;
         boolean installed = systemInstalled;
         boolean alive = ServerStateRepository.get().current().alive;
+        // ADFA-5143: a clone in flight outranks everything below, and has to be asked FIRST. During a
+        // receive the install marker makes isSystemInstalled() false, so without this the very next
+        // line says "no library" while a whole system is arriving — and the branch after it would call
+        // a deliberately stopped server a failure. Neither is true and both were on screen.
+        if (org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()) {
+            setHeader(H_CLONE_RECEIVING);
+            return;
+        }
+        if (CloneSendSession.isActive()) {
+            setHeader(H_CLONE_SHARING);
+            return;
+        }
         if (!installed) { setHeader(H_NO_LIBRARY); return; }
         // ADFA-5074: content being added outranks everything below. It is the only state
         // the user can act on from here, and reporting "ready" over a running install is
@@ -590,6 +614,10 @@ public class LibraryHomeFragment extends Fragment {
             // content arriving blocks nothing: the library works, and it is getting bigger.
             // The label carries the news, and the row stays tappable as the way into progress.
             case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_leaf;  break;
+            // ADFA-5143: amber, not green and not red. The server is deliberately down and the box is
+            // busy with something the user started — that is "wait", which is what amber says here.
+            case H_CLONE_RECEIVING: text = getString(R.string.k2go_home_clone_receiving); dotColor = R.color.k2go_amber; break;
+            case H_CLONE_SHARING:   text = getString(R.string.k2go_home_clone_sharing);   dotColor = R.color.k2go_amber; break;
             default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
         }
         homeStatus.setText(text);
@@ -611,7 +639,12 @@ public class LibraryHomeFragment extends Fragment {
         // exist yet. One line in a switch that already hands out two other buttons.
         int action = h == H_FAILED ? R.string.k2go_home_retry
                 : h == H_INSTALLING ? R.string.k2go_home_see_progress
-                : h == H_NO_LIBRARY ? R.string.k2go_home_install_system : 0;
+                : h == H_NO_LIBRARY ? R.string.k2go_home_install_system
+                // ADFA-5143: a transfer is not offered a restart — restarting the server is not a
+                // meaningful thing to do to a transfer. Each side is offered the place that matters:
+                // the receiver its progress, the donor its QR.
+                : h == H_CLONE_RECEIVING ? R.string.k2go_home_see_progress
+                : h == H_CLONE_SHARING ? R.string.k2go_home_clone_view : 0;
         if (homeStatusAction != null) {
             homeStatusAction.setVisibility(action != 0 ? View.VISIBLE : View.GONE);
             if (action != 0) homeStatusAction.setText(action);

@@ -47,6 +47,9 @@
     <string name="k2go_home_see_progress">See progress</string>
     <string name="k2go_home_retry">Retry</string>
     <string name="k2go_home_install_system">Install a system</string>
+    <string name="k2go_home_clone_receiving">Cloning from another phone</string>
+    <string name="k2go_home_clone_sharing">Sharing with another phone</string>
+    <string name="k2go_home_clone_view">View</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Adding content</string>
@@ -200,7 +203,7 @@
     <string name="k2go_reinstall_title">Reinstall the system</string>
     <string name="k2go_reinstall_sub">Erase everything and install a fresh system from scratch</string>
     <string name="k2go_reinstall_confirm_title">Reinstall from scratch?</string>
-    <string name="k2go_reinstall_confirm_msg">This erases the current system and everything in it — books, maps, downloads and settings — then installs a clean copy. It can\'t be undone. Back up first if you want to keep anything. Needs an internet connection.</string>
+    <string name="k2go_reinstall_confirm_msg">This erases the current system and everything in it — books, maps, downloads and settings — then installs a clean copy. It can\'t be undone. Back up first if you want to keep anything. Then you choose how: download it, or copy it from another phone.</string>
     <string name="k2go_reinstall_confirm_yes">Erase and reinstall</string>
     <string name="k2go_br_soon">Coming in the next build</string>
     <string name="k2go_br_start">Start</string>

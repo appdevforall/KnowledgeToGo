@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">Ona maendeleo</string>
     <string name="k2go_home_retry">Jaribu tena</string>
     <string name="k2go_home_install_system">Sakinisha mfumo</string>
+    <string name="k2go_home_clone_receiving">Inanakili kutoka simu nyingine</string>
+    <string name="k2go_home_clone_sharing">Inashiriki na simu nyingine</string>
+    <string name="k2go_home_clone_view">Tazama</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Inaongeza maudhui</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">Sakinisha upya mfumo</string>
     <string name="k2go_reinstall_sub">Futa kila kitu na usakinishe mfumo mpya kutoka mwanzo</string>
     <string name="k2go_reinstall_confirm_title">Kusakinisha upya kutoka mwanzo?</string>
-    <string name="k2go_reinstall_confirm_msg">Hii inafuta mfumo wa sasa na kila kitu ndani yake — vitabu, ramani, vipakuliwa na mipangilio — kisha inasakinisha nakala safi. Haiwezi kutenduliwa. Hifadhi nakala rudufu kwanza ikiwa unataka kuweka chochote. Inahitaji muunganisho wa intaneti.</string>
+    <string name="k2go_reinstall_confirm_msg">Hii inafuta mfumo wa sasa na kila kitu ndani yake — vitabu, ramani, vipakuliwa na mipangilio — kisha inasakinisha nakala safi. Haiwezi kutenduliwa. Hifadhi nakala rudufu kwanza ikiwa unataka kuweka chochote. Kisha unachagua jinsi: kupakua, au kunakili kutoka simu nyingine.</string>
     <string name="k2go_reinstall_confirm_yes">Futa na usakinishe upya</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Kutoka kwa mfumo</string>

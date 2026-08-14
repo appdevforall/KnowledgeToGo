@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">Zobraziť priebeh</string>
     <string name="k2go_home_retry">Skúsiť znova</string>
     <string name="k2go_home_install_system">Nainštalovať systém</string>
+    <string name="k2go_home_clone_receiving">Klonovanie z iného telefónu</string>
+    <string name="k2go_home_clone_sharing">Zdieľanie s iným telefónom</string>
+    <string name="k2go_home_clone_view">Zobraziť</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Pridáva sa obsah</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">Preinštalovať systém</string>
     <string name="k2go_reinstall_sub">Vymazať všetko a nainštalovať čistý systém od začiatku</string>
     <string name="k2go_reinstall_confirm_title">Preinštalovať od začiatku?</string>
-    <string name="k2go_reinstall_confirm_msg">Týmto sa vymaže aktuálny systém a všetko v ňom — knihy, mapy, stiahnuté súbory a nastavenia — a nainštaluje sa čistá kópia. Nedá sa vrátiť späť. Ak si chcete niečo ponechať, najprv vytvorte zálohu. Vyžaduje pripojenie na internet.</string>
+    <string name="k2go_reinstall_confirm_msg">Týmto sa vymaže aktuálny systém a všetko v ňom — knihy, mapy, stiahnuté súbory a nastavenia — a nainštaluje sa čistá kópia. Nedá sa vrátiť späť. Ak si chcete niečo ponechať, najprv vytvorte zálohu. Potom zvolíte ako: stiahnuť, alebo skopírovať z iného telefónu.</string>
     <string name="k2go_reinstall_confirm_yes">Vymazať a preinštalovať</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Zo systému</string>

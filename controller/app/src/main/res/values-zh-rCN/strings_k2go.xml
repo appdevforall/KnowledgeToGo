@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">查看进度</string>
     <string name="k2go_home_retry">重试</string>
     <string name="k2go_home_install_system">安装系统</string>
+    <string name="k2go_home_clone_receiving">正在从另一台手机复制</string>
+    <string name="k2go_home_clone_sharing">正在与另一台手机共享</string>
+    <string name="k2go_home_clone_view">查看</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">正在添加内容</string>
@@ -690,7 +693,7 @@
     <string name="k2go_dash_rebuild">重建</string>
     <string name="k2go_dash_rebuild_confirm_title">重建 REST 核心？</string>
     <string name="k2go_dash_rebuild_confirm_msg">将 dash-node 更新到最新版本。重建期间服务器会短暂不可用；完成前请勿离开此界面。</string>
-    <string name="k2go_dash_needs_internet">重建需要互联网连接。</string>
+    <string name="k2go_dash_needs_internet">重建然后你选择方式：下载，或从另一台手机复制。</string>
     <string name="k2go_dash_live_title">正在更新仪表板</string>
     <string name="k2go_dash_live_running">正在原地更新… 仪表板会短暂重启。</string>
     <string name="k2go_dash_live_done">仪表板已更新。</string>

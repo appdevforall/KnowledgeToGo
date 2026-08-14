@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">Види напредак</string>
     <string name="k2go_home_retry">Покушај поново</string>
     <string name="k2go_home_install_system">Инсталирај систем</string>
+    <string name="k2go_home_clone_receiving">Клонирање са другог телефона</string>
+    <string name="k2go_home_clone_sharing">Дељење са другим телефоном</string>
+    <string name="k2go_home_clone_view">Погледај</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Додавање садржаја</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">Поново инсталирај систем</string>
     <string name="k2go_reinstall_sub">Брише све и инсталира нов систем из почетка</string>
     <string name="k2go_reinstall_confirm_title">Поново инсталирати из почетка?</string>
-    <string name="k2go_reinstall_confirm_msg">Ово брише тренутни систем и све у њему — књиге, мапе, преузимања и подешавања — а затим инсталира чисту копију. Не може се опозвати. Прво направите резервну копију ако желите нешто да задржите. Захтева интернет везу.</string>
+    <string name="k2go_reinstall_confirm_msg">Ово брише тренутни систем и све у њему — књиге, мапе, преузимања и подешавања — а затим инсталира чисту копију. Не може се опозвати. Прво направите резервну копију ако желите нешто да задржите. Затим бирате како: преузимање или копирање са другог телефона.</string>
     <string name="k2go_reinstall_confirm_yes">Обриши и поново инсталирај</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Из система</string>

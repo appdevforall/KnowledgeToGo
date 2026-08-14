@@ -20,7 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -29,7 +28,8 @@ import com.journeyapps.barcodescanner.ScanContract;
 import com.journeyapps.barcodescanner.ScanOptions;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -104,7 +104,10 @@ public class CloneFragment extends Fragment {
     private LinearLayout receiveBox, progressBox;
     private EditText paste;
     private TextView receiveStart, pStatus, pFile, pStats, cancel;
-    private ProgressBar pbar;
+    private LinearProgressIndicator pbar;   // ADFA-5143: typed as itself, so setProgressCompat is available
+    private com.airbnb.lottie.LottieAnimationView anim;   // ADFA-5143: the clone loop
+    // ADFA-5143: read once — renderReceive() runs on every progress tick and this is a Settings read.
+    private boolean reduceMotion = false;
     private long lastSeq = -1L;
     private LinearLayout confirmPanel, confirmSizes, confirmReplace, confirmFresh;
     private TextView confirmSys, confirmContent, confirmTotal;
@@ -185,6 +188,20 @@ public class CloneFragment extends Fragment {
         progressBox = v.findViewById(R.id.k2go_clone_progress);
         pStatus = v.findViewById(R.id.k2go_clone_pstatus);
         pbar = v.findViewById(R.id.k2go_clone_pbar);
+        // ADFA-5143: the transfer state uses the same Lottie template as the backup / restore job
+        // screen. The animation ships without icons; the two K2Go logos are composited by the layout.
+        anim = v.findViewById(R.id.k2go_clone_anim);
+        reduceMotion = org.iiab.controller.util.Motion.reduced(getContext());
+        if (anim != null) {
+            anim.setAnimation(R.raw.k2go_clone_loop);
+            if (reduceMotion) {
+                // Reduce motion: hold one frame — the glows and a few dots still read as "in flight",
+                // and the screen never depends on movement to be understood.
+                anim.setProgress(0.5f);
+            } else {
+                anim.setRepeatCount(com.airbnb.lottie.LottieDrawable.INFINITE);
+            }
+        }
         pFile = v.findViewById(R.id.k2go_clone_pfile);
         pStats = v.findViewById(R.id.k2go_clone_pstats);
         cancel = v.findViewById(R.id.k2go_clone_cancel);
@@ -305,7 +322,7 @@ public class CloneFragment extends Fragment {
         boolean sharing = (side == Side.SEND && !sendApp && stage == Stage.START && daemonStarted);
         if (target == mode || !sharing) { setMode(target); return; }
         String label = (target == Mode.HOTSPOT) ? "Hotspot" : "Wi-Fi";
-        new AlertDialog.Builder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.k2go_clone_switch_title, label))
                 .setMessage(getString(R.string.k2go_clone_switch_msg))
                 .setNegativeButton(getString(R.string.k2go_cancel), null)
@@ -757,7 +774,7 @@ public class CloneFragment extends Fragment {
     // nothing to copy — warn before probing rather than pulling an empty library.
     private void probeOrWarnEmpty(SyncHandshakeHelper.SyncCredentials creds) {
         if (!creds.hasRootfs) {
-            new AlertDialog.Builder(requireContext())
+            new MaterialAlertDialogBuilder(requireContext())
                     .setTitle(getString(R.string.k2go_clone_nolib_title))
                     .setMessage(getString(R.string.k2go_clone_nolib_msg))
                     .setNegativeButton(getString(R.string.k2go_cancel), null)
@@ -793,10 +810,40 @@ public class CloneFragment extends Fragment {
         syncProtection();   // ADFA-4782: match protection to the live pull state on every transition
     }
 
+    /**
+     * ADFA-5143: show or hide the transfer block, and let the Lottie follow it. The animation is only
+     * ever running while the block that contains it is on screen — one place decides both, so a hidden
+     * screen can't leave a loop spinning against the battery.
+     */
+    private void showProgress(boolean visible) {
+        progressBox.setVisibility(visible ? View.VISIBLE : View.GONE);
+        if (anim == null || reduceMotion) return;
+        if (visible) {
+            if (!anim.isAnimating()) anim.playAnimation();
+        } else if (anim.isAnimating()) {
+            anim.pauseAnimation();
+        }
+    }
+
+    /**
+     * ADFA-5143: switch the M3 indicator between determinate and indeterminate without depending on
+     * whether Material allows it in place. {@code BaseProgressIndicator} guards that transition while
+     * the indicator is visible to the user, and this screen crosses it on every run (CONNECTING and
+     * CALCULATING are indeterminate, TRANSFERRING is not) — so the bar is taken off screen for the
+     * switch and put back. Costs nothing if the guard never fires.
+     */
+    private void setBarIndeterminate(boolean indeterminate) {
+        if (pbar == null || pbar.isIndeterminate() == indeterminate) return;
+        int was = pbar.getVisibility();
+        pbar.setVisibility(View.GONE);
+        pbar.setIndeterminate(indeterminate);
+        pbar.setVisibility(was);
+    }
+
     private void renderReceive() {
         SyncTransferState st = SyncProgressRepository.get().current();
         boolean busy = (st != null && st.isActive());
-        progressBox.setVisibility(busy ? View.VISIBLE : View.GONE);
+        showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
         if (busy) {
@@ -807,7 +854,7 @@ public class CloneFragment extends Fragment {
             rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
             SyncTransferState.Phase ph = st.phase;
             if (ph == SyncTransferState.Phase.CONFIRM) {
-                progressBox.setVisibility(View.GONE);
+                showProgress(false);
                 // ADFA-4790: confirm as a System/Content/Total table (sizes travel in the QR) per the
                 // design mockup; the replace notice is static in the layout. If the sender didn't send
                 // sizes (older build), hide the table and just show the notice.
@@ -831,13 +878,16 @@ public class CloneFragment extends Fragment {
                 return;
             }
             if (ph == SyncTransferState.Phase.TRANSFERRING) {
-                pbar.setIndeterminate(false);
-                pbar.setProgress(st.percent);
+                setBarIndeterminate(false);
+                // setProgressCompat animates to the new value instead of jumping. The explicit switch
+                // above stays: setProgressCompat can also leave indeterminate mode on its own, but only
+                // after the current cycle, and that path isn't something this screen should depend on.
+                pbar.setProgressCompat(st.percent, true);
                 pStatus.setText(getString(R.string.k2go_clone_copying));
                 pFile.setText(st.file);
                 pStats.setText(st.percent + "%    " + st.speed + "    ETA " + st.eta);
             } else {
-                pbar.setIndeterminate(true);
+                setBarIndeterminate(true);
                 pStatus.setText(ph == SyncTransferState.Phase.CALCULATING ? getString(R.string.k2go_clone_calculating) : getString(R.string.k2go_clone_connecting));
                 pFile.setText(""); pStats.setText("");
             }
@@ -966,6 +1016,19 @@ public class CloneFragment extends Fragment {
     }
 
     private void showReceiveTerminal(boolean ok, String message) {
+        // ADFA-5143: reaching a receive terminal is itself the proof that this side owns the clone
+        // environment — whatever this fragment instance happens to remember. cloneLockHeld and
+        // cloneGuardHeld are fragment fields, so a fragment recreated mid-transfer (app closed and
+        // reopened, then re-attached to the running rsync) arrived here with both false and
+        // releaseCloneEnv() returned on its first line: the install marker stayed set, the lock was
+        // never dropped and the server was never booted. The next launch then read that leftover
+        // marker as a damaged install — of a clone that had in fact completed. Re-derive the two
+        // facts from disk, where they actually live, instead of trusting the fragment's memory.
+        Context termCtx = getContext();
+        if (termCtx != null) {
+            cloneLockHeld = true;   // EnvironmentLock.release() is idempotent and self-heals a stale file
+            cloneGuardHeld = org.iiab.controller.InstallGuard.inProgress(termCtx);
+        }
         releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
         String body = (message != null) ? message : "";
@@ -974,12 +1037,31 @@ public class CloneFragment extends Fragment {
             body += "\n\nThe copy was stopped by the system. Keep this screen on and the app in the "
                   + "foreground during a transfer, then scan again to resume.";
         }
-        new AlertDialog.Builder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(ok ? R.string.k2go_clone_copy_complete : R.string.k2go_clone_copy_stopped))
                 .setMessage(body)
                 .setPositiveButton(getString(android.R.string.ok), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
                 .setCancelable(false)
                 .show();
+    }
+
+    // ADFA-5143: the loop follows the screen, like the backup / restore job screen. Only the animation
+    // is touched here — the transfer itself is owned by the service and keeps running either way.
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Re-read the setting here rather than trusting what onCreateView saw: changing it doesn't
+        // recreate the fragment, so a cached answer can outlive the truth. Coming back to the front is
+        // the only moment it can have changed behind our back, and it keeps the read off the tick path.
+        reduceMotion = org.iiab.controller.util.Motion.reduced(getContext());
+        if (anim != null && reduceMotion && anim.isAnimating()) anim.pauseAnimation();
+        if (progressBox != null) showProgress(progressBox.getVisibility() == View.VISIBLE);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (anim != null && anim.isAnimating()) anim.pauseAnimation();
     }
 
     @Override
@@ -995,7 +1077,7 @@ public class CloneFragment extends Fragment {
     }
 
     private void confirmStop() {
-        new AlertDialog.Builder(requireContext())
+        new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.k2go_clone_stopshare_title))
                 .setMessage(getString(R.string.k2go_clone_stopshare_msg))
                 .setNegativeButton(getString(R.string.k2go_cancel), null)

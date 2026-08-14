@@ -151,8 +151,25 @@ public class RsyncManager implements TransportEngine {
                         mainHandler.post(() -> listener.onProgress(progress.percent, progress.speed, progress.eta, finalFile));
                     }
                     // PHASE 1 FIX: Strict match for actual rsync errors, ignoring files named "error"
-                    else if (line.contains("@ERROR:") || line.contains("rsync error:")) {
+                    //
+                    // ADFA-5143: "rsync error:" is only the FINAL summary line. Every per-file failure
+                    // rsync prints starts with a bare "rsync:" —
+                    //     rsync: [receiver] mkstemp "..." failed: Permission denied (13)
+                    //     rsync: [generator] failed to set times on "...": Operation not permitted (1)
+                    // — so none of them matched, they all fell through to the branch below, and were
+                    // stored as lastFile: filed as the name of the file being transferred and shown to
+                    // the user as such. A device log of a code-23 transfer therefore ended with
+                    // "some files/attrs were not transferred (see previous errors)" and no previous
+                    // errors anywhere, because they had been reclassified as data.
+                    //
+                    // That is the difference between a benign 23 (attributes Android will not let us
+                    // set) and a fatal one (files that did not arrive), and it is the whole reason
+                    // nobody can tell those apart today. Logged into LogRepository as well as logcat,
+                    // so the failure report a user can send carries them.
+                    else if (line.contains("@ERROR:") || line.startsWith("rsync:")
+                            || line.startsWith("rsync warning:") || line.contains("rsync error:")) {
                         Log.e(TAG, "[Rsync Output Error] " + line);
+                        org.iiab.controller.LogRepository.get().append("[Rsync] " + line);
                     } else if (!line.trim().isEmpty() && !line.startsWith("sending incremental file list") && !line.contains("bytes/sec")) {
                         lastFile = line.trim();
                     }
@@ -162,6 +179,17 @@ public class RsyncManager implements TransportEngine {
 
                 secretStore.deleteClientPassword();
 
+                // ADFA-5143: say the verdict out loud. The log used to show a code-23 error line and then
+                // a SUCCESS state with nothing in between explaining the jump, which reads like a bug in
+                // the app rather than a deliberate rule. RsyncOutcome.isSuccess() counts 0, 23 and 24 as
+                // complete on purpose — 24 (files vanished from a live source) is defensible, and 23 is
+                // ambiguous: attributes Android refused to set, or files that never arrived. Until the
+                // per-file errors above have been read on a real transfer, the rule stays as it is and
+                // the log states it.
+                Log.i(TAG, "rsync client exit " + exitCode + " → "
+                        + RsyncOutcome.classifyTransfer(exitCode)
+                        + (RsyncOutcome.isSuccess(exitCode) && exitCode != 0
+                            ? " (non-zero treated as complete — see any [Rsync Output Error] lines above)" : ""));
                 if (isCancelled) {
                     mainHandler.post(() -> listener.onError(context.getString(R.string.rsync_error_cancelled)));
                 } else {

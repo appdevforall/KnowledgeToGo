@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">İlerlemeyi gör</string>
     <string name="k2go_home_retry">Yeniden dene</string>
     <string name="k2go_home_install_system">Sistem kur</string>
+    <string name="k2go_home_clone_receiving">Başka telefondan kopyalanıyor</string>
+    <string name="k2go_home_clone_sharing">Başka telefonla paylaşılıyor</string>
+    <string name="k2go_home_clone_view">Görüntüle</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">İçerik ekleniyor</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">Sistemi yeniden kur</string>
     <string name="k2go_reinstall_sub">Her şeyi siler ve sıfırdan yeni bir sistem kurar</string>
     <string name="k2go_reinstall_confirm_title">Sıfırdan yeniden kurulsun mu?</string>
-    <string name="k2go_reinstall_confirm_msg">Bu, mevcut sistemi ve içindeki her şeyi — kitaplar, haritalar, indirmeler ve ayarlar — siler, ardından temiz bir kopya kurar. Geri alınamaz. Bir şey saklamak istiyorsanız önce yedek alın. İnternet bağlantısı gerekir.</string>
+    <string name="k2go_reinstall_confirm_msg">Bu, mevcut sistemi ve içindeki her şeyi — kitaplar, haritalar, indirmeler ve ayarlar — siler, ardından temiz bir kopya kurar. Geri alınamaz. Bir şey saklamak istiyorsanız önce yedek alın. Sonra nasıl olacağını seçersiniz: indirme ya da başka telefondan kopyalama.</string>
     <string name="k2go_reinstall_confirm_yes">Sil ve yeniden kur</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Sistemden</string>

@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">प्रगति देखें</string>
     <string name="k2go_home_retry">पुनः प्रयास</string>
     <string name="k2go_home_install_system">सिस्टम इंस्टॉल करें</string>
+    <string name="k2go_home_clone_receiving">दूसरे फ़ोन से कॉपी हो रहा है</string>
+    <string name="k2go_home_clone_sharing">दूसरे फ़ोन के साथ साझा हो रहा है</string>
+    <string name="k2go_home_clone_view">देखें</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">सामग्री जोड़ी जा रही है</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">सिस्टम फिर से इंस्टॉल करें</string>
     <string name="k2go_reinstall_sub">सब कुछ मिटाकर शुरू से एक नया सिस्टम इंस्टॉल करें</string>
     <string name="k2go_reinstall_confirm_title">शुरू से फिर से इंस्टॉल करें?</string>
-    <string name="k2go_reinstall_confirm_msg">यह वर्तमान सिस्टम और उसमें मौजूद सब कुछ — किताबें, मानचित्र, डाउनलोड और सेटिंग्स — मिटा देता है, फिर एक साफ़ प्रति इंस्टॉल करता है. इसे पूर्ववत नहीं किया जा सकता. अगर आप कुछ रखना चाहते हैं तो पहले बैकअप बनाएँ. इंटरनेट कनेक्शन आवश्यक है.</string>
+    <string name="k2go_reinstall_confirm_msg">यह वर्तमान सिस्टम और उसमें मौजूद सब कुछ — किताबें, मानचित्र, डाउनलोड और सेटिंग्स — मिटा देता है, फिर एक साफ़ प्रति इंस्टॉल करता है. इसे पूर्ववत नहीं किया जा सकता. अगर आप कुछ रखना चाहते हैं तो पहले बैकअप बनाएँ. फिर आप तरीका चुनते हैं: डाउनलोड करें या दूसरे फ़ोन से कॉपी करें।</string>
     <string name="k2go_reinstall_confirm_yes">मिटाएँ और फिर से इंस्टॉल करें</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">सिस्टम से</string>

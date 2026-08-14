@@ -222,6 +222,17 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         // ADFA-4919 (2c-ii): marker set + no live installer (both install repos IDLE) means a proot
         // install was killed. Enter recovery instead of quietly lifting the gate to an empty library.
         recovering = !installing
+                // ADFA-5143 (plan B): not when the user was brought here to get a system. A killed
+                // clone-receive leaves the marker set, so this predicate was true again the moment
+                // recovery's own suggestion — Reinstall → Copy from a phone — landed on this screen:
+                // dialog, recovery, wizard, clone, dialog. A loop out of the exit.
+                //
+                // The extra already means "the caller knows there is no usable system and is bringing
+                // this person somewhere to fix it", which is exactly when a dialog announcing that the
+                // system is broken has nothing to add and everything to block. Leave and come back
+                // cold and the marker still puts them in recovery, correctly: they are no longer
+                // mid-attempt.
+                && !broughtHereToSetUp
                 && org.iiab.controller.InstallGuard.inProgress(this)
                 && !InstallProgressRepository.get().current().isRunning()
                 && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
@@ -985,12 +996,9 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     }
 
     private boolean reduceMotion() {
-        try {
-            return android.provider.Settings.Global.getFloat(getContentResolver(),
-                    android.provider.Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f;
-        } catch (Exception e) {
-            return false;
-        }
+        // ADFA-5143: the reading moved to util/Motion so the clone screen answers this the same way
+        // this one does, instead of keeping a private copy of the same setting.
+        return org.iiab.controller.util.Motion.reduced(this);
     }
 
     /** ADFA-4837: true while a server start is actually in progress (header shows "Starting…"). */
@@ -1011,7 +1019,31 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 && (serverController == null || !serverController.isStopping())
                 && !InstallProgressRepository.get().isRunning()
                 && !org.iiab.controller.InstallGuard.inProgress(this)
+                // ADFA-5143: the last two align this with ServerController.handleServerLaunchClick,
+                // which is the guard that actually decides. This method was a PARTIAL copy of it —
+                // missing the module queue and the environment lock — so it said yes where the real
+                // guard says no, and the header offered a Retry that flickered and did nothing. The
+                // start was never in danger; the button was a lie about it. Two places answering "can
+                // I start the server?" and answering differently is the defect, not the clone.
+                //
+                // ownerHeld covers a clone on either side without knowing anything about clones:
+                // Owner.CLONE is in the enum and both sides acquire it (CloneFragment:354 and :936).
+                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this)
                 && org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this);
+    }
+
+    /**
+     * ADFA-5143: take the user to the Clone tab, where a transfer in flight actually lives.
+     *
+     * <p>The Home header offers this instead of a restart during a transfer. For the receiver it is
+     * the only place the progress exists; for the donor it is where the QR and Stop are — which is
+     * why Stop is not copied onto the header. Navigating to a control beats owning a second one.
+     */
+    public void openCloneTab() {
+        currentTab = R.id.nav_clone;
+        showTab(currentTab);
+        syncSelection(currentTab);
     }
 
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */

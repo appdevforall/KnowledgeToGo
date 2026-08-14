@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">Voortgang</string>
     <string name="k2go_home_retry">Opnieuw</string>
     <string name="k2go_home_install_system">Systeem installeren</string>
+    <string name="k2go_home_clone_receiving">Klonen van een andere telefoon</string>
+    <string name="k2go_home_clone_sharing">Delen met een andere telefoon</string>
+    <string name="k2go_home_clone_view">Bekijken</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Inhoud toevoegen</string>
@@ -721,7 +724,7 @@
     <string name="k2go_reinstall_title">Systeem opnieuw installeren</string>
     <string name="k2go_reinstall_sub">Wis alles en installeer een vers systeem vanaf nul</string>
     <string name="k2go_reinstall_confirm_title">Opnieuw installeren vanaf nul?</string>
-    <string name="k2go_reinstall_confirm_msg">Dit wist het huidige systeem en alles erin — boeken, kaarten, downloads en instellingen — en installeert dan een schone kopie. Dit kan niet ongedaan worden gemaakt. Maak eerst een back-up als je iets wilt bewaren. Vereist een internetverbinding.</string>
+    <string name="k2go_reinstall_confirm_msg">Dit wist het huidige systeem en alles erin — boeken, kaarten, downloads en instellingen — en installeert dan een schone kopie. Dit kan niet ongedaan worden gemaakt. Maak eerst een back-up als je iets wilt bewaren. Daarna kies je hoe: downloaden of kopiëren van een andere telefoon.</string>
     <string name="k2go_reinstall_confirm_yes">Wissen en opnieuw installeren</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Van systeem</string>

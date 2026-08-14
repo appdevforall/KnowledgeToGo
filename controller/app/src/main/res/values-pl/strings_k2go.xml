@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">Zobacz postęp</string>
     <string name="k2go_home_retry">Ponów</string>
     <string name="k2go_home_install_system">Zainstaluj system</string>
+    <string name="k2go_home_clone_receiving">Klonowanie z innego telefonu</string>
+    <string name="k2go_home_clone_sharing">Udostępnianie innemu telefonowi</string>
+    <string name="k2go_home_clone_view">Zobacz</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Dodawanie treści</string>
@@ -731,7 +734,7 @@
     <string name="k2go_reinstall_title">Zainstaluj system od nowa</string>
     <string name="k2go_reinstall_sub">Usuń wszystko i zainstaluj świeży system od zera</string>
     <string name="k2go_reinstall_confirm_title">Zainstalować od nowa?</string>
-    <string name="k2go_reinstall_confirm_msg">Spowoduje to usunięcie bieżącego systemu i całej jego zawartości — książek, map, pobrań i ustawień — a następnie instalację czystej kopii. Nie można tego cofnąć. Najpierw wykonaj kopię zapasową, jeśli chcesz coś zachować. Wymaga połączenia z internetem.</string>
+    <string name="k2go_reinstall_confirm_msg">Spowoduje to usunięcie bieżącego systemu i całej jego zawartości — książek, map, pobrań i ustawień — a następnie instalację czystej kopii. Nie można tego cofnąć. Najpierw wykonaj kopię zapasową, jeśli chcesz coś zachować. Potem wybierasz sposób: pobranie lub skopiowanie z innego telefonu.</string>
     <string name="k2go_reinstall_confirm_yes">Usuń i zainstaluj od nowa</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Z systemu</string>

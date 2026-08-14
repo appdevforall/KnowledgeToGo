@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">অগ্রগতি দেখুন</string>
     <string name="k2go_home_retry">আবার চেষ্টা</string>
     <string name="k2go_home_install_system">সিস্টেম ইনস্টল করুন</string>
+    <string name="k2go_home_clone_receiving">অন্য ফোন থেকে কপি হচ্ছে</string>
+    <string name="k2go_home_clone_sharing">অন্য ফোনের সাথে শেয়ার হচ্ছে</string>
+    <string name="k2go_home_clone_view">দেখুন</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">কনটেন্ট যোগ করা হচ্ছে</string>
@@ -690,7 +693,7 @@
     <string name="k2go_dash_rebuild">পুনর্নির্মাণ</string>
     <string name="k2go_dash_rebuild_confirm_title">REST কোর পুনর্নির্মাণ করবেন?</string>
     <string name="k2go_dash_rebuild_confirm_msg">dash-node কে সর্বশেষ সংস্করণে আপডেট করে। পুনর্নির্মাণের সময় সার্ভার কিছুক্ষণের জন্য অনুপলব্ধ থাকে; শেষ না হওয়া পর্যন্ত এই স্ক্রিন ছেড়ে যাবেন না।</string>
-    <string name="k2go_dash_needs_internet">পুনর্নির্মাণের জন্য ইন্টারনেট সংযোগ প্রয়োজন।</string>
+    <string name="k2go_dash_needs_internet">পুনর্নির্মাণের জন্য তারপর আপনি উপায় বেছে নেবেন: ডাউনলোড করা বা অন্য ফোন থেকে কপি করা।</string>
     <string name="k2go_dash_live_title">ড্যাশবোর্ড আপডেট হচ্ছে</string>
     <string name="k2go_dash_live_running">স্থানেই আপডেট হচ্ছে… ড্যাশবোর্ড কিছুক্ষণের জন্য রিস্টার্ট হবে।</string>
     <string name="k2go_dash_live_done">ড্যাশবোর্ড আপডেট হয়েছে।</string>
