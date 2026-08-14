@@ -47,6 +47,9 @@
     <string name="k2go_home_see_progress">See progress</string>
     <string name="k2go_home_retry">Retry</string>
     <string name="k2go_home_install_system">Install a system</string>
+    <string name="k2go_home_clone_receiving">Cloning from another phone</string>
+    <string name="k2go_home_clone_sharing">Sharing with another phone</string>
+    <string name="k2go_home_clone_view">View</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Adding content</string>

@@ -44,6 +44,9 @@
     <string name="k2go_home_see_progress">प्रगति देखें</string>
     <string name="k2go_home_retry">पुनः प्रयास</string>
     <string name="k2go_home_install_system">सिस्टम इंस्टॉल करें</string>
+    <string name="k2go_home_clone_receiving">दूसरे फ़ोन से कॉपी हो रहा है</string>
+    <string name="k2go_home_clone_sharing">दूसरे फ़ोन के साथ साझा हो रहा है</string>
+    <string name="k2go_home_clone_view">देखें</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">सामग्री जोड़ी जा रही है</string>

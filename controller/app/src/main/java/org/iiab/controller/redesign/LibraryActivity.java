@@ -1011,7 +1011,31 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 && (serverController == null || !serverController.isStopping())
                 && !InstallProgressRepository.get().isRunning()
                 && !org.iiab.controller.InstallGuard.inProgress(this)
+                // ADFA-5143: the last two align this with ServerController.handleServerLaunchClick,
+                // which is the guard that actually decides. This method was a PARTIAL copy of it —
+                // missing the module queue and the environment lock — so it said yes where the real
+                // guard says no, and the header offered a Retry that flickered and did nothing. The
+                // start was never in danger; the button was a lie about it. Two places answering "can
+                // I start the server?" and answering differently is the defect, not the clone.
+                //
+                // ownerHeld covers a clone on either side without knowing anything about clones:
+                // Owner.CLONE is in the enum and both sides acquire it (CloneFragment:354 and :936).
+                && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
+                && !org.iiab.controller.env.EnvironmentLock.ownerHeld(this)
                 && org.iiab.controller.SystemStateEvaluator.isSystemInstalled(this);
+    }
+
+    /**
+     * ADFA-5143: take the user to the Clone tab, where a transfer in flight actually lives.
+     *
+     * <p>The Home header offers this instead of a restart during a transfer. For the receiver it is
+     * the only place the progress exists; for the donor it is where the QR and Stop are — which is
+     * why Stop is not copied onto the header. Navigating to a control beats owning a second one.
+     */
+    public void openCloneTab() {
+        currentTab = R.id.nav_clone;
+        showTab(currentTab);
+        syncSelection(currentTab);
     }
 
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
