@@ -1,16 +1,18 @@
 /*
  * ============================================================================
- * Name        : StudioTreeSource.java
+ * Name        : LocalTreeSource.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : Live reads of a channel's topic tree from Kolibri Studio's
- *               public API. Blocking; call from an IO thread (ADFA-4954).
+ * Description : Reads a channel's topic tree from the box on localhost, when the
+ *               channel's metadata has been imported there. Offline path for
+ *               topic browsing (ADFA-5094).
  * ============================================================================
  */
 package org.iiab.controller.kolibri.data;
 
 import android.util.Log;
 
+import org.iiab.controller.config.BoxEndpoints;
 import org.iiab.controller.kolibri.domain.ChannelId;
 import org.iiab.controller.kolibri.domain.TopicNode;
 import org.json.JSONObject;
@@ -22,71 +24,56 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Reads topic trees straight from Studio, over the internet.
+ * Reads topic trees from the box's Kolibri REST core, not the internet.
  *
- * <p>The only part of the catalog that is fetched at runtime. Channels come from
- * the bundled asset instead, because Studio's channel endpoint is 97 % base64
- * thumbnails with no way to opt out (ADR-4954 D1). A tree is per-channel and
- * carries no images, so it is cheap enough to fetch when the user opens one.
+ * <p>The offline counterpart to {@link StudioTreeSource}. Once a channel has been
+ * metadata-imported on the box (its tree DB present, the content not necessarily
+ * downloaded — ADFA-5094 PR3), the box can answer the same shape Studio does, so
+ * the picker browses the whole tree with no connectivity. Until that import
+ * exists the endpoint returns 404 and this source returns {@code null}, which is
+ * the signal for {@link FallbackTreeSource} to try Studio instead.
  *
- * <p>Unlike every other client in the app, this talks to the public internet
- * rather than the box on localhost. Timeouts are correspondingly generous: a
- * large channel's tree is a big JSON document over a connection that, in the
- * deployments this product targets, is usually poor.
+ * <p>The response is deliberately the <em>same</em> JSON as Studio's
+ * {@code contentnode_tree}, so {@link StudioCatalogMapper#tree(JSONObject)}
+ * parses both with no branching. The box owns that translation (PR3); the device
+ * side stays a thin read.
  *
- * <p>Blocking by design, so the caller controls threading. Never throws: a
- * failure is a {@code null} return, per the {@code CatalogRepository} contract.
+ * <p>Talks to localhost, so timeouts are tight — a slow box is a bug, not the
+ * poor long-haul link {@link StudioTreeSource} plans for. Blocking by design;
+ * never throws, per the {@link TreeSource} contract.
  */
-public final class StudioTreeSource implements TreeSource {
+public final class LocalTreeSource implements TreeSource {
 
     private static final String TAG = "K2Go-Kolibri";
 
-    /** Overridable so a test or a mirror can point elsewhere. */
-    private final String baseUrl;
+    /** {@code GET /k2go-api/kolibri/tree/<nodeId>} — Studio-shaped tree, served locally. */
+    private static final String BASE = BoxEndpoints.API + "/kolibri/tree/";
 
-    private static final String DEFAULT_BASE = "https://studio.learningequality.org";
-    private static final int CONNECT_TIMEOUT_MS = 10000;
-    private static final int READ_TIMEOUT_MS = 25000;
+    private static final int CONNECT_TIMEOUT_MS = 2000;
+    private static final int READ_TIMEOUT_MS = 10000;
 
     /** Refuse absurd payloads rather than filling the heap on a phone. */
     private static final int MAX_BYTES = 8 * 1024 * 1024;
 
-    public StudioTreeSource() {
-        this(DEFAULT_BASE);
-    }
-
-    public StudioTreeSource(String baseUrl) {
-        String b = baseUrl == null || baseUrl.trim().isEmpty() ? DEFAULT_BASE : baseUrl.trim();
-        this.baseUrl = b.endsWith("/") ? b.substring(0, b.length() - 1) : b;
-    }
-
-    /**
-     * One level of the tree rooted at {@code nodeId}, with its direct children.
-     *
-     * @return the subtree, or null when the request failed or the body was not
-     *         a usable node
-     */
     @Override
     public TopicNode fetchTree(String nodeId) {
-        // Validate before the id reaches a URL path, not after. Every caller
-        // today passes an already-normalised Channel.rootNodeId(), but this
-        // method is public and a value with a slash or a query string in it
-        // would build a request to somewhere else entirely. Fail closed, the
-        // way ModuleName, AdbShellCommand and ArchiveEntry do at their own
-        // boundaries.
+        // Validate before the id reaches a URL path, exactly as StudioTreeSource
+        // does: a value with a slash or a query string would address something
+        // else entirely on the box. Fail closed.
         String id = ChannelId.normalise(nodeId);
         if (id == null) {
             return null;
         }
-        String url = baseUrl + "/api/public/v2/contentnode_tree/" + id;
         try {
-            String body = httpGet(url);
+            String body = httpGet(BASE + id);
             if (body.isEmpty()) {
                 return null;
             }
             return StudioCatalogMapper.tree(new JSONObject(body));
         } catch (Exception e) {
-            Log.w(TAG, "studio tree " + nodeId + " failed: " + e.getMessage());
+            // A miss here is ordinary — the channel may simply not be imported
+            // yet — so this is debug, not a warning: the fallback covers it.
+            Log.d(TAG, "local tree " + nodeId + " unavailable: " + e.getMessage());
             return null;
         }
     }
@@ -114,8 +101,6 @@ public final class StudioTreeSource implements TreeSource {
         if (is == null) {
             return "";
         }
-        // try-with-resources rather than a close() at each exit: a read() that
-        // throws part-way used to leak the stream.
         try (InputStream in = is) {
             ByteArrayOutputStream buf = new ByteArrayOutputStream();
             byte[] chunk = new byte[8192];
