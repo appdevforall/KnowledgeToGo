@@ -28,11 +28,24 @@ import java.util.List;
  */
 public final class CatalogRepositoryImpl implements CatalogRepository {
 
+    // ADFA-5094: the Kolibri catalog is refreshed from Cloudflare (ADR-5094), overlaying the APK
+    // asset when a newer version has been pulled.
+    private static final String CATALOG = "kolibri";
+    private static final String MANIFEST_URL =
+            "https://k2go-download.appdevforall.org/catalogs/kolibri.manifest.json";
+    private static final String BASENAME = "kolibri_catalog.jsonl";
+
     private final BundledCatalogSource bundled;
     private final StudioTreeSource studio;
 
     public CatalogRepositoryImpl(Context context) {
         this(new BundledCatalogSource(context), new StudioTreeSource());
+        // Keep the bundled catalog current: a weekly refresh plus an opportunistic (TTL-gated)
+        // check now. Only the Context constructor schedules — the test constructor below does not.
+        org.iiab.controller.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
+                context, CATALOG, MANIFEST_URL, BASENAME);
+        org.iiab.controller.catalog.data.CatalogRefreshScheduler.refreshNow(
+                context, CATALOG, MANIFEST_URL, BASENAME);
     }
 
     /** For tests and for pointing the tree source at a mirror. */
