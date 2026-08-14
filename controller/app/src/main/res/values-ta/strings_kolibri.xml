@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">முடிந்தது — எனது நூலகத்திற்குச் செல்</string>
     <string name="k2go_kolibri_failed_fmt">%1$d பாடநெறிகள் முடியவில்லை.</string>
     <string name="k2go_kolibri_retry_before_leaving">வெளியேறும் முன் தோல்வியடைந்தவற்றை மீண்டும் முயற்சிக்கவும் — வெளியேறினால் இந்தப் பட்டியல் அழிக்கப்படும்.</string>
+    <string name="k2go_kolibri_catalog_updated">பட்டியல் %1$s அன்று புதுப்பிக்கப்பட்டது</string>
 </resources>

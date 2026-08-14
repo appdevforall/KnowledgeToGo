@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Imekamilika — nenda kwenye maktaba yangu</string>
     <string name="k2go_kolibri_failed_fmt">Kozi %1$d hazikukamilika.</string>
     <string name="k2go_kolibri_retry_before_leaving">Jaribu tena zilizoshindwa kabla ya kuondoka — kuondoka kunafuta orodha hii.</string>
+    <string name="k2go_kolibri_catalog_updated">Katalogi ilisasishwa tarehe %1$s</string>
 </resources>

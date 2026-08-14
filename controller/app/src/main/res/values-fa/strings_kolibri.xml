@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">انجام شد — به کتابخانه‌ام برو</string>
     <string name="k2go_kolibri_failed_fmt">%1$d دوره کامل نشد.</string>
     <string name="k2go_kolibri_retry_before_leaving">پیش از خروج، موارد ناموفق را دوباره تلاش کنید — خروج این فهرست را پاک می‌کند.</string>
+    <string name="k2go_kolibri_catalog_updated">کاتالوگ در %1$s به‌روزرسانی شد</string>
 </resources>

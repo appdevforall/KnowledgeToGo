@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">પૂર્ણ — મારી લાઇબ્રેરીમાં જાઓ</string>
     <string name="k2go_kolibri_failed_fmt">%1$d કોર્સ પૂરા થયા નથી.</string>
     <string name="k2go_kolibri_retry_before_leaving">જતાં પહેલાં નિષ્ફળ થયેલા ફરી પ્રયાસ કરો — જવાથી આ યાદી ભૂંસાઈ જશે.</string>
+    <string name="k2go_kolibri_catalog_updated">કૅટલૉગ %1$s ના રોજ અપડેટ થયું</string>
 </resources>

@@ -37,6 +37,8 @@
          language, so both catalogs must describe it identically. -->
     <string name="k2go_kolibri_unavailable">Couldn\'t read the course catalog included with the app.</string>
     <string name="k2go_kolibri_no_match">No courses match your search.</string>
+    <!-- ADFA-5094: catalog freshness on the picker; %1$s is the catalog's generated date. -->
+    <string name="k2go_kolibri_catalog_updated">Catalog updated on %1$s</string>
     <string name="k2go_kolibri_size_unknown">Size unknown</string>
     <string name="k2go_kolibri_confirm_sub">The courses you chose.</string>
     <!-- The third fit state: the total is a floor, not a figure, because at least one
