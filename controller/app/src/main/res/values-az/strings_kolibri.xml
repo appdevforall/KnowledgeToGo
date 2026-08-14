@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Hazırdır — kitabxanama keç</string>
     <string name="k2go_kolibri_failed_fmt">%1$d kurs tamamlanmadı.</string>
     <string name="k2go_kolibri_retry_before_leaving">Getməzdən əvvəl uğursuzları yenidən yoxlayın — çıxış bu siyahını silir.</string>
+    <string name="k2go_kolibri_catalog_updated">Kataloq %1$s tarixində yeniləndi</string>
 </resources>

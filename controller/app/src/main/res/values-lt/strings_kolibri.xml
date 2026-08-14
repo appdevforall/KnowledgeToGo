@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Baigta — eiti į biblioteką</string>
     <string name="k2go_kolibri_failed_fmt">%1$d kursų nebaigta.</string>
     <string name="k2go_kolibri_retry_before_leaving">Prieš išeidami pakartokite nepavykusius — išėjus šis sąrašas išvalomas.</string>
+    <string name="k2go_kolibri_catalog_updated">Katalogas atnaujintas %1$s</string>
 </resources>

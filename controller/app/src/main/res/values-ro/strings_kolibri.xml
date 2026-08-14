@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Gata — mergi la biblioteca mea</string>
     <string name="k2go_kolibri_failed_fmt">%1$d cursuri nu s-au terminat.</string>
     <string name="k2go_kolibri_retry_before_leaving">Reîncearcă-le pe cele eșuate înainte să pleci — plecarea șterge lista.</string>
+    <string name="k2go_kolibri_catalog_updated">Catalog actualizat pe %1$s</string>
 </resources>

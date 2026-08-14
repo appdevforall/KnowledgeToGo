@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Fatto — vai alla mia libreria</string>
     <string name="k2go_kolibri_failed_fmt">%1$d corsi non sono stati completati.</string>
     <string name="k2go_kolibri_retry_before_leaving">Riprova quelli falliti prima di uscire: uscendo questa lista viene cancellata.</string>
+    <string name="k2go_kolibri_catalog_updated">Catalogo aggiornato il %1$s</string>
 </resources>

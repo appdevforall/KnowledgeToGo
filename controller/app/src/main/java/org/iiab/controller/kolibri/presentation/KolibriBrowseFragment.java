@@ -76,6 +76,7 @@ public final class KolibriBrowseFragment extends Fragment {
     private TextView langSub;
     private TextView status;
     private TextView count;
+    private TextView updated;
     private TextView storageLabel;
     private ProgressBar storageBar;
     private LinearLayout chips;
@@ -106,6 +107,7 @@ public final class KolibriBrowseFragment extends Fragment {
         langSub = v.findViewById(R.id.k2go_kbrowse_lang_sub);
         status = v.findViewById(R.id.k2go_kbrowse_status);
         count = v.findViewById(R.id.k2go_kbrowse_count);
+        updated = v.findViewById(R.id.k2go_kbrowse_updated);
         storageLabel = v.findViewById(R.id.k2go_kbrowse_storage_label);
         storageBar = v.findViewById(R.id.k2go_kbrowse_storage_bar);
         chips = v.findViewById(R.id.k2go_kbrowse_chips);
@@ -245,6 +247,17 @@ public final class KolibriBrowseFragment extends Fragment {
         count.setText(getString(vm.query().hasKeyword()
                         ? R.string.k2go_zc_count_results : R.string.k2go_zc_count_items,
                 s.channels().size()));
+
+        // ADFA-5094: catalog freshness — the pulled overlay's date once refreshed, else the bundled one.
+        String on = s.generatedOn();
+        if (updated != null) {
+            if (on == null || on.isEmpty()) {
+                updated.setVisibility(View.GONE);
+            } else {
+                updated.setVisibility(View.VISIBLE);
+                updated.setText(getString(R.string.k2go_kolibri_catalog_updated, on));
+            }
+        }
         updateStorage();
     }
 

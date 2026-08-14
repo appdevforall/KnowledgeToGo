@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Klaar — naar mijn bibliotheek</string>
     <string name="k2go_kolibri_failed_fmt">%1$d cursussen zijn niet afgerond.</string>
     <string name="k2go_kolibri_retry_before_leaving">Probeer de mislukte opnieuw voordat u weggaat — weggaan wist deze lijst.</string>
+    <string name="k2go_kolibri_catalog_updated">Catalogus bijgewerkt op %1$s</string>
 </resources>

@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">Xong — tới thư viện của tôi</string>
     <string name="k2go_kolibri_failed_fmt">%1$d khóa học chưa hoàn tất.</string>
     <string name="k2go_kolibri_retry_before_leaving">Hãy thử lại những mục lỗi trước khi rời đi — rời đi sẽ xóa danh sách này.</string>
+    <string name="k2go_kolibri_catalog_updated">Danh mục cập nhật ngày %1$s</string>
 </resources>

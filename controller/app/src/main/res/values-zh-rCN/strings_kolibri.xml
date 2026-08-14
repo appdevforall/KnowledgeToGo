@@ -34,4 +34,5 @@
     <string name="k2go_kolibri_go_to_library">完成 — 前往我的图书馆</string>
     <string name="k2go_kolibri_failed_fmt">%1$d 门课程未完成。</string>
     <string name="k2go_kolibri_retry_before_leaving">离开前请重试失败的项目——离开会清空此列表。</string>
+    <string name="k2go_kolibri_catalog_updated">目录更新于 %1$s</string>
 </resources>
