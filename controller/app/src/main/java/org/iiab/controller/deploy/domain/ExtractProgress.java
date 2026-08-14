@@ -77,6 +77,36 @@ public final class ExtractProgress {
     public static String fileLabel(String line) {
         if (line == null || line.isEmpty() || line.endsWith("/")) return "";
         int slash = line.lastIndexOf('/');
-        return slash >= 0 ? line.substring(slash + 1) : line;
+        String name = slash >= 0 ? line.substring(slash + 1) : line;
+        return isOpaque(name) ? "" : name;
+    }
+
+    /**
+     * ADFA-5119: is this name a machine's business rather than a person's?
+     *
+     * <p>The detail line exists to give a sign of life during a long extraction, and a file name does
+     * that only while it means something. A rootfs carries thousands of content-addressed blobs —
+     * {@code 0418c83b80f7f7bfaec2738bfb…62196c0781702f6eddc8.body} was on screen during a real run —
+     * and a 64-character hash gives movement without information. It also fills the whole line, so
+     * the middle-ellipsized text swings to full width and back as ordinary names alternate with
+     * hashes, which is the same restlessness ADFA-4910 removed from the percentage.
+     *
+     * <p>The rule is narrow on purpose: a long unbroken run of hex, which is what a digest looks like
+     * and what an ordinary file name never does. Sixteen characters, because that is past any real
+     * word and short of the shortest digest anyone uses. Anything else is shown — an unreadable name
+     * we cannot recognise is better than silently hiding a legible one.
+     */
+    private static boolean isOpaque(String name) {
+        int run = 0;
+        for (int i = 0; i < name.length(); i++) {
+            char c = name.charAt(i);
+            boolean hex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+            if (hex) {
+                if (++run >= 16) return true;
+            } else {
+                run = 0;
+            }
+        }
+        return false;
     }
 }
