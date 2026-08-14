@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1720 2714" width="1720" height="2714" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1720 2932" width="1720" height="2932" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
 <title>System lifecycle — the states the whole app shares, and where a user gets stuck</title>
-<desc>States are combinations of facts, not screens: setup_complete, a rootfs on disk, health, whether the server answers, and who holds the environment lock. Edges are labelled with the guard that allows them, cited to file:line. Red states are dead ends. Read this before drawing any per-area diagram, and reuse these state names verbatim.</desc>
+<desc>States are combinations of facts, not screens: a rootfs on disk, health, whether the server answers, and who holds the environment lock. Edges are labelled with the guard that allows them, cited to file:line. Red states are dead ends. Read this before drawing any per-area diagram, and reuse these state names verbatim.</desc>
 
 <style>
   .bg     { fill: #F7F8F9; }
@@ -38,9 +38,9 @@
   </marker>
 </defs>
 
-<rect class="bg" x="0" y="0" width="1720" height="2714"/>
+<rect class="bg" x="0" y="0" width="1720" height="2932"/>
 <text class="h1" x="24" y="44">System lifecycle — where a user gets stuck</text>
-<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 12 Aug. Every edge cites the guard that allows it.</text>
+<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 13 Aug — after ADFA-5137 deleted setup_complete. Every edge cites the guard that allows it.</text>
 
 <rect x="1180" y="24" width="516" height="106" rx="10" fill="#FFFFFF" stroke="#D3D1C7"/>
 <text class="h3" x="1196" y="46">LEGEND</text>
@@ -63,20 +63,20 @@
 <!-- ============================ S0 ============================ -->
 <rect class="st" x="24" y="240" width="340" height="200" rx="12"/>
 <text class="h2" x="44" y="270">S0 · First run</text>
-<text class="facts" x="44" y="292">!setup_complete</text>
+<text class="facts" x="44" y="292">!rootfs, !install, !lock</text>
 <text class="can" x="44" y="318">Welcome, language, permissions, then</text>
 <text class="can" x="44" y="338">the two setup choices.</text>
 <text class="lblg" x="44" y="366">ADFA-5116 closed both Skip exits: every</text>
 <text class="lblg" x="44" y="384">path installs, clones, or returns here.</text>
-<text class="code" x="44" y="410">Download does not mark setup complete</text>
-<text class="code" x="44" y="426">— ADFA-4982, verified on the tree.</text>
+<text class="code" x="44" y="410">Nothing is written on the way in — the</text>
+<text class="code" x="44" y="426">launch derives it (ADFA-5137).</text>
 
 <path class="e" d="M364,300 L470,300" marker-end="url(#a)"/>
 <text class="lbl" x="376" y="292">Download</text>
 
 <path class="e-one" d="M180,440 L180,516" marker-end="url(#aw)"/>
 <text class="lblr" x="192" y="470">Copy from a phone</text>
-<text class="code" x="192" y="490">marks complete first</text>
+<text class="code" x="192" y="490">→ Clone tab, EXTRA_SETTING_UP</text>
 
 <!-- ============================ S2 ============================ -->
 <rect class="st-warn" x="470" y="240" width="330" height="200" rx="12"/>
@@ -84,9 +84,9 @@
 <text class="facts" x="490" y="292">installing</text>
 <text class="can" x="490" y="318">Boot gate with live progress. Back</text>
 <text class="can" x="490" y="338">backgrounds the app.</text>
-<text class="note" x="490" y="366">setup_complete is written when the</text>
-<text class="note" x="490" y="384">install STARTS, not when it succeeds.</text>
-<text class="code" x="490" y="410">SetupLibraryActivity:284</text>
+<text class="note" x="490" y="366">The install marker is planted where the</text>
+<text class="note" x="490" y="384">user commits, and answers for the run.</text>
+<text class="code" x="490" y="410">SetupLibraryActivity:298 (ADFA-5137)</text>
 
 <path class="e-auto" d="M635,440 L635,516" marker-end="url(#a)"/>
 <text class="lblg" x="647" y="482">SUCCESS · :239</text>
@@ -95,16 +95,16 @@
 <text class="lblr" x="330" y="452">FAILED · :255</text>
 
 <!-- ============================ S1 ============================ -->
-<rect class="st-bad" x="24" y="516" width="340" height="268" rx="12"/>
-<text class="h2" x="44" y="546">S1 · No system, setup complete</text>
-<text class="facts" x="44" y="568">setup_complete, !installed</text>
-<text class="can" x="44" y="596">Header reads "No library yet — tap Get</text>
-<text class="can" x="44" y="616">more". Text only: no button, and the</text>
-<text class="can" x="44" y="636">row is deliberately non-clickable.</text>
-<text class="code" x="44" y="660">LibraryHome:555, 575, 585-588</text>
-<text class="note" x="44" y="688">All five cards read "Not installed".</text>
-<text class="note" x="44" y="708">Tapping one offers Install and</text>
-<text class="note" x="44" y="728">Schedule — neither can work.</text>
+<rect class="st" x="24" y="516" width="340" height="268" rx="12"/>
+<text class="h2" x="44" y="546">S1 · UNREACHABLE since ADFA-5137</text>
+<text class="facts" x="44" y="568">was: setup_complete, !installed</text>
+<text class="can" x="44" y="596">It needed a stored flag to disagree with</text>
+<text class="can" x="44" y="616">the disk. There is no flag left, so a</text>
+<text class="can" x="44" y="636">device with nothing opens the wizard.</text>
+<text class="code" x="44" y="660">LibraryActivity:112-127</text>
+<text class="note" x="44" y="688">Still reachable for an instance already</text>
+<text class="note" x="44" y="708">alive (onNewIntent skips the check), so</text>
+<text class="note" x="44" y="728">the header keeps its Install button.</text>
 <text class="code" x="44" y="754">Gate is 900 ms here, not 25 s · :317</text>
 
 <path class="e-dead" d="M194,784 L194,832" marker-end="url(#ar)"/>
@@ -222,7 +222,7 @@
 
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
-<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 13 Aug: finding 1 is closed, 3 is half closed and 4 lost one of its three blind spots — all three to ADFA-5119. None of the rest survives closing the app.</text>
+<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 13 Aug: findings 1, 3 and 5 are closed, and 4 lost one of its three blind spots. Finding 8 was found by using the app, not by reading it.</text>
 <text class="sub" x="24" y="1292">Findings 1, 2, 3 and 4 are one sentence four times: a fact nobody clears. They are rows in the standing directive's ledger at the top of operation-model-roadmap.svg — fix them there, not here.</text>
 
 <rect class="st-ok" x="24" y="1276" width="1672" height="212" rx="12"/>
@@ -243,16 +243,15 @@
 <text class="code" x="44" y="1640">env/EnvironmentLock.java:69-87 (all four sources are process-scoped), 97-100 (the file names this and points at ADFA-4874).</text>
 <text class="note" x="44" y="1664">Opens with: an age past which a session is ignored, and a message that says what is actually holding the lock. Belongs with ADFA-5106 — the expiry needs the per-session timestamp that ticket produces.</text>
 
-<rect class="st-warn" x="24" y="1710" width="1672" height="222" rx="12"/>
-<text class="h2" x="44" y="1738">3 · HALF CLOSED (13 Aug) — the flag finally has a writer that clears it, on one of the routes that should</text>
-<text class="can" x="44" y="1764">ADFA-5116 removed both Skip buttons and it worked: verified on the updated tree, every wizard path now installs, clones, or returns to the wizard. Download</text>
-<text class="can" x="44" y="1784">deliberately does not mark setup complete (ADFA-4982), and Step 1's Back routes through Library, which bounces straight back. Nothing is left to opt out with.</text>
-<text class="can" x="44" y="1804">What remains is not a choice, which is why it is harder to see. "Copy from a phone" marks setup complete before any transfer exists, and a first install marks it</text>
-<text class="can" x="44" y="1824">when the install STARTS rather than when it succeeds — so a failed install, a failed clone, or a reinstall that destroys the rootfs without finishing all land in</text>
-<text class="can" x="44" y="1844">S1. From there the app routes to Library forever and never offers the wizard again, because none of the four writers ever sets the flag false.</text>
-<text class="code" x="44" y="1870">Writers: WizardActivity:308 (Copy) · SetupLibraryActivity:284 (install start) · MainActivity:276 · SetupSectionFragment:245. Read at LibraryActivity:84.</text>
-<text class="note" x="44" y="1894">ADFA-5119 took the second half: Cancel is the FIRST of the five writers ever to set the flag false, and a failed install now keeps the install marker instead of clearing it, so it lands in recovery rather than in S1. Still open: the flag is</text>
-<text class="note" x="44" y="1912">written on intent rather than on a verified install, so a failed clone — which marks it before any transfer exists — still ends in S1 with no way back to the wizard.</text>
+<rect class="st-ok" x="24" y="1710" width="1672" height="190" rx="12"/>
+<text class="h2" x="44" y="1738">3 · CLOSED (13 Aug, ADFA-5137) — the flag that could disagree with reality no longer exists</text>
+<text class="can" x="44" y="1764">Was: setup_complete was written when an install STARTED, and by "Copy from a phone" before a transfer existed, and cleared by nobody. So a failed install, a failed clone,</text>
+<text class="can" x="44" y="1784">or a reinstall that destroyed the rootfs without finishing, all landed in S1 — and from there the app routed to the Library forever and never offered the wizard again.</text>
+<text class="can" x="44" y="1804">ADFA-5119 closed the install route: a failure keeps the install marker and lands in recovery. ADFA-5137 removed the flag outright. The launch now asks whether a rootfs, an</text>
+<text class="can" x="44" y="1824">install or a deep operation is there — three facts that each die with the thing they describe — so the four writers and four readers went with it. Four boolean facts allow</text>
+<text class="can" x="44" y="1844">sixteen combinations; three allow eight, and all eight describe something physically true. The dead end is not fixed, it is unrepresentable.</text>
+<text class="code" x="44" y="1870">system/domain/SystemPresence (the rule, eight-row truth table) · system/data/SystemFactsReader.hereOrOnTheWay (the three reads) · the preference key is gone from 34 files.</text>
+<text class="note" x="44" y="1892">Ledger consequence: the setup_complete row is deleted rather than turned green. The first row of the standing directive's own table stops existing.</text>
 
 <rect class="st-bad" x="24" y="1942" width="1672" height="178" rx="12"/>
 <text class="h2" x="44" y="1970">4 · HIDDEN EXIT — a damaged system reached by the wrong door is never diagnosed</text>
@@ -263,15 +262,15 @@
 <text class="note" x="44" y="2086">Opens with: computing health where it is displayed rather than only in the launch branch — it is already computed app-wide and read by exactly one screen. ADFA-5119 removed one of the three pre-emptions: a failure DURING a live install now</text>
 <text class="note" x="44" y="2104">diagnoses itself, because the gate's own observer shows the recovery dialog and latches the gate shut. A held lock and a running module queue still skip the branch.</text>
 
-<rect class="st-bad" x="24" y="2132" width="1672" height="200" rx="12"/>
-<text class="h2" x="44" y="2160">5 · STILL OPEN, and now reached almost only through finding 3 — with no system, the only way forward is a control named "Get more"</text>
-<text class="can" x="44" y="2186">Unchanged inside the state: the header reads "No library yet — tap Get more to install and add content", which is honest, but it is text with no button on a row that</text>
-<text class="can" x="44" y="2206">is explicitly non-clickable — the code now says so in a comment, so it is a decision rather than an oversight. Every card still offers Install and Schedule; ADFA-5104</text>
-<text class="can" x="44" y="2226">improved where they land, so the hub explains why it refuses instead of only refusing. Better to read, still a refusal, and still no labelled way to install a system.</text>
-<text class="can" x="44" y="2246">What changed is the way IN. A failed install now keeps the install marker and lands in recovery, and Cancel clears setup_complete and lands in the wizard — so S1 is</text>
-<text class="can" x="44" y="2266">now reached almost only by a failed "Copy from a phone", which marks the flag before any transfer exists. Close finding 3's remaining half and this becomes unreachable</text>
-<text class="can" x="44" y="2286">without touching this screen at all: the fix is not a button on Home, it is not writing setup_complete on intent.</text>
-<text class="code" x="44" y="2372">LibraryHomeFragment.java:515 (!installed → H_NO_LIBRARY, always), :575-590 (no action for it; the row is set non-clickable on purpose) · ModuleHubFragment.java:232-243 (the refusal, now with a reason).</text>
+<rect class="st-ok" x="24" y="2132" width="1672" height="182" rx="12"/>
+<text class="h2" x="44" y="2160">5 · CLOSED (13 Aug, ADFA-5137) — the state is unrepresentable now, and the screen was given an exit anyway</text>
+<text class="can" x="44" y="2186">The entrance went with finding 3. S1 needed setup_complete to disagree with the disk, and there is no flag left to disagree with anything: a device with nothing on it now</text>
+<text class="can" x="44" y="2206">opens the wizard. Phones already stuck in S1 — including anyone who used the Skip that ADFA-5116 removed — are freed on their next launch, with no migration.</text>
+<text class="can" x="44" y="2226">The screen was fixed too, deliberately and not for belt and braces. H_NO_LIBRARY was the one header state offering nothing while FAILED offers Retry and INSTALLING offers</text>
+<text class="can" x="44" y="2246">See progress; it now offers "Install a system", routing through openGetMore(), which re-reads the facts at click time and refuses while a deep operation holds the lock.</text>
+<text class="can" x="44" y="2266">Both halves, because a reused LibraryActivity instance never re-runs the launch check — onNewIntent skips it — so "no system on Home" stays reachable for an instance that</text>
+<text class="can" x="44" y="2286">was already alive. A state with no exit is a bug whoever reaches it, including by a route that does not exist yet.</text>
+<text class="code" x="44" y="2306">LibraryHomeFragment:111 (the action), :252-275 (openGetMore — re-read + ownerHeld guard) · LibraryActivity:112-127 (the launch check) · ModuleHubFragment:232-243.</text>
 
 <rect class="st-bad" x="24" y="2364" width="1672" height="140" rx="12"/>
 <text class="h2" x="44" y="2392">6 · DEAD CONTROL — a banked order that is not running is invisible and, for three types, uncancellable</text>
@@ -287,4 +286,14 @@
 <text class="can" x="44" y="2630">why it will not work.</text>
 <text class="code" x="44" y="2656">redesign/ConnectFragment.java — browseUrl():126; no reference to SystemFacts, ServerStateRepository or EnvironmentLock anywhere in the file.</text>
 
+
+<rect class="st-bad" x="24" y="2708" width="1672" height="184" rx="12"/>
+<text class="h2" x="44" y="2736">8 · DEAD CONTROL — while a clone is being shared, Home says the system failed to start, and the Retry it offers boots the server mid-transfer</text>
+<text class="can" x="44" y="2762">The server is stopped on purpose while a share runs. The header reads !alive and, with no start in progress, concludes H_FAILED — "Couldn't start — tap to retry" — so it</text>
+<text class="can" x="44" y="2782">states something false about a perfectly healthy device. And canStartServer() checks seven conditions, none of which is CloneSendSession.isActive(), so that Retry passes</text>
+<text class="can" x="44" y="2802">every guard and starts the server on top of a live transfer. Same shape as the module Cancel ADFA-5119 took off the notification: a visible control that breaks the thing</text>
+<text class="can" x="44" y="2822">it is attached to. It also repeats finding 5 in a new place — Stop lives inside the Clone flow, so a user who navigated away cannot end the share, or get their system</text>
+<text class="can" x="44" y="2842">back, from where they now are.</text>
+<text class="code" x="44" y="2866">LibraryActivity.canStartServer():1004-1012 · LibraryHomeFragment.updateHeaderFromCards():519-545 · CloneSendSession.isActive().</text>
+<text class="note" x="44" y="2886">ADFA-5143. The guard first, because it is what removes the destructive control; then an amber header state with Stop. Found on a device, by navigating — no grep would have.</text>
 </svg>

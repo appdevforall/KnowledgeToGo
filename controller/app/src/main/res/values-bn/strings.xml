@@ -133,7 +133,6 @@
     <string name="go_to_settings">সেটিংসে যান</string>
     <string name="app_started">অ্যাপ্লিকেশন শুরু হয়েছে</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">সংরক্ষিত হয়েছে</string>
     <string name="settings_saved">সেটিংস সংরক্ষিত হয়েছে</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

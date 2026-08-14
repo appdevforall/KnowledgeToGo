@@ -133,7 +133,6 @@
     <string name="go_to_settings">الذهاب إلى الإعدادات</string>
     <string name="app_started">بدأ التطبيق</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">تم الحفظ</string>
     <string name="settings_saved">تم حفظ الإعدادات</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

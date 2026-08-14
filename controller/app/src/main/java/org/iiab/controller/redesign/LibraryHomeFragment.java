@@ -105,6 +105,13 @@ public class LibraryHomeFragment extends Fragment {
                             requireContext(), SetupProgressActivity.class));
                     return;
                 }
+                // ADFA-5137: with no system, the way forward is choosing one — the tier step, the same
+                // place the wizard sends people. Named, on the header, instead of a sentence pointing
+                // at a control at the bottom of the screen called "Get more".
+                if (headerState == H_NO_LIBRARY) {
+                    openGetMore();
+                    return;
+                }
                 // ADFA-4837: retry only when it is genuinely safe — canStartServer guards
                 // against stacking a second proot over a live one.
                 if (headerState != H_FAILED) return;
@@ -242,6 +249,26 @@ public class LibraryHomeFragment extends Fragment {
     }
 
     private void openGetMore() {
+        // ADFA-5137 (review): refuse while a deep operation owns the environment, and refuse HERE so
+        // both entrances are covered — the footer control and the header button this ticket added.
+        //
+        // The hole is not theoretical and the header made it one tap wide. isSystemInstalled() is false
+        // for the whole time an install marker is set, and a clone-receive holds both the marker and
+        // the lock — so during a live receive the header reads "no library" and this method would take
+        // the Step-1 branch. That branch starts an install with reinstall=false, InstallService's
+        // non-destructive guard sees the half-received rootfs directory, skips the extract and reports
+        // success, and its teardown clears the marker that a killed receive needs for recovery. That is
+        // exactly the "boot the wreck" failure InstallService's own cleanup comment warns about,
+        // reached from a button labelled as a way out.
+        //
+        // ownerHeld, not isHeld: a live content download holds no owner marker and must not block this
+        // (ADFA-4957 draws the same line for the server toggle).
+        if (org.iiab.controller.env.EnvironmentLock.ownerHeld(requireContext())) {
+            if (getView() != null) {
+                org.iiab.controller.util.Snackbars.make(getView(), R.string.k2go_install_busy).show();
+            }
+            return;
+        }
         // If a system is already installed, skip the destructive system step and go straight
         // to content (Step 2). Otherwise run the full setup from Step 1.
         Intent i = new Intent(requireContext(), SetupLibraryActivity.class);
@@ -572,8 +599,19 @@ public class LibraryHomeFragment extends Fragment {
         // app working and gets a spinner; the rest are statements and get nothing. The status
         // colour lives on the dot only — the button wears the brand colour, because it is a
         // control rather than a severity.
+        // ADFA-5137: H_NO_LIBRARY gets one too. It was the only state here that offered nothing, and
+        // that is finding 5 of state-spine.svg: the header said "tap Get more to install" while being
+        // plain text, pointing at a control at the far bottom of the screen whose name says content
+        // rather than system. Meanwhile both cards on the way there offer Install and Schedule, and
+        // both refuse.
+        //
+        // ADFA-5137 also closes the way INTO this state, so in principle nobody arrives here any more.
+        // The button stays anyway, because "in principle" is what the last four dead ends had in
+        // common: a state with no exit is a bug whoever reaches it, including by a route that does not
+        // exist yet. One line in a switch that already hands out two other buttons.
         int action = h == H_FAILED ? R.string.k2go_home_retry
-                : h == H_INSTALLING ? R.string.k2go_home_see_progress : 0;
+                : h == H_INSTALLING ? R.string.k2go_home_see_progress
+                : h == H_NO_LIBRARY ? R.string.k2go_home_install_system : 0;
         if (homeStatusAction != null) {
             homeStatusAction.setVisibility(action != 0 ? View.VISIBLE : View.GONE);
             if (action != 0) homeStatusAction.setText(action);

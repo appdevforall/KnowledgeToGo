@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">起動できませんでした</string>
     <string name="k2go_home_see_progress">進行状況</string>
     <string name="k2go_home_retry">再試行</string>
+    <string name="k2go_home_install_system">システムをインストール</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">コンテンツを追加中</string>

@@ -133,7 +133,6 @@
     <string name="go_to_settings">அமைப்புகளுக்குச் செல்</string>
     <string name="app_started">பயன்பாடு தொடங்கியது</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">சேமிக்கப்பட்டது</string>
     <string name="settings_saved">அமைப்புகள் சேமிக்கப்பட்டன</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

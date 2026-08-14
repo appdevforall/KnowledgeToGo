@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">Haikuweza kuanza</string>
     <string name="k2go_home_see_progress">Ona maendeleo</string>
     <string name="k2go_home_retry">Jaribu tena</string>
+    <string name="k2go_home_install_system">Sakinisha mfumo</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Inaongeza maudhui</string>

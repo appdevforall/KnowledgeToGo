@@ -133,7 +133,6 @@
     <string name="go_to_settings">前往设置</string>
     <string name="app_started">应用已启动</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">已保存</string>
     <string name="settings_saved">设置已保存</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

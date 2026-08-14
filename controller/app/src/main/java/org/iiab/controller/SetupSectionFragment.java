@@ -240,9 +240,10 @@ public class SetupSectionFragment extends Fragment {
     private void completeSetup() {
         // ADFA-4466 Phase 2: setup funnel completion (no-op unless opted in).
         org.iiab.controller.analytics.AnalyticsClient.with(requireContext()).logOnboardingCompleted();
-        SharedPreferences prefs = requireContext().getSharedPreferences(
-                getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        prefs.edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
+        // ADFA-5137: nothing to mark. This screen belongs to the legacy setup shell, and it wrote
+        // setup_complete on its way out — a fourth writer of a flag nobody cleared. LibraryActivity
+        // now asks the device instead, so if this path really did install a system it will be found,
+        // and if it did not, the wizard is where the user should land.
         startActivity(new Intent(requireContext(), org.iiab.controller.redesign.LibraryActivity.class));
         requireActivity().finish();
     }

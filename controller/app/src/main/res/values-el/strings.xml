@@ -133,7 +133,6 @@
     <string name="go_to_settings">Μετάβαση στις ρυθμίσεις</string>
     <string name="app_started">Η εφαρμογή ξεκίνησε</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">Αποθηκεύτηκε</string>
     <string name="settings_saved">Οι ρυθμίσεις αποθηκεύτηκαν</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

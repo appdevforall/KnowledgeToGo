@@ -133,7 +133,6 @@
     <string name="go_to_settings">설정으로 이동</string>
     <string name="app_started">애플리케이션 시작됨</string>
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">저장됨</string>
     <string name="settings_saved">설정이 저장되었습니다</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

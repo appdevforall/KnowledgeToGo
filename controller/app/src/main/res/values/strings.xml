@@ -168,7 +168,6 @@
     <string name="app_started">Application Started</string>
 
     <string name="pref_file_internal">IIAB_Internal</string>
-    <string name="pref_key_setup_complete">setup_complete</string>
     <string name="saved_toast">Saved</string>
     <string name="settings_saved">Settings Saved</string>
     <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>

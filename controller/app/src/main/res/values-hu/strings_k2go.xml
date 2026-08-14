@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">Nem sikerült elindítani</string>
     <string name="k2go_home_see_progress">Folyamat</string>
     <string name="k2go_home_retry">Újra</string>
+    <string name="k2go_home_install_system">Rendszer telepítése</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Tartalom hozzáadása</string>

@@ -1509,7 +1509,7 @@ public final class InstallService extends Service {
     /**
      * ADFA-5119: erase every trace of a system the user decided not to build.
      *
-     * <p>Five things claimed that system existed or was about to. Leaving any one of them behind is
+     * <p>Four things claimed that system existed or was about to. Leaving any one of them behind is
      * a specific bug, not untidiness:
      *
      * <ol>
@@ -1523,10 +1523,12 @@ public final class InstallService extends Service {
      *       the content chosen for the tier being given up is not drained into the next one.</li>
      *   <li><b>{@code installed_tier}</b>, which a later "Get more" reads to size content against a
      *       system that was never installed.</li>
-     *   <li><b>{@code setup_complete}</b>, which is what decides whether the next launch opens the
-     *       library or the wizard. This is the one that keeps the promise: no path ends in the app
-     *       with no system.</li>
      * </ol>
+     *
+     * <p>There used to be a fifth: {@code setup_complete} → false, which was what kept the promise that
+     * no path ends in the app with no system. ADFA-5137 deleted the flag, so the promise is now kept by
+     * not having anything to unset — the launch asks whether a rootfs, an install or a deep operation
+     * is there, and after this cleanup none of the three is.
      *
      * <p>The install marker is a sixth, and it is already handled — {@link #teardown()} clears it on
      * every clean terminal. Left set, the next launch would open in damaged-system recovery over a
@@ -1564,22 +1566,22 @@ public final class InstallService extends Service {
             org.iiab.controller.system.data.ContentStateInvalidator.replacementSucceeded(this,
                     org.iiab.controller.system.domain.SystemReplacement.Cause.ABANDONED_INSTALL);
 
-            // 4 + 5. The decision itself, and last on purpose. If the process is killed part-way
+            // 4. The recorded tier, and last on purpose. If the process is killed part-way
             // through this method, everything above it is disposable wreckage and the install marker
             // is still set, so the next launch enters damaged-system recovery — which offers a
             // reinstall. Clearing setup_complete first and dying here would instead send the user to
             // the wizard while the marker still says an install is running.
             //
-            // commit(), not apply(): the state posted below sends the UI
-            // to the tier selection immediately, and a later cold launch reads setup_complete to
-            // decide between the library and the wizard. An asynchronous write is a race with both.
+            // commit(), not apply(): the state posted below sends the UI to the tier selection
+            // immediately, and an asynchronous write would race it.
             //
-            // We are the first writer to set setup_complete false — the other four only ever set it
-            // true, which is why an abandoned install used to strand the user on an empty library.
+            // ADFA-5119 added a setup_complete → false here and called itself the first writer of
+            // false among five. ADFA-5137 removed the flag altogether, so there is nothing to unset:
+            // the marker cleared by teardown() and the absent rootfs now say the same thing between
+            // them, and they cannot disagree with each other the way the flag could disagree with both.
             getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE)
                     .edit()
                     .remove("installed_tier")
-                    .putBoolean(getString(R.string.pref_key_setup_complete), false)
                     .commit();
         } catch (Exception e) {
             // Never leave the UI waiting because a cleanup step failed: the state below is what
@@ -1602,7 +1604,7 @@ public final class InstallService extends Service {
      *                    no system, so forgetting that an install happened is exactly what let the
      *                    app open an empty library. Success, cancellation and every module or reset
      *                    path still pass true — a cancellation has already removed the residue and
-     *                    cleared setup_complete, so it needs no marker to be recovered from.
+     *                    removed the residue and left no rootfs, so it needs no marker to say so.
      */
     private void teardown(boolean clearMarker) {
         // ADFA-5119: nothing to wait for once this is over — neither the window nor a queued attempt.

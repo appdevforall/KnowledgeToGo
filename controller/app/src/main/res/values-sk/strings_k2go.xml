@@ -43,6 +43,7 @@
     <string name="k2go_home_failed">Nepodarilo sa spustiť</string>
     <string name="k2go_home_see_progress">Zobraziť priebeh</string>
     <string name="k2go_home_retry">Skúsiť znova</string>
+    <string name="k2go_home_install_system">Nainštalovať systém</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Pridáva sa obsah</string>

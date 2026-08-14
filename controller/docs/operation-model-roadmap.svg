@@ -24,7 +24,7 @@
   <marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,1 L8,4.5 L0,8 Z" fill="#9AA0A6"/></marker>
   <marker id="ahi" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,1 L8,4.5 L0,8 Z" fill="#0E7C86"/></marker>
 </defs>
-<rect class="bg" x="0" y="0" width="1280" height="2679"/>
+<rect class="bg" x="0" y="0" width="1280" height="2825"/>
 <text class="h1" x="24" y="34">Operation model — ticket map</text>
 <text class="sub" x="24" y="54">A card's column is its status: delivered, in flight, next. Arrows say what directs what — the teal cards are the two hubs, and they are hubs because arrows leave them.</text>
 <text class="sub" x="24" y="72">Solid teal = it drives that work. Grey = it enabled it. Dashed = coordination only, no dependency. Generated, so the geometry is checked rather than eyeballed.</text>
@@ -35,7 +35,7 @@
 <text class="item" x="40" y="150">The app's state is scattered and undeclared. A dozen facts live in preferences, in files, in in-memory singletons and inside the rootfs, and nothing says who writes each one, who clears it, or what happens if the process dies between</text>
 <text class="item" x="40" y="167">the two. That is not a tidiness complaint: four of the seven dead ends in state-spine.svg are the same sentence — a fact with no lifecycle.</text>
 <text class="item" x="40" y="184">The rule, from here on. A change that touches a fact leaves it with a named owner and a stated lifetime, and updates the row below. Not a cleanup ticket for later — refactor-by-feature, the way the layering already spreads. Two rows</text>
-<text class="item" x="40" y="201">are already right and are the shape to copy: both put the fact where its own destruction takes it with them, so nothing has to remember to invalidate anything.</text>
+<text class="item" x="40" y="201">are already right and are the shape to copy: both put the fact where its own destruction takes it with them, so nothing has to remember to invalidate anything. ADFA-5137 shows the third move — a fact that can be derived is deleted, not maintained.</text>
 <text class="h3" x="40" y="232">FACT</text>
 <text class="h3" x="274" y="232">WHERE IT LIVES</text>
 <text class="h3" x="494" y="232">WHO WRITES IT</text>
@@ -43,12 +43,12 @@
 <text class="h3" x="984" y="232">DIES WITH</text>
 <text class="h3" x="1134" y="232">STATUS</text>
 <line x1="40" y1="238" x2="1236" y2="238" stroke="#D5D8DC"/>
-<text class="item" x="40" y="255">setup_complete</text>
-<text class="item" x="274" y="255">SharedPreferences</text>
-<text class="item" x="494" y="255">4 sites</text>
-<text class="item" x="684" y="255">nobody</text>
-<text class="item" x="984" y="255">never</text>
-<text class="item" x="1134" y="255" fill="#C0392B">no lifecycle</text>
+<text class="item" x="40" y="255">setup_complete — DELETED 13 Aug</text>
+<text class="item" x="274" y="255">nowhere: derived on demand</text>
+<text class="item" x="494" y="255">nobody</text>
+<text class="item" x="684" y="255">nothing to clear</text>
+<text class="item" x="984" y="255">—</text>
+<text class="item" x="1134" y="255" fill="#1B7F4B">ADFA-5137: removed</text>
 <text class="item" x="40" y="272">.install_in_progress</text>
 <text class="item" x="274" y="272">file in filesDir</text>
 <text class="item" x="494" y="272">5 sites</text>
@@ -223,12 +223,12 @@
 <text class="h2" x="464" y="962">Maps runrole swallows failures</text>
 <text class="sub" x="464" y="986">onProcessExit and onError both continue,</text>
 <text class="sub" x="464" y="1001">so a failed install reports as finished.</text>
-<rect class="card" x="448" y="1039" width="380" height="111"/>
-<rect class="chip" x="464" y="1055" width="79" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="472" y="1069" fill="#1B5E8F">ADFA-5119</text>
-<text class="h2" x="464" y="1095">Base-install legs end honestly</text>
-<text class="sub" x="464" y="1119">Kiwix index and extract. The module queue</text>
-<text class="sub" x="464" y="1134">already does it right in the same file.</text>
+<rect class="card" x="448" y="1039" width="380" height="111" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="464" y="1055" width="118" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="472" y="1069" fill="#1B7F4B">ADFA-5119 · DONE</text>
+<text class="h2" x="464" y="1095">Pause, Retry, Cancel — and a failure</text>
+<text class="sub" x="464" y="1119">that leads somewhere. PR #400, 13 Aug.</text>
+<text class="sub" x="464" y="1134">Left over: the kiwix index leg still lies.</text>
 <rect class="card" x="448" y="1180" width="380" height="187"/>
 <rect class="chip" x="464" y="1196" width="79" height="19" fill="#F0F1F3" stroke="none"/>
 <text class="chiptx" x="472" y="1210" fill="#5B636B">FOLLOW UP</text>
@@ -304,6 +304,23 @@
 <text class="note" x="464" y="1528">teardown() clears the install marker, so the app stops standing</text>
 <text class="note" x="464" y="1543">back while Ansible is still configuring. ADFA-5119 replaced the</text>
 <text class="note" x="464" y="1558">notification's Cancel with View: door closed, hazard intact.</text>
+<rect class="card" x="872" y="1310" width="380" height="140" stroke="#C0392B" stroke-width="2"/>
+<rect class="chip" x="888" y="1326" width="118" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="896" y="1340" fill="#C0392B">ADFA-5143 · NOW</text>
+<text class="h2" x="888" y="1366">Clone sharing has no name, and its</text>
+<text class="h2" x="888" y="1384">Retry boots the server mid-transfer</text>
+<circle class="s-todo" cx="896" cy="1402" r="5.5"/>
+<text class="item" x="910" y="1406">canStartServer learns about the share</text>
+<circle class="s-todo" cx="896" cy="1420" r="5.5"/>
+<text class="item" x="910" y="1424">Amber header state, with Stop</text>
+<text class="note" x="888" y="1442">Live on main today. The guard first: it is the destructive half.</text>
+<rect class="card" x="872" y="1470" width="380" height="122" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="888" y="1486" width="118" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="896" y="1500" fill="#1B7F4B">ADFA-5137 · DONE</text>
+<text class="h2" x="888" y="1526">setup_complete stops existing</text>
+<text class="sub" x="888" y="1550">Findings 3 and 5 closed, and the first</text>
+<text class="sub" x="888" y="1565">ledger row deleted rather than fixed.</text>
+<text class="note" x="888" y="1584">A derivable fact is removed, not maintained.</text>
 <text class="h3" x="24" y="2117">SPANS THE BOARD — real work with no ticket, and the small things</text>
 <rect class="card" x="24" y="2135" width="1228" height="131" stroke="#C0392B" stroke-width="2.5"/>
 <rect class="chip" x="40" y="2151" width="107" height="19" fill="#FDECEC" stroke="none"/>

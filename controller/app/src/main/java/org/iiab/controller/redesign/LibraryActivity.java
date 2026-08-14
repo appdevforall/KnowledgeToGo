@@ -3,7 +3,6 @@ package org.iiab.controller.redesign;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +39,23 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     public static final String EXTRA_INSTALLING = "installing";
     /** ADFA-4777: preselect a bottom-nav tab on launch (e.g. from the wizard's "Copy from a phone"). */
     public static final String EXTRA_TAB = "tab";
+    /**
+     * ADFA-5137: the caller knows there is no system and is bringing the user here to get one.
+     *
+     * <p>Only the wizard's "Copy from a phone" sets it. That choice has to land on the Clone tab with
+     * nothing installed and nothing yet in flight, which is precisely the state that otherwise sends
+     * the user back to the wizard — so before this ticket the wizard wrote {@code setup_complete} to
+     * get past the check, and that lie is the entrance to findings 3 and 5.
+     *
+     * <p>An Intent extra rather than a stored fact — but its lifetime is the <b>task record</b>, not
+     * this navigation, and the difference is worth stating because a first draft of this comment got it
+     * wrong in both directions. Android replays the launching Intent when the process is killed and the
+     * task is restored, so the extra survives that; swiping the task away is what ends it. And
+     * {@code onNewIntent} calls {@code setIntent}, so a later arrival carrying no {@code settingUp}
+     * replaces it. Both outcomes are truthful — the user lands on Home, which since ADFA-5137 has a
+     * labelled way to install a system — but nobody should read this as "it dies when you navigate".
+     */
+    public static final String EXTRA_SETTING_UP = "settingUp";
     private boolean installing = false;
 
     /** ADFA-4799: bottom bar (compact) and rail (medium/expanded) share the NavigationBarView
@@ -97,10 +113,18 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Not set up yet? Run the first-run wizard, then it routes back here.
-        SharedPreferences prefs0 = getSharedPreferences(
-                getString(R.string.pref_file_internal), MODE_PRIVATE);
-        if (!prefs0.getBoolean(getString(R.string.pref_key_setup_complete), false)) {
+        // ADFA-5137: nothing here and nothing coming? Run the first-run wizard, then it routes back.
+        //
+        // This used to read setup_complete, a flag written when an install STARTED and cleared by
+        // nobody — so it could say "set up" while the device had no system, and then this branch
+        // routed past the wizard forever. That pair is findings 3 and 5 of state-spine.svg. The
+        // question was never "did setup happen": it is "is there a system, or one on the way", and
+        // that is answerable from the disk and the two markers, none of which can drift from what
+        // they describe.
+        boolean broughtHereToSetUp = getIntent() != null
+                && getIntent().getBooleanExtra(EXTRA_SETTING_UP, false);
+        if (!broughtHereToSetUp
+                && !org.iiab.controller.system.data.SystemFactsReader.hereOrOnTheWay(this)) {
             startActivity(new Intent(this, WizardActivity.class));
             finish();
             return;

@@ -277,11 +277,25 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         // Fire exactly once. (The install service also dedupes the actual install via its `started` guard.)
         if (installStarting) return;
         installStarting = true;
-        // ADFA-4982: the real install is starting — mark setup complete NOW (it is no longer set at the
-        // wizard's "download" choice, so bailing before this resumes the wizard). This also lets the
-        // install LibraryActivity below show progress instead of redirecting back to the wizard.
-        getSharedPreferences(getString(R.string.pref_file_internal), MODE_PRIVATE)
-                .edit().putBoolean(getString(R.string.pref_key_setup_complete), true).apply();
+        // ADFA-5137: nothing is written here any more. ADFA-4982 set setup_complete at this line so the
+        // LibraryActivity below would show progress instead of bouncing back to the wizard — which
+        // worked, and was also the bug: it claimed setup was done at the moment an install BEGAN, and
+        // then nobody unclaimed it if the install never finished. LibraryActivity now asks whether a
+        // system is here or on the way, and the install marker this service is about to plant answers
+        // yes for exactly as long as the install runs.
+        //
+        // Which is why the marker is planted HERE, before the service is asked to start. Both the
+        // service start and the Activity start below are asynchronous dispatches with no ordering
+        // between them, so LibraryActivity.onCreate can run before InstallService.onStartCommand — and
+        // it would then find no rootfs, no marker and no lock, and bounce the user back to the wizard
+        // on the one path that matters most. The marker is a file, so writing it here makes the fact
+        // true at the moment the user commits rather than whenever the scheduler gets to the service.
+        // InstallGuard.begin is idempotent, so the service planting it again costs nothing.
+        //
+        // The trade-off, stated: if the service never starts at all, the marker is left set with no
+        // install behind it, and the next launch enters recovery. That is a state with a dialog and a
+        // way out (ADFA-5119) rather than a silent dead end, which is the right side to fail on.
+        org.iiab.controller.InstallGuard.begin(this);
         Intent i = new Intent(this, InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());

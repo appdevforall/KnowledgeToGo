@@ -65,9 +65,12 @@ public class ModuleHubFragment extends Fragment {
      * with. The screen still listed all six as installable, because it decided that from a probe
      * — and with no system nothing answers, so everything looked missing.
      *
-     * <p>Reachable, not theoretical: {@code pref_key_setup_complete} is only ever written true —
-     * five writers, none of them clears it — so after a reset or a failed restore the app still
-     * routes to the Library, and Settings still opens this screen over an empty rootfs.
+     * <p>Reachable, not theoretical — and it stays reachable after ADFA-5137. That ticket removed the
+     * flag this note used to blame ({@code setup_complete}, written true by four sites and cleared by
+     * none), so a device that simply has no system now opens the wizard instead of the Library. What
+     * still lands here is the case where a marker is held: a failed restore keeps it, so the launch
+     * treats the device as having something on the way, reaches the Library, and this screen can be
+     * opened over a rootfs that is empty or half-written. The precondition still has to be asked here.
      *
      * <p>Seeded true so the first frame looks like the ordinary case; the background pass
      * corrects it before anything is offered.
