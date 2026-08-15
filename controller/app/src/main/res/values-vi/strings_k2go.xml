@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Bước 2 · Lấy ứng dụng</string>
     <string name="k2go_clone_step3_title">Bước 3 · Sao chép thư viện</string>
     <string name="k2go_clone_stop_sharing">Dừng chia sẻ</string>
-    <string name="k2go_clone_copy_begins_note">Việc sao chép bắt đầu khi họ quét mã này.</string>
     <string name="k2go_clone_no_library_note">Điện thoại này chưa cài thư viện K2Go. Cài nội dung trước, hoặc vẫn chia sẻ.</string>
     <string name="k2go_clone_back_step1">‹ Quay lại bước 1</string>
     <string name="k2go_connect_readonly">Quyền truy cập chỉ đọc vào nội dung của bạn.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Kết nối với điểm phát sóng của tôi</string>
     <string name="k2go_clone_join_wifi_title">Kết nối cùng một Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Hướng camera vào đây để tải K2Go.</string>
+    <string name="k2go_clone_exit_slow">Các dịch vụ đang mất nhiều thời gian hơn bình thường</string>
+    <string name="k2go_clone_exit_rescan">Quét lại từ điện thoại kia để xác minh ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Tiếp tục chờ</string>
+    <string name="k2go_clone_exit_redirecting">Đang mở thư viện của bạn sau %1$d giây…</string>
 </resources>

@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Pasul 2 · Obține aplicația</string>
     <string name="k2go_clone_step3_title">Pasul 3 · Copiază biblioteca</string>
     <string name="k2go_clone_stop_sharing">Oprește partajarea</string>
-    <string name="k2go_clone_copy_begins_note">Copierea începe când ei scanează acest cod.</string>
     <string name="k2go_clone_no_library_note">Acest telefon nu are o bibliotecă K2Go instalată. Instalează mai întâi conținut sau partajează oricum.</string>
     <string name="k2go_clone_back_step1">‹ Înapoi la pasul 1</string>
     <string name="k2go_connect_readonly">Acces doar pentru citire la conținutul tău.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Conectează-te la hotspotul meu</string>
     <string name="k2go_clone_join_wifi_title">Conectează-te la aceeași rețea Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Îndreaptă camera aici pentru a descărca K2Go.</string>
+    <string name="k2go_clone_exit_slow">Serviciile durează mai mult decât de obicei</string>
+    <string name="k2go_clone_exit_rescan">Scanează din nou de pe celălalt telefon pentru verificare ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Continuă să aștepți</string>
+    <string name="k2go_clone_exit_redirecting">Se deschide biblioteca în %1$d s…</string>
 </resources>

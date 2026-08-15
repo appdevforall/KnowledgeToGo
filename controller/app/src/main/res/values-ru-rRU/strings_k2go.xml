@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Шаг 2 · Получите приложение</string>
     <string name="k2go_clone_step3_title">Шаг 3 · Скопируйте библиотеку</string>
     <string name="k2go_clone_stop_sharing">Остановить раздачу</string>
-    <string name="k2go_clone_copy_begins_note">Копирование начнётся, когда они отсканируют этот код.</string>
     <string name="k2go_clone_no_library_note">На этом телефоне не установлена библиотека K2Go. Сначала установите контент или всё равно поделитесь.</string>
     <string name="k2go_clone_back_step1">‹ Назад к шагу 1</string>
     <string name="k2go_connect_readonly">Доступ к вашему контенту только для чтения.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Подключитесь к моей точке доступа</string>
     <string name="k2go_clone_join_wifi_title">Подключитесь к той же сети Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Наведите камеру сюда, чтобы скачать K2Go.</string>
+    <string name="k2go_clone_exit_slow">Службы запускаются дольше обычного</string>
+    <string name="k2go_clone_exit_rescan">Отсканируйте ещё раз с другого телефона для проверки ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Продолжить ожидание</string>
+    <string name="k2go_clone_exit_redirecting">Открытие библиотеки через %1$d с…</string>
 </resources>

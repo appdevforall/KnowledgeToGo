@@ -272,6 +272,23 @@
                     android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
             </LinearLayout>
 
+            <!-- ADFA-5155: success-exit status zone (below the scan button on receive step 2). One place
+                 that cycles by phase: "starting services…" -> (if slow) taking-longer + Rescan/Keep-waiting
+                 -> "Redirecting in Ns". Never a fixed timer that could condemn a good transfer. -->
+            <LinearLayout android:id="@+id/k2go_rcv_exit" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:gravity="center" android:layout_marginTop="16dp" android:visibility="gone">
+                <TextView android:id="@+id/k2go_rcv_exit_status" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textAppearance="?attr/textAppearanceTitleMedium" android:textColor="@color/k2go_teal" />
+                <TextView android:id="@+id/k2go_rcv_exit_rescan" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_exit_rescan"
+                    android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:clickable="true" android:focusable="true" android:visibility="gone" />
+                <TextView android:id="@+id/k2go_rcv_exit_wait" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_exit_keep_waiting"
+                    android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:clickable="true" android:focusable="true" android:visibility="gone" />
+            </LinearLayout>
+
             <!-- ADFA-4790: confirm as a System/Content/Total table + replace notice, per the design mockup. -->
             <LinearLayout android:id="@+id/k2go_rcv_confirm" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="12dp" android:visibility="gone">

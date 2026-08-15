@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">2. корак · Набавите апликацију</string>
     <string name="k2go_clone_step3_title">3. корак · Копирајте библиотеку</string>
     <string name="k2go_clone_stop_sharing">Заустави дељење</string>
-    <string name="k2go_clone_copy_begins_note">Копирање почиње када они скенирају овај.</string>
     <string name="k2go_clone_no_library_note">На овом телефону није инсталирана K2Go библиотека. Прво инсталирајте садржај или ипак поделите.</string>
     <string name="k2go_clone_back_step1">‹ Назад на 1. корак</string>
     <string name="k2go_connect_readonly">Приступ само за читање вашем садржају.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Придружите се мојој приступној тачки</string>
     <string name="k2go_clone_join_wifi_title">Повежите се на исти Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Усмерите камеру овде да преузмете K2Go.</string>
+    <string name="k2go_clone_exit_slow">Услуге се покрећу дуже него обично</string>
+    <string name="k2go_clone_exit_rescan">Скенирајте поново са другог телефона ради провере ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Настави да чекаш</string>
+    <string name="k2go_clone_exit_redirecting">Отварање библиотеке за %1$d s…</string>
 </resources>

@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Ìgbésẹ̀ 2 · Rí áàpù</string>
     <string name="k2go_clone_step3_title">Ìgbésẹ̀ 3 · Ṣẹ̀dà ilé-ìkàwé</string>
     <string name="k2go_clone_stop_sharing">Dá pípínni dúró</string>
-    <string name="k2go_clone_copy_begins_note">Ẹ̀dà ń bẹ̀rẹ̀ nígbà tí wọ́n bá ya èyí.</string>
     <string name="k2go_clone_no_library_note">Fóònù yìí kò ní ilé-ìkàwé K2Go tí a fi sórí ẹ̀rọ. Kọ́kọ́ fi àkóónú sórí ẹ̀rọ, tàbí pín lóòótọ́.</string>
     <string name="k2go_clone_back_step1">‹ Padà sí ìgbésẹ̀ 1</string>
     <string name="k2go_connect_readonly">Ìwọlé kíkà-nìkan sí àkóónú rẹ.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Darapọ̀ mọ́ hotspot mi</string>
     <string name="k2go_clone_join_wifi_title">Darapọ̀ mọ́ Wi-Fi kan náà</string>
     <string name="k2go_clone_getapp_caption">Tọ́ kamẹra síhìn-ín láti gba K2Go wọlé.</string>
+    <string name="k2go_clone_exit_slow">Àwọn iṣẹ́ ń gba àkókò ju bí ó ti ṣe deede lọ</string>
+    <string name="k2go_clone_exit_rescan">Tún àyẹ̀wò ṣe láti inú fóònù kejì láti ṣàyẹ̀wò ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Máa dúró síwájú</string>
+    <string name="k2go_clone_exit_redirecting">Ìwé-ìkàwé rẹ yóò ṣí ní %1$d s…</string>
 </resources>

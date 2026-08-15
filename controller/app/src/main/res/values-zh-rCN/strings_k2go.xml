@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">第 2 步 · 获取应用</string>
     <string name="k2go_clone_step3_title">第 3 步 · 复制图书馆</string>
     <string name="k2go_clone_stop_sharing">停止共享</string>
-    <string name="k2go_clone_copy_begins_note">当对方扫描此代码时开始复制。</string>
     <string name="k2go_clone_no_library_note">本手机未安装 K2Go 图书馆。请先安装内容，或仍然共享。</string>
     <string name="k2go_clone_back_step1">‹ 返回第 1 步</string>
     <string name="k2go_connect_readonly">对您内容的只读访问。</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">加入我的热点</string>
     <string name="k2go_clone_join_wifi_title">连接同一个 Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">将摄像头对准这里下载 K2Go。</string>
+    <string name="k2go_clone_exit_slow">服务启动时间比平时长</string>
+    <string name="k2go_clone_exit_rescan">从另一部手机重新扫描以核对 ›</string>
+    <string name="k2go_clone_exit_keep_waiting">继续等待</string>
+    <string name="k2go_clone_exit_redirecting">%1$d 秒后打开你的库…</string>
 </resources>

@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Krok 2 · Získajte aplikáciu</string>
     <string name="k2go_clone_step3_title">Krok 3 · Skopírujte knižnicu</string>
     <string name="k2go_clone_stop_sharing">Zastaviť zdieľanie</string>
-    <string name="k2go_clone_copy_begins_note">Kopírovanie sa začne, keď naskenujú tento.</string>
     <string name="k2go_clone_no_library_note">Tento telefón nemá nainštalovanú knižnicu K2Go. Najprv nainštalujte obsah alebo zdieľajte napriek tomu.</string>
     <string name="k2go_clone_back_step1">‹ Späť na krok 1</string>
     <string name="k2go_connect_readonly">Prístup k vášmu obsahu iba na čítanie.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Pripojte sa k môjmu hotspotu</string>
     <string name="k2go_clone_join_wifi_title">Pripojte sa k rovnakej Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Namierte sem fotoaparát a stiahnite si K2Go.</string>
+    <string name="k2go_clone_exit_slow">Služby trvajú dlhšie ako zvyčajne</string>
+    <string name="k2go_clone_exit_rescan">Naskenujte znova z druhého telefónu na overenie ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Ďalej čakať</string>
+    <string name="k2go_clone_exit_redirecting">Knižnica sa otvorí o %1$d s…</string>
 </resources>

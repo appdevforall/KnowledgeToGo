@@ -254,6 +254,10 @@
     <string name="k2go_clone_nolib_msg">There\'s nothing to copy from it yet. Continue anyway?</string>
     <string name="k2go_clone_try_anyway">Try anyway</string>
     <string name="k2go_clone_copy_complete">Copy complete</string>
+    <string name="k2go_clone_exit_slow">Services are taking longer than usual</string>
+    <string name="k2go_clone_exit_rescan">Rescan from the other phone to verify ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Keep waiting</string>
+    <string name="k2go_clone_exit_redirecting">Opening your library in %1$d s…</string>
     <string name="k2go_clone_copy_stopped">Copy stopped</string>
     <string name="k2go_clone_stopshare_title">Stop sharing?</string>
     <string name="k2go_clone_stopshare_msg">This stops any copy in progress. The other device can start again by rescanning.</string>
@@ -347,7 +351,6 @@
     <string name="k2go_clone_step2_title">Step 2 · Get the app</string>
     <string name="k2go_clone_step3_title">Step 3 · Copy the library</string>
     <string name="k2go_clone_stop_sharing">Stop sharing</string>
-    <string name="k2go_clone_copy_begins_note">The copy begins when they scan this one.</string>
     <string name="k2go_clone_no_library_note">This phone has no K2Go library installed. Install content first, or share anyway.</string>
     <string name="k2go_clone_back_step1">‹ Back to step 1</string>
     <string name="k2go_connect_readonly">Read-only access to your content.</string>

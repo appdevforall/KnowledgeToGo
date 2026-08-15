@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">படி 2 · செயலியைப் பெறு</string>
     <string name="k2go_clone_step3_title">படி 3 · நூலகத்தை நகலெடு</string>
     <string name="k2go_clone_stop_sharing">பகிர்வை நிறுத்து</string>
-    <string name="k2go_clone_copy_begins_note">அவர்கள் இதை ஸ்கேன் செய்யும்போது நகல் தொடங்கும்.</string>
     <string name="k2go_clone_no_library_note">இந்தத் தொலைபேசியில் K2Go நூலகம் நிறுவப்படவில்லை. முதலில் உள்ளடக்கத்தை நிறுவவும், அல்லது இருப்பினும் பகிரவும்.</string>
     <string name="k2go_clone_back_step1">‹ படி 1-க்குத் திரும்பு</string>
     <string name="k2go_connect_readonly">உங்கள் உள்ளடக்கத்திற்கு படிக்க-மட்டும் அணுகல்.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">எனது ஹாட்ஸ்பாட்டுடன் இணையவும்</string>
     <string name="k2go_clone_join_wifi_title">அதே Wi-Fi உடன் இணையவும்</string>
     <string name="k2go_clone_getapp_caption">K2Go ஐப் பதிவிறக்க கேமராவை இங்கே காட்டவும்.</string>
+    <string name="k2go_clone_exit_slow">சேவைகள் வழக்கத்தை விட அதிக நேரம் எடுக்கின்றன</string>
+    <string name="k2go_clone_exit_rescan">சரிபார்க்க மற்ற ஃபோனிலிருந்து மீண்டும் ஸ்கேன் செய்யவும் ›</string>
+    <string name="k2go_clone_exit_keep_waiting">காத்திருக்கவும்</string>
+    <string name="k2go_clone_exit_redirecting">%1$d வினாடிகளில் உங்கள் நூலகம் திறக்கிறது…</string>
 </resources>

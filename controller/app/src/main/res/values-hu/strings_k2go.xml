@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">2. lépés · Szerezd meg az appot</string>
     <string name="k2go_clone_step3_title">3. lépés · Másold a könyvtárat</string>
     <string name="k2go_clone_stop_sharing">Megosztás leállítása</string>
-    <string name="k2go_clone_copy_begins_note">A másolás akkor kezdődik, amikor beolvassák ezt.</string>
     <string name="k2go_clone_no_library_note">Ezen a telefonon nincs telepített K2Go könyvtár. Előbb telepíts tartalmat, vagy oszd meg mindenképp.</string>
     <string name="k2go_clone_back_step1">‹ Vissza az 1. lépéshez</string>
     <string name="k2go_connect_readonly">Csak olvasható hozzáférés a tartalmadhoz.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Csatlakozás a hotspotomhoz</string>
     <string name="k2go_clone_join_wifi_title">Csatlakozás ugyanahhoz a Wi-Fi-hez</string>
     <string name="k2go_clone_getapp_caption">Irányítsa ide a kamerát a K2Go letöltéséhez.</string>
+    <string name="k2go_clone_exit_slow">A szolgáltatások a szokásosnál tovább tartanak</string>
+    <string name="k2go_clone_exit_rescan">Ellenőrzéshez olvassa be újra a másik telefonról ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Várakozás folytatása</string>
+    <string name="k2go_clone_exit_redirecting">A könyvtár megnyitása %1$d mp múlva…</string>
 </resources>

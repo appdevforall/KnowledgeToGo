@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Addım 2 · Tətbiqi al</string>
     <string name="k2go_clone_step3_title">Addım 3 · Kitabxananı köçür</string>
     <string name="k2go_clone_stop_sharing">Paylaşmanı dayandır</string>
-    <string name="k2go_clone_copy_begins_note">Köçürmə onlar bunu skan etdikdə başlayır.</string>
     <string name="k2go_clone_no_library_note">Bu telefonda quraşdırılmış K2Go kitabxanası yoxdur. Əvvəlcə məzmun quraşdırın və ya yenə də paylaşın.</string>
     <string name="k2go_clone_back_step1">‹ Addım 1-ə qayıt</string>
     <string name="k2go_connect_readonly">Məzmununuza yalnız oxuma girişi.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Hotspotuma qoşulun</string>
     <string name="k2go_clone_join_wifi_title">Eyni Wi-Fi-a qoşulun</string>
     <string name="k2go_clone_getapp_caption">K2Go-nu yükləmək üçün kameranı buraya yönəldin.</string>
+    <string name="k2go_clone_exit_slow">Xidmətlər həmişəkindən uzun çəkir</string>
+    <string name="k2go_clone_exit_rescan">Yoxlamaq üçün digər telefondan yenidən skan edin ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Gözləməyə davam et</string>
+    <string name="k2go_clone_exit_redirecting">Kitabxananız %1$d s sonra açılır…</string>
 </resources>

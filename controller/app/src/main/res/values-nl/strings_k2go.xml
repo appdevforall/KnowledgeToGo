@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Stap 2 · De app ophalen</string>
     <string name="k2go_clone_step3_title">Stap 3 · De bibliotheek kopiëren</string>
     <string name="k2go_clone_stop_sharing">Delen stoppen</string>
-    <string name="k2go_clone_copy_begins_note">De kopie begint wanneer zij deze scannen.</string>
     <string name="k2go_clone_no_library_note">Op deze telefoon is geen K2Go-bibliotheek geïnstalleerd. Installeer eerst inhoud of deel toch.</string>
     <string name="k2go_clone_back_step1">‹ Terug naar stap 1</string>
     <string name="k2go_connect_readonly">Alleen-lezen toegang tot je inhoud.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Verbind met mijn hotspot</string>
     <string name="k2go_clone_join_wifi_title">Verbind met hetzelfde wifi-netwerk</string>
     <string name="k2go_clone_getapp_caption">Richt de camera hierop om K2Go te downloaden.</string>
+    <string name="k2go_clone_exit_slow">De services duren langer dan gebruikelijk</string>
+    <string name="k2go_clone_exit_rescan">Scan opnieuw vanaf de andere telefoon om te verifiëren ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Blijven wachten</string>
+    <string name="k2go_clone_exit_redirecting">Je bibliotheek wordt geopend over %1$d s…</string>
 </resources>

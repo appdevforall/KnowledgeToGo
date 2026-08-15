@@ -290,7 +290,6 @@
     <string name="k2go_clone_step2_title">Βήμα 2 · Αποκτήστε την εφαρμογή</string>
     <string name="k2go_clone_step3_title">Βήμα 3 · Αντιγράψτε τη βιβλιοθήκη</string>
     <string name="k2go_clone_stop_sharing">Διακοπή κοινής χρήσης</string>
-    <string name="k2go_clone_copy_begins_note">Η αντιγραφή ξεκινά όταν σαρώσουν αυτόν.</string>
     <string name="k2go_clone_no_library_note">Αυτό το τηλέφωνο δεν έχει εγκατεστημένη βιβλιοθήκη K2Go. Εγκαταστήστε πρώτα περιεχόμενο ή μοιραστείτε ούτως ή άλλως.</string>
     <string name="k2go_clone_back_step1">‹ Πίσω στο βήμα 1</string>
     <string name="k2go_connect_readonly">Πρόσβαση μόνο για ανάγνωση στο περιεχόμενό σας.</string>
@@ -809,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Σύνδεση στο hotspot μου</string>
     <string name="k2go_clone_join_wifi_title">Σύνδεση στο ίδιο Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Στρέψτε την κάμερα εδώ για λήψη του K2Go.</string>
+    <string name="k2go_clone_exit_slow">Οι υπηρεσίες αργούν περισσότερο από το συνηθισμένο</string>
+    <string name="k2go_clone_exit_rescan">Σαρώστε ξανά από το άλλο τηλέφωνο για επαλήθευση ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Συνέχεια αναμονής</string>
+    <string name="k2go_clone_exit_redirecting">Άνοιγμα της βιβλιοθήκης σε %1$d δλ…</string>
 </resources>

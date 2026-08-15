@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Paso 2 · Obtén la app</string>
     <string name="k2go_clone_step3_title">Paso 3 · Copia la biblioteca</string>
     <string name="k2go_clone_stop_sharing">Dejar de compartir</string>
-    <string name="k2go_clone_copy_begins_note">La copia empieza cuando escaneen este.</string>
     <string name="k2go_clone_no_library_note">Este teléfono no tiene ninguna biblioteca K2Go instalada. Instala contenido primero, o comparte de todos modos.</string>
     <string name="k2go_clone_back_step1">‹ Volver al paso 1</string>
     <string name="k2go_connect_readonly">Acceso de solo lectura a tu contenido.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Únete a mi zona Wi-Fi</string>
     <string name="k2go_clone_join_wifi_title">Conéctate al mismo Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Apunta la cámara aquí para descargar K2Go.</string>
+    <string name="k2go_clone_exit_slow">Los servicios están tardando más de lo habitual</string>
+    <string name="k2go_clone_exit_rescan">Vuelve a escanear del otro teléfono para verificar ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Seguir esperando</string>
+    <string name="k2go_clone_exit_redirecting">Abriendo tu biblioteca en %1$d s…</string>
 </resources>

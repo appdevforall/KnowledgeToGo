@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Langkah 2 · Dapatkan aplikasi</string>
     <string name="k2go_clone_step3_title">Langkah 3 · Salin pustaka</string>
     <string name="k2go_clone_stop_sharing">Berhenti berbagi</string>
-    <string name="k2go_clone_copy_begins_note">Penyalinan dimulai saat mereka memindai yang ini.</string>
     <string name="k2go_clone_no_library_note">Ponsel ini belum punya pustaka K2Go terpasang. Pasang konten dahulu, atau bagikan saja.</string>
     <string name="k2go_clone_back_step1">‹ Kembali ke langkah 1</string>
     <string name="k2go_connect_readonly">Akses hanya-baca ke konten Anda.</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">Gabung ke hotspot saya</string>
     <string name="k2go_clone_join_wifi_title">Sambungkan ke Wi-Fi yang sama</string>
     <string name="k2go_clone_getapp_caption">Arahkan kamera ke sini untuk mengunduh K2Go.</string>
+    <string name="k2go_clone_exit_slow">Layanan memerlukan waktu lebih lama dari biasanya</string>
+    <string name="k2go_clone_exit_rescan">Pindai ulang dari ponsel lain untuk memverifikasi ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Terus menunggu</string>
+    <string name="k2go_clone_exit_redirecting">Membuka pustaka Anda dalam %1$d dtk…</string>
 </resources>

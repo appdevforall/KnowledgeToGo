@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">चरण 2 · ऐप पाएँ</string>
     <string name="k2go_clone_step3_title">चरण 3 · लाइब्रेरी कॉपी करें</string>
     <string name="k2go_clone_stop_sharing">शेयर करना रोकें</string>
-    <string name="k2go_clone_copy_begins_note">जब वे इसे स्कैन करते हैं तो कॉपी शुरू होती है।</string>
     <string name="k2go_clone_no_library_note">इस फ़ोन में कोई K2Go लाइब्रेरी इंस्टॉल नहीं है। पहले सामग्री इंस्टॉल करें, या फिर भी शेयर करें।</string>
     <string name="k2go_clone_back_step1">‹ चरण 1 पर वापस</string>
     <string name="k2go_connect_readonly">आपकी सामग्री तक केवल-पढ़ने की पहुँच।</string>
@@ -808,4 +807,8 @@
     <string name="k2go_clone_join_hotspot_title">मेरे हॉटस्पॉट से जुड़ें</string>
     <string name="k2go_clone_join_wifi_title">उसी वाई-फ़ाई से जुड़ें</string>
     <string name="k2go_clone_getapp_caption">K2Go डाउनलोड करने के लिए कैमरा यहाँ लगाएँ।</string>
+    <string name="k2go_clone_exit_slow">सेवाएँ सामान्य से ज़्यादा समय ले रही हैं</string>
+    <string name="k2go_clone_exit_rescan">पुष्टि के लिए दूसरे फ़ोन से फिर स्कैन करें ›</string>
+    <string name="k2go_clone_exit_keep_waiting">प्रतीक्षा जारी रखें</string>
+    <string name="k2go_clone_exit_redirecting">%1$d s में आपकी लाइब्रेरी खुल रही है…</string>
 </resources>
