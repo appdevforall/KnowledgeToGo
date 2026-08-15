@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">대체할 것이 없습니다</string>
     <string name="k2go_clone_once_installed">설치가 완료되면 돌아와서 라이브러리를 복사하세요.</string>
     <string name="k2go_clone_one_android_step">Android에서 한 단계</string>
-    <string name="k2go_clone_other_no_app">상대방 휴대폰에 아직 K2Go가 없나요?</string>
     <string name="k2go_clone_receive_from">다른 휴대폰에서 받기  ›</string>
     <string name="k2go_clone_sharing_now">공유 중</string>
     <string name="k2go_clone_scan_enter_text">스캔이 안 되나요? 코드를 텍스트로 입력  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">상대방의 코드를 스캔하여 여기로 복사본을 받으세요.</string>
     <string name="k2go_clone_scan_get_app">스캔하여 앱 받기</string>
     <string name="k2go_clone_scan_to_join">스캔하여 접속</string>
-    <string name="k2go_clone_send_app_first">먼저 앱 보내기  ›</string>
     <string name="k2go_clone_send_to">다른 휴대폰으로 보내기  ›</string>
     <string name="k2go_clone_sending_whole">전체 라이브러리를 전송 중</string>
     <string name="k2go_clone_share_wifi_settings">Android 설정을 통해 Wi-Fi 공유</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">크기는 예상치입니다.</string>
     <string name="k2go_lbl_system">시스템</string>
     <string name="k2go_clone_technical_details">기술 세부 정보  ▾</string>
-    <string name="k2go_clone_app_separate_step">먼저 K2Go 앱이 설치됩니다. 라이브러리는 이후 단계에서 복사합니다.</string>
     <string name="k2go_clone_other_downloads">상대방 휴대폰은 이 코드에서 K2Go를 다운로드합니다.</string>
     <string name="k2go_clone_allow_install_note">상대방 휴대폰에서 "이 소스에서 설치 허용"을 탭합니다 — 한 번만 하는 단계입니다.</string>
     <string name="k2go_clone_incompat_title">이 휴대폰들은 호환되지 않습니다</string>

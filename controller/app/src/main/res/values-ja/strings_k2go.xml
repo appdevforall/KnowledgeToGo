@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">置き換えるものがありません</string>
     <string name="k2go_clone_once_installed">インストールが完了したら、戻ってライブラリをコピーしてください。</string>
     <string name="k2go_clone_one_android_step">Android での 1 ステップ</string>
-    <string name="k2go_clone_other_no_app">相手のスマホにまだ K2Go がありませんか？</string>
     <string name="k2go_clone_receive_from">別のスマホから受信  ›</string>
     <string name="k2go_clone_sharing_now">共有中</string>
     <string name="k2go_clone_scan_enter_text">スキャンできませんでしたか？ コードをテキストで入力  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">相手のコードをスキャンして、ここにコピーを取得します。</string>
     <string name="k2go_clone_scan_get_app">スキャンしてアプリを入手</string>
     <string name="k2go_clone_scan_to_join">スキャンして接続</string>
-    <string name="k2go_clone_send_app_first">先にアプリを送信  ›</string>
     <string name="k2go_clone_send_to">別のスマホに送信  ›</string>
     <string name="k2go_clone_sending_whole">ライブラリ全体を送信中</string>
     <string name="k2go_clone_share_wifi_settings">Android の設定から Wi-Fi を共有</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">サイズは概算です。</string>
     <string name="k2go_lbl_system">システム</string>
     <string name="k2go_clone_technical_details">技術的な詳細  ▾</string>
-    <string name="k2go_clone_app_separate_step">まず K2Go アプリがインストールされます。ライブラリは後のステップでコピーします。</string>
     <string name="k2go_clone_other_downloads">相手のスマホはこのコードから K2Go をダウンロードします。</string>
     <string name="k2go_clone_allow_install_note">相手のスマホで「このソースからのインストールを許可」をタップします — 一度だけの操作です。</string>
     <string name="k2go_clone_incompat_title">これらのスマホは互換性がありません</string>

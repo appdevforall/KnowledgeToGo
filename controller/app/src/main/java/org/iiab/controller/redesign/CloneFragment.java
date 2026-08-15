@@ -95,7 +95,6 @@ public class CloneFragment extends Fragment {
     // ADFA-5154: the APK is served over HTTP from the Get-app section on Page 1 (was a sub-screen).
     private ApkServer apkServer;
     private String apkFileName;
-    private LinearLayout sendAppEntry, sendAppView;   // ADFA-5154: vestigial deep view, kept GONE
 
     private ActivityResultLauncher<String> locationPerm;
 
@@ -104,11 +103,11 @@ public class CloneFragment extends Fragment {
     private boolean atFork = true;
     private LinearLayout forkBox, tabsRow;
     private TextView cloneHdr, subtitleView, backHeader;
-    private TextView stepTitle, skipApp, shareWifi;
+    private TextView stepTitle, shareWifi;
     // ADFA-5154: Page 1 stacks two shared QR sections (Join ① + Get app ②); Page 2 is Copy.
     private QrSection secJoin, secGetApp;
     private TextView secJoinBadge, secJoinTitle;   // Join title is mode-dependent; not part of QrSection
-    private LinearLayout page1, page2, hint, getAppBanner;
+    private LinearLayout page1, page2, getAppBanner;
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -169,7 +168,6 @@ public class CloneFragment extends Fragment {
         // include root + the shared sec_* ids (ADFA-5157).
         page1 = v.findViewById(R.id.k2go_clone_page1);
         page2 = v.findViewById(R.id.k2go_clone_page2);
-        hint = v.findViewById(R.id.k2go_clone_hint);
         getAppBanner = v.findViewById(R.id.k2go_clone_getapp_banner);
         View joinRoot = v.findViewById(R.id.k2go_clone_sec_join);
         View getAppRoot = v.findViewById(R.id.k2go_clone_sec_getapp);
@@ -251,9 +249,7 @@ public class CloneFragment extends Fragment {
         codetext = v.findViewById(R.id.k2go_clone_codetext);
         copyBtn = v.findViewById(R.id.k2go_clone_copy);
         shareBtn = v.findViewById(R.id.k2go_clone_share);
-        sendAppEntry = v.findViewById(R.id.k2go_sendapp_entry);   // ADFA-5154: vestigial (deep view), kept GONE
-        sendAppView = v.findViewById(R.id.k2go_sendapp_view);
-        // ADFA-5154: the Get-app QR now lives inline on Page 1 (secGetApp); "Can't scan? Share another way"
+        // ADFA-5154: the Get-app QR lives inline on Page 1 (secGetApp); "Can't scan? Share another way"
         // hands the installed APK to the Android share sheet.
         v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
 
@@ -310,7 +306,6 @@ public class CloneFragment extends Fragment {
         forkBox = v.findViewById(R.id.k2go_clone_fork);
         tabsRow = v.findViewById(R.id.k2go_clone_tabs);
         stepTitle = v.findViewById(R.id.k2go_clone_steptitle);
-        skipApp = v.findViewById(R.id.k2go_clone_skipapp);   // ADFA-5154: vestigial, kept GONE
         shareWifi = v.findViewById(R.id.k2go_clone_sharewifi);
         shareWifi.setOnClickListener(x -> openWifiSettings());
         v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
@@ -548,7 +543,7 @@ public class CloneFragment extends Fragment {
         if (startingDots != null) startingDots.stop();   // ADFA-5154: only the daemon-starting state re-starts it
         updateBackGuard();   // ADFA-5151: keep the Back confinement in step with side + transfer state
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
-        if (stepTitle != null) { stepTitle.setVisibility(View.GONE); skipApp.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
+        if (stepTitle != null) { stepTitle.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
         paintTab(tabSend, side == Side.SEND);
         paintTab(tabReceive, side == Side.RECEIVE);
 
@@ -566,8 +561,6 @@ public class CloneFragment extends Fragment {
             actionFooter.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
-            sendAppEntry.setVisibility(View.GONE);
-            sendAppView.setVisibility(View.GONE);
             receiveBox.setVisibility(View.GONE);
             return;
         }
@@ -587,8 +580,6 @@ public class CloneFragment extends Fragment {
             actionFooter.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
-            sendAppEntry.setVisibility(View.GONE);
-            sendAppView.setVisibility(View.GONE);
             receiveBox.setVisibility(View.VISIBLE);
             renderReceive();
             syncProtection();
@@ -600,8 +591,6 @@ public class CloneFragment extends Fragment {
             return;
         }
         // ADFA-5154: Send is two pages. Common chrome, then the page.
-        sendAppView.setVisibility(View.GONE);
-        sendAppEntry.setVisibility(View.GONE);
         actionFooter.setVisibility(View.GONE);   // ADFA-5154: default hidden; only Copy's states re-show it
         netRow.setVisibility(View.VISIBLE);
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
@@ -647,7 +636,6 @@ public class CloneFragment extends Fragment {
         subCaption.setVisibility(View.GONE);
         showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE);
         shareCard.setVisibility(View.GONE);
-        sendAppEntry.setVisibility(View.GONE); sendAppView.setVisibility(View.GONE);
         advance.setVisibility(View.GONE);
         actionFooter.setVisibility(View.VISIBLE);
         stop.setText(getString(R.string.k2go_home_recover));

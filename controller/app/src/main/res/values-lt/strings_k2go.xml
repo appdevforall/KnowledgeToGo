@@ -238,7 +238,6 @@
     <string name="k2go_clone_nothing_to_replace">Nėra ką pakeisti</string>
     <string name="k2go_clone_once_installed">Kai bus įdiegta, grįžkite ir nukopijuokite biblioteką.</string>
     <string name="k2go_clone_one_android_step">Vienas Android žingsnis</string>
-    <string name="k2go_clone_other_no_app">Kitas telefonas dar neturi K2Go?</string>
     <string name="k2go_clone_receive_from">Gauti iš kito telefono  ›</string>
     <string name="k2go_clone_sharing_now">DABAR BENDRINAMA</string>
     <string name="k2go_clone_scan_enter_text">Nuskaityti nepavyko? Įveskite kodą tekstu  ▸</string>
@@ -246,7 +245,6 @@
     <string name="k2go_clone_scan_their_codes">Nuskaitykite jų kodus, kad gautumėte kopiją čia.</string>
     <string name="k2go_clone_scan_get_app">Nuskaitykite, kad gautumėte programą</string>
     <string name="k2go_clone_scan_to_join">Nuskaitykite, kad prisijungtumėte</string>
-    <string name="k2go_clone_send_app_first">Pirmiausia išsiųskite programą  ›</string>
     <string name="k2go_clone_send_to">Siųsti į kitą telefoną  ›</string>
     <string name="k2go_clone_sending_whole">Siunčiama visa jūsų biblioteka</string>
     <string name="k2go_clone_share_wifi_settings">Bendrinti Wi-Fi per Android nustatymus</string>
@@ -255,7 +253,6 @@
     <string name="k2go_clone_sizes_estimates">Dydžiai yra apytiksliai.</string>
     <string name="k2go_lbl_system">Sistema</string>
     <string name="k2go_clone_technical_details">Techninė informacija  ▾</string>
-    <string name="k2go_clone_app_separate_step">Pirmiausia įdiegiama K2Go programa. Biblioteką nukopijuosite vėlesniame žingsnyje.</string>
     <string name="k2go_clone_other_downloads">Kitas telefonas atsisiunčia K2Go pagal šį kodą.</string>
     <string name="k2go_clone_allow_install_note">Kitas telefonas bakstelėja „leisti diegti iš šio šaltinio“ — vienkartinis veiksmas.</string>
     <string name="k2go_clone_incompat_title">Šie telefonai nesuderinami</string>

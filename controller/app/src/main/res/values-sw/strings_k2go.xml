@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Hakuna cha kubadilisha</string>
     <string name="k2go_clone_once_installed">Mara ikisakinishwa, rudi na unakili maktaba.</string>
     <string name="k2go_clone_one_android_step">Hatua moja ya Android</string>
-    <string name="k2go_clone_other_no_app">Simu nyingine bado haina K2Go?</string>
     <string name="k2go_clone_receive_from">Pokea kutoka simu nyingine  ›</string>
     <string name="k2go_clone_sharing_now">INASHIRIKI SASA</string>
     <string name="k2go_clone_scan_enter_text">Skani haikufanya kazi? Weka msimbo kama maandishi  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Skani misimbo yao ili kupata nakala hapa.</string>
     <string name="k2go_clone_scan_get_app">Skani ili kupata programu</string>
     <string name="k2go_clone_scan_to_join">Skani ili kujiunga</string>
-    <string name="k2go_clone_send_app_first">Tuma programu kwanza  ›</string>
     <string name="k2go_clone_send_to">Tuma kwa simu nyingine  ›</string>
     <string name="k2go_clone_sending_whole">Inatuma maktaba yako yote</string>
     <string name="k2go_clone_share_wifi_settings">Shiriki Wi-Fi kupitia mipangilio ya Android</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Ukubwa ni makadirio.</string>
     <string name="k2go_lbl_system">Mfumo</string>
     <string name="k2go_clone_technical_details">Maelezo ya kiufundi  ▾</string>
-    <string name="k2go_clone_app_separate_step">Kwanza, programu ya K2Go husakinishwa. Utanakili maktaba katika hatua ya baadaye.</string>
     <string name="k2go_clone_other_downloads">Simu nyingine hupakua K2Go kutoka msimbo huu.</string>
     <string name="k2go_clone_allow_install_note">Simu nyingine hugusa "ruhusu usakinishaji kutoka chanzo hiki" — hatua ya mara moja.</string>
     <string name="k2go_clone_incompat_title">Simu hizi haziendani</string>

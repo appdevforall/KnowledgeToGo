@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Нічого замінювати</string>
     <string name="k2go_clone_once_installed">Після встановлення поверніться й скопіюйте бібліотеку.</string>
     <string name="k2go_clone_one_android_step">Один крок Android</string>
-    <string name="k2go_clone_other_no_app">На іншому телефоні ще немає K2Go?</string>
     <string name="k2go_clone_receive_from">Отримати з іншого телефона  ›</string>
     <string name="k2go_clone_sharing_now">НАДСИЛАННЯ ЗАРАЗ</string>
     <string name="k2go_clone_scan_enter_text">Сканування не спрацювало? Введіть код текстом  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Скануйте їхні коди, щоб отримати копію сюди.</string>
     <string name="k2go_clone_scan_get_app">Скануйте, щоб отримати застосунок</string>
     <string name="k2go_clone_scan_to_join">Скануйте, щоб приєднатися</string>
-    <string name="k2go_clone_send_app_first">Спершу надішліть застосунок  ›</string>
     <string name="k2go_clone_send_to">Надіслати на інший телефон  ›</string>
     <string name="k2go_clone_sending_whole">Надсилання всієї вашої бібліотеки</string>
     <string name="k2go_clone_share_wifi_settings">Поділіться Wi-Fi через налаштування Android</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Розміри приблизні.</string>
     <string name="k2go_lbl_system">Система</string>
     <string name="k2go_clone_technical_details">Технічні деталі  ▾</string>
-    <string name="k2go_clone_app_separate_step">Спершу встановлюється застосунок K2Go. Бібліотеку ви скопіюєте на пізнішому кроці.</string>
     <string name="k2go_clone_other_downloads">Інший телефон завантажує K2Go за цим кодом.</string>
     <string name="k2go_clone_allow_install_note">Інший телефон торкається «дозволити встановлення з цього джерела» — одноразовий крок.</string>
     <string name="k2go_clone_incompat_title">Ці телефони несумісні</string>

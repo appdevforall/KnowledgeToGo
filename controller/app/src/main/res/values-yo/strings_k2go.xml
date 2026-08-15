@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Kò sí ohunkóhun láti rọ́pò</string>
     <string name="k2go_clone_once_installed">Ní kété tí a bá fi sórí ẹ̀rọ, padà kí o sì ṣẹ̀dà ilé-ìkàwé.</string>
     <string name="k2go_clone_one_android_step">Ìgbésẹ̀ Android kan</string>
-    <string name="k2go_clone_other_no_app">Fóònù mìíràn kò tíì ní K2Go?</string>
     <string name="k2go_clone_receive_from">Gbà láti fóònù mìíràn  ›</string>
     <string name="k2go_clone_sharing_now">Ń PÍNNI NÍSINSÌNYÍ</string>
     <string name="k2go_clone_scan_enter_text">Ìyàwòrán kò ṣiṣẹ́? Tẹ kóòdù wọlé gẹ́gẹ́ bí ọ̀rọ̀  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Ya àwọn kóòdù wọn láti rí ẹ̀dà kan níbí.</string>
     <string name="k2go_clone_scan_get_app">Ya àwòrán láti rí áàpù</string>
     <string name="k2go_clone_scan_to_join">Ya àwòrán láti darapọ̀</string>
-    <string name="k2go_clone_send_app_first">Kọ́kọ́ fi áàpù ránṣẹ́  ›</string>
     <string name="k2go_clone_send_to">Fi ránṣẹ́ sí fóònù mìíràn  ›</string>
     <string name="k2go_clone_sending_whole">Ń fi gbogbo ilé-ìkàwé rẹ ránṣẹ́</string>
     <string name="k2go_clone_share_wifi_settings">Pín Wi-Fi nípasẹ̀ ìtòlẹ́sẹẹsẹ Android</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Àwọn ìwọ̀n jẹ́ ìfojúsọ́nà.</string>
     <string name="k2go_lbl_system">Ẹ̀rọ</string>
     <string name="k2go_clone_technical_details">Àwọn àlàyé onímọ̀-ẹ̀rọ  ▾</string>
-    <string name="k2go_clone_app_separate_step">Lákọ̀ọ́kọ́, a óò fi áàpù K2Go sórí ẹ̀rọ. O óò ṣẹ̀dà ilé-ìkàwé ní ìgbésẹ̀ tó ń bọ̀.</string>
     <string name="k2go_clone_other_downloads">Fóònù mìíràn ń gba K2Go sílẹ̀ láti kóòdù yìí.</string>
     <string name="k2go_clone_allow_install_note">Fóònù mìíràn ń tẹ "fàyè gba fífi sórí ẹ̀rọ láti orísun yìí" — ìgbésẹ̀ ẹ̀ẹ̀kan.</string>
     <string name="k2go_clone_incompat_title">Àwọn fóònù wọ̀nyí kò bá ara wọn mu</string>

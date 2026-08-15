@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">لا يوجد ما يُستبدل</string>
     <string name="k2go_clone_once_installed">بمجرد تثبيته، عُد وانسخ المكتبة.</string>
     <string name="k2go_clone_one_android_step">خطوة واحدة في Android</string>
-    <string name="k2go_clone_other_no_app">الهاتف الآخر لا يحتوي على K2Go بعد؟</string>
     <string name="k2go_clone_receive_from">الاستلام من هاتف آخر  ›</string>
     <string name="k2go_clone_sharing_now">جارٍ المشاركة الآن</string>
     <string name="k2go_clone_scan_enter_text">لم ينجح المسح؟ أدخل الرمز كنص  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">امسح رموزهم للحصول على نسخة هنا.</string>
     <string name="k2go_clone_scan_get_app">امسح للحصول على التطبيق</string>
     <string name="k2go_clone_scan_to_join">امسح للانضمام</string>
-    <string name="k2go_clone_send_app_first">أرسل التطبيق أولًا  ›</string>
     <string name="k2go_clone_send_to">أرسل إلى هاتف آخر  ›</string>
     <string name="k2go_clone_sending_whole">جارٍ إرسال مكتبتك بالكامل</string>
     <string name="k2go_clone_share_wifi_settings">شارك Wi-Fi عبر إعدادات Android</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">الأحجام تقديرية.</string>
     <string name="k2go_lbl_system">النظام</string>
     <string name="k2go_clone_technical_details">تفاصيل تقنية  ▾</string>
-    <string name="k2go_clone_app_separate_step">أولًا، يُثبَّت تطبيق K2Go. ستنسخ المكتبة في خطوة لاحقة.</string>
     <string name="k2go_clone_other_downloads">ينزّل الهاتف الآخر K2Go من هذا الرمز.</string>
     <string name="k2go_clone_allow_install_note">ينقر الهاتف الآخر على \"السماح بالتثبيت من هذا المصدر\" — خطوة تُجرى مرة واحدة.</string>
     <string name="k2go_clone_incompat_title">هذان الهاتفان غير متوافقين</string>

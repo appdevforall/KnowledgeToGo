@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Əvəz ediləcək heç nə yoxdur</string>
     <string name="k2go_clone_once_installed">Quraşdırıldıqdan sonra qayıdın və kitabxananı köçürün.</string>
     <string name="k2go_clone_one_android_step">Bir Android addımı</string>
-    <string name="k2go_clone_other_no_app">Digər telefonda hələ K2Go yoxdur?</string>
     <string name="k2go_clone_receive_from">Başqa telefondan al  ›</string>
     <string name="k2go_clone_sharing_now">İNDİ PAYLAŞILIR</string>
     <string name="k2go_clone_scan_enter_text">Skan alınmadı? Kodu mətn kimi daxil edin  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Burada surət almaq üçün onların kodlarını skan edin.</string>
     <string name="k2go_clone_scan_get_app">Tətbiqi almaq üçün skan et</string>
     <string name="k2go_clone_scan_to_join">Qoşulmaq üçün skan et</string>
-    <string name="k2go_clone_send_app_first">Əvvəlcə tətbiqi göndər  ›</string>
     <string name="k2go_clone_send_to">Başqa telefona göndər  ›</string>
     <string name="k2go_clone_sending_whole">Bütün kitabxananız göndərilir</string>
     <string name="k2go_clone_share_wifi_settings">Android ayarları vasitəsilə Wi-Fi paylaş</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Ölçülər təxminidir.</string>
     <string name="k2go_lbl_system">Sistem</string>
     <string name="k2go_clone_technical_details">Texniki detallar  ▾</string>
-    <string name="k2go_clone_app_separate_step">Əvvəlcə K2Go tətbiqi quraşdırılır. Kitabxananı sonrakı addımda köçürəcəksiniz.</string>
     <string name="k2go_clone_other_downloads">Digər telefon K2Go-nu bu koddan yükləyir.</string>
     <string name="k2go_clone_allow_install_note">Digər telefon "bu mənbədən quraşdırmağa icazə ver" seçiminə toxunur — birdəfəlik addımdır.</string>
     <string name="k2go_clone_incompat_title">Bu telefonlar uyğun deyil</string>
