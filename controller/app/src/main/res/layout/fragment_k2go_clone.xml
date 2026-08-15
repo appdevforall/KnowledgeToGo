@@ -8,13 +8,17 @@
   view_k2go_qr_section (ADFA-5157) bound by QrSection. Fork, tabs and the whole Receive box are
   unchanged. See CloneFragment.
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/k2go_paper" android:fillViewport="true"
-    android:scrollbars="vertical" android:scrollbarStyle="outsideOverlay">
+    android:orientation="vertical" android:background="@color/k2go_paper">
+
+    <!-- ADFA-5154: PINNED chrome (header/back + Send/Receive tabs + Hotspot/Wi-Fi selector). Kept
+         outside the ScrollView so the active network stays visible while the QR content scrolls,
+         mirroring Connect's pinned header. -->
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="16dp">
+        android:orientation="vertical" android:paddingLeft="16dp" android:paddingRight="16dp"
+        android:paddingTop="16dp" android:paddingBottom="8dp">
 
         <TextView android:id="@+id/k2go_clone_hdr" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="@string/k2go_tab_clone" android:textAppearance="?attr/textAppearanceHeadlineMedium" android:textColor="@color/k2go_ink" />
@@ -26,8 +30,32 @@
             android:layout_marginTop="4dp" android:padding="4dp" android:text="@string/k2go_back_link" android:textColor="@color/k2go_teal"
             android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
+        <LinearLayout android:id="@+id/k2go_clone_tabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+            android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg" android:padding="4dp">
+            <TextView android:id="@+id/k2go_clone_send" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_send" android:clickable="true" android:focusable="true" />
+            <TextView android:id="@+id/k2go_clone_receive" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_receive" android:clickable="true" android:focusable="true" />
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/k2go_clone_net" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+            android:layout_marginTop="10dp" android:background="@drawable/k2go_card_bg" android:padding="4dp" android:visibility="gone">
+            <TextView android:id="@+id/k2go_clone_hotspot" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_hotspot" android:clickable="true" android:focusable="true" />
+            <TextView android:id="@+id/k2go_clone_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
+                android:gravity="center" android:text="@string/k2go_wifi" android:clickable="true" android:focusable="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- ADFA-5154: SCROLLABLE content — fork, stepper, the two Send pages and the Receive box. -->
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:fillViewport="true" android:scrollbars="vertical" android:scrollbarStyle="outsideOverlay">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:paddingLeft="16dp" android:paddingRight="16dp"
+            android:paddingBottom="16dp" android:paddingTop="8dp">
+
         <LinearLayout android:id="@+id/k2go_clone_fork" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginTop="16dp" android:visibility="gone">
+            android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="@string/k2go_clone_fork_question" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
             <LinearLayout android:id="@+id/k2go_clone_fork_send" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -52,22 +80,6 @@
                         android:text="@string/k2go_clone_scan_their_codes" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout android:id="@+id/k2go_clone_tabs" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-            android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg" android:padding="4dp">
-            <TextView android:id="@+id/k2go_clone_send" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_send" android:clickable="true" android:focusable="true" />
-            <TextView android:id="@+id/k2go_clone_receive" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_receive" android:clickable="true" android:focusable="true" />
-        </LinearLayout>
-
-        <LinearLayout android:id="@+id/k2go_clone_net" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-            android:layout_marginTop="10dp" android:background="@drawable/k2go_card_bg" android:padding="4dp" android:visibility="gone">
-            <TextView android:id="@+id/k2go_clone_hotspot" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_hotspot" android:clickable="true" android:focusable="true" />
-            <TextView android:id="@+id/k2go_clone_wifi" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="8dp"
-                android:gravity="center" android:text="@string/k2go_wifi" android:clickable="true" android:focusable="true" />
         </LinearLayout>
 
         <!-- ADFA-4785: secondary entry to bootstrap a phone with no K2Go yet. -->
@@ -472,5 +484,6 @@
                     android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

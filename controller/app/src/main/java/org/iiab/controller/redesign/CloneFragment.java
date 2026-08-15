@@ -707,7 +707,7 @@ public class CloneFragment extends Fragment {
         secGetApp.caption.setText(getString(R.string.k2go_clone_getapp_caption));
         secGetApp.subCaption.setText("");
         secGetApp.setFallback(requireContext(), null);
-        hint.setVisibility(View.VISIBLE);
+        // ADFA-5154: no "STEP 2 BELOW" hint — Connect keeps its equivalent hidden, so Clone matches.
         getAppBanner.setVisibility(View.VISIBLE);
     }
 
