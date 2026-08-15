@@ -52,8 +52,14 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      * returned to call {@code finish()} themselves.
      */
     public static void recover(android.content.Context ctx) {
+        // ADFA-5150: SINGLE_TOP | CLEAR_TOP so recovery never stacks. Every systemless surface routes
+        // here, so without this a user bouncing surface -> recover -> back -> surface -> recover would
+        // pile up SetupLibraryActivity instances. With the flags an existing recovery instance is
+        // brought forward and reused instead of a new one being pushed.
         ctx.startActivity(new android.content.Intent(ctx, SetupLibraryActivity.class)
-                .putExtra(EXTRA_BACKUP_RESTORE, true));
+                .putExtra(EXTRA_BACKUP_RESTORE, true)
+                .addFlags(android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        | android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
     /** ADFA-5023: run the install wizard in REINSTALL mode — the normal flow, but the final install
      *  wipes the existing rootfs first (delete + install). Reached from Backup & restore's third card

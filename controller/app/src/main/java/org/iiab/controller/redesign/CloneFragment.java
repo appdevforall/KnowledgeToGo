@@ -83,6 +83,7 @@ public class CloneFragment extends Fragment {
     private boolean cloneLockHeld = false;  // ADFA-4956: this fragment holds EnvironmentLock(CLONE)
     private boolean cloneGuardHeld = false; // ADFA-4956: a receive (destructive write) also set InstallGuard
     private boolean shareAnyway = false;  // ADFA-4786: user chose to share even with no library installed
+    private boolean systemPresent = true; // ADFA-5150: Send needs a system to send; refreshed on entry / onResume
     // ADFA-4785: "Send the app" sub-screen (bootstrap a phone with no K2Go) — serves the APK over HTTP.
     private boolean sendApp = false;
     private ApkServer apkServer;
@@ -309,20 +310,19 @@ public class CloneFragment extends Fragment {
     private void goToFork() { atFork = true; render(); }
 
     private void setSide(Side sd) {
-        // ADFA-5150: Send shares this device's library — with no system there is nothing to send, the
-        // same dead surface as Connect. Block it at the entry (this covers both the fork card and the
-        // Send tab), not three steps in at the old "share anyway" notice. Receive stays open: it is how
-        // you GET a system. Route to Recover instead of entering the send flow.
-        //
-        // This also blocks "send the app" (the APK share buried under Send), which does not itself need
-        // a system — a deliberate simplification. If users ask to bootstrap a peer's app from a
-        // systemless phone, lift that path up to the fork as its own option rather than reopening Send.
-        if (sd == Side.SEND && !org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
-            SetupLibraryActivity.recover(requireContext());
+        side = sd;
+        if (sd == Side.SEND) {
+            // ADFA-5150: Send shares this device's library — with no system there is nothing to send,
+            // the same dead surface as Connect. Refresh the fact; render() shows a no-system empty
+            // state (message + Recover) at the entry rather than an abrupt jump or a snackbar. Receive
+            // stays open: it is how you GET a system. Don't spin up the hotspot when there is nothing
+            // to serve. (This also covers "send the app" buried under Send — a deliberate simplification;
+            // a phone with a system is the natural source for both the app and the system.)
+            systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+            stage = Stage.JOIN;
+            if (systemPresent) setMode(Mode.HOTSPOT); else render();   // ADFA-4785: enter Send at step 1
             return;
         }
-        side = sd;
-        if (sd == Side.SEND) { stage = Stage.JOIN; setMode(Mode.HOTSPOT); return; }   // ADFA-4785: enter Send at step 1
         rStage = RStage.JOIN; pasteExpanded = false;
         incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false;   // ADFA-4784: fresh on entry
         render();
@@ -532,6 +532,10 @@ public class CloneFragment extends Fragment {
             return;
         }
         receiveBox.setVisibility(View.GONE);
+        if (!systemPresent) {   // ADFA-5150: empty state, like Connect — no system to send, offer Recover
+            renderNoSystemSend();
+            return;
+        }
         if (sendApp) {   // ADFA-4785: step 2 (Get app) — spine + step title + network selector, then the sub-view
             netRow.setVisibility(View.VISIBLE); qr.setVisibility(View.GONE);
             paintTab(tabHotspot, mode == Mode.HOTSPOT);
@@ -559,6 +563,32 @@ public class CloneFragment extends Fragment {
 
         if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
         syncProtection();
+    }
+
+    /**
+     * ADFA-5150: no system, so nothing to send — the empty state Connect shows, at the entry to Send
+     * rather than three steps in at the old "share anyway" notice. A message plus a Recover action.
+     * Reuses {@code stop} as the button; the normal Send paths re-set stop, so this does not stick once
+     * a system exists. Reuses k2go_connect_no_system (both Send and Connect are "share your library").
+     */
+    private void renderNoSystemSend() {
+        netRow.setVisibility(View.GONE);
+        steps.setVisibility(View.GONE);
+        if (stepTitle != null) stepTitle.setVisibility(View.GONE);
+        qr.setImageBitmap(null); qr.setVisibility(View.GONE);
+        subCaption.setVisibility(View.GONE);
+        footer.setVisibility(View.GONE);
+        fallback.setVisibility(View.GONE); fallbackToggle.setVisibility(View.GONE);
+        shareCard.setVisibility(View.GONE);
+        sendAppEntry.setVisibility(View.GONE); sendAppView.setVisibility(View.GONE);
+        advance.setVisibility(View.GONE);
+        caption.setVisibility(View.VISIBLE);
+        caption.setText(getString(R.string.k2go_connect_no_system));
+        stop.setVisibility(View.VISIBLE);
+        stop.setText(getString(R.string.k2go_home_recover));
+        stop.setBackgroundResource(R.drawable.k2go_primary_bg);
+        stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
+        stop.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
     }
 
     private void renderHotspot() {
@@ -1068,6 +1098,10 @@ public class CloneFragment extends Fragment {
         reduceMotion = org.iiab.controller.util.Motion.reduced(getContext());
         if (anim != null && reduceMotion && anim.isAnimating()) anim.pauseAnimation();
         if (progressBox != null) showProgress(progressBox.getVisibility() == View.VISIBLE);
+        // ADFA-5150: a system may have been recovered while away (Send's Recover sends them off and
+        // back). Refresh so the Send empty state clears once a system exists, and redraw if on Send.
+        systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        if (!atFork && side == Side.SEND) render();
     }
 
     @Override
