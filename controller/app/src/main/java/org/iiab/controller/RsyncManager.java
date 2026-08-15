@@ -160,9 +160,23 @@ public class RsyncManager implements TransportEngine {
                         }
                         if (pct < lastEmittedPct) pct = lastEmittedPct;
                         lastEmittedPct = pct;
+
+                        // ADFA-5160: rsync's ETA is computed against its per-file plan, so it jumps
+                        // the same way the old percent did. When we have a whole-set total, derive
+                        // the ETA from the bytes still to go and the current speed instead.
+                        String eta = progress.eta;
+                        if (expectedTotalBytes > 0) {
+                            double bps = RsyncProgress.parseSpeedBytesPerSec(progress.speed);
+                            if (bps > 0) {
+                                long remaining = Math.max(0L, expectedTotalBytes - progress.bytes);
+                                eta = RsyncProgress.formatEta((long) (remaining / bps));
+                            }
+                        }
+
                         String finalFile = lastFile;
                         int finalPct = pct;
-                        mainHandler.post(() -> listener.onProgress(finalPct, progress.speed, progress.eta, finalFile));
+                        String finalEta = eta;
+                        mainHandler.post(() -> listener.onProgress(finalPct, progress.speed, finalEta, finalFile));
                     }
                     // PHASE 1 FIX: Strict match for actual rsync errors, ignoring files named "error"
                     //
