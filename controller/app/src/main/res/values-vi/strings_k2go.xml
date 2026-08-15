@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Kết nối với điểm phát sóng của tôi</string>
     <string name="k2go_clone_join_wifi_title">Kết nối cùng một Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Hướng camera vào đây để tải K2Go.</string>
+    <string name="k2go_clone_exit_slow">Các dịch vụ đang mất nhiều thời gian hơn bình thường</string>
+    <string name="k2go_clone_exit_rescan">Quét lại từ điện thoại kia để xác minh ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Tiếp tục chờ</string>
+    <string name="k2go_clone_exit_redirecting">Đang mở thư viện của bạn sau %1$d giây…</string>
 </resources>

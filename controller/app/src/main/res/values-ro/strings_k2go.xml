@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Conectează-te la hotspotul meu</string>
     <string name="k2go_clone_join_wifi_title">Conectează-te la aceeași rețea Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Îndreaptă camera aici pentru a descărca K2Go.</string>
+    <string name="k2go_clone_exit_slow">Serviciile durează mai mult decât de obicei</string>
+    <string name="k2go_clone_exit_rescan">Scanează din nou de pe celălalt telefon pentru verificare ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Continuă să aștepți</string>
+    <string name="k2go_clone_exit_redirecting">Se deschide biblioteca în %1$d s…</string>
 </resources>

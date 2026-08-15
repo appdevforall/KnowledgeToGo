@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">আমার হটস্পটে যুক্ত হোন</string>
     <string name="k2go_clone_join_wifi_title">একই ওয়াই-ফাই-তে যুক্ত হোন</string>
     <string name="k2go_clone_getapp_caption">K2Go ডাউনলোড করতে ক্যামেরা এখানে তাক করুন।</string>
+    <string name="k2go_clone_exit_slow">পরিষেবাগুলি স্বাভাবিকের চেয়ে বেশি সময় নিচ্ছে</string>
+    <string name="k2go_clone_exit_rescan">যাচাই করতে অন্য ফোন থেকে আবার স্ক্যান করুন ›</string>
+    <string name="k2go_clone_exit_keep_waiting">অপেক্ষা করতে থাকুন</string>
+    <string name="k2go_clone_exit_redirecting">%1$d সেকেন্ডে আপনার লাইব্রেরি খুলছে…</string>
 </resources>

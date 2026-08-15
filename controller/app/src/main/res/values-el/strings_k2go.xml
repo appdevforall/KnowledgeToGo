@@ -809,4 +809,8 @@
     <string name="k2go_clone_join_hotspot_title">Σύνδεση στο hotspot μου</string>
     <string name="k2go_clone_join_wifi_title">Σύνδεση στο ίδιο Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Στρέψτε την κάμερα εδώ για λήψη του K2Go.</string>
+    <string name="k2go_clone_exit_slow">Οι υπηρεσίες αργούν περισσότερο από το συνηθισμένο</string>
+    <string name="k2go_clone_exit_rescan">Σαρώστε ξανά από το άλλο τηλέφωνο για επαλήθευση ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Συνέχεια αναμονής</string>
+    <string name="k2go_clone_exit_redirecting">Άνοιγμα της βιβλιοθήκης σε %1$d δλ…</string>
 </resources>

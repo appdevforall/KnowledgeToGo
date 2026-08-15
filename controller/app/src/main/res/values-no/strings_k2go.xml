@@ -818,4 +818,8 @@
     <string name="k2go_clone_join_hotspot_title">Koble til hotspotet mitt</string>
     <string name="k2go_clone_join_wifi_title">Koble til samme Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Rett kameraet hit for å laste ned K2Go.</string>
+    <string name="k2go_clone_exit_slow">Tjenestene bruker lengre tid enn vanlig</string>
+    <string name="k2go_clone_exit_rescan">Skann på nytt fra den andre telefonen for å bekrefte ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Fortsett å vente</string>
+    <string name="k2go_clone_exit_redirecting">Åpner biblioteket ditt om %1$d s…</string>
 </resources>

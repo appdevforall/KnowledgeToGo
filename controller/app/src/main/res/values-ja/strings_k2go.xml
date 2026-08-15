@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">自分のホットスポットに接続</string>
     <string name="k2go_clone_join_wifi_title">同じ Wi-Fi に接続</string>
     <string name="k2go_clone_getapp_caption">カメラをここに向けて K2Go をダウンロードします。</string>
+    <string name="k2go_clone_exit_slow">サービスの起動に通常より時間がかかっています</string>
+    <string name="k2go_clone_exit_rescan">確認のためもう一方の端末から再スキャン ›</string>
+    <string name="k2go_clone_exit_keep_waiting">待機を続ける</string>
+    <string name="k2go_clone_exit_redirecting">%1$d 秒後にライブラリを開きます…</string>
 </resources>

@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">به هات‌اسپات من متصل شوید</string>
     <string name="k2go_clone_join_wifi_title">به همان Wi-Fi متصل شوید</string>
     <string name="k2go_clone_getapp_caption">برای دانلود K2Go دوربین را اینجا بگیرید.</string>
+    <string name="k2go_clone_exit_slow">سرویس‌ها بیشتر از حد معمول طول می‌کشند</string>
+    <string name="k2go_clone_exit_rescan">برای بررسی، دوباره از تلفن دیگر اسکن کنید ›</string>
+    <string name="k2go_clone_exit_keep_waiting">ادامهٔ انتظار</string>
+    <string name="k2go_clone_exit_redirecting">باز کردن کتابخانه شما تا %1$d ثانیه…</string>
 </resources>

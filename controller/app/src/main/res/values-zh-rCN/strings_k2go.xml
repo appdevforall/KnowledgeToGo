@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">加入我的热点</string>
     <string name="k2go_clone_join_wifi_title">连接同一个 Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">将摄像头对准这里下载 K2Go。</string>
+    <string name="k2go_clone_exit_slow">服务启动时间比平时长</string>
+    <string name="k2go_clone_exit_rescan">从另一部手机重新扫描以核对 ›</string>
+    <string name="k2go_clone_exit_keep_waiting">继续等待</string>
+    <string name="k2go_clone_exit_redirecting">%1$d 秒后打开你的库…</string>
 </resources>

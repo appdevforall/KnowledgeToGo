@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Свържете се с моята точка за достъп</string>
     <string name="k2go_clone_join_wifi_title">Свържете се към същата Wi-Fi мрежа</string>
     <string name="k2go_clone_getapp_caption">Насочете камерата тук, за да изтеглите K2Go.</string>
+    <string name="k2go_clone_exit_slow">Услугите се стартират по-дълго от обичайното</string>
+    <string name="k2go_clone_exit_rescan">Сканирайте отново от другия телефон за проверка ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Продължете да изчаквате</string>
+    <string name="k2go_clone_exit_redirecting">Библиотеката се отваря след %1$d с…</string>
 </resources>

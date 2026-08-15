@@ -86,8 +86,21 @@ public class CloneFragment extends Fragment {
     private boolean cloneGuardHeld = false; // ADFA-4956: a receive (destructive write) also set InstallGuard
     private boolean shareAnyway = false;  // ADFA-4786: user chose to share even with no library installed
     private boolean systemPresent = true; // ADFA-5150: Send needs a system to send; refreshed on entry / onResume
-    private boolean receiveExiting = false; // ADFA-5151: success confirmation is showing; hold it, then go to Library
-    private static final long RECEIVE_SUCCESS_REDIRECT_MS = 3000L; // ADFA-5151: like the install index's REDIRECT_MS
+    // ADFA-5155: the success exit waits for the REST core to actually answer (apiReady) before it counts
+    // down and redirects — never a fixed timer that could drop the user onto a dead Home or condemn a
+    // good transfer. State: pop-up acknowledged, services confirmed up, a probe in flight, the user chose
+    // to keep waiting past the "slow" nudge, and the 3-2-1 countdown running.
+    private boolean exitInProgress = false, exitAck = false, exitServicesUp = false;
+    private boolean exitProbing = false, exitKeepWaiting = false, exitCountingDown = false;
+    private long exitStartAt = 0L;
+    private int exitSecs = 0;
+    private final android.os.Handler exitHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private org.iiab.controller.util.EllipsisAnimator exitDots;
+    private LinearLayout rcvExit;
+    private TextView rcvExitStatus, rcvExitRescan, rcvExitWait;
+    private static final long EXIT_POLL_MS = 2000L;      // reschedule the apiReady probe (like the index)
+    private static final long EXIT_SLOW_MS = 30000L;     // after this, offer a re-scan instead of condemning
+    private static final int  EXIT_REDIRECT_SECS = 3;    // literal countdown once services are up
     // ADFA-5151: once a receive is accepted (running), Back is confined — first press warns, the next
     // backgrounds the app (the copy keeps running under CloneShareService; the notification returns).
     private androidx.activity.OnBackPressedCallback receiveBackGate;
@@ -216,6 +229,13 @@ public class CloneFragment extends Fragment {
         incompatTech.setOnClickListener(x -> { incompatTechOpen = !incompatTechOpen; renderReceive(); });
         incompatBack.setOnClickListener(x -> { incompatHostBits = -1; incompatWhyOpen = false; incompatTechOpen = false; renderReceive(); });
         progressBox = v.findViewById(R.id.k2go_clone_progress);
+        rcvExit = v.findViewById(R.id.k2go_rcv_exit);   // ADFA-5155: success-exit status zone (receive step 2)
+        rcvExitStatus = v.findViewById(R.id.k2go_rcv_exit_status);
+        rcvExitRescan = v.findViewById(R.id.k2go_rcv_exit_rescan);
+        rcvExitWait = v.findViewById(R.id.k2go_rcv_exit_wait);
+        exitDots = new org.iiab.controller.util.EllipsisAnimator(rcvExitStatus);
+        rcvExitRescan.setOnClickListener(x -> exitRescan());
+        rcvExitWait.setOnClickListener(x -> { exitKeepWaiting = true; renderReceive(); });
         pStatus = v.findViewById(R.id.k2go_clone_pstatus);
         pbar = v.findViewById(R.id.k2go_clone_pbar);
         // ADFA-5143: the transfer state uses the same Lottie template as the backup / restore job
@@ -892,9 +912,9 @@ public class CloneFragment extends Fragment {
             if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
             else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
         }
-        // ADFA-5151: while the success confirmation is holding before the redirect to Library, don't let
-        // renderReceive() tear the progress screen down (SUCCESS is not active, so it would).
-        if (side == Side.RECEIVE && !receiveExiting) renderReceive();
+        // ADFA-5155: on the success exit we WANT renderReceive — it draws step 2 with the exit status
+        // zone (starting services / slow / countdown). The transfer state is idle by then.
+        if (side == Side.RECEIVE) renderReceive();
         updateBackGuard();   // ADFA-5151: CONFIRM -> running (accepted) flips the Back confinement on
         syncProtection();   // ADFA-4782: match protection to the live pull state on every transition
     }
@@ -949,6 +969,7 @@ public class CloneFragment extends Fragment {
         showProgress(busy);
         confirmPanel.setVisibility(View.GONE);
         rcvIncompat.setVisibility(View.GONE);   // ADFA-4784
+        if (rcvExit != null && (busy || !exitInProgress)) rcvExit.setVisibility(View.GONE);   // ADFA-5155
         if (busy) {
             rcvSteps.setVisibility(View.GONE); rcvCaption.setVisibility(View.GONE);
             rcvIntro.setVisibility(View.GONE); rcvNotice.setVisibility(View.GONE);
@@ -1030,6 +1051,108 @@ public class CloneFragment extends Fragment {
         rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
         rcvShowPaste.setText(pasteExpanded ? getString(R.string.k2go_clone_enter_text_open) : getString(R.string.k2go_clone_scan_enter_text));
         pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
+        renderExitZone();   // ADFA-5155: the success-exit status band at the bottom of step 2
+    }
+
+    // ---------------------------------------------------------- ADFA-5155: success-exit service wait
+
+    /** The status band under step 2: "starting services…" -> (if slow) offer a re-scan -> "Opening…" countdown. */
+    private void renderExitZone() {
+        if (rcvExit == null) return;
+        if (!exitInProgress || !exitAck) { rcvExit.setVisibility(View.GONE); if (exitDots != null) exitDots.stop(); return; }
+        rcvExit.setVisibility(View.VISIBLE);
+        if (exitCountingDown) {
+            if (exitDots != null) exitDots.stop();
+            rcvExitStatus.setText(getString(R.string.k2go_clone_exit_redirecting, exitSecs));
+            rcvExitRescan.setVisibility(View.GONE);
+            rcvExitWait.setVisibility(View.GONE);
+            return;
+        }
+        boolean slow = !exitKeepWaiting && (android.os.SystemClock.elapsedRealtime() - exitStartAt > EXIT_SLOW_MS);
+        if (slow) {
+            if (exitDots != null) exitDots.stop();
+            rcvExitStatus.setText(getString(R.string.k2go_clone_exit_slow));
+            rcvExitRescan.setVisibility(View.VISIBLE);
+            rcvExitWait.setVisibility(View.VISIBLE);
+        } else {
+            rcvExitRescan.setVisibility(View.GONE);
+            rcvExitWait.setVisibility(View.GONE);
+            if (exitDots != null) exitDots.start(getString(R.string.k2go_clone_starting_service));
+        }
+    }
+
+    private void startExitPoll() {
+        exitHandler.removeCallbacks(exitPollRunnable);
+        exitHandler.post(exitPollRunnable);
+    }
+
+    // Probe the REST core off the main thread (apiReady can block ~5s), then reschedule from the callback
+    // — the SetupProgressActivity pattern. Stops the moment services answer; never a hard failure deadline.
+    private final Runnable exitPollRunnable = new Runnable() {
+        @Override public void run() {
+            if (!isAdded() || !exitInProgress || exitServicesUp || exitProbing) return;
+            exitProbing = true;
+            org.iiab.controller.util.AppExecutors.get().io().execute(() -> {
+                final boolean up = RestReadiness.apiReady();
+                exitHandler.post(() -> {
+                    exitProbing = false;
+                    if (!isAdded() || !exitInProgress) return;
+                    if (up) {
+                        exitServicesUp = true;
+                        maybeStartCountdown();
+                        if (side == Side.RECEIVE) renderReceive();
+                    } else {
+                        if (side == Side.RECEIVE) renderReceive();   // may cross the "slow" threshold
+                        exitHandler.postDelayed(exitPollRunnable, EXIT_POLL_MS);
+                    }
+                });
+            });
+        }
+    };
+
+    /** Begin the 3-2-1 only when BOTH facts hold: the user acknowledged and the services are truly up. */
+    private void maybeStartCountdown() {
+        if (!exitInProgress || !exitAck || !exitServicesUp || exitCountingDown) return;
+        exitCountingDown = true;
+        exitSecs = EXIT_REDIRECT_SECS;
+        exitHandler.post(exitTick);
+    }
+
+    private final Runnable exitTick = new Runnable() {
+        @Override public void run() {
+            if (!isAdded() || !exitInProgress) return;
+            if (exitSecs <= 0) { finishExit(); return; }
+            if (side == Side.RECEIVE) renderReceive();   // shows "Opening your library in Ns…"
+            exitSecs--;
+            exitHandler.postDelayed(exitTick, 1000L);
+        }
+    };
+
+    private void finishExit() {
+        exitInProgress = false; exitCountingDown = false;
+        exitHandler.removeCallbacks(exitTick);
+        exitHandler.removeCallbacks(exitPollRunnable);
+        if (exitDots != null) exitDots.stop();
+        if (getActivity() instanceof LibraryActivity) ((LibraryActivity) getActivity()).openLibraryTab();
+    }
+
+    /** Services slow -> the user chooses to re-verify from the source. Non-destructive: rsync resumes and
+     *  fills any gap. Tear down the wait and re-enter the normal receive scan (step 2). */
+    private void exitRescan() {
+        cancelExit();
+        rStage = RStage.START;
+        renderReceive();
+        launchScanner(getString(R.string.k2go_clone_scan_prompt_receive));
+    }
+
+    /** Drop the exit wait entirely (re-scan, or the user navigated away). No fixed timer to leak. */
+    private void cancelExit() {
+        exitInProgress = false; exitAck = false; exitServicesUp = false;
+        exitCountingDown = false; exitKeepWaiting = false;
+        exitHandler.removeCallbacks(exitTick);
+        exitHandler.removeCallbacks(exitPollRunnable);
+        if (exitDots != null) exitDots.stop();
+        if (rcvExit != null) rcvExit.setVisibility(View.GONE);
     }
 
     private void buildReceiveSteps() {
@@ -1136,28 +1259,26 @@ public class CloneFragment extends Fragment {
         syncVm.releaseNetwork();
 
         if (ok) {
-            // ADFA-5151: success exit. Do not strand the user on the receive step — confirm briefly on
-            // the progress screen, then go to the Library, exactly as the install index does. A system
-            // now exists (releaseCloneEnv booted it), so LibraryHomeFragment refreshes onto it. Shared
-            // terminal, so a normal receive (with a system) gets the same courtesy.
-            receiveExiting = true;
-            if (progressBox != null) progressBox.setVisibility(View.VISIBLE);
-            setBarIndeterminate(false);
-            if (pbar != null) pbar.setProgressCompat(100, true);
-            if (pStatus != null) pStatus.setText(getString(R.string.k2go_clone_copy_complete));
-            if (pFile != null) pFile.setText("");
-            if (pStats != null) pStats.setText("");
-            if (cancel != null) cancel.setVisibility(View.GONE);   // nothing to cancel on a finished copy
-            View host = (progressBox != null) ? progressBox : getView();
-            if (host != null) host.postDelayed(() -> {
-                if (!isAdded()) return;
-                // ADFA-5151 (review): clear the flag here — its owner and lifetime. Navigation destroys
-                // this fragment, so it normally dies with it; resetting means that even if navigation
-                // ever no-ops, renderReceive is not left permanently muted. A marker with a clear-path.
-                receiveExiting = false;
-                SyncProgressRepository.get().postIdle();
-                if (getActivity() instanceof LibraryActivity) ((LibraryActivity) getActivity()).openLibraryTab();
-            }, RECEIVE_SUCCESS_REDIRECT_MS);
+            // ADFA-5155: success exit. releaseCloneEnv() above already booted the environment; start
+            // probing the REST core now (background) and confirm with a pop-up. The OK does NOT navigate —
+            // it lands the user on receive step 2, where the exit status zone waits until apiReady answers
+            // before counting down and redirecting. Never a fixed timer: a slow boot must not drop onto a
+            // dead Home, and 45s must never condemn a long, good transfer.
+            exitInProgress = true; exitAck = false; exitServicesUp = false;
+            exitKeepWaiting = false; exitCountingDown = false;
+            exitStartAt = android.os.SystemClock.elapsedRealtime();
+            SyncProgressRepository.get().postIdle();   // the copy is done; drop the busy/progress state
+            startExitPoll();
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(getString(R.string.k2go_clone_copy_complete))
+                    .setCancelable(false)
+                    .setPositiveButton(android.R.string.ok, (d, w) -> {
+                        exitAck = true;
+                        rStage = RStage.START;   // land on step 2, where the status zone lives
+                        maybeStartCountdown();   // if services already answered, begin the 3-2-1 now
+                        if (side == Side.RECEIVE) renderReceive();
+                    })
+                    .show();
             return;
         }
 
@@ -1210,6 +1331,10 @@ public class CloneFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (startingDots != null) startingDots.stop();   // ADFA-5154: no dangling Handler after the view is gone
+        // ADFA-5155: tear down the success-exit wait so no probe/countdown Handler outlives the view.
+        exitHandler.removeCallbacks(exitTick);
+        exitHandler.removeCallbacks(exitPollRunnable);
+        if (exitDots != null) exitDots.stop();
         // ADFA-4782: release protection only when nothing is running; an active share daemon or pull
         // keeps the (app-scoped) CloneShareService alive so leaving the tab doesn't cut the transfer.
         // ADFA-4956: same gate for the deep-env lock — only boot the server back + drop the lock when

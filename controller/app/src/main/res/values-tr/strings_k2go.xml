@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Etkin noktama bağlan</string>
     <string name="k2go_clone_join_wifi_title">Aynı Wi-Fi\'ye bağlan</string>
     <string name="k2go_clone_getapp_caption">K2Go\'yu indirmek için kamerayı buraya doğrult.</string>
+    <string name="k2go_clone_exit_slow">Hizmetler her zamankinden uzun sürüyor</string>
+    <string name="k2go_clone_exit_rescan">Doğrulamak için diğer telefondan yeniden tara ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Beklemeye devam et</string>
+    <string name="k2go_clone_exit_redirecting">Kitaplığınız %1$d sn içinde açılıyor…</string>
 </resources>

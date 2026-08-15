@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Verbind met mijn hotspot</string>
     <string name="k2go_clone_join_wifi_title">Verbind met hetzelfde wifi-netwerk</string>
     <string name="k2go_clone_getapp_caption">Richt de camera hierop om K2Go te downloaden.</string>
+    <string name="k2go_clone_exit_slow">De services duren langer dan gebruikelijk</string>
+    <string name="k2go_clone_exit_rescan">Scan opnieuw vanaf de andere telefoon om te verifiëren ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Blijven wachten</string>
+    <string name="k2go_clone_exit_redirecting">Je bibliotheek wordt geopend over %1$d s…</string>
 </resources>

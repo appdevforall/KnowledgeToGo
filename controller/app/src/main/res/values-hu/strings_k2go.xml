@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Csatlakozás a hotspotomhoz</string>
     <string name="k2go_clone_join_wifi_title">Csatlakozás ugyanahhoz a Wi-Fi-hez</string>
     <string name="k2go_clone_getapp_caption">Irányítsa ide a kamerát a K2Go letöltéséhez.</string>
+    <string name="k2go_clone_exit_slow">A szolgáltatások a szokásosnál tovább tartanak</string>
+    <string name="k2go_clone_exit_rescan">Ellenőrzéshez olvassa be újra a másik telefonról ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Várakozás folytatása</string>
+    <string name="k2go_clone_exit_redirecting">A könyvtár megnyitása %1$d mp múlva…</string>
 </resources>

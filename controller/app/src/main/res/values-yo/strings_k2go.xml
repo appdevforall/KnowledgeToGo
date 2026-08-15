@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Darapọ̀ mọ́ hotspot mi</string>
     <string name="k2go_clone_join_wifi_title">Darapọ̀ mọ́ Wi-Fi kan náà</string>
     <string name="k2go_clone_getapp_caption">Tọ́ kamẹra síhìn-ín láti gba K2Go wọlé.</string>
+    <string name="k2go_clone_exit_slow">Àwọn iṣẹ́ ń gba àkókò ju bí ó ti ṣe deede lọ</string>
+    <string name="k2go_clone_exit_rescan">Tún àyẹ̀wò ṣe láti inú fóònù kejì láti ṣàyẹ̀wò ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Máa dúró síwájú</string>
+    <string name="k2go_clone_exit_redirecting">Ìwé-ìkàwé rẹ yóò ṣí ní %1$d s…</string>
 </resources>

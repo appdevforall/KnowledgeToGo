@@ -808,4 +808,8 @@
     <string name="k2go_clone_join_hotspot_title">Pripojte sa k môjmu hotspotu</string>
     <string name="k2go_clone_join_wifi_title">Pripojte sa k rovnakej Wi-Fi</string>
     <string name="k2go_clone_getapp_caption">Namierte sem fotoaparát a stiahnite si K2Go.</string>
+    <string name="k2go_clone_exit_slow">Služby trvajú dlhšie ako zvyčajne</string>
+    <string name="k2go_clone_exit_rescan">Naskenujte znova z druhého telefónu na overenie ›</string>
+    <string name="k2go_clone_exit_keep_waiting">Ďalej čakať</string>
+    <string name="k2go_clone_exit_redirecting">Knižnica sa otvorí o %1$d s…</string>
 </resources>
