@@ -50,7 +50,10 @@ public class LibraryHomeFragment extends Fragment {
             H_FAILED = 4, H_INSTALLING = 5,
             // ADFA-5143: a clone in flight, told apart by side. The receiver is the only one with a
             // percentage, so it is the one whose loss matters; the donor has a QR and a Stop.
-            H_CLONE_RECEIVING = 6, H_CLONE_SHARING = 7;
+            H_CLONE_RECEIVING = 6, H_CLONE_SHARING = 7,
+            // ADFA-5147: a system is on disk but was left unbootable (a killed install or clone). Split
+            // out of H_NO_LIBRARY, which offered to install over it — this offers to repair it instead.
+            H_DAMAGED = 8;
     // ADFA-4837: how long a card stays amber (patient) once the box is up before it's called stuck.
     private static final long CARD_RED_GRACE_MS = 60000L;
 
@@ -113,6 +116,16 @@ public class LibraryHomeFragment extends Fragment {
                 // at a control at the bottom of the screen called "Get more".
                 if (headerState == H_NO_LIBRARY) {
                     openGetMore();
+                    return;
+                }
+                // ADFA-5147: a damaged system is repaired, not installed over. Exactly what the launch
+                // recovery dialog does on "Recover" — the recovery screen offers restore-a-backup or
+                // reinstall, both of which work without a healthy rootfs. No finish() here, unlike the
+                // dialog: the dialog closes so the user cannot fall back onto a held boot gate, but Home
+                // is now an honest surface — back out of recovery and it still says "needs repair".
+                if (headerState == H_DAMAGED) {
+                    startActivity(new android.content.Intent(requireContext(), SetupLibraryActivity.class)
+                            .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true));
                     return;
                 }
                 // ADFA-5143: both clone states go to the Clone tab. For the receiver that is the only
@@ -563,7 +576,29 @@ public class LibraryHomeFragment extends Fragment {
             setHeader(H_CLONE_SHARING);
             return;
         }
-        if (!installed) { setHeader(H_NO_LIBRARY); return; }
+        if (!installed) {
+            // ADFA-5147: "not installed" is two states, and this line used to collapse them. A truly
+            // empty phone has no install marker; a killed install or clone leaves the marker set and
+            // the system unbootable. isSystemInstalled() folds both into false, so a damaged system
+            // read as "no library" and the header offered to install over it — the misdiagnosis that
+            // sent a whole night at rsync while the cloned system was intact.
+            //
+            // Ask the one owner of that distinction — the same verdict the launch recovery dialog uses
+            // (InterruptedInstallDetector) — so Home and the dialog cannot disagree about what a marker
+            // means. The full form is required here: a live install, module queue or deep op holds the
+            // marker legitimately and must NOT read as damage (ADFA-4971). This is the destination made
+            // honest, so the diagnosis no longer depends on which launch branch was taken to reach it.
+            boolean marker = org.iiab.controller.InstallGuard.inProgress(requireContext());
+            boolean instRunning = org.iiab.controller.install.presentation.InstallProgressRepository.get().current().isRunning();
+            boolean modRunning = org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning();
+            boolean deepOp = org.iiab.controller.env.EnvironmentLock.ownerHeld(requireContext());
+            org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict v =
+                    org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(
+                            marker, instRunning, modRunning, deepOp, alive);
+            setHeader(v == org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL
+                    ? H_DAMAGED : H_NO_LIBRARY);
+            return;
+        }
         // ADFA-5074: content being added outranks everything below. It is the only state
         // the user can act on from here, and reporting "ready" over a running install is
         // how the install became unreachable in the first place. Sessions only, not banked
@@ -618,6 +653,10 @@ public class LibraryHomeFragment extends Fragment {
             // busy with something the user started — that is "wait", which is what amber says here.
             case H_CLONE_RECEIVING: text = getString(R.string.k2go_home_clone_receiving); dotColor = R.color.k2go_amber; break;
             case H_CLONE_SHARING:   text = getString(R.string.k2go_home_clone_sharing);   dotColor = R.color.k2go_amber; break;
+            // ADFA-5147: clay, like H_FAILED — both are "the system won't run and needs you". The
+            // difference is the remedy: FAILED can retry a healthy system, DAMAGED must repair a broken
+            // one, so it carries the Recover action below rather than Retry.
+            case H_DAMAGED:     text = getString(R.string.k2go_home_damaged);     dotColor = R.color.k2go_clay;  break;
             default:            text = getString(R.string.k2go_starting_library); dotColor = R.color.k2go_amber; break;
         }
         homeStatus.setText(text);
@@ -644,7 +683,9 @@ public class LibraryHomeFragment extends Fragment {
                 // meaningful thing to do to a transfer. Each side is offered the place that matters:
                 // the receiver its progress, the donor its QR.
                 : h == H_CLONE_RECEIVING ? R.string.k2go_home_see_progress
-                : h == H_CLONE_SHARING ? R.string.k2go_home_clone_view : 0;
+                : h == H_CLONE_SHARING ? R.string.k2go_home_clone_view
+                // ADFA-5147: repair, not install. Routes to the recovery screen the launch dialog uses.
+                : h == H_DAMAGED ? R.string.k2go_home_recover : 0;
         if (homeStatusAction != null) {
             homeStatusAction.setVisibility(action != 0 ? View.VISIBLE : View.GONE);
             if (action != 0) homeStatusAction.setText(action);

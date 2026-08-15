@@ -401,6 +401,8 @@
     <string name="k2go_lang_choose_content_title">Wybierz język treści</string>
     <string name="k2go_hide">Ukryj</string>
     <string name="k2go_home_no_library">Brak jeszcze biblioteki — dotknij Pobierz więcej, aby zainstalować i dodać treść</string>
+    <string name="k2go_home_damaged">Biblioteka wymaga naprawy — ostatnia konfiguracja nie zakończyła się</string>
+    <string name="k2go_home_recover">Napraw</string>
     <string name="k2go_home_ready_empty">Biblioteka gotowa — dotknij Pobierz więcej, aby dodać treść</string>
     <string name="k2go_rate_per_second">/s</string>
 

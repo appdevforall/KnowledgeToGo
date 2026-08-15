@@ -401,6 +401,8 @@
     <string name="k2go_lang_choose_content_title">Choisir la langue du contenu</string>
     <string name="k2go_hide">Masquer</string>
     <string name="k2go_home_no_library">Pas encore de bibliothèque — appuyez sur Obtenir plus pour installer et ajouter du contenu</string>
+    <string name="k2go_home_damaged">La bibliothèque doit être réparée — la dernière configuration ne s\'est pas terminée</string>
+    <string name="k2go_home_recover">Réparer</string>
     <string name="k2go_home_ready_empty">Bibliothèque prête — appuyez sur Obtenir plus pour ajouter du contenu</string>
     <string name="k2go_rate_per_second">/s</string>
 

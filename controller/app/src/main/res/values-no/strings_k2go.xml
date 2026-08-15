@@ -401,6 +401,8 @@
     <string name="k2go_lang_choose_content_title">Velg innholdsspråk</string>
     <string name="k2go_hide">Skjul</string>
     <string name="k2go_home_no_library">Ikke noe bibliotek ennå — trykk Hent mer for å installere og legge til innhold</string>
+    <string name="k2go_home_damaged">Biblioteket må repareres — det siste oppsettet ble ikke fullført</string>
+    <string name="k2go_home_recover">Reparer</string>
     <string name="k2go_home_ready_empty">Bibliotek klart — trykk Hent mer for å legge til innhold</string>
     <string name="k2go_rate_per_second">/s</string>
 

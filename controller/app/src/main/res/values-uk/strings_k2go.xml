@@ -399,6 +399,8 @@
     <string name="k2go_lang_choose_content_title">Оберіть мову контенту</string>
     <string name="k2go_hide">Сховати</string>
     <string name="k2go_home_no_library">Поки немає бібліотеки — торкніться «Отримати ще», щоб встановити й додати контент</string>
+    <string name="k2go_home_damaged">Бібліотеку потрібно відновити — останнє налаштування не завершилося</string>
+    <string name="k2go_home_recover">Відновити</string>
     <string name="k2go_home_ready_empty">Бібліотека готова — торкніться «Отримати ще», щоб додати контент</string>
     <string name="k2go_rate_per_second">/с</string>
     <string name="k2go_gm_hub_title">Отримати ще</string>

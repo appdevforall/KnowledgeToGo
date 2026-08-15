@@ -399,6 +399,8 @@
     <string name="k2go_lang_choose_content_title">Chagua lugha ya maudhui</string>
     <string name="k2go_hide">Ficha</string>
     <string name="k2go_home_no_library">Bado hakuna maktaba — gusa Pata zaidi ili kusakinisha na kuongeza maudhui</string>
+    <string name="k2go_home_damaged">Maktaba inahitaji kurekebishwa — usanidi wa mwisho haukukamilika</string>
+    <string name="k2go_home_recover">Rekebisha</string>
     <string name="k2go_home_ready_empty">Maktaba tayari — gusa Pata zaidi ili kuongeza maudhui</string>
     <string name="k2go_rate_per_second">/sek</string>
     <string name="k2go_gm_hub_title">Pata zaidi</string>
