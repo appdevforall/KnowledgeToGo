@@ -575,20 +575,23 @@ public class CloneFragment extends Fragment {
         netRow.setVisibility(View.GONE);
         steps.setVisibility(View.GONE);
         if (stepTitle != null) stepTitle.setVisibility(View.GONE);
-        qr.setImageBitmap(null); qr.setVisibility(View.GONE);
+        // Keep the QR placeholder box visible (null bitmap shows its card background), exactly as
+        // Connect's no-system state does — this is what makes the two screens read the same instead of
+        // Send looking bare and top-crammed.
+        qr.setImageBitmap(null); qr.setVisibility(View.VISIBLE);
+        caption.setVisibility(View.VISIBLE);
+        caption.setText(getString(R.string.k2go_connect_no_system));
         subCaption.setVisibility(View.GONE);
-        footer.setVisibility(View.GONE);
-        fallback.setVisibility(View.GONE); fallbackToggle.setVisibility(View.GONE);
+        setFallback(null); fallbackToggle.setVisibility(View.GONE);
         shareCard.setVisibility(View.GONE);
         sendAppEntry.setVisibility(View.GONE); sendAppView.setVisibility(View.GONE);
         advance.setVisibility(View.GONE);
-        caption.setVisibility(View.VISIBLE);
-        caption.setText(getString(R.string.k2go_connect_no_system));
         stop.setVisibility(View.VISIBLE);
         stop.setText(getString(R.string.k2go_home_recover));
         stop.setBackgroundResource(R.drawable.k2go_primary_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
         stop.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
+        footer.setVisibility(View.GONE);
     }
 
     private void renderHotspot() {
