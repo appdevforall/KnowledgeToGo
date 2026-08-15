@@ -801,4 +801,9 @@
     <string name="k2go_dl_cancel_confirm">शुरू से करें</string>
     <string name="k2go_damaged_report">समस्या की रिपोर्ट करें</string>
     <string name="k2go_notif_view">देखें</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">मेरे हॉटस्पॉट से जुड़ें</string>
+    <string name="k2go_connect_s2_title">लाइब्रेरी खोलें</string>
+    <string name="k2go_connect_step2_below">चरण 2 नीचे</string>
+    <string name="k2go_done">हो गया</string>
 </resources>

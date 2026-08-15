@@ -811,4 +811,9 @@
     <string name="k2go_dl_cancel_confirm">Zacznij od nowa</string>
     <string name="k2go_damaged_report">Zgłoś problem</string>
     <string name="k2go_notif_view">Zobacz</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Połącz z moim hotspotem</string>
+    <string name="k2go_connect_s2_title">Otwórz bibliotekę</string>
+    <string name="k2go_connect_step2_below">KROK 2 PONIŻEJ</string>
+    <string name="k2go_done">Gotowe</string>
 </resources>

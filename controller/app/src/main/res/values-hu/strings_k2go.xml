@@ -801,4 +801,9 @@
     <string name="k2go_dl_cancel_confirm">Kezdés elölről</string>
     <string name="k2go_damaged_report">Probléma jelentése</string>
     <string name="k2go_notif_view">Megtekintés</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Csatlakozás a hotspotomhoz</string>
+    <string name="k2go_connect_s2_title">Könyvtár megnyitása</string>
+    <string name="k2go_connect_step2_below">2. LÉPÉS LENT</string>
+    <string name="k2go_done">Kész</string>
 </resources>

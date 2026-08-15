@@ -801,4 +801,9 @@
     <string name="k2go_dl_cancel_confirm">처음부터 다시</string>
     <string name="k2go_damaged_report">문제 신고</string>
     <string name="k2go_notif_view">보기</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">내 핫스팟에 연결</string>
+    <string name="k2go_connect_s2_title">라이브러리 열기</string>
+    <string name="k2go_connect_step2_below">2단계는 아래에</string>
+    <string name="k2go_done">완료</string>
 </resources>

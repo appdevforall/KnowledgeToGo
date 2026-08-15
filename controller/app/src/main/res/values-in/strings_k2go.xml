@@ -801,4 +801,9 @@
     <string name="k2go_dl_cancel_confirm">Mulai dari awal</string>
     <string name="k2go_damaged_report">Laporkan masalah</string>
     <string name="k2go_notif_view">Lihat</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Gabung ke hotspot saya</string>
+    <string name="k2go_connect_s2_title">Buka perpustakaan</string>
+    <string name="k2go_connect_step2_below">LANGKAH 2 DI BAWAH</string>
+    <string name="k2go_done">Selesai</string>
 </resources>

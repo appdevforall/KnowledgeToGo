@@ -801,4 +801,9 @@
     <string name="k2go_dl_cancel_confirm">Започни отначало</string>
     <string name="k2go_damaged_report">Съобщи за проблема</string>
     <string name="k2go_notif_view">Виж</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Свържете се с точката ми</string>
+    <string name="k2go_connect_s2_title">Отворете библиотеката</string>
+    <string name="k2go_connect_step2_below">СТЪПКА 2 ПО-ДОЛУ</string>
+    <string name="k2go_done">Готово</string>
 </resources>

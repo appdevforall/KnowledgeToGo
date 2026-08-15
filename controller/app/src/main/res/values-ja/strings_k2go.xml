@@ -801,4 +801,9 @@
     <string name="k2go_dl_cancel_confirm">最初からやり直す</string>
     <string name="k2go_damaged_report">問題を報告</string>
     <string name="k2go_notif_view">表示</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">マイホットスポットに接続</string>
+    <string name="k2go_connect_s2_title">ライブラリを開く</string>
+    <string name="k2go_connect_step2_below">ステップ2は下</string>
+    <string name="k2go_done">完了</string>
 </resources>
