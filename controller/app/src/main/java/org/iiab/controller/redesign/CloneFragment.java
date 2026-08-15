@@ -1101,7 +1101,12 @@ public class CloneFragment extends Fragment {
             // orders are not discarded until it actually completes.
             org.iiab.controller.system.data.ContentStateInvalidator.replacementStarting(app,
                     org.iiab.controller.system.domain.SystemReplacement.Cause.CLONE_RECEIVE);
-            transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath,
+            // ADFA-5160: anchor the progress bar to the dry-run's bytes-to-transfer (startProbe
+            // ran it before this point), i.e. what rsync computed for THIS transfer. Not the QR
+            // estimate: it reflects the sender's initial install and can be stale. 0 falls back
+            // to rsync's own percent.
+            long expectedTotal = syncVm.getPendingBytes();
+            transport.startClient(app, shareConfig, fcreds.ip, fcreds.port, fcreds.user, fcreds.pass, destPath, expectedTotal,
                 new TransportEngine.SyncListener() {
                     @Override public void onProgress(int pct, String speed, String eta, String file) { SyncProgressRepository.get().postTransferring(pct, speed, eta, file); }
                     @Override public void onComplete(String message) {

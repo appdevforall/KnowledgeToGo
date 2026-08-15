@@ -16,9 +16,19 @@ public class RsyncProgressTest {
     public void parsesProgressLine() {
         RsyncProgress p = RsyncProgress.parse("     32,768  45%  12.34MB/s    0:00:12");
         assertNotNull(p);
+        assertEquals(32768L, p.bytes);
         assertEquals(45, p.percent);
         assertEquals("12.34MB/s", p.speed);
         assertEquals("0:00:12", p.eta);
+    }
+
+    // ADFA-5160: the leading byte column is the numerator the caller anchors to a known total.
+    @Test
+    public void parsesLeadingTransferredBytesWithSeparators() {
+        RsyncProgress p = RsyncProgress.parse("1,234,567,890  88%  40.00MB/s    0:00:03");
+        assertNotNull(p);
+        assertEquals(1234567890L, p.bytes);
+        assertEquals(88, p.percent);
     }
 
     @Test

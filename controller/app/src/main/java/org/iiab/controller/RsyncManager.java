@@ -101,7 +101,7 @@ public class RsyncManager implements TransportEngine {
     }
 
     @Override
-    public void startClient(Context context, ShareConfig config, String hostIp, int port, String user, String pass, String destinationDir, TransportEngine.SyncListener listener) {
+    public void startClient(Context context, ShareConfig config, String hostIp, int port, String user, String pass, String destinationDir, long expectedTotalBytes, TransportEngine.SyncListener listener) {
         stop();
         isCancelled = false;
         Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -138,6 +138,7 @@ public class RsyncManager implements TransportEngine {
                 String line;
 
                 String lastFile = "";
+                int lastEmittedPct = 0; // ADFA-5160: smoothed percent, never walked back
 
                 while ((line = reader.readLine()) != null) {
                     if (isCancelled) {
@@ -147,8 +148,21 @@ public class RsyncManager implements TransportEngine {
 
                     RsyncProgress progress = RsyncProgress.parse(line);
                     if (progress != null) {
+                        // ADFA-5160: rsync's own percent divides by an estimate that keeps growing as
+                        // it discovers files, so it lurches. Anchor to the dry-run bytes-to-transfer
+                        // (what rsync computed for this transfer up front) and let the transferred-byte
+                        // count climb it. Hold at 99% until rsync's success lands; never go backwards.
+                        int pct;
+                        if (expectedTotalBytes > 0) {
+                            pct = (int) Math.min(99L, 100L * progress.bytes / expectedTotalBytes);
+                        } else {
+                            pct = Math.min(99, progress.percent);
+                        }
+                        if (pct < lastEmittedPct) pct = lastEmittedPct;
+                        lastEmittedPct = pct;
                         String finalFile = lastFile;
-                        mainHandler.post(() -> listener.onProgress(progress.percent, progress.speed, progress.eta, finalFile));
+                        int finalPct = pct;
+                        mainHandler.post(() -> listener.onProgress(finalPct, progress.speed, progress.eta, finalFile));
                     }
                     // PHASE 1 FIX: Strict match for actual rsync errors, ignoring files named "error"
                     //

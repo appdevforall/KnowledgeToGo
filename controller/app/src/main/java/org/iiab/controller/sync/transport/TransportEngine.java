@@ -45,9 +45,16 @@ public interface TransportEngine {
     /** Starts the read-only sharing server. Returns false if it could not start. */
     boolean startServer(Context context, ShareConfig config, String password, String shareDir);
 
-    /** Pulls from a peer (host/port/user/password come from the scanned handshake). */
+    /**
+     * Pulls from a peer (host/port/user/password come from the scanned handshake).
+     * {@code expectedTotalBytes} is the dry-run's bytes-to-transfer — what rsync computed for
+     * this transfer up front — so the reported percent climbs a fixed denominator instead of
+     * rsync's own estimate, which grows as it discovers files (ADFA-5160). Pass 0 when no
+     * dry-run figure is available to fall back to rsync's raw percent.
+     */
     void startClient(Context context, ShareConfig config, String hostIp, int port,
-                     String user, String password, String destDir, SyncListener listener);
+                     String user, String password, String destDir, long expectedTotalBytes,
+                     SyncListener listener);
 
     /** Estimates the bytes a pull would transfer, without writing anything. */
     void calculateTransferPlan(Context context, ShareConfig config, String hostIp, int port,

@@ -157,7 +157,13 @@ public final class ReceiveController {
         // the application context (it lives in the Activity-scoped ViewModel).
         SyncProgressRepository.get().postTransferring(0, "", "", "RootFS");
 
-        syncVm.getTransport().startClient(fragment.requireContext().getApplicationContext(), shareConfig, creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), new TransportEngine.SyncListener() {
+        // ADFA-5160: measure the bar against the dry-run's bytes-to-transfer — the amount
+        // rsync itself computed for THIS transfer (resume-aware). Not the QR size estimate:
+        // that reflects the sender's initial install and can be stale. 0 (no dry-run) makes
+        // the transport fall back to rsync's own percent rather than a value we can't trust.
+        long expectedTotal = syncVm.getPendingBytes();
+
+        syncVm.getTransport().startClient(fragment.requireContext().getApplicationContext(), shareConfig, creds.ip, creds.port, creds.user, creds.pass, destDir.getAbsolutePath(), expectedTotal, new TransportEngine.SyncListener() {
             @Override
             public void onProgress(int percentage, String speed, String eta, String currentFile) {
                 SyncProgressRepository.get().postTransferring(percentage, speed, eta, currentFile);
