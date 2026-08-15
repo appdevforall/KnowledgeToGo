@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADFA-5154: one stacked "scan this" section — a numbered teal badge + title, a QR on a Paper card
+  (with a placeholder for the pre-scannable state), a caption/subcaption, and a reveal-on-tap text
+  fallback (ADFA-4815). Bound by the shared QrSection holder (ADFA-5157) via these ids.
+
+  Included more than once on a page, so its inner ids are generic (sec_*). Bind through the include
+  root: `View s = root.findViewById(R.id.<include_id>); s.findViewById(R.id.sec_qr)`. The badge number
+  and title are set by the host (an <include> cannot parameterise child text), so they carry no
+  default here. Shared by Connect (the two-section Hotspot page) and Clone Page 1 (Join + Get app).
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:orientation="vertical" android:padding="16dp" android:background="@drawable/k2go_card_bg">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical">
+        <TextView android:id="@+id/sec_badge" android:layout_width="28dp" android:layout_height="28dp"
+            android:background="@drawable/k2go_badge_teal" android:gravity="center"
+            android:textColor="@color/k2go_on_teal" android:textStyle="bold" />
+        <TextView android:id="@+id/sec_title" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginStart="12dp" android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:textColor="@color/k2go_ink" />
+    </LinearLayout>
+
+    <FrameLayout android:id="@+id/sec_qr_frame" android:layout_width="220dp" android:layout_height="220dp"
+        android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="@drawable/k2go_card_bg">
+        <ImageView android:id="@+id/sec_qr" android:layout_width="match_parent" android:layout_height="match_parent"
+            android:padding="10dp" android:contentDescription="@string/k2go_tab_clone" />
+        <TextView android:id="@+id/sec_qr_ph" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_gravity="center" android:gravity="center" android:padding="12dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium" android:textColor="@color/k2go_muted" android:visibility="gone" />
+    </FrameLayout>
+
+    <TextView android:id="@+id/sec_caption" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceBodyMedium" android:textColor="@color/k2go_ink" />
+    <TextView android:id="@+id/sec_subcaption" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
+
+    <TextView android:id="@+id/sec_fallback_toggle" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:gravity="center" android:layout_marginTop="6dp" android:padding="6dp"
+        android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal"
+        android:clickable="true" android:focusable="true" android:visibility="gone" />
+    <LinearLayout android:id="@+id/sec_fallback" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:layout_marginTop="8dp" android:padding="14dp"
+        android:background="@drawable/k2go_card_bg" android:visibility="gone">
+        <LinearLayout android:id="@+id/sec_fallback_values" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
+    </LinearLayout>
+</LinearLayout>
