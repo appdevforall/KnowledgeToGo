@@ -309,6 +309,18 @@ public class CloneFragment extends Fragment {
     private void goToFork() { atFork = true; render(); }
 
     private void setSide(Side sd) {
+        // ADFA-5150: Send shares this device's library — with no system there is nothing to send, the
+        // same dead surface as Connect. Block it at the entry (this covers both the fork card and the
+        // Send tab), not three steps in at the old "share anyway" notice. Receive stays open: it is how
+        // you GET a system. Route to Recover instead of entering the send flow.
+        //
+        // This also blocks "send the app" (the APK share buried under Send), which does not itself need
+        // a system — a deliberate simplification. If users ask to bootstrap a peer's app from a
+        // systemless phone, lift that path up to the fork as its own option rather than reopening Send.
+        if (sd == Side.SEND && !org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
+            SetupLibraryActivity.recover(requireContext());
+            return;
+        }
         side = sd;
         if (sd == Side.SEND) { stage = Stage.JOIN; setMode(Mode.HOTSPOT); return; }   // ADFA-4785: enter Send at step 1
         rStage = RStage.JOIN; pasteExpanded = false;
