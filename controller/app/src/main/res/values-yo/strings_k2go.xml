@@ -808,4 +808,7 @@
     <string name="k2go_done">Parí</string>
     <string name="k2go_connect_step_join">Darapọ̀</string>
     <string name="k2go_connect_step_open">Ṣí</string>
+    <string name="k2go_clone_join_hotspot_title">Darapọ̀ mọ́ hotspot mi</string>
+    <string name="k2go_clone_join_wifi_title">Darapọ̀ mọ́ Wi-Fi kan náà</string>
+    <string name="k2go_clone_getapp_caption">Tọ́ kamẹra síhìn-ín láti gba K2Go wọlé.</string>
 </resources>

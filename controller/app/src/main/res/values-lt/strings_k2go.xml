@@ -818,4 +818,7 @@
     <string name="k2go_done">Atlikta</string>
     <string name="k2go_connect_step_join">Prisijungti</string>
     <string name="k2go_connect_step_open">Atverti</string>
+    <string name="k2go_clone_join_hotspot_title">Prisijunkite prie mano viešosios prieigos taško</string>
+    <string name="k2go_clone_join_wifi_title">Prisijunkite prie to paties „Wi-Fi“</string>
+    <string name="k2go_clone_getapp_caption">Nukreipkite kamerą čia, kad atsisiųstumėte K2Go.</string>
 </resources>

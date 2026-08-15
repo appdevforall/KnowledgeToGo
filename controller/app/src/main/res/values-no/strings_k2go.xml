@@ -818,4 +818,7 @@
     <string name="k2go_done">Ferdig</string>
     <string name="k2go_connect_step_join">Koble til</string>
     <string name="k2go_connect_step_open">Åpne</string>
+    <string name="k2go_clone_join_hotspot_title">Koble til hotspotet mitt</string>
+    <string name="k2go_clone_join_wifi_title">Koble til samme Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Rett kameraet hit for å laste ned K2Go.</string>
 </resources>

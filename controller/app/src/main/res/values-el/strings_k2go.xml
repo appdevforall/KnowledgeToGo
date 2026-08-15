@@ -809,4 +809,7 @@
     <string name="k2go_done">Τέλος</string>
     <string name="k2go_connect_step_join">Σύνδεση</string>
     <string name="k2go_connect_step_open">Άνοιγμα</string>
+    <string name="k2go_clone_join_hotspot_title">Σύνδεση στο hotspot μου</string>
+    <string name="k2go_clone_join_wifi_title">Σύνδεση στο ίδιο Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Στρέψτε την κάμερα εδώ για λήψη του K2Go.</string>
 </resources>

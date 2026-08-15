@@ -808,4 +808,7 @@
     <string name="k2go_done">થઈ ગયું</string>
     <string name="k2go_connect_step_join">જોડાઓ</string>
     <string name="k2go_connect_step_open">ખોલો</string>
+    <string name="k2go_clone_join_hotspot_title">મારા હૉટસ્પૉટ સાથે જોડાઓ</string>
+    <string name="k2go_clone_join_wifi_title">એ જ Wi-Fi સાથે જોડાઓ</string>
+    <string name="k2go_clone_getapp_caption">K2Go ડાઉનલોડ કરવા કૅમેરા અહીં તાકો.</string>
 </resources>

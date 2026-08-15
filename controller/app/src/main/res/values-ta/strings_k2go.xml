@@ -808,4 +808,7 @@
     <string name="k2go_done">முடிந்தது</string>
     <string name="k2go_connect_step_join">இணை</string>
     <string name="k2go_connect_step_open">திற</string>
+    <string name="k2go_clone_join_hotspot_title">எனது ஹாட்ஸ்பாட்டுடன் இணையவும்</string>
+    <string name="k2go_clone_join_wifi_title">அதே Wi-Fi உடன் இணையவும்</string>
+    <string name="k2go_clone_getapp_caption">K2Go ஐப் பதிவிறக்க கேமராவை இங்கே காட்டவும்.</string>
 </resources>

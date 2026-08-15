@@ -808,4 +808,7 @@
     <string name="k2go_done">Klaar</string>
     <string name="k2go_connect_step_join">Verbinden</string>
     <string name="k2go_connect_step_open">Openen</string>
+    <string name="k2go_clone_join_hotspot_title">Verbind met mijn hotspot</string>
+    <string name="k2go_clone_join_wifi_title">Verbind met hetzelfde wifi-netwerk</string>
+    <string name="k2go_clone_getapp_caption">Richt de camera hierop om K2Go te downloaden.</string>
 </resources>

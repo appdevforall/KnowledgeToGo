@@ -808,4 +808,7 @@
     <string name="k2go_done">हो गया</string>
     <string name="k2go_connect_step_join">जुड़ें</string>
     <string name="k2go_connect_step_open">खोलें</string>
+    <string name="k2go_clone_join_hotspot_title">मेरे हॉटस्पॉट से जुड़ें</string>
+    <string name="k2go_clone_join_wifi_title">उसी वाई-फ़ाई से जुड़ें</string>
+    <string name="k2go_clone_getapp_caption">K2Go डाउनलोड करने के लिए कैमरा यहाँ लगाएँ।</string>
 </resources>

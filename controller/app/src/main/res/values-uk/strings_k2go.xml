@@ -808,4 +808,7 @@
     <string name="k2go_done">Готово</string>
     <string name="k2go_connect_step_join">Приєднатися</string>
     <string name="k2go_connect_step_open">Відкрити</string>
+    <string name="k2go_clone_join_hotspot_title">Підключіться до моєї точки доступу</string>
+    <string name="k2go_clone_join_wifi_title">Підключіться до тієї ж мережі Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Наведіть камеру сюди, щоб завантажити K2Go.</string>
 </resources>

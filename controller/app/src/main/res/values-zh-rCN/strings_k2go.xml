@@ -808,4 +808,7 @@
     <string name="k2go_done">完成</string>
     <string name="k2go_connect_step_join">加入</string>
     <string name="k2go_connect_step_open">打开</string>
+    <string name="k2go_clone_join_hotspot_title">加入我的热点</string>
+    <string name="k2go_clone_join_wifi_title">连接同一个 Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">将摄像头对准这里下载 K2Go。</string>
 </resources>

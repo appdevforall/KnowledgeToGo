@@ -808,4 +808,7 @@
     <string name="k2go_done">সম্পন্ন</string>
     <string name="k2go_connect_step_join">যোগ</string>
     <string name="k2go_connect_step_open">খুলুন</string>
+    <string name="k2go_clone_join_hotspot_title">আমার হটস্পটে যুক্ত হোন</string>
+    <string name="k2go_clone_join_wifi_title">একই ওয়াই-ফাই-তে যুক্ত হোন</string>
+    <string name="k2go_clone_getapp_caption">K2Go ডাউনলোড করতে ক্যামেরা এখানে তাক করুন।</string>
 </resources>
