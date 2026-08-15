@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">다시 시도</string>
     <string name="k2go_home_install_system">시스템 설치</string>
     <string name="k2go_home_clone_receiving">다른 기기에서 복사 중</string>
-    <string name="k2go_home_clone_sharing">다른 기기와 공유 중</string>
+    <string name="k2go_home_clone_sharing">기기 간 전송 중</string>
     <string name="k2go_home_clone_view">보기</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">완료</string>
     <string name="k2go_connect_step_join">연결</string>
     <string name="k2go_connect_step_open">열기</string>
+    <string name="k2go_clone_join_hotspot_title">내 핫스팟에 연결</string>
+    <string name="k2go_clone_join_wifi_title">같은 Wi-Fi에 연결</string>
+    <string name="k2go_clone_getapp_caption">여기에 카메라를 비춰 K2Go를 다운로드하세요.</string>
 </resources>

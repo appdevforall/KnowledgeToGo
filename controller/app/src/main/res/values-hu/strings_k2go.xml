@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Újra</string>
     <string name="k2go_home_install_system">Rendszer telepítése</string>
     <string name="k2go_home_clone_receiving">Klónozás másik telefonról</string>
-    <string name="k2go_home_clone_sharing">Megosztás másik telefonnal</string>
+    <string name="k2go_home_clone_sharing">Átvitel eszközök között</string>
     <string name="k2go_home_clone_view">Megtekintés</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Kész</string>
     <string name="k2go_connect_step_join">Csatlakozás</string>
     <string name="k2go_connect_step_open">Megnyitás</string>
+    <string name="k2go_clone_join_hotspot_title">Csatlakozás a hotspotomhoz</string>
+    <string name="k2go_clone_join_wifi_title">Csatlakozás ugyanahhoz a Wi-Fi-hez</string>
+    <string name="k2go_clone_getapp_caption">Irányítsa ide a kamerát a K2Go letöltéséhez.</string>
 </resources>

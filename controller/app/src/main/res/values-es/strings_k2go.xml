@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Reintentar</string>
     <string name="k2go_home_install_system">Instalar un sistema</string>
     <string name="k2go_home_clone_receiving">Clonando desde otro teléfono</string>
-    <string name="k2go_home_clone_sharing">Compartiendo con otro teléfono</string>
+    <string name="k2go_home_clone_sharing">Transfiriendo entre dispositivos</string>
     <string name="k2go_home_clone_view">Ver</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Listo</string>
     <string name="k2go_connect_step_join">Unirse</string>
     <string name="k2go_connect_step_open">Abrir</string>
+    <string name="k2go_clone_join_hotspot_title">Únete a mi zona Wi-Fi</string>
+    <string name="k2go_clone_join_wifi_title">Conéctate al mismo Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Apunta la cámara aquí para descargar K2Go.</string>
 </resources>

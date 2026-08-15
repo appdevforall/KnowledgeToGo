@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Prøv igjen</string>
     <string name="k2go_home_install_system">Installer et system</string>
     <string name="k2go_home_clone_receiving">Kloner fra en annen telefon</string>
-    <string name="k2go_home_clone_sharing">Deler med en annen telefon</string>
+    <string name="k2go_home_clone_sharing">Overfører mellom enheter</string>
     <string name="k2go_home_clone_view">Vis</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -818,4 +818,7 @@
     <string name="k2go_done">Ferdig</string>
     <string name="k2go_connect_step_join">Koble til</string>
     <string name="k2go_connect_step_open">Åpne</string>
+    <string name="k2go_clone_join_hotspot_title">Koble til hotspotet mitt</string>
+    <string name="k2go_clone_join_wifi_title">Koble til samme Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Rett kameraet hit for å laste ned K2Go.</string>
 </resources>

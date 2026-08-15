@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">تلاش دوباره</string>
     <string name="k2go_home_install_system">نصب سیستم</string>
     <string name="k2go_home_clone_receiving">در حال کلون از تلفن دیگر</string>
-    <string name="k2go_home_clone_sharing">در حال اشتراک با تلفن دیگر</string>
+    <string name="k2go_home_clone_sharing">در حال انتقال بین دستگاه‌ها</string>
     <string name="k2go_home_clone_view">نمایش</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">انجام شد</string>
     <string name="k2go_connect_step_join">پیوستن</string>
     <string name="k2go_connect_step_open">باز کردن</string>
+    <string name="k2go_clone_join_hotspot_title">به هات‌اسپات من متصل شوید</string>
+    <string name="k2go_clone_join_wifi_title">به همان Wi-Fi متصل شوید</string>
+    <string name="k2go_clone_getapp_caption">برای دانلود K2Go دوربین را اینجا بگیرید.</string>
 </resources>

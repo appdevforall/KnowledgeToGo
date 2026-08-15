@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Повторити</string>
     <string name="k2go_home_install_system">Встановити систему</string>
     <string name="k2go_home_clone_receiving">Клонування з іншого телефона</string>
-    <string name="k2go_home_clone_sharing">Надсилання на інший телефон</string>
+    <string name="k2go_home_clone_sharing">Передавання між пристроями</string>
     <string name="k2go_home_clone_view">Переглянути</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Готово</string>
     <string name="k2go_connect_step_join">Приєднатися</string>
     <string name="k2go_connect_step_open">Відкрити</string>
+    <string name="k2go_clone_join_hotspot_title">Підключіться до моєї точки доступу</string>
+    <string name="k2go_clone_join_wifi_title">Підключіться до тієї ж мережі Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Наведіть камеру сюди, щоб завантажити K2Go.</string>
 </resources>

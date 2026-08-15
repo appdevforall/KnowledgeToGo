@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Coba lagi</string>
     <string name="k2go_home_install_system">Pasang sistem</string>
     <string name="k2go_home_clone_receiving">Menyalin dari ponsel lain</string>
-    <string name="k2go_home_clone_sharing">Membagikan ke ponsel lain</string>
+    <string name="k2go_home_clone_sharing">Mentransfer antar-perangkat</string>
     <string name="k2go_home_clone_view">Lihat</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Selesai</string>
     <string name="k2go_connect_step_join">Gabung</string>
     <string name="k2go_connect_step_open">Buka</string>
+    <string name="k2go_clone_join_hotspot_title">Gabung ke hotspot saya</string>
+    <string name="k2go_clone_join_wifi_title">Sambungkan ke Wi-Fi yang sama</string>
+    <string name="k2go_clone_getapp_caption">Arahkan kamera ke sini untuk mengunduh K2Go.</string>
 </resources>

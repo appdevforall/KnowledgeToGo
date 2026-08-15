@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">إعادة المحاولة</string>
     <string name="k2go_home_install_system">تثبيت نظام</string>
     <string name="k2go_home_clone_receiving">النسخ من هاتف آخر</string>
-    <string name="k2go_home_clone_sharing">المشاركة مع هاتف آخر</string>
+    <string name="k2go_home_clone_sharing">جارٍ النقل بين الأجهزة</string>
     <string name="k2go_home_clone_view">عرض</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">تم</string>
     <string name="k2go_connect_step_join">انضمام</string>
     <string name="k2go_connect_step_open">فتح</string>
+    <string name="k2go_clone_join_hotspot_title">اتصل بنقطة الاتصال الخاصة بي</string>
+    <string name="k2go_clone_join_wifi_title">اتصل بشبكة Wi-Fi نفسها</string>
+    <string name="k2go_clone_getapp_caption">وجّه الكاميرا هنا لتنزيل K2Go.</string>
 </resources>

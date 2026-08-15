@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Yeniden dene</string>
     <string name="k2go_home_install_system">Sistem kur</string>
     <string name="k2go_home_clone_receiving">Başka telefondan kopyalanıyor</string>
-    <string name="k2go_home_clone_sharing">Başka telefonla paylaşılıyor</string>
+    <string name="k2go_home_clone_sharing">Cihazlar arasında aktarılıyor</string>
     <string name="k2go_home_clone_view">Görüntüle</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Bitti</string>
     <string name="k2go_connect_step_join">Katıl</string>
     <string name="k2go_connect_step_open">Aç</string>
+    <string name="k2go_clone_join_hotspot_title">Etkin noktama bağlan</string>
+    <string name="k2go_clone_join_wifi_title">Aynı Wi-Fi\'ye bağlan</string>
+    <string name="k2go_clone_getapp_caption">K2Go\'yu indirmek için kamerayı buraya doğrult.</string>
 </resources>

@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Thử lại</string>
     <string name="k2go_home_install_system">Cài đặt hệ thống</string>
     <string name="k2go_home_clone_receiving">Đang sao chép từ điện thoại khác</string>
-    <string name="k2go_home_clone_sharing">Đang chia sẻ với điện thoại khác</string>
+    <string name="k2go_home_clone_sharing">Đang chuyển giữa các thiết bị</string>
     <string name="k2go_home_clone_view">Xem</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Xong</string>
     <string name="k2go_connect_step_join">Tham gia</string>
     <string name="k2go_connect_step_open">Mở</string>
+    <string name="k2go_clone_join_hotspot_title">Kết nối với điểm phát sóng của tôi</string>
+    <string name="k2go_clone_join_wifi_title">Kết nối cùng một Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Hướng camera vào đây để tải K2Go.</string>
 </resources>

@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">ફરી પ્રયાસ</string>
     <string name="k2go_home_install_system">સિસ્ટમ ઇન્સ્ટોલ કરો</string>
     <string name="k2go_home_clone_receiving">બીજા ફોનમાંથી કૉપિ થઈ રહ્યું છે</string>
-    <string name="k2go_home_clone_sharing">બીજા ફોન સાથે શેર થઈ રહ્યું છે</string>
+    <string name="k2go_home_clone_sharing">ડિવાઇસ વચ્ચે ટ્રાન્સફર થઈ રહ્યું છે</string>
     <string name="k2go_home_clone_view">જુઓ</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">થઈ ગયું</string>
     <string name="k2go_connect_step_join">જોડાઓ</string>
     <string name="k2go_connect_step_open">ખોલો</string>
+    <string name="k2go_clone_join_hotspot_title">મારા હૉટસ્પૉટ સાથે જોડાઓ</string>
+    <string name="k2go_clone_join_wifi_title">એ જ Wi-Fi સાથે જોડાઓ</string>
+    <string name="k2go_clone_getapp_caption">K2Go ડાઉનલોડ કરવા કૅમેરા અહીં તાકો.</string>
 </resources>

@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Reîncearcă</string>
     <string name="k2go_home_install_system">Instalează un sistem</string>
     <string name="k2go_home_clone_receiving">Clonare de pe alt telefon</string>
-    <string name="k2go_home_clone_sharing">Partajare cu alt telefon</string>
+    <string name="k2go_home_clone_sharing">Se transferă între dispozitive</string>
     <string name="k2go_home_clone_view">Vezi</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Gata</string>
     <string name="k2go_connect_step_join">Conectare</string>
     <string name="k2go_connect_step_open">Deschide</string>
+    <string name="k2go_clone_join_hotspot_title">Conectează-te la hotspotul meu</string>
+    <string name="k2go_clone_join_wifi_title">Conectează-te la aceeași rețea Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Îndreaptă camera aici pentru a descărca K2Go.</string>
 </resources>

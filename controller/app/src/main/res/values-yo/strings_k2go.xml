@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Tún gbìyànjú</string>
     <string name="k2go_home_install_system">Fi ẹ̀rọ sílẹ̀</string>
     <string name="k2go_home_clone_receiving">Ń dà kọ láti inú fóònù mìíràn</string>
-    <string name="k2go_home_clone_sharing">Ń pín pẹ̀lú fóònù mìíràn</string>
+    <string name="k2go_home_clone_sharing">Ń gbé láàrin àwọn ẹ̀rọ</string>
     <string name="k2go_home_clone_view">Wò ó</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
@@ -808,4 +808,7 @@
     <string name="k2go_done">Parí</string>
     <string name="k2go_connect_step_join">Darapọ̀</string>
     <string name="k2go_connect_step_open">Ṣí</string>
+    <string name="k2go_clone_join_hotspot_title">Darapọ̀ mọ́ hotspot mi</string>
+    <string name="k2go_clone_join_wifi_title">Darapọ̀ mọ́ Wi-Fi kan náà</string>
+    <string name="k2go_clone_getapp_caption">Tọ́ kamẹra síhìn-ín láti gba K2Go wọlé.</string>
 </resources>
