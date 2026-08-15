@@ -816,4 +816,6 @@
     <string name="k2go_connect_s2_title">Åpne biblioteket</string>
     <string name="k2go_connect_step2_below">TRINN 2 NEDENFOR</string>
     <string name="k2go_done">Ferdig</string>
+    <string name="k2go_connect_step_join">Koble til</string>
+    <string name="k2go_connect_step_open">Åpne</string>
 </resources>

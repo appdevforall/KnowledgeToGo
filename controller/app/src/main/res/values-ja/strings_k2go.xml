@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">ライブラリを開く</string>
     <string name="k2go_connect_step2_below">ステップ2は下</string>
     <string name="k2go_done">完了</string>
+    <string name="k2go_connect_step_join">参加</string>
+    <string name="k2go_connect_step_open">開く</string>
 </resources>

@@ -332,9 +332,9 @@ public class ConnectFragment extends Fragment {
     private void buildSteps() {
         steps.removeAllViews();
         steps.setVisibility(View.VISIBLE);
-        steps.addView(badge("1", "Join"));
+        steps.addView(badge("1", getString(R.string.k2go_connect_step_join)));
         steps.addView(arrow());
-        steps.addView(badge("2", "Open"));
+        steps.addView(badge("2", getString(R.string.k2go_connect_step_open)));
     }
 
     private View badge(String num, String label) {

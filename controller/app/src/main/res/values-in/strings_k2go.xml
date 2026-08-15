@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">Buka perpustakaan</string>
     <string name="k2go_connect_step2_below">LANGKAH 2 DI BAWAH</string>
     <string name="k2go_done">Selesai</string>
+    <string name="k2go_connect_step_join">Gabung</string>
+    <string name="k2go_connect_step_open">Buka</string>
 </resources>

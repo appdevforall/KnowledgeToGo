@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">打开图书馆</string>
     <string name="k2go_connect_step2_below">第 2 步在下方</string>
     <string name="k2go_done">完成</string>
+    <string name="k2go_connect_step_join">加入</string>
+    <string name="k2go_connect_step_open">打开</string>
 </resources>

@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">Ṣí ilé-ìkàwé</string>
     <string name="k2go_connect_step2_below">IGBÉSẸ̀ 2 NÍSÀLẸ̀</string>
     <string name="k2go_done">Parí</string>
+    <string name="k2go_connect_step_join">Darapọ̀</string>
+    <string name="k2go_connect_step_open">Ṣí</string>
 </resources>

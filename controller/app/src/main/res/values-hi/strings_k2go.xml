@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">लाइब्रेरी खोलें</string>
     <string name="k2go_connect_step2_below">चरण 2 नीचे</string>
     <string name="k2go_done">हो गया</string>
+    <string name="k2go_connect_step_join">जुड़ें</string>
+    <string name="k2go_connect_step_open">खोलें</string>
 </resources>

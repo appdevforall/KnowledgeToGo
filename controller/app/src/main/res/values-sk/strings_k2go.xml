@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">Otvoriť knižnicu</string>
     <string name="k2go_connect_step2_below">KROK 2 NIŽŠIE</string>
     <string name="k2go_done">Hotovo</string>
+    <string name="k2go_connect_step_join">Pripojiť</string>
+    <string name="k2go_connect_step_open">Otvoriť</string>
 </resources>

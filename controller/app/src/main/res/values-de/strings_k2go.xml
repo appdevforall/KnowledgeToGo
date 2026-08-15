@@ -807,4 +807,6 @@
     <string name="k2go_connect_s2_title">Bibliothek öffnen</string>
     <string name="k2go_connect_step2_below">SCHRITT 2 UNTEN</string>
     <string name="k2go_done">Fertig</string>
+    <string name="k2go_connect_step_join">Verbinden</string>
+    <string name="k2go_connect_step_open">Öffnen</string>
 </resources>

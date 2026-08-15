@@ -807,4 +807,6 @@
     <string name="k2go_connect_s2_title">Άνοιγμα βιβλιοθήκης</string>
     <string name="k2go_connect_step2_below">ΒΗΜΑ 2 ΠΑΡΑΚΑΤΩ</string>
     <string name="k2go_done">Τέλος</string>
+    <string name="k2go_connect_step_join">Σύνδεση</string>
+    <string name="k2go_connect_step_open">Άνοιγμα</string>
 </resources>

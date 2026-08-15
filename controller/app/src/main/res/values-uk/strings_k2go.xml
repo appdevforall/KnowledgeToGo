@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">Відкрити бібліотеку</string>
     <string name="k2go_connect_step2_below">КРОК 2 НИЖЧЕ</string>
     <string name="k2go_done">Готово</string>
+    <string name="k2go_connect_step_join">Приєднатися</string>
+    <string name="k2go_connect_step_open">Відкрити</string>
 </resources>

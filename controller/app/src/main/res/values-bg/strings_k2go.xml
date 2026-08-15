@@ -806,4 +806,6 @@
     <string name="k2go_connect_s2_title">Отворете библиотеката</string>
     <string name="k2go_connect_step2_below">СТЪПКА 2 ПО-ДОЛУ</string>
     <string name="k2go_done">Готово</string>
+    <string name="k2go_connect_step_join">Свързване</string>
+    <string name="k2go_connect_step_open">Отваряне</string>
 </resources>
