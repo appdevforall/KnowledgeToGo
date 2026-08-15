@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">K2Go खुला रखें। आप जा सकते हैं — यह बैकग्राउंड में चलता रहता है, और सूचना आपको वापस ले आती है।</string>
     <string name="k2go_bj_returning">हो गया — होम पर लौट रहे हैं…</string>
     <string name="k2go_br_leave_backup">बैकअप चल रहा है — आप जा सकते हैं; यह चलता रहता है और आपके लौटने पर तैयार होगा।</string>
+    <string name="k2go_clone_back_running">कॉपी चल रही है — आप जा सकते हैं; यह चलती रहती है और सूचना आपको वापस ले आती है।</string>
     <string name="k2go_br_leave_restore">पुनर्स्थापना चल रही है — आप जा सकते हैं; यह चलती रहती है और आपके लौटने पर तैयार होगी।</string>
     <string name="k2go_settings_sec_developer">डेवलपर</string>
     <string name="k2go_settings_network_dns">नेटवर्क और DNS</string>

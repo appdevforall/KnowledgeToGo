@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Ține K2Go deschis. Poți pleca — rămâne activ în fundal, iar notificarea te aduce înapoi.</string>
     <string name="k2go_bj_returning">Gata — revenire la Acasă…</string>
     <string name="k2go_br_leave_backup">Copia de rezervă rulează — poți pleca; continuă și va fi gata când revii.</string>
+    <string name="k2go_clone_back_running">Copierea rulează — poți pleca; continuă, iar notificarea te readuce.</string>
     <string name="k2go_br_leave_restore">Restaurarea rulează — poți pleca; continuă și va fi gata când revii.</string>
     <string name="k2go_settings_sec_developer">DEZVOLTATOR</string>
     <string name="k2go_settings_network_dns">Rețea &amp; DNS</string>

@@ -184,6 +184,7 @@
     <string name="k2go_bj_wait_body">Palikite K2Go atidarytą. Galite išeiti — ji toliau veikia fone, o pranešimas jus sugrąžins.</string>
     <string name="k2go_bj_returning">Atlikta — grįžtama į pradžią…</string>
     <string name="k2go_br_leave_backup">Vykdoma atsarginė kopija — galite išeiti; ji tęsis ir bus paruošta jums grįžus.</string>
+    <string name="k2go_clone_back_running">Vykdomas kopijavimas — galite išeiti; jis tęsis, o pranešimas jus sugrąžins.</string>
     <string name="k2go_br_leave_restore">Vykdomas atkūrimas — galite išeiti; jis tęsis ir bus paruoštas jums grįžus.</string>
     <string name="k2go_settings_sec_developer">KŪRĖJUI</string>
     <string name="k2go_settings_network_dns">Tinklas ir DNS</string>

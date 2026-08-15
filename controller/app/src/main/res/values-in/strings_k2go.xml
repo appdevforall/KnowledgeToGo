@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Biarkan K2Go terbuka. Anda boleh pergi — proses tetap berjalan di latar belakang, dan notifikasi akan membawa Anda kembali.</string>
     <string name="k2go_bj_returning">Selesai — kembali ke Beranda…</string>
     <string name="k2go_br_leave_backup">Pencadangan sedang berjalan — Anda boleh pergi; proses berlanjut dan akan siap saat Anda kembali.</string>
+    <string name="k2go_clone_back_running">Penyalinan sedang berjalan — Anda boleh pergi; proses berlanjut dan notifikasi akan membawa Anda kembali.</string>
     <string name="k2go_br_leave_restore">Pemulihan sedang berjalan — Anda boleh pergi; proses berlanjut dan akan siap saat Anda kembali.</string>
     <string name="k2go_settings_sec_developer">PENGEMBANG</string>
     <string name="k2go_settings_network_dns">Jaringan &amp; DNS</string>

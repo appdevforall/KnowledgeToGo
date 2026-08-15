@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Држите K2Go отворен. Можете отићи — наставља да ради у позадини, а обавештење вас враћа назад.</string>
     <string name="k2go_bj_returning">Готово — повратак на Почетну…</string>
     <string name="k2go_br_leave_backup">Резервна копија је у току — можете отићи; наставља се и биће готова када се вратите.</string>
+    <string name="k2go_clone_back_running">Копирање је у току — можете отићи; наставља се и обавештење вас враћа назад.</string>
     <string name="k2go_br_leave_restore">Враћање је у току — можете отићи; наставља се и биће готово када се вратите.</string>
     <string name="k2go_settings_sec_developer">ПРОГРАМЕР</string>
     <string name="k2go_settings_network_dns">Мрежа и DNS</string>

@@ -84,6 +84,12 @@ public class CloneFragment extends Fragment {
     private boolean cloneGuardHeld = false; // ADFA-4956: a receive (destructive write) also set InstallGuard
     private boolean shareAnyway = false;  // ADFA-4786: user chose to share even with no library installed
     private boolean systemPresent = true; // ADFA-5150: Send needs a system to send; refreshed on entry / onResume
+    private boolean receiveExiting = false; // ADFA-5151: success confirmation is showing; hold it, then go to Library
+    private static final long RECEIVE_SUCCESS_REDIRECT_MS = 3000L; // ADFA-5151: like the install index's REDIRECT_MS
+    // ADFA-5151: once a receive is accepted (running), Back is confined — first press warns, the next
+    // backgrounds the app (the copy keeps running under CloneShareService; the notification returns).
+    private androidx.activity.OnBackPressedCallback receiveBackGate;
+    private boolean leaveWarned = false;
     // ADFA-4785: "Send the app" sub-screen (bootstrap a phone with no K2Go) — serves the APK over HTTP.
     private boolean sendApp = false;
     private ApkServer apkServer;
@@ -287,6 +293,22 @@ public class CloneFragment extends Fragment {
         v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
         v.findViewById(R.id.k2go_clone_fork_receive).setOnClickListener(x -> enterSide(Side.RECEIVE));
         backHeader.setOnClickListener(x -> goToFork());
+        // ADFA-5151: the receive confinement, mirroring BackupJobFragment's backGate. Enabled only once
+        // the transfer is accepted (running, past CONFIRM) via updateBackGuard(); before that Back is
+        // free. First Back warns; the next backgrounds the app rather than landing on a systemless Home.
+        receiveBackGate = new androidx.activity.OnBackPressedCallback(false) {
+            @Override public void handleOnBackPressed() {
+                if (!leaveWarned) {
+                    leaveWarned = true;
+                    org.iiab.controller.util.Snackbars.make(
+                            requireActivity().findViewById(android.R.id.content),
+                            R.string.k2go_clone_back_running).show();
+                } else {
+                    requireActivity().moveTaskToBack(true);   // leave; the copy survives, the notification returns
+                }
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), receiveBackGate);
         // ADFA-4960: re-bind to a live SEND session. Its rsync daemon is still up in this process (kept
         // alive by CloneShareService), so a recreated Fragment must land on the share screen — not the
         // fork. Restore the state the share screen redraws from; daemonStarted=true makes ensureDaemon's
@@ -312,6 +334,12 @@ public class CloneFragment extends Fragment {
             cloneLockHeld = true;
             Context rebindCtx = getContext();
             cloneGuardHeld = rebindCtx != null && org.iiab.controller.InstallGuard.inProgress(rebindCtx);
+        } else if (!org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
+            // ADFA-5151: no system → skip the Send/Receive fork and land on receive step 1. Send is
+            // blocked anyway (ADFA-5150), so Receive is the only real move; going straight to it is the
+            // funnel Recover feeds. Free until the transfer is accepted — the back guard bites only once
+            // it is running.
+            atFork = false; side = Side.RECEIVE; rStage = RStage.JOIN;
         }
         render();
         return v;
@@ -490,6 +518,7 @@ public class CloneFragment extends Fragment {
 
     private void render() {
         if (!isAdded() || caption == null) return;
+        updateBackGuard();   // ADFA-5151: keep the Back confinement in step with side + transfer state
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
         if (stepTitle != null) { stepTitle.setVisibility(View.GONE); skipApp.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
         paintTab(tabSend, side == Side.SEND);
@@ -863,7 +892,10 @@ public class CloneFragment extends Fragment {
             if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
             else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
         }
-        if (side == Side.RECEIVE) renderReceive();
+        // ADFA-5151: while the success confirmation is holding before the redirect to Library, don't let
+        // renderReceive() tear the progress screen down (SUCCESS is not active, so it would).
+        if (side == Side.RECEIVE && !receiveExiting) renderReceive();
+        updateBackGuard();   // ADFA-5151: CONFIRM -> running (accepted) flips the Back confinement on
         syncProtection();   // ADFA-4782: match protection to the live pull state on every transition
     }
 
@@ -895,6 +927,20 @@ public class CloneFragment extends Fragment {
         pbar.setVisibility(View.GONE);
         pbar.setIndeterminate(indeterminate);
         pbar.setVisibility(was);
+    }
+
+    /**
+     * ADFA-5151: enable the Back confinement only once the receive is accepted (running, past CONFIRM).
+     * Before acceptance (JOIN / CONFIRM) Back is free; the user is still deciding. Reset the one-time
+     * warning whenever it is off, so each accepted transfer warns once before backgrounding.
+     */
+    private void updateBackGuard() {
+        if (receiveBackGate == null) return;
+        SyncTransferState st = SyncProgressRepository.get().current();
+        boolean accepted = side == Side.RECEIVE && st != null && st.isActive()
+                && st.phase != SyncTransferState.Phase.CONFIRM;
+        receiveBackGate.setEnabled(accepted);
+        if (!accepted) leaveWarned = false;
     }
 
     private void renderReceive() {
@@ -1088,16 +1134,51 @@ public class CloneFragment extends Fragment {
         }
         releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
+
+        if (ok) {
+            // ADFA-5151: success exit. Do not strand the user on the receive step — confirm briefly on
+            // the progress screen, then go to the Library, exactly as the install index does. A system
+            // now exists (releaseCloneEnv booted it), so LibraryHomeFragment refreshes onto it. Shared
+            // terminal, so a normal receive (with a system) gets the same courtesy.
+            receiveExiting = true;
+            if (progressBox != null) progressBox.setVisibility(View.VISIBLE);
+            setBarIndeterminate(false);
+            if (pbar != null) pbar.setProgressCompat(100, true);
+            if (pStatus != null) pStatus.setText(getString(R.string.k2go_clone_copy_complete));
+            if (pFile != null) pFile.setText("");
+            if (pStats != null) pStats.setText("");
+            if (cancel != null) cancel.setVisibility(View.GONE);   // nothing to cancel on a finished copy
+            View host = (progressBox != null) ? progressBox : getView();
+            if (host != null) host.postDelayed(() -> {
+                if (!isAdded()) return;
+                // ADFA-5151 (review): clear the flag here — its owner and lifetime. Navigation destroys
+                // this fragment, so it normally dies with it; resetting means that even if navigation
+                // ever no-ops, renderReceive is not left permanently muted. A marker with a clear-path.
+                receiveExiting = false;
+                SyncProgressRepository.get().postIdle();
+                if (getActivity() instanceof LibraryActivity) ((LibraryActivity) getActivity()).openLibraryTab();
+            }, RECEIVE_SUCCESS_REDIRECT_MS);
+            return;
+        }
+
         String body = (message != null) ? message : "";
         // ADFA-4782: if rsync was SIGKILLed (exit 137, phantom-process killer), guide the user.
-        if (!ok && body.contains("137")) {
+        if (body.contains("137")) {
             body += "\n\nThe copy was stopped by the system. Keep this screen on and the app in the "
                   + "foreground during a transfer, then scan again to resume.";
         }
+        // ADFA-5151: fail -> the user chooses, never stranded and never dropped onto a systemless Home.
+        // Retry re-scans (rsync resumes from the half-written tree — the maravilla Luis relies on);
+        // Recover goes to the hub (restore / install over internet / clone again). The Back guard has
+        // already turned off (FAILED is not active), so leaving the app is free too.
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(ok ? R.string.k2go_clone_copy_complete : R.string.k2go_clone_copy_stopped))
+                .setTitle(getString(R.string.k2go_clone_copy_stopped))
                 .setMessage(body)
-                .setPositiveButton(getString(android.R.string.ok), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setPositiveButton(getString(R.string.k2go_home_retry), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setNegativeButton(getString(R.string.k2go_home_recover), (d, w) -> {
+                    SyncProgressRepository.get().postIdle();
+                    SetupLibraryActivity.recover(requireContext());
+                })
                 .setCancelable(false)
                 .show();
     }

@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">K2Go-nu açıq saxlayın. Tərk edə bilərsiniz — arxa planda işləməyə davam edir və bildiriş sizi geri gətirir.</string>
     <string name="k2go_bj_returning">Hazır — Evə qayıdılır…</string>
     <string name="k2go_br_leave_backup">Ehtiyat nüsxə işləyir — tərk edə bilərsiniz; davam edir və qayıtdıqda hazır olacaq.</string>
+    <string name="k2go_clone_back_running">Kopyalama işləyir — tərk edə bilərsiniz; davam edir və bildiriş sizi geri qaytarır.</string>
     <string name="k2go_br_leave_restore">Bərpa işləyir — tərk edə bilərsiniz; davam edir və qayıtdıqda hazır olacaq.</string>
     <string name="k2go_settings_sec_developer">TƏRTİBATÇI</string>
     <string name="k2go_settings_network_dns">Şəbəkə &amp; DNS</string>

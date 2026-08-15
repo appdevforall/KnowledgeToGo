@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Mantenha o K2Go aberto. Pode sair — continua a funcionar em segundo plano e a notificação traz-lo de volta.</string>
     <string name="k2go_bj_returning">Concluído — a regressar ao Início…</string>
     <string name="k2go_br_leave_backup">A cópia de segurança está a decorrer — pode sair; continua e estará pronta quando voltar.</string>
+    <string name="k2go_clone_back_running">A cópia está a decorrer — pode sair; continua e a notificação leva-o de volta.</string>
     <string name="k2go_br_leave_restore">O restauro está a decorrer — pode sair; continua e estará pronto quando voltar.</string>
     <string name="k2go_settings_sec_developer">PROGRAMADOR</string>
     <string name="k2go_settings_network_dns">Rede &amp; DNS</string>

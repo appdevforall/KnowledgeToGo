@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">请保持 K2Go 打开。您可以离开 — 它会在后台持续运行，通知会带您返回。</string>
     <string name="k2go_bj_returning">完成 — 正在返回主屏幕…</string>
     <string name="k2go_br_leave_backup">备份正在运行 — 您可以离开；它会继续，并在您返回时准备就绪。</string>
+    <string name="k2go_clone_back_running">复制正在运行 — 您可以离开；它会继续，通知会带您回来。</string>
     <string name="k2go_br_leave_restore">恢复正在运行 — 您可以离开；它会继续，并在您返回时准备就绪。</string>
     <string name="k2go_settings_sec_developer">开发者</string>
     <string name="k2go_settings_network_dns">网络与 DNS</string>

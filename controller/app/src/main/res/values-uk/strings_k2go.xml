@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Тримайте K2Go відкритим. Ви можете вийти — він продовжує працювати у фоні, а сповіщення поверне вас.</string>
     <string name="k2go_bj_returning">Готово — повернення на Головну…</string>
     <string name="k2go_br_leave_backup">Резервне копіювання триває — ви можете вийти; воно продовжиться й буде готове, коли ви повернетеся.</string>
+    <string name="k2go_clone_back_running">Копіювання триває — ви можете вийти; воно продовжиться, а сповіщення поверне вас назад.</string>
     <string name="k2go_br_leave_restore">Відновлення триває — ви можете вийти; воно продовжиться й буде готове, коли ви повернетеся.</string>
     <string name="k2go_settings_sec_developer">РОЗРОБНИК</string>
     <string name="k2go_settings_network_dns">Мережа та DNS</string>

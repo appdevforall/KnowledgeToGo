@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">K2Go را باز نگه دارید. می‌توانید خارج شوید — در پس‌زمینه اجرا می‌ماند و اعلان شما را برمی‌گرداند.</string>
     <string name="k2go_bj_returning">انجام شد — در حال بازگشت به خانه…</string>
     <string name="k2go_br_leave_backup">پشتیبان‌گیری در حال اجراست — می‌توانید خارج شوید؛ ادامه می‌یابد و هنگام بازگشت آماده خواهد بود.</string>
+    <string name="k2go_clone_back_running">کپی در حال اجراست — می‌توانید خارج شوید؛ ادامه می‌یابد و اعلان شما را بازمی‌گرداند.</string>
     <string name="k2go_br_leave_restore">بازیابی در حال اجراست — می‌توانید خارج شوید؛ ادامه می‌یابد و هنگام بازگشت آماده خواهد بود.</string>
     <string name="k2go_settings_sec_developer">توسعه‌دهنده</string>
     <string name="k2go_settings_network_dns">شبکه و DNS</string>

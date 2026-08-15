@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">أبقِ K2Go مفتوحًا. يمكنك المغادرة — يستمر في العمل في الخلفية، ويعيدك الإشعار.</string>
     <string name="k2go_bj_returning">تم — جارٍ العودة إلى الشاشة الرئيسية…</string>
     <string name="k2go_br_leave_backup">النسخ الاحتياطي قيد التشغيل — يمكنك المغادرة؛ سيستمر وسيكون جاهزًا عند عودتك.</string>
+    <string name="k2go_clone_back_running">النسخ قيد التشغيل — يمكنك المغادرة؛ يستمر، والإشعار يعيدك إليه.</string>
     <string name="k2go_br_leave_restore">الاستعادة قيد التشغيل — يمكنك المغادرة؛ ستستمر وستكون جاهزة عند عودتك.</string>
     <string name="k2go_settings_sec_developer">المطوّر</string>
     <string name="k2go_settings_network_dns">الشبكة وDNS</string>

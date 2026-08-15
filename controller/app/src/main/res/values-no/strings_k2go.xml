@@ -184,6 +184,7 @@
     <string name="k2go_bj_wait_body">Hold K2Go åpen. Du kan forlate den — den fortsetter å kjøre i bakgrunnen, og varselet tar deg tilbake.</string>
     <string name="k2go_bj_returning">Ferdig — går tilbake til Hjem…</string>
     <string name="k2go_br_leave_backup">Sikkerhetskopieringen kjører — du kan forlate den; den fortsetter og er klar når du kommer tilbake.</string>
+    <string name="k2go_clone_back_running">Kopieringen kjører — du kan forlate den; den fortsetter og varselet tar deg tilbake.</string>
     <string name="k2go_br_leave_restore">Gjenopprettingen kjører — du kan forlate den; den fortsetter og er klar når du kommer tilbake.</string>
     <string name="k2go_settings_sec_developer">UTVIKLER</string>
     <string name="k2go_settings_network_dns">Nettverk &amp; DNS</string>

@@ -184,6 +184,7 @@
     <string name="k2go_bj_wait_body">Κρατήστε το K2Go ανοιχτό. Μπορείτε να φύγετε — συνεχίζει να εκτελείται στο παρασκήνιο και η ειδοποίηση σας επαναφέρει.</string>
     <string name="k2go_bj_returning">Ολοκληρώθηκε — επιστροφή στην Αρχική…</string>
     <string name="k2go_br_leave_backup">Το αντίγραφο ασφαλείας εκτελείται — μπορείτε να φύγετε· συνεχίζεται και θα είναι έτοιμο όταν επιστρέψετε.</string>
+    <string name="k2go_clone_back_running">Η αντιγραφή εκτελείται — μπορείτε να φύγετε· συνεχίζεται και η ειδοποίηση σας επαναφέρει.</string>
     <string name="k2go_br_leave_restore">Η επαναφορά εκτελείται — μπορείτε να φύγετε· συνεχίζεται και θα είναι έτοιμη όταν επιστρέψετε.</string>
     <string name="k2go_settings_sec_developer">ΠΡΟΓΡΑΜΜΑΤΙΣΤΗΣ</string>
     <string name="k2go_settings_network_dns">Δίκτυο &amp; DNS</string>

@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Giữ K2Go mở. Bạn có thể rời đi — nó tiếp tục chạy nền, và thông báo sẽ đưa bạn quay lại.</string>
     <string name="k2go_bj_returning">Xong — đang quay về Trang chủ…</string>
     <string name="k2go_br_leave_backup">Đang sao lưu — bạn có thể rời đi; nó tiếp tục và sẽ sẵn sàng khi bạn quay lại.</string>
+    <string name="k2go_clone_back_running">Đang sao chép — bạn có thể rời đi; nó tiếp tục và thông báo sẽ đưa bạn quay lại.</string>
     <string name="k2go_br_leave_restore">Đang khôi phục — bạn có thể rời đi; nó tiếp tục và sẽ sẵn sàng khi bạn quay lại.</string>
     <string name="k2go_settings_sec_developer">NHÀ PHÁT TRIỂN</string>
     <string name="k2go_settings_network_dns">Mạng &amp; DNS</string>
