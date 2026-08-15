@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,7 +22,6 @@ import org.iiab.controller.R;
 import org.iiab.controller.hotspot.LocalHotspotManager;
 import org.iiab.controller.sync.transport.NetworkInterfaces;
 import org.iiab.controller.sync.transport.NetworkStateLiveData;
-import org.iiab.controller.sync.transport.QrCodec;
 
 /**
  * Connect tab (ADFA-4776; redesigned ADFA-5154). Let a nearby device browse the library.
@@ -31,7 +29,8 @@ import org.iiab.controller.sync.transport.QrCodec;
  * <p>On the app's LocalOnly hotspot the flow is two codes — (1) Join, (2) Open — and the redesign
  * shows BOTH at once on one scrollable page (no vanishing wizard step): the user builds a stable
  * spatial map instead of chasing a code that swaps in place. On a shared Wi-Fi it stays one code
- * (Open), shown in the single container. Reuses LocalHotspotManager, NetworkInterfaces and QrCodec.
+ * (Open), shown in the single container. Reuses LocalHotspotManager, NetworkInterfaces and the shared
+ * QrSection (ADFA-5157).
  *
  * <p>Both hotspot codes need the hotspot ON (ssid/pass for Join, the IP for Open), and the manager
  * publishes all three together at Phase.ON. So while it is still starting the two sections show a
@@ -43,30 +42,9 @@ public class ConnectFragment extends Fragment {
 
     private enum Mode { HOTSPOT, WIFI }
 
-    /**
-     * One QR "section": its slot (frame + code + placeholder), caption/subcaption and its own
-     * reveal-on-tap scan fallback (ADFA-4815). Three of these — Join, Open, and the single
-     * container used for Wi-Fi / failed / no-system — so the three no longer need parallel fields.
-     */
-    private static final class Section {
-        final FrameLayout frame;
-        final ImageView qr;
-        final TextView ph, caption, subCaption, fallbackToggle;
-        final LinearLayout fallback, fallbackValues;
-        boolean fbOpen;   // this section's fallback reveal state, kept across re-renders
-
-        Section(View r, int frameId, int qrId, int phId, int capId, int subId,
-                int toggleId, int fallbackId, int valuesId) {
-            frame = r.findViewById(frameId);
-            qr = r.findViewById(qrId);
-            ph = r.findViewById(phId);
-            caption = r.findViewById(capId);
-            subCaption = r.findViewById(subId);
-            fallbackToggle = r.findViewById(toggleId);
-            fallback = r.findViewById(fallbackId);
-            fallbackValues = r.findViewById(valuesId);
-        }
-    }
+    // ADFA-5157: the "section" holder and its setQr/setFallback logic moved to the shared QrSection
+    // class so the Clone (Send) redesign reuses it instead of copying it. Three instances here — Join,
+    // Open, and the single container used for Wi-Fi / failed / no-system.
 
     private Mode mode = Mode.HOTSPOT;
     // ADFA-5150: Connect shares this device's library — with no system there is nothing to serve, and
@@ -78,7 +56,7 @@ public class ConnectFragment extends Fragment {
 
     private TextView tabHotspot, tabWifi, advance, finish, connFooter;
     private LinearLayout steps, two, single, hint;
-    private Section secJoin, secOpen, secSingle;
+    private QrSection secJoin, secOpen, secSingle;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
@@ -102,13 +80,13 @@ public class ConnectFragment extends Fragment {
         single = v.findViewById(R.id.k2go_conn_single);
         hint = v.findViewById(R.id.k2go_conn_hint);
 
-        secJoin = new Section(v, R.id.k2go_conn_qr1_frame, R.id.k2go_conn_qr1, R.id.k2go_conn_qr1_ph,
+        secJoin = new QrSection(v, R.id.k2go_conn_qr1_frame, R.id.k2go_conn_qr1, R.id.k2go_conn_qr1_ph,
                 R.id.k2go_conn_caption1, R.id.k2go_conn_subcaption1,
                 R.id.k2go_conn_fallback_toggle1, R.id.k2go_conn_fallback1, R.id.k2go_conn_fallback_values1);
-        secOpen = new Section(v, R.id.k2go_conn_qr2_frame, R.id.k2go_conn_qr2, R.id.k2go_conn_qr2_ph,
+        secOpen = new QrSection(v, R.id.k2go_conn_qr2_frame, R.id.k2go_conn_qr2, R.id.k2go_conn_qr2_ph,
                 R.id.k2go_conn_caption2, R.id.k2go_conn_subcaption2,
                 R.id.k2go_conn_fallback_toggle2, R.id.k2go_conn_fallback2, R.id.k2go_conn_fallback_values2);
-        secSingle = new Section(v, R.id.k2go_conn_qrS_frame, R.id.k2go_conn_qrS, R.id.k2go_conn_qrS_ph,
+        secSingle = new QrSection(v, R.id.k2go_conn_qrS_frame, R.id.k2go_conn_qrS, R.id.k2go_conn_qrS_ph,
                 R.id.k2go_conn_captionS, R.id.k2go_conn_subcaptionS,
                 R.id.k2go_conn_fallback_toggleS, R.id.k2go_conn_fallbackS, R.id.k2go_conn_fallback_valuesS);
 
@@ -190,7 +168,7 @@ public class ConnectFragment extends Fragment {
         steps.setVisibility(View.GONE);
         secSingle.caption.setText(R.string.k2go_connect_no_system);
         secSingle.subCaption.setText("");
-        setFallback(secSingle, null);
+        secSingle.setFallback(requireContext(), null);
         advance.setVisibility(View.VISIBLE);
         advance.setText(R.string.k2go_home_recover);
         styleAdvance(true);
@@ -222,26 +200,26 @@ public class ConnectFragment extends Fragment {
             String ip = NetworkInterfaces.discover().hotspotIp;
             if (ip == null) ip = "192.168.49.1";
 
-            setQr(secJoin, "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
+            secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
             secJoin.caption.setText(R.string.k2go_just_scan);
             secJoin.subCaption.setText("");
-            setFallback(secJoin, new String[]{
+            secJoin.setFallback(requireContext(), new String[]{
                     getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
 
-            setQr(secOpen, browseUrl(ip), null);
+            secOpen.setQr(requireContext(), browseUrl(ip), null);
             secOpen.caption.setText(R.string.k2go_connect_readonly);
             secOpen.subCaption.setText("");
-            setFallback(secOpen, new String[]{browseUrl(ip)});
+            secOpen.setFallback(requireContext(), new String[]{browseUrl(ip)});
 
             finish.setVisibility(View.VISIBLE);
         } else {
             // Starting: hold both slots with a placeholder caption, no scannable code yet.
             String starting = getString(R.string.k2go_connect_starting_hotspot);
-            for (Section sec : new Section[]{secJoin, secOpen}) {
-                setQr(sec, null, starting);
+            for (QrSection sec : new QrSection[]{secJoin, secOpen}) {
+                sec.setQr(requireContext(), null, starting);
                 sec.caption.setText("");
                 sec.subCaption.setText("");
-                setFallback(sec, null);
+                sec.setFallback(requireContext(), null);
             }
             finish.setVisibility(View.VISIBLE);
         }
@@ -256,10 +234,10 @@ public class ConnectFragment extends Fragment {
             return;
         }
         secSingle.frame.setVisibility(View.VISIBLE);
-        setQr(secSingle, browseUrl(ip), null);
+        secSingle.setQr(requireContext(), browseUrl(ip), null);
         secSingle.caption.setText(R.string.k2go_connect_scan_open);
         secSingle.subCaption.setText(R.string.k2go_connect_same_wifi);
-        setFallback(secSingle, new String[]{browseUrl(ip)});
+        secSingle.setFallback(requireContext(), new String[]{browseUrl(ip)});
         finish.setVisibility(View.VISIBLE);
     }
 
@@ -270,7 +248,7 @@ public class ConnectFragment extends Fragment {
         secSingle.frame.setVisibility(View.GONE);
         secSingle.caption.setText(cap);
         secSingle.subCaption.setText(sub);
-        setFallback(secSingle, null);
+        secSingle.setFallback(requireContext(), null);
         advance.setVisibility(View.GONE);
     }
 
@@ -282,47 +260,7 @@ public class ConnectFragment extends Fragment {
         secSingle.frame.setVisibility(View.VISIBLE);   // default; status / no-system hide it
     }
 
-    /** Draw {@code data} into the section's QR, or clear it and show {@code placeholder} in the slot. */
-    private void setQr(Section sec, String data, String placeholder) {
-        if (data == null) {
-            sec.qr.setImageBitmap(null);
-            sec.ph.setText(placeholder == null ? "" : placeholder);
-            sec.ph.setVisibility(View.VISIBLE);
-            return;
-        }
-        int px = Math.round(200 * getResources().getDisplayMetrics().density);
-        sec.qr.setImageBitmap(QrCodec.encode(data, px));
-        sec.ph.setVisibility(View.GONE);
-    }
-
-    private void setFallback(Section sec, String[] vals) {
-        sec.fallbackValues.removeAllViews();
-        if (vals == null || vals.length == 0) {
-            sec.fallback.setVisibility(View.GONE);
-            sec.fallbackToggle.setVisibility(View.GONE);
-            return;
-        }
-        for (String val : vals) {
-            TextView t = new TextView(requireContext());
-            t.setText(val);
-            t.setGravity(Gravity.CENTER);
-            t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-            t.setTextIsSelectable(true);
-            sec.fallbackValues.addView(t);
-        }
-        // ADFA-4815: reveal-on-tap. The toggle sits under the caption; the quote block with the values
-        // stays hidden until tapped, so a working scan stays clutter-free.
-        sec.fallbackToggle.setVisibility(View.VISIBLE);
-        applyFallbackOpen(sec);
-        sec.fallbackToggle.setOnClickListener(x -> { sec.fbOpen = !sec.fbOpen; applyFallbackOpen(sec); });
-    }
-
-    private void applyFallbackOpen(Section sec) {
-        sec.fallback.setVisibility(sec.fbOpen ? View.VISIBLE : View.GONE);
-        sec.fallbackToggle.setText(sec.fbOpen
-                ? getString(R.string.k2go_hide) + "  ▴"
-                : getString(R.string.k2go_scan_didnt_work) + "  ▸");
-    }
+    // ADFA-5157: setQr / setFallback / applyFallbackOpen moved to QrSection (shared with Clone).
 
     // ---- 1·2 stepper for orientation. Both are present at once, so both read as active. ----
     private void buildSteps() {
