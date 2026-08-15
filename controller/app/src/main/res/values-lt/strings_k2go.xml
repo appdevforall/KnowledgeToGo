@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Bandyti dar kartą</string>
     <string name="k2go_home_install_system">Įdiegti sistemą</string>
     <string name="k2go_home_clone_receiving">Klonuojama iš kito telefono</string>
-    <string name="k2go_home_clone_sharing">Bendrinama su kitu telefonu</string>
+    <string name="k2go_home_clone_sharing">Perkeliama tarp įrenginių</string>
     <string name="k2go_home_clone_view">Peržiūrėti</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

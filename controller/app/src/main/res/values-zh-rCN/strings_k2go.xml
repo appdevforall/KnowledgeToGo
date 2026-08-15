@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">重试</string>
     <string name="k2go_home_install_system">安装系统</string>
     <string name="k2go_home_clone_receiving">正在从另一台手机复制</string>
-    <string name="k2go_home_clone_sharing">正在与另一台手机共享</string>
+    <string name="k2go_home_clone_sharing">正在设备间传输</string>
     <string name="k2go_home_clone_view">查看</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

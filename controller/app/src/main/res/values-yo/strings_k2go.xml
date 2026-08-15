@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Tún gbìyànjú</string>
     <string name="k2go_home_install_system">Fi ẹ̀rọ sílẹ̀</string>
     <string name="k2go_home_clone_receiving">Ń dà kọ láti inú fóònù mìíràn</string>
-    <string name="k2go_home_clone_sharing">Ń pín pẹ̀lú fóònù mìíràn</string>
+    <string name="k2go_home_clone_sharing">Ń gbé láàrin àwọn ẹ̀rọ</string>
     <string name="k2go_home_clone_view">Wò ó</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

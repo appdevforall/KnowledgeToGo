@@ -137,6 +137,8 @@ public class CloneFragment extends Fragment {
     private ImageView qr;
     private TextView showcode, codetext, copyBtn, shareBtn;
     private LinearLayout codeblock;
+    private LinearLayout actionFooter;   // ADFA-5154: pinned wrapper for the stop/start/recover button
+    private org.iiab.controller.util.EllipsisAnimator startingDots;   // ADFA-5154: animated "Starting service…"
     private String currentPayload = "";
     private boolean codeExpanded = false;
 
@@ -183,7 +185,9 @@ public class CloneFragment extends Fragment {
         ((TextView) getAppRoot.findViewById(R.id.sec_title)).setText(getString(R.string.k2go_badge_getapp));
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
+        actionFooter = v.findViewById(R.id.k2go_clone_action_footer);   // ADFA-5154: pinned action button
         footer = v.findViewById(R.id.k2go_clone_footer);
+        startingDots = new org.iiab.controller.util.EllipsisAnimator(caption, true);   // animated "Starting service…"
         shareCard = v.findViewById(R.id.k2go_clone_sharecard);
         sizeSys = v.findViewById(R.id.k2go_clone_size_sys);
         sizeContent = v.findViewById(R.id.k2go_clone_size_content);
@@ -535,6 +539,7 @@ public class CloneFragment extends Fragment {
 
     private void render() {
         if (!isAdded() || caption == null) return;
+        if (startingDots != null) startingDots.stop();   // ADFA-5154: only the daemon-starting state re-starts it
         updateBackGuard();   // ADFA-5151: keep the Back confinement in step with side + transfer state
         if (showcode != null) { showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE); }
         if (stepTitle != null) { stepTitle.setVisibility(View.GONE); skipApp.setVisibility(View.GONE); shareWifi.setVisibility(View.GONE); }
@@ -552,7 +557,7 @@ public class CloneFragment extends Fragment {
             page1.setVisibility(View.GONE);
             page2.setVisibility(View.GONE);
             advance.setVisibility(View.GONE);
-            stop.setVisibility(View.GONE);
+            actionFooter.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
             sendAppEntry.setVisibility(View.GONE);
@@ -573,7 +578,7 @@ public class CloneFragment extends Fragment {
             page1.setVisibility(View.GONE);
             page2.setVisibility(View.GONE);
             advance.setVisibility(View.GONE);
-            stop.setVisibility(View.GONE);
+            actionFooter.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
             shareCard.setVisibility(View.GONE);
             sendAppEntry.setVisibility(View.GONE);
@@ -637,7 +642,7 @@ public class CloneFragment extends Fragment {
         shareCard.setVisibility(View.GONE);
         sendAppEntry.setVisibility(View.GONE); sendAppView.setVisibility(View.GONE);
         advance.setVisibility(View.GONE);
-        stop.setVisibility(View.VISIBLE);
+        actionFooter.setVisibility(View.VISIBLE);
         stop.setText(getString(R.string.k2go_home_recover));
         stop.setBackgroundResource(R.drawable.k2go_primary_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
@@ -733,7 +738,7 @@ public class CloneFragment extends Fragment {
             caption.setText(getString(R.string.k2go_clone_nothing_title));
             subCaption.setText(getString(R.string.k2go_clone_no_library_note));
             footer.setText(""); shareCard.setVisibility(View.GONE);
-            stop.setVisibility(View.VISIBLE);
+            actionFooter.setVisibility(View.VISIBLE);
             stop.setText(getString(R.string.k2go_clone_share_anyway));
             stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
             stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
@@ -742,9 +747,9 @@ public class CloneFragment extends Fragment {
         }
         if (daemonStarting) {
             qr.setImageBitmap(null);
-            caption.setText(getString(R.string.k2go_clone_starting_service));
+            startingDots.start(getString(R.string.k2go_clone_starting_service));   // animated "…"
             subCaption.setText("");
-            footer.setText(""); stop.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
+            footer.setText(""); actionFooter.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
@@ -812,7 +817,7 @@ public class CloneFragment extends Fragment {
     }
 
     private void showStopButton() {
-        stop.setVisibility(View.VISIBLE);
+        actionFooter.setVisibility(View.VISIBLE);
         stop.setText(getString(R.string.k2go_clone_stop_sharing));
         stop.setBackgroundResource(R.drawable.k2go_turnoff_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_clay));
@@ -820,7 +825,7 @@ public class CloneFragment extends Fragment {
     }
 
     private void showStartButton() {
-        stop.setVisibility(View.VISIBLE);
+        actionFooter.setVisibility(View.VISIBLE);
         stop.setText(getString(R.string.k2go_clone_start_sharing));
         stop.setBackgroundResource(R.drawable.k2go_primary_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
@@ -1209,6 +1214,7 @@ public class CloneFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (startingDots != null) startingDots.stop();   // ADFA-5154: no dangling Handler after the view is gone
         // ADFA-4782: release protection only when nothing is running; an active share daemon or pull
         // keeps the (app-scoped) CloneShareService alive so leaving the tab doesn't cut the transfer.
         // ADFA-4956: same gate for the deep-env lock — only boot the server back + drop the lock when
@@ -1239,7 +1245,7 @@ public class CloneFragment extends Fragment {
         caption.setText(cap);
         subCaption.setText(sub);
         advance.setVisibility(View.GONE);
-        stop.setVisibility(View.GONE);
+        actionFooter.setVisibility(View.GONE);
         footer.setText("");
     }
 

@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">மீண்டும் முயற்சி</string>
     <string name="k2go_home_install_system">கணினியை நிறுவு</string>
     <string name="k2go_home_clone_receiving">மற்றொரு தொலைபேசியிலிருந்து நகலெடுக்கிறது</string>
-    <string name="k2go_home_clone_sharing">மற்றொரு தொலைபேசியுடன் பங்கிடுகிறது</string>
+    <string name="k2go_home_clone_sharing">சாதனங்களுக்கிடையே பரிமாற்றம்</string>
     <string name="k2go_home_clone_view">பார்</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

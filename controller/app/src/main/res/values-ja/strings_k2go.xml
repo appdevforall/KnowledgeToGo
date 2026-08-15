@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">再試行</string>
     <string name="k2go_home_install_system">システムをインストール</string>
     <string name="k2go_home_clone_receiving">別の端末からコピー中</string>
-    <string name="k2go_home_clone_sharing">別の端末と共有中</string>
+    <string name="k2go_home_clone_sharing">デバイス間で転送中</string>
     <string name="k2go_home_clone_view">表示</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

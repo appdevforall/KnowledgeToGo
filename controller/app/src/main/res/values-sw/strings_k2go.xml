@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Jaribu tena</string>
     <string name="k2go_home_install_system">Sakinisha mfumo</string>
     <string name="k2go_home_clone_receiving">Inanakili kutoka simu nyingine</string>
-    <string name="k2go_home_clone_sharing">Inashiriki na simu nyingine</string>
+    <string name="k2go_home_clone_sharing">Inahamisha kati ya vifaa</string>
     <string name="k2go_home_clone_view">Tazama</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

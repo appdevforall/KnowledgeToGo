@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Reintentar</string>
     <string name="k2go_home_install_system">Instalar un sistema</string>
     <string name="k2go_home_clone_receiving">Clonando desde otro teléfono</string>
-    <string name="k2go_home_clone_sharing">Compartiendo con otro teléfono</string>
+    <string name="k2go_home_clone_sharing">Transfiriendo entre dispositivos</string>
     <string name="k2go_home_clone_view">Ver</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

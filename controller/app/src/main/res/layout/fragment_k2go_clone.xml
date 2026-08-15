@@ -211,11 +211,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView android:id="@+id/k2go_clone_stop" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_stop_sharing"
-                android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
-                android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
-
             <TextView android:id="@+id/k2go_clone_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="10dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
         </LinearLayout>
@@ -486,4 +481,17 @@
         </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <!-- ADFA-5154: pinned action footer (Stop sharing / Start sharing / Share anyway / Recover) — stays
+         fixed at the bottom like Library's "Get more" and Settings' "Turn off K2Go". The fragment toggles
+         this wrapper; the button inside stays visible. -->
+    <LinearLayout android:id="@+id/k2go_clone_action_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:background="@color/k2go_paper"
+        android:paddingLeft="16dp" android:paddingRight="16dp" android:paddingTop="8dp" android:paddingBottom="12dp"
+        android:visibility="gone">
+        <TextView android:id="@+id/k2go_clone_stop" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_stop_sharing"
+            android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
+            android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" />
+    </LinearLayout>
 </LinearLayout>

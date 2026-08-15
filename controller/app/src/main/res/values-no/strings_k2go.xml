@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Prøv igjen</string>
     <string name="k2go_home_install_system">Installer et system</string>
     <string name="k2go_home_clone_receiving">Kloner fra en annen telefon</string>
-    <string name="k2go_home_clone_sharing">Deler med en annen telefon</string>
+    <string name="k2go_home_clone_sharing">Overfører mellom enheter</string>
     <string name="k2go_home_clone_view">Vis</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->

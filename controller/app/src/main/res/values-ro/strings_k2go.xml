@@ -45,7 +45,7 @@
     <string name="k2go_home_retry">Reîncearcă</string>
     <string name="k2go_home_install_system">Instalează un sistem</string>
     <string name="k2go_home_clone_receiving">Clonare de pe alt telefon</string>
-    <string name="k2go_home_clone_sharing">Partajare cu alt telefon</string>
+    <string name="k2go_home_clone_sharing">Se transferă între dispozitive</string>
     <string name="k2go_home_clone_view">Vezi</string>
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
