@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">K2Go を開いたままにしてください。離れても構いません — バックグラウンドで実行され続け、通知で戻れます。</string>
     <string name="k2go_bj_returning">完了 — ホームに戻ります…</string>
     <string name="k2go_br_leave_backup">バックアップの実行中です — 離れても構いません。続行され、戻ったときに準備ができています。</string>
+    <string name="k2go_clone_back_running">コピーの実行中です — 離れても構いません。続行され、通知でここに戻れます。</string>
     <string name="k2go_br_leave_restore">復元の実行中です — 離れても構いません。続行され、戻ったときに準備ができています。</string>
     <string name="k2go_settings_sec_developer">開発者</string>
     <string name="k2go_settings_network_dns">ネットワークと DNS</string>

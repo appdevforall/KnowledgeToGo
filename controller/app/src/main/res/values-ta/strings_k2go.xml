@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">K2Go-ஐத் திறந்து வைத்திருங்கள். நீங்கள் வெளியேறலாம் — இது பின்னணியில் இயங்கிக்கொண்டே இருக்கும், அறிவிப்பு உங்களை மீண்டும் அழைத்து வரும்.</string>
     <string name="k2go_bj_returning">முடிந்தது — முகப்புக்குத் திரும்புகிறது…</string>
     <string name="k2go_br_leave_backup">காப்புப்பிரதி இயங்குகிறது — நீங்கள் வெளியேறலாம்; இது தொடரும், நீங்கள் திரும்பும்போது தயாராக இருக்கும்.</string>
+    <string name="k2go_clone_back_running">நகல் இயங்குகிறது — நீங்கள் வெளியேறலாம்; இது தொடரும், அறிவிப்பு உங்களை மீண்டும் அழைத்து வரும்.</string>
     <string name="k2go_br_leave_restore">மீட்பு இயங்குகிறது — நீங்கள் வெளியேறலாம்; இது தொடரும், நீங்கள் திரும்பும்போது தயாராக இருக்கும்.</string>
     <string name="k2go_settings_sec_developer">டெவலப்பர்</string>
     <string name="k2go_settings_network_dns">நெட்வொர்க் &amp; DNS</string>

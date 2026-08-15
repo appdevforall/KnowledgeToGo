@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Houd K2Go open. Je kunt weggaan — het blijft op de achtergrond actief en de melding brengt je terug.</string>
     <string name="k2go_bj_returning">Klaar — terug naar Home…</string>
     <string name="k2go_br_leave_backup">Back-up loopt — je kunt weggaan; het gaat door en is klaar als je terugkomt.</string>
+    <string name="k2go_clone_back_running">Kopiëren loopt — je kunt weggaan; het gaat door en de melding brengt je terug.</string>
     <string name="k2go_br_leave_restore">Herstel loopt — je kunt weggaan; het gaat door en is klaar als je terugkomt.</string>
     <string name="k2go_settings_sec_developer">ONTWIKKELAAR</string>
     <string name="k2go_settings_network_dns">Netwerk &amp; DNS</string>

@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Mantén K2Go abierto. Puedes salir — sigue ejecutándose en segundo plano, y la notificación te trae de vuelta.</string>
     <string name="k2go_bj_returning">Listo — volviendo a Inicio…</string>
     <string name="k2go_br_leave_backup">La copia está en marcha — puedes salir; sigue funcionando y estará lista cuando vuelvas.</string>
+    <string name="k2go_clone_back_running">La copia está en marcha — puedes salir; sigue funcionando y la notificación te trae de vuelta.</string>
     <string name="k2go_br_leave_restore">La restauración está en marcha — puedes salir; sigue funcionando y estará lista cuando vuelvas.</string>
     <string name="k2go_settings_sec_developer">DESARROLLADOR</string>
     <string name="k2go_settings_network_dns">Red y DNS</string>

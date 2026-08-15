@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Держите K2Go открытым. Можно выйти — оно продолжит работать в фоне, а уведомление вернёт вас обратно.</string>
     <string name="k2go_bj_returning">Готово — возврат на главный экран…</string>
     <string name="k2go_br_leave_backup">Резервное копирование выполняется — можно выйти; оно продолжится и будет готово, когда вы вернётесь.</string>
+    <string name="k2go_clone_back_running">Копирование выполняется — можно выйти; оно продолжится, а уведомление вернёт вас обратно.</string>
     <string name="k2go_br_leave_restore">Восстановление выполняется — можно выйти; оно продолжится и будет готово, когда вы вернётесь.</string>
     <string name="k2go_settings_sec_developer">РАЗРАБОТЧИК</string>
     <string name="k2go_settings_network_dns">Сеть и DNS</string>

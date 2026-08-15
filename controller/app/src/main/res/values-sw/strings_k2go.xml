@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Weka K2Go wazi. Unaweza kuondoka — inaendelea kufanya kazi chinichini, na arifa itakurudisha.</string>
     <string name="k2go_bj_returning">Imekamilika — inarudi Mwanzo…</string>
     <string name="k2go_br_leave_backup">Nakala rudufu inaendelea — unaweza kuondoka; inaendelea na itakuwa tayari utakaporudi.</string>
+    <string name="k2go_clone_back_running">Kunakili kunaendelea — unaweza kuondoka; kunaendelea na arifa itakurudisha.</string>
     <string name="k2go_br_leave_restore">Urejeshaji unaendelea — unaweza kuondoka; unaendelea na utakuwa tayari utakaporudi.</string>
     <string name="k2go_settings_sec_developer">MSANIDI</string>
     <string name="k2go_settings_network_dns">Mtandao &amp; DNS</string>

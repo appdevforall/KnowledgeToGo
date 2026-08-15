@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Tartsd nyitva a K2Go-t. Elhagyhatod — a háttérben tovább fut, és az értesítés visszahoz.</string>
     <string name="k2go_bj_returning">Kész — visszatérés a Kezdőlapra…</string>
     <string name="k2go_br_leave_backup">A mentés fut — elhagyhatod; tovább folytatódik, és kész lesz, mire visszatérsz.</string>
+    <string name="k2go_clone_back_running">A másolás fut — elhagyhatod; tovább folytatódik, és az értesítés visszahoz.</string>
     <string name="k2go_br_leave_restore">A visszaállítás fut — elhagyhatod; tovább folytatódik, és kész lesz, mire visszatérsz.</string>
     <string name="k2go_settings_sec_developer">FEJLESZTŐ</string>
     <string name="k2go_settings_network_dns">Hálózat &amp; DNS</string>

@@ -234,6 +234,8 @@
     <string name="k2go_bj_wait_title">This can take a while</string>
     <string name="k2go_bj_wait_body">Keep K2Go open. You can leave — it keeps running in the background, and the notification brings you back.</string>
     <string name="k2go_bj_returning">Done — returning to Home…</string>
+    <!-- ADFA-5151: first Back during an accepted receive; a second Back backgrounds the app. -->
+    <string name="k2go_clone_back_running">Copy is running — you can leave; it keeps going, and the notification brings you back.</string>
     <string name="k2go_br_leave_backup">Backup is running — you can leave; it keeps going and will be ready when you come back.</string>
     <string name="k2go_br_leave_restore">Restore is running — you can leave; it keeps going and will be ready when you come back.</string>
     <string name="k2go_settings_sec_developer">DEVELOPER</string>

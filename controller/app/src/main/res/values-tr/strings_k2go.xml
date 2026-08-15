@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">K2Go\'yu açık tutun. Ayrılabilirsiniz — arka planda çalışmaya devam eder ve bildirim sizi geri getirir.</string>
     <string name="k2go_bj_returning">Bitti — Ana ekrana dönülüyor…</string>
     <string name="k2go_br_leave_backup">Yedekleme sürüyor — ayrılabilirsiniz; devam eder ve döndüğünüzde hazır olur.</string>
+    <string name="k2go_clone_back_running">Kopyalama sürüyor — ayrılabilirsiniz; devam eder ve bildirim sizi geri getirir.</string>
     <string name="k2go_br_leave_restore">Geri yükleme sürüyor — ayrılabilirsiniz; devam eder ve döndüğünüzde hazır olur.</string>
     <string name="k2go_settings_sec_developer">GELİŞTİRİCİ</string>
     <string name="k2go_settings_network_dns">Ağ &amp; DNS</string>

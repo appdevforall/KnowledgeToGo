@@ -184,6 +184,7 @@
     <string name="k2go_bj_wait_body">Lass K2Go geöffnet. Du kannst weggehen — es läuft im Hintergrund weiter, und die Benachrichtigung bringt dich zurück.</string>
     <string name="k2go_bj_returning">Fertig — zurück zum Start…</string>
     <string name="k2go_br_leave_backup">Das Backup läuft — du kannst weggehen; es läuft weiter und ist fertig, wenn du zurückkommst.</string>
+    <string name="k2go_clone_back_running">Das Kopieren läuft — du kannst weggehen; es läuft weiter und die Benachrichtigung bringt dich zurück.</string>
     <string name="k2go_br_leave_restore">Die Wiederherstellung läuft — du kannst weggehen; sie läuft weiter und ist fertig, wenn du zurückkommst.</string>
     <string name="k2go_settings_sec_developer">ENTWICKLER</string>
     <string name="k2go_settings_network_dns">Netzwerk &amp; DNS</string>

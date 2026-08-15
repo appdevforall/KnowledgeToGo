@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Jẹ́ kí K2Go ṣí sílẹ̀. O lè lọ — óò máa ṣiṣẹ́ lọ lẹ́yìn ẹ̀rọ, ìfitónilétí sì óò mú ọ padà.</string>
     <string name="k2go_bj_returning">Ó ti parí — ń padà sí Ilé…</string>
     <string name="k2go_br_leave_backup">Àfẹ̀yìntì ń ṣiṣẹ́ — o lè lọ; óò tẹ̀síwájú yóò sì múra tán nígbà tí o bá padà.</string>
+    <string name="k2go_clone_back_running">Àdàkọ ń ṣiṣẹ́ — o lè lọ; óò tẹ̀síwájú, ìfìtọ́nilétí yóò sì mú ọ padà.</string>
     <string name="k2go_br_leave_restore">Ìmúpadà ń ṣiṣẹ́ — o lè lọ; óò tẹ̀síwájú yóò sì múra tán nígbà tí o bá padà.</string>
     <string name="k2go_settings_sec_developer">OLÙDÀGBÀSÓKÈ</string>
     <string name="k2go_settings_network_dns">Nẹ́tíwọ́ọ̀kì &amp; DNS</string>

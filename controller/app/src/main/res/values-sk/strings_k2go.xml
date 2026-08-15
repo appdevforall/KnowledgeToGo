@@ -183,6 +183,7 @@
     <string name="k2go_bj_wait_body">Nechajte K2Go otvorené. Môžete odísť — beží ďalej na pozadí a upozornenie vás vráti späť.</string>
     <string name="k2go_bj_returning">Hotovo — návrat na Domov…</string>
     <string name="k2go_br_leave_backup">Zálohovanie prebieha — môžete odísť; pokračuje ďalej a bude hotové, keď sa vrátite.</string>
+    <string name="k2go_clone_back_running">Kopírovanie prebieha — môžete odísť; pokračuje ďalej a oznámenie vás vráti späť.</string>
     <string name="k2go_br_leave_restore">Obnova prebieha — môžete odísť; pokračuje ďalej a bude hotová, keď sa vrátite.</string>
     <string name="k2go_settings_sec_developer">PRE VÝVOJÁROV</string>
     <string name="k2go_settings_network_dns">Sieť &amp; DNS</string>

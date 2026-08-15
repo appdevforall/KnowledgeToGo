@@ -184,6 +184,7 @@
     <string name="k2go_bj_wait_body">Gardez K2Go ouvert. Vous pouvez quitter — il continue de fonctionner en arrière-plan, et la notification vous ramène.</string>
     <string name="k2go_bj_returning">Terminé — retour à l\'Accueil…</string>
     <string name="k2go_br_leave_backup">La sauvegarde est en cours — vous pouvez quitter ; elle continue et sera prête à votre retour.</string>
+    <string name="k2go_clone_back_running">La copie est en cours — vous pouvez quitter ; elle continue et la notification vous y ramène.</string>
     <string name="k2go_br_leave_restore">La restauration est en cours — vous pouvez quitter ; elle continue et sera prête à votre retour.</string>
     <string name="k2go_settings_sec_developer">DÉVELOPPEUR</string>
     <string name="k2go_settings_network_dns">Réseau &amp; DNS</string>
