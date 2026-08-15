@@ -596,6 +596,7 @@ public class CloneFragment extends Fragment {
         // ADFA-5154: Send is two pages. Common chrome, then the page.
         sendAppView.setVisibility(View.GONE);
         sendAppEntry.setVisibility(View.GONE);
+        actionFooter.setVisibility(View.GONE);   // ADFA-5154: default hidden; only Copy's states re-show it
         netRow.setVisibility(View.VISIBLE);
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
