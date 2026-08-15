@@ -289,7 +289,7 @@ public class CloneFragment extends Fragment {
         // ADFA-4960: re-bind to a live SEND session. Its rsync daemon is still up in this process (kept
         // alive by CloneShareService), so a recreated Fragment must land on the share screen — not the
         // fork. Restore the state the share screen redraws from; daemonStarted=true makes ensureDaemon's
-        // guard skip a re-start. (Receive already re-binds via SyncProgressRepository.)
+        // guard skip a re-start.
         if (CloneSendSession.isActive()) {
             atFork = false; side = Side.SEND; sendApp = false; stage = Stage.START;
             mode = CloneSendSession.isHotspot() ? Mode.HOTSPOT : Mode.WIFI;
@@ -299,6 +299,18 @@ public class CloneFragment extends Fragment {
             librarySplit = CloneSendSession.split();
             daemonStarted = true;
             cloneLockHeld = true;   // the CLONE lock is still held by this process's send session
+        } else if (SyncProgressRepository.get().isActive()) {
+            // ADFA-5152: the symmetric RECEIVE re-bind, which the SEND comment above used to claim
+            // already existed. A recreated Fragment during a live receive (the notification tapped, or
+            // the app reopened) must land on the progress screen, not the fork — the receiver's
+            // percentage is the only progress there is. renderReceive() paints it from the live state;
+            // this just selects the receive side. The CLONE lock and install guard are still held by
+            // this process's receive, so mark them held (re-derived, like showReceiveTerminal) — a
+            // later cancel goes through releaseCloneEnv(), which is gated on these.
+            atFork = false; side = Side.RECEIVE;
+            cloneLockHeld = true;
+            Context rebindCtx = getContext();
+            cloneGuardHeld = rebindCtx != null && org.iiab.controller.InstallGuard.inProgress(rebindCtx);
         }
         render();
         return v;
