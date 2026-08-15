@@ -40,7 +40,7 @@
 
 <rect class="bg" x="0" y="0" width="1720" height="2932"/>
 <text class="h1" x="24" y="44">System lifecycle — where a user gets stuck</text>
-<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 13 Aug — after ADFA-5137 deleted setup_complete. Every edge cites the guard that allows it.</text>
+<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 15 Aug — findings 4 and 7 closed since (ADFA-5147, ADFA-5150). Every edge cites the guard that allows it.</text>
 
 <rect x="1180" y="24" width="516" height="106" rx="10" fill="#FFFFFF" stroke="#D3D1C7"/>
 <text class="h3" x="1196" y="46">LEGEND</text>
@@ -213,17 +213,17 @@
 <path class="e-one" d="M1025,1012 L1025,1060" marker-end="url(#aw)"/>
 <text class="lblr" x="1037" y="1040">reached another way</text>
 
-<rect class="st-bad" x="860" y="1060" width="330" height="132" rx="12"/>
-<text class="h2" x="880" y="1088">S5′ · Damaged, never diagnosed</text>
-<text class="note" x="880" y="1114">If a lock is held, or an install or a queue</text>
-<text class="note" x="880" y="1134">is running, the recovery branch never runs.</text>
-<text class="note" x="880" y="1154">Lands on S1's screen: no dialog, no Retry,</text>
-<text class="note" x="880" y="1174">and no mention of damage anywhere.</text>
+<rect class="st-ok" x="860" y="1060" width="330" height="132" rx="12"/>
+<text class="h2" x="880" y="1088">S5′ · Damaged — now diagnosed on Home</text>
+<text class="note" x="880" y="1114">Was a dead end: a held lock or a running</text>
+<text class="note" x="880" y="1134">queue skipped the recovery branch and Home</text>
+<text class="note" x="880" y="1154">read "no system". ADFA-5147: Home now asks</text>
+<text class="note" x="880" y="1174">InterruptedInstallDetector → "needs repair".</text>
 
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
-<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 14 Aug: findings 1, 3, 5 and 8 are closed, and 4 lost one of its three blind spots. Finding 8 was found by using the app, not by reading it — and one of its claims turned out to be wrong for the same reason.</text>
-<text class="sub" x="24" y="1292">Findings 1, 2, 3 and 4 are one sentence four times: a fact nobody clears. They are rows in the standing directive's ledger at the top of operation-model-roadmap.svg — fix them there, not here.</text>
+<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 15 Aug: findings 1, 3, 4, 5, 7 and 8 are closed. Two remain: 2 — the release blocker, a stale busy flag nobody clears — and 6, a banked order with no home and no owner yet.</text>
+<text class="sub" x="24" y="1292">Findings 1–4 were one sentence four times: a fact nobody clears. 1, 3 and 4 are closed; only 2 remains, a row in the standing directive's ledger at the top of operation-model-roadmap.svg — fix it there, not here.</text>
 
 <rect class="st-ok" x="24" y="1276" width="1672" height="212" rx="12"/>
 <text class="h2" x="44" y="1304">1 · CLOSED (13 Aug, ADFA-5119) — the boot gate no longer holds an install nobody can influence</text>
@@ -236,7 +236,7 @@
 <text class="note" x="44" y="1456">is still a trap — rarer, and unbounded. And the kiwix index (:478-479) and maps (:545-546) still send exit AND error onward, so a failed companion run reports as a finished install. Maps → ADFA-4898, the rest under ADFA-4893.</text>
 
 <rect class="st-bad" x="24" y="1520" width="1672" height="158" rx="12"/>
-<text class="h2" x="44" y="1548">2 · HIDDEN EXIT — a stale "busy" flag refuses every deep operation, and the way out has no name</text>
+<text class="h2" x="44" y="1548">2 · HIDDEN EXIT · RELEASE BLOCKER — a stale "busy" flag refuses every deep operation, and the way out has no name</text>
 <text class="can" x="44" y="1574">A download service killed before reaching a terminal state leaves EnvironmentLock.isBusyNow() true. Clone, backup, restore, module install and the dashboard rebuild</text>
 <text class="can" x="44" y="1594">all refuse, all with the same message — "An install is already running" — while nothing is running. It is not durable: every source it reads is in-memory, so closing</text>
 <text class="can" x="44" y="1614">the app clears it. That is the whole problem. The exit exists and nobody will find it, because no one closes an app to unblock a button.</text>
@@ -279,12 +279,12 @@
 <text class="can" x="44" y="2458">anywhere in the UI.</text>
 <text class="code" x="44" y="2484">LibraryHomeFragment.java:518-529 (anyRunning gates the button), :337-342 (isScheduled ignores three of the five wishlists).</text>
 
-<rect class="st-warn" x="24" y="2536" width="1672" height="140" rx="12"/>
-<text class="h2" x="44" y="2564">7 · DEAD CONTROL — Connect hands out a QR for a box that may not exist</text>
-<text class="can" x="44" y="2590">ConnectFragment reads no system fact at all: not isSystemInstalled, not the server state, not the lock. With no system, a damaged one, or the server stopped, the whole</text>
-<text class="can" x="44" y="2610">tab behaves normally and prints a QR pointing at a dead port. It is the largest visible-but-useless surface in the app, and the only one that says nothing at all about</text>
-<text class="can" x="44" y="2630">why it will not work.</text>
-<text class="code" x="44" y="2656">redesign/ConnectFragment.java — browseUrl():126; no reference to SystemFacts, ServerStateRepository or EnvironmentLock anywhere in the file.</text>
+<rect class="st-ok" x="24" y="2536" width="1672" height="140" rx="12"/>
+<text class="h2" x="44" y="2564">7 · CLOSED (ADFA-5150) — Connect and Clone Send read the system fact and offer Recover, not a dead QR</text>
+<text class="can" x="44" y="2590">Was: ConnectFragment read no system fact at all — not isSystemInstalled, not the server, not the lock — so with no system, a damaged one, or the server stopped, it printed</text>
+<text class="can" x="44" y="2610">a QR pointing at a dead port. Now both Connect and Clone Send check the fact on entry and on resume; a systemless surface shows an empty state whose one action is Recover,</text>
+<text class="can" x="44" y="2630">homogenized across the two tabs, instead of a control that leads nowhere.</text>
+<text class="code" x="44" y="2656">ConnectFragment.java:117,146 (isSystemInstalled on entry/resume), :173-175 (Recover) · CloneFragment (Send no-system empty state) · SetupLibraryActivity.recover().</text>
 
 
 <rect class="st-ok" x="24" y="2708" width="1672" height="204" rx="12"/>
