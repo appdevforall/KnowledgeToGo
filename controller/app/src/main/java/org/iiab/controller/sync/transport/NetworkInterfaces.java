@@ -41,6 +41,7 @@ public final class NetworkInterfaces {
         String hotspotIp = null;
         try {
             List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            // Pass 1: known interface names (precise when they match).
             for (NetworkInterface intf : interfaces) {
                 String name = intf.getName();
                 if (!intf.isUp()) continue;
@@ -57,6 +58,26 @@ public final class NetworkInterfaces {
                             if (isHotspot) hotspotIp = addr.getHostAddress();
                         }
                     }
+                }
+            }
+            // ADFA-5158: Pass 2 fallback — some OEMs name the LocalOnlyHotspot interface outside the
+            // whitelist above, so pass 1 misses it and the get-app QR never gets an IP. Take an up,
+            // non-loopback, site-local IPv4 that is not wlan0 and not the Wi-Fi address: that is the AP,
+            // whatever it is called. Site-local (10/172.16-31/192.168) excludes cellular/CGNAT.
+            if (hotspotIp == null) {
+                for (NetworkInterface intf : interfaces) {
+                    String name = intf.getName();
+                    // Skip wlan0 (Wi-Fi) and VPN/point-to-point ifaces, which can also carry a site-local
+                    // IPv4 but are not the AP the other phone joins.
+                    if (!intf.isUp() || name.equals("wlan0") || name.startsWith("tun") || name.startsWith("ppp")) continue;
+                    for (InetAddress addr : Collections.list(intf.getInetAddresses())) {
+                        if (addr.isLoopbackAddress() || !(addr instanceof Inet4Address)) continue;
+                        if (addr.isSiteLocalAddress() && !addr.getHostAddress().equals(wifiIp)) {
+                            hotspotIp = addr.getHostAddress();
+                            break;
+                        }
+                    }
+                    if (hotspotIp != null) break;
                 }
             }
         } catch (Exception ignored) {
