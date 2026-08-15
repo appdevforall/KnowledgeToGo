@@ -1163,10 +1163,18 @@ public class CloneFragment extends Fragment {
             body += "\n\nThe copy was stopped by the system. Keep this screen on and the app in the "
                   + "foreground during a transfer, then scan again to resume.";
         }
+        // ADFA-5151: fail -> the user chooses, never stranded and never dropped onto a systemless Home.
+        // Retry re-scans (rsync resumes from the half-written tree — the maravilla Luis relies on);
+        // Recover goes to the hub (restore / install over internet / clone again). The Back guard has
+        // already turned off (FAILED is not active), so leaving the app is free too.
         new MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.k2go_clone_copy_stopped))
                 .setMessage(body)
-                .setPositiveButton(getString(android.R.string.ok), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setPositiveButton(getString(R.string.k2go_home_retry), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
+                .setNegativeButton(getString(R.string.k2go_home_recover), (d, w) -> {
+                    SyncProgressRepository.get().postIdle();
+                    SetupLibraryActivity.recover(requireContext());
+                })
                 .setCancelable(false)
                 .show();
     }
