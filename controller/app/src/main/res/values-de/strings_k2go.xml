@@ -402,6 +402,8 @@
     <string name="k2go_home_no_library">Noch keine Bibliothek — tippe auf Mehr laden, um Inhalte zu installieren und hinzuzufügen</string>
     <string name="k2go_home_damaged">Bibliothek muss repariert werden — die letzte Einrichtung wurde nicht abgeschlossen</string>
     <string name="k2go_home_recover">Reparieren</string>
+    <string name="k2go_state_no_system">Noch kein System</string>
+    <string name="k2go_connect_no_system">Noch kein System zum Teilen — zuerst eines reparieren</string>
     <string name="k2go_home_ready_empty">Bibliothek bereit — tippe auf Mehr laden, um Inhalte hinzuzufügen</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Mehr laden</string>

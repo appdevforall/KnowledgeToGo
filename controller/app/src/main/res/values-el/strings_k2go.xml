@@ -402,6 +402,8 @@
     <string name="k2go_home_no_library">Δεν υπάρχει ακόμη βιβλιοθήκη — πατήστε Αποκτήστε περισσότερα για εγκατάσταση και προσθήκη περιεχομένου</string>
     <string name="k2go_home_damaged">Η βιβλιοθήκη χρειάζεται επιδιόρθωση — η τελευταία εγκατάσταση δεν ολοκληρώθηκε</string>
     <string name="k2go_home_recover">Επιδιόρθωση</string>
+    <string name="k2go_state_no_system">Κανένα σύστημα ακόμη</string>
+    <string name="k2go_connect_no_system">Δεν υπάρχει ακόμη σύστημα για κοινή χρήση — επιδιορθώστε πρώτα ένα</string>
     <string name="k2go_home_ready_empty">Η βιβλιοθήκη είναι έτοιμη — πατήστε Αποκτήστε περισσότερα για προσθήκη περιεχομένου</string>
     <string name="k2go_rate_per_second">/δ</string>
     <string name="k2go_gm_hub_title">Αποκτήστε περισσότερα</string>

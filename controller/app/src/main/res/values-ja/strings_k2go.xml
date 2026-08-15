@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">ライブラリがまだありません — 「もっと入手」をタップしてインストールし、コンテンツを追加してください</string>
     <string name="k2go_home_damaged">ライブラリの修復が必要です — 前回のセットアップが完了しませんでした</string>
     <string name="k2go_home_recover">修復</string>
+    <string name="k2go_state_no_system">システムはまだありません</string>
+    <string name="k2go_connect_no_system">共有できるシステムがまだありません — 先に修復してください</string>
     <string name="k2go_home_ready_empty">ライブラリの準備完了 — 「もっと入手」をタップしてコンテンツを追加してください</string>
     <string name="k2go_rate_per_second">/秒</string>
     <string name="k2go_gm_hub_title">もっと入手</string>

@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Kò sí ilé-ìkàwé síbẹ̀ — tẹ Rí i síi láti fi sórí ẹ̀rọ kí o sì fi àkóónú kún</string>
     <string name="k2go_home_damaged">Ilé-ìkàwé nílò àtúnṣe — ìṣètò tó gbẹ̀yìn kò parí</string>
     <string name="k2go_home_recover">Àtúnṣe</string>
+    <string name="k2go_state_no_system">Kò sí ètò kankan síbẹ̀</string>
+    <string name="k2go_connect_no_system">Kò sí ètò láti pín síbẹ̀ — kọ́kọ́ tún ọ̀kan ṣe</string>
     <string name="k2go_home_ready_empty">Ilé-ìkàwé múra tán — tẹ Rí i síi láti fi àkóónú kún</string>
     <string name="k2go_rate_per_second">/ìs</string>
     <string name="k2go_gm_hub_title">Rí i síi</string>

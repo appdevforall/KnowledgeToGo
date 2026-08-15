@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Henüz kitaplık yok — kurmak ve içerik eklemek için Daha fazlası\'na dokunun</string>
     <string name="k2go_home_damaged">Kitaplık onarım gerektiriyor — son kurulum tamamlanmadı</string>
     <string name="k2go_home_recover">Onar</string>
+    <string name="k2go_state_no_system">Henüz sistem yok</string>
+    <string name="k2go_connect_no_system">Paylaşılacak sistem henüz yok — önce birini onarın</string>
     <string name="k2go_home_ready_empty">Kitaplık hazır — içerik eklemek için Daha fazlası\'na dokunun</string>
     <string name="k2go_rate_per_second">/sn</string>
     <string name="k2go_gm_hub_title">Daha fazlası</string>

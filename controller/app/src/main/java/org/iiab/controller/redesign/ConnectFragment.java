@@ -39,6 +39,9 @@ public class ConnectFragment extends Fragment {
     private Mode mode = Mode.HOTSPOT;
     private Stage stage = Stage.JOIN;
     private boolean openDone = false;
+    // ADFA-5150: Connect shares this device's library — with no system there is nothing to serve, and
+    // the QR would point at a dead port. Read on onResume (a system is not gained while this is open).
+    private boolean systemPresent = true;
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
@@ -100,6 +103,9 @@ public class ConnectFragment extends Fragment {
         // turns Wi-Fi on after landing on a blank QR); render() re-reads the IP via discover().
         NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), net -> render());
 
+        // ADFA-5150: seed before the first render so a systemless open never flashes the QR flow;
+        // onResume re-reads it.
+        systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         setMode(Mode.HOTSPOT);
         return v;
     }
@@ -125,12 +131,45 @@ public class ConnectFragment extends Fragment {
 
     private static String browseUrl(String ip) { return "http://" + ip + ":8085"; }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // ADFA-5150: refresh the system fact on the way to the front and redraw — a system may have
+        // been recovered while the user was away in the Recover flow this screen sends them to.
+        systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        render();
+    }
+
     private void render() {
         if (!isAdded() || caption == null) return;
+        // ADFA-5150: advance's default action is the stage toggle; noSystemState() repurposes it as
+        // Recover, so reset it here every render — a system that returns must not keep the Recover tap.
+        advance.setOnClickListener(x -> {
+            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; openDone = false; fallbackOpen = false; render(); }
+        });
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
         if (finish != null) finish.setVisibility(View.GONE);
+        if (!systemPresent) { noSystemState(); return; }
         if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
+    }
+
+    /**
+     * ADFA-5150: no system, so nothing to share. Instead of a QR pointing at a dead server, say so and
+     * offer the one move that helps — Recover (restore / internet / clone). Reuses {@code advance} as
+     * the action; render() resets its listener so this does not stick once a system exists.
+     */
+    private void noSystemState() {
+        if (steps != null) steps.setVisibility(View.GONE);
+        qr.setImageBitmap(null);
+        caption.setText(R.string.k2go_connect_no_system);
+        subCaption.setText("");
+        setFallback(null);
+        if (fallbackToggle != null) fallbackToggle.setVisibility(View.GONE);
+        advance.setVisibility(View.VISIBLE);
+        advance.setText(R.string.k2go_home_recover);
+        styleAdvance(true);
+        advance.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
     }
 
     private void renderHotspot() {

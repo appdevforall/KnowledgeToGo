@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Még nincs könyvtár — koppints a Továbbiakra a tartalom telepítéséhez és hozzáadásához</string>
     <string name="k2go_home_damaged">A könyvtárat javítani kell — az utolsó beállítás nem fejeződött be</string>
     <string name="k2go_home_recover">Javítás</string>
+    <string name="k2go_state_no_system">Még nincs rendszer</string>
+    <string name="k2go_connect_no_system">Még nincs megosztható rendszer — előbb javítson meg egyet</string>
     <string name="k2go_home_ready_empty">A könyvtár kész — koppints a Továbbiakra tartalom hozzáadásához</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Továbbiak</string>

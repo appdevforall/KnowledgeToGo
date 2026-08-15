@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">暂无图书馆 — 点按“获取更多”以安装并添加内容</string>
     <string name="k2go_home_damaged">图书馆需要修复 — 上次设置未完成</string>
     <string name="k2go_home_recover">修复</string>
+    <string name="k2go_state_no_system">尚无系统</string>
+    <string name="k2go_connect_no_system">尚无可共享的系统 — 请先修复一个</string>
     <string name="k2go_home_ready_empty">图书馆就绪 — 点按“获取更多”以添加内容</string>
     <string name="k2go_rate_per_second">/秒</string>
     <string name="k2go_gm_hub_title">获取更多</string>

@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Nog geen bibliotheek — tik op Meer ophalen om inhoud te installeren en toe te voegen</string>
     <string name="k2go_home_damaged">Bibliotheek moet worden hersteld — de laatste installatie is niet voltooid</string>
     <string name="k2go_home_recover">Herstellen</string>
+    <string name="k2go_state_no_system">Nog geen systeem</string>
+    <string name="k2go_connect_no_system">Nog geen systeem om te delen — herstel er eerst een</string>
     <string name="k2go_home_ready_empty">Bibliotheek klaar — tik op Meer ophalen om inhoud toe te voegen</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Meer ophalen</string>

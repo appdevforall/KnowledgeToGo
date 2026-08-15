@@ -473,6 +473,11 @@
          clone). Distinct from "no library" — there is something to repair, not to install fresh. -->
     <string name="k2go_home_damaged">Library needs repair — the last setup didn\'t finish</string>
     <string name="k2go_home_recover">Recover</string>
+    <!-- ADFA-5150: shown on surfaces that need a system when there is none — a short state label
+         (module sheet subtitle, module detail chip). -->
+    <string name="k2go_state_no_system">No system yet</string>
+    <!-- ADFA-5150: Connect shares this device's library; with no system there is nothing to serve. -->
+    <string name="k2go_connect_no_system">No system to share yet — recover one first</string>
     <string name="k2go_home_ready_empty">Library ready — tap Get more to add content</string>
     <string name="k2go_rate_per_second">/s</string>
 

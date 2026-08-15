@@ -241,6 +241,16 @@ public class ModuleHubFragment extends Fragment {
             msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
             msg.setText(R.string.k2go_mod_needs_system);
             host.addView(msg);
+            // ADFA-5150: was a dead end — the sentence, and no way forward but Back. Give it the one
+            // action that helps: Recover (restore / internet / clone all live there).
+            com.google.android.material.button.MaterialButton recover =
+                    new com.google.android.material.button.MaterialButton(requireContext());
+            recover.setText(R.string.k2go_home_recover);
+            recover.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
+            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rlp.gravity = Gravity.CENTER;
+            host.addView(recover, rlp);
             addHiddenSection();
             return;
         }

@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">இன்னும் நூலகம் இல்லை — நிறுவி உள்ளடக்கத்தைச் சேர்க்க ‘மேலும் பெறு’-ஐத் தட்டவும்</string>
     <string name="k2go_home_damaged">நூலகத்தை சரிசெய்ய வேண்டும் — கடைசி அமைப்பு முடியவில்லை</string>
     <string name="k2go_home_recover">சரிசெய்</string>
+    <string name="k2go_state_no_system">இன்னும் அமைப்பு இல்லை</string>
+    <string name="k2go_connect_no_system">பகிர இன்னும் அமைப்பு இல்லை — முதலில் ஒன்றைச் சரிசெய்யவும்</string>
     <string name="k2go_home_ready_empty">நூலகம் தயார் — உள்ளடக்கத்தைச் சேர்க்க ‘மேலும் பெறு’-ஐத் தட்டவும்</string>
     <string name="k2go_rate_per_second">/வி</string>
     <string name="k2go_gm_hub_title">மேலும் பெறு</string>

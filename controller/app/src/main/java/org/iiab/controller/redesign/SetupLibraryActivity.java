@@ -40,6 +40,21 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
     public static final String EXTRA_ZIM_SETUP = "zimSetup";
     /** ADFA-4952: open Backup & restore directly (Settings → Advanced). */
     public static final String EXTRA_BACKUP_RESTORE = "backupRestore";
+
+    /**
+     * ADFA-5150: the one way into recovery — restore a backup, install over the internet, or clone from
+     * a peer, all three offered here. The route to it (this class + {@link #EXTRA_BACKUP_RESTORE}) was
+     * copied at the launch damaged-dialog and the Home header; a systemless module sheet, Add-modules,
+     * module detail and Connect all need it too. Kept next to its destination so no caller re-spells it.
+     *
+     * <p>Does not finish the caller: the launch dialog closes itself so the user cannot fall back onto a
+     * held boot gate, but a surface like Home is an honest place to return to. Callers that must not be
+     * returned to call {@code finish()} themselves.
+     */
+    public static void recover(android.content.Context ctx) {
+        ctx.startActivity(new android.content.Intent(ctx, SetupLibraryActivity.class)
+                .putExtra(EXTRA_BACKUP_RESTORE, true));
+    }
     /** ADFA-5023: run the install wizard in REINSTALL mode — the normal flow, but the final install
      *  wipes the existing rootfs first (delete + install). Reached from Backup & restore's third card
      *  and from the damaged-system recovery. */

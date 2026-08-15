@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Библиотеки пока нет — нажмите «Добавить ещё», чтобы установить и добавить контент</string>
     <string name="k2go_home_damaged">Библиотеке нужен ремонт — последняя настройка не завершилась</string>
     <string name="k2go_home_recover">Восстановить</string>
+    <string name="k2go_state_no_system">Системы пока нет</string>
+    <string name="k2go_connect_no_system">Пока нет системы для передачи — сначала восстановите её</string>
     <string name="k2go_home_ready_empty">Библиотека готова — нажмите «Добавить ещё», чтобы добавить контент</string>
     <string name="k2go_rate_per_second">/с</string>
     <string name="k2go_gm_hub_title">Добавить ещё</string>

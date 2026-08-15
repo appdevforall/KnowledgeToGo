@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">لا توجد مكتبة بعد — انقر على المزيد لتثبيت المحتوى وإضافته</string>
     <string name="k2go_home_damaged">المكتبة بحاجة إلى إصلاح — لم يكتمل الإعداد الأخير</string>
     <string name="k2go_home_recover">إصلاح</string>
+    <string name="k2go_state_no_system">لا يوجد نظام بعد</string>
+    <string name="k2go_connect_no_system">لا يوجد نظام لمشاركته بعد — أصلح واحدًا أولاً</string>
     <string name="k2go_home_ready_empty">المكتبة جاهزة — انقر على المزيد لإضافة محتوى</string>
     <string name="k2go_rate_per_second">/ث</string>
     <string name="k2go_gm_hub_title">المزيد</string>
