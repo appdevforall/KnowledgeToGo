@@ -1045,6 +1045,15 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
         syncSelection(currentTab);
     }
 
+    /** ADFA-5151: land on Home/Library — the success exit of a clone-receive (a system now exists),
+     *  mirroring the install index's goHome. The server was booted by CloneFragment.releaseCloneEnv,
+     *  so LibraryHomeFragment refreshes onto the new system. */
+    public void openLibraryTab() {
+        currentTab = R.id.nav_library;
+        showTab(currentTab);
+        syncSelection(currentTab);
+    }
+
     /** ADFA-4837: header "Couldn't start — tap to retry" action. Safe no-op unless truly idle. */
     public void startServer() {
         if (!canStartServer()) return;

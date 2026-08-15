@@ -84,6 +84,8 @@ public class CloneFragment extends Fragment {
     private boolean cloneGuardHeld = false; // ADFA-4956: a receive (destructive write) also set InstallGuard
     private boolean shareAnyway = false;  // ADFA-4786: user chose to share even with no library installed
     private boolean systemPresent = true; // ADFA-5150: Send needs a system to send; refreshed on entry / onResume
+    private boolean receiveExiting = false; // ADFA-5151: success confirmation is showing; hold it, then go to Library
+    private static final long RECEIVE_SUCCESS_REDIRECT_MS = 3000L; // ADFA-5151: like the install index's REDIRECT_MS
     // ADFA-4785: "Send the app" sub-screen (bootstrap a phone with no K2Go) — serves the APK over HTTP.
     private boolean sendApp = false;
     private ApkServer apkServer;
@@ -863,7 +865,9 @@ public class CloneFragment extends Fragment {
             if (st.phase == SyncTransferState.Phase.SUCCESS) { lastSeq = st.seq; showReceiveTerminal(true, st.message); }
             else if (st.phase == SyncTransferState.Phase.FAILED || st.phase == SyncTransferState.Phase.ABORTED) { lastSeq = st.seq; showReceiveTerminal(false, st.message); }
         }
-        if (side == Side.RECEIVE) renderReceive();
+        // ADFA-5151: while the success confirmation is holding before the redirect to Library, don't let
+        // renderReceive() tear the progress screen down (SUCCESS is not active, so it would).
+        if (side == Side.RECEIVE && !receiveExiting) renderReceive();
         syncProtection();   // ADFA-4782: match protection to the live pull state on every transition
     }
 
@@ -1088,14 +1092,37 @@ public class CloneFragment extends Fragment {
         }
         releaseCloneEnv();   // ADFA-4956: boot the (possibly replaced) system, end guard, drop the lock
         syncVm.releaseNetwork();
+
+        if (ok) {
+            // ADFA-5151: success exit. Do not strand the user on the receive step — confirm briefly on
+            // the progress screen, then go to the Library, exactly as the install index does. A system
+            // now exists (releaseCloneEnv booted it), so LibraryHomeFragment refreshes onto it. Shared
+            // terminal, so a normal receive (with a system) gets the same courtesy.
+            receiveExiting = true;
+            if (progressBox != null) progressBox.setVisibility(View.VISIBLE);
+            setBarIndeterminate(false);
+            if (pbar != null) pbar.setProgressCompat(100, true);
+            if (pStatus != null) pStatus.setText(getString(R.string.k2go_clone_copy_complete));
+            if (pFile != null) pFile.setText("");
+            if (pStats != null) pStats.setText("");
+            if (cancel != null) cancel.setVisibility(View.GONE);   // nothing to cancel on a finished copy
+            View host = (progressBox != null) ? progressBox : getView();
+            if (host != null) host.postDelayed(() -> {
+                if (!isAdded()) return;
+                SyncProgressRepository.get().postIdle();
+                if (getActivity() instanceof LibraryActivity) ((LibraryActivity) getActivity()).openLibraryTab();
+            }, RECEIVE_SUCCESS_REDIRECT_MS);
+            return;
+        }
+
         String body = (message != null) ? message : "";
         // ADFA-4782: if rsync was SIGKILLed (exit 137, phantom-process killer), guide the user.
-        if (!ok && body.contains("137")) {
+        if (body.contains("137")) {
             body += "\n\nThe copy was stopped by the system. Keep this screen on and the app in the "
                   + "foreground during a transfer, then scan again to resume.";
         }
         new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(ok ? R.string.k2go_clone_copy_complete : R.string.k2go_clone_copy_stopped))
+                .setTitle(getString(R.string.k2go_clone_copy_stopped))
                 .setMessage(body)
                 .setPositiveButton(getString(android.R.string.ok), (d, w) -> { SyncProgressRepository.get().postIdle(); renderReceive(); })
                 .setCancelable(false)
