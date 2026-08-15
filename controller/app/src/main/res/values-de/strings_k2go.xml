@@ -238,7 +238,6 @@
     <string name="k2go_clone_nothing_to_replace">Nichts zu ersetzen</string>
     <string name="k2go_clone_once_installed">Sobald es installiert ist, komm zurück und kopiere die Bibliothek.</string>
     <string name="k2go_clone_one_android_step">Ein Android-Schritt</string>
-    <string name="k2go_clone_other_no_app">Anderes Telefon hat K2Go noch nicht?</string>
     <string name="k2go_clone_receive_from">Von einem anderen Telefon empfangen  ›</string>
     <string name="k2go_clone_sharing_now">TEILT JETZT</string>
     <string name="k2go_clone_scan_enter_text">Scan hat nicht geklappt? Code als Text eingeben  ▸</string>
@@ -246,7 +245,6 @@
     <string name="k2go_clone_scan_their_codes">Scanne ihre Codes, um hier eine Kopie zu erhalten.</string>
     <string name="k2go_clone_scan_get_app">Scannen, um die App zu erhalten</string>
     <string name="k2go_clone_scan_to_join">Scannen zum Beitreten</string>
-    <string name="k2go_clone_send_app_first">Zuerst die App senden  ›</string>
     <string name="k2go_clone_send_to">An ein anderes Telefon senden  ›</string>
     <string name="k2go_clone_sending_whole">Deine gesamte Bibliothek wird gesendet</string>
     <string name="k2go_clone_share_wifi_settings">Wi-Fi über Android-Einstellungen teilen</string>
@@ -255,7 +253,6 @@
     <string name="k2go_clone_sizes_estimates">Größen sind Schätzungen.</string>
     <string name="k2go_lbl_system">System</string>
     <string name="k2go_clone_technical_details">Technische Details  ▾</string>
-    <string name="k2go_clone_app_separate_step">Zuerst wird die K2Go-App installiert. Die Bibliothek kopierst du in einem späteren Schritt.</string>
     <string name="k2go_clone_other_downloads">Das andere Telefon lädt K2Go über diesen Code herunter.</string>
     <string name="k2go_clone_allow_install_note">Das andere Telefon tippt auf \"Installation aus dieser Quelle zulassen\" — ein einmaliger Schritt.</string>
     <string name="k2go_clone_incompat_title">Diese Telefone sind nicht kompatibel</string>

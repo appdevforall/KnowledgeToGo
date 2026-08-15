@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Niets te vervangen</string>
     <string name="k2go_clone_once_installed">Zodra het is geïnstalleerd, kom terug en kopieer de bibliotheek.</string>
     <string name="k2go_clone_one_android_step">Eén Android-stap</string>
-    <string name="k2go_clone_other_no_app">Heeft de andere telefoon nog geen K2Go?</string>
     <string name="k2go_clone_receive_from">Ontvangen van een andere telefoon  ›</string>
     <string name="k2go_clone_sharing_now">NU AAN HET DELEN</string>
     <string name="k2go_clone_scan_enter_text">Scannen mislukt? Voer de code als tekst in  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Scan hun codes om hier een kopie te krijgen.</string>
     <string name="k2go_clone_scan_get_app">Scan om de app te krijgen</string>
     <string name="k2go_clone_scan_to_join">Scan om deel te nemen</string>
-    <string name="k2go_clone_send_app_first">Stuur eerst de app  ›</string>
     <string name="k2go_clone_send_to">Naar een andere telefoon sturen  ›</string>
     <string name="k2go_clone_sending_whole">Je hele bibliotheek versturen</string>
     <string name="k2go_clone_share_wifi_settings">Wi-Fi delen via Android-instellingen</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Groottes zijn schattingen.</string>
     <string name="k2go_lbl_system">Systeem</string>
     <string name="k2go_clone_technical_details">Technische details  ▾</string>
-    <string name="k2go_clone_app_separate_step">Eerst wordt de K2Go-app geïnstalleerd. De bibliotheek kopieer je in een latere stap.</string>
     <string name="k2go_clone_other_downloads">De andere telefoon downloadt K2Go via deze code.</string>
     <string name="k2go_clone_allow_install_note">De andere telefoon tikt op \"installatie van deze bron toestaan\" — een eenmalige stap.</string>
     <string name="k2go_clone_incompat_title">Deze telefoons zijn niet compatibel</string>

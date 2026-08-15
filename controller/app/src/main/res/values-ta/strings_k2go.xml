@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">மாற்றுவதற்கு எதுவும் இல்லை</string>
     <string name="k2go_clone_once_installed">நிறுவப்பட்டவுடன், திரும்பி வந்து நூலகத்தை நகலெடுக்கவும்.</string>
     <string name="k2go_clone_one_android_step">ஒரு Android படி</string>
-    <string name="k2go_clone_other_no_app">மற்ற தொலைபேசியில் இன்னும் K2Go இல்லையா?</string>
     <string name="k2go_clone_receive_from">மற்றொரு தொலைபேசியிலிருந்து பெறு  ›</string>
     <string name="k2go_clone_sharing_now">இப்போது பகிரப்படுகிறது</string>
     <string name="k2go_clone_scan_enter_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாக உள்ளிடு  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">இங்கே ஒரு நகலைப் பெற அவர்களின் குறியீடுகளை ஸ்கேன் செய்யுங்கள்.</string>
     <string name="k2go_clone_scan_get_app">செயலியைப் பெற ஸ்கேன் செய்யுங்கள்</string>
     <string name="k2go_clone_scan_to_join">இணைய ஸ்கேன் செய்யுங்கள்</string>
-    <string name="k2go_clone_send_app_first">முதலில் செயலியை அனுப்பு  ›</string>
     <string name="k2go_clone_send_to">மற்றொரு தொலைபேசிக்கு அனுப்பு  ›</string>
     <string name="k2go_clone_sending_whole">உங்கள் முழு நூலகமும் அனுப்பப்படுகிறது</string>
     <string name="k2go_clone_share_wifi_settings">Android அமைப்புகள் வழியாக Wi-Fi-ஐப் பகிர்</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">அளவுகள் மதிப்பீடுகள்.</string>
     <string name="k2go_lbl_system">அமைப்பு</string>
     <string name="k2go_clone_technical_details">தொழில்நுட்ப விவரங்கள்  ▾</string>
-    <string name="k2go_clone_app_separate_step">முதலில், K2Go செயலி நிறுவப்படும். நூலகத்தை நீங்கள் பிந்தைய படியில் நகலெடுப்பீர்கள்.</string>
     <string name="k2go_clone_other_downloads">மற்ற தொலைபேசி இந்தக் குறியீட்டிலிருந்து K2Go-ஐப் பதிவிறக்குகிறது.</string>
     <string name="k2go_clone_allow_install_note">மற்ற தொலைபேசி "இந்த மூலத்திலிருந்து நிறுவலை அனுமதி" என்பதைத் தட்டுகிறது — இது ஒருமுறை படி.</string>
     <string name="k2go_clone_incompat_title">இந்தத் தொலைபேசிகள் இணக்கமானவை அல்ல</string>

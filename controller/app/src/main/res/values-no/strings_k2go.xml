@@ -238,7 +238,6 @@
     <string name="k2go_clone_nothing_to_replace">Ingenting å erstatte</string>
     <string name="k2go_clone_once_installed">Når den er installert, kom tilbake og kopier biblioteket.</string>
     <string name="k2go_clone_one_android_step">Ett Android-steg</string>
-    <string name="k2go_clone_other_no_app">Har ikke den andre telefonen K2Go ennå?</string>
     <string name="k2go_clone_receive_from">Motta fra en annen telefon  ›</string>
     <string name="k2go_clone_sharing_now">DELER NÅ</string>
     <string name="k2go_clone_scan_enter_text">Fungerte ikke skanningen? Skriv inn koden som tekst  ▸</string>
@@ -246,7 +245,6 @@
     <string name="k2go_clone_scan_their_codes">Skann kodene deres for å få en kopi her.</string>
     <string name="k2go_clone_scan_get_app">Skann for å hente appen</string>
     <string name="k2go_clone_scan_to_join">Skann for å koble til</string>
-    <string name="k2go_clone_send_app_first">Send appen først  ›</string>
     <string name="k2go_clone_send_to">Send til en annen telefon  ›</string>
     <string name="k2go_clone_sending_whole">Sender hele biblioteket ditt</string>
     <string name="k2go_clone_share_wifi_settings">Del Wi-Fi via Android-innstillinger</string>
@@ -255,7 +253,6 @@
     <string name="k2go_clone_sizes_estimates">Størrelsene er anslag.</string>
     <string name="k2go_lbl_system">System</string>
     <string name="k2go_clone_technical_details">Tekniske detaljer  ▾</string>
-    <string name="k2go_clone_app_separate_step">Først installeres K2Go-appen. Du kopierer biblioteket i et senere steg.</string>
     <string name="k2go_clone_other_downloads">Den andre telefonen laster ned K2Go fra denne koden.</string>
     <string name="k2go_clone_allow_install_note">Den andre telefonen trykker på \"tillat installasjon fra denne kilden\" — et engangssteg.</string>
     <string name="k2go_clone_incompat_title">Disse telefonene er ikke kompatible</string>

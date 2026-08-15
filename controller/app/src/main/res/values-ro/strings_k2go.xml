@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Nimic de înlocuit</string>
     <string name="k2go_clone_once_installed">După ce e instalată, revino și copiază biblioteca.</string>
     <string name="k2go_clone_one_android_step">Un pas Android</string>
-    <string name="k2go_clone_other_no_app">Celălalt telefon nu are încă K2Go?</string>
     <string name="k2go_clone_receive_from">Primește de la alt telefon  ›</string>
     <string name="k2go_clone_sharing_now">SE PARTAJEAZĂ ACUM</string>
     <string name="k2go_clone_scan_enter_text">Scanarea nu a funcționat? Introdu codul ca text  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Scanează codurile lor pentru a obține o copie aici.</string>
     <string name="k2go_clone_scan_get_app">Scanează pentru a obține aplicația</string>
     <string name="k2go_clone_scan_to_join">Scanează pentru a te conecta</string>
-    <string name="k2go_clone_send_app_first">Trimite mai întâi aplicația  ›</string>
     <string name="k2go_clone_send_to">Trimite către alt telefon  ›</string>
     <string name="k2go_clone_sending_whole">Se trimite întreaga bibliotecă</string>
     <string name="k2go_clone_share_wifi_settings">Partajează Wi-Fi prin setările Android</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Dimensiunile sunt estimative.</string>
     <string name="k2go_lbl_system">Sistem</string>
     <string name="k2go_clone_technical_details">Detalii tehnice  ▾</string>
-    <string name="k2go_clone_app_separate_step">Mai întâi se instalează aplicația K2Go. Vei copia biblioteca într-un pas ulterior.</string>
     <string name="k2go_clone_other_downloads">Celălalt telefon descarcă K2Go de la acest cod.</string>
     <string name="k2go_clone_allow_install_note">Celălalt telefon atinge "permite instalarea din această sursă" — un pas unic.</string>
     <string name="k2go_clone_incompat_title">Aceste telefoane nu sunt compatibile</string>

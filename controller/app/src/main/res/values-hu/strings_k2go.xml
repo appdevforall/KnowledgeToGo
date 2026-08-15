@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Nincs mit lecserélni</string>
     <string name="k2go_clone_once_installed">Ha telepítve van, gyere vissza és másold a könyvtárat.</string>
     <string name="k2go_clone_one_android_step">Egy Android-lépés</string>
-    <string name="k2go_clone_other_no_app">A másik telefonon még nincs K2Go?</string>
     <string name="k2go_clone_receive_from">Fogadás egy másik telefonról  ›</string>
     <string name="k2go_clone_sharing_now">MOST MEGOSZTVA</string>
     <string name="k2go_clone_scan_enter_text">Nem működött a beolvasás? Írd be a kódot szövegként  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Olvasd be a kódjaikat, hogy másolatot kapj ide.</string>
     <string name="k2go_clone_scan_get_app">Olvasd be az app megszerzéséhez</string>
     <string name="k2go_clone_scan_to_join">Olvasd be a csatlakozáshoz</string>
-    <string name="k2go_clone_send_app_first">Előbb küldd az appot  ›</string>
     <string name="k2go_clone_send_to">Küldés egy másik telefonra  ›</string>
     <string name="k2go_clone_sending_whole">A teljes könyvtárad küldése</string>
     <string name="k2go_clone_share_wifi_settings">Wi-Fi megosztása az Android beállításain keresztül</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">A méretek becslések.</string>
     <string name="k2go_lbl_system">Rendszer</string>
     <string name="k2go_clone_technical_details">Technikai részletek  ▾</string>
-    <string name="k2go_clone_app_separate_step">Először a K2Go app települ. A könyvtárat egy későbbi lépésben másolod.</string>
     <string name="k2go_clone_other_downloads">A másik telefon ebből a kódból tölti le a K2Go-t.</string>
     <string name="k2go_clone_allow_install_note">A másik telefon megérinti a "telepítés engedélyezése ebből a forrásból" opciót — egyszeri lépés.</string>
     <string name="k2go_clone_incompat_title">Ezek a telefonok nem kompatibilisek</string>

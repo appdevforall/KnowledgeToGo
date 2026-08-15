@@ -238,7 +238,6 @@
     <string name="k2go_clone_nothing_to_replace">Τίποτα προς αντικατάσταση</string>
     <string name="k2go_clone_once_installed">Μόλις εγκατασταθεί, επιστρέψτε και αντιγράψτε τη βιβλιοθήκη.</string>
     <string name="k2go_clone_one_android_step">Ένα βήμα Android</string>
-    <string name="k2go_clone_other_no_app">Το άλλο τηλέφωνο δεν έχει ακόμη το K2Go;</string>
     <string name="k2go_clone_receive_from">Λήψη από άλλο τηλέφωνο  ›</string>
     <string name="k2go_clone_sharing_now">ΚΟΙΝΗ ΧΡΗΣΗ ΤΩΡΑ</string>
     <string name="k2go_clone_scan_enter_text">Δεν λειτούργησε η σάρωση; Εισαγάγετε τον κωδικό ως κείμενο  ▸</string>
@@ -246,7 +245,6 @@
     <string name="k2go_clone_scan_their_codes">Σαρώστε τους κωδικούς τους για να λάβετε ένα αντίγραφο εδώ.</string>
     <string name="k2go_clone_scan_get_app">Σαρώστε για να αποκτήσετε την εφαρμογή</string>
     <string name="k2go_clone_scan_to_join">Σαρώστε για σύνδεση</string>
-    <string name="k2go_clone_send_app_first">Στείλτε πρώτα την εφαρμογή  ›</string>
     <string name="k2go_clone_send_to">Αποστολή σε άλλο τηλέφωνο  ›</string>
     <string name="k2go_clone_sending_whole">Αποστολή ολόκληρης της βιβλιοθήκης σας</string>
     <string name="k2go_clone_share_wifi_settings">Κοινή χρήση Wi-Fi μέσω ρυθμίσεων Android</string>
@@ -255,7 +253,6 @@
     <string name="k2go_clone_sizes_estimates">Τα μεγέθη είναι εκτιμήσεις.</string>
     <string name="k2go_lbl_system">Σύστημα</string>
     <string name="k2go_clone_technical_details">Τεχνικές λεπτομέρειες  ▾</string>
-    <string name="k2go_clone_app_separate_step">Πρώτα εγκαθίσταται η εφαρμογή K2Go. Θα αντιγράψετε τη βιβλιοθήκη σε επόμενο βήμα.</string>
     <string name="k2go_clone_other_downloads">Το άλλο τηλέφωνο κατεβάζει το K2Go από αυτόν τον κωδικό.</string>
     <string name="k2go_clone_allow_install_note">Το άλλο τηλέφωνο πατά \"να επιτρέπεται η εγκατάσταση από αυτήν την πηγή\" — ένα βήμα μία φορά.</string>
     <string name="k2go_clone_incompat_title">Αυτά τα τηλέφωνα δεν είναι συμβατά</string>

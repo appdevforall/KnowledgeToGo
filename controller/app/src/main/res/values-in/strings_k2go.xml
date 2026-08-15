@@ -237,7 +237,6 @@
     <string name="k2go_clone_nothing_to_replace">Tidak ada yang perlu diganti</string>
     <string name="k2go_clone_once_installed">Setelah terpasang, kembali lagi dan salin pustakanya.</string>
     <string name="k2go_clone_one_android_step">Satu langkah Android</string>
-    <string name="k2go_clone_other_no_app">Ponsel lain belum punya K2Go?</string>
     <string name="k2go_clone_receive_from">Terima dari ponsel lain  ›</string>
     <string name="k2go_clone_sharing_now">SEDANG BERBAGI</string>
     <string name="k2go_clone_scan_enter_text">Pindai tidak berhasil? Masukkan kode sebagai teks  ▸</string>
@@ -245,7 +244,6 @@
     <string name="k2go_clone_scan_their_codes">Pindai kode mereka untuk mendapatkan salinan di sini.</string>
     <string name="k2go_clone_scan_get_app">Pindai untuk mendapatkan aplikasi</string>
     <string name="k2go_clone_scan_to_join">Pindai untuk gabung</string>
-    <string name="k2go_clone_send_app_first">Kirim aplikasi dahulu  ›</string>
     <string name="k2go_clone_send_to">Kirim ke ponsel lain  ›</string>
     <string name="k2go_clone_sending_whole">Mengirim seluruh pustaka Anda</string>
     <string name="k2go_clone_share_wifi_settings">Bagikan Wi-Fi lewat setelan Android</string>
@@ -254,7 +252,6 @@
     <string name="k2go_clone_sizes_estimates">Ukuran adalah perkiraan.</string>
     <string name="k2go_lbl_system">Sistem</string>
     <string name="k2go_clone_technical_details">Detail teknis  ▾</string>
-    <string name="k2go_clone_app_separate_step">Pertama, aplikasi K2Go dipasang. Anda akan menyalin pustaka pada langkah berikutnya.</string>
     <string name="k2go_clone_other_downloads">Ponsel lain mengunduh K2Go dari kode ini.</string>
     <string name="k2go_clone_allow_install_note">Ponsel lain mengetuk "izinkan pemasangan dari sumber ini" — langkah satu kali.</string>
     <string name="k2go_clone_incompat_title">Kedua ponsel ini tidak kompatibel</string>
