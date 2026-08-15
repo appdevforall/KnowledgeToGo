@@ -45,6 +45,13 @@ public final class ModuleActionSheet {
      */
     public enum State {
         READY, NOT_INSTALLED, SCHEDULED,
+        /**
+         * ADFA-5150: there is no system to install into — a killed install/clone, a deletion, anything
+         * that is not the first-run wizard (which runs before this surface is reachable). The sheet
+         * collapses to the one action that helps: Recover. No Install/Schedule over a system that is
+         * not there.
+         */
+        NO_SYSTEM,
         /** The platform did not answer and nothing else says why. */
         UNKNOWN,
         /**
@@ -212,6 +219,13 @@ public final class ModuleActionSheet {
                         }));
                 break;
             }
+            case NO_SYSTEM:
+                // ADFA-5150: nothing to install into. Collapse to Recover — restore a backup, install
+                // over the internet, or clone from a peer, all three live there. No About/Install/
+                // Schedule/Hide: a systemless card has one meaningful move, and this is it.
+                content.addView(row(ctx, R.drawable.ic_arrow_right, act.getString(R.string.k2go_home_recover),
+                        Emphasis.ACCENT, null, false, v -> { dlg.dismiss(); SetupLibraryActivity.recover(act); }));
+                break;
             case UNKNOWN:
             case STOPPED:
                 // Nothing established, or the box is down — either way we cannot say whether this
@@ -253,7 +267,7 @@ public final class ModuleActionSheet {
                 break;
         }
 
-        if (state != State.SCHEDULED && key != null) {   // ADFA-4958: Hide declutters Home; Restore lives in management
+        if (state != State.SCHEDULED && state != State.NO_SYSTEM && key != null) {   // ADFA-4958: Hide declutters Home; Restore lives in management (ADFA-5150: not over a systemless card)
             content.addView(row(ctx, R.drawable.ic_hide_24, act.getString(R.string.k2go_sheet_hide),
                     Emphasis.PLAIN, null, false, v -> {
                         HiddenModules.add(ctx, key);
@@ -333,6 +347,7 @@ public final class ModuleActionSheet {
             case SCHEDULED: return act.getString(R.string.k2go_state_scheduled);
             case UNKNOWN: return act.getString(R.string.k2go_state_no_answer);
             case STOPPED: return act.getString(R.string.k2go_card_stopped);
+            case NO_SYSTEM: return act.getString(R.string.k2go_state_no_system);
             case NOT_INSTALLED:
             default: return act.getString(R.string.k2go_state_not_installed);
         }

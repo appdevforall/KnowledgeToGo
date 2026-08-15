@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Zatím žádná knihovna — klepněte na Získat další pro instalaci a přidání obsahu</string>
     <string name="k2go_home_damaged">Knihovna potřebuje opravu — poslední nastavení se nedokončilo</string>
     <string name="k2go_home_recover">Opravit</string>
+    <string name="k2go_state_no_system">Zatím žádný systém</string>
+    <string name="k2go_connect_no_system">Zatím není žádný systém ke sdílení — nejprve nějaký opravte</string>
     <string name="k2go_home_ready_empty">Knihovna připravena — klepněte na Získat další pro přidání obsahu</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Získat další</string>

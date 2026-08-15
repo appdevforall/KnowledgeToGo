@@ -124,8 +124,7 @@ public class LibraryHomeFragment extends Fragment {
                 // dialog: the dialog closes so the user cannot fall back onto a held boot gate, but Home
                 // is now an honest surface — back out of recovery and it still says "needs repair".
                 if (headerState == H_DAMAGED) {
-                    startActivity(new android.content.Intent(requireContext(), SetupLibraryActivity.class)
-                            .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true));
+                    SetupLibraryActivity.recover(requireContext());   // ADFA-5150: the shared route
                     return;
                 }
                 // ADFA-5143: both clone states go to the Clone tab. For the receiver that is the only
@@ -369,9 +368,11 @@ public class LibraryHomeFragment extends Fragment {
         if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
         else if (!systemInstalled) {
-            // No system, so nothing is installed. Asked here rather than remembered: the store
-            // holds what a probe said, and no probe has been made.
-            s = ModuleActionSheet.State.NOT_INSTALLED;
+            // ADFA-5150: no system to install a module into. This used to be NOT_INSTALLED — About /
+            // Install now / Schedule — which banked an install order with nothing to drain it. The
+            // sheet now collapses to Recover. (A first-run phone never reaches this surface; the wizard
+            // runs before the tabs, so a systemless card here always means a system was lost.)
+            s = ModuleActionSheet.State.NO_SYSTEM;
         } else if (ev != null && !PlatformPresence.resolve(ev)) {
             // Known absent, and still known absent with the box off — that is the state where
             // installing is exactly the right offer.

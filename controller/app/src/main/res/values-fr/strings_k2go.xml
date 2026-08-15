@@ -403,6 +403,8 @@
     <string name="k2go_home_no_library">Pas encore de bibliothèque — appuyez sur Obtenir plus pour installer et ajouter du contenu</string>
     <string name="k2go_home_damaged">La bibliothèque doit être réparée — la dernière configuration ne s\'est pas terminée</string>
     <string name="k2go_home_recover">Réparer</string>
+    <string name="k2go_state_no_system">Pas encore de système</string>
+    <string name="k2go_connect_no_system">Aucun système à partager pour l\'instant — réparez-en un d\'abord</string>
     <string name="k2go_home_ready_empty">Bibliothèque prête — appuyez sur Obtenir plus pour ajouter du contenu</string>
     <string name="k2go_rate_per_second">/s</string>
 

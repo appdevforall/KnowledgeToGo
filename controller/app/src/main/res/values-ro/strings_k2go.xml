@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Încă fără bibliotecă — atinge Mai multe pentru a instala și adăuga conținut</string>
     <string name="k2go_home_damaged">Biblioteca necesită reparare — ultima configurare nu s-a finalizat</string>
     <string name="k2go_home_recover">Repară</string>
+    <string name="k2go_state_no_system">Încă niciun sistem</string>
+    <string name="k2go_connect_no_system">Încă niciun sistem de partajat — repară mai întâi unul</string>
     <string name="k2go_home_ready_empty">Bibliotecă gata — atinge Mai multe pentru a adăuga conținut</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Mai multe</string>

@@ -944,9 +944,8 @@ public class LibraryActivity extends AppCompatActivity implements ServerControll
                 .setTitle(R.string.k2go_damaged_title)
                 .setMessage(R.string.k2go_damaged_body)
                 .setPositiveButton(R.string.k2go_damaged_recover, (dlg, w) -> {
-                    startActivity(new android.content.Intent(this, SetupLibraryActivity.class)
-                            .putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true));
-                    finish();
+                    SetupLibraryActivity.recover(this);   // ADFA-5150: the shared route
+                    finish();   // the dialog closes so the user can't fall back onto the held gate
                 })
                 // ADFA-5119: report it from here, where the user is standing when it matters. The app
                 // knows what happened and they do not, so the description is filled from the install

@@ -401,6 +401,8 @@
     <string name="k2go_home_no_library">Bado hakuna maktaba — gusa Pata zaidi ili kusakinisha na kuongeza maudhui</string>
     <string name="k2go_home_damaged">Maktaba inahitaji kurekebishwa — usanidi wa mwisho haukukamilika</string>
     <string name="k2go_home_recover">Rekebisha</string>
+    <string name="k2go_state_no_system">Bado hakuna mfumo</string>
+    <string name="k2go_connect_no_system">Bado hakuna mfumo wa kushiriki — rekebisha mmoja kwanza</string>
     <string name="k2go_home_ready_empty">Maktaba tayari — gusa Pata zaidi ili kuongeza maudhui</string>
     <string name="k2go_rate_per_second">/sek</string>
     <string name="k2go_gm_hub_title">Pata zaidi</string>
