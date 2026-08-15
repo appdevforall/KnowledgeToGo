@@ -139,6 +139,8 @@ public class RsyncManager implements TransportEngine {
 
                 String lastFile = "";
                 int lastEmittedPct = 0; // ADFA-5160: smoothed percent, never walked back
+                long firstProgressMs = 0L;      // ADFA-5160 follow-up: anchor for the ETA warmup
+                final long etaWarmupMs = 3000L; // hold the ETA until the speed sample settles
 
                 while ((line = reader.readLine()) != null) {
                     if (isCancelled) {
@@ -162,15 +164,26 @@ public class RsyncManager implements TransportEngine {
                         lastEmittedPct = pct;
 
                         // ADFA-5160: rsync's ETA is computed against its per-file plan, so it jumps
-                        // the same way the old percent did. When we have a whole-set total, derive
-                        // the ETA from the bytes still to go and the current speed instead.
-                        String eta = progress.eta;
+                        // the same way the old percent did — and its first samples report a tiny
+                        // instantaneous speed, so an ETA derived then reads as thousands of hours.
+                        // Hold the ETA for a short warmup, then compute it from the AVERAGE speed
+                        // (bytes moved / elapsed), which is steadier than rsync's instantaneous
+                        // figure and smooths the mid-transfer jitter too. The bar and speed keep
+                        // moving during the warmup; only the ETA waits.
+                        if (firstProgressMs == 0L) firstProgressMs = System.currentTimeMillis();
+                        long elapsedMs = System.currentTimeMillis() - firstProgressMs;
+
+                        String eta;
                         if (expectedTotalBytes > 0) {
-                            double bps = RsyncProgress.parseSpeedBytesPerSec(progress.speed);
-                            if (bps > 0) {
+                            if (elapsedMs >= etaWarmupMs && progress.bytes > 0) {
+                                double avgBps = progress.bytes / (elapsedMs / 1000.0);
                                 long remaining = Math.max(0L, expectedTotalBytes - progress.bytes);
-                                eta = RsyncProgress.formatEta((long) (remaining / bps));
+                                eta = RsyncProgress.formatEta((long) (remaining / avgBps));
+                            } else {
+                                eta = "…"; // warmup: no bogus figure yet
                             }
+                        } else {
+                            eta = progress.eta; // no whole-set total: rsync's own ETA
                         }
 
                         String finalFile = lastFile;

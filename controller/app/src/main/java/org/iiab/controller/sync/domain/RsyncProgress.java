@@ -41,12 +41,6 @@ public final class RsyncProgress {
     private static final Pattern STATS =
             Pattern.compile("Total transferred file size:\\s+([\\d,\\.]+)\\s+bytes");
 
-    // ADFA-5160: rsync's speed column, e.g. "12.34MB/s" / "512.00B/s". Used to turn the
-    // whole-set remaining bytes into a whole-set ETA, instead of rsync's own ETA, which is
-    // computed against its per-file plan and jumps the same way the old percent did.
-    private static final Pattern SPEED =
-            Pattern.compile("([\\d\\.]+)([kMGT]?B)/s");
-
     /**
      * Parses one rsync {@code --info=progress2} line. Returns {@code null} if the
      * line carries no progress token or the percentage is not a number.
@@ -76,31 +70,6 @@ public final class RsyncProgress {
             return Long.parseLong(m.group(1).replaceAll("[,\\.]", ""));
         } catch (NumberFormatException e) {
             return fallback;
-        }
-    }
-
-    /**
-     * Parses a rsync speed column ("12.34MB/s") into bytes per second (1024-based units, as
-     * rsync prints them). Returns {@code -1} when the string does not match. ADFA-5160.
-     */
-    public static double parseSpeedBytesPerSec(String speed) {
-        if (speed == null) return -1d;
-        Matcher m = SPEED.matcher(speed);
-        if (!m.find()) return -1d;
-        try {
-            double n = Double.parseDouble(m.group(1));
-            double mult;
-            switch (m.group(2)) {
-                case "B":  mult = 1d; break;
-                case "kB": mult = 1024d; break;
-                case "MB": mult = 1024d * 1024d; break;
-                case "GB": mult = 1024d * 1024d * 1024d; break;
-                case "TB": mult = 1024d * 1024d * 1024d * 1024d; break;
-                default:   return -1d;
-            }
-            return n * mult;
-        } catch (NumberFormatException e) {
-            return -1d;
         }
     }
 
