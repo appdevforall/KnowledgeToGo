@@ -1151,6 +1151,10 @@ public class CloneFragment extends Fragment {
             View host = (progressBox != null) ? progressBox : getView();
             if (host != null) host.postDelayed(() -> {
                 if (!isAdded()) return;
+                // ADFA-5151 (review): clear the flag here — its owner and lifetime. Navigation destroys
+                // this fragment, so it normally dies with it; resetting means that even if navigation
+                // ever no-ops, renderReceive is not left permanently muted. A marker with a clear-path.
+                receiveExiting = false;
                 SyncProgressRepository.get().postIdle();
                 if (getActivity() instanceof LibraryActivity) ((LibraryActivity) getActivity()).openLibraryTab();
             }, RECEIVE_SUCCESS_REDIRECT_MS);
