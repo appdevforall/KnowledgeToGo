@@ -138,6 +138,7 @@ public class CloneFragment extends Fragment {
     private TextView showcode, codetext, copyBtn, shareBtn;
     private LinearLayout codeblock;
     private LinearLayout actionFooter;   // ADFA-5154: pinned wrapper for the stop/start/recover button
+    private android.widget.ScrollView contentScroll;   // ADFA-5154: scrolls back to top on Hotspot/Wi-Fi switch
     private org.iiab.controller.util.EllipsisAnimator startingDots;   // ADFA-5154: animated "Starting service…"
     private String currentPayload = "";
     private boolean codeExpanded = false;
@@ -186,6 +187,7 @@ public class CloneFragment extends Fragment {
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
         actionFooter = v.findViewById(R.id.k2go_clone_action_footer);   // ADFA-5154: pinned action button
+        contentScroll = v.findViewById(R.id.k2go_clone_scroll);
         footer = v.findViewById(R.id.k2go_clone_footer);
         startingDots = new org.iiab.controller.util.EllipsisAnimator(caption, true);   // animated "Starting service…"
         shareCard = v.findViewById(R.id.k2go_clone_sharecard);
@@ -408,6 +410,10 @@ public class CloneFragment extends Fragment {
         if (secJoin != null) secJoin.fbOpen = false;   // ADFA-4815: each mode starts with ①'s fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
+        // ADFA-5154: Hotspot ① has a QR, Wi-Fi ① doesn't, so the two tabs differ in height — switching
+        // mid-scroll would leave the view offset. Snap back to the top (Connect avoids this: single QR
+        // that fits one screen).
+        if (contentScroll != null) contentScroll.post(() -> contentScroll.smoothScrollTo(0, 0));
     }
 
     private void ensureHotspot() {

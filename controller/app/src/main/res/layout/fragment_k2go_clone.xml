@@ -48,7 +48,7 @@
     </LinearLayout>
 
     <!-- ADFA-5154: SCROLLABLE content — fork, stepper, the two Send pages and the Receive box. -->
-    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+    <ScrollView android:id="@+id/k2go_clone_scroll" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
         android:fillViewport="true" android:scrollbars="vertical" android:scrollbarStyle="outsideOverlay">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical" android:paddingLeft="16dp" android:paddingRight="16dp"
