@@ -16,9 +16,19 @@ public class RsyncProgressTest {
     public void parsesProgressLine() {
         RsyncProgress p = RsyncProgress.parse("     32,768  45%  12.34MB/s    0:00:12");
         assertNotNull(p);
+        assertEquals(32768L, p.bytes);
         assertEquals(45, p.percent);
         assertEquals("12.34MB/s", p.speed);
         assertEquals("0:00:12", p.eta);
+    }
+
+    // ADFA-5160: the leading byte column is the numerator the caller anchors to a known total.
+    @Test
+    public void parsesLeadingTransferredBytesWithSeparators() {
+        RsyncProgress p = RsyncProgress.parse("1,234,567,890  88%  40.00MB/s    0:00:03");
+        assertNotNull(p);
+        assertEquals(1234567890L, p.bytes);
+        assertEquals(88, p.percent);
     }
 
     @Test
@@ -39,5 +49,24 @@ public class RsyncProgressTest {
     public void returnsFallbackWhenStatsLineAbsent() {
         assertEquals(99L, RsyncProgress.parseTransferredBytes("some other line", 99L));
         assertEquals(0L, RsyncProgress.parseTransferredBytes(null, 0L));
+    }
+
+    // ADFA-5160: speed -> bytes/sec, for deriving a whole-set ETA.
+    @Test
+    public void parsesSpeedToBytesPerSecond() {
+        assertEquals(1024.0 * 1024.0, RsyncProgress.parseSpeedBytesPerSec("1.00MB/s"), 0.001);
+        assertEquals(1024.0, RsyncProgress.parseSpeedBytesPerSec("1.00kB/s"), 0.001);
+        assertEquals(512.0, RsyncProgress.parseSpeedBytesPerSec("512.00B/s"), 0.001);
+        assertEquals(-1.0, RsyncProgress.parseSpeedBytesPerSec("n/a"), 0.001);
+        assertEquals(-1.0, RsyncProgress.parseSpeedBytesPerSec(null), 0.001);
+    }
+
+    // ADFA-5160: whole-set ETA formatting, rsync's H:MM:SS.
+    @Test
+    public void formatsEtaAsHoursMinutesSeconds() {
+        assertEquals("0:00:12", RsyncProgress.formatEta(12));
+        assertEquals("0:01:15", RsyncProgress.formatEta(75));
+        assertEquals("1:02:05", RsyncProgress.formatEta(3725));
+        assertEquals("0:00:00", RsyncProgress.formatEta(-5));
     }
 }
