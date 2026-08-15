@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">மீண்டும் தொடங்கு</string>
     <string name="k2go_damaged_report">சிக்கலைப் புகாரளி</string>
     <string name="k2go_notif_view">பார்</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">எனது ஹாட்ஸ்பாட்டில் இணையவும்</string>
+    <string name="k2go_connect_s2_title">நூலகத்தைத் திற</string>
+    <string name="k2go_connect_step2_below">படி 2 கீழே</string>
+    <string name="k2go_done">முடிந்தது</string>
+    <string name="k2go_connect_step_join">இணை</string>
+    <string name="k2go_connect_step_open">திற</string>
 </resources>

@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">Почни испочетка</string>
     <string name="k2go_damaged_report">Пријави проблем</string>
     <string name="k2go_notif_view">Погледај</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Придружи се мом хотспоту</string>
+    <string name="k2go_connect_s2_title">Отвори библиотеку</string>
+    <string name="k2go_connect_step2_below">КОРАК 2 ИСПОД</string>
+    <string name="k2go_done">Готово</string>
+    <string name="k2go_connect_step_join">Придружи се</string>
+    <string name="k2go_connect_step_open">Отвори</string>
 </resources>

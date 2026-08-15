@@ -802,4 +802,11 @@
     <string name="k2go_dl_cancel_confirm">Ξεκινήστε ξανά</string>
     <string name="k2go_damaged_report">Αναφορά προβλήματος</string>
     <string name="k2go_notif_view">Προβολή</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Σύνδεση στο hotspot μου</string>
+    <string name="k2go_connect_s2_title">Άνοιγμα βιβλιοθήκης</string>
+    <string name="k2go_connect_step2_below">ΒΗΜΑ 2 ΠΑΡΑΚΑΤΩ</string>
+    <string name="k2go_done">Τέλος</string>
+    <string name="k2go_connect_step_join">Σύνδεση</string>
+    <string name="k2go_connect_step_open">Άνοιγμα</string>
 </resources>

@@ -811,4 +811,11 @@
     <string name="k2go_dl_cancel_confirm">Pradėti iš naujo</string>
     <string name="k2go_damaged_report">Pranešti apie problemą</string>
     <string name="k2go_notif_view">Peržiūrėti</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Prisijungti prie mano viešosios prieigos taško</string>
+    <string name="k2go_connect_s2_title">Atverti biblioteką</string>
+    <string name="k2go_connect_step2_below">2 ŽINGSNIS ŽEMIAU</string>
+    <string name="k2go_done">Atlikta</string>
+    <string name="k2go_connect_step_join">Prisijungti</string>
+    <string name="k2go_connect_step_open">Atverti</string>
 </resources>

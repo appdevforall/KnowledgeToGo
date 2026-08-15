@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">Baştan başla</string>
     <string name="k2go_damaged_report">Sorunu bildir</string>
     <string name="k2go_notif_view">Görüntüle</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Etkin noktama katıl</string>
+    <string name="k2go_connect_s2_title">Kütüphaneyi aç</string>
+    <string name="k2go_connect_step2_below">ADIM 2 AŞAĞIDA</string>
+    <string name="k2go_done">Bitti</string>
+    <string name="k2go_connect_step_join">Katıl</string>
+    <string name="k2go_connect_step_open">Aç</string>
 </resources>

@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">Opnieuw beginnen</string>
     <string name="k2go_damaged_report">Probleem melden</string>
     <string name="k2go_notif_view">Bekijken</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Verbind met mijn hotspot</string>
+    <string name="k2go_connect_s2_title">Bibliotheek openen</string>
+    <string name="k2go_connect_step2_below">STAP 2 HIERONDER</string>
+    <string name="k2go_done">Klaar</string>
+    <string name="k2go_connect_step_join">Verbinden</string>
+    <string name="k2go_connect_step_open">Openen</string>
 </resources>

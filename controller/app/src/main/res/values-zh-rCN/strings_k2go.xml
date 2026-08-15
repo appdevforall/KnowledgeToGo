@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">从头开始</string>
     <string name="k2go_damaged_report">报告问题</string>
     <string name="k2go_notif_view">查看</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">加入我的热点</string>
+    <string name="k2go_connect_s2_title">打开图书馆</string>
+    <string name="k2go_connect_step2_below">第 2 步在下方</string>
+    <string name="k2go_done">完成</string>
+    <string name="k2go_connect_step_join">加入</string>
+    <string name="k2go_connect_step_open">打开</string>
 </resources>

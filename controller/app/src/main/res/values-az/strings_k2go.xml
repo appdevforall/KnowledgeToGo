@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">Yenidən başla</string>
     <string name="k2go_damaged_report">Problemi bildir</string>
     <string name="k2go_notif_view">Bax</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Hotspot-uma qoşul</string>
+    <string name="k2go_connect_s2_title">Kitabxananı aç</string>
+    <string name="k2go_connect_step2_below">ADDIM 2 AŞAĞIDA</string>
+    <string name="k2go_done">Hazırdır</string>
+    <string name="k2go_connect_step_join">Qoşul</string>
+    <string name="k2go_connect_step_open">Aç</string>
 </resources>

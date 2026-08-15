@@ -811,4 +811,11 @@
     <string name="k2go_dl_cancel_confirm">Recommencer</string>
     <string name="k2go_damaged_report">Signaler le problème</string>
     <string name="k2go_notif_view">Voir</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Rejoindre mon point d\'accès</string>
+    <string name="k2go_connect_s2_title">Ouvrir la bibliothèque</string>
+    <string name="k2go_connect_step2_below">ÉTAPE 2 CI-DESSOUS</string>
+    <string name="k2go_done">Terminé</string>
+    <string name="k2go_connect_step_join">Rejoindre</string>
+    <string name="k2go_connect_step_open">Ouvrir</string>
 </resources>

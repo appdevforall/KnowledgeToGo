@@ -811,4 +811,11 @@
     <string name="k2go_dl_cancel_confirm">Start forfra</string>
     <string name="k2go_damaged_report">Rapporter problemet</string>
     <string name="k2go_notif_view">Vis</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Koble til hotspotet mitt</string>
+    <string name="k2go_connect_s2_title">Åpne biblioteket</string>
+    <string name="k2go_connect_step2_below">TRINN 2 NEDENFOR</string>
+    <string name="k2go_done">Ferdig</string>
+    <string name="k2go_connect_step_join">Koble til</string>
+    <string name="k2go_connect_step_open">Åpne</string>
 </resources>

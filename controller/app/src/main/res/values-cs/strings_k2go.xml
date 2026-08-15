@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">Začít znovu</string>
     <string name="k2go_damaged_report">Nahlásit problém</string>
     <string name="k2go_notif_view">Zobrazit</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">Připojit k hotspotu</string>
+    <string name="k2go_connect_s2_title">Otevřít knihovnu</string>
+    <string name="k2go_connect_step2_below">KROK 2 NÍŽE</string>
+    <string name="k2go_done">Hotovo</string>
+    <string name="k2go_connect_step_join">Připojit</string>
+    <string name="k2go_connect_step_open">Otevřít</string>
 </resources>

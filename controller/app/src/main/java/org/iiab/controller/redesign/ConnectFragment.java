@@ -3,7 +3,6 @@ package org.iiab.controller.redesign;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -27,18 +26,49 @@ import org.iiab.controller.sync.transport.NetworkStateLiveData;
 import org.iiab.controller.sync.transport.QrCodec;
 
 /**
- * Connect tab (ADFA-4776): let a nearby device browse the library. Two-code flow per the final
- * design — on a shared Wi-Fi it's one code (Open); on the app's LocalOnly hotspot it's two
- * (Join → Open). Reuses LocalHotspotManager, NetworkInterfaces and QrCodec — no new transport.
+ * Connect tab (ADFA-4776; redesigned ADFA-5154). Let a nearby device browse the library.
+ *
+ * <p>On the app's LocalOnly hotspot the flow is two codes — (1) Join, (2) Open — and the redesign
+ * shows BOTH at once on one scrollable page (no vanishing wizard step): the user builds a stable
+ * spatial map instead of chasing a code that swaps in place. On a shared Wi-Fi it stays one code
+ * (Open), shown in the single container. Reuses LocalHotspotManager, NetworkInterfaces and QrCodec.
+ *
+ * <p>Both hotspot codes need the hotspot ON (ssid/pass for Join, the IP for Open), and the manager
+ * publishes all three together at Phase.ON. So while it is still starting the two sections show a
+ * placeholder in the QR slot (record-time on LocalOnly, so this is a blink); a genuine failure or an
+ * unsupported device is a single fact, shown once in the single container rather than as two dead
+ * frames.
  */
 public class ConnectFragment extends Fragment {
 
     private enum Mode { HOTSPOT, WIFI }
-    private enum Stage { JOIN, OPEN }
+
+    /**
+     * One QR "section": its slot (frame + code + placeholder), caption/subcaption and its own
+     * reveal-on-tap scan fallback (ADFA-4815). Three of these — Join, Open, and the single
+     * container used for Wi-Fi / failed / no-system — so the three no longer need parallel fields.
+     */
+    private static final class Section {
+        final FrameLayout frame;
+        final ImageView qr;
+        final TextView ph, caption, subCaption, fallbackToggle;
+        final LinearLayout fallback, fallbackValues;
+        boolean fbOpen;   // this section's fallback reveal state, kept across re-renders
+
+        Section(View r, int frameId, int qrId, int phId, int capId, int subId,
+                int toggleId, int fallbackId, int valuesId) {
+            frame = r.findViewById(frameId);
+            qr = r.findViewById(qrId);
+            ph = r.findViewById(phId);
+            caption = r.findViewById(capId);
+            subCaption = r.findViewById(subId);
+            fallbackToggle = r.findViewById(toggleId);
+            fallback = r.findViewById(fallbackId);
+            fallbackValues = r.findViewById(valuesId);
+        }
+    }
 
     private Mode mode = Mode.HOTSPOT;
-    private Stage stage = Stage.JOIN;
-    private boolean openDone = false;
     // ADFA-5150: Connect shares this device's library — with no system there is nothing to serve, and
     // the QR would point at a dead port. Read on onResume (a system is not gained while this is open).
     private boolean systemPresent = true;
@@ -46,13 +76,9 @@ public class ConnectFragment extends Fragment {
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
 
-    private TextView tabHotspot, tabWifi, caption, subCaption, advance, finish, fallbackToggle;
-    private TextView connFooter;   // ADFA-5150: the static "available while open" note — hidden in the no-system state
-    private LinearLayout steps, fallback, fallbackValues;
-    private ImageView qr;
-    // ADFA-4815: the scan fallback (Wi-Fi/pass or URL) is hidden until tapped, so it only
-    // shows up when the scan actually failed — same reveal as the Clone step-3 "show code as text".
-    private boolean fallbackOpen = false;
+    private TextView tabHotspot, tabWifi, advance, finish, connFooter;
+    private LinearLayout steps, two, single, hint;
+    private Section secJoin, secOpen, secSingle;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
@@ -72,32 +98,35 @@ public class ConnectFragment extends Fragment {
         tabHotspot = v.findViewById(R.id.k2go_conn_hotspot);
         tabWifi = v.findViewById(R.id.k2go_conn_wifi);
         steps = v.findViewById(R.id.k2go_conn_steps);
-        qr = v.findViewById(R.id.k2go_conn_qr);
-        caption = v.findViewById(R.id.k2go_conn_caption);
-        subCaption = v.findViewById(R.id.k2go_conn_subcaption);
-        fallback = v.findViewById(R.id.k2go_conn_fallback);
-        fallbackToggle = v.findViewById(R.id.k2go_conn_fallback_toggle);
-        fallbackValues = v.findViewById(R.id.k2go_conn_fallback_values);
+        two = v.findViewById(R.id.k2go_conn_two);
+        single = v.findViewById(R.id.k2go_conn_single);
+        hint = v.findViewById(R.id.k2go_conn_hint);
+
+        secJoin = new Section(v, R.id.k2go_conn_qr1_frame, R.id.k2go_conn_qr1, R.id.k2go_conn_qr1_ph,
+                R.id.k2go_conn_caption1, R.id.k2go_conn_subcaption1,
+                R.id.k2go_conn_fallback_toggle1, R.id.k2go_conn_fallback1, R.id.k2go_conn_fallback_values1);
+        secOpen = new Section(v, R.id.k2go_conn_qr2_frame, R.id.k2go_conn_qr2, R.id.k2go_conn_qr2_ph,
+                R.id.k2go_conn_caption2, R.id.k2go_conn_subcaption2,
+                R.id.k2go_conn_fallback_toggle2, R.id.k2go_conn_fallback2, R.id.k2go_conn_fallback_values2);
+        secSingle = new Section(v, R.id.k2go_conn_qrS_frame, R.id.k2go_conn_qrS, R.id.k2go_conn_qrS_ph,
+                R.id.k2go_conn_captionS, R.id.k2go_conn_subcaptionS,
+                R.id.k2go_conn_fallback_toggleS, R.id.k2go_conn_fallbackS, R.id.k2go_conn_fallback_valuesS);
+
         advance = v.findViewById(R.id.k2go_conn_advance);
         finish = v.findViewById(R.id.k2go_conn_finish);
         connFooter = v.findViewById(R.id.k2go_conn_footer);
 
         tabHotspot.setOnClickListener(x -> setMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> setMode(Mode.WIFI));
-        advance.setOnClickListener(x -> {
-            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; openDone = false; fallbackOpen = false; render(); }
-        });
         finish.setOnClickListener(x -> {
-            openDone = true;      // tick step 2, briefly show it complete, then go Home
             finish.setEnabled(false);
-            render();
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                 if (!isAdded()) return;
                 View nav = requireActivity().findViewById(R.id.k2go_bottom_nav);
                 if (nav instanceof com.google.android.material.bottomnavigation.BottomNavigationView) {
                     ((com.google.android.material.bottomnavigation.BottomNavigationView) nav).setSelectedItemId(R.id.nav_library);
                 }
-            }, 1500);
+            }, 300);
         });
 
         hs.state().observe(getViewLifecycleOwner(), st -> render());
@@ -114,9 +143,7 @@ public class ConnectFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
-        stage = (m == Mode.HOTSPOT) ? Stage.JOIN : Stage.OPEN;
-        openDone = false;
-        fallbackOpen = false;   // ADFA-4815: each mode/stage starts with the fallback collapsed
+        secJoin.fbOpen = secOpen.fbOpen = secSingle.fbOpen = false;   // each mode starts collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
@@ -143,37 +170,32 @@ public class ConnectFragment extends Fragment {
     }
 
     private void render() {
-        if (!isAdded() || caption == null) return;
-        // ADFA-5150: advance's default action is the stage toggle; noSystemState() repurposes it as
-        // Recover, so reset it here every render — a system that returns must not keep the Recover tap.
-        advance.setOnClickListener(x -> {
-            if (mode == Mode.HOTSPOT) { stage = (stage == Stage.JOIN) ? Stage.OPEN : Stage.JOIN; openDone = false; fallbackOpen = false; render(); }
-        });
+        if (!isAdded() || secSingle == null) return;
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
-        if (finish != null) finish.setVisibility(View.GONE);
-        if (connFooter != null) connFooter.setVisibility(View.VISIBLE);   // default; the no-system state hides it
+        finish.setVisibility(View.GONE);
+        connFooter.setVisibility(View.VISIBLE);   // default; the no-system state hides it
+        advance.setVisibility(View.GONE);
         if (!systemPresent) { noSystemState(); return; }
         if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
     }
 
     /**
      * ADFA-5150: no system, so nothing to share. Instead of a QR pointing at a dead server, say so and
-     * offer the one move that helps — Recover (restore / internet / clone). Reuses {@code advance} as
-     * the action; render() resets its listener so this does not stick once a system exists.
+     * offer the one move that helps — Recover. Reuses {@code advance} as the action.
      */
     private void noSystemState() {
-        if (steps != null) steps.setVisibility(View.GONE);
-        qr.setImageBitmap(null);
-        caption.setText(R.string.k2go_connect_no_system);
-        subCaption.setText("");
-        setFallback(null);
-        if (fallbackToggle != null) fallbackToggle.setVisibility(View.GONE);
+        showSingle();
+        secSingle.frame.setVisibility(View.GONE);
+        steps.setVisibility(View.GONE);
+        secSingle.caption.setText(R.string.k2go_connect_no_system);
+        secSingle.subCaption.setText("");
+        setFallback(secSingle, null);
         advance.setVisibility(View.VISIBLE);
         advance.setText(R.string.k2go_home_recover);
         styleAdvance(true);
-        advance.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
-        if (connFooter != null) connFooter.setVisibility(View.GONE);   // ADFA-5150: no "available" note here
+        advance.setOnClickListener(x -> SetupLibraryActivity.recover(requireContext()));
+        connFooter.setVisibility(View.GONE);   // no "available" note here
     }
 
     private void renderHotspot() {
@@ -181,113 +203,137 @@ public class ConnectFragment extends Fragment {
         LocalHotspotManager.Phase phase = (st != null) ? st.phase : LocalHotspotManager.Phase.OFF;
 
         if (!LocalHotspotManager.isSupported()) {
-            simpleState(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi));
-            return;
-        }
-        if (phase == LocalHotspotManager.Phase.OFF || phase == LocalHotspotManager.Phase.STARTING) {
-            simpleState(getString(R.string.k2go_connect_starting_hotspot), "");
+            singleStatus(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi));
             return;
         }
         if (phase == LocalHotspotManager.Phase.FAILED) {
-            simpleState(getString(R.string.k2go_connect_hotspot_failed), getString(R.string.k2go_connect_enable_location));
+            singleStatus(getString(R.string.k2go_connect_hotspot_failed), getString(R.string.k2go_connect_enable_location));
             return;
         }
 
-        String ssid = (st.ssid != null) ? st.ssid : "";
-        String pass = (st.passphrase != null) ? st.passphrase : "";
-        buildSteps(true);
-        advance.setVisibility(View.VISIBLE);
-        if (stage == Stage.JOIN) {
-            setQr("WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;");
-            caption.setText(R.string.k2go_scan_join_hotspot);
-            subCaption.setText(R.string.k2go_just_scan);
-            setFallback(new String[]{getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
-            advance.setText(R.string.k2go_connect_shownext);
-            styleAdvance(true);
-        } else {
+        // OFF / STARTING / ON all show the two sections; only ON has scannable codes.
+        showTwo();
+        buildSteps();
+        boolean on = (phase == LocalHotspotManager.Phase.ON);
+
+        if (on) {
+            String ssid = (st != null && st.ssid != null) ? st.ssid : "";
+            String pass = (st != null && st.passphrase != null) ? st.passphrase : "";
             String ip = NetworkInterfaces.discover().hotspotIp;
             if (ip == null) ip = "192.168.49.1";
-            setQr(browseUrl(ip));
-            caption.setText(getString(R.string.k2go_connect_scan_open));
-            subCaption.setText(getString(R.string.k2go_connect_readonly));
-            setFallback(new String[]{browseUrl(ip)});
-            advance.setText(getString(R.string.k2go_clone_back_step1));
-            styleAdvance(false);
-            finish.setVisibility(openDone ? View.GONE : View.VISIBLE);
-            advance.setVisibility(openDone ? View.GONE : View.VISIBLE);
+
+            setQr(secJoin, "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
+            secJoin.caption.setText(R.string.k2go_just_scan);
+            secJoin.subCaption.setText("");
+            setFallback(secJoin, new String[]{
+                    getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
+
+            setQr(secOpen, browseUrl(ip), null);
+            secOpen.caption.setText(R.string.k2go_connect_readonly);
+            secOpen.subCaption.setText("");
+            setFallback(secOpen, new String[]{browseUrl(ip)});
+
+            finish.setVisibility(View.VISIBLE);
+        } else {
+            // Starting: hold both slots with a placeholder caption, no scannable code yet.
+            String starting = getString(R.string.k2go_connect_starting_hotspot);
+            for (Section sec : new Section[]{secJoin, secOpen}) {
+                setQr(sec, null, starting);
+                sec.caption.setText("");
+                sec.subCaption.setText("");
+                setFallback(sec, null);
+            }
+            finish.setVisibility(View.VISIBLE);
         }
     }
 
     private void renderWifi() {
-        buildSteps(false);
-        advance.setVisibility(View.GONE);
+        showSingle();
+        steps.setVisibility(View.GONE);
         String ip = NetworkInterfaces.discover().wifiIp;
         if (ip == null) {
-            simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi));
+            singleStatus(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi));
             return;
         }
-        setQr(browseUrl(ip));
-        caption.setText(getString(R.string.k2go_connect_scan_open));
-        subCaption.setText(getString(R.string.k2go_connect_same_wifi));
-        setFallback(new String[]{browseUrl(ip)});
-        finish.setVisibility(View.VISIBLE);   // same forward exit back to the library
+        secSingle.frame.setVisibility(View.VISIBLE);
+        setQr(secSingle, browseUrl(ip), null);
+        secSingle.caption.setText(R.string.k2go_connect_scan_open);
+        secSingle.subCaption.setText(R.string.k2go_connect_same_wifi);
+        setFallback(secSingle, new String[]{browseUrl(ip)});
+        finish.setVisibility(View.VISIBLE);
     }
 
-    /** Clear the QR + fallback and show a status message (starting / failed / unsupported). */
-    private void simpleState(String cap, String sub) {
-        qr.setImageBitmap(null);
-        caption.setText(cap);
-        subCaption.setText(sub);
-        setFallback(null);
+    /** A single status message (starting / failed / unsupported / no Wi-Fi) — no dead QR frame. */
+    private void singleStatus(String cap, String sub) {
+        showSingle();
+        steps.setVisibility(View.GONE);
+        secSingle.frame.setVisibility(View.GONE);
+        secSingle.caption.setText(cap);
+        secSingle.subCaption.setText(sub);
+        setFallback(secSingle, null);
         advance.setVisibility(View.GONE);
     }
 
-    private void setQr(String data) {
-        int px = Math.round(220 * getResources().getDisplayMetrics().density);
-        qr.setImageBitmap(QrCodec.encode(data, px));
+    private void showTwo() { two.setVisibility(View.VISIBLE); single.setVisibility(View.GONE); }
+
+    private void showSingle() {
+        single.setVisibility(View.VISIBLE);
+        two.setVisibility(View.GONE);
+        secSingle.frame.setVisibility(View.VISIBLE);   // default; status / no-system hide it
     }
 
-    private void setFallback(String[] values) {
-        fallbackValues.removeAllViews();
-        if (values == null || values.length == 0) {
-            fallback.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE);
+    /** Draw {@code data} into the section's QR, or clear it and show {@code placeholder} in the slot. */
+    private void setQr(Section sec, String data, String placeholder) {
+        if (data == null) {
+            sec.qr.setImageBitmap(null);
+            sec.ph.setText(placeholder == null ? "" : placeholder);
+            sec.ph.setVisibility(View.VISIBLE);
             return;
         }
-        for (String val : values) {
+        int px = Math.round(200 * getResources().getDisplayMetrics().density);
+        sec.qr.setImageBitmap(QrCodec.encode(data, px));
+        sec.ph.setVisibility(View.GONE);
+    }
+
+    private void setFallback(Section sec, String[] vals) {
+        sec.fallbackValues.removeAllViews();
+        if (vals == null || vals.length == 0) {
+            sec.fallback.setVisibility(View.GONE);
+            sec.fallbackToggle.setVisibility(View.GONE);
+            return;
+        }
+        for (String val : vals) {
             TextView t = new TextView(requireContext());
             t.setText(val);
             t.setGravity(Gravity.CENTER);
             t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
             t.setTextIsSelectable(true);
-            fallbackValues.addView(t);
+            sec.fallbackValues.addView(t);
         }
-        // ADFA-4815: reveal-on-tap. The toggle sits under "just scan…"; the quote block with the
-        // values stays hidden until tapped, so a working scan stays clutter-free.
-        fallbackToggle.setVisibility(View.VISIBLE);
-        applyFallbackOpen();
-        fallbackToggle.setOnClickListener(x -> { fallbackOpen = !fallbackOpen; applyFallbackOpen(); });
+        // ADFA-4815: reveal-on-tap. The toggle sits under the caption; the quote block with the values
+        // stays hidden until tapped, so a working scan stays clutter-free.
+        sec.fallbackToggle.setVisibility(View.VISIBLE);
+        applyFallbackOpen(sec);
+        sec.fallbackToggle.setOnClickListener(x -> { sec.fbOpen = !sec.fbOpen; applyFallbackOpen(sec); });
     }
 
-    private void applyFallbackOpen() {
-        fallback.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
-        fallbackToggle.setText(fallbackOpen
+    private void applyFallbackOpen(Section sec) {
+        sec.fallback.setVisibility(sec.fbOpen ? View.VISIBLE : View.GONE);
+        sec.fallbackToggle.setText(sec.fbOpen
                 ? getString(R.string.k2go_hide) + "  ▴"
                 : getString(R.string.k2go_scan_didnt_work) + "  ▸");
     }
 
-    // ---- step badges: numbered circle that KEEPS its number and gains a corner check when done ----
-    private void buildSteps(boolean twoSteps) {
+    // ---- 1·2 stepper for orientation. Both are present at once, so both read as active. ----
+    private void buildSteps() {
         steps.removeAllViews();
-        if (!twoSteps) { steps.setVisibility(View.GONE); return; }
         steps.setVisibility(View.VISIBLE);
-        boolean atOpen = (stage == Stage.OPEN);
-        steps.addView(badge("1", "Join", !atOpen, atOpen));   // active when on Join; done (check) when on Open
+        steps.addView(badge("1", getString(R.string.k2go_connect_step_join)));
         steps.addView(arrow());
-        steps.addView(badge("2", "Open", atOpen && !openDone, openDone));
+        steps.addView(badge("2", getString(R.string.k2go_connect_step_open)));
     }
 
-    private View badge(String num, String label, boolean active, boolean done) {
+    private View badge(String num, String label) {
         Context ctx = requireContext();
         LinearLayout col = new LinearLayout(ctx);
         col.setOrientation(LinearLayout.VERTICAL);
@@ -296,49 +342,21 @@ public class ConnectFragment extends Fragment {
 
         FrameLayout fl = new FrameLayout(ctx);
         int d = dp(38);
-        boolean filled = active || done;
-
         View circle = new View(ctx);
         GradientDrawable g = new GradientDrawable();
         g.setShape(GradientDrawable.OVAL);
-        if (filled) {
-            g.setColor(ContextCompat.getColor(ctx, R.color.k2go_teal));
-        } else {
-            g.setColor(Color.TRANSPARENT);
-            g.setStroke(dp(2), ContextCompat.getColor(ctx, R.color.k2go_muted));
-        }
+        g.setColor(ContextCompat.getColor(ctx, R.color.k2go_teal));
         circle.setBackground(g);
         fl.addView(circle, new FrameLayout.LayoutParams(d, d));
 
         TextView t = new TextView(ctx);
         t.setText(num);
         t.setGravity(Gravity.CENTER);
-        t.setTextColor(ContextCompat.getColor(ctx, filled ? R.color.k2go_on_teal : R.color.k2go_muted));
+        t.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_on_teal));
         fl.addView(t, new FrameLayout.LayoutParams(d, d));
 
-        if (done) {
-            FrameLayout check = new FrameLayout(ctx);
-            int cd = dp(16);
-            View co = new View(ctx);
-            GradientDrawable cg = new GradientDrawable();
-            cg.setShape(GradientDrawable.OVAL);
-            cg.setColor(ContextCompat.getColor(ctx, R.color.k2go_leaf));
-            co.setBackground(cg);
-            check.addView(co, new FrameLayout.LayoutParams(cd, cd));
-            TextView ck = new TextView(ctx);
-            ck.setText("✓");
-            ck.setGravity(Gravity.CENTER);
-            ck.setTextSize(9);
-            ck.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_on_teal));
-            check.addView(ck, new FrameLayout.LayoutParams(cd, cd));
-            FrameLayout.LayoutParams clp = new FrameLayout.LayoutParams(cd, cd);
-            clp.gravity = Gravity.TOP | Gravity.END;
-            fl.addView(check, clp);
-        }
-
         int box = dp(44);
-        LinearLayout.LayoutParams flp = new LinearLayout.LayoutParams(box, box);
-        col.addView(fl, flp);
+        col.addView(fl, new LinearLayout.LayoutParams(box, box));
 
         TextView lbl = new TextView(ctx);
         lbl.setText(label);

@@ -801,4 +801,11 @@
     <string name="k2go_dl_cancel_confirm">شروع دوباره</string>
     <string name="k2go_damaged_report">گزارش مشکل</string>
     <string name="k2go_notif_view">نمایش</string>
+    <!-- ADFA-5154: Connect redesign — section titles + hint -->
+    <string name="k2go_connect_s1_title">به هات‌اسپات من بپیوندید</string>
+    <string name="k2go_connect_s2_title">کتابخانه را باز کنید</string>
+    <string name="k2go_connect_step2_below">گام ۲ در پایین</string>
+    <string name="k2go_done">انجام شد</string>
+    <string name="k2go_connect_step_join">پیوستن</string>
+    <string name="k2go_connect_step_open">باز کردن</string>
 </resources>
