@@ -62,13 +62,15 @@ public class CloneFragment extends Fragment {
 
     private enum Side { SEND, RECEIVE }
     private enum Mode { HOTSPOT, WIFI }
-    private enum Stage { JOIN, START }
+    // ADFA-5154: the 3-step Send wizard (Join / Get app / Copy) becomes 2 pages. PREPARE shows Join ①
+    // and Get app ② stacked (both QRs at once); COPY shows the transfer QR. The "Installed? Copy the
+    // library ›" gate advances PREPARE -> COPY (a real prerequisite: the app must be on the other phone).
+    private enum Page { PREPARE, COPY }
 
     private Side side = Side.SEND;
     private Mode mode = Mode.HOTSPOT;
-    private Stage stage = Stage.JOIN;
+    private Page page = Page.PREPARE;
     private boolean startedStep = false;
-    private boolean fallbackOpen = false;   // ADFA-4815: step-1 scan fallback hidden until tapped
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private TransportEngine transport;
@@ -90,12 +92,10 @@ public class CloneFragment extends Fragment {
     // backgrounds the app (the copy keeps running under CloneShareService; the notification returns).
     private androidx.activity.OnBackPressedCallback receiveBackGate;
     private boolean leaveWarned = false;
-    // ADFA-4785: "Send the app" sub-screen (bootstrap a phone with no K2Go) — serves the APK over HTTP.
-    private boolean sendApp = false;
+    // ADFA-5154: the APK is served over HTTP from the Get-app section on Page 1 (was a sub-screen).
     private ApkServer apkServer;
     private String apkFileName;
-    private LinearLayout sendAppEntry, sendAppView;
-    private ImageView sendAppQr;
+    private LinearLayout sendAppEntry, sendAppView;   // ADFA-5154: vestigial deep view, kept GONE
 
     private ActivityResultLauncher<String> locationPerm;
 
@@ -104,8 +104,11 @@ public class CloneFragment extends Fragment {
     private boolean atFork = true;
     private LinearLayout forkBox, tabsRow;
     private TextView cloneHdr, subtitleView, backHeader;
-    private boolean getAppSkipped = false, getAppDone = false;   // ADFA-4785: step-2 (Get app) disposition
-    private TextView stepTitle, skipApp, shareWifi, fallbackToggle;
+    private TextView stepTitle, skipApp, shareWifi;
+    // ADFA-5154: Page 1 stacks two shared QR sections (Join ① + Get app ②); Page 2 is Copy.
+    private QrSection secJoin, secGetApp;
+    private TextView secJoinBadge, secJoinTitle;   // Join title is mode-dependent; not part of QrSection
+    private LinearLayout page1, page2, hint, getAppBanner;
     // Receive side
     private SyncStateViewModel syncVm;
     private LinearLayout receiveBox, progressBox;
@@ -130,7 +133,7 @@ public class CloneFragment extends Fragment {
     private TextView incompatWhy, incompatWhyText, incompatTech, incompatTechText, incompatBack;
     private int incompatHostBits = -1;
     private boolean incompatWhyOpen = false, incompatTechOpen = false;
-    private LinearLayout netRow, steps, fallback, fallbackValues;
+    private LinearLayout netRow, steps;
     private ImageView qr;
     private TextView showcode, codetext, copyBtn, shareBtn;
     private LinearLayout codeblock;
@@ -159,9 +162,25 @@ public class CloneFragment extends Fragment {
         qr = v.findViewById(R.id.k2go_clone_qr);
         caption = v.findViewById(R.id.k2go_clone_caption);
         subCaption = v.findViewById(R.id.k2go_clone_subcaption);
-        fallback = v.findViewById(R.id.k2go_clone_fallback);
-        fallbackToggle = v.findViewById(R.id.k2go_clone_fallback_toggle);
-        fallbackValues = v.findViewById(R.id.k2go_clone_fallback_values);
+        // ADFA-5154: the two stacked sections (Page 1) + the page containers. Sections bind through the
+        // include root + the shared sec_* ids (ADFA-5157).
+        page1 = v.findViewById(R.id.k2go_clone_page1);
+        page2 = v.findViewById(R.id.k2go_clone_page2);
+        hint = v.findViewById(R.id.k2go_clone_hint);
+        getAppBanner = v.findViewById(R.id.k2go_clone_getapp_banner);
+        View joinRoot = v.findViewById(R.id.k2go_clone_sec_join);
+        View getAppRoot = v.findViewById(R.id.k2go_clone_sec_getapp);
+        secJoin = new QrSection(joinRoot, R.id.sec_qr_frame, R.id.sec_qr, R.id.sec_qr_ph,
+                R.id.sec_caption, R.id.sec_subcaption, R.id.sec_fallback_toggle, R.id.sec_fallback, R.id.sec_fallback_values);
+        secGetApp = new QrSection(getAppRoot, R.id.sec_qr_frame, R.id.sec_qr, R.id.sec_qr_ph,
+                R.id.sec_caption, R.id.sec_subcaption, R.id.sec_fallback_toggle, R.id.sec_fallback, R.id.sec_fallback_values);
+        // ADFA-5154: badge numbers are static; the Get-app title is static; the Join title is mode-
+        // dependent (set in renderPrepare). The include's sec_badge/sec_title aren't part of QrSection.
+        secJoinBadge = joinRoot.findViewById(R.id.sec_badge);
+        secJoinTitle = joinRoot.findViewById(R.id.sec_title);
+        secJoinBadge.setText("1");
+        ((TextView) getAppRoot.findViewById(R.id.sec_badge)).setText("2");
+        ((TextView) getAppRoot.findViewById(R.id.sec_title)).setText(getString(R.string.k2go_badge_getapp));
         advance = v.findViewById(R.id.k2go_clone_advance);
         stop = v.findViewById(R.id.k2go_clone_stop);
         footer = v.findViewById(R.id.k2go_clone_footer);
@@ -226,12 +245,10 @@ public class CloneFragment extends Fragment {
         codetext = v.findViewById(R.id.k2go_clone_codetext);
         copyBtn = v.findViewById(R.id.k2go_clone_copy);
         shareBtn = v.findViewById(R.id.k2go_clone_share);
-        sendAppEntry = v.findViewById(R.id.k2go_sendapp_entry);
+        sendAppEntry = v.findViewById(R.id.k2go_sendapp_entry);   // ADFA-5154: vestigial (deep view), kept GONE
         sendAppView = v.findViewById(R.id.k2go_sendapp_view);
-        sendAppQr = v.findViewById(R.id.k2go_sendapp_qr);
-        sendAppEntry.setOnClickListener(x -> { sendApp = true; render(); });
-        v.findViewById(R.id.k2go_sendapp_back).setOnClickListener(x -> exitSendApp());
-        v.findViewById(R.id.k2go_sendapp_next).setOnClickListener(x -> getAppDoneNext());
+        // ADFA-5154: the Get-app QR now lives inline on Page 1 (secGetApp); "Can't scan? Share another way"
+        // hands the installed APK to the Android share sheet.
         v.findViewById(R.id.k2go_sendapp_share).setOnClickListener(x -> shareApkViaSheet());
 
         syncVm = new ViewModelProvider(requireActivity()).get(SyncStateViewModel.class);
@@ -243,9 +260,10 @@ public class CloneFragment extends Fragment {
         tabHotspot.setOnClickListener(x -> requestMode(Mode.HOTSPOT));
         tabWifi.setOnClickListener(x -> requestMode(Mode.WIFI));
         advance.setOnClickListener(x -> {
-            fallbackOpen = false;   // ADFA-4815: collapse the step-1 fallback when changing step
-            if (stage == Stage.JOIN) { sendApp = true; render(); }        // step 1 -> step 2 (Get app)
-            else { stage = Stage.JOIN; getAppDone = false; render(); }     // step 3 -> back to step 1
+            // ADFA-5154: the one gate. PREPARE (Join + Get app) -> COPY when the app is installed on the
+            // other phone; COPY -> back to PREPARE.
+            page = (page == Page.PREPARE) ? Page.COPY : Page.PREPARE;
+            render();
         });
         showcode.setOnClickListener(x -> {
             codeExpanded = !codeExpanded;
@@ -286,8 +304,7 @@ public class CloneFragment extends Fragment {
         forkBox = v.findViewById(R.id.k2go_clone_fork);
         tabsRow = v.findViewById(R.id.k2go_clone_tabs);
         stepTitle = v.findViewById(R.id.k2go_clone_steptitle);
-        skipApp = v.findViewById(R.id.k2go_clone_skipapp);
-        skipApp.setOnClickListener(x -> { getAppSkipped = true; stage = Stage.START; render(); });
+        skipApp = v.findViewById(R.id.k2go_clone_skipapp);   // ADFA-5154: vestigial, kept GONE
         shareWifi = v.findViewById(R.id.k2go_clone_sharewifi);
         shareWifi.setOnClickListener(x -> openWifiSettings());
         v.findViewById(R.id.k2go_clone_fork_send).setOnClickListener(x -> enterSide(Side.SEND));
@@ -314,7 +331,7 @@ public class CloneFragment extends Fragment {
         // fork. Restore the state the share screen redraws from; daemonStarted=true makes ensureDaemon's
         // guard skip a re-start.
         if (CloneSendSession.isActive()) {
-            atFork = false; side = Side.SEND; sendApp = false; stage = Stage.START;
+            atFork = false; side = Side.SEND; page = Page.COPY;
             mode = CloneSendSession.isHotspot() ? Mode.HOTSPOT : Mode.WIFI;
             tempPass = CloneSendSession.tempPass();
             hostHasRootfs = CloneSendSession.hostHasRootfs();
@@ -345,7 +362,7 @@ public class CloneFragment extends Fragment {
         return v;
     }
 
-    private void enterSide(Side sd) { atFork = false; getAppSkipped = false; getAppDone = false; sendApp = false; setSide(sd); }
+    private void enterSide(Side sd) { atFork = false; page = Page.PREPARE; setSide(sd); }
 
     private void goToFork() { atFork = true; render(); }
 
@@ -359,7 +376,7 @@ public class CloneFragment extends Fragment {
             // to serve. (This also covers "send the app" buried under Send — a deliberate simplification;
             // a phone with a system is the natural source for both the app and the system.)
             systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
-            stage = Stage.JOIN;
+            page = Page.PREPARE;
             if (systemPresent) setMode(Mode.HOTSPOT); else render();   // ADFA-4785: enter Send at step 1
             return;
         }
@@ -371,7 +388,7 @@ public class CloneFragment extends Fragment {
     // ADFA-4785: switching the network at step 3 (Copy) drops the active connection and cuts any
     // copy in progress. Warn first; elsewhere (or when the mode is unchanged) switch directly.
     private void requestMode(Mode target) {
-        boolean sharing = (side == Side.SEND && !sendApp && stage == Stage.START && daemonStarted);
+        boolean sharing = (side == Side.SEND && page == Page.COPY && daemonStarted);
         if (target == mode || !sharing) { setMode(target); return; }
         String label = (target == Mode.HOTSPOT) ? "Hotspot" : "Wi-Fi";
         new MaterialAlertDialogBuilder(requireContext())
@@ -384,7 +401,7 @@ public class CloneFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
-        fallbackOpen = false;   // ADFA-4815: each mode starts with the step-1 fallback collapsed
+        if (secJoin != null) secJoin.fbOpen = false;   // ADFA-4815: each mode starts with ①'s fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
     }
@@ -532,11 +549,8 @@ public class CloneFragment extends Fragment {
             backHeader.setVisibility(View.GONE);
             netRow.setVisibility(View.GONE);
             steps.setVisibility(View.GONE);
-            qr.setVisibility(View.GONE);
-            caption.setVisibility(View.GONE);
-            subCaption.setVisibility(View.GONE);
-            fallback.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE);
+            page1.setVisibility(View.GONE);
+            page2.setVisibility(View.GONE);
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
@@ -556,11 +570,8 @@ public class CloneFragment extends Fragment {
         if (side == Side.RECEIVE) {
             netRow.setVisibility(View.GONE);
             steps.setVisibility(View.GONE);
-            qr.setVisibility(View.GONE);
-            caption.setVisibility(View.GONE);
-            subCaption.setVisibility(View.GONE);
-            fallback.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE);
+            page1.setVisibility(View.GONE);
+            page2.setVisibility(View.GONE);
             advance.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
             footer.setVisibility(View.GONE);
@@ -577,32 +588,28 @@ public class CloneFragment extends Fragment {
             renderNoSystemSend();
             return;
         }
-        if (sendApp) {   // ADFA-4785: step 2 (Get app) — spine + step title + network selector, then the sub-view
-            netRow.setVisibility(View.VISIBLE); qr.setVisibility(View.GONE);
-            paintTab(tabHotspot, mode == Mode.HOTSPOT);
-            paintTab(tabWifi, mode == Mode.WIFI);
-            caption.setVisibility(View.GONE); subCaption.setVisibility(View.GONE); footer.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE); fallback.setVisibility(View.GONE); advance.setVisibility(View.GONE); stop.setVisibility(View.GONE);
-            shareCard.setVisibility(View.GONE); sendAppEntry.setVisibility(View.GONE);
-            steps.setVisibility(View.VISIBLE); buildSteps(true);
-            stepTitle.setVisibility(View.VISIBLE); stepTitle.setText(getString(R.string.k2go_clone_step2_title));
-            sendAppView.setVisibility(View.VISIBLE);
-            renderSendApp();
-            return;
-        }
+        // ADFA-5154: Send is two pages. Common chrome, then the page.
         sendAppView.setVisibility(View.GONE);
-        sendAppEntry.setVisibility(View.GONE);   // renderHotspot's JOIN stage re-shows it
+        sendAppEntry.setVisibility(View.GONE);
         netRow.setVisibility(View.VISIBLE);
-        qr.setVisibility(View.VISIBLE);
-        caption.setVisibility(View.VISIBLE);
-        subCaption.setVisibility(View.VISIBLE);
-        footer.setVisibility(View.VISIBLE);   // RECEIVE hid it; restore for SEND
-        stop.setVisibility(View.GONE);
-        shareCard.setVisibility(View.GONE);
         paintTab(tabHotspot, mode == Mode.HOTSPOT);
         paintTab(tabWifi, mode == Mode.WIFI);
-
-        if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
+        steps.setVisibility(View.VISIBLE);
+        buildSteps();
+        advance.setVisibility(View.VISIBLE);
+        if (page == Page.PREPARE) {
+            page1.setVisibility(View.VISIBLE);
+            page2.setVisibility(View.GONE);
+            advance.setText(getString(R.string.k2go_clone_installed_copy));
+            styleAdvance(true);
+            renderPrepare();
+        } else {
+            page1.setVisibility(View.GONE);
+            page2.setVisibility(View.VISIBLE);
+            advance.setText(getString(R.string.k2go_clone_back_step1));
+            styleAdvance(false);
+            renderCopy();
+        }
         syncProtection();
     }
 
@@ -615,6 +622,9 @@ public class CloneFragment extends Fragment {
     private void renderNoSystemSend() {
         netRow.setVisibility(View.GONE);
         steps.setVisibility(View.GONE);
+        // The empty state draws into Page 2's QR/caption slot, so show that container (and hide Page 1).
+        page1.setVisibility(View.GONE);
+        page2.setVisibility(View.VISIBLE);
         if (stepTitle != null) stepTitle.setVisibility(View.GONE);
         // Keep the QR placeholder box visible (null bitmap shows its card background), exactly as
         // Connect's no-system state does — this is what makes the two screens read the same instead of
@@ -623,7 +633,7 @@ public class CloneFragment extends Fragment {
         caption.setVisibility(View.VISIBLE);
         caption.setText(getString(R.string.k2go_connect_no_system));
         subCaption.setVisibility(View.GONE);
-        setFallback(null); fallbackToggle.setVisibility(View.GONE);
+        showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE);
         shareCard.setVisibility(View.GONE);
         sendAppEntry.setVisibility(View.GONE); sendAppView.setVisibility(View.GONE);
         advance.setVisibility(View.GONE);
@@ -635,69 +645,86 @@ public class CloneFragment extends Fragment {
         footer.setVisibility(View.GONE);
     }
 
-    private void renderHotspot() {
-        LocalHotspotManager.State st = hs.state().getValue();
-        LocalHotspotManager.Phase phase = (st != null) ? st.phase : LocalHotspotManager.Phase.OFF;
-        if (!LocalHotspotManager.isSupported()) { simpleState(getString(R.string.k2go_connect_hotspot_unsupported), getString(R.string.k2go_connect_try_wifi)); return; }
-        if (phase == LocalHotspotManager.Phase.OFF || phase == LocalHotspotManager.Phase.STARTING) { simpleState(getString(R.string.k2go_connect_starting_hotspot), ""); return; }
-        if (phase == LocalHotspotManager.Phase.FAILED) { simpleState(getString(R.string.k2go_connect_hotspot_failed), getString(R.string.k2go_connect_enable_location)); return; }
-
-        String ssid = (st.ssid != null) ? st.ssid : "";
-        String pass = (st.passphrase != null) ? st.passphrase : "";
-        String ip = NetworkInterfaces.discover().hotspotIp;
-        if (ip == null) ip = "192.168.49.1";
-
-        buildSteps(true);
-        advance.setVisibility(View.VISIBLE);
-        if (stage == Stage.JOIN) {
-            setQr("WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;");
-            stepTitle.setVisibility(View.VISIBLE);
-            stepTitle.setText(getString(R.string.k2go_clone_step1_title));
-            caption.setText(getString(R.string.k2go_clone_point_camera_join));
-            subCaption.setText("");
-            setFallback(new String[]{getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
-            advance.setText(getString(R.string.k2go_clone_next_get_app));
-            styleAdvance(true);
-            footer.setText("");
-            sendAppEntry.setVisibility(View.GONE);
-            skipApp.setVisibility(View.VISIBLE);
-            skipApp.setText(getString(R.string.k2go_clone_skip_have_app));
-        } else {
-            advance.setText(getString(R.string.k2go_clone_back_step1));
-            styleAdvance(false);
-            ensureDaemon(ip);
-            renderStartState(ip, true);
-        }
-    }
-
-    private void renderWifi() {
-        String ip = NetworkInterfaces.discover().wifiIp;
-        if (ip == null) { buildSteps(false); advance.setVisibility(View.GONE); simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi)); return; }
-        buildSteps(false);
-        if (stage == Stage.JOIN) {
-            qr.setVisibility(View.GONE);
-            stepTitle.setVisibility(View.VISIBLE);
-            stepTitle.setText(getString(R.string.k2go_clone_step1_title));
-            caption.setText(getString(R.string.k2go_clone_join_wifi_note));
-            subCaption.setText(getString(R.string.k2go_clone_share_wifi_note));
-            setFallback(null);
-            footer.setText("");
-            advance.setVisibility(View.VISIBLE);
+    /**
+     * ADFA-5154: Page 1 — Join ① and Get app ② stacked, both live at once. The other phone joins the
+     * network and installs the app from here; when it's installed, the "Installed? Copy the library"
+     * gate advances to Page 2. Mirrors Connect's stacked-QR page.
+     */
+    private void renderPrepare() {
+        // ---- Section ① : Join the network ----
+        if (mode == Mode.HOTSPOT) {
+            secJoinTitle.setText(getString(R.string.k2go_clone_join_hotspot_title));
+            shareWifi.setVisibility(View.GONE);
+            LocalHotspotManager.State st = hs.state().getValue();
+            LocalHotspotManager.Phase phase = (st != null) ? st.phase : LocalHotspotManager.Phase.OFF;
+            if (!LocalHotspotManager.isSupported()) {
+                secJoin.frame.setVisibility(View.GONE);
+                secJoin.setFallback(requireContext(), null);
+                secJoin.caption.setText(getString(R.string.k2go_connect_hotspot_unsupported));
+                secJoin.subCaption.setText(getString(R.string.k2go_connect_try_wifi));
+            } else if (phase == LocalHotspotManager.Phase.FAILED) {
+                secJoin.frame.setVisibility(View.GONE);
+                secJoin.setFallback(requireContext(), null);
+                secJoin.caption.setText(getString(R.string.k2go_connect_hotspot_failed));
+                secJoin.subCaption.setText(getString(R.string.k2go_connect_enable_location));
+            } else if (phase == LocalHotspotManager.Phase.OFF || phase == LocalHotspotManager.Phase.STARTING) {
+                secJoin.frame.setVisibility(View.VISIBLE);
+                secJoin.setQr(requireContext(), null, getString(R.string.k2go_connect_starting_hotspot));
+                secJoin.setFallback(requireContext(), null);
+                secJoin.caption.setText(getString(R.string.k2go_connect_starting_hotspot));
+                secJoin.subCaption.setText("");
+            } else {
+                String ssid = (st.ssid != null) ? st.ssid : "";
+                String pass = (st.passphrase != null) ? st.passphrase : "";
+                secJoin.frame.setVisibility(View.VISIBLE);
+                secJoin.setQr(requireContext(), "WIFI:S:" + ssid + ";T:WPA;P:" + pass + ";;", null);
+                secJoin.caption.setText(getString(R.string.k2go_clone_point_camera_join));
+                secJoin.subCaption.setText("");
+                secJoin.setFallback(requireContext(), new String[]{
+                        getString(R.string.k2go_fallback_wifi, ssid), getString(R.string.k2go_fallback_pass, pass)});
+            }
+        } else {   // Wi-Fi: "join this Wi-Fi" isn't a QR the other camera can act on — instruct + Share
+            secJoinTitle.setText(getString(R.string.k2go_clone_join_wifi_title));
+            secJoin.frame.setVisibility(View.GONE);
+            secJoin.setQr(requireContext(), null, null);
+            secJoin.setFallback(requireContext(), null);
+            secJoin.caption.setText(getString(R.string.k2go_clone_join_wifi_note));
+            secJoin.subCaption.setText(getString(R.string.k2go_clone_share_wifi_note));
             shareWifi.setVisibility(View.VISIBLE);
-            advance.setText(getString(R.string.k2go_clone_next_get_app));
-            styleAdvance(true);
-            skipApp.setVisibility(View.VISIBLE);
-            skipApp.setText(getString(R.string.k2go_clone_skip_have_app));
-        } else {
-            advance.setVisibility(View.VISIBLE);
-            advance.setText(getString(R.string.k2go_clone_back_step1));
-            styleAdvance(false);
-            ensureDaemon(ip);
-            renderStartState(ip, false);
         }
+
+        // ---- Section ② : Get the app ----
+        if (mode == Mode.HOTSPOT) ensureHotspot();
+        startApkServer();
+        NetworkInterfaces.LanIps net = NetworkInterfaces.discover();
+        String appIp = (mode == Mode.HOTSPOT) ? net.hotspotIp : net.wifiIp;
+        if (appIp == null || apkServer == null) {
+            secGetApp.setQr(requireContext(), null, getString(R.string.k2go_clone_starting_service));
+        } else {
+            String url = "http://" + appIp + ":" + shareConfig.apkPort + "/" + apkFileName;
+            secGetApp.setQr(requireContext(), url, null);
+        }
+        secGetApp.caption.setText(getString(R.string.k2go_clone_getapp_caption));
+        secGetApp.subCaption.setText("");
+        secGetApp.setFallback(requireContext(), null);
+        hint.setVisibility(View.VISIBLE);
+        getAppBanner.setVisibility(View.VISIBLE);
     }
 
-    /** Step-2 state: starting -> stopped (Start sharing) -> running (QR + Stop sharing). */
+    /**
+     * ADFA-5154: Page 2 — Copy the library. Starts the daemon and shows the transfer QR. This is the
+     * point of no easy return: the confinement callback (armed at acceptance) keeps the user here.
+     */
+    private void renderCopy() {
+        NetworkInterfaces.LanIps net = NetworkInterfaces.discover();
+        String ip = (mode == Mode.HOTSPOT) ? net.hotspotIp : net.wifiIp;
+        if (mode == Mode.HOTSPOT && ip == null) ip = "192.168.49.1";
+        if (ip == null) { simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi)); return; }
+        ensureDaemon(ip);
+        renderStartState(ip, mode == Mode.HOTSPOT);
+    }
+
+    /** Copy state: nothing-to-share -> starting -> stopped (Start sharing) -> running (QR + Stop). */
     private void renderStartState(String ip, boolean twoCode) {
         stepTitle.setVisibility(View.VISIBLE);
         stepTitle.setText(getString(R.string.k2go_clone_step3_title));
@@ -705,7 +732,7 @@ public class CloneFragment extends Fragment {
             qr.setImageBitmap(null);
             caption.setText(getString(R.string.k2go_clone_nothing_title));
             subCaption.setText(getString(R.string.k2go_clone_no_library_note));
-            setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
+            footer.setText(""); shareCard.setVisibility(View.GONE);
             stop.setVisibility(View.VISIBLE);
             stop.setText(getString(R.string.k2go_clone_share_anyway));
             stop.setBackgroundResource(R.drawable.k2go_getmore_bg);
@@ -717,14 +744,14 @@ public class CloneFragment extends Fragment {
             qr.setImageBitmap(null);
             caption.setText(getString(R.string.k2go_clone_starting_service));
             subCaption.setText("");
-            setFallback(null); footer.setText(""); stop.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
+            footer.setText(""); stop.setVisibility(View.GONE); shareCard.setVisibility(View.GONE);
             return;
         }
         if (!daemonStarted) {   // stopped by the user (or failed to start)
             qr.setImageBitmap(null);
             caption.setText(getString(R.string.k2go_clone_sharing_stopped));
             subCaption.setText(getString(R.string.k2go_clone_start_service_note));
-            setFallback(null); footer.setText(""); shareCard.setVisibility(View.GONE);
+            footer.setText(""); shareCard.setVisibility(View.GONE);
             showStartButton();
             return;
         }
@@ -734,7 +761,6 @@ public class CloneFragment extends Fragment {
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
         caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
         subCaption.setText(getString(R.string.k2go_clone_copy_begins_note));
-        setFallback(null);
         showCodeAsText(payload);
         showStopButton();
         if (librarySplit != null) {
@@ -746,18 +772,6 @@ public class CloneFragment extends Fragment {
             shareCard.setVisibility(View.GONE);
         }
         footer.setText(getString(R.string.k2go_clone_stays_on));
-    }
-
-    // ------------------------------------------------------------ "Send the app" (ADFA-4785)
-
-    private void renderSendApp() {
-        if (mode == Mode.HOTSPOT) ensureHotspot();
-        startApkServer();
-        NetworkInterfaces.LanIps net = NetworkInterfaces.discover();
-        String ip = (mode == Mode.HOTSPOT) ? net.hotspotIp : net.wifiIp;
-        if (ip == null || apkServer == null) { sendAppQr.setImageBitmap(null); return; }
-        String url = "http://" + ip + ":" + shareConfig.apkPort + "/" + apkFileName;
-        sendAppQr.setImageBitmap(SyncHandshakeHelper.generateQrCode(url, 500));
     }
 
     private void startApkServer() {
@@ -779,20 +793,6 @@ public class CloneFragment extends Fragment {
             try { apkServer.stop(); } catch (Exception ignored) { }
             apkServer = null;
         }
-    }
-
-    private void getAppDoneNext() {   // ADFA-4785: step 2 (Get app) done -> step 3 (Copy)
-        getAppDone = true;
-        stage = Stage.START;
-        stopApkServer();
-        sendApp = false;
-        render();
-    }
-
-    private void exitSendApp() {
-        stopApkServer();
-        sendApp = false;
-        render();
     }
 
     /** Fallback for a phone that can't scan: hand the installed APK to the Android share sheet. */
@@ -1238,7 +1238,6 @@ public class CloneFragment extends Fragment {
         qr.setImageBitmap(null);
         caption.setText(cap);
         subCaption.setText(sub);
-        setFallback(null);
         advance.setVisibility(View.GONE);
         stop.setVisibility(View.GONE);
         footer.setText("");
@@ -1251,50 +1250,17 @@ public class CloneFragment extends Fragment {
         codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
     }
 
-    private void setQr(String data) {
-        int px = Math.round(220 * getResources().getDisplayMetrics().density);
-        qr.setImageBitmap(QrCodec.encode(data, px));
-    }
-
-    private void setFallback(String[] values) {
-        fallbackValues.removeAllViews();
-        if (values == null || values.length == 0) {
-            fallback.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE);
-            return;
-        }
-        for (String val : values) {
-            TextView t = new TextView(requireContext());
-            t.setText(val);
-            t.setGravity(Gravity.CENTER);
-            t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_ink));
-            t.setTextIsSelectable(true);
-            fallbackValues.addView(t);
-        }
-        // ADFA-4815: reveal-on-tap, same as Connect. The toggle sits under the subcaption; the
-        // Wi-Fi + password quote shows only when tapped, so a working scan stays clutter-free.
-        fallbackToggle.setVisibility(View.VISIBLE);
-        applyFallbackOpen();
-        fallbackToggle.setOnClickListener(x -> { fallbackOpen = !fallbackOpen; applyFallbackOpen(); });
-    }
-
-    private void applyFallbackOpen() {
-        fallback.setVisibility(fallbackOpen ? View.VISIBLE : View.GONE);
-        fallbackToggle.setText(fallbackOpen
-                ? getString(R.string.k2go_hide) + "  ▴"
-                : getString(R.string.k2go_scan_didnt_work) + "  ▸");
-    }
-
-    // ---- step badges (same style as Connect): number kept, corner check when done ----
-    private void buildSteps(boolean twoSteps) {   // ADFA-4785: 3-step spine (Connect / Get app / Copy)
+    // ---- step badges (same style as Connect). ADFA-5154: Page 1 (Prepare) lights ① and ② together;
+    // Page 2 (Copy) lights ③ and marks ①·② done. ----
+    private void buildSteps() {
         steps.removeAllViews();
         steps.setVisibility(View.VISIBLE);
-        int active = sendApp ? 2 : (stage == Stage.JOIN ? 1 : 3);
-        steps.addView(badge("1", getString(R.string.k2go_badge_join), active == 1, active > 1));
+        boolean copy = (page == Page.COPY);
+        steps.addView(badge("1", getString(R.string.k2go_badge_join), !copy, copy));
         steps.addView(arrow());
-        steps.addView(badge("2", getString(R.string.k2go_badge_getapp), active == 2, getAppDone));
+        steps.addView(badge("2", getString(R.string.k2go_badge_getapp), !copy, copy));
         steps.addView(arrow());
-        steps.addView(badge("3", getString(R.string.k2go_badge_copy), active == 3, false));
+        steps.addView(badge("3", getString(R.string.k2go_badge_copy), copy, false));
     }
 
     private View badge(String num, String label, boolean active, boolean done) {

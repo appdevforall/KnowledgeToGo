@@ -288,6 +288,9 @@
     <string name="k2go_clone_from_other_hdr">FROM THE OTHER PHONE</string>
     <string name="k2go_clone_get_version_note">Get a K2Go version made for this phone — ask your promoter, or download the right one.</string>
     <string name="k2go_clone_installed_copy">Installed? Copy the library</string>
+    <string name="k2go_clone_join_hotspot_title">Join my hotspot</string>
+    <string name="k2go_clone_join_wifi_title">Join the same Wi-Fi</string>
+    <string name="k2go_clone_getapp_caption">Point the camera here to download K2Go.</string>
     <string name="k2go_clone_incompat_why_long">K2Go\'s library includes programs built to match a phone\'s hardware. When two phones are built differently, the programs from one can\'t run on the other, so copying the library wouldn\'t work.</string>
     <string name="k2go_clone_nothing_to_replace">Nothing to replace</string>
     <string name="k2go_clone_once_installed">Once it\'s installed, come back and copy the library.</string>

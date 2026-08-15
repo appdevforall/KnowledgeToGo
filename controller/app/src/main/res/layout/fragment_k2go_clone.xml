@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADFA-5154: Clone (Send) redesign. The 3-step Send wizard (Join / Get app / Copy) becomes 2 pages,
+  matching Connect's stacked-QR model. Page 1 (Prepare) shows Join ① and Get app ② stacked, both
+  QRs present, with a "STEP 2 BELOW" hint and a peeking ② on small screens. Page 2 (Copy) shows the
+  transfer QR + sizes. The one deliberate gate — "Installed? Copy the library ›" — advances Page 1 ->
+  Page 2 (Copy has a real prerequisite: the app must be on the other phone). Sections use the shared
+  view_k2go_qr_section (ADFA-5157) bound by QrSection. Fork, tabs and the whole Receive box are
+  unchanged. See CloneFragment.
+-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/k2go_paper" android:fillViewport="true">
+    android:background="@color/k2go_paper" android:fillViewport="true"
+    android:scrollbars="vertical" android:scrollbarStyle="outsideOverlay">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
         android:orientation="vertical" android:padding="16dp">
 
@@ -72,124 +82,40 @@
                 android:text="@string/k2go_clone_app_separate_step" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
         </LinearLayout>
 
+        <!-- 1·2·3 stepper for orientation (built by the fragment). -->
         <LinearLayout android:id="@+id/k2go_clone_steps" android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:orientation="horizontal" android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:gravity="center_vertical" />
 
-        <TextView android:id="@+id/k2go_clone_steptitle" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" android:visibility="gone" />
+        <!-- ============ SEND · PAGE 1: Prepare the other phone (Join ① + Get app ②, stacked) ============ -->
+        <LinearLayout android:id="@+id/k2go_clone_page1" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:visibility="gone">
 
-        <ImageView android:id="@+id/k2go_clone_qr" android:layout_width="220dp" android:layout_height="220dp"
-            android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
-            android:background="@drawable/k2go_card_bg" android:contentDescription="@string/k2go_tab_clone" />
+            <!-- Section ① Join (Hotspot: QR; Wi-Fi: no QR, instructions + the share-Wi-Fi button below) -->
+            <include android:id="@+id/k2go_clone_sec_join" layout="@layout/view_k2go_qr_section"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" />
 
-        <TextView android:id="@+id/k2go_clone_caption" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:gravity="center" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
-        <TextView android:id="@+id/k2go_clone_subcaption" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:gravity="center" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
+            <!-- Wi-Fi Join: share this Wi-Fi from Android settings (shown for the Wi-Fi tab, under ①). -->
+            <TextView android:id="@+id/k2go_clone_sharewifi" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_clone_share_wifi_settings"
+                android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal"
+                android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
 
-        <!-- ADFA-4815: step-1 scan fallback reveal (same as Connect): plain centered toggle under
-             the subcaption; the quote block with Wi-Fi + password shows only when tapped. -->
-        <TextView android:id="@+id/k2go_clone_fallback_toggle" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:gravity="center" android:layout_marginTop="6dp" android:padding="6dp"
-            android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal"
-            android:clickable="true" android:focusable="true" android:visibility="gone" />
-
-        <LinearLayout android:id="@+id/k2go_clone_sharecard" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginTop="14dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="@string/k2go_clone_sharing_now" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp"
-                android:text="@string/k2go_clone_sending_whole" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                android:text="@string/k2go_clone_all_apps" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp">
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="@string/k2go_lbl_system" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
-                <TextView android:id="@+id/k2go_clone_size_sys" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+            <!-- "STEP 2 BELOW ⌄" hint (passive cue; the fragment shows it once ① is live). -->
+            <LinearLayout android:id="@+id/k2go_clone_hint" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:gravity="center" android:layout_marginTop="16dp" android:visibility="gone">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/k2go_connect_step2_below" android:textAppearance="?attr/textAppearanceLabelMedium" android:textColor="@color/k2go_teal" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="⌄" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
             </LinearLayout>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="@string/k2go_lbl_content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
-                <TextView android:id="@+id/k2go_clone_size_content" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
-            </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp"
-                android:background="@color/k2go_muted" android:alpha="0.25" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
-                    android:text="@string/k2go_lbl_total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
-                <TextView android:id="@+id/k2go_clone_size_total" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
-            </LinearLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp"
-                android:text="@string/k2go_clone_sizes_estimates" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
-        </LinearLayout>
 
-        <LinearLayout android:id="@+id/k2go_clone_fallback" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
-            android:layout_marginTop="8dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
-            <LinearLayout android:id="@+id/k2go_clone_fallback_values" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </LinearLayout>
+            <!-- Section ② Get the app -->
+            <include android:id="@+id/k2go_clone_sec_getapp" layout="@layout/view_k2go_qr_section"
+                android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" />
 
-        <TextView android:id="@+id/k2go_clone_showcode" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_show_text"
-            android:textColor="@color/k2go_teal"
-            android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
-
-        <LinearLayout android:id="@+id/k2go_clone_codeblock" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginTop="6dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
-            <TextView android:id="@+id/k2go_clone_codetext" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:fontFamily="monospace" android:textIsSelectable="true" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
-                android:layout_marginTop="8dp" android:gravity="end">
-                <TextView android:id="@+id/k2go_clone_copy" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:padding="8dp" android:text="@string/k2go_clone_copy_btn" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
-                <TextView android:id="@+id/k2go_clone_share" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp" android:padding="8dp" android:text="@string/k2go_clone_share_action" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView android:id="@+id/k2go_clone_sharewifi" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" android:padding="14dp" android:gravity="center" android:text="@string/k2go_clone_share_wifi_settings"
-            android:background="@drawable/k2go_getmore_bg" android:textColor="@color/k2go_teal"
-            android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
-
-        <TextView android:id="@+id/k2go_clone_advance" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
-            android:clickable="true" android:focusable="true" android:visibility="gone" />
-
-        <TextView android:id="@+id/k2go_clone_skipapp" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:gravity="end" android:layout_marginTop="8dp" android:padding="6dp" android:textStyle="bold" android:textColor="@color/k2go_teal"
-            android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
-
-        <TextView android:id="@+id/k2go_clone_stop" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_stop_sharing"
-            android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
-            android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
-
-        <TextView android:id="@+id/k2go_clone_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:gravity="center" android:layout_marginTop="10dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
-
-
-        <!-- ADFA-4785: "Send the app" sub-screen — serve the APK by QR (+ Android share fallback). -->
-        <LinearLayout android:id="@+id/k2go_sendapp_view" android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
-            <TextView android:id="@+id/k2go_sendapp_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:padding="6dp" android:text="@string/k2go_back_link" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
-
-            <ImageView android:id="@+id/k2go_sendapp_qr" android:layout_width="220dp" android:layout_height="220dp"
-                android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
-                android:background="@drawable/k2go_card_bg" android:contentDescription="Send the app" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="12dp" android:text="@string/k2go_clone_scan_get_app"
-                android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleLarge" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="2dp" android:text="@string/k2go_clone_other_downloads"
-                android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:layout_marginTop="14dp" android:padding="14dp" android:background="@drawable/k2go_warn_bg">
+            <!-- Amber "one Android step" banner, directly under ② (ADFA-4785). -->
+            <LinearLayout android:id="@+id/k2go_clone_getapp_banner" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="12dp" android:padding="14dp" android:background="@drawable/k2go_warn_bg" android:visibility="gone">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingEnd="12dp"
                     android:text="!" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleLarge" />
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
@@ -201,12 +127,104 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!-- "Can't scan? Share the app another way ›" -->
             <TextView android:id="@+id/k2go_sendapp_share" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_cant_scan"
                 android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center" android:layout_marginTop="8dp" android:text="@string/k2go_clone_once_installed"
-                android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+        </LinearLayout>
+
+        <!-- ============ SEND · PAGE 2: Copy the library (③ transfer QR + sizes) ============ -->
+        <LinearLayout android:id="@+id/k2go_clone_page2" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:visibility="gone">
+
+            <TextView android:id="@+id/k2go_clone_steptitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" android:visibility="gone" />
+
+            <ImageView android:id="@+id/k2go_clone_qr" android:layout_width="220dp" android:layout_height="220dp"
+                android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
+                android:background="@drawable/k2go_card_bg" android:contentDescription="@string/k2go_tab_clone" />
+
+            <TextView android:id="@+id/k2go_clone_caption" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:gravity="center" android:layout_marginTop="12dp" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
+            <TextView android:id="@+id/k2go_clone_subcaption" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:gravity="center" android:layout_marginTop="4dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
+
+            <LinearLayout android:id="@+id/k2go_clone_sharecard" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="14dp" android:padding="16dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="@string/k2go_clone_sharing_now" android:textColor="@color/k2go_teal" android:letterSpacing="0.08" android:textStyle="bold" android:textAppearance="?attr/textAppearanceLabelSmall" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="6dp"
+                    android:text="@string/k2go_clone_sending_whole" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp"
+                    android:text="@string/k2go_clone_all_apps" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="12dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                        android:text="@string/k2go_lbl_system" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    <TextView android:id="@+id/k2go_clone_size_sys" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                </LinearLayout>
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="4dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                        android:text="@string/k2go_lbl_content" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    <TextView android:id="@+id/k2go_clone_size_content" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:layout_marginTop="8dp"
+                    android:background="@color/k2go_muted" android:alpha="0.25" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="8dp">
+                    <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+                        android:text="@string/k2go_lbl_total" android:textStyle="bold" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                    <TextView android:id="@+id/k2go_clone_size_total" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:textStyle="bold" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceTitleMedium" />
+                </LinearLayout>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp"
+                    android:text="@string/k2go_clone_sizes_estimates" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
+            </LinearLayout>
+
+            <TextView android:id="@+id/k2go_clone_showcode" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_show_text"
+                android:textColor="@color/k2go_teal"
+                android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
+
+            <LinearLayout android:id="@+id/k2go_clone_codeblock" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:layout_marginTop="6dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">
+                <TextView android:id="@+id/k2go_clone_codetext" android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:fontFamily="monospace" android:textIsSelectable="true" android:textColor="@color/k2go_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal"
+                    android:layout_marginTop="8dp" android:gravity="end">
+                    <TextView android:id="@+id/k2go_clone_copy" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:padding="8dp" android:text="@string/k2go_clone_copy_btn" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                    <TextView android:id="@+id/k2go_clone_share" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp" android:padding="8dp" android:text="@string/k2go_clone_share_action" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView android:id="@+id/k2go_clone_stop" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_stop_sharing"
+                android:background="@drawable/k2go_turnoff_bg" android:textColor="@color/k2go_clay"
+                android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
+
+            <TextView android:id="@+id/k2go_clone_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:gravity="center" android:layout_marginTop="10dp" android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
+        <!-- Advance: the gate "Installed? Copy the library ›" (Page 1) / "‹ Back to step 2" (Page 2). -->
+        <TextView android:id="@+id/k2go_clone_advance" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:textAppearance="?attr/textAppearanceTitleLarge"
+            android:clickable="true" android:focusable="true" android:visibility="gone" />
+
+        <TextView android:id="@+id/k2go_clone_skipapp" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:gravity="end" android:layout_marginTop="8dp" android:padding="6dp" android:textStyle="bold" android:textColor="@color/k2go_teal"
+            android:textAppearance="?attr/textAppearanceTitleMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
+
+        <!-- ADFA-4785: "Send the app" sub-screen kept for the deep APK-serve view (back + QR + share). -->
+        <LinearLayout android:id="@+id/k2go_sendapp_view" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
+            <TextView android:id="@+id/k2go_sendapp_back" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:padding="6dp" android:text="@string/k2go_back_link" android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyLarge" android:clickable="true" android:focusable="true" />
+            <ImageView android:id="@+id/k2go_sendapp_qr" android:layout_width="220dp" android:layout_height="220dp"
+                android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:padding="10dp"
+                android:background="@drawable/k2go_card_bg" android:contentDescription="Send the app" />
             <TextView android:id="@+id/k2go_sendapp_next" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_clone_installed_copy"
                 android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
@@ -389,13 +407,7 @@
                     android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
             </LinearLayout>
 
-            <!-- ADFA-5143: the receive transfer state, rebuilt on the backup / restore job template
-                 (fragment_k2go_backup_job) so a transfer looks like every other long operation in the
-                 app: the clone Lottie with the K2Go logo composited on each end, an M3
-                 LinearProgressIndicator, the centred status line, the "this takes time" card, and the
-                 destructive action last. While busy, renderReceive() hides everything else in the
-                 receive box, so this block is effectively the whole screen — hence no card background,
-                 exactly like the job screen. Spacing on the 4dp grid, type from the M3 scale. -->
+            <!-- ADFA-5143: the receive transfer state, rebuilt on the backup / restore job template. -->
             <LinearLayout android:id="@+id/k2go_clone_progress" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
 
@@ -406,11 +418,6 @@
                         android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:adjustViewBounds="true" android:scaleType="fitCenter" />
 
-                    <!-- Both ends are phones, so the app composites TWO logos (the animation ships with
-                         none — only the dots and the two glows, green donor / amber receiver). The
-                         weights are the job screen's own (680/295/25, centre at 0.83·W) mirrored to
-                         25/295/360/295/25: the receiver lands exactly where backup/restore put their
-                         single logo, and the donor mirrors it over the green glow. -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
                         android:orientation="vertical">
 
@@ -447,9 +454,7 @@
                     android:layout_marginTop="4dp" android:gravity="center"
                     android:textColor="@color/k2go_teal" android:textAppearance="?attr/textAppearanceBodyMedium" />
 
-                <!-- Same "this takes time" card as the job screen, and its wording is accurate here:
-                     CloneShareService keeps the pull alive in the background and its notification has a
-                     content intent back to the app. -->
+                <!-- Same "this takes time" card as the job screen. -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginTop="20dp" android:orientation="vertical" android:padding="16dp"
                     android:background="@drawable/k2go_info_bg">
