@@ -422,6 +422,8 @@ public class CloneFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
+        apRetries = 0;   // ADFA-5158: fresh AP-IP poll budget on a mode switch
+        netHandler.removeCallbacks(netRetry);
         if (secJoin != null) secJoin.fbOpen = false;   // ADFA-4815: each mode starts with ①'s fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
@@ -717,7 +719,11 @@ public class CloneFragment extends Fragment {
             shareWifi.setVisibility(View.VISIBLE);
         }
 
-        // ---- Section ② : Get the app ----
+        // ---- Section ② : Get the app ---- (own method so the AP-IP poll can redraw just this)
+        renderGetAppSection();
+    }
+
+    private void renderGetAppSection() {
         if (mode == Mode.HOTSPOT) ensureHotspot();
         startApkServer();
         String appIp = peerReachableIp();
@@ -725,6 +731,7 @@ public class CloneFragment extends Fragment {
             secGetApp.setQr(requireContext(), null, getString(R.string.k2go_clone_starting_service));
             scheduleNetRetry();   // ADFA-5158: the AP IP lands with latency — poll and redraw when it does
         } else {
+            apRetries = 0;   // resolved — reset the poll budget
             String url = "http://" + appIp + ":" + shareConfig.apkPort + "/" + apkFileName;
             secGetApp.setQr(requireContext(), url, null);
         }
@@ -749,6 +756,7 @@ public class CloneFragment extends Fragment {
             else simpleState(getString(R.string.k2go_connect_no_wifi), getString(R.string.k2go_connect_join_wifi));
             return;
         }
+        apRetries = 0;   // ADFA-5158: resolved — reset the poll budget
         ensureDaemon(ip);
         renderStartState(ip, mode == Mode.HOTSPOT);
     }
@@ -763,17 +771,33 @@ public class CloneFragment extends Fragment {
         return (mode == Mode.HOTSPOT) ? net.hotspotIp : net.wifiIp;
     }
 
-    // ADFA-5158: while a Send page needs the AP IP and it isn't up yet, re-render shortly so the QR is
-    // drawn the moment the interface gets its address — instead of waiting for an incidental render.
+    // ADFA-5158: while a Send page needs the AP IP and it isn't up yet, re-draw shortly so the QR appears
+    // the moment the interface gets its address — instead of waiting for an incidental render. Re-renders
+    // only the affected section, not the whole screen.
     private final android.os.Handler netHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private static final long AP_IP_POLL_MS = 1000L;
+    private static final int AP_IP_MAX_RETRIES = 120;   // safety cap (~2 min) so the poll can't spin forever
+    private int apRetries = 0;
     private final Runnable netRetry = new Runnable() {
         @Override public void run() {
             if (!isAdded() || atFork || side != Side.SEND) return;   // left Send -> stop; no self-reschedule
-            render();   // re-resolves the IP; renderPrepare/renderCopy reschedule only while still pending
+            if (page == Page.PREPARE) renderGetAppSection(); else renderCopy();   // reschedule only if still pending
         }
     };
+    /**
+     * Only worth polling when the AP IP can still plausibly arrive: hotspot mode, not FAILED/unsupported.
+     * Wi-Fi doesn't need it (the IP is present once joined; the network observer re-renders on join), and a
+     * failed hotspot won't ever provide one — so we don't spin (which also stopped ensureHotspot being
+     * re-requested every second on failure).
+     */
+    private boolean apIpMayArrive() {
+        if (mode != Mode.HOTSPOT || !LocalHotspotManager.isSupported()) return false;
+        LocalHotspotManager.State st = hs.state().getValue();
+        return st == null || st.phase != LocalHotspotManager.Phase.FAILED;
+    }
     private void scheduleNetRetry() {
+        if (!apIpMayArrive() || apRetries >= AP_IP_MAX_RETRIES) return;
+        apRetries++;
         netHandler.removeCallbacks(netRetry);
         netHandler.postDelayed(netRetry, AP_IP_POLL_MS);
     }

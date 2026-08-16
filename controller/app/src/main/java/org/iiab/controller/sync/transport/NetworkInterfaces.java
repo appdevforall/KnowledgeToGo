@@ -67,7 +67,9 @@ public final class NetworkInterfaces {
             if (hotspotIp == null) {
                 for (NetworkInterface intf : interfaces) {
                     String name = intf.getName();
-                    if (!intf.isUp() || name.equals("wlan0")) continue;
+                    // Skip wlan0 (Wi-Fi) and VPN/point-to-point ifaces, which can also carry a site-local
+                    // IPv4 but are not the AP the other phone joins.
+                    if (!intf.isUp() || name.equals("wlan0") || name.startsWith("tun") || name.startsWith("ppp")) continue;
                     for (InetAddress addr : Collections.list(intf.getInetAddresses())) {
                         if (addr.isLoopbackAddress() || !(addr instanceof Inet4Address)) continue;
                         if (addr.isSiteLocalAddress() && !addr.getHostAddress().equals(wifiIp)) {
