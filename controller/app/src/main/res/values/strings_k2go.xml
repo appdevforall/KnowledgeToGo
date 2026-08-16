@@ -351,7 +351,6 @@
     <string name="k2go_clone_step2_title">Step 2 · Get the app</string>
     <string name="k2go_clone_step3_title">Step 3 · Copy the library</string>
     <string name="k2go_clone_stop_sharing">Stop sharing</string>
-    <string name="k2go_clone_copy_begins_note">The copy begins when they scan this one.</string>
     <string name="k2go_clone_no_library_note">This phone has no K2Go library installed. Install content first, or share anyway.</string>
     <string name="k2go_clone_back_step1">‹ Back to step 1</string>
     <string name="k2go_connect_readonly">Read-only access to your content.</string>

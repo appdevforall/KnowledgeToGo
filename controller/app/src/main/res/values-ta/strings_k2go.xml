@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">படி 2 · செயலியைப் பெறு</string>
     <string name="k2go_clone_step3_title">படி 3 · நூலகத்தை நகலெடு</string>
     <string name="k2go_clone_stop_sharing">பகிர்வை நிறுத்து</string>
-    <string name="k2go_clone_copy_begins_note">அவர்கள் இதை ஸ்கேன் செய்யும்போது நகல் தொடங்கும்.</string>
     <string name="k2go_clone_no_library_note">இந்தத் தொலைபேசியில் K2Go நூலகம் நிறுவப்படவில்லை. முதலில் உள்ளடக்கத்தை நிறுவவும், அல்லது இருப்பினும் பகிரவும்.</string>
     <string name="k2go_clone_back_step1">‹ படி 1-க்குத் திரும்பு</string>
     <string name="k2go_connect_readonly">உங்கள் உள்ளடக்கத்திற்கு படிக்க-மட்டும் அணுகல்.</string>

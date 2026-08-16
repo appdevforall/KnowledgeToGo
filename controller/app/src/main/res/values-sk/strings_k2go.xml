@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Krok 2 · Získajte aplikáciu</string>
     <string name="k2go_clone_step3_title">Krok 3 · Skopírujte knižnicu</string>
     <string name="k2go_clone_stop_sharing">Zastaviť zdieľanie</string>
-    <string name="k2go_clone_copy_begins_note">Kopírovanie sa začne, keď naskenujú tento.</string>
     <string name="k2go_clone_no_library_note">Tento telefón nemá nainštalovanú knižnicu K2Go. Najprv nainštalujte obsah alebo zdieľajte napriek tomu.</string>
     <string name="k2go_clone_back_step1">‹ Späť na krok 1</string>
     <string name="k2go_connect_readonly">Prístup k vášmu obsahu iba na čítanie.</string>

@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Bước 2 · Lấy ứng dụng</string>
     <string name="k2go_clone_step3_title">Bước 3 · Sao chép thư viện</string>
     <string name="k2go_clone_stop_sharing">Dừng chia sẻ</string>
-    <string name="k2go_clone_copy_begins_note">Việc sao chép bắt đầu khi họ quét mã này.</string>
     <string name="k2go_clone_no_library_note">Điện thoại này chưa cài thư viện K2Go. Cài nội dung trước, hoặc vẫn chia sẻ.</string>
     <string name="k2go_clone_back_step1">‹ Quay lại bước 1</string>
     <string name="k2go_connect_readonly">Quyền truy cập chỉ đọc vào nội dung của bạn.</string>

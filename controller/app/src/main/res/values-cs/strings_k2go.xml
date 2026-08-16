@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Krok 2 · Získejte aplikaci</string>
     <string name="k2go_clone_step3_title">Krok 3 · Zkopírujte knihovnu</string>
     <string name="k2go_clone_stop_sharing">Zastavit sdílení</string>
-    <string name="k2go_clone_copy_begins_note">Kopírování začne, když naskenují tento.</string>
     <string name="k2go_clone_no_library_note">V tomto telefonu není nainstalovaná knihovna K2Go. Nejprve nainstalujte obsah, nebo přesto sdílejte.</string>
     <string name="k2go_clone_back_step1">‹ Zpět na krok 1</string>
     <string name="k2go_connect_readonly">Přístup k obsahu jen pro čtení.</string>

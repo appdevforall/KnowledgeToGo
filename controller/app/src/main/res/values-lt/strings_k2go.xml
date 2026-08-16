@@ -290,7 +290,6 @@
     <string name="k2go_clone_step2_title">2 žingsnis · Gaukite programą</string>
     <string name="k2go_clone_step3_title">3 žingsnis · Nukopijuokite biblioteką</string>
     <string name="k2go_clone_stop_sharing">Nutraukti bendrinimą</string>
-    <string name="k2go_clone_copy_begins_note">Kopijavimas prasideda, kai jie nuskaito šį kodą.</string>
     <string name="k2go_clone_no_library_note">Šiame telefone neįdiegta K2Go biblioteka. Pirmiausia įdiekite turinį arba vis tiek bendrinkite.</string>
     <string name="k2go_clone_back_step1">‹ Atgal į 1 žingsnį</string>
     <string name="k2go_connect_readonly">Tik skaitymo prieiga prie jūsų turinio.</string>

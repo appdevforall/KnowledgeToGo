@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">الخطوة 2 · احصل على التطبيق</string>
     <string name="k2go_clone_step3_title">الخطوة 3 · انسخ المكتبة</string>
     <string name="k2go_clone_stop_sharing">إيقاف المشاركة</string>
-    <string name="k2go_clone_copy_begins_note">يبدأ النسخ عندما يمسحون هذا الرمز.</string>
     <string name="k2go_clone_no_library_note">لا توجد مكتبة K2Go مثبّتة على هذا الهاتف. ثبّت المحتوى أولًا، أو شارك على أي حال.</string>
     <string name="k2go_clone_back_step1">‹ العودة إلى الخطوة 1</string>
     <string name="k2go_connect_readonly">وصول للقراءة فقط إلى محتواك.</string>

@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">ধাপ ২ · অ্যাপ পান</string>
     <string name="k2go_clone_step3_title">ধাপ ৩ · লাইব্রেরি কপি করুন</string>
     <string name="k2go_clone_stop_sharing">শেয়ার বন্ধ করুন</string>
-    <string name="k2go_clone_copy_begins_note">তারা এটি স্ক্যান করলে কপি শুরু হয়।</string>
     <string name="k2go_clone_no_library_note">এই ফোনে কোনো K2Go লাইব্রেরি ইনস্টল করা নেই। প্রথমে কনটেন্ট ইনস্টল করুন, বা তবুও শেয়ার করুন।</string>
     <string name="k2go_clone_back_step1">‹ ধাপ ১-এ ফিরে যান</string>
     <string name="k2go_connect_readonly">আপনার কনটেন্টে শুধু-পড়ার অ্যাক্সেস।</string>

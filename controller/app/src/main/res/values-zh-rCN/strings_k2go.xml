@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">第 2 步 · 获取应用</string>
     <string name="k2go_clone_step3_title">第 3 步 · 复制图书馆</string>
     <string name="k2go_clone_stop_sharing">停止共享</string>
-    <string name="k2go_clone_copy_begins_note">当对方扫描此代码时开始复制。</string>
     <string name="k2go_clone_no_library_note">本手机未安装 K2Go 图书馆。请先安装内容，或仍然共享。</string>
     <string name="k2go_clone_back_step1">‹ 返回第 1 步</string>
     <string name="k2go_connect_readonly">对您内容的只读访问。</string>

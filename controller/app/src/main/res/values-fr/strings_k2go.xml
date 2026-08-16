@@ -290,7 +290,6 @@
     <string name="k2go_clone_step2_title">Étape 2 · Obtenir l\'appli</string>
     <string name="k2go_clone_step3_title">Étape 3 · Copier la bibliothèque</string>
     <string name="k2go_clone_stop_sharing">Arrêter le partage</string>
-    <string name="k2go_clone_copy_begins_note">La copie commence lorsqu\'ils scannent celui-ci.</string>
     <string name="k2go_clone_no_library_note">Ce téléphone n\'a aucune bibliothèque K2Go installée. Installez d\'abord du contenu, ou partagez quand même.</string>
     <string name="k2go_clone_back_step1">‹ Retour à l\'étape 1</string>
     <string name="k2go_connect_readonly">Accès en lecture seule à votre contenu.</string>

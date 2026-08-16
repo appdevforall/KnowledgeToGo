@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">گام ۲ · دریافت برنامه</string>
     <string name="k2go_clone_step3_title">گام ۳ · کپی کتابخانه</string>
     <string name="k2go_clone_stop_sharing">توقف اشتراک‌گذاری</string>
-    <string name="k2go_clone_copy_begins_note">کپی زمانی آغاز می‌شود که آن‌ها این کد را اسکن کنند.</string>
     <string name="k2go_clone_no_library_note">روی این گوشی هیچ کتابخانه K2Go نصب نشده است. ابتدا محتوا را نصب کنید، یا به‌هرحال اشتراک بگذارید.</string>
     <string name="k2go_clone_back_step1">‹ بازگشت به گام ۱</string>
     <string name="k2go_connect_readonly">دسترسی فقط‌خواندنی به محتوای شما.</string>

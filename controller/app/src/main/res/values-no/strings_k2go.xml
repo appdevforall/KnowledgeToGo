@@ -290,7 +290,6 @@
     <string name="k2go_clone_step2_title">Steg 2 · Hent appen</string>
     <string name="k2go_clone_step3_title">Steg 3 · Kopier biblioteket</string>
     <string name="k2go_clone_stop_sharing">Stopp deling</string>
-    <string name="k2go_clone_copy_begins_note">Kopieringen begynner når de skanner denne.</string>
     <string name="k2go_clone_no_library_note">Denne telefonen har ikke noe K2Go-bibliotek installert. Installer innhold først, eller del likevel.</string>
     <string name="k2go_clone_back_step1">‹ Tilbake til steg 1</string>
     <string name="k2go_connect_readonly">Skrivebeskyttet tilgang til innholdet ditt.</string>

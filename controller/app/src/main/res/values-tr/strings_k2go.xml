@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">2. Adım · Uygulamayı edinin</string>
     <string name="k2go_clone_step3_title">3. Adım · Kitaplığı kopyalayın</string>
     <string name="k2go_clone_stop_sharing">Paylaşımı durdur</string>
-    <string name="k2go_clone_copy_begins_note">Kopyalama, karşı taraf bunu taradığında başlar.</string>
     <string name="k2go_clone_no_library_note">Bu telefonda kurulu bir K2Go kitaplığı yok. Önce içerik kurun veya yine de paylaşın.</string>
     <string name="k2go_clone_back_step1">‹ 1. adıma dön</string>
     <string name="k2go_connect_readonly">İçeriğinize salt okunur erişim.</string>

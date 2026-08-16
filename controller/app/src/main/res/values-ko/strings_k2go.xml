@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">2단계 · 앱 받기</string>
     <string name="k2go_clone_step3_title">3단계 · 라이브러리 복사</string>
     <string name="k2go_clone_stop_sharing">공유 중지</string>
-    <string name="k2go_clone_copy_begins_note">상대방이 이것을 스캔하면 복사가 시작됩니다.</string>
     <string name="k2go_clone_no_library_note">이 휴대폰에는 K2Go 라이브러리가 설치되어 있지 않습니다. 먼저 콘텐츠를 설치하거나 그래도 공유하세요.</string>
     <string name="k2go_clone_back_step1">‹ 1단계로 돌아가기</string>
     <string name="k2go_connect_readonly">콘텐츠에 대한 읽기 전용 접근.</string>

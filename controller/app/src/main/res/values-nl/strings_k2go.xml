@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">Stap 2 · De app ophalen</string>
     <string name="k2go_clone_step3_title">Stap 3 · De bibliotheek kopiëren</string>
     <string name="k2go_clone_stop_sharing">Delen stoppen</string>
-    <string name="k2go_clone_copy_begins_note">De kopie begint wanneer zij deze scannen.</string>
     <string name="k2go_clone_no_library_note">Op deze telefoon is geen K2Go-bibliotheek geïnstalleerd. Installeer eerst inhoud of deel toch.</string>
     <string name="k2go_clone_back_step1">‹ Terug naar stap 1</string>
     <string name="k2go_connect_readonly">Alleen-lezen toegang tot je inhoud.</string>

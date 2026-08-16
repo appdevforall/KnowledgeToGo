@@ -289,7 +289,6 @@
     <string name="k2go_clone_step2_title">चरण 2 · ऐप पाएँ</string>
     <string name="k2go_clone_step3_title">चरण 3 · लाइब्रेरी कॉपी करें</string>
     <string name="k2go_clone_stop_sharing">शेयर करना रोकें</string>
-    <string name="k2go_clone_copy_begins_note">जब वे इसे स्कैन करते हैं तो कॉपी शुरू होती है।</string>
     <string name="k2go_clone_no_library_note">इस फ़ोन में कोई K2Go लाइब्रेरी इंस्टॉल नहीं है। पहले सामग्री इंस्टॉल करें, या फिर भी शेयर करें।</string>
     <string name="k2go_clone_back_step1">‹ चरण 1 पर वापस</string>
     <string name="k2go_connect_readonly">आपकी सामग्री तक केवल-पढ़ने की पहुँच।</string>

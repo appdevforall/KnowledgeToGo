@@ -780,7 +780,7 @@ public class CloneFragment extends Fragment {
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
         qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
         caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
-        subCaption.setText(getString(R.string.k2go_clone_copy_begins_note));
+        subCaption.setText(""); subCaption.setVisibility(View.GONE);   // ADFA-5154: drop the design-leftover note
         showCodeAsText(payload);
         showStopButton();
         if (librarySplit != null) {
@@ -1148,7 +1148,7 @@ public class CloneFragment extends Fragment {
     /** Drop the exit wait entirely (re-scan, or the user navigated away). No fixed timer to leak. */
     private void cancelExit() {
         exitInProgress = false; exitAck = false; exitServicesUp = false;
-        exitCountingDown = false; exitKeepWaiting = false;
+        exitCountingDown = false; exitKeepWaiting = false; exitProbing = false;
         exitHandler.removeCallbacks(exitTick);
         exitHandler.removeCallbacks(exitPollRunnable);
         if (exitDots != null) exitDots.stop();
