@@ -146,4 +146,32 @@ public class TopicNodeTest {
         assertEquals(0, TopicNode.of(ROOT, "x", "topic", false, 0L, -3, null)
                 .descendantCount());
     }
+
+    // ADFA-5094: the offline bundle is flat, so a folder must report the size the
+    // generator measured over the whole DB — not a sum of the one level it carries.
+    @Test
+    public void fromBundleTrustsGivenAggregatesNotChildren() {
+        TopicNode child = TopicNode.fromBundle(A, "Sub", "topic", 0L, 0, 0, 0L, null);
+        TopicNode t = TopicNode.fromBundle(ROOT, "Folder", "topic",
+                5_000_000L, 42, 3, 120L, Collections.singletonList(child));
+        assertTrue(t.isTopic());
+        assertFalse(t.isLeaf());
+        assertTrue(t.hasSubtreeSize());
+        assertEquals(5_000_000L, t.subtreeBytes());
+        assertEquals(42, t.descendantCount());
+        assertEquals(3, t.looseResourceCount());
+        assertEquals(120L, t.looseResourceBytes());
+        assertEquals(1, t.children().size());
+    }
+
+    @Test
+    public void fromBundleClampsNegativesAndRejectsBadId() {
+        TopicNode t = TopicNode.fromBundle(ROOT, "x", "topic", -1L, -5, -2, -9L, null);
+        assertEquals(0L, t.subtreeBytes());
+        assertTrue(t.hasSubtreeSize());
+        assertEquals(0, t.descendantCount());
+        assertEquals(0, t.looseResourceCount());
+        assertEquals(0L, t.looseResourceBytes());
+        assertNull(TopicNode.fromBundle("not-an-id", "x", "topic", 0L, 0, 0, 0L, null));
+    }
 }
