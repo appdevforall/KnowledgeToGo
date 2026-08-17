@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">சரிபார்க்க மற்ற ஃபோனிலிருந்து மீண்டும் ஸ்கேன் செய்யவும் ›</string>
     <string name="k2go_clone_exit_keep_waiting">காத்திருக்கவும்</string>
     <string name="k2go_clone_exit_redirecting">%1$d வினாடிகளில் உங்கள் நூலகம் திறக்கிறது…</string>
+    <string name="k2go_busy_clone">தொலைபேசிகளுக்கிடையே நகலெடுப்பு நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_backup">காப்புப்பிரதி நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_restore">மீட்டமைப்பு நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_install">நிறுவல் நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_download">பதிவிறக்கம் நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
 </resources>

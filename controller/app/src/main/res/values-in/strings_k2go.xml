@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Pindai ulang dari ponsel lain untuk memverifikasi ›</string>
     <string name="k2go_clone_exit_keep_waiting">Terus menunggu</string>
     <string name="k2go_clone_exit_redirecting">Membuka pustaka Anda dalam %1$d dtk…</string>
+    <string name="k2go_busy_clone">Penyalinan antar-ponsel sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
+    <string name="k2go_busy_backup">Pencadangan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
+    <string name="k2go_busy_restore">Pemulihan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
+    <string name="k2go_busy_install">Pemasangan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
+    <string name="k2go_busy_download">Pengunduhan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
 </resources>

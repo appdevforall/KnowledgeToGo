@@ -67,6 +67,7 @@ public final class BooksDownloadService extends Service {
     private static String[] sUrls = new String[0];
     private static int[] sStatus = new int[0];
     private static int sIndex = 0;
+    private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
     private static Listener sListener;
 
     public static boolean isRunning() { return sRunning; }
@@ -75,6 +76,13 @@ public final class BooksDownloadService extends Service {
         if (sIds.length == 0 || sRunning) return false;
         for (int st : sStatus) if (st == PENDING || st == ACTIVE || st == ADDING) return false;
         return true;
+    }
+    /** ADFA-5146: busy only while the poll heartbeat is fresh — a killed service lets it go cold. */
+    public static boolean isActiveNow() {
+        return hasSession() && !isComplete()
+                && org.iiab.controller.env.Freshness.fresh(
+                        sLastProgressAt, android.os.SystemClock.elapsedRealtime(),
+                        org.iiab.controller.env.Freshness.STALE_MS);
     }
     public static String[] titles() { return sTitles; }
     public static int[] status() { return sStatus; }
@@ -96,7 +104,7 @@ public final class BooksDownloadService extends Service {
 
     public static void finishSession() {
         sIds = new String[0]; sTitles = new String[0]; sUrls = new String[0]; sStatus = new int[0];
-        sIndex = 0; sRunning = false;
+        sIndex = 0; sRunning = false; sLastProgressAt = 0L;
     }
 
     private static final int MAX_ATTEMPTS = 3;      // total tries per book before marking it failed
@@ -135,6 +143,7 @@ public final class BooksDownloadService extends Service {
         }
         canceled = false;
         sRunning = true;
+        sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat
         startForeground(NOTIFICATION_ID, buildNotification(currentTitle()));
         processNext();
         return START_NOT_STICKY;
@@ -192,6 +201,7 @@ public final class BooksDownloadService extends Service {
             try {
                 JSONObject j = httpJson("GET", BASE + "/jobs/" + currentJobId, null);
                 String phase = j.optString("phase", "");
+                sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each answered poll
                 switch (phase) {
                     case "done":
                         android.util.Log.i("K2Go-Provision", "books job done [" + i + "]");

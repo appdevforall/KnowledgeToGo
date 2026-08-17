@@ -451,7 +451,7 @@ public class CloneFragment extends Fragment {
         // another one (install/backup/restore) holds the lock, else acquire(CLONE) and stop the server
         // so the served tree is static; the daemon starts only after the stop completes.
         if (!cloneLockHeld && EnvironmentLock.isHeld(requireContext())) {
-            Toast.makeText(requireContext(), getString(R.string.k2go_install_busy), Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), org.iiab.controller.util.BusyMessage.resFor(requireContext()), Toast.LENGTH_LONG).show();
             return;
         }
         daemonStarting = true;

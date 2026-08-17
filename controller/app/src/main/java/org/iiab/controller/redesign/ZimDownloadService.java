@@ -58,6 +58,7 @@ public final class ZimDownloadService extends Service {
     private static int sIndex = 0;
     private static int sPercent = 0;
     private static long sSpeed = 0;
+    private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
     private static Listener sListener;
 
     public static boolean isRunning() { return sRunning; }
@@ -67,6 +68,15 @@ public final class ZimDownloadService extends Service {
         if (sFiles.length == 0 || sRunning) return false;
         for (int st : sStatus) if (st == PENDING || st == ACTIVE || st == INDEXING) return false;
         return true;
+    }
+    /** ADFA-5146: a non-terminal session still counts as busy only while its heartbeat is fresh.
+     *  A service killed before a terminal state lets {@code sLastProgressAt} go cold, so a dead
+     *  session stops blocking deep operations without the app being force-stopped. */
+    public static boolean isActiveNow() {
+        return hasSession() && !isComplete()
+                && org.iiab.controller.env.Freshness.fresh(
+                        sLastProgressAt, android.os.SystemClock.elapsedRealtime(),
+                        org.iiab.controller.env.Freshness.STALE_MS);
     }
     public static String[] labels() { return sLabels; }
     public static long[] bytes() { return sBytes; }
@@ -94,7 +104,7 @@ public final class ZimDownloadService extends Service {
     /** Clear the session so a new selection can start fresh. */
     public static void finishSession() {
         sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; sStatus = new int[0];
-        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false;
+        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sLastProgressAt = 0L;
     }
 
     private static final int MAX_ATTEMPTS = 3;      // total tries per ZIM before marking it failed
@@ -133,6 +143,7 @@ public final class ZimDownloadService extends Service {
             if (sBytes == null) sBytes = new long[sFiles.length];
             sStatus = new int[sFiles.length];
             sIndex = 0; sPercent = 0; sSpeed = 0;
+            sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat at session start
         }
 
         sRunning = true;
@@ -166,10 +177,11 @@ public final class ZimDownloadService extends Service {
         client.addZim(sFiles[i], new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
                 sPercent = percent; sSpeed = parseRate(speed);
+                sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each poll
                 if (sStatus[i] != INDEXING) sStatus[i] = ACTIVE;
                 publish(); updateNotification(sLabels[i]);
             }
-            @Override public void onIndexing() { sStatus[i] = INDEXING; publish(); }
+            @Override public void onIndexing() { sStatus[i] = INDEXING; sLastProgressAt = android.os.SystemClock.elapsedRealtime(); publish(); }
             @Override public void onLog(String line) { /* logcat only */ }
             @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
             @Override public void onError(String message) {

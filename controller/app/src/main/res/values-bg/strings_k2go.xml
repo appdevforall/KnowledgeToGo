@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Сканирайте отново от другия телефон за проверка ›</string>
     <string name="k2go_clone_exit_keep_waiting">Продължете да изчаквате</string>
     <string name="k2go_clone_exit_redirecting">Библиотеката се отваря след %1$d с…</string>
+    <string name="k2go_busy_clone">Копиране между телефони е в ход. Изчакайте операцията да приключи.</string>
+    <string name="k2go_busy_backup">Архивиране е в ход. Изчакайте операцията да приключи.</string>
+    <string name="k2go_busy_restore">Възстановяване е в ход. Изчакайте операцията да приключи.</string>
+    <string name="k2go_busy_install">Инсталиране е в ход. Изчакайте операцията да приключи.</string>
+    <string name="k2go_busy_download">Изтегляне е в ход. Изчакайте операцията да приключи.</string>
 </resources>

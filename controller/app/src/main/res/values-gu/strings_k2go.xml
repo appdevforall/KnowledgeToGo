@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">ચકાસવા માટે બીજા ફોનથી ફરી સ્કૅન કરો ›</string>
     <string name="k2go_clone_exit_keep_waiting">રાહ જોવાનું ચાલુ રાખો</string>
     <string name="k2go_clone_exit_redirecting">%1$d સેકંડમાં તમારી લાઇબ્રેરી ખૂલી રહી છે…</string>
+    <string name="k2go_busy_clone">ફોન વચ્ચે કૉપિ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_backup">બૅકઅપ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_restore">પુનઃસ્થાપન ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_install">ઇન્સ્ટૉલ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_download">ડાઉનલોડ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
 </resources>

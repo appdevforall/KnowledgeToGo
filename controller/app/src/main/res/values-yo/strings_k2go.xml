@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Tún àyẹ̀wò ṣe láti inú fóònù kejì láti ṣàyẹ̀wò ›</string>
     <string name="k2go_clone_exit_keep_waiting">Máa dúró síwájú</string>
     <string name="k2go_clone_exit_redirecting">Ìwé-ìkàwé rẹ yóò ṣí ní %1$d s…</string>
+    <string name="k2go_busy_clone">Ìdàkọ láàrin àwọn fóònù ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
+    <string name="k2go_busy_backup">Àfẹ́yìntì ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
+    <string name="k2go_busy_restore">Ìmúpadàbọ̀ ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
+    <string name="k2go_busy_install">Fifi-sórí-ẹrọ ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
+    <string name="k2go_busy_download">Ìgbàsílẹ̀ ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
 </resources>

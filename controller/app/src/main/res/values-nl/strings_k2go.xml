@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Scan opnieuw vanaf de andere telefoon om te verifiëren ›</string>
     <string name="k2go_clone_exit_keep_waiting">Blijven wachten</string>
     <string name="k2go_clone_exit_redirecting">Je bibliotheek wordt geopend over %1$d s…</string>
+    <string name="k2go_busy_clone">Een kopie tussen telefoons is bezig. Wacht tot de bewerking klaar is.</string>
+    <string name="k2go_busy_backup">Een back-up is bezig. Wacht tot de bewerking klaar is.</string>
+    <string name="k2go_busy_restore">Een herstel is bezig. Wacht tot de bewerking klaar is.</string>
+    <string name="k2go_busy_install">Een installatie is bezig. Wacht tot de bewerking klaar is.</string>
+    <string name="k2go_busy_download">Een download is bezig. Wacht tot de bewerking klaar is.</string>
 </resources>

@@ -69,6 +69,7 @@ public final class KolibriSeedRepository {
      * a download is exactly long enough for that to happen.
      */
     private long startedAtMs = 0L;
+    private volatile long lastProgressAtMs = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
 
     private KolibriSeedRepository() {
     }
@@ -95,6 +96,15 @@ public final class KolibriSeedRepository {
         return current().isComplete();
     }
 
+    /** ADFA-5146: busy only while the seed's poll heartbeat is fresh — a killed seed service lets
+     *  it go cold, so a dead session stops blocking deep operations. */
+    public boolean isActiveNow() {
+        return hasSession() && !isComplete()
+                && org.iiab.controller.env.Freshness.fresh(
+                        lastProgressAtMs, android.os.SystemClock.elapsedRealtime(),
+                        org.iiab.controller.env.Freshness.STALE_MS);
+    }
+
     // ---- writes (service only) --------------------------------------------
 
     /**
@@ -116,6 +126,7 @@ public final class KolibriSeedRepository {
     /** Replaces any previous session. */
     public synchronized void startSession(List<KolibriSeedState.Item> queued) {
         startedAtMs = android.os.SystemClock.elapsedRealtime();
+        lastProgressAtMs = startedAtMs;   // ADFA-5146: seed the heartbeat at session start
         mutate(from -> KolibriSeedState.of(queued));
     }
 
@@ -140,6 +151,7 @@ public final class KolibriSeedRepository {
      */
     public synchronized void itemProgress(int index, int percent, long speedBytesPerSec) {
         final long now = android.os.SystemClock.elapsedRealtime();
+        lastProgressAtMs = now;   // ADFA-5146: heartbeat on each seed poll
         mutate(from -> {
             KolibriSeedState next = from.progress(index, percent, speedBytesPerSec);
             if (speedBytesPerSec > 0L || startedAtMs <= 0L) {
@@ -174,6 +186,7 @@ public final class KolibriSeedRepository {
     /** Clears the session so a new selection can start clean. */
     public synchronized void clearSession() {
         startedAtMs = 0L;   // ADFA-5074: the next session brings its own start time
+        lastProgressAtMs = 0L;   // ADFA-5146
         mutate(from -> KolibriSeedState.idle());
     }
 }

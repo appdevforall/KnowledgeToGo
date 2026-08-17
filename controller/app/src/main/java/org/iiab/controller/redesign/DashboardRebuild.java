@@ -55,7 +55,7 @@ public final class DashboardRebuild {
                                        @Nullable Runnable onLiveUpdated) {
         Context ctx = host.requireContext();
         if (org.iiab.controller.env.EnvironmentLock.isHeld(ctx)) {
-            Snackbars.make(anchor, R.string.k2go_install_busy).show();
+            Snackbars.make(anchor, org.iiab.controller.util.BusyMessage.resFor(ctx)).show();
             return;
         }
         if (!hasInternet(ctx)) {
