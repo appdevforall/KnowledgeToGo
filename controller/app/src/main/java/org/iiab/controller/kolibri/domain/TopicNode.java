@@ -49,11 +49,14 @@ public final class TopicNode {
     private final long subtreeBytes;
     private final boolean subtreeSizeKnown;
     private final int descendantCount;
+    private final int looseResourceCount;
+    private final long looseResourceBytes;
     private final List<TopicNode> children;
 
     private TopicNode(String id, String title, String kind, boolean leaf,
                       long ownBytes, long subtreeBytes, boolean subtreeSizeKnown,
-                      int descendantCount, List<TopicNode> children) {
+                      int descendantCount, int looseResourceCount, long looseResourceBytes,
+                      List<TopicNode> children) {
         this.id = id;
         this.title = title;
         this.kind = kind;
@@ -62,6 +65,8 @@ public final class TopicNode {
         this.subtreeBytes = subtreeBytes;
         this.subtreeSizeKnown = subtreeSizeKnown;
         this.descendantCount = descendantCount;
+        this.looseResourceCount = looseResourceCount;
+        this.looseResourceBytes = looseResourceBytes;
         this.children = children;
     }
 
@@ -132,6 +137,52 @@ public final class TopicNode {
                 kind == null ? "" : kind.trim(),
                 leaf, own, total, known,
                 Math.max(0, descendantCount),
+                0, 0L,
+                Collections.unmodifiableList(kids));
+    }
+
+    /**
+     * Builds a topic (folder) from a precomputed bundle row (ADFA-5094).
+     *
+     * <p>Unlike {@link #of}, the subtree size and count are <em>given</em>, not summed
+     * from children: the offline bundle is flat and served one level at a time, and the
+     * aggregates were computed by the generator over the whole published content DB, so
+     * a folder can report its true size before any child is fetched. {@code subtreeBytes}
+     * is therefore always {@link #hasSubtreeSize() known}.
+     *
+     * <p>The bundle keeps only folders; a folder's direct <em>loose</em> leaf resources
+     * are folded into {@code looseResourceCount}/{@code looseResourceBytes}, so a mixed
+     * level can show "N resources here" without carrying leaves the bundle omits. The live
+     * source (Studio / box) fills those individual leaves when online.
+     *
+     * @param descendantCount the subtree resource count the generator measured
+     * @return the node, or {@code null} when {@code rawId} is not a valid node id
+     */
+    public static TopicNode fromBundle(String rawId, String title, String kind,
+                                       long subtreeBytes, int descendantCount,
+                                       int looseResourceCount, long looseResourceBytes,
+                                       List<TopicNode> children) {
+        String id = ChannelId.normalise(rawId);
+        if (id == null) {
+            return null;
+        }
+        List<TopicNode> kids = new ArrayList<>();
+        if (children != null) {
+            for (TopicNode c : children) {
+                if (c != null) {
+                    kids.add(c);
+                }
+            }
+        }
+        return new TopicNode(id,
+                title == null ? "" : title.trim(),
+                kind == null ? "" : kind.trim(),
+                false,                            // a bundle row is always a folder
+                0L,                               // topics carry no own files beyond artwork
+                Math.max(0L, subtreeBytes), true, // known: the generator measured it over the DB
+                Math.max(0, descendantCount),
+                Math.max(0, looseResourceCount),
+                Math.max(0L, looseResourceBytes),
                 Collections.unmodifiableList(kids));
     }
 
@@ -177,6 +228,19 @@ public final class TopicNode {
     /** How many nodes hang below this one. 0 when unknown or none. */
     public int descendantCount() {
         return descendantCount;
+    }
+
+    /**
+     * Count of loose leaf resources directly under this folder — the bundle's per-level
+     * aggregate (ADFA-5094). 0 for nodes not built from the bundle, or a folder with none.
+     */
+    public int looseResourceCount() {
+        return looseResourceCount;
+    }
+
+    /** Bytes of those loose leaf resources. 0 when none or not from the bundle. */
+    public long looseResourceBytes() {
+        return looseResourceBytes;
     }
 
     /** Direct children, in source order. Unmodifiable, never null. */

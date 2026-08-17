@@ -37,20 +37,39 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
     // from, so the worker writes it exactly where the source looks (they must never drift).
     private static final String BASENAME = BundledCatalogSource.ASSET;
 
+    // ADFA-5094: the offline topic-tree bundle is refreshed the same way, from its own manifest,
+    // overlaying its own APK asset. A separate name so the two refreshes never collide.
+    private static final String TREE_CATALOG = "kolibri-tree";
+    private static final String TREE_MANIFEST_URL =
+            "https://k2go-download.appdevforall.org/catalogs/kolibri-tree.manifest.json";
+    private static final String TREE_BASENAME = BundledTreeSource.ASSET;
+
     private final BundledCatalogSource bundled;
     private final TreeSource tree;
 
     public CatalogRepositoryImpl(Context context) {
         // ADFA-5094: prefer the box-served topic tree (offline, whole tree once the channel's
-        // metadata is imported) and fall back to Studio when the box cannot answer.
+        // metadata is imported), then Studio when online, and finally the bundled tree — the
+        // offline floor that lets the user browse a channel even with the box unimported and no
+        // internet. Live sources win when they can answer, so the bundle is consulted last.
         this(new BundledCatalogSource(context),
-                new FallbackTreeSource(new LocalTreeSource(), new StudioTreeSource()));
+                new FallbackTreeSource(new LocalTreeSource(),
+                        new FallbackTreeSource(new StudioTreeSource(), new BundledTreeSource(context))));
         // Keep the bundled catalog current: a weekly refresh plus an opportunistic (TTL-gated)
         // check now. Only the Context constructor schedules — the test constructor below does not.
         org.iiab.controller.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
                 context, CATALOG, MANIFEST_URL, BASENAME);
         org.iiab.controller.catalog.data.CatalogRefreshScheduler.refreshNow(
                 context, CATALOG, MANIFEST_URL, BASENAME);
+        // The tree bundle refreshes on the same cadence, but only on Wi-Fi (UNMETERED): it is ~16 MB
+        // against the catalog's ~83 KB, and the APK asset is a working floor, so a metered pull is
+        // not worth the user's mobile data.
+        org.iiab.controller.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
+                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
+                androidx.work.NetworkType.UNMETERED);
+        org.iiab.controller.catalog.data.CatalogRefreshScheduler.refreshNow(
+                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
+                androidx.work.NetworkType.UNMETERED);
     }
 
     /** For tests and for pointing the tree source elsewhere (e.g. a local-first composite). */
