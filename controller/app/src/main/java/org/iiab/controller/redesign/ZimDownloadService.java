@@ -101,6 +101,21 @@ public final class ZimDownloadService extends Service {
         }
     }
 
+    /**
+     * ADFA-5146 TEST HOOK (debug only) — seed a non-terminal session whose heartbeat is fresh right now
+     * but has no polling loop behind it, i.e. exactly the "service died, process alive" stale case. It
+     * blocks deep ops immediately and must self-expire after {@code Freshness.STALE_MS}. Only the debug
+     * broadcast receiver (src/debug) calls this; remove with that receiver before merge.
+     */
+    public static void debugSeedStaleCandidate() {
+        sFiles = new String[]{"debug-stale"};
+        sLabels = new String[]{"debug"};
+        sBytes = new long[]{0L};
+        sStatus = new int[]{ACTIVE};
+        sRunning = false;   // not running -> no loop will ever bump the heartbeat
+        sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // fresh now; goes cold after STALE_MS
+    }
+
     /** Clear the session so a new selection can start fresh. */
     public static void finishSession() {
         sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; sStatus = new int[0];
