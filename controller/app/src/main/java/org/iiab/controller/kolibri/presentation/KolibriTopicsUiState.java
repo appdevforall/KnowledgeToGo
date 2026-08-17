@@ -92,9 +92,14 @@ public final class KolibriTopicsUiState {
         return node == null ? Collections.<TopicNode>emptyList() : node.children();
     }
 
-    /** True when the level arrived and genuinely has nothing under it. */
+    /**
+     * True when the level arrived and genuinely has nothing under it — no child folders and
+     * no loose resources folded in by the offline bundle (ADFA-5094). A level with only loose
+     * content is not empty: it renders the aggregate line, not the "empty" status.
+     */
     public boolean isEmpty() {
-        return !loading && !unavailable && (node == null || !node.hasChildren());
+        return !loading && !unavailable
+                && (node == null || (!node.hasChildren() && node.looseResourceCount() == 0));
     }
 
     /** What to show as the screen's heading: the channel, or the topic drilled into. */
