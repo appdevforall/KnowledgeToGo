@@ -38,17 +38,27 @@ public final class CatalogRefreshScheduler {
                 .build();
     }
 
-    private static Constraints connected() {
+    private static Constraints constraints(NetworkType netType) {
         return new Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiredNetworkType(netType)
                 .build();
     }
 
-    /** Weekly periodic refresh, enqueued once per catalog (KEEP). Safe to call on every launch. */
+    /** Weekly periodic refresh over any connection. Safe to call on every launch. */
     public static void scheduleWeekly(Context ctx, String name, String manifestUrl, String basename) {
+        scheduleWeekly(ctx, name, manifestUrl, basename, NetworkType.CONNECTED);
+    }
+
+    /**
+     * Weekly periodic refresh, enqueued once per catalog (KEEP). Safe to call on every launch.
+     * {@code netType} lets a large asset ask for {@link NetworkType#UNMETERED} so it refreshes only
+     * on Wi-Fi and never spends the user's mobile data (ADFA-5094: the tree bundle is ~16 MB).
+     */
+    public static void scheduleWeekly(Context ctx, String name, String manifestUrl, String basename,
+                                      NetworkType netType) {
         PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(
                 CatalogRefreshWorker.class, 7, TimeUnit.DAYS)
-                .setConstraints(connected())
+                .setConstraints(constraints(netType))
                 .setInputData(input(name, manifestUrl, basename))
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())
@@ -56,10 +66,20 @@ public final class CatalogRefreshScheduler {
                         ExistingPeriodicWorkPolicy.KEEP, req);
     }
 
-    /** Opportunistic one-shot; the worker's TTL gate no-ops it when still fresh. */
+    /** Opportunistic one-shot over any connection; the worker's TTL gate no-ops it when fresh. */
     public static void refreshNow(Context ctx, String name, String manifestUrl, String basename) {
+        refreshNow(ctx, name, manifestUrl, basename, NetworkType.CONNECTED);
+    }
+
+    /**
+     * Opportunistic one-shot; the worker's TTL gate no-ops it when still fresh. {@code netType}
+     * constrains which connection may trigger it — {@link NetworkType#UNMETERED} keeps a large
+     * asset off mobile data (ADFA-5094).
+     */
+    public static void refreshNow(Context ctx, String name, String manifestUrl, String basename,
+                                  NetworkType netType) {
         OneTimeWorkRequest req = new OneTimeWorkRequest.Builder(CatalogRefreshWorker.class)
-                .setConstraints(connected())
+                .setConstraints(constraints(netType))
                 .setInputData(input(name, manifestUrl, basename))
                 .build();
         WorkManager.getInstance(ctx.getApplicationContext())

@@ -61,11 +61,15 @@ public final class CatalogRepositoryImpl implements CatalogRepository {
                 context, CATALOG, MANIFEST_URL, BASENAME);
         org.iiab.controller.catalog.data.CatalogRefreshScheduler.refreshNow(
                 context, CATALOG, MANIFEST_URL, BASENAME);
-        // The tree bundle refreshes on the same cadence, from its own manifest/asset.
+        // The tree bundle refreshes on the same cadence, but only on Wi-Fi (UNMETERED): it is ~16 MB
+        // against the catalog's ~83 KB, and the APK asset is a working floor, so a metered pull is
+        // not worth the user's mobile data.
         org.iiab.controller.catalog.data.CatalogRefreshScheduler.scheduleWeekly(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
+                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
+                androidx.work.NetworkType.UNMETERED);
         org.iiab.controller.catalog.data.CatalogRefreshScheduler.refreshNow(
-                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME);
+                context, TREE_CATALOG, TREE_MANIFEST_URL, TREE_BASENAME,
+                androidx.work.NetworkType.UNMETERED);
     }
 
     /** For tests and for pointing the tree source elsewhere (e.g. a local-first composite). */
