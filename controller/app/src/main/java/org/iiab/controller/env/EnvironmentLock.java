@@ -103,11 +103,15 @@ public final class EnvironmentLock {
      * operation already in progress (or is it unsafe to start one)? Combines the process-scoped signal,
      * the durable install guard, and this-process's owner marker. Ask THIS, not
      * {@code ServerStateRepository.alive}.
+     *
+     * ADFA-5146: derived from {@link #currentHolder} so "is it held" and "what holds it" can never
+     * disagree. currentHolder is the ONE place that enumerates the lock sources; anything added there is
+     * picked up here for free. Do NOT re-list the sources in this method — a second copy is exactly the
+     * drift this derivation exists to prevent (isHeld would block while the refusal message named the
+     * wrong holder, or fell back to "an install").
      */
     public static boolean isHeld(Context ctx) {
-        return isBusyNow()
-                || org.iiab.controller.InstallGuard.inProgress(ctx)
-                || ownerHeld(ctx);
+        return currentHolder(ctx) != Holder.NONE;
     }
 
     /**
@@ -154,11 +158,15 @@ public final class EnvironmentLock {
     }
 
     /**
-     * ADFA-5146: which operation holds the environment right now — same order and sources as
-     * {@link #isHeld}: the owner marker (clone / backup / restore, or a write-op install), then the
-     * durable install guard, then a live content download (post-expiry, so a dead session never
-     * shows). Callers use it to name the refusal instead of always saying "an install". Returns
-     * {@code NONE} when nothing holds it.
+     * ADFA-5146: which operation holds the environment right now, AND the single source of truth for
+     * "is it held at all" — {@link #isHeld} derives from this ({@code != NONE}). Priority (highest
+     * first, so the label names the dominant op): the owner marker (clone / backup / restore, or a
+     * write-op install), then the durable install guard, then a live content download (post-expiry, so
+     * a dead session never shows). Returns {@code NONE} when nothing holds it.
+     *
+     * To add a new lock source, add it HERE (with a Holder value + a k2go_busy_* string). isHeld and
+     * every deep-op gate then pick it up automatically — that is the whole point of routing both
+     * questions through one method.
      */
     public static Holder currentHolder(Context ctx) {
         Owner owner = currentOwner(ctx);
