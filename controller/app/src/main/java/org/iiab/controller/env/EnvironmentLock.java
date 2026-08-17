@@ -15,7 +15,7 @@
  *               it is TRUE while a deep-env op is in progress, regardless of the server state.
  *
  *               Generalizes the older, fragmented pieces: InstallGuard (durable "install in progress"
- *               marker) + InstallJobs.isBusy() (process-scoped "a runrole/download is running"). Adds a
+ *               marker) + the process-scoped "a runrole/download is running" signal (isBusyNow). Adds a
  *               durable OWNER marker for ops that have no process-scoped repository of their own
  *               (backup/restore/clone).
  *
@@ -49,6 +49,10 @@ public final class EnvironmentLock {
     /** Who holds (or would hold) the lock. */
     public enum Owner { INSTALL, MODULE, BACKUP, RESTORE, CLONE }
 
+    /** ADFA-5146: what is actually holding the environment, for a refusal message that names the
+     *  real cause instead of always saying "an install". */
+    public enum Holder { CLONE, BACKUP, RESTORE, INSTALL, DOWNLOAD, NONE }
+
     // Owner marker: line 1 = Owner.name(), line 2 = epoch millis, line 3 = session token.
     private static final String MARKER = ".env_lock";
     // Unique per process launch: re-generated when the class is (re)loaded in a fresh process, so a
@@ -63,26 +67,21 @@ public final class EnvironmentLock {
 
     /**
      * Process-scoped signal: a runrole is in flight, or a REST download is running (a deep-env op would
-     * kill it by stopping the server). Matches the legacy {@code InstallJobs.isBusy()} exactly, so its
-     * callers keep the same behavior when they delegate here.
+     * kill it by stopping the server). ADFA-5146: content-download sources count only while their poll
+     * heartbeat is fresh (isActiveNow), so a killed service's stale session no longer blocks forever.
      */
     public static boolean isBusyNow() {
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) return true;
-        if (org.iiab.controller.redesign.ZimDownloadService.hasSession()
-                && !org.iiab.controller.redesign.ZimDownloadService.isComplete()) return true;
-        if (org.iiab.controller.redesign.BooksDownloadService.hasSession()
-                && !org.iiab.controller.redesign.BooksDownloadService.isComplete()) return true;
-        // ADFA-5074: Courses were never added here. A backup, restore, clone or maps runrole
-        // could start on top of a live seeding session and stop the server underneath it —
-        // exactly what the note above says this guard exists to prevent. The third content
-        // type arrived after the list and nobody registered it, the same way it was missed in
-        // the post-install drain and in the index's completion check.
-        //
-        // Same idiom as its neighbours on purpose: a session that has FINISHED protects
-        // nothing, so it must not gate a deep-env op. Only work in flight does.
-        org.iiab.controller.kolibri.presentation.KolibriSeedRepository kolibri =
-                org.iiab.controller.kolibri.presentation.KolibriSeedRepository.get();
-        if (kolibri.hasSession() && !kolibri.isComplete()) return true;
+        // ADFA-5146: the three content downloads (ZIM, Books, Courses) count as busy only while a
+        // non-terminal session's poll heartbeat is still fresh. A service killed before a terminal
+        // state used to leave hasSession() && !isComplete() true forever, blocking every deep-env op
+        // with no exit but force-stopping the app; isActiveNow() folds the freshness check in, so a
+        // dead session ages out. A live download (even a long, slow one) refreshes every poll and
+        // keeps blocking; a finished one never blocks. The module queue keeps its own signal — its
+        // stuck case is dominated by the durable install guard (ADFA-5147-adjacent), not this flag.
+        if (org.iiab.controller.redesign.ZimDownloadService.isActiveNow()) return true;
+        if (org.iiab.controller.redesign.BooksDownloadService.isActiveNow()) return true;
+        if (org.iiab.controller.kolibri.presentation.KolibriSeedRepository.get().isActiveNow()) return true;
         return false;
     }
 
@@ -104,11 +103,15 @@ public final class EnvironmentLock {
      * operation already in progress (or is it unsafe to start one)? Combines the process-scoped signal,
      * the durable install guard, and this-process's owner marker. Ask THIS, not
      * {@code ServerStateRepository.alive}.
+     *
+     * ADFA-5146: derived from {@link #currentHolder} so "is it held" and "what holds it" can never
+     * disagree. currentHolder is the ONE place that enumerates the lock sources; anything added there is
+     * picked up here for free. Do NOT re-list the sources in this method — a second copy is exactly the
+     * drift this derivation exists to prevent (isHeld would block while the refusal message named the
+     * wrong holder, or fell back to "an install").
      */
     public static boolean isHeld(Context ctx) {
-        return isBusyNow()
-                || org.iiab.controller.InstallGuard.inProgress(ctx)
-                || ownerHeld(ctx);
+        return currentHolder(ctx) != Holder.NONE;
     }
 
     /**
@@ -152,6 +155,33 @@ public final class EnvironmentLock {
         } catch (Exception ignored) {
             return null;   // garbled owner line
         }
+    }
+
+    /**
+     * ADFA-5146: which operation holds the environment right now, AND the single source of truth for
+     * "is it held at all" — {@link #isHeld} derives from this ({@code != NONE}). Priority (highest
+     * first, so the label names the dominant op): the owner marker (clone / backup / restore, or a
+     * write-op install), then the durable install guard, then a live content download (post-expiry, so
+     * a dead session never shows). Returns {@code NONE} when nothing holds it.
+     *
+     * To add a new lock source, add it HERE (with a Holder value + a k2go_busy_* string). isHeld and
+     * every deep-op gate then pick it up automatically — that is the whole point of routing both
+     * questions through one method.
+     */
+    public static Holder currentHolder(Context ctx) {
+        Owner owner = currentOwner(ctx);
+        if (owner != null) {
+            switch (owner) {
+                case CLONE:   return Holder.CLONE;
+                case BACKUP:  return Holder.BACKUP;
+                case RESTORE: return Holder.RESTORE;
+                case INSTALL:
+                case MODULE:  return Holder.INSTALL;
+            }
+        }
+        if (org.iiab.controller.InstallGuard.inProgress(ctx)) return Holder.INSTALL;
+        if (isBusyNow()) return Holder.DOWNLOAD;   // module installs are caught above by the guard
+        return Holder.NONE;
     }
 
     /** Epoch millis when this-process's owner acquired the lock, or 0 if not held (or stale). */

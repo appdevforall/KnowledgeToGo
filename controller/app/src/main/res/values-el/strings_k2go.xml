@@ -812,4 +812,9 @@
     <string name="k2go_clone_exit_rescan">Σαρώστε ξανά από το άλλο τηλέφωνο για επαλήθευση ›</string>
     <string name="k2go_clone_exit_keep_waiting">Συνέχεια αναμονής</string>
     <string name="k2go_clone_exit_redirecting">Άνοιγμα της βιβλιοθήκης σε %1$d δλ…</string>
+    <string name="k2go_busy_clone">Μια αντιγραφή μεταξύ τηλεφώνων βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
+    <string name="k2go_busy_backup">Ένα αντίγραφο ασφαλείας βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
+    <string name="k2go_busy_restore">Μια επαναφορά βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
+    <string name="k2go_busy_install">Μια εγκατάσταση βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
+    <string name="k2go_busy_download">Μια λήψη βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
 </resources>

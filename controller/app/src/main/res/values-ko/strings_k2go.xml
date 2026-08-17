@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">확인하려면 다른 휴대전화에서 다시 스캔하세요 ›</string>
     <string name="k2go_clone_exit_keep_waiting">계속 기다리기</string>
     <string name="k2go_clone_exit_redirecting">%1$d초 후 라이브러리를 엽니다…</string>
+    <string name="k2go_busy_clone">휴대전화 간 복사이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
+    <string name="k2go_busy_backup">백업이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
+    <string name="k2go_busy_restore">복원이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
+    <string name="k2go_busy_install">설치이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
+    <string name="k2go_busy_download">다운로드이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
 </resources>

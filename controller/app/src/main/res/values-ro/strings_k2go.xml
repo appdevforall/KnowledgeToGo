@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Scanează din nou de pe celălalt telefon pentru verificare ›</string>
     <string name="k2go_clone_exit_keep_waiting">Continuă să aștepți</string>
     <string name="k2go_clone_exit_redirecting">Se deschide biblioteca în %1$d s…</string>
+    <string name="k2go_busy_clone">O copiere între telefoane este în curs. Așteptați finalizarea operațiunii.</string>
+    <string name="k2go_busy_backup">O copie de rezervă este în curs. Așteptați finalizarea operațiunii.</string>
+    <string name="k2go_busy_restore">O restaurare este în curs. Așteptați finalizarea operațiunii.</string>
+    <string name="k2go_busy_install">O instalare este în curs. Așteptați finalizarea operațiunii.</string>
+    <string name="k2go_busy_download">O descărcare este în curs. Așteptați finalizarea operațiunii.</string>
 </resources>

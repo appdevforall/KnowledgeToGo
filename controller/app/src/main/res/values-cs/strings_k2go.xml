@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Naskenujte znovu z druhého telefonu pro ověření ›</string>
     <string name="k2go_clone_exit_keep_waiting">Pokračovat v čekání</string>
     <string name="k2go_clone_exit_redirecting">Knihovna se otevře za %1$d s…</string>
+    <string name="k2go_busy_clone">Kopírování mezi telefony probíhá. Počkejte na dokončení operace.</string>
+    <string name="k2go_busy_backup">Záloha probíhá. Počkejte na dokončení operace.</string>
+    <string name="k2go_busy_restore">Obnovení probíhá. Počkejte na dokončení operace.</string>
+    <string name="k2go_busy_install">Instalace probíhá. Počkejte na dokončení operace.</string>
+    <string name="k2go_busy_download">Stahování probíhá. Počkejte na dokončení operace.</string>
 </resources>

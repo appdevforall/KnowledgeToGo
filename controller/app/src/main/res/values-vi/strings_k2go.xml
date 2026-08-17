@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Quét lại từ điện thoại kia để xác minh ›</string>
     <string name="k2go_clone_exit_keep_waiting">Tiếp tục chờ</string>
     <string name="k2go_clone_exit_redirecting">Đang mở thư viện của bạn sau %1$d giây…</string>
+    <string name="k2go_busy_clone">Một bản sao giữa các điện thoại đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
+    <string name="k2go_busy_backup">Một bản sao lưu đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
+    <string name="k2go_busy_restore">Một lần khôi phục đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
+    <string name="k2go_busy_install">Một lần cài đặt đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
+    <string name="k2go_busy_download">Một lượt tải xuống đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
 </resources>

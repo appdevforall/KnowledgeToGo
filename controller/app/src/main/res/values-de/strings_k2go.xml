@@ -812,4 +812,9 @@
     <string name="k2go_clone_exit_rescan">Zur Überprüfung erneut vom anderen Telefon scannen ›</string>
     <string name="k2go_clone_exit_keep_waiting">Weiter warten</string>
     <string name="k2go_clone_exit_redirecting">Bibliothek wird in %1$d s geöffnet…</string>
+    <string name="k2go_busy_clone">Eine Übertragung zwischen Telefonen läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
+    <string name="k2go_busy_backup">Eine Sicherung läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
+    <string name="k2go_busy_restore">Eine Wiederherstellung läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
+    <string name="k2go_busy_install">Eine Installation läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
+    <string name="k2go_busy_download">Ein Download läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
 </resources>

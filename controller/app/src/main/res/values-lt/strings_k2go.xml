@@ -821,4 +821,9 @@
     <string name="k2go_clone_exit_rescan">Nuskaitykite dar kartą iš kito telefono patikrai ›</string>
     <string name="k2go_clone_exit_keep_waiting">Toliau laukti</string>
     <string name="k2go_clone_exit_redirecting">Biblioteka atidaroma po %1$d s…</string>
+    <string name="k2go_busy_clone">Kopijavimas tarp telefonų vyksta. Palaukite, kol operacija bus baigta.</string>
+    <string name="k2go_busy_backup">Atsarginė kopija vyksta. Palaukite, kol operacija bus baigta.</string>
+    <string name="k2go_busy_restore">Atkūrimas vyksta. Palaukite, kol operacija bus baigta.</string>
+    <string name="k2go_busy_install">Diegimas vyksta. Palaukite, kol operacija bus baigta.</string>
+    <string name="k2go_busy_download">Atsisiuntimas vyksta. Palaukite, kol operacija bus baigta.</string>
 </resources>

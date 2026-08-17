@@ -150,7 +150,7 @@ public class BackupJobFragment extends Fragment {
 
     private void launchPicker() {
         if (EnvironmentLock.isHeld(requireContext())) {   // another deep-env op owns the environment
-            Snackbars.make(requireView(), R.string.k2go_install_busy).show();
+            Snackbars.make(requireView(), org.iiab.controller.util.BusyMessage.resFor(requireContext())).show();
             popToIntro(false);
             return;
         }

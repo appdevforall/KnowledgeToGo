@@ -95,7 +95,7 @@ public class MapsConfirmFragment extends Fragment {
                 } else if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
                     // ADFA-4919/4951: proot (Maps) acts on the live system, so it must not overlap ANY
                     // deep-env op (runrole, download, backup/restore/clone). Refuse and tell the user to wait.
-                    Snackbars.make(v, R.string.k2go_install_busy).show();
+                    Snackbars.make(v, org.iiab.controller.util.BusyMessage.resFor(requireContext())).show();
                 } else {
                     // ADFA-4919: route Get More Maps through the install index (gated), same as the
                     // wizard — banks to MapsWishlist and opens SetupProgressActivity. Replaces the old

@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">从另一部手机重新扫描以核对 ›</string>
     <string name="k2go_clone_exit_keep_waiting">继续等待</string>
     <string name="k2go_clone_exit_redirecting">%1$d 秒后打开你的库…</string>
+    <string name="k2go_busy_clone">手机间复制正在进行中。请等待操作完成。</string>
+    <string name="k2go_busy_backup">备份正在进行中。请等待操作完成。</string>
+    <string name="k2go_busy_restore">恢复正在进行中。请等待操作完成。</string>
+    <string name="k2go_busy_install">安装正在进行中。请等待操作完成。</string>
+    <string name="k2go_busy_download">下载正在进行中。请等待操作完成。</string>
 </resources>

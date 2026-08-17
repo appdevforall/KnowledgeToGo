@@ -187,17 +187,17 @@
 <text class="note" x="1400" y="428">self-heals on the next read.</text>
 <text class="code" x="1400" y="450">EnvironmentLock:122-125</text>
 
-<rect class="st-bad" x="1380" y="516" width="316" height="248" rx="12"/>
-<text class="h2" x="1400" y="546">S13 · Stale "busy"</text>
-<text class="facts" x="1400" y="568">isBusyNow() stuck true</text>
-<text class="can" x="1400" y="596">Every deep-env door refuses with</text>
-<text class="can" x="1400" y="616">"An install is already running".</text>
-<text class="can" x="1400" y="636">Nothing is running.</text>
-<text class="note" x="1400" y="664">A download service killed before it</text>
-<text class="note" x="1400" y="684">reached a terminal state. No token,</text>
-<text class="note" x="1400" y="704">no expiry, no self-heal — but it</text>
-<text class="note" x="1400" y="722">dies with the process.</text>
-<text class="lblr" x="1400" y="742">Exit: close and reopen the app.</text>
+<rect class="st-ok" x="1380" y="516" width="316" height="248" rx="12"/>
+<text class="h2" x="1400" y="546">S13 · Stale busy — now expires</text>
+<text class="facts" x="1400" y="568">isBusyNow() ages out</text>
+<text class="can" x="1400" y="596">Was: every deep-env door refused</text>
+<text class="can" x="1400" y="616">"An install is already running"</text>
+<text class="can" x="1400" y="636">while nothing ran.</text>
+<text class="note" x="1400" y="664">ADFA-5146: a per-poll heartbeat</text>
+<text class="note" x="1400" y="684">ages a killed session out in ~30s,</text>
+<text class="note" x="1400" y="704">and the refusal now names the real</text>
+<text class="note" x="1400" y="722">holder (clone / backup / download).</text>
+<text class="lblr" x="1400" y="742">Now clears itself after ~30 s.</text>
 
 <!-- ============================ S5 / S5' ============================ -->
 <rect class="st-bad" x="860" y="800" width="330" height="212" rx="12"/>
@@ -222,8 +222,8 @@
 
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
-<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 15 Aug: findings 1, 3, 4, 5, 7 and 8 are closed. Two remain: 2 — the release blocker, a stale busy flag nobody clears — and 6, a banked order with no home and no owner yet.</text>
-<text class="sub" x="24" y="1292">Findings 1–4 were one sentence four times: a fact nobody clears. 1, 3 and 4 are closed; only 2 remains, a row in the standing directive's ledger at the top of operation-model-roadmap.svg — fix it there, not here.</text>
+<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 17 Aug: findings 1, 2, 3, 4, 5, 7 and 8 are closed. One remains: 6, a banked order with no home and no owner yet.</text>
+<text class="sub" x="24" y="1292">Findings 1–4 were one sentence four times: a fact nobody clears. 1, 3 and 4 were closed first; 2 — the release blocker, a row in the standing directive's ledger at the top of operation-model-roadmap.svg — is now closed too (ADFA-5146, 17 Aug).</text>
 
 <rect class="st-ok" x="24" y="1276" width="1672" height="212" rx="12"/>
 <text class="h2" x="44" y="1304">1 · CLOSED (13 Aug, ADFA-5119) — the boot gate no longer holds an install nobody can influence</text>
@@ -235,13 +235,13 @@
 <text class="note" x="44" y="1438">Closed FOR THE DOWNLOAD LEG, which is the one that holds the gate on a first install. Two things behind it are not: verify, extract and provisioning have no watchdog and are deliberately offered no controls, so a genuine hang there</text>
 <text class="note" x="44" y="1456">is still a trap — rarer, and unbounded. And the kiwix index (:478-479) and maps (:545-546) still send exit AND error onward, so a failed companion run reports as a finished install. Maps → ADFA-4898, the rest under ADFA-4893.</text>
 
-<rect class="st-bad" x="24" y="1520" width="1672" height="158" rx="12"/>
-<text class="h2" x="44" y="1548">2 · HIDDEN EXIT · RELEASE BLOCKER — a stale "busy" flag refuses every deep operation, and the way out has no name</text>
-<text class="can" x="44" y="1574">A download service killed before reaching a terminal state leaves EnvironmentLock.isBusyNow() true. Clone, backup, restore, module install and the dashboard rebuild</text>
-<text class="can" x="44" y="1594">all refuse, all with the same message — "An install is already running" — while nothing is running. It is not durable: every source it reads is in-memory, so closing</text>
-<text class="can" x="44" y="1614">the app clears it. That is the whole problem. The exit exists and nobody will find it, because no one closes an app to unblock a button.</text>
-<text class="code" x="44" y="1640">env/EnvironmentLock.java:69-87 (all four sources are process-scoped), 97-100 (the file names this and points at ADFA-4874).</text>
-<text class="note" x="44" y="1664">ADFA-5146. An age past which a session is ignored, and a message that names what is actually holding the lock. The expiry needs only an in-memory timestamp, not the durable record — the stale flag dies with the process, so 4897 is a different problem.</text>
+<rect class="st-ok" x="24" y="1520" width="1672" height="158" rx="12"/>
+<text class="h2" x="44" y="1548">2 · CLOSED (17 Aug, ADFA-5146) — the stale "busy" flag now expires, and the refusal names what actually holds the lock</text>
+<text class="can" x="44" y="1574">Was: a download service killed before a terminal state left EnvironmentLock.isBusyNow() true. Clone, backup, restore, module install and the dashboard rebuild all</text>
+<text class="can" x="44" y="1594">refused with the same message — "An install is already running" — while nothing ran. Not durable: every source it read was in-memory, so only closing the app cleared</text>
+<text class="can" x="44" y="1614">it — and no one closes an app to unblock a button, so the exit existed and nobody would find it.</text>
+<text class="code" x="44" y="1640">env/Freshness.java (staleness window) · EnvironmentLock.isBusyNow()/currentHolder, isHeld derived from currentHolder (one source) · util/BusyMessage · per-poll heartbeat in the three content services.</text>
+<text class="note" x="44" y="1664">Done, device-verified (stale flag expired in exactly ~30 s): a non-terminal session counts as busy only while its poll heartbeat is fresh, so a dead one ages out; a live-but-slow download stays fresh and keeps blocking. Also fixed a Clone hotspot-permission recursion crash surfaced while testing.</text>
 
 <rect class="st-ok" x="24" y="1710" width="1672" height="190" rx="12"/>
 <text class="h2" x="44" y="1738">3 · CLOSED (13 Aug, ADFA-5137) — the flag that could disagree with reality no longer exists</text>
