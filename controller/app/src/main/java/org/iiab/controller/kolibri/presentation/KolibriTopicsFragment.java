@@ -266,6 +266,18 @@ public final class KolibriTopicsFragment extends Fragment {
                 }
                 list.addView(nodeRow(rows.get(i), childAncestors));
             }
+            // ADFA-5094: the offline bundle folds a folder's own loose resources into an
+            // aggregate rather than listing them, so show that as one informational line —
+            // this is also what keeps a loose-only level from rendering blank. The live
+            // sources list those leaves individually, so looseResourceCount is 0 and this
+            // is skipped.
+            TopicNode here = s.node();
+            if (here != null && here.looseResourceCount() > 0) {
+                if (!rows.isEmpty()) {
+                    list.addView(hairline());
+                }
+                list.addView(looseRow(here));
+            }
         }
 
         count.setText(getString(R.string.k2go_zc_count_items, s.children().size()));
@@ -422,6 +434,26 @@ public final class KolibriTopicsFragment extends Fragment {
             return getString(R.string.k2go_kolibri_resources_fmt, node.descendantCount());
         }
         return "";
+    }
+
+    /**
+     * ADFA-5094: the offline summary of a folder's direct loose resources — the leaves the
+     * bundle folds away. Informational only: they have no ids to pick individually (picking
+     * the folder brings them), so no checkbox or chevron. Reuses the resource-count string so
+     * no new translation is needed; the size is language-neutral.
+     */
+    private View looseRow(TopicNode node) {
+        String text = getString(R.string.k2go_kolibri_resources_fmt, node.looseResourceCount());
+        if (node.looseResourceBytes() > 0) {
+            text = text + " · " + ByteFormatter.toHuman(node.looseResourceBytes());
+        }
+        TextView t = new TextView(requireContext());
+        t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        t.setText(text);
+        t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+        t.setPadding(px(12), px(10), px(12), px(10));
+        t.setMinimumHeight(px(36));
+        return t;
     }
 
     private View note(String text, int colorRes) {
