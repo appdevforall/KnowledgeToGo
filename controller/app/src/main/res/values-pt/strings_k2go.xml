@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Digitalize novamente do outro telefone para verificar ›</string>
     <string name="k2go_clone_exit_keep_waiting">Continuar a aguardar</string>
     <string name="k2go_clone_exit_redirecting">A abrir a sua biblioteca em %1$d s…</string>
+    <string name="k2go_busy_clone">Uma cópia entre telefones está em andamento. Aguarde a conclusão da operação.</string>
+    <string name="k2go_busy_backup">Uma cópia de segurança está em andamento. Aguarde a conclusão da operação.</string>
+    <string name="k2go_busy_restore">Uma restauração está em andamento. Aguarde a conclusão da operação.</string>
+    <string name="k2go_busy_install">Uma instalação está em andamento. Aguarde a conclusão da operação.</string>
+    <string name="k2go_busy_download">Uma transferência está em andamento. Aguarde a conclusão da operação.</string>
 </resources>

@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Doğrulamak için diğer telefondan yeniden tara ›</string>
     <string name="k2go_clone_exit_keep_waiting">Beklemeye devam et</string>
     <string name="k2go_clone_exit_redirecting">Kitaplığınız %1$d sn içinde açılıyor…</string>
+    <string name="k2go_busy_clone">Telefonlar arası kopyalama sürüyor. Lütfen işlemin bitmesini bekleyin.</string>
+    <string name="k2go_busy_backup">Yedekleme sürüyor. Lütfen işlemin bitmesini bekleyin.</string>
+    <string name="k2go_busy_restore">Geri yükleme sürüyor. Lütfen işlemin bitmesini bekleyin.</string>
+    <string name="k2go_busy_install">Kurulum sürüyor. Lütfen işlemin bitmesini bekleyin.</string>
+    <string name="k2go_busy_download">İndirme sürüyor. Lütfen işlemin bitmesini bekleyin.</string>
 </resources>

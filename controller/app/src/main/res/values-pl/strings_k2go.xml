@@ -821,4 +821,9 @@
     <string name="k2go_clone_exit_rescan">Zeskanuj ponownie z drugiego telefonu, aby zweryfikować ›</string>
     <string name="k2go_clone_exit_keep_waiting">Czekaj dalej</string>
     <string name="k2go_clone_exit_redirecting">Otwieranie biblioteki za %1$d s…</string>
+    <string name="k2go_busy_clone">Kopiowanie między telefonami jest w toku. Poczekaj na zakończenie operacji.</string>
+    <string name="k2go_busy_backup">Kopia zapasowa jest w toku. Poczekaj na zakończenie operacji.</string>
+    <string name="k2go_busy_restore">Przywracanie jest w toku. Poczekaj na zakończenie operacji.</string>
+    <string name="k2go_busy_install">Instalacja jest w toku. Poczekaj na zakończenie operacji.</string>
+    <string name="k2go_busy_download">Pobieranie jest w toku. Poczekaj na zakończenie operacji.</string>
 </resources>

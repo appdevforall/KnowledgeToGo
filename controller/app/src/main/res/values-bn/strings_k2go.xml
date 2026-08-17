@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">যাচাই করতে অন্য ফোন থেকে আবার স্ক্যান করুন ›</string>
     <string name="k2go_clone_exit_keep_waiting">অপেক্ষা করতে থাকুন</string>
     <string name="k2go_clone_exit_redirecting">%1$d সেকেন্ডে আপনার লাইব্রেরি খুলছে…</string>
+    <string name="k2go_busy_clone">ফোনের মধ্যে কপি চলছে। অনুগ্রহ করে অপারেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+    <string name="k2go_busy_backup">ব্যাকআপ চলছে। অনুগ্রহ করে অপারেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+    <string name="k2go_busy_restore">পুনরুদ্ধার চলছে। অনুগ্রহ করে অপারেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+    <string name="k2go_busy_install">ইনস্টল চলছে। অনুগ্রহ করে অপারেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+    <string name="k2go_busy_download">ডাউনলোড চলছে। অনুগ্রহ করে অপারেশন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
 </resources>

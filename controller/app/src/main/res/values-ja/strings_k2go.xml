@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">確認のためもう一方の端末から再スキャン ›</string>
     <string name="k2go_clone_exit_keep_waiting">待機を続ける</string>
     <string name="k2go_clone_exit_redirecting">%1$d 秒後にライブラリを開きます…</string>
+    <string name="k2go_busy_clone">端末間のコピーが進行中です。操作が完了するまでお待ちください。</string>
+    <string name="k2go_busy_backup">バックアップが進行中です。操作が完了するまでお待ちください。</string>
+    <string name="k2go_busy_restore">復元が進行中です。操作が完了するまでお待ちください。</string>
+    <string name="k2go_busy_install">インストールが進行中です。操作が完了するまでお待ちください。</string>
+    <string name="k2go_busy_download">ダウンロードが進行中です。操作が完了するまでお待ちください。</string>
 </resources>

@@ -110,6 +110,12 @@ public class CloneFragment extends Fragment {
     private String apkFileName;
 
     private ActivityResultLauncher<String> locationPerm;
+    // ADFA-5146: request the location permission at most once per attempt. ensureHotspot() runs on every
+    // render, and the permission callback re-renders; on OEMs that return a denied permission result
+    // synchronously that becomes unbounded recursion (render -> ensureHotspot -> launch -> sync-deny ->
+    // callback -> render …), overflowing the stack. This latch breaks the loop; setMode() clears it so a
+    // Hotspot/Wi-Fi switch is a natural retry path.
+    private boolean locationAsked = false;
 
     private TextView tabSend, tabReceive, tabHotspot, tabWifi, caption, subCaption, advance, stop, footer;
     // ADFA-4785: intent fork (Send / Receive) replaces the persistent top toggle.
@@ -423,6 +429,7 @@ public class CloneFragment extends Fragment {
     private void setMode(Mode m) {
         mode = m;
         apRetries = 0;   // ADFA-5158: fresh AP-IP poll budget on a mode switch
+        locationAsked = false;   // ADFA-5146: a mode switch is a fresh attempt — allow one more perm prompt
         netHandler.removeCallbacks(netRetry);
         if (secJoin != null) secJoin.fbOpen = false;   // ADFA-4815: each mode starts with ①'s fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
@@ -442,7 +449,10 @@ public class CloneFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             hs.start(requireContext().getApplicationContext());
-        } else {
+        } else if (!locationAsked) {
+            // ADFA-5146: launch the request exactly once. Do NOT re-launch on later renders (incl. the one
+            // the permission callback triggers) — a synchronous deny would otherwise recurse into overflow.
+            locationAsked = true;
             locationPerm.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
     }
@@ -457,7 +467,7 @@ public class CloneFragment extends Fragment {
         // another one (install/backup/restore) holds the lock, else acquire(CLONE) and stop the server
         // so the served tree is static; the daemon starts only after the stop completes.
         if (!cloneLockHeld && EnvironmentLock.isHeld(requireContext())) {
-            Toast.makeText(requireContext(), getString(R.string.k2go_install_busy), Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), org.iiab.controller.util.BusyMessage.resFor(requireContext()), Toast.LENGTH_LONG).show();
             return;
         }
         daemonStarting = true;

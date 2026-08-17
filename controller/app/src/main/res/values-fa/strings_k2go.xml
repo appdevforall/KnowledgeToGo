@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">برای بررسی، دوباره از تلفن دیگر اسکن کنید ›</string>
     <string name="k2go_clone_exit_keep_waiting">ادامهٔ انتظار</string>
     <string name="k2go_clone_exit_redirecting">باز کردن کتابخانه شما تا %1$d ثانیه…</string>
+    <string name="k2go_busy_clone">کپی بین تلفن‌ها در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
+    <string name="k2go_busy_backup">پشتیبان‌گیری در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
+    <string name="k2go_busy_restore">بازیابی در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
+    <string name="k2go_busy_install">نصب در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
+    <string name="k2go_busy_download">دانلود در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
 </resources>

@@ -664,6 +664,11 @@
     <string name="k2go_setup_context_proot">You\'ll be taken to your library automatically when setup finishes. Keep the app on this screen while it installs — this part can’t run in the background.</string>
     <!-- ADFA-4919: shown when the user tries to start a proot module while another install job is running. -->
     <string name="k2go_install_busy">An install is already running — please wait for it to finish.</string>
+    <string name="k2go_busy_clone">A copy between phones is in progress — please wait for it to finish.</string>
+    <string name="k2go_busy_backup">A backup is in progress — please wait for it to finish.</string>
+    <string name="k2go_busy_restore">A restore is in progress — please wait for it to finish.</string>
+    <string name="k2go_busy_install">An install is in progress — please wait for it to finish.</string>
+    <string name="k2go_busy_download">A download is in progress — please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
     <string name="k2go_setup_leave_hint">Still setting up the system. You can leave the app — it keeps going and will be ready when you come back.</string>
     <!-- ADFA-4919 (2c-ii): shown when a proot install was killed and the system can't start. -->

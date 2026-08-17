@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">أعد المسح من الهاتف الآخر للتحقق ›</string>
     <string name="k2go_clone_exit_keep_waiting">متابعة الانتظار</string>
     <string name="k2go_clone_exit_redirecting">فتح مكتبتك خلال %1$d ث…</string>
+    <string name="k2go_busy_clone">نسخ بين الهواتف قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
+    <string name="k2go_busy_backup">نسخ احتياطي قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
+    <string name="k2go_busy_restore">استعادة قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
+    <string name="k2go_busy_install">تثبيت قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
+    <string name="k2go_busy_download">تنزيل قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
 </resources>

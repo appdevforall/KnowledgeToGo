@@ -155,7 +155,7 @@ public class ModuleDetailFragment extends Fragment {
 
         Button installNow = installNowBtn;
         installNow.setOnClickListener(v -> {
-            if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, R.string.k2go_install_busy).show(); return; }
+            if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) { Snackbars.make(v, org.iiab.controller.util.BusyMessage.resFor(requireContext())).show(); return; }
             if (getActivity() instanceof SetupLibraryActivity) {
                 if (c.hasSelector) {
                     ((SetupLibraryActivity) getActivity()).openMapsChoose();   // ADFA-4958: maps needs its content selector first

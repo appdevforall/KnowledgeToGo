@@ -811,4 +811,9 @@
     <string name="k2go_clone_exit_rescan">Changanua tena kutoka kwa simu nyingine ili kuthibitisha ›</string>
     <string name="k2go_clone_exit_keep_waiting">Endelea kusubiri</string>
     <string name="k2go_clone_exit_redirecting">Inafungua maktaba yako baada ya sekunde %1$d…</string>
+    <string name="k2go_busy_clone">Kunakili kati ya simu inaendelea. Tafadhali subiri operesheni ikamilike.</string>
+    <string name="k2go_busy_backup">Hifadhi nakala inaendelea. Tafadhali subiri operesheni ikamilike.</string>
+    <string name="k2go_busy_restore">Kurejesha inaendelea. Tafadhali subiri operesheni ikamilike.</string>
+    <string name="k2go_busy_install">Usakinishaji inaendelea. Tafadhali subiri operesheni ikamilike.</string>
+    <string name="k2go_busy_download">Upakuaji inaendelea. Tafadhali subiri operesheni ikamilike.</string>
 </resources>
