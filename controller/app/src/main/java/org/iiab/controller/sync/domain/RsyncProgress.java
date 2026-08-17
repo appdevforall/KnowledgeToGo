@@ -18,18 +18,25 @@ import java.util.regex.Pattern;
 
 public final class RsyncProgress {
 
+    /** Bytes transferred so far this run — the leading column of a progress2 line. */
+    public final long bytes;
     public final int percent;
     public final String speed;
     public final String eta;
 
-    private RsyncProgress(int percent, String speed, String eta) {
+    private RsyncProgress(long bytes, int percent, String speed, String eta) {
+        this.bytes = bytes;
         this.percent = percent;
         this.speed = speed;
         this.eta = eta;
     }
 
+    // ADFA-5160: capture the leading transferred-bytes column (with grouping separators)
+    // as well as the percent. rsync's own percent divides by an estimate that grows as it
+    // discovers files, so it jumps around; the byte count is a stable numerator the caller
+    // can divide by a known total instead.
     private static final Pattern PROGRESS =
-            Pattern.compile("(\\d+)%\\s+([\\d\\.]+[a-zA-Z/s]+)\\s+([\\d:]+)");
+            Pattern.compile("([\\d,]+)\\s+(\\d+)%\\s+([\\d\\.]+[a-zA-Z/s]+)\\s+([\\d:]+)");
 
     private static final Pattern STATS =
             Pattern.compile("Total transferred file size:\\s+([\\d,\\.]+)\\s+bytes");
@@ -43,7 +50,8 @@ public final class RsyncProgress {
         Matcher m = PROGRESS.matcher(line);
         if (!m.find()) return null;
         try {
-            return new RsyncProgress(Integer.parseInt(m.group(1)), m.group(2), m.group(3));
+            long bytes = Long.parseLong(m.group(1).replaceAll("[,\\.]", ""));
+            return new RsyncProgress(bytes, Integer.parseInt(m.group(2)), m.group(3), m.group(4));
         } catch (NumberFormatException e) {
             return null;
         }
@@ -63,5 +71,14 @@ public final class RsyncProgress {
         } catch (NumberFormatException e) {
             return fallback;
         }
+    }
+
+    /** Formats a duration in seconds as rsync's {@code H:MM:SS}. Negatives clamp to zero. */
+    public static String formatEta(long seconds) {
+        if (seconds < 0) seconds = 0;
+        long h = seconds / 3600;
+        long m = (seconds % 3600) / 60;
+        long s = seconds % 60;
+        return h + String.format(java.util.Locale.US, ":%02d:%02d", m, s);
     }
 }

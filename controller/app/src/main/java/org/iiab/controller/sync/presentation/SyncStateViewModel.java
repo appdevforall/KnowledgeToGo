@@ -45,6 +45,7 @@ public class SyncStateViewModel extends ViewModel {
     // credentials/destination are kept here so the re-bound fragment can start the transfer.
     private SyncHandshakeHelper.SyncCredentials pendingCreds;
     private File pendingDestDir;
+    private long pendingBytes; // ADFA-5160: dry-run bytes-to-transfer, the transfer progress denominator
     private Context appContext; // application context, for releasing the network binding
 
     /** The single transport instance for this Activity; created lazily, reused across recreations. */
@@ -66,6 +67,10 @@ public class SyncStateViewModel extends ViewModel {
 
     public File getPendingDestDir() { return pendingDestDir; }
 
+    /** ADFA-5160: the dry-run's bytes-to-transfer (0 = not yet calculated), used as the transfer
+     *  progress denominator so the bar climbs a fixed total instead of rsync's growing estimate. */
+    public long getPendingBytes() { return pendingBytes; }
+
     /**
      * Reachability probe + rsync dry-run, off the fragment. Publishes CONNECTING -> CALCULATING ->
      * CONFIRM (ready, with size) or ABORTED (unreachable / not enough space / dry-run error). The
@@ -74,6 +79,7 @@ public class SyncStateViewModel extends ViewModel {
     public void startProbe(Context appCtx, ShareConfig shareConfig, SyncHandshakeHelper.SyncCredentials creds) {
         this.pendingCreds = creds;
         this.pendingDestDir = null;
+        this.pendingBytes = 0L;
         this.appContext = appCtx.getApplicationContext();
         final SyncProgressRepository repo = SyncProgressRepository.get();
         repo.postConnecting();
@@ -110,6 +116,7 @@ public class SyncStateViewModel extends ViewModel {
                     new TransportEngine.DryRunListener() {
                         @Override
                         public void onCalculated(long bytesToTransfer) {
+                            pendingBytes = bytesToTransfer; // ADFA-5160: denominator for the transfer bar
                             double gigabytes = bytesToTransfer / (1024.0 * 1024.0 * 1024.0);
                             // ADFA-5105: one margin (StorageGuard) on the real write target (StorageProbe),
                             // not a second -5 GB copy. Clone-receive overwrites the library, so refuse on
