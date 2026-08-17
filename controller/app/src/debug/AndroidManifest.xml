@@ -12,13 +12,5 @@
                 <action android:name="org.iiab.controller.DEBUG_DELIVERY" />
             </intent-filter>
         </receiver>
-        <!-- ADFA-5146: seed a stale busy flag from adb to verify it self-expires. Debug only. -->
-        <receiver
-            android:name="org.iiab.controller.env.debug.DebugStaleDownloadReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="org.iiab.controller.DEBUG_STALE_DL" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>
