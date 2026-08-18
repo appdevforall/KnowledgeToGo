@@ -899,4 +899,8 @@
     <string name="k2go_done">Done</string>
     <string name="k2go_connect_step_join">Join</string>
     <string name="k2go_connect_step_open">Open</string>
+    <string name="k2go_pending_title">Pending downloads</string>
+    <string name="k2go_pending_empty">No pending downloads.</string>
+    <string name="k2go_pending_running">Something is downloading now</string>
+    <string name="k2go_pending_see_progress">See progress</string>
 </resources>
