@@ -750,24 +750,3 @@ task refreshKolibriCatalog {
 tasks.matching { it.name == 'assembleRelease' || it.name == 'bundleRelease' }.configureEach {
     dependsOn refreshKolibriCatalog
 }
-
-// ---- Kolibri topic tree: ship gzipped only (ADFA-5094) ------------------------
-// The tree bundle ships GZIPPED (kolibri_tree.jsonl.gz, ~3 MB vs ~16 MB raw) and the
-// app reads only that (BundledTreeSource.ASSET). The generator writes an UNCOMPRESSED
-// kolibri_tree.jsonl as its intermediate (tools/build_kolibri_catalog.py --tree), which
-// the publish-catalogs workflow then `gzip -9`s in place. .gitignore keeps that raw file
-// out of git, but git has NO say over packaging: mergeAssets bundles every file physically
-// present in src/main/assets/, so a stray raw copy left by a local `--tree` run would ship
-// alongside the .gz and bloat the APK. Delete it before the build so only the .gz can ship.
-task purgeUncompressedKolibriTree {
-    group = 'build setup'
-    description = 'Remove any stray uncompressed kolibri_tree.jsonl so only the .gz ships in the APK'
-    doLast {
-        def stray = file('src/main/assets/kolibri_tree.jsonl')
-        if (stray.exists()) {
-            logger.lifecycle(">> [kolibri tree] removing stray uncompressed asset ${stray.name} (ships gzipped only)")
-            delete stray
-        }
-    }
-}
-preBuild.dependsOn purgeUncompressedKolibriTree
