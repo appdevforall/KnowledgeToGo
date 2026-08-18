@@ -29,5 +29,6 @@
 *.keystore binary
 *.zip  binary
 *.tar.gz binary
+*.gz   binary
 *.meta4 binary
 *.zim  binary
