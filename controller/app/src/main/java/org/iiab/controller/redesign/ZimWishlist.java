@@ -63,6 +63,19 @@ public final class ZimWishlist {
         prefs(ctx).edit().putString(KEY, out.toString()).apply();
     }
 
+    /** ADFA-5169: drop one order by its "project|lang|flavour" key; the rest stay.
+     *  No-op if the key is absent. Mirrors BooksWishlist.remove / KolibriWishlist.remove. */
+    public static void remove(Context ctx, String key) {
+        if (key == null) return;
+        JSONArray cur = all(ctx);
+        JSONArray out = new JSONArray();
+        for (int i = 0; i < cur.length(); i++) {
+            JSONObject o = cur.optJSONObject(i);
+            if (o != null && !key.equals(o.optString("key"))) out.put(o);
+        }
+        prefs(ctx).edit().putString(KEY, out.toString()).apply();
+    }
+
     public static void clear(Context ctx) {
         prefs(ctx).edit().remove(KEY).apply();
     }
