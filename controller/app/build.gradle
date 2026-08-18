@@ -706,6 +706,10 @@ preBuild.dependsOn refreshMapsSizes
 // tools/build_kiwix_catalog.py. Unlike the size tasks above it does NOT run on every build
 // (the listings are large and the servers throttle bots) — it runs automatically only when
 // assembling a RELEASE, and can be invoked manually any time: ./gradlew refreshKiwixCatalog.
+// ADFA-5094: unlike Kolibri, Kiwix is NOT yet pulled from Cloudflare on-device (KiwixCatalog is
+// not overlay-aware — that is Kiwix's phase 2), so release regeneration stays here as its only
+// on-device freshness path until the runtime pull ships. The weekly workflow already publishes
+// the Kiwix catalog to Cloudflare so phase 2 has something to consume.
 // Never fails the build: if python3 is missing or the fetch is blocked, the committed CSV
 // (last known) is kept.
 task refreshKiwixCatalog {
@@ -726,16 +730,18 @@ tasks.matching { it.name == 'assembleRelease' || it.name == 'bundleRelease' }.co
     dependsOn refreshKiwixCatalog
 }
 
-// ---- Kolibri channel catalog refresh (release-only) ---------------------------
+// ---- Kolibri channel catalog refresh (manual only) ----------------------------
 // Regenerates src/main/assets/kolibri_catalog.jsonl from Kolibri Studio's public API via
 // tools/build_kolibri_catalog.py. Bundled rather than fetched on-device because Studio's
 // channel endpoint is 97% base64 thumbnails with no way to opt out — 4.1 MB to use 119 KB
-// (ADR-4954 D1). Release-only, like the Kiwix catalog above, and never fails the build:
-// on any error the committed JSONL (last known) is kept.
-// Manual run: ./gradlew refreshKolibriCatalog
+// (ADR-4954 D1). ADFA-5094: this no longer runs on release builds — the weekly publish-catalogs
+// workflow generates the catalog off-device (Studio hit once a week, not per build) and the app
+// pulls it from Cloudflare at runtime. The bundled JSONL is the offline floor; run this by hand
+// only when you want to refresh that floor: ./gradlew refreshKolibriCatalog. Never fails the
+// build: on any error the committed JSONL (last known) is kept.
 task refreshKolibriCatalog {
     group = 'build setup'
-    description = 'Regenerate assets/kolibri_catalog.jsonl from Kolibri Studio (release / manual)'
+    description = 'Regenerate assets/kolibri_catalog.jsonl from Kolibri Studio (manual)'
     doLast {
         try {
             def proc = ['python3', 'tools/build_kolibri_catalog.py'].execute(null, projectDir)
@@ -746,7 +752,4 @@ task refreshKolibriCatalog {
             logger.warn(">> [kolibri catalog] skipped (${e.message}); kept existing JSONL.")
         }
     }
-}
-tasks.matching { it.name == 'assembleRelease' || it.name == 'bundleRelease' }.configureEach {
-    dependsOn refreshKolibriCatalog
 }
