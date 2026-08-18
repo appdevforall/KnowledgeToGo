@@ -12,5 +12,14 @@
                 <action android:name="org.iiab.controller.DEBUG_DELIVERY" />
             </intent-filter>
         </receiver>
+        <!-- ADFA-5169: seed a few banked content orders from adb to validate the Pending
+             downloads screen. Debug only; remove with DebugSeedPendingReceiver before merge. -->
+        <receiver
+            android:name="org.iiab.controller.pending.debug.DebugSeedPendingReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.iiab.controller.DEBUG_SEED_PENDING" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
