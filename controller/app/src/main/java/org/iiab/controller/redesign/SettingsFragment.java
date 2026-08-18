@@ -23,6 +23,9 @@ import org.iiab.controller.feedback.presentation.FeedbackFragment;
  *  open as sub-screens (bottom nav stays); Theme + Language + Send feedback are functional. */
 public class SettingsFragment extends Fragment {
 
+    // ADFA-5169: kept so onResume can refresh its count when Settings becomes visible.
+    private View pendingRow;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
@@ -45,7 +48,7 @@ public class SettingsFragment extends Fragment {
         });
         // ADFA-5169: always-visible entry to the queued content orders (finding 6). Shows a count, or
         // "None" when empty. Opens as a settings sub-screen (bottom nav stays), like Language/About.
-        SettingsUi.row(ctx, list, getString(R.string.k2go_settings_pending), null, pendingValue(ctx), v -> {
+        pendingRow = SettingsUi.row(ctx, list, getString(R.string.k2go_settings_pending), null, pendingValue(ctx), v -> {
             if (getActivity() instanceof LibraryActivity) {
                 ((LibraryActivity) getActivity()).openSettingsSub(
                         new org.iiab.controller.pending.presentation.PendingOrdersFragment());
@@ -77,6 +80,19 @@ public class SettingsFragment extends Fragment {
         return n > 0
                 ? getString(R.string.k2go_settings_pending_count, n)
                 : getString(R.string.k2go_settings_pending_none);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshPendingValue();   // keep the count current on tab entry and on return from the screen
+    }
+
+    /** ADFA-5169: update the pending row's value in place — its children are [column, value, chevron]. */
+    private void refreshPendingValue() {
+        if (!(pendingRow instanceof ViewGroup) || getContext() == null) return;
+        View v = ((ViewGroup) pendingRow).getChildAt(1);
+        if (v instanceof TextView) ((TextView) v).setText(pendingValue(requireContext()));
     }
 
     private void openFeedback() {
