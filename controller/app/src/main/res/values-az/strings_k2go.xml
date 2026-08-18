@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Bərpa davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
     <string name="k2go_busy_install">Quraşdırma davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
     <string name="k2go_busy_download">Yükləmə davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
+    <string name="k2go_pending_title">Gözləyən yükləmələr</string>
+    <string name="k2go_pending_empty">Gözləyən yükləmə yoxdur.</string>
+    <string name="k2go_pending_running">İndi nəsə yüklənir</string>
+    <string name="k2go_pending_see_progress">Gedişata bax</string>
+    <string name="k2go_settings_pending">Gözləyən yükləmələr</string>
+    <string name="k2go_settings_pending_count">%d növbədə</string>
+    <string name="k2go_settings_pending_none">Yoxdur</string>
 </resources>

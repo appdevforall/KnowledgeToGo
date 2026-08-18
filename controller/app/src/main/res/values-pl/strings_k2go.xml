@@ -826,4 +826,11 @@
     <string name="k2go_busy_restore">Przywracanie jest w toku. Poczekaj na zakończenie operacji.</string>
     <string name="k2go_busy_install">Instalacja jest w toku. Poczekaj na zakończenie operacji.</string>
     <string name="k2go_busy_download">Pobieranie jest w toku. Poczekaj na zakończenie operacji.</string>
+    <string name="k2go_pending_title">Oczekujące pobierania</string>
+    <string name="k2go_pending_empty">Brak oczekujących pobierań.</string>
+    <string name="k2go_pending_running">Coś jest teraz pobierane</string>
+    <string name="k2go_pending_see_progress">Zobacz postęp</string>
+    <string name="k2go_settings_pending">Oczekujące pobierania</string>
+    <string name="k2go_settings_pending_count">%d w kolejce</string>
+    <string name="k2go_settings_pending_none">Brak</string>
 </resources>

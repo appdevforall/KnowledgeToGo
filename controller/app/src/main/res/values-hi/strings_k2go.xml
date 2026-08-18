@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">रिस्टोर चल रहा है। कृपया कार्य पूरा होने तक प्रतीक्षा करें।</string>
     <string name="k2go_busy_install">इंस्टॉल चल रहा है। कृपया कार्य पूरा होने तक प्रतीक्षा करें।</string>
     <string name="k2go_busy_download">डाउनलोड चल रहा है। कृपया कार्य पूरा होने तक प्रतीक्षा करें।</string>
+    <string name="k2go_pending_title">लंबित डाउनलोड</string>
+    <string name="k2go_pending_empty">कोई लंबित डाउनलोड नहीं।</string>
+    <string name="k2go_pending_running">अभी कुछ डाउनलोड हो रहा है</string>
+    <string name="k2go_pending_see_progress">प्रगति देखें</string>
+    <string name="k2go_settings_pending">लंबित डाउनलोड</string>
+    <string name="k2go_settings_pending_count">%d कतार में</string>
+    <string name="k2go_settings_pending_none">कोई नहीं</string>
 </resources>

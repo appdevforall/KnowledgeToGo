@@ -432,7 +432,7 @@
 <text class="h2" x="228" y="2931">The receive/clone dead-ends closed — and the debt the fixes exposed</text>
 <text class="item" x="40" y="2958">Landed and merged: ADFA-5143 (a clone in flight has a name and a way back), 5147 (a damaged system reads as damaged), 5150 (systemless Connect/Send route to Recover), 5151</text>
 <text class="item" x="40" y="2975">(confine the receive loop to the recover hub), 5152 (a reopen lands on progress, not the fork), 5154 (Connect + Clone Send redesigned to stacked / 2-page QR), 5157 (shared QrSection),</text>
-<text class="item" x="40" y="2992">5155 (receive success waits for services before Home, never a fixed timer). In flight: ADFA-5158 (get-app QR waits for the hotspot AP IP by polling, not a one-shot; broadened detection).</text>
+<text class="item" x="40" y="2992">5155 (receive success waits for services before Home, never a fixed timer). Also landed: ADFA-5158 (get-app QR waits for the hotspot AP IP by polling, not a one-shot; broadened detection).</text>
 <text class="h3" x="40" y="3024">FOLLOW-UPS WORTH A TICKET</text>
 <circle class="s-todo" cx="48" cy="3044" r="5.5"/>
 <text class="item" x="62" y="3048">Shared "poll until a resource is ready" utility (a ServiceReadyGate). The same Handler-reschedule + in-flight guard + teardown now lives in three places — SetupProgressActivity.readyPoll,</text>

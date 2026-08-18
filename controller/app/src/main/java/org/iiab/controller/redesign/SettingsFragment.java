@@ -23,6 +23,9 @@ import org.iiab.controller.feedback.presentation.FeedbackFragment;
  *  open as sub-screens (bottom nav stays); Theme + Language + Send feedback are functional. */
 public class SettingsFragment extends Fragment {
 
+    // ADFA-5169: kept so onResume can refresh its count when Settings becomes visible.
+    private View pendingRow;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup c, @Nullable Bundle s) {
@@ -43,6 +46,14 @@ public class SettingsFragment extends Fragment {
             i.putExtra(SetupLibraryActivity.EXTRA_MODULE_MGMT, true);
             ctx.startActivity(i);
         });
+        // ADFA-5169: always-visible entry to the queued content orders (finding 6). Shows a count, or
+        // "None" when empty. Opens as a settings sub-screen (bottom nav stays), like Language/About.
+        pendingRow = SettingsUi.row(ctx, list, getString(R.string.k2go_settings_pending), null, pendingValue(ctx), v -> {
+            if (getActivity() instanceof LibraryActivity) {
+                ((LibraryActivity) getActivity()).openSettingsSub(
+                        new org.iiab.controller.pending.presentation.PendingOrdersFragment());
+            }
+        });
         SettingsUi.row(ctx, list, getString(R.string.k2go_settings_backups), getString(R.string.k2go_br_row_sub), null, v -> {
             android.content.Intent i = new android.content.Intent(ctx, SetupLibraryActivity.class);
             i.putExtra(SetupLibraryActivity.EXTRA_BACKUP_RESTORE, true);
@@ -60,6 +71,28 @@ public class SettingsFragment extends Fragment {
         if (getActivity() instanceof LibraryActivity) {
             ((LibraryActivity) getActivity()).openSettingsSub(SettingsSubFragment.newInstance(screen));
         }
+    }
+
+    /** ADFA-5169: the right-aligned value for the Pending downloads row — a count, or "None".
+     *  A cheap read (three SharedPreferences reads via the repository), safe on the main thread. */
+    private String pendingValue(Context ctx) {
+        int n = new org.iiab.controller.pending.data.PendingOrdersRepositoryImpl(ctx).list().size();
+        return n > 0
+                ? getString(R.string.k2go_settings_pending_count, n)
+                : getString(R.string.k2go_settings_pending_none);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        refreshPendingValue();   // keep the count current on tab entry and on return from the screen
+    }
+
+    /** ADFA-5169: update the pending row's value in place — its children are [column, value, chevron]. */
+    private void refreshPendingValue() {
+        if (!(pendingRow instanceof ViewGroup) || getContext() == null) return;
+        View v = ((ViewGroup) pendingRow).getChildAt(1);
+        if (v instanceof TextView) ((TextView) v).setText(pendingValue(requireContext()));
     }
 
     private void openFeedback() {

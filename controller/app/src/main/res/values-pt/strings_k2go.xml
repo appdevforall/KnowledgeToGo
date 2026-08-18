@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Uma restauração está em andamento. Aguarde a conclusão da operação.</string>
     <string name="k2go_busy_install">Uma instalação está em andamento. Aguarde a conclusão da operação.</string>
     <string name="k2go_busy_download">Uma transferência está em andamento. Aguarde a conclusão da operação.</string>
+    <string name="k2go_pending_title">Downloads pendentes</string>
+    <string name="k2go_pending_empty">Nenhum download pendente.</string>
+    <string name="k2go_pending_running">Algo está sendo baixado agora</string>
+    <string name="k2go_pending_see_progress">Ver progresso</string>
+    <string name="k2go_settings_pending">Downloads pendentes</string>
+    <string name="k2go_settings_pending_count">%d na fila</string>
+    <string name="k2go_settings_pending_none">Nenhum</string>
 </resources>

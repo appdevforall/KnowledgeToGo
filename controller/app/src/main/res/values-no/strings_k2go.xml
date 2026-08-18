@@ -826,4 +826,11 @@
     <string name="k2go_busy_restore">En gjenoppretting pågår. Vent til operasjonen er fullført.</string>
     <string name="k2go_busy_install">En installasjon pågår. Vent til operasjonen er fullført.</string>
     <string name="k2go_busy_download">En nedlasting pågår. Vent til operasjonen er fullført.</string>
+    <string name="k2go_pending_title">Ventende nedlastinger</string>
+    <string name="k2go_pending_empty">Ingen ventende nedlastinger.</string>
+    <string name="k2go_pending_running">Noe lastes ned nå</string>
+    <string name="k2go_pending_see_progress">Se fremdrift</string>
+    <string name="k2go_settings_pending">Ventende nedlastinger</string>
+    <string name="k2go_settings_pending_count">%d i kø</string>
+    <string name="k2go_settings_pending_none">Ingen</string>
 </resources>

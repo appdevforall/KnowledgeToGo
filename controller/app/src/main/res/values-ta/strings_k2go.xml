@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">மீட்டமைப்பு நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_busy_install">நிறுவல் நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_busy_download">பதிவிறக்கம் நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_pending_title">நிலுவையிலுள்ள பதிவிறக்கங்கள்</string>
+    <string name="k2go_pending_empty">நிலுவையில் பதிவிறக்கங்கள் இல்லை.</string>
+    <string name="k2go_pending_running">இப்போது ஏதோ பதிவிறக்கப்படுகிறது</string>
+    <string name="k2go_pending_see_progress">முன்னேற்றத்தைக் காண்க</string>
+    <string name="k2go_settings_pending">நிலுவையிலுள்ள பதிவிறக்கங்கள்</string>
+    <string name="k2go_settings_pending_count">வரிசையில் %d</string>
+    <string name="k2go_settings_pending_none">எதுவுமில்லை</string>
 </resources>
