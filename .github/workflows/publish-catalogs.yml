@@ -36,6 +36,7 @@ jobs:
       - name: Generate catalogs
         run: |
           python3 tools/build_kolibri_catalog.py || echo "::warning::kolibri generator failed; its upload will be skipped"
+          python3 tools/build_kolibri_catalog.py --tree topics || echo "::warning::kolibri tree generator failed; its upload will be skipped"
           python3 tools/build_kiwix_catalog.py   || echo "::warning::kiwix generator failed; its upload will be skipped"
 
       - name: Build manifests and upload to Cloudflare R2
@@ -82,5 +83,6 @@ jobs:
               --endpoint-url "$ENDPOINT" --content-type "application/json"
           }
 
-          publish kolibri src/main/assets/kolibri_catalog.jsonl "application/x-ndjson" jsonl
-          publish kiwix   src/main/assets/kiwix_catalog.csv     "text/csv"             none
+          publish kolibri      src/main/assets/kolibri_catalog.jsonl "application/x-ndjson" jsonl
+          publish kolibri-tree src/main/assets/kolibri_tree.jsonl    "application/x-ndjson" none
+          publish kiwix        src/main/assets/kiwix_catalog.csv     "text/csv"             none
