@@ -20,9 +20,12 @@ import org.iiab.controller.kolibri.domain.TopicNode;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
 
 /**
  * The topic tree bundled with the app, as a {@link TreeSource}.
@@ -44,9 +47,16 @@ import java.nio.charset.StandardCharsets;
 public final class BundledTreeSource implements TreeSource {
 
     private static final String TAG = "K2Go-Kolibri";
-    // ADFA-5094: also the overlay basename — CatalogRepositoryImpl points the tree refresh worker
-    // at this same name, so the worker writes the overlay exactly where this source looks for it.
-    static final String ASSET = "kolibri_tree.jsonl";
+    // ADFA-5094: the OVERLAY basename — what the refresh worker writes and what R2 serves. It is a
+    // real gzip (~3 MB), so the pull stays small. CatalogRepositoryImpl points the worker at this
+    // same name, so it writes where we look. Read through readGzipAware(), which un-gzips it.
+    static final String ASSET = "kolibri_tree.jsonl.gz";
+    // The APK-bundled tree lands under THIS name, not ASSET: AGP auto-decompresses any *.gz asset at
+    // merge time and drops the ".gz" extension, so a source `kolibri_tree.jsonl.gz` ships inside the
+    // APK as an already-decompressed `kolibri_tree.jsonl`. Opening ASSET here would miss it entirely
+    // (the silent-empty-tree bug). readGzipAware() then reads it as-is (plain), while the same reader
+    // still un-gzips the R2 overlay — the byte signature decides, so neither path can drift again.
+    private static final String APK_ASSET = "kolibri_tree.jsonl";
 
     private static volatile BundledTreeIndex cachedIndex;
     // -1 = not loaded, 0 = APK asset, >0 = the pulled overlay's lastModified.
@@ -102,8 +112,8 @@ public final class BundledTreeSource implements TreeSource {
             boolean useOverlay = overlay.exists();
             long mtime = useOverlay ? overlay.lastModified() : 0L;
 
-            try (InputStream is = useOverlay
-                    ? new FileInputStream(overlay) : appContext.getAssets().open(ASSET);
+            try (InputStream is = readGzipAware(useOverlay
+                    ? new FileInputStream(overlay) : appContext.getAssets().open(APK_ASSET));
                  BufferedReader r = new BufferedReader(
                          new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
@@ -111,8 +121,9 @@ public final class BundledTreeSource implements TreeSource {
                     builder.add(line);
                 }
             } catch (Exception e) {
-                // A missing asset is a build problem, not a runtime one, but it must not take
-                // the app down: log and serve an empty tree, so the caller falls through.
+                // A missing asset is a build problem, not a runtime one; a truncated/corrupt .gz
+                // trips GZIPInputStream's CRC. Either way it must not take the app down: log and
+                // serve an empty tree, so the caller falls through to the live sources.
                 Log.w(TAG, "bundled tree unavailable: " + e.getMessage());
             }
 
@@ -123,5 +134,30 @@ public final class BundledTreeSource implements TreeSource {
             cachedOverlayMtime = mtime;
             return cachedIndex;
         }
+    }
+
+    /**
+     * Reads {@code in} whether it is gzip or plain, so the single reader serves both tree sources:
+     * the R2 overlay is a real gzip, while the APK asset is the same bundle but already decompressed
+     * by AGP (which strips the {@code .gz} from any {@code *.gz} asset at merge time). The 2-byte
+     * gzip signature (0x1f 0x8b) decides, so the two paths cannot drift out of sync again. The
+     * caller closes the returned stream, which closes {@code in}.
+     */
+    private static InputStream readGzipAware(InputStream in) throws IOException {
+        PushbackInputStream pb = new PushbackInputStream(in, 2);
+        byte[] sig = new byte[2];
+        int n = 0;
+        while (n < 2) {
+            int r = pb.read(sig, n, 2 - n);
+            if (r < 0) {
+                break;
+            }
+            n += r;
+        }
+        boolean gzip = n == 2 && (sig[0] & 0xff) == 0x1f && (sig[1] & 0xff) == 0x8b;
+        if (n > 0) {
+            pb.unread(sig, 0, n);
+        }
+        return gzip ? new GZIPInputStream(pb) : pb;
     }
 }

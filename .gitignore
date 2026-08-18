@@ -10,3 +10,4 @@ Thumbs.db
 
 # pdf.js prebuilt dist (fetched at build time, not vendored) — ADFA-4708
 static/pdfjs/dist/
+controller/app/src/main/assets/kolibri_tree.jsonl
