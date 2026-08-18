@@ -826,4 +826,11 @@
     <string name="k2go_busy_restore">Atkūrimas vyksta. Palaukite, kol operacija bus baigta.</string>
     <string name="k2go_busy_install">Diegimas vyksta. Palaukite, kol operacija bus baigta.</string>
     <string name="k2go_busy_download">Atsisiuntimas vyksta. Palaukite, kol operacija bus baigta.</string>
+    <string name="k2go_pending_title">Laukiantys atsisiuntimai</string>
+    <string name="k2go_pending_empty">Nėra laukiančių atsisiuntimų.</string>
+    <string name="k2go_pending_running">Šiuo metu kažkas atsisiunčiama</string>
+    <string name="k2go_pending_see_progress">Peržiūrėti eigą</string>
+    <string name="k2go_settings_pending">Laukiantys atsisiuntimai</string>
+    <string name="k2go_settings_pending_count">%d eilėje</string>
+    <string name="k2go_settings_pending_none">Nėra</string>
 </resources>

@@ -40,7 +40,7 @@
 
 <rect class="bg" x="0" y="0" width="1720" height="2932"/>
 <text class="h1" x="24" y="44">System lifecycle — where a user gets stuck</text>
-<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 15 Aug — findings 4 and 7 closed since (ADFA-5147, ADFA-5150). Every edge cites the guard that allows it.</text>
+<text class="sub" x="24" y="68">A state is a combination of facts, never a screen. Verified against the working tree, 17 Aug — all eight findings below are now closed (the last, 6, by ADFA-5169). Every edge cites the guard that allows it.</text>
 
 <rect x="1180" y="24" width="516" height="106" rx="10" fill="#FFFFFF" stroke="#D3D1C7"/>
 <text class="h3" x="1196" y="46">LEGEND</text>
@@ -107,13 +107,13 @@
 <text class="note" x="44" y="728">the header keeps its Install button.</text>
 <text class="code" x="44" y="754">Gate is 900 ms here, not 25 s · :317</text>
 
-<path class="e-dead" d="M194,784 L194,832" marker-end="url(#ar)"/>
-<text class="lblr" x="206" y="812">Install → refused</text>
+<path class="e" d="M194,784 L194,832" marker-end="url(#a)"/>
+<text class="lbl" x="206" y="812">Install → "needs a system"</text>
 
-<rect class="st-bad" x="24" y="832" width="340" height="96" rx="12"/>
-<text class="h2" x="44" y="860">Dead control · module sheet</text>
-<text class="note" x="44" y="886">Install routes to the module hub, which</text>
-<text class="note" x="44" y="906">then refuses · ModuleHubFragment:233</text>
+<rect class="st-ok" x="24" y="832" width="340" height="96" rx="12"/>
+<text class="h2" x="44" y="860">Module sheet · now honest</text>
+<text class="note" x="44" y="886">ADFA-5104: no system → "needs a system",</text>
+<text class="note" x="44" y="906">not a silent refuse · residue: S1's Install</text>
 
 <path class="e" d="M364,596 L470,596" marker-end="url(#a)"/>
 <text class="lbl" x="376" y="588">Get more</text>
@@ -164,16 +164,16 @@
 <path class="e-auto" d="M1180,460 L1180,516" marker-end="url(#a)"/>
 <text class="lblr" x="1192" y="494">drain refused or deferred</text>
 
-<rect class="st-bad" x="1020" y="516" width="320" height="232" rx="12"/>
-<text class="h2" x="1040" y="546">S12 · Order banked, nothing running</text>
+<rect class="st-ok" x="1020" y="516" width="320" height="232" rx="12"/>
+<text class="h2" x="1040" y="546">S12 · Order banked — now surfaced</text>
 <text class="facts" x="1040" y="568">anyBanked &amp;&amp; !anyRunning</text>
-<text class="can" x="1040" y="596">Looks exactly like S9. No "See</text>
-<text class="can" x="1040" y="616">progress", no route to the index,</text>
-<text class="can" x="1040" y="636">no list of what was ordered.</text>
-<text class="code" x="1040" y="660">LibraryHomeFragment:518-529</text>
-<text class="note" x="1040" y="688">A banked ZIM, Books or Courses order</text>
-<text class="note" x="1040" y="708">has no cancel anywhere: isScheduled()</text>
-<text class="note" x="1040" y="728">only looks at maps and modules · :337</text>
+<text class="can" x="1040" y="596">Was: looked exactly like S9 — no</text>
+<text class="can" x="1040" y="616">"See progress", no list, no cancel</text>
+<text class="can" x="1040" y="636">for a ZIM/Books/Courses order.</text>
+<text class="code" x="1040" y="660">org.iiab.controller.pending · PendingOrdersFragment</text>
+<text class="note" x="1040" y="688">ADFA-5169: a persistent Settings ›</text>
+<text class="note" x="1040" y="708">Pending downloads lists every order</text>
+<text class="note" x="1040" y="728">and cancels each by item, never auto.</text>
 
 <!-- ============================ S11 / S13 ============================ -->
 <rect class="st-warn" x="1380" y="240" width="316" height="220" rx="12"/>
@@ -222,7 +222,7 @@
 
 <!-- ============================ FINDINGS ============================ -->
 <text class="h3" x="24" y="1252">DEAD ENDS, WORST FIRST — traps, then one-way doors, then exits nobody can find, then controls that do nothing</text>
-<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 17 Aug: findings 1, 2, 3, 4, 5, 7 and 8 are closed. One remains: 6, a banked order with no home and no owner yet.</text>
+<text class="sub" x="24" y="1272">Ranked by how hard the state is to escape, not by how ugly it looks. As of 17 Aug all eight findings are closed — 6, the last, by ADFA-5169. None remain.</text>
 <text class="sub" x="24" y="1292">Findings 1–4 were one sentence four times: a fact nobody clears. 1, 3 and 4 were closed first; 2 — the release blocker, a row in the standing directive's ledger at the top of operation-model-roadmap.svg — is now closed too (ADFA-5146, 17 Aug).</text>
 
 <rect class="st-ok" x="24" y="1276" width="1672" height="212" rx="12"/>
@@ -272,12 +272,12 @@
 <text class="can" x="44" y="2286">was already alive. A state with no exit is a bug whoever reaches it, including by a route that does not exist yet.</text>
 <text class="code" x="44" y="2306">LibraryHomeFragment:111 (the action), :252-275 (openGetMore — re-read + ownerHeld guard) · LibraryActivity:112-127 (the launch check) · ModuleHubFragment:232-243.</text>
 
-<rect class="st-bad" x="24" y="2364" width="1672" height="140" rx="12"/>
-<text class="h2" x="44" y="2392">6 · DEAD CONTROL — a banked order that is not running is invisible and, for three types, uncancellable</text>
-<text class="can" x="44" y="2418">"See progress" appears only while something is actually running, and a refused or deferred drain leaves the order banked without running. Nothing lists it. The module</text>
-<text class="can" x="44" y="2438">sheet's Cancel is the only cancel in the app, and it only inspects the maps and module wishlists — a banked ZIM, Books or Courses order cannot be cancelled from</text>
-<text class="can" x="44" y="2458">anywhere in the UI.</text>
-<text class="code" x="44" y="2484">LibraryHomeFragment.java:518-529 (anyRunning gates the button), :337-342 (isScheduled ignores three of the five wishlists).</text>
+<rect class="st-ok" x="24" y="2364" width="1672" height="140" rx="12"/>
+<text class="h2" x="44" y="2392">6 · CLOSED (17 Aug, ADFA-5169) — a queued order is now visible and cancellable from Settings</text>
+<text class="can" x="44" y="2418">Was: "See progress" appeared only while something ran, and a refused or deferred drain left the order banked without running, listed nowhere; the module sheet's Cancel</text>
+<text class="can" x="44" y="2438">inspected only the maps and module wishlists, so a banked ZIM, Books or Courses order could not be cancelled from anywhere in the UI.</text>
+<text class="can" x="44" y="2458">Now a persistent Settings › Pending downloads screen lists every queued order by item and cancels each one; nothing is cancelled or purged automatically.</text>
+<text class="code" x="44" y="2484">org.iiab.controller.pending (domain/data/presentation) · Settings row → PendingOrdersFragment · ZimWishlist.remove · reuses ContentType/PendingContent · instrumented test PendingOrdersRepositoryImplTest.</text>
 
 <rect class="st-ok" x="24" y="2536" width="1672" height="140" rx="12"/>
 <text class="h2" x="44" y="2564">7 · CLOSED (ADFA-5150) — Connect and Clone Send read the system fact and offer Recover, not a dead QR</text>

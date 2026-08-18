@@ -817,4 +817,11 @@
     <string name="k2go_busy_restore">Eine Wiederherstellung läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
     <string name="k2go_busy_install">Eine Installation läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
     <string name="k2go_busy_download">Ein Download läuft gerade. Bitte warten, bis der Vorgang abgeschlossen ist.</string>
+    <string name="k2go_pending_title">Ausstehende Downloads</string>
+    <string name="k2go_pending_empty">Keine ausstehenden Downloads.</string>
+    <string name="k2go_pending_running">Es wird gerade etwas heruntergeladen</string>
+    <string name="k2go_pending_see_progress">Fortschritt anzeigen</string>
+    <string name="k2go_settings_pending">Ausstehende Downloads</string>
+    <string name="k2go_settings_pending_count">%d in Warteschlange</string>
+    <string name="k2go_settings_pending_none">Keine</string>
 </resources>

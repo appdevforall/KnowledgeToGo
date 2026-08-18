@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Una restauración está en curso. Espera a que termine la operación.</string>
     <string name="k2go_busy_install">Una instalación está en curso. Espera a que termine la operación.</string>
     <string name="k2go_busy_download">Una descarga está en curso. Espera a que termine la operación.</string>
+    <string name="k2go_pending_title">Descargas pendientes</string>
+    <string name="k2go_pending_empty">No hay descargas pendientes.</string>
+    <string name="k2go_pending_running">Se está descargando algo ahora</string>
+    <string name="k2go_pending_see_progress">Ver progreso</string>
+    <string name="k2go_settings_pending">Descargas pendientes</string>
+    <string name="k2go_settings_pending_count">%d en cola</string>
+    <string name="k2go_settings_pending_none">Ninguna</string>
 </resources>
