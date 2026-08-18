@@ -119,6 +119,46 @@ with a snackbar. No automatic action anywhere.
 - New user-facing strings ship in all 33 locales in the same PR (a missing
   translation fails the build).
 
+## Validation (and why the "natural" repro does not exist)
+
+The durably-banked state is not reachable through normal UX, which shapes how this is
+validated. Confirmed in code:
+
+- Live mode (Get More, with a system): `SetupLibraryActivity.startZimDownload()` /
+  `startBooksDownload()` drain immediately (`…Provisioner.drain`), so content never
+  stays banked there — it starts at once (or moves into the download service).
+- Wizard mode (pre-install): `zimWizardConfirm()` / `booksWizardConfirm()` bank the
+  selection without draining, but the wizard has no route to Settings, and completing
+  the install lets the Home pump drain the banked content.
+- A systemless device opens the wizard, not the tabs, so Settings is unreachable there.
+
+So the states that keep an order banked (no system, or the in-server REST engine down
+while nginx still answers) are incompatible with reaching the Settings screen that
+shows it. The only durable case — rootfs present but the REST engine down, so the Home
+pump's `apiReady()` gate never opens — requires stopping just that engine inside the
+container and is not a user path.
+
+Validation is therefore:
+
+1. Automated, deterministic — an instrumented test (`PendingOrdersRepositoryImplTest`,
+   src/androidTest) seeds the three wishlists with real SharedPreferences and asserts
+   the banked mechanism: the orders are listed grouped by type with the right names,
+   the empty state, and per-item cancel (cancelling one removes only that order —
+   including a ZIM cancel leaving the other ZIM, which exercises the new
+   `ZimWishlist.remove`). Run with `./gradlew :app:connectedDebugAndroidTest`.
+2. The UI end to end — the list, per-item cancel, nothing cancelled automatically, and
+   the Settings count refreshing on entry and on return — via a debug seed that writes
+   the same banked state (`DebugSeedPendingReceiver`, src/debug); stay off Home so the
+   pump does not drain it. Same kind of stand-in as the ADFA-5146 stale flag.
+3. That real banking occurs through the UI is confirmed by selecting content in the
+   wizard and inspecting the wishlist:
+   `adb shell run-as org.iiab.controller cat shared_prefs/k2go_zim_wishlist.xml`.
+4. The "See progress" link is validated with a real running download; the maps/module
+   cancel paths are checked directly for regressions.
+
+Not left pending: a continuous natural flow to a durably-banked order reached from
+Settings does not exist by construction; it is covered by (1) + (2).
+
 ## Seams / reuse
 
 - Reuse `ContentType` + `PendingContent`; no duplicated wishlist knowledge.
