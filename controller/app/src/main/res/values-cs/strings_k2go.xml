@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Obnovení probíhá. Počkejte na dokončení operace.</string>
     <string name="k2go_busy_install">Instalace probíhá. Počkejte na dokončení operace.</string>
     <string name="k2go_busy_download">Stahování probíhá. Počkejte na dokončení operace.</string>
+    <string name="k2go_pending_title">Čekající stahování</string>
+    <string name="k2go_pending_empty">Žádná čekající stahování.</string>
+    <string name="k2go_pending_running">Něco se právě stahuje</string>
+    <string name="k2go_pending_see_progress">Zobrazit průběh</string>
+    <string name="k2go_settings_pending">Čekající stahování</string>
+    <string name="k2go_settings_pending_count">%d ve frontě</string>
+    <string name="k2go_settings_pending_none">Žádné</string>
 </resources>

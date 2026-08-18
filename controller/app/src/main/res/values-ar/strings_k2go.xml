@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">استعادة قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
     <string name="k2go_busy_install">تثبيت قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
     <string name="k2go_busy_download">تنزيل قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
+    <string name="k2go_pending_title">التنزيلات المعلقة</string>
+    <string name="k2go_pending_empty">لا توجد تنزيلات معلقة.</string>
+    <string name="k2go_pending_running">يجري تنزيل شيء الآن</string>
+    <string name="k2go_pending_see_progress">عرض التقدم</string>
+    <string name="k2go_settings_pending">التنزيلات المعلقة</string>
+    <string name="k2go_settings_pending_count">%d في قائمة الانتظار</string>
+    <string name="k2go_settings_pending_none">لا شيء</string>
 </resources>

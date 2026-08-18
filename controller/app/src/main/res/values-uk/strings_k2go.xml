@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Відновлення виконується. Зачекайте завершення операції.</string>
     <string name="k2go_busy_install">Встановлення виконується. Зачекайте завершення операції.</string>
     <string name="k2go_busy_download">Завантаження виконується. Зачекайте завершення операції.</string>
+    <string name="k2go_pending_title">Завантаження в черзі</string>
+    <string name="k2go_pending_empty">Немає завантажень у черзі.</string>
+    <string name="k2go_pending_running">Зараз щось завантажується</string>
+    <string name="k2go_pending_see_progress">Переглянути прогрес</string>
+    <string name="k2go_settings_pending">Завантаження в черзі</string>
+    <string name="k2go_settings_pending_count">%d у черзі</string>
+    <string name="k2go_settings_pending_none">Немає</string>
 </resources>

@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">復元が進行中です。操作が完了するまでお待ちください。</string>
     <string name="k2go_busy_install">インストールが進行中です。操作が完了するまでお待ちください。</string>
     <string name="k2go_busy_download">ダウンロードが進行中です。操作が完了するまでお待ちください。</string>
+    <string name="k2go_pending_title">保留中のダウンロード</string>
+    <string name="k2go_pending_empty">保留中のダウンロードはありません。</string>
+    <string name="k2go_pending_running">現在ダウンロード中です</string>
+    <string name="k2go_pending_see_progress">進行状況を表示</string>
+    <string name="k2go_settings_pending">保留中のダウンロード</string>
+    <string name="k2go_settings_pending_count">%d 件待機中</string>
+    <string name="k2go_settings_pending_none">なし</string>
 </resources>

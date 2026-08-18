@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">بازیابی در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
     <string name="k2go_busy_install">نصب در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
     <string name="k2go_busy_download">دانلود در حال انجام است. لطفاً تا پایان عملیات صبر کنید.</string>
+    <string name="k2go_pending_title">دانلودهای در انتظار</string>
+    <string name="k2go_pending_empty">دانلودی در انتظار نیست.</string>
+    <string name="k2go_pending_running">چیزی در حال دانلود است</string>
+    <string name="k2go_pending_see_progress">مشاهده پیشرفت</string>
+    <string name="k2go_settings_pending">دانلودهای در انتظار</string>
+    <string name="k2go_settings_pending_count">%d در صف</string>
+    <string name="k2go_settings_pending_none">هیچ</string>
 </resources>

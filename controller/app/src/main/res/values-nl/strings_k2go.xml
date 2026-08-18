@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Een herstel is bezig. Wacht tot de bewerking klaar is.</string>
     <string name="k2go_busy_install">Een installatie is bezig. Wacht tot de bewerking klaar is.</string>
     <string name="k2go_busy_download">Een download is bezig. Wacht tot de bewerking klaar is.</string>
+    <string name="k2go_pending_title">Downloads in wachtrij</string>
+    <string name="k2go_pending_empty">Geen downloads in wachtrij.</string>
+    <string name="k2go_pending_running">Er wordt nu iets gedownload</string>
+    <string name="k2go_pending_see_progress">Voortgang bekijken</string>
+    <string name="k2go_settings_pending">Downloads in wachtrij</string>
+    <string name="k2go_settings_pending_count">%d in wachtrij</string>
+    <string name="k2go_settings_pending_none">Geen</string>
 </resources>

@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Възстановяване е в ход. Изчакайте операцията да приключи.</string>
     <string name="k2go_busy_install">Инсталиране е в ход. Изчакайте операцията да приключи.</string>
     <string name="k2go_busy_download">Изтегляне е в ход. Изчакайте операцията да приключи.</string>
+    <string name="k2go_pending_title">Чакащи изтегляния</string>
+    <string name="k2go_pending_empty">Няма чакащи изтегляния.</string>
+    <string name="k2go_pending_running">В момента се изтегля нещо</string>
+    <string name="k2go_pending_see_progress">Преглед на напредъка</string>
+    <string name="k2go_settings_pending">Чакащи изтегляния</string>
+    <string name="k2go_settings_pending_count">%d в опашка</string>
+    <string name="k2go_settings_pending_none">Няма</string>
 </resources>

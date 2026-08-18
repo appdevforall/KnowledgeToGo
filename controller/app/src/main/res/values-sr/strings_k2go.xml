@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Враћање је у току. Сачекајте да се операција заврши.</string>
     <string name="k2go_busy_install">Инсталација је у току. Сачекајте да се операција заврши.</string>
     <string name="k2go_busy_download">Преузимање је у току. Сачекајте да се операција заврши.</string>
+    <string name="k2go_pending_title">Преузимања на чекању</string>
+    <string name="k2go_pending_empty">Нема преузимања на чекању.</string>
+    <string name="k2go_pending_running">Нешто се сада преузима</string>
+    <string name="k2go_pending_see_progress">Прикажи напредак</string>
+    <string name="k2go_settings_pending">Преузимања на чекању</string>
+    <string name="k2go_settings_pending_count">%d у реду</string>
+    <string name="k2go_settings_pending_none">Нема</string>
 </resources>

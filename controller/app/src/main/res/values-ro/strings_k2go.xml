@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">O restaurare este în curs. Așteptați finalizarea operațiunii.</string>
     <string name="k2go_busy_install">O instalare este în curs. Așteptați finalizarea operațiunii.</string>
     <string name="k2go_busy_download">O descărcare este în curs. Așteptați finalizarea operațiunii.</string>
+    <string name="k2go_pending_title">Descărcări în așteptare</string>
+    <string name="k2go_pending_empty">Nicio descărcare în așteptare.</string>
+    <string name="k2go_pending_running">Se descarcă ceva acum</string>
+    <string name="k2go_pending_see_progress">Vezi progresul</string>
+    <string name="k2go_settings_pending">Descărcări în așteptare</string>
+    <string name="k2go_settings_pending_count">%d în coadă</string>
+    <string name="k2go_settings_pending_none">Niciuna</string>
 </resources>

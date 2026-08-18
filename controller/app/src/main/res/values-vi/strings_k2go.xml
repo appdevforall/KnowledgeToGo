@@ -816,4 +816,11 @@
     <string name="k2go_busy_restore">Một lần khôi phục đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
     <string name="k2go_busy_install">Một lần cài đặt đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
     <string name="k2go_busy_download">Một lượt tải xuống đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
+    <string name="k2go_pending_title">Tải xuống đang chờ</string>
+    <string name="k2go_pending_empty">Không có tải xuống đang chờ.</string>
+    <string name="k2go_pending_running">Đang tải xuống một mục</string>
+    <string name="k2go_pending_see_progress">Xem tiến trình</string>
+    <string name="k2go_settings_pending">Tải xuống đang chờ</string>
+    <string name="k2go_settings_pending_count">%d trong hàng đợi</string>
+    <string name="k2go_settings_pending_none">Không có</string>
 </resources>
