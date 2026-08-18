@@ -20,7 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -138,12 +138,14 @@ public class PendingOrdersFragment extends Fragment {
         }
         row.addView(textCol);
 
-        ImageButton cancel = new ImageButton(ctx);
-        cancel.setImageResource(R.drawable.ic_close_24);
-        cancel.setBackground(null);
-        cancel.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_muted));
+        // ADFA-5027 homologation: the official M3 delete (trash) icon in the danger colour, as the
+        // maps (FqrController) and Kiwix (KiwixManageController) per-row deletes use — not a "✕" glyph.
+        ImageView cancel = new ImageView(ctx);
+        cancel.setImageResource(R.drawable.ic_delete_24);
+        cancel.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_clay));
         cancel.setContentDescription(getString(R.string.k2go_cancel));
-        int tap = dp(ctx, 44);
+        int pad = dp(ctx, 8), tap = dp(ctx, 44);
+        cancel.setPadding(pad, pad, pad, pad);
         cancel.setLayoutParams(new LinearLayout.LayoutParams(tap, tap));
         cancel.setOnClickListener(v -> vm.cancel(order));
         row.addView(cancel);
