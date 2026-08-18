@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
 
 /**
  * The topic tree bundled with the app, as a {@link TreeSource}.
@@ -44,9 +45,11 @@ import java.nio.charset.StandardCharsets;
 public final class BundledTreeSource implements TreeSource {
 
     private static final String TAG = "K2Go-Kolibri";
-    // ADFA-5094: also the overlay basename — CatalogRepositoryImpl points the tree refresh worker
-    // at this same name, so the worker writes the overlay exactly where this source looks for it.
-    static final String ASSET = "kolibri_tree.jsonl";
+    // ADFA-5094: the overlay basename (what the refresh worker writes) AND the APK asset name.
+    // Both are the GZIPPED tree (~3 MB vs ~16 MB raw): R2 serves the .gz so the pull is small, and
+    // the APK floor ships the .gz too. Decompressed on read — never written out uncompressed.
+    // CatalogRepositoryImpl points the worker at this same name, so it writes where we look.
+    static final String ASSET = "kolibri_tree.jsonl.gz";
 
     private static volatile BundledTreeIndex cachedIndex;
     // -1 = not loaded, 0 = APK asset, >0 = the pulled overlay's lastModified.
@@ -102,8 +105,8 @@ public final class BundledTreeSource implements TreeSource {
             boolean useOverlay = overlay.exists();
             long mtime = useOverlay ? overlay.lastModified() : 0L;
 
-            try (InputStream is = useOverlay
-                    ? new FileInputStream(overlay) : appContext.getAssets().open(ASSET);
+            try (InputStream is = new GZIPInputStream(useOverlay
+                    ? new FileInputStream(overlay) : appContext.getAssets().open(ASSET));
                  BufferedReader r = new BufferedReader(
                          new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
@@ -111,8 +114,9 @@ public final class BundledTreeSource implements TreeSource {
                     builder.add(line);
                 }
             } catch (Exception e) {
-                // A missing asset is a build problem, not a runtime one, but it must not take
-                // the app down: log and serve an empty tree, so the caller falls through.
+                // A missing asset is a build problem, not a runtime one; a truncated/corrupt .gz
+                // trips GZIPInputStream's CRC. Either way it must not take the app down: log and
+                // serve an empty tree, so the caller falls through to the live sources.
                 Log.w(TAG, "bundled tree unavailable: " + e.getMessage());
             }
 
