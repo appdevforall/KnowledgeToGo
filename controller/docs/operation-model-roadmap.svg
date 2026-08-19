@@ -381,33 +381,44 @@
 <text class="note" x="888" y="2082">Finding 2 closed. A per-poll heartbeat ages a dead session out in</text>
 <text class="note" x="888" y="2097">~30s; the refusal names the holder. In-memory, not 4897's record.</text>
 </g>
-<text class="h3" x="24" y="2117">SPANS THE BOARD — real work with no ticket, and the small things</text>
-<rect class="card" x="24" y="2135" width="1652" height="131" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="2151" width="107" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="2165" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="40" y="2191">A finished run leaves no evidence it happened</text>
-<text class="note" x="40" y="2220">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare “3 Done”. The rate is dropped at completion by design — rateSuffix is called only from the not-complete branch — and</text>
-<text class="note" x="40" y="2235">“838 MB · 32 MB/s · 4 min” is the only thing that tells a real download from a no-op. Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed. The only start</text>
-<text class="note" x="40" y="2250">timestamp in main/ is KolibriSeedRepository.startedAtMs, private and unreachable from the row renderer. Also here: the maps card cannot show “adding content” — its progress belongs to the module queue.</text>
-<rect class="card" x="24" y="2288" width="1652" height="146" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="2304" width="107" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="2318" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="40" y="2344">Replacing the system, and the installer that does it — no ticket on purpose</text>
-<text class="note" x="40" y="2373">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow that works. Recorded here so they are picked up on their own terms.</text>
-<text class="note" x="40" y="2388">•  Two separately invoked installers. One ACTION_START becomes five pipelines through four booleans set by three unrelated senders.</text>
-<text class="note" x="40" y="2403">•  Content-only backup, so a reinstall at another tier can keep what the user added. From zero, the box wipes and rewrites.</text>
-<text class="note" x="40" y="2418">Not blocked by this: the tier picker reports success while doing nothing when a rootfs directory exists — implemented and wrong today, so it is a bug with its own ticket.</text>
-<rect class="card" x="24" y="2456" width="1652" height="194"/>
-<rect class="chip" x="40" y="2472" width="65" height="19" fill="#F0F1F3" stroke="none"/>
-<text class="chiptx" x="48" y="2486" fill="#5B636B">CARRIED</text>
-<text class="h2" x="40" y="2512">Too small for a card, recorded so they are met on purpose</text>
-<text class="note" x="40" y="2541">•  The Books “downloads” link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
-<text class="note" x="40" y="2556">•  The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
-<text class="note" x="40" y="2571">•  EnvironmentLock.Owner.MODULE is never acquired, and hasUnfinishedWork is duplicated between EnvironmentLock and PendingContent (orphan TODO on a closed ticket).</text>
-<text class="note" x="40" y="2586">•  The build's own native-artifact download has no retry: app/build.gradle:362 calls ant.get once, so a dropped socket on a 15 MB fetch fails CI outright.</text>
-<text class="note" x="40" y="2601">   Seen 13 Aug — SocketException mid-ZIP. ant.get takes retries and maxtime, so it is one line. Same fault ADFA-4893 names, one layer up in the build.</text>
-<text class="note" x="40" y="2624">•  DONE (ADFA-5152): a clone-receive reopened during a live transfer now lands on the progress screen, not the Send/Receive fork — CloneFragment re-binds the RECEIVE side</text>
-<text class="note" x="40" y="2639">   symmetrically. Helps while the process is alive; a hard kill is still the durability problem (5146 family).</text>
+<rect class="card" x="24" y="2090" width="380" height="152" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="40" y="2106" width="122" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="48" y="2120" fill="#1B7F4B">ADFA-5192 · DONE</text>
+<text class="h2" x="40" y="2146">Legacy tabbed UI retired</text>
+<text class="sub" x="40" y="2168">MainActivity + the invisible pager, gone.</text>
+<circle class="s-done" cx="48" cy="2186" r="5.5"/>
+<text class="item" x="62" y="2190">Terminal re-homed to TerminalActivity</text>
+<circle class="s-done" cx="48" cy="2206" r="5.5"/>
+<text class="item" x="62" y="2210">4 fragments + carved controllers deleted</text>
+<circle class="s-done" cx="48" cy="2226" r="5.5"/>
+<text class="item" x="62" y="2230">Dead companion leg removed (ADFA-5144)</text>
+<text class="h3" x="24" y="2277">SPANS THE BOARD — real work with no ticket, and the small things</text>
+<rect class="card" x="24" y="2295" width="1652" height="131" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="2311" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="2325" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="40" y="2351">A finished run leaves no evidence it happened</text>
+<text class="note" x="40" y="2380">A LIVE run is meant to be left alone, so the user usually arrives after it ended and finds a bare “3 Done”. The rate is dropped at completion by design — rateSuffix is called only from the not-complete branch — and</text>
+<text class="note" x="40" y="2395">“838 MB · 32 MB/s · 4 min” is the only thing that tells a real download from a no-op. Courses can do it today (KolibriSeedState has bytes). ZIM has no clock at all. Books has neither bytes nor speed. The only start</text>
+<text class="note" x="40" y="2410">timestamp in main/ is KolibriSeedRepository.startedAtMs, private and unreachable from the row renderer. Also here: the maps card cannot show “adding content” — its progress belongs to the module queue.</text>
+<rect class="card" x="24" y="2448" width="1652" height="146" stroke="#C0392B" stroke-width="2.5"/>
+<rect class="chip" x="40" y="2464" width="107" height="19" fill="#FDECEC" stroke="none"/>
+<text class="chiptx" x="48" y="2478" fill="#C0392B">NO TICKET YET</text>
+<text class="h2" x="40" y="2504">Replacing the system, and the installer that does it — no ticket on purpose</text>
+<text class="note" x="40" y="2533">Moved out of ADFA-4758, which had absorbed it. Neither item is a fix: they are capability the app does not have, on top of a flow that works. Recorded here so they are picked up on their own terms.</text>
+<text class="note" x="40" y="2548">•  Two separately invoked installers. One ACTION_START becomes five pipelines through four booleans set by three unrelated senders.</text>
+<text class="note" x="40" y="2563">•  Content-only backup, so a reinstall at another tier can keep what the user added. From zero, the box wipes and rewrites.</text>
+<text class="note" x="40" y="2578">Not blocked by this: the tier picker reports success while doing nothing when a rootfs directory exists — implemented and wrong today, so it is a bug with its own ticket.</text>
+<rect class="card" x="24" y="2616" width="1652" height="194"/>
+<rect class="chip" x="40" y="2632" width="65" height="19" fill="#F0F1F3" stroke="none"/>
+<text class="chiptx" x="48" y="2646" fill="#5B636B">CARRIED</text>
+<text class="h2" x="40" y="2672">Too small for a card, recorded so they are met on purpose</text>
+<text class="note" x="40" y="2701">•  The Books “downloads” link is the last fragment hosting itself. Needs an index that can be opened with nothing in flight.</text>
+<text class="note" x="40" y="2716">•  The three live REST streams can still start together: one provisioner drains asynchronously, so the others see no session yet.</text>
+<text class="note" x="40" y="2731">•  EnvironmentLock.Owner.MODULE is never acquired, and hasUnfinishedWork is duplicated between EnvironmentLock and PendingContent (orphan TODO on a closed ticket).</text>
+<text class="note" x="40" y="2746">•  The build's own native-artifact download has no retry: app/build.gradle:362 calls ant.get once, so a dropped socket on a 15 MB fetch fails CI outright.</text>
+<text class="note" x="40" y="2761">   Seen 13 Aug — SocketException mid-ZIP. ant.get takes retries and maxtime, so it is one line. Same fault ADFA-4893 names, one layer up in the build.</text>
+<text class="note" x="40" y="2784">•  DONE (ADFA-5152): a clone-receive reopened during a live transfer now lands on the progress screen, not the Send/Receive fork — CloneFragment re-binds the RECEIVE side</text>
+<text class="note" x="40" y="2799">   symmetrically. Helps while the process is alive; a hard kill is still the durability problem (5146 family).</text>
 <path class="lnk" d="M344,1502 V1524" marker-end="url(#a)"/>
 <rect x="304" y="1507" width="80" height="15" fill="#F7F8F9" opacity="0.95"/>
 <text class="lnklbl" x="344" y="1518" text-anchor="middle">a real figure</text>
@@ -417,30 +428,22 @@
 <path class="lnk-dash" d="M1296,755 H1274 V673 H1252" marker-end="url(#a)"/>
 <rect x="1194" y="739" width="183" height="15" fill="#F7F8F9" opacity="0.95"/>
 <text class="lnklbl" x="1285" y="750" text-anchor="middle">same launch file — sequence them</text>
-<rect class="card" x="24" y="2673" width="1652" height="146" stroke="#C0392B" stroke-width="2.5"/>
-<rect class="chip" x="40" y="2689" width="107" height="19" fill="#FDECEC" stroke="none"/>
-<text class="chiptx" x="48" y="2703" fill="#C0392B">NO TICKET YET</text>
-<text class="h2" x="40" y="2729">The legacy UI is invisible but still running — open a ticket for it</text>
-<text class="note" x="40" y="2758">Found while writing Cancel (ADFA-5119). The launcher goes SplashActivity → LibraryActivity, and the only door left into the legacy MainActivity is Settings → “Terminal (Debian)”, which passes</text>
-<text class="note" x="40" y="2773">EXTRA_TERMINAL_ONLY so ADFA-4987 keeps the old dashboard hidden behind the terminal sheet. But MainActivity.onCreate builds MainPagerAdapter at :292 and only learns it is terminal-only at :344 —</text>
-<text class="note" x="40" y="2788">so DeployFragment is still constructed and still observes InstallProgressRepository from behind that sheet. Not dead code: invisible code that still runs, which is why its phase switch has to be kept in step.</text>
-<text class="note" x="40" y="2803">The one leak a user can reach: TerminalSessionService:98 opens MainActivity WITHOUT that extra, revealing the whole legacy dashboard with a working install button. Two lines close it — the missing extra, and not building the pager in terminal-only mode. Deleting DeployFragment is the larger piece behind it.</text>
-<text class="h3" x="24" y="2882">SESSION 15 AUG — WHAT LANDED, AND WHAT IT SURFACED</text>
-<rect class="card" x="24" y="2900" width="1652" height="268" stroke="#0E7C86" stroke-width="2"/>
-<rect class="chip" x="40" y="2916" width="176" height="19" fill="#E0F2F1" stroke="none"/>
-<text class="chiptx" x="48" y="2930" fill="#0E7C86">CLONE / STATE-SPINE ARC</text>
-<text class="h2" x="228" y="2931">The receive/clone dead-ends closed — and the debt the fixes exposed</text>
-<text class="item" x="40" y="2958">Landed and merged: ADFA-5143 (a clone in flight has a name and a way back), 5147 (a damaged system reads as damaged), 5150 (systemless Connect/Send route to Recover), 5151</text>
-<text class="item" x="40" y="2975">(confine the receive loop to the recover hub), 5152 (a reopen lands on progress, not the fork), 5154 (Connect + Clone Send redesigned to stacked / 2-page QR), 5157 (shared QrSection),</text>
-<text class="item" x="40" y="2992">5155 (receive success waits for services before Home, never a fixed timer). Also landed: ADFA-5158 (get-app QR waits for the hotspot AP IP by polling, not a one-shot; broadened detection).</text>
-<text class="h3" x="40" y="3024">FOLLOW-UPS WORTH A TICKET</text>
-<circle class="s-todo" cx="48" cy="3044" r="5.5"/>
-<text class="item" x="62" y="3048">Shared "poll until a resource is ready" utility (a ServiceReadyGate). The same Handler-reschedule + in-flight guard + teardown now lives in three places — SetupProgressActivity.readyPoll,</text>
-<text class="item" x="62" y="3065">the 5155 receive-exit wait, and the 5158 AP-IP poll — with a fourth copy one bug away. Extract one loop (and a services-then-redirect gate on top for the first two).</text>
-<circle class="s-done" cx="48" cy="3087" r="5.5"/>
-<text class="item" x="62" y="3091">ADFA-5146 (finding 2, the release blocker) — LANDED, device-verified. Expires on LAST PROGRESS, not a start timestamp: the 5155/5158 lesson honored — a wall clock must never condemn a</text>
-<text class="item" x="62" y="3108">legitimately long op, so a heartbeat the live service refreshes and a dead one lets go cold ages a killed session out in ~30s, across the three content sources (the module queue keeps its own signal). The naming half is currentHolder + BusyMessage (six gates), and isHeld now derives from currentHolder — one source of truth.</text>
-<circle class="s-todo" cx="48" cy="3130" r="5.5"/>
-<text class="item" x="62" y="3134">Generalize "which IP does the peer reach me at": peerReachableIp + NetworkInterfaces pass-2 (up, non-loopback, site-local, not Wi-Fi/VPN) replaced a hardcoded 192.168.49.1. One robust</text>
-<text class="item" x="62" y="3151">source belongs wherever a host advertises itself — the get-app URL, the copy daemon, the transfer QR — instead of a guess that only some OEMs happen to match.</text>
+<text class="h3" x="24" y="2896">SESSION 15 AUG — WHAT LANDED, AND WHAT IT SURFACED</text>
+<rect class="card" x="24" y="2914" width="1652" height="268" stroke="#0E7C86" stroke-width="2"/>
+<rect class="chip" x="40" y="2930" width="176" height="19" fill="#E0F2F1" stroke="none"/>
+<text class="chiptx" x="48" y="2944" fill="#0E7C86">CLONE / STATE-SPINE ARC</text>
+<text class="h2" x="228" y="2945">The receive/clone dead-ends closed — and the debt the fixes exposed</text>
+<text class="item" x="40" y="2972">Landed and merged: ADFA-5143 (a clone in flight has a name and a way back), 5147 (a damaged system reads as damaged), 5150 (systemless Connect/Send route to Recover), 5151</text>
+<text class="item" x="40" y="2989">(confine the receive loop to the recover hub), 5152 (a reopen lands on progress, not the fork), 5154 (Connect + Clone Send redesigned to stacked / 2-page QR), 5157 (shared QrSection),</text>
+<text class="item" x="40" y="3006">5155 (receive success waits for services before Home, never a fixed timer). Also landed: ADFA-5158 (get-app QR waits for the hotspot AP IP by polling, not a one-shot; broadened detection).</text>
+<text class="h3" x="40" y="3038">FOLLOW-UPS WORTH A TICKET</text>
+<circle class="s-todo" cx="48" cy="3058" r="5.5"/>
+<text class="item" x="62" y="3062">Shared "poll until a resource is ready" utility (a ServiceReadyGate). The same Handler-reschedule + in-flight guard + teardown now lives in three places — SetupProgressActivity.readyPoll,</text>
+<text class="item" x="62" y="3079">the 5155 receive-exit wait, and the 5158 AP-IP poll — with a fourth copy one bug away. Extract one loop (and a services-then-redirect gate on top for the first two).</text>
+<circle class="s-done" cx="48" cy="3101" r="5.5"/>
+<text class="item" x="62" y="3105">ADFA-5146 (finding 2, the release blocker) — LANDED, device-verified. Expires on LAST PROGRESS, not a start timestamp: the 5155/5158 lesson honored — a wall clock must never condemn a</text>
+<text class="item" x="62" y="3122">legitimately long op, so a heartbeat the live service refreshes and a dead one lets go cold ages a killed session out in ~30s, across the three content sources (the module queue keeps its own signal). The naming half is currentHolder + BusyMessage (six gates), and isHeld now derives from currentHolder — one source of truth.</text>
+<circle class="s-todo" cx="48" cy="3144" r="5.5"/>
+<text class="item" x="62" y="3148">Generalize "which IP does the peer reach me at": peerReachableIp + NetworkInterfaces pass-2 (up, non-loopback, site-local, not Wi-Fi/VPN) replaced a hardcoded 192.168.49.1. One robust</text>
+<text class="item" x="62" y="3165">source belongs wherever a host advertises itself — the get-app URL, the copy daemon, the transfer QR — instead of a guess that only some OEMs happen to match.</text>
 </svg>
