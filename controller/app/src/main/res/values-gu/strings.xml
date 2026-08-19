@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">સેટિંગ્સ</string>
-    <string name="tab_deploy">ઇન્સ્ટૉલ કરો</string>
-    <string name="tab_status">સ્થિતિ</string>
-    <string name="tab_usage">વપરાશ</string>
-    <string name="tab_share">શેર કરો</string>
     <string name="setup_title">પ્રારંભિક સેટઅપ</string>
     <string name="setup_welcome">%1$s સેટઅપ વિઝાર્ડમાં આપનું સ્વાગત છે.\n\nયોગ્ય રીતે કામ કરવા માટે, અમને નીચેની પરવાનગીઓ જોઈએ છે:</string>
     <string name="setup_continue">ચાલુ રાખો</string>

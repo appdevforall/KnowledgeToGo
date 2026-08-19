@@ -11,10 +11,6 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">PARAMÈTRES</string>
 
-    <string name="tab_deploy">Installer</string>
-    <string name="tab_status">Statut</string>
-    <string name="tab_usage">Utilisation</string>
-    <string name="tab_share">Partager</string>
 
     <string name="setup_title">Configuration initiale</string>
     <string name="setup_welcome">Bienvenue dans l\'assistant de configuration de %1$s.\n\nPour fonctionner correctement, nous avons besoin des autorisations suivantes :</string>

@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">EINSTELLUNGEN</string>
-    <string name="tab_deploy">Installieren</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">Nutzung</string>
-    <string name="tab_share">Teilen</string>
     <string name="setup_title">Ersteinrichtung</string>
     <string name="setup_welcome">Willkommen beim Einrichtungsassistenten von %1$s.\n\nDamit alles richtig funktioniert, benötigen wir folgende Berechtigungen:</string>
     <string name="setup_continue">Weiter</string>

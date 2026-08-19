@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">تنظیمات</string>
-    <string name="tab_deploy">نصب</string>
-    <string name="tab_status">وضعیت</string>
-    <string name="tab_usage">استفاده</string>
-    <string name="tab_share">اشتراک‌گذاری</string>
     <string name="setup_title">راه‌اندازی اولیه</string>
     <string name="setup_welcome">به دستیار راه‌اندازی %1$s خوش آمدید.\n\nبرای عملکرد صحیح، به مجوزهای زیر نیاز داریم:</string>
     <string name="setup_continue">ادامه</string>

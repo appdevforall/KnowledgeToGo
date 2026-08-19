@@ -506,7 +506,7 @@ public class CloneFragment extends Fragment {
     /**
      * This app's ACTUAL installed ABI width, read from nativeLibraryDir — not the device's 64-bit
      * capability. A 32-bit install on a 64-bit phone must report 32, because the rootfs/library arch
-     * follows the app's install ABI, not the hardware. Mirrors ArchCheckController.getArchBits().
+     * follows the app's install ABI, not the hardware.
      * (ADFA-4784: the earlier Build.SUPPORTED_64_BIT_ABIS check wrongly passed 32-on-64 as compatible.)
      */
     private int archBits() {

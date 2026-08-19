@@ -11,10 +11,6 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">CONFIGURAÇÕES</string>
 
-    <string name="tab_deploy">Instalar</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">Uso</string>
-    <string name="tab_share">Compartilhar</string>
 
     <string name="setup_title">Configuração Inicial</string>
     <string name="setup_welcome">Bem-vindo ao assistente de configuração do %1$s.\n\nPara funcionar corretamente, precisamos das seguintes permissões:</string>

@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">SETĂRI</string>
-    <string name="tab_deploy">Instalare</string>
-    <string name="tab_status">Stare</string>
-    <string name="tab_usage">Utilizare</string>
-    <string name="tab_share">Partajare</string>
     <string name="setup_title">Configurare inițială</string>
     <string name="setup_welcome">Bine ai venit la asistentul de configurare %1$s.\n\nPentru a funcționa corect, avem nevoie de următoarele permisiuni:</string>
     <string name="setup_continue">Continuă</string>

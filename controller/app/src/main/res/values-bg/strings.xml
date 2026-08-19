@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">НАСТРОЙКИ</string>
-    <string name="tab_deploy">Инсталиране</string>
-    <string name="tab_status">Състояние</string>
-    <string name="tab_usage">Употреба</string>
-    <string name="tab_share">Споделяне</string>
     <string name="setup_title">Първоначална настройка</string>
     <string name="setup_welcome">Добре дошли в помощника за настройка на %1$s.\n\nЗа да работи правилно, се нуждаем от следните разрешения:</string>
     <string name="setup_continue">Продължи</string>

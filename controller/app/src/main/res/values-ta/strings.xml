@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">அமைப்புகள்</string>
-    <string name="tab_deploy">நிறுவு</string>
-    <string name="tab_status">நிலை</string>
-    <string name="tab_usage">பயன்பாடு</string>
-    <string name="tab_share">பகிர்</string>
     <string name="setup_title">தொடக்க அமைப்பு</string>
     <string name="setup_welcome">%1$s அமைப்பு வழிகாட்டிக்கு வரவேற்கிறோம்.\n\nசரியாக இயங்க, எங்களுக்கு பின்வரும் அனுமதிகள் தேவை:</string>
     <string name="setup_continue">தொடரவும்</string>

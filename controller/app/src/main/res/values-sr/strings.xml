@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">ПОДЕШАВАЊА</string>
-    <string name="tab_deploy">Инсталација</string>
-    <string name="tab_status">Статус</string>
-    <string name="tab_usage">Употреба</string>
-    <string name="tab_share">Дељење</string>
     <string name="setup_title">Почетно подешавање</string>
     <string name="setup_welcome">Добро дошли у чаробњак за подешавање %1$s.\n\nДа би радила исправно, потребне су нам следеће дозволе:</string>
     <string name="setup_continue">Настави</string>
