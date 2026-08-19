@@ -51,8 +51,6 @@ import org.iiab.controller.install.domain.AnsibleRunOutcome;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.util.Locale;
 
@@ -90,16 +88,12 @@ public final class InstallService extends Service {
 
     // Start extras (snapshotted at start; the pipeline never reads the live UI).
     public static final String EXTRA_TIER = "tier";              // InstallationPlanner.Tier.name()
-    public static final String EXTRA_COMPANION = "companion";    // boolean
     public static final String EXTRA_ARCH = "arch";              // termux arch, e.g. arm64-v8a
-    public static final String EXTRA_KIWIX_LANG = "kiwixLang";   // nullable override
-    public static final String EXTRA_KIWIX_VARIANT = "kiwixVariant"; // nullable override
     public static final String EXTRA_REINSTALL = "reinstall";    // boolean: wipe existing rootfs first
     public static final String EXTRA_MODULES = "modules";        // String[]: module yamlBaseKeys to install
 
     // Which pipeline to run (ADFA-4476). Absent/"install" -> normal install; "reset" -> scratch reset.
     public static final String EXTRA_MODE = "mode";
-    public static final String EXTRA_SKIP_MAPS = "skipMaps"; // content flow: maps ship in the base image
     public static final String MODE_INSTALL = "install";
     public static final String MODE_RESET = "reset";
 
@@ -129,7 +123,6 @@ public final class InstallService extends Service {
      * non-destructive guard. Exactly the failure the cleanup claims to prevent.
      */
     private volatile TarExtractor extractor;
-    private volatile org.iiab.controller.content.RestContentClient restContentClient;   // ADFA-4840 (was socket.io, ADFA-4832); volatile: ADFA-5119 review
 
     private volatile boolean cancelled = false;
     private volatile boolean finished = false;
@@ -181,12 +174,8 @@ public final class InstallService extends Service {
 
     // Snapshot of the start parameters.
     private InstallationPlanner.Tier tier;
-    private boolean companionData;
     private String arch;
-    private String overrideKiwixLang;
-    private String overrideKiwixVariant;
     private boolean reinstall;
-    private boolean skipMaps;
     private boolean resetMode;
 
     // ADFA-4476 slice 3: per-module install queue state (module mode only).
@@ -315,13 +304,9 @@ public final class InstallService extends Service {
         // Snapshot start parameters (rootfs install).
         String tierName = intent.getStringExtra(EXTRA_TIER);
         tier = parseTier(tierName);
-        companionData = intent.getBooleanExtra(EXTRA_COMPANION, false);
         arch = intent.getStringExtra(EXTRA_ARCH);
         if (arch == null) arch = "arm64-v8a";
-        overrideKiwixLang = intent.getStringExtra(EXTRA_KIWIX_LANG);
-        overrideKiwixVariant = intent.getStringExtra(EXTRA_KIWIX_VARIANT);
         reinstall = intent.getBooleanExtra(EXTRA_REINSTALL, false);
-        skipMaps = intent.getBooleanExtra(EXTRA_SKIP_MAPS, false);
         resetMode = MODE_RESET.equals(intent.getStringExtra(EXTRA_MODE));
 
         startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_provisioning)));
@@ -361,12 +346,11 @@ public final class InstallService extends Service {
     private void runPipeline() {
         try {
             // Non-destructive guard (ADFA-4725): an already-installed system is NEVER
-            // re-extracted unless an explicit reinstall was requested. "Get more" then only
-            // runs the additive companion-data steps (Kiwix zims + Maps) inside the existing
-            // rootfs, so the OS blocks and any customized content are left untouched.
+            // re-extracted unless an explicit reinstall was requested, so the OS blocks and any
+            // customized content are left untouched. Content ("Get more") is added by the wizard
+            // through its own live channel, not here (ADFA-5192 retired the legacy companion leg).
             if (!reinstall && debianRootfs.exists() && debianRootfs.isDirectory()) {
-                if (companionData) startCompanionData();
-                else finishSuccess();
+                finishSuccess();
                 return;
             }
             // ADFA-5119 (review): a fresh install — nothing on disk — is already building the system
@@ -652,13 +636,7 @@ public final class InstallService extends Service {
                             }
                         }
 
-                        // DNS is written at the single chokepoint (PRootEngine.executeInContainer),
-                        // so the companion-data proot steps below get a working resolv.conf for free.
-                        if (companionData) {
-                            startCompanionData();
-                        } else {
-                            finishSuccess();
-                        }
+                        finishSuccess();
                     }
 
                     @Override
@@ -671,179 +649,6 @@ public final class InstallService extends Service {
                         fail(getString(R.string.install_error_extraction, error));
                     }
                 });
-    }
-
-    /**
-     * ADFA-5119 (review): widen {@code work} back before this runs.
-     *
-     * <p>By the time companion data starts, the rootfs is extracted and usable — so from here a
-     * cancellation is content being abandoned, not a system. Left at ROOTFS_BUILD, the notification's
-     * Cancel during a ZIM download or the maps runrole would have deleted a working rootfs and
-     * cleared setup_complete. Reachable only from the legacy {@code companion=true} start; the K2Go
-     * wizard banks content as wishlists and passes false.
-     */
-    private void startCompanionData() {
-        work = org.iiab.controller.install.domain.AbandonedInstall.Work.CONTENT;
-        editLocalVarsForMaps(debianRootfs, tier);
-        SharedPreferences prefs = getSharedPreferences(getString(R.string.pref_file_internal), Context.MODE_PRIVATE);
-        String targetLang = (overrideKiwixLang != null) ? overrideKiwixLang : prefs.getString("selected_lang_minimal", org.iiab.controller.applang.data.ContentLanguage.systemDefault());
-
-        InstallationPlanner.calculateProjectedSize(this, tier, true, targetLang, overrideKiwixVariant,
-                new InstallationPlanner.PlanResultListener() {
-                    @Override
-                    public void onCalculated(InstallationPlanner.StorageProjection projection) {
-                        if (cancelled) return;
-                        if (projection.resolvedFilename != null) downloadAndIndexKiwix(projection.resolvedFilename);
-                        else runMapsAnsible();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        runMapsAnsible();
-                    }
-                });
-    }
-
-    private void downloadAndIndexKiwix(String zimFilename) {
-        // ADFA-4832: on an already-running system, adding a ZIM via a second proot
-        // (iiab-make-kiwix-lib) collides with the live server and breaks Kiwix. Route the add
-        // through the in-server dashboard channel — the running server downloads + indexes
-        // in-process, no new proot. The app-side proot path below stays for the fresh-install
-        // case (server down), which safely owns the rootfs exclusively.
-        if (org.iiab.controller.ServerStateRepository.get().current().alive) {
-            addZimViaLiveChannel(zimFilename);
-            return;
-        }
-
-        postProvisioning(getString(R.string.install_status_preparing_kiwix));
-
-        String zimUrl = "https://download.kiwix.org/zim/wikipedia/" + zimFilename;
-        File libraryDir = new File(debianRootfs, "library/zims/content");
-        if (!libraryDir.exists()) libraryDir.mkdirs();
-
-        if (aria2Manager == null) aria2Manager = new Aria2Manager();
-        aria2Manager.startDownload(this, zimUrl, new Aria2Manager.DownloadListener() {
-            @Override
-            public void onProgress(int percentage, String speed, String eta) {
-                if (cancelled) return;
-                String text = getString(R.string.install_status_zim_download, percentage, speed);
-                postProvisioning(text);
-                updateNotification(text);
-            }
-
-            @Override
-            public void onComplete(String downloadPath) {
-                if (cancelled) return;
-                postProvisioning(getString(R.string.install_status_indexing_zim));
-                File downloadedZim = new File(downloadPath, zimFilename);
-                if (downloadedZim.exists()) downloadedZim.renameTo(new File(libraryDir, zimFilename));
-
-                if (prootEngine == null) prootEngine = new PRootEngine();
-                prootEngine.executeInContainer(InstallService.this, debianRootfs.getAbsolutePath(), "iiab-make-kiwix-lib",
-                        new PRootEngine.OutputListener() {
-                            @Override public void onOutputLine(String line) { log("[Kiwix] " + line); }
-                            @Override public void onProcessExit(int exitCode) { runMapsAnsible(); }
-                            @Override public void onError(String error) { runMapsAnsible(); }
-                        });
-            }
-
-            @Override
-            public void onError(String error) {
-                runMapsAnsible();
-            }
-        });
-    }
-
-    /**
-     * ADFA-4840: add a ZIM on the LIVE system through the in-server durable REST job engine, so the
-     * running server does the download + index in-process (no second proot). Short POST + ~1s polls
-     * instead of a long-lived socket; the job is durable server-side, so it survives UI/config churn
-     * and even a dashboard restart. This service is foreground, so polling continues in the background.
-     * On success we finish here rather than running the maps proot — maps on a live system needs the
-     * same migration (follow-up), and spawning that proot would re-introduce the collision.
-     */
-    private void addZimViaLiveChannel(String zimFilename) {
-        postProvisioning(getString(R.string.install_status_preparing_kiwix));
-        restContentClient = new org.iiab.controller.content.RestContentClient();
-        restContentClient.addZim(zimFilename, new org.iiab.controller.content.RestContentClient.Listener() {
-            @Override public void onProgress(int percent, String speed) {
-                if (cancelled) return;
-                // ADFA-4830: install_status_zim_download no longer bakes the unit — the rate carries
-                // its own localized "/s". The live channel gives a raw rate, so append it here.
-                String rate = speed + getString(R.string.k2go_rate_per_second);
-                String text = getString(R.string.install_status_zim_download, percent, rate);
-                postProvisioning(text);
-                updateNotification(text);
-            }
-            @Override public void onIndexing() {
-                if (cancelled) return;
-                postProvisioning(getString(R.string.install_status_indexing_zim));
-            }
-            @Override public void onLog(String line) { log("[Kiwix-live] " + line); }
-            @Override public void onDone() {
-                if (cancelled) return;
-                finishSuccess();
-            }
-            @Override public void onError(String message) {
-                if (cancelled) return;
-                log("[Kiwix-live] add failed: " + message);
-                // Safe degrade: never spawn a colliding proot on the live system — surface the failure.
-                fail(getString(R.string.install_error_download, message));
-            }
-        });
-    }
-
-    private void runMapsAnsible() {
-        if (cancelled) return;
-
-        if (skipMaps || tier == InstallationPlanner.Tier.BASIC) {
-            // Maps ship in the software block (base image) and BASIC already has them; the
-            // content flow disables the maps reinstall. Skip straight to success.
-            postProvisioning(getString(R.string.install_status_maps_provisioned));
-            new Handler(Looper.getMainLooper()).postDelayed(this::finishSuccess, 1500);
-            return;
-        }
-
-        postProvisioning(getString(R.string.install_status_maps_configuring));
-        if (prootEngine == null) prootEngine = new PRootEngine();
-        String installCmd = "cd /opt/iiab/iiab && ./runrole --reinstall maps";
-        prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
-            @Override public void onOutputLine(String line) { log("[Ansible] " + line); }
-            @Override public void onProcessExit(int exitCode) { finishSuccess(); }
-            @Override public void onError(String error) { finishSuccess(); }
-        });
-    }
-
-    private void editLocalVarsForMaps(File debianRootfs, InstallationPlanner.Tier tier) {
-        File yamlFile = new File(debianRootfs, "etc/iiab/local_vars.yml");
-        if (!yamlFile.exists()) return;
-        try {
-            StringBuilder content = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new FileReader(yamlFile));
-            String line;
-            while ((line = reader.readLine()) != null) content.append(line).append("\n");
-            reader.close();
-
-            String text = content.toString();
-            text = text.replaceAll("(?m)^maps_install:\\s*.*", "maps_install: True");
-            text = text.replaceAll("(?m)^maps_enabled:\\s*.*", "maps_enabled: True");
-
-            if (tier == InstallationPlanner.Tier.STANDARD) {
-                text = text.replaceAll("(?m)^maps_vector_(quality|zoom):\\s*.*", "maps_vector_zoom: 11");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 7");
-            } else if (tier == InstallationPlanner.Tier.FULL) {
-                text = text.replaceAll("(?m)^maps_vector_(quality|zoom):\\s*.*", "maps_vector_zoom: 11");
-                text = text.replaceAll("(?m)^maps_satellite_zoom:\\s*.*", "maps_satellite_zoom: 9");
-                text = text.replaceAll("(?m)^maps_terrain_zoom:\\s*.*", "maps_terrain_zoom: 8");
-            }
-            // BASIC keeps the base-image defaults.
-
-            FileWriter writer = new FileWriter(yamlFile);
-            writer.write(text);
-            writer.close();
-        } catch (Exception ignored) {
-        }
     }
 
     // ------------------------------------------------------------ reset pipeline
@@ -1480,7 +1285,6 @@ public final class InstallService extends Service {
         finished = true;
         try {
             if (aria2Manager != null) aria2Manager.stopDownload();
-            if (restContentClient != null) restContentClient.cancel();   // ADFA-4840
             // ADFA-5119 (review): stop tar BEFORE the cleanup deletes the tree it is writing into.
             // Without this the rm -rf below raced a live extraction and the surviving directory was
             // adopted by the next install's non-destructive guard — a "successful" boot over a wreck.
