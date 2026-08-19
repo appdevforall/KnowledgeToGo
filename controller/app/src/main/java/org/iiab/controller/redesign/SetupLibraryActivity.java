@@ -320,13 +320,11 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
         Intent i = new Intent(this, InstallService.class);
         i.setAction(InstallService.ACTION_START);
         i.putExtra(InstallService.EXTRA_TIER, getSelectedTier().name());
-        i.putExtra(InstallService.EXTRA_COMPANION, false);
         i.putExtra(InstallService.EXTRA_ARCH, SystemStateEvaluator.termuxArch(this));
         // ADFA-5023: reinstall wipes the existing rootfs first. Stopping a LIVE server before the wipe is
         // done by the SERVICE (InstallService.runPipeline) — NOT here — so this navigation stays instant:
         // one tap goes straight to the boot gate instead of the wizard sitting there during stopEnvironment.
         i.putExtra(InstallService.EXTRA_REINSTALL, reinstallMode);
-        i.putExtra(InstallService.EXTRA_SKIP_MAPS, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) startForegroundService(i);
         else startService(i);
         // ADFA-5023: plain startActivity so a FRESH LibraryActivity is created and reads EXTRA_INSTALLING
