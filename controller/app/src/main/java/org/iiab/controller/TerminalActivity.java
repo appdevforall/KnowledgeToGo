@@ -37,6 +37,7 @@ public class TerminalActivity extends AppCompatActivity implements TerminalContr
     }
 
     private TerminalController terminalController;
+    private boolean finishOnHideAttached = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,6 @@ public class TerminalActivity extends AppCompatActivity implements TerminalContr
 
         terminalController = new TerminalController(this, this);
         terminalController.bind();
-        attachFinishOnHide();
         openTerminal();
     }
 
@@ -60,7 +60,13 @@ public class TerminalActivity extends AppCompatActivity implements TerminalContr
     private void openTerminal() {
         if (terminalController == null) return;
         View root = findViewById(R.id.terminal_coordinator);
-        Runnable open = () -> terminalController.openFullTerminal();
+        Runnable open = () -> {
+            terminalController.openFullTerminal();
+            // Attach finish-on-hide only after the sheet has been expanded, so the initial
+            // HIDDEN state (set in bind()) can never reach a live callback and close the
+            // Activity on launch. Mirrors MainActivity, which attached it inside the open.
+            attachFinishOnHide();
+        };
         if (root != null) root.post(open);
         else open.run();
     }
@@ -68,9 +74,11 @@ public class TerminalActivity extends AppCompatActivity implements TerminalContr
     /**
      * Swiping the terminal sheet down finishes back to the caller instead of exposing an
      * empty surface. Mirrors MainActivity.attachTerminalOnlyFinish (ADFA-4987): no peek
-     * stop — a swipe-down goes straight to HIDDEN -> finish().
+     * stop — a swipe-down goes straight to HIDDEN -> finish(). Attached once (after the
+     * first expand); a re-open via onNewIntent must not stack a second callback.
      */
     private void attachFinishOnHide() {
+        if (finishOnHideAttached) return;
         View sheet = findViewById(R.id.terminal_bottom_sheet);
         if (sheet == null) return;
         BottomSheetBehavior<View> b = BottomSheetBehavior.from(sheet);
@@ -87,6 +95,7 @@ public class TerminalActivity extends AppCompatActivity implements TerminalContr
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) { }
         });
+        finishOnHideAttached = true;
     }
 
     @Override
