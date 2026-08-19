@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">BEÁLLÍTÁSOK</string>
-    <string name="tab_deploy">Telepítés</string>
-    <string name="tab_status">Állapot</string>
-    <string name="tab_usage">Használat</string>
-    <string name="tab_share">Megosztás</string>
     <string name="setup_title">Kezdeti beállítás</string>
     <string name="setup_welcome">Üdvözli a(z) %1$s beállítási varázslója.\n\nA megfelelő működéshez a következő engedélyekre van szükségünk:</string>
     <string name="setup_continue">Folytatás</string>

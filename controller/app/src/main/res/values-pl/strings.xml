@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">USTAWIENIA</string>
-    <string name="tab_deploy">Instalacja</string>
-    <string name="tab_status">Stan</string>
-    <string name="tab_usage">Użycie</string>
-    <string name="tab_share">Udostępnianie</string>
     <string name="setup_title">Konfiguracja początkowa</string>
     <string name="setup_welcome">Witamy w kreatorze konfiguracji %1$s.\n\nAby działać prawidłowo, potrzebujemy następujących uprawnień:</string>
     <string name="setup_continue">Kontynuuj</string>

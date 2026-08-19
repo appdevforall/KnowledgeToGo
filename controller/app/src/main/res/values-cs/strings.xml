@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">NASTAVENÍ</string>
-    <string name="tab_deploy">Instalace</string>
-    <string name="tab_status">Stav</string>
-    <string name="tab_usage">Využití</string>
-    <string name="tab_share">Sdílet</string>
     <string name="setup_title">Počáteční nastavení</string>
     <string name="setup_welcome">Vítejte v průvodci nastavením %1$s.\n\nAby vše fungovalo správně, potřebujeme následující oprávnění:</string>
     <string name="setup_continue">Pokračovat</string>

@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">INNSTILLINGER</string>
-    <string name="tab_deploy">Installer</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">Bruk</string>
-    <string name="tab_share">Del</string>
     <string name="setup_title">Førstegangsoppsett</string>
     <string name="setup_welcome">Velkommen til oppsettsveiviseren for %1$s.\n\nFor å fungere riktig trenger vi følgende tillatelser:</string>
     <string name="setup_continue">Fortsett</string>

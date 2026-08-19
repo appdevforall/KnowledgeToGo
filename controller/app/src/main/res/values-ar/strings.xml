@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">الإعدادات</string>
-    <string name="tab_deploy">التثبيت</string>
-    <string name="tab_status">الحالة</string>
-    <string name="tab_usage">الاستخدام</string>
-    <string name="tab_share">المشاركة</string>
     <string name="setup_title">الإعداد الأولي</string>
     <string name="setup_welcome">مرحبًا بك في معالج إعداد %1$s.\n\nلكي يعمل بشكل صحيح، نحتاج إلى الأذونات التالية:</string>
     <string name="setup_continue">متابعة</string>

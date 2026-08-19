@@ -10,10 +10,6 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">AJUSTES</string>
 
-    <string name="tab_deploy">Instalar</string>
-    <string name="tab_status">Estado</string>
-    <string name="tab_usage">Uso</string>
-    <string name="tab_share">Enviar</string>
 
     <string name="setup_title">Configuración Inicial</string>
     <string name="setup_welcome">Bienvenido al asistente de configuración de %1$s.\n\nPara funcionar correctamente, necesitamos los siguientes permisos:</string>

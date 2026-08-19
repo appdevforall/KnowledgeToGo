@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">NASTAVENIA</string>
-    <string name="tab_deploy">Inštalácia</string>
-    <string name="tab_status">Stav</string>
-    <string name="tab_usage">Využitie</string>
-    <string name="tab_share">Zdieľať</string>
     <string name="setup_title">Úvodné nastavenie</string>
     <string name="setup_welcome">Vitajte v sprievodcovi nastavením %1$s.\n\nAby aplikácia fungovala správne, potrebujeme nasledujúce povolenia:</string>
     <string name="setup_continue">Pokračovať</string>

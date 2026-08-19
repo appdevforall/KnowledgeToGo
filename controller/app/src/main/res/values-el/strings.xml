@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">ΡΥΘΜΙΣΕΙΣ</string>
-    <string name="tab_deploy">Εγκατάσταση</string>
-    <string name="tab_status">Κατάσταση</string>
-    <string name="tab_usage">Χρήση</string>
-    <string name="tab_share">Κοινή χρήση</string>
     <string name="setup_title">Αρχική ρύθμιση</string>
     <string name="setup_welcome">Καλώς ήρθατε στον οδηγό ρύθμισης %1$s.\n\nΓια να λειτουργήσει σωστά, χρειαζόμαστε τις εξής άδειες:</string>
     <string name="setup_continue">Συνέχεια</string>

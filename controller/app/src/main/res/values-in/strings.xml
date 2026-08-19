@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">PENGATURAN</string>
-    <string name="tab_deploy">Pasang</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">Penggunaan</string>
-    <string name="tab_share">Bagikan</string>
     <string name="setup_title">Penyiapan Awal</string>
     <string name="setup_welcome">Selamat datang di wizard penyiapan %1$s.\n\nAgar dapat berfungsi dengan baik, kami memerlukan izin berikut:</string>
     <string name="setup_continue">Lanjutkan</string>

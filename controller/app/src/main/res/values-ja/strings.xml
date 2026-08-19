@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">設定</string>
-    <string name="tab_deploy">インストール</string>
-    <string name="tab_status">ステータス</string>
-    <string name="tab_usage">使用状況</string>
-    <string name="tab_share">共有</string>
     <string name="setup_title">初期設定</string>
     <string name="setup_welcome">%1$s のセットアップウィザードへようこそ。\n\n正しく動作させるには、次の権限が必要です：</string>
     <string name="setup_continue">続行</string>

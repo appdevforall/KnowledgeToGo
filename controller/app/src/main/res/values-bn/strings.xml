@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">সেটিংস</string>
-    <string name="tab_deploy">ইনস্টল</string>
-    <string name="tab_status">অবস্থা</string>
-    <string name="tab_usage">ব্যবহার</string>
-    <string name="tab_share">শেয়ার</string>
     <string name="setup_title">প্রাথমিক সেটআপ</string>
     <string name="setup_welcome">%1$s সেটআপ উইজার্ডে স্বাগতম।\n\nসঠিকভাবে কাজ করার জন্য, আমাদের নিম্নলিখিত অনুমতিগুলো প্রয়োজন:</string>
     <string name="setup_continue">চালিয়ে যান</string>

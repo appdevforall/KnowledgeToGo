@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">CÀI ĐẶT</string>
-    <string name="tab_deploy">Cài đặt</string>
-    <string name="tab_status">Trạng thái</string>
-    <string name="tab_usage">Sử dụng</string>
-    <string name="tab_share">Chia sẻ</string>
     <string name="setup_title">Thiết lập ban đầu</string>
     <string name="setup_welcome">Chào mừng đến với trình hướng dẫn thiết lập %1$s.\n\nĐể hoạt động đúng, chúng tôi cần các quyền sau:</string>
     <string name="setup_continue">Tiếp tục</string>

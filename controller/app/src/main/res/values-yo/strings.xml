@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">ÀWỌN ÌṢÀGBÉKALẸ̀</string>
-    <string name="tab_deploy">Fi sórí ẹ̀rọ</string>
-    <string name="tab_status">Ipò</string>
-    <string name="tab_usage">Lílò</string>
-    <string name="tab_share">Pín</string>
     <string name="setup_title">Ìṣàgbékalẹ̀ Àkọ́kọ́</string>
     <string name="setup_welcome">Káàbọ̀ sí olùtọ́ọ̀nà ìṣàgbékalẹ̀ %1$s.\n\nKí ó lè ṣiṣẹ́ dáadáa, a nílò àwọn ìgbàláàyè wọ̀nyí:</string>
     <string name="setup_continue">Tẹ̀síwájú</string>

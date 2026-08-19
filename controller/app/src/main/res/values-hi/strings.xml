@@ -11,10 +11,6 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">सेटिंग्स</string>
 
-    <string name="tab_deploy">इंस्टॉल</string>
-    <string name="tab_status">स्थिति</string>
-    <string name="tab_usage">उपयोग</string>
-    <string name="tab_share">साझा करें</string>
 
     <string name="setup_title">प्रारंभिक सेटअप</string>
     <string name="setup_welcome">%1$s सेटअप विज़ार्ड में आपका स्वागत है।\n\nठीक से काम करने के लिए, हमें निम्नलिखित अनुमतियों की आवश्यकता है:</string>

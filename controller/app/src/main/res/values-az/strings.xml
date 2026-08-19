@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">TƏNZİMLƏMƏLƏR</string>
-    <string name="tab_deploy">Quraşdır</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">İstifadə</string>
-    <string name="tab_share">Paylaş</string>
     <string name="setup_title">İlkin quraşdırma</string>
     <string name="setup_welcome">%1$s quraşdırma sehrbazına xoş gəlmisiniz.\n\nDüzgün işləmək üçün aşağıdakı icazələr lazımdır:</string>
     <string name="setup_continue">Davam et</string>

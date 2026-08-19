@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">설정</string>
-    <string name="tab_deploy">설치</string>
-    <string name="tab_status">상태</string>
-    <string name="tab_usage">사용</string>
-    <string name="tab_share">공유</string>
     <string name="setup_title">초기 설정</string>
     <string name="setup_welcome">%1$s 설정 마법사에 오신 것을 환영합니다.\n\n올바르게 작동하려면 다음 권한이 필요합니다:</string>
     <string name="setup_continue">계속</string>

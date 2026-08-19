@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">INSTELLINGEN</string>
-    <string name="tab_deploy">Installeren</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">Gebruik</string>
-    <string name="tab_share">Delen</string>
     <string name="setup_title">Eerste installatie</string>
     <string name="setup_welcome">Welkom bij de installatiewizard van %1$s.\n\nOm goed te werken hebben we de volgende machtigingen nodig:</string>
     <string name="setup_continue">Doorgaan</string>

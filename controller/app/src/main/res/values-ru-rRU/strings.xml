@@ -11,10 +11,6 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">НАСТРОЙКИ</string>
 
-    <string name="tab_deploy">Установка</string>
-    <string name="tab_status">Статус</string>
-    <string name="tab_usage">Использование</string>
-    <string name="tab_share">Поделиться</string>
 
     <string name="setup_title">Начальная настройка</string>
     <string name="setup_welcome">Добро пожаловать в мастер настройки %1$s.\n\nДля правильной работы нам требуются следующие разрешения:</string>

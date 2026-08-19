@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">设置</string>
-    <string name="tab_deploy">安装</string>
-    <string name="tab_status">状态</string>
-    <string name="tab_usage">使用</string>
-    <string name="tab_share">共享</string>
     <string name="setup_title">初始设置</string>
     <string name="setup_welcome">欢迎使用 %1$s 设置向导。\n\n为了正常运行，我们需要以下权限：</string>
     <string name="setup_continue">继续</string>

@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">MIPANGILIO</string>
-    <string name="tab_deploy">Sakinisha</string>
-    <string name="tab_status">Hali</string>
-    <string name="tab_usage">Matumizi</string>
-    <string name="tab_share">Shiriki</string>
     <string name="setup_title">Usanidi wa Awali</string>
     <string name="setup_welcome">Karibu kwenye mchawi wa usanidi wa %1$s.\n\nIli ifanye kazi vizuri, tunahitaji ruhusa zifuatazo:</string>
     <string name="setup_continue">Endelea</string>

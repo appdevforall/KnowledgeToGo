@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">NUSTATYMAI</string>
-    <string name="tab_deploy">Diegti</string>
-    <string name="tab_status">Būsena</string>
-    <string name="tab_usage">Naudojimas</string>
-    <string name="tab_share">Bendrinti</string>
     <string name="setup_title">Pradinė sąranka</string>
     <string name="setup_welcome">Sveiki atvykę į %1$s sąrankos vediklį.\n\nKad viskas veiktų tinkamai, mums reikia šių leidimų:</string>
     <string name="setup_continue">Tęsti</string>

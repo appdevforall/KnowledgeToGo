@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">AYARLAR</string>
-    <string name="tab_deploy">Yükle</string>
-    <string name="tab_status">Durum</string>
-    <string name="tab_usage">Kullanım</string>
-    <string name="tab_share">Paylaş</string>
     <string name="setup_title">İlk kurulum</string>
     <string name="setup_welcome">%1$s kurulum sihirbazına hoş geldiniz.\n\nDüzgün çalışması için aşağıdaki izinlere ihtiyacımız var:</string>
     <string name="setup_continue">Devam</string>

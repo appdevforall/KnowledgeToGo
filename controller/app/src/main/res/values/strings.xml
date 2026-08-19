@@ -11,10 +11,6 @@
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">SETTINGS</string>
 
-    <string name="tab_deploy">Install</string>
-    <string name="tab_status">Status</string>
-    <string name="tab_usage">Usage</string>
-    <string name="tab_share">Share</string>
 
 
     <string name="setup_title">Initial Setup</string>

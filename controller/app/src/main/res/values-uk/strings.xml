@@ -9,10 +9,6 @@
     <string name="label_separator_down">▼ %s</string>
     <string name="label_separator_up">▶ %s</string>
     <string name="settings_label">НАЛАШТУВАННЯ</string>
-    <string name="tab_deploy">Встановлення</string>
-    <string name="tab_status">Стан</string>
-    <string name="tab_usage">Використання</string>
-    <string name="tab_share">Поділитися</string>
     <string name="setup_title">Початкове налаштування</string>
     <string name="setup_welcome">Ласкаво просимо до майстра налаштування %1$s.\n\nЩоб працювати належним чином, нам потрібні такі дозволи:</string>
     <string name="setup_continue">Продовжити</string>

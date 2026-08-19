@@ -61,19 +61,12 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            android:windowSoftInputMode="adjustResize" /> <!-- ADFA-5024-followup: the terminal lives in a
-            BottomSheet/CoordinatorLayout (ADFA-4987); without an explicit mode the system defaulted to
-            adjustPan, so the IME covered the ExtraKeys bar and the text stuck. adjustResize shrinks the
-            window so the extra-keys bar + terminal sit above the keyboard. -->
-
-        <!-- ADFA-5192: the Debian terminal re-homed out of MainActivity. Same window/IME setup as
-             MainActivity carried the terminal (adjustResize + configChanges); singleTop lets the
-             keep-alive notification's SINGLE_TOP intent reuse the running instance. Not exported:
-             launched only in-app (redesign Settings, the terminal's own notification PendingIntent). -->
+        <!-- ADFA-5192: the Debian terminal. adjustResize + configChanges (the setup the terminal
+             carried when it lived in MainActivity, ADFA-5024/ADFA-4987): the terminal sits in a
+             BottomSheet/CoordinatorLayout and adjustResize keeps the extra-keys bar + terminal above
+             the IME. singleTop lets the keep-alive notification's SINGLE_TOP intent reuse the running
+             instance. Not exported: launched only in-app (redesign Settings, the terminal's own
+             notification PendingIntent). -->
         <activity
             android:name=".TerminalActivity"
             android:exported="false"
