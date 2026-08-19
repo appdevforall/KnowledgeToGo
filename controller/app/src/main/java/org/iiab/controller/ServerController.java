@@ -155,7 +155,7 @@ public class ServerController {
 
             // ADFA-4578: evaluate + publish the SystemState at app level (every poll),
             // so every tab reflects the server live instead of only after visiting the Dashboard.
-            final DashboardFragment.SystemState sysState = SystemStateEvaluator.evaluate(activity, localAlive);
+            final SystemState sysState = SystemStateEvaluator.evaluate(activity, localAlive);
             ServerStateRepository.get().post(ServerState.of(localAlive, sysState));
 
             // STATE MACHINE: Has the target state been reached?

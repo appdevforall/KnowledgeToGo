@@ -96,10 +96,8 @@ public class DashboardFragment extends Fragment {
             new IiabModule("dashboard", R.string.dash_system, false)
     );
 
-    public enum SystemState {
-        ONLINE, OFFLINE, DEBIAN_ONLY, INSTALLER, TERMUX_ONLY, NONE
-    }
-
+    // ADFA-5192: SystemState is now a top-level enum (org.iiab.controller.SystemState),
+    // extracted so it survives the retirement of this legacy fragment.
     private SystemState currentSystemState = SystemState.NONE;
 
     @Nullable

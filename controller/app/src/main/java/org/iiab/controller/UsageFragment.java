@@ -184,8 +184,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
 
         btnServerControl.setOnClickListener(v -> {
             // --- Intercept based on State Machine ---
-            DashboardFragment.SystemState state = ServerStateRepository.get().current().systemState;
-            boolean isFullyInstalled = (state == DashboardFragment.SystemState.ONLINE || state == DashboardFragment.SystemState.OFFLINE);
+            SystemState state = ServerStateRepository.get().current().systemState;
+            boolean isFullyInstalled = (state == SystemState.ONLINE || state == SystemState.OFFLINE);
 
             if (!isFullyInstalled) {
                 Snackbar.make(v, R.string.server_not_installed_warning, 6000).show();
@@ -259,8 +259,8 @@ public class UsageFragment extends Fragment implements View.OnClickListener {
         }
 
         // Server Control Logic
-        DashboardFragment.SystemState state = ServerStateRepository.get().current().systemState;
-        boolean isFullyInstalled = (state == DashboardFragment.SystemState.ONLINE || state == DashboardFragment.SystemState.OFFLINE);
+        SystemState state = ServerStateRepository.get().current().systemState;
+        boolean isFullyInstalled = (state == SystemState.ONLINE || state == SystemState.OFFLINE);
 
         if (!isFullyInstalled) {
             // SYSTEM NOT READY: Gray out the button

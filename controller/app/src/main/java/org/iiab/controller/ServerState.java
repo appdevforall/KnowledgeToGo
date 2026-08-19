@@ -14,18 +14,18 @@ package org.iiab.controller;
 public final class ServerState {
 
     public final boolean alive;
-    public final DashboardFragment.SystemState systemState;
+    public final SystemState systemState;
 
-    private ServerState(boolean alive, DashboardFragment.SystemState systemState) {
+    private ServerState(boolean alive, SystemState systemState) {
         this.alive = alive;
         this.systemState = systemState;
     }
 
-    public static ServerState of(boolean alive, DashboardFragment.SystemState systemState) {
+    public static ServerState of(boolean alive, SystemState systemState) {
         return new ServerState(alive, systemState);
     }
 
     public static ServerState unknown() {
-        return new ServerState(false, DashboardFragment.SystemState.NONE);
+        return new ServerState(false, SystemState.NONE);
     }
 }

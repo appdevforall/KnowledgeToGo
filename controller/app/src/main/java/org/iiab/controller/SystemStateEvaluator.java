@@ -65,21 +65,21 @@ public final class SystemStateEvaluator {
     }
 
     /** Server responding → ONLINE; else derive from the rootfs on disk. */
-    public static DashboardFragment.SystemState evaluate(Context ctx, boolean serverAlive) {
+    public static SystemState evaluate(Context ctx, boolean serverAlive) {
         File rootfsDir = rootfsDir(ctx);
         File debianBash = new File(rootfsDir, "bin/bash");
         File flagIiabReady = new File(rootfsDir, "usr/local/pdsm/flag_install_ready");
 
         if (serverAlive) {
-            return DashboardFragment.SystemState.ONLINE;
+            return SystemState.ONLINE;
         }
         if (flagIiabReady.exists()) {
-            return DashboardFragment.SystemState.OFFLINE;
+            return SystemState.OFFLINE;
         }
         if (debianBash.exists()) {
-            return DashboardFragment.SystemState.DEBIAN_ONLY;
+            return SystemState.DEBIAN_ONLY;
         }
-        return DashboardFragment.SystemState.NONE;
+        return SystemState.NONE;
     }
 
     public static String termuxArch(Context ctx) {
