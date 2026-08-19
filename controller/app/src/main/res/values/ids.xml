@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ADFA-5192: fab_feedback was declared via @+id in the old main.xml (deleted with the legacy
+         tabbed UI). FeedbackFab.installOn adds the FAB programmatically to the redesign screens and
+         needs this id to exist (idempotency check + setId), so it is declared standalone here. -->
+    <item name="fab_feedback" type="id" />
+</resources>
