@@ -93,11 +93,10 @@ public class TerminalSessionService extends Service {
     }
 
     private Notification buildNotification() {
-        // Tapping the notification opens the terminal directly, bypassing the hidden
-        // version-footer gesture (ADFA-4696). SINGLE_TOP reuses the running Activity.
-        Intent open = new Intent(this, MainActivity.class)
-                .putExtra(MainActivity.EXTRA_OPEN_TERMINAL, true)
-                .putExtra(MainActivity.EXTRA_TERMINAL_ONLY, true)
+        // Tapping the notification opens the terminal directly (ADFA-4696). ADFA-5192: the terminal
+        // is its own Activity now, so no terminal-only extras are needed. SINGLE_TOP reuses the
+        // running instance.
+        Intent open = new Intent(this, TerminalActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pending = PendingIntent.getActivity(
                 this, 0, open, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

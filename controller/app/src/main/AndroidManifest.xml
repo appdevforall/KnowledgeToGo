@@ -70,6 +70,17 @@
             adjustPan, so the IME covered the ExtraKeys bar and the text stuck. adjustResize shrinks the
             window so the extra-keys bar + terminal sit above the keyboard. -->
 
+        <!-- ADFA-5192: the Debian terminal re-homed out of MainActivity. Same window/IME setup as
+             MainActivity carried the terminal (adjustResize + configChanges); singleTop lets the
+             keep-alive notification's SINGLE_TOP intent reuse the running instance. Not exported:
+             launched only in-app (redesign Settings, the terminal's own notification PendingIntent). -->
+        <activity
+            android:name=".TerminalActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".PortalActivity"
             android:exported="false"
