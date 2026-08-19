@@ -205,12 +205,9 @@ public class SettingsSubFragment extends Fragment {
         } catch (Exception ignore) { /* no-op */ }
     }
 
-    /** The full Debian terminal lives in MainActivity; EXTRA_OPEN_TERMINAL opens it directly. */
+    /** The full Debian terminal lives in its own TerminalActivity (ADFA-5192). */
     private void openTerminal(Context ctx) {
-        Intent i = new Intent(ctx, org.iiab.controller.MainActivity.class);
-        i.putExtra(org.iiab.controller.MainActivity.EXTRA_OPEN_TERMINAL, true);
-        i.putExtra(org.iiab.controller.MainActivity.EXTRA_TERMINAL_ONLY, true);
-        ctx.startActivity(i);
+        ctx.startActivity(new Intent(ctx, org.iiab.controller.TerminalActivity.class));
     }
 
     // ---- Advanced (power-user features — preview for now) ----

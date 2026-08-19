@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ADFA-5192: the Debian terminal re-homed out of the legacy MainActivity into its own
+  TerminalActivity. This is the terminal_bottom_sheet subtree lifted verbatim from
+  res/layout/main.xml (drag handle + drawer + TerminalView + extra keys), kept as a
+  BottomSheetBehavior child of a CoordinatorLayout so TerminalController.bind() —
+  which does BottomSheetBehavior.from(terminal_bottom_sheet) — works unchanged.
+  The terminal is a legitimately always-dark surface (like the QR black/white), so the
+  hardcoded dark hex is intentional and carried over as-is; restyling to M3 tokens is
+  out of scope for a behaviour-preserving re-home.
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/terminal_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <LinearLayout
+        android:id="@+id/terminal_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#000000"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <FrameLayout
+            android:id="@+id/terminal_drag_handle_area"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="#111111"
+            android:clickable="true"
+            android:focusable="true">
+
+            <LinearLayout
+                android:layout_width="80dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="#222222"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="32dp"
+                    android:layout_height="2dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="#555555" />
+
+                <View
+                    android:layout_width="32dp"
+                    android:layout_height="2dp"
+                    android:background="#555555" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/drawer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.termux.view.TerminalView
+                android:id="@+id/terminal_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:id="@+id/left_drawer"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="#1A1A1A"
+                android:orientation="vertical"
+                android:elevation="8dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/sessions_title"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:padding="16dp"
+                    android:background="#111111" />
+
+                <ListView
+                    android:id="@+id/left_drawer_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:choiceMode="singleChoice"
+                    android:divider="#333333"
+                    android:dividerHeight="1dp" />
+
+                <Button
+                    android:id="@+id/new_session_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:backgroundTint="#333333"
+                    android:textColor="#FFFFFF"
+                    android:text="@string/new_session_btn"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+        <com.termux.shared.termux.extrakeys.ExtraKeysView
+            android:id="@+id/extra_keys_view"
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:background="#1E1E1E"
+            android:visibility="visible" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
