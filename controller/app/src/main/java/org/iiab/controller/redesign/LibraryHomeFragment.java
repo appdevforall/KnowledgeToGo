@@ -786,15 +786,14 @@ public class LibraryHomeFragment extends Fragment {
      * not a fourth reading here.
      *
      * <p>The card endpoints and the content keys disagree on one name — the Wikipedia card is
-     * {@code kiwix} and its content type is {@code zim}. That belongs on {@code ContentType}
-     * as an endpoint field; it is exactly what ADFA-5062 exists to retire, and this adds one
-     * more instance of it.
+     * {@code kiwix} and its content type is {@code zim}. That alias now lives on {@code ContentType}
+     * as an {@code endpoint} field (ADFA-5062), so the lookup is {@code byEndpoint} rather than a
+     * hand-rolled remap here.
      */
     private boolean contentInFlight(Card c) {
         if (c == null || c.endpoint == null || passContent == null) return false;
-        String key = "kiwix".equals(c.endpoint) ? "zim" : c.endpoint;
         org.iiab.controller.system.domain.ContentType type =
-                org.iiab.controller.system.domain.ContentType.byKey(key);
+                org.iiab.controller.system.domain.ContentType.byEndpoint(c.endpoint);
         return type != null && passContent.isRunning(type);
     }
 
