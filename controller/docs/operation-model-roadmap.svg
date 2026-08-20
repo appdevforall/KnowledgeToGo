@@ -221,7 +221,7 @@
 <circle class="s-done" cx="472" cy="861" r="5.5"/>
 <text class="item" x="486" y="865">Resumes on a validated network change</text>
 </g>
-<g transform="translate(424,0)">
+<g transform="translate(424,-191)">
 <rect class="card" x="448" y="906" width="380" height="111"/>
 <rect class="chip" x="464" y="922" width="79" height="19" fill="#E7F1FB" stroke="none"/>
 <text class="chiptx" x="472" y="936" fill="#1B5E8F">ADFA-4898</text>
@@ -237,7 +237,7 @@
 <text class="sub" x="464" y="1119">that leads somewhere. PR #400, 13 Aug.</text>
 <text class="sub" x="464" y="1134">Left over: the kiwix index leg still lies.</text>
 </g>
-<g transform="translate(424,-135)">
+<g transform="translate(424,-326)">
 <rect class="card" x="448" y="1180" width="380" height="187"/>
 <rect class="chip" x="464" y="1196" width="79" height="19" fill="#F0F1F3" stroke="none"/>
 <text class="chiptx" x="472" y="1210" fill="#5B636B">FOLLOW UP</text>
@@ -251,26 +251,26 @@
 <text class="item" x="486" y="1328">Dashboard Rebuild: the REST/proot fork</text>
 <text class="note" x="464" y="1351">5104 proved the disk source; the repository is still owed.</text>
 </g>
-<g transform="translate(424,0)">
-<rect class="card" x="872" y="467" width="380" height="226"/>
-<rect class="chip" x="888" y="483" width="79" height="19" fill="#E7F1FB" stroke="none"/>
-<text class="chiptx" x="896" y="497" fill="#1B5E8F">ADFA-5062</text>
+<g transform="translate(-424,1133)">
+<rect class="card" x="872" y="467" width="380" height="226" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="888" y="483" width="122" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="896" y="497" fill="#1B7F4B">ADFA-5062 · DONE</text>
 <text class="h2" x="888" y="523">Retire the surfaces that still guess</text>
-<text class="sub" x="888" y="547">All five re-verified against the code, 11 Aug.</text>
+<text class="sub" x="888" y="547">All five closed: 3 PRs + 2 ADRs (Maps, Books).</text>
 <circle class="s-done" cx="896" cy="563" r="5.5"/>
-<text class="item" x="910" y="567">ModuleActionSheet: Open vs Install</text>
-<circle class="s-todo" cx="896" cy="581" r="5.5"/>
-<text class="item" x="910" y="585">Home cards: app install vs content</text>
-<circle class="s-todo" cx="896" cy="599" r="5.5"/>
-<text class="item" x="910" y="603">SetupProgressActivity key switch</text>
-<circle class="s-todo" cx="896" cy="617" r="5.5"/>
-<text class="item" x="910" y="621">Maps: two mechanisms, one name</text>
-<circle class="s-todo" cx="896" cy="635" r="5.5"/>
-<text class="item" x="910" y="639">5 sites that probe the rootfs themselves</text>
-<text class="note" x="888" y="662">A check answering with a boolean invites its caller to</text>
-<text class="note" x="888" y="677">treat silence as a verdict. Three screens did it apart.</text>
+<text class="item" x="910" y="567">SetupProgress: class from the model, not the prefix</text>
+<circle class="s-done" cx="896" cy="581" r="5.5"/>
+<text class="item" x="910" y="585">Home: endpoint alias on ContentType</text>
+<circle class="s-done" cx="896" cy="599" r="5.5"/>
+<text class="item" x="910" y="603">DashboardRebuild: class into an Operation</text>
+<circle class="s-done" cx="896" cy="617" r="5.5"/>
+<text class="item" x="910" y="621">Maps: two operations — ADR</text>
+<circle class="s-done" cx="896" cy="635" r="5.5"/>
+<text class="item" x="910" y="639">Books: single card, already modeled — ADR</text>
+<text class="note" x="888" y="662">ModuleActionSheet already read the class; the rest now</text>
+<text class="note" x="888" y="677">do too, or record why they need no change.</text>
 </g>
-<g transform="translate(424,0)">
+<g transform="translate(424,-248)">
 <rect class="card" x="872" y="715" width="380" height="205"/>
 <rect class="chip" x="888" y="731" width="79" height="19" fill="#E7F1FB" stroke="none"/>
 <text class="chiptx" x="896" y="745" fill="#1B5E8F">ADFA-5103</text>
@@ -300,7 +300,7 @@
 <circle class="s-done" cx="896" cy="1089" r="5.5"/>
 <text class="item" x="910" y="1093">Picker prefers the box; weekly pull</text>
 </g>
-<g transform="translate(424,-186)">
+<g transform="translate(424,-434)">
 <rect class="card" x="872" y="1134" width="380" height="154"/>
 <rect class="chip" x="888" y="1150" width="65" height="19" fill="#F0F1F3" stroke="none"/>
 <text class="chiptx" x="896" y="1164" fill="#5B636B">NOT NOW</text>
@@ -311,7 +311,7 @@
 <text class="item" x="910" y="1249">Decide: can a module be uninstalled?</text>
 <text class="note" x="888" y="1272">Seven verbs for “remove” today; two name one action.</text>
 </g>
-<g transform="translate(424,-130)">
+<g transform="translate(424,-321)">
 <rect class="card" x="448" y="1390" width="380" height="172" stroke="#C0392B" stroke-width="2"/>
 <rect class="chip" x="464" y="1406" width="107" height="19" fill="#FDECEC" stroke="none"/>
 <text class="chiptx" x="472" y="1420" fill="#C0392B">NO TICKET YET</text>
@@ -348,7 +348,7 @@
 <text class="sub" x="888" y="1601">ledger row deleted rather than fixed.</text>
 <text class="note" x="888" y="1620">A derivable fact is removed, not maintained.</text>
 </g>
-<g transform="translate(424,-526)">
+<g transform="translate(424,-774)">
 <rect class="card" x="872" y="1656" width="380" height="196" stroke="#C0392B" stroke-width="2"/>
 <rect class="chip" x="888" y="1672" width="107" height="19" fill="#FDECEC" stroke="none"/>
 <text class="chiptx" x="896" y="1686" fill="#C0392B">NO TICKET YET</text>
@@ -425,9 +425,6 @@
 <path class="lnk-hi" d="M144,467 V417 H1416 V467" marker-end="url(#ahi)"/>
 <rect x="681" y="400" width="199" height="15" fill="#F7F8F9" opacity="0.95"/>
 <text class="lnklbl" x="780" y="411" text-anchor="middle">retires the derivations it replaced</text>
-<path class="lnk-dash" d="M1296,755 H1274 V673 H1252" marker-end="url(#a)"/>
-<rect x="1194" y="739" width="183" height="15" fill="#F7F8F9" opacity="0.95"/>
-<text class="lnklbl" x="1285" y="750" text-anchor="middle">same launch file — sequence them</text>
 <text class="h3" x="24" y="2896">SESSION 15 AUG — WHAT LANDED, AND WHAT IT SURFACED</text>
 <rect class="card" x="24" y="2914" width="1652" height="268" stroke="#0E7C86" stroke-width="2"/>
 <rect class="chip" x="40" y="2930" width="176" height="19" fill="#E0F2F1" stroke="none"/>
