@@ -22,6 +22,12 @@
  *               from theme attributes (colorSurface/onSurface/primary/error/…) so they follow light/dark;
  *               dialogs use MaterialAlertDialogBuilder, buttons MaterialButton, and the progress bars
  *               the Material progress indicators. All user-facing text lives in string resources.
+ *
+ *               ADFA-5062: in the operation model (ADR-5061) this FQR region fetch is
+ *               Operation.content("maps") — a CONTENT / LIVE operation. Unlike the banked ContentType
+ *               members (ZIM, Books, Courses and the STOPPED maps-layer install of ContentType.MAPS),
+ *               it is user-driven: it exists only when someone draws a region here and consents, so it
+ *               is an Operation, not a ContentType. See ADR-5062-maps-two-operations.md.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
