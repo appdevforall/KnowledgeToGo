@@ -34,6 +34,13 @@ public class ServerController {
 
     private static final String TAG = "IIAB-ServerController";
     private static final int CHECK_INTERVAL_MS = 3000;
+    /**
+     * ADFA-5103: how long "environment alive, services not answering" is read as "still starting"
+     * rather than "stuck", before ensure-up is allowed to kill it. Must comfortably exceed the
+     * observed 3.5 s mid-boot window that got the earlier kill reverted; kept well under a normal
+     * boot-to-services time so a genuinely stuck orphan still recovers on a Retry.
+     */
+    private static final long BOOT_GRACE_MS = 20_000L;
 
     /** Activity-side callbacks the server lifecycle needs. */
     public interface Host {
@@ -73,6 +80,11 @@ public class ServerController {
     private String currentTargetUrl = null;
     // ADFA-4834: hard guard so a repeat "Turn off" tap never spawns a second concurrent pdsm stop.
     private volatile boolean stopping = false;
+    // ADFA-5103: an ensure-up decision or launch is in flight. Because the decision now runs off the
+    // main thread, two concurrent startEnvironment() calls could each read /proc, both see nothing,
+    // and both LAUNCH — the synchronous main-thread serialisation that used to prevent that is gone.
+    // This flag restores it: a concurrent call is a no-op until the launch (or the no-op) resolves.
+    private volatile boolean ensuring = false;
     private static final java.util.regex.Pattern PDSM_SVC = java.util.regex.Pattern.compile("\\[pdsm:([^\\]]+)\\]");
 
     private final Handler timeoutHandler = new Handler(android.os.Looper.getMainLooper());
@@ -248,24 +260,58 @@ public class ServerController {
      */
     public void startEnvironment() {
         if (stopping) return;   // a graceful stop is still tearing its proot down — don't stack a second
+        if (ensuring) return;   // ADFA-5103: a decision/launch is already in flight; never double-launch
+        ensuring = true;
+        // ADFA-5103: "ensure it is up", decided OFF the main thread — this has six callers, all on it,
+        // one of them a tap, and the decision reads /proc. Launch if nothing of ours is running; a
+        // no-op if it is already up or still inside its boot grace; kill+relaunch only a stuck orphan
+        // (alive, services down, past the grace). A proot cannot be re-entered, so a live-but-
+        // serviceless environment is recovered by ending it and booting a fresh one — but never one
+        // still in its boot grace, which was the 3.5 s mid-boot kill that got the earlier attempt
+        // reverted. EnvironmentProcess is the detection half; EnvironmentEnsure is the decision,
+        // pure and unit-tested on the JVM. `ensuring` is cleared by doLaunchEnvironment() on the
+        // launch paths and here on the no-op paths, so it is released exactly once.
+        AppExecutors.get().io().execute(() -> {
+            boolean envAlive = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
+            long ageMs = envAlive ? org.iiab.controller.env.EnvironmentProcess.environmentAgeMs(activity) : -1L;
+            boolean servicesAlive = ServerStateRepository.get().current().alive;
+            org.iiab.controller.env.domain.EnvironmentEnsure.Action action =
+                    org.iiab.controller.env.domain.EnvironmentEnsure.decide(
+                            envAlive, ageMs, servicesAlive, BOOT_GRACE_MS);
+            switch (action) {
+                case LAUNCH:
+                    activity.runOnUiThread(this::doLaunchEnvironment);
+                    break;
+                case KILL_AND_RELAUNCH:
+                    android.util.Log.i(TAG, "ADFA-5103: environment alive but services down past boot"
+                            + " grace (age " + ageMs + "ms) — killing the orphan and relaunching");
+                    org.iiab.controller.env.EnvironmentProcess.killOrphan(activity);
+                    activity.runOnUiThread(this::doLaunchEnvironment);
+                    break;
+                case NOOP_HEALTHY:
+                case WAIT_BOOT_GRACE:
+                default:
+                    android.util.Log.i(TAG, "ADFA-5103: ensure-up is a no-op (" + action + ", age "
+                            + ageMs + "ms) — not stacking a second proot");
+                    ensuring = false;
+                    break;
+            }
+        });
+    }
+
+    /**
+     * ADFA-5103: the actual boot, on the main thread. Reached only from {@link #startEnvironment()}
+     * once it has decided off-thread that a fresh proot is needed — either nothing of ours was
+     * running, or a stuck orphan was just killed. This is the old body of {@code startEnvironment},
+     * unchanged except that its {@code onStartupBegan} no longer needs {@code runOnUiThread} (it is
+     * already there) and it records the environment as coming up.
+     */
+    private void doLaunchEnvironment() {
         File rootfsDir = new File(activity.getFilesDir(), "rootfs/installed-rootfs/iiab");
         host.addToLog(activity.getString(R.string.log_server_booting_native));
-        activity.runOnUiThread(host::onStartupBegan);   // ADFA-4837: fill the pre-pdsm silent window
+        host.onStartupBegan();   // ADFA-4837: fill the pre-pdsm silent window
         createFakeSysData(rootfsDir);
         if (serverEngine != null) serverEngine.killProcess();
-        // ADFA-5061: an EnvironmentProcess.killOrphan(activity) call sat here and was removed on
-        // the device. It was meant for the environment this controller has no handle on —
-        // `serverEngine` is a field on an Activity-scoped controller, so a second controller sees
-        // a live proot as an orphan. That much is real. What it could not tell apart is an
-        // environment THIS process started seconds ago: on one launch it killed a proot 3.5 s into
-        // its own `pdsm start`, mid-boot, and the services had to come up twice.
-        //
-        // Doing it properly needs three things this line could not have: the handle held per
-        // process rather than per Activity, `startEnvironment` meaning "ensure it is up" rather
-        // than "start" — which is what all six of its callers actually want — and a boot grace,
-        // because "proot alive, services not answering" and "proot alive, still starting" are the
-        // same observation for the first several seconds. EnvironmentProcess and its matcher stay,
-        // unwired and tested, as the detection half of that work.
         serverEngine = new PRootEngine();
         String startCmd = "/usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin bash -lc '/usr/local/bin/pdsm start && tail -f /dev/null'";
         serverEngine.executeInContainer(activity, rootfsDir.getAbsolutePath(), startCmd, new PRootEngine.OutputListener() {
@@ -291,6 +337,7 @@ public class ServerController {
         host.enableSystemProtection();
         host.addToLog(activity.getString(R.string.watchdog_started));
         host.startFusionPulse();
+        ensuring = false;   // ADFA-5103: launch issued — release the ensure-up guard
     }
 
     /**

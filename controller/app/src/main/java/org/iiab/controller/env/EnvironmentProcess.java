@@ -99,6 +99,74 @@ public final class EnvironmentProcess {
     }
 
     /**
+     * The running environment proot's age in ms, or {@code -1} when there is none or its start time
+     * cannot be read.
+     *
+     * <p>ADFA-5103: the boot grace is measured from the proot's own age, not from when this process
+     * launched it, so a young proot is protected whether we started it or a force-closed predecessor
+     * did — the observed 3.5 s double-boot after Android restored the Activity stack. Read from
+     * {@code /proc/<pid>/stat} field 22 (starttime, in clock ticks since system boot) and compared
+     * against {@link android.os.SystemClock#elapsedRealtime()}, which counts from the same boot.
+     */
+    public static long environmentAgeMs(Context ctx) {
+        if (ctx == null) {
+            return -1L;
+        }
+        int pid = findPid(ctx);
+        if (pid <= 0) {
+            return -1L;
+        }
+        long startTicks = readStartTicks(pid);
+        if (startTicks < 0) {
+            return -1L;
+        }
+        long clkTck;
+        try {
+            clkTck = android.system.Os.sysconf(android.system.OsConstants._SC_CLK_TCK);
+        } catch (Throwable t) {
+            clkTck = 100L;   // the near-universal default; a wrong value only shifts the grace slightly
+        }
+        if (clkTck <= 0) {
+            clkTck = 100L;
+        }
+        long startedAtSinceBootMs = (startTicks * 1000L) / clkTck;
+        long ageMs = android.os.SystemClock.elapsedRealtime() - startedAtSinceBootMs;
+        return ageMs < 0 ? -1L : ageMs;
+    }
+
+    /**
+     * {@code /proc/<pid>/stat} field 22 (starttime), or {@code -1} if unreadable. The comm field (2)
+     * is wrapped in parentheses and may itself contain spaces and parentheses, so the fields after
+     * it are parsed from the last {@code ')'} — starttime is the 19th token after that.
+     */
+    private static long readStartTicks(int pid) {
+        File stat = new File("/proc/" + pid + "/stat");
+        try (FileInputStream in = new FileInputStream(stat)) {
+            byte[] buf = new byte[4096];
+            int total = 0, r;
+            while (total < buf.length && (r = in.read(buf, total, buf.length - total)) != -1) {
+                total += r;
+            }
+            if (total == 0) {
+                return -1L;
+            }
+            String content = new String(buf, 0, total);
+            int lastParen = content.lastIndexOf(')');
+            if (lastParen < 0 || lastParen + 2 >= content.length()) {
+                return -1L;
+            }
+            String[] after = content.substring(lastParen + 2).trim().split("\\s+");
+            // after[0] is field 3 (state); starttime is field 22 -> index 22 - 3 = 19.
+            if (after.length <= 19) {
+                return -1L;
+            }
+            return Long.parseLong(after[19]);
+        } catch (Exception e) {
+            return -1L;   // vanished, not ours to read, or an unexpected shape
+        }
+    }
+
+    /**
      * Stop an environment proot this process has no handle on.
      *
      * <p>Only for the case that has no other answer: the environment is up, the services are not,
