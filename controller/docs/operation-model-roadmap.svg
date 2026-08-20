@@ -208,18 +208,18 @@
 <text class="note" x="464" y="668">and parses the rate, then throws it away as a string.</text>
 <text class="note" x="464" y="683">ADFA-5106 was a DUPLICATE of 4897 and is folded into it.</text>
 </g>
-<g transform="translate(424,0)">
-<rect class="card" x="448" y="729" width="380" height="155" stroke="#C77700" stroke-width="2"/>
-<rect class="chip" x="464" y="745" width="121" height="19" fill="#FFF4E0" stroke="none"/>
-<text class="chiptx" x="472" y="759" fill="#C77700">IMPORTANT · NOW</text>
-<text class="h2" x="464" y="785">ADFA-4895 · Rootfs download</text>
-<text class="sub" x="464" y="809">The longest leg and the likeliest to stall.</text>
-<circle class="s-doing" cx="472" cy="825" r="5.5"/>
-<text class="item" x="486" y="829">Exit code classified, not discarded</text>
-<circle class="s-todo" cx="472" cy="843" r="5.5"/>
-<text class="item" x="486" y="847">Retry with backoff, then --lowest-speed-limit</text>
-<circle class="s-todo" cx="472" cy="861" r="5.5"/>
-<text class="item" x="486" y="865">Recover from a network change mid-download</text>
+<g transform="translate(0,697)">
+<rect class="card" x="448" y="729" width="380" height="155" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="464" y="745" width="122" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="472" y="759" fill="#1B7F4B">ADFA-4895 · DONE</text>
+<text class="h2" x="464" y="785">Rootfs download survives a network change</text>
+<text class="sub" x="464" y="809">The longest leg; now recovers on its own. PR #440.</text>
+<circle class="s-done" cx="472" cy="825" r="5.5"/>
+<text class="item" x="486" y="829">Exit code classified, not discarded (PR #399)</text>
+<circle class="s-done" cx="472" cy="843" r="5.5"/>
+<text class="item" x="486" y="847">Stall detected + Pause/Resume/Retry (5119)</text>
+<circle class="s-done" cx="472" cy="861" r="5.5"/>
+<text class="item" x="486" y="865">Resumes on a validated network change</text>
 </g>
 <g transform="translate(424,0)">
 <rect class="card" x="448" y="906" width="380" height="111"/>
