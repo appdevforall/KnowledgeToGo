@@ -46,6 +46,7 @@ import org.iiab.controller.kolibri.presentation.KolibriSeedingFragment;
 import org.iiab.controller.system.data.PendingContent;
 import org.iiab.controller.system.domain.OperationDispatcher;
 import org.iiab.controller.system.domain.ContentType;
+import org.iiab.controller.system.domain.Operation;
 import org.iiab.controller.util.Snackbars;
 import org.iiab.controller.util.AppExecutors;
 
@@ -1217,14 +1218,25 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         showingDetail = true;
         bounceOnComplete = !lastAllComplete;
         androidx.fragment.app.Fragment f;
-        boolean proot;
-        if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); proot = true; }  // ADFA-4842
-        else if ("zim".equals(key)) { f = new ZimPreparingFragment(); proot = false; }   // ADFA-5074: observe-only
-        else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); proot = false; }   // ADFA-4954: observe-only
-        else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); proot = true; }   // ADFA-4901: observe-only
-        else { f = BooksDownloadsFragment.newInstance(true); proot = false; }
-        // ADFA-4919/4842: a proot detail (maps or module) cannot background either — only Back (to the index).
-        if (detailRunBgBtn != null) detailRunBgBtn.setVisibility(proot ? View.GONE : View.VISIBLE);
+        // Per-key detail view — presentation routing only; the execution class is NOT decided here.
+        if (key.startsWith("mod:")) { f = ModuleInstallFragment.newInstance(key.substring(4)); }  // ADFA-4842
+        else if ("zim".equals(key)) { f = new ZimPreparingFragment(); }   // ADFA-5074: observe-only
+        else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); }   // ADFA-4954: observe-only
+        else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); }   // ADFA-4901: observe-only
+        else { f = BooksDownloadsFragment.newInstance(true); }
+        // ADFA-5062: read the execution class from the model instead of re-deriving it from the key
+        // prefix. A module install is an APP_INSTALL (runs with the box stopped); content rows carry
+        // their class on ContentType (maps = STOPPED; zim/kolibri/books = LIVE). Only a LIVE op can
+        // keep running in the background, so the "run in background" button shows only for LIVE
+        // (ADFA-4919/4842: a stopped-class detail — maps or module — offers only Back).
+        final boolean live;
+        if (key.startsWith("mod:")) {
+            live = Operation.appInstall(key.substring(4)).isLive();
+        } else {
+            ContentType ct = ContentType.byKey(key);
+            live = ct != null && ct.isLive();
+        }
+        if (detailRunBgBtn != null) detailRunBgBtn.setVisibility(live ? View.VISIBLE : View.GONE);
         // ADFA-5074: commitNow, to match backToIndex. With an async commit a render() landing in
         // between set showingDetail back to false and found nothing to remove, and the queued
         // transaction then added the fragment into a hidden host — where ZimPreparingFragment
