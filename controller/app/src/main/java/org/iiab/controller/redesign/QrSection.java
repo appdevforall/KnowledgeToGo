@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.R;
 import org.iiab.controller.sync.transport.QrCodec;
+import org.iiab.controller.util.M3Text;
 
 /**
  * ADFA-5157: extracted from ConnectFragment (ADFA-5154), where it lived as a private
@@ -83,10 +84,22 @@ public final class QrSection {
             TextView t = new TextView(ctx);
             t.setText(val);
             t.setGravity(Gravity.CENTER);
-            t.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ink));
+            // ADFA-5183: the fallback carries what a user without a QR scanner has to READ AND TYPE —
+            // the server URL (http://<ip>:8085), and the hotspot Wi-Fi name + password (ADFA-5181).
+            // The default TextView size is too small to copy a run of digits from; put it on the M3
+            // type scale at TitleLarge via M3Text (which re-applies the theme colour after the
+            // appearance, per ADFA-4961) instead of a fixed sp. Enlarges every fallback value, so it
+            // covers both the URL (5183) and the password (5181's font half).
+            M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
+                    ContextCompat.getColor(ctx, R.color.k2go_ink));
             t.setTextIsSelectable(true);
             fallbackValues.addView(t);
         }
+        // ADFA-5183: the "scan didn't work" toggle is the pointer to the fallback, not extra clutter —
+        // it stays reveal-on-tap and hidden by default, but it was on the smallest role too, so nudge
+        // it one M3 step up (BodySmall -> BodyMedium) to be easy to find, keeping its teal action colour.
+        M3Text.apply(fallbackToggle, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium,
+                ContextCompat.getColor(ctx, R.color.k2go_teal));
         fallbackToggle.setVisibility(View.VISIBLE);
         applyFallbackOpen(ctx);
         fallbackToggle.setOnClickListener(x -> { fbOpen = !fbOpen; applyFallbackOpen(ctx); });
