@@ -29,6 +29,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Handler;
@@ -38,6 +41,7 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.Observer;
 
 import org.iiab.controller.Aria2Manager;
 import org.iiab.controller.InstallationPlanner;
@@ -48,6 +52,7 @@ import org.iiab.controller.TarExtractor;
 import org.iiab.controller.util.ProcessRunner;
 import org.iiab.controller.deploy.domain.ModuleName;
 import org.iiab.controller.install.domain.AnsibleRunOutcome;
+import org.iiab.controller.sync.transport.NetworkStateLiveData;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -169,6 +174,21 @@ public final class InstallService extends Service {
             org.iiab.controller.download.domain.Aria2Exit.Kind.UNKNOWN;
     private final Handler heldHandler = new Handler(Looper.getMainLooper());
 
+    /**
+     * ADFA-4895: auto-resume a held download when a validated network returns, so recovery does not
+     * depend on the user tapping Retry. Anchored to SOFTFAILED — an involuntary stop that can
+     * continue — and never PAUSED, which is the user's own choice and must not be undone by a radio
+     * event. This is the "a precondition changed" resume ADR-4893 allows (the network came back), as
+     * opposed to retrying on a timer against unchanged conditions, which that ADR withdrew.
+     *
+     * <p>observeForever, not a lifecycle observe: the download lives in this foreground Service with
+     * no UI guaranteed (it drops at 3 a.m. with the screen off), so the trigger must outlive any
+     * Fragment. NetworkStateLiveData posts on the main thread, so the callback and the doResume() it
+     * calls both run there, as doResume() already does from ACTION_RESUME. Removed in onDestroy() so
+     * the app-scoped singleton never retains a destroyed service.
+     */
+    private final Observer<Long> networkResumeObserver = token -> onValidatedNetworkReturned();
+
     private volatile org.iiab.controller.install.domain.AbandonedInstall.Work work =
             org.iiab.controller.install.domain.AbandonedInstall.Work.CONTENT;
 
@@ -195,6 +215,44 @@ public final class InstallService extends Service {
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        // ADFA-4895: listen for a returning validated network for as long as this service lives — i.e.
+        // for the duration of the operation it owns. The observer is inert unless a rootfs download is
+        // SOFTFAILED, so it costs nothing on module / reset / rebuild runs.
+        NetworkStateLiveData.get(this).observeForever(networkResumeObserver);
+    }
+
+    /**
+     * ADFA-4895: a default-network change arrived. Resume only when the transfer stopped on its own
+     * and can still continue (SOFTFAILED), and only onto a network that actually reaches the internet
+     * (VALIDATED) — a captive-portal association fires onAvailable too, and re-driving onto it would
+     * just soft-fail again. PAUSED is deliberately left alone: the user stopped it, and a radio event
+     * is not their decision to continue.
+     *
+     * <p>Covers both held cases with one guard: the 60 s unattended window (this fires and doResume()
+     * cancels the pending expiry) and the indefinite user-present hold (fires with no window to
+     * cancel). doResume() owns the single re-drive path — fresh attempt budget, locks re-taken, aria2
+     * continues from its {@code .aria2} control file — and its own {@code isHeld()} guard debounces a
+     * second token that lands before the state leaves SOFTFAILED.
+     */
+    private void onValidatedNetworkReturned() {
+        if (finished || cancelled) return;
+        if (!InstallProgressRepository.get().current().isSoftFailed()) return;
+        if (!hasValidatedInternet()) return;
+        Log.i(TAG, "ADFA-4895: a validated network returned while the download was held — resuming");
+        log("[Download] validated network returned — resuming the held download");
+        doResume();
+    }
+
+    /** ADFA-4895: true only when the active default network both offers internet and has been validated. */
+    private boolean hasValidatedInternet() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return false;
+        Network active = cm.getActiveNetwork();
+        if (active == null) return false;
+        NetworkCapabilities caps = cm.getNetworkCapabilities(active);
+        return caps != null
+                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
     }
 
     @Override
@@ -1433,6 +1491,10 @@ public final class InstallService extends Service {
             if (moduleMode) ModuleQueueRepository.get().postIdle();
             else InstallProgressRepository.get().postIdle();
         }
+        // ADFA-4895: drop the network trigger so the app-scoped NetworkStateLiveData singleton does
+        // not retain this destroyed service (and so its ConnectivityManager callback is released once
+        // no one else is observing).
+        NetworkStateLiveData.get(this).removeObserver(networkResumeObserver);
         releaseHardwareLocks();
         super.onDestroy();
     }
