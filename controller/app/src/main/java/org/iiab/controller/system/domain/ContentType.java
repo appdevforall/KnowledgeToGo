@@ -40,22 +40,24 @@ package org.iiab.controller.system.domain;
 public enum ContentType {
 
     /** Wikipedia and other ZIM collections, downloaded by the server. */
-    ZIM("zim", Operation.ExecutionClass.LIVE),
+    ZIM("zim", "kiwix", Operation.ExecutionClass.LIVE),
 
     /** Gutenberg books, downloaded by the server. */
-    BOOKS("books", Operation.ExecutionClass.LIVE),
+    BOOKS("books", "books", Operation.ExecutionClass.LIVE),
 
     /** Kolibri channels, imported by the server. Tens of GB at the top end. */
-    COURSES("kolibri", Operation.ExecutionClass.LIVE),
+    COURSES("kolibri", "kolibri", Operation.ExecutionClass.LIVE),
 
     /** Map layers, built by an Ansible runrole under proot. */
-    MAPS("maps", Operation.ExecutionClass.STOPPED);
+    MAPS("maps", "maps", Operation.ExecutionClass.STOPPED);
 
     private final String key;
+    private final String endpoint;
     private final Operation.ExecutionClass executionClass;
 
-    ContentType(String key, Operation.ExecutionClass executionClass) {
+    ContentType(String key, String endpoint, Operation.ExecutionClass executionClass) {
         this.key = key;
+        this.endpoint = endpoint;
         this.executionClass = executionClass;
     }
 
@@ -65,6 +67,16 @@ public enum ContentType {
      */
     public String key() {
         return key;
+    }
+
+    /**
+     * The identifier the Home surface uses for this type's platform, which differs from
+     * {@link #key()} for exactly one type: the Wikipedia card is {@code kiwix} while its
+     * content key is {@code zim}. Carrying the alias here retires the hand-rolled
+     * {@code "kiwix" -> "zim"} remap the callers used to keep (ADFA-5062).
+     */
+    public String endpoint() {
+        return endpoint;
     }
 
     public Operation.ExecutionClass executionClass() {
@@ -93,6 +105,22 @@ public enum ContentType {
         }
         for (ContentType t : values()) {
             if (t.key.equals(key)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param endpoint a Home-surface platform endpoint (e.g. {@code kiwix})
+     * @return the matching type, or {@code null} for an unknown endpoint
+     */
+    public static ContentType byEndpoint(String endpoint) {
+        if (endpoint == null) {
+            return null;
+        }
+        for (ContentType t : values()) {
+            if (t.endpoint.equals(endpoint)) {
                 return t;
             }
         }
