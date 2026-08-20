@@ -36,6 +36,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.iiab.controller.R;
 import org.iiab.controller.install.presentation.InstallService;
+import org.iiab.controller.system.domain.Operation;
 import org.iiab.controller.util.AppExecutors;
 import org.iiab.controller.util.Snackbars;
 
@@ -77,10 +78,19 @@ public final class DashboardRebuild {
         final Context app = host.requireContext().getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
         AppExecutors.get().io().execute(() -> {
-            final boolean rest = DashboardVersion.atLeast(DashboardVersion.installed(app), 1, 2, 0);
+            // ADFA-5062: the rebuild's execution class genuinely depends on state (the installed
+            // dash-node version), so resolve the class first and build the Operation with it — the
+            // pattern Operation's contract prescribes for a state-dependent class — instead of
+            // forking on a bare boolean. dash-node >= 1.2.0 rebuilds itself LIVE over REST; older
+            // installs take the STOPPED proot rebuild once as a bridge to 1.2.0.
+            final Operation.ExecutionClass cls =
+                    DashboardVersion.atLeast(DashboardVersion.installed(app), 1, 2, 0)
+                            ? Operation.ExecutionClass.LIVE
+                            : Operation.ExecutionClass.STOPPED;
+            final Operation op = Operation.of("dashboard", Operation.Kind.APP_INSTALL, cls);
             main.post(() -> {
                 if (!host.isAdded()) return;
-                if (rest) startRest(host, anchor, onLiveUpdated);
+                if (op.isLive()) startRest(host, anchor, onLiveUpdated);
                 else startProot(host);
             });
         });
