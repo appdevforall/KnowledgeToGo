@@ -50,6 +50,9 @@ export interface RunnerContext {
     update(patch: JobUpdate): void;
     isCanceled(): boolean;
     throwIfCanceled(): void;
+    /** ADFA-4894: aborted when the job is canceled, so an in-flight fetch (books) can be
+     *  interrupted — a child process is killed via SIGKILL, but a fetch has no process. */
+    readonly signal: AbortSignal;
     /** Spawn a child that is killed automatically on cancel and untracked on exit. */
     spawn(cmd: string, args: string[], opts?: SpawnOptions): ChildProcess;
     log(line: string): void;
@@ -68,7 +71,7 @@ const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
 class JobManager {
     private db: Database.Database;
     private runners = new Map<JobType, Runner>();
-    private runtime = new Map<string, { canceled: boolean; procs: Set<ChildProcess> }>();
+    private runtime = new Map<string, { canceled: boolean; procs: Set<ChildProcess>; ac: AbortController }>();
     // ADFA-4879: bounded rolling log tail per job for the live-log REST endpoint.
     private readonly logTail = new RollingLog();
 
@@ -134,6 +137,7 @@ class JobManager {
         if (rt) {
             rt.canceled = true;
             for (const p of rt.procs) { try { p.kill('SIGKILL'); } catch { /* already gone */ } }
+            try { rt.ac.abort(); } catch { /* ADFA-4894: interrupt an in-flight fetch too */ }
         }
         if (ACTIVE.includes(job.phase)) this.patch(id, { phase: 'canceled' });
         return true;
@@ -168,7 +172,7 @@ class JobManager {
         const runner = this.runners.get(job.type);
         if (!runner) { this.patch(job.id, { phase: 'error', error: `no runner for ${job.type}` }); return; }
 
-        const rt = { canceled: false, procs: new Set<ChildProcess>() };
+        const rt = { canceled: false, procs: new Set<ChildProcess>(), ac: new AbortController() };
         this.runtime.set(job.id, rt);
 
         let items: unknown[] = [];
@@ -180,6 +184,7 @@ class JobManager {
             update: (p) => this.patch(job.id, p),
             isCanceled: () => rt.canceled,
             throwIfCanceled: () => { if (rt.canceled) throw new CanceledError(); },
+            signal: rt.ac.signal,
             spawn: (cmd, args, opts) => {
                 const child = opts ? spawn(cmd, args, opts) : spawn(cmd, args);
                 rt.procs.add(child);
