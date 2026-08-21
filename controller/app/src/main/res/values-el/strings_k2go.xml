@@ -829,4 +829,5 @@
     <string name="k2go_install_confirm_body">Η εγκατάσταση γίνεται στη συσκευή σας με τον διακομιστή σε παύση.\n\n• Διαρκεί λίγη ώρα, συχνά δεκάδες λεπτά.\n• Διατηρήστε σταθερή σύνδεση αν μπορείτε.\n• Φροντίστε να έχετε αρκετή μπαταρία πριν ξεκινήσετε.\n• Αυτή η οθόνη παραμένει ανοιχτή μέχρι να ολοκληρωθεί.</string>
     <string name="k2go_install_confirm_go">Εγκατάσταση</string>
     <string name="k2go_install_confirm_cancel">Όχι τώρα</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

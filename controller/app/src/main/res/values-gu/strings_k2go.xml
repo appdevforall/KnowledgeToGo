@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">સર્વર થોભાવેલું હોય ત્યારે આ તમારા ઉપકરણ પર ઇન્સ્ટૉલ થાય છે.\n\n• થોડો સમય લાગે છે, ઘણી વાર દસેક મિનિટ.\n• શક્ય હોય તો સ્થિર કનેક્શન રાખો.\n• શરૂ કરતાં પહેલાં પૂરતી બૅટરી રાખો.\n• આ સ્ક્રીન પૂરું થાય ત્યાં સુધી ખુલ્લી રહે છે.</string>
     <string name="k2go_install_confirm_go">ઇન્સ્ટૉલ કરો</string>
     <string name="k2go_install_confirm_cancel">હમણાં નહીં</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

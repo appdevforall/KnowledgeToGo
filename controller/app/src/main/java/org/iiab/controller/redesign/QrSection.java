@@ -81,15 +81,20 @@ public final class QrSection {
             fallback.setVisibility(View.GONE);
             return;
         }
-        // ADFA-5236: each value sits in its own rounded "field" chip. Credential strings arrive as
-        // "Label: value" (e.g. "Wi-Fi: AndroidShare_4464"); we split on the first ": " to show the
-        // label muted and the value in mono. A URL ("http://<ip>:8085") has no ": " so it renders as a
-        // lone mono value. Chip fill is an M3 surface-container tone so it stands off the block.
+        // ADFA-5236: each value is a rounded "field" chip laid out as [ content column | trailing Copy ].
+        // Credential strings arrive as "Label: value" (split on the first ": ") -> muted label over a
+        // mono value; a URL ("http://<ip>:8085") has no ": " -> lone mono value. Copy lives in a RESERVED
+        // TRAILING slot (never floating over the value): icon-only for short creds, word+icon "Copy" for
+        // the long URL. The whole chip is also tappable to copy. Share is NOT here (payload only).
         final int chipBg = com.google.android.material.color.MaterialColors.getColor(
                 ctx, com.google.android.material.R.attr.colorSurfaceContainerHighest,
                 ContextCompat.getColor(ctx, R.color.k2go_surface));
         boolean first = true;
         for (String val : vals) {
+            int sep = val.indexOf(": ");
+            final String label = sep > 0 ? val.substring(0, sep) : null;
+            final String value = sep > 0 ? val.substring(sep + 2) : val;
+
             android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
             bg.setCornerRadius(dp(ctx, 12));
             bg.setColor(chipBg);
@@ -98,39 +103,37 @@ public final class QrSection {
             chip.setOrientation(LinearLayout.HORIZONTAL);
             chip.setGravity(Gravity.CENTER_VERTICAL);
             chip.setBackground(bg);
-            chip.setPadding(dp(ctx, 16), dp(ctx, 10), dp(ctx, 16), dp(ctx, 10));
+            chip.setPadding(dp(ctx, 16), dp(ctx, 8), dp(ctx, 8), dp(ctx, 8));
+            chip.setOnClickListener(v -> copyValue(ctx, value));   // whole field taps to copy
 
-            int sep = val.indexOf(": ");
-            String label = sep > 0 ? val.substring(0, sep) : null;
-            String value = sep > 0 ? val.substring(sep + 2) : val;
-
+            LinearLayout col = new LinearLayout(ctx);
+            col.setOrientation(LinearLayout.VERTICAL);
             if (label != null) {
                 TextView lt = new TextView(ctx);
                 lt.setText(label);
                 M3Text.apply(lt, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium,
                         ContextCompat.getColor(ctx, R.color.k2go_muted));
-                chip.addView(lt);
+                col.addView(lt);
             }
-
             TextView vt = new TextView(ctx);
             vt.setText(value);
-            vt.setGravity(label != null ? Gravity.END : Gravity.CENTER);
-            // ADFA-5183: readable size on the M3 TitleLarge role (M3Text re-applies the colour after
-            // the appearance, per ADFA-4961). ADFA-5236: monospace so digits vs letters can't be
-            // misread (0/O, 1/l) when typing into another phone.
+            vt.setGravity(Gravity.START);
+            // ADFA-5183: readable M3 TitleLarge (M3Text re-applies the colour after the appearance,
+            // ADFA-4961). ADFA-5236: monospace so digits vs letters can't be misread (0/O, 1/l).
             M3Text.apply(vt, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
                     ContextCompat.getColor(ctx, R.color.k2go_ink));
             vt.setTypeface(android.graphics.Typeface.MONOSPACE);
-            vt.setTextIsSelectable(true);
-            // ADFA-5236: keep it on ONE line — a long URL/IP must not wrap. Autosize shrinks to fit the
-            // value column (down to a 12sp floor); short values keep the full size. Set AFTER the
-            // appearance so autosize takes over the sizing; width 0 + weight 1 gives it a bound.
+            // ADFA-5236: one line — a long URL/IP must not wrap. Autosize shrinks to fit (12sp floor);
+            // short values keep the full size. Set AFTER the appearance so it takes over the sizing.
             vt.setMaxLines(1);
             androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                     vt, 12, 22, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
-            LinearLayout.LayoutParams vlp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
-            if (label != null) vlp.setMarginStart(dp(ctx, 12));
-            chip.addView(vt, vlp);
+            col.addView(vt, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            chip.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            // Trailing Copy: icon-only for short creds, word+icon for the long URL (there is room).
+            chip.addView(label != null ? copyIconButton(ctx, value) : copyWordButton(ctx, value));
 
             LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -139,6 +142,65 @@ public final class QrSection {
             fallbackValues.addView(chip, clp);
         }
         fallback.setVisibility(View.VISIBLE);
+    }
+
+    /** ADFA-5236: icon-only Copy for short values (Wi-Fi, password). 48dp target, tooltip + a11y. */
+    private ImageView copyIconButton(Context ctx, String value) {
+        ImageView iv = new ImageView(ctx);
+        iv.setImageResource(R.drawable.ic_content_copy);
+        iv.setScaleType(ImageView.ScaleType.CENTER);
+        CharSequence d = ctx.getString(android.R.string.copy);
+        iv.setContentDescription(d);
+        androidx.appcompat.widget.TooltipCompat.setTooltipText(iv, d);
+        iv.setBackground(ripple(ctx));
+        iv.setOnClickListener(v -> copyValue(ctx, value));
+        return withSize(iv, dp(ctx, 48), dp(ctx, 48));
+    }
+
+    /** ADFA-5236: word+icon "Copy" for the long value (URL/IP), where there is width. */
+    private LinearLayout copyWordButton(Context ctx, String value) {
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        int p = dp(ctx, 10);
+        row.setPadding(p, p, p, p);
+        row.setBackground(ripple(ctx));
+        row.setContentDescription(ctx.getString(android.R.string.copy));
+        row.setOnClickListener(v -> copyValue(ctx, value));
+        ImageView icon = new ImageView(ctx);
+        icon.setImageResource(R.drawable.ic_content_copy);
+        row.addView(icon, new LinearLayout.LayoutParams(dp(ctx, 22), dp(ctx, 22)));
+        TextView t = new TextView(ctx);
+        t.setText(android.R.string.copy);
+        M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_LabelLarge,
+                ContextCompat.getColor(ctx, R.color.k2go_teal));
+        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        tlp.setMarginStart(dp(ctx, 6));
+        row.addView(t, tlp);
+        return row;
+    }
+
+    /** ADFA-5236: copy the FULL value to the clipboard and confirm with a "Copied" snackbar. */
+    private void copyValue(Context ctx, String value) {
+        android.content.ClipboardManager cm =
+                (android.content.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (cm != null) cm.setPrimaryClip(android.content.ClipData.newPlainText("K2Go", value));
+        String msg = ctx.getString(R.string.k2go_copied);
+        com.google.android.material.snackbar.Snackbar
+                .make(fallback, msg, org.iiab.controller.util.SnackbarDuration.millisForText(msg))
+                .show();
+    }
+
+    private static <T extends View> T withSize(T v, int w, int h) {
+        v.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+        return v;
+    }
+
+    private static android.graphics.drawable.Drawable ripple(Context ctx) {
+        android.util.TypedValue tv = new android.util.TypedValue();
+        ctx.getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, tv, true);
+        return tv.resourceId != 0 ? ContextCompat.getDrawable(ctx, tv.resourceId) : null;
     }
 
     private static int dp(Context ctx, int v) {

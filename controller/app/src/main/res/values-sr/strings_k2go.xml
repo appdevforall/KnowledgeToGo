@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">Инсталира се на вашем уређају док је сервер паузиран.\n\n• Траје неко време, често десетине минута.\n• Ако можете, одржавајте стабилну везу.\n• Пре почетка обезбедите довољно батерије.\n• Овај екран остаје отворен до завршетка.</string>
     <string name="k2go_install_confirm_go">Инсталирај</string>
     <string name="k2go_install_confirm_cancel">Не сада</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

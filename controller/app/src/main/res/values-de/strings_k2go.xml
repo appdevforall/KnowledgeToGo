@@ -829,4 +829,5 @@
     <string name="k2go_install_confirm_body">Dies wird auf deinem Gerät installiert, während der Server pausiert.\n\n• Dauert eine Weile – oft mehrere zehn Minuten.\n• Halte nach Möglichkeit eine stabile Verbindung.\n• Sorge vor dem Start für ausreichend Akku.\n• Dieser Bildschirm bleibt bis zum Ende geöffnet.</string>
     <string name="k2go_install_confirm_go">Installieren</string>
     <string name="k2go_install_confirm_cancel">Jetzt nicht</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

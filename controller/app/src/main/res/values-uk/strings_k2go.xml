@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">Встановлення відбувається на вашому пристрої з призупиненим сервером.\n\n• Триває деякий час, часто десятки хвилин.\n• За можливості підтримуйте стабільне з\'єднання.\n• Переконайтеся, що заряду батареї достатньо.\n• Цей екран залишається відкритим до завершення.</string>
     <string name="k2go_install_confirm_go">Встановити</string>
     <string name="k2go_install_confirm_cancel">Не зараз</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

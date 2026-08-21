@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">Se instalează pe dispozitivul dvs. cu serverul în pauză.\n\n• Durează un timp, adesea zeci de minute.\n• Păstrați o conexiune stabilă dacă puteți.\n• Asigurați-vă că aveți suficientă baterie înainte de a începe.\n• Acest ecran rămâne deschis până la finalizare.</string>
     <string name="k2go_install_confirm_go">Instalați</string>
     <string name="k2go_install_confirm_cancel">Nu acum</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

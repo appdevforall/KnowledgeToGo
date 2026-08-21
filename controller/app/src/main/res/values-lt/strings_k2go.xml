@@ -838,4 +838,5 @@
     <string name="k2go_install_confirm_body">Diegiama jūsų įrenginyje, kai serveris pristabdytas.\n\n• Užtrunka kurį laiką, dažnai kelias dešimtis minučių.\n• Jei galite, palaikykite stabilų ryšį.\n• Prieš pradėdami įsitikinkite, kad pakanka baterijos.\n• Šis ekranas lieka atidarytas iki pabaigos.</string>
     <string name="k2go_install_confirm_go">Įdiegti</string>
     <string name="k2go_install_confirm_cancel">Ne dabar</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

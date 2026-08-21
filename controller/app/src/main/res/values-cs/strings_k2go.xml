@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">Instalace proběhne ve vašem zařízení s pozastaveným serverem.\n\n• Chvíli to trvá, často desítky minut.\n• Pokud můžete, udržujte stabilní připojení.\n• Před začátkem mějte dostatek baterie.\n• Tato obrazovka zůstane otevřená až do konce.</string>
     <string name="k2go_install_confirm_go">Nainstalovat</string>
     <string name="k2go_install_confirm_cancel">Teď ne</string>
+    <string name="k2go_copied">Copied</string>
 </resources>
