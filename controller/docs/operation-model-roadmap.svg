@@ -271,20 +271,20 @@
 <text class="note" x="888" y="677">do too, or record why they need no change.</text>
 </g>
 <g transform="translate(424,-248)">
-<rect class=”card” x=”872” y=”715” width=”380” height=”205” stroke=”#1B7F4B” stroke-width=”2”/>
-<rect class=”chip” x=”888” y=”731” width=”118” height=”19” fill=”#E6F4EA” stroke=”none”/>
-<text class=”chiptx” x=”896” y=”745” fill=”#1B7F4B”>ADFA-5103 · DONE</text>
-<text class=”h2” x=”888” y=”771”>Stopped service vs stopped environment</text>
-<text class=”sub” x=”888” y=”795”>pdsm stop left the proot running, so Retry</text>
-<text class=”sub” x=”888” y=”810”>could stack a second one over a live one.</text>
-<circle class=”s-done” cx=”896” cy=”826” r=”5.5”/>
-<text class=”item” x=”910” y=”830”>Environment handle held per process</text>
-<circle class=”s-done” cx=”896” cy=”844” r=”5.5”/>
-<text class=”item” x=”910” y=”848”>startEnvironment means “ensure it is up”</text>
-<circle class=”s-done” cx=”896” cy=”862” r=”5.5”/>
-<text class=”item” x=”910” y=”866”>A boot grace before any verdict</text>
-<text class=”note” x=”888” y=”889”>Decision resolved: kill + relaunch, guarded (EnvironmentEnsure).</text>
-<text class=”note” x=”888” y=”904”>Per-process handle · boot grace · ensure-not-stack. PR #446.</text>
+<rect class="card" x="872" y="715" width="380" height="205" stroke="#1B7F4B" stroke-width="2"/>
+<rect class="chip" x="888" y="731" width="118" height="19" fill="#E6F4EA" stroke="none"/>
+<text class="chiptx" x="896" y="745" fill="#1B7F4B">ADFA-5103 · DONE</text>
+<text class="h2" x="888" y="771">Stopped service vs stopped environment</text>
+<text class="sub" x="888" y="795">pdsm stop left the proot running, so Retry</text>
+<text class="sub" x="888" y="810">could stack a second one over a live one.</text>
+<circle class="s-done" cx="896" cy="826" r="5.5"/>
+<text class="item" x="910" y="830">Environment handle held per process</text>
+<circle class="s-done" cx="896" cy="844" r="5.5"/>
+<text class="item" x="910" y="848">startEnvironment means "ensure it is up"</text>
+<circle class="s-done" cx="896" cy="862" r="5.5"/>
+<text class="item" x="910" y="866">A boot grace before any verdict</text>
+<text class="note" x="888" y="889">Decision resolved: kill + relaunch, guarded (EnvironmentEnsure).</text>
+<text class="note" x="888" y="904">Per-process handle · boot grace · ensure-not-stack. PR #446.</text>
 </g>
 <g transform="translate(-424,286)">
 <rect class="card" x="872" y="942" width="380" height="170" stroke="#1B7F4B" stroke-width="2"/>
