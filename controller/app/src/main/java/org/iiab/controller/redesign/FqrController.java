@@ -180,8 +180,9 @@ public final class FqrController {
 
     /** The map's trash tool was toggled; {@code on} is its REAL state (read from the map cursor, not a
      *  parallel flip that could desync/invert). Open the list when it turns on, close it when off. A
-     *  second press dismisses the list (feels native); closing via the sheet's X doesn't change the
-     *  tool, so the next deactivate correctly leaves it closed. */
+     *  second press dismisses the list (feels native); the sheet's X goes the other way — it disarms
+     *  the tool (see closeDeleteSheetAndTool), which routes back here with on=false, so the two stay
+     *  in lockstep. */
     @JavascriptInterface
     public void onDeleteToolState(boolean on) {
         if (!active) return;
@@ -513,7 +514,7 @@ public final class FqrController {
         int closePad = dp(6);
         close.setPadding(closePad, closePad, closePad, closePad);
         close.setContentDescription(activity.getString(R.string.k2go_cancel));
-        close.setOnClickListener(v -> hideDeleteSheet());
+        close.setOnClickListener(v -> closeDeleteSheetAndTool());
         header.addView(close, new LinearLayout.LayoutParams(dp(36), dp(36)));
         sheet.addView(header);
 
@@ -655,6 +656,17 @@ public final class FqrController {
         deleteSheet = null; searchField = null; listContainer = null; highlight = null;
     }
 
+    /** ADFA-4884 follow-up: closing the list via its X now also disarms the map's trash tool, so the
+     *  tool and the list stay in lockstep (before, X hid the list but left the tool armed, so tapping
+     *  a region reopened it). We ask the map to toggle its tool off — that fires onDeleteToolState(false),
+     *  which hides the list — and also hide here directly so the list still closes if the JS can't reach
+     *  the tool. deleteToolOn is cleared so native state matches even in that fallback. */
+    private void closeDeleteSheetAndTool() {
+        webView.evaluateJavascript("window.__k2goDisarmDelete&&window.__k2goDisarmDelete();", null);
+        deleteToolOn = false;
+        hideDeleteSheet();
+    }
+
     // ---- helpers -----------------------------------------------------------------------------
     /** Padded, transparent container for MaterialAlertDialog setView (the dialog paints the surface). */
     private LinearLayout dialogContent(int pad) { return dialogContent(pad, pad); }
@@ -769,6 +781,16 @@ public final class FqrController {
             // ADFA-5025: native pushes the existing region names here so fireExtract can reject a
             // duplicate name synchronously (see the Next handler).
             "window.__k2goSetRegions=function(arr){try{window.__k2goRegions=arr||[];}catch(e){}};" +
+            // ADFA-4884 follow-up: native calls this when our list's X is pressed, to turn the map's
+            // trash tool OFF too (before, X only closed our list and left the tool armed). Only act when
+            // it's actually armed (crosshair), then click the same toolbar button the user would — that
+            // reuses the existing click path, which fires onDeleteToolState(false).
+            "window.__k2goDisarmDelete=function(){try{" +
+            "var on=host.map&&host.map.getCanvas&&host.map.getCanvas().style.cursor==='crosshair';" +
+            "if(!on)return false;" +
+            "var btn=sr.querySelector('[title=\"Choose region to delete\"]');" +
+            "if(btn){btn.click();return true;}return false;" +
+            "}catch(e){return false;}};" +
             // ADFA-5043: native calls this when the user bails out of the estimate/consent step, to cancel
             // the FQR selection the same way the name dialog's Cancel does. Buttons have no stable id/class
             // (same as fireExtract), so match by text. We hid the popup on Next, but a programmatic click
