@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">சேவையகம் இடைநிறுத்தப்பட்ட நிலையில் இது உங்கள் சாதனத்தில் நிறுவப்படும்.\n\n• சிறிது நேரம் ஆகும், பெரும்பாலும் பல பத்து நிமிடங்கள்.\n• முடிந்தால் நிலையான இணைப்பை வைத்திருங்கள்.\n• தொடங்குவதற்கு முன் போதிய பேட்டரி இருப்பதை உறுதி செய்யுங்கள்.\n• முடியும் வரை இந்தத் திரை திறந்திருக்கும்.</string>
     <string name="k2go_install_confirm_go">நிறுவு</string>
     <string name="k2go_install_confirm_cancel">இப்போது வேண்டாம்</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

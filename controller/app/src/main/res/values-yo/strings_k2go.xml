@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">Èyí máa fi sórí ẹ̀rọ rẹ nígbà tí sáfà bá dúró.\n\n• Ó máa gba àkókò díẹ̀, lọ́pọ̀ ìgbà ẹ̀wádọ́gbọ̀n ìṣẹ́jú.\n• Bí ó bá ṣeé ṣe, jẹ́ kí ìsopọ̀ dúró ṣinṣin.\n• Rí i pé batiri tó tó wà kí o tó bẹ̀rẹ̀.\n• Ojú-ìwé yìí máa wà ní ṣíṣí títí yóò fi parí.</string>
     <string name="k2go_install_confirm_go">Fi sórí ẹ̀rọ</string>
     <string name="k2go_install_confirm_cancel">Kì í ṣe báyìí</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

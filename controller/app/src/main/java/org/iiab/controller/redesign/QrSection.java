@@ -32,7 +32,7 @@ import org.iiab.controller.util.M3Text;
  *
  * <p>A section is bound from a root view plus the ids of its parts, so it works whether those
  * parts come from an {@code <include>} of {@code view_k2go_qr_section} or from inline markup.
- * It owns its own reveal state ({@link #fbOpen}) across re-renders. It holds no Context; the
+ * The manual-access values are always shown (ADFA-5236; no reveal toggle). It holds no Context; the
  * few methods that need one take it as a parameter, so the section can be built in
  * {@code onCreateView} and driven from anywhere.
  */
@@ -41,8 +41,6 @@ public final class QrSection {
     public final ImageView qr;
     public final TextView ph, caption, subCaption, fallbackToggle;
     public final LinearLayout fallback, fallbackValues;
-    /** This section's fallback reveal state, kept across re-renders. */
-    public boolean fbOpen;
 
     public QrSection(View r, int frameId, int qrId, int phId, int capId, int subId,
                      int toggleId, int fallbackId, int valuesId) {
@@ -70,45 +68,119 @@ public final class QrSection {
     }
 
     /**
-     * ADFA-4815: the text fallback is reveal-on-tap. The toggle sits under the caption; the quote
-     * block with the values stays hidden until tapped, so a working scan stays clutter-free.
+     * ADFA-5236: the manual-access block (hotspot Wi-Fi + password, or the library URL) is shown
+     * ALWAYS, not behind a reveal-on-tap toggle. Many phones have no QR scanner baked into the camera
+     * and offline users can't download one, so the credentials/URL must be visible without a tap. The
+     * caption above says what this is (".. or use the following credentials instead:"). The old
+     * "Scan didn't work?" / "Hide" toggle is gone.
      */
     public void setFallback(Context ctx, String[] vals) {
+        fallbackToggle.setVisibility(View.GONE);   // ADFA-5236: no reveal toggle anymore
         fallbackValues.removeAllViews();
         if (vals == null || vals.length == 0) {
             fallback.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE);
             return;
         }
+        // ADFA-5236: each value is a rounded "field" chip laid out as [ content column | trailing Copy ].
+        // Credential strings arrive as "Label: value" (split on the first ": ") -> muted label over a
+        // mono value; a URL ("http://<ip>:8085") has no ": " -> lone mono value. Copy lives in a RESERVED
+        // TRAILING slot (never floating over the value): an icon-only button for every value — the word
+        // "Copy" would cap a long URL's autosize. The whole chip is also tappable. Share is NOT here.
+        final int chipBg = com.google.android.material.color.MaterialColors.getColor(
+                ctx, com.google.android.material.R.attr.colorSurfaceContainerHighest,
+                ContextCompat.getColor(ctx, R.color.k2go_surface));
+        boolean first = true;
         for (String val : vals) {
-            TextView t = new TextView(ctx);
-            t.setText(val);
-            t.setGravity(Gravity.CENTER);
-            // ADFA-5183: the fallback carries what a user without a QR scanner has to READ AND TYPE —
-            // the server URL (http://<ip>:8085), and the hotspot Wi-Fi name + password (ADFA-5181).
-            // The default TextView size is too small to copy a run of digits from; put it on the M3
-            // type scale at TitleLarge via M3Text (which re-applies the theme colour after the
-            // appearance, per ADFA-4961) instead of a fixed sp. Enlarges every fallback value, so it
-            // covers both the URL (5183) and the password (5181's font half).
-            M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
+            int sep = val.indexOf(": ");
+            final String label = sep > 0 ? val.substring(0, sep) : null;
+            final String value = sep > 0 ? val.substring(sep + 2) : val;
+
+            android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+            bg.setCornerRadius(dp(ctx, 12));
+            bg.setColor(chipBg);
+
+            LinearLayout chip = new LinearLayout(ctx);
+            chip.setOrientation(LinearLayout.HORIZONTAL);
+            chip.setGravity(Gravity.CENTER_VERTICAL);
+            chip.setBackground(bg);
+            chip.setPadding(dp(ctx, 16), dp(ctx, 8), dp(ctx, 8), dp(ctx, 8));
+            chip.setOnClickListener(v -> copyValue(ctx, value));   // whole field taps to copy
+
+            LinearLayout col = new LinearLayout(ctx);
+            col.setOrientation(LinearLayout.VERTICAL);
+            if (label != null) {
+                TextView lt = new TextView(ctx);
+                lt.setText(label);
+                M3Text.apply(lt, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium,
+                        ContextCompat.getColor(ctx, R.color.k2go_muted));
+                col.addView(lt);
+            }
+            TextView vt = new TextView(ctx);
+            vt.setText(value);
+            vt.setGravity(Gravity.START);
+            // ADFA-5183: readable M3 TitleLarge (M3Text re-applies the colour after the appearance,
+            // ADFA-4961). ADFA-5236: monospace so digits vs letters can't be misread (0/O, 1/l).
+            M3Text.apply(vt, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
                     ContextCompat.getColor(ctx, R.color.k2go_ink));
-            t.setTextIsSelectable(true);
-            fallbackValues.addView(t);
+            vt.setTypeface(android.graphics.Typeface.MONOSPACE);
+            // ADFA-5236: one line — a long URL/IP must not wrap. Autosize shrinks to fit (12sp floor);
+            // short values keep the full size. Set AFTER the appearance so it takes over the sizing.
+            vt.setMaxLines(1);
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                    vt, 12, 22, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
+            col.addView(vt, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            chip.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+
+            // Trailing Copy: icon-only for EVERY value. The word "Copy" stole width from a long URL/IP
+            // (it capped the autosize), so the URL uses the same icon-only slot as the creds.
+            chip.addView(copyIconButton(ctx, value));
+
+            LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            if (!first) clp.topMargin = dp(ctx, 8);
+            first = false;
+            fallbackValues.addView(chip, clp);
         }
-        // ADFA-5183: the "scan didn't work" toggle is the pointer to the fallback, not extra clutter —
-        // it stays reveal-on-tap and hidden by default, but it was on the smallest role too, so nudge
-        // it one M3 step up (BodySmall -> BodyMedium) to be easy to find, keeping its teal action colour.
-        M3Text.apply(fallbackToggle, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium,
-                ContextCompat.getColor(ctx, R.color.k2go_teal));
-        fallbackToggle.setVisibility(View.VISIBLE);
-        applyFallbackOpen(ctx);
-        fallbackToggle.setOnClickListener(x -> { fbOpen = !fbOpen; applyFallbackOpen(ctx); });
+        fallback.setVisibility(View.VISIBLE);
     }
 
-    private void applyFallbackOpen(Context ctx) {
-        fallback.setVisibility(fbOpen ? View.VISIBLE : View.GONE);
-        fallbackToggle.setText(fbOpen
-                ? ctx.getString(R.string.k2go_hide) + "  ▴"
-                : ctx.getString(R.string.k2go_scan_didnt_work) + "  ▸");
+    /** ADFA-5236: icon-only Copy for short values (Wi-Fi, password). 48dp target, tooltip + a11y. */
+    private ImageView copyIconButton(Context ctx, String value) {
+        ImageView iv = new ImageView(ctx);
+        iv.setImageResource(R.drawable.ic_content_copy);
+        iv.setScaleType(ImageView.ScaleType.CENTER);
+        CharSequence d = ctx.getString(android.R.string.copy);
+        iv.setContentDescription(d);
+        androidx.appcompat.widget.TooltipCompat.setTooltipText(iv, d);
+        iv.setBackground(ripple(ctx));
+        iv.setOnClickListener(v -> copyValue(ctx, value));
+        return withSize(iv, dp(ctx, 48), dp(ctx, 48));
+    }
+
+    /** ADFA-5236: copy the FULL value to the clipboard and confirm with a "Copied" snackbar. */
+    private void copyValue(Context ctx, String value) {
+        android.content.ClipboardManager cm =
+                (android.content.ClipboardManager) ctx.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (cm != null) cm.setPrimaryClip(android.content.ClipData.newPlainText("K2Go", value));
+        String msg = ctx.getString(R.string.k2go_copied);
+        com.google.android.material.snackbar.Snackbar
+                .make(fallback, msg, org.iiab.controller.util.SnackbarDuration.millisForText(msg))
+                .show();
+    }
+
+    private static <T extends View> T withSize(T v, int w, int h) {
+        v.setLayoutParams(new LinearLayout.LayoutParams(w, h));
+        return v;
+    }
+
+    private static android.graphics.drawable.Drawable ripple(Context ctx) {
+        android.util.TypedValue tv = new android.util.TypedValue();
+        ctx.getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, tv, true);
+        return tv.resourceId != 0 ? ContextCompat.getDrawable(ctx, tv.resourceId) : null;
+    }
+
+    private static int dp(Context ctx, int v) {
+        return Math.round(v * ctx.getResources().getDisplayMetrics().density);
     }
 }

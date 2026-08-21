@@ -121,7 +121,6 @@ public class ConnectFragment extends Fragment {
 
     private void setMode(Mode m) {
         mode = m;
-        secJoin.fbOpen = secOpen.fbOpen = secSingle.fbOpen = false;   // each mode starts collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();
     }
@@ -236,7 +235,7 @@ public class ConnectFragment extends Fragment {
         secSingle.frame.setVisibility(View.VISIBLE);
         secSingle.setQr(requireContext(), browseUrl(ip), null);
         secSingle.caption.setText(R.string.k2go_connect_scan_open);
-        secSingle.subCaption.setText(R.string.k2go_connect_same_wifi);
+        secSingle.subCaption.setText("");   // ADFA-5236: drop the "same Wi-Fi" subcaption
         secSingle.setFallback(requireContext(), new String[]{browseUrl(ip)});
         finish.setVisibility(View.VISIBLE);
     }

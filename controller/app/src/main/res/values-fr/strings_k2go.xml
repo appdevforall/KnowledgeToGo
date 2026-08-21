@@ -838,4 +838,5 @@
     <string name="k2go_install_confirm_body">L\'installation se fait sur votre appareil avec le serveur en pause.\n\n• Cela prend du temps, souvent des dizaines de minutes.\n• Gardez une connexion stable si possible.\n• Assurez-vous d\'avoir assez de batterie avant de commencer.\n• Cet écran reste ouvert jusqu\'à la fin.</string>
     <string name="k2go_install_confirm_go">Installer</string>
     <string name="k2go_install_confirm_cancel">Pas maintenant</string>
+    <string name="k2go_copied">Copied</string>
 </resources>

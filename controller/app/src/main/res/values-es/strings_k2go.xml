@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Comenzar</string>
     <string name="k2go_hotspot">Punto de acceso</string>
     <string name="k2go_internet_download">Descarga por Internet</string>
-    <string name="k2go_just_scan">Solo escanea, ¡no hace falta escribir!</string>
+    <string name="k2go_just_scan">Solo escanea, o usa estas credenciales:</string>
     <string name="k2go_perm_keep_running">Seguir en ejecución</string>
     <string name="k2go_connect_subtitle">Deja que un dispositivo cercano explore tu biblioteca.</string>
     <string name="k2go_perm_nearby_note">Los dispositivos cercanos se piden más tarde, solo al compartir.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Recibir de otro teléfono  ›</string>
     <string name="k2go_clone_sharing_now">COMPARTIENDO AHORA</string>
     <string name="k2go_clone_scan_enter_text">¿No funcionó el escaneo? Introduce el código como texto  ▸</string>
-    <string name="k2go_clone_scan_show_text">¿No funcionó el escaneo? Muestra el código como texto  ▸</string>
+    <string name="k2go_clone_scan_show_text">Muestra el código como texto:</string>
     <string name="k2go_clone_scan_their_codes">Escanea sus códigos para obtener una copia aquí.</string>
     <string name="k2go_clone_scan_get_app">Escanea para obtener la app</string>
     <string name="k2go_clone_scan_to_join">Escanea para unirte</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go no puede conectarse a esa red por ti — conéctate en Ajustes y luego Continuar.</string>
     <string name="k2go_clone_next_get_app">Siguiente: obtener la app</string>
     <string name="k2go_clone_nothing_title">Aún no hay nada que compartir</string>
-    <string name="k2go_clone_point_camera_join">Apunta su cámara aquí para unirte a este teléfono.</string>
+    <string name="k2go_clone_point_camera_join">Apunta su cámara aquí para unirte a este teléfono, o usa estas credenciales:</string>
     <string name="k2go_clone_share_anyway">Compartir de todos modos</string>
     <string name="k2go_clone_share_wifi_note">Comparte esta Wi-Fi desde Ajustes, o haz que se conecten a ella, y luego continúa.</string>
     <string name="k2go_clone_sharing_stopped">Uso compartido detenido</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Dejar de compartir</string>
     <string name="k2go_clone_no_library_note">Este teléfono no tiene ninguna biblioteca K2Go instalada. Instala contenido primero, o comparte de todos modos.</string>
     <string name="k2go_clone_back_step1">‹ Volver al paso 1</string>
-    <string name="k2go_connect_readonly">Acceso de solo lectura a tu contenido.</string>
-    <string name="k2go_connect_scan_open">Escanea para abrir la biblioteca</string>
+    <string name="k2go_connect_readonly">Escanea para abrir la biblioteca o visita este sitio web:</string>
+    <string name="k2go_connect_scan_open">Escanea para abrir la biblioteca o visita este sitio web:</string>
     <string name="k2go_connect_same_wifi">Estás en la misma Wi-Fi — un solo código.</string>
     <string name="k2go_wiki_view_list">Lista</string>
     <string name="k2go_wiki_view_grouped">Agrupado</string>
@@ -828,4 +828,5 @@
     <string name="k2go_install_confirm_body">Esto se instala en tu dispositivo con el servidor en pausa.\n\n• Tarda un rato, a menudo decenas de minutos.\n• Mantén una conexión estable si puedes.\n• Ten suficiente batería antes de empezar.\n• Esta pantalla permanece abierta hasta que termine.</string>
     <string name="k2go_install_confirm_go">Instalar</string>
     <string name="k2go_install_confirm_cancel">Ahora no</string>
+    <string name="k2go_copied">Copiado</string>
 </resources>
