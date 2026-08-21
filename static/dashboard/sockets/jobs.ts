@@ -162,7 +162,11 @@ class JobManager {
             this.killAll(rt);
             try { rt.ac.abort(); } catch { /* ADFA-4894: interrupt an in-flight fetch too */ }
         }
-        if (ACTIVE.includes(job.phase)) this.patch(id, { phase: 'canceled' });
+        // ADFA-4896: finalize to 'canceled' from any non-terminal phase, INCLUDING 'paused'. A paused
+        // job's runner has already exited (no rt to kill), so without this it would linger 'paused'
+        // forever after a Cancel-after-Stop. For maps the partial was already purged at pause time, so
+        // there is nothing left to clean here.
+        if (ACTIVE.includes(job.phase) || job.phase === 'paused') this.patch(id, { phase: 'canceled' });
         return true;
     }
 
