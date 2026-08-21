@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Staging for strings that are not yet translated. Marked translatable="false" so the
+     MissingTranslation lint/tests don't fail while a feature is in progress. When the feature
+     lands, MOVE these into the main strings.xml (dropping translatable="false") so they enter
+     the translation pipeline. Keep this file small — it's a temporary holding area, not a home. -->
+<resources>
+    <!-- ADFA-5228: informative confirmation shown before a proot module install (server paused). -->
+    <string name="k2go_install_confirm_title" translatable="false">Install now?</string>
+    <string name="k2go_install_confirm_body" translatable="false">This installs on your device with the server paused.\n\n• Takes a while — often tens of minutes.\n• Keep a stable connection if you can.\n• Have enough battery before you start.\n• This screen stays open until it finishes.</string>
+    <string name="k2go_install_confirm_go" translatable="false">Install</string>
+    <string name="k2go_install_confirm_cancel" translatable="false">Not now</string>
+</resources>

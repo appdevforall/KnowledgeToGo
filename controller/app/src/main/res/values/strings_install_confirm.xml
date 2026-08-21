@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- ADFA-5228: informative confirmation shown before a proot module install (server paused). -->
-<resources>
-    <string name="k2go_install_confirm_title">Install now?</string>
-    <string name="k2go_install_confirm_body">This installs on your device with the server paused.\n\n• Takes a while — often tens of minutes.\n• Keep a stable connection if you can.\n• Have enough battery before you start.\n• This screen stays open until it finishes.</string>
-    <string name="k2go_install_confirm_go">Install</string>
-    <string name="k2go_install_confirm_cancel">Not now</string>
-</resources>
