@@ -94,7 +94,15 @@ public final class QrSection {
             // 0 vs O, 1 vs l — which matters when someone is typing it into another phone.
             t.setTypeface(android.graphics.Typeface.MONOSPACE);
             t.setTextIsSelectable(true);
-            fallbackValues.addView(t);
+            // ADFA-5236: keep the value on ONE line — a long URL/IP must not wrap. Autosize shrinks it
+            // to fit the card width (down to a still-legible 12sp floor); short values keep the full
+            // TitleLarge size. Needs match_parent width so autosize has a bound to shrink into, and it
+            // is set AFTER the appearance so it takes over the sizing (a fixed size would disable it).
+            t.setMaxLines(1);
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                    t, 12, 22, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
+            fallbackValues.addView(t, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         }
         fallback.setVisibility(View.VISIBLE);
     }
