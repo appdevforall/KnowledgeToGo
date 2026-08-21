@@ -16,6 +16,9 @@ import { RollingLog, LogSlice } from './rolling-log';
 export type JobType = 'kiwix' | 'maps' | 'books' | 'kolibri';
 export type JobPhase =
     | 'queued' | 'downloading' | 'indexing' | 'processing'
+    // ADFA-4894 (control surface): 'paused' is a stopped-but-resumable state — like 'canceled' it
+    // halts the runner, but UNLIKE cancel it keeps the partial on disk so resume() continues from it.
+    | 'paused'
     | 'done' | 'error' | 'canceled';
 
 /** A persisted job row. `percent` is -1 when indeterminate; `speed` is bytes/sec. */
@@ -50,7 +53,10 @@ export interface RunnerContext {
     update(patch: JobUpdate): void;
     isCanceled(): boolean;
     throwIfCanceled(): void;
-    /** ADFA-4894: aborted when the job is canceled, so an in-flight fetch (books) can be
+    /** ADFA-4894 (control surface): true when the job was PAUSED (not canceled). A runner uses this
+     *  to skip its clean-on-cancel — a paused download keeps its partial so resume() continues it. */
+    isPaused(): boolean;
+    /** ADFA-4894: aborted when the job is canceled OR paused, so an in-flight fetch (books) can be
      *  interrupted — a child process is killed via SIGKILL, but a fetch has no process. */
     readonly signal: AbortSignal;
     /** Spawn a child that is killed automatically on cancel and untracked on exit. */
@@ -65,13 +71,30 @@ export class CanceledError extends Error {
     constructor() { super('canceled'); this.name = 'CanceledError'; }
 }
 
+/** ADFA-4894: a runner throws this when stopped by pause(); mapped to 'paused' (partial kept). */
+export class PausedError extends Error {
+    constructor() { super('paused'); this.name = 'PausedError'; }
+}
+
+/**
+ * ADFA-4894: why a runner is stopping — so every runner handles pause vs cancel the same way (pause
+ * keeps the partial; cancel cleans it). Returns null for a real error. Keyed on the job flags, not
+ * the error type: a fetch/withRetry only aborts because the job was paused or canceled, so the flags
+ * are the source of truth and each runner does just its own cleanup on 'canceled'.
+ */
+export function classifyStop(ctx: RunnerContext): 'paused' | 'canceled' | null {
+    if (ctx.isPaused()) return 'paused';
+    if (ctx.isCanceled()) return 'canceled';
+    return null;
+}
+
 const DB_PATH = process.env.K2GO_JOBS_DB || '/library/dashboard/jobs.db';
 const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
 
 class JobManager {
     private db: Database.Database;
     private runners = new Map<JobType, Runner>();
-    private runtime = new Map<string, { canceled: boolean; procs: Set<ChildProcess>; ac: AbortController }>();
+    private runtime = new Map<string, { canceled: boolean; paused: boolean; procs: Set<ChildProcess>; ac: AbortController }>();
     // ADFA-4879: bounded rolling log tail per job for the live-log REST endpoint.
     private readonly logTail = new RollingLog();
 
@@ -143,6 +166,58 @@ class JobManager {
         return true;
     }
 
+    /**
+     * ADFA-4894 (control surface): pause a running job. Stops the runner like cancel — kills its
+     * children, aborts an in-flight fetch — but marks it 'paused' and, crucially, the runner does NOT
+     * clean its partial (it checks {@link RunnerContext.isPaused}), so {@link #resume} continues from
+     * the checkpoint. Only an ACTIVE job can be paused. Idempotent on a non-active job.
+     */
+    pause(id: string): boolean {
+        const job = this.get(id);
+        if (!job) return false;
+        if (!ACTIVE.includes(job.phase)) return false;
+        const rt = this.runtime.get(id);
+        if (rt) {
+            rt.paused = true;
+            for (const p of rt.procs) { try { p.kill('SIGKILL'); } catch { /* already gone */ } }
+            try { rt.ac.abort(); } catch { /* interrupt an in-flight fetch */ }
+        }
+        this.patch(id, { phase: 'paused' });
+        return true;
+    }
+
+    /**
+     * ADFA-4894: resume a paused job — re-launch the runner, which continues from its on-disk
+     * checkpoint (aria2 --continue for kiwix; per-item for books). No-op unless the job is 'paused'
+     * and nothing is already running for it.
+     */
+    resume(id: string): boolean {
+        const job = this.get(id);
+        if (!job || job.phase !== 'paused') return false;
+        if (this.runtime.has(id)) return false;   // already running
+        // Leave 'paused' for an ACTIVE phase before relaunching, so the completion guard in launch()
+        // (which only finalizes an ACTIVE job to 'done') and the UI both see it running at once.
+        this.patch(id, { phase: 'queued' });
+        this.launch(job);
+        return true;
+    }
+
+    /**
+     * ADFA-4894: retry a job that ended in 'error' — re-launch it. Where the runner is resumable the
+     * partial is still on disk (kiwix keeps it on a real error), so this continues rather than
+     * restarts. No-op unless the job is in 'error' and nothing is already running for it.
+     */
+    retry(id: string): boolean {
+        const job = this.get(id);
+        if (!job || job.phase !== 'error') return false;
+        if (this.runtime.has(id)) return false;
+        // Move off 'error' to an ACTIVE phase before relaunch (clears the error, satisfies the
+        // completion guard, and the UI shows it running immediately).
+        this.patch(id, { phase: 'queued', error: null });
+        this.launch(job);
+        return true;
+    }
+
     /** Resume jobs that were mid-flight when the dashboard last stopped. */
     reconcileOnBoot(): void {
         const stuck = this.db.prepare(
@@ -172,7 +247,7 @@ class JobManager {
         const runner = this.runners.get(job.type);
         if (!runner) { this.patch(job.id, { phase: 'error', error: `no runner for ${job.type}` }); return; }
 
-        const rt = { canceled: false, procs: new Set<ChildProcess>(), ac: new AbortController() };
+        const rt = { canceled: false, paused: false, procs: new Set<ChildProcess>(), ac: new AbortController() };
         this.runtime.set(job.id, rt);
 
         let items: unknown[] = [];
@@ -184,6 +259,7 @@ class JobManager {
             update: (p) => this.patch(job.id, p),
             isCanceled: () => rt.canceled,
             throwIfCanceled: () => { if (rt.canceled) throw new CanceledError(); },
+            isPaused: () => rt.paused,
             signal: rt.ac.signal,
             spawn: (cmd, args, opts) => {
                 const child = opts ? spawn(cmd, args, opts) : spawn(cmd, args);
@@ -201,7 +277,9 @@ class JobManager {
                 if (cur && ACTIVE.includes(cur.phase)) this.patch(job.id, { phase: 'done', percent: 100 });
             })
             .catch((err: unknown) => {
-                if (err instanceof CanceledError || rt.canceled) {
+                if (err instanceof PausedError || rt.paused) {
+                    this.patch(job.id, { phase: 'paused' });
+                } else if (err instanceof CanceledError || rt.canceled) {
                     this.patch(job.id, { phase: 'canceled' });
                 } else {
                     const msg = err instanceof Error ? err.message : String(err);

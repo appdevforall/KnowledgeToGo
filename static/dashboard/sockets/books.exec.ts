@@ -4,9 +4,9 @@
 // the EPUB and upload it to the local Calibre-Web. Ported from the Phase 1 books.socket
 // download_books_batch handler (auth/CSRF + fetch + upload), made durable and reporting
 // structured per-book progress. A job item is { id, title, url }.
-import { jobs, RunnerContext, CanceledError } from './jobs';
+import { jobs, RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
 import { getCredential } from './credentials';
-import { withRetry, Aborted } from './net-retry';
+import { withRetry } from './net-retry';
 import fs from 'fs';
 import path from 'path';
 
@@ -151,9 +151,12 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 onRetry: ({ attempt, err }) => ctx.log(`[books] retry ${attempt} for "${title}": ${err instanceof Error ? err.message : String(err)}`),
             });
         } catch (err) {
-            // withRetry throws Aborted on cancel; surface it as the engine's CanceledError so the
-            // job lands on 'canceled', not 'error'.
-            if (err instanceof Aborted || ctx.isCanceled()) throw new CanceledError();
+            // ADFA-4894: pause stops the fetch but keeps nothing mid-file (books resumes per item on
+            // the next launch); cancel is terminal. Either way, distinguish from a real error via the
+            // job flags so the phase lands on 'paused' / 'canceled', not 'error'.
+            const stop = classifyStop(ctx);
+            if (stop === 'paused') throw new PausedError();
+            if (stop === 'canceled') throw new CanceledError();
             throw err;
         } finally {
             if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
