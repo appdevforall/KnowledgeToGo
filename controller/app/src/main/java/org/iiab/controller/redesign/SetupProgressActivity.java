@@ -1099,7 +1099,8 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             bar.setProgressCompat(mq.percent, true);
             LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            barLp.topMargin = px(6);
+            barLp.topMargin = px(8);
+            barLp.bottomMargin = px(4);   // ADFA-5228: lift the bar off the card's bottom edge
             col.addView(bar, barLp);
         }
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));

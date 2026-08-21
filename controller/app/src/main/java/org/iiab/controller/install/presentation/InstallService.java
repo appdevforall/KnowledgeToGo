@@ -961,6 +961,12 @@ public final class InstallService extends Service {
                     org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, false);
                     revertModuleInLocalVars(nextModule, InstallService.this::installNextModule);
                 } else {
+                    // ADFA-5228: finish the determinate bar at exactly 100 before advancing (never
+                    // above). The next installNextModule() supersedes it with the following module's
+                    // state, so this only lingers on the just-finished module's own detail view.
+                    if (progress.hasTable()) {
+                        ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 100);
+                    }
                     org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, true);
                     installNextModule();
                 }
