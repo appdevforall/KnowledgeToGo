@@ -5,8 +5,8 @@
 // bytes/sec) instead of streamed as terminal text. Ported from the Phase 1
 // kiwix.socket handler, minus the socket/closure lifetime — the job outlives any
 // client (see jobs.ts).
-import { jobs, RunnerContext, CanceledError } from './jobs';
-import { withRetry, Aborted } from './net-retry';
+import { jobs, RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
+import { withRetry } from './net-retry';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -182,12 +182,12 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             onRetry: ({ attempt, err }) => ctx.log(`[kiwix] reconnect attempt ${attempt} after: ${err instanceof Error ? err.message : String(err)}`),
         });
     } catch (e) {
-        // ADFA-4894: a canceled download leaves nothing half-written; a real error KEEPS the partial
-        // (+ .aria2) so a later run resumes it via --continue rather than starting from zero.
-        if (e instanceof CanceledError || e instanceof Aborted || ctx.isCanceled()) {
-            cleanupPartials(files);
-            throw new CanceledError();
-        }
+        // ADFA-4894: pause KEEPS the partial (+ .aria2) so resume continues via --continue; cancel
+        // discards it; a real error also keeps it, so a later retry/reconcile resumes rather than
+        // starting from zero.
+        const stop = classifyStop(ctx);
+        if (stop === 'paused') throw new PausedError();
+        if (stop === 'canceled') { cleanupPartials(files); throw new CanceledError(); }
         throw e;
     }
 

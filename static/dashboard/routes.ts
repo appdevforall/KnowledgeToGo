@@ -722,3 +722,27 @@ apiRouter.post('/:type/jobs/:id/cancel', (req: Request, res: Response): void => 
     jobs.cancel(job.id);
     res.json({ ok: true });
 });
+
+// ADFA-4894 (control surface): pause / resume / retry over the durable job engine. Pause keeps the
+// partial (resume continues from it via --continue / per-item); retry re-runs an errored job. Each
+// returns 409 when the job is not in a phase the verb applies to, so the caller reflects real state.
+apiRouter.post('/:type/jobs/:id/pause', (req: Request, res: Response): void => {
+    const job = jobs.get(String(req.params.id));
+    if (!job || job.type !== String(req.params.type)) { res.status(404).json({ error: 'not found' }); return; }
+    if (!jobs.pause(job.id)) { res.status(409).json({ error: 'job is not pausable in its current phase' }); return; }
+    res.json({ ok: true });
+});
+
+apiRouter.post('/:type/jobs/:id/resume', (req: Request, res: Response): void => {
+    const job = jobs.get(String(req.params.id));
+    if (!job || job.type !== String(req.params.type)) { res.status(404).json({ error: 'not found' }); return; }
+    if (!jobs.resume(job.id)) { res.status(409).json({ error: 'job is not paused' }); return; }
+    res.json({ ok: true });
+});
+
+apiRouter.post('/:type/jobs/:id/retry', (req: Request, res: Response): void => {
+    const job = jobs.get(String(req.params.id));
+    if (!job || job.type !== String(req.params.type)) { res.status(404).json({ error: 'not found' }); return; }
+    if (!jobs.retry(job.id)) { res.status(409).json({ error: 'job is not in error' }); return; }
+    res.json({ ok: true });
+});

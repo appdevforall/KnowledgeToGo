@@ -1,10 +1,11 @@
 {
   "name": "dashboard-console",
-  "version": "1.2.3-dev.2",
+  "version": "1.2.4",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "node --require ts-node/register --test sockets/maps.socket.test.ts sockets/rolling-log.test.ts sockets/kolibri.session.test.ts sockets/credentials.test.ts sockets/net-retry.test.ts",
+    "test:db": "node --require ts-node/register --test sockets/jobs.test.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
     "start": "node dist/server.js"
