@@ -42,8 +42,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
 
-        <!-- ADFA-5228: determinate bar + percent above the advancing status line, driven by the
-             runrole task table. Hidden (gone) for a module with no table, so it stays indeterminate. -->
+        <!-- ADFA-5228: determinate bar above the advancing status line, driven by the runrole task
+             table. Hidden (gone) for a module with no table, so it stays indeterminate. The caption
+             below the bar carries the percent and shares that line with the ETA (slice #3). -->
         <LinearLayout
             android:id="@+id/k2go_modinst_progress_row"
             android:layout_width="match_parent"
@@ -51,27 +52,24 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
                 android:id="@+id/k2go_modinst_progress"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:max="100"
                 android:indeterminate="false"
                 app:trackCornerRadius="4dp" />
 
             <TextView
                 android:id="@+id/k2go_modinst_progress_pct"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:minWidth="40dp"
-                android:gravity="end"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBodySmall"
                 android:textColor="@color/k2go_muted" />
         </LinearLayout>
 

@@ -977,6 +977,23 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     /** ADFA-4900/4901: summary row for the maps (proot) stage, driven by the module-queue state:
      *  queued -> spinner (runrole in flight) -> check (done) / amber alert (failed). Tappable once
      *  the stage has started; opens the maps Preparing card as its detail (ADFA-4901). */
+    /** ADFA-5228: determinate install bar for a running proot module row (moduleRow + mapsRow share
+     *  it). Only shown while the module is running and has a task table (percent >= 0); otherwise the
+     *  row keeps its indeterminate indicator. Lifted off the card's bottom edge with a small margin. */
+    private void addRowProgressBar(LinearLayout col, ModuleQueueState mq, boolean running) {
+        if (!(running && mq.percent >= 0)) return;
+        com.google.android.material.progressindicator.LinearProgressIndicator bar =
+                new com.google.android.material.progressindicator.LinearProgressIndicator(this);
+        bar.setIndeterminate(false);
+        bar.setMax(100);
+        bar.setProgressCompat(mq.percent, true);
+        LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        barLp.topMargin = px(8);
+        barLp.bottomMargin = px(4);
+        col.addView(bar, barLp);
+    }
+
     private View mapsRow() {
         ModuleQueueState mq = ModuleQueueRepository.get().current();
         boolean done = mapsStartFailed || (mapsInSession() && mq.phase == ModuleQueueState.Phase.DONE);
@@ -1016,10 +1033,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         if (!started) state = getString(R.string.k2go_setup_state_queued);
         else if (failed) state = getString(R.string.k2go_maps_phase_failed);
         else if (done) state = getString(R.string.k2go_setup_state_done);
-        else state = getString(R.string.k2go_maps_phase_building);
+        else state = mq.percent >= 0                                   // ADFA-5228: show the % when determinate
+                ? getString(R.string.k2go_maps_phase_building) + "  " + mq.percent + "%"
+                : getString(R.string.k2go_maps_phase_building);
         sub.setText(state);
         sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
+        addRowProgressBar(col, mq, running);   // ADFA-5228
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         // ADFA-4901: like the ZIM/Books rows, maps opens its own progress detail once the stage has
@@ -1089,20 +1109,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         sub.setText(state);
         sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
-        // ADFA-5228: determinate bar for the module currently installing; modules with no task
-        // table (e.g. matomo) have percent < 0 and keep the indeterminate indicator only.
-        if (running && mq.percent >= 0) {
-            com.google.android.material.progressindicator.LinearProgressIndicator bar =
-                    new com.google.android.material.progressindicator.LinearProgressIndicator(this);
-            bar.setIndeterminate(false);
-            bar.setMax(100);
-            bar.setProgressCompat(mq.percent, true);
-            LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            barLp.topMargin = px(8);
-            barLp.bottomMargin = px(4);   // ADFA-5228: lift the bar off the card's bottom edge
-            col.addView(bar, barLp);
-        }
+        addRowProgressBar(col, mq, running);   // ADFA-5228
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         ImageView chev = new ImageView(this);
