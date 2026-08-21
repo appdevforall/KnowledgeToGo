@@ -149,9 +149,11 @@
                 android:layout_marginTop="16dp" android:padding="16dp" android:gravity="center" android:text="@string/k2go_done"
                 android:background="@drawable/k2go_primary_bg" android:textColor="@color/k2go_on_teal"
                 android:textAppearance="?attr/textAppearanceTitleLarge" android:clickable="true" android:focusable="true" android:visibility="gone" />
+            <!-- ADFA-5236: "Available while the app is open." removed from the Connect footer. -->
             <TextView android:id="@+id/k2go_conn_footer" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="10dp" android:text="@string/k2go_connect_available"
-                android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted" />
+                android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_muted"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

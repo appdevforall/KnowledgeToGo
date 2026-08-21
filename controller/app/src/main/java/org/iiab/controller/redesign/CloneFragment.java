@@ -431,7 +431,6 @@ public class CloneFragment extends Fragment {
         apRetries = 0;   // ADFA-5158: fresh AP-IP poll budget on a mode switch
         locationAsked = false;   // ADFA-5146: a mode switch is a fresh attempt — allow one more perm prompt
         netHandler.removeCallbacks(netRetry);
-        if (secJoin != null) secJoin.fbOpen = false;   // ADFA-4815: each mode starts with ①'s fallback collapsed
         if (m == Mode.HOTSPOT) ensureHotspot();
         render();   // ADFA-4785: keep the current step; switching Hotspot/Wi-Fi no longer resets to step 1
         // ADFA-5154: Hotspot ① has a QR, Wi-Fi ① doesn't, so the two tabs differ in height — switching

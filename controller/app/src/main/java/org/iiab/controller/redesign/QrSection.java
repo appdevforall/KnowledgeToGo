@@ -32,7 +32,7 @@ import org.iiab.controller.util.M3Text;
  *
  * <p>A section is bound from a root view plus the ids of its parts, so it works whether those
  * parts come from an {@code <include>} of {@code view_k2go_qr_section} or from inline markup.
- * It owns its own reveal state ({@link #fbOpen}) across re-renders. It holds no Context; the
+ * The manual-access values are always shown (ADFA-5236; no reveal toggle). It holds no Context; the
  * few methods that need one take it as a parameter, so the section can be built in
  * {@code onCreateView} and driven from anywhere.
  */
@@ -41,8 +41,6 @@ public final class QrSection {
     public final ImageView qr;
     public final TextView ph, caption, subCaption, fallbackToggle;
     public final LinearLayout fallback, fallbackValues;
-    /** This section's fallback reveal state, kept across re-renders. */
-    public boolean fbOpen;
 
     public QrSection(View r, int frameId, int qrId, int phId, int capId, int subId,
                      int toggleId, int fallbackId, int valuesId) {
@@ -70,45 +68,34 @@ public final class QrSection {
     }
 
     /**
-     * ADFA-4815: the text fallback is reveal-on-tap. The toggle sits under the caption; the quote
-     * block with the values stays hidden until tapped, so a working scan stays clutter-free.
+     * ADFA-5236: the manual-access block (hotspot Wi-Fi + password, or the library URL) is shown
+     * ALWAYS, not behind a reveal-on-tap toggle. Many phones have no QR scanner baked into the camera
+     * and offline users can't download one, so the credentials/URL must be visible without a tap. The
+     * caption above says what this is (".. or use the following credentials instead:"). The old
+     * "Scan didn't work?" / "Hide" toggle is gone.
      */
     public void setFallback(Context ctx, String[] vals) {
+        fallbackToggle.setVisibility(View.GONE);   // ADFA-5236: no reveal toggle anymore
         fallbackValues.removeAllViews();
         if (vals == null || vals.length == 0) {
             fallback.setVisibility(View.GONE);
-            fallbackToggle.setVisibility(View.GONE);
             return;
         }
         for (String val : vals) {
             TextView t = new TextView(ctx);
             t.setText(val);
             t.setGravity(Gravity.CENTER);
-            // ADFA-5183: the fallback carries what a user without a QR scanner has to READ AND TYPE —
-            // the server URL (http://<ip>:8085), and the hotspot Wi-Fi name + password (ADFA-5181).
-            // The default TextView size is too small to copy a run of digits from; put it on the M3
-            // type scale at TitleLarge via M3Text (which re-applies the theme colour after the
-            // appearance, per ADFA-4961) instead of a fixed sp. Enlarges every fallback value, so it
-            // covers both the URL (5183) and the password (5181's font half).
+            // ADFA-5183: readable size — the value is READ AND TYPED (server URL, hotspot Wi-Fi name +
+            // password). Put it on the M3 TitleLarge role via M3Text (which re-applies the theme colour
+            // after the appearance, per ADFA-4961) instead of a fixed sp.
             M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
                     ContextCompat.getColor(ctx, R.color.k2go_ink));
+            // ADFA-5236: monospace so a run of digits and letters (password, URL) can't be misread —
+            // 0 vs O, 1 vs l — which matters when someone is typing it into another phone.
+            t.setTypeface(android.graphics.Typeface.MONOSPACE);
             t.setTextIsSelectable(true);
             fallbackValues.addView(t);
         }
-        // ADFA-5183: the "scan didn't work" toggle is the pointer to the fallback, not extra clutter —
-        // it stays reveal-on-tap and hidden by default, but it was on the smallest role too, so nudge
-        // it one M3 step up (BodySmall -> BodyMedium) to be easy to find, keeping its teal action colour.
-        M3Text.apply(fallbackToggle, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium,
-                ContextCompat.getColor(ctx, R.color.k2go_teal));
-        fallbackToggle.setVisibility(View.VISIBLE);
-        applyFallbackOpen(ctx);
-        fallbackToggle.setOnClickListener(x -> { fbOpen = !fbOpen; applyFallbackOpen(ctx); });
-    }
-
-    private void applyFallbackOpen(Context ctx) {
-        fallback.setVisibility(fbOpen ? View.VISIBLE : View.GONE);
-        fallbackToggle.setText(fbOpen
-                ? ctx.getString(R.string.k2go_hide) + "  ▴"
-                : ctx.getString(R.string.k2go_scan_didnt_work) + "  ▸");
+        fallback.setVisibility(View.VISIBLE);
     }
 }
