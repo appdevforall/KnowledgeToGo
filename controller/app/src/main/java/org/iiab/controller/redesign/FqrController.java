@@ -90,6 +90,11 @@ public final class FqrController {
     private TextView overlayPct, overlayTitle;
     private TextView overlayMin;
     private boolean overlayMinimized = false;
+    // ADFA-4896: the Stop/Retry control on the overlay. It drives the server pause/resume endpoints,
+    // but there is no maps checkpoint yet (resume re-extracts from 0), so we present it honestly as
+    // Stop -> Retry, not Pause -> Resume. overlayStopped is the last state the poll reported.
+    private com.google.android.material.button.MaterialButton overlayStop;
+    private boolean overlayStopped = false;
 
     // Delete: unified list bottom-sheet (~55%) fed by the manual trash tool.
     private View deleteSheet;
@@ -357,7 +362,25 @@ public final class FqrController {
         if (box == null) return;
         showOverlay(name, pendingArchive);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
-            @Override public void onProgress(int percent, long speed) { updateOverlay(percent, speed); }
+            @Override public void onProgress(int percent, long speed) {
+                if (overlayStopped) {   // retried/running again: back to Stop
+                    overlayStopped = false;
+                    if (overlayStop != null) overlayStop.setText(R.string.k2go_clone_stop_confirm);
+                }
+                if (overlayStop != null) overlayStop.setEnabled(true);   // re-enable after a Stop/Retry tap
+                updateOverlay(percent, speed);
+            }
+            @Override public void onPaused(int percent) {
+                // Server phase is 'paused', but with no checkpoint this is a full stop: show "Stopped"
+                // and offer Retry (which re-extracts from 0). No percent -- it would imply a resume
+                // point that doesn't exist.
+                overlayStopped = true;
+                if (overlayStop != null) { overlayStop.setText(R.string.k2go_dl_retry); overlayStop.setEnabled(true); }
+                if (overlayPct != null) overlayPct.setText(R.string.k2go_card_stopped);
+                // #2: freeze the bar (determinate, no animation) so it doesn't keep animating under "Stopped".
+                if (overlayBar != null && overlayBar.isIndeterminate()) setBarMode(false);
+                if (overlayBar != null && percent >= 0) overlayBar.setProgressCompat(percent, false);
+            }
             @Override public void onDone() {
                 updateOverlay(100, 0);
                 if (overlayTitle != null) overlayTitle.setText(R.string.k2go_fqr_region_added); // may be gone if hidden
@@ -416,6 +439,14 @@ public final class FqrController {
         overlayPct.setText(R.string.k2go_fqr_starting);
         M3Text.apply(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
         row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        // ADFA-4896: Stop/Retry beside Cancel. The label follows the reported state; the tap fires the
+        // matching verb and the poll (onPaused/onProgress) is the source of truth.
+        overlayStopped = false;
+        overlayStop = new MaterialButton(themed, null,
+                com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        overlayStop.setText(R.string.k2go_clone_stop_confirm);
+        overlayStop.setOnClickListener(v -> toggleStop());
+        row.addView(overlayStop);
         MaterialButton cancel = new MaterialButton(themed, null,
                 com.google.android.material.R.attr.materialButtonOutlinedStyle);
         cancel.setText(R.string.k2go_cancel);
@@ -430,6 +461,15 @@ public final class FqrController {
         overlay = cardV;
         overlayMinimized = false;
         activity.addContentView(overlay, params);
+    }
+
+    /** ADFA-4896: fire Stop (server pause) or Retry (server resume — re-extracts from 0, no maps
+     *  checkpoint). The poll (onPaused/onProgress) is the SOLE writer of the label/state; here we only
+     *  fire the verb and disable the button until the next poll confirms, so the label never flickers
+     *  between the tap and the server catching up. */
+    private void toggleStop() {
+        if (overlayStop != null) overlayStop.setEnabled(false);
+        if (overlayStopped) client.resume(); else client.pause();
     }
 
     private void toggleMinimize() {
@@ -480,7 +520,9 @@ public final class FqrController {
         ViewGroup parent = (ViewGroup) overlay.getParent();
         if (parent != null) parent.removeView(overlay);
         overlay = null; overlayBar = null; overlayPct = null; overlayTitle = null; overlayMin = null;
+        overlayStop = null;
         overlayMinimized = false;
+        overlayStopped = false;
     }
 
     // ---- Delete: unified list bottom-sheet + manual capture ----------------------------------
