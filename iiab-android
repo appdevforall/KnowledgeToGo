@@ -524,7 +524,9 @@ install_iiaboa_dashboard() {
 #-----------------------------
 # Update package db + deps
 #-----------------------------
+export DEBIAN_FRONTEND=noninteractive
 apt-get update
+apt-get -y -o Dpkg::Options::=--force-confold -o Dpkg::Options::=--force-confdef upgrade
 apt-get install -y ca-certificates \
                    coreutils \
                    curl \
@@ -689,6 +691,12 @@ install_welcome_zim
 
 # Install dashboard
 install_iiaboa_dashboard
+
+#-----------------------------
+# Reclaim disk: drop downloaded .deb archives
+#-----------------------------
+log "Cleaning apt package cache (.deb archives) to reclaim space..."
+apt-get clean
 
 if [ -d "/sdcard/.iiab_state" ]; then
   touch /sdcard/.iiab_state/flag_iiab_ready 2>/dev/null || true
