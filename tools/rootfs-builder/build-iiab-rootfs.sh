@@ -30,14 +30,16 @@
 #   - build-<tier>-<arch>.log      (full installer log)
 #
 # Accepted values:
-#   --tier   basic | standard | full      (numeric aliases: 1 | 2 | 3; "medium" = standard)
+#   --tier   basic | standard | full | matomo  (numeric aliases: 1 | 2 | 3 | 4; "medium" = standard)
+#            matomo = a headless Matomo-only build (no code/kiwix/maps, no K2Go web
+#            modules): its build-matomo-<arch>.log isolates what the Matomo role does.
 #   --arch   arm64-v8a | armeabi-v7a
-#   --all-tier = build basic + standard + full   ·   --all-arch = build both arches
+#   --all-tier = build basic + standard + full + matomo   ·   --all-arch = build both arches
 #
 # Usage:
 #   sudo ./build-iiab-rootfs.sh --tier standard --arch arm64-v8a
 #
-#   # Build EVERYTHING in one run (both arches x all three tiers = 6 builds):
+#   # Build EVERYTHING in one run (both arches x all four tiers = 8 builds):
 #   sudo ./build-iiab-rootfs.sh --all-arch --all-tier
 #   # PRISTINE rebuild: delete ALL prior state (dist/ + caches) first. The 2nd flag
 #   # confirms non-interactively; WITHOUT it you are prompted (default NO):
@@ -181,12 +183,14 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-# Normalize tier name <-> number
+# Normalize tier name <-> number. TIER_NUM is passed to the installer as
+# AUTO_INSTALL_SIZE; 4 selects the installer's headless Matomo-only profile.
 case "$TIER" in
   1|basic)            TIER_NUM=1; TIER_NAME="basic" ;;
   2|standard|medium)  TIER_NUM=2; TIER_NAME="standard" ;;
   3|full)             TIER_NUM=3; TIER_NAME="full" ;;
-  *) die "Invalid tier: $TIER (use basic|standard|full or 1|2|3)" ;;
+  4|matomo)           TIER_NUM=4; TIER_NAME="matomo" ;;
+  *) die "Invalid tier: $TIER (use basic|standard|full|matomo or 1|2|3|4)" ;;
 esac
 
 # Map Android arch -> proot-distro Debian arch
@@ -226,7 +230,7 @@ fi
 # non-zero if any combo failed.
 if [[ "$ALL_ARCH" -eq 1 || "$ALL_TIER" -eq 1 ]]; then
   build_archs=("$ARCH");      [[ "$ALL_ARCH" -eq 1 ]] && build_archs=(arm64-v8a armeabi-v7a)
-  build_tiers=("$TIER_NAME"); [[ "$ALL_TIER" -eq 1 ]] && build_tiers=(basic standard full)
+  build_tiers=("$TIER_NAME"); [[ "$ALL_TIER" -eq 1 ]] && build_tiers=(basic standard full matomo)
   # Rebuild the pass-through arg list: drop --all-*, and drop --arch/--tier (+value).
   PASS=(); _skip=0
   for _a in "${ORIG_ARGS[@]}"; do
