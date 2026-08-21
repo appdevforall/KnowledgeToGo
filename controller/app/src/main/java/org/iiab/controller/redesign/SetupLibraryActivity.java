@@ -545,12 +545,15 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  bypassed the index. The server is up during Get More, so the index's readiness latches and
      *  the drain proceeds. This is the entry ADFA-4842 (module management) should generalize. */
     public void openMapsIndex(String[] levels, long totalMb) {
-        String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
-        String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
-        String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
-        boolean search = levels != null && levels.length > 3 && levels[3] != null;
-        MapsWishlist.save(this, base, sat, ter, search, totalMb);
-        startActivity(new Intent(this, SetupProgressActivity.class));
+        // ADFA-5228: maps is a proot (STOPPED) install — confirm before entering the index that runs it.
+        InstallConfirm.gate(this, org.iiab.controller.system.domain.Operation.appInstall("maps"), () -> {
+            String base = levels != null && levels.length > 0 && levels[0] != null ? levels[0] : "11";
+            String sat = levels != null && levels.length > 1 && levels[1] != null ? levels[1] : "none";
+            String ter = levels != null && levels.length > 2 && levels[2] != null ? levels[2] : "0-none";
+            boolean search = levels != null && levels.length > 3 && levels[3] != null;
+            MapsWishlist.save(this, base, sat, ter, search, totalMb);
+            startActivity(new Intent(this, SetupProgressActivity.class));
+        });
     }
 
     /** ADFA-4842: open a module's detail (Play Store card) from the hub or a deep-link. */
@@ -589,7 +592,13 @@ public class SetupLibraryActivity extends AppCompatActivity implements org.iiab.
      *  banked in ModuleWishlist; the index drains them through the proot queue (ModuleProvisioner),
      *  same mechanism as maps. */
     public void openModuleIndex() {
-        startActivity(new Intent(this, SetupProgressActivity.class));
+        // ADFA-5228: module app installs are proot (STOPPED) runroles — confirm before entering the
+        // index that drains them. Class is read from the operation (the first banked module); a LIVE
+        // op would pass straight through the gate.
+        String[] banked = ModuleWishlist.keys(this);
+        org.iiab.controller.system.domain.Operation op =
+                org.iiab.controller.system.domain.Operation.appInstall(banked.length > 0 ? banked[0] : "");
+        InstallConfirm.gate(this, op, () -> startActivity(new Intent(this, SetupProgressActivity.class)));
     }
 
     /** ADFA-4952: open the dedicated backup/restore job screen (mode = MODE_BACKUP / MODE_RESTORE). */
