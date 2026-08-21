@@ -11,7 +11,8 @@ import org.junit.Test;
 
 /**
  * Unit tests for {@link RunroleProgress} — the ADFA-5228 determinate-progress signal derived from
- * matching Ansible {@code TASK [role : name]} lines against an ordered task table.
+ * matching Ansible {@code TASK [role : name]} lines against an ordered task table, mapped onto a
+ * 5% liftoff / 95% ceiling band (100 only on completion).
  */
 public class RunroleProgressTest {
 
@@ -20,55 +21,64 @@ public class RunroleProgressTest {
     }
 
     private RunroleProgress four() {
-        return new RunroleProgress(Arrays.asList("a", "b", "c", "d"));
+        return new RunroleProgress(Arrays.asList("a", "b", "c", "d"));   // span 90 over 4 -> 28/50/73/95
     }
 
     @Test
-    public void startsAtZeroAndAdvancesByFurthestTask() {
+    public void zeroBeforeAnyMovement() {
+        assertEquals(0, four().percent());
+    }
+
+    @Test
+    public void liftsToFiveOnFirstMovementBeforeAnyKnownTask() {
         RunroleProgress p = four();
-        assertEquals(0, p.percent());
+        p.observe("changed: [127.0.0.1] => (item=something)");   // output, but not a known task yet
+        assertEquals(RunroleProgress.LIFTOFF, p.percent());       // 5
+    }
+
+    @Test
+    public void advancesAcrossTheBand() {
+        RunroleProgress p = four();
         p.observe(task("m", "a"));
-        assertEquals(25, p.percent());
+        assertEquals(28, p.percent());
         p.observe(task("m", "b"));
         assertEquals(50, p.percent());
         p.observe(task("m", "c"));
-        assertEquals(75, p.percent());
+        assertEquals(73, p.percent());
     }
 
     @Test
-    public void lastTaskStaysAt99UntilComplete() {
+    public void lastTaskCapsAtCeilingUntilComplete() {
         RunroleProgress p = four();
-        p.observe(task("m", "d"));   // entered the last known task, but the run isn't done
-        assertEquals(99, p.percent());
+        p.observe(task("m", "d"));
+        assertEquals(RunroleProgress.CEIL, p.percent());   // 95, not 100
         p.markComplete();
         assertEquals(100, p.percent());
     }
 
     @Test
-    public void skippedTaskDoesNotStall_takesFurthestReached() {
+    public void skippedTaskJumpsToFurthestReached() {
         RunroleProgress p = four();
         p.observe(task("m", "a"));
-        p.observe(task("m", "c"));   // b was skipped -> jump to c, not stuck at a
-        assertEquals(75, p.percent());
+        p.observe(task("m", "c"));   // b skipped
+        assertEquals(73, p.percent());
     }
 
     @Test
-    public void outOfOrderOrRepeatNeverGoesBackwards() {
+    public void neverGoesBackwards() {
         RunroleProgress p = four();
         p.observe(task("m", "c"));
-        assertEquals(75, p.percent());
+        assertEquals(73, p.percent());
         p.observe(task("m", "a"));   // a late/earlier task must not lower the bar
-        assertEquals(75, p.percent());
+        assertEquals(73, p.percent());
     }
 
     @Test
-    public void unknownAndNonTaskLinesAreIgnored() {
+    public void unknownTasksStayAtLiftoff() {
         RunroleProgress p = four();
-        p.observe("changed: [127.0.0.1] => (item=something)");
-        p.observe("skipping: [127.0.0.1]");
         p.observe(task("m", "not-in-table"));
-        p.observe(task("m", "Gather facts")); // role-less style still just misses the table
-        assertEquals(0, p.percent());
+        p.observe(task("m", "Gather facts"));
+        assertEquals(RunroleProgress.LIFTOFF, p.percent());   // moved, but no known task -> 5
     }
 
     @Test
@@ -77,7 +87,7 @@ public class RunroleProgressTest {
         assertFalse(p.hasTable());
         assertEquals(0, p.percent());
         p.observe(task("m", "a"));
-        assertEquals(0, p.percent());
+        assertEquals(0, p.percent());   // no table -> stays 0 (caller keeps the spinner)
     }
 
     @Test

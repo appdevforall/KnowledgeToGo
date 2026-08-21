@@ -19,10 +19,17 @@ import java.util.Map;
  */
 public final class RunroleProgress {
 
+    /** Liftoff floor: the bar jumps here on the first sign of movement, before any known task, so it
+     *  never sits dead at 0 while the runrole runs common/dependency tasks that aren't in the table. */
+    public static final int LIFTOFF = 5;
+    /** Ceiling while running: 95->100 is the finish, reached only via {@link #markComplete()}. */
+    public static final int CEIL = 95;
+
     private final Map<String, Integer> indexByName;
     private final int total;
     private int furthest = -1;
     private boolean complete = false;
+    private boolean sawMovement = false;
 
     public RunroleProgress(List<String> orderedTaskNames) {
         this.indexByName = new HashMap<>();
@@ -42,6 +49,7 @@ public final class RunroleProgress {
     /** Feed one line of Ansible output. Safe to call on every line. */
     public void observe(String line) {
         if (complete || line == null) return;
+        sawMovement = true;                     // ADFA-5228: any output means the runrole is moving
         String name = taskName(line);
         if (name == null) return;
         Integer idx = indexByName.get(name);
@@ -59,11 +67,13 @@ public final class RunroleProgress {
      */
     public int percent() {
         if (complete) return 100;
-        if (total == 0) return 0;
+        if (total == 0) return 0;                // no table -> caller stays indeterminate
+        if (!sawMovement) return 0;              // nothing has run yet
+        if (furthest < 0) return LIFTOFF;        // moving, but no module task reached yet
         int done = furthest + 1;                 // entering task i means i tasks have been reached
-        int pct = (int) Math.round(done * 100.0 / total);
-        if (pct < 0) pct = 0;
-        if (pct > 99) pct = 99;
+        int pct = LIFTOFF + (int) Math.round(done * (double) (CEIL - LIFTOFF) / total);
+        if (pct < LIFTOFF) pct = LIFTOFF;
+        if (pct > CEIL) pct = CEIL;              // 95 until markComplete() -> 100
         return pct;
     }
 
