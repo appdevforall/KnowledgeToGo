@@ -172,10 +172,11 @@
                     android:text="@string/k2go_clone_sizes_estimates" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
             </LinearLayout>
 
+            <!-- ADFA-5236: static label (no reveal toggle); the code block below is always shown. -->
             <TextView android:id="@+id/k2go_clone_showcode" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="center" android:text="@string/k2go_clone_scan_show_text"
-                android:textColor="@color/k2go_teal"
-                android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" android:visibility="gone" />
+                android:layout_marginTop="12dp" android:padding="8dp" android:gravity="start" android:text="@string/k2go_clone_scan_show_text"
+                android:textColor="@color/k2go_muted"
+                android:textAppearance="?attr/textAppearanceBodyMedium" android:visibility="gone" />
 
             <LinearLayout android:id="@+id/k2go_clone_codeblock" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:layout_marginTop="6dp" android:padding="14dp" android:background="@drawable/k2go_card_bg" android:visibility="gone">

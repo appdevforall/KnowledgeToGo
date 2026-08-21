@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Recibir de otro teléfono  ›</string>
     <string name="k2go_clone_sharing_now">COMPARTIENDO AHORA</string>
     <string name="k2go_clone_scan_enter_text">¿No funcionó el escaneo? Introduce el código como texto  ▸</string>
-    <string name="k2go_clone_scan_show_text">¿No funcionó el escaneo? Muestra el código como texto  ▸</string>
+    <string name="k2go_clone_scan_show_text">Muestra el código como texto:</string>
     <string name="k2go_clone_scan_their_codes">Escanea sus códigos para obtener una copia aquí.</string>
     <string name="k2go_clone_scan_get_app">Escanea para obtener la app</string>
     <string name="k2go_clone_scan_to_join">Escanea para unirte</string>

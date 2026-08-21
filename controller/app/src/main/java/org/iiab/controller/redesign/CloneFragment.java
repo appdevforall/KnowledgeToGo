@@ -159,7 +159,6 @@ public class CloneFragment extends Fragment {
     private android.widget.ScrollView contentScroll;   // ADFA-5154: scrolls back to top on Hotspot/Wi-Fi switch
     private org.iiab.controller.util.EllipsisAnimator startingDots;   // ADFA-5154: animated "Starting service…"
     private String currentPayload = "";
-    private boolean codeExpanded = false;
 
     @Override
     public void onCreate(@Nullable Bundle s) {
@@ -293,11 +292,7 @@ public class CloneFragment extends Fragment {
             page = (page == Page.PREPARE) ? Page.COPY : Page.PREPARE;
             render();
         });
-        showcode.setOnClickListener(x -> {
-            codeExpanded = !codeExpanded;
-            codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
-            showcode.setText(codeExpanded ? getString(R.string.k2go_clone_hide_code) : getString(R.string.k2go_clone_scan_show_text));
-        });
+        // ADFA-5236: no reveal toggle — the code is shown always under a fixed label (see showCodeAsText).
         copyBtn.setOnClickListener(x -> {
             ClipboardManager cm = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             if (cm != null) cm.setPrimaryClip(ClipData.newPlainText("K2Go transfer code", currentPayload));
@@ -1445,8 +1440,10 @@ public class CloneFragment extends Fragment {
     private void showCodeAsText(String payload) {
         currentPayload = payload;
         codetext.setText(payload);
+        // ADFA-5236: fixed label + always-visible code block (the reveal toggle is gone).
+        showcode.setText(R.string.k2go_clone_scan_show_text);
         showcode.setVisibility(View.VISIBLE);
-        codeblock.setVisibility(codeExpanded ? View.VISIBLE : View.GONE);
+        codeblock.setVisibility(View.VISIBLE);
     }
 
     // ---- step badges (same style as Connect). ADFA-5154: Page 1 (Prepare) lights ① and ② together;
