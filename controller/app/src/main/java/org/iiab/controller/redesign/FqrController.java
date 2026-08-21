@@ -734,6 +734,9 @@ public final class FqrController {
             "if(window.__k2goFqr)return;window.__k2goFqr=true;" +
             "var host=document.querySelector('maps-black');if(!host||!host.shadowRoot){console.log('K2Go-FQR no shadow');return;}" +
             "var sr=host.shadowRoot;" +
+            // ADFA-4884: the map's trash-tool button, matched by its title in one place (the click
+            // listener reads it; __k2goDisarmDelete finds it to toggle off).
+            "var DEL_TITLE='Choose region to delete';" +
             "var EX=/tile-extract\\.py\\s+extract\\s+([a-z0-9_]{1,34})\\s+(-?[\\d.]+,-?[\\d.]+,-?[\\d.]+,-?[\\d.]+)/;" +
             "var DE=/tile-extract\\.py\\s+delete\\s+([a-z0-9_]{1,34})/;" +
             "function hidePop(pre){var p=pre.closest?pre.closest('.maplibregl-popup'):null;if(p){p.style.display='none';}}" +
@@ -770,7 +773,7 @@ public final class FqrController {
             "for(var i=0;i<path.length;i++){var el=path[i];if(!el)continue;" +
             // Read the tool's REAL state from the map cursor (crosshair = active) after the click,
             // so open/close mirrors the tool exactly (no flip-based desync/inversion).
-            "if(el.title==='Choose region to delete'){setTimeout(function(){try{var on=host.map.getCanvas().style.cursor==='crosshair';setObserve(on);if(window.K2GoFQR&&K2GoFQR.onDeleteToolState){K2GoFQR.onDeleteToolState(on);}}catch(e){}},0);break;}" +
+            "if(el.title===DEL_TITLE){setTimeout(function(){try{var on=host.map.getCanvas().style.cursor==='crosshair';setObserve(on);if(window.K2GoFQR&&K2GoFQR.onDeleteToolState){K2GoFQR.onDeleteToolState(on);}}catch(e){}},0);break;}" +
             "if(el.tagName==='BUTTON'&&(el.textContent||'').trim()==='Next'){setTimeout(fireExtract,0);break;}" +
             "}}catch(e){}},true);" +
             // Native calls this to fly the map behind the list sheet to a picked region.
@@ -788,7 +791,7 @@ public final class FqrController {
             "window.__k2goDisarmDelete=function(){try{" +
             "var on=host.map&&host.map.getCanvas&&host.map.getCanvas().style.cursor==='crosshair';" +
             "if(!on)return false;" +
-            "var btn=sr.querySelector('[title=\"Choose region to delete\"]');" +
+            "var btn=sr.querySelector('[title=\"'+DEL_TITLE+'\"]');" +
             "if(btn){btn.click();return true;}return false;" +
             "}catch(e){return false;}};" +
             // ADFA-5043: native calls this when the user bails out of the estimate/consent step, to cancel
