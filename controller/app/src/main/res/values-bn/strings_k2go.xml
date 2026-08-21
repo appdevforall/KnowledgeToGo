@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">মুলতুবি ডাউনলোড</string>
     <string name="k2go_settings_pending_count">সারিতে %d</string>
     <string name="k2go_settings_pending_none">কোনোটিই নয়</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">এখন ইনস্টল করবেন?</string>
+    <string name="k2go_install_confirm_body">সার্ভার বিরতিতে থাকা অবস্থায় এটি আপনার ডিভাইসে ইনস্টল হয়।\n\n• কিছুটা সময় লাগে, প্রায়ই কয়েক দশ মিনিট।\n• সম্ভব হলে স্থিতিশীল সংযোগ রাখুন।\n• শুরুর আগে পর্যাপ্ত ব্যাটারি রাখুন।\n• শেষ না হওয়া পর্যন্ত এই স্ক্রিন খোলা থাকে।</string>
+    <string name="k2go_install_confirm_go">ইনস্টল</string>
+    <string name="k2go_install_confirm_cancel">এখন নয়</string>
 </resources>

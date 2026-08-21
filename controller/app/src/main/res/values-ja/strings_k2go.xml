@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">保留中のダウンロード</string>
     <string name="k2go_settings_pending_count">%d 件待機中</string>
     <string name="k2go_settings_pending_none">なし</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">今すぐインストールしますか？</string>
+    <string name="k2go_install_confirm_body">これはサーバーを一時停止した状態で端末にインストールされます。\n\n• 時間がかかります。多くの場合数十分です。\n• 可能であれば安定した接続を保ってください。\n• 開始前に十分なバッテリーを確保してください。\n• 完了するまでこの画面は開いたままになります。</string>
+    <string name="k2go_install_confirm_go">インストール</string>
+    <string name="k2go_install_confirm_cancel">後で</string>
 </resources>

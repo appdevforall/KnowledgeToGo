@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">التنزيلات المعلقة</string>
     <string name="k2go_settings_pending_count">%d في قائمة الانتظار</string>
     <string name="k2go_settings_pending_none">لا شيء</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">التثبيت الآن؟</string>
+    <string name="k2go_install_confirm_body">يتم التثبيت على جهازك مع إيقاف الخادم مؤقتًا.\n\n• يستغرق بعض الوقت، غالبًا عشرات الدقائق.\n• حافظ على اتصال مستقر إن أمكن.\n• تأكد من وجود بطارية كافية قبل البدء.\n• تظل هذه الشاشة مفتوحة حتى الانتهاء.</string>
+    <string name="k2go_install_confirm_go">تثبيت</string>
+    <string name="k2go_install_confirm_cancel">ليس الآن</string>
 </resources>

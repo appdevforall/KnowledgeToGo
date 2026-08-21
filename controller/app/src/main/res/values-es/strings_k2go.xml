@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Descargas pendientes</string>
     <string name="k2go_settings_pending_count">%d en cola</string>
     <string name="k2go_settings_pending_none">Ninguna</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">¿Instalar ahora?</string>
+    <string name="k2go_install_confirm_body">Esto se instala en tu dispositivo con el servidor en pausa.\n\n• Tarda un rato, a menudo decenas de minutos.\n• Mantén una conexión estable si puedes.\n• Ten suficiente batería antes de empezar.\n• Esta pantalla permanece abierta hasta que termine.</string>
+    <string name="k2go_install_confirm_go">Instalar</string>
+    <string name="k2go_install_confirm_cancel">Ahora no</string>
 </resources>

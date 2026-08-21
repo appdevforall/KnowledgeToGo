@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">대기 중인 다운로드</string>
     <string name="k2go_settings_pending_count">%d개 대기 중</string>
     <string name="k2go_settings_pending_none">없음</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">지금 설치할까요?</string>
+    <string name="k2go_install_confirm_body">서버가 일시 중지된 상태에서 기기에 설치됩니다.\n\n• 시간이 걸리며, 보통 수십 분입니다.\n• 가능하면 안정적인 연결을 유지하세요.\n• 시작하기 전에 배터리가 충분한지 확인하세요.\n• 완료될 때까지 이 화면은 열려 있습니다.</string>
+    <string name="k2go_install_confirm_go">설치</string>
+    <string name="k2go_install_confirm_cancel">나중에</string>
 </resources>

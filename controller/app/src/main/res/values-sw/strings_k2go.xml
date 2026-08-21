@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Vipakuliwa vinavyosubiri</string>
     <string name="k2go_settings_pending_count">%d kwenye foleni</string>
     <string name="k2go_settings_pending_none">Hakuna</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Sakinisha sasa?</string>
+    <string name="k2go_install_confirm_body">Hii inasakinishwa kwenye kifaa chako huku seva ikiwa imesitishwa.\n\n• Huchukua muda, mara nyingi makumi ya dakika.\n• Dumisha muunganisho thabiti ikiwezekana.\n• Hakikisha una betri ya kutosha kabla ya kuanza.\n• Skrini hii inabaki wazi hadi imalize.</string>
+    <string name="k2go_install_confirm_go">Sakinisha</string>
+    <string name="k2go_install_confirm_cancel">Si sasa</string>
 </resources>

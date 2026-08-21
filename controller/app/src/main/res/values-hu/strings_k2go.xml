@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Függőben lévő letöltések</string>
     <string name="k2go_settings_pending_count">%d a sorban</string>
     <string name="k2go_settings_pending_none">Nincs</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Telepíti most?</string>
+    <string name="k2go_install_confirm_body">A telepítés az eszközön történik, a kiszolgáló szüneteltetve.\n\n• Eltart egy ideig, gyakran több tíz percig.\n• Ha lehet, tartson stabil kapcsolatot.\n• Indítás előtt legyen elég akkumulátor.\n• Ez a képernyő a befejezésig nyitva marad.</string>
+    <string name="k2go_install_confirm_go">Telepítés</string>
+    <string name="k2go_install_confirm_cancel">Most nem</string>
 </resources>
