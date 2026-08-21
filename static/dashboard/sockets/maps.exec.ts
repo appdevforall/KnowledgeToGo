@@ -6,10 +6,16 @@
 import { jobs, RunnerContext, CanceledError, PausedError, classifyStop, JobUpdate } from './jobs';
 import { parseBox } from './maps.socket';
 import { spawn } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 
 const SCRIPTS_DIR = '/opt/iiab/maps/tile-extract/';
 const EXTRACT_SCRIPT = path.join(SCRIPTS_DIR, 'tile-extract.py');
+// ADFA-4896: tile-extract.py extracts each pmtiles into TMP_DIR and only shutil.move()s all three
+// into the served dir once ALL have finished, updating extracts.json last. So a killed extract
+// leaves half-written pmtiles HERE (never in the catalog) — and the script's own `delete` only
+// cleans the served dir, NOT this one. We prune these ourselves. Must match TMP_DIR in the script.
+const MAPS_TMP_DIR = '/library/downloads/maps';
 // name: letters/digits/hyphen/underscore, 1..34 (same rule as the socket handler).
 const NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
 
@@ -29,13 +35,29 @@ function runMapsCmd(args: string[], log: (l: string) => void): Promise<void> {
     });
 }
 
+/** ADFA-4896: remove a region's half-written pmtiles left in TMP_DIR by a killed extract — the
+ *  script's `delete` doesn't touch this dir. Name-scoped (`*.full-region.<name>.pmtiles`), so a
+ *  concurrent extract for another region is untouched. Best-effort. */
+function cleanupTmpPartials(name: string, log: (l: string) => void): void {
+    try {
+        const suffix = `.full-region.${name}.pmtiles`;
+        for (const f of fs.readdirSync(MAPS_TMP_DIR)) {
+            if (f.endsWith(suffix)) {
+                try { fs.unlinkSync(path.join(MAPS_TMP_DIR, f)); log(`[maps] pruned partial ${f}`); } catch { /* gone */ }
+            }
+        }
+    } catch { /* dir missing / unreadable — nothing to prune */ }
+}
+
 /** ADFA-4896: discard a region's partial extract and drop it from the catalog. There is no maps
  *  checkpoint yet, so pause is stop+restart and cancel is remove — both discard the partial so a
- *  resume/retry re-extracts from a clean slate and nothing half-written is left behind or listed
- *  in extracts.json. delete on a name that was never written is a harmless no-op. */
+ *  resume/retry re-extracts from a clean slate and nothing half-written is left behind or listed.
+ *  Two places to clean: TMP_DIR (a mid-extract kill) and, via the script's `delete` (which runs
+ *  update-json itself), the served dir + extracts.json (the rare race where the extract finished
+ *  just as the stop landed). delete on a name that was never served is a harmless no-op. */
 async function purgeRegion(name: string, log: (l: string) => void): Promise<void> {
+    cleanupTmpPartials(name, log);
     await runMapsCmd(['delete', name], log);
-    await runMapsCmd(['update-json'], log);
 }
 
 const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
