@@ -11,7 +11,8 @@
  *                 POST /api/maps/download {items:[{name,box}]} -> { id, ... }
  *                 GET  /api/maps/jobs/:id                    -> { phase, percent, detail, error }
  *                 POST /api/maps/jobs/:id/cancel             -> { ok:true }
- *               phase is one of: queued|downloading|indexing|processing|done|error|canceled.
+ *                 POST /api/maps/jobs/:id/{pause,resume}     -> { ok:true } | 409  (ADFA-4894)
+ *               phase is one of: queued|downloading|indexing|processing|paused|done|error|canceled.
  *               Only reachable on-device (localhost); the box denies /api to remote clients.
  * ============================================================================
  */
@@ -47,6 +48,9 @@ public final class MapsRegionClient {
         void onProgress(int percent, long speedBytesPerSec);   // percent may be -1; speed 0 if unknown
         void onDone();
         void onError(String message);
+        /** ADFA-4894: the job is paused (partial kept on the box); resume() continues it. Default
+         *  no-op so existing callers keep compiling; the overlay overrides it to show the control. */
+        default void onPaused(int percent) {}
     }
 
     private static final String BASE = BoxEndpoints.API + "/maps";
@@ -114,6 +118,11 @@ public final class MapsRegionClient {
                 case "canceled":
                     fail("canceled");
                     return;
+                case "paused": {   // ADFA-4894: stopped-but-resumable; report it and keep polling
+                    final int pp = percent;
+                    deliver(() -> dl.onPaused(pp));
+                    break;
+                }
                 default: {   // queued / downloading / processing: report progress if known
                     final int p = percent;
                     final long sp = j.optLong("speed", 0L);
@@ -180,6 +189,26 @@ public final class MapsRegionClient {
             });
         }
         teardown();
+    }
+
+    /** ADFA-4894: pause the in-flight download (keeps the partial). Polling keeps running, so the
+     *  next poll reports 'paused' via onPaused(); resume() picks it back up. */
+    public void pause() {
+        final String id = jobId;
+        if (id == null || id.isEmpty()) return;
+        AppExecutors.get().io().execute(() -> {
+            try { httpJson("POST", BASE + "/jobs/" + id + "/pause", null); } catch (Exception ignore) { /* best effort */ }
+        });
+    }
+
+    /** ADFA-4894: resume a paused download; the server continues it via --continue, and the poll
+     *  reports progress again via onProgress(). */
+    public void resume() {
+        final String id = jobId;
+        if (id == null || id.isEmpty()) return;
+        AppExecutors.get().io().execute(() -> {
+            try { httpJson("POST", BASE + "/jobs/" + id + "/resume", null); } catch (Exception ignore) { /* best effort */ }
+        });
     }
 
     private void done() {
