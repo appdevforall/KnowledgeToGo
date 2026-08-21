@@ -380,20 +380,8 @@ public class SetupSectionFragment extends Fragment {
                 return;
             }
             if (switchStorage.isChecked()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    try {
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                        intent.addCategory("android.intent.category.DEFAULT");
-                        intent.setData(Uri.parse(String.format("package:%s", requireContext().getPackageName())));
-                        storageLauncher.launch(intent);
-                    } catch (Exception e) {
-                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                        storageLauncher.launch(intent);
-                    }
-                } else {
-                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                }
+                org.iiab.controller.permissions.StoragePermission.request(
+                        requireContext(), storageLauncher, requestPermissionLauncher);
             }
             switchStorage.setChecked(false);
         });
@@ -473,11 +461,7 @@ public class SetupSectionFragment extends Fragment {
     }
 
     private boolean hasStoragePermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            return Environment.isExternalStorageManager();
-        }
-        return ContextCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return org.iiab.controller.permissions.StoragePermission.isGranted(requireContext());
     }
 
     private boolean hasBatteryPermission() {

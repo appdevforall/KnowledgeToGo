@@ -42,6 +42,11 @@ public class WizardActivity extends AppCompatActivity {
     private final ActivityResultLauncher<Intent> permResult =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> render());
 
+    // ADFA-5225: pre-R storage is a runtime permission (not a Settings screen), so it needs its own
+    // String-contract launcher. StoragePermission picks which launcher to use per OS version.
+    private final ActivityResultLauncher<String> storagePermResult =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), r -> render());
+
     private final ActivityResultLauncher<Intent> langPicker =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
                 if (r.getResultCode() == RESULT_OK && r.getData() != null) {
@@ -293,9 +298,7 @@ public class WizardActivity extends AppCompatActivity {
         return true;
     }
     private boolean hasStorage() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) return android.os.Environment.isExternalStorageManager();
-        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == android.content.pm.PackageManager.PERMISSION_GRANTED;
+        return org.iiab.controller.permissions.StoragePermission.isGranted(this);
     }
     private boolean hasBattery() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -313,17 +316,7 @@ public class WizardActivity extends AppCompatActivity {
         }
     }
     private void requestStorage() {
-        if (hasStorage()) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            try {
-                Intent i = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                i.addCategory("android.intent.category.DEFAULT");
-                i.setData(Uri.parse("package:" + getPackageName()));
-                permResult.launch(i);
-            } catch (Exception e) {
-                permResult.launch(new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION));
-            }
-        }
+        org.iiab.controller.permissions.StoragePermission.request(this, permResult, storagePermResult);
     }
     private void requestBattery() {
         if (hasBattery()) return;
