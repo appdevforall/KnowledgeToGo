@@ -36,6 +36,35 @@
         <!-- ADFA-5074: shared block; the asset is chosen by ProgressVisuals. -->
         <include layout="@layout/view_k2go_working_anim" />
 
+        <!-- ADFA-5228: determinate bar + percent above the status line, driven by the maps runrole
+             task table. The caption shares its line with the ETA (slice #3). Gone if no table. -->
+        <LinearLayout
+            android:id="@+id/k2go_prep_progress_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/k2go_prep_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:indeterminate="false" />
+
+            <TextView
+                android:id="@+id/k2go_prep_progress_pct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="@color/k2go_muted" />
+        </LinearLayout>
+
         <!-- The process's own text, not an invented percentage. -->
         <!-- ADFA-4910: fixed 2-line height (minLines=maxLines=2) so the note below never jumps
              as this line flips between 1 and 2 lines. Slightly smaller text (BodyMedium) too.

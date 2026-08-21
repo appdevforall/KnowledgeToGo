@@ -1,0 +1,80 @@
+Assert that "maps_install is sameas true" (boolean not string etc)
+Assert that "maps_enabled | type_debug == 'bool'" (boolean not string etc)
+Install maps if 'maps_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+Make serving directory (0755 by default)
+Make maps directory (0755 by default)
+Install downloading tools
+Download /library/www/maps/maps-catalog-global-orig.json
+Load maps catalog
+include_tasks
+Set up tile extraction working dir
+Set up pmtiles unarchiving dir
+Define detected arch
+Make sure we have a supported arch for pmtiles
+Download pmtiles archive for arm64
+Unarchive pmtiles archive
+Copy pmtiles executable into working dir
+Get PMTiles (Python tool)
+Install our tile extraction script
+Install maps-update.py
+Make index file
+Install maps.black.js
+Download the remaining basic maps.black javascript and styles (0644)
+Make sure archives end in .tar.gz as expected
+Fetching file size for https://iiab.switnet.org/maps/2/maps.black-component.js via .meta4 file
+debug
+Download maps.black-component.js (5.57 KiB) To check download progress, see previous step (above).
+Fetching file size for https://iiab.switnet.org/maps/2/resourcetiles-minimal.pmtiles via .meta4 file
+Download resourcetiles-minimal.pmtiles (35.3 MiB) To check download progress, see previous step (above).
+Get naturalearth6 from catalog
+Make sure maps_ne6_zoom has a valid value
+Download naturalearth6 from catalog
+Fetching file size for https://iiab.switnet.org/maps/2/naturalearth6-NE2_HR_SR_W_DR-WEBP.2025-12-10.z00-z06.pmtiles via .meta4 file
+Download naturalearth6-NE2_HR_SR_W_DR-WEBP.2025-12-10.z00-z06.pmtiles (57.59 MiB) To check download progress, see previous step (above).
+Select naturalearth6
+Error on deprecated maps_vector_quality
+Get vector from catalog
+Make sure maps_vector_zoom has a valid value
+Download vector from catalog
+Fetching file size for https://iiab.switnet.org/maps/2/naturalearth-openmaptiles.2025-12-10.z00-z08.pmtiles via .meta4 file
+Download naturalearth-openmaptiles.2025-12-10.z00-z08.pmtiles (85.29 MiB) To check download progress, see previous step (above).
+Select vector
+Download fallback vector tiles
+Get satellite from catalog
+Make sure maps_satellite_zoom has a valid value
+Download satellite from catalog
+Fetching file size for https://iiab.switnet.org/maps/2/s2maps-sentinel2-2023.2025-12-10.z00-z07.pmtiles via .meta4 file
+Download s2maps-sentinel2-2023.2025-12-10.z00-z07.pmtiles (84.66 MiB) To check download progress, see previous step (above).
+Select satellite
+Download fallback satellite tiles
+Remove unused satellite symlink
+Get terrain from catalog
+Make sure maps_terrain_zoom has a valid value
+Download terrain from catalog
+Fetching file size for https://iiab.switnet.org/maps/2/terrarium-none.pmtiles via .meta4 file
+Download terrarium-none.pmtiles (104.66 KiB) To check download progress, see previous step (above).
+Select terrain
+Download fallback terrain tiles
+Final map configuration
+Initiate the extracts json
+Download preset full quality regions
+Download maplibre javascript and styles (0644)
+Create static search root directory
+Install static search js
+Get static search from catalog
+Make sure maps_search_static_db has a valid value
+Download static_search from catalog
+Fetching file size for https://iiab.switnet.org/maps/2/static-search.2026-04-22.pop-1k-cities.tar.gz via .meta4 file
+Download static-search.2026-04-22.pop-1k-cities.tar.gz (15.37 MiB) To check download progress, see previous step (above).
+Select static_search
+Set 'maps_installed: True'
+Add 'maps_installed: True' to /etc/iiab/iiab_state.yml
+Enable/Disable/Reload NGINX for maps.black/nominatim, if nginx_enabled
+Enable http://box/osm via NGINX, by installing /etc/nginx/conf.d/maps-nginx.conf from template
+Disable http://box/osm via NGINX, by removing /etc/nginx/conf.d/maps-nginx.conf
+Enable http://box/nominatim via NGINX, by installing /etc/nginx/conf.d/nominatim-nginx.conf from template
+Disable http://box/nominatim via NGINX, by removing /etc/nginx/conf.d/nominatim-nginx.conf
+Reload 'nginx' systemd service
+Disable nominatim service - not proot
+Enable nominatim service - not proot
+Add 'maps' variable values to /etc/iiab/iiab.ini

@@ -49,6 +49,9 @@ public class ModuleInstallFragment extends Fragment {
 
     private String key;
     private TextView status, logText, logLabel;
+    private View progressRow;                                                                 // ADFA-5228
+    private com.google.android.material.progressindicator.LinearProgressIndicator progress;
+    private TextView progressPct;
     private ScrollView logScroll;
     private ImageView logChevron;
     private boolean logExpanded = false;
@@ -67,6 +70,9 @@ public class ModuleInstallFragment extends Fragment {
         title.setText(c != null ? getString(c.detailTitleRes) : (key == null ? "" : key));
 
         status = root.findViewById(R.id.k2go_modinst_status);
+        progressRow = root.findViewById(R.id.k2go_modinst_progress_row);   // ADFA-5228
+        progress = root.findViewById(R.id.k2go_modinst_progress);
+        progressPct = root.findViewById(R.id.k2go_modinst_progress_pct);
         logLabel = root.findViewById(R.id.k2go_modinst_log_label);
         // ADFA-5074: the key is passed so a module that earns its own art can be matched.
         org.iiab.controller.util.ProgressVisuals.applyForModule(root, key);
@@ -105,6 +111,17 @@ public class ModuleInstallFragment extends Fragment {
     private void updateStatus() {
         if (status == null || !isAdded()) return;
         ModuleQueueState mq = ModuleQueueRepository.get().current();
+
+        // ADFA-5228: determinate bar above the status line while THIS module installs; hidden when
+        // it isn't running or has no task table (percent < 0), leaving the animation alone.
+        if (progressRow != null) {
+            boolean showBar = installing() && mq.percent >= 0;
+            progressRow.setVisibility(showBar ? View.VISIBLE : View.GONE);
+            if (showBar) {
+                progress.setProgressCompat(mq.percent, true);
+                progressPct.setText(mq.percent + "%");
+            }
+        }
 
         if (mq.failedModules != null && mq.failedModules.contains(key)) {
             terminalDone = true;

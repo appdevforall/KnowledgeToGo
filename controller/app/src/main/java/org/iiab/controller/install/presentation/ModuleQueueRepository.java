@@ -60,6 +60,8 @@ public final class ModuleQueueRepository {
 
     // Thread-safe posts (callable from the proot worker callbacks).
     public void postRunning(String currentModule, int remaining) { post(ModuleQueueState.running(currentModule, remaining)); }
+    /** ADFA-5228: running with a determinate percent (0..100) for the current module's runrole. */
+    public void postRunning(String currentModule, int remaining, int percent) { post(ModuleQueueState.running(currentModule, remaining, percent)); }
     public void postDone(List<String> failedModules)             { post(ModuleQueueState.done(failedModules)); }
     public void postIdle()                                       { post(ModuleQueueState.idle()); }
 

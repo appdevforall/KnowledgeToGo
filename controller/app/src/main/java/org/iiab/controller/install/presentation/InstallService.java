@@ -909,6 +909,18 @@ public final class InstallService extends Service {
             return;
         }
 
+        // ADFA-5228: drive a determinate bar from the runrole's task stream. The table is the
+        // module's ordered task names (assets/runrole/<role>.txt); with no table the progress stays
+        // indeterminate and the row keeps its spinner. remaining/lastPct are captured for the
+        // worker-thread output callback below.
+        final org.iiab.controller.install.domain.RunroleProgress progress =
+                new org.iiab.controller.install.domain.RunroleProgress(RunroleTables.tasksFor(this, roleName));
+        final int remainingSnapshot = moduleQueue.size();
+        final int[] lastPct = { Integer.MIN_VALUE };
+        if (progress.hasTable()) {
+            ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 0);
+        }
+
         // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
         // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
         final String installCmd = ("maps".equals(nextModule) && hasMapsConfig)
@@ -926,6 +938,16 @@ public final class InstallService extends Service {
             public void onOutputLine(String line) {
                 outcome.observe(line);
                 log("[Ansible] " + line);
+                // ADFA-5228: advance the determinate bar as known tasks are reached. Post only on a
+                // percent change so LiveData isn't spammed per output line.
+                if (progress.hasTable()) {
+                    progress.observe(line);
+                    int pct = progress.percent();
+                    if (pct != lastPct[0]) {
+                        lastPct[0] = pct;
+                        ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, pct);
+                    }
+                }
             }
 
             @Override
@@ -939,6 +961,12 @@ public final class InstallService extends Service {
                     org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, false);
                     revertModuleInLocalVars(nextModule, InstallService.this::installNextModule);
                 } else {
+                    // ADFA-5228: finish the determinate bar at exactly 100 before advancing (never
+                    // above). The next installNextModule() supersedes it with the following module's
+                    // state, so this only lingers on the just-finished module's own detail view.
+                    if (progress.hasTable()) {
+                        ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 100);
+                    }
                     org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, true);
                     installNextModule();
                 }
