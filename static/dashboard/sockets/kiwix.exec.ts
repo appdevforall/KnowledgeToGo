@@ -35,6 +35,18 @@ const ARIA2_ARGS: string[] = [
     '--summary-interval=1',
     '--download-result=hide',
     '--async-dns=false',
+    // ADFA-4894 / 4832: reconnect on a transient drop instead of failing the job at the first blip.
+    // DIVERGENCE from the app-side Aria2Manager (--max-tries=1) is deliberate and documented: the app
+    // wraps aria2 in its own outer retry loop (InstallService softAttempts), so it wants aria2 to give
+    // up fast and lets the app re-drive on a changed precondition. The REST engine has no such outer
+    // loop today, so aria2 itself must be the thing that reconnects — hence a higher max-tries here.
+    // retry-wait matches the app (never 0: a 0-wait retry hammers a struggling server).
+    '--max-tries=5',
+    '--retry-wait=5',
+    '--timeout=60',
+    '--connect-timeout=15',
+    // No --lowest-speed-limit, same as the app: it turns a slow link into a hard abort, which is the
+    // opposite of resilient on the intermittent 3G this contract exists for.
     '-Z',
     '-j', '5',
 ];
@@ -78,6 +90,26 @@ function cleanupMetadata(): void {
     } catch { /* non-fatal */ }
 }
 
+/**
+ * ADFA-4894: clean-on-cancel. aria2 keeps a partial `.zim` + `.aria2` control file so a resume can
+ * continue — right after a pause, wrong after a cancel, where the user gave the download up. So on
+ * cancel we prune each requested file's partial and its control/metadata siblings, leaving nothing
+ * half-written. A file with no `.aria2` is treated as already complete and left alone.
+ */
+function cleanupPartials(files: string[]): void {
+    for (const f of files) {
+        try {
+            const control = path.join(ZIMS_DIR, `${f}.aria2`);
+            if (!fs.existsSync(control)) continue;   // no control file -> complete, don't delete it
+            fs.unlinkSync(control);
+            for (const sibling of [f, `${f}.meta4`, `${f}.torrent`]) {
+                const p = path.join(ZIMS_DIR, sibling);
+                if (fs.existsSync(p)) fs.unlinkSync(p);
+            }
+        } catch { /* best-effort */ }
+    }
+}
+
 const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // ADFA-5042: keep each id's project subdir for the URL; use basename only for the local file/display.
     const ids = ctx.ids.map(String).map((z) => z.replace(/^\/+/, '')).filter((z) => z.endsWith('.zim'));
@@ -98,27 +130,33 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     // Each id already carries its project subdir on the mirror (/zim/<project>/<file>).
     const urls = ids.map((z) => BASE_URL + z);
 
-    await new Promise<void>((resolve, reject) => {
-        const dl = ctx.spawn('/usr/bin/aria2c', [...ARIA2_ARGS, ...urls]);
-        const onData = (buf: Buffer) => {
-            const text = buf.toString();
-            // A single chunk can carry several summary lines; take the LAST %/rate.
-            const re = /\((\d+)%\).*?DL:([^\s]+)/g;
-            let m: RegExpExecArray | null;
-            let lastPct = -1;
-            let lastRate = '';
-            while ((m = re.exec(text)) !== null) { lastPct = parseInt(m[1], 10); lastRate = m[2]; }
-            if (lastPct >= 0) ctx.update({ phase: 'downloading', percent: lastPct, speed: parseRate(lastRate) });
-        };
-        dl.stdout?.on('data', onData);
-        dl.stderr?.on('data', onData);
-        dl.on('error', reject);
-        dl.on('exit', (code, signal) => {
-            if (signal === 'SIGKILL' || ctx.isCanceled()) return reject(new CanceledError());
-            if (code === 0) resolve();
-            else reject(new Error(`aria2 exited with code ${code}`));
+    try {
+        await new Promise<void>((resolve, reject) => {
+            const dl = ctx.spawn('/usr/bin/aria2c', [...ARIA2_ARGS, ...urls]);
+            const onData = (buf: Buffer) => {
+                const text = buf.toString();
+                // A single chunk can carry several summary lines; take the LAST %/rate.
+                const re = /\((\d+)%\).*?DL:([^\s]+)/g;
+                let m: RegExpExecArray | null;
+                let lastPct = -1;
+                let lastRate = '';
+                while ((m = re.exec(text)) !== null) { lastPct = parseInt(m[1], 10); lastRate = m[2]; }
+                if (lastPct >= 0) ctx.update({ phase: 'downloading', percent: lastPct, speed: parseRate(lastRate) });
+            };
+            dl.stdout?.on('data', onData);
+            dl.stderr?.on('data', onData);
+            dl.on('error', reject);
+            dl.on('exit', (code, signal) => {
+                if (signal === 'SIGKILL' || ctx.isCanceled()) return reject(new CanceledError());
+                if (code === 0) resolve();
+                else reject(new Error(`aria2 exited with code ${code}`));
+            });
         });
-    });
+    } catch (e) {
+        // ADFA-4894: a canceled download leaves nothing half-written.
+        if (e instanceof CanceledError || ctx.isCanceled()) cleanupPartials(files);
+        throw e;
+    }
 
     cleanupMetadata();
     ctx.throwIfCanceled();

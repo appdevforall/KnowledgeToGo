@@ -4,10 +4,19 @@
 // the EPUB and upload it to the local Calibre-Web. Ported from the Phase 1 books.socket
 // download_books_batch handler (auth/CSRF + fetch + upload), made durable and reporting
 // structured per-book progress. A job item is { id, title, url }.
-import { jobs, RunnerContext } from './jobs';
+import { jobs, RunnerContext, CanceledError } from './jobs';
 import { getCredential } from './credentials';
+import { withRetry, Aborted } from './net-retry';
 import fs from 'fs';
 import path from 'path';
+
+// ADFA-4894: a stalled Gutenberg fetch must not hang the job forever, and a transient
+// drop must not fail the whole batch at one book. Per-book: bound each attempt with a
+// timeout, retry the transient ones with backoff, and make the job's cancel abort an
+// in-flight fetch (ctx.signal). A Gutenberg EPUB is a few MB, so a failed attempt is
+// re-fetched whole rather than byte-ranged — resume at the item granularity, not the byte.
+const FETCH_TIMEOUT_MS = 60_000;
+const BOOK_TRIES = 4;
 
 const CALIBRE_WEB_LOCAL_URL = 'http://127.0.0.1:8083';
 const TMP_DIR = '/tmp/books_downloader/';
@@ -89,24 +98,56 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
 
         const tmp = path.join(TMP_DIR, `pg_${id}.epub`);
         try {
-            const response = await fetch(url, {
-                headers: { 'User-Agent': SYSTEM_USER_AGENT, Accept: 'application/epub+zip' },
+            await withRetry(async () => {
+                // Cancel (ctx.signal) is terminal; a per-attempt timeout is retryable. Combine both
+                // for the fetch so a stall aborts, then let withRetry decide whether to try again.
+                const signal = AbortSignal.any([ctx.signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]);
+
+                const response = await fetch(url, {
+                    headers: { 'User-Agent': SYSTEM_USER_AGENT, Accept: 'application/epub+zip' },
+                    signal,
+                });
+                if (!response.ok) {
+                    const e = new Error(`HTTP ${response.status} from Gutenberg`);
+                    (e as { status?: number }).status = response.status;
+                    throw e;
+                }
+
+                const fileBuffer = await response.arrayBuffer();
+                fs.writeFileSync(tmp, Buffer.from(fileBuffer));
+
+                const form = new FormData();
+                form.append('csrf_token', session.csrfToken);
+                form.append('btn-upload', new Blob([fileBuffer], { type: 'application/epub+zip' }), `${title}.epub`);
+
+                const uploadRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/upload`, {
+                    method: 'POST',
+                    headers: { Cookie: session.cookie, Referer: `${CALIBRE_WEB_LOCAL_URL}/` },
+                    body: form,
+                    signal,
+                });
+                if (!uploadRes.ok) {
+                    const e = new Error(`Calibre-Web rejected upload: ${uploadRes.status}`);
+                    (e as { status?: number }).status = uploadRes.status;
+                    throw e;
+                }
+            }, {
+                tries: BOOK_TRIES,
+                signal: ctx.signal,
+                isCanceled: ctx.isCanceled,
+                // Retry network drops and timeouts and 5xx; a 4xx is the server's final word.
+                isTransient: (err) => {
+                    const status = (err as { status?: number })?.status;
+                    if (typeof status === 'number') return status >= 500;
+                    return true;
+                },
+                onRetry: ({ attempt, err }) => ctx.log(`[books] retry ${attempt} for "${title}": ${err instanceof Error ? err.message : String(err)}`),
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status} from Gutenberg`);
-
-            const fileBuffer = await response.arrayBuffer();
-            fs.writeFileSync(tmp, Buffer.from(fileBuffer));
-
-            const form = new FormData();
-            form.append('csrf_token', session.csrfToken);
-            form.append('btn-upload', new Blob([fileBuffer], { type: 'application/epub+zip' }), `${title}.epub`);
-
-            const uploadRes = await fetch(`${CALIBRE_WEB_LOCAL_URL}/upload`, {
-                method: 'POST',
-                headers: { Cookie: session.cookie, Referer: `${CALIBRE_WEB_LOCAL_URL}/` },
-                body: form,
-            });
-            if (!uploadRes.ok) throw new Error(`Calibre-Web rejected upload: ${uploadRes.status}`);
+        } catch (err) {
+            // withRetry throws Aborted on cancel; surface it as the engine's CanceledError so the
+            // job lands on 'canceled', not 'error'.
+            if (err instanceof Aborted || ctx.isCanceled()) throw new CanceledError();
+            throw err;
         } finally {
             if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
         }
