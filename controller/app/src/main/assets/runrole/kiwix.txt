@@ -1,0 +1,33 @@
+Assert that "kiwix_install is sameas true" (boolean not string etc)
+Assert that "kiwix_enabled | type_debug == 'bool'" (boolean not string etc)
+Install Kiwix if 'kiwix_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+Force Ansible to exit (FAIL) if kiwix-tools appears unavailable for your CPU/OS architecture (aarch64)
+Record (initial) disk space used
+Download https://download.kiwix.org/release/kiwix-tools/kiwix-tools_linux-aarch64.tar.gz into /opt/iiab/downloads (ACTUAL filename should include kiwix-tools version, or nightly build date)
+Does /opt/iiab/kiwix/bin already exist? (as a directory, symlink or file)
+If so, move /opt/iiab/kiwix/bin to /opt/iiab/kiwix/bin.DATE_TIME_TZ
+Create dirs, including parent dirs: /opt/iiab/kiwix/bin (executables), /library/zims/content (ZIM files), /library/zims/index (legacy indexes) (by default 0755)
+Count *.zim files in /library/zims/content
+If there were none, install /library/zims/content/test.zim
+Unarchive /opt/iiab/downloads/kiwix-tools.tar.gz to /opt/iiab/kiwix/bin -- untar with '--strip-components=1' to chop tarball's top-level dir from path
+Install from templates: kiwix-serve.service, iiab-make-kiwix-lib, iiab-make-kiwix-lib.py
+daemon_reload, so systemd (re)reads newly installed kiwix-serve.service
+Install Kiwix Android app
+Record (final) disk space used
+Add 'kiwix_disk_usage = 74371072' to /etc/iiab/iiab.ini
+Set 'kiwix_installed: True'
+Add 'kiwix_installed: True' to /etc/iiab/iiab_state.yml
+include_tasks
+Disable & Stop 'kiwix-serve' systemd service
+Run /usr/bin/iiab-make-kiwix-lib to update /library/zims/library.xml
+Enable & Ensure 'kiwix-serve.service' is running
+Enable 'kiwix' via pdsm (proot)
+Start 'kiwix' via pdsm (proot)
+Set cron to restart kiwix-serve 4AM daily, if kiwix_enabled
+Remove 4AM daily cron, if not kiwix_enabled
+Enable/Disable/Restart NGINX
+Enable http://box/kiwix via NGINX, by installing /etc/nginx/conf.d/kiwix-nginx.conf from template
+Disable http://box/kiwix via NGINX, by removing /etc/nginx/conf.d/kiwix-nginx.conf
+Restart 'nginx' systemd service
+Restart 'nginx' via pdsm (proot)
+Add 'kiwix' variable values to /etc/iiab/iiab.ini

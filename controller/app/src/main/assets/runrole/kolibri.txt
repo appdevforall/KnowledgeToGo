@@ -1,0 +1,43 @@
+Assert that "kolibri_install is sameas true" (boolean not string etc)
+Assert that "kolibri_enabled | type_debug == 'bool'" (boolean not string etc)
+Install Kolibri, if 'kolibri_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+Record (initial) disk space used
+Create Linux user kolibri and add it to groups www-data, disk
+Create directory /library/kolibri for Kolibri content, configuration, sqlite3 databases (kolibri:www-data, by default 0755)
+Create directory /etc/kolibri (by default 0755)
+Save kolibri_user (kolibri) to /etc/kolibri/username
+Save kolibri_home (KOLIBRI_HOME="/library/kolibri") to /etc/kolibri/daemon.conf
+Download Kolibri's apt key to /etc/apt/keyrings/learningequality-kolibri.asc -- if not is_debian
+Remove Kolibri PPA's legacy apt .list
+Download Kolibri's apt key to /etc/apt/keyrings/learningequality-kolibri.asc -- if is_debian
+Add signed Kolibri PPA stable
+apt install kolibri (using apt source specified above, if kolibri_deb_url ISN'T defined)
+apt install << error 1 - 'kolibri_deb_url' is undefined >> (if kolibri_deb_url IS defined)
+Run 'rm -rf /root/.kolibri' to remove "unavoidable" pollution created above
+Install from template: /etc/systemd/system/kolibri.service
+Stop 'kolibri' systemd service, for Kolibri provisioning (after daemon_reload)
+Stop 'kolibri' via pdsm (proot), for Kolibri provisioning
+Setup dummy getprop to set tzlocal (proot)
+Provision Kolibri, while setting: facility name, admin acnt / password, preset type, and language
+Verify patch file is available in the right path (proot)
+Fail if it isn't available
+Test for patch already applied via reverse dry-run (proot)
+Apply patch only if not applied (proot)
+Disable Zeroconf at options.ini (proot)
+Set custom http_port at options.ini (proot)
+Record (final) disk space used
+Add 'kolibri_disk_usage = 419373056' to /etc/iiab/iiab.ini
+Set 'kolibri_installed: True'
+Add 'kolibri_installed: True' to /etc/iiab/iiab_state.yml
+include_tasks
+Enable & Start 'kolibri' systemd service, if kolibri_enabled
+Enable 'kolibri' via pdsm (proot)
+Start 'kolibri' via pdsm (proot)
+Disable & Stop 'kolibri' systemd service, if not kolibri_enabled
+Stop 'kolibri' via pdsm (proot)
+Disable 'kolibri' via pdsm (proot)
+Enable http://box/kolibri/ via NGINX, by installing /etc/nginx/conf.d/kolibri-nginx.conf from template
+Disable http://box/kolibri/ via NGINX, by removing /etc/nginx/conf.d/kolibri-nginx.conf
+Restart 'nginx' systemd service
+Restart 'nginx' via pdsm (proot)
+Add 'kolibri' variable values to /etc/iiab/iiab.ini
