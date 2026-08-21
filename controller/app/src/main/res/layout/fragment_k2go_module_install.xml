@@ -42,6 +42,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp" />
 
+        <!-- ADFA-5228: determinate bar above the advancing status line, driven by the runrole task
+             table. Hidden (gone) for a module with no table, so it stays indeterminate. -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/k2go_modinst_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:max="100"
+            android:indeterminate="false"
+            android:visibility="gone"
+            app:trackCornerRadius="4dp" />
+
         <TextView
             android:id="@+id/k2go_modinst_status"
             android:layout_width="match_parent"
