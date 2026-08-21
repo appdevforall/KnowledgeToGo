@@ -1082,11 +1082,26 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         String state;
         if (failed) state = getString(R.string.k2go_mod_phase_failed);
         else if (done) state = getString(R.string.k2go_setup_state_done);
-        else if (running) state = getString(R.string.k2go_mod_phase_installing);
+        else if (running) state = mq.percent >= 0                       // ADFA-5228: show the % when determinate
+                ? getString(R.string.k2go_mod_phase_installing) + "  " + mq.percent + "%"
+                : getString(R.string.k2go_mod_phase_installing);
         else state = getString(R.string.k2go_mod_phase_queued);
         sub.setText(state);
         sub.setTextColor(ContextCompat.getColor(this, failed ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
+        // ADFA-5228: determinate bar for the module currently installing; modules with no task
+        // table (e.g. matomo) have percent < 0 and keep the indeterminate indicator only.
+        if (running && mq.percent >= 0) {
+            com.google.android.material.progressindicator.LinearProgressIndicator bar =
+                    new com.google.android.material.progressindicator.LinearProgressIndicator(this);
+            bar.setIndeterminate(false);
+            bar.setMax(100);
+            bar.setProgressCompat(mq.percent, true);
+            LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            barLp.topMargin = px(6);
+            col.addView(bar, barLp);
+        }
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         ImageView chev = new ImageView(this);
