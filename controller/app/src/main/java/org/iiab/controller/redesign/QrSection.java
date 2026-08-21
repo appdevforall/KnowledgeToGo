@@ -81,29 +81,67 @@ public final class QrSection {
             fallback.setVisibility(View.GONE);
             return;
         }
+        // ADFA-5236: each value sits in its own rounded "field" chip. Credential strings arrive as
+        // "Label: value" (e.g. "Wi-Fi: AndroidShare_4464"); we split on the first ": " to show the
+        // label muted and the value in mono. A URL ("http://<ip>:8085") has no ": " so it renders as a
+        // lone mono value. Chip fill is an M3 surface-container tone so it stands off the block.
+        final int chipBg = com.google.android.material.color.MaterialColors.getColor(
+                ctx, com.google.android.material.R.attr.colorSurfaceContainerHighest,
+                ContextCompat.getColor(ctx, R.color.k2go_surface));
+        boolean first = true;
         for (String val : vals) {
-            TextView t = new TextView(ctx);
-            t.setText(val);
-            t.setGravity(Gravity.CENTER);
-            // ADFA-5183: readable size — the value is READ AND TYPED (server URL, hotspot Wi-Fi name +
-            // password). Put it on the M3 TitleLarge role via M3Text (which re-applies the theme colour
-            // after the appearance, per ADFA-4961) instead of a fixed sp.
-            M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
+            android.graphics.drawable.GradientDrawable bg = new android.graphics.drawable.GradientDrawable();
+            bg.setCornerRadius(dp(ctx, 12));
+            bg.setColor(chipBg);
+
+            LinearLayout chip = new LinearLayout(ctx);
+            chip.setOrientation(LinearLayout.HORIZONTAL);
+            chip.setGravity(Gravity.CENTER_VERTICAL);
+            chip.setBackground(bg);
+            chip.setPadding(dp(ctx, 16), dp(ctx, 10), dp(ctx, 16), dp(ctx, 10));
+
+            int sep = val.indexOf(": ");
+            String label = sep > 0 ? val.substring(0, sep) : null;
+            String value = sep > 0 ? val.substring(sep + 2) : val;
+
+            if (label != null) {
+                TextView lt = new TextView(ctx);
+                lt.setText(label);
+                M3Text.apply(lt, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium,
+                        ContextCompat.getColor(ctx, R.color.k2go_muted));
+                chip.addView(lt);
+            }
+
+            TextView vt = new TextView(ctx);
+            vt.setText(value);
+            vt.setGravity(label != null ? Gravity.END : Gravity.CENTER);
+            // ADFA-5183: readable size on the M3 TitleLarge role (M3Text re-applies the colour after
+            // the appearance, per ADFA-4961). ADFA-5236: monospace so digits vs letters can't be
+            // misread (0/O, 1/l) when typing into another phone.
+            M3Text.apply(vt, com.google.android.material.R.style.TextAppearance_Material3_TitleLarge,
                     ContextCompat.getColor(ctx, R.color.k2go_ink));
-            // ADFA-5236: monospace so a run of digits and letters (password, URL) can't be misread —
-            // 0 vs O, 1 vs l — which matters when someone is typing it into another phone.
-            t.setTypeface(android.graphics.Typeface.MONOSPACE);
-            t.setTextIsSelectable(true);
-            // ADFA-5236: keep the value on ONE line — a long URL/IP must not wrap. Autosize shrinks it
-            // to fit the card width (down to a still-legible 12sp floor); short values keep the full
-            // TitleLarge size. Needs match_parent width so autosize has a bound to shrink into, and it
-            // is set AFTER the appearance so it takes over the sizing (a fixed size would disable it).
-            t.setMaxLines(1);
+            vt.setTypeface(android.graphics.Typeface.MONOSPACE);
+            vt.setTextIsSelectable(true);
+            // ADFA-5236: keep it on ONE line — a long URL/IP must not wrap. Autosize shrinks to fit the
+            // value column (down to a 12sp floor); short values keep the full size. Set AFTER the
+            // appearance so autosize takes over the sizing; width 0 + weight 1 gives it a bound.
+            vt.setMaxLines(1);
             androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
-                    t, 12, 22, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
-            fallbackValues.addView(t, new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    vt, 12, 22, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
+            LinearLayout.LayoutParams vlp = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+            if (label != null) vlp.setMarginStart(dp(ctx, 12));
+            chip.addView(vt, vlp);
+
+            LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            if (!first) clp.topMargin = dp(ctx, 8);
+            first = false;
+            fallbackValues.addView(chip, clp);
         }
         fallback.setVisibility(View.VISIBLE);
+    }
+
+    private static int dp(Context ctx, int v) {
+        return Math.round(v * ctx.getResources().getDisplayMetrics().density);
     }
 }
