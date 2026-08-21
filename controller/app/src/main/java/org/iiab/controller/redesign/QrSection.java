@@ -84,8 +84,8 @@ public final class QrSection {
         // ADFA-5236: each value is a rounded "field" chip laid out as [ content column | trailing Copy ].
         // Credential strings arrive as "Label: value" (split on the first ": ") -> muted label over a
         // mono value; a URL ("http://<ip>:8085") has no ": " -> lone mono value. Copy lives in a RESERVED
-        // TRAILING slot (never floating over the value): icon-only for short creds, word+icon "Copy" for
-        // the long URL. The whole chip is also tappable to copy. Share is NOT here (payload only).
+        // TRAILING slot (never floating over the value): an icon-only button for every value — the word
+        // "Copy" would cap a long URL's autosize. The whole chip is also tappable. Share is NOT here.
         final int chipBg = com.google.android.material.color.MaterialColors.getColor(
                 ctx, com.google.android.material.R.attr.colorSurfaceContainerHighest,
                 ContextCompat.getColor(ctx, R.color.k2go_surface));
@@ -132,8 +132,9 @@ public final class QrSection {
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             chip.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
-            // Trailing Copy: icon-only for short creds, word+icon for the long URL (there is room).
-            chip.addView(label != null ? copyIconButton(ctx, value) : copyWordButton(ctx, value));
+            // Trailing Copy: icon-only for EVERY value. The word "Copy" stole width from a long URL/IP
+            // (it capped the autosize), so the URL uses the same icon-only slot as the creds.
+            chip.addView(copyIconButton(ctx, value));
 
             LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -155,30 +156,6 @@ public final class QrSection {
         iv.setBackground(ripple(ctx));
         iv.setOnClickListener(v -> copyValue(ctx, value));
         return withSize(iv, dp(ctx, 48), dp(ctx, 48));
-    }
-
-    /** ADFA-5236: word+icon "Copy" for the long value (URL/IP), where there is width. */
-    private LinearLayout copyWordButton(Context ctx, String value) {
-        LinearLayout row = new LinearLayout(ctx);
-        row.setOrientation(LinearLayout.HORIZONTAL);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        int p = dp(ctx, 10);
-        row.setPadding(p, p, p, p);
-        row.setBackground(ripple(ctx));
-        row.setContentDescription(ctx.getString(android.R.string.copy));
-        row.setOnClickListener(v -> copyValue(ctx, value));
-        ImageView icon = new ImageView(ctx);
-        icon.setImageResource(R.drawable.ic_content_copy);
-        row.addView(icon, new LinearLayout.LayoutParams(dp(ctx, 22), dp(ctx, 22)));
-        TextView t = new TextView(ctx);
-        t.setText(android.R.string.copy);
-        M3Text.apply(t, com.google.android.material.R.style.TextAppearance_Material3_LabelLarge,
-                ContextCompat.getColor(ctx, R.color.k2go_teal));
-        LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        tlp.setMarginStart(dp(ctx, 6));
-        row.addView(t, tlp);
-        return row;
     }
 
     /** ADFA-5236: copy the FULL value to the clipboard and confirm with a "Copied" snackbar. */
