@@ -46,6 +46,9 @@ public class WizardActivity extends AppCompatActivity {
     // String-contract launcher. StoragePermission picks which launcher to use per OS version.
     private final ActivityResultLauncher<String> storagePermResult =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), r -> render());
+    // ADFA-5225: tracks whether the pre-R runtime permission was already requested, so a later
+    // "Don't ask again" denial can be detected and routed to app settings.
+    private boolean storageAsked = false;
 
     private final ActivityResultLauncher<Intent> langPicker =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
@@ -316,7 +319,10 @@ public class WizardActivity extends AppCompatActivity {
         }
     }
     private void requestStorage() {
-        org.iiab.controller.permissions.StoragePermission.request(this, permResult, storagePermResult);
+        // ADFA-5225: requestOrOpenSettings (not request) so a permanent pre-R denial routes to app
+        // settings instead of a silent no-op — the wizard has no other path to Settings.
+        storageAsked = org.iiab.controller.permissions.StoragePermission
+                .requestOrOpenSettings(this, permResult, storagePermResult, storageAsked);
     }
     private void requestBattery() {
         if (hasBattery()) return;
