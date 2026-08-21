@@ -90,10 +90,11 @@ public final class FqrController {
     private TextView overlayPct, overlayTitle;
     private TextView overlayMin;
     private boolean overlayMinimized = false;
-    // ADFA-4894: the Pause/Resume control on the overlay. overlayPaused is the last state the poll
-    // reported, so the button toggles between pause() and resume().
-    private com.google.android.material.button.MaterialButton overlayPause;
-    private boolean overlayPaused = false;
+    // ADFA-4896: the Stop/Retry control on the overlay. It drives the server pause/resume endpoints,
+    // but there is no maps checkpoint yet (resume re-extracts from 0), so we present it honestly as
+    // Stop -> Retry, not Pause -> Resume. overlayStopped is the last state the poll reported.
+    private com.google.android.material.button.MaterialButton overlayStop;
+    private boolean overlayStopped = false;
 
     // Delete: unified list bottom-sheet (~55%) fed by the manual trash tool.
     private View deleteSheet;
@@ -362,21 +363,19 @@ public final class FqrController {
         showOverlay(name, pendingArchive);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
             @Override public void onProgress(int percent, long speed) {
-                if (overlayPaused) {   // resumed: back to normal
-                    overlayPaused = false;
-                    if (overlayPause != null) overlayPause.setText(R.string.k2go_dl_pause);
+                if (overlayStopped) {   // retried/running again: back to normal
+                    overlayStopped = false;
+                    if (overlayStop != null) overlayStop.setText(R.string.k2go_clone_stop_confirm);
                 }
                 updateOverlay(percent, speed);
             }
             @Override public void onPaused(int percent) {
-                overlayPaused = true;
-                if (overlayPause != null) overlayPause.setText(R.string.k2go_dl_resume);
-                if (overlayPct != null) overlayPct.setText(str(R.string.k2go_dl_paused_notif)
-                        + (percent >= 0 ? "  ·  " + str(R.string.k2go_fqr_percent, percent) : ""));
-                if (overlayBar != null && percent >= 0) {
-                    if (overlayBar.isIndeterminate()) setBarMode(false);
-                    overlayBar.setProgressCompat(percent, true);
-                }
+                // Server phase is 'paused', but with no checkpoint this is a full stop: show "Stopped"
+                // and offer Retry (which re-extracts from 0). No percent -- it would imply a resume
+                // point that doesn't exist.
+                overlayStopped = true;
+                if (overlayStop != null) overlayStop.setText(R.string.k2go_dl_retry);
+                if (overlayPct != null) overlayPct.setText(R.string.k2go_card_stopped);
             }
             @Override public void onDone() {
                 updateOverlay(100, 0);
@@ -436,14 +435,14 @@ public final class FqrController {
         overlayPct.setText(R.string.k2go_fqr_starting);
         M3Text.apply(overlayPct, com.google.android.material.R.style.TextAppearance_Material3_BodyMedium, cOnSurfaceVariant);
         row.addView(overlayPct, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
-        // ADFA-4894: Pause/Resume beside Cancel. The button label follows the reported state; the tap
-        // fires the matching verb and the poll (onPaused/onProgress) is the source of truth.
-        overlayPaused = false;
-        overlayPause = new MaterialButton(themed, null,
+        // ADFA-4896: Stop/Retry beside Cancel. The label follows the reported state; the tap fires the
+        // matching verb and the poll (onPaused/onProgress) is the source of truth.
+        overlayStopped = false;
+        overlayStop = new MaterialButton(themed, null,
                 com.google.android.material.R.attr.materialButtonOutlinedStyle);
-        overlayPause.setText(R.string.k2go_dl_pause);
-        overlayPause.setOnClickListener(v -> togglePause());
-        row.addView(overlayPause);
+        overlayStop.setText(R.string.k2go_clone_stop_confirm);
+        overlayStop.setOnClickListener(v -> toggleStop());
+        row.addView(overlayStop);
         MaterialButton cancel = new MaterialButton(themed, null,
                 com.google.android.material.R.attr.materialButtonOutlinedStyle);
         cancel.setText(R.string.k2go_cancel);
@@ -460,13 +459,14 @@ public final class FqrController {
         activity.addContentView(overlay, params);
     }
 
-    /** ADFA-4894: fire pause or resume based on the last reported state; the poll callbacks
-     *  (onPaused / onProgress) then reconcile the label and the status line. The optimistic flip
-     *  here just gives instant feedback on the tap. */
-    private void togglePause() {
-        if (overlayPaused) client.resume(); else client.pause();
-        overlayPaused = !overlayPaused;
-        if (overlayPause != null) overlayPause.setText(overlayPaused ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
+    /** ADFA-4896: Stop the extract, or Retry (restart) a stopped one, based on the last reported
+     *  state. Drives the server pause/resume endpoints — resume re-extracts from 0 (no maps
+     *  checkpoint), which is why it reads as Retry, not Resume. The poll (onPaused/onProgress)
+     *  reconciles; the optimistic flip here just gives instant feedback on the tap. */
+    private void toggleStop() {
+        if (overlayStopped) client.resume(); else client.pause();
+        overlayStopped = !overlayStopped;
+        if (overlayStop != null) overlayStop.setText(overlayStopped ? R.string.k2go_dl_retry : R.string.k2go_clone_stop_confirm);
     }
 
     private void toggleMinimize() {
@@ -517,9 +517,9 @@ public final class FqrController {
         ViewGroup parent = (ViewGroup) overlay.getParent();
         if (parent != null) parent.removeView(overlay);
         overlay = null; overlayBar = null; overlayPct = null; overlayTitle = null; overlayMin = null;
-        overlayPause = null;
+        overlayStop = null;
         overlayMinimized = false;
-        overlayPaused = false;
+        overlayStopped = false;
     }
 
     // ---- Delete: unified list bottom-sheet + manual capture ----------------------------------
