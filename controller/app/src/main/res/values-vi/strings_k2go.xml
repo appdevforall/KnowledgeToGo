@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Tải xuống đang chờ</string>
     <string name="k2go_settings_pending_count">%d trong hàng đợi</string>
     <string name="k2go_settings_pending_none">Không có</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Cài đặt ngay?</string>
+    <string name="k2go_install_confirm_body">Nội dung này được cài đặt trên thiết bị của bạn khi máy chủ tạm dừng.\n\n• Mất một lúc, thường là hàng chục phút.\n• Giữ kết nối ổn định nếu có thể.\n• Đảm bảo đủ pin trước khi bắt đầu.\n• Màn hình này vẫn mở cho đến khi hoàn tất.</string>
+    <string name="k2go_install_confirm_go">Cài đặt</string>
+    <string name="k2go_install_confirm_cancel">Để sau</string>
 </resources>

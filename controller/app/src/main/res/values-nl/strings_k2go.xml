@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Downloads in wachtrij</string>
     <string name="k2go_settings_pending_count">%d in wachtrij</string>
     <string name="k2go_settings_pending_none">Geen</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Nu installeren?</string>
+    <string name="k2go_install_confirm_body">Dit wordt op je apparaat geïnstalleerd terwijl de server is gepauzeerd.\n\n• Duurt even, vaak tientallen minuten.\n• Houd indien mogelijk een stabiele verbinding.\n• Zorg voor voldoende batterij voordat je begint.\n• Dit scherm blijft open tot het klaar is.</string>
+    <string name="k2go_install_confirm_go">Installeren</string>
+    <string name="k2go_install_confirm_cancel">Niet nu</string>
 </resources>

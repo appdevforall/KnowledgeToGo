@@ -833,4 +833,9 @@
     <string name="k2go_settings_pending">Oczekujące pobierania</string>
     <string name="k2go_settings_pending_count">%d w kolejce</string>
     <string name="k2go_settings_pending_none">Brak</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Zainstalować teraz?</string>
+    <string name="k2go_install_confirm_body">Instalacja odbywa się na Twoim urządzeniu przy wstrzymanym serwerze.\n\n• Trwa to chwilę, często kilkadziesiąt minut.\n• W miarę możliwości utrzymuj stabilne połączenie.\n• Zadbaj o wystarczający poziom baterii przed rozpoczęciem.\n• Ten ekran pozostaje otwarty do zakończenia.</string>
+    <string name="k2go_install_confirm_go">Zainstaluj</string>
+    <string name="k2go_install_confirm_cancel">Nie teraz</string>
 </resources>

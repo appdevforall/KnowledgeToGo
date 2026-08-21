@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Чакащи изтегляния</string>
     <string name="k2go_settings_pending_count">%d в опашка</string>
     <string name="k2go_settings_pending_none">Няма</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Инсталиране сега?</string>
+    <string name="k2go_install_confirm_body">Инсталира се на вашето устройство със спрян сървър.\n\n• Отнема известно време, често десетки минути.\n• Ако е възможно, поддържайте стабилна връзка.\n• Уверете се, че имате достатъчно батерия преди да започнете.\n• Този екран остава отворен до приключване.</string>
+    <string name="k2go_install_confirm_go">Инсталиране</string>
+    <string name="k2go_install_confirm_cancel">Не сега</string>
 </resources>

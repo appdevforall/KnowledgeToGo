@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Unduhan tertunda</string>
     <string name="k2go_settings_pending_count">%d dalam antrean</string>
     <string name="k2go_settings_pending_none">Tidak ada</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Pasang sekarang?</string>
+    <string name="k2go_install_confirm_body">Ini dipasang di perangkat Anda saat server dijeda.\n\n• Perlu waktu, sering kali puluhan menit.\n• Jaga koneksi tetap stabil jika bisa.\n• Pastikan baterai cukup sebelum memulai.\n• Layar ini tetap terbuka sampai selesai.</string>
+    <string name="k2go_install_confirm_go">Pasang</string>
+    <string name="k2go_install_confirm_cancel">Nanti saja</string>
 </resources>

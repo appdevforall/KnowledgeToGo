@@ -823,4 +823,9 @@
     <string name="k2go_settings_pending">Čekající stahování</string>
     <string name="k2go_settings_pending_count">%d ve frontě</string>
     <string name="k2go_settings_pending_none">Žádné</string>
+    <!-- ADFA-5228: proot install confirmation -->
+    <string name="k2go_install_confirm_title">Nainstalovat nyní?</string>
+    <string name="k2go_install_confirm_body">Instalace proběhne ve vašem zařízení s pozastaveným serverem.\n\n• Chvíli to trvá, často desítky minut.\n• Pokud můžete, udržujte stabilní připojení.\n• Před začátkem mějte dostatek baterie.\n• Tato obrazovka zůstane otevřená až do konce.</string>
+    <string name="k2go_install_confirm_go">Nainstalovat</string>
+    <string name="k2go_install_confirm_cancel">Teď ne</string>
 </resources>
