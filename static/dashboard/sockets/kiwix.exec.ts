@@ -6,6 +6,7 @@
 // kiwix.socket handler, minus the socket/closure lifetime — the job outlives any
 // client (see jobs.ts).
 import { jobs, RunnerContext, CanceledError } from './jobs';
+import { withRetry, Aborted } from './net-retry';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
@@ -19,9 +20,17 @@ const SAFE_ID = /^[A-Za-z0-9._-]+(\/[A-Za-z0-9._-]+)*$/;
 const INDEXER = '/usr/bin/iiab-make-kiwix-lib';
 const SAFETY_BUFFER_BYTES = 5 * 1024 * 1024 * 1024; // keep >=5 GB free
 
-// ADFA-4832 sync note: these aria2 flags mirror the app-side downloader
-// (controller/app/.../Aria2Manager.java) and the Phase 1 socket handler. Keep the
-// three in sync; if you change one, change the others and document any divergence.
+// ADFA-4832 CANONICAL aria2 flag set — mirrored in three places. If you change a flag here,
+// change the others and update this note (nothing enforces it; a silent drift is the risk):
+//   1. this file (REST/dash-node kiwix runner)
+//   2. controller/app/.../Aria2Manager.java (the Android app downloader)
+//   3. the Phase 1 socket handler
+// Shared intent: --continue, --check-integrity, --max-connection-per-server=4, --split, no
+// --lowest-speed-limit. Two DOCUMENTED divergences from the app, both about the retry model:
+//   - retry count: app uses --max-tries=1 (its outer InstallService loop re-drives); REST uses
+//     --max-tries=5 so aria2 absorbs in-flight blips itself (see the outer loop below for the
+//     total-interface-loss case aria2 can't retry).
+//   - timeouts: app 10s/5s (aggressive, its loop re-drives fast); REST 60s/15s (no fast re-drive).
 const ARIA2_ARGS: string[] = [
     '-d', ZIMS_DIR,
     '--continue=true',
@@ -35,12 +44,10 @@ const ARIA2_ARGS: string[] = [
     '--summary-interval=1',
     '--download-result=hide',
     '--async-dns=false',
-    // ADFA-4894 / 4832: reconnect on a transient drop instead of failing the job at the first blip.
-    // DIVERGENCE from the app-side Aria2Manager (--max-tries=1) is deliberate and documented: the app
-    // wraps aria2 in its own outer retry loop (InstallService softAttempts), so it wants aria2 to give
-    // up fast and lets the app re-drive on a changed precondition. The REST engine has no such outer
-    // loop today, so aria2 itself must be the thing that reconnects — hence a higher max-tries here.
-    // retry-wait matches the app (never 0: a 0-wait retry hammers a struggling server).
+    // ADFA-4894: aria2 absorbs in-flight blips itself (retry-wait never 0 — a 0-wait retry hammers a
+    // struggling server). A FULL interface loss (exit 19, DNS can't resolve) is not something aria2
+    // retries, so that case is handled by the outer withRetry loop below, not here. See the canonical
+    // note above for the documented divergence from the app's --max-tries=1 model.
     '--max-tries=5',
     '--retry-wait=5',
     '--timeout=60',
@@ -50,6 +57,17 @@ const ARIA2_ARGS: string[] = [
     '-Z',
     '-j', '5',
 ];
+
+// ADFA-4894: the outer reconnect loop for a FULL interface loss. aria2's --max-tries handles
+// in-flight blips, but when Wi-Fi drops entirely aria2 exits (19 = name resolution failed) and
+// can't retry a name it can't resolve. So we re-run aria2 — which resumes via --continue — on the
+// transient exit codes, across a mobile handoff. NOT retried: 3/4 (not found), 9 (no space), 13
+// (file exists) — those are terminal. Budget ~30s to outlast a Wi-Fi reassociation.
+//   1 unknown · 2 timeout · 6 network · 7 unfinished · 19 DNS · 29 HTTP 503
+const ARIA2_TRANSIENT_EXITS = new Set<number>([1, 2, 6, 7, 19, 29]);
+const KIWIX_DL_TRIES = 5;
+const KIWIX_RETRY_BASE_MS = 2_000;
+const KIWIX_RETRY_MAX_MS = 15_000;
 
 /** Convert an aria2 rate token ("34MiB", "512KiB", "1.2MB") to bytes/sec. */
 function parseRate(token: string): number {
@@ -131,7 +149,7 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     const urls = ids.map((z) => BASE_URL + z);
 
     try {
-        await new Promise<void>((resolve, reject) => {
+        await withRetry(() => new Promise<void>((resolve, reject) => {
             const dl = ctx.spawn('/usr/bin/aria2c', [...ARIA2_ARGS, ...urls]);
             const onData = (buf: Buffer) => {
                 const text = buf.toString();
@@ -148,13 +166,28 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             dl.on('error', reject);
             dl.on('exit', (code, signal) => {
                 if (signal === 'SIGKILL' || ctx.isCanceled()) return reject(new CanceledError());
-                if (code === 0) resolve();
-                else reject(new Error(`aria2 exited with code ${code}`));
+                if (code === 0) return resolve();
+                // Carry the aria2 exit code so the outer loop can tell a transient network failure
+                // (retry, resuming via --continue) from a terminal one (not found / no space).
+                const err = new Error(`aria2 exited with code ${code}`);
+                (err as { code?: number }).code = code ?? -1;
+                reject(err);
             });
+        }), {
+            tries: KIWIX_DL_TRIES,
+            baseMs: KIWIX_RETRY_BASE_MS,
+            maxMs: KIWIX_RETRY_MAX_MS,
+            isCanceled: ctx.isCanceled,
+            isTransient: (e) => ARIA2_TRANSIENT_EXITS.has((e as { code?: number }).code ?? -1),
+            onRetry: ({ attempt, err }) => ctx.log(`[kiwix] reconnect attempt ${attempt} after: ${err instanceof Error ? err.message : String(err)}`),
         });
     } catch (e) {
-        // ADFA-4894: a canceled download leaves nothing half-written.
-        if (e instanceof CanceledError || ctx.isCanceled()) cleanupPartials(files);
+        // ADFA-4894: a canceled download leaves nothing half-written; a real error KEEPS the partial
+        // (+ .aria2) so a later run resumes it via --continue rather than starting from zero.
+        if (e instanceof CanceledError || e instanceof Aborted || ctx.isCanceled()) {
+            cleanupPartials(files);
+            throw new CanceledError();
+        }
         throw e;
     }
 

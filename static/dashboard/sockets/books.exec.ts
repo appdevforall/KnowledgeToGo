@@ -16,7 +16,12 @@ import path from 'path';
 // in-flight fetch (ctx.signal). A Gutenberg EPUB is a few MB, so a failed attempt is
 // re-fetched whole rather than byte-ranged — resume at the item granularity, not the byte.
 const FETCH_TIMEOUT_MS = 60_000;
-const BOOK_TRIES = 4;
+// The retry budget has to outlast a real mobile Wi-Fi drop, not just a sub-second blip: on a
+// device, disabling Wi-Fi and re-associating takes several seconds (measured on ADFA-4894).
+// 6 tries with 1/2/4/8/15s backoff ≈ a 30s window across the handoff, then the item fails.
+const BOOK_TRIES = 6;
+const BOOK_RETRY_BASE_MS = 1_000;
+const BOOK_RETRY_MAX_MS = 15_000;
 
 const CALIBRE_WEB_LOCAL_URL = 'http://127.0.0.1:8083';
 const TMP_DIR = '/tmp/books_downloader/';
@@ -133,6 +138,8 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 }
             }, {
                 tries: BOOK_TRIES,
+                baseMs: BOOK_RETRY_BASE_MS,
+                maxMs: BOOK_RETRY_MAX_MS,
                 signal: ctx.signal,
                 isCanceled: ctx.isCanceled,
                 // Retry network drops and timeouts and 5xx; a 4xx is the server's final word.
