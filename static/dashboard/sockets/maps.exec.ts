@@ -3,8 +3,9 @@
 // Maps runner for the durable job engine: extract a tile region via tile-extract.py.
 // Ported from the Phase 1 maps.socket handler; reuses its box validation. A job item
 // is { name, box, noninteractive? }; deletion stays a separate op (not a long job).
-import { jobs, RunnerContext, CanceledError, JobUpdate } from './jobs';
+import { jobs, RunnerContext, CanceledError, PausedError, classifyStop, JobUpdate } from './jobs';
 import { parseBox } from './maps.socket';
+import { spawn } from 'child_process';
 import path from 'path';
 
 const SCRIPTS_DIR = '/opt/iiab/maps/tile-extract/';
@@ -13,6 +14,29 @@ const EXTRACT_SCRIPT = path.join(SCRIPTS_DIR, 'tile-extract.py');
 const NAME_RE = /^[A-Za-z0-9_-]{1,34}$/;
 
 interface MapItem { name?: string; box?: string; noninteractive?: boolean; }
+
+/** ADFA-4896: run a tile-extract maintenance command to completion, best-effort. Used for the
+ *  stop/cancel cleanup, which must run while the job's own context is being torn down, so it does
+ *  NOT go through ctx.spawn (that child would be killed with the job). Never rejects — a failed
+ *  purge is logged, not fatal. */
+function runMapsCmd(args: string[], log: (l: string) => void): Promise<void> {
+    return new Promise((resolve) => {
+        const p = spawn('sudo', [EXTRACT_SCRIPT, ...args]);
+        p.stdout?.on('data', (d: Buffer) => log(d.toString().trim()));
+        p.stderr?.on('data', (d: Buffer) => log(d.toString().trim()));
+        p.on('error', () => resolve());
+        p.on('exit', () => resolve());
+    });
+}
+
+/** ADFA-4896: discard a region's partial extract and drop it from the catalog. There is no maps
+ *  checkpoint yet, so pause is stop+restart and cancel is remove — both discard the partial so a
+ *  resume/retry re-extracts from a clean slate and nothing half-written is left behind or listed
+ *  in extracts.json. delete on a name that was never written is a harmless no-op. */
+async function purgeRegion(name: string, log: (l: string) => void): Promise<void> {
+    await runMapsCmd(['delete', name], log);
+    await runMapsCmd(['update-json'], log);
+}
 
 const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     const item = (ctx.items[0] ?? {}) as MapItem;
@@ -37,7 +61,10 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     let lastPct = 0;
 
     await new Promise<void>((resolve, reject) => {
-        const p = ctx.spawn('sudo', args, { env: { ...process.env, PYTHONUNBUFFERED: '1' } });
+        // ADFA-4896: detached so `sudo` is a process-group leader and the engine's group-kill takes
+        // the python worker down with it (otherwise pause/cancel only kill the sudo wrapper and the
+        // extract finishes in the background).
+        const p = ctx.spawn('sudo', args, { env: { ...process.env, PYTHONUNBUFFERED: '1' }, detached: true });
         const onData = (buf: Buffer) => {
             const text = buf.toString();
             ctx.log(text.trim());
@@ -57,11 +84,30 @@ const mapsRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
         p.stderr?.on('data', onData);
         p.on('error', reject);
         p.on('exit', (code, signal) => {
-            if (signal === 'SIGKILL' || ctx.isCanceled()) return reject(new CanceledError());
-            if (code === 0) resolve();
-            else reject(new Error(`tile-extract exited with code ${code}`));
+            if (code === 0) return resolve();
+            // Non-zero or killed: could be a pause/cancel (group-killed by the engine) or a real
+            // failure. The catch below classifies it via classifyStop(ctx); this message is only
+            // surfaced for a genuine error.
+            reject(new Error(signal ? `tile-extract killed by ${signal}` : `tile-extract exited with code ${code}`));
         });
+    }).catch(async (e: unknown) => {
+        // ADFA-4896: any non-success purges the partial (no maps checkpoint -> never keep half-work),
+        // then re-throws as pause/cancel/error so the engine records the right terminal phase. On
+        // pause the job is resumable (resume re-extracts clean); on cancel the region is gone.
+        await purgeRegion(name, ctx.log);
+        const stop = classifyStop(ctx);
+        if (stop === 'paused') throw new PausedError();
+        if (stop === 'canceled') throw new CanceledError();
+        throw e;
     });
+
+    // A stop can race in exactly as the extract finishes (code 0). Honor it — purge and stop —
+    // rather than marking done, so a paused/canceled job never leaves a completed region behind.
+    const lateStop = classifyStop(ctx);
+    if (lateStop) {
+        await purgeRegion(name, ctx.log);
+        throw lateStop === 'paused' ? new PausedError() : new CanceledError();
+    }
 
     ctx.update({ phase: 'done', percent: 100 });
 };

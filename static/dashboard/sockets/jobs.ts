@@ -159,7 +159,7 @@ class JobManager {
         const rt = this.runtime.get(id);
         if (rt) {
             rt.canceled = true;
-            for (const p of rt.procs) { try { p.kill('SIGKILL'); } catch { /* already gone */ } }
+            this.killAll(rt);
             try { rt.ac.abort(); } catch { /* ADFA-4894: interrupt an in-flight fetch too */ }
         }
         if (ACTIVE.includes(job.phase)) this.patch(id, { phase: 'canceled' });
@@ -179,7 +179,7 @@ class JobManager {
         const rt = this.runtime.get(id);
         if (rt) {
             rt.paused = true;
-            for (const p of rt.procs) { try { p.kill('SIGKILL'); } catch { /* already gone */ } }
+            this.killAll(rt);
             try { rt.ac.abort(); } catch { /* interrupt an in-flight fetch */ }
         }
         this.patch(id, { phase: 'paused' });
@@ -226,6 +226,21 @@ class JobManager {
         for (const job of stuck) this.launch(job);
     }
 
+    /**
+     * ADFA-4896: SIGKILL a job's children. A runner that shells through a wrapper (e.g. maps via
+     * `sudo`) spawns detached, so the wrapper is a process-group leader; we kill the whole group
+     * (-pid) so the real worker dies with it, not just the wrapper — otherwise the worker is
+     * reparented and runs to completion in the background (the region ends up added even though the
+     * job was canceled). For a non-detached child (kiwix's aria2c), -pid names a group that doesn't
+     * exist and the group kill is a harmless no-op; the direct kill still stops it.
+     */
+    private killAll(rt: { procs: Set<ChildProcess> }): void {
+        for (const p of rt.procs) {
+            try { if (p.pid) process.kill(-p.pid, 'SIGKILL'); } catch { /* no such group / already gone */ }
+            try { p.kill('SIGKILL'); } catch { /* already gone */ }
+        }
+    }
+
     private patch(id: string, patch: JobUpdate): void {
         const cur = this.get(id);
         if (!cur) return;
@@ -256,7 +271,9 @@ class JobManager {
 
         const ctx: RunnerContext = {
             job, items, ids,
-            update: (p) => this.patch(job.id, p),
+            // ADFA-4896: once the job is stopped, drop late updates so a slow-dying process (or a
+            // final progress line racing the kill) can't resurrect the paused/canceled phase.
+            update: (p) => { if (rt.canceled || rt.paused) return; this.patch(job.id, p); },
             isCanceled: () => rt.canceled,
             throwIfCanceled: () => { if (rt.canceled) throw new CanceledError(); },
             isPaused: () => rt.paused,

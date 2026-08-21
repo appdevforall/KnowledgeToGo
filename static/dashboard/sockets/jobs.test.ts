@@ -80,6 +80,29 @@ test('retry re-runs a job that ended in error', async () => {
     assert.equal(attempt, 2);
 });
 
+test('a stopped job ignores late updates (no phase resurrection)', async () => {
+    // Models the maps bug (ADFA-4896): a slow-dying worker emits one more progress line right after
+    // pause. The engine must drop it so the phase stays 'paused' instead of flipping back to active.
+    jobs.registerRunner('kiwix', async (ctx: RunnerContext) => {
+        ctx.update({ phase: 'downloading', percent: 10 });
+        await new Promise<void>((_resolve, reject) => {
+            ctx.signal.addEventListener('abort', () => {
+                ctx.update({ phase: 'downloading', percent: 50 });   // late line after pause
+                reject(new Error('abort'));
+            }, { once: true });
+        }).catch(() => {
+            if (ctx.isPaused()) throw new PausedError();
+            throw new CanceledError();
+        });
+    });
+
+    const job = jobs.create('kiwix', ['wikipedia/late.zim']);
+    await tick();
+    assert.equal(jobs.pause(job.id), true);
+    await tick();
+    assert.equal(jobs.get(job.id)?.phase, 'paused');   // the late 'downloading' update was dropped
+});
+
 test('the verbs no-op outside their phase', async () => {
     jobs.registerRunner('kiwix', async (ctx: RunnerContext) => {
         ctx.update({ phase: 'done', percent: 100 });   // completes immediately
