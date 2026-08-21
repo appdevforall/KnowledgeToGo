@@ -363,10 +363,11 @@ public final class FqrController {
         showOverlay(name, pendingArchive);
         client.download(name, box, new MapsRegionClient.DownloadListener() {
             @Override public void onProgress(int percent, long speed) {
-                if (overlayStopped) {   // retried/running again: back to normal
+                if (overlayStopped) {   // retried/running again: back to Stop
                     overlayStopped = false;
                     if (overlayStop != null) overlayStop.setText(R.string.k2go_clone_stop_confirm);
                 }
+                if (overlayStop != null) overlayStop.setEnabled(true);   // re-enable after a Stop/Retry tap
                 updateOverlay(percent, speed);
             }
             @Override public void onPaused(int percent) {
@@ -374,8 +375,11 @@ public final class FqrController {
                 // and offer Retry (which re-extracts from 0). No percent -- it would imply a resume
                 // point that doesn't exist.
                 overlayStopped = true;
-                if (overlayStop != null) overlayStop.setText(R.string.k2go_dl_retry);
+                if (overlayStop != null) { overlayStop.setText(R.string.k2go_dl_retry); overlayStop.setEnabled(true); }
                 if (overlayPct != null) overlayPct.setText(R.string.k2go_card_stopped);
+                // #2: freeze the bar (determinate, no animation) so it doesn't keep animating under "Stopped".
+                if (overlayBar != null && overlayBar.isIndeterminate()) setBarMode(false);
+                if (overlayBar != null && percent >= 0) overlayBar.setProgressCompat(percent, false);
             }
             @Override public void onDone() {
                 updateOverlay(100, 0);
@@ -459,14 +463,13 @@ public final class FqrController {
         activity.addContentView(overlay, params);
     }
 
-    /** ADFA-4896: Stop the extract, or Retry (restart) a stopped one, based on the last reported
-     *  state. Drives the server pause/resume endpoints — resume re-extracts from 0 (no maps
-     *  checkpoint), which is why it reads as Retry, not Resume. The poll (onPaused/onProgress)
-     *  reconciles; the optimistic flip here just gives instant feedback on the tap. */
+    /** ADFA-4896: fire Stop (server pause) or Retry (server resume — re-extracts from 0, no maps
+     *  checkpoint). The poll (onPaused/onProgress) is the SOLE writer of the label/state; here we only
+     *  fire the verb and disable the button until the next poll confirms, so the label never flickers
+     *  between the tap and the server catching up. */
     private void toggleStop() {
+        if (overlayStop != null) overlayStop.setEnabled(false);
         if (overlayStopped) client.resume(); else client.pause();
-        overlayStopped = !overlayStopped;
-        if (overlayStop != null) overlayStop.setText(overlayStopped ? R.string.k2go_dl_retry : R.string.k2go_clone_stop_confirm);
     }
 
     private void toggleMinimize() {
