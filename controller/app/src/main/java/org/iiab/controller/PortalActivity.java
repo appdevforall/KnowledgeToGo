@@ -82,6 +82,30 @@ public class PortalActivity extends AppCompatActivity {
     private final static int FILECHOOSER_RESULTCODE = 100;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        // ADFA-5051 follow-up: if the dashboard was rebuilt to a NEW version while the app stayed
+        // alive, its served JS/HTML changed under the WebView — clear the cache once and reload so we
+        // don't keep running the old copy. The version comes from a rootfs file read (local,
+        // offline-safe; no network, no proot); onResume is hot, so do the read OFF the main thread and
+        // only touch the WebView back on the UI thread. onCreate sets the baseline synchronously, so
+        // this never fires spuriously on the first resume.
+        AppExecutors.get().io().execute(() -> {
+            final String v = org.iiab.controller.redesign.DashboardVersion.installed(this);
+            if (v == null || v.isEmpty()
+                    || v.equals(org.iiab.controller.redesign.UpdateStatusCache.cacheClearedVersion(this))) {
+                return;
+            }
+            runOnUiThread(() -> {
+                if (webView == null) return;
+                webView.clearCache(true);
+                org.iiab.controller.redesign.UpdateStatusCache.setCacheClearedVersion(this, v);
+                if (webView.getUrl() != null) webView.reload();
+            });
+        });
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_portal);
@@ -91,6 +115,13 @@ public class PortalActivity extends AppCompatActivity {
 
         // 1. Basic WebView configuration
         webView = findViewById(R.id.myWebView);
+        // ADFA-5051 follow-up: start each cold launch with a clean WebView cache so a stale copy of the
+        // box's served JS (e.g. the /maps/ page that drives the FQR controls) can't break in-page
+        // features — offline users can't just know to tap Reload. The box is on the local hotspot, so
+        // refetching is cheap. Record the installed dashboard version as the baseline for onResume.
+        webView.clearCache(true);
+        org.iiab.controller.redesign.UpdateStatusCache.setCacheClearedVersion(
+                this, org.iiab.controller.redesign.DashboardVersion.installed(this));
         // Learn which pdf.js builds the box serves so we can route PDFs per WebView version.
         AppExecutors.get().io().execute(() -> pdfViewerBuilds = PdfViewerCatalog.fetch());
         webView.setGestureLogging(BuildConfig.DEBUG);
