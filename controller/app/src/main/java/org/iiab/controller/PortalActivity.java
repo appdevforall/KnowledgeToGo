@@ -86,15 +86,23 @@ public class PortalActivity extends AppCompatActivity {
         super.onResume();
         // ADFA-5051 follow-up: if the dashboard was rebuilt to a NEW version while the app stayed
         // alive, its served JS/HTML changed under the WebView — clear the cache once and reload so we
-        // don't keep running the old copy. Version is read from the rootfs on disk (local, offline-safe;
-        // no network, no proot). onCreate set the baseline, so the first resume is a no-op.
-        String v = org.iiab.controller.redesign.DashboardVersion.installed(this);
-        if (webView != null && v != null && !v.isEmpty()
-                && !v.equals(org.iiab.controller.redesign.UpdateStatusCache.cacheClearedVersion(this))) {
-            webView.clearCache(true);
-            org.iiab.controller.redesign.UpdateStatusCache.setCacheClearedVersion(this, v);
-            if (webView.getUrl() != null) webView.reload();
-        }
+        // don't keep running the old copy. The version comes from a rootfs file read (local,
+        // offline-safe; no network, no proot); onResume is hot, so do the read OFF the main thread and
+        // only touch the WebView back on the UI thread. onCreate sets the baseline synchronously, so
+        // this never fires spuriously on the first resume.
+        AppExecutors.get().io().execute(() -> {
+            final String v = org.iiab.controller.redesign.DashboardVersion.installed(this);
+            if (v == null || v.isEmpty()
+                    || v.equals(org.iiab.controller.redesign.UpdateStatusCache.cacheClearedVersion(this))) {
+                return;
+            }
+            runOnUiThread(() -> {
+                if (webView == null) return;
+                webView.clearCache(true);
+                org.iiab.controller.redesign.UpdateStatusCache.setCacheClearedVersion(this, v);
+                if (webView.getUrl() != null) webView.reload();
+            });
+        });
     }
 
     @Override
