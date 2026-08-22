@@ -24,12 +24,17 @@ public final class RunroleProgress {
     public static final int LIFTOFF = 5;
     /** Ceiling while running: 95->100 is the finish, reached only via {@link #markComplete()}. */
     public static final int CEIL = 95;
+    /** Warmup tasks (common/dependency tasks before the module's own) to reach {@link #LIFTOFF}. A
+     *  heuristic, not derived from build logs (those run every role, so they don't model a single
+     *  module's short warmup); the bar just needs to creep, not be exact. */
+    public static final int WARMUP_TARGET = 10;
 
     private final Map<String, Integer> indexByName;
     private final int total;
     private int furthest = -1;
     private boolean complete = false;
     private boolean sawMovement = false;
+    private int warmupTasks = 0;
 
     public RunroleProgress(List<String> orderedTaskNames) {
         this.indexByName = new HashMap<>();
@@ -53,7 +58,11 @@ public final class RunroleProgress {
         String name = taskName(line);
         if (name == null) return;
         Integer idx = indexByName.get(name);
-        if (idx != null && idx > furthest) furthest = idx;
+        if (idx != null) {
+            if (idx > furthest) furthest = idx;
+        } else if (furthest < 0) {
+            warmupTasks++;                      // a pre-module (common/dependency) task: creep the liftoff
+        }
     }
 
     /** Mark the run finished (PLAY RECAP seen, or the process exited ok) so {@link #percent()} is 100. */
@@ -69,7 +78,11 @@ public final class RunroleProgress {
         if (complete) return 100;
         if (total == 0) return 0;                // no table -> caller stays indeterminate
         if (!sawMovement) return 0;              // nothing has run yet
-        if (furthest < 0) return LIFTOFF;        // moving, but no module task reached yet
+        if (furthest < 0) {                      // moving, but no module task reached yet:
+            // creep 1..LIFTOFF across the warmup so the bar isn't flat at the floor.
+            int p = (int) Math.round(LIFTOFF * Math.min(1.0, (double) warmupTasks / WARMUP_TARGET));
+            return Math.max(1, Math.min(LIFTOFF, p));
+        }
         int done = furthest + 1;                 // entering task i means i tasks have been reached
         int pct = LIFTOFF + (int) Math.round(done * (double) (CEIL - LIFTOFF) / total);
         if (pct < LIFTOFF) pct = LIFTOFF;
@@ -83,13 +96,17 @@ public final class RunroleProgress {
     /** Number of known tasks in the table (0 when none). */
     public int total() { return total; }
 
+    /** How many known tasks have been reached so far (0..total) — the ETA uses this to know which
+     *  tasks remain. */
+    public int reached() { return furthest + 1; }
+
     /**
      * Extract the task name from a {@code TASK [role : name] ***} line, or {@code null} if the line
      * isn't a task header. A role-less pre-task ({@code TASK [Gather facts] ***}) yields its bare
      * text, which simply won't be in any module table. Matches how the asset tables were extracted
      * (name = the text after {@code " : "}, up to the first {@code ']'}).
      */
-    static String taskName(String line) {
+    public static String taskName(String line) {
         int open = line.indexOf("TASK [");
         if (open < 0) return null;
         int start = open + 6;

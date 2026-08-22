@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Staging for strings not yet translated. translatable="false" so MissingTranslation doesn't fail
+     while the feature is in progress. When it lands, MOVE these into strings_k2go.xml (dropping
+     translatable="false") so they enter the translation pipeline. Keep this file a temporary holder. -->
+<resources>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min" translatable="false">under a min</string>
+    <string name="k2go_eta_minutes_fmt" translatable="false">~%1$d min</string>
+</resources>

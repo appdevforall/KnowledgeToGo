@@ -10,9 +10,8 @@ import java.util.Collections;
 import org.junit.Test;
 
 /**
- * Unit tests for {@link RunroleProgress} — the ADFA-5228 determinate-progress signal derived from
- * matching Ansible {@code TASK [role : name]} lines against an ordered task table, mapped onto a
- * 5% liftoff / 95% ceiling band (100 only on completion).
+ * Unit tests for {@link RunroleProgress} — the ADFA-5228 determinate signal: a 0..5% warmup creep
+ * (common/dependency tasks), the module's known tasks over 5..95%, and 100% only on completion.
  */
 public class RunroleProgressTest {
 
@@ -30,10 +29,29 @@ public class RunroleProgressTest {
     }
 
     @Test
-    public void liftsToFiveOnFirstMovementBeforeAnyKnownTask() {
+    public void firstMovementCreepsToOne() {
         RunroleProgress p = four();
-        p.observe("changed: [127.0.0.1] => (item=something)");   // output, but not a known task yet
-        assertEquals(RunroleProgress.LIFTOFF, p.percent());       // 5
+        p.observe("ok: [127.0.0.1]");        // output, but not a task header -> just "moving"
+        assertEquals(1, p.percent());
+    }
+
+    @Test
+    public void warmupTasksCreepTowardLiftoff() {
+        RunroleProgress p = four();
+        for (int i = 0; i < 4; i++) p.observe(task("m", "warmup " + i));   // 4/10 of the way
+        assertEquals(2, p.percent());                                      // round(5 * 4/10) = 2
+        for (int i = 0; i < 10; i++) p.observe(task("m", "warmup x" + i)); // well past target
+        assertEquals(RunroleProgress.LIFTOFF, p.percent());                // capped at 5
+    }
+
+    @Test
+    public void firstKnownTaskLeavesWarmupForTheBand() {
+        RunroleProgress p = four();
+        p.observe(task("m", "warmup 1"));
+        p.observe(task("m", "warmup 2"));
+        assertTrue(p.percent() < RunroleProgress.LIFTOFF);   // still warming up
+        p.observe(task("m", "a"));                            // first module task
+        assertEquals(28, p.percent());                        // jumps into the 5..95 band
     }
 
     @Test
@@ -71,14 +89,6 @@ public class RunroleProgressTest {
         assertEquals(73, p.percent());
         p.observe(task("m", "a"));   // a late/earlier task must not lower the bar
         assertEquals(73, p.percent());
-    }
-
-    @Test
-    public void unknownTasksStayAtLiftoff() {
-        RunroleProgress p = four();
-        p.observe(task("m", "not-in-table"));
-        p.observe(task("m", "Gather facts"));
-        assertEquals(RunroleProgress.LIFTOFF, p.percent());   // moved, but no known task -> 5
     }
 
     @Test
