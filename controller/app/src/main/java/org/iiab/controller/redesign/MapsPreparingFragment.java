@@ -62,7 +62,7 @@ public class MapsPreparingFragment extends Fragment {
     private TextView status;
     private View progressRow;                                                                 // ADFA-5228
     private com.google.android.material.progressindicator.LinearProgressIndicator progress;
-    private TextView progressPct;
+    private TextView progressPct, progressEta;
     private boolean fromIndex = false;  // ADFA-4901: hosted by the Finishing-setup index (observe only)
     private boolean launched = false;   // ADFA-4900: guard against re-launching maps on view recreation
 
@@ -88,6 +88,7 @@ public class MapsPreparingFragment extends Fragment {
         progressRow = root.findViewById(R.id.k2go_prep_progress_row);   // ADFA-5228
         progress = root.findViewById(R.id.k2go_prep_progress);
         progressPct = root.findViewById(R.id.k2go_prep_progress_pct);
+        progressEta = root.findViewById(R.id.k2go_prep_progress_eta);
 
         // ADFA-4919: the fromIndex=false branch below is the DEPRECATED standalone Get More route
         // (its own "Run in background", no index, no gate). Get More now routes through the install
@@ -129,6 +130,7 @@ public class MapsPreparingFragment extends Fragment {
                 if (showBar) {
                     progress.setProgressCompat(st.percent, true);
                     progressPct.setText(st.percent + "%");
+                    progressEta.setText(org.iiab.controller.install.presentation.EtaText.of(requireContext(), st.etaSeconds));
                 }
             }
             if (st.phase == ModuleQueueState.Phase.RUNNING) {
