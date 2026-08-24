@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">يتم التثبيت على جهازك مع إيقاف الخادم مؤقتًا.\n\n• يستغرق بعض الوقت، غالبًا عشرات الدقائق.\n• حافظ على اتصال مستقر إن أمكن.\n• تأكد من وجود بطارية كافية قبل البدء.\n• تظل هذه الشاشة مفتوحة حتى الانتهاء.</string>
     <string name="k2go_install_confirm_go">تثبيت</string>
     <string name="k2go_install_confirm_cancel">ليس الآن</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">أقل من دقيقة</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d دقيقة</string>
 </resources>

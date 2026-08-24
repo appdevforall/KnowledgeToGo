@@ -838,4 +838,7 @@
     <string name="k2go_install_confirm_body">Diegiama jūsų įrenginyje, kai serveris pristabdytas.\n\n• Užtrunka kurį laiką, dažnai kelias dešimtis minučių.\n• Jei galite, palaikykite stabilų ryšį.\n• Prieš pradėdami įsitikinkite, kad pakanka baterijos.\n• Šis ekranas lieka atidarytas iki pabaigos.</string>
     <string name="k2go_install_confirm_go">Įdiegti</string>
     <string name="k2go_install_confirm_cancel">Ne dabar</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">mažiau nei 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

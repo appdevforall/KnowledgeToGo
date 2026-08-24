@@ -838,4 +838,7 @@
     <string name="k2go_install_confirm_body">Instalacja odbywa się na Twoim urządzeniu przy wstrzymanym serwerze.\n\n• Trwa to chwilę, często kilkadziesiąt minut.\n• W miarę możliwości utrzymuj stabilne połączenie.\n• Zadbaj o wystarczający poziom baterii przed rozpoczęciem.\n• Ten ekran pozostaje otwarty do zakończenia.</string>
     <string name="k2go_install_confirm_go">Zainstaluj</string>
     <string name="k2go_install_confirm_cancel">Nie teraz</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">mniej niż 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

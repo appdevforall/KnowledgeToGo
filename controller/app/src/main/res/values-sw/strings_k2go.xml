@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">Hii inasakinishwa kwenye kifaa chako huku seva ikiwa imesitishwa.\n\n• Huchukua muda, mara nyingi makumi ya dakika.\n• Dumisha muunganisho thabiti ikiwezekana.\n• Hakikisha una betri ya kutosha kabla ya kuanza.\n• Skrini hii inabaki wazi hadi imalize.</string>
     <string name="k2go_install_confirm_go">Sakinisha</string>
     <string name="k2go_install_confirm_cancel">Si sasa</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">chini ya dakika 1</string>
+    <string name="k2go_eta_minutes_fmt">~dakika %1$d</string>
 </resources>
