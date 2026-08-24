@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">Bu, sunucu duraklatılmışken cihazınıza kurulur.\n\n• Bir süre alır, genellikle onlarca dakika.\n• Mümkünse kararlı bir bağlantı koruyun.\n• Başlamadan önce yeterli pil olduğundan emin olun.\n• Bu ekran bitene kadar açık kalır.</string>
     <string name="k2go_install_confirm_go">Kur</string>
     <string name="k2go_install_confirm_cancel">Şimdi değil</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">1 dk\'dan az</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d dk</string>
 </resources>

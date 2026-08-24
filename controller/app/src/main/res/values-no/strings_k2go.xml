@@ -838,4 +838,7 @@
     <string name="k2go_install_confirm_body">Dette installeres på enheten din mens serveren er satt på pause.\n\n• Tar en stund, ofte titalls minutter.\n• Hold en stabil tilkobling hvis du kan.\n• Sørg for nok batteri før du starter.\n• Denne skjermen forblir åpen til den er ferdig.</string>
     <string name="k2go_install_confirm_go">Installer</string>
     <string name="k2go_install_confirm_cancel">Ikke nå</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">under 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

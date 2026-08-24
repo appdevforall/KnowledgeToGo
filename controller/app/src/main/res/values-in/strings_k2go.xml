@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">Ini dipasang di perangkat Anda saat server dijeda.\n\n• Perlu waktu, sering kali puluhan menit.\n• Jaga koneksi tetap stabil jika bisa.\n• Pastikan baterai cukup sebelum memulai.\n• Layar ini tetap terbuka sampai selesai.</string>
     <string name="k2go_install_confirm_go">Pasang</string>
     <string name="k2go_install_confirm_cancel">Nanti saja</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">kurang dari 1 mnt</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d mnt</string>
 </resources>

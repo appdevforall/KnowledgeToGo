@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">这将在服务器暂停的情况下安装到你的设备上。\n\n• 需要一些时间，通常几十分钟。\n• 如有可能，请保持网络稳定。\n• 开始前请确保电量充足。\n• 此界面会一直打开，直到完成。</string>
     <string name="k2go_install_confirm_go">安装</string>
     <string name="k2go_install_confirm_cancel">暂不</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">不到 1 分钟</string>
+    <string name="k2go_eta_minutes_fmt">约 %1$d 分钟</string>
 </resources>

@@ -911,4 +911,7 @@
     <string name="k2go_install_confirm_body">This installs on your device with the server paused.\n\n• Takes a while — often tens of minutes.\n• Keep a stable connection if you can.\n• Have enough battery before you start.\n• This screen stays open until it finishes.</string>
     <string name="k2go_install_confirm_go">Install</string>
     <string name="k2go_install_confirm_cancel">Not now</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">under a min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

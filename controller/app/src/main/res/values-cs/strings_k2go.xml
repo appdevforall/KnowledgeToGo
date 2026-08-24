@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">Instalace proběhne ve vašem zařízení s pozastaveným serverem.\n\n• Chvíli to trvá, často desítky minut.\n• Pokud můžete, udržujte stabilní připojení.\n• Před začátkem mějte dostatek baterie.\n• Tato obrazovka zůstane otevřená až do konce.</string>
     <string name="k2go_install_confirm_go">Nainstalovat</string>
     <string name="k2go_install_confirm_cancel">Teď ne</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">méně než 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>
