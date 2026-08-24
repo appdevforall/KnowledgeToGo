@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">서버가 일시 중지된 상태에서 기기에 설치됩니다.\n\n• 시간이 걸리며, 보통 수십 분입니다.\n• 가능하면 안정적인 연결을 유지하세요.\n• 시작하기 전에 배터리가 충분한지 확인하세요.\n• 완료될 때까지 이 화면은 열려 있습니다.</string>
     <string name="k2go_install_confirm_go">설치</string>
     <string name="k2go_install_confirm_cancel">나중에</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">1분 미만</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d분</string>
 </resources>

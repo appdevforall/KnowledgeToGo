@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">Dit wordt op je apparaat geïnstalleerd terwijl de server is gepauzeerd.\n\n• Duurt even, vaak tientallen minuten.\n• Houd indien mogelijk een stabiele verbinding.\n• Zorg voor voldoende batterij voordat je begint.\n• Dit scherm blijft open tot het klaar is.</string>
     <string name="k2go_install_confirm_go">Installeren</string>
     <string name="k2go_install_confirm_cancel">Niet nu</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">minder dan 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

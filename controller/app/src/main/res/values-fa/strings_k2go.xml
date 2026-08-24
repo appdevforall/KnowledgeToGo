@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">این روی دستگاه شما و با سرور متوقف‌شده نصب می‌شود.\n\n• کمی طول می‌کشد، اغلب ده‌ها دقیقه.\n• در صورت امکان اتصال پایدار داشته باشید.\n• پیش از شروع از کافی بودن باتری مطمئن شوید.\n• این صفحه تا پایان کار باز می‌ماند.</string>
     <string name="k2go_install_confirm_go">نصب</string>
     <string name="k2go_install_confirm_cancel">حالا نه</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">کمتر از ۱ دقیقه</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d دقیقه</string>
 </resources>

@@ -828,4 +828,7 @@
     <string name="k2go_install_confirm_body">यह सर्वर रुका होने पर आपके डिवाइस पर इंस्टॉल होता है।\n\n• इसमें समय लगता है, अक्सर दसियों मिनट।\n• हो सके तो स्थिर कनेक्शन बनाए रखें।\n• शुरू करने से पहले पर्याप्त बैटरी रखें।\n• यह स्क्रीन पूरा होने तक खुली रहती है।</string>
     <string name="k2go_install_confirm_go">इंस्टॉल करें</string>
     <string name="k2go_install_confirm_cancel">अभी नहीं</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">1 मिनट से कम</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d मिनट</string>
 </resources>

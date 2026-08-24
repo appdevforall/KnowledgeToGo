@@ -4,7 +4,8 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4879. App-side client for in-app FQR (Full-Quality Region) maps, talking to
- *               the durable REST job engine on the box (nginx localhost:8085 -> Node :4000, /api).
+ *               the durable REST job engine on the box via BoxEndpoints.API (nginx :8085 /k2go-api
+ *               -> Node :4000 /api; the paths below are the Node routes that base resolves to).
  *               Mirrors RestContentClient (start a job, then POLL its structured status ~1s), but
  *               for the maps contract added in static/dashboard/routes.ts:
  *                 POST /api/maps/estimate {box}              -> { transfer, archive, free, free_after }

@@ -51,7 +51,7 @@ public class ModuleInstallFragment extends Fragment {
     private TextView status, logText, logLabel;
     private View progressRow;                                                                 // ADFA-5228
     private com.google.android.material.progressindicator.LinearProgressIndicator progress;
-    private TextView progressPct;
+    private TextView progressPct, progressEta;
     private ScrollView logScroll;
     private ImageView logChevron;
     private boolean logExpanded = false;
@@ -73,6 +73,7 @@ public class ModuleInstallFragment extends Fragment {
         progressRow = root.findViewById(R.id.k2go_modinst_progress_row);   // ADFA-5228
         progress = root.findViewById(R.id.k2go_modinst_progress);
         progressPct = root.findViewById(R.id.k2go_modinst_progress_pct);
+        progressEta = root.findViewById(R.id.k2go_modinst_progress_eta);
         logLabel = root.findViewById(R.id.k2go_modinst_log_label);
         // ADFA-5074: the key is passed so a module that earns its own art can be matched.
         org.iiab.controller.util.ProgressVisuals.applyForModule(root, key);
@@ -120,6 +121,7 @@ public class ModuleInstallFragment extends Fragment {
             if (showBar) {
                 progress.setProgressCompat(mq.percent, true);
                 progressPct.setText(mq.percent + "%");
+                progressEta.setText(org.iiab.controller.install.presentation.EtaText.of(requireContext(), mq.etaSeconds));
             }
         }
 
