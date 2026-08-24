@@ -200,10 +200,14 @@ public class BooksLandingFragment extends Fragment {
         t.setText(text);
         t.setPadding(px(14), px(8), px(14), px(8));
         t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        // ADFA-4910: white on the selected (teal) chip — same as MapsChooseFragment. The theme-split
-        // k2go_on_teal could resolve to its dark night value in light mode, killing the contrast.
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? android.R.color.white : R.color.k2go_ink));
+        // ADFA-5248: apply the text appearance FIRST, then the color. TextAppearance_Material3_*
+        // carries its own colorOnSurface, so setting the color before it silently overwrote the chip
+        // color (the real bug the ticket reported: onSurface flips with the theme, giving dark-on-
+        // dark-teal in light mode and light-on-aqua in dark mode — never legible on the teal fill).
+        // With the order fixed, k2go_on_teal sticks: it flips against the fill (light text on the
+        // dark-teal light-mode fill, dark text on the light-aqua dark-mode fill).
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
         t.setClickable(true);
         t.setOnClickListener(v -> onClick.run());
         return t;
@@ -366,18 +370,23 @@ public class BooksLandingFragment extends Fragment {
         return box;
     }
 
-    /** A pill band under the title. A faint white stroke keeps it legible on any cover color. */
+    /**
+     * A state pill under the title. ADFA-5248: the pill is a light (cream) surface so it separates
+     * from ANY of the 6 covers (all medium/dark) — the old colored fill matched the same-hue covers
+     * (green band on a green cover) and vanished. The semantic hue now lives in the TEXT ({@code
+     * colorRes}), which reads darkly on the cream pill.
+     */
     private TextView band(int colorRes, String text) {
         TextView t = new TextView(requireContext());
         t.setText(text);
         t.setGravity(Gravity.CENTER);
         t.setPadding(px(12), px(4), px(12), px(4));
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
-        t.setTextColor(0xFFFFFFFF);
+        t.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
         GradientDrawable d = new GradientDrawable();
-        d.setColor(ContextCompat.getColor(requireContext(), colorRes));
+        d.setColor(ContextCompat.getColor(requireContext(), R.color.k2go_band_surface));
         d.setCornerRadius(px(8));
-        d.setStroke(px(1), 0x4DFFFFFF);
+        d.setStroke(px(1), 0x1A000000);   // subtle dark hairline to define the pill edge on any cover
         t.setBackground(d);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
