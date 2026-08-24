@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Откажи</string>
     <string name="copy_all">Копирај све</string>
     <string name="fix_action">ПОПРАВИ</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Обезбеђује да услуге остану активне када је екран искључен.</string>
     <string name="watchdog_channel_name">K2Go Watchdog услуга</string>
     <string name="install_channel_name">K2Go инсталер</string>
-    <string name="install_channel_desc">Приказује напредак док се Knowledge To Go инсталира.</string>
-    <string name="install_notif_title">Инсталирање Knowledge To Go</string>
+    <string name="install_channel_desc">Приказује напредак док се Knowledge to Go инсталира.</string>
+    <string name="install_notif_title">Инсталирање Knowledge to Go</string>
     <string name="install_notif_cancel">Откажи</string>
     <string name="watchdog_notif_title">K2Go Watchdog активан</string>
     <string name="watchdog_started">Watchdog покренут</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Сачувано</string>
     <string name="settings_saved">Подешавања сачувана</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">покреће App Dev for All</string>
     <string name="setup_manage_all_permissions">Управљај свим дозволама</string>
     <string name="update_dialog_title">Доступна нова верзија: %1$s</string>
     <string name="update_dialog_message">Да ли желите да ажурирате апликацију?\n\nШта је ново:\n%1$s</string>
     <string name="update_dialog_positive">Ажурирај</string>
     <string name="update_dialog_negative">Касније</string>
-    <string name="download_title">Ажурирање Knowledge To Go</string>
+    <string name="download_title">Ажурирање Knowledge to Go</string>
     <string name="download_description">Преузимање нове верзије…</string>
     <string name="download_started_toast">Преузимање започето…</string>
     <string name="ota_toast_checking">Провера ажурирања…</string>

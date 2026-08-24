@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Άκυρο</string>
     <string name="copy_all">Αντιγραφή όλων</string>
     <string name="fix_action">ΔΙΟΡΘΩΣΗ</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Διασφαλίζει ότι οι υπηρεσίες παραμένουν ενεργές όταν η οθόνη είναι σβηστή.</string>
     <string name="watchdog_channel_name">Υπηρεσία Watchdog K2Go</string>
     <string name="install_channel_name">Πρόγραμμα εγκατάστασης K2Go</string>
-    <string name="install_channel_desc">Εμφανίζει την πρόοδο κατά την εγκατάσταση του Knowledge To Go.</string>
-    <string name="install_notif_title">Εγκατάσταση του Knowledge To Go</string>
+    <string name="install_channel_desc">Εμφανίζει την πρόοδο κατά την εγκατάσταση του Knowledge to Go.</string>
+    <string name="install_notif_title">Εγκατάσταση του Knowledge to Go</string>
     <string name="install_notif_cancel">Άκυρο</string>
     <string name="watchdog_notif_title">Το Watchdog K2Go είναι ενεργό</string>
     <string name="watchdog_started">Το Watchdog ξεκίνησε</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Αποθηκεύτηκε</string>
     <string name="settings_saved">Οι ρυθμίσεις αποθηκεύτηκαν</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">Διαχείριση όλων των αδειών</string>
     <string name="update_dialog_title">Διαθέσιμη νέα έκδοση: %1$s</string>
     <string name="update_dialog_message">Θέλετε να ενημερώσετε την εφαρμογή;\n\nΤι νέο υπάρχει:\n%1$s</string>
     <string name="update_dialog_positive">Ενημέρωση</string>
     <string name="update_dialog_negative">Αργότερα</string>
-    <string name="download_title">Ενημέρωση του Knowledge To Go</string>
+    <string name="download_title">Ενημέρωση του Knowledge to Go</string>
     <string name="download_description">Λήψη νέας έκδοσης…</string>
     <string name="download_started_toast">Η λήψη ξεκίνησε…</string>
     <string name="ota_toast_checking">Έλεγχος για ενημερώσεις…</string>

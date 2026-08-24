@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">રદ કરો</string>
     <string name="copy_all">બધું કૉપિ કરો</string>
     <string name="fix_action">ઠીક કરો</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">સ્ક્રીન બંધ હોય ત્યારે સેવાઓ સક્રિય રહે તેની ખાતરી કરે છે.</string>
     <string name="watchdog_channel_name">K2Go Watchdog સેવા</string>
     <string name="install_channel_name">K2Go ઇન્સ્ટૉલર</string>
-    <string name="install_channel_desc">Knowledge To Go ઇન્સ્ટૉલ થઈ રહ્યું હોય ત્યારે પ્રગતિ બતાવે છે.</string>
-    <string name="install_notif_title">Knowledge To Go ઇન્સ્ટૉલ થઈ રહ્યું છે</string>
+    <string name="install_channel_desc">Knowledge to Go ઇન્સ્ટૉલ થઈ રહ્યું હોય ત્યારે પ્રગતિ બતાવે છે.</string>
+    <string name="install_notif_title">Knowledge to Go ઇન્સ્ટૉલ થઈ રહ્યું છે</string>
     <string name="install_notif_cancel">રદ કરો</string>
     <string name="watchdog_notif_title">K2Go Watchdog સક્રિય</string>
     <string name="watchdog_started">Watchdog શરૂ થયું</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">સાચવ્યું</string>
     <string name="settings_saved">સેટિંગ્સ સાચવ્યાં</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">App Dev for All દ્વારા સંચાલિત</string>
     <string name="setup_manage_all_permissions">બધી પરવાનગીઓ મેનેજ કરો</string>
     <string name="update_dialog_title">નવું સંસ્કરણ ઉપલબ્ધ: %1$s</string>
     <string name="update_dialog_message">શું તમે ઍપ્લિકેશન અપડેટ કરવા માગો છો?\n\nનવું શું છે:\n%1$s</string>
     <string name="update_dialog_positive">અપડેટ કરો</string>
     <string name="update_dialog_negative">પછીથી</string>
-    <string name="download_title">Knowledge To Go અપડેટ થઈ રહ્યું છે</string>
+    <string name="download_title">Knowledge to Go અપડેટ થઈ રહ્યું છે</string>
     <string name="download_description">નવું સંસ્કરણ ડાઉનલોડ થઈ રહ્યું છે…</string>
     <string name="download_started_toast">ડાઉનલોડ શરૂ થયું…</string>
     <string name="ota_toast_checking">અપડેટ્સ તપાસી રહ્યું છે…</string>

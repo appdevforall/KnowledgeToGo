@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Отказ</string>
     <string name="copy_all">Копирай всичко</string>
     <string name="fix_action">ПОПРАВИ</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Гарантира, че услугите остават активни при изключен екран.</string>
     <string name="watchdog_channel_name">Услуга Watchdog на K2Go</string>
     <string name="install_channel_name">Инсталатор на K2Go</string>
-    <string name="install_channel_desc">Показва напредъка, докато Knowledge To Go се инсталира.</string>
-    <string name="install_notif_title">Инсталиране на Knowledge To Go</string>
+    <string name="install_channel_desc">Показва напредъка, докато Knowledge to Go се инсталира.</string>
+    <string name="install_notif_title">Инсталиране на Knowledge to Go</string>
     <string name="install_notif_cancel">Отказ</string>
     <string name="watchdog_notif_title">Watchdog на K2Go е активен</string>
     <string name="watchdog_started">Watchdog е стартиран</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Запазено</string>
     <string name="settings_saved">Настройките са запазени</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">осигурено от App Dev for All</string>
     <string name="setup_manage_all_permissions">Управление на всички разрешения</string>
     <string name="update_dialog_title">Налична е нова версия: %1$s</string>
     <string name="update_dialog_message">Искате ли да актуализирате приложението?\n\nКакво е новото:\n%1$s</string>
     <string name="update_dialog_positive">Актуализирай</string>
     <string name="update_dialog_negative">По-късно</string>
-    <string name="download_title">Актуализиране на Knowledge To Go</string>
+    <string name="download_title">Актуализиране на Knowledge to Go</string>
     <string name="download_description">Изтегляне на новата версия…</string>
     <string name="download_started_toast">Изтеглянето започна…</string>
     <string name="ota_toast_checking">Проверка за актуализации…</string>

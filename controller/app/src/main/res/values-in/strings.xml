@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Batal</string>
     <string name="copy_all">Salin Semua</string>
     <string name="fix_action">PERBAIKI</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Memastikan layanan tetap aktif saat layar mati.</string>
     <string name="watchdog_channel_name">Layanan Watchdog K2Go</string>
     <string name="install_channel_name">Pemasang K2Go</string>
-    <string name="install_channel_desc">Menampilkan progres saat Knowledge To Go sedang dipasang.</string>
-    <string name="install_notif_title">Memasang Knowledge To Go</string>
+    <string name="install_channel_desc">Menampilkan progres saat Knowledge to Go sedang dipasang.</string>
+    <string name="install_notif_title">Memasang Knowledge to Go</string>
     <string name="install_notif_cancel">Batal</string>
     <string name="watchdog_notif_title">Watchdog K2Go Aktif</string>
     <string name="watchdog_started">Watchdog Dimulai</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Tersimpan</string>
     <string name="settings_saved">Pengaturan Disimpan</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">didukung oleh App Dev for All</string>
     <string name="setup_manage_all_permissions">Kelola Semua Izin</string>
     <string name="update_dialog_title">Versi baru tersedia: %1$s</string>
     <string name="update_dialog_message">Apakah Anda ingin memperbarui aplikasi?\n\nApa yang baru:\n%1$s</string>
     <string name="update_dialog_positive">Perbarui</string>
     <string name="update_dialog_negative">Nanti</string>
-    <string name="download_title">Memperbarui Knowledge To Go</string>
+    <string name="download_title">Memperbarui Knowledge to Go</string>
     <string name="download_description">Mengunduh versi baru…</string>
     <string name="download_started_toast">Unduhan dimulai…</string>
     <string name="ota_toast_checking">Memeriksa pembaruan…</string>

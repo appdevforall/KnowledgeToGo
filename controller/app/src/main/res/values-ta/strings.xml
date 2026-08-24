@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">ரத்துசெய்</string>
     <string name="copy_all">அனைத்தையும் நகலெடு</string>
     <string name="fix_action">சரிசெய்</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">திரை அணைந்திருக்கும்போது சேவைகள் செயலில் இருப்பதை உறுதிசெய்கிறது.</string>
     <string name="watchdog_channel_name">K2Go Watchdog சேவை</string>
     <string name="install_channel_name">K2Go நிறுவி</string>
-    <string name="install_channel_desc">Knowledge To Go நிறுவப்படும்போது முன்னேற்றத்தைக் காட்டுகிறது.</string>
-    <string name="install_notif_title">Knowledge To Go நிறுவுகிறது</string>
+    <string name="install_channel_desc">Knowledge to Go நிறுவப்படும்போது முன்னேற்றத்தைக் காட்டுகிறது.</string>
+    <string name="install_notif_title">Knowledge to Go நிறுவுகிறது</string>
     <string name="install_notif_cancel">ரத்துசெய்</string>
     <string name="watchdog_notif_title">K2Go Watchdog செயலில் உள்ளது</string>
     <string name="watchdog_started">Watchdog தொடங்கியது</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">சேமிக்கப்பட்டது</string>
     <string name="settings_saved">அமைப்புகள் சேமிக்கப்பட்டன</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">அனைத்து அனுமதிகளையும் நிர்வகி</string>
     <string name="update_dialog_title">புதிய பதிப்பு கிடைக்கிறது: %1$s</string>
     <string name="update_dialog_message">பயன்பாட்டைப் புதுப்பிக்க விரும்புகிறீர்களா?\n\nபுதியவை:\n%1$s</string>
     <string name="update_dialog_positive">புதுப்பி</string>
     <string name="update_dialog_negative">பிறகு</string>
-    <string name="download_title">Knowledge To Go ஐப் புதுப்பிக்கிறது</string>
+    <string name="download_title">Knowledge to Go ஐப் புதுப்பிக்கிறது</string>
     <string name="download_description">புதிய பதிப்பைப் பதிவிறக்குகிறது…</string>
     <string name="download_started_toast">பதிவிறக்கம் தொடங்கியது…</string>
     <string name="ota_toast_checking">புதுப்பிப்புகளைச் சரிபார்க்கிறது…</string>

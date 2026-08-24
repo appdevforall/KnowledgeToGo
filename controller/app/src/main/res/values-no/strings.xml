@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Avbryt</string>
     <string name="copy_all">Kopier alt</string>
     <string name="fix_action">FIKS</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Sørger for at tjenester forblir aktive når skjermen er av.</string>
     <string name="watchdog_channel_name">K2Go Watchdog-tjeneste</string>
     <string name="install_channel_name">K2Go-installasjonsprogram</string>
-    <string name="install_channel_desc">Viser fremdrift mens Knowledge To Go installeres.</string>
-    <string name="install_notif_title">Installerer Knowledge To Go</string>
+    <string name="install_channel_desc">Viser fremdrift mens Knowledge to Go installeres.</string>
+    <string name="install_notif_title">Installerer Knowledge to Go</string>
     <string name="install_notif_cancel">Avbryt</string>
     <string name="watchdog_notif_title">K2Go Watchdog aktiv</string>
     <string name="watchdog_started">Watchdog startet</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Lagret</string>
     <string name="settings_saved">Innstillinger lagret</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">drevet av App Dev for All</string>
     <string name="setup_manage_all_permissions">Administrer alle tillatelser</string>
     <string name="update_dialog_title">Ny versjon tilgjengelig: %1$s</string>
     <string name="update_dialog_message">Vil du oppdatere applikasjonen?\n\nHva er nytt:\n%1$s</string>
     <string name="update_dialog_positive">Oppdater</string>
     <string name="update_dialog_negative">Senere</string>
-    <string name="download_title">Oppdaterer Knowledge To Go</string>
+    <string name="download_title">Oppdaterer Knowledge to Go</string>
     <string name="download_description">Laster ned ny versjon…</string>
     <string name="download_started_toast">Nedlasting startet…</string>
     <string name="ota_toast_checking">Ser etter oppdateringer…</string>

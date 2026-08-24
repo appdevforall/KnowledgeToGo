@@ -803,7 +803,7 @@ public class TerminalController {
                 cliStr.append("      shift\n");
                 cliStr.append("      ;;\n");
                 cliStr.append("    -h|--help)\n");
-                cliStr.append("      echo 'Knowledge To Go CLI'\n");
+                cliStr.append("      echo 'Knowledge to Go CLI'\n");
                 cliStr.append("      echo 'Usage: iiab [COMMAND] [OPTIONS]'\n");
                 cliStr.append("      echo 'Commands:'\n");
                 cliStr.append("      echo '  -l, --login        Enter the Debian environment'\n");
@@ -910,7 +910,7 @@ public class TerminalController {
                 // 2. The Mission / Welcome
                 profile.append("echo -e \"Welcome to the native \\033[1;36mK2Go Host Shell\\033[0m.\"\n");
                 profile.append("echo \"\"\n");
-                profile.append("echo -e \"\\033[1mKnowledge To Go\\033[0m will allow millions of\"\n");
+                profile.append("echo -e \"\\033[1mKnowledge to Go\\033[0m will allow millions of\"\n");
                 profile.append("echo \"people worldwide to build their own family\"\n");
                 profile.append("echo \"libraries, inside their own phones!\"\n");
                 profile.append("echo \"\"\n");

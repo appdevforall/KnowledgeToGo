@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
 
     <string name="cancel">Cancelar</string>
     <string name="copy_all">Copiar Tudo</string>
@@ -103,8 +103,8 @@
     <string name="watchdog_channel_desc">Garante que os serviços permaneçam ativos quando a tela estiver desligada.</string>
     <string name="watchdog_channel_name">Serviço K2Go Watchdog</string>
     <string name="install_channel_name">Instalador K2Go</string>
-    <string name="install_channel_desc">Mostra o progresso enquanto o Knowledge To Go é instalado.</string>
-    <string name="install_notif_title">Instalando o Knowledge To Go</string>
+    <string name="install_channel_desc">Mostra o progresso enquanto o Knowledge to Go é instalado.</string>
+    <string name="install_notif_title">Instalando o Knowledge to Go</string>
     <string name="install_notif_cancel">Cancelar</string>
     <string name="watchdog_notif_title">K2Go Watchdog Ativo</string>
     <string name="watchdog_started">Watchdog Iniciado</string>
@@ -149,15 +149,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Salvo</string>
     <string name="settings_saved">Configurações salvas</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
 
     <string name="update_dialog_title">Nova versão disponível: %1$s</string>
     <string name="update_dialog_message">Deseja atualizar o aplicativo?\n\nO que há de novo:\n%1$s</string>
     <string name="update_dialog_positive">Atualizar</string>
     <string name="update_dialog_negative">Mais tarde</string>
-    <string name="download_title">Atualizando Knowledge To Go</string>
+    <string name="download_title">Atualizando Knowledge to Go</string>
     <string name="download_description">Baixando nova versão...</string>
     <string name="download_started_toast">Download iniciado...</string>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
 
     <string name="cancel">Cancel</string>
     <string name="copy_all">Copy All</string>
@@ -114,8 +114,8 @@
     <string name="watchdog_channel_desc">Ensures services remain active when screen is off.</string>
     <string name="watchdog_channel_name">K2Go Watchdog Service</string>
     <string name="install_channel_name">K2Go Installer</string>
-    <string name="install_channel_desc">Shows progress while Knowledge To Go is being installed.</string>
-    <string name="install_notif_title">Installing Knowledge To Go</string>
+    <string name="install_channel_desc">Shows progress while Knowledge to Go is being installed.</string>
+    <string name="install_notif_title">Installing Knowledge to Go</string>
     <string name="install_notif_cancel">Cancel</string>
     <string name="watchdog_notif_title">K2Go Watchdog Active</string>
 
@@ -166,8 +166,8 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Saved</string>
     <string name="settings_saved">Settings Saved</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">Manage All Permissions</string>
 
@@ -176,7 +176,7 @@
     <string name="update_dialog_positive">Update</string>
     <string name="update_dialog_negative">Later</string>
 
-    <string name="download_title">Updating Knowledge To Go</string>
+    <string name="download_title">Updating Knowledge to Go</string>
     <string name="download_description">Downloading new version...</string>
     <string name="download_started_toast">Download started...</string>
 

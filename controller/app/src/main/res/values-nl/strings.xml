@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Annuleren</string>
     <string name="copy_all">Alles kopiëren</string>
     <string name="fix_action">OPLOSSEN</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Zorgt dat services actief blijven wanneer het scherm uit is.</string>
     <string name="watchdog_channel_name">K2Go-watchdogservice</string>
     <string name="install_channel_name">K2Go-installatieprogramma</string>
-    <string name="install_channel_desc">Toont de voortgang terwijl Knowledge To Go wordt geïnstalleerd.</string>
-    <string name="install_notif_title">Knowledge To Go installeren</string>
+    <string name="install_channel_desc">Toont de voortgang terwijl Knowledge to Go wordt geïnstalleerd.</string>
+    <string name="install_notif_title">Knowledge to Go installeren</string>
     <string name="install_notif_cancel">Annuleren</string>
     <string name="watchdog_notif_title">K2Go-watchdog actief</string>
     <string name="watchdog_started">Watchdog gestart</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Opgeslagen</string>
     <string name="settings_saved">Instellingen opgeslagen</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">mogelijk gemaakt door App Dev for All</string>
     <string name="setup_manage_all_permissions">Alle machtigingen beheren</string>
     <string name="update_dialog_title">Nieuwe versie beschikbaar: %1$s</string>
     <string name="update_dialog_message">Wil je de applicatie bijwerken?\n\nWat is er nieuw:\n%1$s</string>
     <string name="update_dialog_positive">Bijwerken</string>
     <string name="update_dialog_negative">Later</string>
-    <string name="download_title">Knowledge To Go bijwerken</string>
+    <string name="download_title">Knowledge to Go bijwerken</string>
     <string name="download_description">Nieuwe versie downloaden…</string>
     <string name="download_started_toast">Download gestart…</string>
     <string name="ota_toast_checking">Controleren op updates…</string>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">İptal</string>
     <string name="copy_all">Tümünü kopyala</string>
     <string name="fix_action">DÜZELT</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Ekran kapalıyken hizmetlerin etkin kalmasını sağlar.</string>
     <string name="watchdog_channel_name">K2Go Watchdog Hizmeti</string>
     <string name="install_channel_name">K2Go Yükleyici</string>
-    <string name="install_channel_desc">Knowledge To Go yüklenirken ilerlemeyi gösterir.</string>
-    <string name="install_notif_title">Knowledge To Go yükleniyor</string>
+    <string name="install_channel_desc">Knowledge to Go yüklenirken ilerlemeyi gösterir.</string>
+    <string name="install_notif_title">Knowledge to Go yükleniyor</string>
     <string name="install_notif_cancel">İptal</string>
     <string name="watchdog_notif_title">K2Go Watchdog etkin</string>
     <string name="watchdog_started">Watchdog başlatıldı</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Kaydedildi</string>
     <string name="settings_saved">Ayarlar kaydedildi</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">App Dev for All tarafından desteklenmektedir</string>
     <string name="setup_manage_all_permissions">Tüm izinleri yönet</string>
     <string name="update_dialog_title">Yeni sürüm mevcut: %1$s</string>
     <string name="update_dialog_message">Uygulamayı güncellemek istiyor musunuz?\n\nYenilikler:\n%1$s</string>
     <string name="update_dialog_positive">Güncelle</string>
     <string name="update_dialog_negative">Daha sonra</string>
-    <string name="download_title">Knowledge To Go güncelleniyor</string>
+    <string name="download_title">Knowledge to Go güncelleniyor</string>
     <string name="download_description">Yeni sürüm indiriliyor…</string>
     <string name="download_started_toast">İndirme başladı…</string>
     <string name="ota_toast_checking">Güncellemeler kontrol ediliyor…</string>

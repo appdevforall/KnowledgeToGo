@@ -1,6 +1,6 @@
 /*
  * File        : SplashActivity.java
- * Description : Branded intro: the K2Go logo and "Knowledge To Go" wordmark fading in on a
+ * Description : Branded intro: the K2Go logo and "Knowledge to Go" wordmark fading in on a
  *               plain background (light/dark by system), then an exit fade to MainActivity.
  * Copyright   : Copyright (c) 2026 AppDevForAll
  */

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Скасувати</string>
     <string name="copy_all">Копіювати все</string>
     <string name="fix_action">ВИПРАВИТИ</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Забезпечує активність служб, коли екран вимкнено.</string>
     <string name="watchdog_channel_name">Служба Watchdog K2Go</string>
     <string name="install_channel_name">Інсталятор K2Go</string>
-    <string name="install_channel_desc">Показує прогрес під час встановлення Knowledge To Go.</string>
-    <string name="install_notif_title">Встановлення Knowledge To Go</string>
+    <string name="install_channel_desc">Показує прогрес під час встановлення Knowledge to Go.</string>
+    <string name="install_notif_title">Встановлення Knowledge to Go</string>
     <string name="install_notif_cancel">Скасувати</string>
     <string name="watchdog_notif_title">Watchdog K2Go активний</string>
     <string name="watchdog_started">Watchdog запущено</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Збережено</string>
     <string name="settings_saved">Налаштування збережено</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">працює на App Dev for All</string>
     <string name="setup_manage_all_permissions">Керувати всіма дозволами</string>
     <string name="update_dialog_title">Доступна нова версія: %1$s</string>
     <string name="update_dialog_message">Бажаєте оновити застосунок?\n\nЩо нового:\n%1$s</string>
     <string name="update_dialog_positive">Оновити</string>
     <string name="update_dialog_negative">Пізніше</string>
-    <string name="download_title">Оновлення Knowledge To Go</string>
+    <string name="download_title">Оновлення Knowledge to Go</string>
     <string name="download_description">Завантаження нової версії…</string>
     <string name="download_started_toast">Завантаження розпочато…</string>
     <string name="ota_toast_checking">Перевірка оновлень…</string>

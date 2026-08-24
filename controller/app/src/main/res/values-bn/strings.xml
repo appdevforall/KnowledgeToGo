@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">বাতিল</string>
     <string name="copy_all">সব কপি করুন</string>
     <string name="fix_action">ঠিক করুন</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">স্ক্রিন বন্ধ থাকলেও পরিষেবাগুলো সক্রিয় থাকা নিশ্চিত করে।</string>
     <string name="watchdog_channel_name">K2Go Watchdog পরিষেবা</string>
     <string name="install_channel_name">K2Go ইনস্টলার</string>
-    <string name="install_channel_desc">Knowledge To Go ইনস্টল হওয়ার সময় অগ্রগতি দেখায়।</string>
-    <string name="install_notif_title">Knowledge To Go ইনস্টল হচ্ছে</string>
+    <string name="install_channel_desc">Knowledge to Go ইনস্টল হওয়ার সময় অগ্রগতি দেখায়।</string>
+    <string name="install_notif_title">Knowledge to Go ইনস্টল হচ্ছে</string>
     <string name="install_notif_cancel">বাতিল</string>
     <string name="watchdog_notif_title">K2Go Watchdog সক্রিয়</string>
     <string name="watchdog_started">Watchdog চালু হয়েছে</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">সংরক্ষিত হয়েছে</string>
     <string name="settings_saved">সেটিংস সংরক্ষিত হয়েছে</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">সমস্ত অনুমতি পরিচালনা করুন</string>
     <string name="update_dialog_title">নতুন সংস্করণ উপলব্ধ: %1$s</string>
     <string name="update_dialog_message">আপনি কি অ্যাপ্লিকেশনটি আপডেট করতে চান?\n\nনতুন কী আছে:\n%1$s</string>
     <string name="update_dialog_positive">আপডেট করুন</string>
     <string name="update_dialog_negative">পরে</string>
-    <string name="download_title">Knowledge To Go আপডেট হচ্ছে</string>
+    <string name="download_title">Knowledge to Go আপডেট হচ্ছে</string>
     <string name="download_description">নতুন সংস্করণ ডাউনলোড হচ্ছে…</string>
     <string name="download_started_toast">ডাউনলোড শুরু হয়েছে…</string>
     <string name="ota_toast_checking">আপডেট পরীক্ষা করা হচ্ছে…</string>

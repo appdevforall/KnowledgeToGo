@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">취소</string>
     <string name="copy_all">모두 복사</string>
     <string name="fix_action">수정</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">화면이 꺼져 있을 때도 서비스가 활성 상태를 유지하도록 합니다.</string>
     <string name="watchdog_channel_name">K2Go 워치독 서비스</string>
     <string name="install_channel_name">K2Go 설치 관리자</string>
-    <string name="install_channel_desc">Knowledge To Go 설치 중 진행 상황을 표시합니다.</string>
-    <string name="install_notif_title">Knowledge To Go 설치 중</string>
+    <string name="install_channel_desc">Knowledge to Go 설치 중 진행 상황을 표시합니다.</string>
+    <string name="install_notif_title">Knowledge to Go 설치 중</string>
     <string name="install_notif_cancel">취소</string>
     <string name="watchdog_notif_title">K2Go 워치독 활성</string>
     <string name="watchdog_started">워치독 시작됨</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">저장됨</string>
     <string name="settings_saved">설정이 저장되었습니다</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">모든 권한 관리</string>
     <string name="update_dialog_title">새 버전 사용 가능: %1$s</string>
     <string name="update_dialog_message">애플리케이션을 업데이트하시겠습니까?\n\n새로운 기능:\n%1$s</string>
     <string name="update_dialog_positive">업데이트</string>
     <string name="update_dialog_negative">나중에</string>
-    <string name="download_title">Knowledge To Go 업데이트 중</string>
+    <string name="download_title">Knowledge to Go 업데이트 중</string>
     <string name="download_description">새 버전 다운로드 중…</string>
     <string name="download_started_toast">다운로드 시작됨…</string>
     <string name="ota_toast_checking">업데이트 확인 중…</string>
