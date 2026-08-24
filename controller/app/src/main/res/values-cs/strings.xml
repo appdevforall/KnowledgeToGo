@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Zrušit</string>
     <string name="copy_all">Kopírovat vše</string>
     <string name="fix_action">OPRAVIT</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Zajišťuje, že služby zůstávají aktivní, když je obrazovka vypnutá.</string>
     <string name="watchdog_channel_name">Služba Watchdog K2Go</string>
     <string name="install_channel_name">Instalační program K2Go</string>
-    <string name="install_channel_desc">Zobrazuje průběh během instalace Knowledge To Go.</string>
-    <string name="install_notif_title">Instalace Knowledge To Go</string>
+    <string name="install_channel_desc">Zobrazuje průběh během instalace Knowledge to Go.</string>
+    <string name="install_notif_title">Instalace Knowledge to Go</string>
     <string name="install_notif_cancel">Zrušit</string>
     <string name="watchdog_notif_title">Watchdog K2Go je aktivní</string>
     <string name="watchdog_started">Watchdog spuštěn</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Uloženo</string>
     <string name="settings_saved">Nastavení uloženo</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">poháněno App Dev for All</string>
     <string name="setup_manage_all_permissions">Spravovat všechna oprávnění</string>
     <string name="update_dialog_title">Dostupná nová verze: %1$s</string>
     <string name="update_dialog_message">Chcete aktualizovat aplikaci?\n\nCo je nového:\n%1$s</string>
     <string name="update_dialog_positive">Aktualizovat</string>
     <string name="update_dialog_negative">Později</string>
-    <string name="download_title">Aktualizace Knowledge To Go</string>
+    <string name="download_title">Aktualizace Knowledge to Go</string>
     <string name="download_description">Stahování nové verze…</string>
     <string name="download_started_toast">Stahování zahájeno…</string>
     <string name="ota_toast_checking">Kontrola aktualizací…</string>

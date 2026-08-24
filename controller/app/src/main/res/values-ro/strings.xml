@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Anulează</string>
     <string name="copy_all">Copiază tot</string>
     <string name="fix_action">REPARĂ</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Asigură că serviciile rămân active când ecranul este stins.</string>
     <string name="watchdog_channel_name">Serviciu Watchdog K2Go</string>
     <string name="install_channel_name">Instalator K2Go</string>
-    <string name="install_channel_desc">Afișează progresul în timp ce Knowledge To Go se instalează.</string>
-    <string name="install_notif_title">Se instalează Knowledge To Go</string>
+    <string name="install_channel_desc">Afișează progresul în timp ce Knowledge to Go se instalează.</string>
+    <string name="install_notif_title">Se instalează Knowledge to Go</string>
     <string name="install_notif_cancel">Anulează</string>
     <string name="watchdog_notif_title">Watchdog K2Go activ</string>
     <string name="watchdog_started">Watchdog pornit</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Salvat</string>
     <string name="settings_saved">Setări salvate</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
     <string name="setup_manage_all_permissions">Gestionează toate permisiunile</string>
     <string name="update_dialog_title">Versiune nouă disponibilă: %1$s</string>
     <string name="update_dialog_message">Dorești să actualizezi aplicația?\n\nNoutăți:\n%1$s</string>
     <string name="update_dialog_positive">Actualizează</string>
     <string name="update_dialog_negative">Mai târziu</string>
-    <string name="download_title">Se actualizează Knowledge To Go</string>
+    <string name="download_title">Se actualizează Knowledge to Go</string>
     <string name="download_description">Se descarcă versiunea nouă…</string>
     <string name="download_started_toast">Descărcare începută…</string>
     <string name="ota_toast_checking">Se verifică actualizările…</string>

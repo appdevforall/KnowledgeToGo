@@ -1,10 +1,10 @@
-# Knowledge To Go (K2Go)
+# Knowledge to Go (K2Go)
 
 > **Status:** Early development. The original Proof of Concept has been **validated**; current work focuses on refactoring K2Go into a well-architected, first-class application that runs, manages, and routes a localized "Internet-in-a-Box" (IIAB) environment directly on an Android device.
 
 ## Overview
 
-Knowledge To Go (K2Go) acts as the **frontend system manager** for the educational ecosystem. It runs a full Debian/IIAB Linux server *inside the phone*, using **Termux** as the execution substrate and shipping native binaries (`proot`, `aria2c`, `tar`, `xz`, `rsync`) as `.so` libraries. It bridges the native Android OS and the Linux subsystem where the actual IIAB services and modules reside.
+Knowledge to Go (K2Go) acts as the **frontend system manager** for the educational ecosystem. It runs a full Debian/IIAB Linux server *inside the phone*, using **Termux** as the execution substrate and shipping native binaries (`proot`, `aria2c`, `tar`, `xz`, `rsync`) as `.so` libraries. It bridges the native Android OS and the Linux subsystem where the actual IIAB services and modules reside.
 
 Instead of requiring users to type commands in a terminal, the app provides a clean, user-friendly graphical interface to deploy, monitor, and control the entire localized server stack.
 

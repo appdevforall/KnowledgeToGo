@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
 
     <string name="cancel">रद्द करें</string>
     <string name="copy_all">सभी कॉपी करें</string>
@@ -103,8 +103,8 @@
     <string name="watchdog_channel_desc">यह सुनिश्चित करता है कि स्क्रीन बंद होने पर सेवाएं सक्रिय रहें।</string>
     <string name="watchdog_channel_name">K2Go वॉचडॉग सेवा</string>
     <string name="install_channel_name">K2Go इंस्टॉलर</string>
-    <string name="install_channel_desc">Knowledge To Go इंस्टॉल होने के दौरान प्रगति दिखाता है।</string>
-    <string name="install_notif_title">Knowledge To Go इंस्टॉल हो रहा है</string>
+    <string name="install_channel_desc">Knowledge to Go इंस्टॉल होने के दौरान प्रगति दिखाता है।</string>
+    <string name="install_notif_title">Knowledge to Go इंस्टॉल हो रहा है</string>
     <string name="install_notif_cancel">रद्द करें</string>
     <string name="watchdog_notif_title">K2Go वॉचडॉग सक्रिय</string>
     <string name="watchdog_started">वॉचडॉग शुरू</string>
@@ -149,15 +149,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">सहेजा गया</string>
     <string name="settings_saved">सेटिंग्स सहेजी गईं</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">powered by App Dev for All</string>
 
     <string name="update_dialog_title">नया संस्करण उपलब्ध है: %1$s</string>
     <string name="update_dialog_message">क्या आप एप्लिकेशन को अपडेट करना चाहते हैं?\n\nनया क्या है:\n%1$s</string>
     <string name="update_dialog_positive">अपडेट करें</string>
     <string name="update_dialog_negative">बाद में</string>
-    <string name="download_title">Knowledge To Go अपडेट हो रहा है</string>
+    <string name="download_title">Knowledge to Go अपडेट हो रहा है</string>
     <string name="download_description">नया संस्करण डाउनलोड हो रहा है...</string>
     <string name="download_started_toast">डाउनलोड शुरू हुआ...</string>
 

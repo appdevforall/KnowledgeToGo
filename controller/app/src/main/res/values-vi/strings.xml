@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Hủy</string>
     <string name="copy_all">Sao chép tất cả</string>
     <string name="fix_action">SỬA</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Đảm bảo các dịch vụ vẫn hoạt động khi màn hình tắt.</string>
     <string name="watchdog_channel_name">Dịch vụ Watchdog K2Go</string>
     <string name="install_channel_name">Trình cài đặt K2Go</string>
-    <string name="install_channel_desc">Hiển thị tiến trình trong khi cài Knowledge To Go.</string>
-    <string name="install_notif_title">Đang cài Knowledge To Go</string>
+    <string name="install_channel_desc">Hiển thị tiến trình trong khi cài Knowledge to Go.</string>
+    <string name="install_notif_title">Đang cài Knowledge to Go</string>
     <string name="install_notif_cancel">Hủy</string>
     <string name="watchdog_notif_title">Watchdog K2Go đang hoạt động</string>
     <string name="watchdog_started">Đã khởi động Watchdog</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Đã lưu</string>
     <string name="settings_saved">Đã lưu cài đặt</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">được cung cấp bởi App Dev for All</string>
     <string name="setup_manage_all_permissions">Quản lý tất cả quyền</string>
     <string name="update_dialog_title">Đã có phiên bản mới: %1$s</string>
     <string name="update_dialog_message">Bạn có muốn cập nhật ứng dụng không?\n\nCó gì mới:\n%1$s</string>
     <string name="update_dialog_positive">Cập nhật</string>
     <string name="update_dialog_negative">Để sau</string>
-    <string name="download_title">Đang cập nhật Knowledge To Go</string>
+    <string name="download_title">Đang cập nhật Knowledge to Go</string>
     <string name="download_description">Đang tải phiên bản mới…</string>
     <string name="download_started_toast">Đã bắt đầu tải xuống…</string>
     <string name="ota_toast_checking">Đang kiểm tra cập nhật…</string>

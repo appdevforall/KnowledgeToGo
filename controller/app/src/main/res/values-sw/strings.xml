@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Ghairi</string>
     <string name="copy_all">Nakili Vyote</string>
     <string name="fix_action">REKEBISHA</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Inahakikisha huduma zinabaki hai skrini ikiwa imezimwa.</string>
     <string name="watchdog_channel_name">Huduma ya Watchdog ya K2Go</string>
     <string name="install_channel_name">Kisakinishi cha K2Go</string>
-    <string name="install_channel_desc">Inaonyesha maendeleo wakati Knowledge To Go inasakinishwa.</string>
-    <string name="install_notif_title">Inasakinisha Knowledge To Go</string>
+    <string name="install_channel_desc">Inaonyesha maendeleo wakati Knowledge to Go inasakinishwa.</string>
+    <string name="install_notif_title">Inasakinisha Knowledge to Go</string>
     <string name="install_notif_cancel">Ghairi</string>
     <string name="watchdog_notif_title">Watchdog ya K2Go Inafanya Kazi</string>
     <string name="watchdog_started">Watchdog Imeanzishwa</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Imehifadhiwa</string>
     <string name="settings_saved">Mipangilio Imehifadhiwa</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">inaendeshwa na App Dev for All</string>
     <string name="setup_manage_all_permissions">Dhibiti Ruhusa Zote</string>
     <string name="update_dialog_title">Toleo jipya linapatikana: %1$s</string>
     <string name="update_dialog_message">Je, unataka kusasisha programu?\n\nMapya:\n%1$s</string>
     <string name="update_dialog_positive">Sasisha</string>
     <string name="update_dialog_negative">Baadaye</string>
-    <string name="download_title">Inasasisha Knowledge To Go</string>
+    <string name="download_title">Inasasisha Knowledge to Go</string>
     <string name="download_description">Inapakua toleo jipya…</string>
     <string name="download_started_toast">Upakuaji umeanza…</string>
     <string name="ota_toast_checking">Inakagua masasisho…</string>

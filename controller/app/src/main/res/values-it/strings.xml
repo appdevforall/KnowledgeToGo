@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Annulla</string>
     <string name="copy_all">Copia tutto</string>
     <string name="fix_action">CORREGGI</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Garantisce che i servizi restino attivi quando lo schermo è spento.</string>
     <string name="watchdog_channel_name">Servizio Watchdog K2Go</string>
     <string name="install_channel_name">Installer K2Go</string>
-    <string name="install_channel_desc">Mostra l\'avanzamento durante l\'installazione di Knowledge To Go.</string>
-    <string name="install_notif_title">Installazione di Knowledge To Go</string>
+    <string name="install_channel_desc">Mostra l\'avanzamento durante l\'installazione di Knowledge to Go.</string>
+    <string name="install_notif_title">Installazione di Knowledge to Go</string>
     <string name="install_notif_cancel">Annulla</string>
     <string name="watchdog_notif_title">Watchdog K2Go attivo</string>
     <string name="watchdog_started">Watchdog avviato</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Salvato</string>
     <string name="settings_saved">Impostazioni salvate</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">con la tecnologia di App Dev for All</string>
     <string name="setup_manage_all_permissions">Gestisci tutte le autorizzazioni</string>
     <string name="update_dialog_title">Nuova versione disponibile: %1$s</string>
     <string name="update_dialog_message">Vuoi aggiornare l\'applicazione?\n\nNovità:\n%1$s</string>
     <string name="update_dialog_positive">Aggiorna</string>
     <string name="update_dialog_negative">Più tardi</string>
-    <string name="download_title">Aggiornamento di Knowledge To Go</string>
+    <string name="download_title">Aggiornamento di Knowledge to Go</string>
     <string name="download_description">Download della nuova versione…</string>
     <string name="download_started_toast">Download avviato…</string>
     <string name="ota_toast_checking">Ricerca di aggiornamenti…</string>

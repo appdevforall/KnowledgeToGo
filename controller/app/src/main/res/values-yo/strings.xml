@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Fagilé</string>
     <string name="copy_all">Ṣ\'àdàkọ gbogbo rẹ̀</string>
     <string name="fix_action">TÚNṢE</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Ó rí i dájú pé àwọn iṣẹ́ ṣì ń ṣiṣẹ́ nígbà tí àwòrán bá pa.</string>
     <string name="watchdog_channel_name">Iṣẹ́ Watchdog K2Go</string>
     <string name="install_channel_name">Olùfisórí ẹ̀rọ K2Go</string>
-    <string name="install_channel_desc">Ó fi ìlọsíwájú hàn nígbà tí a bá ń fi Knowledge To Go sórí ẹ̀rọ.</string>
-    <string name="install_notif_title">Ń fi Knowledge To Go sórí ẹ̀rọ</string>
+    <string name="install_channel_desc">Ó fi ìlọsíwájú hàn nígbà tí a bá ń fi Knowledge to Go sórí ẹ̀rọ.</string>
+    <string name="install_notif_title">Ń fi Knowledge to Go sórí ẹ̀rọ</string>
     <string name="install_notif_cancel">Fagilé</string>
     <string name="watchdog_notif_title">Watchdog K2Go Ń Ṣiṣẹ́</string>
     <string name="watchdog_started">A ti Bẹ̀rẹ̀ Watchdog</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">A ti Fi Pamọ́</string>
     <string name="settings_saved">A ti Fi Àwọn Ìṣàgbékalẹ̀ Pamọ́</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">tí App Dev for All ń mú ṣiṣẹ́</string>
     <string name="setup_manage_all_permissions">Ṣàkóso Gbogbo Àwọn Ìgbàláàyè</string>
     <string name="update_dialog_title">Ẹ̀yà tuntun wà: %1$s</string>
     <string name="update_dialog_message">Ṣé o fẹ́ ṣàtúnṣe app náà?\n\nOhun tuntun:\n%1$s</string>
     <string name="update_dialog_positive">Ṣàtúnṣe</string>
     <string name="update_dialog_negative">Nígbà mìíràn</string>
-    <string name="download_title">Ń ṣàtúnṣe Knowledge To Go</string>
+    <string name="download_title">Ń ṣàtúnṣe Knowledge to Go</string>
     <string name="download_description">Ń gba ẹ̀yà tuntun sílẹ̀…</string>
     <string name="download_started_toast">Ìgbàsílẹ̀ ti bẹ̀rẹ̀…</string>
     <string name="ota_toast_checking">Ń ṣàyẹ̀wò fún àwọn ìṣàtúnṣe…</string>

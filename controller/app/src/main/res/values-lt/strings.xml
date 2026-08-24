@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Atšaukti</string>
     <string name="copy_all">Kopijuoti viską</string>
     <string name="fix_action">TAISYTI</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Užtikrina, kad paslaugos liktų aktyvios, kai ekranas išjungtas.</string>
     <string name="watchdog_channel_name">K2Go Watchdog paslauga</string>
     <string name="install_channel_name">K2Go diegimo įrankis</string>
-    <string name="install_channel_desc">Rodo eigą, kol diegiama Knowledge To Go.</string>
-    <string name="install_notif_title">Diegiama Knowledge To Go</string>
+    <string name="install_channel_desc">Rodo eigą, kol diegiama Knowledge to Go.</string>
+    <string name="install_notif_title">Diegiama Knowledge to Go</string>
     <string name="install_notif_cancel">Atšaukti</string>
     <string name="watchdog_notif_title">K2Go Watchdog aktyvus</string>
     <string name="watchdog_started">Watchdog paleistas</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Išsaugota</string>
     <string name="settings_saved">Nustatymai išsaugoti</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">sukurta App Dev for All</string>
     <string name="setup_manage_all_permissions">Tvarkyti visus leidimus</string>
     <string name="update_dialog_title">Yra nauja versija: %1$s</string>
     <string name="update_dialog_message">Ar norite atnaujinti programą?\n\nKas naujo:\n%1$s</string>
     <string name="update_dialog_positive">Atnaujinti</string>
     <string name="update_dialog_negative">Vėliau</string>
-    <string name="download_title">Atnaujinama Knowledge To Go</string>
+    <string name="download_title">Atnaujinama Knowledge to Go</string>
     <string name="download_description">Atsisiunčiama nauja versija…</string>
     <string name="download_started_toast">Atsisiuntimas pradėtas…</string>
     <string name="ota_toast_checking">Tikrinama, ar yra atnaujinimų…</string>
