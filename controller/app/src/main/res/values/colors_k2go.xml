@@ -49,8 +49,13 @@
     <color name="k2go_cover_4">#B5432E</color>  <!-- clay -->
     <color name="k2go_cover_5">#2E7D4F</color>  <!-- forest -->
     <color name="k2go_cover_6">#4A5568</color>  <!-- slate -->
-    <color name="k2go_band_library">#2E9E5B</color> <!-- green band: already in your books -->
-    <color name="k2go_band_selected">#4A504E</color> <!-- gray band: selected to add -->
+    <!-- ADFA-5248: cover state bands. The band is a light (cream) pill so it reads on ANY of the
+         6 covers above (all medium/dark); the semantic hue lives in the TEXT, not the fill, which
+         is why the old green fill vanished on the green covers. Mode-independent (sits on a fixed
+         cover color), so no -night twin. -->
+    <color name="k2go_band_surface">#FBF8F3</color>  <!-- cream band pill: high contrast on every cover -->
+    <color name="k2go_band_library">#12633C</color>  <!-- band TEXT (dark green): already in your books -->
+    <color name="k2go_band_selected">#3A403E</color> <!-- band TEXT (dark gray): selected to add -->
 
     <!-- ADFA-4886: WebView nav "Exit" tint. Red is the universal alert/exit color; kept fixed in
          both light and dark (no values-night override) so the exit affordance always reads the same. -->
