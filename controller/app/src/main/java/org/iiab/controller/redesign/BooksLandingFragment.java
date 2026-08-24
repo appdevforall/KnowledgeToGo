@@ -200,13 +200,14 @@ public class BooksLandingFragment extends Fragment {
         t.setText(text);
         t.setPadding(px(14), px(8), px(14), px(8));
         t.setBackgroundResource(on ? R.drawable.k2go_chip_bg : R.drawable.k2go_pill_bg);
-        // ADFA-5248: use k2go_on_teal for the selected (teal) chip. It flips with the same DayNight
-        // mechanism as k2go_teal (the chip's own fill), so it resolves per the current mode just like
-        // the fill does: light text on the dark-teal light-mode fill, dark text on the light-aqua
-        // dark-mode fill. The old hardcoded white was legible only in light mode; in dark mode it
-        // washed out on the light-aqua fill (this ticket).
-        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
+        // ADFA-5248: apply the text appearance FIRST, then the color. TextAppearance_Material3_*
+        // carries its own colorOnSurface, so setting the color before it silently overwrote the chip
+        // color (the real bug the ticket reported: onSurface flips with the theme, giving dark-on-
+        // dark-teal in light mode and light-on-aqua in dark mode — never legible on the teal fill).
+        // With the order fixed, k2go_on_teal sticks: it flips against the fill (light text on the
+        // dark-teal light-mode fill, dark text on the light-aqua dark-mode fill).
         t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+        t.setTextColor(ContextCompat.getColor(requireContext(), on ? R.color.k2go_on_teal : R.color.k2go_ink));
         t.setClickable(true);
         t.setOnClickListener(v -> onClick.run());
         return t;
