@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">Zrušiť</string>
     <string name="copy_all">Kopírovať všetko</string>
     <string name="fix_action">OPRAVIŤ</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">Zabezpečuje, že služby zostanú aktívne pri vypnutej obrazovke.</string>
     <string name="watchdog_channel_name">Služba Watchdog K2Go</string>
     <string name="install_channel_name">Inštalátor K2Go</string>
-    <string name="install_channel_desc">Zobrazuje priebeh počas inštalácie Knowledge To Go.</string>
-    <string name="install_notif_title">Inštaluje sa Knowledge To Go</string>
+    <string name="install_channel_desc">Zobrazuje priebeh počas inštalácie Knowledge to Go.</string>
+    <string name="install_notif_title">Inštaluje sa Knowledge to Go</string>
     <string name="install_notif_cancel">Zrušiť</string>
     <string name="watchdog_notif_title">Watchdog K2Go je aktívny</string>
     <string name="watchdog_started">Watchdog spustený</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">Uložené</string>
     <string name="settings_saved">Nastavenia uložené</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">poháňané App Dev for All</string>
     <string name="setup_manage_all_permissions">Spravovať všetky povolenia</string>
     <string name="update_dialog_title">Dostupná nová verzia: %1$s</string>
     <string name="update_dialog_message">Chcete aktualizovať aplikáciu?\n\nČo je nové:\n%1$s</string>
     <string name="update_dialog_positive">Aktualizovať</string>
     <string name="update_dialog_negative">Neskôr</string>
-    <string name="download_title">Aktualizuje sa Knowledge To Go</string>
+    <string name="download_title">Aktualizuje sa Knowledge to Go</string>
     <string name="download_description">Sťahuje sa nová verzia…</string>
     <string name="download_started_toast">Sťahovanie začalo…</string>
     <string name="ota_toast_checking">Kontrolujú sa aktualizácie…</string>

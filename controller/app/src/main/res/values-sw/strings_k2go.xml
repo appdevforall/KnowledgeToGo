@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Anza</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Upakuaji wa intaneti</string>
-    <string name="k2go_just_scan">Skani tu — huhitaji kuandika!</string>
+    <string name="k2go_just_scan">Changanua tu, au tumia hati zifuatazo:</string>
     <string name="k2go_perm_keep_running">Endelea kufanya kazi</string>
     <string name="k2go_connect_subtitle">Ruhusu kifaa cha karibu kivinjari maktaba yako.</string>
     <string name="k2go_perm_nearby_note">Vifaa vya karibu huombwa baadaye, tu wakati wa kushiriki.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Pokea kutoka simu nyingine  ›</string>
     <string name="k2go_clone_sharing_now">INASHIRIKI SASA</string>
     <string name="k2go_clone_scan_enter_text">Skani haikufanya kazi? Weka msimbo kama maandishi  ▸</string>
-    <string name="k2go_clone_scan_show_text">Skani haikufanya kazi? Onyesha msimbo kama maandishi  ▸</string>
+    <string name="k2go_clone_scan_show_text">Onyesha msimbo kama maandishi:</string>
     <string name="k2go_clone_scan_their_codes">Skani misimbo yao ili kupata nakala hapa.</string>
     <string name="k2go_clone_scan_get_app">Skani ili kupata programu</string>
     <string name="k2go_clone_scan_to_join">Skani ili kujiunga</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go haiwezi kukujiunga na mtandao huo — unganisha katika Mipangilio, kisha Endelea.</string>
     <string name="k2go_clone_next_get_app">Ifuatayo: pata programu</string>
     <string name="k2go_clone_nothing_title">Bado hakuna cha kushiriki</string>
-    <string name="k2go_clone_point_camera_join">Elekeza kamera yake hapa ili kujiunga na simu hii.</string>
+    <string name="k2go_clone_point_camera_join">Elekeza kamera yake hapa ili kuunganisha simu hii, au tumia hati zifuatazo</string>
     <string name="k2go_clone_share_anyway">Shiriki hata hivyo</string>
     <string name="k2go_clone_share_wifi_note">Shiriki Wi-Fi hii kutoka Mipangilio, au waambie wajiunge nayo, kisha endelea.</string>
     <string name="k2go_clone_sharing_stopped">Kushiriki kumesimamishwa</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Acha kushiriki</string>
     <string name="k2go_clone_no_library_note">Simu hii haina maktaba ya K2Go iliyosakinishwa. Sakinisha maudhui kwanza, au shiriki hata hivyo.</string>
     <string name="k2go_clone_back_step1">‹ Rudi hatua 1</string>
-    <string name="k2go_connect_readonly">Ufikiaji wa kusoma tu wa maudhui yako.</string>
-    <string name="k2go_connect_scan_open">Skani ili kufungua maktaba</string>
+    <string name="k2go_connect_readonly">Changanua ili kufungua maktaba au tembelea tovuti hii:</string>
+    <string name="k2go_connect_scan_open">Changanua ili kufungua maktaba au tembelea tovuti hii:</string>
     <string name="k2go_connect_same_wifi">Uko kwenye Wi-Fi ileile — msimbo mmoja.</string>
     <string name="k2go_wiki_view_list">Orodha</string>
     <string name="k2go_wiki_view_grouped">Imepangwa kwa vikundi</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">Hii inasakinishwa kwenye kifaa chako huku seva ikiwa imesitishwa.\n\n• Huchukua muda, mara nyingi makumi ya dakika.\n• Dumisha muunganisho thabiti ikiwezekana.\n• Hakikisha una betri ya kutosha kabla ya kuanza.\n• Skrini hii inabaki wazi hadi imalize.</string>
     <string name="k2go_install_confirm_go">Sakinisha</string>
     <string name="k2go_install_confirm_cancel">Si sasa</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">Imenakiliwa</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">chini ya dakika 1</string>
+    <string name="k2go_eta_minutes_fmt">~dakika %1$d</string>
 </resources>

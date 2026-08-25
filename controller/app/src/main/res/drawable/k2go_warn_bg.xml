@@ -4,13 +4,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#C98A1E" />
+            <solid android:color="@color/k2go_amber" />
             <corners android:radius="16dp" />
         </shape>
     </item>
     <item android:left="5dp">
         <shape android:shape="rectangle">
-            <solid android:color="#FBEFD3" />
+            <solid android:color="@color/k2go_warn_container" />
             <corners android:radius="16dp" />
         </shape>
     </item>

@@ -114,7 +114,7 @@
                         android:text="@string/k2go_clone_one_android_step" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceBodyMedium" />
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
                         android:text="@string/k2go_clone_allow_install_note"
-                        android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                        android:textColor="@color/k2go_warn_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -339,7 +339,7 @@
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="@string/k2go_clone_nothing_to_replace" android:textStyle="bold" android:textColor="#1E6B2E" android:textAppearance="?attr/textAppearanceTitleMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                            android:text="@string/k2go_clone_no_library_fresh" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_no_library_fresh" android:textColor="@color/k2go_ok_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
                 </LinearLayout>
                 <TextView android:id="@+id/k2go_rcv_confirm_go" android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -364,20 +364,20 @@
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="@string/k2go_clone_incompat_title" android:textStyle="bold" android:textColor="#8A5A00" android:textAppearance="?attr/textAppearanceTitleMedium" />
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="@string/k2go_clone_for_copying" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                            android:text="@string/k2go_clone_for_copying" android:textColor="@color/k2go_warn_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"
-                            android:text="@string/k2go_clone_incompat_body" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_incompat_body" android:textColor="@color/k2go_warn_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                            android:text="@string/k2go_clone_what_to_do" android:textStyle="bold" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
+                            android:text="@string/k2go_clone_what_to_do" android:textStyle="bold" android:textColor="@color/k2go_warn_ink" android:textAppearance="?attr/textAppearanceBodyMedium" />
                         <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp"
-                            android:text="@string/k2go_clone_get_version_note" android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:text="@string/k2go_clone_get_version_note" android:textColor="@color/k2go_warn_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                         <TextView android:id="@+id/k2go_rcv_incompat_why" android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:layout_marginTop="10dp" android:text="@string/k2go_clone_why_incompat" android:textStyle="bold" android:textColor="#8A5A00"
                             android:textAppearance="?attr/textAppearanceBodyMedium" android:clickable="true" android:focusable="true" />
                         <TextView android:id="@+id/k2go_rcv_incompat_whytext" android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:layout_marginTop="4dp" android:visibility="gone"
                             android:text="@string/k2go_clone_incompat_why_long"
-                            android:textColor="@color/k2go_notice_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
+                            android:textColor="@color/k2go_warn_ink" android:textAppearance="?attr/textAppearanceBodySmall" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -446,10 +446,10 @@
                     android:background="@drawable/k2go_info_bg">
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="@string/k2go_bj_wait_title" android:textStyle="bold"
-                        android:textAppearance="?attr/textAppearanceTitleSmall" android:textColor="@color/k2go_teal" />
+                        android:textAppearance="?attr/textAppearanceTitleSmall" android:textColor="@color/k2go_info_ink" />
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:layout_marginTop="4dp" android:text="@string/k2go_bj_wait_body"
-                        android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal" />
+                        android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_info_ink" />
                 </LinearLayout>
 
                 <TextView android:id="@+id/k2go_clone_cancel" android:layout_width="match_parent" android:layout_height="wrap_content"

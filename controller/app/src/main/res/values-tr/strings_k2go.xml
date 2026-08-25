@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Başlayın</string>
     <string name="k2go_hotspot">Etkin nokta</string>
     <string name="k2go_internet_download">İnternetten indirme</string>
-    <string name="k2go_just_scan">Sadece tarayın — yazmaya gerek yok!</string>
+    <string name="k2go_just_scan">Tarayın ya da aşağıdaki bilgileri kullanın:</string>
     <string name="k2go_perm_keep_running">Çalışır durumda tut</string>
     <string name="k2go_connect_subtitle">Yakındaki bir cihazın kitaplığınıza göz atmasına izin verin.</string>
     <string name="k2go_perm_nearby_note">Yakındaki cihazlar izni daha sonra, yalnızca paylaşırken istenir.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Başka bir telefondan al  ›</string>
     <string name="k2go_clone_sharing_now">ŞİMDİ PAYLAŞILIYOR</string>
     <string name="k2go_clone_scan_enter_text">Tarama işe yaramadı mı? Kodu metin olarak girin  ▸</string>
-    <string name="k2go_clone_scan_show_text">Tarama işe yaramadı mı? Kodu metin olarak göster  ▸</string>
+    <string name="k2go_clone_scan_show_text">Kodu metin olarak göster:</string>
     <string name="k2go_clone_scan_their_codes">Buraya bir kopya almak için kodlarını tarayın.</string>
     <string name="k2go_clone_scan_get_app">Uygulamayı almak için tarayın</string>
     <string name="k2go_clone_scan_to_join">Katılmak için tarayın</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go sizin için o ağa bağlanamaz — Ayarlar\'dan bağlanın, sonra Devam edin.</string>
     <string name="k2go_clone_next_get_app">İleri: uygulamayı edinin</string>
     <string name="k2go_clone_nothing_title">Henüz paylaşılacak bir şey yok</string>
-    <string name="k2go_clone_point_camera_join">Bu telefona bağlanmak için kamerasını buraya doğrultun.</string>
+    <string name="k2go_clone_point_camera_join">Bu telefonu bağlamak için kamerayı buraya doğrultun ya da aşağıdaki bilgileri kullanın</string>
     <string name="k2go_clone_share_anyway">Yine de paylaş</string>
     <string name="k2go_clone_share_wifi_note">Bu Wi-Fi\'yi Ayarlar\'dan paylaşın veya karşı tarafın katılmasını sağlayın, sonra devam edin.</string>
     <string name="k2go_clone_sharing_stopped">Paylaşım durduruldu</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Paylaşımı durdur</string>
     <string name="k2go_clone_no_library_note">Bu telefonda kurulu bir K2Go kitaplığı yok. Önce içerik kurun veya yine de paylaşın.</string>
     <string name="k2go_clone_back_step1">‹ 1. adıma dön</string>
-    <string name="k2go_connect_readonly">İçeriğinize salt okunur erişim.</string>
-    <string name="k2go_connect_scan_open">Kitaplığı açmak için tarayın</string>
+    <string name="k2go_connect_readonly">Kitaplığı açmak için tarayın ya da bu web sitesini ziyaret edin:</string>
+    <string name="k2go_connect_scan_open">Kitaplığı açmak için tarayın ya da bu web sitesini ziyaret edin:</string>
     <string name="k2go_connect_same_wifi">Aynı Wi-Fi\'desiniz — tek kod.</string>
     <string name="k2go_wiki_view_list">Liste</string>
     <string name="k2go_wiki_view_grouped">Gruplu</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">Bu, sunucu duraklatılmışken cihazınıza kurulur.\n\n• Bir süre alır, genellikle onlarca dakika.\n• Mümkünse kararlı bir bağlantı koruyun.\n• Başlamadan önce yeterli pil olduğundan emin olun.\n• Bu ekran bitene kadar açık kalır.</string>
     <string name="k2go_install_confirm_go">Kur</string>
     <string name="k2go_install_confirm_cancel">Şimdi değil</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">Kopyalandı</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">1 dk\'dan az</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d dk</string>
 </resources>

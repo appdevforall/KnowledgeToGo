@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Začať</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Sťahovanie z internetu</string>
-    <string name="k2go_just_scan">Stačí naskenovať — nemusíte nič písať!</string>
+    <string name="k2go_just_scan">Stačí naskenovať alebo použite tieto údaje:</string>
     <string name="k2go_perm_keep_running">Ponechať spustené</string>
     <string name="k2go_connect_subtitle">Umožnite blízkemu zariadeniu prehliadať vašu knižnicu.</string>
     <string name="k2go_perm_nearby_note">Na blízke zariadenia sa spýtame neskôr, len pri zdieľaní.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Prijať z iného telefónu  ›</string>
     <string name="k2go_clone_sharing_now">PRÁVE SA ZDIEĽA</string>
     <string name="k2go_clone_scan_enter_text">Skenovanie nefungovalo? Zadajte kód ako text  ▸</string>
-    <string name="k2go_clone_scan_show_text">Skenovanie nefungovalo? Zobrazte kód ako text  ▸</string>
+    <string name="k2go_clone_scan_show_text">Zobraziť kód ako text:</string>
     <string name="k2go_clone_scan_their_codes">Naskenujte ich kódy a získajte kópiu sem.</string>
     <string name="k2go_clone_scan_get_app">Naskenujte pre získanie aplikácie</string>
     <string name="k2go_clone_scan_to_join">Naskenujte pre pripojenie</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go sa za vás nemôže pripojiť k tej sieti — pripojte sa v Nastaveniach, potom Pokračujte.</string>
     <string name="k2go_clone_next_get_app">Ďalej: získajte aplikáciu</string>
     <string name="k2go_clone_nothing_title">Zatiaľ nie je čo zdieľať</string>
-    <string name="k2go_clone_point_camera_join">Namierte jeho kameru sem pre pripojenie k tomuto telefónu.</string>
+    <string name="k2go_clone_point_camera_join">Namierte sem fotoaparát a pripojte tento telefón, alebo použite tieto údaje</string>
     <string name="k2go_clone_share_anyway">Zdieľať napriek tomu</string>
     <string name="k2go_clone_share_wifi_note">Zdieľajte túto Wi-Fi z Nastavení alebo ich k nej pripojte, potom pokračujte.</string>
     <string name="k2go_clone_sharing_stopped">Zdieľanie zastavené</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Zastaviť zdieľanie</string>
     <string name="k2go_clone_no_library_note">Tento telefón nemá nainštalovanú knižnicu K2Go. Najprv nainštalujte obsah alebo zdieľajte napriek tomu.</string>
     <string name="k2go_clone_back_step1">‹ Späť na krok 1</string>
-    <string name="k2go_connect_readonly">Prístup k vášmu obsahu iba na čítanie.</string>
-    <string name="k2go_connect_scan_open">Naskenujte pre otvorenie knižnice</string>
+    <string name="k2go_connect_readonly">Naskenujte na otvorenie knižnice alebo navštívte túto stránku:</string>
+    <string name="k2go_connect_scan_open">Naskenujte na otvorenie knižnice alebo navštívte túto stránku:</string>
     <string name="k2go_connect_same_wifi">Ste na rovnakej Wi-Fi — jeden kód.</string>
     <string name="k2go_wiki_view_list">Zoznam</string>
     <string name="k2go_wiki_view_grouped">Zoskupené</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">Inštalácia prebehne vo vašom zariadení s pozastaveným serverom.\n\n• Chvíľu to trvá, často desiatky minút.\n• Ak môžete, udržujte stabilné pripojenie.\n• Pred začatím majte dostatok batérie.\n• Táto obrazovka zostane otvorená až do konca.</string>
     <string name="k2go_install_confirm_go">Nainštalovať</string>
     <string name="k2go_install_confirm_cancel">Teraz nie</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">Skopírované</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">menej než 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

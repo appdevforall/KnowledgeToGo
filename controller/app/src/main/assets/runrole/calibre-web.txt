@@ -1,0 +1,40 @@
+Assert that "calibreweb_install is sameas true" (boolean not string etc)
+Assert that "calibreweb_enabled | type_debug == 'bool'" (boolean not string etc)
+Install Calibre-Web if 'calibreweb_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+Record (initial) disk space used
+Stop 'calibre-web' systemd service for safety (RED ERROR CAN BE IGNORED!)
+Stop 'calibre-web' via pdsm (proot)
+Install package: imagemagick
+Does /etc/ImageMagick-6/policy.xml exist?
+Allow ImageMagick to read PDFs, per /etc/ImageMagick-6/policy.xml, to create book cover thumbnails
+Create 2 Calibre-Web folders to store data and config files: /library/calibre-web, /library/calibre-web/config (each set to root:www-data, default to 0755)
+Remove previous virtual environment /usr/local/calibre-web-py3 -- if 'calibreweb_venv_wipe: True'
+Does /usr/local/calibre-web-py3 exist?
+git clone Calibre-Web (master) from https://github.com/iiab/calibre-web to /usr/local/calibre-web-py3 (~217 MB initially, ~384+ MB later) -- if /usr/local/calibre-web-py3 doesns't exist
+cd /usr/local/calibre-web-py3 ; git pull https://github.com/iiab/calibre-web master --no-rebase --no-edit -- if /usr/local/calibre-web-py3 exists
+debug
+If Calibre-Web is being enhanced with audio/video "books" too, install/upgrade additional prereqs -- SEE https://github.com/iiab/calibre-web/wiki
+Download Calibre-Web dependencies from 'requirements.txt' into python3 virtual environment /usr/local/calibre-web-py3
+Install /etc/systemd/system/calibre-web.service from template
+Ensure log dir exists for Calibre-Web (proot)
+Does /library/calibre-web/metadata.db exist?
+Provision/Copy both default metadata files (metadata.db, metadata_db_prefs_backup.json) into /library/calibre-web IF metadata.db did not exist
+Does /library/calibre-web/config/app.db exist?
+Provision/Copy default admin settings to /library/calibre-web/config/app.db IF it did not exist
+Record (final) disk space used
+Add 'calibreweb_disk_usage = 1564987392' to /etc/iiab/iiab.ini
+Set 'calibreweb_installed: True'
+Add 'calibreweb_installed: True' to /etc/iiab/iiab_state.yml
+include_tasks
+Enable & Restart 'calibre-web' systemd service, if calibreweb_enabled
+Enable 'calibre-web' via pdsm (proot)
+Restart 'calibre-web' via pdsm (proot)
+Disable & Stop 'calibre-web' systemd service, if not calibreweb_enabled
+Disable 'calibre-web' via pdsm (proot)
+Enable http://box/books via NGINX, by installing /etc/nginx/conf.d/calibre-web-nginx.conf from template
+If enabling with Calibre-Web enhanced for large audio/video "books" too, also append onto calibre-web-nginx.conf AND symlink /library/www/html/calibre-web -> /library/calibre-web (WIP)
+Disable http://box/books via NGINX, by removing /etc/nginx/conf.d/calibre-web-nginx.conf
+If disabling, also remove symlink /library/www/html/calibre-web (WIP)
+Restart 'nginx' systemd service
+Restart 'nginx' via pdsm (proot)
+Add 'calibre-web' variable values to /etc/iiab/iiab.ini

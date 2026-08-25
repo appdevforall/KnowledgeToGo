@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/k2go_books_dl_sub"
                 android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/k2go_teal" />
+                android:textColor="@color/k2go_info_ink" />
         </LinearLayout>
     </LinearLayout>
 

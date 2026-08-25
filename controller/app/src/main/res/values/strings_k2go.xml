@@ -912,4 +912,7 @@
     <string name="k2go_install_confirm_go">Install</string>
     <string name="k2go_install_confirm_cancel">Not now</string>
     <string name="k2go_copied">Copied</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">under a min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

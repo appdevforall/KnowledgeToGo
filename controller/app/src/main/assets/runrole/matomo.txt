@@ -1,0 +1,45 @@
+Assert that "matomo_install is sameas true" (boolean not string etc)
+Assert that "matomo_enabled | type_debug == 'bool'" (boolean not string etc)
+Enable/Disable/Reload NGINX for Matomo
+Enable http://box/matomo via NGINX, by installing /etc/nginx/conf.d/matomo-nginx.conf from template
+Disable http://box/matomo via NGINX, by removing /etc/nginx/conf.d/matomo-nginx.conf
+Reload 'nginx' systemd service
+Restart 'nginx' via pdsm (proot)
+Install Matomo if 'matomo_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+WARNING: './runrole --reinstall matomo' CAN FAIL AS OF 2022-06-15, e.g. if /library/www/matomo already exists
+Set 'mysql_install: True' and 'mysql_enabled: True'
+FAIL (STOP THE INSTALL) IF 'mysql_installed is undefined'
+Record (initial) disk space used
+Install Matomo's recommended PHP extensions
+Run roles/www_options/tasks/php-settings.yml with 'nginx_high_php_limits: False' by default
+Start 'php-fpm' via pdsm (proot)
+Start MariaDB
+Start 'mariadb' via pdsm (proot)
+Create MariaDB Database for Matomo
+Add Admin User to MariaDB Database
+Create MariaDB Database for Matomo (proot)
+Ensure Matomo DB user exists for localhost and 127.0.0.1 (proot)
+Download Matomo (2 min)
+Extract Matomo (1 min)
+Set Matomo Directory Permissions
+HTTP Get Welcome
+Show Matomo Welcome page HTTP status
+Set a variable for the MATOMO_SESSID cookie
+Get Matomo System Check
+Matomo Database Setup
+Matomo Table Creation
+Matomo User Setup
+Configure Matomo to track IIAB
+Fallback Configure Matomo to track IIAB
+Matomo Tracking Code
+Finish Matomo Setup
+Start Collecting Matomo Data
+Run Daily Job Collecting Matomo Data
+Set Permissions for token.php
+Set Permissions for tracker Directory
+Don't Check for Trusted Host
+Record (final) disk space used
+Add 'matomo_disk_usage = 147087360' to /etc/iiab/iiab.ini
+Set 'matomo_installed: True'
+Add 'matomo_installed: True' to /etc/iiab/iiab_state.yml
+Add 'matomo' variable values to /etc/iiab/iiab.ini

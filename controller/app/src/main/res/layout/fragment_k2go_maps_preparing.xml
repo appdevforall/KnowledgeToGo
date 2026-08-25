@@ -36,6 +36,49 @@
         <!-- ADFA-5074: shared block; the asset is chosen by ProgressVisuals. -->
         <include layout="@layout/view_k2go_working_anim" />
 
+        <!-- ADFA-5228: determinate bar + percent above the status line, driven by the maps runrole
+             task table. The caption shares its line with the ETA (slice #3). Gone if no table. -->
+        <LinearLayout
+            android:id="@+id/k2go_prep_progress_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/k2go_prep_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:indeterminate="false" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/k2go_prep_progress_pct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+
+                <TextView
+                    android:id="@+id/k2go_prep_progress_eta"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/k2go_muted" />
+            </LinearLayout>
+        </LinearLayout>
+
         <!-- The process's own text, not an invented percentage. -->
         <!-- ADFA-4910: fixed 2-line height (minLines=maxLines=2) so the note below never jumps
              as this line flips between 1 and 2 lines. Slightly smaller text (BodyMedium) too.
@@ -70,7 +113,7 @@
                 android:text="@string/k2go_maps_leave_title"
                 android:textStyle="bold"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
-                android:textColor="@color/k2go_teal" />
+                android:textColor="@color/k2go_info_ink" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -78,7 +121,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/k2go_maps_leave_body"
                 android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/k2go_teal" />
+                android:textColor="@color/k2go_info_ink" />
         </LinearLayout>
 
         <!-- ADFA-4901: collapsible live log fed by LogRepository (the reusable terminal for all

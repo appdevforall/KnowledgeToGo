@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">إلغاء</string>
     <string name="copy_all">نسخ الكل</string>
     <string name="fix_action">إصلاح</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">يضمن بقاء الخدمات نشطة عند إيقاف الشاشة.</string>
     <string name="watchdog_channel_name">خدمة مراقبة K2Go</string>
     <string name="install_channel_name">مثبِّت K2Go</string>
-    <string name="install_channel_desc">يعرض التقدم أثناء تثبيت Knowledge To Go.</string>
-    <string name="install_notif_title">جارٍ تثبيت Knowledge To Go</string>
+    <string name="install_channel_desc">يعرض التقدم أثناء تثبيت Knowledge to Go.</string>
+    <string name="install_notif_title">جارٍ تثبيت Knowledge to Go</string>
     <string name="install_notif_cancel">إلغاء</string>
     <string name="watchdog_notif_title">مراقبة K2Go نشطة</string>
     <string name="watchdog_started">بدأت المراقبة</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">تم الحفظ</string>
     <string name="settings_saved">تم حفظ الإعدادات</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">بدعم من App Dev for All</string>
     <string name="setup_manage_all_permissions">إدارة جميع الأذونات</string>
     <string name="update_dialog_title">إصدار جديد متاح: %1$s</string>
     <string name="update_dialog_message">هل تريد تحديث التطبيق؟\n\nما الجديد:\n%1$s</string>
     <string name="update_dialog_positive">تحديث</string>
     <string name="update_dialog_negative">لاحقًا</string>
-    <string name="download_title">جارٍ تحديث Knowledge To Go</string>
+    <string name="download_title">جارٍ تحديث Knowledge to Go</string>
     <string name="download_description">جارٍ تنزيل الإصدار الجديد…</string>
     <string name="download_started_toast">بدأ التنزيل…</string>
     <string name="ota_toast_checking">جارٍ البحث عن تحديثات…</string>

@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Começar</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Transferência pela Internet</string>
-    <string name="k2go_just_scan">Basta digitalizar — sem escrever!</string>
+    <string name="k2go_just_scan">Basta digitalizar, ou use as seguintes credenciais:</string>
     <string name="k2go_perm_keep_running">Manter em execução</string>
     <string name="k2go_connect_subtitle">Permita que um dispositivo próximo navegue na sua biblioteca.</string>
     <string name="k2go_perm_nearby_note">A permissão de dispositivos próximos é pedida depois, apenas ao partilhar.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Receber de outro telemóvel  ›</string>
     <string name="k2go_clone_sharing_now">A PARTILHAR AGORA</string>
     <string name="k2go_clone_scan_enter_text">A digitalização não funcionou? Introduza o código como texto  ▸</string>
-    <string name="k2go_clone_scan_show_text">A digitalização não funcionou? Mostre o código como texto  ▸</string>
+    <string name="k2go_clone_scan_show_text">Mostrar o código como texto:</string>
     <string name="k2go_clone_scan_their_codes">Digitalize os códigos deles para obter uma cópia aqui.</string>
     <string name="k2go_clone_scan_get_app">Digitalize para obter a app</string>
     <string name="k2go_clone_scan_to_join">Digitalize para entrar</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">O K2Go não pode ligar-se a essa rede por si — ligue-se nas Definições e depois Continuar.</string>
     <string name="k2go_clone_next_get_app">Seguinte: obter a app</string>
     <string name="k2go_clone_nothing_title">Ainda não há nada para partilhar</string>
-    <string name="k2go_clone_point_camera_join">Aponte a câmara dele para aqui para se ligar a este telemóvel.</string>
+    <string name="k2go_clone_point_camera_join">Aponte a câmera aqui para conectar este telefone, ou use as seguintes credenciais</string>
     <string name="k2go_clone_share_anyway">Partilhar mesmo assim</string>
     <string name="k2go_clone_share_wifi_note">Partilhe esta Wi-Fi nas Definições, ou peça que se liguem a ela, e depois continue.</string>
     <string name="k2go_clone_sharing_stopped">Partilha interrompida</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Parar de partilhar</string>
     <string name="k2go_clone_no_library_note">Este telemóvel não tem uma biblioteca K2Go instalada. Instale conteúdo primeiro, ou partilhe mesmo assim.</string>
     <string name="k2go_clone_back_step1">‹ Voltar ao passo 1</string>
-    <string name="k2go_connect_readonly">Acesso apenas de leitura ao seu conteúdo.</string>
-    <string name="k2go_connect_scan_open">Digitalize para abrir a biblioteca</string>
+    <string name="k2go_connect_readonly">Digitalize para abrir a biblioteca ou acesse este site:</string>
+    <string name="k2go_connect_scan_open">Digitalize para abrir a biblioteca ou acesse este site:</string>
     <string name="k2go_connect_same_wifi">Está na mesma Wi-Fi — um código.</string>
     <string name="k2go_wiki_view_list">Lista</string>
     <string name="k2go_wiki_view_grouped">Agrupado</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">Isto é instalado no seu dispositivo com o servidor pausado.\n\n• Demora um tempo, muitas vezes dezenas de minutos.\n• Mantenha uma conexão estável se possível.\n• Tenha bateria suficiente antes de começar.\n• Esta tela permanece aberta até terminar.</string>
     <string name="k2go_install_confirm_go">Instalar</string>
     <string name="k2go_install_confirm_cancel">Agora não</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">Copiado</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">menos de 1 min</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d min</string>
 </resources>

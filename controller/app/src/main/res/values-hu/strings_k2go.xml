@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Kezdjük</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Internetes letöltés</string>
-    <string name="k2go_just_scan">Csak olvasd be — nem kell begépelni!</string>
+    <string name="k2go_just_scan">Csak olvassa be, vagy használja az alábbi adatokat:</string>
     <string name="k2go_perm_keep_running">Futás fenntartása</string>
     <string name="k2go_connect_subtitle">Engedd, hogy egy közeli eszköz böngéssze a könyvtáradat.</string>
     <string name="k2go_perm_nearby_note">A közeli eszközök engedélyét később kérjük, csak megosztáskor.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Fogadás egy másik telefonról  ›</string>
     <string name="k2go_clone_sharing_now">MOST MEGOSZTVA</string>
     <string name="k2go_clone_scan_enter_text">Nem működött a beolvasás? Írd be a kódot szövegként  ▸</string>
-    <string name="k2go_clone_scan_show_text">Nem működött a beolvasás? Mutasd a kódot szövegként  ▸</string>
+    <string name="k2go_clone_scan_show_text">Kód megjelenítése szövegként:</string>
     <string name="k2go_clone_scan_their_codes">Olvasd be a kódjaikat, hogy másolatot kapj ide.</string>
     <string name="k2go_clone_scan_get_app">Olvasd be az app megszerzéséhez</string>
     <string name="k2go_clone_scan_to_join">Olvasd be a csatlakozáshoz</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">A K2Go nem tud csatlakozni ahhoz a hálózathoz helyetted — csatlakozz a Beállításokban, majd Folytatás.</string>
     <string name="k2go_clone_next_get_app">Tovább: szerezd meg az appot</string>
     <string name="k2go_clone_nothing_title">Még nincs mit megosztani</string>
-    <string name="k2go_clone_point_camera_join">Irányítsd ide a kameráját, hogy csatlakozzon ehhez a telefonhoz.</string>
+    <string name="k2go_clone_point_camera_join">Irányítsa ide a kameráját a telefon csatlakoztatásához, vagy használja az alábbi adatokat</string>
     <string name="k2go_clone_share_anyway">Megosztás mindenképp</string>
     <string name="k2go_clone_share_wifi_note">Oszd meg ezt a Wi-Fi-t a Beállításokból, vagy csatlakoztasd őket, majd folytasd.</string>
     <string name="k2go_clone_sharing_stopped">A megosztás leállt</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Megosztás leállítása</string>
     <string name="k2go_clone_no_library_note">Ezen a telefonon nincs telepített K2Go könyvtár. Előbb telepíts tartalmat, vagy oszd meg mindenképp.</string>
     <string name="k2go_clone_back_step1">‹ Vissza az 1. lépéshez</string>
-    <string name="k2go_connect_readonly">Csak olvasható hozzáférés a tartalmadhoz.</string>
-    <string name="k2go_connect_scan_open">Olvasd be a könyvtár megnyitásához</string>
+    <string name="k2go_connect_readonly">Olvassa be a könyvtár megnyitásához, vagy látogasson el erre a webhelyre:</string>
+    <string name="k2go_connect_scan_open">Olvassa be a könyvtár megnyitásához, vagy látogasson el erre a webhelyre:</string>
     <string name="k2go_connect_same_wifi">Ugyanazon a Wi-Fi-n vagy — egy kód.</string>
     <string name="k2go_wiki_view_list">Lista</string>
     <string name="k2go_wiki_view_grouped">Csoportosítva</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">A telepítés az eszközön történik, a kiszolgáló szüneteltetve.\n\n• Eltart egy ideig, gyakran több tíz percig.\n• Ha lehet, tartson stabil kapcsolatot.\n• Indítás előtt legyen elég akkumulátor.\n• Ez a képernyő a befejezésig nyitva marad.</string>
     <string name="k2go_install_confirm_go">Telepítés</string>
     <string name="k2go_install_confirm_cancel">Most nem</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">Másolva</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">kevesebb mint 1 perc</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d perc</string>
 </resources>

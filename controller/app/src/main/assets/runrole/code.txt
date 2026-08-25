@@ -1,0 +1,22 @@
+Assert that "code_install is sameas true" (boolean not string etc)
+Assert that "code_enabled | type_debug == 'bool'" (boolean not string etc)
+Install COTG if 'code_installed' not defined, e.g. in /etc/iiab/iiab_state.yml
+Record (initial) disk space used
+Make code directories available
+Copy static assets
+Make index.html file
+Make content directory
+Render localized Markdown content files
+Continue APK install tasks
+Make apk directory
+Download arch arm 64-bits APK
+Record (final) disk space used
+Add 'code_disk_usage = 664997888' to /etc/iiab/iiab.ini
+Set 'code_installed: True'
+Add 'code_installed: True' to /etc/iiab/iiab_state.yml
+Enable/Disable/Reload NGINX for COTG
+Enable http://box/code via NGINX, by installing /etc/nginx/conf.d/code-nginx.conf
+Disable http://box/code via NGINX, by removing /etc/nginx/conf.d/code-nginx.conf
+Reload 'nginx' systemd service
+Restart 'nginx' via pdsm (proot)
+Add 'code' variable values to /etc/iiab/iiab.ini

@@ -164,20 +164,20 @@ public final class KolibriConfirmFragment extends Fragment {
             fits.setText(getString(R.string.k2go_zim_fits_fmt,
                     ByteFormatter.toHuman(plan.requiredBytes()),
                     freeBytes == null ? "" : ByteFormatter.toHuman(freeBytes)));
-            paint(R.color.k2go_leaf, R.drawable.k2go_ok_bg);
+            paint(R.color.k2go_ok_ink, R.drawable.k2go_ok_bg);
             fitAllows = true;
         } else if (Boolean.FALSE.equals(verdict)) {
             fits.setText(getString(R.string.k2go_zim_nofit_fmt,
                     ByteFormatter.toHuman(plan.requiredBytes()),
                     freeBytes == null ? "" : ByteFormatter.toHuman(freeBytes)));
-            paint(R.color.k2go_amber_text, R.drawable.k2go_warn_bg);
+            paint(R.color.k2go_warn_ink, R.drawable.k2go_warn_bg);
             fitAllows = false;
         } else {
             // Cannot tell: a channel with no published size, or no readable free
             // space. Warn and let it through — refusing here would block a
             // download that has every chance of succeeding.
             fits.setText(R.string.k2go_kolibri_fit_unknown);
-            paint(R.color.k2go_amber_text, R.drawable.k2go_warn_bg);
+            paint(R.color.k2go_warn_ink, R.drawable.k2go_warn_bg);
             fitAllows = true;
         }
 

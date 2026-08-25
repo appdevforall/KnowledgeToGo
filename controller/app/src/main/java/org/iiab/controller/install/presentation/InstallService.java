@@ -909,6 +909,24 @@ public final class InstallService extends Service {
             return;
         }
 
+        // ADFA-5228: drive a determinate bar from the runrole's task stream. The table is the
+        // module's ordered task names (assets/runrole/<role>.txt); with no table the progress stays
+        // indeterminate and the row keeps its spinner. remaining/lastPct are captured for the
+        // worker-thread output callback below.
+        final java.util.List<String> tasks = RunroleTables.tasksFor(this, roleName);
+        final org.iiab.controller.install.domain.RunroleProgress progress =
+                new org.iiab.controller.install.domain.RunroleProgress(tasks);
+        // ADFA-5228: learned per-task durations for the ETA + a fresh timer for this run.
+        final java.util.Map<String, Long> learned = RunroleDurationStore.load(this, roleName);
+        final org.iiab.controller.install.domain.RunroleTimings timings =
+                new org.iiab.controller.install.domain.RunroleTimings();
+        final long startMs = System.currentTimeMillis();
+        final int remainingSnapshot = moduleQueue.size();
+        final int[] lastPct = { Integer.MIN_VALUE };
+        if (progress.hasTable()) {
+            ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 0);
+        }
+
         // ADFA-4900: for the wizard maps flow, write the full per-layer maps_* var set before
         // runrole (the generic <key>_install/_enabled echo can't express quality/off/search).
         final String installCmd = ("maps".equals(nextModule) && hasMapsConfig)
@@ -926,6 +944,19 @@ public final class InstallService extends Service {
             public void onOutputLine(String line) {
                 outcome.observe(line);
                 log("[Ansible] " + line);
+                // ADFA-5228: advance the determinate bar as known tasks are reached. Post only on a
+                // percent change so LiveData isn't spammed per output line.
+                if (progress.hasTable()) {
+                    progress.observe(line);
+                    String tn = org.iiab.controller.install.domain.RunroleProgress.taskName(line);
+                    if (tn != null) timings.onTask(tn, System.currentTimeMillis());
+                    int pct = progress.percent();
+                    if (pct != lastPct[0]) {
+                        lastPct[0] = pct;
+                        long eta = estimateEtaSeconds(progress, tasks, learned, startMs);
+                        ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, pct, eta);
+                    }
+                }
             }
 
             @Override
@@ -939,6 +970,16 @@ public final class InstallService extends Service {
                     org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, false);
                     revertModuleInLocalVars(nextModule, InstallService.this::installNextModule);
                 } else {
+                    // ADFA-5228: finish the determinate bar at exactly 100 before advancing (never
+                    // above). The next installNextModule() supersedes it with the following module's
+                    // state, so this only lingers on the just-finished module's own detail view.
+                    if (progress.hasTable()) {
+                        // ADFA-5228: close the timings and blend them into the per-role store so the
+                        // next install's ETA is sharper; finish the bar at exactly 100.
+                        timings.finish(System.currentTimeMillis());
+                        RunroleDurationStore.blendAndSave(InstallService.this, roleName, timings.durationsMs());
+                        ModuleQueueRepository.get().postRunning(nextModule, remainingSnapshot, 100, 0L);
+                    }
                     org.iiab.controller.analytics.AnalyticsClient.with(InstallService.this).logModuleInstall(nextModule, true);
                     installNextModule();
                 }
@@ -956,6 +997,33 @@ public final class InstallService extends Service {
                 revertModuleInLocalVars(nextModule, InstallService.this::finishModuleQueue);
             }
         });
+    }
+
+    /**
+     * ADFA-5228: seconds remaining for the current module — the learned durations of the remaining
+     * tasks when all are known, otherwise the rate observed in this run. Pure delegation to
+     * {@link org.iiab.controller.install.domain.RunroleEta}; returns -1 when there's nothing to go on.
+     */
+    private static long estimateEtaSeconds(org.iiab.controller.install.domain.RunroleProgress progress,
+                                           java.util.List<String> tasks,
+                                           java.util.Map<String, Long> learned, long startMs) {
+        int total = progress.total();
+        int reached = progress.reached();
+        int remaining = total - reached;
+        long knownRemainingSec = -1L;
+        if (!learned.isEmpty() && remaining > 0 && tasks != null) {
+            long sumMs = 0L;
+            boolean allKnown = true;
+            for (int i = reached; i < tasks.size(); i++) {
+                Long d = learned.get(tasks.get(i));
+                if (d == null) { allKnown = false; break; }
+                sumMs += d;
+            }
+            if (allKnown) knownRemainingSec = Math.round(sumMs / 1000.0);
+        }
+        long elapsedSec = Math.max(0L, (System.currentTimeMillis() - startMs) / 1000L);
+        return org.iiab.controller.install.domain.RunroleEta.secondsRemaining(
+                remaining, knownRemainingSec, reached, elapsedSec);
     }
 
     /**

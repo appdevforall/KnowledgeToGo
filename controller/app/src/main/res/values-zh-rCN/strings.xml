@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- NOTE: Machine translation (AI) — pending human review; not final. -->
 <resources>
-    <string name="app_name">Knowledge To Go</string>
+    <string name="app_name">Knowledge to Go</string>
     <string name="cancel">取消</string>
     <string name="copy_all">全部复制</string>
     <string name="fix_action">修复</string>
@@ -90,8 +90,8 @@
     <string name="watchdog_channel_desc">确保屏幕关闭时服务保持活动。</string>
     <string name="watchdog_channel_name">K2Go 看门狗服务</string>
     <string name="install_channel_name">K2Go 安装程序</string>
-    <string name="install_channel_desc">在安装 Knowledge To Go 时显示进度。</string>
-    <string name="install_notif_title">正在安装 Knowledge To Go</string>
+    <string name="install_channel_desc">在安装 Knowledge to Go 时显示进度。</string>
+    <string name="install_notif_title">正在安装 Knowledge to Go</string>
     <string name="install_notif_cancel">取消</string>
     <string name="watchdog_notif_title">K2Go 看门狗已启用</string>
     <string name="watchdog_started">看门狗已启动</string>
@@ -131,15 +131,15 @@
     <string name="pref_file_internal">IIAB_Internal</string>
     <string name="saved_toast">已保存</string>
     <string name="settings_saved">设置已保存</string>
-    <string name="version_footer_fallback">Knowledge To Go · 2026 · v0.3.xbeta</string>
-    <string name="version_footer_format">Knowledge To Go · 2026 · %1$s</string>
+    <string name="version_footer_fallback">Knowledge to Go · 2026 · v0.3.xbeta</string>
+    <string name="version_footer_format">Knowledge to Go · 2026 · %1$s</string>
     <string name="splash_powered_by">由 App Dev for All 提供支持</string>
     <string name="setup_manage_all_permissions">管理所有权限</string>
     <string name="update_dialog_title">有新版本可用: %1$s</string>
     <string name="update_dialog_message">你要更新此应用吗？\n\n新功能:\n%1$s</string>
     <string name="update_dialog_positive">更新</string>
     <string name="update_dialog_negative">稍后</string>
-    <string name="download_title">正在更新 Knowledge To Go</string>
+    <string name="download_title">正在更新 Knowledge to Go</string>
     <string name="download_description">正在下载新版本…</string>
     <string name="download_started_toast">下载已开始…</string>
     <string name="ota_toast_checking">正在检查更新…</string>

@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Започните</string>
     <string name="k2go_hotspot">Хотспот</string>
     <string name="k2go_internet_download">Преузимање са интернета</string>
-    <string name="k2go_just_scan">Само скенирајте — без куцања!</string>
+    <string name="k2go_just_scan">Само скенирајте или користите следеће податке:</string>
     <string name="k2go_perm_keep_running">Настави рад</string>
     <string name="k2go_connect_subtitle">Дозволите оближњем уређају да прегледа вашу библиотеку.</string>
     <string name="k2go_perm_nearby_note">Дозвола за оближње уређаје тражи се касније, само при дељењу.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Прими са другог телефона  ›</string>
     <string name="k2go_clone_sharing_now">ДЕЛИ СЕ САДА</string>
     <string name="k2go_clone_scan_enter_text">Скенирање није успело? Унесите код као текст  ▸</string>
-    <string name="k2go_clone_scan_show_text">Скенирање није успело? Прикажите код као текст  ▸</string>
+    <string name="k2go_clone_scan_show_text">Прикажи кôд као текст:</string>
     <string name="k2go_clone_scan_their_codes">Скенирајте њихове кодове да добијете копију овде.</string>
     <string name="k2go_clone_scan_get_app">Скенирајте да добијете апликацију</string>
     <string name="k2go_clone_scan_to_join">Скенирајте да се повежете</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go не може да се повеже на ту мрежу уместо вас — повежите се у Подешавањима, па наставите.</string>
     <string name="k2go_clone_next_get_app">Даље: набавите апликацију</string>
     <string name="k2go_clone_nothing_title">Још нема шта да се дели</string>
-    <string name="k2go_clone_point_camera_join">Усмерите његову камеру овде да се повеже на овај телефон.</string>
+    <string name="k2go_clone_point_camera_join">Усмерите камеру овамо да повежете овај телефон или користите следеће податке</string>
     <string name="k2go_clone_share_anyway">Ипак подели</string>
     <string name="k2go_clone_share_wifi_note">Поделите овај Wi-Fi из Подешавања или их повежите на њега, па наставите.</string>
     <string name="k2go_clone_sharing_stopped">Дељење заустављено</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Заустави дељење</string>
     <string name="k2go_clone_no_library_note">На овом телефону није инсталирана K2Go библиотека. Прво инсталирајте садржај или ипак поделите.</string>
     <string name="k2go_clone_back_step1">‹ Назад на 1. корак</string>
-    <string name="k2go_connect_readonly">Приступ само за читање вашем садржају.</string>
-    <string name="k2go_connect_scan_open">Скенирајте да отворите библиотеку</string>
+    <string name="k2go_connect_readonly">Скенирајте да отворите библиотеку или посетите овај сајт:</string>
+    <string name="k2go_connect_scan_open">Скенирајте да отворите библиотеку или посетите овај сајт:</string>
     <string name="k2go_connect_same_wifi">Ви сте на истом Wi-Fi — један код.</string>
     <string name="k2go_wiki_view_list">Списак</string>
     <string name="k2go_wiki_view_grouped">Груписано</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">Инсталира се на вашем уређају док је сервер паузиран.\n\n• Траје неко време, често десетине минута.\n• Ако можете, одржавајте стабилну везу.\n• Пре почетка обезбедите довољно батерије.\n• Овај екран остаје отворен до завршетка.</string>
     <string name="k2go_install_confirm_go">Инсталирај</string>
     <string name="k2go_install_confirm_cancel">Не сада</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">Копирано</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">мање од 1 мин</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d мин</string>
 </resources>

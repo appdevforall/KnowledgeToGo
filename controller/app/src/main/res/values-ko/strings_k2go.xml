@@ -24,7 +24,7 @@
     <string name="k2go_get_started">시작하기</string>
     <string name="k2go_hotspot">핫스팟</string>
     <string name="k2go_internet_download">인터넷 다운로드</string>
-    <string name="k2go_just_scan">스캔만 하면 됩니다 — 입력할 필요 없어요!</string>
+    <string name="k2go_just_scan">스캔하거나 다음 자격 증명을 사용하세요:</string>
     <string name="k2go_perm_keep_running">계속 실행</string>
     <string name="k2go_connect_subtitle">근처 기기가 라이브러리를 열람할 수 있게 합니다.</string>
     <string name="k2go_perm_nearby_note">근처 기기 권한은 공유할 때만 나중에 요청됩니다.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">다른 휴대폰에서 받기  ›</string>
     <string name="k2go_clone_sharing_now">공유 중</string>
     <string name="k2go_clone_scan_enter_text">스캔이 안 되나요? 코드를 텍스트로 입력  ▸</string>
-    <string name="k2go_clone_scan_show_text">스캔이 안 되나요? 코드를 텍스트로 표시  ▸</string>
+    <string name="k2go_clone_scan_show_text">코드를 텍스트로 표시:</string>
     <string name="k2go_clone_scan_their_codes">상대방의 코드를 스캔하여 여기로 복사본을 받으세요.</string>
     <string name="k2go_clone_scan_get_app">스캔하여 앱 받기</string>
     <string name="k2go_clone_scan_to_join">스캔하여 접속</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go는 그 네트워크에 대신 접속할 수 없습니다 — 설정에서 접속한 후 계속하세요.</string>
     <string name="k2go_clone_next_get_app">다음: 앱 받기</string>
     <string name="k2go_clone_nothing_title">아직 공유할 것이 없습니다</string>
-    <string name="k2go_clone_point_camera_join">그 카메라를 여기로 향하게 하여 이 휴대폰에 접속하세요.</string>
+    <string name="k2go_clone_point_camera_join">이 휴대폰을 연결하려면 카메라를 여기에 대거나 다음 자격 증명을 사용하세요</string>
     <string name="k2go_clone_share_anyway">그래도 공유</string>
     <string name="k2go_clone_share_wifi_note">설정에서 이 Wi-Fi를 공유하거나 상대방이 접속하게 한 후 계속하세요.</string>
     <string name="k2go_clone_sharing_stopped">공유 중지됨</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">공유 중지</string>
     <string name="k2go_clone_no_library_note">이 휴대폰에는 K2Go 라이브러리가 설치되어 있지 않습니다. 먼저 콘텐츠를 설치하거나 그래도 공유하세요.</string>
     <string name="k2go_clone_back_step1">‹ 1단계로 돌아가기</string>
-    <string name="k2go_connect_readonly">콘텐츠에 대한 읽기 전용 접근.</string>
-    <string name="k2go_connect_scan_open">스캔하여 라이브러리 열기</string>
+    <string name="k2go_connect_readonly">스캔하여 라이브러리를 열거나 이 웹사이트를 방문하세요:</string>
+    <string name="k2go_connect_scan_open">스캔하여 라이브러리를 열거나 이 웹사이트를 방문하세요:</string>
     <string name="k2go_connect_same_wifi">같은 Wi-Fi입니다 — 코드는 하나.</string>
     <string name="k2go_wiki_view_list">목록</string>
     <string name="k2go_wiki_view_grouped">그룹화</string>
@@ -828,5 +828,8 @@
     <string name="k2go_install_confirm_body">서버가 일시 중지된 상태에서 기기에 설치됩니다.\n\n• 시간이 걸리며, 보통 수십 분입니다.\n• 가능하면 안정적인 연결을 유지하세요.\n• 시작하기 전에 배터리가 충분한지 확인하세요.\n• 완료될 때까지 이 화면은 열려 있습니다.</string>
     <string name="k2go_install_confirm_go">설치</string>
     <string name="k2go_install_confirm_cancel">나중에</string>
-    <string name="k2go_copied">Copied</string>
+    <string name="k2go_copied">복사됨</string>
+    <!-- ADFA-5228: module-install ETA labels. -->
+    <string name="k2go_eta_under_min">1분 미만</string>
+    <string name="k2go_eta_minutes_fmt">~%1$d분</string>
 </resources>
