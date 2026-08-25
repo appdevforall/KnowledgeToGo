@@ -38,6 +38,7 @@ public class ZimPreparingFragment extends Fragment {
     private LinearLayout listv;
     private LinearLayout controls;          // ADFA-4893: session control row (pause/resume + cancel)
     private Button pauseBtn, cancelBtn;
+    private boolean pauseSupported = false; // ADFA-4893: box dash-node >= 1.2.4 exposes pause/resume (4894)
 
     /**
      * ADFA-5074: {@code newInstance(boolean fromIndex)} used to live here, and every caller now
@@ -72,6 +73,10 @@ public class ZimPreparingFragment extends Fragment {
             ContextCompat.startForegroundService(ctx,
                     new Intent(ctx, ZimDownloadService.class).setAction(ZimDownloadService.ACTION_CANCEL));
         });
+        // ADFA-4893: only offer the controls when the box's dash-node exposes pause/resume (>= 1.2.4,
+        // ADFA-4894). atLeast() returns false for an unknown/older version, so old boxes hide the row
+        // (notification Cancel still works) instead of showing a Pause that 404s.
+        pauseSupported = DashboardVersion.atLeast(DashboardVersion.installed(requireContext()), 1, 2, 4);
         // ADFA-5074: the shared animation block declares no asset; the rule picks it.
         org.iiab.controller.util.ProgressVisuals.apply(root, org.iiab.controller.system.domain.ContentType.ZIM);
 
@@ -117,8 +122,9 @@ public class ZimPreparingFragment extends Fragment {
         detail.setText(getString(R.string.k2go_zim_prep_detail_fmt,
                 gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), speedPart, doneCount, n));
 
-        // ADFA-4893: session controls — shown only while a job is in flight; poll is the source of truth.
-        boolean active = ZimDownloadService.isRunning() && !allDone;
+        // ADFA-4893: session controls — shown only when the box supports pause/resume and a job is in
+        // flight; poll is the source of truth.
+        boolean active = pauseSupported && ZimDownloadService.isRunning() && !allDone;
         controls.setVisibility(active ? View.VISIBLE : View.GONE);
         if (active) {
             boolean paused = ZimDownloadService.isPaused();
