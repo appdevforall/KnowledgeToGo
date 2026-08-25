@@ -840,7 +840,8 @@ public class CloneFragment extends Fragment {
         long sysB = (librarySplit != null) ? librarySplit.systemBytes : 0L;
         long contentB = (librarySplit != null) ? librarySplit.contentBytes : 0L;
         String payload = SyncHandshakeHelper.createPayload(ip, shareConfig.rsyncPort, shareConfig.user, tempPass, hostHasRootfs, archBits(), sysB, contentB);
-        qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, 500));
+        // ADFA-5236: encode at the rendered QR size (@dimen/k2go_qr_size) so it stays crisp per bucket.
+        qr.setImageBitmap(SyncHandshakeHelper.generateQrCode(payload, getResources().getDimensionPixelSize(R.dimen.k2go_qr_size)));
         caption.setText(getString(twoCode ? R.string.k2go_clone_ready_scan2 : R.string.k2go_clone_ready_scan));
         subCaption.setText(""); subCaption.setVisibility(View.GONE);   // ADFA-5154: drop the design-leftover note
         showCodeAsText(payload);

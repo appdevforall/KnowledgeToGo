@@ -62,7 +62,9 @@ public final class QrSection {
             ph.setVisibility(View.VISIBLE);
             return;
         }
-        int px = Math.round(200 * ctx.getResources().getDisplayMetrics().density);
+        // ADFA-5236: encode at the rendered QR size (single source of truth = @dimen/k2go_qr_size)
+        // so the bitmap stays crisp at every smallest-width bucket instead of upscaling a fixed 200dp.
+        int px = ctx.getResources().getDimensionPixelSize(R.dimen.k2go_qr_size);
         qr.setImageBitmap(QrCodec.encode(data, px));
         ph.setVisibility(View.GONE);
     }

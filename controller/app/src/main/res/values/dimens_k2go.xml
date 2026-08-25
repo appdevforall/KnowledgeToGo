@@ -11,5 +11,5 @@
          (250dp) is the floor for small/old phones (<360dp); sw360/sw400/sw600 scale up and cap.
          sw = shortest screen side, so it also bounds landscape/tablets. Quiet zone + ECC (L)
          are baked into the bitmap and scale with it. -->
-    <dimen name="k2go_qr_size">250dp</dimen>
+    <dimen name="k2go_qr_size">252dp</dimen>
 </resources>
