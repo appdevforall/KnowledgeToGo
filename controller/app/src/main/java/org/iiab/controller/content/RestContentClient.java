@@ -19,7 +19,8 @@
  *                                                                 speed(bytes/s),
  *                                                                 detail, error }
  *                 POST /api/kiwix/jobs/:id/cancel            -> { ok:true }
- *               phase is one of: queued|downloading|indexing|processing|done|error|canceled.
+ *                 POST /api/kiwix/jobs/:id/pause|resume      -> { ok:true }   (ADFA-4893)
+ *               phase is one of: queued|downloading|indexing|processing|paused|done|error|canceled.
  * ============================================================================
  */
 package org.iiab.controller.content;
@@ -51,6 +52,8 @@ public final class RestContentClient {
         void onLog(String line);                     // free-form detail line (for logs)
         void onDone();                               // success (terminal)
         void onError(String message);                // failure (terminal)
+        /** ADFA-4893: 'paused' phase (best-effort). Default no-op so existing implementers compile unchanged. */
+        default void onPaused(int percent) {}
     }
 
     private static final String BASE = BoxEndpoints.API + "/kiwix";
@@ -116,6 +119,12 @@ public final class RestContentClient {
                 case "canceled":
                     fail("canceled");
                     return;
+                case "paused": {
+                    // ADFA-4893: not terminal — surface it and keep polling so resume/progress is seen.
+                    final int pp = percent;
+                    deliver(() -> listener.onPaused(pp));
+                    break;
+                }
                 default:
                     break; // queued / unknown: keep polling
             }
@@ -135,6 +144,26 @@ public final class RestContentClient {
             });
         }
         teardown();
+    }
+
+    /** ADFA-4893: best-effort pause of the in-flight job. Keeps polling so 'paused' is observed and resume works. */
+    public void pause() {
+        final String id = jobId;
+        if (id != null && !id.isEmpty()) {
+            AppExecutors.get().io().execute(() -> {
+                try { httpJson("POST", BASE + "/jobs/" + id + "/pause", null); } catch (Exception ignore) { /* best effort */ }
+            });
+        }
+    }
+
+    /** ADFA-4893: best-effort resume of a paused job; polling continues, so progress flows again. */
+    public void resume() {
+        final String id = jobId;
+        if (id != null && !id.isEmpty()) {
+            AppExecutors.get().io().execute(() -> {
+                try { httpJson("POST", BASE + "/jobs/" + id + "/resume", null); } catch (Exception ignore) { /* best effort */ }
+            });
+        }
     }
 
     private void done() {

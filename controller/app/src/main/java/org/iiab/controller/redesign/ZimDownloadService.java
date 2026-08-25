@@ -41,6 +41,8 @@ public final class ZimDownloadService extends Service {
     public static final String ACTION_START = "org.iiab.controller.ZIM_DOWNLOAD_START";
     public static final String ACTION_RETRY = "org.iiab.controller.ZIM_DOWNLOAD_RETRY";
     public static final String ACTION_CANCEL = "org.iiab.controller.ZIM_DOWNLOAD_CANCEL";
+    public static final String ACTION_PAUSE = "org.iiab.controller.ZIM_DOWNLOAD_PAUSE";     // ADFA-4893
+    public static final String ACTION_RESUME = "org.iiab.controller.ZIM_DOWNLOAD_RESUME";   // ADFA-4893
     public static final String EXTRA_FILES = "files";
     public static final String EXTRA_LABELS = "labels";
     public static final String EXTRA_BYTES = "bytes";
@@ -59,9 +61,11 @@ public final class ZimDownloadService extends Service {
     private static int sPercent = 0;
     private static long sSpeed = 0;
     private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
+    private static volatile boolean sPaused = false;     // ADFA-4893: active job paused on the server (session-level)
     private static Listener sListener;
 
     public static boolean isRunning() { return sRunning; }
+    public static boolean isPaused() { return sPaused; }
     public static boolean hasSession() { return sFiles.length > 0; }
     /** All items are terminal (done/failed) and nothing is in flight. */
     public static boolean isComplete() {
@@ -101,10 +105,21 @@ public final class ZimDownloadService extends Service {
         }
     }
 
+    /** ADFA-4893: pause the active job (the server keeps the partial). No-op if nothing is running. */
+    public static void pause(Context ctx) {
+        if (!sRunning) return;
+        ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_PAUSE));
+    }
+
+    /** ADFA-4893: resume a paused job; polling/progress continues from the partial. */
+    public static void resume(Context ctx) {
+        ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RESUME));
+    }
+
     /** Clear the session so a new selection can start fresh. */
     public static void finishSession() {
         sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; sStatus = new int[0];
-        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sLastProgressAt = 0L;
+        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sPaused = false; sLastProgressAt = 0L;
     }
 
     private static final int MAX_ATTEMPTS = 3;      // total tries per ZIM before marking it failed
@@ -123,9 +138,25 @@ public final class ZimDownloadService extends Service {
 
         if (ACTION_CANCEL.equals(action)) {
             if (client != null) client.cancel();
-            sRunning = false;
+            sRunning = false; sPaused = false;
             publish();
             main.post(() -> { stopForeground(true); stopSelf(); });
+            return START_NOT_STICKY;
+        }
+
+        // ADFA-4893: pause/resume the active job. Handled BEFORE the sRunning guard (the session is
+        // still "running" while paused). The queue never advances during a pause because the paused
+        // job never reaches onDone/onError, so processNext() isn't called.
+        if (ACTION_PAUSE.equals(action)) {
+            if (client != null) client.pause();
+            sPaused = true;
+            publish();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_RESUME.equals(action)) {
+            if (client != null) client.resume();
+            sPaused = false;
+            publish();
             return START_NOT_STICKY;
         }
 
@@ -142,7 +173,7 @@ public final class ZimDownloadService extends Service {
             if (sLabels == null) sLabels = sFiles;
             if (sBytes == null) sBytes = new long[sFiles.length];
             sStatus = new int[sFiles.length];
-            sIndex = 0; sPercent = 0; sSpeed = 0;
+            sIndex = 0; sPercent = 0; sSpeed = 0; sPaused = false;
             sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat at session start
         }
 
@@ -176,12 +207,20 @@ public final class ZimDownloadService extends Service {
         client = new RestContentClient();
         client.addZim(sFiles[i], new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
+                if (sPaused) sPaused = false;   // ADFA-4893: progress means the server resumed
                 sPercent = percent; sSpeed = parseRate(speed);
                 sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each poll
                 if (sStatus[i] != INDEXING) sStatus[i] = ACTIVE;
                 publish(); updateNotification(sLabels[i]);
             }
             @Override public void onIndexing() { sStatus[i] = INDEXING; sLastProgressAt = android.os.SystemClock.elapsedRealtime(); publish(); }
+            @Override public void onPaused(int percent) {
+                // ADFA-4893: server acknowledged the pause. Keep the heartbeat fresh (a pause is
+                // intentional, not a dead session) and let the screen render the paused state.
+                sPercent = percent; sPaused = true;
+                sLastProgressAt = android.os.SystemClock.elapsedRealtime();
+                publish();
+            }
             @Override public void onLog(String line) { /* logcat only */ }
             @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
             @Override public void onError(String message) {

@@ -75,6 +75,39 @@
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="@color/k2go_muted" />
 
+        <!-- ADFA-4893: session controls live HERE, on the status screen (not the index, not the
+             notification): Pause <-> Resume + Cancel. ZimDownloadService (the poll) is the source of
+             truth for the label + visibility; hidden when nothing is in flight. -->
+        <LinearLayout
+            android:id="@+id/k2go_zprep_controls"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/k2go_zprep_pause"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="@string/k2go_dl_pause"
+                android:textColor="@color/k2go_teal"
+                android:textAllCaps="false"
+                android:background="@drawable/k2go_getmore_bg" />
+
+            <Button
+                android:id="@+id/k2go_zprep_cancel"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="@string/k2go_zim_notif_cancel"
+                android:textColor="@color/k2go_ink"
+                android:textAllCaps="false"
+                android:background="@drawable/k2go_getmore_bg" />
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/k2go_zprep_list"
             android:layout_width="match_parent"

@@ -12,16 +12,19 @@
  */
 package org.iiab.controller.redesign;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.Locale;
@@ -33,6 +36,8 @@ public class ZimPreparingFragment extends Fragment {
     private TextView label, pct, detail;
     private ProgressBar bar;
     private LinearLayout listv;
+    private LinearLayout controls;          // ADFA-4893: session control row (pause/resume + cancel)
+    private Button pauseBtn, cancelBtn;
 
     /**
      * ADFA-5074: {@code newInstance(boolean fromIndex)} used to live here, and every caller now
@@ -53,6 +58,20 @@ public class ZimPreparingFragment extends Fragment {
         detail = root.findViewById(R.id.k2go_zprep_detail);
         bar = root.findViewById(R.id.k2go_zprep_bar);
         listv = root.findViewById(R.id.k2go_zprep_list);
+        // ADFA-4893: session controls on the status screen. Poll (service) drives label + visibility.
+        controls = root.findViewById(R.id.k2go_zprep_controls);
+        pauseBtn = root.findViewById(R.id.k2go_zprep_pause);
+        cancelBtn = root.findViewById(R.id.k2go_zprep_cancel);
+        pauseBtn.setOnClickListener(v -> {
+            android.content.Context ctx = requireContext().getApplicationContext();
+            if (ZimDownloadService.isPaused()) ZimDownloadService.resume(ctx);
+            else ZimDownloadService.pause(ctx);
+        });
+        cancelBtn.setOnClickListener(v -> {
+            android.content.Context ctx = requireContext().getApplicationContext();
+            ContextCompat.startForegroundService(ctx,
+                    new Intent(ctx, ZimDownloadService.class).setAction(ZimDownloadService.ACTION_CANCEL));
+        });
         // ADFA-5074: the shared animation block declares no asset; the rule picks it.
         org.iiab.controller.util.ProgressVisuals.apply(root, org.iiab.controller.system.domain.ContentType.ZIM);
 
@@ -97,6 +116,15 @@ public class ZimPreparingFragment extends Fragment {
                 ? " · " + humanRate(sp) + getString(R.string.k2go_rate_per_second) : "";
         detail.setText(getString(R.string.k2go_zim_prep_detail_fmt,
                 gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), speedPart, doneCount, n));
+
+        // ADFA-4893: session controls — shown only while a job is in flight; poll is the source of truth.
+        boolean active = ZimDownloadService.isRunning() && !allDone;
+        controls.setVisibility(active ? View.VISIBLE : View.GONE);
+        if (active) {
+            boolean paused = ZimDownloadService.isPaused();
+            pauseBtn.setText(paused ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
+            if (paused) label.setText(R.string.k2go_dl_paused);
+        }
 
         drawChecklist(labels, status);
     }
