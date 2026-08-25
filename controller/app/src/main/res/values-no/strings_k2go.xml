@@ -531,7 +531,7 @@
     <string name="k2go_zim_preparing_title">Forbereder innhold…</string>
     <string name="k2go_zim_preparing_sub">Store nedlastinger. Du kan la den kjøre.</string>
     <string name="k2go_zim_downloading_fmt">Laster ned %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s av %2$s%3$s · %4$d av %5$d elementer · gjenopptas hvis den faller ut</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s av %2$s%3$s · %4$d av %5$d elementer</string>
     <string name="k2go_zim_leave_title">La den kjøre</string>
     <string name="k2go_zim_leave_body">Vi varsler deg når innholdet ditt er klart.</string>
     <string name="k2go_zim_run_bg">Kjør i bakgrunnen</string>

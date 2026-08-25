@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Προετοιμασία περιεχομένου…</string>
     <string name="k2go_zim_preparing_sub">Μεγάλες λήψεις. Μπορείτε να το αφήσετε να εκτελείται.</string>
     <string name="k2go_zim_downloading_fmt">Λήψη %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s από %2$s%3$s · %4$d από %5$d στοιχεία · επαναλαμβάνεται αν διακοπεί</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s από %2$s%3$s · %4$d από %5$d στοιχεία</string>
     <string name="k2go_zim_leave_title">Αφήστε το να εκτελείται</string>
     <string name="k2go_zim_leave_body">Θα σας ειδοποιήσουμε όταν το περιεχόμενό σας είναι έτοιμο.</string>
     <string name="k2go_zim_run_bg">Εκτέλεση στο παρασκήνιο</string>

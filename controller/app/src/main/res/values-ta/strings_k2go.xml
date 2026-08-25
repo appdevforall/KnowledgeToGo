@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">உள்ளடக்கம் தயாராகிறது…</string>
     <string name="k2go_zim_preparing_sub">பெரிய பதிவிறக்கங்கள். இதை இயங்க விட்டுவிடலாம்.</string>
     <string name="k2go_zim_downloading_fmt">%1$s பதிவிறக்கப்படுகிறது</string>
-    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s-இல் %1$s · %5$d-இல் %4$d பொருள்கள் · துண்டித்தால் மீண்டும் தொடரும்</string>
+    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s-இல் %1$s · %5$d-இல் %4$d பொருள்கள்</string>
     <string name="k2go_zim_leave_title">இயங்க விடு</string>
     <string name="k2go_zim_leave_body">உங்கள் உள்ளடக்கம் தயாராகும்போது நாங்கள் உங்களுக்குத் தெரிவிப்போம்.</string>
     <string name="k2go_zim_run_bg">பின்னணியில் இயக்கு</string>

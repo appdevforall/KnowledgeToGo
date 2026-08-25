@@ -531,7 +531,7 @@
     <string name="k2go_zim_preparing_title">Préparation du contenu…</string>
     <string name="k2go_zim_preparing_sub">Téléchargements volumineux. Vous pouvez le laisser tourner.</string>
     <string name="k2go_zim_downloading_fmt">Téléchargement de %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s sur %2$s%3$s · %4$d sur %5$d éléments · reprend en cas de coupure</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s sur %2$s%3$s · %4$d sur %5$d éléments</string>
     <string name="k2go_zim_leave_title">Laissez-le tourner</string>
     <string name="k2go_zim_leave_body">Nous vous préviendrons lorsque votre contenu sera prêt.</string>
     <string name="k2go_zim_run_bg">Exécuter en arrière-plan</string>

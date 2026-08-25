@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">Подготовка контента…</string>
     <string name="k2go_zim_preparing_sub">Большие загрузки. Можно оставить работать.</string>
     <string name="k2go_zim_downloading_fmt">Загрузка %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s из %2$s%3$s · %4$d из %5$d элементов · возобновится при обрыве</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s из %2$s%3$s · %4$d из %5$d элементов</string>
     <string name="k2go_zim_leave_title">Оставьте работать</string>
     <string name="k2go_zim_leave_body">Мы уведомим вас, когда контент будет готов.</string>
     <string name="k2go_zim_run_bg">Работать в фоне</string>

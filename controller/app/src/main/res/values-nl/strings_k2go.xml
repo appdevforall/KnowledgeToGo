@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">Inhoud voorbereiden…</string>
     <string name="k2go_zim_preparing_sub">Grote downloads. Je kunt het laten doorlopen.</string>
     <string name="k2go_zim_downloading_fmt">%1$s downloaden</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s van %2$s%3$s · %4$d van %5$d items · hervat bij onderbreking</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s van %2$s%3$s · %4$d van %5$d items</string>
     <string name="k2go_zim_leave_title">Laat het doorlopen</string>
     <string name="k2go_zim_leave_body">We laten het je weten wanneer je inhoud klaar is.</string>
     <string name="k2go_zim_run_bg">Op achtergrond uitvoeren</string>

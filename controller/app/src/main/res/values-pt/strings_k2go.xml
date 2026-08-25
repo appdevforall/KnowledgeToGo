@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">A preparar o conteúdo…</string>
     <string name="k2go_zim_preparing_sub">Transferências grandes. Pode deixá-la a decorrer.</string>
     <string name="k2go_zim_downloading_fmt">A transferir %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s de %2$s%3$s · %4$d de %5$d itens · retoma se cair</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s de %2$s%3$s · %4$d de %5$d itens</string>
     <string name="k2go_zim_leave_title">Deixe a decorrer</string>
     <string name="k2go_zim_leave_body">Notificá-lo-emos quando o seu conteúdo estiver pronto.</string>
     <string name="k2go_zim_run_bg">Executar em segundo plano</string>

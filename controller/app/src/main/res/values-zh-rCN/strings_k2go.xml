@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">正在准备内容…</string>
     <string name="k2go_zim_preparing_sub">大型下载。您可以让它继续运行。</string>
     <string name="k2go_zim_downloading_fmt">正在下载 %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s 中的 %1$s · %5$d 个项目中的 %4$d 个 · 中断后恢复</string>
+    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s 中的 %1$s · %5$d 个项目中的 %4$d 个</string>
     <string name="k2go_zim_leave_title">让它继续运行</string>
     <string name="k2go_zim_leave_body">内容准备就绪后我们会通知您。</string>
     <string name="k2go_zim_run_bg">在后台运行</string>
