@@ -23,7 +23,7 @@
             android:textColor="@color/k2go_ink" />
     </LinearLayout>
 
-    <FrameLayout android:id="@+id/sec_qr_frame" android:layout_width="242dp" android:layout_height="242dp"
+    <FrameLayout android:id="@+id/sec_qr_frame" android:layout_width="@dimen/k2go_qr_size" android:layout_height="@dimen/k2go_qr_size"
         android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="@drawable/k2go_card_bg">
         <ImageView android:id="@+id/sec_qr" android:layout_width="match_parent" android:layout_height="match_parent"
             android:padding="10dp" android:contentDescription="@string/k2go_tab_clone" />

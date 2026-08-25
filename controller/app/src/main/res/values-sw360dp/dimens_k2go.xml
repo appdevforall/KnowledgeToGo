@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- K2Go redesign dimensions (ADFA-5236: QR size by smallest-width). -->
+<resources>
+    <dimen name="k2go_qr_size">288dp</dimen>
+</resources>
