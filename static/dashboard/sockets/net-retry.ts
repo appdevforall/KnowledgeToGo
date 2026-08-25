@@ -19,6 +19,10 @@ export interface RetryOpts {
     baseMs?: number;
     /** Upper bound on a single backoff. Default 8000. */
     maxMs?: number;
+    /** ADFA-4893: explicit backoff schedule in ms; overrides baseMs/maxMs/jitter. The wait after a
+     *  failed attempt k (1-based) is delaysMs[k-1] (clamped to the last entry). With N delays and
+     *  tries defaulting to N+1, this yields N visible reconnect waits. */
+    delaysMs?: number[];
     /** Fraction of jitter added to each delay [0..1]. Default 0.2. */
     jitter?: number;
     /** Aborts the loop (between and, via fetch, within attempts). */
@@ -56,7 +60,7 @@ function aborted(opts: RetryOpts): boolean {
  * @param fn receives the 1-based attempt number.
  */
 export async function withRetry<T>(fn: (attempt: number) => Promise<T>, opts: RetryOpts = {}): Promise<T> {
-    const tries = Math.max(1, opts.tries ?? 4);
+    const tries = Math.max(1, opts.tries ?? (opts.delaysMs ? opts.delaysMs.length + 1 : 4));
     const baseMs = opts.baseMs ?? 500;
     const maxMs = opts.maxMs ?? 8000;
     const jitter = opts.jitter ?? 0.2;
@@ -72,8 +76,9 @@ export async function withRetry<T>(fn: (attempt: number) => Promise<T>, opts: Re
             lastErr = err;
             if (err instanceof Aborted || aborted(opts)) throw new Aborted();
             if (attempt >= tries || !isTransient(err)) throw err;
-            const backoff = Math.min(maxMs, baseMs * 2 ** (attempt - 1));
-            const delayMs = Math.round(backoff * (1 + Math.random() * jitter));
+            const delayMs = opts.delaysMs
+                ? opts.delaysMs[Math.min(attempt - 1, opts.delaysMs.length - 1)]
+                : Math.round(Math.min(maxMs, baseMs * 2 ** (attempt - 1)) * (1 + Math.random() * jitter));
             opts.onRetry?.({ attempt, delayMs, err });
             await sleep(delayMs, opts.signal);   // throws Aborted if the signal fires mid-backoff
         }
