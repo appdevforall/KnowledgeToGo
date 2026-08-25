@@ -800,6 +800,7 @@
     <string name="k2go_dl_soft_slow">Tilkoblingen er for treg</string>
     <string name="k2go_dl_soft_stopped">Nedlastingen stoppet</string>
     <string name="k2go_dl_paused">Nedlasting satt på pause</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">På pause</string>
     <string name="k2go_dl_cancel_title">Avbryte nedlastingen?</string>
     <string name="k2go_dl_cancel_body">Nedlastingen stopper og starter forfra, og du må sette opp grunnsystemet og velge innholdet på nytt.</string>

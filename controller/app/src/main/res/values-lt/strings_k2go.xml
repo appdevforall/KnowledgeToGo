@@ -800,6 +800,7 @@
     <string name="k2go_dl_soft_slow">Ryšys per lėtas</string>
     <string name="k2go_dl_soft_stopped">Atsisiuntimas sustojo</string>
     <string name="k2go_dl_paused">Atsisiuntimas pristabdytas</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Pristabdyta</string>
     <string name="k2go_dl_cancel_title">Atšaukti atsisiuntimą?</string>
     <string name="k2go_dl_cancel_body">Atsisiuntimas sustos ir prasidės iš naujo, o pagrindinę sistemą ir turinį reikės pasirinkti dar kartą.</string>

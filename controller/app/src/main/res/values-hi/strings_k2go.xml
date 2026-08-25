@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">कनेक्शन बहुत धीमा है</string>
     <string name="k2go_dl_soft_stopped">डाउनलोड रुक गया</string>
     <string name="k2go_dl_paused">डाउनलोड रोका गया</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">रोका गया</string>
     <string name="k2go_dl_cancel_title">डाउनलोड रद्द करें?</string>
     <string name="k2go_dl_cancel_body">डाउनलोड रुक जाएगा और शुरू से चालू होगा, और आपको बेस सिस्टम और सामग्री फिर से चुननी होगी।</string>

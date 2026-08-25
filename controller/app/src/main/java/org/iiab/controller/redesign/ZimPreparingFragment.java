@@ -129,7 +129,9 @@ public class ZimPreparingFragment extends Fragment {
         if (active) {
             boolean paused = ZimDownloadService.isPaused();
             pauseBtn.setText(paused ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
+            int rc = ZimDownloadService.reconnectAttempt();
             if (paused) label.setText(R.string.k2go_dl_paused);
+            else if (rc > 0) label.setText(getString(R.string.k2go_dl_reconnecting_fmt, rc, ZimDownloadService.reconnectTotal()));
         }
 
         drawChecklist(labels, status);

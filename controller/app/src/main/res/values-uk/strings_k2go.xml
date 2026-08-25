@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">З’єднання надто повільне</string>
     <string name="k2go_dl_soft_stopped">Завантаження зупинено</string>
     <string name="k2go_dl_paused">Завантаження призупинено</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Призупинено</string>
     <string name="k2go_dl_cancel_title">Скасувати завантаження?</string>
     <string name="k2go_dl_cancel_body">Завантаження зупиниться й почнеться спочатку, а базову систему та вміст доведеться вибрати знову.</string>

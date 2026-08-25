@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">Conexiunea este prea lentă</string>
     <string name="k2go_dl_soft_stopped">Descărcarea s-a oprit</string>
     <string name="k2go_dl_paused">Descărcare în pauză</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">În pauză</string>
     <string name="k2go_dl_cancel_title">Anulați descărcarea?</string>
     <string name="k2go_dl_cancel_body">Descărcarea se va opri și va reîncepe de la început, iar sistemul de bază și conținutul vor trebui alese din nou.</string>

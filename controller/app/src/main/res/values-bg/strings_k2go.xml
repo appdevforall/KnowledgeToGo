@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">Връзката е твърде бавна</string>
     <string name="k2go_dl_soft_stopped">Изтеглянето спря</string>
     <string name="k2go_dl_paused">Изтеглянето е на пауза</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">На пауза</string>
     <string name="k2go_dl_cancel_title">Да се откаже ли изтеглянето?</string>
     <string name="k2go_dl_cancel_body">Изтеглянето ще спре и ще започне отначало, а базовата система и съдържанието ще трябва да бъдат избрани отново.</string>

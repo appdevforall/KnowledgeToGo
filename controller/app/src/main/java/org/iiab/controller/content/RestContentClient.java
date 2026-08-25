@@ -54,6 +54,8 @@ public final class RestContentClient {
         void onError(String message);                // failure (terminal)
         /** ADFA-4893: 'paused' phase (best-effort). Default no-op so existing implementers compile unchanged. */
         default void onPaused(int percent) {}
+        /** ADFA-4893: server is reconnecting (attempt n of total) after a network drop; keeps polling. */
+        default void onReconnecting(int attempt, int total) {}
     }
 
     private static final String BASE = BoxEndpoints.API + "/kiwix";
@@ -96,12 +98,17 @@ public final class RestContentClient {
             long speed = j.optLong("speed", 0L);
             String detail = j.isNull("detail") ? null : j.optString("detail", null);
             String error = j.isNull("error") ? null : j.optString("error", null);
+            int retryAttempt = j.optInt("retryAttempt", 0);   // ADFA-4893: reconnect state (0 when not retrying)
+            int retryTotal = j.optInt("retryTotal", 0);
 
             if (detail != null && !detail.isEmpty()) deliver(() -> listener.onLog(detail));
 
             switch (phase) {
                 case "downloading":
-                    if (percent >= 0) {
+                    if (retryAttempt > 0) {
+                        final int a = retryAttempt, t = retryTotal;
+                        deliver(() -> listener.onReconnecting(a, t));
+                    } else if (percent >= 0) {
                         final int p = percent; final String rate = formatRate(speed);
                         deliver(() -> listener.onProgress(p, rate));
                     }

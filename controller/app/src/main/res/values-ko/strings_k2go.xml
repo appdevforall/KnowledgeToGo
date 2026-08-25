@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">연결이 너무 느립니다</string>
     <string name="k2go_dl_soft_stopped">다운로드가 중지되었습니다</string>
     <string name="k2go_dl_paused">다운로드 일시중지됨</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">일시중지됨</string>
     <string name="k2go_dl_cancel_title">다운로드를 취소할까요?</string>
     <string name="k2go_dl_cancel_body">다운로드가 중지되고 처음부터 다시 시작되며, 기본 시스템 설정과 콘텐츠 선택도 다시 해야 합니다.</string>

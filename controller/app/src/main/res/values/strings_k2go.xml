@@ -885,6 +885,7 @@
     <string name="k2go_dl_soft_slow">The connection is too slow</string>
     <string name="k2go_dl_soft_stopped">The download stopped</string>
     <string name="k2go_dl_paused">Download paused</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Paused</string>
     <string name="k2go_dl_cancel_title">Cancel the download?</string>
     <string name="k2go_dl_cancel_body">The download will stop and start over from the beginning, and you will set up the base system and choose your content again.</string>

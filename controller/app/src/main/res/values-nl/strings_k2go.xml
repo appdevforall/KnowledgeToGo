@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">De verbinding is te traag</string>
     <string name="k2go_dl_soft_stopped">De download is gestopt</string>
     <string name="k2go_dl_paused">Download gepauzeerd</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Gepauzeerd</string>
     <string name="k2go_dl_cancel_title">Download annuleren?</string>
     <string name="k2go_dl_cancel_body">De download stopt en begint opnieuw vanaf het begin, en je stelt het basissysteem opnieuw in en kiest je inhoud opnieuw.</string>

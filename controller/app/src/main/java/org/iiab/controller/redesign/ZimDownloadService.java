@@ -62,10 +62,14 @@ public final class ZimDownloadService extends Service {
     private static long sSpeed = 0;
     private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
     private static volatile boolean sPaused = false;     // ADFA-4893: active job paused on the server (session-level)
+    private static volatile int sReconnectAttempt = 0;   // ADFA-4893: >0 while the server reconnects (n of total)
+    private static volatile int sReconnectTotal = 0;
     private static Listener sListener;
 
     public static boolean isRunning() { return sRunning; }
     public static boolean isPaused() { return sPaused; }
+    public static int reconnectAttempt() { return sReconnectAttempt; }
+    public static int reconnectTotal() { return sReconnectTotal; }
     public static boolean hasSession() { return sFiles.length > 0; }
     /** All items are terminal (done/failed) and nothing is in flight. */
     public static boolean isComplete() {
@@ -119,15 +123,12 @@ public final class ZimDownloadService extends Service {
     /** Clear the session so a new selection can start fresh. */
     public static void finishSession() {
         sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; sStatus = new int[0];
-        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sPaused = false; sLastProgressAt = 0L;
+        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sPaused = false;
+        sReconnectAttempt = 0; sReconnectTotal = 0; sLastProgressAt = 0L;
     }
-
-    private static final int MAX_ATTEMPTS = 3;      // total tries per ZIM before marking it failed
-    private static final long RETRY_DELAY_MS = 4000L;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private RestContentClient client;
-    private int attempts = 0;                        // attempts for the ZIM currently in flight
 
     @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
     @Nullable @Override public IBinder onBind(Intent intent) { return null; }
@@ -138,7 +139,7 @@ public final class ZimDownloadService extends Service {
 
         if (ACTION_CANCEL.equals(action)) {
             if (client != null) client.cancel();
-            sRunning = false; sPaused = false;
+            sRunning = false; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
             publish();
             main.post(() -> { stopForeground(true); stopSelf(); });
             return START_NOT_STICKY;
@@ -173,7 +174,7 @@ public final class ZimDownloadService extends Service {
             if (sLabels == null) sLabels = sFiles;
             if (sBytes == null) sBytes = new long[sFiles.length];
             sStatus = new int[sFiles.length];
-            sIndex = 0; sPercent = 0; sSpeed = 0; sPaused = false;
+            sIndex = 0; sPercent = 0; sSpeed = 0; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
             sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat at session start
         }
 
@@ -196,7 +197,6 @@ public final class ZimDownloadService extends Service {
         int i = firstPending();
         if (i < 0) { sessionComplete(); return; }
         sIndex = i; sPercent = 0; sStatus[i] = ACTIVE;
-        attempts = 0;
         publish();
         updateNotification(sLabels[i]);
         startItem(i);
@@ -208,6 +208,7 @@ public final class ZimDownloadService extends Service {
         client.addZim(sFiles[i], new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
                 if (sPaused) sPaused = false;   // ADFA-4893: progress means the server resumed
+                sReconnectAttempt = 0;          // ADFA-4893: progress means the reconnect succeeded
                 sPercent = percent; sSpeed = parseRate(speed);
                 sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each poll
                 if (sStatus[i] != INDEXING) sStatus[i] = ACTIVE;
@@ -221,26 +222,22 @@ public final class ZimDownloadService extends Service {
                 sLastProgressAt = android.os.SystemClock.elapsedRealtime();
                 publish();
             }
+            @Override public void onReconnecting(int attempt, int total) {
+                // ADFA-4893: the server lost the link and is retrying (n of total). Surface it so the
+                // screen shows "Reconnecting n/N"; keep the heartbeat fresh — this is not a dead session.
+                sReconnectAttempt = attempt; sReconnectTotal = total;
+                sLastProgressAt = android.os.SystemClock.elapsedRealtime();
+                publish();
+            }
             @Override public void onLog(String line) { /* logcat only */ }
             @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
             @Override public void onError(String message) {
+                // ADFA-4893: the server owns reconnection (5 visible attempts). When it gives up we mark
+                // the item FAILED and let the user retry it (checklist tap) — no invisible app-side re-POST.
                 android.util.Log.w("K2Go-Provision", "zim job [" + i + "] error: " + message);
-                retryOrFail(i);
+                sStatus[i] = FAILED; sReconnectAttempt = 0; publish(); processNext();
             }
         });
-    }
-
-    /** Transient failure (server warming up, a flaky mirror): retry the same ZIM a couple times
-     *  before giving up, so a blip doesn't leave content missing. */
-    private void retryOrFail(int i) {
-        attempts++;
-        if (attempts < MAX_ATTEMPTS) {
-            android.util.Log.w("K2Go-Provision", "zim job [" + i + "] transient failure, retry " + attempts + "/" + (MAX_ATTEMPTS - 1));
-            main.postDelayed(() -> startItem(i), RETRY_DELAY_MS);
-        } else {
-            android.util.Log.w("K2Go-Provision", "zim job [" + i + "] failed after " + attempts + " attempts");
-            sStatus[i] = FAILED; publish(); processNext();
-        }
     }
 
     private void sessionComplete() {

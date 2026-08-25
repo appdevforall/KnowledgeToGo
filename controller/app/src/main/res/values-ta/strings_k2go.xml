@@ -790,6 +790,7 @@
     <string name="k2go_dl_soft_slow">இணைப்பு மிகவும் மெதுவாக உள்ளது</string>
     <string name="k2go_dl_soft_stopped">பதிவிறக்கம் நின்றது</string>
     <string name="k2go_dl_paused">பதிவிறக்கம் இடைநிறுத்தப்பட்டது</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">இடைநிறுத்தப்பட்டது</string>
     <string name="k2go_dl_cancel_title">பதிவிறக்கத்தை ரத்து செய்யவா?</string>
     <string name="k2go_dl_cancel_body">பதிவிறக்கம் நின்று முதலில் இருந்து மீண்டும் தொடங்கும், மேலும் அடிப்படை அமைப்பையும் உள்ளடக்கத்தையும் மீண்டும் தேர்ந்தெடுக்க வேண்டும்.</string>

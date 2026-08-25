@@ -791,6 +791,7 @@
     <string name="k2go_dl_soft_slow">Η σύνδεση είναι πολύ αργή</string>
     <string name="k2go_dl_soft_stopped">Η λήψη σταμάτησε</string>
     <string name="k2go_dl_paused">Η λήψη σε παύση</string>
+    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Σε παύση</string>
     <string name="k2go_dl_cancel_title">Ακύρωση της λήψης;</string>
     <string name="k2go_dl_cancel_body">Η λήψη θα σταματήσει και θα ξεκινήσει από την αρχή, και θα ρυθμίσετε ξανά το βασικό σύστημα και θα επιλέξετε ξανά το περιεχόμενό σας.</string>
