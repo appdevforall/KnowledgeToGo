@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">La conexión es demasiado lenta</string>
     <string name="k2go_dl_soft_stopped">La descarga se detuvo</string>
     <string name="k2go_dl_paused">Descarga en pausa</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">En pausa</string>
     <string name="k2go_dl_cancel_title">¿Cancelar la descarga?</string>
     <string name="k2go_dl_cancel_body">La descarga se detendrá y comenzará de nuevo desde el principio, y volverás a configurar el sistema base y a elegir tu contenido.</string>

@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">Bağlantı çox yavaşdır</string>
     <string name="k2go_dl_soft_stopped">Yükləmə dayandı</string>
     <string name="k2go_dl_paused">Yükləmə fasilədə</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Fasilədə</string>
     <string name="k2go_dl_cancel_title">Yükləmə ləğv edilsin?</string>
     <string name="k2go_dl_cancel_body">Yükləmə dayanacaq və əvvəldən başlayacaq; əsas sistemi və məzmunu yenidən seçəcəksiniz.</string>

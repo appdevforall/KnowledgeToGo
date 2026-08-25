@@ -63,15 +63,24 @@ public class ZimPreparingFragment extends Fragment {
         controls = root.findViewById(R.id.k2go_zprep_controls);
         pauseBtn = root.findViewById(R.id.k2go_zprep_pause);
         cancelBtn = root.findViewById(R.id.k2go_zprep_cancel);
+        // ADFA-4893: the primary button morphs Pause -> Resume -> Retry; the action is decided at tap
+        // time from the live state, so we don't remove/re-add buttons across states.
         pauseBtn.setOnClickListener(v -> {
             android.content.Context ctx = requireContext().getApplicationContext();
-            if (ZimDownloadService.isPaused()) ZimDownloadService.resume(ctx);
+            if (!ZimDownloadService.isRunning() && ZimDownloadService.hasFailed()) ZimDownloadService.retryFailed(ctx);
+            else if (ZimDownloadService.isPaused()) ZimDownloadService.resume(ctx);
             else ZimDownloadService.pause(ctx);
         });
+        // Cancel is always available: cancels a running session, or dismisses a failed/terminal one.
         cancelBtn.setOnClickListener(v -> {
             android.content.Context ctx = requireContext().getApplicationContext();
-            ContextCompat.startForegroundService(ctx,
-                    new Intent(ctx, ZimDownloadService.class).setAction(ZimDownloadService.ACTION_CANCEL));
+            if (ZimDownloadService.isRunning()) {
+                ContextCompat.startForegroundService(ctx,
+                        new Intent(ctx, ZimDownloadService.class).setAction(ZimDownloadService.ACTION_CANCEL));
+            } else {
+                ZimDownloadService.finishSession();
+                render();
+            }
         });
         // ADFA-4893: only offer the controls when the box's dash-node exposes pause/resume (>= 1.2.4,
         // ADFA-4894). atLeast() returns false for an unknown/older version, so old boxes hide the row
@@ -94,7 +103,7 @@ public class ZimPreparingFragment extends Fragment {
         int idx = ZimDownloadService.index();
         int p = ZimDownloadService.percent();
         int n = labels.length;
-        if (n == 0) return;
+        if (n == 0) { controls.setVisibility(View.GONE); return; }
 
         long totalBytes = 0, doneBytes = 0;
         int doneCount = 0;
@@ -112,37 +121,61 @@ public class ZimPreparingFragment extends Fragment {
         bar.setProgress(overall);
         pct.setText(overall + "%");
 
-        boolean allDone = ZimDownloadService.isComplete();
-        label.setText(allDone
-                ? getString(R.string.k2go_zim_all_ready)
-                : getString(R.string.k2go_zim_downloading_fmt, idx < n ? labels[idx] : ""));
+        boolean anyFailed = ZimDownloadService.hasFailed();
+        boolean running = ZimDownloadService.isRunning();
+        boolean paused = ZimDownloadService.isPaused();
+        int rc = ZimDownloadService.reconnectAttempt();
+        boolean allOk = ZimDownloadService.isComplete() && !anyFailed;
+
+        // Label reflects the true state — honest: never "all ready" when something failed.
+        if (!running && anyFailed) {
+            int f = firstFailed(status);
+            label.setText(f >= 0 ? labels[f] + getString(R.string.k2go_zim_item_failed_suffix)
+                                 : getString(R.string.k2go_zim_downloading_fmt, ""));
+        } else if (paused) {
+            label.setText(R.string.k2go_dl_paused);
+        } else if (running && rc > 0) {
+            // ADFA-4893: match rootfs wording exactly — "Reconnecting…  n of N" (static ellipsis).
+            label.setText(getString(R.string.k2go_dl_attempt, rc, ZimDownloadService.reconnectTotal()));
+        } else if (allOk) {
+            label.setText(R.string.k2go_zim_all_ready);
+        } else {
+            label.setText(getString(R.string.k2go_zim_downloading_fmt, idx < n ? labels[idx] : ""));
+        }
+
         long sp = ZimDownloadService.speed();
-        String speedPart = (!allDone && sp > 0)
+        String speedPart = (running && !paused && rc <= 0 && sp > 0)
                 ? " · " + humanRate(sp) + getString(R.string.k2go_rate_per_second) : "";
         detail.setText(getString(R.string.k2go_zim_prep_detail_fmt,
                 gb(doneBytes / (1024L * 1024L)), gb(totalBytes / (1024L * 1024L)), speedPart, doneCount, n));
 
-        // ADFA-4893: session controls — shown only when the box supports pause/resume and a job is in
-        // flight; poll is the source of truth.
-        boolean active = pauseSupported && ZimDownloadService.isRunning() && !allDone;
-        controls.setVisibility(active ? View.VISIBLE : View.GONE);
-        if (active) {
-            boolean paused = ZimDownloadService.isPaused();
-            pauseBtn.setText(paused ? R.string.k2go_dl_resume : R.string.k2go_dl_pause);
-            int rc = ZimDownloadService.reconnectAttempt();
-            if (paused) label.setText(R.string.k2go_dl_paused);
-            else if (rc > 0) label.setText(getString(R.string.k2go_dl_reconnecting_fmt, rc, ZimDownloadService.reconnectTotal()));
+        // ADFA-4893: [primary][Cancel] row. The primary morphs Pause -> Resume -> Retry; Cancel is always
+        // present. Shown while running (needs pause support, dash-node >= 1.2.4) OR whenever an item failed
+        // (Retry works on any version). Old boxes keep the notification Cancel while running.
+        boolean showControls = (running && pauseSupported) || anyFailed;
+        controls.setVisibility(showControls ? View.VISIBLE : View.GONE);
+        if (showControls) {
+            if (!running && anyFailed) pauseBtn.setText(R.string.k2go_dl_retry);
+            else if (paused) pauseBtn.setText(R.string.k2go_dl_resume);
+            else pauseBtn.setText(R.string.k2go_dl_pause);
         }
 
         drawChecklist(labels, status);
     }
 
     private void drawChecklist(String[] labels, int[] status) {
+        // ADFA-4893: no per-item Retry pill — the status-screen Retry (the morphing primary button) owns
+        // retry now, so the checklist is display-only and the retry affordance stays one consistent size.
         ProvisioningChecklist.render(requireContext(), listv, labels.length, status,
                 ZimDownloadService.DONE, ZimDownloadService.FAILED,
                 i -> (status[i] == ZimDownloadService.FAILED)
                         ? labels[i] + getString(R.string.k2go_zim_item_failed_suffix) : labels[i],
-                i -> ZimDownloadService.retry(requireContext().getApplicationContext(), i));
+                null);
+    }
+
+    private static int firstFailed(int[] status) {
+        for (int i = 0; i < status.length; i++) if (status[i] == ZimDownloadService.FAILED) return i;
+        return -1;
     }
 
     private String gb(long mb) {   // ADFA-4910: one standard size formatter for the whole UI

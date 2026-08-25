@@ -800,7 +800,6 @@
     <string name="k2go_dl_soft_slow">Połączenie jest zbyt wolne</string>
     <string name="k2go_dl_soft_stopped">Pobieranie zatrzymane</string>
     <string name="k2go_dl_paused">Pobieranie wstrzymane</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Wstrzymano</string>
     <string name="k2go_dl_cancel_title">Anulować pobieranie?</string>
     <string name="k2go_dl_cancel_body">Pobieranie zostanie zatrzymane i zacznie się od nowa, a system podstawowy i treści trzeba będzie wybrać ponownie.</string>

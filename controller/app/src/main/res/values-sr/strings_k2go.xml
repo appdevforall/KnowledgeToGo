@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">Веза је превише спора</string>
     <string name="k2go_dl_soft_stopped">Преузимање је заустављено</string>
     <string name="k2go_dl_paused">Преузимање је паузирано</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Паузирано</string>
     <string name="k2go_dl_cancel_title">Отказати преузимање?</string>
     <string name="k2go_dl_cancel_body">Преузимање ће се зауставити и почети испочетка, а основни систем и садржај ћете поново изабрати.</string>

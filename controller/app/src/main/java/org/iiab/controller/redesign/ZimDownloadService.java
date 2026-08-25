@@ -100,15 +100,6 @@ public final class ZimDownloadService extends Service {
         ContextCompat.startForegroundService(ctx, i);
     }
 
-    /** Re-queue a failed item; resume processing if the session had already stopped. */
-    public static void retry(Context ctx, int i) {
-        if (i < 0 || i >= sStatus.length) return;
-        sStatus[i] = PENDING;
-        if (!sRunning) {
-            ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RETRY));
-        }
-    }
-
     /** ADFA-4893: pause the active job (the server keeps the partial). No-op if nothing is running. */
     public static void pause(Context ctx) {
         if (!sRunning) return;
@@ -118,6 +109,22 @@ public final class ZimDownloadService extends Service {
     /** ADFA-4893: resume a paused job; polling/progress continues from the partial. */
     public static void resume(Context ctx) {
         ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RESUME));
+    }
+
+    /** ADFA-4893: true when any item is FAILED (so the status screen can offer a single Retry). */
+    public static boolean hasFailed() {
+        for (int st : sStatus) if (st == FAILED) return true;
+        return false;
+    }
+
+    /** ADFA-4893: re-queue ALL failed items and resume the session — the status-screen Retry (the
+     *  Pause button morphs into it), so a failed run doesn't fall back to a separate per-item control. */
+    public static void retryFailed(Context ctx) {
+        boolean any = false;
+        for (int i = 0; i < sStatus.length; i++) if (sStatus[i] == FAILED) { sStatus[i] = PENDING; any = true; }
+        if (any && !sRunning) {
+            ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RETRY));
+        }
     }
 
     /** Clear the session so a new selection can start fresh. */

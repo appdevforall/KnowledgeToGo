@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">Koneksi terlalu lambat</string>
     <string name="k2go_dl_soft_stopped">Unduhan berhenti</string>
     <string name="k2go_dl_paused">Unduhan dijeda</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Dijeda</string>
     <string name="k2go_dl_cancel_title">Batalkan unduhan?</string>
     <string name="k2go_dl_cancel_body">Unduhan akan berhenti dan dimulai lagi dari awal, dan Anda akan menyiapkan sistem dasar serta memilih konten lagi.</string>

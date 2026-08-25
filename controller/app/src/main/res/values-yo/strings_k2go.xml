@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">Ìsopọ̀ náà lọra jù</string>
     <string name="k2go_dl_soft_stopped">Ìgbàsílẹ̀ ti dúró</string>
     <string name="k2go_dl_paused">Ìgbàsílẹ̀ ti dá dúró</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Ó dúró</string>
     <string name="k2go_dl_cancel_title">Fagilé ìgbàsílẹ̀?</string>
     <string name="k2go_dl_cancel_body">Ìgbàsílẹ̀ yóò dúró yóò sì bẹ̀rẹ̀ láti ìbẹ̀rẹ̀, ìwọ yóò sì tún ètò ìpìlẹ̀ ṣe kí o sì tún àkóónú yàn.</string>

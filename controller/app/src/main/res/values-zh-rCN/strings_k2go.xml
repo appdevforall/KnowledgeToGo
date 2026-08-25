@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">连接太慢</string>
     <string name="k2go_dl_soft_stopped">下载已停止</string>
     <string name="k2go_dl_paused">下载已暂停</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">已暂停</string>
     <string name="k2go_dl_cancel_title">取消下载吗？</string>
     <string name="k2go_dl_cancel_body">下载将停止并从头开始，你需要重新设置基础系统并重新选择内容。</string>

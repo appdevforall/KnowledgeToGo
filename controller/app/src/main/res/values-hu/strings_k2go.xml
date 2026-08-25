@@ -790,7 +790,6 @@
     <string name="k2go_dl_soft_slow">A kapcsolat túl lassú</string>
     <string name="k2go_dl_soft_stopped">A letöltés leállt</string>
     <string name="k2go_dl_paused">Letöltés szüneteltetve</string>
-    <string name="k2go_dl_reconnecting_fmt">Reconnecting %1$d/%2$d</string>
     <string name="k2go_dl_paused_notif">Szüneteltetve</string>
     <string name="k2go_dl_cancel_title">Megszakítja a letöltést?</string>
     <string name="k2go_dl_cancel_body">A letöltés leáll és elölről kezdődik, az alaprendszert és a tartalmat pedig újra ki kell választani.</string>
