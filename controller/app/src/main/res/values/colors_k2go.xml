@@ -27,9 +27,20 @@
     <color name="k2go_amber">#F2A23C</color>
     <color name="k2go_amber_text">#B0740F</color>
     <color name="k2go_clay">#C4462F</color>
-    <color name="k2go_notice_ink">#3A2320</color>  <!-- fixed dark; notice bg is always light pink -->
-    <color name="k2go_info_ink">#0E5C63</color>  <!-- ADFA-4955: fixed dark teal for text over k2go_info_bg (fixed-light); no values-night override so it stays readable in dark. -->
-    <color name="k2go_warn_ink">#8A5A00</color>  <!-- ADFA-4958: fixed dark amber for text over k2go_warn_bg (fixed-light); no values-night override. -->
+    <color name="k2go_notice_ink">#A8351F</color>  <!-- ADFA-5267 (light fix): notice banner text (Clay). light #A8351F = 5.28:1; -night twin #F2B4A4 (dark container #2E1613). -->
+    <color name="k2go_info_ink">#0E5C63</color>  <!-- ADFA-4955/5267: text over the info banner. Now paired with a -night twin (#7FE0A3), since the info container goes dark (#153029) in dark mode. -->
+    <color name="k2go_warn_ink">#8A5A00</color>  <!-- ADFA-4958/5267: warn banner text; now paired with a -night twin (#F6CE86), since the warn container goes dark (#2C2211) in dark mode. -->
+
+    <!-- ADFA-5267: note/status banner tokens, de-hardcoded from the layer-list drawables so a
+         reported color is a one-token change. container = tinted body; bar = accent. Light values
+         are unchanged from the old inline hex; all four families get -night twins (design: k2go-banner-families-dark-v1).
+         Bars: info=teal, warn=Marigold, notice=clay (+bright dark twin), ok=leaf. -->
+    <color name="k2go_info_container">#DCE9EA</color>    <!-- was inline in k2go_info_bg; -night = #153029 -->
+    <color name="k2go_warn_container">#FBEFD3</color>    <!-- warn banner body; -night = #2C2211 -->
+    <color name="k2go_notice_container">#F7E2DD</color>  <!-- was inline in k2go_notice_bg -->
+    <color name="k2go_ok_container">#DCF0E3</color>      <!-- was inline in k2go_ok_bg -->
+    <color name="k2go_notice_bar">#C4462F</color>       <!-- notice accent (Clay); -night = #D9694F (brighter, AA on the dark container) -->
+    <color name="k2go_ok_ink">#17703D</color>           <!-- ADFA-5267 (light fix): ok banner text (dark Leaf). light #17703D = 5.15:1; -night = #8CE0A0 -->
     <!-- ADFA-4901: install log terminal — fixed dark surface + light-green text in both themes
          (reused by all proot module install logs). -->
     <color name="k2go_terminal_bg">#0F1512</color>

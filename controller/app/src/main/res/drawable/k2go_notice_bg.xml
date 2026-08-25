@@ -2,13 +2,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/k2go_clay" />
+            <solid android:color="@color/k2go_notice_bar" />
             <corners android:radius="16dp" />
         </shape>
     </item>
     <item android:left="5dp">
         <shape android:shape="rectangle">
-            <solid android:color="#F7E2DD" />
+            <solid android:color="@color/k2go_notice_container" />
             <corners android:radius="16dp" />
         </shape>
     </item>

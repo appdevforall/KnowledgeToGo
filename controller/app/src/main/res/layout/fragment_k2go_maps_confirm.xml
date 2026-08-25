@@ -64,7 +64,7 @@
                 android:text="@string/k2go_maps_takes_time_title"
                 android:textStyle="bold"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
-                android:textColor="@color/k2go_amber_text" />
+                android:textColor="@color/k2go_warn_ink" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -72,7 +72,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/k2go_maps_takes_time_body"
                 android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/k2go_amber_text" />
+                android:textColor="@color/k2go_warn_ink" />
         </LinearLayout>
 
         <LinearLayout
