@@ -358,10 +358,10 @@ public class SettingsSubFragment extends Fragment {
                         accept.setEnabled(true); accept.setAlpha(1f);
                         spinner.setVisibility(View.GONE);
                         statusIcon.setImageResource(R.drawable.ic_check_circle);
-                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_leaf));
+                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_ok_ink));
                         statusIcon.setVisibility(View.VISIBLE);
                         statusCard.setBackgroundResource(R.drawable.k2go_ok_bg);
-                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_leaf));
+                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_ok_ink));
                         statusText.setText(getString(R.string.dns_status_ok));
                         statusCard.setVisibility(View.VISIBLE);
                         break;

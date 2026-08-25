@@ -12,12 +12,18 @@
     <color name="k2go_hairline">#2A3D3B</color>
     <color name="k2go_on_teal">#0F1A19</color>
     <!-- ADFA-5267: info banner dark fix (design k2go-banner-contrast-v1). Dark container + bright
-         teal/leaf text ~8.8:1 (AA). The other note families have no -night container, so they stay
-         light for now — a one-token change if design updates them. -->
+         teal/leaf text ~8.8:1 (AA). -->
     <color name="k2go_info_container">#153029</color>
     <color name="k2go_info_ink">#7FE0A3</color>
     <!-- ADFA-5267 (warn twin): dark caution container + bright amber text
          (design k2go-warn-darktwin-proposal-v1). text 10.48:1, bar (Marigold) 7.45:1. -->
     <color name="k2go_warn_container">#2C2211</color>
     <color name="k2go_warn_ink">#F6CE86</color>
+    <!-- ADFA-5267 (notice + ok twins, design k2go-banner-families-dark-v1). text 9.5:1 / 9.0:1;
+         notice bar uses a brighter dark twin (Clay #C4462F is only 3.4:1 on the dark container). -->
+    <color name="k2go_notice_container">#2E1613</color>
+    <color name="k2go_notice_ink">#F2B4A4</color>
+    <color name="k2go_notice_bar">#D9694F</color>
+    <color name="k2go_ok_container">#14301C</color>
+    <color name="k2go_ok_ink">#8CE0A0</color>
 </resources>
