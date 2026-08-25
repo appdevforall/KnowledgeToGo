@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Kom i gang</string>
     <string name="k2go_hotspot">Wi-Fi-sone</string>
     <string name="k2go_internet_download">Nedlasting via internett</string>
-    <string name="k2go_just_scan">Bare skann — ingen skriving!</string>
+    <string name="k2go_just_scan">Bare skann, eller bruk følgende innlogging:</string>
     <string name="k2go_perm_keep_running">Hold i gang</string>
     <string name="k2go_connect_subtitle">La en enhet i nærheten bla i biblioteket ditt.</string>
     <string name="k2go_perm_nearby_note">Enheter i nærheten spørres om senere, bare ved deling.</string>
@@ -241,7 +241,7 @@
     <string name="k2go_clone_receive_from">Motta fra en annen telefon  ›</string>
     <string name="k2go_clone_sharing_now">DELER NÅ</string>
     <string name="k2go_clone_scan_enter_text">Fungerte ikke skanningen? Skriv inn koden som tekst  ▸</string>
-    <string name="k2go_clone_scan_show_text">Fungerte ikke skanningen? Vis koden som tekst  ▸</string>
+    <string name="k2go_clone_scan_show_text">Vis koden som tekst:</string>
     <string name="k2go_clone_scan_their_codes">Skann kodene deres for å få en kopi her.</string>
     <string name="k2go_clone_scan_get_app">Skann for å hente appen</string>
     <string name="k2go_clone_scan_to_join">Skann for å koble til</string>
@@ -277,7 +277,7 @@
     <string name="k2go_clone_cant_join_note">K2Go kan ikke koble til det nettverket for deg — koble til i Innstillinger, og fortsett.</string>
     <string name="k2go_clone_next_get_app">Neste: hent appen</string>
     <string name="k2go_clone_nothing_title">Ingenting å dele ennå</string>
-    <string name="k2go_clone_point_camera_join">Rett kameraet dens hit for å koble til denne telefonen.</string>
+    <string name="k2go_clone_point_camera_join">Rett kameraet hit for å koble til denne telefonen, eller bruk følgende innlogging</string>
     <string name="k2go_clone_share_anyway">Del likevel</string>
     <string name="k2go_clone_share_wifi_note">Del denne Wi-Fi-en fra Innstillinger, eller la dem koble til den, og fortsett.</string>
     <string name="k2go_clone_sharing_stopped">Deling stoppet</string>
@@ -292,8 +292,8 @@
     <string name="k2go_clone_stop_sharing">Stopp deling</string>
     <string name="k2go_clone_no_library_note">Denne telefonen har ikke noe K2Go-bibliotek installert. Installer innhold først, eller del likevel.</string>
     <string name="k2go_clone_back_step1">‹ Tilbake til steg 1</string>
-    <string name="k2go_connect_readonly">Skrivebeskyttet tilgang til innholdet ditt.</string>
-    <string name="k2go_connect_scan_open">Skann for å åpne biblioteket</string>
+    <string name="k2go_connect_readonly">Skann for å åpne biblioteket, eller gå til dette nettstedet:</string>
+    <string name="k2go_connect_scan_open">Skann for å åpne biblioteket, eller gå til dette nettstedet:</string>
     <string name="k2go_connect_same_wifi">Dere er på samme Wi-Fi — én kode.</string>
 
     <string name="k2go_wiki_view_list">Liste</string>
@@ -838,6 +838,7 @@
     <string name="k2go_install_confirm_body">Dette installeres på enheten din mens serveren er satt på pause.\n\n• Tar en stund, ofte titalls minutter.\n• Hold en stabil tilkobling hvis du kan.\n• Sørg for nok batteri før du starter.\n• Denne skjermen forblir åpen til den er ferdig.</string>
     <string name="k2go_install_confirm_go">Installer</string>
     <string name="k2go_install_confirm_cancel">Ikke nå</string>
+    <string name="k2go_copied">Kopiert</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">under 1 min</string>
     <string name="k2go_eta_minutes_fmt">~%1$d min</string>

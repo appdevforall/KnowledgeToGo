@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Почати</string>
     <string name="k2go_hotspot">Точка доступу</string>
     <string name="k2go_internet_download">Завантаження з Інтернету</string>
-    <string name="k2go_just_scan">Просто скануйте — не треба вводити!</string>
+    <string name="k2go_just_scan">Просто відскануйте або скористайтеся такими даними:</string>
     <string name="k2go_perm_keep_running">Не зупиняти</string>
     <string name="k2go_connect_subtitle">Дозвольте пристрою поруч переглядати вашу бібліотеку.</string>
     <string name="k2go_perm_nearby_note">Дозвіл на пристрої поруч запитується пізніше, лише під час надсилання.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Отримати з іншого телефона  ›</string>
     <string name="k2go_clone_sharing_now">НАДСИЛАННЯ ЗАРАЗ</string>
     <string name="k2go_clone_scan_enter_text">Сканування не спрацювало? Введіть код текстом  ▸</string>
-    <string name="k2go_clone_scan_show_text">Сканування не спрацювало? Показати код текстом  ▸</string>
+    <string name="k2go_clone_scan_show_text">Показати код як текст:</string>
     <string name="k2go_clone_scan_their_codes">Скануйте їхні коди, щоб отримати копію сюди.</string>
     <string name="k2go_clone_scan_get_app">Скануйте, щоб отримати застосунок</string>
     <string name="k2go_clone_scan_to_join">Скануйте, щоб приєднатися</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go не може приєднатися до цієї мережі за вас — підключіться в Налаштуваннях, потім Продовжити.</string>
     <string name="k2go_clone_next_get_app">Далі: отримайте застосунок</string>
     <string name="k2go_clone_nothing_title">Поки нічого надсилати</string>
-    <string name="k2go_clone_point_camera_join">Наведіть його камеру сюди, щоб приєднатися до цього телефона.</string>
+    <string name="k2go_clone_point_camera_join">Наведіть камеру сюди, щоб підключити цей телефон, або скористайтеся такими даними</string>
     <string name="k2go_clone_share_anyway">Усе одно поділитися</string>
     <string name="k2go_clone_share_wifi_note">Поділіться цим Wi-Fi у Налаштуваннях або нехай вони приєднаються, потім продовжте.</string>
     <string name="k2go_clone_sharing_stopped">Надсилання зупинено</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Припинити надсилання</string>
     <string name="k2go_clone_no_library_note">На цьому телефоні не встановлено бібліотеку K2Go. Спершу встановіть контент або поділіться попри це.</string>
     <string name="k2go_clone_back_step1">‹ Назад до кроку 1</string>
-    <string name="k2go_connect_readonly">Доступ до вашого контенту лише для читання.</string>
-    <string name="k2go_connect_scan_open">Скануйте, щоб відкрити бібліотеку</string>
+    <string name="k2go_connect_readonly">Відскануйте, щоб відкрити бібліотеку, або відвідайте цей сайт:</string>
+    <string name="k2go_connect_scan_open">Відскануйте, щоб відкрити бібліотеку, або відвідайте цей сайт:</string>
     <string name="k2go_connect_same_wifi">Ви в тій самій мережі Wi-Fi — один код.</string>
     <string name="k2go_wiki_view_list">Список</string>
     <string name="k2go_wiki_view_grouped">Згруповано</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">Встановлення відбувається на вашому пристрої з призупиненим сервером.\n\n• Триває деякий час, часто десятки хвилин.\n• За можливості підтримуйте стабільне з\'єднання.\n• Переконайтеся, що заряду батареї достатньо.\n• Цей екран залишається відкритим до завершення.</string>
     <string name="k2go_install_confirm_go">Встановити</string>
     <string name="k2go_install_confirm_cancel">Не зараз</string>
+    <string name="k2go_copied">Скопійовано</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">менше 1 хв</string>
     <string name="k2go_eta_minutes_fmt">~%1$d хв</string>

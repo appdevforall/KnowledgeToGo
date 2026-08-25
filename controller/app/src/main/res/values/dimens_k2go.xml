@@ -6,4 +6,10 @@
          layout and the programmatic "Get more" grid cell. -->
     <dimen name="k2go_card_height">176dp</dimen>
     <dimen name="k2go_gm_card_height">200dp</dimen>
+    <!-- ADFA-5236: on-screen QR size (Connect/Clone). Bigger modules = easier scans on weak
+         guest cameras. Sized by smallest-width buckets (same APK, per-device): this default
+         (250dp) is the floor for small/old phones (<360dp); sw360/sw400/sw600 scale up and cap.
+         sw = shortest screen side, so it also bounds landscape/tablets. Quiet zone + ECC (L)
+         are baked into the bitmap and scale with it. -->
+    <dimen name="k2go_qr_size">252dp</dimen>
 </resources>

@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Bắt đầu</string>
     <string name="k2go_hotspot">Điểm phát sóng</string>
     <string name="k2go_internet_download">Tải qua Internet</string>
-    <string name="k2go_just_scan">Chỉ cần quét — không cần gõ!</string>
+    <string name="k2go_just_scan">Chỉ cần quét, hoặc dùng thông tin đăng nhập sau:</string>
     <string name="k2go_perm_keep_running">Tiếp tục chạy</string>
     <string name="k2go_connect_subtitle">Cho phép thiết bị gần đó duyệt thư viện của bạn.</string>
     <string name="k2go_perm_nearby_note">Quyền thiết bị gần đó sẽ được hỏi sau, chỉ khi chia sẻ.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Nhận từ điện thoại khác  ›</string>
     <string name="k2go_clone_sharing_now">ĐANG CHIA SẺ</string>
     <string name="k2go_clone_scan_enter_text">Quét không được? Nhập mã dưới dạng văn bản  ▸</string>
-    <string name="k2go_clone_scan_show_text">Quét không được? Hiển thị mã dưới dạng văn bản  ▸</string>
+    <string name="k2go_clone_scan_show_text">Hiển thị mã dưới dạng văn bản:</string>
     <string name="k2go_clone_scan_their_codes">Quét mã của họ để lấy một bản sao ở đây.</string>
     <string name="k2go_clone_scan_get_app">Quét để lấy ứng dụng</string>
     <string name="k2go_clone_scan_to_join">Quét để tham gia</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go không thể tham gia mạng đó thay bạn — kết nối trong Cài đặt, rồi Tiếp tục.</string>
     <string name="k2go_clone_next_get_app">Tiếp theo: lấy ứng dụng</string>
     <string name="k2go_clone_nothing_title">Chưa có gì để chia sẻ</string>
-    <string name="k2go_clone_point_camera_join">Hướng camera của nó vào đây để tham gia điện thoại này.</string>
+    <string name="k2go_clone_point_camera_join">Hướng camera vào đây để kết nối điện thoại này, hoặc dùng thông tin đăng nhập sau</string>
     <string name="k2go_clone_share_anyway">Vẫn chia sẻ</string>
     <string name="k2go_clone_share_wifi_note">Chia sẻ Wi-Fi này từ Cài đặt, hoặc để họ tham gia, rồi tiếp tục.</string>
     <string name="k2go_clone_sharing_stopped">Đã dừng chia sẻ</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Dừng chia sẻ</string>
     <string name="k2go_clone_no_library_note">Điện thoại này chưa cài thư viện K2Go. Cài nội dung trước, hoặc vẫn chia sẻ.</string>
     <string name="k2go_clone_back_step1">‹ Quay lại bước 1</string>
-    <string name="k2go_connect_readonly">Quyền truy cập chỉ đọc vào nội dung của bạn.</string>
-    <string name="k2go_connect_scan_open">Quét để mở thư viện</string>
+    <string name="k2go_connect_readonly">Quét để mở thư viện hoặc truy cập trang web này:</string>
+    <string name="k2go_connect_scan_open">Quét để mở thư viện hoặc truy cập trang web này:</string>
     <string name="k2go_connect_same_wifi">Bạn đang ở cùng Wi-Fi — một mã.</string>
     <string name="k2go_wiki_view_list">Danh sách</string>
     <string name="k2go_wiki_view_grouped">Nhóm</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">Nội dung này được cài đặt trên thiết bị của bạn khi máy chủ tạm dừng.\n\n• Mất một lúc, thường là hàng chục phút.\n• Giữ kết nối ổn định nếu có thể.\n• Đảm bảo đủ pin trước khi bắt đầu.\n• Màn hình này vẫn mở cho đến khi hoàn tất.</string>
     <string name="k2go_install_confirm_go">Cài đặt</string>
     <string name="k2go_install_confirm_cancel">Để sau</string>
+    <string name="k2go_copied">Đã sao chép</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">dưới 1 phút</string>
     <string name="k2go_eta_minutes_fmt">~%1$d phút</string>

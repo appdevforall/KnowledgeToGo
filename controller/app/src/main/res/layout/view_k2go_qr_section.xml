@@ -23,7 +23,7 @@
             android:textColor="@color/k2go_ink" />
     </LinearLayout>
 
-    <FrameLayout android:id="@+id/sec_qr_frame" android:layout_width="220dp" android:layout_height="220dp"
+    <FrameLayout android:id="@+id/sec_qr_frame" android:layout_width="@dimen/k2go_qr_size" android:layout_height="@dimen/k2go_qr_size"
         android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="@drawable/k2go_card_bg">
         <ImageView android:id="@+id/sec_qr" android:layout_width="match_parent" android:layout_height="match_parent"
             android:padding="10dp" android:contentDescription="@string/k2go_tab_clone" />
@@ -41,9 +41,10 @@
         android:gravity="center" android:layout_marginTop="6dp" android:padding="6dp"
         android:textAppearance="?attr/textAppearanceBodySmall" android:textColor="@color/k2go_teal"
         android:clickable="true" android:focusable="true" android:visibility="gone" />
+    <!-- ADFA-5236: no outer background/padding — each value is its own chip (QrSection.setFallback),
+         so this is just a transparent stacker; the old k2go_card_bg here caused a double background. -->
     <LinearLayout android:id="@+id/sec_fallback" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:layout_marginTop="8dp" android:padding="14dp"
-        android:background="@drawable/k2go_card_bg" android:visibility="gone">
+        android:orientation="vertical" android:layout_marginTop="8dp" android:visibility="gone">
         <LinearLayout android:id="@+id/sec_fallback_values" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" />
     </LinearLayout>
 </LinearLayout>

@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Aan de slag</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Internetdownload</string>
-    <string name="k2go_just_scan">Gewoon scannen — niets typen!</string>
+    <string name="k2go_just_scan">Scan gewoon, of gebruik anders de volgende gegevens:</string>
     <string name="k2go_perm_keep_running">Actief houden</string>
     <string name="k2go_connect_subtitle">Laat een apparaat in de buurt je bibliotheek bekijken.</string>
     <string name="k2go_perm_nearby_note">Apparaten in de buurt wordt later gevraagd, alleen bij delen.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Ontvangen van een andere telefoon  ›</string>
     <string name="k2go_clone_sharing_now">NU AAN HET DELEN</string>
     <string name="k2go_clone_scan_enter_text">Scannen mislukt? Voer de code als tekst in  ▸</string>
-    <string name="k2go_clone_scan_show_text">Scannen mislukt? Toon de code als tekst  ▸</string>
+    <string name="k2go_clone_scan_show_text">Code als tekst weergeven:</string>
     <string name="k2go_clone_scan_their_codes">Scan hun codes om hier een kopie te krijgen.</string>
     <string name="k2go_clone_scan_get_app">Scan om de app te krijgen</string>
     <string name="k2go_clone_scan_to_join">Scan om deel te nemen</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go kan dat netwerk niet voor je verbinden — maak verbinding in Instellingen en tik daarna op Doorgaan.</string>
     <string name="k2go_clone_next_get_app">Volgende: de app ophalen</string>
     <string name="k2go_clone_nothing_title">Nog niets om te delen</string>
-    <string name="k2go_clone_point_camera_join">Richt de camera hierop om verbinding te maken met deze telefoon.</string>
+    <string name="k2go_clone_point_camera_join">Richt de camera hierop om deze telefoon te koppelen, of gebruik de volgende gegevens</string>
     <string name="k2go_clone_share_anyway">Toch delen</string>
     <string name="k2go_clone_share_wifi_note">Deel deze Wi-Fi via Instellingen, of laat hen verbinden, en ga daarna door.</string>
     <string name="k2go_clone_sharing_stopped">Delen gestopt</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Delen stoppen</string>
     <string name="k2go_clone_no_library_note">Op deze telefoon is geen K2Go-bibliotheek geïnstalleerd. Installeer eerst inhoud of deel toch.</string>
     <string name="k2go_clone_back_step1">‹ Terug naar stap 1</string>
-    <string name="k2go_connect_readonly">Alleen-lezen toegang tot je inhoud.</string>
-    <string name="k2go_connect_scan_open">Scan om de bibliotheek te openen</string>
+    <string name="k2go_connect_readonly">Scan om de bibliotheek te openen of bezoek deze website:</string>
+    <string name="k2go_connect_scan_open">Scan om de bibliotheek te openen of bezoek deze website:</string>
     <string name="k2go_connect_same_wifi">Je zit op dezelfde Wi-Fi — één code.</string>
     <string name="k2go_wiki_view_list">Lijst</string>
     <string name="k2go_wiki_view_grouped">Gegroepeerd</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">Dit wordt op je apparaat geïnstalleerd terwijl de server is gepauzeerd.\n\n• Duurt even, vaak tientallen minuten.\n• Houd indien mogelijk een stabiele verbinding.\n• Zorg voor voldoende batterij voordat je begint.\n• Dit scherm blijft open tot het klaar is.</string>
     <string name="k2go_install_confirm_go">Installeren</string>
     <string name="k2go_install_confirm_cancel">Niet nu</string>
+    <string name="k2go_copied">Gekopieerd</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">minder dan 1 min</string>
     <string name="k2go_eta_minutes_fmt">~%1$d min</string>

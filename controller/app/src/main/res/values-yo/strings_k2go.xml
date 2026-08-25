@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Bẹ̀rẹ̀</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Gbígbà sílẹ̀ láti Íńtánẹ́ẹ̀tì</string>
-    <string name="k2go_just_scan">Kàn ya àwòrán rẹ̀ — kò sí ìdí láti tẹ̀ ọ́!</string>
+    <string name="k2go_just_scan">Kàn ya kóòdù, tàbí lo àwọn ẹ̀rí wọ̀nyí:</string>
     <string name="k2go_perm_keep_running">Máa ṣiṣẹ́ lọ</string>
     <string name="k2go_connect_subtitle">Jẹ́ kí ẹ̀rọ tó wà nítòsí wo ilé-ìkàwé rẹ.</string>
     <string name="k2go_perm_nearby_note">A óò béèrè àwọn ẹ̀rọ tó wà nítòsí lẹ́yìn, nígbà tí a bá ń pínni nìkan.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Gbà láti fóònù mìíràn  ›</string>
     <string name="k2go_clone_sharing_now">Ń PÍNNI NÍSINSÌNYÍ</string>
     <string name="k2go_clone_scan_enter_text">Ìyàwòrán kò ṣiṣẹ́? Tẹ kóòdù wọlé gẹ́gẹ́ bí ọ̀rọ̀  ▸</string>
-    <string name="k2go_clone_scan_show_text">Ìyàwòrán kò ṣiṣẹ́? Fi kóòdù hàn gẹ́gẹ́ bí ọ̀rọ̀  ▸</string>
+    <string name="k2go_clone_scan_show_text">Fi kóòdù hàn gẹ́gẹ́ bí ọ̀rọ̀:</string>
     <string name="k2go_clone_scan_their_codes">Ya àwọn kóòdù wọn láti rí ẹ̀dà kan níbí.</string>
     <string name="k2go_clone_scan_get_app">Ya àwòrán láti rí áàpù</string>
     <string name="k2go_clone_scan_to_join">Ya àwòrán láti darapọ̀</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go kò lè darapọ̀ mọ́ nẹ́tíwọ́ọ̀kì yẹn fún ọ — so pọ̀ nínú Ìtòlẹ́sẹẹsẹ, kó o sì Tẹ̀síwájú.</string>
     <string name="k2go_clone_next_get_app">Tẹ̀síwájú: rí áàpù</string>
     <string name="k2go_clone_nothing_title">Kò sí ohunkóhun láti pín síbẹ̀</string>
-    <string name="k2go_clone_point_camera_join">Tọ́ka kámẹ́rà rẹ̀ síbí láti darapọ̀ mọ́ fóònù yìí.</string>
+    <string name="k2go_clone_point_camera_join">Dojú kámẹ́rà rẹ̀ síhìn-ín láti so fóònù yìí pọ̀, tàbí lo àwọn ẹ̀rí wọ̀nyí</string>
     <string name="k2go_clone_share_anyway">Pín lóòótọ́</string>
     <string name="k2go_clone_share_wifi_note">Pín Wi-Fi yìí láti Ìtòlẹ́sẹẹsẹ, tàbí jẹ́ kí wọ́n darapọ̀ mọ́ ọ, kó o sì tẹ̀síwájú.</string>
     <string name="k2go_clone_sharing_stopped">A dá pípínni dúró</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Dá pípínni dúró</string>
     <string name="k2go_clone_no_library_note">Fóònù yìí kò ní ilé-ìkàwé K2Go tí a fi sórí ẹ̀rọ. Kọ́kọ́ fi àkóónú sórí ẹ̀rọ, tàbí pín lóòótọ́.</string>
     <string name="k2go_clone_back_step1">‹ Padà sí ìgbésẹ̀ 1</string>
-    <string name="k2go_connect_readonly">Ìwọlé kíkà-nìkan sí àkóónú rẹ.</string>
-    <string name="k2go_connect_scan_open">Ya àwòrán láti ṣí ilé-ìkàwé</string>
+    <string name="k2go_connect_readonly">Ya kóòdù láti ṣí ilé-ìkàwé tàbí bẹ̀ wẹ́ẹ̀bù yìí wò:</string>
+    <string name="k2go_connect_scan_open">Ya kóòdù láti ṣí ilé-ìkàwé tàbí bẹ̀ wẹ́ẹ̀bù yìí wò:</string>
     <string name="k2go_connect_same_wifi">O wà lórí Wi-Fi kan náà — kóòdù kan.</string>
     <string name="k2go_wiki_view_list">Àkọ́sílẹ̀</string>
     <string name="k2go_wiki_view_grouped">Ní àkójọpọ̀</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">Èyí máa fi sórí ẹ̀rọ rẹ nígbà tí sáfà bá dúró.\n\n• Ó máa gba àkókò díẹ̀, lọ́pọ̀ ìgbà ẹ̀wádọ́gbọ̀n ìṣẹ́jú.\n• Bí ó bá ṣeé ṣe, jẹ́ kí ìsopọ̀ dúró ṣinṣin.\n• Rí i pé batiri tó tó wà kí o tó bẹ̀rẹ̀.\n• Ojú-ìwé yìí máa wà ní ṣíṣí títí yóò fi parí.</string>
     <string name="k2go_install_confirm_go">Fi sórí ẹ̀rọ</string>
     <string name="k2go_install_confirm_cancel">Kì í ṣe báyìí</string>
+    <string name="k2go_copied">A ti daako</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">kò tó ìṣẹ́jú 1</string>
     <string name="k2go_eta_minutes_fmt">~ìṣẹ́jú %1$d</string>

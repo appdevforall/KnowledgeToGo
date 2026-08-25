@@ -26,7 +26,7 @@
     <string name="k2go_get_started">Get started</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Internet download</string>
-    <string name="k2go_just_scan">Just scan — no need to type!</string>
+    <string name="k2go_just_scan">Just scan, or use the following credentials instead:</string>
     <string name="k2go_perm_keep_running">Keep running</string>
     <string name="k2go_brand" translatable="false">Knowledge to Go</string>
     <string name="k2go_connect_subtitle">Let a nearby device browse your library.</string>
@@ -302,7 +302,7 @@
     <string name="k2go_clone_receive_from">Receive from another phone  ›</string>
     <string name="k2go_clone_sharing_now">SHARING NOW</string>
     <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter the code as text  ▸</string>
-    <string name="k2go_clone_scan_show_text">Scan didn\'t work? Show the code as text  ▸</string>
+    <string name="k2go_clone_scan_show_text">Show the code as text:</string>
     <string name="k2go_clone_scan_their_codes">Scan their codes to get a copy here.</string>
     <string name="k2go_clone_scan_get_app">Scan to get the app</string>
     <string name="k2go_clone_scan_to_join">Scan to join</string>
@@ -338,7 +338,7 @@
     <string name="k2go_clone_cant_join_note">K2Go can\'t join that network for you — connect in Settings, then Continue.</string>
     <string name="k2go_clone_next_get_app">Next: get the app</string>
     <string name="k2go_clone_nothing_title">Nothing to share yet</string>
-    <string name="k2go_clone_point_camera_join">Point its camera here to join this phone.</string>
+    <string name="k2go_clone_point_camera_join">Point its camera here to join this phone or use the following credentials instead</string>
     <string name="k2go_clone_share_anyway">Share anyway</string>
     <string name="k2go_clone_share_wifi_note">Share this Wi-Fi from Settings, or have them join it, then continue.</string>
     <string name="k2go_clone_sharing_stopped">Sharing stopped</string>
@@ -353,8 +353,8 @@
     <string name="k2go_clone_stop_sharing">Stop sharing</string>
     <string name="k2go_clone_no_library_note">This phone has no K2Go library installed. Install content first, or share anyway.</string>
     <string name="k2go_clone_back_step1">‹ Back to step 1</string>
-    <string name="k2go_connect_readonly">Read-only access to your content.</string>
-    <string name="k2go_connect_scan_open">Scan to open the library</string>
+    <string name="k2go_connect_readonly">Scan to open the library or visit this website:</string>
+    <string name="k2go_connect_scan_open">Scan to open the library or visit this website:</string>
     <string name="k2go_connect_same_wifi">You\'re on the same Wi-Fi — one code.</string>
 
     <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
@@ -911,6 +911,7 @@
     <string name="k2go_install_confirm_body">This installs on your device with the server paused.\n\n• Takes a while — often tens of minutes.\n• Keep a stable connection if you can.\n• Have enough battery before you start.\n• This screen stays open until it finishes.</string>
     <string name="k2go_install_confirm_go">Install</string>
     <string name="k2go_install_confirm_cancel">Not now</string>
+    <string name="k2go_copied">Copied</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">under a min</string>
     <string name="k2go_eta_minutes_fmt">~%1$d min</string>

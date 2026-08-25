@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Mulai</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Unduhan internet</string>
-    <string name="k2go_just_scan">Cukup pindai — tak perlu mengetik!</string>
+    <string name="k2go_just_scan">Cukup pindai, atau gunakan kredensial berikut:</string>
     <string name="k2go_perm_keep_running">Tetap berjalan</string>
     <string name="k2go_connect_subtitle">Biarkan perangkat terdekat menjelajahi pustaka Anda.</string>
     <string name="k2go_perm_nearby_note">Perangkat terdekat diminta nanti, hanya saat berbagi.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">Terima dari ponsel lain  ›</string>
     <string name="k2go_clone_sharing_now">SEDANG BERBAGI</string>
     <string name="k2go_clone_scan_enter_text">Pindai tidak berhasil? Masukkan kode sebagai teks  ▸</string>
-    <string name="k2go_clone_scan_show_text">Pindai tidak berhasil? Tampilkan kode sebagai teks  ▸</string>
+    <string name="k2go_clone_scan_show_text">Tampilkan kode sebagai teks:</string>
     <string name="k2go_clone_scan_their_codes">Pindai kode mereka untuk mendapatkan salinan di sini.</string>
     <string name="k2go_clone_scan_get_app">Pindai untuk mendapatkan aplikasi</string>
     <string name="k2go_clone_scan_to_join">Pindai untuk gabung</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go tidak bisa menyambung ke jaringan itu untuk Anda — sambungkan di Setelan, lalu Lanjutkan.</string>
     <string name="k2go_clone_next_get_app">Berikutnya: dapatkan aplikasi</string>
     <string name="k2go_clone_nothing_title">Belum ada yang bisa dibagikan</string>
-    <string name="k2go_clone_point_camera_join">Arahkan kameranya ke sini untuk gabung ke ponsel ini.</string>
+    <string name="k2go_clone_point_camera_join">Arahkan kameranya ke sini untuk menghubungkan ponsel ini, atau gunakan kredensial berikut</string>
     <string name="k2go_clone_share_anyway">Bagikan saja</string>
     <string name="k2go_clone_share_wifi_note">Bagikan Wi-Fi ini dari Setelan, atau minta mereka bergabung, lalu lanjutkan.</string>
     <string name="k2go_clone_sharing_stopped">Berbagi dihentikan</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">Berhenti berbagi</string>
     <string name="k2go_clone_no_library_note">Ponsel ini belum punya pustaka K2Go terpasang. Pasang konten dahulu, atau bagikan saja.</string>
     <string name="k2go_clone_back_step1">‹ Kembali ke langkah 1</string>
-    <string name="k2go_connect_readonly">Akses hanya-baca ke konten Anda.</string>
-    <string name="k2go_connect_scan_open">Pindai untuk membuka pustaka</string>
+    <string name="k2go_connect_readonly">Pindai untuk membuka perpustakaan atau kunjungi situs web ini:</string>
+    <string name="k2go_connect_scan_open">Pindai untuk membuka perpustakaan atau kunjungi situs web ini:</string>
     <string name="k2go_connect_same_wifi">Anda di Wi-Fi yang sama — satu kode.</string>
     <string name="k2go_wiki_view_list">Daftar</string>
     <string name="k2go_wiki_view_grouped">Dikelompokkan</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">Ini dipasang di perangkat Anda saat server dijeda.\n\n• Perlu waktu, sering kali puluhan menit.\n• Jaga koneksi tetap stabil jika bisa.\n• Pastikan baterai cukup sebelum memulai.\n• Layar ini tetap terbuka sampai selesai.</string>
     <string name="k2go_install_confirm_go">Pasang</string>
     <string name="k2go_install_confirm_cancel">Nanti saja</string>
+    <string name="k2go_copied">Disalin</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">kurang dari 1 mnt</string>
     <string name="k2go_eta_minutes_fmt">~%1$d mnt</string>

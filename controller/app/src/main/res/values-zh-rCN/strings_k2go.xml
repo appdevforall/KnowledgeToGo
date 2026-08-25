@@ -24,7 +24,7 @@
     <string name="k2go_get_started">开始</string>
     <string name="k2go_hotspot">热点</string>
     <string name="k2go_internet_download">互联网下载</string>
-    <string name="k2go_just_scan">只需扫描 — 无需输入！</string>
+    <string name="k2go_just_scan">直接扫码，或使用以下凭据:</string>
     <string name="k2go_perm_keep_running">保持运行</string>
     <string name="k2go_connect_subtitle">让附近的设备浏览您的图书馆。</string>
     <string name="k2go_perm_nearby_note">附近设备权限稍后请求，仅在共享时。</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">从另一部手机接收  ›</string>
     <string name="k2go_clone_sharing_now">正在共享</string>
     <string name="k2go_clone_scan_enter_text">扫描没成功？以文本形式输入代码  ▸</string>
-    <string name="k2go_clone_scan_show_text">扫描没成功？以文本形式显示代码  ▸</string>
+    <string name="k2go_clone_scan_show_text">以文本显示代码:</string>
     <string name="k2go_clone_scan_their_codes">扫描对方的代码以在此处获取副本。</string>
     <string name="k2go_clone_scan_get_app">扫描以获取应用</string>
     <string name="k2go_clone_scan_to_join">扫描以加入</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go 无法为您加入该网络 — 请在设置中连接，然后继续。</string>
     <string name="k2go_clone_next_get_app">下一步：获取应用</string>
     <string name="k2go_clone_nothing_title">暂无可共享的内容</string>
-    <string name="k2go_clone_point_camera_join">将其相机对准这里以加入本手机。</string>
+    <string name="k2go_clone_point_camera_join">将其摄像头对准这里以连接此手机，或使用以下凭据</string>
     <string name="k2go_clone_share_anyway">仍要共享</string>
     <string name="k2go_clone_share_wifi_note">从设置共享此 Wi-Fi，或让对方加入，然后继续。</string>
     <string name="k2go_clone_sharing_stopped">共享已停止</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">停止共享</string>
     <string name="k2go_clone_no_library_note">本手机未安装 K2Go 图书馆。请先安装内容，或仍然共享。</string>
     <string name="k2go_clone_back_step1">‹ 返回第 1 步</string>
-    <string name="k2go_connect_readonly">对您内容的只读访问。</string>
-    <string name="k2go_connect_scan_open">扫描以打开图书馆</string>
+    <string name="k2go_connect_readonly">扫码打开图书馆，或访问此网站:</string>
+    <string name="k2go_connect_scan_open">扫码打开图书馆，或访问此网站:</string>
     <string name="k2go_connect_same_wifi">您在同一 Wi-Fi 上 — 一个代码。</string>
     <string name="k2go_wiki_view_list">列表</string>
     <string name="k2go_wiki_view_grouped">分组</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">这将在服务器暂停的情况下安装到你的设备上。\n\n• 需要一些时间，通常几十分钟。\n• 如有可能，请保持网络稳定。\n• 开始前请确保电量充足。\n• 此界面会一直打开，直到完成。</string>
     <string name="k2go_install_confirm_go">安装</string>
     <string name="k2go_install_confirm_cancel">暂不</string>
+    <string name="k2go_copied">已复制</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">不到 1 分钟</string>
     <string name="k2go_eta_minutes_fmt">约 %1$d 分钟</string>

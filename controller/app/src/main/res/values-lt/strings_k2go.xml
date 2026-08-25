@@ -24,7 +24,7 @@
     <string name="k2go_get_started">Pradėti</string>
     <string name="k2go_hotspot">Prieigos taškas</string>
     <string name="k2go_internet_download">Atsisiuntimas internetu</string>
-    <string name="k2go_just_scan">Tiesiog nuskaitykite — nereikia rašyti!</string>
+    <string name="k2go_just_scan">Tiesiog nuskaitykite arba naudokite šiuos prisijungimo duomenis:</string>
     <string name="k2go_perm_keep_running">Veikti toliau</string>
     <string name="k2go_connect_subtitle">Leiskite šalia esančiam įrenginiui naršyti jūsų biblioteką.</string>
     <string name="k2go_perm_nearby_note">Netoliese esančių įrenginių leidimo paprašysime vėliau, tik dalijantis.</string>
@@ -241,7 +241,7 @@
     <string name="k2go_clone_receive_from">Gauti iš kito telefono  ›</string>
     <string name="k2go_clone_sharing_now">DABAR BENDRINAMA</string>
     <string name="k2go_clone_scan_enter_text">Nuskaityti nepavyko? Įveskite kodą tekstu  ▸</string>
-    <string name="k2go_clone_scan_show_text">Nuskaityti nepavyko? Rodyti kodą tekstu  ▸</string>
+    <string name="k2go_clone_scan_show_text">Rodyti kodą kaip tekstą:</string>
     <string name="k2go_clone_scan_their_codes">Nuskaitykite jų kodus, kad gautumėte kopiją čia.</string>
     <string name="k2go_clone_scan_get_app">Nuskaitykite, kad gautumėte programą</string>
     <string name="k2go_clone_scan_to_join">Nuskaitykite, kad prisijungtumėte</string>
@@ -277,7 +277,7 @@
     <string name="k2go_clone_cant_join_note">K2Go negali prijungti jūsų prie to tinklo — prisijunkite Nustatymuose ir bakstelėkite Tęsti.</string>
     <string name="k2go_clone_next_get_app">Toliau: gaukite programą</string>
     <string name="k2go_clone_nothing_title">Kol kas nėra ką bendrinti</string>
-    <string name="k2go_clone_point_camera_join">Nukreipkite jo kamerą čia, kad prisijungtumėte prie šio telefono.</string>
+    <string name="k2go_clone_point_camera_join">Nukreipkite kamerą čia, kad prijungtumėte šį telefoną, arba naudokite šiuos prisijungimo duomenis</string>
     <string name="k2go_clone_share_anyway">Vis tiek bendrinti</string>
     <string name="k2go_clone_share_wifi_note">Bendrinkite šį Wi-Fi iš Nustatymų arba paprašykite jų prisijungti, tada tęskite.</string>
     <string name="k2go_clone_sharing_stopped">Bendrinimas sustabdytas</string>
@@ -292,8 +292,8 @@
     <string name="k2go_clone_stop_sharing">Nutraukti bendrinimą</string>
     <string name="k2go_clone_no_library_note">Šiame telefone neįdiegta K2Go biblioteka. Pirmiausia įdiekite turinį arba vis tiek bendrinkite.</string>
     <string name="k2go_clone_back_step1">‹ Atgal į 1 žingsnį</string>
-    <string name="k2go_connect_readonly">Tik skaitymo prieiga prie jūsų turinio.</string>
-    <string name="k2go_connect_scan_open">Nuskaitykite, kad atidarytumėte biblioteką</string>
+    <string name="k2go_connect_readonly">Nuskaitykite, kad atidarytumėte biblioteką, arba apsilankykite šioje svetainėje:</string>
+    <string name="k2go_connect_scan_open">Nuskaitykite, kad atidarytumėte biblioteką, arba apsilankykite šioje svetainėje:</string>
     <string name="k2go_connect_same_wifi">Esate tame pačiame Wi-Fi — vienas kodas.</string>
 
     <string name="k2go_wiki_view_list">Sąrašas</string>
@@ -838,6 +838,7 @@
     <string name="k2go_install_confirm_body">Diegiama jūsų įrenginyje, kai serveris pristabdytas.\n\n• Užtrunka kurį laiką, dažnai kelias dešimtis minučių.\n• Jei galite, palaikykite stabilų ryšį.\n• Prieš pradėdami įsitikinkite, kad pakanka baterijos.\n• Šis ekranas lieka atidarytas iki pabaigos.</string>
     <string name="k2go_install_confirm_go">Įdiegti</string>
     <string name="k2go_install_confirm_cancel">Ne dabar</string>
+    <string name="k2go_copied">Nukopijuota</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">mažiau nei 1 min</string>
     <string name="k2go_eta_minutes_fmt">~%1$d min</string>

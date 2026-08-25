@@ -24,7 +24,7 @@
     <string name="k2go_get_started">தொடங்கு</string>
     <string name="k2go_hotspot">ஹாட்ஸ்பாட்</string>
     <string name="k2go_internet_download">இணைய பதிவிறக்கம்</string>
-    <string name="k2go_just_scan">வெறுமனே ஸ்கேன் செய்யுங்கள் — தட்டச்சு செய்ய வேண்டாம்!</string>
+    <string name="k2go_just_scan">ஸ்கேன் செய்யவும், அல்லது கீழ்க்காணும் விவரங்களைப் பயன்படுத்தவும்:</string>
     <string name="k2go_perm_keep_running">இயக்கத்தில் வைத்திரு</string>
     <string name="k2go_connect_subtitle">அருகிலுள்ள சாதனம் உங்கள் நூலகத்தை உலாவ அனுமதிக்கவும்.</string>
     <string name="k2go_perm_nearby_note">அருகிலுள்ள சாதனங்களுக்கான அனுமதி பிறகு, பகிரும்போது மட்டுமே கேட்கப்படும்.</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">மற்றொரு தொலைபேசியிலிருந்து பெறு  ›</string>
     <string name="k2go_clone_sharing_now">இப்போது பகிரப்படுகிறது</string>
     <string name="k2go_clone_scan_enter_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாக உள்ளிடு  ▸</string>
-    <string name="k2go_clone_scan_show_text">ஸ்கேன் வேலை செய்யவில்லையா? குறியீட்டை உரையாகக் காட்டு  ▸</string>
+    <string name="k2go_clone_scan_show_text">குறியீட்டை உரையாகக் காட்டு:</string>
     <string name="k2go_clone_scan_their_codes">இங்கே ஒரு நகலைப் பெற அவர்களின் குறியீடுகளை ஸ்கேன் செய்யுங்கள்.</string>
     <string name="k2go_clone_scan_get_app">செயலியைப் பெற ஸ்கேன் செய்யுங்கள்</string>
     <string name="k2go_clone_scan_to_join">இணைய ஸ்கேன் செய்யுங்கள்</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go உங்களுக்காக அந்த நெட்வொர்க்கில் இணைய முடியாது — அமைப்புகளில் இணைந்து, பிறகு தொடரவும்.</string>
     <string name="k2go_clone_next_get_app">அடுத்து: செயலியைப் பெறு</string>
     <string name="k2go_clone_nothing_title">இன்னும் பகிர எதுவும் இல்லை</string>
-    <string name="k2go_clone_point_camera_join">இந்தத் தொலைபேசியில் இணைய அதன் கேமராவை இங்கே காட்டவும்.</string>
+    <string name="k2go_clone_point_camera_join">இந்த மொபைலை இணைக்க அதன் கேமராவை இங்கே காட்டவும், அல்லது கீழ்க்காணும் விவரங்களைப் பயன்படுத்தவும்</string>
     <string name="k2go_clone_share_anyway">இருப்பினும் பகிர்</string>
     <string name="k2go_clone_share_wifi_note">அமைப்புகளிலிருந்து இந்த Wi-Fi-ஐப் பகிரவும், அல்லது அவர்களை இணையச் செய்து, பிறகு தொடரவும்.</string>
     <string name="k2go_clone_sharing_stopped">பகிர்வு நிறுத்தப்பட்டது</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">பகிர்வை நிறுத்து</string>
     <string name="k2go_clone_no_library_note">இந்தத் தொலைபேசியில் K2Go நூலகம் நிறுவப்படவில்லை. முதலில் உள்ளடக்கத்தை நிறுவவும், அல்லது இருப்பினும் பகிரவும்.</string>
     <string name="k2go_clone_back_step1">‹ படி 1-க்குத் திரும்பு</string>
-    <string name="k2go_connect_readonly">உங்கள் உள்ளடக்கத்திற்கு படிக்க-மட்டும் அணுகல்.</string>
-    <string name="k2go_connect_scan_open">நூலகத்தைத் திறக்க ஸ்கேன் செய்யுங்கள்</string>
+    <string name="k2go_connect_readonly">நூலகத்தைத் திறக்க ஸ்கேன் செய்யவும் அல்லது இந்த வலைத்தளத்தைப் பார்வையிடவும்:</string>
+    <string name="k2go_connect_scan_open">நூலகத்தைத் திறக்க ஸ்கேன் செய்யவும் அல்லது இந்த வலைத்தளத்தைப் பார்வையிடவும்:</string>
     <string name="k2go_connect_same_wifi">நீங்கள் அதே Wi-Fi-இல் உள்ளீர்கள் — ஒரு குறியீடு.</string>
     <string name="k2go_wiki_view_list">பட்டியல்</string>
     <string name="k2go_wiki_view_grouped">குழுவாக்கப்பட்டது</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">சேவையகம் இடைநிறுத்தப்பட்ட நிலையில் இது உங்கள் சாதனத்தில் நிறுவப்படும்.\n\n• சிறிது நேரம் ஆகும், பெரும்பாலும் பல பத்து நிமிடங்கள்.\n• முடிந்தால் நிலையான இணைப்பை வைத்திருங்கள்.\n• தொடங்குவதற்கு முன் போதிய பேட்டரி இருப்பதை உறுதி செய்யுங்கள்.\n• முடியும் வரை இந்தத் திரை திறந்திருக்கும்.</string>
     <string name="k2go_install_confirm_go">நிறுவு</string>
     <string name="k2go_install_confirm_cancel">இப்போது வேண்டாம்</string>
+    <string name="k2go_copied">நகலெடுக்கப்பட்டது</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">1 நிமிடத்திற்கும் குறைவு</string>
     <string name="k2go_eta_minutes_fmt">~%1$d நிமிடம்</string>

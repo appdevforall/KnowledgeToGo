@@ -25,7 +25,7 @@
     <string name="k2go_get_started">Ξεκινήστε</string>
     <string name="k2go_hotspot">Σημείο πρόσβασης</string>
     <string name="k2go_internet_download">Λήψη μέσω διαδικτύου</string>
-    <string name="k2go_just_scan">Απλώς σαρώστε — χωρίς πληκτρολόγηση!</string>
+    <string name="k2go_just_scan">Απλώς σαρώστε ή χρησιμοποιήστε τα παρακάτω στοιχεία:</string>
     <string name="k2go_perm_keep_running">Διατήρηση σε λειτουργία</string>
     <string name="k2go_connect_subtitle">Επιτρέψτε σε κοντινή συσκευή να περιηγηθεί στη βιβλιοθήκη σας.</string>
     <string name="k2go_perm_nearby_note">Η άδεια για κοντινές συσκευές ζητείται αργότερα, μόνο κατά την κοινή χρήση.</string>
@@ -241,7 +241,7 @@
     <string name="k2go_clone_receive_from">Λήψη από άλλο τηλέφωνο  ›</string>
     <string name="k2go_clone_sharing_now">ΚΟΙΝΗ ΧΡΗΣΗ ΤΩΡΑ</string>
     <string name="k2go_clone_scan_enter_text">Δεν λειτούργησε η σάρωση; Εισαγάγετε τον κωδικό ως κείμενο  ▸</string>
-    <string name="k2go_clone_scan_show_text">Δεν λειτούργησε η σάρωση; Εμφάνιση του κωδικού ως κείμενο  ▸</string>
+    <string name="k2go_clone_scan_show_text">Εμφάνιση κωδικού ως κείμενο:</string>
     <string name="k2go_clone_scan_their_codes">Σαρώστε τους κωδικούς τους για να λάβετε ένα αντίγραφο εδώ.</string>
     <string name="k2go_clone_scan_get_app">Σαρώστε για να αποκτήσετε την εφαρμογή</string>
     <string name="k2go_clone_scan_to_join">Σαρώστε για σύνδεση</string>
@@ -277,7 +277,7 @@
     <string name="k2go_clone_cant_join_note">Το K2Go δεν μπορεί να συνδεθεί σε αυτό το δίκτυο για εσάς — συνδεθείτε στις Ρυθμίσεις και μετά Συνέχεια.</string>
     <string name="k2go_clone_next_get_app">Επόμενο: αποκτήστε την εφαρμογή</string>
     <string name="k2go_clone_nothing_title">Τίποτα για κοινή χρήση ακόμη</string>
-    <string name="k2go_clone_point_camera_join">Στρέψτε την κάμερά του εδώ για σύνδεση σε αυτό το τηλέφωνο.</string>
+    <string name="k2go_clone_point_camera_join">Στρέψτε την κάμερα εδώ για να συνδέσετε αυτό το τηλέφωνο ή χρησιμοποιήστε τα παρακάτω στοιχεία</string>
     <string name="k2go_clone_share_anyway">Κοινή χρήση ούτως ή άλλως</string>
     <string name="k2go_clone_share_wifi_note">Μοιραστείτε αυτό το Wi-Fi από τις Ρυθμίσεις ή ζητήστε τους να συνδεθούν σε αυτό και μετά συνεχίστε.</string>
     <string name="k2go_clone_sharing_stopped">Η κοινή χρήση σταμάτησε</string>
@@ -292,8 +292,8 @@
     <string name="k2go_clone_stop_sharing">Διακοπή κοινής χρήσης</string>
     <string name="k2go_clone_no_library_note">Αυτό το τηλέφωνο δεν έχει εγκατεστημένη βιβλιοθήκη K2Go. Εγκαταστήστε πρώτα περιεχόμενο ή μοιραστείτε ούτως ή άλλως.</string>
     <string name="k2go_clone_back_step1">‹ Πίσω στο βήμα 1</string>
-    <string name="k2go_connect_readonly">Πρόσβαση μόνο για ανάγνωση στο περιεχόμενό σας.</string>
-    <string name="k2go_connect_scan_open">Σαρώστε για άνοιγμα της βιβλιοθήκης</string>
+    <string name="k2go_connect_readonly">Σαρώστε για να ανοίξετε τη βιβλιοθήκη ή επισκεφθείτε αυτόν τον ιστότοπο:</string>
+    <string name="k2go_connect_scan_open">Σαρώστε για να ανοίξετε τη βιβλιοθήκη ή επισκεφθείτε αυτόν τον ιστότοπο:</string>
     <string name="k2go_connect_same_wifi">Είστε στο ίδιο Wi-Fi — ένας κωδικός.</string>
     <string name="k2go_wiki_view_list">Λίστα</string>
     <string name="k2go_wiki_view_grouped">Ομαδοποιημένα</string>
@@ -829,6 +829,7 @@
     <string name="k2go_install_confirm_body">Η εγκατάσταση γίνεται στη συσκευή σας με τον διακομιστή σε παύση.\n\n• Διαρκεί λίγη ώρα, συχνά δεκάδες λεπτά.\n• Διατηρήστε σταθερή σύνδεση αν μπορείτε.\n• Φροντίστε να έχετε αρκετή μπαταρία πριν ξεκινήσετε.\n• Αυτή η οθόνη παραμένει ανοιχτή μέχρι να ολοκληρωθεί.</string>
     <string name="k2go_install_confirm_go">Εγκατάσταση</string>
     <string name="k2go_install_confirm_cancel">Όχι τώρα</string>
+    <string name="k2go_copied">Αντιγράφηκε</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">λιγότερο από 1 λεπτό</string>
     <string name="k2go_eta_minutes_fmt">~%1$d λεπτά</string>

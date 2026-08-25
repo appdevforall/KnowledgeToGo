@@ -24,7 +24,7 @@
     <string name="k2go_get_started">शुरू करें</string>
     <string name="k2go_hotspot">हॉटस्पॉट</string>
     <string name="k2go_internet_download">इंटरनेट डाउनलोड</string>
-    <string name="k2go_just_scan">बस स्कैन करें — टाइप करने की ज़रूरत नहीं!</string>
+    <string name="k2go_just_scan">बस स्कैन करें, या नीचे दी गई जानकारी का उपयोग करें:</string>
     <string name="k2go_perm_keep_running">चालू रखें</string>
     <string name="k2go_connect_subtitle">किसी पास के डिवाइस को अपनी लाइब्रेरी देखने दें।</string>
     <string name="k2go_perm_nearby_note">पास के डिवाइस की अनुमति बाद में, केवल शेयर करते समय माँगी जाती है।</string>
@@ -240,7 +240,7 @@
     <string name="k2go_clone_receive_from">दूसरे फ़ोन से प्राप्त करें  ›</string>
     <string name="k2go_clone_sharing_now">अभी शेयर हो रहा है</string>
     <string name="k2go_clone_scan_enter_text">स्कैन नहीं हुआ? कोड टेक्स्ट के रूप में डालें  ▸</string>
-    <string name="k2go_clone_scan_show_text">स्कैन नहीं हुआ? कोड टेक्स्ट के रूप में दिखाएँ  ▸</string>
+    <string name="k2go_clone_scan_show_text">कोड को टेक्स्ट के रूप में दिखाएँ:</string>
     <string name="k2go_clone_scan_their_codes">यहाँ कॉपी पाने के लिए उनके कोड स्कैन करें।</string>
     <string name="k2go_clone_scan_get_app">ऐप पाने के लिए स्कैन करें</string>
     <string name="k2go_clone_scan_to_join">जुड़ने के लिए स्कैन करें</string>
@@ -276,7 +276,7 @@
     <string name="k2go_clone_cant_join_note">K2Go आपके लिए वह नेटवर्क जॉइन नहीं कर सकता — सेटिंग्स में जुड़ें, फिर जारी रखें।</string>
     <string name="k2go_clone_next_get_app">आगे: ऐप पाएँ</string>
     <string name="k2go_clone_nothing_title">अभी शेयर करने के लिए कुछ नहीं</string>
-    <string name="k2go_clone_point_camera_join">इस फ़ोन से जुड़ने के लिए उसका कैमरा यहाँ इंगित करें।</string>
+    <string name="k2go_clone_point_camera_join">इस फ़ोन को जोड़ने के लिए इसका कैमरा यहाँ इंगित करें, या नीचे दी गई जानकारी का उपयोग करें</string>
     <string name="k2go_clone_share_anyway">फिर भी शेयर करें</string>
     <string name="k2go_clone_share_wifi_note">सेटिंग्स से यह Wi-Fi शेयर करें, या उन्हें इससे जुड़ने दें, फिर जारी रखें।</string>
     <string name="k2go_clone_sharing_stopped">शेयर करना रुका</string>
@@ -291,8 +291,8 @@
     <string name="k2go_clone_stop_sharing">शेयर करना रोकें</string>
     <string name="k2go_clone_no_library_note">इस फ़ोन में कोई K2Go लाइब्रेरी इंस्टॉल नहीं है। पहले सामग्री इंस्टॉल करें, या फिर भी शेयर करें।</string>
     <string name="k2go_clone_back_step1">‹ चरण 1 पर वापस</string>
-    <string name="k2go_connect_readonly">आपकी सामग्री तक केवल-पढ़ने की पहुँच।</string>
-    <string name="k2go_connect_scan_open">लाइब्रेरी खोलने के लिए स्कैन करें</string>
+    <string name="k2go_connect_readonly">लाइब्रेरी खोलने के लिए स्कैन करें या इस वेबसाइट पर जाएँ:</string>
+    <string name="k2go_connect_scan_open">लाइब्रेरी खोलने के लिए स्कैन करें या इस वेबसाइट पर जाएँ:</string>
     <string name="k2go_connect_same_wifi">आप उसी Wi-Fi पर हैं — एक कोड।</string>
     <string name="k2go_wiki_view_list">सूची</string>
     <string name="k2go_wiki_view_grouped">समूहित</string>
@@ -828,6 +828,7 @@
     <string name="k2go_install_confirm_body">यह सर्वर रुका होने पर आपके डिवाइस पर इंस्टॉल होता है।\n\n• इसमें समय लगता है, अक्सर दसियों मिनट।\n• हो सके तो स्थिर कनेक्शन बनाए रखें।\n• शुरू करने से पहले पर्याप्त बैटरी रखें।\n• यह स्क्रीन पूरा होने तक खुली रहती है।</string>
     <string name="k2go_install_confirm_go">इंस्टॉल करें</string>
     <string name="k2go_install_confirm_cancel">अभी नहीं</string>
+    <string name="k2go_copied">कॉपी किया गया</string>
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">1 मिनट से कम</string>
     <string name="k2go_eta_minutes_fmt">~%1$d मिनट</string>
