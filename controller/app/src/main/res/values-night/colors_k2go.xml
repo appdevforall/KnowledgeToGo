@@ -16,4 +16,8 @@
          light for now — a one-token change if design updates them. -->
     <color name="k2go_info_container">#153029</color>
     <color name="k2go_info_ink">#7FE0A3</color>
+    <!-- ADFA-5267 (warn twin): dark caution container + bright amber text
+         (design k2go-warn-darktwin-proposal-v1). text 10.48:1, bar (Marigold) 7.45:1. -->
+    <color name="k2go_warn_container">#2C2211</color>
+    <color name="k2go_warn_ink">#F6CE86</color>
 </resources>

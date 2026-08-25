@@ -369,10 +369,10 @@ public class SettingsSubFragment extends Fragment {
                         accept.setEnabled(true); accept.setAlpha(1f);
                         spinner.setVisibility(View.GONE);
                         statusIcon.setImageResource(R.drawable.ic_warning_24);
-                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_amber_text));
+                        statusIcon.setColorFilter(ContextCompat.getColor(ctx, R.color.k2go_warn_ink));
                         statusIcon.setVisibility(View.VISIBLE);
                         statusCard.setBackgroundResource(R.drawable.k2go_warn_bg);
-                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_amber_text));
+                        statusText.setTextColor(ContextCompat.getColor(ctx, R.color.k2go_warn_ink));
                         statusText.setText(st.message == null ? "" : st.message);
                         statusCard.setVisibility(View.VISIBLE);
                         break;
