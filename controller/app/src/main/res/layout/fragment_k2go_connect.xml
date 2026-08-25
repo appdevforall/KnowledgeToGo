@@ -52,7 +52,7 @@
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp"
                             android:text="@string/k2go_connect_s1_title" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
                     </LinearLayout>
-                    <FrameLayout android:id="@+id/k2go_conn_qr1_frame" android:layout_width="220dp" android:layout_height="220dp"
+                    <FrameLayout android:id="@+id/k2go_conn_qr1_frame" android:layout_width="242dp" android:layout_height="242dp"
                         android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="@drawable/k2go_card_bg">
                         <ImageView android:id="@+id/k2go_conn_qr1" android:layout_width="match_parent" android:layout_height="match_parent"
                             android:padding="10dp" android:contentDescription="@string/k2go_connect_s1_title" />
@@ -92,7 +92,7 @@
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp"
                             android:text="@string/k2go_connect_s2_title" android:textAppearance="?attr/textAppearanceTitleLarge" android:textColor="@color/k2go_ink" />
                     </LinearLayout>
-                    <FrameLayout android:id="@+id/k2go_conn_qr2_frame" android:layout_width="220dp" android:layout_height="220dp"
+                    <FrameLayout android:id="@+id/k2go_conn_qr2_frame" android:layout_width="242dp" android:layout_height="242dp"
                         android:layout_gravity="center_horizontal" android:layout_marginTop="12dp" android:background="@drawable/k2go_card_bg">
                         <ImageView android:id="@+id/k2go_conn_qr2" android:layout_width="match_parent" android:layout_height="match_parent"
                             android:padding="10dp" android:contentDescription="@string/k2go_connect_s2_title" />
@@ -118,7 +118,7 @@
             <!-- ========== SINGLE container: Wi-Fi (single QR), plus failed / no-system status ========== -->
             <LinearLayout android:id="@+id/k2go_conn_single" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical" android:visibility="gone">
-                <FrameLayout android:id="@+id/k2go_conn_qrS_frame" android:layout_width="220dp" android:layout_height="220dp"
+                <FrameLayout android:id="@+id/k2go_conn_qrS_frame" android:layout_width="242dp" android:layout_height="242dp"
                     android:layout_gravity="center_horizontal" android:layout_marginTop="16dp" android:background="@drawable/k2go_card_bg">
                     <ImageView android:id="@+id/k2go_conn_qrS" android:layout_width="match_parent" android:layout_height="match_parent"
                         android:padding="10dp" android:contentDescription="@string/k2go_tab_connect" />
