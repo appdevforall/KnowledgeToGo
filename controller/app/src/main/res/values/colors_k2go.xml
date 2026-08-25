@@ -28,8 +28,18 @@
     <color name="k2go_amber_text">#B0740F</color>
     <color name="k2go_clay">#C4462F</color>
     <color name="k2go_notice_ink">#3A2320</color>  <!-- fixed dark; notice bg is always light pink -->
-    <color name="k2go_info_ink">#0E5C63</color>  <!-- ADFA-4955: fixed dark teal for text over k2go_info_bg (fixed-light); no values-night override so it stays readable in dark. -->
+    <color name="k2go_info_ink">#0E5C63</color>  <!-- ADFA-4955/5267: text over the info banner. Now paired with a -night twin (#7FE0A3), since the info container goes dark (#153029) in dark mode. -->
     <color name="k2go_warn_ink">#8A5A00</color>  <!-- ADFA-4958: fixed dark amber for text over k2go_warn_bg (fixed-light); no values-night override. -->
+
+    <!-- ADFA-5267: note/status banner tokens, de-hardcoded from the layer-list drawables so a
+         reported color is a one-token change. container = tinted body; bar = accent. Light values
+         are unchanged from the old inline hex; only info gets a -night twin (design fix,
+         k2go-banner-contrast-v1). Bars reuse existing brand tokens where they already match. -->
+    <color name="k2go_info_container">#DCE9EA</color>    <!-- was inline in k2go_info_bg; -night = #153029 -->
+    <color name="k2go_warn_container">#FBEFD3</color>    <!-- was inline in k2go_warn_bg -->
+    <color name="k2go_notice_container">#F7E2DD</color>  <!-- was inline in k2go_notice_bg -->
+    <color name="k2go_ok_container">#DCF0E3</color>      <!-- was inline in k2go_ok_bg -->
+    <color name="k2go_warn_bar">#C98A1E</color>          <!-- was inline in k2go_warn_bg (amber accent) -->
     <!-- ADFA-4901: install log terminal — fixed dark surface + light-green text in both themes
          (reused by all proot module install logs). -->
     <color name="k2go_terminal_bg">#0F1512</color>

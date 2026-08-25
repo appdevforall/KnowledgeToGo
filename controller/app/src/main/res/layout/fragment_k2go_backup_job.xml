@@ -121,7 +121,7 @@
                 android:text="@string/k2go_bj_wait_title"
                 android:textStyle="bold"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
-                android:textColor="@color/k2go_teal" />
+                android:textColor="@color/k2go_info_ink" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                 android:layout_marginTop="4dp"
                 android:text="@string/k2go_bj_wait_body"
                 android:textAppearance="?attr/textAppearanceBodySmall"
-                android:textColor="@color/k2go_teal" />
+                android:textColor="@color/k2go_info_ink" />
         </LinearLayout>
 
         <!-- ADFA-4961: collapsible detailed log — GONE until tar/extract output is plumbed (see ticket). -->

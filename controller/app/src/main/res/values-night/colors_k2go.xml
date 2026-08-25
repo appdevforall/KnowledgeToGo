@@ -11,4 +11,9 @@
     <color name="k2go_muted">#9BA6A3</color>
     <color name="k2go_hairline">#2A3D3B</color>
     <color name="k2go_on_teal">#0F1A19</color>
+    <!-- ADFA-5267: info banner dark fix (design k2go-banner-contrast-v1). Dark container + bright
+         teal/leaf text ~8.8:1 (AA). The other note families have no -night container, so they stay
+         light for now — a one-token change if design updates them. -->
+    <color name="k2go_info_container">#153029</color>
+    <color name="k2go_info_ink">#7FE0A3</color>
 </resources>
