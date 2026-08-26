@@ -160,7 +160,9 @@ public final class ZimDownloadService extends Service {
 
         if (ACTION_CANCEL.equals(action)) {
             if (client != null) client.cancel();
-            sRunning = false; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
+            // ADFA-4893: PURGE the session (same as Books). A canceled item left non-terminal can't be
+            // dismissed and blocks the next drain (PendingContent.anyUnfinished). finishSession() clears it.
+            finishSession();
             publish();
             main.post(() -> { stopForeground(true); stopSelf(); });
             return START_NOT_STICKY;

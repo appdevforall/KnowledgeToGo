@@ -144,7 +144,10 @@ public final class BooksDownloadService extends Service {
         String action = intent != null ? intent.getAction() : null;
         if (ACTION_CANCEL.equals(action)) {
             if (client != null) client.cancel();
-            sRunning = false; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
+            // ADFA-4893: PURGE the session. A canceled item must not linger non-terminal (ACTIVE), or it
+            // can't be dismissed (Finish disabled, controls hidden) AND it blocks the next drain
+            // (PendingContent.anyUnfinished stays true). finishSession() clears hasSession/isComplete.
+            finishSession();
             publish();
             main.post(() -> { stopForeground(true); stopSelf(); });
             return START_NOT_STICKY;
