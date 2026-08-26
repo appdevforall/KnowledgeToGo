@@ -58,8 +58,10 @@ public class Step1SystemFragment extends Fragment {
         editions.clear();
         editions.add(new Edition(InstallationPlanner.Tier.BASIC, getString(R.string.k2go_edition_basic),
                 getString(R.string.k2go_edition_basic_desc), false));
+        // ADFA-5295: no "Recommended" badge on Standard anymore — its size edge no longer buys a
+        // real design/UX advantage, so we don't steer users to it.
         editions.add(new Edition(InstallationPlanner.Tier.STANDARD, getString(R.string.k2go_edition_standard),
-                getString(R.string.k2go_edition_standard_desc), true));
+                getString(R.string.k2go_edition_standard_desc), false));
         editions.add(new Edition(InstallationPlanner.Tier.FULL, getString(R.string.k2go_edition_full),
                 getString(R.string.k2go_edition_full_desc), false));
 
