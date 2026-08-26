@@ -3,13 +3,11 @@
  * Name        : ZimDownloadService.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4849. Foreground service that downloads the ZIM selection cart through the
- *               in-server REST job engine (RestContentClient / ADFA-4838/4840): one job per ZIM,
- *               SEQUENTIALLY, CONTINUING past a failed item. The heavy work runs on the live
- *               Debian/proot server (durable there); the device only POSTs + polls, so this
- *               service is light. It holds the session state; the Preparing screen observes it,
- *               re-attaches, RETRIES failed items (re-queued), and FINISHES (clears the session).
- *               Resume/checksum of a partial download is the SERVER's job; a retry just re-POSTs.
+ * Description : ADFA-4849 / ADFA-4893. Foreground shell for the ZIM stream: it owns the notification
+ *               and the ZIM-specific bits (file/label/byte arrays, the {ids:[..]} body, byte-weighted
+ *               percent) and delegates the queue + client + progress/pause/reconnect state to the
+ *               shared ContentDownloadSession. The static getters below keep the same API the UI has
+ *               always observed. The heavy work runs on the server; the device only POSTs + polls.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -31,9 +29,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.R;
-import org.iiab.controller.content.RestContentClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-public final class ZimDownloadService extends Service {
+public final class ZimDownloadService extends Service implements ContentDownloadSession.Host {
 
     private static final String CHANNEL_ID = "zim_download_channel";
     private static final int NOTIFICATION_ID = 5;
@@ -41,72 +40,43 @@ public final class ZimDownloadService extends Service {
     public static final String ACTION_START = "org.iiab.controller.ZIM_DOWNLOAD_START";
     public static final String ACTION_RETRY = "org.iiab.controller.ZIM_DOWNLOAD_RETRY";
     public static final String ACTION_CANCEL = "org.iiab.controller.ZIM_DOWNLOAD_CANCEL";
-    public static final String ACTION_PAUSE = "org.iiab.controller.ZIM_DOWNLOAD_PAUSE";     // ADFA-4893
-    public static final String ACTION_RESUME = "org.iiab.controller.ZIM_DOWNLOAD_RESUME";   // ADFA-4893
+    public static final String ACTION_PAUSE = "org.iiab.controller.ZIM_DOWNLOAD_PAUSE";
+    public static final String ACTION_RESUME = "org.iiab.controller.ZIM_DOWNLOAD_RESUME";
     public static final String EXTRA_FILES = "files";
     public static final String EXTRA_LABELS = "labels";
     public static final String EXTRA_BYTES = "bytes";
 
-    public static final int PENDING = 0, ACTIVE = 1, INDEXING = 2, DONE = 3, FAILED = 4;
+    // Per-item status — same values the UI/checklist already use, sourced from the shared session.
+    public static final int PENDING = ContentDownloadSession.PENDING;
+    public static final int ACTIVE = ContentDownloadSession.ACTIVE;
+    public static final int INDEXING = ContentDownloadSession.PROCESSING;
+    public static final int DONE = ContentDownloadSession.DONE;
+    public static final int FAILED = ContentDownloadSession.FAILED;
 
+    /** Kept for the callers that pass {@code this::render}; adapts to the session listener. */
     public interface Listener { void onUpdate(); }
 
-    // ---- shared state for the single active session (observed by the Preparing screen) ----
-    private static volatile boolean sRunning = false;   // a job is actively being processed
-    private static String[] sFiles = new String[0];
-    private static String[] sLabels = new String[0];
-    private static long[] sBytes = new long[0];
-    private static int[] sStatus = new int[0];
-    private static int sIndex = 0;
-    private static int sPercent = 0;
-    private static long sSpeed = 0;
-    private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
-    private static volatile boolean sPaused = false;     // ADFA-4893: active job paused on the server (session-level)
-    private static volatile int sReconnectAttempt = 0;   // ADFA-4893: >0 while the server reconnects (n of total)
-    private static volatile int sReconnectTotal = 0;
-    private static Listener sListener;
+    private static final ContentDownloadSession SESSION = new ContentDownloadSession("kiwix");
+    // The whole per-item snapshot (files-as-bodies/labels/sizes) now lives in SESSION, so status and the
+    // metadata the UI indexes off it stay length-consistent by construction (ADFA-4893).
 
-    public static boolean isRunning() { return sRunning; }
-    public static boolean isPaused() { return sPaused; }
-    public static int reconnectAttempt() { return sReconnectAttempt; }
-    public static int reconnectTotal() { return sReconnectTotal; }
-    public static boolean hasSession() { return sFiles.length > 0; }
-    /** All items are terminal (done/failed) and nothing is in flight. */
-    public static boolean isComplete() {
-        if (sFiles.length == 0 || sRunning) return false;
-        for (int st : sStatus) if (st == PENDING || st == ACTIVE || st == INDEXING) return false;
-        return true;
-    }
-    /** ADFA-5146: a non-terminal session still counts as busy only while its heartbeat is fresh.
-     *  A service killed before a terminal state lets {@code sLastProgressAt} go cold, so a dead
-     *  session stops blocking deep operations without the app being force-stopped. */
-    public static boolean isActiveNow() {
-        return hasSession() && !isComplete()
-                && org.iiab.controller.env.Freshness.fresh(
-                        sLastProgressAt, android.os.SystemClock.elapsedRealtime(),
-                        org.iiab.controller.env.Freshness.STALE_MS);
-    }
-    public static String[] labels() { return sLabels; }
-    public static long[] bytes() { return sBytes; }
-    public static int[] status() { return sStatus; }
-    public static int index() { return sIndex; }
-    public static int percent() { return sPercent; }
-    public static long speed() { return sSpeed; }
-    public static void setListener(Listener l) { sListener = l; }
-
-    /** ADFA-4893: byte-weighted overall percent across the session (0-100). The single source both the
-     *  status-screen bar (ZimPreparingFragment) and the index row bar (SetupProgressActivity) read, so
-     *  the two can never drift. Active item contributes its live percent; done/failed count in full. */
-    public static int overallPercent() {
-        long total = 0, done = 0;
-        for (int i = 0; i < sBytes.length && i < sStatus.length; i++) {
-            total += sBytes[i];
-            if (sStatus[i] == DONE || sStatus[i] == FAILED) done += sBytes[i];
-            else if (i == sIndex && (sStatus[i] == ACTIVE || sStatus[i] == INDEXING) && sPercent >= 0)
-                done += sBytes[i] * sPercent / 100;
-        }
-        return total > 0 ? (int) Math.min(100, done * 100 / total) : (isComplete() ? 100 : 0);
-    }
+    // ---- static API the UI observes (delegates to the shared session) -------------------------
+    public static boolean isRunning() { return SESSION.isRunning(); }
+    public static boolean isPaused() { return SESSION.isPaused(); }
+    public static int reconnectAttempt() { return SESSION.reconnectAttempt(); }
+    public static int reconnectTotal() { return SESSION.reconnectTotal(); }
+    public static boolean hasSession() { return SESSION.hasSession(); }
+    public static boolean isComplete() { return SESSION.isComplete(); }
+    public static boolean isActiveNow() { return SESSION.isActiveNow(); }
+    public static boolean hasFailed() { return SESSION.hasFailed(); }
+    public static int[] status() { return SESSION.status(); }
+    public static int index() { return SESSION.index(); }
+    public static int percent() { return SESSION.percent(); }
+    public static long speed() { return SESSION.speed(); }
+    public static int overallPercent() { return SESSION.overallPercent(); }
+    public static String[] labels() { return SESSION.labels(); }
+    public static long[] bytes() { return SESSION.sizes(); }
+    public static void setListener(Listener l) { SESSION.setListener(l == null ? null : l::onUpdate); }
 
     public static void start(Context ctx, String[] files, String[] labels, long[] bytes) {
         Intent i = new Intent(ctx, ZimDownloadService.class).setAction(ACTION_START)
@@ -114,176 +84,69 @@ public final class ZimDownloadService extends Service {
         ContextCompat.startForegroundService(ctx, i);
     }
 
-    /** ADFA-4893: pause the active job (the server keeps the partial). No-op if nothing is running. */
     public static void pause(Context ctx) {
-        if (!sRunning) return;
+        if (!SESSION.isRunning()) return;
         ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_PAUSE));
     }
 
-    /** ADFA-4893: resume a paused job; polling/progress continues from the partial. */
     public static void resume(Context ctx) {
         ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RESUME));
     }
 
-    /** ADFA-4893: true when any item is FAILED (so the status screen can offer a single Retry). */
-    public static boolean hasFailed() {
-        for (int st : sStatus) if (st == FAILED) return true;
-        return false;
-    }
-
-    /** ADFA-4893: re-queue ALL failed items and resume the session — the status-screen Retry (the
-     *  Pause button morphs into it), so a failed run doesn't fall back to a separate per-item control. */
+    /** ADFA-4893: re-queue ALL failed items and resume — the status-screen Retry (Pause morphs into it). */
     public static void retryFailed(Context ctx) {
-        boolean any = false;
-        for (int i = 0; i < sStatus.length; i++) if (sStatus[i] == FAILED) { sStatus[i] = PENDING; any = true; }
-        if (any && !sRunning) {
+        if (SESSION.requeueFailed() && !SESSION.isRunning()) {
             ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RETRY));
         }
     }
 
-    /** Clear the session so a new selection can start fresh. */
-    public static void finishSession() {
-        sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; sStatus = new int[0];
-        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sPaused = false;
-        sReconnectAttempt = 0; sReconnectTotal = 0; sLastProgressAt = 0L;
-    }
+    public static void finishSession() { SESSION.purge(); }
 
     private final Handler main = new Handler(Looper.getMainLooper());
-    private RestContentClient client;
 
-    @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
+    @Override public void onCreate() { super.onCreate(); createNotificationChannel(); SESSION.attach(this); }
     @Nullable @Override public IBinder onBind(Intent intent) { return null; }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        SESSION.attach(this);
         String action = intent != null ? intent.getAction() : null;
 
-        if (ACTION_CANCEL.equals(action)) {
-            if (client != null) client.cancel();
-            // ADFA-4893: PURGE the session (same as Books). A canceled item left non-terminal can't be
-            // dismissed and blocks the next drain (PendingContent.anyUnfinished). finishSession() clears it.
-            finishSession();
-            publish();
-            main.post(() -> { stopForeground(true); stopSelf(); });
-            return START_NOT_STICKY;
-        }
+        if (ACTION_CANCEL.equals(action)) { SESSION.cancelAndPurge(); return START_NOT_STICKY; }
+        if (ACTION_PAUSE.equals(action)) { SESSION.pauseActive(); return START_NOT_STICKY; }
+        if (ACTION_RESUME.equals(action)) { SESSION.resumeActive(); return START_NOT_STICKY; }
 
-        // ADFA-4893: pause/resume the active job. Handled BEFORE the sRunning guard (the session is
-        // still "running" while paused). The queue never advances during a pause because the paused
-        // job never reaches onDone/onError, so processNext() isn't called.
-        if (ACTION_PAUSE.equals(action)) {
-            if (client != null) client.pause();
-            sPaused = true;
-            publish();
-            return START_NOT_STICKY;
-        }
-        if (ACTION_RESUME.equals(action)) {
-            if (client != null) client.resume();
-            sPaused = false;
-            publish();
-            return START_NOT_STICKY;
-        }
-
-        if (sRunning) return START_NOT_STICKY;
+        if (SESSION.isRunning()) return START_NOT_STICKY;
 
         if (ACTION_RETRY.equals(action)) {
-            if (!hasSession()) { stopSelf(); return START_NOT_STICKY; }
+            if (!SESSION.hasSession()) { stopSelf(); return START_NOT_STICKY; }
+            startForeground(NOTIFICATION_ID, buildNotification(SESSION.label(SESSION.index())));
+            SESSION.resumeQueue();
         } else { // ACTION_START: fresh session from the extras
-            String[] f = intent.getStringArrayExtra(EXTRA_FILES);
-            if (f == null || f.length == 0) { stopSelf(); return START_NOT_STICKY; }
-            sFiles = f;
-            sLabels = intent.getStringArrayExtra(EXTRA_LABELS);
-            sBytes = intent.getLongArrayExtra(EXTRA_BYTES);
-            if (sLabels == null) sLabels = sFiles;
-            if (sBytes == null) sBytes = new long[sFiles.length];
-            sStatus = new int[sFiles.length];
-            sIndex = 0; sPercent = 0; sSpeed = 0; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
-            sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat at session start
+            String[] files = intent.getStringArrayExtra(EXTRA_FILES);
+            if (files == null || files.length == 0) { stopSelf(); return START_NOT_STICKY; }
+            String[] labels = intent.getStringArrayExtra(EXTRA_LABELS);
+            long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
+            if (labels == null) labels = files;
+            JSONObject[] bodies = new JSONObject[files.length];
+            for (int i = 0; i < files.length; i++) {
+                try { bodies[i] = new JSONObject().put("ids", new JSONArray().put(files[i])); }
+                catch (Exception e) { bodies[i] = new JSONObject(); }
+            }
+            startForeground(NOTIFICATION_ID, buildNotification(labels.length > 0 ? labels[0] : ""));
+            SESSION.begin(labels, bytes, bodies);   // session owns the snapshot from here on
         }
-
-        sRunning = true;
-        startForeground(NOTIFICATION_ID, buildNotification(currentLabel()));
-        processNext();
         return START_NOT_STICKY;
     }
 
-    private static int firstPending() {
-        for (int i = 0; i < sStatus.length; i++) if (sStatus[i] == PENDING) return i;
-        return -1;
+    // ---- ContentDownloadSession.Host (ZIM specifics) ------------------------------------------
+    @Override public void notify(String label) {
+        if (!SESSION.isRunning()) return;
+        NotificationManager m = getSystemService(NotificationManager.class);
+        if (m != null) m.notify(NOTIFICATION_ID, buildNotification(label));
     }
 
-    private String currentLabel() {
-        return sIndex >= 0 && sIndex < sLabels.length ? sLabels[sIndex] : "";
-    }
-
-    private void processNext() {
-        int i = firstPending();
-        if (i < 0) { sessionComplete(); return; }
-        sIndex = i; sPercent = 0; sStatus[i] = ACTIVE;
-        publish();
-        updateNotification(sLabels[i]);
-        startItem(i);
-    }
-
-    private void startItem(final int i) {
-        android.util.Log.i("K2Go-Provision", "zim job start [" + i + "] file='" + sFiles[i] + "'");
-        client = new RestContentClient();
-        client.addZim(sFiles[i], new RestContentClient.Listener() {
-            @Override public void onProgress(int percent, String speed) {
-                if (sPaused) sPaused = false;   // ADFA-4893: progress means the server resumed
-                sReconnectAttempt = 0;          // ADFA-4893: progress means the reconnect succeeded
-                sPercent = percent; sSpeed = parseRate(speed);
-                sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each poll
-                if (sStatus[i] != INDEXING) sStatus[i] = ACTIVE;
-                publish(); updateNotification(sLabels[i]);
-            }
-            @Override public void onIndexing() { sStatus[i] = INDEXING; sLastProgressAt = android.os.SystemClock.elapsedRealtime(); publish(); }
-            @Override public void onPaused(int percent) {
-                // ADFA-4893: server acknowledged the pause. Keep the heartbeat fresh (a pause is
-                // intentional, not a dead session) and let the screen render the paused state.
-                sPercent = percent; sPaused = true;
-                sLastProgressAt = android.os.SystemClock.elapsedRealtime();
-                publish();
-            }
-            @Override public void onReconnecting(int attempt, int total) {
-                // ADFA-4893: the server lost the link and is retrying (n of total). Surface it so the
-                // screen shows "Reconnecting n/N"; keep the heartbeat fresh — this is not a dead session.
-                sReconnectAttempt = attempt; sReconnectTotal = total;
-                sLastProgressAt = android.os.SystemClock.elapsedRealtime();
-                publish();
-            }
-            @Override public void onLog(String line) { /* logcat only */ }
-            @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
-            @Override public void onError(String message) {
-                // ADFA-4893: the server owns reconnection (5 visible attempts). When it gives up we mark
-                // the item FAILED and let the user retry it (checklist tap) — no invisible app-side re-POST.
-                android.util.Log.w("K2Go-Provision", "zim job [" + i + "] error: " + message);
-                sStatus[i] = FAILED; sReconnectAttempt = 0; publish(); processNext();
-            }
-        });
-    }
-
-    private void sessionComplete() {
-        sRunning = false;
-        publish();
-        main.post(() -> { stopForeground(true); stopSelf(); });
-    }
-
-    private void publish() { main.post(() -> { if (sListener != null) sListener.onUpdate(); }); }
-
-    private static long parseRate(String s) {
-        if (s == null) return 0;
-        try {
-            String t = s.trim();
-            int sp = t.indexOf(' ');
-            if (sp < 0) return 0;
-            double v = Double.parseDouble(t.substring(0, sp));
-            String u = t.substring(sp + 1);
-            double m = "GB".equals(u) ? 1024d * 1024 * 1024 : "MB".equals(u) ? 1024d * 1024
-                    : "KB".equals(u) ? 1024d : 1d;
-            return Math.round(v * m);
-        } catch (Exception e) { return 0; }
-    }
+    @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -295,8 +158,6 @@ public final class ZimDownloadService extends Service {
     }
 
     private Notification buildNotification(String currentLabel) {
-        // ADFA-4987: the redesign progress screen, not the legacy UI. ADFA-5074: the index, not
-        // this stream's detail — it is the only surface that can end the run.
         Intent open = new Intent(this, SetupProgressActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, open,
@@ -314,11 +175,5 @@ public final class ZimDownloadService extends Service {
                 .setOnlyAlertOnce(true)
                 .addAction(0, getString(R.string.k2go_zim_notif_cancel), cancelIntent)
                 .build();
-    }
-
-    private void updateNotification(String currentLabel) {
-        if (!sRunning) return;
-        NotificationManager manager = getSystemService(NotificationManager.class);
-        if (manager != null) manager.notify(NOTIFICATION_ID, buildNotification(currentLabel));
     }
 }
