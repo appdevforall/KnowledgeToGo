@@ -110,7 +110,13 @@ public final class BooksDownloadService extends Service implements ContentDownlo
         SESSION.attach(this);
         String action = intent != null ? intent.getAction() : null;
 
-        if (ACTION_CANCEL.equals(action)) { SESSION.cancelAndPurge(); return START_NOT_STICKY; }
+        if (ACTION_CANCEL.equals(action)) {
+            // ADFA-4897: Cancel abandons the order -> drop the remaining wishlist (DONE books were
+            // already removed one by one via onItemDone) so a later drain does not re-add them.
+            BooksWishlist.clear(getApplicationContext());
+            SESSION.cancelAndPurge();
+            return START_NOT_STICKY;
+        }
         if (ACTION_PAUSE.equals(action)) { SESSION.pauseActive(); return START_NOT_STICKY; }
         if (ACTION_RESUME.equals(action)) { SESSION.resumeActive(); return START_NOT_STICKY; }
 
@@ -135,7 +141,8 @@ public final class BooksDownloadService extends Service implements ContentDownlo
                 } catch (Exception e) { bodies[i] = new JSONObject(); }
             }
             startForeground(NOTIFICATION_ID, buildNotification(titles.length > 0 ? titles[0] : ""));
-            SESSION.begin(titles, null, bodies);   // books: no per-item byte size -> count-based percent
+            // keys = ids: the book id is both the download id and the wishlist key (ADFA-4897).
+            SESSION.begin(ids, titles, null, bodies);   // books: no per-item byte size -> count-based percent
         }
         return START_NOT_STICKY;
     }
@@ -148,6 +155,11 @@ public final class BooksDownloadService extends Service implements ContentDownlo
     }
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
+
+    /** ADFA-4897: book confirmed added to the library -> drop it from the durable wishlist. */
+    @Override public void onItemDone(String key) {
+        if (key != null && !key.isEmpty()) BooksWishlist.remove(getApplicationContext(), key);
+    }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
