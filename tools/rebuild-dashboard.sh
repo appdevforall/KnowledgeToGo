@@ -1,5 +1,5 @@
 #!/bin/sh
-# tools/rebuild-dashboard.sh [CLONE_DIR] — ADFA-5011 / ADFA-5051
+# tools/rebuild-dashboard.sh [BRANCH] [CLONE_DIR] — ADFA-5011 / ADFA-5051
 #
 # Rebuild ONLY the dash-node REST API from the on-device clone, without a rootfs rebuild.
 # Blue-green + verify-before-commit so the live API is never left in a broken or misreporting state:
@@ -22,8 +22,12 @@
 # this script. Single-flight via a lock dir; progress in $LOG; state in $STATUS for the app.
 set -u
 
-CLONE_DIR="${1:-/opt/iiab-android}"
-BRANCH="${K2GO_BRANCH:-main}"
+# Simpler invocation: BRANCH is the value that changes, so it's $1 (env K2GO_BRANCH still works, which
+# is how the app's detached REST call passes it). CLONE_DIR is the optional $2 — the install location is
+# almost always the same, so it defaults; pass it only if it moved.
+#   sh tools/rebuild-dashboard.sh <branch> [clone_dir]
+BRANCH="${1:-${K2GO_BRANCH:-main}}"
+CLONE_DIR="${2:-/opt/iiab-android}"
 SRC="$CLONE_DIR/static/dashboard"
 LIVE="/library/dashboard"
 STAGE="/library/dashboard.staging"
