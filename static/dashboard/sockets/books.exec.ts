@@ -7,6 +7,7 @@
 import { jobs, RunnerContext, CanceledError, PausedError, classifyStop } from './jobs';
 import { getCredential } from './credentials';
 import { withRetry } from './net-retry';
+import { presentTitles } from './books.query';
 import fs from 'fs';
 import path from 'path';
 
@@ -94,12 +95,22 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     }
 
     let done = 0;
+    // ADFA-4893: idempotent resume — a relaunch skips books already in the library instead of
+    // re-downloading + re-uploading them (which duplicated entries and reset the percent to 0).
+    const present = presentTitles();
     for (const book of books) {
         ctx.throwIfCanceled();
         const id = String(book.id);
         const title = String(book.title ?? id);
         const url = String(book.url);
         ctx.update({ phase: 'processing', detail: title, percent: Math.round((done / books.length) * 100) });
+
+        if (present.has(title.trim().toLowerCase())) {
+            ctx.log(`[books] skip "${title}" — already in the library (idempotent resume)`);
+            done++;
+            ctx.update({ phase: 'processing', percent: Math.round((done / books.length) * 100) });
+            continue;
+        }
 
         const tmp = path.join(TMP_DIR, `pg_${id}.epub`);
         try {
@@ -148,7 +159,10 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                     if (typeof status === 'number') return status >= 500;
                     return true;
                 },
-                onRetry: ({ attempt, err }) => ctx.log(`[books] retry ${attempt} for "${title}": ${err instanceof Error ? err.message : String(err)}`),
+                onRetry: ({ attempt, err }) => {
+                    ctx.reportRetry(attempt, BOOK_TRIES - 1);   // ADFA-4893: surface "Reconnecting… n of N" on the poll
+                    ctx.log(`[books] retry ${attempt}/${BOOK_TRIES - 1} for "${title}": ${err instanceof Error ? err.message : String(err)}`);
+                },
             });
         } catch (err) {
             // ADFA-4894: pause stops the fetch but keeps nothing mid-file (books resumes per item on
@@ -162,6 +176,7 @@ const booksRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
             if (fs.existsSync(tmp)) fs.unlinkSync(tmp);
         }
 
+        ctx.reportRetry(0, 0);   // ADFA-4893: item completed → clear any reconnect state
         done++;
         ctx.update({ phase: 'processing', percent: Math.round((done / books.length) * 100) });
     }
