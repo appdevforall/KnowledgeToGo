@@ -164,6 +164,9 @@ public final class BooksDownloadService extends Service implements ContentDownlo
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
 
+    /** Clear the Books-specific arrays alongside the session state (parity with ZIM's onPurged). */
+    @Override public void onPurged() { sIds = new String[0]; sTitles = new String[0]; sUrls = new String[0]; }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel ch = new NotificationChannel(

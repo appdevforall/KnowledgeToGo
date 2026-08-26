@@ -95,7 +95,10 @@ public class ZimPreparingFragment extends Fragment {
         int[] status = ZimDownloadService.status();
         int idx = ZimDownloadService.index();
         int p = ZimDownloadService.percent();
-        int n = labels.length;
+        // Derive n from the shortest of the arrays this method indexes (labels/bytes/status). A Cancel
+        // purge clears them together now, but a snapshot read mid-purge could still see a mismatch —
+        // clamping here means the loop below can never index past any array (ADFA-4893, defense in depth).
+        int n = Math.min(labels.length, Math.min(bytes.length, status.length));
         if (n == 0) { dlControls.render(); return; }
 
         // Byte figures for the "X of Y · N of M" detail line; the bar percent comes from the single
@@ -124,7 +127,7 @@ public class ZimPreparingFragment extends Fragment {
         // Label reflects the true state — honest: never "all ready" when something failed.
         if (!running && anyFailed) {
             int f = firstFailed(status);
-            label.setText(f >= 0 ? labels[f] + getString(R.string.k2go_zim_item_failed_suffix)
+            label.setText(f >= 0 && f < labels.length ? labels[f] + getString(R.string.k2go_zim_item_failed_suffix)
                                  : getString(R.string.k2go_zim_downloading_fmt, ""));
         } else if (paused) {
             label.setText(R.string.k2go_dl_paused);

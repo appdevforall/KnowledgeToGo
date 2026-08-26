@@ -36,6 +36,7 @@ public final class ContentDownloadSession {
         String label(int i);           // display label for item i (notification)
         void notify(String label);     // update the foreground notification
         void stop();                   // stopForeground(true) + stopSelf()
+        void onPurged();               // clear the per-type arrays so the snapshot stays consistent
     }
 
     private final String type;                          // "kiwix" / "books" -> /api/<type>
@@ -134,12 +135,16 @@ public final class ContentDownloadSession {
         if (host != null) host.stop();
     }
 
-    /** Clear all session state (the services' finishSession()). */
+    /** Clear all session state (the services' finishSession()). Also clears the owner's per-type arrays
+     *  via {@link Host#onPurged()} so the snapshot the UI reads stays length-consistent (labels/status/
+     *  bytes all empty together) — otherwise a Cancel left labels>0 with status=0 and the ZIM fragment
+     *  indexed status[] off the label count → AIOOBE (ADFA-4893). */
     public void purge() {
         status = new int[0];
         index = 0; percent = 0; speed = 0;
         running = false; paused = false; reconnectAttempt = 0; reconnectTotal = 0;
         lastProgressAt = 0L;
+        if (host != null) host.onPurged();
     }
 
     private int firstPending() {

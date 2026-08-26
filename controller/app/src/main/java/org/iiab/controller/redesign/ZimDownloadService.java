@@ -168,6 +168,10 @@ public final class ZimDownloadService extends Service implements ContentDownload
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
 
+    /** Clear the ZIM-specific arrays alongside the session state, so a Cancel purge leaves
+     *  labels/status/bytes empty together (no length mismatch for the fragment to trip over). */
+    @Override public void onPurged() { sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
