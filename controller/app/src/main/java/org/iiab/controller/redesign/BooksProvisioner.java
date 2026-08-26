@@ -8,8 +8,9 @@
  *               order to the existing BooksDownloadService — the same foreground, one-at-a-time,
  *               per-item-retry engine used by Get More — so provisioning is seamless and needs no
  *               new download machinery. Books is a LIVE operation (server up), so this must only be
- *               called when the server is alive. Idempotent: the wishlist is cleared once handed
- *               off (the service then owns retry), so it won't re-drain.
+ *               called when the server is alive. ADFA-4897: the wishlist is NOT cleared at hand-off;
+ *               the service drops each entry only once its book is confirmed added, so a process death
+ *               re-drains only what did not finish. Re-entrant: a running session short-circuits drain().
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -67,11 +68,10 @@ public final class BooksProvisioner {
         }
         if (ids.isEmpty()) { BooksWishlist.clear(ctx); return; }
         Log.i(TAG, "books drain: handing " + ids.size() + " to BooksDownloadService");
+        // ADFA-4897: do NOT clear the wishlist here. The service drops each book from the wishlist only
+        // when it is confirmed added (BooksDownloadService.onItemDone), and clears the rest on an
+        // explicit Cancel — so a process death leaves the not-done books banked for the next drain.
         BooksDownloadService.start(ctx.getApplicationContext(),
                 ids.toArray(new String[0]), titles.toArray(new String[0]), urls.toArray(new String[0]));
-        // TODO(ADFA-4874): clearing here means that if the process dies mid-download both the
-        // wishlist and the service's in-memory state are lost (orphaned partial). The durable
-        // background-jobs monitor should own this hand-off so it survives process death.
-        BooksWishlist.clear(ctx);   // handed off; the service owns retry from here
     }
 }
