@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">કન્ટેન્ટ તૈયાર થઈ રહ્યું છે…</string>
     <string name="k2go_zim_preparing_sub">મોટા ડાઉનલોડ. તમે તેને ચાલુ છોડી શકો છો.</string>
     <string name="k2go_zim_downloading_fmt">%1$s ડાઉનલોડ થઈ રહ્યું છે</string>
-    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s માંથી %1$s · %5$d આઇટમમાંથી %4$d · છૂટે તો ફરી ચાલુ થાય છે</string>
+    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s માંથી %1$s · %5$d આઇટમમાંથી %4$d</string>
     <string name="k2go_zim_leave_title">તેને ચાલુ છોડો</string>
     <string name="k2go_zim_leave_body">તમારું કન્ટેન્ટ તૈયાર થાય ત્યારે અમે તમને જણાવીશું.</string>
     <string name="k2go_zim_run_bg">બૅકગ્રાઉન્ડમાં ચલાવો</string>

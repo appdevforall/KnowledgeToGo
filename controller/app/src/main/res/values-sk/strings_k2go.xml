@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">Pripravuje sa obsah…</string>
     <string name="k2go_zim_preparing_sub">Veľké sťahovania. Môžete to nechať bežať.</string>
     <string name="k2go_zim_downloading_fmt">Sťahuje sa %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s z %2$s%3$s · %4$d z %5$d položiek · po výpadku sa obnoví</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s z %2$s%3$s · %4$d z %5$d položiek</string>
     <string name="k2go_zim_leave_title">Nechajte to bežať</string>
     <string name="k2go_zim_leave_body">Upozorníme vás, keď bude váš obsah pripravený.</string>
     <string name="k2go_zim_run_bg">Spustiť na pozadí</string>

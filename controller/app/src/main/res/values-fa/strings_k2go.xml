@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">در حال آماده‌سازی محتوا…</string>
     <string name="k2go_zim_preparing_sub">دانلودهای بزرگ. می‌توانید آن را در حال اجرا رها کنید.</string>
     <string name="k2go_zim_downloading_fmt">در حال دانلود %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s از %2$s%3$s · %4$d از %5$d مورد · در صورت قطع از سر گرفته می‌شود</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s از %2$s%3$s · %4$d از %5$d مورد</string>
     <string name="k2go_zim_leave_title">آن را در حال اجرا رها کنید</string>
     <string name="k2go_zim_leave_body">وقتی محتوای شما آماده شد به شما اطلاع می‌دهیم.</string>
     <string name="k2go_zim_run_bg">اجرا در پس‌زمینه</string>

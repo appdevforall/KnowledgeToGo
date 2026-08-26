@@ -696,7 +696,8 @@ apiRouter.post('/:type/download', (req: Request, res: Response): void => {
 apiRouter.get('/:type/jobs/:id', (req: Request, res: Response): void => {
     const job = jobs.get(String(req.params.id));
     if (!job || job.type !== String(req.params.type)) { res.status(404).json({ error: 'not found' }); return; }
-    res.json(toApi(job));
+    // ADFA-4893: merge the live reconnect state so the poll can surface "Reconnecting n/total".
+    res.json({ ...toApi(job), ...jobs.retrySnapshot(job.id) });
 });
 
 // Live log tail for a job (ADFA-4879). Opt-in: a client polls ?since=<cursor> and appends the

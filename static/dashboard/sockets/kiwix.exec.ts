@@ -65,9 +65,9 @@ const ARIA2_ARGS: string[] = [
 // (file exists) — those are terminal. Budget ~30s to outlast a Wi-Fi reassociation.
 //   1 unknown · 2 timeout · 6 network · 7 unfinished · 19 DNS · 29 HTTP 503
 const ARIA2_TRANSIENT_EXITS = new Set<number>([1, 2, 6, 7, 19, 29]);
-const KIWIX_DL_TRIES = 5;
-const KIWIX_RETRY_BASE_MS = 2_000;
-const KIWIX_RETRY_MAX_MS = 15_000;
+// ADFA-4893: 5 VISIBLE reconnect waits (3, 6, 9, 18, 36 s ≈ 72 s total). Surfaced on the poll as
+// "Reconnecting n/5"; the app renders it and can cancel a wait (which pauses via ctx.signal).
+const KIWIX_RETRY_DELAYS = [3_000, 6_000, 9_000, 18_000, 36_000];
 
 /** Convert an aria2 rate token ("34MiB", "512KiB", "1.2MB") to bytes/sec. */
 function parseRate(token: string): number {
@@ -144,7 +144,9 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
     ctx.throwIfCanceled();
 
     // --- Download phase -----------------------------------------------------
-    ctx.update({ phase: 'downloading', percent: 0, speed: 0, detail: files.join(', ') });
+    // ADFA-4893: don't send percent here — a fresh job keeps -1 (indeterminate until aria2 reports),
+    // and a RESUME keeps its retained percent instead of flashing 0 before --continue re-reports.
+    ctx.update({ phase: 'downloading', speed: 0, detail: files.join(', ') });
     // Each id already carries its project subdir on the mirror (/zim/<project>/<file>).
     const urls = ids.map((z) => BASE_URL + z);
 
@@ -159,7 +161,7 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 let lastPct = -1;
                 let lastRate = '';
                 while ((m = re.exec(text)) !== null) { lastPct = parseInt(m[1], 10); lastRate = m[2]; }
-                if (lastPct >= 0) ctx.update({ phase: 'downloading', percent: lastPct, speed: parseRate(lastRate) });
+                if (lastPct >= 0) { ctx.reportRetry(0, 0); ctx.update({ phase: 'downloading', percent: lastPct, speed: parseRate(lastRate) }); }
             };
             dl.stdout?.on('data', onData);
             dl.stderr?.on('data', onData);
@@ -174,12 +176,15 @@ const kiwixRunner: (ctx: RunnerContext) => Promise<void> = async (ctx) => {
                 reject(err);
             });
         }), {
-            tries: KIWIX_DL_TRIES,
-            baseMs: KIWIX_RETRY_BASE_MS,
-            maxMs: KIWIX_RETRY_MAX_MS,
+            delaysMs: KIWIX_RETRY_DELAYS,                 // ADFA-4893: 3/6/9/18/36 s, 5 visible reconnects
+            tries: KIWIX_RETRY_DELAYS.length + 1,
+            signal: ctx.signal,                          // pause/cancel breaks the backoff sleep at once
             isCanceled: ctx.isCanceled,
             isTransient: (e) => ARIA2_TRANSIENT_EXITS.has((e as { code?: number }).code ?? -1),
-            onRetry: ({ attempt, err }) => ctx.log(`[kiwix] reconnect attempt ${attempt} after: ${err instanceof Error ? err.message : String(err)}`),
+            onRetry: ({ attempt, err }) => {
+                ctx.reportRetry(attempt, KIWIX_RETRY_DELAYS.length);   // poll shows "Reconnecting attempt/5"
+                ctx.log(`[kiwix] reconnect ${attempt}/${KIWIX_RETRY_DELAYS.length} after: ${err instanceof Error ? err.message : String(err)}`);
+            },
         });
     } catch (e) {
         // ADFA-4894: pause KEEPS the partial (+ .aria2) so resume continues via --continue; cancel

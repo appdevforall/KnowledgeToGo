@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">Menyiapkan konten…</string>
     <string name="k2go_zim_preparing_sub">Unduhan besar. Anda boleh membiarkannya berjalan.</string>
     <string name="k2go_zim_downloading_fmt">Mengunduh %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s dari %2$s%3$s · %4$d dari %5$d item · melanjutkan jika terputus</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s dari %2$s%3$s · %4$d dari %5$d item</string>
     <string name="k2go_zim_leave_title">Biarkan berjalan</string>
     <string name="k2go_zim_leave_body">Kami akan memberi tahu Anda saat konten siap.</string>
     <string name="k2go_zim_run_bg">Jalankan di latar belakang</string>

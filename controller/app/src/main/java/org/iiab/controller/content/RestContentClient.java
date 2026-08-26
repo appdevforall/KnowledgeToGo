@@ -19,7 +19,8 @@
  *                                                                 speed(bytes/s),
  *                                                                 detail, error }
  *                 POST /api/kiwix/jobs/:id/cancel            -> { ok:true }
- *               phase is one of: queued|downloading|indexing|processing|done|error|canceled.
+ *                 POST /api/kiwix/jobs/:id/pause|resume      -> { ok:true }   (ADFA-4893)
+ *               phase is one of: queued|downloading|indexing|processing|paused|done|error|canceled.
  * ============================================================================
  */
 package org.iiab.controller.content;
@@ -51,11 +52,19 @@ public final class RestContentClient {
         void onLog(String line);                     // free-form detail line (for logs)
         void onDone();                               // success (terminal)
         void onError(String message);                // failure (terminal)
+        /** ADFA-4893: 'paused' phase (best-effort). Default no-op so existing implementers compile unchanged. */
+        default void onPaused(int percent) {}
+        /** ADFA-4893: server is reconnecting (attempt n of total) after a network drop; keeps polling. */
+        default void onReconnecting(int attempt, int total) {}
     }
 
     private static final String BASE = BoxEndpoints.API + "/kiwix";
     private static final long POLL_MS = 1000L;
     private static final int MAX_POLL_ERRORS = 10;   // tolerate ~10s of transient network blips
+    // ADFA-4893: the START (download) POST is before any server job exists, so the server's own
+    // reconnect can't cover a still-warming box; give the kickoff a few quick tries before failing.
+    private static final int START_TRIES = 3;
+    private static final long START_RETRY_MS = 2000L;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private Listener listener;
@@ -70,15 +79,25 @@ public final class RestContentClient {
     public void addZim(@NonNull String zimFilename, @NonNull Listener l) {
         this.listener = l;
         AppExecutors.get().io().execute(() -> {
-            try {
-                JSONObject body = new JSONObject().put("ids", new JSONArray().put(zimFilename));
-                JSONObject resp = httpJson("POST", BASE + "/download", body);
-                String id = resp.optString("id", "");
-                if (id.isEmpty()) { fail("content service did not start the job"); return; }
-                jobId = id;
-                main.postDelayed(pollTask, POLL_MS);
-            } catch (Exception e) {
-                fail("couldn't reach the content service");
+            final JSONObject body;
+            try { body = new JSONObject().put("ids", new JSONArray().put(zimFilename)); }
+            catch (Exception e) { fail("couldn't build the request"); return; }
+            // ADFA-4893: retry ONLY the kickoff POST (connectivity blip / server still warming) a few
+            // times. An empty id is a server refusal, not a blip, so it fails without retrying. Once the
+            // job exists, the server owns reconnection (visible), not this loop.
+            for (int attempt = 1; !finished; attempt++) {
+                try {
+                    JSONObject resp = httpJson("POST", BASE + "/download", body);
+                    String id = resp.optString("id", "");
+                    if (id.isEmpty()) { fail("content service did not start the job"); return; }
+                    jobId = id;
+                    main.postDelayed(pollTask, POLL_MS);
+                    return;
+                } catch (Exception e) {
+                    if (attempt >= START_TRIES) { fail("couldn't reach the content service"); return; }
+                    try { Thread.sleep(START_RETRY_MS); }
+                    catch (InterruptedException ie) { Thread.currentThread().interrupt(); return; }
+                }
             }
         });
     }
@@ -93,12 +112,17 @@ public final class RestContentClient {
             long speed = j.optLong("speed", 0L);
             String detail = j.isNull("detail") ? null : j.optString("detail", null);
             String error = j.isNull("error") ? null : j.optString("error", null);
+            int retryAttempt = j.optInt("retryAttempt", 0);   // ADFA-4893: reconnect state (0 when not retrying)
+            int retryTotal = j.optInt("retryTotal", 0);
 
             if (detail != null && !detail.isEmpty()) deliver(() -> listener.onLog(detail));
 
             switch (phase) {
                 case "downloading":
-                    if (percent >= 0) {
+                    if (retryAttempt > 0) {
+                        final int a = retryAttempt, t = retryTotal;
+                        deliver(() -> listener.onReconnecting(a, t));
+                    } else if (percent >= 0) {
                         final int p = percent; final String rate = formatRate(speed);
                         deliver(() -> listener.onProgress(p, rate));
                     }
@@ -116,6 +140,12 @@ public final class RestContentClient {
                 case "canceled":
                     fail("canceled");
                     return;
+                case "paused": {
+                    // ADFA-4893: not terminal — surface it and keep polling so resume/progress is seen.
+                    final int pp = percent;
+                    deliver(() -> listener.onPaused(pp));
+                    break;
+                }
                 default:
                     break; // queued / unknown: keep polling
             }
@@ -128,6 +158,7 @@ public final class RestContentClient {
 
     /** Best-effort cancel of the in-flight job. */
     public void cancel() {
+        finished = true;   // ADFA-4893: also stops the START retry loop if a cancel lands mid-kickoff
         final String id = jobId;
         if (id != null && !id.isEmpty()) {
             AppExecutors.get().io().execute(() -> {
@@ -135,6 +166,26 @@ public final class RestContentClient {
             });
         }
         teardown();
+    }
+
+    /** ADFA-4893: best-effort pause of the in-flight job. Keeps polling so 'paused' is observed and resume works. */
+    public void pause() {
+        final String id = jobId;
+        if (id != null && !id.isEmpty()) {
+            AppExecutors.get().io().execute(() -> {
+                try { httpJson("POST", BASE + "/jobs/" + id + "/pause", null); } catch (Exception ignore) { /* best effort */ }
+            });
+        }
+    }
+
+    /** ADFA-4893: best-effort resume of a paused job; polling continues, so progress flows again. */
+    public void resume() {
+        final String id = jobId;
+        if (id != null && !id.isEmpty()) {
+            AppExecutors.get().io().execute(() -> {
+                try { httpJson("POST", BASE + "/jobs/" + id + "/resume", null); } catch (Exception ignore) { /* best effort */ }
+            });
+        }
     }
 
     private void done() {

@@ -525,7 +525,7 @@
     <string name="k2go_zim_preparing_title">Preparazione dei contenuti…</string>
     <string name="k2go_zim_preparing_sub">Download di grandi dimensioni. Puoi lasciarlo in esecuzione.</string>
     <string name="k2go_zim_downloading_fmt">Download di %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s di %2$s%3$s · %4$d di %5$d elementi · riprende se si interrompe</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s di %2$s%3$s · %4$d di %5$d elementi</string>
     <string name="k2go_zim_leave_title">Lascialo in esecuzione</string>
     <string name="k2go_zim_leave_body">Ti avviseremo quando i tuoi contenuti saranno pronti.</string>
     <string name="k2go_zim_run_bg">Esegui in background</string>

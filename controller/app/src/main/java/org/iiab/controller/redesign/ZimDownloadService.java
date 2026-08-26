@@ -41,6 +41,8 @@ public final class ZimDownloadService extends Service {
     public static final String ACTION_START = "org.iiab.controller.ZIM_DOWNLOAD_START";
     public static final String ACTION_RETRY = "org.iiab.controller.ZIM_DOWNLOAD_RETRY";
     public static final String ACTION_CANCEL = "org.iiab.controller.ZIM_DOWNLOAD_CANCEL";
+    public static final String ACTION_PAUSE = "org.iiab.controller.ZIM_DOWNLOAD_PAUSE";     // ADFA-4893
+    public static final String ACTION_RESUME = "org.iiab.controller.ZIM_DOWNLOAD_RESUME";   // ADFA-4893
     public static final String EXTRA_FILES = "files";
     public static final String EXTRA_LABELS = "labels";
     public static final String EXTRA_BYTES = "bytes";
@@ -59,9 +61,15 @@ public final class ZimDownloadService extends Service {
     private static int sPercent = 0;
     private static long sSpeed = 0;
     private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
+    private static volatile boolean sPaused = false;     // ADFA-4893: active job paused on the server (session-level)
+    private static volatile int sReconnectAttempt = 0;   // ADFA-4893: >0 while the server reconnects (n of total)
+    private static volatile int sReconnectTotal = 0;
     private static Listener sListener;
 
     public static boolean isRunning() { return sRunning; }
+    public static boolean isPaused() { return sPaused; }
+    public static int reconnectAttempt() { return sReconnectAttempt; }
+    public static int reconnectTotal() { return sReconnectTotal; }
     public static boolean hasSession() { return sFiles.length > 0; }
     /** All items are terminal (done/failed) and nothing is in flight. */
     public static boolean isComplete() {
@@ -86,17 +94,49 @@ public final class ZimDownloadService extends Service {
     public static long speed() { return sSpeed; }
     public static void setListener(Listener l) { sListener = l; }
 
+    /** ADFA-4893: byte-weighted overall percent across the session (0-100). The single source both the
+     *  status-screen bar (ZimPreparingFragment) and the index row bar (SetupProgressActivity) read, so
+     *  the two can never drift. Active item contributes its live percent; done/failed count in full. */
+    public static int overallPercent() {
+        long total = 0, done = 0;
+        for (int i = 0; i < sBytes.length && i < sStatus.length; i++) {
+            total += sBytes[i];
+            if (sStatus[i] == DONE || sStatus[i] == FAILED) done += sBytes[i];
+            else if (i == sIndex && (sStatus[i] == ACTIVE || sStatus[i] == INDEXING) && sPercent >= 0)
+                done += sBytes[i] * sPercent / 100;
+        }
+        return total > 0 ? (int) Math.min(100, done * 100 / total) : (isComplete() ? 100 : 0);
+    }
+
     public static void start(Context ctx, String[] files, String[] labels, long[] bytes) {
         Intent i = new Intent(ctx, ZimDownloadService.class).setAction(ACTION_START)
                 .putExtra(EXTRA_FILES, files).putExtra(EXTRA_LABELS, labels).putExtra(EXTRA_BYTES, bytes);
         ContextCompat.startForegroundService(ctx, i);
     }
 
-    /** Re-queue a failed item; resume processing if the session had already stopped. */
-    public static void retry(Context ctx, int i) {
-        if (i < 0 || i >= sStatus.length) return;
-        sStatus[i] = PENDING;
-        if (!sRunning) {
+    /** ADFA-4893: pause the active job (the server keeps the partial). No-op if nothing is running. */
+    public static void pause(Context ctx) {
+        if (!sRunning) return;
+        ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_PAUSE));
+    }
+
+    /** ADFA-4893: resume a paused job; polling/progress continues from the partial. */
+    public static void resume(Context ctx) {
+        ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RESUME));
+    }
+
+    /** ADFA-4893: true when any item is FAILED (so the status screen can offer a single Retry). */
+    public static boolean hasFailed() {
+        for (int st : sStatus) if (st == FAILED) return true;
+        return false;
+    }
+
+    /** ADFA-4893: re-queue ALL failed items and resume the session — the status-screen Retry (the
+     *  Pause button morphs into it), so a failed run doesn't fall back to a separate per-item control. */
+    public static void retryFailed(Context ctx) {
+        boolean any = false;
+        for (int i = 0; i < sStatus.length; i++) if (sStatus[i] == FAILED) { sStatus[i] = PENDING; any = true; }
+        if (any && !sRunning) {
             ContextCompat.startForegroundService(ctx, new Intent(ctx, ZimDownloadService.class).setAction(ACTION_RETRY));
         }
     }
@@ -104,15 +144,12 @@ public final class ZimDownloadService extends Service {
     /** Clear the session so a new selection can start fresh. */
     public static void finishSession() {
         sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; sStatus = new int[0];
-        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sLastProgressAt = 0L;
+        sIndex = 0; sPercent = 0; sSpeed = 0; sRunning = false; sPaused = false;
+        sReconnectAttempt = 0; sReconnectTotal = 0; sLastProgressAt = 0L;
     }
-
-    private static final int MAX_ATTEMPTS = 3;      // total tries per ZIM before marking it failed
-    private static final long RETRY_DELAY_MS = 4000L;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private RestContentClient client;
-    private int attempts = 0;                        // attempts for the ZIM currently in flight
 
     @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
     @Nullable @Override public IBinder onBind(Intent intent) { return null; }
@@ -123,9 +160,25 @@ public final class ZimDownloadService extends Service {
 
         if (ACTION_CANCEL.equals(action)) {
             if (client != null) client.cancel();
-            sRunning = false;
+            sRunning = false; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
             publish();
             main.post(() -> { stopForeground(true); stopSelf(); });
+            return START_NOT_STICKY;
+        }
+
+        // ADFA-4893: pause/resume the active job. Handled BEFORE the sRunning guard (the session is
+        // still "running" while paused). The queue never advances during a pause because the paused
+        // job never reaches onDone/onError, so processNext() isn't called.
+        if (ACTION_PAUSE.equals(action)) {
+            if (client != null) client.pause();
+            sPaused = true;
+            publish();
+            return START_NOT_STICKY;
+        }
+        if (ACTION_RESUME.equals(action)) {
+            if (client != null) client.resume();
+            sPaused = false;
+            publish();
             return START_NOT_STICKY;
         }
 
@@ -142,7 +195,7 @@ public final class ZimDownloadService extends Service {
             if (sLabels == null) sLabels = sFiles;
             if (sBytes == null) sBytes = new long[sFiles.length];
             sStatus = new int[sFiles.length];
-            sIndex = 0; sPercent = 0; sSpeed = 0;
+            sIndex = 0; sPercent = 0; sSpeed = 0; sPaused = false; sReconnectAttempt = 0; sReconnectTotal = 0;
             sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat at session start
         }
 
@@ -165,7 +218,6 @@ public final class ZimDownloadService extends Service {
         int i = firstPending();
         if (i < 0) { sessionComplete(); return; }
         sIndex = i; sPercent = 0; sStatus[i] = ACTIVE;
-        attempts = 0;
         publish();
         updateNotification(sLabels[i]);
         startItem(i);
@@ -176,32 +228,37 @@ public final class ZimDownloadService extends Service {
         client = new RestContentClient();
         client.addZim(sFiles[i], new RestContentClient.Listener() {
             @Override public void onProgress(int percent, String speed) {
+                if (sPaused) sPaused = false;   // ADFA-4893: progress means the server resumed
+                sReconnectAttempt = 0;          // ADFA-4893: progress means the reconnect succeeded
                 sPercent = percent; sSpeed = parseRate(speed);
                 sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each poll
                 if (sStatus[i] != INDEXING) sStatus[i] = ACTIVE;
                 publish(); updateNotification(sLabels[i]);
             }
             @Override public void onIndexing() { sStatus[i] = INDEXING; sLastProgressAt = android.os.SystemClock.elapsedRealtime(); publish(); }
+            @Override public void onPaused(int percent) {
+                // ADFA-4893: server acknowledged the pause. Keep the heartbeat fresh (a pause is
+                // intentional, not a dead session) and let the screen render the paused state.
+                sPercent = percent; sPaused = true;
+                sLastProgressAt = android.os.SystemClock.elapsedRealtime();
+                publish();
+            }
+            @Override public void onReconnecting(int attempt, int total) {
+                // ADFA-4893: the server lost the link and is retrying (n of total). Surface it so the
+                // screen shows "Reconnecting n/N"; keep the heartbeat fresh — this is not a dead session.
+                sReconnectAttempt = attempt; sReconnectTotal = total;
+                sLastProgressAt = android.os.SystemClock.elapsedRealtime();
+                publish();
+            }
             @Override public void onLog(String line) { /* logcat only */ }
             @Override public void onDone() { android.util.Log.i("K2Go-Provision", "zim job done [" + i + "]"); sStatus[i] = DONE; publish(); processNext(); }
             @Override public void onError(String message) {
+                // ADFA-4893: the server owns reconnection (5 visible attempts). When it gives up we mark
+                // the item FAILED and let the user retry it (checklist tap) — no invisible app-side re-POST.
                 android.util.Log.w("K2Go-Provision", "zim job [" + i + "] error: " + message);
-                retryOrFail(i);
+                sStatus[i] = FAILED; sReconnectAttempt = 0; publish(); processNext();
             }
         });
-    }
-
-    /** Transient failure (server warming up, a flaky mirror): retry the same ZIM a couple times
-     *  before giving up, so a blip doesn't leave content missing. */
-    private void retryOrFail(int i) {
-        attempts++;
-        if (attempts < MAX_ATTEMPTS) {
-            android.util.Log.w("K2Go-Provision", "zim job [" + i + "] transient failure, retry " + attempts + "/" + (MAX_ATTEMPTS - 1));
-            main.postDelayed(() -> startItem(i), RETRY_DELAY_MS);
-        } else {
-            android.util.Log.w("K2Go-Provision", "zim job [" + i + "] failed after " + attempts + " attempts");
-            sStatus[i] = FAILED; publish(); processNext();
-        }
     }
 
     private void sessionComplete() {

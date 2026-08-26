@@ -13,6 +13,23 @@ test('withRetry: returns on the first success, no retries', async () => {
     assert.equal(calls, 1);
 });
 
+test('withRetry: ADFA-4893 delaysMs drives the exact schedule (3/6/9/18/36), tries defaults to N+1', async () => {
+    const waited: number[] = [];
+    const onRetried: number[] = [];
+    let calls = 0;
+    await assert.rejects(
+        withRetry(async () => { calls++; throw new Error('down'); }, {
+            delaysMs: [3000, 6000, 9000, 18000, 36000],
+            sleep: async (ms: number) => { waited.push(ms); },
+            onRetry: ({ attempt }) => { onRetried.push(attempt); },
+        }),
+        /down/,
+    );
+    assert.equal(calls, 6);                                        // N+1 attempts = 5 visible reconnects
+    assert.deepEqual(waited, [3000, 6000, 9000, 18000, 36000]);    // exact schedule, no jitter
+    assert.deepEqual(onRetried, [1, 2, 3, 4, 5]);                  // "Reconnecting n/5" ordinals
+});
+
 test('withRetry: retries a transient failure then succeeds', async () => {
     let calls = 0;
     const out = await withRetry(async (attempt) => {
