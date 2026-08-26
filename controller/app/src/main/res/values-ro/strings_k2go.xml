@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Se pregătește conținutul…</string>
     <string name="k2go_zim_preparing_sub">Descărcări mari. O poți lăsa să ruleze.</string>
     <string name="k2go_zim_downloading_fmt">Se descarcă %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s din %2$s%3$s · %4$d din %5$d elemente · se reia dacă se întrerupe</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s din %2$s%3$s · %4$d din %5$d elemente</string>
     <string name="k2go_zim_leave_title">Las-o să ruleze</string>
     <string name="k2go_zim_leave_body">Te vom anunța când conținutul este gata.</string>
     <string name="k2go_zim_run_bg">Rulează în fundal</string>

@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Inaandaa maudhui…</string>
     <string name="k2go_zim_preparing_sub">Upakuaji mkubwa. Unaweza kuiacha ikiendelea.</string>
     <string name="k2go_zim_downloading_fmt">Inapakua %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s kati ya %2$s%3$s · %4$d kati ya vipengele %5$d · huendelea ikikatika</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s kati ya %2$s%3$s · %4$d kati ya vipengele %5$d</string>
     <string name="k2go_zim_leave_title">Iache ikiendelea</string>
     <string name="k2go_zim_leave_body">Tutakuarifu maudhui yako yatakapokuwa tayari.</string>
     <string name="k2go_zim_run_bg">Endesha chinichini</string>

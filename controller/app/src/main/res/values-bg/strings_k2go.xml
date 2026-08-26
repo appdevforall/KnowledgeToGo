@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Подготовка на съдържанието…</string>
     <string name="k2go_zim_preparing_sub">Големи изтегляния. Можете да го оставите да работи.</string>
     <string name="k2go_zim_downloading_fmt">Изтегляне на %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s от %2$s%3$s · %4$d от %5$d елемента · възобновява се при прекъсване</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s от %2$s%3$s · %4$d от %5$d елемента</string>
     <string name="k2go_zim_leave_title">Оставете го да работи</string>
     <string name="k2go_zim_leave_body">Ще ви уведомим, когато съдържанието ви е готово.</string>
     <string name="k2go_zim_run_bg">Изпълни във фонов режим</string>

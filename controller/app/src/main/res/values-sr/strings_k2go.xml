@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Припрема садржаја…</string>
     <string name="k2go_zim_preparing_sub">Велика преузимања. Можете их оставити да раде.</string>
     <string name="k2go_zim_downloading_fmt">Преузимање %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s од %2$s%3$s · %4$d од %5$d ставки · наставља се ако прекине</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s од %2$s%3$s · %4$d од %5$d ставки</string>
     <string name="k2go_zim_leave_title">Оставите да ради</string>
     <string name="k2go_zim_leave_body">Обавестићемо вас када ваш садржај буде спреман.</string>
     <string name="k2go_zim_run_bg">Ради у позадини</string>

@@ -532,7 +532,7 @@
     <string name="k2go_zim_preparing_title">Ruošiamas turinys…</string>
     <string name="k2go_zim_preparing_sub">Dideli atsisiuntimai. Galite palikti veikti.</string>
     <string name="k2go_zim_downloading_fmt">Atsisiunčiama %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s iš %2$s%3$s · %4$d iš %5$d elementų · atsinaujina, jei nutrūksta</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s iš %2$s%3$s · %4$d iš %5$d elementų</string>
     <string name="k2go_zim_leave_title">Palikite veikti</string>
     <string name="k2go_zim_leave_body">Pranešime, kai turinys bus paruoštas.</string>
     <string name="k2go_zim_run_bg">Vykdyti fone</string>

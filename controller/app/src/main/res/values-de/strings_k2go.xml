@@ -527,7 +527,7 @@
     <string name="k2go_zim_preparing_title">Inhalte werden vorbereitet…</string>
     <string name="k2go_zim_preparing_sub">Große Downloads. Du kannst es laufen lassen.</string>
     <string name="k2go_zim_downloading_fmt">%1$s wird heruntergeladen</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s von %2$s%3$s · %4$d von %5$d Elementen · setzt bei Abbruch fort</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s von %2$s%3$s · %4$d von %5$d Elementen</string>
     <string name="k2go_zim_leave_title">Lass es laufen</string>
     <string name="k2go_zim_leave_body">Wir benachrichtigen dich, wenn deine Inhalte bereit sind.</string>
     <string name="k2go_zim_run_bg">Im Hintergrund ausführen</string>

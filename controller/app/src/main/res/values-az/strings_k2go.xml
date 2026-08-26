@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Məzmun hazırlanır…</string>
     <string name="k2go_zim_preparing_sub">Böyük yükləmələr. İşləməyə buraxa bilərsiniz.</string>
     <string name="k2go_zim_downloading_fmt">%1$s yüklənir</string>
-    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s-dən %1$s · %5$d elementdən %4$d · kəsilsə davam edir</string>
+    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s-dən %1$s · %5$d elementdən %4$d</string>
     <string name="k2go_zim_leave_title">İşləməyə burax</string>
     <string name="k2go_zim_leave_body">Məzmununuz hazır olduqda sizə bildiriş göndərəcəyik.</string>
     <string name="k2go_zim_run_bg">Arxa planda işlət</string>

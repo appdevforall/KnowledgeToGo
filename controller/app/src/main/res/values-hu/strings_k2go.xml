@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Tartalom előkészítése…</string>
     <string name="k2go_zim_preparing_sub">Nagy letöltések. Hagyhatod futni.</string>
     <string name="k2go_zim_downloading_fmt">%1$s letöltése</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s / %2$s%3$s · %4$d / %5$d elem · folytatódik, ha megszakad</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s / %2$s%3$s · %4$d / %5$d elem</string>
     <string name="k2go_zim_leave_title">Hagyd futni</string>
     <string name="k2go_zim_leave_body">Értesítünk, amikor a tartalmad kész.</string>
     <string name="k2go_zim_run_bg">Futtatás a háttérben</string>

@@ -62,6 +62,8 @@ export interface RunnerContext {
     /** Spawn a child that is killed automatically on cancel and untracked on exit. */
     spawn(cmd: string, args: string[], opts?: SpawnOptions): ChildProcess;
     log(line: string): void;
+    /** ADFA-4893: report reconnect progress so the poll surfaces "Reconnecting n/total". (0,0) clears it. */
+    reportRetry(attempt: number, total: number): void;
 }
 
 export type Runner = (ctx: RunnerContext) => Promise<void>;
@@ -94,7 +96,7 @@ const ACTIVE: JobPhase[] = ['queued', 'downloading', 'indexing', 'processing'];
 class JobManager {
     private db: Database.Database;
     private runners = new Map<JobType, Runner>();
-    private runtime = new Map<string, { canceled: boolean; paused: boolean; procs: Set<ChildProcess>; ac: AbortController }>();
+    private runtime = new Map<string, { canceled: boolean; paused: boolean; procs: Set<ChildProcess>; ac: AbortController; retryAttempt: number; retryTotal: number }>();
     // ADFA-4879: bounded rolling log tail per job for the live-log REST endpoint.
     private readonly logTail = new RollingLog();
 
@@ -222,6 +224,12 @@ class JobManager {
         return true;
     }
 
+    /** ADFA-4893: live reconnect state for the poll (in-memory; 0/0 when not reconnecting). */
+    retrySnapshot(id: string): { retryAttempt: number; retryTotal: number } {
+        const rt = this.runtime.get(id);
+        return { retryAttempt: rt?.retryAttempt ?? 0, retryTotal: rt?.retryTotal ?? 0 };
+    }
+
     /** Resume jobs that were mid-flight when the dashboard last stopped. */
     reconcileOnBoot(): void {
         const stuck = this.db.prepare(
@@ -266,7 +274,7 @@ class JobManager {
         const runner = this.runners.get(job.type);
         if (!runner) { this.patch(job.id, { phase: 'error', error: `no runner for ${job.type}` }); return; }
 
-        const rt = { canceled: false, paused: false, procs: new Set<ChildProcess>(), ac: new AbortController() };
+        const rt = { canceled: false, paused: false, procs: new Set<ChildProcess>(), ac: new AbortController(), retryAttempt: 0, retryTotal: 0 };
         this.runtime.set(job.id, rt);
 
         let items: unknown[] = [];
@@ -282,6 +290,7 @@ class JobManager {
             throwIfCanceled: () => { if (rt.canceled) throw new CanceledError(); },
             isPaused: () => rt.paused,
             signal: rt.ac.signal,
+            reportRetry: (attempt, total) => { rt.retryAttempt = attempt; rt.retryTotal = total; },
             spawn: (cmd, args, opts) => {
                 const child = opts ? spawn(cmd, args, opts) : spawn(cmd, args);
                 rt.procs.add(child);

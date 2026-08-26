@@ -274,7 +274,13 @@ public class ServerController {
         AppExecutors.get().io().execute(() -> {
             boolean envAlive = org.iiab.controller.env.EnvironmentProcess.isRunning(activity);
             long ageMs = envAlive ? org.iiab.controller.env.EnvironmentProcess.environmentAgeMs(activity) : -1L;
-            boolean servicesAlive = ServerStateRepository.get().current().alive;
+            // ADFA-5280: decide on FRESH liveness, not the cached ServerStateRepository.alive.
+            // Right after a module batch's `pdsm stop`, the cache still reads TRUE until the 3s poll
+            // catches up, so decide() returned NOOP_HEALTHY and the box was never relaunched (Home
+            // "Couldn't start" until a manual Retry). A live probe reads a just-stopped server as down
+            // at once (connection refused); a genuinely-healthy env still answers true -> NOOP_HEALTHY,
+            // so this never double-boots. Safe here: this block already runs off the main thread.
+            boolean servicesAlive = org.iiab.controller.redesign.RestReadiness.apiReady();
             org.iiab.controller.env.domain.EnvironmentEnsure.Action action =
                     org.iiab.controller.env.domain.EnvironmentEnsure.decide(
                             envAlive, ageMs, servicesAlive, BOOT_GRACE_MS);

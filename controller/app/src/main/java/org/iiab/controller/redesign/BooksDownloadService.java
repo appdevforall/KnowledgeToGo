@@ -3,12 +3,12 @@
  * Name        : BooksDownloadService.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-4850. Foreground download manager for Books, following the ZIM pattern
- *               (CLAUDE.md): sequential, ONE AT A TIME (kind to Project Gutenberg), continuing
- *               past a failed item, per-item retry, "Finish" to clear the session. Each book is
- *               its own durable REST job: POST /api/books/download {items:[{id,title,url}]} then
- *               poll /api/books/jobs/:id (the server downloads the EPUB from Gutenberg and
- *               uploads it into Calibre-Web). The device only POSTs + polls.
+ * Description : ADFA-4850 / ADFA-4893. Foreground shell for the Books stream: owns the notification and
+ *               the Books-specific bits (id/title/url arrays, the {items:[{id,title,url}]} body,
+ *               item-count percent) and delegates the queue + client + progress/pause/reconnect state
+ *               to the shared ContentDownloadSession — the same engine ZIM uses, so both behave
+ *               identically. The server downloads each EPUB from Gutenberg and uploads it into
+ *               Calibre-Web; the device only POSTs + polls.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -30,64 +30,51 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import org.iiab.controller.R;
-import org.iiab.controller.config.BoxEndpoints;
-import org.iiab.controller.util.AppExecutors;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-
-public final class BooksDownloadService extends Service {
+public final class BooksDownloadService extends Service implements ContentDownloadSession.Host {
 
     private static final String CHANNEL_ID = "books_download_channel";
     private static final int NOTIFICATION_ID = 6;
-    private static final String BASE = BoxEndpoints.API + "/books";
-    private static final long POLL_MS = 1000L;
 
     public static final String ACTION_START = "org.iiab.controller.BOOKS_DOWNLOAD_START";
     public static final String ACTION_RETRY = "org.iiab.controller.BOOKS_DOWNLOAD_RETRY";
     public static final String ACTION_CANCEL = "org.iiab.controller.BOOKS_DOWNLOAD_CANCEL";
+    public static final String ACTION_PAUSE = "org.iiab.controller.BOOKS_DOWNLOAD_PAUSE";
+    public static final String ACTION_RESUME = "org.iiab.controller.BOOKS_DOWNLOAD_RESUME";
     public static final String EXTRA_IDS = "ids";
     public static final String EXTRA_TITLES = "titles";
     public static final String EXTRA_URLS = "urls";
 
-    public static final int PENDING = 0, ACTIVE = 1, ADDING = 2, DONE = 3, FAILED = 4;
+    // Per-item status — same values the UI/checklist already use, sourced from the shared session.
+    public static final int PENDING = ContentDownloadSession.PENDING;
+    public static final int ACTIVE = ContentDownloadSession.ACTIVE;
+    public static final int ADDING = ContentDownloadSession.PROCESSING;
+    public static final int DONE = ContentDownloadSession.DONE;
+    public static final int FAILED = ContentDownloadSession.FAILED;
 
+    /** Kept for the callers that pass {@code this::render}; adapts to the session listener. */
     public interface Listener { void onUpdate(); }
 
-    // ---- shared session state (observed by the Downloads screen) ----
-    private static volatile boolean sRunning = false;
-    private static String[] sIds = new String[0];
-    private static String[] sTitles = new String[0];
-    private static String[] sUrls = new String[0];
-    private static int[] sStatus = new int[0];
-    private static int sIndex = 0;
-    private static volatile long sLastProgressAt = 0L;   // ADFA-5146: last-progress heartbeat (elapsedRealtime)
-    private static Listener sListener;
+    private static final ContentDownloadSession SESSION = new ContentDownloadSession("books");
+    // The whole per-item snapshot (id/title/url-as-bodies, titles-as-labels) now lives in SESSION, so
+    // status and the metadata the UI indexes off it stay length-consistent by construction (ADFA-4893).
 
-    public static boolean isRunning() { return sRunning; }
-    public static boolean hasSession() { return sIds.length > 0; }
-    public static boolean isComplete() {
-        if (sIds.length == 0 || sRunning) return false;
-        for (int st : sStatus) if (st == PENDING || st == ACTIVE || st == ADDING) return false;
-        return true;
-    }
-    /** ADFA-5146: busy only while the poll heartbeat is fresh — a killed service lets it go cold. */
-    public static boolean isActiveNow() {
-        return hasSession() && !isComplete()
-                && org.iiab.controller.env.Freshness.fresh(
-                        sLastProgressAt, android.os.SystemClock.elapsedRealtime(),
-                        org.iiab.controller.env.Freshness.STALE_MS);
-    }
-    public static String[] titles() { return sTitles; }
-    public static int[] status() { return sStatus; }
-    public static int index() { return sIndex; }
-    public static void setListener(Listener l) { sListener = l; }
+    // ---- static API the UI observes (delegates to the shared session) -------------------------
+    public static boolean isRunning() { return SESSION.isRunning(); }
+    public static boolean isPaused() { return SESSION.isPaused(); }
+    public static int reconnectAttempt() { return SESSION.reconnectAttempt(); }
+    public static int reconnectTotal() { return SESSION.reconnectTotal(); }
+    public static boolean hasSession() { return SESSION.hasSession(); }
+    public static boolean isComplete() { return SESSION.isComplete(); }
+    public static boolean isActiveNow() { return SESSION.isActiveNow(); }
+    public static boolean hasFailed() { return SESSION.hasFailed(); }
+    public static int[] status() { return SESSION.status(); }
+    public static int index() { return SESSION.index(); }
+    public static int overallPercent() { return SESSION.overallPercent(); }
+    public static String[] titles() { return SESSION.labels(); }
+    public static void setListener(Listener l) { SESSION.setListener(l == null ? null : l::onUpdate); }
 
     public static void start(Context ctx, String[] ids, String[] titles, String[] urls) {
         Intent i = new Intent(ctx, BooksDownloadService.class).setAction(ACTION_START)
@@ -95,144 +82,72 @@ public final class BooksDownloadService extends Service {
         ContextCompat.startForegroundService(ctx, i);
     }
 
-    public static void retry(Context ctx, int i) {
-        if (i < 0 || i >= sStatus.length) return;
-        sStatus[i] = PENDING;
-        if (!sRunning) ContextCompat.startForegroundService(ctx,
-                new Intent(ctx, BooksDownloadService.class).setAction(ACTION_RETRY));
+    public static void pause(Context ctx) {
+        if (!SESSION.isRunning()) return;
+        ContextCompat.startForegroundService(ctx, new Intent(ctx, BooksDownloadService.class).setAction(ACTION_PAUSE));
     }
 
-    public static void finishSession() {
-        sIds = new String[0]; sTitles = new String[0]; sUrls = new String[0]; sStatus = new int[0];
-        sIndex = 0; sRunning = false; sLastProgressAt = 0L;
+    public static void resume(Context ctx) {
+        ContextCompat.startForegroundService(ctx, new Intent(ctx, BooksDownloadService.class).setAction(ACTION_RESUME));
     }
 
-    private static final int MAX_ATTEMPTS = 3;      // total tries per book before marking it failed
-    private static final long RETRY_DELAY_MS = 4000L;
+    /** ADFA-4893: re-queue ALL failed books and resume — the status-screen Retry (Pause morphs into it). */
+    public static void retryFailed(Context ctx) {
+        if (SESSION.requeueFailed() && !SESSION.isRunning()) {
+            ContextCompat.startForegroundService(ctx, new Intent(ctx, BooksDownloadService.class).setAction(ACTION_RETRY));
+        }
+    }
+
+    public static void finishSession() { SESSION.purge(); }
 
     private final Handler main = new Handler(Looper.getMainLooper());
-    private volatile String currentJobId;
-    private volatile boolean canceled = false;
-    private int attempts = 0;                        // attempts for the item currently in flight
 
-    @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
+    @Override public void onCreate() { super.onCreate(); createNotificationChannel(); SESSION.attach(this); }
     @Nullable @Override public IBinder onBind(Intent intent) { return null; }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        SESSION.attach(this);
         String action = intent != null ? intent.getAction() : null;
-        if (ACTION_CANCEL.equals(action)) {
-            canceled = true; sRunning = false; publish();
-            main.post(() -> { stopForeground(true); stopSelf(); });
-            return START_NOT_STICKY;
-        }
-        if (sRunning) return START_NOT_STICKY;
+
+        if (ACTION_CANCEL.equals(action)) { SESSION.cancelAndPurge(); return START_NOT_STICKY; }
+        if (ACTION_PAUSE.equals(action)) { SESSION.pauseActive(); return START_NOT_STICKY; }
+        if (ACTION_RESUME.equals(action)) { SESSION.resumeActive(); return START_NOT_STICKY; }
+
+        if (SESSION.isRunning()) return START_NOT_STICKY;
 
         if (ACTION_RETRY.equals(action)) {
-            if (!hasSession()) { stopSelf(); return START_NOT_STICKY; }
-        } else {
+            if (!SESSION.hasSession()) { stopSelf(); return START_NOT_STICKY; }
+            startForeground(NOTIFICATION_ID, buildNotification(SESSION.label(SESSION.index())));
+            SESSION.resumeQueue();
+        } else { // ACTION_START: fresh session from the extras
             String[] ids = intent.getStringArrayExtra(EXTRA_IDS);
             if (ids == null || ids.length == 0) { stopSelf(); return START_NOT_STICKY; }
-            sIds = ids;
-            sTitles = intent.getStringArrayExtra(EXTRA_TITLES);
-            sUrls = intent.getStringArrayExtra(EXTRA_URLS);
-            if (sTitles == null) sTitles = ids;
-            if (sUrls == null) sUrls = new String[ids.length];
-            sStatus = new int[ids.length];
-            sIndex = 0;
+            String[] titles = intent.getStringArrayExtra(EXTRA_TITLES);
+            String[] urls = intent.getStringArrayExtra(EXTRA_URLS);
+            if (titles == null) titles = ids;
+            if (urls == null) urls = new String[ids.length];
+            JSONObject[] bodies = new JSONObject[ids.length];
+            for (int i = 0; i < ids.length; i++) {
+                try {
+                    JSONObject item = new JSONObject().put("id", ids[i]).put("title", titles[i]).put("url", urls[i]);
+                    bodies[i] = new JSONObject().put("items", new JSONArray().put(item));
+                } catch (Exception e) { bodies[i] = new JSONObject(); }
+            }
+            startForeground(NOTIFICATION_ID, buildNotification(titles.length > 0 ? titles[0] : ""));
+            SESSION.begin(titles, null, bodies);   // books: no per-item byte size -> count-based percent
         }
-        canceled = false;
-        sRunning = true;
-        sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: seed the heartbeat
-        startForeground(NOTIFICATION_ID, buildNotification(currentTitle()));
-        processNext();
         return START_NOT_STICKY;
     }
 
-    private static int firstPending() {
-        for (int i = 0; i < sStatus.length; i++) if (sStatus[i] == PENDING) return i;
-        return -1;
+    // ---- ContentDownloadSession.Host (Books specifics) ----------------------------------------
+    @Override public void notify(String label) {
+        if (!SESSION.isRunning()) return;
+        NotificationManager m = getSystemService(NotificationManager.class);
+        if (m != null) m.notify(NOTIFICATION_ID, buildNotification(label));
     }
 
-    private String currentTitle() { return sIndex >= 0 && sIndex < sTitles.length ? sTitles[sIndex] : ""; }
-
-    private void processNext() {
-        int i = firstPending();
-        if (i < 0) { sessionComplete(); return; }
-        sIndex = i; sStatus[i] = ACTIVE;
-        attempts = 0;
-        publish();
-        updateNotification(sTitles[i]);
-        AppExecutors.get().io().execute(() -> startJob(i));
-    }
-
-    /** Transient failure (nginx 502 while the engine warms up, a flaky Gutenberg fetch, etc.):
-     *  retry the same book a couple times before giving up, so the wizard doesn't stall on a blip. */
-    private void retryOrFail(int i) {
-        attempts++;
-        if (attempts < MAX_ATTEMPTS) {
-            android.util.Log.w("K2Go-Provision", "books job [" + i + "] transient failure, retry " + attempts + "/" + (MAX_ATTEMPTS - 1));
-            main.postDelayed(() -> AppExecutors.get().io().execute(() -> startJob(i)), RETRY_DELAY_MS);
-        } else {
-            android.util.Log.w("K2Go-Provision", "books job [" + i + "] failed after " + attempts + " attempts");
-            fail(i);
-        }
-    }
-
-    private void startJob(int i) {
-        android.util.Log.i("K2Go-Provision", "books job start [" + i + "] id=" + sIds[i] + " title='" + sTitles[i] + "' url=" + sUrls[i]);
-        try {
-            JSONObject item = new JSONObject().put("id", sIds[i]).put("title", sTitles[i]).put("url", sUrls[i]);
-            JSONObject body = new JSONObject().put("items", new JSONArray().put(item));
-            JSONObject resp = httpJson("POST", BASE + "/download", body);
-            String id = resp.optString("id", "");
-            if (id.isEmpty()) { android.util.Log.w("K2Go-Provision", "books job [" + i + "] no job id in response: " + resp); retryOrFail(i); return; }
-            currentJobId = id;
-            main.postDelayed(() -> poll(i), POLL_MS);
-        } catch (Exception e) {
-            android.util.Log.w("K2Go-Provision", "books job [" + i + "] POST failed: " + e.getMessage());
-            retryOrFail(i);
-        }
-    }
-
-    private void poll(int i) {
-        if (canceled) return;
-        AppExecutors.get().io().execute(() -> {
-            try {
-                JSONObject j = httpJson("GET", BASE + "/jobs/" + currentJobId, null);
-                String phase = j.optString("phase", "");
-                sLastProgressAt = android.os.SystemClock.elapsedRealtime();   // ADFA-5146: heartbeat on each answered poll
-                switch (phase) {
-                    case "done":
-                        android.util.Log.i("K2Go-Provision", "books job done [" + i + "]");
-                        sStatus[i] = DONE; publish(); main.post(BooksDownloadService.this::processNext); return;
-                    case "error":
-                    case "canceled":
-                        android.util.Log.w("K2Go-Provision", "books job [" + i + "] phase=" + phase + " err=" + j.optString("error"));
-                        retryOrFail(i); return;
-                    case "processing":
-                        if (sStatus[i] != ADDING) { sStatus[i] = ADDING; publish(); }
-                        break;
-                    default: break; // queued
-                }
-                main.postDelayed(() -> poll(i), POLL_MS);
-            } catch (Exception e) {
-                main.postDelayed(() -> poll(i), POLL_MS); // tolerate transient blips
-            }
-        });
-    }
-
-    private void fail(int i) {
-        sStatus[i] = FAILED; publish();
-        main.post(this::processNext);
-    }
-
-    private void sessionComplete() {
-        sRunning = false; publish();
-        main.post(() -> { stopForeground(true); stopSelf(); });
-    }
-
-    private void publish() { main.post(() -> { if (sListener != null) sListener.onUpdate(); }); }
+    @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -244,8 +159,6 @@ public final class BooksDownloadService extends Service {
     }
 
     private Notification buildNotification(String title) {
-        // ADFA-4987: the redesign progress screen, not the legacy UI. ADFA-5074: the index, not
-        // this stream's detail — it is the only surface that can end the run.
         Intent openI = new Intent(this, SetupProgressActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent open = PendingIntent.getActivity(this, 0, openI,
@@ -263,45 +176,5 @@ public final class BooksDownloadService extends Service {
                 .setOnlyAlertOnce(true)
                 .addAction(0, getString(R.string.k2go_zim_notif_cancel), cancel)
                 .build();
-    }
-
-    private void updateNotification(String title) {
-        if (!sRunning) return;
-        NotificationManager m = getSystemService(NotificationManager.class);
-        if (m != null) m.notify(NOTIFICATION_ID, buildNotification(title));
-    }
-
-    private static JSONObject httpJson(String method, String urlStr, JSONObject body) throws Exception {
-        HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
-        try {
-            c.setUseCaches(false);
-            c.setConnectTimeout(5000);
-            c.setReadTimeout(8000);
-            c.setRequestMethod(method);
-            c.setRequestProperty("Accept", "application/json");
-            if (body != null) {
-                c.setDoOutput(true);
-                c.setRequestProperty("Content-Type", "application/json");
-                byte[] payload = body.toString().getBytes(StandardCharsets.UTF_8);
-                try (OutputStream os = c.getOutputStream()) { os.write(payload); }
-            }
-            int code = c.getResponseCode();
-            boolean ok = code >= 200 && code < 400;
-            String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
-            if (!ok) throw new Exception("HTTP " + code + ": " + text);
-            return new JSONObject(text.isEmpty() ? "{}" : text);
-        } finally {
-            c.disconnect();
-        }
-    }
-
-    private static String readAll(InputStream is) throws Exception {
-        if (is == null) return "";
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        byte[] chunk = new byte[4096];
-        int n;
-        while ((n = is.read(chunk)) != -1) buf.write(chunk, 0, n);
-        is.close();
-        return buf.toString(StandardCharsets.UTF_8.name());
     }
 }

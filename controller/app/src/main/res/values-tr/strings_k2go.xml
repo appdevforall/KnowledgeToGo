@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">İçerik hazırlanıyor…</string>
     <string name="k2go_zim_preparing_sub">Büyük indirmeler. Çalışır durumda bırakabilirsiniz.</string>
     <string name="k2go_zim_downloading_fmt">%1$s indiriliyor</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s / %2$s%3$s · %4$d / %5$d öge · bağlantı koparsa sürer</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s / %2$s%3$s · %4$d / %5$d öge</string>
     <string name="k2go_zim_leave_title">Çalışır durumda bırakın</string>
     <string name="k2go_zim_leave_body">İçeriğiniz hazır olduğunda sizi bilgilendireceğiz.</string>
     <string name="k2go_zim_run_bg">Arka planda çalıştır</string>

@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Ń múra àkóónú sílẹ̀…</string>
     <string name="k2go_zim_preparing_sub">Gbígbà sílẹ̀ ńlá. O lè fi í sílẹ̀ kí ó máa ṣiṣẹ́.</string>
     <string name="k2go_zim_downloading_fmt">Ń gba %1$s sílẹ̀</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s nínú %2$s%3$s · %4$d nínú nkan %5$d · ń tẹ̀síwájú tí ó bá dánù</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s nínú %2$s%3$s · %4$d nínú nkan %5$d</string>
     <string name="k2go_zim_leave_title">Fi í sílẹ̀ kí ó máa ṣiṣẹ́</string>
     <string name="k2go_zim_leave_body">A óò fi tó ọ létí nígbà tí àkóónú rẹ bá múra tán.</string>
     <string name="k2go_zim_run_bg">Ṣiṣẹ́ lẹ́yìn ẹ̀rọ</string>

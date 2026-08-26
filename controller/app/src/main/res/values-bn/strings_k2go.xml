@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">কনটেন্ট প্রস্তুত হচ্ছে…</string>
     <string name="k2go_zim_preparing_sub">বড় ডাউনলোড। আপনি এটি চালু রেখে যেতে পারেন।</string>
     <string name="k2go_zim_downloading_fmt">%1$s ডাউনলোড হচ্ছে</string>
-    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s-এর মধ্যে %1$s · %5$dটির মধ্যে %4$dটি আইটেম · বিচ্ছিন্ন হলে আবার শুরু হয়</string>
+    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s-এর মধ্যে %1$s · %5$dটির মধ্যে %4$dটি আইটেম</string>
     <string name="k2go_zim_leave_title">চালু রেখে যান</string>
     <string name="k2go_zim_leave_body">আপনার কনটেন্ট প্রস্তুত হলে আমরা আপনাকে জানাব।</string>
     <string name="k2go_zim_run_bg">ব্যাকগ্রাউন্ডে চালান</string>

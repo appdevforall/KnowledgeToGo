@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Đang chuẩn bị nội dung…</string>
     <string name="k2go_zim_preparing_sub">Tải lớn. Bạn có thể để nó tiếp tục chạy.</string>
     <string name="k2go_zim_downloading_fmt">Đang tải %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s trong %2$s%3$s · %4$d trong %5$d mục · tiếp tục lại nếu mất kết nối</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s trong %2$s%3$s · %4$d trong %5$d mục</string>
     <string name="k2go_zim_leave_title">Để nó tiếp tục chạy</string>
     <string name="k2go_zim_leave_body">Chúng tôi sẽ thông báo khi nội dung của bạn sẵn sàng.</string>
     <string name="k2go_zim_run_bg">Chạy nền</string>

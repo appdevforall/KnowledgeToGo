@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">콘텐츠를 준비하는 중…</string>
     <string name="k2go_zim_preparing_sub">대규모 다운로드입니다. 실행한 채로 벗어나도 됩니다.</string>
     <string name="k2go_zim_downloading_fmt">%1$s 다운로드 중</string>
-    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s 중 %1$s · %5$d개 중 %4$d개 항목 · 중단되면 재개</string>
+    <string name="k2go_zim_prep_detail_fmt">%2$s%3$s 중 %1$s · %5$d개 중 %4$d개 항목</string>
     <string name="k2go_zim_leave_title">실행한 채로 두기</string>
     <string name="k2go_zim_leave_body">콘텐츠가 준비되면 알려드리겠습니다.</string>
     <string name="k2go_zim_run_bg">백그라운드에서 실행</string>

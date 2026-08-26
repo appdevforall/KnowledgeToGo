@@ -526,7 +526,7 @@
     <string name="k2go_zim_preparing_title">Підготовка контенту…</string>
     <string name="k2go_zim_preparing_sub">Великі завантаження. Ви можете залишити їх виконуватися.</string>
     <string name="k2go_zim_downloading_fmt">Завантаження %1$s</string>
-    <string name="k2go_zim_prep_detail_fmt">%1$s з %2$s%3$s · %4$d з %5$d елементів · відновлюється в разі розриву</string>
+    <string name="k2go_zim_prep_detail_fmt">%1$s з %2$s%3$s · %4$d з %5$d елементів</string>
     <string name="k2go_zim_leave_title">Залишіть виконуватися</string>
     <string name="k2go_zim_leave_body">Ми сповістимо вас, коли контент буде готовий.</string>
     <string name="k2go_zim_run_bg">Виконувати у фоні</string>

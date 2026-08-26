@@ -1,5 +1,5 @@
 #!/bin/sh
-# tools/rebuild-dashboard.sh [CLONE_DIR] — ADFA-5011 / ADFA-5051
+# tools/rebuild-dashboard.sh [BRANCH] [CLONE_DIR] — ADFA-5011 / ADFA-5051
 #
 # Rebuild ONLY the dash-node REST API from the on-device clone, without a rootfs rebuild.
 # Blue-green + verify-before-commit so the live API is never left in a broken or misreporting state:
@@ -22,8 +22,12 @@
 # this script. Single-flight via a lock dir; progress in $LOG; state in $STATUS for the app.
 set -u
 
-CLONE_DIR="${1:-/opt/iiab-android}"
-BRANCH="${K2GO_BRANCH:-main}"
+# Simpler invocation: BRANCH is the value that changes, so it's $1 (env K2GO_BRANCH still works, which
+# is how the app's detached REST call passes it). CLONE_DIR is the optional $2 — the install location is
+# almost always the same, so it defaults; pass it only if it moved.
+#   sh tools/rebuild-dashboard.sh <branch> [clone_dir]
+BRANCH="${1:-${K2GO_BRANCH:-main}}"
+CLONE_DIR="${2:-/opt/iiab-android}"
 SRC="$CLONE_DIR/static/dashboard"
 LIVE="/library/dashboard"
 STAGE="/library/dashboard.staging"
@@ -38,7 +42,9 @@ STATUS="/var/run/dash-rebuild.status"
 LOG="/var/log/dash-rebuild.log"
 LOCK="/var/run/dash-rebuild.lock"
 
-log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> "$LOG" 2>/dev/null; }
+# ADFA-4893: also echo to the console so a manual foreground run shows progress live (not just the
+# log file). Harmless when launched detached (POST .../rebuild) — stdout goes nowhere then.
+log() { _m="[$(date '+%Y-%m-%d %H:%M:%S')] $*"; echo "$_m" >> "$LOG" 2>/dev/null; echo "$_m"; }
 set_status() { echo "$1" > "$STATUS" 2>/dev/null || true; }
 # ADFA-5051: proot renders some native-build symlinks (e.g. in better-sqlite3/build) as ".l2s." loops
 # that `rm -rf` can't recurse into (ELOOP -> "Directory not empty"), but a direct unlink removes them.
@@ -86,7 +92,11 @@ purge_staging; mkdir -p "$STAGE" || fail "mkdir staging"
 if [ -d "$LIVE/node_modules" ]; then
     ( cd "$LIVE" && tar --exclude='*.l2s.*' -cf - node_modules ) | ( cd "$STAGE" && tar -xf - ) || true
 fi
-( cd "$STAGE" && yarn install >>"$LOG" 2>&1 && yarn build >>"$LOG" 2>&1 ) || fail "yarn install/build (offline or build error) — live untouched"
+# ADFA-4893: stream yarn install/build to BOTH the console and the log — no more staring at a stopped
+# screen. POSIX sh has no `pipefail`, so capture the real exit code to a file inside the group before
+# the pipe, then check it. (yarn install prints progress; `yarn build` = tsc, silent on success.)
+{ ( cd "$STAGE" && yarn install && yarn build ); echo $? > "$STAGE/.buildrc"; } 2>&1 | tee -a "$LOG"
+[ "$(cat "$STAGE/.buildrc" 2>/dev/null || echo 1)" = 0 ] || fail "yarn install/build (offline or build error) — live untouched"
 [ -f "$STAGE/dist/server.js" ] || fail "no dist/server.js after build — live untouched"
 
 # 3) smoke-test the STAGED build on a temp port (does not touch the live :4000).

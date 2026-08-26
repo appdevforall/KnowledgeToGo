@@ -605,13 +605,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                         zimSession, ZimDownloadService.status(),
                         ZimDownloadService.DONE, ZimDownloadService.FAILED,
                         zimSession && ZimDownloadService.isComplete(), content.banked(ContentType.ZIM),
-                        ZimDownloadService.speed()));
+                        ZimDownloadService.speed(), zimOverallPercent()));
         if (booksShown) (booksSession ? started : waiting).add(
                 streamRow(getString(R.string.k2go_gm_books_title), "books",
                         booksSession, BooksDownloadService.status(),
                         BooksDownloadService.DONE, BooksDownloadService.FAILED,
                         booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS),
-                        0L));
+                        0L, booksOverallPercent()));   // ADFA-4893: item-count bar, homologated with ZIM
         // ADFA-4954. Statuses come from an observable snapshot rather than static arrays, so the
         // ordinals are mapped to the checklist's PENDING=0 / doneVal / failedVal convention here.
         if (kolibriShown) (kolibriState.hasSession() ? started : waiting).add(
@@ -619,7 +619,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                         kolibriState.hasSession(), kolibriState.statusOrdinals(),
                         KolibriSeedState.Status.DONE.ordinal(), KolibriSeedState.Status.FAILED.ordinal(),
                         kolibriState.hasSession() && kolibriState.isComplete(), kolibriBanked,
-                        kolibriState.speedBytesPerSec()));
+                        kolibriState.speedBytesPerSec(), -1));   // ADFA-4893: Kolibri keeps its indicator
         for (View v : started) sections.addView(v);
         for (View v : waiting) sections.addView(v);
 
@@ -894,7 +894,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     }
 
     private View streamRow(String heading, String key, boolean sess, int[] status, int doneVal, int failedVal,
-                           boolean complete, int wishlistCount, long bytesPerSec) {
+                           boolean complete, int wishlistCount, long bytesPerSec, int barPercent) {
         int n = sess && status != null ? status.length : wishlistCount;
         int done = 0, failed = 0;
         if (sess && status != null) for (int st : status) { if (st == doneVal) done++; else if (st == failedVal) failed++; }
@@ -959,6 +959,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         sub.setText(state);
         sub.setTextColor(ContextCompat.getColor(this, (sess && failed > 0) ? R.color.k2go_amber_text : R.color.k2go_muted));
         col.addView(sub);
+        addRowProgressBar(col, barPercent, sess && !complete);   // ADFA-4893: determinate bar for REST streams (ZIM)
         row.addView(col, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
 
         ImageView chev = new ImageView(this);
@@ -981,17 +982,37 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
      *  it). Only shown while the module is running and has a task table (percent >= 0); otherwise the
      *  row keeps its indeterminate indicator. Lifted off the card's bottom edge with a small margin. */
     private void addRowProgressBar(LinearLayout col, ModuleQueueState mq, boolean running) {
-        if (!(running && mq.percent >= 0)) return;
+        addRowProgressBar(col, mq.percent, running);   // ADFA-5228 (proot rows)
+    }
+
+    /** ADFA-4893: same determinate row bar driven by a plain percent, for REST streams (ZIM). Hidden
+     *  when not running or percent < 0, so a paused/indeterminate stream keeps its indicator. */
+    private void addRowProgressBar(LinearLayout col, int percent, boolean running) {
+        if (!(running && percent >= 0)) return;
         com.google.android.material.progressindicator.LinearProgressIndicator bar =
                 new com.google.android.material.progressindicator.LinearProgressIndicator(this);
         bar.setIndeterminate(false);
         bar.setMax(100);
-        bar.setProgressCompat(mq.percent, true);
+        bar.setProgressCompat(percent, true);
         LinearLayout.LayoutParams barLp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         barLp.topMargin = px(8);
         barLp.bottomMargin = px(4);
         col.addView(bar, barLp);
+    }
+
+    /** ADFA-4893: the ZIM index row bar shares one formula with the status screen — see
+     *  {@link ZimDownloadService#overallPercent()}. Here we only gate visibility: -1 (no bar) unless a
+     *  job is actively running, so a terminal/failed row falls back to its indicator. */
+    private int zimOverallPercent() {
+        return (ZimDownloadService.isRunning() && !ZimDownloadService.isComplete())
+                ? ZimDownloadService.overallPercent() : -1;
+    }
+
+    /** ADFA-4893: Books index row bar — same gating as ZIM, item-count percent from the service. */
+    private int booksOverallPercent() {
+        return (BooksDownloadService.isRunning() && !BooksDownloadService.isComplete())
+                ? BooksDownloadService.overallPercent() : -1;
     }
 
     private View mapsRow() {
