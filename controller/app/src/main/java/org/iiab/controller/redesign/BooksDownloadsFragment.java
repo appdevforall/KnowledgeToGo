@@ -15,6 +15,7 @@
  */
 package org.iiab.controller.redesign;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -39,6 +40,9 @@ public class BooksDownloadsFragment extends Fragment {
     private TextView detail;
     private LinearLayout listv;
     private Button finishBtn, runBgBtn;
+    private LinearLayout controls;                 // ADFA-4893: session control row (pause/resume + cancel)
+    private Button pauseBtn, cancelBtn;
+    private boolean pauseSupported = false;        // ADFA-4893: box dash-node >= 1.2.4 exposes pause/resume
     private boolean fromIndex;   // hosted by the Finishing-setup index: hide own buttons, only observe
 
     /** Open as a detail card inside the Finishing-setup index (host owns Back/Finish; observe only). */
@@ -72,6 +76,28 @@ public class BooksDownloadsFragment extends Fragment {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
 
+        // ADFA-4893: session controls, homologated with ZIM — primary morphs Pause -> Resume -> Retry.
+        controls = root.findViewById(R.id.k2go_bdl_controls);
+        pauseBtn = root.findViewById(R.id.k2go_bdl_pause);
+        cancelBtn = root.findViewById(R.id.k2go_bdl_cancel);
+        pauseBtn.setOnClickListener(v -> {
+            android.content.Context ctx = requireContext().getApplicationContext();
+            if (!BooksDownloadService.isRunning() && BooksDownloadService.hasFailed()) BooksDownloadService.retryFailed(ctx);
+            else if (BooksDownloadService.isPaused()) BooksDownloadService.resume(ctx);
+            else BooksDownloadService.pause(ctx);
+        });
+        cancelBtn.setOnClickListener(v -> {
+            android.content.Context ctx = requireContext().getApplicationContext();
+            if (BooksDownloadService.isRunning()) {
+                ContextCompat.startForegroundService(ctx,
+                        new Intent(ctx, BooksDownloadService.class).setAction(BooksDownloadService.ACTION_CANCEL));
+            } else {
+                BooksDownloadService.finishSession();
+                render();
+            }
+        });
+        pauseSupported = DashboardVersion.atLeast(DashboardVersion.installed(requireContext()), 1, 2, 4);
+
         if (fromIndex) {   // the index host provides Back/Finish; this card only observes
             finishBtn.setVisibility(View.GONE);
             runBgBtn.setVisibility(View.GONE);
@@ -91,9 +117,26 @@ public class BooksDownloadsFragment extends Fragment {
 
         int done = 0;
         for (int st : status) if (st == BooksDownloadService.DONE) done++;
-        detail.setText(getString(R.string.k2go_books_dl_detail_fmt, done, n));
+
+        boolean anyFailed = BooksDownloadService.hasFailed();
+        boolean running = BooksDownloadService.isRunning();
+        boolean paused = BooksDownloadService.isPaused();
+        int rc = BooksDownloadService.reconnectAttempt();
+        if (paused) detail.setText(R.string.k2go_dl_paused);
+        else if (running && rc > 0) detail.setText(getString(R.string.k2go_dl_attempt, rc, BooksDownloadService.reconnectTotal()));
+        else detail.setText(getString(R.string.k2go_books_dl_detail_fmt, done, n));
 
         drawChecklist(titles, status);
+
+        // ADFA-4893: morphing control row (Pause -> Resume -> Retry) + Cancel, same as ZIM. Shown while
+        // running (needs pause support >= 1.2.4) or whenever a book failed (Retry works on any version).
+        boolean showControls = (running && pauseSupported) || anyFailed;
+        controls.setVisibility(showControls ? View.VISIBLE : View.GONE);
+        if (showControls) {
+            if (!running && anyFailed) pauseBtn.setText(R.string.k2go_dl_retry);
+            else if (paused) pauseBtn.setText(R.string.k2go_dl_resume);
+            else pauseBtn.setText(R.string.k2go_dl_pause);
+        }
 
         if (!fromIndex) {
             boolean complete = BooksDownloadService.isComplete();
@@ -109,7 +152,7 @@ public class BooksDownloadsFragment extends Fragment {
                     @Override public String main(int i) { return titles[i]; }
                     @Override public String sub(int i) { return stateLabel(status[i]); }
                 },
-                i -> BooksDownloadService.retry(requireContext().getApplicationContext(), i));
+                null);   // ADFA-4893: retry handled by the status-screen morph button, not a per-item pill
     }
 
     private String stateLabel(int st) {

@@ -21,6 +21,25 @@ const CATALOG_DB_PATH = path.join(BOOKS_DIR, 'catalog.db');
 const CALIBRE_WEB_LOCAL_URL = 'http://127.0.0.1:8083';
 // ADFA-4949: credentials come from the shared store (see sockets/credentials.ts).
 
+/**
+ * ADFA-4893: normalized titles already in the Calibre-Web library, so the books runner is idempotent —
+ * a resume (or a re-run after process death) skips books already uploaded instead of duplicating them.
+ * Title is the only reliable key today (Gutenberg id isn't persisted as a Calibre identifier). Returns
+ * an empty set if the library DB isn't present yet (nothing to skip).
+ */
+export function presentTitles(): Set<string> {
+    const out = new Set<string>();
+    if (!fs.existsSync(CALIBRE_DB_PATH)) return out;
+    const db = new Database(CALIBRE_DB_PATH, { readonly: true });
+    try {
+        const rows = db.prepare('SELECT title FROM books').all() as { title: string }[];
+        for (const r of rows) if (r.title) out.add(r.title.trim().toLowerCase());
+    } finally {
+        db.close();
+    }
+    return out;
+}
+
 export interface CatalogBook {
     gutenberg_id: number | string;
     title: string;

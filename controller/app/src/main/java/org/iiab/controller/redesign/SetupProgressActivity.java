@@ -611,7 +611,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                         booksSession, BooksDownloadService.status(),
                         BooksDownloadService.DONE, BooksDownloadService.FAILED,
                         booksSession && BooksDownloadService.isComplete(), content.banked(ContentType.BOOKS),
-                        0L, -1));   // ADFA-4893: Books has no per-item size yet -> no determinate bar
+                        0L, booksOverallPercent()));   // ADFA-4893: item-count bar, homologated with ZIM
         // ADFA-4954. Statuses come from an observable snapshot rather than static arrays, so the
         // ordinals are mapped to the checklist's PENDING=0 / doneVal / failedVal convention here.
         if (kolibriShown) (kolibriState.hasSession() ? started : waiting).add(
@@ -1007,6 +1007,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private int zimOverallPercent() {
         return (ZimDownloadService.isRunning() && !ZimDownloadService.isComplete())
                 ? ZimDownloadService.overallPercent() : -1;
+    }
+
+    /** ADFA-4893: Books index row bar — same gating as ZIM, item-count percent from the service. */
+    private int booksOverallPercent() {
+        return (BooksDownloadService.isRunning() && !BooksDownloadService.isComplete())
+                ? BooksDownloadService.overallPercent() : -1;
     }
 
     private View mapsRow() {
