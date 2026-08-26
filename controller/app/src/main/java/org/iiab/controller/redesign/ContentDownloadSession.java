@@ -4,12 +4,15 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4893. The one download-session engine shared by the content streams (ZIM, Books,
- *               ...). It owns the sequential queue, the shared RestContentClient wiring, and all the
- *               state (progress, paused, reconnect, heartbeat) that the UI observes; ZimDownloadService
- *               and BooksDownloadService used to carry an identical copy of this. Each service holds ONE
- *               instance (so their static session state never collides) and delegates to it, attaching
- *               itself as {@link Host} for the per-type body/percent and the foreground notification.
- *               The device only POSTs + polls; the server owns download reconnection (visible).
+ *               ...). It owns the sequential queue, the shared RestContentClient wiring, ALL the state
+ *               the UI observes (progress, paused, reconnect, heartbeat) AND the per-item snapshot
+ *               (labels / sizes / start-bodies). Holding the snapshot here — set together with status in
+ *               begin(), cleared together in purge() — makes length-consistency a structural invariant:
+ *               status[] and the metadata the UI indexes off it can never diverge, so a Cancel can't
+ *               leave the fragment indexing one array off another (the AIOOBE we fixed). Each service
+ *               holds ONE instance and delegates to it, attaching itself as {@link Host} only to build
+ *               the foreground notification and stop itself. The device only POSTs + polls; the server
+ *               owns download reconnection (visible).
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -29,19 +32,16 @@ public final class ContentDownloadSession {
     /** UI observer: pinged whenever session state changes (same shape both services exposed). */
     public interface Listener { void onUpdate(); }
 
-    /** Per-type hooks the owning Service provides (body, percent, notification, stop). */
+    /** Per-type hooks the owning Service provides. The session owns the queue AND the per-item snapshot,
+     *  so the service is left only with the foreground notification and its own stop — there is no
+     *  per-type array for it to keep length-consistent anymore (ADFA-4893). */
     public interface Host {
-        JSONObject buildBody(int i);   // start body for item i (kiwix {ids:[..]}, books {items:[..]})
-        int computeOverallPercent();   // per-type overall percent (byte-weighted vs item-count)
-        String label(int i);           // display label for item i (notification)
-        void notify(String label);     // update the foreground notification
+        void notify(String label);     // update the foreground notification for the current item
         void stop();                   // stopForeground(true) + stopSelf()
-        void onPurged();               // clear the per-type arrays so the snapshot stays consistent
     }
 
     private final String type;                          // "kiwix" / "books" -> /api/<type>
     private final Handler main = new Handler(Looper.getMainLooper());
-    private static final long POLL_MS = 1000L;
 
     private Host host;
     private Listener listener;
@@ -53,6 +53,12 @@ public final class ContentDownloadSession {
     private volatile int reconnectTotal = 0;
     private volatile long lastProgressAt = 0L;          // ADFA-5146 heartbeat
     private int[] status = new int[0];
+    // Per-item snapshot — same length as status by construction (set together in begin(), cleared
+    // together in purge()). bodies[i] is the REST start request for item i (kiwix {ids:[..]}, books
+    // {items:[..]}); sizes[i] is the byte weight (0 for books -> count-based percent).
+    private String[] labels = new String[0];
+    private long[] sizes = new long[0];
+    private JSONObject[] bodies = new JSONObject[0];
     private int index = 0;
     private int percent = 0;
     private long speed = 0;
@@ -72,6 +78,10 @@ public final class ContentDownloadSession {
     public int index() { return index; }
     public int percent() { return percent; }
     public long speed() { return speed; }
+    public String[] labels() { return labels; }
+    public long[] sizes() { return sizes; }
+    public String label(int i) { return i >= 0 && i < labels.length ? labels[i] : ""; }
+    public long size(int i) { return i >= 0 && i < sizes.length ? sizes[i] : 0L; }
     public boolean hasSession() { return status.length > 0; }
     public boolean isComplete() {
         if (status.length == 0 || running) return false;
@@ -87,13 +97,38 @@ public final class ContentDownloadSession {
         for (int st : status) if (st == FAILED) return true;
         return false;
     }
-    /** Overall percent for the bars — delegated to the per-type Host (byte-weighted vs item-count). */
-    public int overallPercent() { return host != null ? host.computeOverallPercent() : 0; }
+
+    /** Overall percent for the bars. Byte-weighted when the items carry sizes (ZIM); item-count when
+     *  they don't (books send size 0). One formula, one owner — the services no longer compute this,
+     *  so the status screen and the index bar read the exact same number by construction. */
+    public int overallPercent() {
+        int n = Math.min(sizes.length, status.length);
+        long total = 0, done = 0;
+        for (int i = 0; i < n; i++) {
+            total += sizes[i];
+            if (status[i] == DONE || status[i] == FAILED) done += sizes[i];
+            else if (i == index && (status[i] == ACTIVE || status[i] == PROCESSING) && percent >= 0)
+                done += sizes[i] * percent / 100;
+        }
+        if (total > 0) return (int) Math.min(100, done * 100 / total);
+        // No per-item sizes (books): fall back to item count.
+        int m = status.length;
+        if (m == 0) return isComplete() ? 100 : 0;
+        int c = 0;
+        for (int st : status) if (st == DONE || st == FAILED) c++;
+        return (int) Math.min(100, (long) c * 100 / m);
+    }
 
     // ---- actions (the services' onStartCommand / statics delegate here) ------------------------
 
-    /** Fresh session over {@code count} items (status all PENDING), then start pumping the queue. */
-    public void begin(int count) {
+    /** Fresh session over the given items (status all PENDING), then start pumping the queue. The
+     *  labels/sizes/bodies snapshot is held here so it stays the same length as status for the whole
+     *  session — the service passes it in and never keeps its own copy. */
+    public void begin(String[] labels, long[] sizes, JSONObject[] bodies) {
+        int count = labels != null ? labels.length : 0;
+        this.labels = labels != null ? labels : new String[0];
+        this.sizes = sizes != null && sizes.length == count ? sizes : new long[count];
+        this.bodies = bodies != null && bodies.length == count ? bodies : new JSONObject[count];
         status = new int[count];
         index = 0; percent = 0; speed = 0;
         paused = false; reconnectAttempt = 0; reconnectTotal = 0;
@@ -135,16 +170,14 @@ public final class ContentDownloadSession {
         if (host != null) host.stop();
     }
 
-    /** Clear all session state (the services' finishSession()). Also clears the owner's per-type arrays
-     *  via {@link Host#onPurged()} so the snapshot the UI reads stays length-consistent (labels/status/
-     *  bytes all empty together) — otherwise a Cancel left labels>0 with status=0 and the ZIM fragment
-     *  indexed status[] off the label count → AIOOBE (ADFA-4893). */
+    /** Clear all session state AND the per-item snapshot (labels/sizes/bodies) together, so the UI can
+     *  never read a length mismatch after a Cancel (ADFA-4893). */
     public void purge() {
         status = new int[0];
+        labels = new String[0]; sizes = new long[0]; bodies = new JSONObject[0];
         index = 0; percent = 0; speed = 0;
         running = false; paused = false; reconnectAttempt = 0; reconnectTotal = 0;
         lastProgressAt = 0L;
-        if (host != null) host.onPurged();
     }
 
     private int firstPending() {
@@ -157,13 +190,14 @@ public final class ContentDownloadSession {
         if (i < 0) { running = false; publish(); if (host != null) host.stop(); return; }
         index = i; percent = 0; status[i] = ACTIVE;
         publish();
-        if (host != null) host.notify(host.label(i));
+        if (host != null) host.notify(label(i));
         startItem(i);
     }
 
     private void startItem(final int i) {
         client = new RestContentClient(type);
-        client.start(host.buildBody(i), new RestContentClient.Listener() {
+        JSONObject body = i >= 0 && i < bodies.length && bodies[i] != null ? bodies[i] : new JSONObject();
+        client.start(body, new RestContentClient.Listener() {
             @Override public void onProgress(int pct, String rate) {
                 if (paused) paused = false;
                 reconnectAttempt = 0;
@@ -171,7 +205,7 @@ public final class ContentDownloadSession {
                 lastProgressAt = SystemClock.elapsedRealtime();
                 if (status[i] != PROCESSING) status[i] = ACTIVE;
                 publish();
-                if (host != null) host.notify(host.label(i));
+                if (host != null) host.notify(label(i));
             }
             @Override public void onIndexing() {
                 status[i] = PROCESSING; lastProgressAt = SystemClock.elapsedRealtime(); publish();

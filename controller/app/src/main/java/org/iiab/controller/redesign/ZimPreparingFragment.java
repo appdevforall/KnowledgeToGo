@@ -154,7 +154,10 @@ public class ZimPreparingFragment extends Fragment {
     private void drawChecklist(String[] labels, int[] status) {
         // ADFA-4893: no per-item Retry pill — the status-screen Retry (the morphing primary button) owns
         // retry now, so the checklist is display-only and the retry affordance stays one consistent size.
-        ProvisioningChecklist.render(requireContext(), listv, labels.length, status,
+        // Row count is min(labels,status): ProvisioningChecklist invokes the row lambda once per count, and
+        // the lambda indexes status[i]/labels[i], so a length mismatch must not drive it past status[].
+        int count = Math.min(labels.length, status.length);
+        ProvisioningChecklist.render(requireContext(), listv, count, status,
                 ZimDownloadService.DONE, ZimDownloadService.FAILED,
                 i -> (status[i] == ZimDownloadService.FAILED)
                         ? labels[i] + getString(R.string.k2go_zim_item_failed_suffix) : labels[i],

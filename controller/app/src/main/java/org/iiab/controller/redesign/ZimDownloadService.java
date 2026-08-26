@@ -57,10 +57,8 @@ public final class ZimDownloadService extends Service implements ContentDownload
     public interface Listener { void onUpdate(); }
 
     private static final ContentDownloadSession SESSION = new ContentDownloadSession("kiwix");
-    // ZIM-specific session data (labels/files/sizes); the queue/progress state lives in SESSION.
-    private static String[] sFiles = new String[0];
-    private static String[] sLabels = new String[0];
-    private static long[] sBytes = new long[0];
+    // The whole per-item snapshot (files-as-bodies/labels/sizes) now lives in SESSION, so status and the
+    // metadata the UI indexes off it stay length-consistent by construction (ADFA-4893).
 
     // ---- static API the UI observes (delegates to the shared session) -------------------------
     public static boolean isRunning() { return SESSION.isRunning(); }
@@ -76,8 +74,8 @@ public final class ZimDownloadService extends Service implements ContentDownload
     public static int percent() { return SESSION.percent(); }
     public static long speed() { return SESSION.speed(); }
     public static int overallPercent() { return SESSION.overallPercent(); }
-    public static String[] labels() { return sLabels; }
-    public static long[] bytes() { return sBytes; }
+    public static String[] labels() { return SESSION.labels(); }
+    public static long[] bytes() { return SESSION.sizes(); }
     public static void setListener(Listener l) { SESSION.setListener(l == null ? null : l::onUpdate); }
 
     public static void start(Context ctx, String[] files, String[] labels, long[] bytes) {
@@ -102,7 +100,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
         }
     }
 
-    public static void finishSession() { SESSION.purge(); sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; }
+    public static void finishSession() { SESSION.purge(); }
 
     private final Handler main = new Handler(Looper.getMainLooper());
 
@@ -122,44 +120,26 @@ public final class ZimDownloadService extends Service implements ContentDownload
 
         if (ACTION_RETRY.equals(action)) {
             if (!SESSION.hasSession()) { stopSelf(); return START_NOT_STICKY; }
-            startForeground(NOTIFICATION_ID, buildNotification(label(SESSION.index())));
+            startForeground(NOTIFICATION_ID, buildNotification(SESSION.label(SESSION.index())));
             SESSION.resumeQueue();
         } else { // ACTION_START: fresh session from the extras
-            String[] f = intent.getStringArrayExtra(EXTRA_FILES);
-            if (f == null || f.length == 0) { stopSelf(); return START_NOT_STICKY; }
-            sFiles = f;
-            sLabels = intent.getStringArrayExtra(EXTRA_LABELS);
-            sBytes = intent.getLongArrayExtra(EXTRA_BYTES);
-            if (sLabels == null) sLabels = sFiles;
-            if (sBytes == null) sBytes = new long[sFiles.length];
-            startForeground(NOTIFICATION_ID, buildNotification(sLabels.length > 0 ? sLabels[0] : ""));
-            SESSION.begin(sFiles.length);
+            String[] files = intent.getStringArrayExtra(EXTRA_FILES);
+            if (files == null || files.length == 0) { stopSelf(); return START_NOT_STICKY; }
+            String[] labels = intent.getStringArrayExtra(EXTRA_LABELS);
+            long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
+            if (labels == null) labels = files;
+            JSONObject[] bodies = new JSONObject[files.length];
+            for (int i = 0; i < files.length; i++) {
+                try { bodies[i] = new JSONObject().put("ids", new JSONArray().put(files[i])); }
+                catch (Exception e) { bodies[i] = new JSONObject(); }
+            }
+            startForeground(NOTIFICATION_ID, buildNotification(labels.length > 0 ? labels[0] : ""));
+            SESSION.begin(labels, bytes, bodies);   // session owns the snapshot from here on
         }
         return START_NOT_STICKY;
     }
 
     // ---- ContentDownloadSession.Host (ZIM specifics) ------------------------------------------
-    @Override public JSONObject buildBody(int i) {
-        try { return new JSONObject().put("ids", new JSONArray().put(sFiles[i])); }
-        catch (Exception e) { return new JSONObject(); }
-    }
-
-    @Override public String label(int i) { return i >= 0 && i < sLabels.length ? sLabels[i] : ""; }
-
-    /** Byte-weighted overall percent: done/failed count in full, the active item adds its live percent. */
-    @Override public int computeOverallPercent() {
-        int[] status = SESSION.status();
-        int idx = SESSION.index();
-        int p = SESSION.percent();
-        long total = 0, done = 0;
-        for (int i = 0; i < sBytes.length && i < status.length; i++) {
-            total += sBytes[i];
-            if (status[i] == DONE || status[i] == FAILED) done += sBytes[i];
-            else if (i == idx && (status[i] == ACTIVE || status[i] == INDEXING) && p >= 0) done += sBytes[i] * p / 100;
-        }
-        return total > 0 ? (int) Math.min(100, done * 100 / total) : (SESSION.isComplete() ? 100 : 0);
-    }
-
     @Override public void notify(String label) {
         if (!SESSION.isRunning()) return;
         NotificationManager m = getSystemService(NotificationManager.class);
@@ -167,10 +147,6 @@ public final class ZimDownloadService extends Service implements ContentDownload
     }
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
-
-    /** Clear the ZIM-specific arrays alongside the session state, so a Cancel purge leaves
-     *  labels/status/bytes empty together (no length mismatch for the fragment to trip over). */
-    @Override public void onPurged() { sFiles = new String[0]; sLabels = new String[0]; sBytes = new long[0]; }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

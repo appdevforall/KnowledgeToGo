@@ -58,10 +58,8 @@ public final class BooksDownloadService extends Service implements ContentDownlo
     public interface Listener { void onUpdate(); }
 
     private static final ContentDownloadSession SESSION = new ContentDownloadSession("books");
-    // Books-specific session data; the queue/progress state lives in SESSION.
-    private static String[] sIds = new String[0];
-    private static String[] sTitles = new String[0];
-    private static String[] sUrls = new String[0];
+    // The whole per-item snapshot (id/title/url-as-bodies, titles-as-labels) now lives in SESSION, so
+    // status and the metadata the UI indexes off it stay length-consistent by construction (ADFA-4893).
 
     // ---- static API the UI observes (delegates to the shared session) -------------------------
     public static boolean isRunning() { return SESSION.isRunning(); }
@@ -75,7 +73,7 @@ public final class BooksDownloadService extends Service implements ContentDownlo
     public static int[] status() { return SESSION.status(); }
     public static int index() { return SESSION.index(); }
     public static int overallPercent() { return SESSION.overallPercent(); }
-    public static String[] titles() { return sTitles; }
+    public static String[] titles() { return SESSION.labels(); }
     public static void setListener(Listener l) { SESSION.setListener(l == null ? null : l::onUpdate); }
 
     public static void start(Context ctx, String[] ids, String[] titles, String[] urls) {
@@ -100,7 +98,7 @@ public final class BooksDownloadService extends Service implements ContentDownlo
         }
     }
 
-    public static void finishSession() { SESSION.purge(); sIds = new String[0]; sTitles = new String[0]; sUrls = new String[0]; }
+    public static void finishSession() { SESSION.purge(); }
 
     private final Handler main = new Handler(Looper.getMainLooper());
 
@@ -120,42 +118,29 @@ public final class BooksDownloadService extends Service implements ContentDownlo
 
         if (ACTION_RETRY.equals(action)) {
             if (!SESSION.hasSession()) { stopSelf(); return START_NOT_STICKY; }
-            startForeground(NOTIFICATION_ID, buildNotification(label(SESSION.index())));
+            startForeground(NOTIFICATION_ID, buildNotification(SESSION.label(SESSION.index())));
             SESSION.resumeQueue();
         } else { // ACTION_START: fresh session from the extras
             String[] ids = intent.getStringArrayExtra(EXTRA_IDS);
             if (ids == null || ids.length == 0) { stopSelf(); return START_NOT_STICKY; }
-            sIds = ids;
-            sTitles = intent.getStringArrayExtra(EXTRA_TITLES);
-            sUrls = intent.getStringArrayExtra(EXTRA_URLS);
-            if (sTitles == null) sTitles = ids;
-            if (sUrls == null) sUrls = new String[ids.length];
-            startForeground(NOTIFICATION_ID, buildNotification(sTitles.length > 0 ? sTitles[0] : ""));
-            SESSION.begin(sIds.length);
+            String[] titles = intent.getStringArrayExtra(EXTRA_TITLES);
+            String[] urls = intent.getStringArrayExtra(EXTRA_URLS);
+            if (titles == null) titles = ids;
+            if (urls == null) urls = new String[ids.length];
+            JSONObject[] bodies = new JSONObject[ids.length];
+            for (int i = 0; i < ids.length; i++) {
+                try {
+                    JSONObject item = new JSONObject().put("id", ids[i]).put("title", titles[i]).put("url", urls[i]);
+                    bodies[i] = new JSONObject().put("items", new JSONArray().put(item));
+                } catch (Exception e) { bodies[i] = new JSONObject(); }
+            }
+            startForeground(NOTIFICATION_ID, buildNotification(titles.length > 0 ? titles[0] : ""));
+            SESSION.begin(titles, null, bodies);   // books: no per-item byte size -> count-based percent
         }
         return START_NOT_STICKY;
     }
 
     // ---- ContentDownloadSession.Host (Books specifics) ----------------------------------------
-    @Override public JSONObject buildBody(int i) {
-        try {
-            JSONObject item = new JSONObject().put("id", sIds[i]).put("title", sTitles[i]).put("url", sUrls[i]);
-            return new JSONObject().put("items", new JSONArray().put(item));
-        } catch (Exception e) { return new JSONObject(); }
-    }
-
-    @Override public String label(int i) { return i >= 0 && i < sTitles.length ? sTitles[i] : ""; }
-
-    /** Item-count overall percent (books carry no per-item byte size). */
-    @Override public int computeOverallPercent() {
-        int[] status = SESSION.status();
-        int n = status.length;
-        if (n == 0) return SESSION.isComplete() ? 100 : 0;
-        int done = 0;
-        for (int st : status) if (st == DONE || st == FAILED) done++;
-        return (int) Math.min(100, (long) done * 100 / n);
-    }
-
     @Override public void notify(String label) {
         if (!SESSION.isRunning()) return;
         NotificationManager m = getSystemService(NotificationManager.class);
@@ -163,9 +148,6 @@ public final class BooksDownloadService extends Service implements ContentDownlo
     }
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
-
-    /** Clear the Books-specific arrays alongside the session state (parity with ZIM's onPurged). */
-    @Override public void onPurged() { sIds = new String[0]; sTitles = new String[0]; sUrls = new String[0]; }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
