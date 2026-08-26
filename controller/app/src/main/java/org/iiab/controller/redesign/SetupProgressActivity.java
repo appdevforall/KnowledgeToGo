@@ -1001,22 +1001,12 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         col.addView(bar, barLp);
     }
 
-    /** ADFA-4893: byte-weighted overall percent for the ZIM stream (mirrors ZimPreparingFragment), or
-     *  -1 when not running / no sizes / indeterminate — so the index row bar matches the status screen. */
+    /** ADFA-4893: the ZIM index row bar shares one formula with the status screen — see
+     *  {@link ZimDownloadService#overallPercent()}. Here we only gate visibility: -1 (no bar) unless a
+     *  job is actively running, so a terminal/failed row falls back to its indicator. */
     private int zimOverallPercent() {
-        if (!ZimDownloadService.isRunning() || ZimDownloadService.isComplete()) return -1;
-        long[] b = ZimDownloadService.bytes();
-        int[] st = ZimDownloadService.status();
-        int idx = ZimDownloadService.index();
-        int p = ZimDownloadService.percent();
-        long total = 0, done = 0;
-        for (int i = 0; i < b.length; i++) {
-            total += b[i];
-            if (st[i] == ZimDownloadService.DONE || st[i] == ZimDownloadService.FAILED) done += b[i];
-            else if (i == idx && (st[i] == ZimDownloadService.ACTIVE || st[i] == ZimDownloadService.INDEXING) && p >= 0)
-                done += b[i] * p / 100;
-        }
-        return total > 0 ? (int) Math.min(100, done * 100 / total) : -1;
+        return (ZimDownloadService.isRunning() && !ZimDownloadService.isComplete())
+                ? ZimDownloadService.overallPercent() : -1;
     }
 
     private View mapsRow() {

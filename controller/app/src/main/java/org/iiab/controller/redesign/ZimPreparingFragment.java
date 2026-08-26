@@ -105,6 +105,8 @@ public class ZimPreparingFragment extends Fragment {
         int n = labels.length;
         if (n == 0) { controls.setVisibility(View.GONE); return; }
 
+        // Byte figures for the "X of Y · N of M" detail line; the bar percent comes from the single
+        // shared source (ZimDownloadService.overallPercent) so the status screen and the index can't drift.
         long totalBytes = 0, doneBytes = 0;
         int doneCount = 0;
         for (int i = 0; i < n; i++) {
@@ -116,8 +118,7 @@ public class ZimPreparingFragment extends Fragment {
                 doneBytes += bytes[i] * p / 100;
             }
         }
-        int overall = totalBytes > 0 ? (int) Math.min(100, doneBytes * 100 / totalBytes)
-                : (ZimDownloadService.isComplete() ? 100 : 0);
+        int overall = ZimDownloadService.overallPercent();
         bar.setProgress(overall);
         pct.setText(overall + "%");
 

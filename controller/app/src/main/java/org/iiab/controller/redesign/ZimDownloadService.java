@@ -94,6 +94,20 @@ public final class ZimDownloadService extends Service {
     public static long speed() { return sSpeed; }
     public static void setListener(Listener l) { sListener = l; }
 
+    /** ADFA-4893: byte-weighted overall percent across the session (0-100). The single source both the
+     *  status-screen bar (ZimPreparingFragment) and the index row bar (SetupProgressActivity) read, so
+     *  the two can never drift. Active item contributes its live percent; done/failed count in full. */
+    public static int overallPercent() {
+        long total = 0, done = 0;
+        for (int i = 0; i < sBytes.length && i < sStatus.length; i++) {
+            total += sBytes[i];
+            if (sStatus[i] == DONE || sStatus[i] == FAILED) done += sBytes[i];
+            else if (i == sIndex && (sStatus[i] == ACTIVE || sStatus[i] == INDEXING) && sPercent >= 0)
+                done += sBytes[i] * sPercent / 100;
+        }
+        return total > 0 ? (int) Math.min(100, done * 100 / total) : (isComplete() ? 100 : 0);
+    }
+
     public static void start(Context ctx, String[] files, String[] labels, long[] bytes) {
         Intent i = new Intent(ctx, ZimDownloadService.class).setAction(ACTION_START)
                 .putExtra(EXTRA_FILES, files).putExtra(EXTRA_LABELS, labels).putExtra(EXTRA_BYTES, bytes);

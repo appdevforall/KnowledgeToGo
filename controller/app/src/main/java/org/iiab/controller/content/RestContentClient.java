@@ -61,6 +61,10 @@ public final class RestContentClient {
     private static final String BASE = BoxEndpoints.API + "/kiwix";
     private static final long POLL_MS = 1000L;
     private static final int MAX_POLL_ERRORS = 10;   // tolerate ~10s of transient network blips
+    // ADFA-4893: the START (download) POST is before any server job exists, so the server's own
+    // reconnect can't cover a still-warming box; give the kickoff a few quick tries before failing.
+    private static final int START_TRIES = 3;
+    private static final long START_RETRY_MS = 2000L;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private Listener listener;
@@ -75,15 +79,25 @@ public final class RestContentClient {
     public void addZim(@NonNull String zimFilename, @NonNull Listener l) {
         this.listener = l;
         AppExecutors.get().io().execute(() -> {
-            try {
-                JSONObject body = new JSONObject().put("ids", new JSONArray().put(zimFilename));
-                JSONObject resp = httpJson("POST", BASE + "/download", body);
-                String id = resp.optString("id", "");
-                if (id.isEmpty()) { fail("content service did not start the job"); return; }
-                jobId = id;
-                main.postDelayed(pollTask, POLL_MS);
-            } catch (Exception e) {
-                fail("couldn't reach the content service");
+            final JSONObject body;
+            try { body = new JSONObject().put("ids", new JSONArray().put(zimFilename)); }
+            catch (Exception e) { fail("couldn't build the request"); return; }
+            // ADFA-4893: retry ONLY the kickoff POST (connectivity blip / server still warming) a few
+            // times. An empty id is a server refusal, not a blip, so it fails without retrying. Once the
+            // job exists, the server owns reconnection (visible), not this loop.
+            for (int attempt = 1; !finished; attempt++) {
+                try {
+                    JSONObject resp = httpJson("POST", BASE + "/download", body);
+                    String id = resp.optString("id", "");
+                    if (id.isEmpty()) { fail("content service did not start the job"); return; }
+                    jobId = id;
+                    main.postDelayed(pollTask, POLL_MS);
+                    return;
+                } catch (Exception e) {
+                    if (attempt >= START_TRIES) { fail("couldn't reach the content service"); return; }
+                    try { Thread.sleep(START_RETRY_MS); }
+                    catch (InterruptedException ie) { Thread.currentThread().interrupt(); return; }
+                }
             }
         });
     }
@@ -144,6 +158,7 @@ public final class RestContentClient {
 
     /** Best-effort cancel of the in-flight job. */
     public void cancel() {
+        finished = true;   // ADFA-4893: also stops the START retry loop if a cancel lands mid-kickoff
         final String id = jobId;
         if (id != null && !id.isEmpty()) {
             AppExecutors.get().io().execute(() -> {
