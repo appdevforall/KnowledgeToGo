@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Pilih bahasa</string>
     <string name="k2go_wiz_language_sub">Mengatur bahasa aplikasi + konten.</string>
     <string name="k2go_wiz_permissions_title">Izinkan beberapa hal</string>
+    <string name="k2go_wiz_permissions_sub">Izin berikut diperlukan. Aplikasi mungkin meminta izin tambahan saat Anda membagikan perpustakaan Anda.</string>
     <string name="k2go_continue">Lanjutkan</string>
     <string name="k2go_wiz_setup_sub">Bagaimana Anda menginginkannya?</string>
     <string name="k2go_settings_language">Bahasa</string>

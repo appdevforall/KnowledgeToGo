@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">ভাষা বেছে নিন</string>
     <string name="k2go_wiz_language_sub">অ্যাপ ও কনটেন্টের ভাষা নির্ধারণ করে।</string>
     <string name="k2go_wiz_permissions_title">কয়েকটি অনুমতি দিন</string>
+    <string name="k2go_wiz_permissions_sub">নিম্নলিখিত অনুমতিগুলি আবশ্যক। আপনার লাইব্রেরি শেয়ার করার সময় অ্যাপটি অতিরিক্ত অনুমতি চাইতে পারে।</string>
     <string name="k2go_continue">চালিয়ে যান</string>
     <string name="k2go_wiz_setup_sub">আপনি এটি কীভাবে চান?</string>
     <string name="k2go_settings_language">ভাষা</string>

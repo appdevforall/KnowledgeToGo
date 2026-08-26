@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Alege limba</string>
     <string name="k2go_wiz_language_sub">Setează limba aplicației + a conținutului.</string>
     <string name="k2go_wiz_permissions_title">Permite câteva lucruri</string>
+    <string name="k2go_wiz_permissions_sub">Următoarele permisiuni sunt necesare. Aplicația poate solicita permisiuni suplimentare când îți partajezi biblioteca.</string>
     <string name="k2go_continue">Continuă</string>
     <string name="k2go_wiz_setup_sub">Cum o vrei?</string>
     <string name="k2go_settings_language">Limbă</string>

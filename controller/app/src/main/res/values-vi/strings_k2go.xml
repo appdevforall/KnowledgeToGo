@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Chọn ngôn ngữ</string>
     <string name="k2go_wiz_language_sub">Đặt ngôn ngữ ứng dụng + nội dung.</string>
     <string name="k2go_wiz_permissions_title">Cho phép một vài mục</string>
+    <string name="k2go_wiz_permissions_sub">Các quyền sau là cần thiết. Ứng dụng có thể yêu cầu thêm quyền khi bạn chia sẻ thư viện của mình.</string>
     <string name="k2go_continue">Tiếp tục</string>
     <string name="k2go_wiz_setup_sub">Bạn muốn thiết lập thế nào?</string>
     <string name="k2go_settings_language">Ngôn ngữ</string>

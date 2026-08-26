@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Изберете език</string>
     <string name="k2go_wiz_language_sub">Задава езика на приложението и съдържанието.</string>
     <string name="k2go_wiz_permissions_title">Разрешете няколко неща</string>
+    <string name="k2go_wiz_permissions_sub">Следните разрешения са необходими. Приложението може да поиска допълнителни разрешения, когато споделяте библиотеката си.</string>
     <string name="k2go_continue">Продължи</string>
     <string name="k2go_wiz_setup_sub">Как го искате?</string>
     <string name="k2go_settings_language">Език</string>

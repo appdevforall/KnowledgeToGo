@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Yan èdè</string>
     <string name="k2go_wiz_language_sub">Ó ń ṣètò èdè áàpù + àkóónú.</string>
     <string name="k2go_wiz_permissions_title">Fàyè gba ohun díẹ̀</string>
+    <string name="k2go_wiz_permissions_sub">Àwọn ìyọ̀nda wọ̀nyí ni a nílò. Ohun-èlò náà lè béèrè fún ìyọ̀nda àfikún nígbà tí o bá pín ilé-ìkàwé rẹ.</string>
     <string name="k2go_continue">Tẹ̀síwájú</string>
     <string name="k2go_wiz_setup_sub">Báwo ni o ṣe fẹ́ ẹ?</string>
     <string name="k2go_settings_language">Èdè</string>

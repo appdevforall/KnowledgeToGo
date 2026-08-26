@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Elegir idioma</string>
     <string name="k2go_wiz_language_sub">Define el idioma de la app y del contenido.</string>
     <string name="k2go_wiz_permissions_title">Permite algunas cosas</string>
+    <string name="k2go_wiz_permissions_sub">Los siguientes permisos son necesarios. La app puede pedir permisos adicionales cuando compartas tu biblioteca.</string>
     <string name="k2go_continue">Continuar</string>
     <string name="k2go_wiz_setup_sub">¿Cómo lo quieres?</string>
     <string name="k2go_settings_language">Idioma</string>

@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Изаберите језик</string>
     <string name="k2go_wiz_language_sub">Поставља језик апликације и садржаја.</string>
     <string name="k2go_wiz_permissions_title">Дозволите неколико ствари</string>
+    <string name="k2go_wiz_permissions_sub">Следеће дозволе су неопходне. Апликација може затражити додатне дозволе када делите своју библиотеку.</string>
     <string name="k2go_continue">Настави</string>
     <string name="k2go_wiz_setup_sub">Како желите да буде?</string>
     <string name="k2go_settings_language">Језик</string>

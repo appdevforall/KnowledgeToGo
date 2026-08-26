@@ -89,6 +89,7 @@
     <string name="k2go_wiz_choose_language">Επιλέξτε γλώσσα</string>
     <string name="k2go_wiz_language_sub">Ορίζει τη γλώσσα εφαρμογής + περιεχομένου.</string>
     <string name="k2go_wiz_permissions_title">Επιτρέψτε μερικά πράγματα</string>
+    <string name="k2go_wiz_permissions_sub">Οι παρακάτω άδειες απαιτούνται. Η εφαρμογή ενδέχεται να ζητήσει πρόσθετες άδειες όταν μοιράζεστε τη βιβλιοθήκη σας.</string>
     <string name="k2go_continue">Συνέχεια</string>
     <string name="k2go_wiz_setup_sub">Πώς το θέλετε;</string>
     <string name="k2go_settings_language">Γλώσσα</string>

@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Dil seçin</string>
     <string name="k2go_wiz_language_sub">Uygulama + içerik dilini ayarlar.</string>
     <string name="k2go_wiz_permissions_title">Birkaç şeye izin verin</string>
+    <string name="k2go_wiz_permissions_sub">Aşağıdaki izinler gereklidir. Kitaplığınızı paylaştığınızda uygulama ek izinler isteyebilir.</string>
     <string name="k2go_continue">Devam</string>
     <string name="k2go_wiz_setup_sub">Nasıl istersiniz?</string>
     <string name="k2go_settings_language">Dil</string>

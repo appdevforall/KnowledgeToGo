@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">言語を選択</string>
     <string name="k2go_wiz_language_sub">アプリとコンテンツの言語を設定します。</string>
     <string name="k2go_wiz_permissions_title">いくつかの許可が必要です</string>
+    <string name="k2go_wiz_permissions_sub">以下の権限が必要です。ライブラリを共有するときに、アプリが追加の権限を求める場合があります。</string>
     <string name="k2go_continue">続行</string>
     <string name="k2go_wiz_setup_sub">どのようにしますか？</string>
     <string name="k2go_settings_language">言語</string>

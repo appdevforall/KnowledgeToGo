@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Dil seçin</string>
     <string name="k2go_wiz_language_sub">Tətbiq + məzmun dilini təyin edir.</string>
     <string name="k2go_wiz_permissions_title">Bir neçə şeyə icazə verin</string>
+    <string name="k2go_wiz_permissions_sub">Aşağıdakı icazələr tələb olunur. Kitabxananızı paylaşdıqda tətbiq əlavə icazələr istəyə bilər.</string>
     <string name="k2go_continue">Davam et</string>
     <string name="k2go_wiz_setup_sub">Bunu necə istəyirsiniz?</string>
     <string name="k2go_settings_language">Dil</string>

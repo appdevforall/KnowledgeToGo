@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Velg språk</string>
     <string name="k2go_wiz_language_sub">Angir språk for app + innhold.</string>
     <string name="k2go_wiz_permissions_title">Tillat noen få ting</string>
+    <string name="k2go_wiz_permissions_sub">Følgende tillatelser kreves. Appen kan be om flere tillatelser når du deler biblioteket ditt.</string>
     <string name="k2go_continue">Fortsett</string>
     <string name="k2go_wiz_setup_sub">Hvordan vil du ha det?</string>
     <string name="k2go_settings_language">Språk</string>

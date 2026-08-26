@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Vyberte jazyk</string>
     <string name="k2go_wiz_language_sub">Nastaví jazyk aplikácie + obsahu.</string>
     <string name="k2go_wiz_permissions_title">Povoľte niekoľko vecí</string>
+    <string name="k2go_wiz_permissions_sub">Nasledujúce povolenia sú potrebné. Aplikácia môže požiadať o ďalšie povolenia pri zdieľaní knižnice.</string>
     <string name="k2go_continue">Pokračovať</string>
     <string name="k2go_wiz_setup_sub">Ako to chcete?</string>
     <string name="k2go_settings_language">Jazyk</string>

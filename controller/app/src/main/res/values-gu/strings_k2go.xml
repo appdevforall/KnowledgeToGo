@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">ભાષા પસંદ કરો</string>
     <string name="k2go_wiz_language_sub">ઍપ + કન્ટેન્ટ ભાષા સેટ કરે છે.</string>
     <string name="k2go_wiz_permissions_title">થોડી બાબતોને મંજૂરી આપો</string>
+    <string name="k2go_wiz_permissions_sub">નીચેની પરવાનગીઓ આવશ્યક છે. તમારી લાઇબ્રેરી શેર કરતી વખતે એપ વધારાની પરવાનગીઓ માંગી શકે છે.</string>
     <string name="k2go_continue">ચાલુ રાખો</string>
     <string name="k2go_wiz_setup_sub">તમને તે કેવી રીતે જોઈએ છે?</string>
     <string name="k2go_settings_language">ભાષા</string>

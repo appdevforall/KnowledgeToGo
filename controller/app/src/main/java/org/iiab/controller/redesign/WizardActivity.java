@@ -249,7 +249,7 @@ public class WizardActivity extends AppCompatActivity {
                 break;
             case 2:
                 title.setText(getString(R.string.k2go_wiz_permissions_title));
-                subtitle.setText("");
+                subtitle.setText(getString(R.string.k2go_wiz_permissions_sub));
                 refreshPermStatuses();
                 primary.setVisibility(View.VISIBLE);
                 primary.setText(getString(R.string.k2go_continue));

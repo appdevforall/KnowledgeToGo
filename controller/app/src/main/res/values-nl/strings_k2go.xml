@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Kies taal</string>
     <string name="k2go_wiz_language_sub">Stelt de taal van app + inhoud in.</string>
     <string name="k2go_wiz_permissions_title">Sta een paar dingen toe</string>
+    <string name="k2go_wiz_permissions_sub">De volgende machtigingen zijn vereist. De app kan om extra machtigingen vragen wanneer je je bibliotheek deelt.</string>
     <string name="k2go_continue">Doorgaan</string>
     <string name="k2go_wiz_setup_sub">Hoe wil je het?</string>
     <string name="k2go_settings_language">Taal</string>

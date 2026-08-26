@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">اختر اللغة</string>
     <string name="k2go_wiz_language_sub">يضبط لغة التطبيق والمحتوى.</string>
     <string name="k2go_wiz_permissions_title">اسمح ببعض الأمور</string>
+    <string name="k2go_wiz_permissions_sub">الأذونات التالية مطلوبة. قد يطلب التطبيق أذونات إضافية عند مشاركة مكتبتك.</string>
     <string name="k2go_continue">متابعة</string>
     <string name="k2go_wiz_setup_sub">كيف تريده؟</string>
     <string name="k2go_settings_language">اللغة</string>

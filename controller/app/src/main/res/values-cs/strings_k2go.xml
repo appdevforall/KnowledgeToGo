@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Vyberte jazyk</string>
     <string name="k2go_wiz_language_sub">Nastaví jazyk aplikace + obsahu.</string>
     <string name="k2go_wiz_permissions_title">Povolte pár věcí</string>
+    <string name="k2go_wiz_permissions_sub">Následující oprávnění jsou vyžadována. Aplikace může požádat o další oprávnění při sdílení knihovny.</string>
     <string name="k2go_continue">Pokračovat</string>
     <string name="k2go_wiz_setup_sub">Jak to chcete?</string>
     <string name="k2go_settings_language">Jazyk</string>

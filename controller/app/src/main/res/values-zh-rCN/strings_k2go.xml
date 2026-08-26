@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">选择语言</string>
     <string name="k2go_wiz_language_sub">设置应用和内容语言。</string>
     <string name="k2go_wiz_permissions_title">允许一些权限</string>
+    <string name="k2go_wiz_permissions_sub">需要以下权限。共享您的图书馆时，应用可能会请求额外权限。</string>
     <string name="k2go_continue">继续</string>
     <string name="k2go_wiz_setup_sub">您希望如何设置？</string>
     <string name="k2go_settings_language">语言</string>

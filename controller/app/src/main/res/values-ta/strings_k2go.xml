@@ -88,6 +88,7 @@
     <string name="k2go_wiz_choose_language">மொழியைத் தேர்வுசெய்க</string>
     <string name="k2go_wiz_language_sub">செயலி + உள்ளடக்க மொழியை அமைக்கிறது.</string>
     <string name="k2go_wiz_permissions_title">சில அனுமதிகளை வழங்கவும்</string>
+    <string name="k2go_wiz_permissions_sub">பின்வரும் அனுமதிகள் அவசியம். உங்கள் நூலகத்தைப் பகிரும்போது ஆப் கூடுதல் அனுமதிகளைக் கேட்கக்கூடும்.</string>
     <string name="k2go_continue">தொடர்</string>
     <string name="k2go_wiz_setup_sub">எப்படி வேண்டும்?</string>
     <string name="k2go_settings_language">மொழி</string>
