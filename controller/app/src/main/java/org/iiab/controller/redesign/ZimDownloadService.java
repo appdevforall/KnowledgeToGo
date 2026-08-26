@@ -147,7 +147,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
     @Override public String label(int i) { return i >= 0 && i < sLabels.length ? sLabels[i] : ""; }
 
     /** Byte-weighted overall percent: done/failed count in full, the active item adds its live percent. */
-    @Override public int overallPercent() {
+    @Override public int computeOverallPercent() {
         int[] status = SESSION.status();
         int idx = SESSION.index();
         int p = SESSION.percent();

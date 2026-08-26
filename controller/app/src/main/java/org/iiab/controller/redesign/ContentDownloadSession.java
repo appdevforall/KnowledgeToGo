@@ -32,7 +32,7 @@ public final class ContentDownloadSession {
     /** Per-type hooks the owning Service provides (body, percent, notification, stop). */
     public interface Host {
         JSONObject buildBody(int i);   // start body for item i (kiwix {ids:[..]}, books {items:[..]})
-        int overallPercent();          // per-type overall percent (byte-weighted vs item-count)
+        int computeOverallPercent();   // per-type overall percent (byte-weighted vs item-count)
         String label(int i);           // display label for item i (notification)
         void notify(String label);     // update the foreground notification
         void stop();                   // stopForeground(true) + stopSelf()
@@ -87,7 +87,7 @@ public final class ContentDownloadSession {
         return false;
     }
     /** Overall percent for the bars — delegated to the per-type Host (byte-weighted vs item-count). */
-    public int overallPercent() { return host != null ? host.overallPercent() : 0; }
+    public int overallPercent() { return host != null ? host.computeOverallPercent() : 0; }
 
     // ---- actions (the services' onStartCommand / statics delegate here) ------------------------
 
