@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Po prostu zeskanuj lub użyj poniższych danych:</string>
     <string name="k2go_perm_keep_running">Ciągłe działanie</string>
     <string name="k2go_connect_subtitle">Pozwól pobliskiemu urządzeniu przeglądać Twoją bibliotekę.</string>
-    <string name="k2go_perm_nearby_note">O pobliskie urządzenia poprosimy później, tylko przy udostępnianiu.</string>
     <string name="k2go_next">Dalej</string>
     <string name="k2go_next_choose_content">Dalej: wybierz treść</string>
     <string name="k2go_clone_next_note">Dalej: dołącz do tej samej sieci, a potem zacznij.</string>

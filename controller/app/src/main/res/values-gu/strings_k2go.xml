@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">ફક્ત સ્કૅન કરો, અથવા નીચેની વિગતોનો ઉપયોગ કરો:</string>
     <string name="k2go_perm_keep_running">ચાલુ રાખો</string>
     <string name="k2go_connect_subtitle">નજીકના ડિવાઇસને તમારી લાઇબ્રેરી બ્રાઉઝ કરવા દો.</string>
-    <string name="k2go_perm_nearby_note">નજીકના ડિવાઇસ પછીથી પૂછવામાં આવે છે, ફક્ત શેર કરતી વખતે.</string>
     <string name="k2go_next">આગળ</string>
     <string name="k2go_next_choose_content">આગળ: કન્ટેન્ટ પસંદ કરો</string>
     <string name="k2go_clone_next_note">આગળ: એ જ નેટવર્ક સાથે જોડાઓ, પછી શરૂ કરો.</string>

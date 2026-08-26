@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">बस स्कैन करें, या नीचे दी गई जानकारी का उपयोग करें:</string>
     <string name="k2go_perm_keep_running">चालू रखें</string>
     <string name="k2go_connect_subtitle">किसी पास के डिवाइस को अपनी लाइब्रेरी देखने दें।</string>
-    <string name="k2go_perm_nearby_note">पास के डिवाइस की अनुमति बाद में, केवल शेयर करते समय माँगी जाती है।</string>
     <string name="k2go_next">आगे</string>
     <string name="k2go_next_choose_content">आगे: सामग्री चुनें</string>
     <string name="k2go_clone_next_note">आगे: वही नेटवर्क जॉइन करें, फिर शुरू करें।</string>

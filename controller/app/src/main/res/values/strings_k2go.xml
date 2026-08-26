@@ -30,7 +30,6 @@
     <string name="k2go_perm_keep_running">Keep running</string>
     <string name="k2go_brand" translatable="false">Knowledge to Go</string>
     <string name="k2go_connect_subtitle">Let a nearby device browse your library.</string>
-    <string name="k2go_perm_nearby_note">Nearby devices is asked later, only when sharing.</string>
     <string name="k2go_next">Next</string>
     <string name="k2go_next_choose_content">Next: choose content</string>
     <string name="k2go_clone_next_note">Next: join the same network, then start.</string>

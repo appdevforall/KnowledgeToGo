@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Scan gewoon, of gebruik anders de volgende gegevens:</string>
     <string name="k2go_perm_keep_running">Actief houden</string>
     <string name="k2go_connect_subtitle">Laat een apparaat in de buurt je bibliotheek bekijken.</string>
-    <string name="k2go_perm_nearby_note">Apparaten in de buurt wordt later gevraagd, alleen bij delen.</string>
     <string name="k2go_next">Volgende</string>
     <string name="k2go_next_choose_content">Volgende: inhoud kiezen</string>
     <string name="k2go_clone_next_note">Volgende: ga naar hetzelfde netwerk en start.</string>

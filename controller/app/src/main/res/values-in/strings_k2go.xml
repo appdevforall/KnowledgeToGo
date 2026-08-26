@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Cukup pindai, atau gunakan kredensial berikut:</string>
     <string name="k2go_perm_keep_running">Tetap berjalan</string>
     <string name="k2go_connect_subtitle">Biarkan perangkat terdekat menjelajahi pustaka Anda.</string>
-    <string name="k2go_perm_nearby_note">Perangkat terdekat diminta nanti, hanya saat berbagi.</string>
     <string name="k2go_next">Berikutnya</string>
     <string name="k2go_next_choose_content">Berikutnya: pilih konten</string>
     <string name="k2go_clone_next_note">Berikutnya: gabung ke jaringan yang sama, lalu mulai.</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Bare skann, eller bruk følgende innlogging:</string>
     <string name="k2go_perm_keep_running">Hold i gang</string>
     <string name="k2go_connect_subtitle">La en enhet i nærheten bla i biblioteket ditt.</string>
-    <string name="k2go_perm_nearby_note">Enheter i nærheten spørres om senere, bare ved deling.</string>
     <string name="k2go_next">Neste</string>
     <string name="k2go_next_choose_content">Neste: velg innhold</string>
     <string name="k2go_clone_next_note">Neste: koble til samme nettverk, og start.</string>

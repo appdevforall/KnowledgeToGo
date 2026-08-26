@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Scannez, ou utilisez plutôt les identifiants suivants :</string>
     <string name="k2go_perm_keep_running">Continuer l\'exécution</string>
     <string name="k2go_connect_subtitle">Laissez un appareil à proximité parcourir votre bibliothèque.</string>
-    <string name="k2go_perm_nearby_note">L\'accès aux appareils à proximité est demandé plus tard, uniquement lors du partage.</string>
     <string name="k2go_next">Suivant</string>
     <string name="k2go_next_choose_content">Suivant : choisir le contenu</string>
     <string name="k2go_clone_next_note">Suivant : rejoignez le même réseau, puis démarrez.</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Само скенирајте или користите следеће податке:</string>
     <string name="k2go_perm_keep_running">Настави рад</string>
     <string name="k2go_connect_subtitle">Дозволите оближњем уређају да прегледа вашу библиотеку.</string>
-    <string name="k2go_perm_nearby_note">Дозвола за оближње уређаје тражи се касније, само при дељењу.</string>
     <string name="k2go_next">Даље</string>
     <string name="k2go_next_choose_content">Даље: изаберите садржај</string>
     <string name="k2go_clone_next_note">Даље: повежите се на исту мрежу, па започните.</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Tarayın ya da aşağıdaki bilgileri kullanın:</string>
     <string name="k2go_perm_keep_running">Çalışır durumda tut</string>
     <string name="k2go_connect_subtitle">Yakındaki bir cihazın kitaplığınıza göz atmasına izin verin.</string>
-    <string name="k2go_perm_nearby_note">Yakındaki cihazlar izni daha sonra, yalnızca paylaşırken istenir.</string>
     <string name="k2go_next">İleri</string>
     <string name="k2go_next_choose_content">İleri: içerik seçin</string>
     <string name="k2go_clone_next_note">İleri: aynı ağa bağlanın, sonra başlayın.</string>

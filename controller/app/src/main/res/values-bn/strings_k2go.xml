@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">শুধু স্ক্যান করুন, অথবা নিচের তথ্য ব্যবহার করুন:</string>
     <string name="k2go_perm_keep_running">চালু রাখুন</string>
     <string name="k2go_connect_subtitle">কাছের কোনো ডিভাইসকে আপনার লাইব্রেরি ব্রাউজ করতে দিন।</string>
-    <string name="k2go_perm_nearby_note">কাছের ডিভাইসের অনুমতি পরে চাওয়া হয়, শুধু শেয়ার করার সময়।</string>
     <string name="k2go_next">পরবর্তী</string>
     <string name="k2go_next_choose_content">পরবর্তী: কনটেন্ট বেছে নিন</string>
     <string name="k2go_clone_next_note">পরবর্তী: একই নেটওয়ার্কে যুক্ত হয়ে শুরু করুন।</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Stačí naskenovať alebo použite tieto údaje:</string>
     <string name="k2go_perm_keep_running">Ponechať spustené</string>
     <string name="k2go_connect_subtitle">Umožnite blízkemu zariadeniu prehliadať vašu knižnicu.</string>
-    <string name="k2go_perm_nearby_note">Na blízke zariadenia sa spýtame neskôr, len pri zdieľaní.</string>
     <string name="k2go_next">Ďalej</string>
     <string name="k2go_next_choose_content">Ďalej: vyberte obsah</string>
     <string name="k2go_clone_next_note">Ďalej: pripojte sa k rovnakej sieti, potom začnite.</string>

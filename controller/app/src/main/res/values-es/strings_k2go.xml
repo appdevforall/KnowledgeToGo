@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Solo escanea, o usa estas credenciales:</string>
     <string name="k2go_perm_keep_running">Seguir en ejecución</string>
     <string name="k2go_connect_subtitle">Deja que un dispositivo cercano explore tu biblioteca.</string>
-    <string name="k2go_perm_nearby_note">Los dispositivos cercanos se piden más tarde, solo al compartir.</string>
     <string name="k2go_next">Siguiente</string>
     <string name="k2go_next_choose_content">Siguiente: elegir contenido</string>
     <string name="k2go_clone_next_note">Siguiente: conéctate a la misma red y empieza.</string>

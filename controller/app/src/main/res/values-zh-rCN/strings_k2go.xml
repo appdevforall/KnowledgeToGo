@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">直接扫码，或使用以下凭据:</string>
     <string name="k2go_perm_keep_running">保持运行</string>
     <string name="k2go_connect_subtitle">让附近的设备浏览您的图书馆。</string>
-    <string name="k2go_perm_nearby_note">附近设备权限稍后请求，仅在共享时。</string>
     <string name="k2go_next">下一步</string>
     <string name="k2go_next_choose_content">下一步：选择内容</string>
     <string name="k2go_clone_next_note">下一步：加入同一网络，然后开始。</string>

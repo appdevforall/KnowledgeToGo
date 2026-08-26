@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">스캔하거나 다음 자격 증명을 사용하세요:</string>
     <string name="k2go_perm_keep_running">계속 실행</string>
     <string name="k2go_connect_subtitle">근처 기기가 라이브러리를 열람할 수 있게 합니다.</string>
-    <string name="k2go_perm_nearby_note">근처 기기 권한은 공유할 때만 나중에 요청됩니다.</string>
     <string name="k2go_next">다음</string>
     <string name="k2go_next_choose_content">다음: 콘텐츠 선택</string>
     <string name="k2go_clone_next_note">다음: 같은 네트워크에 접속한 후 시작하세요.</string>

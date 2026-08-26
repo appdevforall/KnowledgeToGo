@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Tiesiog nuskaitykite arba naudokite šiuos prisijungimo duomenis:</string>
     <string name="k2go_perm_keep_running">Veikti toliau</string>
     <string name="k2go_connect_subtitle">Leiskite šalia esančiam įrenginiui naršyti jūsų biblioteką.</string>
-    <string name="k2go_perm_nearby_note">Netoliese esančių įrenginių leidimo paprašysime vėliau, tik dalijantis.</string>
     <string name="k2go_next">Toliau</string>
     <string name="k2go_next_choose_content">Toliau: pasirinkite turinį</string>
     <string name="k2go_clone_next_note">Toliau: prisijunkite prie to paties tinklo ir pradėkite.</string>

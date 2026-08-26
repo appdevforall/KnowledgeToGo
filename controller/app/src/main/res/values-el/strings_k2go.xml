@@ -28,7 +28,6 @@
     <string name="k2go_just_scan">Απλώς σαρώστε ή χρησιμοποιήστε τα παρακάτω στοιχεία:</string>
     <string name="k2go_perm_keep_running">Διατήρηση σε λειτουργία</string>
     <string name="k2go_connect_subtitle">Επιτρέψτε σε κοντινή συσκευή να περιηγηθεί στη βιβλιοθήκη σας.</string>
-    <string name="k2go_perm_nearby_note">Η άδεια για κοντινές συσκευές ζητείται αργότερα, μόνο κατά την κοινή χρήση.</string>
     <string name="k2go_next">Επόμενο</string>
     <string name="k2go_next_choose_content">Επόμενο: επιλέξτε περιεχόμενο</string>
     <string name="k2go_clone_next_note">Επόμενο: συνδεθείτε στο ίδιο δίκτυο και μετά ξεκινήστε.</string>

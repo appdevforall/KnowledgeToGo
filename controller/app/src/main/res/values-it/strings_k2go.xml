@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Scansiona, oppure usa le seguenti credenziali:</string>
     <string name="k2go_perm_keep_running">Mantieni attivo</string>
     <string name="k2go_connect_subtitle">Permetti a un dispositivo vicino di sfogliare la tua libreria.</string>
-    <string name="k2go_perm_nearby_note">L\'accesso ai dispositivi vicini viene richiesto dopo, solo quando condividi.</string>
     <string name="k2go_next">Avanti</string>
     <string name="k2go_next_choose_content">Avanti: scegli i contenuti</string>
     <string name="k2go_clone_next_note">Avanti: collegati alla stessa rete, poi inizia.</string>

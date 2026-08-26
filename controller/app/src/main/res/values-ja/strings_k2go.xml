@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">スキャンするか、次の認証情報を使用してください:</string>
     <string name="k2go_perm_keep_running">実行を継続</string>
     <string name="k2go_connect_subtitle">近くのデバイスにライブラリを閲覧させます。</string>
-    <string name="k2go_perm_nearby_note">近くのデバイスの許可は、共有するときにのみ後で求められます。</string>
     <string name="k2go_next">次へ</string>
     <string name="k2go_next_choose_content">次へ：コンテンツを選択</string>
     <string name="k2go_clone_next_note">次へ：同じネットワークに接続してから開始します。</string>

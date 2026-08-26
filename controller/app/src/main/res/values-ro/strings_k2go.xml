@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Doar scanează sau folosește următoarele date:</string>
     <string name="k2go_perm_keep_running">Menține activ</string>
     <string name="k2go_connect_subtitle">Permite unui dispozitiv din apropiere să răsfoiască biblioteca ta.</string>
-    <string name="k2go_perm_nearby_note">Dispozitivele din apropiere se cer mai târziu, doar la partajare.</string>
     <string name="k2go_next">Următorul</string>
     <string name="k2go_next_choose_content">Următorul: alege conținutul</string>
     <string name="k2go_clone_next_note">Următorul: conectează-te la aceeași rețea, apoi începe.</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Basta digitalizar, ou use as seguintes credenciais:</string>
     <string name="k2go_perm_keep_running">Manter em execução</string>
     <string name="k2go_connect_subtitle">Permita que um dispositivo próximo navegue na sua biblioteca.</string>
-    <string name="k2go_perm_nearby_note">A permissão de dispositivos próximos é pedida depois, apenas ao partilhar.</string>
     <string name="k2go_next">Seguinte</string>
     <string name="k2go_next_choose_content">Seguinte: escolher conteúdo</string>
     <string name="k2go_clone_next_note">Seguinte: ligue-se à mesma rede e comece.</string>

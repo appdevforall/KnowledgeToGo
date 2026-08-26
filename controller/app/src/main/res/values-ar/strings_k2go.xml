@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">امسح فقط، أو استخدم بيانات الاعتماد التالية:</string>
     <string name="k2go_perm_keep_running">إبقاء التشغيل</string>
     <string name="k2go_connect_subtitle">اسمح لجهاز قريب بتصفّح مكتبتك.</string>
-    <string name="k2go_perm_nearby_note">يُطلب إذن الأجهزة القريبة لاحقًا، فقط عند المشاركة.</string>
     <string name="k2go_next">التالي</string>
     <string name="k2go_next_choose_content">التالي: اختر المحتوى</string>
     <string name="k2go_clone_next_note">التالي: انضم إلى الشبكة نفسها ثم ابدأ.</string>

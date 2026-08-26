@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Просто отсканируйте или используйте следующие данные:</string>
     <string name="k2go_perm_keep_running">Работать в фоне</string>
     <string name="k2go_connect_subtitle">Позвольте соседнему устройству просматривать вашу библиотеку.</string>
-    <string name="k2go_perm_nearby_note">Разрешение на соседние устройства запрашивается позже, только при передаче.</string>
     <string name="k2go_next">Далее</string>
     <string name="k2go_next_choose_content">Далее: выбор контента</string>
     <string name="k2go_clone_next_note">Далее: подключитесь к той же сети, затем начните.</string>

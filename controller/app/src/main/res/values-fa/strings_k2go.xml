@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">فقط اسکن کنید یا از اطلاعات زیر استفاده کنید:</string>
     <string name="k2go_perm_keep_running">ادامه اجرا</string>
     <string name="k2go_connect_subtitle">به یک دستگاه نزدیک اجازه دهید کتابخانه شما را مرور کند.</string>
-    <string name="k2go_perm_nearby_note">دسترسی دستگاه‌های نزدیک بعداً و فقط هنگام اشتراک‌گذاری درخواست می‌شود.</string>
     <string name="k2go_next">بعدی</string>
     <string name="k2go_next_choose_content">بعدی: انتخاب محتوا</string>
     <string name="k2go_clone_next_note">بعدی: به همان شبکه بپیوندید، سپس شروع کنید.</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Просто відскануйте або скористайтеся такими даними:</string>
     <string name="k2go_perm_keep_running">Не зупиняти</string>
     <string name="k2go_connect_subtitle">Дозвольте пристрою поруч переглядати вашу бібліотеку.</string>
-    <string name="k2go_perm_nearby_note">Дозвіл на пристрої поруч запитується пізніше, лише під час надсилання.</string>
     <string name="k2go_next">Далі</string>
     <string name="k2go_next_choose_content">Далі: оберіть контент</string>
     <string name="k2go_clone_next_note">Далі: приєднайтеся до тієї ж мережі, потім почніть.</string>
