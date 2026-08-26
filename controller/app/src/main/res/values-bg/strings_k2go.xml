@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Просто сканирайте или използвайте следните данни:</string>
     <string name="k2go_perm_keep_running">Продължи работа</string>
     <string name="k2go_connect_subtitle">Позволете на близко устройство да разглежда библиотеката ви.</string>
-    <string name="k2go_perm_nearby_note">Разрешението за близки устройства се иска по-късно, само при споделяне.</string>
     <string name="k2go_next">Напред</string>
     <string name="k2go_next_choose_content">Напред: изберете съдържание</string>
     <string name="k2go_clone_next_note">Напред: свържете се към същата мрежа и започнете.</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">Изберете език</string>
     <string name="k2go_wiz_language_sub">Задава езика на приложението и съдържанието.</string>
     <string name="k2go_wiz_permissions_title">Разрешете няколко неща</string>
+    <string name="k2go_wiz_permissions_sub">Следните разрешения са необходими. Приложението може да поиска допълнителни разрешения, когато споделяте библиотеката си.</string>
     <string name="k2go_continue">Продължи</string>
     <string name="k2go_wiz_setup_sub">Как го искате?</string>
     <string name="k2go_settings_language">Език</string>

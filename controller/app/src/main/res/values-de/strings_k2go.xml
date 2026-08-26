@@ -28,7 +28,6 @@
     <string name="k2go_just_scan">Einfach scannen oder die folgenden Zugangsdaten verwenden:</string>
     <string name="k2go_perm_keep_running">Weiterlaufen lassen</string>
     <string name="k2go_connect_subtitle">Lass ein Gerät in der Nähe deine Bibliothek durchstöbern.</string>
-    <string name="k2go_perm_nearby_note">Nach Geräten in der Nähe wird später gefragt, nur beim Teilen.</string>
     <string name="k2go_next">Weiter</string>
     <string name="k2go_next_choose_content">Weiter: Inhalte wählen</string>
     <string name="k2go_clone_next_note">Weiter: dem selben Netzwerk beitreten, dann starten.</string>
@@ -89,6 +88,7 @@
     <string name="k2go_wiz_choose_language">Sprache wählen</string>
     <string name="k2go_wiz_language_sub">Legt App- + Inhaltssprache fest.</string>
     <string name="k2go_wiz_permissions_title">Ein paar Dinge erlauben</string>
+    <string name="k2go_wiz_permissions_sub">Die folgenden Berechtigungen sind erforderlich. Die App fragt möglicherweise nach weiteren Berechtigungen, wenn du deine Bibliothek teilst.</string>
     <string name="k2go_continue">Weiter</string>
     <string name="k2go_wiz_setup_sub">Wie möchtest du es?</string>
     <string name="k2go_settings_language">Sprache</string>

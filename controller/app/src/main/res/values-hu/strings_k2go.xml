@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Csak olvassa be, vagy használja az alábbi adatokat:</string>
     <string name="k2go_perm_keep_running">Futás fenntartása</string>
     <string name="k2go_connect_subtitle">Engedd, hogy egy közeli eszköz böngéssze a könyvtáradat.</string>
-    <string name="k2go_perm_nearby_note">A közeli eszközök engedélyét később kérjük, csak megosztáskor.</string>
     <string name="k2go_next">Tovább</string>
     <string name="k2go_next_choose_content">Tovább: tartalom kiválasztása</string>
     <string name="k2go_clone_next_note">Tovább: csatlakozz ugyanarra a hálózatra, majd indíts.</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">Válassz nyelvet</string>
     <string name="k2go_wiz_language_sub">Beállítja az app + tartalom nyelvét.</string>
     <string name="k2go_wiz_permissions_title">Engedélyezz néhány dolgot</string>
+    <string name="k2go_wiz_permissions_sub">A következő engedélyek szükségesek. Az alkalmazás további engedélyeket kérhet, amikor megosztja a könyvtárát.</string>
     <string name="k2go_continue">Folytatás</string>
     <string name="k2go_wiz_setup_sub">Hogyan szeretnéd?</string>
     <string name="k2go_settings_language">Nyelv</string>

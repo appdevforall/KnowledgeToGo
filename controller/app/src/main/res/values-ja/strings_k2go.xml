@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">スキャンするか、次の認証情報を使用してください:</string>
     <string name="k2go_perm_keep_running">実行を継続</string>
     <string name="k2go_connect_subtitle">近くのデバイスにライブラリを閲覧させます。</string>
-    <string name="k2go_perm_nearby_note">近くのデバイスの許可は、共有するときにのみ後で求められます。</string>
     <string name="k2go_next">次へ</string>
     <string name="k2go_next_choose_content">次へ：コンテンツを選択</string>
     <string name="k2go_clone_next_note">次へ：同じネットワークに接続してから開始します。</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">言語を選択</string>
     <string name="k2go_wiz_language_sub">アプリとコンテンツの言語を設定します。</string>
     <string name="k2go_wiz_permissions_title">いくつかの許可が必要です</string>
+    <string name="k2go_wiz_permissions_sub">以下の権限が必要です。ライブラリを共有するときに、アプリが追加の権限を求める場合があります。</string>
     <string name="k2go_continue">続行</string>
     <string name="k2go_wiz_setup_sub">どのようにしますか？</string>
     <string name="k2go_settings_language">言語</string>

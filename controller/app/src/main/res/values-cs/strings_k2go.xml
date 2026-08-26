@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Stačí naskenovat nebo použijte následující údaje:</string>
     <string name="k2go_perm_keep_running">Ponechat spuštěné</string>
     <string name="k2go_connect_subtitle">Umožněte blízkému zařízení procházet vaši knihovnu.</string>
-    <string name="k2go_perm_nearby_note">Na blízká zařízení se zeptáme později, jen při sdílení.</string>
     <string name="k2go_next">Další</string>
     <string name="k2go_next_choose_content">Další: vyberte obsah</string>
     <string name="k2go_clone_next_note">Další: připojte se ke stejné síti a začněte.</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">Vyberte jazyk</string>
     <string name="k2go_wiz_language_sub">Nastaví jazyk aplikace + obsahu.</string>
     <string name="k2go_wiz_permissions_title">Povolte pár věcí</string>
+    <string name="k2go_wiz_permissions_sub">Následující oprávnění jsou vyžadována. Aplikace může požádat o další oprávnění při sdílení knihovny.</string>
     <string name="k2go_continue">Pokračovat</string>
     <string name="k2go_wiz_setup_sub">Jak to chcete?</string>
     <string name="k2go_settings_language">Jazyk</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Cukup pindai, atau gunakan kredensial berikut:</string>
     <string name="k2go_perm_keep_running">Tetap berjalan</string>
     <string name="k2go_connect_subtitle">Biarkan perangkat terdekat menjelajahi pustaka Anda.</string>
-    <string name="k2go_perm_nearby_note">Perangkat terdekat diminta nanti, hanya saat berbagi.</string>
     <string name="k2go_next">Berikutnya</string>
     <string name="k2go_next_choose_content">Berikutnya: pilih konten</string>
     <string name="k2go_clone_next_note">Berikutnya: gabung ke jaringan yang sama, lalu mulai.</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">Pilih bahasa</string>
     <string name="k2go_wiz_language_sub">Mengatur bahasa aplikasi + konten.</string>
     <string name="k2go_wiz_permissions_title">Izinkan beberapa hal</string>
+    <string name="k2go_wiz_permissions_sub">Izin berikut diperlukan. Aplikasi mungkin meminta izin tambahan saat Anda membagikan perpustakaan Anda.</string>
     <string name="k2go_continue">Lanjutkan</string>
     <string name="k2go_wiz_setup_sub">Bagaimana Anda menginginkannya?</string>
     <string name="k2go_settings_language">Bahasa</string>

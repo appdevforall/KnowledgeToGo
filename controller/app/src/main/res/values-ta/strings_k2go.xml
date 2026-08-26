@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">ஸ்கேன் செய்யவும், அல்லது கீழ்க்காணும் விவரங்களைப் பயன்படுத்தவும்:</string>
     <string name="k2go_perm_keep_running">இயக்கத்தில் வைத்திரு</string>
     <string name="k2go_connect_subtitle">அருகிலுள்ள சாதனம் உங்கள் நூலகத்தை உலாவ அனுமதிக்கவும்.</string>
-    <string name="k2go_perm_nearby_note">அருகிலுள்ள சாதனங்களுக்கான அனுமதி பிறகு, பகிரும்போது மட்டுமே கேட்கப்படும்.</string>
     <string name="k2go_next">அடுத்து</string>
     <string name="k2go_next_choose_content">அடுத்து: உள்ளடக்கத்தைத் தேர்வுசெய்க</string>
     <string name="k2go_clone_next_note">அடுத்து: அதே நெட்வொர்க்கில் இணைந்து, பிறகு தொடங்கவும்.</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">மொழியைத் தேர்வுசெய்க</string>
     <string name="k2go_wiz_language_sub">செயலி + உள்ளடக்க மொழியை அமைக்கிறது.</string>
     <string name="k2go_wiz_permissions_title">சில அனுமதிகளை வழங்கவும்</string>
+    <string name="k2go_wiz_permissions_sub">பின்வரும் அனுமதிகள் அவசியம். உங்கள் நூலகத்தைப் பகிரும்போது ஆப் கூடுதல் அனுமதிகளைக் கேட்கக்கூடும்.</string>
     <string name="k2go_continue">தொடர்</string>
     <string name="k2go_wiz_setup_sub">எப்படி வேண்டும்?</string>
     <string name="k2go_settings_language">மொழி</string>

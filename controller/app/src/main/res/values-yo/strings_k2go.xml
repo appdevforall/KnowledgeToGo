@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Kàn ya kóòdù, tàbí lo àwọn ẹ̀rí wọ̀nyí:</string>
     <string name="k2go_perm_keep_running">Máa ṣiṣẹ́ lọ</string>
     <string name="k2go_connect_subtitle">Jẹ́ kí ẹ̀rọ tó wà nítòsí wo ilé-ìkàwé rẹ.</string>
-    <string name="k2go_perm_nearby_note">A óò béèrè àwọn ẹ̀rọ tó wà nítòsí lẹ́yìn, nígbà tí a bá ń pínni nìkan.</string>
     <string name="k2go_next">Tẹ̀síwájú</string>
     <string name="k2go_next_choose_content">Tẹ̀síwájú: yan àkóónú</string>
     <string name="k2go_clone_next_note">Tẹ̀síwájú: darapọ̀ mọ́ nẹ́tíwọ́ọ̀kì kan náà, kó o sì bẹ̀rẹ̀.</string>
@@ -88,6 +87,7 @@
     <string name="k2go_wiz_choose_language">Yan èdè</string>
     <string name="k2go_wiz_language_sub">Ó ń ṣètò èdè áàpù + àkóónú.</string>
     <string name="k2go_wiz_permissions_title">Fàyè gba ohun díẹ̀</string>
+    <string name="k2go_wiz_permissions_sub">Àwọn ìyọ̀nda wọ̀nyí ni a nílò. Ohun-èlò náà lè béèrè fún ìyọ̀nda àfikún nígbà tí o bá pín ilé-ìkàwé rẹ.</string>
     <string name="k2go_continue">Tẹ̀síwájú</string>
     <string name="k2go_wiz_setup_sub">Báwo ni o ṣe fẹ́ ẹ?</string>
     <string name="k2go_settings_language">Èdè</string>
