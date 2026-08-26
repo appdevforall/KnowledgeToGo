@@ -40,8 +40,7 @@ public class BooksDownloadsFragment extends Fragment {
     private TextView detail;
     private LinearLayout listv;
     private Button finishBtn, runBgBtn;
-    private LinearLayout controls;                 // ADFA-4893: session control row (pause/resume + cancel)
-    private Button pauseBtn, cancelBtn;
+    private DownloadControls dlControls;            // ADFA-4893: shared status-screen control row
     private boolean pauseSupported = false;        // ADFA-4893: box dash-node >= 1.2.4 exposes pause/resume
     private boolean fromIndex;   // hosted by the Finishing-setup index: hide own buttons, only observe
 
@@ -55,6 +54,8 @@ public class BooksDownloadsFragment extends Fragment {
     }
 
     private int px(int dp) { return Math.round(dp * getResources().getDisplayMetrics().density); }
+
+    private android.content.Context ctx() { return requireContext().getApplicationContext(); }
 
     @Nullable
     @Override
@@ -76,27 +77,26 @@ public class BooksDownloadsFragment extends Fragment {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
 
-        // ADFA-4893: session controls, homologated with ZIM — primary morphs Pause -> Resume -> Retry.
-        controls = root.findViewById(R.id.k2go_bdl_controls);
-        pauseBtn = root.findViewById(R.id.k2go_bdl_pause);
-        cancelBtn = root.findViewById(R.id.k2go_bdl_cancel);
-        pauseBtn.setOnClickListener(v -> {
-            android.content.Context ctx = requireContext().getApplicationContext();
-            if (!BooksDownloadService.isRunning() && BooksDownloadService.hasFailed()) BooksDownloadService.retryFailed(ctx);
-            else if (BooksDownloadService.isPaused()) BooksDownloadService.resume(ctx);
-            else BooksDownloadService.pause(ctx);
-        });
-        cancelBtn.setOnClickListener(v -> {
-            android.content.Context ctx = requireContext().getApplicationContext();
-            if (BooksDownloadService.isRunning()) {
-                ContextCompat.startForegroundService(ctx,
-                        new Intent(ctx, BooksDownloadService.class).setAction(BooksDownloadService.ACTION_CANCEL));
-            } else {
-                BooksDownloadService.finishSession();
-                render();
-            }
-        });
+        // ADFA-4893: the shared status-screen control row (homologated with ZIM).
         pauseSupported = DashboardVersion.atLeast(DashboardVersion.installed(requireContext()), 1, 2, 4);
+        dlControls = new DownloadControls(
+                root.findViewById(R.id.k2go_bdl_controls),
+                root.findViewById(R.id.k2go_bdl_pause),
+                root.findViewById(R.id.k2go_bdl_cancel),
+                new DownloadControls.Controller() {
+                    @Override public boolean isRunning() { return BooksDownloadService.isRunning(); }
+                    @Override public boolean isPaused() { return BooksDownloadService.isPaused(); }
+                    @Override public boolean hasFailed() { return BooksDownloadService.hasFailed(); }
+                    @Override public boolean pauseSupported() { return pauseSupported; }
+                    @Override public void pause() { BooksDownloadService.pause(ctx()); }
+                    @Override public void resume() { BooksDownloadService.resume(ctx()); }
+                    @Override public void retryFailed() { BooksDownloadService.retryFailed(ctx()); }
+                    @Override public void cancelRunning() {
+                        ContextCompat.startForegroundService(ctx(),
+                                new Intent(ctx(), BooksDownloadService.class).setAction(BooksDownloadService.ACTION_CANCEL));
+                    }
+                    @Override public void dismiss() { BooksDownloadService.finishSession(); render(); }
+                });
 
         if (fromIndex) {   // the index host provides Back/Finish; this card only observes
             finishBtn.setVisibility(View.GONE);
@@ -118,7 +118,6 @@ public class BooksDownloadsFragment extends Fragment {
         int done = 0;
         for (int st : status) if (st == BooksDownloadService.DONE) done++;
 
-        boolean anyFailed = BooksDownloadService.hasFailed();
         boolean running = BooksDownloadService.isRunning();
         boolean paused = BooksDownloadService.isPaused();
         int rc = BooksDownloadService.reconnectAttempt();
@@ -128,15 +127,7 @@ public class BooksDownloadsFragment extends Fragment {
 
         drawChecklist(titles, status);
 
-        // ADFA-4893: morphing control row (Pause -> Resume -> Retry) + Cancel, same as ZIM. Shown while
-        // running (needs pause support >= 1.2.4) or whenever a book failed (Retry works on any version).
-        boolean showControls = (running && pauseSupported) || anyFailed;
-        controls.setVisibility(showControls ? View.VISIBLE : View.GONE);
-        if (showControls) {
-            if (!running && anyFailed) pauseBtn.setText(R.string.k2go_dl_retry);
-            else if (paused) pauseBtn.setText(R.string.k2go_dl_resume);
-            else pauseBtn.setText(R.string.k2go_dl_pause);
-        }
+        dlControls.render();   // ADFA-4893: shared morph Pause/Resume/Retry + Cancel
 
         if (!fromIndex) {
             boolean complete = BooksDownloadService.isComplete();
