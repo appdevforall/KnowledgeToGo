@@ -1118,9 +1118,11 @@ public class CloneFragment extends Fragment {
             rcvCamNote.setVisibility(View.GONE); rcvShowPaste.setVisibility(View.GONE); pasteBlock.setVisibility(View.GONE);
             rcvIncompat.setVisibility(View.VISIBLE);
             incompatWhyText.setVisibility(incompatWhyOpen ? View.VISIBLE : View.GONE);
-            incompatWhy.setText(incompatWhyOpen ? getString(R.string.k2go_clone_why_incompat_open) : getString(R.string.k2go_clone_why_incompat));
+            incompatWhy.setText(R.string.k2go_clone_why_incompat);
+            setExpandChevron(incompatWhy, incompatWhyOpen, R.color.k2go_warn_ink);
             incompatTechText.setVisibility(incompatTechOpen ? View.VISIBLE : View.GONE);
-            incompatTech.setText(incompatTechOpen ? getString(R.string.k2go_clone_technical_details_open) : getString(R.string.k2go_clone_technical_details));
+            incompatTech.setText(R.string.k2go_clone_technical_details);
+            setExpandChevron(incompatTech, incompatTechOpen, R.color.k2go_muted);
             incompatTechText.setText(getString(R.string.k2go_clone_tech_arch, bitsLabel(archBits()), bitsLabel(incompatHostBits)));
             return;
         }
@@ -1142,9 +1144,24 @@ public class CloneFragment extends Fragment {
         rcvSkipHint.setVisibility(atJoin ? View.VISIBLE : View.GONE);
         rcvCamNote.setVisibility(View.GONE);
         rcvShowPaste.setVisibility(atJoin ? View.GONE : View.VISIBLE);
-        rcvShowPaste.setText(pasteExpanded ? getString(R.string.k2go_clone_enter_text_open) : getString(R.string.k2go_clone_scan_enter_text));
+        rcvShowPaste.setText(R.string.k2go_clone_scan_enter_text);
+        setExpandChevron(rcvShowPaste, pasteExpanded, R.color.k2go_teal);
         pasteBlock.setVisibility((!atJoin && pasteExpanded) ? View.VISIBLE : View.GONE);
         renderExitZone();   // ADFA-5155: the success-exit status band at the bottom of step 2
+    }
+
+    /** ADFA-5304: Material 3 expand/collapse affordance — one trailing icon that toggles state
+     *  (expand_more when closed, expand_less when open), tinted to the row's role colour. */
+    private void setExpandChevron(android.widget.TextView tv, boolean open, int colorRes) {
+        android.graphics.drawable.Drawable d = androidx.core.content.ContextCompat.getDrawable(
+                requireContext(), open ? R.drawable.ic_expand_less : R.drawable.ic_expand_more);
+        if (d != null) {
+            d = d.mutate();
+            androidx.core.graphics.drawable.DrawableCompat.setTint(d,
+                    androidx.core.content.ContextCompat.getColor(requireContext(), colorRes));
+        }
+        tv.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, d, null);
+        tv.setCompoundDrawablePadding((int) (6 * getResources().getDisplayMetrics().density));
     }
 
     // ---------------------------------------------------------- ADFA-5155: success-exit service wait
