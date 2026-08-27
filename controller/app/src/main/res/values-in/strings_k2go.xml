@@ -81,8 +81,6 @@
     <string name="k2go_skipped">dilewati</string>
     <string name="k2go_books_body">Segera hadir — belum ada konten untuk dipilih.</string>
     <string name="k2go_maps_body">Peta dasar dunia offline. Termasuk dengan peta (tetap untuk saat ini).</string>
-    <string name="k2go_courses_hint">Preset Kiwix tersedia; Kolibri belum bisa diset — siapkan di perangkat setelah pemasangan.</string>
-    <string name="k2go_added_after">ditambahkan setelah pemasangan</string>
     <string name="k2go_step2a_hint">Ketuk sumber untuk Tambah atau Lewati. Lewati semua = hanya sistem.</string>
     <string name="k2go_skip_for_now">Lewati untuk sekarang ›</string>
     <string name="k2go_wiz_choose_language">Pilih bahasa</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Salinan lengkap pustaka ponsel lain.</string>
     <string name="k2go_clone_all_apps">Semua aplikasi dan kontennya</string>
     <string name="k2go_clone_already_wifi_skip">Sudah di Wi-Fi yang sama? Anda bisa lewati langkah ini›</string>
-    <string name="k2go_clone_camera_note">Kamera tidak berfungsi? Sambungkan ke Wi-Fi ponsel lain di Setelan, lalu Lewati.</string>
     <string name="k2go_clone_camera_q">Kamera tidak berfungsi?</string>
     <string name="k2go_clone_cant_scan">Tidak bisa memindai? Bagikan aplikasi dengan cara lain  ›</string>
     <string name="k2go_cancel">Batal</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Kata sandi: %1$s</string>
     <string name="k2go_step2_download_fmt">Unduh pustaka · %.1f GB</string>
     <string name="k2go_step2_review">Tinjau</string>
-    <string name="k2go_step2b_info_books">Buku — segera hadir (belum ada pengelola konten · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Peta — termasuk dalam edisi Anda.</string>
-    <string name="k2go_step2b_info_courses">Kursus — disiapkan di perangkat setelah pemasangan.</string>
     <string name="k2go_step2b_info_review">Tinjau pustaka Anda, lalu unduh.</string>
     <string name="k2go_setting_up_library">Menyiapkan pustaka Anda…</string>
     <string name="k2go_reading">membaca</string>

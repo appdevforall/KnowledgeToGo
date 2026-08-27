@@ -81,8 +81,6 @@
     <string name="k2go_skipped">已跳过</string>
     <string name="k2go_books_body">即将推出 — 暂无可选内容。</string>
     <string name="k2go_maps_body">离线世界底图。随地图一起提供（目前固定）。</string>
-    <string name="k2go_courses_hint">Kiwix 预设已存在；Kolibri 尚无法预设 — 请在安装后于设备上设置。</string>
-    <string name="k2go_added_after">安装后添加</string>
     <string name="k2go_step2a_hint">点按来源以添加或跳过。全部跳过 = 仅系统。</string>
     <string name="k2go_skip_for_now">暂时跳过 ›</string>
     <string name="k2go_wiz_choose_language">选择语言</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">对方手机图书馆的完整副本。</string>
     <string name="k2go_clone_all_apps">所有应用及其内容</string>
     <string name="k2go_clone_already_wifi_skip">已在同一 Wi-Fi 上？您可以跳过此步骤›</string>
-    <string name="k2go_clone_camera_note">相机无法工作？在设置中连接到对方手机的 Wi-Fi，然后跳过。</string>
     <string name="k2go_clone_camera_q">相机无法工作？</string>
     <string name="k2go_clone_cant_scan">无法扫描？用其他方式共享应用  ›</string>
     <string name="k2go_cancel">取消</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">密码：%1$s</string>
     <string name="k2go_step2_download_fmt">下载图书馆 · %.1f GB</string>
     <string name="k2go_step2_review">查看</string>
-    <string name="k2go_step2b_info_books">图书 — 即将推出（暂无内容管理器 · 0 GB）。</string>
-    <string name="k2go_step2b_info_maps">地图 — 已包含在您的版本中。</string>
-    <string name="k2go_step2b_info_courses">课程 — 安装后在设备上设置。</string>
     <string name="k2go_step2b_info_review">查看您的图书馆，然后下载。</string>
     <string name="k2go_setting_up_library">正在设置您的图书馆…</string>
     <string name="k2go_reading">正在读取</string>

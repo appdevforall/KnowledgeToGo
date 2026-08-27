@@ -81,8 +81,6 @@
     <string name="k2go_skipped">preskočené</string>
     <string name="k2go_books_body">Už čoskoro — zatiaľ nie je z čoho vyberať.</string>
     <string name="k2go_maps_body">Offline základná mapa sveta. Súčasť mapy (zatiaľ pevná).</string>
-    <string name="k2go_courses_hint">Predvoľby Kiwix existujú; Kolibri zatiaľ nemožno prednastaviť — nastavte v zariadení po inštalácii.</string>
-    <string name="k2go_added_after">pridané po inštalácii</string>
     <string name="k2go_step2a_hint">Klepnutím na zdroj ho Pridáte alebo Preskočíte. Preskočiť všetko = iba systém.</string>
     <string name="k2go_skip_for_now">Zatiaľ preskočiť ›</string>
     <string name="k2go_wiz_choose_language">Vyberte jazyk</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Úplná kópia knižnice druhého telefónu.</string>
     <string name="k2go_clone_all_apps">Všetky aplikácie a ich obsah</string>
     <string name="k2go_clone_already_wifi_skip">Už na rovnakej Wi-Fi? Tento krok môžete preskočiť›</string>
-    <string name="k2go_clone_camera_note">Nefunguje kamera? Pripojte sa k Wi-Fi druhého telefónu v Nastaveniach, potom Preskočte.</string>
     <string name="k2go_clone_camera_q">Nefunguje kamera?</string>
     <string name="k2go_clone_cant_scan">Nemôžete skenovať? Zdieľajte aplikáciu iným spôsobom  ›</string>
     <string name="k2go_cancel">Zrušiť</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Heslo: %1$s</string>
     <string name="k2go_step2_download_fmt">Stiahnuť knižnicu · %.1f GB</string>
     <string name="k2go_step2_review">Prehľad</string>
-    <string name="k2go_step2b_info_books">Knihy — už čoskoro (zatiaľ bez správcu obsahu · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapy — súčasť vašej edície.</string>
-    <string name="k2go_step2b_info_courses">Kurzy — nastavia sa v zariadení po inštalácii.</string>
     <string name="k2go_step2b_info_review">Skontrolujte svoju knižnicu, potom stiahnite.</string>
     <string name="k2go_setting_up_library">Nastavuje sa vaša knižnica…</string>
     <string name="k2go_reading">načítava</string>

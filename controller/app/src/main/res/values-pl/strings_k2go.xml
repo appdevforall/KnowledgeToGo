@@ -81,8 +81,6 @@
     <string name="k2go_skipped">pominięto</string>
     <string name="k2go_books_body">Wkrótce — brak treści do wyboru.</string>
     <string name="k2go_maps_body">Podstawowa mapa świata offline. Dołączona do mapy (na razie stała).</string>
-    <string name="k2go_courses_hint">Ustawienia wstępne Kiwix istnieją; Kolibri nie da się jeszcze wstępnie ustawić — skonfiguruj na urządzeniu po instalacji.</string>
-    <string name="k2go_added_after">dodane po instalacji</string>
     <string name="k2go_step2a_hint">Dotknij źródła, aby je Dodać lub Pominąć. Pomiń wszystko = tylko system.</string>
     <string name="k2go_skip_for_now">Pomiń na razie ›</string>
     <string name="k2go_wiz_choose_language">Wybierz język</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Pełna kopia biblioteki drugiego telefonu.</string>
     <string name="k2go_clone_all_apps">Wszystkie aplikacje i ich treść</string>
     <string name="k2go_clone_already_wifi_skip">Już w tej samej sieci Wi-Fi? Możesz pominąć ten krok›</string>
-    <string name="k2go_clone_camera_note">Aparat nie działa? Połącz się z Wi-Fi drugiego telefonu w Ustawieniach, a potem Pomiń.</string>
     <string name="k2go_clone_camera_q">Aparat nie działa?</string>
     <string name="k2go_clone_cant_scan">Nie możesz zeskanować? Udostępnij aplikację inaczej  ›</string>
     <string name="k2go_cancel">Anuluj</string>
@@ -342,9 +339,6 @@
     <string name="k2go_fallback_pass">Hasło: %1$s</string>
     <string name="k2go_step2_download_fmt">Pobierz bibliotekę · %.1f GB</string>
     <string name="k2go_step2_review">Przejrzyj</string>
-    <string name="k2go_step2b_info_books">Książki — wkrótce (brak jeszcze menedżera treści · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapy — dołączone do Twojej edycji.</string>
-    <string name="k2go_step2b_info_courses">Kursy — skonfiguruj na urządzeniu po instalacji.</string>
     <string name="k2go_step2b_info_review">Przejrzyj bibliotekę, a potem pobierz.</string>
     <string name="k2go_setting_up_library">Konfigurowanie biblioteki…</string>
     <string name="k2go_reading">odczyt</string>

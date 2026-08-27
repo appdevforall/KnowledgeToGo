@@ -81,8 +81,6 @@
     <string name="k2go_skipped">ignoré</string>
     <string name="k2go_books_body">Bientôt disponible — aucun contenu à choisir pour l\'instant.</string>
     <string name="k2go_maps_body">Carte de base mondiale hors ligne. Incluse avec la carte (fixe pour l\'instant).</string>
-    <string name="k2go_courses_hint">Des préréglages Kiwix existent ; Kolibri ne peut pas encore être préréglé — à configurer sur l\'appareil après l\'installation.</string>
-    <string name="k2go_added_after">ajouté après l\'installation</string>
     <string name="k2go_step2a_hint">Appuyez sur une source pour l\'Ajouter ou l\'Ignorer. Tout ignorer = juste le système.</string>
     <string name="k2go_skip_for_now">Ignorer pour l\'instant ›</string>
     <string name="k2go_wiz_choose_language">Choisir la langue</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Une copie complète de la bibliothèque de l\'autre téléphone.</string>
     <string name="k2go_clone_all_apps">Toutes les applications et leur contenu</string>
     <string name="k2go_clone_already_wifi_skip">Déjà sur le même Wi-Fi ? Vous pouvez ignorer cette étape›</string>
-    <string name="k2go_clone_camera_note">La caméra ne fonctionne pas ? Connectez-vous au Wi-Fi de l\'autre téléphone dans les Paramètres, puis Ignorer.</string>
     <string name="k2go_clone_camera_q">La caméra ne fonctionne pas ?</string>
     <string name="k2go_clone_cant_scan">Impossible de scanner ? Partagez l\'appli autrement  ›</string>
     <string name="k2go_cancel">Annuler</string>
@@ -342,9 +339,6 @@
     <string name="k2go_fallback_pass">Mot de passe : %1$s</string>
     <string name="k2go_step2_download_fmt">Télécharger la bibliothèque · %.1f Go</string>
     <string name="k2go_step2_review">Vérifier</string>
-    <string name="k2go_step2b_info_books">Livres — bientôt disponible (pas encore de gestionnaire de contenu · 0 Go).</string>
-    <string name="k2go_step2b_info_maps">Cartes — incluses dans votre édition.</string>
-    <string name="k2go_step2b_info_courses">Cours — à configurer sur l\'appareil après l\'installation.</string>
     <string name="k2go_step2b_info_review">Vérifiez votre bibliothèque, puis téléchargez.</string>
     <string name="k2go_setting_up_library">Configuration de votre bibliothèque…</string>
     <string name="k2go_reading">lecture</string>

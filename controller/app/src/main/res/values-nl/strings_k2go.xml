@@ -81,8 +81,6 @@
     <string name="k2go_skipped">overgeslagen</string>
     <string name="k2go_books_body">Binnenkort — nog geen inhoud om te kiezen.</string>
     <string name="k2go_maps_body">Offline wereldbasiskaart. Inbegrepen bij de kaart (voorlopig vast).</string>
-    <string name="k2go_courses_hint">Kiwix-presets bestaan; Kolibri kan nog niet vooraf worden ingesteld — stel na installatie in op het apparaat.</string>
-    <string name="k2go_added_after">toegevoegd na installatie</string>
     <string name="k2go_step2a_hint">Tik op een bron om die toe te voegen of over te slaan. Alles overslaan = alleen het systeem.</string>
     <string name="k2go_skip_for_now">Voorlopig overslaan ›</string>
     <string name="k2go_wiz_choose_language">Kies taal</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Een volledige kopie van de bibliotheek van de andere telefoon.</string>
     <string name="k2go_clone_all_apps">Alle applicaties en hun inhoud</string>
     <string name="k2go_clone_already_wifi_skip">Al op dezelfde Wi-Fi? Je kunt deze stap overslaan›</string>
-    <string name="k2go_clone_camera_note">Camera werkt niet? Maak in Instellingen verbinding met de Wi-Fi van de andere telefoon en tik daarna op Overslaan.</string>
     <string name="k2go_clone_camera_q">Camera werkt niet?</string>
     <string name="k2go_clone_cant_scan">Kun je niet scannen? Deel de app op een andere manier  ›</string>
     <string name="k2go_cancel">Annuleren</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Wachtwoord: %1$s</string>
     <string name="k2go_step2_download_fmt">Bibliotheek downloaden · %.1f GB</string>
     <string name="k2go_step2_review">Controleren</string>
-    <string name="k2go_step2b_info_books">Boeken — binnenkort (nog geen inhoudbeheer · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Kaarten — inbegrepen bij je editie.</string>
-    <string name="k2go_step2b_info_courses">Cursussen — na installatie op het apparaat instellen.</string>
     <string name="k2go_step2b_info_review">Controleer je bibliotheek en download daarna.</string>
     <string name="k2go_setting_up_library">Je bibliotheek instellen…</string>
     <string name="k2go_reading">lezen</string>

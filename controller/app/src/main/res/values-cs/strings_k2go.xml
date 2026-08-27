@@ -81,8 +81,6 @@
     <string name="k2go_skipped">přeskočeno</string>
     <string name="k2go_books_body">Již brzy — zatím není z čeho vybírat.</string>
     <string name="k2go_maps_body">Offline základní mapa světa. Součástí mapy (zatím pevně dané).</string>
-    <string name="k2go_courses_hint">Předvolby Kiwix existují; Kolibri zatím nelze přednastavit — nastavte v zařízení po instalaci.</string>
-    <string name="k2go_added_after">přidáno po instalaci</string>
     <string name="k2go_step2a_hint">Klepnutím na zdroj jej přidáte nebo přeskočíte. Přeskočit vše = jen systém.</string>
     <string name="k2go_skip_for_now">Zatím přeskočit ›</string>
     <string name="k2go_wiz_choose_language">Vyberte jazyk</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Úplná kopie knihovny druhého telefonu.</string>
     <string name="k2go_clone_all_apps">Všechny aplikace a jejich obsah</string>
     <string name="k2go_clone_already_wifi_skip">Už jste na stejné Wi-Fi? Tento krok můžete přeskočit›</string>
-    <string name="k2go_clone_camera_note">Nefunguje fotoaparát? Připojte se k Wi-Fi druhého telefonu v Nastavení a poté klepněte na Přeskočit.</string>
     <string name="k2go_clone_camera_q">Nefunguje fotoaparát?</string>
     <string name="k2go_clone_cant_scan">Nelze skenovat? Sdílejte aplikaci jinak  ›</string>
     <string name="k2go_cancel">Zrušit</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Heslo: %1$s</string>
     <string name="k2go_step2_download_fmt">Stáhnout knihovnu · %.1f GB</string>
     <string name="k2go_step2_review">Zkontrolovat</string>
-    <string name="k2go_step2b_info_books">Knihy — již brzy (zatím bez správce obsahu · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapy — součástí vaší edice.</string>
-    <string name="k2go_step2b_info_courses">Kurzy — nastaví se v zařízení po instalaci.</string>
     <string name="k2go_step2b_info_review">Zkontrolujte knihovnu a poté stáhněte.</string>
     <string name="k2go_setting_up_library">Nastavování knihovny…</string>
     <string name="k2go_reading">čtení</string>

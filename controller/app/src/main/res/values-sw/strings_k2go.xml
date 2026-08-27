@@ -81,8 +81,6 @@
     <string name="k2go_skipped">imerukwa</string>
     <string name="k2go_books_body">Inakuja hivi karibuni — hakuna maudhui ya kuchagua bado.</string>
     <string name="k2go_maps_body">Ramani ya msingi ya dunia isiyo ya mtandaoni. Imejumuishwa na ramani (imewekwa kwa sasa).</string>
-    <string name="k2go_courses_hint">Kuna presets za Kiwix; Kolibri haiwezi kuwekwa bado — sanidi kwenye kifaa baada ya usakinishaji.</string>
-    <string name="k2go_added_after">imeongezwa baada ya usakinishaji</string>
     <string name="k2go_step2a_hint">Gusa chanzo ili Kuongeza au Kuruka. Ruka vyote = mfumo pekee.</string>
     <string name="k2go_skip_for_now">Ruka kwa sasa ›</string>
     <string name="k2go_wiz_choose_language">Chagua lugha</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Nakala kamili ya maktaba ya simu nyingine.</string>
     <string name="k2go_clone_all_apps">Programu zote na maudhui yake</string>
     <string name="k2go_clone_already_wifi_skip">Tayari kwenye Wi-Fi ileile? Unaweza kuruka hatua hii›</string>
-    <string name="k2go_clone_camera_note">Kamera haifanyi kazi? Unganisha kwenye Wi-Fi ya simu nyingine katika Mipangilio, kisha Ruka.</string>
     <string name="k2go_clone_camera_q">Kamera haifanyi kazi?</string>
     <string name="k2go_clone_cant_scan">Huwezi kuskani? Shiriki programu kwa njia nyingine  ›</string>
     <string name="k2go_cancel">Ghairi</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Nenosiri: %1$s</string>
     <string name="k2go_step2_download_fmt">Pakua maktaba · %.1f GB</string>
     <string name="k2go_step2_review">Kagua</string>
-    <string name="k2go_step2b_info_books">Vitabu — inakuja hivi karibuni (bado hakuna meneja wa maudhui · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Ramani — imejumuishwa katika toleo lako.</string>
-    <string name="k2go_step2b_info_courses">Kozi — husanidiwa kwenye kifaa baada ya usakinishaji.</string>
     <string name="k2go_step2b_info_review">Kagua maktaba yako, kisha upakue.</string>
     <string name="k2go_setting_up_library">Inasanidi maktaba yako…</string>
     <string name="k2go_reading">inasoma</string>

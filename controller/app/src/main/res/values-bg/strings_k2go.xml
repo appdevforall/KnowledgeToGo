@@ -81,8 +81,6 @@
     <string name="k2go_skipped">пропуснато</string>
     <string name="k2go_books_body">Очаквайте скоро — все още няма съдържание за избор.</string>
     <string name="k2go_maps_body">Офлайн базова карта на света. Включена с картата (засега фиксирана).</string>
-    <string name="k2go_courses_hint">Има готови настройки за Kiwix; Kolibri все още не може да се предварително настрои — настройте на устройството след инсталиране.</string>
-    <string name="k2go_added_after">добавено след инсталиране</string>
     <string name="k2go_step2a_hint">Докоснете източник, за да го добавите или пропуснете. Пропусни всички = само системата.</string>
     <string name="k2go_skip_for_now">Пропусни засега ›</string>
     <string name="k2go_wiz_choose_language">Изберете език</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Пълно копие на библиотеката на другия телефон.</string>
     <string name="k2go_clone_all_apps">Всички приложения и тяхното съдържание</string>
     <string name="k2go_clone_already_wifi_skip">Вече сте в същата Wi-Fi мрежа? Можете да пропуснете тази стъпка›</string>
-    <string name="k2go_clone_camera_note">Камерата не работи? Свържете се с Wi-Fi на другия телефон в Настройки, след което Пропуснете.</string>
     <string name="k2go_clone_camera_q">Камерата не работи?</string>
     <string name="k2go_clone_cant_scan">Не можете да сканирате? Споделете приложението по друг начин  ›</string>
     <string name="k2go_cancel">Отказ</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Парола: %1$s</string>
     <string name="k2go_step2_download_fmt">Изтегляне на библиотека · %.1f GB</string>
     <string name="k2go_step2_review">Преглед</string>
-    <string name="k2go_step2b_info_books">Книги — очаквайте скоро (все още няма мениджър на съдържание · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Карти — включени в изданието ви.</string>
-    <string name="k2go_step2b_info_courses">Курсове — настройват се на устройството след инсталиране.</string>
     <string name="k2go_step2b_info_review">Прегледайте библиотеката си, след което изтеглете.</string>
     <string name="k2go_setting_up_library">Настройване на библиотеката ви…</string>
     <string name="k2go_reading">четене</string>

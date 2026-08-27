@@ -81,8 +81,6 @@
     <string name="k2go_skipped">пропущено</string>
     <string name="k2go_books_body">Скоро — контента для выбора пока нет.</string>
     <string name="k2go_maps_body">Офлайн-базовая карта мира. Входит в комплект карты (пока фиксированная).</string>
-    <string name="k2go_courses_hint">Пресеты Kiwix есть; Kolibri пока нельзя настроить заранее — настройте на устройстве после установки.</string>
-    <string name="k2go_added_after">добавляется после установки</string>
     <string name="k2go_step2a_hint">Нажмите на источник, чтобы добавить или пропустить его. Пропустить всё = только система.</string>
     <string name="k2go_skip_for_now">Пропустить пока ›</string>
     <string name="k2go_wiz_choose_language">Выберите язык</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Полная копия библиотеки другого телефона.</string>
     <string name="k2go_clone_all_apps">Все приложения и их контент</string>
     <string name="k2go_clone_already_wifi_skip">Уже в той же сети Wi-Fi? Можно пропустить этот шаг›</string>
-    <string name="k2go_clone_camera_note">Камера не работает? Подключитесь к Wi-Fi другого телефона в настройках, затем нажмите «Пропустить».</string>
     <string name="k2go_clone_camera_q">Камера не работает?</string>
     <string name="k2go_clone_cant_scan">Не удаётся отсканировать? Поделитесь приложением иначе  ›</string>
     <string name="k2go_cancel">Отмена</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Пароль: %1$s</string>
     <string name="k2go_step2_download_fmt">Загрузить библиотеку · %.1f ГБ</string>
     <string name="k2go_step2_review">Обзор</string>
-    <string name="k2go_step2b_info_books">Книги — скоро (менеджера контента пока нет · 0 ГБ).</string>
-    <string name="k2go_step2b_info_maps">Карты — входят в вашу редакцию.</string>
-    <string name="k2go_step2b_info_courses">Курсы — настраиваются на устройстве после установки.</string>
     <string name="k2go_step2b_info_review">Проверьте библиотеку, затем загрузите.</string>
     <string name="k2go_setting_up_library">Настройка вашей библиотеки…</string>
     <string name="k2go_reading">чтение</string>

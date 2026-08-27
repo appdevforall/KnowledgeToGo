@@ -81,8 +81,6 @@
     <string name="k2go_skipped">এড়ানো হয়েছে</string>
     <string name="k2go_books_body">শীঘ্রই আসছে — এখনো বেছে নেওয়ার মতো কোনো কনটেন্ট নেই।</string>
     <string name="k2go_maps_body">অফলাইন বিশ্ব বেস মানচিত্র। মানচিত্রের সাথে অন্তর্ভুক্ত (আপাতত নির্ধারিত)।</string>
-    <string name="k2go_courses_hint">Kiwix প্রিসেট আছে; Kolibri এখনো প্রিসেট করা যায় না — ইনস্টলের পরে ডিভাইসে সেট আপ করুন।</string>
-    <string name="k2go_added_after">ইনস্টলের পরে যোগ করা হয়েছে</string>
     <string name="k2go_step2a_hint">যোগ বা এড়িয়ে যেতে কোনো উৎসে ট্যাপ করুন। সব এড়িয়ে যাওয়া = শুধু সিস্টেম।</string>
     <string name="k2go_skip_for_now">আপাতত এড়িয়ে যান ›</string>
     <string name="k2go_wiz_choose_language">ভাষা বেছে নিন</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">অন্য ফোনের লাইব্রেরির একটি সম্পূর্ণ কপি।</string>
     <string name="k2go_clone_all_apps">সমস্ত অ্যাপ্লিকেশন ও তাদের কনটেন্ট</string>
     <string name="k2go_clone_already_wifi_skip">ইতিমধ্যে একই Wi-Fi-তে? আপনি এই ধাপটি এড়িয়ে যেতে পারেন›</string>
-    <string name="k2go_clone_camera_note">ক্যামেরা কাজ করছে না? সেটিংসে অন্য ফোনের Wi-Fi-তে সংযোগ করুন, তারপর এড়িয়ে যান।</string>
     <string name="k2go_clone_camera_q">ক্যামেরা কাজ করছে না?</string>
     <string name="k2go_clone_cant_scan">স্ক্যান করতে পারছেন না? অন্যভাবে অ্যাপ শেয়ার করুন  ›</string>
     <string name="k2go_cancel">বাতিল</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">পাসওয়ার্ড: %1$s</string>
     <string name="k2go_step2_download_fmt">লাইব্রেরি ডাউনলোড · %.1f GB</string>
     <string name="k2go_step2_review">পর্যালোচনা</string>
-    <string name="k2go_step2b_info_books">বই — শীঘ্রই আসছে (এখনো কোনো কনটেন্ট ম্যানেজার নেই · 0 GB)।</string>
-    <string name="k2go_step2b_info_maps">মানচিত্র — আপনার সংস্করণে অন্তর্ভুক্ত।</string>
-    <string name="k2go_step2b_info_courses">কোর্স — ইনস্টলের পরে ডিভাইসে সেট আপ করা হয়।</string>
     <string name="k2go_step2b_info_review">আপনার লাইব্রেরি পর্যালোচনা করুন, তারপর ডাউনলোড করুন।</string>
     <string name="k2go_setting_up_library">আপনার লাইব্রেরি সেট আপ হচ্ছে…</string>
     <string name="k2go_reading">পড়া হচ্ছে</string>

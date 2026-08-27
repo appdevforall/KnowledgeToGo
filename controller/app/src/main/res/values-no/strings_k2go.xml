@@ -81,8 +81,6 @@
     <string name="k2go_skipped">hoppet over</string>
     <string name="k2go_books_body">Kommer snart — ingen innhold å velge ennå.</string>
     <string name="k2go_maps_body">Frakoblet grunnkart over verden. Inkludert i kartet (fast inntil videre).</string>
-    <string name="k2go_courses_hint">Kiwix-forhåndsvalg finnes; Kolibri kan ikke forhåndsinnstilles ennå — settes opp på enheten etter installasjon.</string>
-    <string name="k2go_added_after">lagt til etter installasjon</string>
     <string name="k2go_step2a_hint">Trykk på en kilde for å legge til eller hoppe over. Hopp over alt = bare systemet.</string>
     <string name="k2go_skip_for_now">Hopp over for nå ›</string>
     <string name="k2go_wiz_choose_language">Velg språk</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">En full kopi av den andre telefonens bibliotek.</string>
     <string name="k2go_clone_all_apps">Alle applikasjoner og innholdet deres</string>
     <string name="k2go_clone_already_wifi_skip">Allerede på samme Wi-Fi? Du kan hoppe over dette steget›</string>
-    <string name="k2go_clone_camera_note">Fungerer ikke kameraet? Koble til den andre telefonens Wi-Fi i Innstillinger, og hopp over.</string>
     <string name="k2go_clone_camera_q">Fungerer ikke kameraet?</string>
     <string name="k2go_clone_cant_scan">Kan du ikke skanne? Del appen på en annen måte  ›</string>
     <string name="k2go_cancel">Avbryt</string>
@@ -342,9 +339,6 @@
     <string name="k2go_fallback_pass">Passord: %1$s</string>
     <string name="k2go_step2_download_fmt">Last ned bibliotek · %.1f GB</string>
     <string name="k2go_step2_review">Se gjennom</string>
-    <string name="k2go_step2b_info_books">Bøker — kommer snart (ingen innholdsbehandler ennå · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Kart — inkludert i utgaven din.</string>
-    <string name="k2go_step2b_info_courses">Kurs — settes opp på enheten etter installasjon.</string>
     <string name="k2go_step2b_info_review">Se gjennom biblioteket ditt, og last ned.</string>
     <string name="k2go_setting_up_library">Setter opp biblioteket ditt…</string>
     <string name="k2go_reading">leser</string>

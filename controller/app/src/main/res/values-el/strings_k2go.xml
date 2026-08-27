@@ -82,8 +82,6 @@
     <string name="k2go_skipped">παραλείφθηκε</string>
     <string name="k2go_books_body">Έρχεται σύντομα — δεν υπάρχει ακόμη περιεχόμενο για επιλογή.</string>
     <string name="k2go_maps_body">Βασικός παγκόσμιος χάρτης εκτός σύνδεσης. Περιλαμβάνεται με τον χάρτη (σταθερός προς το παρόν).</string>
-    <string name="k2go_courses_hint">Υπάρχουν προεπιλογές Kiwix· το Kolibri δεν μπορεί ακόμη να προρυθμιστεί — ρυθμίστε το στη συσκευή μετά την εγκατάσταση.</string>
-    <string name="k2go_added_after">προστίθεται μετά την εγκατάσταση</string>
     <string name="k2go_step2a_hint">Πατήστε μια πηγή για Προσθήκη ή Παράλειψη. Παράλειψη όλων = μόνο το σύστημα.</string>
     <string name="k2go_skip_for_now">Παράλειψη προς το παρόν ›</string>
     <string name="k2go_wiz_choose_language">Επιλέξτε γλώσσα</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Ένα πλήρες αντίγραφο της βιβλιοθήκης του άλλου τηλεφώνου.</string>
     <string name="k2go_clone_all_apps">Όλες οι εφαρμογές και το περιεχόμενό τους</string>
     <string name="k2go_clone_already_wifi_skip">Ήδη στο ίδιο Wi-Fi; Μπορείτε να παραλείψετε αυτό το βήμα›</string>
-    <string name="k2go_clone_camera_note">Δεν λειτουργεί η κάμερα; Συνδεθείτε στο Wi-Fi του άλλου τηλεφώνου στις Ρυθμίσεις και μετά Παράλειψη.</string>
     <string name="k2go_clone_camera_q">Δεν λειτουργεί η κάμερα;</string>
     <string name="k2go_clone_cant_scan">Δεν μπορείτε να σαρώσετε; Μοιραστείτε την εφαρμογή με άλλο τρόπο  ›</string>
     <string name="k2go_cancel">Ακύρωση</string>
@@ -341,9 +338,6 @@
     <string name="k2go_fallback_pass">Κωδικός: %1$s</string>
     <string name="k2go_step2_download_fmt">Λήψη βιβλιοθήκης · %.1f GB</string>
     <string name="k2go_step2_review">Επισκόπηση</string>
-    <string name="k2go_step2b_info_books">Βιβλία — έρχεται σύντομα (δεν υπάρχει ακόμη διαχείριση περιεχομένου · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Χάρτες — περιλαμβάνονται στην έκδοσή σας.</string>
-    <string name="k2go_step2b_info_courses">Μαθήματα — ρυθμίζονται στη συσκευή μετά την εγκατάσταση.</string>
     <string name="k2go_step2b_info_review">Ελέγξτε τη βιβλιοθήκη σας και μετά κατεβάστε.</string>
     <string name="k2go_setting_up_library">Ρύθμιση της βιβλιοθήκης σας…</string>
     <string name="k2go_reading">ανάγνωση</string>

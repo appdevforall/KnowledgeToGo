@@ -81,8 +81,6 @@
     <string name="k2go_skipped">omitido</string>
     <string name="k2go_books_body">Próximamente — aún no hay contenido para elegir.</string>
     <string name="k2go_maps_body">Mapa base del mundo sin conexión. Incluido con el mapa (fijo por ahora).</string>
-    <string name="k2go_courses_hint">Existen preajustes de Kiwix; Kolibri aún no se puede preajustar — configúralo en el dispositivo después de instalar.</string>
-    <string name="k2go_added_after">añadido tras la instalación</string>
     <string name="k2go_step2a_hint">Toca una fuente para añadirla u omitirla. Omitir todo = solo el sistema.</string>
     <string name="k2go_skip_for_now">Omitir por ahora ›</string>
     <string name="k2go_wiz_choose_language">Elegir idioma</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Una copia completa de la biblioteca del otro teléfono.</string>
     <string name="k2go_clone_all_apps">Todas las aplicaciones y su contenido</string>
     <string name="k2go_clone_already_wifi_skip">¿Ya en la misma Wi-Fi? Puedes omitir este paso›</string>
-    <string name="k2go_clone_camera_note">¿La cámara no funciona? Conéctate a la Wi-Fi del otro teléfono en Ajustes y luego Omitir.</string>
     <string name="k2go_clone_camera_q">¿La cámara no funciona?</string>
     <string name="k2go_clone_cant_scan">¿No puedes escanear? Comparte la app de otra forma  ›</string>
     <string name="k2go_cancel">Cancelar</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Contraseña: %1$s</string>
     <string name="k2go_step2_download_fmt">Descargar biblioteca · %.1f GB</string>
     <string name="k2go_step2_review">Revisar</string>
-    <string name="k2go_step2b_info_books">Libros — próximamente (aún sin gestor de contenido · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapas — incluidos con tu edición.</string>
-    <string name="k2go_step2b_info_courses">Cursos — se configuran en el dispositivo después de instalar.</string>
     <string name="k2go_step2b_info_review">Revisa tu biblioteca y luego descarga.</string>
     <string name="k2go_setting_up_library">Configurando tu biblioteca…</string>
     <string name="k2go_reading">leyendo</string>

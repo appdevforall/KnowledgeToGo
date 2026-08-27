@@ -81,8 +81,6 @@
     <string name="k2go_skipped">تم التخطّي</string>
     <string name="k2go_books_body">قريبًا — لا يوجد محتوى للاختيار بعد.</string>
     <string name="k2go_maps_body">خريطة أساس للعالم دون اتصال. مضمّنة مع الخريطة (ثابتة حاليًا).</string>
-    <string name="k2go_courses_hint">توجد إعدادات مسبقة لـKiwix؛ أما Kolibri فلا يمكن ضبطه مسبقًا بعد — يُعدّ على الجهاز بعد التثبيت.</string>
-    <string name="k2go_added_after">تُضاف بعد التثبيت</string>
     <string name="k2go_step2a_hint">انقر على مصدر لإضافته أو تخطّيه. تخطّي الكل = النظام فقط.</string>
     <string name="k2go_skip_for_now">تخطّي الآن ›</string>
     <string name="k2go_wiz_choose_language">اختر اللغة</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">نسخة كاملة من مكتبة الهاتف الآخر.</string>
     <string name="k2go_clone_all_apps">جميع التطبيقات ومحتواها</string>
     <string name="k2go_clone_already_wifi_skip">على شبكة Wi-Fi نفسها بالفعل؟ يمكنك تخطّي هذه الخطوة›</string>
-    <string name="k2go_clone_camera_note">الكاميرا لا تعمل؟ اتصل بشبكة Wi-Fi الخاصة بالهاتف الآخر من الإعدادات، ثم تخطّى.</string>
     <string name="k2go_clone_camera_q">الكاميرا لا تعمل؟</string>
     <string name="k2go_clone_cant_scan">لا يمكنك المسح؟ شارك التطبيق بطريقة أخرى  ›</string>
     <string name="k2go_cancel">إلغاء</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">كلمة المرور: %1$s</string>
     <string name="k2go_step2_download_fmt">تنزيل المكتبة · %.1f GB</string>
     <string name="k2go_step2_review">مراجعة</string>
-    <string name="k2go_step2b_info_books">الكتب — قريبًا (لا يوجد مدير محتوى بعد · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">الخرائط — مضمّنة في إصدارك.</string>
-    <string name="k2go_step2b_info_courses">الدورات — تُعدّ على الجهاز بعد التثبيت.</string>
     <string name="k2go_step2b_info_review">راجع مكتبتك، ثم نزّل.</string>
     <string name="k2go_setting_up_library">جارٍ إعداد مكتبتك…</string>
     <string name="k2go_reading">القراءة</string>

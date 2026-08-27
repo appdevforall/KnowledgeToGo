@@ -81,8 +81,6 @@
     <string name="k2go_skipped">atlandı</string>
     <string name="k2go_books_body">Yakında — henüz seçilecek içerik yok.</string>
     <string name="k2go_maps_body">Çevrimdışı dünya temel haritası. Haritayla birlikte gelir (şimdilik sabit).</string>
-    <string name="k2go_courses_hint">Kiwix ön ayarları mevcut; Kolibri henüz ön ayarlanamıyor — kurulumdan sonra cihazda ayarlayın.</string>
-    <string name="k2go_added_after">kurulumdan sonra eklenir</string>
     <string name="k2go_step2a_hint">Eklemek veya atlamak için bir kaynağa dokunun. Tümünü atla = yalnızca sistem.</string>
     <string name="k2go_skip_for_now">Şimdilik atla ›</string>
     <string name="k2go_wiz_choose_language">Dil seçin</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Diğer telefonun kitaplığının tam bir kopyası.</string>
     <string name="k2go_clone_all_apps">Tüm uygulamalar ve içerikleri</string>
     <string name="k2go_clone_already_wifi_skip">Zaten aynı Wi-Fi\'de misiniz? Bu adımı atlayabilirsiniz›</string>
-    <string name="k2go_clone_camera_note">Kamera çalışmıyor mu? Ayarlar\'dan diğer telefonun Wi-Fi\'sine bağlanın, sonra Atla.</string>
     <string name="k2go_clone_camera_q">Kamera çalışmıyor mu?</string>
     <string name="k2go_clone_cant_scan">Tarayamıyor musunuz? Uygulamayı başka bir yolla paylaşın  ›</string>
     <string name="k2go_cancel">İptal</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Parola: %1$s</string>
     <string name="k2go_step2_download_fmt">Kitaplığı indir · %.1f GB</string>
     <string name="k2go_step2_review">Gözden geçir</string>
-    <string name="k2go_step2b_info_books">Kitaplar — yakında (henüz içerik yöneticisi yok · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Haritalar — sürümünüzle birlikte gelir.</string>
-    <string name="k2go_step2b_info_courses">Kurslar — kurulumdan sonra cihazda ayarlanır.</string>
     <string name="k2go_step2b_info_review">Kitaplığınızı gözden geçirin, sonra indirin.</string>
     <string name="k2go_setting_up_library">Kitaplığınız ayarlanıyor…</string>
     <string name="k2go_reading">okunuyor</string>

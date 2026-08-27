@@ -81,8 +81,6 @@
     <string name="k2go_skipped">ignorado</string>
     <string name="k2go_books_body">Em breve — ainda não há conteúdo para escolher.</string>
     <string name="k2go_maps_body">Mapa base mundial offline. Incluído com o mapa (fixo por agora).</string>
-    <string name="k2go_courses_hint">Existem predefinições Kiwix; o Kolibri ainda não pode ser predefinido — configure no dispositivo após a instalação.</string>
-    <string name="k2go_added_after">adicionado após a instalação</string>
     <string name="k2go_step2a_hint">Toque numa fonte para a Adicionar ou Ignorar. Ignorar tudo = apenas o sistema.</string>
     <string name="k2go_skip_for_now">Ignorar por agora ›</string>
     <string name="k2go_wiz_choose_language">Escolher idioma</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Uma cópia completa da biblioteca do outro telemóvel.</string>
     <string name="k2go_clone_all_apps">Todas as aplicações e o seu conteúdo</string>
     <string name="k2go_clone_already_wifi_skip">Já está na mesma Wi-Fi? Pode ignorar este passo›</string>
-    <string name="k2go_clone_camera_note">A câmara não funciona? Ligue-se à Wi-Fi do outro telemóvel nas Definições e depois Ignore.</string>
     <string name="k2go_clone_camera_q">A câmara não funciona?</string>
     <string name="k2go_clone_cant_scan">Não consegue digitalizar? Partilhe a app de outra forma  ›</string>
     <string name="k2go_cancel">Cancelar</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Palavra-passe: %1$s</string>
     <string name="k2go_step2_download_fmt">Transferir biblioteca · %.1f GB</string>
     <string name="k2go_step2_review">Rever</string>
-    <string name="k2go_step2b_info_books">Livros — em breve (ainda sem gestor de conteúdo · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapas — incluídos na sua edição.</string>
-    <string name="k2go_step2b_info_courses">Cursos — configurados no dispositivo após a instalação.</string>
     <string name="k2go_step2b_info_review">Reveja a sua biblioteca e depois transfira.</string>
     <string name="k2go_setting_up_library">A configurar a sua biblioteca…</string>
     <string name="k2go_reading">a ler</string>

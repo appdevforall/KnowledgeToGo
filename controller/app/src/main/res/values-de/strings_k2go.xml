@@ -82,8 +82,6 @@
     <string name="k2go_skipped">übersprungen</string>
     <string name="k2go_books_body">Demnächst — noch keine Inhalte zur Auswahl.</string>
     <string name="k2go_maps_body">Offline-Weltbasiskarte. In der Karte enthalten (vorerst fest).</string>
-    <string name="k2go_courses_hint">Kiwix-Voreinstellungen gibt es; Kolibri lässt sich noch nicht voreinstellen — nach der Installation auf dem Gerät einrichten.</string>
-    <string name="k2go_added_after">nach der Installation hinzugefügt</string>
     <string name="k2go_step2a_hint">Tippe auf eine Quelle, um sie hinzuzufügen oder zu überspringen. Alle überspringen = nur das System.</string>
     <string name="k2go_skip_for_now">Vorerst überspringen ›</string>
     <string name="k2go_wiz_choose_language">Sprache wählen</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Eine vollständige Kopie der Bibliothek des anderen Telefons.</string>
     <string name="k2go_clone_all_apps">Alle Anwendungen und ihre Inhalte</string>
     <string name="k2go_clone_already_wifi_skip">Schon im selben Wi-Fi? Du kannst diesen Schritt überspringen›</string>
-    <string name="k2go_clone_camera_note">Kamera funktioniert nicht? Verbinde dich in den Einstellungen mit dem Wi-Fi des anderen Telefons, dann Überspringen.</string>
     <string name="k2go_clone_camera_q">Kamera funktioniert nicht?</string>
     <string name="k2go_clone_cant_scan">Kannst nicht scannen? Teile die App anders  ›</string>
     <string name="k2go_cancel">Abbrechen</string>
@@ -341,9 +338,6 @@
     <string name="k2go_fallback_pass">Passwort: %1$s</string>
     <string name="k2go_step2_download_fmt">Bibliothek herunterladen · %.1f GB</string>
     <string name="k2go_step2_review">Überprüfen</string>
-    <string name="k2go_step2b_info_books">Bücher — demnächst (noch kein Content-Manager · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Karten — in deiner Edition enthalten.</string>
-    <string name="k2go_step2b_info_courses">Kurse — nach der Installation auf dem Gerät einrichten.</string>
     <string name="k2go_step2b_info_review">Überprüfe deine Bibliothek, dann herunterladen.</string>
     <string name="k2go_setting_up_library">Deine Bibliothek wird eingerichtet…</string>
     <string name="k2go_reading">liest</string>

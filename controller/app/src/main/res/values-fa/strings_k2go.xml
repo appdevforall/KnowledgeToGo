@@ -81,8 +81,6 @@
     <string name="k2go_skipped">رد شد</string>
     <string name="k2go_books_body">به‌زودی — هنوز محتوایی برای انتخاب نیست.</string>
     <string name="k2go_maps_body">نقشه پایه جهانی آفلاین. همراه نقشه است (فعلاً ثابت).</string>
-    <string name="k2go_courses_hint">پیش‌تنظیم‌های Kiwix موجود است؛ Kolibri هنوز قابل پیش‌تنظیم نیست — پس از نصب روی دستگاه راه‌اندازی کنید.</string>
-    <string name="k2go_added_after">پس از نصب اضافه می‌شود</string>
     <string name="k2go_step2a_hint">برای افزودن یا رد کردن هر منبع روی آن ضربه بزنید. رد کردن همه = فقط سیستم.</string>
     <string name="k2go_skip_for_now">فعلاً رد کن ›</string>
     <string name="k2go_wiz_choose_language">انتخاب زبان</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">یک کپی کامل از کتابخانه گوشی دیگر.</string>
     <string name="k2go_clone_all_apps">همه برنامه‌ها و محتوای آن‌ها</string>
     <string name="k2go_clone_already_wifi_skip">از قبل روی همان Wi-Fi هستید؟ می‌توانید این گام را رد کنید›</string>
-    <string name="k2go_clone_camera_note">دوربین کار نمی‌کند؟ در تنظیمات به Wi-Fi گوشی دیگر متصل شوید، سپس رد کنید.</string>
     <string name="k2go_clone_camera_q">دوربین کار نمی‌کند؟</string>
     <string name="k2go_clone_cant_scan">نمی‌توانید اسکن کنید؟ برنامه را به روش دیگری به اشتراک بگذارید  ›</string>
     <string name="k2go_cancel">لغو</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">رمز عبور: %1$s</string>
     <string name="k2go_step2_download_fmt">دانلود کتابخانه · %.1f گیگابایت</string>
     <string name="k2go_step2_review">بازبینی</string>
-    <string name="k2go_step2b_info_books">کتاب‌ها — به‌زودی (هنوز مدیر محتوا وجود ندارد · ۰ گیگابایت).</string>
-    <string name="k2go_step2b_info_maps">نقشه‌ها — همراه نسخه شما.</string>
-    <string name="k2go_step2b_info_courses">دوره‌ها — پس از نصب روی دستگاه راه‌اندازی می‌شود.</string>
     <string name="k2go_step2b_info_review">کتابخانه خود را بازبینی کنید، سپس دانلود کنید.</string>
     <string name="k2go_setting_up_library">در حال راه‌اندازی کتابخانه شما…</string>
     <string name="k2go_reading">در حال خواندن</string>

@@ -81,8 +81,6 @@
     <string name="k2go_skipped">прескочено</string>
     <string name="k2go_books_body">Ускоро — још нема садржаја за избор.</string>
     <string name="k2go_maps_body">Офлајн основна мапа света. Укључена у мапу (за сада фиксно).</string>
-    <string name="k2go_courses_hint">Kiwix предефинисани скупови постоје; Kolibri се још не може предефинисати — подесите на уређају након инсталације.</string>
-    <string name="k2go_added_after">додато након инсталације</string>
     <string name="k2go_step2a_hint">Додирните извор да га додате или прескочите. Прескочи све = само систем.</string>
     <string name="k2go_skip_for_now">Прескочи за сада ›</string>
     <string name="k2go_wiz_choose_language">Изаберите језик</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Потпуна копија библиотеке другог телефона.</string>
     <string name="k2go_clone_all_apps">Све апликације и њихов садржај</string>
     <string name="k2go_clone_already_wifi_skip">Већ сте на истом Wi-Fi? Можете прескочити овај корак›</string>
-    <string name="k2go_clone_camera_note">Камера не ради? Повежите се на Wi-Fi другог телефона у Подешавањима, па прескочите.</string>
     <string name="k2go_clone_camera_q">Камера не ради?</string>
     <string name="k2go_clone_cant_scan">Не можете да скенирате? Поделите апликацију на други начин  ›</string>
     <string name="k2go_cancel">Откажи</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Лозинка: %1$s</string>
     <string name="k2go_step2_download_fmt">Преузми библиотеку · %.1f GB</string>
     <string name="k2go_step2_review">Преглед</string>
-    <string name="k2go_step2b_info_books">Књиге — ускоро (још нема управљача садржајем · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Мапе — укључене у вашем издању.</string>
-    <string name="k2go_step2b_info_courses">Курсеви — подешавају се на уређају након инсталације.</string>
     <string name="k2go_step2b_info_review">Прегледајте библиотеку, па преузмите.</string>
     <string name="k2go_setting_up_library">Подешавање ваше библиотеке…</string>
     <string name="k2go_reading">читање</string>

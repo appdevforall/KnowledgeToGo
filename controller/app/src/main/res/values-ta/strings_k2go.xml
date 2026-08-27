@@ -81,8 +81,6 @@
     <string name="k2go_skipped">தவிர்க்கப்பட்டது</string>
     <string name="k2go_books_body">விரைவில் வருகிறது — தேர்வுசெய்ய இன்னும் உள்ளடக்கம் இல்லை.</string>
     <string name="k2go_maps_body">ஆஃப்லைன் உலக அடிப்படை வரைபடம். வரைபடத்துடன் அடங்கியுள்ளது (தற்போதைக்கு நிலையானது).</string>
-    <string name="k2go_courses_hint">Kiwix முன்னமைவுகள் உள்ளன; Kolibri-ஐ இன்னும் முன்னமைக்க முடியாது — நிறுவலுக்குப் பிறகு சாதனத்தில் அமைக்கவும்.</string>
-    <string name="k2go_added_after">நிறுவலுக்குப் பிறகு சேர்க்கப்பட்டது</string>
     <string name="k2go_step2a_hint">சேர்க்க அல்லது தவிர்க்க ஒரு மூலத்தைத் தட்டவும். அனைத்தையும் தவிர் = அமைப்பு மட்டும்.</string>
     <string name="k2go_skip_for_now">தற்போதைக்குத் தவிர் ›</string>
     <string name="k2go_wiz_choose_language">மொழியைத் தேர்வுசெய்க</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">மற்ற தொலைபேசியின் நூலகத்தின் முழு நகல்.</string>
     <string name="k2go_clone_all_apps">அனைத்து செயலிகளும் அவற்றின் உள்ளடக்கமும்</string>
     <string name="k2go_clone_already_wifi_skip">ஏற்கனவே அதே Wi-Fi-இல் உள்ளீர்களா? இந்தப் படியைத் தவிர்க்கலாம்›</string>
-    <string name="k2go_clone_camera_note">கேமரா வேலை செய்யவில்லையா? அமைப்புகளில் மற்ற தொலைபேசியின் Wi-Fi-இல் இணைந்து, பிறகு தவிர்க்கவும்.</string>
     <string name="k2go_clone_camera_q">கேமரா வேலை செய்யவில்லையா?</string>
     <string name="k2go_clone_cant_scan">ஸ்கேன் செய்ய முடியவில்லையா? செயலியை வேறு வழியில் பகிரவும்  ›</string>
     <string name="k2go_cancel">ரத்து</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">கடவுச்சொல்: %1$s</string>
     <string name="k2go_step2_download_fmt">நூலகத்தைப் பதிவிறக்கு · %.1f GB</string>
     <string name="k2go_step2_review">மறுபார்வை</string>
-    <string name="k2go_step2b_info_books">புத்தகங்கள் — விரைவில் வருகிறது (இன்னும் உள்ளடக்க மேலாளர் இல்லை · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">வரைபடங்கள் — உங்கள் பதிப்பில் அடங்கியுள்ளன.</string>
-    <string name="k2go_step2b_info_courses">பாடநெறிகள் — நிறுவலுக்குப் பிறகு சாதனத்தில் அமைக்கப்படும்.</string>
     <string name="k2go_step2b_info_review">உங்கள் நூலகத்தை மறுபார்வையிட்டு, பிறகு பதிவிறக்கவும்.</string>
     <string name="k2go_setting_up_library">உங்கள் நூலகம் அமைக்கப்படுகிறது…</string>
     <string name="k2go_reading">படிக்கிறது</string>

@@ -81,8 +81,6 @@
     <string name="k2go_skipped">praleista</string>
     <string name="k2go_books_body">Netrukus — dar nėra turinio, kurį galima pasirinkti.</string>
     <string name="k2go_maps_body">Neprisijungus veikiantis pasaulio bazinis žemėlapis. Įtrauktas į žemėlapį (kol kas nekeičiamas).</string>
-    <string name="k2go_courses_hint">Kiwix išankstiniai nustatymai yra; Kolibri kol kas negalima iš anksto nustatyti — nustatykite įrenginyje po įdiegimo.</string>
-    <string name="k2go_added_after">pridedama po įdiegimo</string>
     <string name="k2go_step2a_hint">Bakstelėkite šaltinį, kad jį pridėtumėte ar praleistumėte. Praleisti viską = tik sistema.</string>
     <string name="k2go_skip_for_now">Kol kas praleisti ›</string>
     <string name="k2go_wiz_choose_language">Pasirinkite kalbą</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Visa kito telefono bibliotekos kopija.</string>
     <string name="k2go_clone_all_apps">Visos programos ir jų turinys</string>
     <string name="k2go_clone_already_wifi_skip">Jau tame pačiame Wi-Fi? Šį žingsnį galite praleisti›</string>
-    <string name="k2go_clone_camera_note">Kamera neveikia? Nustatymuose prisijunkite prie kito telefono Wi-Fi ir bakstelėkite Praleisti.</string>
     <string name="k2go_clone_camera_q">Kamera neveikia?</string>
     <string name="k2go_clone_cant_scan">Nepavyksta nuskaityti? Bendrinkite programą kitu būdu  ›</string>
     <string name="k2go_cancel">Atšaukti</string>
@@ -342,9 +339,6 @@
     <string name="k2go_fallback_pass">Slaptažodis: %1$s</string>
     <string name="k2go_step2_download_fmt">Atsisiųsti biblioteką · %.1f GB</string>
     <string name="k2go_step2_review">Peržiūra</string>
-    <string name="k2go_step2b_info_books">Knygos — netrukus (dar nėra turinio tvarkyklės · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Žemėlapiai — įtraukti į jūsų leidimą.</string>
-    <string name="k2go_step2b_info_courses">Kursai — nustatomi įrenginyje po įdiegimo.</string>
     <string name="k2go_step2b_info_review">Peržiūrėkite biblioteką ir atsisiųskite.</string>
     <string name="k2go_setting_up_library">Ruošiama biblioteka…</string>
     <string name="k2go_reading">skaitoma</string>

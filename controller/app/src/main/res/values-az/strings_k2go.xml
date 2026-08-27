@@ -81,8 +81,6 @@
     <string name="k2go_skipped">ötürüldü</string>
     <string name="k2go_books_body">Tezliklə — hələ seçiləcək məzmun yoxdur.</string>
     <string name="k2go_maps_body">Oflayn dünya baza xəritəsi. Xəritəyə daxildir (hələlik sabitdir).</string>
-    <string name="k2go_courses_hint">Kiwix hazır ayarları var; Kolibri hələ öncədən qurula bilmir — quraşdırmadan sonra cihazda qurun.</string>
-    <string name="k2go_added_after">quraşdırmadan sonra əlavə olunur</string>
     <string name="k2go_step2a_hint">Əlavə etmək və ya ötürmək üçün mənbəyə toxunun. Hamısını ötür = yalnız sistem.</string>
     <string name="k2go_skip_for_now">Hələlik ötür ›</string>
     <string name="k2go_wiz_choose_language">Dil seçin</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Digər telefonun kitabxanasının tam surəti.</string>
     <string name="k2go_clone_all_apps">Bütün tətbiqlər və onların məzmunu</string>
     <string name="k2go_clone_already_wifi_skip">Artıq eyni Wi-Fi-dəsiniz? Bu addımı ötürə bilərsiniz›</string>
-    <string name="k2go_clone_camera_note">Kamera işləmir? Ayarlarda digər telefonun Wi-Fi-ına qoşulun, sonra Ötürün.</string>
     <string name="k2go_clone_camera_q">Kamera işləmir?</string>
     <string name="k2go_clone_cant_scan">Skan edə bilmirsiniz? Tətbiqi başqa yolla paylaşın  ›</string>
     <string name="k2go_cancel">Ləğv et</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Parol: %1$s</string>
     <string name="k2go_step2_download_fmt">Kitabxananı yüklə · %.1f GB</string>
     <string name="k2go_step2_review">Nəzərdən keçir</string>
-    <string name="k2go_step2b_info_books">Kitablar — tezliklə (hələ məzmun meneceri yoxdur · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Xəritələr — nəşrinizə daxildir.</string>
-    <string name="k2go_step2b_info_courses">Kurslar — quraşdırmadan sonra cihazda qurulur.</string>
     <string name="k2go_step2b_info_review">Kitabxananızı nəzərdən keçirin, sonra yükləyin.</string>
     <string name="k2go_setting_up_library">Kitabxananız qurulur…</string>
     <string name="k2go_reading">oxunur</string>

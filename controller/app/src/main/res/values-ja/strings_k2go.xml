@@ -81,8 +81,6 @@
     <string name="k2go_skipped">スキップ済み</string>
     <string name="k2go_books_body">近日公開 — 選択できるコンテンツはまだありません。</string>
     <string name="k2go_maps_body">オフラインの世界ベース地図。地図に含まれています（現時点では固定）。</string>
-    <string name="k2go_courses_hint">Kiwix のプリセットはあります。Kolibri はまだプリセットできません — インストール後にデバイス上で設定してください。</string>
-    <string name="k2go_added_after">インストール後に追加</string>
     <string name="k2go_step2a_hint">ソースをタップして追加またはスキップします。すべてスキップ = システムのみ。</string>
     <string name="k2go_skip_for_now">今はスキップ ›</string>
     <string name="k2go_wiz_choose_language">言語を選択</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">相手のスマホのライブラリの完全なコピー。</string>
     <string name="k2go_clone_all_apps">すべてのアプリとそのコンテンツ</string>
     <string name="k2go_clone_already_wifi_skip">すでに同じ Wi-Fi ですか？ このステップをスキップできます›</string>
-    <string name="k2go_clone_camera_note">カメラが動作しませんか？ 設定で相手のスマホの Wi-Fi に接続してから、スキップしてください。</string>
     <string name="k2go_clone_camera_q">カメラが動作しませんか？</string>
     <string name="k2go_clone_cant_scan">スキャンできませんか？ 別の方法でアプリを共有  ›</string>
     <string name="k2go_cancel">キャンセル</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">パスワード：%1$s</string>
     <string name="k2go_step2_download_fmt">ライブラリをダウンロード · %.1f GB</string>
     <string name="k2go_step2_review">確認</string>
-    <string name="k2go_step2b_info_books">書籍 — 近日公開（コンテンツマネージャーはまだありません · 0 GB）。</string>
-    <string name="k2go_step2b_info_maps">地図 — お使いのエディションに含まれています。</string>
-    <string name="k2go_step2b_info_courses">コース — インストール後にデバイス上で設定します。</string>
     <string name="k2go_step2b_info_review">ライブラリを確認してからダウンロードしてください。</string>
     <string name="k2go_setting_up_library">ライブラリをセットアップ中…</string>
     <string name="k2go_reading">読み込み中</string>

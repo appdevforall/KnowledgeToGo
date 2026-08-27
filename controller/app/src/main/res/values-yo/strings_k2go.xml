@@ -81,8 +81,6 @@
     <string name="k2go_skipped">a fo</string>
     <string name="k2go_books_body">Ó ń bọ̀ láìpẹ́ — kò sí àkóónú láti yan síbẹ̀.</string>
     <string name="k2go_maps_body">Máàpù ipìlẹ̀ àgbáyé aláìsíntánẹ́ẹ̀tì. Ó wà pẹ̀lú máàpù (a ti dá a sílẹ̀ fún ìsinsìnyí).</string>
-    <string name="k2go_courses_hint">Àwọn ìtòlẹ́sẹẹsẹ Kiwix wà; Kolibri kò tíì lè ṣètò — ṣètò lórí ẹ̀rọ lẹ́yìn fífi sórí ẹ̀rọ.</string>
-    <string name="k2go_added_after">a fi kún lẹ́yìn fífi sórí ẹ̀rọ</string>
     <string name="k2go_step2a_hint">Tẹ orísun kan láti Fi kún tàbí Fo. Fo gbogbo rẹ̀ = ẹ̀rọ nìkan.</string>
     <string name="k2go_skip_for_now">Fo fún ìsinsìnyí ›</string>
     <string name="k2go_wiz_choose_language">Yan èdè</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Ẹ̀dà pípé ti ilé-ìkàwé fóònù mìíràn.</string>
     <string name="k2go_clone_all_apps">Gbogbo àwọn áàpù àti àkóónú wọn</string>
     <string name="k2go_clone_already_wifi_skip">O ti wà lórí Wi-Fi kan náà? O lè fo ìgbésẹ̀ yìí›</string>
-    <string name="k2go_clone_camera_note">Kámẹ́rà kò ṣiṣẹ́? So pọ̀ mọ́ Wi-Fi fóònù mìíràn nínú Ìtòlẹ́sẹẹsẹ, kó o sì Fo.</string>
     <string name="k2go_clone_camera_q">Kámẹ́rà kò ṣiṣẹ́?</string>
     <string name="k2go_clone_cant_scan">O kò lè yàwòrán? Pín áàpù ní ọ̀nà mìíràn  ›</string>
     <string name="k2go_cancel">Fagilé</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Ọ̀rọ̀ àṣínà: %1$s</string>
     <string name="k2go_step2_download_fmt">Gba ilé-ìkàwé sílẹ̀ · %.1f GB</string>
     <string name="k2go_step2_review">Àyẹ̀wò</string>
-    <string name="k2go_step2b_info_books">Ìwé — ó ń bọ̀ láìpẹ́ (kò sí alábòójútó àkóónú síbẹ̀ · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Máàpù — ó wà nínú ẹ̀dà rẹ.</string>
-    <string name="k2go_step2b_info_courses">Àwọn Ẹ̀kọ́ — a óò ṣètò lórí ẹ̀rọ lẹ́yìn fífi sórí ẹ̀rọ.</string>
     <string name="k2go_step2b_info_review">Ṣàyẹ̀wò ilé-ìkàwé rẹ, kó o sì gbà á sílẹ̀.</string>
     <string name="k2go_setting_up_library">Ń ṣètò ilé-ìkàwé rẹ…</string>
     <string name="k2go_reading">ń kàwé</string>

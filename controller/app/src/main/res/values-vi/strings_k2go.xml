@@ -81,8 +81,6 @@
     <string name="k2go_skipped">đã bỏ qua</string>
     <string name="k2go_books_body">Sắp ra mắt — chưa có nội dung để chọn.</string>
     <string name="k2go_maps_body">Bản đồ nền thế giới ngoại tuyến. Đi kèm với bản đồ (cố định hiện tại).</string>
-    <string name="k2go_courses_hint">Có sẵn cấu hình Kiwix; Kolibri chưa thể cấu hình sẵn — thiết lập trên thiết bị sau khi cài đặt.</string>
-    <string name="k2go_added_after">thêm sau khi cài đặt</string>
     <string name="k2go_step2a_hint">Chạm vào một nguồn để Thêm hoặc Bỏ qua. Bỏ qua tất cả = chỉ hệ thống.</string>
     <string name="k2go_skip_for_now">Bỏ qua bây giờ ›</string>
     <string name="k2go_wiz_choose_language">Chọn ngôn ngữ</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">Một bản sao đầy đủ thư viện của điện thoại kia.</string>
     <string name="k2go_clone_all_apps">Tất cả ứng dụng và nội dung của chúng</string>
     <string name="k2go_clone_already_wifi_skip">Đã ở cùng Wi-Fi? Bạn có thể bỏ qua bước này›</string>
-    <string name="k2go_clone_camera_note">Camera không hoạt động? Kết nối với Wi-Fi của điện thoại kia trong Cài đặt, rồi Bỏ qua.</string>
     <string name="k2go_clone_camera_q">Camera không hoạt động?</string>
     <string name="k2go_clone_cant_scan">Không quét được? Chia sẻ ứng dụng theo cách khác  ›</string>
     <string name="k2go_cancel">Hủy</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">Mật khẩu: %1$s</string>
     <string name="k2go_step2_download_fmt">Tải thư viện · %.1f GB</string>
     <string name="k2go_step2_review">Xem lại</string>
-    <string name="k2go_step2b_info_books">Sách — sắp ra mắt (chưa có trình quản lý nội dung · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Bản đồ — đi kèm với phiên bản của bạn.</string>
-    <string name="k2go_step2b_info_courses">Khóa học — thiết lập trên thiết bị sau khi cài.</string>
     <string name="k2go_step2b_info_review">Xem lại thư viện của bạn, rồi tải xuống.</string>
     <string name="k2go_setting_up_library">Đang thiết lập thư viện của bạn…</string>
     <string name="k2go_reading">đang đọc</string>

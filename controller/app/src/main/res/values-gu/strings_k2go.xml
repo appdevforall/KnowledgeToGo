@@ -81,8 +81,6 @@
     <string name="k2go_skipped">છોડ્યું</string>
     <string name="k2go_books_body">ટૂંક સમયમાં — હજી પસંદ કરવા માટે કોઈ કન્ટેન્ટ નથી.</string>
     <string name="k2go_maps_body">ઑફલાઇન વિશ્વ બેઝ મૅપ. નકશા સાથે સામેલ (અત્યારે નિશ્ચિત).</string>
-    <string name="k2go_courses_hint">Kiwix પ્રીસેટ છે; Kolibri હજી પ્રીસેટ કરી શકાતું નથી — ઇન્સ્ટોલ પછી ડિવાઇસ પર સેટ કરો.</string>
-    <string name="k2go_added_after">ઇન્સ્ટોલ પછી ઉમેરાયું</string>
     <string name="k2go_step2a_hint">સ્રોત ઉમેરવા કે છોડવા ટૅપ કરો. બધું છોડો = ફક્ત સિસ્ટમ.</string>
     <string name="k2go_skip_for_now">અત્યારે છોડો ›</string>
     <string name="k2go_wiz_choose_language">ભાષા પસંદ કરો</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">બીજા ફોનની લાઇબ્રેરીની સંપૂર્ણ કૉપિ.</string>
     <string name="k2go_clone_all_apps">બધી ઍપ્લિકેશન અને તેમનું કન્ટેન્ટ</string>
     <string name="k2go_clone_already_wifi_skip">પહેલેથી એ જ Wi-Fi પર છો? તમે આ સ્ટેપ છોડી શકો છો›</string>
-    <string name="k2go_clone_camera_note">કૅમેરા કામ નથી કરતો? Settings માં બીજા ફોનના Wi-Fi સાથે જોડાઓ, પછી છોડો.</string>
     <string name="k2go_clone_camera_q">કૅમેરા કામ નથી કરતો?</string>
     <string name="k2go_clone_cant_scan">સ્કૅન નથી કરી શકતા? ઍપ બીજી રીતે શેર કરો  ›</string>
     <string name="k2go_cancel">રદ કરો</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">પાસવર્ડ: %1$s</string>
     <string name="k2go_step2_download_fmt">લાઇબ્રેરી ડાઉનલોડ કરો · %.1f GB</string>
     <string name="k2go_step2_review">સમીક્ષા</string>
-    <string name="k2go_step2b_info_books">પુસ્તકો — ટૂંક સમયમાં (હજી કોઈ કન્ટેન્ટ મૅનેજર નથી · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">નકશા — તમારા એડિશન સાથે સામેલ.</string>
-    <string name="k2go_step2b_info_courses">કોર્સ — ઇન્સ્ટોલ પછી ડિવાઇસ પર સેટ કરો.</string>
     <string name="k2go_step2b_info_review">તમારી લાઇબ્રેરીની સમીક્ષા કરો, પછી ડાઉનલોડ કરો.</string>
     <string name="k2go_setting_up_library">તમારી લાઇબ્રેરી સેટ થઈ રહી છે…</string>
     <string name="k2go_reading">વાંચી રહ્યું છે</string>

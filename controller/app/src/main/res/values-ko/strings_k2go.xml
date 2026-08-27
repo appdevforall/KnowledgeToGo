@@ -81,8 +81,6 @@
     <string name="k2go_skipped">건너뜀</string>
     <string name="k2go_books_body">곧 제공 예정 — 아직 선택할 콘텐츠가 없습니다.</string>
     <string name="k2go_maps_body">오프라인 세계 기본 지도. 지도에 포함되어 있습니다(현재는 고정).</string>
-    <string name="k2go_courses_hint">Kiwix 프리셋은 있습니다. Kolibri는 아직 프리셋할 수 없습니다 — 설치 후 기기에서 설정하세요.</string>
-    <string name="k2go_added_after">설치 후 추가됨</string>
     <string name="k2go_step2a_hint">소스를 탭하여 추가하거나 건너뛰세요. 모두 건너뛰기 = 시스템만.</string>
     <string name="k2go_skip_for_now">지금은 건너뛰기 ›</string>
     <string name="k2go_wiz_choose_language">언어 선택</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">상대방 휴대폰 라이브러리의 전체 복사본.</string>
     <string name="k2go_clone_all_apps">모든 애플리케이션과 그 콘텐츠</string>
     <string name="k2go_clone_already_wifi_skip">이미 같은 Wi-Fi인가요? 이 단계를 건너뛸 수 있습니다›</string>
-    <string name="k2go_clone_camera_note">카메라가 작동하지 않나요? 설정에서 상대방 휴대폰의 Wi-Fi에 접속한 후 건너뛰세요.</string>
     <string name="k2go_clone_camera_q">카메라가 작동하지 않나요?</string>
     <string name="k2go_clone_cant_scan">스캔할 수 없나요? 다른 방법으로 앱 공유  ›</string>
     <string name="k2go_cancel">취소</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">비밀번호: %1$s</string>
     <string name="k2go_step2_download_fmt">라이브러리 다운로드 · %.1f GB</string>
     <string name="k2go_step2_review">검토</string>
-    <string name="k2go_step2b_info_books">도서 — 곧 제공 예정(아직 콘텐츠 관리자 없음 · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">지도 — 사용 중인 에디션에 포함됨.</string>
-    <string name="k2go_step2b_info_courses">강좌 — 설치 후 기기에서 설정됨.</string>
     <string name="k2go_step2b_info_review">라이브러리를 검토한 후 다운로드하세요.</string>
     <string name="k2go_setting_up_library">라이브러리를 설정하는 중…</string>
     <string name="k2go_reading">읽는 중</string>
