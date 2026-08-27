@@ -9,7 +9,9 @@
  *               (kiwix_catalog.csv, via KiwixCatalog) into a real ZIM file + label + size, then
  *               hands them to the existing ZimDownloadService (the live REST route, foreground,
  *               per-item retry). ZIM is a LIVE operation (server up), so this must only run when
- *               the server is alive. Idempotent: the wishlist is cleared once handed off.
+ *               the server is alive. ADFA-4897: the wishlist is NOT cleared at hand-off; the service
+ *               drops each entry only once its item is confirmed done, so a process death re-drains
+ *               only what did not finish. Re-entrant: a running session short-circuits drain().
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -66,13 +68,15 @@ public final class ZimProvisioner {
 
     private static void resolveAndStart(Context app, JSONObject catalog) {
         JSONArray order = ZimWishlist.all(app);
-        List<String> files = new ArrayList<>(), labels = new ArrayList<>();
+        List<String> keys = new ArrayList<>(), files = new ArrayList<>(), labels = new ArrayList<>();
         List<Long> bytes = new ArrayList<>();
         for (int i = 0; i < order.length(); i++) {
             JSONObject o = order.optJSONObject(i);
             if (o == null) continue;
-            ZimSelection.Item it = ZimSelection.resolve(catalog, o.optString("key", ""));
+            String key = o.optString("key", "");
+            ZimSelection.Item it = ZimSelection.resolve(catalog, key);
             if (it == null) continue;
+            keys.add(key);      // wishlist key ("project|lang|flavour") — dropped per-item once done
             files.add(it.id);   // "<project>/<file>" (ADFA-5042)
             labels.add(ZimItemLabel.of(it.project,
                     it.entry.optString("creator"), it.entry.optString("flavour")));
@@ -82,11 +86,12 @@ public final class ZimProvisioner {
         long[] b = new long[bytes.size()];
         for (int i = 0; i < b.length; i++) b[i] = bytes.get(i);
         Log.i(TAG, "zim drain: handing " + files.size() + " to ZimDownloadService");
-        ZimDownloadService.start(app, files.toArray(new String[0]), labels.toArray(new String[0]), b);
-        // TODO(ADFA-4874): clearing here means that if the process dies mid-download both the
-        // wishlist and the service's in-memory state are lost (orphaned partial). The durable
-        // background-jobs monitor should own this hand-off so it survives process death.
-        ZimWishlist.clear(app);   // handed off; the service owns retry from here
+        // ADFA-4897: do NOT clear the wishlist here. The service now drops each item from the wishlist
+        // only when it is confirmed DONE (ZimDownloadService.onItemDone), and clears the rest on an
+        // explicit Cancel. So a process death mid-download leaves exactly the not-done items banked,
+        // and the next drain re-hands them off — no orphaned partial, no re-download of finished items.
+        ZimDownloadService.start(app, keys.toArray(new String[0]), files.toArray(new String[0]),
+                labels.toArray(new String[0]), b);
     }
 
     // ADFA-5074: a private label() lived here and a different one lived in the Get More path, so

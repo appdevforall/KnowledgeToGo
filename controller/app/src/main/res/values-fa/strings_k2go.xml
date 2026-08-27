@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">فقط اسکن کنید یا از اطلاعات زیر استفاده کنید:</string>
     <string name="k2go_perm_keep_running">ادامه اجرا</string>
     <string name="k2go_connect_subtitle">به یک دستگاه نزدیک اجازه دهید کتابخانه شما را مرور کند.</string>
-    <string name="k2go_perm_nearby_note">دسترسی دستگاه‌های نزدیک بعداً و فقط هنگام اشتراک‌گذاری درخواست می‌شود.</string>
     <string name="k2go_next">بعدی</string>
     <string name="k2go_next_choose_content">بعدی: انتخاب محتوا</string>
     <string name="k2go_clone_next_note">بعدی: به همان شبکه بپیوندید، سپس شروع کنید.</string>
@@ -86,6 +85,7 @@
     <string name="k2go_wiz_choose_language">انتخاب زبان</string>
     <string name="k2go_wiz_language_sub">زبان برنامه و محتوا را تنظیم می‌کند.</string>
     <string name="k2go_wiz_permissions_title">چند مورد را مجاز کنید</string>
+    <string name="k2go_wiz_permissions_sub">دسترسی‌های زیر ضروری هستند. ممکن است برنامه هنگام اشتراک‌گذاری کتابخانه‌تان دسترسی‌های بیشتری بخواهد.</string>
     <string name="k2go_continue">ادامه</string>
     <string name="k2go_wiz_setup_sub">چطور می‌خواهیدش؟</string>
     <string name="k2go_settings_language">زبان</string>

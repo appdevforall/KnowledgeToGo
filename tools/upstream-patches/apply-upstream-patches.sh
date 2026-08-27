@@ -49,6 +49,30 @@ if [[ -d "$PATCH_DIR" ]]; then
   shopt -s nullglob
   for f in "$PATCH_DIR"/*.patch; do
     name="$(basename "$f")"
+    # ADFA-5303: GNU `patch` cannot apply git binary hunks (e.g. images). Route any
+    # patch that carries a binary diff through `git apply`, which handles binary AND
+    # text hunks together; text-only patches keep the `patch -p1` path below.
+    if grep -q '^GIT binary patch' "$f"; then
+      command -v git >/dev/null 2>&1 || { warn "binary patch needs git (not installed): $name"; failed=$((failed+1)); rc=1; continue; }
+      # Already present? A clean REVERSE apply proves it is in the tree -> skip.
+      if git -C "$ROOT" apply -p"$STRIP" -R --check < "$f" >/dev/null 2>&1; then
+        log "skip (already present, binary): $name"; skipped=$((skipped+1)); continue
+      fi
+      if git -C "$ROOT" apply -p"$STRIP" --check < "$f" >/dev/null 2>&1; then
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+          log "would apply (binary): $name"
+        else
+          git -C "$ROOT" apply -p"$STRIP" < "$f"
+          log "applied (binary): $name"
+        fi
+        applied=$((applied+1))
+      else
+        warn "could NOT apply (binary; context drift / partially applied): $name"
+        warn "  -> regenerate against the current /opt/iiab/iiab, or drop if superseded."
+        failed=$((failed+1)); rc=1
+      fi
+      continue
+    fi
     # Already present? (upstream merged it, or a prior run applied it.) A clean
     # REVERSE apply proves the change is already in the tree → skip.
     if patch -p"$STRIP" -d "$ROOT" -R --dry-run < "$f" >/dev/null 2>&1; then

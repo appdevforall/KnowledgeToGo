@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Sadəcə skan edin və ya aşağıdakı məlumatlardan istifadə edin:</string>
     <string name="k2go_perm_keep_running">İşləməyə davam et</string>
     <string name="k2go_connect_subtitle">Yaxınlıqdakı cihaza kitabxananıza baxmağa icazə verin.</string>
-    <string name="k2go_perm_nearby_note">Yaxınlıqdakı cihazlar sonra, yalnız paylaşarkən soruşulur.</string>
     <string name="k2go_next">İrəli</string>
     <string name="k2go_next_choose_content">İrəli: məzmun seç</string>
     <string name="k2go_clone_next_note">İrəli: eyni şəbəkəyə qoşul, sonra başla.</string>
@@ -86,6 +85,7 @@
     <string name="k2go_wiz_choose_language">Dil seçin</string>
     <string name="k2go_wiz_language_sub">Tətbiq + məzmun dilini təyin edir.</string>
     <string name="k2go_wiz_permissions_title">Bir neçə şeyə icazə verin</string>
+    <string name="k2go_wiz_permissions_sub">Aşağıdakı icazələr tələb olunur. Kitabxananızı paylaşdıqda tətbiq əlavə icazələr istəyə bilər.</string>
     <string name="k2go_continue">Davam et</string>
     <string name="k2go_wiz_setup_sub">Bunu necə istəyirsiniz?</string>
     <string name="k2go_settings_language">Dil</string>
