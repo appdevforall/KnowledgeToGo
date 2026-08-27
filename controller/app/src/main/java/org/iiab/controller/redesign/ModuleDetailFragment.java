@@ -155,12 +155,14 @@ public class ModuleDetailFragment extends Fragment {
                 if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().current().didFail(c.key())) {
                     chipRow.addView(chip(getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
                     schedule.setText(R.string.k2go_home_retry);
-                    // Shared, busy-gated retry (same action the live progress card fires). On a real
-                    // start, bounce to the hub — this detail is a one-shot snapshot with no observer and
-                    // would otherwise sit on a stale "Couldn't install"; the hub reflects the queue live.
+                    // Shared, busy-gated retry (same action the live progress card fires). On a real start,
+                    // land on the install index — the same destination as a normal install (openModuleIndex)
+                    // — where the batch we just re-fired shows its rows, progress and log. NOT onBackPressed:
+                    // that dropped the user on the hub, which during an install only shows "Adding content"
+                    // with no route to the progress (the bug seen retrying from Module management).
                     schedule.setOnClickListener(v -> {
                         if (ModuleRetry.fire(v, c.key())) {
-                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                            startActivity(new android.content.Intent(requireContext(), SetupProgressActivity.class));
                         }
                     });
                     schedule.setVisibility(View.VISIBLE);
