@@ -80,8 +80,6 @@
     <string name="k2go_skipped">hoppet over</string>
     <string name="k2go_books_body">Kommer snart — ingen innhold å velge ennå.</string>
     <string name="k2go_maps_body">Frakoblet grunnkart over verden. Inkludert i kartet (fast inntil videre).</string>
-    <string name="k2go_courses_hint">Kiwix-forhåndsvalg finnes; Kolibri kan ikke forhåndsinnstilles ennå — settes opp på enheten etter installasjon.</string>
-    <string name="k2go_added_after">lagt til etter installasjon</string>
     <string name="k2go_step2a_hint">Trykk på en kilde for å legge til eller hoppe over. Hopp over alt = bare systemet.</string>
     <string name="k2go_skip_for_now">Hopp over for nå ›</string>
     <string name="k2go_wiz_choose_language">Velg språk</string>
@@ -178,7 +176,7 @@
     <string name="deepop_notif_cancel">Avbryt</string>
     <string name="k2go_clone_channel_name">Klon</string>
     <string name="k2go_clone_channel_desc">Holder en overføring fra enhet til enhet i gang</string>
-    <string name="k2go_clone_notif_text">Overfører mellom enheter — trykk for å gå tilbake</string>
+    <string name="k2go_clone_notif_text">Overfører mellom enheter</string>
     <string name="k2go_bj_finish">Fullfør</string>
     <string name="k2go_bj_wait_title">Dette kan ta en stund</string>
     <string name="k2go_bj_wait_body">Hold K2Go åpen. Du kan forlate den — den fortsetter å kjøre i bakgrunnen, og varselet tar deg tilbake.</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">En full kopi av den andre telefonens bibliotek.</string>
     <string name="k2go_clone_all_apps">Alle applikasjoner og innholdet deres</string>
     <string name="k2go_clone_already_wifi_skip">Allerede på samme Wi-Fi? Du kan hoppe over dette steget›</string>
-    <string name="k2go_clone_camera_note">Fungerer ikke kameraet? Koble til den andre telefonens Wi-Fi i Innstillinger, og hopp over.</string>
     <string name="k2go_clone_camera_q">Fungerer ikke kameraet?</string>
     <string name="k2go_clone_cant_scan">Kan du ikke skanne? Del appen på en annen måte  ›</string>
     <string name="k2go_cancel">Avbryt</string>
@@ -232,7 +229,7 @@
     <string name="k2go_clone_everything_note">Alt den har — appene og innholdet deres.</string>
     <string name="k2go_clone_exact_size">Nøyaktig størrelse vises når du kobler til.</string>
     <string name="k2go_clone_from_other_hdr">FRA DEN ANDRE TELEFONEN</string>
-    <string name="k2go_clone_get_version_note">Skaff en K2Go-versjon laget for denne telefonen — spør promotøren din, eller last ned den riktige.</string>
+    <string name="k2go_clone_get_version_note">Skaff en K2Go-versjon laget for denne telefonen — spør personen som deler K2Go med deg, eller last ned den riktige.</string>
     <string name="k2go_clone_installed_copy">Installert? Kopier biblioteket</string>
     <string name="k2go_clone_incompat_why_long">K2Gos bibliotek inneholder programmer bygget for å passe en telefons maskinvare. Når to telefoner er bygget forskjellig, kan ikke programmene fra den ene kjøre på den andre, så det ville ikke fungere å kopiere biblioteket.</string>
     <string name="k2go_clone_nothing_to_replace">Ingenting å erstatte</string>
@@ -274,12 +271,12 @@
     <string name="k2go_clone_already_connected">Allerede tilkoblet? Fortsett ›</string>
     <string name="k2go_clone_copying">Kopierer biblioteket…</string>
     <string name="k2go_clone_join_wifi_note">Få den andre telefonen på denne Wi-Fi-en.</string>
-    <string name="k2go_clone_cant_join_note">K2Go kan ikke koble til det nettverket for deg — koble til i Innstillinger, og fortsett.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kan ikke koble til det nettverket for deg — koble til i Androids Wi-Fi-innstillinger, og trykk deretter Fortsett.</string>
     <string name="k2go_clone_next_get_app">Neste: hent appen</string>
     <string name="k2go_clone_nothing_title">Ingenting å dele ennå</string>
     <string name="k2go_clone_point_camera_join">Rett kameraet hit for å koble til denne telefonen, eller bruk følgende innlogging</string>
     <string name="k2go_clone_share_anyway">Del likevel</string>
-    <string name="k2go_clone_share_wifi_note">Del denne Wi-Fi-en fra Innstillinger, eller la dem koble til den, og fortsett.</string>
+    <string name="k2go_clone_share_wifi_note">Del denne Wi-Fi-en fra Androids Wi-Fi-innstillinger, eller la dem koble seg til, og fortsett deretter.</string>
     <string name="k2go_clone_sharing_stopped">Deling stoppet</string>
     <string name="k2go_clone_skip_have_app">Hopp over — de har allerede K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Start deling</string>
@@ -342,9 +339,6 @@
     <string name="k2go_fallback_pass">Passord: %1$s</string>
     <string name="k2go_step2_download_fmt">Last ned bibliotek · %.1f GB</string>
     <string name="k2go_step2_review">Se gjennom</string>
-    <string name="k2go_step2b_info_books">Bøker — kommer snart (ingen innholdsbehandler ennå · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Kart — inkludert i utgaven din.</string>
-    <string name="k2go_step2b_info_courses">Kurs — settes opp på enheten etter installasjon.</string>
     <string name="k2go_step2b_info_review">Se gjennom biblioteket ditt, og last ned.</string>
     <string name="k2go_setting_up_library">Setter opp biblioteket ditt…</string>
     <string name="k2go_reading">leser</string>

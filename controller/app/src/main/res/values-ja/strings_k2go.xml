@@ -80,8 +80,6 @@
     <string name="k2go_skipped">スキップ済み</string>
     <string name="k2go_books_body">近日公開 — 選択できるコンテンツはまだありません。</string>
     <string name="k2go_maps_body">オフラインの世界ベース地図。地図に含まれています（現時点では固定）。</string>
-    <string name="k2go_courses_hint">Kiwix のプリセットはあります。Kolibri はまだプリセットできません — インストール後にデバイス上で設定してください。</string>
-    <string name="k2go_added_after">インストール後に追加</string>
     <string name="k2go_step2a_hint">ソースをタップして追加またはスキップします。すべてスキップ = システムのみ。</string>
     <string name="k2go_skip_for_now">今はスキップ ›</string>
     <string name="k2go_wiz_choose_language">言語を選択</string>
@@ -177,7 +175,7 @@
     <string name="deepop_notif_cancel">キャンセル</string>
     <string name="k2go_clone_channel_name">クローン</string>
     <string name="k2go_clone_channel_desc">デバイス間の転送を実行し続けます</string>
-    <string name="k2go_clone_notif_text">デバイス間で転送中 — タップして戻る</string>
+    <string name="k2go_clone_notif_text">デバイス間で転送中</string>
     <string name="k2go_bj_finish">完了</string>
     <string name="k2go_bj_wait_title">時間がかかる場合があります</string>
     <string name="k2go_bj_wait_body">K2Go を開いたままにしてください。離れても構いません — バックグラウンドで実行され続け、通知で戻れます。</string>
@@ -221,7 +219,6 @@
     <string name="k2go_clone_full_copy_note">相手のスマホのライブラリの完全なコピー。</string>
     <string name="k2go_clone_all_apps">すべてのアプリとそのコンテンツ</string>
     <string name="k2go_clone_already_wifi_skip">すでに同じ Wi-Fi ですか？ このステップをスキップできます›</string>
-    <string name="k2go_clone_camera_note">カメラが動作しませんか？ 設定で相手のスマホの Wi-Fi に接続してから、スキップしてください。</string>
     <string name="k2go_clone_camera_q">カメラが動作しませんか？</string>
     <string name="k2go_clone_cant_scan">スキャンできませんか？ 別の方法でアプリを共有  ›</string>
     <string name="k2go_cancel">キャンセル</string>
@@ -231,7 +228,7 @@
     <string name="k2go_clone_everything_note">相手が持っているすべて — そのアプリとコンテンツ。</string>
     <string name="k2go_clone_exact_size">正確なサイズは接続後に表示されます。</string>
     <string name="k2go_clone_from_other_hdr">相手のスマホから</string>
-    <string name="k2go_clone_get_version_note">このスマホ用に作られた K2Go のバージョンを入手してください — 担当者に尋ねるか、適切なものをダウンロードしてください。</string>
+    <string name="k2go_clone_get_version_note">この端末向けの K2Go を入手してください。K2Go を共有している相手に頼むか、正しいものをダウンロードしてください。</string>
     <string name="k2go_clone_installed_copy">インストール済みですか？ ライブラリをコピー</string>
     <string name="k2go_clone_incompat_why_long">K2Go のライブラリには、スマホのハードウェアに合わせて作られたプログラムが含まれています。2 台のスマホの作りが異なる場合、一方のプログラムは他方では実行できないため、ライブラリのコピーは機能しません。</string>
     <string name="k2go_clone_nothing_to_replace">置き換えるものがありません</string>
@@ -273,12 +270,12 @@
     <string name="k2go_clone_already_connected">すでに接続済みですか？ 続行 ›</string>
     <string name="k2go_clone_copying">ライブラリをコピー中…</string>
     <string name="k2go_clone_join_wifi_note">相手のスマホをこの Wi-Fi に接続させます。</string>
-    <string name="k2go_clone_cant_join_note">K2Go はそのネットワークに代わりに接続できません — 設定で接続してから続行してください。</string>
+    <string name="k2go_clone_cant_join_note">K2Go はそのネットワークに代わりに接続できません。Android の Wi-Fi 設定で接続してから「続行」をタップしてください。</string>
     <string name="k2go_clone_next_get_app">次へ：アプリを入手</string>
     <string name="k2go_clone_nothing_title">共有できるものがまだありません</string>
     <string name="k2go_clone_point_camera_join">この端末を接続するにはカメラをここに向けるか、次の認証情報を使用してください</string>
     <string name="k2go_clone_share_anyway">それでも共有</string>
-    <string name="k2go_clone_share_wifi_note">設定からこの Wi-Fi を共有するか、相手に接続してもらってから続行してください。</string>
+    <string name="k2go_clone_share_wifi_note">この Wi-Fi を Android の Wi-Fi 設定から共有するか、相手に参加してもらってから続行してください。</string>
     <string name="k2go_clone_sharing_stopped">共有を停止しました</string>
     <string name="k2go_clone_skip_have_app">スキップ — 相手はすでに K2Go を持っています  ›</string>
     <string name="k2go_clone_start_sharing">共有を開始</string>
@@ -340,9 +337,6 @@
     <string name="k2go_fallback_pass">パスワード：%1$s</string>
     <string name="k2go_step2_download_fmt">ライブラリをダウンロード · %.1f GB</string>
     <string name="k2go_step2_review">確認</string>
-    <string name="k2go_step2b_info_books">書籍 — 近日公開（コンテンツマネージャーはまだありません · 0 GB）。</string>
-    <string name="k2go_step2b_info_maps">地図 — お使いのエディションに含まれています。</string>
-    <string name="k2go_step2b_info_courses">コース — インストール後にデバイス上で設定します。</string>
     <string name="k2go_step2b_info_review">ライブラリを確認してからダウンロードしてください。</string>
     <string name="k2go_setting_up_library">ライブラリをセットアップ中…</string>
     <string name="k2go_reading">読み込み中</string>

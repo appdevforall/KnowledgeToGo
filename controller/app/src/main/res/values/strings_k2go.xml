@@ -83,8 +83,6 @@
     <string name="k2go_skipped">skipped</string>
     <string name="k2go_books_body">Coming soon — no content to choose yet.</string>
     <string name="k2go_maps_body">Offline world base map. Included with the map (fixed for now).</string>
-    <string name="k2go_courses_hint">Kiwix presets exist; Kolibri can\'t be preset yet — set up on the device after install.</string>
-    <string name="k2go_added_after">added after install</string>
     <string name="k2go_step2a_hint">Tap a source to Add or Skip it. Skip all = just the system.</string>
     <!-- ADFA-5116: currently UNUSED in the main flow — the setup "Skip for now" was removed (it let
          the user reach the Library with no system). Kept for likely reuse; the translations still carry
@@ -184,7 +182,7 @@
     <string name="k2go_mod_kiwix_sub">Kiwix</string>
     <string name="k2go_mod_kiwix_desc">Reads offline ZIM archives such as Wikipedia and other reference collections. This installs the reader app; add the actual content from Get More.</string>
     <string name="k2go_mod_code_title" translatable="false">Code on the Go</string>
-    <string name="k2go_mod_code_sub" translatable="false">AppDevForAll</string>
+    <string name="k2go_mod_code_sub" translatable="false">App Dev for All</string>
     <string name="k2go_mod_code_desc">An offline-first Android IDE. Write, debug, and build  Android apps directly on the phone or tablet, without needing internet access.</string>
     <string name="k2go_mod_matomo_title">Analytics</string>
     <string name="k2go_mod_matomo_sub">Matomo</string>
@@ -229,7 +227,7 @@
     <string name="k2go_clone_channel_name">Clone</string>
     <string name="k2go_clone_channel_desc">Keeps a device-to-device transfer running</string>
     <string name="k2go_clone_notif_title" translatable="false">Knowledge to Go</string>
-    <string name="k2go_clone_notif_text">Transferring between devices — tap to return</string>
+    <string name="k2go_clone_notif_text">Transferring between devices</string>
     <string name="k2go_bj_finish">Finish</string>
     <string name="k2go_bj_wait_title">This can take a while</string>
     <string name="k2go_bj_wait_body">Keep K2Go open. You can leave — it keeps running in the background, and the notification brings you back.</string>
@@ -280,7 +278,6 @@
     <string name="k2go_clone_full_copy_note">A full copy of the other phone\'s library.</string>
     <string name="k2go_clone_all_apps">All applications and their content</string>
     <string name="k2go_clone_already_wifi_skip">Already on the same Wi-Fi? You can skip this step›</string>
-    <string name="k2go_clone_camera_note">Camera not working? Connect to the other phone\'s Wi-Fi in Settings, then Skip.</string>
     <string name="k2go_clone_camera_q">Camera not working?</string>
     <string name="k2go_clone_cant_scan">Can\'t scan? Share the app another way  ›</string>
     <string name="k2go_cancel">Cancel</string>
@@ -290,7 +287,7 @@
     <string name="k2go_clone_everything_note">Everything it has — its apps and their content.</string>
     <string name="k2go_clone_exact_size">Exact size is shown once you connect.</string>
     <string name="k2go_clone_from_other_hdr">FROM THE OTHER PHONE</string>
-    <string name="k2go_clone_get_version_note">Get a K2Go version made for this phone — ask your promoter, or download the right one.</string>
+    <string name="k2go_clone_get_version_note">Get a K2Go version made for this phone — ask the person sharing K2Go with you, or download the right one.</string>
     <string name="k2go_clone_installed_copy">Installed? Copy the library</string>
     <string name="k2go_clone_join_hotspot_title">Join my hotspot</string>
     <string name="k2go_clone_join_wifi_title">Join the same Wi-Fi</string>
@@ -335,12 +332,12 @@
     <string name="k2go_clone_already_connected">Already connected? Continue ›</string>
     <string name="k2go_clone_copying">Copying the library…</string>
     <string name="k2go_clone_join_wifi_note">Get the other phone onto this Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go can\'t join that network for you — connect in Settings, then Continue.</string>
+    <string name="k2go_clone_cant_join_note">K2Go can\'t join that network for you — connect in Android Wi-Fi Settings, then Continue.</string>
     <string name="k2go_clone_next_get_app">Next: get the app</string>
     <string name="k2go_clone_nothing_title">Nothing to share yet</string>
     <string name="k2go_clone_point_camera_join">Point its camera here to join this phone or use the following credentials instead</string>
     <string name="k2go_clone_share_anyway">Share anyway</string>
-    <string name="k2go_clone_share_wifi_note">Share this Wi-Fi from Settings, or have them join it, then continue.</string>
+    <string name="k2go_clone_share_wifi_note">Share this Wi-Fi from Android Wi-Fi Settings, or have them join it, then continue.</string>
     <string name="k2go_clone_sharing_stopped">Sharing stopped</string>
     <string name="k2go_clone_skip_have_app">Skip — they already have K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Start sharing</string>
@@ -406,9 +403,6 @@
     <string name="k2go_fallback_pass">Password: %1$s</string>
     <string name="k2go_step2_download_fmt">Download library · %.1f GB</string>
     <string name="k2go_step2_review">Review</string>
-    <string name="k2go_step2b_info_books">Books — coming soon (no content manager yet · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Maps — included with your edition.</string>
-    <string name="k2go_step2b_info_courses">Courses — set up on the device after install.</string>
     <string name="k2go_step2b_info_review">Review your library, then download.</string>
     <string name="k2go_setting_up_library">Setting up your library…</string>
     <!-- ADFA-4915: minimalist indicator during the archive "reading/listing" sub-phase. Technical term, not localized for now. -->

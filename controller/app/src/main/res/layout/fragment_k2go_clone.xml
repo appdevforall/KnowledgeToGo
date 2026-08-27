@@ -248,7 +248,6 @@
 
             <TextView android:id="@+id/k2go_rcv_skiphint" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center" android:layout_marginTop="8dp"
-                android:text="@string/k2go_clone_camera_note"
                 android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" android:visibility="gone" />
 
             <TextView android:id="@+id/k2go_rcv_camnote" android:layout_width="match_parent" android:layout_height="wrap_content"
