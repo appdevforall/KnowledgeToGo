@@ -446,7 +446,10 @@ public class LibraryHomeFragment extends Fragment {
         // ADFA-4828: nothing installed (or an install is running — the boot gate normally covers
         // that). The home isn't starting anything, so don't imply it: the cards read "Not installed"
         // and the header points to Get more (set in updateHeaderFromCards).
-        if (!installed) {
+        // ADFA-5312: a running proot module makes isSystemInstalled() false (marker held) even though
+        // the rootfs is present — don't paint every card "Not installed" during an install. Fall through
+        // to the normal handling: the server is down mid-runrole, so cards keep their last-known state.
+        if (!installed && !org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
             for (final Card c : cards) {
                 // ADFA-5061: this used to record ABSENT for all five, and the write was right at
                 // the instant it happened and wrong forever after. "No system is installed" is a
@@ -575,6 +578,14 @@ public class LibraryHomeFragment extends Fragment {
         }
         if (CloneSendSession.isActive()) {
             setHeader(H_CLONE_SHARING);
+            return;
+        }
+        // ADFA-5312: a running proot module holds the install marker and stops the server, so
+        // isSystemInstalled() reads false — but this is an install in progress, not an absent or
+        // damaged system. Surface it as installing (like LibraryActivity/SetupProgressActivity do)
+        // before the "no library / recover" branch below can misread it.
+        if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+            setHeader(H_INSTALLING);
             return;
         }
         if (!installed) {

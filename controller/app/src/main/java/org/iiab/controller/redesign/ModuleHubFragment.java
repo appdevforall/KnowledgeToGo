@@ -94,6 +94,7 @@ public class ModuleHubFragment extends Fragment {
     private boolean stateUnknown = false;
     private int probesPending = 0;
     private int probeGen = 0;   // ADFA-4842: supersedes an in-flight probe batch (e.g. onResume re-probe)
+    private boolean lastQueueRunning = false;   // ADFA-5312: react only to running-transitions of the module queue
     private LinearLayout host;
     private Button proceed;
 
@@ -140,6 +141,16 @@ public class ModuleHubFragment extends Fragment {
         });
 
         buildCards();   // shows "checking…" until probes resolve
+
+        // ADFA-5312: re-probe when the module queue starts/stops so the "installing" state appears and
+        // clears live (the screen otherwise only re-probes on resume). React to running-transitions
+        // only, not the per-second percent ticks — a fresh probe is needed on finish to re-read the
+        // now-cleared install marker (systemPresent flips back to true).
+        org.iiab.controller.install.presentation.ModuleQueueRepository.get().state()
+                .observe(getViewLifecycleOwner(), st -> {
+                    boolean running = st != null && st.isRunning();
+                    if (running != lastQueueRunning) { lastQueueRunning = running; probeAll(); }
+                });
         return root;
     }
 
@@ -231,6 +242,20 @@ public class ModuleHubFragment extends Fragment {
     private void buildCards() {
         if (host == null) return;
         host.removeAllViews();
+        // ADFA-5312: a proot module is installing right now — the runrole holds the install marker and
+        // stops the server, so systemPresent reads false. This is NOT "no system" (the rootfs is there),
+        // so show that an install is in progress and do NOT offer Recover / Install-a-system over it.
+        if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+            TextView installing = new TextView(requireContext());
+            installing.setGravity(Gravity.CENTER);
+            installing.setPadding(px(8), px(24), px(8), px(24));
+            installing.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            installing.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+            String mod = org.iiab.controller.install.presentation.ModuleQueueRepository.get().currentModule();
+            installing.setText(getString(R.string.install_status_installing_module, mod != null ? mod : ""));
+            host.addView(installing);
+            return;
+        }
         // ADFA-5104: with no system there is nothing to install into, so nothing is offered and
         // the screen says why. Listing modules here would be an invitation the box cannot honour.
         if (!systemPresent) {
