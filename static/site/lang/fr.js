@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Système",
     "theme_light": "Clair",
     "theme_dark": "Sombre",
-    "backend_error": "Le serveur backend ne répond pas. Veuillez vérifier qu'il est démarré. Ouvrez l'application Termux et exécutez"
+    "backend_error": "Le serveur K2Go ne répond pas. Assurez-vous que K2Go est ouvert sur l'appareil hôte ; la page se reconnecte toute seule. S'il ne revient pas, rescannez le code pour obtenir son adresse actuelle."
 };

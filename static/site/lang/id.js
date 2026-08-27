@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Sistem",
     "theme_light": "Terang",
     "theme_dark": "Gelap",
-    "backend_error": "Server backend tidak merespons. Harap pastikan sudah dijalankan. Buka aplikasi Termux dan jalankan"
+    "backend_error": "Server K2Go tidak merespons. Pastikan K2Go berjalan di perangkat host; halaman akan tersambung kembali dengan sendirinya. Jika tidak kembali, pindai ulang kode untuk mendapatkan alamatnya saat ini."
 };

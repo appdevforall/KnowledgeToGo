@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Systeem",
     "theme_light": "Licht",
     "theme_dark": "Donker",
-    "backend_error": "De backendserver reageert niet. Controleer of deze is gestart. Ga naar de Termux-app en voer uit"
+    "backend_error": "De K2Go-server reageert niet. Zorg dat K2Go draait op het host-apparaat; de pagina maakt vanzelf opnieuw verbinding. Komt hij niet terug, scan de code opnieuw voor het huidige adres."
 };

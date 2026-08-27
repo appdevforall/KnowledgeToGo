@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Mfumo",
     "theme_light": "Nyepesi",
     "theme_dark": "Nyeusi",
-    "backend_error": "Seva ya nyuma haijibu. Tafadhali hakikisha imeanzishwa. Fungua programu ya Termux na uendeshe"
+    "backend_error": "Seva ya K2Go haiitikii. Hakikisha K2Go inaendeshwa kwenye kifaa mwenyeji; ukurasa utaunganisha tena wenyewe. Ikiwa hairudi, changanua tena msimbo ili kupata anwani yake ya sasa."
 };

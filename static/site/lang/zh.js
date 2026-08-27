@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "跟随系统",
     "theme_light": "浅色",
     "theme_dark": "深色",
-    "backend_error": "后端服务器未响应。请确认它已启动。请打开 Termux 应用并运行"
+    "backend_error": "K2Go 服务器未响应。请确认主机设备上的 K2Go 正在运行；页面会自动重新连接。如果仍未恢复，请重新扫描二维码以获取其当前地址。"
 };

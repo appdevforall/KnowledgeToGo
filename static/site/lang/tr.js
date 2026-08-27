@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Sistem",
     "theme_light": "Açık",
     "theme_dark": "Koyu",
-    "backend_error": "Arka uç sunucusu yanıt vermiyor. Lütfen başlatıldığından emin olun. Termux uygulamasına gidin ve şunu çalıştırın"
+    "backend_error": "K2Go sunucusu yanıt vermiyor. K2Go'nun ana cihazda çalıştığından emin olun; sayfa kendi kendine yeniden bağlanır. Geri gelmezse, güncel adresini almak için kodu yeniden tarayın."
 };

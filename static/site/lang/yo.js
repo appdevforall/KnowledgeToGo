@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Ẹ̀rọ",
     "theme_light": "Ìmọ́lẹ̀",
     "theme_dark": "Òkùnkùn",
-    "backend_error": "Sáfà backend kò dáhùn. Jọ̀wọ́ rí i dájú pé ó ti bẹ̀rẹ̀. Ṣí ẹ̀rọ Termux kí o sì ṣiṣẹ́"
+    "backend_error": "Sáà K2Go kò dáhùn. Rí i dájú pé K2Go ń ṣiṣẹ́ lórí ẹ̀rọ agbàlejò; ojú-ìwé náà á tún so ara rẹ̀ pọ̀ fúnra rẹ̀. Tí kò bá padà, tún ka kóòdù náà láti gba àdírẹ́sì rẹ̀ lọ́wọ́lọ́wọ́."
 };

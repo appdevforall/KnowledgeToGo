@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Sistem",
     "theme_light": "İşıqlı",
     "theme_dark": "Qaranlıq",
-    "backend_error": "Backend server cavab vermir. Zəhmət olmasa onun işə salındığını yoxlayın. Termux tətbiqini açın və işə salın"
+    "backend_error": "K2Go server cavab vermir. K2Go-nun host cihazda işlədiyinə əmin olun; səhifə özü yenidən qoşulur. Qayıtmasa, cari ünvanını almaq üçün kodu yenidən skan edin."
 };
