@@ -500,25 +500,10 @@ public class ModuleHubFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);
         row.addView(pill, tlp);
-        // ADFA-4898: a failed module offers a user-confirmed Retry right on the row (no auto-retry).
-        if (failed) {
-            com.google.android.material.button.MaterialButton retry =
-                    new com.google.android.material.button.MaterialButton(requireContext(), null,
-                            com.google.android.material.R.attr.materialButtonOutlinedStyle);
-            retry.setText(R.string.k2go_home_retry);
-            retry.setOnClickListener(v -> {
-                if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
-                    Snackbars.make(v, org.iiab.controller.util.BusyMessage.resFor(requireContext())).show();
-                    return;
-                }
-                org.iiab.controller.install.presentation.InstallService.retryModules(
-                        requireContext(), java.util.Collections.singletonList(c.key()));
-            });
-            LinearLayout.LayoutParams rblp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            rblp.leftMargin = px(8);
-            row.addView(retry, rblp);
-        }
+        // ADFA-4898: Retry does NOT live on the hub row. The "Couldn't install" pill is signal enough
+        // to draw the user into the module; the per-module Retry lives on the module detail (the same
+        // per-module didFail(key) that colours this pill drives the detail's Retry/Back there), so a
+        // batch where only one module failed never sprays Retry across the whole list.
         return row;
     }
 

@@ -688,14 +688,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // wording and would suggest we're bringing the server up while runroles own the rootfs. During the
         // runroles show "Modules are installing"; only the real post-DONE restart says "Starting services".
         boolean moduleFlow = moduleInSession();
-        // Amber "working" while a module install runs or its post-DONE restart is pending — but NOT once it
-        // failed (that shows the Finish/error controls, no animated wait).
-        boolean amberWaiting = !moduleServerFailed && (moduleFlow ? !moduleServerUp : !servicesReady);
+        // ADFA-4898: the module batch reached its terminal with at least one runrole failed. The server
+        // itself came up (so this is NOT moduleServerFailed), and a green "Adding your content" here read
+        // the failed batch as a clean success. Keep the SAME amber "installing" header it had before the
+        // failure — no new copy — and let the failure + Retry surface per-module below (hub pill + detail),
+        // not in this batch-level header.
+        boolean moduleFailed = moduleFlow && prootFailed > 0;
+        // Amber "working" while a module install runs, its post-DONE restart is pending, or the batch
+        // ended with a failed module (kept on the same amber install line, never a green success).
+        boolean amberWaiting = !moduleServerFailed && (moduleFailed || (moduleFlow ? !moduleServerUp : !servicesReady));
         tint(dot, (amberWaiting || moduleServerFailed) ? R.color.k2go_amber : R.color.k2go_leaf);
         int statusRes;
         if (moduleServerFailed) statusRes = R.string.k2go_setup_slow;                            // couldn't bring services online
         else if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;   // (re)starting the server
         else if (moduleFlow && !moduleServerUp) statusRes = R.string.install_busy_modules;       // runroles in flight
+        else if (moduleFailed) statusRes = R.string.install_busy_modules;                        // ADFA-4898: keep the amber install header; failure + Retry are per-module below
         else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
         else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
         else statusRes = R.string.k2go_setup_adding;

@@ -125,7 +125,10 @@ public class ModuleInstallFragment extends Fragment {
             }
         }
 
-        if (mq.failedModules != null && mq.failedModules.contains(key)) {
+        // ADFA-4898: one predicate for "did this module fail" across every surface (hub pill, detail
+        // Retry/Back, this progress line) — ModuleQueueState.didFail(key). Was hand-rolled here as
+        // failedModules.contains(...); routed through the shared atom so the three can't drift apart.
+        if (mq.didFail(key)) {
             terminalDone = true;
             status.setText(getString(R.string.k2go_mod_phase_failed));
             return;

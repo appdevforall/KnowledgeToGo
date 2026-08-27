@@ -143,6 +143,33 @@ public class ModuleDetailFragment extends Fragment {
                     chipRow.addView(chip(getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));
                     return;   // nothing to offer: a module cannot be uninstalled or reinstalled here
                 }
+                // ADFA-4898: this module's runrole failed in the last finished batch — the SAME per-module
+                // didFail(key) that colours the hub's "Couldn't install" pill, so only the module that
+                // actually failed lands here (a batch where one of many failed does not turn the rest into
+                // Retry). Installed outranks it (a module genuinely on disk is not "failed"), which is why
+                // this sits just below the isInstalled branch. The two action buttons take on the recovery
+                // roles: primary Schedule -> Retry (re-fires just this module, user-confirmed, no auto-retry),
+                // secondary Install now -> Back — the same slot-reuse this switch already does for Recover.
+                // Retry then bounces to the hub, which observes the queue live; this detail is a one-shot
+                // snapshot (no observer) and would otherwise sit on a stale "Couldn't install".
+                if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().current().didFail(c.key())) {
+                    chipRow.addView(chip(getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
+                    schedule.setText(R.string.k2go_home_retry);
+                    schedule.setOnClickListener(v -> {
+                        if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
+                            Snackbars.make(v, org.iiab.controller.util.BusyMessage.resFor(requireContext())).show();
+                            return;
+                        }
+                        org.iiab.controller.install.presentation.InstallService.retryModules(
+                                requireContext(), java.util.Collections.singletonList(c.key()));
+                        requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                    });
+                    schedule.setVisibility(View.VISIBLE);
+                    installNowBtn.setText(R.string.k2go_setup_back);
+                    installNowBtn.setOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
+                    installNowBtn.setVisibility(View.VISIBLE);
+                    return;
+                }
                 if (unknown) {
                     chipRow.addView(chip(getString(R.string.k2go_state_no_answer),
                             R.color.k2go_amber_text));
