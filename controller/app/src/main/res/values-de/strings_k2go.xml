@@ -176,7 +176,7 @@
     <string name="deepop_notif_cancel">Abbrechen</string>
     <string name="k2go_clone_channel_name">Klonen</string>
     <string name="k2go_clone_channel_desc">Hält eine Übertragung zwischen Geräten am Laufen</string>
-    <string name="k2go_clone_notif_text">Übertragung zwischen Geräten — tippen, um zurückzukehren</string>
+    <string name="k2go_clone_notif_text">Übertragung zwischen Geräten</string>
     <string name="k2go_bj_finish">Fertigstellen</string>
     <string name="k2go_bj_wait_title">Das kann eine Weile dauern</string>
     <string name="k2go_bj_wait_body">Lass K2Go geöffnet. Du kannst weggehen — es läuft im Hintergrund weiter, und die Benachrichtigung bringt dich zurück.</string>
@@ -229,7 +229,7 @@
     <string name="k2go_clone_everything_note">Alles, was es hat — seine Apps und ihre Inhalte.</string>
     <string name="k2go_clone_exact_size">Die genaue Größe wird angezeigt, sobald du verbunden bist.</string>
     <string name="k2go_clone_from_other_hdr">VOM ANDEREN TELEFON</string>
-    <string name="k2go_clone_get_version_note">Hol dir eine K2Go-Version für dieses Telefon — frag deinen Promoter oder lade die passende herunter.</string>
+    <string name="k2go_clone_get_version_note">Hol dir eine für dieses Telefon passende K2Go-Version – frag die Person, die K2Go mit dir teilt, oder lade die richtige herunter.</string>
     <string name="k2go_clone_installed_copy">Installiert? Kopiere die Bibliothek</string>
     <string name="k2go_clone_incompat_why_long">Die K2Go-Bibliothek enthält Programme, die auf die Hardware eines Telefons zugeschnitten sind. Wenn zwei Telefone unterschiedlich gebaut sind, laufen die Programme des einen nicht auf dem anderen, daher würde das Kopieren der Bibliothek nicht funktionieren.</string>
     <string name="k2go_clone_nothing_to_replace">Nichts zu ersetzen</string>
@@ -271,12 +271,12 @@
     <string name="k2go_clone_already_connected">Schon verbunden? Weiter ›</string>
     <string name="k2go_clone_copying">Bibliothek wird kopiert…</string>
     <string name="k2go_clone_join_wifi_note">Bring das andere Telefon in dieses Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go kann diesem Netzwerk nicht für dich beitreten — verbinde dich in den Einstellungen, dann Weiter.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kann diesem Netzwerk nicht für dich beitreten – verbinde dich in den Android-WLAN-Einstellungen und tippe dann auf Weiter.</string>
     <string name="k2go_clone_next_get_app">Weiter: die App holen</string>
     <string name="k2go_clone_nothing_title">Noch nichts zu teilen</string>
     <string name="k2go_clone_point_camera_join">Richte die Kamera hierauf, um dieses Telefon zu verbinden, oder verwende die folgenden Zugangsdaten</string>
     <string name="k2go_clone_share_anyway">Trotzdem teilen</string>
-    <string name="k2go_clone_share_wifi_note">Teile dieses Wi-Fi über die Einstellungen oder lass sie beitreten, dann fahre fort.</string>
+    <string name="k2go_clone_share_wifi_note">Teile dieses WLAN über die Android-WLAN-Einstellungen oder lass sie beitreten und fahre dann fort.</string>
     <string name="k2go_clone_sharing_stopped">Teilen gestoppt</string>
     <string name="k2go_clone_skip_have_app">Überspringen — sie haben K2Go bereits  ›</string>
     <string name="k2go_clone_start_sharing">Teilen starten</string>

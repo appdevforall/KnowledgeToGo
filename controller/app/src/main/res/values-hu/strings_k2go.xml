@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">Mégse</string>
     <string name="k2go_clone_channel_name">Klónozás</string>
     <string name="k2go_clone_channel_desc">Fenntartja az eszközök közötti átvitelt</string>
-    <string name="k2go_clone_notif_text">Átvitel eszközök között — koppints a visszatéréshez</string>
+    <string name="k2go_clone_notif_text">Átvitel az eszközök között</string>
     <string name="k2go_bj_finish">Befejezés</string>
     <string name="k2go_bj_wait_title">Ez eltarthat egy ideig</string>
     <string name="k2go_bj_wait_body">Tartsd nyitva a K2Go-t. Elhagyhatod — a háttérben tovább fut, és az értesítés visszahoz.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">Minden, amije van — az appjai és tartalmuk.</string>
     <string name="k2go_clone_exact_size">A pontos méret a csatlakozás után jelenik meg.</string>
     <string name="k2go_clone_from_other_hdr">A MÁSIK TELEFONRÓL</string>
-    <string name="k2go_clone_get_version_note">Szerezz egy erre a telefonra készült K2Go verziót — kérdezd a promóteredet, vagy töltsd le a megfelelőt.</string>
+    <string name="k2go_clone_get_version_note">Szerezz be egy ehhez a telefonhoz készült K2Go-verziót – kérd meg a személyt, aki megosztja veled a K2Go-t, vagy töltsd le a megfelelőt.</string>
     <string name="k2go_clone_installed_copy">Telepítve? Másold a könyvtárat</string>
     <string name="k2go_clone_incompat_why_long">A K2Go könyvtára a telefon hardveréhez illeszkedő programokat tartalmaz. Ha két telefon eltérően épül fel, az egyik programjai nem futnak a másikon, ezért a könyvtár másolása nem működne.</string>
     <string name="k2go_clone_nothing_to_replace">Nincs mit lecserélni</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">Már csatlakoztál? Folytatás ›</string>
     <string name="k2go_clone_copying">A könyvtár másolása…</string>
     <string name="k2go_clone_join_wifi_note">Csatlakoztasd a másik telefont erre a Wi-Fi-re.</string>
-    <string name="k2go_clone_cant_join_note">A K2Go nem tud csatlakozni ahhoz a hálózathoz helyetted — csatlakozz a Beállításokban, majd Folytatás.</string>
+    <string name="k2go_clone_cant_join_note">A K2Go nem tud helyetted csatlakozni ahhoz a hálózathoz – csatlakozz az Android Wi-Fi beállításaiban, majd koppints a Folytatásra.</string>
     <string name="k2go_clone_next_get_app">Tovább: szerezd meg az appot</string>
     <string name="k2go_clone_nothing_title">Még nincs mit megosztani</string>
     <string name="k2go_clone_point_camera_join">Irányítsa ide a kameráját a telefon csatlakoztatásához, vagy használja az alábbi adatokat</string>
     <string name="k2go_clone_share_anyway">Megosztás mindenképp</string>
-    <string name="k2go_clone_share_wifi_note">Oszd meg ezt a Wi-Fi-t a Beállításokból, vagy csatlakoztasd őket, majd folytasd.</string>
+    <string name="k2go_clone_share_wifi_note">Oszd meg ezt a Wi-Fit az Android Wi-Fi beállításaiból, vagy hagyd, hogy csatlakozzanak, majd folytasd.</string>
     <string name="k2go_clone_sharing_stopped">A megosztás leállt</string>
     <string name="k2go_clone_skip_have_app">Kihagyás — már van K2Go-juk  ›</string>
     <string name="k2go_clone_start_sharing">Megosztás indítása</string>

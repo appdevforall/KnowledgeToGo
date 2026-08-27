@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">キャンセル</string>
     <string name="k2go_clone_channel_name">クローン</string>
     <string name="k2go_clone_channel_desc">デバイス間の転送を実行し続けます</string>
-    <string name="k2go_clone_notif_text">デバイス間で転送中 — タップして戻る</string>
+    <string name="k2go_clone_notif_text">デバイス間で転送中</string>
     <string name="k2go_bj_finish">完了</string>
     <string name="k2go_bj_wait_title">時間がかかる場合があります</string>
     <string name="k2go_bj_wait_body">K2Go を開いたままにしてください。離れても構いません — バックグラウンドで実行され続け、通知で戻れます。</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">相手が持っているすべて — そのアプリとコンテンツ。</string>
     <string name="k2go_clone_exact_size">正確なサイズは接続後に表示されます。</string>
     <string name="k2go_clone_from_other_hdr">相手のスマホから</string>
-    <string name="k2go_clone_get_version_note">このスマホ用に作られた K2Go のバージョンを入手してください — 担当者に尋ねるか、適切なものをダウンロードしてください。</string>
+    <string name="k2go_clone_get_version_note">この端末向けの K2Go を入手してください。K2Go を共有している相手に頼むか、正しいものをダウンロードしてください。</string>
     <string name="k2go_clone_installed_copy">インストール済みですか？ ライブラリをコピー</string>
     <string name="k2go_clone_incompat_why_long">K2Go のライブラリには、スマホのハードウェアに合わせて作られたプログラムが含まれています。2 台のスマホの作りが異なる場合、一方のプログラムは他方では実行できないため、ライブラリのコピーは機能しません。</string>
     <string name="k2go_clone_nothing_to_replace">置き換えるものがありません</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">すでに接続済みですか？ 続行 ›</string>
     <string name="k2go_clone_copying">ライブラリをコピー中…</string>
     <string name="k2go_clone_join_wifi_note">相手のスマホをこの Wi-Fi に接続させます。</string>
-    <string name="k2go_clone_cant_join_note">K2Go はそのネットワークに代わりに接続できません — 設定で接続してから続行してください。</string>
+    <string name="k2go_clone_cant_join_note">K2Go はそのネットワークに代わりに接続できません。Android の Wi-Fi 設定で接続してから「続行」をタップしてください。</string>
     <string name="k2go_clone_next_get_app">次へ：アプリを入手</string>
     <string name="k2go_clone_nothing_title">共有できるものがまだありません</string>
     <string name="k2go_clone_point_camera_join">この端末を接続するにはカメラをここに向けるか、次の認証情報を使用してください</string>
     <string name="k2go_clone_share_anyway">それでも共有</string>
-    <string name="k2go_clone_share_wifi_note">設定からこの Wi-Fi を共有するか、相手に接続してもらってから続行してください。</string>
+    <string name="k2go_clone_share_wifi_note">この Wi-Fi を Android の Wi-Fi 設定から共有するか、相手に参加してもらってから続行してください。</string>
     <string name="k2go_clone_sharing_stopped">共有を停止しました</string>
     <string name="k2go_clone_skip_have_app">スキップ — 相手はすでに K2Go を持っています  ›</string>
     <string name="k2go_clone_start_sharing">共有を開始</string>

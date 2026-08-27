@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">বাতিল</string>
     <string name="k2go_clone_channel_name">ক্লোন</string>
     <string name="k2go_clone_channel_desc">ডিভাইস থেকে ডিভাইসে স্থানান্তর চালু রাখে</string>
-    <string name="k2go_clone_notif_text">ডিভাইসের মধ্যে স্থানান্তর হচ্ছে — ফিরতে ট্যাপ করুন</string>
+    <string name="k2go_clone_notif_text">ডিভাইসের মধ্যে স্থানান্তর হচ্ছে</string>
     <string name="k2go_bj_finish">শেষ করুন</string>
     <string name="k2go_bj_wait_title">এতে কিছুটা সময় লাগতে পারে</string>
     <string name="k2go_bj_wait_body">K2Go খোলা রাখুন। আপনি চলে যেতে পারেন — এটি ব্যাকগ্রাউন্ডে চালু থাকে, এবং বিজ্ঞপ্তি আপনাকে ফিরিয়ে আনে।</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">এটির কাছে যা আছে সবকিছু — এর অ্যাপ ও তাদের কনটেন্ট।</string>
     <string name="k2go_clone_exact_size">সংযোগ করার পরে সঠিক আকার দেখানো হয়।</string>
     <string name="k2go_clone_from_other_hdr">অন্য ফোন থেকে</string>
-    <string name="k2go_clone_get_version_note">এই ফোনের জন্য তৈরি K2Go-এর একটি সংস্করণ নিন — আপনার প্রোমোটারকে জিজ্ঞাসা করুন, বা সঠিকটি ডাউনলোড করুন।</string>
+    <string name="k2go_clone_get_version_note">এই ফোনের জন্য তৈরি K2Go-এর একটি সংস্করণ নিন — যিনি আপনার সাথে K2Go শেয়ার করছেন তাঁর কাছে চান, বা সঠিকটি ডাউনলোড করুন।</string>
     <string name="k2go_clone_installed_copy">ইনস্টল হয়েছে? লাইব্রেরি কপি করুন</string>
     <string name="k2go_clone_incompat_why_long">K2Go-এর লাইব্রেরিতে এমন প্রোগ্রাম থাকে যা ফোনের হার্ডওয়্যারের সাথে মিলিয়ে তৈরি। যখন দুটি ফোন ভিন্নভাবে তৈরি হয়, একটির প্রোগ্রাম অন্যটিতে চলতে পারে না, তাই লাইব্রেরি কপি করা কাজ করবে না।</string>
     <string name="k2go_clone_nothing_to_replace">প্রতিস্থাপন করার মতো কিছু নেই</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">ইতিমধ্যে সংযুক্ত? চালিয়ে যান ›</string>
     <string name="k2go_clone_copying">লাইব্রেরি কপি হচ্ছে…</string>
     <string name="k2go_clone_join_wifi_note">অন্য ফোনটিকে এই Wi-Fi-তে যুক্ত করুন।</string>
-    <string name="k2go_clone_cant_join_note">K2Go আপনার জন্য সেই নেটওয়ার্কে যুক্ত হতে পারে না — সেটিংসে সংযোগ করুন, তারপর চালিয়ে যান।</string>
+    <string name="k2go_clone_cant_join_note">K2Go আপনার হয়ে ওই নেটওয়ার্কে যুক্ত হতে পারে না — Android-এর Wi-Fi সেটিংস থেকে যুক্ত হন, তারপর চালিয়ে যান-এ ট্যাপ করুন।</string>
     <string name="k2go_clone_next_get_app">পরবর্তী: অ্যাপ পান</string>
     <string name="k2go_clone_nothing_title">এখনো শেয়ার করার মতো কিছু নেই</string>
     <string name="k2go_clone_point_camera_join">এই ফোনটি যুক্ত করতে এর ক্যামেরা এখানে তাক করুন, অথবা নিচের তথ্য ব্যবহার করুন</string>
     <string name="k2go_clone_share_anyway">তবুও শেয়ার করুন</string>
-    <string name="k2go_clone_share_wifi_note">সেটিংস থেকে এই Wi-Fi শেয়ার করুন, বা তাদের যুক্ত হতে দিন, তারপর চালিয়ে যান।</string>
+    <string name="k2go_clone_share_wifi_note">এই Wi-Fi Android-এর Wi-Fi সেটিংস থেকে শেয়ার করুন, বা তাদের যুক্ত হতে বলুন, তারপর চালিয়ে যান।</string>
     <string name="k2go_clone_sharing_stopped">শেয়ার বন্ধ হয়েছে</string>
     <string name="k2go_clone_skip_have_app">এড়িয়ে যান — তাদের কাছে ইতিমধ্যে K2Go আছে  ›</string>
     <string name="k2go_clone_start_sharing">শেয়ার শুরু করুন</string>

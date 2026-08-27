@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">取消</string>
     <string name="k2go_clone_channel_name">克隆</string>
     <string name="k2go_clone_channel_desc">保持设备间传输运行</string>
-    <string name="k2go_clone_notif_text">正在设备间传输 — 点按返回</string>
+    <string name="k2go_clone_notif_text">正在设备间传输</string>
     <string name="k2go_bj_finish">完成</string>
     <string name="k2go_bj_wait_title">这可能需要一些时间</string>
     <string name="k2go_bj_wait_body">请保持 K2Go 打开。您可以离开 — 它会在后台持续运行，通知会带您返回。</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">对方拥有的一切 — 其应用及内容。</string>
     <string name="k2go_clone_exact_size">连接后会显示确切大小。</string>
     <string name="k2go_clone_from_other_hdr">来自对方手机</string>
-    <string name="k2go_clone_get_version_note">获取为本手机制作的 K2Go 版本 — 询问您的推广人员，或下载正确的版本。</string>
+    <string name="k2go_clone_get_version_note">获取为这部手机制作的 K2Go 版本——向与你共享 K2Go 的人索取，或下载正确的版本。</string>
     <string name="k2go_clone_installed_copy">已安装？复制图书馆</string>
     <string name="k2go_clone_incompat_why_long">K2Go 的图书馆包含为匹配手机硬件而构建的程序。当两部手机的构建方式不同时，一部手机的程序无法在另一部上运行，因此复制图书馆将无法工作。</string>
     <string name="k2go_clone_nothing_to_replace">没有可替换的内容</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">已经连接？继续 ›</string>
     <string name="k2go_clone_copying">正在复制图书馆…</string>
     <string name="k2go_clone_join_wifi_note">让对方手机连接到此 Wi-Fi。</string>
-    <string name="k2go_clone_cant_join_note">K2Go 无法为您加入该网络 — 请在设置中连接，然后继续。</string>
+    <string name="k2go_clone_cant_join_note">K2Go 无法替你加入该网络——请在 Android 的 Wi-Fi 设置中连接，然后点按“继续”。</string>
     <string name="k2go_clone_next_get_app">下一步：获取应用</string>
     <string name="k2go_clone_nothing_title">暂无可共享的内容</string>
     <string name="k2go_clone_point_camera_join">将其摄像头对准这里以连接此手机，或使用以下凭据</string>
     <string name="k2go_clone_share_anyway">仍要共享</string>
-    <string name="k2go_clone_share_wifi_note">从设置共享此 Wi-Fi，或让对方加入，然后继续。</string>
+    <string name="k2go_clone_share_wifi_note">从 Android 的 Wi-Fi 设置中共享此 Wi-Fi，或让对方加入，然后继续。</string>
     <string name="k2go_clone_sharing_stopped">共享已停止</string>
     <string name="k2go_clone_skip_have_app">跳过 — 对方已有 K2Go  ›</string>
     <string name="k2go_clone_start_sharing">开始共享</string>

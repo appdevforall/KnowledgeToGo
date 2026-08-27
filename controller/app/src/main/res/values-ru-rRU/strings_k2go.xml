@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">Отмена</string>
     <string name="k2go_clone_channel_name">Клонирование</string>
     <string name="k2go_clone_channel_desc">Поддерживает передачу между устройствами</string>
-    <string name="k2go_clone_notif_text">Передача между устройствами — нажмите, чтобы вернуться</string>
+    <string name="k2go_clone_notif_text">Передача между устройствами</string>
     <string name="k2go_bj_finish">Завершить</string>
     <string name="k2go_bj_wait_title">Это может занять время</string>
     <string name="k2go_bj_wait_body">Держите K2Go открытым. Можно выйти — оно продолжит работать в фоне, а уведомление вернёт вас обратно.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">Всё, что на нём есть, — приложения и их контент.</string>
     <string name="k2go_clone_exact_size">Точный размер показывается после подключения.</string>
     <string name="k2go_clone_from_other_hdr">С ДРУГОГО ТЕЛЕФОНА</string>
-    <string name="k2go_clone_get_version_note">Получите версию K2Go для этого телефона — спросите у промоутера или скачайте подходящую.</string>
+    <string name="k2go_clone_get_version_note">Получи версию K2Go для этого телефона — попроси у человека, который делится с тобой K2Go, или скачай нужную.</string>
     <string name="k2go_clone_installed_copy">Установлено? Скопируйте библиотеку</string>
     <string name="k2go_clone_incompat_why_long">Библиотека K2Go включает программы, собранные под оборудование телефона. Когда два телефона устроены по-разному, программы одного не запускаются на другом, поэтому копирование библиотеки не сработает.</string>
     <string name="k2go_clone_nothing_to_replace">Нечего заменять</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">Уже подключены? Продолжить ›</string>
     <string name="k2go_clone_copying">Копирование библиотеки…</string>
     <string name="k2go_clone_join_wifi_note">Подключите другой телефон к этому Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go не может подключиться к этой сети за вас — подключитесь в настройках, затем нажмите «Продолжить».</string>
+    <string name="k2go_clone_cant_join_note">K2Go не может подключиться к этой сети за тебя — подключись в настройках Wi-Fi Android, затем нажми «Продолжить».</string>
     <string name="k2go_clone_next_get_app">Далее: получить приложение</string>
     <string name="k2go_clone_nothing_title">Пока нечем поделиться</string>
     <string name="k2go_clone_point_camera_join">Наведите камеру сюда, чтобы подключить этот телефон, или используйте следующие данные</string>
     <string name="k2go_clone_share_anyway">Всё равно поделиться</string>
-    <string name="k2go_clone_share_wifi_note">Поделитесь этим Wi-Fi из настроек или попросите их подключиться, затем продолжите.</string>
+    <string name="k2go_clone_share_wifi_note">Поделись этой сетью Wi-Fi из настроек Wi-Fi Android или попроси их подключиться, затем продолжи.</string>
     <string name="k2go_clone_sharing_stopped">Раздача остановлена</string>
     <string name="k2go_clone_skip_have_app">Пропустить — у них уже есть K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Начать раздачу</string>

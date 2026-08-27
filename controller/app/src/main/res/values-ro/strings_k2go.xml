@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">Anulează</string>
     <string name="k2go_clone_channel_name">Clonare</string>
     <string name="k2go_clone_channel_desc">Menține un transfer între dispozitive activ</string>
-    <string name="k2go_clone_notif_text">Se transferă între dispozitive — atinge pentru a reveni</string>
+    <string name="k2go_clone_notif_text">Transfer între dispozitive</string>
     <string name="k2go_bj_finish">Finalizează</string>
     <string name="k2go_bj_wait_title">Poate dura</string>
     <string name="k2go_bj_wait_body">Ține K2Go deschis. Poți pleca — rămâne activ în fundal, iar notificarea te aduce înapoi.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">Tot ce are — aplicațiile și conținutul lor.</string>
     <string name="k2go_clone_exact_size">Dimensiunea exactă apare după ce te conectezi.</string>
     <string name="k2go_clone_from_other_hdr">DE PE CELĂLALT TELEFON</string>
-    <string name="k2go_clone_get_version_note">Obține o versiune K2Go potrivită pentru acest telefon — întreabă promotorul sau descarcă versiunea corectă.</string>
+    <string name="k2go_clone_get_version_note">Obține o versiune K2Go făcută pentru acest telefon — cere-i persoanei care îți partajează K2Go sau descarc-o pe cea potrivită.</string>
     <string name="k2go_clone_installed_copy">Instalat? Copiază biblioteca</string>
     <string name="k2go_clone_incompat_why_long">Biblioteca K2Go include programe create pentru hardware-ul unui telefon. Când două telefoane sunt construite diferit, programele de pe unul nu pot rula pe celălalt, așa că copierea bibliotecii nu ar funcționa.</string>
     <string name="k2go_clone_nothing_to_replace">Nimic de înlocuit</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">Deja conectat? Continuă ›</string>
     <string name="k2go_clone_copying">Se copiază biblioteca…</string>
     <string name="k2go_clone_join_wifi_note">Conectează celălalt telefon la acest Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go nu se poate conecta la acea rețea în locul tău — conectează-te din Setări, apoi Continuă.</string>
+    <string name="k2go_clone_cant_join_note">K2Go nu se poate conecta la acea rețea în locul tău — conectează-te din setările Wi-Fi Android, apoi apasă Continuă.</string>
     <string name="k2go_clone_next_get_app">Următorul: obține aplicația</string>
     <string name="k2go_clone_nothing_title">Încă nimic de partajat</string>
     <string name="k2go_clone_point_camera_join">Îndreaptă camera aici pentru a conecta acest telefon sau folosește următoarele date</string>
     <string name="k2go_clone_share_anyway">Partajează oricum</string>
-    <string name="k2go_clone_share_wifi_note">Partajează acest Wi-Fi din Setări sau roagă-i să se conecteze, apoi continuă.</string>
+    <string name="k2go_clone_share_wifi_note">Partajează acest Wi-Fi din setările Wi-Fi Android sau roagă-i să se conecteze, apoi continuă.</string>
     <string name="k2go_clone_sharing_stopped">Partajare oprită</string>
     <string name="k2go_clone_skip_have_app">Omite — au deja K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Începe partajarea</string>

@@ -176,7 +176,7 @@
     <string name="deepop_notif_cancel">Atšaukti</string>
     <string name="k2go_clone_channel_name">Klonavimas</string>
     <string name="k2go_clone_channel_desc">Vykdo perkėlimą iš įrenginio į įrenginį</string>
-    <string name="k2go_clone_notif_text">Perkeliama tarp įrenginių — bakstelėkite, kad grįžtumėte</string>
+    <string name="k2go_clone_notif_text">Perkeliama tarp įrenginių</string>
     <string name="k2go_bj_finish">Baigti</string>
     <string name="k2go_bj_wait_title">Tai gali užtrukti</string>
     <string name="k2go_bj_wait_body">Palikite K2Go atidarytą. Galite išeiti — ji toliau veikia fone, o pranešimas jus sugrąžins.</string>
@@ -229,7 +229,7 @@
     <string name="k2go_clone_everything_note">Viskas, ką jis turi — programos ir jų turinys.</string>
     <string name="k2go_clone_exact_size">Tikslus dydis rodomas prisijungus.</string>
     <string name="k2go_clone_from_other_hdr">IŠ KITO TELEFONO</string>
-    <string name="k2go_clone_get_version_note">Gaukite šiam telefonui skirtą K2Go versiją — paklauskite platintojo arba atsisiųskite tinkamą.</string>
+    <string name="k2go_clone_get_version_note">Gauk šiam telefonui pritaikytą „K2Go“ versiją — paprašyk žmogaus, kuris tau bendrina „K2Go“, arba atsisiųsk tinkamą.</string>
     <string name="k2go_clone_installed_copy">Įdiegta? Nukopijuokite biblioteką</string>
     <string name="k2go_clone_incompat_why_long">K2Go bibliotekoje yra programų, sukurtų pagal telefono aparatinę įrangą. Kai du telefonai sukurti skirtingai, vieno programos negali veikti kitame, todėl kopijuoti biblioteką nepavyktų.</string>
     <string name="k2go_clone_nothing_to_replace">Nėra ką pakeisti</string>
@@ -271,12 +271,12 @@
     <string name="k2go_clone_already_connected">Jau prisijungta? Tęsti ›</string>
     <string name="k2go_clone_copying">Kopijuojama biblioteka…</string>
     <string name="k2go_clone_join_wifi_note">Prijunkite kitą telefoną prie šio Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go negali prijungti jūsų prie to tinklo — prisijunkite Nustatymuose ir bakstelėkite Tęsti.</string>
+    <string name="k2go_clone_cant_join_note">„K2Go“ negali už tave prisijungti prie to tinklo — prisijunk „Android“ „Wi-Fi“ nustatymuose, tada paliesk „Tęsti“.</string>
     <string name="k2go_clone_next_get_app">Toliau: gaukite programą</string>
     <string name="k2go_clone_nothing_title">Kol kas nėra ką bendrinti</string>
     <string name="k2go_clone_point_camera_join">Nukreipkite kamerą čia, kad prijungtumėte šį telefoną, arba naudokite šiuos prisijungimo duomenis</string>
     <string name="k2go_clone_share_anyway">Vis tiek bendrinti</string>
-    <string name="k2go_clone_share_wifi_note">Bendrinkite šį Wi-Fi iš Nustatymų arba paprašykite jų prisijungti, tada tęskite.</string>
+    <string name="k2go_clone_share_wifi_note">Bendrink šį „Wi-Fi“ iš „Android“ „Wi-Fi“ nustatymų arba leisk jiems prisijungti, tada tęsk.</string>
     <string name="k2go_clone_sharing_stopped">Bendrinimas sustabdytas</string>
     <string name="k2go_clone_skip_have_app">Praleisti — jie jau turi K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Pradėti bendrinti</string>

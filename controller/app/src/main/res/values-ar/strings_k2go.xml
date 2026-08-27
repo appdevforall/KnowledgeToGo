@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">إلغاء</string>
     <string name="k2go_clone_channel_name">استنساخ</string>
     <string name="k2go_clone_channel_desc">يُبقي عملية النقل من جهاز إلى جهاز قيد التشغيل</string>
-    <string name="k2go_clone_notif_text">جارٍ النقل بين الأجهزة — انقر للعودة</string>
+    <string name="k2go_clone_notif_text">جارٍ النقل بين الأجهزة</string>
     <string name="k2go_bj_finish">إنهاء</string>
     <string name="k2go_bj_wait_title">قد يستغرق هذا بعض الوقت</string>
     <string name="k2go_bj_wait_body">أبقِ K2Go مفتوحًا. يمكنك المغادرة — يستمر في العمل في الخلفية، ويعيدك الإشعار.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">كل ما لديه — تطبيقاته ومحتواها.</string>
     <string name="k2go_clone_exact_size">يظهر الحجم الدقيق بمجرد الاتصال.</string>
     <string name="k2go_clone_from_other_hdr">من الهاتف الآخر</string>
-    <string name="k2go_clone_get_version_note">احصل على نسخة من K2Go مصمّمة لهذا الهاتف — اسأل المروّج، أو نزّل النسخة الصحيحة.</string>
+    <string name="k2go_clone_get_version_note">احصل على إصدار من K2Go مصمم لهذا الهاتف — اطلبه من الشخص الذي يشارك K2Go معك، أو نزّل الإصدار المناسب.</string>
     <string name="k2go_clone_installed_copy">مثبّت؟ انسخ المكتبة</string>
     <string name="k2go_clone_incompat_why_long">تتضمّن مكتبة K2Go برامج مبنية لتلائم عتاد الهاتف. عندما يكون هاتفان مختلفَي البنية، لا يمكن لبرامج أحدهما العمل على الآخر، لذا لن ينجح نسخ المكتبة.</string>
     <string name="k2go_clone_nothing_to_replace">لا يوجد ما يُستبدل</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">متصل بالفعل؟ متابعة ›</string>
     <string name="k2go_clone_copying">جارٍ نسخ المكتبة…</string>
     <string name="k2go_clone_join_wifi_note">اجعل الهاتف الآخر ينضم إلى شبكة Wi-Fi هذه.</string>
-    <string name="k2go_clone_cant_join_note">لا يمكن لـK2Go الانضمام إلى تلك الشبكة نيابةً عنك — اتصل من الإعدادات، ثم تابع.</string>
+    <string name="k2go_clone_cant_join_note">لا يستطيع K2Go الانضمام إلى تلك الشبكة نيابةً عنك — اتصل من إعدادات Wi-Fi في Android، ثم اضغط متابعة.</string>
     <string name="k2go_clone_next_get_app">التالي: احصل على التطبيق</string>
     <string name="k2go_clone_nothing_title">لا يوجد ما تشاركه بعد</string>
     <string name="k2go_clone_point_camera_join">وجّه الكاميرا هنا لربط هذا الهاتف، أو استخدم بيانات الاعتماد التالية</string>
     <string name="k2go_clone_share_anyway">شارك على أي حال</string>
-    <string name="k2go_clone_share_wifi_note">شارك شبكة Wi-Fi هذه من الإعدادات، أو اطلب منهم الانضمام إليها، ثم تابع.</string>
+    <string name="k2go_clone_share_wifi_note">شارك شبكة Wi-Fi هذه من إعدادات Wi-Fi في Android، أو اطلب منهم الانضمام إليها، ثم تابع.</string>
     <string name="k2go_clone_sharing_stopped">توقّفت المشاركة</string>
     <string name="k2go_clone_skip_have_app">تخطّى — لديهم K2Go بالفعل  ›</string>
     <string name="k2go_clone_start_sharing">بدء المشاركة</string>

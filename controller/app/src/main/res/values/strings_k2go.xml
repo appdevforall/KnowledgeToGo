@@ -287,7 +287,7 @@
     <string name="k2go_clone_everything_note">Everything it has — its apps and their content.</string>
     <string name="k2go_clone_exact_size">Exact size is shown once you connect.</string>
     <string name="k2go_clone_from_other_hdr">FROM THE OTHER PHONE</string>
-    <string name="k2go_clone_get_version_note">Get a K2Go version made for this phone — ask your promoter, or download the right one.</string>
+    <string name="k2go_clone_get_version_note">Get a K2Go version made for this phone — ask the person sharing K2Go with you, or download the right one.</string>
     <string name="k2go_clone_installed_copy">Installed? Copy the library</string>
     <string name="k2go_clone_join_hotspot_title">Join my hotspot</string>
     <string name="k2go_clone_join_wifi_title">Join the same Wi-Fi</string>

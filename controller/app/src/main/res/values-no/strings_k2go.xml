@@ -176,7 +176,7 @@
     <string name="deepop_notif_cancel">Avbryt</string>
     <string name="k2go_clone_channel_name">Klon</string>
     <string name="k2go_clone_channel_desc">Holder en overføring fra enhet til enhet i gang</string>
-    <string name="k2go_clone_notif_text">Overfører mellom enheter — trykk for å gå tilbake</string>
+    <string name="k2go_clone_notif_text">Overfører mellom enheter</string>
     <string name="k2go_bj_finish">Fullfør</string>
     <string name="k2go_bj_wait_title">Dette kan ta en stund</string>
     <string name="k2go_bj_wait_body">Hold K2Go åpen. Du kan forlate den — den fortsetter å kjøre i bakgrunnen, og varselet tar deg tilbake.</string>
@@ -229,7 +229,7 @@
     <string name="k2go_clone_everything_note">Alt den har — appene og innholdet deres.</string>
     <string name="k2go_clone_exact_size">Nøyaktig størrelse vises når du kobler til.</string>
     <string name="k2go_clone_from_other_hdr">FRA DEN ANDRE TELEFONEN</string>
-    <string name="k2go_clone_get_version_note">Skaff en K2Go-versjon laget for denne telefonen — spør promotøren din, eller last ned den riktige.</string>
+    <string name="k2go_clone_get_version_note">Skaff en K2Go-versjon laget for denne telefonen — spør personen som deler K2Go med deg, eller last ned den riktige.</string>
     <string name="k2go_clone_installed_copy">Installert? Kopier biblioteket</string>
     <string name="k2go_clone_incompat_why_long">K2Gos bibliotek inneholder programmer bygget for å passe en telefons maskinvare. Når to telefoner er bygget forskjellig, kan ikke programmene fra den ene kjøre på den andre, så det ville ikke fungere å kopiere biblioteket.</string>
     <string name="k2go_clone_nothing_to_replace">Ingenting å erstatte</string>
@@ -271,12 +271,12 @@
     <string name="k2go_clone_already_connected">Allerede tilkoblet? Fortsett ›</string>
     <string name="k2go_clone_copying">Kopierer biblioteket…</string>
     <string name="k2go_clone_join_wifi_note">Få den andre telefonen på denne Wi-Fi-en.</string>
-    <string name="k2go_clone_cant_join_note">K2Go kan ikke koble til det nettverket for deg — koble til i Innstillinger, og fortsett.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kan ikke koble til det nettverket for deg — koble til i Androids Wi-Fi-innstillinger, og trykk deretter Fortsett.</string>
     <string name="k2go_clone_next_get_app">Neste: hent appen</string>
     <string name="k2go_clone_nothing_title">Ingenting å dele ennå</string>
     <string name="k2go_clone_point_camera_join">Rett kameraet hit for å koble til denne telefonen, eller bruk følgende innlogging</string>
     <string name="k2go_clone_share_anyway">Del likevel</string>
-    <string name="k2go_clone_share_wifi_note">Del denne Wi-Fi-en fra Innstillinger, eller la dem koble til den, og fortsett.</string>
+    <string name="k2go_clone_share_wifi_note">Del denne Wi-Fi-en fra Androids Wi-Fi-innstillinger, eller la dem koble seg til, og fortsett deretter.</string>
     <string name="k2go_clone_sharing_stopped">Deling stoppet</string>
     <string name="k2go_clone_skip_have_app">Hopp over — de har allerede K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Start deling</string>

@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">ரத்து</string>
     <string name="k2go_clone_channel_name">நகல்</string>
     <string name="k2go_clone_channel_desc">சாதனத்திலிருந்து சாதனத்திற்கான பரிமாற்றத்தை இயக்கி வைக்கிறது</string>
-    <string name="k2go_clone_notif_text">சாதனங்களுக்கிடையே பரிமாற்றம் — திரும்ப தட்டவும்</string>
+    <string name="k2go_clone_notif_text">சாதனங்களுக்கு இடையே இடமாற்றம்</string>
     <string name="k2go_bj_finish">முடி</string>
     <string name="k2go_bj_wait_title">இதற்கு சிறிது நேரம் ஆகலாம்</string>
     <string name="k2go_bj_wait_body">K2Go-ஐத் திறந்து வைத்திருங்கள். நீங்கள் வெளியேறலாம் — இது பின்னணியில் இயங்கிக்கொண்டே இருக்கும், அறிவிப்பு உங்களை மீண்டும் அழைத்து வரும்.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">அது வைத்திருக்கும் அனைத்தும் — அதன் செயலிகளும் அவற்றின் உள்ளடக்கமும்.</string>
     <string name="k2go_clone_exact_size">இணைந்தவுடன் சரியான அளவு காட்டப்படும்.</string>
     <string name="k2go_clone_from_other_hdr">மற்ற தொலைபேசியிலிருந்து</string>
-    <string name="k2go_clone_get_version_note">இந்தத் தொலைபேசிக்காக உருவாக்கப்பட்ட K2Go பதிப்பைப் பெறுங்கள் — உங்கள் விளம்பரதாரரிடம் கேளுங்கள், அல்லது சரியானதைப் பதிவிறக்குங்கள்.</string>
+    <string name="k2go_clone_get_version_note">இந்த மொபைலுக்காக உருவாக்கப்பட்ட K2Go பதிப்பைப் பெறவும் — உங்களுடன் K2Go ஐப் பகிர்பவரிடம் கேட்கவும், அல்லது சரியானதைப் பதிவிறக்கவும்.</string>
     <string name="k2go_clone_installed_copy">நிறுவப்பட்டதா? நூலகத்தை நகலெடு</string>
     <string name="k2go_clone_incompat_why_long">K2Go-இன் நூலகத்தில் தொலைபேசியின் வன்பொருளுக்கு ஏற்ப உருவாக்கப்பட்ட நிரல்கள் உள்ளன. இரண்டு தொலைபேசிகள் வேறுவிதமாக உருவாக்கப்படும்போது, ஒன்றின் நிரல்கள் மற்றொன்றில் இயங்காது, எனவே நூலகத்தை நகலெடுப்பது வேலை செய்யாது.</string>
     <string name="k2go_clone_nothing_to_replace">மாற்றுவதற்கு எதுவும் இல்லை</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">ஏற்கனவே இணைக்கப்பட்டதா? தொடர் ›</string>
     <string name="k2go_clone_copying">நூலகம் நகலெடுக்கப்படுகிறது…</string>
     <string name="k2go_clone_join_wifi_note">மற்ற தொலைபேசியை இந்த Wi-Fi-இல் இணைக்கவும்.</string>
-    <string name="k2go_clone_cant_join_note">K2Go உங்களுக்காக அந்த நெட்வொர்க்கில் இணைய முடியாது — அமைப்புகளில் இணைந்து, பிறகு தொடரவும்.</string>
+    <string name="k2go_clone_cant_join_note">K2Go உங்கள் சார்பாக அந்த நெட்வொர்க்குடன் இணைய முடியாது — Android இன் Wi-Fi அமைப்புகளில் இணையவும், பிறகு தொடரவும் என்பதைத் தட்டவும்.</string>
     <string name="k2go_clone_next_get_app">அடுத்து: செயலியைப் பெறு</string>
     <string name="k2go_clone_nothing_title">இன்னும் பகிர எதுவும் இல்லை</string>
     <string name="k2go_clone_point_camera_join">இந்த மொபைலை இணைக்க அதன் கேமராவை இங்கே காட்டவும், அல்லது கீழ்க்காணும் விவரங்களைப் பயன்படுத்தவும்</string>
     <string name="k2go_clone_share_anyway">இருப்பினும் பகிர்</string>
-    <string name="k2go_clone_share_wifi_note">அமைப்புகளிலிருந்து இந்த Wi-Fi-ஐப் பகிரவும், அல்லது அவர்களை இணையச் செய்து, பிறகு தொடரவும்.</string>
+    <string name="k2go_clone_share_wifi_note">இந்த Wi-Fi ஐ Android இன் Wi-Fi அமைப்புகளில் இருந்து பகிரவும், அல்லது அவர்களை இணையச் சொல்லவும், பிறகு தொடரவும்.</string>
     <string name="k2go_clone_sharing_stopped">பகிர்வு நிறுத்தப்பட்டது</string>
     <string name="k2go_clone_skip_have_app">தவிர் — அவர்களிடம் ஏற்கனவே K2Go உள்ளது  ›</string>
     <string name="k2go_clone_start_sharing">பகிர்வைத் தொடங்கு</string>

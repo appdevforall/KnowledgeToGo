@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">Ləğv et</string>
     <string name="k2go_clone_channel_name">Klon</string>
     <string name="k2go_clone_channel_desc">Cihazdan-cihaza köçürməni işlədir</string>
-    <string name="k2go_clone_notif_text">Cihazlar arasında köçürülür — qayıtmaq üçün toxun</string>
+    <string name="k2go_clone_notif_text">Cihazlar arasında köçürülür</string>
     <string name="k2go_bj_finish">Bitir</string>
     <string name="k2go_bj_wait_title">Bu bir qədər vaxt apara bilər</string>
     <string name="k2go_bj_wait_body">K2Go-nu açıq saxlayın. Tərk edə bilərsiniz — arxa planda işləməyə davam edir və bildiriş sizi geri gətirir.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">Onda olan hər şey — tətbiqləri və onların məzmunu.</string>
     <string name="k2go_clone_exact_size">Dəqiq ölçü qoşulduqdan sonra göstərilir.</string>
     <string name="k2go_clone_from_other_hdr">DİGƏR TELEFONDAN</string>
-    <string name="k2go_clone_get_version_note">Bu telefon üçün hazırlanmış K2Go versiyasını əldə edin — təşviqatçınızdan soruşun və ya düzgün olanı yükləyin.</string>
+    <string name="k2go_clone_get_version_note">Bu telefon üçün hazırlanmış K2Go versiyasını əldə et — K2Go-nu səninlə paylaşan şəxsdən istə və ya düzgün olanı yüklə.</string>
     <string name="k2go_clone_installed_copy">Quraşdırıldı? Kitabxananı köçür</string>
     <string name="k2go_clone_incompat_why_long">K2Go-nun kitabxanası telefonun aparatına uyğun qurulmuş proqramları ehtiva edir. İki telefon fərqli qurulduqda, birinin proqramları digərində işləyə bilmir, ona görə kitabxananı köçürmək işə yaramaz.</string>
     <string name="k2go_clone_nothing_to_replace">Əvəz ediləcək heç nə yoxdur</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">Artıq qoşulub? Davam et ›</string>
     <string name="k2go_clone_copying">Kitabxana köçürülür…</string>
     <string name="k2go_clone_join_wifi_note">Digər telefonu bu Wi-Fi-a qoşun.</string>
-    <string name="k2go_clone_cant_join_note">K2Go sizin üçün həmin şəbəkəyə qoşula bilmir — Ayarlarda qoşulun, sonra Davam edin.</string>
+    <string name="k2go_clone_cant_join_note">K2Go sənin yerinə həmin şəbəkəyə qoşula bilmir — Android Wi-Fi parametrlərində qoşul, sonra Davam et düyməsinə toxun.</string>
     <string name="k2go_clone_next_get_app">İrəli: tətbiqi al</string>
     <string name="k2go_clone_nothing_title">Hələ paylaşılacaq heç nə yoxdur</string>
     <string name="k2go_clone_point_camera_join">Bu telefonu qoşmaq üçün kameranı buraya yönəldin və ya aşağıdakı məlumatlardan istifadə edin</string>
     <string name="k2go_clone_share_anyway">Yenə də paylaş</string>
-    <string name="k2go_clone_share_wifi_note">Bu Wi-Fi-ı Ayarlardan paylaşın və ya onları qoşdurun, sonra davam edin.</string>
+    <string name="k2go_clone_share_wifi_note">Bu Wi-Fi-ni Android Wi-Fi parametrlərindən paylaş və ya qoşulmalarını istə, sonra davam et.</string>
     <string name="k2go_clone_sharing_stopped">Paylaşma dayandırıldı</string>
     <string name="k2go_clone_skip_have_app">Ötür — onlarda artıq K2Go var  ›</string>
     <string name="k2go_clone_start_sharing">Paylaşmağa başla</string>

@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">Откажи</string>
     <string name="k2go_clone_channel_name">Клонирање</string>
     <string name="k2go_clone_channel_desc">Одржава пренос са уређаја на уређај</string>
-    <string name="k2go_clone_notif_text">Пренос између уређаја — додирните за повратак</string>
+    <string name="k2go_clone_notif_text">Пренос између уређаја</string>
     <string name="k2go_bj_finish">Заврши</string>
     <string name="k2go_bj_wait_title">Ово може потрајати</string>
     <string name="k2go_bj_wait_body">Држите K2Go отворен. Можете отићи — наставља да ради у позадини, а обавештење вас враћа назад.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">Све што има — његове апликације и њихов садржај.</string>
     <string name="k2go_clone_exact_size">Тачна величина се приказује када се повежете.</string>
     <string name="k2go_clone_from_other_hdr">СА ДРУГОГ ТЕЛЕФОНА</string>
-    <string name="k2go_clone_get_version_note">Набавите верзију K2Go направљену за овај телефон — питајте промотера или преузмите одговарајућу.</string>
+    <string name="k2go_clone_get_version_note">Набави верзију K2Go направљену за овај телефон — питај особу која дели K2Go са тобом или преузми праву.</string>
     <string name="k2go_clone_installed_copy">Инсталирано? Копирајте библиотеку</string>
     <string name="k2go_clone_incompat_why_long">K2Go библиотека садржи програме направљене за хардвер телефона. Када су два телефона другачије направљена, програми са једног не могу да раде на другом, па копирање библиотеке не би функционисало.</string>
     <string name="k2go_clone_nothing_to_replace">Нема шта да се замени</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">Већ повезани? Наставите ›</string>
     <string name="k2go_clone_copying">Копирање библиотеке…</string>
     <string name="k2go_clone_join_wifi_note">Повежите други телефон на овај Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go не може да се повеже на ту мрежу уместо вас — повежите се у Подешавањима, па наставите.</string>
+    <string name="k2go_clone_cant_join_note">K2Go не може да се повеже на ту мрежу уместо тебе — повежи се у Android Wi-Fi подешавањима, па додирни Настави.</string>
     <string name="k2go_clone_next_get_app">Даље: набавите апликацију</string>
     <string name="k2go_clone_nothing_title">Још нема шта да се дели</string>
     <string name="k2go_clone_point_camera_join">Усмерите камеру овамо да повежете овај телефон или користите следеће податке</string>
     <string name="k2go_clone_share_anyway">Ипак подели</string>
-    <string name="k2go_clone_share_wifi_note">Поделите овај Wi-Fi из Подешавања или их повежите на њега, па наставите.</string>
+    <string name="k2go_clone_share_wifi_note">Подели овај Wi-Fi из Android Wi-Fi подешавања или их пусти да се повежу, па настави.</string>
     <string name="k2go_clone_sharing_stopped">Дељење заустављено</string>
     <string name="k2go_clone_skip_have_app">Прескочи — они већ имају K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Започни дељење</string>

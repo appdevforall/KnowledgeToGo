@@ -175,7 +175,7 @@
     <string name="deepop_notif_cancel">Zrušiť</string>
     <string name="k2go_clone_channel_name">Klonovanie</string>
     <string name="k2go_clone_channel_desc">Udržiava prenos medzi zariadeniami bežiaci</string>
-    <string name="k2go_clone_notif_text">Prenos medzi zariadeniami — klepnite pre návrat</string>
+    <string name="k2go_clone_notif_text">Prenos medzi zariadeniami</string>
     <string name="k2go_bj_finish">Dokončiť</string>
     <string name="k2go_bj_wait_title">Môže to chvíľu trvať</string>
     <string name="k2go_bj_wait_body">Nechajte K2Go otvorené. Môžete odísť — beží ďalej na pozadí a upozornenie vás vráti späť.</string>
@@ -228,7 +228,7 @@
     <string name="k2go_clone_everything_note">Všetko, čo má — jeho aplikácie a ich obsah.</string>
     <string name="k2go_clone_exact_size">Presná veľkosť sa zobrazí po pripojení.</string>
     <string name="k2go_clone_from_other_hdr">Z DRUHÉHO TELEFÓNU</string>
-    <string name="k2go_clone_get_version_note">Získajte verziu K2Go vytvorenú pre tento telefón — opýtajte sa svojho promotéra alebo stiahnite tú správnu.</string>
+    <string name="k2go_clone_get_version_note">Získaj verziu K2Go vytvorenú pre tento telefón — požiadaj osobu, ktorá ti K2Go zdieľa, alebo si stiahni tú správnu.</string>
     <string name="k2go_clone_installed_copy">Nainštalované? Skopírujte knižnicu</string>
     <string name="k2go_clone_incompat_why_long">Knižnica K2Go obsahuje programy prispôsobené hardvéru telefónu. Keď sú dva telefóny postavené odlišne, programy z jedného nemôžu bežať na druhom, takže kopírovanie knižnice by nefungovalo.</string>
     <string name="k2go_clone_nothing_to_replace">Nie je čo nahradiť</string>
@@ -270,12 +270,12 @@
     <string name="k2go_clone_already_connected">Už pripojené? Pokračovať ›</string>
     <string name="k2go_clone_copying">Kopíruje sa knižnica…</string>
     <string name="k2go_clone_join_wifi_note">Pripojte druhý telefón k tejto Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go sa za vás nemôže pripojiť k tej sieti — pripojte sa v Nastaveniach, potom Pokračujte.</string>
+    <string name="k2go_clone_cant_join_note">K2Go sa za teba nemôže pripojiť k tejto sieti — pripoj sa v nastaveniach Wi-Fi Androidu a potom ťukni na Pokračovať.</string>
     <string name="k2go_clone_next_get_app">Ďalej: získajte aplikáciu</string>
     <string name="k2go_clone_nothing_title">Zatiaľ nie je čo zdieľať</string>
     <string name="k2go_clone_point_camera_join">Namierte sem fotoaparát a pripojte tento telefón, alebo použite tieto údaje</string>
     <string name="k2go_clone_share_anyway">Zdieľať napriek tomu</string>
-    <string name="k2go_clone_share_wifi_note">Zdieľajte túto Wi-Fi z Nastavení alebo ich k nej pripojte, potom pokračujte.</string>
+    <string name="k2go_clone_share_wifi_note">Zdieľaj túto Wi-Fi z nastavení Wi-Fi Androidu, alebo ich nechaj pripojiť, a potom pokračuj.</string>
     <string name="k2go_clone_sharing_stopped">Zdieľanie zastavené</string>
     <string name="k2go_clone_skip_have_app">Preskočiť — už majú K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Začať zdieľať</string>
