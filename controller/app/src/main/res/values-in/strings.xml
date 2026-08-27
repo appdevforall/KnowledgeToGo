@@ -455,12 +455,12 @@
     <string name="crash_report_dismiss">Abaikan</string>
     <string name="rsync_error_process_killed">Android menghentikan proses transfer (batas proses latar belakang sistem). Untuk mencegah ini, aktifkan “Nonaktifkan pembatasan proses anak” di Opsi pengembang, atau siapkan pengoptimalan ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Bagikan statistik penggunaan anonim?</string>
-    <string name="analytics_enroll_body">Bantu tingkatkan %1$s dengan membagikan statistik penggunaan operasional yang anonim — hal-hal seperti pemasangan, unduhan, crash, versi aplikasi, dan waktu di aplikasi. Tidak ada data pribadi, tidak ada riwayat penjelajahan, dan tidak ada apa pun tentang orang yang menggunakan konten yang disajikan. Anda dapat mengubah ini kapan saja di Pengaturan.</string>
-    <string name="analytics_enroll_accept">Bagikan statistik</string>
-    <string name="analytics_enroll_decline">Tidak, terima kasih</string>
-    <string name="settings_analytics_title">Bagikan statistik penggunaan anonim</string>
-    <string name="settings_analytics_desc">Hanya operasional (pemasangan, crash, waktu di aplikasi). Anonim, tanpa data pribadi. Ubah kapan saja.</string>
+    <string name="analytics_enroll_title">Privasi &amp; analitik</string>
+    <string name="analytics_enroll_body">%1$s mengumpulkan informasi penggunaan anonim untuk membantu kami memperbaiki bug dan menyempurnakan aplikasi. Tidak ada informasi pribadi yang dikumpulkan atau dibagikan, dan tidak ada yang dilacak tentang orang yang menggunakan konten yang kamu bagikan.\n\nBagikan data anonim mengirim informasi ini saat ponsel daring. Tetap luring tidak mengirim apa pun, meski ponsel daring.</string>
+    <string name="analytics_enroll_accept">Bagikan data anonim</string>
+    <string name="analytics_enroll_decline">Tetap luring</string>
+    <string name="settings_analytics_title">Bagikan data anonim</string>
+    <string name="settings_analytics_desc">Informasi penggunaan anonim untuk memperbaiki bug dan menyempurnakan aplikasi — tanpa data pribadi dan tidak ada tentang orang yang menggunakan konten yang kamu bagikan. Ubah kapan saja.</string>
     <string name="phantom_warn_title">Transfer mungkin terganggu</string>
     <string name="phantom_warn_body">Pada Android 12+, sistem dapat menghentikan transfer saat berjalan di latar belakang (batas proses phantom). Untuk mencegahnya, nonaktifkan “pembatasan proses anak”, atau tetap lanjutkan — transfer besar mungkin terganggu.</string>
     <string name="phantom_warn_open_dev">Buka Opsi pengembang</string>

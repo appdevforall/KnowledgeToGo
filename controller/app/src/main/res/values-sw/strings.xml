@@ -455,12 +455,12 @@
     <string name="crash_report_dismiss">Ondoa</string>
     <string name="rsync_error_process_killed">Android imesimamisha mchakato wa uhamishaji (kikomo cha michakato ya nyuma cha mfumo). Ili kuzuia hili, washa “Zima vizuizi vya michakato mtoto” katika Chaguo za msanidi, au sanidi uboreshaji wa ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Shiriki takwimu za matumizi bila utambulisho?</string>
-    <string name="analytics_enroll_body">Saidia kuboresha %1$s kwa kushiriki takwimu za matumizi bila utambulisho, za kiuendeshaji — kama usakinishaji, upakuaji, ajali, toleo la programu na muda ndani ya programu. Hakuna data ya kibinafsi, hakuna historia ya kuvinjari, na hakuna chochote kuhusu watu wanaotumia maudhui yanayotolewa. Unaweza kubadilisha hili wakati wowote katika Mipangilio.</string>
-    <string name="analytics_enroll_accept">Shiriki takwimu</string>
-    <string name="analytics_enroll_decline">Hapana asante</string>
-    <string name="settings_analytics_title">Shiriki takwimu za matumizi bila utambulisho</string>
-    <string name="settings_analytics_desc">Za kiuendeshaji tu (usakinishaji, ajali, muda ndani ya programu). Bila utambulisho, hakuna data ya kibinafsi. Badilisha wakati wowote.</string>
+    <string name="analytics_enroll_title">Faragha na uchanganuzi</string>
+    <string name="analytics_enroll_body">%1$s hukusanya taarifa za matumizi zisizojulikana ili kutusaidia kurekebisha hitilafu na kuboresha programu. Hakuna taarifa binafsi zinazokusanywa au kushirikiwa, na hakuna kinachofuatiliwa kuhusu watu wanaotumia maudhui unayoshiriki.\n\nShiriki data isiyojulikana hutuma taarifa hizi simu ikiwa mtandaoni. Weka nje ya mtandao haitumi chochote, hata kama simu iko mtandaoni.</string>
+    <string name="analytics_enroll_accept">Shiriki data isiyojulikana</string>
+    <string name="analytics_enroll_decline">Weka nje ya mtandao</string>
+    <string name="settings_analytics_title">Shiriki data isiyojulikana</string>
+    <string name="settings_analytics_desc">Taarifa za matumizi zisizojulikana ili kurekebisha hitilafu na kuboresha programu — hakuna data binafsi na hakuna kuhusu watu wanaotumia maudhui unayoshiriki. Badilisha wakati wowote.</string>
     <string name="phantom_warn_title">Uhamishaji unaweza kukatizwa</string>
     <string name="phantom_warn_body">Kwenye Android 12+ mfumo unaweza kusimamisha uhamishaji unapoendeshwa nyuma (kikomo cha phantom-process). Ili kulizuia, zima “vizuizi vya michakato mtoto”, au endelea hata hivyo — uhamishaji mkubwa unaweza kukatizwa.</string>
     <string name="phantom_warn_open_dev">Fungua Chaguo za msanidi</string>
