@@ -70,18 +70,34 @@ public final class ModuleProvisioner {
                     + " (" + modules.length + " module(s) still banked)");
             return verdict;
         }
-        // Record the ordered batch so the install index can render a row per module (the queue only
-        // reports the current module + remaining, not the full list).
-        ModuleBatch.save(app, modules);
-        Intent i = new Intent(app, InstallService.class);
-        i.setAction(InstallService.ACTION_START_MODULES);
-        i.putExtra(InstallService.EXTRA_MODULES, modules);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.startForegroundService(i);
-        else app.startService(i);
+        // Record the ordered batch and hand it to the queue engine — via the one startBatch path, so
+        // the install index always has its rows (the queue only reports current + remaining).
+        startBatch(app, modules, null);
         Log.i(TAG, "module drain: handed " + modules.length + " module(s) to InstallService");
         // Handed off; the module-queue owns the run from here. Wishlist cleared; the batch persists
         // until the index sees the run finish.
         ModuleWishlist.clear(app);
         return verdict;
+    }
+
+    /**
+     * ADFA-4898: the single entry point that starts a module batch. Saves the ordered batch so the
+     * install index renders a row per module (the queue only reports current + remaining), then hands
+     * the keys to InstallService. Every caller — the wishlist {@link #drain} and the user-confirmed
+     * Retry ({@code InstallService.retryModules}) — goes through here, so nothing can start the
+     * runroles without the batch the index needs. A raw ACTION_START_MODULES that skipped the save
+     * left the index empty ("Finishing setup" with no rows); centralising it makes that unrepresentable.
+     *
+     * @param extras optional intent extras (maps carries its retained per-layer selection here); null otherwise.
+     */
+    public static void startBatch(Context ctx, String[] modules, android.os.Bundle extras) {
+        if (ctx == null || modules == null || modules.length == 0) return;
+        final Context app = ctx.getApplicationContext();
+        ModuleBatch.save(app, modules);
+        Intent i = new Intent(app, InstallService.class).setAction(InstallService.ACTION_START_MODULES);
+        i.putExtra(InstallService.EXTRA_MODULES, modules);
+        if (extras != null) i.putExtras(extras);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) app.startForegroundService(i);
+        else app.startService(i);
     }
 }

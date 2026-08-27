@@ -1069,15 +1069,20 @@ public final class InstallService extends Service {
      */
     public static void retryModules(Context ctx, java.util.List<String> modules) {
         if (ctx == null || modules == null || modules.isEmpty()) return;
-        Intent i = new Intent(ctx, InstallService.class).setAction(ACTION_START_MODULES);
-        i.putExtra(EXTRA_MODULES, modules.toArray(new String[0]));
+        // Go through ModuleProvisioner.startBatch (the same path the wishlist drain uses) so the retry
+        // ALSO records the ModuleBatch. Firing ACTION_START_MODULES raw here skipped the batch save, so
+        // the install index came up empty ("Finishing setup" with no rows). Maps keeps its retained
+        // per-layer selection by passing it as extras.
+        android.os.Bundle extras = null;
         if (modules.contains("maps") && sRetryMapsVector != null) {
-            i.putExtra(EXTRA_MAPS_VECTOR, sRetryMapsVector);
-            i.putExtra(EXTRA_MAPS_SAT, sRetryMapsSat);
-            i.putExtra(EXTRA_MAPS_TERRAIN, sRetryMapsTerrain);
-            i.putExtra(EXTRA_MAPS_SEARCH, sRetryMapsSearch);
+            extras = new android.os.Bundle();
+            extras.putString(EXTRA_MAPS_VECTOR, sRetryMapsVector);
+            extras.putString(EXTRA_MAPS_SAT, sRetryMapsSat);
+            extras.putString(EXTRA_MAPS_TERRAIN, sRetryMapsTerrain);
+            extras.putBoolean(EXTRA_MAPS_SEARCH, sRetryMapsSearch);
         }
-        androidx.core.content.ContextCompat.startForegroundService(ctx, i);
+        org.iiab.controller.redesign.ModuleProvisioner.startBatch(
+                ctx, modules.toArray(new String[0]), extras);
     }
 
     private void finishModuleQueue() {
