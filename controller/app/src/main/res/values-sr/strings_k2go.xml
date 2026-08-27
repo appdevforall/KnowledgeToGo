@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Само скенирајте или користите следеће податке:</string>
     <string name="k2go_perm_keep_running">Настави рад</string>
     <string name="k2go_connect_subtitle">Дозволите оближњем уређају да прегледа вашу библиотеку.</string>
-    <string name="k2go_perm_nearby_note">Дозвола за оближње уређаје тражи се касније, само при дељењу.</string>
     <string name="k2go_next">Даље</string>
     <string name="k2go_next_choose_content">Даље: изаберите садржај</string>
     <string name="k2go_clone_next_note">Даље: повежите се на исту мрежу, па започните.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Додавање садржаја</string>
+    <string name="k2go_home_installing_system">Инсталирање — сачекајте</string>
     <string name="k2go_perm_storage">Приступ складишту</string>
     <string name="k2go_storage">Складиште</string>
     <string name="k2go_lang_system_default">Подразумевано системски</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">прескочено</string>
     <string name="k2go_books_body">Ускоро — још нема садржаја за избор.</string>
     <string name="k2go_maps_body">Офлајн основна мапа света. Укључена у мапу (за сада фиксно).</string>
-    <string name="k2go_courses_hint">Kiwix предефинисани скупови постоје; Kolibri се још не може предефинисати — подесите на уређају након инсталације.</string>
-    <string name="k2go_added_after">додато након инсталације</string>
     <string name="k2go_step2a_hint">Додирните извор да га додате или прескочите. Прескочи све = само систем.</string>
     <string name="k2go_skip_for_now">Прескочи за сада ›</string>
     <string name="k2go_wiz_choose_language">Изаберите језик</string>
     <string name="k2go_wiz_language_sub">Поставља језик апликације и садржаја.</string>
     <string name="k2go_wiz_permissions_title">Дозволите неколико ствари</string>
+    <string name="k2go_wiz_permissions_sub">Следеће дозволе су неопходне. Апликација може затражити додатне дозволе када делите своју библиотеку.</string>
     <string name="k2go_continue">Настави</string>
     <string name="k2go_wiz_setup_sub">Како желите да буде?</string>
     <string name="k2go_settings_language">Језик</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Откажи</string>
     <string name="k2go_clone_channel_name">Клонирање</string>
     <string name="k2go_clone_channel_desc">Одржава пренос са уређаја на уређај</string>
-    <string name="k2go_clone_notif_text">Пренос између уређаја — додирните за повратак</string>
+    <string name="k2go_clone_notif_text">Пренос између уређаја</string>
     <string name="k2go_bj_finish">Заврши</string>
     <string name="k2go_bj_wait_title">Ово може потрајати</string>
     <string name="k2go_bj_wait_body">Држите K2Go отворен. Можете отићи — наставља да ради у позадини, а обавештење вас враћа назад.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Потпуна копија библиотеке другог телефона.</string>
     <string name="k2go_clone_all_apps">Све апликације и њихов садржај</string>
     <string name="k2go_clone_already_wifi_skip">Већ сте на истом Wi-Fi? Можете прескочити овај корак›</string>
-    <string name="k2go_clone_camera_note">Камера не ради? Повежите се на Wi-Fi другог телефона у Подешавањима, па прескочите.</string>
     <string name="k2go_clone_camera_q">Камера не ради?</string>
     <string name="k2go_clone_cant_scan">Не можете да скенирате? Поделите апликацију на други начин  ›</string>
     <string name="k2go_cancel">Откажи</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Све што има — његове апликације и њихов садржај.</string>
     <string name="k2go_clone_exact_size">Тачна величина се приказује када се повежете.</string>
     <string name="k2go_clone_from_other_hdr">СА ДРУГОГ ТЕЛЕФОНА</string>
-    <string name="k2go_clone_get_version_note">Набавите верзију K2Go направљену за овај телефон — питајте промотера или преузмите одговарајућу.</string>
+    <string name="k2go_clone_get_version_note">Набави верзију K2Go направљену за овај телефон — питај особу која дели K2Go са тобом или преузми праву.</string>
     <string name="k2go_clone_installed_copy">Инсталирано? Копирајте библиотеку</string>
     <string name="k2go_clone_incompat_why_long">K2Go библиотека садржи програме направљене за хардвер телефона. Када су два телефона другачије направљена, програми са једног не могу да раде на другом, па копирање библиотеке не би функционисало.</string>
     <string name="k2go_clone_nothing_to_replace">Нема шта да се замени</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Већ повезани? Наставите ›</string>
     <string name="k2go_clone_copying">Копирање библиотеке…</string>
     <string name="k2go_clone_join_wifi_note">Повежите други телефон на овај Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go не може да се повеже на ту мрежу уместо вас — повежите се у Подешавањима, па наставите.</string>
+    <string name="k2go_clone_cant_join_note">K2Go не може да се повеже на ту мрежу уместо тебе — повежи се у Android Wi-Fi подешавањима, па додирни Настави.</string>
     <string name="k2go_clone_next_get_app">Даље: набавите апликацију</string>
     <string name="k2go_clone_nothing_title">Још нема шта да се дели</string>
     <string name="k2go_clone_point_camera_join">Усмерите камеру овамо да повежете овај телефон или користите следеће податке</string>
     <string name="k2go_clone_share_anyway">Ипак подели</string>
-    <string name="k2go_clone_share_wifi_note">Поделите овај Wi-Fi из Подешавања или их повежите на њега, па наставите.</string>
+    <string name="k2go_clone_share_wifi_note">Подели овај Wi-Fi из Android Wi-Fi подешавања или их пусти да се повежу, па настави.</string>
     <string name="k2go_clone_sharing_stopped">Дељење заустављено</string>
     <string name="k2go_clone_skip_have_app">Прескочи — они већ имају K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Започни дељење</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Лозинка: %1$s</string>
     <string name="k2go_step2_download_fmt">Преузми библиотеку · %.1f GB</string>
     <string name="k2go_step2_review">Преглед</string>
-    <string name="k2go_step2b_info_books">Књиге — ускоро (још нема управљача садржајем · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Мапе — укључене у вашем издању.</string>
-    <string name="k2go_step2b_info_courses">Курсеви — подешавају се на уређају након инсталације.</string>
     <string name="k2go_step2b_info_review">Прегледајте библиотеку, па преузмите.</string>
     <string name="k2go_setting_up_library">Подешавање ваше библиотеке…</string>
     <string name="k2go_reading">читање</string>

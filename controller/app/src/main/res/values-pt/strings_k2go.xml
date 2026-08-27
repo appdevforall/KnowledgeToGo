@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Basta digitalizar, ou use as seguintes credenciais:</string>
     <string name="k2go_perm_keep_running">Manter em execução</string>
     <string name="k2go_connect_subtitle">Permita que um dispositivo próximo navegue na sua biblioteca.</string>
-    <string name="k2go_perm_nearby_note">A permissão de dispositivos próximos é pedida depois, apenas ao partilhar.</string>
     <string name="k2go_next">Seguinte</string>
     <string name="k2go_next_choose_content">Seguinte: escolher conteúdo</string>
     <string name="k2go_clone_next_note">Seguinte: ligue-se à mesma rede e comece.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Adicionando conteúdo</string>
+    <string name="k2go_home_installing_system">Instalando — aguarde</string>
     <string name="k2go_perm_storage">Acesso ao armazenamento</string>
     <string name="k2go_storage">Armazenamento</string>
     <string name="k2go_lang_system_default">Predefinição do sistema</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">ignorado</string>
     <string name="k2go_books_body">Em breve — ainda não há conteúdo para escolher.</string>
     <string name="k2go_maps_body">Mapa base mundial offline. Incluído com o mapa (fixo por agora).</string>
-    <string name="k2go_courses_hint">Existem predefinições Kiwix; o Kolibri ainda não pode ser predefinido — configure no dispositivo após a instalação.</string>
-    <string name="k2go_added_after">adicionado após a instalação</string>
     <string name="k2go_step2a_hint">Toque numa fonte para a Adicionar ou Ignorar. Ignorar tudo = apenas o sistema.</string>
     <string name="k2go_skip_for_now">Ignorar por agora ›</string>
     <string name="k2go_wiz_choose_language">Escolher idioma</string>
     <string name="k2go_wiz_language_sub">Define o idioma da app + conteúdo.</string>
     <string name="k2go_wiz_permissions_title">Permitir algumas coisas</string>
+    <string name="k2go_wiz_permissions_sub">As seguintes permissões são necessárias. O app pode solicitar permissões adicionais quando você compartilhar sua biblioteca.</string>
     <string name="k2go_continue">Continuar</string>
     <string name="k2go_wiz_setup_sub">Como o quer?</string>
     <string name="k2go_settings_language">Idioma</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Cancelar</string>
     <string name="k2go_clone_channel_name">Clonar</string>
     <string name="k2go_clone_channel_desc">Mantém uma transferência entre dispositivos a decorrer</string>
-    <string name="k2go_clone_notif_text">A transferir entre dispositivos — toque para regressar</string>
+    <string name="k2go_clone_notif_text">Transferindo entre dispositivos</string>
     <string name="k2go_bj_finish">Concluir</string>
     <string name="k2go_bj_wait_title">Isto pode demorar</string>
     <string name="k2go_bj_wait_body">Mantenha o K2Go aberto. Pode sair — continua a funcionar em segundo plano e a notificação traz-lo de volta.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Uma cópia completa da biblioteca do outro telemóvel.</string>
     <string name="k2go_clone_all_apps">Todas as aplicações e o seu conteúdo</string>
     <string name="k2go_clone_already_wifi_skip">Já está na mesma Wi-Fi? Pode ignorar este passo›</string>
-    <string name="k2go_clone_camera_note">A câmara não funciona? Ligue-se à Wi-Fi do outro telemóvel nas Definições e depois Ignore.</string>
     <string name="k2go_clone_camera_q">A câmara não funciona?</string>
     <string name="k2go_clone_cant_scan">Não consegue digitalizar? Partilhe a app de outra forma  ›</string>
     <string name="k2go_cancel">Cancelar</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Tudo o que tem — as suas apps e o respetivo conteúdo.</string>
     <string name="k2go_clone_exact_size">O tamanho exato é mostrado assim que se ligar.</string>
     <string name="k2go_clone_from_other_hdr">DO OUTRO TELEMÓVEL</string>
-    <string name="k2go_clone_get_version_note">Obtenha uma versão do K2Go feita para este telemóvel — pergunte ao seu promotor ou transfira a versão certa.</string>
+    <string name="k2go_clone_get_version_note">Obtenha uma versão do K2Go feita para este telefone — peça à pessoa que está compartilhando o K2Go com você, ou baixe a certa.</string>
     <string name="k2go_clone_installed_copy">Instalado? Copie a biblioteca</string>
     <string name="k2go_clone_incompat_why_long">A biblioteca do K2Go inclui programas criados para corresponder ao hardware de um telemóvel. Quando dois telemóveis são construídos de forma diferente, os programas de um não funcionam no outro, pelo que copiar a biblioteca não resultaria.</string>
     <string name="k2go_clone_nothing_to_replace">Nada para substituir</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Já está ligado? Continuar ›</string>
     <string name="k2go_clone_copying">A copiar a biblioteca…</string>
     <string name="k2go_clone_join_wifi_note">Coloque o outro telemóvel nesta Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">O K2Go não pode ligar-se a essa rede por si — ligue-se nas Definições e depois Continuar.</string>
+    <string name="k2go_clone_cant_join_note">O K2Go não consegue entrar nessa rede por você — conecte-se nas configurações de Wi-Fi do Android e toque em Continuar.</string>
     <string name="k2go_clone_next_get_app">Seguinte: obter a app</string>
     <string name="k2go_clone_nothing_title">Ainda não há nada para partilhar</string>
     <string name="k2go_clone_point_camera_join">Aponte a câmera aqui para conectar este telefone, ou use as seguintes credenciais</string>
     <string name="k2go_clone_share_anyway">Partilhar mesmo assim</string>
-    <string name="k2go_clone_share_wifi_note">Partilhe esta Wi-Fi nas Definições, ou peça que se liguem a ela, e depois continue.</string>
+    <string name="k2go_clone_share_wifi_note">Compartilhe este Wi-Fi pelas configurações de Wi-Fi do Android, ou peça para entrarem, e continue.</string>
     <string name="k2go_clone_sharing_stopped">Partilha interrompida</string>
     <string name="k2go_clone_skip_have_app">Ignorar — já têm o K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Começar a partilhar</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Palavra-passe: %1$s</string>
     <string name="k2go_step2_download_fmt">Transferir biblioteca · %.1f GB</string>
     <string name="k2go_step2_review">Rever</string>
-    <string name="k2go_step2b_info_books">Livros — em breve (ainda sem gestor de conteúdo · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapas — incluídos na sua edição.</string>
-    <string name="k2go_step2b_info_courses">Cursos — configurados no dispositivo após a instalação.</string>
     <string name="k2go_step2b_info_review">Reveja a sua biblioteca e depois transfira.</string>
     <string name="k2go_setting_up_library">A configurar a sua biblioteca…</string>
     <string name="k2go_reading">a ler</string>

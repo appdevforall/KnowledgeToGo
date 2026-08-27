@@ -38,6 +38,7 @@ public final class ContentDownloadSession {
     public interface Host {
         void notify(String label);     // update the foreground notification for the current item
         void stop();                   // stopForeground(true) + stopSelf()
+        void onItemDone(String key);   // item confirmed DONE -> drop its wishlist entry (ADFA-4897)
     }
 
     private final String type;                          // "kiwix" / "books" -> /api/<type>
@@ -55,7 +56,10 @@ public final class ContentDownloadSession {
     private int[] status = new int[0];
     // Per-item snapshot — same length as status by construction (set together in begin(), cleared
     // together in purge()). bodies[i] is the REST start request for item i (kiwix {ids:[..]}, books
-    // {items:[..]}); sizes[i] is the byte weight (0 for books -> count-based percent).
+    // {items:[..]}); sizes[i] is the byte weight (0 for books -> count-based percent); keys[i] is the
+    // owning wishlist key, so the service can drop the entry the moment item i is confirmed DONE
+    // (ADFA-4897 — the wishlist is the durable order, kept until each item completes).
+    private String[] keys = new String[0];
     private String[] labels = new String[0];
     private long[] sizes = new long[0];
     private JSONObject[] bodies = new JSONObject[0];
@@ -82,6 +86,7 @@ public final class ContentDownloadSession {
     public long[] sizes() { return sizes; }
     public String label(int i) { return i >= 0 && i < labels.length ? labels[i] : ""; }
     public long size(int i) { return i >= 0 && i < sizes.length ? sizes[i] : 0L; }
+    public String key(int i) { return i >= 0 && i < keys.length ? keys[i] : ""; }
     public boolean hasSession() { return status.length > 0; }
     public boolean isComplete() {
         if (status.length == 0 || running) return false;
@@ -124,8 +129,9 @@ public final class ContentDownloadSession {
     /** Fresh session over the given items (status all PENDING), then start pumping the queue. The
      *  labels/sizes/bodies snapshot is held here so it stays the same length as status for the whole
      *  session — the service passes it in and never keeps its own copy. */
-    public void begin(String[] labels, long[] sizes, JSONObject[] bodies) {
+    public void begin(String[] keys, String[] labels, long[] sizes, JSONObject[] bodies) {
         int count = labels != null ? labels.length : 0;
+        this.keys = keys != null && keys.length == count ? keys : new String[count];
         this.labels = labels != null ? labels : new String[0];
         this.sizes = sizes != null && sizes.length == count ? sizes : new long[count];
         this.bodies = bodies != null && bodies.length == count ? bodies : new JSONObject[count];
@@ -174,7 +180,7 @@ public final class ContentDownloadSession {
      *  never read a length mismatch after a Cancel (ADFA-4893). */
     public void purge() {
         status = new int[0];
-        labels = new String[0]; sizes = new long[0]; bodies = new JSONObject[0];
+        keys = new String[0]; labels = new String[0]; sizes = new long[0]; bodies = new JSONObject[0];
         index = 0; percent = 0; speed = 0;
         running = false; paused = false; reconnectAttempt = 0; reconnectTotal = 0;
         lastProgressAt = 0L;
@@ -218,7 +224,14 @@ public final class ContentDownloadSession {
                 lastProgressAt = SystemClock.elapsedRealtime(); publish();
             }
             @Override public void onLog(String line) { /* logcat only */ }
-            @Override public void onDone() { status[i] = DONE; publish(); pump(); }
+            @Override public void onDone() {
+                status[i] = DONE; publish();
+                // ADFA-4897: item confirmed done -> drop its wishlist entry, so a later process death
+                // only re-drains what actually did NOT finish (no re-download of completed items).
+                String k = key(i);
+                if (host != null && !k.isEmpty()) host.onItemDone(k);
+                pump();
+            }
             @Override public void onError(String message) {
                 // ADFA-4893: server owns reconnection (visible); on give-up, FAILED for a manual Retry.
                 android.util.Log.w("K2Go-Provision", "[" + type + "] job [" + i + "] error: " + message);

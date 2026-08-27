@@ -112,21 +112,32 @@ public class ModuleDetailFragment extends Fragment {
             // Null is "could not read", not "nothing installed" — same distinction the hub keeps.
             final boolean isInstalled = onDisk != null && onDisk.contains(c.key());
             final boolean unknown = onDisk == null;
-            // ADFA-5150: read the system fact off the same IO thread (it hits the disk). A damaged
-            // rootfs with still-readable flags used to show Install now, guarded only by the lock —
-            // installing a module into a system that is not there. No system → the button is Recover.
-            final boolean noSystem = !org.iiab.controller.SystemStateEvaluator.isSystemInstalled(appCtx);
+            // ADFA-5150/5312: read the system verdict off the same IO thread (it hits the disk). A
+            // damaged rootfs with still-readable flags used to show Install now; and during an install
+            // the marker made it read "no system" and offer Recover into a system that is actually there
+            // and mid-setup. Branch on the one shared verdict instead of bare isSystemInstalled().
+            final org.iiab.controller.system.domain.SystemVerdict.State verdict =
+                    org.iiab.controller.system.data.SystemFactsReader.verdict(appCtx);
             // root, not requireView(): inside onCreateView the fragment's view is not set yet,
             // so requireView() would throw. root is already inflated and its handler is the
             // main looper's.
             root.post(() -> {
                 if (!isAdded()) return;
-                if (noSystem) {
+                if (verdict == org.iiab.controller.system.domain.SystemVerdict.State.NO_SYSTEM
+                        || verdict == org.iiab.controller.system.domain.SystemVerdict.State.DAMAGED) {
                     chipRow.addView(chip(getString(R.string.k2go_state_no_system), R.color.k2go_amber_text));
                     installNowBtn.setText(R.string.k2go_home_recover);
                     installNowBtn.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
                     installNowBtn.setVisibility(View.VISIBLE);
                     return;   // no Install/Schedule into a system that is not there
+                }
+                if (verdict == org.iiab.controller.system.domain.SystemVerdict.State.INSTALLING
+                        || verdict == org.iiab.controller.system.domain.SystemVerdict.State.CLONE_RECEIVING
+                        || verdict == org.iiab.controller.system.domain.SystemVerdict.State.CLONE_SHARING) {
+                    // ADFA-5312: a system op is in progress — the system is present but mid-setup and the
+                    // server is down. Don't offer Install or Recover into it; just say it's busy.
+                    chipRow.addView(chip(getString(R.string.k2go_home_installing), R.color.k2go_amber_text));
+                    return;
                 }
                 if (isInstalled) {
                     chipRow.addView(chip(getString(R.string.k2go_mod_phase_done), R.color.k2go_leaf));

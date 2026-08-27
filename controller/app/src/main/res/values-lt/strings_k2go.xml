@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Tiesiog nuskaitykite arba naudokite šiuos prisijungimo duomenis:</string>
     <string name="k2go_perm_keep_running">Veikti toliau</string>
     <string name="k2go_connect_subtitle">Leiskite šalia esančiam įrenginiui naršyti jūsų biblioteką.</string>
-    <string name="k2go_perm_nearby_note">Netoliese esančių įrenginių leidimo paprašysime vėliau, tik dalijantis.</string>
     <string name="k2go_next">Toliau</string>
     <string name="k2go_next_choose_content">Toliau: pasirinkite turinį</string>
     <string name="k2go_clone_next_note">Toliau: prisijunkite prie to paties tinklo ir pradėkite.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Pridedamas turinys</string>
+    <string name="k2go_home_installing_system">Įdiegiama — palaukite</string>
     <string name="k2go_perm_storage">Prieiga prie saugyklos</string>
     <string name="k2go_storage">Saugykla</string>
     <string name="k2go_lang_system_default">Sistemos numatytoji</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">praleista</string>
     <string name="k2go_books_body">Netrukus — dar nėra turinio, kurį galima pasirinkti.</string>
     <string name="k2go_maps_body">Neprisijungus veikiantis pasaulio bazinis žemėlapis. Įtrauktas į žemėlapį (kol kas nekeičiamas).</string>
-    <string name="k2go_courses_hint">Kiwix išankstiniai nustatymai yra; Kolibri kol kas negalima iš anksto nustatyti — nustatykite įrenginyje po įdiegimo.</string>
-    <string name="k2go_added_after">pridedama po įdiegimo</string>
     <string name="k2go_step2a_hint">Bakstelėkite šaltinį, kad jį pridėtumėte ar praleistumėte. Praleisti viską = tik sistema.</string>
     <string name="k2go_skip_for_now">Kol kas praleisti ›</string>
     <string name="k2go_wiz_choose_language">Pasirinkite kalbą</string>
     <string name="k2go_wiz_language_sub">Nustato programos ir turinio kalbą.</string>
     <string name="k2go_wiz_permissions_title">Leiskite keletą dalykų</string>
+    <string name="k2go_wiz_permissions_sub">Toliau nurodyti leidimai yra reikalingi. Programa gali paprašyti papildomų leidimų, kai bendrinate biblioteką.</string>
     <string name="k2go_continue">Tęsti</string>
     <string name="k2go_wiz_setup_sub">Kaip norite tai nustatyti?</string>
     <string name="k2go_settings_language">Kalba</string>
@@ -178,7 +177,7 @@
     <string name="deepop_notif_cancel">Atšaukti</string>
     <string name="k2go_clone_channel_name">Klonavimas</string>
     <string name="k2go_clone_channel_desc">Vykdo perkėlimą iš įrenginio į įrenginį</string>
-    <string name="k2go_clone_notif_text">Perkeliama tarp įrenginių — bakstelėkite, kad grįžtumėte</string>
+    <string name="k2go_clone_notif_text">Perkeliama tarp įrenginių</string>
     <string name="k2go_bj_finish">Baigti</string>
     <string name="k2go_bj_wait_title">Tai gali užtrukti</string>
     <string name="k2go_bj_wait_body">Palikite K2Go atidarytą. Galite išeiti — ji toliau veikia fone, o pranešimas jus sugrąžins.</string>
@@ -222,7 +221,6 @@
     <string name="k2go_clone_full_copy_note">Visa kito telefono bibliotekos kopija.</string>
     <string name="k2go_clone_all_apps">Visos programos ir jų turinys</string>
     <string name="k2go_clone_already_wifi_skip">Jau tame pačiame Wi-Fi? Šį žingsnį galite praleisti›</string>
-    <string name="k2go_clone_camera_note">Kamera neveikia? Nustatymuose prisijunkite prie kito telefono Wi-Fi ir bakstelėkite Praleisti.</string>
     <string name="k2go_clone_camera_q">Kamera neveikia?</string>
     <string name="k2go_clone_cant_scan">Nepavyksta nuskaityti? Bendrinkite programą kitu būdu  ›</string>
     <string name="k2go_cancel">Atšaukti</string>
@@ -232,7 +230,7 @@
     <string name="k2go_clone_everything_note">Viskas, ką jis turi — programos ir jų turinys.</string>
     <string name="k2go_clone_exact_size">Tikslus dydis rodomas prisijungus.</string>
     <string name="k2go_clone_from_other_hdr">IŠ KITO TELEFONO</string>
-    <string name="k2go_clone_get_version_note">Gaukite šiam telefonui skirtą K2Go versiją — paklauskite platintojo arba atsisiųskite tinkamą.</string>
+    <string name="k2go_clone_get_version_note">Gauk šiam telefonui pritaikytą „K2Go“ versiją — paprašyk žmogaus, kuris tau bendrina „K2Go“, arba atsisiųsk tinkamą.</string>
     <string name="k2go_clone_installed_copy">Įdiegta? Nukopijuokite biblioteką</string>
     <string name="k2go_clone_incompat_why_long">K2Go bibliotekoje yra programų, sukurtų pagal telefono aparatinę įrangą. Kai du telefonai sukurti skirtingai, vieno programos negali veikti kitame, todėl kopijuoti biblioteką nepavyktų.</string>
     <string name="k2go_clone_nothing_to_replace">Nėra ką pakeisti</string>
@@ -274,12 +272,12 @@
     <string name="k2go_clone_already_connected">Jau prisijungta? Tęsti ›</string>
     <string name="k2go_clone_copying">Kopijuojama biblioteka…</string>
     <string name="k2go_clone_join_wifi_note">Prijunkite kitą telefoną prie šio Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go negali prijungti jūsų prie to tinklo — prisijunkite Nustatymuose ir bakstelėkite Tęsti.</string>
+    <string name="k2go_clone_cant_join_note">„K2Go“ negali už tave prisijungti prie to tinklo — prisijunk „Android“ „Wi-Fi“ nustatymuose, tada paliesk „Tęsti“.</string>
     <string name="k2go_clone_next_get_app">Toliau: gaukite programą</string>
     <string name="k2go_clone_nothing_title">Kol kas nėra ką bendrinti</string>
     <string name="k2go_clone_point_camera_join">Nukreipkite kamerą čia, kad prijungtumėte šį telefoną, arba naudokite šiuos prisijungimo duomenis</string>
     <string name="k2go_clone_share_anyway">Vis tiek bendrinti</string>
-    <string name="k2go_clone_share_wifi_note">Bendrinkite šį Wi-Fi iš Nustatymų arba paprašykite jų prisijungti, tada tęskite.</string>
+    <string name="k2go_clone_share_wifi_note">Bendrink šį „Wi-Fi“ iš „Android“ „Wi-Fi“ nustatymų arba leisk jiems prisijungti, tada tęsk.</string>
     <string name="k2go_clone_sharing_stopped">Bendrinimas sustabdytas</string>
     <string name="k2go_clone_skip_have_app">Praleisti — jie jau turi K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Pradėti bendrinti</string>
@@ -342,9 +340,6 @@
     <string name="k2go_fallback_pass">Slaptažodis: %1$s</string>
     <string name="k2go_step2_download_fmt">Atsisiųsti biblioteką · %.1f GB</string>
     <string name="k2go_step2_review">Peržiūra</string>
-    <string name="k2go_step2b_info_books">Knygos — netrukus (dar nėra turinio tvarkyklės · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Žemėlapiai — įtraukti į jūsų leidimą.</string>
-    <string name="k2go_step2b_info_courses">Kursai — nustatomi įrenginyje po įdiegimo.</string>
     <string name="k2go_step2b_info_review">Peržiūrėkite biblioteką ir atsisiųskite.</string>
     <string name="k2go_setting_up_library">Ruošiama biblioteka…</string>
     <string name="k2go_reading">skaitoma</string>

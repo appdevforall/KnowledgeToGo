@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Scan gewoon, of gebruik anders de volgende gegevens:</string>
     <string name="k2go_perm_keep_running">Actief houden</string>
     <string name="k2go_connect_subtitle">Laat een apparaat in de buurt je bibliotheek bekijken.</string>
-    <string name="k2go_perm_nearby_note">Apparaten in de buurt wordt later gevraagd, alleen bij delen.</string>
     <string name="k2go_next">Volgende</string>
     <string name="k2go_next_choose_content">Volgende: inhoud kiezen</string>
     <string name="k2go_clone_next_note">Volgende: ga naar hetzelfde netwerk en start.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Inhoud toevoegen</string>
+    <string name="k2go_home_installing_system">Bezig met installeren — even geduld</string>
     <string name="k2go_perm_storage">Opslagtoegang</string>
     <string name="k2go_storage">Opslag</string>
     <string name="k2go_lang_system_default">Systeemstandaard</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">overgeslagen</string>
     <string name="k2go_books_body">Binnenkort — nog geen inhoud om te kiezen.</string>
     <string name="k2go_maps_body">Offline wereldbasiskaart. Inbegrepen bij de kaart (voorlopig vast).</string>
-    <string name="k2go_courses_hint">Kiwix-presets bestaan; Kolibri kan nog niet vooraf worden ingesteld — stel na installatie in op het apparaat.</string>
-    <string name="k2go_added_after">toegevoegd na installatie</string>
     <string name="k2go_step2a_hint">Tik op een bron om die toe te voegen of over te slaan. Alles overslaan = alleen het systeem.</string>
     <string name="k2go_skip_for_now">Voorlopig overslaan ›</string>
     <string name="k2go_wiz_choose_language">Kies taal</string>
     <string name="k2go_wiz_language_sub">Stelt de taal van app + inhoud in.</string>
     <string name="k2go_wiz_permissions_title">Sta een paar dingen toe</string>
+    <string name="k2go_wiz_permissions_sub">De volgende machtigingen zijn vereist. De app kan om extra machtigingen vragen wanneer je je bibliotheek deelt.</string>
     <string name="k2go_continue">Doorgaan</string>
     <string name="k2go_wiz_setup_sub">Hoe wil je het?</string>
     <string name="k2go_settings_language">Taal</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Annuleren</string>
     <string name="k2go_clone_channel_name">Klonen</string>
     <string name="k2go_clone_channel_desc">Houdt een overdracht tussen apparaten actief</string>
-    <string name="k2go_clone_notif_text">Overdracht tussen apparaten — tik om terug te keren</string>
+    <string name="k2go_clone_notif_text">Overdracht tussen apparaten</string>
     <string name="k2go_bj_finish">Voltooien</string>
     <string name="k2go_bj_wait_title">Dit kan even duren</string>
     <string name="k2go_bj_wait_body">Houd K2Go open. Je kunt weggaan — het blijft op de achtergrond actief en de melding brengt je terug.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Een volledige kopie van de bibliotheek van de andere telefoon.</string>
     <string name="k2go_clone_all_apps">Alle applicaties en hun inhoud</string>
     <string name="k2go_clone_already_wifi_skip">Al op dezelfde Wi-Fi? Je kunt deze stap overslaan›</string>
-    <string name="k2go_clone_camera_note">Camera werkt niet? Maak in Instellingen verbinding met de Wi-Fi van de andere telefoon en tik daarna op Overslaan.</string>
     <string name="k2go_clone_camera_q">Camera werkt niet?</string>
     <string name="k2go_clone_cant_scan">Kun je niet scannen? Deel de app op een andere manier  ›</string>
     <string name="k2go_cancel">Annuleren</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Alles wat het heeft — de apps en hun inhoud.</string>
     <string name="k2go_clone_exact_size">De exacte grootte wordt getoond zodra je verbinding maakt.</string>
     <string name="k2go_clone_from_other_hdr">VAN DE ANDERE TELEFOON</string>
-    <string name="k2go_clone_get_version_note">Haal een K2Go-versie voor deze telefoon — vraag je promotor of download de juiste.</string>
+    <string name="k2go_clone_get_version_note">Haal een K2Go-versie die voor deze telefoon is gemaakt — vraag het aan de persoon die K2Go met je deelt, of download de juiste.</string>
     <string name="k2go_clone_installed_copy">Geïnstalleerd? Kopieer de bibliotheek</string>
     <string name="k2go_clone_incompat_why_long">De bibliotheek van K2Go bevat programma\'s die zijn gebouwd voor de hardware van een telefoon. Als twee telefoons anders zijn gebouwd, kunnen de programma\'s van de ene niet op de andere draaien, dus kopiëren van de bibliotheek zou niet werken.</string>
     <string name="k2go_clone_nothing_to_replace">Niets te vervangen</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Al verbonden? Doorgaan ›</string>
     <string name="k2go_clone_copying">De bibliotheek kopiëren…</string>
     <string name="k2go_clone_join_wifi_note">Verbind de andere telefoon met deze Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go kan dat netwerk niet voor je verbinden — maak verbinding in Instellingen en tik daarna op Doorgaan.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kan dat netwerk niet voor je verbinden — maak verbinding in de Android-wifi-instellingen en tik daarna op Doorgaan.</string>
     <string name="k2go_clone_next_get_app">Volgende: de app ophalen</string>
     <string name="k2go_clone_nothing_title">Nog niets om te delen</string>
     <string name="k2go_clone_point_camera_join">Richt de camera hierop om deze telefoon te koppelen, of gebruik de volgende gegevens</string>
     <string name="k2go_clone_share_anyway">Toch delen</string>
-    <string name="k2go_clone_share_wifi_note">Deel deze Wi-Fi via Instellingen, of laat hen verbinden, en ga daarna door.</string>
+    <string name="k2go_clone_share_wifi_note">Deel deze wifi via de Android-wifi-instellingen, of laat ze deelnemen, en ga dan verder.</string>
     <string name="k2go_clone_sharing_stopped">Delen gestopt</string>
     <string name="k2go_clone_skip_have_app">Overslaan — ze hebben K2Go al  ›</string>
     <string name="k2go_clone_start_sharing">Delen starten</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Wachtwoord: %1$s</string>
     <string name="k2go_step2_download_fmt">Bibliotheek downloaden · %.1f GB</string>
     <string name="k2go_step2_review">Controleren</string>
-    <string name="k2go_step2b_info_books">Boeken — binnenkort (nog geen inhoudbeheer · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Kaarten — inbegrepen bij je editie.</string>
-    <string name="k2go_step2b_info_courses">Cursussen — na installatie op het apparaat instellen.</string>
     <string name="k2go_step2b_info_review">Controleer je bibliotheek en download daarna.</string>
     <string name="k2go_setting_up_library">Je bibliotheek instellen…</string>
     <string name="k2go_reading">lezen</string>

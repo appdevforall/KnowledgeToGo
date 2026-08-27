@@ -70,8 +70,6 @@
                 </LinearLayout>
                 <TextView android:id="@+id/perm_battery_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/k2go_perm_allow" android:textColor="@color/k2go_teal" />
             </LinearLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp"
-                android:text="@string/k2go_perm_nearby_note" android:textColor="@color/k2go_muted" android:textAppearance="?attr/textAppearanceBodySmall" />
         </LinearLayout>
 
         <!-- SET UP LIBRARY -->

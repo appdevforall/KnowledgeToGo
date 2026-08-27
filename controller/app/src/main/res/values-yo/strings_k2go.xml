@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Kàn ya kóòdù, tàbí lo àwọn ẹ̀rí wọ̀nyí:</string>
     <string name="k2go_perm_keep_running">Máa ṣiṣẹ́ lọ</string>
     <string name="k2go_connect_subtitle">Jẹ́ kí ẹ̀rọ tó wà nítòsí wo ilé-ìkàwé rẹ.</string>
-    <string name="k2go_perm_nearby_note">A óò béèrè àwọn ẹ̀rọ tó wà nítòsí lẹ́yìn, nígbà tí a bá ń pínni nìkan.</string>
     <string name="k2go_next">Tẹ̀síwájú</string>
     <string name="k2go_next_choose_content">Tẹ̀síwájú: yan àkóónú</string>
     <string name="k2go_clone_next_note">Tẹ̀síwájú: darapọ̀ mọ́ nẹ́tíwọ́ọ̀kì kan náà, kó o sì bẹ̀rẹ̀.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Ń fi àkóónú kún un</string>
+    <string name="k2go_home_installing_system">Ó ń fi sórí ẹ̀rọ — jọ̀wọ́ dúró</string>
     <string name="k2go_perm_storage">Ìwọlé sí ibi ìtọ́jú</string>
     <string name="k2go_storage">Ibi ìtọ́jú</string>
     <string name="k2go_lang_system_default">Àbùdá ẹ̀rọ</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">a fo</string>
     <string name="k2go_books_body">Ó ń bọ̀ láìpẹ́ — kò sí àkóónú láti yan síbẹ̀.</string>
     <string name="k2go_maps_body">Máàpù ipìlẹ̀ àgbáyé aláìsíntánẹ́ẹ̀tì. Ó wà pẹ̀lú máàpù (a ti dá a sílẹ̀ fún ìsinsìnyí).</string>
-    <string name="k2go_courses_hint">Àwọn ìtòlẹ́sẹẹsẹ Kiwix wà; Kolibri kò tíì lè ṣètò — ṣètò lórí ẹ̀rọ lẹ́yìn fífi sórí ẹ̀rọ.</string>
-    <string name="k2go_added_after">a fi kún lẹ́yìn fífi sórí ẹ̀rọ</string>
     <string name="k2go_step2a_hint">Tẹ orísun kan láti Fi kún tàbí Fo. Fo gbogbo rẹ̀ = ẹ̀rọ nìkan.</string>
     <string name="k2go_skip_for_now">Fo fún ìsinsìnyí ›</string>
     <string name="k2go_wiz_choose_language">Yan èdè</string>
     <string name="k2go_wiz_language_sub">Ó ń ṣètò èdè áàpù + àkóónú.</string>
     <string name="k2go_wiz_permissions_title">Fàyè gba ohun díẹ̀</string>
+    <string name="k2go_wiz_permissions_sub">Àwọn ìyọ̀nda wọ̀nyí ni a nílò. Ohun-èlò náà lè béèrè fún ìyọ̀nda àfikún nígbà tí o bá pín ilé-ìkàwé rẹ.</string>
     <string name="k2go_continue">Tẹ̀síwájú</string>
     <string name="k2go_wiz_setup_sub">Báwo ni o ṣe fẹ́ ẹ?</string>
     <string name="k2go_settings_language">Èdè</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Fagilé</string>
     <string name="k2go_clone_channel_name">Ẹ̀dà</string>
     <string name="k2go_clone_channel_desc">Ń jẹ́ kí ìgbésẹ̀ láti ẹ̀rọ sí ẹ̀rọ máa ṣiṣẹ́ lọ</string>
-    <string name="k2go_clone_notif_text">Ń gbé láàrin àwọn ẹ̀rọ — tẹ̀ láti padà</string>
+    <string name="k2go_clone_notif_text">Ń gbé láàrin àwọn ẹ̀rọ</string>
     <string name="k2go_bj_finish">Parí</string>
     <string name="k2go_bj_wait_title">Èyí lè gba àkókò</string>
     <string name="k2go_bj_wait_body">Jẹ́ kí K2Go ṣí sílẹ̀. O lè lọ — óò máa ṣiṣẹ́ lọ lẹ́yìn ẹ̀rọ, ìfitónilétí sì óò mú ọ padà.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Ẹ̀dà pípé ti ilé-ìkàwé fóònù mìíràn.</string>
     <string name="k2go_clone_all_apps">Gbogbo àwọn áàpù àti àkóónú wọn</string>
     <string name="k2go_clone_already_wifi_skip">O ti wà lórí Wi-Fi kan náà? O lè fo ìgbésẹ̀ yìí›</string>
-    <string name="k2go_clone_camera_note">Kámẹ́rà kò ṣiṣẹ́? So pọ̀ mọ́ Wi-Fi fóònù mìíràn nínú Ìtòlẹ́sẹẹsẹ, kó o sì Fo.</string>
     <string name="k2go_clone_camera_q">Kámẹ́rà kò ṣiṣẹ́?</string>
     <string name="k2go_clone_cant_scan">O kò lè yàwòrán? Pín áàpù ní ọ̀nà mìíràn  ›</string>
     <string name="k2go_cancel">Fagilé</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Ohun gbogbo tó ní — àwọn áàpù rẹ̀ àti àkóónú wọn.</string>
     <string name="k2go_clone_exact_size">A óò fi ìwọ̀n gangan hàn nígbà tí o bá so pọ̀.</string>
     <string name="k2go_clone_from_other_hdr">LÁTI FÓÒNÙ MÌÍRÀN</string>
-    <string name="k2go_clone_get_version_note">Rí ẹ̀dà K2Go tí a ṣe fún fóònù yìí — béèrè lọ́wọ́ olùgbélẹ́rí rẹ, tàbí gba èyí tó tọ́ sílẹ̀.</string>
+    <string name="k2go_clone_get_version_note">Gba ẹ̀dà K2Go tí a ṣe fún fóònù yìí — béèrè lọ́wọ́ ẹni tó ń pín K2Go pẹ̀lú rẹ, tàbí gba èyí tó tọ̀nà sílẹ̀.</string>
     <string name="k2go_clone_installed_copy">Ó ti wà lórí ẹ̀rọ? Ṣẹ̀dà ilé-ìkàwé</string>
     <string name="k2go_clone_incompat_why_long">Ilé-ìkàwé K2Go ní àwọn ètò tí a kọ́ láti bá ohun èlò fóònù mu. Nígbà tí a bá kọ́ fóònù méjì lọ́nà tó yàtọ̀, àwọn ètò láti ọ̀kan kò lè ṣiṣẹ́ lórí èkejì, nítorí náà ṣíṣe ẹ̀dà ilé-ìkàwé kò ní ṣiṣẹ́.</string>
     <string name="k2go_clone_nothing_to_replace">Kò sí ohunkóhun láti rọ́pò</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">O ti so pọ̀ tẹ́lẹ̀? Tẹ̀síwájú ›</string>
     <string name="k2go_clone_copying">Ń ṣe ẹ̀dà ilé-ìkàwé…</string>
     <string name="k2go_clone_join_wifi_note">Mú fóònù mìíràn wọ Wi-Fi yìí.</string>
-    <string name="k2go_clone_cant_join_note">K2Go kò lè darapọ̀ mọ́ nẹ́tíwọ́ọ̀kì yẹn fún ọ — so pọ̀ nínú Ìtòlẹ́sẹẹsẹ, kó o sì Tẹ̀síwájú.</string>
+    <string name="k2go_clone_cant_join_note">K2Go kò lè dara pọ̀ mọ́ nẹ́tíwọ̀kì yẹn fún ọ — sopọ̀ nínú ètò Wi-Fi Android, lẹ́yìn náà tẹ Tẹ̀síwájú.</string>
     <string name="k2go_clone_next_get_app">Tẹ̀síwájú: rí áàpù</string>
     <string name="k2go_clone_nothing_title">Kò sí ohunkóhun láti pín síbẹ̀</string>
     <string name="k2go_clone_point_camera_join">Dojú kámẹ́rà rẹ̀ síhìn-ín láti so fóònù yìí pọ̀, tàbí lo àwọn ẹ̀rí wọ̀nyí</string>
     <string name="k2go_clone_share_anyway">Pín lóòótọ́</string>
-    <string name="k2go_clone_share_wifi_note">Pín Wi-Fi yìí láti Ìtòlẹ́sẹẹsẹ, tàbí jẹ́ kí wọ́n darapọ̀ mọ́ ọ, kó o sì tẹ̀síwájú.</string>
+    <string name="k2go_clone_share_wifi_note">Pín Wi-Fi yìí láti inú ètò Wi-Fi Android, tàbí béèrè kí wọ́n dara pọ̀, lẹ́yìn náà tẹ̀síwájú.</string>
     <string name="k2go_clone_sharing_stopped">A dá pípínni dúró</string>
     <string name="k2go_clone_skip_have_app">Fo — wọ́n ti ní K2Go tẹ́lẹ̀  ›</string>
     <string name="k2go_clone_start_sharing">Bẹ̀rẹ̀ pípínni</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Ọ̀rọ̀ àṣínà: %1$s</string>
     <string name="k2go_step2_download_fmt">Gba ilé-ìkàwé sílẹ̀ · %.1f GB</string>
     <string name="k2go_step2_review">Àyẹ̀wò</string>
-    <string name="k2go_step2b_info_books">Ìwé — ó ń bọ̀ láìpẹ́ (kò sí alábòójútó àkóónú síbẹ̀ · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Máàpù — ó wà nínú ẹ̀dà rẹ.</string>
-    <string name="k2go_step2b_info_courses">Àwọn Ẹ̀kọ́ — a óò ṣètò lórí ẹ̀rọ lẹ́yìn fífi sórí ẹ̀rọ.</string>
     <string name="k2go_step2b_info_review">Ṣàyẹ̀wò ilé-ìkàwé rẹ, kó o sì gbà á sílẹ̀.</string>
     <string name="k2go_setting_up_library">Ń ṣètò ilé-ìkàwé rẹ…</string>
     <string name="k2go_reading">ń kàwé</string>

@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">直接扫码，或使用以下凭据:</string>
     <string name="k2go_perm_keep_running">保持运行</string>
     <string name="k2go_connect_subtitle">让附近的设备浏览您的图书馆。</string>
-    <string name="k2go_perm_nearby_note">附近设备权限稍后请求，仅在共享时。</string>
     <string name="k2go_next">下一步</string>
     <string name="k2go_next_choose_content">下一步：选择内容</string>
     <string name="k2go_clone_next_note">下一步：加入同一网络，然后开始。</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">正在添加内容</string>
+    <string name="k2go_home_installing_system">正在安装 — 请稍候</string>
     <string name="k2go_perm_storage">存储访问</string>
     <string name="k2go_storage">存储</string>
     <string name="k2go_lang_system_default">系统默认</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">已跳过</string>
     <string name="k2go_books_body">即将推出 — 暂无可选内容。</string>
     <string name="k2go_maps_body">离线世界底图。随地图一起提供（目前固定）。</string>
-    <string name="k2go_courses_hint">Kiwix 预设已存在；Kolibri 尚无法预设 — 请在安装后于设备上设置。</string>
-    <string name="k2go_added_after">安装后添加</string>
     <string name="k2go_step2a_hint">点按来源以添加或跳过。全部跳过 = 仅系统。</string>
     <string name="k2go_skip_for_now">暂时跳过 ›</string>
     <string name="k2go_wiz_choose_language">选择语言</string>
     <string name="k2go_wiz_language_sub">设置应用和内容语言。</string>
     <string name="k2go_wiz_permissions_title">允许一些权限</string>
+    <string name="k2go_wiz_permissions_sub">需要以下权限。共享您的图书馆时，应用可能会请求额外权限。</string>
     <string name="k2go_continue">继续</string>
     <string name="k2go_wiz_setup_sub">您希望如何设置？</string>
     <string name="k2go_settings_language">语言</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">取消</string>
     <string name="k2go_clone_channel_name">克隆</string>
     <string name="k2go_clone_channel_desc">保持设备间传输运行</string>
-    <string name="k2go_clone_notif_text">正在设备间传输 — 点按返回</string>
+    <string name="k2go_clone_notif_text">正在设备间传输</string>
     <string name="k2go_bj_finish">完成</string>
     <string name="k2go_bj_wait_title">这可能需要一些时间</string>
     <string name="k2go_bj_wait_body">请保持 K2Go 打开。您可以离开 — 它会在后台持续运行，通知会带您返回。</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">对方手机图书馆的完整副本。</string>
     <string name="k2go_clone_all_apps">所有应用及其内容</string>
     <string name="k2go_clone_already_wifi_skip">已在同一 Wi-Fi 上？您可以跳过此步骤›</string>
-    <string name="k2go_clone_camera_note">相机无法工作？在设置中连接到对方手机的 Wi-Fi，然后跳过。</string>
     <string name="k2go_clone_camera_q">相机无法工作？</string>
     <string name="k2go_clone_cant_scan">无法扫描？用其他方式共享应用  ›</string>
     <string name="k2go_cancel">取消</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">对方拥有的一切 — 其应用及内容。</string>
     <string name="k2go_clone_exact_size">连接后会显示确切大小。</string>
     <string name="k2go_clone_from_other_hdr">来自对方手机</string>
-    <string name="k2go_clone_get_version_note">获取为本手机制作的 K2Go 版本 — 询问您的推广人员，或下载正确的版本。</string>
+    <string name="k2go_clone_get_version_note">获取为这部手机制作的 K2Go 版本——向与你共享 K2Go 的人索取，或下载正确的版本。</string>
     <string name="k2go_clone_installed_copy">已安装？复制图书馆</string>
     <string name="k2go_clone_incompat_why_long">K2Go 的图书馆包含为匹配手机硬件而构建的程序。当两部手机的构建方式不同时，一部手机的程序无法在另一部上运行，因此复制图书馆将无法工作。</string>
     <string name="k2go_clone_nothing_to_replace">没有可替换的内容</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">已经连接？继续 ›</string>
     <string name="k2go_clone_copying">正在复制图书馆…</string>
     <string name="k2go_clone_join_wifi_note">让对方手机连接到此 Wi-Fi。</string>
-    <string name="k2go_clone_cant_join_note">K2Go 无法为您加入该网络 — 请在设置中连接，然后继续。</string>
+    <string name="k2go_clone_cant_join_note">K2Go 无法替你加入该网络——请在 Android 的 Wi-Fi 设置中连接，然后点按“继续”。</string>
     <string name="k2go_clone_next_get_app">下一步：获取应用</string>
     <string name="k2go_clone_nothing_title">暂无可共享的内容</string>
     <string name="k2go_clone_point_camera_join">将其摄像头对准这里以连接此手机，或使用以下凭据</string>
     <string name="k2go_clone_share_anyway">仍要共享</string>
-    <string name="k2go_clone_share_wifi_note">从设置共享此 Wi-Fi，或让对方加入，然后继续。</string>
+    <string name="k2go_clone_share_wifi_note">从 Android 的 Wi-Fi 设置中共享此 Wi-Fi，或让对方加入，然后继续。</string>
     <string name="k2go_clone_sharing_stopped">共享已停止</string>
     <string name="k2go_clone_skip_have_app">跳过 — 对方已有 K2Go  ›</string>
     <string name="k2go_clone_start_sharing">开始共享</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">密码：%1$s</string>
     <string name="k2go_step2_download_fmt">下载图书馆 · %.1f GB</string>
     <string name="k2go_step2_review">查看</string>
-    <string name="k2go_step2b_info_books">图书 — 即将推出（暂无内容管理器 · 0 GB）。</string>
-    <string name="k2go_step2b_info_maps">地图 — 已包含在您的版本中。</string>
-    <string name="k2go_step2b_info_courses">课程 — 安装后在设备上设置。</string>
     <string name="k2go_step2b_info_review">查看您的图书馆，然后下载。</string>
     <string name="k2go_setting_up_library">正在设置您的图书馆…</string>
     <string name="k2go_reading">正在读取</string>

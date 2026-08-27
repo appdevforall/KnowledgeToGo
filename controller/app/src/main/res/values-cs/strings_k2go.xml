@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Stačí naskenovat nebo použijte následující údaje:</string>
     <string name="k2go_perm_keep_running">Ponechat spuštěné</string>
     <string name="k2go_connect_subtitle">Umožněte blízkému zařízení procházet vaši knihovnu.</string>
-    <string name="k2go_perm_nearby_note">Na blízká zařízení se zeptáme později, jen při sdílení.</string>
     <string name="k2go_next">Další</string>
     <string name="k2go_next_choose_content">Další: vyberte obsah</string>
     <string name="k2go_clone_next_note">Další: připojte se ke stejné síti a začněte.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Přidává se obsah</string>
+    <string name="k2go_home_installing_system">Instaluje se — čekejte prosím</string>
     <string name="k2go_perm_storage">Přístup k úložišti</string>
     <string name="k2go_storage">Úložiště</string>
     <string name="k2go_lang_system_default">Výchozí nastavení systému</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">přeskočeno</string>
     <string name="k2go_books_body">Již brzy — zatím není z čeho vybírat.</string>
     <string name="k2go_maps_body">Offline základní mapa světa. Součástí mapy (zatím pevně dané).</string>
-    <string name="k2go_courses_hint">Předvolby Kiwix existují; Kolibri zatím nelze přednastavit — nastavte v zařízení po instalaci.</string>
-    <string name="k2go_added_after">přidáno po instalaci</string>
     <string name="k2go_step2a_hint">Klepnutím na zdroj jej přidáte nebo přeskočíte. Přeskočit vše = jen systém.</string>
     <string name="k2go_skip_for_now">Zatím přeskočit ›</string>
     <string name="k2go_wiz_choose_language">Vyberte jazyk</string>
     <string name="k2go_wiz_language_sub">Nastaví jazyk aplikace + obsahu.</string>
     <string name="k2go_wiz_permissions_title">Povolte pár věcí</string>
+    <string name="k2go_wiz_permissions_sub">Následující oprávnění jsou vyžadována. Aplikace může požádat o další oprávnění při sdílení knihovny.</string>
     <string name="k2go_continue">Pokračovat</string>
     <string name="k2go_wiz_setup_sub">Jak to chcete?</string>
     <string name="k2go_settings_language">Jazyk</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Zrušit</string>
     <string name="k2go_clone_channel_name">Klonování</string>
     <string name="k2go_clone_channel_desc">Udržuje spuštěný přenos mezi zařízeními</string>
-    <string name="k2go_clone_notif_text">Přenos mezi zařízeními — klepnutím se vrátíte</string>
+    <string name="k2go_clone_notif_text">Přenos mezi zařízeními</string>
     <string name="k2go_bj_finish">Dokončit</string>
     <string name="k2go_bj_wait_title">Může to chvíli trvat</string>
     <string name="k2go_bj_wait_body">Nechte K2Go otevřené. Můžete odejít — běží dál na pozadí a oznámení vás vrátí zpět.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Úplná kopie knihovny druhého telefonu.</string>
     <string name="k2go_clone_all_apps">Všechny aplikace a jejich obsah</string>
     <string name="k2go_clone_already_wifi_skip">Už jste na stejné Wi-Fi? Tento krok můžete přeskočit›</string>
-    <string name="k2go_clone_camera_note">Nefunguje fotoaparát? Připojte se k Wi-Fi druhého telefonu v Nastavení a poté klepněte na Přeskočit.</string>
     <string name="k2go_clone_camera_q">Nefunguje fotoaparát?</string>
     <string name="k2go_clone_cant_scan">Nelze skenovat? Sdílejte aplikaci jinak  ›</string>
     <string name="k2go_cancel">Zrušit</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Vše, co má — jeho aplikace a jejich obsah.</string>
     <string name="k2go_clone_exact_size">Přesná velikost se zobrazí po připojení.</string>
     <string name="k2go_clone_from_other_hdr">Z DRUHÉHO TELEFONU</string>
-    <string name="k2go_clone_get_version_note">Získejte verzi K2Go určenou pro tento telefon — zeptejte se svého promotéra nebo si stáhněte tu správnou.</string>
+    <string name="k2go_clone_get_version_note">Získej verzi K2Go vytvořenou pro tento telefon — požádej osobu, která ti K2Go sdílí, nebo si stáhni tu správnou.</string>
     <string name="k2go_clone_installed_copy">Nainstalováno? Zkopírujte knihovnu</string>
     <string name="k2go_clone_incompat_why_long">Knihovna K2Go obsahuje programy sestavené pro hardware konkrétního telefonu. Když jsou dva telefony postavené odlišně, programy z jednoho nemohou běžet na druhém, takže kopírování knihovny by nefungovalo.</string>
     <string name="k2go_clone_nothing_to_replace">Není co nahradit</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Už připojeno? Pokračovat ›</string>
     <string name="k2go_clone_copying">Kopírování knihovny…</string>
     <string name="k2go_clone_join_wifi_note">Připojte druhý telefon k této Wi-Fi.</string>
-    <string name="k2go_clone_cant_join_note">K2Go se za vás k té síti nepřipojí — připojte se v Nastavení a poté Pokračovat.</string>
+    <string name="k2go_clone_cant_join_note">K2Go se za tebe nemůže připojit k této síti — připoj se v nastavení Wi-Fi Androidu a pak klepni na Pokračovat.</string>
     <string name="k2go_clone_next_get_app">Další: získat aplikaci</string>
     <string name="k2go_clone_nothing_title">Zatím není co sdílet</string>
     <string name="k2go_clone_point_camera_join">Namiřte sem fotoaparát a připojte tento telefon, nebo použijte následující údaje</string>
     <string name="k2go_clone_share_anyway">Přesto sdílet</string>
-    <string name="k2go_clone_share_wifi_note">Sdílejte tuto Wi-Fi z Nastavení, nebo je nechte připojit, a poté pokračujte.</string>
+    <string name="k2go_clone_share_wifi_note">Sdílej tuto Wi-Fi z nastavení Wi-Fi Androidu, nebo je nech připojit, a pak pokračuj.</string>
     <string name="k2go_clone_sharing_stopped">Sdílení zastaveno</string>
     <string name="k2go_clone_skip_have_app">Přeskočit — už mají K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Zahájit sdílení</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Heslo: %1$s</string>
     <string name="k2go_step2_download_fmt">Stáhnout knihovnu · %.1f GB</string>
     <string name="k2go_step2_review">Zkontrolovat</string>
-    <string name="k2go_step2b_info_books">Knihy — již brzy (zatím bez správce obsahu · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Mapy — součástí vaší edice.</string>
-    <string name="k2go_step2b_info_courses">Kurzy — nastaví se v zařízení po instalaci.</string>
     <string name="k2go_step2b_info_review">Zkontrolujte knihovnu a poté stáhněte.</string>
     <string name="k2go_setting_up_library">Nastavování knihovny…</string>
     <string name="k2go_reading">čtení</string>

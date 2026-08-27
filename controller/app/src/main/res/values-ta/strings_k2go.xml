@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">ஸ்கேன் செய்யவும், அல்லது கீழ்க்காணும் விவரங்களைப் பயன்படுத்தவும்:</string>
     <string name="k2go_perm_keep_running">இயக்கத்தில் வைத்திரு</string>
     <string name="k2go_connect_subtitle">அருகிலுள்ள சாதனம் உங்கள் நூலகத்தை உலாவ அனுமதிக்கவும்.</string>
-    <string name="k2go_perm_nearby_note">அருகிலுள்ள சாதனங்களுக்கான அனுமதி பிறகு, பகிரும்போது மட்டுமே கேட்கப்படும்.</string>
     <string name="k2go_next">அடுத்து</string>
     <string name="k2go_next_choose_content">அடுத்து: உள்ளடக்கத்தைத் தேர்வுசெய்க</string>
     <string name="k2go_clone_next_note">அடுத்து: அதே நெட்வொர்க்கில் இணைந்து, பிறகு தொடங்கவும்.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">உள்ளடக்கம் சேர்க்கப்படுகிறது</string>
+    <string name="k2go_home_installing_system">நிறுவப்படுகிறது — காத்திருக்கவும்</string>
     <string name="k2go_perm_storage">சேமிப்பக அணுகல்</string>
     <string name="k2go_storage">சேமிப்பகம்</string>
     <string name="k2go_lang_system_default">கணினி இயல்பு</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">தவிர்க்கப்பட்டது</string>
     <string name="k2go_books_body">விரைவில் வருகிறது — தேர்வுசெய்ய இன்னும் உள்ளடக்கம் இல்லை.</string>
     <string name="k2go_maps_body">ஆஃப்லைன் உலக அடிப்படை வரைபடம். வரைபடத்துடன் அடங்கியுள்ளது (தற்போதைக்கு நிலையானது).</string>
-    <string name="k2go_courses_hint">Kiwix முன்னமைவுகள் உள்ளன; Kolibri-ஐ இன்னும் முன்னமைக்க முடியாது — நிறுவலுக்குப் பிறகு சாதனத்தில் அமைக்கவும்.</string>
-    <string name="k2go_added_after">நிறுவலுக்குப் பிறகு சேர்க்கப்பட்டது</string>
     <string name="k2go_step2a_hint">சேர்க்க அல்லது தவிர்க்க ஒரு மூலத்தைத் தட்டவும். அனைத்தையும் தவிர் = அமைப்பு மட்டும்.</string>
     <string name="k2go_skip_for_now">தற்போதைக்குத் தவிர் ›</string>
     <string name="k2go_wiz_choose_language">மொழியைத் தேர்வுசெய்க</string>
     <string name="k2go_wiz_language_sub">செயலி + உள்ளடக்க மொழியை அமைக்கிறது.</string>
     <string name="k2go_wiz_permissions_title">சில அனுமதிகளை வழங்கவும்</string>
+    <string name="k2go_wiz_permissions_sub">பின்வரும் அனுமதிகள் அவசியம். உங்கள் நூலகத்தைப் பகிரும்போது ஆப் கூடுதல் அனுமதிகளைக் கேட்கக்கூடும்.</string>
     <string name="k2go_continue">தொடர்</string>
     <string name="k2go_wiz_setup_sub">எப்படி வேண்டும்?</string>
     <string name="k2go_settings_language">மொழி</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">ரத்து</string>
     <string name="k2go_clone_channel_name">நகல்</string>
     <string name="k2go_clone_channel_desc">சாதனத்திலிருந்து சாதனத்திற்கான பரிமாற்றத்தை இயக்கி வைக்கிறது</string>
-    <string name="k2go_clone_notif_text">சாதனங்களுக்கிடையே பரிமாற்றம் — திரும்ப தட்டவும்</string>
+    <string name="k2go_clone_notif_text">சாதனங்களுக்கு இடையே இடமாற்றம்</string>
     <string name="k2go_bj_finish">முடி</string>
     <string name="k2go_bj_wait_title">இதற்கு சிறிது நேரம் ஆகலாம்</string>
     <string name="k2go_bj_wait_body">K2Go-ஐத் திறந்து வைத்திருங்கள். நீங்கள் வெளியேறலாம் — இது பின்னணியில் இயங்கிக்கொண்டே இருக்கும், அறிவிப்பு உங்களை மீண்டும் அழைத்து வரும்.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">மற்ற தொலைபேசியின் நூலகத்தின் முழு நகல்.</string>
     <string name="k2go_clone_all_apps">அனைத்து செயலிகளும் அவற்றின் உள்ளடக்கமும்</string>
     <string name="k2go_clone_already_wifi_skip">ஏற்கனவே அதே Wi-Fi-இல் உள்ளீர்களா? இந்தப் படியைத் தவிர்க்கலாம்›</string>
-    <string name="k2go_clone_camera_note">கேமரா வேலை செய்யவில்லையா? அமைப்புகளில் மற்ற தொலைபேசியின் Wi-Fi-இல் இணைந்து, பிறகு தவிர்க்கவும்.</string>
     <string name="k2go_clone_camera_q">கேமரா வேலை செய்யவில்லையா?</string>
     <string name="k2go_clone_cant_scan">ஸ்கேன் செய்ய முடியவில்லையா? செயலியை வேறு வழியில் பகிரவும்  ›</string>
     <string name="k2go_cancel">ரத்து</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">அது வைத்திருக்கும் அனைத்தும் — அதன் செயலிகளும் அவற்றின் உள்ளடக்கமும்.</string>
     <string name="k2go_clone_exact_size">இணைந்தவுடன் சரியான அளவு காட்டப்படும்.</string>
     <string name="k2go_clone_from_other_hdr">மற்ற தொலைபேசியிலிருந்து</string>
-    <string name="k2go_clone_get_version_note">இந்தத் தொலைபேசிக்காக உருவாக்கப்பட்ட K2Go பதிப்பைப் பெறுங்கள் — உங்கள் விளம்பரதாரரிடம் கேளுங்கள், அல்லது சரியானதைப் பதிவிறக்குங்கள்.</string>
+    <string name="k2go_clone_get_version_note">இந்த மொபைலுக்காக உருவாக்கப்பட்ட K2Go பதிப்பைப் பெறவும் — உங்களுடன் K2Go ஐப் பகிர்பவரிடம் கேட்கவும், அல்லது சரியானதைப் பதிவிறக்கவும்.</string>
     <string name="k2go_clone_installed_copy">நிறுவப்பட்டதா? நூலகத்தை நகலெடு</string>
     <string name="k2go_clone_incompat_why_long">K2Go-இன் நூலகத்தில் தொலைபேசியின் வன்பொருளுக்கு ஏற்ப உருவாக்கப்பட்ட நிரல்கள் உள்ளன. இரண்டு தொலைபேசிகள் வேறுவிதமாக உருவாக்கப்படும்போது, ஒன்றின் நிரல்கள் மற்றொன்றில் இயங்காது, எனவே நூலகத்தை நகலெடுப்பது வேலை செய்யாது.</string>
     <string name="k2go_clone_nothing_to_replace">மாற்றுவதற்கு எதுவும் இல்லை</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">ஏற்கனவே இணைக்கப்பட்டதா? தொடர் ›</string>
     <string name="k2go_clone_copying">நூலகம் நகலெடுக்கப்படுகிறது…</string>
     <string name="k2go_clone_join_wifi_note">மற்ற தொலைபேசியை இந்த Wi-Fi-இல் இணைக்கவும்.</string>
-    <string name="k2go_clone_cant_join_note">K2Go உங்களுக்காக அந்த நெட்வொர்க்கில் இணைய முடியாது — அமைப்புகளில் இணைந்து, பிறகு தொடரவும்.</string>
+    <string name="k2go_clone_cant_join_note">K2Go உங்கள் சார்பாக அந்த நெட்வொர்க்குடன் இணைய முடியாது — Android இன் Wi-Fi அமைப்புகளில் இணையவும், பிறகு தொடரவும் என்பதைத் தட்டவும்.</string>
     <string name="k2go_clone_next_get_app">அடுத்து: செயலியைப் பெறு</string>
     <string name="k2go_clone_nothing_title">இன்னும் பகிர எதுவும் இல்லை</string>
     <string name="k2go_clone_point_camera_join">இந்த மொபைலை இணைக்க அதன் கேமராவை இங்கே காட்டவும், அல்லது கீழ்க்காணும் விவரங்களைப் பயன்படுத்தவும்</string>
     <string name="k2go_clone_share_anyway">இருப்பினும் பகிர்</string>
-    <string name="k2go_clone_share_wifi_note">அமைப்புகளிலிருந்து இந்த Wi-Fi-ஐப் பகிரவும், அல்லது அவர்களை இணையச் செய்து, பிறகு தொடரவும்.</string>
+    <string name="k2go_clone_share_wifi_note">இந்த Wi-Fi ஐ Android இன் Wi-Fi அமைப்புகளில் இருந்து பகிரவும், அல்லது அவர்களை இணையச் சொல்லவும், பிறகு தொடரவும்.</string>
     <string name="k2go_clone_sharing_stopped">பகிர்வு நிறுத்தப்பட்டது</string>
     <string name="k2go_clone_skip_have_app">தவிர் — அவர்களிடம் ஏற்கனவே K2Go உள்ளது  ›</string>
     <string name="k2go_clone_start_sharing">பகிர்வைத் தொடங்கு</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">கடவுச்சொல்: %1$s</string>
     <string name="k2go_step2_download_fmt">நூலகத்தைப் பதிவிறக்கு · %.1f GB</string>
     <string name="k2go_step2_review">மறுபார்வை</string>
-    <string name="k2go_step2b_info_books">புத்தகங்கள் — விரைவில் வருகிறது (இன்னும் உள்ளடக்க மேலாளர் இல்லை · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">வரைபடங்கள் — உங்கள் பதிப்பில் அடங்கியுள்ளன.</string>
-    <string name="k2go_step2b_info_courses">பாடநெறிகள் — நிறுவலுக்குப் பிறகு சாதனத்தில் அமைக்கப்படும்.</string>
     <string name="k2go_step2b_info_review">உங்கள் நூலகத்தை மறுபார்வையிட்டு, பிறகு பதிவிறக்கவும்.</string>
     <string name="k2go_setting_up_library">உங்கள் நூலகம் அமைக்கப்படுகிறது…</string>
     <string name="k2go_reading">படிக்கிறது</string>

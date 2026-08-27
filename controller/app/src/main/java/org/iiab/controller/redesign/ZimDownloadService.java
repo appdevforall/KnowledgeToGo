@@ -45,6 +45,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
     public static final String EXTRA_FILES = "files";
     public static final String EXTRA_LABELS = "labels";
     public static final String EXTRA_BYTES = "bytes";
+    public static final String EXTRA_KEYS = "keys";   // ADFA-4897: wishlist keys, one per file
 
     // Per-item status — same values the UI/checklist already use, sourced from the shared session.
     public static final int PENDING = ContentDownloadSession.PENDING;
@@ -78,9 +79,10 @@ public final class ZimDownloadService extends Service implements ContentDownload
     public static long[] bytes() { return SESSION.sizes(); }
     public static void setListener(Listener l) { SESSION.setListener(l == null ? null : l::onUpdate); }
 
-    public static void start(Context ctx, String[] files, String[] labels, long[] bytes) {
+    public static void start(Context ctx, String[] keys, String[] files, String[] labels, long[] bytes) {
         Intent i = new Intent(ctx, ZimDownloadService.class).setAction(ACTION_START)
-                .putExtra(EXTRA_FILES, files).putExtra(EXTRA_LABELS, labels).putExtra(EXTRA_BYTES, bytes);
+                .putExtra(EXTRA_KEYS, keys).putExtra(EXTRA_FILES, files)
+                .putExtra(EXTRA_LABELS, labels).putExtra(EXTRA_BYTES, bytes);
         ContextCompat.startForegroundService(ctx, i);
     }
 
@@ -112,7 +114,13 @@ public final class ZimDownloadService extends Service implements ContentDownload
         SESSION.attach(this);
         String action = intent != null ? intent.getAction() : null;
 
-        if (ACTION_CANCEL.equals(action)) { SESSION.cancelAndPurge(); return START_NOT_STICKY; }
+        if (ACTION_CANCEL.equals(action)) {
+            // ADFA-4897: Cancel abandons the order -> drop the remaining wishlist so a later drain does
+            // not re-download it (DONE items were already removed one by one via onItemDone).
+            ZimWishlist.clear(getApplicationContext());
+            SESSION.cancelAndPurge();
+            return START_NOT_STICKY;
+        }
         if (ACTION_PAUSE.equals(action)) { SESSION.pauseActive(); return START_NOT_STICKY; }
         if (ACTION_RESUME.equals(action)) { SESSION.resumeActive(); return START_NOT_STICKY; }
 
@@ -127,6 +135,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
             if (files == null || files.length == 0) { stopSelf(); return START_NOT_STICKY; }
             String[] labels = intent.getStringArrayExtra(EXTRA_LABELS);
             long[] bytes = intent.getLongArrayExtra(EXTRA_BYTES);
+            String[] keys = intent.getStringArrayExtra(EXTRA_KEYS);
             if (labels == null) labels = files;
             JSONObject[] bodies = new JSONObject[files.length];
             for (int i = 0; i < files.length; i++) {
@@ -134,7 +143,7 @@ public final class ZimDownloadService extends Service implements ContentDownload
                 catch (Exception e) { bodies[i] = new JSONObject(); }
             }
             startForeground(NOTIFICATION_ID, buildNotification(labels.length > 0 ? labels[0] : ""));
-            SESSION.begin(labels, bytes, bodies);   // session owns the snapshot from here on
+            SESSION.begin(keys, labels, bytes, bodies);   // session owns the snapshot from here on
         }
         return START_NOT_STICKY;
     }
@@ -147,6 +156,12 @@ public final class ZimDownloadService extends Service implements ContentDownload
     }
 
     @Override public void stop() { main.post(() -> { stopForeground(true); stopSelf(); }); }
+
+    /** ADFA-4897: item confirmed downloaded -> drop it from the durable wishlist, so a process death
+     *  after this point never re-downloads it. */
+    @Override public void onItemDone(String key) {
+        if (key != null && !key.isEmpty()) ZimWishlist.remove(getApplicationContext(), key);
+    }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

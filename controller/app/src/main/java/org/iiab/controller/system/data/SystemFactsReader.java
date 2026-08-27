@@ -89,6 +89,30 @@ public final class SystemFactsReader {
     }
 
     /**
+     * ADFA-5312: the single DISPLAY verdict for "what state is the system in", for UI screens to
+     * switch on instead of each re-deriving it from {@code isSystemInstalled()} plus its own set of
+     * running flags. Gathers the raw signals here (this is the one reader) and delegates the rule to
+     * the pure {@link org.iiab.controller.system.domain.SystemVerdict}. Does NOT feed the boot gate,
+     * the server-start gate or the recovery dialog — those keep their strict checks.
+     */
+    public static org.iiab.controller.system.domain.SystemVerdict.State verdict(Context ctx) {
+        if (ctx == null) {
+            return org.iiab.controller.system.domain.SystemVerdict.State.NO_SYSTEM;
+        }
+        ServerStateRepository server = ServerStateRepository.get();
+        return org.iiab.controller.system.domain.SystemVerdict.evaluate(
+                SystemStateEvaluator.rootfsPresent(ctx),
+                InstallGuard.inProgress(ctx),
+                InstallProgressRepository.get().isRunning(),
+                ModuleQueueRepository.get().isRunning(),
+                EnvironmentLock.ownerHeld(ctx),
+                org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive(),
+                org.iiab.controller.redesign.CloneSendSession.isActive(),
+                server.current().alive,
+                server.hasObservation());
+    }
+
+    /**
      * ADFA-5137: does this device have a system, or is one on its way?
      *
      * <p>The question the launch path asks before deciding between the library and the first-run

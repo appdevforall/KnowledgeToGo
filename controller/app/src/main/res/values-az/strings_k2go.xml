@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Sadəcə skan edin və ya aşağıdakı məlumatlardan istifadə edin:</string>
     <string name="k2go_perm_keep_running">İşləməyə davam et</string>
     <string name="k2go_connect_subtitle">Yaxınlıqdakı cihaza kitabxananıza baxmağa icazə verin.</string>
-    <string name="k2go_perm_nearby_note">Yaxınlıqdakı cihazlar sonra, yalnız paylaşarkən soruşulur.</string>
     <string name="k2go_next">İrəli</string>
     <string name="k2go_next_choose_content">İrəli: məzmun seç</string>
     <string name="k2go_clone_next_note">İrəli: eyni şəbəkəyə qoşul, sonra başla.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Məzmun əlavə edilir</string>
+    <string name="k2go_home_installing_system">Quraşdırılır — gözləyin</string>
     <string name="k2go_perm_storage">Yaddaşa giriş</string>
     <string name="k2go_storage">Yaddaş</string>
     <string name="k2go_lang_system_default">Sistem defoltu</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">ötürüldü</string>
     <string name="k2go_books_body">Tezliklə — hələ seçiləcək məzmun yoxdur.</string>
     <string name="k2go_maps_body">Oflayn dünya baza xəritəsi. Xəritəyə daxildir (hələlik sabitdir).</string>
-    <string name="k2go_courses_hint">Kiwix hazır ayarları var; Kolibri hələ öncədən qurula bilmir — quraşdırmadan sonra cihazda qurun.</string>
-    <string name="k2go_added_after">quraşdırmadan sonra əlavə olunur</string>
     <string name="k2go_step2a_hint">Əlavə etmək və ya ötürmək üçün mənbəyə toxunun. Hamısını ötür = yalnız sistem.</string>
     <string name="k2go_skip_for_now">Hələlik ötür ›</string>
     <string name="k2go_wiz_choose_language">Dil seçin</string>
     <string name="k2go_wiz_language_sub">Tətbiq + məzmun dilini təyin edir.</string>
     <string name="k2go_wiz_permissions_title">Bir neçə şeyə icazə verin</string>
+    <string name="k2go_wiz_permissions_sub">Aşağıdakı icazələr tələb olunur. Kitabxananızı paylaşdıqda tətbiq əlavə icazələr istəyə bilər.</string>
     <string name="k2go_continue">Davam et</string>
     <string name="k2go_wiz_setup_sub">Bunu necə istəyirsiniz?</string>
     <string name="k2go_settings_language">Dil</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Ləğv et</string>
     <string name="k2go_clone_channel_name">Klon</string>
     <string name="k2go_clone_channel_desc">Cihazdan-cihaza köçürməni işlədir</string>
-    <string name="k2go_clone_notif_text">Cihazlar arasında köçürülür — qayıtmaq üçün toxun</string>
+    <string name="k2go_clone_notif_text">Cihazlar arasında köçürülür</string>
     <string name="k2go_bj_finish">Bitir</string>
     <string name="k2go_bj_wait_title">Bu bir qədər vaxt apara bilər</string>
     <string name="k2go_bj_wait_body">K2Go-nu açıq saxlayın. Tərk edə bilərsiniz — arxa planda işləməyə davam edir və bildiriş sizi geri gətirir.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Digər telefonun kitabxanasının tam surəti.</string>
     <string name="k2go_clone_all_apps">Bütün tətbiqlər və onların məzmunu</string>
     <string name="k2go_clone_already_wifi_skip">Artıq eyni Wi-Fi-dəsiniz? Bu addımı ötürə bilərsiniz›</string>
-    <string name="k2go_clone_camera_note">Kamera işləmir? Ayarlarda digər telefonun Wi-Fi-ına qoşulun, sonra Ötürün.</string>
     <string name="k2go_clone_camera_q">Kamera işləmir?</string>
     <string name="k2go_clone_cant_scan">Skan edə bilmirsiniz? Tətbiqi başqa yolla paylaşın  ›</string>
     <string name="k2go_cancel">Ləğv et</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Onda olan hər şey — tətbiqləri və onların məzmunu.</string>
     <string name="k2go_clone_exact_size">Dəqiq ölçü qoşulduqdan sonra göstərilir.</string>
     <string name="k2go_clone_from_other_hdr">DİGƏR TELEFONDAN</string>
-    <string name="k2go_clone_get_version_note">Bu telefon üçün hazırlanmış K2Go versiyasını əldə edin — təşviqatçınızdan soruşun və ya düzgün olanı yükləyin.</string>
+    <string name="k2go_clone_get_version_note">Bu telefon üçün hazırlanmış K2Go versiyasını əldə et — K2Go-nu səninlə paylaşan şəxsdən istə və ya düzgün olanı yüklə.</string>
     <string name="k2go_clone_installed_copy">Quraşdırıldı? Kitabxananı köçür</string>
     <string name="k2go_clone_incompat_why_long">K2Go-nun kitabxanası telefonun aparatına uyğun qurulmuş proqramları ehtiva edir. İki telefon fərqli qurulduqda, birinin proqramları digərində işləyə bilmir, ona görə kitabxananı köçürmək işə yaramaz.</string>
     <string name="k2go_clone_nothing_to_replace">Əvəz ediləcək heç nə yoxdur</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Artıq qoşulub? Davam et ›</string>
     <string name="k2go_clone_copying">Kitabxana köçürülür…</string>
     <string name="k2go_clone_join_wifi_note">Digər telefonu bu Wi-Fi-a qoşun.</string>
-    <string name="k2go_clone_cant_join_note">K2Go sizin üçün həmin şəbəkəyə qoşula bilmir — Ayarlarda qoşulun, sonra Davam edin.</string>
+    <string name="k2go_clone_cant_join_note">K2Go sənin yerinə həmin şəbəkəyə qoşula bilmir — Android Wi-Fi parametrlərində qoşul, sonra Davam et düyməsinə toxun.</string>
     <string name="k2go_clone_next_get_app">İrəli: tətbiqi al</string>
     <string name="k2go_clone_nothing_title">Hələ paylaşılacaq heç nə yoxdur</string>
     <string name="k2go_clone_point_camera_join">Bu telefonu qoşmaq üçün kameranı buraya yönəldin və ya aşağıdakı məlumatlardan istifadə edin</string>
     <string name="k2go_clone_share_anyway">Yenə də paylaş</string>
-    <string name="k2go_clone_share_wifi_note">Bu Wi-Fi-ı Ayarlardan paylaşın və ya onları qoşdurun, sonra davam edin.</string>
+    <string name="k2go_clone_share_wifi_note">Bu Wi-Fi-ni Android Wi-Fi parametrlərindən paylaş və ya qoşulmalarını istə, sonra davam et.</string>
     <string name="k2go_clone_sharing_stopped">Paylaşma dayandırıldı</string>
     <string name="k2go_clone_skip_have_app">Ötür — onlarda artıq K2Go var  ›</string>
     <string name="k2go_clone_start_sharing">Paylaşmağa başla</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Parol: %1$s</string>
     <string name="k2go_step2_download_fmt">Kitabxananı yüklə · %.1f GB</string>
     <string name="k2go_step2_review">Nəzərdən keçir</string>
-    <string name="k2go_step2b_info_books">Kitablar — tezliklə (hələ məzmun meneceri yoxdur · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Xəritələr — nəşrinizə daxildir.</string>
-    <string name="k2go_step2b_info_courses">Kurslar — quraşdırmadan sonra cihazda qurulur.</string>
     <string name="k2go_step2b_info_review">Kitabxananızı nəzərdən keçirin, sonra yükləyin.</string>
     <string name="k2go_setting_up_library">Kitabxananız qurulur…</string>
     <string name="k2go_reading">oxunur</string>

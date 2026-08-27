@@ -10,12 +10,17 @@
  *               job and then POLLs its structured status every ~1s. The job lives in
  *               the dashboard process (durable, resumable), so there is no connection
  *               to lose — the app can drop and re-attach by polling the same jobId.
+ *               ADFA-4897: start() acts as start-or-attach — before creating a job it
+ *               checks GET /:type/jobs for an ACTIVE job with the same target ids and,
+ *               if found, polls that one instead, so a queue re-drained after process
+ *               death re-attaches to the in-flight download rather than duplicating it.
  *               Still driven by the foreground InstallService so polling continues
  *               across UI/config changes.
  *
  *               Contract (static/dashboard/routes.ts + sockets/jobs.ts), per content <type>
  *               ("kiwix", "books", ...) — ADFA-4893 made this client type-parametric:
  *                 POST /api/<type>/download <body>           -> { id, ... }
+ *                 GET  /api/<type>/jobs                       -> [ { id, ids, phase, ... }, ... ]
  *                 GET  /api/<type>/jobs/:id                  -> { phase, percent, speed(bytes/s),
  *                                                                 detail, error, retryAttempt, retryTotal }
  *                 POST /api/<type>/jobs/:id/{cancel,pause,resume} -> { ok:true }
@@ -95,6 +100,18 @@ public final class RestContentClient {
     public void start(@NonNull JSONObject body, @NonNull Listener l) {
         this.listener = l;
         AppExecutors.get().io().execute(() -> {
+            // ADFA-4897: re-attach instead of re-POST. The server job engine is durable (jobs.db +
+            // reconcileOnBoot), so a job we started before a process death survives. Before creating a
+            // new job, look for an ACTIVE one whose target ids match this body's items and, if found,
+            // just poll it — so a relaunched queue re-attaches to the in-flight download instead of
+            // starting a duplicate. Any error here falls through to a normal fresh POST.
+            String existing = findActiveJob(body);
+            if (finished) return;   // a cancel landed during the lookup
+            if (existing != null) {
+                jobId = existing;
+                main.postDelayed(pollTask, POLL_MS);
+                return;
+            }
             // ADFA-4893: retry ONLY the kickoff POST (connectivity blip / server still warming) a few
             // times. An empty id is a server refusal, not a blip, so it fails without retrying. Once the
             // job exists, the server owns reconnection (visible), not this loop.
@@ -231,6 +248,76 @@ public final class RestContentClient {
         return i == 0
                 ? String.format(java.util.Locale.US, "%.0f %s", v, units[i])
                 : String.format(java.util.Locale.US, "%.1f %s", v, units[i]);
+    }
+
+    /** ADFA-4897: id of an ACTIVE server job whose target ids intersect this body's item ids, or null
+     *  if none / on any error (so a fresh start just POSTs a new job). */
+    private String findActiveJob(JSONObject body) {
+        try {
+            java.util.Set<String> want = idsFromBody(body);
+            if (want.isEmpty()) return null;
+            JSONArray list = httpArray("GET", base + "/jobs");
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject job = list.optJSONObject(i);
+                if (job == null || !isActivePhase(job.optString("phase", ""))) continue;
+                java.util.Set<String> have = idsFromJob(job);
+                for (String id : want) if (have.contains(id)) {
+                    String jid = job.optString("id", "");
+                    if (!jid.isEmpty()) return jid;
+                }
+            }
+        } catch (Exception ignore) { /* fall through to a fresh POST */ }
+        return null;
+    }
+
+    /** Item ids in a start body: kiwix {ids:[..]} (strings), books {items:[{id,..}]} (objects). */
+    private static java.util.Set<String> idsFromBody(JSONObject body) {
+        java.util.Set<String> out = new java.util.HashSet<>();
+        JSONArray ids = body.optJSONArray("ids");
+        if (ids != null) for (int i = 0; i < ids.length(); i++) {
+            String s = ids.optString(i, ""); if (!s.isEmpty()) out.add(s);
+        }
+        JSONArray items = body.optJSONArray("items");
+        if (items != null) for (int i = 0; i < items.length(); i++) {
+            JSONObject o = items.optJSONObject(i);
+            if (o != null) { String s = o.optString("id", ""); if (!s.isEmpty()) out.add(s); }
+        }
+        return out;
+    }
+
+    /** Item ids in a job's target (toApi 'ids'): kiwix elements are strings, books elements are objects. */
+    private static java.util.Set<String> idsFromJob(JSONObject job) {
+        java.util.Set<String> out = new java.util.HashSet<>();
+        JSONArray arr = job.optJSONArray("ids");
+        if (arr != null) for (int i = 0; i < arr.length(); i++) {
+            Object el = arr.opt(i);
+            if (el instanceof JSONObject) { String s = ((JSONObject) el).optString("id", ""); if (!s.isEmpty()) out.add(s); }
+            else if (el != null) { String s = String.valueOf(el); if (!s.isEmpty()) out.add(s); }
+        }
+        return out;
+    }
+
+    /** Non-terminal phase — worth attaching to (queued/downloading/indexing/processing/paused). */
+    private static boolean isActivePhase(String phase) {
+        return !("done".equals(phase) || "error".equals(phase) || "canceled".equals(phase));
+    }
+
+    private static JSONArray httpArray(String method, String urlStr) throws Exception {
+        HttpURLConnection c = (HttpURLConnection) new URL(urlStr).openConnection();
+        try {
+            c.setUseCaches(false);
+            c.setConnectTimeout(4000);
+            c.setReadTimeout(4000);
+            c.setRequestMethod(method);
+            c.setRequestProperty("Accept", "application/json");
+            int code = c.getResponseCode();
+            boolean ok = code >= 200 && code < 400;
+            String text = readAll(ok ? c.getInputStream() : c.getErrorStream());
+            if (!ok) throw new Exception("HTTP " + code + ": " + text);
+            return new JSONArray(text.isEmpty() ? "[]" : text);
+        } finally {
+            c.disconnect();
+        }
     }
 
     private static JSONObject httpJson(String method, String urlStr, JSONObject body) throws Exception {

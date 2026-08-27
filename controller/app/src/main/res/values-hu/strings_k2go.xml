@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Csak olvassa be, vagy használja az alábbi adatokat:</string>
     <string name="k2go_perm_keep_running">Futás fenntartása</string>
     <string name="k2go_connect_subtitle">Engedd, hogy egy közeli eszköz böngéssze a könyvtáradat.</string>
-    <string name="k2go_perm_nearby_note">A közeli eszközök engedélyét később kérjük, csak megosztáskor.</string>
     <string name="k2go_next">Tovább</string>
     <string name="k2go_next_choose_content">Tovább: tartalom kiválasztása</string>
     <string name="k2go_clone_next_note">Tovább: csatlakozz ugyanarra a hálózatra, majd indíts.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Tartalom hozzáadása</string>
+    <string name="k2go_home_installing_system">Telepítés — kérjük, várjon</string>
     <string name="k2go_perm_storage">Tárhely-hozzáférés</string>
     <string name="k2go_storage">Tárhely</string>
     <string name="k2go_lang_system_default">Rendszer alapértelmezett</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">kihagyva</string>
     <string name="k2go_books_body">Hamarosan — még nincs választható tartalom.</string>
     <string name="k2go_maps_body">Offline világ-alaptérkép. A térképpel együtt jár (egyelőre rögzített).</string>
-    <string name="k2go_courses_hint">Kiwix-előbeállítások léteznek; a Kolibri még nem állítható be előre — a telepítés után állítsd be az eszközön.</string>
-    <string name="k2go_added_after">telepítés után hozzáadva</string>
     <string name="k2go_step2a_hint">Koppints egy forrásra a hozzáadásához vagy kihagyásához. Mind kihagyása = csak a rendszer.</string>
     <string name="k2go_skip_for_now">Kihagyás most ›</string>
     <string name="k2go_wiz_choose_language">Válassz nyelvet</string>
     <string name="k2go_wiz_language_sub">Beállítja az app + tartalom nyelvét.</string>
     <string name="k2go_wiz_permissions_title">Engedélyezz néhány dolgot</string>
+    <string name="k2go_wiz_permissions_sub">A következő engedélyek szükségesek. Az alkalmazás további engedélyeket kérhet, amikor megosztja a könyvtárát.</string>
     <string name="k2go_continue">Folytatás</string>
     <string name="k2go_wiz_setup_sub">Hogyan szeretnéd?</string>
     <string name="k2go_settings_language">Nyelv</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Mégse</string>
     <string name="k2go_clone_channel_name">Klónozás</string>
     <string name="k2go_clone_channel_desc">Fenntartja az eszközök közötti átvitelt</string>
-    <string name="k2go_clone_notif_text">Átvitel eszközök között — koppints a visszatéréshez</string>
+    <string name="k2go_clone_notif_text">Átvitel az eszközök között</string>
     <string name="k2go_bj_finish">Befejezés</string>
     <string name="k2go_bj_wait_title">Ez eltarthat egy ideig</string>
     <string name="k2go_bj_wait_body">Tartsd nyitva a K2Go-t. Elhagyhatod — a háttérben tovább fut, és az értesítés visszahoz.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">A másik telefon könyvtárának teljes másolata.</string>
     <string name="k2go_clone_all_apps">Minden alkalmazás és tartalmuk</string>
     <string name="k2go_clone_already_wifi_skip">Már ugyanazon a Wi-Fi-n vagy? Kihagyhatod ezt a lépést›</string>
-    <string name="k2go_clone_camera_note">Nem működik a kamera? Csatlakozz a másik telefon Wi-Fi-jéhez a Beállításokban, majd Kihagyás.</string>
     <string name="k2go_clone_camera_q">Nem működik a kamera?</string>
     <string name="k2go_clone_cant_scan">Nem tudsz beolvasni? Oszd meg az appot másképp  ›</string>
     <string name="k2go_cancel">Mégse</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Minden, amije van — az appjai és tartalmuk.</string>
     <string name="k2go_clone_exact_size">A pontos méret a csatlakozás után jelenik meg.</string>
     <string name="k2go_clone_from_other_hdr">A MÁSIK TELEFONRÓL</string>
-    <string name="k2go_clone_get_version_note">Szerezz egy erre a telefonra készült K2Go verziót — kérdezd a promóteredet, vagy töltsd le a megfelelőt.</string>
+    <string name="k2go_clone_get_version_note">Szerezz be egy ehhez a telefonhoz készült K2Go-verziót – kérd meg a személyt, aki megosztja veled a K2Go-t, vagy töltsd le a megfelelőt.</string>
     <string name="k2go_clone_installed_copy">Telepítve? Másold a könyvtárat</string>
     <string name="k2go_clone_incompat_why_long">A K2Go könyvtára a telefon hardveréhez illeszkedő programokat tartalmaz. Ha két telefon eltérően épül fel, az egyik programjai nem futnak a másikon, ezért a könyvtár másolása nem működne.</string>
     <string name="k2go_clone_nothing_to_replace">Nincs mit lecserélni</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Már csatlakoztál? Folytatás ›</string>
     <string name="k2go_clone_copying">A könyvtár másolása…</string>
     <string name="k2go_clone_join_wifi_note">Csatlakoztasd a másik telefont erre a Wi-Fi-re.</string>
-    <string name="k2go_clone_cant_join_note">A K2Go nem tud csatlakozni ahhoz a hálózathoz helyetted — csatlakozz a Beállításokban, majd Folytatás.</string>
+    <string name="k2go_clone_cant_join_note">A K2Go nem tud helyetted csatlakozni ahhoz a hálózathoz – csatlakozz az Android Wi-Fi beállításaiban, majd koppints a Folytatásra.</string>
     <string name="k2go_clone_next_get_app">Tovább: szerezd meg az appot</string>
     <string name="k2go_clone_nothing_title">Még nincs mit megosztani</string>
     <string name="k2go_clone_point_camera_join">Irányítsa ide a kameráját a telefon csatlakoztatásához, vagy használja az alábbi adatokat</string>
     <string name="k2go_clone_share_anyway">Megosztás mindenképp</string>
-    <string name="k2go_clone_share_wifi_note">Oszd meg ezt a Wi-Fi-t a Beállításokból, vagy csatlakoztasd őket, majd folytasd.</string>
+    <string name="k2go_clone_share_wifi_note">Oszd meg ezt a Wi-Fit az Android Wi-Fi beállításaiból, vagy hagyd, hogy csatlakozzanak, majd folytasd.</string>
     <string name="k2go_clone_sharing_stopped">A megosztás leállt</string>
     <string name="k2go_clone_skip_have_app">Kihagyás — már van K2Go-juk  ›</string>
     <string name="k2go_clone_start_sharing">Megosztás indítása</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Jelszó: %1$s</string>
     <string name="k2go_step2_download_fmt">Könyvtár letöltése · %.1f GB</string>
     <string name="k2go_step2_review">Áttekintés</string>
-    <string name="k2go_step2b_info_books">Könyvek — hamarosan (még nincs tartalomkezelő · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Térképek — a kiadásod része.</string>
-    <string name="k2go_step2b_info_courses">Kurzusok — a telepítés után állítsd be az eszközön.</string>
     <string name="k2go_step2b_info_review">Tekintsd át a könyvtárad, majd tölts le.</string>
     <string name="k2go_setting_up_library">A könyvtárad beállítása…</string>
     <string name="k2go_reading">olvasás</string>

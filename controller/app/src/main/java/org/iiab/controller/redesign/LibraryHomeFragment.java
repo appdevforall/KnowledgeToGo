@@ -53,7 +53,12 @@ public class LibraryHomeFragment extends Fragment {
             H_CLONE_RECEIVING = 6, H_CLONE_SHARING = 7,
             // ADFA-5147: a system is on disk but was left unbootable (a killed install or clone). Split
             // out of H_NO_LIBRARY, which offered to install over it — this offers to repair it instead.
-            H_DAMAGED = 8;
+            H_DAMAGED = 8,
+            // ADFA-5312: a system op is in progress with the server deliberately DOWN (a proot module,
+            // a rootfs install, or a deep op). That is "wait", so it is rendered amber like the clone
+            // states — NOT the green "Adding content" of H_INSTALLING, which is a content download over
+            // a live, navigable box. Same "See progress" action, different colour + label.
+            H_INSTALLING_SYSTEM = 9;
     // ADFA-4837: how long a card stays amber (patient) once the box is up before it's called stuck.
     private static final long CARD_RED_GRACE_MS = 60000L;
 
@@ -106,7 +111,7 @@ public class LibraryHomeFragment extends Fragment {
             homeStatusAction.setOnClickListener(v -> {
                 // ADFA-5074: the way back into a running install. Opens the index without
                 // starting anything — every other route to it begins new work.
-                if (headerState == H_INSTALLING) {
+                if (headerState == H_INSTALLING || headerState == H_INSTALLING_SYSTEM) {
                     startActivity(new android.content.Intent(
                             requireContext(), SetupProgressActivity.class));
                     return;
@@ -293,10 +298,22 @@ public class LibraryHomeFragment extends Fragment {
             }
             return;
         }
-        // If a system is already installed, skip the destructive system step and go straight
-        // to content (Step 2). Otherwise run the full setup from Step 1.
+        // ADFA-5312: the content-only vs full-setup decision (and the busy guard) come from the shared
+        // verdict. A running proot module holds the install marker but NOT the env-lock owner, so the
+        // ownerHeld guard above misses it — without this, "Get more" during a module install would
+        // launch the destructive full setup over a system that is present and mid-install.
+        org.iiab.controller.system.domain.SystemVerdict.State verdict =
+                org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext());
+        if (verdict == org.iiab.controller.system.domain.SystemVerdict.State.INSTALLING) {
+            if (getView() != null) {
+                org.iiab.controller.util.Snackbars.make(getView(), R.string.k2go_install_busy).show();
+            }
+            return;
+        }
+        // A ready system skips the destructive system step and goes straight to content (Step 2);
+        // otherwise (no system / damaged) run the full setup from Step 1.
         Intent i = new Intent(requireContext(), SetupLibraryActivity.class);
-        if (org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext())) {
+        if (verdict == org.iiab.controller.system.domain.SystemVerdict.State.READY) {
             i.putExtra(SetupLibraryActivity.EXTRA_CONTENT_ONLY, true);
         }
         startActivity(i);
@@ -365,13 +382,20 @@ public class LibraryHomeFragment extends Fragment {
     private void openSheet(Card c) {
         ModuleActionSheet.State s;
         final PlatformPresence.Evidence ev = PlatformEvidence.last(c.endpoint);
+        // ADFA-5312: the "no usable system" decision comes from the shared verdict, so a card's sheet
+        // can't collapse to Recover during an install (marker held) the way bare !systemInstalled did.
+        org.iiab.controller.system.domain.SystemVerdict.State verdict =
+                org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext());
         if (c.state == GREEN || contentInFlight(c)) s = ModuleActionSheet.State.READY;
         else if (isScheduled(c)) s = ModuleActionSheet.State.SCHEDULED;
-        else if (!systemInstalled) {
+        else if (verdict == org.iiab.controller.system.domain.SystemVerdict.State.NO_SYSTEM
+                || verdict == org.iiab.controller.system.domain.SystemVerdict.State.DAMAGED) {
             // ADFA-5150: no system to install a module into. This used to be NOT_INSTALLED — About /
             // Install now / Schedule — which banked an install order with nothing to drain it. The
             // sheet now collapses to Recover. (A first-run phone never reaches this surface; the wizard
             // runs before the tabs, so a systemless card here always means a system was lost.)
+            // ADFA-5312: gated on the verdict (NO_SYSTEM/DAMAGED), not bare !systemInstalled, so a
+            // mid-install marker no longer routes a card to Recover.
             s = ModuleActionSheet.State.NO_SYSTEM;
         } else if (ev != null && !PlatformPresence.resolve(ev)) {
             // Known absent, and still known absent with the box off — that is the state where
@@ -433,11 +457,21 @@ public class LibraryHomeFragment extends Fragment {
      */
     private boolean systemInstalled = true;
 
+    /**
+     * ADFA-5312: the shared system verdict, read once per pass alongside {@link #passContent} and
+     * {@link #systemInstalled} — so the cards and the header decide from ONE reading rather than two
+     * taken moments apart (the same "once per decision" reason SystemFactsReader states). Seeded READY
+     * so paths before the first pass behave as they did.
+     */
+    private org.iiab.controller.system.domain.SystemVerdict.State passVerdict =
+            org.iiab.controller.system.domain.SystemVerdict.State.READY;
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         systemInstalled = installed;
         boolean alive = ServerStateRepository.get().current().alive;
         passContent = org.iiab.controller.system.data.PendingContent.read(requireContext());
+        passVerdict = org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext());
 
         // ADFA-4837: track when the server first came up; the card red-grace is measured from here.
         if (alive) { if (serverAliveSinceMs == 0L) serverAliveSinceMs = android.os.SystemClock.elapsedRealtime(); }
@@ -446,7 +480,12 @@ public class LibraryHomeFragment extends Fragment {
         // ADFA-4828: nothing installed (or an install is running — the boot gate normally covers
         // that). The home isn't starting anything, so don't imply it: the cards read "Not installed"
         // and the header points to Get more (set in updateHeaderFromCards).
-        if (!installed) {
+        // ADFA-5312: only paint every card "Not installed" when there is genuinely no usable system —
+        // nothing on disk (NO_SYSTEM) or a killed install left it damaged (DAMAGED). During an install,
+        // clone or deep op the system is present/arriving, so fall through and keep last-known state.
+        // Uses the once-per-pass passVerdict so the cards and the header cannot disagree.
+        if (passVerdict == org.iiab.controller.system.domain.SystemVerdict.State.NO_SYSTEM
+                || passVerdict == org.iiab.controller.system.domain.SystemVerdict.State.DAMAGED) {
             for (final Card c : cards) {
                 // ADFA-5061: this used to record ABSENT for all five, and the write was right at
                 // the instant it happened and wrong forever after. "No system is installed" is a
@@ -563,42 +602,21 @@ public class LibraryHomeFragment extends Fragment {
      */
     private void updateHeaderFromCards() {
         if (homeStatus == null || !isAdded()) return;
-        boolean installed = systemInstalled;
         boolean alive = ServerStateRepository.get().current().alive;
-        // ADFA-5143: a clone in flight outranks everything below, and has to be asked FIRST. During a
-        // receive the install marker makes isSystemInstalled() false, so without this the very next
-        // line says "no library" while a whole system is arriving — and the branch after it would call
-        // a deliberately stopped server a failure. Neither is true and both were on screen.
-        if (org.iiab.controller.sync.presentation.SyncProgressRepository.get().isActive()) {
-            setHeader(H_CLONE_RECEIVING);
-            return;
-        }
-        if (CloneSendSession.isActive()) {
-            setHeader(H_CLONE_SHARING);
-            return;
-        }
-        if (!installed) {
-            // ADFA-5147: "not installed" is two states, and this line used to collapse them. A truly
-            // empty phone has no install marker; a killed install or clone leaves the marker set and
-            // the system unbootable. isSystemInstalled() folds both into false, so a damaged system
-            // read as "no library" and the header offered to install over it — the misdiagnosis that
-            // sent a whole night at rsync while the cloned system was intact.
-            //
-            // Ask the one owner of that distinction — the same verdict the launch recovery dialog uses
-            // (InterruptedInstallDetector) — so Home and the dialog cannot disagree about what a marker
-            // means. The full form is required here: a live install, module queue or deep op holds the
-            // marker legitimately and must NOT read as damage (ADFA-4971). This is the destination made
-            // honest, so the diagnosis no longer depends on which launch branch was taken to reach it.
-            boolean marker = org.iiab.controller.InstallGuard.inProgress(requireContext());
-            boolean instRunning = org.iiab.controller.install.presentation.InstallProgressRepository.get().current().isRunning();
-            boolean modRunning = org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning();
-            boolean deepOp = org.iiab.controller.env.EnvironmentLock.ownerHeld(requireContext());
-            org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict v =
-                    org.iiab.controller.install.domain.InterruptedInstallDetector.evaluate(
-                            marker, instRunning, modRunning, deepOp, alive);
-            setHeader(v == org.iiab.controller.install.domain.InterruptedInstallDetector.Verdict.DAMAGED_REINSTALL
-                    ? H_DAMAGED : H_NO_LIBRARY);
-            return;
+        // ADFA-5312: the system-state axis comes from the ONE shared verdict (SystemFactsReader), so
+        // Home cannot disagree with Modules/Connect/Clone about whether an install-in-progress is
+        // "installing" vs "no system / damaged". Clone, any system op (install/module/deep-op) and
+        // damaged all outrank the content + server sub-states below, which only apply once the system
+        // itself is READY. (This centralizes what used to be re-derived here from isSystemInstalled()
+        // plus a grab-bag of running flags — the ADFA-5312 bug class.) Reads the once-per-pass
+        // passVerdict so the header and the cards cannot answer from two readings taken moments apart.
+        switch (passVerdict) {
+            case CLONE_RECEIVING: setHeader(H_CLONE_RECEIVING); return;
+            case CLONE_SHARING:   setHeader(H_CLONE_SHARING);   return;
+            case INSTALLING:      setHeader(H_INSTALLING_SYSTEM); return;
+            case NO_SYSTEM:       setHeader(H_NO_LIBRARY);      return;
+            case DAMAGED:         setHeader(H_DAMAGED);         return;
+            case READY:           break;   // fall through to the content + server sub-state below
         }
         // ADFA-5074: content being added outranks everything below. It is the only state
         // the user can act on from here, and reporting "ready" over a running install is
@@ -607,11 +625,13 @@ public class LibraryHomeFragment extends Fragment {
         // claiming work that is not happening.
         // ADFA-5061: from the pass snapshot, so the header and the cards cannot answer this
         // from two different readings taken moments apart.
+        // ADFA-5074: content being added (REST download) still shows "installing" — but that is the
+        // content axis on a READY system, not a system state, so it lives here in the READY branch
+        // (the system op case is already handled by the verdict above).
         boolean contentRunning = passContent != null
                 ? passContent.anyRunning()
                 : org.iiab.controller.system.data.PendingContent.anyRunning(requireContext());
-        if (contentRunning
-                || org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()) {
+        if (contentRunning) {
             setHeader(H_INSTALLING);
             return;
         }
@@ -650,6 +670,8 @@ public class LibraryHomeFragment extends Fragment {
             // content arriving blocks nothing: the library works, and it is getting bigger.
             // The label carries the news, and the row stays tappable as the way into progress.
             case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_leaf;  break;
+            // ADFA-5312: a system op with the server stopped — amber "wait", not the green content look.
+            case H_INSTALLING_SYSTEM: text = getString(R.string.k2go_home_installing_system); dotColor = R.color.k2go_amber; break;
             // ADFA-5143: amber, not green and not red. The server is deliberately down and the box is
             // busy with something the user started — that is "wait", which is what amber says here.
             case H_CLONE_RECEIVING: text = getString(R.string.k2go_home_clone_receiving); dotColor = R.color.k2go_amber; break;
@@ -678,7 +700,7 @@ public class LibraryHomeFragment extends Fragment {
         // common: a state with no exit is a bug whoever reaches it, including by a route that does not
         // exist yet. One line in a switch that already hands out two other buttons.
         int action = h == H_FAILED ? R.string.k2go_home_retry
-                : h == H_INSTALLING ? R.string.k2go_home_see_progress
+                : (h == H_INSTALLING || h == H_INSTALLING_SYSTEM) ? R.string.k2go_home_see_progress
                 : h == H_NO_LIBRARY ? R.string.k2go_home_install_system
                 // ADFA-5143: a transfer is not offered a restart — restarting the server is not a
                 // meaningful thing to do to a transfer. Each side is offered the place that matters:

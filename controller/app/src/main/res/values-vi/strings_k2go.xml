@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Chỉ cần quét, hoặc dùng thông tin đăng nhập sau:</string>
     <string name="k2go_perm_keep_running">Tiếp tục chạy</string>
     <string name="k2go_connect_subtitle">Cho phép thiết bị gần đó duyệt thư viện của bạn.</string>
-    <string name="k2go_perm_nearby_note">Quyền thiết bị gần đó sẽ được hỏi sau, chỉ khi chia sẻ.</string>
     <string name="k2go_next">Tiếp theo</string>
     <string name="k2go_next_choose_content">Tiếp theo: chọn nội dung</string>
     <string name="k2go_clone_next_note">Tiếp theo: kết nối cùng mạng, rồi bắt đầu.</string>
@@ -50,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Đang thêm nội dung</string>
+    <string name="k2go_home_installing_system">Đang cài đặt — vui lòng đợi</string>
     <string name="k2go_perm_storage">Truy cập bộ nhớ</string>
     <string name="k2go_storage">Bộ nhớ</string>
     <string name="k2go_lang_system_default">Mặc định hệ thống</string>
@@ -81,13 +81,12 @@
     <string name="k2go_skipped">đã bỏ qua</string>
     <string name="k2go_books_body">Sắp ra mắt — chưa có nội dung để chọn.</string>
     <string name="k2go_maps_body">Bản đồ nền thế giới ngoại tuyến. Đi kèm với bản đồ (cố định hiện tại).</string>
-    <string name="k2go_courses_hint">Có sẵn cấu hình Kiwix; Kolibri chưa thể cấu hình sẵn — thiết lập trên thiết bị sau khi cài đặt.</string>
-    <string name="k2go_added_after">thêm sau khi cài đặt</string>
     <string name="k2go_step2a_hint">Chạm vào một nguồn để Thêm hoặc Bỏ qua. Bỏ qua tất cả = chỉ hệ thống.</string>
     <string name="k2go_skip_for_now">Bỏ qua bây giờ ›</string>
     <string name="k2go_wiz_choose_language">Chọn ngôn ngữ</string>
     <string name="k2go_wiz_language_sub">Đặt ngôn ngữ ứng dụng + nội dung.</string>
     <string name="k2go_wiz_permissions_title">Cho phép một vài mục</string>
+    <string name="k2go_wiz_permissions_sub">Các quyền sau là cần thiết. Ứng dụng có thể yêu cầu thêm quyền khi bạn chia sẻ thư viện của mình.</string>
     <string name="k2go_continue">Tiếp tục</string>
     <string name="k2go_wiz_setup_sub">Bạn muốn thiết lập thế nào?</string>
     <string name="k2go_settings_language">Ngôn ngữ</string>
@@ -177,7 +176,7 @@
     <string name="deepop_notif_cancel">Hủy</string>
     <string name="k2go_clone_channel_name">Sao chép</string>
     <string name="k2go_clone_channel_desc">Giữ quá trình chuyển giữa các thiết bị tiếp tục chạy</string>
-    <string name="k2go_clone_notif_text">Đang chuyển giữa các thiết bị — chạm để quay lại</string>
+    <string name="k2go_clone_notif_text">Đang chuyển giữa các thiết bị</string>
     <string name="k2go_bj_finish">Hoàn tất</string>
     <string name="k2go_bj_wait_title">Việc này có thể mất một lúc</string>
     <string name="k2go_bj_wait_body">Giữ K2Go mở. Bạn có thể rời đi — nó tiếp tục chạy nền, và thông báo sẽ đưa bạn quay lại.</string>
@@ -221,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Một bản sao đầy đủ thư viện của điện thoại kia.</string>
     <string name="k2go_clone_all_apps">Tất cả ứng dụng và nội dung của chúng</string>
     <string name="k2go_clone_already_wifi_skip">Đã ở cùng Wi-Fi? Bạn có thể bỏ qua bước này›</string>
-    <string name="k2go_clone_camera_note">Camera không hoạt động? Kết nối với Wi-Fi của điện thoại kia trong Cài đặt, rồi Bỏ qua.</string>
     <string name="k2go_clone_camera_q">Camera không hoạt động?</string>
     <string name="k2go_clone_cant_scan">Không quét được? Chia sẻ ứng dụng theo cách khác  ›</string>
     <string name="k2go_cancel">Hủy</string>
@@ -231,7 +229,7 @@
     <string name="k2go_clone_everything_note">Mọi thứ nó có — các ứng dụng và nội dung của chúng.</string>
     <string name="k2go_clone_exact_size">Kích thước chính xác được hiển thị khi bạn kết nối.</string>
     <string name="k2go_clone_from_other_hdr">TỪ ĐIỆN THOẠI KIA</string>
-    <string name="k2go_clone_get_version_note">Lấy phiên bản K2Go dành cho điện thoại này — hỏi người quảng bá của bạn, hoặc tải đúng bản.</string>
+    <string name="k2go_clone_get_version_note">Nhận phiên bản K2Go dành cho điện thoại này — hỏi người đang chia sẻ K2Go với bạn, hoặc tải bản phù hợp.</string>
     <string name="k2go_clone_installed_copy">Đã cài? Sao chép thư viện</string>
     <string name="k2go_clone_incompat_why_long">Thư viện của K2Go bao gồm các chương trình được xây dựng để phù hợp với phần cứng của điện thoại. Khi hai điện thoại được xây dựng khác nhau, các chương trình của máy này không thể chạy trên máy kia, nên việc sao chép thư viện sẽ không hoạt động.</string>
     <string name="k2go_clone_nothing_to_replace">Không có gì để thay thế</string>
@@ -273,12 +271,12 @@
     <string name="k2go_clone_already_connected">Đã kết nối? Tiếp tục ›</string>
     <string name="k2go_clone_copying">Đang sao chép thư viện…</string>
     <string name="k2go_clone_join_wifi_note">Đưa điện thoại kia vào Wi-Fi này.</string>
-    <string name="k2go_clone_cant_join_note">K2Go không thể tham gia mạng đó thay bạn — kết nối trong Cài đặt, rồi Tiếp tục.</string>
+    <string name="k2go_clone_cant_join_note">K2Go không thể tham gia mạng đó thay bạn — hãy kết nối trong Cài đặt Wi-Fi của Android, rồi nhấn Tiếp tục.</string>
     <string name="k2go_clone_next_get_app">Tiếp theo: lấy ứng dụng</string>
     <string name="k2go_clone_nothing_title">Chưa có gì để chia sẻ</string>
     <string name="k2go_clone_point_camera_join">Hướng camera vào đây để kết nối điện thoại này, hoặc dùng thông tin đăng nhập sau</string>
     <string name="k2go_clone_share_anyway">Vẫn chia sẻ</string>
-    <string name="k2go_clone_share_wifi_note">Chia sẻ Wi-Fi này từ Cài đặt, hoặc để họ tham gia, rồi tiếp tục.</string>
+    <string name="k2go_clone_share_wifi_note">Chia sẻ Wi-Fi này từ Cài đặt Wi-Fi của Android, hoặc nhờ họ tham gia, rồi tiếp tục.</string>
     <string name="k2go_clone_sharing_stopped">Đã dừng chia sẻ</string>
     <string name="k2go_clone_skip_have_app">Bỏ qua — họ đã có K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Bắt đầu chia sẻ</string>
@@ -340,9 +338,6 @@
     <string name="k2go_fallback_pass">Mật khẩu: %1$s</string>
     <string name="k2go_step2_download_fmt">Tải thư viện · %.1f GB</string>
     <string name="k2go_step2_review">Xem lại</string>
-    <string name="k2go_step2b_info_books">Sách — sắp ra mắt (chưa có trình quản lý nội dung · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Bản đồ — đi kèm với phiên bản của bạn.</string>
-    <string name="k2go_step2b_info_courses">Khóa học — thiết lập trên thiết bị sau khi cài.</string>
     <string name="k2go_step2b_info_review">Xem lại thư viện của bạn, rồi tải xuống.</string>
     <string name="k2go_setting_up_library">Đang thiết lập thư viện của bạn…</string>
     <string name="k2go_reading">đang đọc</string>

@@ -75,6 +75,44 @@ android {
     }
 }
 
+// ADFA-5302 --- On-device (Android aarch64) NDK selection ----------------------
+// Only relevant when the build runs ON an aarch64 Android host (e.g. Code on the
+// Go, on the phone): AGP's default NDK is an x86_64 host build that cannot execute
+// on the device, so the native build fails. AGP's `ndkVersion` is an EXACT string
+// match, so instead of hardcoding one build number we select — dynamically —
+// the highest NDK r29+ actually installed in the SDK (put there by the CoGo "NDK
+// Installer" plugin). A newer NDK package therefore keeps working with no edit here.
+//
+// On any other host/arch (x86_64 PC and CI, Intel/Apple-Silicon or Windows desktops)
+// this sets NOTHING, leaving AGP's normal behaviour untouched so no other flow breaks.
+if (System.getProperty("os.arch") == "aarch64"
+        && System.getProperty("os.name").toLowerCase().contains("linux")
+        && new File("/system/build.prop").exists()) {   // Android marker: not a desktop/CI aarch64 Linux host
+    def ndkRoot = new File(android.sdkDirectory, "ndk")
+    def versions = (ndkRoot.listFiles() ?: new File[0])
+            .findAll { f ->
+                if (!f.isDirectory()) return false
+                def major = f.name.tokenize('.')[0]
+                major?.isInteger() && (major as Integer) >= 29
+            }
+            .collect { it.name }
+            .sort(false) { a, b ->
+                def na = a.tokenize('.')*.toInteger()
+                def nb = b.tokenize('.')*.toInteger()
+                for (int i = 0; i < Math.min(na.size(), nb.size()); i++) {
+                    if (na[i] != nb[i]) return na[i] <=> nb[i]
+                }
+                na.size() <=> nb.size()
+            }
+    if (versions) {
+        android.ndkVersion = versions.last()
+        logger.lifecycle("termux-core: aarch64 Android host -> ndkVersion=${android.ndkVersion} (auto-selected)")
+    } else {
+        logger.warn("termux-core: aarch64 host but no NDK r29+ found under ${ndkRoot} — " +
+                "install the 'NDK Installer' plugin in Code on the Go.")
+    }
+}
+
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'com.google.android.material:material:1.13.0'
