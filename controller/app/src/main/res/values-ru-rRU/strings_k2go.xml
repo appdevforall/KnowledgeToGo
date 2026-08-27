@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Просто отсканируйте или используйте следующие данные:</string>
     <string name="k2go_perm_keep_running">Работать в фоне</string>
     <string name="k2go_connect_subtitle">Позвольте соседнему устройству просматривать вашу библиотеку.</string>
-    <string name="k2go_perm_nearby_note">Разрешение на соседние устройства запрашивается позже, только при передаче.</string>
     <string name="k2go_next">Далее</string>
     <string name="k2go_next_choose_content">Далее: выбор контента</string>
     <string name="k2go_clone_next_note">Далее: подключитесь к той же сети, затем начните.</string>
@@ -86,6 +85,7 @@
     <string name="k2go_wiz_choose_language">Выберите язык</string>
     <string name="k2go_wiz_language_sub">Задаёт язык приложения и контента.</string>
     <string name="k2go_wiz_permissions_title">Разрешите несколько вещей</string>
+    <string name="k2go_wiz_permissions_sub">Следующие разрешения необходимы. Приложение может запросить дополнительные разрешения, когда вы делитесь своей библиотекой.</string>
     <string name="k2go_continue">Продолжить</string>
     <string name="k2go_wiz_setup_sub">Как вы хотите это настроить?</string>
     <string name="k2go_settings_language">Язык</string>

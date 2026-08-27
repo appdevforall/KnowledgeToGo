@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">बस स्कैन करें, या नीचे दी गई जानकारी का उपयोग करें:</string>
     <string name="k2go_perm_keep_running">चालू रखें</string>
     <string name="k2go_connect_subtitle">किसी पास के डिवाइस को अपनी लाइब्रेरी देखने दें।</string>
-    <string name="k2go_perm_nearby_note">पास के डिवाइस की अनुमति बाद में, केवल शेयर करते समय माँगी जाती है।</string>
     <string name="k2go_next">आगे</string>
     <string name="k2go_next_choose_content">आगे: सामग्री चुनें</string>
     <string name="k2go_clone_next_note">आगे: वही नेटवर्क जॉइन करें, फिर शुरू करें।</string>
@@ -86,6 +85,7 @@
     <string name="k2go_wiz_choose_language">भाषा चुनें</string>
     <string name="k2go_wiz_language_sub">ऐप + सामग्री की भाषा सेट करता है।</string>
     <string name="k2go_wiz_permissions_title">कुछ चीज़ों की अनुमति दें</string>
+    <string name="k2go_wiz_permissions_sub">निम्नलिखित अनुमतियाँ आवश्यक हैं. अपनी लाइब्रेरी साझा करते समय ऐप अतिरिक्त अनुमतियाँ माँग सकता है.</string>
     <string name="k2go_continue">जारी रखें</string>
     <string name="k2go_wiz_setup_sub">आप इसे कैसे चाहते हैं?</string>
     <string name="k2go_settings_language">भाषा</string>

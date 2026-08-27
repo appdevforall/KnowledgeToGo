@@ -27,7 +27,6 @@
     <string name="k2go_just_scan">Solo escanea, o usa estas credenciales:</string>
     <string name="k2go_perm_keep_running">Seguir en ejecución</string>
     <string name="k2go_connect_subtitle">Deja que un dispositivo cercano explore tu biblioteca.</string>
-    <string name="k2go_perm_nearby_note">Los dispositivos cercanos se piden más tarde, solo al compartir.</string>
     <string name="k2go_next">Siguiente</string>
     <string name="k2go_next_choose_content">Siguiente: elegir contenido</string>
     <string name="k2go_clone_next_note">Siguiente: conéctate a la misma red y empieza.</string>
@@ -86,6 +85,7 @@
     <string name="k2go_wiz_choose_language">Elegir idioma</string>
     <string name="k2go_wiz_language_sub">Define el idioma de la app y del contenido.</string>
     <string name="k2go_wiz_permissions_title">Permite algunas cosas</string>
+    <string name="k2go_wiz_permissions_sub">Los siguientes permisos son necesarios. La app puede pedir permisos adicionales cuando compartas tu biblioteca.</string>
     <string name="k2go_continue">Continuar</string>
     <string name="k2go_wiz_setup_sub">¿Cómo lo quieres?</string>
     <string name="k2go_settings_language">Idioma</string>
