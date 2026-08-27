@@ -457,11 +457,21 @@ public class LibraryHomeFragment extends Fragment {
      */
     private boolean systemInstalled = true;
 
+    /**
+     * ADFA-5312: the shared system verdict, read once per pass alongside {@link #passContent} and
+     * {@link #systemInstalled} — so the cards and the header decide from ONE reading rather than two
+     * taken moments apart (the same "once per decision" reason SystemFactsReader states). Seeded READY
+     * so paths before the first pass behave as they did.
+     */
+    private org.iiab.controller.system.domain.SystemVerdict.State passVerdict =
+            org.iiab.controller.system.domain.SystemVerdict.State.READY;
+
     private void refreshStatuses() {
         boolean installed = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         systemInstalled = installed;
         boolean alive = ServerStateRepository.get().current().alive;
         passContent = org.iiab.controller.system.data.PendingContent.read(requireContext());
+        passVerdict = org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext());
 
         // ADFA-4837: track when the server first came up; the card red-grace is measured from here.
         if (alive) { if (serverAliveSinceMs == 0L) serverAliveSinceMs = android.os.SystemClock.elapsedRealtime(); }
@@ -473,10 +483,9 @@ public class LibraryHomeFragment extends Fragment {
         // ADFA-5312: only paint every card "Not installed" when there is genuinely no usable system —
         // nothing on disk (NO_SYSTEM) or a killed install left it damaged (DAMAGED). During an install,
         // clone or deep op the system is present/arriving, so fall through and keep last-known state.
-        org.iiab.controller.system.domain.SystemVerdict.State verdict =
-                org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext());
-        if (verdict == org.iiab.controller.system.domain.SystemVerdict.State.NO_SYSTEM
-                || verdict == org.iiab.controller.system.domain.SystemVerdict.State.DAMAGED) {
+        // Uses the once-per-pass passVerdict so the cards and the header cannot disagree.
+        if (passVerdict == org.iiab.controller.system.domain.SystemVerdict.State.NO_SYSTEM
+                || passVerdict == org.iiab.controller.system.domain.SystemVerdict.State.DAMAGED) {
             for (final Card c : cards) {
                 // ADFA-5061: this used to record ABSENT for all five, and the write was right at
                 // the instant it happened and wrong forever after. "No system is installed" is a
@@ -599,8 +608,9 @@ public class LibraryHomeFragment extends Fragment {
         // "installing" vs "no system / damaged". Clone, any system op (install/module/deep-op) and
         // damaged all outrank the content + server sub-states below, which only apply once the system
         // itself is READY. (This centralizes what used to be re-derived here from isSystemInstalled()
-        // plus a grab-bag of running flags — the ADFA-5312 bug class.)
-        switch (org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext())) {
+        // plus a grab-bag of running flags — the ADFA-5312 bug class.) Reads the once-per-pass
+        // passVerdict so the header and the cards cannot answer from two readings taken moments apart.
+        switch (passVerdict) {
             case CLONE_RECEIVING: setHeader(H_CLONE_RECEIVING); return;
             case CLONE_SHARING:   setHeader(H_CLONE_SHARING);   return;
             case INSTALLING:      setHeader(H_INSTALLING_SYSTEM); return;
