@@ -49,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Đang thêm nội dung</string>
+    <string name="k2go_home_installing_system">Đang cài đặt — vui lòng đợi</string>
     <string name="k2go_perm_storage">Truy cập bộ nhớ</string>
     <string name="k2go_storage">Bộ nhớ</string>
     <string name="k2go_lang_system_default">Mặc định hệ thống</string>

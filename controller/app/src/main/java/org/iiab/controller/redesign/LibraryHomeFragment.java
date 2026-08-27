@@ -53,7 +53,12 @@ public class LibraryHomeFragment extends Fragment {
             H_CLONE_RECEIVING = 6, H_CLONE_SHARING = 7,
             // ADFA-5147: a system is on disk but was left unbootable (a killed install or clone). Split
             // out of H_NO_LIBRARY, which offered to install over it — this offers to repair it instead.
-            H_DAMAGED = 8;
+            H_DAMAGED = 8,
+            // ADFA-5312: a system op is in progress with the server deliberately DOWN (a proot module,
+            // a rootfs install, or a deep op). That is "wait", so it is rendered amber like the clone
+            // states — NOT the green "Adding content" of H_INSTALLING, which is a content download over
+            // a live, navigable box. Same "See progress" action, different colour + label.
+            H_INSTALLING_SYSTEM = 9;
     // ADFA-4837: how long a card stays amber (patient) once the box is up before it's called stuck.
     private static final long CARD_RED_GRACE_MS = 60000L;
 
@@ -106,7 +111,7 @@ public class LibraryHomeFragment extends Fragment {
             homeStatusAction.setOnClickListener(v -> {
                 // ADFA-5074: the way back into a running install. Opens the index without
                 // starting anything — every other route to it begins new work.
-                if (headerState == H_INSTALLING) {
+                if (headerState == H_INSTALLING || headerState == H_INSTALLING_SYSTEM) {
                     startActivity(new android.content.Intent(
                             requireContext(), SetupProgressActivity.class));
                     return;
@@ -598,7 +603,7 @@ public class LibraryHomeFragment extends Fragment {
         switch (org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext())) {
             case CLONE_RECEIVING: setHeader(H_CLONE_RECEIVING); return;
             case CLONE_SHARING:   setHeader(H_CLONE_SHARING);   return;
-            case INSTALLING:      setHeader(H_INSTALLING);      return;
+            case INSTALLING:      setHeader(H_INSTALLING_SYSTEM); return;
             case NO_SYSTEM:       setHeader(H_NO_LIBRARY);      return;
             case DAMAGED:         setHeader(H_DAMAGED);         return;
             case READY:           break;   // fall through to the content + server sub-state below
@@ -655,6 +660,8 @@ public class LibraryHomeFragment extends Fragment {
             // content arriving blocks nothing: the library works, and it is getting bigger.
             // The label carries the news, and the row stays tappable as the way into progress.
             case H_INSTALLING:  text = getString(R.string.k2go_home_installing);  dotColor = R.color.k2go_leaf;  break;
+            // ADFA-5312: a system op with the server stopped — amber "wait", not the green content look.
+            case H_INSTALLING_SYSTEM: text = getString(R.string.k2go_home_installing_system); dotColor = R.color.k2go_amber; break;
             // ADFA-5143: amber, not green and not red. The server is deliberately down and the box is
             // busy with something the user started — that is "wait", which is what amber says here.
             case H_CLONE_RECEIVING: text = getString(R.string.k2go_home_clone_receiving); dotColor = R.color.k2go_amber; break;
@@ -683,7 +690,7 @@ public class LibraryHomeFragment extends Fragment {
         // common: a state with no exit is a bug whoever reaches it, including by a route that does not
         // exist yet. One line in a switch that already hands out two other buttons.
         int action = h == H_FAILED ? R.string.k2go_home_retry
-                : h == H_INSTALLING ? R.string.k2go_home_see_progress
+                : (h == H_INSTALLING || h == H_INSTALLING_SYSTEM) ? R.string.k2go_home_see_progress
                 : h == H_NO_LIBRARY ? R.string.k2go_home_install_system
                 // ADFA-5143: a transfer is not offered a restart — restarting the server is not a
                 // meaningful thing to do to a transfer. Each side is offered the place that matters:

@@ -49,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">正在添加内容</string>
+    <string name="k2go_home_installing_system">正在安装 — 请稍候</string>
     <string name="k2go_perm_storage">存储访问</string>
     <string name="k2go_storage">存储</string>
     <string name="k2go_lang_system_default">系统默认</string>
