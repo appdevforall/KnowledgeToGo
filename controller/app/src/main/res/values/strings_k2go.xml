@@ -7,22 +7,12 @@
     <string name="k2go_tab_clone">Clone</string>
     <string name="k2go_tab_settings">Settings</string>
     <string name="k2go_get_more">+  Get more</string>
-    <string name="k2go_step1_breadcrumb">1  System   →   2  Content</string>
     <string name="k2go_perm_allow">Allow</string>
-    <string name="k2go_clone_app_programs">App &amp; programs</string>
     <string name="k2go_connect_available">Available while the app is open.</string>
     <string name="k2go_back">Back</string>
-    <string name="k2go_step2a_note">Books and Maps are included with your edition. Courses is set up after install.</string>
     <string name="k2go_choose_edition">CHOOSE AN EDITION</string>
-    <string name="k2go_clone_content">Content — books, Wikipedia, maps</string>
     <string name="k2go_copy_from_phone">Copy from a phone</string>
     <string name="k2go_clone_subtitle">Copy the K2Go app and its library onto another phone</string>
-    <string name="k2go_coverage">Coverage</string>
-    <string name="k2go_detail">Detail</string>
-    <string name="k2go_download_library">Download library</string>
-    <string name="k2go_lang_english">English</string>
-    <string name="k2go_lang_spanish">Español</string>
-    <string name="k2go_cov_everything">Everything</string>
     <string name="k2go_get_started">Get started</string>
     <string name="k2go_hotspot">Hotspot</string>
     <string name="k2go_internet_download">Internet download</string>
@@ -32,13 +22,8 @@
     <string name="k2go_connect_subtitle">Let a nearby device browse your library.</string>
     <string name="k2go_next">Next</string>
     <string name="k2go_next_choose_content">Next: choose content</string>
-    <string name="k2go_clone_next_note">Next: join the same network, then start.</string>
     <string name="k2go_perm_notifications">Notifications</string>
-    <string name="k2go_cov_popular">Popular</string>
     <string name="k2go_recommended">Recommended</string>
-    <string name="k2go_scan_didnt_work">Scan didn\'t work? Use this:</string>
-    <string name="k2go_scan_join_hotspot">Scan to join my hotspot</string>
-    <string name="k2go_send_nearby">Send to a nearby phone</string>
     <string name="k2go_send">Send</string>
     <string name="k2go_setup_library_title">Set up your library</string>
     <string name="k2go_starting_library">Starting your library…</string>
@@ -58,40 +43,18 @@
     <string name="k2go_home_installing_system">Installing — please wait</string>
     <string name="k2go_perm_storage">Storage access</string>
     <string name="k2go_storage">Storage</string>
-    <string name="k2go_lang_system_default">System default</string>
-    <string name="k2go_step2b_breadcrumb">1 ✓ System → 2 Content</string>
-    <string name="k2go_step2a_breadcrumb">1 ✓ System → 2 Content</string>
-    <string name="k2go_det_text">Text only</string>
-    <string name="k2go_clone_headsup">If there\'s a K2Go library on the other phone, it will be replaced with this one.</string>
     <string name="k2go_step1_note">Apps are the programs that open content. Select the ones you want. You can add the content for the apps in Step 2.</string>
-    <string name="k2go_connect_shownext">They\'re connected — show next ›</string>
-    <string name="k2go_clone_total">Total copy</string>
-    <string name="k2go_clone_receive_hdr">WHAT THEY\'LL RECEIVE</string>
     <string name="k2go_wifi">Wi-Fi</string>
-    <string name="k2go_wikipedia_kiwix">Wikipedia (via Kiwix)</string>
-    <string name="k2go_det_pictures">With pictures</string>
     <string name="k2go_perm_notifications_sub">Allows K2Go to send notifications about download progress</string>
-    <string name="k2go_projected_use">projected use</string>
     <string name="k2go_perm_keep_running_sub">Allows K2Go to keep running in the background</string>
     <string name="k2go_perm_storage_sub">Store and share content on this device</string>
     <string name="k2go_internet_download_sub">system + content · 3 GB+</string>
     <string name="k2go_receive">Receive</string>
     <string name="k2go_welcome_sub">A library in your pocket</string>
     <string name="k2go_back_link">‹ Back</string>
-    <string name="k2go_src_wikipedia">Wikipedia</string>
-    <string name="k2go_src_books">Books</string>
-    <string name="k2go_src_maps">Maps</string>
-    <string name="k2go_src_courses">Courses</string>
-    <string name="k2go_skip">Skip</string>
-    <string name="k2go_add">Add</string>
-    <string name="k2go_skipped">skipped</string>
-    <string name="k2go_books_body">Not available yet but coming soon</string>
-    <string name="k2go_maps_body">Offline base map. Included with the map (fixed for now).</string>
-    <string name="k2go_step2a_hint">Tap a source to add or Skip it. Skip all = just the system.</string>
     <!-- ADFA-5116: currently UNUSED in the main flow — the setup "Skip for now" was removed (it let
          the user reach the Library with no system). Kept for likely reuse; the translations still carry
          it. Remove this note when it is wired to a screen again. -->
-    <string name="k2go_skip_for_now">Skip for now ›</string>
     <string name="k2go_wiz_choose_language">Choose language</string>
     <string name="k2go_wiz_language_sub">Sets the language for the app and content.</string>
     <string name="k2go_wiz_permissions_title">Give K2Go permissions</string>
@@ -143,7 +106,6 @@
     <string name="k2go_settings_turnoff_title">Turn off K2Go?</string>
     <string name="k2go_settings_turnoff_msg">This stops the library and closes the app. To exit but keep the app running in the background, press the Home or Back button.</string>
     <string name="k2go_settings_turnoff_confirm">Turn off</string>
-    <string name="k2go_settings_lang_caption">Sets the app language and the default content language.</string>
     <string name="k2go_settings_app_version">App version</string>
     <string name="k2go_settings_check_updates">Check for updates</string>
     <string name="k2go_settings_permissions">Permissions</string>
@@ -159,7 +121,6 @@
     <string name="k2go_mod_hub_title">Add modules</string>
     <string name="k2go_mod_hub_sub">Apps you can install on your library. Runs on the device — no internet needed.</string>
     <string name="k2go_mod_hub_prompt">What would you like to install?</string>
-    <string name="k2go_mod_none">Everything available is already installed.</string>
     <string name="k2go_mod_proceed_fmt">Install %1$d</string>
     <string name="k2go_mod_schedule">Schedule install</string>
     <string name="k2go_mod_unschedule">Remove from install</string>
@@ -207,17 +168,12 @@
     <string name="k2go_reinstall_confirm_title">Reinstall from scratch?</string>
     <string name="k2go_reinstall_confirm_msg">This erases the current system, including all apps, content, and settings, then installs a clean copy. This action can\'t be undone. If you want to keep anything, back up first. Then choose how: download it, or copy it from another phone.</string>
     <string name="k2go_reinstall_confirm_yes">Erase and reinstall</string>
-    <string name="k2go_br_soon">Coming in the next build</string>
-    <string name="k2go_br_start">Start</string>
-    <string name="k2go_br_backup_warn">Starting the backup stops the server and blocks other operations until it finishes.</string>
     <string name="k2go_br_status_stopping">Stopping services</string>
     <string name="k2go_br_status_backing">Backing up</string>
     <string name="k2go_br_backup_done">Backup saved</string>
     <string name="k2go_br_backup_failed">Backup failed. Please try again.</string>
-    <string name="k2go_br_done">Done</string>
     <string name="k2go_br_done_title">Done</string>
     <string name="k2go_br_failed_title">Something went wrong</string>
-    <string name="k2go_br_restore_pick">Choose a saved backup file to restore</string>
     <string name="k2go_br_status_checking">Checking the file</string>
     <string name="k2go_br_status_restoring">Restoring</string>
     <string name="k2go_br_restore_warn">This replaces your current system with the chosen backup. It can\'t be undone, and the server stops while it runs.</string>
@@ -240,7 +196,6 @@
     <string name="k2go_clone_back_running">The copy is in progress. This process runs in the background, so you can leave this page.</string>
     <string name="k2go_br_leave_backup">The backup is in progress. This process runs in the background, so you can leave this page.</string>
     <string name="k2go_br_leave_restore">The restore is in progress. This process runs in the background, so you can leave this page.</string>
-    <string name="k2go_settings_sec_developer">DEVELOPER</string>
     <string name="k2go_settings_network_dns">Network &amp; DNS</string>
     <string name="k2go_dns_toggle_sub">Use a custom DNS. Off = server defaults.</string>
     <string name="k2go_dns_required">Required</string>
@@ -274,7 +229,6 @@
     <string name="k2go_clone_toast_scan_invalid">That isn\'t a valid transfer code.</string>
     <string name="k2go_clone_toast_open_wifi">Open Settings › Wi-Fi to join the other phone.</string>
     <string name="k2go_clone_toast_expired">The transfer details have expired. Please scan or paste the code again</string>
-    <string name="k2go_step2_included">Included</string>
     <string name="k2go_downloading_library">Downloading your library…</string>
     <string name="k2go_retrying">Retrying…</string>
     <string name="k2go_not_supported">Not supported</string>
@@ -298,14 +252,12 @@
     <string name="k2go_clone_getapp_caption">Point the camera here to download K2Go.</string>
     <string name="k2go_clone_incompat_why_long">The K2Go app includes programs built to match a phone\'s hardware. If two phones don\'t have similar hardware, you can\'t add K2Go to the other device.</string>
     <string name="k2go_clone_nothing_to_replace">Nothing to replace</string>
-    <string name="k2go_clone_once_installed">Once it\'s installed, come back and copy the library.</string>
     <string name="k2go_clone_one_android_step">One Android step</string>
     <string name="k2go_clone_receive_from">Receive from another phone</string>
     <string name="k2go_clone_sharing_now">SHARING NOW</string>
     <string name="k2go_clone_scan_enter_text">Scan didn\'t work? Enter the code as text</string>
     <string name="k2go_clone_scan_show_text">Show the code as text:</string>
     <string name="k2go_clone_scan_their_codes">Scan their codes to get a copy here.</string>
-    <string name="k2go_clone_scan_get_app">Scan to get the app</string>
     <string name="k2go_clone_scan_to_join">Scan to join</string>
     <string name="k2go_clone_send_to">Send to another phone</string>
     <string name="k2go_clone_sending_whole">Sending your whole library</string>
@@ -315,7 +267,6 @@
     <string name="k2go_clone_sizes_estimates">Sizes are estimates.</string>
     <string name="k2go_lbl_system">System</string>
     <string name="k2go_clone_technical_details">Technical details</string>
-    <string name="k2go_clone_other_downloads">The other phone used this code to download K2Go.</string>
     <string name="k2go_clone_allow_install_note">The other phone must agree to allow installations from this source. This is a one-time step.</string>
     <string name="k2go_clone_incompat_title">These phones aren\'t compatible</string>
     <string name="k2go_clone_incompat_body">These phones don\'t have similar hardware, so you can\'t copy library onto the other phone.</string>
@@ -337,35 +288,27 @@
     <string name="k2go_clone_copying">Copying the library…</string>
     <string name="k2go_clone_join_wifi_note">Get the other phone connected to this Wi-Fi.</string>
     <string name="k2go_clone_cant_join_note">K2Go can\'t join that network directly. Open Android Wi-Fi settings and choose the network\'s name, then return here and tap Continue.</string>
-    <string name="k2go_clone_next_get_app">Next: get the app</string>
     <string name="k2go_clone_nothing_title">Nothing to share yet</string>
     <string name="k2go_clone_point_camera_join">Point the camera or QR scanner here to join this phone\'s hotspot or join in Android Wi-Fi settings using these credentials: </string>
     <string name="k2go_clone_share_anyway">Share anyway</string>
     <string name="k2go_clone_share_wifi_note">If the QR code won\'t work, the other phone can connect to this network in Android Wi-Fi settings. When they\'re connected, they can continue to access the library.</string>
     <string name="k2go_clone_sharing_stopped">Sharing stopped</string>
-    <string name="k2go_clone_skip_have_app">Skip installing the K2Go app because they already have it ›</string>
     <string name="k2go_clone_start_sharing">Start sharing</string>
     <string name="k2go_clone_start_service_note">Start the service to share this phone\'s library.</string>
     <string name="k2go_clone_starting_service">Starting the service…</string>
     <string name="k2go_clone_stays_on">Stays on until you Stop.</string>
-    <string name="k2go_clone_step1_title">Step 1 · Join the other phone</string>
-    <string name="k2go_clone_step2_title">Step 2 · Get the app</string>
     <string name="k2go_clone_step3_title">Step 3 · Copy the library</string>
     <string name="k2go_clone_stop_sharing">Stop sharing</string>
     <string name="k2go_clone_no_library_note">This phone has no K2Go library installed. Install content first, or share anyway.</string>
     <string name="k2go_clone_back_step1">‹ Back to step 1</string>
     <string name="k2go_connect_readonly">Scan to open the library or visit this website:</string>
     <string name="k2go_connect_scan_open">Scan to open the library or visit this website:</string>
-    <string name="k2go_connect_same_wifi">You\'re on the same Wi-Fi and ready to connect to the library.</string>
 
     <!-- Wikipedia version picker (dictionary — translatable=false for now, i18n pass later) -->
     <string name="k2go_wiki_view_list">List</string>
     <string name="k2go_wiki_view_grouped">Grouped</string>
     <string name="k2go_wiki_col_version">Version</string>
     <string name="k2go_wiki_col_size">Size</string>
-    <string name="k2go_wiki_choose">Choose versions</string>
-    <string name="k2go_wiki_skip_all">Skip Wikipedia</string>
-    <string name="k2go_wiki_pick_one">Pick at least one version to continue.</string>
     <string name="k2go_wiki_none">No versions available for this language.</string>
     <string name="k2go_wiki_cov_all">Everything</string>
     <string name="k2go_wiki_cov_all_desc">Every article</string>
@@ -376,7 +319,6 @@
     <string name="k2go_wiki_det_maxi">With pictures</string>
     <string name="k2go_wiki_det_nopic">Text only</string>
     <string name="k2go_wiki_det_mini">Summaries</string>
-    <string name="k2go_preview_banner">Preview — not functional yet</string>
     <!-- ADFA-4795: redesign dynamic text (cards, editions, connect states, badges, toggles, formats) sweep 3 -->
     <string name="k2go_card_books">Read a book</string>
     <string name="k2go_card_code" translatable="false">Code on the Go</string>
@@ -405,9 +347,6 @@
     <string name="k2go_connect_join_wifi">Join the same Wi-Fi or connect to the library\'s hotspot.</string>
     <string name="k2go_fallback_wifi">Wi-Fi: %1$s</string>
     <string name="k2go_fallback_pass">Password: %1$s</string>
-    <string name="k2go_step2_download_fmt">Download library · %.1f GB</string>
-    <string name="k2go_step2_review">Review</string>
-    <string name="k2go_step2b_info_review">Review your library, then download.</string>
     <string name="k2go_setting_up_library">Setting up your library…</string>
     <!-- ADFA-4915: minimalist indicator during the archive "reading/listing" sub-phase. Technical term, not localized for now. -->
     <string name="k2go_reading">reading</string>
@@ -417,7 +356,6 @@
     <string name="k2go_eta_min">about %1$d min left</string>
     <!-- ADFA-5118: ETA when less than a minute remains. -->
     <string name="k2go_eta_almost">almost done</string>
-    <string name="k2go_clone_hide_code">Hide code  ▴</string>
     <string name="k2go_clone_chooser_send_code">Send transfer code</string>
     <string name="k2go_clone_scan_prompt_receive">Scan the other phone\'s transfer code</string>
     <string name="k2go_clone_chooser_share_app">Share K2Go app</string>
@@ -433,7 +371,6 @@
     <!-- ADFA-4795: storage bar legend (positional format) sweep 4 -->
     <string name="k2go_legend_sys_free">Used %1$s  ·  System %2$s  ·  Free %3$s</string>
     <string name="k2go_legend_your_picks">Used %1$s · System %2$s · Your picks %3$s · Free %4$s</string>
-    <string name="k2go_legend_picks">Used %1$.1f · System %2$.1f · Picks %3$.1f · Free %4$.1f</string>
     <string name="k2go_perm_granted">Granted</string>
     <!-- ADFA-4795: clone back-header, ready/step states, paste hint, Soon badge (sweep 5) -->
     <string name="k2go_clone_back_send">‹ Send</string>
@@ -501,9 +438,6 @@
     <!-- ADFA-4848: Maps Get More flow (WIP; translatable=false until the l10n pass). -->
     <string name="k2go_maps_scr_title">Maps</string>
     <string name="k2go_maps_landing_sub">Manage your offline maps.</string>
-    <string name="k2go_maps_install_title">Install or update maps</string>
-    <string name="k2go_maps_install_desc">Base map, satellite, 3D terrain, search \u2014 pick quality &amp; size, then build.</string>
-    <string name="k2go_maps_choose_cta">Choose layers &amp; quality \u203a</string>
     <string name="k2go_maps_choose_title">Choose layers &amp; quality</string>
     <string name="k2go_maps_choose_sub">Adding more detail creates a bigger download.</string>
     <!-- ADFA-4910: Maps landing v3 (richer landing + dismissible Full-Quality Regions card). -->
@@ -568,17 +502,13 @@
     <string name="k2go_maps_log_show">Show details</string>
     <string name="k2go_maps_log_hide">Hide details</string>
     <string name="k2go_maps_phase_prepared">Prepared the list</string>
-    <string name="k2go_maps_phase_downloading">Downloading map data</string>
     <string name="k2go_maps_phase_building">Building the map tiles</string>
-    <string name="k2go_maps_phase_finishing">Finishing up</string>
     <string name="k2go_maps_phase_ready">Ready</string>
     <string name="k2go_maps_phase_failed">Couldn\'t build maps. Please check available space and connection, then retry.</string>
 
     <!-- ADFA-4849: Wikipedia & ZIM content (WIP; translate in a later l10n pass) -->
     <string name="k2go_zim_title">Wikipedia &amp; ZIM content</string>
     <string name="k2go_zim_lang_fmt">Language: %1$s</string>
-    <string name="k2go_zim_lang_sub">From system · filters the catalog</string>
-    <string name="k2go_zim_lang_sub_manual">Manually selected · filters the catalog</string>
     <!-- ADFA-5033: language source as the sub-line of the one-control selector (drops "filters the
          catalog"). localized across all 33 locales (ADFA-5033). -->
     <string name="k2go_zim_lang_state_system">From System</string>
@@ -587,11 +517,8 @@
     <string name="k2go_zim_storage">STORAGE</string>
     <string name="k2go_zim_storage_fmt">Used %1$s · Your selection %2$s · Free %3$s</string>
     <string name="k2go_zim_search_hint">Search titles…</string>
-    <string name="k2go_zim_browse">Browse categories</string>
     <string name="k2go_zim_loading">Loading catalog…</string>
     <string name="k2go_zim_unavailable">Couldn’t reach the content mirror. Check your connection and try again.</string>
-    <string name="k2go_zim_cat_unavailable">Not available</string>
-    <string name="k2go_zim_see_all_fmt">See all %1$d categories · %2$d items</string>
     <string name="k2go_zim_no_match">No categories match your search.</string>
     <!-- ADFA-5033: catalog browse "breathe" — sections, chips, See-all, unavailable collapse.
          localized across all 33 locales (ADFA-5033). -->
@@ -613,13 +540,11 @@
     <!-- ADFA-5033: item count as list metadata (replaces the redundant "‹lang› · N" title pill). -->
     <string name="k2go_zc_count_items">%1$d items</string>
     <string name="k2go_zc_count_results">%1$d results</string>
-    <string name="k2go_zc_sub_fmt">%1$s · %2$d items</string>
     <string name="k2go_zc_sort_size">By size</string>
     <string name="k2go_zc_sort_name">A–Z</string>
     <string name="k2go_zc_search_hint">Search in %1$s</string>
     <string name="k2go_zc_add_fmt">Add to selection · %1$s</string>
     <string name="k2go_zc_nospace">Not enough space — needs %1$s, %2$s free</string>
-    <string name="k2go_zc_lang_fmt">%1$s · %2$d</string>
     <string name="k2go_zc_sort_name_desc">Z–A</string>
     <string name="k2go_zc_sort_group">Grouped</string>
     <string name="k2go_zc_group_topics">Topics</string>
@@ -682,8 +607,6 @@
     <string name="k2go_setup_state_failed_fmt">%1$d failed</string>
     <string name="k2go_setup_state_progress_fmt">%1$d of %2$d</string>
     <string name="k2go_setup_back">Back</string>
-    <string name="k2go_setup_finish_q">Finish setup?</string>
-    <string name="k2go_setup_finish_msg">Downloads will continue in the background. Items with errors won\'t be retried.</string>
     <string name="k2go_zim_add_setup_fmt">Add to your setup (%1$s)</string>
     <string name="k2go_gm_none">No content modules are installed yet.</string>
     <string name="k2go_gm_server_off">Your system is stopped. Start it to see what you can add.</string>
@@ -698,7 +621,6 @@
     <string name="k2go_books_lang_fmt">Language: %1$s</string>
     <string name="k2go_books_lang_title">Choose a language</string>
     <string name="k2go_books_local_none">No books in your library yet.</string>
-    <string name="k2go_books_local_hint">Tap a book to open it in the library.</string>
     <string name="k2go_books_loading">Loading…</string>
     <string name="k2go_books_unavailable">Couldn\'t reach the content service.</string>
     <string name="k2go_books_offline_error">Couldn\'t read the offline catalog.</string>
@@ -719,7 +641,6 @@
     <string name="k2go_books_total_fmt">%1$d books</string>
     <string name="k2go_books_dl_title">Downloads</string>
     <string name="k2go_books_dl_sub">Added one at a time — kind to Project Gutenberg.</string>
-    <string name="k2go_books_dl_started_fmt">Downloading %1$d books in the background…</string>
     <string name="k2go_books_dl_detail_fmt">%1$d of %2$d books</string>
     <string name="k2go_books_state_queued">Queued</string>
     <string name="k2go_books_state_downloading">Downloading…</string>
@@ -850,12 +771,10 @@
     <string name="k2go_zim_manage_action">Manage downloads</string>
     <string name="k2go_zim_get_more">Get more content</string>
     <string name="k2go_zim_manage_title">Downloaded content</string>
-    <string name="k2go_zim_manage_loading">Loading downloaded content…</string>
     <string name="k2go_zim_empty">No downloaded content yet.</string>
     <string name="k2go_zim_no_matches">No matches.</string>
     <string name="k2go_zim_load_failed">Couldn\'t load downloaded content.</string>
     <!-- %1$d = count, %2$s = human size, e.g. "3 item(s) · 12.4 GB" -->
-    <string name="k2go_zim_summary_fmt">%1$d item(s) · %2$s</string>
     <string name="k2go_zim_delete">Delete</string>
     <!-- %1$s = content name -->
     <string name="k2go_zim_delete_confirm_title">Delete %1$s?</string>
