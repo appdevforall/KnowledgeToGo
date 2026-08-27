@@ -414,6 +414,9 @@ public class ModuleHubFragment extends Fragment {
      *  badge when banked, else a chevron. */
     private View cardRow(final ModuleCards.Card c, final boolean isInstalled,
                          final boolean unknown) {
+        // ADFA-4898: did this module's runrole fail in the last finished batch? (DONE + in failedModules)
+        final boolean failed = !isInstalled
+                && org.iiab.controller.install.presentation.ModuleQueueRepository.get().current().didFail(c.key());
         LinearLayout row = new LinearLayout(requireContext());
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
@@ -435,7 +438,7 @@ public class ModuleHubFragment extends Fragment {
         // no checkbox. The row still opens its detail, which is where "what is this" lives.
         // ADFA-5104: and no tick when the flags could not be read either. Ticking would bank an
         // order we have no grounds to take.
-        if (!isInstalled && !unknown && !c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector)
+        if (!isInstalled && !unknown && !failed && !c.hasSelector) {   // ADFA-4958: tick to schedule several at once (maps uses its own selector). ADFA-4898: a failed module shows Retry, not the checkbox.
             com.google.android.material.checkbox.MaterialCheckBox cb =
                     new com.google.android.material.checkbox.MaterialCheckBox(requireContext());
             cb.setChecked(ModuleWishlist.contains(requireContext(), c.key()));
@@ -485,16 +488,37 @@ public class ModuleHubFragment extends Fragment {
         boolean scheduled = !isInstalled && !unknown && ModuleWishlist.contains(requireContext(), c.key());
         TextView pill = statePill(
                 isInstalled ? getString(R.string.k2go_mod_phase_done)
-                        : unknown ? getString(R.string.k2go_state_no_answer)
-                                : scheduled ? getString(R.string.k2go_mod_scheduled)
-                                        : getString(R.string.k2go_state_not_installed),
+                        : failed ? getString(R.string.k2go_mod_phase_failed)
+                                : unknown ? getString(R.string.k2go_state_no_answer)
+                                        : scheduled ? getString(R.string.k2go_mod_scheduled)
+                                                : getString(R.string.k2go_state_not_installed),
                 isInstalled ? R.color.k2go_leaf
-                        : unknown ? R.color.k2go_amber_text
-                                : scheduled ? R.color.k2go_teal : R.color.k2go_muted);
+                        : failed ? R.color.k2go_clay
+                                : unknown ? R.color.k2go_amber_text
+                                        : scheduled ? R.color.k2go_teal : R.color.k2go_muted);
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);
         row.addView(pill, tlp);
+        // ADFA-4898: a failed module offers a user-confirmed Retry right on the row (no auto-retry).
+        if (failed) {
+            com.google.android.material.button.MaterialButton retry =
+                    new com.google.android.material.button.MaterialButton(requireContext(), null,
+                            com.google.android.material.R.attr.materialButtonOutlinedStyle);
+            retry.setText(R.string.k2go_home_retry);
+            retry.setOnClickListener(v -> {
+                if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
+                    Snackbars.make(v, org.iiab.controller.util.BusyMessage.resFor(requireContext())).show();
+                    return;
+                }
+                org.iiab.controller.install.presentation.InstallService.retryModules(
+                        requireContext(), java.util.Collections.singletonList(c.key()));
+            });
+            LinearLayout.LayoutParams rblp = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            rblp.leftMargin = px(8);
+            row.addView(retry, rblp);
+        }
         return row;
     }
 

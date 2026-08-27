@@ -68,6 +68,21 @@ public final class ModuleQueueState {
         return phase == Phase.RUNNING && currentModule != null && currentModule.equals(moduleKey);
     }
 
+    /**
+     * ADFA-4898: the queue finished with at least one module's runrole failed. An explicit signal so a
+     * failed batch is not read as a clean success — kept on the DONE terminal (the failedModules list is
+     * already published there) rather than a separate phase, so every existing "queue finished" consumer
+     * keeps working and only the surfaces that care read this.
+     */
+    public boolean hasFailures() {
+        return phase == Phase.DONE && !failedModules.isEmpty();
+    }
+
+    /** True when {@code moduleKey} failed in the batch that just finished. */
+    public boolean didFail(String moduleKey) {
+        return phase == Phase.DONE && failedModules.contains(moduleKey);
+    }
+
     public static ModuleQueueState idle() {
         return new ModuleQueueState(Phase.IDLE, null, 0, INDETERMINATE, ETA_UNKNOWN, null, 0L);
     }
