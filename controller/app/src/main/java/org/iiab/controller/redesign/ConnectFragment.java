@@ -49,7 +49,6 @@ public class ConnectFragment extends Fragment {
     private Mode mode = Mode.HOTSPOT;
     // ADFA-5150: Connect shares this device's library — with no system there is nothing to serve, and
     // the QR would point at a dead port. Read on onResume (a system is not gained while this is open).
-    private boolean systemPresent = true;
 
     private final LocalHotspotManager hs = LocalHotspotManager.get();
     private ActivityResultLauncher<String> locationPerm;
@@ -112,9 +111,6 @@ public class ConnectFragment extends Fragment {
         // turns Wi-Fi on after landing on a blank QR); render() re-reads the IP via discover().
         NetworkStateLiveData.get(requireContext()).observe(getViewLifecycleOwner(), net -> render());
 
-        // ADFA-5150: seed before the first render so a systemless open never flashes the QR flow;
-        // onResume re-reads it.
-        systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
         setMode(Mode.HOTSPOT);
         return v;
     }
@@ -140,9 +136,8 @@ public class ConnectFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        // ADFA-5150: refresh the system fact on the way to the front and redraw — a system may have
-        // been recovered while the user was away in the Recover flow this screen sends them to.
-        systemPresent = org.iiab.controller.SystemStateEvaluator.isSystemInstalled(requireContext());
+        // ADFA-5150/5312: redraw on the way to the front — a system may have been recovered, or an
+        // install may have finished, while the user was away. render() re-reads the shared verdict.
         render();
     }
 
@@ -153,7 +148,17 @@ public class ConnectFragment extends Fragment {
         finish.setVisibility(View.GONE);
         connFooter.setVisibility(View.VISIBLE);   // default; the no-system state hides it
         advance.setVisibility(View.GONE);
-        if (!systemPresent) { noSystemState(); return; }
+        // ADFA-5312: branch on the shared verdict. During an install the marker made isSystemInstalled()
+        // read false and this screen offered Recover over a system that is present and mid-setup.
+        switch (org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext())) {
+            case NO_SYSTEM:
+            case DAMAGED:
+                noSystemState(); return;
+            case INSTALLING:
+                busyState(); return;
+            default:
+                break;   // READY / CLONE_* -> the normal share render handles it
+        }
         if (mode == Mode.HOTSPOT) renderHotspot(); else renderWifi();
     }
 
@@ -173,6 +178,22 @@ public class ConnectFragment extends Fragment {
         styleAdvance(true);
         advance.setOnClickListener(x -> SetupLibraryActivity.recover(requireContext()));
         connFooter.setVisibility(View.GONE);   // no "available" note here
+    }
+
+    /**
+     * ADFA-5312: a system op (install / module / deep-op) is in progress — the system is present but the
+     * server is deliberately down, so there is nothing to share yet and Recover would be wrong. Say it is
+     * busy and offer no action; render() reruns on resume when the op finishes.
+     */
+    private void busyState() {
+        showSingle();
+        secSingle.frame.setVisibility(View.GONE);
+        steps.setVisibility(View.GONE);
+        secSingle.caption.setText(R.string.k2go_install_busy);
+        secSingle.subCaption.setText("");
+        secSingle.setFallback(requireContext(), null);
+        advance.setVisibility(View.GONE);
+        connFooter.setVisibility(View.GONE);
     }
 
     private void renderHotspot() {

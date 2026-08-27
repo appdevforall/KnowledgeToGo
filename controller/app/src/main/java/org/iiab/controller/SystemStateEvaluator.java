@@ -36,7 +36,13 @@ public final class SystemStateEvaluator {
     private static volatile boolean archCalculated;
 
     /** True when a system (rootfs) is actually installed on disk — the reliable signal for
-     *  whether "Get more" should skip the destructive system step and go straight to content. */
+     *  whether "Get more" should skip the destructive system step and go straight to content.
+     *
+     *  <p><b>UI screens: prefer {@code SystemFactsReader.verdict(ctx)} (ADFA-5312).</b> This boolean
+     *  folds "an install is in progress" into false (the marker is held), which is correct for boot /
+     *  server-start / readiness gates but wrong for display: a screen that branches on it alone shows a
+     *  false "no system / Recover" over a system that is present and mid-install. The shared verdict
+     *  tells INSTALLING / NO_SYSTEM / DAMAGED / CLONE_* / READY apart so every screen agrees. */
     public static boolean isSystemInstalled(Context ctx) {
         // ADFA-4811: a running (or interrupted) install is not "installed" — the rootfs is
         // half-baked, so callers must not treat it as ready or auto-start the server over it.
