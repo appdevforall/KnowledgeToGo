@@ -81,8 +81,6 @@
     <string name="k2go_skipped">imerukwa</string>
     <string name="k2go_books_body">Inakuja hivi karibuni — hakuna maudhui ya kuchagua bado.</string>
     <string name="k2go_maps_body">Ramani ya msingi ya dunia isiyo ya mtandaoni. Imejumuishwa na ramani (imewekwa kwa sasa).</string>
-    <string name="k2go_courses_hint">Kuna presets za Kiwix; Kolibri haiwezi kuwekwa bado — sanidi kwenye kifaa baada ya usakinishaji.</string>
-    <string name="k2go_added_after">imeongezwa baada ya usakinishaji</string>
     <string name="k2go_step2a_hint">Gusa chanzo ili Kuongeza au Kuruka. Ruka vyote = mfumo pekee.</string>
     <string name="k2go_skip_for_now">Ruka kwa sasa ›</string>
     <string name="k2go_wiz_choose_language">Chagua lugha</string>
@@ -178,7 +176,7 @@
     <string name="deepop_notif_cancel">Ghairi</string>
     <string name="k2go_clone_channel_name">Nakili</string>
     <string name="k2go_clone_channel_desc">Huweka uhamishaji kati ya vifaa ukiendelea</string>
-    <string name="k2go_clone_notif_text">Inahamisha kati ya vifaa — gusa ili kurudi</string>
+    <string name="k2go_clone_notif_text">Inahamisha kati ya vifaa</string>
     <string name="k2go_bj_finish">Maliza</string>
     <string name="k2go_bj_wait_title">Hii inaweza kuchukua muda</string>
     <string name="k2go_bj_wait_body">Weka K2Go wazi. Unaweza kuondoka — inaendelea kufanya kazi chinichini, na arifa itakurudisha.</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Nakala kamili ya maktaba ya simu nyingine.</string>
     <string name="k2go_clone_all_apps">Programu zote na maudhui yake</string>
     <string name="k2go_clone_already_wifi_skip">Tayari kwenye Wi-Fi ileile? Unaweza kuruka hatua hii›</string>
-    <string name="k2go_clone_camera_note">Kamera haifanyi kazi? Unganisha kwenye Wi-Fi ya simu nyingine katika Mipangilio, kisha Ruka.</string>
     <string name="k2go_clone_camera_q">Kamera haifanyi kazi?</string>
     <string name="k2go_clone_cant_scan">Huwezi kuskani? Shiriki programu kwa njia nyingine  ›</string>
     <string name="k2go_cancel">Ghairi</string>
@@ -232,7 +229,7 @@
     <string name="k2go_clone_everything_note">Kila kilicho nacho — programu zake na maudhui yake.</string>
     <string name="k2go_clone_exact_size">Ukubwa kamili huonyeshwa mara tu unapounganisha.</string>
     <string name="k2go_clone_from_other_hdr">KUTOKA SIMU NYINGINE</string>
-    <string name="k2go_clone_get_version_note">Pata toleo la K2Go lililotengenezwa kwa simu hii — muulize mtangazaji wako, au pakua lililo sahihi.</string>
+    <string name="k2go_clone_get_version_note">Pata toleo la K2Go lililotengenezwa kwa simu hii — muombe mtu anayekushirikisha K2Go, au pakua lile sahihi.</string>
     <string name="k2go_clone_installed_copy">Imesakinishwa? Nakili maktaba</string>
     <string name="k2go_clone_incompat_why_long">Maktaba ya K2Go ina programu zilizojengwa kulingana na maunzi ya simu. Wakati simu mbili zimejengwa tofauti, programu za moja haziwezi kuendeshwa kwenye nyingine, hivyo kunakili maktaba hakutafanya kazi.</string>
     <string name="k2go_clone_nothing_to_replace">Hakuna cha kubadilisha</string>
@@ -274,12 +271,12 @@
     <string name="k2go_clone_already_connected">Tayari umeunganishwa? Endelea ›</string>
     <string name="k2go_clone_copying">Inanakili maktaba…</string>
     <string name="k2go_clone_join_wifi_note">Unganisha simu nyingine kwenye Wi-Fi hii.</string>
-    <string name="k2go_clone_cant_join_note">K2Go haiwezi kukujiunga na mtandao huo — unganisha katika Mipangilio, kisha Endelea.</string>
+    <string name="k2go_clone_cant_join_note">K2Go haiwezi kujiunga na mtandao huo kwa niaba yako — unganisha katika mipangilio ya Wi-Fi ya Android, kisha gusa Endelea.</string>
     <string name="k2go_clone_next_get_app">Ifuatayo: pata programu</string>
     <string name="k2go_clone_nothing_title">Bado hakuna cha kushiriki</string>
     <string name="k2go_clone_point_camera_join">Elekeza kamera yake hapa ili kuunganisha simu hii, au tumia hati zifuatazo</string>
     <string name="k2go_clone_share_anyway">Shiriki hata hivyo</string>
-    <string name="k2go_clone_share_wifi_note">Shiriki Wi-Fi hii kutoka Mipangilio, au waambie wajiunge nayo, kisha endelea.</string>
+    <string name="k2go_clone_share_wifi_note">Shiriki Wi-Fi hii kutoka mipangilio ya Wi-Fi ya Android, au waombe wajiunge, kisha endelea.</string>
     <string name="k2go_clone_sharing_stopped">Kushiriki kumesimamishwa</string>
     <string name="k2go_clone_skip_have_app">Ruka — tayari wana K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Anza kushiriki</string>
@@ -341,9 +338,6 @@
     <string name="k2go_fallback_pass">Nenosiri: %1$s</string>
     <string name="k2go_step2_download_fmt">Pakua maktaba · %.1f GB</string>
     <string name="k2go_step2_review">Kagua</string>
-    <string name="k2go_step2b_info_books">Vitabu — inakuja hivi karibuni (bado hakuna meneja wa maudhui · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Ramani — imejumuishwa katika toleo lako.</string>
-    <string name="k2go_step2b_info_courses">Kozi — husanidiwa kwenye kifaa baada ya usakinishaji.</string>
     <string name="k2go_step2b_info_review">Kagua maktaba yako, kisha upakue.</string>
     <string name="k2go_setting_up_library">Inasanidi maktaba yako…</string>
     <string name="k2go_reading">inasoma</string>

@@ -81,8 +81,6 @@
     <string name="k2go_skipped">dilewati</string>
     <string name="k2go_books_body">Segera hadir — belum ada konten untuk dipilih.</string>
     <string name="k2go_maps_body">Peta dasar dunia offline. Termasuk dengan peta (tetap untuk saat ini).</string>
-    <string name="k2go_courses_hint">Preset Kiwix tersedia; Kolibri belum bisa diset — siapkan di perangkat setelah pemasangan.</string>
-    <string name="k2go_added_after">ditambahkan setelah pemasangan</string>
     <string name="k2go_step2a_hint">Ketuk sumber untuk Tambah atau Lewati. Lewati semua = hanya sistem.</string>
     <string name="k2go_skip_for_now">Lewati untuk sekarang ›</string>
     <string name="k2go_wiz_choose_language">Pilih bahasa</string>
@@ -178,7 +176,7 @@
     <string name="deepop_notif_cancel">Batal</string>
     <string name="k2go_clone_channel_name">Klon</string>
     <string name="k2go_clone_channel_desc">Menjaga transfer antar-perangkat tetap berjalan</string>
-    <string name="k2go_clone_notif_text">Mentransfer antar-perangkat — ketuk untuk kembali</string>
+    <string name="k2go_clone_notif_text">Mentransfer antar perangkat</string>
     <string name="k2go_bj_finish">Selesai</string>
     <string name="k2go_bj_wait_title">Ini bisa memakan waktu</string>
     <string name="k2go_bj_wait_body">Biarkan K2Go terbuka. Anda boleh pergi — proses tetap berjalan di latar belakang, dan notifikasi akan membawa Anda kembali.</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">Salinan lengkap pustaka ponsel lain.</string>
     <string name="k2go_clone_all_apps">Semua aplikasi dan kontennya</string>
     <string name="k2go_clone_already_wifi_skip">Sudah di Wi-Fi yang sama? Anda bisa lewati langkah ini›</string>
-    <string name="k2go_clone_camera_note">Kamera tidak berfungsi? Sambungkan ke Wi-Fi ponsel lain di Setelan, lalu Lewati.</string>
     <string name="k2go_clone_camera_q">Kamera tidak berfungsi?</string>
     <string name="k2go_clone_cant_scan">Tidak bisa memindai? Bagikan aplikasi dengan cara lain  ›</string>
     <string name="k2go_cancel">Batal</string>
@@ -232,7 +229,7 @@
     <string name="k2go_clone_everything_note">Semua yang dimilikinya — aplikasi dan kontennya.</string>
     <string name="k2go_clone_exact_size">Ukuran pasti ditampilkan setelah Anda tersambung.</string>
     <string name="k2go_clone_from_other_hdr">DARI PONSEL LAIN</string>
-    <string name="k2go_clone_get_version_note">Dapatkan versi K2Go yang dibuat untuk ponsel ini — tanyakan promotor Anda, atau unduh yang tepat.</string>
+    <string name="k2go_clone_get_version_note">Dapatkan versi K2Go yang dibuat untuk ponsel ini — minta ke orang yang membagikan K2Go denganmu, atau unduh yang tepat.</string>
     <string name="k2go_clone_installed_copy">Sudah terpasang? Salin pustaka</string>
     <string name="k2go_clone_incompat_why_long">Pustaka K2Go berisi program yang dibuat sesuai perangkat keras ponsel. Bila dua ponsel dibuat berbeda, program dari yang satu tidak bisa berjalan di yang lain, jadi menyalin pustaka tidak akan berhasil.</string>
     <string name="k2go_clone_nothing_to_replace">Tidak ada yang perlu diganti</string>
@@ -274,12 +271,12 @@
     <string name="k2go_clone_already_connected">Sudah tersambung? Lanjutkan ›</string>
     <string name="k2go_clone_copying">Menyalin pustaka…</string>
     <string name="k2go_clone_join_wifi_note">Sambungkan ponsel lain ke Wi-Fi ini.</string>
-    <string name="k2go_clone_cant_join_note">K2Go tidak bisa menyambung ke jaringan itu untuk Anda — sambungkan di Setelan, lalu Lanjutkan.</string>
+    <string name="k2go_clone_cant_join_note">K2Go tidak bisa menyambung ke jaringan itu untukmu — sambungkan di setelan Wi-Fi Android, lalu ketuk Lanjutkan.</string>
     <string name="k2go_clone_next_get_app">Berikutnya: dapatkan aplikasi</string>
     <string name="k2go_clone_nothing_title">Belum ada yang bisa dibagikan</string>
     <string name="k2go_clone_point_camera_join">Arahkan kameranya ke sini untuk menghubungkan ponsel ini, atau gunakan kredensial berikut</string>
     <string name="k2go_clone_share_anyway">Bagikan saja</string>
-    <string name="k2go_clone_share_wifi_note">Bagikan Wi-Fi ini dari Setelan, atau minta mereka bergabung, lalu lanjutkan.</string>
+    <string name="k2go_clone_share_wifi_note">Bagikan Wi-Fi ini dari setelan Wi-Fi Android, atau minta mereka bergabung, lalu lanjutkan.</string>
     <string name="k2go_clone_sharing_stopped">Berbagi dihentikan</string>
     <string name="k2go_clone_skip_have_app">Lewati — mereka sudah punya K2Go  ›</string>
     <string name="k2go_clone_start_sharing">Mulai berbagi</string>
@@ -341,9 +338,6 @@
     <string name="k2go_fallback_pass">Kata sandi: %1$s</string>
     <string name="k2go_step2_download_fmt">Unduh pustaka · %.1f GB</string>
     <string name="k2go_step2_review">Tinjau</string>
-    <string name="k2go_step2b_info_books">Buku — segera hadir (belum ada pengelola konten · 0 GB).</string>
-    <string name="k2go_step2b_info_maps">Peta — termasuk dalam edisi Anda.</string>
-    <string name="k2go_step2b_info_courses">Kursus — disiapkan di perangkat setelah pemasangan.</string>
     <string name="k2go_step2b_info_review">Tinjau pustaka Anda, lalu unduh.</string>
     <string name="k2go_setting_up_library">Menyiapkan pustaka Anda…</string>
     <string name="k2go_reading">membaca</string>

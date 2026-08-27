@@ -81,8 +81,6 @@
     <string name="k2go_skipped">رد شد</string>
     <string name="k2go_books_body">به‌زودی — هنوز محتوایی برای انتخاب نیست.</string>
     <string name="k2go_maps_body">نقشه پایه جهانی آفلاین. همراه نقشه است (فعلاً ثابت).</string>
-    <string name="k2go_courses_hint">پیش‌تنظیم‌های Kiwix موجود است؛ Kolibri هنوز قابل پیش‌تنظیم نیست — پس از نصب روی دستگاه راه‌اندازی کنید.</string>
-    <string name="k2go_added_after">پس از نصب اضافه می‌شود</string>
     <string name="k2go_step2a_hint">برای افزودن یا رد کردن هر منبع روی آن ضربه بزنید. رد کردن همه = فقط سیستم.</string>
     <string name="k2go_skip_for_now">فعلاً رد کن ›</string>
     <string name="k2go_wiz_choose_language">انتخاب زبان</string>
@@ -178,7 +176,7 @@
     <string name="deepop_notif_cancel">لغو</string>
     <string name="k2go_clone_channel_name">کلون</string>
     <string name="k2go_clone_channel_desc">انتقال دستگاه‌به‌دستگاه را در حال اجرا نگه می‌دارد</string>
-    <string name="k2go_clone_notif_text">در حال انتقال بین دستگاه‌ها — برای بازگشت ضربه بزنید</string>
+    <string name="k2go_clone_notif_text">در حال انتقال بین دستگاه‌ها</string>
     <string name="k2go_bj_finish">پایان</string>
     <string name="k2go_bj_wait_title">این کار ممکن است زمان‌بر باشد</string>
     <string name="k2go_bj_wait_body">K2Go را باز نگه دارید. می‌توانید خارج شوید — در پس‌زمینه اجرا می‌ماند و اعلان شما را برمی‌گرداند.</string>
@@ -222,7 +220,6 @@
     <string name="k2go_clone_full_copy_note">یک کپی کامل از کتابخانه گوشی دیگر.</string>
     <string name="k2go_clone_all_apps">همه برنامه‌ها و محتوای آن‌ها</string>
     <string name="k2go_clone_already_wifi_skip">از قبل روی همان Wi-Fi هستید؟ می‌توانید این گام را رد کنید›</string>
-    <string name="k2go_clone_camera_note">دوربین کار نمی‌کند؟ در تنظیمات به Wi-Fi گوشی دیگر متصل شوید، سپس رد کنید.</string>
     <string name="k2go_clone_camera_q">دوربین کار نمی‌کند؟</string>
     <string name="k2go_clone_cant_scan">نمی‌توانید اسکن کنید؟ برنامه را به روش دیگری به اشتراک بگذارید  ›</string>
     <string name="k2go_cancel">لغو</string>
@@ -232,7 +229,7 @@
     <string name="k2go_clone_everything_note">هر آنچه دارد — برنامه‌هایش و محتوای آن‌ها.</string>
     <string name="k2go_clone_exact_size">اندازه دقیق پس از اتصال نمایش داده می‌شود.</string>
     <string name="k2go_clone_from_other_hdr">از گوشی دیگر</string>
-    <string name="k2go_clone_get_version_note">نسخه‌ای از K2Go را که برای این گوشی ساخته شده تهیه کنید — از مروج خود بخواهید یا نسخه درست را دانلود کنید.</string>
+    <string name="k2go_clone_get_version_note">نسخه‌ای از K2Go که برای این گوشی ساخته شده تهیه کنید — از فردی که K2Go را با شما به اشتراک می‌گذارد بخواهید یا نسخهٔ درست را دانلود کنید.</string>
     <string name="k2go_clone_installed_copy">نصب شد؟ کتابخانه را کپی کنید</string>
     <string name="k2go_clone_incompat_why_long">کتابخانه K2Go شامل نرم‌افزارهایی است که متناسب با سخت‌افزار یک گوشی ساخته شده‌اند. وقتی دو گوشی متفاوت ساخته شده باشند، نرم‌افزارهای یکی روی دیگری اجرا نمی‌شود، بنابراین کپی کتابخانه کار نمی‌کند.</string>
     <string name="k2go_clone_nothing_to_replace">چیزی برای جایگزینی نیست</string>
@@ -274,12 +271,12 @@
     <string name="k2go_clone_already_connected">از قبل متصل هستید؟ ادامه ›</string>
     <string name="k2go_clone_copying">در حال کپی کتابخانه…</string>
     <string name="k2go_clone_join_wifi_note">گوشی دیگر را به این Wi-Fi متصل کنید.</string>
-    <string name="k2go_clone_cant_join_note">K2Go نمی‌تواند به‌جای شما به آن شبکه بپیوندد — در تنظیمات متصل شوید، سپس ادامه دهید.</string>
+    <string name="k2go_clone_cant_join_note">K2Go نمی‌تواند به‌جای شما به آن شبکه متصل شود — از تنظیمات Wi-Fi اندروید متصل شوید، سپس روی ادامه بزنید.</string>
     <string name="k2go_clone_next_get_app">بعدی: دریافت برنامه</string>
     <string name="k2go_clone_nothing_title">هنوز چیزی برای اشتراک‌گذاری نیست</string>
     <string name="k2go_clone_point_camera_join">دوربین را به اینجا بگیرید تا این گوشی متصل شود، یا از اطلاعات زیر استفاده کنید</string>
     <string name="k2go_clone_share_anyway">به‌هرحال اشتراک بگذار</string>
-    <string name="k2go_clone_share_wifi_note">این Wi-Fi را از تنظیمات به اشتراک بگذارید، یا از آن‌ها بخواهید به آن بپیوندند، سپس ادامه دهید.</string>
+    <string name="k2go_clone_share_wifi_note">این Wi-Fi را از تنظیمات Wi-Fi اندروید به اشتراک بگذارید یا از آن‌ها بخواهید به آن بپیوندند، سپس ادامه دهید.</string>
     <string name="k2go_clone_sharing_stopped">اشتراک‌گذاری متوقف شد</string>
     <string name="k2go_clone_skip_have_app">رد کن — آن‌ها از قبل K2Go دارند  ›</string>
     <string name="k2go_clone_start_sharing">شروع اشتراک‌گذاری</string>
@@ -341,9 +338,6 @@
     <string name="k2go_fallback_pass">رمز عبور: %1$s</string>
     <string name="k2go_step2_download_fmt">دانلود کتابخانه · %.1f گیگابایت</string>
     <string name="k2go_step2_review">بازبینی</string>
-    <string name="k2go_step2b_info_books">کتاب‌ها — به‌زودی (هنوز مدیر محتوا وجود ندارد · ۰ گیگابایت).</string>
-    <string name="k2go_step2b_info_maps">نقشه‌ها — همراه نسخه شما.</string>
-    <string name="k2go_step2b_info_courses">دوره‌ها — پس از نصب روی دستگاه راه‌اندازی می‌شود.</string>
     <string name="k2go_step2b_info_review">کتابخانه خود را بازبینی کنید، سپس دانلود کنید.</string>
     <string name="k2go_setting_up_library">در حال راه‌اندازی کتابخانه شما…</string>
     <string name="k2go_reading">در حال خواندن</string>
