@@ -49,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">सामग्री जोड़ी जा रही है</string>
+    <string name="k2go_home_installing_system">इंस्टॉल हो रहा है — कृपया प्रतीक्षा करें</string>
     <string name="k2go_perm_storage">स्टोरेज एक्सेस</string>
     <string name="k2go_storage">स्टोरेज</string>
     <string name="k2go_lang_system_default">सिस्टम डिफ़ॉल्ट</string>

@@ -94,6 +94,7 @@ public class ModuleHubFragment extends Fragment {
     private boolean stateUnknown = false;
     private int probesPending = 0;
     private int probeGen = 0;   // ADFA-4842: supersedes an in-flight probe batch (e.g. onResume re-probe)
+    private boolean lastQueueRunning = false;   // ADFA-5312: react only to running-transitions of the module queue
     private LinearLayout host;
     private Button proceed;
 
@@ -140,6 +141,16 @@ public class ModuleHubFragment extends Fragment {
         });
 
         buildCards();   // shows "checking…" until probes resolve
+
+        // ADFA-5312: re-probe when the module queue starts/stops so the "installing" state appears and
+        // clears live (the screen otherwise only re-probes on resume). React to running-transitions
+        // only, not the per-second percent ticks — a fresh probe is needed on finish to re-read the
+        // now-cleared install marker (systemPresent flips back to true).
+        org.iiab.controller.install.presentation.ModuleQueueRepository.get().state()
+                .observe(getViewLifecycleOwner(), st -> {
+                    boolean running = st != null && st.isRunning();
+                    if (running != lastQueueRunning) { lastQueueRunning = running; probeAll(); }
+                });
         return root;
     }
 
@@ -231,28 +242,51 @@ public class ModuleHubFragment extends Fragment {
     private void buildCards() {
         if (host == null) return;
         host.removeAllViews();
-        // ADFA-5104: with no system there is nothing to install into, so nothing is offered and
-        // the screen says why. Listing modules here would be an invitation the box cannot honour.
-        if (!systemPresent) {
-            TextView msg = new TextView(requireContext());
-            msg.setGravity(Gravity.CENTER);
-            msg.setPadding(px(8), px(24), px(8), px(24));
-            msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
-            msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
-            msg.setText(R.string.k2go_mod_needs_system);
-            host.addView(msg);
-            // ADFA-5150: was a dead end — the sentence, and no way forward but Back. Give it the one
-            // action that helps: Recover (restore / internet / clone all live there).
-            com.google.android.material.button.MaterialButton recover =
-                    new com.google.android.material.button.MaterialButton(requireContext());
-            recover.setText(R.string.k2go_home_recover);
-            recover.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
-            LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            rlp.gravity = Gravity.CENTER;
-            host.addView(recover, rlp);
-            addHiddenSection();
-            return;
+        // ADFA-5312: branch on the ONE shared system verdict instead of bare systemPresent, so this
+        // screen can't offer Recover / Install-a-system over a system that is present and mid-install
+        // (the runrole stops the server, so systemPresent reads false during a legitimate install).
+        switch (org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext())) {
+            case INSTALLING:
+            case CLONE_RECEIVING:
+            case CLONE_SHARING: {
+                // A system op is in progress — show it and do NOT offer Recover.
+                TextView installing = new TextView(requireContext());
+                installing.setGravity(Gravity.CENTER);
+                installing.setPadding(px(8), px(24), px(8), px(24));
+                installing.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+                installing.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+                String mod = org.iiab.controller.install.presentation.ModuleQueueRepository.get().currentModule();
+                installing.setText(mod != null && !mod.isEmpty()
+                        ? getString(R.string.install_status_installing_module, mod)
+                        : getString(R.string.k2go_home_installing));
+                host.addView(installing);
+                return;
+            }
+            case NO_SYSTEM:
+            case DAMAGED: {
+                // ADFA-5104: with no usable system there is nothing to install into, so nothing is
+                // offered and the screen says why. ADFA-5150: give the one action that helps — Recover
+                // (restore / internet / clone all live there).
+                TextView msg = new TextView(requireContext());
+                msg.setGravity(Gravity.CENTER);
+                msg.setPadding(px(8), px(24), px(8), px(24));
+                msg.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+                msg.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
+                msg.setText(R.string.k2go_mod_needs_system);
+                host.addView(msg);
+                com.google.android.material.button.MaterialButton recover =
+                        new com.google.android.material.button.MaterialButton(requireContext());
+                recover.setText(R.string.k2go_home_recover);
+                recover.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
+                LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                rlp.gravity = Gravity.CENTER;
+                host.addView(recover, rlp);
+                addHiddenSection();
+                return;
+            }
+            case READY:
+                break;   // build the module grid below
         }
 
         TextView helper = new TextView(requireContext());   // ADFA-4958

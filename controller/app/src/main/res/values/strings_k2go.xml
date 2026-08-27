@@ -52,6 +52,10 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Adding content</string>
+    <!-- ADFA-5312. Home header when a system op is in progress with the server stopped (a proot module,
+         a rootfs install, or a deep op) — amber "wait", distinct from the green "Adding content" above
+         which is a content download over a live box. Tapping opens the install progress. -->
+    <string name="k2go_home_installing_system">Installing — please wait</string>
     <string name="k2go_perm_storage">Storage access</string>
     <string name="k2go_storage">Storage</string>
     <string name="k2go_lang_system_default">System default</string>

@@ -49,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">உள்ளடக்கம் சேர்க்கப்படுகிறது</string>
+    <string name="k2go_home_installing_system">நிறுவப்படுகிறது — காத்திருக்கவும்</string>
     <string name="k2go_perm_storage">சேமிப்பக அணுகல்</string>
     <string name="k2go_storage">சேமிப்பகம்</string>
     <string name="k2go_lang_system_default">கணினி இயல்பு</string>

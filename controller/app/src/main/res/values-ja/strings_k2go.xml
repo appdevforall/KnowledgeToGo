@@ -49,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">コンテンツを追加中</string>
+    <string name="k2go_home_installing_system">インストール中 — お待ちください</string>
     <string name="k2go_perm_storage">ストレージへのアクセス</string>
     <string name="k2go_storage">ストレージ</string>
     <string name="k2go_lang_system_default">システムの既定</string>

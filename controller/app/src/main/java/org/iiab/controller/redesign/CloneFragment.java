@@ -616,8 +616,16 @@ public class CloneFragment extends Fragment {
             return;
         }
         receiveBox.setVisibility(View.GONE);
-        if (!systemPresent) {   // ADFA-5150: empty state, like Connect — no system to send, offer Recover
-            renderNoSystemSend();
+        if (!systemPresent) {   // ADFA-5150: empty state, like Connect — nothing to send
+            // ADFA-5312: a system op in progress (install/module holds the marker) is not "no system" —
+            // show busy, not Recover. systemPresent stays isSystemInstalled() on purpose: a clone-send
+            // holds no install marker, so it still renders the normal Send path above.
+            if (org.iiab.controller.system.data.SystemFactsReader.verdict(requireContext())
+                    == org.iiab.controller.system.domain.SystemVerdict.State.INSTALLING) {
+                renderBusySend();
+            } else {
+                renderNoSystemSend();
+            }
             return;
         }
         // ADFA-5154: Send is two pages. Common chrome, then the page.
@@ -672,6 +680,28 @@ public class CloneFragment extends Fragment {
         stop.setBackgroundResource(R.drawable.k2go_primary_bg);
         stop.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_on_teal));
         stop.setOnClickListener(v -> SetupLibraryActivity.recover(requireContext()));
+        footer.setVisibility(View.GONE);
+    }
+
+    /**
+     * ADFA-5312: a system op (install / module / deep-op) is in progress — the system is present but the
+     * server is down, so there is nothing to send yet and Recover would be wrong. Mirrors the no-system
+     * empty state but says "busy" and offers no action; render() reruns on resume when the op finishes.
+     */
+    private void renderBusySend() {
+        netRow.setVisibility(View.GONE);
+        steps.setVisibility(View.GONE);
+        page1.setVisibility(View.GONE);
+        page2.setVisibility(View.VISIBLE);
+        if (stepTitle != null) stepTitle.setVisibility(View.GONE);
+        qr.setImageBitmap(null); qr.setVisibility(View.VISIBLE);
+        caption.setVisibility(View.VISIBLE);
+        caption.setText(getString(R.string.k2go_install_busy));
+        subCaption.setVisibility(View.GONE);
+        showcode.setVisibility(View.GONE); codeblock.setVisibility(View.GONE);
+        shareCard.setVisibility(View.GONE);
+        advance.setVisibility(View.GONE);
+        actionFooter.setVisibility(View.GONE);   // no Recover during an install
         footer.setVisibility(View.GONE);
     }
 

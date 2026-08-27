@@ -49,6 +49,7 @@
     <!-- ADFA-5074. Home header when a content install is running; tapping opens the
          install index. This translation is machine-generated, not human-reviewed. -->
     <string name="k2go_home_installing">Aggiunta di contenuti</string>
+    <string name="k2go_home_installing_system">Installazione in corso — attendere</string>
     <string name="k2go_perm_storage">Accesso all\'archiviazione</string>
     <string name="k2go_storage">Archiviazione</string>
     <string name="k2go_lang_system_default">Predefinita del sistema</string>
