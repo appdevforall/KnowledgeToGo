@@ -455,12 +455,12 @@
     <string name="crash_report_dismiss">Zamietnuť</string>
     <string name="rsync_error_process_killed">Android zastavil proces prenosu (systémový limit procesov na pozadí). Aby ste tomu predišli, zapnite „Vypnúť obmedzenia podriadených procesov“ v Možnostiach pre vývojárov alebo nastavte optimalizáciu ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Zdieľať anonymné štatistiky používania?</string>
-    <string name="analytics_enroll_body">Pomôžte vylepšiť %1$s zdieľaním anonymných, prevádzkových štatistík používania — ako sú inštalácie, sťahovania, zlyhania, verzia aplikácie a čas strávený v aplikácii. Žiadne osobné údaje, žiadna história prehliadania a nič o ľuďoch, ktorí používajú poskytovaný obsah. Toto môžete kedykoľvek zmeniť v Nastaveniach.</string>
-    <string name="analytics_enroll_accept">Zdieľať štatistiky</string>
-    <string name="analytics_enroll_decline">Nie, ďakujem</string>
-    <string name="settings_analytics_title">Zdieľať anonymné štatistiky používania</string>
-    <string name="settings_analytics_desc">Len prevádzkové (inštalácie, zlyhania, čas v aplikácii). Anonymné, žiadne osobné údaje. Kedykoľvek zmeniteľné.</string>
+    <string name="analytics_enroll_title">Súkromie a analytika</string>
+    <string name="analytics_enroll_body">%1$s zhromažďuje anonymné informácie o používaní, aby nám pomohol opravovať chyby a vylepšovať aplikáciu. Nezhromažďujú sa ani nezdieľajú žiadne osobné údaje a nesleduje sa nič o ľuďoch, ktorí používajú váš zdieľaný obsah.\n\nZdieľať anonymné údaje odošle tieto informácie, keď je telefón online. Ponechať offline neodošle nič, aj keď je telefón online.</string>
+    <string name="analytics_enroll_accept">Zdieľať anonymné údaje</string>
+    <string name="analytics_enroll_decline">Ponechať offline</string>
+    <string name="settings_analytics_title">Zdieľať anonymné údaje</string>
+    <string name="settings_analytics_desc">Anonymné informácie o používaní na opravu chýb a vylepšenie aplikácie — žiadne osobné údaje a nič o ľuďoch, ktorí používajú váš zdieľaný obsah. Možno kedykoľvek zmeniť.</string>
     <string name="phantom_warn_title">Prenos môže byť prerušený</string>
     <string name="phantom_warn_body">V systéme Android 12+ môže systém zastaviť prenos počas jeho behu na pozadí (limit phantom procesov). Aby ste tomu predišli, vypnite „obmedzenia podriadených procesov“ alebo pokračujte napriek tomu — veľké prenosy môžu byť prerušené.</string>
     <string name="phantom_warn_open_dev">Otvoriť Možnosti pre vývojárov</string>

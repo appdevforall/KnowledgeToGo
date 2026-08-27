@@ -455,12 +455,12 @@
     <string name="crash_report_dismiss">Atmesti</string>
     <string name="rsync_error_process_killed">Android sustabdė perdavimo procesą (sistemos foninių procesų riba). Kad to išvengtumėte, kūrėjo parinktyse įjunkite „Išjungti antrinių procesų apribojimus“ arba nustatykite ADB optimizavimą.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Bendrinti anonimišką naudojimo statistiką?</string>
-    <string name="analytics_enroll_body">Padėkite tobulinti %1$s bendrindami anonimišką, veiklos naudojimo statistiką — pavyzdžiui, diegimus, atsisiuntimus, gedimus, programos versiją ir laiką, praleistą programoje. Jokių asmens duomenų, jokios naršymo istorijos ir nieko apie žmones, kurie naudoja teikiamą turinį. Tai galite bet kada pakeisti Nustatymuose.</string>
-    <string name="analytics_enroll_accept">Bendrinti statistiką</string>
-    <string name="analytics_enroll_decline">Ne, ačiū</string>
-    <string name="settings_analytics_title">Bendrinti anonimišką naudojimo statistiką</string>
-    <string name="settings_analytics_desc">Tik veiklos (diegimai, gedimai, laikas programoje). Anonimiška, be asmens duomenų. Galima bet kada pakeisti.</string>
+    <string name="analytics_enroll_title">Privatumas ir analitika</string>
+    <string name="analytics_enroll_body">„%1$s“ renka anoniminę naudojimo informaciją, kad padėtų mums taisyti klaidas ir tobulinti programą. Jokia asmeninė informacija nerenkama ir nebendrinama, ir niekas nesekamas apie žmones, kurie naudoja jūsų bendrinamą turinį.\n\n„Bendrinti anoniminius duomenis“ išsiunčia šią informaciją, kai telefonas prisijungęs. „Palikti neprisijungus“ nieko nesiunčia, net jei telefonas prisijungęs.</string>
+    <string name="analytics_enroll_accept">Bendrinti anoniminius duomenis</string>
+    <string name="analytics_enroll_decline">Palikti neprisijungus</string>
+    <string name="settings_analytics_title">Bendrinti anoniminius duomenis</string>
+    <string name="settings_analytics_desc">Anoniminė naudojimo informacija klaidoms taisyti ir programai tobulinti — jokių asmens duomenų ir nieko apie žmones, naudojančius jūsų bendrinamą turinį. Galima keisti bet kada.</string>
     <string name="phantom_warn_title">Perdavimas gali būti nutrauktas</string>
     <string name="phantom_warn_body">Android 12+ sistema gali sustabdyti perdavimą, kai jis vyksta fone (fantominių procesų riba). Kad to išvengtumėte, išjunkite „antrinių procesų apribojimus“ arba vis tiek tęskite — dideli perdavimai gali būti nutraukti.</string>
     <string name="phantom_warn_open_dev">Atidaryti kūrėjo parinktis</string>
