@@ -99,20 +99,9 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_ink" />
 
-        <!-- ADFA-4898: Retry lives right here, under the status line, because this live card is where
-             the user watches the runrole fail (the log below shows why). Hidden until this module's
-             state is "failed"; the fragment observes the queue, so it self-hides the moment a retry
-             re-fires. Shares the single busy-gated action in ModuleRetry with the module detail. -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/k2go_modinst_retry"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/k2go_home_retry"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:visibility="gone"
-            app:backgroundTint="@color/k2go_teal" />
+        <!-- ADFA-4898: Retry for a failed module is NOT here — it lives in the host's detail button bar
+             (SetupProgressActivity: k2go_sp_back becomes Retry, k2go_sp_detail_finish becomes Back),
+             reusing the same Run-in-background + Back template the live details already use. -->
 
         <!-- ADFA-4842: "this takes time" info card, matching the maps Preparing screen. -->
         <LinearLayout

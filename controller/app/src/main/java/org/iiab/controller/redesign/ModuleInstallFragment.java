@@ -49,7 +49,6 @@ public class ModuleInstallFragment extends Fragment {
 
     private String key;
     private TextView status, logText, logLabel;
-    private com.google.android.material.button.MaterialButton retryBtn;                        // ADFA-4898
     private View progressRow;                                                                 // ADFA-5228
     private com.google.android.material.progressindicator.LinearProgressIndicator progress;
     private TextView progressPct, progressEta;
@@ -71,11 +70,6 @@ public class ModuleInstallFragment extends Fragment {
         title.setText(c != null ? getString(c.detailTitleRes) : (key == null ? "" : key));
 
         status = root.findViewById(R.id.k2go_modinst_status);
-        // ADFA-4898: retry this one failed module, from the card where the failure is on screen. The
-        // busy gate + re-fire is the shared ModuleRetry action; visibility is driven live by
-        // updateStatus() (shown only while this module reads "failed").
-        retryBtn = root.findViewById(R.id.k2go_modinst_retry);
-        retryBtn.setOnClickListener(v -> ModuleRetry.fire(v, key));
         progressRow = root.findViewById(R.id.k2go_modinst_progress_row);   // ADFA-5228
         progress = root.findViewById(R.id.k2go_modinst_progress);
         progressPct = root.findViewById(R.id.k2go_modinst_progress_pct);
@@ -118,10 +112,6 @@ public class ModuleInstallFragment extends Fragment {
     private void updateStatus() {
         if (status == null || !isAdded()) return;
         ModuleQueueState mq = ModuleQueueRepository.get().current();
-
-        // ADFA-4898: the retry button tracks the one failed state, live — visible only while this
-        // module reads "failed", so a re-fire (queue -> RUNNING) hides it again on the next tick.
-        if (retryBtn != null) retryBtn.setVisibility(mq.didFail(key) ? View.VISIBLE : View.GONE);
 
         // ADFA-5228: determinate bar above the status line while THIS module installs; hidden when
         // it isn't running or has no task table (percent < 0), leaving the animation alone.
