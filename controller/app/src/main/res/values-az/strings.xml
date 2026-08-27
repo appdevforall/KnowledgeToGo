@@ -455,12 +455,12 @@
     <string name="crash_report_dismiss">Ləğv et</string>
     <string name="rsync_error_process_killed">Android ötürmə prosesini dayandırdı (sistemin fon prosesi məhdudiyyəti). Bunun qarşısını almaq üçün Tərtibatçı seçimlərində “Uşaq prosesi məhdudiyyətlərini söndür” seçimini aktivləşdirin və ya ADB optimallaşdırmasını quraşdırın.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Anonim istifadə statistikası paylaşılsın?</string>
-    <string name="analytics_enroll_body">Anonim, əməliyyat istifadə statistikasını — quraşdırmalar, endirmələr, çökmələr, tətbiq versiyası və tətbiqdə keçirilən vaxt kimi məlumatları paylaşaraq %1$s-i yaxşılaşdırmağa kömək edin. Şəxsi məlumat, baxış tarixçəsi yoxdur və təqdim olunan məzmundan istifadə edən insanlar haqqında heç nə yoxdur. Bunu istənilən vaxt Tənzimləmələrdə dəyişə bilərsiniz.</string>
-    <string name="analytics_enroll_accept">Statistika paylaş</string>
-    <string name="analytics_enroll_decline">Xeyr, təşəkkürlər</string>
-    <string name="settings_analytics_title">Anonim istifadə statistikasını paylaş</string>
-    <string name="settings_analytics_desc">Yalnız əməliyyat (quraşdırmalar, çökmələr, tətbiqdə vaxt). Anonim, şəxsi məlumat yoxdur. İstənilən vaxt dəyişin.</string>
+    <string name="analytics_enroll_title">Məxfilik və analitika</string>
+    <string name="analytics_enroll_body">%1$s, xətaları düzəltməyə və tətbiqi təkmilləşdirməyə kömək etmək üçün anonim istifadə məlumatı toplayır. Heç bir şəxsi məlumat toplanmır və paylaşılmır və paylaşdığınız məzmundan istifadə edən insanlar haqqında heç nə izlənmir.\n\nAnonim məlumatları paylaş telefon onlayn olduqda bu məlumatı göndərir. Oflayn saxla telefon onlayn olsa belə heç nə göndərmir.</string>
+    <string name="analytics_enroll_accept">Anonim məlumatları paylaş</string>
+    <string name="analytics_enroll_decline">Oflayn saxla</string>
+    <string name="settings_analytics_title">Anonim məlumatları paylaş</string>
+    <string name="settings_analytics_desc">Xətaları düzəltmək və tətbiqi təkmilləşdirmək üçün anonim istifadə məlumatı — şəxsi məlumat yoxdur və paylaşdığınız məzmundan istifadə edənlər haqqında heç nə yoxdur. İstənilən vaxt dəyişin.</string>
     <string name="phantom_warn_title">Ötürmə kəsilə bilər</string>
     <string name="phantom_warn_body">Android 12+ sistemində sistem ötürməni fonda işləyərkən dayandıra bilər (fantom-proses məhdudiyyəti). Bunun qarşısını almaq üçün “uşaq prosesi məhdudiyyətlərini” söndürün və ya yenə də davam edin — böyük ötürmələr kəsilə bilər.</string>
     <string name="phantom_warn_open_dev">Tərtibatçı seçimlərini aç</string>

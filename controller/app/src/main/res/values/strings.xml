@@ -544,12 +544,12 @@
     <string name="rsync_error_process_killed">Android stopped the transfer process (system background-process limit). To prevent this, enable “Disable child process restrictions” in Developer options, or set up the ADB optimization.</string>
 
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Share anonymous usage stats?</string>
-    <string name="analytics_enroll_body">Help improve %1$s by sharing anonymous, operational usage statistics — things like installs, downloads, crashes, app version and time in the app. No personal data, no browsing history, and nothing about the people who use the served content. You can change this anytime in Settings.</string>
-    <string name="analytics_enroll_accept">Share stats</string>
-    <string name="analytics_enroll_decline">No thanks</string>
-    <string name="settings_analytics_title">Share anonymous usage statistics</string>
-    <string name="settings_analytics_desc">Operational only (installs, crashes, time in app). Anonymous, no personal data. Change anytime.</string>
+    <string name="analytics_enroll_title">Privacy &amp; analytics</string>
+    <string name="analytics_enroll_body">%1$s collects anonymous usage information to help us fix bugs and improve the app. No personal information is collected or shared, and nothing about the people who use your shared content is tracked.\n\nShare anonymous data sends this information when the phone is online. Keep offline sends nothing, even if the phone is online.</string>
+    <string name="analytics_enroll_accept">Share anonymous data</string>
+    <string name="analytics_enroll_decline">Keep offline</string>
+    <string name="settings_analytics_title">Share anonymous data</string>
+    <string name="settings_analytics_desc">Anonymous usage information to help us fix bugs and improve the app — no personal data, and nothing about the people who use your shared content. Change anytime.</string>
     <string name="phantom_warn_title">Transfer may be interrupted</string>
     <string name="phantom_warn_body">On Android 12+ the system can stop the transfer while it runs in the background (phantom-process limit). To prevent it, disable “child process restrictions”, or continue anyway — large transfers may be interrupted.</string>
     <string name="phantom_warn_open_dev">Open Developer options</string>

@@ -455,12 +455,12 @@
     <string name="crash_report_dismiss">Kọ̀ ọ́ sílẹ̀</string>
     <string name="rsync_error_process_killed">Android dá iṣẹ́ gbígbé lọ dúró (ààlà iṣẹ́ ẹ̀yìn ètò). Láti dènà èyí, tan “Pa àwọn ìdíwọ́ iṣẹ́ ọmọ” nínú Àwọn Àṣàyàn Olùdàgbàsókè, tàbí ṣàgbékalẹ̀ ìdàgbàsókè ADB.</string>
     <!-- Analytics enrollment + settings toggle (ADFA-4466) -->
-    <string name="analytics_enroll_title">Pín àwọn ìṣirò lílo aláìlórúkọ?</string>
-    <string name="analytics_enroll_body">Ràn wá lọ́wọ́ láti mú %1$s dára sí i nípa pínpín àwọn ìṣirò lílo aláìlórúkọ, ti iṣẹ́ ṣíṣe — bíi àwọn ìfisórí ẹ̀rọ, ìgbàsílẹ̀, ìbàjẹ́, ẹ̀yà app àti àkókò nínú app. Kò sí dátà ara ẹni, kò sí ìtàn àwáàrí, àti kò sí ohunkóhun nípa àwọn ènìyàn tí ń lo àkóónú tí a pèsè. O lè yí èyí padà nígbàkúùgbà nínú Àwọn Ìṣàgbékalẹ̀.</string>
-    <string name="analytics_enroll_accept">Pín àwọn ìṣirò</string>
-    <string name="analytics_enroll_decline">Rárá, ẹ ṣé</string>
-    <string name="settings_analytics_title">Pín àwọn ìṣirò lílo aláìlórúkọ</string>
-    <string name="settings_analytics_desc">Ti iṣẹ́ ṣíṣe nìkan (àwọn ìfisórí ẹ̀rọ, ìbàjẹ́, àkókò nínú app). Aláìlórúkọ, kò sí dátà ara ẹni. Yí padà nígbàkúùgbà.</string>
+    <string name="analytics_enroll_title">Àṣírí àti ìtúpalẹ̀</string>
+    <string name="analytics_enroll_body">%1$s ń kó ìsọfúnni ìlò aláìlórúkọ jọ láti ràn wá lọ́wọ́ láti tún àwọn àsìṣe ṣe àti láti mú ìṣàmúlò dára sí i. Kò sí ìsọfúnni ara-ẹni tí a ń kójọ tàbí pín, kò sì sí ohunkóhun tí a ń tọpasẹ̀ nípa àwọn ènìyàn tó ń lo àkóónú tí o pín.\n\nPín àkójọ dátà aláìlórúkọ ń fi ìsọfúnni yìí ránṣẹ́ nígbà tí fóònù bá wà lórí íńtánẹ́ẹ̀tì. Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì kì í fi ohunkóhun ránṣẹ́, kódà tí fóònù bá wà lórí íńtánẹ́ẹ̀tì.</string>
+    <string name="analytics_enroll_accept">Pín àkójọ dátà aláìlórúkọ</string>
+    <string name="analytics_enroll_decline">Pa á mọ́ àìsí-íńtánẹ́ẹ̀tì</string>
+    <string name="settings_analytics_title">Pín àkójọ dátà aláìlórúkọ</string>
+    <string name="settings_analytics_desc">Ìsọfúnni ìlò aláìlórúkọ láti tún àwọn àsìṣe ṣe àti mú ìṣàmúlò dára — kò sí dátà ara-ẹni, kò sì sí ohunkóhun nípa àwọn tó ń lo àkóónú tí o pín. Yí padà nígbàkigbà.</string>
     <string name="phantom_warn_title">Gbígbé lọ lè dídùró</string>
     <string name="phantom_warn_body">Lórí Android 12+ ètò náà lè dá gbígbé lọ dúró nígbà tí ó bá ń ṣiṣẹ́ ní ẹ̀yìn (ààlà iṣẹ́ phantom). Láti dènà rẹ̀, pa “àwọn ìdíwọ́ iṣẹ́ ọmọ”, tàbí tẹ̀síwájú lọ́nàkọnà — àwọn gbígbé lọ ńlá lè dídùró.</string>
     <string name="phantom_warn_open_dev">Ṣí Àwọn Àṣàyàn Olùdàgbàsókè</string>
