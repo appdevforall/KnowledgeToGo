@@ -155,14 +155,13 @@ public class ModuleDetailFragment extends Fragment {
                 if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().current().didFail(c.key())) {
                     chipRow.addView(chip(getString(R.string.k2go_mod_phase_failed), R.color.k2go_clay));
                     schedule.setText(R.string.k2go_home_retry);
+                    // Shared, busy-gated retry (same action the live progress card fires). On a real
+                    // start, bounce to the hub — this detail is a one-shot snapshot with no observer and
+                    // would otherwise sit on a stale "Couldn't install"; the hub reflects the queue live.
                     schedule.setOnClickListener(v -> {
-                        if (org.iiab.controller.env.EnvironmentLock.isHeld(requireContext())) {
-                            Snackbars.make(v, org.iiab.controller.util.BusyMessage.resFor(requireContext())).show();
-                            return;
+                        if (ModuleRetry.fire(v, c.key())) {
+                            requireActivity().getOnBackPressedDispatcher().onBackPressed();
                         }
-                        org.iiab.controller.install.presentation.InstallService.retryModules(
-                                requireContext(), java.util.Collections.singletonList(c.key()));
-                        requireActivity().getOnBackPressedDispatcher().onBackPressed();
                     });
                     schedule.setVisibility(View.VISIBLE);
                     installNowBtn.setText(R.string.k2go_setup_back);
