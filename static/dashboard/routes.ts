@@ -316,16 +316,32 @@ apiRouter.post('/system/dashboard/rebuild/cancel', (_req: Request, res: Response
         // can't signal it. Do NOT claim success or touch the status — the app can retry in a moment.
         res.status(409).json({ error: 'cancel not ready', cancelled: false }); return;
     }
+    // Verify the pid is actually OUR rebuild script before signaling — never SIGTERM a recycled/unrelated
+    // pid. /proc/<pid>/cmdline is NUL-separated; a substring match on the script name is enough.
+    let cmdline = '';
+    try { cmdline = fs.readFileSync(`/proc/${pid}/cmdline`, 'utf8'); } catch { /* process gone / no proc */ }
+    const healStale = (): void => {
+        try { fs.writeFileSync(REBUILD_STATUS_FILE, 'idle'); } catch { /* best effort */ }
+        try { fs.rmdirSync(REBUILD_LOCK_DIR); } catch { /* maybe already gone */ }
+        try { fs.unlinkSync(REBUILD_PHASE_FILE); } catch { /* maybe already gone */ }
+        try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* maybe already gone */ }
+    };
+    if (cmdline === '' && !fs.existsSync(`/proc/${pid}`)) {
+        // The run already exited but left stale state (status 'running' with a dead pid) — heal it and
+        // report success; there is nothing left to stop.
+        healStale();
+        res.status(200).json({ ok: true, cancelled: true }); return;
+    }
+    if (!cmdline.includes('rebuild-dashboard.sh')) {
+        // The pid is alive but was recycled by an unrelated process — refuse to signal it.
+        res.status(409).json({ error: 'stale pid', cancelled: false }); return;
+    }
     try {
-        // Signal the whole detached session group; its EXIT/TERM trap purges staging + removes lock/phase/pid.
+        // Signal the whole detached session group; the script's on_cancel/EXIT trap sets status idle and
+        // purges staging + lock/phase/pid. We also write idle + best-effort rmdir here as belt-and-suspenders.
         try { process.kill(-pid, 'SIGTERM'); } catch { /* group already gone */ }
         try { process.kill(pid, 'SIGTERM'); } catch { /* leader already gone */ }
-        // We own the status file, so reset it to idle (a stopped build is "nothing running", not an error).
-        // Best-effort lock rmdir in case the trap is slow, so a fresh rebuild can start without wedging.
-        try { fs.writeFileSync(REBUILD_STATUS_FILE, 'idle'); } catch { /* best effort */ }
-        try { fs.rmdirSync(REBUILD_LOCK_DIR); } catch { /* trap likely removed it */ }
-        try { fs.unlinkSync(REBUILD_PHASE_FILE); } catch { /* trap may have removed it */ }
-        try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* trap may have removed it */ }
+        healStale();
         res.status(200).json({ ok: true, cancelled: true });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'cancel failed', cancelled: false });

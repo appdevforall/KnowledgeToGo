@@ -51,6 +51,8 @@ public final class DashboardRebuildService extends Service {
     private static final int NOTIFICATION_ID = 10;   // app-global; distinct from the other services
 
     public static final String ACTION_START = "org.iiab.controller.DASHBOARD_UPDATE_START";
+    /** ADFA-5333: re-own an already-running rebuild (poll only, never POST a new one). */
+    public static final String ACTION_ATTACH = "org.iiab.controller.DASHBOARD_UPDATE_ATTACH";
     /** ADFA-5333: request a clean cancel (from the notification action or the card button). */
     public static final String ACTION_CANCEL = "org.iiab.controller.DASHBOARD_UPDATE_CANCEL";
     /** App-internal broadcast on every state change so a visible card can reflect it live. */
@@ -72,12 +74,18 @@ public final class DashboardRebuildService extends Service {
     private boolean started = false;    // one rebuild per service instance; ignore re-delivered starts
     private boolean cancelling = false; // a cancel request is in flight; ignore repeats
 
-    /** Kick the background live update. Safe to call again while running — the box reports 409 and the
-     *  service just keeps polling the in-flight rebuild (so a card can re-own a lost session by calling
-     *  this after it sees the box still rebuilding). */
+    /** Kick a NEW background live update (POST + poll). */
     public static void start(Context ctx) {
         ContextCompat.startForegroundService(ctx,
                 new Intent(ctx, DashboardRebuildService.class).setAction(ACTION_START));
+    }
+
+    /** Re-own a rebuild that is ALREADY running on the box (e.g. our process was killed mid-update): poll
+     *  it to completion and restore the notification, but never POST a new rebuild — so a card that sees
+     *  the box still building can attach without risking a second run if the original just finished. */
+    public static void attach(Context ctx) {
+        ContextCompat.startForegroundService(ctx,
+                new Intent(ctx, DashboardRebuildService.class).setAction(ACTION_ATTACH));
     }
 
     @Override public void onCreate() { super.onCreate(); createNotificationChannel(); }
@@ -90,15 +98,22 @@ public final class DashboardRebuildService extends Service {
         // — otherwise the system raises "did not call startForeground". It's idempotent, so satisfy the
         // contract first.
         startForeground(NOTIFICATION_ID, buildOngoing());
-        if (ACTION_CANCEL.equals(intent != null ? intent.getAction() : null)) { requestCancel(); return START_NOT_STICKY; }
+        final String action = intent != null ? intent.getAction() : null;
+        if (ACTION_CANCEL.equals(action)) { requestCancel(); return START_NOT_STICKY; }
         if (started) return START_NOT_STICKY;
         started = true;
         RUNNING = true;
         broadcastState(STATE_RUNNING);
-        DashboardClient.rebuildStart(new DashboardClient.RebuildStartCb() {
-            @Override public void onStarted(boolean alreadyRunning) { pollStatus(); }
-            @Override public void onErr(String message) { finish(STATE_ERROR, R.string.k2go_dash_live_start_failed); }
-        });
+        if (ACTION_ATTACH.equals(action)) {
+            // Re-own: the box is already building, so just poll to completion (a first poll that finds
+            // done/error finishes at once — no new rebuild is ever launched).
+            pollStatus();
+        } else {
+            DashboardClient.rebuildStart(new DashboardClient.RebuildStartCb() {
+                @Override public void onStarted(boolean alreadyRunning) { pollStatus(); }
+                @Override public void onErr(String message) { finish(STATE_ERROR, R.string.k2go_dash_live_start_failed); }
+            });
+        }
         return START_NOT_STICKY;
     }
 

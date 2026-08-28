@@ -72,12 +72,17 @@ verify_live() {
 }
 cleanup() { [ -n "${TESTPID:-}" ] && kill "$TESTPID" 2>/dev/null || true; purge_staging; rmdir "$LOCK" 2>/dev/null || true; rm -f "$PHASE" "$PIDFILE" 2>/dev/null || true; }
 fail() { log "FAIL: $*"; set_status "error"; cleanup; exit 1; }
+# ADFA-5333: a cancel (SIGTERM/INT during the building phase) self-heals the state — set the status to
+# idle BEFORE cleanup so a killed build can never leave a wedged "running" (the endpoint also writes idle,
+# but this makes it true regardless of whether the endpoint completes). Ignored during promote (trapped off).
+on_cancel() { log "canceled"; set_status "idle"; cleanup; exit 0; }
 
 # Single-flight: mkdir is atomic.
 mkdir "$LOCK" 2>/dev/null || { echo "another rebuild is running" >&2; exit 3; }
 # ADFA-5333: clean staging + phase/pid on ANY exit, including a cancel signal (TERM/INT). Killing this
 # session during steps 1-3 therefore leaves nothing behind and the live dashboard untouched.
-trap cleanup EXIT INT TERM
+trap cleanup EXIT
+trap on_cancel INT TERM
 : > "$LOG" 2>/dev/null || true
 set_status "running"
 set_phase "building"
@@ -174,6 +179,7 @@ else
     rm -rf "$BACKUP"
     set_status "error"
 fi
-# Promote window done — nothing left touches the live dashboard, so signals may be handled normally again.
-trap cleanup EXIT INT TERM
+# Promote done: the terminal status (done/error) is already written and only cleanup remains, so keep
+# INT/TERM ignored — a late signal must NOT run on_cancel and overwrite that status with "idle". The EXIT
+# trap still runs cleanup on the way out.
 cleanup

@@ -147,7 +147,7 @@ public class DashboardDetailFragment extends Fragment {
                 if (!isAdded()) return;
                 if (DashboardRebuildService.STATE_RUNNING.equals(state) && !DashboardRebuildService.isRunning()) {
                     setUpdating(true);
-                    DashboardRebuildService.start(ctx);
+                    DashboardRebuildService.attach(ctx);   // re-own without risking a fresh rebuild
                 }
             }
             @Override public void onErr(String message) { /* box stopped/offline — nothing in flight to show */ }
