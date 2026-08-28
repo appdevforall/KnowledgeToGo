@@ -46,24 +46,27 @@ public final class BooksCatalogAsset {
     // Parsed once, kept in memory (already popularity-ordered by the generator).
     private static volatile List<JSONObject> CACHE;
 
-    /** Search the offline catalog. lang: ""=all or an ISO code; q empty => popularity order. */
-    public static void search(Context ctx, String q, String lang, int limit, BooksClient.ArrayCb cb) {
+    /** Search the offline catalog. lang: ""=all or an ISO code; q empty => popularity order.
+     *  ADFA-5329: offset skips earlier batches so the caller can page through with "Load more". */
+    public static void search(Context ctx, String q, String lang, int offset, int limit, BooksClient.ArrayCb cb) {
         final Context app = ctx.getApplicationContext();
         AppExecutors.get().io().execute(() -> {
             try {
                 List<JSONObject> all = ensureLoaded(app);
                 String term = q == null ? "" : q.trim().toLowerCase(Locale.ROOT);
                 String lc = lang == null ? "" : lang.trim();
+                int skip = Math.max(0, offset);
                 JSONArray out = new JSONArray();
-                int n = 0;
+                int matched = 0, taken = 0;
                 for (JSONObject b : all) {
                     if (!lc.isEmpty() && !lc.equalsIgnoreCase(b.optString("language"))) continue;
                     if (!term.isEmpty()) {
                         String hay = (b.optString("title") + " " + b.optString("author")).toLowerCase(Locale.ROOT);
                         if (!hay.contains(term)) continue;
                     }
+                    if (matched++ < skip) continue;   // already shown in an earlier batch
                     out.put(b);
-                    if (++n >= Math.max(1, limit)) break;
+                    if (++taken >= Math.max(1, limit)) break;
                 }
                 MAIN.post(() -> cb.onOk(out));
             } catch (Exception e) {

@@ -1240,6 +1240,9 @@
     <string name="k2go_books_confirm_sub">Your selection.</string>
     <string name="k2go_books_confirm_note_title">One at a time</string>
     <string name="k2go_books_total_fmt">%1$d books</string>
+    <string name="k2go_books_load_more">Load more</string>
+    <string name="k2go_books_showing_fmt">Showing %1$d books</string>
+    <string name="k2go_books_all_fmt">That\'s all · %1$d books</string>
     <string name="k2go_books_dl_title">Downloads</string>
     <string name="k2go_books_dl_sub">Added one at a time — kind to Project Gutenberg.</string>
     <string name="k2go_books_dl_detail_fmt">%1$d of %2$d books</string>

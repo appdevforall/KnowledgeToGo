@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d tanfolyam nem fejeződött be.</string>
     <string name="k2go_kolibri_retry_before_leaving">Távozás előtt próbálja újra a sikerteleneket — a kilépés törli ezt a listát.</string>
     <string name="k2go_kolibri_catalog_updated">Katalógus frissítve: %1$s</string>
+    <string name="k2go_books_load_more">Továbbiak betöltése</string>
+    <string name="k2go_books_showing_fmt">%1$d könyv megjelenítve</string>
+    <string name="k2go_books_all_fmt">Ennyi · %1$d könyv</string>
 </resources>

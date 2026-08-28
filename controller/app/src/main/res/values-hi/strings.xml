@@ -1363,4 +1363,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d कोर्स पूरे नहीं हुए।</string>
     <string name="k2go_kolibri_retry_before_leaving">जाने से पहले विफल हुए फिर से आज़माएँ — जाने पर यह सूची मिट जाएगी।</string>
     <string name="k2go_kolibri_catalog_updated">कैटलॉग %1$s को अपडेट हुआ</string>
+    <string name="k2go_books_load_more">और लोड करें</string>
+    <string name="k2go_books_showing_fmt">%1$d किताबें दिखाई जा रही हैं</string>
+    <string name="k2go_books_all_fmt">बस इतना ही · %1$d किताबें</string>
 </resources>

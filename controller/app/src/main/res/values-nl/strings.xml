@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d cursussen zijn niet afgerond.</string>
     <string name="k2go_kolibri_retry_before_leaving">Probeer de mislukte opnieuw voordat u weggaat — weggaan wist deze lijst.</string>
     <string name="k2go_kolibri_catalog_updated">Catalogus bijgewerkt op %1$s</string>
+    <string name="k2go_books_load_more">Meer laden</string>
+    <string name="k2go_books_showing_fmt">%1$d boeken weergegeven</string>
+    <string name="k2go_books_all_fmt">Dat is alles · %1$d boeken</string>
 </resources>

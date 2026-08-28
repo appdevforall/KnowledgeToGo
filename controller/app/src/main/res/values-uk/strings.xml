@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d курс(ів) не завершено.</string>
     <string name="k2go_kolibri_retry_before_leaving">Повторіть невдалі перед виходом — вихід очищає цей список.</string>
     <string name="k2go_kolibri_catalog_updated">Каталог оновлено %1$s</string>
+    <string name="k2go_books_load_more">Завантажити ще</string>
+    <string name="k2go_books_showing_fmt">Показано книг: %1$d</string>
+    <string name="k2go_books_all_fmt">Це все · %1$d книг</string>
 </resources>

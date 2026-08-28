@@ -1293,4 +1293,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kurzov sa nedokončilo.</string>
     <string name="k2go_kolibri_retry_before_leaving">Pred odchodom skúste neúspešné znova — odchodom sa tento zoznam vymaže.</string>
     <string name="k2go_kolibri_catalog_updated">Katalóg aktualizovaný %1$s</string>
+    <string name="k2go_books_load_more">Načítať ďalšie</string>
+    <string name="k2go_books_showing_fmt">Zobrazených %1$d kníh</string>
+    <string name="k2go_books_all_fmt">To je všetko · %1$d kníh</string>
 </resources>

@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d cursuri nu s-au terminat.</string>
     <string name="k2go_kolibri_retry_before_leaving">Reîncearcă-le pe cele eșuate înainte să pleci — plecarea șterge lista.</string>
     <string name="k2go_kolibri_catalog_updated">Catalog actualizat pe %1$s</string>
+    <string name="k2go_books_load_more">Încarcă mai multe</string>
+    <string name="k2go_books_showing_fmt">%1$d cărți afișate</string>
+    <string name="k2go_books_all_fmt">Asta e tot · %1$d cărți</string>
 </resources>

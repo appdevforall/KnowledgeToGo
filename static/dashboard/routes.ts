@@ -65,13 +65,15 @@ export const apiRouter: Router = express.Router();
 // (POST /books/download). These paths don't collide with the generic /:type/* routes below.
 
 // Search the offline Gutenberg catalog. ?q= (FTS) | ?filter=educational | (default) top-by-downloads.
+// ADFA-5329: ?offset= pages through the results for the client's "Load more".
 apiRouter.get('/books/search', (req: Request, res: Response): void => {
     try {
         const q = String(req.query.q ?? '');
         const filter = String(req.query.filter ?? '');
         const lang = String(req.query.lang ?? '');
+        const offset = parseInt(String(req.query.offset ?? '0'), 10);
         const limit = parseInt(String(req.query.limit ?? '40'), 10);
-        res.json(searchCatalog(q, filter, lang, limit));
+        res.json(searchCatalog(q, filter, lang, offset, limit));
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'search failed' });
     }
