@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Hệ thống",
     "theme_light": "Sáng",
     "theme_dark": "Tối",
-    "backend_error": "Máy chủ backend không phản hồi. Vui lòng xác minh rằng nó đã khởi động. Vui lòng mở ứng dụng Termux và chạy"
+    "backend_error": "Máy chủ K2Go không phản hồi. Hãy đảm bảo K2Go đang chạy trên thiết bị chủ và thiết bị của bạn ở cùng Wi-Fi hoặc đã kết nối với điểm phát sóng của nó."
 };
