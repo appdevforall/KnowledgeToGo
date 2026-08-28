@@ -1293,4 +1293,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kurzov sa nedokončilo.</string>
     <string name="k2go_kolibri_retry_before_leaving">Pred odchodom skúste neúspešné znova — odchodom sa tento zoznam vymaže.</string>
     <string name="k2go_kolibri_catalog_updated">Katalóg aktualizovaný %1$s</string>
+    <string name="k2go_mod_phase_stalled">Stále prebieha — trvá to dlhšie než zvyčajne. Môžete počkať, alebo zrušiť a skúsiť znova.</string>
+    <string name="k2go_mod_cancel_title">Zastaviť inštaláciu?</string>
+    <string name="k2go_mod_cancel_body">Doteraz vykonané sa vráti späť a modul sa nenainštaluje. Môžete ho spustiť znova neskôr.</string>
+    <string name="k2go_mod_cancel_confirm">Zastaviť</string>
+    <string name="k2go_mod_cancel_dismiss">Pokračovať v inštalácii</string>
 </resources>

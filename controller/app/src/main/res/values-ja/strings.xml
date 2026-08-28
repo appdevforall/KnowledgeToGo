@@ -1287,4 +1287,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d 件のコースが完了しませんでした。</string>
     <string name="k2go_kolibri_retry_before_leaving">退出する前に失敗したものを再試行してください。退出するとこの一覧は消えます。</string>
     <string name="k2go_kolibri_catalog_updated">カタログの更新日: %1$s</string>
+    <string name="k2go_mod_phase_stalled">まだ実行中です — 通常より時間がかかっています。このまま待つか、キャンセルして再試行できます。</string>
+    <string name="k2go_mod_cancel_title">インストールを停止しますか？</string>
+    <string name="k2go_mod_cancel_body">これまでの作業は元に戻され、モジュールはインストールされません。後でもう一度開始できます。</string>
+    <string name="k2go_mod_cancel_confirm">インストールを停止</string>
+    <string name="k2go_mod_cancel_dismiss">インストールを続行</string>
 </resources>

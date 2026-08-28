@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d دوره کامل نشد.</string>
     <string name="k2go_kolibri_retry_before_leaving">پیش از خروج، موارد ناموفق را دوباره تلاش کنید — خروج این فهرست را پاک می‌کند.</string>
     <string name="k2go_kolibri_catalog_updated">کاتالوگ در %1$s به‌روزرسانی شد</string>
+    <string name="k2go_mod_phase_stalled">هنوز در حال کار است — بیش از حد معمول طول می‌کشد. می‌توانید صبر کنید یا لغو کرده و دوباره تلاش کنید.</string>
+    <string name="k2go_mod_cancel_title">نصب متوقف شود؟</string>
+    <string name="k2go_mod_cancel_body">کارهای انجام‌شده تا کنون بازگردانده می‌شود و ماژول نصب نخواهد شد. می‌توانید بعداً دوباره آن را شروع کنید.</string>
+    <string name="k2go_mod_cancel_confirm">توقف نصب</string>
+    <string name="k2go_mod_cancel_dismiss">ادامه نصب</string>
 </resources>

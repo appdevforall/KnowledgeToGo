@@ -1287,4 +1287,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d 门课程未完成。</string>
     <string name="k2go_kolibri_retry_before_leaving">离开前请重试失败的项目——离开会清空此列表。</string>
     <string name="k2go_kolibri_catalog_updated">目录更新于 %1$s</string>
+    <string name="k2go_mod_phase_stalled">仍在进行 — 用时比平常长。您可以继续等待，或取消并重试。</string>
+    <string name="k2go_mod_cancel_title">停止安装？</string>
+    <string name="k2go_mod_cancel_body">目前所做的更改将被撤销，模块不会被安装。您稍后可以重新开始。</string>
+    <string name="k2go_mod_cancel_confirm">停止安装</string>
+    <string name="k2go_mod_cancel_dismiss">继续安装</string>
 </resources>

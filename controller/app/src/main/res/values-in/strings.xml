@@ -1293,4 +1293,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kursus tidak selesai.</string>
     <string name="k2go_kolibri_retry_before_leaving">Coba lagi yang gagal sebelum keluar — keluar akan menghapus daftar ini.</string>
     <string name="k2go_kolibri_catalog_updated">Katalog diperbarui pada %1$s</string>
+    <string name="k2go_mod_phase_stalled">Masih berjalan — ini memakan waktu lebih lama dari biasanya. Anda dapat menunggu, atau membatalkan dan mencoba lagi.</string>
+    <string name="k2go_mod_cancel_title">Hentikan pemasangan?</string>
+    <string name="k2go_mod_cancel_body">Yang sudah dilakukan sejauh ini dibatalkan dan modul tidak akan dipasang. Anda dapat memulainya lagi nanti.</string>
+    <string name="k2go_mod_cancel_confirm">Hentikan pemasangan</string>
+    <string name="k2go_mod_cancel_dismiss">Lanjutkan pemasangan</string>
 </resources>

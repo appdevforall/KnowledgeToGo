@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d cursuri nu s-au terminat.</string>
     <string name="k2go_kolibri_retry_before_leaving">Reîncearcă-le pe cele eșuate înainte să pleci — plecarea șterge lista.</string>
     <string name="k2go_kolibri_catalog_updated">Catalog actualizat pe %1$s</string>
+    <string name="k2go_mod_phase_stalled">Încă lucrează — durează mai mult decât de obicei. Poți aștepta sau anula și reîncerca.</string>
+    <string name="k2go_mod_cancel_title">Oprești instalarea?</string>
+    <string name="k2go_mod_cancel_body">Ce s-a făcut până acum se anulează și modulul nu va fi instalat. Îl poți porni din nou mai târziu.</string>
+    <string name="k2go_mod_cancel_confirm">Oprește</string>
+    <string name="k2go_mod_cancel_dismiss">Continuă instalarea</string>
 </resources>

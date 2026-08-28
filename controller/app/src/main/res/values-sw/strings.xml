@@ -1306,4 +1306,9 @@
     <string name="k2go_kolibri_failed_fmt">Kozi %1$d hazikukamilika.</string>
     <string name="k2go_kolibri_retry_before_leaving">Jaribu tena zilizoshindwa kabla ya kuondoka — kuondoka kunafuta orodha hii.</string>
     <string name="k2go_kolibri_catalog_updated">Katalogi ilisasishwa tarehe %1$s</string>
+    <string name="k2go_mod_phase_stalled">Bado inaendelea — inachukua muda mrefu kuliko kawaida. Unaweza kusubiri, au kughairi na kujaribu tena.</string>
+    <string name="k2go_mod_cancel_title">Kusimamisha usakinishaji?</string>
+    <string name="k2go_mod_cancel_body">Yaliyofanyika hadi sasa yanabatilishwa na moduli haitasakinishwa. Unaweza kuanza tena baadaye.</string>
+    <string name="k2go_mod_cancel_confirm">Simamisha usakinishaji</string>
+    <string name="k2go_mod_cancel_dismiss">Endelea kusakinisha</string>
 </resources>

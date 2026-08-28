@@ -1287,4 +1287,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d개 강의가 완료되지 않았습니다.</string>
     <string name="k2go_kolibri_retry_before_leaving">나가기 전에 실패한 항목을 다시 시도하세요. 나가면 이 목록이 지워집니다.</string>
     <string name="k2go_kolibri_catalog_updated">카탈로그 업데이트: %1$s</string>
+    <string name="k2go_mod_phase_stalled">아직 진행 중입니다 — 평소보다 오래 걸리고 있습니다. 기다리거나, 취소하고 다시 시도할 수 있습니다.</string>
+    <string name="k2go_mod_cancel_title">설치를 중지할까요?</string>
+    <string name="k2go_mod_cancel_body">지금까지 진행된 내용은 되돌려지고 모듈이 설치되지 않습니다. 나중에 다시 시작할 수 있습니다.</string>
+    <string name="k2go_mod_cancel_confirm">설치 중지</string>
+    <string name="k2go_mod_cancel_dismiss">설치 계속</string>
 </resources>

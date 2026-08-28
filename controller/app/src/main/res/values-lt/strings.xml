@@ -1303,4 +1303,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kursų nebaigta.</string>
     <string name="k2go_kolibri_retry_before_leaving">Prieš išeidami pakartokite nepavykusius — išėjus šis sąrašas išvalomas.</string>
     <string name="k2go_kolibri_catalog_updated">Katalogas atnaujintas %1$s</string>
+    <string name="k2go_mod_phase_stalled">Vis dar vyksta — tai užtrunka ilgiau nei įprastai. Galite palaukti arba atšaukti ir bandyti dar kartą.</string>
+    <string name="k2go_mod_cancel_title">Stabdyti diegimą?</string>
+    <string name="k2go_mod_cancel_body">Iki šiol atlikti veiksmai atšaukiami ir modulis nebus įdiegtas. Vėliau galėsite pradėti iš naujo.</string>
+    <string name="k2go_mod_cancel_confirm">Stabdyti diegimą</string>
+    <string name="k2go_mod_cancel_dismiss">Tęsti diegimą</string>
 </resources>

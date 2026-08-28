@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kurs tamamlanmadı.</string>
     <string name="k2go_kolibri_retry_before_leaving">Ayrılmadan önce başarısız olanları yeniden deneyin — ayrılmak bu listeyi siler.</string>
     <string name="k2go_kolibri_catalog_updated">Katalog %1$s tarihinde güncellendi</string>
+    <string name="k2go_mod_phase_stalled">Hâlâ çalışıyor — bu her zamankinden uzun sürüyor. Bekleyebilir ya da iptal edip yeniden deneyebilirsiniz.</string>
+    <string name="k2go_mod_cancel_title">Kurulum durdurulsun mu?</string>
+    <string name="k2go_mod_cancel_body">Şimdiye kadar yapılanlar geri alınır ve modül kurulmaz. Daha sonra yeniden başlatabilirsiniz.</string>
+    <string name="k2go_mod_cancel_confirm">Kurulumu durdur</string>
+    <string name="k2go_mod_cancel_dismiss">Kuruluma devam et</string>
 </resources>

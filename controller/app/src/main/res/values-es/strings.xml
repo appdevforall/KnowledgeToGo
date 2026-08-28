@@ -1362,4 +1362,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d curso(s) no terminaron.</string>
     <string name="k2go_kolibri_retry_before_leaving">Reintenta los que fallaron antes de salir: al salir se borra esta lista.</string>
     <string name="k2go_kolibri_catalog_updated">Catálogo actualizado el %1$s</string>
+    <string name="k2go_mod_phase_stalled">Sigue trabajando — está tardando más de lo normal. Puedes seguir esperando, o cancelar y reintentar.</string>
+    <string name="k2go_mod_cancel_title">¿Detener la instalación?</string>
+    <string name="k2go_mod_cancel_body">Lo hecho hasta ahora se revierte y el módulo no se instalará. Puedes iniciarlo de nuevo después.</string>
+    <string name="k2go_mod_cancel_confirm">Detener instalación</string>
+    <string name="k2go_mod_cancel_dismiss">Seguir instalando</string>
 </resources>

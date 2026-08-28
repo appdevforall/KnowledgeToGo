@@ -1296,4 +1296,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kurs ble ikke ferdige.</string>
     <string name="k2go_kolibri_retry_before_leaving">Prøv de mislykkede på nytt før du går — å gå tømmer denne listen.</string>
     <string name="k2go_kolibri_catalog_updated">Katalog oppdatert %1$s</string>
+    <string name="k2go_mod_phase_stalled">Fortsatt i gang — dette tar lengre tid enn vanlig. Du kan vente, eller avbryte og prøve igjen.</string>
+    <string name="k2go_mod_cancel_title">Stoppe installasjonen?</string>
+    <string name="k2go_mod_cancel_body">Det som er gjort så langt tilbakestilles, og modulen blir ikke installert. Du kan starte den på nytt senere.</string>
+    <string name="k2go_mod_cancel_confirm">Stopp installasjon</string>
+    <string name="k2go_mod_cancel_dismiss">Fortsett installasjonen</string>
 </resources>

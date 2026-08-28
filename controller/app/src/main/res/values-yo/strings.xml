@@ -1306,4 +1306,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d ìdánilẹ́kọ̀ọ́ kò parí.</string>
     <string name="k2go_kolibri_retry_before_leaving">Tún gbìyànjú àwọn tí ó kùnà kí o tó lọ — lílọ máa pa àtòjọ yìí rẹ́.</string>
     <string name="k2go_kolibri_catalog_updated">A ṣe àfikún àtòjọ ní %1$s</string>
+    <string name="k2go_mod_phase_stalled">Ó ṣì ń ṣiṣẹ́ — ó ń gba àkókò ju bí ó ṣe máa ń rí lọ. O lè dúró, tàbí fagilé kí o sì gbìyànjú lẹ́ẹ̀kansí.</string>
+    <string name="k2go_mod_cancel_title">Ṣé kí a dá fífi sórí ẹ̀rọ dúró?</string>
+    <string name="k2go_mod_cancel_body">Ohun tí a ti ṣe títí di báyìí ni a ó yí padà, a kì yóò sì fi módùlù náà sórí ẹ̀rọ. O lè bẹ̀rẹ̀ rẹ̀ lẹ́ẹ̀kansí lẹ́yìn náà.</string>
+    <string name="k2go_mod_cancel_confirm">Dá dúró</string>
+    <string name="k2go_mod_cancel_dismiss">Máa bá a lọ</string>
 </resources>

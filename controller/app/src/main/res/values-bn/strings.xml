@@ -1299,4 +1299,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$dটি কোর্স শেষ হয়নি।</string>
     <string name="k2go_kolibri_retry_before_leaving">চলে যাওয়ার আগে ব্যর্থগুলো আবার চেষ্টা করুন — চলে গেলে এই তালিকা মুছে যাবে।</string>
     <string name="k2go_kolibri_catalog_updated">ক্যাটালগ %1$s তারিখে আপডেট হয়েছে</string>
+    <string name="k2go_mod_phase_stalled">এখনও চলছে — এটি স্বাভাবিকের চেয়ে বেশি সময় নিচ্ছে। আপনি অপেক্ষা করতে পারেন, অথবা বাতিল করে আবার চেষ্টা করতে পারেন।</string>
+    <string name="k2go_mod_cancel_title">ইনস্টল করা বন্ধ করবেন?</string>
+    <string name="k2go_mod_cancel_body">এ পর্যন্ত যা হয়েছে তা পূর্বাবস্থায় ফিরিয়ে আনা হয় এবং মডিউলটি ইনস্টল হবে না। আপনি পরে আবার এটি শুরু করতে পারেন।</string>
+    <string name="k2go_mod_cancel_confirm">ইনস্টল বন্ধ করুন</string>
+    <string name="k2go_mod_cancel_dismiss">ইনস্টল চালিয়ে যান</string>
 </resources>

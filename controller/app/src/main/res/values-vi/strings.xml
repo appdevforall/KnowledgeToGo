@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d khóa học chưa hoàn tất.</string>
     <string name="k2go_kolibri_retry_before_leaving">Hãy thử lại những mục lỗi trước khi rời đi — rời đi sẽ xóa danh sách này.</string>
     <string name="k2go_kolibri_catalog_updated">Danh mục cập nhật ngày %1$s</string>
+    <string name="k2go_mod_phase_stalled">Vẫn đang chạy — việc này lâu hơn bình thường. Bạn có thể chờ, hoặc hủy và thử lại.</string>
+    <string name="k2go_mod_cancel_title">Dừng cài đặt?</string>
+    <string name="k2go_mod_cancel_body">Những gì đã làm đến giờ sẽ được hoàn tác và mô-đun sẽ không được cài đặt. Bạn có thể bắt đầu lại sau.</string>
+    <string name="k2go_mod_cancel_confirm">Dừng cài đặt</string>
+    <string name="k2go_mod_cancel_dismiss">Tiếp tục cài đặt</string>
 </resources>

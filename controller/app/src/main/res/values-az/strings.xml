@@ -1306,4 +1306,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kurs tamamlanmadı.</string>
     <string name="k2go_kolibri_retry_before_leaving">Getməzdən əvvəl uğursuzları yenidən yoxlayın — çıxış bu siyahını silir.</string>
     <string name="k2go_kolibri_catalog_updated">Kataloq %1$s tarixində yeniləndi</string>
+    <string name="k2go_mod_phase_stalled">Hələ də işləyir — bu, adətən olduğundan daha uzun çəkir. Gözləyə, yaxud ləğv edib yenidən cəhd edə bilərsiniz.</string>
+    <string name="k2go_mod_cancel_title">Quraşdırma dayandırılsın?</string>
+    <string name="k2go_mod_cancel_body">İndiyədək edilənlər geri qaytarılır və modul quraşdırılmayacaq. Onu sonra yenidən başlada bilərsiniz.</string>
+    <string name="k2go_mod_cancel_confirm">Quraşdırmanı dayandır</string>
+    <string name="k2go_mod_cancel_dismiss">Quraşdırmaya davam et</string>
 </resources>

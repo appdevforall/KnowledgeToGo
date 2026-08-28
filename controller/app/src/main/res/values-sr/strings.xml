@@ -1299,4 +1299,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d курсева није завршено.</string>
     <string name="k2go_kolibri_retry_before_leaving">Покушајте поново неуспеле пре него што одете — одлазак брише овај списак.</string>
     <string name="k2go_kolibri_catalog_updated">Каталог ажуриран %1$s</string>
+    <string name="k2go_mod_phase_stalled">Још увек ради — траје дуже него обично. Можете сачекати или отказати и покушати поново.</string>
+    <string name="k2go_mod_cancel_title">Зауставити инсталацију?</string>
+    <string name="k2go_mod_cancel_body">Оно што је до сада урађено се поништава и модул неће бити инсталиран. Можете га поново покренути касније.</string>
+    <string name="k2go_mod_cancel_confirm">Заустави</string>
+    <string name="k2go_mod_cancel_dismiss">Настави инсталацију</string>
 </resources>

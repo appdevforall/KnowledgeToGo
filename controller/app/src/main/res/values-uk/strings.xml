@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d курс(ів) не завершено.</string>
     <string name="k2go_kolibri_retry_before_leaving">Повторіть невдалі перед виходом — вихід очищає цей список.</string>
     <string name="k2go_kolibri_catalog_updated">Каталог оновлено %1$s</string>
+    <string name="k2go_mod_phase_stalled">Ще триває — це займає більше часу, ніж зазвичай. Можна зачекати або скасувати та повторити.</string>
+    <string name="k2go_mod_cancel_title">Зупинити встановлення?</string>
+    <string name="k2go_mod_cancel_body">Зроблене досі скасовується, і модуль не буде встановлено. Ви зможете запустити його знову пізніше.</string>
+    <string name="k2go_mod_cancel_confirm">Зупинити</string>
+    <string name="k2go_mod_cancel_dismiss">Продовжити встановлення</string>
 </resources>

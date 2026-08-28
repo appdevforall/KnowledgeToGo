@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d Kurse wurden nicht fertig.</string>
     <string name="k2go_kolibri_retry_before_leaving">Wiederholen Sie die fehlgeschlagenen, bevor Sie gehen — beim Verlassen wird diese Liste gelöscht.</string>
     <string name="k2go_kolibri_catalog_updated">Katalog aktualisiert am %1$s</string>
+    <string name="k2go_mod_phase_stalled">Läuft noch — das dauert länger als üblich. Du kannst warten oder abbrechen und erneut versuchen.</string>
+    <string name="k2go_mod_cancel_title">Installation abbrechen?</string>
+    <string name="k2go_mod_cancel_body">Das bisher Erledigte wird zurückgesetzt und das Modul wird nicht installiert. Du kannst es später erneut starten.</string>
+    <string name="k2go_mod_cancel_confirm">Abbrechen</string>
+    <string name="k2go_mod_cancel_dismiss">Weiter installieren</string>
 </resources>

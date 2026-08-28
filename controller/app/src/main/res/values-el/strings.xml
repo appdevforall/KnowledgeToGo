@@ -1293,4 +1293,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d μαθήματα δεν ολοκληρώθηκαν.</string>
     <string name="k2go_kolibri_retry_before_leaving">Δοκιμάστε ξανά όσα απέτυχαν πριν φύγετε — η έξοδος διαγράφει αυτή τη λίστα.</string>
     <string name="k2go_kolibri_catalog_updated">Ο κατάλογος ενημερώθηκε στις %1$s</string>
+    <string name="k2go_mod_phase_stalled">Ακόμη σε εξέλιξη — καθυστερεί περισσότερο από το συνηθισμένο. Μπορείτε να περιμένετε ή να ακυρώσετε και να δοκιμάσετε ξανά.</string>
+    <string name="k2go_mod_cancel_title">Διακοπή εγκατάστασης;</string>
+    <string name="k2go_mod_cancel_body">Ό,τι έγινε μέχρι τώρα αναιρείται και η μονάδα δεν θα εγκατασταθεί. Μπορείτε να την ξεκινήσετε ξανά αργότερα.</string>
+    <string name="k2go_mod_cancel_confirm">Διακοπή</string>
+    <string name="k2go_mod_cancel_dismiss">Συνέχιση εγκατάστασης</string>
 </resources>

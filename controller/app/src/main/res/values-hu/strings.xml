@@ -1286,4 +1286,9 @@
     <string name="k2go_kolibri_failed_fmt">%1$d tanfolyam nem fejeződött be.</string>
     <string name="k2go_kolibri_retry_before_leaving">Távozás előtt próbálja újra a sikerteleneket — a kilépés törli ezt a listát.</string>
     <string name="k2go_kolibri_catalog_updated">Katalógus frissítve: %1$s</string>
+    <string name="k2go_mod_phase_stalled">Még dolgozik — a szokásosnál tovább tart. Várhatsz, vagy megszakíthatod és újrapróbálhatod.</string>
+    <string name="k2go_mod_cancel_title">Leállítod a telepítést?</string>
+    <string name="k2go_mod_cancel_body">Az eddigiek visszavonásra kerülnek, és a modul nem lesz telepítve. Később újraindíthatod.</string>
+    <string name="k2go_mod_cancel_confirm">Leállítás</string>
+    <string name="k2go_mod_cancel_dismiss">Telepítés folytatása</string>
 </resources>
