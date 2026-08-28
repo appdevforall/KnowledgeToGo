@@ -1135,14 +1135,15 @@
     <string name="k2go_dash_card_sub_fmt">Kókó REST · fi sori ẹrọ v%1$s</string>
     <string name="k2go_dash_rebuild">Tún kọ́</string>
     <string name="k2go_dash_rebuild_confirm_title">Tún kókó REST kọ́?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Ó ń ṣe àfikún dash-node sí ẹ̀yà tuntun. Sáfà kì yóò sí fún ìgbà díẹ̀ nígbà tí ó ń tún kọ́; má ṣe kúrò ní ojú-iwé yìí títí yóò fi parí.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Ó ń mú dash-node dójú ìwọ̀n sí ẹ̀yà tuntun. Ó ń ṣiṣẹ́ ní ẹ̀yìn; olùpèsè kì yóò sí fún ìgbà díẹ̀ nígbà tí ó bá ń tún kọ́.</string>
     <string name="k2go_dash_needs_internet">Àtúnkọ́ nílò ìsopọ̀ íntánẹ́ẹ̀tì.</string>
     <string name="k2go_dash_live_title">Ń ṣàtúnṣe dáàṣíbọ́ọ̀dù</string>
     <string name="k2go_dash_live_running">Ń ṣàtúnṣe níbí… dáàṣíbọ́ọ̀dù yóò tún bẹ̀rẹ̀ fún ìgbà díẹ̀.</string>
     <string name="k2go_dash_live_done">A ti ṣàtúnṣe dáàṣíbọ́ọ̀dù.</string>
     <string name="k2go_dash_live_error">Àtúnṣe kùnà — a pa ẹ̀yà tí ó ṣáájú mọ́.</string>
-    <string name="k2go_dash_live_timeout">Ìmúdójúìwọ̀n náà ń gba àkókò ju ti àtẹ̀yìnwá lọ. Yóò parí ní ẹ̀yìn — ṣàyẹ̀wò ẹ̀yà náà láìpẹ́.</string>
     <string name="k2go_dash_live_start_failed">Kò lè bẹ̀rẹ̀ àtúnṣe. Gbìyànjú lẹ́ẹ̀kansi.</string>
+    <string name="k2go_dash_update_started">Ń mú dáṣíbọ̀ọ̀dù dójú ìwọ̀n ní ẹ̀yìn.</string>
+    <string name="k2go_dash_update_channel_name">Ìmúdójúìwọ̀n dáṣíbọ̀ọ̀dù</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kókó ètò · fi sori ẹrọ nígbà gbogbo</string>
     <string name="k2go_dash_detail_desc">Dáṣíbọ́ọ̀dù ni kókó REST API ẹ̀rọ náà (dash-node) — iṣẹ́ Node kékeré kan lórí 127.0.0.1:4000, tí nginx ń ṣe àgbékalẹ̀ tí pdsm sì ń bójú tó. Ó ń darí gbogbo iṣẹ́ ilé-ìkàwé nínú ìṣàmúlò: ṣíṣàwárí àti gbígba àwọn Ìwé sílẹ̀, fifi kún àti pípa àkóónú Wikipedia àti ZIM rẹ́, àwọn ìpàdé Kolibri, Máàpù àti ipò ètò. Yàtọ̀ sí àwọn módùlù àkóónú, o kò lè fi í sórí ẹ̀rọ tàbí yọ ọ́ kúrò. Ó ń wá pẹ̀lú ìṣàmúlò náà ó sì máa ń wà nígbà gbogbo. Nígbà tí ẹ̀dà tuntun bá wà, o lè tún un kọ́ ní ibẹ̀.</string>

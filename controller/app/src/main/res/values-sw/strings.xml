@@ -1135,14 +1135,15 @@
     <string name="k2go_dash_card_sub_fmt">Kiini cha REST · imesakinishwa v%1$s</string>
     <string name="k2go_dash_rebuild">Jenga upya</string>
     <string name="k2go_dash_rebuild_confirm_title">Ujenge upya kiini cha REST?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Inasasisha dash-node hadi toleo jipya zaidi. Seva haipatikani kwa muda mfupi wakati wa kujengwa upya; usiondoke skrini hii hadi ikamilike.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Inasasisha dash-node hadi toleo la hivi karibuni. Inaendeshwa chinichini; seva haipatikani kwa muda mfupi wakati wa kujengwa upya.</string>
     <string name="k2go_dash_needs_internet">Kujenga upya kunahitaji muunganisho wa intaneti.</string>
     <string name="k2go_dash_live_title">Inasasisha dashibodi</string>
     <string name="k2go_dash_live_running">Inasasisha papo hapo… dashibodi itaanza upya kwa muda mfupi.</string>
     <string name="k2go_dash_live_done">Dashibodi imesasishwa.</string>
     <string name="k2go_dash_live_error">Sasisho limeshindwa — toleo la awali limehifadhiwa.</string>
-    <string name="k2go_dash_live_timeout">Sasisho linachukua muda mrefu kuliko kawaida. Itakamilika chinichini — angalia toleo baada ya muda mfupi.</string>
     <string name="k2go_dash_live_start_failed">Imeshindwa kuanzisha sasisho. Jaribu tena.</string>
+    <string name="k2go_dash_update_started">Inasasisha dashibodi chinichini.</string>
+    <string name="k2go_dash_update_channel_name">Sasisho la dashibodi</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kiini cha mfumo · kimesakinishwa daima</string>
     <string name="k2go_dash_detail_desc">Dashibodi ni kiini cha REST API cha kifaa (dash-node) — huduma ndogo ya Node kwenye 127.0.0.1:4000, inayotolewa na nginx na kusimamiwa na pdsm. Inaendesha kila kitendo cha maktaba ndani ya programu: kuvinjari na kupakua Vitabu, kuongeza na kufuta maudhui ya Wikipedia na ZIM, vipindi vya Kolibri, Ramani na hali ya mfumo. Tofauti na moduli za maudhui, huwezi kuisakinisha wala kuiondoa. Inakuja na programu na ipo daima. Wakati toleo jipya linapatikana, unaweza kuijenga upya papo hapo.</string>

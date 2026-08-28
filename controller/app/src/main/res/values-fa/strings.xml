@@ -1115,14 +1115,15 @@
     <string name="k2go_dash_card_sub_fmt">هستهٔ REST · نصب‌شده v%1$s</string>
     <string name="k2go_dash_rebuild">بازسازی</string>
     <string name="k2go_dash_rebuild_confirm_title">هستهٔ REST بازسازی شود؟</string>
-    <string name="k2go_dash_rebuild_confirm_msg">dash-node را به آخرین نسخه به‌روزرسانی می‌کند. سرور در حین بازسازی برای مدت کوتاهی در دسترس نیست؛ تا پایان کار این صفحه را ترک نکنید.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node را به آخرین نسخه به‌روزرسانی می‌کند. در پس‌زمینه اجرا می‌شود؛ سرور هنگام بازسازی برای مدت کوتاهی در دسترس نیست.</string>
     <string name="k2go_dash_needs_internet">بازسازی به اتصال اینترنت نیاز دارد.</string>
     <string name="k2go_dash_live_title">در حال به‌روزرسانی داشبورد</string>
     <string name="k2go_dash_live_running">به‌روزرسانی در محل… داشبورد برای لحظه‌ای دوباره راه‌اندازی می‌شود.</string>
     <string name="k2go_dash_live_done">داشبورد به‌روزرسانی شد.</string>
     <string name="k2go_dash_live_error">به‌روزرسانی ناموفق بود — نسخهٔ قبلی حفظ شد.</string>
-    <string name="k2go_dash_live_timeout">به‌روزرسانی بیشتر از حد معمول طول می‌کشد. در پس‌زمینه تمام می‌شود — کمی بعد نسخه را بررسی کنید.</string>
     <string name="k2go_dash_live_start_failed">شروع به‌روزرسانی ممکن نشد. دوباره تلاش کنید.</string>
+    <string name="k2go_dash_update_started">داشبورد در پس‌زمینه به‌روزرسانی می‌شود.</string>
+    <string name="k2go_dash_update_channel_name">به‌روزرسانی داشبورد</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">هستهٔ سیستم · همیشه نصب‌شده</string>
     <string name="k2go_dash_detail_desc">داشبورد هستهٔ REST API دستگاه (dash-node) است — یک سرویس کوچک Node روی 127.0.0.1:4000 که با nginx ارائه و با pdsm نظارت می‌شود. هر عملیات کتابخانه در برنامه را پیش می‌برد: مرور و دانلود کتاب‌ها، افزودن و حذف محتوای Wikipedia و ZIM، جلسات Kolibri، نقشه‌ها و وضعیت سیستم. برخلاف ماژول‌های محتوا، نمی‌توانید آن را نصب یا حذف کنید. همراه برنامه می‌آید و همیشه حاضر است. وقتی نسخهٔ جدیدتری موجود باشد، می‌توانید آن را در همان‌جا بازسازی کنید.</string>

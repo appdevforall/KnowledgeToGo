@@ -1115,14 +1115,15 @@
     <string name="k2go_dash_card_sub_fmt">REST-Kern · installiert v%1$s</string>
     <string name="k2go_dash_rebuild">Neu erstellen</string>
     <string name="k2go_dash_rebuild_confirm_title">REST-Kern neu erstellen?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Aktualisiert dash-node auf die neueste Version. Der Server ist während der Neuerstellung kurz nicht verfügbar; verlassen Sie diesen Bildschirm nicht, bis es fertig ist.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Aktualisiert dash-node auf die neueste Version. Es läuft im Hintergrund; der Server ist während der Neuerstellung kurz nicht verfügbar.</string>
     <string name="k2go_dash_needs_internet">Für die Neuerstellung ist eine Internetverbindung nötig.</string>
     <string name="k2go_dash_live_title">Dashboard wird aktualisiert</string>
     <string name="k2go_dash_live_running">Aktualisierung an Ort und Stelle… das Dashboard startet kurz neu.</string>
     <string name="k2go_dash_live_done">Dashboard aktualisiert.</string>
     <string name="k2go_dash_live_error">Aktualisierung fehlgeschlagen — die vorherige Version wurde beibehalten.</string>
-    <string name="k2go_dash_live_timeout">Die Aktualisierung dauert länger als üblich. Es wird im Hintergrund abgeschlossen — prüfe die Version gleich.</string>
     <string name="k2go_dash_live_start_failed">Aktualisierung konnte nicht gestartet werden. Erneut versuchen.</string>
+    <string name="k2go_dash_update_started">Dashboard wird im Hintergrund aktualisiert.</string>
+    <string name="k2go_dash_update_channel_name">Dashboard-Aktualisierung</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systemkern · immer installiert</string>
     <string name="k2go_dash_detail_desc">Das Dashboard ist der REST-API-Kern der Box (dash-node) – ein kleiner Node-Dienst auf 127.0.0.1:4000, über nginx bereitgestellt und von pdsm überwacht. Es steuert jede Bibliotheksaktion in der App: Bücher durchsuchen und herunterladen, Wikipedia- und ZIM-Inhalte hinzufügen und löschen, Kolibri-Sitzungen, Karten und Systemstatus. Anders als die Inhaltsmodule kannst du es nicht installieren oder entfernen. Es wird mit der App geliefert und ist immer vorhanden. Wenn eine neuere Version verfügbar ist, kannst du es an Ort und Stelle neu erstellen.</string>

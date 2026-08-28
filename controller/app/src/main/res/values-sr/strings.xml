@@ -1128,14 +1128,15 @@
     <string name="k2go_dash_card_sub_fmt">REST језгро · инсталирана v%1$s</string>
     <string name="k2go_dash_rebuild">Поново изгради</string>
     <string name="k2go_dash_rebuild_confirm_title">Поново изградити REST језгро?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Ажурира dash-node на најновију верзију. Сервер је накратко недоступан током поновне изградње; не напуштајте овај екран док се не заврши.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Ажурира dash-node на најновију верзију. Ради у позадини; сервер је накратко недоступан током поновне изградње.</string>
     <string name="k2go_dash_needs_internet">Поновна изградња захтева интернет везу.</string>
     <string name="k2go_dash_live_title">Ажурирање контролне табле</string>
     <string name="k2go_dash_live_running">Ажурирање на лицу места… контролна табла ће се накратко поново покренути.</string>
     <string name="k2go_dash_live_done">Контролна табла је ажурирана.</string>
     <string name="k2go_dash_live_error">Ажурирање није успело — задржана је претходна верзија.</string>
-    <string name="k2go_dash_live_timeout">Ажурирање траје дуже него обично. Завршиће се у позадини — проверите верзију за тренутак.</string>
     <string name="k2go_dash_live_start_failed">Ажурирање није могло да почне. Покушајте поново.</string>
+    <string name="k2go_dash_update_started">Контролна табла се ажурира у позадини.</string>
+    <string name="k2go_dash_update_channel_name">Ажурирање контролне табле</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системско језгро · увек инсталирано</string>
     <string name="k2go_dash_detail_desc">Контролна табла је језгро REST API-ја уређаја (dash-node) — мала Node услуга на 127.0.0.1:4000, коју опслужује nginx и надзире pdsm. Покреће сваку радњу библиотеке у апликацији: прегледање и преузимање Књига, додавање и брисање садржаја Wikipedia и ZIM, Kolibri сесије, Мапе и статус система. За разлику од модула садржаја, не можеш је инсталирати ни уклонити. Долази уз апликацију и увек је присутна. Када је доступна новија верзија, можеш је поново изградити на месту.</string>

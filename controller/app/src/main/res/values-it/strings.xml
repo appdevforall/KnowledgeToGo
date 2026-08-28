@@ -1115,14 +1115,15 @@
     <string name="k2go_dash_card_sub_fmt">Nucleo REST · installato v%1$s</string>
     <string name="k2go_dash_rebuild">Ricostruisci</string>
     <string name="k2go_dash_rebuild_confirm_title">Ricostruire il nucleo REST?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Aggiorna dash-node all\'ultima versione. Il server è brevemente non disponibile durante la ricostruzione; non lasciare questa schermata finché non termina.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Aggiorna dash-node all\'ultima versione. Viene eseguito in background; il server è brevemente non disponibile durante la ricostruzione.</string>
     <string name="k2go_dash_needs_internet">La ricostruzione richiede una connessione a internet.</string>
     <string name="k2go_dash_live_title">Aggiornamento della dashboard</string>
     <string name="k2go_dash_live_running">Aggiornamento sul posto… la dashboard si riavvia brevemente.</string>
     <string name="k2go_dash_live_done">Dashboard aggiornata.</string>
     <string name="k2go_dash_live_error">Aggiornamento non riuscito — è stata mantenuta la versione precedente.</string>
-    <string name="k2go_dash_live_timeout">L\'aggiornamento sta impiegando più del solito. Terminerà in background — controlla la versione tra un momento.</string>
     <string name="k2go_dash_live_start_failed">Impossibile avviare l\'aggiornamento. Riprova.</string>
+    <string name="k2go_dash_update_started">Aggiornamento della dashboard in background.</string>
+    <string name="k2go_dash_update_channel_name">Aggiornamento della dashboard</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Nucleo di sistema · sempre installato</string>
     <string name="k2go_dash_detail_desc">La dashboard è il cuore dell\'API REST del box (dash-node): un piccolo servizio Node su 127.0.0.1:4000, servito da nginx e supervisionato da pdsm. Alimenta ogni azione della libreria nell\'app: sfogliare e scaricare Libri, aggiungere ed eliminare contenuti di Wikipedia e ZIM, sessioni Kolibri, Mappe e stato del sistema. A differenza dei moduli di contenuto, non puoi installarla né rimuoverla. È inclusa nell\'app ed è sempre presente. Quando è disponibile una build più recente, puoi ricostruirla sul posto.</string>

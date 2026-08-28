@@ -1122,14 +1122,15 @@
     <string name="k2go_dash_card_sub_fmt">Jádro REST · nainstalováno v%1$s</string>
     <string name="k2go_dash_rebuild">Přestavět</string>
     <string name="k2go_dash_rebuild_confirm_title">Přestavět jádro REST?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Aktualizuje dash-node na nejnovější verzi. Server je během přestavby krátce nedostupný; neopouštějte tuto obrazovku, dokud neskončí.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Aktualizuje dash-node na nejnovější verzi. Běží na pozadí; server je během obnovování krátce nedostupný.</string>
     <string name="k2go_dash_needs_internet">Přestavba vyžaduje připojení k internetu.</string>
     <string name="k2go_dash_live_title">Aktualizace nástěnky</string>
     <string name="k2go_dash_live_running">Aktualizace na místě… nástěnka se na chvíli restartuje.</string>
     <string name="k2go_dash_live_done">Nástěnka je aktualizována.</string>
     <string name="k2go_dash_live_error">Aktualizace selhala — předchozí verze byla zachována.</string>
-    <string name="k2go_dash_live_timeout">Aktualizace trvá déle než obvykle. Dokončí se na pozadí — za chvíli zkontrolujte verzi.</string>
     <string name="k2go_dash_live_start_failed">Aktualizaci se nepodařilo spustit. Zkuste to znovu.</string>
+    <string name="k2go_dash_update_started">Panel se aktualizuje na pozadí.</string>
+    <string name="k2go_dash_update_channel_name">Aktualizace panelu</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Jádro systému · vždy nainstalováno</string>
     <string name="k2go_dash_detail_desc">Ovládací panel je jádro REST API zařízení (dash-node) — malá služba Node na 127.0.0.1:4000, obsluhovaná přes nginx a spravovaná pomocí pdsm. Pohání každou akci knihovny v aplikaci: procházení a stahování Knih, přidávání a mazání obsahu Wikipedie a ZIM, relace Kolibri, Mapy a stav systému. Na rozdíl od modulů obsahu ho nemůžeš nainstalovat ani odebrat. Je součástí aplikace a je vždy přítomný. Když je k dispozici novější sestavení, můžeš ho na místě znovu sestavit.</string>

@@ -1115,14 +1115,15 @@
     <string name="k2go_dash_card_sub_fmt">Ядро REST · встановлено v%1$s</string>
     <string name="k2go_dash_rebuild">Перезібрати</string>
     <string name="k2go_dash_rebuild_confirm_title">Перезібрати ядро REST?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Оновлює dash-node до найновішої версії. Під час перезбирання сервер ненадовго недоступний; не залишайте цей екран, доки воно не завершиться.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Оновлює dash-node до останньої версії. Виконується у фоні; сервер ненадовго недоступний під час перезбирання.</string>
     <string name="k2go_dash_needs_internet">Для перезбирання потрібне з\'єднання з інтернетом.</string>
     <string name="k2go_dash_live_title">Оновлення панелі</string>
     <string name="k2go_dash_live_running">Оновлення на місці… панель ненадовго перезапуститься.</string>
     <string name="k2go_dash_live_done">Панель оновлено.</string>
     <string name="k2go_dash_live_error">Не вдалося оновити — збережено попередню версію.</string>
-    <string name="k2go_dash_live_timeout">Оновлення триває довше, ніж зазвичай. Завершиться у фоні — перевірте версію за мить.</string>
     <string name="k2go_dash_live_start_failed">Не вдалося розпочати оновлення. Спробуйте ще раз.</string>
+    <string name="k2go_dash_update_started">Панель оновлюється у фоні.</string>
+    <string name="k2go_dash_update_channel_name">Оновлення панелі</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Ядро системи · завжди встановлено</string>
     <string name="k2go_dash_detail_desc">Панель — це ядро REST API пристрою (dash-node): невелика служба Node на 127.0.0.1:4000, що обслуговується nginx і керується pdsm. Вона забезпечує всі дії бібліотеки в застосунку: перегляд і завантаження Книг, додавання й видалення вмісту Wikipedia та ZIM, сеанси Kolibri, Карти й стан системи. На відміну від модулів вмісту, її не можна встановити чи видалити. Вона постачається із застосунком і завжди присутня. Коли доступна новіша збірка, ви можете перезібрати її на місці.</string>

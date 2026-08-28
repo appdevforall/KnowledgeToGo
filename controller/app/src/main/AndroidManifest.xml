@@ -154,6 +154,14 @@
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
+        <!-- ADFA-5333: runs the LIVE dash-node update in the background (notification only) instead of
+             behind a blocking modal. Same shape as the download services above: not exported, and
+             specialUse because it drives the in-server blue-green rebuild rather than a stock transfer. -->
+        <service
+            android:name=".redesign.DashboardRebuildService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <!-- ADFA-4954: seeds Kolibri channels through the in-server REST job engine. Same shape as
              the ZIM and Books services above: not exported, and specialUse because the work runs
              inside the co-located proot rather than being a stock data transfer. -->

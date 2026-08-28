@@ -1115,14 +1115,15 @@
     <string name="k2go_dash_card_sub_fmt">REST-kern · geïnstalleerd v%1$s</string>
     <string name="k2go_dash_rebuild">Opnieuw opbouwen</string>
     <string name="k2go_dash_rebuild_confirm_title">REST-kern opnieuw opbouwen?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Werkt dash-node bij naar de nieuwste versie. De server is tijdens het opnieuw opbouwen kort niet beschikbaar; verlaat dit scherm niet totdat het klaar is.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Werkt dash-node bij naar de nieuwste versie. Het draait op de achtergrond; de server is tijdens het opnieuw opbouwen kort niet beschikbaar.</string>
     <string name="k2go_dash_needs_internet">Opnieuw opbouwen vereist een internetverbinding.</string>
     <string name="k2go_dash_live_title">Dashboard bijwerken</string>
     <string name="k2go_dash_live_running">Bijwerken ter plekke… het dashboard start kort opnieuw op.</string>
     <string name="k2go_dash_live_done">Dashboard bijgewerkt.</string>
     <string name="k2go_dash_live_error">Bijwerken mislukt — de vorige versie is behouden.</string>
-    <string name="k2go_dash_live_timeout">De update duurt langer dan normaal. Het wordt op de achtergrond voltooid — controleer de versie zo meteen.</string>
     <string name="k2go_dash_live_start_failed">Kan de update niet starten. Probeer het opnieuw.</string>
+    <string name="k2go_dash_update_started">Dashboard wordt op de achtergrond bijgewerkt.</string>
+    <string name="k2go_dash_update_channel_name">Dashboard-update</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systeemkern · altijd geïnstalleerd</string>
     <string name="k2go_dash_detail_desc">Het dashboard is de REST API-kern van de box (dash-node): een kleine Node-service op 127.0.0.1:4000, geserveerd via nginx en beheerd door pdsm. Het drijft elke bibliotheekactie in de app aan: Boeken bekijken en downloaden, Wikipedia- en ZIM-inhoud toevoegen en verwijderen, Kolibri-sessies, Kaarten en systeemstatus. In tegenstelling tot de inhoudsmodules kun je het niet installeren of verwijderen. Het zit bij de app en is altijd aanwezig. Wanneer er een nieuwere build is, kun je het ter plekke opnieuw bouwen.</string>

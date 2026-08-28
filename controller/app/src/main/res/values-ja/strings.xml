@@ -1116,14 +1116,15 @@
     <string name="k2go_dash_card_sub_fmt">REST コア · インストール済み v%1$s</string>
     <string name="k2go_dash_rebuild">再構築</string>
     <string name="k2go_dash_rebuild_confirm_title">REST コアを再構築しますか？</string>
-    <string name="k2go_dash_rebuild_confirm_msg">dash-node を最新バージョンに更新します。再構築中はサーバーが一時的に利用できなくなります。完了するまでこの画面を離れないでください。</string>
+    <string name="k2go_dash_rebuild_confirm_msg">dash-node を最新バージョンに更新します。バックグラウンドで実行され、再構築中はサーバーが一時的に利用できなくなります。</string>
     <string name="k2go_dash_needs_internet">再構築にはその後、方法を選びます：ダウンロード、または別の端末からコピー。</string>
     <string name="k2go_dash_live_title">ダッシュボードを更新中</string>
     <string name="k2go_dash_live_running">その場で更新中… ダッシュボードが少しの間再起動します。</string>
     <string name="k2go_dash_live_done">ダッシュボードを更新しました。</string>
     <string name="k2go_dash_live_error">更新に失敗しました — 以前のバージョンを維持しました。</string>
-    <string name="k2go_dash_live_timeout">更新に通常より時間がかかっています。バックグラウンドで完了します — 少し後にバージョンを確認してください。</string>
     <string name="k2go_dash_live_start_failed">更新を開始できませんでした。もう一度お試しください。</string>
+    <string name="k2go_dash_update_started">ダッシュボードをバックグラウンドで更新しています。</string>
+    <string name="k2go_dash_update_channel_name">ダッシュボードの更新</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">システムコア · 常にインストール済み</string>
     <string name="k2go_dash_detail_desc">ダッシュボードは box の REST API コア（dash-node）です。127.0.0.1:4000 で動作する小さな Node サービスで、nginx が前面に立ち、pdsm が管理します。アプリ内のすべてのライブラリ操作を担います。書籍の閲覧とダウンロード、Wikipedia と ZIM コンテンツの追加と削除、Kolibri セッション、地図、システム状態です。コンテンツモジュールとは異なり、インストールや削除はできません。アプリに付属し、常に存在します。新しいビルドが利用可能になると、その場で再ビルドできます。</string>

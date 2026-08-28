@@ -1122,14 +1122,15 @@
     <string name="k2go_dash_card_sub_fmt">Inti REST · terpasang v%1$s</string>
     <string name="k2go_dash_rebuild">Bangun ulang</string>
     <string name="k2go_dash_rebuild_confirm_title">Bangun ulang inti REST?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Memperbarui dash-node ke versi terbaru. Server sebentar tidak tersedia saat dibangun ulang; jangan tinggalkan layar ini sampai selesai.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Memperbarui dash-node ke versi terbaru. Berjalan di latar belakang; server sebentar tidak tersedia saat membangun ulang.</string>
     <string name="k2go_dash_needs_internet">Membangun ulang memerlukan koneksi internet.</string>
     <string name="k2go_dash_live_title">Memperbarui dasbor</string>
     <string name="k2go_dash_live_running">Memperbarui di tempat… dasbor dimulai ulang sebentar.</string>
     <string name="k2go_dash_live_done">Dasbor diperbarui.</string>
     <string name="k2go_dash_live_error">Pembaruan gagal — versi sebelumnya dipertahankan.</string>
-    <string name="k2go_dash_live_timeout">Pembaruan memakan waktu lebih lama dari biasanya. Akan selesai di latar belakang — periksa versinya sebentar lagi.</string>
     <string name="k2go_dash_live_start_failed">Tidak dapat memulai pembaruan. Coba lagi.</string>
+    <string name="k2go_dash_update_started">Memperbarui dasbor di latar belakang.</string>
+    <string name="k2go_dash_update_channel_name">Pembaruan dasbor</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Inti sistem · selalu terpasang</string>
     <string name="k2go_dash_detail_desc">Dasbor adalah inti REST API perangkat (dash-node) — layanan Node kecil di 127.0.0.1:4000, disajikan oleh nginx dan diawasi oleh pdsm. Ini menjalankan setiap tindakan pustaka di aplikasi: menjelajahi dan mengunduh Buku, menambah dan menghapus konten Wikipedia dan ZIM, sesi Kolibri, Peta, dan status sistem. Berbeda dengan modul konten, kamu tidak bisa memasang atau menghapusnya. Ini disertakan bersama aplikasi dan selalu ada. Saat build lebih baru tersedia, kamu bisa membangunnya ulang di tempat.</string>

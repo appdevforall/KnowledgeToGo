@@ -12,7 +12,11 @@
  */
 package org.iiab.controller.redesign;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -40,6 +44,19 @@ public class DashboardDetailFragment extends Fragment {
     private TextView versionChip;  // ADFA-5051: "v<version>" chip, updated in place after a live update
     private Button rebuild;        // de-emphasized when already on the latest
     private TextView rebuildHint;  // "no rebuild needed" note, shown only when on the latest
+
+    /** ADFA-5333: the live update now runs in the background (DashboardRebuildService). When it reaches a
+     *  terminal state the service broadcasts; if this card is on screen we refresh the version/pill in
+     *  place, exactly as the old in-modal completion did. Registered only while STARTED, so there is no
+     *  callback captured across the multi-minute detached rebuild. */
+    private final BroadcastReceiver rebuildDone = new BroadcastReceiver() {
+        @Override public void onReceive(Context c, Intent i) {
+            if (!isAdded()) return;
+            if (DashboardRebuildService.RESULT_DONE.equals(i.getStringExtra(DashboardRebuildService.EXTRA_RESULT))) {
+                refreshAfterLiveUpdate();
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -73,7 +90,7 @@ public class DashboardDetailFragment extends Fragment {
         // "Rebuild"; hide the secondary "Install now".
         rebuild = root.findViewById(R.id.k2go_moddet_schedule);
         rebuild.setText(R.string.k2go_dash_rebuild);
-        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root, this::refreshAfterLiveUpdate));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, root));
         root.findViewById(R.id.k2go_moddet_install_now).setVisibility(View.GONE);
         rebuildHint = buildRebuildHint(rebuild);   // ADFA-5026: "no rebuild needed" note (hidden until on-latest)
 
@@ -81,6 +98,25 @@ public class DashboardDetailFragment extends Fragment {
         fetchUpdateStatus();
 
         return root;
+    }
+
+    /** ADFA-5333: listen for the background update's completion only while visible. Explicit-package,
+     *  not-exported — an internal signal from our own service. */
+    @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter f = new IntentFilter(DashboardRebuildService.ACTION_DONE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireContext().registerReceiver(rebuildDone, f, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            requireContext().registerReceiver(rebuildDone, f);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        try { requireContext().unregisterReceiver(rebuildDone); } catch (IllegalArgumentException ignore) { /* not registered */ }
+        super.onStop();
     }
 
     /** ADFA-5026: ask the box whether a newer build exists and reflect it in the status pill + Rebuild

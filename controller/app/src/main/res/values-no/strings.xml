@@ -1125,14 +1125,15 @@
     <string name="k2go_dash_card_sub_fmt">REST-kjerne · installert v%1$s</string>
     <string name="k2go_dash_rebuild">Bygg på nytt</string>
     <string name="k2go_dash_rebuild_confirm_title">Bygge REST-kjernen på nytt?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Oppdaterer dash-node til nyeste versjon. Serveren er kort utilgjengelig mens den bygges på nytt; ikke forlat denne skjermen før den er ferdig.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Oppdaterer dash-node til den nyeste versjonen. Det kjøres i bakgrunnen; serveren er kort utilgjengelig mens den bygges på nytt.</string>
     <string name="k2go_dash_needs_internet">Ombygging krever internettforbindelse.</string>
     <string name="k2go_dash_live_title">Oppdaterer dashbordet</string>
     <string name="k2go_dash_live_running">Oppdaterer på stedet… dashbordet starter kort på nytt.</string>
     <string name="k2go_dash_live_done">Dashbordet er oppdatert.</string>
     <string name="k2go_dash_live_error">Oppdateringen mislyktes — forrige versjon ble beholdt.</string>
-    <string name="k2go_dash_live_timeout">Oppdateringen tar lengre tid enn vanlig. Det fullføres i bakgrunnen — sjekk versjonen om et øyeblikk.</string>
     <string name="k2go_dash_live_start_failed">Kunne ikke starte oppdateringen. Prøv igjen.</string>
+    <string name="k2go_dash_update_started">Oppdaterer dashbordet i bakgrunnen.</string>
+    <string name="k2go_dash_update_channel_name">Dashbordoppdatering</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systemkjerne · alltid installert</string>
     <string name="k2go_dash_detail_desc">Dashbordet er boksens REST API-kjerne (dash-node) — en liten Node-tjeneste på 127.0.0.1:4000, servert via nginx og overvåket av pdsm. Det driver hver bibliotekhandling i appen: bla i og laste ned Bøker, legge til og slette Wikipedia- og ZIM-innhold, Kolibri-økter, Kart og systemstatus. I motsetning til innholdsmodulene kan du ikke installere eller fjerne den. Den følger med appen og er alltid til stede. Når en nyere build er tilgjengelig, kan du bygge den på nytt på stedet.</string>
