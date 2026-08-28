@@ -1321,14 +1321,25 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
      */
     private void configureDetailBar() {
         if (!showingDetail || detailKey == null || detailBackBtn == null) return;
-        boolean moduleFailed = detailKey.startsWith("mod:")
-                && ModuleQueueRepository.get().current().didFail(detailKey.substring(4));
+        final boolean isModule = detailKey.startsWith("mod:");
+        final String moduleKey = isModule ? detailKey.substring(4) : null;
+        ModuleQueueState mq = ModuleQueueRepository.get().current();
+        boolean moduleFailed = isModule && mq.didFail(moduleKey);
+        boolean moduleRunning = isModule && mq.isInstalling(moduleKey);
         if (moduleFailed) {
-            final String moduleKey = detailKey.substring(4);
             detailBackBtn.setText(R.string.k2go_home_retry);
             detailBackBtn.setOnClickListener(v -> ModuleRetry.fire(v, moduleKey));
             detailRunBgBtn.setText(R.string.k2go_setup_back);
             detailRunBgBtn.setOnClickListener(v -> backToIndex());
+            detailRunBgBtn.setVisibility(View.VISIBLE);
+        } else if (moduleRunning) {
+            // ADFA-4898 P5: while this module's runrole runs, offer a confirmed Cancel in the same
+            // secondary slot (Back stays primary). Cancel kills the runrole and surfaces the module as
+            // failed, so the Retry above appears on the next tick — the "immediate retry" of the ticket.
+            detailBackBtn.setText(R.string.k2go_setup_back);
+            detailBackBtn.setOnClickListener(v -> backToIndex());
+            detailRunBgBtn.setText(R.string.k2go_setup_cancel);
+            detailRunBgBtn.setOnClickListener(v -> confirmCancelModule());
             detailRunBgBtn.setVisibility(View.VISIBLE);
         } else {
             detailBackBtn.setText(R.string.k2go_setup_back);
@@ -1337,6 +1348,22 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
             detailRunBgBtn.setOnClickListener(v -> finish());
             detailRunBgBtn.setVisibility(isLiveDetail(detailKey) ? View.VISIBLE : View.GONE);
         }
+    }
+
+    /**
+     * ADFA-4898 P5: strong confirmation before cancelling a running module install, then send
+     * ACTION_CANCEL. The service kills the runrole (proot --kill-on-exit), rolls back the speculative
+     * flag and marks the module failed; the base system is untouched and the server restarts.
+     */
+    private void confirmCancelModule() {
+        new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.k2go_mod_cancel_title)
+                .setMessage(R.string.k2go_mod_cancel_body)
+                .setNegativeButton(R.string.k2go_mod_cancel_dismiss, null)
+                .setPositiveButton(R.string.k2go_mod_cancel_confirm, (d, w) ->
+                        startService(new Intent(this, org.iiab.controller.install.presentation.InstallService.class)
+                                .setAction(org.iiab.controller.install.presentation.InstallService.ACTION_CANCEL)))
+                .show();
     }
 
     private void backToIndex() {

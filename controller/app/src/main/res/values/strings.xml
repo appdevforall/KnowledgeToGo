@@ -734,6 +734,13 @@
     <string name="k2go_mod_phase_installing">Installing…</string>
     <string name="k2go_mod_phase_done">Installed</string>
     <string name="k2go_mod_phase_failed">Couldn\'t install</string>
+    <!-- ADFA-4898 P4: movement-based stall hint (surface only) -->
+    <string name="k2go_mod_phase_stalled">Still working — this is taking longer than usual. You can keep waiting, or cancel and retry.</string>
+    <!-- ADFA-4898 P5: strong confirmation before cancelling a running module install -->
+    <string name="k2go_mod_cancel_title">Stop installing?</string>
+    <string name="k2go_mod_cancel_body">What\'s been done so far is rolled back and the module won\'t be installed. You can start it again afterward.</string>
+    <string name="k2go_mod_cancel_confirm">Stop install</string>
+    <string name="k2go_mod_cancel_dismiss">Keep installing</string>
     <string name="k2go_mod_leave_title">This can take a while. Thanks for your patience.</string>
     <string name="k2go_mod_leave_body">Installing a module changes the system and can take a while. You can safely leave the screen because the installation will continue in the background.</string>
     <!-- per-module cards: title · subtitle · description -->

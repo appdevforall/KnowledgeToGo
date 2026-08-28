@@ -84,6 +84,16 @@ public class ModuleInstallFragment extends Fragment {
 
         updateStatus();
         ModuleQueueRepository.get().state().observe(getViewLifecycleOwner(), st -> updateStatus());
+        // ADFA-4898 P4: surface a "seems stalled" hint over the frozen status line while this module is
+        // the one running and no movement (log line / write-dir growth) has arrived for the stall window.
+        // Surface only — the install keeps going; a new log line or updateStatus restores the live line.
+        ModuleQueueRepository.get().stalled().observe(getViewLifecycleOwner(), s -> {
+            if (Boolean.TRUE.equals(s) && installing() && !terminalDone) {
+                status.setText(getString(R.string.k2go_mod_phase_stalled));
+            } else {
+                updateStatus();
+            }
+        });
 
         logListener = new LogRepository.Listener() {
             @Override public void onAppend(String line) {
