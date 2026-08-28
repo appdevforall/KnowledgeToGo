@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Urmează sistemul</string>
     <string name="k2go_theme_dark">Întunecată</string>
     <string name="k2go_settings_turnoff_title">Oprești K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Aceasta oprește biblioteca și închide aplicația. (Când apeși butoanele Acasă sau Înapoi, aplicația este minimizată, dar rămâne activă în fundal.)</string>
+    <string name="k2go_settings_turnoff_msg">Aceasta oprește biblioteca și închide aplicația. Ca să ieși, dar să menții aplicația rulând în fundal, apasă butonul acasă sau înapoi.</string>
     <string name="k2go_settings_turnoff_confirm">Oprește</string>
     <string name="k2go_settings_app_version">Versiunea aplicației</string>
     <string name="k2go_settings_check_updates">Caută actualizări</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Se transferă K2Go pe celălalt dispozitiv.</string>
     <string name="k2go_bj_finish">Finalizează</string>
     <string name="k2go_bj_wait_title">Poate dura</string>
-    <string name="k2go_bj_wait_body">Ține K2Go deschis. Poți pleca — rămâne activ în fundal, iar notificarea te aduce înapoi.</string>
-    <string name="k2go_bj_returning">Gata — revenire la Acasă…</string>
+    <string name="k2go_bj_wait_body">Ține K2Go deschis. Apasă butoanele înapoi sau acasă ca să ruleze în fundal. Când transferul se termină, poți atinge notificarea pentru a reveni la K2Go.</string>
+    <string name="k2go_bj_returning">Gata. Te ducem înapoi la ecranul de pornire…</string>
     <string name="k2go_br_leave_backup">Copia de rezervă este în curs. Acest proces rulează în fundal, așa că poți părăsi această pagină.</string>
     <string name="k2go_clone_back_running">Copierea este în curs. Acest proces rulează în fundal, așa că poți părăsi această pagină.</string>
     <string name="k2go_br_leave_restore">Restaurarea este în curs. Acest proces rulează în fundal, așa că poți părăsi această pagină.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Alege limba conținutului</string>
     <string name="k2go_hide">Ascunde</string>
     <string name="k2go_home_no_library">Încă fără bibliotecă — atinge Mai multe pentru a instala și adăuga conținut</string>
-    <string name="k2go_home_damaged">Biblioteca necesită reparare — ultima configurare nu s-a finalizat</string>
+    <string name="k2go_home_damaged">Biblioteca nu a fost instalată complet și trebuie reparată</string>
     <string name="k2go_home_recover">Repară</string>
     <string name="k2go_state_no_system">Încă niciun sistem</string>
     <string name="k2go_connect_no_system">Încă niciun sistem de partajat — repară mai întâi unul</string>
-    <string name="k2go_home_ready_empty">Bibliotecă gata — atinge Mai multe pentru a adăuga conținut</string>
+    <string name="k2go_home_ready_empty">Biblioteca este gata. Atinge Get more pentru a adăuga conținut</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Mai multe</string>
     <string name="k2go_gm_hub_sub">Adaugă conținut în biblioteca ta offline.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Se finalizează configurarea</string>
     <string name="k2go_setup_context">Vei fi dus automat la biblioteca ta când se termină configurarea. Instalarea poate rula în fundal cât timp vizitezi altă parte a aplicației.</string>
     <string name="k2go_setup_context_proot">Vei fi dus automat la biblioteca ta când se termină configurarea. Această acțiune nu poate rula în fundal, așa că rămâi pe acest ecran până se instalează conținutul.</string>
-    <string name="k2go_install_busy">O instalare este deja în curs — te rugăm să aștepți să se termine.</string>
+    <string name="k2go_install_busy">O instalare rulează deja. Așteaptă să se termine.</string>
     <string name="k2go_setup_leave_hint">Încă se configurează sistemul. Poți părăsi aplicația cât timp configurarea rulează în fundal.</string>
     <string name="k2go_damaged_title">Instalare întreruptă</string>
     <string name="k2go_damaged_close">Închide</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Descărcări de cărți</string>
     <string name="k2go_books_dl_notif_title">Se adaugă cărți în biblioteca ta</string>
     <string name="k2go_fqr_invalid">Numele sau zona regiunii pare invalid.</string>
-    <string name="k2go_fqr_name_taken">„%1$s” este deja folosit — alege alt nume.</string>
+    <string name="k2go_fqr_name_taken">„%1$s” este deja folosit. Alege alt nume.</string>
     <string name="k2go_fqr_calculating">Se calculează dimensiunea descărcării…</string>
     <string name="k2go_fqr_estimate_error_title">Nu se poate descărca această regiune</string>
     <string name="k2go_fqr_consent_title">Descarci această regiune?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s de descărcat, %3$s pe disc.</string>
     <string name="k2go_fqr_consent_legend">Această regiune: %1$s  ·  Liber după: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Această regiune s-ar putea să nu încapă — ar rămâne liberi doar %1$s după aceea.</string>
+    <string name="k2go_fqr_consent_wont_fit">Această regiune s-ar putea să nu încapă. După aceea ar rămâne liber doar %1$s.</string>
     <string name="k2go_fqr_download">Descarcă</string>
     <string name="k2go_fqr_not_now">Nu acum</string>
     <string name="k2go_fqr_downloading">Se descarcă “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Aceasta elimină fișierul și actualizează biblioteca de conținut. Îl poți descărca din nou mai târziu.</string>
     <string name="k2go_zim_deleting">Se șterge…</string>
     <string name="k2go_zim_deleted">%1$s șters</string>
-    <string name="k2go_zim_deleted_deferred">Șters — ascuns momentan, eliminat complet după ce se termină descărcarea curentă.</string>
+    <string name="k2go_zim_deleted_deferred">Șters. Deocamdată ascuns și va fi eliminat complet când se termină descărcarea curentă.</string>
     <string name="k2go_zim_delete_failed">Ștergerea a eșuat. Încearcă din nou.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Se reconstruiește panoul…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Actualizarea nu a putut porni. Încercați din nou.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Nucleul sistemului · întotdeauna instalat</string>
-    <string name="k2go_dash_detail_desc">Panoul este nucleul API REST al cutiei (dash-node): un mic serviciu Node la 127.0.0.1:4000, servit de nginx și supravegheat de pdsm. Alimentează fiecare acțiune a bibliotecii din aplicație: răsfoirea și descărcarea Cărților, adăugarea și ștergerea conținutului Wikipedia și ZIM, sesiunile Kolibri, Hărțile și starea sistemului. Spre deosebire de modulele de conținut, nu se instalează și nu se elimină — vine cu cutia și este întotdeauna prezent. Când este disponibilă o versiune mai nouă, îl poți reconstrui pe loc.</string>
+    <string name="k2go_dash_detail_desc">Panoul este nucleul API REST al box-ului (dash-node) — un mic serviciu Node pe 127.0.0.1:4000, servit prin nginx și supravegheat de pdsm. Alimentează fiecare acțiune a bibliotecii din aplicație: răsfoirea și descărcarea de Cărți, adăugarea și ștergerea de conținut Wikipedia și ZIM, sesiuni Kolibri, Hărți și starea sistemului. Spre deosebire de modulele de conținut, nu îl poți instala sau elimina. Vine cu aplicația și este mereu prezent. Când e disponibil un build mai nou, îl poți reconstrui pe loc.</string>
     <string name="k2go_dash_includes">Puncte finale REST pentru Cărți, Wikipedia/ZIM, Kolibri și Hărți; vhost-ul nginx; și punctele finale pentru versiunea sistemului și reconstruire — toate servite la 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Nucleul sistemului</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Instalarea s-a oprit înainte de a se termina și sistemul nu pornește. Pentru a recupera, poți restaura o copie de rezervă sau reinstala sistemul de la zero.</string>
     <string name="k2go_damaged_recover">Recuperează…</string>
     <string name="k2go_reinstall_title">Reinstalează sistemul</string>
-    <string name="k2go_reinstall_sub">Șterge tot și instalează un sistem nou de la zero</string>
+    <string name="k2go_reinstall_sub">Șterge K2Go și conținutul de pe acest dispozitiv și instalează un sistem nou de la zero</string>
     <string name="k2go_reinstall_confirm_title">Reinstalezi de la zero?</string>
-    <string name="k2go_reinstall_confirm_msg">Aceasta șterge sistemul actual și tot ce conține — cărți, hărți, descărcări și setări — apoi instalează o copie curată. Nu poate fi anulată. Fă mai întâi o copie de rezervă dacă vrei să păstrezi ceva. Apoi alegeți cum: descărcare sau copiere de pe alt telefon.</string>
+    <string name="k2go_reinstall_confirm_msg">Aceasta șterge sistemul actual, inclusiv toate aplicațiile, conținutul și setările, apoi instalează o copie curată. Această acțiune nu poate fi anulată. Dacă vrei să păstrezi ceva, fă mai întâi o copie de rezervă. Apoi alege cum: descarcă-l sau copiază-l de pe alt telefon.</string>
     <string name="k2go_reinstall_confirm_yes">Șterge și reinstalează</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Din sistem</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d rezultate</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autentificare</string>
-    <string name="k2go_settings_authentication_sub">Autentificări pentru Cărți și Cursuri</string>
+    <string name="k2go_settings_authentication_sub">Autentificări pentru Calibre-Web (cărți) și Kolibri (cursuri)</string>
     <string name="k2go_auth_hint">Autentificările pe care K2Go le folosește pentru Cărți și Cursuri. Actualizați una dacă s-a schimbat parola serviciului.</string>
     <string name="k2go_auth_username">Nume de utilizator</string>
     <string name="k2go_auth_password">Parolă</string>
@@ -676,14 +676,14 @@
     <string name="k2go_auth_failed">Salvarea a eșuat — încearcă din nou</string>
     <string name="k2go_auth_load_failed">Încărcarea a eșuat — serviciul rulează?</string>
     <string name="k2go_auth_svc_books">Citește o carte</string>
-    <string name="k2go_auth_svc_courses">Urmează cursuri</string>
+    <string name="k2go_auth_svc_courses">Urmează un curs</string>
     <string name="k2go_auth_custom_toggle">Utilizați o autentificare personalizată</string>
     <string name="k2go_auth_not_running">Acest serviciu nu rulează încă. Modificările sunt salvate acum și intră în vigoare după ce este instalat și pornit.</string>
-    <string name="k2go_auth_list_note">Serviciile neinstalate rămân accesibile — puteți preconfigura autentificarea. Datele de autentificare sunt stocate pe acest dispozitiv.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · autentificarea folosită de K2Go pentru a deschide cărțile.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · autentificarea folosită de K2Go pentru a deschide cursurile.</string>
+    <string name="k2go_auth_list_note">Poți introduce și salva credențiale pentru servicii care nu sunt încă instalate.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · autentificarea pe care K2Go o folosește pentru a-ți deschide cărțile.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · autentificarea pe care K2Go o folosește pentru a-ți deschide cursurile.</string>
     <string name="k2go_auth_toggle_hint">Activați o autentificare personalizată doar dacă parola s-a schimbat.</string>
-    <string name="k2go_auth_eye_hint">Atingeți ochiul pentru a o afișa.</string>
+    <string name="k2go_auth_eye_hint">Atinge ochiul pentru a-ți afișa parola în timp ce scrii.</string>
     <string name="k2go_auth_chip_default">Implicit</string>
     <string name="k2go_auth_chip_custom">Personalizat</string>
     <string name="k2go_auth_chip_notinstalled">Neinstalat</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Scanează din nou de pe celălalt telefon pentru verificare</string>
     <string name="k2go_clone_exit_keep_waiting">Continuă să aștepți</string>
     <string name="k2go_clone_exit_redirecting">Se deschide biblioteca în %1$d s…</string>
-    <string name="k2go_busy_clone">O copiere între telefoane este în curs. Așteptați finalizarea operațiunii.</string>
-    <string name="k2go_busy_backup">O copie de rezervă este în curs. Așteptați finalizarea operațiunii.</string>
-    <string name="k2go_busy_restore">O restaurare este în curs. Așteptați finalizarea operațiunii.</string>
-    <string name="k2go_busy_install">O instalare este în curs. Așteptați finalizarea operațiunii.</string>
-    <string name="k2go_busy_download">O descărcare este în curs. Așteptați finalizarea operațiunii.</string>
+    <string name="k2go_busy_clone">O copie între telefoane este în curs. Așteaptă să se termine.</string>
+    <string name="k2go_busy_backup">O copie de rezervă este în curs. Așteaptă să se termine.</string>
+    <string name="k2go_busy_restore">O restaurare este în curs. Așteaptă să se termine.</string>
+    <string name="k2go_busy_install">O instalare este în curs. Așteaptă să se termine.</string>
+    <string name="k2go_busy_download">O descărcare este în curs. Așteaptă să se termine.</string>
     <string name="k2go_pending_title">Descărcări în așteptare</string>
     <string name="k2go_pending_empty">Nicio descărcare în așteptare.</string>
     <string name="k2go_pending_running">Se descarcă ceva acum</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Niciuna</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Instalați acum?</string>
-    <string name="k2go_install_confirm_body">Se instalează pe dispozitivul dvs. cu serverul în pauză.\n\n• Durează un timp, adesea zeci de minute.\n• Păstrați o conexiune stabilă dacă puteți.\n• Asigurați-vă că aveți suficientă baterie înainte de a începe.\n• Acest ecran rămâne deschis până la finalizare.</string>
+    <string name="k2go_install_confirm_body">Aceasta se instalează pe dispozitivul tău cu serverul pus pe pauză.\n\n• Acest proces poate dura (până la zeci de minute).\n• Menține o conexiune stabilă dacă poți.\n• Asigură-te că ai bateria încărcată înainte să începi.\n• Acest ecran rămâne deschis până se termină.</string>
     <string name="k2go_install_confirm_go">Instalați</string>
     <string name="k2go_install_confirm_cancel">Nu acum</string>
     <string name="k2go_copied">Copiat</string>

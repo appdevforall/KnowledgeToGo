@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Rendszer szerint</string>
     <string name="k2go_theme_dark">Sötét</string>
     <string name="k2go_settings_turnoff_title">Kikapcsolod a K2Go-t?</string>
-    <string name="k2go_settings_turnoff_msg">Ez leállítja a könyvtárat és bezárja az appot. (A Kezdőlap vagy a Vissza gomb megnyomásakor az app kis méretűre vált, de a háttérben tovább fut.)</string>
+    <string name="k2go_settings_turnoff_msg">Ez leállítja a könyvtárat és bezárja az appot. Ha ki akarsz lépni, de az appot a háttérben szeretnéd tartani, nyomd meg a főképernyő vagy a vissza gombot.</string>
     <string name="k2go_settings_turnoff_confirm">Kikapcsolás</string>
     <string name="k2go_settings_app_version">App verziója</string>
     <string name="k2go_settings_check_updates">Frissítések keresése</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">A K2Go átvitele a másik eszközre.</string>
     <string name="k2go_bj_finish">Befejezés</string>
     <string name="k2go_bj_wait_title">Ez eltarthat egy ideig</string>
-    <string name="k2go_bj_wait_body">Tartsd nyitva a K2Go-t. Elhagyhatod — a háttérben tovább fut, és az értesítés visszahoz.</string>
-    <string name="k2go_bj_returning">Kész — visszatérés a Kezdőlapra…</string>
+    <string name="k2go_bj_wait_body">Tartsd nyitva a K2Go-t. Koppints a vissza vagy a főképernyő gombra, hogy a háttérben fusson. Az átvitel befejeztével az értesítésre koppintva visszatérhetsz a K2Go-hoz.</string>
+    <string name="k2go_bj_returning">Kész. Visszaviszünk a kezdőképernyőre…</string>
     <string name="k2go_br_leave_backup">A biztonsági mentés folyamatban van. Ez a folyamat a háttérben fut, így elhagyhatod ezt az oldalt.</string>
     <string name="k2go_clone_back_running">A másolás folyamatban van. Ez a folyamat a háttérben fut, így elhagyhatod ezt az oldalt.</string>
     <string name="k2go_br_leave_restore">A visszaállítás folyamatban van. Ez a folyamat a háttérben fut, így elhagyhatod ezt az oldalt.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Válassz tartalomnyelvet</string>
     <string name="k2go_hide">Elrejtés</string>
     <string name="k2go_home_no_library">Még nincs könyvtár — koppints a Továbbiakra a tartalom telepítéséhez és hozzáadásához</string>
-    <string name="k2go_home_damaged">A könyvtárat javítani kell — az utolsó beállítás nem fejeződött be</string>
+    <string name="k2go_home_damaged">A könyvtár nem települt teljesen, és javításra szorul</string>
     <string name="k2go_home_recover">Javítás</string>
     <string name="k2go_state_no_system">Még nincs rendszer</string>
     <string name="k2go_connect_no_system">Még nincs megosztható rendszer — előbb javítson meg egyet</string>
-    <string name="k2go_home_ready_empty">A könyvtár kész — koppints a Továbbiakra tartalom hozzáadásához</string>
+    <string name="k2go_home_ready_empty">A könyvtár kész. Koppints a Get more gombra tartalom hozzáadásához</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Továbbiak</string>
     <string name="k2go_gm_hub_sub">Adj tartalmat az offline könyvtáradhoz.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Beállítás befejezése</string>
     <string name="k2go_setup_context">A beállítás befejeztével automatikusan a könyvtáradhoz jutsz. A telepítés futhat a háttérben, miközben az app egy másik részét nézed.</string>
     <string name="k2go_setup_context_proot">A beállítás befejeztével automatikusan a könyvtáradhoz jutsz. Ez a művelet nem futhat a háttérben, ezért maradj ezen a képernyőn, amíg a tartalom települ.</string>
-    <string name="k2go_install_busy">Már fut egy telepítés — kérjük, várd meg, amíg befejeződik.</string>
+    <string name="k2go_install_busy">Már fut egy telepítés. Kérlek, várd meg, amíg befejeződik.</string>
     <string name="k2go_setup_leave_hint">A rendszer beállítása még folyamatban. Elhagyhatod az appot, miközben a beállítás a háttérben fut.</string>
     <string name="k2go_damaged_title">A telepítés megszakadt</string>
     <string name="k2go_damaged_close">Bezárás</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Könyvletöltések</string>
     <string name="k2go_books_dl_notif_title">Könyvek hozzáadása a könyvtáradhoz</string>
     <string name="k2go_fqr_invalid">A régió neve vagy területe érvénytelennek tűnik.</string>
-    <string name="k2go_fqr_name_taken">A(z) „%1$s” már foglalt — válassz másik nevet.</string>
+    <string name="k2go_fqr_name_taken">A(z) „%1$s” már használatban van. Válassz másik nevet.</string>
     <string name="k2go_fqr_calculating">Letöltési méret kiszámítása…</string>
     <string name="k2go_fqr_estimate_error_title">Ez a régió nem tölthető le</string>
     <string name="k2go_fqr_consent_title">Letöltöd ezt a régiót?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s a letöltés, %3$s a lemezen.</string>
     <string name="k2go_fqr_consent_legend">Ez a régió: %1$s  ·  Utána szabad: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Lehet, hogy ez a régió nem fér el — utána csak %1$s lenne szabad.</string>
+    <string name="k2go_fqr_consent_wont_fit">Lehet, hogy ez a régió nem fér el. Utána már csak %1$s lenne szabad.</string>
     <string name="k2go_fqr_download">Letöltés</string>
     <string name="k2go_fqr_not_now">Most nem</string>
     <string name="k2go_fqr_downloading">“%1$s” letöltése</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Ez eltávolítja a fájlt, és frissíti a tartalomtárat. Később újra letöltheted.</string>
     <string name="k2go_zim_deleting">Törlés…</string>
     <string name="k2go_zim_deleted">%1$s törölve</string>
-    <string name="k2go_zim_deleted_deferred">Törölve — egyelőre elrejtve, a jelenlegi letöltés befejeztével teljesen eltávolítva.</string>
+    <string name="k2go_zim_deleted_deferred">Törölve. Egyelőre rejtett, és teljesen eltávolítjuk, amint a jelenlegi letöltés befejeződik.</string>
     <string name="k2go_zim_delete_failed">A törlés sikertelen. Próbáld újra.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Irányítópult újraépítése…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">A frissítést nem sikerült elindítani. Próbálja újra.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rendszermag · mindig telepítve</string>
-    <string name="k2go_dash_detail_desc">Az irányítópult a doboz REST API magja (dash-node): egy kis Node szolgáltatás a 127.0.0.1:4000 címen, amelyet az nginx szolgál ki és a pdsm felügyel. Ez működteti az alkalmazás minden könyvtári műveletét: Könyvek böngészése és letöltése, Wikipédia- és ZIM-tartalom hozzáadása és törlése, Kolibri munkamenetek, Térképek és rendszerállapot. A tartalommoduloktól eltérően nem telepíted vagy távolítod el — a dobozzal érkezik és mindig jelen van. Ha újabb verzió érhető el, helyben újraépítheted.</string>
+    <string name="k2go_dash_detail_desc">Az irányítópult a box REST API-magja (dash-node) — egy kis Node szolgáltatás a 127.0.0.1:4000 címen, nginx mögött, pdsm által felügyelve. Minden appon belüli könyvtárműveletet ez hajt: Könyvek böngészése és letöltése, Wikipédia- és ZIM-tartalom hozzáadása és törlése, Kolibri-munkamenetek, Térképek és rendszerállapot. A tartalommoduloktól eltérően nem telepítheted és nem távolíthatod el. Az appal érkezik, és mindig jelen van. Ha újabb build érhető el, helyben újraépítheted.</string>
     <string name="k2go_dash_includes">Könyvek, Wikipédia/ZIM, Kolibri és Térképek REST végpontjai; az nginx vhost; valamint a rendszerverzió és újraépítés végpontjai — mind a 127.0.0.1:4000 címen.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Rendszermag</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">A telepítés befejezés előtt leállt, és a rendszer nem indul el. A helyreállításhoz visszaállíthatsz egy biztonsági mentést, vagy újratelepítheted a rendszert a nulláról.</string>
     <string name="k2go_damaged_recover">Helyreállítás…</string>
     <string name="k2go_reinstall_title">Rendszer újratelepítése</string>
-    <string name="k2go_reinstall_sub">Mindent töröl, és tiszta rendszert telepít a nulláról</string>
+    <string name="k2go_reinstall_sub">A K2Go és a tartalom törlése ezen az eszközön, és egy friss rendszer telepítése az alapoktól</string>
     <string name="k2go_reinstall_confirm_title">Újratelepítés a nulláról?</string>
-    <string name="k2go_reinstall_confirm_msg">Ez törli a jelenlegi rendszert és mindent benne — könyvek, térképek, letöltések és beállítások —, majd tiszta másolatot telepít. Nem vonható vissza. Előbb készíts biztonsági mentést, ha meg akarsz tartani valamit. Utána választ: letölti, vagy másik telefonról átmásolja.</string>
+    <string name="k2go_reinstall_confirm_msg">Ez törli a jelenlegi rendszert, beleértve az összes appot, tartalmat és beállítást, majd tiszta másolatot telepít. Ez a művelet nem vonható vissza. Ha meg akarsz tartani valamit, előbb készíts biztonsági mentést. Utána válaszd ki, hogyan: töltsd le, vagy másold át egy másik telefonról.</string>
     <string name="k2go_reinstall_confirm_yes">Törlés és újratelepítés</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Rendszerből</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d találat</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Hitelesítés</string>
-    <string name="k2go_settings_authentication_sub">Bejelentkezések a Könyvekhez és Kurzusokhoz</string>
+    <string name="k2go_settings_authentication_sub">Bejelentkezések a Calibre-Web (könyvek) és a Kolibri (kurzusok) szolgáltatáshoz</string>
     <string name="k2go_auth_hint">A K2Go által a Könyvekhez és Kurzusokhoz használt bejelentkezések. Frissítse valamelyiket, ha az adott szolgáltatás jelszava megváltozott.</string>
     <string name="k2go_auth_username">Felhasználónév</string>
     <string name="k2go_auth_password">Jelszó</string>
@@ -675,15 +675,15 @@
     <string name="k2go_auth_noperm">Ez a fiók nem kezelhet tartalmat</string>
     <string name="k2go_auth_failed">A mentés nem sikerült — próbáld újra</string>
     <string name="k2go_auth_load_failed">A betöltés nem sikerült — fut a szolgáltatás?</string>
-    <string name="k2go_auth_svc_books">Olvass egy könyvet</string>
-    <string name="k2go_auth_svc_courses">Végezz kurzusokat</string>
+    <string name="k2go_auth_svc_books">Könyv olvasása</string>
+    <string name="k2go_auth_svc_courses">Kurzus elvégzése</string>
     <string name="k2go_auth_custom_toggle">Egyéni bejelentkezés használata</string>
     <string name="k2go_auth_not_running">Ez a szolgáltatás még nem fut. A módosítások most mentődnek, és akkor lépnek életbe, amint telepítve van és fut.</string>
-    <string name="k2go_auth_list_note">A nem telepített szolgáltatások is elérhetők maradnak — a bejelentkezést előre beállíthatja. A hitelesítő adatok ezen az eszközön tárolódnak.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · a bejelentkezés, amellyel a K2Go megnyitja a könyveidet.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · a bejelentkezés, amellyel a K2Go megnyitja a kurzusaidat.</string>
+    <string name="k2go_auth_list_note">Megadhatsz és menthetsz hitelesítő adatokat még nem telepített szolgáltatásokhoz.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · a bejelentkezés, amelyet a K2Go a könyveid megnyitásához használ.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · a bejelentkezés, amelyet a K2Go a kurzusaid megnyitásához használ.</string>
     <string name="k2go_auth_toggle_hint">Csak akkor kapcsoljon be egyéni bejelentkezést, ha a jelszó megváltozott.</string>
-    <string name="k2go_auth_eye_hint">Koppintson a szemre a megjelenítéshez.</string>
+    <string name="k2go_auth_eye_hint">Koppints a szemre, hogy gépelés közben lásd a jelszavad.</string>
     <string name="k2go_auth_chip_default">Alapértelmezett</string>
     <string name="k2go_auth_chip_custom">Egyéni</string>
     <string name="k2go_auth_chip_notinstalled">Nincs telepítve</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Ellenőrzéshez olvassa be újra a másik telefonról</string>
     <string name="k2go_clone_exit_keep_waiting">Várakozás folytatása</string>
     <string name="k2go_clone_exit_redirecting">A könyvtár megnyitása %1$d mp múlva…</string>
-    <string name="k2go_busy_clone">Másolás telefonok között folyamatban van. Várja meg a művelet befejezését.</string>
-    <string name="k2go_busy_backup">Biztonsági mentés folyamatban van. Várja meg a művelet befejezését.</string>
-    <string name="k2go_busy_restore">Visszaállítás folyamatban van. Várja meg a művelet befejezését.</string>
-    <string name="k2go_busy_install">Telepítés folyamatban van. Várja meg a művelet befejezését.</string>
-    <string name="k2go_busy_download">Letöltés folyamatban van. Várja meg a művelet befejezését.</string>
+    <string name="k2go_busy_clone">Telefonok közötti másolás van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
+    <string name="k2go_busy_backup">Biztonsági mentés van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
+    <string name="k2go_busy_restore">Visszaállítás van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
+    <string name="k2go_busy_install">Telepítés van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
+    <string name="k2go_busy_download">Letöltés van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
     <string name="k2go_pending_title">Függőben lévő letöltések</string>
     <string name="k2go_pending_empty">Nincs függőben lévő letöltés.</string>
     <string name="k2go_pending_running">Most letöltődik valami</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Nincs</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Telepíti most?</string>
-    <string name="k2go_install_confirm_body">A telepítés az eszközön történik, a kiszolgáló szüneteltetve.\n\n• Eltart egy ideig, gyakran több tíz percig.\n• Ha lehet, tartson stabil kapcsolatot.\n• Indítás előtt legyen elég akkumulátor.\n• Ez a képernyő a befejezésig nyitva marad.</string>
+    <string name="k2go_install_confirm_body">Ez az eszközödre telepít, miközben a szerver szünetel.\n\n• Ez a folyamat eltarthat egy ideig (akár több tíz percig).\n• Ha tudsz, tarts fenn stabil kapcsolatot.\n• Indítás előtt győződj meg róla, hogy fel van töltve az akkumulátor.\n• Ez a képernyő nyitva marad, amíg be nem fejeződik.</string>
     <string name="k2go_install_confirm_go">Telepítés</string>
     <string name="k2go_install_confirm_cancel">Most nem</string>
     <string name="k2go_copied">Másolva</string>

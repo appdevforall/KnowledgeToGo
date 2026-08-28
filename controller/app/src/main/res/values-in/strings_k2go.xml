@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Ikuti sistem</string>
     <string name="k2go_theme_dark">Gelap</string>
     <string name="k2go_settings_turnoff_title">Matikan K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Ini menghentikan pustaka dan menutup aplikasi. (Saat Anda menekan tombol Beranda atau Kembali, aplikasi diperkecil tetapi terus berjalan di latar belakang.)</string>
+    <string name="k2go_settings_turnoff_msg">Ini menghentikan pustaka dan menutup aplikasi. Untuk keluar tetapi menjaga aplikasi berjalan di latar belakang, tekan tombol beranda atau kembali.</string>
     <string name="k2go_settings_turnoff_confirm">Matikan</string>
     <string name="k2go_settings_app_version">Versi aplikasi</string>
     <string name="k2go_settings_check_updates">Periksa pembaruan</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Mentransfer K2Go ke perangkat lain.</string>
     <string name="k2go_bj_finish">Selesai</string>
     <string name="k2go_bj_wait_title">Ini bisa memakan waktu</string>
-    <string name="k2go_bj_wait_body">Biarkan K2Go terbuka. Anda boleh pergi — proses tetap berjalan di latar belakang, dan notifikasi akan membawa Anda kembali.</string>
-    <string name="k2go_bj_returning">Selesai — kembali ke Beranda…</string>
+    <string name="k2go_bj_wait_body">Biarkan K2Go tetap terbuka. Ketuk tombol kembali atau beranda agar terus berjalan di latar belakang. Saat transfer selesai, kamu bisa mengetuk notifikasi untuk kembali ke K2Go.</string>
+    <string name="k2go_bj_returning">Selesai. Membawamu kembali ke layar Beranda…</string>
     <string name="k2go_br_leave_backup">Pencadangan sedang berlangsung. Proses ini berjalan di latar belakang, jadi kamu bisa meninggalkan halaman ini.</string>
     <string name="k2go_clone_back_running">Penyalinan sedang berlangsung. Proses ini berjalan di latar belakang, jadi kamu bisa meninggalkan halaman ini.</string>
     <string name="k2go_br_leave_restore">Pemulihan sedang berlangsung. Proses ini berjalan di latar belakang, jadi kamu bisa meninggalkan halaman ini.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Pilih bahasa konten</string>
     <string name="k2go_hide">Sembunyikan</string>
     <string name="k2go_home_no_library">Belum ada pustaka — ketuk Dapatkan lagi untuk memasang dan menambahkan konten</string>
-    <string name="k2go_home_damaged">Pustaka perlu diperbaiki — penyiapan terakhir tidak selesai</string>
+    <string name="k2go_home_damaged">Pustaka tidak terpasang sepenuhnya dan perlu diperbaiki</string>
     <string name="k2go_home_recover">Perbaiki</string>
     <string name="k2go_state_no_system">Belum ada sistem</string>
     <string name="k2go_connect_no_system">Belum ada sistem untuk dibagikan — perbaiki satu dulu</string>
-    <string name="k2go_home_ready_empty">Pustaka siap — ketuk Dapatkan lagi untuk menambahkan konten</string>
+    <string name="k2go_home_ready_empty">Pustaka siap. Ketuk Get more untuk menambahkan konten</string>
     <string name="k2go_rate_per_second">/d</string>
     <string name="k2go_gm_hub_title">Dapatkan lagi</string>
     <string name="k2go_gm_hub_sub">Tambahkan konten ke pustaka offline Anda.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Menyelesaikan penyiapan</string>
     <string name="k2go_setup_context">Kamu akan dibawa ke pustakamu secara otomatis saat penyiapan selesai. Pemasangan bisa berjalan di latar belakang sementara kamu menjelajahi bagian lain aplikasi.</string>
     <string name="k2go_setup_context_proot">Kamu akan dibawa ke pustakamu secara otomatis saat penyiapan selesai. Tindakan ini tidak bisa berjalan di latar belakang, jadi tetap di layar ini sampai konten terpasang.</string>
-    <string name="k2go_install_busy">Pemasangan sedang berjalan — mohon tunggu sampai selesai.</string>
+    <string name="k2go_install_busy">Pemasangan sudah berjalan. Harap tunggu sampai selesai.</string>
     <string name="k2go_setup_leave_hint">Sistem masih disiapkan. Kamu bisa meninggalkan aplikasi sementara penyiapan berjalan di latar belakang.</string>
     <string name="k2go_damaged_title">Pemasangan terputus</string>
     <string name="k2go_damaged_close">Tutup</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Unduhan buku</string>
     <string name="k2go_books_dl_notif_title">Menambahkan buku ke pustaka Anda</string>
     <string name="k2go_fqr_invalid">Nama wilayah atau area itu tampaknya tidak valid.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” sudah digunakan — pilih nama lain.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” sudah dipakai. Pilih nama lain.</string>
     <string name="k2go_fqr_calculating">Menghitung ukuran unduhan…</string>
     <string name="k2go_fqr_estimate_error_title">Tidak bisa mengunduh wilayah ini</string>
     <string name="k2go_fqr_consent_title">Unduh wilayah ini?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s untuk diunduh, %3$s di disk.</string>
     <string name="k2go_fqr_consent_legend">Wilayah ini: %1$s  ·  Kosong setelahnya: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Wilayah ini mungkin tidak muat — hanya %1$s yang akan kosong setelahnya.</string>
+    <string name="k2go_fqr_consent_wont_fit">Wilayah ini mungkin tidak muat. Setelahnya hanya %1$s yang tersisa.</string>
     <string name="k2go_fqr_download">Unduh</string>
     <string name="k2go_fqr_not_now">Nanti saja</string>
     <string name="k2go_fqr_downloading">Mengunduh “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Ini menghapus file dan memperbarui pustaka konten. Anda dapat mengunduhnya lagi nanti.</string>
     <string name="k2go_zim_deleting">Menghapus…</string>
     <string name="k2go_zim_deleted">%1$s dihapus</string>
-    <string name="k2go_zim_deleted_deferred">Dihapus — disembunyikan untuk saat ini, dihapus sepenuhnya setelah unduhan saat ini selesai.</string>
+    <string name="k2go_zim_deleted_deferred">Dihapus. Untuk sekarang disembunyikan dan akan dihapus sepenuhnya saat unduhan saat ini selesai.</string>
     <string name="k2go_zim_delete_failed">Tidak dapat menghapus. Silakan coba lagi.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Membangun ulang dasbor…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Tidak dapat memulai pembaruan. Coba lagi.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Inti sistem · selalu terpasang</string>
-    <string name="k2go_dash_detail_desc">Dasbor adalah inti REST API dari box (dash-node): layanan Node kecil di 127.0.0.1:4000, disajikan oleh nginx dan diawasi oleh pdsm. Ia menggerakkan setiap tindakan pustaka di dalam aplikasi: menjelajahi dan mengunduh Buku, menambah dan menghapus konten Wikipedia dan ZIM, sesi Kolibri, Peta, dan status sistem. Berbeda dengan modul konten, ia tidak dipasang atau dihapus — ia hadir bersama box dan selalu ada. Saat versi lebih baru tersedia, Anda dapat membangunnya ulang di tempat.</string>
+    <string name="k2go_dash_detail_desc">Dasbor adalah inti REST API perangkat (dash-node) — layanan Node kecil di 127.0.0.1:4000, disajikan oleh nginx dan diawasi oleh pdsm. Ini menjalankan setiap tindakan pustaka di aplikasi: menjelajahi dan mengunduh Buku, menambah dan menghapus konten Wikipedia dan ZIM, sesi Kolibri, Peta, dan status sistem. Berbeda dengan modul konten, kamu tidak bisa memasang atau menghapusnya. Ini disertakan bersama aplikasi dan selalu ada. Saat build lebih baru tersedia, kamu bisa membangunnya ulang di tempat.</string>
     <string name="k2go_dash_includes">Endpoint REST untuk Buku, Wikipedia/ZIM, Kolibri, dan Peta; vhost nginx; serta endpoint versi sistem dan bangun ulang — semuanya di 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Inti sistem</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Penyiapan berhenti sebelum selesai dan sistem tidak bisa dijalankan. Untuk memulihkan, Anda dapat memulihkan cadangan atau menginstal ulang sistem dari awal.</string>
     <string name="k2go_damaged_recover">Pulihkan…</string>
     <string name="k2go_reinstall_title">Instal ulang sistem</string>
-    <string name="k2go_reinstall_sub">Hapus semuanya dan instal sistem baru dari awal</string>
+    <string name="k2go_reinstall_sub">Hapus K2Go dan konten di perangkat ini dan pasang sistem baru dari awal</string>
     <string name="k2go_reinstall_confirm_title">Instal ulang dari awal?</string>
-    <string name="k2go_reinstall_confirm_msg">Ini menghapus sistem saat ini dan semua isinya — buku, peta, unduhan, dan pengaturan — lalu menginstal salinan bersih. Tidak dapat dibatalkan. Cadangkan dulu jika ingin menyimpan sesuatu. Lalu Anda memilih caranya: mengunduh, atau menyalin dari ponsel lain.</string>
+    <string name="k2go_reinstall_confirm_msg">Ini menghapus sistem saat ini, termasuk semua aplikasi, konten, dan pengaturan, lalu memasang salinan bersih. Tindakan ini tidak bisa dibatalkan. Jika ingin menyimpan sesuatu, cadangkan dulu. Lalu pilih caranya: unduh, atau salin dari ponsel lain.</string>
     <string name="k2go_reinstall_confirm_yes">Hapus dan instal ulang</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Dari sistem</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d hasil</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autentikasi</string>
-    <string name="k2go_settings_authentication_sub">Info masuk untuk Buku dan Kursus</string>
+    <string name="k2go_settings_authentication_sub">Info masuk untuk Calibre-Web (buku) dan Kolibri (kursus)</string>
     <string name="k2go_auth_hint">Info masuk yang dipakai K2Go untuk Buku dan Kursus. Perbarui salah satu jika kata sandi layanannya berubah.</string>
     <string name="k2go_auth_username">Nama pengguna</string>
     <string name="k2go_auth_password">Kata sandi</string>
@@ -679,11 +679,11 @@
     <string name="k2go_auth_svc_courses">Ikuti kursus</string>
     <string name="k2go_auth_custom_toggle">Gunakan info masuk khusus</string>
     <string name="k2go_auth_not_running">Layanan ini belum berjalan. Perubahan disimpan sekarang dan berlaku setelah terpasang dan berjalan.</string>
-    <string name="k2go_auth_list_note">Layanan yang belum terpasang tetap dapat diakses — Anda bisa mengatur info masuk lebih dulu. Kredensial disimpan di perangkat ini.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · info masuk yang dipakai K2Go untuk membuka buku Anda.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · info masuk yang dipakai K2Go untuk membuka kursus Anda.</string>
+    <string name="k2go_auth_list_note">Kamu bisa memasukkan dan menyimpan kredensial untuk layanan yang belum terpasang.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · info masuk yang K2Go pakai untuk membuka bukumu.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · info masuk yang K2Go pakai untuk membuka kursusmu.</string>
     <string name="k2go_auth_toggle_hint">Aktifkan info masuk khusus hanya jika kata sandi berubah.</string>
-    <string name="k2go_auth_eye_hint">Ketuk mata untuk menampilkannya.</string>
+    <string name="k2go_auth_eye_hint">Ketuk mata untuk menampilkan kata sandimu saat mengetik.</string>
     <string name="k2go_auth_chip_default">Default</string>
     <string name="k2go_auth_chip_custom">Khusus</string>
     <string name="k2go_auth_chip_notinstalled">Belum terpasang</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Pindai ulang dari ponsel lain untuk memverifikasi</string>
     <string name="k2go_clone_exit_keep_waiting">Terus menunggu</string>
     <string name="k2go_clone_exit_redirecting">Membuka pustaka Anda dalam %1$d dtk…</string>
-    <string name="k2go_busy_clone">Penyalinan antar-ponsel sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
-    <string name="k2go_busy_backup">Pencadangan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
-    <string name="k2go_busy_restore">Pemulihan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
-    <string name="k2go_busy_install">Pemasangan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
-    <string name="k2go_busy_download">Pengunduhan sedang berlangsung. Harap tunggu hingga operasi selesai.</string>
+    <string name="k2go_busy_clone">Penyalinan antar ponsel sedang berlangsung. Harap tunggu sampai selesai.</string>
+    <string name="k2go_busy_backup">Pencadangan sedang berlangsung. Harap tunggu sampai selesai.</string>
+    <string name="k2go_busy_restore">Pemulihan sedang berlangsung. Harap tunggu sampai selesai.</string>
+    <string name="k2go_busy_install">Pemasangan sedang berlangsung. Harap tunggu sampai selesai.</string>
+    <string name="k2go_busy_download">Unduhan sedang berlangsung. Harap tunggu sampai selesai.</string>
     <string name="k2go_pending_title">Unduhan tertunda</string>
     <string name="k2go_pending_empty">Tidak ada unduhan tertunda.</string>
     <string name="k2go_pending_running">Sesuatu sedang diunduh sekarang</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Tidak ada</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Pasang sekarang?</string>
-    <string name="k2go_install_confirm_body">Ini dipasang di perangkat Anda saat server dijeda.\n\n• Perlu waktu, sering kali puluhan menit.\n• Jaga koneksi tetap stabil jika bisa.\n• Pastikan baterai cukup sebelum memulai.\n• Layar ini tetap terbuka sampai selesai.</string>
+    <string name="k2go_install_confirm_body">Ini dipasang di perangkatmu dengan server dijeda.\n\n• Proses ini bisa memakan waktu (hingga puluhan menit).\n• Jaga koneksi tetap stabil jika bisa.\n• Pastikan baterai terisi sebelum mulai.\n• Layar ini tetap terbuka sampai selesai.</string>
     <string name="k2go_install_confirm_go">Pasang</string>
     <string name="k2go_install_confirm_cancel">Nanti saja</string>
     <string name="k2go_copied">Disalin</string>

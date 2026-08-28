@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Sistemə uyğun</string>
     <string name="k2go_theme_dark">Qaranlıq</string>
     <string name="k2go_settings_turnoff_title">K2Go söndürülsün?</string>
-    <string name="k2go_settings_turnoff_msg">Bu, kitabxananı dayandırır və tətbiqi bağlayır. (Ev və ya Geri düymələrini basdıqda tətbiq kiçildilir, lakin arxa planda işləməyə davam edir.)</string>
+    <string name="k2go_settings_turnoff_msg">Bu, kitabxananı dayandırır və tətbiqi bağlayır. Çıxmaq, amma tətbiqi arxa fonda işlək saxlamaq üçün əsas ekran və ya geri düyməsinə bas.</string>
     <string name="k2go_settings_turnoff_confirm">Söndür</string>
     <string name="k2go_settings_app_version">Tətbiq versiyası</string>
     <string name="k2go_settings_check_updates">Yeniləmələri yoxla</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">K2Go digər cihaza köçürülür.</string>
     <string name="k2go_bj_finish">Bitir</string>
     <string name="k2go_bj_wait_title">Bu bir qədər vaxt apara bilər</string>
-    <string name="k2go_bj_wait_body">K2Go-nu açıq saxlayın. Tərk edə bilərsiniz — arxa planda işləməyə davam edir və bildiriş sizi geri gətirir.</string>
-    <string name="k2go_bj_returning">Hazır — Evə qayıdılır…</string>
+    <string name="k2go_bj_wait_body">K2Go-nu açıq saxla. Arxa fonda işləməyə davam etməsi üçün geri və ya əsas ekran düyməsinə bas. Köçürmə bitdikdə, K2Go-ya qayıtmaq üçün bildirişə toxuna bilərsən.</string>
+    <string name="k2go_bj_returning">Hazırdır. Səni əsas ekrana qaytarırıq…</string>
     <string name="k2go_br_leave_backup">Ehtiyat nüsxə gedir. Bu proses arxa fonda işləyir, ona görə bu səhifədən çıxa bilərsən.</string>
     <string name="k2go_clone_back_running">Kopyalama gedir. Bu proses arxa fonda işləyir, ona görə bu səhifədən çıxa bilərsiniz.</string>
     <string name="k2go_br_leave_restore">Bərpa gedir. Bu proses arxa fonda işləyir, ona görə bu səhifədən çıxa bilərsən.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Məzmun dilini seçin</string>
     <string name="k2go_hide">Gizlət</string>
     <string name="k2go_home_no_library">Hələ kitabxana yoxdur — məzmun quraşdırmaq və əlavə etmək üçün Daha çox al-a toxunun</string>
-    <string name="k2go_home_damaged">Kitabxananın təmiri lazımdır — son quraşdırma tamamlanmadı</string>
+    <string name="k2go_home_damaged">Kitabxana tam quraşdırılmayıb və təmir tələb edir</string>
     <string name="k2go_home_recover">Bərpa et</string>
     <string name="k2go_state_no_system">Hələ sistem yoxdur</string>
     <string name="k2go_connect_no_system">Paylaşmaq üçün hələ sistem yoxdur — əvvəlcə birini bərpa edin</string>
-    <string name="k2go_home_ready_empty">Kitabxana hazırdır — məzmun əlavə etmək üçün Daha çox al-a toxunun</string>
+    <string name="k2go_home_ready_empty">Kitabxana hazırdır. Məzmun əlavə etmək üçün Get more düyməsinə toxun</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Daha çox al</string>
     <string name="k2go_gm_hub_sub">Oflayn kitabxananıza məzmun əlavə edin.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Qurulum tamamlanır</string>
     <string name="k2go_setup_context">Quraşdırma bitdikdə avtomatik olaraq kitabxanana aparılacaqsan. Tətbiqin başqa hissəsinə baxarkən quraşdırma arxa fonda işləyə bilər.</string>
     <string name="k2go_setup_context_proot">Quraşdırma bitdikdə avtomatik olaraq kitabxanana aparılacaqsan. Bu əməliyyat arxa fonda işləyə bilməz, ona görə məzmun quraşdırılana qədər bu ekranda qal.</string>
-    <string name="k2go_install_busy">Bir quraşdırma artıq işləyir — zəhmət olmasa bitməsini gözləyin.</string>
+    <string name="k2go_install_busy">Quraşdırma artıq gedir. Bitməsini gözlə.</string>
     <string name="k2go_setup_leave_hint">Sistem hələ qurulur. Quraşdırma arxa fonda işləyərkən tətbiqdən çıxa bilərsən.</string>
     <string name="k2go_damaged_title">Quraşdırma yarımçıq qaldı</string>
     <string name="k2go_damaged_close">Bağla</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Kitab yükləmələri</string>
     <string name="k2go_books_dl_notif_title">Kitablar kitabxananıza əlavə olunur</string>
     <string name="k2go_fqr_invalid">Bu region adı və ya ərazi etibarsız görünür.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” artıq istifadə olunur — başqa ad seçin.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” artıq istifadə olunur. Başqa ad seç.</string>
     <string name="k2go_fqr_calculating">Yükləmə ölçüsü hesablanır…</string>
     <string name="k2go_fqr_estimate_error_title">Bu region yüklənə bilmir</string>
     <string name="k2go_fqr_consent_title">Bu region yüklənsin?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — yükləmək üçün %2$s, diskdə %3$s.</string>
     <string name="k2go_fqr_consent_legend">Bu region: %1$s  ·  Sonra boş: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Bu region yerləşməyə bilər — sonra yalnız %1$s boş qalacaq.</string>
+    <string name="k2go_fqr_consent_wont_fit">Bu region yerləşməyə bilər. Sonra yalnız %1$s boş qalar.</string>
     <string name="k2go_fqr_download">Yüklə</string>
     <string name="k2go_fqr_not_now">İndi yox</string>
     <string name="k2go_fqr_downloading">“%1$s” yüklənir</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Bu, faylı silir və məzmun kitabxanasını yeniləyir. Sonra yenidən endirə bilərsiniz.</string>
     <string name="k2go_zim_deleting">Silinir…</string>
     <string name="k2go_zim_deleted">%1$s silindi</string>
-    <string name="k2go_zim_deleted_deferred">Silindi — hələlik gizlədilib, cari endirmə bitdikdə tam silinəcək.</string>
+    <string name="k2go_zim_deleted_deferred">Silindi. Hələlik gizlidir və cari endirmə bitdikdə tamamilə silinəcək.</string>
     <string name="k2go_zim_delete_failed">Silinmədi. Zəhmət olmasa yenidən cəhd edin.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Panel yenidən qurulur…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Yeniləməni başlatmaq alınmadı. Yenidən cəhd edin.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistem nüvəsi · həmişə quraşdırılıb</string>
-    <string name="k2go_dash_detail_desc">Panel qutunun REST API nüvəsidir (dash-node): 127.0.0.1:4000 ünvanında işləyən, nginx tərəfindən təqdim edilən və pdsm tərəfindən idarə olunan kiçik Node xidmətidir. O, tətbiqdəki bütün kitabxana əməliyyatlarını işə salır: Kitablara baxış və endirmə, Wikipedia və ZIM məzmununun əlavə edilməsi və silinməsi, Kolibri sessiyaları, Xəritələr və sistem vəziyyəti. Məzmun modullarından fərqli olaraq quraşdırılmır və silinmir — qutu ilə birlikdə gəlir və həmişə mövcuddur. Daha yeni versiya olduqda onu yerində yenidən qura bilərsiniz.</string>
+    <string name="k2go_dash_detail_desc">Panel cihazın REST API nüvəsidir (dash-node) — 127.0.0.1:4000 ünvanında kiçik Node xidmətidir, nginx ilə təqdim olunur və pdsm ilə nəzarət olunur. Tətbiqdəki hər kitabxana əməliyyatını idarə edir: Kitablara baxış və endirmə, Wikipedia və ZIM məzmununun əlavəsi və silinməsi, Kolibri sessiyaları, Xəritələr və sistem statusu. Məzmun modullarından fərqli olaraq, onu quraşdıra və ya silə bilməzsən. Tətbiqlə birlikdə gəlir və həmişə mövcuddur. Daha yeni versiya mövcud olduqda onu yerində yenidən qura bilərsən.</string>
     <string name="k2go_dash_includes">Kitablar, Wikipedia/ZIM, Kolibri və Xəritələr üçün REST son nöqtələri; nginx vhost; və sistem versiyası ilə yenidən qurma son nöqtələri — hamısı 127.0.0.1:4000 ünvanında.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Sistem nüvəsi</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Quraşdırma bitməzdən əvvəl dayandırıldı və sistem başlamır. Bərpa etmək üçün ehtiyat nüsxəni bərpa edə və ya sistemi sıfırdan yenidən quraşdıra bilərsiniz.</string>
     <string name="k2go_damaged_recover">Bərpa et…</string>
     <string name="k2go_reinstall_title">Sistemi yenidən quraşdır</string>
-    <string name="k2go_reinstall_sub">Hər şeyi silir və sıfırdan təzə sistem quraşdırır</string>
+    <string name="k2go_reinstall_sub">Bu cihazdakı K2Go-nu və məzmunu sil və sıfırdan yeni sistem quraşdır</string>
     <string name="k2go_reinstall_confirm_title">Sıfırdan yenidən quraşdırılsın?</string>
-    <string name="k2go_reinstall_confirm_msg">Bu, cari sistemi və içindəki hər şeyi — kitablar, xəritələr, endirmələr və parametrlər — silir, sonra təmiz nüsxə quraşdırır. Geri qaytarıla bilməz. Nə isə saxlamaq istəyirsinizsə, əvvəlcə ehtiyat nüsxə çıxarın. Sonra necə olacağını seçirsiniz: yükləmə və ya başqa telefondan kopyalama.</string>
+    <string name="k2go_reinstall_confirm_msg">Bu, cari sistemi, bütün tətbiqlər, məzmun və parametrlər daxil silir və sonra təmiz nüsxə quraşdırır. Bu əməliyyat geri qaytarıla bilməz. Nəyisə saxlamaq istəyirsənsə, əvvəlcə ehtiyat nüsxə al. Sonra necə olacağını seç: onu endir və ya başqa telefondan kopyala.</string>
     <string name="k2go_reinstall_confirm_yes">Sil və yenidən quraşdır</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Sistemdən</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d nəticə</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Kimlik doğrulama</string>
-    <string name="k2go_settings_authentication_sub">Kitablar və Kurslar üçün girişlər</string>
+    <string name="k2go_settings_authentication_sub">Calibre-Web (kitablar) və Kolibri (kurslar) üçün girişlər</string>
     <string name="k2go_auth_hint">K2Go-nun Kitablar və Kurslar üçün istifadə etdiyi girişlər. Xidmətin parolu dəyişibsə birini yeniləyin.</string>
     <string name="k2go_auth_username">İstifadəçi adı</string>
     <string name="k2go_auth_password">Parol</string>
@@ -676,14 +676,14 @@
     <string name="k2go_auth_failed">Saxlanmadı — yenidən cəhd edin</string>
     <string name="k2go_auth_load_failed">Yüklənmədi — xidmət işləyirmi?</string>
     <string name="k2go_auth_svc_books">Kitab oxu</string>
-    <string name="k2go_auth_svc_courses">Kurslar keç</string>
+    <string name="k2go_auth_svc_courses">Kurs keç</string>
     <string name="k2go_auth_custom_toggle">Fərdi giriş istifadə edin</string>
     <string name="k2go_auth_not_running">Bu xidmət hələ işləmir. Dəyişikliklər indi saxlanılır və o quraşdırılıb işə düşdükdə tətbiq olunur.</string>
-    <string name="k2go_auth_list_note">Quraşdırılmamış xidmətlərə çıxış mümkündür — girişi əvvəlcədən təyin edə bilərsiniz. Etimadnamələr bu cihazda saxlanılır.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · K2Go-nun kitablarınızı açmaq üçün istifadə etdiyi giriş.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · K2Go-nun kurslarınızı açmaq üçün istifadə etdiyi giriş.</string>
+    <string name="k2go_auth_list_note">Hələ quraşdırılmamış xidmətlər üçün etimadnamələri daxil edib saxlaya bilərsən.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go-nun kitablarını açmaq üçün istifadə etdiyi giriş.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go-nun kurslarını açmaq üçün istifadə etdiyi giriş.</string>
     <string name="k2go_auth_toggle_hint">Yalnız parol dəyişdirilibsə fərdi girişi aktiv edin.</string>
-    <string name="k2go_auth_eye_hint">Göstərmək üçün gözə toxunun.</string>
+    <string name="k2go_auth_eye_hint">Yazarkən parolunu görmək üçün gözə toxun.</string>
     <string name="k2go_auth_chip_default">Standart</string>
     <string name="k2go_auth_chip_custom">Fərdi</string>
     <string name="k2go_auth_chip_notinstalled">Quraşdırılmayıb</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Yoxlamaq üçün digər telefondan yenidən skan edin</string>
     <string name="k2go_clone_exit_keep_waiting">Gözləməyə davam et</string>
     <string name="k2go_clone_exit_redirecting">Kitabxananız %1$d s sonra açılır…</string>
-    <string name="k2go_busy_clone">Telefonlar arasında kopyalama davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
-    <string name="k2go_busy_backup">Ehtiyat nüsxəsi davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
-    <string name="k2go_busy_restore">Bərpa davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
-    <string name="k2go_busy_install">Quraşdırma davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
-    <string name="k2go_busy_download">Yükləmə davam edir. Zəhmət olmasa, əməliyyatın bitməsini gözləyin.</string>
+    <string name="k2go_busy_clone">Telefonlar arasında kopyalama gedir. Bitməsini gözlə.</string>
+    <string name="k2go_busy_backup">Ehtiyat nüsxə gedir. Bitməsini gözlə.</string>
+    <string name="k2go_busy_restore">Bərpa gedir. Bitməsini gözlə.</string>
+    <string name="k2go_busy_install">Quraşdırma gedir. Bitməsini gözlə.</string>
+    <string name="k2go_busy_download">Endirmə gedir. Bitməsini gözlə.</string>
     <string name="k2go_pending_title">Gözləyən yükləmələr</string>
     <string name="k2go_pending_empty">Gözləyən yükləmə yoxdur.</string>
     <string name="k2go_pending_running">İndi nəsə yüklənir</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Yoxdur</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">İndi quraşdırılsın?</string>
-    <string name="k2go_install_confirm_body">Bu, server dayandırılmış halda cihazınıza quraşdırılır.\n\n• Bir qədər vaxt aparır, çox vaxt onlarla dəqiqə.\n• Mümkünsə sabit bağlantı saxlayın.\n• Başlamazdan əvvəl kifayət qədər batareya olduğundan əmin olun.\n• Bu ekran bitənə qədər açıq qalır.</string>
+    <string name="k2go_install_confirm_body">Bu, server dayandırılmış halda cihazına quraşdırılır.\n\n• Bu proses bir qədər çəkə bilər (onlarla dəqiqəyə qədər).\n• Mümkünsə sabit bağlantı saxla.\n• Başlamazdan əvvəl batareyanın dolu olduğundan əmin ol.\n• Bu ekran bitənə qədər açıq qalır.</string>
     <string name="k2go_install_confirm_go">Quraşdır</string>
     <string name="k2go_install_confirm_cancel">İndi yox</string>
     <string name="k2go_copied">Kopyalandı</string>

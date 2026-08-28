@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Прати систем</string>
     <string name="k2go_theme_dark">Тамна</string>
     <string name="k2go_settings_turnoff_title">Искључити K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Ово зауставља библиотеку и затвара апликацију. (Када притиснете дугме Почетна или Назад, апликација се минимизује, али наставља да ради у позадини.)</string>
+    <string name="k2go_settings_turnoff_msg">Ово зауставља библиотеку и затвара апликацију. Да изађеш али да апликација настави да ради у позадини, притисни дугме почетни екран или назад.</string>
     <string name="k2go_settings_turnoff_confirm">Искључи</string>
     <string name="k2go_settings_app_version">Верзија апликације</string>
     <string name="k2go_settings_check_updates">Провери ажурирања</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Пренос K2Go на други уређај.</string>
     <string name="k2go_bj_finish">Заврши</string>
     <string name="k2go_bj_wait_title">Ово може потрајати</string>
-    <string name="k2go_bj_wait_body">Држите K2Go отворен. Можете отићи — наставља да ради у позадини, а обавештење вас враћа назад.</string>
-    <string name="k2go_bj_returning">Готово — повратак на Почетну…</string>
+    <string name="k2go_bj_wait_body">Држи K2Go отворено. Притисни дугме назад или почетни екран да настави да ради у позадини. Када се пренос заврши, можеш да додирнеш обавештење да се вратиш у K2Go.</string>
+    <string name="k2go_bj_returning">Готово. Враћамо те на почетни екран…</string>
     <string name="k2go_br_leave_backup">Прављење резервне копије је у току. Овај процес се одвија у позадини, па можеш да напустиш ову страницу.</string>
     <string name="k2go_clone_back_running">Копирање је у току. Овај процес се одвија у позадини, па можете напустити ову страницу.</string>
     <string name="k2go_br_leave_restore">Враћање је у току. Овај процес се одвија у позадини, па можеш да напустиш ову страницу.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Изаберите језик садржаја</string>
     <string name="k2go_hide">Сакриј</string>
     <string name="k2go_home_no_library">Још нема библиотеке — додирните Преузми још да инсталирате и додате садржај</string>
-    <string name="k2go_home_damaged">Библиотеку треба поправити — последње подешавање није завршено</string>
+    <string name="k2go_home_damaged">Библиотека није инсталирана у потпуности и потребна је поправка</string>
     <string name="k2go_home_recover">Поправи</string>
     <string name="k2go_state_no_system">Још нема система</string>
     <string name="k2go_connect_no_system">Још нема система за дељење — прво поправите неки</string>
-    <string name="k2go_home_ready_empty">Библиотека спремна — додирните Преузми још да додате садржај</string>
+    <string name="k2go_home_ready_empty">Библиотека је спремна. Додирни Get more да додаш садржај</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Преузми још</string>
     <string name="k2go_gm_hub_sub">Додајте садржај у вашу офлајн библиотеку.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Завршавање подешавања</string>
     <string name="k2go_setup_context">Бићеш аутоматски пребачен у своју библиотеку када се подешавање заврши. Инсталација може да ради у позадини док посећујеш други део апликације.</string>
     <string name="k2go_setup_context_proot">Бићеш аутоматски пребачен у своју библиотеку када се подешавање заврши. Ова радња не може да ради у позадини, па остани на овом екрану док се садржај не инсталира.</string>
-    <string name="k2go_install_busy">Инсталација је већ у току — молимо сачекајте да се заврши.</string>
+    <string name="k2go_install_busy">Инсталација је већ у току. Сачекај да се заврши.</string>
     <string name="k2go_setup_leave_hint">Систем се још подешава. Можеш да напустиш апликацију док подешавање ради у позадини.</string>
     <string name="k2go_damaged_title">Инсталација прекинута</string>
     <string name="k2go_damaged_close">Затвори</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Преузимања књига</string>
     <string name="k2go_books_dl_notif_title">Додавање књига у вашу библиотеку</string>
     <string name="k2go_fqr_invalid">Тај назив региона или подручје изгледа неважеће.</string>
-    <string name="k2go_fqr_name_taken">„%1$s“ се већ користи — изаберите друго име.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ се већ користи. Изабери друго име.</string>
     <string name="k2go_fqr_calculating">Израчунавање величине преузимања…</string>
     <string name="k2go_fqr_estimate_error_title">Није могуће преузети овај регион</string>
     <string name="k2go_fqr_consent_title">Преузети овај регион?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s за преузимање, %3$s на диску.</string>
     <string name="k2go_fqr_consent_legend">Овај регион: %1$s  ·  Слободно након: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Овај регион можда неће стати — само %1$s би остало слободно.</string>
+    <string name="k2go_fqr_consent_wont_fit">Овај регион можда неће стати. После тога би слободно остало само %1$s.</string>
     <string name="k2go_fqr_download">Преузми</string>
     <string name="k2go_fqr_not_now">Не сада</string>
     <string name="k2go_fqr_downloading">Преузимање “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Ово уклања датотеку и ажурира библиотеку садржаја. Можете је поново преузети касније.</string>
     <string name="k2go_zim_deleting">Брисање…</string>
     <string name="k2go_zim_deleted">%1$s обрисано</string>
-    <string name="k2go_zim_deleted_deferred">Обрисано — за сада сакривено, потпуно уклоњено када се заврши тренутно преузимање.</string>
+    <string name="k2go_zim_deleted_deferred">Обрисано. Засад је сакривено и биће потпуно уклоњено када се тренутно преузимање заврши.</string>
     <string name="k2go_zim_delete_failed">Брисање није успело. Покушајте поново.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Поновно грађење контролне табле…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Ажурирање није могло да почне. Покушајте поново.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системско језгро · увек инсталирано</string>
-    <string name="k2go_dash_detail_desc">Контролна табла је REST API језгро уређаја (dash-node): мала Node услуга на 127.0.0.1:4000, коју опслужује nginx а надгледа pdsm. Покреће сваку радњу библиотеке у апликацији: прегледање и преузимање Књига, додавање и брисање садржаја Wikipedia и ZIM, Kolibri сесије, Мапе и стање система. За разлику од модула садржаја, не инсталира се нити уклања — долази уз уређај и увек је присутна. Када је доступна новија верзија, можете је поново изградити на лицу места.</string>
+    <string name="k2go_dash_detail_desc">Контролна табла је језгро REST API-ја уређаја (dash-node) — мала Node услуга на 127.0.0.1:4000, коју опслужује nginx и надзире pdsm. Покреће сваку радњу библиотеке у апликацији: прегледање и преузимање Књига, додавање и брисање садржаја Wikipedia и ZIM, Kolibri сесије, Мапе и статус система. За разлику од модула садржаја, не можеш је инсталирати ни уклонити. Долази уз апликацију и увек је присутна. Када је доступна новија верзија, можеш је поново изградити на месту.</string>
     <string name="k2go_dash_includes">REST крајње тачке за Књиге, Wikipedia/ZIM, Kolibri и Мапе; nginx vhost; и крајње тачке за верзију система и поновну изградњу — све на 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Системско језгро</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Инсталација је заустављена пре завршетка и систем не може да се покрене. За опоравак можете да вратите резервну копију или да поново инсталирате систем из почетка.</string>
     <string name="k2go_damaged_recover">Опорави…</string>
     <string name="k2go_reinstall_title">Поново инсталирај систем</string>
-    <string name="k2go_reinstall_sub">Брише све и инсталира нов систем из почетка</string>
+    <string name="k2go_reinstall_sub">Обриши K2Go и садржај на овом уређају и инсталирај нови систем испочетка</string>
     <string name="k2go_reinstall_confirm_title">Поново инсталирати из почетка?</string>
-    <string name="k2go_reinstall_confirm_msg">Ово брише тренутни систем и све у њему — књиге, мапе, преузимања и подешавања — а затим инсталира чисту копију. Не може се опозвати. Прво направите резервну копију ако желите нешто да задржите. Затим бирате како: преузимање или копирање са другог телефона.</string>
+    <string name="k2go_reinstall_confirm_msg">Ово брише тренутни систем, укључујући све апликације, садржај и подешавања, а затим инсталира чисту копију. Ова радња не може да се опозове. Ако желиш нешто да сачуваш, прво направи резервну копију. Затим изабери како: преузми га или копирај са другог телефона.</string>
     <string name="k2go_reinstall_confirm_yes">Обриши и поново инсталирај</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Из система</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d резултата</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Потврда идентитета</string>
-    <string name="k2go_settings_authentication_sub">Пријаве за Књиге и Курсеве</string>
+    <string name="k2go_settings_authentication_sub">Пријаве за Calibre-Web (књиге) и Kolibri (курсеви)</string>
     <string name="k2go_auth_hint">Пријаве које K2Go користи за Књиге и Курсеве. Ажурирајте једну ако је лозинка те услуге промењена.</string>
     <string name="k2go_auth_username">Корисничко име</string>
     <string name="k2go_auth_password">Лозинка</string>
@@ -675,15 +675,15 @@
     <string name="k2go_auth_noperm">Овај налог не може да управља садржајем</string>
     <string name="k2go_auth_failed">Чување није успело — покушајте поново</string>
     <string name="k2go_auth_load_failed">Учитавање није успело — да ли услуга ради?</string>
-    <string name="k2go_auth_svc_books">Прочитајте књигу</string>
-    <string name="k2go_auth_svc_courses">Похађајте курсеве</string>
+    <string name="k2go_auth_svc_books">Прочитај књигу</string>
+    <string name="k2go_auth_svc_courses">Похађај курс</string>
     <string name="k2go_auth_custom_toggle">Користи прилагођену пријаву</string>
     <string name="k2go_auth_not_running">Ова услуга још није покренута. Промене се сада чувају и примењују се чим буде инсталирана и покренута.</string>
-    <string name="k2go_auth_list_note">Неинсталиране услуге остају доступне — пријаву можете унапред подесити. Акредитиви се чувају на овом уређају.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · пријава коју K2Go користи за отварање ваших књига.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · пријава коју K2Go користи за отварање ваших курсева.</string>
+    <string name="k2go_auth_list_note">Можеш да унесеш и сачуваш акредитиве за услуге које још нису инсталиране.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · пријава коју K2Go користи да отвори твоје књиге.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · пријава коју K2Go користи да отвори твоје курсеве.</string>
     <string name="k2go_auth_toggle_hint">Укључите прилагођену пријаву само ако је лозинка промењена.</string>
-    <string name="k2go_auth_eye_hint">Додирните око да бисте је приказали.</string>
+    <string name="k2go_auth_eye_hint">Додирни око да видиш лозинку док куцаш.</string>
     <string name="k2go_auth_chip_default">Подразумевано</string>
     <string name="k2go_auth_chip_custom">Прилагођено</string>
     <string name="k2go_auth_chip_notinstalled">Није инсталирано</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Скенирајте поново са другог телефона ради провере</string>
     <string name="k2go_clone_exit_keep_waiting">Настави да чекаш</string>
     <string name="k2go_clone_exit_redirecting">Отварање библиотеке за %1$d s…</string>
-    <string name="k2go_busy_clone">Копирање између телефона је у току. Сачекајте да се операција заврши.</string>
-    <string name="k2go_busy_backup">Резервна копија је у току. Сачекајте да се операција заврши.</string>
-    <string name="k2go_busy_restore">Враћање је у току. Сачекајте да се операција заврши.</string>
-    <string name="k2go_busy_install">Инсталација је у току. Сачекајте да се операција заврши.</string>
-    <string name="k2go_busy_download">Преузимање је у току. Сачекајте да се операција заврши.</string>
+    <string name="k2go_busy_clone">Копирање између телефона је у току. Сачекај да се заврши.</string>
+    <string name="k2go_busy_backup">Прављење резервне копије је у току. Сачекај да се заврши.</string>
+    <string name="k2go_busy_restore">Враћање је у току. Сачекај да се заврши.</string>
+    <string name="k2go_busy_install">Инсталација је у току. Сачекај да се заврши.</string>
+    <string name="k2go_busy_download">Преузимање је у току. Сачекај да се заврши.</string>
     <string name="k2go_pending_title">Преузимања на чекању</string>
     <string name="k2go_pending_empty">Нема преузимања на чекању.</string>
     <string name="k2go_pending_running">Нешто се сада преузима</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Нема</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Инсталирати сада?</string>
-    <string name="k2go_install_confirm_body">Инсталира се на вашем уређају док је сервер паузиран.\n\n• Траје неко време, често десетине минута.\n• Ако можете, одржавајте стабилну везу.\n• Пре почетка обезбедите довољно батерије.\n• Овај екран остаје отворен до завршетка.</string>
+    <string name="k2go_install_confirm_body">Ово се инсталира на твом уређају док је сервер паузиран.\n\n• Овај процес може да потраје (до неколико десетина минута).\n• Ако можеш, одржавај стабилну везу.\n• Пре него што почнеш, увери се да је батерија напуњена.\n• Овај екран остаје отворен док се не заврши.</string>
     <string name="k2go_install_confirm_go">Инсталирај</string>
     <string name="k2go_install_confirm_cancel">Не сада</string>
     <string name="k2go_copied">Копирано</string>

@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">시스템 따르기</string>
     <string name="k2go_theme_dark">다크</string>
     <string name="k2go_settings_turnoff_title">K2Go를 끄시겠어요?</string>
-    <string name="k2go_settings_turnoff_msg">라이브러리가 중지되고 앱이 닫힙니다. (홈 또는 뒤로 버튼을 누르면 앱이 최소화되지만 백그라운드에서 계속 실행됩니다.)</string>
+    <string name="k2go_settings_turnoff_msg">이것은 라이브러리를 중지하고 앱을 닫습니다. 종료하되 앱을 백그라운드에서 계속 실행하려면 홈 또는 뒤로 버튼을 누르세요.</string>
     <string name="k2go_settings_turnoff_confirm">끄기</string>
     <string name="k2go_settings_app_version">앱 버전</string>
     <string name="k2go_settings_check_updates">업데이트 확인</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">K2Go를 다른 기기로 전송하는 중입니다.</string>
     <string name="k2go_bj_finish">완료</string>
     <string name="k2go_bj_wait_title">시간이 걸릴 수 있습니다</string>
-    <string name="k2go_bj_wait_body">K2Go를 열어 두세요. 벗어나도 됩니다 — 백그라운드에서 계속 실행되며 알림으로 돌아올 수 있습니다.</string>
-    <string name="k2go_bj_returning">완료 — 홈으로 돌아가는 중…</string>
+    <string name="k2go_bj_wait_body">K2Go를 열어 두세요. 백그라운드에서 계속 실행되도록 뒤로 또는 홈 버튼을 누르세요. 전송이 완료되면 알림을 눌러 K2Go로 돌아올 수 있습니다.</string>
+    <string name="k2go_bj_returning">완료. 홈 화면으로 돌아가는 중…</string>
     <string name="k2go_br_leave_backup">백업이 진행 중입니다. 이 작업은 백그라운드에서 실행되므로 이 페이지를 떠나도 됩니다.</string>
     <string name="k2go_clone_back_running">복사가 진행 중입니다. 이 작업은 백그라운드에서 실행되므로 이 페이지를 나가도 됩니다.</string>
     <string name="k2go_br_leave_restore">복원이 진행 중입니다. 이 작업은 백그라운드에서 실행되므로 이 페이지를 떠나도 됩니다.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">콘텐츠 언어 선택</string>
     <string name="k2go_hide">숨기기</string>
     <string name="k2go_home_no_library">아직 라이브러리가 없음 — ‘더 받기’를 탭하여 설치하고 콘텐츠를 추가하세요</string>
-    <string name="k2go_home_damaged">라이브러리 복구가 필요함 — 마지막 설정이 완료되지 않음</string>
+    <string name="k2go_home_damaged">라이브러리가 완전히 설치되지 않아 복구가 필요합니다</string>
     <string name="k2go_home_recover">복구</string>
     <string name="k2go_state_no_system">아직 시스템 없음</string>
     <string name="k2go_connect_no_system">아직 공유할 시스템이 없음 — 먼저 복구하세요</string>
-    <string name="k2go_home_ready_empty">라이브러리 준비 완료 — ‘더 받기’를 탭하여 콘텐츠를 추가하세요</string>
+    <string name="k2go_home_ready_empty">라이브러리가 준비되었습니다. 콘텐츠를 추가하려면 Get more를 누르세요</string>
     <string name="k2go_rate_per_second">/초</string>
     <string name="k2go_gm_hub_title">더 받기</string>
     <string name="k2go_gm_hub_sub">오프라인 라이브러리에 콘텐츠를 추가합니다.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">설정을 완료하는 중</string>
     <string name="k2go_setup_context">설정이 끝나면 자동으로 라이브러리로 이동합니다. 앱의 다른 부분을 보는 동안 설치가 백그라운드에서 실행될 수 있습니다.</string>
     <string name="k2go_setup_context_proot">설정이 끝나면 자동으로 라이브러리로 이동합니다. 이 작업은 백그라운드에서 실행할 수 없으므로 콘텐츠가 설치될 때까지 이 화면에 머무르세요.</string>
-    <string name="k2go_install_busy">이미 설치가 실행 중입니다 — 완료될 때까지 기다려 주세요.</string>
+    <string name="k2go_install_busy">설치가 이미 실행 중입니다. 완료될 때까지 기다리세요.</string>
     <string name="k2go_setup_leave_hint">아직 시스템을 설정 중입니다. 설정이 백그라운드에서 실행되는 동안 앱을 떠나도 됩니다.</string>
     <string name="k2go_damaged_title">설치가 중단됨</string>
     <string name="k2go_damaged_close">닫기</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">도서 다운로드</string>
     <string name="k2go_books_dl_notif_title">라이브러리에 도서를 추가하는 중</string>
     <string name="k2go_fqr_invalid">그 지역 이름 또는 영역이 유효하지 않은 것 같습니다.</string>
-    <string name="k2go_fqr_name_taken">“%1$s”은(는) 이미 사용 중입니다 — 다른 이름을 선택하세요.</string>
+    <string name="k2go_fqr_name_taken">“%1$s”은(는) 이미 사용 중입니다. 다른 이름을 선택하세요.</string>
     <string name="k2go_fqr_calculating">다운로드 크기를 계산하는 중…</string>
     <string name="k2go_fqr_estimate_error_title">이 지역을 다운로드할 수 없음</string>
     <string name="k2go_fqr_consent_title">이 지역을 다운로드하시겠어요?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — 다운로드 %2$s, 디스크 %3$s.</string>
     <string name="k2go_fqr_consent_legend">이 지역: %1$s  ·  이후 여유: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">이 지역은 맞지 않을 수 있습니다 — 이후 여유는 %1$s뿐입니다.</string>
+    <string name="k2go_fqr_consent_wont_fit">이 지역은 맞지 않을 수 있습니다. 이후에는 %1$s만 남습니다.</string>
     <string name="k2go_fqr_download">다운로드</string>
     <string name="k2go_fqr_not_now">나중에</string>
     <string name="k2go_fqr_downloading">“%1$s” 다운로드 중</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">파일을 제거하고 콘텐츠 라이브러리를 업데이트합니다. 나중에 다시 다운로드할 수 있습니다.</string>
     <string name="k2go_zim_deleting">삭제 중…</string>
     <string name="k2go_zim_deleted">%1$s 삭제됨</string>
-    <string name="k2go_zim_deleted_deferred">삭제됨 — 지금은 숨김 상태이며, 현재 다운로드가 완료되면 완전히 제거됩니다.</string>
+    <string name="k2go_zim_deleted_deferred">삭제됨. 지금은 숨겨져 있으며 현재 다운로드가 완료되면 완전히 제거됩니다.</string>
     <string name="k2go_zim_delete_failed">삭제하지 못했습니다. 다시 시도해 주세요.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">대시보드 재빌드 중…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">업데이트를 시작할 수 없습니다. 다시 시도하세요.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">시스템 코어 · 항상 설치됨</string>
-    <string name="k2go_dash_detail_desc">대시보드는 박스의 REST API 코어(dash-node)입니다. 127.0.0.1:4000에서 실행되는 작은 Node 서비스로, nginx가 제공하고 pdsm이 관리합니다. 앱의 모든 라이브러리 작업을 구동합니다: 도서 탐색 및 다운로드, Wikipedia 및 ZIM 콘텐츠 추가 및 삭제, Kolibri 세션, 지도, 시스템 상태. 콘텐츠 모듈과 달리 설치하거나 제거하지 않습니다 — 박스와 함께 제공되며 항상 존재합니다. 새 빌드가 있으면 제자리에서 재빌드할 수 있습니다.</string>
+    <string name="k2go_dash_detail_desc">대시보드는 박스의 REST API 코어(dash-node)입니다. 127.0.0.1:4000에서 실행되는 작은 Node 서비스로, nginx가 앞단을 맡고 pdsm이 관리합니다. 앱 내 모든 라이브러리 작업을 구동합니다. 책 탐색 및 다운로드, Wikipedia 및 ZIM 콘텐츠 추가 및 삭제, Kolibri 세션, 지도, 시스템 상태입니다. 콘텐츠 모듈과 달리 설치하거나 제거할 수 없습니다. 앱과 함께 제공되며 항상 존재합니다. 더 새로운 빌드가 있으면 그 자리에서 다시 빌드할 수 있습니다.</string>
     <string name="k2go_dash_includes">도서, Wikipedia/ZIM, Kolibri, 지도의 REST 엔드포인트, nginx vhost, 시스템 버전 및 재빌드 엔드포인트 — 모두 127.0.0.1:4000에서 제공됩니다.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">시스템 코어</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">설정이 끝나기 전에 중지되어 시스템을 시작할 수 없습니다. 복구하려면 백업을 복원하거나 시스템을 처음부터 다시 설치할 수 있습니다.</string>
     <string name="k2go_damaged_recover">복구…</string>
     <string name="k2go_reinstall_title">시스템 다시 설치</string>
-    <string name="k2go_reinstall_sub">모두 지우고 처음부터 새 시스템을 설치합니다</string>
+    <string name="k2go_reinstall_sub">이 기기의 K2Go와 콘텐츠를 지우고 새 시스템을 처음부터 설치</string>
     <string name="k2go_reinstall_confirm_title">처음부터 다시 설치할까요?</string>
-    <string name="k2go_reinstall_confirm_msg">현재 시스템과 그 안의 모든 것 — 도서, 지도, 다운로드, 설정 — 을 지우고 깨끗한 사본을 설치합니다. 되돌릴 수 없습니다. 무언가를 남기려면 먼저 백업하세요. 그다음 방법을 선택합니다: 다운로드하거나 다른 기기에서 복사.</string>
+    <string name="k2go_reinstall_confirm_msg">이것은 현재 시스템을 모든 앱, 콘텐츠, 설정을 포함해 지우고 깨끗한 사본을 설치합니다. 이 작업은 되돌릴 수 없습니다. 무언가 보관하려면 먼저 백업하세요. 그런 다음 방법을 선택하세요. 다운로드하거나 다른 휴대폰에서 복사하세요.</string>
     <string name="k2go_reinstall_confirm_yes">지우고 다시 설치</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">시스템에서</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d개 결과</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">인증</string>
-    <string name="k2go_settings_authentication_sub">도서 및 강좌 로그인</string>
+    <string name="k2go_settings_authentication_sub">Calibre-Web(책) 및 Kolibri(코스) 로그인</string>
     <string name="k2go_auth_hint">K2Go가 도서와 코스에 사용하는 로그인입니다. 서비스 비밀번호가 바뀌면 업데이트하세요.</string>
     <string name="k2go_auth_username">사용자 이름</string>
     <string name="k2go_auth_password">비밀번호</string>
@@ -676,14 +676,14 @@
     <string name="k2go_auth_failed">저장하지 못했습니다 — 다시 시도하세요</string>
     <string name="k2go_auth_load_failed">불러오지 못했습니다 — 서비스가 실행 중인가요?</string>
     <string name="k2go_auth_svc_books">책 읽기</string>
-    <string name="k2go_auth_svc_courses">강좌 수강</string>
+    <string name="k2go_auth_svc_courses">코스 수강</string>
     <string name="k2go_auth_custom_toggle">맞춤 로그인 사용</string>
     <string name="k2go_auth_not_running">이 서비스는 아직 실행 중이 아닙니다. 변경 사항은 지금 저장되며 설치되어 실행되면 적용됩니다.</string>
-    <string name="k2go_auth_list_note">설치되지 않은 서비스도 접근할 수 있습니다 — 로그인을 미리 설정할 수 있습니다. 자격 증명은 이 기기에 저장됩니다.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · K2Go가 책을 열 때 사용하는 로그인입니다.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · K2Go가 코스를 열 때 사용하는 로그인입니다.</string>
+    <string name="k2go_auth_list_note">아직 설치되지 않은 서비스의 자격 증명을 입력하고 저장할 수 있습니다.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · K2Go가 책을 여는 데 사용하는 로그인.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · K2Go가 코스를 여는 데 사용하는 로그인.</string>
     <string name="k2go_auth_toggle_hint">비밀번호가 변경된 경우에만 맞춤 로그인을 켜세요.</string>
-    <string name="k2go_auth_eye_hint">눈 아이콘을 눌러 표시하세요.</string>
+    <string name="k2go_auth_eye_hint">입력하는 동안 비밀번호를 보려면 눈 아이콘을 누르세요.</string>
     <string name="k2go_auth_chip_default">기본값</string>
     <string name="k2go_auth_chip_custom">맞춤</string>
     <string name="k2go_auth_chip_notinstalled">설치되지 않음</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">확인하려면 다른 휴대전화에서 다시 스캔하세요</string>
     <string name="k2go_clone_exit_keep_waiting">계속 기다리기</string>
     <string name="k2go_clone_exit_redirecting">%1$d초 후 라이브러리를 엽니다…</string>
-    <string name="k2go_busy_clone">휴대전화 간 복사이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
-    <string name="k2go_busy_backup">백업이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
-    <string name="k2go_busy_restore">복원이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
-    <string name="k2go_busy_install">설치이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
-    <string name="k2go_busy_download">다운로드이(가) 진행 중입니다. 작업이 완료될 때까지 기다려 주세요.</string>
+    <string name="k2go_busy_clone">휴대폰 간 복사가 진행 중입니다. 완료될 때까지 기다리세요.</string>
+    <string name="k2go_busy_backup">백업이 진행 중입니다. 완료될 때까지 기다리세요.</string>
+    <string name="k2go_busy_restore">복원이 진행 중입니다. 완료될 때까지 기다리세요.</string>
+    <string name="k2go_busy_install">설치가 진행 중입니다. 완료될 때까지 기다리세요.</string>
+    <string name="k2go_busy_download">다운로드가 진행 중입니다. 완료될 때까지 기다리세요.</string>
     <string name="k2go_pending_title">대기 중인 다운로드</string>
     <string name="k2go_pending_empty">대기 중인 다운로드가 없습니다.</string>
     <string name="k2go_pending_running">지금 다운로드 중입니다</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">없음</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">지금 설치할까요?</string>
-    <string name="k2go_install_confirm_body">서버가 일시 중지된 상태에서 기기에 설치됩니다.\n\n• 시간이 걸리며, 보통 수십 분입니다.\n• 가능하면 안정적인 연결을 유지하세요.\n• 시작하기 전에 배터리가 충분한지 확인하세요.\n• 완료될 때까지 이 화면은 열려 있습니다.</string>
+    <string name="k2go_install_confirm_body">이것은 서버를 일시 중지한 상태로 기기에 설치됩니다.\n\n• 이 과정은 시간이 걸릴 수 있습니다(최대 수십 분).\n• 가능하면 안정적인 연결을 유지하세요.\n• 시작하기 전에 배터리가 충전되어 있는지 확인하세요.\n• 이 화면은 완료될 때까지 열려 있습니다.</string>
     <string name="k2go_install_confirm_go">설치</string>
     <string name="k2go_install_confirm_cancel">나중에</string>
     <string name="k2go_copied">복사됨</string>

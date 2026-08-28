@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">સિસ્ટમ અનુસરો</string>
     <string name="k2go_theme_dark">ડાર્ક</string>
     <string name="k2go_settings_turnoff_title">K2Go બંધ કરવું છે?</string>
-    <string name="k2go_settings_turnoff_msg">આ લાઇબ્રેરી બંધ કરે છે અને ઍપ બંધ કરે છે. (જ્યારે તમે Home કે Back બટન દબાવો છો, ત્યારે ઍપ મિનિમાઇઝ થાય છે પણ બૅકગ્રાઉન્ડમાં ચાલતી રહે છે.)</string>
+    <string name="k2go_settings_turnoff_msg">આ લાઇબ્રેરી થોભાવે છે અને ઍપ બંધ કરે છે. બહાર નીકળીને ઍપ બૅકગ્રાઉન્ડમાં ચાલુ રાખવા હોમ કે બૅક બટન દબાવો.</string>
     <string name="k2go_settings_turnoff_confirm">બંધ કરો</string>
     <string name="k2go_settings_app_version">ઍપ વર્ઝન</string>
     <string name="k2go_settings_check_updates">અપડેટ્સ તપાસો</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">K2Go બીજા ઉપકરણ પર ટ્રાન્સફર થઈ રહ્યું છે.</string>
     <string name="k2go_bj_finish">પૂર્ણ કરો</string>
     <string name="k2go_bj_wait_title">આમાં થોડો સમય લાગી શકે છે</string>
-    <string name="k2go_bj_wait_body">K2Go ખુલ્લી રાખો. તમે છોડી શકો છો — તે બૅકગ્રાઉન્ડમાં ચાલતું રહે છે, અને નોટિફિકેશન તમને પાછા લાવે છે.</string>
-    <string name="k2go_bj_returning">થઈ ગયું — Home પર પાછા જઈ રહ્યા છીએ…</string>
+    <string name="k2go_bj_wait_body">K2Go ખુલ્લું રાખો. બૅકગ્રાઉન્ડમાં ચાલુ રાખવા બૅક કે હોમ બટન દબાવો. ટ્રાન્સફર પૂર્ણ થાય ત્યારે, K2Go પર પાછા આવવા નોટિફિકેશન પર ટૅપ કરી શકો છો.</string>
+    <string name="k2go_bj_returning">થઈ ગયું. તમને હોમ સ્ક્રીન પર પાછા લઈ જઈ રહ્યા છીએ…</string>
     <string name="k2go_br_leave_backup">બૅકઅપ ચાલુ છે. આ પ્રક્રિયા બૅકગ્રાઉન્ડમાં ચાલે છે, તેથી તમે આ પેજ છોડી શકો છો.</string>
     <string name="k2go_clone_back_running">કૉપિ ચાલુ છે. આ પ્રક્રિયા બૅકગ્રાઉન્ડમાં ચાલે છે, તેથી તમે આ પેજ છોડી શકો છો.</string>
     <string name="k2go_br_leave_restore">પુનઃસ્થાપન ચાલુ છે. આ પ્રક્રિયા બૅકગ્રાઉન્ડમાં ચાલે છે, તેથી તમે આ પેજ છોડી શકો છો.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">કન્ટેન્ટ ભાષા પસંદ કરો</string>
     <string name="k2go_hide">છુપાવો</string>
     <string name="k2go_home_no_library">હજી કોઈ લાઇબ્રેરી નથી — ઇન્સ્ટોલ કરવા અને કન્ટેન્ટ ઉમેરવા Get more ટૅપ કરો</string>
-    <string name="k2go_home_damaged">લાઇબ્રેરીને સમારકામની જરૂર છે — છેલ્લું સેટઅપ પૂર્ણ થયું નથી</string>
+    <string name="k2go_home_damaged">લાઇબ્રેરી સંપૂર્ણ ઇન્સ્ટોલ થઈ નથી અને સમારકામની જરૂર છે</string>
     <string name="k2go_home_recover">સમારકામ</string>
     <string name="k2go_state_no_system">હજી કોઈ સિસ્ટમ નથી</string>
     <string name="k2go_connect_no_system">શેર કરવા માટે હજી કોઈ સિસ્ટમ નથી — પહેલાં એકનું સમારકામ કરો</string>
-    <string name="k2go_home_ready_empty">લાઇબ્રેરી તૈયાર — કન્ટેન્ટ ઉમેરવા Get more ટૅપ કરો</string>
+    <string name="k2go_home_ready_empty">લાઇબ્રેરી તૈયાર છે. સામગ્રી ઉમેરવા Get more પર ટૅપ કરો</string>
     <string name="k2go_rate_per_second">/સે</string>
     <string name="k2go_gm_hub_title">વધુ મેળવો</string>
     <string name="k2go_gm_hub_sub">તમારી ઑફલાઇન લાઇબ્રેરીમાં કન્ટેન્ટ ઉમેરો.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">સેટઅપ પૂર્ણ થઈ રહ્યું છે</string>
     <string name="k2go_setup_context">સેટઅપ પૂર્ણ થાય ત્યારે તમને આપમેળે તમારી લાઇબ્રેરીમાં લઈ જવાશે. તમે ઍપના બીજા ભાગમાં હો ત્યારે ઇન્સ્ટોલેશન બૅકગ્રાઉન્ડમાં ચાલી શકે છે.</string>
     <string name="k2go_setup_context_proot">સેટઅપ પૂર્ણ થાય ત્યારે તમને આપમેળે તમારી લાઇબ્રેરીમાં લઈ જવાશે. આ ક્રિયા બૅકગ્રાઉન્ડમાં ચાલી શકતી નથી, તેથી સામગ્રી ઇન્સ્ટોલ થાય ત્યાં સુધી આ સ્ક્રીન પર રહો.</string>
-    <string name="k2go_install_busy">એક ઇન્સ્ટોલ પહેલેથી ચાલી રહ્યું છે — કૃપા કરીને તે પૂરું થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_install_busy">એક ઇન્સ્ટોલ પહેલેથી ચાલી રહ્યું છે. કૃપા કરી પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
     <string name="k2go_setup_leave_hint">સિસ્ટમ હજી સેટ થઈ રહી છે. સેટઅપ બૅકગ્રાઉન્ડમાં ચાલતું હોય ત્યારે તમે ઍપ છોડી શકો છો.</string>
     <string name="k2go_damaged_title">ઇન્સ્ટોલેશન વિક્ષેપ પામ્યું</string>
     <string name="k2go_damaged_close">બંધ કરો</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">પુસ્તક ડાઉનલોડ</string>
     <string name="k2go_books_dl_notif_title">તમારી લાઇબ્રેરીમાં પુસ્તકો ઉમેરાઈ રહ્યાં છે</string>
     <string name="k2go_fqr_invalid">તે પ્રદેશનું નામ કે વિસ્તાર અમાન્ય લાગે છે.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” પહેલેથી વપરાયેલું છે — બીજું નામ પસંદ કરો.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” પહેલેથી વપરાયેલું છે. અલગ નામ પસંદ કરો.</string>
     <string name="k2go_fqr_calculating">ડાઉનલોડ કદની ગણતરી થઈ રહી છે…</string>
     <string name="k2go_fqr_estimate_error_title">આ પ્રદેશ ડાઉનલોડ કરી શકાતો નથી</string>
     <string name="k2go_fqr_consent_title">આ પ્રદેશ ડાઉનલોડ કરવો છે?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — ડાઉનલોડ કરવા %2$s, ડિસ્ક પર %3$s.</string>
     <string name="k2go_fqr_consent_legend">આ પ્રદેશ: %1$s  ·  પછી ખાલી: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">આ પ્રદેશ કદાચ બંધબેસે નહીં — પછી ફક્ત %1$s ખાલી રહેશે.</string>
+    <string name="k2go_fqr_consent_wont_fit">આ પ્રદેશ કદાચ ન સમાય. પછી માત્ર %1$s ખાલી રહેશે.</string>
     <string name="k2go_fqr_download">ડાઉનલોડ કરો</string>
     <string name="k2go_fqr_not_now">હમણાં નહીં</string>
     <string name="k2go_fqr_downloading">“%1$s” ડાઉનલોડ થઈ રહ્યું છે</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">આ ફાઇલ દૂર કરે છે અને સામગ્રી લાઇબ્રેરી અપડેટ કરે છે. તમે તેને પછીથી ફરીથી ડાઉનલોડ કરી શકો છો.</string>
     <string name="k2go_zim_deleting">કાઢી રહ્યું છે…</string>
     <string name="k2go_zim_deleted">%1$s કાઢી નાખ્યું</string>
-    <string name="k2go_zim_deleted_deferred">કાઢી નાખ્યું — હમણાં માટે છુપાવ્યું, વર્તમાન ડાઉનલોડ પૂર્ણ થતાં સંપૂર્ણપણે દૂર થશે.</string>
+    <string name="k2go_zim_deleted_deferred">ભૂંસ્યું. હાલ છુપાયેલું છે અને વર્તમાન ડાઉનલોડ પૂર્ણ થાય ત્યારે સંપૂર્ણ દૂર થશે.</string>
     <string name="k2go_zim_delete_failed">કાઢી શકાયું નથી. કૃપા કરીને ફરી પ્રયાસ કરો.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">ડેશબોર્ડ ફરીથી બનાવાઈ રહ્યું છે…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">અપડેટ શરૂ કરી શકાયું નહીં. ફરી પ્રયાસ કરો.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">સિસ્ટમ કોર · હંમેશા સ્થાપિત</string>
-    <string name="k2go_dash_detail_desc">ડેશબોર્ડ એ બોક્સનું REST API કોર છે (dash-node): 127.0.0.1:4000 પર એક નાની Node સેવા, જેને nginx પીરસે છે અને pdsm દેખરેખ રાખે છે. તે એપમાં દરેક લાઇબ્રેરી ક્રિયા ચલાવે છે: પુસ્તકો બ્રાઉઝ અને ડાઉનલોડ, Wikipedia અને ZIM સામગ્રી ઉમેરવી અને કાઢી નાખવી, Kolibri સત્રો, નકશા અને સિસ્ટમ સ્થિતિ. સામગ્રી મોડ્યુલોથી વિપરીત, તે સ્થાપિત કે દૂર કરાતું નથી — તે બોક્સ સાથે આવે છે અને હંમેશા હાજર રહે છે. જ્યારે નવું સંસ્કરણ ઉપલબ્ધ હોય, ત્યારે તમે તેને સ્થળ પર જ ફરીથી બનાવી શકો છો.</string>
+    <string name="k2go_dash_detail_desc">ડૅશબોર્ડ એ બોક્સનું REST API કોર (dash-node) છે — 127.0.0.1:4000 પર એક નાની Node સેવા, જે nginx દ્વારા પીરસાય છે અને pdsm દ્વારા દેખરેખ થાય છે. તે ઍપમાં દરેક લાઇબ્રેરી ક્રિયા ચલાવે છે: પુસ્તકો બ્રાઉઝ અને ડાઉનલોડ, Wikipedia અને ZIM સામગ્રી ઉમેરવી અને કાઢવી, Kolibri સત્રો, નકશા અને સિસ્ટમ સ્થિતિ. સામગ્રી મોડ્યુલથી વિપરીત, તમે તેને ઇન્સ્ટોલ કે દૂર કરી શકતા નથી. તે ઍપ સાથે આવે છે અને હંમેશા હાજર હોય છે. જ્યારે નવો બિલ્ડ ઉપલબ્ધ હોય, ત્યારે તમે તેને એ જ સ્થાને ફરીથી બનાવી શકો છો.</string>
     <string name="k2go_dash_includes">પુસ્તકો, Wikipedia/ZIM, Kolibri અને નકશા માટે REST એન્ડપોઇન્ટ; nginx vhost; અને સિસ્ટમ સંસ્કરણ અને ફરીથી બનાવવાના એન્ડપોઇન્ટ — બધા 127.0.0.1:4000 પર.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">સિસ્ટમ કોર</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">સેટઅપ પૂર્ણ થાય તે પહેલાં અટકી ગયું અને સિસ્ટમ શરૂ થઈ શકતી નથી. પુનઃપ્રાપ્તિ માટે તમે બેકઅપ પુનઃસ્થાપિત કરી શકો છો અથવા સિસ્ટમ શરૂઆતથી ફરીથી ઇન્સ્ટોલ કરી શકો છો.</string>
     <string name="k2go_damaged_recover">પુનઃપ્રાપ્ત કરો…</string>
     <string name="k2go_reinstall_title">સિસ્ટમ ફરીથી ઇન્સ્ટોલ કરો</string>
-    <string name="k2go_reinstall_sub">બધું ભૂંસી નાખો અને શરૂઆતથી નવી સિસ્ટમ ઇન્સ્ટોલ કરો</string>
+    <string name="k2go_reinstall_sub">આ ઉપકરણ પરના K2Go અને સામગ્રી ભૂંસો અને શરૂઆતથી નવી સિસ્ટમ ઇન્સ્ટોલ કરો</string>
     <string name="k2go_reinstall_confirm_title">શરૂઆતથી ફરીથી ઇન્સ્ટોલ કરવું?</string>
-    <string name="k2go_reinstall_confirm_msg">આ વર્તમાન સિસ્ટમ અને તેમાંનું બધું — પુસ્તકો, નકશા, ડાઉનલોડ અને સેટિંગ્સ — ભૂંસી નાખે છે, પછી એક સ્વચ્છ નકલ ઇન્સ્ટોલ કરે છે. તેને પાછું લઈ શકાતું નથી. કંઈક રાખવું હોય તો પહેલાં બેકઅપ લો. પછી તમે રીત પસંદ કરો: ડાઉનલોડ કરો અથવા બીજા ફોનમાંથી કૉપિ કરો.</string>
+    <string name="k2go_reinstall_confirm_msg">આ વર્તમાન સિસ્ટમને, બધી ઍપ્સ, સામગ્રી અને સેટિંગ્સ સહિત, ભૂંસી નાખે છે અને પછી એક સ્વચ્છ કૉપિ ઇન્સ્ટોલ કરે છે. આ ક્રિયા પૂર્વવત્ કરી શકાતી નથી. જો તમે કંઈ રાખવા માંગતા હો, તો પહેલા બૅકઅપ લો. પછી કેવી રીતે તે પસંદ કરો: તેને ડાઉનલોડ કરો, અથવા બીજા ફોનમાંથી કૉપિ કરો.</string>
     <string name="k2go_reinstall_confirm_yes">ભૂંસો અને ફરીથી ઇન્સ્ટોલ કરો</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">સિસ્ટમમાંથી</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d પરિણામ</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">પ્રમાણીકરણ</string>
-    <string name="k2go_settings_authentication_sub">પુસ્તકો અને અભ્યાસક્રમો માટે સાઇન-ઇન</string>
+    <string name="k2go_settings_authentication_sub">Calibre-Web (પુસ્તકો) અને Kolibri (કોર્સ) માટે સાઇન-ઇન</string>
     <string name="k2go_auth_hint">K2Go પુસ્તકો અને કોર્સ માટે વાપરે તે સાઇન-ઇન. કોઈ સેવાનો પાસવર્ડ બદલાય તો તેને અપડેટ કરો.</string>
     <string name="k2go_auth_username">વપરાશકર્તાનામ</string>
     <string name="k2go_auth_password">પાસવર્ડ</string>
@@ -679,11 +679,11 @@
     <string name="k2go_auth_svc_courses">કોર્સ કરો</string>
     <string name="k2go_auth_custom_toggle">કસ્ટમ સાઇન-ઇન વાપરો</string>
     <string name="k2go_auth_not_running">આ સેવા હજી ચાલુ નથી. ફેરફારો હમણાં સાચવાય છે અને તે ઇન્સ્ટોલ થઈને ચાલુ થાય ત્યારે લાગુ થશે.</string>
-    <string name="k2go_auth_list_note">ઇન્સ્ટૉલ ન થયેલી સેવાઓ પણ પહોંચમાં રહે છે — તમે સાઇન-ઇન અગાઉથી સેટ કરી શકો છો. ઓળખપત્રો આ ડિવાઇસ પર સંગ્રહાય છે.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · K2Go તમારાં પુસ્તકો ખોલવા જે સાઇન-ઇન વાપરે છે.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · K2Go તમારા કોર્સ ખોલવા જે સાઇન-ઇન વાપરે છે.</string>
+    <string name="k2go_auth_list_note">હજી ઇન્સ્ટોલ ન થયેલી સેવાઓ માટે તમે ઓળખપત્રો દાખલ કરીને સાચવી શકો છો.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · જે સાઇન-ઇન K2Go તમારાં પુસ્તકો ખોલવા વાપરે છે.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · જે સાઇન-ઇન K2Go તમારા કોર્સ ખોલવા વાપરે છે.</string>
     <string name="k2go_auth_toggle_hint">પાસવર્ડ બદલાયો હોય તો જ કસ્ટમ સાઇન-ઇન ચાલુ કરો.</string>
-    <string name="k2go_auth_eye_hint">તે બતાવવા આંખ પર ટૅપ કરો.</string>
+    <string name="k2go_auth_eye_hint">ટાઇપ કરતી વખતે તમારો પાસવર્ડ બતાવવા આંખ પર ટૅપ કરો.</string>
     <string name="k2go_auth_chip_default">ડિફૉલ્ટ</string>
     <string name="k2go_auth_chip_custom">કસ્ટમ</string>
     <string name="k2go_auth_chip_notinstalled">ઇન્સ્ટૉલ થયેલ નથી</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">ચકાસવા માટે બીજા ફોનથી ફરી સ્કૅન કરો</string>
     <string name="k2go_clone_exit_keep_waiting">રાહ જોવાનું ચાલુ રાખો</string>
     <string name="k2go_clone_exit_redirecting">%1$d સેકંડમાં તમારી લાઇબ્રેરી ખૂલી રહી છે…</string>
-    <string name="k2go_busy_clone">ફોન વચ્ચે કૉપિ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
-    <string name="k2go_busy_backup">બૅકઅપ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
-    <string name="k2go_busy_restore">પુનઃસ્થાપન ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
-    <string name="k2go_busy_install">ઇન્સ્ટૉલ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
-    <string name="k2go_busy_download">ડાઉનલોડ ચાલી રહ્યું છે. કૃપા કરીને ક્રિયા પૂરી થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_clone">ફોન વચ્ચે એક કૉપિ ચાલુ છે. કૃપા કરી પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_backup">એક બૅકઅપ ચાલુ છે. કૃપા કરી પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_restore">એક પુનઃસ્થાપન ચાલુ છે. કૃપા કરી પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_install">એક ઇન્સ્ટોલ ચાલુ છે. કૃપા કરી પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
+    <string name="k2go_busy_download">એક ડાઉનલોડ ચાલુ છે. કૃપા કરી પૂર્ણ થાય ત્યાં સુધી રાહ જુઓ.</string>
     <string name="k2go_pending_title">બાકી ડાઉનલોડ્સ</string>
     <string name="k2go_pending_empty">કોઈ બાકી ડાઉનલોડ નથી.</string>
     <string name="k2go_pending_running">અત્યારે કંઈક ડાઉનલોડ થઈ રહ્યું છે</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">કોઈ નહીં</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">હમણાં ઇન્સ્ટૉલ કરવું?</string>
-    <string name="k2go_install_confirm_body">સર્વર થોભાવેલું હોય ત્યારે આ તમારા ઉપકરણ પર ઇન્સ્ટૉલ થાય છે.\n\n• થોડો સમય લાગે છે, ઘણી વાર દસેક મિનિટ.\n• શક્ય હોય તો સ્થિર કનેક્શન રાખો.\n• શરૂ કરતાં પહેલાં પૂરતી બૅટરી રાખો.\n• આ સ્ક્રીન પૂરું થાય ત્યાં સુધી ખુલ્લી રહે છે.</string>
+    <string name="k2go_install_confirm_body">સર્વર થોભાવેલ સાથે આ તમારા ઉપકરણ પર ઇન્સ્ટોલ થાય છે.\n\n• આ પ્રક્રિયામાં સમય લાગી શકે (દસ મિનિટ સુધી).\n• શક્ય હોય તો સ્થિર કનેક્શન રાખો.\n• શરૂ કરતાં પહેલાં ખાતરી કરો કે બૅટરી ચાર્જ છે.\n• આ સ્ક્રીન પૂર્ણ થાય ત્યાં સુધી ખુલ્લી રહે છે.</string>
     <string name="k2go_install_confirm_go">ઇન્સ્ટૉલ કરો</string>
     <string name="k2go_install_confirm_cancel">હમણાં નહીં</string>
     <string name="k2go_copied">કૉપિ થયું</string>

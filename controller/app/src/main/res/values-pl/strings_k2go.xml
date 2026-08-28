@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Zgodnie z systemem</string>
     <string name="k2go_theme_dark">Ciemny</string>
     <string name="k2go_settings_turnoff_title">Wyłączyć K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">To zatrzymuje bibliotekę i zamyka aplikację. (Gdy naciśniesz przyciski Ekran główny lub Wstecz, aplikacja jest minimalizowana, ale nadal działa w tle.)</string>
+    <string name="k2go_settings_turnoff_msg">To zatrzymuje bibliotekę i zamyka aplikację. Aby wyjść, ale zostawić aplikację działającą w tle, naciśnij przycisk ekranu głównego lub wstecz.</string>
     <string name="k2go_settings_turnoff_confirm">Wyłącz</string>
     <string name="k2go_settings_app_version">Wersja aplikacji</string>
     <string name="k2go_settings_check_updates">Sprawdź aktualizacje</string>
@@ -136,8 +136,8 @@
     <string name="k2go_clone_notif_text">Przesyłanie K2Go na drugie urządzenie.</string>
     <string name="k2go_bj_finish">Zakończ</string>
     <string name="k2go_bj_wait_title">To może chwilę potrwać</string>
-    <string name="k2go_bj_wait_body">Zostaw K2Go otwarte. Możesz wyjść — działa w tle, a powiadomienie Cię tu przywróci.</string>
-    <string name="k2go_bj_returning">Gotowe — powrót do ekranu głównego…</string>
+    <string name="k2go_bj_wait_body">Nie zamykaj K2Go. Naciśnij przycisk wstecz lub ekranu głównego, aby działało w tle. Po zakończeniu przesyłania możesz dotknąć powiadomienia, aby wrócić do K2Go.</string>
+    <string name="k2go_bj_returning">Gotowe. Wracamy do ekranu głównego…</string>
     <string name="k2go_br_leave_backup">Tworzenie kopii zapasowej w toku. Ten proces działa w tle, więc możesz opuścić tę stronę.</string>
     <string name="k2go_clone_back_running">Kopiowanie w toku. Ten proces działa w tle, więc możesz opuścić tę stronę.</string>
     <string name="k2go_br_leave_restore">Przywracanie w toku. Ten proces działa w tle, więc możesz opuścić tę stronę.</string>
@@ -327,11 +327,11 @@
     <string name="k2go_lang_choose_content_title">Wybierz język treści</string>
     <string name="k2go_hide">Ukryj</string>
     <string name="k2go_home_no_library">Brak jeszcze biblioteki — dotknij Pobierz więcej, aby zainstalować i dodać treść</string>
-    <string name="k2go_home_damaged">Biblioteka wymaga naprawy — ostatnia konfiguracja nie zakończyła się</string>
+    <string name="k2go_home_damaged">Biblioteka nie została w pełni zainstalowana i wymaga naprawy</string>
     <string name="k2go_home_recover">Napraw</string>
     <string name="k2go_state_no_system">Brak systemu</string>
     <string name="k2go_connect_no_system">Brak systemu do udostępnienia — najpierw napraw jakiś</string>
-    <string name="k2go_home_ready_empty">Biblioteka gotowa — dotknij Pobierz więcej, aby dodać treść</string>
+    <string name="k2go_home_ready_empty">Biblioteka jest gotowa. Dotknij Get more, aby dodać treści</string>
     <string name="k2go_rate_per_second">/s</string>
 
     <string name="k2go_gm_hub_title">Pobierz więcej</string>
@@ -465,7 +465,7 @@
     <string name="k2go_setup_progress_title">Kończenie konfiguracji</string>
     <string name="k2go_setup_context">Po zakończeniu konfiguracji zostaniesz automatycznie przeniesiony do biblioteki. Instalacja może działać w tle, gdy odwiedzasz inną część aplikacji.</string>
     <string name="k2go_setup_context_proot">Po zakończeniu konfiguracji zostaniesz automatycznie przeniesiony do biblioteki. Ta czynność nie może działać w tle, więc pozostań na tym ekranie, aż treść zostanie zainstalowana.</string>
-    <string name="k2go_install_busy">Instalacja jest już w toku — poczekaj na jej zakończenie.</string>
+    <string name="k2go_install_busy">Instalacja już trwa. Poczekaj na zakończenie.</string>
     <string name="k2go_setup_leave_hint">Wciąż trwa konfiguracja systemu. Możesz opuścić aplikację, gdy konfiguracja działa w tle.</string>
     <string name="k2go_damaged_title">Instalacja przerwana</string>
     <string name="k2go_damaged_close">Zamknij</string>
@@ -522,13 +522,13 @@
     <string name="k2go_books_dl_notif_title">Dodawanie książek do biblioteki</string>
 
     <string name="k2go_fqr_invalid">Ta nazwa regionu lub obszar wygląda na nieprawidłowe.</string>
-    <string name="k2go_fqr_name_taken">„%1$s” jest już używana — wybierz inną nazwę.</string>
+    <string name="k2go_fqr_name_taken">„%1$s” jest już używana. Wybierz inną nazwę.</string>
     <string name="k2go_fqr_calculating">Obliczanie rozmiaru pobierania…</string>
     <string name="k2go_fqr_estimate_error_title">Nie można pobrać tego regionu</string>
     <string name="k2go_fqr_consent_title">Pobrać ten region?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s do pobrania, %3$s na dysku.</string>
     <string name="k2go_fqr_consent_legend">Ten region: %1$s  ·  Wolne po: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Ten region może się nie zmieścić — potem wolne byłoby tylko %1$s.</string>
+    <string name="k2go_fqr_consent_wont_fit">Ten region może się nie zmieścić. Potem wolne byłoby tylko %1$s.</string>
     <string name="k2go_fqr_download">Pobierz</string>
     <string name="k2go_fqr_not_now">Nie teraz</string>
     <string name="k2go_fqr_downloading">Pobieranie “%1$s”</string>
@@ -605,7 +605,7 @@
     <string name="k2go_zim_delete_confirm_msg">Spowoduje to usunięcie pliku i aktualizację biblioteki treści. Możesz pobrać go ponownie później.</string>
     <string name="k2go_zim_deleting">Usuwanie…</string>
     <string name="k2go_zim_deleted">Usunięto %1$s</string>
-    <string name="k2go_zim_deleted_deferred">Usunięto — na razie ukryte, zostanie całkowicie usunięte po zakończeniu bieżącego pobierania.</string>
+    <string name="k2go_zim_deleted_deferred">Usunięto. Na razie ukryte i zostanie całkowicie usunięte po zakończeniu bieżącego pobierania.</string>
     <string name="k2go_zim_delete_failed">Nie udało się usunąć. Spróbuj ponownie.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Przebudowa pulpitu…</string>
@@ -624,7 +624,7 @@
     <string name="k2go_dash_live_start_failed">Nie można rozpocząć aktualizacji. Spróbuj ponownie.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rdzeń systemu · zawsze zainstalowany</string>
-    <string name="k2go_dash_detail_desc">Pulpit to rdzeń interfejsu REST API urządzenia (dash-node) — mała usługa Node pod adresem 127.0.0.1:4000, obsługiwana przez nginx i nadzorowana przez pdsm. Napędza każdą akcję biblioteki w aplikacji: przeglądanie i pobieranie Książek, dodawanie i usuwanie treści Wikipedii oraz ZIM, sesje Kolibri, Mapy i stan systemu. W przeciwieństwie do modułów treści nie instaluje się go ani nie usuwa — jest dostarczany z urządzeniem i zawsze obecny. Gdy dostępna jest nowsza wersja, możesz przebudować go w miejscu.</string>
+    <string name="k2go_dash_detail_desc">Panel to rdzeń REST API urządzenia (dash-node) — mała usługa Node na 127.0.0.1:4000, obsługiwana przez nginx i nadzorowana przez pdsm. Zasila każdą akcję biblioteki w aplikacji: przeglądanie i pobieranie Książek, dodawanie i usuwanie treści Wikipedii i ZIM, sesje Kolibri, Mapy i stan systemu. W przeciwieństwie do modułów treści nie możesz go zainstalować ani usunąć. Jest dołączony do aplikacji i zawsze obecny. Gdy dostępna jest nowsza kompilacja, możesz go przebudować w miejscu.</string>
     <string name="k2go_dash_includes">Punkty końcowe REST Książek, Wikipedii/ZIM, Kolibri i Map; vhost nginx; oraz punkty końcowe wersji systemu i przebudowy — wszystkie pod 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Rdzeń systemu</string>
@@ -644,9 +644,9 @@
     <string name="k2go_damaged_body">Instalacja została przerwana przed zakończeniem i system nie uruchamia się. Aby odzyskać, możesz przywrócić kopię zapasową lub zainstalować system od nowa.</string>
     <string name="k2go_damaged_recover">Odzyskaj…</string>
     <string name="k2go_reinstall_title">Zainstaluj system od nowa</string>
-    <string name="k2go_reinstall_sub">Usuń wszystko i zainstaluj świeży system od zera</string>
+    <string name="k2go_reinstall_sub">Usuń K2Go i treści na tym urządzeniu i zainstaluj świeży system od nowa</string>
     <string name="k2go_reinstall_confirm_title">Zainstalować od nowa?</string>
-    <string name="k2go_reinstall_confirm_msg">Spowoduje to usunięcie bieżącego systemu i całej jego zawartości — książek, map, pobrań i ustawień — a następnie instalację czystej kopii. Nie można tego cofnąć. Najpierw wykonaj kopię zapasową, jeśli chcesz coś zachować. Potem wybierasz sposób: pobranie lub skopiowanie z innego telefonu.</string>
+    <string name="k2go_reinstall_confirm_msg">To usuwa obecny system, w tym wszystkie aplikacje, treści i ustawienia, a następnie instaluje czystą kopię. Tej czynności nie można cofnąć. Jeśli chcesz coś zachować, najpierw zrób kopię zapasową. Następnie wybierz jak: pobrać go lub skopiować z innego telefonu.</string>
     <string name="k2go_reinstall_confirm_yes">Usuń i zainstaluj od nowa</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Z systemu</string>
@@ -670,7 +670,7 @@
     <string name="k2go_zc_count_results">%1$d wyników</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Uwierzytelnianie</string>
-    <string name="k2go_settings_authentication_sub">Logowania do Książek i Kursów</string>
+    <string name="k2go_settings_authentication_sub">Logowania do Calibre-Web (książki) i Kolibri (kursy)</string>
     <string name="k2go_auth_hint">Loginy, których K2Go używa do Książek i Kursów. Zaktualizuj jeden, jeśli zmieniło się hasło danej usługi.</string>
     <string name="k2go_auth_username">Nazwa użytkownika</string>
     <string name="k2go_auth_password">Hasło</string>
@@ -686,14 +686,14 @@
     <string name="k2go_auth_failed">Nie udało się zapisać — spróbuj ponownie</string>
     <string name="k2go_auth_load_failed">Nie udało się wczytać — czy usługa działa?</string>
     <string name="k2go_auth_svc_books">Przeczytaj książkę</string>
-    <string name="k2go_auth_svc_courses">Ucz się na kursach</string>
+    <string name="k2go_auth_svc_courses">Weź udział w kursie</string>
     <string name="k2go_auth_custom_toggle">Użyj niestandardowego logowania</string>
     <string name="k2go_auth_not_running">Ta usługa jeszcze nie działa. Zmiany są zapisywane teraz i zaczną obowiązywać po jej zainstalowaniu i uruchomieniu.</string>
-    <string name="k2go_auth_list_note">Niezainstalowane usługi pozostają dostępne — logowanie możesz ustawić z wyprzedzeniem. Dane logowania są przechowywane na tym urządzeniu.</string>
+    <string name="k2go_auth_list_note">Możesz wprowadzić i zapisać dane logowania dla usług, które nie są jeszcze zainstalowane.</string>
     <string name="k2go_auth_sub_books">Calibre-Web · logowanie, którego K2Go używa do otwierania Twoich książek.</string>
     <string name="k2go_auth_sub_courses">Kolibri · logowanie, którego K2Go używa do otwierania Twoich kursów.</string>
     <string name="k2go_auth_toggle_hint">Włącz niestandardowe logowanie tylko, gdy hasło zostało zmienione.</string>
-    <string name="k2go_auth_eye_hint">Dotknij oka, aby je pokazać.</string>
+    <string name="k2go_auth_eye_hint">Dotknij oka, aby pokazać hasło podczas pisania.</string>
     <string name="k2go_auth_chip_default">Domyślne</string>
     <string name="k2go_auth_chip_custom">Niestandardowe</string>
     <string name="k2go_auth_chip_notinstalled">Niezainstalowane</string>
@@ -732,11 +732,11 @@
     <string name="k2go_clone_exit_rescan">Zeskanuj ponownie z drugiego telefonu, aby zweryfikować</string>
     <string name="k2go_clone_exit_keep_waiting">Czekaj dalej</string>
     <string name="k2go_clone_exit_redirecting">Otwieranie biblioteki za %1$d s…</string>
-    <string name="k2go_busy_clone">Kopiowanie między telefonami jest w toku. Poczekaj na zakończenie operacji.</string>
-    <string name="k2go_busy_backup">Kopia zapasowa jest w toku. Poczekaj na zakończenie operacji.</string>
-    <string name="k2go_busy_restore">Przywracanie jest w toku. Poczekaj na zakończenie operacji.</string>
-    <string name="k2go_busy_install">Instalacja jest w toku. Poczekaj na zakończenie operacji.</string>
-    <string name="k2go_busy_download">Pobieranie jest w toku. Poczekaj na zakończenie operacji.</string>
+    <string name="k2go_busy_clone">Trwa kopiowanie między telefonami. Poczekaj na zakończenie.</string>
+    <string name="k2go_busy_backup">Trwa tworzenie kopii zapasowej. Poczekaj na zakończenie.</string>
+    <string name="k2go_busy_restore">Trwa przywracanie. Poczekaj na zakończenie.</string>
+    <string name="k2go_busy_install">Trwa instalacja. Poczekaj na zakończenie.</string>
+    <string name="k2go_busy_download">Trwa pobieranie. Poczekaj na zakończenie.</string>
     <string name="k2go_pending_title">Oczekujące pobierania</string>
     <string name="k2go_pending_empty">Brak oczekujących pobierań.</string>
     <string name="k2go_pending_running">Coś jest teraz pobierane</string>
@@ -746,7 +746,7 @@
     <string name="k2go_settings_pending_none">Brak</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Zainstalować teraz?</string>
-    <string name="k2go_install_confirm_body">Instalacja odbywa się na Twoim urządzeniu przy wstrzymanym serwerze.\n\n• Trwa to chwilę, często kilkadziesiąt minut.\n• W miarę możliwości utrzymuj stabilne połączenie.\n• Zadbaj o wystarczający poziom baterii przed rozpoczęciem.\n• Ten ekran pozostaje otwarty do zakończenia.</string>
+    <string name="k2go_install_confirm_body">To instaluje się na Twoim urządzeniu przy wstrzymanym serwerze.\n\n• Ten proces może chwilę potrwać (nawet kilkadziesiąt minut).\n• W miarę możliwości utrzymuj stabilne połączenie.\n• Przed rozpoczęciem upewnij się, że bateria jest naładowana.\n• Ten ekran pozostaje otwarty do zakończenia.</string>
     <string name="k2go_install_confirm_go">Zainstaluj</string>
     <string name="k2go_install_confirm_cancel">Nie teraz</string>
     <string name="k2go_copied">Skopiowano</string>

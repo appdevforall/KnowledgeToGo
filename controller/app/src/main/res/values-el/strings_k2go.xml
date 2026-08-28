@@ -66,7 +66,7 @@
     <string name="k2go_theme_system">Ακολούθηση συστήματος</string>
     <string name="k2go_theme_dark">Σκοτεινό</string>
     <string name="k2go_settings_turnoff_title">Απενεργοποίηση του K2Go;</string>
-    <string name="k2go_settings_turnoff_msg">Αυτό σταματά τη βιβλιοθήκη και κλείνει την εφαρμογή. (Όταν πατάτε τα κουμπιά Αρχική ή Πίσω, η εφαρμογή ελαχιστοποιείται αλλά συνεχίζει να εκτελείται στο παρασκήνιο.)</string>
+    <string name="k2go_settings_turnoff_msg">Αυτό σταματά τη βιβλιοθήκη και κλείνει την εφαρμογή. Για να βγεις αλλά να κρατήσεις την εφαρμογή να εκτελείται στο παρασκήνιο, πάτησε το κουμπί αρχική ή πίσω.</string>
     <string name="k2go_settings_turnoff_confirm">Απενεργοποίηση</string>
     <string name="k2go_settings_app_version">Έκδοση εφαρμογής</string>
     <string name="k2go_settings_check_updates">Έλεγχος για ενημερώσεις</string>
@@ -136,8 +136,8 @@
     <string name="k2go_clone_notif_text">Μεταφορά του K2Go στην άλλη συσκευή.</string>
     <string name="k2go_bj_finish">Τέλος</string>
     <string name="k2go_bj_wait_title">Αυτό μπορεί να διαρκέσει λίγο</string>
-    <string name="k2go_bj_wait_body">Κρατήστε το K2Go ανοιχτό. Μπορείτε να φύγετε — συνεχίζει να εκτελείται στο παρασκήνιο και η ειδοποίηση σας επαναφέρει.</string>
-    <string name="k2go_bj_returning">Ολοκληρώθηκε — επιστροφή στην Αρχική…</string>
+    <string name="k2go_bj_wait_body">Κράτα το K2Go ανοιχτό. Πάτησε το κουμπί πίσω ή αρχική για να συνεχίσει να εκτελείται στο παρασκήνιο. Όταν ολοκληρωθεί η μεταφορά, μπορείς να πατήσεις την ειδοποίηση για να επιστρέψεις στο K2Go.</string>
+    <string name="k2go_bj_returning">Έτοιμο. Σε επιστρέφουμε στην αρχική οθόνη…</string>
     <string name="k2go_br_leave_backup">Η δημιουργία αντιγράφου ασφαλείας είναι σε εξέλιξη. Αυτή η διαδικασία εκτελείται στο παρασκήνιο, οπότε μπορείτε να φύγετε από αυτήν τη σελίδα.</string>
     <string name="k2go_clone_back_running">Η αντιγραφή είναι σε εξέλιξη. Αυτή η διαδικασία εκτελείται στο παρασκήνιο, οπότε μπορείτε να φύγετε από αυτήν τη σελίδα.</string>
     <string name="k2go_br_leave_restore">Η επαναφορά είναι σε εξέλιξη. Αυτή η διαδικασία εκτελείται στο παρασκήνιο, οπότε μπορείτε να φύγετε από αυτήν τη σελίδα.</string>
@@ -326,11 +326,11 @@
     <string name="k2go_lang_choose_content_title">Επιλέξτε γλώσσα περιεχομένου</string>
     <string name="k2go_hide">Απόκρυψη</string>
     <string name="k2go_home_no_library">Δεν υπάρχει ακόμη βιβλιοθήκη — πατήστε Αποκτήστε περισσότερα για εγκατάσταση και προσθήκη περιεχομένου</string>
-    <string name="k2go_home_damaged">Η βιβλιοθήκη χρειάζεται επιδιόρθωση — η τελευταία εγκατάσταση δεν ολοκληρώθηκε</string>
+    <string name="k2go_home_damaged">Η βιβλιοθήκη δεν εγκαταστάθηκε πλήρως και χρειάζεται επιδιόρθωση</string>
     <string name="k2go_home_recover">Επιδιόρθωση</string>
     <string name="k2go_state_no_system">Κανένα σύστημα ακόμη</string>
     <string name="k2go_connect_no_system">Δεν υπάρχει ακόμη σύστημα για κοινή χρήση — επιδιορθώστε πρώτα ένα</string>
-    <string name="k2go_home_ready_empty">Η βιβλιοθήκη είναι έτοιμη — πατήστε Αποκτήστε περισσότερα για προσθήκη περιεχομένου</string>
+    <string name="k2go_home_ready_empty">Η βιβλιοθήκη είναι έτοιμη. Πάτησε Get more για να προσθέσεις περιεχόμενο</string>
     <string name="k2go_rate_per_second">/δ</string>
     <string name="k2go_gm_hub_title">Αποκτήστε περισσότερα</string>
     <string name="k2go_gm_hub_sub">Προσθέστε περιεχόμενο στη βιβλιοθήκη σας εκτός σύνδεσης.</string>
@@ -459,7 +459,7 @@
     <string name="k2go_setup_progress_title">Ολοκλήρωση ρύθμισης</string>
     <string name="k2go_setup_context">Θα μεταφερθείς στη βιβλιοθήκη σου αυτόματα όταν ολοκληρωθεί η ρύθμιση. Η εγκατάσταση μπορεί να εκτελείται στο παρασκήνιο ενώ επισκέπτεσαι άλλο μέρος της εφαρμογής.</string>
     <string name="k2go_setup_context_proot">Θα μεταφερθείς στη βιβλιοθήκη σου αυτόματα όταν ολοκληρωθεί η ρύθμιση. Αυτή η ενέργεια δεν μπορεί να εκτελείται στο παρασκήνιο, οπότε μείνε σε αυτή την οθόνη μέχρι να εγκατασταθεί το περιεχόμενο.</string>
-    <string name="k2go_install_busy">Μια εγκατάσταση εκτελείται ήδη — περιμένετε να ολοκληρωθεί.</string>
+    <string name="k2go_install_busy">Μια εγκατάσταση εκτελείται ήδη. Περίμενε να ολοκληρωθεί.</string>
     <string name="k2go_setup_leave_hint">Το σύστημα ρυθμίζεται ακόμη. Μπορείς να αφήσεις την εφαρμογή ενώ η ρύθμιση εκτελείται στο παρασκήνιο.</string>
     <string name="k2go_damaged_title">Η εγκατάσταση διακόπηκε</string>
     <string name="k2go_damaged_close">Κλείσιμο</string>
@@ -514,13 +514,13 @@
     <string name="k2go_books_dl_channel_name">Λήψεις βιβλίων</string>
     <string name="k2go_books_dl_notif_title">Προσθήκη βιβλίων στη βιβλιοθήκη σας</string>
     <string name="k2go_fqr_invalid">Το όνομα ή η περιοχή αυτή φαίνεται μη έγκυρη.</string>
-    <string name="k2go_fqr_name_taken">Το «%1$s» χρησιμοποιείται ήδη — διάλεξε άλλο όνομα.</string>
+    <string name="k2go_fqr_name_taken">Το «%1$s» χρησιμοποιείται ήδη. Διάλεξε άλλο όνομα.</string>
     <string name="k2go_fqr_calculating">Υπολογισμός μεγέθους λήψης…</string>
     <string name="k2go_fqr_estimate_error_title">Δεν είναι δυνατή η λήψη αυτής της περιοχής</string>
     <string name="k2go_fqr_consent_title">Λήψη αυτής της περιοχής;</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s για λήψη, %3$s στον δίσκο.</string>
     <string name="k2go_fqr_consent_legend">Αυτή η περιοχή: %1$s  ·  Ελεύθερα μετά: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Αυτή η περιοχή ίσως δεν χωράει — μόνο %1$s θα ήταν ελεύθερα στη συνέχεια.</string>
+    <string name="k2go_fqr_consent_wont_fit">Αυτή η περιοχή μπορεί να μη χωράει. Μετά θα έμεναν ελεύθερα μόνο %1$s.</string>
     <string name="k2go_fqr_download">Λήψη</string>
     <string name="k2go_fqr_not_now">Όχι τώρα</string>
     <string name="k2go_fqr_downloading">Λήψη “%1$s”</string>
@@ -596,7 +596,7 @@
     <string name="k2go_zim_delete_confirm_msg">Αυτό αφαιρεί το αρχείο και ενημερώνει τη βιβλιοθήκη περιεχομένου. Μπορείτε να το κατεβάσετε ξανά αργότερα.</string>
     <string name="k2go_zim_deleting">Διαγραφή…</string>
     <string name="k2go_zim_deleted">Διαγράφηκε %1$s</string>
-    <string name="k2go_zim_deleted_deferred">Διαγράφηκε — προς το παρόν κρυφό, θα αφαιρεθεί πλήρως μόλις ολοκληρωθεί η τρέχουσα λήψη.</string>
+    <string name="k2go_zim_deleted_deferred">Διαγράφηκε. Προς το παρόν κρυμμένο και θα αφαιρεθεί πλήρως όταν ολοκληρωθεί η τρέχουσα λήψη.</string>
     <string name="k2go_zim_delete_failed">Η διαγραφή απέτυχε. Δοκιμάστε ξανά.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Ανασυγκρότηση του πίνακα…</string>
@@ -615,7 +615,7 @@
     <string name="k2go_dash_live_start_failed">Δεν ήταν δυνατή η έναρξη της ενημέρωσης. Δοκιμάστε ξανά.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Πυρήνας συστήματος · πάντα εγκατεστημένος</string>
-    <string name="k2go_dash_detail_desc">Ο πίνακας είναι ο πυρήνας REST API της συσκευής (dash-node): μια μικρή υπηρεσία Node στο 127.0.0.1:4000, που εξυπηρετείται από το nginx και επιβλέπεται από το pdsm. Τροφοδοτεί κάθε ενέργεια της βιβλιοθήκης στην εφαρμογή: περιήγηση και λήψη Βιβλίων, προσθήκη και διαγραφή περιεχομένου Wikipedia και ZIM, συνεδρίες Kolibri, Χάρτες και κατάσταση συστήματος. Σε αντίθεση με τις μονάδες περιεχομένου, δεν εγκαθίσταται ούτε αφαιρείται — συνοδεύει τη συσκευή και είναι πάντα παρών. Όταν υπάρχει νεότερη έκδοση, μπορείτε να τον ανασυγκροτήσετε επιτόπου.</string>
+    <string name="k2go_dash_detail_desc">Ο πίνακας ελέγχου είναι ο πυρήνας REST API της συσκευής (dash-node) — μια μικρή υπηρεσία Node στο 127.0.0.1:4000, που εξυπηρετείται από nginx και εποπτεύεται από pdsm. Τροφοδοτεί κάθε ενέργεια της βιβλιοθήκης στην εφαρμογή: περιήγηση και λήψη Βιβλίων, προσθήκη και διαγραφή περιεχομένου Wikipedia και ZIM, συνεδρίες Kolibri, Χάρτες και κατάσταση συστήματος. Σε αντίθεση με τα module περιεχομένου, δεν μπορείς να το εγκαταστήσεις ή να το αφαιρέσεις. Έρχεται με την εφαρμογή και είναι πάντα παρόν. Όταν είναι διαθέσιμη νεότερη έκδοση, μπορείς να το ξαναχτίσεις επιτόπου.</string>
     <string name="k2go_dash_includes">Σημεία REST για Βιβλία, Wikipedia/ZIM, Kolibri και Χάρτες· το vhost του nginx· και σημεία έκδοσης συστήματος και ανασυγκρότησης — όλα στο 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Πυρήνας συστήματος</string>
@@ -635,9 +635,9 @@
     <string name="k2go_damaged_body">Η εγκατάσταση διακόπηκε πριν ολοκληρωθεί και το σύστημα δεν ξεκινά. Για ανάκτηση μπορείτε να επαναφέρετε ένα αντίγραφο ασφαλείας ή να επανεγκαταστήσετε το σύστημα από την αρχή.</string>
     <string name="k2go_damaged_recover">Ανάκτηση…</string>
     <string name="k2go_reinstall_title">Επανεγκατάσταση συστήματος</string>
-    <string name="k2go_reinstall_sub">Διαγράφει τα πάντα και εγκαθιστά ένα καθαρό σύστημα από την αρχή</string>
+    <string name="k2go_reinstall_sub">Διαγραφή του K2Go και του περιεχομένου σε αυτή τη συσκευή και εγκατάσταση νέου συστήματος από την αρχή</string>
     <string name="k2go_reinstall_confirm_title">Επανεγκατάσταση από την αρχή;</string>
-    <string name="k2go_reinstall_confirm_msg">Αυτό διαγράφει το τρέχον σύστημα και ό,τι περιέχει — βιβλία, χάρτες, λήψεις και ρυθμίσεις — και έπειτα εγκαθιστά ένα καθαρό αντίγραφο. Δεν αναιρείται. Κάντε πρώτα αντίγραφο ασφαλείας αν θέλετε να κρατήσετε κάτι. Μετά επιλέγετε πώς: λήψη ή αντιγραφή από άλλο τηλέφωνο.</string>
+    <string name="k2go_reinstall_confirm_msg">Αυτό διαγράφει το τρέχον σύστημα, συμπεριλαμβανομένων όλων των εφαρμογών, του περιεχομένου και των ρυθμίσεων, και μετά εγκαθιστά ένα καθαρό αντίγραφο. Αυτή η ενέργεια δεν μπορεί να αναιρεθεί. Αν θέλεις να κρατήσεις κάτι, κάνε πρώτα αντίγραφο ασφαλείας. Μετά διάλεξε πώς: κατέβασέ το ή αντίγραψέ το από άλλο τηλέφωνο.</string>
     <string name="k2go_reinstall_confirm_yes">Διαγραφή και επανεγκατάσταση</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Από το σύστημα</string>
@@ -661,7 +661,7 @@
     <string name="k2go_zc_count_results">%1$d αποτελέσματα</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Έλεγχος ταυτότητας</string>
-    <string name="k2go_settings_authentication_sub">Συνδέσεις για Βιβλία και Μαθήματα</string>
+    <string name="k2go_settings_authentication_sub">Συνδέσεις για Calibre-Web (βιβλία) και Kolibri (μαθήματα)</string>
     <string name="k2go_auth_hint">Οι συνδέσεις που χρησιμοποιεί το K2Go για Βιβλία και Μαθήματα. Ενημερώστε μία αν άλλαξε ο κωδικός της υπηρεσίας της.</string>
     <string name="k2go_auth_username">Όνομα χρήστη</string>
     <string name="k2go_auth_password">Κωδικός πρόσβασης</string>
@@ -676,15 +676,15 @@
     <string name="k2go_auth_noperm">Αυτός ο λογαριασμός δεν μπορεί να διαχειριστεί περιεχόμενο</string>
     <string name="k2go_auth_failed">Η αποθήκευση απέτυχε — δοκιμάστε ξανά</string>
     <string name="k2go_auth_load_failed">Η φόρτωση απέτυχε — εκτελείται η υπηρεσία;</string>
-    <string name="k2go_auth_svc_books">Διαβάστε ένα βιβλίο</string>
-    <string name="k2go_auth_svc_courses">Παρακολουθήστε μαθήματα</string>
+    <string name="k2go_auth_svc_books">Διάβασε ένα βιβλίο</string>
+    <string name="k2go_auth_svc_courses">Παρακολούθησε ένα μάθημα</string>
     <string name="k2go_auth_custom_toggle">Χρήση προσαρμοσμένης σύνδεσης</string>
     <string name="k2go_auth_not_running">Αυτή η υπηρεσία δεν εκτελείται ακόμη. Οι αλλαγές αποθηκεύονται τώρα και εφαρμόζονται μόλις εγκατασταθεί και εκτελεστεί.</string>
-    <string name="k2go_auth_list_note">Οι μη εγκατεστημένες υπηρεσίες παραμένουν προσβάσιμες — μπορείτε να ορίσετε εκ των προτέρων τη σύνδεση. Τα διαπιστευτήρια αποθηκεύονται σε αυτή τη συσκευή.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · η σύνδεση που χρησιμοποιεί το K2Go για να ανοίγει τα βιβλία σας.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · η σύνδεση που χρησιμοποιεί το K2Go για να ανοίγει τα μαθήματά σας.</string>
+    <string name="k2go_auth_list_note">Μπορείς να εισαγάγεις και να αποθηκεύσεις διαπιστευτήρια για υπηρεσίες που δεν έχουν εγκατασταθεί ακόμη.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · η σύνδεση που χρησιμοποιεί το K2Go για να ανοίγει τα βιβλία σου.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · η σύνδεση που χρησιμοποιεί το K2Go για να ανοίγει τα μαθήματά σου.</string>
     <string name="k2go_auth_toggle_hint">Ενεργοποιήστε προσαρμοσμένη σύνδεση μόνο αν άλλαξε ο κωδικός.</string>
-    <string name="k2go_auth_eye_hint">Πατήστε το μάτι για εμφάνιση.</string>
+    <string name="k2go_auth_eye_hint">Πάτησε το μάτι για να βλέπεις τον κωδικό καθώς πληκτρολογείς.</string>
     <string name="k2go_auth_chip_default">Προεπιλογή</string>
     <string name="k2go_auth_chip_custom">Προσαρμοσμένο</string>
     <string name="k2go_auth_chip_notinstalled">Δεν έχει εγκατασταθεί</string>
@@ -723,11 +723,11 @@
     <string name="k2go_clone_exit_rescan">Σαρώστε ξανά από το άλλο τηλέφωνο για επαλήθευση</string>
     <string name="k2go_clone_exit_keep_waiting">Συνέχεια αναμονής</string>
     <string name="k2go_clone_exit_redirecting">Άνοιγμα της βιβλιοθήκης σε %1$d δλ…</string>
-    <string name="k2go_busy_clone">Μια αντιγραφή μεταξύ τηλεφώνων βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
-    <string name="k2go_busy_backup">Ένα αντίγραφο ασφαλείας βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
-    <string name="k2go_busy_restore">Μια επαναφορά βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
-    <string name="k2go_busy_install">Μια εγκατάσταση βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
-    <string name="k2go_busy_download">Μια λήψη βρίσκεται σε εξέλιξη. Περιμένετε να ολοκληρωθεί η λειτουργία.</string>
+    <string name="k2go_busy_clone">Μια αντιγραφή μεταξύ τηλεφώνων είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
+    <string name="k2go_busy_backup">Μια δημιουργία αντιγράφου ασφαλείας είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
+    <string name="k2go_busy_restore">Μια επαναφορά είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
+    <string name="k2go_busy_install">Μια εγκατάσταση είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
+    <string name="k2go_busy_download">Μια λήψη είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
     <string name="k2go_pending_title">Εκκρεμείς λήψεις</string>
     <string name="k2go_pending_empty">Δεν υπάρχουν εκκρεμείς λήψεις.</string>
     <string name="k2go_pending_running">Γίνεται λήψη τώρα</string>
@@ -737,7 +737,7 @@
     <string name="k2go_settings_pending_none">Καμία</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Εγκατάσταση τώρα;</string>
-    <string name="k2go_install_confirm_body">Η εγκατάσταση γίνεται στη συσκευή σας με τον διακομιστή σε παύση.\n\n• Διαρκεί λίγη ώρα, συχνά δεκάδες λεπτά.\n• Διατηρήστε σταθερή σύνδεση αν μπορείτε.\n• Φροντίστε να έχετε αρκετή μπαταρία πριν ξεκινήσετε.\n• Αυτή η οθόνη παραμένει ανοιχτή μέχρι να ολοκληρωθεί.</string>
+    <string name="k2go_install_confirm_body">Αυτό εγκαθίσταται στη συσκευή σου με τον διακομιστή σε παύση.\n\n• Αυτή η διαδικασία μπορεί να πάρει ώρα (έως δεκάδες λεπτά).\n• Κράτα σταθερή σύνδεση αν μπορείς.\n• Βεβαιώσου ότι η μπαταρία είναι φορτισμένη πριν ξεκινήσεις.\n• Αυτή η οθόνη μένει ανοιχτή μέχρι να τελειώσει.</string>
     <string name="k2go_install_confirm_go">Εγκατάσταση</string>
     <string name="k2go_install_confirm_cancel">Όχι τώρα</string>
     <string name="k2go_copied">Αντιγράφηκε</string>

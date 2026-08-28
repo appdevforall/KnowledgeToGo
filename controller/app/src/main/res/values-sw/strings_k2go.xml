@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Fuata mfumo</string>
     <string name="k2go_theme_dark">Nyeusi</string>
     <string name="k2go_settings_turnoff_title">Zima K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Hii husimamisha maktaba na kufunga programu. (Unapobonyeza kitufe cha Mwanzo au Rudi, programu hupunguzwa lakini huendelea kufanya kazi chinichini.)</string>
+    <string name="k2go_settings_turnoff_msg">Hii inasimamisha maktaba na kufunga programu. Ili kutoka lakini kuweka programu ikiendeshwa chinichini, bonyeza kitufe cha mwanzo au nyuma.</string>
     <string name="k2go_settings_turnoff_confirm">Zima</string>
     <string name="k2go_settings_app_version">Toleo la programu</string>
     <string name="k2go_settings_check_updates">Angalia masasisho</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Inahamisha K2Go kwenye kifaa kingine.</string>
     <string name="k2go_bj_finish">Maliza</string>
     <string name="k2go_bj_wait_title">Hii inaweza kuchukua muda</string>
-    <string name="k2go_bj_wait_body">Weka K2Go wazi. Unaweza kuondoka — inaendelea kufanya kazi chinichini, na arifa itakurudisha.</string>
-    <string name="k2go_bj_returning">Imekamilika — inarudi Mwanzo…</string>
+    <string name="k2go_bj_wait_body">Weka K2Go wazi. Gusa kitufe cha nyuma au mwanzo ili iendelee kuendeshwa chinichini. Uhamishaji ukikamilika, unaweza kugusa arifa ili kurudi K2Go.</string>
+    <string name="k2go_bj_returning">Imekamilika. Tunakurudisha kwenye skrini ya Mwanzo…</string>
     <string name="k2go_br_leave_backup">Uhifadhi nakala unaendelea. Mchakato huu unaendeshwa chinichini, hivyo unaweza kuondoka kwenye ukurasa huu.</string>
     <string name="k2go_clone_back_running">Kunakili kunaendelea. Mchakato huu unaendeshwa chinichini, hivyo unaweza kuondoka kwenye ukurasa huu.</string>
     <string name="k2go_br_leave_restore">Urejeshaji unaendelea. Mchakato huu unaendeshwa chinichini, hivyo unaweza kuondoka kwenye ukurasa huu.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Chagua lugha ya maudhui</string>
     <string name="k2go_hide">Ficha</string>
     <string name="k2go_home_no_library">Bado hakuna maktaba — gusa Pata zaidi ili kusakinisha na kuongeza maudhui</string>
-    <string name="k2go_home_damaged">Maktaba inahitaji kurekebishwa — usanidi wa mwisho haukukamilika</string>
+    <string name="k2go_home_damaged">Maktaba haikusakinishwa kikamilifu na inahitaji kurekebishwa</string>
     <string name="k2go_home_recover">Rekebisha</string>
     <string name="k2go_state_no_system">Bado hakuna mfumo</string>
     <string name="k2go_connect_no_system">Bado hakuna mfumo wa kushiriki — rekebisha mmoja kwanza</string>
-    <string name="k2go_home_ready_empty">Maktaba tayari — gusa Pata zaidi ili kuongeza maudhui</string>
+    <string name="k2go_home_ready_empty">Maktaba iko tayari. Gusa Get more ili kuongeza maudhui</string>
     <string name="k2go_rate_per_second">/sek</string>
     <string name="k2go_gm_hub_title">Pata zaidi</string>
     <string name="k2go_gm_hub_sub">Ongeza maudhui kwenye maktaba yako isiyo ya mtandaoni.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Inamaliza usanidi</string>
     <string name="k2go_setup_context">Utapelekwa kwenye maktaba yako kiotomatiki usanidi ukikamilika. Usakinishaji unaweza kuendeshwa chinichini unapotembelea sehemu nyingine ya programu.</string>
     <string name="k2go_setup_context_proot">Utapelekwa kwenye maktaba yako kiotomatiki usanidi ukikamilika. Kitendo hiki hakiwezi kuendeshwa chinichini, hivyo baki kwenye skrini hii hadi maudhui yasakinishwe.</string>
-    <string name="k2go_install_busy">Usakinishaji tayari unaendelea — tafadhali subiri umalize.</string>
+    <string name="k2go_install_busy">Usakinishaji tayari unaendelea. Tafadhali subiri ukamilike.</string>
     <string name="k2go_setup_leave_hint">Bado inasanidi mfumo. Unaweza kuondoka kwenye programu wakati usanidi unaendelea chinichini.</string>
     <string name="k2go_damaged_title">Usakinishaji umekatizwa</string>
     <string name="k2go_damaged_close">Funga</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Upakuaji wa vitabu</string>
     <string name="k2go_books_dl_notif_title">Inaongeza vitabu kwenye maktaba yako</string>
     <string name="k2go_fqr_invalid">Jina la eneo au eneo hilo linaonekana si sahihi.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” tayari inatumika — chagua jina lingine.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” tayari inatumika. Chagua jina tofauti.</string>
     <string name="k2go_fqr_calculating">Inakokotoa ukubwa wa upakuaji…</string>
     <string name="k2go_fqr_estimate_error_title">Haiwezi kupakua eneo hili</string>
     <string name="k2go_fqr_consent_title">Pakua eneo hili?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s kupakua, %3$s kwenye diski.</string>
     <string name="k2go_fqr_consent_legend">Eneo hili: %1$s  ·  Wazi baadaye: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Eneo hili linaweza lisitoshee — ni %1$s tu itakayokuwa wazi baadaye.</string>
+    <string name="k2go_fqr_consent_wont_fit">Eneo hili linaweza lisitoshe. Baadaye ni %1$s tu itakayobaki huru.</string>
     <string name="k2go_fqr_download">Pakua</string>
     <string name="k2go_fqr_not_now">Si sasa</string>
     <string name="k2go_fqr_downloading">Inapakua “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Hii huondoa faili na kusasisha maktaba ya maudhui. Unaweza kuipakua tena baadaye.</string>
     <string name="k2go_zim_deleting">Inafuta…</string>
     <string name="k2go_zim_deleted">%1$s imefutwa</string>
-    <string name="k2go_zim_deleted_deferred">Imefutwa — imefichwa kwa sasa, itaondolewa kabisa upakuaji wa sasa utakapokamilika.</string>
+    <string name="k2go_zim_deleted_deferred">Imefutwa. Kwa sasa imefichwa na itaondolewa kabisa upakuaji wa sasa ukikamilika.</string>
     <string name="k2go_zim_delete_failed">Imeshindwa kufuta. Tafadhali jaribu tena.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Inajenga upya dashibodi…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Imeshindwa kuanzisha sasisho. Jaribu tena.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kiini cha mfumo · kimesakinishwa daima</string>
-    <string name="k2go_dash_detail_desc">Dashibodi ni kiini cha REST API cha kisanduku (dash-node): huduma ndogo ya Node kwenye 127.0.0.1:4000, inayotolewa na nginx na kusimamiwa na pdsm. Inaendesha kila kitendo cha maktaba ndani ya programu: kuvinjari na kupakua Vitabu, kuongeza na kufuta maudhui ya Wikipedia na ZIM, vipindi vya Kolibri, Ramani na hali ya mfumo. Tofauti na moduli za maudhui, haisakinishwi wala kuondolewa — inakuja na kisanduku na ipo daima. Toleo jipya linapopatikana, unaweza kukijenga upya papo hapo.</string>
+    <string name="k2go_dash_detail_desc">Dashibodi ni kiini cha REST API cha kifaa (dash-node) — huduma ndogo ya Node kwenye 127.0.0.1:4000, inayotolewa na nginx na kusimamiwa na pdsm. Inaendesha kila kitendo cha maktaba ndani ya programu: kuvinjari na kupakua Vitabu, kuongeza na kufuta maudhui ya Wikipedia na ZIM, vipindi vya Kolibri, Ramani na hali ya mfumo. Tofauti na moduli za maudhui, huwezi kuisakinisha wala kuiondoa. Inakuja na programu na ipo daima. Wakati toleo jipya linapatikana, unaweza kuijenga upya papo hapo.</string>
     <string name="k2go_dash_includes">Ncha za REST za Vitabu, Wikipedia/ZIM, Kolibri na Ramani; vhost ya nginx; na ncha za toleo la mfumo na kujenga upya — zote kwenye 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Kiini cha mfumo</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Usanidi ulisimamishwa kabla ya kukamilika na mfumo hauwezi kuanza. Ili kurejesha, unaweza kurejesha nakala rudufu au kusakinisha upya mfumo kutoka mwanzo.</string>
     <string name="k2go_damaged_recover">Rejesha…</string>
     <string name="k2go_reinstall_title">Sakinisha upya mfumo</string>
-    <string name="k2go_reinstall_sub">Futa kila kitu na usakinishe mfumo mpya kutoka mwanzo</string>
+    <string name="k2go_reinstall_sub">Futa K2Go na maudhui kwenye kifaa hiki na usakinishe mfumo mpya kutoka mwanzo</string>
     <string name="k2go_reinstall_confirm_title">Kusakinisha upya kutoka mwanzo?</string>
-    <string name="k2go_reinstall_confirm_msg">Hii inafuta mfumo wa sasa na kila kitu ndani yake — vitabu, ramani, vipakuliwa na mipangilio — kisha inasakinisha nakala safi. Haiwezi kutenduliwa. Hifadhi nakala rudufu kwanza ikiwa unataka kuweka chochote. Kisha unachagua jinsi: kupakua, au kunakili kutoka simu nyingine.</string>
+    <string name="k2go_reinstall_confirm_msg">Hii inafuta mfumo wa sasa, ikijumuisha programu zote, maudhui na mipangilio, kisha inasakinisha nakala safi. Kitendo hiki hakiwezi kutenduliwa. Ukitaka kuhifadhi chochote, hifadhi nakala kwanza. Kisha chagua jinsi: ipakue, au inakili kutoka simu nyingine.</string>
     <string name="k2go_reinstall_confirm_yes">Futa na usakinishe upya</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Kutoka kwa mfumo</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">matokeo %1$d</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Uthibitishaji</string>
-    <string name="k2go_settings_authentication_sub">Kuingia kwa Vitabu na Kozi</string>
+    <string name="k2go_settings_authentication_sub">Uingiaji wa Calibre-Web (vitabu) na Kolibri (kozi)</string>
     <string name="k2go_auth_hint">Maingizo ambayo K2Go hutumia kwa Vitabu na Kozi. Sasisha moja ikiwa nenosiri la huduma yake limebadilika.</string>
     <string name="k2go_auth_username">Jina la mtumiaji</string>
     <string name="k2go_auth_password">Nenosiri</string>
@@ -679,11 +679,11 @@
     <string name="k2go_auth_svc_courses">Chukua kozi</string>
     <string name="k2go_auth_custom_toggle">Tumia ingizo maalum</string>
     <string name="k2go_auth_not_running">Huduma hii bado haijaanza kufanya kazi. Mabadiliko yanahifadhiwa sasa na yataanza kutumika mara itakaposakinishwa na kuanza kufanya kazi.</string>
-    <string name="k2go_auth_list_note">Huduma zisizosakinishwa hubaki zinafikika — unaweza kuweka ingizo mapema. Vitambulisho huhifadhiwa kwenye kifaa hiki.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · ingizo ambalo K2Go hutumia kufungua vitabu vyako.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · ingizo ambalo K2Go hutumia kufungua kozi zako.</string>
+    <string name="k2go_auth_list_note">Unaweza kuingiza na kuhifadhi vitambulisho vya huduma ambazo bado hazijasakinishwa.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · uingiaji ambao K2Go hutumia kufungua vitabu vyako.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · uingiaji ambao K2Go hutumia kufungua kozi zako.</string>
     <string name="k2go_auth_toggle_hint">Washa ingizo maalum tu ikiwa nenosiri limebadilika.</string>
-    <string name="k2go_auth_eye_hint">Gusa jicho ili kuionyesha.</string>
+    <string name="k2go_auth_eye_hint">Gusa jicho ili kuonyesha nenosiri lako unapoandika.</string>
     <string name="k2go_auth_chip_default">Chaguo-msingi</string>
     <string name="k2go_auth_chip_custom">Maalum</string>
     <string name="k2go_auth_chip_notinstalled">Haijasakinishwa</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Changanua tena kutoka kwa simu nyingine ili kuthibitisha</string>
     <string name="k2go_clone_exit_keep_waiting">Endelea kusubiri</string>
     <string name="k2go_clone_exit_redirecting">Inafungua maktaba yako baada ya sekunde %1$d…</string>
-    <string name="k2go_busy_clone">Kunakili kati ya simu inaendelea. Tafadhali subiri operesheni ikamilike.</string>
-    <string name="k2go_busy_backup">Hifadhi nakala inaendelea. Tafadhali subiri operesheni ikamilike.</string>
-    <string name="k2go_busy_restore">Kurejesha inaendelea. Tafadhali subiri operesheni ikamilike.</string>
-    <string name="k2go_busy_install">Usakinishaji inaendelea. Tafadhali subiri operesheni ikamilike.</string>
-    <string name="k2go_busy_download">Upakuaji inaendelea. Tafadhali subiri operesheni ikamilike.</string>
+    <string name="k2go_busy_clone">Kunakili kati ya simu kunaendelea. Tafadhali subiri ukamilike.</string>
+    <string name="k2go_busy_backup">Uhifadhi nakala unaendelea. Tafadhali subiri ukamilike.</string>
+    <string name="k2go_busy_restore">Urejeshaji unaendelea. Tafadhali subiri ukamilike.</string>
+    <string name="k2go_busy_install">Usakinishaji unaendelea. Tafadhali subiri ukamilike.</string>
+    <string name="k2go_busy_download">Upakuaji unaendelea. Tafadhali subiri ukamilike.</string>
     <string name="k2go_pending_title">Vipakuliwa vinavyosubiri</string>
     <string name="k2go_pending_empty">Hakuna vipakuliwa vinavyosubiri.</string>
     <string name="k2go_pending_running">Kitu kinapakuliwa sasa</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Hakuna</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Sakinisha sasa?</string>
-    <string name="k2go_install_confirm_body">Hii inasakinishwa kwenye kifaa chako huku seva ikiwa imesitishwa.\n\n• Huchukua muda, mara nyingi makumi ya dakika.\n• Dumisha muunganisho thabiti ikiwezekana.\n• Hakikisha una betri ya kutosha kabla ya kuanza.\n• Skrini hii inabaki wazi hadi imalize.</string>
+    <string name="k2go_install_confirm_body">Hii husakinishwa kwenye kifaa chako huku seva ikiwa imesimamishwa.\n\n• Mchakato huu unaweza kuchukua muda (hadi makumi ya dakika).\n• Dumisha muunganisho thabiti ikiwezekana.\n• Hakikisha betri imejaa kabla ya kuanza.\n• Skrini hii inabaki wazi hadi ikamilike.</string>
     <string name="k2go_install_confirm_go">Sakinisha</string>
     <string name="k2go_install_confirm_cancel">Si sasa</string>
     <string name="k2go_copied">Imenakiliwa</string>

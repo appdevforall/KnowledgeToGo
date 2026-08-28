@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Podľa systému</string>
     <string name="k2go_theme_dark">Tmavý</string>
     <string name="k2go_settings_turnoff_title">Vypnúť K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Toto zastaví knižnicu a zatvorí aplikáciu. (Keď stlačíte tlačidlo Domov alebo Späť, aplikácia sa minimalizuje, ale beží ďalej na pozadí.)</string>
+    <string name="k2go_settings_turnoff_msg">Toto zastaví knižnicu a zavrie aplikáciu. Ak ju chceš opustiť, ale nechať bežať na pozadí, stlač tlačidlo domov alebo späť.</string>
     <string name="k2go_settings_turnoff_confirm">Vypnúť</string>
     <string name="k2go_settings_app_version">Verzia aplikácie</string>
     <string name="k2go_settings_check_updates">Skontrolovať aktualizácie</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Prenášanie K2Go do druhého zariadenia.</string>
     <string name="k2go_bj_finish">Dokončiť</string>
     <string name="k2go_bj_wait_title">Môže to chvíľu trvať</string>
-    <string name="k2go_bj_wait_body">Nechajte K2Go otvorené. Môžete odísť — beží ďalej na pozadí a upozornenie vás vráti späť.</string>
-    <string name="k2go_bj_returning">Hotovo — návrat na Domov…</string>
+    <string name="k2go_bj_wait_body">Nechaj K2Go otvorené. Ťukni na tlačidlo späť alebo domov, aby bežalo na pozadí. Po dokončení prenosu môžeš ťuknutím na oznámenie prejsť späť do K2Go.</string>
+    <string name="k2go_bj_returning">Hotovo. Vraciame ťa na domovskú obrazovku…</string>
     <string name="k2go_br_leave_backup">Zálohovanie prebieha. Tento proces beží na pozadí, takže túto stránku môžeš opustiť.</string>
     <string name="k2go_clone_back_running">Kopírovanie prebieha. Tento proces beží na pozadí, takže túto stránku môžeš opustiť.</string>
     <string name="k2go_br_leave_restore">Obnovenie prebieha. Tento proces beží na pozadí, takže túto stránku môžeš opustiť.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Vyberte jazyk obsahu</string>
     <string name="k2go_hide">Skryť</string>
     <string name="k2go_home_no_library">Zatiaľ žiadna knižnica — klepnite na Získať viac pre inštaláciu a pridanie obsahu</string>
-    <string name="k2go_home_damaged">Knižnica potrebuje opravu — posledné nastavenie sa nedokončilo</string>
+    <string name="k2go_home_damaged">Knižnica nebola nainštalovaná úplne a treba ju opraviť</string>
     <string name="k2go_home_recover">Opraviť</string>
     <string name="k2go_state_no_system">Zatiaľ žiadny systém</string>
     <string name="k2go_connect_no_system">Zatiaľ žiadny systém na zdieľanie — najprv nejaký opravte</string>
-    <string name="k2go_home_ready_empty">Knižnica pripravená — klepnite na Získať viac pre pridanie obsahu</string>
+    <string name="k2go_home_ready_empty">Knižnica je pripravená. Ťukni na Get more a pridaj obsah</string>
     <string name="k2go_rate_per_second">/s</string>
     <string name="k2go_gm_hub_title">Získať viac</string>
     <string name="k2go_gm_hub_sub">Pridajte obsah do svojej offline knižnice.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Dokončuje sa nastavenie</string>
     <string name="k2go_setup_context">Po dokončení nastavenia budeš automaticky presmerovaný do knižnice. Inštalácia môže bežať na pozadí, zatiaľ čo navštíviš inú časť aplikácie.</string>
     <string name="k2go_setup_context_proot">Po dokončení nastavenia budeš automaticky presmerovaný do knižnice. Táto akcia nemôže bežať na pozadí, preto zostaň na tejto obrazovke, kým sa obsah nenainštaluje.</string>
-    <string name="k2go_install_busy">Inštalácia už prebieha — počkajte, kým sa dokončí.</string>
+    <string name="k2go_install_busy">Inštalácia už prebieha. Počkaj, kým sa dokončí.</string>
     <string name="k2go_setup_leave_hint">Systém sa stále nastavuje. Aplikáciu môžeš opustiť, zatiaľ čo nastavenie beží na pozadí.</string>
     <string name="k2go_damaged_title">Inštalácia prerušená</string>
     <string name="k2go_damaged_close">Zavrieť</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Sťahovanie kníh</string>
     <string name="k2go_books_dl_notif_title">Pridávanie kníh do vašej knižnice</string>
     <string name="k2go_fqr_invalid">Tento názov oblasti alebo územie vyzerá neplatne.</string>
-    <string name="k2go_fqr_name_taken">„%1$s“ sa už používa — zvoľte iný názov.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ sa už používa. Vyber iný názov.</string>
     <string name="k2go_fqr_calculating">Vypočítava sa veľkosť sťahovania…</string>
     <string name="k2go_fqr_estimate_error_title">Túto oblasť nemožno stiahnuť</string>
     <string name="k2go_fqr_consent_title">Stiahnuť túto oblasť?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s na stiahnutie, %3$s na disku.</string>
     <string name="k2go_fqr_consent_legend">Táto oblasť: %1$s  ·  Voľné potom: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Táto oblasť sa nemusí zmestiť — potom by zostalo voľných iba %1$s.</string>
+    <string name="k2go_fqr_consent_wont_fit">Táto oblasť sa možno nezmestí. Potom by zostalo voľných len %1$s.</string>
     <string name="k2go_fqr_download">Stiahnuť</string>
     <string name="k2go_fqr_not_now">Teraz nie</string>
     <string name="k2go_fqr_downloading">Sťahuje sa “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Týmto sa súbor odstráni a aktualizuje sa knižnica obsahu. Neskôr ho môžete znova stiahnuť.</string>
     <string name="k2go_zim_deleting">Odstraňuje sa…</string>
     <string name="k2go_zim_deleted">%1$s odstránené</string>
-    <string name="k2go_zim_deleted_deferred">Odstránené — zatiaľ skryté, úplne odstránené po dokončení aktuálneho sťahovania.</string>
+    <string name="k2go_zim_deleted_deferred">Odstránené. Zatiaľ skryté a úplne sa odstráni po dokončení aktuálneho sťahovania.</string>
     <string name="k2go_zim_delete_failed">Odstránenie zlyhalo. Skúste to znova.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Prestavba nástenky…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Aktualizáciu sa nepodarilo spustiť. Skúste to znova.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Jadro systému · vždy nainštalované</string>
-    <string name="k2go_dash_detail_desc">Nástenka je jadro REST API zariadenia (dash-node) — malá služba Node na 127.0.0.1:4000, obsluhovaná nginx a riadená pdsm. Poháňa každú akciu knižnice v aplikácii: prehliadanie a sťahovanie Kníh, pridávanie a mazanie obsahu Wikipédie a ZIM, relácie Kolibri, Mapy a stav systému. Na rozdiel od obsahových modulov sa neinštaluje ani neodstraňuje — je súčasťou zariadenia a je vždy prítomná. Keď je dostupná novšia verzia, môžete ju prestavať na mieste.</string>
+    <string name="k2go_dash_detail_desc">Ovládací panel je jadro REST API zariadenia (dash-node) — malá služba Node na 127.0.0.1:4000, obsluhovaná cez nginx a spravovaná pomocou pdsm. Poháňa každú akciu knižnice v aplikácii: prehliadanie a sťahovanie Kníh, pridávanie a mazanie obsahu Wikipédie a ZIM, relácie Kolibri, Mapy a stav systému. Na rozdiel od modulov obsahu ho nemôžeš nainštalovať ani odstrániť. Je súčasťou aplikácie a je vždy prítomný. Keď je k dispozícii novšie zostavenie, môžeš ho na mieste znova zostaviť.</string>
     <string name="k2go_dash_includes">REST koncové body Kníh, Wikipédie/ZIM, Kolibri a Máp; nginx vhost; a koncové body verzie systému a prestavby — všetko na 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Jadro systému</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Inštalácia bola prerušená pred dokončením a systém sa nedá spustiť. Na obnovu môžete obnoviť zálohu alebo preinštalovať systém od začiatku.</string>
     <string name="k2go_damaged_recover">Obnoviť…</string>
     <string name="k2go_reinstall_title">Preinštalovať systém</string>
-    <string name="k2go_reinstall_sub">Vymazať všetko a nainštalovať čistý systém od začiatku</string>
+    <string name="k2go_reinstall_sub">Vymazať K2Go a obsah v tomto zariadení a nainštalovať čistý systém od začiatku</string>
     <string name="k2go_reinstall_confirm_title">Preinštalovať od začiatku?</string>
-    <string name="k2go_reinstall_confirm_msg">Týmto sa vymaže aktuálny systém a všetko v ňom — knihy, mapy, stiahnuté súbory a nastavenia — a nainštaluje sa čistá kópia. Nedá sa vrátiť späť. Ak si chcete niečo ponechať, najprv vytvorte zálohu. Potom zvolíte ako: stiahnuť, alebo skopírovať z iného telefónu.</string>
+    <string name="k2go_reinstall_confirm_msg">Toto vymaže súčasný systém, vrátane všetkých aplikácií, obsahu a nastavení, a potom nainštaluje čistú kópiu. Túto akciu nemožno vrátiť späť. Ak si chceš niečo ponechať, najprv si urob zálohu. Potom zvoľ ako: stiahnuť ho alebo skopírovať z iného telefónu.</string>
     <string name="k2go_reinstall_confirm_yes">Vymazať a preinštalovať</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Zo systému</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d výsledkov</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Overenie</string>
-    <string name="k2go_settings_authentication_sub">Prihlásenia pre Knihy a Kurzy</string>
+    <string name="k2go_settings_authentication_sub">Prihlásenia pre Calibre-Web (knihy) a Kolibri (kurzy)</string>
     <string name="k2go_auth_hint">Prihlásenia, ktoré K2Go používa pre Knihy a Kurzy. Aktualizujte niektoré, ak sa zmenilo heslo danej služby.</string>
     <string name="k2go_auth_username">Používateľské meno</string>
     <string name="k2go_auth_password">Heslo</string>
@@ -676,14 +676,14 @@
     <string name="k2go_auth_failed">Uloženie zlyhalo — skúste znova</string>
     <string name="k2go_auth_load_failed">Načítanie zlyhalo — beží služba?</string>
     <string name="k2go_auth_svc_books">Prečítať knihu</string>
-    <string name="k2go_auth_svc_courses">Absolvovať kurzy</string>
+    <string name="k2go_auth_svc_courses">Absolvovať kurz</string>
     <string name="k2go_auth_custom_toggle">Použiť vlastné prihlásenie</string>
     <string name="k2go_auth_not_running">Táto služba zatiaľ nebeží. Zmeny sa uložia teraz a prejavia sa, keď bude nainštalovaná a spustená.</string>
-    <string name="k2go_auth_list_note">Nenainštalované služby zostávajú dostupné — prihlásenie môžete nastaviť vopred. Prihlasovacie údaje sú uložené v tomto zariadení.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · prihlásenie, ktoré K2Go používa na otváranie vašich kníh.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · prihlásenie, ktoré K2Go používa na otváranie vašich kurzov.</string>
+    <string name="k2go_auth_list_note">Môžeš zadať a uložiť prihlasovacie údaje pre služby, ktoré ešte nie sú nainštalované.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · prihlásenie, ktoré K2Go používa na otváranie tvojich kníh.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · prihlásenie, ktoré K2Go používa na otváranie tvojich kurzov.</string>
     <string name="k2go_auth_toggle_hint">Vlastné prihlásenie zapnite, len ak sa zmenilo heslo.</string>
-    <string name="k2go_auth_eye_hint">Klepnutím na oko ho zobrazíte.</string>
+    <string name="k2go_auth_eye_hint">Ťuknutím na oko zobrazíš heslo pri písaní.</string>
     <string name="k2go_auth_chip_default">Predvolené</string>
     <string name="k2go_auth_chip_custom">Vlastné</string>
     <string name="k2go_auth_chip_notinstalled">Nenainštalované</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Naskenujte znova z druhého telefónu na overenie</string>
     <string name="k2go_clone_exit_keep_waiting">Ďalej čakať</string>
     <string name="k2go_clone_exit_redirecting">Knižnica sa otvorí o %1$d s…</string>
-    <string name="k2go_busy_clone">Kopírovanie medzi telefónmi prebieha. Počkajte na dokončenie operácie.</string>
-    <string name="k2go_busy_backup">Záloha prebieha. Počkajte na dokončenie operácie.</string>
-    <string name="k2go_busy_restore">Obnovenie prebieha. Počkajte na dokončenie operácie.</string>
-    <string name="k2go_busy_install">Inštalácia prebieha. Počkajte na dokončenie operácie.</string>
-    <string name="k2go_busy_download">Sťahovanie prebieha. Počkajte na dokončenie operácie.</string>
+    <string name="k2go_busy_clone">Prebieha kopírovanie medzi telefónmi. Počkaj, kým sa dokončí.</string>
+    <string name="k2go_busy_backup">Prebieha zálohovanie. Počkaj, kým sa dokončí.</string>
+    <string name="k2go_busy_restore">Prebieha obnovenie. Počkaj, kým sa dokončí.</string>
+    <string name="k2go_busy_install">Prebieha inštalácia. Počkaj, kým sa dokončí.</string>
+    <string name="k2go_busy_download">Prebieha sťahovanie. Počkaj, kým sa dokončí.</string>
     <string name="k2go_pending_title">Čakajúce sťahovania</string>
     <string name="k2go_pending_empty">Žiadne čakajúce sťahovania.</string>
     <string name="k2go_pending_running">Práve sa niečo sťahuje</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Žiadne</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Nainštalovať teraz?</string>
-    <string name="k2go_install_confirm_body">Inštalácia prebehne vo vašom zariadení s pozastaveným serverom.\n\n• Chvíľu to trvá, často desiatky minút.\n• Ak môžete, udržujte stabilné pripojenie.\n• Pred začatím majte dostatok batérie.\n• Táto obrazovka zostane otvorená až do konca.</string>
+    <string name="k2go_install_confirm_body">Toto sa nainštaluje do tvojho zariadenia s pozastaveným serverom.\n\n• Tento proces môže chvíľu trvať (až desiatky minút).\n• Ak môžeš, udržuj stabilné pripojenie.\n• Pred začatím sa uisti, že máš nabitú batériu.\n• Táto obrazovka zostane otvorená, kým sa to nedokončí.</string>
     <string name="k2go_install_confirm_go">Nainštalovať</string>
     <string name="k2go_install_confirm_cancel">Teraz nie</string>
     <string name="k2go_copied">Skopírované</string>

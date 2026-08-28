@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Tẹ̀lé ẹ̀rọ</string>
     <string name="k2go_theme_dark">Òkùnkùn</string>
     <string name="k2go_settings_turnoff_title">Pa K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Èyí dá ilé-ìkàwé dúró ó sì ti áàpù. (Nígbà tí o bá tẹ bọ́tìnnì Ilé tàbí Padà, a óò dín áàpù kù ṣùgbọ́n óò máa ṣiṣẹ́ lọ lẹ́yìn ẹ̀rọ.)</string>
+    <string name="k2go_settings_turnoff_msg">Èyí ń dá ilé-ìkàwé dúró ó sì ń ti ìṣàmúlò náà. Láti jáde ṣùgbọ́n kí ìṣàmúlò náà máa ṣiṣẹ́ ní ẹ̀yìn, tẹ bọtini ilé tàbí padà.</string>
     <string name="k2go_settings_turnoff_confirm">Pa</string>
     <string name="k2go_settings_app_version">Ẹ̀dà áàpù</string>
     <string name="k2go_settings_check_updates">Ṣàyẹ̀wò fún ìmúdójúìwọ̀n</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Ń gbé K2Go lọ sí ẹ̀rọ kejì.</string>
     <string name="k2go_bj_finish">Parí</string>
     <string name="k2go_bj_wait_title">Èyí lè gba àkókò</string>
-    <string name="k2go_bj_wait_body">Jẹ́ kí K2Go ṣí sílẹ̀. O lè lọ — óò máa ṣiṣẹ́ lọ lẹ́yìn ẹ̀rọ, ìfitónilétí sì óò mú ọ padà.</string>
-    <string name="k2go_bj_returning">Ó ti parí — ń padà sí Ilé…</string>
+    <string name="k2go_bj_wait_body">Jẹ́ kí K2Go ṣí sílẹ̀. Tẹ bọtini padà tàbí ilé kí ó lè máa ṣiṣẹ́ ní ẹ̀yìn. Nígbà tí gbígbé bá parí, o lè tẹ ìfìtọ́nilétí náà láti padà sí K2Go.</string>
+    <string name="k2go_bj_returning">Ó parí. À ń mú ọ padà sí ojú-ìwé Ilé…</string>
     <string name="k2go_br_leave_backup">Ìfìdí-ọ̀rọ̀ ń lọ lọ́wọ́. Ìlànà yìí ń ṣiṣẹ́ ní ẹ̀yìn, nítorí náà o lè kúrò ní ojú-ìwé yìí.</string>
     <string name="k2go_clone_back_running">Ìdàkọ ń lọ lọ́wọ́. Ìlànà yìí ń ṣiṣẹ́ ní ẹ̀yìn, nítorí náà o lè kúrò ní ojú-ìwé yìí.</string>
     <string name="k2go_br_leave_restore">Ìmúpadàbọ̀ ń lọ lọ́wọ́. Ìlànà yìí ń ṣiṣẹ́ ní ẹ̀yìn, nítorí náà o lè kúrò ní ojú-ìwé yìí.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Yan èdè àkóónú</string>
     <string name="k2go_hide">Fi pamọ́</string>
     <string name="k2go_home_no_library">Kò sí ilé-ìkàwé síbẹ̀ — tẹ Rí i síi láti fi sórí ẹ̀rọ kí o sì fi àkóónú kún</string>
-    <string name="k2go_home_damaged">Ilé-ìkàwé nílò àtúnṣe — ìṣètò tó gbẹ̀yìn kò parí</string>
+    <string name="k2go_home_damaged">A kò fi ilé-ìkàwé sórí ẹ̀rọ ní kíkún ó sì nílò àtúnṣe</string>
     <string name="k2go_home_recover">Àtúnṣe</string>
     <string name="k2go_state_no_system">Kò sí ètò kankan síbẹ̀</string>
     <string name="k2go_connect_no_system">Kò sí ètò láti pín síbẹ̀ — kọ́kọ́ tún ọ̀kan ṣe</string>
-    <string name="k2go_home_ready_empty">Ilé-ìkàwé múra tán — tẹ Rí i síi láti fi àkóónú kún</string>
+    <string name="k2go_home_ready_empty">Ilé-ìkàwé ti ṣetán. Tẹ Get more láti fi àkóónú kún</string>
     <string name="k2go_rate_per_second">/ìs</string>
     <string name="k2go_gm_hub_title">Rí i síi</string>
     <string name="k2go_gm_hub_sub">Fi àkóónú kún ilé-ìkàwé aláìsíntánẹ́ẹ̀tì rẹ.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Ń parí ìṣètò</string>
     <string name="k2go_setup_context">A ó gbé ọ lọ sí ilé-ìkàwé rẹ láìfọwọ́yí nígbà tí ìṣètò bá parí. Fifi-sórí-ẹ̀rọ lè máa ṣiṣẹ́ ní ẹ̀yìn nígbà tí o bá ń bẹ ẹ̀yà mìíràn nínú ìṣàmúlò.</string>
     <string name="k2go_setup_context_proot">A ó gbé ọ lọ sí ilé-ìkàwé rẹ láìfọwọ́yí nígbà tí ìṣètò bá parí. Iṣẹ́ yìí kò lè ṣiṣẹ́ ní ẹ̀yìn, nítorí náà dúró sí ojú-ìwé yìí títí àkóónú yóò fi wọlé.</string>
-    <string name="k2go_install_busy">Fífi sórí ẹ̀rọ ti ń lọ tẹ́lẹ̀ — jọ̀wọ́ dúró kí ó parí.</string>
+    <string name="k2go_install_busy">Fifi-sórí-ẹ̀rọ kan ti ń ṣiṣẹ́ tẹ́lẹ̀. Jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_setup_leave_hint">Ètò náà ṣì ń ṣètò. O lè fi ìṣàmúlò náà sílẹ̀ nígbà tí ìṣètò ń ṣiṣẹ́ ní ẹ̀yìn.</string>
     <string name="k2go_damaged_title">A dí fífi sórí ẹ̀rọ lọ́wọ́</string>
     <string name="k2go_damaged_close">Ti</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Àwọn gbígbà ìwé sílẹ̀</string>
     <string name="k2go_books_dl_notif_title">Ń fi àwọn ìwé kún ilé-ìkàwé rẹ</string>
     <string name="k2go_fqr_invalid">Orúkọ agbègbè tàbí agbègbè yẹn dàbí èyí tí kò tọ́.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” ti wà ní lílò — yan orúkọ mìíràn.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” ti wà ní lílò tẹ́lẹ̀. Yan orúkọ mìíràn.</string>
     <string name="k2go_fqr_calculating">Ń ṣírò ìwọ̀n gbígbà sílẹ̀…</string>
     <string name="k2go_fqr_estimate_error_title">Kò lè gba agbègbè yìí sílẹ̀</string>
     <string name="k2go_fqr_consent_title">Gba agbègbè yìí sílẹ̀?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s láti gbà sílẹ̀, %3$s lórí diskì.</string>
     <string name="k2go_fqr_consent_legend">Agbègbè yìí: %1$s  ·  Òfìfo lẹ́yìn: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Agbègbè yìí lè má bójú mu — %1$s nìkan ni yóò wà lófìfo lẹ́yìn.</string>
+    <string name="k2go_fqr_consent_wont_fit">Ó ṣeé ṣe kí agbègbè yìí má bà á mu. Lẹ́yìn náà %1$s péré ni yóò ku ní òmìnira.</string>
     <string name="k2go_fqr_download">Gbà sílẹ̀</string>
     <string name="k2go_fqr_not_now">Kì í ṣe báyìí</string>
     <string name="k2go_fqr_downloading">Ń gba “%1$s” sílẹ̀</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Èyí máa yọ fáìlì náà kúrò yóò sì ṣàtúnṣe àká àkóónú. O lè tún gbà á sílẹ̀ nígbà mìíràn.</string>
     <string name="k2go_zim_deleting">Ń paarẹ́…</string>
     <string name="k2go_zim_deleted">A ti paarẹ́ %1$s</string>
-    <string name="k2go_zim_deleted_deferred">A ti paarẹ́ — a fi pamọ́ fún ìsinsìnyí, yóò yọ kúrò pátápátá nígbà tí ìgbàsílẹ̀ lọ́wọ́lọ́wọ́ bá parí.</string>
+    <string name="k2go_zim_deleted_deferred">A ti pa á rẹ́. Ó pamọ́ fún ìsinsìnyí a ó sì yọ ọ́ kúrò pátápátá nígbà tí ìgbàsílẹ̀ lọ́wọ́lọ́wọ́ bá parí.</string>
     <string name="k2go_zim_delete_failed">Kò lè paarẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kansi.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Atúnkọ́ dasibọ́ọ̀dù…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Kò lè bẹ̀rẹ̀ àtúnṣe. Gbìyànjú lẹ́ẹ̀kansi.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kókó ètò · fi sori ẹrọ nígbà gbogbo</string>
-    <string name="k2go_dash_detail_desc">Dasibọ́ọ̀dù ni kókó REST API ti àpótí náà (dash-node): iṣẹ́ Node kékeré kan ní 127.0.0.1:4000, tí nginx ń ṣe ìránṣẹ́ tí pdsm sì ń bójútó. Ó ń ṣe àtìlẹ́yìn fún gbogbo iṣẹ́ ilé-ìkàwé nínú áàpù: ríràwo àti gbígba Àwọn Ìwé, fífi kún àti pípa àkóónú Wikipedia àti ZIM rẹ́, àwọn ìpàdé Kolibri, Àwọn Máàpù àti ipò ètò. Yàtọ̀ sí àwọn módù àkóónú, kì í ṣe ohun tí o fi sori ẹrọ tàbí yọ kúrò — ó wá pẹ̀lú àpótí náà ó sì wà nígbà gbogbo. Nígbà tí ẹ̀yà tuntun bá wà, o lè tún un kọ́ níbẹ̀.</string>
+    <string name="k2go_dash_detail_desc">Dáṣíbọ́ọ̀dù ni kókó REST API ẹ̀rọ náà (dash-node) — iṣẹ́ Node kékeré kan lórí 127.0.0.1:4000, tí nginx ń ṣe àgbékalẹ̀ tí pdsm sì ń bójú tó. Ó ń darí gbogbo iṣẹ́ ilé-ìkàwé nínú ìṣàmúlò: ṣíṣàwárí àti gbígba àwọn Ìwé sílẹ̀, fifi kún àti pípa àkóónú Wikipedia àti ZIM rẹ́, àwọn ìpàdé Kolibri, Máàpù àti ipò ètò. Yàtọ̀ sí àwọn módùlù àkóónú, o kò lè fi í sórí ẹ̀rọ tàbí yọ ọ́ kúrò. Ó ń wá pẹ̀lú ìṣàmúlò náà ó sì máa ń wà nígbà gbogbo. Nígbà tí ẹ̀dà tuntun bá wà, o lè tún un kọ́ ní ibẹ̀.</string>
     <string name="k2go_dash_includes">Àwọn ojú-ọ̀nà REST fún Àwọn Ìwé, Wikipedia/ZIM, Kolibri àti Àwọn Máàpù; vhost nginx; àti àwọn ojú-ọ̀nà ẹ̀yà ètò àti àtúnkọ́ — gbogbo rẹ̀ ní 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Kókó ètò</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Ìtòlẹ́sẹẹsẹ dúró kí ó tó parí, ètò náà kò sì lè bẹ̀rẹ̀. Láti gbà á padà, o lè mú àkọsílẹ̀ ìdáàbòbò padà bọ̀ tàbí tún ètò náà fi sori ẹrọ láti ìbẹ̀rẹ̀.</string>
     <string name="k2go_damaged_recover">Gbà padà…</string>
     <string name="k2go_reinstall_title">Tún ètò náà fi sori ẹrọ</string>
-    <string name="k2go_reinstall_sub">Pa gbogbo rẹ̀ rẹ́ kí o sì fi ètò tuntun sori ẹrọ láti ìbẹ̀rẹ̀</string>
+    <string name="k2go_reinstall_sub">Pa K2Go àti àkóónú rẹ́ lórí ẹ̀rọ yìí kí o sì fi ètò tuntun sórí ẹ̀rọ láti ìbẹ̀rẹ̀</string>
     <string name="k2go_reinstall_confirm_title">Tún fi sori ẹrọ láti ìbẹ̀rẹ̀?</string>
-    <string name="k2go_reinstall_confirm_msg">Èyí ń pa ètò tí ó wà lọ́wọ́lọ́wọ́ àti gbogbo ohun tí ó wà nínú rẹ̀ rẹ́ — àwọn ìwé, àwọn máàpù, àwọn ohun tí a gbà sílẹ̀ àti àwọn ètò — lẹ́yìn náà ó fi ẹ̀dà mímọ́ sori ẹrọ. Kò ṣeé yí padà. Kọ́kọ́ ṣe àkọsílẹ̀ ìdáàbòbò bí o bá fẹ́ pa ohunkóhun mọ́. Lẹ́yìn náà o yàn ọ̀nà: gbà á sílẹ̀, tàbí dà kọ láti inú fóònù mìíràn.</string>
+    <string name="k2go_reinstall_confirm_msg">Èyí ń pa ètò lọ́wọ́lọ́wọ́ rẹ́, pẹ̀lú gbogbo àwọn ìṣàmúlò, àkóónú àti àwọn ètò, ó sì ń fi ẹ̀dà mímọ́ sórí ẹ̀rọ. Iṣẹ́ yìí kò ṣe é yí padà. Bí o bá fẹ́ pa ohunkóhun mọ́, kọ́kọ́ ṣe ìfìdí-ọ̀rọ̀. Lẹ́yìn náà yan bí: gbà á sílẹ̀, tàbí ṣe ẹ̀dà rẹ̀ láti fóònù mìíràn.</string>
     <string name="k2go_reinstall_confirm_yes">Pa rẹ́ kí o sì tún fi sori ẹrọ</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Láti inú ẹ̀rọ</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d àbájáde</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Ìfọwọ́sí</string>
-    <string name="k2go_settings_authentication_sub">Ìwọlé fún Ìwé àti Ẹ̀kọ́</string>
+    <string name="k2go_settings_authentication_sub">Àwọn ìwọlé fún Calibre-Web (àwọn ìwé) àti Kolibri (àwọn ẹ̀kọ́)</string>
     <string name="k2go_auth_hint">Àwọn ìwọlé tí K2Go ń lò fún Ìwé àti Ẹ̀kọ́. Ṣàtúnṣe ọ̀kan bí ọ̀rọ̀ìgbaniwọlé iṣẹ́ rẹ̀ bá yí padà.</string>
     <string name="k2go_auth_username">Orúkọ olùmúlò</string>
     <string name="k2go_auth_password">Ọ̀rọ̀ìgbaniwọlé</string>
@@ -675,15 +675,15 @@
     <string name="k2go_auth_noperm">Àkáǹtì yẹn kò lè ṣàkóso àkóónú</string>
     <string name="k2go_auth_failed">Kò lè fipamọ́ — gbìyànjú lẹ́ẹ̀kansí</string>
     <string name="k2go_auth_load_failed">Kò lè gbé wọlé — ṣé iṣẹ́ náà ń ṣiṣẹ́?</string>
-    <string name="k2go_auth_svc_books">Ka ìwé</string>
-    <string name="k2go_auth_svc_courses">Kópa nínú àwọn ẹ̀kọ́</string>
+    <string name="k2go_auth_svc_books">Ka ìwé kan</string>
+    <string name="k2go_auth_svc_courses">Gba ẹ̀kọ́ kan</string>
     <string name="k2go_auth_custom_toggle">Lo ìwọlé àdáni</string>
     <string name="k2go_auth_not_running">Iṣẹ́ yìí kò tíì ń ṣiṣẹ́. A ó fi àwọn àyípadà pamọ́ báyìí, wọn yóò sì ṣiṣẹ́ nígbà tí ó bá ti fi sórí ẹ̀rọ tí ó sì ń ṣiṣẹ́.</string>
-    <string name="k2go_auth_list_note">Àwọn iṣẹ́ tí a kò tíì fi sórí ẹ̀rọ ṣì wà ní àrọ́wọ́tó — o lè ṣàkóso ìwọlé ṣáájú. A ó tọ́jú àwọn ẹ̀rí ìdánimọ̀ sórí ẹ̀rọ yìí.</string>
+    <string name="k2go_auth_list_note">O lè tẹ àwọn ẹ̀rí sínú kí o sì fi pamọ́ fún àwọn iṣẹ́ tí a kò tí ì fi sórí ẹ̀rọ.</string>
     <string name="k2go_auth_sub_books">Calibre-Web · ìwọlé tí K2Go ń lò láti ṣí àwọn ìwé rẹ.</string>
     <string name="k2go_auth_sub_courses">Kolibri · ìwọlé tí K2Go ń lò láti ṣí àwọn ẹ̀kọ́ rẹ.</string>
     <string name="k2go_auth_toggle_hint">Tan ìwọlé àdáni nìkan bí ọ̀rọ̀ìgbaniwọlé bá yí padà.</string>
-    <string name="k2go_auth_eye_hint">Fọwọ́ kàn ojú láti fi hàn.</string>
+    <string name="k2go_auth_eye_hint">Tẹ ojú náà láti fi ọ̀rọ̀ìgbaniwọlé rẹ hàn bí o ṣe ń kọ.</string>
     <string name="k2go_auth_chip_default">Àbùdá</string>
     <string name="k2go_auth_chip_custom">Àdáni</string>
     <string name="k2go_auth_chip_notinstalled">Kò tíì fi sórí ẹ̀rọ</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Tún àyẹ̀wò ṣe láti inú fóònù kejì láti ṣàyẹ̀wò</string>
     <string name="k2go_clone_exit_keep_waiting">Máa dúró síwájú</string>
     <string name="k2go_clone_exit_redirecting">Ìwé-ìkàwé rẹ yóò ṣí ní %1$d s…</string>
-    <string name="k2go_busy_clone">Ìdàkọ láàrin àwọn fóònù ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
-    <string name="k2go_busy_backup">Àfẹ́yìntì ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
-    <string name="k2go_busy_restore">Ìmúpadàbọ̀ ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
-    <string name="k2go_busy_install">Fifi-sórí-ẹrọ ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
-    <string name="k2go_busy_download">Ìgbàsílẹ̀ ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí iṣẹ́ náà parí.</string>
+    <string name="k2go_busy_clone">Ìdàkọ láàrin àwọn fóònù ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
+    <string name="k2go_busy_backup">Ìfìdí-ọ̀rọ̀ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
+    <string name="k2go_busy_restore">Ìmúpadàbọ̀ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
+    <string name="k2go_busy_install">Fifi-sórí-ẹ̀rọ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
+    <string name="k2go_busy_download">Ìgbàsílẹ̀ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_pending_title">Àwọn ìgbàsílẹ̀ tí ń dúró</string>
     <string name="k2go_pending_empty">Kò sí ìgbàsílẹ̀ tí ń dúró.</string>
     <string name="k2go_pending_running">Ohun kan ń gbà sílẹ̀ báyìí</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Kò sí</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Fi sórí ẹ̀rọ báyìí?</string>
-    <string name="k2go_install_confirm_body">Èyí máa fi sórí ẹ̀rọ rẹ nígbà tí sáfà bá dúró.\n\n• Ó máa gba àkókò díẹ̀, lọ́pọ̀ ìgbà ẹ̀wádọ́gbọ̀n ìṣẹ́jú.\n• Bí ó bá ṣeé ṣe, jẹ́ kí ìsopọ̀ dúró ṣinṣin.\n• Rí i pé batiri tó tó wà kí o tó bẹ̀rẹ̀.\n• Ojú-ìwé yìí máa wà ní ṣíṣí títí yóò fi parí.</string>
+    <string name="k2go_install_confirm_body">Èyí ń fi sórí ẹ̀rọ rẹ pẹ̀lú sáà tí a dá dúró.\n\n• Ìlànà yìí lè gba àkókò (títí dé ẹ̀wádún ìṣẹ́jú).\n• Tọ́jú ìsopọ̀ dúró ṣinṣin bí o bá lè ṣe.\n• Rí i dájú pé bátìrì ti gba iná kí o tó bẹ̀rẹ̀.\n• Ojú-ìwé yìí máa ṣí sílẹ̀ títí yóò fi parí.</string>
     <string name="k2go_install_confirm_go">Fi sórí ẹ̀rọ</string>
     <string name="k2go_install_confirm_cancel">Kì í ṣe báyìí</string>
     <string name="k2go_copied">A ti daako</string>

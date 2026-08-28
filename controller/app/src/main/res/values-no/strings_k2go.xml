@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Følg systemet</string>
     <string name="k2go_theme_dark">Mørkt</string>
     <string name="k2go_settings_turnoff_title">Slå av K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Dette stopper biblioteket og lukker appen. (Når du trykker på Hjem- eller Tilbake-knappen, minimeres appen, men fortsetter å kjøre i bakgrunnen.)</string>
+    <string name="k2go_settings_turnoff_msg">Dette stopper biblioteket og lukker appen. For å avslutte, men holde appen i gang i bakgrunnen, trykk på hjem- eller tilbake-knappen.</string>
     <string name="k2go_settings_turnoff_confirm">Slå av</string>
     <string name="k2go_settings_app_version">Appversjon</string>
     <string name="k2go_settings_check_updates">Se etter oppdateringer</string>
@@ -136,8 +136,8 @@
     <string name="k2go_clone_notif_text">Overfører K2Go til den andre enheten.</string>
     <string name="k2go_bj_finish">Fullfør</string>
     <string name="k2go_bj_wait_title">Dette kan ta en stund</string>
-    <string name="k2go_bj_wait_body">Hold K2Go åpen. Du kan forlate den — den fortsetter å kjøre i bakgrunnen, og varselet tar deg tilbake.</string>
-    <string name="k2go_bj_returning">Ferdig — går tilbake til Hjem…</string>
+    <string name="k2go_bj_wait_body">Hold K2Go åpen. Trykk på tilbake- eller hjem-knappen for at den skal kjøre i bakgrunnen. Når overføringen er fullført, kan du trykke på varselet for å gå tilbake til K2Go.</string>
+    <string name="k2go_bj_returning">Ferdig. Sender deg tilbake til startskjermen…</string>
     <string name="k2go_br_leave_backup">Sikkerhetskopieringen pågår. Denne prosessen kjører i bakgrunnen, så du kan forlate denne siden.</string>
     <string name="k2go_clone_back_running">Kopieringen pågår. Denne prosessen kjører i bakgrunnen, så du kan forlate denne siden.</string>
     <string name="k2go_br_leave_restore">Gjenopprettingen pågår. Denne prosessen kjører i bakgrunnen, så du kan forlate denne siden.</string>
@@ -327,11 +327,11 @@
     <string name="k2go_lang_choose_content_title">Velg innholdsspråk</string>
     <string name="k2go_hide">Skjul</string>
     <string name="k2go_home_no_library">Ikke noe bibliotek ennå — trykk Hent mer for å installere og legge til innhold</string>
-    <string name="k2go_home_damaged">Biblioteket må repareres — det siste oppsettet ble ikke fullført</string>
+    <string name="k2go_home_damaged">Biblioteket ble ikke installert fullstendig og må repareres</string>
     <string name="k2go_home_recover">Reparer</string>
     <string name="k2go_state_no_system">Ingen system ennå</string>
     <string name="k2go_connect_no_system">Ingen system å dele ennå — reparer ett først</string>
-    <string name="k2go_home_ready_empty">Bibliotek klart — trykk Hent mer for å legge til innhold</string>
+    <string name="k2go_home_ready_empty">Biblioteket er klart. Trykk Get more for å legge til innhold</string>
     <string name="k2go_rate_per_second">/s</string>
 
     <string name="k2go_gm_hub_title">Hent mer</string>
@@ -465,7 +465,7 @@
     <string name="k2go_setup_progress_title">Fullfører oppsett</string>
     <string name="k2go_setup_context">Du blir tatt til biblioteket ditt automatisk når oppsettet er ferdig. Installasjonen kan kjøre i bakgrunnen mens du besøker en annen del av appen.</string>
     <string name="k2go_setup_context_proot">Du blir tatt til biblioteket ditt automatisk når oppsettet er ferdig. Denne handlingen kan ikke kjøre i bakgrunnen, så bli på denne skjermen til innholdet er installert.</string>
-    <string name="k2go_install_busy">En installasjon kjører allerede — vent til den er ferdig.</string>
+    <string name="k2go_install_busy">En installasjon kjører allerede. Vent til den er ferdig.</string>
     <string name="k2go_setup_leave_hint">Setter fortsatt opp systemet. Du kan forlate appen mens oppsettet kjører i bakgrunnen.</string>
     <string name="k2go_damaged_title">Installasjon avbrutt</string>
     <string name="k2go_damaged_close">Lukk</string>
@@ -522,13 +522,13 @@
     <string name="k2go_books_dl_notif_title">Legger bøker til i biblioteket ditt</string>
 
     <string name="k2go_fqr_invalid">Det regionnavnet eller området ser ugyldig ut.</string>
-    <string name="k2go_fqr_name_taken">«%1$s» er allerede i bruk — velg et annet navn.</string>
+    <string name="k2go_fqr_name_taken">«%1$s» er allerede i bruk. Velg et annet navn.</string>
     <string name="k2go_fqr_calculating">Beregner nedlastingsstørrelse…</string>
     <string name="k2go_fqr_estimate_error_title">Kan ikke laste ned denne regionen</string>
     <string name="k2go_fqr_consent_title">Laste ned denne regionen?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s å laste ned, %3$s på disk.</string>
     <string name="k2go_fqr_consent_legend">Denne regionen: %1$s  ·  Ledig etterpå: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Denne regionen får kanskje ikke plass — bare %1$s ville vært ledig etterpå.</string>
+    <string name="k2go_fqr_consent_wont_fit">Denne regionen får kanskje ikke plass. Etterpå ville bare %1$s være ledig.</string>
     <string name="k2go_fqr_download">Last ned</string>
     <string name="k2go_fqr_not_now">Ikke nå</string>
     <string name="k2go_fqr_downloading">Laster ned “%1$s”</string>
@@ -605,7 +605,7 @@
     <string name="k2go_zim_delete_confirm_msg">Dette fjerner filen og oppdaterer innholdsbiblioteket. Du kan laste den ned igjen senere.</string>
     <string name="k2go_zim_deleting">Sletter…</string>
     <string name="k2go_zim_deleted">%1$s slettet</string>
-    <string name="k2go_zim_deleted_deferred">Slettet — skjult foreløpig, fjernes helt når den pågående nedlastingen er ferdig.</string>
+    <string name="k2go_zim_deleted_deferred">Slettet. Skjult inntil videre, og fjernes helt når den pågående nedlastingen er ferdig.</string>
     <string name="k2go_zim_delete_failed">Kunne ikke slette. Prøv igjen.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Bygger kontrollpanelet på nytt…</string>
@@ -624,7 +624,7 @@
     <string name="k2go_dash_live_start_failed">Kunne ikke starte oppdateringen. Prøv igjen.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systemkjerne · alltid installert</string>
-    <string name="k2go_dash_detail_desc">Kontrollpanelet er boksens REST-API-kjerne (dash-node): en liten Node-tjeneste på 127.0.0.1:4000, levert av nginx og overvåket av pdsm. Den driver alle bibliotekhandlinger i appen: bla i og laste ned Bøker, legge til og slette Wikipedia- og ZIM-innhold, Kolibri-økter, Kart og systemstatus. I motsetning til innholdsmodulene installeres eller fjernes den ikke — den følger med boksen og er alltid til stede. Når en nyere versjon er tilgjengelig, kan du bygge den på nytt på stedet.</string>
+    <string name="k2go_dash_detail_desc">Dashbordet er boksens REST API-kjerne (dash-node) — en liten Node-tjeneste på 127.0.0.1:4000, servert via nginx og overvåket av pdsm. Det driver hver bibliotekhandling i appen: bla i og laste ned Bøker, legge til og slette Wikipedia- og ZIM-innhold, Kolibri-økter, Kart og systemstatus. I motsetning til innholdsmodulene kan du ikke installere eller fjerne den. Den følger med appen og er alltid til stede. Når en nyere build er tilgjengelig, kan du bygge den på nytt på stedet.</string>
     <string name="k2go_dash_includes">REST-endepunkter for Bøker, Wikipedia/ZIM, Kolibri og Kart; nginx-vhost; og endepunkter for systemversjon og ombygging — alle på 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Systemkjerne</string>
@@ -644,9 +644,9 @@
     <string name="k2go_damaged_body">Oppsettet ble stoppet før det ble ferdig, og systemet starter ikke. For å gjenopprette kan du gjenopprette en sikkerhetskopi eller installere systemet på nytt fra bunnen.</string>
     <string name="k2go_damaged_recover">Gjenopprett…</string>
     <string name="k2go_reinstall_title">Installer systemet på nytt</string>
-    <string name="k2go_reinstall_sub">Slett alt og installer et rent system fra bunnen</string>
+    <string name="k2go_reinstall_sub">Slett K2Go og innhold på denne enheten og installer et nytt system fra bunnen av</string>
     <string name="k2go_reinstall_confirm_title">Installere på nytt fra bunnen?</string>
-    <string name="k2go_reinstall_confirm_msg">Dette sletter det nåværende systemet og alt i det — bøker, kart, nedlastinger og innstillinger — og installerer så en ren kopi. Det kan ikke angres. Ta en sikkerhetskopi først hvis du vil beholde noe. Deretter velger du hvordan: laste ned, eller kopiere fra en annen telefon.</string>
+    <string name="k2go_reinstall_confirm_msg">Dette sletter det nåværende systemet, inkludert alle apper, innhold og innstillinger, og installerer deretter en ren kopi. Denne handlingen kan ikke angres. Hvis du vil beholde noe, ta en sikkerhetskopi først. Velg deretter hvordan: last det ned, eller kopier det fra en annen telefon.</string>
     <string name="k2go_reinstall_confirm_yes">Slett og installer på nytt</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Fra systemet</string>
@@ -670,7 +670,7 @@
     <string name="k2go_zc_count_results">%1$d resultater</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Autentisering</string>
-    <string name="k2go_settings_authentication_sub">Innlogginger for Bøker og Kurs</string>
+    <string name="k2go_settings_authentication_sub">Pålogginger for Calibre-Web (bøker) og Kolibri (kurs)</string>
     <string name="k2go_auth_hint">Påloggingene K2Go bruker for Bøker og Kurs. Oppdater en hvis passordet til tjenesten er endret.</string>
     <string name="k2go_auth_username">Brukernavn</string>
     <string name="k2go_auth_password">Passord</string>
@@ -686,14 +686,14 @@
     <string name="k2go_auth_failed">Kunne ikke lagre — prøv igjen</string>
     <string name="k2go_auth_load_failed">Kunne ikke laste — kjører tjenesten?</string>
     <string name="k2go_auth_svc_books">Les en bok</string>
-    <string name="k2go_auth_svc_courses">Ta kurs</string>
+    <string name="k2go_auth_svc_courses">Ta et kurs</string>
     <string name="k2go_auth_custom_toggle">Bruk en egendefinert pålogging</string>
     <string name="k2go_auth_not_running">Denne tjenesten kjører ikke ennå. Endringer lagres nå og trer i kraft når den er installert og kjører.</string>
-    <string name="k2go_auth_list_note">Tjenester som ikke er installert, er fortsatt tilgjengelige — du kan forhåndsinnstille påloggingen. Legitimasjonen lagres på denne enheten.</string>
+    <string name="k2go_auth_list_note">Du kan skrive inn og lagre påloggingsinfo for tjenester som ennå ikke er installert.</string>
     <string name="k2go_auth_sub_books">Calibre-Web · påloggingen K2Go bruker for å åpne bøkene dine.</string>
     <string name="k2go_auth_sub_courses">Kolibri · påloggingen K2Go bruker for å åpne kursene dine.</string>
     <string name="k2go_auth_toggle_hint">Slå på en egendefinert pålogging bare hvis passordet er endret.</string>
-    <string name="k2go_auth_eye_hint">Trykk på øyet for å vise det.</string>
+    <string name="k2go_auth_eye_hint">Trykk på øyet for å vise passordet mens du skriver.</string>
     <string name="k2go_auth_chip_default">Standard</string>
     <string name="k2go_auth_chip_custom">Egendefinert</string>
     <string name="k2go_auth_chip_notinstalled">Ikke installert</string>
@@ -732,11 +732,11 @@
     <string name="k2go_clone_exit_rescan">Skann på nytt fra den andre telefonen for å bekrefte</string>
     <string name="k2go_clone_exit_keep_waiting">Fortsett å vente</string>
     <string name="k2go_clone_exit_redirecting">Åpner biblioteket ditt om %1$d s…</string>
-    <string name="k2go_busy_clone">En kopiering mellom telefoner pågår. Vent til operasjonen er fullført.</string>
-    <string name="k2go_busy_backup">En sikkerhetskopi pågår. Vent til operasjonen er fullført.</string>
-    <string name="k2go_busy_restore">En gjenoppretting pågår. Vent til operasjonen er fullført.</string>
-    <string name="k2go_busy_install">En installasjon pågår. Vent til operasjonen er fullført.</string>
-    <string name="k2go_busy_download">En nedlasting pågår. Vent til operasjonen er fullført.</string>
+    <string name="k2go_busy_clone">En kopiering mellom telefoner pågår. Vent til den er ferdig.</string>
+    <string name="k2go_busy_backup">En sikkerhetskopiering pågår. Vent til den er ferdig.</string>
+    <string name="k2go_busy_restore">En gjenoppretting pågår. Vent til den er ferdig.</string>
+    <string name="k2go_busy_install">En installasjon pågår. Vent til den er ferdig.</string>
+    <string name="k2go_busy_download">En nedlasting pågår. Vent til den er ferdig.</string>
     <string name="k2go_pending_title">Ventende nedlastinger</string>
     <string name="k2go_pending_empty">Ingen ventende nedlastinger.</string>
     <string name="k2go_pending_running">Noe lastes ned nå</string>
@@ -746,7 +746,7 @@
     <string name="k2go_settings_pending_none">Ingen</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Installere nå?</string>
-    <string name="k2go_install_confirm_body">Dette installeres på enheten din mens serveren er satt på pause.\n\n• Tar en stund, ofte titalls minutter.\n• Hold en stabil tilkobling hvis du kan.\n• Sørg for nok batteri før du starter.\n• Denne skjermen forblir åpen til den er ferdig.</string>
+    <string name="k2go_install_confirm_body">Dette installeres på enheten din med serveren satt på pause.\n\n• Denne prosessen kan ta en stund (opptil titalls minutter).\n• Hold en stabil tilkobling hvis du kan.\n• Sørg for at batteriet er ladet før du starter.\n• Denne skjermen holdes åpen til den er ferdig.</string>
     <string name="k2go_install_confirm_go">Installer</string>
     <string name="k2go_install_confirm_cancel">Ikke nå</string>
     <string name="k2go_copied">Kopiert</string>

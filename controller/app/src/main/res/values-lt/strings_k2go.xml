@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Kaip sistemoje</string>
     <string name="k2go_theme_dark">Tamsi</string>
     <string name="k2go_settings_turnoff_title">Išjungti K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Tai sustabdo biblioteką ir uždaro programą. (Paspaudus mygtuką Pradžia ar Atgal, programa sumažinama, bet toliau veikia fone.)</string>
+    <string name="k2go_settings_turnoff_msg">Tai sustabdo biblioteką ir uždaro programą. Norėdamas išeiti, bet palikti programą veikti fone, paspauskite pradžios arba atgal mygtuką.</string>
     <string name="k2go_settings_turnoff_confirm">Išjungti</string>
     <string name="k2go_settings_app_version">Programos versija</string>
     <string name="k2go_settings_check_updates">Tikrinti, ar yra naujinių</string>
@@ -136,8 +136,8 @@
     <string name="k2go_clone_notif_text">„K2Go“ perkeliama į kitą įrenginį.</string>
     <string name="k2go_bj_finish">Baigti</string>
     <string name="k2go_bj_wait_title">Tai gali užtrukti</string>
-    <string name="k2go_bj_wait_body">Palikite K2Go atidarytą. Galite išeiti — ji toliau veikia fone, o pranešimas jus sugrąžins.</string>
-    <string name="k2go_bj_returning">Atlikta — grįžtama į pradžią…</string>
+    <string name="k2go_bj_wait_body">Palik „K2Go“ atvertą. Paspauskite atgal arba pradžios mygtuką, kad ji veiktų fone. Perkėlimui pasibaigus, gali paliesti pranešimą ir grįžti į „K2Go“.</string>
+    <string name="k2go_bj_returning">Baigta. Grąžiname tave į pradžios ekraną…</string>
     <string name="k2go_br_leave_backup">Atsarginė kopija kuriama. Šis procesas veikia fone, todėl gali palikti šį puslapį.</string>
     <string name="k2go_clone_back_running">Kopijavimas vyksta. Šis procesas veikia fone, todėl galite palikti šį puslapį.</string>
     <string name="k2go_br_leave_restore">Atkūrimas vyksta. Šis procesas veikia fone, todėl gali palikti šį puslapį.</string>
@@ -327,11 +327,11 @@
     <string name="k2go_lang_choose_content_title">Pasirinkite turinio kalbą</string>
     <string name="k2go_hide">Slėpti</string>
     <string name="k2go_home_no_library">Dar nėra bibliotekos — bakstelėkite Gauti daugiau, kad įdiegtumėte ir pridėtumėte turinio</string>
-    <string name="k2go_home_damaged">Biblioteką reikia taisyti — paskutinė sąranka nebaigta</string>
+    <string name="k2go_home_damaged">Biblioteka įdiegta ne visiškai ir ją reikia pataisyti</string>
     <string name="k2go_home_recover">Taisyti</string>
     <string name="k2go_state_no_system">Kol kas nėra sistemos</string>
     <string name="k2go_connect_no_system">Kol kas nėra sistemos, kuria galima dalytis — pirma pataisykite vieną</string>
-    <string name="k2go_home_ready_empty">Biblioteka paruošta — bakstelėkite Gauti daugiau, kad pridėtumėte turinio</string>
+    <string name="k2go_home_ready_empty">Biblioteka paruošta. Palieskite „Get more“, kad pridėtumėte turinio</string>
     <string name="k2go_rate_per_second">/s</string>
 
     <string name="k2go_gm_hub_title">Gauti daugiau</string>
@@ -465,7 +465,7 @@
     <string name="k2go_setup_progress_title">Baigiama sąranka</string>
     <string name="k2go_setup_context">Baigus sąranką būsi automatiškai nukreiptas į biblioteką. Diegimas gali vykti fone, kol lankai kitą programos dalį.</string>
     <string name="k2go_setup_context_proot">Baigus sąranką būsi automatiškai nukreiptas į biblioteką. Šis veiksmas negali vykti fone, todėl likite šiame ekrane, kol turinys bus įdiegtas.</string>
-    <string name="k2go_install_busy">Jau vyksta diegimas — palaukite, kol jis baigsis.</string>
+    <string name="k2go_install_busy">Diegimas jau vyksta. Palaukite, kol baigsis.</string>
     <string name="k2go_setup_leave_hint">Sistema vis dar nustatoma. Programą gali palikti, kol sąranka vyksta fone.</string>
     <string name="k2go_damaged_title">Įdiegimas nutrauktas</string>
     <string name="k2go_damaged_close">Uždaryti</string>
@@ -522,13 +522,13 @@
     <string name="k2go_books_dl_notif_title">Knygos pridedamos į biblioteką</string>
 
     <string name="k2go_fqr_invalid">Šis regiono pavadinimas arba sritis atrodo netinkami.</string>
-    <string name="k2go_fqr_name_taken">„%1$s“ jau naudojamas — pasirinkite kitą pavadinimą.</string>
+    <string name="k2go_fqr_name_taken">„%1$s“ jau naudojamas. Pasirinkite kitą pavadinimą.</string>
     <string name="k2go_fqr_calculating">Skaičiuojamas atsisiuntimo dydis…</string>
     <string name="k2go_fqr_estimate_error_title">Šio regiono atsisiųsti negalima</string>
     <string name="k2go_fqr_consent_title">Atsisiųsti šį regioną?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s atsisiųsti, %3$s diske.</string>
     <string name="k2go_fqr_consent_legend">Šis regionas: %1$s  ·  Po to laisva: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Šis regionas gali netilpti — po to liktų laisva tik %1$s.</string>
+    <string name="k2go_fqr_consent_wont_fit">Šis regionas gali netilpti. Po to liktų laisva tik %1$s.</string>
     <string name="k2go_fqr_download">Atsisiųsti</string>
     <string name="k2go_fqr_not_now">Ne dabar</string>
     <string name="k2go_fqr_downloading">Atsisiunčiama “%1$s”</string>
@@ -605,7 +605,7 @@
     <string name="k2go_zim_delete_confirm_msg">Tai pašalina failą ir atnaujina turinio biblioteką. Vėliau galėsite jį atsisiųsti dar kartą.</string>
     <string name="k2go_zim_deleting">Trinama…</string>
     <string name="k2go_zim_deleted">%1$s ištrinta</string>
-    <string name="k2go_zim_deleted_deferred">Ištrinta — kol kas paslėpta, visiškai pašalinta pasibaigus dabartiniam atsisiuntimui.</string>
+    <string name="k2go_zim_deleted_deferred">Ištrinta. Kol kas paslėpta ir bus visiškai pašalinta, kai baigsis dabartinis atsisiuntimas.</string>
     <string name="k2go_zim_delete_failed">Nepavyko ištrinti. Bandykite dar kartą.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Skydelis atkuriamas…</string>
@@ -624,7 +624,7 @@
     <string name="k2go_dash_live_start_failed">Nepavyko pradėti atnaujinimo. Bandykite dar kartą.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistemos branduolys · visada įdiegtas</string>
-    <string name="k2go_dash_detail_desc">Skydelis yra įrenginio REST API branduolys (dash-node): maža Node paslauga adresu 127.0.0.1:4000, aptarnaujama nginx ir prižiūrima pdsm. Jis palaiko kiekvieną bibliotekos veiksmą programoje: Knygų naršymą ir atsisiuntimą, Wikipedia ir ZIM turinio pridėjimą bei šalinimą, Kolibri sesijas, Žemėlapius ir sistemos būseną. Skirtingai nei turinio moduliai, jis nediegiamas ir nešalinamas — pateikiamas su įrenginiu ir visada yra. Kai pasiekiama naujesnė versija, galite jį atkurti vietoje.</string>
+    <string name="k2go_dash_detail_desc">Skydelis yra įrenginio REST API branduolys (dash-node) — maža „Node“ paslauga adresu 127.0.0.1:4000, aptarnaujama „nginx“ ir prižiūrima „pdsm“. Ji maitina kiekvieną bibliotekos veiksmą programoje: Knygų naršymą ir atsisiuntimą, „Wikipedia“ ir ZIM turinio pridėjimą bei šalinimą, „Kolibri“ seansus, Žemėlapius ir sistemos būseną. Skirtingai nei turinio moduliai, jos negalima įdiegti ar pašalinti. Ji pateikiama su programa ir visada yra. Kai prieinama naujesnė versija, gali ją perkurti vietoje.</string>
     <string name="k2go_dash_includes">REST galiniai taškai Knygoms, Wikipedia/ZIM, Kolibri ir Žemėlapiams; nginx vhost; ir sistemos versijos bei atkūrimo galiniai taškai — visi adresu 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Sistemos branduolys</string>
@@ -644,9 +644,9 @@
     <string name="k2go_damaged_body">Diegimas buvo nutrauktas prieš pabaigą ir sistema nepasileidžia. Norėdami atkurti, galite atkurti atsarginę kopiją arba iš naujo įdiegti sistemą nuo nulio.</string>
     <string name="k2go_damaged_recover">Atkurti…</string>
     <string name="k2go_reinstall_title">Įdiegti sistemą iš naujo</string>
-    <string name="k2go_reinstall_sub">Ištrina viską ir įdiegia švarią sistemą nuo nulio</string>
+    <string name="k2go_reinstall_sub">Ištrinti „K2Go“ ir turinį šiame įrenginyje ir įdiegti naują sistemą nuo nulio</string>
     <string name="k2go_reinstall_confirm_title">Įdiegti iš naujo nuo nulio?</string>
-    <string name="k2go_reinstall_confirm_msg">Tai ištrina dabartinę sistemą ir viską joje — knygas, žemėlapius, atsisiuntimus ir nustatymus — ir įdiegia švarią kopiją. Negalima atšaukti. Pirmiausia sukurkite atsarginę kopiją, jei norite ką nors išsaugoti. Tada pasirinksite kaip: atsisiųsti arba nukopijuoti iš kito telefono.</string>
+    <string name="k2go_reinstall_confirm_msg">Tai ištrina dabartinę sistemą, įskaitant visas programas, turinį ir nustatymus, o tada įdiegia švarią kopiją. Šio veiksmo anuliuoti negalima. Jei nori ką nors išsaugoti, pirma sukurk atsarginę kopiją. Tada pasirink kaip: atsisiųsti ją arba nukopijuoti iš kito telefono.</string>
     <string name="k2go_reinstall_confirm_yes">Ištrinti ir įdiegti iš naujo</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Iš sistemos</string>
@@ -670,7 +670,7 @@
     <string name="k2go_zc_count_results">%1$d rezultatų</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Tapatybės nustatymas</string>
-    <string name="k2go_settings_authentication_sub">Prisijungimai prie Knygų ir Kursų</string>
+    <string name="k2go_settings_authentication_sub">Prisijungimai prie Calibre-Web (knygos) ir Kolibri (kursai)</string>
     <string name="k2go_auth_hint">Prisijungimai, kuriuos K2Go naudoja Knygoms ir Kursams. Atnaujinkite vieną, jei pasikeitė tos paslaugos slaptažodis.</string>
     <string name="k2go_auth_username">Naudotojo vardas</string>
     <string name="k2go_auth_password">Slaptažodis</string>
@@ -686,14 +686,14 @@
     <string name="k2go_auth_failed">Nepavyko įrašyti — bandykite dar kartą</string>
     <string name="k2go_auth_load_failed">Nepavyko įkelti — ar paslauga veikia?</string>
     <string name="k2go_auth_svc_books">Skaityti knygą</string>
-    <string name="k2go_auth_svc_courses">Mokytis kursuose</string>
+    <string name="k2go_auth_svc_courses">Baigti kursą</string>
     <string name="k2go_auth_custom_toggle">Naudoti pasirinktinį prisijungimą</string>
     <string name="k2go_auth_not_running">Ši paslauga dar neveikia. Pakeitimai išsaugomi dabar ir įsigalioja, kai ji bus įdiegta ir paleista.</string>
-    <string name="k2go_auth_list_note">Neįdiegtos paslaugos lieka pasiekiamos — prisijungimą galite nustatyti iš anksto. Prisijungimo duomenys saugomi šiame įrenginyje.</string>
-    <string name="k2go_auth_sub_books">Calibre-Web · prisijungimas, kurį K2Go naudoja jūsų knygoms atverti.</string>
-    <string name="k2go_auth_sub_courses">Kolibri · prisijungimas, kurį K2Go naudoja jūsų kursams atverti.</string>
+    <string name="k2go_auth_list_note">Gali įvesti ir įrašyti dar neįdiegtų paslaugų prisijungimo duomenis.</string>
+    <string name="k2go_auth_sub_books">Calibre-Web · prisijungimas, kurį „K2Go“ naudoja tavo knygoms atverti.</string>
+    <string name="k2go_auth_sub_courses">Kolibri · prisijungimas, kurį „K2Go“ naudoja tavo kursams atverti.</string>
     <string name="k2go_auth_toggle_hint">Įjunkite pasirinktinį prisijungimą tik jei buvo pakeistas slaptažodis.</string>
-    <string name="k2go_auth_eye_hint">Palieskite akį, kad parodytumėte.</string>
+    <string name="k2go_auth_eye_hint">Palieskite akį, kad matytumėte slaptažodį rašydami.</string>
     <string name="k2go_auth_chip_default">Numatytasis</string>
     <string name="k2go_auth_chip_custom">Pasirinktinis</string>
     <string name="k2go_auth_chip_notinstalled">Neįdiegta</string>
@@ -732,11 +732,11 @@
     <string name="k2go_clone_exit_rescan">Nuskaitykite dar kartą iš kito telefono patikrai</string>
     <string name="k2go_clone_exit_keep_waiting">Toliau laukti</string>
     <string name="k2go_clone_exit_redirecting">Biblioteka atidaroma po %1$d s…</string>
-    <string name="k2go_busy_clone">Kopijavimas tarp telefonų vyksta. Palaukite, kol operacija bus baigta.</string>
-    <string name="k2go_busy_backup">Atsarginė kopija vyksta. Palaukite, kol operacija bus baigta.</string>
-    <string name="k2go_busy_restore">Atkūrimas vyksta. Palaukite, kol operacija bus baigta.</string>
-    <string name="k2go_busy_install">Diegimas vyksta. Palaukite, kol operacija bus baigta.</string>
-    <string name="k2go_busy_download">Atsisiuntimas vyksta. Palaukite, kol operacija bus baigta.</string>
+    <string name="k2go_busy_clone">Vykdomas kopijavimas tarp telefonų. Palaukite, kol baigsis.</string>
+    <string name="k2go_busy_backup">Vykdoma atsarginė kopija. Palaukite, kol baigsis.</string>
+    <string name="k2go_busy_restore">Vykdomas atkūrimas. Palaukite, kol baigsis.</string>
+    <string name="k2go_busy_install">Vykdomas diegimas. Palaukite, kol baigsis.</string>
+    <string name="k2go_busy_download">Vykdomas atsisiuntimas. Palaukite, kol baigsis.</string>
     <string name="k2go_pending_title">Laukiantys atsisiuntimai</string>
     <string name="k2go_pending_empty">Nėra laukiančių atsisiuntimų.</string>
     <string name="k2go_pending_running">Šiuo metu kažkas atsisiunčiama</string>
@@ -746,7 +746,7 @@
     <string name="k2go_settings_pending_none">Nėra</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Įdiegti dabar?</string>
-    <string name="k2go_install_confirm_body">Diegiama jūsų įrenginyje, kai serveris pristabdytas.\n\n• Užtrunka kurį laiką, dažnai kelias dešimtis minučių.\n• Jei galite, palaikykite stabilų ryšį.\n• Prieš pradėdami įsitikinkite, kad pakanka baterijos.\n• Šis ekranas lieka atidarytas iki pabaigos.</string>
+    <string name="k2go_install_confirm_body">Tai įdiegiama tavo įrenginyje pristabdžius serverį.\n\n• Šis procesas gali užtrukti (iki keliasdešimties minučių).\n• Jei gali, palaikyk stabilų ryšį.\n• Prieš pradėdamas įsitikink, kad akumuliatorius įkrautas.\n• Šis ekranas lieka atvertas, kol baigsis.</string>
     <string name="k2go_install_confirm_go">Įdiegti</string>
     <string name="k2go_install_confirm_cancel">Ne dabar</string>
     <string name="k2go_copied">Nukopijuota</string>

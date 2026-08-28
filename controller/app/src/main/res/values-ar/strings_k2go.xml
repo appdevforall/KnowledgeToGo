@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">اتّبع النظام</string>
     <string name="k2go_theme_dark">داكن</string>
     <string name="k2go_settings_turnoff_title">إيقاف K2Go؟</string>
-    <string name="k2go_settings_turnoff_msg">يؤدي هذا إلى إيقاف المكتبة وإغلاق التطبيق. (عند الضغط على زرّي الشاشة الرئيسية أو الرجوع، يُصغّر التطبيق لكنه يستمر في العمل في الخلفية.)</string>
+    <string name="k2go_settings_turnoff_msg">هذا يوقف المكتبة ويغلق التطبيق. للخروج مع إبقاء التطبيق يعمل في الخلفية، اضغط زر الرئيسية أو الرجوع.</string>
     <string name="k2go_settings_turnoff_confirm">إيقاف</string>
     <string name="k2go_settings_app_version">إصدار التطبيق</string>
     <string name="k2go_settings_check_updates">التحقّق من التحديثات</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">جارٍ نقل K2Go إلى الجهاز الآخر.</string>
     <string name="k2go_bj_finish">إنهاء</string>
     <string name="k2go_bj_wait_title">قد يستغرق هذا بعض الوقت</string>
-    <string name="k2go_bj_wait_body">أبقِ K2Go مفتوحًا. يمكنك المغادرة — يستمر في العمل في الخلفية، ويعيدك الإشعار.</string>
-    <string name="k2go_bj_returning">تم — جارٍ العودة إلى الشاشة الرئيسية…</string>
+    <string name="k2go_bj_wait_body">أبقِ K2Go مفتوحًا. اضغط زر الرجوع أو الرئيسية لإبقائه يعمل في الخلفية. عند اكتمال النقل، يمكنك الضغط على الإشعار للعودة إلى K2Go.</string>
+    <string name="k2go_bj_returning">تم. جارٍ إعادتك إلى الشاشة الرئيسية…</string>
     <string name="k2go_br_leave_backup">النسخ الاحتياطي قيد التنفيذ. تعمل هذه العملية في الخلفية، لذا يمكنك مغادرة هذه الصفحة.</string>
     <string name="k2go_clone_back_running">النسخ قيد التنفيذ. تعمل هذه العملية في الخلفية، لذا يمكنك مغادرة هذه الصفحة.</string>
     <string name="k2go_br_leave_restore">الاستعادة قيد التنفيذ. تعمل هذه العملية في الخلفية، لذا يمكنك مغادرة هذه الصفحة.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">اختر لغة المحتوى</string>
     <string name="k2go_hide">إخفاء</string>
     <string name="k2go_home_no_library">لا توجد مكتبة بعد — انقر على المزيد لتثبيت المحتوى وإضافته</string>
-    <string name="k2go_home_damaged">المكتبة بحاجة إلى إصلاح — لم يكتمل الإعداد الأخير</string>
+    <string name="k2go_home_damaged">لم يتم تثبيت المكتبة بالكامل وتحتاج إلى إصلاح</string>
     <string name="k2go_home_recover">إصلاح</string>
     <string name="k2go_state_no_system">لا يوجد نظام بعد</string>
     <string name="k2go_connect_no_system">لا يوجد نظام لمشاركته بعد — أصلح واحدًا أولاً</string>
-    <string name="k2go_home_ready_empty">المكتبة جاهزة — انقر على المزيد لإضافة محتوى</string>
+    <string name="k2go_home_ready_empty">المكتبة جاهزة. اضغط Get more لإضافة محتوى</string>
     <string name="k2go_rate_per_second">/ث</string>
     <string name="k2go_gm_hub_title">المزيد</string>
     <string name="k2go_gm_hub_sub">أضف محتوى إلى مكتبتك غير المتصلة.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">جارٍ إنهاء الإعداد</string>
     <string name="k2go_setup_context">سيتم نقلك إلى مكتبتك تلقائيًا عند انتهاء الإعداد. يمكن أن يعمل التثبيت في الخلفية بينما تتصفح جزءًا آخر من التطبيق.</string>
     <string name="k2go_setup_context_proot">سيتم نقلك إلى مكتبتك تلقائيًا عند انتهاء الإعداد. لا يمكن تنفيذ هذا الإجراء في الخلفية، لذا ابقَ في هذه الشاشة حتى يتم تثبيت المحتوى.</string>
-    <string name="k2go_install_busy">هناك تثبيت قيد التشغيل بالفعل — يُرجى انتظار انتهائه.</string>
+    <string name="k2go_install_busy">يوجد تثبيت قيد التشغيل بالفعل. يرجى الانتظار حتى ينتهي.</string>
     <string name="k2go_setup_leave_hint">لا يزال إعداد النظام جاريًا. يمكنك مغادرة التطبيق بينما يعمل الإعداد في الخلفية.</string>
     <string name="k2go_damaged_title">انقطع التثبيت</string>
     <string name="k2go_damaged_close">إغلاق</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">تنزيلات الكتب</string>
     <string name="k2go_books_dl_notif_title">جارٍ إضافة الكتب إلى مكتبتك</string>
     <string name="k2go_fqr_invalid">يبدو اسم المنطقة أو مساحتها غير صالح.</string>
-    <string name="k2go_fqr_name_taken">«%1$s» مُستخدم بالفعل — اختر اسمًا آخر.</string>
+    <string name="k2go_fqr_name_taken">«%1$s» مستخدم بالفعل. اختر اسمًا مختلفًا.</string>
     <string name="k2go_fqr_calculating">جارٍ حساب حجم التنزيل…</string>
     <string name="k2go_fqr_estimate_error_title">لا يمكن تنزيل هذه المنطقة</string>
     <string name="k2go_fqr_consent_title">تنزيل هذه المنطقة؟</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s للتنزيل، %3$s على القرص.</string>
     <string name="k2go_fqr_consent_legend">هذه المنطقة: %1$s  ·  المتاح بعدها: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">قد لا تتّسع هذه المنطقة — لن يتوفّر سوى %1$s بعد ذلك.</string>
+    <string name="k2go_fqr_consent_wont_fit">قد لا تتّسع هذه المنطقة. بعدها سيبقى %1$s فقط متاحًا.</string>
     <string name="k2go_fqr_download">تنزيل</string>
     <string name="k2go_fqr_not_now">ليس الآن</string>
     <string name="k2go_fqr_downloading">جارٍ تنزيل “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">يؤدي هذا إلى إزالة الملف وتحديث مكتبة المحتوى. يمكنك تنزيله مرة أخرى لاحقًا.</string>
     <string name="k2go_zim_deleting">جارٍ الحذف…</string>
     <string name="k2go_zim_deleted">تم حذف %1$s</string>
-    <string name="k2go_zim_deleted_deferred">تم الحذف — مخفي الآن، وسيُزال بالكامل بعد انتهاء التنزيل الحالي.</string>
+    <string name="k2go_zim_deleted_deferred">تم الحذف. مخفي حاليًا وسيُزال بالكامل عند انتهاء التنزيل الحالي.</string>
     <string name="k2go_zim_delete_failed">تعذّر الحذف. يُرجى المحاولة مرة أخرى.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">إعادة بناء لوحة التحكم…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">تعذّر بدء التحديث. حاول مرة أخرى.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">نواة النظام · مثبَّتة دائمًا</string>
-    <string name="k2go_dash_detail_desc">لوحة التحكم هي نواة واجهة REST API للجهاز (dash-node): خدمة Node صغيرة على 127.0.0.1:4000، يقدّمها nginx ويشرف عليها pdsm. تُشغِّل كل إجراء للمكتبة داخل التطبيق: تصفّح الكتب وتنزيلها، وإضافة محتوى Wikipedia وZIM وحذفه، وجلسات Kolibri، والخرائط، وحالة النظام. على عكس وحدات المحتوى، لا تُثبَّت ولا تُزال — فهي تأتي مع الجهاز وموجودة دائمًا. عند توفّر إصدار أحدث يمكنك إعادة بنائها في مكانها.</string>
+    <string name="k2go_dash_detail_desc">لوحة التحكم هي نواة واجهة REST API للجهاز (dash-node) — خدمة Node صغيرة على 127.0.0.1:4000، تُقدَّم عبر nginx ويشرف عليها pdsm. تشغّل كل إجراء للمكتبة داخل التطبيق: تصفّح وتنزيل الكتب، إضافة وحذف محتوى Wikipedia وZIM، جلسات Kolibri، الخرائط وحالة النظام. على عكس وحدات المحتوى، لا يمكنك تثبيتها أو إزالتها. تأتي مع التطبيق وموجودة دائمًا. عند توفّر إصدار أحدث، يمكنك إعادة بنائها في مكانها.</string>
     <string name="k2go_dash_includes">نقاط نهاية REST للكتب وWikipedia/ZIM وKolibri والخرائط؛ ومضيف nginx الافتراضي؛ ونقاط نهاية إصدار النظام وإعادة البناء — كلها على 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">نواة النظام</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">توقّف الإعداد قبل أن يكتمل، ولا يمكن للنظام أن يبدأ. للاسترداد يمكنك استعادة نسخة احتياطية أو إعادة تثبيت النظام من الصفر.</string>
     <string name="k2go_damaged_recover">استرداد…</string>
     <string name="k2go_reinstall_title">إعادة تثبيت النظام</string>
-    <string name="k2go_reinstall_sub">يمحو كل شيء ويثبّت نظامًا جديدًا من الصفر</string>
+    <string name="k2go_reinstall_sub">امحُ K2Go والمحتوى على هذا الجهاز وثبّت نظامًا جديدًا من الصفر</string>
     <string name="k2go_reinstall_confirm_title">إعادة التثبيت من الصفر؟</string>
-    <string name="k2go_reinstall_confirm_msg">هذا يمحو النظام الحالي وكل ما فيه — الكتب والخرائط والتنزيلات والإعدادات — ثم يثبّت نسخة نظيفة. لا يمكن التراجع عنه. أنشئ نسخة احتياطية أولاً إذا أردت الاحتفاظ بأي شيء. ثم تختار الطريقة: التنزيل أو النسخ من هاتف آخر.</string>
+    <string name="k2go_reinstall_confirm_msg">هذا يمحو النظام الحالي، بما في ذلك جميع التطبيقات والمحتوى والإعدادات، ثم يثبّت نسخة نظيفة. لا يمكن التراجع عن هذا الإجراء. إذا أردت الاحتفاظ بأي شيء، فأنشئ نسخة احتياطية أولًا. ثم اختر الطريقة: نزّله أو انسخه من هاتف آخر.</string>
     <string name="k2go_reinstall_confirm_yes">محو وإعادة تثبيت</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">من النظام</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d نتيجة</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">المصادقة</string>
-    <string name="k2go_settings_authentication_sub">تسجيلات الدخول للكتب والدورات</string>
+    <string name="k2go_settings_authentication_sub">تسجيلات الدخول لـ Calibre-Web (الكتب) وKolibri (الدورات)</string>
     <string name="k2go_auth_hint">عمليات تسجيل الدخول التي يستخدمها K2Go للكتب والدورات. حدِّث واحدة إذا تغيّرت كلمة مرور خدمتها.</string>
     <string name="k2go_auth_username">اسم المستخدم</string>
     <string name="k2go_auth_password">كلمة المرور</string>
@@ -676,14 +676,14 @@
     <string name="k2go_auth_failed">تعذّر الحفظ — حاول مرة أخرى</string>
     <string name="k2go_auth_load_failed">تعذّر التحميل — هل الخدمة تعمل؟</string>
     <string name="k2go_auth_svc_books">اقرأ كتابًا</string>
-    <string name="k2go_auth_svc_courses">التحق بالدورات</string>
+    <string name="k2go_auth_svc_courses">خذ دورة</string>
     <string name="k2go_auth_custom_toggle">استخدام تسجيل دخول مخصص</string>
     <string name="k2go_auth_not_running">هذه الخدمة لا تعمل بعد. يتم حفظ التغييرات الآن وتُطبَّق بمجرد تثبيتها وتشغيلها.</string>
-    <string name="k2go_auth_list_note">تظل الخدمات غير المثبَّتة قابلة للوصول — يمكنك ضبط تسجيل الدخول مسبقًا. تُخزَّن بيانات الاعتماد على هذا الجهاز.</string>
+    <string name="k2go_auth_list_note">يمكنك إدخال وحفظ بيانات اعتماد للخدمات غير المثبّتة بعد.</string>
     <string name="k2go_auth_sub_books">Calibre-Web · تسجيل الدخول الذي يستخدمه K2Go لفتح كتبك.</string>
     <string name="k2go_auth_sub_courses">Kolibri · تسجيل الدخول الذي يستخدمه K2Go لفتح دوراتك.</string>
     <string name="k2go_auth_toggle_hint">فعِّل تسجيل دخول مخصصًا فقط إذا تغيّرت كلمة المرور.</string>
-    <string name="k2go_auth_eye_hint">اضغط على العين لإظهارها.</string>
+    <string name="k2go_auth_eye_hint">اضغط على العين لعرض كلمة المرور أثناء الكتابة.</string>
     <string name="k2go_auth_chip_default">افتراضي</string>
     <string name="k2go_auth_chip_custom">مخصص</string>
     <string name="k2go_auth_chip_notinstalled">غير مثبَّت</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">أعد المسح من الهاتف الآخر للتحقق</string>
     <string name="k2go_clone_exit_keep_waiting">متابعة الانتظار</string>
     <string name="k2go_clone_exit_redirecting">فتح مكتبتك خلال %1$d ث…</string>
-    <string name="k2go_busy_clone">نسخ بين الهواتف قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
-    <string name="k2go_busy_backup">نسخ احتياطي قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
-    <string name="k2go_busy_restore">استعادة قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
-    <string name="k2go_busy_install">تثبيت قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
-    <string name="k2go_busy_download">تنزيل قيد التنفيذ. يُرجى الانتظار حتى تنتهي العملية.</string>
+    <string name="k2go_busy_clone">توجد نسخة بين الهواتف قيد التنفيذ. يرجى الانتظار حتى تنتهي.</string>
+    <string name="k2go_busy_backup">يوجد نسخ احتياطي قيد التنفيذ. يرجى الانتظار حتى ينتهي.</string>
+    <string name="k2go_busy_restore">توجد استعادة قيد التنفيذ. يرجى الانتظار حتى تنتهي.</string>
+    <string name="k2go_busy_install">يوجد تثبيت قيد التنفيذ. يرجى الانتظار حتى ينتهي.</string>
+    <string name="k2go_busy_download">يوجد تنزيل قيد التنفيذ. يرجى الانتظار حتى ينتهي.</string>
     <string name="k2go_pending_title">التنزيلات المعلقة</string>
     <string name="k2go_pending_empty">لا توجد تنزيلات معلقة.</string>
     <string name="k2go_pending_running">يجري تنزيل شيء الآن</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">لا شيء</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">التثبيت الآن؟</string>
-    <string name="k2go_install_confirm_body">يتم التثبيت على جهازك مع إيقاف الخادم مؤقتًا.\n\n• يستغرق بعض الوقت، غالبًا عشرات الدقائق.\n• حافظ على اتصال مستقر إن أمكن.\n• تأكد من وجود بطارية كافية قبل البدء.\n• تظل هذه الشاشة مفتوحة حتى الانتهاء.</string>
+    <string name="k2go_install_confirm_body">يُثبَّت هذا على جهازك مع إيقاف الخادم مؤقتًا.\n\n• قد تستغرق هذه العملية بعض الوقت (حتى عشرات الدقائق).\n• حافظ على اتصال مستقر إن أمكن.\n• تأكد من شحن البطارية قبل البدء.\n• تبقى هذه الشاشة مفتوحة حتى تنتهي.</string>
     <string name="k2go_install_confirm_go">تثبيت</string>
     <string name="k2go_install_confirm_cancel">ليس الآن</string>
     <string name="k2go_copied">تم النسخ</string>

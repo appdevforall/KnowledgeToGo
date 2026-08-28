@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">கணினியைப் பின்பற்று</string>
     <string name="k2go_theme_dark">இருள்</string>
     <string name="k2go_settings_turnoff_title">K2Go-ஐ அணைக்கவா?</string>
-    <string name="k2go_settings_turnoff_msg">இது நூலகத்தை நிறுத்தி செயலியை மூடுகிறது. (முகப்பு அல்லது பின் பொத்தானை அழுத்தும்போது, செயலி சிறிதாக்கப்படும் ஆனால் பின்னணியில் இயங்கிக்கொண்டே இருக்கும்.)</string>
+    <string name="k2go_settings_turnoff_msg">இது நூலகத்தை நிறுத்தி ஆப்பை மூடும். வெளியேறி ஆப்பை பின்னணியில் இயங்க வைக்க, முகப்பு அல்லது பின் பொத்தானை அழுத்தவும்.</string>
     <string name="k2go_settings_turnoff_confirm">அணை</string>
     <string name="k2go_settings_app_version">செயலி பதிப்பு</string>
     <string name="k2go_settings_check_updates">புதுப்பிப்புகளைச் சரிபார்</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">K2Go மற்ற சாதனத்திற்கு மாற்றப்படுகிறது.</string>
     <string name="k2go_bj_finish">முடி</string>
     <string name="k2go_bj_wait_title">இதற்கு சிறிது நேரம் ஆகலாம்</string>
-    <string name="k2go_bj_wait_body">K2Go-ஐத் திறந்து வைத்திருங்கள். நீங்கள் வெளியேறலாம் — இது பின்னணியில் இயங்கிக்கொண்டே இருக்கும், அறிவிப்பு உங்களை மீண்டும் அழைத்து வரும்.</string>
-    <string name="k2go_bj_returning">முடிந்தது — முகப்புக்குத் திரும்புகிறது…</string>
+    <string name="k2go_bj_wait_body">K2Go ஐத் திறந்தே வைக்கவும். பின்னணியில் இயங்கிக்கொண்டிருக்க பின் அல்லது முகப்பு பொத்தானை அழுத்தவும். இடமாற்றம் முடிந்ததும், K2Go க்குத் திரும்ப அறிவிப்பைத் தட்டலாம்.</string>
+    <string name="k2go_bj_returning">முடிந்தது. உங்களை முகப்புத் திரைக்குத் திருப்புகிறோம்…</string>
     <string name="k2go_br_leave_backup">காப்புப்பிரதி நடந்துகொண்டிருக்கிறது. இந்தச் செயல்முறை பின்னணியில் இயங்குகிறது, எனவே இந்தப் பக்கத்தை விட்டுச் செல்லலாம்.</string>
     <string name="k2go_clone_back_running">நகலெடுப்பு நடந்துகொண்டிருக்கிறது. இந்தச் செயல்முறை பின்னணியில் இயங்குகிறது, எனவே இந்தப் பக்கத்தை விட்டுச் செல்லலாம்.</string>
     <string name="k2go_br_leave_restore">மீட்டெடுப்பு நடந்துகொண்டிருக்கிறது. இந்தச் செயல்முறை பின்னணியில் இயங்குகிறது, எனவே இந்தப் பக்கத்தை விட்டுச் செல்லலாம்.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">உள்ளடக்க மொழியைத் தேர்வுசெய்க</string>
     <string name="k2go_hide">மறை</string>
     <string name="k2go_home_no_library">இன்னும் நூலகம் இல்லை — நிறுவி உள்ளடக்கத்தைச் சேர்க்க ‘மேலும் பெறு’-ஐத் தட்டவும்</string>
-    <string name="k2go_home_damaged">நூலகத்தை சரிசெய்ய வேண்டும் — கடைசி அமைப்பு முடியவில்லை</string>
+    <string name="k2go_home_damaged">நூலகம் முழுமையாக நிறுவப்படவில்லை, சரிசெய்ய வேண்டும்</string>
     <string name="k2go_home_recover">சரிசெய்</string>
     <string name="k2go_state_no_system">இன்னும் அமைப்பு இல்லை</string>
     <string name="k2go_connect_no_system">பகிர இன்னும் அமைப்பு இல்லை — முதலில் ஒன்றைச் சரிசெய்யவும்</string>
-    <string name="k2go_home_ready_empty">நூலகம் தயார் — உள்ளடக்கத்தைச் சேர்க்க ‘மேலும் பெறு’-ஐத் தட்டவும்</string>
+    <string name="k2go_home_ready_empty">நூலகம் தயார். உள்ளடக்கம் சேர்க்க Get more ஐத் தட்டவும்</string>
     <string name="k2go_rate_per_second">/வி</string>
     <string name="k2go_gm_hub_title">மேலும் பெறு</string>
     <string name="k2go_gm_hub_sub">உங்கள் ஆஃப்லைன் நூலகத்தில் உள்ளடக்கத்தைச் சேர்.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">அமைவு முடிக்கப்படுகிறது</string>
     <string name="k2go_setup_context">அமைவு முடிந்ததும் தானாகவே உங்கள் நூலகத்திற்கு அழைத்துச் செல்லப்படுவீர்கள். ஆப்பின் மற்றொரு பகுதிக்குச் செல்லும்போது நிறுவல் பின்னணியில் இயங்கலாம்.</string>
     <string name="k2go_setup_context_proot">அமைவு முடிந்ததும் தானாகவே உங்கள் நூலகத்திற்கு அழைத்துச் செல்லப்படுவீர்கள். இந்தச் செயல் பின்னணியில் இயங்க முடியாது, எனவே உள்ளடக்கம் நிறுவப்படும் வரை இந்தத் திரையில் இருங்கள்.</string>
-    <string name="k2go_install_busy">ஏற்கனவே ஒரு நிறுவல் இயங்குகிறது — அது முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_install_busy">ஒரு நிறுவல் ஏற்கனவே இயங்குகிறது. முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_setup_leave_hint">சிஸ்டம் இன்னும் அமைக்கப்படுகிறது. அமைவு பின்னணியில் இயங்கும்போது நீங்கள் ஆப்பை விட்டு வெளியேறலாம்.</string>
     <string name="k2go_damaged_title">நிறுவல் தடைபட்டது</string>
     <string name="k2go_damaged_close">மூடு</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">புத்தகப் பதிவிறக்கங்கள்</string>
     <string name="k2go_books_dl_notif_title">உங்கள் நூலகத்தில் புத்தகங்கள் சேர்க்கப்படுகின்றன</string>
     <string name="k2go_fqr_invalid">அந்தப் பகுதியின் பெயர் அல்லது பரப்பு செல்லுபடியாகாதது போல் தெரிகிறது.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” ஏற்கனவே பயன்பாட்டில் உள்ளது — வேறு பெயரைத் தேர்ந்தெடுக்கவும்.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” ஏற்கனவே பயன்பாட்டில் உள்ளது. வேறு பெயரைத் தேர்ந்தெடுக்கவும்.</string>
     <string name="k2go_fqr_calculating">பதிவிறக்க அளவு கணக்கிடப்படுகிறது…</string>
     <string name="k2go_fqr_estimate_error_title">இந்தப் பகுதியைப் பதிவிறக்க முடியாது</string>
     <string name="k2go_fqr_consent_title">இந்தப் பகுதியைப் பதிவிறக்கவா?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — பதிவிறக்க %2$s, வட்டில் %3$s.</string>
     <string name="k2go_fqr_consent_legend">இந்தப் பகுதி: %1$s  ·  பிறகு காலி: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">இந்தப் பகுதி பொருந்தாமல் போகலாம் — பிறகு %1$s மட்டுமே காலியாக இருக்கும்.</string>
+    <string name="k2go_fqr_consent_wont_fit">இந்தப் பகுதி பொருந்தாமல் போகலாம். அதன் பிறகு %1$s மட்டுமே காலியாக இருக்கும்.</string>
     <string name="k2go_fqr_download">பதிவிறக்கு</string>
     <string name="k2go_fqr_not_now">இப்போது வேண்டாம்</string>
     <string name="k2go_fqr_downloading">“%1$s” பதிவிறக்கப்படுகிறது</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">இது கோப்பை அகற்றி உள்ளடக்க நூலகத்தைப் புதுப்பிக்கும். பிறகு மீண்டும் பதிவிறக்கலாம்.</string>
     <string name="k2go_zim_deleting">நீக்குகிறது…</string>
     <string name="k2go_zim_deleted">%1$s நீக்கப்பட்டது</string>
-    <string name="k2go_zim_deleted_deferred">நீக்கப்பட்டது — தற்போது மறைக்கப்பட்டது, தற்போதைய பதிவிறக்கம் முடிந்ததும் முழுமையாக அகற்றப்படும்.</string>
+    <string name="k2go_zim_deleted_deferred">நீக்கப்பட்டது. இப்போதைக்கு மறைக்கப்பட்டுள்ளது, தற்போதைய பதிவிறக்கம் முடிந்ததும் முழுமையாக அகற்றப்படும்.</string>
     <string name="k2go_zim_delete_failed">நீக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">டாஷ்போர்டு மீண்டும் உருவாக்கப்படுகிறது…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">புதுப்பிப்பைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">கணினி கரு · எப்போதும் நிறுவப்பட்டது</string>
-    <string name="k2go_dash_detail_desc">டாஷ்போர்டு என்பது பெட்டியின் REST API கரு (dash-node): 127.0.0.1:4000 இல் இயங்கும் ஒரு சிறிய Node சேவை, nginx வழங்கி pdsm மேற்பார்வையிடுகிறது. இது பயன்பாட்டில் ஒவ்வொரு நூலக செயலையும் இயக்குகிறது: புத்தகங்களை உலாவுதல் மற்றும் பதிவிறக்குதல், Wikipedia மற்றும் ZIM உள்ளடக்கத்தைச் சேர்த்தல் மற்றும் நீக்குதல், Kolibri அமர்வுகள், வரைபடங்கள் மற்றும் கணினி நிலை. உள்ளடக்க தொகுதிகளைப் போலல்லாமல், இதை நிறுவவோ அகற்றவோ முடியாது — இது பெட்டியுடன் வருகிறது, எப்போதும் இருக்கும். புதிய பதிப்பு கிடைக்கும்போது அதை இடத்திலேயே மீண்டும் உருவாக்கலாம்.</string>
+    <string name="k2go_dash_detail_desc">டாஷ்போர்டு என்பது சாதனத்தின் REST API மையம் (dash-node) — 127.0.0.1:4000 இல் இயங்கும் ஒரு சிறிய Node சேவை, nginx வழங்குகிறது, pdsm மேற்பார்வையிடுகிறது. இது ஆப்பில் ஒவ்வொரு நூலகச் செயலையும் இயக்குகிறது: புத்தகங்களை உலாவுதல் மற்றும் பதிவிறக்குதல், Wikipedia மற்றும் ZIM உள்ளடக்கத்தைச் சேர்த்தல் மற்றும் நீக்குதல், Kolibri அமர்வுகள், வரைபடங்கள் மற்றும் சிஸ்டம் நிலை. உள்ளடக்கத் தொகுதிகளைப் போலல்லாமல், அதை நிறுவவோ அகற்றவோ முடியாது. அது ஆப்புடன் வருகிறது, எப்போதும் இருக்கும். புதிய பதிப்பு கிடைக்கும்போது, அதை அந்த இடத்திலேயே மீண்டும் உருவாக்கலாம்.</string>
     <string name="k2go_dash_includes">புத்தகங்கள், Wikipedia/ZIM, Kolibri மற்றும் வரைபடங்களுக்கான REST இறுதிப்புள்ளிகள்; nginx vhost; மற்றும் கணினி பதிப்பு மற்றும் மீண்டும் உருவாக்கும் இறுதிப்புள்ளிகள் — அனைத்தும் 127.0.0.1:4000 இல்.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">கணினி கரு</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">நிறுவல் முடிவதற்கு முன் நிறுத்தப்பட்டது, அமைப்பு தொடங்க முடியவில்லை. மீட்க, ஒரு காப்புப்பிரதியை மீட்டமைக்கலாம் அல்லது அமைப்பை புதிதாக மீண்டும் நிறுவலாம்.</string>
     <string name="k2go_damaged_recover">மீட்டெடு…</string>
     <string name="k2go_reinstall_title">அமைப்பை மீண்டும் நிறுவு</string>
-    <string name="k2go_reinstall_sub">அனைத்தையும் அழித்து புதிதாக ஒரு புதிய அமைப்பை நிறுவும்</string>
+    <string name="k2go_reinstall_sub">இந்தச் சாதனத்தில் K2Go மற்றும் உள்ளடக்கத்தை அழித்து, முதலிலிருந்து புதிய சிஸ்டத்தை நிறுவவும்</string>
     <string name="k2go_reinstall_confirm_title">புதிதாக மீண்டும் நிறுவவா?</string>
-    <string name="k2go_reinstall_confirm_msg">இது தற்போதைய அமைப்பையும் அதிலுள்ள அனைத்தையும் — புத்தகங்கள், வரைபடங்கள், பதிவிறக்கங்கள் மற்றும் அமைப்புகள் — அழித்து, பிறகு ஒரு சுத்தமான நகலை நிறுவும். இதைத் திரும்பப்பெற முடியாது. ஏதேனும் வைத்திருக்க விரும்பினால் முதலில் காப்புப்பிரதி எடுக்கவும். பிறகு வழியைத் தேர்ந்தெடுக்கிறீர்கள்: பதிவிறக்கம் அல்லது மற்றொரு தொலைபேசியிலிருந்து நகல்.</string>
+    <string name="k2go_reinstall_confirm_msg">இது தற்போதைய சிஸ்டத்தை, எல்லா ஆப்கள், உள்ளடக்கம் மற்றும் அமைப்புகள் உட்பட அழித்து, பிறகு ஒரு சுத்தமான நகலை நிறுவும். இந்தச் செயலைச் செயல்தவிர்க்க முடியாது. ஏதேனும் வைத்திருக்க விரும்பினால், முதலில் காப்புப்பிரதி எடுக்கவும். பிறகு எப்படி என்பதைத் தேர்ந்தெடுக்கவும்: அதைப் பதிவிறக்கவும், அல்லது வேறு தொலைபேசியிலிருந்து நகலெடுக்கவும்.</string>
     <string name="k2go_reinstall_confirm_yes">அழித்து மீண்டும் நிறுவு</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">கணினியிலிருந்து</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d முடிவுகள்</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">அங்கீகாரம்</string>
-    <string name="k2go_settings_authentication_sub">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கான உள்நுழைவுகள்</string>
+    <string name="k2go_settings_authentication_sub">Calibre-Web (புத்தகங்கள்) மற்றும் Kolibri (பாடநெறிகள்) க்கான உள்நுழைவுகள்</string>
     <string name="k2go_auth_hint">புத்தகங்கள் மற்றும் பாடநெறிகளுக்கு K2Go பயன்படுத்தும் உள்நுழைவுகள். ஒரு சேவையின் கடவுச்சொல் மாறினால் அதைப் புதுப்பிக்கவும்.</string>
     <string name="k2go_auth_username">பயனர்பெயர்</string>
     <string name="k2go_auth_password">கடவுச்சொல்</string>
@@ -675,15 +675,15 @@
     <string name="k2go_auth_noperm">இந்தக் கணக்கு உள்ளடக்கத்தை நிர்வகிக்க முடியாது</string>
     <string name="k2go_auth_failed">சேமிக்க முடியவில்லை — மீண்டும் முயற்சிக்கவும்</string>
     <string name="k2go_auth_load_failed">ஏற்ற முடியவில்லை — சேவை இயங்குகிறதா?</string>
-    <string name="k2go_auth_svc_books">ஒரு புத்தகம் படி</string>
-    <string name="k2go_auth_svc_courses">பாடநெறிகளை எடு</string>
+    <string name="k2go_auth_svc_books">ஒரு புத்தகம் படிக்கவும்</string>
+    <string name="k2go_auth_svc_courses">ஒரு பாடநெறி எடுக்கவும்</string>
     <string name="k2go_auth_custom_toggle">தனிப்பயன் உள்நுழைவைப் பயன்படுத்தவும்</string>
     <string name="k2go_auth_not_running">இந்தச் சேவை இன்னும் இயங்கவில்லை. மாற்றங்கள் இப்போது சேமிக்கப்படும், அது நிறுவப்பட்டு இயங்கத் தொடங்கியதும் அமலுக்கு வரும்.</string>
-    <string name="k2go_auth_list_note">நிறுவப்படாத சேவைகளும் அணுகக்கூடியதாக இருக்கும் — உள்நுழைவை முன்கூட்டியே அமைக்கலாம். சான்றுகள் இந்தச் சாதனத்தில் சேமிக்கப்படும்.</string>
+    <string name="k2go_auth_list_note">இன்னும் நிறுவப்படாத சேவைகளுக்கான சான்றுகளை உள்ளிட்டுச் சேமிக்கலாம்.</string>
     <string name="k2go_auth_sub_books">Calibre-Web · உங்கள் புத்தகங்களைத் திறக்க K2Go பயன்படுத்தும் உள்நுழைவு.</string>
     <string name="k2go_auth_sub_courses">Kolibri · உங்கள் பாடநெறிகளைத் திறக்க K2Go பயன்படுத்தும் உள்நுழைவு.</string>
     <string name="k2go_auth_toggle_hint">கடவுச்சொல் மாற்றப்பட்டால் மட்டுமே தனிப்பயன் உள்நுழைவை இயக்கவும்.</string>
-    <string name="k2go_auth_eye_hint">அதைக் காட்ட கண்ணைத் தட்டவும்.</string>
+    <string name="k2go_auth_eye_hint">தட்டச்சு செய்யும்போது கடவுச்சொல்லைக் காட்ட கண்ணைத் தட்டவும்.</string>
     <string name="k2go_auth_chip_default">இயல்புநிலை</string>
     <string name="k2go_auth_chip_custom">தனிப்பயன்</string>
     <string name="k2go_auth_chip_notinstalled">நிறுவப்படவில்லை</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">சரிபார்க்க மற்ற ஃபோனிலிருந்து மீண்டும் ஸ்கேன் செய்யவும்</string>
     <string name="k2go_clone_exit_keep_waiting">காத்திருக்கவும்</string>
     <string name="k2go_clone_exit_redirecting">%1$d வினாடிகளில் உங்கள் நூலகம் திறக்கிறது…</string>
-    <string name="k2go_busy_clone">தொலைபேசிகளுக்கிடையே நகலெடுப்பு நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
-    <string name="k2go_busy_backup">காப்புப்பிரதி நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
-    <string name="k2go_busy_restore">மீட்டமைப்பு நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
-    <string name="k2go_busy_install">நிறுவல் நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
-    <string name="k2go_busy_download">பதிவிறக்கம் நடைபெறுகிறது. செயல்பாடு முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_clone">தொலைபேசிகளுக்கு இடையே ஒரு நகல் நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_backup">ஒரு காப்புப்பிரதி நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_restore">ஒரு மீட்டெடுப்பு நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_install">ஒரு நிறுவல் நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_download">ஒரு பதிவிறக்கம் நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_pending_title">நிலுவையிலுள்ள பதிவிறக்கங்கள்</string>
     <string name="k2go_pending_empty">நிலுவையில் பதிவிறக்கங்கள் இல்லை.</string>
     <string name="k2go_pending_running">இப்போது ஏதோ பதிவிறக்கப்படுகிறது</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">எதுவுமில்லை</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">இப்போது நிறுவவா?</string>
-    <string name="k2go_install_confirm_body">சேவையகம் இடைநிறுத்தப்பட்ட நிலையில் இது உங்கள் சாதனத்தில் நிறுவப்படும்.\n\n• சிறிது நேரம் ஆகும், பெரும்பாலும் பல பத்து நிமிடங்கள்.\n• முடிந்தால் நிலையான இணைப்பை வைத்திருங்கள்.\n• தொடங்குவதற்கு முன் போதிய பேட்டரி இருப்பதை உறுதி செய்யுங்கள்.\n• முடியும் வரை இந்தத் திரை திறந்திருக்கும்.</string>
+    <string name="k2go_install_confirm_body">சர்வர் இடைநிறுத்தப்பட்ட நிலையில் இது உங்கள் சாதனத்தில் நிறுவப்படும்.\n\n• இந்தச் செயல்முறை நேரம் எடுக்கலாம் (பத்துக்கணக்கான நிமிடங்கள் வரை).\n• முடிந்தால் நிலையான இணைப்பை வைத்திருங்கள்.\n• தொடங்குமுன் பேட்டரி சார்ஜ் உள்ளதா என உறுதிசெய்யவும்.\n• முடியும் வரை இந்தத் திரை திறந்திருக்கும்.</string>
     <string name="k2go_install_confirm_go">நிறுவு</string>
     <string name="k2go_install_confirm_cancel">இப்போது வேண்டாம்</string>
     <string name="k2go_copied">நகலெடுக்கப்பட்டது</string>

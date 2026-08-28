@@ -65,7 +65,7 @@
     <string name="k2go_theme_system">Theo hệ thống</string>
     <string name="k2go_theme_dark">Tối</string>
     <string name="k2go_settings_turnoff_title">Tắt K2Go?</string>
-    <string name="k2go_settings_turnoff_msg">Thao tác này dừng thư viện và đóng ứng dụng. (Khi bạn nhấn nút Home hoặc Back, ứng dụng được thu nhỏ nhưng vẫn chạy nền.)</string>
+    <string name="k2go_settings_turnoff_msg">Việc này dừng thư viện và đóng ứng dụng. Để thoát nhưng giữ ứng dụng chạy nền, hãy nhấn nút Chính hoặc quay lại.</string>
     <string name="k2go_settings_turnoff_confirm">Tắt</string>
     <string name="k2go_settings_app_version">Phiên bản ứng dụng</string>
     <string name="k2go_settings_check_updates">Kiểm tra cập nhật</string>
@@ -135,8 +135,8 @@
     <string name="k2go_clone_notif_text">Đang chuyển K2Go sang thiết bị kia.</string>
     <string name="k2go_bj_finish">Hoàn tất</string>
     <string name="k2go_bj_wait_title">Việc này có thể mất một lúc</string>
-    <string name="k2go_bj_wait_body">Giữ K2Go mở. Bạn có thể rời đi — nó tiếp tục chạy nền, và thông báo sẽ đưa bạn quay lại.</string>
-    <string name="k2go_bj_returning">Xong — đang quay về Trang chủ…</string>
+    <string name="k2go_bj_wait_body">Hãy giữ K2Go mở. Nhấn nút quay lại hoặc nút Chính để giữ nó chạy nền. Khi chuyển xong, bạn có thể nhấn thông báo để quay lại K2Go.</string>
+    <string name="k2go_bj_returning">Xong. Đang đưa bạn về màn hình Chính…</string>
     <string name="k2go_br_leave_backup">Đang sao lưu. Quá trình này chạy nền, nên bạn có thể rời trang này.</string>
     <string name="k2go_clone_back_running">Đang sao chép. Quá trình này chạy nền, nên bạn có thể rời trang này.</string>
     <string name="k2go_br_leave_restore">Đang khôi phục. Quá trình này chạy nền, nên bạn có thể rời trang này.</string>
@@ -325,11 +325,11 @@
     <string name="k2go_lang_choose_content_title">Chọn ngôn ngữ nội dung</string>
     <string name="k2go_hide">Ẩn</string>
     <string name="k2go_home_no_library">Chưa có thư viện — chạm Tải thêm để cài và thêm nội dung</string>
-    <string name="k2go_home_damaged">Thư viện cần sửa chữa — lần cài đặt trước chưa hoàn tất</string>
+    <string name="k2go_home_damaged">Thư viện chưa được cài đặt hoàn chỉnh và cần được sửa chữa</string>
     <string name="k2go_home_recover">Sửa chữa</string>
     <string name="k2go_state_no_system">Chưa có hệ thống</string>
     <string name="k2go_connect_no_system">Chưa có hệ thống để chia sẻ — hãy sửa chữa một cái trước</string>
-    <string name="k2go_home_ready_empty">Thư viện sẵn sàng — chạm Tải thêm để thêm nội dung</string>
+    <string name="k2go_home_ready_empty">Thư viện đã sẵn sàng. Nhấn Get more để thêm nội dung</string>
     <string name="k2go_rate_per_second">/giây</string>
     <string name="k2go_gm_hub_title">Tải thêm</string>
     <string name="k2go_gm_hub_sub">Thêm nội dung vào thư viện ngoại tuyến của bạn.</string>
@@ -458,7 +458,7 @@
     <string name="k2go_setup_progress_title">Đang hoàn tất thiết lập</string>
     <string name="k2go_setup_context">Bạn sẽ được đưa đến thư viện của mình tự động khi thiết lập xong. Việc cài đặt có thể chạy nền trong khi bạn xem phần khác của ứng dụng.</string>
     <string name="k2go_setup_context_proot">Bạn sẽ được đưa đến thư viện của mình tự động khi thiết lập xong. Tác vụ này không thể chạy nền, nên hãy ở lại màn hình này cho đến khi nội dung được cài đặt.</string>
-    <string name="k2go_install_busy">Một quá trình cài đang chạy — vui lòng chờ nó hoàn tất.</string>
+    <string name="k2go_install_busy">Đã có một cài đặt đang chạy. Vui lòng đợi cho đến khi hoàn tất.</string>
     <string name="k2go_setup_leave_hint">Vẫn đang thiết lập hệ thống. Bạn có thể rời ứng dụng trong khi thiết lập chạy nền.</string>
     <string name="k2go_damaged_title">Cài đặt bị gián đoạn</string>
     <string name="k2go_damaged_close">Đóng</string>
@@ -513,13 +513,13 @@
     <string name="k2go_books_dl_channel_name">Tải sách</string>
     <string name="k2go_books_dl_notif_title">Đang thêm sách vào thư viện của bạn</string>
     <string name="k2go_fqr_invalid">Tên khu vực hoặc vùng đó có vẻ không hợp lệ.</string>
-    <string name="k2go_fqr_name_taken">“%1$s” đã được dùng — hãy chọn tên khác.</string>
+    <string name="k2go_fqr_name_taken">“%1$s” đã được dùng. Hãy chọn tên khác.</string>
     <string name="k2go_fqr_calculating">Đang tính kích thước tải…</string>
     <string name="k2go_fqr_estimate_error_title">Không thể tải khu vực này</string>
     <string name="k2go_fqr_consent_title">Tải khu vực này?</string>
     <string name="k2go_fqr_consent_sub">“%1$s” — %2$s để tải, %3$s trên đĩa.</string>
     <string name="k2go_fqr_consent_legend">Khu vực này: %1$s  ·  Trống sau: %2$s</string>
-    <string name="k2go_fqr_consent_wont_fit">Khu vực này có thể không vừa — chỉ còn %1$s trống sau đó.</string>
+    <string name="k2go_fqr_consent_wont_fit">Vùng này có thể không vừa. Sau đó chỉ còn trống %1$s.</string>
     <string name="k2go_fqr_download">Tải</string>
     <string name="k2go_fqr_not_now">Không phải bây giờ</string>
     <string name="k2go_fqr_downloading">Đang tải “%1$s”</string>
@@ -595,7 +595,7 @@
     <string name="k2go_zim_delete_confirm_msg">Thao tác này sẽ xóa tệp và cập nhật thư viện nội dung. Bạn có thể tải lại sau.</string>
     <string name="k2go_zim_deleting">Đang xóa…</string>
     <string name="k2go_zim_deleted">Đã xóa %1$s</string>
-    <string name="k2go_zim_deleted_deferred">Đã xóa — tạm ẩn, sẽ bị xóa hoàn toàn khi tải xuống hiện tại hoàn tất.</string>
+    <string name="k2go_zim_deleted_deferred">Đã xóa. Tạm ẩn và sẽ bị xóa hoàn toàn khi lượt tải hiện tại xong.</string>
     <string name="k2go_zim_delete_failed">Không thể xóa. Vui lòng thử lại.</string>
     <!-- ADFA-5011: dash-node REST-core rebuild + detail card -->
     <string name="k2go_dash_rebuilding">Đang xây dựng lại bảng điều khiển…</string>
@@ -614,7 +614,7 @@
     <string name="k2go_dash_live_start_failed">Không thể bắt đầu cập nhật. Hãy thử lại.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Lõi hệ thống · luôn được cài đặt</string>
-    <string name="k2go_dash_detail_desc">Bảng điều khiển là lõi REST API của hộp (dash-node): một dịch vụ Node nhỏ tại 127.0.0.1:4000, do nginx phục vụ và pdsm giám sát. Nó cung cấp mọi thao tác thư viện trong ứng dụng: duyệt và tải Sách, thêm và xóa nội dung Wikipedia và ZIM, phiên Kolibri, Bản đồ và trạng thái hệ thống. Khác với các mô-đun nội dung, nó không được cài đặt hay gỡ bỏ — nó đi kèm với hộp và luôn hiện diện. Khi có bản mới hơn, bạn có thể xây dựng lại nó tại chỗ.</string>
+    <string name="k2go_dash_detail_desc">Bảng điều khiển là lõi REST API của thiết bị (dash-node) — một dịch vụ Node nhỏ tại 127.0.0.1:4000, được phục vụ qua nginx và giám sát bởi pdsm. Nó vận hành mọi thao tác thư viện trong ứng dụng: duyệt và tải Sách, thêm và xóa nội dung Wikipedia và ZIM, phiên Kolibri, Bản đồ và trạng thái hệ thống. Khác với các mô-đun nội dung, bạn không thể cài đặt hay gỡ nó. Nó đi kèm ứng dụng và luôn hiện diện. Khi có bản dựng mới hơn, bạn có thể dựng lại tại chỗ.</string>
     <string name="k2go_dash_includes">Các điểm cuối REST cho Sách, Wikipedia/ZIM, Kolibri và Bản đồ; vhost nginx; và các điểm cuối phiên bản hệ thống và xây dựng lại — tất cả tại 127.0.0.1:4000.</string>
     <string name="k2go_dash_chip_rest">REST API</string>
     <string name="k2go_dash_chip_core">Lõi hệ thống</string>
@@ -634,9 +634,9 @@
     <string name="k2go_damaged_body">Quá trình cài đặt đã dừng trước khi hoàn tất và hệ thống không khởi động. Để khôi phục, bạn có thể phục hồi một bản sao lưu hoặc cài đặt lại hệ thống từ đầu.</string>
     <string name="k2go_damaged_recover">Khôi phục…</string>
     <string name="k2go_reinstall_title">Cài đặt lại hệ thống</string>
-    <string name="k2go_reinstall_sub">Xóa mọi thứ và cài đặt một hệ thống mới từ đầu</string>
+    <string name="k2go_reinstall_sub">Xóa K2Go và nội dung trên thiết bị này và cài hệ thống mới từ đầu</string>
     <string name="k2go_reinstall_confirm_title">Cài đặt lại từ đầu?</string>
-    <string name="k2go_reinstall_confirm_msg">Thao tác này xóa hệ thống hiện tại và mọi thứ trong đó — sách, bản đồ, tải xuống và cài đặt — rồi cài một bản sạch. Không thể hoàn tác. Hãy sao lưu trước nếu bạn muốn giữ lại thứ gì đó. Sau đó bạn chọn cách: tải xuống, hoặc sao chép từ điện thoại khác.</string>
+    <string name="k2go_reinstall_confirm_msg">Việc này xóa hệ thống hiện tại, gồm tất cả ứng dụng, nội dung và cài đặt, rồi cài một bản sạch. Không thể hoàn tác thao tác này. Nếu muốn giữ lại gì, hãy sao lưu trước. Sau đó chọn cách: tải xuống, hoặc sao chép từ điện thoại khác.</string>
     <string name="k2go_reinstall_confirm_yes">Xóa và cài đặt lại</string>
     <!-- ADFA-5033: catalog browse (breathe) — selector source, sections, chips, count. -->
     <string name="k2go_zim_lang_state_system">Từ hệ thống</string>
@@ -660,7 +660,7 @@
     <string name="k2go_zc_count_results">%1$d kết quả</string>
     <!-- ADFA-5044: Settings -> Authentication (manage per-service admin sign-ins). -->
     <string name="k2go_settings_authentication">Xác thực</string>
-    <string name="k2go_settings_authentication_sub">Đăng nhập cho Sách và Khóa học</string>
+    <string name="k2go_settings_authentication_sub">Đăng nhập cho Calibre-Web (sách) và Kolibri (khóa học)</string>
     <string name="k2go_auth_hint">Các thông tin đăng nhập K2Go dùng cho Sách và Khóa học. Cập nhật một mục nếu mật khẩu dịch vụ đã thay đổi.</string>
     <string name="k2go_auth_username">Tên đăng nhập</string>
     <string name="k2go_auth_password">Mật khẩu</string>
@@ -675,15 +675,15 @@
     <string name="k2go_auth_noperm">Tài khoản đó không thể quản lý nội dung</string>
     <string name="k2go_auth_failed">Không lưu được — thử lại</string>
     <string name="k2go_auth_load_failed">Không tải được — dịch vụ có đang chạy không?</string>
-    <string name="k2go_auth_svc_books">Đọc sách</string>
-    <string name="k2go_auth_svc_courses">Học khóa học</string>
+    <string name="k2go_auth_svc_books">Đọc một cuốn sách</string>
+    <string name="k2go_auth_svc_courses">Học một khóa</string>
     <string name="k2go_auth_custom_toggle">Dùng thông tin đăng nhập tùy chỉnh</string>
     <string name="k2go_auth_not_running">Dịch vụ này chưa chạy. Các thay đổi được lưu ngay bây giờ và có hiệu lực khi dịch vụ được cài đặt và chạy.</string>
-    <string name="k2go_auth_list_note">Các dịch vụ chưa cài đặt vẫn có thể truy cập — bạn có thể đặt trước thông tin đăng nhập. Thông tin xác thực được lưu trên thiết bị này.</string>
+    <string name="k2go_auth_list_note">Bạn có thể nhập và lưu thông tin đăng nhập cho các dịch vụ chưa được cài đặt.</string>
     <string name="k2go_auth_sub_books">Calibre-Web · thông tin đăng nhập K2Go dùng để mở sách của bạn.</string>
     <string name="k2go_auth_sub_courses">Kolibri · thông tin đăng nhập K2Go dùng để mở khóa học của bạn.</string>
     <string name="k2go_auth_toggle_hint">Chỉ bật thông tin đăng nhập tùy chỉnh nếu mật khẩu đã thay đổi.</string>
-    <string name="k2go_auth_eye_hint">Chạm vào biểu tượng mắt để hiển thị.</string>
+    <string name="k2go_auth_eye_hint">Nhấn vào biểu tượng mắt để hiển thị mật khẩu khi bạn nhập.</string>
     <string name="k2go_auth_chip_default">Mặc định</string>
     <string name="k2go_auth_chip_custom">Tùy chỉnh</string>
     <string name="k2go_auth_chip_notinstalled">Chưa cài đặt</string>
@@ -722,11 +722,11 @@
     <string name="k2go_clone_exit_rescan">Quét lại từ điện thoại kia để xác minh</string>
     <string name="k2go_clone_exit_keep_waiting">Tiếp tục chờ</string>
     <string name="k2go_clone_exit_redirecting">Đang mở thư viện của bạn sau %1$d giây…</string>
-    <string name="k2go_busy_clone">Một bản sao giữa các điện thoại đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
-    <string name="k2go_busy_backup">Một bản sao lưu đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
-    <string name="k2go_busy_restore">Một lần khôi phục đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
-    <string name="k2go_busy_install">Một lần cài đặt đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
-    <string name="k2go_busy_download">Một lượt tải xuống đang diễn ra. Vui lòng đợi thao tác hoàn tất.</string>
+    <string name="k2go_busy_clone">Đang có một bản sao giữa các điện thoại. Vui lòng đợi cho đến khi hoàn tất.</string>
+    <string name="k2go_busy_backup">Đang sao lưu. Vui lòng đợi cho đến khi hoàn tất.</string>
+    <string name="k2go_busy_restore">Đang khôi phục. Vui lòng đợi cho đến khi hoàn tất.</string>
+    <string name="k2go_busy_install">Đang cài đặt. Vui lòng đợi cho đến khi hoàn tất.</string>
+    <string name="k2go_busy_download">Đang tải xuống. Vui lòng đợi cho đến khi hoàn tất.</string>
     <string name="k2go_pending_title">Tải xuống đang chờ</string>
     <string name="k2go_pending_empty">Không có tải xuống đang chờ.</string>
     <string name="k2go_pending_running">Đang tải xuống một mục</string>
@@ -736,7 +736,7 @@
     <string name="k2go_settings_pending_none">Không có</string>
     <!-- ADFA-5228: proot install confirmation -->
     <string name="k2go_install_confirm_title">Cài đặt ngay?</string>
-    <string name="k2go_install_confirm_body">Nội dung này được cài đặt trên thiết bị của bạn khi máy chủ tạm dừng.\n\n• Mất một lúc, thường là hàng chục phút.\n• Giữ kết nối ổn định nếu có thể.\n• Đảm bảo đủ pin trước khi bắt đầu.\n• Màn hình này vẫn mở cho đến khi hoàn tất.</string>
+    <string name="k2go_install_confirm_body">Việc này cài đặt lên thiết bị của bạn khi máy chủ tạm dừng.\n\n• Quá trình này có thể mất một lúc (đến hàng chục phút).\n• Hãy giữ kết nối ổn định nếu có thể.\n• Đảm bảo pin đã sạc trước khi bắt đầu.\n• Màn hình này vẫn mở cho đến khi xong.</string>
     <string name="k2go_install_confirm_go">Cài đặt</string>
     <string name="k2go_install_confirm_cancel">Để sau</string>
     <string name="k2go_copied">Đã sao chép</string>
