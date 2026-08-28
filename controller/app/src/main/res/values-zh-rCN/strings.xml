@@ -1255,4 +1255,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">不到 1 分钟</string>
     <string name="k2go_eta_minutes_fmt">约 %1$d 分钟</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">课程下载</string>
+    <string name="k2go_kolibri_dl_notif_title">正在添加课程</string>
+    <string name="k2go_kolibri_notif_cancel">取消</string>
+    <string name="k2go_kolibri_seeding_title">正在添加您的课程</string>
+    <string name="k2go_kolibri_unavailable">无法读取随应用提供的课程目录。</string>
+    <string name="k2go_kolibri_no_match">没有课程与您的搜索匹配。</string>
+    <string name="k2go_kolibri_size_unknown">大小未知</string>
+    <string name="k2go_kolibri_confirm_sub">您选择的课程。</string>
+    <string name="k2go_kolibri_fit_unknown">部分大小未公布，因此总量可能更高。您可以继续。</string>
+    <string name="k2go_kolibri_takes_body">课程可能非常大，下载耗时较长，在慢速连接下尤其明显。下载将在系统安装完成后开始，在后台继续，中断后会自动续传。</string>
+    <string name="k2go_kolibri_none_in_lang">暂无 %1$s 课程 · 更改语言</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d 项资源</string>
+    <string name="k2go_kolibri_tree_offline">无法连接课程库，点按重试。</string>
+    <string name="k2go_kolibri_topic_empty">此文件夹暂无内容。</string>
+    <string name="k2go_kolibri_included">已随上方文件夹一起包含</string>
+    <string name="k2go_kolibri_open_topic">打开文件夹</string>
+    <string name="k2go_kolibri_choose_topics">选择主题</string>
+    <string name="k2go_kolibri_narrowed_fmt">已选择 %1$d 个主题</string>
+    <string name="k2go_kolibri_whole_course">整个课程</string>
+    <string name="k2go_kolibri_checking">正在检查此设备可以做什么…</string>
+    <string name="k2go_kolibri_not_installed">本系统未安装课程，因此无法添加内容。</string>
+    <string name="k2go_kolibri_system_damaged">需要先修复系统，才能添加内容。</string>
+    <string name="k2go_kolibri_start_system_first">请先启动系统，然后才能开始下载。</string>
+    <string name="k2go_kolibri_busy">另一项下载正在进行。结束后请重试。</string>
+    <string name="k2go_kolibri_already_here">此设备上已有</string>
+    <string name="k2go_kolibri_partly_here">此设备上有部分</string>
+    <string name="k2go_kolibri_nothing_to_add">您选择的内容都已在此设备上。</string>
+    <string name="k2go_kolibri_go_to_library">完成 — 前往我的图书馆</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d 门课程未完成。</string>
+    <string name="k2go_kolibri_retry_before_leaving">离开前请重试失败的项目——离开会清空此列表。</string>
+    <string name="k2go_kolibri_catalog_updated">目录更新于 %1$s</string>
 </resources>

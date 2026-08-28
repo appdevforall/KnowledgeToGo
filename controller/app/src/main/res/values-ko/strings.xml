@@ -1255,4 +1255,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">1분 미만</string>
     <string name="k2go_eta_minutes_fmt">~%1$d분</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">강좌 다운로드</string>
+    <string name="k2go_kolibri_dl_notif_title">강좌 추가 중</string>
+    <string name="k2go_kolibri_notif_cancel">취소</string>
+    <string name="k2go_kolibri_seeding_title">강좌 추가 중</string>
+    <string name="k2go_kolibri_unavailable">앱에 포함된 강좌 카탈로그를 읽을 수 없습니다.</string>
+    <string name="k2go_kolibri_no_match">검색과 일치하는 강좌가 없습니다.</string>
+    <string name="k2go_kolibri_size_unknown">크기 알 수 없음</string>
+    <string name="k2go_kolibri_confirm_sub">선택한 강좌입니다.</string>
+    <string name="k2go_kolibri_fit_unknown">일부 크기가 공개되지 않아 합계가 더 클 수 있습니다. 계속할 수 있습니다.</string>
+    <string name="k2go_kolibri_takes_body">강좌는 매우 클 수 있고, 특히 느린 연결에서는 다운로드가 오래 걸립니다. 다운로드는 시스템 설치 후 시작되어 백그라운드에서 계속되며, 중단되면 이어서 진행됩니다.</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s 강의가 아직 없습니다 · 언어 변경</string>
+    <string name="k2go_kolibri_resources_fmt">리소스 %1$d개</string>
+    <string name="k2go_kolibri_tree_offline">강의 라이브러리에 연결할 수 없습니다. 다시 시도하려면 누르세요.</string>
+    <string name="k2go_kolibri_topic_empty">이 폴더에는 아직 아무것도 없습니다.</string>
+    <string name="k2go_kolibri_included">위 폴더에 포함됨</string>
+    <string name="k2go_kolibri_open_topic">폴더 열기</string>
+    <string name="k2go_kolibri_choose_topics">주제 선택</string>
+    <string name="k2go_kolibri_narrowed_fmt">주제 %1$d개 선택됨</string>
+    <string name="k2go_kolibri_whole_course">전체 강의</string>
+    <string name="k2go_kolibri_checking">이 기기가 무엇을 할 수 있는지 확인하는 중…</string>
+    <string name="k2go_kolibri_not_installed">이 시스템에 강의가 설치되어 있지 않아 콘텐츠를 추가할 수 없습니다.</string>
+    <string name="k2go_kolibri_system_damaged">콘텐츠를 추가하기 전에 시스템을 복구해야 합니다.</string>
+    <string name="k2go_kolibri_start_system_first">먼저 시스템을 시작하세요. 그러면 이 다운로드를 시작할 수 있습니다.</string>
+    <string name="k2go_kolibri_busy">다른 다운로드가 진행 중입니다. 끝난 뒤 다시 시도하세요.</string>
+    <string name="k2go_kolibri_already_here">이미 이 기기에 있습니다</string>
+    <string name="k2go_kolibri_partly_here">일부만 이 기기에 있습니다</string>
+    <string name="k2go_kolibri_nothing_to_add">선택하신 항목은 모두 이미 이 기기에 있습니다.</string>
+    <string name="k2go_kolibri_go_to_library">완료 — 내 라이브러리로</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d개 강의가 완료되지 않았습니다.</string>
+    <string name="k2go_kolibri_retry_before_leaving">나가기 전에 실패한 항목을 다시 시도하세요. 나가면 이 목록이 지워집니다.</string>
+    <string name="k2go_kolibri_catalog_updated">카탈로그 업데이트: %1$s</string>
 </resources>

@@ -1330,4 +1330,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">меньше 1 мин</string>
     <string name="k2go_eta_minutes_fmt">~%1$d мин</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">Загрузки курсов</string>
+    <string name="k2go_kolibri_dl_notif_title">Добавление курсов</string>
+    <string name="k2go_kolibri_notif_cancel">Отмена</string>
+    <string name="k2go_kolibri_seeding_title">Добавление ваших курсов</string>
+    <string name="k2go_kolibri_unavailable">Не удалось прочитать каталог курсов, входящий в приложение.</string>
+    <string name="k2go_kolibri_no_match">Нет курсов, соответствующих вашему запросу.</string>
+    <string name="k2go_kolibri_size_unknown">Размер неизвестен</string>
+    <string name="k2go_kolibri_confirm_sub">Выбранные вами курсы.</string>
+    <string name="k2go_kolibri_fit_unknown">Некоторые размеры не опубликованы, поэтому итог может быть больше. Можно продолжить.</string>
+    <string name="k2go_kolibri_takes_body">Курсы могут быть очень большими, и их загрузка может занять много времени, особенно при медленном соединении. Загрузка начнётся после установки системы, продолжится в фоне и возобновится при обрыве.</string>
+    <string name="k2go_kolibri_none_in_lang">Курсов на %1$s пока нет · Изменить язык</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d материалов</string>
+    <string name="k2go_kolibri_tree_offline">Не удалось связаться с библиотекой курсов. Нажмите, чтобы повторить.</string>
+    <string name="k2go_kolibri_topic_empty">В этой папке пока ничего нет.</string>
+    <string name="k2go_kolibri_included">Входит в папку выше</string>
+    <string name="k2go_kolibri_open_topic">Открыть папку</string>
+    <string name="k2go_kolibri_choose_topics">Выбрать темы</string>
+    <string name="k2go_kolibri_narrowed_fmt">Выбрано тем: %1$d</string>
+    <string name="k2go_kolibri_whole_course">Весь курс</string>
+    <string name="k2go_kolibri_checking">Проверяем, что может это устройство…</string>
+    <string name="k2go_kolibri_not_installed">Курсы не установлены в этой системе, поэтому добавить содержимое нельзя.</string>
+    <string name="k2go_kolibri_system_damaged">Прежде чем добавлять содержимое, систему нужно восстановить.</string>
+    <string name="k2go_kolibri_start_system_first">Сначала запустите систему, тогда загрузка сможет начаться.</string>
+    <string name="k2go_kolibri_busy">Идёт другая загрузка. Повторите попытку, когда она закончится.</string>
+    <string name="k2go_kolibri_already_here">Уже на этом устройстве</string>
+    <string name="k2go_kolibri_partly_here">Частично на этом устройстве</string>
+    <string name="k2go_kolibri_nothing_to_add">Всё выбранное уже есть на этом устройстве.</string>
+    <string name="k2go_kolibri_go_to_library">Готово — в мою библиотеку</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d курс(ов) не завершились.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Повторите неудавшиеся перед выходом — выход очищает этот список.</string>
+    <string name="k2go_kolibri_catalog_updated">Каталог обновлён %1$s</string>
 </resources>

@@ -1274,4 +1274,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">kò tó ìṣẹ́jú 1</string>
     <string name="k2go_eta_minutes_fmt">~ìṣẹ́jú %1$d</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">Àwọn gbígbà ẹ̀kọ́ sílẹ̀</string>
+    <string name="k2go_kolibri_dl_notif_title">Ń fi àwọn ẹ̀kọ́ kún</string>
+    <string name="k2go_kolibri_notif_cancel">Fagilé</string>
+    <string name="k2go_kolibri_seeding_title">Ń fi àwọn ẹ̀kọ́ rẹ kún</string>
+    <string name="k2go_kolibri_unavailable">A kò lè ka àkójọ àwọn ẹ̀kọ́ tí ó wà nínú áàpù náà.</string>
+    <string name="k2go_kolibri_no_match">Kò sí ẹ̀kọ́ tí ó bá ìwádìí rẹ mu.</string>
+    <string name="k2go_kolibri_size_unknown">Ìwọ̀n kò mọ̀</string>
+    <string name="k2go_kolibri_confirm_sub">Àwọn ẹ̀kọ́ tí o yàn.</string>
+    <string name="k2go_kolibri_fit_unknown">Àwọn ìwọ̀n kan kò tí ì jáde, nítorí náà àpapọ̀ lè pọ̀ jù. O lè tẹ̀síwájú.</string>
+    <string name="k2go_kolibri_takes_body">Àwọn ẹ̀kọ́ lè tóbi gan-an kí ó sì gba àkókò gígùn láti gbà sílẹ̀, pàápàá lórí ìsopọ̀ lọ́ra. Ìgbàsílẹ̀ máa bẹ̀rẹ̀ lẹ́yìn tí a ti fi ẹ̀rọ rẹ sílẹ̀, ó máa tẹ̀síwájú ní ẹ̀yìn, ó sì máa tún bẹ̀rẹ̀ bí ó bá dá.</string>
+    <string name="k2go_kolibri_none_in_lang">Kò sí ìdánilẹ́kọ̀ọ́ ní %1$s síbẹ̀ · Yí èdè padà</string>
+    <string name="k2go_kolibri_resources_fmt">Àwọn ohun ìlò %1$d</string>
+    <string name="k2go_kolibri_tree_offline">Kò lè dé ibi ìkàwé ìdánilẹ́kọ̀ọ́. Tẹ̀ láti tún gbìyànjú.</string>
+    <string name="k2go_kolibri_topic_empty">Kò sí ohunkóhun nínú fáìlì yìí síbẹ̀.</string>
+    <string name="k2go_kolibri_included">Ó wà pẹ̀lú fáìlì tó wà lókè</string>
+    <string name="k2go_kolibri_open_topic">Ṣí fáìlì</string>
+    <string name="k2go_kolibri_choose_topics">Yan àwọn àkòrí</string>
+    <string name="k2go_kolibri_narrowed_fmt">Àkòrí %1$d ti yàn</string>
+    <string name="k2go_kolibri_whole_course">Gbogbo ìdánilẹ́kọ̀ọ́</string>
+    <string name="k2go_kolibri_checking">À ń yẹ ohun tí ẹ̀rọ yìí lè ṣe wò…</string>
+    <string name="k2go_kolibri_not_installed">Ìdánilẹ́kọ̀ọ́ kò sí lórí ètò yìí, nítorí náà a kò lè fi àkóónú kún un.</string>
+    <string name="k2go_kolibri_system_damaged">Ètò rẹ gbọ́dọ̀ tún ṣe kí a tó lè fi àkóónú kún un.</string>
+    <string name="k2go_kolibri_start_system_first">Bẹ̀rẹ̀ ètò rẹ ná, lẹ́yìn náà ni ìgbàsílẹ̀ yìí lè bẹ̀rẹ̀.</string>
+    <string name="k2go_kolibri_busy">Ìgbàsílẹ̀ mìíràn ń lọ. Tún gbìyànjú nígbà tí ó bá parí.</string>
+    <string name="k2go_kolibri_already_here">Ó ti wà lórí ẹ̀rọ yìí</string>
+    <string name="k2go_kolibri_partly_here">Apá kan rẹ̀ wà lórí ẹ̀rọ yìí</string>
+    <string name="k2go_kolibri_nothing_to_add">Gbogbo ohun tí o yàn ti wà lórí ẹ̀rọ yìí.</string>
+    <string name="k2go_kolibri_go_to_library">Ó parí — lọ sí ibi ìkàwé mi</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d ìdánilẹ́kọ̀ọ́ kò parí.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Tún gbìyànjú àwọn tí ó kùnà kí o tó lọ — lílọ máa pa àtòjọ yìí rẹ́.</string>
+    <string name="k2go_kolibri_catalog_updated">A ṣe àfikún àtòjọ ní %1$s</string>
 </resources>

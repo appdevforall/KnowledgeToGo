@@ -1267,4 +1267,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">১ মিনিটের কম</string>
     <string name="k2go_eta_minutes_fmt">~%1$d মিনিট</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">কোর্স ডাউনলোড</string>
+    <string name="k2go_kolibri_dl_notif_title">কোর্স যোগ করা হচ্ছে</string>
+    <string name="k2go_kolibri_notif_cancel">বাতিল</string>
+    <string name="k2go_kolibri_seeding_title">আপনার কোর্স যোগ করা হচ্ছে</string>
+    <string name="k2go_kolibri_unavailable">অ্যাপের সাথে আসা কোর্স ক্যাটালগ পড়া যায়নি।</string>
+    <string name="k2go_kolibri_no_match">আপনার অনুসন্ধানের সাথে মেলে এমন কোনো কোর্স নেই।</string>
+    <string name="k2go_kolibri_size_unknown">আকার অজানা</string>
+    <string name="k2go_kolibri_confirm_sub">আপনি যে কোর্সগুলো বেছে নিয়েছেন।</string>
+    <string name="k2go_kolibri_fit_unknown">কিছু আকার প্রকাশিত নয়, তাই মোট বেশি হতে পারে। আপনি চালিয়ে যেতে পারেন।</string>
+    <string name="k2go_kolibri_takes_body">কোর্স খুব বড় হতে পারে এবং ডাউনলোড হতে অনেক সময় লাগতে পারে, বিশেষত ধীর সংযোগে। সিস্টেম ইনস্টল হওয়ার পর ডাউনলোড শুরু হয়, ব্যাকগ্রাউন্ডে চলতে থাকে এবং বাধা পেলে আবার শুরু হয়।</string>
+    <string name="k2go_kolibri_none_in_lang">%1$s ভাষায় এখনও কোনও কোর্স নেই · ভাষা পরিবর্তন করুন</string>
+    <string name="k2go_kolibri_resources_fmt">%1$dটি রিসোর্স</string>
+    <string name="k2go_kolibri_tree_offline">কোর্স লাইব্রেরিতে পৌঁছানো যায়নি। আবার চেষ্টা করতে ট্যাপ করুন।</string>
+    <string name="k2go_kolibri_topic_empty">এই ফোল্ডারে এখনও কিছু নেই।</string>
+    <string name="k2go_kolibri_included">উপরের ফোল্ডারের সঙ্গে অন্তর্ভুক্ত</string>
+    <string name="k2go_kolibri_open_topic">ফোল্ডার খুলুন</string>
+    <string name="k2go_kolibri_choose_topics">বিষয় বেছে নিন</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$dটি বিষয় নির্বাচিত</string>
+    <string name="k2go_kolibri_whole_course">সম্পূর্ণ কোর্স</string>
+    <string name="k2go_kolibri_checking">এই ডিভাইসটি কী করতে পারে তা দেখা হচ্ছে…</string>
+    <string name="k2go_kolibri_not_installed">এই সিস্টেমে কোর্স ইনস্টল করা নেই, তাই কনটেন্ট যোগ করা যাবে না।</string>
+    <string name="k2go_kolibri_system_damaged">কনটেন্ট যোগ করার আগে আপনার সিস্টেম মেরামত করা দরকার।</string>
+    <string name="k2go_kolibri_start_system_first">আগে আপনার সিস্টেম চালু করুন, তারপর এই ডাউনলোড শুরু হতে পারবে।</string>
+    <string name="k2go_kolibri_busy">আরেকটি ডাউনলোড চলছে। শেষ হলে আবার চেষ্টা করুন।</string>
+    <string name="k2go_kolibri_already_here">ইতিমধ্যে এই ডিভাইসে আছে</string>
+    <string name="k2go_kolibri_partly_here">আংশিকভাবে এই ডিভাইসে আছে</string>
+    <string name="k2go_kolibri_nothing_to_add">আপনি যা বেছে নিয়েছেন সবই ইতিমধ্যে এই ডিভাইসে আছে।</string>
+    <string name="k2go_kolibri_go_to_library">সম্পন্ন — আমার লাইব্রেরিতে যান</string>
+    <string name="k2go_kolibri_failed_fmt">%1$dটি কোর্স শেষ হয়নি।</string>
+    <string name="k2go_kolibri_retry_before_leaving">চলে যাওয়ার আগে ব্যর্থগুলো আবার চেষ্টা করুন — চলে গেলে এই তালিকা মুছে যাবে।</string>
+    <string name="k2go_kolibri_catalog_updated">ক্যাটালগ %1$s তারিখে আপডেট হয়েছে</string>
 </resources>

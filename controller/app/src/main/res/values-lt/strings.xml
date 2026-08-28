@@ -1271,4 +1271,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">mažiau nei 1 min</string>
     <string name="k2go_eta_minutes_fmt">~%1$d min</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">Kursų atsisiuntimai</string>
+    <string name="k2go_kolibri_dl_notif_title">Pridedami kursai</string>
+    <string name="k2go_kolibri_notif_cancel">Atšaukti</string>
+    <string name="k2go_kolibri_seeding_title">Pridedami jūsų kursai</string>
+    <string name="k2go_kolibri_unavailable">Nepavyko nuskaityti su programa pateikto kursų katalogo.</string>
+    <string name="k2go_kolibri_no_match">Jokie kursai neatitinka jūsų paieškos.</string>
+    <string name="k2go_kolibri_size_unknown">Dydis nežinomas</string>
+    <string name="k2go_kolibri_confirm_sub">Jūsų pasirinkti kursai.</string>
+    <string name="k2go_kolibri_fit_unknown">Kai kurie dydžiai neskelbiami, todėl bendra suma gali būti didesnė. Galite tęsti.</string>
+    <string name="k2go_kolibri_takes_body">Kursai gali būti labai dideli ir siųstis ilgai, ypač esant lėtam ryšiui. Siuntimas pradedamas įdiegus sistemą, tęsiasi fone ir atsinaujina, jei nutrūksta.</string>
+    <string name="k2go_kolibri_none_in_lang">Kursų %1$s kalba dar nėra · Pakeisti kalbą</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d išteklių</string>
+    <string name="k2go_kolibri_tree_offline">Nepavyko pasiekti kursų bibliotekos. Palieskite, kad pakartotumėte.</string>
+    <string name="k2go_kolibri_topic_empty">Šiame aplanke dar nieko nėra.</string>
+    <string name="k2go_kolibri_included">Įtraukta su aukščiau esančiu aplanku</string>
+    <string name="k2go_kolibri_open_topic">Atverti aplanką</string>
+    <string name="k2go_kolibri_choose_topics">Pasirinkti temas</string>
+    <string name="k2go_kolibri_narrowed_fmt">Pasirinkta temų: %1$d</string>
+    <string name="k2go_kolibri_whole_course">Visas kursas</string>
+    <string name="k2go_kolibri_checking">Tikrinama, ką gali šis įrenginys…</string>
+    <string name="k2go_kolibri_not_installed">Kursai šioje sistemoje neįdiegti, todėl turinio pridėti negalima.</string>
+    <string name="k2go_kolibri_system_damaged">Prieš pridedant turinį, sistemą reikia sutaisyti.</string>
+    <string name="k2go_kolibri_start_system_first">Pirmiausia paleiskite sistemą, tada šis atsisiuntimas galės prasidėti.</string>
+    <string name="k2go_kolibri_busy">Vyksta kitas atsisiuntimas. Pabandykite, kai jis baigsis.</string>
+    <string name="k2go_kolibri_already_here">Jau yra šiame įrenginyje</string>
+    <string name="k2go_kolibri_partly_here">Iš dalies yra šiame įrenginyje</string>
+    <string name="k2go_kolibri_nothing_to_add">Viskas, ką pasirinkote, jau yra šiame įrenginyje.</string>
+    <string name="k2go_kolibri_go_to_library">Baigta — eiti į biblioteką</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d kursų nebaigta.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Prieš išeidami pakartokite nepavykusius — išėjus šis sąrašas išvalomas.</string>
+    <string name="k2go_kolibri_catalog_updated">Katalogas atnaujintas %1$s</string>
 </resources>

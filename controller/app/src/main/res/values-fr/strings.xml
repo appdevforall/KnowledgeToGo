@@ -1341,4 +1341,36 @@
     <!-- ADFA-5228: module-install ETA labels. -->
     <string name="k2go_eta_under_min">moins d\'1 min</string>
     <string name="k2go_eta_minutes_fmt">~%1$d min</string>
+    <!-- Kolibri strings (merged from strings_kolibri.xml — ADFA-5309 unification) -->
+    <string name="k2go_kolibri_dl_channel_name">Téléchargements de cours</string>
+    <string name="k2go_kolibri_dl_notif_title">Ajout des cours</string>
+    <string name="k2go_kolibri_notif_cancel">Annuler</string>
+    <string name="k2go_kolibri_seeding_title">Ajout de vos cours</string>
+    <string name="k2go_kolibri_unavailable">Impossible de lire le catalogue de cours fourni avec l\'application.</string>
+    <string name="k2go_kolibri_no_match">Aucun cours ne correspond à votre recherche.</string>
+    <string name="k2go_kolibri_size_unknown">Taille inconnue</string>
+    <string name="k2go_kolibri_confirm_sub">Les cours que vous avez choisis.</string>
+    <string name="k2go_kolibri_fit_unknown">Certaines tailles ne sont pas publiées, le total peut donc être plus élevé. Vous pouvez continuer.</string>
+    <string name="k2go_kolibri_takes_body">Les cours peuvent être très volumineux et longs à télécharger, surtout sur une connexion lente. Le téléchargement démarre après l\'installation de votre système, se poursuit en arrière-plan et reprend s\'il est interrompu.</string>
+    <string name="k2go_kolibri_none_in_lang">Aucun cours en %1$s pour l’instant · Changer de langue</string>
+    <string name="k2go_kolibri_resources_fmt">%1$d ressources</string>
+    <string name="k2go_kolibri_tree_offline">Bibliothèque de cours inaccessible. Touchez pour réessayer.</string>
+    <string name="k2go_kolibri_topic_empty">Ce dossier est encore vide.</string>
+    <string name="k2go_kolibri_included">Inclus avec le dossier ci-dessus</string>
+    <string name="k2go_kolibri_open_topic">Ouvrir le dossier</string>
+    <string name="k2go_kolibri_choose_topics">Choisir des thèmes</string>
+    <string name="k2go_kolibri_narrowed_fmt">%1$d thèmes sélectionnés</string>
+    <string name="k2go_kolibri_whole_course">Cours entier</string>
+    <string name="k2go_kolibri_checking">Vérification de ce que cet appareil peut faire…</string>
+    <string name="k2go_kolibri_not_installed">Cours n’est pas installé sur ce système : impossible d’ajouter du contenu.</string>
+    <string name="k2go_kolibri_system_damaged">Votre système doit être réparé avant de pouvoir ajouter du contenu.</string>
+    <string name="k2go_kolibri_start_system_first">Démarrez d’abord votre système, puis ce téléchargement pourra commencer.</string>
+    <string name="k2go_kolibri_busy">Un autre téléchargement est en cours. Réessayez quand il sera terminé.</string>
+    <string name="k2go_kolibri_already_here">Déjà sur cet appareil</string>
+    <string name="k2go_kolibri_partly_here">En partie sur cet appareil</string>
+    <string name="k2go_kolibri_nothing_to_add">Tout ce que vous avez choisi est déjà sur cet appareil.</string>
+    <string name="k2go_kolibri_go_to_library">Terminé — aller à ma bibliothèque</string>
+    <string name="k2go_kolibri_failed_fmt">%1$d cours ne se sont pas terminés.</string>
+    <string name="k2go_kolibri_retry_before_leaving">Réessayez ceux qui ont échoué avant de partir : quitter efface cette liste.</string>
+    <string name="k2go_kolibri_catalog_updated">Catalogue mis à jour le %1$s</string>
 </resources>
