@@ -1088,6 +1088,13 @@ public final class InstallService extends Service {
         lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
         lastModuleDirSize = -1L;
         ModuleQueueRepository.get().postStalled(false);
+        // ADFA-4898 P4: make write-dir drift visible instead of silent. If a module has no mapped dir
+        // (a new module added without updating moduleWriteDirRel), the watch still works off the log
+        // heartbeat — but this line says so in the log, so the missing backstop is noticed, not hidden.
+        if (moduleWriteDirRel(moduleKey) == null) {
+            log("[Stall] no write-dir backstop mapped for '" + moduleKey
+                    + "'; stall watch relies on the log heartbeat only");
+        }
         moduleStallCheck = new Runnable() {
             @Override public void run() {
                 if (finished || cancelled) return;
@@ -1121,7 +1128,12 @@ public final class InstallService extends Service {
         return boundedDirSize(d, 20000);
     }
 
-    /** Where each module does its heavy on-disk writes (relative to the rootfs), for the growth backstop. */
+    /**
+     * Where each module does its heavy on-disk writes (relative to the rootfs), for the stall watch's
+     * growth backstop. Heuristic and best-effort — keep it in sync with the ansible roles. If a key is
+     * unmapped or the path drifts, the watch silently falls back to the log heartbeat (never a false
+     * verdict); {@link #startModuleStallWatch} logs the unmapped case so that drift is visible, not silent.
+     */
     private static String moduleWriteDirRel(String key) {
         if (key == null) return null;
         switch (key) {
