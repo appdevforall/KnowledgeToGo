@@ -64,6 +64,8 @@ public final class InstallService extends Service {
     private static final String TAG = "IIAB-InstallService";
     private static final String CHANNEL_ID = "install_channel";
     private static final int NOTIFICATION_ID = 3;
+    /** ADFA-4898: id for the dismissible "Couldn't install" notification (one place, so post and cancel can't drift). */
+    private static final int NOTIFICATION_ID_MODULE_FAIL = NOTIFICATION_ID + 4;
 
     public static final String ACTION_START = "org.iiab.controller.INSTALL_START";
     public static final String ACTION_CANCEL = "org.iiab.controller.INSTALL_CANCEL";
@@ -363,7 +365,7 @@ public final class InstallService extends Service {
             // the success case (the old failure notification is gone before this batch's foreground one is
             // removed by teardown). The failure notification only ever auto-cancelled on tap before.
             NotificationManager nmClear = getSystemService(NotificationManager.class);
-            if (nmClear != null) nmClear.cancel(NOTIFICATION_ID + 4);
+            if (nmClear != null) nmClear.cancel(NOTIFICATION_ID_MODULE_FAIL);
             acquireHardwareLocks();
             persistQueue();
             // Mark "running" immediately (currentModule null until the first dequeue) so the UI
@@ -1128,7 +1130,7 @@ public final class InstallService extends Service {
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build();
-        m.notify(NOTIFICATION_ID + 4, n);
+        m.notify(NOTIFICATION_ID_MODULE_FAIL, n);
     }
 
     private void persistQueue() {

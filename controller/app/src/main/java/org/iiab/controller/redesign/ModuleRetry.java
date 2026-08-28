@@ -19,6 +19,8 @@ import java.util.Collections;
 
 import org.iiab.controller.env.EnvironmentLock;
 import org.iiab.controller.install.presentation.InstallService;
+import org.iiab.controller.system.data.SystemDoor;
+import org.iiab.controller.system.domain.OperationDispatcher;
 import org.iiab.controller.util.BusyMessage;
 import org.iiab.controller.util.Snackbars;
 
@@ -27,16 +29,28 @@ public final class ModuleRetry {
     private ModuleRetry() {}
 
     /**
-     * Re-fire the install of a single module that failed. Gated by the environment lock: if something
-     * else already owns the rootfs, show a busy snackbar anchored on {@code anchor} and do nothing.
+     * Re-fire the install of a single module that failed. Two gates, the same the wishlist drain uses:
+     * the environment lock (something else owns the rootfs) and the system door (the box may run a
+     * stopped-class op right now). Either refusal shows a busy snackbar on {@code anchor} and does
+     * nothing.
      *
-     * @return true if the retry was actually started (caller may navigate on that), false if it was
-     *         swallowed by the busy gate or the inputs were null.
+     * @return true if the retry was actually started (caller may navigate on that), false if a gate
+     *         swallowed it or the inputs were null.
      */
     public static boolean fire(View anchor, String moduleKey) {
         if (anchor == null || moduleKey == null) return false;
         Context ctx = anchor.getContext();
         if (EnvironmentLock.isHeld(ctx)) {
+            Snackbars.make(anchor, BusyMessage.resFor(ctx)).show();
+            return false;
+        }
+        // ADFA-4898: ask the same door the wishlist drain asks before starting stopped-class runroles —
+        // the box must be in a state that may run them (not NO_SYSTEM / DAMAGED / mid-op). This is the
+        // gate's only correct home: it is a PRE-FLIGHT check. It cannot move into the service loop,
+        // because by then InstallGuard has planted the in-progress marker and the door would read our
+        // own install as "installing" and refuse itself. A retry runs before that begin, so the read is
+        // clean; and a single small file read on a deliberate tap is within the per-screen I/O budget.
+        if (!OperationDispatcher.mayRunStopped(SystemDoor.dispatch(ctx, moduleKey))) {
             Snackbars.make(anchor, BusyMessage.resFor(ctx)).show();
             return false;
         }
