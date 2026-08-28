@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Systémový",
     "theme_light": "Svetlý",
     "theme_dark": "Tmavý",
-    "backend_error": "Server backendu neodpovedá. Skontrolujte, či je spustený. Otvorte aplikáciu Termux a spustite"
+    "backend_error": "Server K2Go neodpovedá. Uistite sa, že K2Go beží na hostiteľskom zariadení a že vaše zariadenie je v tej istej Wi-Fi alebo pripojené k jeho hotspotu."
 };
