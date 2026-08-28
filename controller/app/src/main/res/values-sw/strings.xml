@@ -1314,4 +1314,9 @@
     <string name="k2go_books_load_more">Pakia zaidi</string>
     <string name="k2go_books_showing_fmt">Inaonyesha vitabu %1$d</string>
     <string name="k2go_books_all_fmt">Ndio hivyo · vitabu %1$d</string>
+    <string name="k2go_mod_phase_stalled">Bado inaendelea — inachukua muda mrefu kuliko kawaida. Unaweza kusubiri, au kughairi na kujaribu tena.</string>
+    <string name="k2go_mod_cancel_title">Kusimamisha usakinishaji?</string>
+    <string name="k2go_mod_cancel_body">Yaliyofanyika hadi sasa yanabatilishwa na moduli haitasakinishwa. Unaweza kuanza tena baadaye.</string>
+    <string name="k2go_mod_cancel_confirm">Simamisha usakinishaji</string>
+    <string name="k2go_mod_cancel_dismiss">Endelea kusakinisha</string>
 </resources>

@@ -1295,4 +1295,9 @@
     <string name="k2go_books_load_more">加载更多</string>
     <string name="k2go_books_showing_fmt">正在显示 %1$d 本书</string>
     <string name="k2go_books_all_fmt">就这些 · %1$d 本书</string>
+    <string name="k2go_mod_phase_stalled">仍在进行 — 用时比平常长。您可以继续等待，或取消并重试。</string>
+    <string name="k2go_mod_cancel_title">停止安装？</string>
+    <string name="k2go_mod_cancel_body">目前所做的更改将被撤销，模块不会被安装。您稍后可以重新开始。</string>
+    <string name="k2go_mod_cancel_confirm">停止安装</string>
+    <string name="k2go_mod_cancel_dismiss">继续安装</string>
 </resources>

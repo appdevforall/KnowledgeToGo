@@ -1301,4 +1301,9 @@
     <string name="k2go_books_load_more">Muat lebih banyak</string>
     <string name="k2go_books_showing_fmt">Menampilkan %1$d buku</string>
     <string name="k2go_books_all_fmt">Itu saja · %1$d buku</string>
+    <string name="k2go_mod_phase_stalled">Masih berjalan — ini memakan waktu lebih lama dari biasanya. Anda dapat menunggu, atau membatalkan dan mencoba lagi.</string>
+    <string name="k2go_mod_cancel_title">Hentikan pemasangan?</string>
+    <string name="k2go_mod_cancel_body">Yang sudah dilakukan sejauh ini dibatalkan dan modul tidak akan dipasang. Anda dapat memulainya lagi nanti.</string>
+    <string name="k2go_mod_cancel_confirm">Hentikan pemasangan</string>
+    <string name="k2go_mod_cancel_dismiss">Lanjutkan pemasangan</string>
 </resources>

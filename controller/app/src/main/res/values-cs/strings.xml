@@ -1301,4 +1301,9 @@
     <string name="k2go_books_load_more">Načíst další</string>
     <string name="k2go_books_showing_fmt">Zobrazeno %1$d knih</string>
     <string name="k2go_books_all_fmt">To je vše · %1$d knih</string>
+    <string name="k2go_mod_phase_stalled">Stále probíhá — trvá to déle než obvykle. Můžete počkat, nebo zrušit a zkusit to znovu.</string>
+    <string name="k2go_mod_cancel_title">Zastavit instalaci?</string>
+    <string name="k2go_mod_cancel_body">Dosud provedené se vrátí zpět a modul se nenainstaluje. Můžete jej spustit znovu později.</string>
+    <string name="k2go_mod_cancel_confirm">Zastavit</string>
+    <string name="k2go_mod_cancel_dismiss">Pokračovat v instalaci</string>
 </resources>

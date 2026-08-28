@@ -1370,4 +1370,9 @@
     <string name="k2go_books_load_more">Загрузить ещё</string>
     <string name="k2go_books_showing_fmt">Показано книг: %1$d</string>
     <string name="k2go_books_all_fmt">Это всё · %1$d книг</string>
+    <string name="k2go_mod_phase_stalled">Ещё выполняется — это занимает больше времени, чем обычно. Можно подождать или отменить и повторить.</string>
+    <string name="k2go_mod_cancel_title">Остановить установку?</string>
+    <string name="k2go_mod_cancel_body">Сделанное до сих пор отменяется, и модуль не будет установлен. Вы сможете запустить его снова позже.</string>
+    <string name="k2go_mod_cancel_confirm">Остановить</string>
+    <string name="k2go_mod_cancel_dismiss">Продолжить установку</string>
 </resources>

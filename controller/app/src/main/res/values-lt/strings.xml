@@ -1311,4 +1311,9 @@
     <string name="k2go_books_load_more">Įkelti daugiau</string>
     <string name="k2go_books_showing_fmt">Rodoma knygų: %1$d</string>
     <string name="k2go_books_all_fmt">Tai viskas · %1$d knygų</string>
+    <string name="k2go_mod_phase_stalled">Vis dar vyksta — tai užtrunka ilgiau nei įprastai. Galite palaukti arba atšaukti ir bandyti dar kartą.</string>
+    <string name="k2go_mod_cancel_title">Stabdyti diegimą?</string>
+    <string name="k2go_mod_cancel_body">Iki šiol atlikti veiksmai atšaukiami ir modulis nebus įdiegtas. Vėliau galėsite pradėti iš naujo.</string>
+    <string name="k2go_mod_cancel_confirm">Stabdyti diegimą</string>
+    <string name="k2go_mod_cancel_dismiss">Tęsti diegimą</string>
 </resources>

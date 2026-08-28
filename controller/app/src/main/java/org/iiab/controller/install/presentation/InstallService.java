@@ -135,6 +135,15 @@ public final class InstallService extends Service {
     private volatile boolean finished = false;
     private volatile boolean started = false;
 
+    // ADFA-4898 P4: movement-based stall detection for the running module (surface only, never kills).
+    /** Generous, minute-scale: well above a quiet git-clone/apt phase, so a slow-but-alive install is
+     *  never flagged. Above Freshness.STALE_MS (30s), which is tuned for ~1s-cadence REST polls. */
+    private static final long MODULE_STALL_MS = 120_000L;
+    private static final long MODULE_STALL_POLL_MS = 15_000L;
+    private volatile long lastModuleMovementMs = 0L;   // stamped on a runrole output line OR write-dir growth
+    private volatile long lastModuleDirSize = -1L;
+    private Runnable moduleStallCheck;                 // main-thread poller; null when not watching
+
     /**
      * ADFA-5119: which kind of work is running, for the one question Cancel has to answer — does
      * abandoning it leave the device with no system (see {@code AbandonedInstall}).
@@ -955,9 +964,11 @@ public final class InstallService extends Service {
         // ADFA-4435: Ansible can print its failure to stdout yet still exit 0, so the verdict
         // considers the output as well as the exit code (pure, unit-tested domain object).
         final AnsibleRunOutcome outcome = new AnsibleRunOutcome();
+        startModuleStallWatch(nextModule);   // ADFA-4898 P4: watch this runrole for a stall (surface only)
         prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), installCmd, new PRootEngine.OutputListener() {
             @Override
             public void onOutputLine(String line) {
+                lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();   // ADFA-4898 P4: heartbeat
                 outcome.observe(line);
                 log("[Ansible] " + line);
                 // ADFA-5228: advance the determinate bar as known tasks are reached. Post only on a
@@ -1043,17 +1054,112 @@ public final class InstallService extends Service {
     }
 
     /**
-     * ADFA-4435: roll back the speculative local_vars edit made before runrole, so a failed
-     * install is not left looking installed/enabled. Always runs {@code then} afterwards.
+     * ADFA-4435: roll back the speculative local_vars edit made before runrole, so a failed or
+     * cancelled install is not left looking installed/enabled. Always runs {@code then} afterwards.
+     *
+     * <p>ADFA-4898 P5: write {@code <mod>_install: False} / {@code <mod>_enabled: False} explicitly
+     * rather than only deleting the speculative lines. Both read as "not installed" (the reader keys on
+     * the flag being true), but an explicit False also tells a later ansible run the module is off, so a
+     * partially-installed module is never offered as installed. The leading sed-delete keeps it
+     * idempotent, and the write-before-runrole path deletes these lines before echoing True on a retry.
      */
     private void revertModuleInLocalVars(String module, Runnable then) {
         if (prootEngine == null) prootEngine = new PRootEngine();
-        String revertCmd = "sed -i -E '/^[[:space:]]*" + module + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml";
+        String revertCmd = "sed -i -E '/^[[:space:]]*" + module + "_(install|enabled)[[:space:]]*:/d' /etc/iiab/local_vars.yml && " +
+                "echo '" + module + "_install: False' >> /etc/iiab/local_vars.yml && " +
+                "echo '" + module + "_enabled: False' >> /etc/iiab/local_vars.yml";
         prootEngine.executeInContainer(this, debianRootfs.getAbsolutePath(), revertCmd, new PRootEngine.OutputListener() {
             @Override public void onOutputLine(String line) { }
             @Override public void onProcessExit(int exitCode) { then.run(); }
             @Override public void onError(String error) { then.run(); }
         });
+    }
+
+    // ---- ADFA-4898 P4: movement-based stall watch (surface only, never kills) -------------------
+
+    /**
+     * Watch the running module for movement — a runrole output line (stamped in onOutputLine) OR growth
+     * of its on-disk write directory. When neither moves for {@link #MODULE_STALL_MS}, publish a
+     * "stalled" hint the live card shows; the install is never touched. Re-armed per module; the
+     * dir-growth backstop covers quiet network phases (e.g. calibre-web's git clone) that emit no log.
+     */
+    private void startModuleStallWatch(final String moduleKey) {
+        stopModuleStallWatch();
+        lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
+        lastModuleDirSize = -1L;
+        ModuleQueueRepository.get().postStalled(false);
+        // ADFA-4898 P4: make write-dir drift visible instead of silent. If a module has no mapped dir
+        // (a new module added without updating moduleWriteDirRel), the watch still works off the log
+        // heartbeat — but this line says so in the log, so the missing backstop is noticed, not hidden.
+        if (moduleWriteDirRel(moduleKey) == null) {
+            log("[Stall] no write-dir backstop mapped for '" + moduleKey
+                    + "'; stall watch relies on the log heartbeat only");
+        }
+        moduleStallCheck = new Runnable() {
+            @Override public void run() {
+                if (finished || cancelled) return;
+                org.iiab.controller.util.AppExecutors.get().io().execute(() -> {
+                    long size = moduleWriteDirSize(moduleKey);
+                    if (size >= 0 && size != lastModuleDirSize) {
+                        lastModuleDirSize = size;
+                        lastModuleMovementMs = android.os.SystemClock.elapsedRealtime();
+                    }
+                    boolean fresh = org.iiab.controller.env.Freshness.fresh(
+                            lastModuleMovementMs, android.os.SystemClock.elapsedRealtime(), MODULE_STALL_MS);
+                    ModuleQueueRepository.get().postStalled(!fresh);
+                });
+                heldHandler.postDelayed(this, MODULE_STALL_POLL_MS);
+            }
+        };
+        heldHandler.postDelayed(moduleStallCheck, MODULE_STALL_POLL_MS);
+    }
+
+    private void stopModuleStallWatch() {
+        if (moduleStallCheck != null) { heldHandler.removeCallbacks(moduleStallCheck); moduleStallCheck = null; }
+        ModuleQueueRepository.get().postStalled(false);
+    }
+
+    /** Total bytes under the module's write directory on the host rootfs, or -1 if unknown/absent. */
+    private long moduleWriteDirSize(String key) {
+        String rel = moduleWriteDirRel(key);
+        if (rel == null || debianRootfs == null) return -1L;
+        File d = new File(debianRootfs, rel);
+        if (!d.isDirectory()) return -1L;
+        return boundedDirSize(d, 20000);
+    }
+
+    /**
+     * Where each module does its heavy on-disk writes (relative to the rootfs), for the stall watch's
+     * growth backstop. Heuristic and best-effort — keep it in sync with the ansible roles. If a key is
+     * unmapped or the path drifts, the watch silently falls back to the log heartbeat (never a false
+     * verdict); {@link #startModuleStallWatch} logs the unmapped case so that drift is visible, not silent.
+     */
+    private static String moduleWriteDirRel(String key) {
+        if (key == null) return null;
+        switch (key) {
+            case "calibreweb": return "usr/local/calibre-web-py3";   // git clone + venv
+            case "maps":       return "library/downloads/maps";
+            case "matomo":     return "library/www/matomo";
+            case "kolibri":    return "var/cache/apt/archives";       // chatty on stdout too; disk is the fallback
+            default:           return null;
+        }
+    }
+
+    /** Iterative, file-capped directory size so a large tree can't make the poll expensive. */
+    private static long boundedDirSize(File root, int fileCap) {
+        long total = 0L; int count = 0;
+        java.util.ArrayDeque<File> stack = new java.util.ArrayDeque<>();
+        stack.push(root);
+        while (!stack.isEmpty() && count < fileCap) {
+            File[] kids = stack.pop().listFiles();
+            if (kids == null) continue;
+            for (File k : kids) {
+                if (count >= fileCap) break;
+                if (k.isDirectory()) stack.push(k);
+                else { total += k.length(); count++; }
+            }
+        }
+        return total;
     }
 
     /**
@@ -1096,6 +1202,7 @@ public final class InstallService extends Service {
     private void finishModuleQueue() {
         if (finished) return;
         finished = true;
+        stopModuleStallWatch();   // ADFA-4898 P4
         persistClearQueue();
         // ADFA-4842: clear the durable install guard BEFORE publishing DONE so the LibraryActivity
         // observer that restarts the server (canStartServer() requires !InstallGuard.inProgress) is not
@@ -1485,10 +1592,27 @@ public final class InstallService extends Service {
         } catch (Exception ignored) {
         }
         if (moduleMode) {
-            persistClearQueue();
-            ModuleQueueRepository.get().postDone(
-                    failedModules != null ? new java.util.ArrayList<>(failedModules) : new java.util.ArrayList<>());
-            teardown();
+            // ADFA-4898 P5: user-confirmed cancel of a running module install. Kill the in-flight runrole
+            // (proot runs with --kill-on-exit, so its container children go with it), roll back that
+            // module's speculative <mod>_install so a cancel is not left looking installed, and surface it
+            // as failed so the existing per-module Retry is offered immediately. Ordering mirrors
+            // finishModuleQueue: clear InstallGuard BEFORE postDone so the server-restart observer (the
+            // server was pdsm-stopped for the runroles) is not raced by teardown's later clear.
+            final String cur = ModuleQueueRepository.get().current().currentModule;
+            stopModuleStallWatch();   // ADFA-4898 P4
+            if (prootEngine != null) prootEngine.killProcess();
+            if (failedModules == null) failedModules = new java.util.ArrayList<>();
+            if (cur != null && !failedModules.contains(cur)) failedModules.add(cur);
+            final java.util.List<String> failedSnapshot = new java.util.ArrayList<>(failedModules);
+            final Runnable finishCancel = () -> {
+                persistClearQueue();
+                org.iiab.controller.InstallGuard.end(this);
+                ModuleQueueRepository.get().postDone(failedSnapshot);
+                if (!failedSnapshot.isEmpty()) postModuleFailureNotification(failedSnapshot);
+                teardown();
+            };
+            if (cur != null) revertModuleInLocalVars(cur, finishCancel);   // best-effort rollback, then finish
+            else finishCancel.run();
             return;
         }
         if (!org.iiab.controller.install.domain.AbandonedInstall.leavesNoSystem(work)) {

@@ -29,6 +29,9 @@ public final class ModuleQueueRepository {
     }
 
     private final MutableLiveData<ModuleQueueState> state = new MutableLiveData<>(ModuleQueueState.idle());
+    /** ADFA-4898 P4: movement-based stall hint for the current module (surface only, never auto-kill).
+     *  Kept separate from the immutable ModuleQueueState so a transient hint never rewrites the queue. */
+    private final MutableLiveData<Boolean> stalled = new MutableLiveData<>(false);
     private long seq = 0L;
 
     private ModuleQueueRepository() {
@@ -36,6 +39,16 @@ public final class ModuleQueueRepository {
 
     public LiveData<ModuleQueueState> state() {
         return state;
+    }
+
+    /** ADFA-4898 P4: true while the current module's runrole has shown no movement (log line or write-dir
+     *  growth) for the stall window. A surface-only hint — the install keeps running. */
+    public LiveData<Boolean> stalled() {
+        return stalled;
+    }
+
+    public void postStalled(boolean isStalled) {
+        stalled.postValue(isStalled);
     }
 
     public ModuleQueueState current() {
@@ -64,8 +77,8 @@ public final class ModuleQueueRepository {
     public void postRunning(String currentModule, int remaining, int percent) { post(ModuleQueueState.running(currentModule, remaining, percent)); }
     /** ADFA-5228: running with a determinate percent and an estimated seconds-remaining. */
     public void postRunning(String currentModule, int remaining, int percent, long etaSeconds) { post(ModuleQueueState.running(currentModule, remaining, percent, etaSeconds)); }
-    public void postDone(List<String> failedModules)             { post(ModuleQueueState.done(failedModules)); }
-    public void postIdle()                                       { post(ModuleQueueState.idle()); }
+    public void postDone(List<String> failedModules)             { stalled.postValue(false); post(ModuleQueueState.done(failedModules)); }
+    public void postIdle()                                       { stalled.postValue(false); post(ModuleQueueState.idle()); }
 
     private synchronized void post(ModuleQueueState s) {
         state.postValue(s.withSeq(++seq));

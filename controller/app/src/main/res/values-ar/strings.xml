@@ -1294,4 +1294,9 @@
     <string name="k2go_books_load_more">تحميل المزيد</string>
     <string name="k2go_books_showing_fmt">عرض %1$d كتاب</string>
     <string name="k2go_books_all_fmt">هذا كل شيء · %1$d كتاب</string>
+    <string name="k2go_mod_phase_stalled">لا يزال يعمل — يستغرق وقتًا أطول من المعتاد. يمكنك الانتظار أو الإلغاء وإعادة المحاولة.</string>
+    <string name="k2go_mod_cancel_title">إيقاف التثبيت؟</string>
+    <string name="k2go_mod_cancel_body">يُتراجع عمّا تم حتى الآن ولن يُثبَّت المكوّن. يمكنك بدؤه من جديد لاحقًا.</string>
+    <string name="k2go_mod_cancel_confirm">إيقاف التثبيت</string>
+    <string name="k2go_mod_cancel_dismiss">متابعة التثبيت</string>
 </resources>

@@ -1314,4 +1314,9 @@
     <string name="k2go_books_load_more">Gbé afikun wọlé</string>
     <string name="k2go_books_showing_fmt">Ń fi ìwé %1$d hàn</string>
     <string name="k2go_books_all_fmt">Ìyẹn ni gbogbo rẹ̀ · ìwé %1$d</string>
+    <string name="k2go_mod_phase_stalled">Ó ṣì ń ṣiṣẹ́ — ó ń gba àkókò ju bí ó ṣe máa ń rí lọ. O lè dúró, tàbí fagilé kí o sì gbìyànjú lẹ́ẹ̀kansí.</string>
+    <string name="k2go_mod_cancel_title">Ṣé kí a dá fífi sórí ẹ̀rọ dúró?</string>
+    <string name="k2go_mod_cancel_body">Ohun tí a ti ṣe títí di báyìí ni a ó yí padà, a kì yóò sì fi módùlù náà sórí ẹ̀rọ. O lè bẹ̀rẹ̀ rẹ̀ lẹ́ẹ̀kansí lẹ́yìn náà.</string>
+    <string name="k2go_mod_cancel_confirm">Dá dúró</string>
+    <string name="k2go_mod_cancel_dismiss">Máa bá a lọ</string>
 </resources>

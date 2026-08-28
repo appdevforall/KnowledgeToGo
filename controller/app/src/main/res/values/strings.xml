@@ -1474,4 +1474,9 @@
     <string name="k2go_kolibri_go_to_library">Done — go to my library</string>
     <string name="k2go_kolibri_failed_fmt">%1$d course(s) didn\'t finish.</string>
     <string name="k2go_kolibri_retry_before_leaving">Retry the ones that failed before you leave — leaving clears this list.</string>
+    <string name="k2go_mod_phase_stalled">Still working — this is taking longer than usual. You can keep waiting, or cancel and retry.</string>
+    <string name="k2go_mod_cancel_title">Stop installing?</string>
+    <string name="k2go_mod_cancel_body">What\'s been done so far is rolled back and the module won\'t be installed. You can start it again afterward.</string>
+    <string name="k2go_mod_cancel_confirm">Stop install</string>
+    <string name="k2go_mod_cancel_dismiss">Keep installing</string>
 </resources>

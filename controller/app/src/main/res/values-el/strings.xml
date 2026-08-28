@@ -1301,4 +1301,9 @@
     <string name="k2go_books_load_more">Φόρτωση περισσότερων</string>
     <string name="k2go_books_showing_fmt">Εμφανίζονται %1$d βιβλία</string>
     <string name="k2go_books_all_fmt">Αυτά ήταν όλα · %1$d βιβλία</string>
+    <string name="k2go_mod_phase_stalled">Ακόμη σε εξέλιξη — καθυστερεί περισσότερο από το συνηθισμένο. Μπορείτε να περιμένετε ή να ακυρώσετε και να δοκιμάσετε ξανά.</string>
+    <string name="k2go_mod_cancel_title">Διακοπή εγκατάστασης;</string>
+    <string name="k2go_mod_cancel_body">Ό,τι έγινε μέχρι τώρα αναιρείται και η μονάδα δεν θα εγκατασταθεί. Μπορείτε να την ξεκινήσετε ξανά αργότερα.</string>
+    <string name="k2go_mod_cancel_confirm">Διακοπή</string>
+    <string name="k2go_mod_cancel_dismiss">Συνέχιση εγκατάστασης</string>
 </resources>

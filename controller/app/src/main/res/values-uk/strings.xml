@@ -1294,4 +1294,9 @@
     <string name="k2go_books_load_more">Завантажити ще</string>
     <string name="k2go_books_showing_fmt">Показано книг: %1$d</string>
     <string name="k2go_books_all_fmt">Це все · %1$d книг</string>
+    <string name="k2go_mod_phase_stalled">Ще триває — це займає більше часу, ніж зазвичай. Можна зачекати або скасувати та повторити.</string>
+    <string name="k2go_mod_cancel_title">Зупинити встановлення?</string>
+    <string name="k2go_mod_cancel_body">Зроблене досі скасовується, і модуль не буде встановлено. Ви зможете запустити його знову пізніше.</string>
+    <string name="k2go_mod_cancel_confirm">Зупинити</string>
+    <string name="k2go_mod_cancel_dismiss">Продовжити встановлення</string>
 </resources>

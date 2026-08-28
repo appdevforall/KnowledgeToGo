@@ -1294,4 +1294,9 @@
     <string name="k2go_books_load_more">Carica altro</string>
     <string name="k2go_books_showing_fmt">%1$d libri mostrati</string>
     <string name="k2go_books_all_fmt">È tutto · %1$d libri</string>
+    <string name="k2go_mod_phase_stalled">Ancora in corso — sta impiegando più del solito. Puoi aspettare, oppure annullare e riprovare.</string>
+    <string name="k2go_mod_cancel_title">Interrompere l\'installazione?</string>
+    <string name="k2go_mod_cancel_body">Quanto fatto finora viene annullato e il modulo non verrà installato. Puoi riavviarlo in seguito.</string>
+    <string name="k2go_mod_cancel_confirm">Interrompi</string>
+    <string name="k2go_mod_cancel_dismiss">Continua a installare</string>
 </resources>

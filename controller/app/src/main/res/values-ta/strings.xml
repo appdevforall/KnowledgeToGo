@@ -1314,4 +1314,9 @@
     <string name="k2go_books_load_more">மேலும் ஏற்று</string>
     <string name="k2go_books_showing_fmt">%1$d புத்தகங்கள் காட்டப்படுகின்றன</string>
     <string name="k2go_books_all_fmt">இவ்வளவுதான் · %1$d புத்தகங்கள்</string>
+    <string name="k2go_mod_phase_stalled">இன்னும் இயங்குகிறது — வழக்கத்தை விட அதிக நேரம் எடுக்கிறது. நீங்கள் காத்திருக்கலாம் அல்லது ரத்து செய்து மீண்டும் முயற்சிக்கலாம்.</string>
+    <string name="k2go_mod_cancel_title">நிறுவலை நிறுத்தவா?</string>
+    <string name="k2go_mod_cancel_body">இதுவரை செய்தது மீட்டமைக்கப்படும், தொகுதி நிறுவப்படாது. பிறகு மீண்டும் தொடங்கலாம்.</string>
+    <string name="k2go_mod_cancel_confirm">நிறுவலை நிறுத்து</string>
+    <string name="k2go_mod_cancel_dismiss">நிறுவலைத் தொடர்</string>
 </resources>

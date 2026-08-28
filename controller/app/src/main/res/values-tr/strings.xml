@@ -1294,4 +1294,9 @@
     <string name="k2go_books_load_more">Daha fazla yükle</string>
     <string name="k2go_books_showing_fmt">%1$d kitap gösteriliyor</string>
     <string name="k2go_books_all_fmt">Hepsi bu · %1$d kitap</string>
+    <string name="k2go_mod_phase_stalled">Hâlâ çalışıyor — bu her zamankinden uzun sürüyor. Bekleyebilir ya da iptal edip yeniden deneyebilirsiniz.</string>
+    <string name="k2go_mod_cancel_title">Kurulum durdurulsun mu?</string>
+    <string name="k2go_mod_cancel_body">Şimdiye kadar yapılanlar geri alınır ve modül kurulmaz. Daha sonra yeniden başlatabilirsiniz.</string>
+    <string name="k2go_mod_cancel_confirm">Kurulumu durdur</string>
+    <string name="k2go_mod_cancel_dismiss">Kuruluma devam et</string>
 </resources>

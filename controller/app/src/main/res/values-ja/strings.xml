@@ -1295,4 +1295,9 @@
     <string name="k2go_books_load_more">もっと読み込む</string>
     <string name="k2go_books_showing_fmt">%1$d 冊を表示中</string>
     <string name="k2go_books_all_fmt">以上です · %1$d 冊</string>
+    <string name="k2go_mod_phase_stalled">まだ実行中です — 通常より時間がかかっています。このまま待つか、キャンセルして再試行できます。</string>
+    <string name="k2go_mod_cancel_title">インストールを停止しますか？</string>
+    <string name="k2go_mod_cancel_body">これまでの作業は元に戻され、モジュールはインストールされません。後でもう一度開始できます。</string>
+    <string name="k2go_mod_cancel_confirm">インストールを停止</string>
+    <string name="k2go_mod_cancel_dismiss">インストールを続行</string>
 </resources>

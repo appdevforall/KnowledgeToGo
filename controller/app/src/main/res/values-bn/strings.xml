@@ -1307,4 +1307,9 @@
     <string name="k2go_books_load_more">আরও লোড করুন</string>
     <string name="k2go_books_showing_fmt">%1$d টি বই দেখানো হচ্ছে</string>
     <string name="k2go_books_all_fmt">এটুকুই · %1$d টি বই</string>
+    <string name="k2go_mod_phase_stalled">এখনও চলছে — এটি স্বাভাবিকের চেয়ে বেশি সময় নিচ্ছে। আপনি অপেক্ষা করতে পারেন, অথবা বাতিল করে আবার চেষ্টা করতে পারেন।</string>
+    <string name="k2go_mod_cancel_title">ইনস্টল করা বন্ধ করবেন?</string>
+    <string name="k2go_mod_cancel_body">এ পর্যন্ত যা হয়েছে তা পূর্বাবস্থায় ফিরিয়ে আনা হয় এবং মডিউলটি ইনস্টল হবে না। আপনি পরে আবার এটি শুরু করতে পারেন।</string>
+    <string name="k2go_mod_cancel_confirm">ইনস্টল বন্ধ করুন</string>
+    <string name="k2go_mod_cancel_dismiss">ইনস্টল চালিয়ে যান</string>
 </resources>

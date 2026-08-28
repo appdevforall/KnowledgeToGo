@@ -1307,4 +1307,9 @@
     <string name="k2go_books_load_more">Учитај још</string>
     <string name="k2go_books_showing_fmt">Приказано %1$d књига</string>
     <string name="k2go_books_all_fmt">То је све · %1$d књига</string>
+    <string name="k2go_mod_phase_stalled">Још увек ради — траје дуже него обично. Можете сачекати или отказати и покушати поново.</string>
+    <string name="k2go_mod_cancel_title">Зауставити инсталацију?</string>
+    <string name="k2go_mod_cancel_body">Оно што је до сада урађено се поништава и модул неће бити инсталиран. Можете га поново покренути касније.</string>
+    <string name="k2go_mod_cancel_confirm">Заустави</string>
+    <string name="k2go_mod_cancel_dismiss">Настави инсталацију</string>
 </resources>

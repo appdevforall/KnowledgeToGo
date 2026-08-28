@@ -1294,4 +1294,9 @@
     <string name="k2go_books_load_more">بارگذاری بیشتر</string>
     <string name="k2go_books_showing_fmt">نمایش %1$d کتاب</string>
     <string name="k2go_books_all_fmt">همین · %1$d کتاب</string>
+    <string name="k2go_mod_phase_stalled">هنوز در حال کار است — بیش از حد معمول طول می‌کشد. می‌توانید صبر کنید یا لغو کرده و دوباره تلاش کنید.</string>
+    <string name="k2go_mod_cancel_title">نصب متوقف شود؟</string>
+    <string name="k2go_mod_cancel_body">کارهای انجام‌شده تا کنون بازگردانده می‌شود و ماژول نصب نخواهد شد. می‌توانید بعداً دوباره آن را شروع کنید.</string>
+    <string name="k2go_mod_cancel_confirm">توقف نصب</string>
+    <string name="k2go_mod_cancel_dismiss">ادامه نصب</string>
 </resources>
