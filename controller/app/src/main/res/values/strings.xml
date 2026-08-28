@@ -1190,6 +1190,7 @@
     <string name="k2go_busy_restore">A restore is in progress. Please wait for it to finish.</string>
     <string name="k2go_busy_install">An install is in progress. Please wait for it to finish.</string>
     <string name="k2go_busy_download">A download is in progress. Please wait for it to finish.</string>
+    <string name="k2go_busy_dashboard">A dashboard update is in progress. Please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
     <string name="k2go_setup_leave_hint">Still setting up the system. You can leave the app while setup runs in the background. </string>
     <!-- ADFA-4919 (2c-ii): shown when a proot install was killed and the system can't start. -->
@@ -1240,6 +1241,9 @@
     <string name="k2go_books_confirm_sub">Your selection.</string>
     <string name="k2go_books_confirm_note_title">One at a time</string>
     <string name="k2go_books_total_fmt">%1$d books</string>
+    <string name="k2go_books_load_more">Load more</string>
+    <string name="k2go_books_showing_fmt">Showing %1$d books</string>
+    <string name="k2go_books_all_fmt">That\'s all · %1$d books</string>
     <string name="k2go_books_dl_title">Downloads</string>
     <string name="k2go_books_dl_sub">Added one at a time — kind to Project Gutenberg.</string>
     <string name="k2go_books_dl_detail_fmt">%1$d of %2$d books</string>
@@ -1340,15 +1344,23 @@
     <string name="k2go_dash_card_sub_fmt">REST core · installed v%1$s</string>
     <string name="k2go_dash_rebuild">Rebuild</string>
     <string name="k2go_dash_rebuild_confirm_title">Rebuild the REST core?</string>
-    <string name="k2go_dash_rebuild_confirm_msg">Updates dash-node to the latest version. The server is briefly unavailable while it rebuilds; don\'t leave this screen until it finishes.</string>
+    <string name="k2go_dash_rebuild_confirm_msg">Updates dash-node to the latest version. It runs in the background; the server is briefly unavailable while it rebuilds.</string>
     <string name="k2go_dash_needs_internet">Rebuild needs an internet connection.</string>
-    <!-- ADFA-5051: live REST self-update progress (dash-node >= 1.2.0). -->
+    <!-- ADFA-5051 / ADFA-5333: live REST self-update (dash-node >= 1.2.0), now run in the background by
+         DashboardRebuildService — title + running text are the ongoing notification; done/error are the
+         final notification. -->
     <string name="k2go_dash_live_title">Updating the dashboard</string>
     <string name="k2go_dash_live_running">Updating in place… the dashboard restarts briefly.</string>
     <string name="k2go_dash_live_done">Dashboard updated.</string>
     <string name="k2go_dash_live_error">Update failed — the previous version was kept.</string>
-    <string name="k2go_dash_live_timeout">The update is taking longer than usual. It will finish in the background — check the version in a moment.</string>
     <string name="k2go_dash_live_start_failed">Couldn\'t start the update. Try again.</string>
+    <!-- ADFA-5333: shown when the background update kicks off, so the user knows they can leave. -->
+    <string name="k2go_dash_update_started">Updating the dashboard in the background.</string>
+    <string name="k2go_dash_update_channel_name">Dashboard update</string>
+    <!-- ADFA-5333: clean cancel of the background update. -->
+    <string name="k2go_dash_cancel">Cancel</string>
+    <string name="k2go_dash_cancel_too_late">The update is finishing and can\'t be canceled now.</string>
+    <string name="k2go_dash_cancel_failed">Couldn\'t cancel the update. It will keep running.</string>
     <!-- ADFA-5011: dashboard detail card (Play Store-style, Rebuild-only). -->
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">System core · always installed</string>

@@ -42,8 +42,9 @@ public final class ZimProvisioner {
         // background processes; concurrent REST work risks corruption). Defer ZIM while a module-queue
         // (proot) job is pending or running; a later drain pass runs it once proot is idle.
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || MapsProvisioner.hasPending(ctx)) {
-            Log.d(TAG, "zim drain deferred: proot (runrole) work is pending/running");
+                || MapsProvisioner.hasPending(ctx)
+                || DashboardRebuildService.isRunning()) {   // ADFA-5333: a live dashboard update restarts dash-node
+            Log.d(TAG, "zim drain deferred: proot (runrole) or dashboard-update work is in flight");
             return;
         }
         // ADFA-4954 (ADR-4954 D8): the live REST streams also serialize against each other.

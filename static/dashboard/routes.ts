@@ -65,13 +65,15 @@ export const apiRouter: Router = express.Router();
 // (POST /books/download). These paths don't collide with the generic /:type/* routes below.
 
 // Search the offline Gutenberg catalog. ?q= (FTS) | ?filter=educational | (default) top-by-downloads.
+// ADFA-5329: ?offset= pages through the results for the client's "Load more".
 apiRouter.get('/books/search', (req: Request, res: Response): void => {
     try {
         const q = String(req.query.q ?? '');
         const filter = String(req.query.filter ?? '');
         const lang = String(req.query.lang ?? '');
+        const offset = parseInt(String(req.query.offset ?? '0'), 10);
         const limit = parseInt(String(req.query.limit ?? '40'), 10);
-        res.json(searchCatalog(q, filter, lang, limit));
+        res.json(searchCatalog(q, filter, lang, offset, limit));
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'search failed' });
     }
@@ -242,6 +244,11 @@ apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
 // restarting dash-node mid-run never kills it. Declared before the generic /:type/* routes.
 const REBUILD_SCRIPT = '/opt/iiab-android/tools/rebuild-dashboard.sh';
 const REBUILD_STATUS_FILE = '/var/run/dash-rebuild.status';
+// ADFA-5333: cancel support. The script writes its phase (building | promoting) and its session-leader
+// pid; cancel is safe (and allowed) only while building — that window never touches the live dashboard.
+const REBUILD_PHASE_FILE = '/var/run/dash-rebuild.phase';
+const REBUILD_PID_FILE = '/var/run/dash-rebuild.pid';
+const REBUILD_LOCK_DIR = '/var/run/dash-rebuild.lock';
 // ADFA-5051: the remote branch that update-check compares against AND the rebuild pulls. Defaults to
 // mainline; set K2GO_DASH_BRANCH in the dash-node env to point a test box at a feature branch (e.g.
 // to exercise the live self-update before merging to main) without touching code. Keep it unset in
@@ -287,6 +294,57 @@ apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void
         res.status(202).json({ ok: true, state: 'running' });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'could not start rebuild' });
+    }
+});
+
+// ADFA-5333: cancel an in-flight rebuild cleanly. Safe only while "building" (steps 1-3: git/build/smoke,
+// which never touch the live dashboard) — we signal the detached session group (script + yarn/node) to
+// stop, its EXIT/TERM trap purges staging, and we reset the state we own so the live version is left
+// exactly as it was. Refused once "promoting" (the short dist-swap + restart window) so the swap is never
+// interrupted mid-flight, and a no-op when nothing is running.
+apiRouter.post('/system/dashboard/rebuild/cancel', (_req: Request, res: Response): void => {
+    let state = 'idle';
+    try { state = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'; } catch { /* none */ }
+    if (state !== 'running') { res.status(409).json({ error: 'no rebuild running', cancelled: false }); return; }
+    let phase = 'building';
+    try { phase = fs.readFileSync(REBUILD_PHASE_FILE, 'utf8').trim() || 'building'; } catch { /* default building */ }
+    if (phase === 'promoting') { res.status(409).json({ error: 'promoting', promoting: true, cancelled: false }); return; }
+    let pid = 0;
+    try { pid = parseInt(fs.readFileSync(REBUILD_PID_FILE, 'utf8').trim(), 10); } catch { /* no pid yet */ }
+    if (!Number.isFinite(pid) || pid <= 1) {
+        // The run has just started (status is 'running') but hasn't recorded its session pid yet, so we
+        // can't signal it. Do NOT claim success or touch the status — the app can retry in a moment.
+        res.status(409).json({ error: 'cancel not ready', cancelled: false }); return;
+    }
+    // Verify the pid is actually OUR rebuild script before signaling — never SIGTERM a recycled/unrelated
+    // pid. /proc/<pid>/cmdline is NUL-separated; a substring match on the script name is enough.
+    let cmdline = '';
+    try { cmdline = fs.readFileSync(`/proc/${pid}/cmdline`, 'utf8'); } catch { /* process gone / no proc */ }
+    const healStale = (): void => {
+        try { fs.writeFileSync(REBUILD_STATUS_FILE, 'idle'); } catch { /* best effort */ }
+        try { fs.rmdirSync(REBUILD_LOCK_DIR); } catch { /* maybe already gone */ }
+        try { fs.unlinkSync(REBUILD_PHASE_FILE); } catch { /* maybe already gone */ }
+        try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* maybe already gone */ }
+    };
+    if (cmdline === '' && !fs.existsSync(`/proc/${pid}`)) {
+        // The run already exited but left stale state (status 'running' with a dead pid) — heal it and
+        // report success; there is nothing left to stop.
+        healStale();
+        res.status(200).json({ ok: true, cancelled: true }); return;
+    }
+    if (!cmdline.includes('rebuild-dashboard.sh')) {
+        // The pid is alive but was recycled by an unrelated process — refuse to signal it.
+        res.status(409).json({ error: 'stale pid', cancelled: false }); return;
+    }
+    try {
+        // Signal the whole detached session group; the script's on_cancel/EXIT trap sets status idle and
+        // purges staging + lock/phase/pid. We also write idle + best-effort rmdir here as belt-and-suspenders.
+        try { process.kill(-pid, 'SIGTERM'); } catch { /* group already gone */ }
+        try { process.kill(pid, 'SIGTERM'); } catch { /* leader already gone */ }
+        healStale();
+        res.status(200).json({ ok: true, cancelled: true });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'cancel failed', cancelled: false });
     }
 });
 

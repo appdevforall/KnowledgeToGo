@@ -59,8 +59,9 @@ public final class KolibriProvisioner {
      */
     static boolean canDrainNow(Context ctx) {
         if (org.iiab.controller.install.presentation.ModuleQueueRepository.get().isRunning()
-                || MapsProvisioner.hasPending(ctx)) {
-            Log.d(TAG, "kolibri drain blocked: proot (runrole) work is pending/running");
+                || MapsProvisioner.hasPending(ctx)
+                || org.iiab.controller.redesign.DashboardRebuildService.isRunning()) {   // ADFA-5333
+            Log.d(TAG, "kolibri drain blocked: proot (runrole) or dashboard-update work is in flight");
             return false;
         }
         // ADFA-5074: unfinished work only. This read a merely registered session, so a

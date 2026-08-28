@@ -79,7 +79,7 @@ public class BooksConfirmFragment extends Fragment {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
             if (banks) a.booksWizardConfirm();   // no box yet: bank it
-            else a.startBooksDownload();         // live: download now
+            else if (!DashboardRebuild.blockedByUpdate(v)) a.startBooksDownload();   // live: download now (ADFA-5333)
         });
 
         return root;

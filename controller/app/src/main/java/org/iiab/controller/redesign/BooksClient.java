@@ -4,7 +4,7 @@
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
  * Description : ADFA-4850. App-side client for the dashboard's Books REST endpoints:
- *                 GET  /api/books/search?q=&filter=&limit=  -> catalog rows (offline FTS)
+ *                 GET  /api/books/search?q=&filter=&lang=&offset=&limit=  -> catalog rows (offline FTS)
  *                 GET  /api/books/library                   -> Calibre-Web library rows
  *                 POST /api/books/library/:id/remove        -> delete
  *               (The actual download is a durable job driven by BooksDownloadService.)
@@ -38,11 +38,13 @@ public final class BooksClient {
     public interface OkCb { void onOk(); void onErr(String message); }
 
     /** Search the offline Gutenberg catalog. filter: ""|"educational"; lang: ""=all or an ISO code;
-     *  q empty => top-by-downloads. */
-    public static void search(String q, String filter, String lang, int limit, ArrayCb cb) {
+     *  q empty => top-by-downloads. ADFA-5329: offset pages through the results ("Load more").
+     *  The server must apply a stable order (popularity, then id) so batches don't overlap. */
+    public static void search(String q, String filter, String lang, int offset, int limit, ArrayCb cb) {
         AppExecutors.get().io().execute(() -> {
             try {
                 String url = BASE + "/search?limit=" + limit
+                        + "&offset=" + Math.max(0, offset)
                         + "&filter=" + enc(filter == null ? "" : filter)
                         + "&lang=" + enc(lang == null ? "" : lang)
                         + "&q=" + enc(q == null ? "" : q);
