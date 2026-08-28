@@ -118,7 +118,7 @@
     <string name="k2go_br_status_stopping">Stopper tjenester</string>
     <string name="k2go_br_status_backing">Sikkerhetskopierer</string>
     <string name="k2go_br_backup_done">Sikkerhetskopi lagret</string>
-    <string name="k2go_br_backup_failed">Sikkerhetskopiering mislyktes — prøv igjen</string>
+    <string name="k2go_br_backup_failed">Sikkerhetskopieringen mislyktes. Prøv igjen.</string>
     <string name="k2go_br_done_title">Ferdig</string>
     <string name="k2go_br_failed_title">Noe gikk galt</string>
     <string name="k2go_br_status_checking">Sjekker filen</string>
@@ -138,9 +138,9 @@
     <string name="k2go_bj_wait_title">Dette kan ta en stund</string>
     <string name="k2go_bj_wait_body">Hold K2Go åpen. Du kan forlate den — den fortsetter å kjøre i bakgrunnen, og varselet tar deg tilbake.</string>
     <string name="k2go_bj_returning">Ferdig — går tilbake til Hjem…</string>
-    <string name="k2go_br_leave_backup">Sikkerhetskopieringen kjører — du kan forlate den; den fortsetter og er klar når du kommer tilbake.</string>
+    <string name="k2go_br_leave_backup">Sikkerhetskopieringen pågår. Denne prosessen kjører i bakgrunnen, så du kan forlate denne siden.</string>
     <string name="k2go_clone_back_running">Kopieringen pågår. Denne prosessen kjører i bakgrunnen, så du kan forlate denne siden.</string>
-    <string name="k2go_br_leave_restore">Gjenopprettingen kjører — du kan forlate den; den fortsetter og er klar når du kommer tilbake.</string>
+    <string name="k2go_br_leave_restore">Gjenopprettingen pågår. Denne prosessen kjører i bakgrunnen, så du kan forlate denne siden.</string>
     <string name="k2go_settings_network_dns">Nettverk &amp; DNS</string>
     <string name="k2go_dns_toggle_sub">Bruk en egendefinert DNS. Av = serverstandarder.</string>
     <string name="k2go_dns_required">Påkrevd</string>
@@ -353,15 +353,15 @@
     <string name="k2go_maps_scr_title">Kart</string>
     <string name="k2go_maps_landing_sub">Administrer de frakoblede kartene dine.</string>
     <string name="k2go_maps_choose_title">Velg lag &amp; kvalitet</string>
-    <string name="k2go_maps_choose_sub">Mer detaljer betyr en større nedlasting.</string>
+    <string name="k2go_maps_choose_sub">Å legge til mer detaljer gir en større nedlasting.</string>
     <string name="k2go_maps_basic_title">Enkle kart er inkludert</string>
     <string name="k2go_maps_basic_badge">Inkludert</string>
-    <string name="k2go_maps_basic_desc">Et enkelt, funksjonelt kart over hele verden følger med systemet ditt. Bygg videre på det bare hvis du trenger det.</string>
+    <string name="k2go_maps_basic_desc">Et grunnleggende, funksjonelt verdenskart er inkludert i systemet ditt. Du kan bygge videre på det ved behov.</string>
     <string name="k2go_maps_sec_sharp">SKARP DETALJ FOR ETT OMRÅDE</string>
     <string name="k2go_maps_fqr_title">Regioner i full kvalitet</string>
-    <string name="k2go_maps_fqr_desc">Når den er installert, åpne Kart og legg til et hvilket som helst område i skarp detalj — på nett, i løpet av minutter. Ingen ombygging nødvendig.</string>
-    <string name="k2go_maps_fqr_sub">Innebygd i de enkle kartene — fungerer selv på den letteste.</string>
-    <string name="k2go_maps_fqr_pill_after">Etter oppsett · i Kart</string>
+    <string name="k2go_maps_fqr_desc">Etter at Kart-appen er installert, kan du legge til detaljer om ethvert område på noen minutter. Denne funksjonen krever internett.</string>
+    <string name="k2go_maps_fqr_sub">Muligheten til å legge til mer detaljer per region er innebygd i Kart.</string>
+    <string name="k2go_maps_fqr_pill_after">Legg til i Kart-appen etter oppsett</string>
     <string name="k2go_maps_fqr_pill_light">Lett</string>
     <string name="k2go_maps_fqr_pill_online">På nett</string>
     <string name="k2go_maps_fqr_compact">Regioner i full kvalitet — senere, i Kart.</string>
@@ -374,15 +374,15 @@
     <string name="k2go_maps_rebuild_pill_heavy">Tung</string>
     <string name="k2go_maps_rebuild_pill_offline">Frakoblet bygging</string>
     <string name="k2go_maps_landing_foot">Regioner legges til senere, fra Kart. Ombygging er den eneste karthandlingen under oppsettet.</string>
-    <string name="k2go_maps_landing_ready">Du er klar med enkle kart — legg til mer når som helst.</string>
-    <string name="k2go_maps_grp_base">Grunnkart</string>
-    <string name="k2go_maps_grp_base_hint">gater &amp; steder</string>
-    <string name="k2go_maps_grp_sat">Satellitt</string>
-    <string name="k2go_maps_grp_sat_hint">flyfoto</string>
-    <string name="k2go_maps_grp_terrain">3D-terreng</string>
-    <string name="k2go_maps_grp_terrain_hint">høyde</string>
-    <string name="k2go_maps_grp_search">Søk</string>
-    <string name="k2go_maps_grp_search_hint">finn steder</string>
+    <string name="k2go_maps_landing_ready">Grunnkartene er installert. Du kan legge til flere når som helst.</string>
+    <string name="k2go_maps_grp_base">Grunnkart:</string>
+    <string name="k2go_maps_grp_base_hint">Gater og steder</string>
+    <string name="k2go_maps_grp_sat">Satellittkart:</string>
+    <string name="k2go_maps_grp_sat_hint">Flyfoto</string>
+    <string name="k2go_maps_grp_terrain">3D-terreng:</string>
+    <string name="k2go_maps_grp_terrain_hint">Høydedata</string>
+    <string name="k2go_maps_grp_search">Søk:</string>
+    <string name="k2go_maps_grp_search_hint">Legg til muligheten til å søke i kartet</string>
     <string name="k2go_maps_lvl_off">Av</string>
     <string name="k2go_maps_lvl_low">Lav</string>
     <string name="k2go_maps_lvl_standard">Standard</string>
@@ -398,14 +398,14 @@
     <string name="k2go_maps_confirm_sub">Her er det som skal legges til.</string>
     <string name="k2go_maps_total">Totalt</string>
     <string name="k2go_maps_takes_time_title">Dette tar tid</string>
-    <string name="k2go_maps_takes_time_body">En stor nedlasting og bygging — minutter til noen timer. Den fortsetter å arbeide i bakgrunnen og gjenopptas hvis den avbrytes.</string>
+    <string name="k2go_maps_takes_time_body">Denne store nedlastingen og byggingen kan ta timer. Den fortsetter i bakgrunnen og gjenopptas hvis den avbrytes.</string>
     <string name="k2go_maps_use_wifi">Bruk Wi-Fi</string>
     <string name="k2go_maps_keep_charged">Hold ladet</string>
     <string name="k2go_maps_start_building">Start bygging · %1$s</string>
     <string name="k2go_maps_add_setup_fmt">Legg til i oppsettet ditt · %1$s</string>
-    <string name="k2go_maps_keep_using">Du kan fortsette å bruke appen i mellomtiden.</string>
+    <string name="k2go_maps_keep_using">Du kan fortsette å bruke appen mens kartene bygges.</string>
     <string name="k2go_maps_preparing_title">Forbereder kartene dine…</string>
-    <string name="k2go_maps_preparing_sub">Dette kan ta en stund — hold denne skjermen åpen.</string>
+    <string name="k2go_maps_preparing_sub">Dette kan ta en stund. Hold denne skjermen åpen.</string>
     <string name="k2go_maps_leave_title">Hold denne skjermen åpen</string>
     <string name="k2go_maps_leave_body">Dette installeres direkte på systemet, så det kan ikke kjøre i bakgrunnen. Hold denne skjermen åpen til det er ferdig.</string>
     <string name="k2go_maps_run_bg">Kjør i bakgrunnen</string>
@@ -414,7 +414,7 @@
     <string name="k2go_maps_phase_prepared">Klargjorde listen</string>
     <string name="k2go_maps_phase_building">Bygger kartflisene</string>
     <string name="k2go_maps_phase_ready">Klar</string>
-    <string name="k2go_maps_phase_failed">Kunne ikke bygge kart — sjekk plass og tilkobling, og prøv igjen.</string>
+    <string name="k2go_maps_phase_failed">Kunne ikke bygge kart. Sjekk tilgjengelig plass og tilkobling, og prøv igjen.</string>
 
     <string name="k2go_zim_title">Wikipedia &amp; ZIM-innhold</string>
     <string name="k2go_zim_lang_fmt">Språk: %1$s</string>
@@ -639,8 +639,8 @@
     <string name="k2go_dash_rebuild_failed">Ombygging mislyktes</string>
     <string name="k2go_dash_services_failed">Bygd på nytt, men tjenestene startet ikke i tide</string>
     <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
-    <string name="k2go_br_row_sub">Lagre systemet til en fil, gjenopprett det, eller installer på nytt fra bunnen</string>
-    <string name="k2go_br_desc">Lagre hele systemet til en fil du kan beholde eller flytte, gjenopprett det fra en fil, eller installer på nytt fra bunnen. Serveren stopper mens dette kjører.</string>
+    <string name="k2go_br_row_sub">Du kan lagre systemet ditt til en fil, gjenopprette det fra en sikkerhetskopi, eller installere K2Go på nytt fra bunnen av</string>
+    <string name="k2go_br_desc">Du kan lagre systemet ditt til en fil, gjenopprette det fra en sikkerhetskopi, eller installere K2Go på nytt fra bunnen av. K2Go slutter å dele innhold med andre mens du gjør noen av disse oppgavene.</string>
     <string name="k2go_damaged_body">Oppsettet ble stoppet før det ble ferdig, og systemet starter ikke. For å gjenopprette kan du gjenopprette en sikkerhetskopi eller installere systemet på nytt fra bunnen.</string>
     <string name="k2go_damaged_recover">Gjenopprett…</string>
     <string name="k2go_reinstall_title">Installer systemet på nytt</string>

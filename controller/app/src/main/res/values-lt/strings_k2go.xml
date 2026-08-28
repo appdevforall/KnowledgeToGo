@@ -118,7 +118,7 @@
     <string name="k2go_br_status_stopping">Stabdomos paslaugos</string>
     <string name="k2go_br_status_backing">Kuriama atsarginė kopija</string>
     <string name="k2go_br_backup_done">Atsarginė kopija įrašyta</string>
-    <string name="k2go_br_backup_failed">Nepavyko sukurti atsarginės kopijos — bandykite dar kartą</string>
+    <string name="k2go_br_backup_failed">Atsarginė kopija nepavyko. Bandykite dar kartą.</string>
     <string name="k2go_br_done_title">Atlikta</string>
     <string name="k2go_br_failed_title">Kažkas nepavyko</string>
     <string name="k2go_br_status_checking">Tikrinamas failas</string>
@@ -138,9 +138,9 @@
     <string name="k2go_bj_wait_title">Tai gali užtrukti</string>
     <string name="k2go_bj_wait_body">Palikite K2Go atidarytą. Galite išeiti — ji toliau veikia fone, o pranešimas jus sugrąžins.</string>
     <string name="k2go_bj_returning">Atlikta — grįžtama į pradžią…</string>
-    <string name="k2go_br_leave_backup">Vykdoma atsarginė kopija — galite išeiti; ji tęsis ir bus paruošta jums grįžus.</string>
+    <string name="k2go_br_leave_backup">Atsarginė kopija kuriama. Šis procesas veikia fone, todėl gali palikti šį puslapį.</string>
     <string name="k2go_clone_back_running">Kopijavimas vyksta. Šis procesas veikia fone, todėl galite palikti šį puslapį.</string>
-    <string name="k2go_br_leave_restore">Vykdomas atkūrimas — galite išeiti; jis tęsis ir bus paruoštas jums grįžus.</string>
+    <string name="k2go_br_leave_restore">Atkūrimas vyksta. Šis procesas veikia fone, todėl gali palikti šį puslapį.</string>
     <string name="k2go_settings_network_dns">Tinklas ir DNS</string>
     <string name="k2go_dns_toggle_sub">Naudoti pasirinktinį DNS. Išjungta = serverio numatytieji.</string>
     <string name="k2go_dns_required">Privaloma</string>
@@ -353,15 +353,15 @@
     <string name="k2go_maps_scr_title">Žemėlapiai</string>
     <string name="k2go_maps_landing_sub">Tvarkykite neprisijungus veikiančius žemėlapius.</string>
     <string name="k2go_maps_choose_title">Pasirinkite sluoksnius ir kokybę</string>
-    <string name="k2go_maps_choose_sub">Daugiau detalių — didesnis atsisiuntimas.</string>
+    <string name="k2go_maps_choose_sub">Daugiau detalių reiškia didesnį atsisiuntimą.</string>
     <string name="k2go_maps_basic_title">Baziniai žemėlapiai įtraukti</string>
     <string name="k2go_maps_basic_badge">Įtraukta</string>
-    <string name="k2go_maps_basic_desc">Su jūsų sistema pateikiamas bazinis, funkcionalus viso pasaulio žemėlapis. Papildykite jį tik jei reikia.</string>
+    <string name="k2go_maps_basic_desc">Bazinis, veikiantis pasaulio žemėlapis įtrauktas į tavo sistemą. Prireikus gali jį praplėsti.</string>
     <string name="k2go_maps_sec_sharp">AIŠKIOS DETALĖS VIENAI SRIČIAI</string>
     <string name="k2go_maps_fqr_title">Visos kokybės regionai</string>
-    <string name="k2go_maps_fqr_desc">Įdiegę atidarykite Žemėlapius ir per kelias minutes prisijungę pridėkite bet kurią sritį aiškiomis detalėmis. Perkurti nereikia.</string>
-    <string name="k2go_maps_fqr_sub">Įtraukta į bazinius žemėlapius — veikia net su lengviausiu.</string>
-    <string name="k2go_maps_fqr_pill_after">Po sąrankos · Žemėlapiuose</string>
+    <string name="k2go_maps_fqr_desc">Įdiegus „Žemėlapių“ programą, per kelias minutes gali pridėti bet kurios srities detalių. Šiai funkcijai reikia interneto.</string>
+    <string name="k2go_maps_fqr_sub">Galimybė pridėti daugiau detalių pagal regionus yra integruota į „Žemėlapius“.</string>
+    <string name="k2go_maps_fqr_pill_after">Pridėk „Žemėlapių“ programoje po sąrankos</string>
     <string name="k2go_maps_fqr_pill_light">Lengvas</string>
     <string name="k2go_maps_fqr_pill_online">Prisijungus</string>
     <string name="k2go_maps_fqr_compact">Visos kokybės regionai — vėliau, Žemėlapiuose.</string>
@@ -374,15 +374,15 @@
     <string name="k2go_maps_rebuild_pill_heavy">Sunkus</string>
     <string name="k2go_maps_rebuild_pill_offline">Kūrimas neprisijungus</string>
     <string name="k2go_maps_landing_foot">Regionai pridedami vėliau, iš Žemėlapių. Perkūrimas yra vienintelis žemėlapių veiksmas per sąranką.</string>
-    <string name="k2go_maps_landing_ready">Turite bazinius žemėlapius — daugiau pridėkite bet kada.</string>
-    <string name="k2go_maps_grp_base">Bazinis žemėlapis</string>
-    <string name="k2go_maps_grp_base_hint">gatvės ir vietos</string>
-    <string name="k2go_maps_grp_sat">Palydovinis</string>
-    <string name="k2go_maps_grp_sat_hint">vaizdai iš oro</string>
-    <string name="k2go_maps_grp_terrain">3D reljefas</string>
-    <string name="k2go_maps_grp_terrain_hint">aukštis</string>
-    <string name="k2go_maps_grp_search">Paieška</string>
-    <string name="k2go_maps_grp_search_hint">rasti vietas</string>
+    <string name="k2go_maps_landing_ready">Baziniai žemėlapiai įdiegti. Daugiau gali pridėti bet kada.</string>
+    <string name="k2go_maps_grp_base">Bazinis žemėlapis:</string>
+    <string name="k2go_maps_grp_base_hint">Gatvės ir vietos</string>
+    <string name="k2go_maps_grp_sat">Palydoviniai žemėlapiai:</string>
+    <string name="k2go_maps_grp_sat_hint">Aeronuotraukos</string>
+    <string name="k2go_maps_grp_terrain">3D reljefas:</string>
+    <string name="k2go_maps_grp_terrain_hint">Aukščio duomenys</string>
+    <string name="k2go_maps_grp_search">Paieška:</string>
+    <string name="k2go_maps_grp_search_hint">Pridėk galimybę ieškoti žemėlapyje</string>
     <string name="k2go_maps_lvl_off">Išjungta</string>
     <string name="k2go_maps_lvl_low">Žemas</string>
     <string name="k2go_maps_lvl_standard">Standartinis</string>
@@ -398,14 +398,14 @@
     <string name="k2go_maps_confirm_sub">Štai kas bus pridėta.</string>
     <string name="k2go_maps_total">Iš viso</string>
     <string name="k2go_maps_takes_time_title">Tai užtrunka</string>
-    <string name="k2go_maps_takes_time_body">Didelis atsisiuntimas ir kūrimas — nuo minučių iki kelių valandų. Tai veikia fone ir atsinaujina, jei nutraukiama.</string>
+    <string name="k2go_maps_takes_time_body">Šis didelis atsisiuntimas ir kūrimas gali užtrukti valandas. Jis toliau veikia fone ir atsinaujina, jei nutraukiamas.</string>
     <string name="k2go_maps_use_wifi">Naudokite Wi-Fi</string>
     <string name="k2go_maps_keep_charged">Laikykite įkrautą</string>
     <string name="k2go_maps_start_building">Pradėti kurti · %1$s</string>
     <string name="k2go_maps_add_setup_fmt">Pridėti prie sąrankos · %1$s</string>
-    <string name="k2go_maps_keep_using">Tuo metu galite toliau naudotis programa.</string>
+    <string name="k2go_maps_keep_using">Programa gali toliau naudotis, kol žemėlapiai kuriami.</string>
     <string name="k2go_maps_preparing_title">Ruošiami žemėlapiai…</string>
-    <string name="k2go_maps_preparing_sub">Tai gali užtrukti — nepalikite šio ekrano.</string>
+    <string name="k2go_maps_preparing_sub">Tai gali užtrukti. Nepalikite šio ekrano uždaryto.</string>
     <string name="k2go_maps_leave_title">Nepalikite šio ekrano</string>
     <string name="k2go_maps_leave_body">Tai diegiama tiesiai į sistemą, todėl fone veikti negali. Nepalikite šio ekrano, kol nesibaigs.</string>
     <string name="k2go_maps_run_bg">Vykdyti fone</string>
@@ -414,7 +414,7 @@
     <string name="k2go_maps_phase_prepared">Sąrašas paruoštas</string>
     <string name="k2go_maps_phase_building">Kuriamos žemėlapio plytelės</string>
     <string name="k2go_maps_phase_ready">Paruošta</string>
-    <string name="k2go_maps_phase_failed">Nepavyko sukurti žemėlapių — patikrinkite vietą ir ryšį, tada bandykite dar kartą.</string>
+    <string name="k2go_maps_phase_failed">Nepavyko sukurti žemėlapių. Patikrink laisvą vietą ir ryšį, tada bandyk dar kartą.</string>
 
     <string name="k2go_zim_title">Wikipedia ir ZIM turinys</string>
     <string name="k2go_zim_lang_fmt">Kalba: %1$s</string>
@@ -639,8 +639,8 @@
     <string name="k2go_dash_rebuild_failed">Atkurti nepavyko</string>
     <string name="k2go_dash_services_failed">Atkurta, bet paslaugos nepasileido laiku</string>
     <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
-    <string name="k2go_br_row_sub">Įrašykite sistemą į failą, atkurkite ją arba įdiekite iš naujo nuo nulio</string>
-    <string name="k2go_br_desc">Įrašykite visą sistemą į failą, kurį galite laikyti ar perkelti, atkurkite ją iš failo arba įdiekite iš naujo nuo nulio. Operacijos metu serveris sustabdomas.</string>
+    <string name="k2go_br_row_sub">Sistemą gali įrašyti į failą, atkurti iš atsarginės kopijos arba iš naujo įdiegti K2Go nuo nulio</string>
+    <string name="k2go_br_desc">Sistemą gali įrašyti į failą, atkurti iš atsarginės kopijos arba iš naujo įdiegti K2Go nuo nulio. Atliekant bet kurią iš šių užduočių, K2Go nustoja bendrinti turinį su kitais.</string>
     <string name="k2go_damaged_body">Diegimas buvo nutrauktas prieš pabaigą ir sistema nepasileidžia. Norėdami atkurti, galite atkurti atsarginę kopiją arba iš naujo įdiegti sistemą nuo nulio.</string>
     <string name="k2go_damaged_recover">Atkurti…</string>
     <string name="k2go_reinstall_title">Įdiegti sistemą iš naujo</string>

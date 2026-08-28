@@ -118,7 +118,7 @@
     <string name="k2go_br_status_stopping">Arrêt des services</string>
     <string name="k2go_br_status_backing">Sauvegarde en cours</string>
     <string name="k2go_br_backup_done">Sauvegarde enregistrée</string>
-    <string name="k2go_br_backup_failed">Échec de la sauvegarde — réessayez</string>
+    <string name="k2go_br_backup_failed">La sauvegarde a échoué. Veuillez réessayer.</string>
     <string name="k2go_br_done_title">Terminé</string>
     <string name="k2go_br_failed_title">Une erreur s\'est produite</string>
     <string name="k2go_br_status_checking">Vérification du fichier</string>
@@ -138,9 +138,9 @@
     <string name="k2go_bj_wait_title">Cela peut prendre un certain temps</string>
     <string name="k2go_bj_wait_body">Gardez K2Go ouvert. Vous pouvez quitter — il continue de fonctionner en arrière-plan, et la notification vous ramène.</string>
     <string name="k2go_bj_returning">Terminé — retour à l\'Accueil…</string>
-    <string name="k2go_br_leave_backup">La sauvegarde est en cours — vous pouvez quitter ; elle continue et sera prête à votre retour.</string>
+    <string name="k2go_br_leave_backup">La sauvegarde est en cours. Ce processus s\'exécute en arrière-plan, vous pouvez donc quitter cette page.</string>
     <string name="k2go_clone_back_running">La copie est en cours. Ce processus s\'exécute en arrière-plan, vous pouvez donc quitter cette page.</string>
-    <string name="k2go_br_leave_restore">La restauration est en cours — vous pouvez quitter ; elle continue et sera prête à votre retour.</string>
+    <string name="k2go_br_leave_restore">La restauration est en cours. Ce processus s\'exécute en arrière-plan, vous pouvez donc quitter cette page.</string>
     <string name="k2go_settings_network_dns">Réseau &amp; DNS</string>
     <string name="k2go_dns_toggle_sub">Utiliser un DNS personnalisé. Désactivé = valeurs par défaut du serveur.</string>
     <string name="k2go_dns_required">Requis</string>
@@ -353,15 +353,15 @@
     <string name="k2go_maps_scr_title">Cartes</string>
     <string name="k2go_maps_landing_sub">Gérez vos cartes hors ligne.</string>
     <string name="k2go_maps_choose_title">Choisir les couches &amp; la qualité</string>
-    <string name="k2go_maps_choose_sub">Plus de détails signifie un téléchargement plus volumineux.</string>
+    <string name="k2go_maps_choose_sub">Ajouter plus de détails augmente la taille du téléchargement.</string>
     <string name="k2go_maps_basic_title">Les cartes de base sont incluses</string>
     <string name="k2go_maps_basic_badge">Inclus</string>
-    <string name="k2go_maps_basic_desc">Une carte de base et fonctionnelle du monde entier est fournie avec votre système. Développez-la uniquement si nécessaire.</string>
+    <string name="k2go_maps_basic_desc">Une carte du monde basique et fonctionnelle est incluse avec votre système. Vous pouvez l\'enrichir si besoin.</string>
     <string name="k2go_maps_sec_sharp">DÉTAIL PRÉCIS POUR UNE ZONE</string>
     <string name="k2go_maps_fqr_title">Régions en pleine qualité</string>
-    <string name="k2go_maps_fqr_desc">Une fois installé, ouvrez Cartes et ajoutez n\'importe quelle zone en détail précis — en ligne, en quelques minutes. Aucune reconstruction nécessaire.</string>
-    <string name="k2go_maps_fqr_sub">Intégré aux cartes de base — fonctionne même sur la plus légère.</string>
-    <string name="k2go_maps_fqr_pill_after">Après la configuration · dans Cartes</string>
+    <string name="k2go_maps_fqr_desc">Une fois l\'application Cartes installée, vous pouvez ajouter du détail sur n\'importe quelle zone en quelques minutes. Un accès à Internet est nécessaire pour cette fonction.</string>
+    <string name="k2go_maps_fqr_sub">La possibilité d\'ajouter plus de détails par région est intégrée à Cartes.</string>
+    <string name="k2go_maps_fqr_pill_after">Ajouter dans l\'application Cartes après la configuration</string>
     <string name="k2go_maps_fqr_pill_light">Léger</string>
     <string name="k2go_maps_fqr_pill_online">En ligne</string>
     <string name="k2go_maps_fqr_compact">Régions en pleine qualité — plus tard, dans Cartes.</string>
@@ -374,15 +374,15 @@
     <string name="k2go_maps_rebuild_pill_heavy">Lourd</string>
     <string name="k2go_maps_rebuild_pill_offline">Création hors ligne</string>
     <string name="k2go_maps_landing_foot">Les régions sont ajoutées plus tard, depuis Cartes. La reconstruction est la seule action cartographique pendant la configuration.</string>
-    <string name="k2go_maps_landing_ready">Vous êtes prêt avec les cartes de base — ajoutez-en plus à tout moment.</string>
-    <string name="k2go_maps_grp_base">Carte de base</string>
-    <string name="k2go_maps_grp_base_hint">rues &amp; lieux</string>
-    <string name="k2go_maps_grp_sat">Satellite</string>
-    <string name="k2go_maps_grp_sat_hint">photos aériennes</string>
-    <string name="k2go_maps_grp_terrain">Terrain 3D</string>
-    <string name="k2go_maps_grp_terrain_hint">altitude</string>
-    <string name="k2go_maps_grp_search">Recherche</string>
-    <string name="k2go_maps_grp_search_hint">trouver des lieux</string>
+    <string name="k2go_maps_landing_ready">Les cartes de base sont installées. Vous pouvez en ajouter à tout moment.</string>
+    <string name="k2go_maps_grp_base">Carte de base :</string>
+    <string name="k2go_maps_grp_base_hint">Rues et lieux</string>
+    <string name="k2go_maps_grp_sat">Cartes satellite :</string>
+    <string name="k2go_maps_grp_sat_hint">Photos aériennes</string>
+    <string name="k2go_maps_grp_terrain">Relief 3D :</string>
+    <string name="k2go_maps_grp_terrain_hint">Données d\'altitude</string>
+    <string name="k2go_maps_grp_search">Recherche :</string>
+    <string name="k2go_maps_grp_search_hint">Ajouter la possibilité de rechercher sur la carte</string>
     <string name="k2go_maps_lvl_off">Désactivé</string>
     <string name="k2go_maps_lvl_low">Faible</string>
     <string name="k2go_maps_lvl_standard">Standard</string>
@@ -391,21 +391,21 @@
     <string name="k2go_maps_lvl_cities">Villes</string>
     <string name="k2go_maps_free">Espace libre %1$s</string>
     <string name="k2go_maps_fits">Convient : %1$s sur %2$s libres</string>
-    <string name="k2go_maps_nospace">Espace insuffisant — nécessite %1$s, %2$s libres</string>
+    <string name="k2go_maps_nospace">Espace insuffisant — nécessite %1$s, %2$s libre</string>
     <string name="k2go_maps_download">Télécharger · %1$s</string>
 
     <string name="k2go_maps_confirm_title">Prêt à créer vos cartes ?</string>
     <string name="k2go_maps_confirm_sub">Voici ce qui sera ajouté.</string>
     <string name="k2go_maps_total">Total</string>
     <string name="k2go_maps_takes_time_title">Cela prend du temps</string>
-    <string name="k2go_maps_takes_time_body">Un téléchargement et une création volumineux — de quelques minutes à quelques heures. Cela continue en arrière-plan et reprend en cas d\'interruption.</string>
+    <string name="k2go_maps_takes_time_body">Ce téléchargement et cette construction volumineux peuvent nécessiter des heures. Cela continue en arrière-plan et reprend en cas d\'interruption.</string>
     <string name="k2go_maps_use_wifi">Utiliser le Wi-Fi</string>
     <string name="k2go_maps_keep_charged">Restez branché</string>
     <string name="k2go_maps_start_building">Démarrer la création · %1$s</string>
     <string name="k2go_maps_add_setup_fmt">Ajouter à votre configuration · %1$s</string>
-    <string name="k2go_maps_keep_using">Vous pouvez continuer à utiliser l\'appli entre-temps.</string>
+    <string name="k2go_maps_keep_using">Vous pouvez continuer à utiliser l\'application pendant la construction des cartes.</string>
     <string name="k2go_maps_preparing_title">Préparation de vos cartes…</string>
-    <string name="k2go_maps_preparing_sub">Cela peut prendre un certain temps — veuillez garder cet écran ouvert.</string>
+    <string name="k2go_maps_preparing_sub">Cela peut prendre du temps. Gardez cet écran ouvert.</string>
     <string name="k2go_maps_leave_title">Gardez cet écran ouvert</string>
     <string name="k2go_maps_leave_body">Ceci s\'installe directement sur le système, il ne peut donc pas fonctionner en arrière-plan. Veuillez garder cet écran ouvert jusqu\'à la fin.</string>
     <string name="k2go_maps_run_bg">Exécuter en arrière-plan</string>
@@ -414,7 +414,7 @@
     <string name="k2go_maps_phase_prepared">Liste préparée</string>
     <string name="k2go_maps_phase_building">Création des tuiles cartographiques</string>
     <string name="k2go_maps_phase_ready">Prêt</string>
-    <string name="k2go_maps_phase_failed">Impossible de créer les cartes — vérifiez l\'espace et la connexion, puis réessayez.</string>
+    <string name="k2go_maps_phase_failed">Impossible de construire les cartes. Vérifiez l\'espace disponible et la connexion, puis réessayez.</string>
 
     <string name="k2go_zim_title">Wikipedia &amp; contenu ZIM</string>
     <string name="k2go_zim_lang_fmt">Langue : %1$s</string>
@@ -639,8 +639,8 @@
     <string name="k2go_dash_rebuild_failed">Échec de la reconstruction</string>
     <string name="k2go_dash_services_failed">Reconstruit, mais les services n\'ont pas démarré à temps</string>
     <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
-    <string name="k2go_br_row_sub">Enregistrez votre système dans un fichier, restaurez-le, ou réinstallez à neuf</string>
-    <string name="k2go_br_desc">Enregistrez tout votre système dans un fichier que vous pouvez conserver ou déplacer, restaurez-le depuis un fichier, ou réinstallez à neuf. Le serveur s\'arrête pendant l\'opération.</string>
+    <string name="k2go_br_row_sub">Vous pouvez enregistrer votre système dans un fichier, le restaurer à partir d\'une sauvegarde ou réinstaller K2Go de zéro</string>
+    <string name="k2go_br_desc">Vous pouvez enregistrer votre système dans un fichier, le restaurer à partir d\'une sauvegarde ou réinstaller K2Go de zéro. K2Go cesse de partager du contenu avec les autres pendant que vous effectuez l\'une de ces tâches.</string>
     <string name="k2go_damaged_body">L\'installation s\'est arrêtée avant la fin et le système ne peut pas démarrer. Vous pouvez restaurer une sauvegarde ou réinstaller le système à neuf pour récupérer.</string>
     <string name="k2go_damaged_recover">Récupérer…</string>
     <string name="k2go_reinstall_title">Réinstaller le système</string>

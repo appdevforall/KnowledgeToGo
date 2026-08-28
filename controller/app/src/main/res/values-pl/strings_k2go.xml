@@ -118,7 +118,7 @@
     <string name="k2go_br_status_stopping">Zatrzymywanie usług</string>
     <string name="k2go_br_status_backing">Tworzenie kopii</string>
     <string name="k2go_br_backup_done">Kopia zapisana</string>
-    <string name="k2go_br_backup_failed">Tworzenie kopii nie powiodło się — spróbuj ponownie</string>
+    <string name="k2go_br_backup_failed">Kopia zapasowa nie powiodła się. Spróbuj ponownie.</string>
     <string name="k2go_br_done_title">Gotowe</string>
     <string name="k2go_br_failed_title">Coś poszło nie tak</string>
     <string name="k2go_br_status_checking">Sprawdzanie pliku</string>
@@ -138,9 +138,9 @@
     <string name="k2go_bj_wait_title">To może chwilę potrwać</string>
     <string name="k2go_bj_wait_body">Zostaw K2Go otwarte. Możesz wyjść — działa w tle, a powiadomienie Cię tu przywróci.</string>
     <string name="k2go_bj_returning">Gotowe — powrót do ekranu głównego…</string>
-    <string name="k2go_br_leave_backup">Tworzenie kopii trwa — możesz wyjść; będzie kontynuowane i gotowe, gdy wrócisz.</string>
+    <string name="k2go_br_leave_backup">Tworzenie kopii zapasowej w toku. Ten proces działa w tle, więc możesz opuścić tę stronę.</string>
     <string name="k2go_clone_back_running">Kopiowanie w toku. Ten proces działa w tle, więc możesz opuścić tę stronę.</string>
-    <string name="k2go_br_leave_restore">Przywracanie trwa — możesz wyjść; będzie kontynuowane i gotowe, gdy wrócisz.</string>
+    <string name="k2go_br_leave_restore">Przywracanie w toku. Ten proces działa w tle, więc możesz opuścić tę stronę.</string>
     <string name="k2go_settings_network_dns">Sieć &amp; DNS</string>
     <string name="k2go_dns_toggle_sub">Użyj niestandardowego DNS. Wył. = domyślne serwera.</string>
     <string name="k2go_dns_required">Wymagane</string>
@@ -353,15 +353,15 @@
     <string name="k2go_maps_scr_title">Mapy</string>
     <string name="k2go_maps_landing_sub">Zarządzaj mapami offline.</string>
     <string name="k2go_maps_choose_title">Wybierz warstwy &amp; jakość</string>
-    <string name="k2go_maps_choose_sub">Więcej szczegółów oznacza większe pobieranie.</string>
+    <string name="k2go_maps_choose_sub">Dodanie większej szczegółowości powoduje większe pobieranie.</string>
     <string name="k2go_maps_basic_title">Mapy podstawowe są w zestawie</string>
     <string name="k2go_maps_basic_badge">W zestawie</string>
-    <string name="k2go_maps_basic_desc">Podstawowa, funkcjonalna mapa całego świata jest dostarczana z systemem. Rozbuduj ją tylko w razie potrzeby.</string>
+    <string name="k2go_maps_basic_desc">Podstawowa, funkcjonalna mapa świata jest dołączona do systemu. W razie potrzeby możesz ją rozbudować.</string>
     <string name="k2go_maps_sec_sharp">OSTRE SZCZEGÓŁY DLA JEDNEGO OBSZARU</string>
     <string name="k2go_maps_fqr_title">Regiony w pełnej jakości</string>
-    <string name="k2go_maps_fqr_desc">Po zainstalowaniu otwórz Mapy i dodaj dowolny obszar w ostrych szczegółach — online, w kilka minut. Bez przebudowy.</string>
-    <string name="k2go_maps_fqr_sub">Wbudowane w mapy podstawowe — działa nawet na najlżejszej.</string>
-    <string name="k2go_maps_fqr_pill_after">Po konfiguracji · w Mapach</string>
+    <string name="k2go_maps_fqr_desc">Po zainstalowaniu aplikacji Mapy możesz w kilka minut dodać szczegóły dowolnego obszaru. Ta funkcja wymaga dostępu do internetu.</string>
+    <string name="k2go_maps_fqr_sub">Możliwość dodawania większej szczegółowości dla regionów jest wbudowana w Mapy.</string>
+    <string name="k2go_maps_fqr_pill_after">Dodaj w aplikacji Mapy po konfiguracji</string>
     <string name="k2go_maps_fqr_pill_light">Lekkie</string>
     <string name="k2go_maps_fqr_pill_online">Online</string>
     <string name="k2go_maps_fqr_compact">Regiony w pełnej jakości — później, w Mapach.</string>
@@ -374,15 +374,15 @@
     <string name="k2go_maps_rebuild_pill_heavy">Ciężkie</string>
     <string name="k2go_maps_rebuild_pill_offline">Kompilacja offline</string>
     <string name="k2go_maps_landing_foot">Regiony dodajesz później, z Map. Przebudowa to jedyna operacja na mapach podczas konfiguracji.</string>
-    <string name="k2go_maps_landing_ready">Masz mapy podstawowe — dodaj więcej w dowolnej chwili.</string>
-    <string name="k2go_maps_grp_base">Mapa podstawowa</string>
-    <string name="k2go_maps_grp_base_hint">ulice &amp; miejsca</string>
-    <string name="k2go_maps_grp_sat">Satelitarne</string>
-    <string name="k2go_maps_grp_sat_hint">zdjęcia lotnicze</string>
-    <string name="k2go_maps_grp_terrain">Teren 3D</string>
-    <string name="k2go_maps_grp_terrain_hint">wysokość</string>
-    <string name="k2go_maps_grp_search">Wyszukiwanie</string>
-    <string name="k2go_maps_grp_search_hint">znajdź miejsca</string>
+    <string name="k2go_maps_landing_ready">Podstawowe mapy są zainstalowane. Możesz dodać więcej w dowolnym momencie.</string>
+    <string name="k2go_maps_grp_base">Mapa podstawowa:</string>
+    <string name="k2go_maps_grp_base_hint">Ulice i miejsca</string>
+    <string name="k2go_maps_grp_sat">Mapy satelitarne:</string>
+    <string name="k2go_maps_grp_sat_hint">Zdjęcia lotnicze</string>
+    <string name="k2go_maps_grp_terrain">Teren 3D:</string>
+    <string name="k2go_maps_grp_terrain_hint">Dane o wysokości</string>
+    <string name="k2go_maps_grp_search">Szukaj:</string>
+    <string name="k2go_maps_grp_search_hint">Dodaj możliwość wyszukiwania na mapie</string>
     <string name="k2go_maps_lvl_off">Wył.</string>
     <string name="k2go_maps_lvl_low">Niska</string>
     <string name="k2go_maps_lvl_standard">Standardowa</string>
@@ -391,21 +391,21 @@
     <string name="k2go_maps_lvl_cities">Miasta</string>
     <string name="k2go_maps_free">Wolne miejsce %1$s</string>
     <string name="k2go_maps_fits">Zmieści się: %1$s z %2$s wolnych</string>
-    <string name="k2go_maps_nospace">Za mało miejsca — potrzeba %1$s, wolne %2$s</string>
+    <string name="k2go_maps_nospace">Za mało miejsca — wymaga %1$s, wolne %2$s</string>
     <string name="k2go_maps_download">Pobierz · %1$s</string>
 
     <string name="k2go_maps_confirm_title">Gotowe do zbudowania map?</string>
     <string name="k2go_maps_confirm_sub">Oto co zostanie dodane.</string>
     <string name="k2go_maps_total">Razem</string>
     <string name="k2go_maps_takes_time_title">To zajmuje czas</string>
-    <string name="k2go_maps_takes_time_body">Duże pobieranie i kompilacja — od minut do kilku godzin. Działa w tle i wznawia się po przerwaniu.</string>
+    <string name="k2go_maps_takes_time_body">To duże pobieranie i budowanie może zająć godziny. Działa dalej w tle i wznawia się po przerwaniu.</string>
     <string name="k2go_maps_use_wifi">Użyj Wi-Fi</string>
     <string name="k2go_maps_keep_charged">Utrzymuj naładowanie</string>
     <string name="k2go_maps_start_building">Rozpocznij budowanie · %1$s</string>
     <string name="k2go_maps_add_setup_fmt">Dodaj do konfiguracji · %1$s</string>
-    <string name="k2go_maps_keep_using">W międzyczasie możesz nadal korzystać z aplikacji.</string>
+    <string name="k2go_maps_keep_using">Możesz nadal korzystać z aplikacji, gdy mapy są budowane.</string>
     <string name="k2go_maps_preparing_title">Przygotowywanie map…</string>
-    <string name="k2go_maps_preparing_sub">To może chwilę potrwać — nie zamykaj tego ekranu.</string>
+    <string name="k2go_maps_preparing_sub">To może chwilę potrwać. Nie zamykaj tego ekranu.</string>
     <string name="k2go_maps_leave_title">Nie zamykaj tego ekranu</string>
     <string name="k2go_maps_leave_body">To instaluje się bezpośrednio w systemie, więc nie może działać w tle. Nie zamykaj tego ekranu do zakończenia.</string>
     <string name="k2go_maps_run_bg">Uruchom w tle</string>
@@ -414,7 +414,7 @@
     <string name="k2go_maps_phase_prepared">Przygotowano listę</string>
     <string name="k2go_maps_phase_building">Budowanie kafelków map</string>
     <string name="k2go_maps_phase_ready">Gotowe</string>
-    <string name="k2go_maps_phase_failed">Nie udało się zbudować map — sprawdź miejsce i połączenie, a potem spróbuj ponownie.</string>
+    <string name="k2go_maps_phase_failed">Nie udało się zbudować map. Sprawdź dostępne miejsce i połączenie, a potem spróbuj ponownie.</string>
 
     <string name="k2go_zim_title">Wikipedia &amp; treść ZIM</string>
     <string name="k2go_zim_lang_fmt">Język: %1$s</string>
@@ -639,8 +639,8 @@
     <string name="k2go_dash_rebuild_failed">Przebudowa nie powiodła się</string>
     <string name="k2go_dash_services_failed">Przebudowano, ale usługi nie uruchomiły się na czas</string>
     <!-- ADFA-5023: reinstall-from-scratch + damaged-system recovery -->
-    <string name="k2go_br_row_sub">Zapisz system do pliku, przywróć go lub zainstaluj od nowa</string>
-    <string name="k2go_br_desc">Zapisz cały system do pliku, który możesz zachować lub przenieść, przywróć go z pliku albo zainstaluj od nowa. Serwer zatrzymuje się na czas tej operacji.</string>
+    <string name="k2go_br_row_sub">Możesz zapisać system do pliku, przywrócić go z kopii zapasowej lub zainstalować K2Go od nowa</string>
+    <string name="k2go_br_desc">Możesz zapisać system do pliku, przywrócić go z kopii zapasowej lub zainstalować K2Go od nowa. K2Go przestaje udostępniać treści innym, gdy wykonujesz którekolwiek z tych zadań.</string>
     <string name="k2go_damaged_body">Instalacja została przerwana przed zakończeniem i system nie uruchamia się. Aby odzyskać, możesz przywrócić kopię zapasową lub zainstalować system od nowa.</string>
     <string name="k2go_damaged_recover">Odzyskaj…</string>
     <string name="k2go_reinstall_title">Zainstaluj system od nowa</string>
