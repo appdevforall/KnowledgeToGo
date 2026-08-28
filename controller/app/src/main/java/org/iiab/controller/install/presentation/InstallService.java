@@ -64,6 +64,8 @@ public final class InstallService extends Service {
     private static final String TAG = "IIAB-InstallService";
     private static final String CHANNEL_ID = "install_channel";
     private static final int NOTIFICATION_ID = 3;
+    /** ADFA-4898: id for the dismissible "Couldn't install" notification (one place, so post and cancel can't drift). */
+    private static final int NOTIFICATION_ID_MODULE_FAIL = NOTIFICATION_ID + 4;
 
     public static final String ACTION_START = "org.iiab.controller.INSTALL_START";
     public static final String ACTION_CANCEL = "org.iiab.controller.INSTALL_CANCEL";
@@ -206,6 +208,10 @@ public final class InstallService extends Service {
     // ADFA-4900: wizard maps per-layer config (only set when the queue is {"maps"} from the wizard).
     private boolean hasMapsConfig;
     private String mapsVector, mapsSat, mapsTerrain;
+    // ADFA-4898: last maps layer selection, retained process-scoped so a user-confirmed Retry of a
+    // failed maps install re-fires with the same layers (same session; not persisted to disk).
+    private static String sRetryMapsVector, sRetryMapsSat, sRetryMapsTerrain;
+    private static boolean sRetryMapsSearch;
     private boolean mapsSearchOn;
 
     private File iiabRootDir;     // filesDir/rootfs
@@ -348,8 +354,18 @@ public final class InstallService extends Service {
             mapsTerrain = intent.getStringExtra(EXTRA_MAPS_TERRAIN);
             mapsSearchOn = intent.getBooleanExtra(EXTRA_MAPS_SEARCH, false);
             hasMapsConfig = mapsVector != null && moduleQueue.contains("maps");
+            if (hasMapsConfig) {   // ADFA-4898: retain for a possible user-confirmed Retry of maps
+                sRetryMapsVector = mapsVector; sRetryMapsSat = mapsSat;
+                sRetryMapsTerrain = mapsTerrain; sRetryMapsSearch = mapsSearchOn;
+            }
 
             startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_modules)));
+            // ADFA-4898: a new batch supersedes any earlier "Couldn't install" notification. Clearing it
+            // at batch start covers both the retry case (no stale + live notification side by side) and
+            // the success case (the old failure notification is gone before this batch's foreground one is
+            // removed by teardown). The failure notification only ever auto-cancelled on tap before.
+            NotificationManager nmClear = getSystemService(NotificationManager.class);
+            if (nmClear != null) nmClear.cancel(NOTIFICATION_ID_MODULE_FAIL);
             acquireHardwareLocks();
             persistQueue();
             // Mark "running" immediately (currentModule null until the first dequeue) so the UI
@@ -1054,6 +1070,29 @@ public final class InstallService extends Service {
                 mapsVector, mapsSat, mapsTerrain, mapsSearchOn);
     }
 
+    /**
+     * ADFA-4898: re-run the given proot module(s) after a failed batch — the user-confirmed Retry
+     * (same ACTION_START_MODULES intent the provisioners fire). For maps it re-attaches this
+     * session's retained layer selection. No auto-retry: only a user action calls this.
+     */
+    public static void retryModules(Context ctx, java.util.List<String> modules) {
+        if (ctx == null || modules == null || modules.isEmpty()) return;
+        // Go through ModuleProvisioner.startBatch (the same path the wishlist drain uses) so the retry
+        // ALSO records the ModuleBatch. Firing ACTION_START_MODULES raw here skipped the batch save, so
+        // the install index came up empty ("Finishing setup" with no rows). Maps keeps its retained
+        // per-layer selection by passing it as extras.
+        android.os.Bundle extras = null;
+        if (modules.contains("maps") && sRetryMapsVector != null) {
+            extras = new android.os.Bundle();
+            extras.putString(EXTRA_MAPS_VECTOR, sRetryMapsVector);
+            extras.putString(EXTRA_MAPS_SAT, sRetryMapsSat);
+            extras.putString(EXTRA_MAPS_TERRAIN, sRetryMapsTerrain);
+            extras.putBoolean(EXTRA_MAPS_SEARCH, sRetryMapsSearch);
+        }
+        org.iiab.controller.redesign.ModuleProvisioner.startBatch(
+                ctx, modules.toArray(new String[0]), extras);
+    }
+
     private void finishModuleQueue() {
         if (finished) return;
         finished = true;
@@ -1062,8 +1101,36 @@ public final class InstallService extends Service {
         // observer that restarts the server (canStartServer() requires !InstallGuard.inProgress) is not
         // raced by teardown()'s later clear. teardown() clears it again (idempotent).
         org.iiab.controller.InstallGuard.end(this);
-        ModuleQueueRepository.get().postDone(new java.util.ArrayList<>(failedModules));
+        java.util.List<String> failed = new java.util.ArrayList<>(failedModules);
+        ModuleQueueRepository.get().postDone(failed);
+        // ADFA-4898: a module batch that finished with failures leaves a dismissible notification, so a
+        // user who backgrounded the install learns it did not succeed and can reopen to Retry.
+        if (!failed.isEmpty()) postModuleFailureNotification(failed);
         teardown();
+    }
+
+    /**
+     * ADFA-4898: dismissible "install failed" notification for a module batch that ended with failures.
+     * Distinct id from the foreground one (removed by teardown's stopForeground); tapping opens Module
+     * management, where the failed module shows a Retry.
+     */
+    private void postModuleFailureNotification(java.util.List<String> failed) {
+        NotificationManager m = getSystemService(NotificationManager.class);
+        if (m == null) return;
+        Intent open = new Intent(this, org.iiab.controller.redesign.SetupLibraryActivity.class)
+                .putExtra(org.iiab.controller.redesign.SetupLibraryActivity.EXTRA_MODULE_MGMT, true)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        android.app.PendingIntent pi = android.app.PendingIntent.getActivity(this, 0, open,
+                android.app.PendingIntent.FLAG_IMMUTABLE | android.app.PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification n = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(getString(R.string.k2go_mod_phase_failed))
+                .setContentText(android.text.TextUtils.join(", ", failed))
+                .setSmallIcon(android.R.drawable.stat_notify_error)
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
+        m.notify(NOTIFICATION_ID_MODULE_FAIL, n);
     }
 
     private void persistQueue() {

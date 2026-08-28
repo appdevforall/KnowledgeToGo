@@ -83,8 +83,10 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     private View dot;
     private TextView statusText, redirect, cancel, finishNote, contextText;
     private LinearLayout sections;
-    private Button finishBtn, runBgBtn, detailRunBgBtn;
+    private Button finishBtn, runBgBtn, detailRunBgBtn, detailBackBtn;
     private View detailRoot, indexScroll;
+    /** ADFA-4898: the key currently shown in the detail host ("mod:<k>", "zim", …), or null on the index. */
+    private String detailKey;
 
     private final Handler main = new Handler(Looper.getMainLooper());
     private boolean servicesReady = false;
@@ -150,9 +152,13 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         runBgBtn.setOnClickListener(v -> finish());   // leave; the Library keeps provisioning going
         cancel.setOnClickListener(v -> { redirectCancelled = true; cancelRedirect(); render(); });
 
-        Button back = findViewById(R.id.k2go_sp_back);
-        back.setOnClickListener(v -> backToIndex());
+        detailBackBtn = findViewById(R.id.k2go_sp_back);
         detailRunBgBtn = findViewById(R.id.k2go_sp_detail_finish);
+        // ADFA-4898: the two detail buttons are (re)configured per shown detail by configureDetailBar()
+        // — normally [Back (primary) / Run in background (secondary, LIVE only)], and for a failed module
+        // [Retry (primary) / Back (secondary)]. The defaults here cover the window before the first
+        // configure and any non-module detail.
+        detailBackBtn.setOnClickListener(v -> backToIndex());
         detailRunBgBtn.setText(R.string.k2go_zim_run_bg);   // in a detail, secondary = leave (never abort)
         detailRunBgBtn.setOnClickListener(v -> finish());
 
@@ -688,14 +694,21 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // wording and would suggest we're bringing the server up while runroles own the rootfs. During the
         // runroles show "Modules are installing"; only the real post-DONE restart says "Starting services".
         boolean moduleFlow = moduleInSession();
-        // Amber "working" while a module install runs or its post-DONE restart is pending — but NOT once it
-        // failed (that shows the Finish/error controls, no animated wait).
-        boolean amberWaiting = !moduleServerFailed && (moduleFlow ? !moduleServerUp : !servicesReady);
+        // ADFA-4898: the module batch reached its terminal with at least one runrole failed. The server
+        // itself came up (so this is NOT moduleServerFailed), and a green "Adding your content" here read
+        // the failed batch as a clean success. Keep the SAME amber "installing" header it had before the
+        // failure — no new copy — and let the failure + Retry surface per-module below (hub pill + detail),
+        // not in this batch-level header.
+        boolean moduleFailed = moduleFlow && prootFailed > 0;
+        // Amber "working" while a module install runs, its post-DONE restart is pending, or the batch
+        // ended with a failed module (kept on the same amber install line, never a green success).
+        boolean amberWaiting = !moduleServerFailed && (moduleFailed || (moduleFlow ? !moduleServerUp : !servicesReady));
         tint(dot, (amberWaiting || moduleServerFailed) ? R.color.k2go_amber : R.color.k2go_leaf);
         int statusRes;
         if (moduleServerFailed) statusRes = R.string.k2go_setup_slow;                            // couldn't bring services online
         else if (moduleRestartKicked && !moduleServerUp) statusRes = R.string.k2go_setup_starting;   // (re)starting the server
         else if (moduleFlow && !moduleServerUp) statusRes = R.string.install_busy_modules;       // runroles in flight
+        else if (moduleFailed) statusRes = R.string.install_busy_modules;                        // ADFA-4898: keep the amber install header; failure + Retry are per-module below
         else if (moduleFlow) statusRes = R.string.k2go_setup_adding;                             // module done + server up
         else if (!servicesReady) statusRes = (readyPolls >= SLOW_AFTER_POLLS ? R.string.k2go_setup_slow : R.string.k2go_setup_starting);
         else statusRes = R.string.k2go_setup_adding;
@@ -726,6 +739,9 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         // FragmentManager. Deferring costs nothing: onResume posts the poll, which renders.
         lastAllComplete = allComplete;
         if (showingDetail) {
+            // ADFA-4898: keep the detail bar in step with the queue — a module that fails shows Retry,
+            // and a Retry that puts it back to RUNNING restores Back/Run-in-background on the next tick.
+            configureDetailBar();
             if (allComplete && bounceOnComplete
                     && getLifecycle().getCurrentState().isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED)) {
                 bounceOnComplete = false;
@@ -1260,6 +1276,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
     // ---- detail: host the real per-module card ----
     private void openDetail(String key) {
         showingDetail = true;
+        detailKey = key;
         bounceOnComplete = !lastAllComplete;
         androidx.fragment.app.Fragment f;
         // Per-key detail view — presentation routing only; the execution class is NOT decided here.
@@ -1268,19 +1285,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         else if ("kolibri".equals(key)) { f = new KolibriSeedingFragment(); }   // ADFA-4954: observe-only
         else if ("maps".equals(key)) { f = MapsPreparingFragment.newInstance(true); }   // ADFA-4901: observe-only
         else { f = BooksDownloadsFragment.newInstance(true); }
-        // ADFA-5062: read the execution class from the model instead of re-deriving it from the key
-        // prefix. A module install is an APP_INSTALL (runs with the box stopped); content rows carry
-        // their class on ContentType (maps = STOPPED; zim/kolibri/books = LIVE). Only a LIVE op can
-        // keep running in the background, so the "run in background" button shows only for LIVE
-        // (ADFA-4919/4842: a stopped-class detail — maps or module — offers only Back).
-        final boolean live;
-        if (key.startsWith("mod:")) {
-            live = Operation.appInstall(key.substring(4)).isLive();
-        } else {
-            ContentType ct = ContentType.byKey(key);
-            live = ct != null && ct.isLive();
-        }
-        if (detailRunBgBtn != null) detailRunBgBtn.setVisibility(live ? View.VISIBLE : View.GONE);
+        configureDetailBar();
         // ADFA-5074: commitNow, to match backToIndex. With an async commit a render() landing in
         // between set showingDetail back to false and found nothing to remove, and the queued
         // transaction then added the fragment into a hidden host — where ZimPreparingFragment
@@ -1293,8 +1298,50 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
         detailRoot.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * ADFA-5062: only a LIVE op (zim/kolibri/books) can keep running in the background; a stopped-class
+     * detail (maps or a module install) cannot. Read from the model, not re-derived from the key prefix.
+     */
+    private boolean isLiveDetail(String key) {
+        if (key == null) return false;
+        if (key.startsWith("mod:")) return Operation.appInstall(key.substring(4)).isLive();
+        ContentType ct = ContentType.byKey(key);
+        return ct != null && ct.isLive();
+    }
+
+    /**
+     * ADFA-4898: (re)configure the two-button detail bar for the currently shown detail. Reuses the one
+     * existing template — a filled primary (k2go_sp_back) over an outlined secondary (k2go_sp_detail_finish):
+     *   - a failed module → Retry (primary) + Back (secondary), so the recovery action sits where the LIVE
+     *     details put Run-in-background, instead of a bespoke button in the card;
+     *   - anything else → Back (primary) + Run in background (secondary, LIVE only).
+     * Recomputed on every render while a detail is open, so a Retry that puts the module back to RUNNING
+     * flips the bar back to Back/Run-in-background on the next tick (no stale Retry). Retry stays on the
+     * card: this detail is the live progress view and follows the re-run with its log.
+     */
+    private void configureDetailBar() {
+        if (!showingDetail || detailKey == null || detailBackBtn == null) return;
+        boolean moduleFailed = detailKey.startsWith("mod:")
+                && ModuleQueueRepository.get().current().didFail(detailKey.substring(4));
+        if (moduleFailed) {
+            final String moduleKey = detailKey.substring(4);
+            detailBackBtn.setText(R.string.k2go_home_retry);
+            detailBackBtn.setOnClickListener(v -> ModuleRetry.fire(v, moduleKey));
+            detailRunBgBtn.setText(R.string.k2go_setup_back);
+            detailRunBgBtn.setOnClickListener(v -> backToIndex());
+            detailRunBgBtn.setVisibility(View.VISIBLE);
+        } else {
+            detailBackBtn.setText(R.string.k2go_setup_back);
+            detailBackBtn.setOnClickListener(v -> backToIndex());
+            detailRunBgBtn.setText(R.string.k2go_zim_run_bg);
+            detailRunBgBtn.setOnClickListener(v -> finish());
+            detailRunBgBtn.setVisibility(isLiveDetail(detailKey) ? View.VISIBLE : View.GONE);
+        }
+    }
+
     private void backToIndex() {
         showingDetail = false;
+        detailKey = null;
         // commitNow (synchronous) so the fragment's onDestroyView — which nulls the service
         // listener — runs BEFORE we reclaim it. With async commit() the teardown fired later and
         // clobbered the index's listener, so a job finishing while back on the index never updated

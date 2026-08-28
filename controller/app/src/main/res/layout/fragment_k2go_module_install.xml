@@ -99,6 +99,10 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="@color/k2go_ink" />
 
+        <!-- ADFA-4898: Retry for a failed module is NOT here — it lives in the host's detail button bar
+             (SetupProgressActivity: k2go_sp_back becomes Retry, k2go_sp_detail_finish becomes Back),
+             reusing the same Run-in-background + Back template the live details already use. -->
+
         <!-- ADFA-4842: "this takes time" info card, matching the maps Preparing screen. -->
         <LinearLayout
             android:layout_width="match_parent"

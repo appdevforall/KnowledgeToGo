@@ -125,7 +125,10 @@ public class ModuleInstallFragment extends Fragment {
             }
         }
 
-        if (mq.failedModules != null && mq.failedModules.contains(key)) {
+        // ADFA-4898: one predicate for "did this module fail" across every surface (hub pill, detail
+        // Retry/Back, this progress line) — ModuleQueueState.didFail(key). Was hand-rolled here as
+        // failedModules.contains(...); routed through the shared atom so the three can't drift apart.
+        if (mq.didFail(key)) {
             terminalDone = true;
             status.setText(getString(R.string.k2go_mod_phase_failed));
             return;
@@ -136,6 +139,9 @@ public class ModuleInstallFragment extends Fragment {
             return;
         }
         if (installing()) {
+            // ADFA-4898: a retry from this card brought the module back to RUNNING — clear the terminal
+            // latch so the live log resumes driving the status line (it stops again on the next terminal).
+            terminalDone = false;
             // live status is driven by the log; keep the phase text only until the first line arrives.
             if (logLines.isEmpty()) status.setText(getString(R.string.k2go_mod_phase_installing));
             return;
