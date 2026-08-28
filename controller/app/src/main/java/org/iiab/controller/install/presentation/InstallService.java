@@ -358,6 +358,12 @@ public final class InstallService extends Service {
             }
 
             startForeground(NOTIFICATION_ID, buildNotification(getString(R.string.install_busy_modules)));
+            // ADFA-4898: a new batch supersedes any earlier "Couldn't install" notification. Clearing it
+            // at batch start covers both the retry case (no stale + live notification side by side) and
+            // the success case (the old failure notification is gone before this batch's foreground one is
+            // removed by teardown). The failure notification only ever auto-cancelled on tap before.
+            NotificationManager nmClear = getSystemService(NotificationManager.class);
+            if (nmClear != null) nmClear.cancel(NOTIFICATION_ID + 4);
             acquireHardwareLocks();
             persistQueue();
             // Mark "running" immediately (currentModule null until the first dequeue) so the UI
