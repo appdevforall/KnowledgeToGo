@@ -198,6 +198,8 @@ public class WizardActivity extends AppCompatActivity {
     /** One-time usage-stats consent prompt; runs {@code onDone} after the choice (or immediately
      *  if already asked here or in the legacy flow). Reuses the analytics_enroll_* strings. */
     private void maybeAskAnalytics(Runnable onDone) {
+        // ADFA-5337: no analytics compiled in (no google-services.json) → nothing to consent to; skip.
+        if (!org.iiab.controller.BuildConfig.ANALYTICS_ENABLED) { onDone.run(); return; }
         if (AnalyticsConsent.wasAsked(this)) { onDone.run(); return; }
         new MaterialAlertDialogBuilder(this)
                 .setTitle(R.string.analytics_enroll_title)
