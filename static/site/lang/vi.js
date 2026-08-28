@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Hệ thống",
     "theme_light": "Sáng",
     "theme_dark": "Tối",
-    "backend_error": "Máy chủ K2Go không phản hồi. Hãy đảm bảo K2Go đang chạy trên thiết bị chủ; trang sẽ tự kết nối lại. Nếu không trở lại, hãy quét lại mã để lấy địa chỉ hiện tại."
+    "backend_error": "Máy chủ K2Go không phản hồi. Hãy đảm bảo K2Go đang chạy trên thiết bị chủ và thiết bị của bạn ở cùng Wi-Fi hoặc đã kết nối với điểm phát sóng của nó."
 };

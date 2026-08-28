@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Ẹ̀rọ",
     "theme_light": "Ìmọ́lẹ̀",
     "theme_dark": "Òkùnkùn",
-    "backend_error": "Sáà K2Go kò dáhùn. Rí i dájú pé K2Go ń ṣiṣẹ́ lórí ẹ̀rọ agbàlejò; ojú-ìwé náà á tún so ara rẹ̀ pọ̀ fúnra rẹ̀. Tí kò bá padà, tún ka kóòdù náà láti gba àdírẹ́sì rẹ̀ lọ́wọ́lọ́wọ́."
+    "backend_error": "Sáà K2Go kò dáhùn. Rí i dájú pé K2Go ń ṣiṣẹ́ lórí ẹ̀rọ agbàlejò àti pé ẹ̀rọ rẹ wà lórí Wi-Fi kan náà tàbí tí ó sopọ̀ mọ́ hotspot rẹ̀."
 };

@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Systeem",
     "theme_light": "Licht",
     "theme_dark": "Donker",
-    "backend_error": "De K2Go-server reageert niet. Zorg dat K2Go draait op het host-apparaat; de pagina maakt vanzelf opnieuw verbinding. Komt hij niet terug, scan de code opnieuw voor het huidige adres."
+    "backend_error": "De K2Go-server reageert niet. Zorg dat K2Go draait op het host-apparaat en dat je apparaat op dezelfde wifi zit of verbonden is met de hotspot ervan."
 };

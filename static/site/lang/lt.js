@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Sisteminė",
     "theme_light": "Šviesi",
     "theme_dark": "Tamsi",
-    "backend_error": "K2Go serveris neatsako. Įsitikinkite, kad K2Go veikia pagrindiniame įrenginyje; puslapis prisijungs iš naujo pats. Jei jis negrįžta, nuskaitykite kodą iš naujo, kad gautumėte dabartinį adresą."
+    "backend_error": "K2Go serveris neatsako. Įsitikinkite, kad K2Go veikia pagrindiniame įrenginyje ir kad jūsų įrenginys yra tame pačiame Wi-Fi arba prisijungęs prie jo viešosios interneto prieigos taško."
 };

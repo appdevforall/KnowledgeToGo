@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Systemowy",
     "theme_light": "Jasny",
     "theme_dark": "Ciemny",
-    "backend_error": "Serwer K2Go nie odpowiada. Upewnij się, że K2Go działa na urządzeniu hosta; strona połączy się ponownie samoczynnie. Jeśli nie wróci, zeskanuj kod ponownie, aby uzyskać jego aktualny adres."
+    "backend_error": "Serwer K2Go nie odpowiada. Upewnij się, że K2Go działa na urządzeniu hosta i że Twoje urządzenie jest w tej samej sieci Wi-Fi lub połączone z jego hotspotem."
 };

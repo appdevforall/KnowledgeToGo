@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Sistema",
     "theme_light": "Claro",
     "theme_dark": "Oscuro",
-    "backend_error": "El servidor K2Go no responde. Asegúrate de que K2Go esté abierto en el dispositivo anfitrión; la página se reconecta sola. Si no vuelve, vuelve a escanear el código para obtener su dirección actual."
+    "backend_error": "El servidor K2Go no responde. Asegúrate de que K2Go esté abierto en el dispositivo anfitrión y de que tu dispositivo esté en la misma Wi-Fi o conectado a su hotspot."
 };
