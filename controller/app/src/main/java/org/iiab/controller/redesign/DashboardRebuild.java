@@ -3,15 +3,21 @@
  * Name        : DashboardRebuild.java
  * Author      : AppDevForAll
  * Copyright   : Copyright (c) 2026 AppDevForAll
- * Description : ADFA-5011 / ADFA-5051. Single entry point for starting a dash-node REST-core rebuild,
- *               shared by the Module-management hub row and the dashboard detail card. Gated flow:
- *               busy check (EnvironmentLock) -> internet check -> confirm dialog -> start.
+ * Description : ADFA-5011 / ADFA-5051 / ADFA-5333. Single entry point for starting a dash-node REST-core
+ *               rebuild, shared by the Module-management hub row and the dashboard detail card. Gated
+ *               flow: busy check (EnvironmentLock) -> internet check -> confirm dialog -> start.
  *
  *               ADFA-5051 — version-gated cutover: from dash-node 1.2.0 the core updates ITSELF LIVE
  *               over REST (POST /system/dashboard/rebuild: the blue-green rebuild that stages, smoke-
  *               tests, atomically swaps and rolls back on failure — no rootfs/proot). Installs still
  *               on < 1.2.0 predate that, so they take the heavier proot rebuild (InstallService) once
  *               to reach 1.2.0; from there every later update is the live REST path.
+ *
+ *               ADFA-5333 — the LIVE path now runs in the BACKGROUND: it hands off to
+ *               DashboardRebuildService (foreground notification) instead of trapping the user behind a
+ *               non-cancelable modal. Completion is the server's signal (done/error), not a time cap, so
+ *               there is no "taking longer than usual" timeout; a visible card refreshes on the
+ *               service's completion broadcast. The proot path (< 1.2.0) is unchanged.
  * ============================================================================
  */
 package org.iiab.controller.redesign;
@@ -21,18 +27,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.iiab.controller.R;
 import org.iiab.controller.install.presentation.InstallService;
@@ -43,17 +43,11 @@ import org.iiab.controller.util.Snackbars;
 public final class DashboardRebuild {
     private DashboardRebuild() {}
 
-    // Live-rebuild poll cadence + overall cap. The blue-green rebuild does yarn install/build + smoke
-    // test + a dash-node restart, so allow a generous ceiling; the restart briefly makes the status
-    // endpoint unreachable, which we treat as "keep polling", not a failure.
-    private static final long POLL_MS = 2500L;
-    private static final int MAX_POLLS = 160;   // ~6.5 min
-
-    /** Gate then confirm then start. {@code anchor} is where a "busy"/"no internet" snackbar shows.
-     *  {@code onLiveUpdated} (nullable) runs after a successful LIVE (REST) update so the caller can
-     *  refresh its version chip / update pill in place (ADFA-5051). */
-    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor,
-                                       @Nullable Runnable onLiveUpdated) {
+    /** Gate then confirm then start. {@code anchor} is where the "busy"/"no internet"/"started"
+     *  snackbars show. A visible dashboard card refreshes itself on
+     *  {@link DashboardRebuildService#ACTION_STATE} (ADFA-5333), so there is no completion callback to
+     *  pass here — the background update outlives this fragment. */
+    public static void confirmAndStart(@NonNull Fragment host, @NonNull View anchor) {
         Context ctx = host.requireContext();
         if (org.iiab.controller.env.EnvironmentLock.isHeld(ctx)) {
             Snackbars.make(anchor, org.iiab.controller.util.BusyMessage.resFor(ctx)).show();
@@ -67,14 +61,14 @@ public final class DashboardRebuild {
                 .setTitle(R.string.k2go_dash_rebuild_confirm_title)
                 .setMessage(R.string.k2go_dash_rebuild_confirm_msg)
                 .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor, onLiveUpdated))
+                .setPositiveButton(R.string.k2go_dash_rebuild, (d, w) -> start(host, anchor))
                 .show();
     }
 
     /** ADFA-5051: route by the installed dash-node version. >= 1.2.0 updates live over REST; older
      *  installs take the proot rebuild once as a bridge to 1.2.0. The version read hits disk, so it
      *  runs off the main thread; the routing itself is posted back to the UI. */
-    private static void start(@NonNull Fragment host, @NonNull View anchor, @Nullable Runnable onLiveUpdated) {
+    private static void start(@NonNull Fragment host, @NonNull View anchor) {
         final Context app = host.requireContext().getApplicationContext();
         final Handler main = new Handler(Looper.getMainLooper());
         AppExecutors.get().io().execute(() -> {
@@ -90,7 +84,7 @@ public final class DashboardRebuild {
             final Operation op = Operation.of("dashboard", Operation.Kind.APP_INSTALL, cls);
             main.post(() -> {
                 if (!host.isAdded()) return;
-                if (op.isLive()) startRest(host, anchor, onLiveUpdated);
+                if (op.isLive()) startRest(host, anchor);
                 else startProot(host);
             });
         });
@@ -108,86 +102,26 @@ public final class DashboardRebuild {
                 .putExtra(SetupProgressActivity.EXTRA_REBUILD, true));
     }
 
-    /** ADFA-5051: live REST update. Trigger the in-server rebuild, then show a non-cancelable progress
-     *  dialog that polls the state until done/error (tolerating the brief restart window). */
-    private static void startRest(@NonNull Fragment host, @NonNull View anchor, @Nullable Runnable onLiveUpdated) {
-        Context ctx = host.requireContext();
-        LinearLayout box = new LinearLayout(ctx);
-        box.setOrientation(LinearLayout.HORIZONTAL);
-        box.setGravity(Gravity.CENTER_VERTICAL);
-        int pad = Math.round(24 * ctx.getResources().getDisplayMetrics().density);
-        box.setPadding(pad, pad, pad, pad);
-        CircularProgressIndicator spin = new CircularProgressIndicator(ctx);
-        spin.setIndeterminate(true);
-        box.addView(spin);
-        TextView msg = new TextView(ctx);
-        msg.setText(R.string.k2go_dash_live_running);
-        LinearLayout.LayoutParams mlp = new LinearLayout.LayoutParams(-2, -2);
-        mlp.leftMargin = pad;
-        msg.setLayoutParams(mlp);
-        box.addView(msg);
-
-        final AlertDialog dialog = new MaterialAlertDialogBuilder(ctx)
-                .setTitle(R.string.k2go_dash_live_title)
-                .setView(box)
-                .setCancelable(false)
-                .show();
-
-        final Handler poller = new Handler(Looper.getMainLooper());
-        DashboardClient.rebuildStart(new DashboardClient.RebuildStartCb() {
-            @Override public void onStarted(boolean alreadyRunning) {
-                if (!host.isAdded()) { safeDismiss(dialog); return; }
-                pollStatus(host, dialog, poller, new int[]{0}, onLiveUpdated);
-            }
-            @Override public void onErr(String message) {
-                safeDismiss(dialog);
-                if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_live_start_failed).show();
-            }
-        });
+    /** ADFA-5333: live REST update in the background. Hand off to DashboardRebuildService (foreground
+     *  notification) and let the user go — the service POSTs the rebuild and polls the box until it
+     *  reports done/error, with no time cap. A visible dashboard card refreshes on the service's
+     *  completion broadcast; nothing pins this screen. */
+    private static void startRest(@NonNull Fragment host, @NonNull View anchor) {
+        DashboardRebuildService.start(host.requireContext().getApplicationContext());
+        if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
     }
 
-    /** Poll rebuild state until a terminal one, reusing a single {@code poller} Handler. A status error
-     *  is transient (dash-node restarts mid-swap) so we keep polling until MAX_POLLS. Hitting the cap is
-     *  NOT a failure: the rebuild runs detached server-side and may still finish, so we show a distinct
-     *  "still working in the background" message rather than the rollback/failure one. */
-    private static void pollStatus(@NonNull Fragment host, @NonNull AlertDialog dialog,
-                                   @NonNull Handler poller, int[] tries, @Nullable Runnable onLiveUpdated) {
-        if (!host.isAdded()) { safeDismiss(dialog); return; }
-        if (tries[0]++ >= MAX_POLLS) { finishRest(host, dialog, R.string.k2go_dash_live_timeout, onLiveUpdated); return; }
-        DashboardClient.rebuildStatus(new DashboardClient.RebuildStatusCb() {
-            @Override public void onState(String state) {
-                if (!host.isAdded()) { safeDismiss(dialog); return; }
-                if ("done".equals(state)) { finishRest(host, dialog, R.string.k2go_dash_live_done, onLiveUpdated); return; }
-                if ("error".equals(state)) { finishRest(host, dialog, R.string.k2go_dash_live_error, onLiveUpdated); return; }
-                schedule();
-            }
-            @Override public void onErr(String message) {
-                if (!host.isAdded()) { safeDismiss(dialog); return; }
-                schedule();   // API likely restarting mid-swap; keep waiting
-            }
-            private void schedule() {
-                poller.postDelayed(() -> pollStatus(host, dialog, poller, tries, onLiveUpdated), POLL_MS);
-            }
-        });
-    }
-
-    /** Swap the progress dialog for a simple result dialog carrying {@code msgRes} (done/error/timeout).
-     *  On success, fire {@code onLiveUpdated} (ADFA-5051) so the caller refreshes its version/pill in
-     *  place — otherwise the card keeps showing "update available" and users re-tap Rebuild. */
-    private static void finishRest(@NonNull Fragment host, @NonNull AlertDialog dialog, int msgRes,
-                                   @Nullable Runnable onLiveUpdated) {
-        safeDismiss(dialog);
-        if (!host.isAdded()) return;
-        if (msgRes == R.string.k2go_dash_live_done && onLiveUpdated != null) onLiveUpdated.run();
-        new MaterialAlertDialogBuilder(host.requireContext())
-                .setTitle(R.string.k2go_dash_live_title)
-                .setMessage(msgRes)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-
-    private static void safeDismiss(@NonNull AlertDialog d) {
-        try { if (d.isShowing()) d.dismiss(); } catch (Exception ignore) { /* activity gone */ }
+    /** ADFA-5333: reverse gate for LIVE content downloads (ZIM/Books/Kolibri). Those run on the server
+     *  and don't consult EnvironmentLock, so they need an explicit check: a dashboard update in flight
+     *  restarts dash-node and would break an in-flight download. Returns true (and shows a refusal on
+     *  {@code anchor}) when a download must NOT start now. Deep-env ops don't need this — they read the
+     *  same fact through EnvironmentLock.isHeld (Holder.DASHBOARD). */
+    public static boolean blockedByUpdate(@NonNull View anchor) {
+        if (DashboardRebuildService.isRunning()) {
+            Snackbars.make(anchor, R.string.k2go_busy_dashboard).show();
+            return true;
+        }
+        return false;
     }
 
     /** True when the device reports an internet-capable active network. Unknown -> true (let the

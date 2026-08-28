@@ -106,7 +106,7 @@ public class ZimConfirmFragment extends Fragment {
             if (!(getActivity() instanceof SetupLibraryActivity)) return;
             SetupLibraryActivity a = (SetupLibraryActivity) getActivity();
             if (banks) a.zimWizardConfirm();   // no box yet: bank it
-            else a.startZimDownload();         // ADFA-5074: start it, then land on the index
+            else if (!DashboardRebuild.blockedByUpdate(v)) a.startZimDownload();   // ADFA-5074 / ADFA-5333
         });
 
         return root;

@@ -50,8 +50,9 @@ public final class EnvironmentLock {
     public enum Owner { INSTALL, MODULE, BACKUP, RESTORE, CLONE }
 
     /** ADFA-5146: what is actually holding the environment, for a refusal message that names the
-     *  real cause instead of always saying "an install". */
-    public enum Holder { CLONE, BACKUP, RESTORE, INSTALL, DOWNLOAD, NONE }
+     *  real cause instead of always saying "an install". ADFA-5333: DASHBOARD = a live dash-node update
+     *  is in flight; it restarts the server, so nothing that touches the server may start on top of it. */
+    public enum Holder { CLONE, BACKUP, RESTORE, INSTALL, DOWNLOAD, DASHBOARD, NONE }
 
     // Owner marker: line 1 = Owner.name(), line 2 = epoch millis, line 3 = session token.
     private static final String MARKER = ".env_lock";
@@ -180,6 +181,9 @@ public final class EnvironmentLock {
             }
         }
         if (org.iiab.controller.InstallGuard.inProgress(ctx)) return Holder.INSTALL;
+        // ADFA-5333: a live dashboard update restarts dash-node, so it must block every server-touching op
+        // (deep-env ops read this via isHeld; live downloads get an explicit check at their start points).
+        if (org.iiab.controller.redesign.DashboardRebuildService.isRunning()) return Holder.DASHBOARD;
         if (isBusyNow()) return Holder.DOWNLOAD;   // module installs are caught above by the guard
         return Holder.NONE;
     }

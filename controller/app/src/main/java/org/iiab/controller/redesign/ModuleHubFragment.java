@@ -546,7 +546,7 @@ public class ModuleHubFragment extends Fragment {
 
         TextView rebuild = statePill(getString(R.string.k2go_dash_rebuild), R.color.k2go_teal);
         rebuild.setPadding(px(14), px(6), px(14), px(6));
-        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host, null));
+        rebuild.setOnClickListener(v -> DashboardRebuild.confirmAndStart(this, host));
         LinearLayout.LayoutParams tlp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         tlp.leftMargin = px(10);

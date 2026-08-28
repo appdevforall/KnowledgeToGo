@@ -34,6 +34,7 @@ public final class DashboardClient {
     private static final String URL_UPDATE_CHECK = BoxEndpoints.API + "/system/dashboard/update-check";
     private static final String URL_REBUILD = BoxEndpoints.API + "/system/dashboard/rebuild";
     private static final String URL_REBUILD_STATUS = BoxEndpoints.API + "/system/dashboard/rebuild/status";
+    private static final String URL_REBUILD_CANCEL = BoxEndpoints.API + "/system/dashboard/rebuild/cancel";
     private static final Handler MAIN = new Handler(Looper.getMainLooper());
 
     public interface UpdateCb {
@@ -54,6 +55,14 @@ public final class DashboardClient {
         void onErr(String message);
     }
 
+    /** ADFA-5333: result of asking the box to cancel. {@code cancelled} = the rebuild was stopped and the
+     *  live dashboard left untouched; {@code promoting} = too late to cancel (the swap is finishing).
+     *  Neither true and no error = nothing was running. */
+    public interface RebuildCancelCb {
+        void onResult(boolean cancelled, boolean promoting);
+        void onErr(String message);
+    }
+
     /** ADFA-5051: trigger the in-server blue-green rebuild (POST). Fire-and-forget: the box returns 202
      *  at once (or 409 if one is already running); the caller then polls {@link #rebuildStatus}. */
     public static void rebuildStart(RebuildStartCb cb) {
@@ -65,6 +74,39 @@ public final class DashboardClient {
             } catch (Exception e) {
                 if (status[0] == 409) { MAIN.post(() -> cb.onStarted(true)); return; }
                 MAIN.post(() -> cb.onErr("could not start rebuild"));
+            }
+        });
+    }
+
+    /** ADFA-5333: ask the box to cancel the in-flight rebuild. 200 => cancelled; 409 with promoting=true
+     *  => too late (swap finishing); 409 otherwise => nothing running. The body carries the flags, so this
+     *  reads it directly rather than going through the shared bodyless POST. */
+    public static void rebuildCancel(RebuildCancelCb cb) {
+        AppExecutors.get().io().execute(() -> {
+            try {
+                HttpURLConnection c = (HttpURLConnection) new URL(URL_REBUILD_CANCEL).openConnection();
+                try {
+                    c.setUseCaches(false);
+                    c.setConnectTimeout(5000);
+                    c.setReadTimeout(10000);
+                    c.setRequestMethod("POST");
+                    c.setRequestProperty("Accept", "application/json");
+                    int code = c.getResponseCode();
+                    String body = readAll(code >= 200 && code < 400 ? c.getInputStream() : c.getErrorStream());
+                    boolean cancelled = code >= 200 && code < 300;
+                    boolean promoting = false;
+                    try {
+                        JSONObject o = new JSONObject(body);
+                        cancelled = o.optBoolean("cancelled", cancelled);
+                        promoting = o.optBoolean("promoting", false);
+                    } catch (Exception ignore) { /* keep status-derived defaults */ }
+                    final boolean fc = cancelled, fp = promoting;
+                    MAIN.post(() -> cb.onResult(fc, fp));
+                } finally {
+                    c.disconnect();
+                }
+            } catch (Exception e) {
+                MAIN.post(() -> cb.onErr("cancel failed"));
             }
         });
     }
