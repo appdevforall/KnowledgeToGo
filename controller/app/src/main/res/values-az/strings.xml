@@ -1144,6 +1144,9 @@
     <string name="k2go_dash_live_start_failed">Yeniləməni başlatmaq alınmadı. Yenidən cəhd edin.</string>
     <string name="k2go_dash_update_started">İdarə paneli arxa planda yenilənir.</string>
     <string name="k2go_dash_update_channel_name">İdarə paneli yeniləməsi</string>
+    <string name="k2go_dash_cancel">Ləğv et</string>
+    <string name="k2go_dash_cancel_too_late">Yeniləmə bitmək üzrədir və indi ləğv edilə bilməz.</string>
+    <string name="k2go_dash_cancel_failed">Yeniləməni ləğv etmək alınmadı. İşləməyə davam edəcək.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistem nüvəsi · həmişə quraşdırılıb</string>
     <string name="k2go_dash_detail_desc">Panel cihazın REST API nüvəsidir (dash-node) — 127.0.0.1:4000 ünvanında kiçik Node xidmətidir, nginx ilə təqdim olunur və pdsm ilə nəzarət olunur. Tətbiqdəki hər kitabxana əməliyyatını idarə edir: Kitablara baxış və endirmə, Wikipedia və ZIM məzmununun əlavəsi və silinməsi, Kolibri sessiyaları, Xəritələr və sistem statusu. Məzmun modullarından fərqli olaraq, onu quraşdıra və ya silə bilməzsən. Tətbiqlə birlikdə gəlir və həmişə mövcuddur. Daha yeni versiya mövcud olduqda onu yerində yenidən qura bilərsən.</string>
@@ -1259,6 +1262,7 @@
     <string name="k2go_busy_restore">Bərpa gedir. Bitməsini gözlə.</string>
     <string name="k2go_busy_install">Quraşdırma gedir. Bitməsini gözlə.</string>
     <string name="k2go_busy_download">Endirmə gedir. Bitməsini gözlə.</string>
+    <string name="k2go_busy_dashboard">İdarə paneli yenilənir. Bitməsini gözləyin.</string>
     <string name="k2go_pending_title">Gözləyən yükləmələr</string>
     <string name="k2go_pending_empty">Gözləyən yükləmə yoxdur.</string>
     <string name="k2go_pending_running">İndi nəsə yüklənir</string>

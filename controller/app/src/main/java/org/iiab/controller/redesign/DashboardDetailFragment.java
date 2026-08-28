@@ -46,7 +46,8 @@ public class DashboardDetailFragment extends Fragment {
     private TextView versionChip;  // ADFA-5051: "v<version>" chip, updated in place after a live update
     private Button rebuild;        // de-emphasized when already on the latest
     private TextView rebuildHint;  // "no rebuild needed" note, shown only when on the latest
-    private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label)
+    private View updatingRow;      // ADFA-5333: in-progress indicator (indeterminate bar + label + Cancel)
+    private View updatingCancel;   // ADFA-5333: the Cancel affordance beside the bar
     private boolean updating;      // ADFA-5333: a background rebuild is in flight; don't re-emphasize Rebuild
 
     /** ADFA-5333: the live update runs in the background (DashboardRebuildService), which broadcasts each
@@ -62,7 +63,8 @@ public class DashboardDetailFragment extends Fragment {
             } else if (DashboardRebuildService.STATE_DONE.equals(state)) {
                 setUpdating(false);
                 refreshAfterLiveUpdate();
-            } else if (DashboardRebuildService.STATE_ERROR.equals(state)) {
+            } else if (DashboardRebuildService.STATE_ERROR.equals(state)
+                    || DashboardRebuildService.STATE_CANCELLED.equals(state)) {
                 setUpdating(false);
                 fetchUpdateStatus();   // version unchanged; re-resolve the pill/emphasis
             }
@@ -208,9 +210,10 @@ public class DashboardDetailFragment extends Fragment {
         return hint;
     }
 
-    /** ADFA-5333: an in-progress indicator inserted just above Rebuild — an M3 indeterminate bar plus a
-     *  label — shown only while a background update runs (the rebuild reports no percentage, so the bar
-     *  is indeterminate). Built in code so the shared module-detail layout is untouched. */
+    /** ADFA-5333: an in-progress indicator inserted just above Rebuild — a label, then an M3 indeterminate
+     *  bar with a Cancel affordance beside it — shown only while a background update runs (the rebuild
+     *  reports no percentage, so the bar is indeterminate). Built in code so the shared module-detail
+     *  layout is untouched. */
     private View buildUpdatingRow(Button rebuildBtn) {
         ViewGroup parent = (ViewGroup) rebuildBtn.getParent();
         if (parent == null) return null;
@@ -232,18 +235,56 @@ public class DashboardDetailFragment extends Fragment {
         label.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));
         row.addView(label);
 
+        // The bar and Cancel sit on one line: bar takes the width, Cancel is right beside it.
+        LinearLayout line = new LinearLayout(requireContext());
+        line.setOrientation(LinearLayout.HORIZONTAL);
+        line.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        llp.topMargin = Math.round(4 * d);
+        line.setLayoutParams(llp);
+
         LinearProgressIndicator bar = new LinearProgressIndicator(requireContext());
         bar.setIndeterminate(true);
         bar.setIndicatorColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
         LinearLayout.LayoutParams blp = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        blp.topMargin = Math.round(4 * d);
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);   // weight 1 → takes the remaining width
         bar.setLayoutParams(blp);
-        row.addView(bar);
+        line.addView(bar);
 
+        TextView cancel = new TextView(requireContext());
+        cancel.setText(R.string.k2go_dash_cancel);
+        cancel.setAllCaps(true);
+        cancel.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        cancel.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));
+        int hp = Math.round(12 * d), vp = Math.round(6 * d);
+        cancel.setPadding(hp, vp, hp, vp);
+        LinearLayout.LayoutParams clp = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        clp.leftMargin = Math.round(8 * d);
+        cancel.setLayoutParams(clp);
+        android.util.TypedValue tv = new android.util.TypedValue();
+        requireContext().getTheme().resolveAttribute(
+                android.R.attr.selectableItemBackgroundBorderless, tv, true);
+        cancel.setBackgroundResource(tv.resourceId);
+        cancel.setClickable(true);
+        cancel.setOnClickListener(v -> onCancelUpdate());
+        line.addView(cancel);
+        updatingCancel = cancel;
+
+        row.addView(line);
         row.setVisibility(View.GONE);
         parent.addView(row, parent.indexOfChild(rebuildBtn));
         return row;
+    }
+
+    /** Ask the service to cancel; the bar stays until STATE_CANCELLED lands (or the update finishes if it
+     *  was too late). Disable the affordance to avoid double taps. */
+    private void onCancelUpdate() {
+        if (updatingCancel != null) updatingCancel.setEnabled(false);
+        Context ctx = requireContext();
+        ContextCompat.startForegroundService(ctx,
+                new android.content.Intent(ctx, DashboardRebuildService.class).setAction(DashboardRebuildService.ACTION_CANCEL));
     }
 
     /** Toggle the in-progress state: show/hide the bar and disable Rebuild so it can't be re-triggered
@@ -251,6 +292,7 @@ public class DashboardDetailFragment extends Fragment {
     private void setUpdating(boolean on) {
         updating = on;
         if (updatingRow != null) updatingRow.setVisibility(on ? View.VISIBLE : View.GONE);
+        if (updatingCancel != null) updatingCancel.setEnabled(on);   // re-enable when a new update shows
         if (rebuild != null) { rebuild.setEnabled(!on); rebuild.setAlpha(on ? 0.5f : 1f); }
         if (on && rebuildHint != null) rebuildHint.setVisibility(View.GONE);
     }

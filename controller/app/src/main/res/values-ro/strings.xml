@@ -1124,6 +1124,9 @@
     <string name="k2go_dash_live_start_failed">Actualizarea nu a putut porni. Încercați din nou.</string>
     <string name="k2go_dash_update_started">Se actualizează panoul în fundal.</string>
     <string name="k2go_dash_update_channel_name">Actualizarea panoului</string>
+    <string name="k2go_dash_cancel">Anulează</string>
+    <string name="k2go_dash_cancel_too_late">Actualizarea se finalizează și nu mai poate fi anulată acum.</string>
+    <string name="k2go_dash_cancel_failed">Actualizarea nu a putut fi anulată. Va continua.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Nucleul sistemului · întotdeauna instalat</string>
     <string name="k2go_dash_detail_desc">Panoul este nucleul API REST al box-ului (dash-node) — un mic serviciu Node pe 127.0.0.1:4000, servit prin nginx și supravegheat de pdsm. Alimentează fiecare acțiune a bibliotecii din aplicație: răsfoirea și descărcarea de Cărți, adăugarea și ștergerea de conținut Wikipedia și ZIM, sesiuni Kolibri, Hărți și starea sistemului. Spre deosebire de modulele de conținut, nu îl poți instala sau elimina. Vine cu aplicația și este mereu prezent. Când e disponibil un build mai nou, îl poți reconstrui pe loc.</string>
@@ -1239,6 +1242,7 @@
     <string name="k2go_busy_restore">O restaurare este în curs. Așteaptă să se termine.</string>
     <string name="k2go_busy_install">O instalare este în curs. Așteaptă să se termine.</string>
     <string name="k2go_busy_download">O descărcare este în curs. Așteaptă să se termine.</string>
+    <string name="k2go_busy_dashboard">O actualizare a panoului este în curs. Așteptați să se finalizeze.</string>
     <string name="k2go_pending_title">Descărcări în așteptare</string>
     <string name="k2go_pending_empty">Nicio descărcare în așteptare.</string>
     <string name="k2go_pending_running">Se descarcă ceva acum</string>

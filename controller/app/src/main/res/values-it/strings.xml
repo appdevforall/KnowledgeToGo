@@ -1124,6 +1124,9 @@
     <string name="k2go_dash_live_start_failed">Impossibile avviare l\'aggiornamento. Riprova.</string>
     <string name="k2go_dash_update_started">Aggiornamento della dashboard in background.</string>
     <string name="k2go_dash_update_channel_name">Aggiornamento della dashboard</string>
+    <string name="k2go_dash_cancel">Annulla</string>
+    <string name="k2go_dash_cancel_too_late">L\'aggiornamento sta terminando e non può essere annullato ora.</string>
+    <string name="k2go_dash_cancel_failed">Impossibile annullare l\'aggiornamento. Continuerà.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Nucleo di sistema · sempre installato</string>
     <string name="k2go_dash_detail_desc">La dashboard è il cuore dell\'API REST del box (dash-node): un piccolo servizio Node su 127.0.0.1:4000, servito da nginx e supervisionato da pdsm. Alimenta ogni azione della libreria nell\'app: sfogliare e scaricare Libri, aggiungere ed eliminare contenuti di Wikipedia e ZIM, sessioni Kolibri, Mappe e stato del sistema. A differenza dei moduli di contenuto, non puoi installarla né rimuoverla. È inclusa nell\'app ed è sempre presente. Quando è disponibile una build più recente, puoi ricostruirla sul posto.</string>
@@ -1239,6 +1242,7 @@
     <string name="k2go_busy_restore">È in corso un ripristino. Attendi che finisca.</string>
     <string name="k2go_busy_install">È in corso un\'installazione. Attendi che finisca.</string>
     <string name="k2go_busy_download">È in corso un download. Attendi che finisca.</string>
+    <string name="k2go_busy_dashboard">È in corso un aggiornamento della dashboard. Attendi il completamento.</string>
     <string name="k2go_pending_title">Download in sospeso</string>
     <string name="k2go_pending_empty">Nessun download in sospeso.</string>
     <string name="k2go_pending_running">È in corso un download</string>

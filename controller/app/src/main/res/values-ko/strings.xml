@@ -1125,6 +1125,9 @@
     <string name="k2go_dash_live_start_failed">업데이트를 시작할 수 없습니다. 다시 시도하세요.</string>
     <string name="k2go_dash_update_started">백그라운드에서 대시보드를 업데이트하는 중입니다.</string>
     <string name="k2go_dash_update_channel_name">대시보드 업데이트</string>
+    <string name="k2go_dash_cancel">취소</string>
+    <string name="k2go_dash_cancel_too_late">업데이트가 마무리되고 있어 지금은 취소할 수 없습니다.</string>
+    <string name="k2go_dash_cancel_failed">업데이트를 취소하지 못했습니다. 계속 실행됩니다.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">시스템 코어 · 항상 설치됨</string>
     <string name="k2go_dash_detail_desc">대시보드는 박스의 REST API 코어(dash-node)입니다. 127.0.0.1:4000에서 실행되는 작은 Node 서비스로, nginx가 앞단을 맡고 pdsm이 관리합니다. 앱 내 모든 라이브러리 작업을 구동합니다. 책 탐색 및 다운로드, Wikipedia 및 ZIM 콘텐츠 추가 및 삭제, Kolibri 세션, 지도, 시스템 상태입니다. 콘텐츠 모듈과 달리 설치하거나 제거할 수 없습니다. 앱과 함께 제공되며 항상 존재합니다. 더 새로운 빌드가 있으면 그 자리에서 다시 빌드할 수 있습니다.</string>
@@ -1240,6 +1243,7 @@
     <string name="k2go_busy_restore">복원이 진행 중입니다. 완료될 때까지 기다리세요.</string>
     <string name="k2go_busy_install">설치가 진행 중입니다. 완료될 때까지 기다리세요.</string>
     <string name="k2go_busy_download">다운로드가 진행 중입니다. 완료될 때까지 기다리세요.</string>
+    <string name="k2go_busy_dashboard">대시보드 업데이트가 진행 중입니다. 완료될 때까지 기다려 주세요.</string>
     <string name="k2go_pending_title">대기 중인 다운로드</string>
     <string name="k2go_pending_empty">대기 중인 다운로드가 없습니다.</string>
     <string name="k2go_pending_running">지금 다운로드 중입니다</string>

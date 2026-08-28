@@ -1124,6 +1124,9 @@
     <string name="k2go_dash_live_start_failed">Aktualisierung konnte nicht gestartet werden. Erneut versuchen.</string>
     <string name="k2go_dash_update_started">Dashboard wird im Hintergrund aktualisiert.</string>
     <string name="k2go_dash_update_channel_name">Dashboard-Aktualisierung</string>
+    <string name="k2go_dash_cancel">Abbrechen</string>
+    <string name="k2go_dash_cancel_too_late">Das Update wird abgeschlossen und kann jetzt nicht abgebrochen werden.</string>
+    <string name="k2go_dash_cancel_failed">Update konnte nicht abgebrochen werden. Es läuft weiter.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Systemkern · immer installiert</string>
     <string name="k2go_dash_detail_desc">Das Dashboard ist der REST-API-Kern der Box (dash-node) – ein kleiner Node-Dienst auf 127.0.0.1:4000, über nginx bereitgestellt und von pdsm überwacht. Es steuert jede Bibliotheksaktion in der App: Bücher durchsuchen und herunterladen, Wikipedia- und ZIM-Inhalte hinzufügen und löschen, Kolibri-Sitzungen, Karten und Systemstatus. Anders als die Inhaltsmodule kannst du es nicht installieren oder entfernen. Es wird mit der App geliefert und ist immer vorhanden. Wenn eine neuere Version verfügbar ist, kannst du es an Ort und Stelle neu erstellen.</string>
@@ -1239,6 +1242,7 @@
     <string name="k2go_busy_restore">Eine Wiederherstellung läuft. Bitte warte, bis sie abgeschlossen ist.</string>
     <string name="k2go_busy_install">Eine Installation läuft. Bitte warte, bis sie abgeschlossen ist.</string>
     <string name="k2go_busy_download">Ein Download läuft. Bitte warte, bis er abgeschlossen ist.</string>
+    <string name="k2go_busy_dashboard">Ein Dashboard-Update läuft. Bitte warte, bis es abgeschlossen ist.</string>
     <string name="k2go_pending_title">Ausstehende Downloads</string>
     <string name="k2go_pending_empty">Keine ausstehenden Downloads.</string>
     <string name="k2go_pending_running">Es wird gerade etwas heruntergeladen</string>

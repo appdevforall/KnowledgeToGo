@@ -1141,6 +1141,9 @@
     <string name="k2go_dash_live_start_failed">Nepavyko pradėti atnaujinimo. Bandykite dar kartą.</string>
     <string name="k2go_dash_update_started">Skydelis atnaujinamas fone.</string>
     <string name="k2go_dash_update_channel_name">Skydelio atnaujinimas</string>
+    <string name="k2go_dash_cancel">Atšaukti</string>
+    <string name="k2go_dash_cancel_too_late">Atnaujinimas baigiamas ir dabar jo atšaukti negalima.</string>
+    <string name="k2go_dash_cancel_failed">Nepavyko atšaukti atnaujinimo. Jis tęsis.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistemos branduolys · visada įdiegtas</string>
     <string name="k2go_dash_detail_desc">Skydelis yra įrenginio REST API branduolys (dash-node) — maža „Node“ paslauga adresu 127.0.0.1:4000, aptarnaujama „nginx“ ir prižiūrima „pdsm“. Ji maitina kiekvieną bibliotekos veiksmą programoje: Knygų naršymą ir atsisiuntimą, „Wikipedia“ ir ZIM turinio pridėjimą bei šalinimą, „Kolibri“ seansus, Žemėlapius ir sistemos būseną. Skirtingai nei turinio moduliai, jos negalima įdiegti ar pašalinti. Ji pateikiama su programa ir visada yra. Kai prieinama naujesnė versija, gali ją perkurti vietoje.</string>
@@ -1256,6 +1259,7 @@
     <string name="k2go_busy_restore">Vykdomas atkūrimas. Palaukite, kol baigsis.</string>
     <string name="k2go_busy_install">Vykdomas diegimas. Palaukite, kol baigsis.</string>
     <string name="k2go_busy_download">Vykdomas atsisiuntimas. Palaukite, kol baigsis.</string>
+    <string name="k2go_busy_dashboard">Vykdomas skydelio atnaujinimas. Palaukite, kol jis bus baigtas.</string>
     <string name="k2go_pending_title">Laukiantys atsisiuntimai</string>
     <string name="k2go_pending_empty">Nėra laukiančių atsisiuntimų.</string>
     <string name="k2go_pending_running">Šiuo metu kažkas atsisiunčiama</string>

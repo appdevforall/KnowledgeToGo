@@ -1125,6 +1125,9 @@
     <string name="k2go_dash_live_start_failed">更新を開始できませんでした。もう一度お試しください。</string>
     <string name="k2go_dash_update_started">ダッシュボードをバックグラウンドで更新しています。</string>
     <string name="k2go_dash_update_channel_name">ダッシュボードの更新</string>
+    <string name="k2go_dash_cancel">キャンセル</string>
+    <string name="k2go_dash_cancel_too_late">更新は完了間近で、今はキャンセルできません。</string>
+    <string name="k2go_dash_cancel_failed">更新をキャンセルできませんでした。続行されます。</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">システムコア · 常にインストール済み</string>
     <string name="k2go_dash_detail_desc">ダッシュボードは box の REST API コア（dash-node）です。127.0.0.1:4000 で動作する小さな Node サービスで、nginx が前面に立ち、pdsm が管理します。アプリ内のすべてのライブラリ操作を担います。書籍の閲覧とダウンロード、Wikipedia と ZIM コンテンツの追加と削除、Kolibri セッション、地図、システム状態です。コンテンツモジュールとは異なり、インストールや削除はできません。アプリに付属し、常に存在します。新しいビルドが利用可能になると、その場で再ビルドできます。</string>
@@ -1240,6 +1243,7 @@
     <string name="k2go_busy_restore">復元が進行中です。完了までお待ちください。</string>
     <string name="k2go_busy_install">インストールが進行中です。完了までお待ちください。</string>
     <string name="k2go_busy_download">ダウンロードが進行中です。完了までお待ちください。</string>
+    <string name="k2go_busy_dashboard">ダッシュボードの更新が進行中です。完了までお待ちください。</string>
     <string name="k2go_pending_title">保留中のダウンロード</string>
     <string name="k2go_pending_empty">保留中のダウンロードはありません。</string>
     <string name="k2go_pending_running">現在ダウンロード中です</string>

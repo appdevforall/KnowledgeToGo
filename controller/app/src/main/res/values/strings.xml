@@ -1190,6 +1190,7 @@
     <string name="k2go_busy_restore">A restore is in progress. Please wait for it to finish.</string>
     <string name="k2go_busy_install">An install is in progress. Please wait for it to finish.</string>
     <string name="k2go_busy_download">A download is in progress. Please wait for it to finish.</string>
+    <string name="k2go_busy_dashboard">A dashboard update is in progress. Please wait for it to finish.</string>
     <!-- ADFA-4919 (2c): shown on the first Back that would exit while a proot install runs. -->
     <string name="k2go_setup_leave_hint">Still setting up the system. You can leave the app while setup runs in the background. </string>
     <!-- ADFA-4919 (2c-ii): shown when a proot install was killed and the system can't start. -->
@@ -1356,6 +1357,10 @@
     <!-- ADFA-5333: shown when the background update kicks off, so the user knows they can leave. -->
     <string name="k2go_dash_update_started">Updating the dashboard in the background.</string>
     <string name="k2go_dash_update_channel_name">Dashboard update</string>
+    <!-- ADFA-5333: clean cancel of the background update. -->
+    <string name="k2go_dash_cancel">Cancel</string>
+    <string name="k2go_dash_cancel_too_late">The update is finishing and can\'t be canceled now.</string>
+    <string name="k2go_dash_cancel_failed">Couldn\'t cancel the update. It will keep running.</string>
     <!-- ADFA-5011: dashboard detail card (Play Store-style, Rebuild-only). -->
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">System core · always installed</string>

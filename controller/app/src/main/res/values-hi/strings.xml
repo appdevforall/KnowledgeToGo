@@ -1201,6 +1201,9 @@
     <string name="k2go_dash_live_start_failed">अपडेट शुरू नहीं हो सका। फिर से प्रयास करें।</string>
     <string name="k2go_dash_update_started">डैशबोर्ड पृष्ठभूमि में अपडेट हो रहा है।</string>
     <string name="k2go_dash_update_channel_name">डैशबोर्ड अपडेट</string>
+    <string name="k2go_dash_cancel">रद्द करें</string>
+    <string name="k2go_dash_cancel_too_late">अपडेट पूरा हो रहा है और अब रद्द नहीं किया जा सकता।</string>
+    <string name="k2go_dash_cancel_failed">अपडेट रद्द नहीं किया जा सका। यह चलता रहेगा।</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">सिस्टम कोर · हमेशा स्थापित</string>
     <string name="k2go_dash_detail_desc">डैशबोर्ड बॉक्स का REST API कोर (dash-node) है — 127.0.0.1:4000 पर एक छोटी Node सेवा, जो nginx द्वारा प्रस्तुत और pdsm द्वारा नियंत्रित होती है। यह ऐप में हर लाइब्रेरी क्रिया को चलाता है: किताबें ब्राउज़ और डाउनलोड करना, Wikipedia और ZIM सामग्री जोड़ना और हटाना, Kolibri सत्र, मानचित्र और सिस्टम स्थिति। सामग्री मॉड्यूल के विपरीत, आप इसे इंस्टॉल या हटा नहीं सकते। यह ऐप के साथ आता है और हमेशा मौजूद रहता है। जब कोई नया बिल्ड उपलब्ध हो, तो आप इसे यथास्थान फिर से बना सकते हैं।</string>
@@ -1316,6 +1319,7 @@
     <string name="k2go_busy_restore">एक पुनर्स्थापना जारी है। कृपया इसके पूरा होने की प्रतीक्षा करें।</string>
     <string name="k2go_busy_install">एक इंस्टॉल जारी है। कृपया इसके पूरा होने की प्रतीक्षा करें।</string>
     <string name="k2go_busy_download">एक डाउनलोड जारी है। कृपया इसके पूरा होने की प्रतीक्षा करें।</string>
+    <string name="k2go_busy_dashboard">डैशबोर्ड अपडेट चल रहा है। कृपया इसके पूरा होने तक प्रतीक्षा करें।</string>
     <string name="k2go_pending_title">लंबित डाउनलोड</string>
     <string name="k2go_pending_empty">कोई लंबित डाउनलोड नहीं।</string>
     <string name="k2go_pending_running">अभी कुछ डाउनलोड हो रहा है</string>

@@ -41,11 +41,18 @@ SMOKE="${K2GO_SMOKE:-$CLONE_DIR/tools/dashboard-smoketest.sh}"
 STATUS="/var/run/dash-rebuild.status"
 LOG="/var/log/dash-rebuild.log"
 LOCK="/var/run/dash-rebuild.lock"
+# ADFA-5333: coarse phase for a safe cancel. "building" (steps 1-3) never touches the live dashboard, so
+# a cancel there just kills this run and purges staging; "promoting" (step 4: dist swap + restart) is the
+# short, non-cancelable window — the cancel endpoint refuses while it is set. PID lets the endpoint signal
+# this whole detached session (setsid group) to stop.
+PHASE="/var/run/dash-rebuild.phase"
+PIDFILE="/var/run/dash-rebuild.pid"
 
 # ADFA-4893: also echo to the console so a manual foreground run shows progress live (not just the
 # log file). Harmless when launched detached (POST .../rebuild) — stdout goes nowhere then.
 log() { _m="[$(date '+%Y-%m-%d %H:%M:%S')] $*"; echo "$_m" >> "$LOG" 2>/dev/null; echo "$_m"; }
 set_status() { echo "$1" > "$STATUS" 2>/dev/null || true; }
+set_phase() { echo "$1" > "$PHASE" 2>/dev/null || true; }
 # ADFA-5051: proot renders some native-build symlinks (e.g. in better-sqlite3/build) as ".l2s." loops
 # that `rm -rf` can't recurse into (ELOOP -> "Directory not empty"), but a direct unlink removes them.
 # Sweep them first, then remove the tree — so staging is always cleanly removable.
@@ -63,14 +70,20 @@ verify_live() {
     done
     return 1
 }
-cleanup() { [ -n "${TESTPID:-}" ] && kill "$TESTPID" 2>/dev/null || true; purge_staging; rmdir "$LOCK" 2>/dev/null || true; }
+cleanup() { [ -n "${TESTPID:-}" ] && kill "$TESTPID" 2>/dev/null || true; purge_staging; rmdir "$LOCK" 2>/dev/null || true; rm -f "$PHASE" "$PIDFILE" 2>/dev/null || true; }
 fail() { log "FAIL: $*"; set_status "error"; cleanup; exit 1; }
 
 # Single-flight: mkdir is atomic.
 mkdir "$LOCK" 2>/dev/null || { echo "another rebuild is running" >&2; exit 3; }
-trap cleanup EXIT
+# ADFA-5333: clean staging + phase/pid on ANY exit, including a cancel signal (TERM/INT). Killing this
+# session during steps 1-3 therefore leaves nothing behind and the live dashboard untouched.
+trap cleanup EXIT INT TERM
 : > "$LOG" 2>/dev/null || true
 set_status "running"
+set_phase "building"
+# ADFA-5333: record THIS shell's pid. Under setsid it is the session/group leader, so the cancel endpoint
+# can signal the whole group (this script + yarn/node/tar children) with kill(-pid).
+echo $$ > "$PIDFILE" 2>/dev/null || true
 log "rebuild start (branch=$BRANCH, clone=$CLONE_DIR)"
 
 [ -d "$SRC" ]  || fail "source $SRC not found"
@@ -112,6 +125,11 @@ kill "$TESTPID" 2>/dev/null || true; wait "$TESTPID" 2>/dev/null || true; TESTPI
 # 4) promote — swap the dist FIRST and verify it live; only advance source + package.json (and the
 #    nginx vhost) AFTER the live check passes. That way a failed verify rolls back the dist and the
 #    version/source were NEVER touched, so the box can't report a version it isn't actually running.
+# ADFA-5333: entering the non-cancelable window (dist swap + restart). The cancel endpoint refuses once
+# the phase is "promoting"; we also IGNORE stop signals through the swap so a cancel that raced the phase
+# read can't land mid-swap. (EXIT still runs cleanup on normal completion.) Restored after step 5.
+set_phase "promoting"
+trap '' INT TERM
 log "staged build passed — promoting"
 rm -rf "$BACKUP"
 [ -d "$LIVE/dist" ] && cp -a "$LIVE/dist" "$BACKUP"
@@ -156,4 +174,6 @@ else
     rm -rf "$BACKUP"
     set_status "error"
 fi
+# Promote window done — nothing left touches the live dashboard, so signals may be handled normally again.
+trap cleanup EXIT INT TERM
 cleanup

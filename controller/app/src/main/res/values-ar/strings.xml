@@ -1124,6 +1124,9 @@
     <string name="k2go_dash_live_start_failed">تعذّر بدء التحديث. حاول مرة أخرى.</string>
     <string name="k2go_dash_update_started">جارٍ تحديث لوحة المعلومات في الخلفية.</string>
     <string name="k2go_dash_update_channel_name">تحديث لوحة المعلومات</string>
+    <string name="k2go_dash_cancel">إلغاء</string>
+    <string name="k2go_dash_cancel_too_late">التحديث يوشك على الانتهاء ولا يمكن إلغاؤه الآن.</string>
+    <string name="k2go_dash_cancel_failed">تعذّر إلغاء التحديث. سيستمر في العمل.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">نواة النظام · مثبَّتة دائمًا</string>
     <string name="k2go_dash_detail_desc">لوحة التحكم هي نواة واجهة REST API للجهاز (dash-node) — خدمة Node صغيرة على 127.0.0.1:4000، تُقدَّم عبر nginx ويشرف عليها pdsm. تشغّل كل إجراء للمكتبة داخل التطبيق: تصفّح وتنزيل الكتب، إضافة وحذف محتوى Wikipedia وZIM، جلسات Kolibri، الخرائط وحالة النظام. على عكس وحدات المحتوى، لا يمكنك تثبيتها أو إزالتها. تأتي مع التطبيق وموجودة دائمًا. عند توفّر إصدار أحدث، يمكنك إعادة بنائها في مكانها.</string>
@@ -1239,6 +1242,7 @@
     <string name="k2go_busy_restore">توجد استعادة قيد التنفيذ. يرجى الانتظار حتى تنتهي.</string>
     <string name="k2go_busy_install">يوجد تثبيت قيد التنفيذ. يرجى الانتظار حتى ينتهي.</string>
     <string name="k2go_busy_download">يوجد تنزيل قيد التنفيذ. يرجى الانتظار حتى ينتهي.</string>
+    <string name="k2go_busy_dashboard">يجري تحديث لوحة المعلومات. يُرجى الانتظار حتى ينتهي.</string>
     <string name="k2go_pending_title">التنزيلات المعلقة</string>
     <string name="k2go_pending_empty">لا توجد تنزيلات معلقة.</string>
     <string name="k2go_pending_running">يجري تنزيل شيء الآن</string>

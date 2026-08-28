@@ -1125,6 +1125,9 @@
     <string name="k2go_dash_live_start_failed">无法开始更新。请重试。</string>
     <string name="k2go_dash_update_started">正在后台更新仪表板。</string>
     <string name="k2go_dash_update_channel_name">仪表板更新</string>
+    <string name="k2go_dash_cancel">取消</string>
+    <string name="k2go_dash_cancel_too_late">更新即将完成，现在无法取消。</string>
+    <string name="k2go_dash_cancel_failed">无法取消更新。它将继续运行。</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">系统核心 · 始终已安装</string>
     <string name="k2go_dash_detail_desc">仪表板是设备的 REST API 核心（dash-node）——运行在 127.0.0.1:4000 上的一个小型 Node 服务，由 nginx 提供前端、pdsm 监管。它驱动应用内的每一项图书馆操作：浏览和下载图书、添加和删除 Wikipedia 与 ZIM 内容、Kolibri 会话、地图和系统状态。与内容模块不同，你无法安装或移除它。它随应用附带并始终存在。当有更新的构建时，你可以就地重新构建。</string>
@@ -1240,6 +1243,7 @@
     <string name="k2go_busy_restore">恢复正在进行中。请等待其完成。</string>
     <string name="k2go_busy_install">安装正在进行中。请等待其完成。</string>
     <string name="k2go_busy_download">下载正在进行中。请等待其完成。</string>
+    <string name="k2go_busy_dashboard">仪表板更新正在进行。请等待其完成。</string>
     <string name="k2go_pending_title">待处理的下载</string>
     <string name="k2go_pending_empty">没有待处理的下载。</string>
     <string name="k2go_pending_running">正在下载</string>

@@ -1131,6 +1131,9 @@
     <string name="k2go_dash_live_start_failed">Tidak dapat memulai pembaruan. Coba lagi.</string>
     <string name="k2go_dash_update_started">Memperbarui dasbor di latar belakang.</string>
     <string name="k2go_dash_update_channel_name">Pembaruan dasbor</string>
+    <string name="k2go_dash_cancel">Batal</string>
+    <string name="k2go_dash_cancel_too_late">Pembaruan sedang selesai dan tidak dapat dibatalkan sekarang.</string>
+    <string name="k2go_dash_cancel_failed">Tidak dapat membatalkan pembaruan. Pembaruan akan terus berjalan.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Inti sistem · selalu terpasang</string>
     <string name="k2go_dash_detail_desc">Dasbor adalah inti REST API perangkat (dash-node) — layanan Node kecil di 127.0.0.1:4000, disajikan oleh nginx dan diawasi oleh pdsm. Ini menjalankan setiap tindakan pustaka di aplikasi: menjelajahi dan mengunduh Buku, menambah dan menghapus konten Wikipedia dan ZIM, sesi Kolibri, Peta, dan status sistem. Berbeda dengan modul konten, kamu tidak bisa memasang atau menghapusnya. Ini disertakan bersama aplikasi dan selalu ada. Saat build lebih baru tersedia, kamu bisa membangunnya ulang di tempat.</string>
@@ -1246,6 +1249,7 @@
     <string name="k2go_busy_restore">Pemulihan sedang berlangsung. Harap tunggu sampai selesai.</string>
     <string name="k2go_busy_install">Pemasangan sedang berlangsung. Harap tunggu sampai selesai.</string>
     <string name="k2go_busy_download">Unduhan sedang berlangsung. Harap tunggu sampai selesai.</string>
+    <string name="k2go_busy_dashboard">Pembaruan dasbor sedang berlangsung. Harap tunggu hingga selesai.</string>
     <string name="k2go_pending_title">Unduhan tertunda</string>
     <string name="k2go_pending_empty">Tidak ada unduhan tertunda.</string>
     <string name="k2go_pending_running">Sesuatu sedang diunduh sekarang</string>

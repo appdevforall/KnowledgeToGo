@@ -1137,6 +1137,9 @@
     <string name="k2go_dash_live_start_failed">Ажурирање није могло да почне. Покушајте поново.</string>
     <string name="k2go_dash_update_started">Контролна табла се ажурира у позадини.</string>
     <string name="k2go_dash_update_channel_name">Ажурирање контролне табле</string>
+    <string name="k2go_dash_cancel">Откажи</string>
+    <string name="k2go_dash_cancel_too_late">Ажурирање се завршава и не може се отказати сада.</string>
+    <string name="k2go_dash_cancel_failed">Није могуће отказати ажурирање. Наставиће да ради.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Системско језгро · увек инсталирано</string>
     <string name="k2go_dash_detail_desc">Контролна табла је језгро REST API-ја уређаја (dash-node) — мала Node услуга на 127.0.0.1:4000, коју опслужује nginx и надзире pdsm. Покреће сваку радњу библиотеке у апликацији: прегледање и преузимање Књига, додавање и брисање садржаја Wikipedia и ZIM, Kolibri сесије, Мапе и статус система. За разлику од модула садржаја, не можеш је инсталирати ни уклонити. Долази уз апликацију и увек је присутна. Када је доступна новија верзија, можеш је поново изградити на месту.</string>
@@ -1252,6 +1255,7 @@
     <string name="k2go_busy_restore">Враћање је у току. Сачекај да се заврши.</string>
     <string name="k2go_busy_install">Инсталација је у току. Сачекај да се заврши.</string>
     <string name="k2go_busy_download">Преузимање је у току. Сачекај да се заврши.</string>
+    <string name="k2go_busy_dashboard">У току је ажурирање контролне табле. Сачекајте да се заврши.</string>
     <string name="k2go_pending_title">Преузимања на чекању</string>
     <string name="k2go_pending_empty">Нема преузимања на чекању.</string>
     <string name="k2go_pending_running">Нешто се сада преузима</string>

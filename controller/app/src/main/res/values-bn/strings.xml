@@ -1137,6 +1137,9 @@
     <string name="k2go_dash_live_start_failed">আপডেট শুরু করা যায়নি। আবার চেষ্টা করুন।</string>
     <string name="k2go_dash_update_started">ড্যাশবোর্ড ব্যাকগ্রাউন্ডে আপডেট হচ্ছে।</string>
     <string name="k2go_dash_update_channel_name">ড্যাশবোর্ড আপডেট</string>
+    <string name="k2go_dash_cancel">বাতিল</string>
+    <string name="k2go_dash_cancel_too_late">আপডেটটি শেষ হচ্ছে এবং এখন বাতিল করা যাবে না।</string>
+    <string name="k2go_dash_cancel_failed">আপডেট বাতিল করা যায়নি। এটি চলতে থাকবে।</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">সিস্টেম কোর · সর্বদা ইনস্টল করা</string>
     <string name="k2go_dash_detail_desc">ড্যাশবোর্ড হলো বক্সের REST API কোর (dash-node) — 127.0.0.1:4000-এ একটি ছোট Node পরিষেবা, যা nginx দিয়ে পরিবেশিত ও pdsm দিয়ে তত্ত্বাবধান করা হয়। এটি অ্যাপের প্রতিটি লাইব্রেরি কাজ চালায়: বই ব্রাউজ ও ডাউনলোড, Wikipedia ও ZIM কনটেন্ট যোগ ও মুছে ফেলা, Kolibri সেশন, মানচিত্র ও সিস্টেম স্ট্যাটাস। কনটেন্ট মডিউলের বিপরীতে, আপনি এটি ইনস্টল বা সরাতে পারবেন না। এটি অ্যাপের সাথে আসে এবং সবসময় থাকে। নতুন বিল্ড উপলব্ধ হলে, আপনি এটি জায়গাতেই আবার তৈরি করতে পারেন।</string>
@@ -1252,6 +1255,7 @@
     <string name="k2go_busy_restore">একটি পুনরুদ্ধার চলছে। অনুগ্রহ করে শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
     <string name="k2go_busy_install">একটি ইনস্টল চলছে। অনুগ্রহ করে শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
     <string name="k2go_busy_download">একটি ডাউনলোড চলছে। অনুগ্রহ করে শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
+    <string name="k2go_busy_dashboard">ড্যাশবোর্ড আপডেট চলছে। শেষ হওয়া পর্যন্ত অপেক্ষা করুন।</string>
     <string name="k2go_pending_title">মুলতুবি ডাউনলোড</string>
     <string name="k2go_pending_empty">কোনো মুলতুবি ডাউনলোড নেই।</string>
     <string name="k2go_pending_running">এখন কিছু ডাউনলোড হচ্ছে</string>

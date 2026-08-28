@@ -51,12 +51,15 @@ public final class DashboardRebuildService extends Service {
     private static final int NOTIFICATION_ID = 10;   // app-global; distinct from the other services
 
     public static final String ACTION_START = "org.iiab.controller.DASHBOARD_UPDATE_START";
+    /** ADFA-5333: request a clean cancel (from the notification action or the card button). */
+    public static final String ACTION_CANCEL = "org.iiab.controller.DASHBOARD_UPDATE_CANCEL";
     /** App-internal broadcast on every state change so a visible card can reflect it live. */
     public static final String ACTION_STATE = "org.iiab.controller.DASHBOARD_UPDATE_STATE";
     public static final String EXTRA_STATE = "state";
     public static final String STATE_RUNNING = "running";
     public static final String STATE_DONE = "done";
     public static final String STATE_ERROR = "error";
+    public static final String STATE_CANCELLED = "cancelled";
 
     private static final long POLL_MS = 2500L;
 
@@ -66,7 +69,8 @@ public final class DashboardRebuildService extends Service {
     public static boolean isRunning() { return RUNNING; }
 
     private final Handler poller = new Handler(Looper.getMainLooper());
-    private boolean started = false;   // one rebuild per service instance; ignore re-delivered starts
+    private boolean started = false;    // one rebuild per service instance; ignore re-delivered starts
+    private boolean cancelling = false; // a cancel request is in flight; ignore repeats
 
     /** Kick the background live update. Safe to call again while running — the box reports 409 and the
      *  service just keeps polling the in-flight rebuild (so a card can re-own a lost session by calling
@@ -82,9 +86,11 @@ public final class DashboardRebuildService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Every startForegroundService() must be answered by startForeground(), including a redundant
-        // start delivered while a rebuild is already in flight (user re-taps Rebuild) — otherwise the
-        // system raises "did not call startForeground". It's idempotent, so satisfy the contract first.
+        // start delivered while a rebuild is already in flight (user re-taps Rebuild) or a cancel request
+        // — otherwise the system raises "did not call startForeground". It's idempotent, so satisfy the
+        // contract first.
         startForeground(NOTIFICATION_ID, buildOngoing());
+        if (ACTION_CANCEL.equals(intent != null ? intent.getAction() : null)) { requestCancel(); return START_NOT_STICKY; }
         if (started) return START_NOT_STICKY;
         started = true;
         RUNNING = true;
@@ -94,6 +100,46 @@ public final class DashboardRebuildService extends Service {
             @Override public void onErr(String message) { finish(STATE_ERROR, R.string.k2go_dash_live_start_failed); }
         });
         return START_NOT_STICKY;
+    }
+
+    /** ADFA-5333: ask the box to cancel. On success stop cleanly (the box left the live dashboard as it
+     *  was); if it's too late (promoting) or unreachable, keep running and let the update finish — the
+     *  swap is seconds away, so a half-cancel is worse than letting it complete. */
+    private void requestCancel() {
+        if (cancelling) return;
+        cancelling = true;
+        DashboardClient.rebuildCancel(new DashboardClient.RebuildCancelCb() {
+            @Override public void onResult(boolean cancelled, boolean promoting) {
+                if (cancelled) { finishCancelled(); return; }
+                cancelling = false;
+                // Not cancelled. If this instance isn't actually running a rebuild (a stale cancel-only
+                // start on an old notification), clear the device side so no orphan notification lingers.
+                if (!started) { finishCancelled(); return; }
+                // Still updating: re-assert RUNNING so a visible card re-enables its Cancel, then say why.
+                broadcastState(STATE_RUNNING);
+                toast(promoting ? R.string.k2go_dash_cancel_too_late : R.string.k2go_dash_cancel_failed);
+            }
+            @Override public void onErr(String message) {
+                cancelling = false;
+                if (!started) { finishCancelled(); return; }   // couldn't reach the box, nothing to keep
+                broadcastState(STATE_RUNNING);                  // update keeps going; let the card retry
+                toast(R.string.k2go_dash_cancel_failed);
+            }
+        });
+    }
+
+    /** Cancelled cleanly: drop the poll and the notification entirely (leave nothing behind) and tell a
+     *  visible card to re-enable Rebuild. */
+    private void finishCancelled() {
+        poller.removeCallbacksAndMessages(null);
+        RUNNING = false;
+        stopForeground(Service.STOP_FOREGROUND_REMOVE);
+        broadcastState(STATE_CANCELLED);
+        stopSelf();
+    }
+
+    private void toast(@StringRes int msgRes) {
+        android.widget.Toast.makeText(getApplicationContext(), msgRes, android.widget.Toast.LENGTH_LONG).show();
     }
 
     /** Poll the box until it reports a terminal state. No time cap: completion is the server's signal
@@ -152,8 +198,11 @@ public final class DashboardRebuildService extends Service {
     }
 
     /** Ongoing "updating…" notification. Not dismissible and does NOT auto-cancel on tap — while the
-     *  update runs it stays put as the way back to the in-app indicator. */
+     *  update runs it stays put as the way back to the in-app indicator. Carries a Cancel action. */
     private Notification buildOngoing() {
+        PendingIntent cancel = PendingIntent.getService(this, 1,
+                new Intent(this, DashboardRebuildService.class).setAction(ACTION_CANCEL),
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(getString(R.string.k2go_dash_live_title))
                 .setContentText(getString(R.string.k2go_dash_live_running))
@@ -163,6 +212,7 @@ public final class DashboardRebuildService extends Service {
                 .setAutoCancel(false)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setOnlyAlertOnce(true)
+                .addAction(0, getString(R.string.k2go_dash_cancel), cancel)
                 .build();
     }
 

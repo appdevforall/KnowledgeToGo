@@ -1144,6 +1144,9 @@
     <string name="k2go_dash_live_start_failed">Kò lè bẹ̀rẹ̀ àtúnṣe. Gbìyànjú lẹ́ẹ̀kansi.</string>
     <string name="k2go_dash_update_started">Ń mú dáṣíbọ̀ọ̀dù dójú ìwọ̀n ní ẹ̀yìn.</string>
     <string name="k2go_dash_update_channel_name">Ìmúdójúìwọ̀n dáṣíbọ̀ọ̀dù</string>
+    <string name="k2go_dash_cancel">Fagilee</string>
+    <string name="k2go_dash_cancel_too_late">Ìmúdójúìwọ̀n náà ń parí, kò sì ṣeé fagilee báyìí.</string>
+    <string name="k2go_dash_cancel_failed">Kò ṣeé fagilee ìmúdójúìwọ̀n náà. Yóò máa bá a lọ.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Kókó ètò · fi sori ẹrọ nígbà gbogbo</string>
     <string name="k2go_dash_detail_desc">Dáṣíbọ́ọ̀dù ni kókó REST API ẹ̀rọ náà (dash-node) — iṣẹ́ Node kékeré kan lórí 127.0.0.1:4000, tí nginx ń ṣe àgbékalẹ̀ tí pdsm sì ń bójú tó. Ó ń darí gbogbo iṣẹ́ ilé-ìkàwé nínú ìṣàmúlò: ṣíṣàwárí àti gbígba àwọn Ìwé sílẹ̀, fifi kún àti pípa àkóónú Wikipedia àti ZIM rẹ́, àwọn ìpàdé Kolibri, Máàpù àti ipò ètò. Yàtọ̀ sí àwọn módùlù àkóónú, o kò lè fi í sórí ẹ̀rọ tàbí yọ ọ́ kúrò. Ó ń wá pẹ̀lú ìṣàmúlò náà ó sì máa ń wà nígbà gbogbo. Nígbà tí ẹ̀dà tuntun bá wà, o lè tún un kọ́ ní ibẹ̀.</string>
@@ -1259,6 +1262,7 @@
     <string name="k2go_busy_restore">Ìmúpadàbọ̀ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_busy_install">Fifi-sórí-ẹ̀rọ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_busy_download">Ìgbàsílẹ̀ kan ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
+    <string name="k2go_busy_dashboard">Ìmúdójúìwọ̀n dáṣíbọ̀ọ̀dù ń lọ lọ́wọ́. Jọ̀wọ́ dúró kí ó parí.</string>
     <string name="k2go_pending_title">Àwọn ìgbàsílẹ̀ tí ń dúró</string>
     <string name="k2go_pending_empty">Kò sí ìgbàsílẹ̀ tí ń dúró.</string>
     <string name="k2go_pending_running">Ohun kan ń gbà sílẹ̀ báyìí</string>

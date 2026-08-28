@@ -244,6 +244,11 @@ apiRouter.post('/kiwix/delete', (req: Request, res: Response): void => {
 // restarting dash-node mid-run never kills it. Declared before the generic /:type/* routes.
 const REBUILD_SCRIPT = '/opt/iiab-android/tools/rebuild-dashboard.sh';
 const REBUILD_STATUS_FILE = '/var/run/dash-rebuild.status';
+// ADFA-5333: cancel support. The script writes its phase (building | promoting) and its session-leader
+// pid; cancel is safe (and allowed) only while building — that window never touches the live dashboard.
+const REBUILD_PHASE_FILE = '/var/run/dash-rebuild.phase';
+const REBUILD_PID_FILE = '/var/run/dash-rebuild.pid';
+const REBUILD_LOCK_DIR = '/var/run/dash-rebuild.lock';
 // ADFA-5051: the remote branch that update-check compares against AND the rebuild pulls. Defaults to
 // mainline; set K2GO_DASH_BRANCH in the dash-node env to point a test box at a feature branch (e.g.
 // to exercise the live self-update before merging to main) without touching code. Keep it unset in
@@ -289,6 +294,41 @@ apiRouter.post('/system/dashboard/rebuild', (_req: Request, res: Response): void
         res.status(202).json({ ok: true, state: 'running' });
     } catch (e: any) {
         res.status(500).json({ error: e?.message || 'could not start rebuild' });
+    }
+});
+
+// ADFA-5333: cancel an in-flight rebuild cleanly. Safe only while "building" (steps 1-3: git/build/smoke,
+// which never touch the live dashboard) — we signal the detached session group (script + yarn/node) to
+// stop, its EXIT/TERM trap purges staging, and we reset the state we own so the live version is left
+// exactly as it was. Refused once "promoting" (the short dist-swap + restart window) so the swap is never
+// interrupted mid-flight, and a no-op when nothing is running.
+apiRouter.post('/system/dashboard/rebuild/cancel', (_req: Request, res: Response): void => {
+    let state = 'idle';
+    try { state = fs.readFileSync(REBUILD_STATUS_FILE, 'utf8').trim() || 'idle'; } catch { /* none */ }
+    if (state !== 'running') { res.status(409).json({ error: 'no rebuild running', cancelled: false }); return; }
+    let phase = 'building';
+    try { phase = fs.readFileSync(REBUILD_PHASE_FILE, 'utf8').trim() || 'building'; } catch { /* default building */ }
+    if (phase === 'promoting') { res.status(409).json({ error: 'promoting', promoting: true, cancelled: false }); return; }
+    let pid = 0;
+    try { pid = parseInt(fs.readFileSync(REBUILD_PID_FILE, 'utf8').trim(), 10); } catch { /* no pid yet */ }
+    if (!Number.isFinite(pid) || pid <= 1) {
+        // The run has just started (status is 'running') but hasn't recorded its session pid yet, so we
+        // can't signal it. Do NOT claim success or touch the status — the app can retry in a moment.
+        res.status(409).json({ error: 'cancel not ready', cancelled: false }); return;
+    }
+    try {
+        // Signal the whole detached session group; its EXIT/TERM trap purges staging + removes lock/phase/pid.
+        try { process.kill(-pid, 'SIGTERM'); } catch { /* group already gone */ }
+        try { process.kill(pid, 'SIGTERM'); } catch { /* leader already gone */ }
+        // We own the status file, so reset it to idle (a stopped build is "nothing running", not an error).
+        // Best-effort lock rmdir in case the trap is slow, so a fresh rebuild can start without wedging.
+        try { fs.writeFileSync(REBUILD_STATUS_FILE, 'idle'); } catch { /* best effort */ }
+        try { fs.rmdirSync(REBUILD_LOCK_DIR); } catch { /* trap likely removed it */ }
+        try { fs.unlinkSync(REBUILD_PHASE_FILE); } catch { /* trap may have removed it */ }
+        try { fs.unlinkSync(REBUILD_PID_FILE); } catch { /* trap may have removed it */ }
+        res.status(200).json({ ok: true, cancelled: true });
+    } catch (e: any) {
+        res.status(500).json({ error: e?.message || 'cancel failed', cancelled: false });
     }
 });
 

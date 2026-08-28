@@ -376,6 +376,8 @@ public final class KolibriConfirmFragment extends Fragment {
      * be left with silence, so the refusal is shown.
      */
     private void startLive(List<Channel> chosen) {
+        // ADFA-5333: a live dashboard update restarts dash-node and would break the seed — defer.
+        if (org.iiab.controller.redesign.DashboardRebuild.blockedByUpdate(confirm)) return;
         final List<Channel> toDownload = missingOnly(chosen);
         if (toDownload.isEmpty()) {
             refuse(R.string.k2go_kolibri_nothing_to_add);

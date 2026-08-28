@@ -1124,6 +1124,9 @@
     <string name="k2go_dash_live_start_failed">A frissítést nem sikerült elindítani. Próbálja újra.</string>
     <string name="k2go_dash_update_started">Az irányítópult frissítése a háttérben.</string>
     <string name="k2go_dash_update_channel_name">Irányítópult frissítése</string>
+    <string name="k2go_dash_cancel">Mégse</string>
+    <string name="k2go_dash_cancel_too_late">A frissítés befejeződik, és most nem szakítható meg.</string>
+    <string name="k2go_dash_cancel_failed">A frissítést nem sikerült megszakítani. Tovább fut.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rendszermag · mindig telepítve</string>
     <string name="k2go_dash_detail_desc">Az irányítópult a box REST API-magja (dash-node) — egy kis Node szolgáltatás a 127.0.0.1:4000 címen, nginx mögött, pdsm által felügyelve. Minden appon belüli könyvtárműveletet ez hajt: Könyvek böngészése és letöltése, Wikipédia- és ZIM-tartalom hozzáadása és törlése, Kolibri-munkamenetek, Térképek és rendszerállapot. A tartalommoduloktól eltérően nem telepítheted és nem távolíthatod el. Az appal érkezik, és mindig jelen van. Ha újabb build érhető el, helyben újraépítheted.</string>
@@ -1239,6 +1242,7 @@
     <string name="k2go_busy_restore">Visszaállítás van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
     <string name="k2go_busy_install">Telepítés van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
     <string name="k2go_busy_download">Letöltés van folyamatban. Kérlek, várd meg, amíg befejeződik.</string>
+    <string name="k2go_busy_dashboard">Irányítópult-frissítés van folyamatban. Kérjük, várja meg, amíg befejeződik.</string>
     <string name="k2go_pending_title">Függőben lévő letöltések</string>
     <string name="k2go_pending_empty">Nincs függőben lévő letöltés.</string>
     <string name="k2go_pending_running">Most letöltődik valami</string>

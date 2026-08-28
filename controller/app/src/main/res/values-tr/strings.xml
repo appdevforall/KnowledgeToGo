@@ -1124,6 +1124,9 @@
     <string name="k2go_dash_live_start_failed">Güncelleme başlatılamadı. Tekrar deneyin.</string>
     <string name="k2go_dash_update_started">Kontrol paneli arka planda güncelleniyor.</string>
     <string name="k2go_dash_update_channel_name">Kontrol paneli güncellemesi</string>
+    <string name="k2go_dash_cancel">İptal</string>
+    <string name="k2go_dash_cancel_too_late">Güncelleme tamamlanıyor ve şimdi iptal edilemez.</string>
+    <string name="k2go_dash_cancel_failed">Güncelleme iptal edilemedi. Çalışmaya devam edecek.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Sistem çekirdeği · her zaman yüklü</string>
     <string name="k2go_dash_detail_desc">Pano, cihazın REST API çekirdeğidir (dash-node) — 127.0.0.1:4000 üzerinde küçük bir Node hizmeti, nginx ile sunulur ve pdsm ile denetlenir. Uygulamadaki her kitaplık işlemini çalıştırır: Kitaplara göz atma ve indirme, Wikipedia ve ZIM içeriği ekleme ve silme, Kolibri oturumları, Haritalar ve sistem durumu. İçerik modüllerinin aksine onu kuramaz veya kaldıramazsın. Uygulamayla gelir ve her zaman vardır. Daha yeni bir sürüm mevcut olduğunda onu yerinde yeniden oluşturabilirsin.</string>
@@ -1239,6 +1242,7 @@
     <string name="k2go_busy_restore">Bir geri yükleme sürüyor. Lütfen bitmesini bekle.</string>
     <string name="k2go_busy_install">Bir kurulum sürüyor. Lütfen bitmesini bekle.</string>
     <string name="k2go_busy_download">Bir indirme sürüyor. Lütfen bitmesini bekle.</string>
+    <string name="k2go_busy_dashboard">Bir kontrol paneli güncellemesi sürüyor. Lütfen bitmesini bekleyin.</string>
     <string name="k2go_pending_title">Bekleyen indirmeler</string>
     <string name="k2go_pending_empty">Bekleyen indirme yok.</string>
     <string name="k2go_pending_running">Şu anda bir şey indiriliyor</string>

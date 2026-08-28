@@ -1200,6 +1200,9 @@
     <string name="k2go_dash_live_start_failed">Не удалось запустить обновление. Повторите попытку.</string>
     <string name="k2go_dash_update_started">Панель обновляется в фоне.</string>
     <string name="k2go_dash_update_channel_name">Обновление панели</string>
+    <string name="k2go_dash_cancel">Отмена</string>
+    <string name="k2go_dash_cancel_too_late">Обновление завершается, отменить его сейчас нельзя.</string>
+    <string name="k2go_dash_cancel_failed">Не удалось отменить обновление. Оно продолжит выполняться.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Ядро системы · всегда установлено</string>
     <string name="k2go_dash_detail_desc">Панель — это ядро REST API устройства (dash-node): небольшая служба Node на 127.0.0.1:4000, обслуживаемая nginx и управляемая pdsm. Она обеспечивает все действия библиотеки в приложении: просмотр и загрузку Книг, добавление и удаление контента Wikipedia и ZIM, сеансы Kolibri, Карты и статус системы. В отличие от модулей контента, её нельзя установить или удалить. Она поставляется с приложением и всегда присутствует. Когда доступна новая сборка, вы можете пересобрать её на месте.</string>
@@ -1315,6 +1318,7 @@
     <string name="k2go_busy_restore">Выполняется восстановление. Дождитесь завершения.</string>
     <string name="k2go_busy_install">Выполняется установка. Дождитесь завершения.</string>
     <string name="k2go_busy_download">Выполняется загрузка. Дождитесь завершения.</string>
+    <string name="k2go_busy_dashboard">Выполняется обновление панели. Дождитесь завершения.</string>
     <string name="k2go_pending_title">Ожидающие загрузки</string>
     <string name="k2go_pending_empty">Нет ожидающих загрузок.</string>
     <string name="k2go_pending_running">Сейчас что-то загружается</string>

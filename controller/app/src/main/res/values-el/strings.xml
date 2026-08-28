@@ -1131,6 +1131,9 @@
     <string name="k2go_dash_live_start_failed">Δεν ήταν δυνατή η έναρξη της ενημέρωσης. Δοκιμάστε ξανά.</string>
     <string name="k2go_dash_update_started">Ο πίνακας ενημερώνεται στο παρασκήνιο.</string>
     <string name="k2go_dash_update_channel_name">Ενημέρωση πίνακα</string>
+    <string name="k2go_dash_cancel">Ακύρωση</string>
+    <string name="k2go_dash_cancel_too_late">Η ενημέρωση ολοκληρώνεται και δεν μπορεί να ακυρωθεί τώρα.</string>
+    <string name="k2go_dash_cancel_failed">Δεν ήταν δυνατή η ακύρωση της ενημέρωσης. Θα συνεχιστεί.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Πυρήνας συστήματος · πάντα εγκατεστημένος</string>
     <string name="k2go_dash_detail_desc">Ο πίνακας ελέγχου είναι ο πυρήνας REST API της συσκευής (dash-node) — μια μικρή υπηρεσία Node στο 127.0.0.1:4000, που εξυπηρετείται από nginx και εποπτεύεται από pdsm. Τροφοδοτεί κάθε ενέργεια της βιβλιοθήκης στην εφαρμογή: περιήγηση και λήψη Βιβλίων, προσθήκη και διαγραφή περιεχομένου Wikipedia και ZIM, συνεδρίες Kolibri, Χάρτες και κατάσταση συστήματος. Σε αντίθεση με τα module περιεχομένου, δεν μπορείς να το εγκαταστήσεις ή να το αφαιρέσεις. Έρχεται με την εφαρμογή και είναι πάντα παρόν. Όταν είναι διαθέσιμη νεότερη έκδοση, μπορείς να το ξαναχτίσεις επιτόπου.</string>
@@ -1246,6 +1249,7 @@
     <string name="k2go_busy_restore">Μια επαναφορά είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
     <string name="k2go_busy_install">Μια εγκατάσταση είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
     <string name="k2go_busy_download">Μια λήψη είναι σε εξέλιξη. Περίμενε να ολοκληρωθεί.</string>
+    <string name="k2go_busy_dashboard">Εκτελείται ενημέρωση του πίνακα. Περιμένετε να ολοκληρωθεί.</string>
     <string name="k2go_pending_title">Εκκρεμείς λήψεις</string>
     <string name="k2go_pending_empty">Δεν υπάρχουν εκκρεμείς λήψεις.</string>
     <string name="k2go_pending_running">Γίνεται λήψη τώρα</string>

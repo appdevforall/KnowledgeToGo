@@ -1144,6 +1144,9 @@
     <string name="k2go_dash_live_start_failed">புதுப்பிப்பைத் தொடங்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.</string>
     <string name="k2go_dash_update_started">டாஷ்போர்டு பின்னணியில் புதுப்பிக்கப்படுகிறது.</string>
     <string name="k2go_dash_update_channel_name">டாஷ்போர்டு புதுப்பிப்பு</string>
+    <string name="k2go_dash_cancel">ரத்து</string>
+    <string name="k2go_dash_cancel_too_late">புதுப்பிப்பு முடிவடைகிறது, இப்போது ரத்து செய்ய முடியாது.</string>
+    <string name="k2go_dash_cancel_failed">புதுப்பிப்பை ரத்து செய்ய முடியவில்லை. அது தொடர்ந்து இயங்கும்.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">கணினி கரு · எப்போதும் நிறுவப்பட்டது</string>
     <string name="k2go_dash_detail_desc">டாஷ்போர்டு என்பது சாதனத்தின் REST API மையம் (dash-node) — 127.0.0.1:4000 இல் இயங்கும் ஒரு சிறிய Node சேவை, nginx வழங்குகிறது, pdsm மேற்பார்வையிடுகிறது. இது ஆப்பில் ஒவ்வொரு நூலகச் செயலையும் இயக்குகிறது: புத்தகங்களை உலாவுதல் மற்றும் பதிவிறக்குதல், Wikipedia மற்றும் ZIM உள்ளடக்கத்தைச் சேர்த்தல் மற்றும் நீக்குதல், Kolibri அமர்வுகள், வரைபடங்கள் மற்றும் சிஸ்டம் நிலை. உள்ளடக்கத் தொகுதிகளைப் போலல்லாமல், அதை நிறுவவோ அகற்றவோ முடியாது. அது ஆப்புடன் வருகிறது, எப்போதும் இருக்கும். புதிய பதிப்பு கிடைக்கும்போது, அதை அந்த இடத்திலேயே மீண்டும் உருவாக்கலாம்.</string>
@@ -1259,6 +1262,7 @@
     <string name="k2go_busy_restore">ஒரு மீட்டெடுப்பு நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_busy_install">ஒரு நிறுவல் நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_busy_download">ஒரு பதிவிறக்கம் நடந்துகொண்டிருக்கிறது. முடியும் வரை காத்திருக்கவும்.</string>
+    <string name="k2go_busy_dashboard">டாஷ்போர்டு புதுப்பிப்பு நடைபெறுகிறது. முடியும் வரை காத்திருக்கவும்.</string>
     <string name="k2go_pending_title">நிலுவையிலுள்ள பதிவிறக்கங்கள்</string>
     <string name="k2go_pending_empty">நிலுவையில் பதிவிறக்கங்கள் இல்லை.</string>
     <string name="k2go_pending_running">இப்போது ஏதோ பதிவிறக்கப்படுகிறது</string>

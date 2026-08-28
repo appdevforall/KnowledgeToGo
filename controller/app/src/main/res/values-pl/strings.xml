@@ -1134,6 +1134,9 @@
     <string name="k2go_dash_live_start_failed">Nie można rozpocząć aktualizacji. Spróbuj ponownie.</string>
     <string name="k2go_dash_update_started">Aktualizowanie pulpitu w tle.</string>
     <string name="k2go_dash_update_channel_name">Aktualizacja pulpitu</string>
+    <string name="k2go_dash_cancel">Anuluj</string>
+    <string name="k2go_dash_cancel_too_late">Aktualizacja się kończy i nie można jej teraz anulować.</string>
+    <string name="k2go_dash_cancel_failed">Nie udało się anulować aktualizacji. Będzie kontynuowana.</string>
     <string name="k2go_dash_detail_title">Dashboard (REST API)</string>
     <string name="k2go_dash_detail_sub">Rdzeń systemu · zawsze zainstalowany</string>
     <string name="k2go_dash_detail_desc">Panel to rdzeń REST API urządzenia (dash-node) — mała usługa Node na 127.0.0.1:4000, obsługiwana przez nginx i nadzorowana przez pdsm. Zasila każdą akcję biblioteki w aplikacji: przeglądanie i pobieranie Książek, dodawanie i usuwanie treści Wikipedii i ZIM, sesje Kolibri, Mapy i stan systemu. W przeciwieństwie do modułów treści nie możesz go zainstalować ani usunąć. Jest dołączony do aplikacji i zawsze obecny. Gdy dostępna jest nowsza kompilacja, możesz go przebudować w miejscu.</string>
@@ -1249,6 +1252,7 @@
     <string name="k2go_busy_restore">Trwa przywracanie. Poczekaj na zakończenie.</string>
     <string name="k2go_busy_install">Trwa instalacja. Poczekaj na zakończenie.</string>
     <string name="k2go_busy_download">Trwa pobieranie. Poczekaj na zakończenie.</string>
+    <string name="k2go_busy_dashboard">Trwa aktualizacja pulpitu. Poczekaj na jej zakończenie.</string>
     <string name="k2go_pending_title">Oczekujące pobierania</string>
     <string name="k2go_pending_empty">Brak oczekujących pobierań.</string>
     <string name="k2go_pending_running">Coś jest teraz pobierane</string>

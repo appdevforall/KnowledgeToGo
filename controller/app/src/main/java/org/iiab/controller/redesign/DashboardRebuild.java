@@ -111,6 +111,19 @@ public final class DashboardRebuild {
         if (host.isAdded()) Snackbars.make(anchor, R.string.k2go_dash_update_started).show();
     }
 
+    /** ADFA-5333: reverse gate for LIVE content downloads (ZIM/Books/Kolibri). Those run on the server
+     *  and don't consult EnvironmentLock, so they need an explicit check: a dashboard update in flight
+     *  restarts dash-node and would break an in-flight download. Returns true (and shows a refusal on
+     *  {@code anchor}) when a download must NOT start now. Deep-env ops don't need this — they read the
+     *  same fact through EnvironmentLock.isHeld (Holder.DASHBOARD). */
+    public static boolean blockedByUpdate(@NonNull View anchor) {
+        if (DashboardRebuildService.isRunning()) {
+            Snackbars.make(anchor, R.string.k2go_busy_dashboard).show();
+            return true;
+        }
+        return false;
+    }
+
     /** True when the device reports an internet-capable active network. Unknown -> true (let the
      *  preflight decide), matching the previous inline check in ModuleHubFragment. */
     public static boolean hasInternet(@NonNull Context ctx) {
