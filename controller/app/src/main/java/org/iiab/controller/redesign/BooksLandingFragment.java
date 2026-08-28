@@ -68,6 +68,11 @@ public class BooksLandingFragment extends Fragment {
     // live download service. "In your books" here means "already in your setup order".
     private boolean wizard = false;
 
+    // ADFA-5329: incremental "Load more" — BATCH titles per tap; hasMore/loading drive the footer.
+    private static final int BATCH = 40;
+    private boolean hasMore = false;
+    private boolean loading = false;
+
     /** Open the Books screen in wizard (pre-install, offline) mode. */
     public static BooksLandingFragment newInstance(boolean wizard) {
         BooksLandingFragment f = new BooksLandingFragment();
@@ -229,27 +234,51 @@ public class BooksLandingFragment extends Fragment {
         });
     }
 
+    /** (Re)load the first batch — called on open and whenever the filter, search or language changes. */
     private void loadBooks() {
-        android.util.Log.d("K2Go-Books", "loadBooks wizard=" + wizard + " filter=" + filter + " lang=" + lang + " q=" + query);
-        status.setVisibility(View.VISIBLE);
-        status.setText(getString(R.string.k2go_books_loading));
-        grid.removeAllViews();
+        hasMore = true;
+        fetchBatch(0, false);
+    }
+
+    /** ADFA-5329: append the next batch on demand ("Load more"). */
+    private void loadMore() {
+        if (loading || !hasMore) return;
+        fetchBatch(books.size(), true);
+    }
+
+    private void fetchBatch(int offset, boolean append) {
+        android.util.Log.d("K2Go-Books", "fetchBatch off=" + offset + " append=" + append
+                + " wizard=" + wizard + " filter=" + filter + " lang=" + lang + " q=" + query);
+        loading = true;
+        if (!append) {
+            books.clear();
+            status.setVisibility(View.VISIBLE);
+            status.setText(getString(R.string.k2go_books_loading));
+            grid.removeAllViews();
+        } else {
+            render();   // show the "Loading…" footer while the next batch arrives
+        }
         BooksClient.ArrayCb cb = new BooksClient.ArrayCb() {
             @Override public void onOk(JSONArray rows) {
                 if (!isAdded()) return;
-                books.clear();
+                loading = false;
+                if (!append) books.clear();
                 for (int i = 0; i < rows.length(); i++) { JSONObject b = rows.optJSONObject(i); if (b != null) books.add(b); }
+                // The local library returns everything at once; a short batch means we hit the end.
+                hasMore = !isLocal() && rows.length() >= BATCH;
                 render();
             }
             @Override public void onErr(String m) {
                 if (!isAdded()) return;
+                loading = false;
+                if (append) { render(); return; }   // keep what we have; the Load more stays for a retry
                 status.setVisibility(View.VISIBLE);
                 status.setText(getString(wizard ? R.string.k2go_books_offline_error : R.string.k2go_books_unavailable));
             }
         };
-        if (wizard) BooksCatalogAsset.search(requireContext(), query, lang, 40, cb);
+        if (wizard) BooksCatalogAsset.search(requireContext(), query, lang, offset, BATCH, cb);
         else if (isLocal()) BooksClient.library(cb);
-        else BooksClient.search(query, filter, lang, 40, cb);
+        else BooksClient.search(query, filter, lang, offset, BATCH, cb);
     }
 
     private boolean inLibrary(JSONObject b) {
@@ -279,7 +308,49 @@ public class BooksLandingFragment extends Fragment {
                 row.addView(pad, new LinearLayout.LayoutParams(0, 1, 1f));
             }
         }
+        appendPaginationFooter();   // ADFA-5329: Load more / loading / end-of-list
         refreshFooter();
+    }
+
+    /** ADFA-5329: the "Load more" / loading / end-of-list footer, appended under the grid (inside the
+     *  scroll, above the fixed Add bar). Not shown for the local library, which returns all rows. */
+    private void appendPaginationFooter() {
+        if (isLocal() || books.isEmpty()) return;
+        if (loading) {
+            grid.addView(footerText(getString(R.string.k2go_books_loading), false));
+            return;
+        }
+        if (hasMore) {
+            grid.addView(footerText(getString(R.string.k2go_books_showing_fmt, books.size()), false));
+            TextView more = footerText(getString(R.string.k2go_books_load_more), true);
+            more.setOnClickListener(v -> loadMore());
+            grid.addView(more);
+        } else {
+            grid.addView(footerText(getString(R.string.k2go_books_all_fmt, books.size()), false));
+        }
+    }
+
+    private TextView footerText(String text, boolean asButton) {
+        TextView t = new TextView(requireContext());
+        t.setText(text);
+        t.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.setMargins(px(8), px(10), px(8), px(6));
+        t.setLayoutParams(lp);
+        if (asButton) {
+            t.setPadding(px(10), px(12), px(10), px(12));
+            t.setBackgroundResource(R.drawable.k2go_getmore_bg);
+            t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyLarge);
+            t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_teal));   // after appearance
+            t.setClickable(true);
+            t.setFocusable(true);
+        } else {
+            t.setPadding(px(10), px(6), px(10), px(6));
+            t.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodySmall);
+            t.setTextColor(ContextCompat.getColor(requireContext(), R.color.k2go_muted));   // after appearance
+        }
+        return t;
     }
 
     /** Cover colors chosen so a card never repeats its left neighbor's or the one above it (2-col
