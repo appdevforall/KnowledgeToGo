@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Rendszer",
     "theme_light": "Világos",
     "theme_dark": "Sötét",
-    "backend_error": "A backend szerver nem válaszol. Ellenőrizze, hogy elindult-e. Nyissa meg a Termux alkalmazást és futtassa"
+    "backend_error": "A K2Go szerver nem válaszol. Győződj meg róla, hogy a K2Go fut a gazdaeszközön, és hogy az eszközöd ugyanazon a Wi-Fi-n van vagy csatlakozik a hotspotjához."
 };

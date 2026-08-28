@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "시스템",
     "theme_light": "라이트",
     "theme_dark": "다크",
-    "backend_error": "백엔드 서버가 응답하지 않습니다. 서버가 시작되었는지 확인하세요. Termux 앱을 열고 다음을 실행하세요"
+    "backend_error": "K2Go 서버가 응답하지 않습니다. 호스트 기기에서 K2Go가 실행 중인지, 그리고 사용 중인 기기가 같은 Wi-Fi에 있거나 해당 핫스팟에 연결되어 있는지 확인하세요."
 };

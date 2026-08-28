@@ -16,5 +16,5 @@ window.i18n = {
     "theme_system": "Sisteminė",
     "theme_light": "Šviesi",
     "theme_dark": "Tamsi",
-    "backend_error": "Vidinis serveris neatsako. Įsitikinkite, kad jis paleistas. Atidarykite Termux programėlę ir paleiskite"
+    "backend_error": "K2Go serveris neatsako. Įsitikinkite, kad K2Go veikia pagrindiniame įrenginyje ir kad jūsų įrenginys yra tame pačiame Wi-Fi arba prisijungęs prie jo viešosios interneto prieigos taško."
 };
