@@ -1361,7 +1361,7 @@ public class SetupProgressActivity extends AppCompatActivity implements org.iiab
                 .setMessage(R.string.k2go_mod_cancel_body)
                 .setNegativeButton(R.string.k2go_mod_cancel_dismiss, null)
                 .setPositiveButton(R.string.k2go_mod_cancel_confirm, (d, w) ->
-                        startService(new Intent(this, org.iiab.controller.install.presentation.InstallService.class)
+                        startService(new android.content.Intent(this, org.iiab.controller.install.presentation.InstallService.class)
                                 .setAction(org.iiab.controller.install.presentation.InstallService.ACTION_CANCEL)))
                 .show();
     }
