@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d Kurse wurden nicht fertig.</string>
     <string name="k2go_kolibri_retry_before_leaving">Wiederholen Sie die fehlgeschlagenen, bevor Sie gehen — beim Verlassen wird diese Liste gelöscht.</string>
     <string name="k2go_kolibri_catalog_updated">Katalog aktualisiert am %1$s</string>
+    <string name="k2go_books_load_more">Mehr laden</string>
+    <string name="k2go_books_showing_fmt">%1$d Bücher angezeigt</string>
+    <string name="k2go_books_all_fmt">Das ist alles · %1$d Bücher</string>
 </resources>

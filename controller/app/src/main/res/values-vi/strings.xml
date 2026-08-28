@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d khóa học chưa hoàn tất.</string>
     <string name="k2go_kolibri_retry_before_leaving">Hãy thử lại những mục lỗi trước khi rời đi — rời đi sẽ xóa danh sách này.</string>
     <string name="k2go_kolibri_catalog_updated">Danh mục cập nhật ngày %1$s</string>
+    <string name="k2go_books_load_more">Tải thêm</string>
+    <string name="k2go_books_showing_fmt">Đang hiển thị %1$d cuốn sách</string>
+    <string name="k2go_books_all_fmt">Hết rồi · %1$d cuốn sách</string>
 </resources>

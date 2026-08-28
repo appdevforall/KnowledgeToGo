@@ -1299,4 +1299,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d કોર્સ પૂરા થયા નથી.</string>
     <string name="k2go_kolibri_retry_before_leaving">જતાં પહેલાં નિષ્ફળ થયેલા ફરી પ્રયાસ કરો — જવાથી આ યાદી ભૂંસાઈ જશે.</string>
     <string name="k2go_kolibri_catalog_updated">કૅટલૉગ %1$s ના રોજ અપડેટ થયું</string>
+    <string name="k2go_books_load_more">વધુ લોડ કરો</string>
+    <string name="k2go_books_showing_fmt">%1$d પુસ્તકો બતાવ્યાં</string>
+    <string name="k2go_books_all_fmt">એટલું જ · %1$d પુસ્તકો</string>
 </resources>

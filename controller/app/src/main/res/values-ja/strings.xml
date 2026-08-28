@@ -1287,4 +1287,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d 件のコースが完了しませんでした。</string>
     <string name="k2go_kolibri_retry_before_leaving">退出する前に失敗したものを再試行してください。退出するとこの一覧は消えます。</string>
     <string name="k2go_kolibri_catalog_updated">カタログの更新日: %1$s</string>
+    <string name="k2go_books_load_more">もっと読み込む</string>
+    <string name="k2go_books_showing_fmt">%1$d 冊を表示中</string>
+    <string name="k2go_books_all_fmt">以上です · %1$d 冊</string>
 </resources>

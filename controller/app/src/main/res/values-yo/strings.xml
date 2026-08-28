@@ -1306,4 +1306,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d ìdánilẹ́kọ̀ọ́ kò parí.</string>
     <string name="k2go_kolibri_retry_before_leaving">Tún gbìyànjú àwọn tí ó kùnà kí o tó lọ — lílọ máa pa àtòjọ yìí rẹ́.</string>
     <string name="k2go_kolibri_catalog_updated">A ṣe àfikún àtòjọ ní %1$s</string>
+    <string name="k2go_books_load_more">Gbé afikun wọlé</string>
+    <string name="k2go_books_showing_fmt">Ń fi ìwé %1$d hàn</string>
+    <string name="k2go_books_all_fmt">Ìyẹn ni gbogbo rẹ̀ · ìwé %1$d</string>
 </resources>

@@ -1373,4 +1373,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d cours ne se sont pas terminés.</string>
     <string name="k2go_kolibri_retry_before_leaving">Réessayez ceux qui ont échoué avant de partir : quitter efface cette liste.</string>
     <string name="k2go_kolibri_catalog_updated">Catalogue mis à jour le %1$s</string>
+    <string name="k2go_books_load_more">Charger plus</string>
+    <string name="k2go_books_showing_fmt">%1$d livres affichés</string>
+    <string name="k2go_books_all_fmt">C\'est tout · %1$d livres</string>
 </resources>

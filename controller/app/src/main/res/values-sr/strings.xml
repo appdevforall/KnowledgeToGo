@@ -1299,4 +1299,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d курсева није завршено.</string>
     <string name="k2go_kolibri_retry_before_leaving">Покушајте поново неуспеле пре него што одете — одлазак брише овај списак.</string>
     <string name="k2go_kolibri_catalog_updated">Каталог ажуриран %1$s</string>
+    <string name="k2go_books_load_more">Учитај још</string>
+    <string name="k2go_books_showing_fmt">Приказано %1$d књига</string>
+    <string name="k2go_books_all_fmt">То је све · %1$d књига</string>
 </resources>

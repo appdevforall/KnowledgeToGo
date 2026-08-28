@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d دوره کامل نشد.</string>
     <string name="k2go_kolibri_retry_before_leaving">پیش از خروج، موارد ناموفق را دوباره تلاش کنید — خروج این فهرست را پاک می‌کند.</string>
     <string name="k2go_kolibri_catalog_updated">کاتالوگ در %1$s به‌روزرسانی شد</string>
+    <string name="k2go_books_load_more">بارگذاری بیشتر</string>
+    <string name="k2go_books_showing_fmt">نمایش %1$d کتاب</string>
+    <string name="k2go_books_all_fmt">همین · %1$d کتاب</string>
 </resources>

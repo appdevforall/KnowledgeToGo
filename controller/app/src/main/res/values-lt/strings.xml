@@ -1303,4 +1303,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kursų nebaigta.</string>
     <string name="k2go_kolibri_retry_before_leaving">Prieš išeidami pakartokite nepavykusius — išėjus šis sąrašas išvalomas.</string>
     <string name="k2go_kolibri_catalog_updated">Katalogas atnaujintas %1$s</string>
+    <string name="k2go_books_load_more">Įkelti daugiau</string>
+    <string name="k2go_books_showing_fmt">Rodoma knygų: %1$d</string>
+    <string name="k2go_books_all_fmt">Tai viskas · %1$d knygų</string>
 </resources>

@@ -1286,4 +1286,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d دورة لم تكتمل.</string>
     <string name="k2go_kolibri_retry_before_leaving">أعد محاولة ما فشل قبل المغادرة — المغادرة تمسح هذه القائمة.</string>
     <string name="k2go_kolibri_catalog_updated">تم تحديث الكتالوج في %1$s</string>
+    <string name="k2go_books_load_more">تحميل المزيد</string>
+    <string name="k2go_books_showing_fmt">عرض %1$d كتاب</string>
+    <string name="k2go_books_all_fmt">هذا كل شيء · %1$d كتاب</string>
 </resources>

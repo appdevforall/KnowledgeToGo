@@ -1293,4 +1293,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d kursus tidak selesai.</string>
     <string name="k2go_kolibri_retry_before_leaving">Coba lagi yang gagal sebelum keluar — keluar akan menghapus daftar ini.</string>
     <string name="k2go_kolibri_catalog_updated">Katalog diperbarui pada %1$s</string>
+    <string name="k2go_books_load_more">Muat lebih banyak</string>
+    <string name="k2go_books_showing_fmt">Menampilkan %1$d buku</string>
+    <string name="k2go_books_all_fmt">Itu saja · %1$d buku</string>
 </resources>

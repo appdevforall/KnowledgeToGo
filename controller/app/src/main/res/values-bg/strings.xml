@@ -1293,4 +1293,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d курса не завършиха.</string>
     <string name="k2go_kolibri_retry_before_leaving">Опитайте отново неуспешните, преди да излезете — излизането изчиства този списък.</string>
     <string name="k2go_kolibri_catalog_updated">Каталогът е обновен на %1$s</string>
+    <string name="k2go_books_load_more">Зареди още</string>
+    <string name="k2go_books_showing_fmt">Показани %1$d книги</string>
+    <string name="k2go_books_all_fmt">Това е всичко · %1$d книги</string>
 </resources>

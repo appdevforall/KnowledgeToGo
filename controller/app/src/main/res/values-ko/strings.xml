@@ -1287,4 +1287,7 @@
     <string name="k2go_kolibri_failed_fmt">%1$d개 강의가 완료되지 않았습니다.</string>
     <string name="k2go_kolibri_retry_before_leaving">나가기 전에 실패한 항목을 다시 시도하세요. 나가면 이 목록이 지워집니다.</string>
     <string name="k2go_kolibri_catalog_updated">카탈로그 업데이트: %1$s</string>
+    <string name="k2go_books_load_more">더 보기</string>
+    <string name="k2go_books_showing_fmt">%1$d권 표시 중</string>
+    <string name="k2go_books_all_fmt">여기까지입니다 · %1$d권</string>
 </resources>
